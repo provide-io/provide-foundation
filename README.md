@@ -262,3 +262,25 @@ This project is licensed under the **Apache 2.0 License**. See the [LICENSE](LIC
 
 - [`structlog`](https://www.structlog.org/) - The foundation for structured logging
 - [`attrs`](https://www.attrs.org/) - Powerful data classes and configuration management
+
+## 🤖 Development Transparency
+
+**AI-Assisted Development Notice**: This project was developed with significant AI assistance for code generation and implementation. While AI tools performed much of the heavy lifting for writing code, documentation, and tests, all architectural decisions, design patterns, functionality requirements, and final verification were made by human developers.
+
+**Human Oversight Includes**:
+- Architectural design and module structure decisions
+- API design and interface specifications  
+- Feature requirements and acceptance criteria
+- Code review and functionality verification
+- Performance requirements and benchmarking validation
+- Testing strategy and coverage requirements
+- Release readiness assessment
+
+**AI Assistance Includes**:
+- Code implementation based on human specifications
+- Documentation generation and formatting
+- Test case generation and implementation
+- Example script creation
+- Boilerplate and repetitive code generation
+
+This approach allows us to leverage AI capabilities for productivity while maintaining human control over critical technical decisions and quality assurance.
