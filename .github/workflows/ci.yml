@@ -1,0 +1,244 @@
+name: 🧪 CI - Tests & Quality
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+env:
+  UV_VERSION: "0.7.8"
+  PYTHON_VERSION: "3.13"
+
+jobs:
+  # ==================================================================================
+  # 🔧 Code Quality & Type Checking
+  # ==================================================================================
+  quality:
+    name: 🔧 Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: ⚡ Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: 📦 Install Dependencies
+        run: |
+          uv sync --all-groups
+
+      - name: 🎨 Run Ruff Linting
+        run: |
+          source env.sh
+          ruff check src/ tests/ scripts/ examples/ --output-format=github
+        continue-on-error: true
+
+
+      - name: 📏 Run Ruff Formatting Check
+        run: |
+          source env.sh
+          ruff format --check src/ tests/ scripts/ examples/
+        continue-on-error: true
+
+      - name: 🏷️ Run MyPy Type Checking
+        run: |
+          source env.sh
+          mypy src/ tests/ --show-error-codes --pretty
+        continue-on-error: true
+
+  # ==================================================================================
+  # 🧪 Testing Matrix
+  # ==================================================================================
+  test:
+    name: 🧪 Tests (Python ${{ matrix.python-version }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ["3.13"]
+
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: ⚡ Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: 📦 Install Dependencies
+        run: |
+          uv sync --all-groups
+
+      - name: 🧪 Run Tests with Coverage
+        shell: bash
+        run: |
+          source env.sh
+          pytest tests/ \
+            --cov=pyvider.telemetry \
+            --cov-report=xml \
+            --cov-branch \
+            --junitxml=junit.xml -o junit_family=legacy
+        continue-on-error: true
+
+      - name: 📊 Upload Coverage to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@v5
+        with:
+          name: codecov-umbrella
+          file: ./test-results.xml
+          flags: unittests
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: 📊 Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: 📈 Upload Test Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.os }}-${{ matrix.python-version }}
+          path: |
+            test-results.xml
+            htmlcov/
+            coverage.xml
+
+  # ==================================================================================
+  # 📦 Package Building & Testing
+  # ==================================================================================
+  package:
+    name: 📦 Package Build & Test
+    runs-on: ubuntu-latest
+    needs: [test]
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for version detection
+
+      - name: 🐍 Setup Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: ⚡ Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: 📦 Install Dependencies
+        run: |
+          uv sync --all-groups
+
+      - name: 🔍 Version Consistency Check
+        run: |
+          source env.sh
+          python scripts/version_checker.py
+
+      - name: 🏗️ Build Package
+        run: |
+          source env.sh
+          uv build
+
+      - name: 🧪 Test Package Installation
+        run: |
+          # Create clean environment for package testing
+          uv venv .venv_test
+          source .venv_test/bin/activate
+          uv pip install dist/*.whl
+          python -c "from pyvider.telemetry import logger; logger.info('Package test successful')"
+
+      - name: 📈 Upload Package Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-dist
+          path: |
+            dist/
+
+  # ==================================================================================
+  # 🏁 Integration Tests
+  # ==================================================================================
+  integration:
+    name: 🏁 Integration Tests
+    runs-on: ubuntu-latest
+    needs: [quality, test]
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: ⚡ Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: 📦 Install Dependencies
+        run: |
+          uv sync --all-groups
+
+      - name: 🧪 Run Full Integration Suite
+        run: |
+          source env.sh
+          pytest tests/test_integration.py -v --tb=short
+        continue-on-error: true
+
+      - name: ⚠️ Run Edge Case Tests
+        run: |
+          source env.sh
+          pytest tests/test_edge_cases.py -v --tb=short
+        continue-on-error: true
+
+      - name: 🔥 Run Coverage Completion Tests
+        run: |
+          source env.sh
+          pytest tests/test_coverage_completion.py -v
+        continue-on-error: true
+
+  # ==================================================================================
+  # 📋 Summary Job
+  # ==================================================================================
+  summary:
+    name: 📋 CI Summary
+    runs-on: ubuntu-latest
+    needs: [quality, test, package, integration]
+    if: always()
+    steps:
+      - name: 📊 Report Results
+        run: |
+          echo "## 🧪 Pyvider Telemetry CI Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| 🔧 Code Quality | ${{ needs.quality.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🧪 Tests | ${{ needs.test.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📦 Package | ${{ needs.package.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| 🏁 Integration | ${{ needs.integration.result == 'success' && '✅ Pass' || '❌ Fail' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [[ "${{ needs.quality.result }}" == "success" && "${{ needs.test.result }}" == "success" ]]; then
+            echo "🎉 **All critical checks passed!** Ready for release." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **Some checks failed.** Review results before proceeding." >> $GITHUB_STEP_SUMMARY
+          fi

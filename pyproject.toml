@@ -1,0 +1,186 @@
+#
+# pyproject.toml
+#
+
+[project]
+name = "pyvider-telemetry"
+description = "Pyvider Telemetry: An opinionated, developer-friendly telemetry wrapper for Python."
+version = "0.0.11"
+requires-python = ">=3.13"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+authors = [
+    { name = "Tim Perkins", email = "code@tim.life" },
+]
+maintainers = [
+    { name = "provide.io", email = "code@provide.io" },
+]
+keywords = ["telemetry", "logging", "tracing", "python", "pyvider"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: System :: Logging",
+    "Topic :: System :: Monitoring",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = [
+    "attrs>=23.1.0",
+    "structlog>=25.3.0",
+]
+
+[project.urls]
+Homepage = "https://pyvider.com/"
+Repository = "https://github.com/your-repo/pyvider-telemetry"
+
+
+[project.optional-dependencies]
+opentelemetry = [
+    "opentelemetry-api>=1.22.0",
+    "opentelemetry-sdk>=1.22.0",
+    "opentelemetry-exporter-otlp-proto-grpc>=1.22.0",
+    "opentelemetry-exporter-otlp-proto-http>=1.22.0",
+]
+
+[dependency-groups]
+dev = [
+    "bandit>=1.8.3",
+    "hypothesis>=6.131.28",
+    "mypy>=1.8.0",
+    "psutil>=7.0.0",
+    "pyrefly>=0.16.2",
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "pytest-xdist>=3.3.0",
+    "pyyaml>=6.0.2",
+    "reuse>=1.1.0",
+    "ruff>=0.1.0",
+    "twine>=6.1.0",
+    "ty>=0.0.1a6",
+]
+
+################################################################################
+# Pytest Configuration
+################################################################################
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "DEBUG"
+
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+testpaths = ["tests"]
+
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*", "*Tests"]
+python_functions = ["test_*", "*_test"]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore:cannot collect test class 'Test.*' because it has a __init__ constructor:pytest.PytestCollectionWarning",
+    "ignore:cannot collect test class .* because it has a __init__ constructor:pytest.PytestCollectionWarning",
+    "ignore:.* KqueueSelector constructor:pytest.PytestCollectionWarning",
+    "ignore:.* KqueueSelector constructor:pytest.PytestCollectionWarning",
+]
+norecursedirs = [
+    ".git", ".hg", ".svn", "*_build", "build", "dist", "*.egg-info",
+    ".venv", "venv", # Added venv as it's a common default
+    "htmlcov", "docs/_build",
+    ".hypothesis", # Added to address the warning
+]
+addopts = "-ra -q --color=yes"
+
+################################################################################
+# Ruff Linter and Formatter Configuration
+################################################################################
+
+[tool.ruff]
+line-length = 88
+indent-width = 4
+target-version = "py313"
+
+[tool.ruff.lint]
+select = [
+    "E", "F", "W", "I", "UP", "ANN", "B", "C90", "SIM", "PTH", "RUF",
+]
+ignore = [ "ANN401", "B008", "E501" ] # Removed ANN101, ANN102
+[tool.ruff.lint.isort]
+known-first-party = ["pyvider", "tests"]
+force-sort-within-sections = true
+combine-as-imports = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+################################################################################
+# MyPy Static Type Checker Configuration
+################################################################################
+
+[tool.mypy]
+python_version = "3.13"
+# files = ["src/pyvider", "tests"] # Removed files key
+mypy_path = "src" # Explicitly set mypy_path
+strict = true
+ignore_missing_imports = false
+pretty = true
+show_error_codes = true
+
+################################################################################
+# Coverage.py Configuration
+################################################################################
+
+[tool.coverage.run]
+source = ["pyvider.telemetry"]
+branch = true
+parallel = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+fail_under = 80
+precision = 2
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "def __repr__",
+    "def __str__",
+    "@(abc\\.)?abstractmethod",
+    "pass",
+    "logger\\.(debug|info|warning|error|exception|critical|trace)\\(",
+    "import logging",
+    "from logging import",
+    "print\\(",
+]
+
+[tool.coverage.html]
+directory = "/app/pyvider_htmlcov" # Using an absolute path
+
+[tool.coverage.xml]
+output = "coverage.xml"
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true
+
+[tool.bandit]
+exclude_dirs = [".venv", "tests"]
+
+[tool.pyrefly]
+project_includes = [
+    "src",
+    "tests",
+]
+
+# 🐍🏗️⚙️

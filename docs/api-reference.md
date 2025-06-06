@@ -1,0 +1,627 @@
+# 📚 Pyvider Telemetry API Documentation
+
+Complete API reference for Pyvider Telemetry v1.0.0
+
+## 🎯 Core API
+
+### setup_telemetry()
+
+```python
+def setup_telemetry(config: TelemetryConfig | None = None) -> None
+```
+
+**Description**: Initializes and configures the Pyvider telemetry system.
+
+**Parameters**:
+- `config` (TelemetryConfig | None): Configuration instance. If None, loads from environment variables.
+
+**Thread Safety**: ✅ Thread-safe with internal locking
+
+**Example**:
+```python
+from pyvider.telemetry import setup_telemetry, TelemetryConfig
+
+# Use environment variables
+setup_telemetry()
+
+# Use programmatic config
+config = TelemetryConfig(service_name="my-app")
+setup_telemetry(config)
+```
+
+### shutdown_pyvider_telemetry()
+
+```python
+async def shutdown_pyvider_telemetry(timeout_millis: int = 5000) -> None
+```
+
+**Description**: Performs graceful shutdown of telemetry system.
+
+**Parameters**:
+- `timeout_millis` (int): Timeout for shutdown operations (currently unused)
+
+**Returns**: None
+
+**Example**:
+```python
+import asyncio
+from pyvider.telemetry import shutdown_pyvider_telemetry
+
+# In async context
+await shutdown_pyvider_telemetry()
+
+# In sync context
+asyncio.run(shutdown_pyvider_telemetry())
+```
+
+## 🏗️ Configuration Classes
+
+### TelemetryConfig
+
+```python
+@define(kw_only=True, auto_attribs=True, frozen=True, slots=True)
+class TelemetryConfig:
+    service_name: str | None = field(default=None)
+    logging: LoggingConfig = field(factory=LoggingConfig)
+    globally_disabled: bool = field(default=False)
+```
+
+**Description**: Main configuration class for telemetry system.
+
+**Attributes**:
+- `service_name`: Service identifier included in all log entries
+- `logging`: Logging-specific configuration 
+- `globally_disabled`: If True, disables all telemetry output
+
+**Methods**:
+
+#### from_env()
+
+```python
+@classmethod
+def from_env(cls) -> "TelemetryConfig"
+```
+
+**Description**: Creates configuration from environment variables.
+
+**Environment Variables**:
+- `OTEL_SERVICE_NAME` / `PYVIDER_SERVICE_NAME`: Service name
+- `PYVIDER_TELEMETRY_DISABLED`: Global disable flag
+
+**Example**:
+```python
+import os
+from pyvider.telemetry import TelemetryConfig
+
+os.environ["PYVIDER_SERVICE_NAME"] = "my-service"
+config = TelemetryConfig.from_env()
+print(config.service_name)  # "my-service"
+```
+
+### LoggingConfig
+
+```python
+@define(kw_only=True, auto_attribs=True, frozen=True, slots=True)
+class LoggingConfig:
+    default_level: LogLevelStr = field(default="DEBUG")
+    module_levels: dict[str, LogLevelStr] = field(factory=dict)
+    console_formatter: Literal["key_value", "json"] = field(default="key_value")
+    logger_name_emoji_prefix_enabled: bool = field(default=True)
+    das_emoji_prefix_enabled: bool = field(default=True)
+    omit_timestamp: bool = field(default=False)
+```
+
+**Description**: Logging-specific configuration options.
+
+**Attributes**:
+- `default_level`: Default log level for all loggers
+- `module_levels`: Per-module log level overrides
+- `console_formatter`: Output format ("key_value" or "json")
+- `logger_name_emoji_prefix_enabled`: Enable logger name emoji prefixes
+- `das_emoji_prefix_enabled`: Enable Domain-Action-Status emoji prefixes
+- `omit_timestamp`: Remove timestamps from output
+
+**Environment Variables**:
+- `PYVIDER_LOG_LEVEL`: Default log level
+- `PYVIDER_LOG_CONSOLE_FORMATTER`: Output formatter
+- `PYVIDER_LOG_LOGGER_NAME_EMOJI_ENABLED`: Logger emoji toggle
+- `PYVIDER_LOG_DAS_EMOJI_ENABLED`: DAS emoji toggle
+- `PYVIDER_LOG_OMIT_TIMESTAMP`: Timestamp toggle
+- `PYVIDER_LOG_MODULE_LEVELS`: Module level overrides
+
+**Example**:
+```python
+from pyvider.telemetry import LoggingConfig
+
+config = LoggingConfig(
+    default_level="INFO",
+    module_levels={"auth": "DEBUG", "db": "ERROR"},
+    console_formatter="json",
+    das_emoji_prefix_enabled=True
+)
+```
+
+### LogLevelStr
+
+```python
+LogLevelStr = Literal["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE", "NOTSET"]
+```
+
+**Description**: Type alias for valid log level strings.
+
+**Valid Values**:
+- `"CRITICAL"`: Critical system failures
+- `"ERROR"`: Error conditions  
+- `"WARNING"`: Warning conditions
+- `"INFO"`: Informational messages
+- `"DEBUG"`: Debug information
+- `"TRACE"`: Ultra-verbose tracing (custom level)
+- `"NOTSET"`: No level filtering
+
+## 📝 Logger Interface
+
+### logger (Global Instance)
+
+```python
+logger: PyviderLogger
+```
+
+**Description**: Global logger instance for immediate use.
+
+**Example**:
+```python
+from pyvider.telemetry import logger
+
+logger.info("Application started")
+logger.debug("Debug information", user_id=123)
+logger.error("Error occurred", error_code="E001")
+```
+
+### PyviderLogger Class
+
+#### get_logger()
+
+```python
+def get_logger(self, name: str | None = None) -> Any
+```
+
+**Description**: Creates a named logger instance.
+
+**Parameters**:
+- `name`: Logger name (defaults to "pyvider.default")
+
+**Returns**: structlog BoundLogger instance
+
+**Example**:
+```python
+from pyvider.telemetry import logger
+
+auth_logger = logger.get_logger("auth.service")
+db_logger = logger.get_logger("database.connection")
+
+auth_logger.info("User authenticated")
+db_logger.error("Connection failed")
+```
+
+#### Logging Methods
+
+All methods follow the same signature pattern:
+
+```python
+def info(self, event: str, *args: Any, **kwargs: Any) -> None
+def debug(self, event: str, *args: Any, **kwargs: Any) -> None  
+def warning(self, event: str, *args: Any, **kwargs: Any) -> None
+def error(self, event: str, *args: Any, **kwargs: Any) -> None
+def critical(self, event: str, *args: Any, **kwargs: Any) -> None
+def exception(self, event: str, *args: Any, **kwargs: Any) -> None
+```
+
+**Parameters**:
+- `event`: Log message (supports printf-style formatting)
+- `*args`: Arguments for printf-style formatting
+- `**kwargs`: Additional structured data
+
+**Example**:
+```python
+# Simple message
+logger.info("User login successful")
+
+# With formatting
+logger.info("User %s logged in from %s", "alice", "192.168.1.1")
+
+# With structured data
+logger.info("User login", user_id=123, ip="192.168.1.1", success=True)
+
+# Exception logging (includes traceback)
+try:
+    risky_operation()
+except Exception:
+    logger.exception("Operation failed", operation="risky")
+```
+
+#### trace()
+
+```python
+def trace(
+    self, 
+    event: str, 
+    *args: Any, 
+    _pyvider_logger_name: str | None = None, 
+    **kwargs: Any
+) -> None
+```
+
+**Description**: Logs with custom TRACE level (more verbose than DEBUG).
+
+**Parameters**:
+- `event`: Log message
+- `*args`: Format arguments
+- `_pyvider_logger_name`: Override logger name for this call
+- `**kwargs`: Additional structured data
+
+**Example**:
+```python
+# Default trace
+logger.trace("Detailed execution flow")
+
+# With custom logger name
+logger.trace("Database query details", 
+            _pyvider_logger_name="db.trace",
+            query="SELECT * FROM users", 
+            duration_ms=23)
+```
+
+## 🎨 Emoji System
+
+### Domain-Action-Status (DAS) Logging
+
+Use `domain`, `action`, and `status` keyword arguments to trigger DAS emoji prefixes:
+
+```python
+logger.info("User authentication", 
+           domain="auth", 
+           action="login", 
+           status="success")
+# Output: [🔑][➡️][✅] User authentication
+```
+
+### Emoji Matrices
+
+#### PRIMARY_EMOJI (Domains)
+
+```python
+PRIMARY_EMOJI: dict[str, str] = {
+    "system": "⚙️", "server": "🛎️", "client": "🙋", "network": "🌐",
+    "security": "🔐", "config": "🔩", "database": "🗄️", "cache": "💾",
+    "task": "🔄", "plugin": "🔌", "telemetry": "🛰️", "di": "💉",
+    "protocol": "📡", "file": "📄", "user": "👤", "test": "🧪",
+    "utils": "🧰", "core": "🌟", "auth": "🔑", "entity": "🦎",
+    "report": "📈", "default": "❓",
+}
+```
+
+#### SECONDARY_EMOJI (Actions)
+
+```python
+SECONDARY_EMOJI: dict[str, str] = {
+    "init": "🌱", "start": "🚀", "stop": "🛑", "connect": "🔗",
+    "disconnect": "💔", "listen": "👂", "send": "📤", "receive": "📥",
+    "read": "📖", "write": "📝", "process": "⚙️", "validate": "🛡️",
+    "execute": "▶️", "query": "🔍", "update": "🔄", "delete": "🗑️",
+    "login": "➡️", "logout": "⬅️", "auth": "🔑", "error": "🔥",
+    "encrypt": "🛡️", "decrypt": "🔓", "parse": "🧩", "transmit": "📡",
+    "build": "🏗️", "schedule": "📅", "emit": "📢", "load": "💡",
+    "observe": "🧐", "request": "🗣️", "interrupt": "🚦",
+    "default": "⚙️",
+}
+```
+
+#### TERTIARY_EMOJI (Statuses)
+
+```python
+TERTIARY_EMOJI: dict[str, str] = {
+    "success": "✅", "failure": "❌", "error": "🔥", "warning": "⚠️",
+    "info": "ℹ️", "debug": "🐞", "trace": "👣", "attempt": "⏳",
+    "retry": "🔁", "skip": "⏭️", "complete": "🏁", "timeout": "⏱️",
+    "notfound": "❓", "unauthorized": "🚫", "invalid": "💢", "cached": "🎯",
+    "ongoing": "🏃", "idle": "💤", "ready": "👍", "default": "➡️",
+}
+```
+
+### show_emoji_matrix()
+
+```python
+def show_emoji_matrix() -> None
+```
+
+**Description**: Displays the complete emoji mapping contract.
+
+**Environment Variable**: `PYVIDER_SHOW_EMOJI_MATRIX=true`
+
+**Example**:
+```python
+import os
+from pyvider.telemetry.logger.emoji_matrix import show_emoji_matrix
+
+os.environ["PYVIDER_SHOW_EMOJI_MATRIX"] = "true"
+show_emoji_matrix()  # Prints emoji reference
+```
+
+## 🚀 Performance Considerations
+
+### **Benchmarked Performance Metrics**
+
+The Pyvider Telemetry system has been thoroughly benchmarked to ensure production-ready performance:
+
+| Scenario          | Typical Performance | Notes                                   |
+|-------------------|---------------------|-----------------------------------------|
+| **Basic Logging** | ~40,000 msg/sec     | Key-value format, emoji enabled         |
+| **JSON Formatting** | ~38,900 msg/sec     | Structured output with emojis           |
+| **Multithreaded**   | ~39,800 msg/sec     | 10 threads, concurrent logging          |
+| **Level Filtering** | ~68,100 msg/sec     | Efficient filtering                     |
+| **Large Payloads**  | ~14,200 msg/sec     | ~1KB structured data per message        |
+| **Async Logging**   | ~43,400 msg/sec     | Logging from async tasks                |
+
+### **Optimization Guidelines**
+
+#### **1. Log Level Management**
+```python
+# ✅ RECOMMENDED: Use appropriate levels for production
+config = TelemetryConfig(
+    logging=LoggingConfig(
+        default_level="INFO",  # Avoid DEBUG/TRACE in production
+        module_levels={
+            "critical.component": "ERROR",    # Only errors for critical paths
+            "auth": "DEBUG",                  # Verbose only where needed
+            "performance.sensitive": "WARNING"  # Minimal logging for hot paths
+        }
+    )
+)
+```
+
+#### **2. Module-Level Filtering**
+```python
+# ✅ RECOMMENDED: Use hierarchical filtering for fine control
+module_levels = {
+    "app": "INFO",                    # Default for application
+    "app.auth": "DEBUG",              # Verbose authentication logs
+    "app.auth.oauth": "TRACE",        # Ultra-verbose OAuth debugging
+    "external.api": "ERROR",          # Minimal third-party noise
+    "database.queries": "WARNING",    # Only slow/problematic queries
+}
+```
+
+#### **3. High-Volume Applications**
+```python
+# ✅ RECOMMENDED: Configuration for high-throughput services
+high_performance_config = TelemetryConfig(
+    logging=LoggingConfig(
+        default_level="WARNING",  # Reduce log volume
+        console_formatter="json",  # More efficient for log aggregation
+        logger_name_emoji_prefix_enabled=False,  # Slight performance gain
+        das_emoji_prefix_enabled=True,  # Keep semantic benefits
+        omit_timestamp=True,  # If timestamps added by log aggregator
+    )
+)
+```
+
+#### **4. Memory Usage Optimization**
+```python
+# For long-running applications, monitor memory usage
+from pyvider.telemetry.logger.custom_processors import get_emoji_cache_stats
+
+# Periodically check cache utilization
+stats = get_emoji_cache_stats()
+print(f"Emoji cache usage: {stats['cache_utilization']:.1f}%")
+
+# Clear cache if needed (rare)
+if stats['cache_size'] > 500:
+    from pyvider.telemetry.logger.custom_processors import clear_emoji_cache
+    clear_emoji_cache()
+```
+
+### **Performance Best Practices**
+
+#### **Efficient Logging Patterns**
+```python
+# ✅ GOOD: Structured logging with meaningful fields
+logger.info("Request processed",
+           request_id="req-123", 
+           duration_ms=45, 
+           status_code=200)
+
+# ✅ GOOD: Use DAS pattern for semantic meaning
+logger.info("Payment completed",
+           domain="payment", action="process", status="success",
+           amount=99.99, payment_id="pay-456")
+
+# ❌ AVOID: Excessive string formatting in hot paths
+logger.debug(f"Complex calculation: {expensive_computation()}")  # Computed even if filtered
+
+# ✅ BETTER: Let level filtering avoid computation
+logger.debug("Complex calculation", result=lambda: expensive_computation())
+```
+
+#### **Production Monitoring**
+```python
+# Monitor logging performance in production
+import time
+
+start_time = time.time()
+for i in range(1000):
+    logger.info("Performance test", iteration=i)
+end_time = time.time()
+
+throughput = 1000 / (end_time - start_time)
+logger.info("Logging throughput measured", 
+           messages_per_second=throughput,
+           domain="system", action="benchmark", status="complete")
+```
+
+### **Memory and CPU Considerations**
+
+1. **Emoji Caching**: Logger name emoji lookups are cached for frequently used names (up to 1000 entries)
+2. **Level Filtering**: Early filtering prevents expensive string operations for suppressed messages
+3. **Processor Chain**: Optimized order minimizes work for filtered messages
+4. **Thread Safety**: Lock-free logging operations after initial setup
+
+### **Troubleshooting Performance Issues**
+
+#### **Common Issues and Solutions**
+
+| Issue | Symptom | Solution |
+|-------|---------|----------|
+| **Slow Throughput** | <500 msg/sec | Check log level settings, disable unnecessary emojis |
+| **High Memory Usage** | Growing RSS | Monitor emoji cache, check for log level misconfiguration |
+| **Lock Contention** | Inconsistent performance | Verify proper setup, avoid repeated setup calls |
+| **Formatting Overhead** | JSON slower than expected | Consider key-value format for high-volume scenarios |
+
+#### **Performance Debugging**
+```python
+# Run built-in benchmarks
+python scripts/benchmark_performance.py
+
+# Check configuration impact
+config_fast = TelemetryConfig(
+    logging=LoggingConfig(
+        default_level="ERROR",  # Minimal logging
+        logger_name_emoji_prefix_enabled=False,
+        das_emoji_prefix_enabled=False,
+    )
+)
+
+config_full = TelemetryConfig(
+    logging=LoggingConfig(
+        default_level="DEBUG",  # Verbose logging
+        logger_name_emoji_prefix_enabled=True,
+        das_emoji_prefix_enabled=True,
+    )
+)
+
+# Compare performance between configurations
+```
+
+## 🔧 Advanced Usage
+
+### Module-Level Configuration
+
+```python
+from pyvider.telemetry import setup_telemetry, TelemetryConfig, LoggingConfig
+
+config = TelemetryConfig(
+    logging=LoggingConfig(
+        default_level="INFO",
+        module_levels={
+            "auth": "DEBUG",           # Verbose auth logging
+            "auth.oauth": "TRACE",     # Ultra-verbose OAuth
+            "database": "ERROR",       # Only DB errors
+            "cache": "WARNING",        # Cache warnings+
+            "api.handlers": "INFO",    # API info+
+        }
+    )
+)
+setup_telemetry(config)
+
+# These loggers will use their configured levels
+auth_logger = logger.get_logger("auth.service")        # DEBUG level
+oauth_logger = logger.get_logger("auth.oauth.token")   # TRACE level  
+db_logger = logger.get_logger("database.connection")   # ERROR level
+cache_logger = logger.get_logger("cache.redis")        # WARNING level
+api_logger = logger.get_logger("api.handlers.user")    # INFO level
+```
+
+### Custom Processor Development
+
+```python
+from typing import Any
+import structlog
+
+def custom_processor(
+    logger: Any, 
+    method_name: str, 
+    event_dict: structlog.types.EventDict
+) -> structlog.types.EventDict:
+    """Example custom processor."""
+    # Add custom field
+    event_dict["custom_field"] = "custom_value"
+    
+    # Modify existing fields
+    if "sensitive_data" in event_dict:
+        event_dict["sensitive_data"] = "[REDACTED]"
+    
+    return event_dict
+
+# Note: Adding custom processors requires modifying core.py
+# This is for advanced users who want to extend functionality
+```
+
+### Testing Integration
+
+```python
+import pytest
+from pyvider.telemetry import setup_telemetry, TelemetryConfig
+
+@pytest.fixture
+def setup_logging():
+    """Test fixture for logging setup."""
+    config = TelemetryConfig(
+        service_name="test-service",
+        logging=LoggingConfig(
+            default_level="DEBUG",
+            console_formatter="json",
+            omit_timestamp=True  # Easier test assertions
+        )
+    )
+    setup_telemetry(config)
+
+def test_feature_with_logging(setup_logging, caplog):
+    """Example test using logging."""
+    from pyvider.telemetry import logger
+    
+    logger.info("Test operation", operation="test")
+    
+    # Verify log output
+    assert "Test operation" in caplog.text
+    assert "operation=test" in caplog.text
+```
+
+## 🔍 Troubleshooting
+
+### Common Issues
+
+#### Version Import Error
+```python
+# If dynamic versioning fails
+from importlib.metadata import version, PackageNotFoundError
+
+try:
+    __version__ = version("pyvider-telemetry")
+except PackageNotFoundError:
+    __version__ = "0.0.0-dev"  # Development fallback
+```
+
+#### Thread Safety Concerns
+```python
+# The library is thread-safe, but for custom extensions:
+import threading
+
+_custom_lock = threading.Lock()
+
+def thread_safe_operation():
+    with _custom_lock:
+        # Your thread-safe code here
+        pass
+```
+
+#### Performance Optimization
+```python
+# For high-volume logging, consider level filtering
+config = TelemetryConfig(
+    logging=LoggingConfig(
+        default_level="WARNING",  # Reduce log volume
+        module_levels={
+            "critical.module": "ERROR"  # Only errors for critical modules
+        }
+    )
+)
+```

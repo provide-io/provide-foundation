@@ -1,0 +1,60 @@
+name: 🔐 Security Scanning
+
+on:
+  push:
+    branches: [ main, develop ]
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM UTC
+  workflow_dispatch:
+
+env:
+  UV_VERSION: "0.7.8"
+  PYTHON_VERSION: "3.13"
+
+jobs:
+  security:
+    name: 🔐 Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: ⚡ Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: 📦 Install Dependencies
+        run: |
+          uv sync --all-groups
+
+      - name: 🔒 Run Bandit Security Scan
+        run: |
+          source env.sh
+          bandit -r src/ -f json -o bandit-report.json
+        continue-on-error: true
+
+      - name: 🚨 Run Safety Check
+        run: |
+          source env.sh
+          safety check --json --output safety-report.json
+        continue-on-error: true
+
+      - name: 📈 Upload Security Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-reports-${{ github.sha }}
+          path: |
+            bandit-report.json
+            safety-report.json
+
+      - name: 📊 Security Summary
+        run: |
+          echo "## 🔐 Security Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "Security reports uploaded as artifacts for detailed review." >> $GITHUB_STEP_SUMMARY
