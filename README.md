@@ -11,7 +11,7 @@ Modern structured logging built on `structlog` with emoji-enhanced visual parsin
 [![Python Versions](https://img.shields.io/pypi/pyversions/pyvider-telemetry?style=flat-square)](https://pypi.org/project/pyvider-telemetry/)
 [![Downloads](https://static.pepy.tech/badge/pyvider-telemetry/month)](https://pepy.tech/project/pyvider-telemetry)
 
-[![CI](https://github.com/provide-io/pyvider-telemetry/workflows/ci.yaml/badge.svg)](https://github.com/provide-io/pyvider-telemetry/actions/workflows/ci.yml/badge.svg)
+[![CI](https://github.com/provide-io/pyvider-telemetry/workflows/ci.yml)](https://github.com/provide-io/pyvider-telemetry/actions/workflows/ci.yml/badge.svg)
 [![Coverage](https://codecov.io/gh/provide-io/pyvider-telemetry/branch/main/graph/badge.svg)](https://codecov.io/gh/provide-io/pyvider-telemetry)
 [![Type Checked](https://img.shields.io/badge/type--checked-mypy-blue?style=flat-square)](https://mypy.readthedocs.io/)
 [![Code style: ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json&style=flat-square)](https://github.com/astral-sh/ruff)
