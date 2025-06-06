@@ -43,7 +43,9 @@ jobs:
       - name: 📖 Test Example Scripts
         run: |
           source env.sh
-          python examples/examples_basic.py
+          for example in examples/*.py; do
+              python ${example}
+          done
 
       - name: 🔗 Validate README Links
         run: |
@@ -51,15 +53,3 @@ jobs:
           npm install -g markdown-link-check
           markdown-link-check README.md --config .github/markdown-link-check.json
         continue-on-error: true
-
-      - name: 📝 Test API Documentation Examples
-        run: |
-          source env.sh
-          # Test code examples in documentation
-          python -c "
-          # Test basic usage examples from README
-          from pyvider.telemetry import setup_telemetry, logger
-          setup_telemetry()
-          logger.info('Documentation test', version='1.0.0')
-          print('✅ Documentation examples work correctly')
-          "
