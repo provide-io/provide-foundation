@@ -189,6 +189,8 @@ logger.trace("Token validation details",
 Run benchmarks yourself:
 ```bash
 python scripts/benchmark_performance.py
+
+python scripts/extreme_performance.py
 ```
 
 ## 🎨 Emoji Reference
@@ -196,7 +198,6 @@ python scripts/benchmark_performance.py
 ### Domain Emojis (Primary)
 - `🔑` auth, `🗄️` database, `🌐` network, `⚙️` system
 - `🛎️` server, `🙋` client, `🔐` security, `📄` file
-- See full matrix: `PYVIDER_SHOW_EMOJI_MATRIX=true python -c "from pyvider.telemetry.logger.emoji_matrix import show_emoji_matrix; show_emoji_matrix()"`
 
 ### Action Emojis (Secondary)
 - `➡️` login, `🔗` connect, `📤` send, `📥` receive
@@ -205,6 +206,8 @@ python scripts/benchmark_performance.py
 ### Status Emojis (Tertiary)
 - `✅` success, `❌` failure, `🔥` error, `⚠️` warning
 - `⏳` attempt, `🔁` retry, `🏁` complete, `⏱️` timeout
+
+See full matrix: `PYVIDER_SHOW_EMOJI_MATRIX=true python -c "from pyvider.telemetry.logger.emoji_matrix import show_emoji_matrix; show_emoji_matrix()"`
 
 ## 🔧 Advanced Usage
 

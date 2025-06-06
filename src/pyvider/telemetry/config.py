@@ -48,23 +48,23 @@ is consumed by `pyvider.telemetry.core.setup_telemetry()` to initialize and appl
 the desired logging behavior across the application.
 """
 
-import json  # Moved up
+import json
 import logging as stdlib_logging
 import os
 import sys
 from typing import TYPE_CHECKING, Any, TextIO  # TextIO will be kept
 
 from attrs import define, field
-import structlog  # Moved up
+import structlog
 
-from pyvider.telemetry.logger.custom_processors import (  # type: ignore[import-untyped] # Moved up
+from pyvider.telemetry.logger.custom_processors import (
     StructlogProcessor,  # This is an alias for a callable, effectively AnyCallable
     add_das_emoji_prefix,
     add_log_level_custom,
     add_logger_name_emoji_prefix,
     filter_by_level_custom,
 )
-from pyvider.telemetry.types import (  # type: ignore[import-untyped] # Import new types
+from pyvider.telemetry.types import (
     _VALID_FORMATTER_TUPLE,  # Now comes from types.py
     _VALID_LOG_LEVEL_TUPLE,  # Now comes from types.py
     TRACE_LEVEL_NUM,  # Now comes from types.py
