@@ -52,7 +52,7 @@ import json
 import logging as stdlib_logging
 import os
 import sys
-from typing import TYPE_CHECKING, Any, TextIO  # TextIO will be kept
+from typing import TYPE_CHECKING, Any, TextIO, cast  # TextIO will be kept
 
 from attrs import define, field
 import structlog
@@ -228,7 +228,7 @@ class TelemetryConfig:
         raw_default_log_level: str = os.getenv("PYVIDER_LOG_LEVEL", "DEBUG").upper()
         default_log_level: LogLevelStr
         if raw_default_log_level in _VALID_LOG_LEVEL_TUPLE:
-            default_log_level = raw_default_log_level
+            default_log_level = cast(LogLevelStr, raw_default_log_level)
         else:
             _ensure_config_logger_handler(config_warnings_logger)
             config_warnings_logger.warning(
@@ -242,7 +242,7 @@ class TelemetryConfig:
         ).lower()
         console_formatter: ConsoleFormatterStr
         if raw_console_formatter in _VALID_FORMATTER_TUPLE:
-            console_formatter = raw_console_formatter
+            console_formatter = cast(ConsoleFormatterStr, raw_console_formatter)
         else:
             _ensure_config_logger_handler(config_warnings_logger)
             config_warnings_logger.warning(
@@ -322,7 +322,7 @@ class TelemetryConfig:
                     continue
 
                 if level_name_raw in _VALID_LOG_LEVEL_TUPLE:
-                    levels[module_name] = level_name_raw
+                    levels[module_name] = cast(LogLevelStr, level_name_raw)
                 else:
                     _ensure_config_logger_handler(config_warnings_logger)
                     config_warnings_logger.warning(
@@ -416,7 +416,7 @@ def _config_create_service_name_processor(service_name: str | None) -> Structlog
         if service_name is not None: # Add service_name if it's defined
             event_dict["service_name"] = service_name
         return event_dict
-    return processor
+    return cast(StructlogProcessor, processor)
 
 
 def _config_create_timestamp_processors(omit_timestamp: bool) -> list[StructlogProcessor]:
@@ -441,7 +441,7 @@ def _config_create_timestamp_processors(omit_timestamp: bool) -> list[StructlogP
         ) -> structlog.types.EventDict:
             event_dict.pop("timestamp", None) # Remove timestamp if present
             return event_dict
-        processors.append(pop_timestamp_processor)
+        processors.append(cast(StructlogProcessor, pop_timestamp_processor))
     return processors
 
 
@@ -457,9 +457,9 @@ def _config_create_emoji_processors(logging_config: LoggingConfig) -> list[Struc
     """
     processors: list[StructlogProcessor] = []
     if logging_config.logger_name_emoji_prefix_enabled:
-        processors.append(add_logger_name_emoji_prefix)
+        processors.append(cast(StructlogProcessor, add_logger_name_emoji_prefix))
     if logging_config.das_emoji_prefix_enabled:
-        processors.append(add_das_emoji_prefix)
+        processors.append(cast(StructlogProcessor, add_das_emoji_prefix))
     return processors
 
 
@@ -477,12 +477,12 @@ def _build_core_processors_list(config: TelemetryConfig) -> list[StructlogProces
     log_cfg = config.logging
     processors: list[StructlogProcessor] = [
         structlog.contextvars.merge_contextvars, # Merge context variables into the event
-        add_log_level_custom,                   # Add our custom log level (e.g., TRACE)
-        filter_by_level_custom(                 # Filter messages based on configured levels
+        cast(StructlogProcessor, add_log_level_custom), # Add our custom log level (e.g., TRACE)
+        cast(StructlogProcessor, filter_by_level_custom( # Filter messages based on configured levels
             default_level_str=log_cfg.default_level, # LogLevelStr type
             module_levels=log_cfg.module_levels, # dict[str, LogLevelStr] type
             level_to_numeric_map=_LEVEL_TO_NUMERIC # Uses LogLevelStr as keys
-        ),
+        )),
         structlog.processors.StackInfoRenderer(),   # Render stack information for exceptions
         structlog.dev.set_exc_info,               # Add exception info to the event
     ]
@@ -530,7 +530,7 @@ def _config_create_keyvalue_formatter_processors(output_stream: TextIO) -> list[
     ) -> structlog.types.EventDict:
         event_dict.pop("logger_name", None)
         return event_dict
-    processors.append(pop_logger_name_processor)
+    processors.append(cast(StructlogProcessor, pop_logger_name_processor))
 
     # Determine if output is a TTY to enable/disable colors
     is_tty = hasattr(output_stream, 'isatty') and output_stream.isatty()

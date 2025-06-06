@@ -36,14 +36,14 @@ from typing import TYPE_CHECKING, Any, Protocol, cast
 
 import structlog
 
-from pyvider.telemetry.logger.emoji_matrix import (  # type: ignore[import-untyped]
+from pyvider.telemetry.logger.emoji_matrix import (
     PRIMARY_EMOJI,
     SECONDARY_EMOJI,
     TERTIARY_EMOJI,
 )
 
 # Updated import for LogLevelStr, and new imports for TRACE constants
-from pyvider.telemetry.types import (  # type: ignore[import-untyped]
+from pyvider.telemetry.types import (
     TRACE_LEVEL_NAME,
     TRACE_LEVEL_NUM,
     LogLevelStr,

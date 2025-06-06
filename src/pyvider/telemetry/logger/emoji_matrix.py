@@ -36,7 +36,7 @@ across the logging system and provides a clear reference for developers.
 import os
 
 from pyvider.telemetry.logger import (
-    base as pyvider_logger_base,  # type: ignore[import-untyped]
+    base as pyvider_logger_base,
 )
 
 PRIMARY_EMOJI: dict[str, str] = {

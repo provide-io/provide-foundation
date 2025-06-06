@@ -34,14 +34,15 @@ of this module, which is then typically re-exported by
 import contextlib  # For suppress
 import sys
 import threading
-from typing import TYPE_CHECKING, Any, TextIO
+from typing import TYPE_CHECKING, Any, TextIO, cast
 
 import structlog
+from structlog.types import BindableLogger
 
-from pyvider.telemetry.types import TRACE_LEVEL_NAME  # type: ignore[import-untyped]
+from pyvider.telemetry.types import TRACE_LEVEL_NAME
 
 if TYPE_CHECKING:
-    from pyvider.telemetry.config import TelemetryConfig  # type: ignore[import-untyped]
+    from pyvider.telemetry.config import TelemetryConfig
 
 # Global state for lazy initialization
 _LAZY_SETUP_LOCK = threading.Lock()
@@ -216,10 +217,10 @@ class PyviderLogger:
         """
         # Import here to avoid circular imports
         from pyvider.telemetry.config import (
-            TelemetryConfig,  # type: ignore[import-untyped]
+            TelemetryConfig,
         )
         from pyvider.telemetry.core import (
-            _configure_structlog_output,  # type: ignore[import-untyped]
+            _configure_structlog_output,
         )
 
         # NOTE: Do NOT reset stream here - preserve any custom stream set for testing
@@ -231,7 +232,7 @@ class PyviderLogger:
         except Exception:
             # If environment config fails, use minimal safe defaults
             from pyvider.telemetry.config import (
-                LoggingConfig,  # type: ignore[import-untyped]
+                LoggingConfig,
             )
             default_config = TelemetryConfig(
                 service_name=None,
@@ -285,7 +286,7 @@ class PyviderLogger:
                     structlog.dev.ConsoleRenderer(colors=False),
                 ],
                 logger_factory=structlog.PrintLoggerFactory(file=_get_safe_stderr()),
-                wrapper_class=structlog.BoundLogger,
+                wrapper_class=cast(type[BindableLogger], structlog.BoundLogger),
                 cache_logger_on_first_use=True,
             )
         except Exception:
