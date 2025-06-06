@@ -35,7 +35,7 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://pyvider.com/"
-Repository = "https://github.com/your-repo/pyvider-telemetry"
+Repository = "https://github.com/provider-io/pyvider-telemetry"
 
 
 [project.optional-dependencies]
