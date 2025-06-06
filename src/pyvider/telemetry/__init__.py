@@ -43,17 +43,17 @@ except PackageNotFoundError:  # pragma: no cover
     # Fallback for development/editable installs
     __version__ = "0.0.0-dev"
 
-from pyvider.telemetry.config import (  # type: ignore[import-untyped]
+from pyvider.telemetry.config import (
     LoggingConfig,
     LogLevelStr,
     TelemetryConfig,
 )
-from pyvider.telemetry.core import (  # type: ignore[import-untyped]
+from pyvider.telemetry.core import (
     setup_telemetry,
     shutdown_pyvider_telemetry,
 )
-from pyvider.telemetry.logger import logger  # type: ignore[import-untyped]
-from pyvider.telemetry.logger.emoji_matrix import (  # type: ignore[import-untyped]
+from pyvider.telemetry.logger import logger
+from pyvider.telemetry.logger.emoji_matrix import (
     PRIMARY_EMOJI,
     SECONDARY_EMOJI,
     TERTIARY_EMOJI,

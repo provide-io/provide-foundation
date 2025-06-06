@@ -45,14 +45,15 @@ import threading
 from typing import Any, TextIO, cast
 
 import structlog
+from structlog.types import BindableLogger
 
-from pyvider.telemetry.config import (  # type: ignore[import-untyped]
+from pyvider.telemetry.config import (
     TelemetryConfig,
     _build_core_processors_list,
     _build_formatter_processors_list,
 )
 from pyvider.telemetry.logger import (
-    base as logger_base_module,  # type: ignore[import-untyped]
+    base as logger_base_module,
 )
 
 # Enhanced global state management
@@ -253,7 +254,7 @@ def _apply_structlog_configuration(processors: list[Any]) -> None:
     structlog.configure(
         processors=processors,
         logger_factory=structlog.PrintLoggerFactory(file=output_stream),
-        wrapper_class=structlog.BoundLogger,
+        wrapper_class=cast(type[BindableLogger], structlog.BoundLogger),
         cache_logger_on_first_use=True,
     )
 

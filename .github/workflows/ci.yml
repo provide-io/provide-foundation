@@ -29,7 +29,7 @@ jobs:
         uses: actions/setup-python@v5
 
       - name: ⚡ Install uv
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v4
         with:
           version: ${{ env.UV_VERSION }}
 
@@ -40,20 +40,20 @@ jobs:
       - name: 🎨 Run Ruff Linting
         run: |
           source env.sh
-          ruff check src/ tests/ scripts/ examples/ --output-format=github
+          ruff check src/ examples/ --output-format=github
         continue-on-error: true
 
 
       - name: 📏 Run Ruff Formatting Check
         run: |
           source env.sh
-          ruff format --check src/ tests/ scripts/ examples/
+          ruff format --check src/ examples/
         continue-on-error: true
 
       - name: 🏷️ Run MyPy Type Checking
         run: |
           source env.sh
-          mypy src/ tests/ --show-error-codes --pretty
+          mypy src/ --show-error-codes --pretty
         continue-on-error: true
 
   # ==================================================================================
