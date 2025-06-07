@@ -27,11 +27,11 @@ import `logger` from `pyvider.telemetry` (which re-exports it from here), but di
 imports from `pyvider.telemetry.logger` are available for more specific needs or
 for accessing logger-specific utilities not promoted to the top-level package.
 """
-from pyvider.telemetry.logger.base import (  # type: ignore[import-untyped]
+from pyvider.telemetry.logger.base import (
     PyviderLogger,
     logger,
 )
-from pyvider.telemetry.logger.emoji_matrix import (  # type: ignore[import-untyped]
+from pyvider.telemetry.logger.emoji_matrix import (
     PRIMARY_EMOJI,
     SECONDARY_EMOJI,
     TERTIARY_EMOJI,
