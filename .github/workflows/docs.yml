@@ -1,0 +1,55 @@
+name: 📚 Documentation
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'README.md'
+      - 'docs/**'
+      - 'examples/**'
+  pull_request:
+    paths:
+      - 'README.md'
+      - 'docs/**'
+      - 'examples/**'
+  workflow_dispatch:
+
+env:
+  UV_VERSION: "0.7.8"
+  PYTHON_VERSION: "3.13"
+
+jobs:
+  docs:
+    name: 📚 Documentation Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: ⚡ Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: 📦 Install Dependencies
+        run: |
+          uv sync --all-groups
+
+      - name: 📖 Test Example Scripts
+        run: |
+          source env.sh
+          for example in examples/*.py; do
+              python ${example}
+          done
+
+      - name: 🔗 Validate README Links
+        run: |
+          # Install markdown link checker
+          npm install -g markdown-link-check
+          markdown-link-check README.md --config .github/markdown-link-check.json
+        continue-on-error: true

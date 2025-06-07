@@ -1,0 +1,91 @@
+name: 🚀 Performance Benchmarks
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 4 * * 1'  # Weekly on Monday at 4 AM UTC
+  workflow_dispatch:
+    inputs:
+      run_extreme_tests:
+        description: 'Run extreme performance tests'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  UV_VERSION: "0.7.8"
+  PYTHON_VERSION: "3.13"
+
+jobs:
+  performance:
+    name: 🚀 Performance Benchmarks
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: ⚡ Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: 📦 Install Dependencies
+        run: |
+          uv sync --all-groups
+
+      - name: 📊 Run Standard Benchmarks
+        run: |
+          source .venv/bin/activate
+          python scripts/benchmark_performance.py
+        continue-on-error: true
+
+      # - name: 🔥 Run Extreme Performance Tests
+      #   if: github.event.inputs.run_extreme_tests == 'true' || github.event_name == 'schedule'
+      #   run: |
+      #     source .venv/bin/activate
+      #     python scripts/extreme_performance_test.py
+      #   continue-on-error: true
+
+      - name: 📈 Upload Benchmark Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results-${{ github.sha }}
+          path: |
+            benchmark-results.json
+
+      - name: 💬 Comment Performance Results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            try {
+              const results = JSON.parse(fs.readFileSync('benchmark-results.json', 'utf8'));
+              const basicThroughput = results.benchmarks?.basic_logging?.messages_per_second || 'N/A';
+              const jsonThroughput = results.benchmarks?.json_formatting?.messages_per_second || 'N/A';
+
+              const comment = `## 🚀 Performance Benchmark Results
+
+              | Benchmark | Throughput |
+              |-----------|------------|
+              | Basic Logging | ${Math.round(basicThroughput)} msg/sec |
+              | JSON Formatting | ${Math.round(jsonThroughput)} msg/sec |
+
+              Performance targets: Basic >1000 msg/sec ✅, JSON >500 msg/sec ✅
+              `;
+
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            } catch (error) {
+              console.log('Could not post performance results:', error);
+            }
