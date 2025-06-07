@@ -16,23 +16,26 @@ on:
 
 env:
   UV_VERSION: "0.7.8"
-  PYTHON_VERSION: "3.13"
 
 jobs:
   docs:
     name: 📚 Documentation Validation
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python-version: ["3.13"]
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v4
 
-      - name: 🐍 Setup Python ${{ env.PYTHON_VERSION }}
+      - name: 🐍 Setup Python ${{ matrix.os }}-${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: ${{ matrix.os }}-${{ matrix.python-version }}
 
       - name: ⚡ Install uv
-        uses: astral-sh/setup-uv@v3
+        uses: astral-sh/setup-uv@v4
         with:
           version: ${{ env.UV_VERSION }}
 
