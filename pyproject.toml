@@ -78,7 +78,7 @@ asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 
 testpaths = ["tests"]
-
+pythonpath = ["src", "."]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*", "*Tests"]
 python_functions = ["test_*", "*_test"]
@@ -165,7 +165,7 @@ parallel = true
 [tool.coverage.report]
 show_missing = true
 skip_covered = false
-fail_under = 80
+fail_under = 80 # Set this to a realistic target once you get >0%
 precision = 2
 exclude_lines = [
     "pragma: no cover",
@@ -176,14 +176,15 @@ exclude_lines = [
     "def __str__",
     "@(abc\\.)?abstractmethod",
     "pass",
+    # This is usually fine, but double-check it's not too greedy for your codebase
     "logger\\.(debug|info|warning|error|exception|critical|trace)\\(",
-    "import logging",
-    "from logging import",
+    "import logging", # Excluding all import logging lines might be too much
+    "from logging import", # Same as above
     "print\\(",
 ]
 
 [tool.coverage.html]
-directory = "/app/pyvider_htmlcov" # Using an absolute path
+directory = "htmlcov" # Using an absolute path
 
 [tool.coverage.xml]
 output = "coverage.xml"
