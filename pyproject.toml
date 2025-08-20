@@ -5,7 +5,7 @@
 [project]
 name = "pyvider-telemetry"
 description = "Pyvider Telemetry: An opinionated, developer-friendly telemetry wrapper for Python."
-version = "0.0.16"
+version = "0.1.0"
 requires-python = ">=3.11"
 readme = "README.md"
 license = { text = "Apache-2.0" }
@@ -21,10 +21,10 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
-    "Programming Language :: Python :: 3.14",
     "Topic :: System :: Logging",
     "Topic :: System :: Monitoring",
     "Topic :: Software Development :: Libraries :: Python Modules",
