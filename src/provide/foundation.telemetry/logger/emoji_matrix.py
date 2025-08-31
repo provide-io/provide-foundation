@@ -68,7 +68,7 @@ def _format_field_definition_for_display(field_def: SemanticFieldDefinition) -> 
 
 def show_emoji_matrix() -> None: # pragma: no cover
     """
-    Prints the active Pyvider emoji logging contract to the console.
+    Prints the active Foundation emoji logging contract to the console.
     If semantic layers are active, it displays their configuration.
     Otherwise, it displays the legacy DAS emoji mappings.
     Activated by `PYVIDER_SHOW_EMOJI_MATRIX` environment variable.
