@@ -1,4 +1,4 @@
-# src/pyvider/telemetry/utils.py
+# src/provide/foundation/telemetry/utils.py
 """
 Utility functions for Foundation Telemetry, such as context managers for timing operations.
 """

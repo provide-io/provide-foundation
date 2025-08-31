@@ -1,4 +1,4 @@
-# src/pyvider/telemetry/semantic_layers.py
+# src/provide/foundation/telemetry/semantic_layers.py
 """
 Predefined Semantic Telemetry Layers for Foundation Telemetry.
 

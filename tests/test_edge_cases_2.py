@@ -32,7 +32,7 @@ from provide.foundation.logger.custom_processors import (
 )
 from provide.foundation.logger.emoji_matrix import show_emoji_matrix
 
-# --- Tests for src/pyvider/telemetry/config.py ---
+# --- Tests for src/provide/foundation/telemetry/config.py ---
 
 def test_config_from_env_malformed_json(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
@@ -109,7 +109,7 @@ def test_config_dangling_emoji_set_reference(
     assert "[❓] Testing dangling reference" in output
 
 
-# --- Tests for src/pyvider/telemetry/core.py ---
+# --- Tests for src/provide/foundation/telemetry/core.py ---
 
 def test_core_create_logger_handler_close_fails() -> None:
     """Covers the exception handling when a handler's close() method fails."""
@@ -123,7 +123,7 @@ def test_core_create_logger_handler_close_fails() -> None:
     _create_core_setup_logger()
 
 
-# --- Tests for src/pyvider/telemetry/logger/base.py ---
+# --- Tests for src/provide/foundation/telemetry/logger/base.py ---
 
 def test_base_get_config_exception() -> None:
     """Covers the case where structlog.get_config() raises an exception."""
@@ -144,7 +144,7 @@ def test_base_emergency_fallback_fails() -> None:
         assert mock_configure.call_count == 2
 
 
-# --- Tests for src/pyvider/telemetry/logger/custom_processors.py ---
+# --- Tests for src/provide/foundation/telemetry/logger/custom_processors.py ---
 
 def test_custom_processors_level_hint() -> None:
     """Covers the _pyvider_level_hint logic in add_log_level_custom."""
@@ -180,7 +180,7 @@ def test_custom_processors_full_emoji_cache(
         assert True
 
 
-# --- Tests for src/pyvider/telemetry/logger/emoji_matrix.py ---
+# --- Tests for src/provide/foundation/telemetry/logger/emoji_matrix.py ---
 
 def test_emoji_matrix_display_with_semantic_layers(
     setup_pyvider_telemetry_for_test: Callable,

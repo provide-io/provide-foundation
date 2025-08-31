@@ -1,4 +1,4 @@
-# src/pyvider/telemetry/types.py
+# src/provide/foundation/telemetry/types.py
 """
 Foundation Telemetry Custom Type Definitions, Constants, and Data Structures.
 
