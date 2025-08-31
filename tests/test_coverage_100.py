@@ -89,10 +89,14 @@ def test_logger_base_error_while_waiting_for_lock():
     _LAZY_SETUP_STATE["error"] = None
     _LAZY_SETUP_STATE["in_progress"] = False
     
+    def set_error():
+        _LAZY_SETUP_STATE["error"] = Exception("Error from other thread")
+        return MagicMock()
+    
     # Use patch to modify the lock behavior
     with patch.object(base, '_LAZY_SETUP_LOCK') as mock_lock:
         # Configure the lock's context manager behavior
-        mock_lock.__enter__ = MagicMock(side_effect=lambda: setattr(_LAZY_SETUP_STATE, 'error', Exception("Error from other thread")) or mock_lock)
+        mock_lock.__enter__ = MagicMock(side_effect=set_error)
         mock_lock.__exit__ = MagicMock(return_value=None)
         
         # Mock emergency fallback to verify it's called
