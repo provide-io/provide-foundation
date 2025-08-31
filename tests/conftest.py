@@ -20,8 +20,8 @@ import pytest
 from provide.foundation import TelemetryConfig, setup_telemetry
 
 # ensure_config_warnings_logger_configured is removed from config.py, so remove import
-# from provide.foundation.telemetry.config import ensure_config_warnings_logger_configured
-from provide.foundation.telemetry.core import (
+# from provide.foundation.config import ensure_config_warnings_logger_configured
+from provide.foundation.core import (
     _set_log_stream_for_testing,
     reset_foundation_setup_for_testing,
 )

@@ -8,12 +8,12 @@ active emoji configurations (legacy or layer-based).
 """
 import os
 
-from provide.foundation.telemetry.logger import (
+from provide.foundation.logger import (
     base as foundation_logger_base,  # For accessing the global logger instance
 )
 
 # Import types for resolved config structure
-from provide.foundation.telemetry.types import CustomDasEmojiSet, SemanticFieldDefinition
+from provide.foundation.types import CustomDasEmojiSet, SemanticFieldDefinition
 
 PRIMARY_EMOJI: dict[str, str] = {
     "system": "⚙️", "server": "🛎️", "client": "🙋", "network": "🌐",

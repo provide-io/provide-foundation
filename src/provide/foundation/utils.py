@@ -9,7 +9,7 @@ import time
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from provide.foundation.telemetry.logger.base import FoundationLogger
+    from provide.foundation.logger.base import FoundationLogger
 
 
 # Example context variable for trace_id (application would need to set this)
@@ -46,7 +46,7 @@ def timed_block(
     Example:
         ```python
         from provide.foundation import logger
-        from provide.foundation.telemetry.utils import timed_block
+        from provide.foundation.utils import timed_block
 
         with timed_block(logger, "database_query", db_operation="select_user", db_table="users"):
             # ... code to execute database query ...

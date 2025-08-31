@@ -17,18 +17,18 @@ from typing import Any, TextIO, cast
 import structlog
 from structlog.types import BindableLogger
 
-from provide.foundation.telemetry.config import (
+from provide.foundation.config import (
     LoggingConfig,
     TelemetryConfig,
     _build_core_processors_list,
     _build_formatter_processors_list,
 )
-from provide.foundation.telemetry.logger import base as foundation_logger
-from provide.foundation.telemetry.semantic_layers import (
+from provide.foundation.logger import base as foundation_logger
+from provide.foundation.semantic_layers import (
     BUILTIN_SEMANTIC_LAYERS,
     LEGACY_DAS_EMOJI_SETS,
 )
-from provide.foundation.telemetry.types import (
+from provide.foundation.types import (
     CustomDasEmojiSet,
     SemanticFieldDefinition,
     SemanticLayer,

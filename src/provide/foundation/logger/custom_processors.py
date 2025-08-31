@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, Any, Protocol, cast
 
 import structlog
 
-from provide.foundation.telemetry.types import TRACE_LEVEL_NAME, TRACE_LEVEL_NUM, LogLevelStr
+from provide.foundation.types import TRACE_LEVEL_NAME, TRACE_LEVEL_NUM, LogLevelStr
 
 if TYPE_CHECKING:
     pass

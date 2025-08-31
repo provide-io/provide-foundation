@@ -7,12 +7,12 @@ standardized logging conventions (structured keys, emojis) for common
 technologies and domains like LLMs, HTTP interactions, and databases.
 """
 
-from provide.foundation.telemetry.logger.emoji_matrix import (
+from provide.foundation.logger.emoji_matrix import (
     PRIMARY_EMOJI,
     SECONDARY_EMOJI,
     TERTIARY_EMOJI,
 )
-from provide.foundation.telemetry.types import (
+from provide.foundation.types import (
     CustomDasEmojiSet,
     SemanticFieldDefinition,
     SemanticLayer,

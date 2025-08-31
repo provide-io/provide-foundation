@@ -12,17 +12,17 @@ from provide.foundation import (
     TelemetryConfig,
     logger as global_logger,
 )
-from provide.foundation.telemetry.core import (
+from provide.foundation.core import (
     _resolve_active_semantic_config,
     reset_foundation_setup_for_testing,
 )
-from provide.foundation.telemetry.semantic_layers import (
+from provide.foundation.semantic_layers import (
     BUILTIN_SEMANTIC_LAYERS,
     HTTP_LAYER,
     LEGACY_DAS_EMOJI_SETS,
     LLM_LAYER,
 )
-from provide.foundation.telemetry.types import (
+from provide.foundation.types import (
     CustomDasEmojiSet,
     SemanticFieldDefinition,
     SemanticLayer,

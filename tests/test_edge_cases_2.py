@@ -21,16 +21,16 @@ from provide.foundation import (
     TelemetryConfig,
     logger,
 )
-from provide.foundation.telemetry.config import _build_formatter_processors_list
-from provide.foundation.telemetry.core import (
+from provide.foundation.config import _build_formatter_processors_list
+from provide.foundation.core import (
     _CORE_SETUP_LOGGER_NAME,
     _create_core_setup_logger,
 )
-from provide.foundation.telemetry.logger import base as foundation_logger_base
-from provide.foundation.telemetry.logger.custom_processors import (
+from provide.foundation.logger import base as foundation_logger_base
+from provide.foundation.logger.custom_processors import (
     add_log_level_custom,
 )
-from provide.foundation.telemetry.logger.emoji_matrix import show_emoji_matrix
+from provide.foundation.logger.emoji_matrix import show_emoji_matrix
 
 # --- Tests for src/provide/foundation/telemetry/config.py ---
 
@@ -85,7 +85,7 @@ def test_config_dangling_emoji_set_reference(
     captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     """Covers a semantic field referencing a non-existent emoji set."""
-    from provide.foundation.telemetry.types import SemanticFieldDefinition
+    from provide.foundation.types import SemanticFieldDefinition
 
     dangling_field = SemanticFieldDefinition(
         log_key="dangling_key", emoji_set_name="non_existent_set"
@@ -172,7 +172,7 @@ def test_custom_processors_full_emoji_cache(
         TelemetryConfig(logging=LoggingConfig(logger_name_emoji_prefix_enabled=True))
     )
     with patch(
-        "provide.foundation.telemetry.logger.custom_processors._EMOJI_CACHE_SIZE_LIMIT", 0
+        "provide.foundation.logger.custom_processors._EMOJI_CACHE_SIZE_LIMIT", 0
     ):
         # With cache size 0, this call will exercise the "cache is full" path
         logger.get_logger("some.new.logger").info("test")

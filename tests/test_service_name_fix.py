@@ -20,7 +20,7 @@ def test_service_name_injection_fix() -> None:
     print("=== Testing Service Name Injection Fix ===")
 
     # Reset state
-    from provide.foundation.telemetry.core import reset_foundation_setup_for_testing
+    from provide.foundation.core import reset_foundation_setup_for_testing
     reset_foundation_setup_for_testing()
 
     # Set environment like the failing test
@@ -34,7 +34,7 @@ def test_service_name_injection_fix() -> None:
     # Capture output
     import io
 
-    from provide.foundation.telemetry.core import _set_log_stream_for_testing
+    from provide.foundation.core import _set_log_stream_for_testing
     captured_output = io.StringIO()
     _set_log_stream_for_testing(captured_output)
 
@@ -81,7 +81,7 @@ def test_key_value_still_has_emojis() -> None:
     print("\n=== Testing Key-Value Format Still Has Emojis ===")
 
     # Reset state
-    from provide.foundation.telemetry.core import reset_foundation_setup_for_testing
+    from provide.foundation.core import reset_foundation_setup_for_testing
     reset_foundation_setup_for_testing()
 
     # Set environment for key-value format
@@ -95,7 +95,7 @@ def test_key_value_still_has_emojis() -> None:
     # Capture output
     import io
 
-    from provide.foundation.telemetry.core import _set_log_stream_for_testing
+    from provide.foundation.core import _set_log_stream_for_testing
     captured_output = io.StringIO()
     _set_log_stream_for_testing(captured_output)
 
