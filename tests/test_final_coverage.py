@@ -88,8 +88,13 @@ def test_add_logger_name_emoji_prefix_no_event_msg():
 
 def test_add_logger_name_emoji_prefix_no_emoji():
     """Test custom_processors.py branch 106->108 - no emoji and no event."""
+    from provide.foundation.logger import custom_processors
+    
+    # Clear the cache first to ensure our mock is used
+    custom_processors._EMOJI_LOOKUP_CACHE.clear()
+    
     event_dict = {
-        "logger_name": "test_logger",
+        "logger_name": "test_logger_no_emoji",
         # No "event" key
     }
     
