@@ -256,7 +256,7 @@ class TestLazyInitializationEdgeCases:
 
         captured = capsys.readouterr()
         # Should log via emergency fallback mechanism
-        assert "Emergency fallback message" in captured.err or "Pyvider Emergency" in captured.err
+        assert "Emergency fallback message" in captured.err or "Foundation Emergency" in captured.err
 
     def test_concurrent_lazy_initialization_race_condition(self, capsys: CaptureFixture) -> None:
         """Test race conditions in concurrent lazy initialization."""

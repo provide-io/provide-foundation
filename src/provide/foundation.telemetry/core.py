@@ -160,7 +160,7 @@ def _internal_setup(config: TelemetryConfig | None = None, is_explicit_call: boo
     _core_setup_logger = _create_core_setup_logger(globally_disabled=current_config.globally_disabled)
 
     if not current_config.globally_disabled:
-        _core_setup_logger.info("⚙️➡️🚀 Starting Pyvider (structlog) setup...")
+        _core_setup_logger.info("⚙️➡️🚀 Starting Foundation (structlog) setup...")
 
     # 3. Resolve semantic config
     resolved_semantic_config = _resolve_active_semantic_config(current_config.logging, BUILTIN_SEMANTIC_LAYERS)
@@ -178,7 +178,7 @@ def _internal_setup(config: TelemetryConfig | None = None, is_explicit_call: boo
     logger_base_module._LAZY_SETUP_STATE["done"] = True
 
     if not current_config.globally_disabled:
-        _core_setup_logger.info("⚙️➡️✅ Pyvider (structlog) setup completed.")
+        _core_setup_logger.info("⚙️➡️✅ Foundation (structlog) setup completed.")
 
 def setup_telemetry(config: TelemetryConfig | None = None) -> None:
     """

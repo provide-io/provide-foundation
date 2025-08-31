@@ -70,9 +70,9 @@ def manage_telemetry_reset_for_each_test() -> Generator[None]:
 @pytest.fixture
 def captured_stderr_for_pyvider() -> Generator[TextIO]: # Corrected: TextIO, and it's io.StringIO which is a TextIO
     """
-    Fixture to capture stderr output from Pyvider's logging system.
+    Fixture to capture stderr output from Foundation's logging system.
 
-    It redirects Pyvider's log stream to an `io.StringIO` buffer, yields the buffer
+    It redirects Foundation's log stream to an `io.StringIO` buffer, yields the buffer
     to the test, and then restores the original stream.
     """
     current_test_stream = io.StringIO()
