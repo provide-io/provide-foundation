@@ -35,7 +35,7 @@ from provide.foundation.telemetry.types import (
 )
 
 if TYPE_CHECKING:
-    from provide.foundation.core import ResolvedSemanticConfig
+    from provide.foundation.telemetry.core import ResolvedSemanticConfig
 
 _LEVEL_TO_NUMERIC: dict[LogLevelStr, int] = {
     "CRITICAL": stdlib_logging.CRITICAL,
