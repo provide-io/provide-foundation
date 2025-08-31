@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# examples/pyvider_telemetry/01_quick_start.py
+# examples/foundation_telemetry/01_quick_start.py
 """Demonstrates quick start with default Foundation Telemetry configuration."""
 
 from pathlib import Path

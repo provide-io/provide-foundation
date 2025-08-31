@@ -149,7 +149,7 @@ jobs:
           for i in {1..45}; do echo -n "$i "; sleep 1; done;
           uv venv .venv_test_install
           source .venv_test_install/bin/activate
-          uv pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ pyvider-telemetry
+          uv pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ provide-foundation
           python -c "from provide.foundation import logger; logger.info('Test PyPI installation successful')"
 
   # ==================================================================================
@@ -192,7 +192,7 @@ jobs:
             ## 📦 Installation
 
             ```bash
-            uv install pyvider-telemetry
+            uv install provide-foundation
             ```
 
             ## 🚀 What's New

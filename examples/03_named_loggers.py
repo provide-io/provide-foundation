@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# examples/pyvider_telemetry/03_named_loggers.py
+# examples/foundation_telemetry/03_named_loggers.py
 """Demonstrates usage of named loggers for different components."""
 
 from pathlib import Path

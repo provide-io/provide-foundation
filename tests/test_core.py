@@ -22,9 +22,9 @@ from provide.foundation.core import (
     _create_core_setup_logger,
     _get_safe_stderr,
     _handle_globally_disabled_setup,
-    reset_pyvider_setup_for_testing,
+    reset_foundation_setup_for_testing,
     setup_telemetry,
-    shutdown_pyvider_telemetry,
+    shutdown_foundation_telemetry,
 )
 from provide.foundation.logger import base as logger_base_module
 
@@ -70,11 +70,11 @@ class TestCreateCoreSetupLogger:
                 mock_handler_stream.close()
 
 class TestStateResetCoverage:
-    def test_reset_pyvider_setup_for_testing_resets_lazy_state(self) -> None:
+    def test_reset_foundation_setup_for_testing_resets_lazy_state(self) -> None:
         logger_base_module._LAZY_SETUP_STATE["done"] = True
         logger_base_module._LAZY_SETUP_STATE["error"] = Exception("dummy error")
         logger_base_module._LAZY_SETUP_STATE["in_progress"] = True
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
         assert not logger_base_module._LAZY_SETUP_STATE["done"]
         assert logger_base_module._LAZY_SETUP_STATE["error"] is None
         assert not logger_base_module._LAZY_SETUP_STATE["in_progress"]
@@ -91,11 +91,11 @@ class TestStateResetCoverage:
 
 class TestShutdownCoverage:
     @pytest.mark.asyncio
-    async def test_shutdown_pyvider_telemetry_logs_message(self, capsys: CaptureFixture[str]) -> None:
-        reset_pyvider_setup_for_testing()
+    async def test_shutdown_foundation_telemetry_logs_message(self, capsys: CaptureFixture[str]) -> None:
+        reset_foundation_setup_for_testing()
         core_logger_for_shutdown_test = stdlib_logging.getLogger(_CORE_SETUP_LOGGER_NAME)
         core_logger_for_shutdown_test.setLevel(stdlib_logging.INFO)
-        await shutdown_pyvider_telemetry()
+        await shutdown_foundation_telemetry()
         captured = capsys.readouterr()
         assert "Foundation Telemetry shutdown called" in captured.err
 
@@ -105,7 +105,7 @@ class TestHandleGloballyDisabledSetup:
         """
         Tests that _handle_globally_disabled_setup configures structlog with ReturnLoggerFactory.
         """
-        reset_pyvider_setup_for_testing() # Ensure clean state
+        reset_foundation_setup_for_testing() # Ensure clean state
 
         _handle_globally_disabled_setup()
 

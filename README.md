@@ -7,12 +7,12 @@
 Modern structured logging built on `structlog` with emoji-enhanced visual parsing and semantic Domain-Action-Status patterns.
 
 [![Awesome: uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
-[![PyPI Version](https://img.shields.io/pypi/v/pyvider-telemetry?style=flat-square)](https://pypi.org/project/pyvider-telemetry/)
-[![Python Versions](https://img.shields.io/pypi/pyversions/pyvider-telemetry?style=flat-square)](https://pypi.org/project/pyvider-telemetry/)
-[![Downloads](https://static.pepy.tech/badge/pyvider-telemetry/month)](https://pepy.tech/project/pyvider-telemetry)
+[![PyPI Version](https://img.shields.io/pypi/v/provide-foundation?style=flat-square)](https://pypi.org/project/provide-foundation/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/provide-foundation?style=flat-square)](https://pypi.org/project/provide-foundation/)
+[![Downloads](https://static.pepy.tech/badge/provide-foundation/month)](https://pepy.tech/project/provide-foundation)
 
-[![CI](https://github.com/provide-io/pyvider-telemetry/actions/workflows/ci.yml/badge.svg)](https://github.com/provide-io/pyvider-telemetry/actions/workflows/ci.yml)
-[![Coverage](https://codecov.io/gh/provide-io/pyvider-telemetry/branch/main/graph/badge.svg)](https://codecov.io/gh/provide-io/pyvider-telemetry)
+[![CI](https://github.com/provide-io/provide-foundation/actions/workflows/ci.yml/badge.svg)](https://github.com/provide-io/provide-foundation/actions/workflows/ci.yml)
+[![Coverage](https://codecov.io/gh/provide-io/provide-foundation/branch/main/graph/badge.svg)](https://codecov.io/gh/provide-io/provide-foundation)
 [![Type Checked](https://img.shields.io/badge/type--checked-mypy-blue?style=flat-square)](https://mypy.readthedocs.io/)
 [![Code style: ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json&style=flat-square)](https://github.com/astral-sh/ruff)
 
@@ -66,7 +66,7 @@ Modern structured logging built on `structlog` with emoji-enhanced visual parsin
 Requires Python 3.13 or later.
 
 ```bash
-pip install pyvider-telemetry
+pip install provide-foundation
 ```
 
 ## 💡 Quick Start
@@ -273,7 +273,7 @@ These emojis are used when no semantic layers are active and you use the `domain
 
 ```python
 import asyncio
-from provide.foundation import setup_telemetry, logger, shutdown_pyvider_telemetry
+from provide.foundation import setup_telemetry, logger, shutdown_foundation_telemetry
 
 async def main():
     setup_telemetry()
@@ -282,7 +282,7 @@ async def main():
     logger.info("Async app started")
 
     # Graceful shutdown
-    await shutdown_pyvider_telemetry()
+    await shutdown_foundation_telemetry()
 
 asyncio.run(main())
 ```

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# examples/pyvider_telemetry/06_trace_logging.py
+# examples/foundation_telemetry/06_trace_logging.py
 """Demonstrates TRACE level logging for ultra-verbose output."""
 
 from pathlib import Path
@@ -44,10 +44,10 @@ def example_6_trace_logging() -> None:
     logger.trace("Entering function 'process_data'", argument1="value1")
     logger.trace("Processing item", item_id=123, item_data={"key": "val"})
 
-    # Using the special _pyvider_logger_name to emit a trace log as if from another logger
+    # Using the special _foundation_logger_name to emit a trace log as if from another logger
     logger.trace(
         "Database query details for specific module",
-        _pyvider_logger_name="database.queries",  # This logger will also use TRACE
+        _foundation_logger_name="database.queries",  # This logger will also use TRACE
         query="SELECT * FROM users WHERE active=TRUE",
         params={"active": True},
         estimated_rows=150,

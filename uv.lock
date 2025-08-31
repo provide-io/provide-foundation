@@ -1380,7 +1380,7 @@ wheels = [
 ]
 
 [[package]]
-name = "pyvider-telemetry"
+name = "provide-foundation"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

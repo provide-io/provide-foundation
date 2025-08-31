@@ -2,7 +2,7 @@
 # tests/conftest.py
 #
 """
-Pytest configuration and fixtures for pyvider-telemetry tests.
+Pytest configuration and fixtures for provide-foundation tests.
 
 This file defines shared fixtures used across multiple test modules,
 primarily for managing the telemetry system's state during testing,
@@ -23,7 +23,7 @@ from provide.foundation import TelemetryConfig, setup_telemetry
 # from provide.foundation.config import ensure_config_warnings_logger_configured
 from provide.foundation.core import (
     _set_log_stream_for_testing,
-    reset_pyvider_setup_for_testing,
+    reset_foundation_setup_for_testing,
 )
 
 _conftest_diag_logger_name = "provide.foundation.conftest_diag"
@@ -53,16 +53,16 @@ if not os.getenv("PYTEST_WORKER_ID"): # Avoid multiple messages with xdist
 def manage_telemetry_reset_for_each_test() -> Generator[None]:
     """
     Autouse fixture to reset Foundation Telemetry before and after each test.
-    Ensures test isolation by calling `reset_pyvider_setup_for_testing()`.
+    Ensures test isolation by calling `reset_foundation_setup_for_testing()`.
     """
     if not os.getenv("PYTEST_WORKER_ID") or os.getenv("PYTEST_WORKER_ID") == "gw0":
-        conftest_diag_logger.debug("🔄 (Pre-test) Calling reset_pyvider_setup_for_testing()")
-    reset_pyvider_setup_for_testing()
+        conftest_diag_logger.debug("🔄 (Pre-test) Calling reset_foundation_setup_for_testing()")
+    reset_foundation_setup_for_testing()
     # ensure_config_warnings_logger_configured call removed
     yield
     if not os.getenv("PYTEST_WORKER_ID") or os.getenv("PYTEST_WORKER_ID") == "gw0":
-        conftest_diag_logger.debug("🔄 (Post-test) Calling reset_pyvider_setup_for_testing()")
-    reset_pyvider_setup_for_testing()
+        conftest_diag_logger.debug("🔄 (Post-test) Calling reset_foundation_setup_for_testing()")
+    reset_foundation_setup_for_testing()
     # ensure_config_warnings_logger_configured call removed
     _set_log_stream_for_testing(None) # Ensure stream is reset to default stderr
 
@@ -83,7 +83,7 @@ def captured_stderr_for_pyvider() -> Generator[TextIO]: # Corrected: TextIO, and
 
 
 @pytest.fixture
-def setup_pyvider_telemetry_for_test(
+def setup_foundation_telemetry_for_test(
     captured_stderr_for_pyvider: TextIO # Corrected: TextIO
 ) -> Callable[[TelemetryConfig | None], None]:
     """
@@ -105,7 +105,7 @@ def setup_pyvider_telemetry_for_test(
     return _setup_func
 
 @pytest.fixture(scope="session")
-def pyvider_conftest_diagnostic_logger() -> stdlib_logging.Logger:
+def foundation_conftest_diagnostic_logger() -> stdlib_logging.Logger:
     """Session-scoped fixture providing the conftest diagnostic logger."""
     return _get_conftest_diag_logger()
 

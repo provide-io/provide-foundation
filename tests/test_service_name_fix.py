@@ -20,8 +20,8 @@ def test_service_name_injection_fix() -> None:
     print("=== Testing Service Name Injection Fix ===")
 
     # Reset state
-    from provide.foundation.core import reset_pyvider_setup_for_testing
-    reset_pyvider_setup_for_testing()
+    from provide.foundation.core import reset_foundation_setup_for_testing
+    reset_foundation_setup_for_testing()
 
     # Set environment like the failing test
     os.environ["PYVIDER_SERVICE_NAME"] = "lazy-service-test"
@@ -81,8 +81,8 @@ def test_key_value_still_has_emojis() -> None:
     print("\n=== Testing Key-Value Format Still Has Emojis ===")
 
     # Reset state
-    from provide.foundation.core import reset_pyvider_setup_for_testing
-    reset_pyvider_setup_for_testing()
+    from provide.foundation.core import reset_foundation_setup_for_testing
+    reset_foundation_setup_for_testing()
 
     # Set environment for key-value format
     os.environ.pop("PYVIDER_SERVICE_NAME", None)

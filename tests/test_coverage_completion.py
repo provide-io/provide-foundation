@@ -21,13 +21,13 @@ from provide.foundation import (
     TelemetryConfig,
     logger,
     setup_telemetry,
-    shutdown_pyvider_telemetry,
+    shutdown_foundation_telemetry,
 )
 from provide.foundation.core import (
     _create_core_setup_logger,
     _handle_globally_disabled_setup,
     _set_log_stream_for_testing,
-    reset_pyvider_setup_for_testing,
+    reset_foundation_setup_for_testing,
 )
 from provide.foundation.logger.custom_processors import (
     _compute_emoji_for_logger_name,
@@ -82,7 +82,7 @@ def test_custom_processors_emoji_cache_functions() -> None:
     assert get_emoji_cache_stats()["cache_size"] == 0
 
 def test_emoji_matrix_display(
-    setup_pyvider_telemetry_for_test: Callable[[TelemetryConfig | None], None],
+    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
     captured_stderr_for_pyvider: io.StringIO,
 ) -> None:
     # Test that it does nothing by default
@@ -92,7 +92,7 @@ def test_emoji_matrix_display(
     # Test that it prints when env var is set
     with patch.dict(os.environ, {"PYVIDER_SHOW_EMOJI_MATRIX": "true"}):
         # Use a simple config for the test
-        setup_pyvider_telemetry_for_test(TelemetryConfig())
+        setup_foundation_telemetry_for_test(TelemetryConfig())
         show_emoji_matrix()
         output = captured_stderr_for_pyvider.getvalue()
         # FIX: Assert the correct output string for legacy mode
@@ -101,8 +101,8 @@ def test_emoji_matrix_display(
 
 def test_trace_level_custom_logger_name() -> None:
     setup_telemetry(TelemetryConfig(logging=LoggingConfig(default_level="TRACE")))
-    logger.trace("Custom trace message", _pyvider_logger_name="custom.trace.test")
-    logger.trace("Trace with %s and %d", "args", 42, _pyvider_logger_name="custom.trace.args")
+    logger.trace("Custom trace message", _foundation_logger_name="custom.trace.test")
+    logger.trace("Trace with %s and %d", "args", 42, _foundation_logger_name="custom.trace.args")
 
 def test_core_setup_environment_variable_edge_cases() -> None:
     with patch.dict(os.environ, {"PYVIDER_CORE_SETUP_LOG_LEVEL": "INVALID"}):
@@ -110,7 +110,7 @@ def test_core_setup_environment_variable_edge_cases() -> None:
 
 def test_shutdown_telemetry_coverage() -> None:
     setup_telemetry()
-    asyncio.run(shutdown_pyvider_telemetry(timeout_millis=1000))
+    asyncio.run(shutdown_foundation_telemetry(timeout_millis=1000))
 
 def test_level_filter_edge_cases() -> None:
     from provide.foundation.logger.custom_processors import _LevelFilter
@@ -129,7 +129,7 @@ def test_concurrent_setup_and_reset() -> None:
     def setup_worker() -> None:
         setup_telemetry(TelemetryConfig(service_name="concurrent_test"))
     def reset_worker() -> None:
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
     threads = [threading.Thread(target=setup_worker if i % 2 == 0 else reset_worker) for i in range(4)]
     for t in threads:
         t.start()

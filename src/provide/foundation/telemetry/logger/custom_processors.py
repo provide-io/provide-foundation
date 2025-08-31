@@ -30,7 +30,7 @@ class StructlogProcessor(Protocol):
     def __call__(self, logger: Any, method_name: str, event_dict: structlog.types.EventDict) -> structlog.types.EventDict: ...
 
 def add_log_level_custom(_logger: Any, method_name: str, event_dict: structlog.types.EventDict) -> structlog.types.EventDict:
-    level_hint: str | None = event_dict.pop("_pyvider_level_hint", None)
+    level_hint: str | None = event_dict.pop("_foundation_level_hint", None)
     if level_hint is not None:
         event_dict["level"] = level_hint.lower()
     elif "level" not in event_dict:

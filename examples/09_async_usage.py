@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# examples/pyvider_telemetry/09_async_usage.py
+# examples/foundation_telemetry/09_async_usage.py
 """Demonstrates using Foundation Telemetry in asynchronous applications."""
 
 import asyncio
@@ -16,7 +16,7 @@ if src_path.exists() and str(src_path) not in sys.path:
 from provide.foundation import (  # noqa: E402
     logger,
     setup_telemetry,
-    shutdown_pyvider_telemetry,
+    shutdown_foundation_telemetry,
 )
 
 
@@ -24,7 +24,7 @@ async def example_9_async_usage() -> None:
     """
     Example 9: Demonstrates usage in asynchronous (`asyncio`) contexts.
 
-    Covers logging from async functions and using the `shutdown_pyvider_telemetry`
+    Covers logging from async functions and using the `shutdown_foundation_telemetry`
     async function.
     """
     print("\n" + "=" * 60)
@@ -50,7 +50,7 @@ async def example_9_async_usage() -> None:
 
     # Demonstrate async shutdown (currently logs a message)
     logger.info("Initiating telemetry shutdown...")
-    await shutdown_pyvider_telemetry(timeout_millis=100)
+    await shutdown_foundation_telemetry(timeout_millis=100)
     logger.info(
         "Message after shutdown call (may use fallback if shutdown was destructive)"
     )

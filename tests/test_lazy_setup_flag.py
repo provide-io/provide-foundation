@@ -19,8 +19,8 @@ def test_lazy_setup_done_flag() -> None:
     print("=== Testing Lazy Setup Done Flag ===")
 
     # Reset state
-    from provide.foundation.core import reset_pyvider_setup_for_testing
-    reset_pyvider_setup_for_testing()
+    from provide.foundation.core import reset_foundation_setup_for_testing
+    reset_foundation_setup_for_testing()
 
     # Check initial state
     from provide.foundation.logger.base import _LAZY_SETUP_STATE  # Changed
@@ -48,8 +48,8 @@ def test_recursive_logging_protection() -> None:
     print("\n=== Testing Recursive Logging Protection ===")
 
     # Reset state
-    from provide.foundation.core import reset_pyvider_setup_for_testing
-    reset_pyvider_setup_for_testing()
+    from provide.foundation.core import reset_foundation_setup_for_testing
+    reset_foundation_setup_for_testing()
 
     # Create a custom setup function that logs during setup
     def recursive_setup(self: Any) -> None: # Added type for self

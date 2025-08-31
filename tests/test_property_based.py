@@ -35,12 +35,12 @@ from provide.foundation import (
     TERTIARY_EMOJI,
     LoggingConfig,
     TelemetryConfig,
-    logger as pyvider_global_logger,
+    logger as foundation_global_logger,
     setup_telemetry,
 )
 from provide.foundation.core import (
     _set_log_stream_for_testing,
-    reset_pyvider_setup_for_testing,
+    reset_foundation_setup_for_testing,
 )
 from provide.foundation.types import ConsoleFormatterStr, LogLevelStr  # Corrected import
 
@@ -138,7 +138,7 @@ def telemetry_config_st(draw: Callable[[SearchStrategy[Any]], Any]) -> Telemetry
     deadline=None,
     max_examples=25  # Reduced from 50
 )
-def test_pyvider_logger_robustness(
+def test_foundation_logger_robustness(
     config: TelemetryConfig,
     logger_name: str,
     message: str,
@@ -152,7 +152,7 @@ def test_pyvider_logger_robustness(
     Tests that FoundationLogger methods do not crash with varied inputs.
     """
     # Manual setup for each Hypothesis example
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
     current_example_log_capture_buffer = io.StringIO()
     _set_log_stream_for_testing(current_example_log_capture_buffer)
 
@@ -176,14 +176,14 @@ def test_pyvider_logger_robustness(
         if status is not None:
             log_call_kwargs["status"] = str(status)
 
-        current_logger = pyvider_global_logger
+        current_logger = foundation_global_logger
 
         if hasattr(current_logger, log_method_name):
             getattr(current_logger, log_method_name)
 
             if log_method_name == "trace":
                 trace_kwargs = log_call_kwargs.copy()
-                current_logger.trace(safe_message, _pyvider_logger_name=safe_logger_name, **trace_kwargs)
+                current_logger.trace(safe_message, _foundation_logger_name=safe_logger_name, **trace_kwargs)
             else:
                 # For other methods, use get_logger
                 named_logger = current_logger.get_logger(safe_logger_name)

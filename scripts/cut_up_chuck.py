@@ -35,7 +35,7 @@ from provide.foundation import (
     TelemetryConfig,
     logger,  # This is the global FoundationLogger instance
     setup_telemetry,
-    shutdown_pyvider_telemetry,
+    shutdown_foundation_telemetry,
 )
 
 # --- Configuration ---
@@ -98,7 +98,7 @@ async def generate_log_entries_continuously() -> None:
             if iteration_count % 5 == 0:
                 logger.trace(
                     "Anomalous energy signature detected.",
-                    _pyvider_logger_name="Interzone.Anomalies",
+                    _foundation_logger_name="Interzone.Anomalies",
                     signature_type=f"Type-{random.choice(['Alpha', 'Beta', 'Gamma', 'Delta'])}",
                     confidence=f"{random.random()*100:.1f}%",
                     domain="sensor_grid", action="detect", status="trace_event"
@@ -133,7 +133,7 @@ async def main_async_loop() -> None:
         await generate_log_entries_continuously()
     finally:
         print("🔌 Shutting down Foundation Telemetry...")
-        await shutdown_pyvider_telemetry()
+        await shutdown_foundation_telemetry()
         print("Foundation Telemetry shutdown complete.")
 
 if __name__ == "__main__":

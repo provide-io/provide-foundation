@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# examples/pyvider_telemetry/05_exception_handling.py
+# examples/foundation_telemetry/05_exception_handling.py
 """Demonstrates exception logging with automatic traceback inclusion."""
 
 from pathlib import Path

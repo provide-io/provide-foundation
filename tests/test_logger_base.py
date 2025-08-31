@@ -126,12 +126,12 @@ class FoundationLogger:
         except (TypeError, ValueError, KeyError):
             return f"{event_str} {' '.join(str(arg) for arg in args)}"
 
-    def trace(self, event: str, *args: Any, _pyvider_logger_name: str | None = None, **kwargs: Any) -> None:
+    def trace(self, event: str, *args: Any, _foundation_logger_name: str | None = None, **kwargs: Any) -> None:
         self._ensure_configured()
         formatted_event = self._format_message_with_args(event, args)
-        logger_name = _pyvider_logger_name or "pyvider.dynamic_call_trace"
+        logger_name = _foundation_logger_name or "pyvider.dynamic_call_trace"
         log = self.get_logger(logger_name)
-        kwargs["_pyvider_level_hint"] = TRACE_LEVEL_NAME.lower()
+        kwargs["_foundation_level_hint"] = TRACE_LEVEL_NAME.lower()
         log.msg(formatted_event, **kwargs)
 
     def debug(self, event: str, *args: Any, **kwargs: Any) -> None:

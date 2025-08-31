@@ -20,7 +20,7 @@ from pytest import CaptureFixture  # Added for capsys
 from provide.foundation import logger as global_logger
 from provide.foundation.core import (
     _set_log_stream_for_testing,
-    reset_pyvider_setup_for_testing,
+    reset_foundation_setup_for_testing,
 )
 
 
@@ -29,7 +29,7 @@ class TestStreamHandling:
 
     def test_lazy_init_defaults_to_stderr(self, capsys: CaptureFixture[str]) -> None:
         """Test that lazy initialization always defaults to stderr."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Ensure no custom stream is set
         _set_log_stream_for_testing(None)
@@ -43,7 +43,7 @@ class TestStreamHandling:
 
     def test_lazy_init_never_uses_stdout(self, capsys: CaptureFixture[str]) -> None:
         """Test that lazy initialization never accidentally uses stdout."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Even if somehow stdout was set as the stream, should be corrected
         # FIXED: Don't patch the stream directly, instead test through config
@@ -57,7 +57,7 @@ class TestStreamHandling:
 
     def test_custom_stream_for_testing(self: "TestStreamHandling") -> None:
         """Test that custom streams work for testing purposes."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Create custom stream
         custom_stream = io.StringIO()
@@ -77,7 +77,7 @@ class TestStreamHandling:
         self, capsys: CaptureFixture[str]
     ) -> None:
         """Test behavior when custom stream is closed unexpectedly."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Create and immediately close a custom stream
         custom_stream = io.StringIO()
@@ -98,7 +98,7 @@ class TestStreamHandling:
 
     def test_concurrent_stream_access(self, capsys: CaptureFixture[str]) -> None:
         """Test concurrent access to streams during lazy initialization."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         import threading
 
@@ -140,7 +140,7 @@ class TestLazyInitializationErrorRecovery:
         self, capsys: CaptureFixture[str]
     ) -> None:
         """Test recovery when TelemetryConfig creation fails."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Mock config creation to fail completely
         with patch("provide.foundation.config.TelemetryConfig") as mock_config_class:
@@ -158,7 +158,7 @@ class TestLazyInitializationErrorRecovery:
         self, capsys: CaptureFixture[str]
     ) -> None:
         """Test recovery when structlog.configure fails."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Mock structlog.configure to fail
         with patch("structlog.configure") as mock_configure:
@@ -175,7 +175,7 @@ class TestLazyInitializationErrorRecovery:
         self, capsys: CaptureFixture[str]
     ) -> None:
         """Test recovery when processor chain building fails."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Mock processor chain building to fail
         with patch(
@@ -192,7 +192,7 @@ class TestLazyInitializationErrorRecovery:
 
     def test_import_failure_recovery(self, capsys: CaptureFixture[str]) -> None:
         """Test recovery when imports fail during lazy initialization."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Mock import failure for config module
         with patch("provide.foundation.logger.base.sys.modules") as mock_modules:
@@ -215,7 +215,7 @@ class TestLazyInitializationErrorRecovery:
 
     def test_repeated_failure_handling(self, capsys: CaptureFixture[str]) -> None:
         """Test that repeated failures don't cause infinite loops."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         failure_count = 0
         max_failures = 3
@@ -244,7 +244,7 @@ class TestLazyInitializationErrorRecovery:
 
     def test_thread_safety_during_errors(self, capsys: CaptureFixture[str]) -> None:
         """Test thread safety when errors occur during lazy initialization."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         import threading
         import time
@@ -306,7 +306,7 @@ class TestLazyInitializationEdgeEnvironments:
 
     def test_no_stderr_available(self, capsys: CaptureFixture[str]) -> None:
         """Test behavior when stderr is not available."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Create a StringIO as fallback before patching stderr
         fallback_stream = io.StringIO()
@@ -340,7 +340,7 @@ class TestLazyInitializationEdgeEnvironments:
 
     def test_readonly_environment(self, capsys: CaptureFixture[str]) -> None:
         """Test lazy initialization in read-only environment."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Simulate read-only environment by making os.environ read-only
         with patch.dict(os.environ, {}, clear=True):
@@ -352,7 +352,7 @@ class TestLazyInitializationEdgeEnvironments:
 
     def test_memory_constrained_environment(self, capsys: CaptureFixture[str]) -> None:
         """Test lazy initialization under memory pressure."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Simulate memory pressure by limiting object creation
         original_getattr = getattr

@@ -9,7 +9,7 @@ active emoji configurations (legacy or layer-based).
 import os
 
 from provide.foundation.logger import (
-    base as pyvider_logger_base,  # For accessing the global logger instance
+    base as foundation_logger_base,  # For accessing the global logger instance
 )
 
 # Import types for resolved config structure
@@ -76,12 +76,12 @@ def show_emoji_matrix() -> None: # pragma: no cover
     if os.getenv("PYVIDER_SHOW_EMOJI_MATRIX", "false").strip().lower() not in ("true", "1", "yes"):
         return
 
-    matrix_logger = pyvider_logger_base.logger.get_logger("provide.foundation.emoji_matrix_display")
+    matrix_logger = foundation_logger_base.logger.get_logger("provide.foundation.emoji_matrix_display")
 
     # Access the resolved semantic config from the global logger instance
     # This assumes the logger has been configured (explicitly or lazily)
-    pyvider_logger_base.logger._ensure_configured() # Ensure config is loaded
-    resolved_config_tuple = getattr(pyvider_logger_base.logger, '_active_resolved_semantic_config', None)
+    foundation_logger_base.logger._ensure_configured() # Ensure config is loaded
+    resolved_config_tuple = getattr(foundation_logger_base.logger, '_active_resolved_semantic_config', None)
 
     lines: list[str] = []
 

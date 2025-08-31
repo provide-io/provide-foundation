@@ -14,7 +14,7 @@ from provide.foundation import (
 )
 from provide.foundation.core import (
     _resolve_active_semantic_config,
-    reset_pyvider_setup_for_testing,
+    reset_foundation_setup_for_testing,
 )
 from provide.foundation.semantic_layers import (
     BUILTIN_SEMANTIC_LAYERS,
@@ -32,9 +32,9 @@ ResolvedSemanticConfigForTest = tuple[list[SemanticFieldDefinition], dict[str, C
 
 @pytest.fixture(autouse=True)
 def auto_reset_telemetry():
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
     yield
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
 
 class TestResolveActiveSemanticConfig:
     def test_no_layers_enabled(self):
@@ -68,23 +68,23 @@ class TestSetupWithLayers:
 
     def test_setup_with_enabled_llm_layer(
         self,
-        setup_pyvider_telemetry_for_test: Callable[[TelemetryConfig | None], None],
+        setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
         captured_stderr_for_pyvider: io.StringIO,
     ) -> None:
         config = TelemetryConfig(logging=LoggingConfig(enabled_semantic_layers=["llm"], console_formatter="key_value", das_emoji_prefix_enabled=True, logger_name_emoji_prefix_enabled=False))
-        setup_pyvider_telemetry_for_test(config)
+        setup_foundation_telemetry_for_test(config)
         global_logger.info("LLM Generation", **{"llm.provider": "openai", "llm.task": "generation", "llm.outcome": "success"})
         captured = self._filter_app_logs(captured_stderr_for_pyvider.getvalue())
         assert "[🤖][✍️][👍] LLM Generation" in captured
 
     def test_setup_with_custom_layer_overriding_builtin_emojis(
         self,
-        setup_pyvider_telemetry_for_test: Callable[[TelemetryConfig | None], None],
+        setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
         captured_stderr_for_pyvider: io.StringIO,
     ) -> None:
         my_llm_provider_emojis = CustomDasEmojiSet(name="llm_provider", emojis={"openai": "🧠MAX", "default": "💡CUST"})
         config = TelemetryConfig(logging=LoggingConfig(enabled_semantic_layers=["llm"], user_defined_emoji_sets=[my_llm_provider_emojis], console_formatter="key_value", das_emoji_prefix_enabled=True, logger_name_emoji_prefix_enabled=False))
-        setup_pyvider_telemetry_for_test(config)
+        setup_foundation_telemetry_for_test(config)
         global_logger.info("LLM Call", **{"llm.provider": "openai", "llm.task": "chat", "llm.outcome": "error"})
         captured = self._filter_app_logs(captured_stderr_for_pyvider.getvalue())
         assert "[🧠MAX][💬][🔥] LLM Call" in captured
@@ -92,13 +92,13 @@ class TestSetupWithLayers:
     def test_env_var_parsing_for_layers(
         self,
         monkeypatch: pytest.MonkeyPatch,
-        setup_pyvider_telemetry_for_test: Callable[[TelemetryConfig | None], None],
+        setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
         captured_stderr_for_pyvider: io.StringIO,
     ) -> None:
         monkeypatch.setenv("PYVIDER_LOG_ENABLED_SEMANTIC_LAYERS", "http")
         monkeypatch.setenv("PYVIDER_LOG_USER_DEFINED_EMOJI_SETS", '[{"name": "http_method", "emojis": {"get": "🔽", "default": "🌐"}}]')
         monkeypatch.setenv("PYVIDER_LOG_LOGGER_NAME_EMOJI_ENABLED", "false")
-        setup_pyvider_telemetry_for_test(TelemetryConfig.from_env())
+        setup_foundation_telemetry_for_test(TelemetryConfig.from_env())
         global_logger.info("HTTP GET", **{"http.method": "get", "http.status_class": "2xx"})
         captured = self._filter_app_logs(captured_stderr_for_pyvider.getvalue())
         assert "[🔽][✅] HTTP GET" in captured

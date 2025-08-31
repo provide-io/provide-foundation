@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# examples/pyvider_telemetry/07_module_filtering.py
+# examples/foundation_telemetry/07_module_filtering.py
 """Demonstrates module-specific log level configuration."""
 
 from pathlib import Path

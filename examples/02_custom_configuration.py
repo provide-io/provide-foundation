@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# examples/pyvider_telemetry/02_custom_configuration.py
+# examples/foundation_telemetry/02_custom_configuration.py
 """Demonstrates custom configuration of Foundation Telemetry using TelemetryConfig and LoggingConfig."""
 
 from pathlib import Path

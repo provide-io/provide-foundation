@@ -1,6 +1,6 @@
 # Foundation Telemetry Examples
 
-This directory contains a collection of executable Python scripts demonstrating various features and usage patterns of the `pyvider-telemetry` library. Each script is designed to be run independently and showcases a specific aspect of the library.
+This directory contains a collection of executable Python scripts demonstrating various features and usage patterns of the `provide-foundation` library. Each script is designed to be run independently and showcases a specific aspect of the library.
 
 ## Running the Examples
 
@@ -8,7 +8,7 @@ To run an example script:
 
 1.  **Navigate to this directory** in your terminal:
     ```bash
-    cd examples/pyvider_telemetry
+    cd examples/foundation_telemetry
     ```
 
 2.  **Execute the desired Python script**:
@@ -51,11 +51,11 @@ Here's a list of the available examples and what they demonstrate:
     Illustrates how Foundation Telemetry can be configured entirely through environment variables (e.g., `PYVIDER_LOG_LEVEL`, `PYVIDER_SERVICE_NAME`), allowing for runtime adjustments without code changes.
 
 -   **`09_async_usage.py`**:
-    Provides examples of using Foundation Telemetry in asynchronous applications built with `asyncio`, including logging from async functions and using `shutdown_pyvider_telemetry()`.
+    Provides examples of using Foundation Telemetry in asynchronous applications built with `asyncio`, including logging from async functions and using `shutdown_foundation_telemetry()`.
 
 -   **`10_production_patterns.py`**:
     Demonstrates logging patterns and configurations suitable for production environments, such as structured JSON logging, appropriate log levels, and logging key business events or health metrics.
 
 ## Exploration
 
-Feel free to explore, modify, and run these examples to better understand the capabilities and configuration options of the `pyvider-telemetry` library. Each script is self-contained and can be a good starting point for integrating Foundation Telemetry into your own projects.
+Feel free to explore, modify, and run these examples to better understand the capabilities and configuration options of the `provide-foundation` library. Each script is self-contained and can be a good starting point for integrating Foundation Telemetry into your own projects.

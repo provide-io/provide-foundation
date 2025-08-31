@@ -26,7 +26,7 @@ from provide.foundation.core import (
     _CORE_SETUP_LOGGER_NAME,
     _create_core_setup_logger,
 )
-from provide.foundation.logger import base as pyvider_logger_base
+from provide.foundation.logger import base as foundation_logger_base
 from provide.foundation.logger.custom_processors import (
     add_log_level_custom,
 )
@@ -81,7 +81,7 @@ def test_config_unknown_formatter(capsys: pytest.CaptureFixture) -> None:
 
 
 def test_config_dangling_emoji_set_reference(
-    setup_pyvider_telemetry_for_test: Callable,
+    setup_foundation_telemetry_for_test: Callable,
     captured_stderr_for_pyvider: io.StringIO,
 ) -> None:
     """Covers a semantic field referencing a non-existent emoji set."""
@@ -101,7 +101,7 @@ def test_config_dangling_emoji_set_reference(
             logger_name_emoji_prefix_enabled=False,
         )
     )
-    setup_pyvider_telemetry_for_test(config)
+    setup_foundation_telemetry_for_test(config)
 
     logger.info("Testing dangling reference", dangling_key="some_value")
     output = captured_stderr_for_pyvider.getvalue()
@@ -147,8 +147,8 @@ def test_base_emergency_fallback_fails() -> None:
 # --- Tests for src/provide/foundation/telemetry/logger/custom_processors.py ---
 
 def test_custom_processors_level_hint() -> None:
-    """Covers the _pyvider_level_hint logic in add_log_level_custom."""
-    event = add_log_level_custom(None, "info", {"_pyvider_level_hint": "CRITICAL"})
+    """Covers the _foundation_level_hint logic in add_log_level_custom."""
+    event = add_log_level_custom(None, "info", {"_foundation_level_hint": "CRITICAL"})
     assert event["level"] == "critical"
 
 
@@ -165,10 +165,10 @@ def test_custom_processors_method_name_matching() -> None:
 
 
 def test_custom_processors_full_emoji_cache(
-    setup_pyvider_telemetry_for_test: Callable,
+    setup_foundation_telemetry_for_test: Callable,
 ) -> None:
     """Covers the path where the emoji cache is full."""
-    setup_pyvider_telemetry_for_test(
+    setup_foundation_telemetry_for_test(
         TelemetryConfig(logging=LoggingConfig(logger_name_emoji_prefix_enabled=True))
     )
     with patch(
@@ -183,7 +183,7 @@ def test_custom_processors_full_emoji_cache(
 # --- Tests for src/provide/foundation/telemetry/logger/emoji_matrix.py ---
 
 def test_emoji_matrix_display_with_semantic_layers(
-    setup_pyvider_telemetry_for_test: Callable,
+    setup_foundation_telemetry_for_test: Callable,
     captured_stderr_for_pyvider: io.StringIO,
 ) -> None:
     """Covers displaying the matrix when semantic layers are active."""
@@ -191,7 +191,7 @@ def test_emoji_matrix_display_with_semantic_layers(
         config = TelemetryConfig(
             logging=LoggingConfig(enabled_semantic_layers=["http"])
         )
-        setup_pyvider_telemetry_for_test(config)
+        setup_foundation_telemetry_for_test(config)
         show_emoji_matrix()
         output = captured_stderr_for_pyvider.getvalue()
         assert "Active Semantic Layer Emoji Contract" in output
@@ -202,9 +202,9 @@ def test_emoji_matrix_display_unresolved(capsys: pytest.CaptureFixture) -> None:
     """Covers displaying the matrix when config is not yet resolved."""
     with patch.dict(os.environ, {"PYVIDER_SHOW_EMOJI_MATRIX": "true"}):
         # Prevent lazy-init from running
-        with patch.object(pyvider_logger_base.logger, "_ensure_configured"):
+        with patch.object(foundation_logger_base.logger, "_ensure_configured"):
             # Ensure the attribute that is checked is None
-            pyvider_logger_base.logger._active_resolved_semantic_config = None
+            foundation_logger_base.logger._active_resolved_semantic_config = None
 
             # Mock the logger that show_emoji_matrix will create
             mock_info_method = MagicMock()
@@ -212,7 +212,7 @@ def test_emoji_matrix_display_unresolved(capsys: pytest.CaptureFixture) -> None:
             mock_created_logger.info = mock_info_method
 
             with patch.object(
-                pyvider_logger_base.logger, "get_logger", return_value=mock_created_logger
+                foundation_logger_base.logger, "get_logger", return_value=mock_created_logger
             ):
                 show_emoji_matrix()
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# examples/pyvider_telemetry/04_das_logging.py
+# examples/foundation_telemetry/04_das_logging.py
 """Demonstrates Domain-Action-Status (DAS) structured logging."""
 
 from pathlib import Path

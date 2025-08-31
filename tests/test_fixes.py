@@ -21,8 +21,8 @@ def test_lazy_setup_flags() -> None:
     """Test that lazy setup flags are set correctly."""
     print("=== Test 1: Lazy Setup Flags ===")
 
-    from provide.foundation.core import reset_pyvider_setup_for_testing
-    reset_pyvider_setup_for_testing()
+    from provide.foundation.core import reset_foundation_setup_for_testing
+    reset_foundation_setup_for_testing()
 
     # Use the new _LAZY_SETUP_STATE dictionary
     from provide.foundation.logger.base import _LAZY_SETUP_STATE
@@ -46,9 +46,9 @@ def test_service_name_no_emoji() -> None:
 
     from provide.foundation.core import (
         _set_log_stream_for_testing,
-        reset_pyvider_setup_for_testing,
+        reset_foundation_setup_for_testing,
     )
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
 
     # Set environment to disable emojis for JSON format
     os.environ["PYVIDER_SERVICE_NAME"] = "test-service"
@@ -99,9 +99,9 @@ def test_das_emoji_register_action() -> None:
 
     from provide.foundation.core import (
         _set_log_stream_for_testing,
-        reset_pyvider_setup_for_testing,
+        reset_foundation_setup_for_testing,
     )
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
 
     # Enable DAS emojis
     os.environ["PYVIDER_LOG_DAS_EMOJI_ENABLED"] = "true"
@@ -144,8 +144,8 @@ def test_thread_safety() -> None:
     """Test thread safety of lazy initialization."""
     print("\n=== Test 4: Thread Safety ===")
 
-    from provide.foundation.core import reset_pyvider_setup_for_testing
-    reset_pyvider_setup_for_testing()
+    from provide.foundation.core import reset_foundation_setup_for_testing
+    reset_foundation_setup_for_testing()
 
     results = []
     exceptions = []

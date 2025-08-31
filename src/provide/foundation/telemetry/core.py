@@ -124,7 +124,7 @@ def _handle_globally_disabled_setup() -> None:
     _core_setup_logger.info("⚙️➡️🚫 Foundation Telemetry globally disabled.")
     structlog.configure(processors=[], logger_factory=structlog.ReturnLoggerFactory(), cache_logger_on_first_use=True)
 
-def reset_pyvider_setup_for_testing() -> None:
+def reset_foundation_setup_for_testing() -> None:
     """
     Resets `structlog` defaults and Foundation Telemetry's internal logger state.
     This is a test utility and should not be called by production code.
@@ -190,5 +190,5 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
         _internal_setup(config, is_explicit_call=True)
         _EXPLICIT_SETUP_DONE = True
 
-async def shutdown_pyvider_telemetry(timeout_millis: int = 5000) -> None:
+async def shutdown_foundation_telemetry(timeout_millis: int = 5000) -> None:
     _core_setup_logger.info("🔌➡️🏁 Foundation Telemetry shutdown called.")

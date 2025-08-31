@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 # Example context variable for trace_id (application would need to set this)
 # This is just a placeholder to show how it *could* be integrated.
 # Foundation Telemetry itself won't manage this contextvar's lifecycle.
-_PYVIDER_CONTEXT_TRACE_ID = contextvars.ContextVar("pyvider_context_trace_id", default=None)
+_PYVIDER_CONTEXT_TRACE_ID = contextvars.ContextVar("foundation_context_trace_id", default=None)
 
 
 @contextmanager

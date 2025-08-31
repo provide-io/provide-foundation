@@ -21,7 +21,7 @@ from provide.foundation import (
     logger,  # This is the global FoundationLogger instance
     setup_telemetry,
 )
-from provide.foundation.core import reset_pyvider_setup_for_testing
+from provide.foundation.core import reset_foundation_setup_for_testing
 
 
 def test_invalid_environment_variables_handling(monkeypatch, capsys) -> None: # Added capsys
@@ -98,11 +98,11 @@ def test_module_levels_parsing_edge_cases() -> None:
 
 
 def test_logger_with_extreme_names(
-    setup_pyvider_telemetry_for_test: Callable[[TelemetryConfig | None], None],
+    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
     captured_stderr_for_pyvider: io.StringIO,
 ) -> None:
     """Tests logger behavior with extreme names."""
-    setup_pyvider_telemetry_for_test(None)
+    setup_foundation_telemetry_for_test(None)
 
     extreme_names = [
         "",  # Empty string
@@ -135,11 +135,11 @@ def test_logger_with_extreme_names(
 
 
 def test_log_message_edge_cases(
-    setup_pyvider_telemetry_for_test: Callable[[TelemetryConfig | None], None],
+    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
     captured_stderr_for_pyvider: io.StringIO,
 ) -> None:
     """Tests logging with edge case message content."""
-    setup_pyvider_telemetry_for_test(None)
+    setup_foundation_telemetry_for_test(None)
     test_logger = logger.get_logger("edge.test")
 
     edge_case_messages: list[Any] = [ # Allow Any for diverse test inputs
@@ -173,11 +173,11 @@ def test_log_message_edge_cases(
 
 
 def test_logger_args_formatting_edge_cases(
-    setup_pyvider_telemetry_for_test: Callable[[TelemetryConfig | None], None],
+    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
     captured_stderr_for_pyvider: io.StringIO,
 ) -> None:
     """Tests logger argument formatting edge cases using FoundationLogger's methods."""
-    setup_pyvider_telemetry_for_test(None)
+    setup_foundation_telemetry_for_test(None)
     # Using the global logger instance which has the FoundationLogger methods
 
     test_cases: list[tuple[str, tuple[Any, ...], bool]] = [
@@ -213,7 +213,7 @@ def test_logger_args_formatting_edge_cases(
 
 
 def test_repeated_setup_calls(
-    setup_pyvider_telemetry_for_test: Callable[[TelemetryConfig | None], None],
+    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
     captured_stderr_for_pyvider: io.StringIO,
 ) -> None:
     """Tests behavior with repeated setup calls."""
@@ -227,11 +227,11 @@ def test_repeated_setup_calls(
     )
 
     # First setup
-    setup_pyvider_telemetry_for_test(config1)
+    setup_foundation_telemetry_for_test(config1)
     logger.info("Message after first setup")
 
     # Second setup (should reconfigure)
-    setup_pyvider_telemetry_for_test(config2)
+    setup_foundation_telemetry_for_test(config2)
     logger.info("Message after second setup")
     logger.debug("Debug message (should be filtered in INFO level)")
 
@@ -272,7 +272,7 @@ def test_concurrent_setup_calls() -> None:
 
     assert len(exceptions) == 0, f"Concurrent setup failed: {exceptions}"
     assert len(setup_results) == len(configs)
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
 
 
 def test_memory_usage_with_large_configs() -> None:
@@ -298,11 +298,11 @@ def test_memory_usage_with_large_configs() -> None:
     except Exception as e: # pragma: no cover
         pytest.fail(f"Large configuration failed: {e}")
     finally:
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
 
 def test_trace_level_edge_cases(
-    setup_pyvider_telemetry_for_test: Callable[[TelemetryConfig | None], None],
+    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
     captured_stderr_for_pyvider: io.StringIO,
 ) -> None:
     """Tests TRACE level edge cases."""
@@ -312,10 +312,10 @@ def test_trace_level_edge_cases(
             module_levels={"trace.test": "TRACE"},
         )
     )
-    setup_pyvider_telemetry_for_test(config)
+    setup_foundation_telemetry_for_test(config)
 
     logger.trace("Default trace message")
-    logger.trace("Named trace message", _pyvider_logger_name="trace.test.custom")
+    logger.trace("Named trace message", _foundation_logger_name="trace.test.custom")
     logger.trace("Trace with args %s %d", "test", 42)
     logger.trace("Trace with kwargs", key1="value1", key2=123)
 
@@ -357,7 +357,7 @@ def test_configuration_immutability() -> None:
 
 
 def test_performance_with_disabled_features(
-    setup_pyvider_telemetry_for_test: Callable[[TelemetryConfig | None], None],
+    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
     captured_stderr_for_pyvider: io.StringIO,
 ) -> None:
     """Tests performance when emoji features are disabled."""
@@ -369,7 +369,7 @@ def test_performance_with_disabled_features(
             das_emoji_prefix_enabled=False,
         )
     )
-    setup_pyvider_telemetry_for_test(config)
+    setup_foundation_telemetry_for_test(config)
     test_logger = logger.get_logger("performance.test")
     start_time = time.time()
     message_count = 1000

@@ -41,7 +41,7 @@ from provide.foundation import (
 )
 from provide.foundation.core import (
     _set_log_stream_for_testing,
-    reset_pyvider_setup_for_testing,
+    reset_foundation_setup_for_testing,
 )
 
 
@@ -126,7 +126,7 @@ def benchmark_basic_logging() -> dict[str, Any]:
     Returns:
         Dictionary containing benchmark results including throughput metrics.
     """
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
 
     config = TelemetryConfig(
         logging=LoggingConfig(
@@ -168,7 +168,7 @@ def benchmark_json_formatting() -> dict[str, Any]:
     Returns:
         Dictionary containing JSON formatting performance metrics.
     """
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
 
     config = TelemetryConfig(
         logging=LoggingConfig(
@@ -214,7 +214,7 @@ def benchmark_emoji_processing() -> dict[str, Any]:
     Returns:
         Dictionary containing emoji processing overhead analysis.
     """
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
 
     # Test with emojis enabled
     config_with_emojis = TelemetryConfig(
@@ -246,7 +246,7 @@ def benchmark_emoji_processing() -> dict[str, Any]:
         emoji_result["messages_per_second"] = emoji_result["message_count"] / emoji_result["duration_seconds"]
 
     # Test with emojis disabled
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
     config_no_emojis = TelemetryConfig(
         logging=LoggingConfig(
             default_level="INFO",
@@ -295,7 +295,7 @@ def benchmark_multithreaded_logging() -> dict[str, Any]:
     Returns:
         Dictionary containing concurrent logging performance metrics.
     """
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
 
     config = TelemetryConfig(
         logging=LoggingConfig(
@@ -351,7 +351,7 @@ def benchmark_level_filtering() -> dict[str, Any]:
     Returns:
         Dictionary containing level filtering performance metrics.
     """
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
 
     config = TelemetryConfig(
         logging=LoggingConfig(
@@ -400,7 +400,7 @@ async def benchmark_async_usage() -> dict[str, Any]:
     Returns:
         Dictionary containing async logging performance metrics.
     """
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
 
     config = TelemetryConfig(
         logging=LoggingConfig(
@@ -456,7 +456,7 @@ def benchmark_large_payloads() -> dict[str, Any]:
     Returns:
         Dictionary containing large payload performance metrics.
     """
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
 
     config = TelemetryConfig(
         logging=LoggingConfig(

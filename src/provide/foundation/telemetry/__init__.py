@@ -9,7 +9,7 @@ Primary public interface for the library, re-exporting common components.
 from importlib.metadata import PackageNotFoundError, version
 
 try:
-    __version__ = version("pyvider-telemetry")
+    __version__ = version("provide-foundation")
 except PackageNotFoundError: # pragma: no cover
     __version__ = "0.0.0-dev"
 
@@ -19,7 +19,7 @@ from provide.foundation.config import (
 )
 from provide.foundation.core import (
     setup_telemetry,
-    shutdown_pyvider_telemetry,
+    shutdown_foundation_telemetry,
 )
 from provide.foundation.logger import logger  # Global logger instance
 from provide.foundation.logger.emoji_matrix import (
@@ -45,7 +45,7 @@ __all__ = [
     # Core setup and logger
     "logger",
     "setup_telemetry",
-    "shutdown_pyvider_telemetry",
+    "shutdown_foundation_telemetry",
     # Configuration classes
     "TelemetryConfig",
     "LoggingConfig",

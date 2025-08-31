@@ -59,7 +59,7 @@ def parse_kv_log_line(line: str) -> dict:
 
 @pytest.fixture
 def setup_telemetry_for_utils(
-    setup_pyvider_telemetry_for_test: Callable[[TelemetryConfig | None], None]
+    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None]
 ) -> None:
     """Fixture to set up telemetry for util tests with logger name emojis disabled."""
     config = TelemetryConfig(
@@ -69,7 +69,7 @@ def setup_telemetry_for_utils(
             logger_name_emoji_prefix_enabled=False,
         )
     )
-    setup_pyvider_telemetry_for_test(config)
+    setup_foundation_telemetry_for_test(config)
 
 @pytest.mark.usefixtures("setup_telemetry_for_utils")
 class TestTimedBlock:

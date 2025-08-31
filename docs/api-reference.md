@@ -29,10 +29,10 @@ config = TelemetryConfig(service_name="my-app")
 setup_telemetry(config)
 ```
 
-### shutdown_pyvider_telemetry()
+### shutdown_foundation_telemetry()
 
 ```python
-async def shutdown_pyvider_telemetry(timeout_millis: int = 5000) -> None
+async def shutdown_foundation_telemetry(timeout_millis: int = 5000) -> None
 ```
 
 **Description**: Performs graceful shutdown of telemetry system.
@@ -45,13 +45,13 @@ async def shutdown_pyvider_telemetry(timeout_millis: int = 5000) -> None
 **Example**:
 ```python
 import asyncio
-from provide.foundation import shutdown_pyvider_telemetry
+from provide.foundation import shutdown_foundation_telemetry
 
 # In async context
-await shutdown_pyvider_telemetry()
+await shutdown_foundation_telemetry()
 
 # In sync context
-asyncio.run(shutdown_pyvider_telemetry())
+asyncio.run(shutdown_foundation_telemetry())
 ```
 
 ## 🏗️ Configuration Classes
@@ -257,7 +257,7 @@ def trace(
     self, 
     event: str, 
     *args: Any, 
-    _pyvider_logger_name: str | None = None, 
+    _foundation_logger_name: str | None = None, 
     **kwargs: Any
 ) -> None
 ```
@@ -267,7 +267,7 @@ def trace(
 **Parameters**:
 - `event`: Log message
 - `*args`: Format arguments
-- `_pyvider_logger_name`: Override logger name for this call
+- `_foundation_logger_name`: Override logger name for this call
 - `**kwargs`: Additional structured data
 
 **Example**:
@@ -277,7 +277,7 @@ logger.trace("Detailed execution flow")
 
 # With custom logger name
 logger.trace("Database query details", 
-            _pyvider_logger_name="db.trace",
+            _foundation_logger_name="db.trace",
             query="SELECT * FROM users", 
             duration_ms=23)
 ```
@@ -771,7 +771,7 @@ def test_feature_with_logging(setup_logging, caplog):
 from importlib.metadata import version, PackageNotFoundError
 
 try:
-    __version__ = version("pyvider-telemetry")
+    __version__ = version("provide-foundation")
 except PackageNotFoundError:
     __version__ = "0.0.0-dev"  # Development fallback
 ```

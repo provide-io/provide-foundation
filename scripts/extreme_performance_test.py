@@ -38,7 +38,7 @@ from provide.foundation import (
 )
 from provide.foundation.core import (
     _set_log_stream_for_testing,
-    reset_pyvider_setup_for_testing,
+    reset_foundation_setup_for_testing,
 )
 
 
@@ -115,7 +115,7 @@ def extreme_throughput_test() -> dict[str, Any]:
     """Test absolute maximum throughput."""
     print("🔥 Running EXTREME Throughput Test...")
 
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
     config = TelemetryConfig(
         logging=LoggingConfig(
             default_level="INFO",
@@ -155,7 +155,7 @@ def extreme_concurrency_test() -> dict[str, Any]:
     """Test with extreme thread concurrency."""
     print("🧵 Running EXTREME Concurrency Test...")
 
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
     config = TelemetryConfig(
         logging=LoggingConfig(
             default_level="INFO",
@@ -205,7 +205,7 @@ def memory_stress_test() -> dict[str, Any]:
     """Test memory usage under sustained load."""
     print("🧠 Running Memory Stress Test...")
 
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
     config = TelemetryConfig(
         logging=LoggingConfig(
             default_level="DEBUG",  # More processing overhead
@@ -264,7 +264,7 @@ async def async_extreme_test() -> dict[str, Any]:
     """Test extreme async performance."""
     print("⚡ Running EXTREME Async Test...")
 
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
     config = TelemetryConfig(
         logging=LoggingConfig(
             default_level="INFO",
@@ -322,7 +322,7 @@ def filtering_efficiency_test() -> dict[str, Any]:
     """Test filtering efficiency under extreme load."""
     print("🔍 Running Filtering Efficiency Test...")
 
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
     config = TelemetryConfig(
         logging=LoggingConfig(
             default_level="CRITICAL",  # Filter almost everything

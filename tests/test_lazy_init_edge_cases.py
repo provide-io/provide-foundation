@@ -20,7 +20,7 @@ from pytest import CaptureFixture  # Added for capsys
 import structlog
 
 from provide.foundation import logger as global_logger
-from provide.foundation.core import reset_pyvider_setup_for_testing
+from provide.foundation.core import reset_foundation_setup_for_testing
 
 
 class TestExtremeEdgeCases:
@@ -28,7 +28,7 @@ class TestExtremeEdgeCases:
 
     def test_recursive_logging_during_setup(self, capsys: CaptureFixture) -> None:
         """Test handling of recursive logging calls during lazy setup."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         original_perform_lazy_setup = None
 
@@ -50,7 +50,7 @@ class TestExtremeEdgeCases:
 
     def test_concurrent_setup_with_exceptions(self, capsys: CaptureFixture) -> None:
         """Test concurrent setup attempts when some fail with exceptions."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         setup_attempts = 0
         setup_failures = 0
@@ -93,7 +93,7 @@ class TestExtremeEdgeCases:
 
     def test_memory_pressure_during_setup(self, capsys: CaptureFixture) -> None:
         """Test lazy setup under simulated memory pressure."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         allocation_count = 0
 
@@ -119,7 +119,7 @@ class TestExtremeEdgeCases:
 
     def test_signal_interruption_during_setup(self, capsys: CaptureFixture) -> None:
         """Test interruption by signals during lazy setup."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         import signal
 
@@ -174,7 +174,7 @@ class TestExtremeEdgeCases:
 
     def test_import_system_corruption(self, capsys: CaptureFixture) -> None:
         """Test behavior when import system is corrupted during setup."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Mock import failure for critical modules
         def failing_import(name: str, *args: Any, **kwargs: Any) -> Any: # ANN202 (already had arg types)
@@ -193,7 +193,7 @@ class TestExtremeEdgeCases:
 
     def test_filesystem_access_denied(self, capsys: CaptureFixture) -> None:
         """Test behavior when filesystem access is denied during setup."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Mock file operations to simulate permission errors
         def permission_denied_open(*args: Any, **kwargs: Any) -> Never: # ANN002, ANN003
@@ -214,7 +214,7 @@ class TestStateConsistencyUnderFailure:
 
     def test_partial_setup_state_recovery(self, capsys: CaptureFixture) -> None:
         """Test recovery from partial setup state."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Simulate partial setup failure
         from provide.foundation.logger import (
@@ -242,7 +242,7 @@ class TestStateConsistencyUnderFailure:
 
     def test_lock_contention_state_consistency(self, capsys: CaptureFixture) -> None:
         """Test state consistency under heavy lock contention."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         results: list[bool] = []
         state_snapshots: list[tuple[bool, bool, Any]] = []
@@ -295,7 +295,7 @@ class TestStateConsistencyUnderFailure:
 
     def test_exception_handling_state_cleanup(self, capsys: CaptureFixture) -> None:
         """Test that exceptions during setup properly clean up state."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         from provide.foundation.logger import base as logger_base
 
@@ -331,7 +331,7 @@ class TestStateConsistencyUnderFailure:
 
     def test_thread_local_state_isolation(self, capsys: CaptureFixture) -> None:
         """Test that thread-local state doesn't interfere with global state."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         thread_results: dict[int, Any] = {}
 
@@ -380,7 +380,7 @@ class TestLazyInitializationCompliance:
 
     def test_initialization_only_when_needed(self, capsys: CaptureFixture) -> None:
         """Test that initialization only occurs when actually needed."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Import and create logger instance should not trigger setup
         from provide.foundation import logger
@@ -411,7 +411,7 @@ class TestLazyInitializationCompliance:
 
     def test_setup_occurs_exactly_once(self, capsys: CaptureFixture) -> None:
         """Test that lazy setup occurs exactly once regardless of calls."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         setup_call_count = 0
 
@@ -442,7 +442,7 @@ class TestLazyInitializationCompliance:
 
     def test_thread_safety_specification_compliance(self, capsys: CaptureFixture) -> None:
         """Test compliance with thread safety specifications."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Configure structlog with a non-default factory to bypass early exit in _ensure_configured
         # This allows testing the lock contention for _perform_lazy_setup itself.
@@ -498,7 +498,7 @@ class TestLazyInitializationCompliance:
 
     def test_error_isolation_specification(self, capsys: CaptureFixture) -> None:
         """Test that errors in setup don't affect subsequent logging attempts."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         from provide.foundation.logger import base as logger_base
 
