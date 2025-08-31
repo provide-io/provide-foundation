@@ -13,16 +13,16 @@ try:
 except PackageNotFoundError: # pragma: no cover
     __version__ = "0.0.0-dev"
 
-from provide.foundation.config import (
+from provide.foundation.telemetry.config import (
     LoggingConfig,
     TelemetryConfig,
 )
-from provide.foundation.core import (
+from provide.foundation.telemetry.core import (
     setup_telemetry,
     shutdown_foundation_telemetry,
 )
-from provide.foundation.logger import logger  # Global logger instance
-from provide.foundation.logger.emoji_matrix import (
+from provide.foundation.telemetry.logger import logger  # Global logger instance
+from provide.foundation.telemetry.logger.emoji_matrix import (
     PRIMARY_EMOJI,  # Legacy/default domain emojis
     SECONDARY_EMOJI,  # Legacy/default action emojis
     TERTIARY_EMOJI,  # Legacy/default status emojis
@@ -30,7 +30,7 @@ from provide.foundation.logger.emoji_matrix import (
 )
 
 # New type exports for semantic layering
-from provide.foundation.types import (
+from provide.foundation.telemetry.types import (
     ConsoleFormatterStr,
     CustomDasEmojiSet,
     LogLevelStr,
@@ -39,7 +39,7 @@ from provide.foundation.types import (
 )
 
 # New utility exports
-from provide.foundation.utils import timed_block
+from provide.foundation.telemetry.utils import timed_block
 
 __all__ = [
     # Core setup and logger

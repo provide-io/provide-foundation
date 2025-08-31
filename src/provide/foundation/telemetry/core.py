@@ -17,18 +17,18 @@ from typing import Any, TextIO, cast
 import structlog
 from structlog.types import BindableLogger
 
-from provide.foundation.config import (
+from provide.foundation.telemetry.config import (
     LoggingConfig,
     TelemetryConfig,
     _build_core_processors_list,
     _build_formatter_processors_list,
 )
-from provide.foundation.logger import base as logger_base_module
-from provide.foundation.semantic_layers import (
+from provide.foundation.telemetry.logger import base as foundation_logger
+from provide.foundation.telemetry.semantic_layers import (
     BUILTIN_SEMANTIC_LAYERS,
     LEGACY_DAS_EMOJI_SETS,
 )
-from provide.foundation.types import (
+from provide.foundation.telemetry.types import (
     CustomDasEmojiSet,
     SemanticFieldDefinition,
     SemanticLayer,
@@ -132,10 +132,10 @@ def reset_foundation_setup_for_testing() -> None:
     global _FOUNDATION_LOG_STREAM, _core_setup_logger, _EXPLICIT_SETUP_DONE
     with _FOUNDATION_SETUP_LOCK:
         structlog.reset_defaults()
-        logger_base_module.logger._is_configured_by_setup = False
-        logger_base_module.logger._active_config = None
-        logger_base_module.logger._active_resolved_semantic_config = None
-        logger_base_module._LAZY_SETUP_STATE.update({"done": False, "error": None, "in_progress": False})
+        foundation_logger.logger._is_configured_by_setup = False
+        foundation_logger.logger._active_config = None
+        foundation_logger.logger._active_resolved_semantic_config = None
+        foundation_logger._LAZY_SETUP_STATE.update({"done": False, "error": None, "in_progress": False})
         _FOUNDATION_LOG_STREAM = sys.stderr
         _EXPLICIT_SETUP_DONE = False
         _core_setup_logger = _create_core_setup_logger()
@@ -150,10 +150,10 @@ def _internal_setup(config: TelemetryConfig | None = None, is_explicit_call: boo
     # This function assumes the lock is already held.
     # 1. Reset all relevant state.
     structlog.reset_defaults()
-    logger_base_module.logger._is_configured_by_setup = False
-    logger_base_module.logger._active_config = None
-    logger_base_module.logger._active_resolved_semantic_config = None
-    logger_base_module._LAZY_SETUP_STATE.update({"done": False, "error": None, "in_progress": False})
+    foundation_logger.logger._is_configured_by_setup = False
+    foundation_logger.logger._active_config = None
+    foundation_logger.logger._active_resolved_semantic_config = None
+    foundation_logger._LAZY_SETUP_STATE.update({"done": False, "error": None, "in_progress": False})
 
     # 2. Determine configuration
     current_config = config if config is not None else TelemetryConfig.from_env()
@@ -172,10 +172,10 @@ def _internal_setup(config: TelemetryConfig | None = None, is_explicit_call: boo
         _configure_structlog_output(current_config, resolved_semantic_config)
 
     # 5. Update state flags
-    logger_base_module.logger._is_configured_by_setup = is_explicit_call
-    logger_base_module.logger._active_config = current_config
-    logger_base_module.logger._active_resolved_semantic_config = resolved_semantic_config
-    logger_base_module._LAZY_SETUP_STATE["done"] = True
+    foundation_logger.logger._is_configured_by_setup = is_explicit_call
+    foundation_logger.logger._active_config = current_config
+    foundation_logger.logger._active_resolved_semantic_config = resolved_semantic_config
+    foundation_logger._LAZY_SETUP_STATE["done"] = True
 
     if not current_config.globally_disabled:
         _core_setup_logger.info("⚙️➡️✅ Foundation (structlog) setup completed.")
