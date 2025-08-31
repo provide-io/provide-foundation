@@ -27,7 +27,7 @@ _NUMERIC_TO_LEVEL_NAME_CUSTOM: dict[int, str] = {
 }
 
 class StructlogProcessor(Protocol):
-    def __call__(self, logger: Any, method_name: str, event_dict: structlog.types.EventDict) -> structlog.types.EventDict: ...
+    def __call__(self, logger: Any, method_name: str, event_dict: structlog.types.EventDict) -> structlog.types.EventDict: ...  # pragma: no cover
 
 def add_log_level_custom(_logger: Any, method_name: str, event_dict: structlog.types.EventDict) -> structlog.types.EventDict:
     level_hint: str | None = event_dict.pop("_foundation_level_hint", None)

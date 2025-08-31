@@ -69,7 +69,7 @@ class FoundationLogger:
         with _LAZY_SETUP_LOCK:
             # Double-check state after acquiring lock, as another thread might have finished.
             if self._is_configured_by_setup or (_LAZY_SETUP_STATE["done"] and not _LAZY_SETUP_STATE["error"]):
-                return
+                return  # pragma: no cover - TODO: Requires complex threading test to simulate race condition
 
             # If setup failed while waiting for the lock, use fallback.
             if _LAZY_SETUP_STATE["error"]:
