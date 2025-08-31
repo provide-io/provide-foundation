@@ -19,7 +19,7 @@ def test_basic_lazy_init() -> None:
     print("=== Test 1: Basic Lazy Initialization ===")
 
     # Reset any existing configuration
-    from provide.foundation.core import reset_foundation_setup_for_testing
+    from provide.foundation.telemetry.core import reset_foundation_setup_for_testing
     reset_foundation_setup_for_testing()
 
     # Clear environment
@@ -39,7 +39,7 @@ def test_service_name_injection() -> None:
     """Test service name injection with JSON format."""
     print("\n=== Test 2: Service Name Injection (JSON) ===")
 
-    from provide.foundation.core import reset_foundation_setup_for_testing
+    from provide.foundation.telemetry.core import reset_foundation_setup_for_testing
     reset_foundation_setup_for_testing()
 
     # Set environment like the failing test
@@ -55,10 +55,10 @@ def test_lazy_setup_flags() -> None:
     """Test that lazy setup flags are set correctly."""
     print("\n=== Test 3: Lazy Setup Flags ===")
 
-    from provide.foundation.core import reset_foundation_setup_for_testing
+    from provide.foundation.telemetry.core import reset_foundation_setup_for_testing
     reset_foundation_setup_for_testing()
 
-    from provide.foundation.logger.base import _LAZY_SETUP_STATE  # Changed
+    from provide.foundation.telemetry.logger.base import _LAZY_SETUP_STATE  # Changed
     print(f"Initial state - _LAZY_SETUP_STATE: {_LAZY_SETUP_STATE}")
 
     from provide.foundation import logger
@@ -76,14 +76,14 @@ def test_emergency_fallback() -> None:
     """Test emergency fallback doesn't crash."""
     print("\n=== Test 4: Emergency Fallback ===")
 
-    from provide.foundation.core import reset_foundation_setup_for_testing
+    from provide.foundation.telemetry.core import reset_foundation_setup_for_testing
     reset_foundation_setup_for_testing()
 
-    from provide.foundation.logger.base import FoundationLogger
+    from provide.foundation.telemetry.logger.base import FoundationLogger
     test_logger = FoundationLogger()
 
     # Trigger emergency fallback by setting error state
-    from provide.foundation.logger.base import (
+    from provide.foundation.telemetry.logger.base import (
         _LAZY_SETUP_STATE,  # Ensure we use the state dict
     )
     _LAZY_SETUP_STATE["error"] = Exception("Test error") # Set error state

@@ -7,14 +7,14 @@ Unit tests for src.provide.foundation.logger.custom_processors.py
 import pytest
 import structlog  # For DropEvent
 
-from provide.foundation.logger.custom_processors import (
+from provide.foundation.telemetry.logger.custom_processors import (
     add_logger_name_emoji_prefix,
     # add_das_emoji_prefix, # Will add if testing that
     # _LOGGER_NAME_EMOJI_PREFIXES, # For direct manipulation if needed
     # clear_emoji_cache # To reset state for emoji cache tests
     filter_by_level_custom,
 )
-from provide.foundation.types import LogLevelStr  # Corrected import for type hints
+from provide.foundation.telemetry.types import LogLevelStr  # Corrected import for type hints
 
 # Helper for level to numeric mapping, mirroring what's in config.py
 _LEVEL_TO_NUMERIC_TEST_MAP: dict[LogLevelStr, int] = {

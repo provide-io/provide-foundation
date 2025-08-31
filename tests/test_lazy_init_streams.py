@@ -18,7 +18,7 @@ from unittest.mock import patch
 from pytest import CaptureFixture  # Added for capsys
 
 from provide.foundation import logger as global_logger
-from provide.foundation.core import (
+from provide.foundation.telemetry.core import (
     _set_log_stream_for_testing,
     reset_foundation_setup_for_testing,
 )

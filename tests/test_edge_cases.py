@@ -21,7 +21,7 @@ from provide.foundation import (
     logger,  # This is the global FoundationLogger instance
     setup_telemetry,
 )
-from provide.foundation.core import reset_foundation_setup_for_testing
+from provide.foundation.telemetry.core import reset_foundation_setup_for_testing
 
 
 def test_invalid_environment_variables_handling(monkeypatch, capsys) -> None: # Added capsys

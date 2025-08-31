@@ -23,19 +23,19 @@ from provide.foundation import (
     setup_telemetry,
     shutdown_foundation_telemetry,
 )
-from provide.foundation.core import (
+from provide.foundation.telemetry.core import (
     _create_core_setup_logger,
     _handle_globally_disabled_setup,
     _set_log_stream_for_testing,
     reset_foundation_setup_for_testing,
 )
-from provide.foundation.logger.custom_processors import (
+from provide.foundation.telemetry.logger.custom_processors import (
     _compute_emoji_for_logger_name,
     clear_emoji_cache,
     get_emoji_cache_stats,
 )
-from provide.foundation.logger.emoji_matrix import show_emoji_matrix
-from provide.foundation.types import (
+from provide.foundation.telemetry.logger.emoji_matrix import show_emoji_matrix
+from provide.foundation.telemetry.types import (
     LogLevelStr,
 )
 
@@ -113,7 +113,7 @@ def test_shutdown_telemetry_coverage() -> None:
     asyncio.run(shutdown_foundation_telemetry(timeout_millis=1000))
 
 def test_level_filter_edge_cases() -> None:
-    from provide.foundation.logger.custom_processors import _LevelFilter
+    from provide.foundation.telemetry.logger.custom_processors import _LevelFilter
     level_map: dict[LogLevelStr, int] = {"CRITICAL": 50, "ERROR": 40, "WARNING": 30, "INFO": 20, "DEBUG": 10, "TRACE": 5, "NOTSET": 0}
     filter_instance = _LevelFilter("INFO", {"app": "DEBUG"}, level_map)
     with pytest.raises(structlog.DropEvent):

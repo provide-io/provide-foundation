@@ -17,13 +17,13 @@ from typing import TYPE_CHECKING, Any, TextIO, cast
 from attrs import define, field
 import structlog
 
-from provide.foundation.logger.custom_processors import (
+from provide.foundation.telemetry.logger.custom_processors import (
     StructlogProcessor,
     add_log_level_custom,
     add_logger_name_emoji_prefix,
     filter_by_level_custom,
 )
-from provide.foundation.types import (
+from provide.foundation.telemetry.types import (
     _VALID_FORMATTER_TUPLE,
     _VALID_LOG_LEVEL_TUPLE,
     TRACE_LEVEL_NUM,
@@ -263,7 +263,7 @@ def _config_create_emoji_processors(logging_config: LoggingConfig, resolved_sema
 
         def add_das_emoji_prefix_closure(_logger: Any, _method_name: str, event_dict: structlog.types.EventDict) -> structlog.types.EventDict:
             # This inner function now has access to the resolved config from its closure scope
-            from provide.foundation.logger.emoji_matrix import (
+            from provide.foundation.telemetry.logger.emoji_matrix import (
                 PRIMARY_EMOJI,
                 SECONDARY_EMOJI,
                 TERTIARY_EMOJI,

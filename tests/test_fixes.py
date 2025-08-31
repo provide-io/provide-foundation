@@ -21,11 +21,11 @@ def test_lazy_setup_flags() -> None:
     """Test that lazy setup flags are set correctly."""
     print("=== Test 1: Lazy Setup Flags ===")
 
-    from provide.foundation.core import reset_foundation_setup_for_testing
+    from provide.foundation.telemetry.core import reset_foundation_setup_for_testing
     reset_foundation_setup_for_testing()
 
     # Use the new _LAZY_SETUP_STATE dictionary
-    from provide.foundation.logger.base import _LAZY_SETUP_STATE
+    from provide.foundation.telemetry.logger.base import _LAZY_SETUP_STATE
     print(f"Initial state - STATE: {_LAZY_SETUP_STATE}")
 
     from provide.foundation import logger
@@ -44,7 +44,7 @@ def test_service_name_no_emoji() -> None:
     """Test service name injection without emoji prefix for JSON format."""
     print("\n=== Test 2: Service Name Without Emoji (JSON) ===")
 
-    from provide.foundation.core import (
+    from provide.foundation.telemetry.core import (
         _set_log_stream_for_testing,
         reset_foundation_setup_for_testing,
     )
@@ -97,7 +97,7 @@ def test_das_emoji_register_action() -> None:
     """Test that register action has proper emoji mapping."""
     print("\n=== Test 3: DAS Emoji Register Action ===")
 
-    from provide.foundation.core import (
+    from provide.foundation.telemetry.core import (
         _set_log_stream_for_testing,
         reset_foundation_setup_for_testing,
     )
@@ -144,7 +144,7 @@ def test_thread_safety() -> None:
     """Test thread safety of lazy initialization."""
     print("\n=== Test 4: Thread Safety ===")
 
-    from provide.foundation.core import reset_foundation_setup_for_testing
+    from provide.foundation.telemetry.core import reset_foundation_setup_for_testing
     reset_foundation_setup_for_testing()
 
     results = []
@@ -186,7 +186,7 @@ def test_get_safe_stderr() -> None:
     print("\n=== Test 5: Safe Stderr Function ===")
 
     try:
-        from provide.foundation.logger.base import (
+        from provide.foundation.telemetry.logger.base import (
             _get_safe_stderr,  # type: ignore[import-untyped]
         )
         stderr = _get_safe_stderr()
@@ -202,7 +202,7 @@ def test_emoji_matrix_defaults() -> None:
     """Test emoji matrix has correct default mappings."""
     print("\n=== Test 6: Emoji Matrix Defaults ===")
 
-    from provide.foundation.logger.emoji_matrix import (
+    from provide.foundation.telemetry.logger.emoji_matrix import (
         PRIMARY_EMOJI,
         SECONDARY_EMOJI,
         TERTIARY_EMOJI,

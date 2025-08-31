@@ -28,7 +28,7 @@ from provide.foundation import (
     setup_telemetry,
     shutdown_foundation_telemetry,
 )
-from provide.foundation.core import reset_foundation_setup_for_testing
+from provide.foundation.telemetry.core import reset_foundation_setup_for_testing
 
 
 class TestRealWorldScenarios:

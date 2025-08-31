@@ -20,7 +20,7 @@ from pytest import CaptureFixture  # Added for capsys
 import structlog
 
 from provide.foundation import logger as global_logger
-from provide.foundation.core import reset_foundation_setup_for_testing
+from provide.foundation.telemetry.core import reset_foundation_setup_for_testing
 
 
 class TestExtremeEdgeCases:
@@ -37,7 +37,7 @@ class TestExtremeEdgeCases:
             global_logger.debug("Logging during lazy setup")
             return original_perform_lazy_setup(self)
 
-        from provide.foundation.logger.base import FoundationLogger
+        from provide.foundation.telemetry.logger.base import FoundationLogger
         original_perform_lazy_setup = FoundationLogger._perform_lazy_setup
 
         with patch.object(FoundationLogger, '_perform_lazy_setup', recursive_lazy_setup):
@@ -65,7 +65,7 @@ class TestExtremeEdgeCases:
                     raise Exception(f"Setup failure {setup_attempts}")
 
             # Later attempts succeed
-            from provide.foundation.logger.base import FoundationLogger
+            from provide.foundation.telemetry.logger.base import FoundationLogger
             return FoundationLogger._perform_lazy_setup.__wrapped__(self)
 
         def concurrent_worker(worker_id: int) -> bool:
@@ -77,7 +77,7 @@ class TestExtremeEdgeCases:
 
         from concurrent.futures import ThreadPoolExecutor
 
-        from provide.foundation.logger.base import (
+        from provide.foundation.telemetry.logger.base import (
             FoundationLogger,  # type: ignore[import-untyped]
         )
 
@@ -130,7 +130,7 @@ class TestExtremeEdgeCases:
             try:
                 # Simulate slow setup that could be interrupted
                 time.sleep(0.1)
-                from provide.foundation.logger.base import FoundationLogger
+                from provide.foundation.telemetry.logger.base import FoundationLogger
                 return FoundationLogger._perform_lazy_setup.__wrapped__(self)
             except KeyboardInterrupt:
                 setup_interrupted = True
@@ -139,7 +139,7 @@ class TestExtremeEdgeCases:
         def interrupt_handler(signum: int, frame: Any) -> None: # Added types
             pass  # Just interrupt, don't exit
 
-        from provide.foundation.logger.base import (
+        from provide.foundation.telemetry.logger.base import (
             FoundationLogger,  # type: ignore[import-untyped]
         )
 
@@ -217,7 +217,7 @@ class TestStateConsistencyUnderFailure:
         reset_foundation_setup_for_testing()
 
         # Simulate partial setup failure
-        from provide.foundation.logger import (
+        from provide.foundation.telemetry.logger import (
             base as logger_base,  # type: ignore[import-untyped]
         )
 
@@ -255,7 +255,7 @@ class TestStateConsistencyUnderFailure:
                 global_logger.info(f"Contention worker {worker_id}")
 
                 # Snapshot state after logging
-                from provide.foundation.logger import (
+                from provide.foundation.telemetry.logger import (
                     base as logger_base,  # Keep for _LAZY_SETUP_STATE access
                 )
                 snapshot = (
@@ -297,7 +297,7 @@ class TestStateConsistencyUnderFailure:
         """Test that exceptions during setup properly clean up state."""
         reset_foundation_setup_for_testing()
 
-        from provide.foundation.logger import base as logger_base
+        from provide.foundation.telemetry.logger import base as logger_base
 
         exception_count = 0
 
@@ -344,7 +344,7 @@ class TestStateConsistencyUnderFailure:
             thread_logger.info(f"Thread {worker_id} message")
 
             # Record thread's view of global state
-            from provide.foundation.logger import (
+            from provide.foundation.telemetry.logger import (
                 base as logger_base,  # Keep for _LAZY_SETUP_STATE access
             )
             thread_results[worker_id] = {
@@ -384,7 +384,7 @@ class TestLazyInitializationCompliance:
 
         # Import and create logger instance should not trigger setup
         from provide.foundation import logger
-        from provide.foundation.logger import base as logger_base
+        from provide.foundation.telemetry.logger import base as logger_base
         new_logger = logger_base.FoundationLogger()
 
         # Verify no initialization yet
@@ -418,10 +418,10 @@ class TestLazyInitializationCompliance:
         def counting_setup(self: Any) -> Any: # ANN202
             nonlocal setup_call_count
             setup_call_count += 1
-            from provide.foundation.logger.base import FoundationLogger
+            from provide.foundation.telemetry.logger.base import FoundationLogger
             return FoundationLogger._perform_lazy_setup.__wrapped__(self)
 
-        from provide.foundation.logger.base import FoundationLogger
+        from provide.foundation.telemetry.logger.base import FoundationLogger
 
         with patch.object(FoundationLogger, '_perform_lazy_setup', counting_setup):
             # Multiple logging calls
@@ -452,7 +452,7 @@ class TestLazyInitializationCompliance:
         setup_end_times: list[float] = []
 
         # Import FoundationLogger here to access its original method
-        from provide.foundation.logger.base import FoundationLogger
+        from provide.foundation.telemetry.logger.base import FoundationLogger
         original_perform_lazy_setup_method = FoundationLogger._perform_lazy_setup
 
         def timed_setup(self_instance: Any) -> Any: # ANN202 (already had arg type)
@@ -500,7 +500,7 @@ class TestLazyInitializationCompliance:
         """Test that errors in setup don't affect subsequent logging attempts."""
         reset_foundation_setup_for_testing()
 
-        from provide.foundation.logger import base as logger_base
+        from provide.foundation.telemetry.logger import base as logger_base
 
         # First setup attempt fails
         def failing_then_succeeding_setup(self: Any) -> Any: # ANN202

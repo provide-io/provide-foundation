@@ -25,10 +25,10 @@ from provide.foundation import (
     logger as global_logger,
     setup_telemetry,
 )
-from provide.foundation.core import (
+from provide.foundation.telemetry.core import (
     reset_foundation_setup_for_testing,
 )
-from provide.foundation.logger.base import (
+from provide.foundation.telemetry.logger.base import (
     _LAZY_SETUP_STATE,  # Changed from _LAZY_SETUP_DONE, _LAZY_SETUP_ERROR
 )
 
@@ -472,11 +472,11 @@ class TestLazyInitializationInternalState:
 
         # Import internal state variables
         # No, _LAZY_SETUP_STATE is already imported.
-        # from provide.foundation.logger import base as logger_base # This line is not needed if we use the imported _LAZY_SETUP_STATE
+        # from provide.foundation.telemetry.logger import base as logger_base # This line is not needed if we use the imported _LAZY_SETUP_STATE
 
         # Mock the lazy setup to fail
         # To access FoundationLogger for patching, we might need logger_base_module still, or patch differently
-        from provide.foundation.logger.base import (
+        from provide.foundation.telemetry.logger.base import (
             FoundationLogger as FoundationLoggerForPatching,  # Specific import for patching if needed
         )
 
@@ -495,7 +495,7 @@ class TestLazyInitializationInternalState:
         """Test that multiple logger instances share lazy initialization state."""
         reset_foundation_setup_for_testing()
 
-        from provide.foundation.logger.base import FoundationLogger
+        from provide.foundation.telemetry.logger.base import FoundationLogger
 
         # Create multiple logger instances
         logger1 = FoundationLogger()

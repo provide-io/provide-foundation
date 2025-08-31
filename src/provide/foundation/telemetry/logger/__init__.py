@@ -5,11 +5,11 @@
 Foundation Telemetry Logger Sub-package.
 Re-exports key components related to logging functionality.
 """
-from provide.foundation.logger.base import (
+from provide.foundation.telemetry.logger.base import (
     FoundationLogger,  # Class definition
     logger,  # Global instance
 )
-from provide.foundation.logger.emoji_matrix import (
+from provide.foundation.telemetry.logger.emoji_matrix import (
     PRIMARY_EMOJI,  # Legacy/default domain emojis
     SECONDARY_EMOJI,  # Legacy/default action emojis
     TERTIARY_EMOJI,  # Legacy/default status emojis
