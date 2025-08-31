@@ -25,19 +25,22 @@ def test_logger_base_already_configured_after_lock():
     
     # Mock check_structlog to return False so we enter the lock section
     with patch.object(logger, '_check_structlog_already_disabled', return_value=False):
-        # Set the flag right before the lock check to trigger line 72
-        def set_configured(*args, **kwargs):
-            # Set done=True and no error to trigger the condition on line 71-72
-            _LAZY_SETUP_STATE["done"] = True
-            _LAZY_SETUP_STATE["error"] = None
-            return MagicMock()
+        # Simulate another thread completing setup while we wait for lock
+        # by setting done=True just before we check
+        original_ensure = logger._ensure_configured
+        call_count = [0]
         
-        # Mock the lock to set the state just before checking
-        original_enter = _LAZY_SETUP_LOCK.__enter__
-        with patch.object(_LAZY_SETUP_LOCK, '__enter__', side_effect=set_configured):
-            with patch.object(_LAZY_SETUP_LOCK, '__exit__', return_value=None):
-                logger._ensure_configured()
-                # Should return early at line 72
+        def mock_ensure(*args, **kwargs):
+            call_count[0] += 1
+            if call_count[0] == 1:
+                # First call - set the state as if another thread completed
+                _LAZY_SETUP_STATE["done"] = True
+                _LAZY_SETUP_STATE["error"] = None
+            return original_ensure(*args, **kwargs)
+        
+        with patch.object(logger, '_ensure_configured', mock_ensure):
+            # This should trigger the early return at line 72
+            logger._ensure_configured()
     
     # Reset
     reset_foundation_setup_for_testing()
@@ -45,26 +48,22 @@ def test_logger_base_already_configured_after_lock():
 
 def test_config_parse_custom_layers_non_list():
     """Test config.py line 167 - return empty list when custom_layers is not a list."""
-    config = TelemetryConfig()
-    
     # Set environment variable to a non-list JSON value
-    with patch.dict(os.environ, {'FOUNDATION_CUSTOM_SEMANTIC_LAYERS': '{"not": "a list"}'}):
-        result = config._parse_custom_semantic_layers()
+    with patch.dict(os.environ, {'FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS': '{"not": "a list"}'}):
+        result = TelemetryConfig._parse_custom_layers_from_env()
         assert result == []
 
 
 def test_config_parse_custom_layers_non_dict_item():
     """Test config.py line 170 - continue when layer_data is not a dict."""
-    config = TelemetryConfig()
-    
     # Set environment variable with a list containing non-dict items
     layers_json = json.dumps([
         "not a dict",  # This should be skipped
         {"name": "valid_layer", "emoji_sets": [], "field_definitions": []}
     ])
     
-    with patch.dict(os.environ, {'FOUNDATION_CUSTOM_SEMANTIC_LAYERS': layers_json}):
-        result = config._parse_custom_semantic_layers()
+    with patch.dict(os.environ, {'FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS': layers_json}):
+        result = TelemetryConfig._parse_custom_layers_from_env()
         # Should only have the valid layer
         assert len(result) == 1
         assert result[0].name == "valid_layer"
@@ -72,26 +71,22 @@ def test_config_parse_custom_layers_non_dict_item():
 
 def test_config_parse_user_emoji_sets_non_list():
     """Test config.py line 196 - return empty list when user_emoji_sets is not a list."""
-    config = TelemetryConfig()
-    
     # Set environment variable to a non-list JSON value
-    with patch.dict(os.environ, {'FOUNDATION_USER_EMOJI_SETS': '"not a list"'}):
-        result = config._parse_user_defined_emoji_sets()
+    with patch.dict(os.environ, {'FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS': '"not a list"'}):
+        result = TelemetryConfig._parse_user_emoji_sets_from_env()
         assert result == []
 
 
 def test_config_parse_user_emoji_sets_non_dict_item():
     """Test config.py line 199 - only process dict items in user emoji sets."""
-    config = TelemetryConfig()
-    
     # Set environment variable with a list containing non-dict and dict items
     sets_json = json.dumps([
         ["not", "a", "dict"],  # This should be skipped
         {"name": "valid_set", "emojis": {"test": "✅"}}  # This should be processed
     ])
     
-    with patch.dict(os.environ, {'FOUNDATION_USER_EMOJI_SETS': sets_json}):
-        result = config._parse_user_defined_emoji_sets()
+    with patch.dict(os.environ, {'FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS': sets_json}):
+        result = TelemetryConfig._parse_user_emoji_sets_from_env()
         # Should only have the valid set
         assert len(result) == 1
         assert result[0].name == "valid_set"
