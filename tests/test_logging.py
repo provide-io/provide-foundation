@@ -114,20 +114,20 @@ class TestConfigWarnings:
 
 
 class TestLoggingWithSemanticLayers:
-    def test_llm_layer_end_to_end(self, setup_foundation_telemetry_for_test: callable, captured_stderr_for_pyvider: "io.StringIO") -> None:
+    def test_llm_layer_end_to_end(self, setup_foundation_telemetry_for_test: callable, captured_stderr_for_foundation: "io.StringIO") -> None:
         config = TelemetryConfig(logging=LoggingConfig(enabled_semantic_layers=["llm"], console_formatter="key_value", das_emoji_prefix_enabled=True, logger_name_emoji_prefix_enabled=False))
         setup_foundation_telemetry_for_test(config)
         global_logger.info("LLM generated response", **{"llm.provider": "openai", "llm.task": "generation", "llm.model": "gpt-4o", "llm.outcome": "success", "duration_ms": 1230, "llm.output.tokens": 250})
-        output = captured_stderr_for_pyvider.getvalue()
+        output = captured_stderr_for_foundation.getvalue()
         assert "[🤖][✍️][💡][👍] LLM generated response" in output
         assert "duration_ms=1230" in output
         assert "llm.output.tokens=250" in output
         assert "llm.provider=openai" not in output
 
-    def test_legacy_das_still_works_if_no_layers_active(self, setup_foundation_telemetry_for_test: callable, captured_stderr_for_pyvider: "io.StringIO") -> None:
+    def test_legacy_das_still_works_if_no_layers_active(self, setup_foundation_telemetry_for_test: callable, captured_stderr_for_foundation: "io.StringIO") -> None:
         config = TelemetryConfig(logging=LoggingConfig(console_formatter="key_value", das_emoji_prefix_enabled=True, logger_name_emoji_prefix_enabled=False))
         setup_foundation_telemetry_for_test(config)
         global_logger.info("Legacy system test", domain="auth", action="login", status="success")
-        output = captured_stderr_for_pyvider.getvalue()
+        output = captured_stderr_for_foundation.getvalue()
         assert "[🔑][➡️][✅] Legacy system test" in output
         assert "domain=auth" not in output

@@ -42,7 +42,7 @@ from provide.foundation import (
 
 def test_full_lifecycle_integration(
     setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
-    captured_stderr_for_pyvider: io.StringIO,
+    captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     """
     Tests complete setup -> use -> shutdown lifecycle.
@@ -78,7 +78,7 @@ def test_full_lifecycle_integration(
         app_logger.exception("Handled error", context="integration_test")
 
     # Verify output structure and content
-    output = captured_stderr_for_pyvider.getvalue()
+    output = captured_stderr_for_foundation.getvalue()
     lines = [
         line for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]") and line.strip()
@@ -153,7 +153,7 @@ def test_environment_variable_integration() -> None:
 
 def test_high_volume_logging_performance(
     setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
-    captured_stderr_for_pyvider: io.StringIO,
+    captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     """
     Tests performance with high-volume logging.
@@ -184,7 +184,7 @@ def test_high_volume_logging_performance(
     duration = end_time - start_time
 
     # Verify all messages were logged
-    output = captured_stderr_for_pyvider.getvalue()
+    output = captured_stderr_for_foundation.getvalue()
     lines = [
         line for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]") and line.strip()
@@ -199,7 +199,7 @@ def test_high_volume_logging_performance(
 
 def test_thread_safety_concurrent_logging(
     setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
-    captured_stderr_for_pyvider: io.StringIO,
+    captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     """
     Tests thread safety with concurrent logging from multiple threads.
@@ -240,7 +240,7 @@ def test_thread_safety_concurrent_logging(
             future.result()
 
     # Verify output correctness
-    output = captured_stderr_for_pyvider.getvalue()
+    output = captured_stderr_for_foundation.getvalue()
     lines = [
         line for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]") and line.strip()
@@ -302,7 +302,7 @@ async def test_async_usage_patterns() -> None:
 
 def test_error_recovery_and_resilience(
     setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
-    captured_stderr_for_pyvider: io.StringIO,
+    captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     """
     Tests error recovery and system resilience.
@@ -340,7 +340,7 @@ def test_error_recovery_and_resilience(
             pytest.fail(f"Logger failed with message '{message}': {e}")
 
     # Verify output exists and is valid
-    output = captured_stderr_for_pyvider.getvalue()
+    output = captured_stderr_for_foundation.getvalue()
     lines = [
         line for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]") and line.strip()
@@ -378,7 +378,7 @@ def test_configuration_edge_cases() -> None:
 
 def test_repeated_setup_calls_integration( # Renamed to avoid conflict
     setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
-    captured_stderr_for_pyvider: io.StringIO,
+    captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     """Tests behavior with repeated setup calls."""
     config1 = TelemetryConfig(
@@ -399,7 +399,7 @@ def test_repeated_setup_calls_integration( # Renamed to avoid conflict
     logger.info("Message after second setup")
     logger.debug("Debug message (should be filtered in INFO level)")
 
-    output = captured_stderr_for_pyvider.getvalue()
+    output = captured_stderr_for_foundation.getvalue()
 
     assert "service1" in output
     assert "service2" in output
@@ -408,7 +408,7 @@ def test_repeated_setup_calls_integration( # Renamed to avoid conflict
 
 def test_emoji_matrix_comprehensive_coverage(
     setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
-    captured_stderr_for_pyvider: io.StringIO,
+    captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     """
     Tests comprehensive emoji matrix coverage.
@@ -446,7 +446,7 @@ def test_emoji_matrix_comprehensive_coverage(
         )
 
     # Verify output contains expected emoji prefixes
-    output = captured_stderr_for_pyvider.getvalue()
+    output = captured_stderr_for_foundation.getvalue()
 
     # Check for specific emoji combinations
     assert "[🔑][➡️][✅]" in output  # auth-login-success
@@ -459,7 +459,7 @@ def test_emoji_matrix_comprehensive_coverage(
 
 def test_module_level_filtering_comprehensive(
     setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
-    captured_stderr_for_pyvider: io.StringIO,
+    captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     """
     Tests comprehensive module-level filtering with hierarchical overrides.
@@ -512,7 +512,7 @@ def test_module_level_filtering_comprehensive(
         else:
             log_method(message)
 
-    output = captured_stderr_for_pyvider.getvalue()
+    output = captured_stderr_for_foundation.getvalue()
     filtered_lines = [
         line for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]") and line.strip()

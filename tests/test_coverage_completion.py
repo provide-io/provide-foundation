@@ -83,18 +83,18 @@ def test_custom_processors_emoji_cache_functions() -> None:
 
 def test_emoji_matrix_display(
     setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
-    captured_stderr_for_pyvider: io.StringIO,
+    captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     # Test that it does nothing by default
     show_emoji_matrix()
-    assert captured_stderr_for_pyvider.getvalue() == ""
+    assert captured_stderr_for_foundation.getvalue() == ""
 
     # Test that it prints when env var is set
     with patch.dict(os.environ, {"FOUNDATION_SHOW_EMOJI_MATRIX": "true"}):
         # Use a simple config for the test
         setup_foundation_telemetry_for_test(TelemetryConfig())
         show_emoji_matrix()
-        output = captured_stderr_for_pyvider.getvalue()
+        output = captured_stderr_for_foundation.getvalue()
         # FIX: Assert the correct output string for legacy mode
         assert "Foundation Telemetry: Legacy DAS Emoji Contract" in output
         assert "Primary Emojis" in output

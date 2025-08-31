@@ -82,7 +82,7 @@ def test_config_unknown_formatter(capsys: pytest.CaptureFixture) -> None:
 
 def test_config_dangling_emoji_set_reference(
     setup_foundation_telemetry_for_test: Callable,
-    captured_stderr_for_pyvider: io.StringIO,
+    captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     """Covers a semantic field referencing a non-existent emoji set."""
     from provide.foundation.types import SemanticFieldDefinition
@@ -104,7 +104,7 @@ def test_config_dangling_emoji_set_reference(
     setup_foundation_telemetry_for_test(config)
 
     logger.info("Testing dangling reference", dangling_key="some_value")
-    output = captured_stderr_for_pyvider.getvalue()
+    output = captured_stderr_for_foundation.getvalue()
     # Should fall back to the default question mark emoji
     assert "[❓] Testing dangling reference" in output
 
@@ -184,7 +184,7 @@ def test_custom_processors_full_emoji_cache(
 
 def test_emoji_matrix_display_with_semantic_layers(
     setup_foundation_telemetry_for_test: Callable,
-    captured_stderr_for_pyvider: io.StringIO,
+    captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     """Covers displaying the matrix when semantic layers are active."""
     with patch.dict(os.environ, {"FOUNDATION_SHOW_EMOJI_MATRIX": "true"}):
@@ -193,7 +193,7 @@ def test_emoji_matrix_display_with_semantic_layers(
         )
         setup_foundation_telemetry_for_test(config)
         show_emoji_matrix()
-        output = captured_stderr_for_pyvider.getvalue()
+        output = captured_stderr_for_foundation.getvalue()
         assert "Active Semantic Layer Emoji Contract" in output
         assert "Log Key: 'http.method'" in output
 

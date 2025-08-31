@@ -68,7 +68,7 @@ def manage_telemetry_reset_for_each_test() -> Generator[None]:
 
 
 @pytest.fixture
-def captured_stderr_for_pyvider() -> Generator[TextIO]: # Corrected: TextIO, and it's io.StringIO which is a TextIO
+def captured_stderr_for_foundation() -> Generator[TextIO]: # Corrected: TextIO, and it's io.StringIO which is a TextIO
     """
     Fixture to capture stderr output from Foundation's logging system.
 
@@ -84,16 +84,16 @@ def captured_stderr_for_pyvider() -> Generator[TextIO]: # Corrected: TextIO, and
 
 @pytest.fixture
 def setup_foundation_telemetry_for_test(
-    captured_stderr_for_pyvider: TextIO # Corrected: TextIO
+    captured_stderr_for_foundation: TextIO # Corrected: TextIO
 ) -> Callable[[TelemetryConfig | None], None]:
     """
     Fixture providing a function to set up Foundation Telemetry for a test.
 
-    The setup function uses the `captured_stderr_for_pyvider` fixture to ensure
+    The setup function uses the `captured_stderr_for_foundation` fixture to ensure
     log output during setup (and subsequent logging) is captured.
 
     Args:
-        captured_stderr_for_pyvider: Fixture to capture stderr.
+        captured_stderr_for_foundation: Fixture to capture stderr.
 
     Returns:
         A callable that takes an optional `TelemetryConfig` and calls `setup_telemetry`.
