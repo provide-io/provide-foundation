@@ -172,7 +172,7 @@ def test_custom_processors_full_emoji_cache(
         TelemetryConfig(logging=LoggingConfig(logger_name_emoji_prefix_enabled=True))
     )
     with patch(
-        "provide.foundation.logger.custom_processors._EMOJI_CACHE_SIZE_LIMIT", 0
+        "provide.foundation.telemetry.logger.custom_processors._EMOJI_CACHE_SIZE_LIMIT", 0
     ):
         # With cache size 0, this call will exercise the "cache is full" path
         logger.get_logger("some.new.logger").info("test")

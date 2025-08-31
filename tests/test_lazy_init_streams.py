@@ -195,7 +195,7 @@ class TestLazyInitializationErrorRecovery:
         reset_foundation_setup_for_testing()
 
         # Mock import failure for config module
-        with patch("provide.foundation.logger.base.sys.modules") as mock_modules:
+        with patch("provide.foundation.telemetry.logger.base.sys.modules") as mock_modules:
             # Simulate import error for config module
             original_config = mock_modules.get("provide.foundation.config")
             mock_modules["provide.foundation.config"] = None
@@ -230,7 +230,7 @@ class TestLazyInitializationErrorRecovery:
             return  # Explicit return None
 
         with patch(
-            "provide.foundation.logger.base.FoundationLogger._perform_lazy_setup",
+            "provide.foundation.telemetry.logger.base.FoundationLogger._perform_lazy_setup",
             failing_setup,
         ):
             # Multiple logging calls should not cause infinite retry loops
@@ -279,7 +279,7 @@ class TestLazyInitializationErrorRecovery:
                 pass  # Ignore individual thread failures for this test
 
         with patch(
-            "provide.foundation.logger.base.FoundationLogger._perform_lazy_setup",
+            "provide.foundation.telemetry.logger.base.FoundationLogger._perform_lazy_setup",
             error_prone_setup,
         ):
             # Start multiple threads
@@ -318,7 +318,7 @@ class TestLazyInitializationEdgeEnvironments:
                 "provide.foundation.core._get_safe_stderr", return_value=fallback_stream
             ),
             patch(
-                "provide.foundation.logger.base._get_safe_stderr",
+                "provide.foundation.telemetry.logger.base._get_safe_stderr",
                 return_value=fallback_stream,
             ),
         ):
