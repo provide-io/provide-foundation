@@ -24,8 +24,8 @@ def test_basic_lazy_init() -> None:
 
     # Clear environment
     env_vars_to_clear = [
-        "PYVIDER_SERVICE_NAME", "PYVIDER_LOG_CONSOLE_FORMATTER",
-        "PYVIDER_LOG_LOGGER_NAME_EMOJI_ENABLED", "PYVIDER_LOG_DAS_EMOJI_ENABLED"
+        "FOUNDATION_SERVICE_NAME", "FOUNDATION_LOG_CONSOLE_FORMATTER",
+        "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED", "FOUNDATION_LOG_DAS_EMOJI_ENABLED"
     ]
     for var in env_vars_to_clear:
         os.environ.pop(var, None)
@@ -43,8 +43,8 @@ def test_service_name_injection() -> None:
     reset_foundation_setup_for_testing()
 
     # Set environment like the failing test
-    os.environ["PYVIDER_SERVICE_NAME"] = "test-service"
-    os.environ["PYVIDER_LOG_CONSOLE_FORMATTER"] = "json"
+    os.environ["FOUNDATION_SERVICE_NAME"] = "test-service"
+    os.environ["FOUNDATION_LOG_CONSOLE_FORMATTER"] = "json"
 
     from provide.foundation import logger
     logger.info("Message with service name")

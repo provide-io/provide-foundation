@@ -69,11 +69,11 @@ class TestRealWorldScenarios:
 
         # Simulate microservice environment
         with patch.dict(os.environ, {
-            "PYVIDER_SERVICE_NAME": "user-service",
-            "PYVIDER_LOG_LEVEL": "INFO",
-            "PYVIDER_LOG_CONSOLE_FORMATTER": "json",
-            "PYVIDER_LOG_MODULE_LEVELS": "app.auth:DEBUG,app.external:WARNING",
-            "PYVIDER_LOG_DAS_EMOJI_ENABLED": "true",
+            "FOUNDATION_SERVICE_NAME": "user-service",
+            "FOUNDATION_LOG_LEVEL": "INFO",
+            "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
+            "FOUNDATION_LOG_MODULE_LEVELS": "app.auth:DEBUG,app.external:WARNING",
+            "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "true",
         }):
             # Service startup logging
             global_logger.info("User service starting up")
@@ -393,9 +393,9 @@ class TestMigrationFromExplicitSetup:
 
         # Set environment for lazy init
         with patch.dict(os.environ, {
-            "PYVIDER_SERVICE_NAME": "env-service",
-            "PYVIDER_LOG_CONSOLE_FORMATTER": "key_value",
-            "PYVIDER_LOG_LEVEL": "WARNING",
+            "FOUNDATION_SERVICE_NAME": "env-service",
+            "FOUNDATION_LOG_CONSOLE_FORMATTER": "key_value",
+            "FOUNDATION_LOG_LEVEL": "WARNING",
         }):
             # Trigger lazy init first
             global_logger.warning("Lazy init message")
@@ -556,14 +556,14 @@ class TestDocumentedBehaviorCompliance:
         reset_foundation_setup_for_testing()
 
         documented_env_vars = {
-            "PYVIDER_LOG_LEVEL": "DEBUG",
-            "PYVIDER_LOG_CONSOLE_FORMATTER": "json",
-            "PYVIDER_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
-            "PYVIDER_LOG_DAS_EMOJI_ENABLED": "true",
-            "PYVIDER_LOG_OMIT_TIMESTAMP": "true",
-            "PYVIDER_LOG_MODULE_LEVELS": "test.module:ERROR",
-            "PYVIDER_SERVICE_NAME": "documented-service",
-            "PYVIDER_TELEMETRY_DISABLED": "false",
+            "FOUNDATION_LOG_LEVEL": "DEBUG",
+            "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
+            "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
+            "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "true",
+            "FOUNDATION_LOG_OMIT_TIMESTAMP": "true",
+            "FOUNDATION_LOG_MODULE_LEVELS": "test.module:ERROR",
+            "FOUNDATION_SERVICE_NAME": "documented-service",
+            "FOUNDATION_TELEMETRY_DISABLED": "false",
         }
 
         with patch.dict(os.environ, documented_env_vars):
@@ -768,10 +768,10 @@ class TestLazyInitializationDocumentation:
 
         # Example from docs: environment-based configuration
         with patch.dict(os.environ, {
-            "PYVIDER_SERVICE_NAME": "my-service",
-            "PYVIDER_LOG_LEVEL": "INFO",
-            "PYVIDER_LOG_CONSOLE_FORMATTER": "json",
-            "PYVIDER_LOG_MODULE_LEVELS": "auth:DEBUG,db:ERROR",
+            "FOUNDATION_SERVICE_NAME": "my-service",
+            "FOUNDATION_LOG_LEVEL": "INFO",
+            "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
+            "FOUNDATION_LOG_MODULE_LEVELS": "auth:DEBUG,db:ERROR",
         }):
             from provide.foundation import logger
 

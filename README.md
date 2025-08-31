@@ -167,12 +167,12 @@ setup_telemetry(config)
 ### Environment Variable Configuration
 
 ```bash
-export PYVIDER_SERVICE_NAME="my-service"
-export PYVIDER_LOG_LEVEL="INFO"
-export PYVIDER_LOG_CONSOLE_FORMATTER="json"
-export PYVIDER_LOG_MODULE_LEVELS="auth:DEBUG,db:ERROR"
+export FOUNDATION_SERVICE_NAME="my-service"
+export FOUNDATION_LOG_LEVEL="INFO"
+export FOUNDATION_LOG_CONSOLE_FORMATTER="json"
+export FOUNDATION_LOG_MODULE_LEVELS="auth:DEBUG,db:ERROR"
 # New: Enable semantic layers via environment
-export PYVIDER_LOG_ENABLED_SEMANTIC_LAYERS="llm,http"
+export FOUNDATION_LOG_ENABLED_SEMANTIC_LAYERS="llm,http"
 ```
 
 ```python
@@ -243,7 +243,7 @@ To see the complete emoji mappings for your **current configuration** (including
 
 ```bash
 # This will print the full emoji matrix for your active configuration
-export PYVIDER_SHOW_EMOJI_MATRIX=true
+export FOUNDATION_SHOW_EMOJI_MATRIX=true
 python -c "from provide.foundation.logger.emoji_matrix import show_emoji_matrix; show_emoji_matrix()"
 ```
 

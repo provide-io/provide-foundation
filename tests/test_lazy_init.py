@@ -63,8 +63,8 @@ class TestLazyInitializationBasics:
         # Clear any environment variables that might affect output
         with patch.dict(os.environ, {}, clear=True):
             os.environ.update({
-                "PYVIDER_LOG_LEVEL": "INFO",
-                "PYVIDER_LOG_CONSOLE_FORMATTER": "key_value",
+                "FOUNDATION_LOG_LEVEL": "INFO",
+                "FOUNDATION_LOG_CONSOLE_FORMATTER": "key_value",
             })
 
             global_logger.warning("Warning message to stderr")
@@ -78,10 +78,10 @@ class TestLazyInitializationBasics:
         reset_foundation_setup_for_testing()
 
         with patch.dict(os.environ, {
-            "PYVIDER_LOG_LEVEL": "DEBUG",
-            "PYVIDER_LOG_CONSOLE_FORMATTER": "json",
-            "PYVIDER_SERVICE_NAME": "lazy-test-service",
-            "PYVIDER_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
+            "FOUNDATION_LOG_LEVEL": "DEBUG",
+            "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
+            "FOUNDATION_SERVICE_NAME": "lazy-test-service",
+            "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
         }):
             global_logger.debug("Debug message with env config")
 
@@ -182,8 +182,8 @@ class TestLazyInitializationBasics:
         reset_foundation_setup_for_testing()
 
         with patch.dict(os.environ, {
-            "PYVIDER_LOG_LEVEL": "WARNING",
-            "PYVIDER_LOG_MODULE_LEVELS": "test.debug:DEBUG,test.error:ERROR",
+            "FOUNDATION_LOG_LEVEL": "WARNING",
+            "FOUNDATION_LOG_MODULE_LEVELS": "test.debug:DEBUG,test.error:ERROR",
         }):
             # These should be filtered (below WARNING)
             global_logger.get_logger("test.default").info("Default info - filtered")
@@ -218,7 +218,7 @@ class TestLazyInitializationEdgeCases:
         """Test lazy initialization when telemetry is globally disabled."""
         reset_foundation_setup_for_testing()
 
-        with patch.dict(os.environ, {"PYVIDER_TELEMETRY_DISABLED": "true"}):
+        with patch.dict(os.environ, {"FOUNDATION_TELEMETRY_DISABLED": "true"}):
             global_logger.info("Message when disabled")
             global_logger.error("Error when disabled")
 
@@ -355,8 +355,8 @@ class TestLazyInitializationCompatibility:
         reset_foundation_setup_for_testing()
 
         with patch.dict(os.environ, {
-            "PYVIDER_LOG_LEVEL": "INFO",
-            "PYVIDER_LOG_MODULE_LEVELS": "trace.test:TRACE",
+            "FOUNDATION_LOG_LEVEL": "INFO",
+            "FOUNDATION_LOG_MODULE_LEVELS": "trace.test:TRACE",
         }):
             # Regular trace should be filtered
             global_logger.trace("Filtered trace message")
@@ -387,8 +387,8 @@ class TestLazyInitializationCompatibility:
         reset_foundation_setup_for_testing()
 
         with patch.dict(os.environ, {
-            "PYVIDER_LOG_CONSOLE_FORMATTER": "key_value",
-            "PYVIDER_LOG_DAS_EMOJI_ENABLED": "true",
+            "FOUNDATION_LOG_CONSOLE_FORMATTER": "key_value",
+            "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "true",
         }):
             global_logger.info(
                 "DAS test message",
@@ -430,10 +430,10 @@ class TestLazyInitializationCompatibility:
 
         # FIXED: Explicitly disable emojis for JSON format to match test expectation
         with patch.dict(os.environ, {
-            "PYVIDER_SERVICE_NAME": "lazy-service-test",
-            "PYVIDER_LOG_CONSOLE_FORMATTER": "json",
-            "PYVIDER_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
-            "PYVIDER_LOG_DAS_EMOJI_ENABLED": "false",
+            "FOUNDATION_SERVICE_NAME": "lazy-service-test",
+            "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
+            "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
+            "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "false",
         }):
             global_logger.info("Message with service name")
 

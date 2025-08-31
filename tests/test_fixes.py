@@ -51,10 +51,10 @@ def test_service_name_no_emoji() -> None:
     reset_foundation_setup_for_testing()
 
     # Set environment to disable emojis for JSON format
-    os.environ["PYVIDER_SERVICE_NAME"] = "test-service"
-    os.environ["PYVIDER_LOG_CONSOLE_FORMATTER"] = "json"
-    os.environ["PYVIDER_LOG_LOGGER_NAME_EMOJI_ENABLED"] = "false"
-    os.environ["PYVIDER_LOG_DAS_EMOJI_ENABLED"] = "false"
+    os.environ["FOUNDATION_SERVICE_NAME"] = "test-service"
+    os.environ["FOUNDATION_LOG_CONSOLE_FORMATTER"] = "json"
+    os.environ["FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED"] = "false"
+    os.environ["FOUNDATION_LOG_DAS_EMOJI_ENABLED"] = "false"
 
     # Capture output
     import io
@@ -88,8 +88,8 @@ def test_service_name_no_emoji() -> None:
     finally:
         _set_log_stream_for_testing(None)
         # Clean up environment
-        for key in ["PYVIDER_SERVICE_NAME", "PYVIDER_LOG_CONSOLE_FORMATTER",
-                   "PYVIDER_LOG_LOGGER_NAME_EMOJI_ENABLED", "PYVIDER_LOG_DAS_EMOJI_ENABLED"]:
+        for key in ["FOUNDATION_SERVICE_NAME", "FOUNDATION_LOG_CONSOLE_FORMATTER",
+                   "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED", "FOUNDATION_LOG_DAS_EMOJI_ENABLED"]:
             os.environ.pop(key, None)
 
 
@@ -104,8 +104,8 @@ def test_das_emoji_register_action() -> None:
     reset_foundation_setup_for_testing()
 
     # Enable DAS emojis
-    os.environ["PYVIDER_LOG_DAS_EMOJI_ENABLED"] = "true"
-    os.environ["PYVIDER_LOG_CONSOLE_FORMATTER"] = "key_value"
+    os.environ["FOUNDATION_LOG_DAS_EMOJI_ENABLED"] = "true"
+    os.environ["FOUNDATION_LOG_CONSOLE_FORMATTER"] = "key_value"
 
     import io
     captured_output = io.StringIO()
@@ -136,7 +136,7 @@ def test_das_emoji_register_action() -> None:
             raise AssertionError("DAS emoji for register action is incorrect.")
     finally:
         _set_log_stream_for_testing(None)
-        for key in ["PYVIDER_LOG_DAS_EMOJI_ENABLED", "PYVIDER_LOG_CONSOLE_FORMATTER"]:
+        for key in ["FOUNDATION_LOG_DAS_EMOJI_ENABLED", "FOUNDATION_LOG_CONSOLE_FORMATTER"]:
             os.environ.pop(key, None)
 
 

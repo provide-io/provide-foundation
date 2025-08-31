@@ -13,7 +13,7 @@ from provide.foundation import (
     TelemetryConfig,
     logger as global_logger,
 )
-from provide.foundation.utils import _PYVIDER_CONTEXT_TRACE_ID, timed_block
+from provide.foundation.utils import _FOUNDATION_CONTEXT_TRACE_ID, timed_block
 
 
 def parse_kv_log_line(line: str) -> dict:
@@ -114,24 +114,24 @@ class TestTimedBlock:
         assert "[error " in captured_stderr_for_pyvider.getvalue().lower()
 
     def test_trace_id_from_contextvar(self, captured_stderr_for_pyvider: io.StringIO) -> None:
-        token = _PYVIDER_CONTEXT_TRACE_ID.set("test-trace-12345")
+        token = _FOUNDATION_CONTEXT_TRACE_ID.set("test-trace-12345")
         try:
             with timed_block(global_logger, "op_with_trace_id"):
                 pass
         finally:
-            _PYVIDER_CONTEXT_TRACE_ID.reset(token)
+            _FOUNDATION_CONTEXT_TRACE_ID.reset(token)
         captured = captured_stderr_for_pyvider.getvalue()
         log_lines = [line for line in captured.strip().splitlines() if "op_with_trace_id" in line]
         assert len(log_lines) == 1
         assert parse_kv_log_line(log_lines[0]).get("trace_id") == "test-trace-12345"
 
     def test_trace_id_from_initial_kvs_overrides_contextvar(self, captured_stderr_for_pyvider: io.StringIO) -> None:
-        token = _PYVIDER_CONTEXT_TRACE_ID.set("context-id")
+        token = _FOUNDATION_CONTEXT_TRACE_ID.set("context-id")
         try:
             with timed_block(global_logger, "op_override_trace_id", trace_id="kvs-id"):
                 pass
         finally:
-            _PYVIDER_CONTEXT_TRACE_ID.reset(token)
+            _FOUNDATION_CONTEXT_TRACE_ID.reset(token)
         captured = captured_stderr_for_pyvider.getvalue()
         log_lines = [line for line in captured.strip().splitlines() if "op_override_trace_id" in line]
         assert len(log_lines) == 1

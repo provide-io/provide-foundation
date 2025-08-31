@@ -28,13 +28,13 @@ def test_invalid_environment_variables_handling(monkeypatch, capsys) -> None: # 
     """Tests handling of invalid environment variables."""
     # Define cases with expected warning snippet, or None if specific warning isn't critical/expected
     invalid_env_cases = [
-        ("PYVIDER_LOG_LEVEL", "INVALID_LEVEL", "Invalid PYVIDER_LOG_LEVEL 'INVALID_LEVEL'"),
-        ("PYVIDER_LOG_CONSOLE_FORMATTER", "invalid_formatter", "Invalid PYVIDER_LOG_CONSOLE_FORMATTER 'invalid_formatter'"),
-        ("PYVIDER_LOG_LOGGER_NAME_EMOJI_ENABLED", "maybe", None), # bool parsing defaults, no specific warning expected by from_env
-        ("PYVIDER_LOG_DAS_EMOJI_ENABLED", "sometimes", None),    # bool parsing defaults
-        ("PYVIDER_LOG_OMIT_TIMESTAMP", "perhaps", None),       # bool parsing defaults
-        ("PYVIDER_TELEMETRY_DISABLED", "kinda", None),         # bool parsing defaults
-        ("PYVIDER_LOG_MODULE_LEVELS", "invalid:format:here,also:bad", "Invalid log level 'FORMAT:HERE' for module 'invalid'"),
+        ("FOUNDATION_LOG_LEVEL", "INVALID_LEVEL", "Invalid FOUNDATION_LOG_LEVEL 'INVALID_LEVEL'"),
+        ("FOUNDATION_LOG_CONSOLE_FORMATTER", "invalid_formatter", "Invalid FOUNDATION_LOG_CONSOLE_FORMATTER 'invalid_formatter'"),
+        ("FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED", "maybe", None), # bool parsing defaults, no specific warning expected by from_env
+        ("FOUNDATION_LOG_DAS_EMOJI_ENABLED", "sometimes", None),    # bool parsing defaults
+        ("FOUNDATION_LOG_OMIT_TIMESTAMP", "perhaps", None),       # bool parsing defaults
+        ("FOUNDATION_TELEMETRY_DISABLED", "kinda", None),         # bool parsing defaults
+        ("FOUNDATION_LOG_MODULE_LEVELS", "invalid:format:here,also:bad", "Invalid log level 'FORMAT:HERE' for module 'invalid'"),
     ]
 
     for env_var, invalid_value, expected_warning_snippet in invalid_env_cases:
@@ -46,7 +46,7 @@ def test_invalid_environment_variables_handling(monkeypatch, capsys) -> None: # 
         # Remove other potentially interfering env vars if they are not the one being tested
         # This ensures that warnings from other default settings don't cloud the specific test.
         possible_interfering_vars = [
-            "PYVIDER_LOG_LEVEL", "PYVIDER_LOG_CONSOLE_FORMATTER", "PYVIDER_LOG_MODULE_LEVELS"
+            "FOUNDATION_LOG_LEVEL", "FOUNDATION_LOG_CONSOLE_FORMATTER", "FOUNDATION_LOG_MODULE_LEVELS"
         ]
         for var_to_clear in possible_interfering_vars:
             if var_to_clear != env_var:
@@ -59,9 +59,9 @@ def test_invalid_environment_variables_handling(monkeypatch, capsys) -> None: # 
         assert isinstance(config.logging, LoggingConfig)
 
         # Verify fallback to defaults for the specific var being tested
-        if env_var == "PYVIDER_LOG_LEVEL":
+        if env_var == "FOUNDATION_LOG_LEVEL":
             assert config.logging.default_level == "DEBUG"  # Default from DEFAULT_ENV_CONFIG or fallback in from_env
-        elif env_var == "PYVIDER_LOG_CONSOLE_FORMATTER":
+        elif env_var == "FOUNDATION_LOG_CONSOLE_FORMATTER":
             assert config.logging.console_formatter == "key_value"  # Default from DEFAULT_ENV_CONFIG or fallback in from_env
 
         # Check for specific warning message if one is expected
@@ -92,7 +92,7 @@ def test_module_levels_parsing_edge_cases() -> None:
     ]
 
     for levels_str, expected in edge_cases:
-        with patch.dict(os.environ, {"PYVIDER_LOG_MODULE_LEVELS": levels_str}):
+        with patch.dict(os.environ, {"FOUNDATION_LOG_MODULE_LEVELS": levels_str}):
             config = TelemetryConfig.from_env()
             assert config.logging.module_levels == expected, f"Failed for: '{levels_str}'"
 
@@ -340,7 +340,7 @@ def test_configuration_validation_edge_cases() -> None:
         ("1", False), ("0", False), ("yes", False), ("no", False), ("", False),
     ]
     for env_value, expected in bool_test_cases:
-        with patch.dict(os.environ, {"PYVIDER_LOG_OMIT_TIMESTAMP": env_value}):
+        with patch.dict(os.environ, {"FOUNDATION_LOG_OMIT_TIMESTAMP": env_value}):
             config = TelemetryConfig.from_env()
             assert config.logging.omit_timestamp == expected, f"Failed for '{env_value}'"
 

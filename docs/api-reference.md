@@ -85,15 +85,15 @@ def from_env(cls) -> "TelemetryConfig"
 **Description**: Creates configuration from environment variables.
 
 **Environment Variables**:
-- `OTEL_SERVICE_NAME` / `PYVIDER_SERVICE_NAME`: Service name
-- `PYVIDER_TELEMETRY_DISABLED`: Global disable flag
+- `OTEL_SERVICE_NAME` / `FOUNDATION_SERVICE_NAME`: Service name
+- `FOUNDATION_TELEMETRY_DISABLED`: Global disable flag
 
 **Example**:
 ```python
 import os
 from provide.foundation import TelemetryConfig
 
-os.environ["PYVIDER_SERVICE_NAME"] = "my-service"
+os.environ["FOUNDATION_SERVICE_NAME"] = "my-service"
 config = TelemetryConfig.from_env()
 print(config.service_name)  # "my-service"
 ```
@@ -129,15 +129,15 @@ class LoggingConfig:
 - **`user_defined_emoji_sets` (new)**: A list of `CustomDasEmojiSet` objects to add or override emoji mappings.
 
 **Environment Variables**:
-- `PYVIDER_LOG_LEVEL`: Default log level
-- `PYVIDER_LOG_CONSOLE_FORMATTER`: Output formatter
-- `PYVIDER_LOG_LOGGER_NAME_EMOJI_ENABLED`: Logger emoji toggle
-- `PYVIDER_LOG_DAS_EMOJI_ENABLED`: DAS emoji toggle
-- `PYVIDER_LOG_OMIT_TIMESTAMP`: Timestamp toggle
-- `PYVIDER_LOG_MODULE_LEVELS`: Module level overrides
-- **`PYVIDER_LOG_ENABLED_SEMANTIC_LAYERS` (new)**: Comma-separated list of layer names to enable (e.g., `"llm,http"`).
-- **`PYVIDER_LOG_CUSTOM_SEMANTIC_LAYERS` (new)**: A JSON string representing a list of `SemanticLayer` objects.
-- **`PYVIDER_LOG_USER_DEFINED_EMOJI_SETS` (new)**: A JSON string representing a list of `CustomDasEmojiSet` objects.
+- `FOUNDATION_LOG_LEVEL`: Default log level
+- `FOUNDATION_LOG_CONSOLE_FORMATTER`: Output formatter
+- `FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED`: Logger emoji toggle
+- `FOUNDATION_LOG_DAS_EMOJI_ENABLED`: DAS emoji toggle
+- `FOUNDATION_LOG_OMIT_TIMESTAMP`: Timestamp toggle
+- `FOUNDATION_LOG_MODULE_LEVELS`: Module level overrides
+- **`FOUNDATION_LOG_ENABLED_SEMANTIC_LAYERS` (new)**: Comma-separated list of layer names to enable (e.g., `"llm,http"`).
+- **`FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS` (new)**: A JSON string representing a list of `SemanticLayer` objects.
+- **`FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS` (new)**: A JSON string representing a list of `CustomDasEmojiSet` objects.
 
 **Example**:
 ```python
@@ -514,14 +514,14 @@ def show_emoji_matrix() -> None
 
 **Description**: Displays the complete emoji mapping contract for the **active configuration**. This is the best way to see which emojis are currently in use.
 
-**Environment Variable**: `PYVIDER_SHOW_EMOJI_MATRIX=true`
+**Environment Variable**: `FOUNDATION_SHOW_EMOJI_MATRIX=true`
 
 **Example**:
 ```python
 import os
 from provide.foundation.logger.emoji_matrix import show_emoji_matrix
 
-os.environ["PYVIDER_SHOW_EMOJI_MATRIX"] = "true"
+os.environ["FOUNDATION_SHOW_EMOJI_MATRIX"] = "true"
 show_emoji_matrix()  # Prints emoji reference
 ```
 

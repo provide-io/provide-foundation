@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 # Example context variable for trace_id (application would need to set this)
 # This is just a placeholder to show how it *could* be integrated.
 # Foundation Telemetry itself won't manage this contextvar's lifecycle.
-_PYVIDER_CONTEXT_TRACE_ID = contextvars.ContextVar("foundation_context_trace_id", default=None)
+_FOUNDATION_CONTEXT_TRACE_ID = contextvars.ContextVar("foundation_context_trace_id", default=None)
 
 
 @contextmanager
@@ -64,7 +64,7 @@ def timed_block(
     # This part is highly dependent on how an application manages trace_id.
     # For now, we'll assume if "trace_id" is a known semantic key, it might be in context.
     # A more robust solution would involve integration with a tracing library.
-    contextual_trace_id = _PYVIDER_CONTEXT_TRACE_ID.get()
+    contextual_trace_id = _FOUNDATION_CONTEXT_TRACE_ID.get()
     if contextual_trace_id and "trace_id" not in log_kvs: # Only add if not already provided
         log_kvs["trace_id"] = contextual_trace_id
 

@@ -23,7 +23,7 @@ def example_8_environment_configuration() -> None:
     """
     Example 8: Demonstrates configuration via environment variables.
 
-    Foundation Telemetry can be configured using `PYVIDER_*` environment variables,
+    Foundation Telemetry can be configured using `FOUNDATION_*` environment variables,
     allowing settings to be changed without code modification.
     """
     print("\n" + "=" * 60)
@@ -36,12 +36,12 @@ def example_8_environment_configuration() -> None:
     original_env = os.environ.copy()
     os.environ.update(
         {
-            "PYVIDER_SERVICE_NAME": "env-service-demo",
-            "PYVIDER_LOG_LEVEL": "DEBUG",
-            "PYVIDER_LOG_CONSOLE_FORMATTER": "json",
-            "PYVIDER_LOG_MODULE_LEVELS": "auth.service:TRACE,database:ERROR",
-            "PYVIDER_LOG_DAS_EMOJI_ENABLED": "true",
-            "PYVIDER_LOG_OMIT_TIMESTAMP": "false",  # Explicitly include timestamps for this demo
+            "FOUNDATION_SERVICE_NAME": "env-service-demo",
+            "FOUNDATION_LOG_LEVEL": "DEBUG",
+            "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
+            "FOUNDATION_LOG_MODULE_LEVELS": "auth.service:TRACE,database:ERROR",
+            "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "true",
+            "FOUNDATION_LOG_OMIT_TIMESTAMP": "false",  # Explicitly include timestamps for this demo
         }
     )
 
@@ -81,7 +81,7 @@ def example_8_environment_configuration() -> None:
         for key in original_env:
             os.environ[key] = original_env[key]
         for key in list(os.environ.keys()):  # Handle keys added during this test
-            if key not in original_env and key.startswith("PYVIDER_"):
+            if key not in original_env and key.startswith("FOUNDATION_"):
                 del os.environ[key]
 
 

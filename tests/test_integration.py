@@ -111,13 +111,13 @@ def test_environment_variable_integration() -> None:
     """
     # Define test environment variables
     env_vars = {
-        "PYVIDER_SERVICE_NAME": "env-test-service",
-        "PYVIDER_LOG_LEVEL": "WARNING",
-        "PYVIDER_LOG_CONSOLE_FORMATTER": "key_value",
-        "PYVIDER_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
-        "PYVIDER_LOG_DAS_EMOJI_ENABLED": "true",
-        "PYVIDER_LOG_OMIT_TIMESTAMP": "true",
-        "PYVIDER_LOG_MODULE_LEVELS": "app.security:ERROR,app.auth:DEBUG",
+        "FOUNDATION_SERVICE_NAME": "env-test-service",
+        "FOUNDATION_LOG_LEVEL": "WARNING",
+        "FOUNDATION_LOG_CONSOLE_FORMATTER": "key_value",
+        "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
+        "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "true",
+        "FOUNDATION_LOG_OMIT_TIMESTAMP": "true",
+        "FOUNDATION_LOG_MODULE_LEVELS": "app.security:ERROR,app.auth:DEBUG",
     }
 
     # Save original environment values for restoration

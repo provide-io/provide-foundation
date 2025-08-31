@@ -47,7 +47,7 @@ class TestStreamHandling:
 
         # Even if somehow stdout was set as the stream, should be corrected
         # FIXED: Don't patch the stream directly, instead test through config
-        with patch.dict(os.environ, {"PYVIDER_LOG_CONSOLE_FORMATTER": "key_value"}):
+        with patch.dict(os.environ, {"FOUNDATION_LOG_CONSOLE_FORMATTER": "key_value"}):
             global_logger.warning("Should not go to stdout")
 
         captured = capsys.readouterr()

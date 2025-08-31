@@ -89,19 +89,19 @@ def _check_traceback_presence(output: str, expected_traceback: str) -> bool:
 
 class TestConfigWarnings:
     @pytest.mark.parametrize("module_levels_env, expected_warning_parts", [
-        ("no_colon_module_level", ["Invalid item 'no_colon_module_level' in PYVIDER_LOG_MODULE_LEVELS. Skipping."]),
-        (":DEBUG", ["Invalid item ':DEBUG' in PYVIDER_LOG_MODULE_LEVELS. Skipping."]),
+        ("no_colon_module_level", ["Invalid item 'no_colon_module_level' in FOUNDATION_LOG_MODULE_LEVELS. Skipping."]),
+        (":DEBUG", ["Invalid item ':DEBUG' in FOUNDATION_LOG_MODULE_LEVELS. Skipping."]),
         ("valid_module:SUPER_LEVEL", ["Invalid log level 'SUPER_LEVEL' for module 'valid_module'. Skipping."]),
         ("mod1:INFO,mod2:BOGUS,mod3:DEBUG", ["Invalid log level 'BOGUS' for module 'mod2'. Skipping."]),
         ("mod1:INFO,,mod3:DEBUG", []),
-        ("mod1:INFO, :TRACE ,mod3:DEBUG", ["Invalid item ':TRACE' in PYVIDER_LOG_MODULE_LEVELS. Skipping."]),
+        ("mod1:INFO, :TRACE ,mod3:DEBUG", ["Invalid item ':TRACE' in FOUNDATION_LOG_MODULE_LEVELS. Skipping."]),
     ])
     def test_invalid_foundation_log_module_levels(self, monkeypatch: MonkeyPatch, capsys: CaptureFixture[str], module_levels_env: str, expected_warning_parts: list[str]) -> None:
         from provide.foundation.config import (
             _ensure_config_logger_handler,
             config_warnings_logger,
         )
-        monkeypatch.setenv("PYVIDER_LOG_MODULE_LEVELS", module_levels_env)
+        monkeypatch.setenv("FOUNDATION_LOG_MODULE_LEVELS", module_levels_env)
         _ensure_config_logger_handler(config_warnings_logger)
         TelemetryConfig.from_env()
         captured_err = capsys.readouterr().err
