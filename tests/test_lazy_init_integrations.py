@@ -21,14 +21,14 @@ from unittest.mock import patch
 import pytest
 from pytest import CaptureFixture  # Added for capsys
 
-from pyvider.telemetry import (
+from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
     logger as global_logger,
     setup_telemetry,
     shutdown_pyvider_telemetry,
 )
-from pyvider.telemetry.core import reset_pyvider_setup_for_testing
+from provide.foundation.core import reset_pyvider_setup_for_testing
 
 
 class TestRealWorldScenarios:
@@ -730,7 +730,7 @@ class TestLazyInitializationDocumentation:
         reset_pyvider_setup_for_testing()
 
         # Example from docs: immediate logging without setup
-        from pyvider.telemetry import logger
+        from provide.foundation import logger
 
         logger.info("Application started", version="1.0.0")
         logger.debug("Debug information", component="main")
@@ -748,7 +748,7 @@ class TestLazyInitializationDocumentation:
         reset_pyvider_setup_for_testing()
 
         # Example from docs: component-specific loggers
-        from pyvider.telemetry import logger
+        from provide.foundation import logger
 
         auth_logger = logger.get_logger("auth.service")
         db_logger = logger.get_logger("database.connection")
@@ -773,7 +773,7 @@ class TestLazyInitializationDocumentation:
             "PYVIDER_LOG_CONSOLE_FORMATTER": "json",
             "PYVIDER_LOG_MODULE_LEVELS": "auth:DEBUG,db:ERROR",
         }):
-            from pyvider.telemetry import logger
+            from provide.foundation import logger
 
             logger.info("Service started")
 
@@ -806,7 +806,7 @@ class TestLazyInitializationDocumentation:
         reset_pyvider_setup_for_testing()
 
         # Example from docs: gradual migration
-        from pyvider.telemetry import (
+        from provide.foundation import (
             LoggingConfig,
             TelemetryConfig,
             logger,

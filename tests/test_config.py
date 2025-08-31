@@ -2,7 +2,7 @@
 # tests/test_config.py
 #
 """
-Unit tests for processor assembly helper functions in pyvider.telemetry.config.
+Unit tests for processor assembly helper functions in provide.foundation.config.
 """
 import io
 import json
@@ -12,7 +12,7 @@ from pytest import CaptureFixture
 from structlog.dev import ConsoleRenderer
 from structlog.processors import JSONRenderer, TimeStamper
 
-from pyvider.telemetry.config import (
+from provide.foundation.config import (
     LoggingConfig,
     TelemetryConfig,
     _build_core_processors_list,
@@ -22,10 +22,10 @@ from pyvider.telemetry.config import (
     _ensure_config_logger_handler,
     config_warnings_logger,
 )
-from pyvider.telemetry.core import (
+from provide.foundation.core import (
     _resolve_active_semantic_config,
 )
-from pyvider.telemetry.semantic_layers import BUILTIN_SEMANTIC_LAYERS
+from provide.foundation.semantic_layers import BUILTIN_SEMANTIC_LAYERS
 
 
 def get_proc_name(proc: Any) -> str:

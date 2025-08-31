@@ -2,7 +2,7 @@
 # custom_processors.py
 #
 """
-Pyvider Telemetry Custom Structlog Processors.
+Foundation Telemetry Custom Structlog Processors.
 Includes processors for log level normalization, level-based filtering,
 and logger name emoji prefixes. The semantic field emoji prefix processor
 is now created as a closure in config.py.
@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, Any, Protocol, cast
 
 import structlog
 
-from pyvider.telemetry.types import TRACE_LEVEL_NAME, TRACE_LEVEL_NUM, LogLevelStr
+from provide.foundation.types import TRACE_LEVEL_NAME, TRACE_LEVEL_NUM, LogLevelStr
 
 if TYPE_CHECKING:
     pass
@@ -70,9 +70,9 @@ def filter_by_level_custom(default_level_str: LogLevelStr, module_levels: dict[s
     return _LevelFilter(default_level_str, module_levels, level_to_numeric_map)
 
 _LOGGER_NAME_EMOJI_PREFIXES: dict[str, str] = {
-    'pyvider.telemetry.core.test': '⚙️', 'pyvider.telemetry.core_setup': '🛠️',
-    'pyvider.telemetry.emoji_matrix_display': '💡', 'pyvider.telemetry': '⚙️',
-    'pyvider.telemetry.logger': '📝', 'pyvider.telemetry.config': '🔩',
+    'provide.foundation.core.test': '⚙️', 'provide.foundation.core_setup': '🛠️',
+    'provide.foundation.emoji_matrix_display': '💡', 'provide.foundation': '⚙️',
+    'provide.foundation.logger': '📝', 'provide.foundation.config': '🔩',
     'pyvider.dynamic_call_trace': '👣', 'pyvider.dynamic_call': '🗣️',
     'pyvider.default': '📦', 'formatter.test': '🎨', 'service.alpha': '🇦',
     'service.beta': '🇧', 'service.beta.child': '👶', 'service.gamma.trace_enabled': '🇬',

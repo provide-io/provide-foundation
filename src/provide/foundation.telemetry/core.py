@@ -2,7 +2,7 @@
 # core.py
 #
 """
-Pyvider Telemetry Core Initialization and Configuration.
+Foundation Telemetry Core Initialization and Configuration.
 Handles setup, global state, processor chain assembly (including semantic layer resolution),
 and shutdown for the telemetry system.
 """
@@ -17,18 +17,18 @@ from typing import Any, TextIO, cast
 import structlog
 from structlog.types import BindableLogger
 
-from pyvider.telemetry.config import (
+from provide.foundation.config import (
     LoggingConfig,
     TelemetryConfig,
     _build_core_processors_list,
     _build_formatter_processors_list,
 )
-from pyvider.telemetry.logger import base as logger_base_module
-from pyvider.telemetry.semantic_layers import (
+from provide.foundation.logger import base as logger_base_module
+from provide.foundation.semantic_layers import (
     BUILTIN_SEMANTIC_LAYERS,
     LEGACY_DAS_EMOJI_SETS,
 )
-from pyvider.telemetry.types import (
+from provide.foundation.types import (
     CustomDasEmojiSet,
     SemanticFieldDefinition,
     SemanticLayer,
@@ -36,7 +36,7 @@ from pyvider.telemetry.types import (
 
 _PYVIDER_SETUP_LOCK = threading.Lock() # A non-reentrant lock is fine with the refactored logic.
 _PYVIDER_LOG_STREAM: TextIO = sys.stderr
-_CORE_SETUP_LOGGER_NAME = "pyvider.telemetry.core_setup"
+_CORE_SETUP_LOGGER_NAME = "provide.foundation.core_setup"
 _EXPLICIT_SETUP_DONE = False
 
 def _get_safe_stderr() -> TextIO:
@@ -62,7 +62,7 @@ def _create_core_setup_logger(globally_disabled: bool = False) -> stdlib_logging
             pass
     handler: stdlib_logging.Handler = stdlib_logging.NullHandler() if globally_disabled else stdlib_logging.StreamHandler(sys.stderr)
     if not globally_disabled:
-        handler.setFormatter(stdlib_logging.Formatter("[Pyvider Setup] %(levelname)s (%(name)s): %(message)s"))
+        handler.setFormatter(stdlib_logging.Formatter("[Foundation Setup] %(levelname)s (%(name)s): %(message)s"))
     logger.addHandler(handler)
     logger.setLevel(getattr(stdlib_logging, os.getenv("PYVIDER_CORE_SETUP_LOG_LEVEL", "INFO").upper(), stdlib_logging.INFO))
     logger.propagate = False
@@ -121,12 +121,12 @@ def _configure_structlog_output(config: TelemetryConfig, resolved_semantic_confi
     _apply_structlog_configuration(processors)
 
 def _handle_globally_disabled_setup() -> None:
-    _core_setup_logger.info("⚙️➡️🚫 Pyvider telemetry globally disabled.")
+    _core_setup_logger.info("⚙️➡️🚫 Foundation Telemetry globally disabled.")
     structlog.configure(processors=[], logger_factory=structlog.ReturnLoggerFactory(), cache_logger_on_first_use=True)
 
 def reset_pyvider_setup_for_testing() -> None:
     """
-    Resets `structlog` defaults and Pyvider Telemetry's internal logger state.
+    Resets `structlog` defaults and Foundation Telemetry's internal logger state.
     This is a test utility and should not be called by production code.
     """
     global _PYVIDER_LOG_STREAM, _core_setup_logger, _EXPLICIT_SETUP_DONE
@@ -182,7 +182,7 @@ def _internal_setup(config: TelemetryConfig | None = None, is_explicit_call: boo
 
 def setup_telemetry(config: TelemetryConfig | None = None) -> None:
     """
-    Initializes or reconfigures the Pyvider Telemetry system.
+    Initializes or reconfigures the Foundation Telemetry system.
     """
     global _EXPLICIT_SETUP_DONE
     with _PYVIDER_SETUP_LOCK:
@@ -191,4 +191,4 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
         _EXPLICIT_SETUP_DONE = True
 
 async def shutdown_pyvider_telemetry(timeout_millis: int = 5000) -> None:
-    _core_setup_logger.info("🔌➡️🏁 Pyvider telemetry shutdown called.")
+    _core_setup_logger.info("🔌➡️🏁 Foundation Telemetry shutdown called.")

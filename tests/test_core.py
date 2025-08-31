@@ -2,7 +2,7 @@
 # tests/test_core.py
 #
 """
-Unit tests for src.pyvider.telemetry.core.py
+Unit tests for src.provide.foundation.core.py
 """
 import io
 import logging as stdlib_logging
@@ -13,11 +13,11 @@ import pytest
 from pytest import CaptureFixture
 import structlog
 
-from pyvider.telemetry.config import (
+from provide.foundation.config import (
     LoggingConfig,
     TelemetryConfig,
 )
-from pyvider.telemetry.core import (
+from provide.foundation.core import (
     _CORE_SETUP_LOGGER_NAME,
     _create_core_setup_logger,
     _get_safe_stderr,
@@ -26,7 +26,7 @@ from pyvider.telemetry.core import (
     setup_telemetry,
     shutdown_pyvider_telemetry,
 )
-from pyvider.telemetry.logger import base as logger_base_module
+from provide.foundation.logger import base as logger_base_module
 
 
 class TestGetSafeStderr:
@@ -97,7 +97,7 @@ class TestShutdownCoverage:
         core_logger_for_shutdown_test.setLevel(stdlib_logging.INFO)
         await shutdown_pyvider_telemetry()
         captured = capsys.readouterr()
-        assert "Pyvider telemetry shutdown called" in captured.err
+        assert "Foundation Telemetry shutdown called" in captured.err
 
 # FIX: Rewrote TestHandleGloballyDisabledSetup to be simpler and correct.
 class TestHandleGloballyDisabledSetup:
@@ -116,4 +116,4 @@ class TestHandleGloballyDisabledSetup:
 
         # Check that the setup message was logged
         captured = capsys.readouterr()
-        assert "Pyvider telemetry globally disabled." in captured.err
+        assert "Foundation Telemetry globally disabled." in captured.err

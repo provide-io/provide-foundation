@@ -7,22 +7,22 @@ import io
 
 import pytest
 
-from pyvider.telemetry import (
+from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
     logger as global_logger,
 )
-from pyvider.telemetry.core import (
+from provide.foundation.core import (
     _resolve_active_semantic_config,
     reset_pyvider_setup_for_testing,
 )
-from pyvider.telemetry.semantic_layers import (
+from provide.foundation.semantic_layers import (
     BUILTIN_SEMANTIC_LAYERS,
     HTTP_LAYER,
     LEGACY_DAS_EMOJI_SETS,
     LLM_LAYER,
 )
-from pyvider.telemetry.types import (
+from provide.foundation.types import (
     CustomDasEmojiSet,
     SemanticFieldDefinition,
     SemanticLayer,
@@ -64,7 +64,7 @@ class TestResolveActiveSemanticConfig:
 
 class TestSetupWithLayers:
     def _filter_app_logs(self, output: str) -> str:
-        return "\n".join([line for line in output.splitlines() if not line.startswith("[Pyvider Setup]")])
+        return "\n".join([line for line in output.splitlines() if not line.startswith("[Foundation Setup]")])
 
     def test_setup_with_enabled_llm_layer(
         self,

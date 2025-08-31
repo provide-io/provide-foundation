@@ -20,7 +20,7 @@ def test_service_name_injection_fix() -> None:
     print("=== Testing Service Name Injection Fix ===")
 
     # Reset state
-    from pyvider.telemetry.core import reset_pyvider_setup_for_testing
+    from provide.foundation.core import reset_pyvider_setup_for_testing
     reset_pyvider_setup_for_testing()
 
     # Set environment like the failing test
@@ -34,13 +34,13 @@ def test_service_name_injection_fix() -> None:
     # Capture output
     import io
 
-    from pyvider.telemetry.core import _set_log_stream_for_testing
+    from provide.foundation.core import _set_log_stream_for_testing
     captured_output = io.StringIO()
     _set_log_stream_for_testing(captured_output)
 
     try:
         # Test logging
-        from pyvider.telemetry import logger
+        from provide.foundation import logger
         logger.info("Message with service name")
 
         # Get output
@@ -81,7 +81,7 @@ def test_key_value_still_has_emojis() -> None:
     print("\n=== Testing Key-Value Format Still Has Emojis ===")
 
     # Reset state
-    from pyvider.telemetry.core import reset_pyvider_setup_for_testing
+    from provide.foundation.core import reset_pyvider_setup_for_testing
     reset_pyvider_setup_for_testing()
 
     # Set environment for key-value format
@@ -95,12 +95,12 @@ def test_key_value_still_has_emojis() -> None:
     # Capture output
     import io
 
-    from pyvider.telemetry.core import _set_log_stream_for_testing
+    from provide.foundation.core import _set_log_stream_for_testing
     captured_output = io.StringIO()
     _set_log_stream_for_testing(captured_output)
 
     try:
-        from pyvider.telemetry import logger
+        from provide.foundation import logger
         logger.info("Test message for key-value format")
 
         output = captured_output.getvalue()

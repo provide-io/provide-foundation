@@ -1,6 +1,6 @@
 # tests/test_utils.py
 """
-Tests for utility functions in pyvider.telemetry.utils.
+Tests for utility functions in provide.foundation.utils.
 """
 from collections.abc import Callable
 import io
@@ -8,12 +8,12 @@ import re
 
 import pytest
 
-from pyvider.telemetry import (
+from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
     logger as global_logger,
 )
-from pyvider.telemetry.utils import _PYVIDER_CONTEXT_TRACE_ID, timed_block
+from provide.foundation.utils import _PYVIDER_CONTEXT_TRACE_ID, timed_block
 
 
 def parse_kv_log_line(line: str) -> dict:

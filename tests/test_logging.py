@@ -2,7 +2,7 @@
 # test_logging.py
 #
 """
-Tests for the Pyvider Telemetry logging system.
+Tests for the Foundation Telemetry logging system.
 """
 import io
 import json
@@ -12,7 +12,7 @@ from typing import Any
 import pytest
 from pytest import CaptureFixture, MonkeyPatch
 
-from pyvider.telemetry import (
+from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
     logger as global_logger,
@@ -20,7 +20,7 @@ from pyvider.telemetry import (
 
 
 def _filter_application_logs(output: str) -> list[str]:
-    return [line for line in output.strip().splitlines() if not line.startswith("[Pyvider Setup]") and line.strip()]
+    return [line for line in output.strip().splitlines() if not line.startswith("[Foundation Setup]") and line.strip()]
 
 def assert_log_output(output: str, expected_level: str, expected_message_core: str, expected_kvs: dict[str, Any] | None = None, is_json: bool = False, expect_traceback_containing: str | None = None, expect_timestamp: bool = True) -> None:
     actual_log_lines = _filter_application_logs(output)
@@ -97,7 +97,7 @@ class TestConfigWarnings:
         ("mod1:INFO, :TRACE ,mod3:DEBUG", ["Invalid item ':TRACE' in PYVIDER_LOG_MODULE_LEVELS. Skipping."]),
     ])
     def test_invalid_pyvider_log_module_levels(self, monkeypatch: MonkeyPatch, capsys: CaptureFixture[str], module_levels_env: str, expected_warning_parts: list[str]) -> None:
-        from pyvider.telemetry.config import (
+        from provide.foundation.config import (
             _ensure_config_logger_handler,
             config_warnings_logger,
         )
@@ -106,7 +106,7 @@ class TestConfigWarnings:
         TelemetryConfig.from_env()
         captured_err = capsys.readouterr().err
         if not expected_warning_parts:
-            assert "[Pyvider Config Warning]" not in captured_err
+            assert "[Foundation Config Warning]" not in captured_err
         else:
             for part in expected_warning_parts:
                 assert part in captured_err

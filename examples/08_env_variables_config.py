@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # examples/pyvider_telemetry/08_env_variables_config.py
-"""Demonstrates configuring Pyvider Telemetry using environment variables."""
+"""Demonstrates configuring Foundation Telemetry using environment variables."""
 
 import os
 from pathlib import Path
@@ -13,7 +13,7 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from pyvider.telemetry import (  # noqa: E402
+from provide.foundation import (  # noqa: E402
     logger,
     setup_telemetry,
 )
@@ -23,7 +23,7 @@ def example_8_environment_configuration() -> None:
     """
     Example 8: Demonstrates configuration via environment variables.
 
-    Pyvider Telemetry can be configured using `PYVIDER_*` environment variables,
+    Foundation Telemetry can be configured using `PYVIDER_*` environment variables,
     allowing settings to be changed without code modification.
     """
     print("\n" + "=" * 60)
@@ -64,7 +64,7 @@ def example_8_environment_configuration() -> None:
             "database.queries"
         )  # This is a structlog.BoundLogger
 
-        # Use the global `logger` (PyviderLogger instance) for .trace()
+        # Use the global `logger` (FoundationLogger instance) for .trace()
         logger.trace(
             "Token validation trace details", _pyvider_logger_name="auth.service.tokens"
         )  # ✅ Shows (auth.service is TRACE)

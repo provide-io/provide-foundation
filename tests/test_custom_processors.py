@@ -2,19 +2,19 @@
 # tests/test_custom_processors.py
 #
 """
-Unit tests for src.pyvider.telemetry.logger.custom_processors.py
+Unit tests for src.provide.foundation.logger.custom_processors.py
 """
 import pytest
 import structlog  # For DropEvent
 
-from pyvider.telemetry.logger.custom_processors import (
+from provide.foundation.logger.custom_processors import (
     add_logger_name_emoji_prefix,
     # add_das_emoji_prefix, # Will add if testing that
     # _LOGGER_NAME_EMOJI_PREFIXES, # For direct manipulation if needed
     # clear_emoji_cache # To reset state for emoji cache tests
     filter_by_level_custom,
 )
-from pyvider.telemetry.types import LogLevelStr  # Corrected import for type hints
+from provide.foundation.types import LogLevelStr  # Corrected import for type hints
 
 # Helper for level to numeric mapping, mirroring what's in config.py
 _LEVEL_TO_NUMERIC_TEST_MAP: dict[LogLevelStr, int] = {
@@ -113,7 +113,7 @@ class TestAddLoggerNameEmojiPrefix:
         """
         Standard case: event message exists, and emoji is found.
         """
-        logger_name_with_emoji = "pyvider.telemetry.logger" # Expected: 📝
+        logger_name_with_emoji = "provide.foundation.logger" # Expected: 📝
         expected_emoji = "📝"
         original_message = "This is a test message."
 

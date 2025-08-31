@@ -8,6 +8,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2025-06-06
 
 ### Added
-- Initial release of pyvider.telemetry.
+- Initial release of provide.foundation.
 - Feature-rich logging library with emoji support, structured logging, and Domain, Action, Status (DAS) patterns.
 - Comprehensive test suite and documentation.

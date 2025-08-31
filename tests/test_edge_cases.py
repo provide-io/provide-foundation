@@ -2,7 +2,7 @@
 # test_edge_cases.py
 #
 """
-Edge case and error condition tests for Pyvider Telemetry.
+Edge case and error condition tests for Foundation Telemetry.
 
 This module tests boundary conditions, error handling, and edge cases
 that might not be covered in regular functional tests.
@@ -15,13 +15,13 @@ from unittest.mock import patch
 
 import pytest
 
-from pyvider.telemetry import (
+from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
-    logger,  # This is the global PyviderLogger instance
+    logger,  # This is the global FoundationLogger instance
     setup_telemetry,
 )
-from pyvider.telemetry.core import reset_pyvider_setup_for_testing
+from provide.foundation.core import reset_pyvider_setup_for_testing
 
 
 def test_invalid_environment_variables_handling(monkeypatch, capsys) -> None: # Added capsys
@@ -67,8 +67,8 @@ def test_invalid_environment_variables_handling(monkeypatch, capsys) -> None: # 
         # Check for specific warning message if one is expected
         captured = capsys.readouterr()
         if expected_warning_snippet:
-            assert "[Pyvider Config Warning]" in captured.err, \
-                f"No Pyvider Config Warning for {env_var}={invalid_value}. Output: {captured.err}"
+            assert "[Foundation Config Warning]" in captured.err, \
+                f"No Foundation Config Warning for {env_var}={invalid_value}. Output: {captured.err}"
             assert expected_warning_snippet in captured.err, \
                 f"Expected warning snippet '{expected_warning_snippet}' not found for {env_var}={invalid_value}. Output: {captured.err}"
 
@@ -129,7 +129,7 @@ def test_logger_with_extreme_names(
     output = captured_stderr_for_pyvider.getvalue()
     lines = [
         line for line in output.strip().splitlines()
-        if not line.startswith("[Pyvider Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]") and line.strip()
     ]
     assert len(lines) == len(extreme_names)
 
@@ -167,7 +167,7 @@ def test_log_message_edge_cases(
     output = captured_stderr_for_pyvider.getvalue()
     lines = [
         line for line in output.strip().splitlines()
-        if not line.startswith("[Pyvider Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]") and line.strip()
     ]
     assert len(lines) >= len(edge_case_messages)
 
@@ -176,18 +176,18 @@ def test_logger_args_formatting_edge_cases(
     setup_pyvider_telemetry_for_test: Callable[[TelemetryConfig | None], None],
     captured_stderr_for_pyvider: io.StringIO,
 ) -> None:
-    """Tests logger argument formatting edge cases using PyviderLogger's methods."""
+    """Tests logger argument formatting edge cases using FoundationLogger's methods."""
     setup_pyvider_telemetry_for_test(None)
-    # Using the global logger instance which has the PyviderLogger methods
+    # Using the global logger instance which has the FoundationLogger methods
 
     test_cases: list[tuple[str, tuple[Any, ...], bool]] = [
         # (message, args, should_not_raise)
         ("Simple message with %s", ("arg1",), True),
         ("Multiple args: %s %d %s", ("str", 42, "end"), True),
-        ("Too few args: %s %s", ("only_one",), True), # PyviderLogger's _format_message_with_args handles this
-        ("Too many args: %s", ("arg1", "arg2", "extra"), True), # PyviderLogger's _format_message_with_args handles this
-        ("Invalid format: %q", ("arg",), True), # PyviderLogger's _format_message_with_args handles this
-        ("No format but args", ("arg1", "arg2"), True), # PyviderLogger's _format_message_with_args handles this
+        ("Too few args: %s %s", ("only_one",), True), # FoundationLogger's _format_message_with_args handles this
+        ("Too many args: %s", ("arg1", "arg2", "extra"), True), # FoundationLogger's _format_message_with_args handles this
+        ("Invalid format: %q", ("arg",), True), # FoundationLogger's _format_message_with_args handles this
+        ("No format but args", ("arg1", "arg2"), True), # FoundationLogger's _format_message_with_args handles this
         ("Empty args", (), True),
         ("Unicode in args: %s", ("🚀🌟",), True),
         ("None arg: %s", (None,), True),
@@ -196,7 +196,7 @@ def test_logger_args_formatting_edge_cases(
 
     for message, args, should_not_raise in test_cases:
         try:
-            # Call info method on the global PyviderLogger instance
+            # Call info method on the global FoundationLogger instance
             logger.info(message, *args)
             if not should_not_raise: # pragma: no cover
                 pytest.fail(f"Expected exception for: {message} with args {args}")
@@ -207,7 +207,7 @@ def test_logger_args_formatting_edge_cases(
     output = captured_stderr_for_pyvider.getvalue()
     lines = [
         line for line in output.strip().splitlines()
-        if not line.startswith("[Pyvider Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]") and line.strip()
     ]
     assert len(lines) == len(test_cases), f"Expected {len(test_cases)} log lines, got {len(lines)}"
 
@@ -322,7 +322,7 @@ def test_trace_level_edge_cases(
     output = captured_stderr_for_pyvider.getvalue()
     lines = [
         line for line in output.strip().splitlines()
-        if not line.startswith("[Pyvider Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]") and line.strip()
     ]
     assert len(lines) >= 4, "Not all trace messages were logged"
     trace_count = sum(1 for line in lines if "trace" in line.lower())
@@ -380,7 +380,7 @@ def test_performance_with_disabled_features(
     output = captured_stderr_for_pyvider.getvalue()
     lines = [
         line for line in output.strip().splitlines()
-        if not line.startswith("[Pyvider Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]") and line.strip()
     ]
     assert len(lines) == message_count
     messages_per_second = message_count / duration

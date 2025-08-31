@@ -19,8 +19,8 @@ from unittest.mock import patch
 from pytest import CaptureFixture  # Added for capsys
 import structlog
 
-from pyvider.telemetry import logger as global_logger
-from pyvider.telemetry.core import reset_pyvider_setup_for_testing
+from provide.foundation import logger as global_logger
+from provide.foundation.core import reset_pyvider_setup_for_testing
 
 
 class TestExtremeEdgeCases:
@@ -37,10 +37,10 @@ class TestExtremeEdgeCases:
             global_logger.debug("Logging during lazy setup")
             return original_perform_lazy_setup(self)
 
-        from pyvider.telemetry.logger.base import PyviderLogger
-        original_perform_lazy_setup = PyviderLogger._perform_lazy_setup
+        from provide.foundation.logger.base import FoundationLogger
+        original_perform_lazy_setup = FoundationLogger._perform_lazy_setup
 
-        with patch.object(PyviderLogger, '_perform_lazy_setup', recursive_lazy_setup):
+        with patch.object(FoundationLogger, '_perform_lazy_setup', recursive_lazy_setup):
             # Should handle recursion gracefully without infinite loop
             global_logger.info("Initial log that triggers recursive setup")
 
@@ -65,8 +65,8 @@ class TestExtremeEdgeCases:
                     raise Exception(f"Setup failure {setup_attempts}")
 
             # Later attempts succeed
-            from pyvider.telemetry.logger.base import PyviderLogger
-            return PyviderLogger._perform_lazy_setup.__wrapped__(self)
+            from provide.foundation.logger.base import FoundationLogger
+            return FoundationLogger._perform_lazy_setup.__wrapped__(self)
 
         def concurrent_worker(worker_id: int) -> bool:
             try:
@@ -77,12 +77,12 @@ class TestExtremeEdgeCases:
 
         from concurrent.futures import ThreadPoolExecutor
 
-        from pyvider.telemetry.logger.base import (
-            PyviderLogger,  # type: ignore[import-untyped]
+        from provide.foundation.logger.base import (
+            FoundationLogger,  # type: ignore[import-untyped]
         )
 
         # SIM117: Combined with statements
-        with patch.object(PyviderLogger, '_perform_lazy_setup', failing_setup), \
+        with patch.object(FoundationLogger, '_perform_lazy_setup', failing_setup), \
              ThreadPoolExecutor(max_workers=10) as executor:
             futures = [executor.submit(concurrent_worker, i) for i in range(20)]
             results = [future.result() for future in futures]
@@ -130,8 +130,8 @@ class TestExtremeEdgeCases:
             try:
                 # Simulate slow setup that could be interrupted
                 time.sleep(0.1)
-                from pyvider.telemetry.logger.base import PyviderLogger
-                return PyviderLogger._perform_lazy_setup.__wrapped__(self)
+                from provide.foundation.logger.base import FoundationLogger
+                return FoundationLogger._perform_lazy_setup.__wrapped__(self)
             except KeyboardInterrupt:
                 setup_interrupted = True
                 raise # Correct way to re-raise the caught exception
@@ -139,15 +139,15 @@ class TestExtremeEdgeCases:
         def interrupt_handler(signum: int, frame: Any) -> None: # Added types
             pass  # Just interrupt, don't exit
 
-        from pyvider.telemetry.logger.base import (
-            PyviderLogger,  # type: ignore[import-untyped]
+        from provide.foundation.logger.base import (
+            FoundationLogger,  # type: ignore[import-untyped]
         )
 
         # Set up signal handler
         original_handler = signal.signal(signal.SIGINT, interrupt_handler)
 
         try:
-            with patch.object(PyviderLogger, '_perform_lazy_setup', slow_setup):
+            with patch.object(FoundationLogger, '_perform_lazy_setup', slow_setup):
                 # Start setup in a thread
                 def setup_worker() -> None:
                     global_logger.info("Message during interruptible setup")
@@ -178,7 +178,7 @@ class TestExtremeEdgeCases:
 
         # Mock import failure for critical modules
         def failing_import(name: str, *args: Any, **kwargs: Any) -> Any: # ANN202 (already had arg types)
-            if name in ('structlog', 'pyvider.telemetry.config'):
+            if name in ('structlog', 'provide.foundation.config'):
                 raise ImportError(f"Simulated import failure for {name}")
             return __import__(name, *args, **kwargs)
 
@@ -217,7 +217,7 @@ class TestStateConsistencyUnderFailure:
         reset_pyvider_setup_for_testing()
 
         # Simulate partial setup failure
-        from pyvider.telemetry.logger import (
+        from provide.foundation.logger import (
             base as logger_base,  # type: ignore[import-untyped]
         )
 
@@ -227,7 +227,7 @@ class TestStateConsistencyUnderFailure:
             raise Exception("Partial setup failure")
 
         # SIM117: Combined with statements
-        with patch.object(logger_base.PyviderLogger, '_perform_lazy_setup', partial_failure_setup), \
+        with patch.object(logger_base.FoundationLogger, '_perform_lazy_setup', partial_failure_setup), \
              contextlib.suppress(Exception):
             # First attempt should fail
             global_logger.info("First attempt")
@@ -255,7 +255,7 @@ class TestStateConsistencyUnderFailure:
                 global_logger.info(f"Contention worker {worker_id}")
 
                 # Snapshot state after logging
-                from pyvider.telemetry.logger import (
+                from provide.foundation.logger import (
                     base as logger_base,  # Keep for _LAZY_SETUP_STATE access
                 )
                 snapshot = (
@@ -297,7 +297,7 @@ class TestStateConsistencyUnderFailure:
         """Test that exceptions during setup properly clean up state."""
         reset_pyvider_setup_for_testing()
 
-        from pyvider.telemetry.logger import base as logger_base
+        from provide.foundation.logger import base as logger_base
 
         exception_count = 0
 
@@ -312,9 +312,9 @@ class TestStateConsistencyUnderFailure:
                 raise Exception(f"Setup exception {exception_count}")
 
             # Eventually succeed with clean state
-            return logger_base.PyviderLogger._perform_lazy_setup.__wrapped__(self)
+            return logger_base.FoundationLogger._perform_lazy_setup.__wrapped__(self)
 
-        with patch.object(logger_base.PyviderLogger, '_perform_lazy_setup', exception_setup):
+        with patch.object(logger_base.FoundationLogger, '_perform_lazy_setup', exception_setup):
             # Multiple attempts should eventually succeed
             for attempt in range(5):
                 try:
@@ -344,7 +344,7 @@ class TestStateConsistencyUnderFailure:
             thread_logger.info(f"Thread {worker_id} message")
 
             # Record thread's view of global state
-            from pyvider.telemetry.logger import (
+            from provide.foundation.logger import (
                 base as logger_base,  # Keep for _LAZY_SETUP_STATE access
             )
             thread_results[worker_id] = {
@@ -383,9 +383,9 @@ class TestLazyInitializationCompliance:
         reset_pyvider_setup_for_testing()
 
         # Import and create logger instance should not trigger setup
-        from pyvider.telemetry import logger
-        from pyvider.telemetry.logger import base as logger_base
-        new_logger = logger_base.PyviderLogger()
+        from provide.foundation import logger
+        from provide.foundation.logger import base as logger_base
+        new_logger = logger_base.FoundationLogger()
 
         # Verify no initialization yet
         assert not logger_base._LAZY_SETUP_STATE["done"]
@@ -397,7 +397,7 @@ class TestLazyInitializationCompliance:
 
         # Actually, get_logger does call _ensure_configured, so let's test differently
         # Just creating a logger instance should not trigger setup
-        logger_base.PyviderLogger()
+        logger_base.FoundationLogger()
 
         # The instance creation itself shouldn't trigger setup
         # Only actual logging should trigger setup
@@ -418,12 +418,12 @@ class TestLazyInitializationCompliance:
         def counting_setup(self: Any) -> Any: # ANN202
             nonlocal setup_call_count
             setup_call_count += 1
-            from pyvider.telemetry.logger.base import PyviderLogger
-            return PyviderLogger._perform_lazy_setup.__wrapped__(self)
+            from provide.foundation.logger.base import FoundationLogger
+            return FoundationLogger._perform_lazy_setup.__wrapped__(self)
 
-        from pyvider.telemetry.logger.base import PyviderLogger
+        from provide.foundation.logger.base import FoundationLogger
 
-        with patch.object(PyviderLogger, '_perform_lazy_setup', counting_setup):
+        with patch.object(FoundationLogger, '_perform_lazy_setup', counting_setup):
             # Multiple logging calls
             for i in range(10):
                 global_logger.info(f"Message {i}")
@@ -451,9 +451,9 @@ class TestLazyInitializationCompliance:
         setup_start_times: list[float] = []
         setup_end_times: list[float] = []
 
-        # Import PyviderLogger here to access its original method
-        from pyvider.telemetry.logger.base import PyviderLogger
-        original_perform_lazy_setup_method = PyviderLogger._perform_lazy_setup
+        # Import FoundationLogger here to access its original method
+        from provide.foundation.logger.base import FoundationLogger
+        original_perform_lazy_setup_method = FoundationLogger._perform_lazy_setup
 
         def timed_setup(self_instance: Any) -> Any: # ANN202 (already had arg type)
             setup_start_times.append(time.time())
@@ -466,8 +466,8 @@ class TestLazyInitializationCompliance:
             setup_end_times.append(time.time())
             return original_method_result
 
-        # PyviderLogger is already imported above
-        with patch.object(PyviderLogger, '_perform_lazy_setup', timed_setup):
+        # FoundationLogger is already imported above
+        with patch.object(FoundationLogger, '_perform_lazy_setup', timed_setup):
             # Create barrier to synchronize thread starts
             thread_count = 20
             barrier = threading.Barrier(thread_count)
@@ -500,7 +500,7 @@ class TestLazyInitializationCompliance:
         """Test that errors in setup don't affect subsequent logging attempts."""
         reset_pyvider_setup_for_testing()
 
-        from pyvider.telemetry.logger import base as logger_base
+        from provide.foundation.logger import base as logger_base
 
         # First setup attempt fails
         def failing_then_succeeding_setup(self: Any) -> Any: # ANN202
@@ -509,9 +509,9 @@ class TestLazyInitializationCompliance:
                 raise Exception("First setup fails")
             else:
                 # Second attempt succeeds
-                return logger_base.PyviderLogger._perform_lazy_setup.__wrapped__(self)
+                return logger_base.FoundationLogger._perform_lazy_setup.__wrapped__(self)
 
-        with patch.object(logger_base.PyviderLogger, '_perform_lazy_setup', failing_then_succeeding_setup), \
+        with patch.object(logger_base.FoundationLogger, '_perform_lazy_setup', failing_then_succeeding_setup), \
              contextlib.suppress(Exception): # SIM105 for first attempt
             # First logging attempt (setup fails)
             global_logger.info("First attempt")

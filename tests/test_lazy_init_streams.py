@@ -17,8 +17,8 @@ from unittest.mock import patch
 
 from pytest import CaptureFixture  # Added for capsys
 
-from pyvider.telemetry import logger as global_logger
-from pyvider.telemetry.core import (
+from provide.foundation import logger as global_logger
+from provide.foundation.core import (
     _set_log_stream_for_testing,
     reset_pyvider_setup_for_testing,
 )
@@ -143,7 +143,7 @@ class TestLazyInitializationErrorRecovery:
         reset_pyvider_setup_for_testing()
 
         # Mock config creation to fail completely
-        with patch("pyvider.telemetry.config.TelemetryConfig") as mock_config_class:
+        with patch("provide.foundation.config.TelemetryConfig") as mock_config_class:
             mock_config_class.from_env.side_effect = Exception("Config creation failed")
             mock_config_class.side_effect = Exception("Config constructor failed")
 
@@ -179,7 +179,7 @@ class TestLazyInitializationErrorRecovery:
 
         # Mock processor chain building to fail
         with patch(
-            "pyvider.telemetry.config._build_core_processors_list"
+            "provide.foundation.config._build_core_processors_list"
         ) as mock_build:
             mock_build.side_effect = Exception("Processor chain failed")
 
@@ -195,10 +195,10 @@ class TestLazyInitializationErrorRecovery:
         reset_pyvider_setup_for_testing()
 
         # Mock import failure for config module
-        with patch("pyvider.telemetry.logger.base.sys.modules") as mock_modules:
+        with patch("provide.foundation.logger.base.sys.modules") as mock_modules:
             # Simulate import error for config module
-            original_config = mock_modules.get("pyvider.telemetry.config")
-            mock_modules["pyvider.telemetry.config"] = None
+            original_config = mock_modules.get("provide.foundation.config")
+            mock_modules["provide.foundation.config"] = None
 
             try:
                 # Should handle import failure gracefully
@@ -211,7 +211,7 @@ class TestLazyInitializationErrorRecovery:
             finally:
                 # Restore original module
                 if original_config:
-                    mock_modules["pyvider.telemetry.config"] = original_config
+                    mock_modules["provide.foundation.config"] = original_config
 
     def test_repeated_failure_handling(self, capsys: CaptureFixture[str]) -> None:
         """Test that repeated failures don't cause infinite loops."""
@@ -230,7 +230,7 @@ class TestLazyInitializationErrorRecovery:
             return  # Explicit return None
 
         with patch(
-            "pyvider.telemetry.logger.base.PyviderLogger._perform_lazy_setup",
+            "provide.foundation.logger.base.FoundationLogger._perform_lazy_setup",
             failing_setup,
         ):
             # Multiple logging calls should not cause infinite retry loops
@@ -279,7 +279,7 @@ class TestLazyInitializationErrorRecovery:
                 pass  # Ignore individual thread failures for this test
 
         with patch(
-            "pyvider.telemetry.logger.base.PyviderLogger._perform_lazy_setup",
+            "provide.foundation.logger.base.FoundationLogger._perform_lazy_setup",
             error_prone_setup,
         ):
             # Start multiple threads
@@ -315,10 +315,10 @@ class TestLazyInitializationEdgeEnvironments:
         with (
             patch("sys.stderr", None),
             patch(
-                "pyvider.telemetry.core._get_safe_stderr", return_value=fallback_stream
+                "provide.foundation.core._get_safe_stderr", return_value=fallback_stream
             ),
             patch(
-                "pyvider.telemetry.logger.base._get_safe_stderr",
+                "provide.foundation.logger.base._get_safe_stderr",
                 return_value=fallback_stream,
             ),
         ):

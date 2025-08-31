@@ -5,7 +5,7 @@
 Continuously emits diverse log messages every second until Ctrl+C.
 
 This script serves as a demonstration and a simple load test for the
-pyvider.telemetry logging system. It showcases various logging features,
+provide.foundation logging system. It showcases various logging features,
 including different log levels, named loggers, DAS (Domain-Action-Status)
 logging, and the custom trace level.
 """
@@ -30,10 +30,10 @@ src_path = os.path.join(project_root, "src")
 if src_path not in sys.path:
     sys.path.insert(0, src_path)
 
-from pyvider.telemetry import (
+from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
-    logger,  # This is the global PyviderLogger instance
+    logger,  # This is the global FoundationLogger instance
     setup_telemetry,
     shutdown_pyvider_telemetry,
 )
@@ -126,15 +126,15 @@ async def generate_log_entries_continuously() -> None:
 
 async def main_async_loop() -> None:
     """Main asynchronous routine for the log generation demo."""
-    print("🚀 Initializing Pyvider Telemetry...")
+    print("🚀 Initializing Foundation Telemetry...")
     setup_telemetry(config)
 
     try:
         await generate_log_entries_continuously()
     finally:
-        print("🔌 Shutting down Pyvider Telemetry...")
+        print("🔌 Shutting down Foundation Telemetry...")
         await shutdown_pyvider_telemetry()
-        print("Pyvider Telemetry shutdown complete.")
+        print("Foundation Telemetry shutdown complete.")
 
 if __name__ == "__main__":
     try:

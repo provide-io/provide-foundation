@@ -12,7 +12,7 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from pyvider.telemetry import (  # noqa: E402
+from provide.foundation import (  # noqa: E402
     LoggingConfig,
     TelemetryConfig,
     logger,

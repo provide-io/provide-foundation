@@ -19,16 +19,16 @@ def test_lazy_setup_done_flag() -> None:
     print("=== Testing Lazy Setup Done Flag ===")
 
     # Reset state
-    from pyvider.telemetry.core import reset_pyvider_setup_for_testing
+    from provide.foundation.core import reset_pyvider_setup_for_testing
     reset_pyvider_setup_for_testing()
 
     # Check initial state
-    from pyvider.telemetry.logger.base import _LAZY_SETUP_STATE  # Changed
+    from provide.foundation.logger.base import _LAZY_SETUP_STATE  # Changed
     print("Initial state:")
     print(f"  _LAZY_SETUP_STATE: {_LAZY_SETUP_STATE}")
 
     # Trigger lazy setup
-    from pyvider.telemetry import logger
+    from provide.foundation import logger
     print("\nLogging message to trigger lazy setup...")
     logger.info("Test message to trigger lazy setup")
 
@@ -48,13 +48,13 @@ def test_recursive_logging_protection() -> None:
     print("\n=== Testing Recursive Logging Protection ===")
 
     # Reset state
-    from pyvider.telemetry.core import reset_pyvider_setup_for_testing
+    from provide.foundation.core import reset_pyvider_setup_for_testing
     reset_pyvider_setup_for_testing()
 
     # Create a custom setup function that logs during setup
     def recursive_setup(self: Any) -> None: # Added type for self
         print("In recursive setup - this should trigger emergency fallback")
-        from pyvider.telemetry import (
+        from provide.foundation import (
             logger as global_logger,  # type: ignore[import-untyped]
         )
         global_logger.debug("Logging during setup - should use emergency fallback")
@@ -64,12 +64,12 @@ def test_recursive_logging_protection() -> None:
     # Patch the setup method
     from unittest.mock import patch
 
-    from pyvider.telemetry.logger.base import (
-        PyviderLogger,  # type: ignore[import-untyped]
+    from provide.foundation.logger.base import (
+        FoundationLogger,  # type: ignore[import-untyped]
     )
 
-    with patch.object(PyviderLogger, '_perform_lazy_setup', recursive_setup): # type: ignore[assignment]
-        from pyvider.telemetry import logger  # type: ignore[import-untyped]
+    with patch.object(FoundationLogger, '_perform_lazy_setup', recursive_setup): # type: ignore[assignment]
+        from provide.foundation import logger  # type: ignore[import-untyped]
         print("Triggering recursive logging scenario...")
 
         try:

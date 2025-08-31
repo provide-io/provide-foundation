@@ -4,7 +4,7 @@
 
 [project]
 name = "pyvider-telemetry"
-description = "Pyvider Telemetry: An opinionated, developer-friendly telemetry wrapper for Python."
+description = "Foundation Telemetry: An opinionated, developer-friendly telemetry wrapper for Python."
 version = "0.0.16"
 requires-python = ">=3.11"
 readme = "README.md"
@@ -158,7 +158,7 @@ ignore_missing_imports = true
 ################################################################################
 
 [tool.coverage.run]
-source = ["pyvider.telemetry"]
+source = ["provide.foundation"]
 branch = true
 parallel = true
 

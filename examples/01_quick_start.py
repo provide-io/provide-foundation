@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # examples/pyvider_telemetry/01_quick_start.py
-"""Demonstrates quick start with default Pyvider Telemetry configuration."""
+"""Demonstrates quick start with default Foundation Telemetry configuration."""
 
 from pathlib import Path
 import sys
 
 # Add src to path for examples
-# This allows the example script to find the `pyvider.telemetry` module
+# This allows the example script to find the `provide.foundation` module
 # when run directly from the `examples` directory or the project root.
 example_dir = Path(__file__).resolve().parent.parent  # Go up one level to `examples`
 project_root = example_dir.parent
@@ -14,7 +14,7 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from pyvider.telemetry import logger, setup_telemetry  # noqa: E402
+from provide.foundation import logger, setup_telemetry  # noqa: E402
 
 
 def example_1_quick_start() -> None:

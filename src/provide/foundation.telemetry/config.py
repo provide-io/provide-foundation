@@ -2,7 +2,7 @@
 # config.py
 #
 """
-Pyvider Telemetry Configuration Module.
+Foundation Telemetry Configuration Module.
 Defines data models for telemetry and logging settings, environment variable parsing,
 and helpers for assembling structlog processor chains based on active configuration,
 now including support for Semantic Telemetry Layers.
@@ -17,13 +17,13 @@ from typing import TYPE_CHECKING, Any, TextIO, cast
 from attrs import define, field
 import structlog
 
-from pyvider.telemetry.logger.custom_processors import (
+from provide.foundation.logger.custom_processors import (
     StructlogProcessor,
     add_log_level_custom,
     add_logger_name_emoji_prefix,
     filter_by_level_custom,
 )
-from pyvider.telemetry.types import (
+from provide.foundation.types import (
     _VALID_FORMATTER_TUPLE,
     _VALID_LOG_LEVEL_TUPLE,
     TRACE_LEVEL_NUM,
@@ -35,7 +35,7 @@ from pyvider.telemetry.types import (
 )
 
 if TYPE_CHECKING:
-    from pyvider.telemetry.core import ResolvedSemanticConfig
+    from provide.foundation.core import ResolvedSemanticConfig
 
 _LEVEL_TO_NUMERIC: dict[LogLevelStr, int] = {
     "CRITICAL": stdlib_logging.CRITICAL,
@@ -56,9 +56,9 @@ DEFAULT_ENV_CONFIG: dict[str, str] = {
     "PYVIDER_LOG_ENABLED_SEMANTIC_LAYERS": "",
 }
 
-config_warnings_logger = stdlib_logging.getLogger("pyvider.telemetry.config_warnings")
+config_warnings_logger = stdlib_logging.getLogger("provide.foundation.config_warnings")
 _config_warning_formatter = stdlib_logging.Formatter(
-    "[Pyvider Config Warning] %(levelname)s (%(name)s): %(message)s"
+    "[Foundation Config Warning] %(levelname)s (%(name)s): %(message)s"
 )
 
 def _ensure_config_logger_handler(logger: stdlib_logging.Logger) -> None:
@@ -73,7 +73,7 @@ def _ensure_config_logger_handler(logger: stdlib_logging.Logger) -> None:
 
 @define(frozen=True, slots=True)
 class LoggingConfig:
-    """Configuration specific to logging behavior within Pyvider Telemetry."""
+    """Configuration specific to logging behavior within Foundation Telemetry."""
     default_level: LogLevelStr = field(default="DEBUG")
     module_levels: dict[str, LogLevelStr] = field(factory=dict)
     console_formatter: ConsoleFormatterStr = field(default="key_value")
@@ -87,7 +87,7 @@ class LoggingConfig:
 
 @define(frozen=True, slots=True)
 class TelemetryConfig:
-    """Main configuration object for the Pyvider Telemetry system."""
+    """Main configuration object for the Foundation Telemetry system."""
     service_name: str | None = field(default=None)
     logging: LoggingConfig = field(factory=LoggingConfig)
     globally_disabled: bool = field(default=False)
@@ -263,7 +263,7 @@ def _config_create_emoji_processors(logging_config: LoggingConfig, resolved_sema
 
         def add_das_emoji_prefix_closure(_logger: Any, _method_name: str, event_dict: structlog.types.EventDict) -> structlog.types.EventDict:
             # This inner function now has access to the resolved config from its closure scope
-            from pyvider.telemetry.logger.emoji_matrix import (
+            from provide.foundation.logger.emoji_matrix import (
                 PRIMARY_EMOJI,
                 SECONDARY_EMOJI,
                 TERTIARY_EMOJI,

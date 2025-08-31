@@ -1,6 +1,6 @@
 # src/pyvider/telemetry/utils.py
 """
-Utility functions for Pyvider Telemetry, such as context managers for timing operations.
+Utility functions for Foundation Telemetry, such as context managers for timing operations.
 """
 from collections.abc import Generator
 from contextlib import contextmanager
@@ -9,18 +9,18 @@ import time
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from pyvider.telemetry.logger.base import PyviderLogger
+    from provide.foundation.logger.base import FoundationLogger
 
 
 # Example context variable for trace_id (application would need to set this)
 # This is just a placeholder to show how it *could* be integrated.
-# Pyvider Telemetry itself won't manage this contextvar's lifecycle.
+# Foundation Telemetry itself won't manage this contextvar's lifecycle.
 _PYVIDER_CONTEXT_TRACE_ID = contextvars.ContextVar("pyvider_context_trace_id", default=None)
 
 
 @contextmanager
 def timed_block(
-    logger_instance: "PyviderLogger",
+    logger_instance: "FoundationLogger",
     event_name: str,
     # Semantic keys for layers (examples, actual keys depend on active layers)
     # These are just illustrative; the user provides relevant semantic keys.
@@ -35,7 +35,7 @@ def timed_block(
     and any initial or error-specific key-value pairs.
 
     Args:
-        logger_instance: The PyviderLogger instance to use for logging.
+        logger_instance: The FoundationLogger instance to use for logging.
         event_name: A descriptive name for the event/operation being timed.
         layer_keys: Optional dictionary of pre-defined semantic keys relevant to
                     active telemetry layers (e.g., {"llm.task": "generation"}).
@@ -45,8 +45,8 @@ def timed_block(
 
     Example:
         ```python
-        from pyvider.telemetry import logger
-        from pyvider.telemetry.utils import timed_block
+        from provide.foundation import logger
+        from provide.foundation.utils import timed_block
 
         with timed_block(logger, "database_query", db_operation="select_user", db_table="users"):
             # ... code to execute database query ...

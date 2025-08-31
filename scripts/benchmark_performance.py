@@ -2,7 +2,7 @@
 # benchmark_performance.py
 #
 """
-Performance benchmarking script for Pyvider Telemetry.
+Performance benchmarking script for Foundation Telemetry.
 
 This script measures the performance characteristics of the logging system
 under various conditions and outputs detailed benchmark results.
@@ -33,13 +33,13 @@ from typing import Any
 # Add src to path for development
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from pyvider.telemetry import (
+from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
     logger,
     setup_telemetry,
 )
-from pyvider.telemetry.core import (
+from provide.foundation.core import (
     _set_log_stream_for_testing,
     reset_pyvider_setup_for_testing,
 )
@@ -504,7 +504,7 @@ def main() -> None:
     This function coordinates the execution of all benchmark tests,
     collects results, and saves them to a JSON file for analysis.
     """
-    print("🚀 Starting Pyvider Telemetry Performance Benchmarks...")
+    print("🚀 Starting Foundation Telemetry Performance Benchmarks...")
     print("=" * 60)
 
     benchmarks = [

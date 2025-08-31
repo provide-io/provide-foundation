@@ -1,6 +1,6 @@
 # src/pyvider/telemetry/types.py
 """
-Pyvider Telemetry Custom Type Definitions, Constants, and Data Structures.
+Foundation Telemetry Custom Type Definitions, Constants, and Data Structures.
 
 This module centralizes custom type aliases, constants, and data structures
 used throughout the `pyvider-telemetry` package.

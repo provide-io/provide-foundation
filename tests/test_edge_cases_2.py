@@ -15,22 +15,22 @@ from unittest.mock import MagicMock, patch
 import pytest
 import structlog
 
-from pyvider.telemetry import (
+from provide.foundation import (
     LoggingConfig,
     SemanticLayer,
     TelemetryConfig,
     logger,
 )
-from pyvider.telemetry.config import _build_formatter_processors_list
-from pyvider.telemetry.core import (
+from provide.foundation.config import _build_formatter_processors_list
+from provide.foundation.core import (
     _CORE_SETUP_LOGGER_NAME,
     _create_core_setup_logger,
 )
-from pyvider.telemetry.logger import base as pyvider_logger_base
-from pyvider.telemetry.logger.custom_processors import (
+from provide.foundation.logger import base as pyvider_logger_base
+from provide.foundation.logger.custom_processors import (
     add_log_level_custom,
 )
-from pyvider.telemetry.logger.emoji_matrix import show_emoji_matrix
+from provide.foundation.logger.emoji_matrix import show_emoji_matrix
 
 # --- Tests for src/pyvider/telemetry/config.py ---
 
@@ -85,7 +85,7 @@ def test_config_dangling_emoji_set_reference(
     captured_stderr_for_pyvider: io.StringIO,
 ) -> None:
     """Covers a semantic field referencing a non-existent emoji set."""
-    from pyvider.telemetry.types import SemanticFieldDefinition
+    from provide.foundation.types import SemanticFieldDefinition
 
     dangling_field = SemanticFieldDefinition(
         log_key="dangling_key", emoji_set_name="non_existent_set"
@@ -172,7 +172,7 @@ def test_custom_processors_full_emoji_cache(
         TelemetryConfig(logging=LoggingConfig(logger_name_emoji_prefix_enabled=True))
     )
     with patch(
-        "pyvider.telemetry.logger.custom_processors._EMOJI_CACHE_SIZE_LIMIT", 0
+        "provide.foundation.logger.custom_processors._EMOJI_CACHE_SIZE_LIMIT", 0
     ):
         # With cache size 0, this call will exercise the "cache is full" path
         logger.get_logger("some.new.logger").info("test")

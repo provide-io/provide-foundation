@@ -3,7 +3,7 @@
 #
 
 """
-Property-based tests for Pyvider Telemetry using Hypothesis.
+Property-based tests for Foundation Telemetry using Hypothesis.
 
 These tests aim to cover a wider range of inputs and edge cases
 by generating test data automatically.
@@ -29,7 +29,7 @@ from hypothesis.strategies import (
     text,
 )
 
-from pyvider.telemetry import (
+from provide.foundation import (
     PRIMARY_EMOJI,
     SECONDARY_EMOJI,
     TERTIARY_EMOJI,
@@ -38,11 +38,11 @@ from pyvider.telemetry import (
     logger as pyvider_global_logger,
     setup_telemetry,
 )
-from pyvider.telemetry.core import (
+from provide.foundation.core import (
     _set_log_stream_for_testing,
     reset_pyvider_setup_for_testing,
 )
-from pyvider.telemetry.types import ConsoleFormatterStr, LogLevelStr  # Corrected import
+from provide.foundation.types import ConsoleFormatterStr, LogLevelStr  # Corrected import
 
 # --- Strategies ---
 
@@ -149,7 +149,7 @@ def test_pyvider_logger_robustness(
     log_method_name: str
 ) -> None:
     """
-    Tests that PyviderLogger methods do not crash with varied inputs.
+    Tests that FoundationLogger methods do not crash with varied inputs.
     """
     # Manual setup for each Hypothesis example
     reset_pyvider_setup_for_testing()

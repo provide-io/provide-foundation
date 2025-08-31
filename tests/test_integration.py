@@ -2,7 +2,7 @@
 # test_integration.py
 #
 """
-Integration tests for Pyvider Telemetry.
+Integration tests for Foundation Telemetry.
 
 This module contains tests that verify the complete system behavior,
 including real-world usage patterns, error conditions, and edge cases.
@@ -31,7 +31,7 @@ from typing import Any  # Added for type hints
 
 import pytest
 
-from pyvider.telemetry import (
+from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
     logger,
@@ -81,7 +81,7 @@ def test_full_lifecycle_integration(
     output = captured_stderr_for_pyvider.getvalue()
     lines = [
         line for line in output.strip().splitlines()
-        if not line.startswith("[Pyvider Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]") and line.strip()
     ]
 
     assert len(lines) >= 4, f"Expected at least 4 log lines, got {len(lines)}"
@@ -187,7 +187,7 @@ def test_high_volume_logging_performance(
     output = captured_stderr_for_pyvider.getvalue()
     lines = [
         line for line in output.strip().splitlines()
-        if not line.startswith("[Pyvider Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]") and line.strip()
     ]
 
     assert len(lines) == message_count, f"Expected {message_count} lines, got {len(lines)}"
@@ -243,7 +243,7 @@ def test_thread_safety_concurrent_logging(
     output = captured_stderr_for_pyvider.getvalue()
     lines = [
         line for line in output.strip().splitlines()
-        if not line.startswith("[Pyvider Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]") and line.strip()
     ]
 
     expected_messages = thread_count * messages_per_thread
@@ -343,7 +343,7 @@ def test_error_recovery_and_resilience(
     output = captured_stderr_for_pyvider.getvalue()
     lines = [
         line for line in output.strip().splitlines()
-        if not line.startswith("[Pyvider Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]") and line.strip()
     ]
 
     assert len(lines) >= len(test_cases), "Not all test messages were logged"
@@ -515,7 +515,7 @@ def test_module_level_filtering_comprehensive(
     output = captured_stderr_for_pyvider.getvalue()
     filtered_lines = [
         line for line in output.strip().splitlines()
-        if not line.startswith("[Pyvider Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]") and line.strip()
     ]
 
     expected_messages_count = sum(1 for _, _, _, tc_should_appear in test_cases if tc_should_appear)

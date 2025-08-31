@@ -17,16 +17,16 @@ from typing import TextIO  # Corrected: TextIO from typing
 
 import pytest
 
-from pyvider.telemetry import TelemetryConfig, setup_telemetry
+from provide.foundation import TelemetryConfig, setup_telemetry
 
 # ensure_config_warnings_logger_configured is removed from config.py, so remove import
-# from pyvider.telemetry.config import ensure_config_warnings_logger_configured
-from pyvider.telemetry.core import (
+# from provide.foundation.config import ensure_config_warnings_logger_configured
+from provide.foundation.core import (
     _set_log_stream_for_testing,
     reset_pyvider_setup_for_testing,
 )
 
-_conftest_diag_logger_name = "pyvider.telemetry.conftest_diag"
+_conftest_diag_logger_name = "provide.foundation.conftest_diag"
 
 def _get_conftest_diag_logger() -> stdlib_logging.Logger:
     """Initializes and returns a diagnostic logger for conftest operations."""
@@ -52,7 +52,7 @@ if not os.getenv("PYTEST_WORKER_ID"): # Avoid multiple messages with xdist
 @pytest.fixture(autouse=True)
 def manage_telemetry_reset_for_each_test() -> Generator[None]:
     """
-    Autouse fixture to reset Pyvider telemetry before and after each test.
+    Autouse fixture to reset Foundation Telemetry before and after each test.
     Ensures test isolation by calling `reset_pyvider_setup_for_testing()`.
     """
     if not os.getenv("PYTEST_WORKER_ID") or os.getenv("PYTEST_WORKER_ID") == "gw0":
@@ -87,7 +87,7 @@ def setup_pyvider_telemetry_for_test(
     captured_stderr_for_pyvider: TextIO # Corrected: TextIO
 ) -> Callable[[TelemetryConfig | None], None]:
     """
-    Fixture providing a function to set up Pyvider telemetry for a test.
+    Fixture providing a function to set up Foundation Telemetry for a test.
 
     The setup function uses the `captured_stderr_for_pyvider` fixture to ensure
     log output during setup (and subsequent logging) is captured.

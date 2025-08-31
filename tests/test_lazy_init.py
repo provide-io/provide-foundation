@@ -3,7 +3,7 @@
 #
 
 """
-Comprehensive tests for lazy initialization functionality in Pyvider telemetry.
+Comprehensive tests for lazy initialization functionality in Foundation Telemetry.
 
 This test suite verifies that logging works correctly without explicit setup_telemetry()
 calls, maintains thread safety, outputs to stderr by default, and handles various
@@ -19,16 +19,16 @@ from unittest.mock import patch
 import pytest
 from pytest import CaptureFixture
 
-from pyvider.telemetry import (
+from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
     logger as global_logger,
     setup_telemetry,
 )
-from pyvider.telemetry.core import (
+from provide.foundation.core import (
     reset_pyvider_setup_for_testing,
 )
-from pyvider.telemetry.logger.base import (
+from provide.foundation.logger.base import (
     _LAZY_SETUP_STATE,  # Changed from _LAZY_SETUP_DONE, _LAZY_SETUP_ERROR
 )
 
@@ -233,7 +233,7 @@ class TestLazyInitializationEdgeCases:
         reset_pyvider_setup_for_testing()
 
         # Mock TelemetryConfig.from_env to raise an exception
-        with patch('pyvider.telemetry.config.TelemetryConfig.from_env') as mock_from_env:
+        with patch('provide.foundation.config.TelemetryConfig.from_env') as mock_from_env:
             mock_from_env.side_effect = Exception("Config loading failed")
 
             # Should still work with fallback configuration
@@ -248,7 +248,7 @@ class TestLazyInitializationEdgeCases:
         reset_pyvider_setup_for_testing()
 
         # Mock _configure_structlog_output to raise an exception
-        with patch('pyvider.telemetry.core._configure_structlog_output') as mock_configure:
+        with patch('provide.foundation.core._configure_structlog_output') as mock_configure:
             mock_configure.side_effect = Exception("Structlog config failed")
 
             # Should still work with emergency fallback
@@ -472,18 +472,18 @@ class TestLazyInitializationInternalState:
 
         # Import internal state variables
         # No, _LAZY_SETUP_STATE is already imported.
-        # from pyvider.telemetry.logger import base as logger_base # This line is not needed if we use the imported _LAZY_SETUP_STATE
+        # from provide.foundation.logger import base as logger_base # This line is not needed if we use the imported _LAZY_SETUP_STATE
 
         # Mock the lazy setup to fail
-        # To access PyviderLogger for patching, we might need logger_base_module still, or patch differently
-        from pyvider.telemetry.logger.base import (
-            PyviderLogger as PyviderLoggerForPatching,  # Specific import for patching if needed
+        # To access FoundationLogger for patching, we might need logger_base_module still, or patch differently
+        from provide.foundation.logger.base import (
+            FoundationLogger as FoundationLoggerForPatching,  # Specific import for patching if needed
         )
 
         def failing_lazy_setup(self) -> Never:
             raise Exception("Simulated lazy setup failure")
 
-        with patch.object(PyviderLoggerForPatching, '_perform_lazy_setup', failing_lazy_setup):
+        with patch.object(FoundationLoggerForPatching, '_perform_lazy_setup', failing_lazy_setup):
             # Should still work via emergency fallback
             global_logger.error("Message during setup failure")
 
@@ -495,11 +495,11 @@ class TestLazyInitializationInternalState:
         """Test that multiple logger instances share lazy initialization state."""
         reset_pyvider_setup_for_testing()
 
-        from pyvider.telemetry.logger.base import PyviderLogger
+        from provide.foundation.logger.base import FoundationLogger
 
         # Create multiple logger instances
-        logger1 = PyviderLogger()
-        logger2 = PyviderLogger()
+        logger1 = FoundationLogger()
+        logger2 = FoundationLogger()
 
         # First logger triggers initialization
         logger1.info("Message from logger1")

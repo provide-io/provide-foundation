@@ -1,18 +1,18 @@
 # src/pyvider/telemetry/semantic_layers.py
 """
-Predefined Semantic Telemetry Layers for Pyvider Telemetry.
+Predefined Semantic Telemetry Layers for Foundation Telemetry.
 
 This module contains definitions for built-in semantic layers that provide
 standardized logging conventions (structured keys, emojis) for common
 technologies and domains like LLMs, HTTP interactions, and databases.
 """
 
-from pyvider.telemetry.logger.emoji_matrix import (
+from provide.foundation.logger.emoji_matrix import (
     PRIMARY_EMOJI,
     SECONDARY_EMOJI,
     TERTIARY_EMOJI,
 )
-from pyvider.telemetry.types import (
+from provide.foundation.types import (
     CustomDasEmojiSet,
     SemanticFieldDefinition,
     SemanticLayer,

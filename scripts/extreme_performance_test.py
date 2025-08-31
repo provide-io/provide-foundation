@@ -2,7 +2,7 @@
 # extreme_performance_test.py
 #
 """
-Extreme Performance Testing for Pyvider Telemetry.
+Extreme Performance Testing for Foundation Telemetry.
 
 This script pushes the logging system to its absolute limits to test:
 - Maximum sustainable throughput
@@ -30,13 +30,13 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 import io
 
-from pyvider.telemetry import (
+from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
     logger,
     setup_telemetry,
 )
-from pyvider.telemetry.core import (
+from provide.foundation.core import (
     _set_log_stream_for_testing,
     reset_pyvider_setup_for_testing,
 )
@@ -351,7 +351,7 @@ def filtering_efficiency_test() -> dict[str, Any]:
         # Count actual output
         output_lines = len([
             line for line in captured.getvalue().split('\n')
-            if line.strip() and not line.startswith("[Pyvider Setup]")
+            if line.strip() and not line.startswith("[Foundation Setup]")
         ])
 
         duration = end_time - start_time
