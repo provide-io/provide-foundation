@@ -45,7 +45,7 @@ class TestRegistry:
         
         reg.register("foo", "value1", dimension="component")
         
-        with pytest.raises(ValueError, match="already registered"):
+        with pytest.raises(AlreadyExistsError, match="already registered"):
             reg.register("foo", "value2", dimension="component")
     
     def test_registry_allows_replace(self):
