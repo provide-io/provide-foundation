@@ -6,9 +6,9 @@ import sys
 from typing import Any, Callable, TypeVar
 
 import click
-import structlog
 
 from provide.foundation.context import Context
+from provide.foundation.logger import get_logger
 
 F = TypeVar("F", bound=Callable[..., Any])
 

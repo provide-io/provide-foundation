@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-import structlog
+from provide.foundation.logger import get_logger
 
 try:
     import tomli as tomllib
@@ -284,7 +284,7 @@ class Context:
     def logger(self) -> Any:
         """Get or create a logger for this context."""
         if self._logger is None:
-            self._logger = structlog.get_logger(
+            self._logger = get_logger(
                 "context",
                 log_level=self.log_level,
                 profile=self.profile,

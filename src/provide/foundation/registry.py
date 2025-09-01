@@ -4,9 +4,9 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Any, Iterator
 
-import structlog
+from provide.foundation.logger import get_logger
 
-log = structlog.get_logger(__name__)
+log = get_logger(__name__)
 
 
 @dataclass(frozen=True, slots=True)
