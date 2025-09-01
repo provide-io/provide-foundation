@@ -10,7 +10,7 @@ from typing import Any
 from attrs import Factory, define, field, fields, validators
 
 from provide.foundation.logger import get_logger
-from provide.foundation.utils.parsing import strict_parse_bool
+from provide.foundation.utils.parsing import parse_bool
 
 try:
     import tomli as tomllib
@@ -45,8 +45,8 @@ class Context:
         converter=str.upper
     )
     profile: str = field(default="default")
-    debug: bool = field(default=False, converter=strict_parse_bool)
-    json_output: bool = field(default=False, converter=strict_parse_bool)
+    debug: bool = field(default=False, converter=lambda x: parse_bool(x, strict=True))
+    json_output: bool = field(default=False, converter=lambda x: parse_bool(x, strict=True))
     config_file: Path | None = field(default=None, converter=lambda x: Path(x) if x else None)
     log_file: Path | None = field(default=None, converter=lambda x: Path(x) if x else None)
     

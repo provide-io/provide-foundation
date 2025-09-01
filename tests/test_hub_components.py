@@ -207,7 +207,7 @@ class TestComponentRegistration:
             return EPGroup()
         
         monkeypatch.setattr(
-            "provide.foundation.hub.components.discovery.entry_points",
+            "provide.foundation.hub.components.entry_points",
             mock_entry_points
         )
         

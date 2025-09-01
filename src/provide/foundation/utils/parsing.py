@@ -12,15 +12,15 @@ from typing import Any, TypeVar, get_origin, get_args
 T = TypeVar("T")
 
 
-def parse_bool(value: str | bool, strict: bool = False) -> bool:
+def parse_bool(value: Any, strict: bool = False) -> bool:
     """
-    Parse a boolean value from string.
+    Parse a boolean value from string or other types.
     
     Accepts: true/false, yes/no, 1/0, on/off, enabled/disabled (case-insensitive)
     
     Args:
-        value: String or bool value to parse
-        strict: If True, raise TypeError for non-bool/non-string types
+        value: Value to parse as boolean
+        strict: If True, only accept bool or string types (raise TypeError otherwise)
         
     Returns:
         Boolean value
@@ -43,26 +43,6 @@ def parse_bool(value: str | bool, strict: bool = False) -> bool:
         return False
     else:
         raise ValueError(f"Cannot parse '{value}' as boolean")
-
-
-def strict_parse_bool(value: Any) -> bool:
-    """
-    Parse boolean with strict type checking.
-    
-    Convenience function for parse_bool(value, strict=True).
-    Only accepts actual bools or strings that can be parsed as bool.
-    
-    Args:
-        value: Value to convert
-        
-    Returns:
-        Boolean value
-        
-    Raises:
-        TypeError: If value is not bool or string
-        ValueError: If string cannot be parsed as boolean
-    """
-    return parse_bool(value, strict=True)
 
 
 def parse_list(
