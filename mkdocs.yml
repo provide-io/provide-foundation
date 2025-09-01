@@ -108,10 +108,15 @@ nav:
   - 'API Reference':
     - 'Logger': 'api-reference/logger.md'
     - 'Configuration': 'api-reference/config.md'
+    - 'Console Output': 'api-reference/console.md'
+    - 'Platform Detection': 'api-reference/platform.md'
+    - 'Process Execution': 'api-reference/process.md'
     - 'Semantic Layers': 'api-reference/semantic-layers.md'
     - 'Error Handling': 'api-reference/errors.md'
-    - 'Utilities': 'api-reference/utils.md'
+    - 'Registry': 'api-reference/registry.md'
+    - 'CLI Framework': 'api-reference/cli.md'
     - 'Hub': 'api-reference/hub.md'
+    - 'Utilities': 'api-reference/utils.md'
   - 'About':
     - 'Contributing': 'about/contributing.md'
     - 'License': 'LICENSE' # Link to existing license file
