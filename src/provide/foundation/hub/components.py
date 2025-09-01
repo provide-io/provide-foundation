@@ -7,7 +7,6 @@ components in the provide-io ecosystem.
 
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, TypeVar, overload
 
@@ -36,7 +35,7 @@ class ComponentInfo:
     metadata: dict[str, Any] = field(default_factory=dict)
 
 
-class BaseComponent(ABC):
+class BaseComponent:
     """
     Base class for hub components.
     
@@ -62,9 +61,8 @@ class BaseComponent(ABC):
             self._setup()
             self._initialized = True
     
-    @abstractmethod
     def _setup(self) -> None:
-        """Setup hook for subclasses to implement."""
+        """Setup hook for subclasses to override if needed."""
         pass
     
     def cleanup(self) -> None:

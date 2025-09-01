@@ -40,6 +40,31 @@ def parse_bool(value: str | bool) -> bool:
         raise ValueError(f"Cannot parse '{value}' as boolean")
 
 
+def strict_bool_converter(value: Any) -> bool:
+    """
+    Convert value to bool with strict type checking.
+    
+    Only accepts actual bools or strings that can be parsed as bool.
+    Raises TypeError for other types.
+    
+    Args:
+        value: Value to convert
+        
+    Returns:
+        Boolean value
+        
+    Raises:
+        TypeError: If value is not bool or parseable string
+        ValueError: If string cannot be parsed as boolean
+    """
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        # Use parse_bool for string conversion
+        return parse_bool(value)
+    raise TypeError(f"Cannot convert {type(value).__name__} to bool: {value!r}")
+
+
 def parse_list(
     value: str | list,
     separator: str = ",",
