@@ -221,5 +221,5 @@ def _build_formatter_processors_list(
         case _:
             # Unknown formatter, warn and default to key_value
             import sys
-            print(f"Unknown formatter '{logging_config.console_formatter}', defaulting to key_value", file=sys.stderr)
+            sys.stderr.write(f"Unknown formatter '{logging_config.console_formatter}', defaulting to key_value\n")
             return _config_create_keyvalue_formatter_processors(output_stream)

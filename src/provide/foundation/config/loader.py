@@ -191,7 +191,7 @@ class EnvConfigLoader(ConfigLoader):
         if not issubclass(config_class, EnvConfig):
             raise TypeError(f"{config_class.__name__} must inherit from EnvConfig")
 
-        return await config_class.from_env(
+        return config_class.from_env(
             prefix=self.prefix,
             delimiter=self.delimiter,
             case_sensitive=self.case_sensitive,
