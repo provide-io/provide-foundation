@@ -1,0 +1,22 @@
+# act configuration for provide-foundation
+# https://github.com/nektos/act
+
+# Default runner images (smaller than GitHub's)
+-P ubuntu-latest=catthehacker/ubuntu:act-latest
+-P ubuntu-22.04=catthehacker/ubuntu:act-22.04
+-P ubuntu-20.04=catthehacker/ubuntu:act-20.04
+-P macos-latest=catthehacker/ubuntu:act-latest  # Note: act doesn't support macOS runners
+-P macos-13=catthehacker/ubuntu:act-latest
+-P macos-12=catthehacker/ubuntu:act-latest
+
+# Use local .env file for secrets
+--secret-file .secrets
+
+# Enable verbose output for debugging
+# --verbose
+
+# Reuse containers for faster runs
+--reuse
+
+# Default workflow to run
+--workflows .github/workflows/ci.yml
