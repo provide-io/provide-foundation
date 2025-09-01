@@ -20,6 +20,7 @@ from provide.foundation.config.env import (
 )
 from provide.foundation.config.loader import (
     ConfigLoader,
+    DictConfigLoader,
     FileConfigLoader,
     MultiSourceLoader,
 )
@@ -53,6 +54,7 @@ __all__ = [
     "parse_list",
     # Loader
     "ConfigLoader",
+    "DictConfigLoader",
     "FileConfigLoader",
     "MultiSourceLoader",
     # Manager
