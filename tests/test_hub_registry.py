@@ -2,7 +2,7 @@
 
 import pytest
 
-from provide.foundation.hub.registry import Registry
+from provide.foundation.registry import Registry
 
 
 class TestRegistry:
