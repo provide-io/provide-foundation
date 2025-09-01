@@ -237,7 +237,10 @@ def suppress_and_log(
                 return func(*args, **kwargs)
             except exceptions as e:
                 # Get appropriate log method
-                log_method = getattr(logger, log_level, logger.warning)
+                if hasattr(logger, log_level):
+                    log_method = getattr(logger, log_level)
+                else:
+                    log_method = logger.warning
                 
                 log_method(
                     f"Suppressed {type(e).__name__} in {func.__name__}: {e}",
