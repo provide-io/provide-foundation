@@ -24,10 +24,10 @@ This guide explains how to test GitHub Actions workflows locally using [act](htt
 
 When using act with Colima, you may encounter an error:
 ```
-error while creating mount source path '/Users/tim/.colima/docker.sock': mkdir /Users/tim/.colima/docker.sock: file exists
+error while creating mount source path '/Users/tim/.colima/default/docker.sock': mkdir /Users/tim/.colima/default/docker.sock: operation not supported
 ```
 
-This happens because act tries to mount the Docker socket into containers, but Colima's virtualization layer doesn't support this operation.
+This happens because act tries to mount the Docker socket into containers, but Colima's virtualization layer doesn't support this operation. The solution is to disable socket mounting using the `--container-daemon-socket -` flag.
 
 ## Solution
 
