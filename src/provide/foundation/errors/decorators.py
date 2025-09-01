@@ -79,14 +79,12 @@ def with_error_handling(
                     )
                 
                 # Map the error if mapper provided
-                if error_mapper:
-                    e = error_mapper(e)
+                if error_mapper and not isinstance(e, FoundationError):
+                    mapped = error_mapper(e)
+                    if mapped is not e:
+                        raise mapped from e
                 
-                # Don't wrap FoundationErrors
-                if isinstance(e, FoundationError):
-                    raise
-                
-                # Re-raise the (possibly mapped) error
+                # Re-raise the original error
                 raise
         
         return wrapper  # type: ignore
