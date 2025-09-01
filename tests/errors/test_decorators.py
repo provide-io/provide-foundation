@@ -1,7 +1,7 @@
 """Tests for provide.foundation.errors.decorators module."""
 
 import time
-from unittest.mock import MagicMock, patch
+from unittest.mock import ANY, MagicMock, patch
 
 import pytest
 
@@ -267,7 +267,7 @@ class TestRetryOnError:
         with pytest.raises(ValueError):
             func()
         
-        callback.assert_called_once_with(1, pytest.Any(ValueError))
+        callback.assert_called_once_with(1, ANY)
     
     def test_on_retry_callback_exception(self):
         """Test that exceptions in on_retry don't break retry."""

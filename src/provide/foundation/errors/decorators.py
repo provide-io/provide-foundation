@@ -155,6 +155,13 @@ def retry_on_error(
                     
                     # Check if we should retry this error
                     if not policy.should_retry(e, attempt):
+                        if attempt > 1:  # Only log if we've actually retried
+                            logger.error(
+                                f"All {attempt} retry attempts failed for {func.__name__}",
+                                attempts=attempt,
+                                error=str(e),
+                                error_type=type(e).__name__
+                            )
                         raise
                     
                     # Don't retry on last attempt
