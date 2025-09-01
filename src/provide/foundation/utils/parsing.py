@@ -187,6 +187,11 @@ def auto_parse(attr: Any, value: str) -> Any:
     Returns:
         Parsed value based on field type
     """
+    # Debug output
+    import os
+    if os.environ.get("DEBUG_ENV_PARSE") and hasattr(attr, "name") and attr.name == "int_val":
+        print(f"DEBUG auto_parse: attr={attr}, has type={hasattr(attr, 'type')}, type={getattr(attr, 'type', None)}")
+    
     # Get type hint from attrs field
     if hasattr(attr, "type") and attr.type is not None:
         return parse_typed_value(value, attr.type)
