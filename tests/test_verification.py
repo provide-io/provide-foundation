@@ -19,18 +19,18 @@ def test_basic_lazy_init() -> None:
     print("=== Test 1: Basic Lazy Initialization ===")
 
     # Reset any existing configuration
-    from pyvider.telemetry.core import reset_pyvider_setup_for_testing
-    reset_pyvider_setup_for_testing()
+    from provide.foundation.core import reset_foundation_setup_for_testing
+    reset_foundation_setup_for_testing()
 
     # Clear environment
     env_vars_to_clear = [
-        "PYVIDER_SERVICE_NAME", "PYVIDER_LOG_CONSOLE_FORMATTER",
-        "PYVIDER_LOG_LOGGER_NAME_EMOJI_ENABLED", "PYVIDER_LOG_DAS_EMOJI_ENABLED"
+        "FOUNDATION_SERVICE_NAME", "FOUNDATION_LOG_CONSOLE_FORMATTER",
+        "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED", "FOUNDATION_LOG_DAS_EMOJI_ENABLED"
     ]
     for var in env_vars_to_clear:
         os.environ.pop(var, None)
 
-    from pyvider.telemetry import logger
+    from provide.foundation import logger
     logger.info("Basic lazy initialization test")
     print("✅ Basic lazy initialization works")
 
@@ -39,14 +39,14 @@ def test_service_name_injection() -> None:
     """Test service name injection with JSON format."""
     print("\n=== Test 2: Service Name Injection (JSON) ===")
 
-    from pyvider.telemetry.core import reset_pyvider_setup_for_testing
-    reset_pyvider_setup_for_testing()
+    from provide.foundation.core import reset_foundation_setup_for_testing
+    reset_foundation_setup_for_testing()
 
     # Set environment like the failing test
-    os.environ["PYVIDER_SERVICE_NAME"] = "test-service"
-    os.environ["PYVIDER_LOG_CONSOLE_FORMATTER"] = "json"
+    os.environ["FOUNDATION_SERVICE_NAME"] = "test-service"
+    os.environ["FOUNDATION_LOG_CONSOLE_FORMATTER"] = "json"
 
-    from pyvider.telemetry import logger
+    from provide.foundation import logger
     logger.info("Message with service name")
     print("✅ Service name injection test works")
 
@@ -55,13 +55,13 @@ def test_lazy_setup_flags() -> None:
     """Test that lazy setup flags are set correctly."""
     print("\n=== Test 3: Lazy Setup Flags ===")
 
-    from pyvider.telemetry.core import reset_pyvider_setup_for_testing
-    reset_pyvider_setup_for_testing()
+    from provide.foundation.core import reset_foundation_setup_for_testing
+    reset_foundation_setup_for_testing()
 
-    from pyvider.telemetry.logger.base import _LAZY_SETUP_STATE  # Changed
+    from provide.foundation.logger.base import _LAZY_SETUP_STATE  # Changed
     print(f"Initial state - _LAZY_SETUP_STATE: {_LAZY_SETUP_STATE}")
 
-    from pyvider.telemetry import logger
+    from provide.foundation import logger
     logger.info("Trigger lazy setup")
 
     # _LAZY_SETUP_STATE is a mutable dict, check its current content
@@ -76,14 +76,14 @@ def test_emergency_fallback() -> None:
     """Test emergency fallback doesn't crash."""
     print("\n=== Test 4: Emergency Fallback ===")
 
-    from pyvider.telemetry.core import reset_pyvider_setup_for_testing
-    reset_pyvider_setup_for_testing()
+    from provide.foundation.core import reset_foundation_setup_for_testing
+    reset_foundation_setup_for_testing()
 
-    from pyvider.telemetry.logger.base import PyviderLogger
-    test_logger = PyviderLogger()
+    from provide.foundation.logger.base import FoundationLogger
+    test_logger = FoundationLogger()
 
     # Trigger emergency fallback by setting error state
-    from pyvider.telemetry.logger.base import (
+    from provide.foundation.logger.base import (
         _LAZY_SETUP_STATE,  # Ensure we use the state dict
     )
     _LAZY_SETUP_STATE["error"] = Exception("Test error") # Set error state
@@ -100,7 +100,7 @@ def test_emergency_fallback() -> None:
         raise AssertionError(f"Emergency fallback test failed: {e}") from e # B904
     finally:
         # Clean up state
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
 # Removed __main__ block
 

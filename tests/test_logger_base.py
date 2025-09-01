@@ -2,8 +2,8 @@
 # base.py
 #
 """
-Pyvider Telemetry Base Logger Implementation.
-Defines PyviderLogger with lazy initialization, thread safety, and standard logging methods.
+Foundation Telemetry Base Logger Implementation.
+Defines FoundationLogger with lazy initialization, thread safety, and standard logging methods.
 """
 
 import contextlib
@@ -15,11 +15,11 @@ from typing import TYPE_CHECKING, Any, TextIO, cast
 import structlog
 from structlog.types import BindableLogger
 
-from pyvider.telemetry.types import TRACE_LEVEL_NAME
+from provide.foundation.types import TRACE_LEVEL_NAME
 
 if TYPE_CHECKING:
-    from pyvider.telemetry.config import TelemetryConfig
-    from pyvider.telemetry.core import ResolvedSemanticConfig
+    from provide.foundation.config import TelemetryConfig
+    from provide.foundation.core import ResolvedSemanticConfig
 
 _LAZY_SETUP_LOCK = threading.Lock()
 _LAZY_SETUP_STATE: dict[str, Any] = {"done": False, "error": None, "in_progress": False}
@@ -27,7 +27,7 @@ _LAZY_SETUP_STATE: dict[str, Any] = {"done": False, "error": None, "in_progress"
 def _get_safe_stderr() -> TextIO:
     return sys.stderr if hasattr(sys, 'stderr') and sys.stderr is not None else io.StringIO()
 
-class PyviderLogger:
+class FoundationLogger:
     """A `structlog`-based logger providing a standardized logging interface."""
 
     def __init__(self) -> None:
@@ -90,7 +90,7 @@ class PyviderLogger:
         """
         Executes lazy setup by calling the main internal setup function.
         """
-        from pyvider.telemetry.core import _internal_setup
+        from provide.foundation.core import _internal_setup
         # Calling _internal_setup with no config will make it use from_env()
         # and is_explicit_call=False will be used.
         _internal_setup(config=None, is_explicit_call=False)
@@ -126,12 +126,12 @@ class PyviderLogger:
         except (TypeError, ValueError, KeyError):
             return f"{event_str} {' '.join(str(arg) for arg in args)}"
 
-    def trace(self, event: str, *args: Any, _pyvider_logger_name: str | None = None, **kwargs: Any) -> None:
+    def trace(self, event: str, *args: Any, _foundation_logger_name: str | None = None, **kwargs: Any) -> None:
         self._ensure_configured()
         formatted_event = self._format_message_with_args(event, args)
-        logger_name = _pyvider_logger_name or "pyvider.dynamic_call_trace"
+        logger_name = _foundation_logger_name or "pyvider.dynamic_call_trace"
         log = self.get_logger(logger_name)
-        kwargs["_pyvider_level_hint"] = TRACE_LEVEL_NAME.lower()
+        kwargs["_foundation_level_hint"] = TRACE_LEVEL_NAME.lower()
         log.msg(formatted_event, **kwargs)
 
     def debug(self, event: str, *args: Any, **kwargs: Any) -> None:
@@ -157,4 +157,4 @@ class PyviderLogger:
     def __setattr__(self, name: str, value: Any) -> None:
         super().__setattr__(name, value)
 
-logger: PyviderLogger = PyviderLogger()
+logger: FoundationLogger = FoundationLogger()

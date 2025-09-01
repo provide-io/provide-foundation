@@ -3,7 +3,7 @@
 #
 
 """
-Comprehensive tests for lazy initialization functionality in Pyvider telemetry.
+Comprehensive tests for lazy initialization functionality in Foundation Telemetry.
 
 This test suite verifies that logging works correctly without explicit setup_telemetry()
 calls, maintains thread safety, outputs to stderr by default, and handles various
@@ -19,16 +19,16 @@ from unittest.mock import patch
 import pytest
 from pytest import CaptureFixture
 
-from pyvider.telemetry import (
+from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
     logger as global_logger,
     setup_telemetry,
 )
-from pyvider.telemetry.core import (
-    reset_pyvider_setup_for_testing,
+from provide.foundation.core import (
+    reset_foundation_setup_for_testing,
 )
-from pyvider.telemetry.logger.base import (
+from provide.foundation.logger.base import (
     _LAZY_SETUP_STATE,  # Changed from _LAZY_SETUP_DONE, _LAZY_SETUP_ERROR
 )
 
@@ -38,7 +38,7 @@ class TestLazyInitializationBasics:
 
     def test_lazy_initialization_without_setup(self, capsys: CaptureFixture) -> None:
         """Test that logging works immediately without setup_telemetry()."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Verify initial state - not configured by explicit setup
         assert not global_logger._is_configured_by_setup
@@ -58,13 +58,13 @@ class TestLazyInitializationBasics:
 
     def test_lazy_initialization_stderr_default(self, capsys: CaptureFixture) -> None:
         """Test that lazy initialization defaults to stderr output."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Clear any environment variables that might affect output
         with patch.dict(os.environ, {}, clear=True):
             os.environ.update({
-                "PYVIDER_LOG_LEVEL": "INFO",
-                "PYVIDER_LOG_CONSOLE_FORMATTER": "key_value",
+                "FOUNDATION_LOG_LEVEL": "INFO",
+                "FOUNDATION_LOG_CONSOLE_FORMATTER": "key_value",
             })
 
             global_logger.warning("Warning message to stderr")
@@ -75,13 +75,13 @@ class TestLazyInitializationBasics:
 
     def test_lazy_initialization_with_environment_config(self, capsys: CaptureFixture) -> None:
         """Test lazy initialization respects environment configuration."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         with patch.dict(os.environ, {
-            "PYVIDER_LOG_LEVEL": "DEBUG",
-            "PYVIDER_LOG_CONSOLE_FORMATTER": "json",
-            "PYVIDER_SERVICE_NAME": "lazy-test-service",
-            "PYVIDER_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
+            "FOUNDATION_LOG_LEVEL": "DEBUG",
+            "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
+            "FOUNDATION_SERVICE_NAME": "lazy-test-service",
+            "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
         }):
             global_logger.debug("Debug message with env config")
 
@@ -99,7 +99,7 @@ class TestLazyInitializationBasics:
 
     def test_lazy_initialization_thread_safety(self, capsys: CaptureFixture) -> None:
         """Test that lazy initialization is thread-safe."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         results: list[bool] = []
         exceptions: list[Exception] = []
@@ -142,7 +142,7 @@ class TestLazyInitializationBasics:
 
     def test_explicit_setup_after_lazy_initialization(self, capsys: CaptureFixture) -> None:
         """Test that explicit setup_telemetry() works after lazy initialization."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # First, trigger lazy initialization
         global_logger.info("Message before explicit setup")
@@ -179,11 +179,11 @@ class TestLazyInitializationBasics:
 
     def test_lazy_initialization_with_module_levels(self, capsys: CaptureFixture) -> None:
         """Test lazy initialization with module-specific log levels."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         with patch.dict(os.environ, {
-            "PYVIDER_LOG_LEVEL": "WARNING",
-            "PYVIDER_LOG_MODULE_LEVELS": "test.debug:DEBUG,test.error:ERROR",
+            "FOUNDATION_LOG_LEVEL": "WARNING",
+            "FOUNDATION_LOG_MODULE_LEVELS": "test.debug:DEBUG,test.error:ERROR",
         }):
             # These should be filtered (below WARNING)
             global_logger.get_logger("test.default").info("Default info - filtered")
@@ -216,9 +216,9 @@ class TestLazyInitializationEdgeCases:
 
     def test_lazy_initialization_disabled_globally(self, capsys: CaptureFixture) -> None:
         """Test lazy initialization when telemetry is globally disabled."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
-        with patch.dict(os.environ, {"PYVIDER_TELEMETRY_DISABLED": "true"}):
+        with patch.dict(os.environ, {"FOUNDATION_TELEMETRY_DISABLED": "true"}):
             global_logger.info("Message when disabled")
             global_logger.error("Error when disabled")
 
@@ -230,10 +230,10 @@ class TestLazyInitializationEdgeCases:
 
     def test_lazy_initialization_config_error_fallback(self, capsys: CaptureFixture) -> None:
         """Test fallback behavior when configuration fails."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Mock TelemetryConfig.from_env to raise an exception
-        with patch('pyvider.telemetry.config.TelemetryConfig.from_env') as mock_from_env:
+        with patch('provide.foundation.config.TelemetryConfig.from_env') as mock_from_env:
             mock_from_env.side_effect = Exception("Config loading failed")
 
             # Should still work with fallback configuration
@@ -245,10 +245,10 @@ class TestLazyInitializationEdgeCases:
 
     def test_lazy_initialization_structlog_config_error_fallback(self, capsys: CaptureFixture) -> None:
         """Test emergency fallback when structlog configuration fails."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Mock _configure_structlog_output to raise an exception
-        with patch('pyvider.telemetry.core._configure_structlog_output') as mock_configure:
+        with patch('provide.foundation.core._configure_structlog_output') as mock_configure:
             mock_configure.side_effect = Exception("Structlog config failed")
 
             # Should still work with emergency fallback
@@ -256,11 +256,11 @@ class TestLazyInitializationEdgeCases:
 
         captured = capsys.readouterr()
         # Should log via emergency fallback mechanism
-        assert "Emergency fallback message" in captured.err or "Pyvider Emergency" in captured.err
+        assert "Emergency fallback message" in captured.err or "Foundation Emergency" in captured.err
 
     def test_concurrent_lazy_initialization_race_condition(self, capsys: CaptureFixture) -> None:
         """Test race conditions in concurrent lazy initialization."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Use a barrier to synchronize thread starts for maximum contention
         thread_count = 20
@@ -302,7 +302,7 @@ class TestLazyInitializationEdgeCases:
 
     def test_lazy_initialization_memory_usage(self, capsys: CaptureFixture) -> None:
         """Test that lazy initialization doesn't cause memory leaks."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         import gc
 
@@ -326,7 +326,7 @@ class TestLazyInitializationEdgeCases:
 
     def test_reset_after_lazy_initialization(self, capsys: CaptureFixture) -> None:
         """Test that reset works correctly after lazy initialization."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Trigger lazy initialization
         global_logger.info("Before reset")
@@ -335,7 +335,7 @@ class TestLazyInitializationEdgeCases:
         assert "Before reset" in captured_before.err
 
         # Reset should clear lazy initialization state
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Verify state was reset
         assert not global_logger._is_configured_by_setup
@@ -352,17 +352,17 @@ class TestLazyInitializationCompatibility:
 
     def test_trace_logging_with_lazy_initialization(self, capsys: CaptureFixture) -> None:
         """Test TRACE level logging works with lazy initialization."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         with patch.dict(os.environ, {
-            "PYVIDER_LOG_LEVEL": "INFO",
-            "PYVIDER_LOG_MODULE_LEVELS": "trace.test:TRACE",
+            "FOUNDATION_LOG_LEVEL": "INFO",
+            "FOUNDATION_LOG_MODULE_LEVELS": "trace.test:TRACE",
         }):
             # Regular trace should be filtered
             global_logger.trace("Filtered trace message")
 
             # Module-specific trace should appear
-            global_logger.trace("Shown trace message", _pyvider_logger_name="trace.test")
+            global_logger.trace("Shown trace message", _foundation_logger_name="trace.test")
 
         captured = capsys.readouterr()
         assert "Filtered trace message" not in captured.err
@@ -370,7 +370,7 @@ class TestLazyInitializationCompatibility:
 
     def test_exception_logging_with_lazy_initialization(self, capsys: CaptureFixture) -> None:
         """Test exception logging works with lazy initialization."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         try:
             raise ValueError("Test exception for lazy init")
@@ -384,11 +384,11 @@ class TestLazyInitializationCompatibility:
 
     def test_das_emoji_with_lazy_initialization(self, capsys: CaptureFixture) -> None:
         """Test Domain-Action-Status emojis work with lazy initialization."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         with patch.dict(os.environ, {
-            "PYVIDER_LOG_CONSOLE_FORMATTER": "key_value",
-            "PYVIDER_LOG_DAS_EMOJI_ENABLED": "true",
+            "FOUNDATION_LOG_CONSOLE_FORMATTER": "key_value",
+            "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "true",
         }):
             global_logger.info(
                 "DAS test message",
@@ -405,7 +405,7 @@ class TestLazyInitializationCompatibility:
     @pytest.mark.asyncio
     async def test_async_logging_with_lazy_initialization(self, capsys: CaptureFixture) -> None:
         """Test async logging works with lazy initialization."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         async def async_task(task_id: int) -> None:
             global_logger.info(f"Async task {task_id} started")
@@ -426,14 +426,14 @@ class TestLazyInitializationCompatibility:
 
     def test_service_name_injection_with_lazy_initialization(self, capsys: CaptureFixture) -> None:
         """Test service name injection works with lazy initialization."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # FIXED: Explicitly disable emojis for JSON format to match test expectation
         with patch.dict(os.environ, {
-            "PYVIDER_SERVICE_NAME": "lazy-service-test",
-            "PYVIDER_LOG_CONSOLE_FORMATTER": "json",
-            "PYVIDER_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
-            "PYVIDER_LOG_DAS_EMOJI_ENABLED": "false",
+            "FOUNDATION_SERVICE_NAME": "lazy-service-test",
+            "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
+            "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
+            "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "false",
         }):
             global_logger.info("Message with service name")
 
@@ -452,7 +452,7 @@ class TestLazyInitializationInternalState:
 
     def test_lazy_setup_done_flag(self, capsys: CaptureFixture) -> None:
         """Test that _LAZY_SETUP_DONE flag is managed correctly."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # _LAZY_SETUP_STATE is imported directly now
         # Initially should not be done
@@ -468,22 +468,22 @@ class TestLazyInitializationInternalState:
 
     def test_lazy_setup_error_handling(self, capsys: CaptureFixture) -> None:
         """Test error handling in lazy setup."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Import internal state variables
         # No, _LAZY_SETUP_STATE is already imported.
-        # from pyvider.telemetry.logger import base as logger_base # This line is not needed if we use the imported _LAZY_SETUP_STATE
+        # from provide.foundation.logger import base as logger_base # This line is not needed if we use the imported _LAZY_SETUP_STATE
 
         # Mock the lazy setup to fail
-        # To access PyviderLogger for patching, we might need logger_base_module still, or patch differently
-        from pyvider.telemetry.logger.base import (
-            PyviderLogger as PyviderLoggerForPatching,  # Specific import for patching if needed
+        # To access FoundationLogger for patching, we might need logger_base_module still, or patch differently
+        from provide.foundation.logger.base import (
+            FoundationLogger as FoundationLoggerForPatching,  # Specific import for patching if needed
         )
 
         def failing_lazy_setup(self) -> Never:
             raise Exception("Simulated lazy setup failure")
 
-        with patch.object(PyviderLoggerForPatching, '_perform_lazy_setup', failing_lazy_setup):
+        with patch.object(FoundationLoggerForPatching, '_perform_lazy_setup', failing_lazy_setup):
             # Should still work via emergency fallback
             global_logger.error("Message during setup failure")
 
@@ -493,13 +493,13 @@ class TestLazyInitializationInternalState:
 
     def test_multiple_logger_instances_lazy_init(self, capsys: CaptureFixture) -> None:
         """Test that multiple logger instances share lazy initialization state."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
-        from pyvider.telemetry.logger.base import PyviderLogger
+        from provide.foundation.logger.base import FoundationLogger
 
         # Create multiple logger instances
-        logger1 = PyviderLogger()
-        logger2 = PyviderLogger()
+        logger1 = FoundationLogger()
+        logger2 = FoundationLogger()
 
         # First logger triggers initialization
         logger1.info("Message from logger1")

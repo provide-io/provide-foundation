@@ -1,6 +1,6 @@
-# 📚 Pyvider Telemetry API Documentation
+# 📚 Foundation Telemetry API Documentation
 
-Complete API reference for Pyvider Telemetry v1.0.0
+Complete API reference for Foundation Telemetry v1.0.0
 
 ## 🎯 Core API
 
@@ -10,7 +10,7 @@ Complete API reference for Pyvider Telemetry v1.0.0
 def setup_telemetry(config: TelemetryConfig | None = None) -> None
 ```
 
-**Description**: Initializes and configures the Pyvider telemetry system.
+**Description**: Initializes and configures the Foundation Telemetry system.
 
 **Parameters**:
 - `config` (TelemetryConfig | None): Configuration instance. If None, loads from environment variables.
@@ -19,7 +19,7 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None
 
 **Example**:
 ```python
-from pyvider.telemetry import setup_telemetry, TelemetryConfig
+from provide.foundation import setup_telemetry, TelemetryConfig
 
 # Use environment variables
 setup_telemetry()
@@ -29,10 +29,10 @@ config = TelemetryConfig(service_name="my-app")
 setup_telemetry(config)
 ```
 
-### shutdown_pyvider_telemetry()
+### shutdown_foundation_telemetry()
 
 ```python
-async def shutdown_pyvider_telemetry(timeout_millis: int = 5000) -> None
+async def shutdown_foundation_telemetry(timeout_millis: int = 5000) -> None
 ```
 
 **Description**: Performs graceful shutdown of telemetry system.
@@ -45,13 +45,13 @@ async def shutdown_pyvider_telemetry(timeout_millis: int = 5000) -> None
 **Example**:
 ```python
 import asyncio
-from pyvider.telemetry import shutdown_pyvider_telemetry
+from provide.foundation import shutdown_foundation_telemetry
 
 # In async context
-await shutdown_pyvider_telemetry()
+await shutdown_foundation_telemetry()
 
 # In sync context
-asyncio.run(shutdown_pyvider_telemetry())
+asyncio.run(shutdown_foundation_telemetry())
 ```
 
 ## 🏗️ Configuration Classes
@@ -85,15 +85,15 @@ def from_env(cls) -> "TelemetryConfig"
 **Description**: Creates configuration from environment variables.
 
 **Environment Variables**:
-- `OTEL_SERVICE_NAME` / `PYVIDER_SERVICE_NAME`: Service name
-- `PYVIDER_TELEMETRY_DISABLED`: Global disable flag
+- `OTEL_SERVICE_NAME` / `FOUNDATION_SERVICE_NAME`: Service name
+- `FOUNDATION_TELEMETRY_DISABLED`: Global disable flag
 
 **Example**:
 ```python
 import os
-from pyvider.telemetry import TelemetryConfig
+from provide.foundation import TelemetryConfig
 
-os.environ["PYVIDER_SERVICE_NAME"] = "my-service"
+os.environ["FOUNDATION_SERVICE_NAME"] = "my-service"
 config = TelemetryConfig.from_env()
 print(config.service_name)  # "my-service"
 ```
@@ -129,19 +129,19 @@ class LoggingConfig:
 - **`user_defined_emoji_sets` (new)**: A list of `CustomDasEmojiSet` objects to add or override emoji mappings.
 
 **Environment Variables**:
-- `PYVIDER_LOG_LEVEL`: Default log level
-- `PYVIDER_LOG_CONSOLE_FORMATTER`: Output formatter
-- `PYVIDER_LOG_LOGGER_NAME_EMOJI_ENABLED`: Logger emoji toggle
-- `PYVIDER_LOG_DAS_EMOJI_ENABLED`: DAS emoji toggle
-- `PYVIDER_LOG_OMIT_TIMESTAMP`: Timestamp toggle
-- `PYVIDER_LOG_MODULE_LEVELS`: Module level overrides
-- **`PYVIDER_LOG_ENABLED_SEMANTIC_LAYERS` (new)**: Comma-separated list of layer names to enable (e.g., `"llm,http"`).
-- **`PYVIDER_LOG_CUSTOM_SEMANTIC_LAYERS` (new)**: A JSON string representing a list of `SemanticLayer` objects.
-- **`PYVIDER_LOG_USER_DEFINED_EMOJI_SETS` (new)**: A JSON string representing a list of `CustomDasEmojiSet` objects.
+- `FOUNDATION_LOG_LEVEL`: Default log level
+- `FOUNDATION_LOG_CONSOLE_FORMATTER`: Output formatter
+- `FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED`: Logger emoji toggle
+- `FOUNDATION_LOG_DAS_EMOJI_ENABLED`: DAS emoji toggle
+- `FOUNDATION_LOG_OMIT_TIMESTAMP`: Timestamp toggle
+- `FOUNDATION_LOG_MODULE_LEVELS`: Module level overrides
+- **`FOUNDATION_LOG_ENABLED_SEMANTIC_LAYERS` (new)**: Comma-separated list of layer names to enable (e.g., `"llm,http"`).
+- **`FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS` (new)**: A JSON string representing a list of `SemanticLayer` objects.
+- **`FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS` (new)**: A JSON string representing a list of `CustomDasEmojiSet` objects.
 
 **Example**:
 ```python
-from pyvider.telemetry import LoggingConfig
+from provide.foundation import LoggingConfig
 
 config = LoggingConfig(
     default_level="INFO",
@@ -174,21 +174,21 @@ LogLevelStr = Literal["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE", 
 ### logger (Global Instance)
 
 ```python
-logger: PyviderLogger
+logger: FoundationLogger
 ```
 
 **Description**: Global logger instance for immediate use.
 
 **Example**:
 ```python
-from pyvider.telemetry import logger
+from provide.foundation import logger
 
 logger.info("Application started")
 logger.debug("Debug information", user_id=123)
 logger.error("Error occurred", error_code="E001")
 ```
 
-### PyviderLogger Class
+### FoundationLogger Class
 
 #### get_logger()
 
@@ -205,7 +205,7 @@ def get_logger(self, name: str | None = None) -> Any
 
 **Example**:
 ```python
-from pyvider.telemetry import logger
+from provide.foundation import logger
 
 auth_logger = logger.get_logger("auth.service")
 db_logger = logger.get_logger("database.connection")
@@ -257,7 +257,7 @@ def trace(
     self, 
     event: str, 
     *args: Any, 
-    _pyvider_logger_name: str | None = None, 
+    _foundation_logger_name: str | None = None, 
     **kwargs: Any
 ) -> None
 ```
@@ -267,7 +267,7 @@ def trace(
 **Parameters**:
 - `event`: Log message
 - `*args`: Format arguments
-- `_pyvider_logger_name`: Override logger name for this call
+- `_foundation_logger_name`: Override logger name for this call
 - `**kwargs`: Additional structured data
 
 **Example**:
@@ -277,7 +277,7 @@ logger.trace("Detailed execution flow")
 
 # With custom logger name
 logger.trace("Database query details", 
-            _pyvider_logger_name="db.trace",
+            _foundation_logger_name="db.trace",
             query="SELECT * FROM users", 
             duration_ms=23)
 ```
@@ -289,7 +289,7 @@ logger.trace("Database query details",
 
 ```python
 def timed_block(
-    logger_instance: "PyviderLogger",
+    logger_instance: "FoundationLogger",
     event_name: str,
     layer_keys: dict[str, Any] | None = None,
     **initial_kvs: Any
@@ -299,14 +299,14 @@ def timed_block(
 **Description**: A context manager to log the duration and outcome of a block of code. It automatically captures the start time, executes the wrapped code block, and then logs an event including the `duration_ms`, `outcome` (success/error), and any initial or error-specific key-value pairs. If an exception occurs, it is logged and then re-raised.
 
 **Parameters**:
-- `logger_instance`: The `pyvider.telemetry.logger` instance to use for logging.
+- `logger_instance`: The `provide.foundation.logger` instance to use for logging.
 - `event_name`: A descriptive name for the event/operation being timed.
 - `layer_keys`: Optional dictionary of pre-defined semantic keys relevant to active telemetry layers (e.g., `{"llm.task": "generation"}`). These are merged with `initial_kvs`.
 - `**initial_kvs`: Additional key-value pairs to include in the log entry from the start of the block.
 
 **Example**:
 ```python
-from pyvider.telemetry import logger, timed_block
+from provide.foundation import logger, timed_block
 
 # Example 1: Successful operation
 with timed_block(logger, "database_query", db_table="users", query_type="select"):
@@ -381,7 +381,7 @@ class CustomDasEmojiSet:
 This example shows how to define a completely custom layer for file operations.
 
 ```python
-from pyvider.telemetry import (
+from provide.foundation import (
     setup_telemetry,
     logger,
     TelemetryConfig,
@@ -514,14 +514,14 @@ def show_emoji_matrix() -> None
 
 **Description**: Displays the complete emoji mapping contract for the **active configuration**. This is the best way to see which emojis are currently in use.
 
-**Environment Variable**: `PYVIDER_SHOW_EMOJI_MATRIX=true`
+**Environment Variable**: `FOUNDATION_SHOW_EMOJI_MATRIX=true`
 
 **Example**:
 ```python
 import os
-from pyvider.telemetry.logger.emoji_matrix import show_emoji_matrix
+from provide.foundation.logger.emoji_matrix import show_emoji_matrix
 
-os.environ["PYVIDER_SHOW_EMOJI_MATRIX"] = "true"
+os.environ["FOUNDATION_SHOW_EMOJI_MATRIX"] = "true"
 show_emoji_matrix()  # Prints emoji reference
 ```
 
@@ -529,7 +529,7 @@ show_emoji_matrix()  # Prints emoji reference
 
 ### **Benchmarked Performance Metrics**
 
-The Pyvider Telemetry system has been thoroughly benchmarked to ensure production-ready performance:
+The Foundation Telemetry system has been thoroughly benchmarked to ensure production-ready performance:
 
 | Scenario          | Typical Performance | Notes                                   |
 |-------------------|---------------------|-----------------------------------------|
@@ -586,7 +586,7 @@ high_performance_config = TelemetryConfig(
 #### **4. Memory Usage Optimization**
 ```python
 # For long-running applications, monitor memory usage
-from pyvider.telemetry.logger.custom_processors import get_emoji_cache_stats
+from provide.foundation.logger.custom_processors import get_emoji_cache_stats
 
 # Periodically check cache utilization
 stats = get_emoji_cache_stats()
@@ -594,7 +594,7 @@ print(f"Emoji cache usage: {stats['cache_utilization']:.1f}%")
 
 # Clear cache if needed (rare)
 if stats['cache_size'] > 500:
-    from pyvider.telemetry.logger.custom_processors import clear_emoji_cache
+    from provide.foundation.logger.custom_processors import clear_emoji_cache
     clear_emoji_cache()
 ```
 
@@ -682,7 +682,7 @@ config_full = TelemetryConfig(
 ### Module-Level Configuration
 
 ```python
-from pyvider.telemetry import setup_telemetry, TelemetryConfig, LoggingConfig
+from provide.foundation import setup_telemetry, TelemetryConfig, LoggingConfig
 
 config = TelemetryConfig(
     logging=LoggingConfig(
@@ -735,7 +735,7 @@ def custom_processor(
 
 ```python
 import pytest
-from pyvider.telemetry import setup_telemetry, TelemetryConfig
+from provide.foundation import setup_telemetry, TelemetryConfig
 
 @pytest.fixture
 def setup_logging():
@@ -752,7 +752,7 @@ def setup_logging():
 
 def test_feature_with_logging(setup_logging, caplog):
     """Example test using logging."""
-    from pyvider.telemetry import logger
+    from provide.foundation import logger
     
     logger.info("Test operation", operation="test")
     
@@ -771,7 +771,7 @@ def test_feature_with_logging(setup_logging, caplog):
 from importlib.metadata import version, PackageNotFoundError
 
 try:
-    __version__ = version("pyvider-telemetry")
+    __version__ = version("provide-foundation")
 except PackageNotFoundError:
     __version__ = "0.0.0-dev"  # Development fallback
 ```

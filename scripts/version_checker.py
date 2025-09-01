@@ -2,7 +2,7 @@
 # scripts/check_version_consistency.py
 #
 """
-Version consistency checker for Pyvider Telemetry.
+Version consistency checker for Foundation Telemetry.
 
 This script ensures that version numbers are consistent across the project
 and that the dynamic versioning system works correctly.
@@ -72,7 +72,7 @@ def check_dynamic_versioning() -> str:
 
     try:
         # Import and check if versioning works
-        from pyvider.telemetry import __version__
+        from provide.foundation import __version__
 
         match __version__:
             case "0.0.0-dev":
@@ -85,7 +85,7 @@ def check_dynamic_versioning() -> str:
                 raise ValueError("Dynamic versioning returned empty version")
 
     except ImportError as e:
-        raise ImportError(f"Failed to import pyvider.telemetry: {e}") from e
+        raise ImportError(f"Failed to import provide.foundation: {e}") from e
     except Exception as e:
         raise RuntimeError(f"Dynamic versioning failed: {e}") from e
 

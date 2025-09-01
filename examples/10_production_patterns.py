@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# examples/pyvider_telemetry/10_production_patterns.py
-"""Demonstrates production-ready logging patterns with Pyvider Telemetry."""
+# examples/foundation_telemetry/10_production_patterns.py
+"""Demonstrates production-ready logging patterns with Foundation Telemetry."""
 
 from pathlib import Path
 import sys
@@ -12,13 +12,13 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from pyvider.telemetry import (  # noqa: E402
+from provide.foundation import (  # noqa: E402
     LoggingConfig,
     TelemetryConfig,
     logger,
     setup_telemetry,
 )
-from pyvider.telemetry.core import reset_pyvider_setup_for_testing  # noqa: E402
+from provide.foundation.core import reset_foundation_setup_for_testing  # noqa: E402
 
 
 def example_10_production_patterns() -> None:
@@ -106,6 +106,6 @@ def example_10_production_patterns() -> None:
 if __name__ == "__main__":
     # Reset telemetry to ensure this example uses its own configuration
     # and is not affected by previous example runs if scripts were concatenated.
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
     example_10_production_patterns()
     print("\n✅ Example 10 completed.")

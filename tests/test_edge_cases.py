@@ -2,7 +2,7 @@
 # test_edge_cases.py
 #
 """
-Edge case and error condition tests for Pyvider Telemetry.
+Edge case and error condition tests for Foundation Telemetry.
 
 This module tests boundary conditions, error handling, and edge cases
 that might not be covered in regular functional tests.
@@ -15,26 +15,26 @@ from unittest.mock import patch
 
 import pytest
 
-from pyvider.telemetry import (
+from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
-    logger,  # This is the global PyviderLogger instance
+    logger,  # This is the global FoundationLogger instance
     setup_telemetry,
 )
-from pyvider.telemetry.core import reset_pyvider_setup_for_testing
+from provide.foundation.core import reset_foundation_setup_for_testing
 
 
 def test_invalid_environment_variables_handling(monkeypatch, capsys) -> None: # Added capsys
     """Tests handling of invalid environment variables."""
     # Define cases with expected warning snippet, or None if specific warning isn't critical/expected
     invalid_env_cases = [
-        ("PYVIDER_LOG_LEVEL", "INVALID_LEVEL", "Invalid PYVIDER_LOG_LEVEL 'INVALID_LEVEL'"),
-        ("PYVIDER_LOG_CONSOLE_FORMATTER", "invalid_formatter", "Invalid PYVIDER_LOG_CONSOLE_FORMATTER 'invalid_formatter'"),
-        ("PYVIDER_LOG_LOGGER_NAME_EMOJI_ENABLED", "maybe", None), # bool parsing defaults, no specific warning expected by from_env
-        ("PYVIDER_LOG_DAS_EMOJI_ENABLED", "sometimes", None),    # bool parsing defaults
-        ("PYVIDER_LOG_OMIT_TIMESTAMP", "perhaps", None),       # bool parsing defaults
-        ("PYVIDER_TELEMETRY_DISABLED", "kinda", None),         # bool parsing defaults
-        ("PYVIDER_LOG_MODULE_LEVELS", "invalid:format:here,also:bad", "Invalid log level 'FORMAT:HERE' for module 'invalid'"),
+        ("FOUNDATION_LOG_LEVEL", "INVALID_LEVEL", "Invalid FOUNDATION_LOG_LEVEL 'INVALID_LEVEL'"),
+        ("FOUNDATION_LOG_CONSOLE_FORMATTER", "invalid_formatter", "Invalid FOUNDATION_LOG_CONSOLE_FORMATTER 'invalid_formatter'"),
+        ("FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED", "maybe", None), # bool parsing defaults, no specific warning expected by from_env
+        ("FOUNDATION_LOG_DAS_EMOJI_ENABLED", "sometimes", None),    # bool parsing defaults
+        ("FOUNDATION_LOG_OMIT_TIMESTAMP", "perhaps", None),       # bool parsing defaults
+        ("FOUNDATION_TELEMETRY_DISABLED", "kinda", None),         # bool parsing defaults
+        ("FOUNDATION_LOG_MODULE_LEVELS", "invalid:format:here,also:bad", "Invalid log level 'FORMAT:HERE' for module 'invalid'"),
     ]
 
     for env_var, invalid_value, expected_warning_snippet in invalid_env_cases:
@@ -46,7 +46,7 @@ def test_invalid_environment_variables_handling(monkeypatch, capsys) -> None: # 
         # Remove other potentially interfering env vars if they are not the one being tested
         # This ensures that warnings from other default settings don't cloud the specific test.
         possible_interfering_vars = [
-            "PYVIDER_LOG_LEVEL", "PYVIDER_LOG_CONSOLE_FORMATTER", "PYVIDER_LOG_MODULE_LEVELS"
+            "FOUNDATION_LOG_LEVEL", "FOUNDATION_LOG_CONSOLE_FORMATTER", "FOUNDATION_LOG_MODULE_LEVELS"
         ]
         for var_to_clear in possible_interfering_vars:
             if var_to_clear != env_var:
@@ -59,16 +59,16 @@ def test_invalid_environment_variables_handling(monkeypatch, capsys) -> None: # 
         assert isinstance(config.logging, LoggingConfig)
 
         # Verify fallback to defaults for the specific var being tested
-        if env_var == "PYVIDER_LOG_LEVEL":
+        if env_var == "FOUNDATION_LOG_LEVEL":
             assert config.logging.default_level == "DEBUG"  # Default from DEFAULT_ENV_CONFIG or fallback in from_env
-        elif env_var == "PYVIDER_LOG_CONSOLE_FORMATTER":
+        elif env_var == "FOUNDATION_LOG_CONSOLE_FORMATTER":
             assert config.logging.console_formatter == "key_value"  # Default from DEFAULT_ENV_CONFIG or fallback in from_env
 
         # Check for specific warning message if one is expected
         captured = capsys.readouterr()
         if expected_warning_snippet:
-            assert "[Pyvider Config Warning]" in captured.err, \
-                f"No Pyvider Config Warning for {env_var}={invalid_value}. Output: {captured.err}"
+            assert "[Foundation Config Warning]" in captured.err, \
+                f"No Foundation Config Warning for {env_var}={invalid_value}. Output: {captured.err}"
             assert expected_warning_snippet in captured.err, \
                 f"Expected warning snippet '{expected_warning_snippet}' not found for {env_var}={invalid_value}. Output: {captured.err}"
 
@@ -92,17 +92,17 @@ def test_module_levels_parsing_edge_cases() -> None:
     ]
 
     for levels_str, expected in edge_cases:
-        with patch.dict(os.environ, {"PYVIDER_LOG_MODULE_LEVELS": levels_str}):
+        with patch.dict(os.environ, {"FOUNDATION_LOG_MODULE_LEVELS": levels_str}):
             config = TelemetryConfig.from_env()
             assert config.logging.module_levels == expected, f"Failed for: '{levels_str}'"
 
 
 def test_logger_with_extreme_names(
-    setup_pyvider_telemetry_for_test: Callable[[TelemetryConfig | None], None],
-    captured_stderr_for_pyvider: io.StringIO,
+    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
+    captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     """Tests logger behavior with extreme names."""
-    setup_pyvider_telemetry_for_test(None)
+    setup_foundation_telemetry_for_test(None)
 
     extreme_names = [
         "",  # Empty string
@@ -126,20 +126,20 @@ def test_logger_with_extreme_names(
             pytest.fail(f"Logger failed with name '{name}': {e}")
 
     # Verify all messages were logged
-    output = captured_stderr_for_pyvider.getvalue()
+    output = captured_stderr_for_foundation.getvalue()
     lines = [
         line for line in output.strip().splitlines()
-        if not line.startswith("[Pyvider Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]") and line.strip()
     ]
     assert len(lines) == len(extreme_names)
 
 
 def test_log_message_edge_cases(
-    setup_pyvider_telemetry_for_test: Callable[[TelemetryConfig | None], None],
-    captured_stderr_for_pyvider: io.StringIO,
+    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
+    captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     """Tests logging with edge case message content."""
-    setup_pyvider_telemetry_for_test(None)
+    setup_foundation_telemetry_for_test(None)
     test_logger = logger.get_logger("edge.test")
 
     edge_case_messages: list[Any] = [ # Allow Any for diverse test inputs
@@ -164,30 +164,30 @@ def test_log_message_edge_cases(
             pytest.fail(f"Logging failed with message '{str(message)[:50]}...': {e}")
 
     # Verify output exists
-    output = captured_stderr_for_pyvider.getvalue()
+    output = captured_stderr_for_foundation.getvalue()
     lines = [
         line for line in output.strip().splitlines()
-        if not line.startswith("[Pyvider Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]") and line.strip()
     ]
     assert len(lines) >= len(edge_case_messages)
 
 
 def test_logger_args_formatting_edge_cases(
-    setup_pyvider_telemetry_for_test: Callable[[TelemetryConfig | None], None],
-    captured_stderr_for_pyvider: io.StringIO,
+    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
+    captured_stderr_for_foundation: io.StringIO,
 ) -> None:
-    """Tests logger argument formatting edge cases using PyviderLogger's methods."""
-    setup_pyvider_telemetry_for_test(None)
-    # Using the global logger instance which has the PyviderLogger methods
+    """Tests logger argument formatting edge cases using FoundationLogger's methods."""
+    setup_foundation_telemetry_for_test(None)
+    # Using the global logger instance which has the FoundationLogger methods
 
     test_cases: list[tuple[str, tuple[Any, ...], bool]] = [
         # (message, args, should_not_raise)
         ("Simple message with %s", ("arg1",), True),
         ("Multiple args: %s %d %s", ("str", 42, "end"), True),
-        ("Too few args: %s %s", ("only_one",), True), # PyviderLogger's _format_message_with_args handles this
-        ("Too many args: %s", ("arg1", "arg2", "extra"), True), # PyviderLogger's _format_message_with_args handles this
-        ("Invalid format: %q", ("arg",), True), # PyviderLogger's _format_message_with_args handles this
-        ("No format but args", ("arg1", "arg2"), True), # PyviderLogger's _format_message_with_args handles this
+        ("Too few args: %s %s", ("only_one",), True), # FoundationLogger's _format_message_with_args handles this
+        ("Too many args: %s", ("arg1", "arg2", "extra"), True), # FoundationLogger's _format_message_with_args handles this
+        ("Invalid format: %q", ("arg",), True), # FoundationLogger's _format_message_with_args handles this
+        ("No format but args", ("arg1", "arg2"), True), # FoundationLogger's _format_message_with_args handles this
         ("Empty args", (), True),
         ("Unicode in args: %s", ("🚀🌟",), True),
         ("None arg: %s", (None,), True),
@@ -196,7 +196,7 @@ def test_logger_args_formatting_edge_cases(
 
     for message, args, should_not_raise in test_cases:
         try:
-            # Call info method on the global PyviderLogger instance
+            # Call info method on the global FoundationLogger instance
             logger.info(message, *args)
             if not should_not_raise: # pragma: no cover
                 pytest.fail(f"Expected exception for: {message} with args {args}")
@@ -204,17 +204,17 @@ def test_logger_args_formatting_edge_cases(
             if should_not_raise:
                 pytest.fail(f"Unexpected exception for '{message}' with args {args}: {e}")
 
-    output = captured_stderr_for_pyvider.getvalue()
+    output = captured_stderr_for_foundation.getvalue()
     lines = [
         line for line in output.strip().splitlines()
-        if not line.startswith("[Pyvider Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]") and line.strip()
     ]
     assert len(lines) == len(test_cases), f"Expected {len(test_cases)} log lines, got {len(lines)}"
 
 
 def test_repeated_setup_calls(
-    setup_pyvider_telemetry_for_test: Callable[[TelemetryConfig | None], None],
-    captured_stderr_for_pyvider: io.StringIO,
+    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
+    captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     """Tests behavior with repeated setup calls."""
     config1 = TelemetryConfig(
@@ -227,15 +227,15 @@ def test_repeated_setup_calls(
     )
 
     # First setup
-    setup_pyvider_telemetry_for_test(config1)
+    setup_foundation_telemetry_for_test(config1)
     logger.info("Message after first setup")
 
     # Second setup (should reconfigure)
-    setup_pyvider_telemetry_for_test(config2)
+    setup_foundation_telemetry_for_test(config2)
     logger.info("Message after second setup")
     logger.debug("Debug message (should be filtered in INFO level)")
 
-    output = captured_stderr_for_pyvider.getvalue()
+    output = captured_stderr_for_foundation.getvalue()
 
     assert "service1" in output
     assert "service2" in output
@@ -272,7 +272,7 @@ def test_concurrent_setup_calls() -> None:
 
     assert len(exceptions) == 0, f"Concurrent setup failed: {exceptions}"
     assert len(setup_results) == len(configs)
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
 
 
 def test_memory_usage_with_large_configs() -> None:
@@ -298,12 +298,12 @@ def test_memory_usage_with_large_configs() -> None:
     except Exception as e: # pragma: no cover
         pytest.fail(f"Large configuration failed: {e}")
     finally:
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
 
 def test_trace_level_edge_cases(
-    setup_pyvider_telemetry_for_test: Callable[[TelemetryConfig | None], None],
-    captured_stderr_for_pyvider: io.StringIO,
+    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
+    captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     """Tests TRACE level edge cases."""
     config = TelemetryConfig(
@@ -312,17 +312,17 @@ def test_trace_level_edge_cases(
             module_levels={"trace.test": "TRACE"},
         )
     )
-    setup_pyvider_telemetry_for_test(config)
+    setup_foundation_telemetry_for_test(config)
 
     logger.trace("Default trace message")
-    logger.trace("Named trace message", _pyvider_logger_name="trace.test.custom")
+    logger.trace("Named trace message", _foundation_logger_name="trace.test.custom")
     logger.trace("Trace with args %s %d", "test", 42)
     logger.trace("Trace with kwargs", key1="value1", key2=123)
 
-    output = captured_stderr_for_pyvider.getvalue()
+    output = captured_stderr_for_foundation.getvalue()
     lines = [
         line for line in output.strip().splitlines()
-        if not line.startswith("[Pyvider Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]") and line.strip()
     ]
     assert len(lines) >= 4, "Not all trace messages were logged"
     trace_count = sum(1 for line in lines if "trace" in line.lower())
@@ -340,7 +340,7 @@ def test_configuration_validation_edge_cases() -> None:
         ("1", False), ("0", False), ("yes", False), ("no", False), ("", False),
     ]
     for env_value, expected in bool_test_cases:
-        with patch.dict(os.environ, {"PYVIDER_LOG_OMIT_TIMESTAMP": env_value}):
+        with patch.dict(os.environ, {"FOUNDATION_LOG_OMIT_TIMESTAMP": env_value}):
             config = TelemetryConfig.from_env()
             assert config.logging.omit_timestamp == expected, f"Failed for '{env_value}'"
 
@@ -357,8 +357,8 @@ def test_configuration_immutability() -> None:
 
 
 def test_performance_with_disabled_features(
-    setup_pyvider_telemetry_for_test: Callable[[TelemetryConfig | None], None],
-    captured_stderr_for_pyvider: io.StringIO,
+    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
+    captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     """Tests performance when emoji features are disabled."""
     import time
@@ -369,7 +369,7 @@ def test_performance_with_disabled_features(
             das_emoji_prefix_enabled=False,
         )
     )
-    setup_pyvider_telemetry_for_test(config)
+    setup_foundation_telemetry_for_test(config)
     test_logger = logger.get_logger("performance.test")
     start_time = time.time()
     message_count = 1000
@@ -377,10 +377,10 @@ def test_performance_with_disabled_features(
         test_logger.info(f"Performance test message {i}", iteration=i)
     end_time = time.time()
     duration = end_time - start_time
-    output = captured_stderr_for_pyvider.getvalue()
+    output = captured_stderr_for_foundation.getvalue()
     lines = [
         line for line in output.strip().splitlines()
-        if not line.startswith("[Pyvider Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]") and line.strip()
     ]
     assert len(lines) == message_count
     messages_per_second = message_count / duration

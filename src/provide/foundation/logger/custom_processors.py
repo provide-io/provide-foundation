@@ -2,7 +2,7 @@
 # custom_processors.py
 #
 """
-Pyvider Telemetry Custom Structlog Processors.
+Foundation Telemetry Custom Structlog Processors.
 Includes processors for log level normalization, level-based filtering,
 and logger name emoji prefixes. The semantic field emoji prefix processor
 is now created as a closure in config.py.
@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, Any, Protocol, cast
 
 import structlog
 
-from pyvider.telemetry.types import TRACE_LEVEL_NAME, TRACE_LEVEL_NUM, LogLevelStr
+from provide.foundation.types import TRACE_LEVEL_NAME, TRACE_LEVEL_NUM, LogLevelStr
 
 if TYPE_CHECKING:
     pass
@@ -27,10 +27,10 @@ _NUMERIC_TO_LEVEL_NAME_CUSTOM: dict[int, str] = {
 }
 
 class StructlogProcessor(Protocol):
-    def __call__(self, logger: Any, method_name: str, event_dict: structlog.types.EventDict) -> structlog.types.EventDict: ...
+    def __call__(self, logger: Any, method_name: str, event_dict: structlog.types.EventDict) -> structlog.types.EventDict: ...  # pragma: no cover
 
 def add_log_level_custom(_logger: Any, method_name: str, event_dict: structlog.types.EventDict) -> structlog.types.EventDict:
-    level_hint: str | None = event_dict.pop("_pyvider_level_hint", None)
+    level_hint: str | None = event_dict.pop("_foundation_level_hint", None)
     if level_hint is not None:
         event_dict["level"] = level_hint.lower()
     elif "level" not in event_dict:
@@ -70,9 +70,9 @@ def filter_by_level_custom(default_level_str: LogLevelStr, module_levels: dict[s
     return _LevelFilter(default_level_str, module_levels, level_to_numeric_map)
 
 _LOGGER_NAME_EMOJI_PREFIXES: dict[str, str] = {
-    'pyvider.telemetry.core.test': '⚙️', 'pyvider.telemetry.core_setup': '🛠️',
-    'pyvider.telemetry.emoji_matrix_display': '💡', 'pyvider.telemetry': '⚙️',
-    'pyvider.telemetry.logger': '📝', 'pyvider.telemetry.config': '🔩',
+    'provide.foundation.core.test': '⚙️', 'provide.foundation.core_setup': '🛠️',
+    'provide.foundation.emoji_matrix_display': '💡', 'provide.foundation': '⚙️',
+    'provide.foundation.logger': '📝', 'provide.foundation.config': '🔩',
     'pyvider.dynamic_call_trace': '👣', 'pyvider.dynamic_call': '🗣️',
     'pyvider.default': '📦', 'formatter.test': '🎨', 'service.alpha': '🇦',
     'service.beta': '🇧', 'service.beta.child': '👶', 'service.gamma.trace_enabled': '🇬',

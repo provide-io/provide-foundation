@@ -1,6 +1,6 @@
 # tests/test_utils.py
 """
-Tests for utility functions in pyvider.telemetry.utils.
+Tests for utility functions in provide.foundation.utils.
 """
 from collections.abc import Callable
 import io
@@ -8,12 +8,12 @@ import re
 
 import pytest
 
-from pyvider.telemetry import (
+from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
     logger as global_logger,
 )
-from pyvider.telemetry.utils import _PYVIDER_CONTEXT_TRACE_ID, timed_block
+from provide.foundation.utils import _FOUNDATION_CONTEXT_TRACE_ID, timed_block
 
 
 def parse_kv_log_line(line: str) -> dict:
@@ -59,7 +59,7 @@ def parse_kv_log_line(line: str) -> dict:
 
 @pytest.fixture
 def setup_telemetry_for_utils(
-    setup_pyvider_telemetry_for_test: Callable[[TelemetryConfig | None], None]
+    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None]
 ) -> None:
     """Fixture to set up telemetry for util tests with logger name emojis disabled."""
     config = TelemetryConfig(
@@ -69,14 +69,14 @@ def setup_telemetry_for_utils(
             logger_name_emoji_prefix_enabled=False,
         )
     )
-    setup_pyvider_telemetry_for_test(config)
+    setup_foundation_telemetry_for_test(config)
 
 @pytest.mark.usefixtures("setup_telemetry_for_utils")
 class TestTimedBlock:
-    def test_successful_execution(self, captured_stderr_for_pyvider: io.StringIO) -> None:
+    def test_successful_execution(self, captured_stderr_for_foundation: io.StringIO) -> None:
         with timed_block(global_logger, "my_successful_op", layer_keys={"component": "test_util"}, project_id=123):
             pass
-        captured = captured_stderr_for_pyvider.getvalue()
+        captured = captured_stderr_for_foundation.getvalue()
         log_lines = [line for line in captured.strip().splitlines() if "my_successful_op" in line]
         assert len(log_lines) == 1
         log_data = parse_kv_log_line(log_lines[0])
@@ -86,11 +86,11 @@ class TestTimedBlock:
         assert log_data.get("outcome") == "success"
         assert "duration_ms" in log_data
 
-    def test_execution_with_exception(self, captured_stderr_for_pyvider: io.StringIO) -> None:
+    def test_execution_with_exception(self, captured_stderr_for_foundation: io.StringIO) -> None:
         with pytest.raises(ValueError, match="Simulated error"):
             with timed_block(global_logger, "my_failing_op", user_id="user_abc"):
                 raise ValueError("Simulated error")
-        captured = captured_stderr_for_pyvider.getvalue()
+        captured = captured_stderr_for_foundation.getvalue()
         log_lines = [line for line in captured.strip().splitlines() if "my_failing_op" in line]
         assert len(log_lines) == 1
         log_data = parse_kv_log_line(log_lines[0])
@@ -99,40 +99,40 @@ class TestTimedBlock:
         assert log_data.get("outcome") == "error"
         assert log_data.get("error.message") == "Simulated error"
 
-    def test_log_level_for_outcome(self, captured_stderr_for_pyvider: io.StringIO) -> None:
+    def test_log_level_for_outcome(self, captured_stderr_for_foundation: io.StringIO) -> None:
         with timed_block(global_logger, "success_op_info_level"):
             pass
-        assert "[info " in captured_stderr_for_pyvider.getvalue().lower()
+        assert "[info " in captured_stderr_for_foundation.getvalue().lower()
 
         # Clear buffer for next check
-        captured_stderr_for_pyvider.seek(0)
-        captured_stderr_for_pyvider.truncate(0)
+        captured_stderr_for_foundation.seek(0)
+        captured_stderr_for_foundation.truncate(0)
 
         with pytest.raises(RuntimeError):
             with timed_block(global_logger, "error_op_error_level"):
                 raise RuntimeError("err")
-        assert "[error " in captured_stderr_for_pyvider.getvalue().lower()
+        assert "[error " in captured_stderr_for_foundation.getvalue().lower()
 
-    def test_trace_id_from_contextvar(self, captured_stderr_for_pyvider: io.StringIO) -> None:
-        token = _PYVIDER_CONTEXT_TRACE_ID.set("test-trace-12345")
+    def test_trace_id_from_contextvar(self, captured_stderr_for_foundation: io.StringIO) -> None:
+        token = _FOUNDATION_CONTEXT_TRACE_ID.set("test-trace-12345")
         try:
             with timed_block(global_logger, "op_with_trace_id"):
                 pass
         finally:
-            _PYVIDER_CONTEXT_TRACE_ID.reset(token)
-        captured = captured_stderr_for_pyvider.getvalue()
+            _FOUNDATION_CONTEXT_TRACE_ID.reset(token)
+        captured = captured_stderr_for_foundation.getvalue()
         log_lines = [line for line in captured.strip().splitlines() if "op_with_trace_id" in line]
         assert len(log_lines) == 1
         assert parse_kv_log_line(log_lines[0]).get("trace_id") == "test-trace-12345"
 
-    def test_trace_id_from_initial_kvs_overrides_contextvar(self, captured_stderr_for_pyvider: io.StringIO) -> None:
-        token = _PYVIDER_CONTEXT_TRACE_ID.set("context-id")
+    def test_trace_id_from_initial_kvs_overrides_contextvar(self, captured_stderr_for_foundation: io.StringIO) -> None:
+        token = _FOUNDATION_CONTEXT_TRACE_ID.set("context-id")
         try:
             with timed_block(global_logger, "op_override_trace_id", trace_id="kvs-id"):
                 pass
         finally:
-            _PYVIDER_CONTEXT_TRACE_ID.reset(token)
-        captured = captured_stderr_for_pyvider.getvalue()
+            _FOUNDATION_CONTEXT_TRACE_ID.reset(token)
+        captured = captured_stderr_for_foundation.getvalue()
         log_lines = [line for line in captured.strip().splitlines() if "op_override_trace_id" in line]
         assert len(log_lines) == 1
         assert parse_kv_log_line(log_lines[0]).get("trace_id") == "kvs-id"
