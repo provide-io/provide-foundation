@@ -222,8 +222,10 @@ class TestHubThreadSafety:
         for hub in hub_instances:
             assert hub is first_hub, "Different hub instances returned!"
     
+    @pytest.mark.serial
     def test_concurrent_command_registration(self):
         """Test concurrent command registration via decorators."""
+        clear_hub()  # Ensure clean state
         errors = []
         hub = get_hub()
         
@@ -248,8 +250,10 @@ class TestHubThreadSafety:
         commands = hub.list_commands()
         assert len(commands) == 50
     
+    @pytest.mark.serial
     def test_concurrent_component_registration(self):
         """Test concurrent component registration."""
+        clear_hub()  # Ensure clean state
         errors = []
         hub = get_hub()
         
