@@ -6,10 +6,9 @@ The Foundation Hub module provides a unified system for registering, discovering
 
 ### Key Features
 
-- **Component Registry**: Organize and discover components (e.g., resources, data sources).
-- **CLI Command Management**: Register functions as CLI commands with automatic `click` integration.
+- **Component Registry**: Organize and discover components.
+- **CLI Command Management**: Register functions as CLI commands with automatic `click` integration and support for nested commands.
 - **Entry Point Discovery**: Automatically load plugins from installed packages.
-- **Lifecycle Management**: Support for `setup` and `teardown` logic in components.
 
 ### `Hub` Class
 
@@ -22,19 +21,11 @@ from provide.foundation.hub import Hub
 hub = Hub()
 ```
 
-#### Component Management
-
-*   `hub.add_component(component_class, name, ...)`: Programmatically register a component.
-*   `hub.get_component(name)`: Retrieve a registered component class by name.
-*   `hub.list_components()`: List the names of all registered components.
-*   `hub.discover_components(entry_point_group)`: Discover and load components from `setuptools` entry points.
-
-#### Command Management
-
-*   `hub.add_command(func, name, ...)`: Programmatically register a function as a command.
-*   `hub.get_command(name)`: Retrieve a registered command function.
-*   `hub.list_commands()`: List the names of all registered commands.
-*   `hub.create_cli(name, ...)`: Build a complete `click`-based CLI application from the registered commands.
+*   `hub.add_component(...)`: Programmatically register a component.
+*   `hub.get_component(...)`: Retrieve a registered component class.
+*   `hub.add_command(...)`: Programmatically register a command.
+*   `hub.get_command(...)`: Retrieve a registered command function.
+*   `hub.create_cli(...)`: Build a complete `click`-based CLI application from the registered commands.
 
 ### Decorators
 
@@ -56,7 +47,7 @@ class PostgresConnection:
 
 #### `@register_command`
 
-Registers a function as a CLI command. The function's signature (parameters, type hints, and docstring) is automatically converted into a `click` command with arguments, options, and help text.
+Registers a function as a CLI command. The function's signature is automatically converted into a `click` command.
 
 ```python
 from provide.foundation.hub import register_command
@@ -70,6 +61,21 @@ def greet_command(name: str = "World", excited: bool = False):
     print(greeting)
 ```
 
+!!! tip "Nested Commands with Dot Notation"
+    You can easily create nested commands (or `click` groups) by using a dot (`.`) in the command name. The Hub will automatically create the parent groups for you.
+
+    ```python
+    # This will create a `container` group with a `status` command.
+    @register_command("container.status")
+    def container_status():
+        print("Container is running.")
+
+    # This will create a `volumes` group inside `container`.
+    @register_command("container.volumes.list")
+    def container_volumes_list():
+        print("Listing volumes...")
+    ```
+
 ### Building a CLI Application
 
 You can assemble all registered commands into a runnable CLI application with a single call.
@@ -78,41 +84,46 @@ You can assemble all registered commands into a runnable CLI application with a 
 # create_cli.py
 from provide.foundation.hub import Hub, register_command
 
-# Register one or more commands...
+@register_command("container.status")
+def container_status():
+    print("Container is running.")
+
 @register_command
 def status():
-    """Check the status of the application."""
+    """Check the top-level status."""
     print("All systems nominal.")
 
 # Create the Hub and build the CLI
 hub = Hub()
-cli = hub.create_cli(
-    name="my-app",
-    version="1.0.0",
-    help="A sample application CLI."
-)
+cli = hub.create_cli(name="my-app")
 
 if __name__ == "__main__":
     cli()
 ```
 
-Running this script will provide a fully-functional CLI:
+Running this script will provide a fully-functional CLI with nested commands:
 
 ```bash
 $ python create_cli.py --help
 Usage: create_cli.py [OPTIONS] COMMAND [ARGS]...
 
-  A sample application CLI.
-
 Options:
-  --version  Show the version and exit.
-  --help     Show this message and exit.
+  --help  Show this message and exit.
 
 Commands:
-  status  Check the status of the application.
+  container  Container commands.
+  status     Check the top-level status.
 
-$ python create_cli.py status
-All systems nominal.
+$ python create_cli.py container --help
+Usage: create_cli.py container [OPTIONS] COMMAND [ARGS]...
+
+  Container commands.
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  status
 ```
 
 ### Advanced Usage

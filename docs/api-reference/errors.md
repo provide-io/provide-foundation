@@ -19,7 +19,7 @@ class FoundationError(Exception):
         code: str | None = None,
         context: dict[str, Any] | None = None,
         cause: Exception | None = None,
-        **extra_context: Any  # Additional kwargs become context
+        **extra_context: Any
     )
 ```
 
@@ -28,6 +28,22 @@ class FoundationError(Exception):
 *   **`context`**: A dictionary for attaching arbitrary structured data to the error.
 *   **`cause`**: The original exception, for chaining (`raise new_error from old_error`).
 *   **`**extra_context`**: Any additional keyword arguments are automatically added to the `context` dictionary.
+
+#### `to_dict()`
+
+Converts the exception to a dictionary suitable for structured logging.
+
+```python
+def to_dict(self) -> dict[str, Any]:
+```
+
+!!! info "Automatic Namespacing"
+    When converting the error's `context` to a dictionary, this method automatically adds an `error.` prefix to any context key that does not already contain a dot (`.`).
+
+    *   `user_id=123` becomes `"error.user_id": 123`
+    *   `"http.status_code"=500` remains `"http.status_code": 500`
+
+    This helps to avoid key collisions and keeps error-specific context organized.
 
 ### Built-in Exception Hierarchy
 
@@ -79,10 +95,6 @@ error.add_context("http.status", 500)
 error.add_context("aws.region", "us-east-1")
 ```
 
-#### Context Propagation Patterns
-
-For advanced use cases, such as propagating context across a request or through an error chain, refer to the detailed [**Error Context Patterns**](../error-context-patterns.md) document.
-
 ### Decorators for Error Handling
 
 The library provides several decorators to handle errors in a clean, declarative way.
@@ -92,14 +104,10 @@ The library provides several decorators to handle errors in a clean, declarative
 Automatically retries a function if it fails with specific exceptions.
 
 ```python
-from provide.foundation import retry_on_error
+from provide.foundation.errors import NetworkError, TimeoutError
+from provide.foundation.errors.decorators import retry_on_error
 
-@retry_on_error(
-    NetworkError, TimeoutError, # Exceptions to retry on
-    max_attempts=3,
-    delay=1.0, # Initial delay in seconds
-    backoff=2.0  # Multiplier for subsequent delays
-)
+@retry_on_error(NetworkError, TimeoutError, max_attempts=3)
 def api_call():
     return fetch_data_from_external_service()
 ```
@@ -109,12 +117,12 @@ def api_call():
 A general-purpose decorator to suppress exceptions and provide a fallback value.
 
 ```python
-from provide.foundation import with_error_handling
+from provide.foundation.errors.decorators import with_error_handling
 
 @with_error_handling(
-    fallback="default_value", # Value to return on failure
-    suppress=(KeyError, AttributeError), # Which exceptions to catch
-    log_errors=True # Whether to log the suppressed exception
+    fallback="default_value",
+    suppress=(KeyError, AttributeError),
+    log_errors=True
 )
 def get_nested_value(data):
     return data["key"].attribute
@@ -122,25 +130,7 @@ def get_nested_value(data):
 
 ### Context Manager for Error Handling
 
-#### `error_boundary`
-
-Use the `error_boundary` context manager for safe execution of a block of code.
-
-```python
-from provide.foundation import error_boundary
-
-# Suppress specific errors and continue
-with error_boundary(KeyError, ValueError, reraise=False):
-    risky_dictionary_or_value_operation()
-
-# Log any exception that occurs, add context, and then re-raise it
-with error_boundary(
-    Exception, # Catch all exceptions
-    log_errors=True,
-    context={"operation": "data_processing"}
-):
-    process_critical_data()
-```
+For advanced error handling patterns, refer to the `provide.foundation.errors.handlers` module.
 
 ---
 

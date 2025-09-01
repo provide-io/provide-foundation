@@ -63,7 +63,8 @@ The [`timed_block`](../api-reference/utils.md#timed_block) utility is an elegant
 from provide.foundation import logger, timed_block
 
 def risky_database_update(user_id: str):
-    with timed_block(logger, "database_update", db_table="users", user_id=user_id):
+    with timed_block(logger, "database_update", initial_kvs={"db_table": "users", "user_id": user_id}):
+        # This might raise a ConnectionError
         execute_db_update(f"UPDATE users SET ... WHERE id = '{user_id}'")
 
 try:
@@ -76,7 +77,7 @@ except Exception:
 
 If an exception occurs, `timed_block` provides a single, powerful log message with the what, why, when, and how long of the failure:
 
-`[🔥] database_update db_table=users user_id=usr_123 outcome=error error.message='Connection refused' error.type=ConnectionError duration_ms=5.23`
+`[🔥] database_update failed db_table=users user_id=usr_123 duration_seconds=0.005 error='Connection refused' error_type=ConnectionError exc_info=...`
 
 ### Advanced Error Handling
 
