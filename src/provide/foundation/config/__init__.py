@@ -36,19 +36,19 @@ from provide.foundation.config.schema import (
     SchemaField,
     validate_schema,
 )
-from provide.foundation.config.types import (
-    ConfigDict,
-    ConfigSource,
-    ConfigValue,
-)
 
 # Import sync wrappers for convenience
 from provide.foundation.config.sync import (
+    SyncConfigManager,
     load_config,
     load_config_from_env,
     load_config_from_file,
     validate_config,
-    SyncConfigManager,
+)
+from provide.foundation.config.types import (
+    ConfigDict,
+    ConfigSource,
+    ConfigValue,
 )
 
 __all__ = [

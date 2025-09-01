@@ -1,26 +1,29 @@
 """
 Base configuration classes and utilities.
 """
+
 from __future__ import annotations
 
+from collections.abc import Callable
 import copy
-from typing import Any, Callable, TypeVar, get_type_hints
+from typing import Any, TypeVar
 
 from attrs import NOTHING, Attribute, Factory, define, field as attrs_field, fields
 
-from provide.foundation.config.types import ConfigDict, ConfigSource, ConfigValue
+from provide.foundation.config.types import ConfigDict, ConfigSource
 
 T = TypeVar("T")
 
 
 class ConfigError(Exception):
     """Base exception for configuration errors."""
+
     pass
 
 
 class ConfigValidationError(ConfigError):
     """Raised when configuration validation fails."""
-    
+
     def __init__(self, field_name: str, value: Any, message: str):
         self.field_name = field_name
         self.value = value
@@ -38,11 +41,11 @@ def field(
     env_var: str | None = None,
     env_prefix: str | None = None,
     sensitive: bool = False,
-    **kwargs
+    **kwargs,
 ) -> Any:
     """
     Enhanced attrs field with configuration-specific metadata.
-    
+
     Args:
         default: Default value for the field
         factory: Factory function to generate default value
@@ -56,7 +59,7 @@ def field(
         **kwargs: Additional attrs field arguments
     """
     config_metadata = metadata or {}
-    
+
     # Add configuration-specific metadata
     if description:
         config_metadata["description"] = description
@@ -66,7 +69,7 @@ def field(
         config_metadata["env_prefix"] = env_prefix
     if sensitive:
         config_metadata["sensitive"] = sensitive
-    
+
     # Handle factory vs default
     if factory is not None:
         # Ensure factory is wrapped in Factory if it's not already
@@ -79,7 +82,7 @@ def field(
             validator=validator,
             converter=converter,
             metadata=config_metadata,
-            **kwargs
+            **kwargs,
         )
     else:
         return attrs_field(
@@ -87,7 +90,7 @@ def field(
             validator=validator,
             converter=converter,
             metadata=config_metadata,
-            **kwargs
+            **kwargs,
         )
 
 
@@ -95,46 +98,46 @@ def field(
 class BaseConfig:
     """
     Base configuration class with common functionality.
-    
+
     All configuration classes should inherit from this.
     All methods are async to support async validation and I/O operations.
     """
-    
+
     def __attrs_post_init__(self):
         """Post-initialization hook for subclasses."""
         self._source_map: dict[str, ConfigSource] = {}
         self._original_values: dict[str, Any] = {}
         # Note: validate() is now async, so we can't call it here
         # Users must explicitly call await config.validate() after creation
-    
+
     async def validate(self) -> None:
         """
         Validate the configuration.
-        
+
         Override this method to add custom validation logic.
         Can perform async operations like checking database connections.
         """
         pass
-    
+
     async def to_dict(self, include_sensitive: bool = False) -> ConfigDict:
         """
         Convert configuration to dictionary.
-        
+
         Args:
             include_sensitive: Whether to include sensitive fields
-            
+
         Returns:
             Dictionary representation of the configuration
         """
         result = {}
-        
+
         for attr in fields(self.__class__):
             value = getattr(self, attr.name)
-            
+
             # Skip sensitive fields if requested
             if not include_sensitive and attr.metadata.get("sensitive", False):
                 continue
-            
+
             # Convert nested configs recursively
             if isinstance(value, BaseConfig):
                 value = await value.to_dict(include_sensitive)
@@ -142,11 +145,11 @@ class BaseConfig:
                 value = await self._convert_dict_values(value, include_sensitive)
             elif isinstance(value, list):
                 value = await self._convert_list_values(value, include_sensitive)
-            
+
             result[attr.name] = value
-        
+
         return result
-    
+
     async def _convert_dict_values(self, d: dict, include_sensitive: bool) -> dict:
         """Convert dictionary values recursively."""
         result = {}
@@ -159,7 +162,7 @@ class BaseConfig:
                 value = await self._convert_list_values(value, include_sensitive)
             result[key] = value
         return result
-    
+
     async def _convert_list_values(self, lst: list, include_sensitive: bool) -> list:
         """Convert list values recursively."""
         result = []
@@ -172,40 +175,44 @@ class BaseConfig:
                 value = await self._convert_list_values(value, include_sensitive)
             result.append(value)
         return result
-    
+
     @classmethod
-    async def from_dict(cls: type[T], data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME) -> T:
+    async def from_dict(
+        cls: type[T], data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME
+    ) -> T:
         """
         Create configuration from dictionary.
-        
+
         Args:
             data: Configuration data
             source: Source of the configuration
-            
+
         Returns:
             Configuration instance
         """
         # Filter data to only include fields defined in the class
         field_names = {f.name for f in fields(cls)}
         filtered_data = {k: v for k, v in data.items() if k in field_names}
-        
+
         # Create instance
         instance = cls(**filtered_data)
-        
+
         # Track sources
         for key in filtered_data:
             instance._source_map[key] = source
             instance._original_values[key] = filtered_data[key]
-        
+
         # Validate the instance
         await instance.validate()
-        
+
         return instance
-    
-    async def update(self, updates: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME) -> None:
+
+    async def update(
+        self, updates: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME
+    ) -> None:
         """
         Update configuration with new values.
-        
+
         Args:
             updates: Dictionary of updates
             source: Source of the updates
@@ -218,22 +225,22 @@ class BaseConfig:
                     setattr(self, key, value)
                     self._source_map[key] = source
                     self._original_values[key] = value
-        
+
         # Re-validate after updates
         await self.validate()
-    
+
     def get_source(self, field_name: str) -> ConfigSource | None:
         """
         Get the source of a configuration field.
-        
+
         Args:
             field_name: Name of the field
-            
+
         Returns:
             Source of the field value or None
         """
         return self._source_map.get(field_name)
-    
+
     async def reset_to_defaults(self) -> None:
         """Reset all fields to their default values."""
         for attr in fields(self.__class__):
@@ -241,54 +248,56 @@ class BaseConfig:
                 setattr(self, attr.name, attr.default)
             elif attr.factory != NOTHING:
                 setattr(self, attr.name, attr.factory())
-        
+
         self._source_map.clear()
         self._original_values.clear()
-        
+
         # Re-validate after reset
         await self.validate()
-    
+
     async def clone(self: T) -> T:
         """Create a deep copy of the configuration."""
         cloned = copy.deepcopy(self)
         # Validate the clone
         await cloned.validate()
         return cloned
-    
-    async def diff(self, other: "BaseConfig") -> dict[str, tuple[Any, Any]]:
+
+    async def diff(self, other: BaseConfig) -> dict[str, tuple[Any, Any]]:
         """
         Compare with another configuration.
-        
+
         Args:
             other: Configuration to compare with
-            
+
         Returns:
             Dictionary of differences (field_name: (self_value, other_value))
         """
         if not isinstance(other, self.__class__):
-            raise TypeError(f"Cannot compare {self.__class__.__name__} with {other.__class__.__name__}")
-        
+            raise TypeError(
+                f"Cannot compare {self.__class__.__name__} with {other.__class__.__name__}"
+            )
+
         differences = {}
-        
+
         for attr in fields(self.__class__):
             self_value = getattr(self, attr.name)
             other_value = getattr(other, attr.name)
-            
+
             if self_value != other_value:
                 differences[attr.name] = (self_value, other_value)
-        
+
         return differences
-    
+
     def __repr__(self) -> str:
         """String representation hiding sensitive fields."""
         parts = []
         for attr in fields(self.__class__):
             value = getattr(self, attr.name)
-            
+
             # Hide sensitive values
             if attr.metadata.get("sensitive", False):
                 value = "***SENSITIVE***"
-            
+
             parts.append(f"{attr.name}={value!r}")
-        
+
         return f"{self.__class__.__name__}({', '.join(parts)})"

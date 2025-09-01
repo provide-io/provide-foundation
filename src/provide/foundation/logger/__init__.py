@@ -5,6 +5,7 @@
 Foundation Telemetry Logger Sub-package.
 Re-exports key components related to logging functionality.
 """
+
 from provide.foundation.logger.base import (
     FoundationLogger,  # Class definition
     logger,  # Global instance

@@ -1,6 +1,7 @@
 """
 Type definitions for the configuration system.
 """
+
 from __future__ import annotations
 
 from enum import Enum
@@ -13,12 +14,12 @@ ConfigDict = dict[str, ConfigValue]
 
 class ConfigSource(Enum):
     """Sources for configuration values with precedence order."""
-    
+
     DEFAULT = 0  # Lowest precedence
     FILE = 10
     ENV = 20
     RUNTIME = 30  # Highest precedence
-    
+
     def __lt__(self, other):
         """Enable comparison for precedence."""
         if not isinstance(other, ConfigSource):
@@ -28,15 +29,15 @@ class ConfigSource(Enum):
 
 class ConfigFormat(Enum):
     """Supported configuration file formats."""
-    
+
     JSON = "json"
     YAML = "yaml"
     TOML = "toml"
     INI = "ini"
     ENV = "env"  # .env files
-    
+
     @classmethod
-    def from_extension(cls, filename: str) -> "ConfigFormat | None":
+    def from_extension(cls, filename: str) -> ConfigFormat | None:
         """Determine format from file extension."""
         ext_map = {
             ".json": cls.JSON,
@@ -46,7 +47,7 @@ class ConfigFormat(Enum):
             ".ini": cls.INI,
             ".env": cls.ENV,
         }
-        
+
         for ext, format_type in ext_map.items():
             if filename.lower().endswith(ext):
                 return format_type

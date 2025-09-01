@@ -7,12 +7,9 @@ Provides easy access to common foundation components:
 """
 
 # Core imports for convenience
-from provide.foundation import logger
-from provide.foundation import config
+from provide.foundation import config, logger
 
 __all__ = [
-    "logger",
     "config",
+    "logger",
 ]
-
-
