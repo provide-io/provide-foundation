@@ -8,8 +8,10 @@ and integrating them with Click.
 from __future__ import annotations
 
 import inspect
+import types
+import typing
 from dataclasses import dataclass, field
-from typing import Any, Callable, TypeVar, overload
+from typing import Any, Callable, TypeVar, overload, get_origin, get_args
 
 import click
 
@@ -197,6 +199,50 @@ def _register_command_func(
     return func
 
 
+def _extract_click_type(annotation: Any) -> type:
+    """
+    Extract a Click-compatible type from a Python type annotation.
+    
+    Handles:
+    - Union types (str | None, Union[str, None])
+    - Optional types (Optional[str])
+    - Regular types (str, int, bool)
+    
+    Args:
+        annotation: Type annotation from function signature
+        
+    Returns:
+        A type that Click can understand
+    """
+    # Handle None type
+    if annotation is type(None):
+        return str
+    
+    # Get the origin and args for generic types
+    origin = get_origin(annotation)
+    args = get_args(annotation)
+    
+    # Handle Union types (including Optional which is Union[T, None])
+    if origin is typing.Union or (hasattr(types, 'UnionType') and isinstance(annotation, types.UnionType)):
+        # For Python 3.10+ union syntax (str | None)
+        if hasattr(annotation, '__args__'):
+            args = annotation.__args__
+        
+        # Filter out None type to get the actual type
+        non_none_types = [t for t in args if t is not type(None)]
+        
+        if non_none_types:
+            # Return the first non-None type
+            # Could be enhanced to handle Union[str, int] etc.
+            return non_none_types[0]
+        else:
+            # If only None, default to str
+            return str
+    
+    # For non-generic types, return as-is
+    return annotation
+
+
 def build_click_command(
     name: str,
     registry: Registry | None = None,
@@ -257,29 +303,8 @@ def build_click_command(
             # Create option
             option_name = f"--{param_name.replace('_', '-')}"
             if param.annotation != inspect.Parameter.empty:
-                # Handle Union types (e.g., str | None)
-                param_type = param.annotation
-                
-                # Check for Optional/Union types
-                import types
-                if hasattr(types, 'UnionType') and isinstance(param_type, types.UnionType):
-                    # Python 3.10+ Union syntax (str | None)
-                    args = param_type.__args__
-                    # Filter out None type
-                    non_none_types = [t for t in args if t is not type(None)]
-                    if non_none_types:
-                        param_type = non_none_types[0]
-                    else:
-                        param_type = str  # Default to str
-                elif hasattr(param_type, '__origin__') and param_type.__origin__ is type(None):
-                    # Handle typing.Optional
-                    if hasattr(param_type, '__args__'):
-                        args = param_type.__args__
-                        non_none_types = [t for t in args if t is not type(None)]
-                        if non_none_types:
-                            param_type = non_none_types[0]
-                        else:
-                            param_type = str
+                # Extract the actual type from unions/optionals
+                param_type = _extract_click_type(param.annotation)
                 
                 # Use type annotation
                 if param_type == bool:
@@ -305,9 +330,11 @@ def build_click_command(
         else:
             # Create argument
             if param.annotation != inspect.Parameter.empty:
+                # Extract the actual type from unions/optionals
+                param_type = _extract_click_type(param.annotation)
                 click_func = click.argument(
                     param_name,
-                    type=param.annotation,
+                    type=param_type,
                 )(click_func)
             else:
                 click_func = click.argument(param_name)(click_func)
