@@ -388,10 +388,13 @@ def build_click_command(
     
     # Build Click command from function signature
     sig = inspect.signature(func)
-    click_func = func
     
-    # Add parameters as Click options/arguments in reverse order for Click
+    # Process parameters in reverse order for Click decorator stacking
     params = list(sig.parameters.items())
+    
+    # Start with the base function
+    decorated_func = func
+    
     for param_name, param in reversed(params):
         if param_name in ("self", "cls", "ctx"):
             continue
@@ -408,41 +411,41 @@ def build_click_command(
                 
                 # Use type annotation
                 if param_type == bool:
-                    click_func = click.option(
+                    decorated_func = click.option(
                         option_name,
                         is_flag=True,
                         default=param.default,
                         help=f"{param_name} flag",
-                    )(click_func)
+                    )(decorated_func)
                 else:
-                    click_func = click.option(
+                    decorated_func = click.option(
                         option_name,
                         type=param_type,
                         default=param.default,
                         help=f"{param_name} option",
-                    )(click_func)
+                    )(decorated_func)
             else:
-                click_func = click.option(
+                decorated_func = click.option(
                     option_name,
                     default=param.default,
                     help=f"{param_name} option",
-                )(click_func)
+                )(decorated_func)
         else:
             # Create argument
             if param.annotation != inspect.Parameter.empty:
                 # Extract the actual type from unions/optionals
                 param_type = _extract_click_type(param.annotation)
-                click_func = click.argument(
+                decorated_func = click.argument(
                     param_name,
                     type=param_type,
-                )(click_func)
+                )(decorated_func)
             else:
-                click_func = click.argument(param_name)(click_func)
+                decorated_func = click.argument(param_name)(decorated_func)
     
-    # Create the Click command
+    # Create the Click command with the decorated function
     return click.Command(
         name=info.name,
-        callback=click_func,
+        callback=decorated_func,
         help=info.description,
         hidden=info.hidden,
     )
