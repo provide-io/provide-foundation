@@ -17,7 +17,8 @@ from provide.foundation.config.loader import (
     FileConfigLoader,
     MultiSourceLoader,
 )
-from provide.foundation.config.types import ConfigFormat, ConfigSource
+from provide.foundation.config.types import ConfigFormat
+from provide.foundation.errors import ConfigurationError, NotFoundError, ConfigSource
 
 
 @define
@@ -127,7 +128,7 @@ EXTRA_VAR="quoted value"
         config_file = tmp_path / "config.unknown"
         config_file.touch()
 
-        with pytest.raises(ValueError, match="Cannot determine format"):
+        with pytest.raises(ConfigurationError, match="Cannot determine format"):
             FileConfigLoader(config_file)
 
     @pytest.mark.asyncio
@@ -136,7 +137,7 @@ EXTRA_VAR="quoted value"
         loader = FileConfigLoader(tmp_path / "nonexistent.json")
         assert not loader.exists()
 
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(NotFoundError):
             await loader.load(TestConfig)
 
 
