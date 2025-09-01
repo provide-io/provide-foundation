@@ -6,6 +6,8 @@ from dataclasses import dataclass, field
 import threading
 from typing import Any
 
+from provide.foundation.errors import AlreadyExistsError, NotFoundError, ValidationError
+from provide.foundation.errors.decorators import with_error_handling
 from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
@@ -71,9 +73,12 @@ class Registry:
         """
         with self._lock:
             if not replace and name in self._registry[dimension]:
-                raise ValueError(
+                raise AlreadyExistsError(
                     f"Item '{name}' already registered in dimension '{dimension}'. "
-                    "Use replace=True to override."
+                    "Use replace=True to override.",
+                    code="REGISTRY_ITEM_EXISTS",
+                    item_name=name,
+                    dimension=dimension
                 )
 
             entry = RegistryEntry(
