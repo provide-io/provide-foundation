@@ -74,6 +74,7 @@ def register_command(
     group: bool = False,
     replace: bool = False,
     registry: Registry | None = None,
+    **metadata: Any,
 ) -> Any:
     """
     Register a CLI command in the hub.
@@ -133,6 +134,7 @@ def register_command(
             group=group,
             replace=replace,
             registry=registry,
+            **metadata,
         )
     
     # Handle @register_command(...) (with arguments)
@@ -148,6 +150,7 @@ def register_command(
             group=group,
             replace=replace,
             registry=registry,
+            **metadata,
         )
     
     return decorator
@@ -165,6 +168,7 @@ def _register_command_func(
     group: bool = False,
     replace: bool = False,
     registry: Registry | None = None,
+    **extra_metadata: Any,
 ) -> F:
     """Internal function to register a command."""
     reg = registry or _command_registry
@@ -191,6 +195,9 @@ def _register_command_func(
         actual_func = func
     
     # Create command info
+    cmd_metadata = {"is_group": group}
+    cmd_metadata.update(extra_metadata)
+    
     info = CommandInfo(
         name=command_name,
         func=actual_func,
@@ -198,7 +205,7 @@ def _register_command_func(
         aliases=aliases or [],
         hidden=hidden,
         category=category,
-        metadata={"is_group": group},
+        metadata=cmd_metadata,
         click_command=click_cmd,
         parent=parent,
     )
@@ -213,21 +220,25 @@ def _register_command_func(
     else:
         full_name = command_name
     
+    # Build registry metadata
+    reg_metadata = {
+        "info": info,
+        "description": info.description,
+        "aliases": info.aliases,
+        "hidden": hidden,
+        "category": category,
+        "parent": parent,
+        "is_group": group,
+        "click_command": click_cmd,
+    }
+    reg_metadata.update(extra_metadata)
+    
     # Register in the registry
     reg.register(
         name=full_name,
         value=func,
         dimension="command",
-        metadata={
-            "info": info,
-            "description": info.description,
-            "aliases": info.aliases,
-            "hidden": hidden,
-            "category": category,
-            "parent": parent,
-            "is_group": group,
-            "click_command": click_cmd,
-        },
+        metadata=reg_metadata,
         aliases=aliases,
         replace=replace,
     )

@@ -270,7 +270,7 @@ class Context:
             if value is not None:
                 merged_data[key] = value
         
-        return self.from_dict(merged_data)
+        return Context.from_dict(merged_data)
     
     def freeze(self) -> None:
         """Freeze context to prevent further modifications."""
