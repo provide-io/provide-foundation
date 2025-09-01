@@ -120,7 +120,7 @@ class TestEnvUtilities:
 
     def test_parse_dict_invalid(self):
         """Test parsing invalid dictionary."""
-        with pytest.raises(ValueError, match="Invalid key-value pair"):
+        with pytest.raises(ValueError, match="Invalid dict format"):
             parse_dict("invalid_format")
 
 
