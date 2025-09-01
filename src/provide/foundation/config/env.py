@@ -19,9 +19,6 @@ from provide.foundation.config.base import BaseConfig, field
 from provide.foundation.config.types import ConfigSource
 from provide.foundation.utils.parsing import (
     auto_parse,
-    parse_bool,
-    parse_dict,
-    parse_list,
 )
 
 T = TypeVar("T")
@@ -111,7 +108,6 @@ def get_env(
     return value
 
 
-
 def env_field(
     env_var: str | None = None,
     env_prefix: str | None = None,
@@ -195,11 +191,13 @@ class EnvConfig(BaseConfig):
                         with open(file_path) as f:
                             value = f.read().strip()
                     except Exception as e:
-                        raise ValueError(f"Failed to read secret from file '{file_path}': {e}")
-                
+                        raise ValueError(
+                            f"Failed to read secret from file '{file_path}': {e}"
+                        )
+
                 # Apply parser if specified
                 parser = attr.metadata.get("env_parser")
-                
+
                 if parser:
                     try:
                         value = parser(value)
@@ -208,7 +206,7 @@ class EnvConfig(BaseConfig):
                 else:
                     # Try to infer parser from type
                     value = EnvConfig._auto_parse(attr, value)
-                
+
                 data[attr.name] = value
 
         return cls.from_dict(data, source=ConfigSource.ENV)
@@ -324,9 +322,7 @@ class EnvConfig(BaseConfig):
         # Use the utility function from utils.parsing
         return auto_parse(attr, value)
 
-    def to_env_dict(
-        self, prefix: str = "", delimiter: str = "_"
-    ) -> dict[str, str]:
+    def to_env_dict(self, prefix: str = "", delimiter: str = "_") -> dict[str, str]:
         """
         Convert configuration to environment variable dictionary.
 

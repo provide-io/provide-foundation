@@ -30,19 +30,19 @@ def timed_block(
 ) -> Generator[dict[str, Any], None, None]:
     """
     Context manager that logs the duration of a code block.
-    
+
     Logs at DEBUG when entering, INFO on success, ERROR on exception.
-    
+
     Args:
         logger_instance: Logger to use for output
         event_name: Name of the operation being timed
         layer_keys: Semantic layer keys (e.g., llm-specific keys)
         initial_kvs: Initial key-value pairs to include in logs
         **extra_kvs: Additional key-value pairs
-        
+
     Yields:
         A mutable dict that can be updated with additional context
-        
+
     Example:
         >>> with timed_block(logger, "database_query") as ctx:
         >>>     ctx["query"] = "SELECT * FROM users"
@@ -56,29 +56,29 @@ def timed_block(
     if initial_kvs:
         all_kvs.update(initial_kvs)
     all_kvs.update(extra_kvs)
-    
+
     # Try to get trace_id from context
     trace_id = _FOUNDATION_CONTEXT_TRACE_ID.get()
     if trace_id and "trace_id" not in all_kvs:
         all_kvs["trace_id"] = trace_id
-    
+
     # Create context dict that can be modified
     context: dict[str, Any] = {}
-    
+
     # Log start
     logger_instance.debug(f"{event_name} started", **all_kvs)
-    
+
     start_time = time.perf_counter()
     try:
         yield context
-        
+
         # Success - calculate duration and log
         duration = time.perf_counter() - start_time
         all_kvs.update(context)
         all_kvs["duration_seconds"] = round(duration, 3)
-        
+
         logger_instance.info(f"{event_name} completed", **all_kvs)
-        
+
     except Exception as e:
         # Error - calculate duration and log with exception
         duration = time.perf_counter() - start_time
@@ -86,6 +86,6 @@ def timed_block(
         all_kvs["duration_seconds"] = round(duration, 3)
         all_kvs["error"] = str(e)
         all_kvs["error_type"] = type(e).__name__
-        
+
         logger_instance.error(f"{event_name} failed", exc_info=True, **all_kvs)
         raise

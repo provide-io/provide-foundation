@@ -106,7 +106,7 @@ class BaseConfig:
     # These are instance attributes that need to be defined outside of slots
     _source_map: dict[str, ConfigSource] = attrs_field(init=False, factory=dict)
     _original_values: dict[str, Any] = attrs_field(init=False, factory=dict)
-    
+
     def __attrs_post_init__(self):
         """Post-initialization hook for subclasses."""
         # The _source_map and _original_values are now handled by attrs with factory
@@ -200,7 +200,7 @@ class BaseConfig:
 
         # Create instance
         instance = cls(**filtered_data)
-        
+
         # Track sources
         for key in filtered_data:
             instance._source_map[key] = source
@@ -245,9 +245,9 @@ class BaseConfig:
         """Reset all fields to their default values."""
         for attr in fields(self.__class__):
             # Skip internal fields
-            if attr.name.startswith('_'):
+            if attr.name.startswith("_"):
                 continue
-                
+
             if attr.default != NOTHING:
                 setattr(self, attr.name, attr.default)
             elif attr.factory != NOTHING:
@@ -297,14 +297,15 @@ class BaseConfig:
         """String representation hiding sensitive fields."""
         # Get the actual attrs fields
         import attrs
+
         attr_fields = attrs.fields(self.__class__)
-        
+
         parts = []
         for attr in attr_fields:
             # Skip internal fields
-            if attr.name.startswith('_'):
+            if attr.name.startswith("_"):
                 continue
-                
+
             value = getattr(self, attr.name)
 
             # Hide sensitive values

@@ -7,7 +7,7 @@ config files, CLI args, etc.) to proper Python types based on type hints.
 
 from __future__ import annotations
 
-from typing import Any, TypeVar, get_origin, get_args
+from typing import Any, TypeVar, get_origin
 
 T = TypeVar("T")
 
@@ -15,28 +15,28 @@ T = TypeVar("T")
 def parse_bool(value: Any, strict: bool = False) -> bool:
     """
     Parse a boolean value from string or other types.
-    
+
     Accepts: true/false, yes/no, 1/0, on/off, enabled/disabled (case-insensitive)
-    
+
     Args:
         value: Value to parse as boolean
         strict: If True, only accept bool or string types (raise TypeError otherwise)
-        
+
     Returns:
         Boolean value
-        
+
     Raises:
         TypeError: If strict=True and value is not bool or string
         ValueError: If value cannot be parsed as boolean
     """
     if isinstance(value, bool):
         return value
-    
+
     if strict and not isinstance(value, str):
         raise TypeError(f"Cannot convert {type(value).__name__} to bool: {value!r}")
-        
+
     str_value = str(value).lower().strip()
-    
+
     if str_value in ("true", "yes", "1", "on", "enabled"):
         return True
     elif str_value in ("false", "no", "0", "off", "disabled", ""):
@@ -52,26 +52,26 @@ def parse_list(
 ) -> list[str]:
     """
     Parse a list from a string.
-    
+
     Args:
         value: String or list to parse
         separator: Separator character
         strip: Whether to strip whitespace from items
-        
+
     Returns:
         List of strings
     """
     if isinstance(value, list):
         return value
-        
+
     if not value:
         return []
-        
+
     items = value.split(separator)
-    
+
     if strip:
         items = [item.strip() for item in items]
-        
+
     return items
 
 
@@ -83,62 +83,62 @@ def parse_dict(
 ) -> dict[str, str]:
     """
     Parse a dictionary from a string.
-    
+
     Format: "key1=value1,key2=value2"
-    
+
     Args:
         value: String or dict to parse
         item_separator: Separator between items
         key_separator: Separator between key and value
         strip: Whether to strip whitespace
-        
+
     Returns:
         Dictionary of string keys and values
-        
+
     Raises:
         ValueError: If format is invalid
     """
     if isinstance(value, dict):
         return value
-        
+
     if not value:
         return {}
-        
+
     result = {}
     items = value.split(item_separator)
-    
+
     for item in items:
         if not item:
             continue
-            
+
         if key_separator not in item:
             raise ValueError(f"Invalid dict format: '{item}' missing '{key_separator}'")
-            
+
         key, val = item.split(key_separator, 1)
-        
+
         if strip:
             key = key.strip()
             val = val.strip()
-            
+
         result[key] = val
-        
+
     return result
 
 
 def parse_typed_value(value: str, target_type: type) -> Any:
     """
     Parse a string value to a specific type.
-    
+
     Handles basic types (int, float, bool, str) and generic types (list, dict).
     For attrs fields, pass field.type as target_type.
-    
+
     Args:
         value: String value to parse
         target_type: Target type to convert to
-        
+
     Returns:
         Parsed value of the target type
-        
+
     Examples:
         >>> parse_typed_value("42", int)
         42
@@ -149,7 +149,7 @@ def parse_typed_value(value: str, target_type: type) -> Any:
     """
     if value is None:
         return None
-        
+
     # Handle basic types
     if target_type == bool:
         return parse_bool(value)
@@ -159,10 +159,10 @@ def parse_typed_value(value: str, target_type: type) -> Any:
         return float(value)
     elif target_type == str:
         return value
-        
+
     # Handle generic types using typing module
     origin = get_origin(target_type)
-    
+
     if origin == list:
         return parse_list(value)
     elif origin == dict:
@@ -173,7 +173,7 @@ def parse_typed_value(value: str, target_type: type) -> Any:
             return parse_list(value)
         elif target_type == dict:
             return parse_dict(value)
-            
+
     # Default to string
     return value
 
@@ -181,41 +181,41 @@ def parse_typed_value(value: str, target_type: type) -> Any:
 def auto_parse(attr: Any, value: str) -> Any:
     """
     Automatically parse value based on an attrs field's type.
-    
+
     This is a convenience wrapper for parse_typed_value that extracts
     the type from an attrs field.
-    
+
     Args:
         attr: attrs field (from fields(Class))
         value: String value to parse
-        
+
     Returns:
         Parsed value based on field type
     """
     # Get type hint from attrs field
     if hasattr(attr, "type") and attr.type is not None:
         field_type = attr.type
-        
+
         # Handle string type annotations (e.g., 'int', 'str', 'bool')
         # This happens when attrs processes classes defined inside functions
         if isinstance(field_type, str):
             # Map common string type names to actual types
             type_map = {
-                'int': int,
-                'float': float,
-                'str': str,
-                'bool': bool,
-                'list': list,
-                'dict': dict,
+                "int": int,
+                "float": float,
+                "str": str,
+                "bool": bool,
+                "list": list,
+                "dict": dict,
             }
             # Try to get the actual type from the map
             field_type = type_map.get(field_type, field_type)
-        
+
         # If we still have a string, we can't parse it
         if isinstance(field_type, str):
             return value
-            
+
         return parse_typed_value(value, field_type)
-    
+
     # No type info, return as string
     return value

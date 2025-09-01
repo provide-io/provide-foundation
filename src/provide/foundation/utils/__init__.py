@@ -17,7 +17,7 @@ __all__ = [
     # Parsing utilities
     "auto_parse",
     "parse_bool",
-    "parse_dict", 
+    "parse_dict",
     "parse_list",
     "parse_typed_value",
     # Timing utilities

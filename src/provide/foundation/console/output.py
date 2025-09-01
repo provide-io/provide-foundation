@@ -36,11 +36,11 @@ def _should_use_color(ctx: Context | None = None, stream=None) -> bool:
     """Determine if color output should be used."""
     if ctx is None:
         ctx = _get_context()
-    
+
     # Check if stream is a TTY
     if stream:
-        return getattr(stream, 'isatty', lambda: False)()
-    
+        return getattr(stream, "isatty", lambda: False)()
+
     return sys.stdout.isatty() or sys.stderr.isatty()
 
 
@@ -53,14 +53,14 @@ def _output_json(data: Any, stream=sys.stdout) -> None:
         # Fallback to string representation
         click.echo(
             json.dumps({"error": f"JSON encoding failed: {e}", "data": str(data)}),
-            file=stream
+            file=stream,
         )
 
 
 def pout(message, **kwargs) -> None:
     """
     Output message to stdout.
-    
+
     Args:
         message: Content to output (any type - will be stringified or JSON-encoded)
         **kwargs: Optional formatting arguments:
@@ -71,36 +71,36 @@ def pout(message, **kwargs) -> None:
             json_key: Key for JSON output mode
             prefix: Optional prefix string
             ctx: Override context
-    
+
     Examples:
         pout("Hello world")
         pout({"data": "value"})  # Auto-JSON if dict/list
         pout("Success", color="green", bold=True)
         pout(results, json_key="results")
     """
-    ctx = kwargs.get('ctx') or _get_context()
-    
+    ctx = kwargs.get("ctx") or _get_context()
+
     # Handle newline option (support both nl and newline)
-    nl = kwargs.get('nl', kwargs.get('newline', True))
-    
+    nl = kwargs.get("nl", kwargs.get("newline", True))
+
     if _should_use_json(ctx):
         # JSON mode
-        if kwargs.get('json_key'):
-            _output_json({kwargs['json_key']: message}, sys.stdout)
+        if kwargs.get("json_key"):
+            _output_json({kwargs["json_key"]: message}, sys.stdout)
         else:
             _output_json(message, sys.stdout)
     else:
         # Regular output mode
         # Add optional prefix
         output = str(message)
-        if prefix := kwargs.get('prefix'):
+        if prefix := kwargs.get("prefix"):
             output = f"{prefix} {output}"
-        
+
         # Apply color/formatting if requested and supported
-        color = kwargs.get('color')
-        bold = kwargs.get('bold', False)
-        dim = kwargs.get('dim', False)
-        
+        color = kwargs.get("color")
+        bold = kwargs.get("bold", False)
+        dim = kwargs.get("dim", False)
+
         if (color or bold or dim) and _should_use_color(ctx, sys.stdout):
             click.secho(output, fg=color, bold=bold, dim=dim, nl=nl)
         else:
@@ -110,7 +110,7 @@ def pout(message, **kwargs) -> None:
 def perr(message, **kwargs) -> None:
     """
     Output message to stderr.
-    
+
     Args:
         message: Content to output (any type - will be stringified or JSON-encoded)
         **kwargs: Optional formatting arguments:
@@ -121,35 +121,35 @@ def perr(message, **kwargs) -> None:
             json_key: Key for JSON output mode
             prefix: Optional prefix string
             ctx: Override context
-    
+
     Examples:
         perr("Error occurred")
         perr("Warning", color="yellow")
         perr({"error": details}, json_key="error")
     """
-    ctx = kwargs.get('ctx') or _get_context()
-    
+    ctx = kwargs.get("ctx") or _get_context()
+
     # Handle newline option (support both nl and newline)
-    nl = kwargs.get('nl', kwargs.get('newline', True))
-    
+    nl = kwargs.get("nl", kwargs.get("newline", True))
+
     if _should_use_json(ctx):
         # JSON mode
-        if kwargs.get('json_key'):
-            _output_json({kwargs['json_key']: message}, sys.stderr)
+        if kwargs.get("json_key"):
+            _output_json({kwargs["json_key"]: message}, sys.stderr)
         else:
             _output_json(message, sys.stderr)
     else:
         # Regular output mode
         # Add optional prefix
         output = str(message)
-        if prefix := kwargs.get('prefix'):
+        if prefix := kwargs.get("prefix"):
             output = f"{prefix} {output}"
-        
+
         # Apply color/formatting if requested and supported
-        color = kwargs.get('color')
-        bold = kwargs.get('bold', False)
-        dim = kwargs.get('dim', False)
-        
+        color = kwargs.get("color")
+        bold = kwargs.get("bold", False)
+        dim = kwargs.get("dim", False)
+
         if (color or bold or dim) and _should_use_color(ctx, sys.stderr):
             click.secho(output, fg=color, bold=bold, dim=dim, err=True, nl=nl)
         else:
