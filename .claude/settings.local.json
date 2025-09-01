@@ -5,7 +5,12 @@
       "Bash(pytest:*)",
       "Bash(python:*)",
       "Read(/Users/tim/code/gh/provide-io/**)",
-      "Read(/Users/tim/code/gh/provide-io/wrknv/**)"
+      "Read(/Users/tim/code/gh/provide-io/wrknv/**)",
+      "Read(/Users/tim/code/gh/provide-io/wrknv/src/wrknv/wenv/**)",
+      "Read(/Users/tim/code/gh/provide-io/**)",
+      "Read(/Users/tim/code/gh/provide-io/supsrc/src/supsrc/cli/**)",
+      "Read(/Users/tim/code/gh/provide-io/supsrc/src/supsrc/cli/**)",
+      "Read(/Users/tim/code/gh/provide-io/**)"
     ],
     "deny": [],
     "ask": []
