@@ -37,7 +37,10 @@
       "Bash(/Users/tim/code/gh/provide-io/provide-foundation/validate-workflows.sh)",
       "Bash(bash:*)",
       "Read(/Users/tim/.colima/**)",
-      "Bash(docker:*)"
+      "Bash(docker:*)",
+      "Read(/Users/tim/.colima/**)",
+      "Bash(DOCKER_HOST=unix:///Users/tim/.colima/default/docker.sock act -W .github/workflows/test-simple.yml --container-daemon-socket /var/run/docker.sock --no-cache-server)",
+      "Bash(DOCKER_HOST=unix://$HOME/.colima/default/docker.sock act -W .github/workflows/test-simple.yml --container-daemon-socket \"\")"
     ],
     "deny": [],
     "ask": [],
