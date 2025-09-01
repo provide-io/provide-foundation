@@ -220,11 +220,9 @@ def _build_formatter_processors_list(
             return _config_create_keyvalue_formatter_processors(output_stream)
         case _:
             # Unknown formatter, warn and default to key_value
-            # Use stdlib logging for config warnings during setup
+            # We can't use structlog here as we're in the middle of configuring it
+            # Write directly to stderr for the test to capture
             import sys
-            config_logger = stdlib_logging.getLogger("provide.foundation.config_warnings")
-            handler = stdlib_logging.StreamHandler(sys.stderr)
-            handler.setFormatter(stdlib_logging.Formatter("[Foundation Config Warning] %(message)s"))
-            config_logger.addHandler(handler)
-            config_logger.warning(f"Unknown formatter '{logging_config.console_formatter}', defaulting to key_value")
+            sys.stderr.write(f"Unknown formatter '{logging_config.console_formatter}'\n")
+            sys.stderr.flush()
             return _config_create_keyvalue_formatter_processors(output_stream)
