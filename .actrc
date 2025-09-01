@@ -1,4 +1,4 @@
-# act configuration for provide-foundation
+# act configuration for provide-foundation with Colima
 # https://github.com/nektos/act
 
 # Default runner images (smaller than GitHub's)
@@ -12,8 +12,11 @@
 # Use local .env file for secrets
 --secret-file .secrets
 
-# Enable verbose output for debugging
-# --verbose
+# Don't try to bind mount the docker socket (causes issues with Colima)
+--container-options "--network=bridge"
+
+# Use the correct architecture for M1/M2 Macs
+--container-architecture linux/amd64
 
 # Reuse containers for faster runs
 --reuse
