@@ -17,6 +17,7 @@ from provide.foundation import (
     with_error_handling,
 )
 from provide.foundation.errors import (
+    AlreadyExistsError,
     AuthenticationError,
     ConfigurationError,
     IntegrationError,
@@ -481,7 +482,6 @@ class TestRealWorldScenarios:
         def db_insert(table, data):
             db_operations.append(("insert", table, data))
             if table == "users" and data.get("email") == "duplicate@example.com":
-                from provide.foundation.errors import AlreadyExistsError
                 raise AlreadyExistsError(
                     "User already exists",
                     resource_type="user",

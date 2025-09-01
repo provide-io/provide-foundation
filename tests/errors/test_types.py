@@ -20,55 +20,55 @@ class TestErrorCode:
     
     def test_config_error_codes(self):
         """Test configuration error codes."""
-        assert ErrorCode.CONFIG_INVALID == "CFG_001"
-        assert ErrorCode.CONFIG_MISSING == "CFG_002"
-        assert ErrorCode.CONFIG_PARSE_ERROR == "CFG_003"
-        assert ErrorCode.CONFIG_TYPE_ERROR == "CFG_004"
+        assert ErrorCode.CONFIG_INVALID.value == "CFG_001"
+        assert ErrorCode.CONFIG_MISSING.value == "CFG_002"
+        assert ErrorCode.CONFIG_PARSE_ERROR.value == "CFG_003"
+        assert ErrorCode.CONFIG_TYPE_ERROR.value == "CFG_004"
     
     def test_validation_error_codes(self):
         """Test validation error codes."""
-        assert ErrorCode.VALIDATION_TYPE == "VAL_001"
-        assert ErrorCode.VALIDATION_RANGE == "VAL_002"
-        assert ErrorCode.VALIDATION_FORMAT == "VAL_003"
-        assert ErrorCode.VALIDATION_REQUIRED == "VAL_004"
-        assert ErrorCode.VALIDATION_CONSTRAINT == "VAL_005"
+        assert ErrorCode.VALIDATION_TYPE.value == "VAL_001"
+        assert ErrorCode.VALIDATION_RANGE.value == "VAL_002"
+        assert ErrorCode.VALIDATION_FORMAT.value == "VAL_003"
+        assert ErrorCode.VALIDATION_REQUIRED.value == "VAL_004"
+        assert ErrorCode.VALIDATION_CONSTRAINT.value == "VAL_005"
     
     def test_integration_error_codes(self):
         """Test integration error codes."""
-        assert ErrorCode.INTEGRATION_TIMEOUT == "INT_001"
-        assert ErrorCode.INTEGRATION_AUTH == "INT_002"
-        assert ErrorCode.INTEGRATION_UNAVAILABLE == "INT_003"
-        assert ErrorCode.INTEGRATION_RATE_LIMIT == "INT_004"
-        assert ErrorCode.INTEGRATION_PROTOCOL == "INT_005"
+        assert ErrorCode.INTEGRATION_TIMEOUT.value == "INT_001"
+        assert ErrorCode.INTEGRATION_AUTH.value == "INT_002"
+        assert ErrorCode.INTEGRATION_UNAVAILABLE.value == "INT_003"
+        assert ErrorCode.INTEGRATION_RATE_LIMIT.value == "INT_004"
+        assert ErrorCode.INTEGRATION_PROTOCOL.value == "INT_005"
     
     def test_resource_error_codes(self):
         """Test resource error codes."""
-        assert ErrorCode.RESOURCE_NOT_FOUND == "RES_001"
-        assert ErrorCode.RESOURCE_LOCKED == "RES_002"
-        assert ErrorCode.RESOURCE_PERMISSION == "RES_003"
-        assert ErrorCode.RESOURCE_EXHAUSTED == "RES_004"
-        assert ErrorCode.RESOURCE_CONFLICT == "RES_005"
+        assert ErrorCode.RESOURCE_NOT_FOUND.value == "RES_001"
+        assert ErrorCode.RESOURCE_LOCKED.value == "RES_002"
+        assert ErrorCode.RESOURCE_PERMISSION.value == "RES_003"
+        assert ErrorCode.RESOURCE_EXHAUSTED.value == "RES_004"
+        assert ErrorCode.RESOURCE_CONFLICT.value == "RES_005"
     
     def test_auth_error_codes(self):
         """Test authentication/authorization error codes."""
-        assert ErrorCode.AUTH_INVALID_CREDENTIALS == "AUTH_001"
-        assert ErrorCode.AUTH_TOKEN_EXPIRED == "AUTH_002"
-        assert ErrorCode.AUTH_INSUFFICIENT_PERMISSION == "AUTH_003"
-        assert ErrorCode.AUTH_SESSION_INVALID == "AUTH_004"
-        assert ErrorCode.AUTH_MFA_REQUIRED == "AUTH_005"
+        assert ErrorCode.AUTH_INVALID_CREDENTIALS.value == "AUTH_001"
+        assert ErrorCode.AUTH_TOKEN_EXPIRED.value == "AUTH_002"
+        assert ErrorCode.AUTH_INSUFFICIENT_PERMISSION.value == "AUTH_003"
+        assert ErrorCode.AUTH_SESSION_INVALID.value == "AUTH_004"
+        assert ErrorCode.AUTH_MFA_REQUIRED.value == "AUTH_005"
     
     def test_system_error_codes(self):
         """Test system error codes."""
-        assert ErrorCode.SYSTEM_UNAVAILABLE == "SYS_001"
-        assert ErrorCode.SYSTEM_OVERLOAD == "SYS_002"
-        assert ErrorCode.SYSTEM_MAINTENANCE == "SYS_003"
-        assert ErrorCode.SYSTEM_INTERNAL == "SYS_004"
-        assert ErrorCode.SYSTEM_PANIC == "SYS_005"
+        assert ErrorCode.SYSTEM_UNAVAILABLE.value == "SYS_001"
+        assert ErrorCode.SYSTEM_OVERLOAD.value == "SYS_002"
+        assert ErrorCode.SYSTEM_MAINTENANCE.value == "SYS_003"
+        assert ErrorCode.SYSTEM_INTERNAL.value == "SYS_004"
+        assert ErrorCode.SYSTEM_PANIC.value == "SYS_005"
     
     def test_error_code_is_string(self):
         """Test that error codes are strings."""
         assert isinstance(ErrorCode.CONFIG_INVALID.value, str)
-        assert str(ErrorCode.VALIDATION_TYPE) == "VAL_001"
+        assert ErrorCode.VALIDATION_TYPE.value == "VAL_001"
 
 
 class TestErrorMetadata:
@@ -140,10 +140,10 @@ class TestBackoffStrategy:
     
     def test_strategy_values(self):
         """Test backoff strategy values."""
-        assert BackoffStrategy.FIXED == "fixed"
-        assert BackoffStrategy.LINEAR == "linear"
-        assert BackoffStrategy.EXPONENTIAL == "exponential"
-        assert BackoffStrategy.FIBONACCI == "fibonacci"
+        assert BackoffStrategy.FIXED.value == "fixed"
+        assert BackoffStrategy.LINEAR.value == "linear"
+        assert BackoffStrategy.EXPONENTIAL.value == "exponential"
+        assert BackoffStrategy.FIBONACCI.value == "fibonacci"
 
 
 class TestRetryPolicy:
