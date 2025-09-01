@@ -13,11 +13,15 @@ If you provide no configuration, the logger will run with a sensible set of defa
 *   **Emoji Prefixes**: All emoji systems (logger name and semantic) are enabled.
 *   **Semantic Layers**: No layers are enabled by default; the system relies on the [DAS fallback](./semantic-layers.md#the-domain-action-status-das-fallback).
 
-This setup is perfect for local development and debugging.
+!!! info "Perfect for Development"
+    The zero-configuration setup is perfect for local development and debugging, as it provides maximum information out of the box.
 
 ### Method 1: Configuration via Environment Variables
 
 For production environments, and for making quick changes without altering code, environment variables are the recommended method of configuration.
+
+!!! tip "Production Best Practice"
+    Using environment variables allows you to change log levels or verbosity in your production environment without needing to redeploy your application.
 
 Here is a complete list of the available environment variables:
 
@@ -34,20 +38,12 @@ Here is a complete list of the available environment variables:
 | `FOUNDATION_LOG_ENABLED_SEMANTIC_LAYERS` | A comma-separated list of built-in semantic layers to activate. | `""` | `http,database,llm` |
 | `FOUNDATION_SHOW_EMOJI_MATRIX` | Set to `true` to print a reference of all active emoji mappings on startup. | `false` | `true` |
 
-**Example Usage:**
-
-```bash
-# Set environment variables before running your app
-export FOUNDATION_LOG_LEVEL="INFO"
-export FOUNDATION_LOG_CONSOLE_FORMATTER="json"
-export FOUNDATION_SERVICE_NAME="billing-service"
-
-python your_app.py
-```
-
 ### Method 2: Programmatic Configuration
 
-For the most control and for complex or dynamic configurations, you can configure the logger directly in your code using the available data classes. This should be done once, at the very beginning of your application's lifecycle.
+For the most control and for complex or dynamic configurations, you can configure the logger directly in your code. 
+
+!!! warning "Call Once at Startup"
+    Programmatic configuration should be done once, at the very beginning of your application's lifecycle, before any other modules start logging. This ensures all log messages are handled consistently.
 
 This method uses two main data classes:
 
@@ -58,30 +54,17 @@ This method uses two main data classes:
 
 ```python
 # In your application's main entry point (e.g., main.py or app.py)
-
-from provide.foundation import (
-    setup_telemetry,
-    TelemetryConfig,
-    LoggingConfig,
-    SemanticLayer, # For custom layers
-)
+from provide.foundation import setup_telemetry, TelemetryConfig, LoggingConfig
 
 # 1. Create a LoggingConfig instance
 logging_config = LoggingConfig(
     default_level="INFO",
     console_formatter="json",
-    
-    # Set per-module log levels for fine-grained control
     module_levels={
         "noisy_library.utils": "WARNING",
         "critical_component.io": "DEBUG",
     },
-    
-    # Enable built-in semantic layers
     enabled_semantic_layers=["http", "database"],
-    
-    # You can also define and add custom semantic layers directly
-    # custom_semantic_layers=[...]
 )
 
 # 2. Create the main TelemetryConfig instance
@@ -91,26 +74,14 @@ telemetry_config = TelemetryConfig(
 )
 
 # 3. Apply the configuration
-# This should be called before any logging occurs
 setup_telemetry(telemetry_config)
-
-
-# Now, you can import and use the logger anywhere else in your app
-# It will automatically use the configuration you just set up
-from provide.foundation import logger
-
-logger.info("This log will be formatted as JSON and will only appear if its level is INFO or higher.")
 ```
 
 ### Configuration Precedence
 
-If both programmatic and environment variable configurations are present, the behavior is as follows:
-
 1.  **`setup_telemetry(config)` is called**: The programmatic configuration provided in the `config` object takes precedence and is used exclusively.
 2.  **`setup_telemetry()` is called with no arguments**: The system will attempt to load configuration from environment variables.
 3.  **No setup is called (lazy initialization)**: The first time `logger` is used, it will initialize itself by loading configuration from environment variables.
-
-For predictable behavior, it is best to choose one method and use it consistently, with the recommended approach being a single, explicit `setup_telemetry()` call at application startup.
 
 ---
 

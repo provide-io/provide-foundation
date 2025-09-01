@@ -63,15 +63,16 @@ You will see the following output in your console, beautifully formatted and ins
 [▶️] Application shutting down
 ```
 
-Let's break down what you're seeing:
+!!! info "Deconstructing the Log Message"
+    Let's break down what you're seeing:
 
-1.  **Emoji Prefixes**: Each message is prefixed with an emoji (`▶️`, `⚠️`, `🔥`). This is part of the **Domain-Action-Status** pattern, which provides immediate visual context about the log's meaning. `▶️` for informational events, `⚠️` for warnings, and `🔥` for errors.
+    1.  **Emoji Prefixes**: Each message is prefixed with an emoji (`▶️`, `⚠️`, `🔥`). This is part of the **Domain-Action-Status** pattern, which provides immediate visual context about the log's meaning. `▶️` for informational events, `⚠️` for warnings, and `🔥` for errors.
 
-2.  **Log Message**: The main, human-readable message for the event.
+    2.  **Log Message**: The main, human-readable message for the event.
 
-3.  **Structured Context**: The keyword arguments you passed to the logger methods are automatically formatted as `key=value` pairs. This is the core of **structured logging**.
+    3.  **Structured Context**: The keyword arguments you passed to the logger methods are automatically formatted as `key=value` pairs. This is the core of **structured logging**.
 
-4.  **Exception Information**: When you use `logger.exception()`, the full exception traceback is automatically captured and included with the log message, which is invaluable for debugging.
+    4.  **Exception Information**: When you use `logger.exception()`, the full exception traceback is automatically captured and included with the log message, which is invaluable for debugging.
 
 ---
 

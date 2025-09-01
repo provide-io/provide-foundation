@@ -42,7 +42,8 @@ If you need the latest development features, you can install the library directl
 pip install git+https://github.com/provide-io/provide-foundation.git
 ```
 
-> **Note**: The development version may contain experimental features and is not guaranteed to be stable. For production use, we strongly recommend using a stable release from PyPI.
+!!! note
+    The development version may contain experimental features and is not guaranteed to be stable. For production use, we strongly recommend using a stable release from PyPI.
 
 ---
 
