@@ -14,7 +14,8 @@
       "Read(/Users/tim/code/gh/provide-io/pyvider/src/pyvider/cli/**)",
       "Read(/Users/tim/code/gh/provide-io/pyvider/src/pyvider/cli/**)",
       "Read(/Users/tim/code/gh/provide-io/pyvider/src/pyvider/cli/**)",
-      "Bash(uv sync:*)"
+      "Bash(uv sync:*)",
+      "Bash(uv pip:*)"
     ],
     "deny": [],
     "ask": []
