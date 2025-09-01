@@ -38,3 +38,9 @@ class TelemetryConfig:
     service_name: str | None = field(default=None)
     logging: LoggingConfig = field(factory=LoggingConfig)
     globally_disabled: bool = field(default=False)
+
+    @classmethod
+    def from_env(cls) -> "TelemetryConfig":
+        """Creates a `TelemetryConfig` instance by parsing relevant environment variables."""
+        from provide.foundation.logger.env import from_env as _from_env
+        return _from_env()
