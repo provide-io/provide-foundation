@@ -292,7 +292,7 @@ class EnvConfig(BaseConfig):
                         raise ValueError(f"Failed to parse {env_var}: {e}")
                 else:
                     # Try to infer parser from type
-                    value = cls._auto_parse(attr, value)
+                    value = EnvConfig._auto_parse(attr, value)
                 
                 data[attr.name] = value
 
@@ -372,7 +372,7 @@ class EnvConfig(BaseConfig):
                     raise ValueError(f"Failed to parse {env_var}: {e}")
             else:
                 # Try to infer parser from type
-                value = cls._auto_parse(attr, value)
+                value = EnvConfig._auto_parse(attr, value)
 
             data[field_name] = value
 
@@ -394,8 +394,8 @@ class EnvConfig(BaseConfig):
         except Exception as e:
             raise ValueError(f"Failed to read secret from file '{file_path}': {e}")
 
-    @classmethod
-    def _auto_parse(cls, attr: Any, value: str) -> Any:
+    @staticmethod
+    def _auto_parse(attr: Any, value: str) -> Any:
         """
         Automatically parse value based on field type.
 
