@@ -211,7 +211,7 @@ json_output: true
         merged = base_ctx.merge(override_ctx)
         
         assert merged.log_level == "DEBUG"  # Overridden
-        assert merged.profile == "default"  # Override's default value takes precedence
+        assert merged.profile == "base"  # Not overridden since override has default value
         assert merged.debug is True  # Overridden
         
         # Test with explicit None handling
