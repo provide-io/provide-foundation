@@ -257,8 +257,32 @@ def build_click_command(
             # Create option
             option_name = f"--{param_name.replace('_', '-')}"
             if param.annotation != inspect.Parameter.empty:
+                # Handle Union types (e.g., str | None)
+                param_type = param.annotation
+                
+                # Check for Optional/Union types
+                import types
+                if hasattr(types, 'UnionType') and isinstance(param_type, types.UnionType):
+                    # Python 3.10+ Union syntax (str | None)
+                    args = param_type.__args__
+                    # Filter out None type
+                    non_none_types = [t for t in args if t is not type(None)]
+                    if non_none_types:
+                        param_type = non_none_types[0]
+                    else:
+                        param_type = str  # Default to str
+                elif hasattr(param_type, '__origin__') and param_type.__origin__ is type(None):
+                    # Handle typing.Optional
+                    if hasattr(param_type, '__args__'):
+                        args = param_type.__args__
+                        non_none_types = [t for t in args if t is not type(None)]
+                        if non_none_types:
+                            param_type = non_none_types[0]
+                        else:
+                            param_type = str
+                
                 # Use type annotation
-                if param.annotation == bool:
+                if param_type == bool:
                     click_func = click.option(
                         option_name,
                         is_flag=True,
@@ -268,7 +292,7 @@ def build_click_command(
                 else:
                     click_func = click.option(
                         option_name,
-                        type=param.annotation,
+                        type=param_type,
                         default=param.default,
                         help=f"{param_name} option",
                     )(click_func)
