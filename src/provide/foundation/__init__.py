@@ -54,6 +54,44 @@ from provide.foundation.types import (
 # New utility exports
 from provide.foundation.utils import timed_block
 
+# Error handling exports
+from provide.foundation.errors import (
+    # Exceptions
+    FoundationError,
+    ConfigurationError,
+    ValidationError,
+    RuntimeError,
+    IntegrationError,
+    ResourceError,
+    NetworkError,
+    TimeoutError,
+    AuthenticationError,
+    AuthorizationError,
+    NotFoundError,
+    AlreadyExistsError,
+    StateError,
+    ConcurrencyError,
+    # Context
+    ErrorContext,
+    ErrorSeverity,
+    ErrorCategory,
+    capture_error_context,
+    # Handlers
+    error_boundary,
+    transactional,
+    handle_error,
+    ErrorHandler,
+    # Decorators
+    with_error_handling,
+    retry_on_error,
+    suppress_and_log,
+    fallback_on_error,
+    # Types
+    ErrorCode,
+    ErrorMetadata,
+    RetryPolicy,
+)
+
 __all__ = [
     # Core setup and logger
     "logger",
@@ -91,6 +129,36 @@ __all__ = [
     # Console output
     "pout",
     "perr",
+    # Error handling
+    "FoundationError",
+    "ConfigurationError",
+    "ValidationError",
+    "RuntimeError",
+    "IntegrationError",
+    "ResourceError",
+    "NetworkError",
+    "TimeoutError",
+    "AuthenticationError",
+    "AuthorizationError",
+    "NotFoundError",
+    "AlreadyExistsError",
+    "StateError",
+    "ConcurrencyError",
+    "ErrorContext",
+    "ErrorSeverity",
+    "ErrorCategory",
+    "capture_error_context",
+    "error_boundary",
+    "transactional",
+    "handle_error",
+    "ErrorHandler",
+    "with_error_handling",
+    "retry_on_error",
+    "suppress_and_log",
+    "fallback_on_error",
+    "ErrorCode",
+    "ErrorMetadata",
+    "RetryPolicy",
 ]
 
 # 🐍📝

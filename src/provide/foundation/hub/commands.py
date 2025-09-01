@@ -392,58 +392,67 @@ def build_click_command(
     # Build Click command from function signature
     sig = inspect.signature(func)
 
-    # Process parameters in reverse order for Click decorator stacking
+    # Process parameters - separate arguments and options
     params = list(sig.parameters.items())
-
-    # Start with the base function
-    decorated_func = func
-
-    for param_name, param in reversed(params):
+    arguments = []
+    options = []
+    
+    for param_name, param in params:
         if param_name in ("self", "cls", "ctx"):
             continue
-
-        # Determine if it's an option or argument
+        
         has_default = param.default != inspect.Parameter.empty
-
         if has_default:
-            # Create option
-            option_name = f"--{param_name.replace('_', '-')}"
-            if param.annotation != inspect.Parameter.empty:
-                # Extract the actual type from unions/optionals
-                param_type = _extract_click_type(param.annotation)
+            options.append((param_name, param))
+        else:
+            arguments.append((param_name, param))
+    
+    # Start with the base function
+    decorated_func = func
+    
+    # Process arguments in reverse order (for Click's decorator stacking)
+    # but maintain their original order in the function signature
+    for param_name, param in reversed(arguments):
+        # Create argument
+        if param.annotation != inspect.Parameter.empty:
+            # Extract the actual type from unions/optionals
+            param_type = _extract_click_type(param.annotation)
+            decorated_func = click.argument(
+                param_name,
+                type=param_type,
+            )(decorated_func)
+        else:
+            decorated_func = click.argument(param_name)(decorated_func)
+    
+    # Process options in reverse order
+    for param_name, param in reversed(options):
+        # Create option
+        option_name = f"--{param_name.replace('_', '-')}"
+        if param.annotation != inspect.Parameter.empty:
+            # Extract the actual type from unions/optionals
+            param_type = _extract_click_type(param.annotation)
 
-                # Use type annotation
-                if param_type == bool:
-                    decorated_func = click.option(
-                        option_name,
-                        is_flag=True,
-                        default=param.default,
-                        help=f"{param_name} flag",
-                    )(decorated_func)
-                else:
-                    decorated_func = click.option(
-                        option_name,
-                        type=param_type,
-                        default=param.default,
-                        help=f"{param_name} option",
-                    )(decorated_func)
+            # Use type annotation
+            if param_type == bool:
+                decorated_func = click.option(
+                    option_name,
+                    is_flag=True,
+                    default=param.default,
+                    help=f"{param_name} flag",
+                )(decorated_func)
             else:
                 decorated_func = click.option(
                     option_name,
+                    type=param_type,
                     default=param.default,
                     help=f"{param_name} option",
                 )(decorated_func)
         else:
-            # Create argument
-            if param.annotation != inspect.Parameter.empty:
-                # Extract the actual type from unions/optionals
-                param_type = _extract_click_type(param.annotation)
-                decorated_func = click.argument(
-                    param_name,
-                    type=param_type,
-                )(decorated_func)
-            else:
-                decorated_func = click.argument(param_name)(decorated_func)
+            decorated_func = click.option(
+                option_name,
+                default=param.default,
+                help=f"{param_name} option",
+            )(decorated_func)
 
     # Create the Click command with the decorated function
     cmd = click.Command(
