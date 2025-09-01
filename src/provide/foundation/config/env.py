@@ -3,9 +3,12 @@ Environment variable configuration utilities.
 """
 from __future__ import annotations
 
+import asyncio
 import os
+from pathlib import Path
 from typing import Any, Callable, TypeVar
 
+import aiofiles
 from attrs import fields
 
 from provide.foundation.config.base import BaseConfig, field
@@ -14,14 +17,14 @@ from provide.foundation.config.types import ConfigDict, ConfigSource
 T = TypeVar("T")
 
 
-def get_env(
+async def get_env_async(
     var_name: str,
     default: str | None = None,
     required: bool = False,
     secret_file: bool = True
 ) -> str | None:
     """
-    Get environment variable value with optional file-based secret support.
+    Get environment variable value with optional file-based secret support (async).
     
     Args:
         var_name: Environment variable name
@@ -42,7 +45,51 @@ def get_env(
             raise ValueError(f"Required environment variable '{var_name}' not found")
         return default
     
-    # Handle file-based secrets
+    # Handle file-based secrets asynchronously
+    if secret_file and value.startswith("file://"):
+        file_path = value[7:]  # Remove "file://" prefix
+        try:
+            async with aiofiles.open(file_path, "r") as f:
+                value = await f.read()
+                value = value.strip()
+        except Exception as e:
+            raise ValueError(f"Failed to read secret from file '{file_path}': {e}")
+    
+    return value
+
+
+def get_env(
+    var_name: str,
+    default: str | None = None,
+    required: bool = False,
+    secret_file: bool = True
+) -> str | None:
+    """
+    Get environment variable value with optional file-based secret support (sync).
+    
+    This is a compatibility function that uses sync I/O.
+    Prefer get_env_async for new code.
+    
+    Args:
+        var_name: Environment variable name
+        default: Default value if not found
+        required: Whether the variable is required
+        secret_file: Whether to support file:// prefix for secrets
+        
+    Returns:
+        Environment variable value or default
+        
+    Raises:
+        ValueError: If required and not found
+    """
+    value = os.environ.get(var_name)
+    
+    if value is None:
+        if required:
+            raise ValueError(f"Required environment variable '{var_name}' not found")
+        return default
+    
+    # Handle file-based secrets synchronously
     if secret_file and value.startswith("file://"):
         file_path = value[7:]  # Remove "file://" prefix
         try:
@@ -181,27 +228,34 @@ def env_field(
 class EnvConfig(BaseConfig):
     """
     Configuration that can be loaded from environment variables.
+    All methods are async to support async secret fetching and validation.
     """
     
     @classmethod
-    def from_env(
+    async def from_env(
         cls: type[T],
         prefix: str = "",
         delimiter: str = "_",
-        case_sensitive: bool = False
+        case_sensitive: bool = False,
+        use_async_secrets: bool = True
     ) -> T:
         """
-        Load configuration from environment variables.
+        Load configuration from environment variables asynchronously.
         
         Args:
             prefix: Prefix for all environment variables
             delimiter: Delimiter between prefix and field name
             case_sensitive: Whether variable names are case-sensitive
+            use_async_secrets: Whether to use async I/O for file-based secrets
             
         Returns:
             Configuration instance
         """
         data = {}
+        
+        # Collect all async operations
+        async_tasks = {}
+        sync_values = {}
         
         for attr in fields(cls):
             # Determine environment variable name
@@ -218,24 +272,52 @@ class EnvConfig(BaseConfig):
                     env_var = field_name
             
             # Get value from environment
-            value = os.environ.get(env_var)
+            raw_value = os.environ.get(env_var)
             
-            if value is not None:
-                # Apply parser if specified
-                parser = attr.metadata.get("env_parser")
-                
-                if parser:
-                    try:
-                        value = parser(value)
-                    except Exception as e:
-                        raise ValueError(f"Failed to parse {env_var}: {e}")
+            if raw_value is not None:
+                # Check if it's a file-based secret
+                if use_async_secrets and raw_value.startswith("file://"):
+                    # Schedule async read
+                    async_tasks[attr.name] = cls._read_secret_async(raw_value[7:])
                 else:
-                    # Try to infer parser from type
-                    value = cls._auto_parse(attr, value)
-                
-                data[attr.name] = value
+                    # Store for sync processing
+                    sync_values[attr.name] = (attr, raw_value)
         
-        return cls.from_dict(data, source=ConfigSource.ENV)
+        # Execute all async reads in parallel
+        if async_tasks:
+            async_results = await asyncio.gather(*async_tasks.values())
+            for (field_name, value) in zip(async_tasks.keys(), async_results):
+                # Find the attribute
+                attr = next(a for a in fields(cls) if a.name == field_name)
+                sync_values[field_name] = (attr, value)
+        
+        # Process all values
+        for field_name, (attr, value) in sync_values.items():
+            # Apply parser if specified
+            parser = attr.metadata.get("env_parser")
+            
+            if parser:
+                try:
+                    value = parser(value)
+                except Exception as e:
+                    raise ValueError(f"Failed to parse {env_var}: {e}")
+            else:
+                # Try to infer parser from type
+                value = cls._auto_parse(attr, value)
+            
+            data[field_name] = value
+        
+        return await cls.from_dict(data, source=ConfigSource.ENV)
+    
+    @staticmethod
+    async def _read_secret_async(file_path: str) -> str:
+        """Read secret from file asynchronously."""
+        try:
+            async with aiofiles.open(file_path, "r") as f:
+                content = await f.read()
+                return content.strip()
+        except Exception as e:
+            raise ValueError(f"Failed to read secret from file '{file_path}': {e}")
     
     @classmethod
     def _auto_parse(cls, attr: Any, value: str) -> Any:
@@ -274,7 +356,7 @@ class EnvConfig(BaseConfig):
         # Default to string
         return value
     
-    def to_env_dict(self, prefix: str = "", delimiter: str = "_") -> dict[str, str]:
+    async def to_env_dict(self, prefix: str = "", delimiter: str = "_") -> dict[str, str]:
         """
         Convert configuration to environment variable dictionary.
         
