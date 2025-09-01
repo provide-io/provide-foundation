@@ -207,11 +207,7 @@ class EnvConfig(BaseConfig):
                         raise ValueError(f"Failed to parse {env_var}: {e}")
                 else:
                     # Try to infer parser from type
-                    parsed_value = EnvConfig._auto_parse(attr, value)
-                    # Debug output
-                    if attr.name == "int_val" and os.environ.get("DEBUG_ENV_PARSE"):
-                        print(f"DEBUG: Parsing {attr.name}: {value!r} -> {parsed_value!r}")
-                    value = parsed_value
+                    value = EnvConfig._auto_parse(attr, value)
                 
                 data[attr.name] = value
 

@@ -187,14 +187,30 @@ def auto_parse(attr: Any, value: str) -> Any:
     Returns:
         Parsed value based on field type
     """
-    # Debug output
-    import os
-    if os.environ.get("DEBUG_ENV_PARSE") and hasattr(attr, "name") and attr.name == "int_val":
-        print(f"DEBUG auto_parse: attr={attr}, has type={hasattr(attr, 'type')}, type={getattr(attr, 'type', None)}")
-    
     # Get type hint from attrs field
     if hasattr(attr, "type") and attr.type is not None:
-        return parse_typed_value(value, attr.type)
+        field_type = attr.type
+        
+        # Handle string type annotations (e.g., 'int', 'str', 'bool')
+        # This happens when attrs processes classes defined inside functions
+        if isinstance(field_type, str):
+            # Map common string type names to actual types
+            type_map = {
+                'int': int,
+                'float': float,
+                'str': str,
+                'bool': bool,
+                'list': list,
+                'dict': dict,
+            }
+            # Try to get the actual type from the map
+            field_type = type_map.get(field_type, field_type)
+        
+        # If we still have a string, we can't parse it
+        if isinstance(field_type, str):
+            return value
+            
+        return parse_typed_value(value, field_type)
     
     # No type info, return as string
     return value
