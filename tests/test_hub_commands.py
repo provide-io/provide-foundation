@@ -3,8 +3,7 @@
 import pytest
 import click
 
-from provide.foundation.hub.commands.decorators import register_command
-from provide.foundation.hub.commands.builder import build_click_command
+from provide.foundation.hub.commands import register_command, build_click_command
 from provide.foundation.hub.manager import get_hub, clear_hub
 
 

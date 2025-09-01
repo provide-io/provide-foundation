@@ -2,11 +2,11 @@
 
 import pytest
 
-from provide.foundation.hub.components.decorators import (
+from provide.foundation.hub.components import (
+    BaseComponent,
     register_component,
     discover_components,
 )
-from provide.foundation.hub.components.base import BaseComponent
 from provide.foundation.hub.manager import get_hub, clear_hub
 
 
