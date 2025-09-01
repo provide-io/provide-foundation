@@ -142,7 +142,8 @@ EXTRA_VAR="quoted value"
 class TestEnvConfigLoader:
     """Test EnvConfigLoader."""
 
-    def test_load_with_prefix(self, monkeypatch):
+    @pytest.mark.asyncio
+    async def test_load_with_prefix(self, monkeypatch):
         """Test loading with prefix."""
         monkeypatch.setenv("APP_NAME", "env_app")
         monkeypatch.setenv("APP_PORT", "7000")
@@ -151,18 +152,19 @@ class TestEnvConfigLoader:
         loader = EnvConfigLoader(prefix="APP")
         assert loader.exists()
 
-        config = loader.load(TestEnvConfig)
+        config = await loader.load(TestEnvConfig)
         assert config.name == "env_app"
         assert config.port == 7000
         assert config.debug is True
 
-    def test_load_without_prefix(self, monkeypatch):
+    @pytest.mark.asyncio
+    async def test_load_without_prefix(self, monkeypatch):
         """Test loading without prefix."""
         monkeypatch.setenv("NAME", "no_prefix")
         monkeypatch.setenv("PORT", "8000")
 
         loader = EnvConfigLoader()
-        config = loader.load(TestEnvConfig)
+        config = await loader.load(TestEnvConfig)
 
         assert config.name == "no_prefix"
         assert config.port == 8000
