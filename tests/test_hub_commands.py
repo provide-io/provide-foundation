@@ -40,7 +40,7 @@ class TestCommandRegistration:
             pass
         
         hub = get_hub()
-        command = hub.get_command("my_special_command")
+        command = hub.get_command("info-cmd")
         
         assert command is my_special_command
     
@@ -100,7 +100,7 @@ class TestCommandRegistration:
     def test_command_info_stored(self):
         """Test that CommandInfo is properly stored."""
         
-        @register_command("info_cmd", description="Custom description")
+        @register_command("info-cmd", description="Custom description")
         def info_command():
             """Docstring description."""
             pass
@@ -180,14 +180,14 @@ class TestCommandRegistration:
     def test_command_with_context(self):
         """Test command that uses Click context."""
         
-        @register_command("with_context")
+        @register_command("with-context")
         @click.pass_context
         def context_command(ctx):
             """Command that uses context."""
             return ctx.obj
         
         hub = get_hub()
-        command = hub.get_command("with_context")
+        command = hub.get_command("with-context")
         
         assert command is context_command
         # The @click.pass_context decorator should be preserved
@@ -260,13 +260,13 @@ class TestCommandRegistration:
     def test_async_command_registration(self):
         """Test registering async commands."""
         
-        @register_command("async_cmd")
+        @register_command("async-cmd")
         async def async_command():
             """Async command."""
             return "async result"
         
         hub = get_hub()
-        command = hub.get_command("async_cmd")
+        command = hub.get_command("async-cmd")
         
         assert command is async_command
         

@@ -179,9 +179,9 @@ def _register_command_func(
             parent = None
             command_name = name
     else:
-        # Use function name as command name (removing 'cmd' suffix if present)
+        # Use function name as command name
         parent = None
-        command_name = func.__name__.replace("cmd", "").strip("_")
+        command_name = func.__name__
 
     # Check if it's already a Click command
     click_cmd = None
