@@ -94,7 +94,7 @@ def field(
         )
 
 
-@define(slots=True)
+@define(slots=True, repr=False)
 class BaseConfig:
     """
     Base configuration class with common functionality.

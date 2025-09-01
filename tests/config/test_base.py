@@ -14,7 +14,7 @@ from provide.foundation.config.base import (
 from provide.foundation.config.types import ConfigSource
 
 
-@define
+@define(repr=False)
 class SampleConfig(BaseConfig):
     """Sample configuration for testing."""
 
