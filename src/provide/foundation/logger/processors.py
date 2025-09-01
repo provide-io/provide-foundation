@@ -218,3 +218,8 @@ def _build_formatter_processors_list(
             return _config_create_json_formatter_processors()
         case "key_value":
             return _config_create_keyvalue_formatter_processors(output_stream)
+        case _:
+            # Unknown formatter, warn and default to key_value
+            import sys
+            print(f"Unknown formatter '{logging_config.console_formatter}', defaulting to key_value", file=sys.stderr)
+            return _config_create_keyvalue_formatter_processors(output_stream)
