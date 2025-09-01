@@ -21,7 +21,8 @@
       "Bash(grep:*)",
       "Bash(LOG_LEVEL=TRACE python /tmp/test_logger_trace.py)",
       "Bash(PROVIDE_LOG_LEVEL=TRACE python /tmp/test_logger_trace.py)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(PYTHONPATH=src:$PYTHONPATH python -c \"from pyvider.hub.components import ComponentRegistry; from provide.foundation import logger; logger.info(''Logger migration successful'')\")"
     ],
     "deny": [],
     "ask": [],
