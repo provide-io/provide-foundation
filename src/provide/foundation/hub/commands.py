@@ -423,8 +423,11 @@ def create_command_group(
     if commands is None:
         commands = reg.list_dimension("command")
     
+    # Sort commands to ensure parents are created before children
+    sorted_commands = sorted(commands, key=lambda x: x.count("-"))
+    
     # First pass: create all groups
-    for cmd_name in commands:
+    for cmd_name in sorted_commands:
         entry = reg.get_entry(cmd_name, dimension="command")
         if not entry:
             continue
@@ -447,13 +450,24 @@ def create_command_group(
             groups[cmd_name] = subgroup
             
             # Add to parent or root
-            if parent and parent in groups:
-                groups[parent].add_command(subgroup)
-            elif not parent:
+            if parent:
+                # Handle multi-level parents (e.g., "container volumes")
+                parent_key = parent.replace(" ", "-")
+                if parent_key in groups:
+                    groups[parent_key].add_command(subgroup)
+                else:
+                    # Try to find parent by checking registry
+                    parent_entry = reg.get_entry(parent_key, dimension="command")
+                    if parent_entry and parent_entry.metadata.get("is_group"):
+                        # Parent should have been created, but add to root as fallback
+                        group.add_command(subgroup)
+                    else:
+                        group.add_command(subgroup)
+            else:
                 group.add_command(subgroup)
     
     # Second pass: add commands to groups
-    for cmd_name in commands:
+    for cmd_name in sorted_commands:
         entry = reg.get_entry(cmd_name, dimension="command")
         if not entry:
             continue
@@ -470,11 +484,15 @@ def create_command_group(
             # Update command name if it has a parent
             if parent:
                 # Extract the actual command name (without parent prefix)
-                click_cmd.name = cmd_name.split("-")[-1]
+                parts = cmd_name.split("-")
+                parent_parts = parent.replace(" ", "-").split("-")
+                # Remove parent parts from command name
+                cmd_parts = parts[len(parent_parts):]
+                click_cmd.name = "-".join(cmd_parts) if cmd_parts else parts[-1]
             
             # Add to parent group or root
             if parent:
-                parent_key = parent if parent in groups else f"{parent}"
+                parent_key = parent.replace(" ", "-")
                 if parent_key in groups:
                     groups[parent_key].add_command(click_cmd)
                 else:
