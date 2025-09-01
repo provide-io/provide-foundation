@@ -1,0 +1,40 @@
+#
+# config.py
+#
+"""
+Foundation Telemetry Configuration Module.
+Defines data models for telemetry and logging settings.
+"""
+
+from attrs import define, field
+
+from provide.foundation.types import (
+    ConsoleFormatterStr,
+    CustomDasEmojiSet,
+    LogLevelStr,
+    SemanticLayer,
+)
+
+
+@define(frozen=True, slots=True)
+class LoggingConfig:
+    """Configuration specific to logging behavior within Foundation Telemetry."""
+
+    default_level: LogLevelStr = field(default="DEBUG")
+    module_levels: dict[str, LogLevelStr] = field(factory=dict)
+    console_formatter: ConsoleFormatterStr = field(default="key_value")
+    logger_name_emoji_prefix_enabled: bool = field(default=True)
+    das_emoji_prefix_enabled: bool = field(default=True)
+    omit_timestamp: bool = field(default=False)
+    enabled_semantic_layers: list[str] = field(factory=list)
+    custom_semantic_layers: list[SemanticLayer] = field(factory=list)
+    user_defined_emoji_sets: list[CustomDasEmojiSet] = field(factory=list)
+
+
+@define(frozen=True, slots=True)
+class TelemetryConfig:
+    """Main configuration object for the Foundation Telemetry system."""
+
+    service_name: str | None = field(default=None)
+    logging: LoggingConfig = field(factory=LoggingConfig)
+    globally_disabled: bool = field(default=False)

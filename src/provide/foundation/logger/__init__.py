@@ -10,6 +10,10 @@ from provide.foundation.logger.base import (
     FoundationLogger,  # Class definition
     logger,  # Global instance
 )
+from provide.foundation.logger.config import (
+    LoggingConfig,
+    TelemetryConfig,
+)
 from provide.foundation.logger.emoji_matrix import (
     PRIMARY_EMOJI,  # Legacy/default domain emojis
     SECONDARY_EMOJI,  # Legacy/default action emojis
@@ -24,6 +28,8 @@ __all__ = [
     "FoundationLogger",
     "logger",
     "show_emoji_matrix",
+    "LoggingConfig",
+    "TelemetryConfig",
 ]
 
 # 🐍📝

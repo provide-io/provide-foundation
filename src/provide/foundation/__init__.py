@@ -19,16 +19,10 @@ from provide.foundation.core import (
     setup_telemetry,
     shutdown_foundation_telemetry,
 )
-from provide.foundation.logger import logger  # Global logger instance
-from provide.foundation.logger.emoji_matrix import (
-    PRIMARY_EMOJI,  # Legacy/default domain emojis
-    SECONDARY_EMOJI,  # Legacy/default action emojis
-    TERTIARY_EMOJI,  # Legacy/default status emojis
-    show_emoji_matrix,  # Utility to display emoji configurations
-)
-from provide.foundation.telemetry_config import (
+from provide.foundation.logger import (
     LoggingConfig,
     TelemetryConfig,
+    logger,  # Global logger instance
 )
 
 # New type exports for semantic layering
