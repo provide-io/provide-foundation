@@ -1,0 +1,10 @@
+# Dependencies for building the documentation site
+
+# The static site generator
+mkdocs
+
+# The theme and its powerful extensions
+mkdocs-material
+
+# Extensions for advanced markdown processing
+pymdown-extensions
