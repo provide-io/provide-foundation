@@ -10,7 +10,10 @@ import os
 from pathlib import Path
 from typing import TypeVar
 
-import aiofiles
+try:
+    import aiofiles
+except ImportError:
+    aiofiles = None
 
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.env import EnvConfig
@@ -87,8 +90,13 @@ class FileConfigLoader(ConfigLoader):
 
     async def _read_file(self) -> ConfigDict:
         """Read and parse configuration file."""
-        async with aiofiles.open(self.path, encoding=self.encoding) as f:
-            content = await f.read()
+        if aiofiles:
+            async with aiofiles.open(self.path, encoding=self.encoding) as f:
+                content = await f.read()
+        else:
+            # Fallback to synchronous read
+            with open(self.path, encoding=self.encoding) as f:
+                content = f.read()
 
         if self.format == ConfigFormat.JSON:
             return json.loads(content)

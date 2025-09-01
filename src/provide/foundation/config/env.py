@@ -9,7 +9,10 @@ from collections.abc import Callable
 import os
 from typing import Any, TypeVar
 
-import aiofiles
+try:
+    import aiofiles
+except ImportError:
+    aiofiles = None
 from attrs import fields
 
 from provide.foundation.config.base import BaseConfig, field
@@ -314,9 +317,15 @@ class EnvConfig(BaseConfig):
     async def _read_secret_async(file_path: str) -> str:
         """Read secret from file asynchronously."""
         try:
-            async with aiofiles.open(file_path) as f:
-                content = await f.read()
-                return content.strip()
+            if aiofiles:
+                async with aiofiles.open(file_path) as f:
+                    content = await f.read()
+                    return content.strip()
+            else:
+                # Fallback to synchronous read
+                with open(file_path) as f:
+                    content = f.read()
+                    return content.strip()
         except Exception as e:
             raise ValueError(f"Failed to read secret from file '{file_path}': {e}")
 
