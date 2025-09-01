@@ -167,12 +167,13 @@ class TestEnvConfigLoader:
         assert config.name == "no_prefix"
         assert config.port == 8000
 
-    def test_non_env_config(self):
+    @pytest.mark.asyncio
+    async def test_non_env_config(self):
         """Test error with non-EnvConfig class."""
         loader = EnvConfigLoader()
 
         with pytest.raises(TypeError, match="must inherit from EnvConfig"):
-            loader.load(TestConfig)
+            await loader.load(TestConfig)
 
 
 class TestDictConfigLoader:
@@ -190,14 +191,14 @@ class TestDictConfigLoader:
         assert config.name == "dict_config"
         assert config.port == 9000
         assert config.debug is True
-        assert await config.get_source("name") == ConfigSource.RUNTIME
+        assert config.get_source("name") == ConfigSource.RUNTIME
 
     @pytest.mark.asyncio
     async def test_custom_source(self):
         """Test with custom source."""
         loader = DictConfigLoader({}, source=ConfigSource.DEFAULT)
         config = await loader.load(TestConfig)
-        assert await config.get_source("name") is None  # Uses default values
+        assert config.get_source("name") is None  # Uses default values
 
 
 class TestMultiSourceLoader:
