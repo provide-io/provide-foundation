@@ -28,6 +28,19 @@ except ImportError:
 VALID_LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 
 
+def _strict_bool_converter(value) -> bool:
+    """Convert value to bool with strict type checking."""
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        # Only allow string conversion for env var compatibility
+        if value.lower() in ("true", "1", "yes", "on"):
+            return True
+        elif value.lower() in ("false", "0", "no", "off"):
+            return False
+    raise TypeError(f"Cannot convert {type(value).__name__} to bool: {value!r}")
+
+
 @define(slots=True, frozen=False)
 class Context:
     """
@@ -44,8 +57,8 @@ class Context:
         converter=str.upper
     )
     profile: str = field(default="default")
-    debug: bool = field(default=False, converter=bool)
-    json_output: bool = field(default=False, converter=bool)
+    debug: bool = field(default=False, converter=_strict_bool_converter)
+    json_output: bool = field(default=False, converter=_strict_bool_converter)
     config_file: Path | None = field(default=None, converter=lambda x: Path(x) if x else None)
     log_file: Path | None = field(default=None, converter=lambda x: Path(x) if x else None)
     
