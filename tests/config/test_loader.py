@@ -126,13 +126,14 @@ EXTRA_VAR="quoted value"
         with pytest.raises(ValueError, match="Cannot determine format"):
             FileConfigLoader(config_file)
     
-    def test_file_not_found(self, tmp_path):
+    @pytest.mark.asyncio
+    async def test_file_not_found(self, tmp_path):
         """Test error when file doesn't exist."""
         loader = FileConfigLoader(tmp_path / "nonexistent.json")
         assert not loader.exists()
         
         with pytest.raises(FileNotFoundError):
-            loader.load(TestConfig)
+            await loader.load(TestConfig)
 
 
 class TestEnvConfigLoader:
