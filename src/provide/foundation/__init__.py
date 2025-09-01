@@ -54,43 +54,18 @@ from provide.foundation.types import (
 # New utility exports
 from provide.foundation.utils import timed_block
 
-# Error handling exports
+# Error handling exports - only the essentials
 from provide.foundation.errors import (
-    # Exceptions
+    # Base exception only
     FoundationError,
-    ConfigurationError,
-    ValidationError,
-    RuntimeError,
-    IntegrationError,
-    ResourceError,
-    NetworkError,
-    TimeoutError,
-    AuthenticationError,
-    AuthorizationError,
-    NotFoundError,
-    AlreadyExistsError,
-    StateError,
-    ConcurrencyError,
-    # Context
-    ErrorContext,
-    ErrorSeverity,
-    ErrorCategory,
-    capture_error_context,
-    # Handlers
+    # Most commonly used handlers
     error_boundary,
-    transactional,
-    handle_error,
-    ErrorHandler,
-    # Decorators
+    # Most commonly used decorators
     with_error_handling,
     retry_on_error,
-    suppress_and_log,
-    fallback_on_error,
-    # Types
-    ErrorCode,
-    ErrorMetadata,
-    RetryPolicy,
 )
+# Make the errors module available for detailed imports
+from provide.foundation import errors
 
 __all__ = [
     # Core setup and logger
