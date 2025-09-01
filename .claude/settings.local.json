@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(source env.sh)",
+      "Bash(pytest:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
