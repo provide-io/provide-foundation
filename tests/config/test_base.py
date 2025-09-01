@@ -24,6 +24,9 @@ class SampleConfig(BaseConfig):
     metadata: dict[str, str] = field(factory=dict)
     secret: str = field(default="", sensitive=True)
 
+    def __attrs_post_init__(self):
+        super().__attrs_post_init__()
+
 
 class TestBaseConfig:
     """Test BaseConfig functionality."""

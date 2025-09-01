@@ -6,6 +6,7 @@ Structlog processors for Foundation Telemetry.
 """
 
 import json
+import logging as stdlib_logging
 from typing import TYPE_CHECKING, Any, TextIO, cast
 
 import structlog
@@ -17,9 +18,23 @@ from provide.foundation.logger.custom_processors import (
     add_logger_name_emoji_prefix,
     filter_by_level_custom,
 )
+from provide.foundation.types import (
+    TRACE_LEVEL_NUM,
+    LogLevelStr,
+)
 
 if TYPE_CHECKING:
     from provide.foundation.core import ResolvedSemanticConfig
+
+_LEVEL_TO_NUMERIC: dict[LogLevelStr, int] = {
+    "CRITICAL": stdlib_logging.CRITICAL,
+    "ERROR": stdlib_logging.ERROR,
+    "WARNING": stdlib_logging.WARNING,
+    "INFO": stdlib_logging.INFO,
+    "DEBUG": stdlib_logging.DEBUG,
+    "TRACE": TRACE_LEVEL_NUM,
+    "NOTSET": stdlib_logging.NOTSET,
+}
 
 
 def _config_create_service_name_processor(

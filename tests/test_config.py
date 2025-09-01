@@ -81,13 +81,13 @@ class TestBuildCoreProcessorsList:
 class TestTelemetryConfigFromEnvSemanticLayers:
     def test_from_env_parses_enabled_semantic_layers(self, monkeypatch) -> None:
         monkeypatch.setenv("FOUNDATION_LOG_ENABLED_SEMANTIC_LAYERS", "llm, http , database ")
-        config = TelemetryConfig.from_env()
+        config = from_env()
         assert config.logging.enabled_semantic_layers == ["llm", "http", "database"]
 
     def test_from_env_handles_malformed_custom_layers_json(self, monkeypatch, capsys: CaptureFixture) -> None:
         monkeypatch.setenv("FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS", "[{'name': 'badjson']")
         _ensure_config_logger_handler(config_warnings_logger)
-        config = TelemetryConfig.from_env()
+        config = from_env()
         assert config.logging.custom_semantic_layers == []
         assert "Invalid JSON in FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS" in capsys.readouterr().err
 
@@ -95,6 +95,7 @@ class TestTelemetryConfigFromEnvSemanticLayers:
         custom_layers_json = json.dumps([{"name": "my_layer", "priority": "not_an_int"}])
         monkeypatch.setenv("FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS", custom_layers_json)
         _ensure_config_logger_handler(config_warnings_logger)
-        config = TelemetryConfig.from_env()
+        config = from_env()
         assert config.logging.custom_semantic_layers == []
         assert "Error parsing data for a custom layer" in capsys.readouterr().err
+r parsing data for a custom layer" in capsys.readouterr().err
