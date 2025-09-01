@@ -9,6 +9,7 @@ This test suite verifies that logging works correctly without explicit setup_tel
 calls, maintains thread safety, outputs to stderr by default, and handles various
 edge cases and error conditions.
 """
+
 import asyncio
 import json
 import os
@@ -62,10 +63,12 @@ class TestLazyInitializationBasics:
 
         # Clear any environment variables that might affect output
         with patch.dict(os.environ, {}, clear=True):
-            os.environ.update({
-                "FOUNDATION_LOG_LEVEL": "INFO",
-                "FOUNDATION_LOG_CONSOLE_FORMATTER": "key_value",
-            })
+            os.environ.update(
+                {
+                    "FOUNDATION_LOG_LEVEL": "INFO",
+                    "FOUNDATION_LOG_CONSOLE_FORMATTER": "key_value",
+                }
+            )
 
             global_logger.warning("Warning message to stderr")
 
@@ -73,22 +76,31 @@ class TestLazyInitializationBasics:
         assert "Warning message to stderr" in captured.err
         assert captured.out == ""
 
-    def test_lazy_initialization_with_environment_config(self, capsys: CaptureFixture) -> None:
+    def test_lazy_initialization_with_environment_config(
+        self, capsys: CaptureFixture
+    ) -> None:
         """Test lazy initialization respects environment configuration."""
         reset_foundation_setup_for_testing()
 
-        with patch.dict(os.environ, {
-            "FOUNDATION_LOG_LEVEL": "DEBUG",
-            "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
-            "FOUNDATION_SERVICE_NAME": "lazy-test-service",
-            "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
-        }):
+        with patch.dict(
+            os.environ,
+            {
+                "FOUNDATION_LOG_LEVEL": "DEBUG",
+                "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
+                "FOUNDATION_SERVICE_NAME": "lazy-test-service",
+                "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
+            },
+        ):
             global_logger.debug("Debug message with env config")
 
         captured = capsys.readouterr()
 
         # Should be JSON format
-        log_lines = [line for line in captured.err.splitlines() if line.strip() and not line.startswith("[")]
+        log_lines = [
+            line
+            for line in captured.err.splitlines()
+            if line.strip() and not line.startswith("[")
+        ]
         assert len(log_lines) >= 1
 
         # Parse JSON to verify structure
@@ -140,7 +152,9 @@ class TestLazyInitializationBasics:
         for i in range(thread_count):
             assert f"Thread {i} message" in captured.err
 
-    def test_explicit_setup_after_lazy_initialization(self, capsys: CaptureFixture) -> None:
+    def test_explicit_setup_after_lazy_initialization(
+        self, capsys: CaptureFixture
+    ) -> None:
         """Test that explicit setup_telemetry() works after lazy initialization."""
         reset_foundation_setup_for_testing()
 
@@ -157,7 +171,7 @@ class TestLazyInitializationBasics:
             logging=LoggingConfig(
                 console_formatter="json",
                 logger_name_emoji_prefix_enabled=False,
-            )
+            ),
         )
         setup_telemetry(explicit_config)
 
@@ -169,22 +183,30 @@ class TestLazyInitializationBasics:
         global_logger.info("Message after explicit setup")
 
         captured_after = capsys.readouterr()
-        log_lines = [line for line in captured_after.err.splitlines()
-                    if line.strip() and not line.startswith("[")]
+        log_lines = [
+            line
+            for line in captured_after.err.splitlines()
+            if line.strip() and not line.startswith("[")
+        ]
 
         # Should be JSON format with service name
         log_data = json.loads(log_lines[-1])  # Get last log line
         assert log_data["event"] == "Message after explicit setup"
         assert log_data["service_name"] == "explicit-service"
 
-    def test_lazy_initialization_with_module_levels(self, capsys: CaptureFixture) -> None:
+    def test_lazy_initialization_with_module_levels(
+        self, capsys: CaptureFixture
+    ) -> None:
         """Test lazy initialization with module-specific log levels."""
         reset_foundation_setup_for_testing()
 
-        with patch.dict(os.environ, {
-            "FOUNDATION_LOG_LEVEL": "WARNING",
-            "FOUNDATION_LOG_MODULE_LEVELS": "test.debug:DEBUG,test.error:ERROR",
-        }):
+        with patch.dict(
+            os.environ,
+            {
+                "FOUNDATION_LOG_LEVEL": "WARNING",
+                "FOUNDATION_LOG_MODULE_LEVELS": "test.debug:DEBUG,test.error:ERROR",
+            },
+        ):
             # These should be filtered (below WARNING)
             global_logger.get_logger("test.default").info("Default info - filtered")
             global_logger.get_logger("test.default").debug("Default debug - filtered")
@@ -194,7 +216,9 @@ class TestLazyInitializationBasics:
             global_logger.get_logger("test.debug").info("Debug module info - shown")
 
             # This should be filtered (module override to ERROR)
-            global_logger.get_logger("test.error").warning("Error module warning - filtered")
+            global_logger.get_logger("test.error").warning(
+                "Error module warning - filtered"
+            )
 
             # This should appear (ERROR level)
             global_logger.get_logger("test.error").error("Error module error - shown")
@@ -214,7 +238,9 @@ class TestLazyInitializationBasics:
 class TestLazyInitializationEdgeCases:
     """Tests edge cases and error conditions in lazy initialization."""
 
-    def test_lazy_initialization_disabled_globally(self, capsys: CaptureFixture) -> None:
+    def test_lazy_initialization_disabled_globally(
+        self, capsys: CaptureFixture
+    ) -> None:
         """Test lazy initialization when telemetry is globally disabled."""
         reset_foundation_setup_for_testing()
 
@@ -228,12 +254,14 @@ class TestLazyInitializationEdgeCases:
         assert "Message when disabled" not in captured.err
         assert "Error when disabled" not in captured.err
 
-    def test_lazy_initialization_config_error_fallback(self, capsys: CaptureFixture) -> None:
+    def test_lazy_initialization_config_error_fallback(
+        self, capsys: CaptureFixture
+    ) -> None:
         """Test fallback behavior when configuration fails."""
         reset_foundation_setup_for_testing()
 
         # Mock TelemetryConfig.from_env to raise an exception
-        with patch('provide.foundation.logger.env.from_env') as mock_from_env:
+        with patch("provide.foundation.logger.env.from_env") as mock_from_env:
             mock_from_env.side_effect = Exception("Config loading failed")
 
             # Should still work with fallback configuration
@@ -243,12 +271,16 @@ class TestLazyInitializationEdgeCases:
         # Should still log the message using fallback config
         assert "Message with config failure" in captured.err
 
-    def test_lazy_initialization_structlog_config_error_fallback(self, capsys: CaptureFixture) -> None:
+    def test_lazy_initialization_structlog_config_error_fallback(
+        self, capsys: CaptureFixture
+    ) -> None:
         """Test emergency fallback when structlog configuration fails."""
         reset_foundation_setup_for_testing()
 
         # Mock _configure_structlog_output to raise an exception
-        with patch('provide.foundation.core._configure_structlog_output') as mock_configure:
+        with patch(
+            "provide.foundation.core._configure_structlog_output"
+        ) as mock_configure:
             mock_configure.side_effect = Exception("Structlog config failed")
 
             # Should still work with emergency fallback
@@ -256,9 +288,14 @@ class TestLazyInitializationEdgeCases:
 
         captured = capsys.readouterr()
         # Should log via emergency fallback mechanism
-        assert "Emergency fallback message" in captured.err or "Foundation Emergency" in captured.err
+        assert (
+            "Emergency fallback message" in captured.err
+            or "Foundation Emergency" in captured.err
+        )
 
-    def test_concurrent_lazy_initialization_race_condition(self, capsys: CaptureFixture) -> None:
+    def test_concurrent_lazy_initialization_race_condition(
+        self, capsys: CaptureFixture
+    ) -> None:
         """Test race conditions in concurrent lazy initialization."""
         reset_foundation_setup_for_testing()
 
@@ -350,25 +387,34 @@ class TestLazyInitializationEdgeCases:
 class TestLazyInitializationCompatibility:
     """Tests compatibility between lazy initialization and existing features."""
 
-    def test_trace_logging_with_lazy_initialization(self, capsys: CaptureFixture) -> None:
+    def test_trace_logging_with_lazy_initialization(
+        self, capsys: CaptureFixture
+    ) -> None:
         """Test TRACE level logging works with lazy initialization."""
         reset_foundation_setup_for_testing()
 
-        with patch.dict(os.environ, {
-            "FOUNDATION_LOG_LEVEL": "INFO",
-            "FOUNDATION_LOG_MODULE_LEVELS": "trace.test:TRACE",
-        }):
+        with patch.dict(
+            os.environ,
+            {
+                "FOUNDATION_LOG_LEVEL": "INFO",
+                "FOUNDATION_LOG_MODULE_LEVELS": "trace.test:TRACE",
+            },
+        ):
             # Regular trace should be filtered
             global_logger.trace("Filtered trace message")
 
             # Module-specific trace should appear
-            global_logger.trace("Shown trace message", _foundation_logger_name="trace.test")
+            global_logger.trace(
+                "Shown trace message", _foundation_logger_name="trace.test"
+            )
 
         captured = capsys.readouterr()
         assert "Filtered trace message" not in captured.err
         assert "Shown trace message" in captured.err
 
-    def test_exception_logging_with_lazy_initialization(self, capsys: CaptureFixture) -> None:
+    def test_exception_logging_with_lazy_initialization(
+        self, capsys: CaptureFixture
+    ) -> None:
         """Test exception logging works with lazy initialization."""
         reset_foundation_setup_for_testing()
 
@@ -386,15 +432,15 @@ class TestLazyInitializationCompatibility:
         """Test Domain-Action-Status emojis work with lazy initialization."""
         reset_foundation_setup_for_testing()
 
-        with patch.dict(os.environ, {
-            "FOUNDATION_LOG_CONSOLE_FORMATTER": "key_value",
-            "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "true",
-        }):
+        with patch.dict(
+            os.environ,
+            {
+                "FOUNDATION_LOG_CONSOLE_FORMATTER": "key_value",
+                "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "true",
+            },
+        ):
             global_logger.info(
-                "DAS test message",
-                domain="auth",
-                action="login",
-                status="success"
+                "DAS test message", domain="auth", action="login", status="success"
             )
 
         captured = capsys.readouterr()
@@ -403,7 +449,9 @@ class TestLazyInitializationCompatibility:
         assert "DAS test message" in captured.err
 
     @pytest.mark.asyncio
-    async def test_async_logging_with_lazy_initialization(self, capsys: CaptureFixture) -> None:
+    async def test_async_logging_with_lazy_initialization(
+        self, capsys: CaptureFixture
+    ) -> None:
         """Test async logging works with lazy initialization."""
         reset_foundation_setup_for_testing()
 
@@ -413,33 +461,37 @@ class TestLazyInitializationCompatibility:
             global_logger.info(f"Async task {task_id} completed")
 
         # Run multiple async tasks
-        await asyncio.gather(
-            async_task(1),
-            async_task(2),
-            async_task(3)
-        )
+        await asyncio.gather(async_task(1), async_task(2), async_task(3))
 
         captured = capsys.readouterr()
         for task_id in [1, 2, 3]:
             assert f"Async task {task_id} started" in captured.err
             assert f"Async task {task_id} completed" in captured.err
 
-    def test_service_name_injection_with_lazy_initialization(self, capsys: CaptureFixture) -> None:
+    def test_service_name_injection_with_lazy_initialization(
+        self, capsys: CaptureFixture
+    ) -> None:
         """Test service name injection works with lazy initialization."""
         reset_foundation_setup_for_testing()
 
         # FIXED: Explicitly disable emojis for JSON format to match test expectation
-        with patch.dict(os.environ, {
-            "FOUNDATION_SERVICE_NAME": "lazy-service-test",
-            "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
-            "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
-            "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "false",
-        }):
+        with patch.dict(
+            os.environ,
+            {
+                "FOUNDATION_SERVICE_NAME": "lazy-service-test",
+                "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
+                "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
+                "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "false",
+            },
+        ):
             global_logger.info("Message with service name")
 
         captured = capsys.readouterr()
-        log_lines = [line for line in captured.err.splitlines()
-                    if line.strip() and not line.startswith("[")]
+        log_lines = [
+            line
+            for line in captured.err.splitlines()
+            if line.strip() and not line.startswith("[")
+        ]
 
         log_data = json.loads(log_lines[0])
         assert log_data["service_name"] == "lazy-service-test"
@@ -483,7 +535,9 @@ class TestLazyInitializationInternalState:
         def failing_lazy_setup(self) -> Never:
             raise Exception("Simulated lazy setup failure")
 
-        with patch.object(FoundationLoggerForPatching, '_perform_lazy_setup', failing_lazy_setup):
+        with patch.object(
+            FoundationLoggerForPatching, "_perform_lazy_setup", failing_lazy_setup
+        ):
             # Should still work via emergency fallback
             global_logger.error("Message during setup failure")
 
@@ -510,5 +564,6 @@ class TestLazyInitializationInternalState:
         captured = capsys.readouterr()
         assert "Message from logger1" in captured.err
         assert "Message from logger2" in captured.err
+
 
 # 🧪🚀

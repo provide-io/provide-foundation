@@ -36,6 +36,7 @@ DEFAULT_ENV_CONFIG: dict[str, str] = {
     "FOUNDATION_LOG_ENABLED_SEMANTIC_LAYERS": "",
 }
 
+
 def _ensure_config_logger_handler(logger: stdlib_logging.Logger) -> None:
     for handler in list(logger.handlers):
         logger.removeHandler(handler)
@@ -44,6 +45,7 @@ def _ensure_config_logger_handler(logger: stdlib_logging.Logger) -> None:
     logger.addHandler(stderr_handler)
     logger.setLevel(stdlib_logging.WARNING)
     logger.propagate = False
+
 
 def from_env() -> "TelemetryConfig":
     """Creates a `TelemetryConfig` instance by parsing relevant environment variables."""
@@ -84,18 +86,12 @@ def from_env() -> "TelemetryConfig":
         "FOUNDATION_LOG_DAS_EMOJI_ENABLED", console_formatter
     )
     omit_timestamp: bool = _parse_bool_env("FOUNDATION_LOG_OMIT_TIMESTAMP", False)
-    globally_disabled: bool = _parse_bool_env(
-        "FOUNDATION_TELEMETRY_DISABLED", False
-    )
+    globally_disabled: bool = _parse_bool_env("FOUNDATION_TELEMETRY_DISABLED", False)
 
-    module_levels = _parse_module_levels(
-        os.getenv("FOUNDATION_LOG_MODULE_LEVELS", "")
-    )
+    module_levels = _parse_module_levels(os.getenv("FOUNDATION_LOG_MODULE_LEVELS", ""))
     enabled_semantic_layers = [
         layer.strip()
-        for layer in os.getenv("FOUNDATION_LOG_ENABLED_SEMANTIC_LAYERS", "").split(
-            ","
-        )
+        for layer in os.getenv("FOUNDATION_LOG_ENABLED_SEMANTIC_LAYERS", "").split(",")
         if layer.strip()
     ]
 
@@ -119,6 +115,7 @@ def from_env() -> "TelemetryConfig":
         logging=log_cfg,
         globally_disabled=globally_disabled,
     )
+
 
 def _parse_custom_layers_from_env() -> list[SemanticLayer]:
     custom_layers_json = os.getenv("FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS", "[]")
@@ -164,6 +161,7 @@ def _parse_custom_layers_from_env() -> list[SemanticLayer]:
         )
     return custom_semantic_layers
 
+
 def _parse_user_emoji_sets_from_env() -> list[CustomDasEmojiSet]:
     user_sets_json = os.getenv("FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS", "[]")
     user_defined_emoji_sets: list[CustomDasEmojiSet] = []
@@ -186,6 +184,7 @@ def _parse_user_emoji_sets_from_env() -> list[CustomDasEmojiSet]:
             "⚙️➡️⚠️ Invalid JSON in FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS. Using empty list."
         )
     return user_defined_emoji_sets
+
 
 def _parse_module_levels(levels_str: str) -> dict[str, LogLevelStr]:
     levels: dict[str, LogLevelStr] = {}
@@ -212,13 +211,16 @@ def _parse_module_levels(levels_str: str) -> dict[str, LogLevelStr]:
             )
     return levels
 
+
 def _apply_default_env_config() -> None:
     for key, default_value in DEFAULT_ENV_CONFIG.items():
         os.environ.setdefault(key, default_value)
 
+
 def _parse_bool_env(env_var: str, default: bool) -> bool:
     value = os.getenv(env_var)
     return value.lower() == "true" if value is not None else default
+
 
 def _parse_bool_env_with_formatter_default(
     env_var: str, formatter: ConsoleFormatterStr

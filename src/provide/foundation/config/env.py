@@ -285,7 +285,9 @@ class EnvConfig(BaseConfig):
         # Execute all async reads in parallel
         if async_tasks:
             async_results = await asyncio.gather(*async_tasks.values())
-            for field_name, value in zip(async_tasks.keys(), async_results, strict=False):
+            for field_name, value in zip(
+                async_tasks.keys(), async_results, strict=False
+            ):
                 # Find the attribute
                 attr = next(a for a in fields(cls) if a.name == field_name)
                 sync_values[field_name] = (attr, value)

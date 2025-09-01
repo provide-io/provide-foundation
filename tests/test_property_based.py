@@ -8,6 +8,7 @@ Property-based tests for Foundation Telemetry using Hypothesis.
 These tests aim to cover a wider range of inputs and edge cases
 by generating test data automatically.
 """
+
 from collections.abc import Callable
 import io
 from typing import (
@@ -44,7 +45,10 @@ from provide.foundation.core import (
     _set_log_stream_for_testing,
     reset_foundation_setup_for_testing,
 )
-from provide.foundation.types import ConsoleFormatterStr, LogLevelStr  # Corrected import
+from provide.foundation.types import (
+    ConsoleFormatterStr,
+    LogLevelStr,
+)  # Corrected import
 
 # --- Strategies ---
 
@@ -52,22 +56,26 @@ from provide.foundation.types import ConsoleFormatterStr, LogLevelStr  # Correct
 logger_names_st = text(
     alphabet="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._- ",
     min_size=0,
-    max_size=50
+    max_size=50,
 )
 
 # Strategy for log messages - FIXED: More conservative character set
 log_messages_st = text(
     alphabet="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 .,!?-_",
     min_size=1,
-    max_size=100
+    max_size=100,
 )
 
 # Strategy for DAS (Domain-Action-Status) keys
-das_keys_base_st = list(PRIMARY_EMOJI.keys()) + list(SECONDARY_EMOJI.keys()) + list(TERTIARY_EMOJI.keys())
+das_keys_base_st = (
+    list(PRIMARY_EMOJI.keys())
+    + list(SECONDARY_EMOJI.keys())
+    + list(TERTIARY_EMOJI.keys())
+)
 das_values_st = one_of(
     none(),
     sampled_from(das_keys_base_st),
-    text(alphabet="abcdefghijklmnopqrstuvwxyz_", min_size=3, max_size=15)
+    text(alphabet="abcdefghijklmnopqrstuvwxyz_", min_size=3, max_size=15),
 )
 
 # Strategy for arbitrary kwargs - FIXED: More conservative values
@@ -77,9 +85,12 @@ simple_kwargs_st = dictionaries(
         none(),
         booleans(),
         integers(min_value=-1000, max_value=1000),
-        text(alphabet="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ._-", max_size=50),
+        text(
+            alphabet="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ._-",
+            max_size=50,
+        ),
     ),
-    max_size=3  # Reduced from 5 to 3
+    max_size=3,  # Reduced from 5 to 3
 )
 
 # Strategy for log levels (strings)
@@ -88,6 +99,7 @@ log_levels_st = sampled_from(list(get_args(LogLevelStr)))
 # Strategy for console formatters
 console_formatters_st = sampled_from(list(get_args(ConsoleFormatterStr)))
 
+
 # Composite strategy for TelemetryConfig
 @composite
 def telemetry_config_st(draw: Callable[[SearchStrategy[Any]], Any]) -> TelemetryConfig:
@@ -95,7 +107,13 @@ def telemetry_config_st(draw: Callable[[SearchStrategy[Any]], Any]) -> Telemetry
     default_level = draw(log_levels_st)
 
     module_levels_keys = draw(lists(logger_names_st, max_size=3))  # Reduced from 5
-    module_levels_values = draw(lists(log_levels_st, min_size=len(module_levels_keys), max_size=len(module_levels_keys)))
+    module_levels_values = draw(
+        lists(
+            log_levels_st,
+            min_size=len(module_levels_keys),
+            max_size=len(module_levels_keys),
+        )
+    )
     module_levels = dict(zip(module_levels_keys, module_levels_values, strict=False))
 
     console_formatter = draw(console_formatters_st)
@@ -118,7 +136,9 @@ def telemetry_config_st(draw: Callable[[SearchStrategy[Any]], Any]) -> Telemetry
         globally_disabled=globally_disabled,
     )
 
+
 # --- Tests ---
+
 
 @given(
     config=telemetry_config_st(),
@@ -128,17 +148,19 @@ def telemetry_config_st(draw: Callable[[SearchStrategy[Any]], Any]) -> Telemetry
     action=das_values_st,
     status=das_values_st,
     extra_kwargs=simple_kwargs_st,
-    log_method_name=sampled_from(["debug", "info", "warning", "error", "critical", "trace"])  # Removed "exception"
+    log_method_name=sampled_from(
+        ["debug", "info", "warning", "error", "critical", "trace"]
+    ),  # Removed "exception"
 )
 @settings(
     suppress_health_check=[
         HealthCheck.too_slow,
         HealthCheck.data_too_large,
         HealthCheck.filter_too_much,
-        HealthCheck.function_scoped_fixture
+        HealthCheck.function_scoped_fixture,
     ],
     deadline=None,
-    max_examples=25  # Reduced from 50
+    max_examples=25,  # Reduced from 50
 )
 def test_foundation_logger_robustness(
     config: TelemetryConfig,
@@ -148,7 +170,7 @@ def test_foundation_logger_robustness(
     action: str | None,
     status: str | None,
     extra_kwargs: dict[str, Any],
-    log_method_name: str
+    log_method_name: str,
 ) -> None:
     """
     Tests that FoundationLogger methods do not crash with varied inputs.
@@ -163,7 +185,11 @@ def test_foundation_logger_robustness(
 
         # FIXED: Sanitize inputs to prevent issues
         safe_message = str(message) if message else "test message"
-        safe_logger_name = str(logger_name).strip() if logger_name and str(logger_name).strip() else "test.logger"
+        safe_logger_name = (
+            str(logger_name).strip()
+            if logger_name and str(logger_name).strip()
+            else "test.logger"
+        )
 
         log_call_kwargs = {}
         # FIXED: Only add safe kwargs
@@ -185,7 +211,11 @@ def test_foundation_logger_robustness(
 
             if log_method_name == "trace":
                 trace_kwargs = log_call_kwargs.copy()
-                current_logger.trace(safe_message, _foundation_logger_name=safe_logger_name, **trace_kwargs)
+                current_logger.trace(
+                    safe_message,
+                    _foundation_logger_name=safe_logger_name,
+                    **trace_kwargs,
+                )
             else:
                 # For other methods, use get_logger
                 named_logger = current_logger.get_logger(safe_logger_name)
@@ -194,6 +224,7 @@ def test_foundation_logger_robustness(
 
     except Exception as e:
         import pytest
+
         pytest.fail(
             f"Logging call failed unexpectedly with error: {e}\n"
             f"Config: {config}\n"
@@ -206,5 +237,6 @@ def test_foundation_logger_robustness(
     finally:
         _set_log_stream_for_testing(None)
         current_example_log_capture_buffer.close()
+
 
 # 🧪🔬

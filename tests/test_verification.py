@@ -4,6 +4,7 @@
 """
 Quick verification script to test the lazy initialization fixes.
 """
+
 import os
 from pathlib import Path
 import sys
@@ -14,23 +15,28 @@ src_path = project_root / "src"
 if src_path.exists():
     sys.path.insert(0, str(src_path))
 
+
 def test_basic_lazy_init() -> None:
     """Test basic lazy initialization works."""
     print("=== Test 1: Basic Lazy Initialization ===")
 
     # Reset any existing configuration
     from provide.foundation.core import reset_foundation_setup_for_testing
+
     reset_foundation_setup_for_testing()
 
     # Clear environment
     env_vars_to_clear = [
-        "FOUNDATION_SERVICE_NAME", "FOUNDATION_LOG_CONSOLE_FORMATTER",
-        "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED", "FOUNDATION_LOG_DAS_EMOJI_ENABLED"
+        "FOUNDATION_SERVICE_NAME",
+        "FOUNDATION_LOG_CONSOLE_FORMATTER",
+        "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED",
+        "FOUNDATION_LOG_DAS_EMOJI_ENABLED",
     ]
     for var in env_vars_to_clear:
         os.environ.pop(var, None)
 
     from provide.foundation import logger
+
     logger.info("Basic lazy initialization test")
     print("✅ Basic lazy initialization works")
 
@@ -40,6 +46,7 @@ def test_service_name_injection() -> None:
     print("\n=== Test 2: Service Name Injection (JSON) ===")
 
     from provide.foundation.core import reset_foundation_setup_for_testing
+
     reset_foundation_setup_for_testing()
 
     # Set environment like the failing test
@@ -47,6 +54,7 @@ def test_service_name_injection() -> None:
     os.environ["FOUNDATION_LOG_CONSOLE_FORMATTER"] = "json"
 
     from provide.foundation import logger
+
     logger.info("Message with service name")
     print("✅ Service name injection test works")
 
@@ -56,12 +64,15 @@ def test_lazy_setup_flags() -> None:
     print("\n=== Test 3: Lazy Setup Flags ===")
 
     from provide.foundation.core import reset_foundation_setup_for_testing
+
     reset_foundation_setup_for_testing()
 
     from provide.foundation.logger.base import _LAZY_SETUP_STATE  # Changed
+
     print(f"Initial state - _LAZY_SETUP_STATE: {_LAZY_SETUP_STATE}")
 
     from provide.foundation import logger
+
     logger.info("Trigger lazy setup")
 
     # _LAZY_SETUP_STATE is a mutable dict, check its current content
@@ -77,17 +88,20 @@ def test_emergency_fallback() -> None:
     print("\n=== Test 4: Emergency Fallback ===")
 
     from provide.foundation.core import reset_foundation_setup_for_testing
+
     reset_foundation_setup_for_testing()
 
     from provide.foundation.logger.base import FoundationLogger
+
     test_logger = FoundationLogger()
 
     # Trigger emergency fallback by setting error state
     from provide.foundation.logger.base import (
         _LAZY_SETUP_STATE,  # Ensure we use the state dict
     )
-    _LAZY_SETUP_STATE["error"] = Exception("Test error") # Set error state
-    _LAZY_SETUP_STATE["done"] = False # Ensure done is false so error path is taken
+
+    _LAZY_SETUP_STATE["error"] = Exception("Test error")  # Set error state
+    _LAZY_SETUP_STATE["done"] = False  # Ensure done is false so error path is taken
 
     try:
         test_logger.info("Emergency fallback test")
@@ -95,12 +109,13 @@ def test_emergency_fallback() -> None:
         # Further assertions could be made if _setup_emergency_fallback was mocked
         # or if there was discernible output from emergency logger.
         # For now, just ensuring it doesn't crash is the main goal of this test.
-    except Exception as e: # pragma: no cover
+    except Exception as e:  # pragma: no cover
         print(f"❌ Emergency fallback failed: {e}")
-        raise AssertionError(f"Emergency fallback test failed: {e}") from e # B904
+        raise AssertionError(f"Emergency fallback test failed: {e}") from e  # B904
     finally:
         # Clean up state
         reset_foundation_setup_for_testing()
+
 
 # Removed __main__ block
 

@@ -4,6 +4,7 @@
 """
 Unit tests for src.provide.foundation.core.py
 """
+
 import io
 import logging as stdlib_logging
 import sys
@@ -31,7 +32,7 @@ from provide.foundation.logger import base as logger_base_module
 
 class TestGetSafeStderr:
     def test_get_safe_stderr_is_none(self) -> None:
-        with patch.object(sys, 'stderr', None):
+        with patch.object(sys, "stderr", None):
             fallback_stream = _get_safe_stderr()
             assert isinstance(fallback_stream, io.StringIO)
 
@@ -43,11 +44,14 @@ class TestGetSafeStderr:
             if sys.stderr is not None:
                 stream = _get_safe_stderr()
                 assert stream == sys.stderr
-            else: # pragma: no cover
-                pytest.skip("sys.stderr was None, cannot run this specific path meaningfully.")
+            else:  # pragma: no cover
+                pytest.skip(
+                    "sys.stderr was None, cannot run this specific path meaningfully."
+                )
         finally:
-            if original_stderr is None and hasattr(sys, 'stderr'):
-                 sys.stderr = original_stderr
+            if original_stderr is None and hasattr(sys, "stderr"):
+                sys.stderr = original_stderr
+
 
 class TestCreateCoreSetupLogger:
     def test_create_core_setup_logger_handler_close_exception(self) -> None:
@@ -69,6 +73,7 @@ class TestCreateCoreSetupLogger:
             if not mock_handler_stream.closed:
                 mock_handler_stream.close()
 
+
 class TestStateResetCoverage:
     def test_reset_foundation_setup_for_testing_resets_lazy_state(self) -> None:
         logger_base_module._LAZY_SETUP_STATE["done"] = True
@@ -89,30 +94,38 @@ class TestStateResetCoverage:
         assert logger_base_module._LAZY_SETUP_STATE["error"] is None
         assert not logger_base_module._LAZY_SETUP_STATE["in_progress"]
 
+
 class TestShutdownCoverage:
     @pytest.mark.asyncio
-    async def test_shutdown_foundation_telemetry_logs_message(self, capsys: CaptureFixture[str]) -> None:
+    async def test_shutdown_foundation_telemetry_logs_message(
+        self, capsys: CaptureFixture[str]
+    ) -> None:
         reset_foundation_setup_for_testing()
-        core_logger_for_shutdown_test = stdlib_logging.getLogger(_CORE_SETUP_LOGGER_NAME)
+        core_logger_for_shutdown_test = stdlib_logging.getLogger(
+            _CORE_SETUP_LOGGER_NAME
+        )
         core_logger_for_shutdown_test.setLevel(stdlib_logging.INFO)
         await shutdown_foundation_telemetry()
         captured = capsys.readouterr()
         assert "Foundation Telemetry shutdown called" in captured.err
 
+
 # FIX: Rewrote TestHandleGloballyDisabledSetup to be simpler and correct.
 class TestHandleGloballyDisabledSetup:
-    def test_globally_disabled_configures_structlog_as_noop(self, capsys: CaptureFixture[str]) -> None:
+    def test_globally_disabled_configures_structlog_as_noop(
+        self, capsys: CaptureFixture[str]
+    ) -> None:
         """
         Tests that _handle_globally_disabled_setup configures structlog with ReturnLoggerFactory.
         """
-        reset_foundation_setup_for_testing() # Ensure clean state
+        reset_foundation_setup_for_testing()  # Ensure clean state
 
         _handle_globally_disabled_setup()
 
         # Check that structlog is configured to be a no-op
         config = structlog.get_config()
-        assert isinstance(config.get('logger_factory'), structlog.ReturnLoggerFactory)
-        assert config.get('processors') == []
+        assert isinstance(config.get("logger_factory"), structlog.ReturnLoggerFactory)
+        assert config.get("processors") == []
 
         # Check that the setup message was logged
         captured = capsys.readouterr()

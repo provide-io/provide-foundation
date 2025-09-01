@@ -5,6 +5,7 @@
 Tests specifically designed to increase code coverage by targeting edge cases
 and error-handling paths identified in coverage reports.
 """
+
 from collections.abc import Callable
 import io
 import json
@@ -34,6 +35,7 @@ from provide.foundation.logger.emoji_matrix import show_emoji_matrix
 
 # --- Tests for src/provide/foundation/telemetry/config.py ---
 
+
 def test_config_from_env_malformed_json(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
 ) -> None:
@@ -42,13 +44,21 @@ def test_config_from_env_malformed_json(
     monkeypatch.setenv("FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS", "[{'name': 'badjson'}]")
     config = TelemetryConfig.from_env()
     assert config.logging.custom_semantic_layers == []
-    assert "Invalid JSON in FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS" in capsys.readouterr().err
+    assert (
+        "Invalid JSON in FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS"
+        in capsys.readouterr().err
+    )
 
     # Test malformed user emoji sets JSON
-    monkeypatch.setenv("FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS", "[{'name': 'badjson'}]")
+    monkeypatch.setenv(
+        "FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS", "[{'name': 'badjson'}]"
+    )
     config = TelemetryConfig.from_env()
     assert config.logging.user_defined_emoji_sets == []
-    assert "Invalid JSON in FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS" in capsys.readouterr().err
+    assert (
+        "Invalid JSON in FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS"
+        in capsys.readouterr().err
+    )
 
 
 def test_config_from_env_type_error_in_data(
@@ -90,9 +100,7 @@ def test_config_dangling_emoji_set_reference(
     dangling_field = SemanticFieldDefinition(
         log_key="dangling_key", emoji_set_name="non_existent_set"
     )
-    layer = SemanticLayer(
-        name="dangling_layer", field_definitions=[dangling_field]
-    )
+    layer = SemanticLayer(name="dangling_layer", field_definitions=[dangling_field])
     config = TelemetryConfig(
         logging=LoggingConfig(
             enabled_semantic_layers=["dangling_layer"],
@@ -111,6 +119,7 @@ def test_config_dangling_emoji_set_reference(
 
 # --- Tests for src/provide/foundation/telemetry/core.py ---
 
+
 def test_core_create_logger_handler_close_fails() -> None:
     """Covers the exception handling when a handler's close() method fails."""
     logger = stdlib_logging.getLogger(_CORE_SETUP_LOGGER_NAME)
@@ -124,6 +133,7 @@ def test_core_create_logger_handler_close_fails() -> None:
 
 
 # --- Tests for src/provide/foundation/telemetry/logger/base.py ---
+
 
 def test_base_get_config_exception() -> None:
     """Covers the case where structlog.get_config() raises an exception."""
@@ -145,6 +155,7 @@ def test_base_emergency_fallback_fails() -> None:
 
 
 # --- Tests for src/provide/foundation/telemetry/logger/custom_processors.py ---
+
 
 def test_custom_processors_level_hint() -> None:
     """Covers the _foundation_level_hint logic in add_log_level_custom."""
@@ -182,6 +193,7 @@ def test_custom_processors_full_emoji_cache(
 
 # --- Tests for src/provide/foundation/telemetry/logger/emoji_matrix.py ---
 
+
 def test_emoji_matrix_display_with_semantic_layers(
     setup_foundation_telemetry_for_test: Callable,
     captured_stderr_for_foundation: io.StringIO,
@@ -212,7 +224,9 @@ def test_emoji_matrix_display_unresolved(capsys: pytest.CaptureFixture) -> None:
             mock_created_logger.info = mock_info_method
 
             with patch.object(
-                foundation_logger_base.logger, "get_logger", return_value=mock_created_logger
+                foundation_logger_base.logger,
+                "get_logger",
+                return_value=mock_created_logger,
             ):
                 show_emoji_matrix()
 

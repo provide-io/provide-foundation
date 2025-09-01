@@ -8,6 +8,7 @@ Integration tests for lazy initialization with complete workflow scenarios.
 This module tests end-to-end scenarios that combine lazy initialization with
 real-world usage patterns, ensuring the feature works in practical applications.
 """
+
 import asyncio
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import contextlib
@@ -68,20 +69,23 @@ class TestRealWorldScenarios:
         reset_foundation_setup_for_testing()
 
         # Simulate microservice environment
-        with patch.dict(os.environ, {
-            "FOUNDATION_SERVICE_NAME": "user-service",
-            "FOUNDATION_LOG_LEVEL": "INFO",
-            "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
-            "FOUNDATION_LOG_MODULE_LEVELS": "app.auth:DEBUG,app.external:WARNING",
-            "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "true",
-        }):
+        with patch.dict(
+            os.environ,
+            {
+                "FOUNDATION_SERVICE_NAME": "user-service",
+                "FOUNDATION_LOG_LEVEL": "INFO",
+                "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
+                "FOUNDATION_LOG_MODULE_LEVELS": "app.auth:DEBUG,app.external:WARNING",
+                "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "true",
+            },
+        ):
             # Service startup logging
             global_logger.info("User service starting up")
 
             # Auth module (DEBUG level)
             auth_logger = global_logger.get_logger("app.auth")
             auth_logger.debug("Loading JWT configuration")  # Should appear
-            auth_logger.info("JWT configuration loaded")    # Should appear
+            auth_logger.info("JWT configuration loaded")  # Should appear
 
             # External module (WARNING level)
             external_logger = global_logger.get_logger("app.external")
@@ -94,7 +98,7 @@ class TestRealWorldScenarios:
                 domain="user",
                 action="register",
                 status="success",
-                user_id=12345
+                user_id=12345,
             )
 
         captured = capsys.readouterr()
@@ -112,12 +116,23 @@ class TestRealWorldScenarios:
         assert all(log["service_name"] == "user-service" for log in service_logs)
 
         # Verify module-level filtering
-        assert any("Loading JWT configuration" in log.get("event", "") for log in json_lines)
-        assert not any("Connecting to external API" in log.get("event", "") for log in json_lines)
-        assert any("External API rate limit reached" in log.get("event", "") for log in json_lines)
+        assert any(
+            "Loading JWT configuration" in log.get("event", "") for log in json_lines
+        )
+        assert not any(
+            "Connecting to external API" in log.get("event", "") for log in json_lines
+        )
+        assert any(
+            "External API rate limit reached" in log.get("event", "")
+            for log in json_lines
+        )
 
         # Verify DAS emoji processing
-        user_reg_logs = [log for log in json_lines if "User registration processed" in log.get("event", "")]
+        user_reg_logs = [
+            log
+            for log in json_lines
+            if "User registration processed" in log.get("event", "")
+        ]
         assert len(user_reg_logs) == 1
         assert "[👤][⚙️][✅]" in user_reg_logs[0]["event"]
 
@@ -133,7 +148,7 @@ class TestRealWorldScenarios:
         ingestion_logger.info("Starting data ingestion", source="s3://data-bucket")
 
         for i in range(3):
-            ingestion_logger.debug(f"Processing file {i+1}/3")
+            ingestion_logger.debug(f"Processing file {i + 1}/3")
 
         ingestion_logger.info("Data ingestion completed", files_processed=3)
 
@@ -190,8 +205,7 @@ class TestRealWorldScenarios:
         # Run concurrent workers
         with ThreadPoolExecutor(max_workers=4) as executor:
             futures = [
-                executor.submit(worker_task, worker_id, 5)
-                for worker_id in range(4)
+                executor.submit(worker_task, worker_id, 5) for worker_id in range(4)
             ]
 
             all_messages = []
@@ -226,7 +240,7 @@ class TestRealWorldScenarios:
                 endpoint=endpoint,
                 domain="server",
                 action="request",
-                status="started"
+                status="started",
             )
 
             # Simulate async work
@@ -244,7 +258,7 @@ class TestRealWorldScenarios:
                 status_code=200,
                 domain="server",
                 action="request",
-                status="success"
+                status="success",
             )
 
         # Simulate multiple concurrent requests
@@ -284,7 +298,10 @@ class TestRealWorldScenarios:
 
                 try:
                     # Simulate processing
-                    result = {k: v.upper() if isinstance(v, str) else v for k, v in data.items()}
+                    result = {
+                        k: v.upper() if isinstance(v, str) else v
+                        for k, v in data.items()
+                    }
 
                     self.logger.info(
                         "Data processing completed",
@@ -292,7 +309,7 @@ class TestRealWorldScenarios:
                         output_size=len(result),
                         domain="data",
                         action="process",
-                        status="success"
+                        status="success",
                     )
                     return result
 
@@ -302,7 +319,7 @@ class TestRealWorldScenarios:
                         error_type=type(e).__name__,
                         domain="data",
                         action="process",
-                        status="error"
+                        status="error",
                     )
                     raise
 
@@ -330,10 +347,7 @@ class TestMigrationFromExplicitSetup:
         # Phase 1: Old code with explicit setup
         explicit_config = TelemetryConfig(
             service_name="migration-test",
-            logging=LoggingConfig(
-                default_level="DEBUG",
-                console_formatter="json"
-            )
+            logging=LoggingConfig(default_level="DEBUG", console_formatter="json"),
         )
         setup_telemetry(explicit_config)
 
@@ -351,8 +365,11 @@ class TestMigrationFromExplicitSetup:
         assert "New component using existing setup" in captured.err
 
         # Should be JSON format from explicit setup
-        json_lines = [line for line in captured.err.splitlines()
-                     if line.strip() and not line.startswith("[")]
+        json_lines = [
+            line
+            for line in captured.err.splitlines()
+            if line.strip() and not line.startswith("[")
+        ]
         assert len(json_lines) >= 2
 
         for line in json_lines:
@@ -372,7 +389,7 @@ class TestMigrationFromExplicitSetup:
         # Now explicit setup (should override)
         explicit_config = TelemetryConfig(
             service_name="explicit-override",
-            logging=LoggingConfig(console_formatter="json")
+            logging=LoggingConfig(console_formatter="json"),
         )
         setup_telemetry(explicit_config)
 
@@ -382,8 +399,11 @@ class TestMigrationFromExplicitSetup:
         assert "Message after explicit setup" in captured_explicit.err
 
         # Should be JSON format with service name
-        json_lines = [line for line in captured_explicit.err.splitlines()
-                     if line.strip() and not line.startswith("[")]
+        json_lines = [
+            line
+            for line in captured_explicit.err.splitlines()
+            if line.strip() and not line.startswith("[")
+        ]
         log_data = json.loads(json_lines[0])
         assert log_data["service_name"] == "explicit-override"
 
@@ -392,11 +412,14 @@ class TestMigrationFromExplicitSetup:
         reset_foundation_setup_for_testing()
 
         # Set environment for lazy init
-        with patch.dict(os.environ, {
-            "FOUNDATION_SERVICE_NAME": "env-service",
-            "FOUNDATION_LOG_CONSOLE_FORMATTER": "key_value",
-            "FOUNDATION_LOG_LEVEL": "WARNING",
-        }):
+        with patch.dict(
+            os.environ,
+            {
+                "FOUNDATION_SERVICE_NAME": "env-service",
+                "FOUNDATION_LOG_CONSOLE_FORMATTER": "key_value",
+                "FOUNDATION_LOG_LEVEL": "WARNING",
+            },
+        ):
             # Trigger lazy init first
             global_logger.warning("Lazy init message")
 
@@ -408,10 +431,7 @@ class TestMigrationFromExplicitSetup:
             # Now explicit setup with different config
             explicit_config = TelemetryConfig(
                 service_name="explicit-service",
-                logging=LoggingConfig(
-                    console_formatter="json",
-                    default_level="DEBUG"
-                )
+                logging=LoggingConfig(console_formatter="json", default_level="DEBUG"),
             )
             setup_telemetry(explicit_config)
 
@@ -422,8 +442,11 @@ class TestMigrationFromExplicitSetup:
             assert "Explicit setup message" in captured_explicit.err
 
             # Should be JSON format with explicit service name
-            json_lines = [line for line in captured_explicit.err.splitlines()
-                         if line.strip() and not line.startswith("[")]
+            json_lines = [
+                line
+                for line in captured_explicit.err.splitlines()
+                if line.strip() and not line.startswith("[")
+            ]
             log_data = json.loads(json_lines[0])
             assert log_data["service_name"] == "explicit-service"
 
@@ -448,8 +471,11 @@ class TestProductionReadinessScenarios:
         captured = capsys.readouterr()
 
         # Verify all messages were logged
-        log_lines = [line for line in captured.err.splitlines()
-                    if "High throughput message" in line]
+        log_lines = [
+            line
+            for line in captured.err.splitlines()
+            if "High throughput message" in line
+        ]
         assert len(log_lines) == message_count
 
         # Verify reasonable performance
@@ -505,7 +531,7 @@ class TestProductionReadinessScenarios:
                     error_type=error_name,
                     domain="system",
                     action="error_handling",
-                    status="handled"
+                    status="handled",
                 )
 
         # Continue normal logging after errors
@@ -538,6 +564,7 @@ class TestProductionReadinessScenarios:
 
         # Run shutdown
         import asyncio
+
         asyncio.run(test_shutdown())
 
         # Log after shutdown (should still work)
@@ -572,15 +599,14 @@ class TestDocumentedBehaviorCompliance:
 
             # Test module-specific level
             test_logger = global_logger.get_logger("test.module")
-            test_logger.warning("Module warning")  # Should be filtered (ERROR level only)
+            test_logger.warning(
+                "Module warning"
+            )  # Should be filtered (ERROR level only)
             test_logger.error("Module error")  # Should appear
 
             # Test DAS with disabled logger name emoji
             global_logger.info(
-                "DAS test",
-                domain="auth",
-                action="login",
-                status="success"
+                "DAS test", domain="auth", action="login", status="success"
             )
 
         captured = capsys.readouterr()
@@ -601,7 +627,9 @@ class TestDocumentedBehaviorCompliance:
         assert all(log["service_name"] == "documented-service" for log in service_logs)
 
         # Verify timestamp omission
-        assert all("timestamp" not in log for log in json_lines), "Timestamps should be omitted"
+        assert all("timestamp" not in log for log in json_lines), (
+            "Timestamps should be omitted"
+        )
 
         # Verify module filtering
         assert not any("Module warning" in log.get("event", "") for log in json_lines)
@@ -716,7 +744,9 @@ class TestDocumentedBehaviorCompliance:
         assert init_time < 0.1, f"Initialization too slow: {init_time:.3f}s"
 
         messages_per_second = 100 / subsequent_time
-        assert messages_per_second > 1000, f"Subsequent logging too slow: {messages_per_second:.1f} msg/sec"
+        assert messages_per_second > 1000, (
+            f"Subsequent logging too slow: {messages_per_second:.1f} msg/sec"
+        )
 
         captured = capsys.readouterr()
         assert "First message triggers initialization" in captured.err
@@ -767,12 +797,15 @@ class TestLazyInitializationDocumentation:
         reset_foundation_setup_for_testing()
 
         # Example from docs: environment-based configuration
-        with patch.dict(os.environ, {
-            "FOUNDATION_SERVICE_NAME": "my-service",
-            "FOUNDATION_LOG_LEVEL": "INFO",
-            "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
-            "FOUNDATION_LOG_MODULE_LEVELS": "auth:DEBUG,db:ERROR",
-        }):
+        with patch.dict(
+            os.environ,
+            {
+                "FOUNDATION_SERVICE_NAME": "my-service",
+                "FOUNDATION_LOG_LEVEL": "INFO",
+                "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
+                "FOUNDATION_LOG_MODULE_LEVELS": "auth:DEBUG,db:ERROR",
+            },
+        ):
             from provide.foundation import logger
 
             logger.info("Service started")
@@ -819,7 +852,7 @@ class TestLazyInitializationDocumentation:
         # New code: explicit setup still works
         config = TelemetryConfig(
             service_name="migrated-service",
-            logging=LoggingConfig(console_formatter="json")
+            logging=LoggingConfig(console_formatter="json"),
         )
         setup_telemetry(config)
 
@@ -831,11 +864,17 @@ class TestLazyInitializationDocumentation:
         assert "After explicit setup" in captured.err
 
         # After explicit setup, should be JSON format
-        json_lines = [line for line in captured.err.splitlines()
-                     if line.strip() and not line.startswith("[") and "After explicit setup" in line]
+        json_lines = [
+            line
+            for line in captured.err.splitlines()
+            if line.strip()
+            and not line.startswith("[")
+            and "After explicit setup" in line
+        ]
         assert len(json_lines) > 0
 
         log_data = json.loads(json_lines[0])
         assert log_data["service_name"] == "migrated-service"
+
 
 # 🧪🎯

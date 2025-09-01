@@ -2,6 +2,7 @@
 """
 Tests for utility functions in provide.foundation.utils.
 """
+
 from collections.abc import Callable
 import io
 import re
@@ -24,7 +25,7 @@ def parse_kv_log_line(line: str) -> dict:
     # Extract level
     level_match = re.search(r"\[\s*([a-zA-Z]+)\s*\]", line)
     level = level_match.group(1).lower() if level_match else ""
-    content_after_level = line[level_match.end():].strip() if level_match else line
+    content_after_level = line[level_match.end() :].strip() if level_match else line
 
     data = {"level": level}
 
@@ -34,14 +35,19 @@ def parse_kv_log_line(line: str) -> dict:
     # Find the start of the key-value section to isolate the event message
     first_kv_match = re.search(r'[\w.]+=(".*?"|\'.*?\'|\S+)', content_after_level)
 
-    event_part = content_after_level[:first_kv_match.start()] if first_kv_match else content_after_level
+    event_part = (
+        content_after_level[: first_kv_match.start()]
+        if first_kv_match
+        else content_after_level
+    )
 
     data["event"] = event_part.strip()
 
     for key, value in kv_pairs:
         # Strip matching quotes if they exist
-        if (value.startswith('"') and value.endswith('"')) or \
-           (value.startswith("'") and value.endswith("'")):
+        if (value.startswith('"') and value.endswith('"')) or (
+            value.startswith("'") and value.endswith("'")
+        ):
             value = value[1:-1]
 
         if value.isdigit():
@@ -57,9 +63,10 @@ def parse_kv_log_line(line: str) -> dict:
                 data[key] = value
     return data
 
+
 @pytest.fixture
 def setup_telemetry_for_utils(
-    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None]
+    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
 ) -> None:
     """Fixture to set up telemetry for util tests with logger name emojis disabled."""
     config = TelemetryConfig(
@@ -71,13 +78,23 @@ def setup_telemetry_for_utils(
     )
     setup_foundation_telemetry_for_test(config)
 
+
 @pytest.mark.usefixtures("setup_telemetry_for_utils")
 class TestTimedBlock:
-    def test_successful_execution(self, captured_stderr_for_foundation: io.StringIO) -> None:
-        with timed_block(global_logger, "my_successful_op", layer_keys={"component": "test_util"}, project_id=123):
+    def test_successful_execution(
+        self, captured_stderr_for_foundation: io.StringIO
+    ) -> None:
+        with timed_block(
+            global_logger,
+            "my_successful_op",
+            layer_keys={"component": "test_util"},
+            project_id=123,
+        ):
             pass
         captured = captured_stderr_for_foundation.getvalue()
-        log_lines = [line for line in captured.strip().splitlines() if "my_successful_op" in line]
+        log_lines = [
+            line for line in captured.strip().splitlines() if "my_successful_op" in line
+        ]
         assert len(log_lines) == 1
         log_data = parse_kv_log_line(log_lines[0])
         assert log_data.get("event", "").strip() == "my_successful_op"
@@ -86,12 +103,16 @@ class TestTimedBlock:
         assert log_data.get("outcome") == "success"
         assert "duration_ms" in log_data
 
-    def test_execution_with_exception(self, captured_stderr_for_foundation: io.StringIO) -> None:
+    def test_execution_with_exception(
+        self, captured_stderr_for_foundation: io.StringIO
+    ) -> None:
         with pytest.raises(ValueError, match="Simulated error"):
             with timed_block(global_logger, "my_failing_op", user_id="user_abc"):
                 raise ValueError("Simulated error")
         captured = captured_stderr_for_foundation.getvalue()
-        log_lines = [line for line in captured.strip().splitlines() if "my_failing_op" in line]
+        log_lines = [
+            line for line in captured.strip().splitlines() if "my_failing_op" in line
+        ]
         assert len(log_lines) == 1
         log_data = parse_kv_log_line(log_lines[0])
         assert log_data.get("event", "").endswith("my_failing_op")
@@ -99,7 +120,9 @@ class TestTimedBlock:
         assert log_data.get("outcome") == "error"
         assert log_data.get("error.message") == "Simulated error"
 
-    def test_log_level_for_outcome(self, captured_stderr_for_foundation: io.StringIO) -> None:
+    def test_log_level_for_outcome(
+        self, captured_stderr_for_foundation: io.StringIO
+    ) -> None:
         with timed_block(global_logger, "success_op_info_level"):
             pass
         assert "[info " in captured_stderr_for_foundation.getvalue().lower()
@@ -113,7 +136,9 @@ class TestTimedBlock:
                 raise RuntimeError("err")
         assert "[error " in captured_stderr_for_foundation.getvalue().lower()
 
-    def test_trace_id_from_contextvar(self, captured_stderr_for_foundation: io.StringIO) -> None:
+    def test_trace_id_from_contextvar(
+        self, captured_stderr_for_foundation: io.StringIO
+    ) -> None:
         token = _FOUNDATION_CONTEXT_TRACE_ID.set("test-trace-12345")
         try:
             with timed_block(global_logger, "op_with_trace_id"):
@@ -121,11 +146,15 @@ class TestTimedBlock:
         finally:
             _FOUNDATION_CONTEXT_TRACE_ID.reset(token)
         captured = captured_stderr_for_foundation.getvalue()
-        log_lines = [line for line in captured.strip().splitlines() if "op_with_trace_id" in line]
+        log_lines = [
+            line for line in captured.strip().splitlines() if "op_with_trace_id" in line
+        ]
         assert len(log_lines) == 1
         assert parse_kv_log_line(log_lines[0]).get("trace_id") == "test-trace-12345"
 
-    def test_trace_id_from_initial_kvs_overrides_contextvar(self, captured_stderr_for_foundation: io.StringIO) -> None:
+    def test_trace_id_from_initial_kvs_overrides_contextvar(
+        self, captured_stderr_for_foundation: io.StringIO
+    ) -> None:
         token = _FOUNDATION_CONTEXT_TRACE_ID.set("context-id")
         try:
             with timed_block(global_logger, "op_override_trace_id", trace_id="kvs-id"):
@@ -133,6 +162,10 @@ class TestTimedBlock:
         finally:
             _FOUNDATION_CONTEXT_TRACE_ID.reset(token)
         captured = captured_stderr_for_foundation.getvalue()
-        log_lines = [line for line in captured.strip().splitlines() if "op_override_trace_id" in line]
+        log_lines = [
+            line
+            for line in captured.strip().splitlines()
+            if "op_override_trace_id" in line
+        ]
         assert len(log_lines) == 1
         assert parse_kv_log_line(log_lines[0]).get("trace_id") == "kvs-id"

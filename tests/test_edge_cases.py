@@ -7,6 +7,7 @@ Edge case and error condition tests for Foundation Telemetry.
 This module tests boundary conditions, error handling, and edge cases
 that might not be covered in regular functional tests.
 """
+
 from collections.abc import Callable
 import io
 import os
@@ -24,17 +25,39 @@ from provide.foundation import (
 from provide.foundation.core import reset_foundation_setup_for_testing
 
 
-def test_invalid_environment_variables_handling(monkeypatch, capsys) -> None: # Added capsys
+def test_invalid_environment_variables_handling(
+    monkeypatch, capsys
+) -> None:  # Added capsys
     """Tests handling of invalid environment variables."""
     # Define cases with expected warning snippet, or None if specific warning isn't critical/expected
     invalid_env_cases = [
-        ("FOUNDATION_LOG_LEVEL", "INVALID_LEVEL", "Invalid FOUNDATION_LOG_LEVEL 'INVALID_LEVEL'"),
-        ("FOUNDATION_LOG_CONSOLE_FORMATTER", "invalid_formatter", "Invalid FOUNDATION_LOG_CONSOLE_FORMATTER 'invalid_formatter'"),
-        ("FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED", "maybe", None), # bool parsing defaults, no specific warning expected by from_env
-        ("FOUNDATION_LOG_DAS_EMOJI_ENABLED", "sometimes", None),    # bool parsing defaults
-        ("FOUNDATION_LOG_OMIT_TIMESTAMP", "perhaps", None),       # bool parsing defaults
-        ("FOUNDATION_TELEMETRY_DISABLED", "kinda", None),         # bool parsing defaults
-        ("FOUNDATION_LOG_MODULE_LEVELS", "invalid:format:here,also:bad", "Invalid log level 'FORMAT:HERE' for module 'invalid'"),
+        (
+            "FOUNDATION_LOG_LEVEL",
+            "INVALID_LEVEL",
+            "Invalid FOUNDATION_LOG_LEVEL 'INVALID_LEVEL'",
+        ),
+        (
+            "FOUNDATION_LOG_CONSOLE_FORMATTER",
+            "invalid_formatter",
+            "Invalid FOUNDATION_LOG_CONSOLE_FORMATTER 'invalid_formatter'",
+        ),
+        (
+            "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED",
+            "maybe",
+            None,
+        ),  # bool parsing defaults, no specific warning expected by from_env
+        (
+            "FOUNDATION_LOG_DAS_EMOJI_ENABLED",
+            "sometimes",
+            None,
+        ),  # bool parsing defaults
+        ("FOUNDATION_LOG_OMIT_TIMESTAMP", "perhaps", None),  # bool parsing defaults
+        ("FOUNDATION_TELEMETRY_DISABLED", "kinda", None),  # bool parsing defaults
+        (
+            "FOUNDATION_LOG_MODULE_LEVELS",
+            "invalid:format:here,also:bad",
+            "Invalid log level 'FORMAT:HERE' for module 'invalid'",
+        ),
     ]
 
     for env_var, invalid_value, expected_warning_snippet in invalid_env_cases:
@@ -46,7 +69,9 @@ def test_invalid_environment_variables_handling(monkeypatch, capsys) -> None: # 
         # Remove other potentially interfering env vars if they are not the one being tested
         # This ensures that warnings from other default settings don't cloud the specific test.
         possible_interfering_vars = [
-            "FOUNDATION_LOG_LEVEL", "FOUNDATION_LOG_CONSOLE_FORMATTER", "FOUNDATION_LOG_MODULE_LEVELS"
+            "FOUNDATION_LOG_LEVEL",
+            "FOUNDATION_LOG_CONSOLE_FORMATTER",
+            "FOUNDATION_LOG_MODULE_LEVELS",
         ]
         for var_to_clear in possible_interfering_vars:
             if var_to_clear != env_var:
@@ -60,17 +85,23 @@ def test_invalid_environment_variables_handling(monkeypatch, capsys) -> None: # 
 
         # Verify fallback to defaults for the specific var being tested
         if env_var == "FOUNDATION_LOG_LEVEL":
-            assert config.logging.default_level == "DEBUG"  # Default from DEFAULT_ENV_CONFIG or fallback in from_env
+            assert (
+                config.logging.default_level == "DEBUG"
+            )  # Default from DEFAULT_ENV_CONFIG or fallback in from_env
         elif env_var == "FOUNDATION_LOG_CONSOLE_FORMATTER":
-            assert config.logging.console_formatter == "key_value"  # Default from DEFAULT_ENV_CONFIG or fallback in from_env
+            assert (
+                config.logging.console_formatter == "key_value"
+            )  # Default from DEFAULT_ENV_CONFIG or fallback in from_env
 
         # Check for specific warning message if one is expected
         captured = capsys.readouterr()
         if expected_warning_snippet:
-            assert "[Foundation Config Warning]" in captured.err, \
+            assert "[Foundation Config Warning]" in captured.err, (
                 f"No Foundation Config Warning for {env_var}={invalid_value}. Output: {captured.err}"
-            assert expected_warning_snippet in captured.err, \
+            )
+            assert expected_warning_snippet in captured.err, (
                 f"Expected warning snippet '{expected_warning_snippet}' not found for {env_var}={invalid_value}. Output: {captured.err}"
+            )
 
         # Clean up the specific environment variable for the next iteration
         monkeypatch.delenv(env_var, raising=False)
@@ -82,19 +113,27 @@ def test_module_levels_parsing_edge_cases() -> None:
         ("", {}),  # Empty string
         ("   ", {}),  # Whitespace only
         ("module1:DEBUG", {"module1": "DEBUG"}),  # Single valid
-        ("module1:DEBUG,module2:ERROR", {"module1": "DEBUG", "module2": "ERROR"}),  # Multiple valid
+        (
+            "module1:DEBUG,module2:ERROR",
+            {"module1": "DEBUG", "module2": "ERROR"},
+        ),  # Multiple valid
         ("module1:INVALID,module2:DEBUG", {"module2": "DEBUG"}),  # Mix valid/invalid
         ("invalid_format,module2:DEBUG", {"module2": "DEBUG"}),  # Missing colon
         ("module1:,module2:DEBUG", {"module2": "DEBUG"}),  # Empty level
         (":DEBUG,module2:ERROR", {"module2": "ERROR"}),  # Empty module name
-        ("module1:DEBUG,,module2:ERROR", {"module1": "DEBUG", "module2": "ERROR"}),  # Empty item
+        (
+            "module1:DEBUG,,module2:ERROR",
+            {"module1": "DEBUG", "module2": "ERROR"},
+        ),  # Empty item
         ("module.with.dots:INFO", {"module.with.dots": "INFO"}),  # Dotted module names
     ]
 
     for levels_str, expected in edge_cases:
         with patch.dict(os.environ, {"FOUNDATION_LOG_MODULE_LEVELS": levels_str}):
             config = TelemetryConfig.from_env()
-            assert config.logging.module_levels == expected, f"Failed for: '{levels_str}'"
+            assert config.logging.module_levels == expected, (
+                f"Failed for: '{levels_str}'"
+            )
 
 
 def test_logger_with_extreme_names(
@@ -121,14 +160,17 @@ def test_logger_with_extreme_names(
     for name in extreme_names:
         try:
             test_logger = logger.get_logger(name)
-            test_logger.info(f"Test message from logger: {name[:50]}")  # Truncate for readability
-        except Exception as e: # pragma: no cover
+            test_logger.info(
+                f"Test message from logger: {name[:50]}"
+            )  # Truncate for readability
+        except Exception as e:  # pragma: no cover
             pytest.fail(f"Logger failed with name '{name}': {e}")
 
     # Verify all messages were logged
     output = captured_stderr_for_foundation.getvalue()
     lines = [
-        line for line in output.strip().splitlines()
+        line
+        for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]") and line.strip()
     ]
     assert len(lines) == len(extreme_names)
@@ -142,7 +184,7 @@ def test_log_message_edge_cases(
     setup_foundation_telemetry_for_test(None)
     test_logger = logger.get_logger("edge.test")
 
-    edge_case_messages: list[Any] = [ # Allow Any for diverse test inputs
+    edge_case_messages: list[Any] = [  # Allow Any for diverse test inputs
         "",  # Empty message
         " ",  # Whitespace only
         "\n\t\r",  # Control characters
@@ -150,7 +192,7 @@ def test_log_message_edge_cases(
         "Message with %s %d formatting",  # Format string without args
         "Null byte: \x00",  # Null byte
         "Unicode: 🚀🌟💫🔥⚡",  # Unicode characters
-        "JSON-like: {\"key\": \"value\", \"number\": 123}",  # JSON content
+        'JSON-like: {"key": "value", "number": 123}',  # JSON content
         "HTML-like: <script>alert('test')</script>",  # HTML content
         "Multi\nline\nmessage",  # Multiline
         "Tabs\tand\ttabs",  # Tab characters
@@ -160,13 +202,14 @@ def test_log_message_edge_cases(
     for message in edge_case_messages:
         try:
             test_logger.info(message)
-        except Exception as e: # pragma: no cover
+        except Exception as e:  # pragma: no cover
             pytest.fail(f"Logging failed with message '{str(message)[:50]}...': {e}")
 
     # Verify output exists
     output = captured_stderr_for_foundation.getvalue()
     lines = [
-        line for line in output.strip().splitlines()
+        line
+        for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]") and line.strip()
     ]
     assert len(lines) >= len(edge_case_messages)
@@ -184,10 +227,26 @@ def test_logger_args_formatting_edge_cases(
         # (message, args, should_not_raise)
         ("Simple message with %s", ("arg1",), True),
         ("Multiple args: %s %d %s", ("str", 42, "end"), True),
-        ("Too few args: %s %s", ("only_one",), True), # FoundationLogger's _format_message_with_args handles this
-        ("Too many args: %s", ("arg1", "arg2", "extra"), True), # FoundationLogger's _format_message_with_args handles this
-        ("Invalid format: %q", ("arg",), True), # FoundationLogger's _format_message_with_args handles this
-        ("No format but args", ("arg1", "arg2"), True), # FoundationLogger's _format_message_with_args handles this
+        (
+            "Too few args: %s %s",
+            ("only_one",),
+            True,
+        ),  # FoundationLogger's _format_message_with_args handles this
+        (
+            "Too many args: %s",
+            ("arg1", "arg2", "extra"),
+            True,
+        ),  # FoundationLogger's _format_message_with_args handles this
+        (
+            "Invalid format: %q",
+            ("arg",),
+            True,
+        ),  # FoundationLogger's _format_message_with_args handles this
+        (
+            "No format but args",
+            ("arg1", "arg2"),
+            True,
+        ),  # FoundationLogger's _format_message_with_args handles this
         ("Empty args", (), True),
         ("Unicode in args: %s", ("🚀🌟",), True),
         ("None arg: %s", (None,), True),
@@ -198,18 +257,23 @@ def test_logger_args_formatting_edge_cases(
         try:
             # Call info method on the global FoundationLogger instance
             logger.info(message, *args)
-            if not should_not_raise: # pragma: no cover
+            if not should_not_raise:  # pragma: no cover
                 pytest.fail(f"Expected exception for: {message} with args {args}")
-        except Exception as e: # pragma: no cover
+        except Exception as e:  # pragma: no cover
             if should_not_raise:
-                pytest.fail(f"Unexpected exception for '{message}' with args {args}: {e}")
+                pytest.fail(
+                    f"Unexpected exception for '{message}' with args {args}: {e}"
+                )
 
     output = captured_stderr_for_foundation.getvalue()
     lines = [
-        line for line in output.strip().splitlines()
+        line
+        for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]") and line.strip()
     ]
-    assert len(lines) == len(test_cases), f"Expected {len(test_cases)} log lines, got {len(lines)}"
+    assert len(lines) == len(test_cases), (
+        f"Expected {len(test_cases)} log lines, got {len(lines)}"
+    )
 
 
 def test_repeated_setup_calls(
@@ -218,12 +282,10 @@ def test_repeated_setup_calls(
 ) -> None:
     """Tests behavior with repeated setup calls."""
     config1 = TelemetryConfig(
-        service_name="service1",
-        logging=LoggingConfig(default_level="DEBUG")
+        service_name="service1", logging=LoggingConfig(default_level="DEBUG")
     )
     config2 = TelemetryConfig(
-        service_name="service2",
-        logging=LoggingConfig(default_level="INFO")
+        service_name="service2", logging=LoggingConfig(default_level="INFO")
     )
 
     # First setup
@@ -246,10 +308,7 @@ def test_concurrent_setup_calls() -> None:
     """Tests thread safety of setup calls."""
     import threading
 
-    configs = [
-        TelemetryConfig(service_name=f"service{i}")
-        for i in range(5)
-    ]
+    configs = [TelemetryConfig(service_name=f"service{i}") for i in range(5)]
 
     setup_results: list[str | None] = []
     exceptions: list[Exception] = []
@@ -258,7 +317,7 @@ def test_concurrent_setup_calls() -> None:
         try:
             setup_telemetry(config)
             setup_results.append(config.service_name)
-        except Exception as e: # pragma: no cover
+        except Exception as e:  # pragma: no cover
             exceptions.append(e)
 
     threads = []
@@ -278,15 +337,13 @@ def test_concurrent_setup_calls() -> None:
 def test_memory_usage_with_large_configs() -> None:
     """Tests memory behavior with large configurations."""
     large_module_levels = {
-        f"module.{i}.submodule.{j}": "DEBUG"
-        for i in range(100)
-        for j in range(10)
+        f"module.{i}.submodule.{j}": "DEBUG" for i in range(100) for j in range(10)
     }
 
     config = TelemetryConfig(
         logging=LoggingConfig(
             default_level="INFO",
-            module_levels=large_module_levels, # type: ignore [arg-type]
+            module_levels=large_module_levels,  # type: ignore [arg-type]
         )
     )
 
@@ -295,7 +352,7 @@ def test_memory_usage_with_large_configs() -> None:
         for i in range(0, 100, 10):
             test_logger = logger.get_logger(f"module.{i}.submodule.5")
             test_logger.info(f"Message from module {i}")
-    except Exception as e: # pragma: no cover
+    except Exception as e:  # pragma: no cover
         pytest.fail(f"Large configuration failed: {e}")
     finally:
         reset_foundation_setup_for_testing()
@@ -321,7 +378,8 @@ def test_trace_level_edge_cases(
 
     output = captured_stderr_for_foundation.getvalue()
     lines = [
-        line for line in output.strip().splitlines()
+        line
+        for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]") and line.strip()
     ]
     assert len(lines) >= 4, "Not all trace messages were logged"
@@ -335,14 +393,24 @@ def test_configuration_validation_edge_cases() -> None:
     assert config_none_service.service_name is None
 
     bool_test_cases = [
-        ("true", True), ("True", True), ("TRUE", True),
-        ("false", False), ("False", False), ("FALSE", False),
-        ("1", False), ("0", False), ("yes", False), ("no", False), ("", False),
+        ("true", True),
+        ("True", True),
+        ("TRUE", True),
+        ("false", False),
+        ("False", False),
+        ("FALSE", False),
+        ("1", False),
+        ("0", False),
+        ("yes", False),
+        ("no", False),
+        ("", False),
     ]
     for env_value, expected in bool_test_cases:
         with patch.dict(os.environ, {"FOUNDATION_LOG_OMIT_TIMESTAMP": env_value}):
             config = TelemetryConfig.from_env()
-            assert config.logging.omit_timestamp == expected, f"Failed for '{env_value}'"
+            assert config.logging.omit_timestamp == expected, (
+                f"Failed for '{env_value}'"
+            )
 
 
 def test_configuration_immutability() -> None:
@@ -362,6 +430,7 @@ def test_performance_with_disabled_features(
 ) -> None:
     """Tests performance when emoji features are disabled."""
     import time
+
     config = TelemetryConfig(
         logging=LoggingConfig(
             default_level="INFO",
@@ -379,11 +448,15 @@ def test_performance_with_disabled_features(
     duration = end_time - start_time
     output = captured_stderr_for_foundation.getvalue()
     lines = [
-        line for line in output.strip().splitlines()
+        line
+        for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]") and line.strip()
     ]
     assert len(lines) == message_count
     messages_per_second = message_count / duration
-    assert messages_per_second > 500, f"Performance too slow: {messages_per_second:.1f} msg/sec"
+    assert messages_per_second > 500, (
+        f"Performance too slow: {messages_per_second:.1f} msg/sec"
+    )
+
 
 # 🧪⚠️
