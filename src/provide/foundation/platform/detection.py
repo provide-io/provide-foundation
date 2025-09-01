@@ -6,7 +6,7 @@ import re
 from provide.foundation.errors import FoundationError
 from provide.foundation.logger import get_logger
 
-log = get_logger(__name__)
+plog = get_logger(__name__)
 
 
 class PlatformError(FoundationError):
@@ -27,7 +27,7 @@ def get_os_name() -> str:
             return "darwin"
         return os_name
     except Exception as e:
-        log.error("Failed to detect OS", error=str(e))
+        plog.error("Failed to detect OS", error=str(e))
         raise PlatformError(
             "Failed to detect operating system",
             code="PLATFORM_OS_DETECTION_FAILED",
@@ -53,7 +53,7 @@ def get_arch_name() -> str:
             return "x86"
         return arch
     except Exception as e:
-        log.error("Failed to detect architecture", error=str(e))
+        plog.error("Failed to detect architecture", error=str(e))
         raise PlatformError(
             "Failed to detect architecture",
             code="PLATFORM_ARCH_DETECTION_FAILED",
@@ -71,7 +71,7 @@ def get_platform_string() -> str:
     os_name = get_os_name()
     arch = get_arch_name()
     platform_str = f"{os_name}_{arch}"
-    log.debug("Detected platform", platform=platform_str, os=os_name, arch=arch)
+    plog.debug("Detected platform", platform=platform_str, os=os_name, arch=arch)
     return platform_str
 
 
@@ -110,7 +110,7 @@ def get_os_version() -> str | None:
         if release:
             return release
     except Exception as e:
-        log.warning("Failed to detect OS version", error=str(e))
+        plog.warning("Failed to detect OS version", error=str(e))
     
     return None
 
@@ -150,7 +150,7 @@ def get_cpu_type() -> str | None:
                 # Return cleaned processor string
                 return processor.strip()
     except Exception as e:
-        log.warning("Failed to detect CPU type", error=str(e))
+        plog.warning("Failed to detect CPU type", error=str(e))
     
     return None
 

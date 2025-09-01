@@ -14,7 +14,7 @@ from provide.foundation.platform.detection import (
     get_platform_string,
 )
 
-log = get_logger(__name__)
+plog = get_logger(__name__)
 
 
 @dataclass
@@ -82,9 +82,9 @@ def get_system_info() -> SystemInfo:
         total_memory = mem.total
         available_memory = mem.available
     except ImportError:
-        log.debug("psutil not available, memory info limited")
+        plog.debug("psutil not available, memory info limited")
     except Exception as e:
-        log.debug("Failed to get memory info", error=str(e))
+        plog.debug("Failed to get memory info", error=str(e))
     
     # Disk usage
     disk_usage = None
@@ -99,7 +99,7 @@ def get_system_info() -> SystemInfo:
                     "free": usage.free,
                 }
     except Exception as e:
-        log.debug("Failed to get disk usage", error=str(e))
+        plog.debug("Failed to get disk usage", error=str(e))
     
     info = SystemInfo(
         os_name=os_name,
@@ -118,7 +118,7 @@ def get_system_info() -> SystemInfo:
         disk_usage=disk_usage,
     )
     
-    log.debug(
+    plog.debug(
         "System information gathered",
         platform=platform_str,
         os=os_name,
