@@ -410,21 +410,7 @@ def build_click_command(
     # Start with the base function
     decorated_func = func
     
-    # Process arguments in reverse order (for Click's decorator stacking)
-    # but maintain their original order in the function signature
-    for param_name, param in reversed(arguments):
-        # Create argument
-        if param.annotation != inspect.Parameter.empty:
-            # Extract the actual type from unions/optionals
-            param_type = _extract_click_type(param.annotation)
-            decorated_func = click.argument(
-                param_name,
-                type=param_type,
-            )(decorated_func)
-        else:
-            decorated_func = click.argument(param_name)(decorated_func)
-    
-    # Process options in reverse order
+    # Process options in reverse order (for decorator stacking)
     for param_name, param in reversed(options):
         # Create option
         option_name = f"--{param_name.replace('_', '-')}"
@@ -453,6 +439,21 @@ def build_click_command(
                 default=param.default,
                 help=f"{param_name} option",
             )(decorated_func)
+    
+    # Process arguments in reverse order
+    # When we apply decorators programmatically, the last one applied
+    # becomes the outermost decorator, which Click sees first
+    for param_name, param in reversed(arguments):
+        # Create argument
+        if param.annotation != inspect.Parameter.empty:
+            # Extract the actual type from unions/optionals
+            param_type = _extract_click_type(param.annotation)
+            decorated_func = click.argument(
+                param_name,
+                type=param_type,
+            )(decorated_func)
+        else:
+            decorated_func = click.argument(param_name)(decorated_func)
 
     # Create the Click command with the decorated function
     cmd = click.Command(

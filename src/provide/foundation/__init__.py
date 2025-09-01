@@ -104,36 +104,12 @@ __all__ = [
     # Console output
     "pout",
     "perr",
-    # Error handling
+    # Error handling essentials
     "FoundationError",
-    "ConfigurationError",
-    "ValidationError",
-    "RuntimeError",
-    "IntegrationError",
-    "ResourceError",
-    "NetworkError",
-    "TimeoutError",
-    "AuthenticationError",
-    "AuthorizationError",
-    "NotFoundError",
-    "AlreadyExistsError",
-    "StateError",
-    "ConcurrencyError",
-    "ErrorContext",
-    "ErrorSeverity",
-    "ErrorCategory",
-    "capture_error_context",
     "error_boundary",
-    "transactional",
-    "handle_error",
-    "ErrorHandler",
     "with_error_handling",
     "retry_on_error",
-    "suppress_and_log",
-    "fallback_on_error",
-    "ErrorCode",
-    "ErrorMetadata",
-    "RetryPolicy",
+    "errors",  # The errors module for detailed imports
 ]
 
 # 🐍📝
