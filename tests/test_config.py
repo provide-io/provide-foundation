@@ -98,4 +98,3 @@ class TestTelemetryConfigFromEnvSemanticLayers:
         config = from_env()
         assert config.logging.custom_semantic_layers == []
         assert "Error parsing data for a custom layer" in capsys.readouterr().err
-r parsing data for a custom layer" in capsys.readouterr().err

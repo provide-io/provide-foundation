@@ -174,7 +174,8 @@ class TestEnvConfigLoader:
 class TestDictConfigLoader:
     """Test DictConfigLoader."""
     
-    def test_load_from_dict(self):
+    @pytest.mark.asyncio
+    async def test_load_from_dict(self):
         """Test loading from dictionary."""
         data = {
             "name": "dict_config",
@@ -185,17 +186,18 @@ class TestDictConfigLoader:
         loader = DictConfigLoader(data)
         assert loader.exists()
         
-        config = loader.load(TestConfig)
+        config = await loader.load(TestConfig)
         assert config.name == "dict_config"
         assert config.port == 9000
         assert config.debug is True
-        assert config.get_source("name") == ConfigSource.RUNTIME
+        assert await config.get_source("name") == ConfigSource.RUNTIME
     
-    def test_custom_source(self):
+    @pytest.mark.asyncio
+    async def test_custom_source(self):
         """Test with custom source."""
         loader = DictConfigLoader({}, source=ConfigSource.DEFAULT)
-        config = loader.load(TestConfig)
-        assert config.get_source("name") is None  # Uses default values
+        config = await loader.load(TestConfig)
+        assert await config.get_source("name") is None  # Uses default values
 
 
 class TestMultiSourceLoader:
@@ -284,4 +286,4 @@ class TestChainedLoader:
         assert not loader.exists()
         
         with pytest.raises(ValueError, match="No configuration source"):
-            loader.load(TestConfig)
+            await loader.load(TestConfig)
