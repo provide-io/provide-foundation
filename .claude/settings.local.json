@@ -29,7 +29,8 @@
       "Bash(ruff check:*)",
       "Bash(ruff format:*)",
       "Bash(tree:*)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(./test-workflows.sh:*)"
     ],
     "deny": [],
     "ask": [],
