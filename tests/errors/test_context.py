@@ -33,7 +33,7 @@ class TestErrorSeverity:
     def test_severity_comparison(self):
         """Test that severities are strings."""
         assert ErrorSeverity.LOW == "low"
-        assert str(ErrorSeverity.HIGH) == "high"
+        assert ErrorSeverity.HIGH.value == "high"
 
 
 class TestErrorCategory:

@@ -27,7 +27,8 @@
       "Bash(PYTHONPATH=src:$PYTHONPATH pytest tests/common/test_encryption_unit.py::TestKeyDerivation::test_get_key_from_config_file -xvs)",
       "Bash(DEBUG_ENV_PARSE=1 python -m pytest tests/config/test_env.py::TestEnvConfigClass::test_auto_parse_types -xvs)",
       "Bash(ruff check:*)",
-      "Bash(ruff format:*)"
+      "Bash(ruff format:*)",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": [],
