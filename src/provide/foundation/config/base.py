@@ -69,8 +69,13 @@ def field(
     
     # Handle factory vs default
     if factory is not None:
+        # Ensure factory is wrapped in Factory if it's not already
+        if not isinstance(factory, Factory):
+            factory = factory if callable(factory) else Factory(factory)
+        else:
+            factory = factory
         return attrs_field(
-            factory=Factory(factory) if not isinstance(factory, Factory) else factory,
+            factory=factory,
             validator=validator,
             converter=converter,
             metadata=config_metadata,
