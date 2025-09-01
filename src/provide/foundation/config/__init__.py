@@ -15,7 +15,9 @@ from provide.foundation.config.env import (
     EnvConfig,
     env_field,
     get_env,
+    get_env_async,
     parse_bool,
+    parse_dict,
     parse_list,
 )
 from provide.foundation.config.loader import (
@@ -40,6 +42,15 @@ from provide.foundation.config.types import (
     ConfigValue,
 )
 
+# Import sync wrappers for convenience
+from provide.foundation.config.sync import (
+    load_config,
+    load_config_from_env,
+    load_config_from_file,
+    validate_config,
+    SyncConfigManager,
+)
+
 __all__ = [
     # Base
     "BaseConfig",
@@ -50,7 +61,9 @@ __all__ = [
     "EnvConfig",
     "env_field",
     "get_env",
+    "get_env_async",
     "parse_bool",
+    "parse_dict",
     "parse_list",
     # Loader
     "ConfigLoader",
@@ -69,4 +82,10 @@ __all__ = [
     "ConfigDict",
     "ConfigSource",
     "ConfigValue",
+    # Sync wrappers
+    "load_config",
+    "load_config_from_env",
+    "load_config_from_file",
+    "validate_config",
+    "SyncConfigManager",
 ]
