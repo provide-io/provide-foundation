@@ -2,11 +2,11 @@
 Type definitions for the configuration system.
 """
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 # Basic type aliases
-ConfigValue = Union[str, int, float, bool, None, List[Any], Dict[str, Any]]
-ConfigDict = Dict[str, ConfigValue]
+ConfigValue = str | int | float | bool | None | list[Any] | dict[str, Any]
+ConfigDict = dict[str, ConfigValue]
 
 
 class ConfigSource(Enum):
@@ -34,7 +34,7 @@ class ConfigFormat(Enum):
     ENV = "env"  # .env files
     
     @classmethod
-    def from_extension(cls, filename: str) -> Optional["ConfigFormat"]:
+    def from_extension(cls, filename: str) -> "ConfigFormat | None":
         """Determine format from file extension."""
         ext_map = {
             ".json": cls.JSON,

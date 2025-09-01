@@ -2,7 +2,7 @@
 Base configuration classes and utilities.
 """
 import copy
-from typing import Any, Callable, Dict, Optional, Type, TypeVar, get_type_hints
+from typing import Any, Callable, TypeVar, get_type_hints
 
 from attrs import NOTHING, Attribute, Factory, define, field as attrs_field, fields
 
@@ -28,13 +28,13 @@ class ConfigValidationError(ConfigError):
 def field(
     *,
     default: Any = NOTHING,
-    factory: Optional[Callable[[], Any]] = None,
-    validator: Optional[Callable[[Any, Attribute, Any], None]] = None,
-    converter: Optional[Callable[[Any], Any]] = None,
-    metadata: Optional[Dict[str, Any]] = None,
-    description: Optional[str] = None,
-    env_var: Optional[str] = None,
-    env_prefix: Optional[str] = None,
+    factory: Callable[[], Any] | None = None,
+    validator: Callable[[Any, Attribute, Any], None] | None = None,
+    converter: Callable[[Any], Any] | None = None,
+    metadata: dict[str, Any] | None = None,
+    description: str | None = None,
+    env_var: str | None = None,
+    env_prefix: str | None = None,
     sensitive: bool = False,
     **kwargs
 ) -> Any:
@@ -94,8 +94,8 @@ class BaseConfig:
     
     def __attrs_post_init__(self):
         """Post-initialization hook for subclasses."""
-        self._source_map: Dict[str, ConfigSource] = {}
-        self._original_values: Dict[str, Any] = {}
+        self._source_map: dict[str, ConfigSource] = {}
+        self._original_values: dict[str, Any] = {}
         self.validate()
     
     def validate(self) -> None:
@@ -137,7 +137,7 @@ class BaseConfig:
         
         return result
     
-    def _convert_dict_values(self, d: Dict, include_sensitive: bool) -> Dict:
+    def _convert_dict_values(self, d: dict, include_sensitive: bool) -> dict:
         """Convert dictionary values recursively."""
         result = {}
         for key, value in d.items():
@@ -164,7 +164,7 @@ class BaseConfig:
         return result
     
     @classmethod
-    def from_dict(cls: Type[T], data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME) -> T:
+    def from_dict(cls: type[T], data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME) -> T:
         """
         Create configuration from dictionary.
         
@@ -206,7 +206,7 @@ class BaseConfig:
                     self._source_map[key] = source
                     self._original_values[key] = value
     
-    def get_source(self, field_name: str) -> Optional[ConfigSource]:
+    def get_source(self, field_name: str) -> ConfigSource | None:
         """
         Get the source of a configuration field.
         
@@ -233,7 +233,7 @@ class BaseConfig:
         """Create a deep copy of the configuration."""
         return copy.deepcopy(self)
     
-    def diff(self, other: "BaseConfig") -> Dict[str, tuple[Any, Any]]:
+    def diff(self, other: "BaseConfig") -> dict[str, tuple[Any, Any]]:
         """
         Compare with another configuration.
         

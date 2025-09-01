@@ -2,7 +2,7 @@
 Environment variable configuration utilities.
 """
 import os
-from typing import Any, Callable, Dict, List, Optional, Type, TypeVar, Union
+from typing import Any, Callable, TypeVar
 
 from attrs import fields
 
@@ -14,10 +14,10 @@ T = TypeVar("T")
 
 def get_env(
     var_name: str,
-    default: Optional[str] = None,
+    default: str | None = None,
     required: bool = False,
     secret_file: bool = True
-) -> Optional[str]:
+) -> str | None:
     """
     Get environment variable value with optional file-based secret support.
     
@@ -52,7 +52,7 @@ def get_env(
     return value
 
 
-def parse_bool(value: Union[str, bool]) -> bool:
+def parse_bool(value: str | bool) -> bool:
     """
     Parse boolean from string.
     
@@ -77,10 +77,10 @@ def parse_bool(value: Union[str, bool]) -> bool:
 
 
 def parse_list(
-    value: Union[str, List[str]],
+    value: str | list[str],
     separator: str = ",",
     strip: bool = True
-) -> List[str]:
+) -> list[str]:
     """
     Parse list from string.
     
@@ -108,10 +108,10 @@ def parse_list(
 
 
 def parse_dict(
-    value: Union[str, Dict[str, str]],
+    value: str | dict[str, str],
     item_separator: str = ",",
     key_value_separator: str = "="
-) -> Dict[str, str]:
+) -> dict[str, str]:
     """
     Parse dictionary from string.
     
@@ -147,9 +147,9 @@ def parse_dict(
 
 
 def env_field(
-    env_var: Optional[str] = None,
-    env_prefix: Optional[str] = None,
-    parser: Optional[Callable[[str], Any]] = None,
+    env_var: str | None = None,
+    env_prefix: str | None = None,
+    parser: Callable[[str], Any] | None = None,
     **kwargs
 ) -> Any:
     """
@@ -183,7 +183,7 @@ class EnvConfig(BaseConfig):
     
     @classmethod
     def from_env(
-        cls: Type[T],
+        cls: type[T],
         prefix: str = "",
         delimiter: str = "_",
         case_sensitive: bool = False
@@ -272,7 +272,7 @@ class EnvConfig(BaseConfig):
         # Default to string
         return value
     
-    def to_env_dict(self, prefix: str = "", delimiter: str = "_") -> Dict[str, str]:
+    def to_env_dict(self, prefix: str = "", delimiter: str = "_") -> dict[str, str]:
         """
         Convert configuration to environment variable dictionary.
         
