@@ -2,6 +2,7 @@
 
 import pytest
 
+from provide.foundation.errors import AlreadyExistsError
 from provide.foundation.hub.components import (
     BaseComponent,
     register_component,
@@ -129,7 +130,7 @@ class TestComponentRegistration:
         class Component1:
             pass
         
-        with pytest.raises(ValueError, match="already registered"):
+        with pytest.raises(AlreadyExistsError, match="already registered"):
             @register_component("duplicate")
             class Component2:
                 pass
