@@ -18,7 +18,8 @@ from provide.foundation.config.loader import (
     MultiSourceLoader,
 )
 from provide.foundation.config.types import ConfigFormat
-from provide.foundation.errors import ConfigurationError, NotFoundError, ConfigSource
+from provide.foundation.errors import ConfigurationError, NotFoundError
+from provide.foundation.config.loader import ConfigSource
 
 
 @define
