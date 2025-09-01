@@ -131,4 +131,3 @@ class TestLoggingWithSemanticLayers:
         output = captured_stderr_for_foundation.getvalue()
         assert "[🔑][➡️][✅] Legacy system test" in output
         assert "domain=auth" not in output
-ut

@@ -103,7 +103,7 @@ _LOGGER_NAME_EMOJI_PREFIXES: dict[str, str] = {
     "provide.foundation.emoji_matrix_display": "💡",
     "provide.foundation": "⚙️",
     "provide.foundation.logger": "📝",
-    "provide.foundation.config": "🔩",
+    "provide.foundation.logger.config": "🔩",
     "pyvider.dynamic_call_trace": "👣",
     "pyvider.dynamic_call": "🗣️",
     "pyvider.default": "📦",

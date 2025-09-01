@@ -512,6 +512,3 @@ class TestLazyInitializationInternalState:
         assert "Message from logger2" in captured.err
 
 # 🧪🚀
-ed.err
-
-# 🧪🚀

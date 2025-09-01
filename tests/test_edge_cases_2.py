@@ -17,10 +17,10 @@ import structlog
 
 from provide.foundation.logger import (
     LoggingConfig,
-    SemanticLayer,
     TelemetryConfig,
     logger,
 )
+from provide.foundation.types import SemanticLayer
 from provide.foundation.logger.processors import _build_formatter_processors_list
 from provide.foundation.core import (
     _CORE_SETUP_LOGGER_NAME,

@@ -29,14 +29,16 @@ from hypothesis.strategies import (
     text,
 )
 
-from provide.foundation import (
-    PRIMARY_EMOJI,
-    SECONDARY_EMOJI,
-    TERTIARY_EMOJI,
+from provide.foundation.logger import (
     LoggingConfig,
     TelemetryConfig,
     logger as foundation_global_logger,
-    setup_telemetry,
+)
+from provide.foundation.core import setup_telemetry
+from provide.foundation.logger.emoji_matrix import (
+    PRIMARY_EMOJI,
+    SECONDARY_EMOJI,
+    TERTIARY_EMOJI,
 )
 from provide.foundation.core import (
     _set_log_stream_for_testing,
