@@ -18,6 +18,9 @@ except ImportError:
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.env import EnvConfig
 from provide.foundation.config.types import ConfigDict, ConfigFormat, ConfigSource
+from provide.foundation.errors import ConfigurationError, NotFoundError, ValidationError
+from provide.foundation.errors.decorators import with_error_handling
+from provide.foundation.logger import logger
 
 T = TypeVar("T", bound=BaseConfig)
 
@@ -72,7 +75,11 @@ class FileConfigLoader(ConfigLoader):
         if format is None:
             format = ConfigFormat.from_extension(str(self.path))
             if format is None:
-                raise ValueError(f"Cannot determine format for file: {self.path}")
+                raise ConfigurationError(
+                    f"Cannot determine format for file: {self.path}",
+                    code="CONFIG_FORMAT_UNKNOWN",
+                    path=str(self.path)
+                )
 
         self.format = format
 
@@ -80,10 +87,22 @@ class FileConfigLoader(ConfigLoader):
         """Check if configuration file exists."""
         return self.path.exists()
 
+    @with_error_handling(
+        context_provider=lambda: {"loader": "FileLoader"},
+        error_mapper=lambda e: ConfigurationError(
+            f"Failed to load configuration: {e}",
+            code="CONFIG_LOAD_ERROR",
+            cause=e
+        ) if not isinstance(e, (ConfigurationError, NotFoundError)) else e
+    )
     async def load(self, config_class: type[T]) -> T:
         """Load configuration from file."""
         if not self.exists():
-            raise FileNotFoundError(f"Configuration file not found: {self.path}")
+            raise NotFoundError(
+                f"Configuration file not found: {self.path}",
+                code="CONFIG_FILE_NOT_FOUND",
+                path=str(self.path)
+            )
 
         data = await self._read_file()
         return config_class.from_dict(data, source=ConfigSource.FILE)
@@ -119,7 +138,11 @@ class FileConfigLoader(ConfigLoader):
         elif self.format == ConfigFormat.ENV:
             return self._parse_env_file(content)
         else:
-            raise ValueError(f"Unsupported format: {self.format}")
+            raise ConfigurationError(
+                f"Unsupported format: {self.format}",
+                code="CONFIG_FORMAT_UNSUPPORTED",
+                format=str(self.format)
+            )
 
     def _ini_to_dict(self, parser) -> ConfigDict:
         """Convert INI parser to dictionary."""

@@ -14,6 +14,12 @@ from typing import Any
 import click
 
 from provide.foundation.context import Context
+from provide.foundation.errors import (
+    AlreadyExistsError,
+    NotFoundError,
+    ValidationError,
+)
+from provide.foundation.errors.decorators import with_error_handling
 from provide.foundation.hub.commands import (
     CommandInfo,
     get_command_registry,
@@ -70,6 +76,14 @@ class Hub:
 
     # Component Management
 
+    @with_error_handling(
+        context_provider=lambda: {"hub": "add_component"},
+        error_mapper=lambda e: ValidationError(
+            f"Failed to add component: {e}",
+            code="HUB_COMPONENT_ADD_ERROR",
+            cause=e
+        ) if not isinstance(e, (AlreadyExistsError, ValidationError)) else e
+    )
     def add_component(
         self,
         component_class: type[Any],
@@ -88,8 +102,28 @@ class Hub:
 
         Returns:
             ComponentInfo for the registered component
+            
+        Raises:
+            AlreadyExistsError: If component is already registered
+            ValidationError: If component class is invalid
         """
+        if not isinstance(component_class, type):
+            raise ValidationError(
+                f"Component must be a class, got {type(component_class).__name__}",
+                code="HUB_INVALID_COMPONENT",
+                component_type=type(component_class).__name__
+            )
+            
         component_name = name or component_class.__name__
+
+        # Check if already exists
+        if self._component_registry.get_entry(component_name, dimension=dimension):
+            raise AlreadyExistsError(
+                f"Component '{component_name}' already registered in dimension '{dimension}'",
+                code="HUB_COMPONENT_EXISTS",
+                component_name=component_name,
+                dimension=dimension
+            )
 
         info = ComponentInfo(
             name=component_name,
@@ -107,6 +141,7 @@ class Hub:
             value=component_class,
             dimension=dimension,
             metadata={"info": info, **metadata},
+            replace=False,  # Don't allow replacement by default
         )
 
         log.info(
