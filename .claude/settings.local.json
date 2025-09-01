@@ -3,7 +3,9 @@
     "allow": [
       "Bash(source env.sh)",
       "Bash(pytest:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Read(/Users/tim/code/gh/provide-io/**)",
+      "Read(/Users/tim/code/gh/provide-io/wrknv/**)"
     ],
     "deny": [],
     "ask": []
