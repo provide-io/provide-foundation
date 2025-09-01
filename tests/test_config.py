@@ -12,7 +12,7 @@ from pytest import CaptureFixture
 from structlog.dev import ConsoleRenderer
 from structlog.processors import JSONRenderer, TimeStamper
 
-from provide.foundation.config import (
+from provide.foundation.telemetry_config import (
     LoggingConfig,
     TelemetryConfig,
     _build_core_processors_list,
