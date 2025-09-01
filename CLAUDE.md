@@ -94,3 +94,4 @@ uv publish                      # Publish to PyPI
 - Follow existing emoji naming conventions in semantic layers
 - Preserve thread safety in all logging operations
 - Use `attrs` for data classes consistently
+- no migration, backward compatibility, or any of that kind of logic will be used. you must treat this as a prerelease in which i can do anything with .
