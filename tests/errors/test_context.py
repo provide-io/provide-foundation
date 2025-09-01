@@ -47,8 +47,8 @@ class TestErrorCategory:
     
     def test_category_comparison(self):
         """Test that categories are strings."""
-        assert ErrorCategory.USER == "user"
-        assert str(ErrorCategory.SYSTEM) == "system"
+        assert ErrorCategory.USER.value == "user"
+        assert ErrorCategory.SYSTEM.value == "system"
 
 
 class TestErrorContext:
