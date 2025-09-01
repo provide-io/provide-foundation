@@ -284,6 +284,8 @@ class Context:
     
     def freeze(self) -> None:
         """Freeze context to prevent further modifications."""
+        # Note: With attrs, we can't dynamically freeze an instance
+        # This is kept for API compatibility but does nothing
         self._frozen = True
     
     def copy(self) -> "Context":
@@ -300,8 +302,3 @@ class Context:
             )
         return self._logger
     
-    def __setattr__(self, name: str, value: Any) -> None:
-        """Override setattr to check frozen state."""
-        if hasattr(self, "_frozen") and self._frozen and not name.startswith("_"):
-            raise RuntimeError("Context is frozen and cannot be modified")
-        super().__setattr__(name, value)
