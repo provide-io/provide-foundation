@@ -8,3 +8,6 @@ mkdocs-material
 
 # Extensions for advanced markdown processing
 pymdown-extensions
+
+# For auto-generating API docs from source code
+mkdocstrings[python]

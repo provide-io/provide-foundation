@@ -52,6 +52,54 @@ theme:
         icon: material/brightness-4
         name: Switch to light mode
 
+  # Features for a top-tier experience
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.instant
+    - navigation.tracking
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.annotate
+    - content.tabs.link
+
+  # Color Palette (with light/dark mode toggle)
+  palette:
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+# Plugins
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          options:
+            show_root_heading: yes
+            show_source: false
+            docstring_style: google
+            heading_level: 3
+            show_signature_annotations: true
+            separate_signature: true
+
 # Markdown Extensions
 markdown_extensions:
   - admonition
