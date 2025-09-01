@@ -7,6 +7,7 @@ registration, discovery, and access.
 
 from __future__ import annotations
 
+import threading
 from typing import Any, Callable
 
 import click
@@ -386,26 +387,39 @@ class Hub:
         self.cleanup()
 
 
-# Global hub instance
+# Global hub instance and lock for thread-safe initialization
 _global_hub: Hub | None = None
+_hub_lock = threading.Lock()
 
 
 def get_hub() -> Hub:
     """
     Get the global hub instance.
     
+    Thread-safe: Uses double-checked locking pattern for efficient lazy initialization.
+    
     Returns:
         Global Hub instance (created if needed)
     """
     global _global_hub
-    if _global_hub is None:
-        _global_hub = Hub()
+    
+    # Fast path: hub already initialized
+    if _global_hub is not None:
+        return _global_hub
+    
+    # Slow path: need to initialize hub
+    with _hub_lock:
+        # Double-check after acquiring lock
+        if _global_hub is None:
+            _global_hub = Hub()
+    
     return _global_hub
 
 
 def clear_hub() -> None:
     """Clear the global hub instance."""
     global _global_hub
-    if _global_hub:
-        _global_hub.clear()
-    _global_hub = None
+    with _hub_lock:
+        if _global_hub:
+            _global_hub.clear()
+        _global_hub = None
