@@ -26,10 +26,10 @@ __all__ = [
     "SECONDARY_EMOJI",
     "TERTIARY_EMOJI",
     "FoundationLogger",
-    "logger",
-    "show_emoji_matrix",
     "LoggingConfig",
     "TelemetryConfig",
+    "logger",
+    "show_emoji_matrix",
 ]
 
 # 🐍📝

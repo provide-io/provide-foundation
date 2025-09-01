@@ -18,10 +18,6 @@ import structlog
 from structlog.types import BindableLogger
 
 from provide.foundation.logger import base as foundation_logger
-from provide.foundation.semantic_layers import (
-    BUILTIN_SEMANTIC_LAYERS,
-    LEGACY_DAS_EMOJI_SETS,
-)
 from provide.foundation.logger.config import (
     LoggingConfig,
     TelemetryConfig,
@@ -29,6 +25,10 @@ from provide.foundation.logger.config import (
 from provide.foundation.logger.processors import (
     _build_core_processors_list,
     _build_formatter_processors_list,
+)
+from provide.foundation.semantic_layers import (
+    BUILTIN_SEMANTIC_LAYERS,
+    LEGACY_DAS_EMOJI_SETS,
 )
 from provide.foundation.types import (
     CustomDasEmojiSet,

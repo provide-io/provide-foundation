@@ -18,8 +18,8 @@ from provide.foundation.types import (
     ConsoleFormatterStr,
     CustomDasEmojiSet,
     LogLevelStr,
-    SemanticLayer,
     SemanticFieldDefinition,
+    SemanticLayer,
 )
 
 config_warnings_logger = stdlib_logging.getLogger("provide.foundation.config_warnings")
