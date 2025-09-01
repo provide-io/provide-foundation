@@ -242,10 +242,11 @@ json_output: true
         with pytest.raises(ValueError, match="must be in"):
             Context(log_level="INVALID")
         
-        # Invalid types should raise
-        with pytest.raises(TypeError):
+        # Invalid string values should raise ValueError
+        with pytest.raises(ValueError):
             Context(debug="not_a_bool")
         
+        # Non-string/non-bool types should raise TypeError
         with pytest.raises(TypeError):
             Context(json_output=123)
     
