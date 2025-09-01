@@ -21,14 +21,14 @@ def test_lazy_setup_flags() -> None:
     """Test that lazy setup flags are set correctly."""
     print("=== Test 1: Lazy Setup Flags ===")
 
-    from pyvider.telemetry.core import reset_pyvider_setup_for_testing
-    reset_pyvider_setup_for_testing()
+    from provide.foundation.core import reset_foundation_setup_for_testing
+    reset_foundation_setup_for_testing()
 
     # Use the new _LAZY_SETUP_STATE dictionary
-    from pyvider.telemetry.logger.base import _LAZY_SETUP_STATE
+    from provide.foundation.logger.base import _LAZY_SETUP_STATE
     print(f"Initial state - STATE: {_LAZY_SETUP_STATE}")
 
-    from pyvider.telemetry import logger
+    from provide.foundation import logger
     logger.info("Trigger lazy setup")
 
     # Re-check the same _LAZY_SETUP_STATE dictionary
@@ -44,17 +44,17 @@ def test_service_name_no_emoji() -> None:
     """Test service name injection without emoji prefix for JSON format."""
     print("\n=== Test 2: Service Name Without Emoji (JSON) ===")
 
-    from pyvider.telemetry.core import (
+    from provide.foundation.core import (
         _set_log_stream_for_testing,
-        reset_pyvider_setup_for_testing,
+        reset_foundation_setup_for_testing,
     )
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
 
     # Set environment to disable emojis for JSON format
-    os.environ["PYVIDER_SERVICE_NAME"] = "test-service"
-    os.environ["PYVIDER_LOG_CONSOLE_FORMATTER"] = "json"
-    os.environ["PYVIDER_LOG_LOGGER_NAME_EMOJI_ENABLED"] = "false"
-    os.environ["PYVIDER_LOG_DAS_EMOJI_ENABLED"] = "false"
+    os.environ["FOUNDATION_SERVICE_NAME"] = "test-service"
+    os.environ["FOUNDATION_LOG_CONSOLE_FORMATTER"] = "json"
+    os.environ["FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED"] = "false"
+    os.environ["FOUNDATION_LOG_DAS_EMOJI_ENABLED"] = "false"
 
     # Capture output
     import io
@@ -62,7 +62,7 @@ def test_service_name_no_emoji() -> None:
     _set_log_stream_for_testing(captured_output)
 
     try:
-        from pyvider.telemetry import logger
+        from provide.foundation import logger
         logger.info("Message with service name")
 
         output = captured_output.getvalue()
@@ -88,8 +88,8 @@ def test_service_name_no_emoji() -> None:
     finally:
         _set_log_stream_for_testing(None)
         # Clean up environment
-        for key in ["PYVIDER_SERVICE_NAME", "PYVIDER_LOG_CONSOLE_FORMATTER",
-                   "PYVIDER_LOG_LOGGER_NAME_EMOJI_ENABLED", "PYVIDER_LOG_DAS_EMOJI_ENABLED"]:
+        for key in ["FOUNDATION_SERVICE_NAME", "FOUNDATION_LOG_CONSOLE_FORMATTER",
+                   "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED", "FOUNDATION_LOG_DAS_EMOJI_ENABLED"]:
             os.environ.pop(key, None)
 
 
@@ -97,22 +97,22 @@ def test_das_emoji_register_action() -> None:
     """Test that register action has proper emoji mapping."""
     print("\n=== Test 3: DAS Emoji Register Action ===")
 
-    from pyvider.telemetry.core import (
+    from provide.foundation.core import (
         _set_log_stream_for_testing,
-        reset_pyvider_setup_for_testing,
+        reset_foundation_setup_for_testing,
     )
-    reset_pyvider_setup_for_testing()
+    reset_foundation_setup_for_testing()
 
     # Enable DAS emojis
-    os.environ["PYVIDER_LOG_DAS_EMOJI_ENABLED"] = "true"
-    os.environ["PYVIDER_LOG_CONSOLE_FORMATTER"] = "key_value"
+    os.environ["FOUNDATION_LOG_DAS_EMOJI_ENABLED"] = "true"
+    os.environ["FOUNDATION_LOG_CONSOLE_FORMATTER"] = "key_value"
 
     import io
     captured_output = io.StringIO()
     _set_log_stream_for_testing(captured_output)
 
     try:
-        from pyvider.telemetry import logger
+        from provide.foundation import logger
         logger.info(
             "User registration processed",
             domain="user",
@@ -136,7 +136,7 @@ def test_das_emoji_register_action() -> None:
             raise AssertionError("DAS emoji for register action is incorrect.")
     finally:
         _set_log_stream_for_testing(None)
-        for key in ["PYVIDER_LOG_DAS_EMOJI_ENABLED", "PYVIDER_LOG_CONSOLE_FORMATTER"]:
+        for key in ["FOUNDATION_LOG_DAS_EMOJI_ENABLED", "FOUNDATION_LOG_CONSOLE_FORMATTER"]:
             os.environ.pop(key, None)
 
 
@@ -144,15 +144,15 @@ def test_thread_safety() -> None:
     """Test thread safety of lazy initialization."""
     print("\n=== Test 4: Thread Safety ===")
 
-    from pyvider.telemetry.core import reset_pyvider_setup_for_testing
-    reset_pyvider_setup_for_testing()
+    from provide.foundation.core import reset_foundation_setup_for_testing
+    reset_foundation_setup_for_testing()
 
     results = []
     exceptions = []
 
     def worker_thread(worker_id: int) -> None: # Added type for worker_id
         try:
-            from pyvider.telemetry import logger  # type: ignore[import-untyped]
+            from provide.foundation import logger  # type: ignore[import-untyped]
             logger.info(f"Thread {worker_id} message")
             results.append(True)
         except Exception as e:
@@ -186,7 +186,7 @@ def test_get_safe_stderr() -> None:
     print("\n=== Test 5: Safe Stderr Function ===")
 
     try:
-        from pyvider.telemetry.logger.base import (
+        from provide.foundation.logger.base import (
             _get_safe_stderr,  # type: ignore[import-untyped]
         )
         stderr = _get_safe_stderr()
@@ -202,7 +202,7 @@ def test_emoji_matrix_defaults() -> None:
     """Test emoji matrix has correct default mappings."""
     print("\n=== Test 6: Emoji Matrix Defaults ===")
 
-    from pyvider.telemetry.logger.emoji_matrix import (
+    from provide.foundation.logger.emoji_matrix import (
         PRIMARY_EMOJI,
         SECONDARY_EMOJI,
         TERTIARY_EMOJI,

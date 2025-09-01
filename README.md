@@ -1,18 +1,18 @@
 <div align="center">
 
-# 🐍📡 `pyvider.telemetry`
+# 🐍📡 `provide.foundation`
 
 **Beautiful, performant, structured logging for Python.**
 
 Modern structured logging built on `structlog` with emoji-enhanced visual parsing and semantic Domain-Action-Status patterns.
 
 [![Awesome: uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
-[![PyPI Version](https://img.shields.io/pypi/v/pyvider-telemetry?style=flat-square)](https://pypi.org/project/pyvider-telemetry/)
-[![Python Versions](https://img.shields.io/pypi/pyversions/pyvider-telemetry?style=flat-square)](https://pypi.org/project/pyvider-telemetry/)
-[![Downloads](https://static.pepy.tech/badge/pyvider-telemetry/month)](https://pepy.tech/project/pyvider-telemetry)
+[![PyPI Version](https://img.shields.io/pypi/v/provide-foundation?style=flat-square)](https://pypi.org/project/provide-foundation/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/provide-foundation?style=flat-square)](https://pypi.org/project/provide-foundation/)
+[![Downloads](https://static.pepy.tech/badge/provide-foundation/month)](https://pepy.tech/project/provide-foundation)
 
-[![CI](https://github.com/provide-io/pyvider-telemetry/actions/workflows/ci.yml/badge.svg)](https://github.com/provide-io/pyvider-telemetry/actions/workflows/ci.yml)
-[![Coverage](https://codecov.io/gh/provide-io/pyvider-telemetry/branch/main/graph/badge.svg)](https://codecov.io/gh/provide-io/pyvider-telemetry)
+[![CI](https://github.com/provide-io/provide-foundation/actions/workflows/ci.yml/badge.svg)](https://github.com/provide-io/provide-foundation/actions/workflows/ci.yml)
+[![Coverage](https://codecov.io/gh/provide-io/provide-foundation/branch/main/graph/badge.svg)](https://codecov.io/gh/provide-io/provide-foundation)
 [![Type Checked](https://img.shields.io/badge/type--checked-mypy-blue?style=flat-square)](https://mypy.readthedocs.io/)
 [![Code style: ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json&style=flat-square)](https://github.com/astral-sh/ruff)
 
@@ -25,11 +25,11 @@ Modern structured logging built on `structlog` with emoji-enhanced visual parsin
 
 ---
 
-**Make your logs beautiful and meaningful!** `pyvider.telemetry` transforms your application logging with visual emoji prefixes, semantic Domain-Action-Status patterns, and high-performance structured output. Perfect for development debugging, production monitoring, and everything in between.
+**Make your logs beautiful and meaningful!** `provide.foundation` transforms your application logging with visual emoji prefixes, semantic Domain-Action-Status patterns, and high-performance structured output. Perfect for development debugging, production monitoring, and everything in between.
 
 </div>
 
-## 🤔 Why `pyvider.telemetry`?
+## 🤔 Why `provide.foundation`?
 
 * **🎨 Visual Log Parsing:** Emoji prefixes based on logger names and semantic context make logs instantly scannable
 * **📊 Semantic Structure:** **(New!)** Extensible Semantic Layers for domains like LLMs, HTTP, and Databases, with a fallback to the classic Domain-Action-Status (DAS) pattern.
@@ -66,7 +66,7 @@ Modern structured logging built on `structlog` with emoji-enhanced visual parsin
 Requires Python 3.13 or later.
 
 ```bash
-pip install pyvider-telemetry
+pip install provide-foundation
 ```
 
 ## 💡 Quick Start
@@ -74,7 +74,7 @@ pip install pyvider-telemetry
 ### Basic Usage
 
 ```python
-from pyvider.telemetry import setup_telemetry, logger
+from provide.foundation import setup_telemetry, logger
 
 # Initialize with sensible defaults
 setup_telemetry()
@@ -98,7 +98,7 @@ Go beyond the basic DAS pattern with extensible, schema-driven logging. Semantic
 
 First, enable the layer in your configuration:
 ```python
-from pyvider.telemetry import setup_telemetry, TelemetryConfig, LoggingConfig
+from provide.foundation import setup_telemetry, TelemetryConfig, LoggingConfig
 
 # Enable the 'llm' semantic layer
 config = TelemetryConfig(
@@ -109,7 +109,7 @@ setup_telemetry(config)
 
 Now, log events using the layer's defined keys (like `llm.provider`, `llm.task`, `llm.outcome`):
 ```python
-from pyvider.telemetry import logger
+from provide.foundation import logger
 
 # Log a successful LLM generation task
 logger.info(
@@ -144,7 +144,7 @@ logger.warning(
 ### Custom Configuration
 
 ```python
-from pyvider.telemetry import setup_telemetry, TelemetryConfig, LoggingConfig
+from provide.foundation import setup_telemetry, TelemetryConfig, LoggingConfig
 
 config = TelemetryConfig(
     service_name="my-microservice",
@@ -167,16 +167,16 @@ setup_telemetry(config)
 ### Environment Variable Configuration
 
 ```bash
-export PYVIDER_SERVICE_NAME="my-service"
-export PYVIDER_LOG_LEVEL="INFO"
-export PYVIDER_LOG_CONSOLE_FORMATTER="json"
-export PYVIDER_LOG_MODULE_LEVELS="auth:DEBUG,db:ERROR"
+export FOUNDATION_SERVICE_NAME="my-service"
+export FOUNDATION_LOG_LEVEL="INFO"
+export FOUNDATION_LOG_CONSOLE_FORMATTER="json"
+export FOUNDATION_LOG_MODULE_LEVELS="auth:DEBUG,db:ERROR"
 # New: Enable semantic layers via environment
-export PYVIDER_LOG_ENABLED_SEMANTIC_LAYERS="llm,http"
+export FOUNDATION_LOG_ENABLED_SEMANTIC_LAYERS="llm,http"
 ```
 
 ```python
-from pyvider.telemetry import setup_telemetry, TelemetryConfig
+from provide.foundation import setup_telemetry, TelemetryConfig
 
 # Automatically loads from environment
 setup_telemetry(TelemetryConfig.from_env())
@@ -197,7 +197,7 @@ except Exception:
 ### Ultra-Verbose TRACE Logging
 
 ```python
-from pyvider.telemetry import setup_telemetry, logger, TelemetryConfig, LoggingConfig
+from provide.foundation import setup_telemetry, logger, TelemetryConfig, LoggingConfig
 
 # Enable TRACE level for deep debugging
 config = TelemetryConfig(
@@ -212,7 +212,7 @@ logger.trace("Token validation details",
 
 ## 📊 Performance
 
-`pyvider.telemetry` is designed for high-throughput production environments:
+`provide.foundation` is designed for high-throughput production environments:
 
 | Scenario | Performance | Notes |
 |----------|-------------|-------|
@@ -243,8 +243,8 @@ To see the complete emoji mappings for your **current configuration** (including
 
 ```bash
 # This will print the full emoji matrix for your active configuration
-export PYVIDER_SHOW_EMOJI_MATRIX=true
-python -c "from pyvider.telemetry.logger.emoji_matrix import show_emoji_matrix; show_emoji_matrix()"
+export FOUNDATION_SHOW_EMOJI_MATRIX=true
+python -c "from provide.foundation.logger.emoji_matrix import show_emoji_matrix; show_emoji_matrix()"
 ```
 
 ### Built-in Layer Emojis (Examples)
@@ -273,7 +273,7 @@ These emojis are used when no semantic layers are active and you use the `domain
 
 ```python
 import asyncio
-from pyvider.telemetry import setup_telemetry, logger, shutdown_pyvider_telemetry
+from provide.foundation import setup_telemetry, logger, shutdown_foundation_telemetry
 
 async def main():
     setup_telemetry()
@@ -282,7 +282,7 @@ async def main():
     logger.info("Async app started")
 
     # Graceful shutdown
-    await shutdown_pyvider_telemetry()
+    await shutdown_foundation_telemetry()
 
 asyncio.run(main())
 ```
@@ -294,7 +294,7 @@ Easily log the duration and outcome of any code block using the `timed_block` co
 
 ```python
 import time
-from pyvider.telemetry import logger, timed_block
+from provide.foundation import logger, timed_block
 
 # Successful operation
 with timed_block(logger, "Data processing task", task_id="abc-123"):
@@ -341,7 +341,7 @@ This project is licensed under the **Apache 2.0 License**. See the [LICENSE](LIC
 
 ## 🙏 Acknowledgements
 
-`pyvider.telemetry` builds upon these excellent open-source libraries:
+`provide.foundation` builds upon these excellent open-source libraries:
 
 - [`structlog`](https://www.structlog.org/) - The foundation for structured logging
 - [`attrs`](https://www.attrs.org/) - Powerful data classes and configuration management

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-# examples/pyvider_telemetry/08_env_variables_config.py
-"""Demonstrates configuring Pyvider Telemetry using environment variables."""
+# examples/foundation_telemetry/08_env_variables_config.py
+"""Demonstrates configuring Foundation Telemetry using environment variables."""
 
 import os
 from pathlib import Path
@@ -13,7 +13,7 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from pyvider.telemetry import (  # noqa: E402
+from provide.foundation import (  # noqa: E402
     logger,
     setup_telemetry,
 )
@@ -23,7 +23,7 @@ def example_8_environment_configuration() -> None:
     """
     Example 8: Demonstrates configuration via environment variables.
 
-    Pyvider Telemetry can be configured using `PYVIDER_*` environment variables,
+    Foundation Telemetry can be configured using `FOUNDATION_*` environment variables,
     allowing settings to be changed without code modification.
     """
     print("\n" + "=" * 60)
@@ -36,12 +36,12 @@ def example_8_environment_configuration() -> None:
     original_env = os.environ.copy()
     os.environ.update(
         {
-            "PYVIDER_SERVICE_NAME": "env-service-demo",
-            "PYVIDER_LOG_LEVEL": "DEBUG",
-            "PYVIDER_LOG_CONSOLE_FORMATTER": "json",
-            "PYVIDER_LOG_MODULE_LEVELS": "auth.service:TRACE,database:ERROR",
-            "PYVIDER_LOG_DAS_EMOJI_ENABLED": "true",
-            "PYVIDER_LOG_OMIT_TIMESTAMP": "false",  # Explicitly include timestamps for this demo
+            "FOUNDATION_SERVICE_NAME": "env-service-demo",
+            "FOUNDATION_LOG_LEVEL": "DEBUG",
+            "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
+            "FOUNDATION_LOG_MODULE_LEVELS": "auth.service:TRACE,database:ERROR",
+            "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "true",
+            "FOUNDATION_LOG_OMIT_TIMESTAMP": "false",  # Explicitly include timestamps for this demo
         }
     )
 
@@ -64,9 +64,9 @@ def example_8_environment_configuration() -> None:
             "database.queries"
         )  # This is a structlog.BoundLogger
 
-        # Use the global `logger` (PyviderLogger instance) for .trace()
+        # Use the global `logger` (FoundationLogger instance) for .trace()
         logger.trace(
-            "Token validation trace details", _pyvider_logger_name="auth.service.tokens"
+            "Token validation trace details", _foundation_logger_name="auth.service.tokens"
         )  # ✅ Shows (auth.service is TRACE)
         auth_service_logger.debug(
             "User 'test' authentication check"
@@ -81,7 +81,7 @@ def example_8_environment_configuration() -> None:
         for key in original_env:
             os.environ[key] = original_env[key]
         for key in list(os.environ.keys()):  # Handle keys added during this test
-            if key not in original_env and key.startswith("PYVIDER_"):
+            if key not in original_env and key.startswith("FOUNDATION_"):
                 del os.environ[key]
 
 

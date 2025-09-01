@@ -2,7 +2,7 @@
 # config.py
 #
 """
-Pyvider Telemetry Configuration Module.
+Foundation Telemetry Configuration Module.
 Defines data models for telemetry and logging settings, environment variable parsing,
 and helpers for assembling structlog processor chains based on active configuration,
 now including support for Semantic Telemetry Layers.
@@ -17,13 +17,13 @@ from typing import TYPE_CHECKING, Any, TextIO, cast
 from attrs import define, field
 import structlog
 
-from pyvider.telemetry.logger.custom_processors import (
+from provide.foundation.logger.custom_processors import (
     StructlogProcessor,
     add_log_level_custom,
     add_logger_name_emoji_prefix,
     filter_by_level_custom,
 )
-from pyvider.telemetry.types import (
+from provide.foundation.types import (
     _VALID_FORMATTER_TUPLE,
     _VALID_LOG_LEVEL_TUPLE,
     TRACE_LEVEL_NUM,
@@ -35,7 +35,7 @@ from pyvider.telemetry.types import (
 )
 
 if TYPE_CHECKING:
-    from pyvider.telemetry.core import ResolvedSemanticConfig
+    from provide.foundation.core import ResolvedSemanticConfig
 
 _LEVEL_TO_NUMERIC: dict[LogLevelStr, int] = {
     "CRITICAL": stdlib_logging.CRITICAL,
@@ -48,17 +48,17 @@ _LEVEL_TO_NUMERIC: dict[LogLevelStr, int] = {
 }
 
 DEFAULT_ENV_CONFIG: dict[str, str] = {
-    "PYVIDER_LOG_LEVEL": "DEBUG",
-    "PYVIDER_LOG_CONSOLE_FORMATTER": "key_value",
-    "PYVIDER_LOG_OMIT_TIMESTAMP": "false",
-    "PYVIDER_TELEMETRY_DISABLED": "false",
-    "PYVIDER_LOG_MODULE_LEVELS": "",
-    "PYVIDER_LOG_ENABLED_SEMANTIC_LAYERS": "",
+    "FOUNDATION_LOG_LEVEL": "DEBUG",
+    "FOUNDATION_LOG_CONSOLE_FORMATTER": "key_value",
+    "FOUNDATION_LOG_OMIT_TIMESTAMP": "false",
+    "FOUNDATION_TELEMETRY_DISABLED": "false",
+    "FOUNDATION_LOG_MODULE_LEVELS": "",
+    "FOUNDATION_LOG_ENABLED_SEMANTIC_LAYERS": "",
 }
 
-config_warnings_logger = stdlib_logging.getLogger("pyvider.telemetry.config_warnings")
+config_warnings_logger = stdlib_logging.getLogger("provide.foundation.config_warnings")
 _config_warning_formatter = stdlib_logging.Formatter(
-    "[Pyvider Config Warning] %(levelname)s (%(name)s): %(message)s"
+    "[Foundation Config Warning] %(levelname)s (%(name)s): %(message)s"
 )
 
 def _ensure_config_logger_handler(logger: stdlib_logging.Logger) -> None:
@@ -73,7 +73,7 @@ def _ensure_config_logger_handler(logger: stdlib_logging.Logger) -> None:
 
 @define(frozen=True, slots=True)
 class LoggingConfig:
-    """Configuration specific to logging behavior within Pyvider Telemetry."""
+    """Configuration specific to logging behavior within Foundation Telemetry."""
     default_level: LogLevelStr = field(default="DEBUG")
     module_levels: dict[str, LogLevelStr] = field(factory=dict)
     console_formatter: ConsoleFormatterStr = field(default="key_value")
@@ -87,7 +87,7 @@ class LoggingConfig:
 
 @define(frozen=True, slots=True)
 class TelemetryConfig:
-    """Main configuration object for the Pyvider Telemetry system."""
+    """Main configuration object for the Foundation Telemetry system."""
     service_name: str | None = field(default=None)
     logging: LoggingConfig = field(factory=LoggingConfig)
     globally_disabled: bool = field(default=False)
@@ -98,22 +98,22 @@ class TelemetryConfig:
         _apply_default_env_config()
 
         service_name_env: str | None = os.getenv(
-            "OTEL_SERVICE_NAME", os.getenv("PYVIDER_SERVICE_NAME")
+            "OTEL_SERVICE_NAME", os.getenv("FOUNDATION_SERVICE_NAME")
         )
 
-        raw_default_log_level: str = os.getenv("PYVIDER_LOG_LEVEL", "DEBUG").upper()
+        raw_default_log_level: str = os.getenv("FOUNDATION_LOG_LEVEL", "DEBUG").upper()
         default_log_level: LogLevelStr
         if raw_default_log_level in _VALID_LOG_LEVEL_TUPLE:
             default_log_level = cast(LogLevelStr, raw_default_log_level)
         else:
             _ensure_config_logger_handler(config_warnings_logger)
             config_warnings_logger.warning(
-                f"⚙️➡️⚠️ Invalid PYVIDER_LOG_LEVEL '{raw_default_log_level}'. Defaulting to DEBUG."
+                f"⚙️➡️⚠️ Invalid FOUNDATION_LOG_LEVEL '{raw_default_log_level}'. Defaulting to DEBUG."
             )
             default_log_level = "DEBUG"
 
         raw_console_formatter: str = os.getenv(
-            "PYVIDER_LOG_CONSOLE_FORMATTER", "key_value"
+            "FOUNDATION_LOG_CONSOLE_FORMATTER", "key_value"
         ).lower()
         console_formatter: ConsoleFormatterStr
         if raw_console_formatter in _VALID_FORMATTER_TUPLE:
@@ -121,22 +121,22 @@ class TelemetryConfig:
         else:
             _ensure_config_logger_handler(config_warnings_logger)
             config_warnings_logger.warning(
-                f"⚙️➡️⚠️ Invalid PYVIDER_LOG_CONSOLE_FORMATTER '{raw_console_formatter}'. Defaulting to 'key_value'."
+                f"⚙️➡️⚠️ Invalid FOUNDATION_LOG_CONSOLE_FORMATTER '{raw_console_formatter}'. Defaulting to 'key_value'."
             )
             console_formatter = "key_value"
 
         logger_name_emoji_enabled: bool = _parse_bool_env_with_formatter_default(
-            "PYVIDER_LOG_LOGGER_NAME_EMOJI_ENABLED", console_formatter
+            "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED", console_formatter
         )
         das_emoji_enabled: bool = _parse_bool_env_with_formatter_default(
-            "PYVIDER_LOG_DAS_EMOJI_ENABLED", console_formatter
+            "FOUNDATION_LOG_DAS_EMOJI_ENABLED", console_formatter
         )
-        omit_timestamp: bool = _parse_bool_env("PYVIDER_LOG_OMIT_TIMESTAMP", False)
-        globally_disabled: bool = _parse_bool_env("PYVIDER_TELEMETRY_DISABLED", False)
+        omit_timestamp: bool = _parse_bool_env("FOUNDATION_LOG_OMIT_TIMESTAMP", False)
+        globally_disabled: bool = _parse_bool_env("FOUNDATION_TELEMETRY_DISABLED", False)
 
-        module_levels = cls._parse_module_levels(os.getenv("PYVIDER_LOG_MODULE_LEVELS", ""))
+        module_levels = cls._parse_module_levels(os.getenv("FOUNDATION_LOG_MODULE_LEVELS", ""))
         enabled_semantic_layers = [
-            layer.strip() for layer in os.getenv("PYVIDER_LOG_ENABLED_SEMANTIC_LAYERS", "").split(",") if layer.strip()
+            layer.strip() for layer in os.getenv("FOUNDATION_LOG_ENABLED_SEMANTIC_LAYERS", "").split(",") if layer.strip()
         ]
 
         custom_semantic_layers = cls._parse_custom_layers_from_env()
@@ -160,7 +160,7 @@ class TelemetryConfig:
 
     @staticmethod
     def _parse_custom_layers_from_env() -> list[SemanticLayer]:
-        custom_layers_json = os.getenv("PYVIDER_LOG_CUSTOM_SEMANTIC_LAYERS", "[]")
+        custom_layers_json = os.getenv("FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS", "[]")
         custom_semantic_layers: list[SemanticLayer] = []
         try:
             parsed_custom_layers = json.loads(custom_layers_json)
@@ -184,12 +184,12 @@ class TelemetryConfig:
                     config_warnings_logger.warning(f"⚙️➡️⚠️ Error parsing data for a custom layer: {e}. Skipping item.")
         except json.JSONDecodeError:
             _ensure_config_logger_handler(config_warnings_logger)
-            config_warnings_logger.warning("⚙️➡️⚠️ Invalid JSON in PYVIDER_LOG_CUSTOM_SEMANTIC_LAYERS. Using empty list.")
+            config_warnings_logger.warning("⚙️➡️⚠️ Invalid JSON in FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS. Using empty list.")
         return custom_semantic_layers
 
     @staticmethod
     def _parse_user_emoji_sets_from_env() -> list[CustomDasEmojiSet]:
-        user_sets_json = os.getenv("PYVIDER_LOG_USER_DEFINED_EMOJI_SETS", "[]")
+        user_sets_json = os.getenv("FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS", "[]")
         user_defined_emoji_sets: list[CustomDasEmojiSet] = []
         try:
             parsed_user_sets = json.loads(user_sets_json)
@@ -203,7 +203,7 @@ class TelemetryConfig:
                     config_warnings_logger.warning(f"⚙️➡️⚠️ Error parsing data for an emoji set: {e}. Skipping item.")
         except json.JSONDecodeError:
             _ensure_config_logger_handler(config_warnings_logger)
-            config_warnings_logger.warning("⚙️➡️⚠️ Invalid JSON in PYVIDER_LOG_USER_DEFINED_EMOJI_SETS. Using empty list.")
+            config_warnings_logger.warning("⚙️➡️⚠️ Invalid JSON in FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS. Using empty list.")
         return user_defined_emoji_sets
 
     @staticmethod
@@ -223,7 +223,7 @@ class TelemetryConfig:
                     config_warnings_logger.warning(f"⚙️➡️⚠️ Invalid log level '{level_name_raw}' for module '{module_name}'. Skipping.")
             else:
                 _ensure_config_logger_handler(config_warnings_logger)
-                config_warnings_logger.warning(f"⚙️➡️⚠️ Invalid item '{item}' in PYVIDER_LOG_MODULE_LEVELS. Skipping.")
+                config_warnings_logger.warning(f"⚙️➡️⚠️ Invalid item '{item}' in FOUNDATION_LOG_MODULE_LEVELS. Skipping.")
         return levels
 
 def _apply_default_env_config() -> None:
@@ -263,7 +263,7 @@ def _config_create_emoji_processors(logging_config: LoggingConfig, resolved_sema
 
         def add_das_emoji_prefix_closure(_logger: Any, _method_name: str, event_dict: structlog.types.EventDict) -> structlog.types.EventDict:
             # This inner function now has access to the resolved config from its closure scope
-            from pyvider.telemetry.logger.emoji_matrix import (
+            from provide.foundation.logger.emoji_matrix import (
                 PRIMARY_EMOJI,
                 SECONDARY_EMOJI,
                 TERTIARY_EMOJI,

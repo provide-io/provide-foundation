@@ -16,26 +16,26 @@ from unittest.mock import patch
 import pytest
 import structlog
 
-from pyvider.telemetry import (
+from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
     logger,
     setup_telemetry,
-    shutdown_pyvider_telemetry,
+    shutdown_foundation_telemetry,
 )
-from pyvider.telemetry.core import (
+from provide.foundation.core import (
     _create_core_setup_logger,
     _handle_globally_disabled_setup,
     _set_log_stream_for_testing,
-    reset_pyvider_setup_for_testing,
+    reset_foundation_setup_for_testing,
 )
-from pyvider.telemetry.logger.custom_processors import (
+from provide.foundation.logger.custom_processors import (
     _compute_emoji_for_logger_name,
     clear_emoji_cache,
     get_emoji_cache_stats,
 )
-from pyvider.telemetry.logger.emoji_matrix import show_emoji_matrix
-from pyvider.telemetry.types import (
+from provide.foundation.logger.emoji_matrix import show_emoji_matrix
+from provide.foundation.types import (
     LogLevelStr,
 )
 
@@ -45,12 +45,12 @@ def test_core_setup_logger_with_existing_handlers() -> None:
     test_logger = stdlib_logging.getLogger(test_logger_name)
     test_logger.addHandler(stdlib_logging.StreamHandler())
     test_logger.addHandler(stdlib_logging.StreamHandler())
-    with patch('pyvider.telemetry.core._CORE_SETUP_LOGGER_NAME', test_logger_name):
+    with patch('provide.foundation.core._CORE_SETUP_LOGGER_NAME', test_logger_name):
         result_logger = _create_core_setup_logger(globally_disabled=False)
     assert result_logger.hasHandlers() and len(result_logger.handlers) == 1
 
 def test_globally_disabled_setup_with_existing_logger() -> None:
-    temp_logger_name = "pyvider.telemetry.core_setup_temp_disabled_msg"
+    temp_logger_name = "provide.foundation.core_setup_temp_disabled_msg"
     temp_logger = stdlib_logging.getLogger(temp_logger_name)
     temp_logger.addHandler(stdlib_logging.StreamHandler(sys.stderr))
     _handle_globally_disabled_setup()
@@ -75,45 +75,45 @@ def test_custom_processors_emoji_cache_functions() -> None:
     stats = get_emoji_cache_stats()
     assert stats["cache_size"] == 0
     setup_telemetry(TelemetryConfig(logging=LoggingConfig(logger_name_emoji_prefix_enabled=True)))
-    logger.get_logger("pyvider.telemetry.core.test").info("Test message 1")
+    logger.get_logger("provide.foundation.core.test").info("Test message 1")
     logger.get_logger("unknown.test").info("Test message 2")
     assert get_emoji_cache_stats()["cache_size"] > 0
     clear_emoji_cache()
     assert get_emoji_cache_stats()["cache_size"] == 0
 
 def test_emoji_matrix_display(
-    setup_pyvider_telemetry_for_test: Callable[[TelemetryConfig | None], None],
-    captured_stderr_for_pyvider: io.StringIO,
+    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
+    captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     # Test that it does nothing by default
     show_emoji_matrix()
-    assert captured_stderr_for_pyvider.getvalue() == ""
+    assert captured_stderr_for_foundation.getvalue() == ""
 
     # Test that it prints when env var is set
-    with patch.dict(os.environ, {"PYVIDER_SHOW_EMOJI_MATRIX": "true"}):
+    with patch.dict(os.environ, {"FOUNDATION_SHOW_EMOJI_MATRIX": "true"}):
         # Use a simple config for the test
-        setup_pyvider_telemetry_for_test(TelemetryConfig())
+        setup_foundation_telemetry_for_test(TelemetryConfig())
         show_emoji_matrix()
-        output = captured_stderr_for_pyvider.getvalue()
+        output = captured_stderr_for_foundation.getvalue()
         # FIX: Assert the correct output string for legacy mode
-        assert "Pyvider Telemetry: Legacy DAS Emoji Contract" in output
+        assert "Foundation Telemetry: Legacy DAS Emoji Contract" in output
         assert "Primary Emojis" in output
 
 def test_trace_level_custom_logger_name() -> None:
     setup_telemetry(TelemetryConfig(logging=LoggingConfig(default_level="TRACE")))
-    logger.trace("Custom trace message", _pyvider_logger_name="custom.trace.test")
-    logger.trace("Trace with %s and %d", "args", 42, _pyvider_logger_name="custom.trace.args")
+    logger.trace("Custom trace message", _foundation_logger_name="custom.trace.test")
+    logger.trace("Trace with %s and %d", "args", 42, _foundation_logger_name="custom.trace.args")
 
 def test_core_setup_environment_variable_edge_cases() -> None:
-    with patch.dict(os.environ, {"PYVIDER_CORE_SETUP_LOG_LEVEL": "INVALID"}):
+    with patch.dict(os.environ, {"FOUNDATION_CORE_SETUP_LOG_LEVEL": "INVALID"}):
         assert _create_core_setup_logger().level == 20
 
 def test_shutdown_telemetry_coverage() -> None:
     setup_telemetry()
-    asyncio.run(shutdown_pyvider_telemetry(timeout_millis=1000))
+    asyncio.run(shutdown_foundation_telemetry(timeout_millis=1000))
 
 def test_level_filter_edge_cases() -> None:
-    from pyvider.telemetry.logger.custom_processors import _LevelFilter
+    from provide.foundation.logger.custom_processors import _LevelFilter
     level_map: dict[LogLevelStr, int] = {"CRITICAL": 50, "ERROR": 40, "WARNING": 30, "INFO": 20, "DEBUG": 10, "TRACE": 5, "NOTSET": 0}
     filter_instance = _LevelFilter("INFO", {"app": "DEBUG"}, level_map)
     with pytest.raises(structlog.DropEvent):
@@ -129,7 +129,7 @@ def test_concurrent_setup_and_reset() -> None:
     def setup_worker() -> None:
         setup_telemetry(TelemetryConfig(service_name="concurrent_test"))
     def reset_worker() -> None:
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
     threads = [threading.Thread(target=setup_worker if i % 2 == 0 else reset_worker) for i in range(4)]
     for t in threads:
         t.start()
@@ -147,7 +147,7 @@ def test_processor_chain_edge_cases() -> None:
 
 def test_complex_nested_logger_names() -> None:
     setup_telemetry()
-    logger.get_logger("pyvider.telemetry.core.sub.module.deep.nest").info("Deep nested message")
+    logger.get_logger("provide.foundation.core.sub.module.deep.nest").info("Deep nested message")
     logger.get_logger("app.module-1.sub_module.v2").info("Special character message")
 
 def test_exception_logging_edge_cases() -> None:

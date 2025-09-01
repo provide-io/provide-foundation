@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# examples/pyvider_telemetry/07_module_filtering.py
+# examples/foundation_telemetry/07_module_filtering.py
 """Demonstrates module-specific log level configuration."""
 
 from pathlib import Path
@@ -12,7 +12,7 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from pyvider.telemetry import (  # noqa: E402
+from provide.foundation import (  # noqa: E402
     LoggingConfig,
     TelemetryConfig,
     logger,

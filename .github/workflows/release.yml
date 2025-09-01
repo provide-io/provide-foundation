@@ -56,7 +56,7 @@ jobs:
       - name: 🧪 Run Critical Tests
         run: |
           source env.sh
-          pytest tests/ --cov=pyvider.telemetry --cov-fail-under=95 -x
+          pytest tests/ --cov=provide.foundation --cov-fail-under=95 -x
         continue-on-error: true
 
       - name: 🚀 Run Performance Validation
@@ -149,8 +149,8 @@ jobs:
           for i in {1..45}; do echo -n "$i "; sleep 1; done;
           uv venv .venv_test_install
           source .venv_test_install/bin/activate
-          uv pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ pyvider-telemetry
-          python -c "from pyvider.telemetry import logger; logger.info('Test PyPI installation successful')"
+          uv pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ provide-foundation
+          python -c "from provide.foundation import logger; logger.info('Test PyPI installation successful')"
 
   # ==================================================================================
   # 🚀 Deploy to Production PyPI
@@ -192,7 +192,7 @@ jobs:
             ## 📦 Installation
 
             ```bash
-            uv install pyvider-telemetry
+            uv install provide-foundation
             ```
 
             ## 🚀 What's New
@@ -210,7 +210,7 @@ jobs:
     steps:
       - name: 📊 Report Deployment Results
         run: |
-          echo "## 🚀 Pyvider Telemetry Deployment Results" >> $GITHUB_STEP_SUMMARY
+          echo "## 🚀 Foundation Telemetry Deployment Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "| Stage | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY

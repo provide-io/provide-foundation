@@ -2,18 +2,18 @@
 # emoji_matrix.py
 #
 """
-Pyvider Telemetry Emoji Matrix and Display Utilities.
+Foundation Telemetry Emoji Matrix and Display Utilities.
 Defines the legacy DAS emoji mappings and provides utilities to display
 active emoji configurations (legacy or layer-based).
 """
 import os
 
-from pyvider.telemetry.logger import (
-    base as pyvider_logger_base,  # For accessing the global logger instance
+from provide.foundation.logger import (
+    base as foundation_logger_base,  # For accessing the global logger instance
 )
 
 # Import types for resolved config structure
-from pyvider.telemetry.types import CustomDasEmojiSet, SemanticFieldDefinition
+from provide.foundation.types import CustomDasEmojiSet, SemanticFieldDefinition
 
 PRIMARY_EMOJI: dict[str, str] = {
     "system": "⚙️", "server": "🛎️", "client": "🙋", "network": "🌐",
@@ -68,20 +68,20 @@ def _format_field_definition_for_display(field_def: SemanticFieldDefinition) -> 
 
 def show_emoji_matrix() -> None: # pragma: no cover
     """
-    Prints the active Pyvider emoji logging contract to the console.
+    Prints the active Foundation emoji logging contract to the console.
     If semantic layers are active, it displays their configuration.
     Otherwise, it displays the legacy DAS emoji mappings.
-    Activated by `PYVIDER_SHOW_EMOJI_MATRIX` environment variable.
+    Activated by `FOUNDATION_SHOW_EMOJI_MATRIX` environment variable.
     """
-    if os.getenv("PYVIDER_SHOW_EMOJI_MATRIX", "false").strip().lower() not in ("true", "1", "yes"):
+    if os.getenv("FOUNDATION_SHOW_EMOJI_MATRIX", "false").strip().lower() not in ("true", "1", "yes"):
         return
 
-    matrix_logger = pyvider_logger_base.logger.get_logger("pyvider.telemetry.emoji_matrix_display")
+    matrix_logger = foundation_logger_base.logger.get_logger("provide.foundation.emoji_matrix_display")
 
     # Access the resolved semantic config from the global logger instance
     # This assumes the logger has been configured (explicitly or lazily)
-    pyvider_logger_base.logger._ensure_configured() # Ensure config is loaded
-    resolved_config_tuple = getattr(pyvider_logger_base.logger, '_active_resolved_semantic_config', None)
+    foundation_logger_base.logger._ensure_configured() # Ensure config is loaded
+    resolved_config_tuple = getattr(foundation_logger_base.logger, '_active_resolved_semantic_config', None)
 
     lines: list[str] = []
 
@@ -89,7 +89,7 @@ def show_emoji_matrix() -> None: # pragma: no cover
         resolved_field_definitions, resolved_emoji_sets_lookup = resolved_config_tuple
 
         if resolved_field_definitions: # New semantic layers are active
-            lines.append("Pyvider Telemetry: Active Semantic Layer Emoji Contract")
+            lines.append("Foundation Telemetry: Active Semantic Layer Emoji Contract")
             lines.append("="*70)
             lines.append("Active Semantic Field Definitions (Order determines prefix sequence):")
             if not resolved_field_definitions:
@@ -108,7 +108,7 @@ def show_emoji_matrix() -> None: # pragma: no cover
                 lines.append("") # Spacer
 
         else: # No custom fields resolved, means legacy DAS is active
-            lines.append("Pyvider Telemetry: Legacy DAS Emoji Contract (No custom layers active)")
+            lines.append("Foundation Telemetry: Legacy DAS Emoji Contract (No custom layers active)")
             lines.append("="*70)
             lines.append("Primary Emojis (Legacy 'domain' key):")
             lines.extend(f"  {e}  -> {k.capitalize()}" for k, e in PRIMARY_EMOJI.items())
@@ -117,7 +117,7 @@ def show_emoji_matrix() -> None: # pragma: no cover
             lines.append("\nTertiary Emojis (Legacy 'status' key):")
             lines.extend(f"  {e}  -> {k.capitalize()}" for k, e in TERTIARY_EMOJI.items())
     else:
-        lines.append("Pyvider Telemetry: Emoji configuration not yet resolved or available.")
+        lines.append("Foundation Telemetry: Emoji configuration not yet resolved or available.")
 
 
     if lines:

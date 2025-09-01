@@ -1,7 +1,7 @@
-# wrknv configuration for pyvider-telemetry
+# wrknv configuration for provide-foundation
 
 [project]
-name = "pyvider-telemetry"
+name = "provide-foundation"
 description = "Unified telemetry and logging system for provide.io tools"
 
 [tools]

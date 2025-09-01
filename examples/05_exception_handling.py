@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# examples/pyvider_telemetry/05_exception_handling.py
+# examples/foundation_telemetry/05_exception_handling.py
 """Demonstrates exception logging with automatic traceback inclusion."""
 
 from pathlib import Path
@@ -14,7 +14,7 @@ if src_path.exists() and str(src_path) not in sys.path:
 
 from typing import Never  # noqa: E402
 
-from pyvider.telemetry import logger, setup_telemetry  # noqa: E402
+from provide.foundation import logger, setup_telemetry  # noqa: E402
 
 
 def example_5_exception_handling() -> None:

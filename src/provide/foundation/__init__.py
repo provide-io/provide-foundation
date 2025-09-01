@@ -2,27 +2,27 @@
 # __init__.py
 #
 """
-Pyvider Telemetry Library (structlog-based).
+Foundation Telemetry Library (structlog-based).
 Primary public interface for the library, re-exporting common components.
 """
 
 from importlib.metadata import PackageNotFoundError, version
 
 try:
-    __version__ = version("pyvider-telemetry")
+    __version__ = version("provide-foundation")
 except PackageNotFoundError: # pragma: no cover
     __version__ = "0.0.0-dev"
 
-from pyvider.telemetry.config import (
+from provide.foundation.config import (
     LoggingConfig,
     TelemetryConfig,
 )
-from pyvider.telemetry.core import (
+from provide.foundation.core import (
     setup_telemetry,
-    shutdown_pyvider_telemetry,
+    shutdown_foundation_telemetry,
 )
-from pyvider.telemetry.logger import logger  # Global logger instance
-from pyvider.telemetry.logger.emoji_matrix import (
+from provide.foundation.logger import logger  # Global logger instance
+from provide.foundation.logger.emoji_matrix import (
     PRIMARY_EMOJI,  # Legacy/default domain emojis
     SECONDARY_EMOJI,  # Legacy/default action emojis
     TERTIARY_EMOJI,  # Legacy/default status emojis
@@ -30,7 +30,7 @@ from pyvider.telemetry.logger.emoji_matrix import (
 )
 
 # New type exports for semantic layering
-from pyvider.telemetry.types import (
+from provide.foundation.types import (
     ConsoleFormatterStr,
     CustomDasEmojiSet,
     LogLevelStr,
@@ -39,13 +39,13 @@ from pyvider.telemetry.types import (
 )
 
 # New utility exports
-from pyvider.telemetry.utils import timed_block
+from provide.foundation.utils import timed_block
 
 __all__ = [
     # Core setup and logger
     "logger",
     "setup_telemetry",
-    "shutdown_pyvider_telemetry",
+    "shutdown_foundation_telemetry",
     # Configuration classes
     "TelemetryConfig",
     "LoggingConfig",

@@ -21,14 +21,14 @@ from unittest.mock import patch
 import pytest
 from pytest import CaptureFixture  # Added for capsys
 
-from pyvider.telemetry import (
+from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
     logger as global_logger,
     setup_telemetry,
-    shutdown_pyvider_telemetry,
+    shutdown_foundation_telemetry,
 )
-from pyvider.telemetry.core import reset_pyvider_setup_for_testing
+from provide.foundation.core import reset_foundation_setup_for_testing
 
 
 class TestRealWorldScenarios:
@@ -36,7 +36,7 @@ class TestRealWorldScenarios:
 
     def test_web_application_startup_scenario(self, capsys: CaptureFixture) -> None:
         """Test lazy initialization in a web application startup scenario."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Simulate web app startup sequence
         global_logger.info("Starting web application")
@@ -65,15 +65,15 @@ class TestRealWorldScenarios:
 
     def test_microservice_with_environment_config(self, capsys: CaptureFixture) -> None:
         """Test microservice startup with environment-based configuration."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Simulate microservice environment
         with patch.dict(os.environ, {
-            "PYVIDER_SERVICE_NAME": "user-service",
-            "PYVIDER_LOG_LEVEL": "INFO",
-            "PYVIDER_LOG_CONSOLE_FORMATTER": "json",
-            "PYVIDER_LOG_MODULE_LEVELS": "app.auth:DEBUG,app.external:WARNING",
-            "PYVIDER_LOG_DAS_EMOJI_ENABLED": "true",
+            "FOUNDATION_SERVICE_NAME": "user-service",
+            "FOUNDATION_LOG_LEVEL": "INFO",
+            "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
+            "FOUNDATION_LOG_MODULE_LEVELS": "app.auth:DEBUG,app.external:WARNING",
+            "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "true",
         }):
             # Service startup logging
             global_logger.info("User service starting up")
@@ -123,7 +123,7 @@ class TestRealWorldScenarios:
 
     def test_data_processing_pipeline_scenario(self, capsys: CaptureFixture) -> None:
         """Test lazy initialization in a data processing pipeline."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Simulate data pipeline stages
         global_logger.get_logger("pipeline.main")
@@ -165,7 +165,7 @@ class TestRealWorldScenarios:
 
     def test_concurrent_workers_scenario(self, capsys: CaptureFixture) -> None:
         """Test lazy initialization with concurrent worker processes."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         def worker_task(worker_id: int, task_count: int) -> list[str]:
             """Simulate worker task with logging."""
@@ -211,7 +211,7 @@ class TestRealWorldScenarios:
     @pytest.mark.asyncio
     async def test_async_web_server_scenario(self, capsys: CaptureFixture) -> None:
         """Test lazy initialization in async web server scenario."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Simulate async web server
         server_logger = global_logger.get_logger("server.async")
@@ -271,7 +271,7 @@ class TestRealWorldScenarios:
 
     def test_library_integration_scenario(self, capsys: CaptureFixture) -> None:
         """Test lazy initialization when used as a library component."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Simulate library that uses pyvider for internal logging
         class DataProcessor:
@@ -325,7 +325,7 @@ class TestMigrationFromExplicitSetup:
 
     def test_gradual_migration_scenario(self, capsys: CaptureFixture) -> None:
         """Test gradual migration from explicit setup to lazy initialization."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Phase 1: Old code with explicit setup
         explicit_config = TelemetryConfig(
@@ -361,7 +361,7 @@ class TestMigrationFromExplicitSetup:
 
     def test_mixed_initialization_order(self, capsys: CaptureFixture) -> None:
         """Test different initialization orders work correctly."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Scenario 1: Lazy init first, then explicit setup
         global_logger.info("Message via lazy init")
@@ -389,13 +389,13 @@ class TestMigrationFromExplicitSetup:
 
     def test_configuration_precedence(self, capsys: CaptureFixture) -> None:
         """Test that explicit setup takes precedence over lazy initialization."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Set environment for lazy init
         with patch.dict(os.environ, {
-            "PYVIDER_SERVICE_NAME": "env-service",
-            "PYVIDER_LOG_CONSOLE_FORMATTER": "key_value",
-            "PYVIDER_LOG_LEVEL": "WARNING",
+            "FOUNDATION_SERVICE_NAME": "env-service",
+            "FOUNDATION_LOG_CONSOLE_FORMATTER": "key_value",
+            "FOUNDATION_LOG_LEVEL": "WARNING",
         }):
             # Trigger lazy init first
             global_logger.warning("Lazy init message")
@@ -433,7 +433,7 @@ class TestProductionReadinessScenarios:
 
     def test_high_throughput_scenario(self, capsys: CaptureFixture) -> None:
         """Test lazy initialization under high throughput."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Simulate high-throughput logging
         start_time = time.time()
@@ -458,7 +458,7 @@ class TestProductionReadinessScenarios:
 
     def test_memory_stability_scenario(self, capsys: CaptureFixture) -> None:
         """Test memory stability with lazy initialization over time."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         import gc
 
@@ -486,7 +486,7 @@ class TestProductionReadinessScenarios:
 
     def test_error_resilience_scenario(self, capsys: CaptureFixture) -> None:
         """Test error resilience in production-like conditions."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Simulate various error conditions
         error_scenarios = [
@@ -522,7 +522,7 @@ class TestProductionReadinessScenarios:
 
     def test_graceful_shutdown_scenario(self, capsys: CaptureFixture) -> None:
         """Test graceful shutdown with lazy initialization."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Simulate application lifecycle
         global_logger.info("Application starting with lazy init")
@@ -534,7 +534,7 @@ class TestProductionReadinessScenarios:
 
         # Test graceful shutdown
         async def test_shutdown() -> None:
-            await shutdown_pyvider_telemetry()
+            await shutdown_foundation_telemetry()
 
         # Run shutdown
         import asyncio
@@ -553,17 +553,17 @@ class TestDocumentedBehaviorCompliance:
 
     def test_documented_environment_variables(self, capsys: CaptureFixture) -> None:
         """Test all documented environment variables work with lazy initialization."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         documented_env_vars = {
-            "PYVIDER_LOG_LEVEL": "DEBUG",
-            "PYVIDER_LOG_CONSOLE_FORMATTER": "json",
-            "PYVIDER_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
-            "PYVIDER_LOG_DAS_EMOJI_ENABLED": "true",
-            "PYVIDER_LOG_OMIT_TIMESTAMP": "true",
-            "PYVIDER_LOG_MODULE_LEVELS": "test.module:ERROR",
-            "PYVIDER_SERVICE_NAME": "documented-service",
-            "PYVIDER_TELEMETRY_DISABLED": "false",
+            "FOUNDATION_LOG_LEVEL": "DEBUG",
+            "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
+            "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
+            "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "true",
+            "FOUNDATION_LOG_OMIT_TIMESTAMP": "true",
+            "FOUNDATION_LOG_MODULE_LEVELS": "test.module:ERROR",
+            "FOUNDATION_SERVICE_NAME": "documented-service",
+            "FOUNDATION_TELEMETRY_DISABLED": "false",
         }
 
         with patch.dict(os.environ, documented_env_vars):
@@ -615,7 +615,7 @@ class TestDocumentedBehaviorCompliance:
 
     def test_backward_compatibility_promise(self, capsys: CaptureFixture) -> None:
         """Test that lazy initialization maintains backward compatibility."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Old code pattern: immediate logging without setup
         global_logger.info("Legacy immediate logging")
@@ -639,7 +639,7 @@ class TestDocumentedBehaviorCompliance:
 
     def test_thread_safety_guarantees(self, capsys: CaptureFixture) -> None:
         """Test documented thread safety guarantees."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         import time
 
@@ -692,7 +692,7 @@ class TestDocumentedBehaviorCompliance:
 
     def test_performance_requirements(self, capsys: CaptureFixture) -> None:
         """Test that lazy initialization meets performance requirements."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         import time
 
@@ -727,10 +727,10 @@ class TestLazyInitializationDocumentation:
 
     def test_basic_usage_example(self, capsys: CaptureFixture) -> None:
         """Test the basic usage example from documentation."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Example from docs: immediate logging without setup
-        from pyvider.telemetry import logger
+        from provide.foundation import logger
 
         logger.info("Application started", version="1.0.0")
         logger.debug("Debug information", component="main")
@@ -745,10 +745,10 @@ class TestLazyInitializationDocumentation:
 
     def test_named_logger_example(self, capsys: CaptureFixture) -> None:
         """Test the named logger example from documentation."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Example from docs: component-specific loggers
-        from pyvider.telemetry import logger
+        from provide.foundation import logger
 
         auth_logger = logger.get_logger("auth.service")
         db_logger = logger.get_logger("database.connection")
@@ -764,16 +764,16 @@ class TestLazyInitializationDocumentation:
 
     def test_environment_config_example(self, capsys: CaptureFixture) -> None:
         """Test the environment configuration example from documentation."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Example from docs: environment-based configuration
         with patch.dict(os.environ, {
-            "PYVIDER_SERVICE_NAME": "my-service",
-            "PYVIDER_LOG_LEVEL": "INFO",
-            "PYVIDER_LOG_CONSOLE_FORMATTER": "json",
-            "PYVIDER_LOG_MODULE_LEVELS": "auth:DEBUG,db:ERROR",
+            "FOUNDATION_SERVICE_NAME": "my-service",
+            "FOUNDATION_LOG_LEVEL": "INFO",
+            "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
+            "FOUNDATION_LOG_MODULE_LEVELS": "auth:DEBUG,db:ERROR",
         }):
-            from pyvider.telemetry import logger
+            from provide.foundation import logger
 
             logger.info("Service started")
 
@@ -803,10 +803,10 @@ class TestLazyInitializationDocumentation:
 
     def test_migration_example(self, capsys: CaptureFixture) -> None:
         """Test the migration example from documentation."""
-        reset_pyvider_setup_for_testing()
+        reset_foundation_setup_for_testing()
 
         # Example from docs: gradual migration
-        from pyvider.telemetry import (
+        from provide.foundation import (
             LoggingConfig,
             TelemetryConfig,
             logger,
