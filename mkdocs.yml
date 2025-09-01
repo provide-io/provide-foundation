@@ -27,6 +27,8 @@ theme:
     - navigation.instant
     - navigation.tracking
     - navigation.top
+    - navigation.expand
+    - toc.integrate  # Move TOC to the left sidebar
     - search.suggest
     - search.highlight
     - content.code.annotate
@@ -81,8 +83,8 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - toc:
       permalink: true
 
@@ -119,4 +121,3 @@ nav:
     - 'Utilities': 'api-reference/utils.md'
   - 'About':
     - 'Contributing': 'about/contributing.md'
-    - 'License': 'LICENSE' # Link to existing license file
