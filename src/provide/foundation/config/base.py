@@ -97,23 +97,26 @@ class BaseConfig:
     Base configuration class with common functionality.
     
     All configuration classes should inherit from this.
+    All methods are async to support async validation and I/O operations.
     """
     
     def __attrs_post_init__(self):
         """Post-initialization hook for subclasses."""
         self._source_map: dict[str, ConfigSource] = {}
         self._original_values: dict[str, Any] = {}
-        self.validate()
+        # Note: validate() is now async, so we can't call it here
+        # Users must explicitly call await config.validate() after creation
     
-    def validate(self) -> None:
+    async def validate(self) -> None:
         """
         Validate the configuration.
         
         Override this method to add custom validation logic.
+        Can perform async operations like checking database connections.
         """
         pass
     
-    def to_dict(self, include_sensitive: bool = False) -> ConfigDict:
+    async def to_dict(self, include_sensitive: bool = False) -> ConfigDict:
         """
         Convert configuration to dictionary.
         
@@ -134,44 +137,44 @@ class BaseConfig:
             
             # Convert nested configs recursively
             if isinstance(value, BaseConfig):
-                value = value.to_dict(include_sensitive)
+                value = await value.to_dict(include_sensitive)
             elif isinstance(value, dict):
-                value = self._convert_dict_values(value, include_sensitive)
+                value = await self._convert_dict_values(value, include_sensitive)
             elif isinstance(value, list):
-                value = self._convert_list_values(value, include_sensitive)
+                value = await self._convert_list_values(value, include_sensitive)
             
             result[attr.name] = value
         
         return result
     
-    def _convert_dict_values(self, d: dict, include_sensitive: bool) -> dict:
+    async def _convert_dict_values(self, d: dict, include_sensitive: bool) -> dict:
         """Convert dictionary values recursively."""
         result = {}
         for key, value in d.items():
             if isinstance(value, BaseConfig):
-                value = value.to_dict(include_sensitive)
+                value = await value.to_dict(include_sensitive)
             elif isinstance(value, dict):
-                value = self._convert_dict_values(value, include_sensitive)
+                value = await self._convert_dict_values(value, include_sensitive)
             elif isinstance(value, list):
-                value = self._convert_list_values(value, include_sensitive)
+                value = await self._convert_list_values(value, include_sensitive)
             result[key] = value
         return result
     
-    def _convert_list_values(self, lst: list, include_sensitive: bool) -> list:
+    async def _convert_list_values(self, lst: list, include_sensitive: bool) -> list:
         """Convert list values recursively."""
         result = []
         for value in lst:
             if isinstance(value, BaseConfig):
-                value = value.to_dict(include_sensitive)
+                value = await value.to_dict(include_sensitive)
             elif isinstance(value, dict):
-                value = self._convert_dict_values(value, include_sensitive)
+                value = await self._convert_dict_values(value, include_sensitive)
             elif isinstance(value, list):
-                value = self._convert_list_values(value, include_sensitive)
+                value = await self._convert_list_values(value, include_sensitive)
             result.append(value)
         return result
     
     @classmethod
-    def from_dict(cls: type[T], data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME) -> T:
+    async def from_dict(cls: type[T], data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME) -> T:
         """
         Create configuration from dictionary.
         
@@ -194,9 +197,12 @@ class BaseConfig:
             instance._source_map[key] = source
             instance._original_values[key] = filtered_data[key]
         
+        # Validate the instance
+        await instance.validate()
+        
         return instance
     
-    def update(self, updates: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME) -> None:
+    async def update(self, updates: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME) -> None:
         """
         Update configuration with new values.
         
@@ -212,6 +218,9 @@ class BaseConfig:
                     setattr(self, key, value)
                     self._source_map[key] = source
                     self._original_values[key] = value
+        
+        # Re-validate after updates
+        await self.validate()
     
     def get_source(self, field_name: str) -> ConfigSource | None:
         """
@@ -225,7 +234,7 @@ class BaseConfig:
         """
         return self._source_map.get(field_name)
     
-    def reset_to_defaults(self) -> None:
+    async def reset_to_defaults(self) -> None:
         """Reset all fields to their default values."""
         for attr in fields(self.__class__):
             if attr.default != NOTHING:
@@ -235,12 +244,18 @@ class BaseConfig:
         
         self._source_map.clear()
         self._original_values.clear()
+        
+        # Re-validate after reset
+        await self.validate()
     
-    def clone(self: T) -> T:
+    async def clone(self: T) -> T:
         """Create a deep copy of the configuration."""
-        return copy.deepcopy(self)
+        cloned = copy.deepcopy(self)
+        # Validate the clone
+        await cloned.validate()
+        return cloned
     
-    def diff(self, other: "BaseConfig") -> dict[str, tuple[Any, Any]]:
+    async def diff(self, other: "BaseConfig") -> dict[str, tuple[Any, Any]]:
         """
         Compare with another configuration.
         
