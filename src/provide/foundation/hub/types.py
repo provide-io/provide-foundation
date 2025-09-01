@@ -1,24 +1,7 @@
 """Type definitions for the hub module."""
 
 from dataclasses import dataclass, field
-from enum import Enum
-from typing import Any, Callable, Protocol, TypeAlias
-
-ComponentType: TypeAlias = type[Any]
-CommandType: TypeAlias = Callable[..., Any]
-RegistryKey: TypeAlias = tuple[str, ...]
-
-
-class RegistryDimension(str, Enum):
-    """Standard registry dimensions."""
-    
-    COMPONENT = "component"
-    COMMAND = "command"
-    RESOURCE = "resource"
-    DATA_SOURCE = "data_source"
-    PROVIDER = "provider"
-    PLUGIN = "plugin"
-    EXTENSION = "extension"
+from typing import Any, Callable, Protocol
 
 
 @dataclass(frozen=True, slots=True)
@@ -26,21 +9,21 @@ class RegistryEntry:
     """A single entry in the registry."""
     
     name: str
-    dimension: RegistryDimension | str
+    dimension: str
     value: Any
     metadata: dict[str, Any] = field(default_factory=dict)
     
     @property
-    def key(self) -> RegistryKey:
+    def key(self) -> tuple[str, str]:
         """Get the registry key for this entry."""
-        return (str(self.dimension), self.name)
+        return (self.dimension, self.name)
 
 
 class Registrable(Protocol):
     """Protocol for objects that can be registered."""
     
     __registry_name__: str
-    __registry_dimension__: RegistryDimension | str
+    __registry_dimension__: str
     __registry_metadata__: dict[str, Any]
 
 
@@ -62,7 +45,7 @@ class ComponentInfo:
     
     name: str
     component_class: type[Any]
-    dimension: RegistryDimension | str
+    dimension: str = "component"
     description: str | None = None
     version: str | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
