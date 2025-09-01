@@ -30,7 +30,9 @@
       "Bash(ruff format:*)",
       "Bash(tree:*)",
       "Bash(chmod:*)",
-      "Bash(./test-workflows.sh:*)"
+      "Bash(./test-workflows.sh:*)",
+      "Bash(colima status:*)",
+      "Bash(export DOCKER_HOST=\"unix://$HOME/.colima/default/docker.sock\")"
     ],
     "deny": [],
     "ask": [],
