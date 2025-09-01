@@ -197,8 +197,9 @@ class TestComponentRegistration:
                     return []
             return EPGroup()
         
+        # Patch at the importlib.metadata level since that's where it's imported from
         monkeypatch.setattr(
-            "provide.foundation.hub.components.entry_points",
+            "importlib.metadata.entry_points",
             mock_entry_points
         )
         
