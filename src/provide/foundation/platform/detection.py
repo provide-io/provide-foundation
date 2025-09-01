@@ -136,7 +136,7 @@ def get_cpu_type() -> str | None:
             elif "AMD" in processor:
                 # Extract AMD CPU model
                 if "Ryzen" in processor:
-                    match = re.search(r"Ryzen\s+(\d+\s+\w+)", processor)
+                    match = re.search(r"Ryzen\s+(\d+)", processor)
                     if match:
                         return f"AMD Ryzen {match.group(1)}"
                 return "AMD"

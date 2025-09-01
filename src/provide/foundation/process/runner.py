@@ -141,6 +141,8 @@ def run_command(
             timeout=timeout,
         ) from e
     except Exception as e:
+        if isinstance(e, (ProcessError, TimeoutError)):
+            raise
         plog.error(
             "💥 Command execution failed",
             command=cmd_str,
