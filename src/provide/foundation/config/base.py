@@ -119,7 +119,7 @@ class BaseConfig:
         """
         pass
 
-    async def to_dict(self, include_sensitive: bool = False) -> ConfigDict:
+    def to_dict(self, include_sensitive: bool = False) -> ConfigDict:
         """
         Convert configuration to dictionary.
 
@@ -140,44 +140,44 @@ class BaseConfig:
 
             # Convert nested configs recursively
             if isinstance(value, BaseConfig):
-                value = await value.to_dict(include_sensitive)
+                value = value.to_dict(include_sensitive)
             elif isinstance(value, dict):
-                value = await self._convert_dict_values(value, include_sensitive)
+                value = self._convert_dict_values(value, include_sensitive)
             elif isinstance(value, list):
-                value = await self._convert_list_values(value, include_sensitive)
+                value = self._convert_list_values(value, include_sensitive)
 
             result[attr.name] = value
 
         return result
 
-    async def _convert_dict_values(self, d: dict, include_sensitive: bool) -> dict:
+    def _convert_dict_values(self, d: dict, include_sensitive: bool) -> dict:
         """Convert dictionary values recursively."""
         result = {}
         for key, value in d.items():
             if isinstance(value, BaseConfig):
-                value = await value.to_dict(include_sensitive)
+                value = value.to_dict(include_sensitive)
             elif isinstance(value, dict):
-                value = await self._convert_dict_values(value, include_sensitive)
+                value = self._convert_dict_values(value, include_sensitive)
             elif isinstance(value, list):
-                value = await self._convert_list_values(value, include_sensitive)
+                value = self._convert_list_values(value, include_sensitive)
             result[key] = value
         return result
 
-    async def _convert_list_values(self, lst: list, include_sensitive: bool) -> list:
+    def _convert_list_values(self, lst: list, include_sensitive: bool) -> list:
         """Convert list values recursively."""
         result = []
         for value in lst:
             if isinstance(value, BaseConfig):
-                value = await value.to_dict(include_sensitive)
+                value = value.to_dict(include_sensitive)
             elif isinstance(value, dict):
-                value = await self._convert_dict_values(value, include_sensitive)
+                value = self._convert_dict_values(value, include_sensitive)
             elif isinstance(value, list):
-                value = await self._convert_list_values(value, include_sensitive)
+                value = self._convert_list_values(value, include_sensitive)
             result.append(value)
         return result
 
     @classmethod
-    async def from_dict(
+    def from_dict(
         cls: type[T], data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME
     ) -> T:
         """
@@ -197,17 +197,20 @@ class BaseConfig:
         # Create instance
         instance = cls(**filtered_data)
 
+        # Initialize the attrs post init manually since we're creating from dict
+        if not hasattr(instance, '_source_map'):
+            instance._source_map = {}
+        if not hasattr(instance, '_original_values'):
+            instance._original_values = {}
+        
         # Track sources
         for key in filtered_data:
             instance._source_map[key] = source
             instance._original_values[key] = filtered_data[key]
 
-        # Validate the instance
-        await instance.validate()
-
         return instance
 
-    async def update(
+    def update(
         self, updates: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME
     ) -> None:
         """
@@ -226,8 +229,7 @@ class BaseConfig:
                     self._source_map[key] = source
                     self._original_values[key] = value
 
-        # Re-validate after updates
-        await self.validate()
+        # Note: validate() is async, must be called separately if needed
 
     def get_source(self, field_name: str) -> ConfigSource | None:
         """
@@ -241,7 +243,7 @@ class BaseConfig:
         """
         return self._source_map.get(field_name)
 
-    async def reset_to_defaults(self) -> None:
+    def reset_to_defaults(self) -> None:
         """Reset all fields to their default values."""
         for attr in fields(self.__class__):
             if attr.default != NOTHING:
@@ -252,14 +254,12 @@ class BaseConfig:
         self._source_map.clear()
         self._original_values.clear()
 
-        # Re-validate after reset
-        await self.validate()
+        # Note: validate() is async, must be called separately if needed
 
-    async def clone(self: T) -> T:
+    def clone(self: T) -> T:
         """Create a deep copy of the configuration."""
         cloned = copy.deepcopy(self)
-        # Validate the clone
-        await cloned.validate()
+        # Note: validate() is async, must be called separately if needed
         return cloned
 
     async def diff(self, other: BaseConfig) -> dict[str, tuple[Any, Any]]:
