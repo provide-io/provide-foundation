@@ -443,12 +443,18 @@ def build_click_command(
                 decorated_func = click.argument(param_name)(decorated_func)
     
     # Create the Click command with the decorated function
-    return click.Command(
+    cmd = click.Command(
         name=info.name,
         callback=decorated_func,
         help=info.description,
         hidden=info.hidden,
     )
+    
+    # Copy over the params from the decorated function (Click stores them there)
+    if hasattr(decorated_func, '__click_params__'):
+        cmd.params = decorated_func.__click_params__
+    
+    return cmd
 
 
 def create_command_group(

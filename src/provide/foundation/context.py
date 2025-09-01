@@ -4,9 +4,10 @@ import copy
 import json
 import logging
 import os
-from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
+
+from attrs import Factory, define, field, fields, validators
 
 from provide.foundation.logger import get_logger
 
@@ -27,7 +28,7 @@ except ImportError:
 VALID_LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 
 
-@dataclass
+@define(slots=True, frozen=False)
 class Context:
     """
     Unified context for configuration and CLI state.
@@ -37,35 +38,24 @@ class Context:
     and programmatic updates.
     """
     
-    log_level: str = "INFO"
-    profile: str = "default"
-    debug: bool = False
-    json_output: bool = False
-    config_file: Path | None = None
-    log_file: Path | None = None
+    log_level: str = field(
+        default="INFO",
+        validator=validators.in_(VALID_LOG_LEVELS),
+        converter=str.upper
+    )
+    profile: str = field(default="default")
+    debug: bool = field(default=False, converter=bool)
+    json_output: bool = field(default=False, converter=bool)
+    config_file: Path | None = field(default=None, converter=lambda x: Path(x) if x else None)
+    log_file: Path | None = field(default=None, converter=lambda x: Path(x) if x else None)
     
-    # Private fields
-    _logger: Any = field(init=False, default=None, repr=False)
+    # Private fields - using Factory for mutable defaults
+    _logger: Any = field(init=False, factory=lambda: None, repr=False)
     _frozen: bool = field(init=False, default=False, repr=False)
     
-    def __post_init__(self) -> None:
-        """Validate context after initialization."""
-        self._validate()
-    
-    def _validate(self) -> None:
-        """Validate context values."""
-        if self.log_level.upper() not in VALID_LOG_LEVELS:
-            raise ValueError(f"Invalid log level: {self.log_level}")
-        
-        # Normalize log level to uppercase
-        self.log_level = self.log_level.upper()
-        
-        # Validate types
-        if not isinstance(self.debug, bool):
-            raise TypeError(f"debug must be bool, got {type(self.debug)}")
-        
-        if not isinstance(self.json_output, bool):
-            raise TypeError(f"json_output must be bool, got {type(self.json_output)}")
+    def __attrs_post_init__(self) -> None:
+        """Post-initialization hook."""
+        pass  # Validation is handled by attrs validators
     
     @classmethod
     def from_env(cls, prefix: str = "PROVIDE") -> "Context":
@@ -252,12 +242,13 @@ class Context:
         
         path.write_text(content)
     
-    def merge(self, other: "Context") -> "Context":
+    def merge(self, other: "Context", override_defaults: bool = False) -> "Context":
         """
         Merge with another context, with other taking precedence.
         
         Args:
             other: Context to merge with
+            override_defaults: If False, only override if other's value differs from its class default
             
         Returns:
             New merged Context instance
@@ -265,10 +256,29 @@ class Context:
         merged_data = self.to_dict()
         other_data = other.to_dict()
         
-        # Update with non-None values from other
-        for key, value in other_data.items():
-            if value is not None:
-                merged_data[key] = value
+        if override_defaults:
+            # Update with non-None values from other
+            for key, value in other_data.items():
+                if value is not None:
+                    merged_data[key] = value
+        else:
+            # Only override if the value differs from the default
+            defaults = {}
+            for f in fields(Context):
+                if not f.name.startswith('_'):  # Skip private fields
+                    if f.default is not None:
+                        defaults[f.name] = f.default
+                    elif f.factory is not None:
+                        # For factory fields, call the factory to get default
+                        defaults[f.name] = f.factory()
+            
+            for key, value in other_data.items():
+                if value is not None:
+                    # Check if this is different from the default
+                    if key in defaults and value == defaults[key]:
+                        # Skip default values
+                        continue
+                    merged_data[key] = value
         
         return Context.from_dict(merged_data)
     
