@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from provide.foundation.hub.context import Context
+from provide.foundation.context import Context
 
 
 class TestContext:

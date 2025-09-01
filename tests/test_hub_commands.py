@@ -73,7 +73,7 @@ class TestCommandRegistration:
             pass
         
         hub = get_hub()
-        entry = hub.registry.get_entry("deploy")
+        entry = hub._command_registry.get_entry("deploy", dimension="command")
         
         assert entry is not None
         assert entry.metadata["category"] == "deployment"
@@ -89,7 +89,7 @@ class TestCommandRegistration:
             pass
         
         hub = get_hub()
-        entry = hub.registry.get_entry("secret")
+        entry = hub._command_registry.get_entry("secret", dimension="command")
         
         assert entry is not None
         assert entry.metadata["hidden"] is True
@@ -106,7 +106,7 @@ class TestCommandRegistration:
             pass
         
         hub = get_hub()
-        entry = hub.registry.get_entry("info-cmd")
+        entry = hub._command_registry.get_entry("info-cmd", dimension="command")
         info = entry.metadata.get("info")
         
         assert info is not None
@@ -129,7 +129,7 @@ class TestCommandRegistration:
         command = hub.get_command("greet")
         assert command is greet
         
-        entry = hub.registry.get_entry("greet")
+        entry = hub._command_registry.get_entry("greet", dimension="command")
         assert entry.metadata.get("click_command") is greet
     
     def test_build_click_command_from_function(self):
@@ -166,7 +166,7 @@ class TestCommandRegistration:
             return "hidden"
         
         hub = get_hub()
-        cli_group = hub.create_cli_group("test-cli")
+        cli_group = hub.create_cli("test-cli")
         
         assert isinstance(cli_group, click.Group)
         assert cli_group.name == "test-cli"

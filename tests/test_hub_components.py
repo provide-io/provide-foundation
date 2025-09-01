@@ -73,7 +73,7 @@ class TestComponentRegistration:
             pass
         
         hub = get_hub()
-        entry = hub.registry.get_entry("versioned_component")
+        entry = hub._component_registry.get_entry("versioned_component")
         
         assert entry is not None
         assert entry.metadata["version"] == "1.0.0"
@@ -89,6 +89,10 @@ class TestComponentRegistration:
             def __init__(self, name: str):
                 super().__init__(name=name)
                 self.resource_type = "test"
+            
+            def _setup(self):
+                """Setup implementation."""
+                pass
         
         hub = get_hub()
         component_class = hub.get_component("base_resource")
@@ -109,7 +113,7 @@ class TestComponentRegistration:
             pass
         
         hub = get_hub()
-        entry = hub.registry.get_entry("info_component")
+        entry = hub._component_registry.get_entry("info_component")
         info = entry.metadata.get("info")
         
         assert info is not None
