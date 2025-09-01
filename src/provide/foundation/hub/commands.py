@@ -188,8 +188,15 @@ def _register_command_func(
         parent=parent,
     )
     
-    # Build full name with parent if specified
-    full_name = f"{parent}-{command_name}" if parent else command_name
+    # Build full name with parent hierarchy if specified
+    # For multi-level nesting, parent can be "container volumes" 
+    # which becomes "container-volumes-{command_name}"
+    if parent:
+        # Replace spaces with dashes for registry key
+        parent_key = parent.replace(" ", "-")
+        full_name = f"{parent_key}-{command_name}"
+    else:
+        full_name = command_name
     
     # Register in the registry
     reg.register(
