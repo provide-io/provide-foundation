@@ -1,0 +1,156 @@
+"""
+Core console output functions for standardized CLI output.
+
+Provides pout() and perr() for consistent output handling with support
+for JSON mode, colors, and proper stream separation.
+"""
+
+import json
+import sys
+from typing import Any
+
+import click
+
+from provide.foundation.context import Context
+from provide.foundation.logger import get_logger
+
+log = get_logger(__name__)
+
+
+def _get_context() -> Context | None:
+    """Get current context from Click or environment."""
+    ctx = click.get_current_context(silent=True)
+    if ctx and hasattr(ctx, "obj") and isinstance(ctx.obj, Context):
+        return ctx.obj
+    return None
+
+
+def _should_use_json(ctx: Context | None = None) -> bool:
+    """Determine if JSON output should be used."""
+    if ctx is None:
+        ctx = _get_context()
+    return ctx.json_output if ctx else False
+
+
+def _should_use_color(ctx: Context | None = None, stream=None) -> bool:
+    """Determine if color output should be used."""
+    if ctx is None:
+        ctx = _get_context()
+    
+    # Check if stream is a TTY
+    if stream:
+        return getattr(stream, 'isatty', lambda: False)()
+    
+    return sys.stdout.isatty() or sys.stderr.isatty()
+
+
+def _output_json(data: Any, stream=sys.stdout) -> None:
+    """Output data as JSON."""
+    try:
+        json_str = json.dumps(data, indent=2, default=str)
+        click.echo(json_str, file=stream)
+    except (TypeError, ValueError) as e:
+        # Fallback to string representation
+        click.echo(
+            json.dumps({"error": f"JSON encoding failed: {e}", "data": str(data)}),
+            file=stream
+        )
+
+
+def pout(message, **kwargs) -> None:
+    """
+    Output message to stdout.
+    
+    Args:
+        message: Content to output (any type - will be stringified or JSON-encoded)
+        **kwargs: Optional formatting arguments:
+            color: Color name (red, green, yellow, blue, cyan, magenta, white)
+            bold: Bold text
+            dim: Dim text
+            nl/newline: Add newline (default: True)
+            json_key: Key for JSON output mode
+            prefix: Optional prefix string
+            ctx: Override context
+    
+    Examples:
+        pout("Hello world")
+        pout({"data": "value"})  # Auto-JSON if dict/list
+        pout("Success", color="green", bold=True)
+        pout(results, json_key="results")
+    """
+    ctx = kwargs.get('ctx') or _get_context()
+    
+    # Handle newline option (support both nl and newline)
+    nl = kwargs.get('nl', kwargs.get('newline', True))
+    
+    if _should_use_json(ctx):
+        # JSON mode
+        if kwargs.get('json_key'):
+            _output_json({kwargs['json_key']: message}, sys.stdout)
+        else:
+            _output_json(message, sys.stdout)
+    else:
+        # Regular output mode
+        # Add optional prefix
+        output = str(message)
+        if prefix := kwargs.get('prefix'):
+            output = f"{prefix} {output}"
+        
+        # Apply color/formatting if requested and supported
+        color = kwargs.get('color')
+        bold = kwargs.get('bold', False)
+        dim = kwargs.get('dim', False)
+        
+        if (color or bold or dim) and _should_use_color(ctx, sys.stdout):
+            click.secho(output, fg=color, bold=bold, dim=dim, nl=nl)
+        else:
+            click.echo(output, nl=nl)
+
+
+def perr(message, **kwargs) -> None:
+    """
+    Output message to stderr.
+    
+    Args:
+        message: Content to output (any type - will be stringified or JSON-encoded)
+        **kwargs: Optional formatting arguments:
+            color: Color name (red, green, yellow, blue, cyan, magenta, white)
+            bold: Bold text
+            dim: Dim text
+            nl/newline: Add newline (default: True)
+            json_key: Key for JSON output mode
+            prefix: Optional prefix string
+            ctx: Override context
+    
+    Examples:
+        perr("Error occurred")
+        perr("Warning", color="yellow")
+        perr({"error": details}, json_key="error")
+    """
+    ctx = kwargs.get('ctx') or _get_context()
+    
+    # Handle newline option (support both nl and newline)
+    nl = kwargs.get('nl', kwargs.get('newline', True))
+    
+    if _should_use_json(ctx):
+        # JSON mode
+        if kwargs.get('json_key'):
+            _output_json({kwargs['json_key']: message}, sys.stderr)
+        else:
+            _output_json(message, sys.stderr)
+    else:
+        # Regular output mode
+        # Add optional prefix
+        output = str(message)
+        if prefix := kwargs.get('prefix'):
+            output = f"{prefix} {output}"
+        
+        # Apply color/formatting if requested and supported
+        color = kwargs.get('color')
+        bold = kwargs.get('bold', False)
+        dim = kwargs.get('dim', False)
+        
+        if (color or bold or dim) and _should_use_color(ctx, sys.stderr):
+            click.secho(output, fg=color, bold=bold, dim=dim, err=True, nl=nl)
+        else:
+            click.echo(output, err=True, nl=nl)

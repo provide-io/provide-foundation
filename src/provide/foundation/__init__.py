@@ -23,6 +23,7 @@ from provide.foundation.logger import (
     LoggingConfig,
     TelemetryConfig,
     logger,  # Global logger instance
+    logger as plog,  # Alias for console logging
     get_logger,  # Factory function for creating loggers
     setup_logging,  # Setup function
 )
@@ -52,9 +53,13 @@ from provide.foundation import cli
 from provide.foundation.context import Context
 from provide.foundation.registry import Registry, RegistryEntry
 
+# Console output functions
+from provide.foundation.console import pout, perr
+
 __all__ = [
     # Core setup and logger
     "logger",
+    "plog",  # Alias for logger
     "get_logger",
     "setup_logging",
     "setup_telemetry",
@@ -85,6 +90,9 @@ __all__ = [
     "Registry",
     "RegistryEntry",
     "cli",
+    # Console output
+    "pout",
+    "perr",
 ]
 
 # 🐍📝
