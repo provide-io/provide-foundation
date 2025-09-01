@@ -11,6 +11,8 @@
       "Read(/Users/tim/code/gh/provide-io/supsrc/src/supsrc/cli/**)",
       "Read(/Users/tim/code/gh/provide-io/supsrc/src/supsrc/cli/**)",
       "Read(/Users/tim/code/gh/provide-io/**)",
+      "Read(/Users/tim/code/gh/provide-io/pyvider/src/pyvider/cli/**)",
+      "Read(/Users/tim/code/gh/provide-io/pyvider/src/pyvider/cli/**)",
       "Read(/Users/tim/code/gh/provide-io/pyvider/src/pyvider/cli/**)"
     ],
     "deny": [],
