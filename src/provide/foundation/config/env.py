@@ -308,7 +308,7 @@ class EnvConfig(BaseConfig):
 
             data[field_name] = value
 
-        return await cls.from_dict(data, source=ConfigSource.ENV)
+        return cls.from_dict(data, source=ConfigSource.ENV)
 
     @staticmethod
     async def _read_secret_async(file_path: str) -> str:

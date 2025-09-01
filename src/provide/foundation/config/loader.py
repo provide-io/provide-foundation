@@ -83,7 +83,7 @@ class FileConfigLoader(ConfigLoader):
             raise FileNotFoundError(f"Configuration file not found: {self.path}")
 
         data = await self._read_file()
-        return await config_class.from_dict(data, source=ConfigSource.FILE)
+        return config_class.from_dict(data, source=ConfigSource.FILE)
 
     async def _read_file(self) -> ConfigDict:
         """Read and parse configuration file."""
@@ -210,7 +210,7 @@ class DictConfigLoader(ConfigLoader):
 
     async def load(self, config_class: type[T]) -> T:
         """Load configuration from dictionary."""
-        return await config_class.from_dict(self.data, source=self.source)
+        return config_class.from_dict(self.data, source=self.source)
 
 
 class MultiSourceLoader(ConfigLoader):
