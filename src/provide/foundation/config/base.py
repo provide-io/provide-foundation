@@ -247,7 +247,10 @@ class BaseConfig:
             if attr.default != NOTHING:
                 setattr(self, attr.name, attr.default)
             elif attr.factory != NOTHING:
-                setattr(self, attr.name, attr.factory())
+                if isinstance(attr.factory, Factory):
+                    setattr(self, attr.name, attr.factory.factory())
+                else:
+                    setattr(self, attr.name, attr.factory())
 
         self._source_map.clear()
         self._original_values.clear()
@@ -260,7 +263,7 @@ class BaseConfig:
         # Note: validate() is async, must be called separately if needed
         return cloned
 
-    async def diff(self, other: BaseConfig) -> dict[str, tuple[Any, Any]]:
+    def diff(self, other: BaseConfig) -> dict[str, tuple[Any, Any]]:
         """
         Compare with another configuration.
 
