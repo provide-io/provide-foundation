@@ -12,9 +12,6 @@
 # Use local .env file for secrets
 --secret-file .secrets
 
-# Don't try to bind mount the docker socket (causes issues with Colima)
---container-options "--network=bridge"
-
 # Use the correct architecture for M1/M2 Macs
 --container-architecture linux/amd64
 
