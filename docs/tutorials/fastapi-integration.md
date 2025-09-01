@@ -1,22 +1,22 @@
-# チュートリアル
+# Tutorials
 
-## FastAPI Webアプリケーションでのロギング
+## Logging in a FastAPI Web Application
 
-このチュートリアルでは、`provide.foundation` をシンプルな **FastAPI** ウェブアプリケーションに統合する方法を順を追って説明します。アプリケーションのセットアップから、リクエストのロギング、ビジネスロジックの計測まで、多くの重要な概念をカバーします。
+This tutorial will walk you through integrating `provide.foundation` into a simple **FastAPI** web application, step by step. We will cover everything from setting up the application to logging requests and timing business logic.
 
-このチュートリアルを終える頃には、あらゆるウェブアプリケーションで美しく、構造化された、意味のあるログを生成するための確かな基礎を身につけていることでしょう。
+By the end of this tutorial, you will have a solid foundation for producing beautiful, structured, and semantic logs in any web application.
 
-### 前提条件
+### Prerequisites
 
-開始する前に、必要なライブラリがインストールされていることを確認してください。
+Before you begin, make sure you have the necessary libraries installed:
 
 ```bash
 pip install provide-foundation fastapi "uvicorn[standard]"
 ```
 
-### ステップ1：基本的なFastAPIアプリケーションのセットアップ
+### Step 1: Basic FastAPI App Setup
 
-まず、`main.py` という名前のファイルを作成し、基本的なFastAPIアプリケーションをセットアップします。
+First, create a file named `main.py` and set up a basic FastAPI application.
 
 ```python
 # main.py
@@ -29,11 +29,11 @@ def read_root():
     return {"message": "Hello World"}
 ```
 
-### ステップ2：起動時のロガーの初期化
+### Step 2: Initializing the Logger on Startup
 
-`provide.foundation` を設定するのに最適な場所は、アプリケーションの起動時です。FastAPIの `lifespan` イベントを使用して、サーバーが起動するときに一度だけ `setup_telemetry` を呼び出すようにします。
+The best place to configure `provide.foundation` is when your application starts. We will use FastAPI's `lifespan` event to ensure `setup_telemetry` is called only once when the server boots up.
 
-このステップでは、`http` と `database` のセマンティックレイヤーも有効にします。
+In this step, we will also enable the `http` and `database` semantic layers.
 
 ```python
 # main.py
@@ -42,15 +42,15 @@ from fastapi import FastAPI
 
 from provide.foundation import setup_telemetry, TelemetryConfig, LoggingConfig
 
-# lifespanイベント内でロガーを設定
+# Set up the logger within the lifespan event
 @contextlib.asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("アプリケーションの起動時にテレメトリを設定しています...")
+    print("Setting up telemetry on application startup...")
     config = TelemetryConfig(
         service_name="my-fastapi-app",
         logging=LoggingConfig(
             default_level="INFO",
-            # HTTPとデータベースのセマンティックレイヤーを有効にする
+            # Enable the http and database semantic layers
             enabled_semantic_layers=["http", "database"],
         ),
     )
@@ -64,17 +64,17 @@ def read_root():
     return {"message": "Hello World"}
 ```
 
-### ステップ3：ミドルウェアによるリクエストのロギング
+### Step 3: Logging Requests with Middleware
 
-すべての受信リクエストとそのレスポンスを自動的にログに記録することは、非常に強力なパターンです。FastAPIミドルウェアを使用してこれを実現できます。
+Automatically logging every incoming request and its response is an incredibly powerful pattern. We can achieve this using FastAPI middleware.
 
 ```python
-# main.py (前のコードに追加)
+# main.py (append to previous code)
 import time
 from fastapi import Request
 from provide.foundation import logger
 
-# ... (FastAPIのセットアップとlifespanは上記と同じ)
+# ... (FastAPI setup and lifespan from above)
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
@@ -95,30 +95,30 @@ async def log_requests(request: Request, call_next):
 
     return response
 
-# ... (ルートとエンドポイントは下記)
+# ... (root and endpoints below)
 ```
 
-### ステップ4：エンドポイントでのロギング
+### Step 4: Logging in Endpoints
 
-次に、ユーザーを作成するための `/users` エンドポイントを追加します。このエンドポイントでは、`timed_block` を使用してビジネスロジックを計測し、バリデーションエラーと成功イベントをログに記録します。
+Next, we'll add a `/users` endpoint to create a user. In this endpoint, we will use `timed_block` to time our business logic and log both validation errors and success events.
 
 ```python
-# main.py (前のコードに追加)
+# main.py (append to previous code)
 from fastapi import Body
 from typing import Annotated
 
 from provide.foundation.errors import ValidationError
 from provide.foundation.utils.timing import timed_block
 
-# ... (前のコードはすべて上記と同じ)
+# ... (all previous code from above)
 
 @app.post("/users")
 def create_user(username: Annotated[str, Body()])-> dict:
-    """新しいユーザーを作成するエンドポイント。"""
+    """An endpoint to create a new user."""
     with timed_block(logger, "create_user_endpoint", initial_kvs={"username": username}) as ctx:
-        # 1. 入力の検証
+        # 1. Validate input
         if not username or len(username) < 3:
-            # バリデーションエラーをログに記録
+            # Log the validation failure
             logger.warning(
                 "Invalid username provided",
                 domain="validation",
@@ -126,10 +126,10 @@ def create_user(username: Annotated[str, Body()])-> dict:
                 status="failure",
                 username=username,
             )
-            # このエラーはキャッチされ、400レスポンスを返す
+            # This error will be caught and turned into a 400 response
             raise ValidationError("Username must be at least 3 characters long")
 
-        # 2. データベース操作のシミュレーション
+        # 2. Simulate a database operation
         ctx["db_operation"] = "insert"
         logger.info(
             "User created in database",
@@ -143,7 +143,7 @@ def create_user(username: Annotated[str, Body()])-> dict:
 
         return {"status": "user created", "username": username}
 
-# FastAPIがValidationErrorを処理するための例外ハンドラ
+# An exception handler to make FastAPI handle our ValidationError
 from fastapi.responses import JSONResponse
 
 @app.exception_handler(ValidationError)
@@ -154,23 +154,23 @@ async def validation_exception_handler(request: Request, exc: ValidationError):
     )
 ```
 
-### ステップ5：アプリケーションの実行とログの確認
+### Step 5: Running the App and Seeing the Logs
 
-これで完全なアプリケーションができました。ターミナルで `uvicorn` を使用して実行します。
+Now our full application is ready. Run it using `uvicorn` in your terminal:
 
 ```bash
 uvicorn main:app --reload
 ```
 
-次に、`curl` やウェブブラウザを使用してAPIにリクエストを送信します。
+Next, send some requests to your API using `curl` or a web browser.
 
-**成功したリクエスト:**
+**A successful request:**
 
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '"provide-user"' http://127.0.0.1:8000/users
 ```
 
-コンソールのログは次のようになります。
+Your console logs will look like this:
 
 ```
 [🐘][➕][✅] User created in database db.table=users
@@ -178,13 +178,13 @@ curl -X POST -H "Content-Type: application/json" -d '"provide-user"' http://127.
 [➡️][✅] HTTP request handled http.url=http://127.0.0.1:8000/users http.response_time_ms=2.5 client.address=127.0.0.1
 ```
 
-**失敗したリクエスト（バリデーションエラー）:**
+**A failing request (validation error):**
 
 ```bash
 curl -X POST -H "Content-Type: application/json" -d '"a"' http://127.0.0.1:8000/users
 ```
 
-コンソールのログは次のようになります。
+Your console logs will look like this:
 
 ```
 [🛡️][➡️][❌] Invalid username provided username=a
@@ -192,13 +192,13 @@ curl -X POST -H "Content-Type: application/json" -d '"a"' http://127.0.0.1:8000/
 [➡️][⚠️CLIENT] HTTP request handled http.url=http://127.0.0.1:8000/users http.response_time_ms=1.5 client.address=127.0.0.1
 ```
 
-### まとめ
+### Conclusion
 
-おめでとうございます！このチュートリアルでは、以下のことを学びました。
+Congratulations! In this tutorial, you have learned how to:
 
-*   FastAPIの起動時に `provide.foundation` を設定する方法。
-*   ミドルウェアを使用してすべてのHTTPリクエストを自動的にログに記録する方法。
-*   `timed_block` を使用して特定の操作のパフォーマンスを計測する方法。
-*   ビジネスロジック（バリデーション、成功）に関連するセマンティックイベントをログに記録する方法。
+*   Configure `provide.foundation` on FastAPI application startup.
+*   Automatically log all HTTP requests using middleware.
+*   Time the performance of specific operations using `timed_block`.
+*   Log semantic events related to your business logic (validation, success).
 
-これらのパターンは、あらゆるウェブアプリケーションで堅牢で観測可能なロギングをセットアップするための強力な基盤となります。
+These patterns provide a powerful foundation for robust, observable logging in any web application.

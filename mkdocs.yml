@@ -103,6 +103,8 @@ nav:
     - 'Exception Logging': 'guides/exception-logging.md'
     - 'Performance Tuning': 'guides/performance-tuning.md'
     - 'Custom Semantic Layers': 'guides/creating-semantic-layers.md'
+  - 'Tutorials':
+    - 'FastAPI Integration': 'tutorials/fastapi-integration.md'
   - 'API Reference':
     - 'Logger': 'api-reference/logger.md'
     - 'Configuration': 'api-reference/config.md'
