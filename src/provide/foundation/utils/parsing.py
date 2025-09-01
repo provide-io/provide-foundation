@@ -16,7 +16,7 @@ def parse_bool(value: str | bool) -> bool:
     """
     Parse a boolean value from string.
     
-    Accepts: true/false, yes/no, 1/0, on/off (case-insensitive)
+    Accepts: true/false, yes/no, 1/0, on/off, enabled/disabled (case-insensitive)
     
     Args:
         value: String or bool value to parse
@@ -32,9 +32,9 @@ def parse_bool(value: str | bool) -> bool:
         
     str_value = str(value).lower().strip()
     
-    if str_value in ("true", "yes", "1", "on"):
+    if str_value in ("true", "yes", "1", "on", "enabled"):
         return True
-    elif str_value in ("false", "no", "0", "off", ""):
+    elif str_value in ("false", "no", "0", "off", "disabled", ""):
         return False
     else:
         raise ValueError(f"Cannot parse '{value}' as boolean")

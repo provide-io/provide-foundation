@@ -57,6 +57,11 @@ class Context:
         """Post-initialization hook."""
         pass  # Validation is handled by attrs validators
     
+    def _validate(self) -> None:
+        """Validate context values. For attrs compatibility."""
+        # Validation is handled by attrs validators automatically
+        pass
+    
     @classmethod
     def from_env(cls, prefix: str = "PROVIDE") -> "Context":
         """
