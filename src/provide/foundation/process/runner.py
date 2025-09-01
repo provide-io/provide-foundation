@@ -251,6 +251,8 @@ def stream_command(
             timeout=timeout,
         ) from e
     except Exception as e:
+        if isinstance(e, (ProcessError, TimeoutError)):
+            raise
         plog.error("💥 Stream failed", command=cmd_str, error=str(e))
         raise ProcessError(
             f"Failed to stream command: {cmd_str}",
