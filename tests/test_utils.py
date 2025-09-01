@@ -14,7 +14,8 @@ from provide.foundation import (
     TelemetryConfig,
     logger as global_logger,
 )
-from provide.foundation.utils import _FOUNDATION_CONTEXT_TRACE_ID, timed_block
+from provide.foundation.utils import timed_block
+from provide.foundation.utils.timing import _FOUNDATION_CONTEXT_TRACE_ID
 
 
 def parse_kv_log_line(line: str) -> dict:
