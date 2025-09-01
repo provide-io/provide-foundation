@@ -20,14 +20,14 @@ class TestNestedCommandRegistration:
         clear_hub()
     
     def test_register_command_with_parent(self):
-        """Test registering a command with a parent group."""
+        """Test registering a command with dot notation."""
         
         @register_command("container", group=True)
         def container_group():
             """Container management commands."""
             pass
         
-        @register_command("status", parent="container")
+        @register_command("container.status")
         def container_status():
             """Show container status."""
             return "Container is running"
@@ -66,12 +66,12 @@ class TestNestedCommandRegistration:
             """Container commands."""
             pass
         
-        @register_command("volumes", parent="container", group=True)
+        @register_command("container.volumes", group=True)
         def container_volumes_group():
             """Volume management commands."""
             pass
         
-        @register_command("backup", parent="container.volumes")
+        @register_command("container.volumes.backup")
         def container_volumes_backup():
             """Backup volumes."""
             return "Backing up volumes"
@@ -90,11 +90,11 @@ class TestNestedCommandRegistration:
         def db_group():
             pass
         
-        @register_command("migrate", parent="db", description="Run migrations")
+        @register_command("db.migrate", description="Run migrations")
         def db_migrate():
             return "Migrating database"
         
-        @register_command("backup", parent="db", description="Backup database")
+        @register_command("db.backup", description="Backup database")
         def db_backup():
             return "Backing up database"
         
@@ -102,7 +102,7 @@ class TestNestedCommandRegistration:
         def cache_group():
             pass
         
-        @register_command("clear", parent="cache", description="Clear cache")
+        @register_command("cache.clear", description="Clear cache")
         def cache_clear():
             return "Clearing cache"
         
@@ -131,13 +131,13 @@ class TestNestedCommandRegistration:
         def server_group():
             pass
         
-        @register_command("start", parent="server")
+        @register_command("server.start")
         def server_start(port: int = 8000):
             """Start the server."""
             click.echo(f"Server started on port {port}")
             return port
         
-        @register_command("stop", parent="server")
+        @register_command("server.stop")
         def server_stop():
             """Stop the server."""
             click.echo("Server stopped")
@@ -165,17 +165,17 @@ class TestNestedCommandRegistration:
             """Cloud commands."""
             pass
         
-        @register_command("aws", parent="cloud", group=True)
+        @register_command("cloud.aws", group=True)
         def cloud_aws_group():
             """AWS commands."""
             pass
         
-        @register_command("s3", parent="cloud.aws", group=True)
+        @register_command("cloud.aws.s3", group=True)
         def cloud_aws_s3_group():
             """S3 commands."""
             pass
         
-        @register_command("list", parent="cloud.aws.s3")
+        @register_command("cloud.aws.s3.list")
         def cloud_aws_s3_list():
             """List S3 buckets."""
             click.echo("Listing S3 buckets")
@@ -200,13 +200,13 @@ class TestNestedCommandRegistration:
             pass
         
         # Using parent parameter
-        @register_command("install", parent="tools.terraform")
+        @register_command("tools.terraform.install")
         def tools_terraform_install():
             """Install Terraform."""
             return "Installing Terraform"
         
         # Mixed: dot in name and parent parameter
-        @register_command("validate", parent="tools.terraform")
+        @register_command("tools.terraform.validate")
         def tools_terraform_validate():
             """Validate Terraform."""
             return "Validating"
@@ -225,7 +225,7 @@ class TestNestedCommandRegistration:
         def docker_group():
             pass
         
-        @register_command("status", parent="docker")
+        @register_command("docker.status")
         def docker_status():
             """Docker status."""
             click.echo("Docker status")
@@ -235,7 +235,7 @@ class TestNestedCommandRegistration:
         def k8s_group():
             pass
         
-        @register_command("status", parent="k8s")
+        @register_command("k8s.status")
         def k8s_status():
             """K8s status."""
             click.echo("K8s status")
@@ -265,7 +265,7 @@ class TestNestedCommandRegistration:
             """Admin commands."""
             pass
         
-        @register_command("reset", parent="admin")
+        @register_command("admin.reset")
         def admin_reset():
             """Reset system."""
             click.echo("System reset")
@@ -294,7 +294,7 @@ class TestNestedCommandRegistration:
         def deploy_group():
             pass
         
-        @register_command("app", parent="deploy")
+        @register_command("deploy.app")
         def deploy_app(
             environment: str,
             version: str = "latest",
@@ -337,7 +337,7 @@ class TestNestedCommandRegistration:
             """Git command group."""
             pass
         
-        @register_command("commit", parent="git", description="Create a commit")
+        @register_command("git.commit", description="Create a commit")
         def git_commit():
             """Commit changes."""
             return "committed"
@@ -358,7 +358,7 @@ class TestNestedCommandRegistration:
         def package_group():
             pass
         
-        @register_command("install", parent="package", aliases=["i", "add"])
+        @register_command("package.install", aliases=["i", "add"])
         def package_install(name: str):
             """Install a package."""
             click.echo(f"Installing {name}")
@@ -374,8 +374,8 @@ class TestNestedCommandRegistration:
     def test_error_on_missing_parent(self):
         """Test behavior when parent group doesn't exist."""
         
-        # This should work - parent will be created implicitly or command added to root
-        @register_command("orphan", parent="nonexistent")
+        # This should work - parent will be created implicitly
+        @register_command("nonexistent.orphan")
         def orphan_command():
             """Orphan command."""
             return "orphan"
@@ -406,12 +406,12 @@ class TestNestedCommandIntegration:
         def db_group():
             pass
         
-        @register_command("migrate", parent="db")
+        @register_command("db.migrate")
         def db_migrate(direction: str = "up"):
             """Run database migrations."""
             click.echo(f"Running migrations {direction}")
         
-        @register_command("seed", parent="db")
+        @register_command("db.seed")
         def db_seed(count: int = 100):
             """Seed database with test data."""
             click.echo(f"Seeding {count} records")
@@ -421,22 +421,22 @@ class TestNestedCommandIntegration:
         def server_group():
             pass
         
-        @register_command("start", parent="server")
+        @register_command("server.start")
         def server_start(port: int = 8000, host: str = "localhost"):
             """Start the server."""
             click.echo(f"Starting server on {host}:{port}")
         
-        @register_command("logs", parent="server", group=True)
+        @register_command("server.logs", group=True)
         def server_logs_group():
             """Server log commands."""
             pass
         
-        @register_command("show", parent="server.logs")
+        @register_command("server.logs.show")
         def server_logs_show(lines: int = 100):
             """Show server logs."""
             click.echo(f"Showing last {lines} lines")
         
-        @register_command("clear", parent="server.logs")
+        @register_command("server.logs.clear")
         def server_logs_clear():
             """Clear server logs."""
             click.echo("Clearing logs")
@@ -446,12 +446,12 @@ class TestNestedCommandIntegration:
         def config_group():
             pass
         
-        @register_command("get", parent="config")
+        @register_command("config.get")
         def config_get(key: str):
             """Get config value."""
             click.echo(f"Config {key} = value")
         
-        @register_command("set", parent="config")
+        @register_command("config.set")
         def config_set(key: str, value: str):
             """Set config value."""
             click.echo(f"Setting {key} = {value}")
@@ -484,16 +484,16 @@ class TestNestedCommandIntegration:
         def tools_group():
             pass
         
-        @register_command("python", parent="tools", group=True, description="Python tools")
+        @register_command("tools.python", group=True, description="Python tools")
         def tools_python_group():
             pass
         
-        @register_command("lint", parent="tools.python", description="Run linter")
+        @register_command("tools.python.lint", description="Run linter")
         def tools_python_lint():
             """Lint Python code."""
             click.echo("Linting...")
         
-        @register_command("format", parent="tools.python", description="Format code")
+        @register_command("tools.python.format", description="Format code")
         def tools_python_format():
             """Format Python code."""
             click.echo("Formatting...")
