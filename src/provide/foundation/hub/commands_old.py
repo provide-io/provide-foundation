@@ -38,7 +38,7 @@ class CommandInfo:
     category: str | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
     click_command: click.Command | None = None
-    parent: str | None = None  # Parent path extracted from dot notation
+    parent: str | None = None  # Parent group for nested commands
 
 
 @overload
@@ -156,6 +156,7 @@ def _register_command_func(
     aliases: list[str] | None = None,
     hidden: bool = False,
     category: str | None = None,
+    parent: str | None = None,
     group: bool = False,
     replace: bool = False,
     registry: Registry | None = None,
@@ -164,22 +165,17 @@ def _register_command_func(
     """Internal function to register a command."""
     reg = registry or _command_registry
     
-    # Determine command name and parent from dot notation
+    # Determine command name and handle dot notation
     if name:
-        parts = name.split(".")
-        if len(parts) > 1:
-            # Extract parent path and command name
-            parent = ".".join(parts[:-1])
-            command_name = parts[-1]
-            
-            # Auto-create parent groups if they don't exist
-            _ensure_parent_groups(parent, reg)
+        # Check if name includes parent via dot notation (e.g., "container.volumes")
+        if "." in name and not parent:
+            parts = name.rsplit(".", 1)
+            parent = parts[0]
+            command_name = parts[1]
         else:
-            parent = None
             command_name = name
     else:
         # Convert function name to kebab-case
-        parent = None
         command_name = func.__name__.replace("_", "-").replace("cmd", "").strip("-")
     
     # Check if it's already a Click command
@@ -206,9 +202,13 @@ def _register_command_func(
         parent=parent,
     )
     
-    # Build full registry key
+    # Build full name with parent hierarchy if specified
+    # For multi-level nesting, parent can be "container.volumes" or "container volumes"
+    # which becomes "container-volumes-{command_name}"
     if parent:
-        full_name = f"{parent.replace('.', '-')}-{command_name}"
+        # Replace dots and spaces with dashes for registry key
+        parent_key = parent.replace(".", "-").replace(" ", "-")
+        full_name = f"{parent_key}-{command_name}"
     else:
         full_name = command_name
     
@@ -243,59 +243,12 @@ def _register_command_func(
     log.info(
         "Registered command",
         name=command_name,
-        parent=parent,
         aliases=aliases,
         hidden=hidden,
         category=category,
     )
     
     return func
-
-
-def _ensure_parent_groups(parent_path: str, registry: Registry) -> None:
-    """Ensure all parent groups in the path exist, creating them if needed."""
-    parts = parent_path.split(".")
-    
-    # Build up the path progressively
-    for i in range(len(parts)):
-        group_path = ".".join(parts[:i+1])
-        registry_key = group_path.replace(".", "-")
-        
-        # Check if this group already exists
-        if not registry.get_entry(registry_key, dimension="command"):
-            # Create a placeholder group
-            def group_func():
-                """Auto-generated command group."""
-                pass
-            
-            # Set the function name for better debugging
-            group_func.__name__ = f"{parts[i]}_group"
-            
-            # Register the group
-            parent = ".".join(parts[:i]) if i > 0 else None
-            
-            info = CommandInfo(
-                name=parts[i],
-                func=group_func,
-                description=f"{parts[i].capitalize()} commands",
-                metadata={"is_group": True, "auto_created": True},
-                parent=parent,
-            )
-            
-            registry.register(
-                name=registry_key,
-                value=group_func,
-                dimension="command",
-                metadata={
-                    "info": info,
-                    "description": info.description,
-                    "parent": parent,
-                    "is_group": True,
-                    "auto_created": True,
-                },
-            )
-            
-            log.debug(f"Auto-created group: {group_path}")
 
 
 def _extract_click_type(annotation: Any) -> type:
@@ -390,9 +343,8 @@ def build_click_command(
     sig = inspect.signature(func)
     click_func = func
     
-    # Add parameters as Click options/arguments in reverse order for Click
-    params = list(sig.parameters.items())
-    for param_name, param in reversed(params):
+    # Add parameters as Click options/arguments
+    for param_name, param in sig.parameters.items():
         if param_name in ("self", "cls", "ctx"):
             continue
         
@@ -517,13 +469,18 @@ def create_command_group(
             
             # Add to parent or root
             if parent:
-                # Handle multi-level parents with dot notation
-                parent_key = parent.replace(".", "-")
+                # Handle multi-level parents (e.g., "container.volumes" or "container volumes")
+                parent_key = parent.replace(".", "-").replace(" ", "-")
                 if parent_key in groups:
                     groups[parent_key].add_command(subgroup)
                 else:
-                    # Parent should have been created, add to root as fallback
-                    group.add_command(subgroup)
+                    # Try to find parent by checking registry
+                    parent_entry = reg.get_entry(parent_key, dimension="command")
+                    if parent_entry and parent_entry.metadata.get("is_group"):
+                        # Parent should have been created, but add to root as fallback
+                        group.add_command(subgroup)
+                    else:
+                        group.add_command(subgroup)
             else:
                 group.add_command(subgroup)
     
@@ -546,14 +503,14 @@ def create_command_group(
             if parent:
                 # Extract the actual command name (without parent prefix)
                 parts = cmd_name.split("-")
-                parent_parts = parent.replace(".", "-").split("-")
+                parent_parts = parent.replace(".", "-").replace(" ", "-").split("-")
                 # Remove parent parts from command name
                 cmd_parts = parts[len(parent_parts):]
                 click_cmd.name = "-".join(cmd_parts) if cmd_parts else parts[-1]
             
             # Add to parent group or root
             if parent:
-                parent_key = parent.replace(".", "-")
+                parent_key = parent.replace(".", "-").replace(" ", "-")
                 if parent_key in groups:
                     groups[parent_key].add_command(click_cmd)
                 else:
