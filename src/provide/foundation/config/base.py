@@ -295,8 +295,11 @@ class BaseConfig:
 
     def __repr__(self) -> str:
         """String representation hiding sensitive fields."""
+        # Get the actual attrs fields
+        attr_fields = attrs.fields(self.__class__)
+        
         parts = []
-        for attr in fields(self.__class__):
+        for attr in attr_fields:
             # Skip internal fields
             if attr.name.startswith('_'):
                 continue
