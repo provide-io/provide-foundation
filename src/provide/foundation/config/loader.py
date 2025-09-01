@@ -9,6 +9,8 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, TypeVar
 
+import aiofiles
+
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.env import EnvConfig
 from provide.foundation.config.types import ConfigDict, ConfigFormat, ConfigSource
@@ -20,7 +22,7 @@ class ConfigLoader(ABC):
     """Abstract base class for configuration loaders."""
     
     @abstractmethod
-    def load(self, config_class: type[T]) -> T:
+    async def load(self, config_class: type[T]) -> T:
         """
         Load configuration.
         
@@ -74,17 +76,18 @@ class FileConfigLoader(ConfigLoader):
         """Check if configuration file exists."""
         return self.path.exists()
     
-    def load(self, config_class: type[T]) -> T:
+    async def load(self, config_class: type[T]) -> T:
         """Load configuration from file."""
         if not self.exists():
             raise FileNotFoundError(f"Configuration file not found: {self.path}")
         
-        data = self._read_file()
-        return config_class.from_dict(data, source=ConfigSource.FILE)
+        data = await self._read_file()
+        return await config_class.from_dict(data, source=ConfigSource.FILE)
     
-    def _read_file(self) -> ConfigDict:
+    async def _read_file(self) -> ConfigDict:
         """Read and parse configuration file."""
-        content = self.path.read_text(encoding=self.encoding)
+        async with aiofiles.open(self.path, 'r', encoding=self.encoding) as f:
+            content = await f.read()
         
         if self.format == ConfigFormat.JSON:
             return json.loads(content)
@@ -175,12 +178,12 @@ class EnvConfigLoader(ConfigLoader):
             return any(key.startswith(prefix_with_delim) for key in os.environ)
         return bool(os.environ)
     
-    def load(self, config_class: type[T]) -> T:
+    async def load(self, config_class: type[T]) -> T:
         """Load configuration from environment variables."""
         if not issubclass(config_class, EnvConfig):
             raise TypeError(f"{config_class.__name__} must inherit from EnvConfig")
         
-        return config_class.from_env(
+        return await config_class.from_env(
             prefix=self.prefix,
             delimiter=self.delimiter,
             case_sensitive=self.case_sensitive
@@ -205,9 +208,9 @@ class DictConfigLoader(ConfigLoader):
         """Check if configuration data exists."""
         return self.data is not None
     
-    def load(self, config_class: type[T]) -> T:
+    async def load(self, config_class: type[T]) -> T:
         """Load configuration from dictionary."""
-        return config_class.from_dict(self.data, source=self.source)
+        return await config_class.from_dict(self.data, source=self.source)
 
 
 class MultiSourceLoader(ConfigLoader):
@@ -226,7 +229,7 @@ class MultiSourceLoader(ConfigLoader):
         """Check if any configuration source exists."""
         return any(loader.exists() for loader in self.loaders)
     
-    def load(self, config_class: type[T]) -> T:
+    async def load(self, config_class: type[T]) -> T:
         """Load and merge configuration from multiple sources."""
         if not self.exists():
             raise ValueError("No configuration sources available")
@@ -236,11 +239,12 @@ class MultiSourceLoader(ConfigLoader):
         for loader in self.loaders:
             if loader.exists():
                 if config is None:
-                    config = loader.load(config_class)
+                    config = await loader.load(config_class)
                 else:
                     # Load and merge
-                    new_config = loader.load(config_class)
-                    config.update(new_config.to_dict(include_sensitive=True), source=new_config._source_map.get("", ConfigSource.RUNTIME))
+                    new_config = await loader.load(config_class)
+                    new_dict = await new_config.to_dict(include_sensitive=True)
+                    await config.update(new_dict, source=new_config._source_map.get("", ConfigSource.RUNTIME))
         
         return config
 
@@ -261,10 +265,10 @@ class ChainedLoader(ConfigLoader):
         """Check if any configuration source exists."""
         return any(loader.exists() for loader in self.loaders)
     
-    def load(self, config_class: type[T]) -> T:
+    async def load(self, config_class: type[T]) -> T:
         """Load configuration from first available source."""
         for loader in self.loaders:
             if loader.exists():
-                return loader.load(config_class)
+                return await loader.load(config_class)
         
         raise ValueError("No configuration source available")
