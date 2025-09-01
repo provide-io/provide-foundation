@@ -252,10 +252,11 @@ class MultiSourceLoader(ConfigLoader):
                     # Load and merge
                     new_config = await loader.load(config_class)
                     new_dict = new_config.to_dict(include_sensitive=True)
-                    config.update(
-                        new_dict,
-                        source=getattr(new_config, '_source_map', {}).get("", ConfigSource.RUNTIME),
-                    )
+                    # Update each field with its proper source
+                    for key, value in new_dict.items():
+                        source = new_config.get_source(key)
+                        if source is not None:
+                            config.update({key: value}, source=source)
 
         return config
 
