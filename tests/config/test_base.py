@@ -1,4 +1,6 @@
 """Tests for base configuration classes."""
+from __future__ import annotations
+
 import pytest
 from attrs import define
 

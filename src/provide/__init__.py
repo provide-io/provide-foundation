@@ -1,12 +1,18 @@
-#
-# __init__.py
-#
 """
 Provide Namespace Package.
 
-This file makes 'provide' a namespace package.
+Provides easy access to common foundation components:
+- logger: Foundation logging system
+- config: Foundation configuration system
 """
 
-# 🐍🔭
+# Core imports for convenience
+from provide.foundation import logger
+from provide.foundation import config
+
+__all__ = [
+    "logger",
+    "config",
+]
 
 

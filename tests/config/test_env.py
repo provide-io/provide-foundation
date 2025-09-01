@@ -1,4 +1,6 @@
 """Tests for environment variable configuration."""
+from __future__ import annotations
+
 import os
 import pytest
 from attrs import define

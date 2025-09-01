@@ -1,6 +1,8 @@
 """
 Base configuration classes and utilities.
 """
+from __future__ import annotations
+
 import copy
 from typing import Any, Callable, TypeVar, get_type_hints
 
