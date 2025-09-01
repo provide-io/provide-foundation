@@ -94,7 +94,7 @@ def field(
         )
 
 
-@define
+@define(slots=True)
 class BaseConfig:
     """
     Base configuration class with common functionality.
@@ -103,12 +103,16 @@ class BaseConfig:
     All methods are async to support async validation and I/O operations.
     """
 
+    # These are instance attributes that need to be defined outside of slots
+    _source_map: dict[str, ConfigSource] = attrs_field(init=False, factory=dict)
+    _original_values: dict[str, Any] = attrs_field(init=False, factory=dict)
+    
     def __attrs_post_init__(self):
         """Post-initialization hook for subclasses."""
-        self._source_map: dict[str, ConfigSource] = {}
-        self._original_values: dict[str, Any] = {}
+        # The _source_map and _original_values are now handled by attrs with factory
         # Note: validate() is now async, so we can't call it here
         # Users must explicitly call await config.validate() after creation
+        pass
 
     async def validate(self) -> None:
         """
@@ -196,12 +200,6 @@ class BaseConfig:
 
         # Create instance
         instance = cls(**filtered_data)
-
-        # Initialize the attrs post init manually since we're creating from dict
-        if not hasattr(instance, '_source_map'):
-            instance._source_map = {}
-        if not hasattr(instance, '_original_values'):
-            instance._original_values = {}
         
         # Track sources
         for key in filtered_data:
