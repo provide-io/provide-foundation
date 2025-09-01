@@ -40,7 +40,8 @@ class TestCommandRegistration:
             pass
         
         hub = get_hub()
-        command = hub.get_command("info-cmd")
+        # The function name is used as the command name
+        command = hub.get_command("my_special_command")
         
         assert command is my_special_command
     
