@@ -12,7 +12,7 @@ from typing import Any, TypeVar, get_origin, get_args
 T = TypeVar("T")
 
 
-def parse_bool(value: str | bool) -> bool:
+def parse_bool(value: str | bool, strict: bool = False) -> bool:
     """
     Parse a boolean value from string.
     
@@ -20,15 +20,20 @@ def parse_bool(value: str | bool) -> bool:
     
     Args:
         value: String or bool value to parse
+        strict: If True, raise TypeError for non-bool/non-string types
         
     Returns:
         Boolean value
         
     Raises:
+        TypeError: If strict=True and value is not bool or string
         ValueError: If value cannot be parsed as boolean
     """
     if isinstance(value, bool):
         return value
+    
+    if strict and not isinstance(value, str):
+        raise TypeError(f"Cannot convert {type(value).__name__} to bool: {value!r}")
         
     str_value = str(value).lower().strip()
     
@@ -40,12 +45,12 @@ def parse_bool(value: str | bool) -> bool:
         raise ValueError(f"Cannot parse '{value}' as boolean")
 
 
-def strict_bool_converter(value: Any) -> bool:
+def strict_parse_bool(value: Any) -> bool:
     """
-    Convert value to bool with strict type checking.
+    Parse boolean with strict type checking.
     
+    Convenience function for parse_bool(value, strict=True).
     Only accepts actual bools or strings that can be parsed as bool.
-    Raises TypeError for other types.
     
     Args:
         value: Value to convert
@@ -54,15 +59,10 @@ def strict_bool_converter(value: Any) -> bool:
         Boolean value
         
     Raises:
-        TypeError: If value is not bool or parseable string
+        TypeError: If value is not bool or string
         ValueError: If string cannot be parsed as boolean
     """
-    if isinstance(value, bool):
-        return value
-    if isinstance(value, str):
-        # Use parse_bool for string conversion
-        return parse_bool(value)
-    raise TypeError(f"Cannot convert {type(value).__name__} to bool: {value!r}")
+    return parse_bool(value, strict=True)
 
 
 def parse_list(
