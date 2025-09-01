@@ -72,7 +72,7 @@ def run_command(
     """
     # Log command execution
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
-    pplog.info("🚀 Running command", command=cmd_str, cwd=str(cwd) if cwd else None)
+    plog.info("🚀 Running command", command=cmd_str, cwd=str(cwd) if cwd else None)
     
     # Prepare environment
     run_env = dict(env) if env is not None else os.environ.copy()
