@@ -514,7 +514,7 @@ def create_command_group(
         commands = reg.list_dimension("command")
 
     # Sort commands to ensure parents are created before children
-    sorted_commands = sorted(commands, key=lambda x: x.count("-"))
+    sorted_commands = sorted(commands, key=lambda x: x.count("."))
 
     # First pass: create all groups
     for cmd_name in sorted_commands:
@@ -530,7 +530,7 @@ def create_command_group(
         if entry.metadata.get("is_group"):
             parent = entry.metadata.get("parent")
             # Extract the actual group name (without parent prefix)
-            actual_name = cmd_name.split("-")[-1] if parent else cmd_name
+            actual_name = cmd_name.split(".")[-1] if parent else cmd_name
 
             subgroup = click.Group(
                 name=actual_name,
@@ -569,11 +569,11 @@ def create_command_group(
             # Update command name if it has a parent
             if parent:
                 # Extract the actual command name (without parent prefix)
-                parts = cmd_name.split("-")
+                parts = cmd_name.split(".")
                 parent_parts = parent.split(".")
                 # Remove parent parts from command name
                 cmd_parts = parts[len(parent_parts) :]
-                click_cmd.name = "-".join(cmd_parts) if cmd_parts else parts[-1]
+                click_cmd.name = cmd_parts[0] if cmd_parts else parts[-1]
 
             # Add to parent group or root
             if parent:
