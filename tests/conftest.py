@@ -2,11 +2,10 @@
 # tests/conftest.py
 #
 """
-Pytest configuration and fixtures for provide-foundation tests.
+Pytest configuration and global fixtures for provide-foundation tests.
 
-This file defines shared fixtures used across multiple test modules,
-primarily for managing the telemetry system's state during testing,
-capturing log output, and providing diagnostic logging for the test setup itself.
+This file contains only the essential global fixtures and configuration
+that must be at the root level for pytest.
 """
 
 from collections.abc import Generator
@@ -19,12 +18,6 @@ import pytest
 from provide.foundation.core import (
     _set_log_stream_for_testing,
     reset_foundation_setup_for_testing,
-)
-
-# Import fixtures from modules for backward compatibility
-from tests.fixtures.logger import (
-    captured_stderr_for_foundation,
-    setup_foundation_telemetry_for_test,
 )
 
 _conftest_diag_logger_name = "provide.foundation.conftest_diag"
@@ -76,14 +69,16 @@ def manage_telemetry_reset_for_each_test() -> Generator[None]:
     _set_log_stream_for_testing(None)  # Ensure stream is reset to default stderr
 
 
-# Fixtures are now imported from tests.fixtures.logger above
-# for backward compatibility - tests can still use them from conftest
+# Import and re-export fixtures so they're available to all tests
+from tests.fixtures.logger import (
+    captured_stderr_for_foundation,
+    setup_foundation_telemetry_for_test,
+)
+from tests.fixtures.hub import default_container_directory
 
-
-@pytest.fixture(scope="session")
-def foundation_conftest_diagnostic_logger() -> stdlib_logging.Logger:
-    """Session-scoped fixture providing the conftest diagnostic logger."""
-    return _get_conftest_diag_logger()
-
-
-# 🧪⚙️
+# Re-export for pytest discovery
+__all__ = [
+    "captured_stderr_for_foundation",
+    "setup_foundation_telemetry_for_test",
+    "default_container_directory",
+]
