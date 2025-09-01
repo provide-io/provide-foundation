@@ -44,7 +44,8 @@
       "Bash(ln:*)",
       "Bash(DOCKER_HOST=unix:///Users/tim/.colima/default/docker.sock act -W .github/workflows/test-simple.yml --container-daemon-socket /var/run/docker.sock)",
       "Bash(DOCKER_HOST=unix:///Users/tim/.colima/default/docker.sock act -W .github/workflows/test-simple.yml --container-daemon-socket \"\")",
-      "Bash(DOCKER_HOST=unix:///Users/tim/.colima/default/docker.sock act -W .github/workflows/ci.yml -j test)"
+      "Bash(DOCKER_HOST=unix:///Users/tim/.colima/default/docker.sock act -W .github/workflows/ci.yml -j test)",
+      "Bash(./act-colima.sh:*)"
     ],
     "deny": [],
     "ask": [],
