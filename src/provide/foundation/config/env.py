@@ -234,7 +234,72 @@ class EnvConfig(BaseConfig):
     """
 
     @classmethod
-    async def from_env(
+    def from_env(
+        cls: type[T],
+        prefix: str = "",
+        delimiter: str = "_",
+        case_sensitive: bool = False,
+    ) -> T:
+        """
+        Load configuration from environment variables synchronously.
+
+        Args:
+            prefix: Prefix for all environment variables
+            delimiter: Delimiter between prefix and field name
+            case_sensitive: Whether variable names are case-sensitive
+
+        Returns:
+            Configuration instance
+        """
+        data = {}
+
+        for attr in fields(cls):
+            # Determine environment variable name
+            env_var = attr.metadata.get("env_var")
+
+            if not env_var:
+                # Build from prefix and field name
+                field_prefix = attr.metadata.get("env_prefix", prefix)
+                field_name = attr.name.upper() if not case_sensitive else attr.name
+
+                if field_prefix:
+                    env_var = f"{field_prefix}{delimiter}{field_name}"
+                else:
+                    env_var = field_name
+
+            # Get value from environment
+            raw_value = os.environ.get(env_var)
+
+            if raw_value is not None:
+                value = raw_value
+                # Check if it's a file-based secret
+                if value.startswith("file://"):
+                    # Read synchronously
+                    file_path = value[7:]
+                    try:
+                        with open(file_path) as f:
+                            value = f.read().strip()
+                    except Exception as e:
+                        raise ValueError(f"Failed to read secret from file '{file_path}': {e}")
+                
+                # Apply parser if specified
+                parser = attr.metadata.get("env_parser")
+                
+                if parser:
+                    try:
+                        value = parser(value)
+                    except Exception as e:
+                        raise ValueError(f"Failed to parse {env_var}: {e}")
+                else:
+                    # Try to infer parser from type
+                    value = cls._auto_parse(attr, value)
+                
+                data[attr.name] = value
+
+        return cls.from_dict(data, source=ConfigSource.ENV)
+
+    @classmethod
+    async def from_env_async(
         cls: type[T],
         prefix: str = "",
         delimiter: str = "_",
@@ -366,7 +431,7 @@ class EnvConfig(BaseConfig):
         # Default to string
         return value
 
-    async def to_env_dict(
+    def to_env_dict(
         self, prefix: str = "", delimiter: str = "_"
     ) -> dict[str, str]:
         """
