@@ -152,33 +152,38 @@ class TestErrorSystemIntegration:
         def unreliable_service():
             nonlocal attempt_count
             attempt_count += 1
-            if attempt_count < 4:
+            if attempt_count < 7:
                 raise NetworkError("Service down")
             return "success"
         
-        # First call: 2 attempts (retry), both fail
+        # First call: 2 attempts (retry), both fail - circuit counts as 1 failure
         with pytest.raises(NetworkError):
             unreliable_service()
         assert attempt_count == 2
         
-        # Second call: 1 attempt (no retry), fails and opens circuit
+        # Second call: 2 attempts (retry), both fail - circuit counts as 2 failures
         with pytest.raises(NetworkError):
             unreliable_service()
-        assert attempt_count == 3
+        assert attempt_count == 4
         
-        # Third call: circuit is open
+        # Third call: 2 attempts (retry), both fail - circuit opens (3 failures)
+        with pytest.raises(NetworkError):
+            unreliable_service()
+        assert attempt_count == 6
+        
+        # Fourth call: circuit is open
         with pytest.raises(RuntimeError) as exc_info:
             unreliable_service()
         assert "Circuit breaker is open" in str(exc_info.value)
-        assert attempt_count == 3  # No new attempt
+        assert attempt_count == 6  # No new attempt
         
         # Wait for recovery
         time.sleep(0.02)
         
-        # Fourth call: circuit half-open, succeeds
+        # Fifth call: circuit half-open, succeeds
         result = unreliable_service()
         assert result == "success"
-        assert attempt_count == 4
+        assert attempt_count == 7
     
     def test_error_handler_chain(self):
         """Test chaining multiple error handlers."""

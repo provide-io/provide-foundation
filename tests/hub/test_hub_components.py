@@ -176,16 +176,7 @@ class TestComponentRegistration:
     
     def test_discover_components_from_entry_points(self, monkeypatch):
         """Test discovering components from entry points."""
-        # Mock entry points
-        class MockEntryPoint:
-            def __init__(self, name, value):
-                self.name = name
-                self._value = value
-                self.module = "test.module"
-                self.attr = name
-            
-            def load(self):
-                return self._value
+        from tests.mocks.components import MockEntryPoint
         
         class TestResource:
             pass

@@ -4,7 +4,9 @@ Provides decorators for common error handling patterns like retry,
 fallback, and error suppression.
 """
 
+import asyncio
 import functools
+import inspect
 import time
 from collections.abc import Callable
 from typing import Any, TypeVar
@@ -51,43 +53,82 @@ def with_error_handling(
         ...     pass
     """
     def decorator(func: F) -> F:
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            try:
-                return func(*args, **kwargs)
-            except Exception as e:
-                # Check if we should suppress this error
-                if suppress and isinstance(e, suppress):
+        if inspect.iscoroutinefunction(func):
+            @functools.wraps(func)
+            async def async_wrapper(*args, **kwargs):
+                try:
+                    return await func(*args, **kwargs)
+                except Exception as e:
+                    # Check if we should suppress this error
+                    if suppress and isinstance(e, suppress):
+                        if log_errors:
+                            context = context_provider() if context_provider else {}
+                            logger.info(
+                                f"Suppressed {type(e).__name__} in {func.__name__}",
+                                function=func.__name__,
+                                error=str(e),
+                                **context
+                            )
+                        return fallback
+                    
+                    # Log the error if configured
                     if log_errors:
                         context = context_provider() if context_provider else {}
-                        logger.info(
-                            f"Suppressed {type(e).__name__} in {func.__name__}",
+                        logger.error(
+                            f"Error in {func.__name__}: {e}",
+                            exc_info=True,
                             function=func.__name__,
-                            error=str(e),
                             **context
                         )
-                    return fallback
-                
-                # Log the error if configured
-                if log_errors:
-                    context = context_provider() if context_provider else {}
-                    logger.error(
-                        f"Error in {func.__name__}: {e}",
-                        exc_info=True,
-                        function=func.__name__,
-                        **context
-                    )
-                
-                # Map the error if mapper provided
-                if error_mapper and not isinstance(e, FoundationError):
-                    mapped = error_mapper(e)
-                    if mapped is not e:
-                        raise mapped from e
-                
-                # Re-raise the original error
-                raise
-        
-        return wrapper  # type: ignore
+                    
+                    # Map the error if mapper provided
+                    if error_mapper and not isinstance(e, FoundationError):
+                        mapped = error_mapper(e)
+                        if mapped is not e:
+                            raise mapped from e
+                    
+                    # Re-raise the original error
+                    raise
+            
+            return async_wrapper  # type: ignore
+        else:
+            @functools.wraps(func)
+            def wrapper(*args, **kwargs):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    # Check if we should suppress this error
+                    if suppress and isinstance(e, suppress):
+                        if log_errors:
+                            context = context_provider() if context_provider else {}
+                            logger.info(
+                                f"Suppressed {type(e).__name__} in {func.__name__}",
+                                function=func.__name__,
+                                error=str(e),
+                                **context
+                            )
+                        return fallback
+                    
+                    # Log the error if configured
+                    if log_errors:
+                        context = context_provider() if context_provider else {}
+                        logger.error(
+                            f"Error in {func.__name__}: {e}",
+                            exc_info=True,
+                            function=func.__name__,
+                            **context
+                        )
+                    
+                    # Map the error if mapper provided
+                    if error_mapper and not isinstance(e, FoundationError):
+                        mapped = error_mapper(e)
+                        if mapped is not e:
+                            raise mapped from e
+                    
+                    # Re-raise the original error
+                    raise
+            
+            return wrapper  # type: ignore
     return decorator
 
 
@@ -237,7 +278,7 @@ def suppress_and_log(
                 return func(*args, **kwargs)
             except exceptions as e:
                 # Get appropriate log method
-                if hasattr(logger, log_level):
+                if log_level in ('debug', 'info', 'warning', 'error', 'critical'):
                     log_method = getattr(logger, log_level)
                 else:
                     log_method = logger.warning

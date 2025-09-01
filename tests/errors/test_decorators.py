@@ -413,7 +413,7 @@ class TestFallbackOnError:
     
     def test_specific_exception_types(self):
         """Test fallback for specific exception types."""
-        def fallback_func():
+        def fallback_func(error_type):
             return "fallback"
         
         @fallback_on_error(fallback_func, NetworkError)
