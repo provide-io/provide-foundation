@@ -464,8 +464,10 @@ def build_click_command(
     )
 
     # Copy over the params from the decorated function (Click stores them there)
+    # Note: Click params are in reverse order of decoration, but for the Command
+    # we need them in the correct positional order
     if hasattr(decorated_func, "__click_params__"):
-        cmd.params = decorated_func.__click_params__
+        cmd.params = list(reversed(decorated_func.__click_params__))
 
     return cmd
 
