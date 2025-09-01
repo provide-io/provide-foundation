@@ -8,7 +8,8 @@ from pathlib import Path
 from attrs import define
 
 from provide.foundation.config.base import BaseConfig, field
-from provide.foundation.config.env import EnvConfig, env_field, parse_bool
+from provide.foundation.config.env import EnvConfig, env_field
+from provide.foundation.utils.parsing import parse_bool
 from provide.foundation.config.loader import (
     ChainedLoader,
     DictConfigLoader,
