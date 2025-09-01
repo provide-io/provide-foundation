@@ -49,7 +49,6 @@ def register_command(
     aliases: list[str] | None = None,
     hidden: bool = False,
     category: str | None = None,
-    parent: str | None = None,
     group: bool = False,
     replace: bool = False,
     registry: Registry | None = None,
@@ -70,7 +69,6 @@ def register_command(
     aliases: list[str] | None = None,
     hidden: bool = False,
     category: str | None = None,
-    parent: str | None = None,
     group: bool = False,
     replace: bool = False,
     registry: Registry | None = None,
@@ -89,30 +87,26 @@ def register_command(
         def my_command():
             pass
         
-        @register_command("container", group=True)
-        def container_group():
-            pass
-        
-        @register_command("status", parent="container")
+        # Nested commands using dot notation - groups are auto-created
+        @register_command("container.status")
         def container_status():
             pass
         
-        # Multi-level nesting with dot notation
-        @register_command("container.volumes", group=True)
-        def container_volumes_group():
+        @register_command("container.volumes.backup")
+        def container_volumes_backup():
             pass
         
-        @register_command("backup", parent="container.volumes")
-        def container_volumes_backup():
+        # Explicit group with custom description (optional)
+        @register_command("container", group=True, description="Container management")
+        def container_group():
             pass
     
     Args:
-        name_or_func: Command name or function (when used without parens)
+        name_or_func: Command name using dot notation for nesting (e.g., "container.status")
         description: Command description (defaults to docstring)
         aliases: Alternative names for the command
         hidden: Whether to hide from help listing
         category: Command category for grouping
-        parent: Parent group name for nested commands (supports dot notation)
         group: Whether this is a command group (not a command)
         replace: Whether to replace existing registration
         registry: Custom registry (defaults to global)
@@ -130,7 +124,6 @@ def register_command(
             aliases=aliases,
             hidden=hidden,
             category=category,
-            parent=parent,
             group=group,
             replace=replace,
             registry=registry,
@@ -146,7 +139,6 @@ def register_command(
             aliases=aliases,
             hidden=hidden,
             category=category,
-            parent=parent,
             group=group,
             replace=replace,
             registry=registry,
