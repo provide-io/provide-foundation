@@ -409,7 +409,7 @@ class TestDotNotationIntegration:
         @register_command("api.users.create")
         def api_users_create(name: str, email: str):
             """Create user."""
-            click.echo(f"Creating user: {email} ({name})")
+            click.echo(f"Creating user: {name} ({email})")
         
         # Another explicit group at deeper level
         @register_command("api.auth", group=True, description="Authentication")
