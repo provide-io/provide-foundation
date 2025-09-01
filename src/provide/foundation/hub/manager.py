@@ -287,36 +287,16 @@ class Hub:
             >>>     cli()
         """
         from provide.foundation.cli.decorators import standard_options, pass_context
+        from provide.foundation.hub.commands import create_command_group
         
-        # Create the main group
-        @click.group(name=name, **kwargs)
-        @standard_options
-        @pass_context
-        @click.version_option(version=version)
-        def cli(ctx: Context, **options: Any) -> None:
-            """Main CLI group."""
-            # Update context with options
-            for key, value in options.items():
-                if value is not None and hasattr(ctx, key):
-                    setattr(ctx, key, value)
+        # Use create_command_group which now handles nested groups
+        cli = create_command_group(name=name, registry=self._command_registry, **kwargs)
         
-        # Add all non-hidden commands
-        for cmd_name in self.list_commands():
-            entry = self._command_registry.get_entry(cmd_name, dimension="command")
-            if not entry:
-                continue
-            
-            info = entry.metadata.get("info")
-            if not info or info.hidden:
-                continue
-            
-            # Get or build Click command
-            click_cmd = info.click_command
-            if not click_cmd:
-                click_cmd = build_click_command(cmd_name, self._command_registry)
-            
-            if click_cmd:
-                cli.add_command(click_cmd)
+        # Apply standard decorators
+        cli = standard_options(cli)
+        cli = pass_context(cli)
+        if version:
+            cli = click.version_option(version=version)(cli)
         
         self._cli_group = cli
         return cli
