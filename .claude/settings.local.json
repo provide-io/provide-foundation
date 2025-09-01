@@ -18,7 +18,9 @@
       "Bash(uv pip:*)",
       "Bash(/dev/null)",
       "Bash(find:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(LOG_LEVEL=TRACE python /tmp/test_logger_trace.py)",
+      "Bash(PROVIDE_LOG_LEVEL=TRACE python /tmp/test_logger_trace.py)"
     ],
     "deny": [],
     "ask": []
