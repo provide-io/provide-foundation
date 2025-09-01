@@ -33,7 +33,9 @@
       "Bash(./test-workflows.sh:*)",
       "Bash(colima status:*)",
       "Bash(export DOCKER_HOST=\"unix://$HOME/.colima/default/docker.sock\")",
-      "Bash(act:*)"
+      "Bash(act:*)",
+      "Bash(/Users/tim/code/gh/provide-io/provide-foundation/validate-workflows.sh)",
+      "Bash(bash:*)"
     ],
     "deny": [],
     "ask": [],
