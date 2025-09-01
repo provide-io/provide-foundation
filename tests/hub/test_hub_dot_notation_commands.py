@@ -307,11 +307,11 @@ class TestDotNotationCommands:
         assert network is not None
         assert network.metadata.get("description") == "Network commands"
         
-        firewall = hub._command_registry.get_entry("network-firewall", dimension="command")
+        firewall = hub._command_registry.get_entry("network.firewall", dimension="command")
         assert firewall is not None
         assert firewall.metadata.get("description") == "Firewall commands"
         
-        rules = hub._command_registry.get_entry("network-firewall-rules", dimension="command")
+        rules = hub._command_registry.get_entry("network.firewall.rules", dimension="command")
         assert rules is not None
         assert rules.metadata.get("description") == "Rules commands"
 

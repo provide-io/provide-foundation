@@ -53,7 +53,7 @@ class TestNestedCommandRegistration:
         hub = get_hub()
         
         # Should extract parent and name from dot notation
-        entry = hub._command_registry.get_entry("config-database", dimension="command")
+        entry = hub._command_registry.get_entry("config.database", dimension="command")
         assert entry is not None
         assert entry.metadata["parent"] == "config"
         assert entry.metadata["is_group"] is True
