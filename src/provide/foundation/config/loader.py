@@ -147,7 +147,7 @@ class FileConfigLoader(ConfigLoader):
             # Parse key=value
             if "=" in line:
                 key, value = line.split("=", 1)
-                key = key.strip()
+                key = key.strip().lower()  # Convert to lowercase for compatibility
                 value = value.strip()
 
                 # Remove quotes if present
