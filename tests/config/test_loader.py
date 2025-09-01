@@ -204,7 +204,8 @@ class TestDictConfigLoader:
 class TestMultiSourceLoader:
     """Test MultiSourceLoader."""
     
-    def test_merge_multiple_sources(self, tmp_path, monkeypatch):
+    @pytest.mark.asyncio
+    async def test_merge_multiple_sources(self, tmp_path, monkeypatch):
         """Test merging from multiple sources."""
         # File source
         config_file = tmp_path / "config.json"
@@ -226,20 +227,21 @@ class TestMultiSourceLoader:
         loader = MultiSourceLoader(file_loader, env_loader, dict_loader)
         assert loader.exists()
         
-        config = loader.load(TestEnvConfig)
+        config = await loader.load(TestEnvConfig)
         
         # Should have merged values with proper precedence
         assert config.name == "runtime_name"  # From dict (last)
         assert config.port == 4000  # From env
         assert config.debug is True  # From env
     
-    def test_no_sources_available(self):
+    @pytest.mark.asyncio
+    async def test_no_sources_available(self):
         """Test error when no sources exist."""
         loader = MultiSourceLoader()
         assert not loader.exists()
         
         with pytest.raises(ValueError, match="No configuration sources"):
-            loader.load(TestConfig)
+            await loader.load(TestConfig)
 
 
 class TestChainedLoader:
@@ -290,4 +292,5 @@ class TestChainedLoader:
         assert not loader.exists()
         
         with pytest.raises(ValueError, match="No configuration source"):
+            await loader.load(TestConfig)        await loader.load(TestConfig):
             await loader.load(TestConfig)
