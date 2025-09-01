@@ -186,7 +186,7 @@ json_output: true
             json_output=False,
         )
         
-        with tempfile.NamedTemporaryFile(suffix=".toml", delete=False) as f:
+        with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as f:
             config_path = f.name
         
         try:
