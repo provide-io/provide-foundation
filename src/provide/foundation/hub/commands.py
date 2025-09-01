@@ -95,6 +95,15 @@ def register_command(
         @register_command("status", parent="container")
         def container_status():
             pass
+        
+        # Multi-level nesting with dot notation
+        @register_command("container.volumes", group=True)
+        def container_volumes_group():
+            pass
+        
+        @register_command("backup", parent="container.volumes")
+        def container_volumes_backup():
+            pass
     
     Args:
         name_or_func: Command name or function (when used without parens)
@@ -102,7 +111,7 @@ def register_command(
         aliases: Alternative names for the command
         hidden: Whether to hide from help listing
         category: Command category for grouping
-        parent: Parent group name for nested commands
+        parent: Parent group name for nested commands (supports dot notation)
         group: Whether this is a command group (not a command)
         replace: Whether to replace existing registration
         registry: Custom registry (defaults to global)
@@ -160,9 +169,15 @@ def _register_command_func(
     """Internal function to register a command."""
     reg = registry or _command_registry
     
-    # Determine command name
+    # Determine command name and handle dot notation
     if name:
-        command_name = name
+        # Check if name includes parent via dot notation (e.g., "container.volumes")
+        if "." in name and not parent:
+            parts = name.rsplit(".", 1)
+            parent = parts[0]
+            command_name = parts[1]
+        else:
+            command_name = name
     else:
         # Convert function name to kebab-case
         command_name = func.__name__.replace("_", "-").replace("cmd", "").strip("-")
@@ -189,11 +204,11 @@ def _register_command_func(
     )
     
     # Build full name with parent hierarchy if specified
-    # For multi-level nesting, parent can be "container volumes" 
+    # For multi-level nesting, parent can be "container.volumes" or "container volumes"
     # which becomes "container-volumes-{command_name}"
     if parent:
-        # Replace spaces with dashes for registry key
-        parent_key = parent.replace(" ", "-")
+        # Replace dots and spaces with dashes for registry key
+        parent_key = parent.replace(".", "-").replace(" ", "-")
         full_name = f"{parent_key}-{command_name}"
     else:
         full_name = command_name
@@ -451,8 +466,8 @@ def create_command_group(
             
             # Add to parent or root
             if parent:
-                # Handle multi-level parents (e.g., "container volumes")
-                parent_key = parent.replace(" ", "-")
+                # Handle multi-level parents (e.g., "container.volumes" or "container volumes")
+                parent_key = parent.replace(".", "-").replace(" ", "-")
                 if parent_key in groups:
                     groups[parent_key].add_command(subgroup)
                 else:
@@ -485,14 +500,14 @@ def create_command_group(
             if parent:
                 # Extract the actual command name (without parent prefix)
                 parts = cmd_name.split("-")
-                parent_parts = parent.replace(" ", "-").split("-")
+                parent_parts = parent.replace(".", "-").replace(" ", "-").split("-")
                 # Remove parent parts from command name
                 cmd_parts = parts[len(parent_parts):]
                 click_cmd.name = "-".join(cmd_parts) if cmd_parts else parts[-1]
             
             # Add to parent group or root
             if parent:
-                parent_key = parent.replace(" ", "-")
+                parent_key = parent.replace(".", "-").replace(" ", "-")
                 if parent_key in groups:
                     groups[parent_key].add_command(click_cmd)
                 else:
