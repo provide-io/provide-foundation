@@ -2,6 +2,7 @@
 
 import pytest
 
+from provide.foundation.errors import AlreadyExistsError
 from provide.foundation.registry import Registry
 
 
