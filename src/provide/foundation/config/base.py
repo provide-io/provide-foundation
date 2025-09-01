@@ -244,6 +244,10 @@ class BaseConfig:
     def reset_to_defaults(self) -> None:
         """Reset all fields to their default values."""
         for attr in fields(self.__class__):
+            # Skip internal fields
+            if attr.name.startswith('_'):
+                continue
+                
             if attr.default != NOTHING:
                 setattr(self, attr.name, attr.default)
             elif attr.factory != NOTHING:
