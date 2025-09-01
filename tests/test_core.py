@@ -13,7 +13,7 @@ import pytest
 from pytest import CaptureFixture
 import structlog
 
-from provide.foundation.config import (
+from provide.foundation.logger.config import (
     LoggingConfig,
     TelemetryConfig,
 )

@@ -5,7 +5,7 @@ from unittest.mock import patch, MagicMock
 import structlog
 from provide.foundation.core import reset_foundation_setup_for_testing
 from provide.foundation.logger.base import FoundationLogger, _LAZY_SETUP_STATE, _LAZY_SETUP_LOCK
-from provide.foundation.config import TelemetryConfig
+from provide.foundation.logger.config import TelemetryConfig
 from provide.foundation.logger.custom_processors import add_logger_name_emoji_prefix
 from provide.foundation.logger.emoji_matrix import _format_field_definition_for_display
 from provide.foundation.types import SemanticFieldDefinition

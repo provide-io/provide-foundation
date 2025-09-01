@@ -18,7 +18,7 @@ from structlog.types import BindableLogger
 from provide.foundation.types import TRACE_LEVEL_NAME
 
 if TYPE_CHECKING:
-    from provide.foundation.config import TelemetryConfig
+    from provide.foundation.logger.config import TelemetryConfig
     from provide.foundation.core import ResolvedSemanticConfig
 
 _LAZY_SETUP_LOCK = threading.Lock()

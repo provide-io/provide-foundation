@@ -15,13 +15,13 @@ from unittest.mock import MagicMock, patch
 import pytest
 import structlog
 
-from provide.foundation import (
+from provide.foundation.logger import (
     LoggingConfig,
     SemanticLayer,
     TelemetryConfig,
     logger,
 )
-from provide.foundation.config import _build_formatter_processors_list
+from provide.foundation.logger.processors import _build_formatter_processors_list
 from provide.foundation.core import (
     _CORE_SETUP_LOGGER_NAME,
     _create_core_setup_logger,

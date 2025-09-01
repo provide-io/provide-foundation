@@ -97,7 +97,7 @@ class TestConfigWarnings:
         ("mod1:INFO, :TRACE ,mod3:DEBUG", ["Invalid item ':TRACE' in FOUNDATION_LOG_MODULE_LEVELS. Skipping."]),
     ])
     def test_invalid_foundation_log_module_levels(self, monkeypatch: MonkeyPatch, capsys: CaptureFixture[str], module_levels_env: str, expected_warning_parts: list[str]) -> None:
-        from provide.foundation.config import (
+        from provide.foundation.logger.env import (
             _ensure_config_logger_handler,
             config_warnings_logger,
         )
@@ -131,3 +131,4 @@ class TestLoggingWithSemanticLayers:
         output = captured_stderr_for_foundation.getvalue()
         assert "[🔑][➡️][✅] Legacy system test" in output
         assert "domain=auth" not in output
+ut

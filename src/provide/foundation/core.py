@@ -22,9 +22,11 @@ from provide.foundation.semantic_layers import (
     BUILTIN_SEMANTIC_LAYERS,
     LEGACY_DAS_EMOJI_SETS,
 )
-from provide.foundation.telemetry_config import (
+from provide.foundation.logger.config import (
     LoggingConfig,
     TelemetryConfig,
+)
+from provide.foundation.logger.processors import (
     _build_core_processors_list,
     _build_formatter_processors_list,
 )
