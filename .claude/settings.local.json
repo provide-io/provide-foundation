@@ -28,7 +28,8 @@
       "Bash(DEBUG_ENV_PARSE=1 python -m pytest tests/config/test_env.py::TestEnvConfigClass::test_auto_parse_types -xvs)",
       "Bash(ruff check:*)",
       "Bash(ruff format:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(chmod:*)"
     ],
     "deny": [],
     "ask": [],
