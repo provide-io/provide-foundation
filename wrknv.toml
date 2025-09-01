@@ -1,0 +1,16 @@
+# wrknv configuration for pyvider-telemetry
+
+[project]
+name = "pyvider-telemetry"
+description = "Unified telemetry and logging system for provide.io tools"
+
+[tools]
+uv = "latest"
+
+[siblings]
+patterns = [
+    "wrknv",  # Environment manager
+]
+
+[settings]
+python_version = ">=3.11"
