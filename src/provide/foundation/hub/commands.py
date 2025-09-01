@@ -38,6 +38,7 @@ class CommandInfo:
     category: str | None = None
     metadata: dict[str, Any] = field(default_factory=dict)
     click_command: click.Command | None = None
+    parent: str | None = None  # Parent group for nested commands
 
 
 @overload
@@ -48,6 +49,8 @@ def register_command(
     aliases: list[str] | None = None,
     hidden: bool = False,
     category: str | None = None,
+    parent: str | None = None,
+    group: bool = False,
     replace: bool = False,
     registry: Registry | None = None,
 ) -> Callable[[F], F]: ...
@@ -67,6 +70,8 @@ def register_command(
     aliases: list[str] | None = None,
     hidden: bool = False,
     category: str | None = None,
+    parent: str | None = None,
+    group: bool = False,
     replace: bool = False,
     registry: Registry | None = None,
 ) -> Any:
@@ -82,6 +87,14 @@ def register_command(
         @register_command("custom-name", aliases=["cn"], category="utils")
         def my_command():
             pass
+        
+        @register_command("container", group=True)
+        def container_group():
+            pass
+        
+        @register_command("status", parent="container")
+        def container_status():
+            pass
     
     Args:
         name_or_func: Command name or function (when used without parens)
@@ -89,6 +102,8 @@ def register_command(
         aliases: Alternative names for the command
         hidden: Whether to hide from help listing
         category: Command category for grouping
+        parent: Parent group name for nested commands
+        group: Whether this is a command group (not a command)
         replace: Whether to replace existing registration
         registry: Custom registry (defaults to global)
     
@@ -105,6 +120,8 @@ def register_command(
             aliases=aliases,
             hidden=hidden,
             category=category,
+            parent=parent,
+            group=group,
             replace=replace,
             registry=registry,
         )
@@ -118,6 +135,8 @@ def register_command(
             aliases=aliases,
             hidden=hidden,
             category=category,
+            parent=parent,
+            group=group,
             replace=replace,
             registry=registry,
         )
@@ -133,6 +152,8 @@ def _register_command_func(
     aliases: list[str] | None = None,
     hidden: bool = False,
     category: str | None = None,
+    parent: str | None = None,
+    group: bool = False,
     replace: bool = False,
     registry: Registry | None = None,
 ) -> F:
@@ -162,13 +183,17 @@ def _register_command_func(
         aliases=aliases or [],
         hidden=hidden,
         category=category,
-        metadata={},
+        metadata={"is_group": group},
         click_command=click_cmd,
+        parent=parent,
     )
+    
+    # Build full name with parent if specified
+    full_name = f"{parent}-{command_name}" if parent else command_name
     
     # Register in the registry
     reg.register(
-        name=command_name,
+        name=full_name,
         value=func,
         dimension="command",
         metadata={
@@ -177,6 +202,8 @@ def _register_command_func(
             "aliases": info.aliases,
             "hidden": hidden,
             "category": category,
+            "parent": parent,
+            "is_group": group,
             "click_command": click_cmd,
         },
         aliases=aliases,
@@ -382,23 +409,72 @@ def create_command_group(
     reg = registry or _command_registry
     group = click.Group(name=name, **kwargs)
     
+    # Build nested command structure
+    groups: dict[str, click.Group] = {}
+    
     # Get commands to include
     if commands is None:
         commands = reg.list_dimension("command")
     
+    # First pass: create all groups
     for cmd_name in commands:
         entry = reg.get_entry(cmd_name, dimension="command")
         if not entry:
             continue
         
         info = entry.metadata.get("info")
-        if not info or info.hidden:
+        if not info:
+            continue
+        
+        # Check if this is a group
+        if entry.metadata.get("is_group"):
+            parent = entry.metadata.get("parent")
+            # Extract the actual group name (without parent prefix)
+            actual_name = cmd_name.split("-")[-1] if parent else cmd_name
+            
+            subgroup = click.Group(
+                name=actual_name,
+                help=info.description,
+                hidden=info.hidden,
+            )
+            groups[cmd_name] = subgroup
+            
+            # Add to parent or root
+            if parent and parent in groups:
+                groups[parent].add_command(subgroup)
+            elif not parent:
+                group.add_command(subgroup)
+    
+    # Second pass: add commands to groups
+    for cmd_name in commands:
+        entry = reg.get_entry(cmd_name, dimension="command")
+        if not entry:
+            continue
+        
+        info = entry.metadata.get("info")
+        if not info or info.hidden or entry.metadata.get("is_group"):
             continue
         
         # Build Click command
         click_cmd = build_click_command(cmd_name, registry=reg)
         if click_cmd:
-            group.add_command(click_cmd)
+            parent = entry.metadata.get("parent")
+            
+            # Update command name if it has a parent
+            if parent:
+                # Extract the actual command name (without parent prefix)
+                click_cmd.name = cmd_name.split("-")[-1]
+            
+            # Add to parent group or root
+            if parent:
+                parent_key = parent if parent in groups else f"{parent}"
+                if parent_key in groups:
+                    groups[parent_key].add_command(click_cmd)
+                else:
+                    # Parent not found, add to root
+                    group.add_command(click_cmd)
+            else:
+                group.add_command(click_cmd)
     
     return group
 
