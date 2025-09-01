@@ -34,7 +34,7 @@ class TestDotNotationCommands:
         assert container is not None
         
         # Check the nested command is registered
-        status = hub.get_command("container-status")
+        status = hub.get_command("container.status")
         assert status is container_status
     
     def test_multi_level_nesting(self):
@@ -49,8 +49,8 @@ class TestDotNotationCommands:
         
         # Check all levels are auto-created
         assert hub.get_command("container") is not None
-        assert hub.get_command("container-volumes") is not None
-        assert hub.get_command("container-volumes-backup") is container_volumes_backup
+        assert hub.get_command("container.volumes") is not None
+        assert hub.get_command("container.volumes.backup") is container_volumes_backup
     
     def test_explicit_group_declaration(self):
         """Test explicit group declaration with custom description."""
@@ -72,7 +72,7 @@ class TestDotNotationCommands:
         assert tools is tools_group
         
         # Check the nested command
-        install = hub.get_command("tools-install")
+        install = hub.get_command("tools.install")
         assert install is tools_install
     
     def test_command_with_parameters(self):
@@ -259,7 +259,7 @@ class TestDotNotationCommands:
         hub = get_hub()
         
         # Check primary name is registered
-        assert hub.get_command("package-install") is package_install
+        assert hub.get_command("package.install") is package_install
         # Aliases are also registered at the hub level
         assert hub.get_command("i") is package_install
         assert hub.get_command("add") is package_install

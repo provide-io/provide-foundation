@@ -39,7 +39,7 @@ class TestNestedCommandRegistration:
         assert container is container_group
         
         # Check the nested command is registered with parent prefix
-        status = hub.get_command("container-status")
+        status = hub.get_command("container.status")
         assert status is container_status
     
     def test_register_command_with_dot_notation(self):
@@ -80,8 +80,8 @@ class TestNestedCommandRegistration:
         
         # Check all levels are registered
         assert hub.get_command("container") is container_group
-        assert hub.get_command("container-volumes") is container_volumes_group
-        assert hub.get_command("container-volumes-backup") is container_volumes_backup
+        assert hub.get_command("container.volumes") is container_volumes_group
+        assert hub.get_command("container.volumes.backup") is container_volumes_backup
     
     def test_create_nested_cli_structure(self):
         """Test creating a CLI with nested command groups."""
@@ -214,9 +214,9 @@ class TestNestedCommandRegistration:
         hub = get_hub()
         
         # Check all are registered correctly
-        assert hub.get_command("tools-terraform") is tools_terraform_group
-        assert hub.get_command("tools-terraform-install") is tools_terraform_install
-        assert hub.get_command("tools-terraform-validate") is tools_terraform_validate
+        assert hub.get_command("tools.terraform") is tools_terraform_group
+        assert hub.get_command("tools.terraform.install") is tools_terraform_install
+        assert hub.get_command("tools.terraform.validate") is tools_terraform_validate
     
     def test_nested_groups_with_same_command_names(self):
         """Test that different groups can have commands with same names."""
@@ -244,8 +244,8 @@ class TestNestedCommandRegistration:
         hub = get_hub()
         
         # Both status commands should exist with different prefixes
-        assert hub.get_command("docker-status") is docker_status
-        assert hub.get_command("k8s-status") is k8s_status
+        assert hub.get_command("docker.status") is docker_status
+        assert hub.get_command("k8s.status") is k8s_status
         
         # Test execution
         cli = create_command_group("app")
@@ -367,7 +367,7 @@ class TestNestedCommandRegistration:
         hub = get_hub()
         
         # Check primary name and aliases are registered
-        assert hub.get_command("package-install") is package_install
+        assert hub.get_command("package.install") is package_install
         # Note: aliases at nested level need special handling
         # This is a known limitation that could be enhanced
     
@@ -388,7 +388,7 @@ class TestNestedCommandRegistration:
         
         # Try to find where it ended up
         hub = get_hub()
-        assert hub.get_command("nonexistent-orphan") is orphan_command
+        assert hub.get_command("nonexistent.orphan") is orphan_command
 
 
 class TestNestedCommandIntegration:

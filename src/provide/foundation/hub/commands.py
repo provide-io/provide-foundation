@@ -179,9 +179,9 @@ def _register_command_func(
             parent = None
             command_name = name
     else:
-        # Convert function name to kebab-case
+        # Use function name as command name (removing 'cmd' suffix if present)
         parent = None
-        command_name = func.__name__.replace("_", "-").replace("cmd", "").strip("-")
+        command_name = func.__name__.replace("cmd", "").strip("_")
 
     # Check if it's already a Click command
     click_cmd = None
@@ -209,7 +209,7 @@ def _register_command_func(
 
     # Build full registry key
     if parent:
-        full_name = f"{parent.replace('.', '-')}-{command_name}"
+        full_name = f"{parent}.{command_name}"
     else:
         full_name = command_name
 
@@ -260,7 +260,7 @@ def _ensure_parent_groups(parent_path: str, registry: Registry) -> None:
     # Build up the path progressively
     for i in range(len(parts)):
         group_path = ".".join(parts[: i + 1])
-        registry_key = group_path.replace(".", "-")
+        registry_key = group_path
 
         # Check if this group already exists
         if not registry.get_entry(registry_key, dimension="command"):
@@ -542,7 +542,7 @@ def create_command_group(
             # Add to parent or root
             if parent:
                 # Handle multi-level parents with dot notation
-                parent_key = parent.replace(".", "-")
+                parent_key = parent
                 if parent_key in groups:
                     groups[parent_key].add_command(subgroup)
                 else:
@@ -570,14 +570,14 @@ def create_command_group(
             if parent:
                 # Extract the actual command name (without parent prefix)
                 parts = cmd_name.split("-")
-                parent_parts = parent.replace(".", "-").split("-")
+                parent_parts = parent.split(".")
                 # Remove parent parts from command name
                 cmd_parts = parts[len(parent_parts) :]
                 click_cmd.name = "-".join(cmd_parts) if cmd_parts else parts[-1]
 
             # Add to parent group or root
             if parent:
-                parent_key = parent.replace(".", "-")
+                parent_key = parent
                 if parent_key in groups:
                     groups[parent_key].add_command(click_cmd)
                 else:
