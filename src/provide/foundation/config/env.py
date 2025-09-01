@@ -17,6 +17,12 @@ from attrs import fields
 
 from provide.foundation.config.base import BaseConfig, field
 from provide.foundation.config.types import ConfigSource
+from provide.foundation.utils.parsing import (
+    auto_parse,
+    parse_bool,
+    parse_dict,
+    parse_list,
+)
 
 T = TypeVar("T")
 
@@ -104,97 +110,6 @@ def get_env(
 
     return value
 
-
-def parse_bool(value: str | bool) -> bool:
-    """
-    Parse boolean from string.
-
-    Args:
-        value: String or boolean value
-
-    Returns:
-        Boolean value
-    """
-    if isinstance(value, bool):
-        return value
-
-    if isinstance(value, str):
-        value_lower = value.lower().strip()
-
-        if value_lower in ("true", "1", "yes", "on", "enabled"):
-            return True
-        elif value_lower in ("false", "0", "no", "off", "disabled", ""):
-            return False
-
-    raise ValueError(f"Cannot parse boolean from: {value}")
-
-
-def parse_list(
-    value: str | list[str], separator: str = ",", strip: bool = True
-) -> list[str]:
-    """
-    Parse list from string.
-
-    Args:
-        value: String or list value
-        separator: List separator
-        strip: Whether to strip whitespace from items
-
-    Returns:
-        List of strings
-    """
-    if isinstance(value, list):
-        return value
-
-    if not value:
-        return []
-
-    items = value.split(separator)
-
-    if strip:
-        items = [item.strip() for item in items]
-        items = [item for item in items if item]  # Remove empty strings
-
-    return items
-
-
-def parse_dict(
-    value: str | dict[str, str],
-    item_separator: str = ",",
-    key_value_separator: str = "=",
-) -> dict[str, str]:
-    """
-    Parse dictionary from string.
-
-    Args:
-        value: String or dictionary value
-        item_separator: Separator between items
-        key_value_separator: Separator between key and value
-
-    Returns:
-        Dictionary
-    """
-    if isinstance(value, dict):
-        return value
-
-    if not value:
-        return {}
-
-    result = {}
-    items = value.split(item_separator)
-
-    for item in items:
-        item = item.strip()
-        if not item:
-            continue
-
-        if key_value_separator not in item:
-            raise ValueError(f"Invalid key-value pair: {item}")
-
-        key, val = item.split(key_value_separator, 1)
-        result[key.strip()] = val.strip()
-
-    return result
 
 
 def env_field(
@@ -406,30 +321,8 @@ class EnvConfig(BaseConfig):
         Returns:
             Parsed value
         """
-        # Get type hint if available
-        if hasattr(attr, "type"):
-            field_type = attr.type
-
-            # Handle basic types
-            if field_type == bool:
-                return parse_bool(value)
-            elif field_type == int:
-                return int(value)
-            elif field_type == float:
-                return float(value)
-            elif field_type == str:
-                return value
-
-            # Handle generic types
-            origin = getattr(field_type, "__origin__", None)
-
-            if origin == list:
-                return parse_list(value)
-            elif origin == dict:
-                return parse_dict(value)
-
-        # Default to string
-        return value
+        # Use the utility function from utils.parsing
+        return auto_parse(attr, value)
 
     def to_env_dict(
         self, prefix: str = "", delimiter: str = "_"
