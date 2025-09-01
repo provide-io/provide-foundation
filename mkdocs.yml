@@ -78,6 +78,7 @@ nav:
     - 'Semantic Layers': 'core-concepts/semantic-layers.md'
     - 'The Emoji System': 'core-concepts/emoji-system.md'
     - 'Configuration': 'core-concepts/configuration.md'
+    - 'Architecture': 'core-concepts/architecture.md'
   - 'Guides':
     - 'Async Usage': 'guides/async-usage.md'
     - 'Exception Logging': 'guides/exception-logging.md'
