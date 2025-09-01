@@ -267,7 +267,7 @@ class Context:
         
         # Update with non-None values from other
         for key, value in other_data.items():
-            if value is not None or key not in merged_data:
+            if value is not None:
                 merged_data[key] = value
         
         return self.from_dict(merged_data)
@@ -284,8 +284,7 @@ class Context:
     def logger(self) -> Any:
         """Get or create a logger for this context."""
         if self._logger is None:
-            self._logger = get_logger(
-                "context",
+            self._logger = get_logger("context").bind(
                 log_level=self.log_level,
                 profile=self.profile,
             )

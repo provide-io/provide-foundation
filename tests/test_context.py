@@ -211,8 +211,17 @@ json_output: true
         merged = base_ctx.merge(override_ctx)
         
         assert merged.log_level == "DEBUG"  # Overridden
-        assert merged.profile == "base"  # Kept from base
+        assert merged.profile == "default"  # Override's default value takes precedence
         assert merged.debug is True  # Overridden
+        
+        # Test with explicit None handling
+        base_ctx2 = Context(log_level="INFO", profile="production")
+        override_ctx2 = Context(log_level="WARNING", profile="staging", config_file=Path("/etc/app.conf"))
+        
+        merged2 = base_ctx2.merge(override_ctx2)
+        assert merged2.log_level == "WARNING"
+        assert merged2.profile == "staging"
+        assert merged2.config_file == Path("/etc/app.conf")
     
     def test_context_logger_property(self):
         """Test lazy logger initialization."""
