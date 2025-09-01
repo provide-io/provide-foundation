@@ -245,7 +245,8 @@ class TestMultiSourceLoader:
 class TestChainedLoader:
     """Test ChainedLoader."""
     
-    def test_first_available_source(self, tmp_path):
+    @pytest.mark.asyncio
+    async def test_first_available_source(self, tmp_path):
         """Test loading from first available source."""
         # Create two config files
         primary = tmp_path / "primary.json"
@@ -260,10 +261,11 @@ class TestChainedLoader:
             FileConfigLoader(fallback)
         )
         
-        config = loader.load(TestConfig)
+        config = await loader.load(TestConfig)
         assert config.name == "primary"  # From first available
     
-    def test_fallback_source(self, tmp_path):
+    @pytest.mark.asyncio
+    async def test_fallback_source(self, tmp_path):
         """Test falling back when primary doesn't exist."""
         primary = tmp_path / "nonexistent.json"
         fallback = tmp_path / "fallback.json"
@@ -274,10 +276,11 @@ class TestChainedLoader:
             FileConfigLoader(fallback)
         )
         
-        config = loader.load(TestConfig)
+        config = await loader.load(TestConfig)
         assert config.name == "fallback"
     
-    def test_no_source_available(self, tmp_path):
+    @pytest.mark.asyncio
+    async def test_no_source_available(self, tmp_path):
         """Test error when no source is available."""
         loader = ChainedLoader(
             FileConfigLoader(tmp_path / "missing1.json"),
