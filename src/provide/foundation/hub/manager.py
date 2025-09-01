@@ -286,15 +286,12 @@ class Hub:
             >>> if __name__ == "__main__":
             >>>     cli()
         """
-        from provide.foundation.cli.decorators import standard_options, pass_context
         from provide.foundation.hub.commands import create_command_group
         
         # Use create_command_group which now handles nested groups
         cli = create_command_group(name=name, registry=self._command_registry, **kwargs)
         
-        # Apply standard decorators
-        cli = standard_options(cli)
-        cli = pass_context(cli)
+        # Add version option if provided
         if version:
             cli = click.version_option(version=version)(cli)
         
