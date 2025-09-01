@@ -296,6 +296,7 @@ class BaseConfig:
     def __repr__(self) -> str:
         """String representation hiding sensitive fields."""
         # Get the actual attrs fields
+        import attrs
         attr_fields = attrs.fields(self.__class__)
         
         parts = []
