@@ -48,7 +48,8 @@
       "Bash(./act-colima.sh:*)",
       "Bash(./validate-workflows.sh:*)",
       "Bash(uv build:*)",
-      "Bash(mkdocs build:*)"
+      "Bash(mkdocs build:*)",
+      "Bash(./run-full-pipeline.sh)"
     ],
     "deny": [],
     "ask": [],
