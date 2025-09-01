@@ -40,7 +40,8 @@ class TestEnvConfig(EnvConfig):
 class TestFileConfigLoader:
     """Test FileConfigLoader."""
 
-    def test_load_json(self, tmp_path):
+    @pytest.mark.asyncio
+    async def test_load_json(self, tmp_path):
         """Test loading JSON configuration."""
         config_file = tmp_path / "config.json"
         config_file.write_text(
@@ -50,13 +51,14 @@ class TestFileConfigLoader:
         loader = FileConfigLoader(config_file)
         assert loader.exists()
 
-        config = loader.load(TestConfig)
+        config = await loader.load(TestConfig)
         assert config.name == "json_config"
         assert config.port == 3000
         assert config.debug is True
         assert config.get_source("name") == ConfigSource.FILE
 
-    def test_load_yaml(self, tmp_path):
+    @pytest.mark.asyncio
+    async def test_load_yaml(self, tmp_path):
         """Test loading YAML configuration."""
         pytest.importorskip("yaml")
 
@@ -68,13 +70,14 @@ debug: true
 """)
 
         loader = FileConfigLoader(config_file)
-        config = loader.load(TestConfig)
+        config = await loader.load(TestConfig)
 
         assert config.name == "yaml_config"
         assert config.port == 4000
         assert config.debug is True
 
-    def test_load_toml(self, tmp_path):
+    @pytest.mark.asyncio
+    async def test_load_toml(self, tmp_path):
         """Test loading TOML configuration."""
         config_file = tmp_path / "config.toml"
         config_file.write_text("""
@@ -84,13 +87,14 @@ debug = false
 """)
 
         loader = FileConfigLoader(config_file)
-        config = loader.load(TestConfig)
+        config = await loader.load(TestConfig)
 
         assert config.name == "toml_config"
         assert config.port == 5000
         assert config.debug is False
 
-    def test_load_env_file(self, tmp_path):
+    @pytest.mark.asyncio
+    async def test_load_env_file(self, tmp_path):
         """Test loading .env file configuration."""
         config_file = tmp_path / ".env"
         config_file.write_text("""
@@ -104,7 +108,7 @@ EXTRA_VAR="quoted value"
 """)
 
         loader = FileConfigLoader(config_file)
-        config = loader.load(TestConfig)
+        config = await loader.load(TestConfig)
 
         # Note: .env files return string values, need proper parsing
         assert config.name == "env_config"

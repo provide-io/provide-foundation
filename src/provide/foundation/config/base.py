@@ -297,6 +297,10 @@ class BaseConfig:
         """String representation hiding sensitive fields."""
         parts = []
         for attr in fields(self.__class__):
+            # Skip internal fields
+            if attr.name.startswith('_'):
+                continue
+                
             value = getattr(self, attr.name)
 
             # Hide sensitive values
