@@ -1,5 +1,6 @@
 """Generic multi-dimensional registry for the foundation."""
 
+import threading
 from collections import defaultdict
 from dataclasses import dataclass, field
 from typing import Any, Iterator
@@ -31,10 +32,13 @@ class Registry:
     Supports hierarchical organization by dimension (component, command, etc.)
     and name within each dimension. This is a generic registry that can be
     used for any type of object storage and retrieval.
+    
+    Thread-safe: All operations are protected by an RLock for safe concurrent access.
     """
     
     def __init__(self) -> None:
         """Initialize an empty registry."""
+        self._lock = threading.RLock()  # Reentrant lock for thread safety
         self._registry: dict[str, dict[str, RegistryEntry]] = defaultdict(dict)
         self._aliases: dict[str, tuple[str, str]] = {}
     
@@ -64,34 +68,35 @@ class Registry:
         Raises:
             ValueError: If name already exists and replace=False
         """
-        if not replace and name in self._registry[dimension]:
-            raise ValueError(
-                f"Item '{name}' already registered in dimension '{dimension}'. "
-                "Use replace=True to override."
+        with self._lock:
+            if not replace and name in self._registry[dimension]:
+                raise ValueError(
+                    f"Item '{name}' already registered in dimension '{dimension}'. "
+                    "Use replace=True to override."
+                )
+            
+            entry = RegistryEntry(
+                name=name,
+                dimension=dimension,
+                value=value,
+                metadata=metadata or {},
             )
-        
-        entry = RegistryEntry(
-            name=name,
-            dimension=dimension,
-            value=value,
-            metadata=metadata or {},
-        )
-        
-        self._registry[dimension][name] = entry
-        
-        if aliases:
-            for alias in aliases:
-                self._aliases[alias] = (dimension, name)
-        
-        log.debug(
-            "Registered item",
-            name=name,
-            dimension=dimension,
-            has_metadata=bool(metadata),
-            aliases=aliases,
-        )
-        
-        return entry
+            
+            self._registry[dimension][name] = entry
+            
+            if aliases:
+                for alias in aliases:
+                    self._aliases[alias] = (dimension, name)
+            
+            log.debug(
+                "Registered item",
+                name=name,
+                dimension=dimension,
+                has_metadata=bool(metadata),
+                aliases=aliases,
+            )
+            
+            return entry
     
     def get(
         self,
@@ -108,24 +113,25 @@ class Registry:
         Returns:
             The registered value or None if not found
         """
-        if dimension is not None:
-            entry = self._registry[dimension].get(name)
-            if entry:
-                return entry.value
-        
-        if name in self._aliases:
-            dim_key, real_name = self._aliases[name]
-            if dimension is None or dim_key == dimension:
-                entry = self._registry[dim_key].get(real_name)
+        with self._lock:
+            if dimension is not None:
+                entry = self._registry[dimension].get(name)
                 if entry:
                     return entry.value
-        
-        if dimension is None:
-            for dim_registry in self._registry.values():
-                if name in dim_registry:
-                    return dim_registry[name].value
-        
-        return None
+            
+            if name in self._aliases:
+                dim_key, real_name = self._aliases[name]
+                if dimension is None or dim_key == dimension:
+                    entry = self._registry[dim_key].get(real_name)
+                    if entry:
+                        return entry.value
+            
+            if dimension is None:
+                for dim_registry in self._registry.values():
+                    if name in dim_registry:
+                        return dim_registry[name].value
+            
+            return None
     
     def get_entry(
         self,
@@ -133,34 +139,37 @@ class Registry:
         dimension: str | None = None,
     ) -> RegistryEntry | None:
         """Get the full registry entry."""
-        if dimension is not None:
-            return self._registry[dimension].get(name)
-        
-        if name in self._aliases:
-            dim_key, real_name = self._aliases[name]
-            if dimension is None or dim_key == dimension:
-                return self._registry[dim_key].get(real_name)
-        
-        if dimension is None:
-            for dim_registry in self._registry.values():
-                if name in dim_registry:
-                    return dim_registry[name]
-        
-        return None
+        with self._lock:
+            if dimension is not None:
+                return self._registry[dimension].get(name)
+            
+            if name in self._aliases:
+                dim_key, real_name = self._aliases[name]
+                if dimension is None or dim_key == dimension:
+                    return self._registry[dim_key].get(real_name)
+            
+            if dimension is None:
+                for dim_registry in self._registry.values():
+                    if name in dim_registry:
+                        return dim_registry[name]
+            
+            return None
     
     def list_dimension(
         self,
         dimension: str,
     ) -> list[str]:
         """List all names in a dimension."""
-        return list(self._registry[dimension].keys())
+        with self._lock:
+            return list(self._registry[dimension].keys())
     
     def list_all(self) -> dict[str, list[str]]:
         """List all dimensions and their items."""
-        return {
-            dimension: list(items.keys())
-            for dimension, items in self._registry.items()
-        }
+        with self._lock:
+            return {
+                dimension: list(items.keys())
+                for dimension, items in self._registry.items()
+            }
     
     def remove(
         self,
@@ -173,64 +182,73 @@ class Registry:
         Returns:
             True if item was removed, False if not found
         """
-        if dimension is not None:
-            if name in self._registry[dimension]:
-                del self._registry[dimension][name]
-                
-                aliases_to_remove = [
-                    alias for alias, (dim, n) in self._aliases.items()
-                    if dim == dimension and n == name
-                ]
-                for alias in aliases_to_remove:
-                    del self._aliases[alias]
-                
-                log.debug("Removed item", name=name, dimension=dimension)
-                return True
-        else:
-            for dim_key, dim_registry in self._registry.items():
-                if name in dim_registry:
-                    del dim_registry[name]
+        with self._lock:
+            if dimension is not None:
+                if name in self._registry[dimension]:
+                    del self._registry[dimension][name]
                     
                     aliases_to_remove = [
-                        alias for alias, (d, n) in self._aliases.items()
-                        if d == dim_key and n == name
+                        alias for alias, (dim, n) in self._aliases.items()
+                        if dim == dimension and n == name
                     ]
                     for alias in aliases_to_remove:
                         del self._aliases[alias]
                     
-                    log.debug("Removed item", name=name, dimension=dim_key)
+                    log.debug("Removed item", name=name, dimension=dimension)
                     return True
-        
-        return False
+            else:
+                for dim_key, dim_registry in self._registry.items():
+                    if name in dim_registry:
+                        del dim_registry[name]
+                        
+                        aliases_to_remove = [
+                            alias for alias, (d, n) in self._aliases.items()
+                            if d == dim_key and n == name
+                        ]
+                        for alias in aliases_to_remove:
+                            del self._aliases[alias]
+                        
+                        log.debug("Removed item", name=name, dimension=dim_key)
+                        return True
+            
+            return False
     
     def clear(self, dimension: str | None = None) -> None:
         """Clear the registry or a specific dimension."""
-        if dimension is not None:
-            self._registry[dimension].clear()
-            
-            aliases_to_remove = [
-                alias for alias, (dim, _) in self._aliases.items()
-                if dim == dimension
-            ]
-            for alias in aliases_to_remove:
-                del self._aliases[alias]
-        else:
-            self._registry.clear()
-            self._aliases.clear()
+        with self._lock:
+            if dimension is not None:
+                self._registry[dimension].clear()
+                
+                aliases_to_remove = [
+                    alias for alias, (dim, _) in self._aliases.items()
+                    if dim == dimension
+                ]
+                for alias in aliases_to_remove:
+                    del self._aliases[alias]
+            else:
+                self._registry.clear()
+                self._aliases.clear()
     
     def __contains__(self, key: str | tuple[str, str]) -> bool:
         """Check if an item exists in the registry."""
-        if isinstance(key, tuple):
-            dimension, name = key
-            return name in self._registry[dimension]
-        else:
-            return any(key in dim_reg for dim_reg in self._registry.values())
+        with self._lock:
+            if isinstance(key, tuple):
+                dimension, name = key
+                return name in self._registry[dimension]
+            else:
+                return any(key in dim_reg for dim_reg in self._registry.values())
     
     def __iter__(self) -> Iterator[RegistryEntry]:
         """Iterate over all registry entries."""
-        for dim_registry in self._registry.values():
-            yield from dim_registry.values()
+        with self._lock:
+            # Create a snapshot to avoid holding lock during iteration
+            entries = []
+            for dim_registry in self._registry.values():
+                entries.extend(dim_registry.values())
+        # Yield outside the lock
+        yield from entries
     
     def __len__(self) -> int:
         """Get total number of registered items."""
-        return sum(len(dim_reg) for dim_reg in self._registry.values())
+        with self._lock:
+            return sum(len(dim_reg) for dim_reg in self._registry.values())
