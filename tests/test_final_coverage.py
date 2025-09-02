@@ -11,6 +11,7 @@ from provide.foundation.logger.base import (
     _LAZY_SETUP_LOCK,
 )
 from provide.foundation.logger.config import TelemetryConfig
+from provide.foundation.logger.env import _parse_custom_layers_from_env, _parse_user_emoji_sets_from_env
 from provide.foundation.logger.custom_processors import add_logger_name_emoji_prefix
 from provide.foundation.logger.emoji_matrix import _format_field_definition_for_display
 from provide.foundation.types import SemanticFieldDefinition
@@ -36,7 +37,7 @@ def test_config_parse_custom_layers_non_list():
     with patch.dict(
         os.environ, {"FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS": '{"not": "a list"}'}
     ):
-        result = TelemetryConfig._parse_custom_layers_from_env()
+        result = _parse_custom_layers_from_env()
         assert result == []
 
 
@@ -51,7 +52,7 @@ def test_config_parse_custom_layers_non_dict_item():
     )
 
     with patch.dict(os.environ, {"FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS": layers_json}):
-        result = TelemetryConfig._parse_custom_layers_from_env()
+        result = _parse_custom_layers_from_env()
         # Should only have the valid layer
         assert len(result) == 1
         assert result[0].name == "valid_layer"
@@ -63,7 +64,7 @@ def test_config_parse_user_emoji_sets_non_list():
     with patch.dict(
         os.environ, {"FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS": '"not a list"'}
     ):
-        result = TelemetryConfig._parse_user_emoji_sets_from_env()
+        result = _parse_user_emoji_sets_from_env()
         assert result == []
 
 
@@ -78,7 +79,7 @@ def test_config_parse_user_emoji_sets_non_dict_item():
     )
 
     with patch.dict(os.environ, {"FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS": sets_json}):
-        result = TelemetryConfig._parse_user_emoji_sets_from_env()
+        result = _parse_user_emoji_sets_from_env()
         # Should only have the valid set
         assert len(result) == 1
         assert result[0].name == "valid_set"

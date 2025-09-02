@@ -9,6 +9,8 @@ Re-exports key components related to logging functionality.
 from provide.foundation.logger.base import (
     FoundationLogger,  # Class definition
     logger,  # Global instance
+    get_logger,  # Factory function
+    setup_logging,  # Setup function
 )
 from provide.foundation.logger.config import (
     LoggingConfig,
@@ -29,6 +31,8 @@ __all__ = [
     "LoggingConfig",
     "TelemetryConfig",
     "logger",
+    "get_logger",
+    "setup_logging",
     "show_emoji_matrix",
 ]
 

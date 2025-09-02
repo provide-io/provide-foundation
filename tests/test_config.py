@@ -20,6 +20,7 @@ from provide.foundation.logger.config import (
 from provide.foundation.logger.env import (
     _ensure_config_logger_handler,
     config_warnings_logger,
+    from_env,
 )
 from provide.foundation.logger.processors import (
     _build_core_processors_list,

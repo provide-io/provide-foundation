@@ -10,7 +10,10 @@ import os
 from pathlib import Path
 from typing import TypeVar
 
-import aiofiles
+try:
+    import aiofiles
+except ImportError:
+    aiofiles = None
 
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.env import EnvConfig
@@ -83,12 +86,17 @@ class FileConfigLoader(ConfigLoader):
             raise FileNotFoundError(f"Configuration file not found: {self.path}")
 
         data = await self._read_file()
-        return await config_class.from_dict(data, source=ConfigSource.FILE)
+        return config_class.from_dict(data, source=ConfigSource.FILE)
 
     async def _read_file(self) -> ConfigDict:
         """Read and parse configuration file."""
-        async with aiofiles.open(self.path, encoding=self.encoding) as f:
-            content = await f.read()
+        if aiofiles:
+            async with aiofiles.open(self.path, encoding=self.encoding) as f:
+                content = await f.read()
+        else:
+            # Fallback to synchronous read
+            with open(self.path, encoding=self.encoding) as f:
+                content = f.read()
 
         if self.format == ConfigFormat.JSON:
             return json.loads(content)
@@ -183,7 +191,7 @@ class EnvConfigLoader(ConfigLoader):
         if not issubclass(config_class, EnvConfig):
             raise TypeError(f"{config_class.__name__} must inherit from EnvConfig")
 
-        return await config_class.from_env(
+        return config_class.from_env(
             prefix=self.prefix,
             delimiter=self.delimiter,
             case_sensitive=self.case_sensitive,
@@ -210,7 +218,7 @@ class DictConfigLoader(ConfigLoader):
 
     async def load(self, config_class: type[T]) -> T:
         """Load configuration from dictionary."""
-        return await config_class.from_dict(self.data, source=self.source)
+        return config_class.from_dict(self.data, source=self.source)
 
 
 class MultiSourceLoader(ConfigLoader):

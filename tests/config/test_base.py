@@ -199,7 +199,8 @@ class TestConfigField:
         # Access metadata through attrs
         from attrs import fields
 
-        field_obj = fields(ConfigWithDescription)[0]
+        # Find the 'value' field (skip internal fields)
+        field_obj = next(f for f in fields(ConfigWithDescription) if f.name == "value")
         assert field_obj.metadata["description"] == "A test value"
 
     def test_field_with_env_metadata(self):
@@ -211,7 +212,8 @@ class TestConfigField:
 
         from attrs import fields
 
-        field_obj = fields(ConfigWithEnv)[0]
+        # Find the 'value' field (skip internal fields)
+        field_obj = next(f for f in fields(ConfigWithEnv) if f.name == "value")
         assert field_obj.metadata["env_var"] == "MY_VALUE"
         assert field_obj.metadata["env_prefix"] == "APP"
 
