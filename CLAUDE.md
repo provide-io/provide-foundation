@@ -96,3 +96,4 @@ uv publish                      # Publish to PyPI
 - Use `attrs` for data classes consistently
 - no migration, backward compatibility, or any of that kind of logic will be used. you must treat this as a prerelease in which i can do anything with .
 - only use foundation.logger - never structlog directly
+- only use absolute imports. never relative imports.
