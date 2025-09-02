@@ -1,7 +1,6 @@
 """Common CLI utilities for output, logging, and testing."""
 
 import json
-import sys
 from pathlib import Path
 from typing import Any
 
@@ -16,7 +15,7 @@ log = get_logger(__name__)
 def echo_json(data: Any, err: bool = False) -> None:
     """
     Output data as JSON.
-    
+
     Args:
         data: Data to output as JSON
         err: Whether to output to stderr
@@ -27,7 +26,7 @@ def echo_json(data: Any, err: bool = False) -> None:
 def echo_error(message: str, json_output: bool = False) -> None:
     """
     Output an error message.
-    
+
     Args:
         message: Error message to output
         json_output: Whether to output as JSON
@@ -41,7 +40,7 @@ def echo_error(message: str, json_output: bool = False) -> None:
 def echo_success(message: str, json_output: bool = False) -> None:
     """
     Output a success message.
-    
+
     Args:
         message: Success message to output
         json_output: Whether to output as JSON
@@ -55,7 +54,7 @@ def echo_success(message: str, json_output: bool = False) -> None:
 def echo_warning(message: str, json_output: bool = False) -> None:
     """
     Output a warning message.
-    
+
     Args:
         message: Warning message to output
         json_output: Whether to output as JSON
@@ -69,7 +68,7 @@ def echo_warning(message: str, json_output: bool = False) -> None:
 def echo_info(message: str, json_output: bool = False) -> None:
     """
     Output an informational message.
-    
+
     Args:
         message: Info message to output
         json_output: Whether to output as JSON
@@ -88,7 +87,7 @@ def setup_cli_logging(
 ) -> None:
     """
     Setup logging for CLI applications.
-    
+
     Args:
         ctx: Optional Context to get settings from
         log_level: Override log level
@@ -99,7 +98,7 @@ def setup_cli_logging(
         log_level = log_level or ctx.log_level
         log_file = log_file or ctx.log_file
         json_logs = json_logs or ctx.json_output
-    
+
     setup_logging(
         level=log_level or "INFO",
         json_logs=json_logs,
@@ -110,41 +109,43 @@ def setup_cli_logging(
 def create_cli_context(**kwargs) -> Context:
     """
     Create a Context for CLI usage.
-    
+
     Loads from environment, then overlays any provided kwargs.
-    
+
     Args:
         **kwargs: Override values for the context
-        
+
     Returns:
         Configured Context instance
     """
     # Start with environment
     ctx = Context.from_env()
-    
+
     # Apply any overrides
     for key, value in kwargs.items():
         if value is not None and hasattr(ctx, key):
             setattr(ctx, key, value)
-    
+
     return ctx
 
 
 # Testing utilities
 
+
 class CliTestRunner:
     """Test runner for CLI commands using Click's testing facilities."""
-    
+
     def __init__(self, mix_stderr: bool = False):
         """
         Initialize the test runner.
-        
+
         Args:
             mix_stderr: Whether to mix stderr with stdout in output
         """
         from click.testing import CliRunner
+
         self.runner = CliRunner(mix_stderr=mix_stderr)
-    
+
     def invoke(
         self,
         cli: click.Command | click.Group,
@@ -156,7 +157,7 @@ class CliTestRunner:
     ):
         """
         Invoke a CLI command for testing.
-        
+
         Args:
             cli: The Click command or group to invoke
             args: Command line arguments
@@ -164,7 +165,7 @@ class CliTestRunner:
             env: Environment variables to set
             catch_exceptions: Whether to catch exceptions
             **kwargs: Additional arguments for CliRunner.invoke
-            
+
         Returns:
             Click Result object with exit_code, output, etc.
         """
@@ -176,11 +177,11 @@ class CliTestRunner:
             catch_exceptions=catch_exceptions,
             **kwargs,
         )
-    
+
     def isolated_filesystem(self):
         """
         Context manager for isolated filesystem.
-        
+
         Creates a temporary directory and changes to it,
         cleaning up on exit.
         """
@@ -190,7 +191,7 @@ class CliTestRunner:
 def assert_cli_success(result, expected_output: str | None = None) -> None:
     """
     Assert that a CLI command succeeded.
-    
+
     Args:
         result: Click Result object from invoke
         expected_output: Optional expected output substring
@@ -201,7 +202,7 @@ def assert_cli_success(result, expected_output: str | None = None) -> None:
             f"Output: {result.output}\n"
             f"Exception: {result.exception}"
         )
-    
+
     if expected_output and expected_output not in result.output:
         raise AssertionError(
             f"Expected output not found.\n"
@@ -217,25 +218,20 @@ def assert_cli_error(
 ) -> None:
     """
     Assert that a CLI command failed.
-    
+
     Args:
         result: Click Result object from invoke
         expected_error: Optional expected error substring
         exit_code: Expected exit code (default: any non-zero)
     """
     if result.exit_code == 0:
-        raise AssertionError(
-            f"Command succeeded unexpectedly\n"
-            f"Output: {result.output}"
-        )
-    
+        raise AssertionError(f"Command succeeded unexpectedly\nOutput: {result.output}")
+
     if exit_code is not None and result.exit_code != exit_code:
         raise AssertionError(
-            f"Wrong exit code.\n"
-            f"Expected: {exit_code}\n"
-            f"Actual: {result.exit_code}"
+            f"Wrong exit code.\nExpected: {exit_code}\nActual: {result.exit_code}"
         )
-    
+
     if expected_error and expected_error not in result.output:
         raise AssertionError(
             f"Expected error not found.\n"

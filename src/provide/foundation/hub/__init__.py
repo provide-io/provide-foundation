@@ -14,33 +14,33 @@ Key Features:
 
 Example Usage:
     >>> from provide.foundation.hub import Hub, register_component, register_command
-    >>> 
+    >>>
     >>> @register_component("my_resource", version="1.0.0")
     >>> class MyResource:
     >>>     pass
-    >>> 
+    >>>
     >>> @register_command("init")
     >>> def init_command():
     >>>     pass
-    >>> 
+    >>>
     >>> hub = Hub()
     >>> resource = hub.get_component("my_resource")
     >>> command = hub.get_command("init")
 """
 
+from provide.foundation.hub.commands import (
+    build_click_command,
+    register_command,
+)
 from provide.foundation.hub.components import (
     BaseComponent,
-    register_component,
     discover_components,
-)
-from provide.foundation.hub.commands import (
-    register_command,
-    build_click_command,
+    register_component,
 )
 from provide.foundation.hub.manager import (
     Hub,
-    get_hub,
     clear_hub,
+    get_hub,
 )
 
 __all__ = [

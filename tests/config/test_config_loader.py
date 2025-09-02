@@ -8,7 +8,8 @@ from pathlib import Path
 from attrs import define
 
 from provide.foundation.config.base import BaseConfig, field
-from provide.foundation.config.env import EnvConfig, env_field, parse_bool
+from provide.foundation.config.env import EnvConfig, env_field
+from provide.foundation.utils.parsing import parse_bool
 from provide.foundation.config.loader import (
     ChainedLoader,
     DictConfigLoader,
@@ -16,7 +17,9 @@ from provide.foundation.config.loader import (
     FileConfigLoader,
     MultiSourceLoader,
 )
-from provide.foundation.config.types import ConfigFormat, ConfigSource
+from provide.foundation.config.types import ConfigFormat
+from provide.foundation.errors import ConfigurationError, NotFoundError
+from provide.foundation.config.loader import ConfigSource
 
 
 @define
@@ -126,7 +129,7 @@ EXTRA_VAR="quoted value"
         config_file = tmp_path / "config.unknown"
         config_file.touch()
 
-        with pytest.raises(ValueError, match="Cannot determine format"):
+        with pytest.raises(ConfigurationError, match="Cannot determine format"):
             FileConfigLoader(config_file)
 
     @pytest.mark.asyncio
@@ -135,7 +138,7 @@ EXTRA_VAR="quoted value"
         loader = FileConfigLoader(tmp_path / "nonexistent.json")
         assert not loader.exists()
 
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(NotFoundError):
             await loader.load(TestConfig)
 
 

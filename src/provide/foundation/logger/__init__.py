@@ -8,8 +8,8 @@ Re-exports key components related to logging functionality.
 
 from provide.foundation.logger.base import (
     FoundationLogger,  # Class definition
-    logger,  # Global instance
     get_logger,  # Factory function
+    logger,  # Global instance
     setup_logging,  # Setup function
 )
 from provide.foundation.logger.config import (
@@ -30,8 +30,8 @@ __all__ = [
     "FoundationLogger",
     "LoggingConfig",
     "TelemetryConfig",
-    "logger",
     "get_logger",
+    "logger",
     "setup_logging",
     "show_emoji_matrix",
 ]

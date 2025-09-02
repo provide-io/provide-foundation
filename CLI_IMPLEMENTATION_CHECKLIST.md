@@ -178,6 +178,28 @@ from provide.foundation.cli import (
 )
 ```
 
+## provide.foundation Updates (Completed)
+
+### Console Output Standardization ✅
+- `pout()` - Output to stdout with JSON mode support
+- `perr()` - Output to stderr with JSON mode support  
+- `plog` - Alias for foundation.logger
+
+### Command Registration with Dot Notation ✅
+- Commands use dot notation for hierarchy: `@register_command("db.migrate")`
+- Auto-creates parent groups as needed
+- Groups can be explicit: `@register_command("db", group=True)`
+- Supports multi-level nesting: `container.volumes.backup`
+
+### Test Infrastructure Reorganization ✅
+- Tests organized by feature in subdirectories
+- Test files use `test_<feature>_` prefix convention
+- Created infrastructure directories:
+  - `tests/mocks/` - Reusable mock objects
+  - `tests/fixtures/` - Organized pytest fixtures
+  - `tests/data/` - Test data files
+  - `tests/helpers/` - Test utilities
+
 ## Testing Requirements
 
 Each CLI tool needs:

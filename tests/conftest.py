@@ -2,26 +2,19 @@
 # tests/conftest.py
 #
 """
-Pytest configuration and fixtures for provide-foundation tests.
+Pytest configuration and global fixtures for provide-foundation tests.
 
-This file defines shared fixtures used across multiple test modules,
-primarily for managing the telemetry system's state during testing,
-capturing log output, and providing diagnostic logging for the test setup itself.
+This file contains only the essential global fixtures and configuration
+that must be at the root level for pytest.
 """
 
-from collections.abc import Callable, Generator
-import io  # For io.StringIO
+from collections.abc import Generator
 import logging as stdlib_logging
 import os
 import sys
-from typing import TextIO  # Corrected: TextIO from typing
 
 import pytest
 
-from provide.foundation import TelemetryConfig, setup_telemetry
-
-# ensure_config_warnings_logger_configured is removed from config.py, so remove import
-# from provide.foundation.config import ensure_config_warnings_logger_configured
 from provide.foundation.core import (
     _set_log_stream_for_testing,
     reset_foundation_setup_for_testing,
@@ -76,52 +69,16 @@ def manage_telemetry_reset_for_each_test() -> Generator[None]:
     _set_log_stream_for_testing(None)  # Ensure stream is reset to default stderr
 
 
-@pytest.fixture
-def captured_stderr_for_foundation() -> Generator[
-    TextIO
-]:  # Corrected: TextIO, and it's io.StringIO which is a TextIO
-    """
-    Fixture to capture stderr output from Foundation's logging system.
+# Import and re-export fixtures so they're available to all tests
+from tests.fixtures.logger import (
+    captured_stderr_for_foundation,
+    setup_foundation_telemetry_for_test,
+)
+from tests.fixtures.hub import default_container_directory
 
-    It redirects Foundation's log stream to an `io.StringIO` buffer, yields the buffer
-    to the test, and then restores the original stream.
-    """
-    current_test_stream = io.StringIO()
-    _set_log_stream_for_testing(current_test_stream)
-    yield current_test_stream
-    _set_log_stream_for_testing(None)
-    current_test_stream.close()
-
-
-@pytest.fixture
-def setup_foundation_telemetry_for_test(
-    captured_stderr_for_foundation: TextIO,  # Corrected: TextIO
-) -> Callable[[TelemetryConfig | None], None]:
-    """
-    Fixture providing a function to set up Foundation Telemetry for a test.
-
-    The setup function uses the `captured_stderr_for_foundation` fixture to ensure
-    log output during setup (and subsequent logging) is captured.
-
-    Args:
-        captured_stderr_for_foundation: Fixture to capture stderr.
-
-    Returns:
-        A callable that takes an optional `TelemetryConfig` and calls `setup_telemetry`.
-    """
-
-    def _setup_func(config: TelemetryConfig | None = None) -> None:
-        # The `config` parameter is correctly defined to accept TelemetryConfig or None.
-        # Calls like _setup_func(config=cfg_instance) or _setup_func(cfg_instance) are valid.
-        setup_telemetry(config)
-
-    return _setup_func
-
-
-@pytest.fixture(scope="session")
-def foundation_conftest_diagnostic_logger() -> stdlib_logging.Logger:
-    """Session-scoped fixture providing the conftest diagnostic logger."""
-    return _get_conftest_diag_logger()
-
-
-# 🧪⚙️
+# Re-export for pytest discovery
+__all__ = [
+    "captured_stderr_for_foundation",
+    "setup_foundation_telemetry_for_test",
+    "default_container_directory",
+]
