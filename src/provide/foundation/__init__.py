@@ -23,6 +23,8 @@ from provide.foundation.logger import (
     LoggingConfig,
     TelemetryConfig,
     logger,  # Global logger instance
+    get_logger,  # Factory function for creating loggers
+    setup_logging,  # Setup function
 )
 
 # New type exports for semantic layering
@@ -37,9 +39,24 @@ from provide.foundation.types import (
 # New utility exports
 from provide.foundation.utils import timed_block
 
+# Emoji exports
+from provide.foundation.logger.emoji_matrix import (
+    PRIMARY_EMOJI,
+    SECONDARY_EMOJI,
+    TERTIARY_EMOJI,
+    show_emoji_matrix,
+)
+
+# New foundation components
+from provide.foundation import cli
+from provide.foundation.context import Context
+from provide.foundation.registry import Registry, RegistryEntry
+
 __all__ = [
     # Core setup and logger
     "logger",
+    "get_logger",
+    "setup_logging",
     "setup_telemetry",
     "shutdown_foundation_telemetry",
     # Configuration classes
@@ -63,6 +80,11 @@ __all__ = [
     "__version__",
     # Config module
     "config",
+    # New foundation modules
+    "Context",
+    "Registry",
+    "RegistryEntry",
+    "cli",
 ]
 
 # 🐍📝

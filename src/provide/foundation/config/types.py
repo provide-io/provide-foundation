@@ -26,6 +26,30 @@ class ConfigSource(Enum):
             return NotImplemented
         return self.value < other.value
 
+    def __le__(self, other):
+        """Enable <= comparison for precedence."""
+        if not isinstance(other, ConfigSource):
+            return NotImplemented
+        return self.value <= other.value
+
+    def __gt__(self, other):
+        """Enable > comparison for precedence."""
+        if not isinstance(other, ConfigSource):
+            return NotImplemented
+        return self.value > other.value
+
+    def __ge__(self, other):
+        """Enable >= comparison for precedence."""
+        if not isinstance(other, ConfigSource):
+            return NotImplemented
+        return self.value >= other.value
+
+    def __eq__(self, other):
+        """Enable == comparison for precedence."""
+        if not isinstance(other, ConfigSource):
+            return NotImplemented
+        return self.value == other.value
+
 
 class ConfigFormat(Enum):
     """Supported configuration file formats."""

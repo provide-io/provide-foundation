@@ -143,7 +143,7 @@ class TestLazyInitializationErrorRecovery:
         reset_foundation_setup_for_testing()
 
         # Mock config creation to fail completely
-        with patch("provide.foundation.config.TelemetryConfig") as mock_config_class:
+        with patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class:
             mock_config_class.from_env.side_effect = Exception("Config creation failed")
             mock_config_class.side_effect = Exception("Config constructor failed")
 
@@ -179,7 +179,7 @@ class TestLazyInitializationErrorRecovery:
 
         # Mock processor chain building to fail
         with patch(
-            "provide.foundation.config._build_core_processors_list"
+            "provide.foundation.logger.processors._build_core_processors_list"
         ) as mock_build:
             mock_build.side_effect = Exception("Processor chain failed")
 
