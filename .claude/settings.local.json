@@ -49,7 +49,8 @@
       "Bash(./validate-workflows.sh:*)",
       "Bash(uv build:*)",
       "Bash(mkdocs build:*)",
-      "Bash(./run-full-pipeline.sh)"
+      "Bash(./run-full-pipeline.sh)",
+      "Bash(./validate-pipeline.sh)"
     ],
     "deny": [],
     "ask": [],
