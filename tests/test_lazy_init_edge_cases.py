@@ -8,6 +8,7 @@ Edge case and error recovery tests for lazy initialization.
 This module tests the most extreme edge cases, error conditions, and
 recovery scenarios to ensure robust behavior under all circumstances.
 """
+
 import contextlib
 import io
 import os
@@ -32,15 +33,18 @@ class TestExtremeEdgeCases:
 
         original_perform_lazy_setup = None
 
-        def recursive_lazy_setup(self: Any) -> Any: # ANN202
+        def recursive_lazy_setup(self: Any) -> Any:  # ANN202
             # This would cause infinite recursion if not handled properly
             global_logger.debug("Logging during lazy setup")
             return original_perform_lazy_setup(self)
 
         from provide.foundation.logger.base import FoundationLogger
+
         original_perform_lazy_setup = FoundationLogger._perform_lazy_setup
 
-        with patch.object(FoundationLogger, '_perform_lazy_setup', recursive_lazy_setup):
+        with patch.object(
+            FoundationLogger, "_perform_lazy_setup", recursive_lazy_setup
+        ):
             # Should handle recursion gracefully without infinite loop
             global_logger.info("Initial log that triggers recursive setup")
 
@@ -56,7 +60,7 @@ class TestExtremeEdgeCases:
         setup_failures = 0
         lock = threading.Lock()
 
-        def failing_setup(self: Any) -> Any: # ANN202
+        def failing_setup(self: Any) -> Any:  # ANN202
             nonlocal setup_attempts, setup_failures
             with lock:
                 setup_attempts += 1
@@ -66,6 +70,7 @@ class TestExtremeEdgeCases:
 
             # Later attempts succeed
             from provide.foundation.logger.base import FoundationLogger
+
             return FoundationLogger._perform_lazy_setup.__wrapped__(self)
 
         def concurrent_worker(worker_id: int) -> bool:
@@ -82,8 +87,10 @@ class TestExtremeEdgeCases:
         )
 
         # SIM117: Combined with statements
-        with patch.object(FoundationLogger, '_perform_lazy_setup', failing_setup), \
-             ThreadPoolExecutor(max_workers=10) as executor:
+        with (
+            patch.object(FoundationLogger, "_perform_lazy_setup", failing_setup),
+            ThreadPoolExecutor(max_workers=10) as executor,
+        ):
             futures = [executor.submit(concurrent_worker, i) for i in range(20)]
             results = [future.result() for future in futures]
 
@@ -97,7 +104,9 @@ class TestExtremeEdgeCases:
 
         allocation_count = 0
 
-        def memory_pressure_allocator(*args: Any, **kwargs: Any) -> object: # ANN002, ANN003, ANN202
+        def memory_pressure_allocator(
+            *args: Any, **kwargs: Any
+        ) -> object:  # ANN002, ANN003, ANN202
             nonlocal allocation_count
             allocation_count += 1
 
@@ -108,7 +117,10 @@ class TestExtremeEdgeCases:
             return object()
 
         # Mock object creation to simulate memory pressure
-        with patch('builtins.object', memory_pressure_allocator), contextlib.suppress(MemoryError): # SIM105
+        with (
+            patch("builtins.object", memory_pressure_allocator),
+            contextlib.suppress(MemoryError),
+        ):  # SIM105
             global_logger.info("Message under memory pressure")
             # If we get here, the system handled memory pressure gracefully
             # If memory error propagates, that's also acceptable (suppressed)
@@ -125,18 +137,19 @@ class TestExtremeEdgeCases:
 
         setup_interrupted = False
 
-        def slow_setup(self: Any) -> Any: # ANN202
+        def slow_setup(self: Any) -> Any:  # ANN202
             nonlocal setup_interrupted
             try:
                 # Simulate slow setup that could be interrupted
                 time.sleep(0.1)
                 from provide.foundation.logger.base import FoundationLogger
+
                 return FoundationLogger._perform_lazy_setup.__wrapped__(self)
             except KeyboardInterrupt:
                 setup_interrupted = True
-                raise # Correct way to re-raise the caught exception
+                raise  # Correct way to re-raise the caught exception
 
-        def interrupt_handler(signum: int, frame: Any) -> None: # Added types
+        def interrupt_handler(signum: int, frame: Any) -> None:  # Added types
             pass  # Just interrupt, don't exit
 
         from provide.foundation.logger.base import (
@@ -147,7 +160,7 @@ class TestExtremeEdgeCases:
         original_handler = signal.signal(signal.SIGINT, interrupt_handler)
 
         try:
-            with patch.object(FoundationLogger, '_perform_lazy_setup', slow_setup):
+            with patch.object(FoundationLogger, "_perform_lazy_setup", slow_setup):
                 # Start setup in a thread
                 def setup_worker() -> None:
                     global_logger.info("Message during interruptible setup")
@@ -177,12 +190,17 @@ class TestExtremeEdgeCases:
         reset_foundation_setup_for_testing()
 
         # Mock import failure for critical modules
-        def failing_import(name: str, *args: Any, **kwargs: Any) -> Any: # ANN202 (already had arg types)
-            if name in ('structlog', 'provide.foundation.config'):
+        def failing_import(
+            name: str, *args: Any, **kwargs: Any
+        ) -> Any:  # ANN202 (already had arg types)
+            if name in ("structlog", "provide.foundation.config"):
                 raise ImportError(f"Simulated import failure for {name}")
             return __import__(name, *args, **kwargs)
 
-        with patch('builtins.__import__', failing_import), contextlib.suppress(ImportError): # SIM105
+        with (
+            patch("builtins.__import__", failing_import),
+            contextlib.suppress(ImportError),
+        ):  # SIM105
             # Should handle import failures gracefully
             global_logger.error("Message during import system corruption")
             # If import error propagates, that's acceptable (suppressed)
@@ -196,10 +214,15 @@ class TestExtremeEdgeCases:
         reset_foundation_setup_for_testing()
 
         # Mock file operations to simulate permission errors
-        def permission_denied_open(*args: Any, **kwargs: Any) -> Never: # ANN002, ANN003
+        def permission_denied_open(
+            *args: Any, **kwargs: Any
+        ) -> Never:  # ANN002, ANN003
             raise PermissionError("Access denied to log file")
 
-        with patch('builtins.open', permission_denied_open), contextlib.suppress(PermissionError): # SIM105
+        with (
+            patch("builtins.open", permission_denied_open),
+            contextlib.suppress(PermissionError),
+        ):  # SIM105
             # Should handle filesystem errors gracefully
             global_logger.warning("Message when filesystem access denied")
             # If permission error propagates, that's acceptable (suppressed)
@@ -221,14 +244,20 @@ class TestStateConsistencyUnderFailure:
             base as logger_base,  # type: ignore[import-untyped]
         )
 
-        def partial_failure_setup(self: Any) -> Never: # Added type for self
+        def partial_failure_setup(self: Any) -> Never:  # Added type for self
             # Set some state but then fail
             self._active_config = "partial_config"  # Invalid state
             raise Exception("Partial setup failure")
 
         # SIM117: Combined with statements
-        with patch.object(logger_base.FoundationLogger, '_perform_lazy_setup', partial_failure_setup), \
-             contextlib.suppress(Exception):
+        with (
+            patch.object(
+                logger_base.FoundationLogger,
+                "_perform_lazy_setup",
+                partial_failure_setup,
+            ),
+            contextlib.suppress(Exception),
+        ):
             # First attempt should fail
             global_logger.info("First attempt")
 
@@ -258,10 +287,11 @@ class TestStateConsistencyUnderFailure:
                 from provide.foundation.logger import (
                     base as logger_base,  # Keep for _LAZY_SETUP_STATE access
                 )
+
                 snapshot = (
                     logger_base._LAZY_SETUP_STATE["done"],
                     global_logger._is_configured_by_setup,
-                    global_logger._active_config is not None
+                    global_logger._active_config is not None,
                 )
                 state_snapshots.append(snapshot)
                 results.append(True)
@@ -291,7 +321,9 @@ class TestStateConsistencyUnderFailure:
         # All snapshots should show consistent final state
         final_states = set(state_snapshots)
         # Should converge to a single consistent state
-        assert len(final_states) <= 2, f"Too many different final states: {final_states}"
+        assert len(final_states) <= 2, (
+            f"Too many different final states: {final_states}"
+        )
 
     def test_exception_handling_state_cleanup(self, capsys: CaptureFixture) -> None:
         """Test that exceptions during setup properly clean up state."""
@@ -301,7 +333,7 @@ class TestStateConsistencyUnderFailure:
 
         exception_count = 0
 
-        def exception_setup(self: Any) -> None: # ANN202
+        def exception_setup(self: Any) -> None:  # ANN202
             nonlocal exception_count
             exception_count += 1
 
@@ -314,7 +346,9 @@ class TestStateConsistencyUnderFailure:
             # Eventually succeed with clean state
             return logger_base.FoundationLogger._perform_lazy_setup.__wrapped__(self)
 
-        with patch.object(logger_base.FoundationLogger, '_perform_lazy_setup', exception_setup):
+        with patch.object(
+            logger_base.FoundationLogger, "_perform_lazy_setup", exception_setup
+        ):
             # Multiple attempts should eventually succeed
             for attempt in range(5):
                 try:
@@ -347,10 +381,11 @@ class TestStateConsistencyUnderFailure:
             from provide.foundation.logger import (
                 base as logger_base,  # Keep for _LAZY_SETUP_STATE access
             )
+
             thread_results[worker_id] = {
-                'lazy_setup_done': logger_base._LAZY_SETUP_STATE["done"],
-                'config_exists': global_logger._active_config is not None,
-                'thread_id': threading.get_ident(),
+                "lazy_setup_done": logger_base._LAZY_SETUP_STATE["done"],
+                "config_exists": global_logger._active_config is not None,
+                "thread_id": threading.get_ident(),
             }
 
         # Start multiple threads
@@ -365,11 +400,13 @@ class TestStateConsistencyUnderFailure:
             thread.join()
 
         # All threads should see consistent global state
-        lazy_setup_states = [r['lazy_setup_done'] for r in thread_results.values()]
-        config_states = [r['config_exists'] for r in thread_results.values()]
+        lazy_setup_states = [r["lazy_setup_done"] for r in thread_results.values()]
+        config_states = [r["config_exists"] for r in thread_results.values()]
 
         # Should all be the same (all True after successful setup)
-        assert len(set(lazy_setup_states)) == 1, "Inconsistent lazy setup state across threads"
+        assert len(set(lazy_setup_states)) == 1, (
+            "Inconsistent lazy setup state across threads"
+        )
         assert len(set(config_states)) == 1, "Inconsistent config state across threads"
         assert all(lazy_setup_states), "Lazy setup should be done in all threads"
         assert all(config_states), "Config should exist in all threads"
@@ -385,6 +422,7 @@ class TestLazyInitializationCompliance:
         # Import and create logger instance should not trigger setup
         from provide.foundation import logger
         from provide.foundation.logger import base as logger_base
+
         new_logger = logger_base.FoundationLogger()
 
         # Verify no initialization yet
@@ -415,15 +453,16 @@ class TestLazyInitializationCompliance:
 
         setup_call_count = 0
 
-        def counting_setup(self: Any) -> Any: # ANN202
+        def counting_setup(self: Any) -> Any:  # ANN202
             nonlocal setup_call_count
             setup_call_count += 1
             from provide.foundation.logger.base import FoundationLogger
+
             return FoundationLogger._perform_lazy_setup.__wrapped__(self)
 
         from provide.foundation.logger.base import FoundationLogger
 
-        with patch.object(FoundationLogger, '_perform_lazy_setup', counting_setup):
+        with patch.object(FoundationLogger, "_perform_lazy_setup", counting_setup):
             # Multiple logging calls
             for i in range(10):
                 global_logger.info(f"Message {i}")
@@ -434,40 +473,49 @@ class TestLazyInitializationCompliance:
                 test_logger.debug(f"Test message {i}")
 
         # Setup should have been called exactly once
-        assert setup_call_count == 1, f"Setup called {setup_call_count} times, expected 1"
+        assert setup_call_count == 1, (
+            f"Setup called {setup_call_count} times, expected 1"
+        )
 
         captured = capsys.readouterr()
         assert "Message 0" in captured.err
         assert "Message 9" in captured.err
 
-    def test_thread_safety_specification_compliance(self, capsys: CaptureFixture) -> None:
+    def test_thread_safety_specification_compliance(
+        self, capsys: CaptureFixture
+    ) -> None:
         """Test compliance with thread safety specifications."""
         reset_foundation_setup_for_testing()
 
         # Configure structlog with a non-default factory to bypass early exit in _ensure_configured
         # This allows testing the lock contention for _perform_lazy_setup itself.
-        structlog.configure(logger_factory=structlog.PrintLoggerFactory(file=io.StringIO()))
+        structlog.configure(
+            logger_factory=structlog.PrintLoggerFactory(file=io.StringIO())
+        )
 
         setup_start_times: list[float] = []
         setup_end_times: list[float] = []
 
         # Import FoundationLogger here to access its original method
         from provide.foundation.logger.base import FoundationLogger
+
         original_perform_lazy_setup_method = FoundationLogger._perform_lazy_setup
 
-        def timed_setup(self_instance: Any) -> Any: # ANN202 (already had arg type)
+        def timed_setup(self_instance: Any) -> Any:  # ANN202 (already had arg type)
             setup_start_times.append(time.time())
             original_method_result = None
             try:
                 # Call the stored original method
-                original_method_result = original_perform_lazy_setup_method(self_instance)
+                original_method_result = original_perform_lazy_setup_method(
+                    self_instance
+                )
             except Exception:
-                raise # Re-raise
+                raise  # Re-raise
             setup_end_times.append(time.time())
             return original_method_result
 
         # FoundationLogger is already imported above
-        with patch.object(FoundationLogger, '_perform_lazy_setup', timed_setup):
+        with patch.object(FoundationLogger, "_perform_lazy_setup", timed_setup):
             # Create barrier to synchronize thread starts
             thread_count = 20
             barrier = threading.Barrier(thread_count)
@@ -488,8 +536,12 @@ class TestLazyInitializationCompliance:
                 thread.join()
 
         # Despite synchronization, setup should still occur only once
-        assert len(setup_start_times) == 1, f"Setup started {len(setup_start_times)} times"
-        assert len(setup_end_times) == 1, f"Setup completed {len(setup_end_times)} times"
+        assert len(setup_start_times) == 1, (
+            f"Setup started {len(setup_start_times)} times"
+        )
+        assert len(setup_end_times) == 1, (
+            f"Setup completed {len(setup_end_times)} times"
+        )
 
         captured = capsys.readouterr()
         # All messages should be logged
@@ -503,21 +555,29 @@ class TestLazyInitializationCompliance:
         from provide.foundation.logger import base as logger_base
 
         # First setup attempt fails
-        def failing_then_succeeding_setup(self: Any) -> Any: # ANN202
-            if not hasattr(self, '_setup_attempted'):
+        def failing_then_succeeding_setup(self: Any) -> Any:  # ANN202
+            if not hasattr(self, "_setup_attempted"):
                 self._setup_attempted = True
                 raise Exception("First setup fails")
             else:
                 # Second attempt succeeds
-                return logger_base.FoundationLogger._perform_lazy_setup.__wrapped__(self)
+                return logger_base.FoundationLogger._perform_lazy_setup.__wrapped__(
+                    self
+                )
 
-        with patch.object(logger_base.FoundationLogger, '_perform_lazy_setup', failing_then_succeeding_setup), \
-             contextlib.suppress(Exception): # SIM105 for first attempt
+        with (
+            patch.object(
+                logger_base.FoundationLogger,
+                "_perform_lazy_setup",
+                failing_then_succeeding_setup,
+            ),
+            contextlib.suppress(Exception),
+        ):  # SIM105 for first attempt
             # First logging attempt (setup fails)
             global_logger.info("First attempt")
             # Expected to fail (suppressed)
 
-        # Reset error state to allow retry
+            # Reset error state to allow retry
             logger_base._LAZY_SETUP_STATE["error"] = None
 
             # Second logging attempt (should succeed)
@@ -525,5 +585,6 @@ class TestLazyInitializationCompliance:
 
         captured = capsys.readouterr()
         assert "Second attempt" in captured.err
+
 
 # 🧪⚡

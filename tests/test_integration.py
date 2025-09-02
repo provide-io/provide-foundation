@@ -20,6 +20,7 @@ The integration tests focus on:
 These tests simulate realistic usage scenarios to ensure the telemetry
 system behaves correctly in production environments.
 """
+
 import asyncio
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
@@ -66,7 +67,9 @@ def test_full_lifecycle_integration(
     # Usage phase - exercise various logging features
     app_logger = logger.get_logger("app.main")
     app_logger.info("Application started", version="1.0.0")
-    app_logger.debug("Debug info", component="auth", action="validate", status="success")
+    app_logger.debug(
+        "Debug info", component="auth", action="validate", status="success"
+    )
 
     # Test custom TRACE level
     logger.trace("Trace event", _foundation_logger_name="app.trace", detail="low-level")
@@ -80,7 +83,8 @@ def test_full_lifecycle_integration(
     # Verify output structure and content
     output = captured_stderr_for_foundation.getvalue()
     lines = [
-        line for line in output.strip().splitlines()
+        line
+        for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]") and line.strip()
     ]
 
@@ -98,7 +102,7 @@ def test_full_lifecycle_integration(
             assert "service_name" in log_data, "Missing service_name field"
             assert log_data["service_name"] == "integration-test-service"
 
-        except json.JSONDecodeError as e: # pragma: no cover
+        except json.JSONDecodeError as e:  # pragma: no cover
             pytest.fail(f"Invalid JSON in log line: {line}. Error: {e}")
 
 
@@ -186,11 +190,14 @@ def test_high_volume_logging_performance(
     # Verify all messages were logged
     output = captured_stderr_for_foundation.getvalue()
     lines = [
-        line for line in output.strip().splitlines()
+        line
+        for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]") and line.strip()
     ]
 
-    assert len(lines) == message_count, f"Expected {message_count} lines, got {len(lines)}"
+    assert len(lines) == message_count, (
+        f"Expected {message_count} lines, got {len(lines)}"
+    )
 
     # Performance assertion - should achieve reasonable throughput
     messages_per_second = message_count / duration
@@ -220,9 +227,7 @@ def test_thread_safety_concurrent_logging(
         thread_logger = logger.get_logger(f"thread.{thread_id}")
         for i in range(message_count):
             thread_logger.info(
-                f"Thread {thread_id} message {i}",
-                thread_id=thread_id,
-                msg_id=i
+                f"Thread {thread_id} message {i}", thread_id=thread_id, msg_id=i
             )
 
     # Launch multiple concurrent threads
@@ -242,12 +247,15 @@ def test_thread_safety_concurrent_logging(
     # Verify output correctness
     output = captured_stderr_for_foundation.getvalue()
     lines = [
-        line for line in output.strip().splitlines()
+        line
+        for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]") and line.strip()
     ]
 
     expected_messages = thread_count * messages_per_thread
-    assert len(lines) == expected_messages, f"Expected {expected_messages} lines, got {len(lines)}"
+    assert len(lines) == expected_messages, (
+        f"Expected {expected_messages} lines, got {len(lines)}"
+    )
 
     # Verify all messages are valid JSON and count per thread
     thread_message_counts: dict[int, int] = {}
@@ -256,15 +264,18 @@ def test_thread_safety_concurrent_logging(
             log_data = json.loads(line)
             thread_id = log_data.get("thread_id")
             if thread_id is not None:
-                thread_message_counts[thread_id] = thread_message_counts.get(thread_id, 0) + 1
-        except json.JSONDecodeError as e: # pragma: no cover
+                thread_message_counts[thread_id] = (
+                    thread_message_counts.get(thread_id, 0) + 1
+                )
+        except json.JSONDecodeError as e:  # pragma: no cover
             pytest.fail(f"Invalid JSON in concurrent log line: {line}. Error: {e}")
 
     # Verify each thread logged the expected number of messages
     for thread_id_val in range(thread_count):
         actual_count = thread_message_counts.get(thread_id_val, 0)
-        assert actual_count == messages_per_thread, \
+        assert actual_count == messages_per_thread, (
             f"Thread {thread_id_val} logged {actual_count} messages, expected {messages_per_thread}"
+        )
 
 
 @pytest.mark.asyncio
@@ -328,21 +339,23 @@ def test_error_recovery_and_resilience(
         ("Message with large data", {"data": "x" * 10000}),
         ("Message with special characters", {"text": "Hello\n\t\r\x00World"}),
         ("Message with unicode", {"unicode": "🚀🌟💫"}),
-        ("Message with complex nested data", {
-            "nested": {"level1": {"level2": {"data": ["item1", "item2"]}}}
-        }),
+        (
+            "Message with complex nested data",
+            {"nested": {"level1": {"level2": {"data": ["item1", "item2"]}}}},
+        ),
     ]
 
     for message, kwargs in test_cases:
         try:
             test_logger.info(message, **kwargs)
-        except Exception as e: # pragma: no cover
+        except Exception as e:  # pragma: no cover
             pytest.fail(f"Logger failed with message '{message}': {e}")
 
     # Verify output exists and is valid
     output = captured_stderr_for_foundation.getvalue()
     lines = [
-        line for line in output.strip().splitlines()
+        line
+        for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]") and line.strip()
     ]
 
@@ -376,18 +389,16 @@ def test_configuration_edge_cases() -> None:
         config_immut.service_name = "modified"  # type: ignore[misc]
 
 
-def test_repeated_setup_calls_integration( # Renamed to avoid conflict
+def test_repeated_setup_calls_integration(  # Renamed to avoid conflict
     setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
     captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     """Tests behavior with repeated setup calls."""
     config1 = TelemetryConfig(
-        service_name="service1",
-        logging=LoggingConfig(default_level="DEBUG")
+        service_name="service1", logging=LoggingConfig(default_level="DEBUG")
     )
     config2 = TelemetryConfig(
-        service_name="service2",
-        logging=LoggingConfig(default_level="INFO")
+        service_name="service2", logging=LoggingConfig(default_level="INFO")
     )
 
     # First setup
@@ -508,27 +519,41 @@ def test_module_level_filtering_comprehensive(
         if level == "trace":
             # Special handling for custom TRACE level
             # Ensure the logger_name from the bound logger is used
-            logger.trace(message, _foundation_logger_name=test_logger_instance._context.get("logger_name"))
+            logger.trace(
+                message,
+                _foundation_logger_name=test_logger_instance._context.get(
+                    "logger_name"
+                ),
+            )
         else:
             log_method(message)
 
     output = captured_stderr_for_foundation.getvalue()
     filtered_lines = [
-        line for line in output.strip().splitlines()
+        line
+        for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]") and line.strip()
     ]
 
-    expected_messages_count = sum(1 for _, _, _, tc_should_appear in test_cases if tc_should_appear)
+    expected_messages_count = sum(
+        1 for _, _, _, tc_should_appear in test_cases if tc_should_appear
+    )
     actual_messages_count = len(filtered_lines)
 
-    assert actual_messages_count == expected_messages_count, \
+    assert actual_messages_count == expected_messages_count, (
         f"Expected {expected_messages_count} messages, got {actual_messages_count}. Output:\n{output}"
+    )
 
     for _, _, message_text, tc_should_appear_for_assertion in test_cases:
         message_found = any(message_text in line for line in filtered_lines)
         if tc_should_appear_for_assertion:
-            assert message_found, f"Expected message '{message_text}' not found in output. Output:\n{output}"
+            assert message_found, (
+                f"Expected message '{message_text}' not found in output. Output:\n{output}"
+            )
         else:
-            assert not message_found, f"Unexpected message '{message_text}' found in output. Output:\n{output}"
+            assert not message_found, (
+                f"Unexpected message '{message_text}' found in output. Output:\n{output}"
+            )
+
 
 # 🧪🔄

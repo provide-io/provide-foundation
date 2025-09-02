@@ -2,6 +2,7 @@
 """
 Utility functions for Foundation Telemetry, such as context managers for timing operations.
 """
+
 from collections.abc import Generator
 from contextlib import contextmanager
 import contextvars  # For potential trace_id integration
@@ -15,7 +16,9 @@ if TYPE_CHECKING:
 # Example context variable for trace_id (application would need to set this)
 # This is just a placeholder to show how it *could* be integrated.
 # Foundation Telemetry itself won't manage this contextvar's lifecycle.
-_FOUNDATION_CONTEXT_TRACE_ID = contextvars.ContextVar("foundation_context_trace_id", default=None)
+_FOUNDATION_CONTEXT_TRACE_ID = contextvars.ContextVar(
+    "foundation_context_trace_id", default=None
+)
 
 
 @contextmanager
@@ -25,7 +28,7 @@ def timed_block(
     # Semantic keys for layers (examples, actual keys depend on active layers)
     # These are just illustrative; the user provides relevant semantic keys.
     layer_keys: dict[str, Any] | None = None,
-    **initial_kvs: Any
+    **initial_kvs: Any,
 ) -> Generator[None, None, None]:
     """
     A context manager to log the duration and outcome of a block of code.
@@ -65,15 +68,17 @@ def timed_block(
     # For now, we'll assume if "trace_id" is a known semantic key, it might be in context.
     # A more robust solution would involve integration with a tracing library.
     contextual_trace_id = _FOUNDATION_CONTEXT_TRACE_ID.get()
-    if contextual_trace_id and "trace_id" not in log_kvs: # Only add if not already provided
+    if (
+        contextual_trace_id and "trace_id" not in log_kvs
+    ):  # Only add if not already provided
         log_kvs["trace_id"] = contextual_trace_id
 
     # Default outcome key, can be overridden by layer_keys or initial_kvs
     # Or, a layer could define a standard key like "operation.outcome"
-    outcome_key = "outcome" # Generic outcome key
+    outcome_key = "outcome"  # Generic outcome key
 
     try:
-        yield # User's code block runs here
+        yield  # User's code block runs here
         log_kvs[outcome_key] = "success"
     except Exception as e:
         log_kvs[outcome_key] = "error"
@@ -84,7 +89,7 @@ def timed_block(
         # but timed_block is more for info/error level.
         # For exceptions, it's often better to catch and log with logger.exception()
         # directly in the user's code if full traceback is needed.
-        raise # Re-raise the exception after capturing info
+        raise  # Re-raise the exception after capturing info
     finally:
         duration_ms = (time.perf_counter() - start_time) * 1000
         log_kvs["duration_ms"] = int(duration_ms)
@@ -95,7 +100,8 @@ def timed_block(
             logger_instance.error(event_name, **log_kvs)
         elif final_outcome == "success":
             logger_instance.info(event_name, **log_kvs)
-        else: # Other outcomes or if outcome key was changed
-            logger_instance.info(event_name, **log_kvs) # pragma: no cover
+        else:  # Other outcomes or if outcome key was changed
+            logger_instance.info(event_name, **log_kvs)  # pragma: no cover
+
 
 # ⏱️🪵

@@ -197,8 +197,8 @@ class TestLazyInitializationErrorRecovery:
         # Mock import failure for config module
         with patch("provide.foundation.logger.base.sys.modules") as mock_modules:
             # Simulate import error for config module
-            original_config = mock_modules.get("provide.foundation.config")
-            mock_modules["provide.foundation.config"] = None
+            original_config = mock_modules.get("provide.foundation.logger.config")
+            mock_modules["provide.foundation.logger.config"] = None
 
             try:
                 # Should handle import failure gracefully

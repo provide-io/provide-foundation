@@ -4,6 +4,7 @@
 """
 Test script to verify all lazy initialization fixes work correctly.
 """
+
 import json
 import os
 from pathlib import Path
@@ -22,13 +23,16 @@ def test_lazy_setup_flags() -> None:
     print("=== Test 1: Lazy Setup Flags ===")
 
     from provide.foundation.core import reset_foundation_setup_for_testing
+
     reset_foundation_setup_for_testing()
 
     # Use the new _LAZY_SETUP_STATE dictionary
     from provide.foundation.logger.base import _LAZY_SETUP_STATE
+
     print(f"Initial state - STATE: {_LAZY_SETUP_STATE}")
 
     from provide.foundation import logger
+
     logger.info("Trigger lazy setup")
 
     # Re-check the same _LAZY_SETUP_STATE dictionary
@@ -36,7 +40,9 @@ def test_lazy_setup_flags() -> None:
 
     assert _LAZY_SETUP_STATE["done"] is True, "Flag 'done' should be True"
     assert _LAZY_SETUP_STATE["error"] is None, "Flag 'error' should be None"
-    assert _LAZY_SETUP_STATE["in_progress"] is False, "Flag 'in_progress' should be False"
+    assert _LAZY_SETUP_STATE["in_progress"] is False, (
+        "Flag 'in_progress' should be False"
+    )
     print("✅ Lazy setup flags work correctly")
 
 
@@ -48,6 +54,7 @@ def test_service_name_no_emoji() -> None:
         _set_log_stream_for_testing,
         reset_foundation_setup_for_testing,
     )
+
     reset_foundation_setup_for_testing()
 
     # Set environment to disable emojis for JSON format
@@ -58,15 +65,21 @@ def test_service_name_no_emoji() -> None:
 
     # Capture output
     import io
+
     captured_output = io.StringIO()
     _set_log_stream_for_testing(captured_output)
 
     try:
         from provide.foundation import logger
+
         logger.info("Message with service name")
 
         output = captured_output.getvalue()
-        lines = [line for line in output.strip().splitlines() if line.strip() and not line.startswith("[")]
+        lines = [
+            line
+            for line in output.strip().splitlines()
+            if line.strip() and not line.startswith("[")
+        ]
 
         if lines:
             log_data = json.loads(lines[0])
@@ -76,7 +89,10 @@ def test_service_name_no_emoji() -> None:
             print(f"Expected: {expected_event}")
             print(f"Actual: {actual_event}")
 
-            if actual_event == expected_event and log_data.get("service_name") == "test-service":
+            if (
+                actual_event == expected_event
+                and log_data.get("service_name") == "test-service"
+            ):
                 print("✅ Service name injection without emoji works")
                 assert True
             else:
@@ -88,8 +104,12 @@ def test_service_name_no_emoji() -> None:
     finally:
         _set_log_stream_for_testing(None)
         # Clean up environment
-        for key in ["FOUNDATION_SERVICE_NAME", "FOUNDATION_LOG_CONSOLE_FORMATTER",
-                   "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED", "FOUNDATION_LOG_DAS_EMOJI_ENABLED"]:
+        for key in [
+            "FOUNDATION_SERVICE_NAME",
+            "FOUNDATION_LOG_CONSOLE_FORMATTER",
+            "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED",
+            "FOUNDATION_LOG_DAS_EMOJI_ENABLED",
+        ]:
             os.environ.pop(key, None)
 
 
@@ -101,6 +121,7 @@ def test_das_emoji_register_action() -> None:
         _set_log_stream_for_testing,
         reset_foundation_setup_for_testing,
     )
+
     reset_foundation_setup_for_testing()
 
     # Enable DAS emojis
@@ -108,35 +129,42 @@ def test_das_emoji_register_action() -> None:
     os.environ["FOUNDATION_LOG_CONSOLE_FORMATTER"] = "key_value"
 
     import io
+
     captured_output = io.StringIO()
     _set_log_stream_for_testing(captured_output)
 
     try:
         from provide.foundation import logger
+
         logger.info(
             "User registration processed",
             domain="user",
             action="register",
-            status="success"
+            status="success",
         )
 
         output = captured_output.getvalue()
         print(f"Output: {output}")
 
         # Should contain [👤][⚙️][✅] - user, register (⚙️), success
-        if "[👤][⚙️][✅]" in output: # User '👤', Register '⚙️', Success '✅'
+        if "[👤][⚙️][✅]" in output:  # User '👤', Register '⚙️', Success '✅'
             print("✅ DAS emoji register action works")
             assert True
         else:
             print("❌ DAS emoji register action failed")
-            print("Expected [👤][⚙️][✅] in output") # Note: This relies on SECONDARY_EMOJI default being ⚙️. If it's ❓, this test needs to change.
-                                                  # Based on previous changes, SECONDARY_EMOJI default is now '❓'.
-                                                  # So, if "register" is not in the map, it should be [👤][❓][✅].
-                                                  # The map currently has "register": "⚙️", so this is correct.
+            print(
+                "Expected [👤][⚙️][✅] in output"
+            )  # Note: This relies on SECONDARY_EMOJI default being ⚙️. If it's ❓, this test needs to change.
+            # Based on previous changes, SECONDARY_EMOJI default is now '❓'.
+            # So, if "register" is not in the map, it should be [👤][❓][✅].
+            # The map currently has "register": "⚙️", so this is correct.
             raise AssertionError("DAS emoji for register action is incorrect.")
     finally:
         _set_log_stream_for_testing(None)
-        for key in ["FOUNDATION_LOG_DAS_EMOJI_ENABLED", "FOUNDATION_LOG_CONSOLE_FORMATTER"]:
+        for key in [
+            "FOUNDATION_LOG_DAS_EMOJI_ENABLED",
+            "FOUNDATION_LOG_CONSOLE_FORMATTER",
+        ]:
             os.environ.pop(key, None)
 
 
@@ -145,14 +173,16 @@ def test_thread_safety() -> None:
     print("\n=== Test 4: Thread Safety ===")
 
     from provide.foundation.core import reset_foundation_setup_for_testing
+
     reset_foundation_setup_for_testing()
 
     results = []
     exceptions = []
 
-    def worker_thread(worker_id: int) -> None: # Added type for worker_id
+    def worker_thread(worker_id: int) -> None:  # Added type for worker_id
         try:
             from provide.foundation import logger  # type: ignore[import-untyped]
+
             logger.info(f"Thread {worker_id} message")
             results.append(True)
         except Exception as e:
@@ -175,8 +205,12 @@ def test_thread_safety() -> None:
     for thread in threads:
         thread.join(timeout=5.0)
 
-    assert len(exceptions) == 0, f"Thread safety test encountered exceptions: {exceptions}"
-    assert len(results) == thread_count, "Not all threads completed in thread safety test"
+    assert len(exceptions) == 0, (
+        f"Thread safety test encountered exceptions: {exceptions}"
+    )
+    assert len(results) == thread_count, (
+        "Not all threads completed in thread safety test"
+    )
     assert all(results), "Some threads failed in thread safety test"
     print("✅ Thread safety test passed")
 
@@ -189,13 +223,14 @@ def test_get_safe_stderr() -> None:
         from provide.foundation.logger.base import (
             _get_safe_stderr,  # type: ignore[import-untyped]
         )
+
         stderr = _get_safe_stderr()
 
-        assert hasattr(stderr, 'write'), "_get_safe_stderr returned invalid stream"
+        assert hasattr(stderr, "write"), "_get_safe_stderr returned invalid stream"
         print("✅ _get_safe_stderr function works")
-    except ImportError: # pragma: no cover
+    except ImportError:  # pragma: no cover
         print("❌ _get_safe_stderr function not found")
-        raise AssertionError("_get_safe_stderr function not found") from None # B904
+        raise AssertionError("_get_safe_stderr function not found") from None  # B904
 
 
 def test_emoji_matrix_defaults() -> None:
@@ -215,20 +250,25 @@ def test_emoji_matrix_defaults() -> None:
 
         # Check default emojis match test expectations
         expected_defaults = {
-            "domain_default": PRIMARY_EMOJI.get("default", "❓"), # Default should be ❓
-            "action_default": SECONDARY_EMOJI.get("default", "❓"), # Default is now ❓
-            "status_default": TERTIARY_EMOJI.get("default", "➡️")  # Default is ➡️
+            "domain_default": PRIMARY_EMOJI.get(
+                "default", "❓"
+            ),  # Default should be ❓
+            "action_default": SECONDARY_EMOJI.get("default", "❓"),  # Default is now ❓
+            "status_default": TERTIARY_EMOJI.get("default", "➡️"),  # Default is ➡️
         }
 
         print(f"Default emojis: {expected_defaults}")
 
         assert PRIMARY_EMOJI.get("default") == "❓", "Primary default emoji mismatch"
-        assert SECONDARY_EMOJI.get("default") == "❓", "Secondary default emoji mismatch - should be ❓"
+        assert SECONDARY_EMOJI.get("default") == "❓", (
+            "Secondary default emoji mismatch - should be ❓"
+        )
         assert TERTIARY_EMOJI.get("default") == "➡️", "Tertiary default emoji mismatch"
         print("✅ Emoji matrix defaults are correct")
-    else: # pragma: no cover
+    else:  # pragma: no cover
         print("❌ Register action not found in emoji matrix")
         raise AssertionError("Register action not found in emoji matrix")
+
 
 # Removed main() function and direct script execution part,
 # as pytest will discover and run these test_ functions.

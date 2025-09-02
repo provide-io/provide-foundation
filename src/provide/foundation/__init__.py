@@ -10,23 +10,19 @@ from importlib.metadata import PackageNotFoundError, version
 
 try:
     __version__ = version("provide-foundation")
-except PackageNotFoundError: # pragma: no cover
+except PackageNotFoundError:  # pragma: no cover
     __version__ = "0.0.0-dev"
 
-from provide.foundation.telemetry_config import (
-    LoggingConfig,
-    TelemetryConfig,
-)
+# Export config module for easy access
+from provide.foundation import config
 from provide.foundation.core import (
     setup_telemetry,
     shutdown_foundation_telemetry,
 )
-from provide.foundation.logger import logger  # Global logger instance
-from provide.foundation.logger.emoji_matrix import (
-    PRIMARY_EMOJI,  # Legacy/default domain emojis
-    SECONDARY_EMOJI,  # Legacy/default action emojis
-    TERTIARY_EMOJI,  # Legacy/default status emojis
-    show_emoji_matrix,  # Utility to display emoji configurations
+from provide.foundation.logger import (
+    LoggingConfig,
+    TelemetryConfig,
+    logger,  # Global logger instance
 )
 
 # New type exports for semantic layering
@@ -40,9 +36,6 @@ from provide.foundation.types import (
 
 # New utility exports
 from provide.foundation.utils import timed_block
-
-# Export config module for easy access
-from provide.foundation import config
 
 __all__ = [
     # Core setup and logger
