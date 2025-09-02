@@ -154,6 +154,7 @@ class TestSetupWithLayers:
             '[{"name": "http_method", "emojis": {"get": "🔽", "default": "🌐"}}]',
         )
         monkeypatch.setenv("FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED", "false")
+        monkeypatch.setenv("FOUNDATION_LOG_CONSOLE_FORMATTER", "key_value")
         setup_foundation_telemetry_for_test(TelemetryConfig.from_env())
         global_logger.info(
             "HTTP GET", **{"http.method": "get", "http.status_class": "2xx"}
