@@ -1,370 +1,381 @@
-<div align="center">
+# `provide.foundation`: Beautiful, Performant, Structured Logging for Python
 
-# 🐍📡 `provide.foundation`
+<p align="center">
+  <img src="https://raw.githubusercontent.com/provide-io/provide-foundation/main/docs/assets/foundation-banner.png" alt="provide.foundation banner">
+</p>
 
-**Beautiful, performant, structured logging for Python.**
+<p align="center">
+    <a href="https://pypi.org/project/provide-foundation/">
+        <img alt="PyPI" src="https://img.shields.io/pypi/v/provide-foundation.svg">
+    </a>
+    <a href="https://github.com/provide-io/provide-foundation/actions/workflows/ci.yml">
+        <img alt="CI Status" src="https://github.com/provide-io/provide-foundation/actions/workflows/ci.yml/badge.svg">
+    </a>
+    <a href="https://codecov.io/gh/provide-io/provide-foundation">
+        <img src="https://codecov.io/gh/provide-io/provide-foundation/branch/main/graph/badge.svg"/>
+    </a>
+    <a href="https://github.com/provide-io/provide-foundation/blob/main/LICENSE">
+        <img alt="License" src="https://img.shields.io/github/license/provide-io/provide-foundation.svg">
+    </a>
+</p>
 
-Modern structured logging built on `structlog` with emoji-enhanced visual parsing and semantic Domain-Action-Status patterns.
-
-[![Awesome: uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
-[![PyPI Version](https://img.shields.io/pypi/v/provide-foundation?style=flat-square)](https://pypi.org/project/provide-foundation/)
-[![Python Versions](https://img.shields.io/pypi/pyversions/provide-foundation?style=flat-square)](https://pypi.org/project/provide-foundation/)
-[![Downloads](https://static.pepy.tech/badge/provide-foundation/month)](https://pepy.tech/project/provide-foundation)
-
-[![CI](https://github.com/provide-io/provide-foundation/actions/workflows/ci.yml/badge.svg)](https://github.com/provide-io/provide-foundation/actions/workflows/ci.yml)
-[![Coverage](https://codecov.io/gh/provide-io/provide-foundation/branch/main/graph/badge.svg)](https://codecov.io/gh/provide-io/provide-foundation)
-[![Type Checked](https://img.shields.io/badge/type--checked-mypy-blue?style=flat-square)](https://mypy.readthedocs.io/)
-[![Code style: ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json&style=flat-square)](https://github.com/astral-sh/ruff)
-
-<!-- Dependencies & Performance -->
-[![Powered by Structlog](https://img.shields.io/badge/powered%20by-structlog-lightgrey.svg?style=flat-square)](https://www.structlog.org/)
-[![Built with attrs](https://img.shields.io/badge/built%20with-attrs-orange.svg?style=flat-square)](https://www.attrs.org/)
-[![Performance](https://img.shields.io/badge/performance-%3E1k%20msg%2Fs-brightgreen?style=flat-square)](README.md#performance)
-
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache-blue.svg?style=flat-square)](https://opensource.org/license/apache-2-0)
+**`provide.foundation`** is a Python telemetry library, built on the robust `structlog`, that provides a beautiful, performant, and structured logging experience right out of the box. It is designed to make your logs not only machine-readable but also instantly scannable by human eyes, enhancing the developer experience in complex applications.
 
 ---
 
-**Make your logs beautiful and meaningful!** `provide.foundation` transforms your application logging with visual emoji prefixes, semantic Domain-Action-Status patterns, and high-performance structured output. Perfect for development debugging, production monitoring, and everything in between.
+## ✨ Key Features
 
-</div>
+*   **🚀 Zero-Configuration Start**: Get beautiful, structured logs instantly without any setup.
+*   **🎨 Emoji-Enhanced Visual Parsing**: Unique emoji prefixes based on logger names and semantic context make logs instantly scannable in a sea of text.
+*   **🏛️ Semantic Logging**: Go beyond simple log levels with extensible Semantic Layers for domains like LLMs, HTTP, and Databases. Fall back to the classic Domain-Action-Status (DAS) pattern when needed.
+*   **⚡ High Performance**: Benchmarked at over 14,000 messages per second with full semantic processing, ensuring it's ready for production loads.
+*   **🔧 Flexible Configuration**: Configure via environment variables or programmatically for fine-grained control.
+*   **🧑‍💻 Developer-Friendly**: Thread-safe, async-ready, and equipped with comprehensive type hints for a modern development workflow.
 
-## 🤔 Why `provide.foundation`?
+## 📦 Installation
 
-* **🎨 Visual Log Parsing:** Emoji prefixes based on logger names and semantic context make logs instantly scannable
-* **📊 Semantic Structure:** **(New!)** Extensible Semantic Layers for domains like LLMs, HTTP, and Databases, with a fallback to the classic Domain-Action-Status (DAS) pattern.
-* **⚡ High Performance:** Benchmarked >14,000 msg/sec (see details below)
-* **🔧 Zero Configuration:** Works beautifully out of the box, configurable via environment variables or code
-* **🎯 Developer Experience:** Thread-safe, async-ready, with comprehensive type hints for Python 3.13+
-
-## ✨ Features
-
-* **🎨 Emoji-Enhanced Logging:**
-  * **Logger Name Prefixes:** `🔑 User authentication successful` (auth module)
-  * **(New!) Semantic Layer Prefixes:** `[🤖][✍️][👍] LLM response generated` (llm-generation-success)
-  * **Custom TRACE Level:** Ultra-verbose debugging with `👣` visual markers
-
-* **📈 Production Ready:**
-  * **High Performance:** >14,000 messages/second throughput (average ~40,000 msg/sec)
-  * **Thread Safe:** Concurrent logging from multiple threads
-  * **Async Support:** Native async/await compatibility
-  * **Memory Efficient:** Optimized emoji caching and processor chains
-
-* **⚙️ Flexible Configuration:**
-  * **Multiple Formats:** JSON for production, key-value for development
-  * **Module-Level Filtering:** Different log levels per component
-  * **Environment Variables:** Zero-code configuration options
-  * **Service Identification:** Automatic service name injection
-
-* **🏗️ Modern Python:**
-  * **Python 3.13+ Exclusive:** Latest language features and typing
-  * **Built with `attrs`:** Immutable, validated configuration objects
-  * **Structlog Foundation:** Industry-standard structured logging
-
-## 🚀 Installation
-
-Requires Python 3.13 or later.
+Install `provide.foundation` using `pip` or your favorite package manager:
 
 ```bash
 pip install provide-foundation
 ```
 
-## 💡 Quick Start
+## 🚀 Quick Start
 
-### Basic Usage
+Getting started is as simple as importing the global `logger` and using it.
 
 ```python
-from provide.foundation import setup_telemetry, logger
+# examples/01_quick_start.py
+from provide.foundation import logger
 
-# Initialize with sensible defaults
-setup_telemetry()
+def main():
+    """A simple function to demonstrate logging."""
+    logger.info("Application starting up")
+    
+    try:
+        result = 1 / 0
+    except ZeroDivisionError:
+        logger.exception(
+            "An expected error occurred",
+            error_details="Attempted to divide by zero",
+            user_id="usr_123"
+        )
+    
+    logger.info("Application shutting down")
 
-# Start logging immediately
-logger.info("Application started", version="1.0.0")
-logger.debug("Debug information", component="auth")
-logger.error("Something went wrong", error_code="E123")
-
-# Create component-specific loggers
-auth_logger = logger.get_logger("auth.service")
-auth_logger.info("User login attempt", user_id=12345)
-# Output: 🔑 User login attempt user_id=12345
+if __name__ == "__main__":
+    main()
 ```
 
-### 🏗️ Semantic Logging with Layers
+Run this script, and you'll see beautifully formatted, structured output right in your console:
 
-Go beyond the basic DAS pattern with extensible, schema-driven logging. Semantic Layers allow you to define structured logging conventions for specific domains (like LLMs, HTTP, or Databases) and automatically get rich, contextual emoji prefixes.
-
-**Example: Using the built-in `llm` layer**
-
-First, enable the layer in your configuration:
-```python
-from provide.foundation import setup_telemetry, TelemetryConfig, LoggingConfig
-
-# Enable the 'llm' semantic layer
-config = TelemetryConfig(
-    logging=LoggingConfig(enabled_semantic_layers=["llm"])
-)
-setup_telemetry(config)
+```
+[▶️] Application starting up
+[🔥] An expected error occurred error_details='Attempted to divide by zero' user_id='usr_123' exc_info=...
+[▶️] Application shutting down
 ```
 
-Now, log events using the layer's defined keys (like `llm.provider`, `llm.task`, `llm.outcome`):
+## 🏛️ Core Concepts
+
+### 1. The Global Logger
+
+For convenience, `provide.foundation` exposes a pre-configured, global logger instance named `logger`. You can import and use it anywhere in your application.
+
 ```python
 from provide.foundation import logger
 
-# Log a successful LLM generation task
-logger.info(
-    "LLM response generated",
-    **{
-        "llm.provider": "openai",
-        "llm.task": "generation",
-        "llm.outcome": "success",
-        "llm.model": "gpt-4o",
-        "duration_ms": 1230,
-        "llm.output.tokens": 250,
-    }
-)
-# Output: [🤖][✍️][👍] LLM response generated duration_ms=1230 llm.output.tokens=250
-
-# Log a rate-limiting event from another provider
-logger.warning(
-    "LLM call failed",
-    **{
-        "llm.provider": "anthropic",
-        "llm.task": "chat",
-        "llm.outcome": "rate_limit",
-        "llm.model": "claude-3-opus",
-    }
-)
-# Output: [📚][💬][⏳] LLM call failed
+logger.debug("This is a debug message")
+logger.info("User logged in", user_id=123, source="google_oauth")
+logger.warning("Disk space is running low", free_space_gb=5)
+logger.error("Failed to connect to database", db_host="prod.db.example.com")
 ```
-- **How it works:** The `llm` layer maps the `llm.provider` key to provider emojis (🤖 for openai, 📚 for anthropic), `llm.task` to task emojis (✍️ for generation), and `llm.outcome` to outcome emojis (👍 for success).
-- **Extensible:** You can define your own custom layers and emoji sets for your application's specific domains!
-- **Legacy DAS:** The original `domain`, `action`, `status` keys still work as a fallback if no semantic layers are active.
 
-### Custom Configuration
+### 2. Structured Logging
+
+`provide.foundation` is built around the principle of structured logging. Instead of embedding variables in log messages, you pass them as keyword arguments. This makes your logs:
+*   **Machine-readable**: Easily parsed, filtered, and indexed by log management systems (like Datadog, Splunk, or the ELK stack).
+*   **Consistent**: Ensures the same event is always logged with the same structure.
+*   **Rich with Context**: Carry detailed, queryable context with every event.
+
+```python
+# ❌ Anti-pattern: Unstructured logging
+logger.info(f"User {user_id} from IP {ip_address} completed checkout for order {order_id}.")
+
+# ✅ Best practice: Structured logging
+logger.info(
+    "Checkout complete",
+    user_id=user_id,
+    ip_address=ip_address,
+    order_id=order_id,
+)
+```
+
+### 3. Emoji-Enhanced Visual Parsing
+
+A standout feature is the automatic inclusion of emoji prefixes. These aren't just for decoration; they provide instant visual cues about the log's origin and meaning, making it effortless to scan logs during development and debugging.
+
+*   **Logger Name Prefix**: A unique emoji is generated based on the name of the logger, so you can instantly identify which part of your application a log is from.
+*   **Semantic Prefix**: Emojis are added based on the *semantic content* of the log, using either the active Semantic Layers or the fallback DAS pattern.
+
+### 4. Semantic Layers
+
+Semantic Layers are the heart of `provide.foundation`'s advanced logging capabilities. They provide a schema-driven way to define structured logging conventions for specific domains.
+
+When you log a message with keys that match a field in an active semantic layer, the library automatically:
+1.  Validates the log structure (in a future release).
+2.  Adds a semantic emoji prefix based on the log's content.
+3.  Namespaces the context for cleaner, more organized output.
+
+The library comes with built-in layers for common domains:
+*   `http`: For logging HTTP requests and responses.
+*   `database`: For database queries and operations.
+*   `llm`: For interactions with Large Language Models.
+
+**Example using the `http` layer:**
+
+```python
+from provide.foundation import logger, setup_telemetry, TelemetryConfig, LoggingConfig
+
+# Enable the 'http' semantic layer
+config = TelemetryConfig(logging=LoggingConfig(enabled_semantic_layers=["http"]))
+setup_telemetry(config)
+
+# Log an HTTP request event
+logger.info(
+    "API request processed",
+    **{
+        "http.method": "GET",
+        "http.status_code": 200,
+        "http.url": "/api/v1/users",
+        "http.response_time_ms": 25,
+    }
+)
+```
+
+**Output:**
+```
+[➡️][✅] API request processed http.url=/api/v1/users http.response_time_ms=25
+```
+The `[➡️][✅]` prefix is automatically generated from the `http.method` ("GET") and `http.status_code` (200).
+
+### 5. The Domain-Action-Status (DAS) Fallback
+
+When no semantic layer matches a log event, the system falls back to the classic DAS pattern. By providing `domain`, `action`, and `status` keys in your log call, you can still get meaningful emoji prefixes.
+
+```python
+logger.info(
+    "User authentication successful",
+    domain="auth",      # 🔑
+    action="login",     # ➡️
+    status="success",   # ✅
+    user_id="usr_456"
+)
+```
+
+**Output:**
+```
+[🔑][➡️][✅] User authentication successful user_id='usr_456'
+```
+
+## 🔧 Configuration
+
+While `provide.foundation` works out of the box, you can easily configure it to suit your needs.
+
+### Via Environment Variables
+
+This is the recommended way to configure the logger in production environments.
+
+| Variable | Description | Default | Example |
+|---|---|---|---|
+| `FOUNDATION_SERVICE_NAME` | Sets the service name for all logs. | `None` | `my-api-service` |
+| `FOUNDATION_LOG_LEVEL` | Default log level. | `DEBUG` | `INFO` |
+| `FOUNDATION_LOG_CONSOLE_FORMATTER` | Output format. | `key_value` | `json` |
+| `FOUNDATION_LOG_ENABLED_SEMANTIC_LAYERS` | Comma-separated list of layers to enable. | `""` | `http,database` |
+| `FOUNDATION_SHOW_EMOJI_MATRIX` | Set to `true` to print the emoji reference on startup. | `false` | `true` |
+
+### Programmatic Configuration
+
+For more complex setups, you can configure the logger in your application's code. This is best done once at application startup.
 
 ```python
 from provide.foundation import setup_telemetry, TelemetryConfig, LoggingConfig
 
 config = TelemetryConfig(
-    service_name="my-microservice",
+    service_name="my-awesome-app",
     logging=LoggingConfig(
         default_level="INFO",
-        console_formatter="json",           # JSON for production
-        # Enable built-in layers for HTTP and Database logging
-        enabled_semantic_layers=["http", "database"],
+        console_formatter="json",
+        # Set per-module log levels for fine-grained control
         module_levels={
-            "auth": "DEBUG",                # Verbose auth logging
-            "database": "ERROR",            # Only DB errors
-            "external.api": "WARNING",      # Minimal third-party noise
-        }
+            "noisy_library": "WARNING",
+            "critical_component": "DEBUG",
+        },
+        # Enable built-in semantic layers
+        enabled_semantic_layers=["http", "database", "llm"],
     )
 )
 
 setup_telemetry(config)
 ```
 
-### Environment Variable Configuration
+## 🧑‍💻 Advanced Usage
 
-```bash
-export FOUNDATION_SERVICE_NAME="my-service"
-export FOUNDATION_LOG_LEVEL="INFO"
-export FOUNDATION_LOG_CONSOLE_FORMATTER="json"
-export FOUNDATION_LOG_MODULE_LEVELS="auth:DEBUG,db:ERROR"
-# New: Enable semantic layers via environment
-export FOUNDATION_LOG_ENABLED_SEMANTIC_LAYERS="llm,http"
-```
+### Named Loggers
+
+For better organization, especially in larger applications, you can create named loggers. Each named logger will have its own unique, consistent emoji prefix.
 
 ```python
-from provide.foundation import setup_telemetry, TelemetryConfig
+from provide.foundation import logger
 
-# Automatically loads from environment
-setup_telemetry(TelemetryConfig.from_env())
+# Get a logger for a specific component
+db_logger = logger.get_logger("database")
+api_logger = logger.get_logger("api.v1.users")
+
+db_logger.info("Connection pool initialized")
+api_logger.info("User lookup request received")
 ```
 
-### Exception Logging
+**Output:**
+```
+[🗄️] Connection pool initialized
+[🙋] User lookup request received
+```
+
+### Exception Handling
+
+The `logger.exception()` method is the best way to log exceptions. It automatically captures and formats the traceback information.
 
 ```python
 try:
-    risky_operation()
-except Exception:
-    logger.exception("Operation failed",
-                    operation="user_registration",
-                    user_id=123)
-    # Automatically includes full traceback
+    # Risky operation
+    ...
+except Exception as e:
+    logger.exception(
+        "Failed to process user data",
+        user_id=123,
+        cause=str(e)
+    )
 ```
 
-### Ultra-Verbose TRACE Logging
+### Async Support
 
-```python
-from provide.foundation import setup_telemetry, logger, TelemetryConfig, LoggingConfig
-
-# Enable TRACE level for deep debugging
-config = TelemetryConfig(
-    logging=LoggingConfig(default_level="TRACE")
-)
-setup_telemetry(config)
-
-logger.trace("Entering function", function="authenticate_user")
-logger.trace("Token validation details",
-            token_type="bearer", expires_in=3600)
-```
-
-## 📊 Performance
-
-`provide.foundation` is designed for high-throughput production environments:
-
-| Scenario | Performance | Notes |
-|----------|-------------|-------|
-| **Basic Logging** | ~40,000 msg/sec | Key-value format with emojis |
-| **JSON Output** | ~38,900 msg/sec | Structured production format |
-| **Multithreaded** | ~39,800 msg/sec | Concurrent logging |
-| **Level Filtering** | ~68,100 msg/sec | Efficiently filters by level |
-| **Large Payloads** | ~14,200 msg/sec | Logging with larger event data |
-| **Async Logging** | ~43,400 msg/sec | Logging from async code |
-
-**Overall Average Throughput:** ~40,800 msg/sec
-**Peak Throughput:** ~68,100 msg/sec
-
-Run benchmarks yourself:
-```bash
-python scripts/benchmark_performance.py
-
-python scripts/extreme_performance.py
-```
-
-## 🎨 Emoji Reference
-
-The emoji system is now driven by **Semantic Layers**. The active layers determine which log keys produce emoji prefixes.
-
-### Viewing the Active Emoji Contract
-
-To see the complete emoji mappings for your **current configuration** (including any custom layers), run the following command. This is the best way to see which emojis are active.
-
-```bash
-# This will print the full emoji matrix for your active configuration
-export FOUNDATION_SHOW_EMOJI_MATRIX=true
-python -c "from provide.foundation.logger.emoji_matrix import show_emoji_matrix; show_emoji_matrix()"
-```
-
-### Built-in Layer Emojis (Examples)
-
-- **`llm` Layer:**
-  - **Provider:** `llm.provider` -> `🤖` (openai), `📚` (anthropic), `🦙` (meta)
-  - **Task:** `llm.task` -> `✍️` (generation), `💬` (chat), `🛠️` (tool_use)
-  - **Outcome:** `llm.outcome` -> `👍` (success), `🔥` (error), `⏳` (rate_limit)
-
-- **`http` Layer:**
-  - **Method:** `http.method` -> `📥` (get), `📤` (post), `🗑️` (delete)
-  - **Status Class:** `http.status_class` -> `✅` (2xx), `⚠️CLIENT` (4xx), `🔥SERVER` (5xx)
-
-### Legacy DAS Emojis (Fallback)
-
-These emojis are used when no semantic layers are active and you use the `domain`, `action`, and `status` keys.
-
-- **Domain Emojis (Primary):** `🔑` auth, `🗄️` database, `🌐` network, `⚙️` system
-- **Action Emojis (Secondary):** `➡️` login, `🔗` connect, `📤` send, `🔍` query
-- **Status Emojis (Tertiary):** `✅` success, `🔥` error, `⚠️` warning, `⏳` attempt
-
-
-## 🔧 Advanced Usage
-
-### Async Applications
+`provide.foundation` is fully compatible with `asyncio`. You can log from async functions without any special considerations.
 
 ```python
 import asyncio
-from provide.foundation import setup_telemetry, logger, shutdown_foundation_telemetry
+from provide.foundation import logger
 
-async def main():
-    setup_telemetry()
+async def fetch_data(url: str):
+    logger.info("Fetching data", url=url)
+    await asyncio.sleep(1) # Simulate network request
+    logger.info("Data fetched successfully", url=url)
 
-    # Your async application code
-    logger.info("Async app started")
-
-    # Graceful shutdown
-    await shutdown_foundation_telemetry()
-
-asyncio.run(main())
+asyncio.run(fetch_data("https://example.com"))
 ```
 
-<!-- NEW SECTION -->
-### Timing Code Blocks
+### `timed_block` Utility
 
-Easily log the duration and outcome of any code block using the `timed_block` context manager. It automatically handles success and failure cases.
+The `timed_block` context manager is a powerful utility for logging the duration and outcome of a block of code. It's perfect for monitoring performance of critical sections.
 
 ```python
-import time
 from provide.foundation import logger, timed_block
 
-# Successful operation
-with timed_block(logger, "Data processing task", task_id="abc-123"):
-    time.sleep(0.05)  # Simulate work
-# Output: Data processing task task_id=abc-123 outcome=success duration_ms=50
+# Time a successful operation
+with timed_block(logger, "database_query", db_table="users"):
+    # Simulate work
+    time.sleep(0.5)
 
-# Failing operation
+# Time a failing operation
 try:
-    with timed_block(logger, "Database query", table="users"):
-        raise ValueError("Connection refused")
-except ValueError:
-    pass # Exception is re-raised and caught here
-# Output: Database query table=users outcome=error error.message='Connection refused' error.type=ValueError duration_ms=...
+    with timed_block(logger, "payment_processing", transaction_id="txn_123"):
+        raise RuntimeError("Credit card declined")
+except RuntimeError:
+    logger.info("Gracefully handling payment failure.")
 ```
-<!-- END NEW SECTION -->
 
-### Production Configuration
+**Output:**
+```
+[▶️] database_query db_table=users outcome=success duration_ms=501.23
+[🔥] payment_processing transaction_id='txn_123' outcome=error error.message='Credit card declined' error.type=RuntimeError duration_ms=0.45
+```
+
+## 🎨 Customization
+
+### Creating a Custom Semantic Layer
+
+You can easily define your own semantic layers for your application's domain.
 
 ```python
-production_config = TelemetryConfig(
-    service_name="production-service",
-    logging=LoggingConfig(
-        default_level="INFO",               # Don't spam with DEBUG
-        console_formatter="json",           # Machine-readable
-        enabled_semantic_layers=["http"],   # Enable HTTP layer for request logging
-        module_levels={
-            "security": "DEBUG",            # Always verbose for security
-            "performance": "WARNING",       # Only perf issues
-            "third_party": "ERROR",         # Minimal external noise
-        }
-    )
+from provide.foundation import (
+    SemanticLayer,
+    SemanticFieldDefinition,
+    CustomDasEmojiSet,
+    TelemetryConfig,
+    LoggingConfig,
+    setup_telemetry,
+    logger,
+)
+
+# 1. Define emoji sets for the layer's fields
+file_op_emojis = CustomDasEmojiSet(
+    name="file_operation_emojis",
+    emojis={"read": "📖", "write": "📝", "delete": "🗑️", "default": "⚙️"}
+)
+file_outcome_emojis = CustomDasEmojiSet(
+    name="file_outcome_emojis",
+    emojis={"success": "✅", "not_found": "❓", "permission_denied": "🚫", "default": "🔥"}
+)
+
+# 2. Define the semantic fields
+file_io_fields = [
+    SemanticFieldDefinition(log_key="file.operation", emoji_set_name="file_operation_emojis"),
+    SemanticFieldDefinition(log_key="file.outcome", emoji_set_name="file_outcome_emojis"),
+    SemanticFieldDefinition(log_key="file.path"), # This field adds context but not an emoji
+]
+
+# 3. Create the layer
+file_io_layer = SemanticLayer(
+    name="file_io",
+    emoji_sets=[file_op_emojis, file_outcome_emojis],
+    field_definitions=file_io_fields,
+)
+
+# 4. Configure telemetry to use the custom layer
+config = TelemetryConfig(logging=LoggingConfig(custom_semantic_layers=[file_io_layer]))
+setup_telemetry(config)
+
+# 5. Log using your new semantic keys!
+logger.info(
+    "File write complete",
+    **{
+        "file.operation": "write",
+        "file.outcome": "success",
+        "file.path": "/data/report.csv",
+    }
 )
 ```
 
-## 📚 Documentation
+**Output:**
+```
+[📝][✅] File write complete file.path=/data/report.csv
+```
 
-For comprehensive API documentation, configuration options, and advanced usage patterns, see:
+## ⚡ Performance
 
-**[📖 Complete API Reference](docs/api-reference.md)**
+`provide.foundation` is built for speed. However, for ultra-high-throughput applications, consider these tips:
+*   **Set a higher log level in production**: `INFO` or `WARNING` is typical. This avoids the cost of processing and writing `DEBUG` logs.
+*   **Use the `json` formatter**: It is slightly more performant than the `key_value` formatter and is better for ingestion by log aggregators.
+*   **Disable logger name emojis if needed**: If you have thousands of dynamically named loggers, you can disable the name-based emoji for a performance boost.
 
-## 📜 License
+## 🤝 Contribution
 
-This project is licensed under the **Apache 2.0 License**. See the [LICENSE](LICENSE) file for details.
+We welcome contributions! Whether it's bug reports, feature requests, or code contributions, please feel free to get involved.
 
-## 🙏 Acknowledgements
+*   **For developers contributing to this library**: Please see `DEVELOPMENT.md` and `CLAUDE.md` for detailed setup and convention guides.
+*   **To report a bug or request a feature**: Please open an issue on our [GitHub repository](https://github.com/provide-io/provide-foundation).
 
-`provide.foundation` builds upon these excellent open-source libraries:
+---
 
-- [`structlog`](https://www.structlog.org/) - The foundation for structured logging
-- [`attrs`](https://www.attrs.org/) - Powerful data classes and configuration management
-
-## 🤖 Development Transparency
-
-**AI-Assisted Development Notice**: This project was developed with significant AI assistance for code generation and implementation. While AI tools performed much of the heavy lifting for writing code, documentation, and tests, all architectural decisions, design patterns, functionality requirements, and final verification were made by human developers.
-
-**Human Oversight Includes**:
-- Architectural design and module structure decisions
-- API design and interface specifications  
-- Feature requirements and acceptance criteria
-- Code review and functionality verification
-- Performance requirements and benchmarking validation
-- Testing strategy and coverage requirements
-- Release readiness assessment
-
-**AI Assistance Includes**:
-- Code implementation based on human specifications
-- Documentation generation and formatting
-- Test case generation and implementation
-- Example script creation
-- Boilerplate and repetitive code generation
-
-This approach allows us to leverage AI capabilities for productivity while maintaining human control over critical technical decisions and quality assurance.
-
+<p align="center">
+  Made with ❤️ by the team at <a href="https://provide.io">Provide</a>
+</p>
