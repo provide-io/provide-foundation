@@ -15,7 +15,7 @@ except PackageNotFoundError:  # pragma: no cover
 
 # Export config module for easy access
 # New foundation components
-from provide.foundation import cli, config
+from provide.foundation import cli, config, platform, process
 
 # Console output functions
 from provide.foundation.console import perr, pout
@@ -101,6 +101,8 @@ __all__ = [
     "Registry",
     "RegistryEntry",
     "cli",
+    "platform",
+    "process",
     # Console output
     "pout",
     "perr",
