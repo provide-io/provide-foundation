@@ -206,12 +206,12 @@ logger: FoundationLogger = FoundationLogger()
 def get_logger(name: str | None = None) -> Any:
     """
     Get a logger instance with the given name.
-    
+
     This is a convenience function that uses the global FoundationLogger.
-    
+
     Args:
         name: Logger name (e.g., __name__ from a module)
-        
+
     Returns:
         Configured structlog logger instance
     """
@@ -226,10 +226,10 @@ def setup_logging(
 ) -> None:
     """
     Setup logging configuration.
-    
+
     This is a convenience function for basic logging setup.
     For more control, use setup_telemetry() from foundation.core.
-    
+
     Args:
         level: Log level (string or int)
         json_logs: Whether to output logs as JSON
@@ -238,11 +238,11 @@ def setup_logging(
     """
     from provide.foundation.core import setup_telemetry
     from provide.foundation.logger.config import TelemetryConfig
-    
+
     config = TelemetryConfig(
         log_level=level if isinstance(level, str) else logging.getLevelName(level),
         json_logs=json_logs,
         log_file=log_file,
     )
-    
+
     setup_telemetry(config)

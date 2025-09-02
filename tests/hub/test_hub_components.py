@@ -2,6 +2,7 @@
 
 import pytest
 
+from provide.foundation.errors import AlreadyExistsError
 from provide.foundation.hub.components import (
     BaseComponent,
     register_component,
@@ -129,7 +130,7 @@ class TestComponentRegistration:
         class Component1:
             pass
         
-        with pytest.raises(ValueError, match="already registered"):
+        with pytest.raises(AlreadyExistsError, match="already registered"):
             @register_component("duplicate")
             class Component2:
                 pass
@@ -176,16 +177,7 @@ class TestComponentRegistration:
     
     def test_discover_components_from_entry_points(self, monkeypatch):
         """Test discovering components from entry points."""
-        # Mock entry points
-        class MockEntryPoint:
-            def __init__(self, name, value):
-                self.name = name
-                self._value = value
-                self.module = "test.module"
-                self.attr = name
-            
-            def load(self):
-                return self._value
+        from tests.mocks.components import MockEntryPoint
         
         class TestResource:
             pass
@@ -206,8 +198,9 @@ class TestComponentRegistration:
                     return []
             return EPGroup()
         
+        # Patch at the importlib.metadata level since that's where it's imported from
         monkeypatch.setattr(
-            "provide.foundation.hub.components.discovery.entry_points",
+            "importlib.metadata.entry_points",
             mock_entry_points
         )
         

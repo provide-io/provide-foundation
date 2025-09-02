@@ -1,18 +1,19 @@
 """Type definitions for the hub module."""
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable, Protocol
+from typing import Any, Protocol
 
 
 @dataclass(frozen=True, slots=True)
 class RegistryEntry:
     """A single entry in the registry."""
-    
+
     name: str
     dimension: str
     value: Any
     metadata: dict[str, Any] = field(default_factory=dict)
-    
+
     @property
     def key(self) -> tuple[str, str]:
         """Get the registry key for this entry."""
@@ -21,7 +22,7 @@ class RegistryEntry:
 
 class Registrable(Protocol):
     """Protocol for objects that can be registered."""
-    
+
     __registry_name__: str
     __registry_dimension__: str
     __registry_metadata__: dict[str, Any]
@@ -30,7 +31,7 @@ class Registrable(Protocol):
 @dataclass(frozen=True, slots=True)
 class CommandInfo:
     """Information about a registered CLI command."""
-    
+
     name: str
     func: Callable[..., Any]
     description: str | None = None
@@ -42,7 +43,7 @@ class CommandInfo:
 @dataclass(frozen=True, slots=True)
 class ComponentInfo:
     """Information about a registered component."""
-    
+
     name: str
     component_class: type[Any]
     dimension: str = "component"

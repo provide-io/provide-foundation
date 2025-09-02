@@ -223,6 +223,9 @@ def _build_formatter_processors_list(
             # We can't use structlog here as we're in the middle of configuring it
             # Write directly to stderr for the test to capture
             import sys
-            sys.stderr.write(f"Unknown formatter '{logging_config.console_formatter}'\n")
+
+            sys.stderr.write(
+                f"Unknown formatter '{logging_config.console_formatter}'\n"
+            )
             sys.stderr.flush()
             return _config_create_keyvalue_formatter_processors(output_stream)

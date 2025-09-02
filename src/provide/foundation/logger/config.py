@@ -43,4 +43,5 @@ class TelemetryConfig:
     def from_env(cls) -> "TelemetryConfig":
         """Creates a `TelemetryConfig` instance by parsing relevant environment variables."""
         from provide.foundation.logger.env import from_env as _from_env
+
         return _from_env()
