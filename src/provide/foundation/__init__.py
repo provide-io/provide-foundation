@@ -13,7 +13,7 @@ try:
 except PackageNotFoundError: # pragma: no cover
     __version__ = "0.0.0-dev"
 
-from provide.foundation.config import (
+from provide.foundation.telemetry_config import (
     LoggingConfig,
     TelemetryConfig,
 )
@@ -41,6 +41,9 @@ from provide.foundation.types import (
 # New utility exports
 from provide.foundation.utils import timed_block
 
+# Export config module for easy access
+from provide.foundation import config
+
 __all__ = [
     # Core setup and logger
     "logger",
@@ -65,6 +68,8 @@ __all__ = [
     "timed_block",
     # Version
     "__version__",
+    # Config module
+    "config",
 ]
 
 # 🐍📝

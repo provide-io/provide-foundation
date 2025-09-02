@@ -17,7 +17,7 @@ from typing import Any, TextIO, cast
 import structlog
 from structlog.types import BindableLogger
 
-from provide.foundation.config import (
+from provide.foundation.telemetry_config import (
     LoggingConfig,
     TelemetryConfig,
     _build_core_processors_list,
