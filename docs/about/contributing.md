@@ -14,8 +14,8 @@ We welcome contributions from the community! Whether you're fixing a bug, propos
 
 For detailed instructions on how to set up your development environment, including virtual environment and dependency management, please consult the following documents in the root of the repository:
 
-*   [**DEVELOPMENT.md**](../../DEVELOPMENT.md): The primary guide for setting up your local environment, running tests, and using the development scripts.
-*   [**CLAUDE.md**](../../CLAUDE.md): A specialized guide (originally for the Claude AI assistant, but useful for humans too!) that provides deep insights into the project's architecture, coding conventions, and key design patterns.
+*   **DEVELOPMENT.md**: The primary guide for setting up your local environment, running tests, and using the development scripts.
+*   **CLAUDE.md**: A specialized guide (originally for the Claude AI assistant, but useful for humans too!) that provides deep insights into the project's architecture, coding conventions, and key design patterns.
 
 ### Code Style and Quality
 

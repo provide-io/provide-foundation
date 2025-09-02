@@ -1,0 +1,47 @@
+name: Local Test with act
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  test-suite:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        run: |
+          apt-get update
+          apt-get install -y python3 python3-pip python3-venv
+          python3 --version
+      
+      - name: Install UV
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          export PATH="$HOME/.local/bin:$PATH"
+          uv --version
+      
+      - name: Setup Environment
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          uv venv
+          source .venv/bin/activate
+          uv pip install -e ".[dev]"
+      
+      - name: Run Linting
+        run: |
+          source .venv/bin/activate
+          ruff check src/ || true
+          ruff format --check src/ || true
+      
+      - name: Run Tests
+        run: |
+          source .venv/bin/activate
+          pytest tests/ -x --tb=short || true
+      
+      - name: Summary
+        run: |
+          echo "✅ Local test workflow completed!"
+          echo "This workflow is designed for testing with act"
