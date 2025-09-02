@@ -4,6 +4,7 @@
 """
 Unit tests for src.provide.foundation.logger.custom_processors.py
 """
+
 import pytest
 import structlog  # For DropEvent
 
@@ -18,11 +19,20 @@ from provide.foundation.types import LogLevelStr  # Corrected import for type hi
 
 # Helper for level to numeric mapping, mirroring what's in config.py
 _LEVEL_TO_NUMERIC_TEST_MAP: dict[LogLevelStr, int] = {
-    "CRITICAL": 50, "ERROR": 40, "WARNING": 30, "INFO": 20, "DEBUG": 10, "TRACE": 5, "NOTSET": 0
+    "CRITICAL": 50,
+    "ERROR": 40,
+    "WARNING": 30,
+    "INFO": 20,
+    "DEBUG": 10,
+    "TRACE": 5,
+    "NOTSET": 0,
 }
 
+
 class TestLevelFilterCustom:
-    def test_filter_with_unrecognized_event_level_defaults_to_info_numeric(self) -> None:
+    def test_filter_with_unrecognized_event_level_defaults_to_info_numeric(
+        self,
+    ) -> None:
         """
         Tests that if event_dict['level'] is an unrecognized string, it defaults
         to the numeric value of INFO for filtering purposes.
@@ -33,7 +43,7 @@ class TestLevelFilterCustom:
         log_filter = filter_by_level_custom(
             default_level_str="WARNING",
             module_levels={},
-            level_to_numeric_map=_LEVEL_TO_NUMERIC_TEST_MAP
+            level_to_numeric_map=_LEVEL_TO_NUMERIC_TEST_MAP,
         )
 
         # Event with an unrecognized level string
@@ -41,8 +51,8 @@ class TestLevelFilterCustom:
         # Since 20 (INFO) < 30 (WARNING threshold), this event should be dropped.
         event_dict_unrecognized_level_dropped = {
             "logger_name": "test_logger",
-            "level": "UNRECOGNIZED_LEVEL", # This will default to INFO (20)
-            "event": "message with unrecognized level"
+            "level": "UNRECOGNIZED_LEVEL",  # This will default to INFO (20)
+            "event": "message with unrecognized level",
         }
         with pytest.raises(structlog.DropEvent):
             log_filter(None, "", event_dict_unrecognized_level_dropped)
@@ -50,21 +60,26 @@ class TestLevelFilterCustom:
         # Event with an unrecognized level string, but threshold is DEBUG (10)
         # "UNRECOGNIZED_LEVEL" (defaults to INFO=20) should pass if threshold is DEBUG (10)
         log_filter_debug_threshold = filter_by_level_custom(
-            default_level_str="DEBUG", # Threshold is 10
+            default_level_str="DEBUG",  # Threshold is 10
             module_levels={},
-            level_to_numeric_map=_LEVEL_TO_NUMERIC_TEST_MAP
+            level_to_numeric_map=_LEVEL_TO_NUMERIC_TEST_MAP,
         )
         event_dict_unrecognized_level_passes = {
             "logger_name": "test_logger",
-            "level": "ANOTHER_UNRECOGNIZED_LEVEL", # Defaults to INFO (20)
-            "event": "message that should pass"
+            "level": "ANOTHER_UNRECOGNIZED_LEVEL",  # Defaults to INFO (20)
+            "event": "message that should pass",
         }
         # No DropEvent should be raised
         try:
-            result_event = log_filter_debug_threshold(None, "", event_dict_unrecognized_level_passes)
+            result_event = log_filter_debug_threshold(
+                None, "", event_dict_unrecognized_level_passes
+            )
             assert result_event == event_dict_unrecognized_level_passes
-        except structlog.DropEvent: # pragma: no cover
-            pytest.fail("Event with unrecognized level (defaulting to INFO) was unexpectedly dropped for DEBUG threshold.")
+        except structlog.DropEvent:  # pragma: no cover
+            pytest.fail(
+                "Event with unrecognized level (defaulting to INFO) was unexpectedly dropped for DEBUG threshold."
+            )
+
 
 # Placeholder for next tests
 class TestAddLoggerNameEmojiPrefix:
@@ -82,7 +97,7 @@ class TestAddLoggerNameEmojiPrefix:
 
         event_dict = {
             "logger_name": logger_name_with_emoji,
-            "event": None # Event message is None
+            "event": None,  # Event message is None
         }
 
         processed_event = add_logger_name_emoji_prefix(None, "info", event_dict.copy())
@@ -97,11 +112,11 @@ class TestAddLoggerNameEmojiPrefix:
         """
         # This logger name is not in _LOGGER_NAME_EMOJI_PREFIXES, so it will use default '🔹'
         logger_name_no_specific_emoji = "some.other.logger.name"
-        expected_default_emoji = "🔹" # Default emoji from _LOGGER_NAME_EMOJI_PREFIXES
+        expected_default_emoji = "🔹"  # Default emoji from _LOGGER_NAME_EMOJI_PREFIXES
 
         event_dict = {
             "logger_name": logger_name_no_specific_emoji,
-            "event": None # Event message is None
+            "event": None,  # Event message is None
         }
 
         processed_event = add_logger_name_emoji_prefix(None, "info", event_dict.copy())
@@ -113,14 +128,11 @@ class TestAddLoggerNameEmojiPrefix:
         """
         Standard case: event message exists, and emoji is found.
         """
-        logger_name_with_emoji = "provide.foundation.logger" # Expected: 📝
+        logger_name_with_emoji = "provide.foundation.logger"  # Expected: 📝
         expected_emoji = "📝"
         original_message = "This is a test message."
 
-        event_dict = {
-            "logger_name": logger_name_with_emoji,
-            "event": original_message
-        }
+        event_dict = {"logger_name": logger_name_with_emoji, "event": original_message}
 
         processed_event = add_logger_name_emoji_prefix(None, "info", event_dict.copy())
 

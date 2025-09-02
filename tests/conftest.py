@@ -8,6 +8,7 @@ This file defines shared fixtures used across multiple test modules,
 primarily for managing the telemetry system's state during testing,
 capturing log output, and providing diagnostic logging for the test setup itself.
 """
+
 from collections.abc import Callable, Generator
 import io  # For io.StringIO
 import logging as stdlib_logging
@@ -28,11 +29,14 @@ from provide.foundation.core import (
 
 _conftest_diag_logger_name = "provide.foundation.conftest_diag"
 
+
 def _get_conftest_diag_logger() -> stdlib_logging.Logger:
     """Initializes and returns a diagnostic logger for conftest operations."""
     logger = stdlib_logging.getLogger(_conftest_diag_logger_name)
     if not logger.handlers:
-        handler = stdlib_logging.StreamHandler(sys.stderr) # Actual stderr for diagnostics
+        handler = stdlib_logging.StreamHandler(
+            sys.stderr
+        )  # Actual stderr for diagnostics
         formatter = stdlib_logging.Formatter(
             "[Conftest DIAG] %(levelname)s (%(name)s): %(message)s"
         )
@@ -44,8 +48,9 @@ def _get_conftest_diag_logger() -> stdlib_logging.Logger:
         logger.propagate = False
     return logger
 
+
 conftest_diag_logger = _get_conftest_diag_logger()
-if not os.getenv("PYTEST_WORKER_ID"): # Avoid multiple messages with xdist
+if not os.getenv("PYTEST_WORKER_ID"):  # Avoid multiple messages with xdist
     conftest_diag_logger.debug("⚙️➡️🔍 Conftest loaded.")
 
 
@@ -56,19 +61,25 @@ def manage_telemetry_reset_for_each_test() -> Generator[None]:
     Ensures test isolation by calling `reset_foundation_setup_for_testing()`.
     """
     if not os.getenv("PYTEST_WORKER_ID") or os.getenv("PYTEST_WORKER_ID") == "gw0":
-        conftest_diag_logger.debug("🔄 (Pre-test) Calling reset_foundation_setup_for_testing()")
+        conftest_diag_logger.debug(
+            "🔄 (Pre-test) Calling reset_foundation_setup_for_testing()"
+        )
     reset_foundation_setup_for_testing()
     # ensure_config_warnings_logger_configured call removed
     yield
     if not os.getenv("PYTEST_WORKER_ID") or os.getenv("PYTEST_WORKER_ID") == "gw0":
-        conftest_diag_logger.debug("🔄 (Post-test) Calling reset_foundation_setup_for_testing()")
+        conftest_diag_logger.debug(
+            "🔄 (Post-test) Calling reset_foundation_setup_for_testing()"
+        )
     reset_foundation_setup_for_testing()
     # ensure_config_warnings_logger_configured call removed
-    _set_log_stream_for_testing(None) # Ensure stream is reset to default stderr
+    _set_log_stream_for_testing(None)  # Ensure stream is reset to default stderr
 
 
 @pytest.fixture
-def captured_stderr_for_foundation() -> Generator[TextIO]: # Corrected: TextIO, and it's io.StringIO which is a TextIO
+def captured_stderr_for_foundation() -> Generator[
+    TextIO
+]:  # Corrected: TextIO, and it's io.StringIO which is a TextIO
     """
     Fixture to capture stderr output from Foundation's logging system.
 
@@ -84,7 +95,7 @@ def captured_stderr_for_foundation() -> Generator[TextIO]: # Corrected: TextIO, 
 
 @pytest.fixture
 def setup_foundation_telemetry_for_test(
-    captured_stderr_for_foundation: TextIO # Corrected: TextIO
+    captured_stderr_for_foundation: TextIO,  # Corrected: TextIO
 ) -> Callable[[TelemetryConfig | None], None]:
     """
     Fixture providing a function to set up Foundation Telemetry for a test.
@@ -98,15 +109,19 @@ def setup_foundation_telemetry_for_test(
     Returns:
         A callable that takes an optional `TelemetryConfig` and calls `setup_telemetry`.
     """
+
     def _setup_func(config: TelemetryConfig | None = None) -> None:
         # The `config` parameter is correctly defined to accept TelemetryConfig or None.
         # Calls like _setup_func(config=cfg_instance) or _setup_func(cfg_instance) are valid.
         setup_telemetry(config)
+
     return _setup_func
+
 
 @pytest.fixture(scope="session")
 def foundation_conftest_diagnostic_logger() -> stdlib_logging.Logger:
     """Session-scoped fixture providing the conftest diagnostic logger."""
     return _get_conftest_diag_logger()
+
 
 # 🧪⚙️
