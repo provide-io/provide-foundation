@@ -52,6 +52,13 @@ class Context:
     log_file: Path | None = field(
         default=None, converter=lambda x: Path(x) if x else None
     )
+    log_format: str = field(default="key_value")
+    no_color: bool = field(
+        default=False, converter=lambda x: parse_bool(x, strict=True)
+    )
+    no_emoji: bool = field(
+        default=False, converter=lambda x: parse_bool(x, strict=True)
+    )
 
     # Private fields - using Factory for mutable defaults
     _logger: Any = field(init=False, factory=lambda: None, repr=False)
@@ -103,6 +110,18 @@ class Context:
         if log_file:
             kwargs["log_file"] = Path(log_file)
 
+        log_format = os.environ.get(f"{prefix}_LOG_FORMAT")
+        if log_format:
+            kwargs["log_format"] = log_format
+
+        no_color = os.environ.get(f"{prefix}_NO_COLOR")
+        if no_color:
+            kwargs["no_color"] = no_color.lower() in ("true", "1", "yes", "on")
+
+        no_emoji = os.environ.get(f"{prefix}_NO_EMOJI")
+        if no_emoji:
+            kwargs["no_emoji"] = no_emoji.lower() in ("true", "1", "yes", "on")
+
         return cls(**kwargs)
 
     def update_from_env(self, prefix: str = "PROVIDE") -> None:
@@ -130,6 +149,12 @@ class Context:
             self.config_file = env_ctx.config_file
         if os.environ.get(f"{prefix}_LOG_FILE"):
             self.log_file = env_ctx.log_file
+        if os.environ.get(f"{prefix}_LOG_FORMAT"):
+            self.log_format = env_ctx.log_format
+        if os.environ.get(f"{prefix}_NO_COLOR"):
+            self.no_color = env_ctx.no_color
+        if os.environ.get(f"{prefix}_NO_EMOJI"):
+            self.no_emoji = env_ctx.no_emoji
 
         self._validate()
 
@@ -142,6 +167,9 @@ class Context:
             "json_output": self.json_output,
             "config_file": str(self.config_file) if self.config_file else None,
             "log_file": str(self.log_file) if self.log_file else None,
+            "log_format": self.log_format,
+            "no_color": self.no_color,
+            "no_emoji": self.no_emoji,
         }
 
     @classmethod
@@ -169,6 +197,12 @@ class Context:
             kwargs["config_file"] = Path(data["config_file"])
         if data.get("log_file"):
             kwargs["log_file"] = Path(data["log_file"])
+        if "log_format" in data:
+            kwargs["log_format"] = data["log_format"]
+        if "no_color" in data:
+            kwargs["no_color"] = data["no_color"]
+        if "no_emoji" in data:
+            kwargs["no_emoji"] = data["no_emoji"]
 
         return cls(**kwargs)
 
@@ -216,6 +250,12 @@ class Context:
             self.config_file = Path(data["config_file"])
         if data.get("log_file"):
             self.log_file = Path(data["log_file"])
+        if "log_format" in data:
+            self.log_format = data["log_format"]
+        if "no_color" in data:
+            self.no_color = data["no_color"]
+        if "no_emoji" in data:
+            self.no_emoji = data["no_emoji"]
 
         self._validate()
 
