@@ -390,3 +390,7 @@ kv-data-*
 
 bin/
 workenv/
+
+# act (GitHub Actions testing)
+.secrets
+.env.local
