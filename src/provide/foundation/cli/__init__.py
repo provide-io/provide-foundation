@@ -8,6 +8,7 @@ CLI tools in the provide-io ecosystem.
 from provide.foundation.cli.decorators import (
     config_options,
     error_handler,
+    flexible_options,
     logging_options,
     output_options,
     pass_context,
@@ -40,6 +41,7 @@ __all__ = [
     "logging_options",
     "config_options",
     "output_options",
+    "flexible_options",
     "standard_options",
     "error_handler",
     "pass_context",
