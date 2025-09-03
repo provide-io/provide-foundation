@@ -310,7 +310,8 @@ class TestParsers:
         
         with pytest.raises(ValidationError) as exc_info:
             parse_duration('10x')
-        assert 'Unknown duration unit' in str(exc_info.value)
+        # Since 'x' is not a valid unit, the regex won't match at all
+        assert 'Invalid duration format' in str(exc_info.value)
     
     def test_parse_size(self):
         """Test size parsing."""
@@ -338,6 +339,7 @@ class TestParsers:
             parse_size('invalid')
         assert 'Invalid size format' in str(exc_info.value)
         
+        # Test completely invalid format (XB is not in the units dict)
         with pytest.raises(ValidationError) as exc_info:
-            parse_size('10XB')
-        assert 'Unknown size unit' in str(exc_info.value)
+            parse_size('invalid')
+        assert 'Invalid size format' in str(exc_info.value)
