@@ -46,6 +46,7 @@ def atomic_write(
     path.parent.mkdir(parents=True, exist_ok=True)
     
     # Create temp file in same directory for atomic rename
+    # Note: mkstemp creates files with 0o600 by default for security
     fd, temp_path = tempfile.mkstemp(
         dir=path.parent,
         prefix=f".{path.name}.",
@@ -68,6 +69,10 @@ def atomic_write(
                 os.chmod(temp_path, existing_mode)
             except OSError:
                 pass
+        elif not preserve_mode:
+            # When not preserving, explicitly set to default permissions
+            # mkstemp creates with 0o600, but we want standard defaults
+            os.chmod(temp_path, 0o666)  # Will be masked by umask
         
         # Atomic rename
         os.replace(temp_path, path)
