@@ -1,10 +1,10 @@
-# Base
+# CLI Utils
 
-::: provide.foundation.cli.base
+::: provide.foundation.cli.utils
 
 ## Overview
 
-API documentation for Base.
+API documentation for CLI utilities and helper functions.
 
 ## Usage
 

@@ -48,7 +48,7 @@ for path in sorted(src_root.rglob("*.py")):
         print(f"::: {identifier}", file=fd)
     
     # Set edit path for the generated file
-    mkdocs_gen_files.set_edit_path(full_doc_path, path.relative_to(Path.cwd()))
+    mkdocs_gen_files.set_edit_path(full_doc_path, Path("src") / path.relative_to(src_root))
 
 # Create the SUMMARY.md file for literate-nav
 with mkdocs_gen_files.open("api/reference/SUMMARY.md", "w") as nav_file:
