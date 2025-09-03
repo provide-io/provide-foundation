@@ -8,25 +8,25 @@ Welcome to provide.foundation! This guide will help you get up and running quick
   <div class="feature-card">
     <h3>📦 Installation</h3>
     <p>Install provide.foundation and its dependencies</p>
-    <a href="installation/">Get Started →</a>
+    <a href="installation">Get Started →</a>
   </div>
   
   <div class="feature-card">
     <h3>🚀 Quick Start</h3>
     <p>Your first provide.foundation application in 5 minutes</p>
-    <a href="quick-start/">Learn More →</a>
+    <a href="quick-start">Learn More →</a>
   </div>
   
   <div class="feature-card">
     <h3>💻 First Application</h3>
     <p>Build a complete application with logging, CLI, and configuration</p>
-    <a href="first-app/">Build Now →</a>
+    <a href="first-app">Build Now →</a>
   </div>
   
   <div class="feature-card">
     <h3>📚 Examples</h3>
     <p>Explore real-world examples and use cases</p>
-    <a href="examples/">Browse →</a>
+    <a href="examples">Browse →</a>
   </div>
 </div>
 
