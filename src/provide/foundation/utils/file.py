@@ -4,12 +4,9 @@ This module provides atomic file operations to ensure data integrity
 during file writes and replacements.
 """
 
-from __future__ import annotations
-
 import os
 import tempfile
 from pathlib import Path
-from typing import Any
 
 from provide.foundation import logger
 

@@ -492,38 +492,16 @@ async def async_stream(
 
 
 # ============================================================================
-# Legacy Compatibility (deprecated names)
-# ============================================================================
-
-# Keep old names for backward compatibility (will be removed in v2.0)
-run_command = run
-run_command_simple = run_simple
-stream_command = stream
-async_run_command = async_run
-async_stream_command = async_stream
-
-
-# ============================================================================
 # Exports
 # ============================================================================
 
 __all__ = [
-    # New simplified names
     "run",
     "run_simple",
     "stream",
     "async_run",
     "async_stream",
-    
-    # Types
     "CompletedProcess",
     "ProcessError",
     "TimeoutError",
-    
-    # Legacy names (deprecated)
-    "run_command",
-    "run_command_simple",
-    "stream_command",
-    "async_run_command",
-    "async_stream_command",
 ]
