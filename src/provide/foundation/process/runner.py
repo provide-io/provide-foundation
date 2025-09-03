@@ -8,20 +8,10 @@ import subprocess
 import sys
 from typing import Any
 
-from provide.foundation.errors import FoundationError
+from provide.foundation.errors.exceptions import ProcessError, TimeoutError, BuildError
 from provide.foundation.logger import get_logger
 
 plog = get_logger(__name__)
-
-
-class ProcessError(FoundationError):
-    """Process execution error."""
-    pass
-
-
-class TimeoutError(ProcessError):
-    """Process execution timed out."""
-    pass
 
 
 @dataclass
@@ -177,6 +167,103 @@ def run_command_simple(
     """
     result = run_command(cmd, cwd=cwd, capture_output=True, check=True, **kwargs)
     return result.stdout.strip()
+
+
+def run_build_command(
+    cmd: list[str],
+    cwd: str | Path | None = None,
+    env: Mapping[str, str] | None = None,
+    capture_output: bool = True,
+    timeout: float | None = None,
+    target: str | None = None,
+    stage: str | None = None,
+    quiet: bool = False,
+    **kwargs: Any,
+) -> CompletedProcess:
+    """
+    Run a build command with build-specific error handling.
+    
+    This is optimized for build tools and compilation commands.
+    
+    Args:
+        cmd: Command and arguments as a list
+        cwd: Working directory for the command
+        env: Environment variables (if None, uses current environment)
+        capture_output: Whether to capture stdout/stderr
+        timeout: Command timeout in seconds
+        target: Build target being executed
+        stage: Build stage being executed
+        quiet: Suppress logging output
+        **kwargs: Additional arguments passed to run_command
+    
+    Returns:
+        CompletedProcess with results
+    
+    Raises:
+        BuildError: If command fails
+        TimeoutError: If timeout is exceeded
+    """
+    # Prepare environment with NO_COVERAGE for build commands
+    build_env = dict(env) if env is not None else os.environ.copy()
+    build_env["NO_COVERAGE"] = "1"  # Disable coverage for build subprocesses
+    
+    cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
+    
+    if not quiet:
+        if target:
+            plog.info("🔨 Running build", command=cmd_str, target=target, stage=stage)
+        else:
+            plog.info("🔨 Running build command", command=cmd_str)
+    
+    try:
+        result = run_command(
+            cmd,
+            cwd=cwd,
+            env=build_env,
+            capture_output=capture_output,
+            check=False,  # We'll handle the check ourselves
+            timeout=timeout,
+            **kwargs,
+        )
+        
+        if result.returncode != 0:
+            if not quiet:
+                plog.error(
+                    "❌ Build failed",
+                    command=cmd_str,
+                    returncode=result.returncode,
+                    target=target,
+                    stage=stage,
+                    stderr=result.stderr if capture_output else None,
+                )
+            raise BuildError(
+                f"Build command failed with exit code {result.returncode}: {cmd_str}",
+                command=cmd_str,
+                returncode=result.returncode,
+                stdout=result.stdout if capture_output else None,
+                stderr=result.stderr if capture_output else None,
+                target=target,
+                stage=stage,
+            )
+        
+        if not quiet:
+            plog.debug("✅ Build completed", command=cmd_str, target=target)
+        
+        return result
+        
+    except TimeoutError:
+        raise  # Re-raise as-is
+    except BuildError:
+        raise  # Re-raise as-is
+    except Exception as e:
+        if not quiet:
+            plog.error("💥 Build execution failed", command=cmd_str, error=str(e))
+        raise BuildError(
+            f"Failed to execute build command: {cmd_str}",
+            command=cmd_str,
+            target=target,
+            stage=stage,
+        ) from e
 
 
 def stream_command(
