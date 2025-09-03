@@ -14,6 +14,7 @@ def atomic_write(
     data: bytes,
     mode: int | None = None,
     backup: bool = False,
+    preserve_mode: bool = True,
 ) -> None:
     """Write file atomically using temp file + rename.
     
@@ -25,6 +26,7 @@ def atomic_write(
         data: Binary data to write
         mode: Optional file permissions (e.g., 0o644)
         backup: Create .bak file before overwrite
+        preserve_mode: Whether to preserve existing file permissions when mode is None
         
     Raises:
         OSError: If file operation fails
@@ -59,8 +61,8 @@ def atomic_write(
         # Set permissions if specified
         if mode is not None:
             os.chmod(temp_path, mode)
-        elif path.exists():
-            # Preserve existing permissions
+        elif preserve_mode and path.exists():
+            # Preserve existing permissions if requested
             try:
                 existing_mode = path.stat().st_mode
                 os.chmod(temp_path, existing_mode)
@@ -91,6 +93,7 @@ def atomic_write_text(
     encoding: str = "utf-8",
     mode: int | None = None,
     backup: bool = False,
+    preserve_mode: bool = True,
 ) -> None:
     """Write text file atomically.
     
@@ -100,13 +103,14 @@ def atomic_write_text(
         encoding: Text encoding (default: utf-8)
         mode: Optional file permissions
         backup: Create .bak file before overwrite
+        preserve_mode: Whether to preserve existing file permissions when mode is None
         
     Raises:
         OSError: If file operation fails
         UnicodeEncodeError: If text cannot be encoded
     """
     data = text.encode(encoding)
-    atomic_write(path, data, mode=mode, backup=backup)
+    atomic_write(path, data, mode=mode, backup=backup, preserve_mode=preserve_mode)
 
 
 def atomic_replace(
@@ -137,7 +141,9 @@ def atomic_replace(
         except OSError:
             pass
     
-    atomic_write(path, data, mode=mode, backup=False)
+    # When preserve_mode is False, we explicitly pass preserve_mode=False to atomic_write
+    # and let it handle the non-preservation (atomic_write won't preserve even if file exists)
+    atomic_write(path, data, mode=mode, backup=False, preserve_mode=preserve_mode)
 
 
 __all__ = [

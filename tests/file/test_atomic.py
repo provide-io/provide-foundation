@@ -134,8 +134,12 @@ def test_atomic_replace_without_preserve_mode(temp_dir):
     atomic_replace(path, new_data, preserve_mode=False)
     
     assert path.read_bytes() == new_data
-    # Mode should be default (not necessarily 0o600)
-    assert path.stat().st_mode & 0o777 != 0o600 or path.stat().st_mode & 0o777 == 0o644
+    # When preserve_mode=False, the file gets default permissions
+    # based on umask. It should not keep the 0o600 permissions.
+    # Default is usually 0o644 or 0o664
+    mode = path.stat().st_mode & 0o777
+    assert mode != 0o600  # Should not preserve the restricted mode
+    assert mode >= 0o644  # Should have at least read permissions for owner/group
 
 
 def test_atomic_write_handles_errors(temp_dir):
@@ -153,11 +157,25 @@ def test_atomic_write_handles_errors(temp_dir):
 
 
 def test_atomic_write_preserves_permissions(temp_dir):
-    """Test atomic write preserves existing file permissions."""
+    """Test atomic write preserves existing file permissions by default."""
     path = temp_dir / "test.txt"
     path.write_bytes(b"Original")
     os.chmod(path, 0o600)
     
-    atomic_write(path, b"New content")
+    atomic_write(path, b"New content")  # preserve_mode=True by default
     
     assert path.stat().st_mode & 0o777 == 0o600
+    
+    
+def test_atomic_write_no_preserve_permissions(temp_dir):
+    """Test atomic write without preserving permissions."""
+    path = temp_dir / "test.txt"
+    path.write_bytes(b"Original")
+    os.chmod(path, 0o600)
+    
+    atomic_write(path, b"New content", preserve_mode=False)
+    
+    # Should not preserve 0o600
+    mode = path.stat().st_mode & 0o777
+    assert mode != 0o600
+    assert mode >= 0o644  # Should have at least standard read permissions
