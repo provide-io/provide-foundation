@@ -5,14 +5,18 @@ import pytest
 from unittest.mock import patch, MagicMock
 
 from provide.foundation.platform import (
-    get_os_name,
-    get_arch_name,
-    get_platform_string,
+    get_os,
+    get_arch,
+    get_platform,
     get_os_version,
     get_cpu_type,
     normalize_platform_components,
+    PlatformError,
+    # Keep legacy names for tests
+    get_os_name,
+    get_arch_name,
+    get_platform_string,
 )
-from provide.foundation.platform.detection import PlatformError
 
 
 class TestPlatformDetection:
