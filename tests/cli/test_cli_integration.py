@@ -60,7 +60,7 @@ class TestCompleteCliIntegration:
         def migrate(ctx: Context):
             """Run database migrations."""
             logger = get_logger(__name__)
-            logger.info("Running migrations", log_level=ctx.log_level)
+            logger.info("Running migrations")
             
             if ctx.json_output:
                 click.echo(json.dumps({"status": "success", "migrations": 5}))
@@ -78,7 +78,7 @@ class TestCompleteCliIntegration:
                     setattr(ctx, key, value)
             
             logger = get_logger(__name__)
-            logger.debug("Checking status", log_level=ctx.log_level)
+            logger.debug("Checking status")
             
             if ctx.json_output:
                 click.echo(json.dumps({"status": "healthy", "uptime": 3600}))
