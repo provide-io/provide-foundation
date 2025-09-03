@@ -374,36 +374,88 @@ structlog.configure(
 
 ### With OpenTelemetry
 
-While not OpenTelemetry-compliant, we can export to OTEL:
+Semantic layers are designed to **extend and enhance OpenTelemetry**, not replace it:
 
 ```python
-def to_otel_attributes(event_dict: dict[str, Any]) -> dict[str, Any]:
-    """Convert semantic fields to OpenTelemetry attributes."""
-    otel_attrs = {}
+from opentelemetry import trace, metrics
+from provide.foundation.otel import SemanticOTELProcessor
+
+# Semantic layers automatically enrich OTEL spans
+tracer = trace.get_tracer(__name__)
+
+class SemanticOTELProcessor:
+    """Bridges semantic layers with OpenTelemetry."""
     
-    # Map our fields to OTEL conventions
-    mapping = {
-        "http.method": "http.request.method",
-        "http.status_code": "http.response.status_code",
-        "db.system": "db.system",
-        "db.operation": "db.operation.name",
-    }
-    
-    for our_key, otel_key in mapping.items():
-        if our_key in event_dict:
-            otel_attrs[otel_key] = event_dict[our_key]
-    
-    return otel_attrs
+    def process_span(self, span: Span, event_dict: dict[str, Any]):
+        """Enrich OTEL span with semantic layer data."""
+        
+        # Direct OTEL attribute mapping (already compatible!)
+        for key, value in event_dict.items():
+            if key.startswith(("http.", "db.", "rpc.", "messaging.")):
+                span.set_attribute(key, value)
+        
+        # Add provide.io-specific attributes
+        if "_semantic_layer" in event_dict:
+            span.set_attribute("provide.semantic_layer", event_dict["_semantic_layer"])
+        
+        # Visual parsing in span events (not attributes)
+        if "_emoji" in event_dict:
+            span.add_event(f"{event_dict['_emoji']} {event_dict.get('event', '')}")
+        
+        return span
+
+# Automatic OTEL integration
+@with_otel_span("http.request")
+def handle_request(request):
+    # Semantic layers enhance the OTEL span
+    logger.info("http_request_started",
+        **{
+            "http.method": request.method,        # OTEL standard
+            "http.url": request.url,              # OTEL standard
+            "http.route": request.route,          # OTEL standard
+            "provide.request_id": request.id,     # provide.io addition
+        }
+    )
+    # Creates OTEL span with all attributes + visual logging
+```
+
+### Distributed Tracing Integration
+
+```python
+from provide.foundation.otel import setup_tracing
+
+# Configure OTEL with semantic layer enhancement
+setup_tracing(
+    endpoint="otel-collector:4317",
+    service_name="my-service",
+    semantic_layers_enabled=True,  # Enable semantic enrichment
+    visual_span_events=True,        # Add emoji events to spans
+)
+
+# Automatic trace context propagation
+with tracer.start_as_current_span("process_order") as span:
+    logger.info("order_processing",
+        order_id="123",
+        # Semantic layer adds emoji + validates fields
+        # OTEL span gets all attributes
+    )
 ```
 
 ## Design Decisions
 
-### Why Not Pure OpenTelemetry?
+### Why Extend OpenTelemetry?
 
-1. **Opinionated for provide.io**: We need specific patterns for our ecosystem
-2. **Visual parsing**: Emoji system isn't part of OTEL spec
-3. **Simplified API**: More approachable than full OTEL complexity
-4. **Performance**: Lighter weight than full OTEL SDK
+1. **Standards compliance**: OTEL is the industry standard for observability
+2. **Visual enhancement**: We add developer-friendly emoji on top of OTEL
+3. **Ecosystem integration**: provide.io services need both OTEL and visual logging
+4. **Progressive enhancement**: Start with our logging, seamlessly add OTEL when needed
+
+### Architecture Benefits
+
+1. **No lock-in**: Can export to any OTEL-compatible backend
+2. **Best of both worlds**: Visual local development + standard production observability
+3. **Gradual adoption**: Use semantic layers alone, or with full OTEL
+4. **Forward compatible**: As OTEL evolves, we evolve with it
 
 ### Why Domain-Specific?
 
