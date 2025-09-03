@@ -365,13 +365,13 @@ nav:
     - Semantic Layer Protocol: spec/semantic-protocol.md
     - Emoji Mapping: spec/emoji-mapping.md
     - Performance Benchmarks: spec/benchmarks.md
-    - PEPs (Enhancement Proposals):
-      - spec/peps/index.md
-      - PEP-001 Semantic Layers: spec/peps/pep-001.md
-      - PEP-002 Async Support: spec/peps/pep-002.md
-      - PEP-003 Plugin System: spec/peps/pep-003.md
-      - PEP-004 Distributed Tracing: spec/peps/pep-004.md
-      - PEP-005 Metrics Integration: spec/peps/pep-005.md
+    - FEPs (Foundation Enhancement Proposals):
+      - spec/feps/index.md
+      - FEP-001 Semantic Layers: spec/feps/fep-001.md
+      - FEP-002 Async Support: spec/feps/fep-002.md
+      - FEP-003 Plugin System: spec/feps/fep-003.md
+      - FEP-004 Distributed Tracing: spec/feps/fep-004.md
+      - FEP-005 Metrics Integration: spec/feps/fep-005.md
   
   - Troubleshooting:
     - troubleshooting/index.md

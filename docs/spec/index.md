@@ -32,19 +32,19 @@ Performance specifications and benchmarks:
 - Memory usage guidelines
 - Optimization strategies
 
-## Enhancement Proposals (PEPs)
+## Enhancement Proposals (FEPs)
 
-The provide.foundation Enhancement Proposals (PEPs) document proposed changes and new features.
+The Foundation Enhancement Proposals (FEPs) document proposed changes and new features for provide.foundation.
 
-### Active PEPs
+### Active FEPs
 
-- [PEP-001: Semantic Layers](peps/pep-001.md) - Core semantic layer architecture
-- [PEP-002: Async Support](peps/pep-002.md) - Asynchronous logging capabilities
-- [PEP-003: Plugin System](peps/pep-003.md) - Extensible plugin architecture
-- [PEP-004: Distributed Tracing](peps/pep-004.md) - OpenTelemetry integration
-- [PEP-005: Metrics Integration](peps/pep-005.md) - Metrics collection and export
+- [FEP-001: Semantic Layers](feps/fep-001.md) - Core semantic layer architecture
+- [FEP-002: Async Support](feps/fep-002.md) - Asynchronous logging capabilities
+- [FEP-003: Plugin System](feps/fep-003.md) - Extensible plugin architecture
+- [FEP-004: Distributed Tracing](feps/fep-004.md) - OpenTelemetry integration
+- [FEP-005: Metrics Integration](feps/fep-005.md) - Metrics collection and export
 
-### PEP Process
+### FEP Process
 
 1. **Draft**: Initial proposal with motivation and design
 2. **Discussion**: Community feedback and refinement
@@ -140,7 +140,7 @@ class SemanticLayer(ABC):
 To propose changes to specifications:
 
 1. Open an issue for discussion
-2. Draft a PEP following the template
+2. Draft an FEP following the template
 3. Submit a pull request
 4. Participate in review process
 
