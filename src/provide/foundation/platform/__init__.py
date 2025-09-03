@@ -381,50 +381,26 @@ def get_archive_extension() -> str:
 
 
 # ============================================================================
-# Legacy Compatibility (deprecated names)
-# ============================================================================
-
-# Keep old names for backward compatibility (will be removed in v2.0)
-get_os_name = get_os
-get_arch_name = get_arch
-get_platform_string = get_platform
-
-
-# ============================================================================
 # Exports
 # ============================================================================
 
 __all__ = [
-    # New simplified names
     "get_os",
     "get_arch",
     "get_platform",
     "get_os_version",
     "get_cpu_type",
     "get_system_info",
-    
-    # Normalizers
     "normalize_platform_components",
     "normalize_arch",
     "normalize_os",
-    
-    # Boolean helpers
     "is_windows",
     "is_macos",
     "is_linux",
     "is_arm",
     "is_64bit",
-    
-    # Tool-specific
     "get_executable_extension",
     "get_archive_extension",
-    
-    # Types
     "SystemInfo",
     "PlatformError",
-    
-    # Legacy names (deprecated)
-    "get_os_name",
-    "get_arch_name",
-    "get_platform_string",
 ]

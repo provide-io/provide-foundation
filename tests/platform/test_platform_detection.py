@@ -12,10 +12,6 @@ from provide.foundation.platform import (
     get_cpu_type,
     normalize_platform_components,
     PlatformError,
-    # Keep legacy names for tests
-    get_os_name,
-    get_arch_name,
-    get_platform_string,
 )
 
 
