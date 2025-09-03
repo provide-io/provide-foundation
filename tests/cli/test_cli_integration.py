@@ -174,7 +174,7 @@ class TestLoggingIntegration:
         def cmd(ctx: Context, **kwargs):
             # Setup logging with the provided level
             if ctx.log_level:
-                setup_cli_logging(level=ctx.log_level)
+                setup_cli_logging(log_level=ctx.log_level)
             
             logger = get_logger(__name__)
             logger.debug("Debug message")
@@ -197,7 +197,7 @@ class TestLoggingIntegration:
         def cmd(ctx: Context, **kwargs):
             if ctx.log_level and hasattr(ctx, "log_format"):
                 setup_cli_logging(
-                    level=ctx.log_level,
+                    log_level=ctx.log_level,
                     format=ctx.log_format
                 )
             
@@ -227,7 +227,7 @@ class TestLoggingIntegration:
             def cmd(ctx: Context, **kwargs):
                 if ctx.log_file:
                     setup_cli_logging(
-                        level=ctx.log_level or "INFO",
+                        log_level=ctx.log_level or "INFO",
                         file=ctx.log_file
                     )
                 
