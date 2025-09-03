@@ -20,9 +20,9 @@ def logging_options(f: F) -> F:
     Add standard logging options to a Click command.
 
     Adds:
-    - --log-level/-l: Set logging verbosity
+    - --log-level/-l: Set logging verbosity (DEBUG, INFO, WARNING, ERROR, CRITICAL)
     - --log-file: Write logs to file
-    - --debug: Enable debug mode
+    - --log-format: Choose log output format (json, text, key_value)
     """
     f = click.option(
         "--log-level",
@@ -40,11 +40,11 @@ def logging_options(f: F) -> F:
         help="Write logs to file",
     )(f)
     f = click.option(
-        "--debug",
-        is_flag=True,
-        default=None,
-        envvar="PROVIDE_DEBUG",
-        help="Enable debug mode",
+        "--log-format",
+        type=click.Choice(["json", "text", "key_value"], case_sensitive=False),
+        default="key_value",
+        envvar="PROVIDE_LOG_FORMAT",
+        help="Log output format",
     )(f)
     return f
 
@@ -81,8 +81,8 @@ def output_options(f: F) -> F:
 
     Adds:
     - --json: Output in JSON format
-    - --quiet/-q: Suppress non-error output
-    - --verbose/-v: Increase output verbosity
+    - --no-color: Disable colored output
+    - --no-emoji: Disable emoji in output
     """
     f = click.option(
         "--json",
@@ -93,19 +93,31 @@ def output_options(f: F) -> F:
         help="Output in JSON format",
     )(f)
     f = click.option(
-        "--quiet",
-        "-q",
+        "--no-color",
         is_flag=True,
         default=False,
-        help="Suppress non-error output",
+        envvar="PROVIDE_NO_COLOR",
+        help="Disable colored output",
     )(f)
     f = click.option(
-        "--verbose",
-        "-v",
-        count=True,
-        default=0,
-        help="Increase output verbosity (-vvv for max)",
+        "--no-emoji",
+        is_flag=True,
+        default=False,
+        envvar="PROVIDE_NO_EMOJI",
+        help="Disable emoji in output",
     )(f)
+    return f
+
+
+def flexible_options(f: F) -> F:
+    """
+    Apply flexible CLI options that can be used at any command level.
+
+    Combines logging_options and config_options for consistent
+    control at both group and command levels.
+    """
+    f = logging_options(f)
+    f = config_options(f)
     return f
 
 
@@ -114,6 +126,9 @@ def standard_options(f: F) -> F:
     Apply all standard CLI options.
 
     Combines logging_options, config_options, and output_options.
+    
+    Note: Consider using flexible_options for better granular control.
+    This decorator is maintained for backward compatibility.
     """
     f = logging_options(f)
     f = config_options(f)
@@ -194,10 +209,14 @@ def pass_context(f: F) -> F:
             ctx.obj.log_level = kwargs["log_level"]
         if kwargs.get("log_file"):
             ctx.obj.log_file = kwargs["log_file"]
-        if "debug" in kwargs and kwargs["debug"] is not None:
-            ctx.obj.debug = kwargs["debug"]
+        if kwargs.get("log_format"):
+            ctx.obj.log_format = kwargs["log_format"]
         if "json_output" in kwargs and kwargs["json_output"] is not None:
             ctx.obj.json_output = kwargs["json_output"]
+        if "no_color" in kwargs and kwargs["no_color"] is not None:
+            ctx.obj.no_color = kwargs["no_color"]
+        if "no_emoji" in kwargs and kwargs["no_emoji"] is not None:
+            ctx.obj.no_emoji = kwargs["no_emoji"]
         if kwargs.get("profile"):
             ctx.obj.profile = kwargs["profile"]
         if kwargs.get("config"):
@@ -207,8 +226,10 @@ def pass_context(f: F) -> F:
         for key in [
             "log_level",
             "log_file",
-            "debug",
+            "log_format",
             "json_output",
+            "no_color",
+            "no_emoji",
             "profile",
             "config",
         ]:
