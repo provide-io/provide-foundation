@@ -1,7 +1,5 @@
 """Type system and Click type mapping utilities."""
 
-from __future__ import annotations
-
 import types
 import typing
 from typing import Any, get_args, get_origin
