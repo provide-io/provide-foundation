@@ -1,13 +1,16 @@
-# FEP-001: Semantic Layers Architecture
+# Design Decision: Semantic Layers
 
-**Status**: Final  
-**Type**: Standards Track  
+**Status**: Implemented  
 **Created**: 2024-01-15  
 **Authors**: provide.io Team
 
-## Abstract
+## Summary
 
-This FEP defines the architecture and protocol for semantic layers in provide.foundation. Semantic layers provide domain-specific logging interfaces that enhance structured logging with contextual understanding and visual parsing through emojis.
+This document explains why we built semantic layers and how they enhance the provide.io ecosystem's logging capabilities.
+
+## Context
+
+provide.foundation is an opinionated foundation library for the provide.io ecosystem. We needed domain-specific logging that provides the architecture and protocol for semantic layers in provide.foundation. Semantic layers provide domain-specific logging interfaces that enhance structured logging with contextual understanding and visual parsing through emojis.
 
 ## Motivation
 
@@ -203,9 +206,9 @@ with logger.bind(request_id="abc-123"):
     # Includes request_id in all logs within context
 ```
 
-## Backwards Compatibility
+## Impact
 
-This FEP introduces new functionality without breaking existing APIs. The traditional logger interface remains unchanged.
+This design introduces new functionality without breaking existing APIs. The traditional logger interface remains unchanged, ensuring backward compatibility across the provide.io ecosystem.
 
 ## Security Considerations
 
