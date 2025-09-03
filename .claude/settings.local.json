@@ -52,6 +52,7 @@
       "Bash(./run-full-pipeline.sh)",
       "Bash(./validate-pipeline.sh)",
       "Read(/private/tmp/**)",
+      "Read(/private/tmp/**)",
       "Read(/private/tmp/**)"
     ],
     "deny": [],
