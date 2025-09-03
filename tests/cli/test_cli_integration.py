@@ -198,7 +198,7 @@ class TestLoggingIntegration:
             if ctx.log_level and hasattr(ctx, "log_format"):
                 setup_cli_logging(
                     log_level=ctx.log_level,
-                    format=ctx.log_format
+                    json_logs=ctx.log_format == "json"
                 )
             
             logger = get_logger(__name__)
@@ -228,7 +228,7 @@ class TestLoggingIntegration:
                 if ctx.log_file:
                     setup_cli_logging(
                         log_level=ctx.log_level or "INFO",
-                        file=ctx.log_file
+                        log_file=ctx.log_file
                     )
                 
                 logger = get_logger(__name__)
