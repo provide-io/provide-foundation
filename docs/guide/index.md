@@ -17,13 +17,13 @@ Comprehensive guide to using provide.foundation in your applications.
   </div>
 
   <div class="feature-card">
-    <h3>⚙️ Configuration</h3>
+    <h3>⚙️ Config</h3>
     <p>Learn how to configure provide.foundation for your needs</p>
     <ul>
-      <li><a href="configuration/environment/">Environment Variables</a></li>
-      <li><a href="configuration/files/">Configuration Files</a></li>
-      <li><a href="configuration/runtime/">Runtime Configuration</a></li>
-      <li><a href="configuration/best-practices/">Best Practices</a></li>
+      <li><a href="config/environment/">Environment Variables</a></li>
+      <li><a href="config/files/">Config Files</a></li>
+      <li><a href="config/runtime/">Runtime Config</a></li>
+      <li><a href="config/best-practices/">Best Practices</a></li>
     </ul>
   </div>
 
