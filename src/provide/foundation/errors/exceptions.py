@@ -357,37 +357,6 @@ class ProcessError(RuntimeError):
         return "PROCESS_ERROR"
 
 
-class BuildError(ProcessError):
-    """Raised when build operations fail.
-    
-    Args:
-        message: Error message describing the build failure.
-        target: Optional build target.
-        stage: Optional build stage that failed.
-        **kwargs: Additional context passed to ProcessError.
-    
-    Examples:
-        >>> raise BuildError("Compilation failed")
-        >>> raise BuildError("Test failed", target="test", stage="unit-tests")
-    """
-    
-    def __init__(
-        self,
-        message: str,
-        *,
-        target: str | None = None,
-        stage: str | None = None,
-        **kwargs: Any
-    ):
-        if target:
-            kwargs.setdefault('context', {})['build.target'] = target
-        if stage:
-            kwargs.setdefault('context', {})['build.stage'] = stage
-        super().__init__(message, **kwargs)
-    
-    def _default_code(self) -> str:
-        return "BUILD_ERROR"
-
 
 class AuthenticationError(FoundationError):
     """Raised when authentication fails.
