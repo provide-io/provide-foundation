@@ -195,15 +195,48 @@ config = TelemetryConfig(
 3. **Preserve context** - Semantic layers complement, not replace, structured logging
 4. **Monitor performance** - Disable in ultra-high-throughput scenarios if needed
 
-## OpenTelemetry Inspiration
+## OpenTelemetry Integration
 
-While not OpenTelemetry-compliant, our semantic layers are inspired by [OpenTelemetry Semantic Conventions](https://opentelemetry.io/docs/concepts/semantic-conventions/):
+Our semantic layers are designed to **seamlessly integrate with OpenTelemetry**, following [OpenTelemetry Semantic Conventions](https://opentelemetry.io/docs/concepts/semantic-conventions/) while adding provide.io-specific enhancements:
 
-- Similar field naming (e.g., `http.method`, `db.system`)
-- Consistent structure across domains
-- Extensible design
+### OTEL-Compatible Field Naming
+```python
+# Our fields match OTEL conventions
+"http.method"        # OTEL standard
+"http.status_code"   # OTEL standard
+"db.system"          # OTEL standard
+"db.operation"       # OTEL standard
 
-The key difference: We're opinionated for the provide.io ecosystem rather than trying to be a universal standard.
+# Plus our visual layer
+"http.method" → "GET" → 📥  # Added emoji mapping
+```
+
+### Seamless OTEL Export
+```python
+from provide.foundation import logger
+from provide.foundation.otel import setup_otel_export
+
+# Enable OTEL export - semantic layers automatically translate
+setup_otel_export(
+    endpoint="https://otel-collector.example.com",
+    service_name="my-service"
+)
+
+# Log with semantic layers - automatically exports to OTEL
+logger.info("http_request",
+    **{"http.method": "GET", "http.status_code": 200}
+)
+# → Sends OTEL span with proper attributes
+# → Also shows: 📥 http_request method=GET status=200 ✅
+```
+
+### Extension, Not Replacement
+- ✅ **OTEL fields work as-is**: Use standard OTEL attribute names
+- ✅ **Visual enhancement**: Adds emoji layer without breaking OTEL
+- ✅ **Automatic translation**: Bridges any naming differences
+- ✅ **Full tracing support**: Spans, metrics, and logs all work together
+
+The key enhancement: We add visual parsing and domain validation **on top of** OTEL standards, making them more developer-friendly for the provide.io ecosystem.
 
 ## Next Steps
 
