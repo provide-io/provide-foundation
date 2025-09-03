@@ -39,9 +39,10 @@ class TestCompleteCliIntegration:
             # Setup logging based on options
             if ctx.log_level:
                 setup_cli_logging(
-                    level=ctx.log_level,
-                    format=getattr(ctx, "log_format", "key_value"),
-                    file=ctx.log_file,
+                    ctx=ctx,
+                    log_level=ctx.log_level,
+                    log_file=ctx.log_file,
+                    json_logs=ctx.json_output,
                 )
 
         @cli.group()
