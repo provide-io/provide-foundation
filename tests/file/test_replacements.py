@@ -128,9 +128,18 @@ def test_wrknv_extract_operations(tmp_path: Path) -> None:
     """Test wrknv extract operations still work."""
     wrknv_path = Path('/Users/tim/code/gh/provide-io/wrknv/src')
     if wrknv_path.exists():
-        sys.path.insert(0, str(wrknv_path))
+        import importlib.util
         
-        from wrknv.wenv.operations.install import extract_archive, make_executable
+        # Load the install module directly without importing the full package
+        spec = importlib.util.spec_from_file_location(
+            "wrknv.wenv.operations.install",
+            str(wrknv_path / "wrknv/wenv/operations/install.py")
+        )
+        install_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(install_module)
+        
+        extract_archive = install_module.extract_archive
+        make_executable = install_module.make_executable
         import tarfile
         import zipfile
         
