@@ -21,17 +21,17 @@ class TestPlatformDetection:
     def test_get_os_name_darwin(self):
         """Test OS name detection on macOS."""
         with patch("platform.system", return_value="Darwin"):
-            assert get_os_name() == "darwin"
+            assert get_os() == "darwin"
     
     def test_get_os_name_linux(self):
         """Test OS name detection on Linux."""
         with patch("platform.system", return_value="Linux"):
-            assert get_os_name() == "linux"
+            assert get_os() == "linux"
     
     def test_get_os_name_windows(self):
         """Test OS name detection on Windows."""
         with patch("platform.system", return_value="Windows"):
-            assert get_os_name() == "windows"
+            assert get_os() == "windows"
     
     def test_get_os_name_error(self):
         """Test OS name detection error handling."""
