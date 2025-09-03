@@ -349,3 +349,12 @@ def stream_command(
             command=cmd_str,
             error=str(e),
         ) from e
+
+# Export all public functions
+__all__ = [
+    "CompletedProcess",
+    "run_command",
+    "run_command_simple", 
+    "run_build_command",
+    "stream_command",
+]
