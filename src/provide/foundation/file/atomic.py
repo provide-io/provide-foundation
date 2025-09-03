@@ -70,9 +70,14 @@ def atomic_write(
             except OSError:
                 pass
         elif not preserve_mode:
-            # When not preserving, explicitly set to default permissions
+            # When not preserving, set to standard default permissions
             # mkstemp creates with 0o600, but we want standard defaults
-            os.chmod(temp_path, 0o666)  # Will be masked by umask
+            # Apply umask manually since os.chmod doesn't respect it
+            import stat
+            default_mode = 0o666
+            current_umask = os.umask(0)  # Get current umask
+            os.umask(current_umask)  # Restore it
+            os.chmod(temp_path, default_mode & ~current_umask)
         
         # Atomic rename
         os.replace(temp_path, path)
