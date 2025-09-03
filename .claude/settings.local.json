@@ -50,7 +50,8 @@
       "Bash(uv build:*)",
       "Bash(mkdocs build:*)",
       "Bash(./run-full-pipeline.sh)",
-      "Bash(./validate-pipeline.sh)"
+      "Bash(./validate-pipeline.sh)",
+      "Read(/private/tmp/**)"
     ],
     "deny": [],
     "ask": [],
