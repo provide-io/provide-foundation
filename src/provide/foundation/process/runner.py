@@ -1,23 +1,23 @@
 """Core subprocess execution utilities."""
 
 from collections.abc import Iterator, Mapping
-from dataclasses import dataclass
+from attrs import define
 import os
 from pathlib import Path
 import subprocess
-import sys
 from typing import Any
 
-from provide.foundation.errors.exceptions import ProcessError, TimeoutError
+from provide.foundation.errors.runtime import ProcessError
+from provide.foundation.errors.integration import TimeoutError
 from provide.foundation.logger import get_logger
 
 plog = get_logger(__name__)
 
 
-@dataclass
+@define
 class CompletedProcess:
     """Result of a completed process."""
-    
+
     args: list[str]
     returncode: int
     stdout: str
@@ -40,7 +40,7 @@ def run_command(
 ) -> CompletedProcess:
     """
     Run a subprocess command with consistent error handling and logging.
-    
+
     Args:
         cmd: Command and arguments as a list
         cwd: Working directory for the command
@@ -52,10 +52,10 @@ def run_command(
         input: Input to send to the process
         shell: Whether to run command through shell
         **kwargs: Additional arguments passed to subprocess.run
-    
+
     Returns:
         CompletedProcess with results
-    
+
     Raises:
         ProcessError: If command fails and check=True
         TimeoutError: If timeout is exceeded
@@ -63,17 +63,17 @@ def run_command(
     # Log command execution
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
     plog.info("🚀 Running command", command=cmd_str, cwd=str(cwd) if cwd else None)
-    
+
     # Prepare environment
     run_env = dict(env) if env is not None else os.environ.copy()
-    
+
     # Convert Path to string
     if isinstance(cwd, Path):
         cwd = str(cwd)
-    
+
     try:
         result = subprocess.run(
-            cmd,
+            " ".join(cmd) if shell else cmd,
             cwd=cwd,
             env=run_env,
             capture_output=capture_output,
@@ -84,7 +84,7 @@ def run_command(
             shell=shell,
             **kwargs,
         )
-        
+
         completed = CompletedProcess(
             args=cmd if isinstance(cmd, list) else [cmd],
             returncode=result.returncode,
@@ -93,7 +93,7 @@ def run_command(
             cwd=cwd,
             env=dict(run_env) if env else None,
         )
-        
+
         if check and result.returncode != 0:
             plog.error(
                 "❌ Command failed",
@@ -109,15 +109,15 @@ def run_command(
                 stdout=result.stdout if capture_output else None,
                 stderr=result.stderr if capture_output else None,
             )
-        
+
         plog.debug(
             "✅ Command completed",
             command=cmd_str,
             returncode=result.returncode,
         )
-        
+
         return completed
-        
+
     except subprocess.TimeoutExpired as e:
         plog.error(
             "⏱️ Command timed out",
@@ -131,7 +131,7 @@ def run_command(
             timeout=timeout,
         ) from e
     except Exception as e:
-        if isinstance(e, (ProcessError, TimeoutError)):
+        if isinstance(e, ProcessError | TimeoutError):
             raise
         plog.error(
             "💥 Command execution failed",
@@ -153,21 +153,20 @@ def run_command_simple(
 ) -> str:
     """
     Simple wrapper for run_command that returns stdout as a string.
-    
+
     Args:
         cmd: Command and arguments as a list
         cwd: Working directory for the command
         **kwargs: Additional arguments passed to run_command
-    
+
     Returns:
         Stdout as a stripped string
-    
+
     Raises:
         ProcessError: If command fails
     """
     result = run_command(cmd, cwd=cwd, capture_output=True, check=True, **kwargs)
     return result.stdout.strip()
-
 
 
 def stream_command(
@@ -179,31 +178,31 @@ def stream_command(
 ) -> Iterator[str]:
     """
     Stream command output line by line.
-    
+
     Args:
         cmd: Command and arguments as a list
         cwd: Working directory for the command
         env: Environment variables
         timeout: Command timeout in seconds
         **kwargs: Additional arguments passed to subprocess.Popen
-    
+
     Yields:
         Lines of output from the command
-    
+
     Raises:
         ProcessError: If command fails
         TimeoutError: If timeout is exceeded
     """
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
     plog.info("🌊 Streaming command", command=cmd_str, cwd=str(cwd) if cwd else None)
-    
+
     # Prepare environment
     run_env = dict(env) if env is not None else os.environ.copy()
-    
+
     # Convert Path to string
     if isinstance(cwd, Path):
         cwd = str(cwd)
-    
+
     try:
         process = subprocess.Popen(
             cmd,
@@ -216,14 +215,14 @@ def stream_command(
             universal_newlines=True,
             **kwargs,
         )
-        
+
         if process.stdout:
             for line in process.stdout:
                 yield line.rstrip()
-        
+
         # Wait for process to complete
         returncode = process.wait(timeout=timeout)
-        
+
         if returncode != 0:
             raise ProcessError(
                 f"Command failed with exit code {returncode}: {cmd_str}",
@@ -231,9 +230,9 @@ def stream_command(
                 command=cmd_str,
                 returncode=returncode,
             )
-        
+
         plog.debug("✅ Stream completed", command=cmd_str)
-        
+
     except subprocess.TimeoutExpired as e:
         process.kill()
         plog.error("⏱️ Stream timed out", command=cmd_str, timeout=timeout)
@@ -244,7 +243,7 @@ def stream_command(
             timeout=timeout,
         ) from e
     except Exception as e:
-        if isinstance(e, (ProcessError, TimeoutError)):
+        if isinstance(e, ProcessError | TimeoutError):
             raise
         plog.error("💥 Stream failed", command=cmd_str, error=str(e))
         raise ProcessError(
@@ -254,10 +253,47 @@ def stream_command(
             error=str(e),
         ) from e
 
+
+def run_shell(
+    cmd: str,
+    cwd: str | Path | None = None,
+    env: Mapping[str, str] | None = None,
+    capture_output: bool = True,
+    check: bool = True,
+    timeout: float | None = None,
+    **kwargs: Any,
+) -> CompletedProcess:
+    """Run a shell command.
+
+    Args:
+        cmd: Shell command string
+        cwd: Working directory
+        env: Environment variables
+        capture_output: Whether to capture output
+        check: Whether to raise on non-zero exit
+        timeout: Command timeout
+        **kwargs: Additional subprocess arguments
+
+    Returns:
+        CompletedProcess with results
+    """
+    return run_command(
+        cmd,
+        cwd=cwd,
+        env=env,
+        capture_output=capture_output,
+        check=check,
+        timeout=timeout,
+        shell=True,
+        **kwargs,
+    )
+
+
 # Export all public functions
 __all__ = [
     "CompletedProcess",
     "run_command",
-    "run_command_simple", 
+    "run_shell",
+    "run_command_simple",
     "stream_command",
 ]

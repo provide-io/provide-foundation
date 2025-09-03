@@ -3,21 +3,16 @@
 import platform
 import re
 
-from provide.foundation.errors import FoundationError
+from provide.foundation.errors.platform import PlatformError
 from provide.foundation.logger import get_logger
 
 plog = get_logger(__name__)
 
 
-class PlatformError(FoundationError):
-    """Error in platform detection."""
-    pass
-
-
 def get_os_name() -> str:
     """
     Get normalized OS name.
-    
+
     Returns:
         Normalized OS name (darwin, linux, windows)
     """
@@ -31,14 +26,14 @@ def get_os_name() -> str:
         raise PlatformError(
             "Failed to detect operating system",
             code="PLATFORM_OS_DETECTION_FAILED",
-            error=str(e)
+            error=str(e),
         ) from e
 
 
 def get_arch_name() -> str:
     """
     Get normalized architecture name.
-    
+
     Returns:
         Normalized architecture (amd64, arm64, x86, i386)
     """
@@ -57,14 +52,14 @@ def get_arch_name() -> str:
         raise PlatformError(
             "Failed to detect architecture",
             code="PLATFORM_ARCH_DETECTION_FAILED",
-            error=str(e)
+            error=str(e),
         ) from e
 
 
 def get_platform_string() -> str:
     """
     Get normalized platform string in format 'os_arch'.
-    
+
     Returns:
         Platform string like 'darwin_arm64' or 'linux_amd64'
     """
@@ -78,13 +73,13 @@ def get_platform_string() -> str:
 def get_os_version() -> str | None:
     """
     Get OS version information.
-    
+
     Returns:
         OS version string or None if unavailable
     """
     try:
         system = platform.system()
-        
+
         if system == "Darwin":
             # macOS version
             mac_ver = platform.mac_ver()
@@ -104,21 +99,21 @@ def get_os_version() -> str | None:
             version = platform.version()
             if version:
                 return version
-        
+
         # Fallback to platform.release()
         release = platform.release()
         if release:
             return release
     except Exception as e:
         plog.warning("Failed to detect OS version", error=str(e))
-    
+
     return None
 
 
 def get_cpu_type() -> str | None:
     """
     Get CPU type/family information.
-    
+
     Returns:
         CPU type string or None if unavailable
     """
@@ -140,7 +135,12 @@ def get_cpu_type() -> str | None:
                     if match:
                         return f"AMD Ryzen {match.group(1)}"
                 return "AMD"
-            elif "Apple" in processor or "M1" in processor or "M2" in processor or "M3" in processor:
+            elif (
+                "Apple" in processor
+                or "M1" in processor
+                or "M2" in processor
+                or "M3" in processor
+            ):
                 # Apple Silicon
                 match = re.search(r"(M\d+\w*)", processor)
                 if match:
@@ -151,18 +151,18 @@ def get_cpu_type() -> str | None:
                 return processor.strip()
     except Exception as e:
         plog.warning("Failed to detect CPU type", error=str(e))
-    
+
     return None
 
 
 def normalize_platform_components(os_name: str, arch_name: str) -> tuple[str, str]:
     """
     Normalize OS and architecture names to standard format.
-    
+
     Args:
         os_name: Operating system name
         arch_name: Architecture name
-    
+
     Returns:
         Tuple of (normalized_os, normalized_arch)
     """
@@ -174,7 +174,7 @@ def normalize_platform_components(os_name: str, arch_name: str) -> tuple[str, st
         "windows": "windows",
         "win32": "windows",
     }
-    
+
     # Normalize architecture names
     arch_map = {
         "x86_64": "amd64",
@@ -186,8 +186,8 @@ def normalize_platform_components(os_name: str, arch_name: str) -> tuple[str, st
         "i486": "x86",
         "i386": "i386",
     }
-    
+
     normalized_os = os_map.get(os_name.lower(), os_name.lower())
     normalized_arch = arch_map.get(arch_name.lower(), arch_name.lower())
-    
+
     return normalized_os, normalized_arch

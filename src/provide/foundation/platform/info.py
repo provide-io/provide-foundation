@@ -1,9 +1,11 @@
 """System information gathering utilities."""
 
-from dataclasses import dataclass
+import contextlib
+from attrs import define
 import os
 import platform
 import shutil
+import sys
 
 from provide.foundation.logger import get_logger
 from provide.foundation.platform.detection import (
@@ -17,10 +19,10 @@ from provide.foundation.platform.detection import (
 plog = get_logger(__name__)
 
 
-@dataclass
+@define
 class SystemInfo:
     """System information container."""
-    
+
     os_name: str
     arch: str
     platform: str
@@ -40,7 +42,7 @@ class SystemInfo:
 def get_system_info() -> SystemInfo:
     """
     Gather comprehensive system information.
-    
+
     Returns:
         SystemInfo object with all available system details
     """
@@ -50,34 +52,31 @@ def get_system_info() -> SystemInfo:
     platform_str = get_platform_string()
     os_version = get_os_version()
     cpu_type = get_cpu_type()
-    
+
     # Python info
     python_version = platform.python_version()
-    
+
     # System info
     hostname = None
-    try:
+    with contextlib.suppress(Exception):
         hostname = platform.node()
-    except Exception:
-        pass
-    
+
     # User info
     username = os.environ.get("USER") or os.environ.get("USERNAME")
     home_dir = os.path.expanduser("~")
     temp_dir = os.environ.get("TMPDIR") or os.environ.get("TEMP") or "/tmp"
-    
+
     # CPU info
     num_cpus = None
-    try:
+    with contextlib.suppress(Exception):
         num_cpus = os.cpu_count()
-    except Exception:
-        pass
-    
+
     # Memory info (requires psutil for accurate values)
     total_memory = None
     available_memory = None
     try:
         import psutil
+
         mem = psutil.virtual_memory()
         total_memory = mem.total
         available_memory = mem.available
@@ -85,7 +84,7 @@ def get_system_info() -> SystemInfo:
         plog.debug("psutil not available, memory info limited")
     except Exception as e:
         plog.debug("Failed to get memory info", error=str(e))
-    
+
     # Disk usage
     disk_usage = None
     try:
@@ -100,7 +99,7 @@ def get_system_info() -> SystemInfo:
                 }
     except Exception as e:
         plog.debug("Failed to get disk usage", error=str(e))
-    
+
     info = SystemInfo(
         os_name=os_name,
         arch=arch,
@@ -117,7 +116,7 @@ def get_system_info() -> SystemInfo:
         available_memory=available_memory,
         disk_usage=disk_usage,
     )
-    
+
     plog.debug(
         "System information gathered",
         platform=platform_str,
@@ -126,5 +125,32 @@ def get_system_info() -> SystemInfo:
         python=python_version,
         cpus=num_cpus,
     )
-    
+
     return info
+
+
+# Platform detection functions
+def is_windows() -> bool:
+    """Check if running on Windows."""
+    return sys.platform.startswith("win")
+
+
+def is_macos() -> bool:
+    """Check if running on macOS."""
+    return sys.platform == "darwin"
+
+
+def is_linux() -> bool:
+    """Check if running on Linux."""
+    return sys.platform.startswith("linux")
+
+
+def is_arm() -> bool:
+    """Check if running on ARM architecture."""
+    machine = platform.machine().lower()
+    return "arm" in machine or "aarch" in machine
+
+
+def is_64bit() -> bool:
+    """Check if running on 64-bit architecture."""
+    return platform.machine().endswith("64") or sys.maxsize > 2**32

@@ -2,9 +2,8 @@
 
 from __future__ import annotations
 
-import os
-import pytest
 from attrs import define
+import pytest
 
 from provide.foundation.config.base import field
 from provide.foundation.config.env import (
@@ -22,21 +21,21 @@ from provide.foundation.utils.parsing import (
 class TestEnvUtilities:
     """Test environment variable utilities."""
 
-    def test_get_env_existing(self, monkeypatch):
+    def test_get_env_existing(self, monkeypatch) -> None:
         """Test getting existing environment variable."""
         monkeypatch.setenv("TEST_VAR", "test_value")
         assert get_env("TEST_VAR") == "test_value"
 
-    def test_get_env_missing_with_default(self):
+    def test_get_env_missing_with_default(self) -> None:
         """Test getting missing variable with default."""
         assert get_env("MISSING_VAR", default="default") == "default"
 
-    def test_get_env_missing_required(self):
+    def test_get_env_missing_required(self) -> None:
         """Test getting missing required variable."""
         with pytest.raises(ValueError, match="Required environment variable"):
             get_env("MISSING_VAR", required=True)
 
-    def test_get_env_file_secret(self, tmp_path, monkeypatch):
+    def test_get_env_file_secret(self, tmp_path, monkeypatch) -> None:
         """Test reading secret from file."""
         secret_file = tmp_path / "secret.txt"
         secret_file.write_text("secret_value\n")
@@ -44,14 +43,14 @@ class TestEnvUtilities:
         monkeypatch.setenv("SECRET_VAR", f"file://{secret_file}")
         assert get_env("SECRET_VAR") == "secret_value"
 
-    def test_get_env_file_secret_missing(self, monkeypatch):
+    def test_get_env_file_secret_missing(self, monkeypatch) -> None:
         """Test reading secret from missing file."""
         monkeypatch.setenv("SECRET_VAR", "file:///nonexistent/file")
 
         with pytest.raises(ValueError, match="Failed to read secret"):
             get_env("SECRET_VAR")
 
-    def test_parse_bool_true_values(self):
+    def test_parse_bool_true_values(self) -> None:
         """Test parsing true boolean values."""
         assert parse_bool("true") is True
         assert parse_bool("True") is True
@@ -62,7 +61,7 @@ class TestEnvUtilities:
         assert parse_bool("enabled") is True
         assert parse_bool(True) is True
 
-    def test_parse_bool_false_values(self):
+    def test_parse_bool_false_values(self) -> None:
         """Test parsing false boolean values."""
         assert parse_bool("false") is False
         assert parse_bool("False") is False
@@ -74,53 +73,53 @@ class TestEnvUtilities:
         assert parse_bool("") is False
         assert parse_bool(False) is False
 
-    def test_parse_bool_invalid(self):
+    def test_parse_bool_invalid(self) -> None:
         """Test parsing invalid boolean values."""
         with pytest.raises(ValueError):
             parse_bool("invalid")
 
-    def test_parse_list_from_string(self):
+    def test_parse_list_from_string(self) -> None:
         """Test parsing list from string."""
         assert parse_list("a,b,c") == ["a", "b", "c"]
         assert parse_list("a, b, c") == ["a", "b", "c"]
         assert parse_list("") == []
 
-    def test_parse_list_from_list(self):
+    def test_parse_list_from_list(self) -> None:
         """Test parsing list from list."""
         assert parse_list(["a", "b", "c"]) == ["a", "b", "c"]
 
-    def test_parse_list_custom_separator(self):
+    def test_parse_list_custom_separator(self) -> None:
         """Test parsing list with custom separator."""
         assert parse_list("a|b|c", separator="|") == ["a", "b", "c"]
 
-    def test_parse_list_no_strip(self):
+    def test_parse_list_no_strip(self) -> None:
         """Test parsing list without stripping."""
         assert parse_list("a , b , c ", strip=False) == ["a ", " b ", " c "]
 
-    def test_parse_dict_from_string(self):
+    def test_parse_dict_from_string(self) -> None:
         """Test parsing dictionary from string."""
         assert parse_dict("key1=value1,key2=value2") == {
             "key1": "value1",
             "key2": "value2",
         }
 
-    def test_parse_dict_from_dict(self):
+    def test_parse_dict_from_dict(self) -> None:
         """Test parsing dictionary from dictionary."""
         d = {"key1": "value1"}
         assert parse_dict(d) == d
 
-    def test_parse_dict_empty(self):
+    def test_parse_dict_empty(self) -> None:
         """Test parsing empty dictionary."""
         assert parse_dict("") == {}
 
-    def test_parse_dict_custom_separators(self):
+    def test_parse_dict_custom_separators(self) -> None:
         """Test parsing dictionary with custom separators."""
         assert parse_dict("key1:value1;key2:value2", ";", ":") == {
             "key1": "value1",
             "key2": "value2",
         }
 
-    def test_parse_dict_invalid(self):
+    def test_parse_dict_invalid(self) -> None:
         """Test parsing invalid dictionary."""
         with pytest.raises(ValueError, match="Invalid dict format"):
             parse_dict("invalid_format")
@@ -133,15 +132,15 @@ class TestEnvConfig(EnvConfig):
     app_name: str = env_field(default="test_app")
     port: int = env_field(default=8080, parser=int)
     debug: bool = env_field(default=False, parser=parse_bool)
-    hosts: list[str] = env_field(factory=list, parser=parse_list)
-    metadata: dict[str, str] = env_field(factory=dict, parser=parse_dict)
+    hosts: list[str] = env_field(factory=lambda: [], parser=parse_list)
+    metadata: dict[str, str] = env_field(factory=lambda: {}, parser=parse_dict)
     custom_var: str = env_field(env_var="CUSTOM_ENV_VAR", default="")
 
 
 class TestEnvConfigClass:
     """Test EnvConfig class functionality."""
 
-    def test_from_env_with_prefix(self, monkeypatch):
+    def test_from_env_with_prefix(self, monkeypatch) -> None:
         """Test loading from environment with prefix."""
         monkeypatch.setenv("TEST_APP_NAME", "my_app")
         monkeypatch.setenv("TEST_PORT", "3000")
@@ -157,14 +156,14 @@ class TestEnvConfigClass:
         assert config.hosts == ["host1", "host2"]
         assert config.metadata == {"key1": "val1", "key2": "val2"}
 
-    def test_from_env_custom_var(self, monkeypatch):
+    def test_from_env_custom_var(self, monkeypatch) -> None:
         """Test loading with custom environment variable name."""
         monkeypatch.setenv("CUSTOM_ENV_VAR", "custom_value")
 
         config = TestEnvConfig.from_env()
         assert config.custom_var == "custom_value"
 
-    def test_from_env_defaults(self):
+    def test_from_env_defaults(self) -> None:
         """Test loading with default values."""
         config = TestEnvConfig.from_env()
 
@@ -174,7 +173,7 @@ class TestEnvConfigClass:
         assert config.hosts == []
         assert config.metadata == {}
 
-    def test_to_env_dict(self):
+    def test_to_env_dict(self) -> None:
         """Test converting to environment variable dictionary."""
         config = TestEnvConfig(
             app_name="my_app",
@@ -192,14 +191,14 @@ class TestEnvConfigClass:
         assert env_dict["APP_HOSTS"] == "host1,host2"
         assert env_dict["APP_METADATA"] == "key=value"
 
-    def test_to_env_dict_custom_delimiter(self):
+    def test_to_env_dict_custom_delimiter(self) -> None:
         """Test converting with custom delimiter."""
         config = TestEnvConfig(app_name="test")
         env_dict = config.to_env_dict(prefix="APP", delimiter="__")
 
         assert "APP__APP_NAME" in env_dict
 
-    def test_auto_parse_types(self, monkeypatch):
+    def test_auto_parse_types(self, monkeypatch) -> None:
         """Test automatic type parsing."""
 
         @define

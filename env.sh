@@ -314,11 +314,12 @@ if command -v uv &> /dev/null; then
 fi
 
 # wrknv
-if command -v wrknv &> /dev/null; then
-    WRKENV_PATH=$(command -v wrknv 2>/dev/null || which wrknv 2>/dev/null || echo "wrknv")
-    printf "%-12s: %s\n" "wrknv" "$WRKENV_PATH"
-    printf "%-12s  %s\n" "" "$(wrknv --version 2>&1 || echo 'No version info')"
-fi
+# if command -v wrknv &> /dev/null; then
+#     WRKENV_PATH=$(command -v wrknv 2>/dev/null || which wrknv 2>/dev/null || echo "wrknv")
+#     printf "% -12s: %s\n" "wrknv" "$WRKENV_PATH"
+#     printf "% -12s  %s\n" "" "$(wrknv --version 2>&1 || echo 'No version info')"
+# fi
+
 
 # ibmtf
 if command -v ibmtf &> /dev/null; then

@@ -7,8 +7,9 @@ components in the provide-io ecosystem.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from typing import Any, TypeVar, overload
+
+from attrs import define, field
 
 from provide.foundation.logger import get_logger
 from provide.foundation.registry import Registry
@@ -21,7 +22,7 @@ T = TypeVar("T")
 _component_registry = Registry()
 
 
-@dataclass(frozen=True, slots=True)
+@define(frozen=True, slots=True)
 class ComponentInfo:
     """Information about a registered component."""
 
@@ -31,8 +32,8 @@ class ComponentInfo:
     version: str | None = None
     description: str | None = None
     author: str | None = None
-    tags: list[str] = field(default_factory=list)
-    metadata: dict[str, Any] = field(default_factory=dict)
+    tags: list[str] = field(factory=lambda: [])
+    metadata: dict[str, Any] = field(factory=lambda: {})
 
 
 class BaseComponent:

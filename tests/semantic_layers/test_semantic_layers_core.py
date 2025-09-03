@@ -42,7 +42,7 @@ def auto_reset_telemetry():
 
 
 class TestResolveActiveSemanticConfig:
-    def test_no_layers_enabled(self):
+    def test_no_layers_enabled(self) -> None:
         lc = LoggingConfig()
         resolved_fields, resolved_emoji_sets = _resolve_active_semantic_config(
             lc, BUILTIN_SEMANTIC_LAYERS
@@ -51,7 +51,7 @@ class TestResolveActiveSemanticConfig:
         for les in LEGACY_DAS_EMOJI_SETS:
             assert les.name in resolved_emoji_sets
 
-    def test_enable_multiple_builtin_layers_no_conflict(self):
+    def test_enable_multiple_builtin_layers_no_conflict(self) -> None:
         lc = LoggingConfig(enabled_semantic_layers=["llm", "http"])
         resolved_fields, resolved_emoji_sets = _resolve_active_semantic_config(
             lc, BUILTIN_SEMANTIC_LAYERS
@@ -65,7 +65,7 @@ class TestResolveActiveSemanticConfig:
             and "http_method" in resolved_emoji_sets
         )
 
-    def test_layer_priority_for_field_definitions(self):
+    def test_layer_priority_for_field_definitions(self) -> None:
         field1 = SemanticFieldDefinition(
             log_key="shared_key", description="from layer1"
         )

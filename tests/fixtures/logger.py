@@ -1,7 +1,7 @@
 """Logger-related test fixtures."""
 
-import io
 from collections.abc import Callable, Generator
+import io
 from typing import TextIO
 
 import pytest

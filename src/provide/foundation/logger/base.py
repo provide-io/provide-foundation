@@ -237,12 +237,13 @@ def setup_logging(
         **kwargs: Additional configuration options
     """
     from provide.foundation.core import setup_telemetry
-    from provide.foundation.logger.config import TelemetryConfig
+    from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
+    from provide.foundation.types import LogLevelStr
 
-    config = TelemetryConfig(
-        log_level=level if isinstance(level, str) else logging.getLevelName(level),
-        json_logs=json_logs,
-        log_file=log_file,
+    logging_config = LoggingConfig(
+        default_level=cast(LogLevelStr, level if isinstance(level, str) else logging.getLevelName(level)),
+        console_formatter="json" if json_logs else "key_value",
     )
+    config = TelemetryConfig(logging=logging_config)
 
     setup_telemetry(config)

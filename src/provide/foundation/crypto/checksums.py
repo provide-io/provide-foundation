@@ -1,12 +1,11 @@
 """Checksum verification and management."""
 
 from pathlib import Path
-from typing import Any
 
-from provide.foundation.crypto.algorithms import DEFAULT_ALGORITHM, validate_algorithm
+from provide.foundation.crypto.algorithms import DEFAULT_ALGORITHM
 from provide.foundation.crypto.hashing import hash_data, hash_file
 from provide.foundation.crypto.utils import compare_hash
-from provide.foundation.errors.exceptions import ResourceError, ValidationError
+from provide.foundation.errors.resources import ResourceError
 from provide.foundation.logger import get_logger
 
 plog = get_logger(__name__)
@@ -18,26 +17,26 @@ def verify_file(
     algorithm: str = DEFAULT_ALGORITHM,
 ) -> bool:
     """Verify a file matches an expected hash.
-    
+
     Args:
         path: File path
         expected_hash: Expected hash value
         algorithm: Hash algorithm
-        
+
     Returns:
         True if hash matches, False otherwise
-        
+
     Raises:
         ResourceError: If file cannot be read
         ValidationError: If algorithm is not supported
     """
     if isinstance(path, str):
         path = Path(path)
-    
+
     try:
         actual_hash = hash_file(path, algorithm)
         matches = compare_hash(actual_hash, expected_hash)
-        
+
         if matches:
             plog.debug(
                 "✅ Checksum verified",
@@ -52,9 +51,9 @@ def verify_file(
                 expected=expected_hash[:16] + "...",
                 actual=actual_hash[:16] + "...",
             )
-        
+
         return matches
-        
+
     except ResourceError:
         plog.error(
             "❌ Failed to verify checksum - file not found",
@@ -69,21 +68,21 @@ def verify_data(
     algorithm: str = DEFAULT_ALGORITHM,
 ) -> bool:
     """Verify data matches an expected hash.
-    
+
     Args:
         data: Data to verify
         expected_hash: Expected hash value
         algorithm: Hash algorithm
-        
+
     Returns:
         True if hash matches, False otherwise
-        
+
     Raises:
         ValidationError: If algorithm is not supported
     """
     actual_hash = hash_data(data, algorithm)
     matches = compare_hash(actual_hash, expected_hash)
-    
+
     if matches:
         plog.debug(
             "✅ Data checksum verified",
@@ -97,7 +96,7 @@ def verify_data(
             expected=expected_hash[:16] + "...",
             actual=actual_hash[:16] + "...",
         )
-    
+
     return matches
 
 
@@ -106,31 +105,31 @@ def calculate_checksums(
     algorithms: list[str] | None = None,
 ) -> dict[str, str]:
     """Calculate multiple checksums for a file.
-    
+
     Args:
         path: File path
         algorithms: List of algorithms (defaults to sha256 and md5)
-        
+
     Returns:
         Dictionary mapping algorithm name to hex digest
-        
+
     Raises:
         ResourceError: If file cannot be read
         ValidationError: If any algorithm is not supported
     """
     if algorithms is None:
         algorithms = ["sha256", "md5"]
-    
+
     from provide.foundation.crypto.hashing import hash_file_multiple
-    
+
     checksums = hash_file_multiple(path, algorithms)
-    
+
     plog.debug(
         "📝 Calculated checksums",
         path=str(path),
         algorithms=algorithms,
     )
-    
+
     return checksums
 
 
@@ -139,42 +138,42 @@ def parse_checksum_file(
     algorithm: str | None = None,
 ) -> dict[str, str]:
     """Parse a checksum file and return filename to hash mapping.
-    
+
     Supports common checksum file formats:
     - SHA256: "hash  filename" or "hash filename"
     - MD5: "hash  filename" or "hash filename"
     - SHA256SUMS: "hash  filename"
     - MD5SUMS: "hash  filename"
-    
+
     Args:
         path: Path to checksum file
         algorithm: Expected algorithm (for validation)
-        
+
     Returns:
         Dictionary mapping filename to hash
-        
+
     Raises:
         ResourceError: If file cannot be read
     """
     if isinstance(path, str):
         path = Path(path)
-    
+
     if not path.exists():
         raise ResourceError(
             f"Checksum file not found: {path}",
             resource_type="file",
             resource_path=str(path),
         )
-    
+
     checksums = {}
-    
+
     try:
-        with open(path, "r", encoding="utf-8") as f:
+        with open(path, encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
                 if not line or line.startswith("#"):
                     continue
-                
+
                 # Split on whitespace (handle both single and double space)
                 parts = line.split(None, 1)
                 if len(parts) == 2:
@@ -183,16 +182,16 @@ def parse_checksum_file(
                     if filename.startswith("*"):
                         filename = filename[1:]
                     checksums[filename] = hash_value.lower()
-        
+
         plog.debug(
             "📄 Parsed checksum file",
             path=str(path),
             entries=len(checksums),
             algorithm=algorithm,
         )
-        
+
         return checksums
-        
+
     except OSError as e:
         raise ResourceError(
             f"Failed to read checksum file: {path}",
@@ -208,39 +207,39 @@ def write_checksum_file(
     binary_mode: bool = True,
 ) -> None:
     """Write checksums to a file in standard format.
-    
+
     Args:
         checksums: Dictionary mapping filename to hash
         path: Path to write checksum file
         algorithm: Algorithm name (for comments)
         binary_mode: Whether to use binary mode indicator (*)
-        
+
     Raises:
         ResourceError: If file cannot be written
     """
     if isinstance(path, str):
         path = Path(path)
-    
+
     try:
         with open(path, "w", encoding="utf-8") as f:
             # Write header comment
             f.write(f"# {algorithm.upper()} checksums\n")
-            f.write(f"# Generated by provide.foundation\n\n")
-            
+            f.write("# Generated by provide.foundation\n\n")
+
             # Write checksums
             for filename, hash_value in sorted(checksums.items()):
                 if binary_mode:
                     f.write(f"{hash_value}  *{filename}\n")
                 else:
                     f.write(f"{hash_value}  {filename}\n")
-        
+
         plog.debug(
             "📝 Wrote checksum file",
             path=str(path),
             entries=len(checksums),
             algorithm=algorithm,
         )
-        
+
     except OSError as e:
         raise ResourceError(
             f"Failed to write checksum file: {path}",
@@ -256,47 +255,47 @@ def verify_checksum_file(
     stop_on_error: bool = False,
 ) -> tuple[list[str], list[str]]:
     """Verify all files listed in a checksum file.
-    
+
     Args:
         checksum_file: Path to checksum file
         base_dir: Base directory for relative paths (defaults to checksum file dir)
         algorithm: Hash algorithm to use
         stop_on_error: Whether to stop on first verification failure
-        
+
     Returns:
         Tuple of (verified_files, failed_files)
-        
+
     Raises:
         ResourceError: If checksum file cannot be read
     """
     if isinstance(checksum_file, str):
         checksum_file = Path(checksum_file)
-    
+
     if base_dir is None:
         base_dir = checksum_file.parent
     elif isinstance(base_dir, str):
         base_dir = Path(base_dir)
-    
+
     checksums = parse_checksum_file(checksum_file, algorithm)
-    
+
     verified = []
     failed = []
-    
+
     for filename, expected_hash in checksums.items():
         file_path = base_dir / filename
-        
+
         if verify_file(file_path, expected_hash, algorithm):
             verified.append(filename)
         else:
             failed.append(filename)
             if stop_on_error:
                 break
-    
+
     plog.info(
         "📊 Checksum verification complete",
         verified=len(verified),
         failed=len(failed),
         total=len(checksums),
     )
-    
+
     return verified, failed

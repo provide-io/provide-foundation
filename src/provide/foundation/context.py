@@ -319,7 +319,6 @@ class Context:
             for f in fields(Context):
                 if not f.name.startswith("_"):  # Skip private fields
                     if isinstance(f.default, Factory):
-                        # For factory fields, call the factory to get default
                         defaults[f.name] = f.default.factory()
                     elif f.default is not None:
                         defaults[f.name] = f.default

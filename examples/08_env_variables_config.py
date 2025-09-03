@@ -66,7 +66,8 @@ def example_8_environment_configuration() -> None:
 
         # Use the global `logger` (FoundationLogger instance) for .trace()
         logger.trace(
-            "Token validation trace details", _foundation_logger_name="auth.service.tokens"
+            "Token validation trace details",
+            _foundation_logger_name="auth.service.tokens",
         )  # ✅ Shows (auth.service is TRACE)
         auth_service_logger.debug(
             "User 'test' authentication check"

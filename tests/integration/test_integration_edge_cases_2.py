@@ -16,22 +16,22 @@ from unittest.mock import MagicMock, patch
 import pytest
 import structlog
 
-from provide.foundation.logger import (
-    LoggingConfig,
-    TelemetryConfig,
-    logger,
-)
-from provide.foundation.types import SemanticLayer
-from provide.foundation.logger.processors import _build_formatter_processors_list
 from provide.foundation.core import (
     _CORE_SETUP_LOGGER_NAME,
     _create_core_setup_logger,
 )
-from provide.foundation.logger import base as foundation_logger_base
+from provide.foundation.logger import (
+    LoggingConfig,
+    TelemetryConfig,
+    base as foundation_logger_base,
+    logger,
+)
 from provide.foundation.logger.custom_processors import (
     add_log_level_custom,
 )
 from provide.foundation.logger.emoji_matrix import show_emoji_matrix
+from provide.foundation.logger.processors import _build_formatter_processors_list
+from provide.foundation.types import SemanticLayer
 
 # --- Tests for src/provide/foundation/telemetry/config.py ---
 

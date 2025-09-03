@@ -20,7 +20,7 @@ log = get_logger(__name__)
 class MockContext(Context):
     """Mock context for testing that tracks method calls."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs) -> None:
         """Initialize mock context with tracking."""
         super().__init__(**kwargs)
         self.calls = []
@@ -150,7 +150,7 @@ def create_test_cli(
     @click.group(name=name)
     @standard_options
     @click.pass_context
-    def cli(ctx, **kwargs):
+    def cli(ctx, **kwargs) -> None:
         """Test CLI for testing."""
         ctx.obj = Context(**{k: v for k, v in kwargs.items() if v is not None})
 
@@ -180,12 +180,12 @@ def mock_logger():
 class CliTestCase:
     """Base class for CLI test cases with common utilities."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test case."""
         self.runner = CliRunner()
         self.temp_files = []
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up test case."""
         for path in self.temp_files:
             if path.exists():

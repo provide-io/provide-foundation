@@ -14,10 +14,6 @@ import pytest
 from pytest import CaptureFixture
 import structlog
 
-from provide.foundation.logger.config import (
-    LoggingConfig,
-    TelemetryConfig,
-)
 from provide.foundation.core import (
     _CORE_SETUP_LOGGER_NAME,
     _create_core_setup_logger,
@@ -28,6 +24,10 @@ from provide.foundation.core import (
     shutdown_foundation_telemetry,
 )
 from provide.foundation.logger import base as logger_base_module
+from provide.foundation.logger.config import (
+    LoggingConfig,
+    TelemetryConfig,
+)
 
 
 class TestGetSafeStderr:

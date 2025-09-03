@@ -15,8 +15,8 @@ from provide.foundation.hub.registry import get_command_registry
 
 __all__ = [
     "CommandInfo",
-    "register_command",
     "build_click_command",
     "create_command_group",
     "get_command_registry",
+    "register_command",
 ]

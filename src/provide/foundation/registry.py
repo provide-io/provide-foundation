@@ -2,25 +2,25 @@
 
 from collections import defaultdict
 from collections.abc import Iterator
-from dataclasses import dataclass, field
 import threading
 from typing import Any
 
-from provide.foundation.errors import AlreadyExistsError, NotFoundError, ValidationError
-from provide.foundation.errors.decorators import with_error_handling
+from attrs import define, field
+
+from provide.foundation.errors.resources import AlreadyExistsError
 from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
 
 
-@dataclass(frozen=True, slots=True)
+@define(frozen=True, slots=True)
 class RegistryEntry:
     """A single entry in the registry."""
 
     name: str
     dimension: str
     value: Any
-    metadata: dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(factory=lambda: {})
 
     @property
     def key(self) -> tuple[str, str]:
@@ -78,7 +78,7 @@ class Registry:
                     "Use replace=True to override.",
                     code="REGISTRY_ITEM_EXISTS",
                     item_name=name,
-                    dimension=dimension
+                    dimension=dimension,
                 )
 
             entry = RegistryEntry(

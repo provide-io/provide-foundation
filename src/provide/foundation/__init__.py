@@ -15,7 +15,8 @@ except PackageNotFoundError:  # pragma: no cover
 
 # Export config module for easy access
 # New foundation components
-from provide.foundation import cli, config, platform, process
+# Make the errors module available for detailed imports
+from provide.foundation import cli, config, errors, platform, process
 
 # Console output functions
 from provide.foundation.console import perr, pout
@@ -23,6 +24,17 @@ from provide.foundation.context import Context
 from provide.foundation.core import (
     setup_telemetry,
     shutdown_foundation_telemetry,
+)
+
+# Error handling exports - only the essentials
+from provide.foundation.errors import (
+    # Base exception only
+    FoundationError,
+    # Most commonly used handlers
+    error_boundary,
+    retry_on_error,
+    # Most commonly used decorators
+    with_error_handling,
 )
 from provide.foundation.logger import (
     LoggingConfig,
@@ -54,64 +66,51 @@ from provide.foundation.types import (
 # New utility exports
 from provide.foundation.utils import timed_block
 
-# Error handling exports - only the essentials
-from provide.foundation.errors import (
-    # Base exception only
-    FoundationError,
-    # Most commonly used handlers
-    error_boundary,
-    # Most commonly used decorators
-    with_error_handling,
-    retry_on_error,
-)
-# Make the errors module available for detailed imports
-from provide.foundation import errors
-
 __all__ = [
-    # Core setup and logger
-    "logger",
-    "plog",  # Alias for logger
-    "get_logger",
-    "setup_logging",
-    "setup_telemetry",
-    "shutdown_foundation_telemetry",
-    # Configuration classes
-    "TelemetryConfig",
-    "LoggingConfig",
-    # Type aliases
-    "LogLevelStr",
-    "ConsoleFormatterStr",
     # Legacy Emoji Dictionaries (still available for direct use or reference)
     "PRIMARY_EMOJI",
     "SECONDARY_EMOJI",
     "TERTIARY_EMOJI",
-    # Semantic Layering classes
-    "CustomDasEmojiSet",
-    "SemanticFieldDefinition",
-    "SemanticLayer",
-    # Utilities
-    "show_emoji_matrix",
-    "timed_block",
-    # Version
-    "__version__",
-    # Config module
-    "config",
+    "ConsoleFormatterStr",
     # New foundation modules
     "Context",
-    "Registry",
-    "RegistryEntry",
-    "cli",
-    "platform",
-    "process",
-    # Console output
-    "pout",
-    "perr",
+    # Semantic Layering classes
+    "CustomDasEmojiSet",
     # Error handling essentials
     "FoundationError",
+    # Type aliases
+    "LogLevelStr",
+    "LoggingConfig",
+    "Registry",
+    "RegistryEntry",
+    "SemanticFieldDefinition",
+    "SemanticLayer",
+    # Configuration classes
+    "TelemetryConfig",
+    # Version
+    "__version__",
+    "cli",
+    # Config module
+    "config",
     "error_boundary",
-    "with_error_handling",
-    "retry_on_error",
     "errors",  # The errors module for detailed imports
+    "get_logger",
+    # Core setup and logger
+    "logger",
+    "perr",
+    "platform",
+    "plog",  # Alias for logger
+    # Console output
+    "pout",
+    "process",
+    "retry_on_error",
+    "setup_logging",
+    "setup_telemetry",
+    # Utilities
+    "show_emoji_matrix",
+    "shutdown_foundation_telemetry",
+    "timed_block",
+    "with_error_handling",
 ]
 
 # 🐍📝

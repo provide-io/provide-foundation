@@ -1,8 +1,9 @@
 """Atomic file operations using temp file + rename pattern."""
 
+import contextlib
 import os
-import tempfile
 from pathlib import Path
+import tempfile
 
 from provide.foundation.logger import get_logger
 
@@ -17,22 +18,22 @@ def atomic_write(
     preserve_mode: bool = True,
 ) -> None:
     """Write file atomically using temp file + rename.
-    
+
     This ensures that the file is either fully written or not written at all,
     preventing partial writes or corruption.
-    
+
     Args:
         path: Target file path
         data: Binary data to write
         mode: Optional file permissions (e.g., 0o644)
         backup: Create .bak file before overwrite
         preserve_mode: Whether to preserve existing file permissions when mode is None
-        
+
     Raises:
         OSError: If file operation fails
     """
     path = Path(path)
-    
+
     # Create backup if requested and file exists
     if backup and path.exists():
         backup_path = path.with_suffix(path.suffix + ".bak")
@@ -41,24 +42,22 @@ def atomic_write(
             log.debug("Created backup", backup=str(backup_path))
         except OSError as e:
             log.warning("Failed to create backup", error=str(e))
-    
+
     # Ensure parent directory exists
     path.parent.mkdir(parents=True, exist_ok=True)
-    
+
     # Create temp file in same directory for atomic rename
     # Note: mkstemp creates files with 0o600 by default for security
     fd, temp_path = tempfile.mkstemp(
-        dir=path.parent,
-        prefix=f".{path.name}.",
-        suffix=".tmp"
+        dir=path.parent, prefix=f".{path.name}.", suffix=".tmp"
     )
-    
+
     try:
         with os.fdopen(fd, "wb") as f:
             f.write(data)
             f.flush()
             os.fsync(f.fileno())
-        
+
         # Set permissions if specified
         if mode is not None:
             os.chmod(temp_path, mode)
@@ -73,27 +72,24 @@ def atomic_write(
             # When not preserving, set to standard default permissions
             # mkstemp creates with 0o600, but we want standard defaults
             # Apply umask manually since os.chmod doesn't respect it
-            import stat
             default_mode = 0o666
             current_umask = os.umask(0)  # Get current umask
             os.umask(current_umask)  # Restore it
             os.chmod(temp_path, default_mode & ~current_umask)
-        
+
         # Atomic rename
         os.replace(temp_path, path)
-        
+
         log.debug(
             "Atomically wrote file",
             path=str(path),
             size=len(data),
-            mode=oct(mode) if mode else None
+            mode=oct(mode) if mode else None,
         )
     except Exception:
         # Clean up temp file on error
-        try:
+        with contextlib.suppress(OSError):
             os.unlink(temp_path)
-        except OSError:
-            pass
         raise
 
 
@@ -106,7 +102,7 @@ def atomic_write_text(
     preserve_mode: bool = True,
 ) -> None:
     """Write text file atomically.
-    
+
     Args:
         path: Target file path
         text: Text content to write
@@ -114,7 +110,7 @@ def atomic_write_text(
         mode: Optional file permissions
         backup: Create .bak file before overwrite
         preserve_mode: Whether to preserve existing file permissions when mode is None
-        
+
     Raises:
         OSError: If file operation fails
         UnicodeEncodeError: If text cannot be encoded
@@ -129,35 +125,33 @@ def atomic_replace(
     preserve_mode: bool = True,
 ) -> None:
     """Replace existing file atomically, preserving permissions.
-    
+
     Args:
         path: Target file path (must exist)
         data: Binary data to write
         preserve_mode: Whether to preserve file permissions
-        
+
     Raises:
         FileNotFoundError: If file doesn't exist
         OSError: If file operation fails
     """
     path = Path(path)
-    
+
     if not path.exists():
         raise FileNotFoundError(f"File does not exist: {path}")
-    
+
     mode = None
     if preserve_mode:
-        try:
+        with contextlib.suppress(OSError):
             mode = path.stat().st_mode
-        except OSError:
-            pass
-    
+
     # When preserve_mode is False, we explicitly pass preserve_mode=False to atomic_write
     # and let it handle the non-preservation (atomic_write won't preserve even if file exists)
     atomic_write(path, data, mode=mode, backup=False, preserve_mode=preserve_mode)
 
 
 __all__ = [
+    "atomic_replace",
     "atomic_write",
     "atomic_write_text",
-    "atomic_replace",
 ]

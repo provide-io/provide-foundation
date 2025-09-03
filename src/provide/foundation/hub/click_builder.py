@@ -26,7 +26,7 @@ def ensure_parent_groups(parent_path: str, registry: Registry) -> None:
         # Check if this group already exists
         if not registry.get_entry(registry_key, dimension="command"):
             # Create a placeholder group
-            def group_func():
+            def group_func() -> None:
                 """Auto-generated command group."""
                 pass
 
@@ -111,20 +111,20 @@ def build_click_command(
     params = list(sig.parameters.items())
     arguments = []
     options = []
-    
+
     for param_name, param in params:
         if param_name in ("self", "cls", "ctx"):
             continue
-        
+
         has_default = param.default != inspect.Parameter.empty
         if has_default:
             options.append((param_name, param))
         else:
             arguments.append((param_name, param))
-    
+
     # Start with the base function
     decorated_func = func
-    
+
     # Process options in reverse order (for decorator stacking)
     for param_name, param in reversed(options):
         # Create option
@@ -154,7 +154,7 @@ def build_click_command(
                 default=param.default,
                 help=f"{param_name} option",
             )(decorated_func)
-    
+
     # Process arguments in reverse order
     # When we apply decorators programmatically, the last one applied
     # becomes the outermost decorator, which Click sees first
@@ -305,7 +305,7 @@ def create_command_group(
 
 
 __all__ = [
-    "ensure_parent_groups",
     "build_click_command",
     "create_command_group",
+    "ensure_parent_groups",
 ]

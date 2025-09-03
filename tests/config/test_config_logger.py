@@ -13,6 +13,9 @@ from pytest import CaptureFixture
 from structlog.dev import ConsoleRenderer
 from structlog.processors import JSONRenderer, TimeStamper
 
+from provide.foundation.core import (
+    _resolve_active_semantic_config,
+)
 from provide.foundation.logger.config import (
     LoggingConfig,
     TelemetryConfig,
@@ -27,9 +30,6 @@ from provide.foundation.logger.processors import (
     _build_formatter_processors_list,
     _config_create_emoji_processors,
     _config_create_timestamp_processors,
-)
-from provide.foundation.core import (
-    _resolve_active_semantic_config,
 )
 from provide.foundation.semantic_layers import BUILTIN_SEMANTIC_LAYERS
 
