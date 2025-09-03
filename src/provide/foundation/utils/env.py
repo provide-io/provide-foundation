@@ -10,6 +10,7 @@ from typing import Any, TypeVar, get_args, get_origin
 
 from provide.foundation.errors import ValidationError
 from provide.foundation.logger import get_logger
+from provide.foundation.utils.parsing import parse_bool, parse_list, parse_dict
 
 logger = get_logger(__name__)
 
@@ -37,19 +38,15 @@ def get_bool(name: str, default: bool | None = None) -> bool | None:
     if value is None:
         return default
         
-    # Handle common boolean representations
-    lower = value.lower()
-    if lower in ('true', '1', 'yes', 'on', 'enabled'):
-        return True
-    elif lower in ('false', '0', 'no', 'off', 'disabled', ''):
-        return False
-    else:
+    try:
+        return parse_bool(value)
+    except ValueError as e:
         raise ValidationError(
             f"Invalid boolean value for {name}: {value}",
             field=name,
             value=value,
             rule="boolean"
-        )
+        ) from e
 
 
 def get_int(name: str, default: int | None = None) -> int | None:
@@ -166,12 +163,9 @@ def get_list(
     if value is None:
         return default or []
         
-    if not value:
-        return []
-        
-    # Split and strip whitespace
-    items = [item.strip() for item in value.split(separator)]
-    # Filter empty strings
+    # Use existing parse_list which handles empty strings and stripping
+    items = parse_list(value, separator=separator, strip=True)
+    # Filter empty strings (parse_list doesn't do this by default)
     return [item for item in items if item]
 
 
@@ -201,29 +195,29 @@ def get_dict(
     if value is None:
         return default or {}
         
-    if not value:
-        return {}
-        
-    result = {}
-    items = value.split(item_separator)
-    
-    for item in items:
-        item = item.strip()
-        if not item:
-            continue
-            
-        if key_value_separator not in item:
-            logger.warning(
-                "Invalid key-value pair in environment variable",
-                var=name,
-                item=item
-            )
-            continue
-            
-        key, val = item.split(key_value_separator, 1)
-        result[key.strip()] = val.strip()
-        
-    return result
+    try:
+        return parse_dict(value, item_separator=item_separator, 
+                         key_separator=key_value_separator, strip=True)
+    except ValueError as e:
+        # parse_dict raises on invalid format, log warning and return partial result
+        logger.warning(
+            "Invalid dictionary format in environment variable",
+            var=name,
+            value=value,
+            error=str(e)
+        )
+        # Try to parse what we can, skipping invalid items
+        result = {}
+        items = value.split(item_separator)
+        for item in items:
+            item = item.strip()
+            if not item:
+                continue
+            if key_value_separator not in item:
+                continue
+            key, val = item.split(key_value_separator, 1)
+            result[key.strip()] = val.strip()
+        return result
 
 
 def require(name: str, type_hint: type[T] | None = None) -> Any:
