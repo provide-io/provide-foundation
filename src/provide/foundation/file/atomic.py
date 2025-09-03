@@ -1,0 +1,147 @@
+"""Atomic file operations using temp file + rename pattern."""
+
+import os
+import tempfile
+from pathlib import Path
+
+from provide.foundation.logger import get_logger
+
+log = get_logger(__name__)
+
+
+def atomic_write(
+    path: Path | str,
+    data: bytes,
+    mode: int | None = None,
+    backup: bool = False,
+) -> None:
+    """Write file atomically using temp file + rename.
+    
+    This ensures that the file is either fully written or not written at all,
+    preventing partial writes or corruption.
+    
+    Args:
+        path: Target file path
+        data: Binary data to write
+        mode: Optional file permissions (e.g., 0o644)
+        backup: Create .bak file before overwrite
+        
+    Raises:
+        OSError: If file operation fails
+    """
+    path = Path(path)
+    
+    # Create backup if requested and file exists
+    if backup and path.exists():
+        backup_path = path.with_suffix(path.suffix + ".bak")
+        try:
+            path.rename(backup_path)
+            log.debug("Created backup", backup=str(backup_path))
+        except OSError as e:
+            log.warning("Failed to create backup", error=str(e))
+    
+    # Ensure parent directory exists
+    path.parent.mkdir(parents=True, exist_ok=True)
+    
+    # Create temp file in same directory for atomic rename
+    fd, temp_path = tempfile.mkstemp(
+        dir=path.parent,
+        prefix=f".{path.name}.",
+        suffix=".tmp"
+    )
+    
+    try:
+        with os.fdopen(fd, "wb") as f:
+            f.write(data)
+            f.flush()
+            os.fsync(f.fileno())
+        
+        # Set permissions if specified
+        if mode is not None:
+            os.chmod(temp_path, mode)
+        elif path.exists():
+            # Preserve existing permissions
+            try:
+                existing_mode = path.stat().st_mode
+                os.chmod(temp_path, existing_mode)
+            except OSError:
+                pass
+        
+        # Atomic rename
+        os.replace(temp_path, path)
+        
+        log.debug(
+            "Atomically wrote file",
+            path=str(path),
+            size=len(data),
+            mode=oct(mode) if mode else None
+        )
+    except Exception:
+        # Clean up temp file on error
+        try:
+            os.unlink(temp_path)
+        except OSError:
+            pass
+        raise
+
+
+def atomic_write_text(
+    path: Path | str,
+    text: str,
+    encoding: str = "utf-8",
+    mode: int | None = None,
+    backup: bool = False,
+) -> None:
+    """Write text file atomically.
+    
+    Args:
+        path: Target file path
+        text: Text content to write
+        encoding: Text encoding (default: utf-8)
+        mode: Optional file permissions
+        backup: Create .bak file before overwrite
+        
+    Raises:
+        OSError: If file operation fails
+        UnicodeEncodeError: If text cannot be encoded
+    """
+    data = text.encode(encoding)
+    atomic_write(path, data, mode=mode, backup=backup)
+
+
+def atomic_replace(
+    path: Path | str,
+    data: bytes,
+    preserve_mode: bool = True,
+) -> None:
+    """Replace existing file atomically, preserving permissions.
+    
+    Args:
+        path: Target file path (must exist)
+        data: Binary data to write
+        preserve_mode: Whether to preserve file permissions
+        
+    Raises:
+        FileNotFoundError: If file doesn't exist
+        OSError: If file operation fails
+    """
+    path = Path(path)
+    
+    if not path.exists():
+        raise FileNotFoundError(f"File does not exist: {path}")
+    
+    mode = None
+    if preserve_mode:
+        try:
+            mode = path.stat().st_mode
+        except OSError:
+            pass
+    
+    atomic_write(path, data, mode=mode, backup=False)
+
+
+__all__ = [
+    "atomic_write",
+    "atomic_write_text",
+    "atomic_replace",
+]
