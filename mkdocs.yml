@@ -242,12 +242,12 @@ nav:
       - Domain-Action-Status: guide/concepts/das-pattern.md
       - Performance: guide/concepts/performance.md
     
-    - Configuration:
-      - guide/configuration/index.md
-      - Environment Variables: guide/configuration/environment.md
-      - Configuration Files: guide/configuration/files.md
-      - Runtime Configuration: guide/configuration/runtime.md
-      - Best Practices: guide/configuration/best-practices.md
+    - Config:
+      - guide/config/index.md
+      - Environment Variables: guide/config/environment.md
+      - Config Files: guide/config/files.md
+      - Runtime Config: guide/config/runtime.md
+      - Best Practices: guide/config/best-practices.md
     
     - Logging:
       - guide/logging/index.md
