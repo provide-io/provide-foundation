@@ -1,123 +1,412 @@
-# MkDocs Configuration
-# For a full reference, see https://www.mkdocs.org/user-guide/configuration/
-# For Material theme options, see https://squidfunk.github.io/mkdocs-material/setup/changing-the-colors/
-
-site_name: provide.foundation
-site_description: 'Beautiful, Performant, Structured Logging for Python'
-site_author: Provide
-
+site_name: provide.foundation Documentation
+site_description: Beautiful, Performant, Structured Logging for Python - Enterprise-grade telemetry built on structlog
+site_author: provide.io
+site_url: https://foundation.provide.io
 repo_url: https://github.com/provide-io/provide-foundation
 repo_name: provide-io/provide-foundation
+edit_uri: edit/main/docs/
+copyright: Copyright &copy; 2024-2025 provide.io
 
-# Copyright
-copyright: 'Copyright &copy; 2017 - 2025 Provide'
-
-# Theme Configuration
 theme:
   name: material
-  logo: assets/logo.svg # You may need to create this file
-  favicon: assets/favicon.ico # You may need to create this file
   language: en
-
-  # Features for a top-tier experience
-  features:
-    - navigation.tabs
-    - navigation.tabs.sticky
-    - navigation.sections
-    - navigation.instant
-    - navigation.tracking
-    - navigation.top
-    - navigation.expand
-    - toc.integrate  # Move TOC to the left sidebar
-    - search.suggest
-    - search.highlight
-    - content.code.annotate
-    - content.tabs.link
-
-  # Color Palette (with light/dark mode toggle)
+  
   palette:
-    # Palette toggle for light mode
+    # Light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: indigo
-      accent: indigo
+      primary: black
+      accent: deep purple
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-
-    # Palette toggle for dark mode
+    
+    # Dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: blue
-      accent: blue
+      primary: indigo
+      accent: deep purple
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
+  
+  font:
+    text: Inter
+    code: Fira Code
+  
+  features:
+    # Navigation
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.instant.progress
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    
+    # Table of contents
+    - toc.follow
+    - toc.integrate
+    
+    # Search
+    - search.suggest
+    - search.highlight
+    - search.share
+    
+    # Content
+    - content.code.copy
+    - content.code.select
+    - content.code.annotate
+    - content.tabs.link
+    - content.tooltips
+    - content.action.edit
+    - content.action.view
+    
+    # Header
+    - header.autohide
+    
+    # Announce
+    - announce.dismiss
 
-# Plugins
 plugins:
-  - search
+  - search:
+      separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+      lang:
+        - en
+  
+  - autorefs
+  
   - mkdocstrings:
       default_handler: python
       handlers:
         python:
+          paths: [src]
           options:
-            show_root_heading: yes
-            show_source: false
             docstring_style: google
-            heading_level: 3
+            docstring_section_style: list
+            show_source: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            show_root_heading: true
+            show_root_toc_entry: true
+            show_object_full_path: false
+            show_category_heading: true
+            show_if_no_docstring: false
+            show_signature: true
             show_signature_annotations: true
+            show_bases: true
+            show_submodules: false
+            group_by_category: true
+            merge_init_into_class: true
             separate_signature: true
+            line_length: 80
+            show_docstring_attributes: true
+            show_docstring_functions: true
+            show_docstring_classes: true
+            show_docstring_modules: true
+            show_docstring_description: true
+            show_docstring_examples: true
+            show_docstring_raises: true
+            show_docstring_returns: true
+            show_docstring_warns: true
+            show_docstring_yields: true
+            show_docstring_receives: true
+            show_docstring_parameters: true
+            show_docstring_other_parameters: true
+            annotations_path: full
+            members_order: source
+            filters:
+              - "!^_"
+              - "^__init__$"
+  
+  - gen-files:
+      scripts:
+        - docs/gen_ref_pages.py
+  
+  - literate-nav:
+      nav_file: SUMMARY.md
+  
+  - section-index
+  
 
-# Markdown Extensions
 markdown_extensions:
+  # Python Markdown
+  - abbr
   - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+      toc_depth: 3
+  - tables
+  - meta
+  
+  # Python Markdown Extensions
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.mark
+  - pymdownx.tilde
   - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+      use_pygments: true
+      auto_title: true
+      linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.smartsymbols
+  - pymdownx.snippets:
+      check_paths: true
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
-  - pymdownx.highlight:
-      anchor_linenums: true
-  - pymdownx.inlinehilite
-  - pymdownx.snippets
-  - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
-  - toc:
-      permalink: true
+  - pymdownx.tabbed:
+      alternate_style: true
+      combine_header_slug: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.critic:
+      mode: view
+  - pymdownx.magiclink:
+      normalize_issue_symbols: true
+      repo_url_shorthand: true
+      user: provide-io
+      repo: provide-foundation
 
-# Navigation Structure
+extra:
+  version:
+    provider: mike
+    default: latest
+  
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/provide-io/provide-foundation
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/provide-foundation/
+    - icon: fontawesome/solid/globe
+      link: https://provide.io
+  
+  analytics:
+    provider: google
+    property: G-XXXXXXXXXX
+    
+  consent:
+    title: Cookie consent
+    description: >-
+      We use cookies to recognize your repeated visits and preferences, as well
+      as to measure the effectiveness of our documentation and whether users
+      find what they're searching for. With your consent, you're helping us to
+      make our documentation better.
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
 nav:
-  - 'Home': 'index.md'
-  - 'Getting Started':
-    - 'Installation': 'getting-started/installation.md'
-    - 'Quick Start': 'getting-started/quick-start.md'
-  - 'Core Concepts':
-    - 'Structured Logging': 'core-concepts/structured-logging.md'
-    - 'Semantic Layers': 'core-concepts/semantic-layers.md'
-    - 'The Emoji System': 'core-concepts/emoji-system.md'
-    - 'Configuration': 'core-concepts/configuration.md'
-    - 'Architecture': 'core-concepts/architecture.md'
-  - 'Guides':
-    - 'Async Usage': 'guides/async-usage.md'
-    - 'Exception Logging': 'guides/exception-logging.md'
-    - 'Performance Tuning': 'guides/performance-tuning.md'
-    - 'Custom Semantic Layers': 'guides/creating-semantic-layers.md'
-  - 'Tutorials':
-    - 'FastAPI Integration': 'tutorials/fastapi-integration.md'
-  - 'API Reference':
-    - 'Logger': 'api-reference/logger.md'
-    - 'Configuration': 'api-reference/config.md'
-    - 'Console Output': 'api-reference/console.md'
-    - 'Platform Detection': 'api-reference/platform.md'
-    - 'Process Execution': 'api-reference/process.md'
-    - 'Semantic Layers': 'api-reference/semantic-layers.md'
-    - 'Error Handling': 'api-reference/errors.md'
-    - 'Registry': 'api-reference/registry.md'
-    - 'CLI Framework': 'api-reference/cli.md'
-    - 'Hub': 'api-reference/hub.md'
-    - 'Utilities': 'api-reference/utils.md'
-  - 'About':
-    - 'Contributing': 'about/contributing.md'
+  - Home: index.md
+  
+  - Getting Started:
+    - getting-started/index.md
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quick-start.md
+    - First Application: getting-started/first-app.md
+    - Examples: getting-started/examples.md
+  
+  - User Guide:
+    - guide/index.md
+    - Core Concepts:
+      - guide/concepts/index.md
+      - Structured Logging: guide/concepts/structured-logging.md
+      - Semantic Layers: guide/concepts/semantic-layers.md
+      - Emoji System: guide/concepts/emoji-system.md
+      - Domain-Action-Status: guide/concepts/das-pattern.md
+      - Performance: guide/concepts/performance.md
+    
+    - Configuration:
+      - guide/configuration/index.md
+      - Environment Variables: guide/configuration/environment.md
+      - Configuration Files: guide/configuration/files.md
+      - Runtime Configuration: guide/configuration/runtime.md
+      - Best Practices: guide/configuration/best-practices.md
+    
+    - Logging:
+      - guide/logging/index.md
+      - Basic Usage: guide/logging/basic.md
+      - Advanced Patterns: guide/logging/advanced.md
+      - Async Logging: guide/logging/async.md
+      - Exception Handling: guide/logging/exceptions.md
+      - Context Management: guide/logging/context.md
+      - Performance Tuning: guide/logging/performance.md
+    
+    - CLI Framework:
+      - guide/cli/index.md
+      - Command Registration: guide/cli/commands.md
+      - Nested Commands: guide/cli/nested.md
+      - Arguments & Options: guide/cli/arguments.md
+      - Output Formatting: guide/cli/output.md
+      - Testing CLI Apps: guide/cli/testing.md
+    
+    - System Utilities:
+      - guide/utilities/index.md
+      - Platform Detection: guide/utilities/platform.md
+      - Process Execution: guide/utilities/process.md
+      - Console Output: guide/utilities/console.md
+      - Registry Pattern: guide/utilities/registry.md
+      - Error Handling: guide/utilities/errors.md
+  
+  - API Reference:
+    - api/index.md
+    - Core:
+      - api/core/index.md
+      - Logger: api/core/logger.md
+      - Configuration: api/core/config.md
+      - Telemetry: api/core/telemetry.md
+      - Base Classes: api/core/base.md
+    
+    - Semantic Layers:
+      - api/semantic/index.md
+      - Base Layer: api/semantic/base.md
+      - HTTP Layer: api/semantic/http.md
+      - Database Layer: api/semantic/database.md
+      - LLM Layer: api/semantic/llm.md
+      - Custom Layers: api/semantic/custom.md
+    
+    - CLI:
+      - api/cli/index.md
+      - Decorators: api/cli/decorators.md
+      - Command Registry: api/cli/registry.md
+      - Base Commands: api/cli/base.md
+      - Helpers: api/cli/helpers.md
+    
+    - Utilities:
+      - api/utils/index.md
+      - Platform: api/utils/platform.md
+      - Process: api/utils/process.md
+      - Console: api/utils/console.md
+      - Registry: api/utils/registry.md
+      - Errors: api/utils/errors.md
+      - Hub: api/utils/hub.md
+  
+  - Cookbook:
+    - cookbook/index.md
+    - Recipes:
+      - cookbook/recipes/index.md
+      - FastAPI Integration: cookbook/recipes/fastapi.md
+      - Django Integration: cookbook/recipes/django.md
+      - Flask Integration: cookbook/recipes/flask.md
+      - Celery Tasks: cookbook/recipes/celery.md
+      - Docker Logging: cookbook/recipes/docker.md
+      - Kubernetes Logging: cookbook/recipes/kubernetes.md
+      - CI/CD Pipelines: cookbook/recipes/ci-cd.md
+      - Testing Strategies: cookbook/recipes/testing.md
+    
+    - Examples:
+      - cookbook/examples/index.md
+      - Web Applications: cookbook/examples/web-app.md
+      - CLI Tools: cookbook/examples/cli-tool.md
+      - Data Pipelines: cookbook/examples/data-pipeline.md
+      - Microservices: cookbook/examples/microservices.md
+      - Machine Learning: cookbook/examples/ml-logging.md
+      - Async Services: cookbook/examples/async-services.md
+    
+    - Patterns:
+      - cookbook/patterns/index.md
+      - Error Boundaries: cookbook/patterns/error-boundaries.md
+      - Context Propagation: cookbook/patterns/context.md
+      - Request Tracing: cookbook/patterns/tracing.md
+      - Performance Monitoring: cookbook/patterns/monitoring.md
+      - Audit Logging: cookbook/patterns/audit.md
+  
+  - Tutorials:
+    - tutorials/index.md
+    - Building a CLI App: tutorials/cli-application.md
+    - FastAPI with Telemetry: tutorials/fastapi-integration.md
+    - Custom Semantic Layer: tutorials/custom-semantic-layer.md
+    - Production Logging: tutorials/production-logging.md
+    - Distributed Tracing: tutorials/distributed-tracing.md
+  
+  - Development:
+    - development/index.md
+    - Contributing: development/contributing.md
+    - Architecture: development/architecture.md
+    - Testing:
+      - development/testing/index.md
+      - Unit Tests: development/testing/unit.md
+      - Integration Tests: development/testing/integration.md
+      - Performance Tests: development/testing/performance.md
+      - Coverage Reports: development/testing/coverage.md
+    - CI/CD: development/ci-cd.md
+    - Release Process: development/release.md
+    - Roadmap: development/roadmap.md
+  
+  - Specification:
+    - spec/index.md
+    - Telemetry Format: spec/telemetry-format.md
+    - Semantic Layer Protocol: spec/semantic-protocol.md
+    - Emoji Mapping: spec/emoji-mapping.md
+    - Performance Benchmarks: spec/benchmarks.md
+    - PEPs (Enhancement Proposals):
+      - spec/peps/index.md
+      - PEP-001 Semantic Layers: spec/peps/pep-001.md
+      - PEP-002 Async Support: spec/peps/pep-002.md
+      - PEP-003 Plugin System: spec/peps/pep-003.md
+      - PEP-004 Distributed Tracing: spec/peps/pep-004.md
+      - PEP-005 Metrics Integration: spec/peps/pep-005.md
+  
+  - Troubleshooting:
+    - troubleshooting/index.md
+    - Common Issues: troubleshooting/common.md
+    - Platform-Specific:
+      - troubleshooting/platforms/index.md
+      - macOS: troubleshooting/platforms/macos.md
+      - Linux: troubleshooting/platforms/linux.md
+      - Windows: troubleshooting/platforms/windows.md
+      - Docker: troubleshooting/platforms/docker.md
+    - Performance Issues: troubleshooting/performance.md
+    - Configuration Problems: troubleshooting/configuration.md
+    - Error Messages: troubleshooting/errors.md
+    - FAQ: troubleshooting/faq.md
+  
+  - Migration:
+    - migration/index.md
+    - From structlog: migration/from-structlog.md
+    - From logging: migration/from-logging.md
+    - From pyvider: migration/from-pyvider.md
+    - API Changes: migration/api-changes.md
+  
+  - Community:
+    - community/index.md
+    - Support: community/support.md
+    - Discussions: community/discussions.md
+    - Blog: community/blog.md
+    - Showcase: community/showcase.md
+
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+
+watch:
+  - src/provide
+  - docs
+  - mkdocs.yml
