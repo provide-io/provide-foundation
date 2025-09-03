@@ -359,19 +359,19 @@ nav:
     - Release Process: development/release.md
     - Roadmap: development/roadmap.md
   
-  - Specification:
-    - spec/index.md
-    - Telemetry Format: spec/telemetry-format.md
-    - Semantic Layer Protocol: spec/semantic-protocol.md
-    - Emoji Mapping: spec/emoji-mapping.md
-    - Performance Benchmarks: spec/benchmarks.md
-    - FEPs (Foundation Enhancement Proposals):
-      - spec/feps/index.md
-      - FEP-001 Semantic Layers: spec/feps/fep-001.md
-      - FEP-002 Async Support: spec/feps/fep-002.md
-      - FEP-003 Plugin System: spec/feps/fep-003.md
-      - FEP-004 Distributed Tracing: spec/feps/fep-004.md
-      - FEP-005 Metrics Integration: spec/feps/fep-005.md
+  - Architecture & Design:
+    - architecture/index.md
+    - Telemetry Format: architecture/telemetry-format.md
+    - Semantic Layer Design: architecture/semantic-layers.md
+    - Emoji System: architecture/emoji-system.md
+    - Performance: architecture/performance.md
+    - Design Decisions:
+      - architecture/decisions/index.md
+      - Semantic Layers: architecture/decisions/semantic-layers.md
+      - Async Support: architecture/decisions/async-support.md
+      - Plugin System: architecture/decisions/plugins.md
+      - Distributed Tracing: architecture/decisions/tracing.md
+      - Metrics Integration: architecture/decisions/metrics.md
   
   - Troubleshooting:
     - troubleshooting/index.md
