@@ -12,14 +12,20 @@ def test_flavorpack_atomic_replacements(tmp_path: Path) -> None:
     # Add flavorpack to path
     flavorpack_path = Path('/Users/tim/code/gh/provide-io/flavorpack/src')
     if flavorpack_path.exists():
-        sys.path.insert(0, str(flavorpack_path))
+        import importlib.util
         
-        from flavor.utils.atomic import (
-            atomic_write,
-            atomic_replace,
-            atomic_write_text,
-            safe_unlink,
+        # Load the atomic module directly without importing the full package
+        spec = importlib.util.spec_from_file_location(
+            "flavor.utils.atomic",
+            str(flavorpack_path / "flavor/utils/atomic.py")
         )
+        atomic_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(atomic_module)
+        
+        atomic_write = atomic_module.atomic_write
+        atomic_replace = atomic_module.atomic_replace
+        atomic_write_text = atomic_module.atomic_write_text
+        safe_unlink = atomic_module.safe_unlink
         
         # Test atomic_write
         test_file = tmp_path / 'test_atomic.bin'
@@ -45,9 +51,17 @@ def test_flavorpack_disk_replacements(tmp_path: Path) -> None:
     """Test flavorpack disk operations are properly replaced."""
     flavorpack_path = Path('/Users/tim/code/gh/provide-io/flavorpack/src')
     if flavorpack_path.exists():
-        sys.path.insert(0, str(flavorpack_path))
+        import importlib.util
         
-        from flavor.utils.disk import ensure_directory
+        # Load the disk module directly without importing the full package
+        spec = importlib.util.spec_from_file_location(
+            "flavor.utils.disk",
+            str(flavorpack_path / "flavor/utils/disk.py")
+        )
+        disk_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(disk_module)
+        
+        ensure_directory = disk_module.ensure_directory
         
         # Test ensure_directory
         test_dir = tmp_path / 'test_dir'
