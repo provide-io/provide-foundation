@@ -78,14 +78,20 @@ def test_wrknv_install_replacements(tmp_path: Path) -> None:
     """Test wrknv install operations are properly replaced."""
     wrknv_path = Path('/Users/tim/code/gh/provide-io/wrknv/src')
     if wrknv_path.exists():
-        sys.path.insert(0, str(wrknv_path))
+        import importlib.util
         
-        from wrknv.wenv.operations.install import (
-            copy_file,
-            ensure_directory,
-            clean_directory,
-            get_file_size,
+        # Load the install module directly without importing the full package
+        spec = importlib.util.spec_from_file_location(
+            "wrknv.wenv.operations.install",
+            str(wrknv_path / "wrknv/wenv/operations/install.py")
         )
+        install_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(install_module)
+        
+        copy_file = install_module.copy_file
+        ensure_directory = install_module.ensure_directory
+        clean_directory = install_module.clean_directory
+        get_file_size = install_module.get_file_size
         
         # Test ensure_directory
         test_dir = tmp_path / 'wrknv_dir'
