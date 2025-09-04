@@ -268,7 +268,7 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
     with _FOUNDATION_SETUP_LOCK:
         current_config = config if config is not None else TelemetryConfig.from_env()
         
-        if _LOG_FILE_HANDLE:
+        if _LOG_FILE_HANDLE and _LOG_FILE_HANDLE is not _FOUNDATION_LOG_STREAM:
             try:
                 _LOG_FILE_HANDLE.close()
             except Exception:
@@ -277,18 +277,19 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
 
         log_file_path = getattr(current_config.logging, 'log_file', None)
         
+        # Preserve testing stream if it's already set and not stderr
+        is_test_stream = _FOUNDATION_LOG_STREAM is not sys.stderr and not isinstance(_FOUNDATION_LOG_STREAM, io.TextIOWrapper)
+
         if log_file_path:
             try:
                 Path(log_file_path).parent.mkdir(parents=True, exist_ok=True)
-                _LOG_FILE_HANDLE = open(log_file_path, "a", encoding="utf-8")
+                _LOG_FILE_HANDLE = open(log_file_path, "a", encoding="utf-8", buffering=1)
                 _FOUNDATION_LOG_STREAM = _LOG_FILE_HANDLE
             except Exception as e:
                 _core_setup_logger.error(f"Failed to open log file {log_file_path}: {e}")
                 _FOUNDATION_LOG_STREAM = _get_safe_stderr()
-        elif _FOUNDATION_LOG_STREAM is sys.stderr:
-            # Only reset to stderr if it's currently the default.
-            # This preserves the test stream set by fixtures.
-            _FOUNDATION_LOG_STREAM = _get_safe_stderr()
+        elif not is_test_stream:
+             _FOUNDATION_LOG_STREAM = _get_safe_stderr()
 
         _internal_setup(current_config, is_explicit_call=True)
         _EXPLICIT_SETUP_DONE = True

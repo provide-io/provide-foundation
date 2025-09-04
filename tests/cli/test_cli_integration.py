@@ -246,7 +246,7 @@ class TestRealWorldScenarios:
     """Test real-world CLI usage scenarios."""
 
     def test_debugging_production_issue(self) -> None:
-        @click.group()
+        @click.group(invoke_without_command=True)
         @flexible_options
         @output_options
         @pass_context
