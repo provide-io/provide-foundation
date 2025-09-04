@@ -13,7 +13,7 @@ from provide.foundation.errors import (
     ValidationError,
 )
 from provide.foundation.hub import Hub
-from provide.foundation.registry import Registry
+from provide.foundation.hub.registry import Registry
 
 
 class TestErrorHandlingIntegration:

@@ -9,7 +9,7 @@ from provide.foundation.hub.click_builder import ensure_parent_groups
 from provide.foundation.hub.info import CommandInfo
 from provide.foundation.hub.registry import get_command_registry
 from provide.foundation.logger import get_logger
-from provide.foundation.registry import Registry
+from provide.foundation.hub.registry import Registry
 
 log = get_logger(__name__)
 
