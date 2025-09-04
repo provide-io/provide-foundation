@@ -256,7 +256,6 @@ nav:
       - Logger: api/core/logger.md
       - Configuration: api/core/config.md
       - Telemetry: api/core/telemetry.md
-      - Base Classes: api/core/base.md
     
     - Semantic Layers:
       - api/semantic/index.md
@@ -269,9 +268,8 @@ nav:
     - CLI:
       - api/cli/index.md
       - Decorators: api/cli/decorators.md
-      - Command Registry: api/cli/registry.md
-      - Base Commands: api/cli/base.md
-      - Helpers: api/cli/helpers.md
+      - Testing: api/cli/testing.md
+      - Utilities: api/cli/utils.md
     
     - Utilities:
       - api/utils/index.md
