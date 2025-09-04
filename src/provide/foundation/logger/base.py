@@ -7,11 +7,9 @@ Defines FoundationLogger with lazy initialization, thread safety, and standard l
 """
 
 import contextlib
-import io
 import logging
-import sys
 import threading
-from typing import TYPE_CHECKING, Any, TextIO, cast
+from typing import TYPE_CHECKING, Any, cast
 
 import structlog
 from structlog.types import BindableLogger
@@ -21,17 +19,13 @@ from provide.foundation.types import TRACE_LEVEL_NAME
 if TYPE_CHECKING:
     from provide.foundation.core import ResolvedEmojiConfig
     from provide.foundation.logger.config import TelemetryConfig
+from provide.foundation.utils.streams import get_safe_stderr
 
 _LAZY_SETUP_LOCK = threading.Lock()
 _LAZY_SETUP_STATE: dict[str, Any] = {"done": False, "error": None, "in_progress": False}
 
 
-def _get_safe_stderr() -> TextIO:
-    return (
-        sys.stderr
-        if hasattr(sys, "stderr") and sys.stderr is not None
-        else io.StringIO()
-    )
+# Moved to utils.streams to avoid duplication with core.py
 
 
 class FoundationLogger:
@@ -116,7 +110,7 @@ class FoundationLogger:
         try:
             structlog.configure(
                 processors=[structlog.dev.ConsoleRenderer(colors=False)],
-                logger_factory=structlog.PrintLoggerFactory(file=_get_safe_stderr()),
+                logger_factory=structlog.PrintLoggerFactory(file=get_safe_stderr()),
                 wrapper_class=cast(type[BindableLogger], structlog.BoundLogger),
                 cache_logger_on_first_use=True,
             )
