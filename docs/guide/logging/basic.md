@@ -48,6 +48,8 @@ import os
 
 # Via environment variable (preferred)
 os.environ["FOUNDATION_LOG_LEVEL"] = "DEBUG"
+
+# Note: The level can also be set in TelemetryConfig during setup
 ```
 
 ### Level Hierarchy
