@@ -206,8 +206,11 @@ async def apin(
         
     Note: This runs the blocking input in a thread pool to avoid blocking the event loop.
     """
+    import functools
+    
     loop = asyncio.get_event_loop()
-    return await loop.run_in_executor(None, pin, prompt, **kwargs)
+    func = functools.partial(pin, prompt, **kwargs)
+    return await loop.run_in_executor(None, func)
 
 
 async def apin_stream() -> AsyncIterator[str]:
