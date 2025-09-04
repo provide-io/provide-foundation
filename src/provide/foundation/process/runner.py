@@ -27,14 +27,14 @@ class CompletedProcess:
 
 
 def run_command(
-    cmd: list[str],
+    cmd: list[str] | str,
     cwd: str | Path | None = None,
     env: Mapping[str, str] | None = None,
     capture_output: bool = True,
     check: bool = True,
     timeout: float | None = None,
     text: bool = True,
-    input: str | None = None,
+    input: str | bytes | None = None,
     shell: bool = False,
     **kwargs: Any,
 ) -> CompletedProcess:
@@ -79,6 +79,16 @@ def run_command(
         else:
             # For non-shell, use the original cmd (list or string)
             subprocess_cmd = cmd
+        
+        # Handle input based on text mode
+        if input is not None and text and isinstance(input, bytes):
+            # Convert bytes to string if text mode is enabled
+            subprocess_input = input.decode('utf-8')
+        elif input is not None and not text and isinstance(input, str):
+            # Convert string to bytes if text mode is disabled
+            subprocess_input = input.encode('utf-8')
+        else:
+            subprocess_input = input
             
         result = subprocess.run(
             subprocess_cmd,
@@ -86,7 +96,7 @@ def run_command(
             env=run_env,
             capture_output=capture_output,
             text=text,
-            input=input,
+            input=subprocess_input,
             timeout=timeout,
             check=False,  # We'll handle the check ourselves
             shell=shell,
