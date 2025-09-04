@@ -19,8 +19,8 @@ from provide.foundation.types import (
     ConsoleFormatterStr,
     CustomDasEmojiSet,
     LogLevelStr,
-    SemanticFieldDefinition,
-    SemanticLayer,
+    FieldToEmojiMapping,
+    EmojiSetConfig,
 )
 
 config_warnings_logger = stdlib_logging.getLogger("provide.foundation.config_warnings")
@@ -91,13 +91,13 @@ def from_env() -> "TelemetryConfig":
     globally_disabled: bool = _parse_bool_env("FOUNDATION_TELEMETRY_DISABLED", False)
 
     module_levels = _parse_module_levels(os.getenv("FOUNDATION_LOG_MODULE_LEVELS", ""))
-    enabled_semantic_layers = [
-        layer.strip()
-        for layer in os.getenv("FOUNDATION_LOG_ENABLED_SEMANTIC_LAYERS", "").split(",")
-        if layer.strip()
+    enabled_emoji_sets = [
+        emoji_set.strip()
+        for emoji_set in os.getenv("FOUNDATION_LOG_ENABLED_EMOJI_SETS", "").split(",")
+        if emoji_set.strip()
     ]
 
-    custom_semantic_layers = _parse_custom_layers_from_env()
+    custom_emoji_sets = _parse_custom_emoji_sets_from_env()
     user_defined_emoji_sets = _parse_user_emoji_sets_from_env()
 
     raw_log_file: str | None = os.getenv("FOUNDATION_LOG_FILE")
@@ -110,8 +110,8 @@ def from_env() -> "TelemetryConfig":
         logger_name_emoji_prefix_enabled=logger_name_emoji_enabled,
         das_emoji_prefix_enabled=das_emoji_enabled,
         omit_timestamp=omit_timestamp,
-        enabled_semantic_layers=enabled_semantic_layers,
-        custom_semantic_layers=custom_semantic_layers,
+        enabled_emoji_sets=enabled_emoji_sets,
+        custom_emoji_sets=custom_emoji_sets,
         user_defined_emoji_sets=user_defined_emoji_sets,
         log_file=log_file, # ADDED THIS LINE
     )
@@ -123,49 +123,49 @@ def from_env() -> "TelemetryConfig":
     )
 
 
-def _parse_custom_layers_from_env() -> list[SemanticLayer]:
-    custom_layers_json = os.getenv("FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS", "[]")
-    custom_semantic_layers: list[SemanticLayer] = []
+def _parse_custom_emoji_sets_from_env() -> list[EmojiSetConfig]:
+    custom_emoji_sets_json = os.getenv("FOUNDATION_LOG_CUSTOM_EMOJI_SETS", "[]")
+    custom_emoji_sets: list[EmojiSetConfig] = []
     try:
-        parsed_custom_layers = json.loads(custom_layers_json)
-        if not isinstance(parsed_custom_layers, list):
+        parsed_custom_emoji_sets = json.loads(custom_emoji_sets_json)
+        if not isinstance(parsed_custom_emoji_sets, list):
             return []
-        for layer_data in parsed_custom_layers:
+        for emoji_set_data in parsed_custom_emoji_sets:
             try:
-                if not isinstance(layer_data, dict):
+                if not isinstance(emoji_set_data, dict):
                     continue
-                emoji_sets_data = layer_data.get("emoji_sets", [])
-                field_defs_data = layer_data.get("field_definitions", [])
-                custom_emoji_sets_for_layer = [
+                emoji_sets_data = emoji_set_data.get("emoji_sets", [])
+                field_defs_data = emoji_set_data.get("field_definitions", [])
+                custom_emoji_sets_for_config = [
                     CustomDasEmojiSet(**es_data)
                     for es_data in emoji_sets_data
                     if isinstance(es_data, dict)
                 ]
-                custom_field_defs_for_layer = [
-                    SemanticFieldDefinition(**fd_data)
+                custom_field_defs_for_config = [
+                    FieldToEmojiMapping(**fd_data)
                     for fd_data in field_defs_data
                     if isinstance(fd_data, dict)
                 ]
-                custom_semantic_layers.append(
-                    SemanticLayer(
-                        name=layer_data.get("name", "unnamed_custom_layer"),
-                        description=layer_data.get("description"),
-                        emoji_sets=custom_emoji_sets_for_layer,
-                        field_definitions=custom_field_defs_for_layer,
-                        priority=layer_data.get("priority", 0),
+                custom_emoji_sets.append(
+                    EmojiSetConfig(
+                        name=emoji_set_data.get("name", "unnamed_custom_emoji_set"),
+                        description=emoji_set_data.get("description"),
+                        emoji_sets=custom_emoji_sets_for_config,
+                        field_definitions=custom_field_defs_for_config,
+                        priority=emoji_set_data.get("priority", 0),
                     )
                 )
             except (TypeError, ValueError) as e:
                 _ensure_config_logger_handler(config_warnings_logger)
                 config_warnings_logger.warning(
-                    f"⚙️➡️⚠️ Error parsing data for a custom layer: {e}. Skipping item."
+                    f"⚙️➡️⚠️ Error parsing data for a custom emoji set: {e}. Skipping item."
                 )
     except json.JSONDecodeError:
         _ensure_config_logger_handler(config_warnings_logger)
         config_warnings_logger.warning(
-            "⚙️➡️⚠️ Invalid JSON in FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS. Using empty list."
+            "⚙️➡️⚠️ Invalid JSON in FOUNDATION_LOG_CUSTOM_EMOJI_SETS. Using empty list."
         )
-    return custom_semantic_layers
+    return custom_emoji_sets
 
 
 def _parse_user_emoji_sets_from_env() -> list[CustomDasEmojiSet]:

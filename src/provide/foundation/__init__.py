@@ -54,13 +54,13 @@ from provide.foundation.logger.emoji_matrix import (
 )
 from provide.foundation.registry import Registry, RegistryEntry
 
-# New type exports for semantic layering
+# New type exports for emoji mapping
 from provide.foundation.types import (
     ConsoleFormatterStr,
     CustomDasEmojiSet,
     LogLevelStr,
-    SemanticFieldDefinition,
-    SemanticLayer,
+    FieldToEmojiMapping,
+    EmojiSetConfig,
 )
 
 # New utility exports
@@ -74,7 +74,7 @@ __all__ = [
     "ConsoleFormatterStr",
     # New foundation modules
     "Context",
-    # Semantic Layering classes
+    # Emoji Mapping classes
     "CustomDasEmojiSet",
     # Error handling essentials
     "FoundationError",
@@ -83,8 +83,8 @@ __all__ = [
     "LoggingConfig",
     "Registry",
     "RegistryEntry",
-    "SemanticFieldDefinition",
-    "SemanticLayer",
+    "FieldToEmojiMapping",
+    "EmojiSetConfig",
     # Configuration classes
     "TelemetryConfig",
     # Version

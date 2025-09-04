@@ -14,7 +14,7 @@ from provide.foundation.logger import (
 )
 
 # Import types for resolved config structure
-from provide.foundation.types import CustomDasEmojiSet, SemanticFieldDefinition
+from provide.foundation.types import CustomDasEmojiSet, FieldToEmojiMapping
 
 PRIMARY_EMOJI: dict[str, str] = {
     "system": "⚙️",
@@ -111,7 +111,7 @@ def _format_emoji_set_for_display(emoji_set: CustomDasEmojiSet) -> list[str]:
     return lines
 
 
-def _format_field_definition_for_display(field_def: SemanticFieldDefinition) -> str:
+def _format_field_definition_for_display(field_def: FieldToEmojiMapping) -> str:
     parts = [f"  Log Key: '{field_def.log_key}'"]
     if field_def.description:
         parts.append(f"    Desc: {field_def.description}")
@@ -144,11 +144,11 @@ def show_emoji_matrix() -> None:  # pragma: no cover
         "provide.foundation.emoji_matrix_display"
     )
 
-    # Access the resolved semantic config from the global logger instance
+    # Access the resolved emoji config from the global logger instance
     # This assumes the logger has been configured (explicitly or lazily)
     foundation_logger_base.logger._ensure_configured()  # Ensure config is loaded
     resolved_config_tuple = getattr(
-        foundation_logger_base.logger, "_active_resolved_semantic_config", None
+        foundation_logger_base.logger, "_active_resolved_emoji_config", None
     )
 
     lines: list[str] = []
@@ -156,21 +156,21 @@ def show_emoji_matrix() -> None:  # pragma: no cover
     if resolved_config_tuple:
         resolved_field_definitions, resolved_emoji_sets_lookup = resolved_config_tuple
 
-        if resolved_field_definitions:  # New semantic layers are active
-            lines.append("Foundation Telemetry: Active Semantic Layer Emoji Contract")
+        if resolved_field_definitions:  # New emoji sets are active
+            lines.append("Foundation Telemetry: Active Emoji Set Contract")
             lines.append("=" * 70)
             lines.append(
-                "Active Semantic Field Definitions (Order determines prefix sequence):"
+                "Active Field-to-Emoji Mappings (Order determines prefix sequence):"
             )
             if not resolved_field_definitions:
-                lines.append("  (No semantic field definitions are active)")
+                lines.append("  (No field-to-emoji mappings are active)")
             for i, field_def in enumerate(resolved_field_definitions):
                 lines.append(f"\nField {i + 1}:")
                 lines.append(_format_field_definition_for_display(field_def))
 
             lines.append("\n" + "=" * 70)
             lines.append(
-                "Available Emoji Sets (Referenced by Semantic Field Definitions):"
+                "Available Emoji Sets (Referenced by Field-to-Emoji Mappings):"
             )
             if not resolved_emoji_sets_lookup:
                 lines.append("  (No emoji sets are defined/active)")
