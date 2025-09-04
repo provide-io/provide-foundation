@@ -187,22 +187,17 @@ logger.info("deployment_complete",
 
 ## Context Binding
 
-### Temporary Context
+### Adding Context
 
 ```python
 from provide.foundation import logger
 
-# Add context for a block
-with logger.bind(request_id="req_123", user_id="usr_456"):
-    logger.info("request_started")
-    # Both request_id and user_id are included
-    
-    process_request()
-    
-    logger.info("request_completed")
-    # Still includes the context
+# Create a new logger with additional context
+request_logger = logger.bind(request_id="req_123", user_id="usr_456")
+request_logger.info("request_started")
+# Includes request_id and user_id in the output
 
-# Context is removed here
+# Original logger doesn't have the context
 logger.info("other_operation")  # No request_id or user_id
 ```
 
