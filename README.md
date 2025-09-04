@@ -1,8 +1,6 @@
-# `provide.foundation`: Beautiful, Performant, Structured Logging for Python
+# provide.foundation
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/provide-io/provide-foundation/main/docs/assets/foundation-banner.png" alt="provide.foundation banner">
-</p>
+**Beautiful, Performant, Structured Logging for Python**
 
 <p align="center">
     <a href="https://pypi.org/project/provide-foundation/">
@@ -19,249 +17,344 @@
     </a>
 </p>
 
-**`provide.foundation`** is a Python telemetry library, built on the robust `structlog`, that provides a beautiful, performant, and structured logging experience right out of the box. It is designed to make your logs not only machine-readable but also instantly scannable by human eyes, enhancing the developer experience in complex applications.
+---
+
+**provide.foundation** is a Python telemetry library built on `structlog` that delivers beautiful, performant, and structured logging with zero configuration. Transform your logs from walls of text into instantly scannable, machine-readable output that enhances debugging and monitoring in production applications.
 
 ---
 
-## ✨ Key Features
-
-*   **🚀 Zero-Configuration Start**: Get beautiful, structured logs instantly without any setup.
-*   **🎨 Emoji-Enhanced Visual Parsing**: Unique emoji prefixes based on logger names and semantic context make logs instantly scannable in a sea of text.
-*   **🏛️ Semantic Logging**: Go beyond simple log levels with extensible Semantic Layers for domains like LLMs, HTTP, and Databases. Fall back to the classic Domain-Action-Status (DAS) pattern when needed.
-*   **⚡ High Performance**: Benchmarked at over 14,000 messages per second with full semantic processing, ensuring it's ready for production loads.
-*   **🔧 Flexible Configuration**: Configure via environment variables or programmatically for fine-grained control.
-*   **🧑‍💻 Developer-Friendly**: Thread-safe, async-ready, and equipped with comprehensive type hints for a modern development workflow.
-
-## 📦 Installation
-
-Install `provide.foundation` using `uv` (recommended) or `pip`:
+## Installation
 
 ```bash
+# Using uv (recommended)
 uv pip install provide-foundation
+
+# Using pip
+pip install provide-foundation
 ```
 
-## 🚀 Quick Start
+---
 
-Getting started is as simple as importing the global `logger` and using it.
+## Quick Start
 
-```python
-# examples/01_quick_start.py
-from provide.foundation import logger
-
-def main():
-    """A simple function to demonstrate logging."""
-    logger.info("Application starting up")
-    
-    try:
-        result = 1 / 0
-    except ZeroDivisionError:
-        logger.exception(
-            "An expected error occurred",
-            error_details="Attempted to divide by zero",
-            user_id="usr_123"
-        )
-    
-    logger.info("Application shutting down")
-
-if __name__ == "__main__":
-    main()```
-
-Run this script, and you'll see beautifully formatted, structured output right in your console:
-
-```[▶️] Application starting up
-[🔥] An expected error occurred error_details='Attempted to divide by zero' user_id='usr_123' exc_info=...
-[▶️] Application shutting down
-```
-
-## 🏛️ Core Concepts
-
-### 1. The Global Logger
-
-For convenience, `provide.foundation` exposes a pre-configured, global logger instance named `logger`. You can import and use it anywhere in your application.
+Get started in seconds with zero configuration:
 
 ```python
 from provide.foundation import logger
 
-logger.debug("This is a debug message")
-logger.info("User logged in", user_id=123, source="google_oauth")
-logger.warning("Disk space is running low", free_space_gb=5)
-logger.error("Failed to connect to database", db_host="prod.db.example.com")
-```
+# Start logging immediately - no setup required
+logger.info("Application starting")
 
-### 2. Structured Logging
+# Add structured context to any log
+logger.info("User logged in", user_id=123, source="oauth")
 
-`provide.foundation` is built around the principle of structured logging. Instead of embedding variables in log messages, you pass them as keyword arguments. This makes your logs machine-readable and consistent.
-
-```python
-# ❌ Anti-pattern: Unstructured logging
-logger.info(f"User {user_id} completed checkout for order {order_id}.")
-
-# ✅ Best practice: Structured logging
-logger.info(
-    "Checkout complete",
-    user_id=user_id,
-    order_id=order_id,
-)
-```
-
-### 3. Semantic Layers
-
-Semantic Layers provide a schema-driven way to define structured logging conventions for specific domains like HTTP, databases, or LLMs. When you log a message with keys that match a semantic layer, the library automatically adds contextual emoji prefixes.
-
-**Example using the `http` layer:**
-
-```python
-from provide.foundation import logger, setup_telemetry, TelemetryConfig, LoggingConfig
-
-# Enable the 'http' emoji set
-config = TelemetryConfig(logging=LoggingConfig(enabled_emoji_sets=["http"]))
-setup_telemetry(config)
-
-# Log an HTTP request event
-logger.info(
-    "API request processed",
-    **{
-        "http.method": "GET",
-        "http.status_code": 200,
-        "http.url": "/api/v1/users",
-    }
-)
+# Automatic error handling with context
+try:
+    result = process_payment()
+except Exception as e:
+    logger.exception("Payment failed", order_id=456, amount=99.99)
 ```
 
 **Output:**
 ```
-[➡️][✅] API request processed http.url=/api/v1/users
+2025-01-15 10:30:45 [info     ] Application starting
+2025-01-15 10:30:46 [info     ] User logged in              user_id=123 source=oauth
+2025-01-15 10:30:47 [error    ] Payment failed              order_id=456 amount=99.99
 ```
-The `[➡️][✅]` prefix is automatically generated from the `http.method` ("GET") and `http.status_code` (200).
 
-### 4. The Domain-Action-Status (DAS) Fallback
+---
 
-When no semantic layer matches, the system falls back to the classic DAS pattern. By providing `domain`, `action`, and `status` keys, you still get meaningful emoji prefixes.
+## Core Features
+
+### Zero Configuration
+Works immediately upon import with sensible defaults. No boilerplate, no setup functions, just import and log.
+
+### Structured Logging
+Every log entry is structured data, making it searchable, filterable, and aggregatable in production:
 
 ```python
-logger.info(
-    "User authentication successful",
-    domain="auth",      # 🔑
-    action="login",     # ➡️
-    status="success",   # ✅
-    user_id="usr_456"
-)
+# Instead of string interpolation...
+logger.info(f"Processing order {order_id} for user {user_id}")
+
+# Use structured fields
+logger.info("Order processed", order_id=order_id, user_id=user_id)
 ```
 
-**Output:**
-```
-[🔑][➡️][✅] User authentication successful user_id='usr_456'
-```
+### High Performance
+Benchmarked at 14,000+ messages/second with full semantic processing. Thread-safe and async-ready for production workloads.
 
-## 🔧 Configuration
+### Visual Clarity
+Smart emoji prefixes and color coding make logs instantly scannable during development while remaining clean in production.
 
-While `provide.foundation` works out of the box, you can easily configure it via environment variables or code.
+---
 
-### Via Environment Variables
+## Configuration
 
-This is the recommended way to configure the logger in production.
+### Environment Variables
 
-#### Core Telemetry Variables (FOUNDATION_*)
+Configure logging behavior without touching code:
 
-These control the core logging behavior:
+#### Core Settings (FOUNDATION_*)
 
-| Variable | Description | Default | Example |
-|---|---|---|---|
-| `FOUNDATION_SERVICE_NAME` | Sets the service name for all logs. | `None` | `my-api-service` |
-| `FOUNDATION_LOG_LEVEL` | Default log level. | `DEBUG` | `INFO` |
-| `FOUNDATION_LOG_CONSOLE_FORMATTER` | Output format. | `key_value` | `json` |
-| `FOUNDATION_LOG_ENABLED_EMOJI_SETS` | Comma-separated list of emoji sets to enable. | `""` | `http,database` |
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `FOUNDATION_SERVICE_NAME` | Service identifier in logs | `None` |
+| `FOUNDATION_LOG_LEVEL` | Minimum log level | `DEBUG` |
+| `FOUNDATION_LOG_CONSOLE_FORMATTER` | Output format (`key_value` or `json`) | `key_value` |
+| `FOUNDATION_LOG_OMIT_TIMESTAMP` | Remove timestamps from console output | `false` |
+| `FOUNDATION_LOG_ENABLED_EMOJI_SETS` | Comma-separated emoji sets | `""` |
 
-#### CLI Variables (PROVIDE_*)
+#### CLI Settings (PROVIDE_*)
 
-When using the CLI decorators, these environment variables are also available:
+When using CLI decorators:
 
-| Variable | Description | Default | Example |
-|---|---|---|---|
-| `PROVIDE_LOG_LEVEL` | CLI log level override | - | `DEBUG` |
-| `PROVIDE_LOG_FORMAT` | CLI output format | `key_value` | `json` |
-| `PROVIDE_JSON_OUTPUT` | Force JSON output in CLI | `false` | `true` |
-| `PROVIDE_NO_COLOR` | Disable colored output | `false` | `true` |
-| `PROVIDE_NO_EMOJI` | Disable emoji in output | `false` | `true` |
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `PROVIDE_LOG_LEVEL` | Override log level for CLI commands | - |
+| `PROVIDE_LOG_FORMAT` | CLI output format | `key_value` |
+| `PROVIDE_JSON_OUTPUT` | Force JSON output | `false` |
+| `PROVIDE_NO_COLOR` | Disable colored output | `false` |
 
 ### Programmatic Configuration
 
-For more complex setups, configure the logger once at application startup.
+For more control, configure programmatically at startup:
 
 ```python
 from provide.foundation import setup_telemetry, TelemetryConfig, LoggingConfig
 
 config = TelemetryConfig(
-    service_name="my-awesome-app",
+    service_name="api-gateway",
     logging=LoggingConfig(
         default_level="INFO",
         console_formatter="json",
         module_levels={
-            "noisy_library": "WARNING",
-        },
-        enabled_emoji_sets=["http", "database", "llm"],
+            "noisy.library": "WARNING",
+            "critical.module": "DEBUG",
+        }
     )
 )
 
 setup_telemetry(config)
 ```
 
-## 🧑‍💻 Advanced Usage
+---
+
+## Advanced Features
 
 ### Named Loggers
 
-For better organization in larger applications, create named loggers. Each will have its own unique, consistent emoji prefix.
+Create module-specific loggers with automatic namespacing:
 
 ```python
 from provide.foundation import logger
 
+# Create named loggers for different components
 db_logger = logger.get_logger("database")
-api_logger = logger.get_logger("api.v1.users")
+api_logger = logger.get_logger("api.auth")
+cache_logger = logger.get_logger("cache")
 
-db_logger.info("Connection pool initialized")
-api_logger.info("User lookup request received")
+# Each logger maintains its own context
+db_logger.info("Connection established", pool_size=10)
+api_logger.warning("Rate limit approaching", remaining=50)
+cache_logger.debug("Cache miss", key="user:123")
 ```
 
-**Output:**
-```
-[🗄️] Connection pool initialized
-[🙋] User lookup request received
-```
+### Context Binding
 
-### `timed_block` Utility
-
-The `timed_block` context manager is a powerful utility for logging the duration and outcome of a block of code.
+Attach persistent context to loggers:
 
 ```python
-import time
+# Create a logger with bound context
+request_logger = logger.bind(
+    request_id="req-123",
+    user_id="user-456",
+    ip_address="192.168.1.1"
+)
+
+# All logs from this logger include the bound context
+request_logger.info("Processing request")
+request_logger.info("Request completed", status_code=200)
+```
+
+### Timing Utilities
+
+Profile code execution with the `timed_block` context manager:
+
+```python
 from provide.foundation import logger, timed_block
 
-# Time a successful operation
-with timed_block(logger, "database_query", db_table="users"):
-    time.sleep(0.5)
-
-# Time a failing operation
+# Automatically logs duration and success/failure
+with timed_block(logger, "database_query", query="SELECT * FROM users"):
+    results = db.execute(query)
+    
+# Handles exceptions gracefully
 try:
-    with timed_block(logger, "payment_processing", transaction_id="txn_123"):
-        raise RuntimeError("Credit card declined")
-except RuntimeError:
-    pass
+    with timed_block(logger, "external_api_call", endpoint="/api/v1/data"):
+        response = requests.get(url)
+except RequestException:
+    pass  # Error logged automatically
 ```
 
-**Output:**
-```
-[▶️] database_query completed db_table=users duration_seconds=0.501
-[🔥] payment_processing failed transaction_id=txn_123 duration_seconds=0.0 error=...
+### Semantic Layers
+
+Define domain-specific logging conventions with semantic layers:
+
+```python
+# Enable semantic layers for better context
+from provide.foundation import setup_telemetry, TelemetryConfig, LoggingConfig
+
+config = TelemetryConfig(
+    logging=LoggingConfig(
+        enabled_emoji_sets=["http", "database", "llm"]
+    )
+)
+setup_telemetry(config)
+
+# Log with semantic context
+logger.info(
+    "API request",
+    **{
+        "http.method": "POST",
+        "http.status_code": 201,
+        "http.path": "/api/users",
+        "http.duration_ms": 145
+    }
+)
 ```
 
-## 🤝 Contribution
+### Error Handling Decorators
 
-We welcome contributions! 
-*   **For developers**: Please see `DEVELOPMENT.md` and `CLAUDE.md` for setup and convention guides.
-*   **To report a bug or request a feature**: Please open an issue on our [GitHub repository](https://github.com/provide-io/provide-foundation).
+Simplify error handling with built-in decorators:
+
+```python
+from provide.foundation import retry_on_error, with_error_handling
+
+@retry_on_error(max_attempts=3, delay=1.0)
+def flaky_network_call():
+    return api.fetch_data()
+
+@with_error_handling(fallback=None, log_errors=True)
+def parse_user_input(data):
+    return json.loads(data)
+```
+
+---
+
+## Integration Examples
+
+### Flask Integration
+
+```python
+from flask import Flask, g
+from provide.foundation import logger
+
+app = Flask(__name__)
+
+@app.before_request
+def before_request():
+    g.request_logger = logger.bind(
+        request_id=generate_request_id(),
+        path=request.path,
+        method=request.method
+    )
+    g.request_logger.info("Request started")
+
+@app.after_request
+def after_request(response):
+    g.request_logger.info("Request completed", status_code=response.status_code)
+    return response
+```
+
+### AsyncIO Support
+
+```python
+import asyncio
+from provide.foundation import logger
+
+async def process_item(item_id):
+    task_logger = logger.bind(task_id=item_id)
+    task_logger.info("Processing started")
+    
+    try:
+        result = await async_operation(item_id)
+        task_logger.info("Processing completed", result=result)
+    except Exception as e:
+        task_logger.exception("Processing failed")
+```
+
+### Testing Support
+
+```python
+import pytest
+from provide.foundation import logger
+
+@pytest.fixture
+def test_logger(caplog):
+    """Fixture for testing with structured logs"""
+    with caplog.at_level("DEBUG"):
+        yield logger.bind(test_run=True)
+```
+
+---
+
+## Performance Considerations
+
+### Lazy Evaluation
+
+The logger uses lazy evaluation to minimize performance impact:
+
+```python
+# Expensive operations are only evaluated if the log level is active
+logger.debug("Query result", result=expensive_calculation())  # Only runs if DEBUG is enabled
+```
+
+### Async-Safe Operations
+
+All logging operations are thread-safe and async-safe, suitable for concurrent applications without additional synchronization.
+
+---
+
+## Migration Guide
+
+### From Python's logging module
+
+```python
+# Before (standard logging)
+import logging
+logging.info("User %s logged in from %s", user_id, ip_address)
+
+# After (provide.foundation)
+from provide.foundation import logger
+logger.info("User logged in", user_id=user_id, ip_address=ip_address)
+```
+
+### From print statements
+
+```python
+# Before
+print(f"DEBUG: Processing {len(items)} items")
+
+# After
+logger.debug("Processing items", item_count=len(items))
+```
+
+---
+
+## Contributing
+
+We welcome contributions! Please see:
+- [DEVELOPMENT.md](DEVELOPMENT.md) - Development setup and guidelines
+- [CLAUDE.md](CLAUDE.md) - AI assistant integration notes
+- [GitHub Issues](https://github.com/provide-io/provide-foundation/issues) - Bug reports and feature requests
+
+---
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
 <p align="center">
-  Made with ❤️ by the team at <a href="https://provide.io">Provide</a>
+  Built by <a href="https://provide.io">Provide</a>
 </p>
