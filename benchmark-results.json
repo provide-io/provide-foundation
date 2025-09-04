@@ -1,0 +1,96 @@
+{
+  "benchmark_info": {
+    "timestamp": "2025-09-04 22:27:25 UTC",
+    "python_version": "3.11.12 (main, Apr  9 2025, 03:49:53) [Clang 20.1.0 ]",
+    "memory_available": true
+  },
+  "benchmarks": {
+    "basic_logging": {
+      "test_name": "basic_logging",
+      "message_count": 10000,
+      "output_size_bytes": 848890,
+      "duration_seconds": 0.07338312501087785,
+      "start_memory_mb": 40.515625,
+      "end_memory_mb": 44.890625,
+      "memory_delta_mb": 4.375,
+      "messages_per_second": 136271.11135588275
+    },
+    "json_formatting": {
+      "test_name": "json_formatting",
+      "message_count": 5000,
+      "output_size_bytes": 1196670,
+      "duration_seconds": 0.0405162499519065,
+      "start_memory_mb": 44.890625,
+      "end_memory_mb": 46.484375,
+      "memory_delta_mb": 1.59375,
+      "messages_per_second": 123407.27500533953
+    },
+    "emoji_processing_overhead": {
+      "test_name": "emoji_processing_overhead",
+      "emoji_enabled": {
+        "test_name": "emoji_enabled",
+        "message_count": 5000,
+        "duration_seconds": 0.038687875028699636,
+        "start_memory_mb": 46.484375,
+        "end_memory_mb": 46.859375,
+        "memory_delta_mb": 0.375,
+        "messages_per_second": 129239.45800307911
+      },
+      "emoji_disabled": {
+        "test_name": "emoji_disabled",
+        "message_count": 5000,
+        "duration_seconds": 0.031427582958713174,
+        "start_memory_mb": 46.859375,
+        "end_memory_mb": 47.40625,
+        "memory_delta_mb": 0.546875,
+        "messages_per_second": 159095.91286636854
+      },
+      "emoji_overhead_percent": -23.101655891019053
+    },
+    "multithreaded_logging": {
+      "test_name": "multithreaded_logging",
+      "thread_count": 10,
+      "messages_per_thread": 500,
+      "total_messages": 5000,
+      "output_size_bytes": 872800,
+      "duration_seconds": 0.035849165986292064,
+      "start_memory_mb": 47.40625,
+      "end_memory_mb": 49.359375,
+      "memory_delta_mb": 1.953125,
+      "messages_per_second": 139473.25865019817
+    },
+    "level_filtering": {
+      "test_name": "level_filtering",
+      "total_attempted_messages": 10000,
+      "output_lines": 5000,
+      "filtering_efficiency": 50.0,
+      "duration_seconds": 0.04184229194652289,
+      "start_memory_mb": 49.359375,
+      "end_memory_mb": 51.109375,
+      "memory_delta_mb": 1.75,
+      "messages_per_second": 238992.64439865376
+    },
+    "large_payloads": {
+      "test_name": "large_payloads",
+      "message_count": 1000,
+      "output_size_bytes": 2040780,
+      "duration_seconds": 0.01645454193931073,
+      "start_memory_mb": 51.109375,
+      "end_memory_mb": 55.421875,
+      "memory_delta_mb": 4.3125,
+      "messages_per_second": 60773.493646210205,
+      "avg_message_size_bytes": 2040.78
+    },
+    "async_logging": {
+      "test_name": "async_logging",
+      "worker_count": 5,
+      "messages_per_worker": 1000,
+      "total_messages": 5000,
+      "duration_seconds": 0.03497479192446917,
+      "start_memory_mb": 55.4375,
+      "end_memory_mb": 55.4375,
+      "memory_delta_mb": 0.0,
+      "messages_per_second": 142960.107119376
+    }
+  }
+}
