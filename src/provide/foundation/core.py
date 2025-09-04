@@ -43,6 +43,24 @@ _LOG_FILE_HANDLE: TextIO | None = None
 _CORE_SETUP_LOGGER_NAME = "provide.foundation.core_setup"
 _EXPLICIT_SETUP_DONE = False
 
+# Single source of truth for Foundation log level
+_FOUNDATION_LOG_LEVEL: int | None = None
+
+
+def _get_foundation_log_level() -> int:
+    """Get the Foundation log level from PROVIDE_LOG_LEVEL, checking only once."""
+    import os
+    
+    global _FOUNDATION_LOG_LEVEL
+    if _FOUNDATION_LOG_LEVEL is None:
+        level_str = os.getenv("PROVIDE_LOG_LEVEL", "INFO").upper()
+        _FOUNDATION_LOG_LEVEL = getattr(
+            stdlib_logging,
+            level_str,
+            stdlib_logging.INFO,  # Default fallback
+        )
+    return _FOUNDATION_LOG_LEVEL
+
 
 # Moved to utils.streams to avoid duplication with logger/base.py
 
@@ -83,7 +101,7 @@ def _create_core_setup_logger(globally_disabled: bool = False) -> stdlib_logging
             )
         )
     logger.addHandler(handler)
-    logger.setLevel(stdlib_logging.DEBUG)
+    logger.setLevel(_get_foundation_log_level())
     logger.propagate = False
     return logger
 
