@@ -1,7 +1,15 @@
 site_name: provide.foundation Documentation
 site_description: Beautiful, Performant, Structured Logging for Python
+
 theme:
   name: material
+
+extra_javascript:
+  - https://unpkg.com/mermaid@10/dist/mermaid.min.js
+
+extra:
+  mermaid:
+    theme: default
   
 plugins:
   - search
@@ -12,7 +20,11 @@ markdown_extensions:
       permalink: true
   - tables
   - pymdownx.highlight
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
 
 nav:
   - Home: index.md
