@@ -3,7 +3,7 @@
 #
 """
 Foundation Telemetry Core Initialization and Configuration.
-Handles setup, global state, processor chain assembly (including semantic layer resolution),
+Handles setup, global state, processor chain assembly (including emoji set resolution),
 and shutdown for the telemetry system.
 """
 

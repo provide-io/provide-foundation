@@ -4,7 +4,7 @@
 """
 Foundation Telemetry Emoji Matrix and Display Utilities.
 Defines the core DAS emoji mappings and provides utilities to display
-active emoji configurations (DAS or semantic layer-based).
+active emoji configurations (DAS or emoji set-based).
 """
 
 import os
@@ -129,7 +129,7 @@ def _format_field_definition_for_display(field_def: FieldToEmojiMapping) -> str:
 def show_emoji_matrix() -> None:  # pragma: no cover
     """
     Prints the active Foundation emoji logging contract to the console.
-    If semantic layers are active, it displays their configuration.
+    If emoji sets are active, it displays their configuration.
     Otherwise, it displays the core DAS emoji mappings.
     Activated by `FOUNDATION_SHOW_EMOJI_MATRIX` environment variable.
     """

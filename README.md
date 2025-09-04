@@ -166,7 +166,7 @@ This is the recommended way to configure the logger in production.
 | `FOUNDATION_SERVICE_NAME` | Sets the service name for all logs. | `None` | `my-api-service` |
 | `FOUNDATION_LOG_LEVEL` | Default log level. | `DEBUG` | `INFO` |
 | `FOUNDATION_LOG_CONSOLE_FORMATTER` | Output format. | `key_value` | `json` |
-| `FOUNDATION_LOG_ENABLED_SEMANTIC_LAYERS` | Comma-separated list of layers to enable. | `""` | `http,database` |
+| `FOUNDATION_LOG_ENABLED_EMOJI_SETS` | Comma-separated list of emoji sets to enable. | `""` | `http,database` |
 
 ### Programmatic Configuration
 
