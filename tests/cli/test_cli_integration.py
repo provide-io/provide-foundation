@@ -67,11 +67,16 @@ class TestCompleteCliIntegration:
                 click.echo("✅ Applied 5 migrations")
 
         @cli.command()
-        @flexible_options
+        @click.option("--log-level", type=click.Choice(["DEBUG", "INFO", "WARNING", "ERROR"]))
+        @click.option("--no-emoji", is_flag=True, help="Disable emoji output")
         @pass_context
-        def status(ctx: Context, **kwargs) -> None:
+        def status(ctx: Context, log_level=None, no_emoji=False, **kwargs) -> None:
             """Show application status."""
             # Command-level options override group-level
+            if log_level is not None:
+                ctx.log_level = log_level
+            if no_emoji:
+                ctx.no_emoji = no_emoji
             for key, value in kwargs.items():
                 if value is not None:
                     setattr(ctx, key, value)
