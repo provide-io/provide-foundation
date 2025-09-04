@@ -31,7 +31,7 @@ def test_config_parse_custom_layers_non_list() -> None:
     """Test config.py line 167 - return empty list when custom_layers is not a list."""
     # Set environment variable to a non-list JSON value
     with patch.dict(
-        os.environ, {"FOUNDATION_LOG_CUSTOM_EMOJI_SETS": '{"not": "a list"}'}
+        os.environ, {"PROVIDE_LOG_CUSTOM_EMOJI_SETS": '{"not": "a list"}'}
     ):
         result = _parse_custom_emoji_sets_from_env()
         assert result == []
@@ -47,7 +47,7 @@ def test_config_parse_custom_layers_non_dict_item() -> None:
         ]
     )
 
-    with patch.dict(os.environ, {"FOUNDATION_LOG_CUSTOM_EMOJI_SETS": layers_json}):
+    with patch.dict(os.environ, {"PROVIDE_LOG_CUSTOM_EMOJI_SETS": layers_json}):
         result = _parse_custom_emoji_sets_from_env()
         # Should only have the valid layer
         assert len(result) == 1
@@ -58,7 +58,7 @@ def test_config_parse_user_emoji_sets_non_list() -> None:
     """Test config.py line 196 - return empty list when user_emoji_sets is not a list."""
     # Set environment variable to a non-list JSON value
     with patch.dict(
-        os.environ, {"FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS": '"not a list"'}
+        os.environ, {"PROVIDE_LOG_USER_DEFINED_EMOJI_SETS": '"not a list"'}
     ):
         result = _parse_user_emoji_sets_from_env()
         assert result == []
@@ -74,7 +74,7 @@ def test_config_parse_user_emoji_sets_non_dict_item() -> None:
         ]
     )
 
-    with patch.dict(os.environ, {"FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS": sets_json}):
+    with patch.dict(os.environ, {"PROVIDE_LOG_USER_DEFINED_EMOJI_SETS": sets_json}):
         result = _parse_user_emoji_sets_from_env()
         # Should only have the valid set
         assert len(result) == 1

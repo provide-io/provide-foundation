@@ -65,8 +65,8 @@ class TestLazyInitializationBasics:
         with patch.dict(os.environ, {}, clear=True):
             os.environ.update(
                 {
-                    "FOUNDATION_LOG_LEVEL": "INFO",
-                    "FOUNDATION_LOG_CONSOLE_FORMATTER": "key_value",
+                    "PROVIDE_LOG_LEVEL": "INFO",
+                    "PROVIDE_LOG_CONSOLE_FORMATTER": "key_value",
                 }
             )
 
@@ -85,10 +85,10 @@ class TestLazyInitializationBasics:
         with patch.dict(
             os.environ,
             {
-                "FOUNDATION_LOG_LEVEL": "DEBUG",
-                "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
-                "FOUNDATION_SERVICE_NAME": "lazy-test-service",
-                "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
+                "PROVIDE_LOG_LEVEL": "DEBUG",
+                "PROVIDE_LOG_CONSOLE_FORMATTER": "json",
+                "PROVIDE_SERVICE_NAME": "lazy-test-service",
+                "PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
             },
         ):
             global_logger.debug("Debug message with env config")
@@ -203,8 +203,8 @@ class TestLazyInitializationBasics:
         with patch.dict(
             os.environ,
             {
-                "FOUNDATION_LOG_LEVEL": "WARNING",
-                "FOUNDATION_LOG_MODULE_LEVELS": "test.debug:DEBUG,test.error:ERROR",
+                "PROVIDE_LOG_LEVEL": "WARNING",
+                "PROVIDE_LOG_MODULE_LEVELS": "test.debug:DEBUG,test.error:ERROR",
             },
         ):
             # These should be filtered (below WARNING)
@@ -244,7 +244,7 @@ class TestLazyInitializationEdgeCases:
         """Test lazy initialization when telemetry is globally disabled."""
         reset_foundation_setup_for_testing()
 
-        with patch.dict(os.environ, {"FOUNDATION_TELEMETRY_DISABLED": "true"}):
+        with patch.dict(os.environ, {"PROVIDE_TELEMETRY_DISABLED": "true"}):
             global_logger.info("Message when disabled")
             global_logger.error("Error when disabled")
 
@@ -396,8 +396,8 @@ class TestLazyInitializationCompatibility:
         with patch.dict(
             os.environ,
             {
-                "FOUNDATION_LOG_LEVEL": "INFO",
-                "FOUNDATION_LOG_MODULE_LEVELS": "trace.test:TRACE",
+                "PROVIDE_LOG_LEVEL": "INFO",
+                "PROVIDE_LOG_MODULE_LEVELS": "trace.test:TRACE",
             },
         ):
             # Regular trace should be filtered
@@ -435,8 +435,8 @@ class TestLazyInitializationCompatibility:
         with patch.dict(
             os.environ,
             {
-                "FOUNDATION_LOG_CONSOLE_FORMATTER": "key_value",
-                "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "true",
+                "PROVIDE_LOG_CONSOLE_FORMATTER": "key_value",
+                "PROVIDE_LOG_DAS_EMOJI_ENABLED": "true",
             },
         ):
             global_logger.info(
@@ -478,10 +478,10 @@ class TestLazyInitializationCompatibility:
         with patch.dict(
             os.environ,
             {
-                "FOUNDATION_SERVICE_NAME": "lazy-service-test",
-                "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
-                "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
-                "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "false",
+                "PROVIDE_SERVICE_NAME": "lazy-service-test",
+                "PROVIDE_LOG_CONSOLE_FORMATTER": "json",
+                "PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
+                "PROVIDE_LOG_DAS_EMOJI_ENABLED": "false",
             },
         ):
             global_logger.info("Message with service name")

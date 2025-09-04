@@ -106,10 +106,10 @@ Run `ruff` or similar tool to identify unused imports across the codebase.
 ## 6. API Consistency Issues
 
 ### 6.1 Environment Variable Naming
-**Issue:** Mix of `FOUNDATION_*` and `PROVIDE_*` prefixes could be confusing
+**Issue:** Mix of `PROVIDE_*` and `PROVIDE_*` prefixes could be confusing
 
 **Current Split:**
-- `FOUNDATION_*` - Core telemetry configuration
+- `PROVIDE_*` - Core telemetry configuration
 - `PROVIDE_*` - CLI-specific configuration
 
 **Recommendation:** Document this split clearly in the main README and configuration guide.

@@ -115,13 +115,13 @@ def test_environment_variable_integration() -> None:
     """
     # Define test environment variables
     env_vars = {
-        "FOUNDATION_SERVICE_NAME": "env-test-service",
-        "FOUNDATION_LOG_LEVEL": "WARNING",
-        "FOUNDATION_LOG_CONSOLE_FORMATTER": "key_value",
-        "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
-        "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "true",
-        "FOUNDATION_LOG_OMIT_TIMESTAMP": "true",
-        "FOUNDATION_LOG_MODULE_LEVELS": "app.security:ERROR,app.auth:DEBUG",
+        "PROVIDE_SERVICE_NAME": "env-test-service",
+        "PROVIDE_LOG_LEVEL": "WARNING",
+        "PROVIDE_LOG_CONSOLE_FORMATTER": "key_value",
+        "PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
+        "PROVIDE_LOG_DAS_EMOJI_ENABLED": "true",
+        "PROVIDE_LOG_OMIT_TIMESTAMP": "true",
+        "PROVIDE_LOG_MODULE_LEVELS": "app.security:ERROR,app.auth:DEBUG",
     }
 
     # Save original environment values for restoration

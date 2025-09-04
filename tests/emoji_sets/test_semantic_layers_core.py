@@ -148,13 +148,13 @@ class TestSetupWithLayers:
         setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
         captured_stderr_for_foundation: io.StringIO,
     ) -> None:
-        monkeypatch.setenv("FOUNDATION_LOG_ENABLED_EMOJI_SETS", "http")
+        monkeypatch.setenv("PROVIDE_LOG_ENABLED_EMOJI_SETS", "http")
         monkeypatch.setenv(
-            "FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS",
+            "PROVIDE_LOG_USER_DEFINED_EMOJI_SETS",
             '[{"name": "http_method", "emojis": {"get": "🔽", "default": "🌐"}}]',
         )
-        monkeypatch.setenv("FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED", "false")
-        monkeypatch.setenv("FOUNDATION_LOG_CONSOLE_FORMATTER", "key_value")
+        monkeypatch.setenv("PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED", "false")
+        monkeypatch.setenv("PROVIDE_LOG_CONSOLE_FORMATTER", "key_value")
         setup_foundation_telemetry_for_test(TelemetryConfig.from_env())
         global_logger.info(
             "HTTP GET", **{"http.method": "get", "http.status_class": "2xx"}

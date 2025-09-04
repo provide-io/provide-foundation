@@ -15,7 +15,7 @@ from provide.foundation import (
     logger as global_logger,
 )
 from provide.foundation.utils import timed_block
-from provide.foundation.utils.timing import _FOUNDATION_CONTEXT_TRACE_ID
+from provide.foundation.utils.timing import _PROVIDE_CONTEXT_TRACE_ID
 
 
 def parse_kv_log_line(line: str) -> dict:
@@ -140,12 +140,12 @@ class TestTimedBlock:
     def test_trace_id_from_contextvar(
         self, captured_stderr_for_foundation: io.StringIO
     ) -> None:
-        token = _FOUNDATION_CONTEXT_TRACE_ID.set("test-trace-12345")
+        token = _PROVIDE_CONTEXT_TRACE_ID.set("test-trace-12345")
         try:
             with timed_block(global_logger, "op_with_trace_id"):
                 pass
         finally:
-            _FOUNDATION_CONTEXT_TRACE_ID.reset(token)
+            _PROVIDE_CONTEXT_TRACE_ID.reset(token)
         captured = captured_stderr_for_foundation.getvalue()
         log_lines = [
             line for line in captured.strip().splitlines() if "op_with_trace_id" in line
@@ -156,12 +156,12 @@ class TestTimedBlock:
     def test_trace_id_from_initial_kvs_overrides_contextvar(
         self, captured_stderr_for_foundation: io.StringIO
     ) -> None:
-        token = _FOUNDATION_CONTEXT_TRACE_ID.set("context-id")
+        token = _PROVIDE_CONTEXT_TRACE_ID.set("context-id")
         try:
             with timed_block(global_logger, "op_override_trace_id", trace_id="kvs-id"):
                 pass
         finally:
-            _FOUNDATION_CONTEXT_TRACE_ID.reset(token)
+            _PROVIDE_CONTEXT_TRACE_ID.reset(token)
         captured = captured_stderr_for_foundation.getvalue()
         log_lines = [
             line

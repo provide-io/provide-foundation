@@ -17,13 +17,13 @@ def test_ensure_stderr_default() -> None:
     from provide.foundation.core import _ensure_stderr_default
 
     # Set stream to stdout first
-    core._FOUNDATION_LOG_STREAM = sys.stdout
+    core._PROVIDE_LOG_STREAM = sys.stdout
 
     # Call the function - should switch to stderr
     _ensure_stderr_default()
 
     # Verify it switched
-    assert core._FOUNDATION_LOG_STREAM is sys.stderr
+    assert core._PROVIDE_LOG_STREAM is sys.stderr
 
     # Reset
     reset_foundation_setup_for_testing()

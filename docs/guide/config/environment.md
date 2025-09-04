@@ -438,7 +438,7 @@ env | grep ^PROVIDE_ | sed 's/=.*/=***/' | sort
 
 ```bash
 # Enable debug output for config loading
-export FOUNDATION_DEBUG=true  # Internal debug flag
+export PROVIDE_DEBUG=true  # Internal debug flag
 python -c "from provide.foundation.config import Config; Config.from_env()"
 ```
 
@@ -460,10 +460,10 @@ For debugging provide.foundation itself (not for production use):
 
 | Variable | Description | Use Case |
 |----------|-------------|----------|
-| `FOUNDATION_DEBUG` | Enable internal debug logging | Troubleshooting config loading |
-| `FOUNDATION_SHOW_EMOJI_MATRIX` | Display emoji mapping table | Debug emoji assignments |
-| `FOUNDATION_TRACE_PROCESSORS` | Trace log processor chain | Debug log pipeline |
-| `FOUNDATION_PROFILE` | Enable profiling output | Performance analysis |
+| `PROVIDE_DEBUG` | Enable internal debug logging | Troubleshooting config loading |
+| `PROVIDE_SHOW_EMOJI_MATRIX` | Display emoji mapping table | Debug emoji assignments |
+| `PROVIDE_TRACE_PROCESSORS` | Trace log processor chain | Debug log pipeline |
+| `PROVIDE_PROFILE` | Enable profiling output | Performance analysis |
 
 ⚠️ **Warning**: Internal variables may change between versions.
 

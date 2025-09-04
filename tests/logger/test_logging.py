@@ -149,12 +149,12 @@ class TestConfigWarnings:
             (
                 "no_colon_module_level",
                 [
-                    "Invalid item 'no_colon_module_level' in FOUNDATION_LOG_MODULE_LEVELS. Skipping."
+                    "Invalid item 'no_colon_module_level' in PROVIDE_LOG_MODULE_LEVELS. Skipping."
                 ],
             ),
             (
                 ":DEBUG",
-                ["Invalid item ':DEBUG' in FOUNDATION_LOG_MODULE_LEVELS. Skipping."],
+                ["Invalid item ':DEBUG' in PROVIDE_LOG_MODULE_LEVELS. Skipping."],
             ),
             (
                 "valid_module:SUPER_LEVEL",
@@ -169,7 +169,7 @@ class TestConfigWarnings:
             ("mod1:INFO,,mod3:DEBUG", []),
             (
                 "mod1:INFO, :TRACE ,mod3:DEBUG",
-                ["Invalid item ':TRACE' in FOUNDATION_LOG_MODULE_LEVELS. Skipping."],
+                ["Invalid item ':TRACE' in PROVIDE_LOG_MODULE_LEVELS. Skipping."],
             ),
         ],
     )
@@ -185,7 +185,7 @@ class TestConfigWarnings:
             config_warnings_logger,
         )
 
-        monkeypatch.setenv("FOUNDATION_LOG_MODULE_LEVELS", module_levels_env)
+        monkeypatch.setenv("PROVIDE_LOG_MODULE_LEVELS", module_levels_env)
         _ensure_config_logger_handler(config_warnings_logger)
         TelemetryConfig.from_env()
         captured_err = capsys.readouterr().err

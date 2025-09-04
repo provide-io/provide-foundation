@@ -72,11 +72,11 @@ class TestRealWorldScenarios:
         with patch.dict(
             os.environ,
             {
-                "FOUNDATION_SERVICE_NAME": "user-service",
-                "FOUNDATION_LOG_LEVEL": "INFO",
-                "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
-                "FOUNDATION_LOG_MODULE_LEVELS": "app.auth:DEBUG,app.external:WARNING",
-                "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "true",
+                "PROVIDE_SERVICE_NAME": "user-service",
+                "PROVIDE_LOG_LEVEL": "INFO",
+                "PROVIDE_LOG_CONSOLE_FORMATTER": "json",
+                "PROVIDE_LOG_MODULE_LEVELS": "app.auth:DEBUG,app.external:WARNING",
+                "PROVIDE_LOG_DAS_EMOJI_ENABLED": "true",
             },
         ):
             # Service startup logging
@@ -415,9 +415,9 @@ class TestMigrationFromExplicitSetup:
         with patch.dict(
             os.environ,
             {
-                "FOUNDATION_SERVICE_NAME": "env-service",
-                "FOUNDATION_LOG_CONSOLE_FORMATTER": "key_value",
-                "FOUNDATION_LOG_LEVEL": "WARNING",
+                "PROVIDE_SERVICE_NAME": "env-service",
+                "PROVIDE_LOG_CONSOLE_FORMATTER": "key_value",
+                "PROVIDE_LOG_LEVEL": "WARNING",
             },
         ):
             # Trigger lazy init first
@@ -583,14 +583,14 @@ class TestDocumentedBehaviorCompliance:
         reset_foundation_setup_for_testing()
 
         documented_env_vars = {
-            "FOUNDATION_LOG_LEVEL": "DEBUG",
-            "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
-            "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
-            "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "true",
-            "FOUNDATION_LOG_OMIT_TIMESTAMP": "true",
-            "FOUNDATION_LOG_MODULE_LEVELS": "test.module:ERROR",
-            "FOUNDATION_SERVICE_NAME": "documented-service",
-            "FOUNDATION_TELEMETRY_DISABLED": "false",
+            "PROVIDE_LOG_LEVEL": "DEBUG",
+            "PROVIDE_LOG_CONSOLE_FORMATTER": "json",
+            "PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
+            "PROVIDE_LOG_DAS_EMOJI_ENABLED": "true",
+            "PROVIDE_LOG_OMIT_TIMESTAMP": "true",
+            "PROVIDE_LOG_MODULE_LEVELS": "test.module:ERROR",
+            "PROVIDE_SERVICE_NAME": "documented-service",
+            "PROVIDE_TELEMETRY_DISABLED": "false",
         }
 
         with patch.dict(os.environ, documented_env_vars):
@@ -800,10 +800,10 @@ class TestLazyInitializationDocumentation:
         with patch.dict(
             os.environ,
             {
-                "FOUNDATION_SERVICE_NAME": "my-service",
-                "FOUNDATION_LOG_LEVEL": "INFO",
-                "FOUNDATION_LOG_CONSOLE_FORMATTER": "json",
-                "FOUNDATION_LOG_MODULE_LEVELS": "auth:DEBUG,db:ERROR",
+                "PROVIDE_SERVICE_NAME": "my-service",
+                "PROVIDE_LOG_LEVEL": "INFO",
+                "PROVIDE_LOG_CONSOLE_FORMATTER": "json",
+                "PROVIDE_LOG_MODULE_LEVELS": "auth:DEBUG,db:ERROR",
             },
         ):
             from provide.foundation import logger
