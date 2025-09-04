@@ -294,6 +294,8 @@ def example_schema_validation() -> None:
     print("Example 5: Schema Validation")
     print("=" * 60)
 
+    import asyncio
+    
     # Define schema
     schema = ConfigSchema(
         [
@@ -329,7 +331,7 @@ def example_schema_validation() -> None:
     valid_data = {"app_name": "my-app", "port": 3000, "debug": True, "version": "1.2.3"}
 
     try:
-        schema.validate(valid_data)
+        asyncio.run(schema.validate(valid_data))
         logger.info("Valid configuration passed schema validation")
     except Exception as e:
         logger.error("Validation failed", error=str(e))
@@ -342,7 +344,7 @@ def example_schema_validation() -> None:
     }
 
     try:
-        schema.validate(invalid_data)
+        asyncio.run(schema.validate(invalid_data))
     except Exception as e:
         logger.warning("Expected validation failure", error=str(e))
 
@@ -353,30 +355,36 @@ def example_config_manager() -> None:
     print("Example 6: Configuration Manager")
     print("=" * 60)
 
-    # Create manager
-    manager = ConfigManager()
+    import asyncio
+    
+    async def async_example():
+        # Create manager
+        manager = ConfigManager()
 
-    # Register configurations
-    app_config = AppConfig(app_name="managed-app")
-    db_config = DatabaseConfig(host="localhost")
+        # Register configurations
+        app_config = AppConfig(app_name="managed-app")
+        db_config = DatabaseConfig(host="localhost")
 
-    manager.register("app", config=app_config)
-    manager.register("database", config=db_config)
+        await manager.register("app", config=app_config)
+        await manager.register("database", config=db_config)
 
-    # List configurations
-    logger.info("Registered configs", configs=manager.list_configs())
+        # List configurations
+        configs = await manager.list_configs()
+        logger.info("Registered configs", configs=configs)
 
-    # Get configuration
-    retrieved = manager.get("app")
-    logger.info("Retrieved app config", name=retrieved.app_name)
+        # Get configuration
+        retrieved = await manager.get("app")
+        logger.info("Retrieved app config", name=retrieved.app_name)
 
-    # Update configuration
-    manager.update("app", {"debug": True, "port": 5000})
-    logger.info("Updated app config", debug=retrieved.debug, port=retrieved.port)
+        # Update configuration
+        await manager.update("app", {"debug": True, "port": 5000})
+        logger.info("Updated app config", debug=retrieved.debug, port=retrieved.port)
 
-    # Export all configurations
-    all_configs = manager.export_all()
-    logger.info("All configurations", count=len(all_configs))
+        # Export all configurations
+        all_configs = await manager.export_all()
+        logger.info("All configurations", count=len(all_configs))
+    
+    asyncio.run(async_example())
 
 
 def main() -> None:
