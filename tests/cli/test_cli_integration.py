@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import tempfile
 import io
+import asyncio
 
 import click
 import pytest
@@ -19,6 +20,7 @@ from provide.foundation.cli.utils import (
 )
 from provide.foundation.context import Context
 from provide.foundation.logger import get_logger
+from provide.foundation.core import shutdown_foundation_telemetry
 
 
 class TestCompleteCliIntegration:
@@ -167,9 +169,13 @@ class TestLoggingIntegration:
             @flexible_options
             @pass_context
             def cmd(ctx: Context, **kwargs) -> None:
-                setup_cli_logging(ctx)
-                logger = get_logger(__name__)
-                logger.info("Message to file")
+                try:
+                    setup_cli_logging(ctx)
+                    logger = get_logger(__name__)
+                    logger.info("Message to file")
+                finally:
+                    asyncio.run(shutdown_foundation_telemetry())
+
             runner = CliTestRunner()
             result = runner.invoke(cmd, ["--log-file", str(log_file), "--log-level", "INFO"])
             assert result.exit_code == 0
