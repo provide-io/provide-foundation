@@ -31,7 +31,7 @@ from provide.foundation.logger.processors import (
     _config_create_emoji_processors,
     _config_create_timestamp_processors,
 )
-from provide.foundation.emoji_sets import BUILTIN_EMOJI_SETS
+from provide.foundation.logger.emoji.sets import BUILTIN_EMOJI_SETS
 
 
 def get_proc_name(proc: Any) -> str:

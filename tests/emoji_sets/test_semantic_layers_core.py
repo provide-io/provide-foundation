@@ -17,7 +17,7 @@ from provide.foundation.core import (
     _resolve_active_emoji_config,
     reset_foundation_setup_for_testing,
 )
-from provide.foundation.emoji_sets import (
+from provide.foundation.logger.emoji.sets import (
     BUILTIN_EMOJI_SETS,
     HTTP_EMOJI_SET,
     LEGACY_DAS_EMOJI_SETS,
