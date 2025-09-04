@@ -41,7 +41,6 @@ from provide.foundation.logger import (
     TelemetryConfig,
     get_logger,  # Factory function for creating loggers
     logger,  # Global logger instance
-    logger as plog,  # Alias for console logging
     setup_logging,  # Setup function
 )
 
@@ -101,7 +100,6 @@ __all__ = [
     # Console input
     "pin",
     "platform",
-    "plog",  # Alias for logger
     # Console output
     "pout",
     "process",
