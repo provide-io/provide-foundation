@@ -157,10 +157,11 @@ def pin_stream() -> Iterator[str]:
     ctx = _get_context()
     
     if _should_use_json(ctx):
-        # In JSON mode, read all input and yield parsed lines
+        # In JSON mode, try to read as JSON first
+        stdin_content = sys.stdin.read()
         try:
-            # Read all input as JSON array
-            data = json.load(sys.stdin)
+            # Try to parse as JSON array/object
+            data = json.loads(stdin_content)
             if isinstance(data, list):
                 for item in data:
                     yield json.dumps(item) if not isinstance(item, str) else item
@@ -168,8 +169,9 @@ def pin_stream() -> Iterator[str]:
                 yield json.dumps(data)
         except json.JSONDecodeError:
             # Fall back to line-by-line reading
-            for line in sys.stdin:
-                yield line.rstrip('\n\r')
+            for line in stdin_content.splitlines():
+                if line:  # Skip empty lines
+                    yield line
     else:
         # Regular mode - yield lines as they come
         plog.debug("📥 Starting input stream")
