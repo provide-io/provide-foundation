@@ -191,10 +191,9 @@ def _handle_globally_disabled_setup() -> None:
     )
 
 
-def reset_foundation_setup_for_testing() -> None:
+def _reset_foundation_state() -> None:
     """
-    Resets `structlog` defaults and Foundation Telemetry's internal logger state.
-    This is a test utility and should not be called by production code.
+    Internal function to reset `structlog` and Foundation Telemetry's state.
     """
     global _FOUNDATION_LOG_STREAM, _core_setup_logger, _EXPLICIT_SETUP_DONE, _LOG_FILE_HANDLE
     with _FOUNDATION_SETUP_LOCK:
@@ -214,6 +213,13 @@ def reset_foundation_setup_for_testing() -> None:
         _FOUNDATION_LOG_STREAM = sys.stderr
         _EXPLICIT_SETUP_DONE = False
         _core_setup_logger = _create_core_setup_logger()
+
+
+def reset_foundation_setup_for_testing() -> None:
+    """
+    Public test utility to reset Foundation Telemetry's internal state.
+    """
+    _reset_foundation_state()
 
 
 def _internal_setup(
@@ -277,13 +283,11 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
 
         log_file_path = getattr(current_config.logging, 'log_file', None)
         
-        # Preserve testing stream if it's already set and not stderr
         is_test_stream = _FOUNDATION_LOG_STREAM is not sys.stderr and not isinstance(_FOUNDATION_LOG_STREAM, io.TextIOWrapper)
 
         if log_file_path:
             try:
                 Path(log_file_path).parent.mkdir(parents=True, exist_ok=True)
-                # Use line buffering (buffering=1) for files to ensure logs are written promptly.
                 _LOG_FILE_HANDLE = open(log_file_path, "a", encoding="utf-8", buffering=1)
                 _FOUNDATION_LOG_STREAM = _LOG_FILE_HANDLE
             except Exception as e:
@@ -297,12 +301,5 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
 
 
 async def shutdown_foundation_telemetry(timeout_millis: int = 5000) -> None:
-    global _LOG_FILE_HANDLE
     _core_setup_logger.info("🔌➡️🏁 Foundation Telemetry shutdown called.")
-    with _FOUNDATION_SETUP_LOCK:
-        if _LOG_FILE_HANDLE:
-            try:
-                _LOG_FILE_HANDLE.close()
-            except Exception as e:
-                _core_setup_logger.error(f"Failed to close log file handle: {e}")
-            _LOG_FILE_HANDLE = None
+    _reset_foundation_state()
