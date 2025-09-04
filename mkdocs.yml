@@ -276,8 +276,6 @@ nav:
       - cookbook/examples/index.md
       - CLI Tools: cookbook/examples/cli-tool.md
     
-    - Patterns:
-      - cookbook/patterns/index.md
   
   - Tutorials:
     - tutorials/index.md
@@ -306,10 +304,6 @@ nav:
     - Emoji Set Design: architecture/emoji-sets.md
     - Emoji System: architecture/emoji-system.md
     - Performance: architecture/performance.md
-    - Design Decisions:
-      - architecture/decisions/index.md
-      - Emoji Sets: architecture/decisions/emoji-sets.md
-      - Async Support: architecture/decisions/async-support.md
   
   - Troubleshooting:
     - troubleshooting/index.md
@@ -325,19 +319,6 @@ nav:
     - Error Messages: troubleshooting/errors.md
     - FAQ: troubleshooting/faq.md
   
-  - Migration:
-    - migration/index.md
-    - From structlog: migration/from-structlog.md
-    - From logging: migration/from-logging.md
-    - From pyvider: migration/from-pyvider.md
-    - API Changes: migration/api-changes.md
-  
-  - Community:
-    - community/index.md
-    - Support: community/support.md
-    - Discussions: community/discussions.md
-    - Blog: community/blog.md
-    - Showcase: community/showcase.md
 
 validation:
   omitted_files: warn
