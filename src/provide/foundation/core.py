@@ -27,14 +27,14 @@ from provide.foundation.logger.processors import (
     _build_core_processors_list,
     _build_formatter_processors_list,
 )
-from provide.foundation.semantic_layers import (
-    BUILTIN_SEMANTIC_LAYERS,
+from provide.foundation.emoji_sets import (
+    BUILTIN_EMOJI_SETS,
     LEGACY_DAS_EMOJI_SETS,
 )
 from provide.foundation.types import (
     CustomDasEmojiSet,
-    SemanticFieldDefinition,
-    SemanticLayer,
+    FieldToEmojiMapping,
+    EmojiSetConfig,
 )
 
 _FOUNDATION_SETUP_LOCK = (
@@ -103,34 +103,34 @@ def _create_core_setup_logger(globally_disabled: bool = False) -> stdlib_logging
 
 _core_setup_logger = _create_core_setup_logger()
 
-ResolvedSemanticConfig = tuple[
-    list[SemanticFieldDefinition], dict[str, CustomDasEmojiSet]
+ResolvedEmojiConfig = tuple[
+    list[FieldToEmojiMapping], dict[str, CustomDasEmojiSet]
 ]
 
 
-def _resolve_active_semantic_config(
-    logging_config: LoggingConfig, builtin_layers_registry: dict[str, SemanticLayer]
-) -> ResolvedSemanticConfig:
-    resolved_fields_dict: dict[str, SemanticFieldDefinition] = {}
+def _resolve_active_emoji_config(
+    logging_config: LoggingConfig, builtin_emoji_registry: dict[str, EmojiSetConfig]
+) -> ResolvedEmojiConfig:
+    resolved_fields_dict: dict[str, FieldToEmojiMapping] = {}
     resolved_emoji_sets_dict: dict[str, CustomDasEmojiSet] = {
         s.name: s for s in LEGACY_DAS_EMOJI_SETS
     }
 
-    layers_to_process: list[SemanticLayer] = [
-        builtin_layers_registry[name]
-        for name in logging_config.enabled_semantic_layers
-        if name in builtin_layers_registry
+    emoji_sets_to_process: list[EmojiSetConfig] = [
+        builtin_emoji_registry[name]
+        for name in logging_config.enabled_emoji_sets
+        if name in builtin_emoji_registry
     ]
-    layers_to_process.extend(logging_config.custom_semantic_layers)
-    layers_to_process.sort(key=lambda layer: layer.priority)
+    emoji_sets_to_process.extend(logging_config.custom_emoji_sets)
+    emoji_sets_to_process.sort(key=lambda emoji_set: emoji_set.priority)
 
     ordered_log_keys: list[str] = []
     seen_log_keys: set[str] = set()
 
-    for layer in layers_to_process:
-        for emoji_set in layer.emoji_sets:
+    for emoji_set_config in emoji_sets_to_process:
+        for emoji_set in emoji_set_config.emoji_sets:
             resolved_emoji_sets_dict[emoji_set.name] = emoji_set
-        for field_def in layer.field_definitions:
+        for field_def in emoji_set_config.field_definitions:
             resolved_fields_dict[field_def.log_key] = field_def
             if field_def.log_key not in seen_log_keys:
                 ordered_log_keys.append(field_def.log_key)
@@ -146,9 +146,9 @@ def _resolve_active_semantic_config(
 
 
 def _build_complete_processor_chain(
-    config: TelemetryConfig, resolved_semantic_config: ResolvedSemanticConfig
+    config: TelemetryConfig, resolved_emoji_config: ResolvedEmojiConfig
 ) -> list[Any]:
-    core_processors = _build_core_processors_list(config, resolved_semantic_config)
+    core_processors = _build_core_processors_list(config, resolved_emoji_config)
     formatter_processors = _build_formatter_processors_list(
         config.logging, _FOUNDATION_LOG_STREAM
     )
@@ -176,9 +176,9 @@ def _apply_structlog_configuration(processors: list[Any]) -> None:
 
 
 def _configure_structlog_output(
-    config: TelemetryConfig, resolved_semantic_config: ResolvedSemanticConfig
+    config: TelemetryConfig, resolved_emoji_config: ResolvedEmojiConfig
 ) -> None:
-    processors = _build_complete_processor_chain(config, resolved_semantic_config)
+    processors = _build_complete_processor_chain(config, resolved_emoji_config)
     _apply_structlog_configuration(processors)
 
 
@@ -206,7 +206,7 @@ def _reset_foundation_state() -> None:
             _LOG_FILE_HANDLE = None
         foundation_logger.logger._is_configured_by_setup = False
         foundation_logger.logger._active_config = None
-        foundation_logger.logger._active_resolved_semantic_config = None
+        foundation_logger.logger._active_resolved_emoji_config = None
         foundation_logger._LAZY_SETUP_STATE.update(
             {"done": False, "error": None, "in_progress": False}
         )
@@ -248,18 +248,18 @@ def _internal_setup(
     if not current_config.globally_disabled:
         _core_setup_logger.info("⚙️➡️🚀 Starting Foundation (structlog) setup...")
 
-    resolved_semantic_config = _resolve_active_semantic_config(
-        current_config.logging, BUILTIN_SEMANTIC_LAYERS
+    resolved_emoji_config = _resolve_active_emoji_config(
+        current_config.logging, BUILTIN_EMOJI_SETS
     )
 
     if current_config.globally_disabled:
         _handle_globally_disabled_setup()
     else:
-        _configure_structlog_output(current_config, resolved_semantic_config)
+        _configure_structlog_output(current_config, resolved_emoji_config)
 
     foundation_logger.logger._is_configured_by_setup = is_explicit_call
     foundation_logger.logger._active_config = current_config
-    foundation_logger.logger._active_resolved_semantic_config = resolved_semantic_config
+    foundation_logger.logger._active_resolved_emoji_config = resolved_emoji_config
     foundation_logger._LAZY_SETUP_STATE["done"] = True
 
     if not current_config.globally_disabled:
