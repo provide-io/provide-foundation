@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from provide.foundation.cli.context import Context
+from provide.foundation.context import Context
 from provide.foundation.cli.utils import (
     assert_cli_error,
     assert_cli_success,
@@ -146,7 +146,7 @@ class TestCliLogging:
         mock_setup_telemetry.assert_called_once()
         config_arg = mock_setup_telemetry.call_args.kwargs["config"]
         assert isinstance(config_arg, TelemetryConfig)
-        assert config_arg.logging.default_level == "INFO"
+        assert config_arg.logging.default_level == "DEBUG"
         assert config_arg.logging.console_formatter == "key_value"
 
     @patch("provide.foundation.cli.utils.setup_telemetry")

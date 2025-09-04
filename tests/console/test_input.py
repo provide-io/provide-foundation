@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 import pytest
 
-from provide.foundation.cli.context import Context
+from provide.foundation.context import Context
 from provide.foundation.console.input import (
     apin,
     apin_lines,

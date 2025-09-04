@@ -103,10 +103,11 @@ def test_emoji_matrix_display(
     show_emoji_matrix()
     assert captured_stderr_for_foundation.getvalue() == ""
 
-    # Test that it prints when env var is set
+    # Test that it prints when config flag is set
     with patch.dict(os.environ, {"PROVIDE_SHOW_EMOJI_MATRIX": "true"}):
-        # Use a simple config for the test
-        setup_foundation_telemetry_for_test(TelemetryConfig())
+        # Use a config with show_emoji_matrix enabled
+        config = TelemetryConfig(logging=LoggingConfig(show_emoji_matrix=True))
+        setup_foundation_telemetry_for_test(config)
         show_emoji_matrix()
         output = captured_stderr_for_foundation.getvalue()
         # FIX: Assert the correct output string for core mode

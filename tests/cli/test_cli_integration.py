@@ -6,7 +6,7 @@ import tempfile
 
 import click
 
-from provide.foundation.cli.context import Context
+from provide.foundation.context import Context
 from provide.foundation.cli.decorators import (
     flexible_options,
     output_options,

@@ -80,6 +80,11 @@ class LoggingConfig(BaseConfig):
         env_var="FOUNDATION_LOG_LEVEL",
         description="Log level for Foundation internal setup messages"
     )
+    show_emoji_matrix: bool = field(
+        default=False,
+        env_var="PROVIDE_SHOW_EMOJI_MATRIX",
+        description="Whether to display emoji matrix on startup"
+    )
 
     @classmethod
     def from_env(cls, strict: bool = True) -> "LoggingConfig":
@@ -139,6 +144,9 @@ class LoggingConfig(BaseConfig):
                     f"[Foundation Config Warning] Invalid FOUNDATION_LOG_LEVEL '{foundation_level}'. Using default.",
                     file=sys.stderr,
                 )
+
+        if show_matrix := os.getenv("PROVIDE_SHOW_EMOJI_MATRIX"):
+            config_dict["show_emoji_matrix"] = show_matrix.strip().lower() in ("true", "1", "yes")
 
         # Parse complex fields
         if module_levels := os.getenv("PROVIDE_LOG_MODULE_LEVELS"):

@@ -203,7 +203,7 @@ def test_emoji_matrix_display_with_semantic_layers(
     """Covers displaying the matrix when semantic layers are active."""
     with patch.dict(os.environ, {"PROVIDE_SHOW_EMOJI_MATRIX": "true"}):
         config = TelemetryConfig(
-            logging=LoggingConfig(enabled_emoji_sets=["http"])
+            logging=LoggingConfig(enabled_emoji_sets=["http"], show_emoji_matrix=True)
         )
         setup_foundation_telemetry_for_test(config)
         show_emoji_matrix()
@@ -215,10 +215,15 @@ def test_emoji_matrix_display_with_semantic_layers(
 def test_emoji_matrix_display_unresolved(capsys: pytest.CaptureFixture) -> None:
     """Covers displaying the matrix when config is not yet resolved."""
     with patch.dict(os.environ, {"PROVIDE_SHOW_EMOJI_MATRIX": "true"}):
-        # Prevent lazy-init from running
-        with patch.object(foundation_logger_base.logger, "_ensure_configured"):
+        # Mock telemetry config with show_emoji_matrix enabled but no resolved config
+        mock_telemetry_config = MagicMock()
+        mock_telemetry_config.logging.show_emoji_matrix = True
+        
+        # Prevent lazy-init from running and mock the config access
+        with patch.object(foundation_logger_base.logger, "_ensure_configured"), \
+             patch.object(foundation_logger_base.logger, "_active_config", mock_telemetry_config):
             # Ensure the attribute that is checked is None
-            foundation_logger_base.logger._active_resolved_semantic_config = None
+            foundation_logger_base.logger._active_resolved_emoji_config = None
 
             # Mock the logger that show_emoji_matrix will create
             mock_info_method = MagicMock()

@@ -8,7 +8,7 @@ import click
 from click.testing import CliRunner
 import pytest
 
-from provide.foundation.cli.context import Context
+from provide.foundation.context import Context
 from provide.foundation.cli.decorators import (
     config_options,
     error_handler,
