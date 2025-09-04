@@ -43,7 +43,7 @@ theme:
     - navigation.tabs
     - navigation.tabs.sticky
     - navigation.sections
-    - navigation.expand
+    - navigation.prune
     - navigation.path
     - navigation.indexes
     - navigation.top
@@ -170,9 +170,11 @@ extra_css:
   - stylesheets/extra.css
 
 extra_javascript:
-  - javascripts/mathjax.js
-  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
   - https://unpkg.com/mermaid@10/dist/mermaid.min.js
+
+extra:
+  mermaid:
+    enabled: true
 
 nav:
   - Home: index.md
