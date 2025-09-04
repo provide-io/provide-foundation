@@ -217,6 +217,11 @@ def stream_command(
         ProcessError: If command fails
         TimeoutError: If timeout is exceeded
     """
+    import os
+    import time
+    import select
+    import fcntl
+    
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
     plog.info("🌊 Streaming command", command=cmd_str, cwd=str(cwd) if cwd else None)
 
@@ -240,12 +245,74 @@ def stream_command(
             **kwargs,
         )
 
-        if process.stdout:
-            for line in process.stdout:
-                yield line.rstrip()
-
-        # Wait for process to complete
-        returncode = process.wait(timeout=timeout)
+        if timeout is not None:
+            start_time = time.time()
+            
+            if process.stdout:
+                # Use non-blocking I/O with timeout
+                # Make stdout non-blocking
+                fd = process.stdout.fileno()
+                fl = fcntl.fcntl(fd, fcntl.F_GETFL)
+                fcntl.fcntl(fd, fcntl.F_SETFL, fl | os.O_NONBLOCK)
+                
+                buffer = ""
+                while True:
+                    elapsed = time.time() - start_time
+                    if elapsed >= timeout:
+                        process.kill()
+                        process.wait()
+                        plog.error("⏱️ Stream timed out", command=cmd_str, timeout=timeout)
+                        raise TimeoutError(
+                            f"Command timed out after {timeout}s: {cmd_str}",
+                            code="PROCESS_STREAM_TIMEOUT",
+                            command=cmd_str,
+                            timeout=timeout,
+                        )
+                    
+                    # Use select with timeout
+                    remaining = timeout - elapsed
+                    ready, _, _ = select.select([process.stdout], [], [], min(0.1, remaining))
+                    
+                    if ready:
+                        try:
+                            chunk = process.stdout.read(1024)
+                            if not chunk:
+                                break  # EOF
+                            buffer += chunk
+                            
+                            # Yield complete lines
+                            while '\n' in buffer:
+                                line, buffer = buffer.split('\n', 1)
+                                yield line.rstrip()
+                        except IOError:
+                            # No data available yet
+                            pass
+                    
+                    # Check if process ended
+                    if process.poll() is not None:
+                        # Read any remaining data
+                        remaining_data = process.stdout.read()
+                        if remaining_data:
+                            buffer += remaining_data
+                        
+                        # Yield any remaining lines
+                        for line in buffer.split('\n'):
+                            if line:
+                                yield line.rstrip()
+                        break
+                
+                # Wait for process to complete
+                returncode = process.poll()
+                if returncode is None:
+                    returncode = process.wait()
+        else:
+            # No timeout - use blocking I/O
+            if process.stdout:
+                for line in process.stdout:
+                    yield line.rstrip()
+            
+            # Wait for process to complete
+            returncode = process.wait()
 
         if returncode != 0:
             raise ProcessError(
@@ -256,16 +323,6 @@ def stream_command(
             )
 
         plog.debug("✅ Stream completed", command=cmd_str)
-
-    except subprocess.TimeoutExpired as e:
-        process.kill()
-        plog.error("⏱️ Stream timed out", command=cmd_str, timeout=timeout)
-        raise TimeoutError(
-            f"Command timed out after {timeout}s: {cmd_str}",
-            code="PROCESS_STREAM_TIMEOUT",
-            command=cmd_str,
-            timeout=timeout,
-        ) from e
     except Exception as e:
         if isinstance(e, ProcessError | TimeoutError):
             raise
