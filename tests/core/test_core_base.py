@@ -107,7 +107,7 @@ class TestShutdownCoverage:
         core_logger_for_shutdown_test.setLevel(stdlib_logging.INFO)
         await shutdown_foundation_telemetry()
         captured = capsys.readouterr()
-        assert "Foundation Telemetry shutdown called" in captured.err
+        assert "Foundation Telemetry shutdown/flush called" in captured.err
 
 
 # FIX: Rewrote TestHandleGloballyDisabledSetup to be simpler and correct.
