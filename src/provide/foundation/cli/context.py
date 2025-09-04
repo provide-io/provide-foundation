@@ -9,6 +9,7 @@ from typing import Any
 from attrs import define, field, fields, validators
 
 from provide.foundation.logger import get_logger
+from provide.foundation.logger.config import TelemetryConfig
 from provide.foundation.utils.parsing import parse_bool
 
 try:
