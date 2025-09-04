@@ -63,7 +63,10 @@
       "Read(/private/tmp/**)",
       "Read(/private/tmp/**)",
       "Bash(pkill:*)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(for:*)",
+      "Bash(do)",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": [],

@@ -204,7 +204,7 @@ class TestLoggingWithSemanticLayers:
     ) -> None:
         config = TelemetryConfig(
             logging=LoggingConfig(
-                enabled_semantic_layers=["llm"],
+                enabled_emoji_sets=["llm"],
                 console_formatter="key_value",
                 das_emoji_prefix_enabled=True,
                 logger_name_emoji_prefix_enabled=False,

@@ -31,7 +31,7 @@ from provide.foundation.logger.custom_processors import (
 )
 from provide.foundation.logger.emoji_matrix import show_emoji_matrix
 from provide.foundation.logger.processors import _build_formatter_processors_list
-from provide.foundation.types import SemanticLayer
+from provide.foundation.types import EmojiSetConfig
 
 # --- Tests for src/provide/foundation/telemetry/config.py ---
 
@@ -41,11 +41,11 @@ def test_config_from_env_malformed_json(
 ) -> None:
     """Covers error handling for invalid JSON in environment variables."""
     # Test malformed custom layers JSON
-    monkeypatch.setenv("FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS", "[{'name': 'badjson'}]")
+    monkeypatch.setenv("FOUNDATION_LOG_CUSTOM_EMOJI_SETS", "[{'name': 'badjson'}]")
     config = TelemetryConfig.from_env()
-    assert config.logging.custom_semantic_layers == []
+    assert config.logging.custom_emoji_sets == []
     assert (
-        "Invalid JSON in FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS"
+        "Invalid JSON in FOUNDATION_LOG_CUSTOM_EMOJI_SETS"
         in capsys.readouterr().err
     )
 
@@ -67,10 +67,10 @@ def test_config_from_env_type_error_in_data(
     """Covers TypeError handling for malformed data within valid JSON."""
     # Test TypeError in custom layers (e.g., priority is not an int)
     custom_layers_json = json.dumps([{"name": "my_layer", "priority": "not-an-int"}])
-    monkeypatch.setenv("FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS", custom_layers_json)
+    monkeypatch.setenv("FOUNDATION_LOG_CUSTOM_EMOJI_SETS", custom_layers_json)
     config = TelemetryConfig.from_env()
-    assert config.logging.custom_semantic_layers == []
-    assert "Error parsing data for a custom layer" in capsys.readouterr().err
+    assert config.logging.custom_emoji_sets == []
+    assert "Error parsing data for a custom emoji set" in capsys.readouterr().err
 
     # Test TypeError in user emoji sets (e.g., emojis is not a dict)
     # Note: The current implementation accepts a list, which may be overly permissive
@@ -97,16 +97,16 @@ def test_config_dangling_emoji_set_reference(
     captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     """Covers a semantic field referencing a non-existent emoji set."""
-    from provide.foundation.types import SemanticFieldDefinition
+    from provide.foundation.types import FieldToEmojiMapping
 
-    dangling_field = SemanticFieldDefinition(
+    dangling_field = FieldToEmojiMapping(
         log_key="dangling_key", emoji_set_name="non_existent_set"
     )
-    layer = SemanticLayer(name="dangling_layer", field_definitions=[dangling_field])
+    layer = EmojiSetConfig(name="dangling_layer", field_definitions=[dangling_field])
     config = TelemetryConfig(
         logging=LoggingConfig(
-            enabled_semantic_layers=["dangling_layer"],
-            custom_semantic_layers=[layer],
+            enabled_emoji_sets=["dangling_layer"],
+            custom_emoji_sets=[layer],
             das_emoji_prefix_enabled=True,
             logger_name_emoji_prefix_enabled=False,
         )
@@ -203,12 +203,12 @@ def test_emoji_matrix_display_with_semantic_layers(
     """Covers displaying the matrix when semantic layers are active."""
     with patch.dict(os.environ, {"FOUNDATION_SHOW_EMOJI_MATRIX": "true"}):
         config = TelemetryConfig(
-            logging=LoggingConfig(enabled_semantic_layers=["http"])
+            logging=LoggingConfig(enabled_emoji_sets=["http"])
         )
         setup_foundation_telemetry_for_test(config)
         show_emoji_matrix()
         output = captured_stderr_for_foundation.getvalue()
-        assert "Active Semantic Layer Emoji Contract" in output
+        assert "Active Emoji Set Contract" in output
         assert "Log Key: 'http.method'" in output
 
 

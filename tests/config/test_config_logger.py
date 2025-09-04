@@ -14,7 +14,7 @@ from structlog.dev import ConsoleRenderer
 from structlog.processors import JSONRenderer, TimeStamper
 
 from provide.foundation.core import (
-    _resolve_active_semantic_config,
+    _resolve_active_emoji_config,
 )
 from provide.foundation.logger.config import (
     LoggingConfig,
@@ -31,7 +31,7 @@ from provide.foundation.logger.processors import (
     _config_create_emoji_processors,
     _config_create_timestamp_processors,
 )
-from provide.foundation.emoji_sets import BUILTIN_SEMANTIC_LAYERS
+from provide.foundation.emoji_sets import BUILTIN_EMOJI_SETS
 
 
 def get_proc_name(proc: Any) -> str:
@@ -64,8 +64,8 @@ class TestConfigEmojiProcessors:
         config = LoggingConfig(
             logger_name_emoji_prefix_enabled=True, das_emoji_prefix_enabled=True
         )
-        resolved_config = _resolve_active_semantic_config(
-            config, BUILTIN_SEMANTIC_LAYERS
+        resolved_config = _resolve_active_emoji_config(
+            config, BUILTIN_EMOJI_SETS
         )
         processors = _config_create_emoji_processors(config, resolved_config)
         assert (
@@ -98,10 +98,10 @@ class TestBuildFormatterProcessorsList:
 class TestBuildCoreProcessorsList:
     def test_default_config(self) -> None:
         config = TelemetryConfig()
-        resolved_semantic_config = _resolve_active_semantic_config(
-            config.logging, BUILTIN_SEMANTIC_LAYERS
+        resolved_emoji_config = _resolve_active_emoji_config(
+            config.logging, BUILTIN_EMOJI_SETS
         )
-        processors = _build_core_processors_list(config, resolved_semantic_config)
+        processors = _build_core_processors_list(config, resolved_emoji_config)
         assert (
             len(processors) == 8
             and get_proc_name(processors[6]) == "add_logger_name_emoji_prefix"
@@ -111,7 +111,7 @@ class TestBuildCoreProcessorsList:
 class TestTelemetryConfigFromEnvSemanticLayers:
     def test_from_env_parses_enabled_emoji_sets(self, monkeypatch) -> None:
         monkeypatch.setenv(
-            "FOUNDATION_LOG_ENABLED_SEMANTIC_LAYERS", "llm, http , database "
+            "FOUNDATION_LOG_ENABLED_EMOJI_SETS", "llm, http , database "
         )
         config = from_env()
         assert config.logging.enabled_emoji_sets == ["llm", "http", "database"]
@@ -120,13 +120,13 @@ class TestTelemetryConfigFromEnvSemanticLayers:
         self, monkeypatch, capsys: CaptureFixture
     ) -> None:
         monkeypatch.setenv(
-            "FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS", "[{'name': 'badjson']"
+            "FOUNDATION_LOG_CUSTOM_EMOJI_SETS", "[{'name': 'badjson']"
         )
         _ensure_config_logger_handler(config_warnings_logger)
         config = from_env()
         assert config.logging.custom_emoji_sets == []
         assert (
-            "Invalid JSON in FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS"
+            "Invalid JSON in FOUNDATION_LOG_CUSTOM_EMOJI_SETS"
             in capsys.readouterr().err
         )
 
@@ -136,8 +136,8 @@ class TestTelemetryConfigFromEnvSemanticLayers:
         custom_layers_json = json.dumps(
             [{"name": "my_layer", "priority": "not_an_int"}]
         )
-        monkeypatch.setenv("FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS", custom_layers_json)
+        monkeypatch.setenv("FOUNDATION_LOG_CUSTOM_EMOJI_SETS", custom_layers_json)
         _ensure_config_logger_handler(config_warnings_logger)
         config = from_env()
         assert config.logging.custom_emoji_sets == []
-        assert "Error parsing data for a custom layer" in capsys.readouterr().err
+        assert "Error parsing data for a custom emoji set" in capsys.readouterr().err
