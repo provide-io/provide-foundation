@@ -303,13 +303,15 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
 async def shutdown_foundation_telemetry(timeout_millis: int = 5000) -> None:
     """
     Gracefully flushes any buffered telemetry, especially for file logging.
-    This does NOT perform a full reset.
+    This does NOT perform a full reset, allowing test runners to clean up streams.
     """
     global _LOG_FILE_HANDLE
     _core_setup_logger.info("🔌➡️🏁 Foundation Telemetry flush called.")
     with _FOUNDATION_SETUP_LOCK:
         if _LOG_FILE_HANDLE:
             try:
+                # Only flush the handle, do not close or reset state.
+                # The test fixture's reset will handle the final close.
                 _LOG_FILE_HANDLE.flush()
             except Exception as e:
                 _core_setup_logger.error(f"Failed to flush log file handle: {e}")
