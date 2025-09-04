@@ -123,7 +123,7 @@ def test_trace_level_custom_logger_name() -> None:
 
 
 def test_core_setup_environment_variable_edge_cases() -> None:
-    with patch.dict(os.environ, {"PROVIDE_LOG_LEVEL": "INVALID"}):
+    with patch.dict(os.environ, {"FOUNDATION_LOG_LEVEL": "INVALID"}):
         assert _create_core_setup_logger().level == 20
 
 
