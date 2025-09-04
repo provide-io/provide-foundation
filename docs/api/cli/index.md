@@ -5,15 +5,15 @@ Command-line interface framework for provide.foundation.
 ## Available Modules
 
 - [Decorators](decorators.md) - Command registration and argument decorators
-- [CLI Utils](base.md) - CLI utilities and helper functions  
-- [Testing](helpers.md) - CLI testing utilities
+- [Utilities](utils.md) - CLI utilities and helper functions
+- [Testing](testing.md) - CLI testing utilities
 
 ## Quick Reference
 
 ### Command Registration
 
 ```python
-from provide.foundation.cli import register_command
+from provide.foundation.hub import register_command
 
 @register_command("hello")
 def hello_command(name: str = "World"):
@@ -38,7 +38,8 @@ def seed():
 ### With Options
 
 ```python
-from provide.foundation.cli import option, argument
+from click import option, argument
+from provide.foundation.hub import register_command
 
 @register_command("deploy")
 @option("--environment", "-e", default="staging")

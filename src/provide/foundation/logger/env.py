@@ -9,6 +9,7 @@ import json
 import logging as stdlib_logging
 import os
 import sys
+from pathlib import Path
 from typing import cast
 
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
@@ -34,6 +35,7 @@ DEFAULT_ENV_CONFIG: dict[str, str] = {
     "FOUNDATION_TELEMETRY_DISABLED": "false",
     "FOUNDATION_LOG_MODULE_LEVELS": "",
     "FOUNDATION_LOG_ENABLED_SEMANTIC_LAYERS": "",
+    "FOUNDATION_LOG_FILE": "", # ADDED THIS LINE
 }
 
 
@@ -98,6 +100,9 @@ def from_env() -> "TelemetryConfig":
     custom_semantic_layers = _parse_custom_layers_from_env()
     user_defined_emoji_sets = _parse_user_emoji_sets_from_env()
 
+    raw_log_file: str | None = os.getenv("FOUNDATION_LOG_FILE")
+    log_file: str | Path | None = Path(raw_log_file) if raw_log_file else None # ADDED THIS LINE
+
     log_cfg = LoggingConfig(
         default_level=default_log_level,
         module_levels=module_levels,
@@ -108,6 +113,7 @@ def from_env() -> "TelemetryConfig":
         enabled_semantic_layers=enabled_semantic_layers,
         custom_semantic_layers=custom_semantic_layers,
         user_defined_emoji_sets=user_defined_emoji_sets,
+        log_file=log_file, # ADDED THIS LINE
     )
 
     return TelemetryConfig(

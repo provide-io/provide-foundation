@@ -94,6 +94,9 @@ pythonpath = ["src", "."]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*", "*Tests"]
 python_functions = ["test_*", "*_test"]
+markers = [
+    "serial: run tests serially to avoid conflicts on global state",
+]
 filterwarnings = [
     "ignore::DeprecationWarning",
     "ignore:cannot collect test class 'Test.*' because it has a __init__ constructor:pytest.PytestCollectionWarning",

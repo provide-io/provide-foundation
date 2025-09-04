@@ -7,6 +7,7 @@ Defines data models for telemetry and logging settings.
 """
 
 from attrs import define, field
+from pathlib import Path
 
 from provide.foundation.types import (
     ConsoleFormatterStr,
@@ -29,6 +30,7 @@ class LoggingConfig:
     enabled_semantic_layers: list[str] = field(factory=lambda: [])
     custom_semantic_layers: list[SemanticLayer] = field(factory=lambda: [])
     user_defined_emoji_sets: list[CustomDasEmojiSet] = field(factory=lambda: [])
+    log_file: str | Path | None = field(default=None) # ADDED THIS LINE
 
 
 @define(frozen=True, slots=True)

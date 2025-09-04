@@ -7,7 +7,12 @@ from typing import Any
 import click
 
 from provide.foundation.context import Context
-from provide.foundation.logger import get_logger, setup_logging
+from provide.foundation.core import setup_telemetry
+from provide.foundation.logger import ( # ADDED THESE IMPORTS
+    LoggingConfig,
+    TelemetryConfig,
+    get_logger,
+)
 
 log = get_logger(__name__)
 
@@ -80,33 +85,36 @@ def echo_info(message: str, json_output: bool = False) -> None:
 
 
 def setup_cli_logging(
-    ctx: Context | None = None,
-    log_level: str | None = None,
-    log_file: str | Path | None = None,
-    log_format: str | None = None,
+    ctx: Context,
 ) -> None:
     """
-    Setup logging for CLI applications.
+    Setup logging for CLI applications using a Context object.
+
+    This function is the designated way to configure logging within a CLI
+    application built with foundation. It uses the provided context object
+    to construct a full TelemetryConfig and initializes the system.
 
     Args:
-        ctx: Optional Context to get settings from
-        log_level: Override log level
-        log_file: Override log file path
-        log_format: Log format ('json', 'text', 'key_value')
+        ctx: The foundation Context, populated by CLI decorators.
     """
-    if ctx:
-        log_level = log_level or ctx.log_level
-        log_file = log_file or ctx.log_file
-        log_format = log_format or getattr(ctx, 'log_format', 'key_value')
-    
-    # Map log_format to json_logs boolean for backward compatibility
-    json_logs = (log_format == 'json') if log_format else False
+    # Map log_format to the correct console_formatter value
+    console_formatter = "json" if ctx.json_output else ctx.log_format
 
-    setup_logging(
-        level=log_level or "INFO",
-        json_logs=json_logs,
-        log_file=str(log_file) if log_file else None,
+    logging_config = LoggingConfig(
+        default_level=ctx.log_level,
+        console_formatter=console_formatter,
+        omit_timestamp=False,  # Timestamps are generally useful in CLIs
+        logger_name_emoji_prefix_enabled=not ctx.no_emoji,
+        das_emoji_prefix_enabled=not ctx.no_emoji,
+        log_file=ctx.log_file, # ADDED THIS LINE
     )
+
+    telemetry_config = TelemetryConfig(
+        service_name=ctx.profile,  # Use profile as a default service name
+        logging=logging_config,
+    )
+
+    setup_telemetry(config=telemetry_config)
 
 
 def create_cli_context(**kwargs) -> Context:

@@ -1,0 +1,152 @@
+site_name: provide.foundation Documentation
+site_description: Beautiful, Performant, Structured Logging for Python - Enterprise-grade telemetry built on structlog
+site_author: provide.io
+site_url: https://foundation.provide.io
+repo_url: https://github.com/provide-io/provide-foundation
+repo_name: provide-io/provide-foundation
+edit_uri: edit/main/docs/
+copyright: Copyright &copy; 2024-2025 provide.io
+
+theme:
+  name: material
+  language: en
+  
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: black
+      accent: deep purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: deep purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  
+  font:
+    text: Inter
+    code: Fira Code
+  
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - navigation.top
+    - content.code.copy
+    - content.tabs.link
+
+plugins:
+  - search
+  - autorefs
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: google
+            show_source: false
+            show_root_heading: true
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - toc:
+      permalink: true
+  - tables
+  - pymdownx.highlight:
+      use_pygments: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - https://unpkg.com/mermaid@10/dist/mermaid.min.js
+
+nav:
+  - Home: index.md
+  
+  - Getting Started:
+    - getting-started/index.md
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quick-start.md
+    - First Application: getting-started/first-app.md
+    - Examples: getting-started/examples.md
+
+  - User Guide:
+    - guide/index.md
+    - Core Concepts:
+      - guide/concepts/index.md
+      - Structured Logging: guide/concepts/structured-logging.md
+      - Semantic Layers: guide/concepts/semantic-layers.md
+      - Emoji System: guide/concepts/emoji-system.md
+      - Domain-Action-Status Pattern: guide/concepts/das-pattern.md
+      - Performance: guide/concepts/performance.md
+    - Configuration:
+      - guide/config/index.md
+      - Environment Variables: guide/config/environment.md
+      - Config Files: guide/config/files.md
+      - Runtime Config: guide/config/runtime.md
+      - Best Practices: guide/config/best-practices.md
+    - Logging:
+      - Basic Usage: guide/logging/basic.md
+      - Advanced Patterns: guide/logging/advanced.md
+      - Async Logging: guide/logging/async.md
+      - Exception Handling: guide/logging/exceptions.md
+      - Context Management: guide/logging/context.md
+      - Performance Tuning: guide/logging/performance.md
+    - CLI Framework:
+      - guide/cli/index.md
+      - Console I/O: docs/guides/console-io.md
+
+  - API Reference:
+    - api/index.md
+    - Logger: api/logger/index.md
+    - Configuration: api/config/index.md
+    - Context: api/context/index.md
+    - CLI: api/cli/index.md
+    - Hub: api/hub/index.md
+    - File Operations: api/file/index.md
+    - Crypto: api/crypto/index.md
+    - Console I/O: api/utils/console.md
+    - Utilities: api/utils/index.md
+  
+  - Cookbook:
+    - cookbook/index.md
+    - Recipes:
+      - cookbook/recipes/index.md
+      - OpenTelemetry: cookbook/recipes/opentelemetry.md
+    - Patterns: cookbook/patterns/index.md
+    - Examples: cookbook/examples/index.md
+
+  - Architecture:
+    - architecture/index.md
+    - Semantic Layers: architecture/semantic-layers.md
+    - Design Decisions:
+      - architecture/decisions/index.md
+      - Semantic Layers: architecture/decisions/semantic-layers.md
+
+  - Development:
+    - development/index.md
+    - Contributing: development/contributing.md
+    - CI/CD: development/ci-cd.md
+    - Local Testing (act): development/testing/act.md
+
+  - Troubleshooting:
+    - troubleshooting/index.md
+    - FAQ: troubleshooting/faq.md
+    - Common Issues: troubleshooting/common.md
+    - Configuration: troubleshooting/configuration.md
+    - Platform Specific: troubleshooting/platforms/index.md

@@ -130,9 +130,10 @@ def interactive_menu():
         if not filename:
             perr("No filename provided", color="red")
             return
-        process_file(filename)
+        # process_file(filename)
     elif choice == 2:
-        show_status()
+        # show_status()
+        pass
     elif choice == 3:
         pout("Goodbye!", color="green")
         exit(0)
@@ -155,7 +156,8 @@ def process_pipeline():
         
         try:
             # Process each line
-            result = transform(line)
+            # result = transform(line)
+            result = line.upper()
             results.append(result)
             pout(f"✓ Processed: {line}", color="green", dim=True)
         except Exception as e:
@@ -165,38 +167,9 @@ def process_pipeline():
     return results
 ```
 
-### Async Data Ingestion
-```python
-import asyncio
-from provide.foundation.console import apin_stream, pout, perr
-
-async def ingest_data():
-    pout("📥 Starting async data ingestion", color="blue")
-    
-    batch = []
-    batch_size = 100
-    
-    async for line in apin_stream():
-        batch.append(line)
-        
-        if len(batch) >= batch_size:
-            # Process batch asynchronously
-            await process_batch(batch)
-            pout(f"✓ Processed batch of {len(batch)}", dim=True)
-            batch = []
-    
-    # Process remaining items
-    if batch:
-        await process_batch(batch)
-    
-    pout("✅ Ingestion complete", color="green", bold=True)
-
-# Run the async function
-asyncio.run(ingest_data())
-```
-
 ### CI/CD Integration
 ```python
+import os
 from provide.foundation import Context, pout, pin
 
 # In CI environments, use JSON mode for structured output
@@ -224,43 +197,12 @@ else:
 5. **Go async when needed**: Use async variants for I/O-heavy operations
 6. **Validate input**: Use `type` and `value_proc` parameters for input validation
 
-## Advanced Features
-
-### Context Override
-```python
-# Override context for specific operations
-test_ctx = Context()
-test_ctx.json_output = True
-
-pout("Normal output")
-pout({"json": "output"}, ctx=test_ctx)  # Forces JSON mode
-```
-
-### Custom Input Processing
-```python
-# Custom value processor
-def validate_email(value):
-    import re
-    if re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', value):
-        return value
-    raise click.BadParameter("Invalid email address")
-
-email = pin("Email: ", value_proc=validate_email)
-```
-
-### Streaming with Filtering
-```python
-# Process only non-empty lines
-for line in pin_stream():
-    if line.strip():  # Skip empty lines
-        process(line)
-```
-
 ## Error Handling
 
 Always handle potential errors in I/O operations:
 
 ```python
+import json
 from provide.foundation import pout, perr, pin
 
 try:

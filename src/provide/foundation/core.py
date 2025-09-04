@@ -12,6 +12,7 @@ import logging as stdlib_logging
 import os
 import sys
 import threading
+from pathlib import Path
 from typing import Any, TextIO, cast
 
 import structlog
@@ -156,15 +157,32 @@ def _build_complete_processor_chain(
     return cast(list[Any], core_processors + formatter_processors)
 
 
-def _apply_structlog_configuration(processors: list[Any]) -> None:
+def _apply_structlog_configuration(
+    processors: list[Any],
+    log_file: str | Path | None = None, # ADDED THIS ARGUMENT
+) -> None:
+    # Determine the output stream
+    output_stream: TextIO
+    if log_file:
+        try:
+            # Ensure parent directory exists for the log file
+            Path(log_file).parent.mkdir(parents=True, exist_ok=True)
+            output_stream = open(log_file, "a", encoding="utf-8")
+            _core_setup_logger.info(f"📝➡️📄 Logging to file: {log_file}")
+        except Exception as e:
+            _core_setup_logger.error(f"❌ Failed to open log file {log_file}: {e}. Falling back to stderr.")
+            output_stream = _FOUNDATION_LOG_STREAM
+    else:
+        output_stream = _FOUNDATION_LOG_STREAM
+
     stream_name = (
         "sys.stderr"
-        if sys.stderr == _FOUNDATION_LOG_STREAM
-        else "custom stream (testing)"
+        if output_stream == sys.stderr
+        else (str(log_file) if log_file else "custom stream (testing)")
     )
     structlog.configure(
         processors=processors,
-        logger_factory=structlog.PrintLoggerFactory(file=_FOUNDATION_LOG_STREAM),
+        logger_factory=structlog.PrintLoggerFactory(file=output_stream),
         wrapper_class=cast(type[BindableLogger], structlog.BoundLogger),
         cache_logger_on_first_use=True,
     )
@@ -174,10 +192,12 @@ def _apply_structlog_configuration(processors: list[Any]) -> None:
 
 
 def _configure_structlog_output(
-    config: TelemetryConfig, resolved_semantic_config: ResolvedSemanticConfig
+    config: TelemetryConfig,
+    resolved_semantic_config: ResolvedSemanticConfig,
+    log_file: str | Path | None = None, # ADDED THIS ARGUMENT
 ) -> None:
     processors = _build_complete_processor_chain(config, resolved_semantic_config)
-    _apply_structlog_configuration(processors)
+    _apply_structlog_configuration(processors, log_file=log_file) # PASS log_file
 
 
 def _handle_globally_disabled_setup() -> None:
@@ -245,7 +265,11 @@ def _internal_setup(
     if current_config.globally_disabled:
         _handle_globally_disabled_setup()
     else:
-        _configure_structlog_output(current_config, resolved_semantic_config)
+        _configure_structlog_output(
+            current_config,
+            resolved_semantic_config,
+            log_file=current_config.logging.log_file # PASS log_file from config
+        )
 
     # 5. Update state flags
     foundation_logger.logger._is_configured_by_setup = is_explicit_call

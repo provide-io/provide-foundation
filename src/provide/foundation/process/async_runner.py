@@ -53,8 +53,11 @@ async def async_run_command(
         "🚀 Running async command", command=cmd_str, cwd=str(cwd) if cwd else None
     )
 
-    # Prepare environment
-    run_env = dict(env) if env is not None else os.environ.copy()
+    # Prepare environment, disabling foundation telemetry by default
+    run_env = os.environ.copy()
+    if env is not None:
+        run_env.update(env)
+    run_env.setdefault('FOUNDATION_TELEMETRY_DISABLED', 'true')
 
     # Convert Path to string
     if isinstance(cwd, Path):
@@ -191,8 +194,12 @@ async def async_stream_command(
         "🌊 Streaming async command", command=cmd_str, cwd=str(cwd) if cwd else None
     )
 
-    # Prepare environment
-    run_env = dict(env) if env is not None else os.environ.copy()
+    # Prepare environment, disabling foundation telemetry by default
+    run_env = os.environ.copy()
+    if env is not None:
+        run_env.update(env)
+    run_env.setdefault('FOUNDATION_TELEMETRY_DISABLED', 'true')
+
 
     # Convert Path to string
     if isinstance(cwd, Path):
@@ -201,7 +208,7 @@ async def async_stream_command(
     try:
         # Create subprocess
         # Merge stderr to stdout for streaming, as we always want to see errors
-        stderr_handling = asyncio.subprocess.STDOUT
+        stderr_handling = asyncio.subprocess.STDOUT if stream_stderr else asyncio.subprocess.PIPE
         process = await asyncio.create_subprocess_exec(
             *(cmd if isinstance(cmd, list) else [cmd]),
             cwd=cwd,
