@@ -233,14 +233,17 @@ debug = true
 port = 9000
 """)
 
+        # Note: FileConfigLoader is async, so we use asyncio.run
+        import asyncio
+        
         # Load from JSON
         json_loader = FileConfigLoader(json_file)
-        json_config = json_loader.load(AppConfig)
+        json_config = asyncio.run(json_loader.load(AppConfig))
         logger.info("JSON config", **json_config.to_dict())
 
         # Load from TOML
         toml_loader = FileConfigLoader(toml_file)
-        toml_config = toml_loader.load(AppConfig)
+        toml_config = asyncio.run(toml_loader.load(AppConfig))
         logger.info("TOML config", **toml_config.to_dict())
 
 
@@ -250,6 +253,8 @@ def example_multi_source() -> None:
     print("Example 4: Multi-source Configuration")
     print("=" * 60)
 
+    import asyncio
+    
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create default config file
         default_file = Path(tmpdir) / "defaults.json"
@@ -271,8 +276,8 @@ def example_multi_source() -> None:
         # Multi-source loader (later sources override earlier)
         multi_loader = MultiSourceLoader(file_loader, dict_loader)
 
-        # Load and merge
-        config = multi_loader.load(AppConfig)
+        # Load and merge (async)
+        config = asyncio.run(multi_loader.load(AppConfig))
 
         logger.info(
             "Multi-source config",
