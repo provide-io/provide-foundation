@@ -172,10 +172,6 @@ extra_css:
 extra_javascript:
   - https://unpkg.com/mermaid@10/dist/mermaid.min.js
 
-extra:
-  mermaid:
-    enabled: true
-
 nav:
   - Home: index.md
   
@@ -196,7 +192,7 @@ nav:
       - Domain-Action-Status: guide/concepts/das-pattern.md
       - Performance: guide/concepts/performance.md
     
-    - Config:
+    - Configuration:
       - guide/config/index.md
       - Environment Variables: guide/config/environment.md
       - Config Files: guide/config/files.md
@@ -218,12 +214,12 @@ nav:
       - Arguments & Options: guide/cli/arguments.md
       - Output Formatting: guide/cli/output.md
     
-    - System Utilities:
-      - Platform Detection: guide/utilities/platform.md
-      - Process Execution: guide/utilities/process.md
-      - Console Output: guide/utilities/console.md
-      - Registry Pattern: guide/utilities/registry.md
+    - Utilities:
+      - Console I/O: guide/utilities/console.md
       - Error Handling: guide/utilities/errors.md
+      - Platform Detection: guide/utilities/platform.md
+      - Process Management: guide/utilities/process.md
+      - Registry System: guide/utilities/registry.md
   
   
   - API Reference:
@@ -255,39 +251,11 @@ nav:
       - api/utils/index.md
       - File Operations: api/file/index.md
       - Crypto: api/crypto/index.md
-
-  - Cookbook:
-    - cookbook/index.md
-    - Recipes:
-      - cookbook/recipes/index.md
-      - FastAPI Integration: cookbook/recipes/fastapi.md
-      - Testing Strategies: cookbook/recipes/testing.md
-    
-    - Examples:
-      - cookbook/examples/index.md
-      - CLI Tools: cookbook/examples/cli-tool.md
-    
-  
-  - Tutorials:
-    - tutorials/index.md
-    - Building a CLI App: tutorials/cli-application.md
-    - FastAPI with Telemetry: tutorials/fastapi-integration.md
-    - Custom Emoji Set: tutorials/custom-emoji-set.md
-    - Production Logging: tutorials/production-logging.md
   
   - Development:
     - development/index.md
     - Contributing: development/contributing.md
-    - Architecture: development/architecture.md
-    - Testing:
-      - Unit Tests: development/testing/unit.md
-      - Integration Tests: development/testing/integration.md
-      - Performance Tests: development/testing/performance.md
-      - Coverage Reports: development/testing/coverage.md
-      - Using Act: development/testing/act.md
     - CI/CD: development/ci-cd.md
-    - Release Process: development/release.md
-    - Roadmap: development/roadmap.md
   
   - Architecture & Design:
     - architecture/index.md
@@ -295,18 +263,6 @@ nav:
     - Emoji Set Design: architecture/emoji-sets.md
     - Emoji System: architecture/emoji-system.md
     - Performance: architecture/performance.md
-  
-  - Troubleshooting:
-    - troubleshooting/index.md
-    - Common Issues: troubleshooting/common.md
-    - Platform-Specific:
-      - troubleshooting/platforms/index.md
-      - macOS: troubleshooting/platforms/macos.md
-      - Linux: troubleshooting/platforms/linux.md
-      - Windows: troubleshooting/platforms/windows.md
-    - Configuration Problems: troubleshooting/configuration.md
-    - FAQ: troubleshooting/faq.md
-  
 
 validation:
   omitted_files: warn
