@@ -18,8 +18,8 @@ except PackageNotFoundError:  # pragma: no cover
 # Make the errors module available for detailed imports
 from provide.foundation import cli, config, errors, platform, process
 
-# Console output functions
-from provide.foundation.console import perr, pout
+# Console I/O functions
+from provide.foundation.console import perr, pin, pout
 from provide.foundation.context import Context
 from provide.foundation.core import (
     setup_telemetry,
@@ -98,6 +98,8 @@ __all__ = [
     # Core setup and logger
     "logger",
     "perr",
+    # Console input
+    "pin",
     "platform",
     "plog",  # Alias for logger
     # Console output
