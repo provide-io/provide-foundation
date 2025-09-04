@@ -39,6 +39,7 @@ from provide.foundation import (
     setup_telemetry,
     shutdown_foundation_telemetry,
 )
+from provide.foundation.config.types import ConfigSource
 
 
 def test_full_lifecycle_integration(
