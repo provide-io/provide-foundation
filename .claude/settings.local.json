@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(source env.sh)"
+      "Bash(source env.sh)",
+      "Bash(python:*)"
     ],
     "deny": [],
     "ask": [],
