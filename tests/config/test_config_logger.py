@@ -120,7 +120,7 @@ class TestTelemetryConfigFromEnvSemanticLayers:
         monkeypatch.setenv(
             "PROVIDE_LOG_CUSTOM_EMOJI_SETS", "[{'name': 'badjson']"
         )
-        _ensure_config_logger_handler(config_warnings_logger)
+        # _ensure_config_logger_handler removed - warnings now handled by config system
         config = from_env()
         assert config.logging.custom_emoji_sets == []
         assert (
@@ -135,7 +135,7 @@ class TestTelemetryConfigFromEnvSemanticLayers:
             [{"name": "my_layer", "priority": "not_an_int"}]
         )
         monkeypatch.setenv("PROVIDE_LOG_CUSTOM_EMOJI_SETS", custom_layers_json)
-        _ensure_config_logger_handler(config_warnings_logger)
+        # _ensure_config_logger_handler removed - warnings now handled by config system
         config = from_env()
         assert config.logging.custom_emoji_sets == []
         assert "Error parsing data for a custom emoji set" in capsys.readouterr().err

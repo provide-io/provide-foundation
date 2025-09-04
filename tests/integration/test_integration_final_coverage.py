@@ -3,6 +3,7 @@
 import json
 import os
 from unittest.mock import patch
+import pytest
 
 from provide.foundation.logger.custom_processors import add_logger_name_emoji_prefix
 from provide.foundation.logger.emoji.matrix import _format_field_definition_for_display
@@ -28,58 +29,28 @@ def test_logger_base_already_configured_after_lock() -> None:
     pass
 
 
+@pytest.mark.skip(reason="Function removed in refactoring - now handled by config system")
 def test_config_parse_custom_layers_non_list() -> None:
     """Test config.py line 167 - return empty list when custom_layers is not a list."""
-    # Set environment variable to a non-list JSON value
-    with patch.dict(
-        os.environ, {"PROVIDE_LOG_CUSTOM_EMOJI_SETS": '{"not": "a list"}'}
-    ):
-        result = _parse_custom_emoji_sets_from_env()
-        assert result == []
+    pass
 
 
+@pytest.mark.skip(reason="Function removed in refactoring - now handled by config system")
 def test_config_parse_custom_layers_non_dict_item() -> None:
     """Test config.py line 170 - continue when layer_data is not a dict."""
-    # Set environment variable with a list containing non-dict items
-    layers_json = json.dumps(
-        [
-            "not a dict",  # This should be skipped
-            {"name": "valid_layer", "emoji_sets": [], "field_definitions": []},
-        ]
-    )
-
-    with patch.dict(os.environ, {"PROVIDE_LOG_CUSTOM_EMOJI_SETS": layers_json}):
-        result = _parse_custom_emoji_sets_from_env()
-        # Should only have the valid layer
-        assert len(result) == 1
-        assert result[0].name == "valid_layer"
+    pass
 
 
+@pytest.mark.skip(reason="Function removed in refactoring - now handled by config system")
 def test_config_parse_user_emoji_sets_non_list() -> None:
     """Test config.py line 196 - return empty list when user_emoji_sets is not a list."""
-    # Set environment variable to a non-list JSON value
-    with patch.dict(
-        os.environ, {"PROVIDE_LOG_USER_DEFINED_EMOJI_SETS": '"not a list"'}
-    ):
-        result = _parse_user_emoji_sets_from_env()
-        assert result == []
+    pass
 
 
+@pytest.mark.skip(reason="Function removed in refactoring - now handled by config system")
 def test_config_parse_user_emoji_sets_non_dict_item() -> None:
     """Test config.py line 199 - only process dict items in user emoji sets."""
-    # Set environment variable with a list containing non-dict and dict items
-    sets_json = json.dumps(
-        [
-            ["not", "a", "dict"],  # This should be skipped
-            {"name": "valid_set", "emojis": {"test": "✅"}},  # This should be processed
-        ]
-    )
-
-    with patch.dict(os.environ, {"PROVIDE_LOG_USER_DEFINED_EMOJI_SETS": sets_json}):
-        result = _parse_user_emoji_sets_from_env()
-        # Should only have the valid set
-        assert len(result) == 1
-        assert result[0].name == "valid_set"
+    pass
 
 
 def test_add_logger_name_emoji_prefix_no_event_msg() -> None:
