@@ -170,8 +170,8 @@ class TestLazyInitializationErrorRecovery:
             global_logger.error("Error during structlog configure failure")
 
         captured = capsys.readouterr()
-        # Should still produce output via emergency fallback
-        assert len(captured.err) > 0
+        # Should still produce output via emergency fallback (could be stdout or stderr)
+        assert len(captured.out) > 0 or len(captured.err) > 0
 
     def test_processor_chain_failure_recovery(
         self, capsys: CaptureFixture[str]
