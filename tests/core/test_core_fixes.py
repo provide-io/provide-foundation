@@ -237,7 +237,7 @@ def test_emoji_matrix_defaults() -> None:
     """Test emoji matrix has correct default mappings."""
     print("\n=== Test 6: Emoji Matrix Defaults ===")
 
-    from provide.foundation.logger.emoji_matrix import (
+    from provide.foundation.logger.emoji.matrix import (
         PRIMARY_EMOJI,
         SECONDARY_EMOJI,
         TERTIARY_EMOJI,

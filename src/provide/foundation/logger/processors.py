@@ -84,7 +84,7 @@ def _config_create_emoji_processors(
             _logger: Any, _method_name: str, event_dict: structlog.types.EventDict
         ) -> structlog.types.EventDict:
             # This inner function now has access to the resolved config from its closure scope
-            from provide.foundation.logger.emoji_matrix import (
+            from provide.foundation.logger.emoji.matrix import (
                 PRIMARY_EMOJI,
                 SECONDARY_EMOJI,
                 TERTIARY_EMOJI,
