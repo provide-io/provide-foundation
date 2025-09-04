@@ -3,6 +3,7 @@ Additional tests for provide.foundation.utils to increase code coverage.
 """
 import io
 from attrs import define, field, fields
+from typing import Any
 import pytest
 
 from provide.foundation import logger, TelemetryConfig, setup_telemetry, LoggingConfig
@@ -103,6 +104,7 @@ class TestTimingCoverage:
             ctx["status_custom"] = "success" # Use a non-special key
 
         output = captured_stderr_for_foundation.getvalue()
+        # Verify that the modifications to the context dict are present in the final log.
         assert "records=100" in output
         assert "status_custom=success" in output
         assert "outcome=success" in output

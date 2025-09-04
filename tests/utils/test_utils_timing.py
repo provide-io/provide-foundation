@@ -101,7 +101,7 @@ class TestTimedBlock:
         assert log_data.get("event", "").strip() == "my_successful_op completed"
         assert log_data.get("project_id") == 123
         assert log_data.get("component") == "test_util"
-        # No 'outcome' field - that's old behavior
+        assert log_data.get("outcome") == "success"
         assert "duration_seconds" in log_data
 
     def test_execution_with_exception(
@@ -118,8 +118,8 @@ class TestTimedBlock:
         log_data = parse_kv_log_line(log_lines[0])
         assert log_data.get("event", "").strip() == "my_failing_op failed"
         assert log_data.get("user_id") == "user_abc"
-        # No 'outcome' field - that's old behavior
-        assert log_data.get("error") == "Simulated error"
+        assert log_data.get("outcome") == "error"
+        assert log_data.get("error.message") == "Simulated error"
 
     def test_log_level_for_outcome(
         self, captured_stderr_for_foundation: io.StringIO
