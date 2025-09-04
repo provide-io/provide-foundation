@@ -14,11 +14,8 @@ from typing import Any
 import click
 
 from provide.foundation.context import Context
-from provide.foundation.errors import (
-    AlreadyExistsError,
-    NotFoundError,
-    ValidationError,
-)
+from provide.foundation.errors.resources import AlreadyExistsError
+from provide.foundation.errors.config import ValidationError
 from provide.foundation.errors.decorators import with_error_handling
 from provide.foundation.hub.commands import (
     CommandInfo,
@@ -79,10 +76,10 @@ class Hub:
     @with_error_handling(
         context_provider=lambda: {"hub": "add_component"},
         error_mapper=lambda e: ValidationError(
-            f"Failed to add component: {e}",
-            code="HUB_COMPONENT_ADD_ERROR",
-            cause=e
-        ) if not isinstance(e, (AlreadyExistsError, ValidationError)) else e
+            f"Failed to add component: {e}", code="HUB_COMPONENT_ADD_ERROR", cause=e
+        )
+        if not isinstance(e, AlreadyExistsError | ValidationError)
+        else e,
     )
     def add_component(
         self,
@@ -102,7 +99,7 @@ class Hub:
 
         Returns:
             ComponentInfo for the registered component
-            
+
         Raises:
             AlreadyExistsError: If component is already registered
             ValidationError: If component class is invalid
@@ -111,9 +108,9 @@ class Hub:
             raise ValidationError(
                 f"Component must be a class, got {type(component_class).__name__}",
                 code="HUB_INVALID_COMPONENT",
-                component_type=type(component_class).__name__
+                component_type=type(component_class).__name__,
             )
-            
+
         component_name = name or component_class.__name__
 
         # Check if already exists
@@ -122,7 +119,7 @@ class Hub:
                 f"Component '{component_name}' already registered in dimension '{dimension}'",
                 code="HUB_COMPONENT_EXISTS",
                 component_name=component_name,
-                dimension=dimension
+                dimension=dimension,
             )
 
         info = ComponentInfo(

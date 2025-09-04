@@ -17,6 +17,7 @@ The checker validates:
 This tool is designed to be run as part of CI/CD pipelines and pre-commit
 hooks to catch version-related issues early in the development process.
 """
+
 from pathlib import Path
 import sys
 import tomllib
@@ -76,7 +77,9 @@ def check_dynamic_versioning() -> str:
 
         match __version__:
             case "0.0.0-dev":
-                print("ℹ️  Using development fallback version (expected in dev environment)")
+                print(
+                    "ℹ️  Using development fallback version (expected in dev environment)"
+                )
                 return __version__
             case version_str if version_str:
                 print(f"✅ Dynamic versioning working: {version_str}")
@@ -116,13 +119,13 @@ def validate_version_format(version: str) -> bool:
 
     # Basic semantic versioning pattern
     # Allows: 1.0.0, 1.0.0-rc1, 1.0.0-beta.1, 1.0.0+build.1
-    pattern = r'^(\d+)\.(\d+)\.(\d+)(?:-([a-zA-Z0-9\-\.]+))?(?:\+([a-zA-Z0-9\-\.]+))?$'
+    pattern = r"^(\d+)\.(\d+)\.(\d+)(?:-([a-zA-Z0-9\-\.]+))?(?:\+([a-zA-Z0-9\-\.]+))?$"
 
     if not re.match(pattern, version):
         return False
 
     # Additional validation for numeric components
-    parts = version.split('-')[0].split('.')
+    parts = version.split("-")[0].split(".")
     try:
         major, minor, patch = map(int, parts[:3])
         return major >= 0 and minor >= 0 and patch >= 0
@@ -184,7 +187,7 @@ def check_git_tag_consistency(version: str) -> bool:
             ["git", "describe", "--tags", "--exact-match", "HEAD"],
             capture_output=True,
             text=True,
-            check=False
+            check=False,
         )
 
         match result.returncode:
@@ -248,7 +251,9 @@ def main() -> None:
                     print("❌ Version mismatch!")
                     print(f"   pyproject.toml: {pyproject_version}")
                     print(f"   dynamic import: {version}")
-                    print("   This suggests the package isn't installed in development mode")
+                    print(
+                        "   This suggests the package isn't installed in development mode"
+                    )
                     success = False
                 case _:
                     print(f"✅ Dynamic versioning matches: {dynamic_version}")

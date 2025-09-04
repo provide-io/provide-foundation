@@ -1,16 +1,17 @@
 """Tests to achieve 100% coverage."""
 
 import sys
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
+
 import structlog
+
 from provide.foundation.core import (
-    _set_log_stream_for_testing,
     reset_foundation_setup_for_testing,
 )
-from provide.foundation.logger.base import FoundationLogger, _LAZY_SETUP_STATE
+from provide.foundation.logger.base import _LAZY_SETUP_STATE, FoundationLogger
 
 
-def test_ensure_stderr_default():
+def test_ensure_stderr_default() -> None:
     """Test that _ensure_stderr_default switches from stdout to stderr."""
     from provide.foundation import core
     from provide.foundation.core import _ensure_stderr_default
@@ -28,7 +29,7 @@ def test_ensure_stderr_default():
     reset_foundation_setup_for_testing()
 
 
-def test_check_structlog_already_disabled_return_factory():
+def test_check_structlog_already_disabled_return_factory() -> None:
     """Test the path where structlog is configured with ReturnLoggerFactory."""
     reset_foundation_setup_for_testing()
 
@@ -47,7 +48,7 @@ def test_check_structlog_already_disabled_return_factory():
     reset_foundation_setup_for_testing()
 
 
-def test_ensure_configured_already_disabled():
+def test_ensure_configured_already_disabled() -> None:
     """Test _ensure_configured when structlog is already disabled."""
     reset_foundation_setup_for_testing()
 
@@ -62,7 +63,7 @@ def test_ensure_configured_already_disabled():
     reset_foundation_setup_for_testing()
 
 
-def test_logger_base_error_paths():
+def test_logger_base_error_paths() -> None:
     """Test error handling paths in logger base."""
     reset_foundation_setup_for_testing()
 
@@ -81,7 +82,7 @@ def test_logger_base_error_paths():
     reset_foundation_setup_for_testing()
 
 
-def test_logger_base_error_while_waiting_for_lock():
+def test_logger_base_error_while_waiting_for_lock() -> None:
     """Test error path when error is set while waiting for lock."""
     from provide.foundation.logger import base
 

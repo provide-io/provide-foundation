@@ -46,13 +46,13 @@ from provide.foundation.hub.manager import (
 __all__ = [
     # Components
     "BaseComponent",
-    "register_component",
-    "discover_components",
-    # Commands
-    "register_command",
-    "build_click_command",
     # Hub
     "Hub",
-    "get_hub",
+    "build_click_command",
     "clear_hub",
+    "discover_components",
+    "get_hub",
+    # Commands
+    "register_command",
+    "register_component",
 ]

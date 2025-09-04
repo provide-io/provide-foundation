@@ -6,16 +6,15 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import Awaitable, Callable
-from dataclasses import dataclass
 from typing import Any
 
-from attrs import Attribute, fields
+from attrs import Attribute, define, fields
 
 from provide.foundation.config.base import BaseConfig, ConfigValidationError
 from provide.foundation.config.types import ConfigDict
 
 
-@dataclass
+@define
 class SchemaField:
     """Schema definition for a configuration field."""
 
@@ -103,7 +102,7 @@ class SchemaField:
 class ConfigSchema:
     """Schema definition for configuration classes."""
 
-    def __init__(self, fields: list[SchemaField] | None = None):
+    def __init__(self, fields: list[SchemaField] | None = None) -> None:
         """
         Initialize configuration schema.
 

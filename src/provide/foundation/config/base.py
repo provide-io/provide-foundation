@@ -6,28 +6,14 @@ from __future__ import annotations
 
 from collections.abc import Callable
 import copy
-from typing import Any, TypeVar
+from typing import Any, TypeVar, cast
 
-from attrs import NOTHING, Attribute, Factory, define, field as attrs_field, fields
+from attrs import NOTHING, Attribute, define, field as attrs_field, fields
 
 from provide.foundation.config.types import ConfigDict, ConfigSource
+from provide.foundation.errors.config import ValidationError as ConfigValidationError
 
-T = TypeVar("T")
-
-
-class ConfigError(Exception):
-    """Base exception for configuration errors."""
-
-    pass
-
-
-class ConfigValidationError(ConfigError):
-    """Raised when configuration validation fails."""
-
-    def __init__(self, field_name: str, value: Any, message: str):
-        self.field_name = field_name
-        self.value = value
-        super().__init__(f"Validation error for field '{field_name}': {message}")
+T = TypeVar("T", bound="BaseConfig")
 
 
 def field(
@@ -72,11 +58,6 @@ def field(
 
     # Handle factory vs default
     if factory is not None:
-        # Ensure factory is wrapped in Factory if it's not already
-        if not isinstance(factory, Factory):
-            factory = factory if callable(factory) else Factory(factory)
-        else:
-            factory = factory
         return attrs_field(
             factory=factory,
             validator=validator,
@@ -104,8 +85,8 @@ class BaseConfig:
     """
 
     # These are instance attributes that need to be defined outside of slots
-    _source_map: dict[str, ConfigSource] = attrs_field(init=False, factory=dict)
-    _original_values: dict[str, Any] = attrs_field(init=False, factory=dict)
+    _source_map: dict[str, ConfigSource] = attrs_field(init=False, factory=lambda: {})
+    _original_values: dict[str, Any] = attrs_field(init=False, factory=lambda: {})
 
     def __attrs_post_init__(self):
         """Post-initialization hook for subclasses."""
@@ -251,10 +232,8 @@ class BaseConfig:
             if attr.default != NOTHING:
                 setattr(self, attr.name, attr.default)
             elif attr.factory != NOTHING:
-                if isinstance(attr.factory, Factory):
-                    setattr(self, attr.name, attr.factory.factory())
-                else:
-                    setattr(self, attr.name, attr.factory())
+                # attrs factory is always callable
+                setattr(self, attr.name, attr.factory())
 
         self._source_map.clear()
         self._original_values.clear()

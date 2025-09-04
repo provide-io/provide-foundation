@@ -1,18 +1,17 @@
 """Utility functions for hashing and cryptographic operations."""
 
 import hashlib
-from typing import Any
 
 
 def quick_hash(data: bytes) -> int:
     """Generate a quick non-cryptographic hash for lookups.
-    
+
     This uses Python's built-in hash function which is fast but not
     cryptographically secure. Use only for hash tables and caching.
-    
+
     Args:
         data: Data to hash
-        
+
     Returns:
         32-bit hash value
     """
@@ -22,12 +21,12 @@ def quick_hash(data: bytes) -> int:
 
 def hash_name(name: str) -> int:
     """Generate a 64-bit hash of a string for fast lookup.
-    
+
     This is useful for creating numeric identifiers from strings.
-    
+
     Args:
         name: String to hash
-        
+
     Returns:
         64-bit integer hash
     """
@@ -38,11 +37,11 @@ def hash_name(name: str) -> int:
 
 def compare_hash(hash1: str, hash2: str) -> bool:
     """Compare two hash values in a case-insensitive manner.
-    
+
     Args:
         hash1: First hash value
         hash2: Second hash value
-        
+
     Returns:
         True if hashes match (case-insensitive)
     """
@@ -56,16 +55,16 @@ def format_hash(
     separator: str = " ",
 ) -> str:
     """Format a hash value for display.
-    
+
     Args:
         hash_value: Hash value to format
         group_size: Number of characters per group
         groups: Number of groups to show (0 for all)
         separator: Separator between groups
-        
+
     Returns:
         Formatted hash string
-        
+
     Examples:
         >>> format_hash("abc123def456", group_size=4, separator="-")
         "abc1-23de-f456"
@@ -74,27 +73,27 @@ def format_hash(
     """
     if group_size <= 0:
         return hash_value
-    
+
     formatted_parts = []
     for i in range(0, len(hash_value), group_size):
-        formatted_parts.append(hash_value[i:i + group_size])
+        formatted_parts.append(hash_value[i : i + group_size])
         if groups > 0 and len(formatted_parts) >= groups:
             break
-    
+
     return separator.join(formatted_parts)
 
 
 def truncate_hash(hash_value: str, length: int = 16, suffix: str = "...") -> str:
     """Truncate a hash for display purposes.
-    
+
     Args:
         hash_value: Hash value to truncate
         length: Number of characters to keep
         suffix: Suffix to append
-        
+
     Returns:
         Truncated hash string
-        
+
     Examples:
         >>> truncate_hash("abc123def456789", length=8)
         "abc123de..."
@@ -106,10 +105,10 @@ def truncate_hash(hash_value: str, length: int = 16, suffix: str = "...") -> str
 
 def hash_to_int(hash_value: str) -> int:
     """Convert a hex hash string to an integer.
-    
+
     Args:
         hash_value: Hex hash string
-        
+
     Returns:
         Integer representation of the hash
     """
@@ -118,11 +117,11 @@ def hash_to_int(hash_value: str) -> int:
 
 def int_to_hash(value: int, length: int | None = None) -> str:
     """Convert an integer to a hex hash string.
-    
+
     Args:
         value: Integer value
         length: Desired length (will pad with zeros)
-        
+
     Returns:
         Hex string representation
     """
@@ -134,11 +133,11 @@ def int_to_hash(value: int, length: int | None = None) -> str:
 
 def is_valid_hash(hash_value: str, algorithm: str | None = None) -> bool:
     """Check if a string is a valid hash value.
-    
+
     Args:
         hash_value: String to check
         algorithm: Optional algorithm to validate length against
-        
+
     Returns:
         True if string appears to be a valid hash
     """
@@ -147,16 +146,19 @@ def is_valid_hash(hash_value: str, algorithm: str | None = None) -> bool:
         int(hash_value, 16)
     except ValueError:
         return False
-    
+
     # If algorithm specified, check length
     if algorithm:
-        from provide.foundation.crypto.algorithms import get_digest_size, validate_algorithm
-        
+        from provide.foundation.crypto.algorithms import (
+            get_digest_size,
+            validate_algorithm,
+        )
+
         try:
             validate_algorithm(algorithm)
             expected_length = get_digest_size(algorithm) * 2  # hex is 2 chars per byte
             return len(hash_value) == expected_length
         except Exception:
             return False
-    
+
     return True

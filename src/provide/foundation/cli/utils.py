@@ -135,7 +135,7 @@ def create_cli_context(**kwargs) -> Context:
 class CliTestRunner:
     """Test runner for CLI commands using Click's testing facilities."""
 
-    def __init__(self, mix_stderr: bool = False):
+    def __init__(self, mix_stderr: bool = False) -> None:
         """
         Initialize the test runner.
 

@@ -2,22 +2,18 @@
 
 import json
 import os
-from unittest.mock import patch, MagicMock
-import structlog
-from provide.foundation.core import reset_foundation_setup_for_testing
-from provide.foundation.logger.base import (
-    FoundationLogger,
-    _LAZY_SETUP_STATE,
-    _LAZY_SETUP_LOCK,
-)
-from provide.foundation.logger.config import TelemetryConfig
-from provide.foundation.logger.env import _parse_custom_layers_from_env, _parse_user_emoji_sets_from_env
+from unittest.mock import patch
+
 from provide.foundation.logger.custom_processors import add_logger_name_emoji_prefix
 from provide.foundation.logger.emoji_matrix import _format_field_definition_for_display
+from provide.foundation.logger.env import (
+    _parse_custom_layers_from_env,
+    _parse_user_emoji_sets_from_env,
+)
 from provide.foundation.types import SemanticFieldDefinition
 
 
-def test_logger_base_already_configured_after_lock():
+def test_logger_base_already_configured_after_lock() -> None:
     """Test line 72 - return when already configured after acquiring lock.
 
     TODO: This test needs to be properly implemented to cover line 72 in logger/base.py.
@@ -31,7 +27,7 @@ def test_logger_base_already_configured_after_lock():
     pass
 
 
-def test_config_parse_custom_layers_non_list():
+def test_config_parse_custom_layers_non_list() -> None:
     """Test config.py line 167 - return empty list when custom_layers is not a list."""
     # Set environment variable to a non-list JSON value
     with patch.dict(
@@ -41,7 +37,7 @@ def test_config_parse_custom_layers_non_list():
         assert result == []
 
 
-def test_config_parse_custom_layers_non_dict_item():
+def test_config_parse_custom_layers_non_dict_item() -> None:
     """Test config.py line 170 - continue when layer_data is not a dict."""
     # Set environment variable with a list containing non-dict items
     layers_json = json.dumps(
@@ -58,7 +54,7 @@ def test_config_parse_custom_layers_non_dict_item():
         assert result[0].name == "valid_layer"
 
 
-def test_config_parse_user_emoji_sets_non_list():
+def test_config_parse_user_emoji_sets_non_list() -> None:
     """Test config.py line 196 - return empty list when user_emoji_sets is not a list."""
     # Set environment variable to a non-list JSON value
     with patch.dict(
@@ -68,7 +64,7 @@ def test_config_parse_user_emoji_sets_non_list():
         assert result == []
 
 
-def test_config_parse_user_emoji_sets_non_dict_item():
+def test_config_parse_user_emoji_sets_non_dict_item() -> None:
     """Test config.py line 199 - only process dict items in user emoji sets."""
     # Set environment variable with a list containing non-dict and dict items
     sets_json = json.dumps(
@@ -85,7 +81,7 @@ def test_config_parse_user_emoji_sets_non_dict_item():
         assert result[0].name == "valid_set"
 
 
-def test_add_logger_name_emoji_prefix_no_event_msg():
+def test_add_logger_name_emoji_prefix_no_event_msg() -> None:
     """Test custom_processors.py lines 106-107 - emoji only when no event message."""
     event_dict = {
         "logger_name": "test_logger",
@@ -103,7 +99,7 @@ def test_add_logger_name_emoji_prefix_no_event_msg():
         assert result["event"] == "🧪"
 
 
-def test_add_logger_name_emoji_prefix_no_emoji():
+def test_add_logger_name_emoji_prefix_no_emoji() -> None:
     """Test custom_processors.py branch 106->108 - no emoji and no event."""
     from provide.foundation.logger import custom_processors
 
@@ -126,16 +122,16 @@ def test_add_logger_name_emoji_prefix_no_emoji():
         assert "event" not in result
 
 
-def test_custom_processor_protocol_coverage():
+def test_custom_processor_protocol_coverage() -> None:
     """Test the StructlogProcessor protocol __call__ method."""
     from provide.foundation.logger.custom_processors import StructlogProcessor
 
     # This is just to ensure the protocol is covered
     # Protocols themselves don't have implementation but we can verify the signature
-    assert hasattr(StructlogProcessor, "__call__")
+    assert callable(StructlogProcessor)
 
 
-def test_add_log_level_custom_with_existing_level():
+def test_add_log_level_custom_with_existing_level() -> None:
     """Test custom_processors.py branch 36->46 - when level already exists in event_dict."""
     from provide.foundation.logger.custom_processors import add_log_level_custom
 
@@ -150,7 +146,7 @@ def test_add_log_level_custom_with_existing_level():
     assert result["level"] == "debug"  # Should be updated from hint
 
 
-def test_format_field_definition_minimal():
+def test_format_field_definition_minimal() -> None:
     """Test emoji_matrix field definition formatting with minimal data."""
     # Test with only required field
     field_def = SemanticFieldDefinition(log_key="test.key")
@@ -160,7 +156,7 @@ def test_format_field_definition_minimal():
     assert "Type:" not in result  # No type
 
 
-def test_format_field_definition_with_emoji_no_override():
+def test_format_field_definition_with_emoji_no_override() -> None:
     """Test emoji_matrix field definition with emoji set but no override."""
     field_def = SemanticFieldDefinition(
         log_key="test.key",
@@ -174,7 +170,7 @@ def test_format_field_definition_with_emoji_no_override():
     assert "Default Emoji Key (Override)" not in result
 
 
-def test_format_field_definition_full():
+def test_format_field_definition_full() -> None:
     """Test emoji_matrix field definition with all fields."""
     field_def = SemanticFieldDefinition(
         log_key="test.key",

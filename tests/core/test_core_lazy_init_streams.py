@@ -143,7 +143,9 @@ class TestLazyInitializationErrorRecovery:
         reset_foundation_setup_for_testing()
 
         # Mock config creation to fail completely
-        with patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class:
+        with patch(
+            "provide.foundation.logger.config.TelemetryConfig"
+        ) as mock_config_class:
             mock_config_class.from_env.side_effect = Exception("Config creation failed")
             mock_config_class.side_effect = Exception("Config constructor failed")
 

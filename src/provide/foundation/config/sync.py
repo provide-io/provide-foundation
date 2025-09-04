@@ -32,7 +32,7 @@ def run_async(coro):
     """
     try:
         # Try to get the current event loop
-        loop = asyncio.get_running_loop()
+        asyncio.get_running_loop()
         # If we're here, we're already in an async context
         # This shouldn't happen in sync code, but handle it gracefully
         import concurrent.futures
@@ -227,7 +227,7 @@ class SyncConfigManager:
     Provides a sync interface to the async ConfigManager.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize sync config manager."""
         self._async_manager = ConfigManager()
 

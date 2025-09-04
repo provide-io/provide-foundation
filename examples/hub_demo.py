@@ -9,31 +9,36 @@ This example demonstrates:
 - Creating a full CLI application
 """
 
-from provide.foundation.hub import Hub, BaseComponent, register_component, register_command
+from provide.foundation.cli import echo_info, echo_success, echo_warning
 from provide.foundation.context import Context
-from provide.foundation.cli import echo_success, echo_info, echo_warning
-
+from provide.foundation.hub import (
+    BaseComponent,
+    Hub,
+    register_command,
+    register_component,
+)
 
 # ==============================================================================
 # COMPONENTS
 # ==============================================================================
 
+
 @register_component("database", dimension="resource", version="1.0.0")
 class DatabaseResource(BaseComponent):
     """Database connection resource with lifecycle management."""
-    
-    def _setup(self):
+
+    def _setup(self) -> None:
         """Initialize database connection."""
         echo_info(f"Connecting to database: {self.name}")
         self.connected = True
-    
-    def _teardown(self):
+
+    def _teardown(self) -> None:
         """Close database connection."""
         if self.connected:
             echo_info(f"Disconnecting from database: {self.name}")
             self.connected = False
-    
-    def query(self, sql: str):
+
+    def query(self, sql: str) -> str:
         """Execute a query."""
         if not self.connected:
             raise RuntimeError("Not connected to database")
@@ -43,22 +48,22 @@ class DatabaseResource(BaseComponent):
 @register_component("cache", dimension="resource", version="1.0.0")
 class CacheResource(BaseComponent):
     """Cache resource for fast data access."""
-    
-    def _setup(self):
+
+    def _setup(self) -> None:
         """Initialize cache."""
         echo_info(f"Initializing cache: {self.name}")
         self.cache = {}
-    
-    def _teardown(self):
+
+    def _teardown(self) -> None:
         """Clear cache."""
         echo_info(f"Clearing cache: {self.name}")
         self.cache.clear()
-    
+
     def get(self, key: str):
         """Get value from cache."""
         return self.cache.get(key)
-    
-    def set(self, key: str, value: str):
+
+    def set(self, key: str, value: str) -> None:
         """Set value in cache."""
         self.cache[key] = value
 
@@ -66,11 +71,11 @@ class CacheResource(BaseComponent):
 @register_component("logger", dimension="service", version="2.0.0")
 class LoggerService:
     """Simple logging service."""
-    
-    def __init__(self, level: str = "INFO"):
+
+    def __init__(self, level: str = "INFO") -> None:
         self.level = level
-    
-    def log(self, message: str):
+
+    def log(self, message: str) -> None:
         """Log a message."""
         print(f"[{self.level}] {message}")
 
@@ -79,34 +84,35 @@ class LoggerService:
 # COMMANDS
 # ==============================================================================
 
+
 @register_command("init", category="project")
-def init_command(name: str = "myproject", template: str = "default"):
+def init_command(name: str = "myproject", template: str = "default") -> None:
     """Initialize a new project."""
     echo_success(f"Initializing project '{name}' with template '{template}'")
-    
+
     # Simulate project initialization
     echo_info("Creating directory structure...")
     echo_info("Installing dependencies...")
     echo_info("Setting up configuration...")
-    
+
     echo_success(f"Project '{name}' initialized successfully!")
 
 
 @register_command("status", aliases=["st", "info"])
-def status_command(verbose: bool = False):
+def status_command(verbose: bool = False) -> None:
     """Show system status."""
     hub = Hub()
-    
+
     echo_info("System Status")
     echo_info("=" * 40)
-    
+
     # Show components
     components = hub.list_components()
     echo_info(f"Registered components: {len(components)}")
     if verbose:
         for comp in components:
             echo_info(f"  - {comp}")
-    
+
     # Show commands
     commands = hub.list_commands()
     echo_info(f"Registered commands: {len(commands)}")
@@ -116,41 +122,41 @@ def status_command(verbose: bool = False):
 
 
 @register_command("test-resources", category="testing")
-def test_resources_command():
+def test_resources_command() -> None:
     """Test resource lifecycle management."""
     hub = Hub()
-    
+
     echo_info("Testing resource lifecycle...")
-    
+
     # Get resource classes
     db_class = hub.get_component("database", dimension="resource")
     cache_class = hub.get_component("cache", dimension="resource")
-    
+
     if not db_class or not cache_class:
         echo_warning("Resources not found!")
         return
-    
+
     # Test database resource
     echo_info("\nTesting database resource:")
     with db_class("test_db") as db:
         result = db.query("SELECT * FROM users")
         echo_success(f"Query executed: {result}")
-    
+
     # Test cache resource
     echo_info("\nTesting cache resource:")
     with cache_class("test_cache") as cache:
         cache.set("key1", "value1")
         value = cache.get("key1")
         echo_success(f"Cache test: key1 = {value}")
-    
+
     echo_success("\nResource lifecycle test completed!")
 
 
 @register_command("list", category="info")
-def list_command(dimension: str | None = None):
+def list_command(dimension: str | None = None) -> None:
     """List registered components by dimension."""
     hub = Hub()
-    
+
     if dimension:
         items = hub.list_components(dimension=dimension)
         echo_info(f"Components in dimension '{dimension}':")
@@ -169,24 +175,19 @@ def list_command(dimension: str | None = None):
 # MAIN APPLICATION
 # ==============================================================================
 
+
 def create_demo_cli():
     """Create the demo CLI application."""
     # Create hub with context
-    context = Context(
-        log_level="INFO",
-        profile="demo",
-        debug=False
-    )
-    
+    context = Context(log_level="INFO", profile="demo", debug=False)
+
     hub = Hub(context=context)
-    
+
     # Create CLI
     cli = hub.create_cli(
-        name="hub-demo",
-        version="1.0.0",
-        help="Foundation Hub Demo Application"
+        name="hub-demo", version="1.0.0", help="Foundation Hub Demo Application"
     )
-    
+
     return cli
 
 
@@ -194,7 +195,7 @@ if __name__ == "__main__":
     # Create and run the CLI
     cli = create_demo_cli()
     cli()
-    
+
     # To test without CLI, uncomment:
     # hub = Hub()
     # test_resources_command()

@@ -14,6 +14,7 @@ This script pushes the logging system to its absolute limits to test:
 
 Results help establish performance ceilings and identify breaking points.
 """
+
 import asyncio
 from collections.abc import Generator
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -57,6 +58,7 @@ def get_memory_usage() -> float:
     """Get memory usage in MB, with fallback."""
     try:
         import psutil
+
         return psutil.Process().memory_info().rss / 1024 / 1024
     except ImportError:
         return 0.0
@@ -163,7 +165,9 @@ def extreme_concurrency_test() -> dict[str, Any]:
         )
     )
 
-    def worker_thread(thread_id: int, messages: int, monitor: PerformanceMonitor) -> None:
+    def worker_thread(
+        thread_id: int, messages: int, monitor: PerformanceMonitor
+    ) -> None:
         """High-intensity worker thread."""
         thread_logger = logger.get_logger(f"extreme.thread.{thread_id}")
         for i in range(messages):
@@ -238,7 +242,7 @@ def memory_stress_test() -> dict[str, Any]:
                 domain="memory",
                 action="stress",
                 status="ongoing",
-                **large_data
+                **large_data,
             )
 
             if i % 1000 == 0:
@@ -349,17 +353,23 @@ def filtering_efficiency_test() -> dict[str, Any]:
         end_time = time.perf_counter()
 
         # Count actual output
-        output_lines = len([
-            line for line in captured.getvalue().split('\n')
-            if line.strip() and not line.startswith("[Foundation Setup]")
-        ])
+        output_lines = len(
+            [
+                line
+                for line in captured.getvalue().split("\n")
+                if line.strip() and not line.startswith("[Foundation Setup]")
+            ]
+        )
 
         duration = end_time - start_time
         stats = {
             "duration_seconds": duration,
             "total_attempts": total_attempts,
             "actual_output_lines": output_lines,
-            "filtering_efficiency_percent": ((total_attempts - output_lines) / total_attempts) * 100,
+            "filtering_efficiency_percent": (
+                (total_attempts - output_lines) / total_attempts
+            )
+            * 100,
             "messages_per_second": total_attempts / duration,
         }
 
@@ -414,10 +424,7 @@ def main() -> None:
             print(f"{test_name:20s}: {throughput:>10.0f} msg/sec")
 
     # Find peak performance
-    peak_test = max(
-        results.items(),
-        key=lambda x: x[1].get("messages_per_second", 0)
-    )
+    peak_test = max(results.items(), key=lambda x: x[1].get("messages_per_second", 0))
     peak_throughput = peak_test[1]["messages_per_second"]
 
     print(f"\n🚀 PEAK PERFORMANCE: {peak_throughput:.0f} msg/sec ({peak_test[0]})")
