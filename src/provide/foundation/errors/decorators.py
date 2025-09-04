@@ -291,7 +291,7 @@ def suppress_and_log(
                 if log_level in ("debug", "info", "warning", "error", "critical"):
                     log_method = getattr(_get_logger(), log_level)
                 else:
-                    log_method = logger.warning
+                    log_method = _get_logger().warning
 
                 log_method(
                     f"Suppressed {type(e).__name__} in {func.__name__}: {e}",

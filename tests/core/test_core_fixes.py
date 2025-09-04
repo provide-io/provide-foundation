@@ -216,21 +216,21 @@ def test_thread_safety() -> None:
 
 
 def test_get_safe_stderr() -> None:
-    """Test that _get_safe_stderr function exists and works."""
+    """Test that get_safe_stderr function exists and works."""
     print("\n=== Test 5: Safe Stderr Function ===")
 
     try:
-        from provide.foundation.logger.base import (
-            _get_safe_stderr,  # type: ignore[import-untyped]
+        from provide.foundation.utils.streams import (
+            get_safe_stderr,
         )
 
-        stderr = _get_safe_stderr()
+        stderr = get_safe_stderr()
 
-        assert hasattr(stderr, "write"), "_get_safe_stderr returned invalid stream"
-        print("✅ _get_safe_stderr function works")
+        assert hasattr(stderr, "write"), "get_safe_stderr returned invalid stream"
+        print("✅ get_safe_stderr function works")
     except ImportError:  # pragma: no cover
-        print("❌ _get_safe_stderr function not found")
-        raise AssertionError("_get_safe_stderr function not found") from None  # B904
+        print("❌ get_safe_stderr function not found")
+        raise AssertionError("get_safe_stderr function not found") from None  # B904
 
 
 def test_emoji_matrix_defaults() -> None:
