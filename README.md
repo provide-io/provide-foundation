@@ -94,15 +94,15 @@ Smart emoji prefixes and color coding make logs instantly scannable during devel
 
 Configure logging behavior without touching code:
 
-#### Core Settings (FOUNDATION_*)
+#### Core Settings (PROVIDE_*)
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `FOUNDATION_SERVICE_NAME` | Service identifier in logs | `None` |
-| `FOUNDATION_LOG_LEVEL` | Minimum log level | `DEBUG` |
-| `FOUNDATION_LOG_CONSOLE_FORMATTER` | Output format (`key_value` or `json`) | `key_value` |
-| `FOUNDATION_LOG_OMIT_TIMESTAMP` | Remove timestamps from console output | `false` |
-| `FOUNDATION_LOG_ENABLED_EMOJI_SETS` | Comma-separated emoji sets | `""` |
+| `PROVIDE_SERVICE_NAME` | Service identifier in logs | `None` |
+| `PROVIDE_LOG_LEVEL` | Minimum log level | `DEBUG` |
+| `PROVIDE_LOG_CONSOLE_FORMATTER` | Output format (`key_value` or `json`) | `key_value` |
+| `PROVIDE_LOG_OMIT_TIMESTAMP` | Remove timestamps from console output | `false` |
+| `PROVIDE_LOG_ENABLED_EMOJI_SETS` | Comma-separated emoji sets | `""` |
 
 #### CLI Settings (PROVIDE_*)
 
