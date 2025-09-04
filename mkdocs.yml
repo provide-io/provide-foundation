@@ -227,6 +227,42 @@ nav:
       - Error Handling: guide/utilities/errors.md
   
   
+  - API Reference:
+    - api/index.md
+    - Logger:
+      - api/logger/index.md
+      - Base Logger: api/logger/base.md
+      - Configuration: api/logger/config.md
+      - Processors: api/logger/processors.md
+      - Emoji Matrix: api/logger/emoji.md
+    
+    - Configuration:
+      - api/config/index.md
+      - Config Manager: api/config/manager.md
+      - Environment: api/config/env.md
+      - Loaders: api/config/loader.md
+      - Schema: api/config/schema.md
+    
+    - CLI:
+      - api/cli/index.md
+      - Decorators: api/cli/decorators.md
+      - Testing: api/cli/testing.md
+      - Utilities: api/cli/utils.md
+    
+    - Hub:
+      - api/hub/index.md
+      - Components: api/hub/components.md
+      - Registry: api/hub/registry.md
+      - Commands: api/hub/commands.md
+    
+    - Utilities:
+      - api/utils/index.md
+      - Platform: api/platform/index.md
+      - Process: api/process/index.md
+      - File Operations: api/file/index.md
+      - Crypto: api/crypto/index.md
+      - Errors: api/errors/index.md
+
   - Cookbook:
     - cookbook/index.md
     - Recipes:
