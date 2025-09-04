@@ -167,17 +167,17 @@ class TestCliLogging:
     @patch("provide.foundation.cli.utils.setup_logging")
     def test_setup_cli_logging_verbose(self, mock_setup: MagicMock) -> None:
         """Test verbose CLI logging setup."""
-        setup_cli_logging(verbose=True)
-        mock_setup.assert_called_once_with(level="DEBUG", console_output=True, console_format="console")
+        setup_cli_logging(log_level="DEBUG")
+        mock_setup.assert_called_once_with(level="DEBUG", json_logs=False, log_file=None)
 
     @patch("provide.foundation.cli.utils.setup_logging")
     def test_setup_cli_logging_quiet(self, mock_setup: MagicMock) -> None:
         """Test quiet CLI logging setup."""
-        setup_cli_logging(quiet=True)
-        mock_setup.assert_called_once_with(level="ERROR", console_output=True, console_format="console")
+        setup_cli_logging(log_level="ERROR")
+        mock_setup.assert_called_once_with(level="ERROR", json_logs=False, log_file=None)
 
     @patch("provide.foundation.cli.utils.setup_logging")
     def test_setup_cli_logging_json(self, mock_setup: MagicMock) -> None:
         """Test JSON CLI logging setup."""
-        setup_cli_logging(json_output=True)
-        mock_setup.assert_called_once_with(level="INFO", console_output=True, console_format="json")
+        setup_cli_logging(log_format="json")
+        mock_setup.assert_called_once_with(level="INFO", json_logs=True, log_file=None)
