@@ -125,7 +125,7 @@ class TestCompleteCliIntegration:
 class TestLoggingIntegration:
     """Test that logging options actually affect logging behavior."""
 
-    def test_log_level_affects_output(self, captured_stderr_for_foundation: io.StringIO) -> None:
+    def test_log_level_affects_output(self) -> None:
         @click.command()
         @flexible_options
         @pass_context
@@ -134,14 +134,14 @@ class TestLoggingIntegration:
             logger = get_logger(__name__)
             logger.debug("Debug message")
             logger.info("Info message")
-        runner = CliTestRunner()
+        runner = CliTestRunner(mix_stderr=True)
         result = runner.invoke(cmd, ["--log-level", "INFO"])
         assert result.exit_code == 0
-        output = captured_stderr_for_foundation.getvalue()
+        output = result.output
         assert "Debug message" not in output
         assert "Info message" in output
 
-    def test_log_format_changes_output(self, captured_stderr_for_foundation: io.StringIO) -> None:
+    def test_log_format_changes_output(self) -> None:
         @click.command()
         @flexible_options
         @output_options
@@ -150,10 +150,10 @@ class TestLoggingIntegration:
             setup_cli_logging(ctx)
             logger = get_logger(__name__)
             logger.info("Test message", extra_field="value")
-        runner = CliTestRunner()
+        runner = CliTestRunner(mix_stderr=True)
         result = runner.invoke(cmd, ["--log-level", "INFO", "--log-format", "json"])
         assert result.exit_code == 0
-        output = captured_stderr_for_foundation.getvalue()
+        output = result.output
         app_logs = [line for line in output.splitlines() if not line.startswith('[Foundation Setup]')]
         log_data = json.loads(app_logs[-1])
         assert "Test message" in log_data["event"]
