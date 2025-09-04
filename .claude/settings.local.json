@@ -5,7 +5,9 @@
       "Bash(python:*)",
       "Bash(pytest:*)",
       "Bash(ruff check:*)",
-      "Bash(PROVIDE_LOG_LEVEL=DEBUG python -c \"from provide.foundation import logger; logger.info(''Testing with DEBUG level!'')\")"
+      "Bash(PROVIDE_LOG_LEVEL=DEBUG python -c \"from provide.foundation import logger; logger.info(''Testing with DEBUG level!'')\")",
+      "Bash(FOUNDATION_LOG_LEVEL=DEBUG python -c \"from provide.foundation import logger; logger.info(''Testing with DEBUG level!'')\")",
+      "Bash(uv build:*)"
     ],
     "deny": [],
     "ask": [],
