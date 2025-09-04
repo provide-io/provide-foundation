@@ -98,3 +98,4 @@ uv publish                      # Publish to PyPI
 - only use foundation.logger - never structlog directly
 - only use absolute imports. never relative imports.
 - use async in pytests where appropriate.
+- no legacy implementation is needed. any refactoring will *replace* the logic. no migration. and the tests must the same as before. no migration.

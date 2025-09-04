@@ -39,9 +39,10 @@ class TestCompleteCliIntegration:
             # Setup logging based on options
             if ctx.log_level:
                 setup_cli_logging(
-                    level=ctx.log_level,
-                    format=getattr(ctx, "log_format", "key_value"),
-                    file=ctx.log_file,
+                    ctx=ctx,
+                    log_level=ctx.log_level,
+                    log_file=ctx.log_file,
+                    json_logs=ctx.json_output,
                 )
 
         @cli.group()
@@ -59,7 +60,7 @@ class TestCompleteCliIntegration:
         def migrate(ctx: Context):
             """Run database migrations."""
             logger = get_logger(__name__)
-            logger.info("Running migrations", log_level=ctx.log_level)
+            logger.info("Running migrations")
             
             if ctx.json_output:
                 click.echo(json.dumps({"status": "success", "migrations": 5}))
@@ -77,7 +78,7 @@ class TestCompleteCliIntegration:
                     setattr(ctx, key, value)
             
             logger = get_logger(__name__)
-            logger.debug("Checking status", log_level=ctx.log_level)
+            logger.debug("Checking status")
             
             if ctx.json_output:
                 click.echo(json.dumps({"status": "healthy", "uptime": 3600}))
@@ -173,7 +174,7 @@ class TestLoggingIntegration:
         def cmd(ctx: Context, **kwargs):
             # Setup logging with the provided level
             if ctx.log_level:
-                setup_cli_logging(level=ctx.log_level)
+                setup_cli_logging(log_level=ctx.log_level)
             
             logger = get_logger(__name__)
             logger.debug("Debug message")
@@ -196,8 +197,8 @@ class TestLoggingIntegration:
         def cmd(ctx: Context, **kwargs):
             if ctx.log_level and hasattr(ctx, "log_format"):
                 setup_cli_logging(
-                    level=ctx.log_level,
-                    format=ctx.log_format
+                    log_level=ctx.log_level,
+                    json_logs=ctx.log_format == "json"
                 )
             
             logger = get_logger(__name__)
@@ -226,8 +227,8 @@ class TestLoggingIntegration:
             def cmd(ctx: Context, **kwargs):
                 if ctx.log_file:
                     setup_cli_logging(
-                        level=ctx.log_level or "INFO",
-                        file=ctx.log_file
+                        log_level=ctx.log_level or "INFO",
+                        log_file=ctx.log_file
                     )
                 
                 logger = get_logger(__name__)

@@ -126,7 +126,7 @@ If you're migrating from `pyvider.telemetry`:
 
 ```python
 # Old (pyvider)
-from pyvider.telemetry import logger
+from provide.foundation import logger
 
 # New (provide.foundation)
 from provide.foundation import plog as logger

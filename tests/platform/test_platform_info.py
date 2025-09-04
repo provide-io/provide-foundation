@@ -9,11 +9,11 @@ from provide.foundation.platform import SystemInfo, get_system_info
 class TestSystemInfo:
     """Test system information gathering."""
     
-    @patch("provide.foundation.platform.info.get_os_name", return_value="darwin")
-    @patch("provide.foundation.platform.info.get_arch_name", return_value="arm64")
-    @patch("provide.foundation.platform.info.get_platform_string", return_value="darwin_arm64")
-    @patch("provide.foundation.platform.info.get_os_version", return_value="14.2.1")
-    @patch("provide.foundation.platform.info.get_cpu_type", return_value="Apple M2")
+    @patch("provide.foundation.platform.get_os", return_value="darwin")
+    @patch("provide.foundation.platform.get_arch", return_value="arm64")
+    @patch("provide.foundation.platform.get_platform", return_value="darwin_arm64")
+    @patch("provide.foundation.platform.get_os_version", return_value="14.2.1")
+    @patch("provide.foundation.platform.get_cpu_type", return_value="Apple M2")
     @patch("platform.python_version", return_value="3.11.7")
     @patch("platform.node", return_value="test-hostname")
     @patch("os.environ.get")
@@ -30,9 +30,9 @@ class TestSystemInfo:
         mock_python_version,
         mock_cpu_type,
         mock_os_version,
-        mock_platform_string,
-        mock_arch_name,
-        mock_os_name,
+        mock_platform,
+        mock_arch,
+        mock_os,
     ):
         """Test getting complete system information."""
         # Setup mocks
@@ -72,11 +72,11 @@ class TestSystemInfo:
         assert "/" in info.disk_usage
         assert info.disk_usage["/"]["total"] == 1000000
     
-    @patch("provide.foundation.platform.info.get_os_name", return_value="linux")
-    @patch("provide.foundation.platform.info.get_arch_name", return_value="amd64")
-    @patch("provide.foundation.platform.info.get_platform_string", return_value="linux_amd64")
-    @patch("provide.foundation.platform.info.get_os_version", return_value=None)
-    @patch("provide.foundation.platform.info.get_cpu_type", return_value=None)
+    @patch("provide.foundation.platform.get_os", return_value="linux")
+    @patch("provide.foundation.platform.get_arch", return_value="amd64")
+    @patch("provide.foundation.platform.get_platform", return_value="linux_amd64")
+    @patch("provide.foundation.platform.get_os_version", return_value=None)
+    @patch("provide.foundation.platform.get_cpu_type", return_value=None)
     @patch("platform.python_version", return_value="3.10.0")
     @patch("platform.node", side_effect=Exception("Cannot get hostname"))
     @patch("os.environ.get", return_value=None)
@@ -93,9 +93,9 @@ class TestSystemInfo:
         mock_python_version,
         mock_cpu_type,
         mock_os_version,
-        mock_platform_string,
-        mock_arch_name,
-        mock_os_name,
+        mock_platform,
+        mock_arch,
+        mock_os,
     ):
         """Test getting system info with minimal data available."""
         # Get system info
@@ -135,9 +135,9 @@ class TestSystemInfo:
         mock_python_version,
         mock_cpu_type,
         mock_os_version,
-        mock_platform_string,
-        mock_arch_name,
-        mock_os_name,
+        mock_platform,
+        mock_arch,
+        mock_os,
     ):
         """Test getting system info with psutil available."""
         # Mock psutil
