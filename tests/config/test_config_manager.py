@@ -144,16 +144,18 @@ class TestConfigManager:
         
         # Mock loader
         mock_loader = AsyncMock()
-        mock_loader.load.return_value = {"test": {"name": "reloaded"}}
-        manager.add_loader(mock_loader)
+        mock_loader.load.return_value = TestConfig(name="reloaded")
+        manager.add_loader("test", mock_loader)
         
         config = TestConfig()
-        manager.register("test", config)
+        await manager.register("test", config)
         
-        await manager.reload()
+        await manager.reload("test")
         
         mock_loader.load.assert_called_once()
-        assert config.name == "reloaded"
+        # Get the reloaded config
+        reloaded = await manager.get("test")
+        assert reloaded.name == "reloaded"
 
     @pytest.mark.asyncio
     async def test_validate_all(self) -> None:
@@ -163,8 +165,8 @@ class TestConfigManager:
         config1 = AsyncMock(spec=TestConfig)
         config2 = AsyncMock(spec=TestConfig)
         
-        manager.register("test1", config1)
-        manager.register("test2", config2)
+        await manager.register("test1", config1)
+        await manager.register("test2", config2)
         
         await manager.validate_all()
         

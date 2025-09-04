@@ -130,7 +130,7 @@ class ConfigManager:
         # Validate against schema if available
         if name in self._schemas:
             schema = self._schemas[name]
-            config_dict = await config.to_dict(include_sensitive=True)
+            config_dict = config.to_dict(include_sensitive=True)
             await schema.validate(config_dict)
 
         # Store configuration
@@ -170,7 +170,7 @@ class ConfigManager:
         # Validate
         if name in self._schemas:
             schema = self._schemas[name]
-            config_dict = await new_config.to_dict(include_sensitive=True)
+            config_dict = new_config.to_dict(include_sensitive=True)
             await schema.validate(config_dict)
 
         # Update stored configuration
@@ -206,7 +206,7 @@ class ConfigManager:
                     await schema._field_map[key].validate(value)
 
         # Apply updates
-        await config.update(updates, source)
+        config.update(updates, source)
 
     async def reset(self, name: str) -> None:
         """
@@ -219,11 +219,11 @@ class ConfigManager:
             raise ValueError(f"Configuration not found: {name}")
 
         config = self._configs[name]
-        await config.reset_to_defaults()
+        config.reset_to_defaults()
 
         # Apply registered defaults
         if name in self._defaults:
-            await config.update(self._defaults[name], ConfigSource.DEFAULT)
+            config.update(self._defaults[name], ConfigSource.DEFAULT)
 
     def list_configs(self) -> list[str]:
         """
@@ -259,7 +259,7 @@ class ConfigManager:
         if name not in self._configs:
             raise ValueError(f"Configuration not found: {name}")
 
-        return await self._configs[name].to_dict(include_sensitive)
+        return self._configs[name].to_dict(include_sensitive)
 
     async def export_all(
         self, include_sensitive: bool = False
@@ -275,7 +275,7 @@ class ConfigManager:
         """
         result = {}
         for name, config in self._configs.items():
-            result[name] = await config.to_dict(include_sensitive)
+            result[name] = config.to_dict(include_sensitive)
         return result
 
     # Alias for export_all
