@@ -59,6 +59,7 @@
       "Read(/private/tmp/**)",
       "Bash(exec python:*)",
       "WebSearch",
+      "Read(/private/tmp/**)",
       "Read(/private/tmp/**)"
     ],
     "deny": [],
