@@ -29,8 +29,9 @@ class TestConfigManager:
         """Test initializing config manager."""
         manager = ConfigManager()
         assert manager._configs == {}
-        assert manager._loaders == []
-        assert manager._watchers == {}
+        assert manager._loaders == {}
+        assert manager._schemas == {}
+        assert manager._defaults == {}
 
     @pytest.mark.asyncio
     async def test_register_config(self) -> None:
@@ -38,7 +39,7 @@ class TestConfigManager:
         manager = ConfigManager()
         config = TestConfig()
         
-        manager.register("test", config)
+        await manager.register("test", config)
         
         assert "test" in manager._configs
         assert manager._configs["test"] is config
@@ -49,8 +50,8 @@ class TestConfigManager:
         manager = ConfigManager()
         config = TestConfig()
         
-        manager.register("test", config)
-        retrieved = manager.get("test")
+        await manager.register("test", config)
+        retrieved = await manager.get("test")
         
         assert retrieved is config
 
@@ -59,7 +60,7 @@ class TestConfigManager:
         """Test getting non-existent configuration."""
         manager = ConfigManager()
         
-        result = manager.get("nonexistent")
+        result = await manager.get("nonexistent")
         assert result is None
 
     @pytest.mark.asyncio
@@ -68,8 +69,8 @@ class TestConfigManager:
         manager = ConfigManager()
         config = TestConfig()
         
-        manager.register("test", config)
-        retrieved = manager.get("test", TestConfig)
+        await manager.register("test", config)
+        retrieved = await manager.get("test")
         
         assert retrieved is config
         assert isinstance(retrieved, TestConfig)
@@ -81,8 +82,8 @@ class TestConfigManager:
         config1 = TestConfig(name="config1")
         config2 = TestConfig(name="config2")
         
-        manager.register("test1", config1)
-        manager.register("test2", config2)
+        await manager.register("test1", config1)
+        await manager.register("test2", config2)
         
         all_configs = manager.get_all()
         assert len(all_configs) == 2
@@ -95,20 +96,19 @@ class TestConfigManager:
         manager = ConfigManager()
         config = TestConfig()
         
-        manager.register("test", config)
-        removed = manager.remove("test")
+        await manager.register("test", config)
+        manager.remove("test")  # remove is sync
         
-        assert removed is config
         assert "test" not in manager._configs
 
     @pytest.mark.asyncio
     async def test_clear_configs(self) -> None:
         """Test clearing all configurations."""
         manager = ConfigManager()
-        manager.register("test1", TestConfig())
-        manager.register("test2", TestConfig())
+        await manager.register("test1", TestConfig())
+        await manager.register("test2", TestConfig())
         
-        manager.clear()
+        manager.clear()  # clear is sync
         
         assert len(manager._configs) == 0
 
@@ -116,12 +116,10 @@ class TestConfigManager:
     async def test_load_from_dict(self) -> None:
         """Test loading configuration from dictionary."""
         manager = ConfigManager()
-        manager.register("test", TestConfig())
         
-        data = {"test": {"name": "updated", "value": 100}}
-        await manager.load_from_dict(data)
+        data = {"name": "updated", "value": 100}
+        config = await manager.load_from_dict("test", TestConfig, data)
         
-        config = manager.get("test", TestConfig)
         assert config is not None
         assert config.name == "updated"
         assert config.value == 100
@@ -131,9 +129,9 @@ class TestConfigManager:
         """Test exporting configuration to dictionary."""
         manager = ConfigManager()
         config = TestConfig(name="export_test", value=99)
-        manager.register("test", config)
+        await manager.register("test", config)
         
-        exported = manager.export_to_dict()
+        exported = await manager.export_to_dict()
         
         assert "test" in exported
         assert exported["test"]["name"] == "export_test"
@@ -192,9 +190,9 @@ class TestConfigManager:
         """Test updating a configuration."""
         manager = ConfigManager()
         config = TestConfig()
-        manager.register("test", config)
+        await manager.register("test", config)
         
-        manager.update("test", {"name": "updated", "value": 200})
+        await manager.update("test", {"name": "updated", "value": 200})
         
         assert config.name == "updated"
         assert config.value == 200

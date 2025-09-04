@@ -84,6 +84,9 @@ def setup_cli_logging(
     log_level: str | None = None,
     log_file: str | Path | None = None,
     json_logs: bool = False,
+    verbose: bool = False,
+    quiet: bool = False,
+    json_output: bool = False,
 ) -> None:
     """
     Setup logging for CLI applications.
@@ -93,7 +96,19 @@ def setup_cli_logging(
         log_level: Override log level
         log_file: Override log file path
         json_logs: Whether to output logs as JSON
+        verbose: Enable verbose logging (DEBUG level)
+        quiet: Suppress most logging (ERROR level)
+        json_output: Alias for json_logs
     """
+    # Handle verbose/quiet flags
+    if verbose:
+        log_level = "DEBUG"
+    elif quiet:
+        log_level = "ERROR"
+    
+    # json_output is an alias for json_logs
+    json_logs = json_logs or json_output
+    
     if ctx:
         log_level = log_level or ctx.log_level
         log_file = log_file or ctx.log_file

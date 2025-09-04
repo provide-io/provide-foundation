@@ -70,6 +70,11 @@ class ConfigManager:
         self._loaders.pop(name, None)
         self._defaults.pop(name, None)
 
+    # Alias for unregister
+    def remove(self, name: str) -> None:
+        """Remove a configuration. Alias for unregister."""
+        self.unregister(name)
+
     async def get(self, name: str) -> BaseConfig | None:
         """
         Get a configuration by name.
@@ -229,6 +234,17 @@ class ConfigManager:
         """
         return list(self._configs.keys())
 
+    def get_all(self) -> dict[str, BaseConfig]:
+        """Get all registered configurations."""
+        return self._configs.copy()
+
+    def clear(self) -> None:
+        """Clear all configurations."""
+        self._configs.clear()
+        self._schemas.clear()
+        self._loaders.clear()
+        self._defaults.clear()
+
     async def export(self, name: str, include_sensitive: bool = False) -> ConfigDict:
         """
         Export a configuration as dictionary.
@@ -261,6 +277,43 @@ class ConfigManager:
         for name, config in self._configs.items():
             result[name] = await config.to_dict(include_sensitive)
         return result
+
+    # Alias for export_all
+    async def export_to_dict(self, include_sensitive: bool = False) -> dict[str, ConfigDict]:
+        """Export all configs to dict. Alias for export_all."""
+        return await self.export_all(include_sensitive)
+
+    async def load_from_dict(self, name: str, config_class: type[T], data: ConfigDict) -> T:
+        """Load config from dictionary."""
+        config = config_class.from_dict(data)
+        self._configs[name] = config
+        return config
+
+    def add_loader(self, name: str, loader: ConfigLoader) -> None:
+        """Add a loader for a configuration."""
+        self._loaders[name] = loader
+
+    async def validate_all(self) -> None:
+        """Validate all configurations."""
+        for name, config in self._configs.items():
+            await config.validate()
+            if name in self._schemas:
+                schema = self._schemas[name]
+                config_dict = config.to_dict(include_sensitive=True)
+                await schema.validate(config_dict)
+
+    async def get_or_create(
+        self, name: str, config_class: type[T], defaults: ConfigDict | None = None
+    ) -> T:
+        """Get existing config or create new one with defaults."""
+        existing = await self.get(name)
+        if existing is not None:
+            return existing
+        
+        # Create new config with defaults
+        config = config_class.from_dict(defaults or {})
+        self._configs[name] = config
+        return config
 
 
 # Global configuration manager instance
