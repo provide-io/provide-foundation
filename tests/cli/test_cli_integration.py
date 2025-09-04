@@ -174,7 +174,7 @@ class TestLoggingIntegration:
                     logger = get_logger(__name__)
                     logger.info("Message to file")
                 finally:
-                    # Ensure file is flushed and closed before test finishes
+                    # Ensure file is flushed before test finishes
                     asyncio.run(shutdown_foundation_telemetry())
 
             runner = CliTestRunner()

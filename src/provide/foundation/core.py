@@ -302,20 +302,14 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
 
 async def shutdown_foundation_telemetry(timeout_millis: int = 5000) -> None:
     """
-    Gracefully shuts down telemetry, flushing/closing file handles and resetting
-    the stream to stderr. This is less destructive than a full reset.
+    Gracefully flushes any buffered telemetry, especially for file logging.
+    This does NOT perform a full reset.
     """
-    global _LOG_FILE_HANDLE, _FOUNDATION_LOG_STREAM
-    _core_setup_logger.info("🔌➡️🏁 Foundation Telemetry shutdown/flush called.")
+    global _LOG_FILE_HANDLE
+    _core_setup_logger.info("🔌➡️🏁 Foundation Telemetry flush called.")
     with _FOUNDATION_SETUP_LOCK:
         if _LOG_FILE_HANDLE:
             try:
-                # Flush and close the file handle
-                _LOG_FILE_HANDLE.close()
+                _LOG_FILE_HANDLE.flush()
             except Exception as e:
-                _core_setup_logger.error(f"Failed to close log file handle: {e}")
-            finally:
-                _LOG_FILE_HANDLE = None
-                # IMPORTANT: Reset the global stream to stderr to avoid
-                # subsequent operations trying to write to a closed file.
-                _FOUNDATION_LOG_STREAM = _get_safe_stderr()
+                _core_setup_logger.error(f"Failed to flush log file handle: {e}")
