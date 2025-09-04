@@ -9,7 +9,7 @@ from provide.foundation.crypto.algorithms import (
     get_hasher,
     validate_algorithm,
 )
-from provide.foundation.errors.exceptions import ResourceError
+from provide.foundation.errors.resources import ResourceError
 from provide.foundation.logger import get_logger
 
 plog = get_logger(__name__)
@@ -24,44 +24,44 @@ def hash_file(
     chunk_size: int = DEFAULT_CHUNK_SIZE,
 ) -> str:
     """Hash a file's contents.
-    
+
     Args:
         path: File path
         algorithm: Hash algorithm (sha256, sha512, md5, etc.)
         chunk_size: Size of chunks to read at a time
-        
+
     Returns:
         Hex digest of file hash
-        
+
     Raises:
         ResourceError: If file cannot be read
         ValidationError: If algorithm is not supported
     """
     if isinstance(path, str):
         path = Path(path)
-    
+
     if not path.exists():
         raise ResourceError(
             f"File not found: {path}",
             resource_type="file",
             resource_path=str(path),
         )
-    
+
     if not path.is_file():
         raise ResourceError(
             f"Path is not a file: {path}",
             resource_type="file",
             resource_path=str(path),
         )
-    
+
     validate_algorithm(algorithm)
     hasher = get_hasher(algorithm)
-    
+
     try:
         with open(path, "rb") as f:
             while chunk := f.read(chunk_size):
                 hasher.update(chunk)
-        
+
         hash_value = hasher.hexdigest()
         plog.debug(
             "🔐 Hashed file",
@@ -70,7 +70,7 @@ def hash_file(
             hash=hash_value[:16] + "...",
         )
         return hash_value
-        
+
     except OSError as e:
         raise ResourceError(
             f"Failed to read file: {path}",
@@ -84,21 +84,21 @@ def hash_data(
     algorithm: str = DEFAULT_ALGORITHM,
 ) -> str:
     """Hash binary data.
-    
+
     Args:
         data: Data to hash
         algorithm: Hash algorithm
-        
+
     Returns:
         Hex digest
-        
+
     Raises:
         ValidationError: If algorithm is not supported
     """
     validate_algorithm(algorithm)
     hasher = get_hasher(algorithm)
     hasher.update(data)
-    
+
     hash_value = hasher.hexdigest()
     plog.debug(
         "🔐 Hashed data",
@@ -115,15 +115,15 @@ def hash_string(
     encoding: str = "utf-8",
 ) -> str:
     """Hash a text string.
-    
+
     Args:
         text: Text to hash
         algorithm: Hash algorithm
         encoding: Text encoding
-        
+
     Returns:
         Hex digest
-        
+
     Raises:
         ValidationError: If algorithm is not supported
     """
@@ -136,26 +136,26 @@ def hash_stream(
     chunk_size: int = DEFAULT_CHUNK_SIZE,
 ) -> str:
     """Hash data from a stream.
-    
+
     Args:
         stream: Binary stream to read from
         algorithm: Hash algorithm
         chunk_size: Size of chunks to read at a time
-        
+
     Returns:
         Hex digest
-        
+
     Raises:
         ValidationError: If algorithm is not supported
     """
     validate_algorithm(algorithm)
     hasher = get_hasher(algorithm)
-    
+
     bytes_read = 0
     while chunk := stream.read(chunk_size):
         hasher.update(chunk)
         bytes_read += len(chunk)
-    
+
     hash_value = hasher.hexdigest()
     plog.debug(
         "🔐 Hashed stream",
@@ -172,55 +172,55 @@ def hash_file_multiple(
     chunk_size: int = DEFAULT_CHUNK_SIZE,
 ) -> dict[str, str]:
     """Hash a file with multiple algorithms in a single pass.
-    
+
     This is more efficient than calling hash_file multiple times.
-    
+
     Args:
         path: File path
         algorithms: List of hash algorithms
         chunk_size: Size of chunks to read at a time
-        
+
     Returns:
         Dictionary mapping algorithm name to hex digest
-        
+
     Raises:
         ResourceError: If file cannot be read
         ValidationError: If any algorithm is not supported
     """
     if isinstance(path, str):
         path = Path(path)
-    
+
     if not path.exists():
         raise ResourceError(
             f"File not found: {path}",
             resource_type="file",
             resource_path=str(path),
         )
-    
+
     # Create hashers for all algorithms
     hashers = {}
     for algo in algorithms:
         validate_algorithm(algo)
         hashers[algo] = get_hasher(algo)
-    
+
     # Read file once and update all hashers
     try:
         with open(path, "rb") as f:
             while chunk := f.read(chunk_size):
                 for hasher in hashers.values():
                     hasher.update(chunk)
-        
+
         # Get results
         results = {algo: hasher.hexdigest() for algo, hasher in hashers.items()}
-        
+
         plog.debug(
             "🔐 Hashed file with multiple algorithms",
             path=str(path),
             algorithms=algorithms,
         )
-        
+
         return results
-        
+
     except OSError as e:
         raise ResourceError(
             f"Failed to read file: {path}",
@@ -234,27 +234,27 @@ def hash_chunks(
     algorithm: str = DEFAULT_ALGORITHM,
 ) -> str:
     """Hash an iterator of byte chunks.
-    
+
     Useful for hashing data that comes in chunks, like from a network stream.
-    
+
     Args:
         chunks: Iterator yielding byte chunks
         algorithm: Hash algorithm
-        
+
     Returns:
         Hex digest
-        
+
     Raises:
         ValidationError: If algorithm is not supported
     """
     validate_algorithm(algorithm)
     hasher = get_hasher(algorithm)
-    
+
     bytes_processed = 0
     for chunk in chunks:
         hasher.update(chunk)
         bytes_processed += len(chunk)
-    
+
     hash_value = hasher.hexdigest()
     plog.debug(
         "🔐 Hashed chunks",

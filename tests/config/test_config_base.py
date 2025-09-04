@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-import pytest
 from attrs import define
+import pytest
 
 from provide.foundation.config.base import (
     BaseConfig,
-    ConfigError,
     ConfigValidationError,
     field,
 )
@@ -21,8 +20,8 @@ class SampleConfig(BaseConfig):
     name: str = field(default="test")
     port: int = field(default=8080)
     debug: bool = field(default=False)
-    tags: list[str] = field(factory=list)
-    metadata: dict[str, str] = field(factory=dict)
+    tags: list[str] = field(factory=lambda: [])
+    metadata: dict[str, str] = field(factory=lambda: {})
     secret: str = field(default="", sensitive=True)
 
     def __attrs_post_init__(self):
@@ -32,7 +31,7 @@ class SampleConfig(BaseConfig):
 class TestBaseConfig:
     """Test BaseConfig functionality."""
 
-    def test_create_config(self):
+    def test_create_config(self) -> None:
         """Test creating a configuration instance."""
         config = SampleConfig()
         assert config.name == "test"
@@ -41,7 +40,7 @@ class TestBaseConfig:
         assert config.tags == []
         assert config.metadata == {}
 
-    def test_create_config_with_values(self):
+    def test_create_config_with_values(self) -> None:
         """Test creating configuration with custom values."""
         config = SampleConfig(
             name="production",
@@ -56,7 +55,7 @@ class TestBaseConfig:
         assert config.tags == ["api", "v2"]
         assert config.metadata == {"version": "1.0"}
 
-    def test_to_dict(self):
+    def test_to_dict(self) -> None:
         """Test converting configuration to dictionary."""
         config = SampleConfig(name="test", port=8080)
         result = config.to_dict()
@@ -66,7 +65,7 @@ class TestBaseConfig:
         assert result["debug"] is False
         assert "secret" not in result  # Sensitive field excluded by default
 
-    def test_to_dict_with_sensitive(self):
+    def test_to_dict_with_sensitive(self) -> None:
         """Test converting configuration with sensitive fields."""
         config = SampleConfig(secret="password123")
 
@@ -78,7 +77,7 @@ class TestBaseConfig:
         result = config.to_dict(include_sensitive=True)
         assert result["secret"] == "password123"
 
-    def test_from_dict(self):
+    def test_from_dict(self) -> None:
         """Test creating configuration from dictionary."""
         data = {
             "name": "from_dict",
@@ -95,7 +94,7 @@ class TestBaseConfig:
         assert config.tags == ["test"]
         assert not hasattr(config, "extra_field")
 
-    def test_update(self):
+    def test_update(self) -> None:
         """Test updating configuration."""
         config = SampleConfig(name="original")
 
@@ -103,7 +102,7 @@ class TestBaseConfig:
         assert config.name == "updated"
         assert config.port == 5000
 
-    def test_update_with_source_precedence(self):
+    def test_update_with_source_precedence(self) -> None:
         """Test update respects source precedence."""
         config = SampleConfig()
 
@@ -119,7 +118,7 @@ class TestBaseConfig:
         config.update({"name": "from_runtime"}, ConfigSource.RUNTIME)
         assert config.name == "from_runtime"
 
-    def test_get_source(self):
+    def test_get_source(self) -> None:
         """Test getting configuration source."""
         config = SampleConfig()
 
@@ -130,7 +129,7 @@ class TestBaseConfig:
         config.update({"name": "updated"}, ConfigSource.ENV)
         assert config.get_source("name") == ConfigSource.ENV
 
-    def test_reset_to_defaults(self):
+    def test_reset_to_defaults(self) -> None:
         """Test resetting to default values."""
         config = SampleConfig(name="modified", port=9999)
         config.reset_to_defaults()
@@ -139,7 +138,7 @@ class TestBaseConfig:
         assert config.port == 8080
         assert config._source_map == {}
 
-    def test_clone(self):
+    def test_clone(self) -> None:
         """Test cloning configuration."""
         config = SampleConfig(name="original", tags=["a", "b"])
         clone = config.clone()
@@ -155,7 +154,7 @@ class TestBaseConfig:
         assert config.name == "original"
         assert config.tags == ["a", "b"]
 
-    def test_diff(self):
+    def test_diff(self) -> None:
         """Test comparing configurations."""
         config1 = SampleConfig(name="config1", port=8080)
         config2 = SampleConfig(name="config2", port=8080, debug=True)
@@ -168,7 +167,7 @@ class TestBaseConfig:
         assert diff["debug"] == (False, True)
         assert "port" not in diff  # Same value
 
-    def test_diff_type_error(self):
+    def test_diff_type_error(self) -> None:
         """Test diff with incompatible types."""
         config = SampleConfig()
         other = BaseConfig()
@@ -176,7 +175,7 @@ class TestBaseConfig:
         with pytest.raises(TypeError):
             config.diff(other)
 
-    def test_repr_hides_sensitive(self):
+    def test_repr_hides_sensitive(self) -> None:
         """Test string representation hides sensitive fields."""
         config = SampleConfig(name="test", secret="password123")
         repr_str = repr(config)
@@ -189,7 +188,7 @@ class TestBaseConfig:
 class TestConfigField:
     """Test enhanced field functionality."""
 
-    def test_field_with_description(self):
+    def test_field_with_description(self) -> None:
         """Test field with description metadata."""
 
         @define
@@ -203,7 +202,7 @@ class TestConfigField:
         field_obj = next(f for f in fields(ConfigWithDescription) if f.name == "value")
         assert field_obj.metadata["description"] == "A test value"
 
-    def test_field_with_env_metadata(self):
+    def test_field_with_env_metadata(self) -> None:
         """Test field with environment variable metadata."""
 
         @define
@@ -221,7 +220,7 @@ class TestConfigField:
 class TestConfigValidationError:
     """Test ConfigValidationError."""
 
-    def test_validation_error(self):
+    def test_validation_error(self) -> None:
         """Test creating validation error."""
         error = ConfigValidationError("test_field", 123, "Invalid value")
 

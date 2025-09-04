@@ -126,7 +126,7 @@ def standard_options(f: F) -> F:
     Apply all standard CLI options.
 
     Combines logging_options, config_options, and output_options.
-    
+
     Note: Consider using flexible_options for better granular control.
     This decorator is maintained for backward compatibility.
     """
@@ -146,7 +146,7 @@ def error_handler(f: F) -> F:
 
     @functools.wraps(f)
     def wrapper(*args, **kwargs):
-        ctx = click.get_current_context()
+        click.get_current_context()
         debug = kwargs.get("debug", False)
         json_output = kwargs.get("json_output", False)
 

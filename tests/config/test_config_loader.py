@@ -3,15 +3,15 @@
 from __future__ import annotations
 
 import json
-import pytest
-from pathlib import Path
+
 from attrs import define
+import pytest
 
 from provide.foundation.config.base import BaseConfig, field
 from provide.foundation.config.env import EnvConfig, env_field
-from provide.foundation.utils.parsing import parse_bool
 from provide.foundation.config.loader import (
     ChainedLoader,
+    ConfigSource,
     DictConfigLoader,
     EnvConfigLoader,
     FileConfigLoader,
@@ -19,7 +19,7 @@ from provide.foundation.config.loader import (
 )
 from provide.foundation.config.types import ConfigFormat
 from provide.foundation.errors import ConfigurationError, NotFoundError
-from provide.foundation.config.loader import ConfigSource
+from provide.foundation.utils.parsing import parse_bool
 
 
 @define
@@ -44,7 +44,7 @@ class TestFileConfigLoader:
     """Test FileConfigLoader."""
 
     @pytest.mark.asyncio
-    async def test_load_json(self, tmp_path):
+    async def test_load_json(self, tmp_path) -> None:
         """Test loading JSON configuration."""
         config_file = tmp_path / "config.json"
         config_file.write_text(
@@ -61,7 +61,7 @@ class TestFileConfigLoader:
         assert config.get_source("name") == ConfigSource.FILE
 
     @pytest.mark.asyncio
-    async def test_load_yaml(self, tmp_path):
+    async def test_load_yaml(self, tmp_path) -> None:
         """Test loading YAML configuration."""
         pytest.importorskip("yaml")
 
@@ -80,7 +80,7 @@ debug: true
         assert config.debug is True
 
     @pytest.mark.asyncio
-    async def test_load_toml(self, tmp_path):
+    async def test_load_toml(self, tmp_path) -> None:
         """Test loading TOML configuration."""
         config_file = tmp_path / "config.toml"
         config_file.write_text("""
@@ -97,7 +97,7 @@ debug = false
         assert config.debug is False
 
     @pytest.mark.asyncio
-    async def test_load_env_file(self, tmp_path):
+    async def test_load_env_file(self, tmp_path) -> None:
         """Test loading .env file configuration."""
         config_file = tmp_path / ".env"
         config_file.write_text("""
@@ -116,7 +116,7 @@ EXTRA_VAR="quoted value"
         # Note: .env files return string values, need proper parsing
         assert config.name == "env_config"
 
-    def test_auto_detect_format(self, tmp_path):
+    def test_auto_detect_format(self, tmp_path) -> None:
         """Test automatic format detection."""
         json_file = tmp_path / "config.json"
         json_file.write_text('{"name": "test"}')
@@ -124,7 +124,7 @@ EXTRA_VAR="quoted value"
         loader = FileConfigLoader(json_file)
         assert loader.format == ConfigFormat.JSON
 
-    def test_unknown_format(self, tmp_path):
+    def test_unknown_format(self, tmp_path) -> None:
         """Test error with unknown format."""
         config_file = tmp_path / "config.unknown"
         config_file.touch()
@@ -133,7 +133,7 @@ EXTRA_VAR="quoted value"
             FileConfigLoader(config_file)
 
     @pytest.mark.asyncio
-    async def test_file_not_found(self, tmp_path):
+    async def test_file_not_found(self, tmp_path) -> None:
         """Test error when file doesn't exist."""
         loader = FileConfigLoader(tmp_path / "nonexistent.json")
         assert not loader.exists()
@@ -146,7 +146,7 @@ class TestEnvConfigLoader:
     """Test EnvConfigLoader."""
 
     @pytest.mark.asyncio
-    async def test_load_with_prefix(self, monkeypatch):
+    async def test_load_with_prefix(self, monkeypatch) -> None:
         """Test loading with prefix."""
         monkeypatch.setenv("APP_NAME", "env_app")
         monkeypatch.setenv("APP_PORT", "7000")
@@ -161,7 +161,7 @@ class TestEnvConfigLoader:
         assert config.debug is True
 
     @pytest.mark.asyncio
-    async def test_load_without_prefix(self, monkeypatch):
+    async def test_load_without_prefix(self, monkeypatch) -> None:
         """Test loading without prefix."""
         monkeypatch.setenv("NAME", "no_prefix")
         monkeypatch.setenv("PORT", "8000")
@@ -173,7 +173,7 @@ class TestEnvConfigLoader:
         assert config.port == 8000
 
     @pytest.mark.asyncio
-    async def test_non_env_config(self):
+    async def test_non_env_config(self) -> None:
         """Test error with non-EnvConfig class."""
         loader = EnvConfigLoader()
 
@@ -185,7 +185,7 @@ class TestDictConfigLoader:
     """Test DictConfigLoader."""
 
     @pytest.mark.asyncio
-    async def test_load_from_dict(self):
+    async def test_load_from_dict(self) -> None:
         """Test loading from dictionary."""
         data = {"name": "dict_config", "port": 9000, "debug": True}
 
@@ -199,7 +199,7 @@ class TestDictConfigLoader:
         assert config.get_source("name") == ConfigSource.RUNTIME
 
     @pytest.mark.asyncio
-    async def test_custom_source(self):
+    async def test_custom_source(self) -> None:
         """Test with custom source."""
         loader = DictConfigLoader({}, source=ConfigSource.DEFAULT)
         config = await loader.load(TestConfig)
@@ -210,7 +210,7 @@ class TestMultiSourceLoader:
     """Test MultiSourceLoader."""
 
     @pytest.mark.asyncio
-    async def test_merge_multiple_sources(self, tmp_path, monkeypatch):
+    async def test_merge_multiple_sources(self, tmp_path, monkeypatch) -> None:
         """Test merging from multiple sources."""
         # File source
         config_file = tmp_path / "config.json"
@@ -237,7 +237,7 @@ class TestMultiSourceLoader:
         assert config.debug is True  # From env
 
     @pytest.mark.asyncio
-    async def test_no_sources_available(self):
+    async def test_no_sources_available(self) -> None:
         """Test error when no sources exist."""
         loader = MultiSourceLoader()
         assert not loader.exists()
@@ -250,7 +250,7 @@ class TestChainedLoader:
     """Test ChainedLoader."""
 
     @pytest.mark.asyncio
-    async def test_first_available_source(self, tmp_path):
+    async def test_first_available_source(self, tmp_path) -> None:
         """Test loading from first available source."""
         # Create two config files
         primary = tmp_path / "primary.json"
@@ -266,7 +266,7 @@ class TestChainedLoader:
         assert config.name == "primary"  # From first available
 
     @pytest.mark.asyncio
-    async def test_fallback_source(self, tmp_path):
+    async def test_fallback_source(self, tmp_path) -> None:
         """Test falling back when primary doesn't exist."""
         primary = tmp_path / "nonexistent.json"
         fallback = tmp_path / "fallback.json"
@@ -278,7 +278,7 @@ class TestChainedLoader:
         assert config.name == "fallback"
 
     @pytest.mark.asyncio
-    async def test_no_source_available(self, tmp_path):
+    async def test_no_source_available(self, tmp_path) -> None:
         """Test error when no source is available."""
         loader = ChainedLoader(
             FileConfigLoader(tmp_path / "missing1.json"),

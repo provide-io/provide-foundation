@@ -7,7 +7,7 @@ used throughout the `provide-foundation` package.
 """
 
 import logging as stdlib_logging
-from typing import Literal
+from typing import cast, Any, Literal
 
 from attrs import define, field
 
@@ -56,9 +56,9 @@ if not hasattr(stdlib_logging, TRACE_LEVEL_NAME):  # pragma: no cover
     if stdlib_logging.root and not hasattr(
         stdlib_logging.root, "trace"
     ):  # pragma: no cover
-        stdlib_logging.root.trace = trace.__get__(
+        (cast(Any, stdlib_logging.root)).trace = trace.__get__(
             stdlib_logging.root, stdlib_logging.Logger
-        )  # type: ignore[attr-defined]
+        )
 
 
 # --- Semantic Layering Data Structures ---
@@ -70,7 +70,7 @@ class CustomDasEmojiSet:
 
     name: str = field()  # e.g., "component_types", "llm_operations", "request_outcomes"
     emojis: dict[str, str] = field(
-        factory=dict, converter=dict
+        factory=lambda: {},
     )  # e.g., {"api": "🌐", "worker": "⚙️", "default": "🧩"}
     default_emoji_key: str = field(
         default="default"
@@ -105,8 +105,8 @@ class SemanticLayer:
 
     name: str = field()  # e.g., "llm", "database", "http_client"
     description: str | None = field(default=None)
-    emoji_sets: list[CustomDasEmojiSet] = field(factory=list)
-    field_definitions: list[SemanticFieldDefinition] = field(factory=list)
+    emoji_sets: list[CustomDasEmojiSet] = field(factory=lambda: [])
+    field_definitions: list[SemanticFieldDefinition] = field(factory=lambda: [])
     priority: int = field(
         default=0, converter=int
     )  # Higher priority layers take precedence in case of conflicts

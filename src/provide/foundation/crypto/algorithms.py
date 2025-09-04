@@ -3,12 +3,12 @@
 import hashlib
 from typing import Any
 
-from provide.foundation.errors.exceptions import ValidationError
+from provide.foundation.errors.config import ValidationError
 
 # Supported hash algorithms
 SUPPORTED_ALGORITHMS = {
     "md5",
-    "sha1", 
+    "sha1",
     "sha224",
     "sha256",
     "sha384",
@@ -39,10 +39,10 @@ SECURE_ALGORITHMS = {
 
 def validate_algorithm(algorithm: str) -> None:
     """Validate that a hash algorithm is supported.
-    
+
     Args:
         algorithm: Hash algorithm name
-        
+
     Raises:
         ValidationError: If algorithm is not supported
     """
@@ -57,20 +57,20 @@ def validate_algorithm(algorithm: str) -> None:
 
 def get_hasher(algorithm: str) -> Any:
     """Get a hash object for the specified algorithm.
-    
+
     Args:
         algorithm: Hash algorithm name
-        
+
     Returns:
         Hash object from hashlib
-        
+
     Raises:
         ValidationError: If algorithm is not supported
     """
     validate_algorithm(algorithm)
-    
+
     algorithm_lower = algorithm.lower()
-    
+
     # Handle special cases
     if algorithm_lower.startswith("sha3_"):
         # sha3_256 -> sha3_256 (hashlib uses underscores)
@@ -85,10 +85,10 @@ def get_hasher(algorithm: str) -> Any:
 
 def is_secure_algorithm(algorithm: str) -> bool:
     """Check if an algorithm is considered cryptographically secure.
-    
+
     Args:
         algorithm: Hash algorithm name
-        
+
     Returns:
         True if algorithm is secure, False otherwise
     """
@@ -97,13 +97,13 @@ def is_secure_algorithm(algorithm: str) -> bool:
 
 def get_digest_size(algorithm: str) -> int:
     """Get the digest size in bytes for an algorithm.
-    
+
     Args:
         algorithm: Hash algorithm name
-        
+
     Returns:
         Digest size in bytes
-        
+
     Raises:
         ValidationError: If algorithm is not supported
     """

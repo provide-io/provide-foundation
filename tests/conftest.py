@@ -70,15 +70,15 @@ def manage_telemetry_reset_for_each_test() -> Generator[None]:
 
 
 # Import and re-export fixtures so they're available to all tests
+from tests.fixtures.hub import default_container_directory
 from tests.fixtures.logger import (
     captured_stderr_for_foundation,
     setup_foundation_telemetry_for_test,
 )
-from tests.fixtures.hub import default_container_directory
 
 # Re-export for pytest discovery
 __all__ = [
     "captured_stderr_for_foundation",
-    "setup_foundation_telemetry_for_test",
     "default_container_directory",
+    "setup_foundation_telemetry_for_test",
 ]

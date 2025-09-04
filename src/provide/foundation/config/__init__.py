@@ -7,20 +7,17 @@ Supports multiple configuration sources with precedence, validation, and type sa
 
 from provide.foundation.config.base import (
     BaseConfig,
-    ConfigError,
-    ConfigValidationError,
     field,
+)
+from provide.foundation.errors.config import (
+    ConfigurationError as ConfigError,
+    ValidationError as ConfigValidationError,
 )
 from provide.foundation.config.env import (
     EnvConfig,
     env_field,
     get_env,
     get_env_async,
-)
-from provide.foundation.utils.parsing import (
-    parse_bool,
-    parse_dict,
-    parse_list,
 )
 from provide.foundation.config.loader import (
     ConfigLoader,
@@ -52,42 +49,47 @@ from provide.foundation.config.types import (
     ConfigSource,
     ConfigValue,
 )
+from provide.foundation.utils.parsing import (
+    parse_bool,
+    parse_dict,
+    parse_list,
+)
 
 __all__ = [
     # Base
     "BaseConfig",
-    "ConfigError",
-    "ConfigValidationError",
-    "field",
-    # Environment
-    "EnvConfig",
-    "env_field",
-    "get_env",
-    "get_env_async",
-    "parse_bool",
-    "parse_dict",
-    "parse_list",
-    # Loader
-    "ConfigLoader",
-    "DictConfigLoader",
-    "FileConfigLoader",
-    "MultiSourceLoader",
-    # Manager
-    "ConfigManager",
-    "get_config",
-    "set_config",
-    # Schema
-    "ConfigSchema",
-    "SchemaField",
-    "validate_schema",
     # Types
     "ConfigDict",
+    "ConfigError",
+    # Loader
+    "ConfigLoader",
+    # Manager
+    "ConfigManager",
+    # Schema
+    "ConfigSchema",
     "ConfigSource",
+    "ConfigValidationError",
     "ConfigValue",
+    "DictConfigLoader",
+    # Environment
+    "EnvConfig",
+    "FileConfigLoader",
+    "MultiSourceLoader",
+    "SchemaField",
+    "SyncConfigManager",
+    "env_field",
+    "field",
+    "get_config",
+    "get_env",
+    "get_env_async",
     # Sync wrappers
     "load_config",
     "load_config_from_env",
     "load_config_from_file",
+    "parse_bool",
+    "parse_dict",
+    "parse_list",
+    "set_config",
     "validate_config",
-    "SyncConfigManager",
+    "validate_schema",
 ]

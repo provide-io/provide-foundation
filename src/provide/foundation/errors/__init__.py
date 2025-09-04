@@ -17,22 +17,12 @@ from provide.foundation.errors.decorators import (
     suppress_and_log,
     with_error_handling,
 )
-from provide.foundation.errors.exceptions import (
-    AlreadyExistsError,
-    AuthenticationError,
-    AuthorizationError,
-    ConcurrencyError,
-    ConfigurationError,
-    FoundationError,
-    IntegrationError,
-    NetworkError,
-    NotFoundError,
-    ResourceError,
-    RuntimeError,
-    StateError,
-    TimeoutError,
-    ValidationError,
-)
+from provide.foundation.errors.auth import AuthenticationError, AuthorizationError
+from provide.foundation.errors.base import FoundationError
+from provide.foundation.errors.config import ConfigurationError, ValidationError
+from provide.foundation.errors.integration import IntegrationError, NetworkError, TimeoutError
+from provide.foundation.errors.resources import AlreadyExistsError, NotFoundError, ResourceError
+from provide.foundation.errors.runtime import ConcurrencyError, RuntimeError, StateError
 from provide.foundation.errors.handlers import (
     ErrorHandler,
     error_boundary,
@@ -46,38 +36,38 @@ from provide.foundation.errors.types import (
 )
 
 __all__ = [
-    # Base exceptions
-    "FoundationError",
-    "ConfigurationError",
-    "ValidationError",
-    "RuntimeError",
-    "IntegrationError",
-    "ResourceError",
-    "NetworkError",
-    "TimeoutError",
+    "AlreadyExistsError",
     "AuthenticationError",
     "AuthorizationError",
-    "NotFoundError",
-    "AlreadyExistsError",
-    "StateError",
     "ConcurrencyError",
+    "ConfigurationError",
+    "ErrorCategory",
+    # Types
+    "ErrorCode",
     # Context
     "ErrorContext",
+    "ErrorHandler",
+    "ErrorMetadata",
     "ErrorSeverity",
-    "ErrorCategory",
+    # Base exceptions
+    "FoundationError",
+    "IntegrationError",
+    "NetworkError",
+    "NotFoundError",
+    "ResourceError",
+    "RetryPolicy",
+    "RuntimeError",
+    "StateError",
+    "TimeoutError",
+    "ValidationError",
     "capture_error_context",
     # Handlers
     "error_boundary",
-    "transactional",
+    "fallback_on_error",
     "handle_error",
-    "ErrorHandler",
-    # Decorators
-    "with_error_handling",
     "retry_on_error",
     "suppress_and_log",
-    "fallback_on_error",
-    # Types
-    "ErrorCode",
-    "ErrorMetadata",
-    "RetryPolicy",
+    "transactional",
+    # Decorators
+    "with_error_handling",
 ]

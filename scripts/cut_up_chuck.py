@@ -9,6 +9,7 @@ provide.foundation logging system. It showcases various logging features,
 including different log levels, named loggers, DAS (Domain-Action-Status)
 logging, and the custom trace level.
 """
+
 #!/usr/bin/env python3
 #
 # cut_up_chuck.py
@@ -70,21 +71,30 @@ phrases: list[str] = [
     "Frequency shift reported by Sector 5.",
 ]
 
+
 async def generate_log_entries_continuously() -> None:
     """Generates a stream of diverse log entries indefinitely."""
-    reception_log.info("⚙️➡️✅ Continuous Terminal Feed Online. Press Ctrl+C to stop.",
-                       log_level_cfg=config.logging.default_level) # log_level_cfg is illustrative, not used by logger
+    reception_log.info(
+        "⚙️➡️✅ Continuous Terminal Feed Online. Press Ctrl+C to stop.",
+        log_level_cfg=config.logging.default_level,
+    )  # log_level_cfg is illustrative, not used by logger
     print("-" * 70)
 
     iteration_count: int = 0
     try:
-        while True: # Loop indefinitely
+        while True:  # Loop indefinitely
             iteration_count += 1
             phrase: str = random.choice(phrases)
 
-            chosen_logger: Any = random.choice([reception_log, kitchen_log, reality_studio_log])
-            log_level_method_name: str = random.choice(["debug", "info", "warning", "error", "critical"])
-            log_level_method: Callable[..., None] = getattr(chosen_logger, log_level_method_name)
+            chosen_logger: Any = random.choice(
+                [reception_log, kitchen_log, reality_studio_log]
+            )
+            log_level_method_name: str = random.choice(
+                ["debug", "info", "warning", "error", "critical"]
+            )
+            log_level_method: Callable[..., None] = getattr(
+                chosen_logger, log_level_method_name
+            )
 
             log_level_method(
                 f"Iter {iteration_count:03d} :: {phrase}",
@@ -92,7 +102,9 @@ async def generate_log_entries_continuously() -> None:
                 random_val=random.randint(1, 1000),
                 domain="transmission",
                 action="broadcast",
-                status="nominal" if log_level_method_name not in ["error", "critical"] else "degraded"
+                status="nominal"
+                if log_level_method_name not in ["error", "critical"]
+                else "degraded",
             )
 
             if iteration_count % 5 == 0:
@@ -100,16 +112,20 @@ async def generate_log_entries_continuously() -> None:
                     "Anomalous energy signature detected.",
                     _foundation_logger_name="Interzone.Anomalies",
                     signature_type=f"Type-{random.choice(['Alpha', 'Beta', 'Gamma', 'Delta'])}",
-                    confidence=f"{random.random()*100:.1f}%",
-                    domain="sensor_grid", action="detect", status="trace_event"
+                    confidence=f"{random.random() * 100:.1f}%",
+                    domain="sensor_grid",
+                    action="detect",
+                    status="trace_event",
                 )
 
             if iteration_count % 7 == 0:
                 logger.trace(
                     "System heartbeat.",
-                    uptime_seconds=int(time.time() % (60*60*24)),
-                    cpu_load=f"{random.random()*100:.1f}%",
-                    domain="system_health", action="heartbeat", status="internal_trace"
+                    uptime_seconds=int(time.time() % (60 * 60 * 24)),
+                    cpu_load=f"{random.random() * 100:.1f}%",
+                    domain="system_health",
+                    action="heartbeat",
+                    status="internal_trace",
                 )
 
             print("-" * 70)
@@ -119,7 +135,9 @@ async def generate_log_entries_continuously() -> None:
         reception_log.warning("🛑 User initiated shutdown (Ctrl+C). Loop terminating.")
     except Exception as e:
         app_error_log = logger.get_logger("Interzone.MainControl.Error")
-        app_error_log.exception(f"💥 Unhandled exception in generate_log_entries_continuously: {e}")
+        app_error_log.exception(
+            f"💥 Unhandled exception in generate_log_entries_continuously: {e}"
+        )
     finally:
         reception_log.info("🏁➡️🛑 Continuous Terminal Feed Offline.")
 
@@ -136,6 +154,7 @@ async def main_async_loop() -> None:
         await shutdown_foundation_telemetry()
         print("Foundation Telemetry shutdown complete.")
 
+
 if __name__ == "__main__":
     try:
         asyncio.run(main_async_loop())
@@ -147,5 +166,3 @@ if __name__ == "__main__":
         print("🎬 Example script finished.")
 
 # 📜☕
-
-

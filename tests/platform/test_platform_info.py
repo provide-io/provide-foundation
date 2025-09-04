@@ -1,17 +1,16 @@
 """Tests for system information gathering."""
 
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 from provide.foundation.platform import SystemInfo, get_system_info
 
 
 class TestSystemInfo:
     """Test system information gathering."""
-    
-    @patch("provide.foundation.platform.get_os", return_value="darwin")
-    @patch("provide.foundation.platform.get_arch", return_value="arm64")
-    @patch("provide.foundation.platform.get_platform", return_value="darwin_arm64")
+
+    @patch("provide.foundation.platform.get_os_name", return_value="darwin")
+    @patch("provide.foundation.platform.get_arch_name", return_value="arm64")
+    @patch("provide.foundation.platform.get_platform_string", return_value="darwin_arm64")
     @patch("provide.foundation.platform.get_os_version", return_value="14.2.1")
     @patch("provide.foundation.platform.get_cpu_type", return_value="Apple M2")
     @patch("platform.python_version", return_value="3.11.7")
@@ -33,8 +32,9 @@ class TestSystemInfo:
         mock_platform,
         mock_arch,
         mock_os,
-    ):
+    ) -> None:
         """Test getting complete system information."""
+
         # Setup mocks
         def env_side_effect(key, default=None):
             if key == "USER":
@@ -42,39 +42,41 @@ class TestSystemInfo:
             elif key == "TMPDIR":
                 return "/tmp"
             return default
-        
+
         mock_env_get.side_effect = env_side_effect
-        
-        mock_disk_usage.return_value = MagicMock(total=1000000, used=500000, free=500000)
-        
+
+        mock_disk_usage.return_value = MagicMock(
+            total=1000000, used=500000, free=500000
+        )
+
         # Get system info
         info = get_system_info()
-        
+
         # Verify basic platform info
         assert info.os_name == "darwin"
         assert info.arch == "arm64"
         assert info.platform == "darwin_arm64"
         assert info.os_version == "14.2.1"
         assert info.cpu_type == "Apple M2"
-        
+
         # Verify Python info
         assert info.python_version == "3.11.7"
-        
+
         # Verify system info
         assert info.hostname == "test-hostname"
         assert info.username == "testuser"
         assert info.home_dir == "/Users/test"
         assert info.temp_dir == "/tmp"
         assert info.num_cpus == 8
-        
+
         # Verify disk usage
         assert info.disk_usage is not None
         assert "/" in info.disk_usage
         assert info.disk_usage["/"]["total"] == 1000000
-    
-    @patch("provide.foundation.platform.get_os", return_value="linux")
-    @patch("provide.foundation.platform.get_arch", return_value="amd64")
-    @patch("provide.foundation.platform.get_platform", return_value="linux_amd64")
+
+    @patch("provide.foundation.platform.get_os_name", return_value="linux")
+    @patch("provide.foundation.platform.get_arch_name", return_value="amd64")
+    @patch("provide.foundation.platform.get_platform_string", return_value="linux_amd64")
     @patch("provide.foundation.platform.get_os_version", return_value=None)
     @patch("provide.foundation.platform.get_cpu_type", return_value=None)
     @patch("platform.python_version", return_value="3.10.0")
@@ -96,21 +98,21 @@ class TestSystemInfo:
         mock_platform,
         mock_arch,
         mock_os,
-    ):
+    ) -> None:
         """Test getting system info with minimal data available."""
         # Get system info
         info = get_system_info()
-        
+
         # Verify basic platform info (always available)
         assert info.os_name == "linux"
         assert info.arch == "amd64"
         assert info.platform == "linux_amd64"
         assert info.os_version is None
         assert info.cpu_type is None
-        
+
         # Verify Python info
         assert info.python_version == "3.10.0"
-        
+
         # Verify optional fields are None
         assert info.hostname is None
         assert info.username is None
@@ -119,16 +121,21 @@ class TestSystemInfo:
         assert info.num_cpus is None
         # Memory info may or may not be available depending on psutil
         # So we just check the attributes exist
-        assert hasattr(info, 'total_memory')
-        assert hasattr(info, 'available_memory')
+        assert hasattr(info, "total_memory")
+        assert hasattr(info, "available_memory")
         # Disk usage may be None or empty dict on error
         assert info.disk_usage is None or info.disk_usage == {}
-    
+
     @patch("provide.foundation.platform.info.get_os_name", return_value="windows")
     @patch("provide.foundation.platform.info.get_arch_name", return_value="amd64")
-    @patch("provide.foundation.platform.info.get_platform_string", return_value="windows_amd64")
+    @patch(
+        "provide.foundation.platform.info.get_platform_string",
+        return_value="windows_amd64",
+    )
     @patch("provide.foundation.platform.info.get_os_version", return_value="10.0.19045")
-    @patch("provide.foundation.platform.info.get_cpu_type", return_value="Intel Core i7")
+    @patch(
+        "provide.foundation.platform.info.get_cpu_type", return_value="Intel Core i7"
+    )
     @patch("platform.python_version", return_value="3.11.0")
     def test_get_system_info_with_psutil(
         self,
@@ -138,7 +145,7 @@ class TestSystemInfo:
         mock_platform,
         mock_arch,
         mock_os,
-    ):
+    ) -> None:
         """Test getting system info with psutil available."""
         # Mock psutil
         mock_psutil = MagicMock()
@@ -146,15 +153,15 @@ class TestSystemInfo:
             total=16000000000,
             available=8000000000,
         )
-        
+
         with patch.dict("sys.modules", {"psutil": mock_psutil}):
             info = get_system_info()
-            
+
             # Check memory info when psutil is available
             assert info.total_memory == 16000000000
             assert info.available_memory == 8000000000
-    
-    def test_system_info_dataclass(self):
+
+    def test_system_info_dataclass(self) -> None:
         """Test SystemInfo dataclass."""
         info = SystemInfo(
             os_name="linux",
@@ -170,11 +177,9 @@ class TestSystemInfo:
             num_cpus=4,
             total_memory=8000000000,
             available_memory=4000000000,
-            disk_usage={
-                "/": {"total": 1000000, "used": 500000, "free": 500000}
-            },
+            disk_usage={"/": {"total": 1000000, "used": 500000, "free": 500000}},
         )
-        
+
         assert info.os_name == "linux"
         assert info.arch == "amd64"
         assert info.platform == "linux_amd64"

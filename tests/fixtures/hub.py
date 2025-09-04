@@ -10,7 +10,7 @@ import pytest
 def default_container_directory():
     """
     Provides a default directory for container operations in tests.
-    
+
     This fixture is used by tests that need a temporary directory
     for container-related operations.
     """

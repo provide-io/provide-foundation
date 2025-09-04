@@ -21,7 +21,7 @@ class ConfigManager:
     Manages multiple configuration objects and provides a unified interface.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize configuration manager."""
         self._configs: dict[str, BaseConfig] = {}
         self._schemas: dict[str, ConfigSchema] = {}

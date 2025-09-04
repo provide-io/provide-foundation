@@ -1,13 +1,18 @@
 """Async subprocess execution utilities."""
 
 import asyncio
+import builtins
 from collections.abc import AsyncIterator, Mapping
 import os
 from pathlib import Path
 from typing import Any
 
 from provide.foundation.logger import get_logger
-from provide.foundation.process.runner import CompletedProcess, ProcessError, TimeoutError
+from provide.foundation.process.runner import (
+    CompletedProcess,
+    ProcessError,
+    TimeoutError,
+)
 
 plog = get_logger(__name__)
 
@@ -24,7 +29,7 @@ async def async_run_command(
 ) -> CompletedProcess:
     """
     Run a subprocess command asynchronously.
-    
+
     Args:
         cmd: Command and arguments as a list
         cwd: Working directory for the command
@@ -34,24 +39,26 @@ async def async_run_command(
         timeout: Command timeout in seconds
         input: Input to send to the process
         **kwargs: Additional arguments
-    
+
     Returns:
         CompletedProcess with results
-    
+
     Raises:
         ProcessError: If command fails and check=True
         TimeoutError: If timeout is exceeded
     """
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
-    plog.info("🚀 Running async command", command=cmd_str, cwd=str(cwd) if cwd else None)
-    
+    plog.info(
+        "🚀 Running async command", command=cmd_str, cwd=str(cwd) if cwd else None
+    )
+
     # Prepare environment
     run_env = dict(env) if env is not None else os.environ.copy()
-    
+
     # Convert Path to string
     if isinstance(cwd, Path):
         cwd = str(cwd)
-    
+
     try:
         # Create subprocess
         process = await asyncio.create_subprocess_exec(
@@ -63,7 +70,7 @@ async def async_run_command(
             stdin=asyncio.subprocess.PIPE if input else None,
             **kwargs,
         )
-        
+
         # Communicate with process
         if timeout:
             try:
@@ -71,10 +78,12 @@ async def async_run_command(
                     process.communicate(input=input),
                     timeout=timeout,
                 )
-            except asyncio.TimeoutError:
+            except builtins.TimeoutError:
                 process.kill()
                 await process.wait()
-                plog.error("⏱️ Async command timed out", command=cmd_str, timeout=timeout)
+                plog.error(
+                    "⏱️ Async command timed out", command=cmd_str, timeout=timeout
+                )
                 raise TimeoutError(
                     f"Command timed out after {timeout}s: {cmd_str}",
                     code="PROCESS_ASYNC_TIMEOUT",
@@ -83,11 +92,11 @@ async def async_run_command(
                 )
         else:
             stdout, stderr = await process.communicate(input=input)
-        
+
         # Decode output
         stdout_str = stdout.decode() if stdout else ""
         stderr_str = stderr.decode() if stderr else ""
-        
+
         completed = CompletedProcess(
             args=cmd,
             returncode=process.returncode or 0,
@@ -96,7 +105,7 @@ async def async_run_command(
             cwd=cwd,
             env=dict(run_env) if env else None,
         )
-        
+
         if check and process.returncode != 0:
             plog.error(
                 "❌ Async command failed",
@@ -112,19 +121,19 @@ async def async_run_command(
                 stdout=stdout_str if capture_output else None,
                 stderr=stderr_str if capture_output else None,
             )
-        
+
         plog.debug(
             "✅ Async command completed",
             command=cmd_str,
             returncode=process.returncode,
         )
-        
+
         return completed
-        
+
     except Exception as e:
-        if isinstance(e, (ProcessError, TimeoutError)):
+        if isinstance(e, ProcessError | TimeoutError):
             raise
-        
+
         plog.error(
             "💥 Async command execution failed",
             command=cmd_str,
@@ -147,31 +156,33 @@ async def async_stream_command(
 ) -> AsyncIterator[str]:
     """
     Stream command output line by line asynchronously.
-    
+
     Args:
         cmd: Command and arguments as a list
         cwd: Working directory for the command
         env: Environment variables
         timeout: Command timeout in seconds
         **kwargs: Additional arguments
-    
+
     Yields:
         Lines of output from the command
-    
+
     Raises:
         ProcessError: If command fails
         TimeoutError: If timeout is exceeded
     """
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
-    plog.info("🌊 Streaming async command", command=cmd_str, cwd=str(cwd) if cwd else None)
-    
+    plog.info(
+        "🌊 Streaming async command", command=cmd_str, cwd=str(cwd) if cwd else None
+    )
+
     # Prepare environment
     run_env = dict(env) if env is not None else os.environ.copy()
-    
+
     # Convert Path to string
     if isinstance(cwd, Path):
         cwd = str(cwd)
-    
+
     try:
         # Create subprocess
         process = await asyncio.create_subprocess_exec(
@@ -182,29 +193,31 @@ async def async_stream_command(
             stderr=asyncio.subprocess.STDOUT,
             **kwargs,
         )
-        
+
         # Stream output with timeout
         start_time = asyncio.get_event_loop().time()
-        
+
         if process.stdout:
             async for line in process.stdout:
                 # Check timeout
                 if timeout and (asyncio.get_event_loop().time() - start_time) > timeout:
                     process.kill()
                     await process.wait()
-                    plog.error("⏱️ Async stream timed out", command=cmd_str, timeout=timeout)
+                    plog.error(
+                        "⏱️ Async stream timed out", command=cmd_str, timeout=timeout
+                    )
                     raise TimeoutError(
                         f"Command timed out after {timeout}s: {cmd_str}",
                         code="PROCESS_ASYNC_STREAM_TIMEOUT",
                         command=cmd_str,
                         timeout=timeout,
                     )
-                
+
                 yield line.decode().rstrip()
-        
+
         # Wait for process to complete
         await process.wait()
-        
+
         if process.returncode != 0:
             raise ProcessError(
                 f"Command failed with exit code {process.returncode}: {cmd_str}",
@@ -212,13 +225,13 @@ async def async_stream_command(
                 command=cmd_str,
                 returncode=process.returncode,
             )
-        
+
         plog.debug("✅ Async stream completed", command=cmd_str)
-        
+
     except Exception as e:
-        if isinstance(e, (ProcessError, TimeoutError)):
+        if isinstance(e, ProcessError | TimeoutError):
             raise
-        
+
         plog.error("💥 Async stream failed", command=cmd_str, error=str(e))
         raise ProcessError(
             f"Failed to stream async command: {cmd_str}",
@@ -226,3 +239,38 @@ async def async_stream_command(
             command=cmd_str,
             error=str(e),
         ) from e
+
+
+async def async_run_shell(
+    cmd: str,
+    cwd: str | Path | None = None,
+    env: Mapping[str, str] | None = None,
+    capture_output: bool = True,
+    check: bool = True,
+    timeout: float | None = None,
+    **kwargs: Any,
+) -> CompletedProcess:
+    """Run a shell command asynchronously.
+
+    Args:
+        cmd: Shell command string
+        cwd: Working directory
+        env: Environment variables
+        capture_output: Whether to capture output
+        check: Whether to raise on non-zero exit
+        timeout: Command timeout
+        **kwargs: Additional subprocess arguments
+
+    Returns:
+        CompletedProcess with results
+    """
+    return await async_run_command(
+        cmd,
+        cwd=cwd,
+        env=env,
+        capture_output=capture_output,
+        check=check,
+        timeout=timeout,
+        shell=True,
+        **kwargs,
+    )

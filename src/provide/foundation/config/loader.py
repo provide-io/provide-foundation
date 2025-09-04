@@ -18,9 +18,9 @@ except ImportError:
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.env import EnvConfig
 from provide.foundation.config.types import ConfigDict, ConfigFormat, ConfigSource
-from provide.foundation.errors import ConfigurationError, NotFoundError, ValidationError
+from provide.foundation.errors.config import ConfigurationError
+from provide.foundation.errors.resources import NotFoundError
 from provide.foundation.errors.decorators import with_error_handling
-from provide.foundation.logger import logger
 
 T = TypeVar("T", bound=BaseConfig)
 
@@ -60,7 +60,7 @@ class FileConfigLoader(ConfigLoader):
         path: str | Path,
         format: ConfigFormat | None = None,
         encoding: str = "utf-8",
-    ):
+    ) -> None:
         """
         Initialize file configuration loader.
 
@@ -78,7 +78,7 @@ class FileConfigLoader(ConfigLoader):
                 raise ConfigurationError(
                     f"Cannot determine format for file: {self.path}",
                     code="CONFIG_FORMAT_UNKNOWN",
-                    path=str(self.path)
+                    path=str(self.path),
                 )
 
         self.format = format
@@ -90,10 +90,10 @@ class FileConfigLoader(ConfigLoader):
     @with_error_handling(
         context_provider=lambda: {"loader": "FileLoader"},
         error_mapper=lambda e: ConfigurationError(
-            f"Failed to load configuration: {e}",
-            code="CONFIG_LOAD_ERROR",
-            cause=e
-        ) if not isinstance(e, (ConfigurationError, NotFoundError)) else e
+            f"Failed to load configuration: {e}", code="CONFIG_LOAD_ERROR", cause=e
+        )
+        if not isinstance(e, ConfigurationError | NotFoundError)
+        else e,
     )
     async def load(self, config_class: type[T]) -> T:
         """Load configuration from file."""
@@ -101,7 +101,7 @@ class FileConfigLoader(ConfigLoader):
             raise NotFoundError(
                 f"Configuration file not found: {self.path}",
                 code="CONFIG_FILE_NOT_FOUND",
-                path=str(self.path)
+                path=str(self.path),
             )
 
         data = await self._read_file()
@@ -141,7 +141,7 @@ class FileConfigLoader(ConfigLoader):
             raise ConfigurationError(
                 f"Unsupported format: {self.format}",
                 code="CONFIG_FORMAT_UNSUPPORTED",
-                format=str(self.format)
+                format=str(self.format),
             )
 
     def _ini_to_dict(self, parser) -> ConfigDict:
@@ -189,7 +189,7 @@ class EnvConfigLoader(ConfigLoader):
 
     def __init__(
         self, prefix: str = "", delimiter: str = "_", case_sensitive: bool = False
-    ):
+    ) -> None:
         """
         Initialize environment configuration loader.
 
@@ -224,7 +224,7 @@ class EnvConfigLoader(ConfigLoader):
 class DictConfigLoader(ConfigLoader):
     """Load configuration from a dictionary."""
 
-    def __init__(self, data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME):
+    def __init__(self, data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME) -> None:
         """
         Initialize dictionary configuration loader.
 
@@ -247,7 +247,7 @@ class DictConfigLoader(ConfigLoader):
 class MultiSourceLoader(ConfigLoader):
     """Load configuration from multiple sources with precedence."""
 
-    def __init__(self, *loaders: ConfigLoader):
+    def __init__(self, *loaders: ConfigLoader) -> None:
         """
         Initialize multi-source configuration loader.
 
@@ -287,7 +287,7 @@ class MultiSourceLoader(ConfigLoader):
 class ChainedLoader(ConfigLoader):
     """Try multiple loaders until one succeeds."""
 
-    def __init__(self, *loaders: ConfigLoader):
+    def __init__(self, *loaders: ConfigLoader) -> None:
         """
         Initialize chained configuration loader.
 

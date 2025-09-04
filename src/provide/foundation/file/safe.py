@@ -1,7 +1,7 @@
 """Safe file operations with error handling and defaults."""
 
-import shutil
 from pathlib import Path
+import shutil
 
 from provide.foundation.logger import get_logger
 
@@ -14,17 +14,17 @@ def safe_read(
     encoding: str | None = None,
 ) -> bytes | str | None:
     """Read file safely, returning default if not found.
-    
+
     Args:
         path: File to read
         default: Value to return if file doesn't exist
         encoding: If provided, decode bytes to str
-        
+
     Returns:
         File contents or default value
     """
     path = Path(path)
-    
+
     try:
         data = path.read_bytes()
         if encoding:
@@ -46,12 +46,12 @@ def safe_read_text(
     encoding: str = "utf-8",
 ) -> str:
     """Read text file safely with default.
-    
+
     Args:
         path: File to read
         default: Default text if file doesn't exist
         encoding: Text encoding
-        
+
     Returns:
         File contents or default text
     """
@@ -64,19 +64,19 @@ def safe_delete(
     missing_ok: bool = True,
 ) -> bool:
     """Delete file safely.
-    
+
     Args:
         path: File to delete
         missing_ok: If True, don't raise error if file doesn't exist
-        
+
     Returns:
         True if deleted, False if didn't exist
-        
+
     Raises:
         OSError: If deletion fails and file exists
     """
     path = Path(path)
-    
+
     try:
         path.unlink()
         log.debug("Deleted file", path=str(path))
@@ -97,12 +97,12 @@ def safe_move(
     overwrite: bool = False,
 ) -> None:
     """Move file safely with optional overwrite.
-    
+
     Args:
         src: Source file path
         dst: Destination file path
         overwrite: Whether to overwrite existing destination
-        
+
     Raises:
         FileNotFoundError: If source doesn't exist
         FileExistsError: If destination exists and overwrite=False
@@ -110,16 +110,16 @@ def safe_move(
     """
     src = Path(src)
     dst = Path(dst)
-    
+
     if not src.exists():
         raise FileNotFoundError(f"Source file does not exist: {src}")
-    
+
     if dst.exists() and not overwrite:
         raise FileExistsError(f"Destination already exists: {dst}")
-    
+
     # Ensure destination directory exists
     dst.parent.mkdir(parents=True, exist_ok=True)
-    
+
     try:
         shutil.move(str(src), str(dst))
         log.debug("Moved file", src=str(src), dst=str(dst))
@@ -135,13 +135,13 @@ def safe_copy(
     preserve_mode: bool = True,
 ) -> None:
     """Copy file safely with metadata preservation.
-    
+
     Args:
         src: Source file path
         dst: Destination file path
         overwrite: Whether to overwrite existing destination
         preserve_mode: Whether to preserve file permissions
-        
+
     Raises:
         FileNotFoundError: If source doesn't exist
         FileExistsError: If destination exists and overwrite=False
@@ -149,16 +149,16 @@ def safe_copy(
     """
     src = Path(src)
     dst = Path(dst)
-    
+
     if not src.exists():
         raise FileNotFoundError(f"Source file does not exist: {src}")
-    
+
     if dst.exists() and not overwrite:
         raise FileExistsError(f"Destination already exists: {dst}")
-    
+
     # Ensure destination directory exists
     dst.parent.mkdir(parents=True, exist_ok=True)
-    
+
     try:
         if preserve_mode:
             shutil.copy2(str(src), str(dst))
@@ -171,9 +171,9 @@ def safe_copy(
 
 
 __all__ = [
-    "safe_read",
-    "safe_read_text",
+    "safe_copy",
     "safe_delete",
     "safe_move",
-    "safe_copy",
+    "safe_read",
+    "safe_read_text",
 ]

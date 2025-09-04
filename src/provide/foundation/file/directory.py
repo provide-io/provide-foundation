@@ -1,9 +1,9 @@
 """Directory operations and utilities."""
 
-import shutil
-import tempfile
 from contextlib import contextmanager
 from pathlib import Path
+import shutil
+import tempfile
 
 from provide.foundation.logger import get_logger
 
@@ -16,23 +16,23 @@ def ensure_dir(
     parents: bool = True,
 ) -> Path:
     """Ensure directory exists with proper permissions.
-    
+
     Args:
         path: Directory path
         mode: Directory permissions
         parents: Create parent directories if needed
-        
+
     Returns:
         Path object for the directory
     """
     path = Path(path)
-    
+
     if not path.exists():
         path.mkdir(mode=mode, parents=parents, exist_ok=True)
         log.debug("Created directory", path=str(path), mode=oct(mode))
     elif not path.is_dir():
         raise NotADirectoryError(f"Path exists but is not a directory: {path}")
-    
+
     return path
 
 
@@ -41,20 +41,20 @@ def ensure_parent_dir(
     mode: int = 0o755,
 ) -> Path:
     """Ensure parent directory of file exists.
-    
+
     Args:
         file_path: File path whose parent to ensure
         mode: Directory permissions
-        
+
     Returns:
         Path object for the parent directory
     """
     file_path = Path(file_path)
     parent = file_path.parent
-    
-    if parent and parent != Path("."):
+
+    if parent and parent != Path():
         return ensure_dir(parent, mode=mode, parents=True)
-    
+
     return parent
 
 
@@ -64,11 +64,11 @@ def temp_dir(
     cleanup: bool = True,
 ):
     """Create temporary directory with automatic cleanup.
-    
+
     Args:
         prefix: Directory name prefix
         cleanup: Whether to remove directory on exit
-        
+
     Yields:
         Path object for the temporary directory
     """
@@ -83,7 +83,11 @@ def temp_dir(
                 shutil.rmtree(temp_path)
                 log.debug("Cleaned up temp directory", path=str(temp_path))
             except Exception as e:
-                log.warning("Failed to cleanup temp directory", path=str(temp_path), error=str(e))
+                log.warning(
+                    "Failed to cleanup temp directory",
+                    path=str(temp_path),
+                    error=str(e),
+                )
 
 
 def safe_rmtree(
@@ -91,19 +95,19 @@ def safe_rmtree(
     missing_ok: bool = True,
 ) -> bool:
     """Remove directory tree safely.
-    
+
     Args:
         path: Directory to remove
         missing_ok: If True, don't raise error if doesn't exist
-        
+
     Returns:
         True if removed, False if didn't exist
-        
+
     Raises:
         OSError: If removal fails and directory exists
     """
     path = Path(path)
-    
+
     try:
         if path.exists():
             shutil.rmtree(path)
@@ -124,6 +128,6 @@ def safe_rmtree(
 __all__ = [
     "ensure_dir",
     "ensure_parent_dir",
-    "temp_dir",
     "safe_rmtree",
+    "temp_dir",
 ]

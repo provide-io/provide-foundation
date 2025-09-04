@@ -182,10 +182,7 @@ def _register_command_func(
     )
 
     # Build full registry key
-    if parent:
-        full_name = f"{parent}.{command_name}"
-    else:
-        full_name = command_name
+    full_name = f"{parent}.{command_name}" if parent else command_name
 
     # Build registry metadata
     reg_metadata = {
