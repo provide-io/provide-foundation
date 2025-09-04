@@ -81,29 +81,6 @@ plugins:
   
   - autorefs
   
-  - mkdocstrings:
-      default_handler: python
-      handlers:
-        python:
-          paths: [src]
-          options:
-            docstring_style: google
-            show_source: true
-            show_root_heading: true
-            show_object_full_path: false
-            show_if_no_docstring: false
-            show_signature: true
-            show_signature_annotations: true
-            merge_init_into_class: true
-            separate_signature: true
-  
-  # Temporarily disable gen-files until we fix all references
-  # - gen-files:
-  #     scripts:
-  #       - docs/gen_ref_pages.py
-  
-  # - literate-nav:
-  #     nav_file: SUMMARY.md
   
   - section-index
   
@@ -249,36 +226,6 @@ nav:
       - Registry Pattern: guide/utilities/registry.md
       - Error Handling: guide/utilities/errors.md
   
-  - API Reference:
-    - api/index.md
-    - Core:
-      - api/core/index.md
-      - Logger: api/core/logger.md
-      - Configuration: api/core/config.md
-      - Telemetry: api/core/telemetry.md
-    
-    - Semantic Layers:
-      - api/semantic/index.md
-      - Base Layer: api/semantic/base.md
-      - HTTP Layer: api/semantic/http.md
-      - Database Layer: api/semantic/database.md
-      - LLM Layer: api/semantic/llm.md
-      - Custom Layers: api/semantic/custom.md
-    
-    - CLI:
-      - api/cli/index.md
-      - Decorators: api/cli/decorators.md
-      - Testing: api/cli/testing.md
-      - Utilities: api/cli/utils.md
-    
-    - Utilities:
-      - api/utils/index.md
-      - Platform: api/utils/platform.md
-      - Process: api/utils/process.md
-      - Console: api/utils/console.md
-      - Registry: api/utils/registry.md
-      - Errors: api/utils/errors.md
-      - Hub: api/utils/hub.md
   
   - Cookbook:
     - cookbook/index.md
