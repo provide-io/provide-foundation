@@ -200,7 +200,8 @@ def _reset_foundation_state() -> None:
         _PROVIDE_LOG_STREAM, \
         _core_setup_logger, \
         _EXPLICIT_SETUP_DONE, \
-        _LOG_FILE_HANDLE
+        _LOG_FILE_HANDLE, \
+        _FOUNDATION_LOG_LEVEL
     with _PROVIDE_SETUP_LOCK:
         structlog.reset_defaults()
         if _LOG_FILE_HANDLE:
@@ -217,6 +218,7 @@ def _reset_foundation_state() -> None:
         )
         _PROVIDE_LOG_STREAM = sys.stderr
         _EXPLICIT_SETUP_DONE = False
+        _FOUNDATION_LOG_LEVEL = None  # Reset log level cache
         _core_setup_logger = _create_core_setup_logger()
 
 
