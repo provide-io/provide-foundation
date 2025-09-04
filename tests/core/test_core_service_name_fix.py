@@ -102,9 +102,9 @@ def test_key_value_still_has_emojis() -> None:
     os.environ.pop("PROVIDE_SERVICE_NAME", None)
     os.environ["PROVIDE_LOG_CONSOLE_FORMATTER"] = "key_value"
 
-    # Explicitly disable emoji settings for JSON output
-    os.environ["PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED"] = "false"
-    os.environ["PROVIDE_LOG_DAS_EMOJI_ENABLED"] = "false"
+    # Enable emojis for key-value format (the test expects emojis)
+    os.environ["PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED"] = "true"
+    os.environ["PROVIDE_LOG_DAS_EMOJI_ENABLED"] = "true"
 
     # Capture output
     import io
