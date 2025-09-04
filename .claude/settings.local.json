@@ -58,7 +58,8 @@
       "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/flavorpack/src:/Users/tim/code/gh/provide-io/provide-foundation/src:$PYTHONPATH python -c \"\nfrom pathlib import Path\n# Test disk utilities\nfrom flavor.utils.disk import ensure_directory\n\n# Test ensure_directory (which now uses foundation)\ntest_dir = Path(''/tmp/test_ensure_dir'')\nensure_directory(test_dir, mode=0o755)\nprint(f''Directory created: {test_dir.exists()}'')\nprint(f''Is directory: {test_dir.is_dir()}'')\n\n# Clean up\nimport shutil\nshutil.rmtree(test_dir)\nprint(f''Cleaned up: {not test_dir.exists()}'')\n\")",
       "Read(/private/tmp/**)",
       "Bash(exec python:*)",
-      "WebSearch"
+      "WebSearch",
+      "Read(/private/tmp/**)"
     ],
     "deny": [],
     "ask": [],

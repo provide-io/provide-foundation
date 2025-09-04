@@ -1,10 +1,10 @@
-# Helpers
+# CLI Testing
 
-::: provide.foundation.cli.helpers
+::: provide.foundation.cli.testing
 
 ## Overview
 
-API documentation for Helpers.
+API documentation for CLI testing utilities.
 
 ## Usage
 
