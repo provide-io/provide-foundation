@@ -1,14 +1,16 @@
 """Common CLI utilities for output, logging, and testing."""
 
+import inspect
 import json
 from pathlib import Path
 from typing import Any
 
 import click
+from click.testing import CliRunner, Result
 
 from provide.foundation.context import Context
 from provide.foundation.core import setup_telemetry
-from provide.foundation.logger import ( # ADDED THESE IMPORTS
+from provide.foundation.logger import (
     LoggingConfig,
     TelemetryConfig,
     get_logger,
@@ -97,20 +99,19 @@ def setup_cli_logging(
     Args:
         ctx: The foundation Context, populated by CLI decorators.
     """
-    # Map log_format to the correct console_formatter value
     console_formatter = "json" if ctx.json_output else ctx.log_format
 
     logging_config = LoggingConfig(
         default_level=ctx.log_level,
         console_formatter=console_formatter,
-        omit_timestamp=False,  # Timestamps are generally useful in CLIs
+        omit_timestamp=False,
         logger_name_emoji_prefix_enabled=not ctx.no_emoji,
         das_emoji_prefix_enabled=not ctx.no_emoji,
-        log_file=ctx.log_file, # ADDED THIS LINE
+        log_file=ctx.log_file,
     )
 
     telemetry_config = TelemetryConfig(
-        service_name=ctx.profile,  # Use profile as a default service name
+        service_name=ctx.profile,
         logging=logging_config,
     )
 
@@ -129,33 +130,29 @@ def create_cli_context(**kwargs) -> Context:
     Returns:
         Configured Context instance
     """
-    # Start with environment
     ctx = Context.from_env()
-
-    # Apply any overrides
     for key, value in kwargs.items():
         if value is not None and hasattr(ctx, key):
             setattr(ctx, key, value)
-
     return ctx
 
 
-# Testing utilities
-
-
 class CliTestRunner:
-    """Test runner for CLI commands using Click's testing facilities."""
+    """
+    Test runner for CLI commands using Click's testing facilities.
+    This wrapper provides compatibility for different Click versions
+    regarding the 'mix_stderr' functionality.
+    """
 
     def __init__(self, mix_stderr: bool = False) -> None:
-        """
-        Initialize the test runner.
+        self._mix_stderr = mix_stderr
+        runner_sig = inspect.signature(CliRunner)
+        self._supports_mix_stderr = 'mix_stderr' in runner_sig.parameters
 
-        Args:
-            mix_stderr: Whether to mix stderr with stdout in output
-        """
-        from click.testing import CliRunner
-
-        self.runner = CliRunner(mix_stderr=mix_stderr)
+        if self._supports_mix_stderr:
+            self.runner = CliRunner(mix_stderr=self._mix_stderr)
+        else:
+            self.runner = CliRunner()
 
     def invoke(
         self,
@@ -165,22 +162,11 @@ class CliTestRunner:
         env: dict[str, str] | None = None,
         catch_exceptions: bool = True,
         **kwargs,
-    ):
+    ) -> Result:
         """
         Invoke a CLI command for testing.
-
-        Args:
-            cli: The Click command or group to invoke
-            args: Command line arguments
-            input: Optional input to provide
-            env: Environment variables to set
-            catch_exceptions: Whether to catch exceptions
-            **kwargs: Additional arguments for CliRunner.invoke
-
-        Returns:
-            Click Result object with exit_code, output, etc.
         """
-        return self.runner.invoke(
+        result = self.runner.invoke(
             cli,
             args=args,
             input=input,
@@ -189,23 +175,32 @@ class CliTestRunner:
             **kwargs,
         )
 
+        if not self._supports_mix_stderr and self._mix_stderr and result.stderr:
+            result_kwargs = {
+                "runner": result.runner,
+                "stdout_bytes": result.stdout_bytes + result.stderr_bytes,
+                "stderr_bytes": b'',
+                "exit_code": result.exit_code,
+                "exception": result.exception,
+                "exc_info": result.exc_info,
+            }
+            result_sig = inspect.signature(Result)
+            if 'return_value' in result_sig.parameters:
+                result_kwargs['return_value'] = result.return_value
+            return Result(**result_kwargs)
+
+        return result
+
     def isolated_filesystem(self):
         """
         Context manager for isolated filesystem.
-
-        Creates a temporary directory and changes to it,
-        cleaning up on exit.
         """
         return self.runner.isolated_filesystem()
 
 
-def assert_cli_success(result, expected_output: str | None = None) -> None:
+def assert_cli_success(result: Result, expected_output: str | None = None) -> None:
     """
     Assert that a CLI command succeeded.
-
-    Args:
-        result: Click Result object from invoke
-        expected_output: Optional expected output substring
     """
     if result.exit_code != 0:
         raise AssertionError(
@@ -223,17 +218,12 @@ def assert_cli_success(result, expected_output: str | None = None) -> None:
 
 
 def assert_cli_error(
-    result,
+    result: Result,
     expected_error: str | None = None,
     exit_code: int | None = None,
 ) -> None:
     """
     Assert that a CLI command failed.
-
-    Args:
-        result: Click Result object from invoke
-        expected_error: Optional expected error substring
-        exit_code: Expected exit code (default: any non-zero)
     """
     if result.exit_code == 0:
         raise AssertionError(f"Command succeeded unexpectedly\nOutput: {result.output}")

@@ -39,13 +39,9 @@ class TestCompleteCliIntegration:
             setup_cli_logging(ctx)
 
         @cli.group()
-        @flexible_options
         @pass_context
-        def database(ctx: Context, **kwargs) -> None:
+        def database(ctx: Context) -> None:
             """Database management commands."""
-            for key, value in kwargs.items():
-                if value is not None:
-                    setattr(ctx, key, value)
             setup_cli_logging(ctx)
 
         @database.command()
@@ -146,7 +142,7 @@ class TestLoggingIntegration:
             logger = get_logger(__name__)
             logger.info("Test message", extra_field="value")
         runner = CliTestRunner()
-        result = runner.invoke(cmd, ["--log-level", "INFO", "--log-format", "json", "--no-emoji"])
+        result = runner.invoke(cmd, ["--log-level", "INFO", "--log-format", "json"])
         assert result.exit_code == 0
         output = captured_stderr_for_foundation.getvalue()
         app_logs = [line for line in output.splitlines() if not line.startswith('[Foundation Setup]')]

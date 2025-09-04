@@ -33,7 +33,7 @@ classifiers = [
 dependencies = [
     "aiofiles>=23.2.1",
     "attrs>=23.1.0",
-    "click>=8.2.1",
+    "click>=8.1.7",
     "structlog>=25.3.0",
     "tomli_w>=1.0.0",
 ]
