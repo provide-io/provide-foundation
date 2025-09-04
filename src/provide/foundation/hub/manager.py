@@ -13,7 +13,7 @@ from typing import Any
 
 import click
 
-from provide.foundation.context import Context
+from provide.foundation.cli.context import Context
 from provide.foundation.errors.resources import AlreadyExistsError
 from provide.foundation.errors.config import ValidationError
 from provide.foundation.errors.decorators import with_error_handling

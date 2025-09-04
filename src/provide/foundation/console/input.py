@@ -13,7 +13,7 @@ from typing import Any, TypeVar
 
 import click
 
-from provide.foundation.context import Context
+from provide.foundation.cli.context import Context
 from provide.foundation.logger import get_logger
 
 plog = get_logger(__name__)

@@ -17,7 +17,7 @@ from provide.foundation.console.input import (
     pin_lines,
     pin_stream,
 )
-from provide.foundation.context import Context
+from provide.foundation.cli.context import Context
 
 
 class TestPin:
