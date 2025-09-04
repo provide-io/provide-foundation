@@ -72,8 +72,16 @@ def run_command(
         cwd = str(cwd)
 
     try:
+        # Prepare command for subprocess
+        if shell:
+            # For shell commands, ensure it's a string
+            subprocess_cmd = cmd_str
+        else:
+            # For non-shell, use the original cmd (list or string)
+            subprocess_cmd = cmd
+            
         result = subprocess.run(
-            " ".join(cmd) if shell else cmd,
+            subprocess_cmd,
             cwd=cwd,
             env=run_env,
             capture_output=capture_output,
