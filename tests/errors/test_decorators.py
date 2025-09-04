@@ -59,7 +59,7 @@ class TestWithErrorHandling:
         with pytest.raises(TypeError):
             func("type")
 
-    @patch("provide.foundation.errors.decorators.logger")
+    @patch("provide.foundation.errors.decorators._get_logger")
     def test_logging_enabled(self, mock_logger) -> None:
         """Test that errors are logged when log_errors=True."""
 
@@ -70,10 +70,10 @@ class TestWithErrorHandling:
         with pytest.raises(ValueError):
             failing_func()
 
-        mock_logger.error.assert_called_once()
-        assert "Error in failing_func" in mock_logger.error.call_args[0][0]
+        mock_logger.return_value.error.assert_called_once()
+        assert "Error in failing_func" in mock_logger.return_value.error.call_args[0][0]
 
-    @patch("provide.foundation.errors.decorators.logger")
+    @patch("provide.foundation.errors.decorators._get_logger")
     def test_logging_disabled(self, mock_logger) -> None:
         """Test that errors are not logged when log_errors=False."""
 
@@ -84,9 +84,9 @@ class TestWithErrorHandling:
         with pytest.raises(ValueError):
             failing_func()
 
-        mock_logger.error.assert_not_called()
+        mock_logger.return_value.error.assert_not_called()
 
-    @patch("provide.foundation.errors.decorators.logger")
+    @patch("provide.foundation.errors.decorators._get_logger")
     def test_suppress_logging(self, mock_logger) -> None:
         """Test that suppressed errors are logged at info level."""
 
@@ -97,8 +97,8 @@ class TestWithErrorHandling:
         result = func()
 
         assert result == "default"
-        mock_logger.info.assert_called_once()
-        assert "Suppressed KeyError" in mock_logger.info.call_args[0][0]
+        mock_logger.return_value.info.assert_called_once()
+        assert "Suppressed KeyError" in mock_logger.return_value.info.call_args[0][0]
 
     def test_context_provider(self) -> None:
         """Test using context provider."""
@@ -110,12 +110,12 @@ class TestWithErrorHandling:
         def func() -> Never:
             raise ValueError("test")
 
-        with patch("provide.foundation.errors.decorators.logger") as mock_logger:
+        with patch("provide.foundation.errors.decorators._get_logger") as mock_logger:
             with pytest.raises(ValueError):
                 func()
 
             context_provider.assert_called_once()
-            call_args = mock_logger.error.call_args[1]
+            call_args = mock_logger.return_value.error.call_args[1]
             assert call_args["request_id"] == "123"
 
     def test_error_mapper(self) -> None:
@@ -239,7 +239,7 @@ class TestRetryOnError:
         assert result == "success"
         assert attempt_count == 2
 
-    @patch("provide.foundation.errors.decorators.logger")
+    @patch("provide.foundation.errors.decorators._get_logger")
     def test_retry_logging(self, mock_logger) -> None:
         """Test that retries are logged."""
 
@@ -251,10 +251,10 @@ class TestRetryOnError:
             func()
 
         # Should log warning for retry and error for final failure
-        assert mock_logger.warning.call_count == 1
-        assert mock_logger.error.call_count == 1
+        assert mock_logger.return_value.warning.call_count == 1
+        assert mock_logger.return_value.error.call_count == 1
 
-        warning_call = mock_logger.warning.call_args[0][0]
+        warning_call = mock_logger.return_value.warning.call_args[0][0]
         assert "Retry 1/2" in warning_call
 
     def test_on_retry_callback(self) -> None:
@@ -286,7 +286,7 @@ class TestRetryOnError:
                 raise ValueError("test")
             return "success"
 
-        with patch("provide.foundation.errors.decorators.logger") as mock_logger:
+        with patch("provide.foundation.errors.decorators._get_logger") as mock_logger:
             result = func()
 
         assert result == "success"
@@ -294,7 +294,7 @@ class TestRetryOnError:
         # Should log callback failures
         assert any(
             "Retry callback failed" in str(call)
-            for call in mock_logger.warning.call_args_list
+            for call in mock_logger.return_value.warning.call_args_list
         )
 
     @patch("time.sleep")
@@ -354,7 +354,7 @@ class TestSuppressAndLog:
         with pytest.raises(ValueError):
             func()
 
-    @patch("provide.foundation.errors.decorators.logger")
+    @patch("provide.foundation.errors.decorators._get_logger")
     def test_logging_at_warning_level(self, mock_logger) -> None:
         """Test that suppressed errors are logged at warning level."""
 
@@ -365,10 +365,10 @@ class TestSuppressAndLog:
         result = func()
 
         assert result == "default"
-        mock_logger.warning.assert_called_once()
-        assert "Suppressed ValueError" in mock_logger.warning.call_args[0][0]
+        mock_logger.return_value.warning.assert_called_once()
+        assert "Suppressed ValueError" in mock_logger.return_value.warning.call_args[0][0]
 
-    @patch("provide.foundation.errors.decorators.logger")
+    @patch("provide.foundation.errors.decorators._get_logger")
     def test_logging_at_custom_level(self, mock_logger) -> None:
         """Test logging at custom level."""
 
@@ -378,9 +378,9 @@ class TestSuppressAndLog:
 
         func()
 
-        mock_logger.error.assert_called_once()
+        mock_logger.return_value.error.assert_called_once()
 
-    @patch("provide.foundation.errors.decorators.logger")
+    @patch("provide.foundation.errors.decorators._get_logger")
     def test_invalid_log_level_falls_back(self, mock_logger) -> None:
         """Test that invalid log level falls back to warning."""
 
@@ -391,7 +391,7 @@ class TestSuppressAndLog:
         func()
 
         # Should fall back to warning
-        mock_logger.warning.assert_called_once()
+        mock_logger.return_value.warning.assert_called_once()
 
 
 class TestFallbackOnError:
@@ -456,7 +456,7 @@ class TestFallbackOnError:
         assert result == "success"
         fallback_func.assert_not_called()
 
-    @patch("provide.foundation.errors.decorators.logger")
+    @patch("provide.foundation.errors.decorators._get_logger")
     def test_logging_enabled(self, mock_logger) -> None:
         """Test that fallback usage is logged."""
 
@@ -469,8 +469,8 @@ class TestFallbackOnError:
 
         func()
 
-        mock_logger.warning.assert_called_once()
-        assert "Using fallback" in mock_logger.warning.call_args[0][0]
+        mock_logger.return_value.warning.assert_called_once()
+        assert "Using fallback" in mock_logger.return_value.warning.call_args[0][0]
 
     def test_fallback_error_propagates(self) -> None:
         """Test that errors in fallback function propagate."""
@@ -488,7 +488,7 @@ class TestFallbackOnError:
         assert str(exc_info.value) == "fallback failed"
         assert str(exc_info.value.__cause__) == "original"
 
-    @patch("provide.foundation.errors.decorators.logger")
+    @patch("provide.foundation.errors.decorators._get_logger")
     def test_fallback_error_logged(self, mock_logger) -> None:
         """Test that fallback errors are logged."""
 
@@ -503,8 +503,8 @@ class TestFallbackOnError:
             func()
 
         # Should log both the fallback attempt and failure
-        assert mock_logger.warning.call_count == 1
-        assert mock_logger.error.call_count == 1
+        assert mock_logger.return_value.warning.call_count == 1
+        assert mock_logger.return_value.error.call_count == 1
 
 
 class TestCircuitBreaker:
@@ -629,7 +629,7 @@ class TestCircuitBreaker:
         func(False)
         assert breaker._failure_count == 1
 
-    @patch("provide.foundation.errors.decorators.logger")
+    @patch("provide.foundation.errors.decorators._get_logger")
     def test_circuit_open_logged(self, mock_logger) -> None:
         """Test that circuit opening is logged."""
         breaker = CircuitBreaker(failure_threshold=1)
@@ -641,10 +641,10 @@ class TestCircuitBreaker:
         with pytest.raises(ValueError):
             func()
 
-        mock_logger.error.assert_called()
-        assert "Circuit breaker for func opened" in mock_logger.error.call_args[0][0]
+        mock_logger.return_value.error.assert_called()
+        assert "Circuit breaker for func opened" in mock_logger.return_value.error.call_args[0][0]
 
-    @patch("provide.foundation.errors.decorators.logger")
+    @patch("provide.foundation.errors.decorators._get_logger")
     def test_recovery_logged(self, mock_logger) -> None:
         """Test that recovery is logged."""
         breaker = CircuitBreaker(failure_threshold=1, recovery_timeout=0.01)
@@ -664,7 +664,7 @@ class TestCircuitBreaker:
         func(False)
 
         # Check for recovery log
-        info_calls = [call[0][0] for call in mock_logger.info.call_args_list]
+        info_calls = [call[0][0] for call in mock_logger.return_value.info.call_args_list]
         assert any("closed after successful recovery" in call for call in info_calls)
 
     def test_circuit_breaker_decorator(self) -> None:
