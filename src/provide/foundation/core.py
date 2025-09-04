@@ -292,9 +292,9 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
                 _FOUNDATION_LOG_STREAM = _LOG_FILE_HANDLE
             except Exception as e:
                 _core_setup_logger.error(f"Failed to open log file {log_file_path}: {e}")
-                _FOUNDATION_LOG_STREAM = _get_safe_stderr()
+                _FOUNDATION_LOG_STREAM = get_safe_stderr()
         elif not is_test_stream:
-             _FOUNDATION_LOG_STREAM = _get_safe_stderr()
+             _FOUNDATION_LOG_STREAM = get_safe_stderr()
 
         _internal_setup(current_config, is_explicit_call=True)
         _EXPLICIT_SETUP_DONE = True

@@ -113,8 +113,8 @@ Semantic Layers provide a schema-driven way to define structured logging convent
 ```python
 from provide.foundation import logger, setup_telemetry, TelemetryConfig, LoggingConfig
 
-# Enable the 'http' semantic layer
-config = TelemetryConfig(logging=LoggingConfig(enabled_semantic_layers=["http"]))
+# Enable the 'http' emoji set
+config = TelemetryConfig(logging=LoggingConfig(enabled_emoji_sets=["http"]))
 setup_telemetry(config)
 
 # Log an HTTP request event
@@ -199,7 +199,7 @@ config = TelemetryConfig(
         module_levels={
             "noisy_library": "WARNING",
         },
-        enabled_semantic_layers=["http", "database", "llm"],
+        enabled_emoji_sets=["http", "database", "llm"],
     )
 )
 
