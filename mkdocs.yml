@@ -204,7 +204,6 @@ nav:
       - Best Practices: guide/config/best-practices.md
     
     - Logging:
-      - guide/logging/index.md
       - Basic Usage: guide/logging/basic.md
       - Advanced Patterns: guide/logging/advanced.md
       - Async Logging: guide/logging/async.md
@@ -218,10 +217,8 @@ nav:
       - Nested Commands: guide/cli/nested.md
       - Arguments & Options: guide/cli/arguments.md
       - Output Formatting: guide/cli/output.md
-      - Testing CLI Apps: guide/cli/testing.md
     
     - System Utilities:
-      - guide/utilities/index.md
       - Platform Detection: guide/utilities/platform.md
       - Process Execution: guide/utilities/process.md
       - Console Output: guide/utilities/console.md
@@ -313,10 +310,7 @@ nav:
       - macOS: troubleshooting/platforms/macos.md
       - Linux: troubleshooting/platforms/linux.md
       - Windows: troubleshooting/platforms/windows.md
-      - Docker: troubleshooting/platforms/docker.md
-    - Performance Issues: troubleshooting/performance.md
     - Configuration Problems: troubleshooting/configuration.md
-    - Error Messages: troubleshooting/errors.md
     - FAQ: troubleshooting/faq.md
   
 
