@@ -74,12 +74,12 @@ class TestCliEchoFunctions:
         output = mock_secho.call_args[0][0]
         assert "Be careful" in output
 
-    @patch("click.secho")
-    def test_echo_info_text(self, mock_secho: MagicMock) -> None:
+    @patch("click.echo")
+    def test_echo_info_text(self, mock_echo: MagicMock) -> None:
         """Test info message output."""
         echo_info("FYI")
-        mock_secho.assert_called_once()
-        output = mock_secho.call_args[0][0]
+        mock_echo.assert_called_once()
+        output = mock_echo.call_args[0][0]
         assert "FYI" in output
 
 
