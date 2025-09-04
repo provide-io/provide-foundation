@@ -64,7 +64,7 @@ class TestCliEchoFunctions:
         mock_echo.assert_called_once()
         output = mock_echo.call_args[0][0]
         parsed = json.loads(output)
-        assert parsed["message"] == "Operation completed"
+        assert parsed["success"] == "Operation completed"
 
     @patch("click.secho")
     def test_echo_warning_text(self, mock_secho: MagicMock) -> None:
