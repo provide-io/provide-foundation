@@ -148,7 +148,7 @@ semantic_registry.register("llm", LLMLayer)
 Layers can be auto-discovered using entry points:
 
 ```toml
-[project.entry_points."provide.foundation.semantic_layers"]
+[project.entry_points."provide.foundation.emoji_sets"]
 custom = "myapp.layers:CustomLayer"
 ```
 

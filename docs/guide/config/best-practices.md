@@ -29,7 +29,7 @@ logging:
   no_emoji: false
   caller_info: true
   
-semantic_layers:
+emoji_sets:
   enabled: true
   emoji: true
   validation: true

@@ -182,7 +182,7 @@ Enable or disable emoji sets:
 from provide.foundation.config import TelemetryConfig
 
 config = TelemetryConfig(
-    enable_semantic_layers=True,     # Enable all layers
+    enable_emoji_sets=True,          # Enable all emoji sets
     enabled_layers=["http", "llm"],  # Or specific ones
     enable_emoji=True,                # Visual parsing
     emoji_fallback="text"             # Fallback strategy

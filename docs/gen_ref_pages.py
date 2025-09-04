@@ -87,9 +87,9 @@ The core modules provide the fundamental functionality of provide.foundation.
 
 ## Semantic Layers
 
-Semantic layers provide domain-specific logging capabilities:
+Emoji sets provide domain-specific logging capabilities:
 
-- [`provide.foundation.semantic_layers`](reference/provide/foundation/semantic_layers.md) - Base semantic layer system
+- [`provide.foundation.emoji_sets`](reference/provide/foundation/emoji_sets.md) - Base emoji set system
 - HTTP Layer - Web request/response logging
 - Database Layer - Database query logging
 - LLM Layer - Language model interaction logging
