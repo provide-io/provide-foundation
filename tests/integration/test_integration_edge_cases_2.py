@@ -31,7 +31,7 @@ from provide.foundation.logger.custom_processors import (
 )
 from provide.foundation.logger.emoji.matrix import show_emoji_matrix
 from provide.foundation.logger.processors import _build_formatter_processors_list
-from provide.foundation.types import EmojiSetConfig
+from provide.foundation.logger.emoji.types import EmojiSetConfig
 from provide.foundation.logger.emoji.types import CustomDasEmojiSet
 # --- Tests for src/provide/foundation/telemetry/config.py ---
 
@@ -97,7 +97,7 @@ def test_config_dangling_emoji_set_reference(
     captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     """Covers a semantic field referencing a non-existent emoji set."""
-    from provide.foundation.types import FieldToEmojiMapping
+    from provide.foundation.logger.emoji.types import FieldToEmojiMapping
 
     dangling_field = FieldToEmojiMapping(
         log_key="dangling_key", emoji_set_name="non_existent_set"

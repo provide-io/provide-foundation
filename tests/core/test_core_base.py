@@ -17,12 +17,12 @@ import structlog
 from provide.foundation.core import (
     _CORE_SETUP_LOGGER_NAME,
     _create_core_setup_logger,
-    _get_safe_stderr,
     _handle_globally_disabled_setup,
     reset_foundation_setup_for_testing,
     setup_telemetry,
     shutdown_foundation_telemetry,
 )
+from provide.foundation.utils.streams import get_safe_stderr
 from provide.foundation.logger import base as logger_base_module
 from provide.foundation.logger.config import (
     LoggingConfig,
@@ -33,7 +33,7 @@ from provide.foundation.logger.config import (
 class TestGetSafeStderr:
     def test_get_safe_stderr_is_none(self) -> None:
         with patch.object(sys, "stderr", None):
-            fallback_stream = _get_safe_stderr()
+            fallback_stream = get_safe_stderr()
             assert isinstance(fallback_stream, io.StringIO)
 
     def test_get_safe_stderr_is_valid(self) -> None:
@@ -42,7 +42,7 @@ class TestGetSafeStderr:
             sys.stderr = io.StringIO("temp stderr for test")
         try:
             if sys.stderr is not None:
-                stream = _get_safe_stderr()
+                stream = get_safe_stderr()
                 assert stream == sys.stderr
             else:  # pragma: no cover
                 pytest.skip(
