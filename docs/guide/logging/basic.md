@@ -185,36 +185,54 @@ logger.info("deployment_complete",
 )
 ```
 
-## Context Management
+## Context Binding
 
-### Adding Context to Logs
+### Temporary Context
 
 ```python
 from provide.foundation import logger
 
-# Add context directly in log calls
-logger.info("request_started", request_id="req_123", user_id="usr_456")
-logger.info("request_completed", request_id="req_123", user_id="usr_456")
+# Add context for a block
+with logger.bind(request_id="req_123", user_id="usr_456"):
+    logger.info("request_started")
+    # Both request_id and user_id are included
+    
+    process_request()
+    
+    logger.info("request_completed")
+    # Still includes the context
+
+# Context is removed here
+logger.info("other_operation")  # No request_id or user_id
 ```
 
-### Named Loggers with Context
+### Permanent Context
 
 ```python
-from provide.foundation import get_logger
-
-# Create a named logger (returns a structlog BoundLogger)
-request_logger = get_logger("payment-api")
-
-# With structlog loggers, you can bind context
-bound_logger = request_logger.bind(
+# Create a logger with permanent context
+request_logger = logger.bind(
     service="payment-api",
     environment="production",
     region="us-west-2"
 )
 
 # All logs include the bound context
-bound_logger.info("service_started")
-bound_logger.debug("processing_payment", amount=99.99)
+request_logger.info("service_started")
+request_logger.debug("processing_payment", amount=99.99)
+```
+
+### Named Loggers
+
+```python
+from provide.foundation import get_logger
+
+# Create a named logger for a specific module
+db_logger = get_logger("database")
+db_logger.info("connection_established", host="localhost", port=5432)
+
+# Named loggers also support bind()
+api_logger = get_logger("api").bind(version="v2")
+api_logger.info("endpoint_called", path="/users", method="GET")
 ```
 
 ## Output Formats
@@ -222,7 +240,7 @@ bound_logger.debug("processing_payment", amount=99.99)
 ### Pretty Format (Development)
 
 ```python
-os.environ["FOUNDATION_LOG_CONSOLE_FORMATTER"] = "key_value"
+os.environ["FOUNDATION_LOG_CONSOLE_FORMATTER"] = "key_value"  # Pretty format with emojis
 
 logger.info("server_started", port=8080, workers=4)
 # Output: ✅ server_started port=8080 workers=4

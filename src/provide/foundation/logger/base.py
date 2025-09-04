@@ -196,6 +196,52 @@ class FoundationLogger:
             "critical", self._format_message_with_args(event, args), **kwargs
         )
 
+    def bind(self, **kwargs: Any) -> Any:
+        """
+        Create a new logger with additional context.
+        
+        This is a pass-through to structlog's bind() method,
+        providing a consistent API with get_logger().
+        
+        Args:
+            **kwargs: Key-value pairs to bind to the logger context
+            
+        Returns:
+            A new logger instance with the bound context
+        """
+        self._ensure_configured()
+        return self.get_logger().bind(**kwargs)
+    
+    def unbind(self, *keys: str) -> Any:
+        """
+        Remove keys from the logger context.
+        
+        This is a pass-through to structlog's unbind() method.
+        
+        Args:
+            *keys: Keys to remove from the context
+            
+        Returns:
+            A new logger instance with the keys removed
+        """
+        self._ensure_configured()
+        return self.get_logger().unbind(*keys)
+    
+    def try_unbind(self, *keys: str) -> Any:
+        """
+        Try to remove keys from the logger context (won't fail if key doesn't exist).
+        
+        This is a pass-through to structlog's try_unbind() method.
+        
+        Args:
+            *keys: Keys to try to remove from the context
+            
+        Returns:
+            A new logger instance with the keys removed (if they existed)
+        """
+        self._ensure_configured()
+        return self.get_logger().try_unbind(*keys)
+
     def __setattr__(self, name: str, value: Any) -> None:
         super().__setattr__(name, value)
 
