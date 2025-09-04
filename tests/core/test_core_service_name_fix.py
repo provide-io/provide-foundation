@@ -30,12 +30,9 @@ def test_service_name_injection_fix() -> None:
     os.environ["PROVIDE_SERVICE_NAME"] = "lazy-service-test"
     os.environ["PROVIDE_LOG_CONSOLE_FORMATTER"] = "json"
 
-    # Clear any existing emoji settings
-    for key in [
-        "PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED",
-        "PROVIDE_LOG_DAS_EMOJI_ENABLED",
-    ]:
-        os.environ.pop(key, None)
+    # Explicitly disable emoji settings for JSON output
+    os.environ["PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED"] = "false"
+    os.environ["PROVIDE_LOG_DAS_EMOJI_ENABLED"] = "false"
 
     # Capture output
     import io
@@ -105,12 +102,9 @@ def test_key_value_still_has_emojis() -> None:
     os.environ.pop("PROVIDE_SERVICE_NAME", None)
     os.environ["PROVIDE_LOG_CONSOLE_FORMATTER"] = "key_value"
 
-    # Clear any existing emoji settings
-    for key in [
-        "PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED",
-        "PROVIDE_LOG_DAS_EMOJI_ENABLED",
-    ]:
-        os.environ.pop(key, None)
+    # Explicitly disable emoji settings for JSON output
+    os.environ["PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED"] = "false"
+    os.environ["PROVIDE_LOG_DAS_EMOJI_ENABLED"] = "false"
 
     # Capture output
     import io
