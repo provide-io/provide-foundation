@@ -11,7 +11,8 @@ def test_flavorpack_atomic_replacements(tmp_path: Path) -> None:
     """Test flavorpack atomic operations are properly replaced."""
     # Add flavorpack to path
     flavorpack_path = Path("/Users/tim/code/gh/provide-io/flavorpack/src")
-    if flavorpack_path.exists():
+    atomic_file = flavorpack_path / "flavor/utils/atomic.py"
+    if flavorpack_path.exists() and atomic_file.exists():
         import importlib.util
 
         # Load the atomic module directly without importing the full package
@@ -49,7 +50,8 @@ def test_flavorpack_atomic_replacements(tmp_path: Path) -> None:
 def test_flavorpack_disk_replacements(tmp_path: Path) -> None:
     """Test flavorpack disk operations are properly replaced."""
     flavorpack_path = Path("/Users/tim/code/gh/provide-io/flavorpack/src")
-    if flavorpack_path.exists():
+    disk_file = flavorpack_path / "flavor/utils/disk.py"
+    if flavorpack_path.exists() and disk_file.exists():
         import importlib.util
 
         # Load the disk module directly without importing the full package
@@ -75,7 +77,8 @@ def test_flavorpack_disk_replacements(tmp_path: Path) -> None:
 def test_wrknv_install_replacements(tmp_path: Path) -> None:
     """Test wrknv install operations are properly replaced."""
     wrknv_path = Path("/Users/tim/code/gh/provide-io/wrknv/src")
-    if wrknv_path.exists():
+    install_file = wrknv_path / "wrknv/wenv/operations/install.py"
+    if wrknv_path.exists() and install_file.exists():
         import importlib.util
 
         # Load the install module directly without importing the full package
@@ -125,7 +128,8 @@ def test_wrknv_install_replacements(tmp_path: Path) -> None:
 def test_wrknv_extract_operations(tmp_path: Path) -> None:
     """Test wrknv extract operations still work."""
     wrknv_path = Path("/Users/tim/code/gh/provide-io/wrknv/src")
-    if wrknv_path.exists():
+    install_file = wrknv_path / "wrknv/wenv/operations/install.py"
+    if wrknv_path.exists() and install_file.exists():
         import importlib.util
 
         # Load the install module directly without importing the full package
