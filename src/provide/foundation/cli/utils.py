@@ -107,6 +107,7 @@ def setup_cli_logging(
         omit_timestamp=False,
         logger_name_emoji_prefix_enabled=not ctx.no_emoji,
         das_emoji_prefix_enabled=not ctx.no_emoji,
+        log_file=ctx.log_file,
     )
 
     telemetry_config = TelemetryConfig(
