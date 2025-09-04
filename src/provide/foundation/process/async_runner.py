@@ -18,13 +18,14 @@ plog = get_logger(__name__)
 
 
 async def async_run_command(
-    cmd: list[str],
+    cmd: list[str] | str,
     cwd: str | Path | None = None,
     env: Mapping[str, str] | None = None,
     capture_output: bool = True,
     check: bool = True,
     timeout: float | None = None,
     input: bytes | None = None,
+    shell: bool = False,
     **kwargs: Any,
 ) -> CompletedProcess:
     """
