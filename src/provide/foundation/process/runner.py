@@ -196,6 +196,7 @@ def stream_command(
     cwd: str | Path | None = None,
     env: Mapping[str, str] | None = None,
     timeout: float | None = None,
+    stream_stderr: bool = False,
     **kwargs: Any,
 ) -> Iterator[str]:
     """
@@ -206,6 +207,7 @@ def stream_command(
         cwd: Working directory for the command
         env: Environment variables
         timeout: Command timeout in seconds
+        stream_stderr: Whether to stream stderr (merged with stdout)
         **kwargs: Additional arguments passed to subprocess.Popen
 
     Yields:
