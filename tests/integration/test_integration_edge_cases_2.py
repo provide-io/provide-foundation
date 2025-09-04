@@ -32,7 +32,7 @@ from provide.foundation.logger.custom_processors import (
 from provide.foundation.logger.emoji.matrix import show_emoji_matrix
 from provide.foundation.logger.processors import _build_formatter_processors_list
 from provide.foundation.types import EmojiSetConfig
-
+from provide.foundation.logger.emoji.types import CustomDasEmojiSet
 # --- Tests for src/provide/foundation/telemetry/config.py ---
 
 

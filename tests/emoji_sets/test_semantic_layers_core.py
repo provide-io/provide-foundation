@@ -23,14 +23,14 @@ from provide.foundation.logger.emoji.sets import (
     LEGACY_DAS_EMOJI_SETS,
     LLM_EMOJI_SET,
 )
-from provide.foundation.types import (
+from provide.foundation.logger.emoji.types import (
     CustomDasEmojiSet,
     FieldToEmojiMapping,
     EmojiSetConfig,
 )
 
 ResolvedEmojiConfigForTest = tuple[
-    list[FieldToEmojiMapping], dict[str, CustomDasEmojiSet]
+    list[FieldToEmojiMapping], dict[str]
 ]
 
 

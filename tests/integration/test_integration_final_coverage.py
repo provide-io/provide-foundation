@@ -11,7 +11,7 @@ from provide.foundation.logger.env import (
     _parse_user_emoji_sets_from_env,
 )
 from provide.foundation.types import FieldToEmojiMapping
-
+from provide.foundation.logger.emoji.types import CustomDasEmojiSet
 
 def test_logger_base_already_configured_after_lock() -> None:
     """Test line 72 - return when already configured after acquiring lock.
