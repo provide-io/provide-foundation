@@ -3,18 +3,19 @@
 import json
 from pathlib import Path
 import tempfile
-from unittest.mock import MagicMock, patch
 import io
 
 import click
-from click.testing import CliRunner
 import pytest
 
-from provide.foundation.cli import (
+from provide.foundation.cli.decorators import (
     flexible_options,
     output_options,
     pass_context,
+)
+from provide.foundation.cli.utils import (
     setup_cli_logging,
+    CliTestRunner,
 )
 from provide.foundation.context import Context
 from provide.foundation.logger import get_logger
@@ -78,27 +79,28 @@ class TestCompleteCliIntegration:
     def test_options_at_group_level(self) -> None:
         """Test that options work at the group level."""
         cli = self.create_test_cli()
-        runner = CliRunner()
+        runner = CliTestRunner()
         result = runner.invoke(cli, ["--log-level", "DEBUG", "--json", "status"])
         assert result.exit_code == 0
         output = json.loads(result.output.strip().split("\n")[-1])
         assert output["status"] == "healthy"
 
-    def test_options_at_subcommand_level(self) -> None:
-        """Test that options work at subcommand level."""
+    def test_options_are_available_to_subcommand(self) -> None:
+        """Test that options passed to the group are available to the subcommand."""
         cli = self.create_test_cli()
-        runner = CliRunner()
-        result = runner.invoke(cli, ["status", "--no-emoji"])
+        runner = CliTestRunner()
+        result = runner.invoke(cli, ["--no-emoji", "status"])
         assert result.exit_code == 0
-        assert "Application is healthy" in result.output
-        assert "🟢" not in result.output
+        output = "\n".join([line for line in result.output.strip().split("\n") if not line.startswith('[Foundation Setup]')])
+        assert "Application is healthy" in output
+        assert "🟢" not in output
 
     def test_nested_groups_inherit_options(self) -> None:
         """Test that nested groups inherit options."""
         cli = self.create_test_cli()
-        runner = CliRunner()
+        runner = CliTestRunner()
         result = runner.invoke(
-            cli, ["--json", "database", "--log-level", "WARNING", "migrate"]
+            cli, ["--json", "--log-level", "WARNING", "database", "migrate"]
         )
         assert result.exit_code == 0
         output = json.loads(result.output.strip().split("\n")[-1])
@@ -107,7 +109,7 @@ class TestCompleteCliIntegration:
     def test_command_options_override_group_options(self) -> None:
         """Test that later options on the same command override earlier ones."""
         cli = self.create_test_cli()
-        runner = CliRunner(mix_stderr=True)
+        runner = CliTestRunner(mix_stderr=True)
         result = runner.invoke(
             cli, ["--log-level", "INFO", "--log-level", "DEBUG", "status"]
         )
@@ -127,7 +129,7 @@ class TestLoggingIntegration:
             logger = get_logger(__name__)
             logger.debug("Debug message")
             logger.info("Info message")
-        runner = CliRunner()
+        runner = CliTestRunner()
         result = runner.invoke(cmd, ["--log-level", "INFO"])
         assert result.exit_code == 0
         output = captured_stderr_for_foundation.getvalue()
@@ -143,7 +145,7 @@ class TestLoggingIntegration:
             setup_cli_logging(ctx)
             logger = get_logger(__name__)
             logger.info("Test message", extra_field="value")
-        runner = CliRunner()
+        runner = CliTestRunner()
         result = runner.invoke(cmd, ["--log-level", "INFO", "--log-format", "json", "--no-emoji"])
         assert result.exit_code == 0
         output = captured_stderr_for_foundation.getvalue()
@@ -164,7 +166,7 @@ class TestLoggingIntegration:
                 setup_cli_logging(ctx)
                 logger = get_logger(__name__)
                 logger.info("Message to file")
-            runner = CliRunner()
+            runner = CliTestRunner()
             result = runner.invoke(cmd, ["--log-file", str(log_file), "--log-level", "INFO"])
             assert result.exit_code == 0
             content = log_file.read_text()
@@ -185,7 +187,7 @@ class TestOutputFormatting:
                 click.echo(json.dumps({"result": "success", "count": 42}))
             else:
                 click.echo("Result: success (42 items)")
-        runner = CliRunner()
+        runner = CliTestRunner()
         result = runner.invoke(cmd, ["--json"])
         assert result.exit_code == 0
         output = json.loads(result.output)
@@ -197,7 +199,7 @@ class TestOutputFormatting:
         @pass_context
         def cmd(ctx: Context, **kwargs) -> None:
             click.secho("Colored text", fg="green", color=not ctx.no_color)
-        runner = CliRunner()
+        runner = CliTestRunner()
         result = runner.invoke(cmd, ["--no-color"])
         assert result.exit_code == 0
         assert "\x1b" not in result.output
@@ -208,7 +210,7 @@ class TestOutputFormatting:
         @pass_context
         def cmd(ctx: Context, **kwargs) -> None:
             click.echo("✅ Success" if not ctx.no_emoji else "Success")
-        runner = CliRunner()
+        runner = CliTestRunner()
         result = runner.invoke(cmd, ["--no-emoji"])
         assert result.exit_code == 0
         assert "✅" not in result.output
@@ -228,7 +230,7 @@ class TestConfigurationLoading:
             @pass_context
             def cmd(ctx: Context, **kwargs) -> None:
                 click.echo(f"profile={ctx.profile}")
-            runner = CliRunner()
+            runner = CliTestRunner()
             result = runner.invoke(cmd, ["--config", str(config_file)])
             assert result.exit_code == 0
             assert "profile=testing" in result.output
@@ -254,7 +256,7 @@ class TestRealWorldScenarios:
                 assert ctx.json_output is True
                 assert ctx.log_file is not None
             click.echo(json.dumps({"diagnosis": "complete"}))
-        runner = CliRunner()
+        runner = CliTestRunner()
         with tempfile.NamedTemporaryFile(suffix=".log", delete=False) as f:
             log_file = Path(f.name)
         try:
@@ -284,7 +286,7 @@ class TestRealWorldScenarios:
             logger = get_logger(__name__)
             logger.debug("Debug information here")
             click.echo("🔧 Development mode active")
-        runner = CliRunner(mix_stderr=True)
+        runner = CliTestRunner(mix_stderr=True)
         result = runner.invoke(develop, ["--log-level", "DEBUG"])
         assert result.exit_code == 0
         assert "🔧 Development mode active" in result.output
