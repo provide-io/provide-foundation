@@ -15,6 +15,11 @@ from provide.foundation.config.types import ConfigDict, ConfigSource
 T = TypeVar("T", bound="BaseConfig")
 
 
+class ConfigValidationError(Exception):
+    """Raised when configuration validation fails."""
+    pass
+
+
 def field(
     *,
     default: Any = NOTHING,
