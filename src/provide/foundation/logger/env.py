@@ -53,13 +53,13 @@ def _ensure_config_logger_handler(logger: stdlib_logging.Logger) -> None:
 
 def from_env() -> "TelemetryConfig":
     """Creates a `TelemetryConfig` instance by parsing relevant environment variables."""
-    _apply_default_env_config()
-
+    # Don't apply defaults to the actual environment - just use them as fallbacks
+    
     service_name_env: str | None = os.getenv(
         "OTEL_SERVICE_NAME", os.getenv("PROVIDE_SERVICE_NAME")
     )
 
-    raw_default_log_level: str = os.getenv("PROVIDE_LOG_LEVEL", "DEBUG").upper()
+    raw_default_log_level: str = os.getenv("PROVIDE_LOG_LEVEL", DEFAULT_ENV_CONFIG["PROVIDE_LOG_LEVEL"]).upper()
     default_log_level: LogLevelStr
     if raw_default_log_level in _VALID_LOG_LEVEL_TUPLE:
         default_log_level = cast(LogLevelStr, raw_default_log_level)
@@ -71,7 +71,7 @@ def from_env() -> "TelemetryConfig":
         default_log_level = "DEBUG"
 
     raw_console_formatter: str = os.getenv(
-        "PROVIDE_LOG_CONSOLE_FORMATTER", "key_value"
+        "PROVIDE_LOG_CONSOLE_FORMATTER", DEFAULT_ENV_CONFIG["PROVIDE_LOG_CONSOLE_FORMATTER"]
     ).lower()
     console_formatter: ConsoleFormatterStr
     if raw_console_formatter in _VALID_FORMATTER_TUPLE:
@@ -89,8 +89,8 @@ def from_env() -> "TelemetryConfig":
     das_emoji_enabled: bool = _parse_bool_env_with_formatter_default(
         "PROVIDE_LOG_DAS_EMOJI_ENABLED", console_formatter
     )
-    omit_timestamp: bool = _parse_bool_env("PROVIDE_LOG_OMIT_TIMESTAMP", False)
-    globally_disabled: bool = _parse_bool_env("PROVIDE_TELEMETRY_DISABLED", False)
+    omit_timestamp: bool = _parse_bool_env("PROVIDE_LOG_OMIT_TIMESTAMP", DEFAULT_ENV_CONFIG["PROVIDE_LOG_OMIT_TIMESTAMP"] == "true")
+    globally_disabled: bool = _parse_bool_env("PROVIDE_TELEMETRY_DISABLED", DEFAULT_ENV_CONFIG["PROVIDE_TELEMETRY_DISABLED"] == "true")
 
     module_levels = _parse_module_levels(os.getenv("PROVIDE_LOG_MODULE_LEVELS", ""))
     enabled_emoji_sets = [
@@ -220,11 +220,6 @@ def _parse_module_levels(levels_str: str) -> dict[str, LogLevelStr]:
                 f"⚙️➡️⚠️ Invalid item '{item}' in PROVIDE_LOG_MODULE_LEVELS. Skipping."
             )
     return levels
-
-
-def _apply_default_env_config() -> None:
-    for key, default_value in DEFAULT_ENV_CONFIG.items():
-        os.environ.setdefault(key, default_value)
 
 
 def _parse_bool_env(env_var: str, default: bool) -> bool:
