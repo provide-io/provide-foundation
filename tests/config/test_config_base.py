@@ -222,9 +222,9 @@ class TestConfigValidationError:
 
     def test_validation_error(self) -> None:
         """Test creating validation error."""
-        error = ConfigValidationError("test_field", 123, "Invalid value")
+        error = ConfigValidationError("Invalid value", field="test_field", value=123)
 
-        assert error.field_name == "test_field"
-        assert error.value == 123
+        assert error.context["validation.field"] == "test_field"
+        assert error.context["validation.value"] == "123"
         assert "test_field" in str(error)
         assert "Invalid value" in str(error)
