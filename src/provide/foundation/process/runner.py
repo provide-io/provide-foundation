@@ -8,20 +8,10 @@ import subprocess
 import sys
 from typing import Any
 
-from provide.foundation.errors import FoundationError
+from provide.foundation.errors.exceptions import ProcessError, TimeoutError
 from provide.foundation.logger import get_logger
 
 plog = get_logger(__name__)
-
-
-class ProcessError(FoundationError):
-    """Process execution error."""
-    pass
-
-
-class TimeoutError(ProcessError):
-    """Process execution timed out."""
-    pass
 
 
 @dataclass
@@ -179,6 +169,7 @@ def run_command_simple(
     return result.stdout.strip()
 
 
+
 def stream_command(
     cmd: list[str],
     cwd: str | Path | None = None,
@@ -262,3 +253,11 @@ def stream_command(
             command=cmd_str,
             error=str(e),
         ) from e
+
+# Export all public functions
+__all__ = [
+    "CompletedProcess",
+    "run_command",
+    "run_command_simple", 
+    "stream_command",
+]
