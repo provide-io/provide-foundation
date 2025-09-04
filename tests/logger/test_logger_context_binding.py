@@ -50,7 +50,7 @@ class TestLoggerBind:
         bound_logger = global_logger.bind(request_id="req_123", user_id="usr_456")
         
         # Log with the bound logger
-        bound_logger.info("test_event", status="success")
+        bound_logger.info("test_event", custom_field="custom_value")
         
         # Check the output
         entries = get_log_entries(captured_stderr_for_foundation)
@@ -61,7 +61,7 @@ class TestLoggerBind:
         assert "test_event" in entry["event"]
         assert entry["request_id"] == "req_123"
         assert entry["user_id"] == "usr_456"
-        assert entry["status"] == "success"
+        assert entry["custom_field"] == "custom_value"
     
     def test_bind_returns_new_logger(self, captured_stderr_for_foundation, setup_foundation_telemetry_for_test):
         """Test that bind() returns a new logger instance."""
