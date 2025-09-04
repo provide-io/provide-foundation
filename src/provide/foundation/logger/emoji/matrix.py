@@ -131,9 +131,9 @@ def show_emoji_matrix() -> None:  # pragma: no cover
     Prints the active Foundation emoji logging contract to the console.
     If emoji sets are active, it displays their configuration.
     Otherwise, it displays the core DAS emoji mappings.
-    Activated by `FOUNDATION_SHOW_EMOJI_MATRIX` environment variable.
+    Activated by `PROVIDE_SHOW_EMOJI_MATRIX` environment variable.
     """
-    if os.getenv("FOUNDATION_SHOW_EMOJI_MATRIX", "false").strip().lower() not in (
+    if os.getenv("PROVIDE_SHOW_EMOJI_MATRIX", "false").strip().lower() not in (
         "true",
         "1",
         "yes",

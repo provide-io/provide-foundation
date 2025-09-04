@@ -87,7 +87,7 @@ def _create_core_setup_logger(globally_disabled: bool = False) -> stdlib_logging
     logger.setLevel(
         getattr(
             stdlib_logging,
-            os.getenv("FOUNDATION_CORE_SETUP_LOG_LEVEL", "INFO").upper(),
+            os.getenv("PROVIDE_CORE_SETUP_LOG_LEVEL", "INFO").upper(),
             stdlib_logging.INFO,
         )
     )

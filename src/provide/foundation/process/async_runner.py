@@ -57,7 +57,7 @@ async def async_run_command(
     run_env = os.environ.copy()
     if env is not None:
         run_env.update(env)
-    run_env.setdefault("FOUNDATION_TELEMETRY_DISABLED", "true")
+    run_env.setdefault("PROVIDE_TELEMETRY_DISABLED", "true")
 
     # Convert Path to string
     if isinstance(cwd, Path):
@@ -198,7 +198,7 @@ async def async_stream_command(
     run_env = os.environ.copy()
     if env is not None:
         run_env.update(env)
-    run_env.setdefault("FOUNDATION_TELEMETRY_DISABLED", "true")
+    run_env.setdefault("PROVIDE_TELEMETRY_DISABLED", "true")
 
     # Convert Path to string
     if isinstance(cwd, Path):

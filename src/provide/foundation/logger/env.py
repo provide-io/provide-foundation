@@ -31,13 +31,13 @@ _config_warning_formatter = stdlib_logging.Formatter(
 )
 
 DEFAULT_ENV_CONFIG: dict[str, str] = {
-    "FOUNDATION_LOG_LEVEL": "DEBUG",
-    "FOUNDATION_LOG_CONSOLE_FORMATTER": "key_value",
-    "FOUNDATION_LOG_OMIT_TIMESTAMP": "false",
-    "FOUNDATION_TELEMETRY_DISABLED": "false",
-    "FOUNDATION_LOG_MODULE_LEVELS": "",
-    "FOUNDATION_LOG_ENABLED_EMOJI_SETS": "",
-    "FOUNDATION_LOG_FILE": "",  # ADDED THIS LINE
+    "PROVIDE_LOG_LEVEL": "DEBUG",
+    "PROVIDE_LOG_CONSOLE_FORMATTER": "key_value",
+    "PROVIDE_LOG_OMIT_TIMESTAMP": "false",
+    "PROVIDE_TELEMETRY_DISABLED": "false",
+    "PROVIDE_LOG_MODULE_LEVELS": "",
+    "PROVIDE_LOG_ENABLED_EMOJI_SETS": "",
+    "PROVIDE_LOG_FILE": "",  # ADDED THIS LINE
 }
 
 
@@ -56,22 +56,22 @@ def from_env() -> "TelemetryConfig":
     _apply_default_env_config()
 
     service_name_env: str | None = os.getenv(
-        "OTEL_SERVICE_NAME", os.getenv("FOUNDATION_SERVICE_NAME")
+        "OTEL_SERVICE_NAME", os.getenv("PROVIDE_SERVICE_NAME")
     )
 
-    raw_default_log_level: str = os.getenv("FOUNDATION_LOG_LEVEL", "DEBUG").upper()
+    raw_default_log_level: str = os.getenv("PROVIDE_LOG_LEVEL", "DEBUG").upper()
     default_log_level: LogLevelStr
     if raw_default_log_level in _VALID_LOG_LEVEL_TUPLE:
         default_log_level = cast(LogLevelStr, raw_default_log_level)
     else:
         _ensure_config_logger_handler(config_warnings_logger)
         config_warnings_logger.warning(
-            f"⚙️➡️⚠️ Invalid FOUNDATION_LOG_LEVEL '{raw_default_log_level}'. Defaulting to DEBUG."
+            f"⚙️➡️⚠️ Invalid PROVIDE_LOG_LEVEL '{raw_default_log_level}'. Defaulting to DEBUG."
         )
         default_log_level = "DEBUG"
 
     raw_console_formatter: str = os.getenv(
-        "FOUNDATION_LOG_CONSOLE_FORMATTER", "key_value"
+        "PROVIDE_LOG_CONSOLE_FORMATTER", "key_value"
     ).lower()
     console_formatter: ConsoleFormatterStr
     if raw_console_formatter in _VALID_FORMATTER_TUPLE:
@@ -79,30 +79,30 @@ def from_env() -> "TelemetryConfig":
     else:
         _ensure_config_logger_handler(config_warnings_logger)
         config_warnings_logger.warning(
-            f"⚙️➡️⚠️ Invalid FOUNDATION_LOG_CONSOLE_FORMATTER '{raw_console_formatter}'. Defaulting to 'key_value'."
+            f"⚙️➡️⚠️ Invalid PROVIDE_LOG_CONSOLE_FORMATTER '{raw_console_formatter}'. Defaulting to 'key_value'."
         )
         console_formatter = "key_value"
 
     logger_name_emoji_enabled: bool = _parse_bool_env_with_formatter_default(
-        "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED", console_formatter
+        "PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED", console_formatter
     )
     das_emoji_enabled: bool = _parse_bool_env_with_formatter_default(
-        "FOUNDATION_LOG_DAS_EMOJI_ENABLED", console_formatter
+        "PROVIDE_LOG_DAS_EMOJI_ENABLED", console_formatter
     )
-    omit_timestamp: bool = _parse_bool_env("FOUNDATION_LOG_OMIT_TIMESTAMP", False)
-    globally_disabled: bool = _parse_bool_env("FOUNDATION_TELEMETRY_DISABLED", False)
+    omit_timestamp: bool = _parse_bool_env("PROVIDE_LOG_OMIT_TIMESTAMP", False)
+    globally_disabled: bool = _parse_bool_env("PROVIDE_TELEMETRY_DISABLED", False)
 
-    module_levels = _parse_module_levels(os.getenv("FOUNDATION_LOG_MODULE_LEVELS", ""))
+    module_levels = _parse_module_levels(os.getenv("PROVIDE_LOG_MODULE_LEVELS", ""))
     enabled_emoji_sets = [
         emoji_set.strip()
-        for emoji_set in os.getenv("FOUNDATION_LOG_ENABLED_EMOJI_SETS", "").split(",")
+        for emoji_set in os.getenv("PROVIDE_LOG_ENABLED_EMOJI_SETS", "").split(",")
         if emoji_set.strip()
     ]
 
     custom_emoji_sets = _parse_custom_emoji_sets_from_env()
     user_defined_emoji_sets = _parse_user_emoji_sets_from_env()
 
-    raw_log_file: str | None = os.getenv("FOUNDATION_LOG_FILE")
+    raw_log_file: str | None = os.getenv("PROVIDE_LOG_FILE")
     log_file: str | Path | None = (
         Path(raw_log_file) if raw_log_file else None
     )  # ADDED THIS LINE
@@ -128,7 +128,7 @@ def from_env() -> "TelemetryConfig":
 
 
 def _parse_custom_emoji_sets_from_env() -> list[EmojiSetConfig]:
-    custom_emoji_sets_json = os.getenv("FOUNDATION_LOG_CUSTOM_EMOJI_SETS", "[]")
+    custom_emoji_sets_json = os.getenv("PROVIDE_LOG_CUSTOM_EMOJI_SETS", "[]")
     custom_emoji_sets: list[EmojiSetConfig] = []
     try:
         parsed_custom_emoji_sets = json.loads(custom_emoji_sets_json)
@@ -167,13 +167,13 @@ def _parse_custom_emoji_sets_from_env() -> list[EmojiSetConfig]:
     except json.JSONDecodeError:
         _ensure_config_logger_handler(config_warnings_logger)
         config_warnings_logger.warning(
-            "⚙️➡️⚠️ Invalid JSON in FOUNDATION_LOG_CUSTOM_EMOJI_SETS. Using empty list."
+            "⚙️➡️⚠️ Invalid JSON in PROVIDE_LOG_CUSTOM_EMOJI_SETS. Using empty list."
         )
     return custom_emoji_sets
 
 
 def _parse_user_emoji_sets_from_env() -> list[CustomDasEmojiSet]:
-    user_sets_json = os.getenv("FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS", "[]")
+    user_sets_json = os.getenv("PROVIDE_LOG_USER_DEFINED_EMOJI_SETS", "[]")
     user_defined_emoji_sets: list[CustomDasEmojiSet] = []
     try:
         parsed_user_sets = json.loads(user_sets_json)
@@ -191,7 +191,7 @@ def _parse_user_emoji_sets_from_env() -> list[CustomDasEmojiSet]:
     except json.JSONDecodeError:
         _ensure_config_logger_handler(config_warnings_logger)
         config_warnings_logger.warning(
-            "⚙️➡️⚠️ Invalid JSON in FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS. Using empty list."
+            "⚙️➡️⚠️ Invalid JSON in PROVIDE_LOG_USER_DEFINED_EMOJI_SETS. Using empty list."
         )
     return user_defined_emoji_sets
 
@@ -217,7 +217,7 @@ def _parse_module_levels(levels_str: str) -> dict[str, LogLevelStr]:
         else:
             _ensure_config_logger_handler(config_warnings_logger)
             config_warnings_logger.warning(
-                f"⚙️➡️⚠️ Invalid item '{item}' in FOUNDATION_LOG_MODULE_LEVELS. Skipping."
+                f"⚙️➡️⚠️ Invalid item '{item}' in PROVIDE_LOG_MODULE_LEVELS. Skipping."
             )
     return levels
 
