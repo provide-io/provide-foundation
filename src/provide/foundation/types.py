@@ -1,15 +1,12 @@
-# src/provide/foundation/telemetry/types.py
 """
-Foundation Telemetry Custom Type Definitions, Constants, and Data Structures.
+Core type definitions and constants for Foundation.
 
-This module centralizes custom type aliases, constants, and data structures
-used throughout the `provide-foundation` package.
+This module contains core logging-related types and constants
+that are used across multiple modules in the foundation package.
 """
 
 import logging as stdlib_logging
 from typing import cast, Any, Literal
-
-from attrs import define, field
 
 # --- Core Log Level and Formatter Types ---
 LogLevelStr = Literal[
@@ -59,54 +56,3 @@ if not hasattr(stdlib_logging, TRACE_LEVEL_NAME):  # pragma: no cover
         (cast(Any, stdlib_logging.root)).trace = trace.__get__(
             stdlib_logging.root, stdlib_logging.Logger
         )
-
-
-# --- Emoji Mapping Data Structures ---
-
-
-@define(frozen=True, slots=True)
-class CustomDasEmojiSet:
-    """A named set of emojis for a specific category."""
-
-    name: str = field()  # e.g., "component_types", "llm_operations", "request_outcomes"
-    emojis: dict[str, str] = field(
-        factory=lambda: {},
-    )  # e.g., {"api": "🌐", "worker": "⚙️", "default": "🧩"}
-    default_emoji_key: str = field(
-        default="default"
-    )  # The key within `emojis` to use as the default
-
-
-@define(frozen=True, slots=True)
-class FieldToEmojiMapping:
-    """
-    Defines a single log field key and its optional emoji mapping.
-    """
-
-    log_key: str = field()  # e.g., "http.method", "llm.request.model"
-    description: str | None = field(default=None)
-    value_type: str | None = field(
-        default=None
-    )  # e.g., "string", "integer", "iso_timestamp"
-    emoji_set_name: str | None = field(
-        default=None
-    )  # Optional: references a CustomDasEmojiSet.name
-    default_emoji_override_key: str | None = field(
-        default=None
-    )  # Optional: key within the emoji_set for this field's default
-
-
-@define(frozen=True, slots=True)
-class EmojiSetConfig:
-    """
-    Defines an emoji set configuration with emoji mappings for specific fields.
-    Provides visual enhancement for structured logging in specific domains.
-    """
-
-    name: str = field()  # e.g., "llm", "database", "http_client"
-    description: str | None = field(default=None)
-    emoji_sets: list[CustomDasEmojiSet] = field(factory=lambda: [])
-    field_definitions: list[FieldToEmojiMapping] = field(factory=lambda: [])
-    priority: int = field(
-        default=0, converter=int
-    )  # Higher priority layers take precedence in case of conflicts

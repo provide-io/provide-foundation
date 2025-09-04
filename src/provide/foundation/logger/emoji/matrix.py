@@ -14,7 +14,7 @@ from provide.foundation.logger import (
 )
 
 # Import types for resolved config structure
-from provide.foundation.types import CustomDasEmojiSet, FieldToEmojiMapping
+from provide.foundation.logger.emoji.types import CustomDasEmojiSet, FieldToEmojiMapping
 
 PRIMARY_EMOJI: dict[str, str] = {
     "system": "⚙️",

@@ -1,6 +1,6 @@
 """Command registry management."""
 
-from provide.foundation.registry import Registry
+from provide.foundation.hub.registry_base import Registry
 
 # Global registry for commands
 _command_registry = Registry()

@@ -7,12 +7,12 @@ visual emoji mappings for common technologies and domains like LLMs, HTTP intera
 and databases.
 """
 
-from provide.foundation.logger.emoji_matrix import (
+from provide.foundation.logger.emoji.matrix import (
     PRIMARY_EMOJI,
     SECONDARY_EMOJI,
     TERTIARY_EMOJI,
 )
-from provide.foundation.types import (
+from provide.foundation.logger.emoji.types import (
     CustomDasEmojiSet,
     FieldToEmojiMapping,
     EmojiSetConfig,
