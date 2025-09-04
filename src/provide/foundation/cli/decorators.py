@@ -209,7 +209,7 @@ def pass_context(f: F) -> F:
             ctx.obj.log_level = kwargs["log_level"]
         if kwargs.get("log_file"):
             ctx.obj.log_file = kwargs["log_file"]
-        if kwargs.get("log_format"):
+        if "log_format" in kwargs and kwargs["log_format"] is not None:
             ctx.obj.log_format = kwargs["log_format"]
         if "json_output" in kwargs and kwargs["json_output"] is not None:
             ctx.obj.json_output = kwargs["json_output"]
