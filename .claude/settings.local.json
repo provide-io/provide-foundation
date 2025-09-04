@@ -4,7 +4,8 @@
       "Bash(source env.sh)",
       "Bash(python:*)",
       "Bash(pytest:*)",
-      "Bash(ruff check:*)"
+      "Bash(ruff check:*)",
+      "Bash(PROVIDE_LOG_LEVEL=DEBUG python -c \"from provide.foundation import logger; logger.info(''Testing with DEBUG level!'')\")"
     ],
     "deny": [],
     "ask": [],
