@@ -24,15 +24,14 @@ The term "semantic layer" appears in different contexts across the tech industry
 
 ### What We ARE
 
-**Domain-Specific Telemetry Interfaces** - Think of them as specialized logging APIs that understand the context of what you're logging:
+**Domain-Specific Emoji Mapping Configurations** - Think of them as passive data structures that define how field values map to emojis during log formatting:
 
 ```python
-# Traditional structured logging
-logger.info("http_request", method="GET", path="/api/users", status=200)
-
-# With semantic layers - automatic context, emojis, and validation
-http_layer.request_completed(method="GET", path="/api/users", status=200)
-# Output: 📥 http_request_completed method=GET path=/api/users status=200 ✅
+# How semantic layers actually work - just use regular logging with semantic field names
+logger.info("http_request", 
+    **{"http.method": "GET", "http.status_code": 200, "http.target": "/api/users"})
+# The emoji processor automatically adds emojis based on field names
+# Output: 📥 ✅ http_request status_code=200 target=/api/users
 ```
 
 ## Built-in Semantic Layers
@@ -42,53 +41,45 @@ provide.foundation includes pre-configured layers for common domains:
 ### 1. HTTP Layer 🌐
 For web requests and responses:
 ```python
-from provide.foundation.semantic_layers import HTTP_LAYER
-
-# Automatic emoji mapping based on method and status
-http_layer.log(
-    "http.method": "POST",      # 📤
-    "http.status_code": 201,    # ✅
-    "http.target": "/api/orders"
+# Just log with the semantic field names - emojis are added automatically
+logger.info("http_request",
+    **{"http.method": "POST",      # → 📤 (added by processor)
+       "http.status_code": 201,     # → ✅ (added by processor)
+       "http.target": "/api/orders"}
 )
 ```
 
 ### 2. Database Layer 🗄️
 For database operations:
 ```python
-from provide.foundation.semantic_layers import DATABASE_LAYER
-
-# Context-aware logging with operation-specific emojis
-db_layer.log(
-    "db.system": "postgres",     # 🐘
-    "db.operation": "insert",    # ➕
-    "db.rows_affected": 42
+# Log with semantic field names - emojis are mapped automatically
+logger.info("db_operation",
+    **{"db.system": "postgres",     # → 🐘 (added by processor)
+       "db.operation": "insert",     # → ➕ (added by processor)
+       "db.rows_affected": 42}
 )
 ```
 
 ### 3. LLM Layer 🤖
 For AI/ML model interactions:
 ```python
-from provide.foundation.semantic_layers import LLM_LAYER
-
-# Specialized fields for LLM operations
-llm_layer.log(
-    "llm.provider": "anthropic", # 📚
-    "llm.task": "generation",    # ✍️
-    "llm.input.tokens": 150,
-    "llm.output.tokens": 500
+# Log with semantic field names for automatic emoji mapping
+logger.info("llm_operation",
+    **{"llm.provider": "anthropic", # → 📚 (added by processor)
+       "llm.task": "generation",     # → ✍️ (added by processor)
+       "llm.input.tokens": 150,
+       "llm.output.tokens": 500}
 )
 ```
 
 ### 4. Task Queue Layer 📨
 For async job processing:
 ```python
-from provide.foundation.semantic_layers import TASK_QUEUE_LAYER
-
-# Track async task lifecycle
-task_layer.log(
-    "task.system": "celery",     # 🥕
-    "task.status": "success",    # ✅
-    "duration_ms": 1234
+# Log with semantic field names for automatic emoji mapping
+logger.info("task_completed",
+    **{"task.system": "celery",     # → 🥕 (added by processor)
+       "task.status": "success",     # → ✅ (added by processor)
+       "duration_ms": 1234}
 )
 ```
 
@@ -126,10 +117,10 @@ Semantic layers add minimal overhead:
 
 ## Creating Custom Semantic Layers
 
-Extend the system with your own domain-specific layers:
+Extend the system with your own domain-specific emoji mappings:
 
 ```python
-from provide.foundation.types import SemanticLayer, CustomDasEmojiSet
+from provide.foundation.types import SemanticLayer, CustomDasEmojiSet, SemanticFieldDefinition
 
 # Define emoji mappings for your domain
 PAYMENT_EMOJI_SETS = [
@@ -141,11 +132,12 @@ PAYMENT_EMOJI_SETS = [
             "crypto": "₿",
             "paypal": "🅿️",
             "default": "💰"
-        }
+        },
+        default_emoji_key="default"
     )
 ]
 
-# Create your semantic layer
+# Create your semantic layer configuration
 PAYMENT_LAYER = SemanticLayer(
     name="payment",
     description="Payment processing operations",
@@ -156,6 +148,15 @@ PAYMENT_LAYER = SemanticLayer(
             emoji_set_name="payment_method"
         )
     ]
+)
+
+# Register and use it
+from provide.foundation import logger
+
+# Log with your custom semantic fields
+logger.info("payment_processed",
+    **{"payment.method": "card",  # → 💳 (automatically mapped)
+       "payment.amount": 99.99}
 )
 ```
 

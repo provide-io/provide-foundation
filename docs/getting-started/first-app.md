@@ -236,40 +236,57 @@ class TaskManager:
         self.max_tasks = config.get("task_manager.max_tasks", 1000)
 ```
 
-## Step 5: Add Semantic Layers
+## Step 5: Understanding Semantic Layers
 
-Create a custom semantic layer for task operations:
+Semantic layers provide automatic emoji mapping for structured log fields:
 
 ```python
-from provide.foundation.semantic_layers import SemanticLayer
+from provide.foundation import logger
 
-class TaskLayer(SemanticLayer):
-    """Semantic layer for task operations."""
-    
-    domain = "task"
-    
-    EMOJI_MATRIX = {
-        "create": {"started": "🆕", "completed": "✅", "failed": "❌"},
-        "update": {"started": "✏️", "completed": "✅", "failed": "❌"},
-        "delete": {"started": "🗑️", "completed": "✅", "failed": "❌"},
-        "complete": {"started": "⏳", "completed": "✅", "failed": "❌"}
-    }
-    
-    def task_created(self, task_id: str, title: str, **kwargs):
-        self.logger.info("task_create_completed",
-                        task_id=task_id,
-                        title=title,
-                        **kwargs)
-    
-    def task_completed(self, task_id: str, duration_ms: float = None, **kwargs):
-        self.logger.info("task_complete_completed",
-                        task_id=task_id,
-                        duration_ms=duration_ms,
-                        **kwargs)
+# When you log with semantic field names, emojis are added automatically
+# For example, if HTTP semantic layer is enabled:
 
-# Use the semantic layer
-task_layer = TaskLayer()
-task_layer.task_created(task_id="task_1", title="My Task")
+logger.info("http_request",
+    **{"http.method": "GET",        # Automatically gets 📥 emoji
+       "http.status_code": 200,      # Automatically gets ✅ emoji
+       "http.target": "/api/tasks"})
+
+# For task operations, you can define custom semantic fields:
+from provide.foundation.types import SemanticLayer, CustomDasEmojiSet, SemanticFieldDefinition
+
+# Define emoji mappings for task operations
+TASK_EMOJI_SETS = [
+    CustomDasEmojiSet(
+        name="task_action",
+        emojis={
+            "create": "🆕",
+            "complete": "✅",
+            "delete": "🗑️",
+            "update": "✏️",
+            "default": "📝"
+        },
+        default_emoji_key="default"
+    )
+]
+
+# Create semantic layer configuration
+TASK_LAYER = SemanticLayer(
+    name="task",
+    description="Task management operations",
+    emoji_sets=TASK_EMOJI_SETS,
+    field_definitions=[
+        SemanticFieldDefinition(
+            log_key="task.action",
+            emoji_set_name="task_action"
+        )
+    ]
+)
+
+# Then when you log with these field names:
+logger.info("task_operation",
+    **{"task.action": "create",      # Gets 🆕 emoji automatically
+       "task.id": "task_1",
+       "task.title": "My Task"})
 ```
 
 ## What You've Learned
@@ -281,7 +298,7 @@ This application demonstrates:
 ✅ **Configuration**: YAML-based configuration management
 ✅ **Error Handling**: Graceful error recovery with logging
 ✅ **Console Output**: User-friendly output with emojis
-✅ **Semantic Layers**: Domain-specific logging interfaces
+✅ **Semantic Layers**: Domain-specific emoji mapping for visual log parsing
 
 ## Next Steps
 
