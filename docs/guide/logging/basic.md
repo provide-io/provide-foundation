@@ -47,14 +47,7 @@ from provide.foundation import logger
 import os
 
 # Via environment variable (preferred)
-os.environ["PROVIDE_LOG_LEVEL"] = "DEBUG"
-
-# Or programmatically
-logger.set_level("DEBUG")
-
-# Check current level
-current = logger.get_level()
-print(f"Current level: {current}")
+os.environ["FOUNDATION_LOG_LEVEL"] = "DEBUG"
 ```
 
 ### Level Hierarchy
