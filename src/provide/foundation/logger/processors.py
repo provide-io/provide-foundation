@@ -116,7 +116,7 @@ def _config_create_emoji_processors(
                             final_das_prefix_parts.append(f"[{chosen_emoji}]")
                         else:
                             final_das_prefix_parts.append("[❓]")
-            else:  # Fallback to Legacy DAS System
+            else:  # Fallback to Core DAS System
                 domain = event_dict.pop("domain", None)
                 action = event_dict.pop("action", None)
                 status = event_dict.pop("status", None)

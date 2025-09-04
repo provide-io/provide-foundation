@@ -67,7 +67,7 @@ from provide.foundation.types import (
 from provide.foundation.utils import timed_block
 
 __all__ = [
-    # Legacy Emoji Dictionaries (still available for direct use or reference)
+    # Core Emoji Dictionaries (available for direct use or reference)
     "PRIMARY_EMOJI",
     "SECONDARY_EMOJI",
     "TERTIARY_EMOJI",
