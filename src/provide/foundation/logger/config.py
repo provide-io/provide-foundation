@@ -3,15 +3,14 @@ Foundation Telemetry Configuration Module.
 Defines data models for telemetry and logging settings.
 """
 
+import json
+import os
 from pathlib import Path
-from typing import Any
 
 from attrs import define
-import asyncio
 
 from provide.foundation.config import BaseConfig, field
-from provide.foundation.config.manager import register_config
-from provide.foundation.config.sync import SyncConfigManager
+from provide.foundation.config.types import ConfigSource
 from provide.foundation.logger.emoji.types import (
     CustomDasEmojiSet,
     EmojiSetConfig,
@@ -19,6 +18,8 @@ from provide.foundation.logger.emoji.types import (
 from provide.foundation.types import (
     ConsoleFormatterStr,
     LogLevelStr,
+    _VALID_LOG_LEVEL_TUPLE,
+    _VALID_FORMATTER_TUPLE,
 )
 
 
@@ -77,6 +78,74 @@ class LoggingConfig(BaseConfig):
         description="Path to log file"
     )
 
+    @classmethod
+    def from_env(cls) -> "LoggingConfig":
+        """Load LoggingConfig from environment variables."""
+        config_dict = {}
+        
+        # Parse standard fields
+        if level := os.getenv("PROVIDE_LOG_LEVEL"):
+            level = level.upper()
+            if level in _VALID_LOG_LEVEL_TUPLE:
+                config_dict["default_level"] = level
+        
+        if formatter := os.getenv("PROVIDE_LOG_CONSOLE_FORMATTER"):
+            formatter = formatter.lower()
+            if formatter in _VALID_FORMATTER_TUPLE:
+                config_dict["console_formatter"] = formatter
+        
+        if omit_ts := os.getenv("PROVIDE_LOG_OMIT_TIMESTAMP"):
+            config_dict["omit_timestamp"] = omit_ts.lower() == "true"
+        
+        if logger_emoji := os.getenv("PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED"):
+            config_dict["logger_name_emoji_prefix_enabled"] = logger_emoji.lower() == "true"
+        
+        if das_emoji := os.getenv("PROVIDE_LOG_DAS_EMOJI_ENABLED"):
+            config_dict["das_emoji_prefix_enabled"] = das_emoji.lower() == "true"
+        
+        if log_file := os.getenv("PROVIDE_LOG_FILE"):
+            config_dict["log_file"] = Path(log_file)
+        
+        # Parse complex fields
+        if module_levels := os.getenv("PROVIDE_LOG_MODULE_LEVELS"):
+            levels_dict = {}
+            for item in module_levels.split(","):
+                if ":" in item:
+                    module, level = item.split(":", 1)
+                    module = module.strip()
+                    level = level.strip().upper()
+                    if module and level in _VALID_LOG_LEVEL_TUPLE:
+                        levels_dict[module] = level
+            if levels_dict:
+                config_dict["module_levels"] = levels_dict
+        
+        if emoji_sets := os.getenv("PROVIDE_LOG_ENABLED_EMOJI_SETS"):
+            config_dict["enabled_emoji_sets"] = [s.strip() for s in emoji_sets.split(",") if s.strip()]
+        
+        if custom_sets := os.getenv("PROVIDE_LOG_CUSTOM_EMOJI_SETS"):
+            try:
+                parsed = json.loads(custom_sets)
+                if isinstance(parsed, list):
+                    config_dict["custom_emoji_sets"] = [
+                        EmojiSetConfig(**item) if isinstance(item, dict) else item
+                        for item in parsed
+                    ]
+            except (json.JSONDecodeError, TypeError):
+                pass  # Invalid JSON, skip
+        
+        if user_sets := os.getenv("PROVIDE_LOG_USER_DEFINED_EMOJI_SETS"):
+            try:
+                parsed = json.loads(user_sets)
+                if isinstance(parsed, list):
+                    config_dict["user_defined_emoji_sets"] = [
+                        CustomDasEmojiSet(**item) if isinstance(item, dict) else item
+                        for item in parsed
+                    ]
+            except (json.JSONDecodeError, TypeError):
+                pass  # Invalid JSON, skip
+        
+        return cls.from_dict(config_dict, source=ConfigSource.ENVIRONMENT)
+
 
 @define(slots=True, repr=False)
 class TelemetryConfig(BaseConfig):
@@ -99,49 +168,18 @@ class TelemetryConfig(BaseConfig):
 
     @classmethod
     def from_env(cls) -> "TelemetryConfig":
-        """Creates a TelemetryConfig instance from environment variables using ConfigManager."""
-        # Use sync wrapper for backward compatibility
-        manager = SyncConfigManager()
+        """Creates a TelemetryConfig instance from environment variables."""
+        config_dict = {}
         
-        # Register the config classes if not already registered
-        manager.register("logging", LoggingConfig)
-        manager.register("telemetry", cls)
+        # Check OTEL_SERVICE_NAME first, then PROVIDE_SERVICE_NAME
+        service_name = os.getenv("OTEL_SERVICE_NAME") or os.getenv("PROVIDE_SERVICE_NAME")
+        if service_name:
+            config_dict["service_name"] = service_name
         
-        # Load from environment
-        telemetry_config = manager.load_from_env("telemetry", cls)
-        logging_config = manager.load_from_env("logging", LoggingConfig)
+        if disabled := os.getenv("PROVIDE_TELEMETRY_DISABLED"):
+            config_dict["globally_disabled"] = disabled.lower() == "true"
         
-        # Combine the configs
-        telemetry_config.logging = logging_config
+        # Load logging config from env
+        config_dict["logging"] = LoggingConfig.from_env()
         
-        return telemetry_config
-
-
-# Register configs globally on module import
-def _register_configs():
-    """Register telemetry configs with global ConfigManager."""
-    try:
-        asyncio.run(register_config(
-            name="logging",
-            defaults={
-                "default_level": "DEBUG",
-                "console_formatter": "key_value",
-                "logger_name_emoji_prefix_enabled": True,
-                "das_emoji_prefix_enabled": True,
-                "omit_timestamp": False,
-            }
-        ))
-        asyncio.run(register_config(
-            name="telemetry",
-            defaults={
-                "globally_disabled": False,
-            }
-        ))
-    except RuntimeError:
-        # If we're already in an async context, use sync version
-        manager = SyncConfigManager()
-        manager.register("logging", LoggingConfig)
-        manager.register("telemetry", TelemetryConfig)
-
-
-_register_configs()
+        return cls.from_dict(config_dict, source=ConfigSource.ENVIRONMENT)
