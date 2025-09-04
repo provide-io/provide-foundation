@@ -84,13 +84,7 @@ def _create_core_setup_logger(globally_disabled: bool = False) -> stdlib_logging
             )
         )
     logger.addHandler(handler)
-    logger.setLevel(
-        getattr(
-            stdlib_logging,
-            os.getenv("PROVIDE_CORE_SETUP_LOG_LEVEL", "DEBUG").upper(),
-            stdlib_logging.DEBUG,
-        )
-    )
+    logger.setLevel(stdlib_logging.DEBUG)
     logger.propagate = False
     return logger
 
