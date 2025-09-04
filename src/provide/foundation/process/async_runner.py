@@ -61,15 +61,28 @@ async def async_run_command(
 
     try:
         # Create subprocess
-        process = await asyncio.create_subprocess_exec(
-            *cmd,
-            cwd=cwd,
-            env=run_env,
-            stdout=asyncio.subprocess.PIPE if capture_output else None,
-            stderr=asyncio.subprocess.PIPE if capture_output else None,
-            stdin=asyncio.subprocess.PIPE if input else None,
-            **kwargs,
-        )
+        if shell:
+            # For shell commands, use create_subprocess_shell with string command
+            process = await asyncio.create_subprocess_shell(
+                cmd_str,
+                cwd=cwd,
+                env=run_env,
+                stdout=asyncio.subprocess.PIPE if capture_output else None,
+                stderr=asyncio.subprocess.PIPE if capture_output else None,
+                stdin=asyncio.subprocess.PIPE if input else None,
+                **{k: v for k, v in kwargs.items() if k != 'shell'},
+            )
+        else:
+            # For non-shell commands, use create_subprocess_exec with unpacked args
+            process = await asyncio.create_subprocess_exec(
+                *(cmd if isinstance(cmd, list) else [cmd]),
+                cwd=cwd,
+                env=run_env,
+                stdout=asyncio.subprocess.PIPE if capture_output else None,
+                stderr=asyncio.subprocess.PIPE if capture_output else None,
+                stdin=asyncio.subprocess.PIPE if input else None,
+                **{k: v for k, v in kwargs.items() if k != 'shell'},
+            )
 
         # Communicate with process
         if timeout:
