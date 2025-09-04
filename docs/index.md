@@ -73,13 +73,13 @@ if result.returncode == 0:
 - Quick start tutorial
 - Basic configuration
 
-### [Core Concepts](core-concepts/structured-logging.md)
+### [Core Concepts](guide/concepts/index.md)
 - Structured logging principles
 - Semantic layers
 - The emoji system
 - Configuration architecture
 
-### [API Reference](api-reference/logger.md)
+### [API Reference](api/index.md)
 Complete API documentation for all modules:
 - Logger and telemetry
 - CLI framework
@@ -90,12 +90,12 @@ Complete API documentation for all modules:
 - Registry pattern
 - Error handling
 
-### [Guides](guides/async-usage.md)
+### [User Guide](guide/index.md)
 Practical guides for common tasks:
-- Async usage patterns
-- Exception logging
-- Performance tuning
-- Creating custom semantic layers
+- Configuration management
+- Logging patterns
+- CLI development
+- System utilities
 
 ### [Tutorials](tutorials/fastapi-integration.md)
 Step-by-step tutorials for integrations
@@ -162,7 +162,7 @@ pip install provide-foundation[dev]
 
 ## 🤝 Contributing
 
-We welcome contributions! See our [Contributing Guide](about/contributing.md) for details.
+We welcome contributions! See our [Contributing Guide](development/contributing.md) for details.
 
 ## 📄 License
 
