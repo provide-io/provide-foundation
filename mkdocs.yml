@@ -250,17 +250,11 @@ nav:
     
     - Hub:
       - api/hub/index.md
-      - Components: api/hub/components.md
-      - Registry: api/hub/registry.md
-      - Commands: api/hub/commands.md
     
     - Utilities:
       - api/utils/index.md
-      - Platform: api/platform/index.md
-      - Process: api/process/index.md
       - File Operations: api/file/index.md
       - Crypto: api/crypto/index.md
-      - Errors: api/errors/index.md
 
   - Cookbook:
     - cookbook/index.md
@@ -286,11 +280,11 @@ nav:
     - Contributing: development/contributing.md
     - Architecture: development/architecture.md
     - Testing:
-      - development/testing/index.md
       - Unit Tests: development/testing/unit.md
       - Integration Tests: development/testing/integration.md
       - Performance Tests: development/testing/performance.md
       - Coverage Reports: development/testing/coverage.md
+      - Using Act: development/testing/act.md
     - CI/CD: development/ci-cd.md
     - Release Process: development/release.md
     - Roadmap: development/roadmap.md
