@@ -144,8 +144,8 @@ class TestCliAssertions:
         result.output = "Error occurred"
 
         # Should not raise
-        assert_cli_error(result, 1)
-        assert_cli_error(result, 1, "Error occurred")
+        assert_cli_error(result, exit_code=1)
+        assert_cli_error(result, "Error occurred", exit_code=1)
 
     def test_assert_cli_error_with_wrong_code(self) -> None:
         """Test CLI error assertion with wrong exit code."""
@@ -153,7 +153,7 @@ class TestCliAssertions:
         result.exit_code = 1
 
         with pytest.raises(AssertionError):
-            assert_cli_error(result, 2)
+            assert_cli_error(result, exit_code=2)
 
 
 class TestCliLogging:
