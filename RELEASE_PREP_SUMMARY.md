@@ -208,6 +208,20 @@
 - Process execution on different platforms
 - Shell command compatibility
 
+## Architectural Concerns
+
+### Logger/Process Stream Conflict
+- **Issue**: Foundation logger outputs ALL logs to stderr by default (even info/debug)
+- **Problem**: When streaming subprocess output with `stream_stderr=True`, subprocess's foundation logger output gets mixed with actual command stderr
+- **Impact**: Confusing output where diagnostic logs are indistinguishable from actual errors
+- **Current Behavior**: `stderr=subprocess.STDOUT` merges everything together
+- **Recommendation**: 
+  1. Keep stdout/stderr separate by default in stream_command
+  2. Add option to suppress subprocess logging during streaming
+  3. Consider logger output to stdout for info/debug levels (stderr for warn/error)
+  4. Document this behavior clearly for users
+  5. Add `capture_logger_output` parameter to control this
+
 ## Final Recommendations
 
 1. **DO NOT RELEASE YET** - 54 failing tests need resolution
