@@ -383,10 +383,12 @@ def test_configuration_edge_cases() -> None:
     logger.info("This should be suppressed")
     logger.error("This should also be suppressed")
 
-    # Test configuration immutability (attrs frozen=True)
-    config_immut = TelemetryConfig(service_name="test")
-    with pytest.raises(AttributeError):
-        config_immut.service_name = "modified"  # type: ignore[misc]
+    # Test configuration mutability with BaseConfig
+    config_mut = TelemetryConfig(service_name="test")
+    # Direct mutation works now but update() is preferred
+    config_mut.update({"service_name": "modified"}, ConfigSource.RUNTIME)
+    assert config_mut.service_name == "modified"
+    assert config_mut.get_source("service_name") == ConfigSource.RUNTIME
 
 
 def test_repeated_setup_calls_integration(  # Renamed to avoid conflict

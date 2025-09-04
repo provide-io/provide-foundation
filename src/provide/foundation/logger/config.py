@@ -23,8 +23,8 @@ from provide.foundation.types import (
 )
 
 
-@define(slots=True, repr=False, frozen=True)
-class LoggingConfig:
+@define(slots=True, repr=False)
+class LoggingConfig(BaseConfig):
     """Configuration specific to logging behavior within Foundation Telemetry."""
 
     default_level: LogLevelStr = field(
@@ -147,8 +147,8 @@ class LoggingConfig:
         return cls.from_dict(config_dict, source=ConfigSource.ENV)
 
 
-@define(slots=True, repr=False, frozen=True)
-class TelemetryConfig:
+@define(slots=True, repr=False)
+class TelemetryConfig(BaseConfig):
     """Main configuration object for the Foundation Telemetry system."""
 
     service_name: str | None = field(
