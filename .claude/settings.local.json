@@ -60,7 +60,9 @@
       "Bash(exec python:*)",
       "WebSearch",
       "Read(/private/tmp/**)",
-      "Read(/private/tmp/**)"
+      "Read(/private/tmp/**)",
+      "Read(/private/tmp/**)",
+      "Bash(pkill:*)"
     ],
     "deny": [],
     "ask": [],
