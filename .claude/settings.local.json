@@ -3,7 +3,8 @@
     "allow": [
       "Bash(source env.sh)",
       "Bash(python:*)",
-      "Bash(pytest:*)"
+      "Bash(pytest:*)",
+      "Bash(ruff check:*)"
     ],
     "deny": [],
     "ask": [],

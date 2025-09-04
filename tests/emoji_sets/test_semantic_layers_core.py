@@ -25,8 +25,8 @@ from provide.foundation.logger.emoji.sets import (
 )
 from provide.foundation.logger.emoji.types import (
     CustomDasEmojiSet,
-    FieldToEmojiMapping,
     EmojiSetConfig,
+    FieldToEmojiMapping,
 )
 
 ResolvedEmojiConfigForTest = tuple[

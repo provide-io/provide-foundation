@@ -2,16 +2,14 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable
-from typing import Any
 import pytest
 
-from provide.foundation.hub.types import (
-    RegistryEntry,
-    Registrable,
-)
-from provide.foundation.hub.info import CommandInfo
 from provide.foundation.hub.components import ComponentInfo
+from provide.foundation.hub.info import CommandInfo
+from provide.foundation.hub.types import (
+    Registrable,
+    RegistryEntry,
+)
 
 
 class TestRegistryEntry:
@@ -24,7 +22,7 @@ class TestRegistryEntry:
             dimension="test_dim",
             value="test_value"
         )
-        
+
         assert entry.name == "test_item"
         assert entry.dimension == "test_dim"
         assert entry.value == "test_value"
@@ -39,7 +37,7 @@ class TestRegistryEntry:
             value="test_value",
             metadata=meta
         )
-        
+
         assert entry.metadata == meta
 
     def test_registry_entry_key_property(self) -> None:
@@ -49,7 +47,7 @@ class TestRegistryEntry:
             dimension="test_dim",
             value="test_value"
         )
-        
+
         assert entry.key == ("test_dim", "test_item")
 
     def test_registry_entry_immutable(self) -> None:
@@ -59,7 +57,7 @@ class TestRegistryEntry:
             dimension="test_dim",
             value="test_value"
         )
-        
+
         with pytest.raises(AttributeError):
             entry.name = "new_name"  # type: ignore
 
@@ -75,7 +73,7 @@ class TestRegistryEntry:
             dimension="test_dim",
             value="test_value"
         )
-        
+
         assert entry1 == entry2
 
 
@@ -84,12 +82,12 @@ class TestRegistrable:
 
     def test_registrable_protocol(self) -> None:
         """Test class implementing Registrable protocol."""
-        
+
         class TestComponent:
             __registry_name__ = "test_component"
             __registry_dimension__ = "components"
             __registry_metadata__ = {"version": "1.0"}
-        
+
         comp = TestComponent()
         assert comp.__registry_name__ == "test_component"
         assert comp.__registry_dimension__ == "components"
@@ -97,15 +95,15 @@ class TestRegistrable:
 
     def test_registrable_type_checking(self) -> None:
         """Test that Registrable works as a type hint."""
-        
+
         def register_item(item: Registrable) -> str:
             return f"{item.__registry_dimension__}:{item.__registry_name__}"
-        
+
         class ValidComponent:
             __registry_name__ = "valid"
             __registry_dimension__ = "test"
             __registry_metadata__ = {}
-        
+
         comp = ValidComponent()
         result = register_item(comp)
         assert result == "test:valid"
@@ -118,12 +116,12 @@ class TestCommandInfo:
         """Test creating command info."""
         def test_func() -> None:
             pass
-        
+
         cmd = CommandInfo(
             name="test_command",
             func=test_func
         )
-        
+
         assert cmd.name == "test_command"
         assert cmd.func is test_func
         assert cmd.description is None
@@ -135,7 +133,7 @@ class TestCommandInfo:
         """Test command info with all fields."""
         def test_func() -> None:
             pass
-        
+
         cmd = CommandInfo(
             name="test_command",
             func=test_func,
@@ -144,7 +142,7 @@ class TestCommandInfo:
             hidden=True,
             metadata={"category": "testing"}
         )
-        
+
         assert cmd.description == "Test command description"
         assert cmd.aliases == ["tc", "test"]
         assert cmd.hidden is True
@@ -154,12 +152,12 @@ class TestCommandInfo:
         """Test that command info is immutable."""
         def test_func() -> None:
             pass
-        
+
         cmd = CommandInfo(
             name="test_command",
             func=test_func
         )
-        
+
         with pytest.raises(AttributeError):
             cmd.name = "new_name"  # type: ignore
 
@@ -169,15 +167,15 @@ class TestComponentInfo:
 
     def test_create_component_info(self) -> None:
         """Test creating component info."""
-        
+
         class TestComponent:
             pass
-        
+
         comp_info = ComponentInfo(
             name="test_component",
             component_class=TestComponent
         )
-        
+
         assert comp_info.name == "test_component"
         assert comp_info.component_class is TestComponent
         assert comp_info.dimension == "component"
@@ -187,10 +185,10 @@ class TestComponentInfo:
 
     def test_component_info_with_all_fields(self) -> None:
         """Test component info with all fields."""
-        
+
         class TestComponent:
             pass
-        
+
         comp_info = ComponentInfo(
             name="test_component",
             component_class=TestComponent,
@@ -199,7 +197,7 @@ class TestComponentInfo:
             version="1.0.0",
             metadata={"author": "test", "tags": ["test", "component"]}
         )
-        
+
         assert comp_info.dimension == "custom_dimension"
         assert comp_info.description == "Test component description"
         assert comp_info.version == "1.0.0"
@@ -207,24 +205,24 @@ class TestComponentInfo:
 
     def test_component_info_immutable(self) -> None:
         """Test that component info is immutable."""
-        
+
         class TestComponent:
             pass
-        
+
         comp_info = ComponentInfo(
             name="test_component",
             component_class=TestComponent
         )
-        
+
         with pytest.raises(AttributeError):
             comp_info.name = "new_name"  # type: ignore
 
     def test_component_info_equality(self) -> None:
         """Test component info equality."""
-        
+
         class TestComponent:
             pass
-        
+
         comp_info1 = ComponentInfo(
             name="test_component",
             component_class=TestComponent,
@@ -235,5 +233,5 @@ class TestComponentInfo:
             component_class=TestComponent,
             version="1.0.0"
         )
-        
+
         assert comp_info1 == comp_info2

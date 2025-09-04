@@ -5,18 +5,17 @@ from pathlib import Path
 import tempfile
 
 import click
-import pytest
 
+from provide.foundation.cli.context import Context
 from provide.foundation.cli.decorators import (
     flexible_options,
     output_options,
     pass_context,
 )
 from provide.foundation.cli.utils import (
-    setup_cli_logging,
     CliTestRunner,
+    setup_cli_logging,
 )
-from provide.foundation.cli.context import Context
 from provide.foundation.logger import get_logger
 
 

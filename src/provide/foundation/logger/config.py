@@ -16,10 +16,10 @@ from provide.foundation.logger.emoji.types import (
     EmojiSetConfig,
 )
 from provide.foundation.types import (
+    _VALID_FORMATTER_TUPLE,
+    _VALID_LOG_LEVEL_TUPLE,
     ConsoleFormatterStr,
     LogLevelStr,
-    _VALID_LOG_LEVEL_TUPLE,
-    _VALID_FORMATTER_TUPLE,
 )
 
 
@@ -86,7 +86,7 @@ class LoggingConfig(BaseConfig):
             strict: If True, emit warnings for invalid values. If False, silently use defaults.
         """
         config_dict = {}
-        
+
         # Parse standard fields
         if level := os.getenv("PROVIDE_LOG_LEVEL"):
             level = level.upper()
@@ -95,7 +95,7 @@ class LoggingConfig(BaseConfig):
             elif strict:
                 import sys
                 print(f"[Foundation Config Warning] Invalid PROVIDE_LOG_LEVEL '{level}'. Using default.", file=sys.stderr)
-        
+
         if formatter := os.getenv("PROVIDE_LOG_CONSOLE_FORMATTER"):
             formatter = formatter.lower()
             if formatter in _VALID_FORMATTER_TUPLE:
@@ -103,19 +103,19 @@ class LoggingConfig(BaseConfig):
             elif strict:
                 import sys
                 print(f"[Foundation Config Warning] Invalid PROVIDE_LOG_CONSOLE_FORMATTER '{formatter}'. Using default.", file=sys.stderr)
-        
+
         if omit_ts := os.getenv("PROVIDE_LOG_OMIT_TIMESTAMP"):
             config_dict["omit_timestamp"] = omit_ts.lower() == "true"
-        
+
         if logger_emoji := os.getenv("PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED"):
             config_dict["logger_name_emoji_prefix_enabled"] = logger_emoji.lower() == "true"
-        
+
         if das_emoji := os.getenv("PROVIDE_LOG_DAS_EMOJI_ENABLED"):
             config_dict["das_emoji_prefix_enabled"] = das_emoji.lower() == "true"
-        
+
         if log_file := os.getenv("PROVIDE_LOG_FILE"):
             config_dict["log_file"] = Path(log_file)
-        
+
         # Parse complex fields
         if module_levels := os.getenv("PROVIDE_LOG_MODULE_LEVELS"):
             levels_dict = {}
@@ -131,10 +131,10 @@ class LoggingConfig(BaseConfig):
                         print(f"[Foundation Config Warning] Invalid log level '{level}' for module '{module}'. Skipping.", file=sys.stderr)
             if levels_dict:
                 config_dict["module_levels"] = levels_dict
-        
+
         if emoji_sets := os.getenv("PROVIDE_LOG_ENABLED_EMOJI_SETS"):
             config_dict["enabled_emoji_sets"] = [s.strip() for s in emoji_sets.split(",") if s.strip()]
-        
+
         if custom_sets := os.getenv("PROVIDE_LOG_CUSTOM_EMOJI_SETS"):
             try:
                 parsed = json.loads(custom_sets)
@@ -151,7 +151,7 @@ class LoggingConfig(BaseConfig):
                 if strict:
                     import sys
                     print(f"[Foundation Config Warning] Error parsing data for a custom emoji set: {e}", file=sys.stderr)
-        
+
         if user_sets := os.getenv("PROVIDE_LOG_USER_DEFINED_EMOJI_SETS"):
             try:
                 parsed = json.loads(user_sets)
@@ -168,7 +168,7 @@ class LoggingConfig(BaseConfig):
                 if strict:
                     import sys
                     print(f"[Foundation Config Warning] Error parsing data for user emoji sets: {e}", file=sys.stderr)
-        
+
         return cls.from_dict(config_dict, source=ConfigSource.ENV)
 
 
@@ -199,16 +199,16 @@ class TelemetryConfig(BaseConfig):
             strict: If True, emit warnings for invalid values. If False, silently use defaults.
         """
         config_dict = {}
-        
+
         # Check OTEL_SERVICE_NAME first, then PROVIDE_SERVICE_NAME
         service_name = os.getenv("OTEL_SERVICE_NAME") or os.getenv("PROVIDE_SERVICE_NAME")
         if service_name:
             config_dict["service_name"] = service_name
-        
+
         if disabled := os.getenv("PROVIDE_TELEMETRY_DISABLED"):
             config_dict["globally_disabled"] = disabled.lower() == "true"
-        
+
         # Load logging config from env
         config_dict["logging"] = LoggingConfig.from_env(strict=strict)
-        
+
         return cls.from_dict(config_dict, source=ConfigSource.ENV)

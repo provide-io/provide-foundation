@@ -5,6 +5,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from provide.foundation.cli.context import Context
 from provide.foundation.cli.utils import (
     assert_cli_error,
     assert_cli_success,
@@ -16,7 +17,6 @@ from provide.foundation.cli.utils import (
     echo_warning,
     setup_cli_logging,
 )
-from provide.foundation.cli.context import Context
 from provide.foundation.logger import TelemetryConfig
 
 

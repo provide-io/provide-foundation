@@ -20,6 +20,8 @@ from provide.foundation.logger.config import (
     LoggingConfig,
     TelemetryConfig,
 )
+from provide.foundation.logger.emoji.sets import BUILTIN_EMOJI_SETS
+
 # env.py removed - use TelemetryConfig.from_env() directly
 from provide.foundation.logger.processors import (
     _build_core_processors_list,
@@ -27,7 +29,6 @@ from provide.foundation.logger.processors import (
     _config_create_emoji_processors,
     _config_create_timestamp_processors,
 )
-from provide.foundation.logger.emoji.sets import BUILTIN_EMOJI_SETS
 
 
 def get_proc_name(proc: Any) -> str:

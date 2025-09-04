@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from provide.foundation import perr, logger, pout
+from provide.foundation import perr, pout
 from provide.foundation.cli.context import Context
 
 

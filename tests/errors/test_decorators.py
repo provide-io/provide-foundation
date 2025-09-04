@@ -6,6 +6,7 @@ from unittest.mock import ANY, MagicMock, patch
 
 import pytest
 
+from provide.foundation.errors.base import FoundationError
 from provide.foundation.errors.decorators import (
     CircuitBreaker,
     circuit_breaker,
@@ -14,7 +15,6 @@ from provide.foundation.errors.decorators import (
     suppress_and_log,
     with_error_handling,
 )
-from provide.foundation.errors.base import FoundationError
 from provide.foundation.errors.integration import NetworkError
 from provide.foundation.errors.types import BackoffStrategy, RetryPolicy
 

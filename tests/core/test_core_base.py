@@ -22,12 +22,12 @@ from provide.foundation.core import (
     setup_telemetry,
     shutdown_foundation_telemetry,
 )
-from provide.foundation.utils.streams import get_safe_stderr
 from provide.foundation.logger import base as logger_base_module
 from provide.foundation.logger.config import (
     LoggingConfig,
     TelemetryConfig,
 )
+from provide.foundation.utils.streams import get_safe_stderr
 
 
 class TestGetSafeStderr:

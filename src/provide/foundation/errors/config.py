@@ -87,7 +87,7 @@ class ConfigValidationError(ValidationError):
         >>> raise ConfigValidationError("Invalid database configuration")
         >>> raise ConfigValidationError("Port must be positive", field="port", value=-1)
     """
-    
+
     def __init__(
         self,
         message: str,
@@ -98,6 +98,6 @@ class ConfigValidationError(ValidationError):
         if config_class:
             kwargs.setdefault("context", {})["config.class"] = config_class
         super().__init__(message, **kwargs)
-    
+
     def _default_code(self) -> str:
         return "CONFIG_VALIDATION_ERROR"

@@ -16,7 +16,7 @@ class TestNestedCommandRegistration:
     def setup_method(self) -> None:
         """Clear the hub before each test."""
         clear_hub()
-    
+
     def teardown_method(self) -> None:
         """Clear the hub after each test."""
         clear_hub()
@@ -408,7 +408,7 @@ class TestNestedCommandIntegration:
     def setup_method(self) -> None:
         """Clear the hub before each test."""
         clear_hub()
-    
+
     def teardown_method(self) -> None:
         """Clear the hub after each test."""
         clear_hub()

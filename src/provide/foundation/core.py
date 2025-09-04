@@ -9,7 +9,6 @@ and shutdown for the telemetry system.
 
 import io
 import logging as stdlib_logging
-import os
 from pathlib import Path
 import sys
 import threading
