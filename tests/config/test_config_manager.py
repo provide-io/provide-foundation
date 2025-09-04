@@ -177,12 +177,12 @@ class TestConfigManager:
         manager = ConfigManager()
         
         # First call creates
-        config1 = manager.get_or_create("test", TestConfig)
+        config1 = await manager.get_or_create("test", TestConfig)
         assert config1 is not None
         assert isinstance(config1, TestConfig)
         
         # Second call gets existing
-        config2 = manager.get_or_create("test", TestConfig)
+        config2 = await manager.get_or_create("test", TestConfig)
         assert config2 is config1
 
     @pytest.mark.asyncio

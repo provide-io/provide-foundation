@@ -296,11 +296,13 @@ class ConfigManager:
     async def validate_all(self) -> None:
         """Validate all configurations."""
         for name, config in self._configs.items():
-            await config.validate()
+            if hasattr(config, 'validate'):
+                await config.validate()
             if name in self._schemas:
                 schema = self._schemas[name]
                 config_dict = config.to_dict(include_sensitive=True)
-                await schema.validate(config_dict)
+                if hasattr(schema, 'validate'):
+                    await schema.validate(config_dict)
 
     async def get_or_create(
         self, name: str, config_class: type[T], defaults: ConfigDict | None = None
