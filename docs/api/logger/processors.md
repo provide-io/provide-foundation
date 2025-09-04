@@ -8,21 +8,21 @@ The processors module provides the core log processing pipeline that transforms 
 
 ## Core Functions
 
-### _build_core_processors_list(config, resolved_semantic_config)
+### _build_core_processors_list(config, resolved_emoji_config)
 
 Build the core processor pipeline for log processing.
 
 ```python
 def _build_core_processors_list(
     config: TelemetryConfig, 
-    resolved_semantic_config: "ResolvedSemanticConfig"
+    resolved_emoji_config: "ResolvedEmojiConfig"
 ) -> list[StructlogProcessor]:
     """
     Build core processors list for structlog configuration.
     
     Args:
         config: Telemetry configuration
-        resolved_semantic_config: Resolved semantic layer configuration
+        resolved_emoji_config: Resolved emoji set configuration
         
     Returns:
         List of processor functions in execution order
@@ -87,21 +87,21 @@ def _config_create_timestamp_processors(
 - Always adds `TimeStamper` with format `"%Y-%m-%d %H:%M:%S.%f"`
 - If `omit_timestamp=True`, adds processor to remove timestamp from final output
 
-### _config_create_emoji_processors(logging_config, resolved_semantic_config)
+### _config_create_emoji_processors(logging_config, resolved_emoji_config)
 
 Create emoji prefix processors for visual log parsing.
 
 ```python
 def _config_create_emoji_processors(
     logging_config: LoggingConfig, 
-    resolved_semantic_config: "ResolvedSemanticConfig"
+    resolved_emoji_config: "ResolvedEmojiConfig"
 ) -> list[StructlogProcessor]:
     """
     Create emoji processors based on configuration.
     
     Args:
         logging_config: Logging configuration
-        resolved_semantic_config: Semantic layer configuration
+        resolved_emoji_config: Emoji set configuration
         
     Returns:
         List of emoji processors
@@ -111,7 +111,7 @@ def _config_create_emoji_processors(
 **Features:**
 - Logger name emoji prefixes (if `logger_name_emoji_prefix_enabled`)
 - Domain-Action-Status emoji prefixes (if `das_emoji_prefix_enabled`)
-- Supports both DAS system and semantic layers
+- Supports both DAS system and emoji sets
 - Automatically selects appropriate emoji based on log context
 
 ## Formatter Functions
@@ -236,7 +236,7 @@ logger.info(
 Uses custom semantic field definitions and emoji sets:
 
 ```python
-# With custom semantic layers
+# With custom emoji sets
 logger.info(
     "Request processed",
     http_method="GET",
@@ -256,7 +256,7 @@ from provide.foundation.logger.processors import (
 )
 
 # Build processor pipeline
-core_processors = _build_core_processors_list(config, resolved_semantic_config)
+core_processors = _build_core_processors_list(config, resolved_emoji_config)
 formatter_processors = _build_formatter_processors_list(config.logging, sys.stdout)
 
 # Combine for structlog
@@ -272,7 +272,7 @@ def custom_processor(logger, method_name, event_dict):
     return event_dict
 
 # Insert into pipeline
-processors = _build_core_processors_list(config, resolved_semantic_config)
+processors = _build_core_processors_list(config, resolved_emoji_config)
 processors.append(custom_processor)  # Add custom processor
 processors.extend(_build_formatter_processors_list(config.logging, sys.stdout))
 ```
@@ -282,4 +282,4 @@ processors.extend(_build_formatter_processors_list(config.logging, sys.stdout))
 - [FoundationLogger API](base.md) - Main logger interface
 - [Emoji System API](emoji.md) - Visual parsing system
 - [Custom Processors Guide](/guide/logging/advanced/) - Creating custom processors
-- [Semantic Layers Guide](/guide/concepts/semantic-layers/) - Advanced emoji system
+- [Semantic Layers Guide](/guide/concepts/emoji-sets/) - Advanced emoji system

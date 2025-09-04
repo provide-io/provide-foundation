@@ -33,7 +33,7 @@ def read_root():
 
 The best place to configure `provide.foundation` is when your application starts. We will use FastAPI's `lifespan` event to ensure `setup_telemetry` is called only once when the server boots up.
 
-In this step, we will also enable the `http` and `database` semantic layers.
+In this step, we will also enable the `http` and `database` emoji sets.
 
 ```python
 # main.py
@@ -50,8 +50,8 @@ async def lifespan(app: FastAPI):
         service_name="my-fastapi-app",
         logging=LoggingConfig(
             default_level="INFO",
-            # Enable the http and database semantic layers
-            enabled_semantic_layers=["http", "database"],
+            # Enable the http and database emoji sets
+            enabled_emoji_sets=["http", "database"],
         ),
     )
     setup_telemetry(config)

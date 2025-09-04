@@ -211,7 +211,7 @@ provide.foundation/
 │   ├── registry.py         # Command registry
 │   └── components.py       # Hub components
 ├── registry.py              # General registry pattern
-└── semantic_layers.py       # Domain-specific logging layers
+└── emoji_sets.py       # Domain-specific logging layers
 ```
 
 ## Type Annotations
@@ -270,12 +270,12 @@ def custom_processor(logger, method_name, event_dict):
 add_processor(custom_processor)
 ```
 
-### Custom Semantic Layers
+### Custom Emoji Sets
 
 ```python
-from provide.foundation.semantic_layers import SemanticLayer
+from provide.foundation.emoji_sets import EmojiSetConfig
 
-class CustomLayer(SemanticLayer):
+class CustomLayer(EmojiSetConfig):
     domain = "custom"
     
     def get_emoji(self, action: str, status: str) -> str:

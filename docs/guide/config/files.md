@@ -257,7 +257,7 @@ logging:          # Logging configuration
   format: string  # Output format
   # ... more logging options
 
-semantic_layers:  # Semantic layer settings
+semantic_layers:  # Emoji set settings
   enabled: bool
   layers: list
   # ... more layer options

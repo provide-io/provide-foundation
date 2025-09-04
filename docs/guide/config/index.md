@@ -100,7 +100,7 @@ graph TD
 
 | Setting | Environment Variable | Type | Default | Description |
 |---------|---------------------|------|---------|-------------|
-| Enable Layers | `PROVIDE_SEMANTIC_LAYERS` | bool | `true` | Enable semantic layer processing |
+| Enable Layers | `PROVIDE_SEMANTIC_LAYERS` | bool | `true` | Enable emoji set processing |
 | Enabled Layers | `PROVIDE_ENABLED_LAYERS` | list | all | Comma-separated layer names |
 | Layer Timeout | `PROVIDE_LAYER_TIMEOUT_MS` | int | `10` | Processing timeout in ms |
 

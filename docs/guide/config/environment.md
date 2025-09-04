@@ -57,7 +57,7 @@ Configure domain-specific telemetry interfaces.
 
 | Variable | Type | Default | Description |
 |----------|------|---------|-------------|
-| `PROVIDE_SEMANTIC_LAYERS` | bool | `true` | Enable semantic layer processing |
+| `PROVIDE_SEMANTIC_LAYERS` | bool | `true` | Enable emoji set processing |
 | `PROVIDE_ENABLED_LAYERS` | list | all | Comma-separated list of layers to enable |
 | `PROVIDE_LAYER_TIMEOUT_MS` | int | `10` | Maximum processing time per layer |
 | `PROVIDE_LAYER_EMOJI` | bool | `true` | Add emoji based on semantic context |

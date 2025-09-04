@@ -5,7 +5,7 @@ Build a complete application using provide.foundation's logging, CLI, and config
 ## What We'll Build
 
 A simple task manager CLI that demonstrates:
-- Structured logging with semantic layers
+- Structured logging with emoji sets
 - CLI command registration
 - Configuration management
 - Error handling
@@ -238,13 +238,13 @@ class TaskManager:
 
 ## Step 5: Understanding Semantic Layers
 
-Semantic layers provide automatic emoji mapping for structured log fields:
+Emoji sets provide automatic emoji mapping for structured log fields:
 
 ```python
 from provide.foundation import logger
 
 # When you log with semantic field names, emojis are added automatically
-# For example, if HTTP semantic layer is enabled:
+# For example, if HTTP emoji set is enabled:
 
 logger.info("http_request",
     **{"http.method": "GET",        # Automatically gets 📥 emoji
@@ -252,7 +252,7 @@ logger.info("http_request",
        "http.target": "/api/tasks"})
 
 # For task operations, you can define custom semantic fields:
-from provide.foundation.types import SemanticLayer, CustomDasEmojiSet, SemanticFieldDefinition
+from provide.foundation.types import EmojiSetConfig, CustomDasEmojiSet, FieldToEmojiMapping
 
 # Define emoji mappings for task operations
 TASK_EMOJI_SETS = [
@@ -269,13 +269,13 @@ TASK_EMOJI_SETS = [
     )
 ]
 
-# Create semantic layer configuration
-TASK_LAYER = SemanticLayer(
+# Create emoji set configuration
+TASK_LAYER = EmojiSetConfig(
     name="task",
     description="Task management operations",
     emoji_sets=TASK_EMOJI_SETS,
     field_definitions=[
-        SemanticFieldDefinition(
+        FieldToEmojiMapping(
             log_key="task.action",
             emoji_set_name="task_action"
         )
@@ -317,7 +317,7 @@ The full example is available at:
 
 - **Start simple**: Use basic features first, add complexity as needed
 - **Log everything**: Structured logging helps debugging and monitoring
-- **Use semantic layers**: Domain-specific logging improves clarity
+- **Use emoji sets**: Domain-specific logging improves clarity
 - **Handle errors gracefully**: Always log errors with context
 - **Provide feedback**: Use pout/perr for user feedback
 

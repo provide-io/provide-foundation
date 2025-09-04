@@ -10,7 +10,7 @@ Comprehensive guide to using provide.foundation in your applications.
     <p>Understand the fundamental principles behind provide.foundation</p>
     <ul>
       <li><a href="concepts/structured-logging/">Structured Logging</a></li>
-      <li><a href="concepts/semantic-layers/">Semantic Layers</a></li>
+      <li><a href="concepts/emoji-sets/">Semantic Layers</a></li>
       <li><a href="concepts/emoji-system/">Emoji System</a></li>
       <li><a href="concepts/das-pattern/">Domain-Action-Status Pattern</a></li>
     </ul>
@@ -129,7 +129,7 @@ logger.info(f"User {user.id} logged in from {request.ip}")
 
 ### 2. Leverage Semantic Layers
 ```python
-from provide.foundation.semantic_layers import HTTPLayer
+from provide.foundation.emoji_sets import HTTPLayer
 
 http = HTTPLayer()
 http.request_started(method="GET", path="/api/users")
@@ -160,7 +160,7 @@ with logger.batch():
 
 ## Advanced Topics
 
-- [Creating Custom Semantic Layers](../tutorials/custom-semantic-layer.md)
+- [Creating Custom Emoji Sets](../tutorials/custom-emoji-set.md)
 - [Distributed Tracing](../tutorials/distributed-tracing.md)
 - [Production Logging Strategies](../tutorials/production-logging.md)
 - [Performance Monitoring](../cookbook/patterns/monitoring.md)

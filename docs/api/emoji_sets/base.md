@@ -1,10 +1,10 @@
-# Http
+# Base
 
-::: provide.foundation.semantic.http
+::: provide.foundation.emoji_sets.base
 
 ## Overview
 
-API documentation for Http.
+API documentation for Base.
 
 ## Usage
 

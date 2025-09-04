@@ -1,18 +1,18 @@
-# Semantic Layers
+# Emoji Sets
 
 Domain-specific telemetry interfaces with visual emoji mapping - a unique approach to structured logging in the provide.io ecosystem.
 
-## What Are Semantic Layers in provide.foundation?
+## What Are Emoji Sets in provide.foundation?
 
-provide.foundation's semantic layers are **domain-specific logging interfaces** that combine:
+provide.foundation's emoji sets are **domain-specific emoji mappings** that provide:
 - 🎯 **Structured logging** with consistent field naming
 - 🌐 **Domain context** for technologies like HTTP, databases, and LLMs
 - 👀 **Visual parsing** through intelligent emoji mapping
 - ⚡ **High performance** with minimal overhead (<5%)
 
-## Not Your Typical Semantic Layer
+## Understanding Emoji Sets
 
-The term "semantic layer" appears in different contexts across the tech industry. Here's how ours is unique:
+Emoji sets in provide.foundation are passive configuration objects that map field values to emojis:
 
 ### What We're NOT
 
@@ -27,14 +27,14 @@ The term "semantic layer" appears in different contexts across the tech industry
 **Domain-Specific Emoji Mapping Configurations** - Think of them as passive data structures that define how field values map to emojis during log formatting:
 
 ```python
-# How semantic layers actually work - just use regular logging with semantic field names
+# How emoji sets actually work - just use regular logging with semantic field names
 logger.info("http_request", 
     **{"http.method": "GET", "http.status_code": 200, "http.target": "/api/users"})
 # The emoji processor automatically adds emojis based on field names
 # Output: 📥 ✅ http_request status_code=200 target=/api/users
 ```
 
-## Built-in Semantic Layers
+## Built-in Emoji Sets
 
 provide.foundation includes pre-configured layers for common domains:
 
@@ -85,7 +85,7 @@ logger.info("task_completed",
 
 ## The Emoji System
 
-Each semantic layer includes intelligent emoji mapping that provides instant visual context:
+Each emoji set includes intelligent emoji mapping that provides instant visual context:
 
 ### Domain → Action → Status Pattern
 
@@ -106,7 +106,7 @@ Each semantic layer includes intelligent emoji mapping that provides instant vis
 
 ## Performance Characteristics
 
-Semantic layers add minimal overhead:
+Emoji sets add minimal overhead:
 
 | Operation | Without Layers | With Layers | Overhead |
 |-----------|---------------|-------------|----------|
@@ -115,12 +115,12 @@ Semantic layers add minimal overhead:
 | Emoji mapping | - | +3μs | - |
 | Field validation | - | +2μs | - |
 
-## Creating Custom Semantic Layers
+## Creating Custom Emoji Sets
 
 Extend the system with your own domain-specific emoji mappings:
 
 ```python
-from provide.foundation.types import SemanticLayer, CustomDasEmojiSet, SemanticFieldDefinition
+from provide.foundation.types import EmojiSetConfig, CustomDasEmojiSet, FieldToEmojiMapping
 
 # Define emoji mappings for your domain
 PAYMENT_EMOJI_SETS = [
@@ -137,13 +137,13 @@ PAYMENT_EMOJI_SETS = [
     )
 ]
 
-# Create your semantic layer configuration
-PAYMENT_LAYER = SemanticLayer(
+# Create your emoji set configuration
+PAYMENT_LAYER = EmojiSetConfig(
     name="payment",
     description="Payment processing operations",
     emoji_sets=PAYMENT_EMOJI_SETS,
     field_definitions=[
-        SemanticFieldDefinition(
+        FieldToEmojiMapping(
             log_key="payment.method",
             emoji_set_name="payment_method"
         )
@@ -160,9 +160,9 @@ logger.info("payment_processed",
 )
 ```
 
-## When to Use Semantic Layers
+## When to Use Emoji Sets
 
-### Use Semantic Layers When:
+### Use Emoji Sets When:
 - ✅ Logging domain-specific operations (HTTP, DB, LLM)
 - ✅ You want consistent field naming across services
 - ✅ Visual log parsing would help (development, debugging)
@@ -176,7 +176,7 @@ logger.info("payment_processed",
 
 ## Configuration
 
-Enable or disable semantic layers:
+Enable or disable emoji sets:
 
 ```python
 from provide.foundation.config import TelemetryConfig
@@ -193,12 +193,12 @@ config = TelemetryConfig(
 
 1. **Use the right layer** - Don't force HTTP semantics on database operations
 2. **Extend thoughtfully** - Create custom layers for truly distinct domains
-3. **Preserve context** - Semantic layers complement, not replace, structured logging
+3. **Preserve context** - Emoji sets complement, not replace, structured logging
 4. **Monitor performance** - Disable in ultra-high-throughput scenarios if needed
 
 ## OpenTelemetry Integration
 
-Our semantic layers are designed to **seamlessly integrate with OpenTelemetry**, following [OpenTelemetry Semantic Conventions](https://opentelemetry.io/docs/concepts/semantic-conventions/) while adding provide.io-specific enhancements:
+Our emoji sets are designed to **seamlessly integrate with OpenTelemetry**, following [OpenTelemetry Semantic Conventions](https://opentelemetry.io/docs/concepts/semantic-conventions/) while adding provide.io-specific enhancements:
 
 ### OTEL-Compatible Field Naming
 ```python
@@ -217,13 +217,13 @@ Our semantic layers are designed to **seamlessly integrate with OpenTelemetry**,
 from provide.foundation import logger
 from provide.foundation.otel import setup_otel_export
 
-# Enable OTEL export - semantic layers automatically translate
+# Enable OTEL export - emoji sets automatically translate
 setup_otel_export(
     endpoint="https://otel-collector.example.com",
     service_name="my-service"
 )
 
-# Log with semantic layers - automatically exports to OTEL
+# Log with emoji sets - automatically exports to OTEL
 logger.info("http_request",
     **{"http.method": "GET", "http.status_code": 200}
 )
@@ -241,16 +241,16 @@ The key enhancement: We add visual parsing and domain validation **on top of** O
 
 ## Next Steps
 
-- 📖 See [Architecture: Semantic Layers](../../architecture/semantic-layers.md) for implementation details
-- 🛠️ Learn to [Create Custom Semantic Layers](../../tutorials/custom-semantic-layer.md)
+- 📖 See [Architecture: Semantic Layers](../../architecture/emoji-sets.md) for implementation details
+- 🛠️ Learn to [Create Custom Emoji Sets](../../tutorials/custom-emoji-set.md)
 - 📚 Explore [Cookbook Recipes](../../cookbook/recipes/index.md) for real-world usage
-- 🔧 Check [API Reference](../../api/semantic/index.md) for all available fields
+- 🔧 Check [API Reference](../../api/emoji_sets/index.md) for all available fields
 
 ## Summary
 
-provide.foundation's semantic layers are a unique innovation that combines:
+provide.foundation's emoji sets are a unique feature that provides:
 - The structure of semantic logging
-- The domain awareness of BI semantic layers
+- The domain awareness of BI emoji sets
 - The visual parsing of emoji-enhanced output
 - The performance of optimized telemetry
 
