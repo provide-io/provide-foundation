@@ -27,91 +27,108 @@ except Exception as e:
 ### Contextual Logging
 
 ```python
+# From examples/06_trace_logging.py
 from provide.foundation import logger
 
-# Bind context for all subsequent logs
-with logger.bind(request_id="req-456", user_id="user-123"):
-    logger.info("request_started")
-    process_request()
-    logger.info("request_completed")
-    # All logs include request_id and user_id
+# Add context via structured fields
+logger.info("request_started",
+            request_id="req-456",
+            user_id="user-123")
+process_request()
+logger.info("request_completed",
+            request_id="req-456",
+            user_id="user-123")
 ```
+
+**See full example:** [examples/06_trace_logging.py](../../examples/06_trace_logging.py)
 
 ### Async Logging
 
 ```python
+# From examples/09_async_usage.py
 import asyncio
 from provide.foundation import logger
 
 async def async_operation():
-    async with logger.bind(operation="async_task"):
-        logger.info("task_started")
-        await asyncio.sleep(1)
-        logger.info("task_completed")
+    logger.info("task_started", operation="async_task")
+    await asyncio.sleep(1)
+    logger.info("task_completed", operation="async_task")
 
 asyncio.run(async_operation())
 ```
+
+**See full example:** [examples/09_async_usage.py](../../examples/09_async_usage.py)
 
 ## CLI Examples
 
 ### Simple Command
 
 ```python
-from provide.foundation.cli import register_command, run_cli
+# From examples/12_cli_application.py
+from provide.foundation.hub import register_command, Hub
+from provide.foundation.cli import echo_success
 
-@register_command("greet")
-def greet(name: str = "World", excited: bool = False):
-    """Greet someone."""
-    greeting = f"Hello, {name}{'!' if excited else '.'}"
-    print(greeting)
+@register_command("init", category="project")
+def init_command(name: str = "myproject", template: str = "default"):
+    """Initialize a new project."""
+    echo_success(f"Initializing project '{name}' with template '{template}'")
 
 if __name__ == "__main__":
-    run_cli()
+    hub = Hub()
+    cli = hub.create_cli(name="myapp", version="1.0.0")
+    cli()
 ```
+
+**See full example:** [examples/12_cli_application.py](../../examples/12_cli_application.py)
 
 ### Nested Commands
 
 ```python
-from provide.foundation.cli import register_command, run_cli
+# From examples/12_cli_application.py
+from provide.foundation.hub import register_command
+from provide.foundation.cli import echo_info
 
 @register_command("db.migrate")
 def migrate():
     """Run database migrations."""
-    print("Running migrations...")
+    echo_info("Running migrations...")
 
 @register_command("db.seed")
 def seed(count: int = 10):
     """Seed the database."""
-    print(f"Seeding {count} records...")
+    echo_info(f"Seeding {count} records...")
 
 @register_command("db.reset")
 def reset():
     """Reset the database."""
-    print("Resetting database...")
+    echo_info("Resetting database...")
 
-# Usage: ./app.py db.migrate
+# Usage: python app.py db migrate
 ```
 
 ### Command with JSON Output
 
 ```python
+# From examples/12_cli_application.py - status command
 import json
-from provide.foundation.cli import register_command
+from provide.foundation.hub import register_command, Hub
+from provide.foundation.cli import echo_info, echo_json
 
-@register_command("info")
-def info(format: str = "text"):
-    """Show system information."""
+@register_command("status")
+def status_command(json_output: bool = False):
+    """Show system status."""
+    hub = Hub()
     data = {
-        "version": "1.0.0",
-        "status": "healthy",
-        "uptime": 3600
+        "components": len(hub.list_components()),
+        "commands": len(hub.list_commands()),
+        "status": "healthy"
     }
     
-    if format == "json":
-        print(json.dumps(data, indent=2))
+    if json_output:
+        echo_json(data)
     else:
         for key, value in data.items():
-            print(f"{key}: {value}")
+            echo_info(f"{key}: {value}")
 ```
 
 ## Configuration Examples
@@ -119,108 +136,106 @@ def info(format: str = "text"):
 ### Environment Variables
 
 ```python
+# From examples/08_env_variables_config.py
 import os
-from provide.foundation.config import TelemetryConfig
+from provide.foundation import TelemetryConfig
 
 # Set environment variables
 os.environ["PROVIDE_LOG_LEVEL"] = "DEBUG"
-os.environ["PROVIDE_LOG_FORMAT"] = "json"
+os.environ["PROVIDE_LOG_CONSOLE_FORMATTER"] = "json"
 
 # Load configuration
 config = TelemetryConfig.from_env()
-print(f"Log level: {config.level}")
-print(f"Format: {config.format}")
+print(f"Log level: {config.logging.default_level}")
+print(f"Format: {config.logging.console_formatter}")
 ```
+
+**See full example:** [examples/08_env_variables_config.py](../../examples/08_env_variables_config.py)
 
 ### Configuration File
 
 ```python
-from provide.foundation.config import Config
+# From examples/11_config_management.py
+from provide.foundation.config import FileConfigLoader, BaseConfig
+from attrs import define
 
-# config.yaml:
-# database:
-#   host: localhost
-#   port: 5432
-#   name: myapp
+@define
+class DatabaseConfig(BaseConfig):
+    host: str = "localhost"
+    port: int = 5432
+    name: str = "myapp"
 
-config = Config.from_file("config.yaml")
-db_host = config.get("database.host")
-db_port = config.get("database.port", 5432)
+# Load from YAML/JSON/TOML file
+loader = FileConfigLoader("config.yaml")
+config = loader.load(DatabaseConfig)
+print(f"Database: {config.host}:{config.port}/{config.name}")
 ```
+
+**See full example:** [examples/11_config_management.py](../../examples/11_config_management.py)
 
 ### Runtime Configuration
 
 ```python
-from provide.foundation.logger import setup_logging
+# From examples/02_custom_configuration.py
+from provide.foundation import setup_telemetry, TelemetryConfig, LoggingConfig
 
-# Change configuration at runtime
-setup_logging(
-    level="DEBUG",
-    format="json",
-    processors=["timestamp", "level", "message"]
+# Configure telemetry at runtime
+config = TelemetryConfig(
+    service_name="my-service",
+    environment="production",
+    logging=LoggingConfig(
+        default_level="INFO",
+        console_formatter="json"
+    )
 )
+setup_telemetry(config)
 ```
 
-## Semantic Layer Examples
+**See full example:** [examples/02_custom_configuration.py](../../examples/02_custom_configuration.py)
 
-### HTTP Request Logging
+## Domain-Action-Status Pattern Examples
+
+### DAS Pattern Logging
 
 ```python
-from provide.foundation.emoji_sets import HTTPLayer
-import time
+# From examples/04_das_logging.py
+from provide.foundation import logger
 
-http = HTTPLayer()
+# Domain-Action-Status pattern for structured logging
+logger.info("database_connection_established", 
+            host="localhost", port=5432)
 
-# Log request lifecycle
-start = time.time()
-http.request_started(method="GET", path="/api/users")
+logger.info("api_request_started",
+            method="GET", endpoint="/users")
+            
+logger.info("cache_hit_found",
+            key="user:123", ttl=3600)
 
-# Simulate processing
-time.sleep(0.1)
-
-# Log completion
-duration_ms = (time.time() - start) * 1000
-http.request_completed(status=200, duration_ms=duration_ms)
+logger.error("payment_processing_failed",
+             amount=99.99, currency="USD", error="Invalid card")
 ```
 
-### Database Query Logging
+**See full example:** [examples/04_das_logging.py](../../examples/04_das_logging.py)
+
+### Custom Emoji Patterns
 
 ```python
-from provide.foundation.emoji_sets import DatabaseLayer
+# From examples/04_das_logging.py
+from provide.foundation import logger
+from provide.foundation.logger.emoji.types import CustomDasEmojiSet
 
-db = DatabaseLayer()
+# Create custom emoji set
+custom_emojis = CustomDasEmojiSet(
+    enabled=True,
+    das_mapping={
+        "api_request_started": "🌐",
+        "database_query_executed": "🗄️",
+        "cache_hit_found": "⚡"
+    }
+)
 
-# Log query execution
-db.query_started(query="SELECT * FROM users", database="main")
-# ... execute query ...
-db.query_completed(rows_affected=42, duration_ms=15.3)
-
-# Log transaction
-db.transaction_started()
-# ... perform operations ...
-db.transaction_committed()
-```
-
-### Custom Emoji Set
-
-```python
-from provide.foundation.emoji_sets import EmojiSetConfig, register_layer
-
-@register_layer("cache")
-class CacheLayer(EmojiSetConfig):
-    domain = "cache"
-    
-    def get(self, key: str, hit: bool, **kwargs):
-        status = "hit" if hit else "miss"
-        self.logger.info(f"cache_get_{status}", key=key, **kwargs)
-    
-    def set(self, key: str, ttl: int, **kwargs):
-        self.logger.info("cache_set", key=key, ttl=ttl, **kwargs)
-
-# Use it
-cache = CacheLayer()
-cache.get(key="user:123", hit=True)
-cache.set(key="user:123", ttl=3600)
+# Logs will be prefixed with custom emojis
+logger.info("api_request_started")  # 🌐 api_request_started
 ```
 
 ## Error Handling Examples
@@ -228,75 +243,83 @@ cache.set(key="user:123", ttl=3600)
 ### Error Boundaries
 
 ```python
-from provide.foundation.errors import with_error_boundary
-from provide.foundation import logger
+# From examples/05_exception_handling.py
+from provide.foundation import logger, with_error_handling
 
-@with_error_boundary(fallback="default_value")
+@with_error_handling
 def risky_operation():
     """Operation that might fail."""
     if random.random() > 0.5:
         raise ValueError("Random failure")
     return "success"
 
-result = risky_operation()  # Returns "default_value" on error
+try:
+    result = risky_operation()
+    logger.info("operation_succeeded", result=result)
+except Exception as e:
+    logger.error("operation_failed", error=str(e))
 ```
 
-### Retry Logic
+**See full example:** [examples/05_exception_handling.py](../../examples/05_exception_handling.py)
+
+### Exception Logging
 
 ```python
-from provide.foundation.errors import retry
+# From examples/05_exception_handling.py
 from provide.foundation import logger
 
-@retry(max_attempts=3, backoff=2.0)
-def flaky_api_call():
-    """API call that might fail."""
-    response = requests.get("https://api.example.com/data")
-    response.raise_for_status()
-    return response.json()
-
-data = flaky_api_call()  # Retries up to 3 times
+def process_data(data):
+    try:
+        # Process the data
+        result = complex_operation(data)
+        logger.info("data_processed", size=len(data), result=result)
+    except ValueError as e:
+        logger.exception("validation_error", data=data, error=str(e))
+    except Exception as e:
+        logger.exception("processing_error", data=data, error=str(e))
+        raise
 ```
 
 ## Platform Detection Examples
 
 ```python
-from provide.foundation.platform import get_system_info
+# From examples/10_production_patterns.py
+from provide.foundation.platform import get_platform_info
+from provide.foundation import logger
 
-info = get_system_info()
-print(f"OS: {info.platform}")  # "darwin", "linux", "windows"
-print(f"Architecture: {info.arch}")  # "arm64", "x86_64"
-print(f"Python: {info.python_version}")
-print(f"Hostname: {info.hostname}")
+info = get_platform_info()
+logger.info("system_info",
+            platform=info["platform"],
+            python_version=info["python_version"],
+            hostname=info.get("hostname", "unknown"))
 
 # Conditional logic based on platform
-if info.platform == "darwin":
+if info["platform"] == "darwin":
     # macOS specific code
-    pass
-elif info.platform == "linux":
+    logger.debug("macos_specific_setup")
+elif info["platform"] == "linux":
     # Linux specific code
-    pass
+    logger.debug("linux_specific_setup")
 ```
 
 ## Process Execution Examples
 
 ```python
-from provide.foundation.process import run_command
+from provide.foundation.process import run_shell_command
+from provide.foundation import logger
 
 # Simple command
-result = run_command(["ls", "-la"])
-if result.returncode == 0:
-    print(result.stdout)
+result = run_shell_command("ls -la")
+if result["returncode"] == 0:
+    logger.info("command_succeeded", output=result["stdout"])
 else:
-    print(f"Error: {result.stderr}")
+    logger.error("command_failed", error=result["stderr"])
 
-# With timeout
-result = run_command(["slow_command"], timeout=5.0)
-
-# With environment variables
-result = run_command(
-    ["npm", "run", "build"],
-    env={"NODE_ENV": "production"}
-)
+# With timeout and error handling
+try:
+    result = run_shell_command("slow_command", timeout=5.0)
+except TimeoutError:
+    logger.error("command_timeout", command="slow_command")
 ```
 
 ## Console Output Examples
