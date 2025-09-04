@@ -9,39 +9,39 @@ Complete API documentation for provide.foundation.
     <h3>🎯 Core APIs</h3>
     <p>Fundamental logging and configuration</p>
     <ul>
-      <li><a href="core/logger/">Logger</a></li>
-      <li><a href="core/config/">Configuration</a></li>
-      <li><a href="core/telemetry/">Telemetry</a></li>
+      <li><a href="logger/index/">Logger System</a></li>
+      <li><a href="config/index/">Configuration</a></li>
+      <li><a href="context/index/">Context Management</a></li>
     </ul>
   </div>
 
   <div class="feature-card">
-    <h3>🌐 Semantic Layers</h3>
-    <p>Domain-specific logging interfaces</p>
+    <h3>📁 File & Data</h3>
+    <p>Safe file operations and data handling</p>
+    <ul>
+      <li><a href="file/index/">File Operations</a></li>
+      <li><a href="crypto/index/">Cryptographic Utils</a></li>
+      <li><a href="utils/index/">Environment & Utils</a></li>
+    </ul>
+  </div>
+
+  <div class="feature-card">
+    <h3>🖥️ Console & CLI</h3>
+    <p>User interaction and command-line tools</p>
+    <ul>
+      <li><a href="utils/console/">Console I/O</a></li>
+      <li><a href="cli/decorators/">CLI Decorators</a></li>
+      <li><a href="hub/index/">Command Hub</a></li>
+    </ul>
+  </div>
+
+  <div class="feature-card">
+    <h3>🌐 Semantic & Advanced</h3>
+    <p>Domain-specific and advanced features</p>
     <ul>
       <li><a href="semantic/http/">HTTP Layer</a></li>
       <li><a href="semantic/database/">Database Layer</a></li>
       <li><a href="semantic/llm/">LLM Layer</a></li>
-    </ul>
-  </div>
-
-  <div class="feature-card">
-    <h3>🖥️ CLI Framework</h3>
-    <p>Command-line interface tools</p>
-    <ul>
-      <li><a href="cli/decorators/">Decorators</a></li>
-      <li><a href="cli/registry/">Registry</a></li>
-      <li><a href="cli/helpers/">Helpers</a></li>
-    </ul>
-  </div>
-
-  <div class="feature-card">
-    <h3>🔧 Utilities</h3>
-    <p>System and helper utilities</p>
-    <ul>
-      <li><a href="utils/platform/">Platform</a></li>
-      <li><a href="utils/process/">Process</a></li>
-      <li><a href="utils/console/">Console</a></li>
     </ul>
   </div>
 </div>
@@ -50,7 +50,7 @@ Complete API documentation for provide.foundation.
 
 ### Logger
 
-The main logging interface:
+The main logging interface with structured, emoji-enhanced output:
 
 ```python
 from provide.foundation import logger, plog
@@ -68,80 +68,150 @@ plog.debug("debug_info", details={"key": "value"})
 - `unbind()` - Remove context
 - `exception()` - Log with exception info
 
-### Configuration
+### Console I/O
 
-Type-safe configuration management:
+Standardized input/output functions with JSON mode support:
 
 ```python
-from provide.foundation.config import TelemetryConfig
+from provide.foundation import pout, perr, pin
 
-config = TelemetryConfig.from_env()
-config = TelemetryConfig(
-    level="DEBUG",
-    format="json",
-    enable_emoji=True
+# Output with styling
+pout("✅ Success message", color="green", bold=True)
+perr("❌ Error message", color="red")
+
+# Interactive input with type conversion
+name = pin("Enter name: ")
+age = pin("Enter age: ", type=int, default=0)
+password = pin("Password: ", password=True)
+```
+
+### Configuration and Context
+
+Unified configuration management from multiple sources:
+
+```python
+from provide.foundation import Context
+
+# Environment-based configuration
+ctx = Context.from_env()
+
+# Programmatic configuration
+ctx = Context(
+    log_level="DEBUG",
+    profile="development",
+    debug=True,
+    json_output=False
 )
+
+# Load from files (TOML, JSON, YAML)
+ctx.load_config("config.toml")
 ```
 
-### CLI Framework
+### File Operations
 
-Build command-line interfaces:
+Safe, atomic file operations with format support:
 
 ```python
-from provide.foundation.cli import register_command, run_cli
+from provide.foundation.file import atomic_write_text, read_json, write_json
 
-@register_command("hello")
-def hello(name: str = "World"):
-    """Say hello."""
-    print(f"Hello, {name}!")
+# Atomic operations prevent corruption
+atomic_write_text("config.txt", "new content", backup=True)
 
-if __name__ == "__main__":
-    run_cli()
+# Format-specific operations
+data = read_json("config.json", default={})
+write_json("output.json", {"key": "value"})
 ```
 
-### Console Output
+### Cryptographic Utilities
 
-Standardized output functions:
+Secure hashing and checksum verification:
 
 ```python
-from provide.foundation import pout, perr
+from provide.foundation.crypto import hash_file, verify_file, calculate_checksums
 
-pout("✅ Success message")  # stdout
-perr("❌ Error message")    # stderr
+# Hash files securely
+digest = hash_file("document.pdf", algorithm="sha256")
+
+# Verify integrity
+is_valid = verify_file("document.pdf", expected_hash)
+
+# Batch checksum calculation
+checksums = calculate_checksums(["file1.txt", "file2.txt"])
+```
+
+### Environment and Utilities
+
+Type-safe environment parsing and formatting utilities:
+
+```python
+from provide.foundation.utils import get_int, get_bool, format_size, timed_block
+
+# Environment parsing with defaults
+port = get_int("PORT", 8000)
+debug = get_bool("DEBUG", False)
+
+# Human-readable formatting
+print(format_size(1536))  # "1.5 KB"
+
+# Performance timing with logging
+with timed_block(logger, "data_processing") as ctx:
+    # Your code here
+    ctx["records_processed"] = 1000
 ```
 
 ## Module Organization
 
 ```
 provide.foundation/
-├── __init__.py           # Main exports
-├── logger/               # Logging system
-│   ├── base.py          # Core logger
-│   ├── config.py        # Configuration
-│   ├── processors.py    # Log processors
-│   └── emoji_matrix.py  # Emoji mappings
-├── cli/                  # CLI framework
-│   ├── decorators.py    # Command decorators
-│   ├── registry.py      # Command registry
-│   └── runner.py        # CLI runner
-├── config/               # Configuration
-│   ├── base.py          # Base config
-│   ├── env.py           # Environment parsing
-│   └── loaders.py       # File loaders
-├── platform/             # Platform utilities
-│   ├── detect.py        # OS detection
-│   └── info.py          # System info
-├── process/              # Process execution
-│   ├── run.py           # Command runner
-│   └── output.py        # Output capture
-├── console/              # Console output
-│   └── output.py        # pout/perr functions
-├── errors/               # Error handling
-│   ├── base.py          # Base exceptions
-│   └── handlers.py      # Error handlers
-├── registry/             # Registry pattern
-│   └── base.py          # Object registry
-└── semantic_layers.py    # Semantic layers
+├── __init__.py              # Main exports and primary interface
+├── logger/                  # Structured logging system
+│   ├── base.py             # Core FoundationLogger
+│   ├── config.py           # TelemetryConfig, LoggingConfig
+│   ├── processors.py       # Log processing pipeline
+│   └── emoji_matrix.py     # Visual emoji mappings
+├── console/                 # Standardized I/O functions
+│   ├── input.py            # pin(), pin_stream(), async variants
+│   └── output.py           # pout(), perr() functions
+├── context.py               # Unified Context class for configuration
+├── config/                  # Advanced configuration system
+│   ├── base.py             # Base configuration classes
+│   ├── env.py              # Environment variable parsing
+│   ├── loader.py           # File loading (YAML, JSON, TOML)
+│   └── manager.py          # Configuration management
+├── file/                    # Safe file operations
+│   ├── atomic.py           # Atomic write operations
+│   ├── formats.py          # JSON, YAML, TOML support
+│   ├── safe.py             # Safe read/write operations
+│   ├── lock.py             # File locking
+│   └── utils.py            # File utilities
+├── crypto/                  # Cryptographic utilities
+│   ├── hashing.py          # File and data hashing
+│   ├── checksums.py        # Checksum verification
+│   ├── algorithms.py       # Algorithm management
+│   └── utils.py            # Crypto utilities
+├── utils/                   # Common utilities
+│   ├── env.py              # Environment variable parsing
+│   ├── formatting.py       # String and number formatting
+│   ├── parsing.py          # Data type parsing
+│   └── timing.py           # Performance timing
+├── errors/                  # Comprehensive error handling
+│   ├── base.py             # Base exceptions
+│   ├── handlers.py         # Error handlers
+│   └── decorators.py       # Error handling decorators
+├── platform/                # Platform detection
+│   └── detection.py        # OS and environment detection
+├── process/                 # Process execution
+│   ├── runner.py           # Subprocess execution
+│   └── async_runner.py     # Async process execution
+├── cli/                     # CLI framework components
+│   ├── decorators.py       # Command decorators
+│   └── testing.py          # CLI testing utilities
+├── hub/                     # Command hub system
+│   ├── manager.py          # Hub management
+│   ├── registry.py         # Command registry
+│   └── components.py       # Hub components
+├── registry.py              # General registry pattern
+└── semantic_layers.py       # Domain-specific logging layers
 ```
 
 ## Type Annotations
