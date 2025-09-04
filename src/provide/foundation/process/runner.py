@@ -70,6 +70,10 @@ def run_command(
     # Convert Path to string
     if isinstance(cwd, Path):
         cwd = str(cwd)
+    
+    # If command is a string, we need shell=True
+    if isinstance(cmd, str) and not shell:
+        shell = True
 
     try:
         # Prepare command for subprocess
