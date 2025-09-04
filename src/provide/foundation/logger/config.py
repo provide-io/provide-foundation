@@ -144,7 +144,7 @@ class LoggingConfig(BaseConfig):
             except (json.JSONDecodeError, TypeError):
                 pass  # Invalid JSON, skip
         
-        return cls.from_dict(config_dict, source=ConfigSource.ENVIRONMENT)
+        return cls.from_dict(config_dict, source=ConfigSource.ENV)
 
 
 @define(slots=True, repr=False)
@@ -182,4 +182,4 @@ class TelemetryConfig(BaseConfig):
         # Load logging config from env
         config_dict["logging"] = LoggingConfig.from_env()
         
-        return cls.from_dict(config_dict, source=ConfigSource.ENVIRONMENT)
+        return cls.from_dict(config_dict, source=ConfigSource.ENV)

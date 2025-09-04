@@ -72,7 +72,10 @@
       "Bash(echo \"Updated: $file\")",
       "Bash(fi)",
       "Bash(PROVIDE_LOG_LEVEL=INFO python -c \"from provide.foundation import logger; logger.info(''Test with PROVIDE_ variables''); logger.debug(''This should not show'')\")",
-      "Bash(PROVIDE_LOG_LEVEL=INFO python -c \"from provide.foundation import logger; logger.info(''Test with PROVIDE_ variables''); logger.debug(''This should not show'')\")"
+      "Bash(PROVIDE_LOG_LEVEL=INFO python -c \"from provide.foundation import logger; logger.info(''Test with PROVIDE_ variables''); logger.debug(''This should not show'')\")",
+      "Bash(PROVIDE_LOG_LEVEL=INFO python -c \"from provide.foundation import logger; logger.info(''Test with PROVIDE_ variables''); logger.debug(''This should not show'')\")",
+      "Bash(PROVIDE_LOG_LEVEL=WARNING python -c \"\nfrom provide.foundation.logger.config import LoggingConfig, TelemetryConfig\nimport os\nos.environ[''PROVIDE_LOG_LEVEL''] = ''WARNING''\nconfig = TelemetryConfig.from_env()\nprint(f''Loaded config default_level: {config.logging.default_level}'')\nprint(f''Config class: {config.__class__.__name__}'')\nprint(f''Logging config class: {config.logging.__class__.__name__}'')\n\")",
+      "Bash(PROVIDE_LOG_LEVEL=WARNING python -c \"\nfrom provide.foundation.logger.config import TelemetryConfig\nimport os\nos.environ[''PROVIDE_LOG_LEVEL''] = ''WARNING''\nconfig = TelemetryConfig.from_env()\nprint(f''Loaded config default_level: {config.logging.default_level}'')\n\")"
     ],
     "deny": [],
     "ask": [],
