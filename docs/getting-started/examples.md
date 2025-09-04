@@ -344,74 +344,30 @@ else:
     perr("❌ Task failed")
 ```
 
-## Complete Application Template
+## Complete Working Examples
 
-```python
-#!/usr/bin/env python3
-"""
-Application template using provide.foundation
-"""
+All examples shown above are extracted from fully working example files in the [examples/](../../examples/) directory:
 
-from provide.foundation import logger, pout, perr
-from provide.foundation.cli import register_command, run_cli
-from provide.foundation.config import Config
-from provide.foundation.platform import get_system_info
+| Example File | Description | Key Concepts |
+|-------------|-------------|---------------|
+| [01_quick_start.py](../../examples/01_quick_start.py) | Basic logging setup | Logger initialization, structured logging |
+| [02_custom_configuration.py](../../examples/02_custom_configuration.py) | Custom telemetry config | TelemetryConfig, LoggingConfig |
+| [03_named_loggers.py](../../examples/03_named_loggers.py) | Module-specific loggers | Named logger instances |
+| [04_das_logging.py](../../examples/04_das_logging.py) | Domain-Action-Status pattern | Structured event naming, emoji prefixes |
+| [05_exception_handling.py](../../examples/05_exception_handling.py) | Error handling patterns | Exception logging, error boundaries |
+| [06_trace_logging.py](../../examples/06_trace_logging.py) | Distributed tracing | Request IDs, context propagation |
+| [07_module_filtering.py](../../examples/07_module_filtering.py) | Log filtering by module | Module-level configuration |
+| [08_env_variables_config.py](../../examples/08_env_variables_config.py) | Environment-based config | PROVIDE_* variables, env_field |
+| [09_async_usage.py](../../examples/09_async_usage.py) | Async logging patterns | asyncio integration |
+| [10_production_patterns.py](../../examples/10_production_patterns.py) | Production best practices | Performance, batching, monitoring |
+| [11_config_management.py](../../examples/11_config_management.py) | Complete config system | ConfigManager, loaders, validation |
+| [12_cli_application.py](../../examples/12_cli_application.py) | Full CLI application | Hub, commands, components |
 
-# Initialize
-logger.info("app_started", 
-            platform=get_system_info().platform,
-            version="1.0.0")
-
-# Load config
-config = Config.from_env()
-
-@register_command("run")
-def run_app(debug: bool = False):
-    """Run the application."""
-    if debug:
-        logger.set_level("DEBUG")
-    
-    try:
-        pout("🚀 Starting application...")
-        logger.info("app_run_started", debug=debug)
-        
-        # Your application logic here
-        
-        pout("✅ Application completed successfully")
-        logger.info("app_run_completed")
-        return 0
-        
-    except Exception as e:
-        perr(f"❌ Application failed: {e}")
-        logger.exception("app_run_failed", error=str(e))
-        return 1
-
-if __name__ == "__main__":
-    run_cli()
-```
-
-## Testing Examples
-
-```python
-import pytest
-from provide.foundation import logger
-from provide.foundation.cli import get_command
-
-def test_logging():
-    """Test structured logging."""
-    with logger.capture() as logs:
-        logger.info("test_event", value=42)
-    
-    assert len(logs) == 1
-    assert logs[0]["event"] == "test_event"
-    assert logs[0]["value"] == 42
-
-def test_cli_command():
-    """Test CLI command registration."""
-    command = get_command("mycommand")
-    assert command is not None
-    result = command(arg1="value")
-    assert result == 0
+To run any example:
+```bash
+python examples/01_quick_start.py
+python examples/12_cli_application.py --help
+PROVIDE_LOG_LEVEL=DEBUG python examples/08_env_variables_config.py
 ```
 
 ## Next Steps
