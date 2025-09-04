@@ -268,7 +268,6 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
     with _FOUNDATION_SETUP_LOCK:
         current_config = config if config is not None else TelemetryConfig.from_env()
         
-        # Close existing file handle if it exists
         if _LOG_FILE_HANDLE:
             try:
                 _LOG_FILE_HANDLE.close()
@@ -286,7 +285,9 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
             except Exception as e:
                 _core_setup_logger.error(f"Failed to open log file {log_file_path}: {e}")
                 _FOUNDATION_LOG_STREAM = _get_safe_stderr()
-        else:
+        elif _FOUNDATION_LOG_STREAM is sys.stderr:
+            # Only reset to stderr if it's currently the default.
+            # This preserves the test stream set by fixtures.
             _FOUNDATION_LOG_STREAM = _get_safe_stderr()
 
         _internal_setup(current_config, is_explicit_call=True)

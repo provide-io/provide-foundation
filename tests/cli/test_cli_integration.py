@@ -38,7 +38,9 @@ class TestCompleteCliIntegration:
                     setattr(ctx, key, value)
             # Configure logging once at the top level.
             setup_cli_logging(ctx)
-            if ctx.invoked_subcommand is None:
+
+            click_ctx = click.get_current_context()
+            if click_ctx.invoked_subcommand is None:
                 logger = get_logger(__name__)
                 logger.info("CLI root command executed.")
 
