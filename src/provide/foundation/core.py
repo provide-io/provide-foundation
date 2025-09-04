@@ -48,12 +48,13 @@ _FOUNDATION_LOG_LEVEL: int | None = None
 
 
 def _get_foundation_log_level() -> int:
-    """Get the Foundation log level from FOUNDATION_LOG_LEVEL, checking only once."""
-    import os
-
+    """Get the Foundation log level from LoggingConfig, checking only once."""
     global _FOUNDATION_LOG_LEVEL
     if _FOUNDATION_LOG_LEVEL is None:
-        level_str = os.getenv("FOUNDATION_LOG_LEVEL", "INFO").upper()
+        # Use the proper config system to get the Foundation setup log level
+        from provide.foundation.logger.config import LoggingConfig
+        logging_config = LoggingConfig.from_env(strict=False)
+        level_str = logging_config.foundation_setup_log_level.upper()
         _FOUNDATION_LOG_LEVEL = getattr(
             stdlib_logging,
             level_str,

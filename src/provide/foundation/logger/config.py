@@ -75,6 +75,11 @@ class LoggingConfig(BaseConfig):
     log_file: Path | None = field(
         default=None, env_var="PROVIDE_LOG_FILE", description="Path to log file"
     )
+    foundation_setup_log_level: LogLevelStr = field(
+        default="INFO",
+        env_var="FOUNDATION_LOG_LEVEL",
+        description="Log level for Foundation internal setup messages"
+    )
 
     @classmethod
     def from_env(cls, strict: bool = True) -> "LoggingConfig":
@@ -123,6 +128,17 @@ class LoggingConfig(BaseConfig):
 
         if log_file := os.getenv("PROVIDE_LOG_FILE"):
             config_dict["log_file"] = Path(log_file)
+
+        if foundation_level := os.getenv("FOUNDATION_LOG_LEVEL"):
+            foundation_level = foundation_level.upper()
+            if foundation_level in _VALID_LOG_LEVEL_TUPLE:
+                config_dict["foundation_setup_log_level"] = foundation_level
+            elif strict:
+                import sys
+                print(
+                    f"[Foundation Config Warning] Invalid FOUNDATION_LOG_LEVEL '{foundation_level}'. Using default.",
+                    file=sys.stderr,
+                )
 
         # Parse complex fields
         if module_levels := os.getenv("PROVIDE_LOG_MODULE_LEVELS"):

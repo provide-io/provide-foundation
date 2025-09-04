@@ -77,7 +77,7 @@ class Context:
     @classmethod
     def from_env(cls, prefix: str = "PROVIDE") -> "Context":
         """
-        Create context from environment variables.
+        Create context from environment variables using TelemetryConfig system.
 
         Args:
             prefix: Environment variable prefix (default: PROVIDE)
@@ -85,49 +85,44 @@ class Context:
         Returns:
             New Context instance with values from environment
         """
+        # Use the main TelemetryConfig system for parsing
+        telemetry_config = TelemetryConfig.from_env(strict=False)
+        
         kwargs = {}
 
-        log_level = os.environ.get(f"{prefix}_LOG_LEVEL")
-        if log_level:
-            kwargs["log_level"] = log_level
-
-        profile = os.environ.get(f"{prefix}_PROFILE")
-        if profile:
+        # Map telemetry config values to CLI context
+        kwargs["log_level"] = telemetry_config.logging.default_level
+        if telemetry_config.logging.console_formatter:
+            kwargs["log_format"] = telemetry_config.logging.console_formatter
+        if telemetry_config.logging.log_file:
+            kwargs["log_file"] = telemetry_config.logging.log_file
+        
+        # CLI-specific environment variables that don't exist in TelemetryConfig
+        if profile := os.environ.get(f"{prefix}_PROFILE"):
             kwargs["profile"] = profile
-
-        debug = os.environ.get(f"{prefix}_DEBUG")
-        if debug:
+        
+        if debug := os.environ.get(f"{prefix}_DEBUG"):
             kwargs["debug"] = debug.lower() in ("true", "1", "yes", "on")
-
-        json_output = os.environ.get(f"{prefix}_JSON_OUTPUT")
-        if json_output:
+        
+        if json_output := os.environ.get(f"{prefix}_JSON_OUTPUT"):
             kwargs["json_output"] = json_output.lower() in ("true", "1", "yes", "on")
-
-        config_file = os.environ.get(f"{prefix}_CONFIG_FILE")
-        if config_file:
+        
+        if config_file := os.environ.get(f"{prefix}_CONFIG_FILE"):
             kwargs["config_file"] = Path(config_file)
-
-        log_file = os.environ.get(f"{prefix}_LOG_FILE")
-        if log_file:
-            kwargs["log_file"] = Path(log_file)
-
-        log_format = os.environ.get(f"{prefix}_LOG_FORMAT")
-        if log_format:
-            kwargs["log_format"] = log_format
-
-        no_color = os.environ.get(f"{prefix}_NO_COLOR")
-        if no_color:
+        
+        # Map emoji settings to no_emoji (inverted)
+        kwargs["no_emoji"] = not (telemetry_config.logging.logger_name_emoji_prefix_enabled and 
+                                  telemetry_config.logging.das_emoji_prefix_enabled)
+        
+        # Check for explicit NO_COLOR override
+        if no_color := os.environ.get(f"{prefix}_NO_COLOR"):
             kwargs["no_color"] = no_color.lower() in ("true", "1", "yes", "on")
-
-        no_emoji = os.environ.get(f"{prefix}_NO_EMOJI")
-        if no_emoji:
-            kwargs["no_emoji"] = no_emoji.lower() in ("true", "1", "yes", "on")
 
         return cls(**kwargs)
 
     def update_from_env(self, prefix: str = "PROVIDE") -> None:
         """
-        Update context from environment variables.
+        Update context from environment variables using TelemetryConfig system.
 
         Args:
             prefix: Environment variable prefix (default: PROVIDE)
@@ -137,9 +132,14 @@ class Context:
 
         env_ctx = self.from_env(prefix)
 
-        # Update only the values that were set in environment
-        if os.environ.get(f"{prefix}_LOG_LEVEL"):
-            self.log_level = env_ctx.log_level
+        # Update values from TelemetryConfig (these are always updated since they're the primary source)
+        self.log_level = env_ctx.log_level
+        self.log_format = env_ctx.log_format
+        if env_ctx.log_file:
+            self.log_file = env_ctx.log_file
+        self.no_emoji = env_ctx.no_emoji
+
+        # Update CLI-specific values only if explicitly set in environment
         if os.environ.get(f"{prefix}_PROFILE"):
             self.profile = env_ctx.profile
         if os.environ.get(f"{prefix}_DEBUG"):
@@ -148,14 +148,8 @@ class Context:
             self.json_output = env_ctx.json_output
         if os.environ.get(f"{prefix}_CONFIG_FILE"):
             self.config_file = env_ctx.config_file
-        if os.environ.get(f"{prefix}_LOG_FILE"):
-            self.log_file = env_ctx.log_file
-        if os.environ.get(f"{prefix}_LOG_FORMAT"):
-            self.log_format = env_ctx.log_format
         if os.environ.get(f"{prefix}_NO_COLOR"):
             self.no_color = env_ctx.no_color
-        if os.environ.get(f"{prefix}_NO_EMOJI"):
-            self.no_emoji = env_ctx.no_emoji
 
         self._validate()
 

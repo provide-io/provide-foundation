@@ -7,7 +7,7 @@ from typing import Any
 import click
 from click.testing import CliRunner, Result
 
-from provide.foundation.cli.context import Context
+from provide.foundation.context import Context
 from provide.foundation.core import setup_telemetry
 from provide.foundation.logger import (
     LoggingConfig,
