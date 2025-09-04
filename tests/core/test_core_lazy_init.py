@@ -261,7 +261,7 @@ class TestLazyInitializationEdgeCases:
         reset_foundation_setup_for_testing()
 
         # Mock TelemetryConfig.from_env to raise an exception
-        with patch("provide.foundation.logger.env.from_env") as mock_from_env:
+        with patch("provide.foundation.logger.config.TelemetryConfig.from_env") as mock_from_env:
             mock_from_env.side_effect = Exception("Config loading failed")
 
             # Should still work with fallback configuration
