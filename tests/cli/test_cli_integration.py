@@ -27,7 +27,7 @@ class TestCompleteCliIntegration:
     def create_test_cli(self):
         """Create a test CLI with all features."""
 
-        @click.group()
+        @click.group(invoke_without_command=True)
         @flexible_options
         @output_options
         @pass_context
@@ -36,13 +36,19 @@ class TestCompleteCliIntegration:
             for key, value in kwargs.items():
                 if value is not None:
                     setattr(ctx, key, value)
+            # Configure logging once at the top level.
             setup_cli_logging(ctx)
+            if ctx.invoked_subcommand is None:
+                logger = get_logger(__name__)
+                logger.info("CLI root command executed.")
+
 
         @cli.group()
         @pass_context
         def database(ctx: Context) -> None:
             """Database management commands."""
-            setup_cli_logging(ctx)
+            # No need to re-configure logging, it's inherited via context.
+            pass
 
         @database.command()
         @pass_context
@@ -59,7 +65,7 @@ class TestCompleteCliIntegration:
         @pass_context
         def status(ctx: Context) -> None:
             """Show application status."""
-            setup_cli_logging(ctx)
+            # No need to re-configure logging.
             logger = get_logger(__name__)
             logger.debug("Checking status")
             if ctx.json_output:
@@ -85,6 +91,7 @@ class TestCompleteCliIntegration:
         """Test that options passed to the group are available to the subcommand."""
         cli = self.create_test_cli()
         runner = CliTestRunner()
+        # Correct invocation: options for parent go BEFORE subcommand
         result = runner.invoke(cli, ["--no-emoji", "status"])
         assert result.exit_code == 0
         output = "\n".join([line for line in result.output.strip().split("\n") if not line.startswith('[Foundation Setup]')])
@@ -158,7 +165,6 @@ class TestLoggingIntegration:
             @flexible_options
             @pass_context
             def cmd(ctx: Context, **kwargs) -> None:
-                ctx.log_file = log_file
                 setup_cli_logging(ctx)
                 logger = get_logger(__name__)
                 logger.info("Message to file")
