@@ -7,7 +7,6 @@ Handles setup, global state, processor chain assembly (including emoji set resol
 and shutdown for the telemetry system.
 """
 
-import io
 import logging as stdlib_logging
 import os
 import sys
@@ -36,6 +35,7 @@ from provide.foundation.logger.emoji.types import (
     FieldToEmojiMapping,
     EmojiSetConfig,
 )
+from provide.foundation.utils.streams import get_safe_stderr
 
 _FOUNDATION_SETUP_LOCK = (
     threading.Lock()
@@ -46,12 +46,7 @@ _CORE_SETUP_LOGGER_NAME = "provide.foundation.core_setup"
 _EXPLICIT_SETUP_DONE = False
 
 
-def _get_safe_stderr() -> TextIO:
-    return (
-        sys.stderr
-        if hasattr(sys, "stderr") and sys.stderr is not None
-        else io.StringIO()
-    )
+# Moved to utils.streams to avoid duplication with logger/base.py
 
 
 def _set_log_stream_for_testing(stream: TextIO | None) -> None:

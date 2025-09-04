@@ -14,9 +14,14 @@ from attrs import define, field
 
 from provide.foundation.errors.base import FoundationError
 from provide.foundation.errors.types import RetryPolicy
-from provide.foundation.logger import logger
 
 F = TypeVar("F", bound=Callable[..., Any])
+
+
+def _get_logger():
+    """Get logger instance lazily to avoid circular imports."""
+    from provide.foundation.logger import logger
+    return logger
 
 
 def with_error_handling(
@@ -64,7 +69,7 @@ def with_error_handling(
                     if suppress and isinstance(e, suppress):
                         if log_errors:
                             context = context_provider() if context_provider else {}
-                            logger.info(
+                            _get_logger().info(
                                 f"Suppressed {type(e).__name__} in {func.__name__}",
                                 function=func.__name__,
                                 error=str(e),
@@ -75,7 +80,7 @@ def with_error_handling(
                     # Log the error if configured
                     if log_errors:
                         context = context_provider() if context_provider else {}
-                        logger.error(
+                        _get_logger().error(
                             f"Error in {func.__name__}: {e}",
                             exc_info=True,
                             function=func.__name__,
@@ -103,7 +108,7 @@ def with_error_handling(
                     if suppress and isinstance(e, suppress):
                         if log_errors:
                             context = context_provider() if context_provider else {}
-                            logger.info(
+                            _get_logger().info(
                                 f"Suppressed {type(e).__name__} in {func.__name__}",
                                 function=func.__name__,
                                 error=str(e),
@@ -114,7 +119,7 @@ def with_error_handling(
                     # Log the error if configured
                     if log_errors:
                         context = context_provider() if context_provider else {}
-                        logger.error(
+                        _get_logger().error(
                             f"Error in {func.__name__}: {e}",
                             exc_info=True,
                             function=func.__name__,
@@ -200,7 +205,7 @@ def retry_on_error(
                     # Check if we should retry this error
                     if not policy.should_retry(e, attempt):
                         if attempt > 1:  # Only log if we've actually retried
-                            logger.error(
+                            _get_logger().error(
                                 f"All {attempt} retry attempts failed for {func.__name__}",
                                 attempts=attempt,
                                 error=str(e),
@@ -210,7 +215,7 @@ def retry_on_error(
 
                     # Don't retry on last attempt
                     if attempt >= policy.max_attempts:
-                        logger.error(
+                        _get_logger().error(
                             f"All {policy.max_attempts} retry attempts failed for {func.__name__}",
                             attempts=policy.max_attempts,
                             error=str(e),
@@ -222,7 +227,7 @@ def retry_on_error(
                     retry_delay = policy.calculate_delay(attempt)
 
                     # Log retry attempt
-                    logger.warning(
+                    _get_logger().warning(
                         f"Retry {attempt}/{policy.max_attempts} for {func.__name__} after {retry_delay:.2f}s",
                         function=func.__name__,
                         attempt=attempt,
@@ -237,7 +242,7 @@ def retry_on_error(
                         try:
                             on_retry(attempt, e)
                         except Exception as callback_error:
-                            logger.warning(
+                            _get_logger().warning(
                                 f"Retry callback failed: {callback_error}",
                                 function=func.__name__,
                                 attempt=attempt,
@@ -284,7 +289,7 @@ def suppress_and_log(
             except exceptions as e:
                 # Get appropriate log method
                 if log_level in ("debug", "info", "warning", "error", "critical"):
-                    log_method = getattr(logger, log_level)
+                    log_method = getattr(_get_logger(), log_level)
                 else:
                     log_method = logger.warning
 
@@ -335,7 +340,7 @@ def fallback_on_error(
                 return func(*args, **kwargs)
             except catch_types as e:
                 if log_errors:
-                    logger.warning(
+                    _get_logger().warning(
                         f"Using fallback for {func.__name__} due to {type(e).__name__}",
                         function=func.__name__,
                         error_type=type(e).__name__,
@@ -347,7 +352,7 @@ def fallback_on_error(
                 try:
                     return fallback_func(*args, **kwargs)
                 except Exception as fallback_error:
-                    logger.error(
+                    _get_logger().error(
                         f"Fallback function {fallback_func.__name__} also failed",
                         exc_info=True,
                         original_error=str(e),
@@ -393,7 +398,7 @@ class CircuitBreaker:
                     and (time.time() - self._last_failure_time) > self.recovery_timeout
                 ):
                     self._state = "half_open"
-                    logger.info(
+                    _get_logger().info(
                         f"Circuit breaker for {func.__name__} entering half-open state",
                         function=func.__name__,
                     )
@@ -407,7 +412,7 @@ class CircuitBreaker:
                 if self._state == "half_open":
                     self._state = "closed"
                     self._failure_count = 0
-                    logger.info(
+                    _get_logger().info(
                         f"Circuit breaker for {func.__name__} closed after successful recovery",
                         function=func.__name__,
                     )
@@ -423,14 +428,14 @@ class CircuitBreaker:
                 # Check if we should open the circuit
                 if self._failure_count >= self.failure_threshold:
                     self._state = "open"
-                    logger.error(
+                    _get_logger().error(
                         f"Circuit breaker for {func.__name__} opened after {self._failure_count} failures",
                         function=func.__name__,
                         failures=self._failure_count,
                         error=str(e),
                     )
                 else:
-                    logger.warning(
+                    _get_logger().warning(
                         f"Circuit breaker for {func.__name__} failure {self._failure_count}/{self.failure_threshold}",
                         function=func.__name__,
                         failures=self._failure_count,
