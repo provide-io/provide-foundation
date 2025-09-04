@@ -166,6 +166,7 @@ async def async_stream_command(
     cwd: str | Path | None = None,
     env: Mapping[str, str] | None = None,
     timeout: float | None = None,
+    stream_stderr: bool = False,
     **kwargs: Any,
 ) -> AsyncIterator[str]:
     """
@@ -199,12 +200,14 @@ async def async_stream_command(
 
     try:
         # Create subprocess
+        # Merge stderr to stdout for streaming, as we always want to see errors
+        stderr_handling = asyncio.subprocess.STDOUT
         process = await asyncio.create_subprocess_exec(
-            *cmd,
+            *(cmd if isinstance(cmd, list) else [cmd]),
             cwd=cwd,
             env=run_env,
             stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.STDOUT,
+            stderr=stderr_handling,
             **kwargs,
         )
 
