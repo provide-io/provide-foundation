@@ -11,6 +11,7 @@ from typing import Any, TypeVar
 from attrs import NOTHING, Attribute, define, field as attrs_field, fields
 
 from provide.foundation.config.types import ConfigDict, ConfigSource
+from provide.foundation.errors.config import ValidationError as ConfigValidationError
 
 T = TypeVar("T", bound="BaseConfig")
 

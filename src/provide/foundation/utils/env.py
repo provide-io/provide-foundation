@@ -9,10 +9,13 @@ from pathlib import Path
 from typing import Any, TypeVar, get_origin
 
 from provide.foundation.errors.config import ValidationError
-from provide.foundation.logger import get_logger
 from provide.foundation.utils.parsing import parse_bool, parse_dict, parse_list
 
-logger = get_logger(__name__)
+
+def _get_logger():
+    """Get logger instance lazily to avoid circular imports."""
+    from provide.foundation.logger import get_logger
+    return get_logger(__name__)
 
 T = TypeVar("T")
 
@@ -202,7 +205,7 @@ def get_dict(
         )
     except ValueError as e:
         # parse_dict raises on invalid format, log warning and return partial result
-        logger.warning(
+        _get_logger().warning(
             "Invalid dictionary format in environment variable",
             var=name,
             value=value,

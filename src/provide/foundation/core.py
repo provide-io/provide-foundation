@@ -7,6 +7,7 @@ Handles setup, global state, processor chain assembly (including emoji set resol
 and shutdown for the telemetry system.
 """
 
+import io
 import logging as stdlib_logging
 import os
 import sys
