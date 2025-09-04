@@ -17,10 +17,10 @@ except PackageNotFoundError:  # pragma: no cover
 # New foundation components
 # Make the errors module available for detailed imports
 from provide.foundation import cli, config, errors, platform, process
+from provide.foundation.cli.context import Context
 
 # Console I/O functions
 from provide.foundation.console import perr, pin, pout
-from provide.foundation.cli.context import Context
 from provide.foundation.core import (
     setup_telemetry,
     shutdown_foundation_telemetry,
@@ -36,6 +36,7 @@ from provide.foundation.errors import (
     # Most commonly used decorators
     with_error_handling,
 )
+from provide.foundation.hub.registry import Registry, RegistryEntry
 from provide.foundation.logger import (
     LoggingConfig,
     TelemetryConfig,
@@ -51,17 +52,16 @@ from provide.foundation.logger.emoji.matrix import (
     TERTIARY_EMOJI,
     show_emoji_matrix,
 )
-from provide.foundation.hub.registry import Registry, RegistryEntry
+from provide.foundation.logger.emoji.types import (
+    CustomDasEmojiSet,
+    EmojiSetConfig,
+    FieldToEmojiMapping,
+)
 
 # New type exports for emoji mapping
 from provide.foundation.types import (
     ConsoleFormatterStr,
     LogLevelStr,
-)
-from provide.foundation.logger.emoji.types import (
-    CustomDasEmojiSet,
-    FieldToEmojiMapping,
-    EmojiSetConfig,
 )
 
 # New utility exports

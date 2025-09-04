@@ -21,6 +21,7 @@ F = TypeVar("F", bound=Callable[..., Any])
 def _get_logger():
     """Get logger instance lazily to avoid circular imports."""
     from provide.foundation.logger import logger
+
     return logger
 
 

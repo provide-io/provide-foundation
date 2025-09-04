@@ -279,11 +279,15 @@ class ConfigManager:
         return result
 
     # Alias for export_all
-    async def export_to_dict(self, include_sensitive: bool = False) -> dict[str, ConfigDict]:
+    async def export_to_dict(
+        self, include_sensitive: bool = False
+    ) -> dict[str, ConfigDict]:
         """Export all configs to dict. Alias for export_all."""
         return await self.export_all(include_sensitive)
 
-    async def load_from_dict(self, name: str, config_class: type[T], data: ConfigDict) -> T:
+    async def load_from_dict(
+        self, name: str, config_class: type[T], data: ConfigDict
+    ) -> T:
         """Load config from dictionary."""
         config = config_class.from_dict(data)
         self._configs[name] = config
@@ -296,12 +300,12 @@ class ConfigManager:
     async def validate_all(self) -> None:
         """Validate all configurations."""
         for name, config in self._configs.items():
-            if hasattr(config, 'validate'):
+            if hasattr(config, "validate"):
                 await config.validate()
             if name in self._schemas:
                 schema = self._schemas[name]
                 config_dict = config.to_dict(include_sensitive=True)
-                if hasattr(schema, 'validate'):
+                if hasattr(schema, "validate"):
                     await schema.validate(config_dict)
 
     async def get_or_create(
@@ -311,7 +315,7 @@ class ConfigManager:
         existing = await self.get(name)
         if existing is not None:
             return existing
-        
+
         # Create new config with defaults
         config = config_class.from_dict(defaults or {})
         self._configs[name] = config

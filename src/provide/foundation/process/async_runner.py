@@ -57,7 +57,7 @@ async def async_run_command(
     run_env = os.environ.copy()
     if env is not None:
         run_env.update(env)
-    run_env.setdefault('FOUNDATION_TELEMETRY_DISABLED', 'true')
+    run_env.setdefault("FOUNDATION_TELEMETRY_DISABLED", "true")
 
     # Convert Path to string
     if isinstance(cwd, Path):
@@ -74,7 +74,7 @@ async def async_run_command(
                 stdout=asyncio.subprocess.PIPE if capture_output else None,
                 stderr=asyncio.subprocess.PIPE if capture_output else None,
                 stdin=asyncio.subprocess.PIPE if input else None,
-                **{k: v for k, v in kwargs.items() if k != 'shell'},
+                **{k: v for k, v in kwargs.items() if k != "shell"},
             )
         else:
             # For non-shell commands, use create_subprocess_exec with unpacked args
@@ -85,7 +85,7 @@ async def async_run_command(
                 stdout=asyncio.subprocess.PIPE if capture_output else None,
                 stderr=asyncio.subprocess.PIPE if capture_output else None,
                 stdin=asyncio.subprocess.PIPE if input else None,
-                **{k: v for k, v in kwargs.items() if k != 'shell'},
+                **{k: v for k, v in kwargs.items() if k != "shell"},
             )
 
         # Communicate with process
@@ -198,8 +198,7 @@ async def async_stream_command(
     run_env = os.environ.copy()
     if env is not None:
         run_env.update(env)
-    run_env.setdefault('FOUNDATION_TELEMETRY_DISABLED', 'true')
-
+    run_env.setdefault("FOUNDATION_TELEMETRY_DISABLED", "true")
 
     # Convert Path to string
     if isinstance(cwd, Path):
@@ -208,7 +207,9 @@ async def async_stream_command(
     try:
         # Create subprocess
         # Merge stderr to stdout for streaming, as we always want to see errors
-        stderr_handling = asyncio.subprocess.STDOUT if stream_stderr else asyncio.subprocess.PIPE
+        stderr_handling = (
+            asyncio.subprocess.STDOUT if stream_stderr else asyncio.subprocess.PIPE
+        )
         process = await asyncio.create_subprocess_exec(
             *(cmd if isinstance(cmd, list) else [cmd]),
             cwd=cwd,
@@ -229,25 +230,24 @@ async def async_stream_command(
                         # Use wait_for on each readline operation
                         remaining_timeout = timeout
                         start_time = asyncio.get_event_loop().time()
-                        
+
                         while True:
                             elapsed = asyncio.get_event_loop().time() - start_time
                             remaining_timeout = timeout - elapsed
-                            
+
                             if remaining_timeout <= 0:
-                                raise asyncio.TimeoutError()
-                            
+                                raise builtins.TimeoutError()
+
                             # Wait for a line with remaining timeout
                             line = await asyncio.wait_for(
-                                process.stdout.readline(), 
-                                timeout=remaining_timeout
+                                process.stdout.readline(), timeout=remaining_timeout
                             )
-                            
+
                             if not line:
                                 break  # EOF
-                            
+
                             lines.append(line.decode().rstrip())
-                    except asyncio.TimeoutError:
+                    except builtins.TimeoutError:
                         process.kill()
                         await process.wait()
                         plog.error(
@@ -259,10 +259,10 @@ async def async_stream_command(
                             command=cmd_str,
                             timeout=timeout,
                         )
-                
+
                 # Wait for process to complete
                 await process.wait()
-                
+
                 if process.returncode != 0:
                     raise ProcessError(
                         f"Command failed with exit code {process.returncode}: {cmd_str}",
@@ -270,9 +270,9 @@ async def async_stream_command(
                         command=cmd_str,
                         returncode=process.returncode,
                     )
-                
+
                 return lines
-            
+
             # Yield lines as they were read
             lines = await read_with_timeout()
             for line in lines:
@@ -282,10 +282,10 @@ async def async_stream_command(
             if process.stdout:
                 async for line in process.stdout:
                     yield line.decode().rstrip()
-            
+
             # Wait for process to complete
             await process.wait()
-            
+
             if process.returncode != 0:
                 raise ProcessError(
                     f"Command failed with exit code {process.returncode}: {cmd_str}",

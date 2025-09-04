@@ -5,16 +5,18 @@
 Foundation Telemetry Configuration Module.
 Defines data models for telemetry and logging settings.
 """
+
 from pathlib import Path
+
 from attrs import define, field
 
-from provide.foundation.types import (
-    ConsoleFormatterStr,
-    LogLevelStr,
-)
 from provide.foundation.logger.emoji.types import (
     CustomDasEmojiSet,
     EmojiSetConfig,
+)
+from provide.foundation.types import (
+    ConsoleFormatterStr,
+    LogLevelStr,
 )
 
 

@@ -180,9 +180,7 @@ def show_emoji_matrix() -> None:  # pragma: no cover
                 lines.append("")  # Spacer
 
         else:  # No custom fields resolved, means core DAS is active
-            lines.append(
-                "Foundation Telemetry: Core DAS Emoji Contract"
-            )
+            lines.append("Foundation Telemetry: Core DAS Emoji Contract")
             lines.append("=" * 70)
             lines.append("Primary Emojis ('domain' key):")
             lines.extend(

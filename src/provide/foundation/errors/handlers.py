@@ -9,14 +9,16 @@ from typing import Any, TypeVar
 
 from attrs import define, field
 
-from provide.foundation.errors.context import capture_error_context
 from provide.foundation.errors.base import FoundationError
+from provide.foundation.errors.context import capture_error_context
 
 
 def _get_logger():
     """Get logger instance lazily to avoid circular imports."""
     from provide.foundation.logger import logger
+
     return logger
+
 
 T = TypeVar("T")
 
@@ -234,7 +236,9 @@ class ErrorHandler:
         >>> result = handler.handle(some_error)
     """
 
-    policies: dict[type[Exception], Callable[[Exception], Any]] = field(factory=lambda: {})
+    policies: dict[type[Exception], Callable[[Exception], Any]] = field(
+        factory=lambda: {}
+    )
     default_action: Callable[[Exception], Any] = field(default=lambda e: None)
     log_all: bool = True
     capture_context: bool = True

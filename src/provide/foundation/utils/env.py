@@ -15,7 +15,9 @@ from provide.foundation.utils.parsing import parse_bool, parse_dict, parse_list
 def _get_logger():
     """Get logger instance lazily to avoid circular imports."""
     from provide.foundation.logger import get_logger
+
     return get_logger(__name__)
+
 
 T = TypeVar("T")
 

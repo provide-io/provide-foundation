@@ -10,9 +10,9 @@ and shutdown for the telemetry system.
 import io
 import logging as stdlib_logging
 import os
+from pathlib import Path
 import sys
 import threading
-from pathlib import Path
 from typing import Any, TextIO, cast
 
 import structlog
@@ -23,24 +23,22 @@ from provide.foundation.logger.config import (
     LoggingConfig,
     TelemetryConfig,
 )
-from provide.foundation.logger.processors import (
-    _build_core_processors_list,
-    _build_formatter_processors_list,
-)
 from provide.foundation.logger.emoji.sets import (
     BUILTIN_EMOJI_SETS,
     LEGACY_DAS_EMOJI_SETS,
 )
 from provide.foundation.logger.emoji.types import (
     CustomDasEmojiSet,
-    FieldToEmojiMapping,
     EmojiSetConfig,
+    FieldToEmojiMapping,
+)
+from provide.foundation.logger.processors import (
+    _build_core_processors_list,
+    _build_formatter_processors_list,
 )
 from provide.foundation.utils.streams import get_safe_stderr
 
-_FOUNDATION_SETUP_LOCK = (
-    threading.Lock()
-)
+_FOUNDATION_SETUP_LOCK = threading.Lock()
 _FOUNDATION_LOG_STREAM: TextIO = sys.stderr
 _LOG_FILE_HANDLE: TextIO | None = None
 _CORE_SETUP_LOGGER_NAME = "provide.foundation.core_setup"
@@ -99,9 +97,7 @@ def _create_core_setup_logger(globally_disabled: bool = False) -> stdlib_logging
 
 _core_setup_logger = _create_core_setup_logger()
 
-ResolvedEmojiConfig = tuple[
-    list[FieldToEmojiMapping], dict[str, CustomDasEmojiSet]
-]
+ResolvedEmojiConfig = tuple[list[FieldToEmojiMapping], dict[str, CustomDasEmojiSet]]
 
 
 def _resolve_active_emoji_config(
@@ -191,7 +187,11 @@ def _reset_foundation_state() -> None:
     """
     Internal function to reset `structlog` and Foundation Telemetry's state.
     """
-    global _FOUNDATION_LOG_STREAM, _core_setup_logger, _EXPLICIT_SETUP_DONE, _LOG_FILE_HANDLE
+    global \
+        _FOUNDATION_LOG_STREAM, \
+        _core_setup_logger, \
+        _EXPLICIT_SETUP_DONE, \
+        _LOG_FILE_HANDLE
     with _FOUNDATION_SETUP_LOCK:
         structlog.reset_defaults()
         if _LOG_FILE_HANDLE:
@@ -269,7 +269,7 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
     global _EXPLICIT_SETUP_DONE, _LOG_FILE_HANDLE, _FOUNDATION_LOG_STREAM
     with _FOUNDATION_SETUP_LOCK:
         current_config = config if config is not None else TelemetryConfig.from_env()
-        
+
         if _LOG_FILE_HANDLE and _LOG_FILE_HANDLE is not _FOUNDATION_LOG_STREAM:
             try:
                 _LOG_FILE_HANDLE.close()
@@ -277,20 +277,26 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
                 pass
             _LOG_FILE_HANDLE = None
 
-        log_file_path = getattr(current_config.logging, 'log_file', None)
-        
-        is_test_stream = _FOUNDATION_LOG_STREAM is not sys.stderr and not isinstance(_FOUNDATION_LOG_STREAM, io.TextIOWrapper)
+        log_file_path = getattr(current_config.logging, "log_file", None)
+
+        is_test_stream = _FOUNDATION_LOG_STREAM is not sys.stderr and not isinstance(
+            _FOUNDATION_LOG_STREAM, io.TextIOWrapper
+        )
 
         if log_file_path:
             try:
                 Path(log_file_path).parent.mkdir(parents=True, exist_ok=True)
-                _LOG_FILE_HANDLE = open(log_file_path, "a", encoding="utf-8", buffering=1)
+                _LOG_FILE_HANDLE = open(
+                    log_file_path, "a", encoding="utf-8", buffering=1
+                )
                 _FOUNDATION_LOG_STREAM = _LOG_FILE_HANDLE
             except Exception as e:
-                _core_setup_logger.error(f"Failed to open log file {log_file_path}: {e}")
+                _core_setup_logger.error(
+                    f"Failed to open log file {log_file_path}: {e}"
+                )
                 _FOUNDATION_LOG_STREAM = get_safe_stderr()
         elif not is_test_stream:
-             _FOUNDATION_LOG_STREAM = get_safe_stderr()
+            _FOUNDATION_LOG_STREAM = get_safe_stderr()
 
         _internal_setup(current_config, is_explicit_call=True)
         _EXPLICIT_SETUP_DONE = True

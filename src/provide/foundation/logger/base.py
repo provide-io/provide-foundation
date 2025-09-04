@@ -193,43 +193,43 @@ class FoundationLogger:
     def bind(self, **kwargs: Any) -> Any:
         """
         Create a new logger with additional context.
-        
+
         This is a pass-through to structlog's bind() method,
         providing a consistent API with get_logger().
-        
+
         Args:
             **kwargs: Key-value pairs to bind to the logger context
-            
+
         Returns:
             A new logger instance with the bound context
         """
         self._ensure_configured()
         return self.get_logger().bind(**kwargs)
-    
+
     def unbind(self, *keys: str) -> Any:
         """
         Remove keys from the logger context.
-        
+
         This is a pass-through to structlog's unbind() method.
-        
+
         Args:
             *keys: Keys to remove from the context
-            
+
         Returns:
             A new logger instance with the keys removed
         """
         self._ensure_configured()
         return self.get_logger().unbind(*keys)
-    
+
     def try_unbind(self, *keys: str) -> Any:
         """
         Try to remove keys from the logger context (won't fail if key doesn't exist).
-        
+
         This is a pass-through to structlog's try_unbind() method.
-        
+
         Args:
             *keys: Keys to try to remove from the context
-            
+
         Returns:
             A new logger instance with the keys removed (if they existed)
         """
@@ -281,7 +281,10 @@ def setup_logging(
     from provide.foundation.types import LogLevelStr
 
     logging_config = LoggingConfig(
-        default_level=cast(LogLevelStr, level if isinstance(level, str) else logging.getLevelName(level)),
+        default_level=cast(
+            LogLevelStr,
+            level if isinstance(level, str) else logging.getLevelName(level),
+        ),
         console_formatter="json" if json_logs else "key_value",
     )
     config = TelemetryConfig(logging=logging_config)

@@ -6,10 +6,9 @@ from typing import Any
 import click
 
 from provide.foundation.hub.info import CommandInfo
-from provide.foundation.hub.registry import get_command_registry
+from provide.foundation.hub.registry import Registry, get_command_registry
 from provide.foundation.hub.type_mapping import extract_click_type
 from provide.foundation.logger import get_logger
-from provide.foundation.hub.registry import Registry
 
 log = get_logger(__name__)
 

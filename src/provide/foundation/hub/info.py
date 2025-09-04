@@ -4,7 +4,6 @@ from collections.abc import Callable
 from typing import Any
 
 from attrs import define, field
-
 import click
 
 

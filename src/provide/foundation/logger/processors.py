@@ -76,9 +76,7 @@ def _config_create_emoji_processors(
         processors.append(cast(StructlogProcessor, add_logger_name_emoji_prefix))
     if logging_config.das_emoji_prefix_enabled:
         # FIX: Create the processor as a closure with the resolved config
-        resolved_field_definitions, resolved_emoji_sets_lookup = (
-            resolved_emoji_config
-        )
+        resolved_field_definitions, resolved_emoji_sets_lookup = resolved_emoji_config
 
         def add_das_emoji_prefix_closure(
             _logger: Any, _method_name: str, event_dict: structlog.types.EventDict
@@ -179,9 +177,7 @@ def _build_core_processors_list(
     processors.extend(_config_create_timestamp_processors(log_cfg.omit_timestamp))
     if config.service_name is not None:
         processors.append(_config_create_service_name_processor(config.service_name))
-    processors.extend(
-        _config_create_emoji_processors(log_cfg, resolved_emoji_config)
-    )
+    processors.extend(_config_create_emoji_processors(log_cfg, resolved_emoji_config))
     return processors
 
 

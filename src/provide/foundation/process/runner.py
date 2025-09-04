@@ -1,14 +1,15 @@
 """Core subprocess execution utilities."""
 
 from collections.abc import Iterator, Mapping
-from attrs import define
 import os
 from pathlib import Path
 import subprocess
 from typing import Any
 
-from provide.foundation.errors.runtime import ProcessError
+from attrs import define
+
 from provide.foundation.errors.integration import TimeoutError
+from provide.foundation.errors.runtime import ProcessError
 from provide.foundation.logger import get_logger
 
 plog = get_logger(__name__)
@@ -67,13 +68,12 @@ def run_command(
     run_env = os.environ.copy()
     if env is not None:
         run_env.update(env)
-    run_env.setdefault('FOUNDATION_TELEMETRY_DISABLED', 'true')
-
+    run_env.setdefault("FOUNDATION_TELEMETRY_DISABLED", "true")
 
     # Convert Path to string
     if isinstance(cwd, Path):
         cwd = str(cwd)
-    
+
     # If command is a string, we need shell=True
     if isinstance(cmd, str) and not shell:
         shell = True
@@ -86,17 +86,17 @@ def run_command(
         else:
             # For non-shell, use the original cmd (list or string)
             subprocess_cmd = cmd
-        
+
         # Handle input based on text mode
         if input is not None and text and isinstance(input, bytes):
             # Convert bytes to string if text mode is enabled
-            subprocess_input = input.decode('utf-8')
+            subprocess_input = input.decode("utf-8")
         elif input is not None and not text and isinstance(input, str):
             # Convert string to bytes if text mode is disabled
-            subprocess_input = input.encode('utf-8')
+            subprocess_input = input.encode("utf-8")
         else:
             subprocess_input = input
-            
+
         result = subprocess.run(
             subprocess_cmd,
             cwd=cwd,
@@ -220,11 +220,11 @@ def stream_command(
         ProcessError: If command fails
         TimeoutError: If timeout is exceeded
     """
-    import os
-    import time
-    import select
     import fcntl
-    
+    import os
+    import select
+    import time
+
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
     plog.info("🌊 Streaming command", command=cmd_str, cwd=str(cwd) if cwd else None)
 
@@ -232,7 +232,7 @@ def stream_command(
     run_env = os.environ.copy()
     if env is not None:
         run_env.update(env)
-    run_env.setdefault('FOUNDATION_TELEMETRY_DISABLED', 'true')
+    run_env.setdefault("FOUNDATION_TELEMETRY_DISABLED", "true")
 
     # Convert Path to string
     if isinstance(cwd, Path):
@@ -253,60 +253,64 @@ def stream_command(
 
         if timeout is not None:
             start_time = time.time()
-            
+
             if process.stdout:
                 # Use non-blocking I/O with timeout
                 # Make stdout non-blocking
                 fd = process.stdout.fileno()
                 fl = fcntl.fcntl(fd, fcntl.F_GETFL)
                 fcntl.fcntl(fd, fcntl.F_SETFL, fl | os.O_NONBLOCK)
-                
+
                 buffer = ""
                 while True:
                     elapsed = time.time() - start_time
                     if elapsed >= timeout:
                         process.kill()
                         process.wait()
-                        plog.error("⏱️ Stream timed out", command=cmd_str, timeout=timeout)
+                        plog.error(
+                            "⏱️ Stream timed out", command=cmd_str, timeout=timeout
+                        )
                         raise TimeoutError(
                             f"Command timed out after {timeout}s: {cmd_str}",
                             code="PROCESS_STREAM_TIMEOUT",
                             command=cmd_str,
                             timeout=timeout,
                         )
-                    
+
                     # Use select with timeout
                     remaining = timeout - elapsed
-                    ready, _, _ = select.select([process.stdout], [], [], min(0.1, remaining))
-                    
+                    ready, _, _ = select.select(
+                        [process.stdout], [], [], min(0.1, remaining)
+                    )
+
                     if ready:
                         try:
                             chunk = process.stdout.read(1024)
                             if not chunk:
                                 break  # EOF
                             buffer += chunk
-                            
+
                             # Yield complete lines
-                            while '\n' in buffer:
-                                line, buffer = buffer.split('\n', 1)
+                            while "\n" in buffer:
+                                line, buffer = buffer.split("\n", 1)
                                 yield line.rstrip()
-                        except IOError:
+                        except OSError:
                             # No data available yet
                             pass
-                    
+
                     # Check if process ended
                     if process.poll() is not None:
                         # Read any remaining data
                         remaining_data = process.stdout.read()
                         if remaining_data:
                             buffer += remaining_data
-                        
+
                         # Yield any remaining lines
-                        for line in buffer.split('\n'):
+                        for line in buffer.split("\n"):
                             if line:
                                 yield line.rstrip()
                         break
-                
+
                 # Wait for process to complete
                 returncode = process.poll()
                 if returncode is None:
@@ -316,7 +320,7 @@ def stream_command(
             if process.stdout:
                 for line in process.stdout:
                     yield line.rstrip()
-            
+
             # Wait for process to complete
             returncode = process.wait()
 
@@ -380,7 +384,7 @@ def run_shell(
 __all__ = [
     "CompletedProcess",
     "run_command",
-    "run_shell",
     "run_command_simple",
+    "run_shell",
     "stream_command",
 ]
