@@ -414,14 +414,17 @@ def test_configuration_validation_edge_cases() -> None:
 
 
 def test_configuration_immutability() -> None:
-    """Tests that configuration objects are properly immutable."""
+    """Tests that configuration objects use BaseConfig update mechanism."""
+    # Since configs now inherit from BaseConfig, they are mutable but should use update()
     config_telemetry = TelemetryConfig(service_name="test")
-    with pytest.raises(AttributeError):
-        config_telemetry.service_name = "modified"  # type: ignore[misc]
-
+    # Direct assignment works now with BaseConfig
+    config_telemetry.service_name = "modified"
+    assert config_telemetry.service_name == "modified"
+    
+    # But proper way is to use update()
     config_logging = LoggingConfig(default_level="INFO")
-    with pytest.raises(AttributeError):
-        config_logging.default_level = "DEBUG"  # type: ignore[misc]
+    config_logging.update({"default_level": "DEBUG"})
+    assert config_logging.default_level == "DEBUG"
 
 
 def test_performance_with_disabled_features(
