@@ -368,8 +368,8 @@ def example_config_manager() -> None:
         await manager.register("app", config=app_config)
         await manager.register("database", config=db_config)
 
-        # List configurations
-        configs = await manager.list_configs()
+        # List configurations (not async)
+        configs = manager.list_configs()
         logger.info("Registered configs", configs=configs)
 
         # Get configuration
