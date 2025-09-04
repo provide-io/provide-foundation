@@ -50,49 +50,51 @@ logger.error("Database connection failed", host="db.example.com", retry_count=3)
 ```
 
 #### **CLI Framework**
-Build command-line interfaces with automatic help generation, configuration loading, and output formatting.
+Build command-line interfaces with automatic help generation and component registration.
 
 ```python
-import click
-from provide.foundation.cli import cli_command, setup_cli_logging
+# From examples/12_cli_application.py
+from provide.foundation.hub import register_command
+from provide.foundation.cli import echo_success
 
-@cli_command()
-@click.option("--name", help="Your name")
-def greet(name):
-    """A simple greeting command."""
-    logger.info("Greeting user", name=name)
-    print(f"Hello, {name}!")
+@register_command("init", category="project")
+def init_command(name: str = "myproject", template: str = "default"):
+    """Initialize a new project."""
+    echo_success(f"Initializing project '{name}' with template '{template}'")
 ```
 
 #### **Configuration Management**
 Flexible configuration system supporting environment variables, files, and runtime updates.
 
 ```python
-from provide.foundation.config import ConfigManager, BaseConfig
+# From examples/11_config_management.py
+from provide.foundation.config import BaseConfig, ConfigManager, field
+from attrs import define
 
+@define
 class AppConfig(BaseConfig):
-    api_key: str
-    timeout: int = 30
-    debug: bool = False
+    app_name: str = field(default="my-app", description="Application name")
+    port: int = field(default=8080, description="Server port")
+    debug: bool = field(default=False, description="Debug mode")
 
 manager = ConfigManager()
-manager.register("app", AppConfig)
-config = manager.get_config("app")
+manager.register("app", config=AppConfig())
+config = manager.get("app")
 ```
 
 #### **Error Handling**
-Comprehensive error handling with retry logic, circuit breakers, and error boundaries.
+Comprehensive error handling with retry logic and error boundaries.
 
 ```python
-from provide.foundation import retry_on_error, with_error_handling
+# From examples/05_exception_handling.py
+from provide.foundation import logger, with_error_handling
 
-@retry_on_error(max_attempts=3, delay=1.0)
-def flaky_network_call():
-    return api.fetch_data()
-
-@with_error_handling(fallback={"status": "error"})
-def parse_response(data):
-    return json.loads(data)
+@with_error_handling
+def risky_operation():
+    """Operation that might fail."""
+    result = perform_calculation()
+    logger.info("operation_succeeded", result=result)
+    return result
 ```
 
 #### **Console I/O**
@@ -114,67 +116,23 @@ pout({"status": "ok", "data": results}, json=True)
 ```
 
 #### **Registry Pattern**
-Flexible registry system for managing plugins, commands, and extensions.
+Flexible registry system for managing components and commands.
 
 ```python
-from provide.foundation.hub import Registry
+# From examples/12_cli_application.py
+from provide.foundation.hub import Hub, register_component, BaseComponent
 
-registry = Registry("plugins")
-registry.register("auth", AuthPlugin())
-registry.register("cache", CachePlugin())
+@register_component("database", dimension="resource", version="1.0.0")
+class DatabaseResource(BaseComponent):
+    def _setup(self):
+        """Initialize database connection."""
+        self.connected = True
 
-# Use registered items
-auth = registry.get("auth")
-all_plugins = registry.list_all()
+hub = Hub()
+db_class = hub.get_component("database", dimension="resource")
 ```
 
-#### **File Operations**
-Safe file operations with atomic writes, file locking, and path utilities.
-
-```python
-from provide.foundation.file import atomic_write, FileLock, ensure_directory
-
-# Atomic file writes
-atomic_write("config.json", json.dumps(data))
-
-# File locking
-with FileLock("data.lock"):
-    # Exclusive access to resource
-    process_data()
-
-# Path utilities
-ensure_directory("logs", mode=0o755)
-```
-
-#### **Process Management**
-Run and manage external processes with timeout, streaming output, and async support.
-
-```python
-from provide.foundation.process import run_command, AsyncCommandRunner
-
-# Synchronous execution
-result = run_command("git status", timeout=5.0)
-print(result.stdout)
-
-# Async execution with streaming
-async def build_project():
-    runner = AsyncCommandRunner()
-    async for line in runner.run_streaming("npm build"):
-        logger.info("Build output", line=line)
-```
-
-#### **Platform Detection**
-Comprehensive platform and environment detection utilities.
-
-```python
-from provide.foundation.platform import PlatformInfo
-
-info = PlatformInfo()
-print(f"OS: {info.os_name}")
-print(f"Python: {info.python_version}")
-print(f"In Docker: {info.in_docker}")
-print(f"In CI: {info.in_ci}")
-```
+See [examples/](examples/) for more comprehensive examples.
 
 ---
 
