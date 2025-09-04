@@ -107,7 +107,6 @@ def setup_cli_logging(
         omit_timestamp=False,
         logger_name_emoji_prefix_enabled=not ctx.no_emoji,
         das_emoji_prefix_enabled=not ctx.no_emoji,
-        log_file=ctx.log_file,
     )
 
     telemetry_config = TelemetryConfig(
@@ -175,19 +174,11 @@ class CliTestRunner:
             **kwargs,
         )
 
-        if not self._supports_mix_stderr and self._mix_stderr and result.stderr:
-            result_kwargs = {
-                "runner": result.runner,
-                "stdout_bytes": result.stdout_bytes + result.stderr_bytes,
-                "stderr_bytes": b'',
-                "exit_code": result.exit_code,
-                "exception": result.exception,
-                "exc_info": result.exc_info,
-            }
-            result_sig = inspect.signature(Result)
-            if 'return_value' in result_sig.parameters:
-                result_kwargs['return_value'] = result.return_value
-            return Result(**result_kwargs)
+        if not self._supports_mix_stderr and self._mix_stderr and result.stderr_bytes:
+            # Manually mix stderr into stdout by modifying the result object in-place.
+            # This is more robust than re-instantiating the Result object.
+            result.stdout_bytes += result.stderr_bytes
+            result.stderr_bytes = b""
 
         return result
 
