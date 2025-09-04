@@ -53,20 +53,23 @@ Complete API documentation for provide.foundation.
 The main logging interface with structured, emoji-enhanced output:
 
 ```python
-from provide.foundation import logger, plog
+from provide.foundation import logger, get_logger
 
 # Direct logger usage
 logger.info("event_occurred", user_id=123, action="login")
 
-# Convenience alias
-plog.debug("debug_info", details={"key": "value"})
+# Create named logger for specific modules
+db_logger = get_logger("database")
+db_logger.debug("query_executed", query="SELECT * FROM users")
 ```
 
-**Key Methods:**
+**Key Methods on logger:**
 - `debug()`, `info()`, `warning()`, `error()`, `critical()`
-- `bind()` - Add context to all subsequent logs
-- `unbind()` - Remove context
 - `exception()` - Log with exception info
+- `trace()` - Very detailed diagnostic logging
+
+**For named loggers (via get_logger):**
+- All the above methods plus structlog features like `bind()`
 
 ### Console I/O
 

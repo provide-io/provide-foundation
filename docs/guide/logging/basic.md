@@ -185,56 +185,36 @@ logger.info("deployment_complete",
 )
 ```
 
-## Context Binding
+## Context Management
 
-### Temporary Context
+### Adding Context to Logs
 
 ```python
 from provide.foundation import logger
 
-# Add context for a block
-with logger.bind(request_id="req_123", user_id="usr_456"):
-    logger.info("request_started")
-    # Both request_id and user_id are included
-    
-    process_request()
-    
-    logger.info("request_completed")
-    # Still includes the context
-
-# Context is removed here
-logger.info("other_operation")  # No request_id or user_id
+# Add context directly in log calls
+logger.info("request_started", request_id="req_123", user_id="usr_456")
+logger.info("request_completed", request_id="req_123", user_id="usr_456")
 ```
 
-### Permanent Context
+### Named Loggers with Context
 
 ```python
-# Create a logger with permanent context
-request_logger = logger.bind(
+from provide.foundation import get_logger
+
+# Create a named logger (returns a structlog BoundLogger)
+request_logger = get_logger("payment-api")
+
+# With structlog loggers, you can bind context
+bound_logger = request_logger.bind(
     service="payment-api",
     environment="production",
     region="us-west-2"
 )
 
 # All logs include the bound context
-request_logger.info("service_started")
-request_logger.debug("processing_payment", amount=99.99)
-```
-
-### Nested Context
-
-```python
-# Context can be nested
-with logger.bind(request_id="req_001"):
-    logger.info("request_received")
-    
-    with logger.bind(user_id="usr_123"):
-        logger.info("user_authenticated")
-        # Includes both request_id and user_id
-        
-        with logger.bind(transaction_id="txn_456"):
-            logger.info("transaction_started")
-            # Includes all three IDs
+bound_logger.info("service_started")
+bound_logger.debug("processing_payment", amount=99.99)
 ```
 
 ## Output Formats
@@ -242,7 +222,7 @@ with logger.bind(request_id="req_001"):
 ### Pretty Format (Development)
 
 ```python
-os.environ["PROVIDE_LOG_FORMAT"] = "pretty"
+os.environ["FOUNDATION_LOG_CONSOLE_FORMATTER"] = "key_value"
 
 logger.info("server_started", port=8080, workers=4)
 # Output: ✅ server_started port=8080 workers=4
@@ -254,7 +234,7 @@ logger.error("database_error", error="Connection refused")
 ### JSON Format (Production)
 
 ```python
-os.environ["PROVIDE_LOG_FORMAT"] = "json"
+os.environ["FOUNDATION_LOG_CONSOLE_FORMATTER"] = "json"
 
 logger.info("server_started", port=8080, workers=4)
 # Output: {"event": "server_started", "level": "info", "port": 8080, "workers": 4, "timestamp": "2024-01-20T10:30:00Z"}
@@ -263,7 +243,7 @@ logger.info("server_started", port=8080, workers=4)
 ### Compact Format (CI/CD)
 
 ```python
-os.environ["PROVIDE_LOG_FORMAT"] = "compact"
+os.environ["FOUNDATION_LOG_CONSOLE_FORMATTER"] = "compact"
 
 logger.info("test_passed", test="auth", duration_ms=45)
 # Output: [INFO] test_passed test=auth duration_ms=45
@@ -272,7 +252,7 @@ logger.info("test_passed", test="auth", duration_ms=45)
 ### Plain Format (Debugging)
 
 ```python
-os.environ["PROVIDE_LOG_FORMAT"] = "plain"
+os.environ["FOUNDATION_LOG_CONSOLE_FORMATTER"] = "plain"
 
 logger.info("debug_info", step=1, status="ok")
 # Output: debug_info step=1 status=ok
@@ -301,7 +281,7 @@ logger.info("llm_completion", provider="openai")       # 🤖
 
 ```python
 # Via environment variable
-os.environ["PROVIDE_NO_EMOJI"] = "true"
+os.environ["FOUNDATION_LOG_DAS_EMOJI_ENABLED"] = "false"
 
 # Or in configuration
 from provide.foundation.config import Config
@@ -369,7 +349,9 @@ logger.debug("expensive_data",
 )
 
 # Or check level explicitly
-if logger.is_enabled_for("DEBUG"):
+# Check log level before expensive operations
+import logging
+if logging.getLogger().isEnabledFor(logging.DEBUG):
     result = expensive_computation()
     logger.debug("computed_result", result=result)
 ```
@@ -381,10 +363,12 @@ if logger.is_enabled_for("DEBUG"):
 from provide.foundation import logger
 
 # Buffer multiple log entries
-with logger.batch():
-    for item in large_collection:
-        logger.info("item_processed", item_id=item.id)
-# All logs are flushed together
+# For high-volume logging, consider batching with a list
+log_entries = []
+for item in large_collection:
+    log_entries.append({"event": "item_processed", "item_id": item.id})
+# Then log summary or key entries
+logger.info("batch_processed", count=len(log_entries))
 ```
 
 ### 4. Sampling
