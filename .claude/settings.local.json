@@ -70,7 +70,8 @@
       "Bash(if [ -f \"$file\" ])",
       "Bash(then)",
       "Bash(echo \"Updated: $file\")",
-      "Bash(fi)"
+      "Bash(fi)",
+      "Bash(PROVIDE_LOG_LEVEL=INFO python -c \"from provide.foundation import logger; logger.info(''Test with PROVIDE_ variables''); logger.debug(''This should not show'')\")"
     ],
     "deny": [],
     "ask": [],
