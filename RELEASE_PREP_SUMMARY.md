@@ -126,6 +126,22 @@
 2. **Process Runner**: Shell execution issues on macOS
 3. **CLI Utils**: Parameter signature mismatches
 
+## Features/Parameters Removed
+
+### ❌ Removed Unwanted CLI Helpers
+- **REMOVED**: `verbose` parameter from `setup_cli_logging()` 
+- **REMOVED**: `quiet` parameter from `setup_cli_logging()`
+- **REMOVED**: `json_output` parameter (was redundant with `log_format='json'`)
+- **KEPT**: Proper `--log-level` option for explicit control (DEBUG/INFO/WARNING/ERROR/CRITICAL)
+- **KEPT**: `--log-format` option for output format (json/text/key_value)
+- **KEPT**: `--log-file` option for file output
+
+### ✅ Clean Implementation Status
+- No verbose/quiet shortcuts anywhere in CLI decorators
+- No verbose/quiet parameters in utility functions
+- Uses explicit log levels instead of boolean flags
+- Proper separation between log format and output format
+
 ## Recommended Action Plan
 
 ### Immediate Actions (Before Release)
