@@ -79,8 +79,12 @@ class LoggingConfig(BaseConfig):
     )
 
     @classmethod
-    def from_env(cls) -> "LoggingConfig":
-        """Load LoggingConfig from environment variables."""
+    def from_env(cls, strict: bool = True) -> "LoggingConfig":
+        """Load LoggingConfig from environment variables.
+        
+        Args:
+            strict: If True, emit warnings for invalid values. If False, silently use defaults.
+        """
         config_dict = {}
         
         # Parse standard fields
@@ -88,11 +92,17 @@ class LoggingConfig(BaseConfig):
             level = level.upper()
             if level in _VALID_LOG_LEVEL_TUPLE:
                 config_dict["default_level"] = level
+            elif strict:
+                import sys
+                print(f"[Foundation Config Warning] Invalid PROVIDE_LOG_LEVEL '{level}'. Using default.", file=sys.stderr)
         
         if formatter := os.getenv("PROVIDE_LOG_CONSOLE_FORMATTER"):
             formatter = formatter.lower()
             if formatter in _VALID_FORMATTER_TUPLE:
                 config_dict["console_formatter"] = formatter
+            elif strict:
+                import sys
+                print(f"[Foundation Config Warning] Invalid PROVIDE_LOG_CONSOLE_FORMATTER '{formatter}'. Using default.", file=sys.stderr)
         
         if omit_ts := os.getenv("PROVIDE_LOG_OMIT_TIMESTAMP"):
             config_dict["omit_timestamp"] = omit_ts.lower() == "true"
@@ -116,6 +126,9 @@ class LoggingConfig(BaseConfig):
                     level = level.strip().upper()
                     if module and level in _VALID_LOG_LEVEL_TUPLE:
                         levels_dict[module] = level
+                    elif strict and module and level not in _VALID_LOG_LEVEL_TUPLE:
+                        import sys
+                        print(f"[Foundation Config Warning] Invalid log level '{level}' for module '{module}'. Skipping.", file=sys.stderr)
             if levels_dict:
                 config_dict["module_levels"] = levels_dict
         
@@ -130,8 +143,14 @@ class LoggingConfig(BaseConfig):
                         EmojiSetConfig(**item) if isinstance(item, dict) else item
                         for item in parsed
                     ]
-            except (json.JSONDecodeError, TypeError):
-                pass  # Invalid JSON, skip
+            except json.JSONDecodeError as e:
+                if strict:
+                    import sys
+                    print(f"[Foundation Config Warning] Invalid JSON in PROVIDE_LOG_CUSTOM_EMOJI_SETS: {e}", file=sys.stderr)
+            except (TypeError, ValueError) as e:
+                if strict:
+                    import sys
+                    print(f"[Foundation Config Warning] Error parsing data for a custom emoji set: {e}", file=sys.stderr)
         
         if user_sets := os.getenv("PROVIDE_LOG_USER_DEFINED_EMOJI_SETS"):
             try:
@@ -141,8 +160,14 @@ class LoggingConfig(BaseConfig):
                         CustomDasEmojiSet(**item) if isinstance(item, dict) else item
                         for item in parsed
                     ]
-            except (json.JSONDecodeError, TypeError):
-                pass  # Invalid JSON, skip
+            except json.JSONDecodeError as e:
+                if strict:
+                    import sys
+                    print(f"[Foundation Config Warning] Invalid JSON in PROVIDE_LOG_USER_DEFINED_EMOJI_SETS: {e}", file=sys.stderr)
+            except (TypeError, ValueError) as e:
+                if strict:
+                    import sys
+                    print(f"[Foundation Config Warning] Error parsing data for user emoji sets: {e}", file=sys.stderr)
         
         return cls.from_dict(config_dict, source=ConfigSource.ENV)
 
@@ -167,8 +192,12 @@ class TelemetryConfig(BaseConfig):
     )
 
     @classmethod
-    def from_env(cls) -> "TelemetryConfig":
-        """Creates a TelemetryConfig instance from environment variables."""
+    def from_env(cls, strict: bool = True) -> "TelemetryConfig":
+        """Creates a TelemetryConfig instance from environment variables.
+        
+        Args:
+            strict: If True, emit warnings for invalid values. If False, silently use defaults.
+        """
         config_dict = {}
         
         # Check OTEL_SERVICE_NAME first, then PROVIDE_SERVICE_NAME
@@ -180,6 +209,6 @@ class TelemetryConfig(BaseConfig):
             config_dict["globally_disabled"] = disabled.lower() == "true"
         
         # Load logging config from env
-        config_dict["logging"] = LoggingConfig.from_env()
+        config_dict["logging"] = LoggingConfig.from_env(strict=strict)
         
         return cls.from_dict(config_dict, source=ConfigSource.ENV)
