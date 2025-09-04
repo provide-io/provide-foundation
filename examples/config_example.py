@@ -25,7 +25,7 @@ if src_path.exists() and str(src_path) not in sys.path:
 from attrs import define, validators
 
 # Import using the new simplified imports
-from provide import logger
+from provide.foundation import logger
 from provide.foundation.config import (
     BaseConfig,
     ConfigManager,

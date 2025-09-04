@@ -5,14 +5,14 @@ import pytest
 from unittest.mock import patch, MagicMock
 
 from provide.foundation.platform import (
-    get_os_name,
-    get_arch_name,
-    get_platform_string,
+    get_os,
+    get_arch,
+    get_platform,
     get_os_version,
     get_cpu_type,
     normalize_platform_components,
+    PlatformError,
 )
-from provide.foundation.platform.detection import PlatformError
 
 
 class TestPlatformDetection:
@@ -21,62 +21,62 @@ class TestPlatformDetection:
     def test_get_os_name_darwin(self):
         """Test OS name detection on macOS."""
         with patch("platform.system", return_value="Darwin"):
-            assert get_os_name() == "darwin"
+            assert get_os() == "darwin"
     
     def test_get_os_name_linux(self):
         """Test OS name detection on Linux."""
         with patch("platform.system", return_value="Linux"):
-            assert get_os_name() == "linux"
+            assert get_os() == "linux"
     
     def test_get_os_name_windows(self):
         """Test OS name detection on Windows."""
         with patch("platform.system", return_value="Windows"):
-            assert get_os_name() == "windows"
+            assert get_os() == "windows"
     
     def test_get_os_name_error(self):
         """Test OS name detection error handling."""
         with patch("platform.system", side_effect=Exception("Test error")):
             with pytest.raises(PlatformError, match="Failed to detect operating system"):
-                get_os_name()
+                get_os()
     
     def test_get_arch_name_amd64(self):
         """Test architecture detection for x86_64."""
         with patch("platform.machine", return_value="x86_64"):
-            assert get_arch_name() == "amd64"
+            assert get_arch() == "amd64"
     
     def test_get_arch_name_arm64(self):
         """Test architecture detection for ARM64."""
         with patch("platform.machine", return_value="aarch64"):
-            assert get_arch_name() == "arm64"
+            assert get_arch() == "arm64"
         
         with patch("platform.machine", return_value="arm64"):
-            assert get_arch_name() == "arm64"
+            assert get_arch() == "arm64"
     
     def test_get_arch_name_x86(self):
         """Test architecture detection for 32-bit x86."""
         with patch("platform.machine", return_value="i686"):
-            assert get_arch_name() == "x86"
+            assert get_arch() == "x86"
     
     def test_get_arch_name_unknown(self):
         """Test architecture detection for unknown arch."""
         with patch("platform.machine", return_value="riscv64"):
-            assert get_arch_name() == "riscv64"
+            assert get_arch() == "riscv64"
     
     def test_get_arch_name_error(self):
         """Test architecture detection error handling."""
         with patch("platform.machine", side_effect=Exception("Test error")):
             with pytest.raises(PlatformError, match="Failed to detect architecture"):
-                get_arch_name()
+                get_arch()
     
     def test_get_platform_string(self):
         """Test platform string generation."""
         with patch("platform.system", return_value="Darwin"):
             with patch("platform.machine", return_value="arm64"):
-                assert get_platform_string() == "darwin_arm64"
+                assert get_platform() == "darwin_arm64"
         
         with patch("platform.system", return_value="Linux"):
             with patch("platform.machine", return_value="x86_64"):
-                assert get_platform_string() == "linux_amd64"
+                assert get_platform() == "linux_amd64"
     
     def test_get_os_version_macos(self):
         """Test OS version detection on macOS."""

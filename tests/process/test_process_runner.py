@@ -6,9 +6,9 @@ from unittest.mock import patch, MagicMock, call
 from pathlib import Path
 
 from provide.foundation.process import (
-    run_command,
-    run_command_simple,
-    stream_command,
+    run,
+    run_simple,
+    stream,
     CompletedProcess,
     ProcessError,
     TimeoutError,
@@ -27,7 +27,7 @@ class TestRunCommand:
             stderr="",
         )
         
-        result = run_command(["echo", "hello"])
+        result = run(["echo", "hello"])
         
         assert isinstance(result, CompletedProcess)
         assert result.returncode == 0
@@ -46,7 +46,7 @@ class TestRunCommand:
         """Test command execution with working directory."""
         mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
         
-        result = run_command(["ls"], cwd="/tmp")
+        result = run(["ls"], cwd="/tmp")
         
         assert result.cwd == "/tmp"
         call_args = mock_run.call_args
@@ -57,7 +57,7 @@ class TestRunCommand:
         """Test command execution with Path object as cwd."""
         mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
         
-        result = run_command(["ls"], cwd=Path("/tmp"))
+        result = run(["ls"], cwd=Path("/tmp"))
         
         assert result.cwd == "/tmp"
         call_args = mock_run.call_args
@@ -69,7 +69,7 @@ class TestRunCommand:
         mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
         
         env = {"FOO": "bar", "PATH": "/usr/bin"}
-        result = run_command(["echo"], env=env)
+        result = run(["echo"], env=env)
         
         assert result.env == env
         call_args = mock_run.call_args
@@ -85,7 +85,7 @@ class TestRunCommand:
         )
         
         with pytest.raises(ProcessError) as exc_info:
-            run_command(["false"], check=True)
+            run(["false"], check=True)
         
         assert "exit code 1" in str(exc_info.value)
         assert exc_info.value.context["returncode"] == 1
@@ -100,7 +100,7 @@ class TestRunCommand:
             stderr="error",
         )
         
-        result = run_command(["false"], check=False)
+        result = run(["false"], check=False)
         
         assert result.returncode == 1
         assert result.stdout == "output"
@@ -112,7 +112,7 @@ class TestRunCommand:
         mock_run.side_effect = subprocess.TimeoutExpired(["sleep", "10"], 1.0)
         
         with pytest.raises(TimeoutError) as exc_info:
-            run_command(["sleep", "10"], timeout=1.0)
+            run(["sleep", "10"], timeout=1.0)
         
         assert "timed out after 1.0s" in str(exc_info.value)
         assert exc_info.value.context["timeout"] == 1.0
@@ -122,7 +122,7 @@ class TestRunCommand:
         """Test command with input."""
         mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
         
-        run_command(["cat"], input="test input")
+        run(["cat"], input="test input")
         
         call_args = mock_run.call_args
         assert call_args[1]["input"] == "test input"
@@ -132,7 +132,7 @@ class TestRunCommand:
         """Test command without capturing output."""
         mock_run.return_value = MagicMock(returncode=0)
         
-        result = run_command(["echo", "hello"], capture_output=False)
+        result = run(["echo", "hello"], capture_output=False)
         
         assert result.stdout == ""
         assert result.stderr == ""
@@ -144,7 +144,7 @@ class TestRunCommand:
         """Test command with shell=True."""
         mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
         
-        run_command(["echo hello"], shell=True)
+        run(["echo hello"], shell=True)
         
         call_args = mock_run.call_args
         assert call_args[1]["shell"] is True
@@ -155,7 +155,7 @@ class TestRunCommand:
         mock_run.side_effect = Exception("Unexpected error")
         
         with pytest.raises(ProcessError) as exc_info:
-            run_command(["echo"])
+            run(["echo"])
         
         assert "Failed to execute command" in str(exc_info.value)
         assert exc_info.value.context["error"] == "Unexpected error"
@@ -173,7 +173,7 @@ class TestRunCommandSimple:
             stderr="",
         )
         
-        result = run_command_simple(["echo", "hello"])
+        result = run_simple(["echo", "hello"])
         
         assert result == "output with spaces"
     
@@ -187,7 +187,7 @@ class TestRunCommandSimple:
         )
         
         with pytest.raises(ProcessError):
-            run_command_simple(["false"])
+            run_simple(["false"])
 
 
 class TestStreamCommand:
@@ -201,7 +201,7 @@ class TestStreamCommand:
         mock_process.wait.return_value = 0
         mock_popen.return_value = mock_process
         
-        lines = list(stream_command(["cat", "file.txt"]))
+        lines = list(stream(["cat", "file.txt"]))
         
         assert lines == ["line1", "line2", "line3"]
         mock_process.wait.assert_called_once()
@@ -214,7 +214,7 @@ class TestStreamCommand:
         mock_process.wait.return_value = 0
         mock_popen.return_value = mock_process
         
-        list(stream_command(["ls"], cwd="/tmp"))
+        list(stream(["ls"], cwd="/tmp"))
         
         call_args = mock_popen.call_args
         assert call_args[1]["cwd"] == "/tmp"
@@ -228,7 +228,7 @@ class TestStreamCommand:
         mock_popen.return_value = mock_process
         
         with pytest.raises(ProcessError) as exc_info:
-            list(stream_command(["false"]))
+            list(stream(["false"]))
         
         assert "exit code 1" in str(exc_info.value)
     
@@ -242,7 +242,7 @@ class TestStreamCommand:
         mock_popen.return_value = mock_process
         
         with pytest.raises(TimeoutError) as exc_info:
-            list(stream_command(["cat"], timeout=1.0))
+            list(stream(["cat"], timeout=1.0))
         
         assert "timed out after 1.0s" in str(exc_info.value)
         mock_process.kill.assert_called_once()
@@ -253,7 +253,7 @@ class TestStreamCommand:
         mock_popen.side_effect = Exception("Popen failed")
         
         with pytest.raises(ProcessError) as exc_info:
-            list(stream_command(["echo"]))
+            list(stream(["echo"]))
         
         assert "Failed to stream command" in str(exc_info.value)
 
