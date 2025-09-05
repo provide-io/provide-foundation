@@ -19,7 +19,8 @@
       "Bash(done)",
       "Bash(for:*)",
       "Bash(echo:*)",
-      "Bash(continue)"
+      "Bash(continue)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": [],
