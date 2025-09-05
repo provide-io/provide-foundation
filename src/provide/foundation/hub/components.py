@@ -13,6 +13,8 @@ import inspect
 import threading
 from typing import Any, Protocol, TypeVar
 
+from attrs import define, field
+
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.hub.registry import Registry, RegistryEntry
 from provide.foundation.logger import get_logger
@@ -21,6 +23,20 @@ from provide.foundation.logger.emoji.types import EmojiSet
 log = get_logger(__name__)
 
 T = TypeVar("T")
+
+
+@define(frozen=True, slots=True)
+class ComponentInfo:
+    """Information about a registered component."""
+    
+    name: str = field()
+    component_class: type[Any] = field()
+    dimension: str = field(default="component")
+    version: str | None = field(default=None)
+    description: str | None = field(default=None)
+    author: str | None = field(default=None)
+    tags: list[str] = field(factory=lambda: [])
+    metadata: dict[str, Any] = field(factory=lambda: {})
 
 
 class ComponentCategory(Enum):
@@ -586,6 +602,19 @@ def reset_registry_for_tests() -> None:
         global _initialized_components
         _component_registry.clear()
         _initialized_components.clear()
+
+
+def discover_components(
+    group: str,
+    dimension: str = "component", 
+    registry: Registry | None = None,
+) -> dict[str, type[Any]]:
+    """
+    Discover and register components from entry points.
+    
+    This is a stub for the TDD implementation.
+    """
+    return {}
 
 
 # Bootstrap on module import
