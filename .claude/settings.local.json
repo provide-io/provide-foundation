@@ -13,7 +13,8 @@
       "Bash(grep:*)",
       "Bash(uv sync:*)",
       "Read(//Users/tim/code/gh/provide-io/**)",
-      "Bash(PYTHONPATH=src python:*)"
+      "Bash(PYTHONPATH=src python:*)",
+      "Bash(uv add:*)"
     ],
     "deny": [],
     "ask": [],
