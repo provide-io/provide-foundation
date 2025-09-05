@@ -16,7 +16,7 @@ from provide.foundation.cli.utils import (
     setup_cli_logging,
     CliTestRunner,
 )
-from provide.foundation.context import Context
+from provide.foundation.cli.context import Context
 from provide.foundation.logger import get_logger
 
 

@@ -16,7 +16,7 @@ from provide.foundation.logger.config import (
     LoggingConfig,
     TelemetryConfig,
 )
-from provide.foundation.logger.emoji_matrix import (
+from provide.foundation.logger.emoji.matrix import (
     PRIMARY_EMOJI,  # Core domain emojis
     SECONDARY_EMOJI,  # Core action emojis
     TERTIARY_EMOJI,  # Core status emojis

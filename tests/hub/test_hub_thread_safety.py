@@ -12,7 +12,7 @@ from provide.foundation.hub import (
     register_command,
     register_component,
 )
-from provide.foundation.registry import Registry
+from provide.foundation.hub.registry import Registry
 
 
 class TestRegistryThreadSafety:

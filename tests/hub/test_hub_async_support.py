@@ -14,7 +14,7 @@ from provide.foundation.hub import (
     register_component,
 )
 from provide.foundation.logger import get_logger
-from provide.foundation.registry import Registry
+from provide.foundation.hub.registry import Registry
 
 
 class TestAsyncRegistryCompatibility:

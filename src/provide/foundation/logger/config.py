@@ -10,8 +10,10 @@ from attrs import define, field
 
 from provide.foundation.types import (
     ConsoleFormatterStr,
-    CustomDasEmojiSet,
     LogLevelStr,
+)
+from provide.foundation.logger.emoji.types import (
+    CustomDasEmojiSet,
     EmojiSetConfig,
 )
 

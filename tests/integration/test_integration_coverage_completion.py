@@ -35,7 +35,7 @@ from provide.foundation.logger.custom_processors import (
     clear_emoji_cache,
     get_emoji_cache_stats,
 )
-from provide.foundation.logger.emoji_matrix import show_emoji_matrix
+from provide.foundation.logger.emoji.matrix import show_emoji_matrix
 from provide.foundation.types import (
     LogLevelStr,
 )

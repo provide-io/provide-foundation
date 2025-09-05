@@ -27,11 +27,11 @@ from provide.foundation.logger.processors import (
     _build_core_processors_list,
     _build_formatter_processors_list,
 )
-from provide.foundation.emoji_sets import (
+from provide.foundation.logger.emoji.sets import (
     BUILTIN_EMOJI_SETS,
     LEGACY_DAS_EMOJI_SETS,
 )
-from provide.foundation.types import (
+from provide.foundation.logger.emoji.types import (
     CustomDasEmojiSet,
     FieldToEmojiMapping,
     EmojiSetConfig,
