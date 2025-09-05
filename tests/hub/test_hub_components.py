@@ -4,9 +4,7 @@ import pytest
 
 from provide.foundation.errors import AlreadyExistsError
 from provide.foundation.hub.components import (
-    BaseComponent,
     discover_components,
-    register_component,
 )
 from provide.foundation.hub.manager import clear_hub, get_hub
 
