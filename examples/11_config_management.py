@@ -233,14 +233,17 @@ debug = true
 port = 9000
 """)
 
+        # Note: FileConfigLoader is async, so we use asyncio.run
+        import asyncio
+        
         # Load from JSON
         json_loader = FileConfigLoader(json_file)
-        json_config = json_loader.load(AppConfig)
+        json_config = asyncio.run(json_loader.load(AppConfig))
         logger.info("JSON config", **json_config.to_dict())
 
         # Load from TOML
         toml_loader = FileConfigLoader(toml_file)
-        toml_config = toml_loader.load(AppConfig)
+        toml_config = asyncio.run(toml_loader.load(AppConfig))
         logger.info("TOML config", **toml_config.to_dict())
 
 
@@ -250,6 +253,8 @@ def example_multi_source() -> None:
     print("Example 4: Multi-source Configuration")
     print("=" * 60)
 
+    import asyncio
+    
     with tempfile.TemporaryDirectory() as tmpdir:
         # Create default config file
         default_file = Path(tmpdir) / "defaults.json"
@@ -271,8 +276,8 @@ def example_multi_source() -> None:
         # Multi-source loader (later sources override earlier)
         multi_loader = MultiSourceLoader(file_loader, dict_loader)
 
-        # Load and merge
-        config = multi_loader.load(AppConfig)
+        # Load and merge (async)
+        config = asyncio.run(multi_loader.load(AppConfig))
 
         logger.info(
             "Multi-source config",
@@ -289,6 +294,8 @@ def example_schema_validation() -> None:
     print("Example 5: Schema Validation")
     print("=" * 60)
 
+    import asyncio
+    
     # Define schema
     schema = ConfigSchema(
         [
@@ -324,7 +331,7 @@ def example_schema_validation() -> None:
     valid_data = {"app_name": "my-app", "port": 3000, "debug": True, "version": "1.2.3"}
 
     try:
-        schema.validate(valid_data)
+        asyncio.run(schema.validate(valid_data))
         logger.info("Valid configuration passed schema validation")
     except Exception as e:
         logger.error("Validation failed", error=str(e))
@@ -337,7 +344,7 @@ def example_schema_validation() -> None:
     }
 
     try:
-        schema.validate(invalid_data)
+        asyncio.run(schema.validate(invalid_data))
     except Exception as e:
         logger.warning("Expected validation failure", error=str(e))
 
@@ -348,30 +355,36 @@ def example_config_manager() -> None:
     print("Example 6: Configuration Manager")
     print("=" * 60)
 
-    # Create manager
-    manager = ConfigManager()
+    import asyncio
+    
+    async def async_example():
+        # Create manager
+        manager = ConfigManager()
 
-    # Register configurations
-    app_config = AppConfig(app_name="managed-app")
-    db_config = DatabaseConfig(host="localhost")
+        # Register configurations
+        app_config = AppConfig(app_name="managed-app")
+        db_config = DatabaseConfig(host="localhost")
 
-    manager.register("app", config=app_config)
-    manager.register("database", config=db_config)
+        await manager.register("app", config=app_config)
+        await manager.register("database", config=db_config)
 
-    # List configurations
-    logger.info("Registered configs", configs=manager.list_configs())
+        # List configurations (not async)
+        configs = manager.list_configs()
+        logger.info("Registered configs", configs=configs)
 
-    # Get configuration
-    retrieved = manager.get("app")
-    logger.info("Retrieved app config", name=retrieved.app_name)
+        # Get configuration
+        retrieved = await manager.get("app")
+        logger.info("Retrieved app config", name=retrieved.app_name)
 
-    # Update configuration
-    manager.update("app", {"debug": True, "port": 5000})
-    logger.info("Updated app config", debug=retrieved.debug, port=retrieved.port)
+        # Update configuration
+        await manager.update("app", {"debug": True, "port": 5000})
+        logger.info("Updated app config", debug=retrieved.debug, port=retrieved.port)
 
-    # Export all configurations
-    all_configs = manager.export_all()
-    logger.info("All configurations", count=len(all_configs))
+        # Export all configurations
+        all_configs = await manager.export_all()
+        logger.info("All configurations", count=len(all_configs))
+    
+    asyncio.run(async_example())
 
 
 def main() -> None:
