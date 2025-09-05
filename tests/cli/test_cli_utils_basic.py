@@ -64,7 +64,7 @@ class TestCliEchoFunctions:
         mock_echo.assert_called_once()
         output = mock_echo.call_args[0][0]
         parsed = json.loads(output)
-        assert parsed["message"] == "Operation completed"
+        assert parsed["success"] == "Operation completed"
 
     @patch("click.secho")
     def test_echo_warning_text(self, mock_secho: MagicMock) -> None:
@@ -74,12 +74,12 @@ class TestCliEchoFunctions:
         output = mock_secho.call_args[0][0]
         assert "Be careful" in output
 
-    @patch("click.secho")
-    def test_echo_info_text(self, mock_secho: MagicMock) -> None:
+    @patch("click.echo")
+    def test_echo_info_text(self, mock_echo: MagicMock) -> None:
         """Test info message output."""
         echo_info("FYI")
-        mock_secho.assert_called_once()
-        output = mock_secho.call_args[0][0]
+        mock_echo.assert_called_once()
+        output = mock_echo.call_args[0][0]
         assert "FYI" in output
 
 
@@ -90,18 +90,19 @@ class TestCliContext:
         """Test creating default CLI context."""
         ctx = create_cli_context()
         assert ctx is not None
-        assert ctx.name == "cli"
+        # Context doesn't have a 'name' attribute in current implementation
+        assert ctx.profile == "default"  # Check default profile instead
 
     def test_create_cli_context_with_name(self) -> None:
-        """Test creating CLI context with custom name."""
-        ctx = create_cli_context(name="myapp")
-        assert ctx.name == "myapp"
+        """Test creating CLI context with custom profile."""
+        ctx = create_cli_context(profile="myapp")
+        assert ctx.profile == "myapp"  # Use profile instead of non-existent name
 
     def test_create_cli_context_with_metadata(self) -> None:
-        """Test creating CLI context with metadata."""
-        ctx = create_cli_context(version="1.0.0", debug=True)
-        assert ctx.metadata.get("version") == "1.0.0"
-        assert ctx.metadata.get("debug") is True
+        """Test creating CLI context with debug flag."""
+        ctx = create_cli_context(debug=True)
+        # Context doesn't have metadata, but has debug flag
+        assert ctx.debug is True
 
 
 class TestCliAssertions:
@@ -143,8 +144,8 @@ class TestCliAssertions:
         result.output = "Error occurred"
 
         # Should not raise
-        assert_cli_error(result, 1)
-        assert_cli_error(result, 1, "Error occurred")
+        assert_cli_error(result, exit_code=1)
+        assert_cli_error(result, "Error occurred", exit_code=1)
 
     def test_assert_cli_error_with_wrong_code(self) -> None:
         """Test CLI error assertion with wrong exit code."""
@@ -152,7 +153,7 @@ class TestCliAssertions:
         result.exit_code = 1
 
         with pytest.raises(AssertionError):
-            assert_cli_error(result, 2)
+            assert_cli_error(result, exit_code=2)
 
 
 class TestCliLogging:
@@ -167,17 +168,17 @@ class TestCliLogging:
     @patch("provide.foundation.cli.utils.setup_logging")
     def test_setup_cli_logging_verbose(self, mock_setup: MagicMock) -> None:
         """Test verbose CLI logging setup."""
-        setup_cli_logging(verbose=True)
-        mock_setup.assert_called_once_with(level="DEBUG", console_output=True, console_format="console")
+        setup_cli_logging(log_level="DEBUG")
+        mock_setup.assert_called_once_with(level="DEBUG", json_logs=False, log_file=None)
 
     @patch("provide.foundation.cli.utils.setup_logging")
     def test_setup_cli_logging_quiet(self, mock_setup: MagicMock) -> None:
         """Test quiet CLI logging setup."""
-        setup_cli_logging(quiet=True)
-        mock_setup.assert_called_once_with(level="ERROR", console_output=True, console_format="console")
+        setup_cli_logging(log_level="ERROR")
+        mock_setup.assert_called_once_with(level="ERROR", json_logs=False, log_file=None)
 
     @patch("provide.foundation.cli.utils.setup_logging")
     def test_setup_cli_logging_json(self, mock_setup: MagicMock) -> None:
         """Test JSON CLI logging setup."""
-        setup_cli_logging(json_output=True)
-        mock_setup.assert_called_once_with(level="INFO", console_output=True, console_format="json")
+        setup_cli_logging(log_format="json")
+        mock_setup.assert_called_once_with(level="INFO", json_logs=True, log_file=None)

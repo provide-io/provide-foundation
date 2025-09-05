@@ -17,9 +17,9 @@ from provide.foundation.logger.config import (
     TelemetryConfig,
 )
 from provide.foundation.logger.emoji_matrix import (
-    PRIMARY_EMOJI,  # Legacy/default domain emojis
-    SECONDARY_EMOJI,  # Legacy/default action emojis
-    TERTIARY_EMOJI,  # Legacy/default status emojis
+    PRIMARY_EMOJI,  # Core domain emojis
+    SECONDARY_EMOJI,  # Core action emojis
+    TERTIARY_EMOJI,  # Core status emojis
     show_emoji_matrix,  # Utility to display emoji configurations
 )
 

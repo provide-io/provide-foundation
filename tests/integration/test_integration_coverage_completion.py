@@ -109,8 +109,8 @@ def test_emoji_matrix_display(
         setup_foundation_telemetry_for_test(TelemetryConfig())
         show_emoji_matrix()
         output = captured_stderr_for_foundation.getvalue()
-        # FIX: Assert the correct output string for legacy mode
-        assert "Foundation Telemetry: Legacy DAS Emoji Contract" in output
+        # FIX: Assert the correct output string for core mode
+        assert "Foundation Telemetry: Core DAS Emoji Contract" in output
         assert "Primary Emojis" in output
 
 

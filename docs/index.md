@@ -120,22 +120,14 @@ Step-by-step tutorials for integrations
 - **Cross-Platform**: Works on Linux, macOS, Windows
 - **Production Ready**: Thread-safe, battle-tested
 
-## 🔄 Migration from pyvider
+## 🔄 Migration from Other Libraries
 
-If you're migrating from `pyvider.telemetry`:
+See our [migration guides](migration/index.md) for help moving from:
+- structlog
+- Python standard logging
+- Other logging frameworks
 
-```python
-# Old (pyvider)
-from provide.foundation import logger
-
-# New (provide.foundation)
-from provide.foundation import plog as logger
-
-# Or use the logger directly
-from provide.foundation import logger
-```
-
-The API is largely compatible, with improvements:
+The provide.foundation API offers:
 - Better performance
 - More features
 - Cleaner configuration

@@ -14,6 +14,7 @@ from provide.foundation.crypto import (
 )
 from provide.foundation.crypto.hashing import hash_chunks, hash_file_multiple
 from provide.foundation.errors.resources import ResourceError
+from provide.foundation.errors.config import ValidationError
 
 
 class TestHashFile:
