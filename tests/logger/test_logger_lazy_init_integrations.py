@@ -757,7 +757,13 @@ class TestLazyInitializationDocumentation:
 
     def test_basic_usage_example(self, capsys: CaptureFixture) -> None:
         """Test the basic usage example from documentation."""
+        from provide.foundation.testing import set_log_stream_for_testing
+        import sys
+        
         reset_foundation_setup_for_testing()
+        
+        # Set up Foundation to log to stderr so capsys can capture it
+        set_log_stream_for_testing(sys.stderr)
 
         # Example from docs: immediate logging without setup
         from provide.foundation import logger
@@ -775,7 +781,11 @@ class TestLazyInitializationDocumentation:
 
     def test_named_logger_example(self, capsys: CaptureFixture) -> None:
         """Test the named logger example from documentation."""
+        from provide.foundation.testing import set_log_stream_for_testing
+        import sys
+        
         reset_foundation_setup_for_testing()
+        set_log_stream_for_testing(sys.stderr)
 
         # Example from docs: component-specific loggers
         from provide.foundation import logger
@@ -836,7 +846,11 @@ class TestLazyInitializationDocumentation:
 
     def test_migration_example(self, capsys: CaptureFixture) -> None:
         """Test the migration example from documentation."""
+        from provide.foundation.testing import set_log_stream_for_testing
+        import sys
+        
         reset_foundation_setup_for_testing()
+        set_log_stream_for_testing(sys.stderr)
 
         # Example from docs: gradual migration
         from provide.foundation import (

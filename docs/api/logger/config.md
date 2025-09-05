@@ -24,17 +24,19 @@ These classes use the `attrs` library for immutable, type-safe configuration wit
 ### TelemetryConfig
 
 ```python
-from provide.foundation.logger.config import TelemetryConfig
+from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
 
 # Basic configuration with defaults
 config = TelemetryConfig()
 
 # Custom configuration
 config = TelemetryConfig(
-    profile="development",
-    debug=True,
     service_name="my-application",
-    service_version="1.0.0"
+    globally_disabled=False,
+    logging=LoggingConfig(
+        default_level="INFO",
+        console_formatter="key_value"
+    )
 )
 
 # Environment-based configuration
