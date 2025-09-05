@@ -19,7 +19,9 @@
       "Bash(rg:*)",
       "Bash(timeout 60s python -m pytest:*)",
       "Bash(timeout:*)",
-      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src timeout 60s python -m pytest tests/transport/test_transport_suite.py::test_server_lifecycle_and_connectivity -v)"
+      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src timeout 60s python -m pytest tests/transport/test_transport_suite.py::test_server_lifecycle_and_connectivity -v)",
+      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src:/Users/tim/code/gh/provide-io/provide-foundation/src python -c \"import provide.foundation; print(''Foundation import successful'')\")",
+      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src:/Users/tim/code/gh/provide-io/provide-foundation/src timeout 60s python -m pytest tests/transport/test_transport_suite.py::test_server_lifecycle_and_connectivity -v)"
     ],
     "deny": [],
     "ask": [],
