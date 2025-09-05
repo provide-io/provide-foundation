@@ -1,248 +1,234 @@
-# Logger Configuration API
+# Logger Configuration
 
-Configuration classes for the Foundation logging system, defining telemetry and logging behavior.
+Configuration classes for the provide.foundation logging system, providing structured configuration for telemetry and logging behavior.
 
-## Classes
+## Overview
 
-### LoggingConfig
+The logger configuration system provides two main configuration classes:
 
-Configuration specific to logging behavior within Foundation Telemetry.
+- **TelemetryConfig**: High-level configuration for the entire telemetry system
+- **LoggingConfig**: Specific logging configuration (output formats, levels, etc.)
 
-```python
-@define(frozen=True, slots=True)
-class LoggingConfig:
-    """Configuration specific to logging behavior within Foundation Telemetry."""
-```
+These classes use the `attrs` library for immutable, type-safe configuration with validation and sensible defaults.
 
-#### Fields
+## Key Features
 
-##### default_level: LogLevelStr
-Default log level for all loggers.
+- **Immutable Configuration**: Thread-safe configuration objects using `attrs` frozen classes
+- **Type Safety**: Full type annotations with modern Python typing
+- **Validation**: Built-in validation for configuration values
+- **Environment Integration**: Automatic loading from environment variables
+- **Sensible Defaults**: Production-ready defaults for all settings
 
-```python
-default_level: LogLevelStr = field(default="DEBUG")
-```
-
-**Valid values:** `"DEBUG"`, `"INFO"`, `"WARNING"`, `"ERROR"`, `"CRITICAL"`, `"TRACE"`, `"NOTSET"`
-
-##### module_levels: dict[str, LogLevelStr]
-Per-module log level overrides.
-
-```python
-module_levels: dict[str, LogLevelStr] = field(factory=lambda: {})
-```
-
-**Example:**
-```python
-module_levels = {
-    "requests": "WARNING",
-    "urllib3": "ERROR",
-    "myapp.db": "DEBUG"
-}
-```
-
-##### console_formatter: ConsoleFormatterStr
-Console output format.
-
-```python
-console_formatter: ConsoleFormatterStr = field(default="key_value")
-```
-
-**Valid values:** `"key_value"`, `"json"`
-
-##### logger_name_emoji_prefix_enabled: bool
-Enable emoji prefixes for logger names.
-
-```python
-logger_name_emoji_prefix_enabled: bool = field(default=True)
-```
-
-##### das_emoji_prefix_enabled: bool
-Enable Domain-Action-Status emoji prefixes.
-
-```python
-das_emoji_prefix_enabled: bool = field(default=True)
-```
-
-##### omit_timestamp: bool
-Omit timestamps from log output.
-
-```python
-omit_timestamp: bool = field(default=False)
-```
-
-##### enabled_emoji_sets: list[str]
-List of enabled emoji set names.
-
-```python
-enabled_emoji_sets: list[str] = field(factory=lambda: [])
-```
-
-##### custom_emoji_sets: list[EmojiSetConfig]
-Custom emoji set definitions.
-
-```python
-custom_emoji_sets: list[EmojiSetConfig] = field(factory=lambda: [])
-```
-
-##### user_defined_emoji_sets: list[CustomDasEmojiSet]
-User-defined emoji sets for emoji sets.
-
-```python
-user_defined_emoji_sets: list[CustomDasEmojiSet] = field(factory=lambda: [])
-```
-
-#### Usage Example
-
-```python
-from provide.foundation.logger.config import LoggingConfig
-
-config = LoggingConfig(
-    default_level="INFO",
-    module_levels={
-        "requests": "WARNING",
-        "myapp.database": "DEBUG"
-    },
-    console_formatter="json",
-    das_emoji_prefix_enabled=True,
-    omit_timestamp=False
-)
-```
+## Basic Usage
 
 ### TelemetryConfig
 
-Main configuration object for the Foundation Telemetry system.
-
 ```python
-@define(frozen=True, slots=True)
-class TelemetryConfig:
-    """Main configuration object for the Foundation Telemetry system."""
+from provide.foundation.logger.config import TelemetryConfig
+
+# Basic configuration with defaults
+config = TelemetryConfig()
+
+# Custom configuration
+config = TelemetryConfig(
+    profile="development",
+    debug=True,
+    service_name="my-application",
+    service_version="1.0.0"
+)
+
+# Environment-based configuration
+config = TelemetryConfig.from_env()
 ```
 
-#### Fields
-
-##### service_name: str | None
-Name of the service for telemetry identification.
+### LoggingConfig
 
 ```python
-service_name: str | None = field(default=None)
+from provide.foundation.logger.config import LoggingConfig
+from pathlib import Path
+
+# Basic logging configuration
+logging_config = LoggingConfig(
+    default_level="INFO",
+    console_formatter="key_value"
+)
+
+# Advanced logging configuration
+logging_config = LoggingConfig(
+    default_level="DEBUG",
+    console_formatter="json",
+    log_file=Path("/var/log/app.log"),
+    enable_colors=True,
+    show_timestamp=True
+)
+
+# Use with TelemetryConfig
+telemetry_config = TelemetryConfig(logging=logging_config)
 ```
 
-##### logging: LoggingConfig
-Logging-specific configuration.
+## Configuration Options
+
+### TelemetryConfig Options
+
+- **profile**: Environment profile (development, staging, production)
+- **debug**: Enable debug mode with verbose output
+- **service_name**: Name of the service for structured logging
+- **service_version**: Version of the service
+- **logging**: LoggingConfig instance for logging-specific settings
+- **enable_emoji**: Enable emoji enhancement for visual log parsing
+
+### LoggingConfig Options
+
+- **default_level**: Default log level for all loggers
+- **console_formatter**: Console output format (key_value, json, minimal)
+- **log_file**: Optional file path for log output
+- **enable_colors**: Enable colored console output
+- **show_timestamp**: Include timestamps in log output
+- **json_indent**: Indentation for JSON formatted logs
+
+## Environment Variables
+
+Configuration can be loaded from environment variables:
+
+```bash
+# TelemetryConfig environment variables
+export FOUNDATION_PROFILE=production
+export FOUNDATION_DEBUG=false
+export FOUNDATION_SERVICE_NAME=my-app
+export FOUNDATION_SERVICE_VERSION=1.2.3
+export FOUNDATION_ENABLE_EMOJI=true
+
+# LoggingConfig environment variables  
+export FOUNDATION_LOG_LEVEL=INFO
+export FOUNDATION_LOG_FORMAT=json
+export FOUNDATION_LOG_FILE=/var/log/app.log
+export FOUNDATION_ENABLE_COLORS=false
+```
 
 ```python
-logging: LoggingConfig = field(factory=LoggingConfig)
+from provide.foundation.logger.config import TelemetryConfig
+
+# Load from environment
+config = TelemetryConfig.from_env()
 ```
 
-##### globally_disabled: bool
-Globally disable all telemetry.
+## Configuration Validation
 
-```python
-globally_disabled: bool = field(default=False)
-```
-
-#### Class Methods
-
-##### from_env() -> TelemetryConfig
-Create configuration from environment variables.
-
-```python
-@classmethod
-def from_env(cls) -> "TelemetryConfig":
-    """Creates a TelemetryConfig instance by parsing relevant environment variables."""
-```
-
-**Environment Variables:**
-- `PROVIDE_SERVICE_NAME`: Service name
-- `PROVIDE_LOG_LEVEL`: Default log level
-- `PROVIDE_LOG_FORMAT`: Console formatter
-- `PROVIDE_DISABLE_EMOJI`: Disable emoji prefixes
-- `PROVIDE_DISABLE_TIMESTAMPS`: Omit timestamps
-- `PROVIDE_GLOBALLY_DISABLED`: Disable all telemetry
-
-#### Usage Examples
+Configuration classes include built-in validation:
 
 ```python
 from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
 
-# Manual configuration
+# Invalid log level raises validation error
+try:
+    config = LoggingConfig(default_level="INVALID")
+except ValueError as e:
+    print(f"Validation error: {e}")
+
+# Invalid profile raises validation error
+try:
+    config = TelemetryConfig(profile="invalid_profile")  
+except ValueError as e:
+    print(f"Validation error: {e}")
+```
+
+## Integration Examples
+
+### Simple Application Setup
+
+```python
+from provide.foundation.logger.config import TelemetryConfig
+from provide.foundation.setup import setup_telemetry
+
+# Environment-based configuration
+config = TelemetryConfig.from_env()
+setup_telemetry(config)
+
+# Now use logging throughout application
+from provide.foundation.logger import get_logger
+log = get_logger(__name__)
+log.info("Application started", config=config.profile)
+```
+
+### Custom Service Configuration
+
+```python
+from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
+from pathlib import Path
+
+# Service-specific logging
 logging_config = LoggingConfig(
     default_level="INFO",
     console_formatter="json",
-    das_emoji_prefix_enabled=False
+    log_file=Path("/var/log/microservice.json"),
+    enable_colors=False  # Disable colors for log aggregation
 )
 
-config = TelemetryConfig(
-    service_name="myapp",
+# Service telemetry
+telemetry_config = TelemetryConfig(
+    profile="production",
+    service_name="user-authentication-service",
+    service_version="2.1.0",
     logging=logging_config,
-    globally_disabled=False
+    enable_emoji=False  # Disable emojis for production
 )
 
-# From environment variables
-config = TelemetryConfig.from_env()
-
-# Using in setup
-from provide.foundation.core import setup_telemetry
-setup_telemetry(config)
+# Apply configuration
+from provide.foundation.setup import setup_telemetry
+setup_telemetry(telemetry_config)
 ```
 
-## Type Definitions
-
-### LogLevelStr
-Valid log level strings.
+### Development vs Production
 
 ```python
-LogLevelStr = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL", "TRACE", "NOTSET"]
+import os
+from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
+
+# Environment-aware configuration
+is_development = os.getenv("ENVIRONMENT", "development") == "development"
+
+if is_development:
+    config = TelemetryConfig(
+        profile="development",
+        debug=True,
+        logging=LoggingConfig(
+            default_level="DEBUG",
+            console_formatter="key_value",
+            enable_colors=True
+        )
+    )
+else:
+    config = TelemetryConfig(
+        profile="production", 
+        debug=False,
+        logging=LoggingConfig(
+            default_level="INFO",
+            console_formatter="json",
+            log_file=Path("/var/log/production.json"),
+            enable_colors=False
+        )
+    )
 ```
 
-### ConsoleFormatterStr
-Valid console formatter strings.
+## Configuration Sources Priority
 
-```python
-ConsoleFormatterStr = Literal["key_value", "json"]
-```
+Configuration is resolved in this order (higher priority overrides lower):
 
-## Environment Configuration
+1. **Explicit parameters** - Direct constructor arguments
+2. **Environment variables** - `from_env()` method
+3. **Default values** - Built-in defaults in the class definition
 
-The `from_env()` method reads the following environment variables:
+## Thread Safety
 
-| Variable | Type | Description | Default |
-|----------|------|-------------|---------|
-| `PROVIDE_SERVICE_NAME` | string | Service identifier | None |
-| `PROVIDE_LOG_LEVEL` | LogLevelStr | Default log level | "DEBUG" |
-| `PROVIDE_LOG_FORMAT` | ConsoleFormatterStr | Output format | "key_value" |
-| `PROVIDE_DISABLE_EMOJI` | bool | Disable emoji prefixes | False |
-| `PROVIDE_DISABLE_TIMESTAMPS` | bool | Omit timestamps | False |
-| `PROVIDE_GLOBALLY_DISABLED` | bool | Disable all logging | False |
-| `PROVIDE_MODULE_LOG_LEVELS` | string | Module levels (JSON) | {} |
+All configuration objects are immutable (`frozen=True` in attrs), making them thread-safe for concurrent access across multiple threads.
 
-**Example environment setup:**
-```bash
-export PROVIDE_SERVICE_NAME="myapp"
-export PROVIDE_LOG_LEVEL="INFO"
-export PROVIDE_LOG_FORMAT="json"
-export PROVIDE_DISABLE_EMOJI="false"
-export PROVIDE_MODULE_LOG_LEVELS='{"requests": "WARNING", "urllib3": "ERROR"}'
-```
+## API Reference
 
-## Immutability
-
-Both configuration classes are frozen and use slots for memory efficiency. To modify configurations, create new instances:
-
-```python
-# Create new config with updated values
-import attrs
-
-new_config = attrs.evolve(
-    existing_config,
-    service_name="updated-service",
-    globally_disabled=False
-)
-```
+::: provide.foundation.logger.config
 
 ## Related Documentation
 
-- [FoundationLogger API](base.md) - Main logger interface
-- [Environment Configuration Guide](/guide/config/environment/) - Environment setup
-- [Configuration Best Practices](/guide/config/best-practices/) - Usage patterns
+- [Logger Base](base.md) - Main logger interface that uses these configurations
+- [Logger Core](core.md) - Core implementation that applies configuration
+- [Setup Functions](../../api/setup.md) - Functions that use configuration
+- [Configuration Guide](../../guide/config/index.md) - Detailed configuration guide

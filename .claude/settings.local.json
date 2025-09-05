@@ -8,7 +8,8 @@
       "Bash(sed:*)",
       "Bash(mkdocs serve:*)",
       "Bash(timeout 30s pytest tests/core/test_core_lazy_init_edge_cases.py::TestExtremeEdgeCases::test_recursive_logging_during_setup -v)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(python:*)"
     ],
     "deny": [],
     "ask": [],
