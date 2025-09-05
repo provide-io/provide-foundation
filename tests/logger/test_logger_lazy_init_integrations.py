@@ -37,7 +37,11 @@ class TestRealWorldScenarios:
 
     def test_web_application_startup_scenario(self, capsys: CaptureFixture) -> None:
         """Test lazy initialization in a web application startup scenario."""
+        from provide.foundation.testing import set_log_stream_for_testing
+        import sys
+        
         reset_foundation_setup_for_testing()
+        set_log_stream_for_testing(sys.stderr)
 
         # Simulate web app startup sequence
         global_logger.info("Starting web application")
@@ -66,7 +70,11 @@ class TestRealWorldScenarios:
 
     def test_microservice_with_environment_config(self, capsys: CaptureFixture) -> None:
         """Test microservice startup with environment-based configuration."""
+        from provide.foundation.testing import set_log_stream_for_testing
+        import sys
+        
         reset_foundation_setup_for_testing()
+        set_log_stream_for_testing(sys.stderr)
 
         # Simulate microservice environment
         with patch.dict(
@@ -138,7 +146,11 @@ class TestRealWorldScenarios:
 
     def test_data_processing_pipeline_scenario(self, capsys: CaptureFixture) -> None:
         """Test lazy initialization in a data processing pipeline."""
+        from provide.foundation.testing import set_log_stream_for_testing
+        import sys
+        
         reset_foundation_setup_for_testing()
+        set_log_stream_for_testing(sys.stderr)
 
         # Simulate data pipeline stages
         global_logger.get_logger("pipeline.main")
@@ -180,7 +192,11 @@ class TestRealWorldScenarios:
 
     def test_concurrent_workers_scenario(self, capsys: CaptureFixture) -> None:
         """Test lazy initialization with concurrent worker processes."""
+        from provide.foundation.testing import set_log_stream_for_testing
+        import sys
+        
         reset_foundation_setup_for_testing()
+        set_log_stream_for_testing(sys.stderr)
 
         def worker_task(worker_id: int, task_count: int) -> list[str]:
             """Simulate worker task with logging."""
@@ -225,7 +241,11 @@ class TestRealWorldScenarios:
     @pytest.mark.asyncio
     async def test_async_web_server_scenario(self, capsys: CaptureFixture) -> None:
         """Test lazy initialization in async web server scenario."""
+        from provide.foundation.testing import set_log_stream_for_testing
+        import sys
+        
         reset_foundation_setup_for_testing()
+        set_log_stream_for_testing(sys.stderr)
 
         # Simulate async web server
         server_logger = global_logger.get_logger("server.async")
@@ -285,7 +305,11 @@ class TestRealWorldScenarios:
 
     def test_library_integration_scenario(self, capsys: CaptureFixture) -> None:
         """Test lazy initialization when used as a library component."""
+        from provide.foundation.testing import set_log_stream_for_testing
+        import sys
+        
         reset_foundation_setup_for_testing()
+        set_log_stream_for_testing(sys.stderr)
 
         # Simulate library that uses pyvider for internal logging
         class DataProcessor:
@@ -342,7 +366,11 @@ class TestMigrationFromExplicitSetup:
 
     def test_gradual_migration_scenario(self, capsys: CaptureFixture) -> None:
         """Test gradual migration from explicit setup to lazy initialization."""
+        from provide.foundation.testing import set_log_stream_for_testing
+        import sys
+        
         reset_foundation_setup_for_testing()
+        set_log_stream_for_testing(sys.stderr)
 
         # Phase 1: Old code with explicit setup
         explicit_config = TelemetryConfig(
@@ -378,7 +406,11 @@ class TestMigrationFromExplicitSetup:
 
     def test_mixed_initialization_order(self, capsys: CaptureFixture) -> None:
         """Test different initialization orders work correctly."""
+        from provide.foundation.testing import set_log_stream_for_testing
+        import sys
+        
         reset_foundation_setup_for_testing()
+        set_log_stream_for_testing(sys.stderr)
 
         # Scenario 1: Lazy init first, then explicit setup
         global_logger.info("Message via lazy init")
@@ -409,7 +441,11 @@ class TestMigrationFromExplicitSetup:
 
     def test_configuration_precedence(self, capsys: CaptureFixture) -> None:
         """Test that explicit setup takes precedence over lazy initialization."""
+        from provide.foundation.testing import set_log_stream_for_testing
+        import sys
+        
         reset_foundation_setup_for_testing()
+        set_log_stream_for_testing(sys.stderr)
 
         # Set environment for lazy init
         with patch.dict(
@@ -456,7 +492,11 @@ class TestProductionReadinessScenarios:
 
     def test_high_throughput_scenario(self, capsys: CaptureFixture) -> None:
         """Test lazy initialization under high throughput."""
+        from provide.foundation.testing import set_log_stream_for_testing
+        import sys
+        
         reset_foundation_setup_for_testing()
+        set_log_stream_for_testing(sys.stderr)
 
         # Simulate high-throughput logging
         start_time = time.time()
@@ -484,7 +524,11 @@ class TestProductionReadinessScenarios:
 
     def test_memory_stability_scenario(self, capsys: CaptureFixture) -> None:
         """Test memory stability with lazy initialization over time."""
+        from provide.foundation.testing import set_log_stream_for_testing
+        import sys
+        
         reset_foundation_setup_for_testing()
+        set_log_stream_for_testing(sys.stderr)
 
         import gc
 
@@ -512,7 +556,11 @@ class TestProductionReadinessScenarios:
 
     def test_error_resilience_scenario(self, capsys: CaptureFixture) -> None:
         """Test error resilience in production-like conditions."""
+        from provide.foundation.testing import set_log_stream_for_testing
+        import sys
+        
         reset_foundation_setup_for_testing()
+        set_log_stream_for_testing(sys.stderr)
 
         # Simulate various error conditions
         error_scenarios = [
@@ -548,7 +596,11 @@ class TestProductionReadinessScenarios:
 
     def test_graceful_shutdown_scenario(self, capsys: CaptureFixture) -> None:
         """Test graceful shutdown with lazy initialization."""
+        from provide.foundation.testing import set_log_stream_for_testing
+        import sys
+        
         reset_foundation_setup_for_testing()
+        set_log_stream_for_testing(sys.stderr)
 
         # Simulate application lifecycle
         global_logger.info("Application starting with lazy init")
