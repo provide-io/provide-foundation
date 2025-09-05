@@ -1027,9 +1027,7 @@ All utility functions are thread-safe:
 ## Module Organization
 
 - [Platform](platform.md) - OS detection and platform utilities
-- [Process](process.md) - Process execution and command running
 - [Console](console.md) - Console I/O and user interaction
-- [Registry](registry.md) - Object registry and service location
 
 ## See Also
 

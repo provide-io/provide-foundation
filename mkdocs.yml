@@ -312,8 +312,6 @@ nav:
       - api/utils/index.md
       - Console: api/utils/console.md
       - Platform: api/utils/platform.md
-      - Process: api/utils/process.md
-      - Registry: api/utils/registry.md
       - File Operations: api/file/index.md
       - Crypto: api/crypto/index.md
   
