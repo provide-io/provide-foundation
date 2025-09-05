@@ -36,7 +36,9 @@
       "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src:/Users/tim/code/gh/provide-foundation/src timeout 30s python -m pytest tests/transport/test_transport_base.py tests/handshake/test_handshake_process_io.py::test_read_handshake_response_multiple_attempts -v)",
       "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src:/Users/tim/code/gh/provide-foundation/src timeout 15s python -m pytest tests/protocol/grpctest/ --collect-only -q)",
       "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src:/Users/tim/code/gh/provide-foundation/src python -c \"from pyvider.rpcplugin import CertificateError; print(''CertificateError import successful:'', CertificateError)\")",
-      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src:/Users/tim/code/gh/provide-foundation/src timeout 15s python -m pytest tests/handshake/test_handshake_certificate.py::test_rebuild_x509_pem -v)"
+      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src:/Users/tim/code/gh/provide-foundation/src timeout 15s python -m pytest tests/handshake/test_handshake_certificate.py::test_rebuild_x509_pem -v)",
+      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src:/Users/tim/code/gh/provide-foundation/src timeout 30s python -m pytest tests/server/test_server_tls.py tests/handshake/test_handshake_certificate.py tests/client/test_client_init.py::test_client_initialization -v)",
+      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src:/Users/tim/code/gh/provide-foundation/src python -c \"\nimport pyvider.rpcplugin\nprint(''✅ Main module imports successfully'')\n\nfrom pyvider.rpcplugin import CertificateError, RPCPluginClient, RPCPluginServer\nprint(''✅ Key classes import successfully'')\n\nprint(''CertificateError type:'', type(CertificateError))\n\")"
     ],
     "deny": [],
     "ask": [],
