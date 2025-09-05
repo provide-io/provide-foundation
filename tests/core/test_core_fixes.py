@@ -50,8 +50,8 @@ def test_service_name_no_emoji() -> None:
     """Test service name injection without emoji prefix for JSON format."""
     print("\n=== Test 2: Service Name Without Emoji (JSON) ===")
 
-    from provide.foundation.core import (
-        _set_log_stream_for_testing,
+    from provide.foundation.testing import (
+        set_log_stream_for_testing,
         reset_foundation_setup_for_testing,
     )
 
@@ -67,7 +67,7 @@ def test_service_name_no_emoji() -> None:
     import io
 
     captured_output = io.StringIO()
-    _set_log_stream_for_testing(captured_output)
+    set_log_stream_for_testing(captured_output)
 
     try:
         from provide.foundation import logger
@@ -102,7 +102,7 @@ def test_service_name_no_emoji() -> None:
             print("❌ No log output found")
             raise AssertionError("No log output found")
     finally:
-        _set_log_stream_for_testing(None)
+        set_log_stream_for_testing(None)
         # Clean up environment
         for key in [
             "PROVIDE_SERVICE_NAME",
@@ -117,8 +117,8 @@ def test_das_emoji_register_action() -> None:
     """Test that register action has proper emoji mapping."""
     print("\n=== Test 3: DAS Emoji Register Action ===")
 
-    from provide.foundation.core import (
-        _set_log_stream_for_testing,
+    from provide.foundation.testing import (
+        set_log_stream_for_testing,
         reset_foundation_setup_for_testing,
     )
 
@@ -131,7 +131,7 @@ def test_das_emoji_register_action() -> None:
     import io
 
     captured_output = io.StringIO()
-    _set_log_stream_for_testing(captured_output)
+    set_log_stream_for_testing(captured_output)
 
     try:
         from provide.foundation import logger
@@ -160,7 +160,7 @@ def test_das_emoji_register_action() -> None:
             # The map currently has "register": "⚙️", so this is correct.
             raise AssertionError("DAS emoji for register action is incorrect.")
     finally:
-        _set_log_stream_for_testing(None)
+        set_log_stream_for_testing(None)
         for key in [
             "PROVIDE_LOG_DAS_EMOJI_ENABLED",
             "PROVIDE_LOG_CONSOLE_FORMATTER",
