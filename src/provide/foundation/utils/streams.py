@@ -41,10 +41,10 @@ def get_foundation_log_stream(output_setting: str) -> TextIO:
     elif output_setting == "main":
         # Import here to avoid circular dependency
         try:
-            from provide.foundation.core import _PROVIDE_LOG_STREAM
-            return _PROVIDE_LOG_STREAM
+            from provide.foundation.setup.streams import get_log_stream
+            return get_log_stream()
         except ImportError:
-            # Fallback if core module not available during initialization
+            # Fallback if setup module not available during initialization
             return get_safe_stderr()
     elif output_setting == "stderr":
         return get_safe_stderr()
