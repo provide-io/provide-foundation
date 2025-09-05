@@ -18,8 +18,8 @@ except PackageNotFoundError:  # pragma: no cover
 # Make the errors module available for detailed imports
 from provide.foundation import cli, config, errors, platform, process
 
-# Console output functions
-from provide.foundation.console import perr, pout
+# Console I/O functions
+from provide.foundation.console import perr, pin, pout
 from provide.foundation.context import Context
 from provide.foundation.core import (
     setup_telemetry,
@@ -67,7 +67,7 @@ from provide.foundation.types import (
 from provide.foundation.utils import timed_block
 
 __all__ = [
-    # Legacy Emoji Dictionaries (still available for direct use or reference)
+    # Core Emoji Dictionaries (available for direct use or reference)
     "PRIMARY_EMOJI",
     "SECONDARY_EMOJI",
     "TERTIARY_EMOJI",
@@ -98,6 +98,8 @@ __all__ = [
     # Core setup and logger
     "logger",
     "perr",
+    # Console input
+    "pin",
     "platform",
     "plog",  # Alias for logger
     # Console output

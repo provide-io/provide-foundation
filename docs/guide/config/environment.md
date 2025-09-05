@@ -543,15 +543,6 @@ STRUCTLOG_PROCESSORS=json
 PROVIDE_LOG_FORMAT=json
 ```
 
-### From pyvider
-
-```python
-# Old (pyvider)
-PYVIDER_DEBUG=true
-
-# New (provide.foundation)
-PROVIDE_LOG_LEVEL=DEBUG
-```
 
 ## Next Steps
 

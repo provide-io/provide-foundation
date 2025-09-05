@@ -332,13 +332,13 @@ def create_error_handler(**policies: Callable[[Exception], Any]) -> ErrorHandler
     default = policies.pop("default", lambda e: None)
 
     # Import error types
-    from provide.foundation.errors import runtime
+    import provide.foundation.errors as errors_module
 
     # Build policies dict
     error_policies = {}
     for error_name, handler_func in policies.items():
-        # Try to get the error class from exceptions module
-        error_class = getattr(exceptions, error_name, None)
+        # Try to get the error class from errors module
+        error_class = getattr(errors_module, error_name, None)
         if (
             error_class
             and isinstance(error_class, type)

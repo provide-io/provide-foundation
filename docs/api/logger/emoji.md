@@ -4,13 +4,13 @@ Visual log parsing system that provides emoji-enhanced log messages for rapid vi
 
 ## Overview
 
-The emoji system transforms log events into visually parseable messages using emoji prefixes. It supports both legacy Domain-Action-Status (DAS) patterns and modern semantic layer configurations.
+The emoji system transforms log events into visually parseable messages using emoji prefixes. It supports Domain-Action-Status (DAS) patterns and semantic layer configurations.
 
-## Legacy Emoji Mappings
+## Core Emoji Mappings
 
 ### PRIMARY_EMOJI
 
-Domain-level emoji mappings for the legacy DAS system.
+Domain-level emoji mappings for the DAS system.
 
 ```python
 PRIMARY_EMOJI: dict[str, str] = {
@@ -42,7 +42,7 @@ PRIMARY_EMOJI: dict[str, str] = {
 
 ### SECONDARY_EMOJI
 
-Action-level emoji mappings for the legacy DAS system.
+Action-level emoji mappings for the DAS system.
 
 ```python
 SECONDARY_EMOJI: dict[str, str] = {
@@ -84,7 +84,7 @@ SECONDARY_EMOJI: dict[str, str] = {
 
 ### TERTIARY_EMOJI
 
-Status-level emoji mappings for the legacy DAS system.
+Status-level emoji mappings for the DAS system.
 
 ```python
 TERTIARY_EMOJI: dict[str, str] = {
@@ -122,7 +122,7 @@ def show_emoji_matrix() -> None:
     """
     Prints the active Foundation emoji logging contract to the console.
     If semantic layers are active, it displays their configuration.
-    Otherwise, it displays the legacy DAS emoji mappings.
+    Otherwise, it displays the core DAS emoji mappings.
     Activated by FOUNDATION_SHOW_EMOJI_MATRIX environment variable.
     """
 ```
@@ -135,23 +135,23 @@ python your_app.py  # Will display emoji matrix on startup
 
 **Output Examples:**
 
-Legacy DAS system output:
+Core DAS system output:
 ```
-Foundation Telemetry: Legacy DAS Emoji Contract (No custom layers active)
+Foundation Telemetry: DAS Emoji Contract
 ======================================================================
-Primary Emojis (Legacy 'domain' key):
+Primary Emojis ('domain' key):
   ⚙️  -> System
   🗄️  -> Database
   🌐  -> Network
   ...
 
-Secondary Emojis (Legacy 'action' key):
+Secondary Emojis ('action' key):
   🚀  -> Start
   🔍  -> Query
   ✅  -> Success
   ...
 
-Tertiary Emojis (Legacy 'status' key):
+Tertiary Emojis ('status' key):
   ✅  -> Success
   ❌  -> Failure
   ⚠️  -> Warning
@@ -191,7 +191,7 @@ Available Emoji Sets (Referenced by Semantic Field Definitions):
 
 ## Usage Examples
 
-### Legacy DAS System
+### Core DAS System
 
 ```python
 from provide.foundation.logger import logger

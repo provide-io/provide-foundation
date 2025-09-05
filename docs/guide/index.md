@@ -169,7 +169,6 @@ with logger.batch():
 
 - [From structlog](../migration/from-structlog.md)
 - [From Python logging](../migration/from-logging.md)
-- [From pyvider](../migration/from-pyvider.md)
 
 ## Next Steps
 

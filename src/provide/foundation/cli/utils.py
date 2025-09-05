@@ -83,7 +83,7 @@ def setup_cli_logging(
     ctx: Context | None = None,
     log_level: str | None = None,
     log_file: str | Path | None = None,
-    json_logs: bool = False,
+    log_format: str | None = None,
 ) -> None:
     """
     Setup logging for CLI applications.
@@ -92,12 +92,15 @@ def setup_cli_logging(
         ctx: Optional Context to get settings from
         log_level: Override log level
         log_file: Override log file path
-        json_logs: Whether to output logs as JSON
+        log_format: Log format ('json', 'text', 'key_value')
     """
     if ctx:
         log_level = log_level or ctx.log_level
         log_file = log_file or ctx.log_file
-        json_logs = json_logs or ctx.json_output
+        log_format = log_format or getattr(ctx, 'log_format', 'key_value')
+    
+    # Map log_format to json_logs boolean for backward compatibility
+    json_logs = (log_format == 'json') if log_format else False
 
     setup_logging(
         level=log_level or "INFO",

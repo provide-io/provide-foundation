@@ -41,7 +41,7 @@ class TestCompleteCliIntegration:
                     ctx=ctx,
                     log_level=ctx.log_level,
                     log_file=ctx.log_file,
-                    json_logs=ctx.json_output,
+                    log_format="json" if ctx.json_output else "key_value",
                 )
 
         @cli.group()
@@ -197,7 +197,7 @@ class TestLoggingIntegration:
         def cmd(ctx: Context, **kwargs) -> None:
             if ctx.log_level and hasattr(ctx, "log_format"):
                 setup_cli_logging(
-                    log_level=ctx.log_level, json_logs=ctx.log_format == "json"
+                    log_level=ctx.log_level, log_format=ctx.log_format
                 )
 
             logger = get_logger(__name__)

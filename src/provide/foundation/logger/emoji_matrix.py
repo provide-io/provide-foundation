@@ -3,8 +3,8 @@
 #
 """
 Foundation Telemetry Emoji Matrix and Display Utilities.
-Defines the legacy DAS emoji mappings and provides utilities to display
-active emoji configurations (legacy or layer-based).
+Defines the core DAS emoji mappings and provides utilities to display
+active emoji configurations (DAS or semantic layer-based).
 """
 
 import os
@@ -130,7 +130,7 @@ def show_emoji_matrix() -> None:  # pragma: no cover
     """
     Prints the active Foundation emoji logging contract to the console.
     If semantic layers are active, it displays their configuration.
-    Otherwise, it displays the legacy DAS emoji mappings.
+    Otherwise, it displays the core DAS emoji mappings.
     Activated by `FOUNDATION_SHOW_EMOJI_MATRIX` environment variable.
     """
     if os.getenv("FOUNDATION_SHOW_EMOJI_MATRIX", "false").strip().lower() not in (
@@ -179,20 +179,20 @@ def show_emoji_matrix() -> None:  # pragma: no cover
                 lines.extend(_format_emoji_set_for_display(emoji_set))
                 lines.append("")  # Spacer
 
-        else:  # No custom fields resolved, means legacy DAS is active
+        else:  # No custom fields resolved, means core DAS is active
             lines.append(
-                "Foundation Telemetry: Legacy DAS Emoji Contract (No custom layers active)"
+                "Foundation Telemetry: Core DAS Emoji Contract"
             )
             lines.append("=" * 70)
-            lines.append("Primary Emojis (Legacy 'domain' key):")
+            lines.append("Primary Emojis ('domain' key):")
             lines.extend(
                 f"  {e}  -> {k.capitalize()}" for k, e in PRIMARY_EMOJI.items()
             )
-            lines.append("\nSecondary Emojis (Legacy 'action' key):")
+            lines.append("\nSecondary Emojis ('action' key):")
             lines.extend(
                 f"  {e}  -> {k.capitalize()}" for k, e in SECONDARY_EMOJI.items()
             )
-            lines.append("\nTertiary Emojis (Legacy 'status' key):")
+            lines.append("\nTertiary Emojis ('status' key):")
             lines.extend(
                 f"  {e}  -> {k.capitalize()}" for k, e in TERTIARY_EMOJI.items()
             )

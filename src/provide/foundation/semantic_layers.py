@@ -18,9 +18,9 @@ from provide.foundation.types import (
     SemanticLayer,
 )
 
-# --- Base/Legacy Layer Definition (Internal representation) ---
-# This serves as the fallback if no other layers are active or if active layers
-# don't handle the specific keys "domain", "action", "status".
+# --- Core DAS Layer Definition (Internal representation) ---
+# This serves as the default Domain-Action-Status system when no custom layers are active.
+# It handles the standard keys "domain", "action", "status".
 LEGACY_DAS_EMOJI_SETS: list[CustomDasEmojiSet] = [
     CustomDasEmojiSet(
         name="_legacy_domain", emojis=PRIMARY_EMOJI, default_emoji_key="default"
@@ -37,8 +37,8 @@ LEGACY_DAS_FIELD_DEFINITIONS: list[SemanticFieldDefinition] = [
     SemanticFieldDefinition(log_key="action", emoji_set_name="_legacy_action"),
     SemanticFieldDefinition(log_key="status", emoji_set_name="_legacy_status"),
 ]
-# Note: The legacy system is not a formal "SemanticLayer" that users enable by name.
-# It's used as a fallback in the `add_das_emoji_prefix` processor.
+# Note: The core DAS system is not a formal "SemanticLayer" that users enable by name.
+# It's the default behavior used in the `add_das_emoji_prefix` processor.
 
 # --- LLM Layer ---
 LLM_EMOJI_SETS: list[CustomDasEmojiSet] = [

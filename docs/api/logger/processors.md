@@ -111,7 +111,7 @@ def _config_create_emoji_processors(
 **Features:**
 - Logger name emoji prefixes (if `logger_name_emoji_prefix_enabled`)
 - Domain-Action-Status emoji prefixes (if `das_emoji_prefix_enabled`)
-- Supports both legacy DAS system and new semantic layers
+- Supports both DAS system and semantic layers
 - Automatically selects appropriate emoji based on log context
 
 ## Formatter Functions
@@ -217,7 +217,7 @@ _LEVEL_TO_NUMERIC: dict[LogLevelStr, int] = {
 
 The emoji processors support two modes:
 
-### Legacy DAS System
+### Core DAS System
 
 Processes `domain`, `action`, and `status` fields:
 
