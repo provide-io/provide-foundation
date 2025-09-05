@@ -33,41 +33,53 @@ python app.py
 
 Create `config.yaml`:
 ```yaml
+service_name: my-service
+environment: production
+
 logging:
   level: INFO
-  format: json
-  emoji: true
-
-telemetry:
-  emoji_sets: true
-  enabled_layers:
-    - http
-    - database
-    - llm
+  console_formatter: json
+  log_file: /var/log/service.log
+  module_levels:
+    database: DEBUG
+    external_api: WARNING
 
 app:
-  name: my-service
-  environment: production
+  port: 8080
+  debug: false
+  features:
+    - auth
+    - metrics
 ```
 
-Load it:
+Load it with the configuration system:
 ```python
-from provide.foundation.config import Config
+from provide.foundation.config import ConfigManager, FileConfigLoader
+import asyncio
 
-config = Config.from_file("config.yaml")
+async def load_config():
+    manager = ConfigManager()
+    loader = FileConfigLoader("config.yaml")
+    
+    await manager.register("app", loader=loader)
+    config = await manager.get("app")
+    return config
+
+config = asyncio.run(load_config())
 ```
 
 ### Runtime Configuration
 
 ```python
-from provide.foundation.logger import setup_logging
+from provide.foundation import setup_logging, LoggingConfig
 
 # Override at runtime
-setup_logging(
+config = LoggingConfig(
     level="DEBUG",
-    format="pretty",
-    enable_emoji=True
+    console_formatter="key_value",
+    omit_timestamp=False
 )
+setup_logging(config)
 ```
 
 ## Configuration Hierarchy
@@ -90,11 +102,16 @@ graph TD
 
 | Setting | Environment Variable | Type | Default | Description |
 |---------|---------------------|------|---------|-------------|
-| Log Level | `PROVIDE_LOG_LEVEL` | string | `INFO` | DEBUG, INFO, WARNING, ERROR, CRITICAL |
-| Log Format | `PROVIDE_LOG_FORMAT` | string | `pretty` | pretty, json, compact |
+| Service Name | `PROVIDE_SERVICE_NAME` | string | None | Service identifier in logs |
+| Log Level | `PROVIDE_LOG_LEVEL` | string | `DEBUG` | TRACE, DEBUG, INFO, WARNING, ERROR, CRITICAL |
+| Console Format | `PROVIDE_LOG_CONSOLE_FORMATTER` | string | `key_value` | key_value, json |
 | Log File | `PROVIDE_LOG_FILE` | path | None | Output file path |
-| No Color | `PROVIDE_NO_COLOR` | bool | `false` | Disable color output |
-| No Emoji | `PROVIDE_NO_EMOJI` | bool | `false` | Disable emoji in logs |
+| Omit Timestamp | `PROVIDE_LOG_OMIT_TIMESTAMP` | bool | `false` | Remove timestamps from console |
+| Module Levels | `PROVIDE_LOG_MODULE_LEVELS` | string | "" | Per-module log levels (json) |
+| Environment | `PROVIDE_ENV` | string | `dev` | Environment (dev/staging/prod) |
+| Debug Mode | `PROVIDE_DEBUG` | bool | `false` | Enable debug mode |
+| JSON Output | `PROVIDE_JSON_OUTPUT` | bool | `false` | Force JSON output |
+| No Color | `PROVIDE_NO_COLOR` | bool | `false` | Disable colored output |
 
 ### Semantic Layers
 
@@ -160,10 +177,10 @@ Environment variables are automatically converted to the appropriate type:
 
 ```python
 # These all work correctly
-export PROVIDE_LOG_LEVEL=DEBUG           # string
-export PROVIDE_NO_EMOJI=true            # bool (true/false, yes/no, 1/0)
-export PROVIDE_LAYER_TIMEOUT_MS=20      # int
-export PROVIDE_ENABLED_LAYERS=http,llm  # list (comma-separated)
+export PROVIDE_LOG_LEVEL=DEBUG                                    # string
+export PROVIDE_LOG_OMIT_TIMESTAMP=true                          # bool (true/false, yes/no, 1/0)
+export PROVIDE_DEBUG=1                                           # bool (1/0)
+export PROVIDE_LOG_MODULE_LEVELS='{"database":"DEBUG","auth":"WARNING"}'  # JSON string
 ```
 
 ## Validation
@@ -171,10 +188,22 @@ export PROVIDE_ENABLED_LAYERS=http,llm  # list (comma-separated)
 Configuration is validated on load:
 
 ```python
-from provide.foundation.config import Config, ValidationError
+from provide.foundation.config import BaseConfig, ConfigSchema, SchemaField
+from provide.foundation.errors import ValidationError
+from attrs import define
+
+@define  
+class AppConfig(BaseConfig):
+    port: int = field(default=8080)
+    debug: bool = field(default=False)
+    
+    def validate(self):
+        if self.port < 1024 or self.port > 65535:
+            raise ValidationError(f"Invalid port: {self.port}")
 
 try:
-    config = Config.from_env()
+    config = AppConfig.from_env()
+    config.validate()
 except ValidationError as e:
     print(f"Configuration error: {e}")
     # Provides helpful error messages
@@ -225,28 +254,45 @@ For debugging, some `PROVIDE_` prefixed variables are available:
 ### Basic Application
 
 ```python
-from provide.foundation import logger
-from provide.foundation.config import Config
+from provide.foundation import logger, setup_telemetry
+from provide.foundation.config import BaseConfig, field
+from attrs import define
 
-# Load configuration
-config = Config.from_env()
+@define
+class AppConfig(BaseConfig):
+    service_name: str = field(default="my-app")
+    port: int = field(default=8080) 
+    debug: bool = field(default=False)
+
+# Load configuration from environment
+config = AppConfig.from_env()
+
+# Setup telemetry with service name
+setup_telemetry(service_name=config.service_name, debug=config.debug)
 
 # Use in application
 logger.info("app_started", 
-            config=config.profile,
-            log_level=config.logging.level)
+            service=config.service_name,
+            port=config.port,
+            debug=config.debug)
 ```
 
 ### CLI Application
 
 ```python
-from provide.foundation.cli import cli_factory
+from provide.foundation.hub import Hub, register_command
+from provide.foundation import setup_telemetry
 
-# Automatically uses PROVIDE_* environment variables
-app = cli_factory(
-    config_file="config.yaml",
-    env_prefix="PROVIDE_"
-)
+@register_command("serve")
+def serve_command(port: int = 8080, debug: bool = False):
+    """Start the application server."""
+    setup_telemetry(debug=debug)
+    logger.info("Starting server", port=port, debug=debug)
+    
+if __name__ == "__main__":
+    hub = Hub()
+    cli = hub.create_cli(name="myapp", version="1.0.0")
+    cli()
 ```
 
 ### Docker Configuration
