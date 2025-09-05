@@ -4,7 +4,10 @@
       "Bash(source env.sh)",
       "Bash(python:*)",
       "Bash(echo $PYTHONPATH)",
-      "Bash(export:*)"
+      "Bash(export:*)",
+      "Bash(pytest:*)",
+      "Bash(ruff:*)",
+      "Bash(mypy:*)"
     ],
     "deny": [],
     "ask": [],
