@@ -34,7 +34,8 @@
       "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src:/Users/tim/code/gh/provide-foundation/src timeout 30s python -m pytest tests/server/test_server_rate_limiting.py::test_rate_limiter_denies_requests_when_limit_exceeded -v)",
       "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src:/Users/tim/code/gh/provide-foundation/src timeout 30s python -m pytest tests/server/test_server_rate_limiting.py tests/transport/test_transport_suite.py tests/handshake/test_handshake_integration.py -v --tb=no)",
       "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src:/Users/tim/code/gh/provide-foundation/src timeout 30s python -m pytest tests/transport/test_transport_base.py tests/handshake/test_handshake_process_io.py::test_read_handshake_response_multiple_attempts -v)",
-      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src:/Users/tim/code/gh/provide-foundation/src timeout 15s python -m pytest tests/protocol/grpctest/ --collect-only -q)"
+      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src:/Users/tim/code/gh/provide-foundation/src timeout 15s python -m pytest tests/protocol/grpctest/ --collect-only -q)",
+      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src:/Users/tim/code/gh/provide-foundation/src python -c \"from pyvider.rpcplugin import CertificateError; print(''CertificateError import successful:'', CertificateError)\")"
     ],
     "deny": [],
     "ask": [],
