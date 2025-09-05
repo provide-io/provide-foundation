@@ -29,18 +29,16 @@ def _get_config_logger():
     import structlog
     import sys
 
-    # Ensure structlog outputs to stderr instead of default stdout
+    # Always ensure structlog outputs to stderr for config warnings
+    # The default PrintLoggerFactory uses sys.stdout by default, so we need to override this
     try:
         config = structlog.get_config()
-        factory = config.get('logger_factory')
-        if hasattr(factory, 'file') and (factory.file is None or factory.file is sys.stdout):
-            # Only reconfigure if using default stdout or None
-            structlog.configure(
-                processors=config.get('processors', [structlog.dev.ConsoleRenderer()]),
-                logger_factory=structlog.PrintLoggerFactory(file=sys.stderr),
-                wrapper_class=config.get('wrapper_class', structlog.BoundLogger),
-                cache_logger_on_first_use=config.get('cache_logger_on_first_use', True),
-            )
+        structlog.configure(
+            processors=config.get('processors', [structlog.dev.ConsoleRenderer()]),
+            logger_factory=structlog.PrintLoggerFactory(file=sys.stderr),
+            wrapper_class=config.get('wrapper_class', structlog.BoundLogger),
+            cache_logger_on_first_use=config.get('cache_logger_on_first_use', True),
+        )
     except Exception:
         # Fallback configuration if anything goes wrong
         structlog.configure(
