@@ -16,16 +16,12 @@ import structlog
 from provide.foundation.logger.core import logger as foundation_logger, _LAZY_SETUP_STATE
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
 from provide.foundation.logger.emoji.sets import BUILTIN_EMOJI_SETS
-from provide.foundation.setup.emoji_resolver import resolve_active_emoji_config
-from provide.foundation.setup.processors import (
+from provide.foundation.logger.setup.emoji_resolver import resolve_active_emoji_config
+from provide.foundation.logger.setup.processors import (
     configure_structlog_output,
     handle_globally_disabled_setup,
 )
-from provide.foundation.setup.streams import (
-    configure_file_logging,
-    get_log_stream,
-    set_log_stream_for_testing,
-)
+from provide.foundation.streams import get_log_stream
 from provide.foundation.utils.streams import get_foundation_log_stream, get_safe_stderr
 
 _PROVIDE_SETUP_LOCK = threading.Lock()
@@ -95,7 +91,7 @@ def internal_setup(
     structlog.reset_defaults()
     foundation_logger._is_configured_by_setup = False
     foundation_logger._active_config = None
-    foundation_logger._active_resolved_semantic_config = None
+    foundation_logger._active_resolved_emoji_config = None
     _LAZY_SETUP_STATE.update(
         {"done": False, "error": None, "in_progress": False}
     )

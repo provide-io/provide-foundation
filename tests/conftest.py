@@ -15,8 +15,8 @@ import sys
 
 import pytest
 
-from provide.foundation.setup.streams import set_log_stream_for_testing
-from provide.foundation.setup.testing import reset_foundation_setup_for_testing
+from provide.foundation.streams.core import set_log_stream_for_testing
+from provide.foundation.logger.setup.testing import reset_foundation_setup_for_testing
 
 _conftest_diag_logger_name = "provide.foundation.conftest_diag"
 

@@ -15,7 +15,7 @@ import structlog
 from provide.foundation.types import TRACE_LEVEL_NAME
 
 if TYPE_CHECKING:
-    from provide.foundation.setup.emoji_resolver import ResolvedEmojiConfig
+    from provide.foundation.logger.setup.emoji_resolver import ResolvedEmojiConfig
     from provide.foundation.logger.config import TelemetryConfig
 
 _LAZY_SETUP_LOCK = threading.Lock()
@@ -80,7 +80,7 @@ class FoundationLogger:
 
     def _perform_lazy_setup(self) -> None:
         """Perform the actual lazy setup of the logging system."""
-        from provide.foundation.setup.coordinator import internal_setup
+        from provide.foundation.logger.setup.coordinator import internal_setup
         
         try:
             _LAZY_SETUP_STATE["in_progress"] = True

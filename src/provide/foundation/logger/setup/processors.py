@@ -16,7 +16,7 @@ from provide.foundation.logger.processors import (
     _build_core_processors_list,
     _build_formatter_processors_list,
 )
-from provide.foundation.setup.emoji_resolver import ResolvedEmojiConfig
+from provide.foundation.logger.setup.emoji_resolver import ResolvedEmojiConfig
 
 
 def build_complete_processor_chain(

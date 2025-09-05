@@ -24,7 +24,7 @@ from provide.foundation.types import (
 )
 
 if TYPE_CHECKING:
-    from provide.foundation.setup.emoji_resolver import ResolvedEmojiConfig
+    from provide.foundation.logger.setup.emoji_resolver import ResolvedEmojiConfig
 
 _LEVEL_TO_NUMERIC: dict[LogLevelStr, int] = {
     "CRITICAL": stdlib_logging.CRITICAL,
@@ -217,7 +217,7 @@ def _build_formatter_processors_list(
         case _:
             # Unknown formatter, warn and default to key_value
             # Use setup coordinator logger
-            from provide.foundation.setup.coordinator import create_core_setup_logger
+            from provide.foundation.logger.setup.coordinator import create_core_setup_logger
             
             setup_logger = create_core_setup_logger()
             setup_logger.warning(

@@ -7,7 +7,7 @@ from typing import TextIO
 import pytest
 
 from provide.foundation import TelemetryConfig, setup_telemetry
-from provide.foundation.setup.streams import set_log_stream_for_testing
+from provide.foundation.streams.core import set_log_stream_for_testing
 
 
 @pytest.fixture

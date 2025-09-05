@@ -9,7 +9,7 @@ Provides functions to reset state and configure test environments.
 import structlog
 
 from provide.foundation.logger.core import logger as foundation_logger, _LAZY_SETUP_STATE
-from provide.foundation.setup.streams import reset_streams
+from provide.foundation.streams.file import reset_streams
 
 
 def reset_foundation_state() -> None:

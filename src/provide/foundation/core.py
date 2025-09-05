@@ -10,7 +10,7 @@ from provide.foundation.setup import (
     shutdown_foundation_telemetry,
     reset_foundation_setup_for_testing,
 )
-from provide.foundation.setup.emoji_resolver import ResolvedEmojiConfig
+from provide.foundation.logger.setup.emoji_resolver import ResolvedEmojiConfig
 
 __all__ = [
     "setup_telemetry",
