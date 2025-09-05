@@ -62,30 +62,23 @@ def __getattr__(name: str) -> Any:
     # CLI testing utilities
     if name in ["MockContext", "isolated_cli_runner", "temp_config_file", 
                 "create_test_cli", "mock_logger", "CliTestCase"]:
-        from provide.foundation.testing.cli import (
-            MockContext, isolated_cli_runner, temp_config_file,
-            create_test_cli, mock_logger, CliTestCase
-        )
-        return globals()[name]
+        import provide.foundation.testing.cli as cli_module
+        return getattr(cli_module, name)
     
     # Logger testing utilities  
     elif name in ["reset_foundation_setup_for_testing", "reset_foundation_state"]:
-        from provide.foundation.testing.logger import (
-            reset_foundation_setup_for_testing, reset_foundation_state
-        )
-        return globals()[name]
+        import provide.foundation.testing.logger as logger_module
+        return getattr(logger_module, name)
     
     # Stream testing utilities
     elif name in ["set_log_stream_for_testing"]:
-        from provide.foundation.testing.streams import set_log_stream_for_testing
-        return globals()[name]
+        import provide.foundation.testing.streams as streams_module
+        return getattr(streams_module, name)
     
     # Fixture utilities
     elif name in ["captured_stderr_for_foundation", "setup_foundation_telemetry_for_test"]:
-        from provide.foundation.testing.fixtures import (
-            captured_stderr_for_foundation, setup_foundation_telemetry_for_test
-        )
-        return globals()[name]
+        import provide.foundation.testing.fixtures as fixtures_module
+        return getattr(fixtures_module, name)
     
     # Crypto fixtures (many fixtures)
     elif name in ["client_cert", "server_cert", "ca_cert", "valid_cert_pem", "valid_key_pem",
@@ -97,8 +90,8 @@ def __getattr__(name: str) -> Any:
     
     # Hub fixtures
     elif name in ["default_container_directory"]:
-        from provide.foundation.testing.hub import default_container_directory
-        return globals()[name]
+        import provide.foundation.testing.hub as hub_module
+        return getattr(hub_module, name)
     
     else:
         raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
