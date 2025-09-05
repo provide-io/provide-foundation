@@ -139,3 +139,53 @@ class TestTelemetryConfigFromEnvSemanticLayers:
         captured = capsys.readouterr()
         assert "Error parsing custom emoji set configuration" in captured.err
         assert "PROVIDE_LOG_CUSTOM_EMOJI_SETS" in captured.err
+
+
+class TestFoundationLogOutputConfigIntegration:
+    """Test FOUNDATION_LOG_OUTPUT integration with config warnings."""
+
+    def test_config_warnings_respect_foundation_log_output_stdout(
+        self, monkeypatch, capsys: CaptureFixture
+    ) -> None:
+        """Test that config warnings go to stdout when FOUNDATION_LOG_OUTPUT=stdout."""
+        monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "stdout")
+        monkeypatch.setenv("PROVIDE_LOG_LEVEL", "INVALID_LEVEL")
+        
+        config = LoggingConfig.from_env()
+        captured = capsys.readouterr()
+        
+        # Warning should go to stdout, not stderr
+        assert "[Foundation Config Warning]" in captured.out
+        assert "[Foundation Config Warning]" not in captured.err
+
+    def test_config_warnings_respect_foundation_log_output_stderr_default(
+        self, monkeypatch, capsys: CaptureFixture
+    ) -> None:
+        """Test that config warnings go to stderr by default."""
+        # Ensure no FOUNDATION_LOG_OUTPUT is set (should default to stderr)
+        monkeypatch.delenv("FOUNDATION_LOG_OUTPUT", raising=False)
+        monkeypatch.setenv("PROVIDE_LOG_LEVEL", "INVALID_LEVEL")
+        
+        config = LoggingConfig.from_env()
+        captured = capsys.readouterr()
+        
+        # Warning should go to stderr (default behavior)
+        assert "[Foundation Config Warning]" in captured.err
+        assert "[Foundation Config Warning]" not in captured.out
+
+    def test_config_warnings_with_invalid_foundation_log_output(
+        self, monkeypatch, capsys: CaptureFixture
+    ) -> None:
+        """Test config warnings when FOUNDATION_LOG_OUTPUT has invalid value."""
+        monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "invalid_value")
+        monkeypatch.setenv("PROVIDE_LOG_LEVEL", "INVALID_LEVEL")
+        
+        config = LoggingConfig.from_env()
+        captured = capsys.readouterr()
+        
+        # Both warnings should go to stderr (fallback)
+        assert "[Foundation Config Warning]" in captured.err
+        # Should have warning about invalid FOUNDATION_LOG_OUTPUT
+        assert "FOUNDATION_LOG_OUTPUT" in captured.err
+        # Should also have warning about invalid PROVIDE_LOG_LEVEL
+        assert "PROVIDE_LOG_LEVEL" in captured.err

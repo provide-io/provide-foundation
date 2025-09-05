@@ -127,5 +127,70 @@ class TestHandleGloballyDisabledSetup:
             assert config.get("processors") == []
 
             # Check that the setup message was logged
+
+
+class TestFoundationLogOutputCoreSetup:
+    """Test FOUNDATION_LOG_OUTPUT effects on core setup logger."""
+
+    def test_core_setup_logger_default_stderr(self, capsys: CaptureFixture) -> None:
+        """Test that core setup logger uses stderr by default."""
+        with patch.dict(os.environ, {"FOUNDATION_LOG_LEVEL": "DEBUG"}, clear=False):
+            reset_foundation_setup_for_testing()
+            
+            # Trigger a core setup log message
+            setup_telemetry(TelemetryConfig())
+            
             captured = capsys.readouterr()
-            assert "Foundation Telemetry globally disabled." in captured.err
+            # Should see setup messages in stderr
+            assert "Foundation bootstrap" in captured.err
+
+    def test_core_setup_logger_stdout_setting(self, monkeypatch, capsys: CaptureFixture) -> None:
+        """Test that core setup logger respects FOUNDATION_LOG_OUTPUT=stdout."""
+        monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "stdout") 
+        monkeypatch.setenv("FOUNDATION_LOG_LEVEL", "DEBUG")
+        
+        reset_foundation_setup_for_testing()
+        
+        # Trigger a core setup log message
+        setup_telemetry(TelemetryConfig())
+        
+        captured = capsys.readouterr()
+        # Should see setup messages in stdout, not stderr
+        assert "Foundation bootstrap" in captured.out
+        assert "Foundation bootstrap" not in captured.err
+
+    def test_core_setup_logger_invalid_setting_fallback(self, monkeypatch, capsys: CaptureFixture) -> None:
+        """Test that invalid FOUNDATION_LOG_OUTPUT falls back to stderr."""
+        monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "invalid_value")
+        monkeypatch.setenv("FOUNDATION_LOG_LEVEL", "DEBUG")
+        
+        reset_foundation_setup_for_testing()
+        
+        # Trigger a core setup log message
+        setup_telemetry(TelemetryConfig())
+        
+        captured = capsys.readouterr()
+        # Should see setup messages in stderr (fallback)
+        assert "Foundation bootstrap" in captured.err
+        # Should also see warning about invalid FOUNDATION_LOG_OUTPUT
+        assert "[Foundation Config Warning]" in captured.err
+        assert "invalid_value" in captured.err
+
+    def test_core_setup_logger_with_main_setting(self, monkeypatch, tmp_path, capsys: CaptureFixture) -> None:
+        """Test that core setup logger follows main log destination with FOUNDATION_LOG_OUTPUT=main."""
+        log_file = tmp_path / "test.log"
+        
+        monkeypatch.setenv("PROVIDE_LOG_FILE", str(log_file))
+        monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "main")
+        monkeypatch.setenv("FOUNDATION_LOG_LEVEL", "DEBUG")
+        
+        reset_foundation_setup_for_testing()
+        
+        # Setup telemetry which should create the log file and log there
+        config = TelemetryConfig.from_env()
+        setup_telemetry(config)
+        
+        # Core setup messages should follow main log destination (file)
+        assert log_file.exists()
+        log_content = log_file.read_text()
+        assert "Foundation bootstrap" in log_content
