@@ -24,18 +24,28 @@ from provide.foundation.types import (
 
 
 def _get_config_logger():
-    """Get logger for config warnings. Lazy import to avoid circular dependencies."""
+    """Get logger for config warnings that respects FOUNDATION_LOG_OUTPUT."""
     # Use basic structlog directly to avoid circular import with foundation logger
     import structlog
     import sys
 
-    # Always ensure structlog outputs to stderr for config warnings
-    # The default PrintLoggerFactory uses sys.stdout by default, so we need to override this
+    # Get the foundation log output destination
+    from provide.foundation.utils.streams import get_foundation_log_stream
+    
+    try:
+        # Try to get current foundation log output setting
+        foundation_output = os.getenv("FOUNDATION_LOG_OUTPUT", "stderr").lower()
+        output_stream = get_foundation_log_stream(foundation_output)
+    except Exception:
+        # Fallback to stderr if anything goes wrong during initialization
+        output_stream = sys.stderr
+
+    # Configure structlog to use the foundation log output destination
     try:
         config = structlog.get_config()
         structlog.configure(
             processors=config.get('processors', [structlog.dev.ConsoleRenderer()]),
-            logger_factory=structlog.PrintLoggerFactory(file=sys.stderr),
+            logger_factory=structlog.PrintLoggerFactory(file=output_stream),
             wrapper_class=config.get('wrapper_class', structlog.BoundLogger),
             cache_logger_on_first_use=config.get('cache_logger_on_first_use', True),
         )
@@ -43,7 +53,7 @@ def _get_config_logger():
         # Fallback configuration if anything goes wrong
         structlog.configure(
             processors=[structlog.dev.ConsoleRenderer()],
-            logger_factory=structlog.PrintLoggerFactory(file=sys.stderr),
+            logger_factory=structlog.PrintLoggerFactory(file=output_stream),
             wrapper_class=structlog.BoundLogger,
             cache_logger_on_first_use=True,
         )
@@ -107,6 +117,11 @@ class LoggingConfig(BaseConfig):
         default="INFO",
         env_var="FOUNDATION_LOG_LEVEL",
         description="Log level for Foundation internal setup messages",
+    )
+    foundation_log_output: str = field(
+        default="stderr",
+        env_var="FOUNDATION_LOG_OUTPUT",
+        description="Output destination for Foundation internal messages (stderr, stdout, main)",
     )
     show_emoji_matrix: bool = field(
         default=False,
@@ -175,6 +190,20 @@ class LoggingConfig(BaseConfig):
                     invalid_value=foundation_level,
                     valid_options=list(_VALID_LOG_LEVEL_TUPLE),
                     default_value="INFO",
+                )
+
+        if foundation_output := os.getenv("FOUNDATION_LOG_OUTPUT"):
+            foundation_output = foundation_output.lower()
+            valid_outputs = ("stderr", "stdout", "main")
+            if foundation_output in valid_outputs:
+                config_dict["foundation_log_output"] = foundation_output
+            elif strict:
+                _get_config_logger().warning(
+                    "[Foundation Config Warning] Invalid configuration value, using default",
+                    config_key="FOUNDATION_LOG_OUTPUT",
+                    invalid_value=foundation_output,
+                    valid_options=list(valid_outputs),
+                    default_value="stderr",
                 )
 
         if show_matrix := os.getenv("PROVIDE_SHOW_EMOJI_MATRIX"):

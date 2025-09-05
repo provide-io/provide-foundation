@@ -91,17 +91,28 @@ def _create_core_setup_logger(globally_disabled: bool = False) -> stdlib_logging
                 h.close()
         except Exception:
             pass
-    handler: stdlib_logging.Handler = (
-        stdlib_logging.NullHandler()
-        if globally_disabled
-        else stdlib_logging.StreamHandler(sys.stderr)
-    )
-    if not globally_disabled:
+    
+    if globally_disabled:
+        handler = stdlib_logging.NullHandler()
+    else:
+        # Get the foundation log output stream
+        from provide.foundation.logger.config import LoggingConfig
+        from provide.foundation.utils.streams import get_foundation_log_stream
+        
+        try:
+            logging_config = LoggingConfig.from_env(strict=False)
+            foundation_stream = get_foundation_log_stream(logging_config.foundation_log_output)
+        except Exception:
+            # Fallback to stderr if config loading fails
+            foundation_stream = get_safe_stderr()
+            
+        handler = stdlib_logging.StreamHandler(foundation_stream)
         handler.setFormatter(
             stdlib_logging.Formatter(
                 "[Foundation Setup] %(levelname)s (%(name)s): %(message)s"
             )
         )
+    
     logger.addHandler(handler)
     logger.setLevel(_get_foundation_log_level())
     logger.propagate = False
