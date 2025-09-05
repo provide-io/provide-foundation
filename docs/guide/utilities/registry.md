@@ -13,10 +13,10 @@ provide.foundation's registry system provides a powerful plugin architecture wit
 Register components in the global registry:
 
 ```python
-from provide.foundation.registry import Registry
+from provide.foundation.hub.registry import Registry
 
-# Get default registry
-registry = Registry.get_default()
+# Create a registry instance
+registry = Registry()
 
 # Register a component
 registry.register(

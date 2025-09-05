@@ -1,11 +1,12 @@
 """System information gathering utilities."""
 
 import contextlib
-from attrs import define
 import os
 import platform
 import shutil
 import sys
+
+from attrs import define
 
 from provide.foundation.logger import get_logger
 from provide.foundation.platform.detection import (

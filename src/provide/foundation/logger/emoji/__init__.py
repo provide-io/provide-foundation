@@ -14,9 +14,9 @@ from provide.foundation.logger.emoji.matrix import (
 from provide.foundation.logger.emoji.sets import (
     DATABASE_EMOJI_SET,
     HTTP_EMOJI_SET,
-    LLM_EMOJI_SET,
     LEGACY_DAS_EMOJI_SETS,
     LEGACY_DAS_FIELD_DEFINITIONS,
+    LLM_EMOJI_SET,
 )
 from provide.foundation.logger.emoji.types import (
     CustomDasEmojiSet,

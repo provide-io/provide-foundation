@@ -19,8 +19,8 @@ from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.env import EnvConfig
 from provide.foundation.config.types import ConfigDict, ConfigFormat, ConfigSource
 from provide.foundation.errors.config import ConfigurationError
-from provide.foundation.errors.resources import NotFoundError
 from provide.foundation.errors.decorators import with_error_handling
+from provide.foundation.errors.resources import NotFoundError
 
 T = TypeVar("T", bound=BaseConfig)
 
@@ -224,7 +224,9 @@ class EnvConfigLoader(ConfigLoader):
 class DictConfigLoader(ConfigLoader):
     """Load configuration from a dictionary."""
 
-    def __init__(self, data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME) -> None:
+    def __init__(
+        self, data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME
+    ) -> None:
         """
         Initialize dictionary configuration loader.
 

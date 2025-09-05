@@ -14,9 +14,9 @@ from typing import Any
 import click
 
 from provide.foundation.cli.context import Context
-from provide.foundation.errors.resources import AlreadyExistsError
 from provide.foundation.errors.config import ValidationError
 from provide.foundation.errors.decorators import with_error_handling
+from provide.foundation.errors.resources import AlreadyExistsError
 from provide.foundation.hub.commands import (
     CommandInfo,
     get_command_registry,
@@ -26,8 +26,8 @@ from provide.foundation.hub.components import (
     discover_components as _discover_components,
     get_component_registry,
 )
-from provide.foundation.logger import get_logger
 from provide.foundation.hub.registry import Registry
+from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
 

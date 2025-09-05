@@ -67,7 +67,7 @@ class ProcessError(RuntimeError):
         self.returncode = returncode
         self.stdout = stdout
         self.stderr = stderr
-        
+
         # Also store in context for structured logging
         if command:
             cmd_str = " ".join(command) if isinstance(command, list) else command

@@ -20,7 +20,7 @@ __all__ = [
     "pout",
     # Input functions
     "pin",
-    "pin_lines", 
+    "pin_lines",
     "pin_stream",
     # Async input functions
     "apin",

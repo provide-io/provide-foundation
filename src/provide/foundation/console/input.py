@@ -6,9 +6,9 @@ for JSON mode, streaming, and proper integration with the foundation's patterns.
 """
 
 import asyncio
+from collections.abc import AsyncIterator, Iterator
 import json
 import sys
-from collections.abc import AsyncIterator, Iterator
 from typing import Any, TypeVar
 
 import click
@@ -40,18 +40,15 @@ def _should_use_color(ctx: Context | None = None) -> bool:
     """Determine if color output should be used."""
     if ctx is None:
         ctx = _get_context()
-    
+
     # Check if stdin is a TTY
     return sys.stdin.isatty()
 
 
-def pin(
-    prompt: str = "",
-    **kwargs
-) -> str | Any:
+def pin(prompt: str = "", **kwargs) -> str | Any:
     """
     Input from stdin with optional prompt.
-    
+
     Args:
         prompt: Prompt to display before input
         **kwargs: Optional formatting arguments:
@@ -66,19 +63,19 @@ def pin(
             ctx: Override context
             color: Color for prompt (red, green, yellow, blue, cyan, magenta, white)
             bold: Bold prompt text
-            
+
     Returns:
         User input as string or converted type
-        
+
     Examples:
         name = pin("Enter name: ")
         age = pin("Age: ", type=int, default=0)
         password = pin("Password: ", password=True)
-        
+
     In JSON mode, returns structured input data.
     """
     ctx = kwargs.get("ctx") or _get_context()
-    
+
     if _should_use_json(ctx):
         # JSON mode - read from stdin and parse
         try:
@@ -86,27 +83,27 @@ def pin(
                 # Interactive mode, still show prompt to stderr
                 if prompt:
                     click.echo(prompt, err=True, nl=False)
-            
+
             line = sys.stdin.readline().strip()
-            
+
             # Try to parse as JSON first
             try:
                 data = json.loads(line)
             except json.JSONDecodeError:
                 # Treat as plain string
                 data = line
-            
+
             # Apply type conversion if specified
             if type_func := kwargs.get("type"):
                 try:
                     data = type_func(data)
                 except (TypeError, ValueError):
                     pass
-            
+
             if json_key := kwargs.get("json_key"):
                 return {json_key: data}
             return data
-            
+
         except Exception as e:
             plog.error("Failed to read JSON input", error=str(e))
             if json_key := kwargs.get("json_key"):
@@ -115,7 +112,7 @@ def pin(
     else:
         # Regular interactive mode - use click.prompt
         prompt_kwargs = {}
-        
+
         # Map our kwargs to click.prompt kwargs
         if "type" in kwargs:
             prompt_kwargs["type"] = kwargs["type"]
@@ -129,7 +126,7 @@ def pin(
             prompt_kwargs["show_default"] = kwargs["show_default"]
         if "value_proc" in kwargs:
             prompt_kwargs["value_proc"] = kwargs["value_proc"]
-        
+
         # Apply color/formatting to prompt if requested and supported
         styled_prompt = prompt
         if _should_use_color(ctx):
@@ -137,25 +134,25 @@ def pin(
             bold = kwargs.get("bold", False)
             if color or bold:
                 styled_prompt = click.style(prompt, fg=color, bold=bold)
-        
+
         return click.prompt(styled_prompt, **prompt_kwargs)
 
 
 def pin_stream() -> Iterator[str]:
     """
     Stream input line by line from stdin.
-    
+
     Yields:
         Lines from stdin (without trailing newline)
-        
+
     Examples:
         for line in pin_stream():
             process(line)
-            
+
     Note: This blocks on each line. For non-blocking, use apin_stream().
     """
     ctx = _get_context()
-    
+
     if _should_use_json(ctx):
         # In JSON mode, try to read as JSON first
         stdin_content = sys.stdin.read()
@@ -178,7 +175,7 @@ def pin_stream() -> Iterator[str]:
         line_count = 0
         try:
             for line in sys.stdin:
-                line = line.rstrip('\n\r')
+                line = line.rstrip("\n\r")
                 line_count += 1
                 plog.trace("📥 Stream line", line_num=line_count, length=len(line))
                 yield line
@@ -186,28 +183,25 @@ def pin_stream() -> Iterator[str]:
             plog.debug("📥 Input stream ended", lines=line_count)
 
 
-async def apin(
-    prompt: str = "",
-    **kwargs
-) -> str | Any:
+async def apin(prompt: str = "", **kwargs) -> str | Any:
     """
     Async input from stdin with optional prompt.
-    
+
     Args:
         prompt: Prompt to display before input
         **kwargs: Same as pin()
-        
+
     Returns:
         User input as string or converted type
-        
+
     Examples:
         name = await apin("Enter name: ")
         age = await apin("Age: ", type=int)
-        
+
     Note: This runs the blocking input in a thread pool to avoid blocking the event loop.
     """
     import functools
-    
+
     loop = asyncio.get_event_loop()
     func = functools.partial(pin, prompt, **kwargs)
     return await loop.run_in_executor(None, func)
@@ -216,33 +210,36 @@ async def apin(
 async def apin_stream() -> AsyncIterator[str]:
     """
     Async stream input line by line from stdin.
-    
+
     Yields:
         Lines from stdin (without trailing newline)
-        
+
     Examples:
         async for line in apin_stream():
             await process(line)
-            
+
     This provides non-blocking line-by-line input streaming.
     """
     ctx = _get_context()
-    
+
     if _should_use_json(ctx):
         # In JSON mode, read all input and yield parsed lines
         loop = asyncio.get_event_loop()
-        
+
         def read_json():
             try:
                 data = json.load(sys.stdin)
                 if isinstance(data, list):
-                    return [json.dumps(item) if not isinstance(item, str) else item for item in data]
+                    return [
+                        json.dumps(item) if not isinstance(item, str) else item
+                        for item in data
+                    ]
                 else:
                     return [json.dumps(data)]
             except json.JSONDecodeError:
                 # Fall back to line-by-line reading
-                return [line.rstrip('\n\r') for line in sys.stdin]
-        
+                return [line.rstrip("\n\r") for line in sys.stdin]
+
         lines = await loop.run_in_executor(None, read_json)
         for line in lines:
             yield line
@@ -250,26 +247,28 @@ async def apin_stream() -> AsyncIterator[str]:
         # Regular mode - async line streaming
         plog.debug("📥 Starting async input stream")
         line_count = 0
-        
+
         # Create async reader for stdin
         loop = asyncio.get_event_loop()
         reader = asyncio.StreamReader()
         protocol = asyncio.StreamReaderProtocol(reader)
-        
+
         await loop.connect_read_pipe(lambda: protocol, sys.stdin)
-        
+
         try:
             while True:
                 try:
                     line_bytes = await reader.readline()
                     if not line_bytes:
                         break
-                    
-                    line = line_bytes.decode('utf-8').rstrip('\n\r')
+
+                    line = line_bytes.decode("utf-8").rstrip("\n\r")
                     line_count += 1
-                    plog.trace("📥 Async stream line", line_num=line_count, length=len(line))
+                    plog.trace(
+                        "📥 Async stream line", line_num=line_count, length=len(line)
+                    )
                     yield line
-                    
+
                 except asyncio.CancelledError:
                     plog.debug("📥 Async stream cancelled", lines=line_count)
                     break
@@ -283,13 +282,13 @@ async def apin_stream() -> AsyncIterator[str]:
 def pin_lines(count: int | None = None) -> list[str]:
     """
     Read multiple lines from stdin.
-    
+
     Args:
         count: Number of lines to read (None for all until EOF)
-        
+
     Returns:
         List of input lines
-        
+
     Examples:
         lines = pin_lines(3)  # Read exactly 3 lines
         all_lines = pin_lines()  # Read until EOF
@@ -305,13 +304,13 @@ def pin_lines(count: int | None = None) -> list[str]:
 async def apin_lines(count: int | None = None) -> list[str]:
     """
     Async read multiple lines from stdin.
-    
+
     Args:
         count: Number of lines to read (None for all until EOF)
-        
+
     Returns:
         List of input lines
-        
+
     Examples:
         lines = await apin_lines(3)  # Read exactly 3 lines
         all_lines = await apin_lines()  # Read until EOF

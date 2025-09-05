@@ -196,11 +196,11 @@ class TestLazyInitializationErrorRecovery:
         """Test recovery when imports fail during lazy initialization."""
         reset_foundation_setup_for_testing()
 
-        # Mock import failure for config module
-        with patch("provide.foundation.logger.base.sys.modules") as mock_modules:
-            # Simulate import error for config module
-            original_config = mock_modules.get("provide.foundation.logger.config")
-            mock_modules["provide.foundation.logger.config"] = None
+        # Mock import failure for streams module
+        with patch("sys.modules") as mock_modules:
+            # Simulate import error for utils.streams module
+            original_streams = mock_modules.get("provide.foundation.utils.streams")
+            mock_modules["provide.foundation.utils.streams"] = None
 
             try:
                 # Should handle import failure gracefully
@@ -212,8 +212,8 @@ class TestLazyInitializationErrorRecovery:
 
             finally:
                 # Restore original module
-                if original_config:
-                    mock_modules["provide.foundation.config"] = original_config
+                if original_streams:
+                    mock_modules["provide.foundation.utils.streams"] = original_streams
 
     def test_repeated_failure_handling(self, capsys: CaptureFixture[str]) -> None:
         """Test that repeated failures don't cause infinite loops."""
@@ -313,15 +313,11 @@ class TestLazyInitializationEdgeEnvironments:
         # Create a StringIO as fallback before patching stderr
         fallback_stream = io.StringIO()
 
-        # FIXED: Mock both _get_safe_stderr functions in correct modules
+        # FIXED: Mock get_safe_stderr in utils.streams module
         with (
             patch("sys.stderr", None),
             patch(
-                "provide.foundation.core._get_safe_stderr", return_value=fallback_stream
-            ),
-            patch(
-                "provide.foundation.logger.base._get_safe_stderr",
-                return_value=fallback_stream,
+                "provide.foundation.utils.streams.get_safe_stderr", return_value=fallback_stream
             ),
         ):
             # Should handle gracefully without crashing or hanging

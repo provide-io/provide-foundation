@@ -2,7 +2,6 @@
 
 import inspect
 import json
-from pathlib import Path
 from typing import Any
 
 import click
@@ -147,7 +146,7 @@ class CliTestRunner:
     def __init__(self, mix_stderr: bool = False) -> None:
         self._mix_stderr = mix_stderr
         runner_sig = inspect.signature(CliRunner)
-        self._supports_mix_stderr = 'mix_stderr' in runner_sig.parameters
+        self._supports_mix_stderr = "mix_stderr" in runner_sig.parameters
 
         if self._supports_mix_stderr:
             self.runner = CliRunner(mix_stderr=self._mix_stderr)

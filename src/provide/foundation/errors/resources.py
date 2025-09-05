@@ -103,18 +103,18 @@ class AlreadyExistsError(FoundationError):
 
 class LockError(FoundationError):
     """Raised when file lock operations fail.
-    
+
     Args:
         message: Error message describing the lock issue.
         lock_path: Optional path to the lock file.
         timeout: Optional timeout that was exceeded.
         **kwargs: Additional context passed to FoundationError.
-    
+
     Examples:
         >>> raise LockError("Failed to acquire lock")
         >>> raise LockError("Lock timeout", lock_path="/tmp/app.lock", timeout=30)
     """
-    
+
     def __init__(
         self,
         message: str,
@@ -128,6 +128,6 @@ class LockError(FoundationError):
         if timeout is not None:
             kwargs.setdefault("context", {})["lock.timeout"] = timeout
         super().__init__(message, **kwargs)
-    
+
     def _default_code(self) -> str:
         return "LOCK_ERROR"

@@ -66,18 +66,8 @@ class TestConsoleOutput:
         captured = capsys.readouterr()
         assert captured.err == "❌ Failed\n"
 
-    def test_plog_is_logger_alias(self) -> None:
-        """Test that plog is an alias for logger."""
-        from provide.foundation import logger
-
-        assert plog is logger
-
-    def test_plog_logging(self, captured_stderr_for_foundation) -> None:
-        """Test plog structured logging."""
-        plog.info("Test message", user="alice", action="login")
-        output = captured_stderr_for_foundation.getvalue()
-        assert "Test message" in output
-        assert "user=alice" in output
+    # plog tests removed - plog alias was deprecated and removed from the public API
+    # Users should use logger directly instead
 
     @pytest.mark.parametrize("color", ["red", "green", "yellow", "blue"])
     def test_colors_non_tty(self, capsys, color) -> None:

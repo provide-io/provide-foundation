@@ -345,7 +345,7 @@ class TestErrorSystemIntegration:
         assert data["details"]["auth_method"] == "jwt"
         assert data["metadata"]["retry_after"] == 30.0
 
-    @patch("provide.foundation.errors.handlers.logger")
+    @patch("provide.foundation.errors.handlers._get_logger")
     def test_logging_integration(self, mock_logger) -> Never:
         """Test integration with logging system."""
         # Create and handle error
@@ -355,8 +355,8 @@ class TestErrorSystemIntegration:
             raise error
 
         # Verify logging
-        mock_logger.error.assert_called_once()
-        call_args = mock_logger.error.call_args
+        mock_logger.return_value.error.assert_called_once()
+        call_args = mock_logger.return_value.error.call_args
 
         # Check logged context
         assert call_args[1]["error.type"] == "ValidationError"
