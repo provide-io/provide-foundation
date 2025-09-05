@@ -34,10 +34,10 @@
 
 ## 📦 Installation
 
-Install `provide.foundation` using `pip` or your favorite package manager:
+Install `provide.foundation` using `uv` (recommended) or `pip`:
 
 ```bash
-pip install provide-foundation
+uv pip install provide-foundation
 ```
 
 ## 🚀 Quick Start
@@ -64,13 +64,11 @@ def main():
     logger.info("Application shutting down")
 
 if __name__ == "__main__":
-    main()
-```
+    main()```
 
 Run this script, and you'll see beautifully formatted, structured output right in your console:
 
-```
-[▶️] Application starting up
+```[▶️] Application starting up
 [🔥] An expected error occurred error_details='Attempted to divide by zero' user_id='usr_123' exc_info=...
 [▶️] Application shutting down
 ```
@@ -92,44 +90,23 @@ logger.error("Failed to connect to database", db_host="prod.db.example.com")
 
 ### 2. Structured Logging
 
-`provide.foundation` is built around the principle of structured logging. Instead of embedding variables in log messages, you pass them as keyword arguments. This makes your logs:
-*   **Machine-readable**: Easily parsed, filtered, and indexed by log management systems (like Datadog, Splunk, or the ELK stack).
-*   **Consistent**: Ensures the same event is always logged with the same structure.
-*   **Rich with Context**: Carry detailed, queryable context with every event.
+`provide.foundation` is built around the principle of structured logging. Instead of embedding variables in log messages, you pass them as keyword arguments. This makes your logs machine-readable and consistent.
 
 ```python
 # ❌ Anti-pattern: Unstructured logging
-logger.info(f"User {user_id} from IP {ip_address} completed checkout for order {order_id}.")
+logger.info(f"User {user_id} completed checkout for order {order_id}.")
 
 # ✅ Best practice: Structured logging
 logger.info(
     "Checkout complete",
     user_id=user_id,
-    ip_address=ip_address,
     order_id=order_id,
 )
 ```
 
-### 3. Emoji-Enhanced Visual Parsing
+### 3. Semantic Layers
 
-A standout feature is the automatic inclusion of emoji prefixes. These aren't just for decoration; they provide instant visual cues about the log's origin and meaning, making it effortless to scan logs during development and debugging.
-
-*   **Logger Name Prefix**: A unique emoji is generated based on the name of the logger, so you can instantly identify which part of your application a log is from.
-*   **Semantic Prefix**: Emojis are added based on the *semantic content* of the log, using either the active Semantic Layers or the fallback DAS pattern.
-
-### 4. Semantic Layers
-
-Semantic Layers are the heart of `provide.foundation`'s advanced logging capabilities. They provide a schema-driven way to define structured logging conventions for specific domains.
-
-When you log a message with keys that match a field in an active semantic layer, the library automatically:
-1.  Validates the log structure (in a future release).
-2.  Adds a semantic emoji prefix based on the log's content.
-3.  Namespaces the context for cleaner, more organized output.
-
-The library comes with built-in layers for common domains:
-*   `http`: For logging HTTP requests and responses.
-*   `database`: For database queries and operations.
-*   `llm`: For interactions with Large Language Models.
+Semantic Layers provide a schema-driven way to define structured logging conventions for specific domains like HTTP, databases, or LLMs. When you log a message with keys that match a semantic layer, the library automatically adds contextual emoji prefixes.
 
 **Example using the `http` layer:**
 
@@ -147,20 +124,19 @@ logger.info(
         "http.method": "GET",
         "http.status_code": 200,
         "http.url": "/api/v1/users",
-        "http.response_time_ms": 25,
     }
 )
 ```
 
 **Output:**
 ```
-[➡️][✅] API request processed http.url=/api/v1/users http.response_time_ms=25
+[➡️][✅] API request processed http.url=/api/v1/users
 ```
 The `[➡️][✅]` prefix is automatically generated from the `http.method` ("GET") and `http.status_code` (200).
 
-### 5. The Domain-Action-Status (DAS) Fallback
+### 4. The Domain-Action-Status (DAS) Fallback
 
-When no semantic layer matches a log event, the system falls back to the classic DAS pattern. By providing `domain`, `action`, and `status` keys in your log call, you can still get meaningful emoji prefixes.
+When no semantic layer matches, the system falls back to the classic DAS pattern. By providing `domain`, `action`, and `status` keys, you still get meaningful emoji prefixes.
 
 ```python
 logger.info(
@@ -179,11 +155,11 @@ logger.info(
 
 ## 🔧 Configuration
 
-While `provide.foundation` works out of the box, you can easily configure it to suit your needs.
+While `provide.foundation` works out of the box, you can easily configure it via environment variables or code.
 
 ### Via Environment Variables
 
-This is the recommended way to configure the logger in production environments.
+This is the recommended way to configure the logger in production.
 
 | Variable | Description | Default | Example |
 |---|---|---|---|
@@ -191,11 +167,10 @@ This is the recommended way to configure the logger in production environments.
 | `FOUNDATION_LOG_LEVEL` | Default log level. | `DEBUG` | `INFO` |
 | `FOUNDATION_LOG_CONSOLE_FORMATTER` | Output format. | `key_value` | `json` |
 | `FOUNDATION_LOG_ENABLED_SEMANTIC_LAYERS` | Comma-separated list of layers to enable. | `""` | `http,database` |
-| `FOUNDATION_SHOW_EMOJI_MATRIX` | Set to `true` to print the emoji reference on startup. | `false` | `true` |
 
 ### Programmatic Configuration
 
-For more complex setups, you can configure the logger in your application's code. This is best done once at application startup.
+For more complex setups, configure the logger once at application startup.
 
 ```python
 from provide.foundation import setup_telemetry, TelemetryConfig, LoggingConfig
@@ -205,12 +180,9 @@ config = TelemetryConfig(
     logging=LoggingConfig(
         default_level="INFO",
         console_formatter="json",
-        # Set per-module log levels for fine-grained control
         module_levels={
             "noisy_library": "WARNING",
-            "critical_component": "DEBUG",
         },
-        # Enable built-in semantic layers
         enabled_semantic_layers=["http", "database", "llm"],
     )
 )
@@ -222,12 +194,11 @@ setup_telemetry(config)
 
 ### Named Loggers
 
-For better organization, especially in larger applications, you can create named loggers. Each named logger will have its own unique, consistent emoji prefix.
+For better organization in larger applications, create named loggers. Each will have its own unique, consistent emoji prefix.
 
 ```python
 from provide.foundation import logger
 
-# Get a logger for a specific component
 db_logger = logger.get_logger("database")
 api_logger = logger.get_logger("api.v1.users")
 
@@ -241,48 +212,16 @@ api_logger.info("User lookup request received")
 [🙋] User lookup request received
 ```
 
-### Exception Handling
-
-The `logger.exception()` method is the best way to log exceptions. It automatically captures and formats the traceback information.
-
-```python
-try:
-    # Risky operation
-    ...
-except Exception as e:
-    logger.exception(
-        "Failed to process user data",
-        user_id=123,
-        cause=str(e)
-    )
-```
-
-### Async Support
-
-`provide.foundation` is fully compatible with `asyncio`. You can log from async functions without any special considerations.
-
-```python
-import asyncio
-from provide.foundation import logger
-
-async def fetch_data(url: str):
-    logger.info("Fetching data", url=url)
-    await asyncio.sleep(1) # Simulate network request
-    logger.info("Data fetched successfully", url=url)
-
-asyncio.run(fetch_data("https://example.com"))
-```
-
 ### `timed_block` Utility
 
-The `timed_block` context manager is a powerful utility for logging the duration and outcome of a block of code. It's perfect for monitoring performance of critical sections.
+The `timed_block` context manager is a powerful utility for logging the duration and outcome of a block of code.
 
 ```python
+import time
 from provide.foundation import logger, timed_block
 
 # Time a successful operation
 with timed_block(logger, "database_query", db_table="users"):
-    # Simulate work
     time.sleep(0.5)
 
 # Time a failing operation
@@ -290,88 +229,19 @@ try:
     with timed_block(logger, "payment_processing", transaction_id="txn_123"):
         raise RuntimeError("Credit card declined")
 except RuntimeError:
-    logger.info("Gracefully handling payment failure.")
+    pass
 ```
 
 **Output:**
 ```
-[▶️] database_query db_table=users outcome=success duration_ms=501.23
-[🔥] payment_processing transaction_id='txn_123' outcome=error error.message='Credit card declined' error.type=RuntimeError duration_ms=0.45
+[▶️] database_query completed db_table=users duration_seconds=0.501
+[🔥] payment_processing failed transaction_id=txn_123 duration_seconds=0.0 error=...
 ```
-
-## 🎨 Customization
-
-### Creating a Custom Semantic Layer
-
-You can easily define your own semantic layers for your application's domain.
-
-```python
-from provide.foundation import (
-    SemanticLayer,
-    SemanticFieldDefinition,
-    CustomDasEmojiSet,
-    TelemetryConfig,
-    LoggingConfig,
-    setup_telemetry,
-    logger,
-)
-
-# 1. Define emoji sets for the layer's fields
-file_op_emojis = CustomDasEmojiSet(
-    name="file_operation_emojis",
-    emojis={"read": "📖", "write": "📝", "delete": "🗑️", "default": "⚙️"}
-)
-file_outcome_emojis = CustomDasEmojiSet(
-    name="file_outcome_emojis",
-    emojis={"success": "✅", "not_found": "❓", "permission_denied": "🚫", "default": "🔥"}
-)
-
-# 2. Define the semantic fields
-file_io_fields = [
-    SemanticFieldDefinition(log_key="file.operation", emoji_set_name="file_operation_emojis"),
-    SemanticFieldDefinition(log_key="file.outcome", emoji_set_name="file_outcome_emojis"),
-    SemanticFieldDefinition(log_key="file.path"), # This field adds context but not an emoji
-]
-
-# 3. Create the layer
-file_io_layer = SemanticLayer(
-    name="file_io",
-    emoji_sets=[file_op_emojis, file_outcome_emojis],
-    field_definitions=file_io_fields,
-)
-
-# 4. Configure telemetry to use the custom layer
-config = TelemetryConfig(logging=LoggingConfig(custom_semantic_layers=[file_io_layer]))
-setup_telemetry(config)
-
-# 5. Log using your new semantic keys!
-logger.info(
-    "File write complete",
-    **{
-        "file.operation": "write",
-        "file.outcome": "success",
-        "file.path": "/data/report.csv",
-    }
-)
-```
-
-**Output:**
-```
-[📝][✅] File write complete file.path=/data/report.csv
-```
-
-## ⚡ Performance
-
-`provide.foundation` is built for speed. However, for ultra-high-throughput applications, consider these tips:
-*   **Set a higher log level in production**: `INFO` or `WARNING` is typical. This avoids the cost of processing and writing `DEBUG` logs.
-*   **Use the `json` formatter**: It is slightly more performant than the `key_value` formatter and is better for ingestion by log aggregators.
-*   **Disable logger name emojis if needed**: If you have thousands of dynamically named loggers, you can disable the name-based emoji for a performance boost.
 
 ## 🤝 Contribution
 
-We welcome contributions! Whether it's bug reports, feature requests, or code contributions, please feel free to get involved.
-
-*   **For developers contributing to this library**: Please see `DEVELOPMENT.md` and `CLAUDE.md` for detailed setup and convention guides.
+We welcome contributions! 
+*   **For developers**: Please see `DEVELOPMENT.md` and `CLAUDE.md` for setup and convention guides.
 *   **To report a bug or request a feature**: Please open an issue on our [GitHub repository](https://github.com/provide-io/provide-foundation).
 
 ---

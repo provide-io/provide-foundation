@@ -12,6 +12,7 @@ import logging as stdlib_logging
 import os
 import sys
 import threading
+from pathlib import Path
 from typing import Any, TextIO, cast
 
 import structlog
@@ -38,8 +39,9 @@ from provide.foundation.types import (
 
 _FOUNDATION_SETUP_LOCK = (
     threading.Lock()
-)  # A non-reentrant lock is fine with the refactored logic.
+)
 _FOUNDATION_LOG_STREAM: TextIO = sys.stderr
+_LOG_FILE_HANDLE: TextIO | None = None
 _CORE_SETUP_LOGGER_NAME = "provide.foundation.core_setup"
 _EXPLICIT_SETUP_DONE = False
 
@@ -189,14 +191,19 @@ def _handle_globally_disabled_setup() -> None:
     )
 
 
-def reset_foundation_setup_for_testing() -> None:
+def _reset_foundation_state() -> None:
     """
-    Resets `structlog` defaults and Foundation Telemetry's internal logger state.
-    This is a test utility and should not be called by production code.
+    Internal function to reset `structlog` and Foundation Telemetry's state.
     """
-    global _FOUNDATION_LOG_STREAM, _core_setup_logger, _EXPLICIT_SETUP_DONE
+    global _FOUNDATION_LOG_STREAM, _core_setup_logger, _EXPLICIT_SETUP_DONE, _LOG_FILE_HANDLE
     with _FOUNDATION_SETUP_LOCK:
         structlog.reset_defaults()
+        if _LOG_FILE_HANDLE:
+            try:
+                _LOG_FILE_HANDLE.close()
+            except Exception:
+                pass
+            _LOG_FILE_HANDLE = None
         foundation_logger.logger._is_configured_by_setup = False
         foundation_logger.logger._active_config = None
         foundation_logger.logger._active_resolved_semantic_config = None
@@ -206,6 +213,13 @@ def reset_foundation_setup_for_testing() -> None:
         _FOUNDATION_LOG_STREAM = sys.stderr
         _EXPLICIT_SETUP_DONE = False
         _core_setup_logger = _create_core_setup_logger()
+
+
+def reset_foundation_setup_for_testing() -> None:
+    """
+    Public test utility to reset Foundation Telemetry's internal state.
+    """
+    _reset_foundation_state()
 
 
 def _internal_setup(
@@ -218,7 +232,6 @@ def _internal_setup(
     global _core_setup_logger
 
     # This function assumes the lock is already held.
-    # 1. Reset all relevant state.
     structlog.reset_defaults()
     foundation_logger.logger._is_configured_by_setup = False
     foundation_logger.logger._active_config = None
@@ -227,7 +240,6 @@ def _internal_setup(
         {"done": False, "error": None, "in_progress": False}
     )
 
-    # 2. Determine configuration
     current_config = config if config is not None else TelemetryConfig.from_env()
     _core_setup_logger = _create_core_setup_logger(
         globally_disabled=current_config.globally_disabled
@@ -236,18 +248,15 @@ def _internal_setup(
     if not current_config.globally_disabled:
         _core_setup_logger.info("⚙️➡️🚀 Starting Foundation (structlog) setup...")
 
-    # 3. Resolve semantic config
     resolved_semantic_config = _resolve_active_semantic_config(
         current_config.logging, BUILTIN_SEMANTIC_LAYERS
     )
 
-    # 4. Apply configuration
     if current_config.globally_disabled:
         _handle_globally_disabled_setup()
     else:
         _configure_structlog_output(current_config, resolved_semantic_config)
 
-    # 5. Update state flags
     foundation_logger.logger._is_configured_by_setup = is_explicit_call
     foundation_logger.logger._active_config = current_config
     foundation_logger.logger._active_resolved_semantic_config = resolved_semantic_config
@@ -261,12 +270,48 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
     """
     Initializes or reconfigures the Foundation Telemetry system.
     """
-    global _EXPLICIT_SETUP_DONE
+    global _EXPLICIT_SETUP_DONE, _LOG_FILE_HANDLE, _FOUNDATION_LOG_STREAM
     with _FOUNDATION_SETUP_LOCK:
-        _ensure_stderr_default()
-        _internal_setup(config, is_explicit_call=True)
+        current_config = config if config is not None else TelemetryConfig.from_env()
+        
+        if _LOG_FILE_HANDLE and _LOG_FILE_HANDLE is not _FOUNDATION_LOG_STREAM:
+            try:
+                _LOG_FILE_HANDLE.close()
+            except Exception:
+                pass
+            _LOG_FILE_HANDLE = None
+
+        log_file_path = getattr(current_config.logging, 'log_file', None)
+        
+        is_test_stream = _FOUNDATION_LOG_STREAM is not sys.stderr and not isinstance(_FOUNDATION_LOG_STREAM, io.TextIOWrapper)
+
+        if log_file_path:
+            try:
+                Path(log_file_path).parent.mkdir(parents=True, exist_ok=True)
+                _LOG_FILE_HANDLE = open(log_file_path, "a", encoding="utf-8", buffering=1)
+                _FOUNDATION_LOG_STREAM = _LOG_FILE_HANDLE
+            except Exception as e:
+                _core_setup_logger.error(f"Failed to open log file {log_file_path}: {e}")
+                _FOUNDATION_LOG_STREAM = _get_safe_stderr()
+        elif not is_test_stream:
+             _FOUNDATION_LOG_STREAM = _get_safe_stderr()
+
+        _internal_setup(current_config, is_explicit_call=True)
         _EXPLICIT_SETUP_DONE = True
 
 
 async def shutdown_foundation_telemetry(timeout_millis: int = 5000) -> None:
-    _core_setup_logger.info("🔌➡️🏁 Foundation Telemetry shutdown called.")
+    """
+    Gracefully flushes any buffered telemetry, especially for file logging.
+    This does NOT perform a full reset, allowing test runners to clean up streams.
+    """
+    global _LOG_FILE_HANDLE
+    _core_setup_logger.info("🔌➡️🏁 Foundation Telemetry flush called.")
+    with _FOUNDATION_SETUP_LOCK:
+        if _LOG_FILE_HANDLE:
+            try:
+                # Only flush the handle, do not close or reset state.
+                # The test fixture's reset will handle the final close.
+                _LOG_FILE_HANDLE.flush()
+            except Exception as e:
+                _core_setup_logger.error(f"Failed to flush log file handle: {e}")

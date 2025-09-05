@@ -60,12 +60,15 @@ def run_command(
         ProcessError: If command fails and check=True
         TimeoutError: If timeout is exceeded
     """
-    # Log command execution
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
     plog.info("🚀 Running command", command=cmd_str, cwd=str(cwd) if cwd else None)
 
-    # Prepare environment
-    run_env = dict(env) if env is not None else os.environ.copy()
+    # Prepare environment, disabling foundation telemetry by default
+    run_env = os.environ.copy()
+    if env is not None:
+        run_env.update(env)
+    run_env.setdefault('FOUNDATION_TELEMETRY_DISABLED', 'true')
+
 
     # Convert Path to string
     if isinstance(cwd, Path):
@@ -225,8 +228,11 @@ def stream_command(
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
     plog.info("🌊 Streaming command", command=cmd_str, cwd=str(cwd) if cwd else None)
 
-    # Prepare environment
-    run_env = dict(env) if env is not None else os.environ.copy()
+    # Prepare environment, disabling foundation telemetry by default
+    run_env = os.environ.copy()
+    if env is not None:
+        run_env.update(env)
+    run_env.setdefault('FOUNDATION_TELEMETRY_DISABLED', 'true')
 
     # Convert Path to string
     if isinstance(cwd, Path):
@@ -238,7 +244,7 @@ def stream_command(
             cwd=cwd,
             env=run_env,
             stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
+            stderr=subprocess.STDOUT if stream_stderr else subprocess.PIPE,
             text=True,
             bufsize=1,
             universal_newlines=True,

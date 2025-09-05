@@ -76,6 +76,7 @@ def timed_block(
         duration = time.perf_counter() - start_time
         all_kvs.update(context)
         all_kvs["duration_seconds"] = round(duration, 3)
+        all_kvs["outcome"] = "success"
 
         logger_instance.info(f"{event_name} completed", **all_kvs)
 
@@ -84,8 +85,9 @@ def timed_block(
         duration = time.perf_counter() - start_time
         all_kvs.update(context)
         all_kvs["duration_seconds"] = round(duration, 3)
-        all_kvs["error"] = str(e)
-        all_kvs["error_type"] = type(e).__name__
+        all_kvs["outcome"] = "error"
+        all_kvs["error.message"] = str(e)
+        all_kvs["error.type"] = type(e).__name__
 
         logger_instance.error(f"{event_name} failed", exc_info=True, **all_kvs)
         raise

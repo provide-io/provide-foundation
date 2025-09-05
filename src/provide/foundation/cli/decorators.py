@@ -2,6 +2,7 @@
 
 from collections.abc import Callable
 import functools
+from pathlib import Path
 import sys
 from typing import Any, TypeVar
 
@@ -208,7 +209,8 @@ def pass_context(f: F) -> F:
         if kwargs.get("log_level"):
             ctx.obj.log_level = kwargs["log_level"]
         if kwargs.get("log_file"):
-            ctx.obj.log_file = kwargs["log_file"]
+            # Ensure log_file is a Path object, as expected by Context
+            ctx.obj.log_file = Path(kwargs["log_file"])
         if "log_format" in kwargs and kwargs["log_format"] is not None:
             ctx.obj.log_format = kwargs["log_format"]
         if "json_output" in kwargs and kwargs["json_output"] is not None:

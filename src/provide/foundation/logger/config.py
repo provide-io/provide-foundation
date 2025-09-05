@@ -5,7 +5,7 @@
 Foundation Telemetry Configuration Module.
 Defines data models for telemetry and logging settings.
 """
-
+from pathlib import Path
 from attrs import define, field
 
 from provide.foundation.types import (
@@ -29,6 +29,7 @@ class LoggingConfig:
     enabled_semantic_layers: list[str] = field(factory=lambda: [])
     custom_semantic_layers: list[SemanticLayer] = field(factory=lambda: [])
     user_defined_emoji_sets: list[CustomDasEmojiSet] = field(factory=lambda: [])
+    log_file: Path | None = field(default=None)
 
 
 @define(frozen=True, slots=True)
