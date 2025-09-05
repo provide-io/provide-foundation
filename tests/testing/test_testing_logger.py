@@ -14,16 +14,22 @@ class TestLoggerTestingUtilities:
     
     def test_reset_foundation_state_resets_structlog(self):
         """Test that reset_foundation_state resets structlog."""
-        # Configure structlog with some processors
+        # Configure structlog with custom processors
+        original_processors = [structlog.processors.add_log_level]
         structlog.configure(
-            processors=[structlog.processors.add_log_level],
+            processors=original_processors,
             logger_factory=structlog.ReturnLoggerFactory(),
         )
         
+        # Verify we have our custom config
+        assert structlog.get_config()["processors"] == original_processors
+        
         reset_foundation_state()
         
-        # Should be reset to defaults
-        assert structlog.get_config()["processors"] == []
+        # Should be reset to structlog defaults (not empty)
+        default_config = structlog.get_config()
+        assert len(default_config["processors"]) > 0  # Should have default processors
+        assert default_config["processors"] != original_processors  # Should be different from our custom config
 
     def test_reset_foundation_state_resets_logger_state(self):
         """Test that foundation logger state is reset."""
