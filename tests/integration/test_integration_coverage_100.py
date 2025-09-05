@@ -12,18 +12,18 @@ from provide.foundation.logger.base import _LAZY_SETUP_STATE, FoundationLogger
 
 
 def test_ensure_stderr_default() -> None:
-    """Test that _ensure_stderr_default switches from stdout to stderr."""
-    from provide.foundation import core
-    from provide.foundation.core import _ensure_stderr_default
+    """Test that ensure_stderr_default switches from stdout to stderr."""
+    from provide.foundation.streams import ensure_stderr_default
+    from provide.foundation import streams
 
     # Set stream to stdout first
-    core._PROVIDE_LOG_STREAM = sys.stdout
+    streams.core._PROVIDE_LOG_STREAM = sys.stdout
 
     # Call the function - should switch to stderr
-    _ensure_stderr_default()
+    ensure_stderr_default()
 
     # Verify it switched
-    assert core._PROVIDE_LOG_STREAM is sys.stderr
+    assert streams.core._PROVIDE_LOG_STREAM is sys.stderr
 
     # Reset
     reset_foundation_setup_for_testing()
