@@ -95,7 +95,7 @@ class TestFoundationLogStreamUtility:
 
     def test_main_setting_with_provide_stream(self) -> None:
         """Test that main setting returns _PROVIDE_LOG_STREAM."""
-        with patch("provide.foundation.core._PROVIDE_LOG_STREAM") as mock_stream:
+        with patch("provide.foundation.streams.core._PROVIDE_LOG_STREAM") as mock_stream:
             mock_stream.__class__ = io.TextIOWrapper
             stream = get_foundation_log_stream("main")
             assert stream is mock_stream
@@ -143,7 +143,8 @@ class TestFoundationLogOutputIntegration:
         monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "main")
         
         # Reset and setup telemetry with file logging
-        from provide.foundation.testing import reset_foundation_setup_for_testing, setup_telemetry
+        from provide.foundation.testing import reset_foundation_setup_for_testing
+        from provide.foundation.setup import setup_telemetry
         reset_foundation_setup_for_testing()
         
         config = TelemetryConfig.from_env()
@@ -168,7 +169,8 @@ class TestFoundationLogOutputIntegration:
         monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "stderr")
         
         # Reset and setup telemetry
-        from provide.foundation.testing import reset_foundation_setup_for_testing, setup_telemetry
+        from provide.foundation.testing import reset_foundation_setup_for_testing
+        from provide.foundation.setup import setup_telemetry
         reset_foundation_setup_for_testing()
         
         config = TelemetryConfig.from_env()
