@@ -9,7 +9,6 @@ and shutdown for the telemetry system.
 
 import io
 import logging as stdlib_logging
-import os
 from pathlib import Path
 import sys
 import threading
@@ -43,6 +42,25 @@ _PROVIDE_LOG_STREAM: TextIO = sys.stderr
 _LOG_FILE_HANDLE: TextIO | None = None
 _CORE_SETUP_LOGGER_NAME = "provide.foundation.core_setup"
 _EXPLICIT_SETUP_DONE = False
+
+# Single source of truth for Foundation log level
+_FOUNDATION_LOG_LEVEL: int | None = None
+
+
+def _get_foundation_log_level() -> int:
+    """Get the Foundation log level from LoggingConfig, checking only once."""
+    global _FOUNDATION_LOG_LEVEL
+    if _FOUNDATION_LOG_LEVEL is None:
+        # Use the proper config system to get the Foundation setup log level
+        from provide.foundation.logger.config import LoggingConfig
+        logging_config = LoggingConfig.from_env(strict=False)
+        level_str = logging_config.foundation_setup_log_level.upper()
+        _FOUNDATION_LOG_LEVEL = getattr(
+            stdlib_logging,
+            level_str,
+            stdlib_logging.INFO,  # Default fallback
+        )
+    return _FOUNDATION_LOG_LEVEL
 
 
 # Moved to utils.streams to avoid duplication with logger/base.py
@@ -84,7 +102,7 @@ def _create_core_setup_logger(globally_disabled: bool = False) -> stdlib_logging
             )
         )
     logger.addHandler(handler)
-    logger.setLevel(stdlib_logging.DEBUG)
+    logger.setLevel(_get_foundation_log_level())
     logger.propagate = False
     return logger
 
@@ -139,16 +157,16 @@ def _build_complete_processor_chain(
         config.logging, _PROVIDE_LOG_STREAM
     )
     _core_setup_logger.debug(
-        f"📝➡️🎨 Configured {config.logging.console_formatter} renderer."
+        "📝➡️🎨 Configured renderer",
+        formatter=config.logging.console_formatter,
+        log_level=config.logging.default_level
     )
     return cast(list[Any], core_processors + formatter_processors)
 
 
 def _apply_structlog_configuration(processors: list[Any]) -> None:
     stream_name = (
-        "sys.stderr"
-        if sys.stderr == _PROVIDE_LOG_STREAM
-        else "custom stream (testing)"
+        "sys.stderr" if sys.stderr == _PROVIDE_LOG_STREAM else "custom stream (testing)"
     )
     structlog.configure(
         processors=processors,
@@ -157,7 +175,10 @@ def _apply_structlog_configuration(processors: list[Any]) -> None:
         cache_logger_on_first_use=True,
     )
     _core_setup_logger.debug(
-        f"📝➡️✅ structlog configured. Wrapper: BoundLogger. Output: {stream_name}."
+        "📝➡️✅ structlog configured",
+        wrapper="BoundLogger", 
+        output=stream_name,
+        processor_count=len(processors)
     )
 
 
@@ -185,7 +206,8 @@ def _reset_foundation_state() -> None:
         _PROVIDE_LOG_STREAM, \
         _core_setup_logger, \
         _EXPLICIT_SETUP_DONE, \
-        _LOG_FILE_HANDLE
+        _LOG_FILE_HANDLE, \
+        _FOUNDATION_LOG_LEVEL
     with _PROVIDE_SETUP_LOCK:
         structlog.reset_defaults()
         if _LOG_FILE_HANDLE:
@@ -202,6 +224,7 @@ def _reset_foundation_state() -> None:
         )
         _PROVIDE_LOG_STREAM = sys.stderr
         _EXPLICIT_SETUP_DONE = False
+        _FOUNDATION_LOG_LEVEL = None  # Reset log level cache
         _core_setup_logger = _create_core_setup_logger()
 
 
@@ -236,7 +259,12 @@ def _internal_setup(
     )
 
     if not current_config.globally_disabled:
-        _core_setup_logger.debug("⚙️➡️🚀 Starting Foundation (structlog) setup...")
+        _core_setup_logger.debug(
+            "⚙️➡️🚀 Starting Foundation (structlog) setup",
+            service_name=current_config.service_name,
+            log_level=current_config.logging.default_level,
+            formatter=current_config.logging.console_formatter
+        )
 
     resolved_emoji_config = _resolve_active_emoji_config(
         current_config.logging, BUILTIN_EMOJI_SETS
@@ -253,7 +281,14 @@ def _internal_setup(
     foundation_logger._LAZY_SETUP_STATE["done"] = True
 
     if not current_config.globally_disabled:
-        _core_setup_logger.debug("⚙️➡️✅ Foundation (structlog) setup completed.")
+        field_definitions, emoji_sets = resolved_emoji_config
+        _core_setup_logger.debug(
+            "⚙️➡️✅ Foundation (structlog) setup completed",
+            emoji_sets_enabled=len(field_definitions) > 0,
+            emoji_sets_count=len(emoji_sets),
+            processors_configured=True,
+            log_file_enabled=current_config.logging.log_file is not None
+        )
 
 
 def setup_telemetry(config: TelemetryConfig | None = None) -> None:
@@ -286,7 +321,10 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
                 _PROVIDE_LOG_STREAM = _LOG_FILE_HANDLE
             except Exception as e:
                 _core_setup_logger.error(
-                    f"Failed to open log file {log_file_path}: {e}"
+                    "Failed to open log file",
+                    log_file_path=str(log_file_path),
+                    error=str(e),
+                    error_type=type(e).__name__
                 )
                 _PROVIDE_LOG_STREAM = get_safe_stderr()
         elif not is_test_stream:
@@ -310,4 +348,8 @@ async def shutdown_foundation_telemetry(timeout_millis: int = 5000) -> None:
                 # The test fixture's reset will handle the final close.
                 _LOG_FILE_HANDLE.flush()
             except Exception as e:
-                _core_setup_logger.error(f"Failed to flush log file handle: {e}")
+                _core_setup_logger.error(
+                    "Failed to flush log file handle",
+                    error=str(e),
+                    error_type=type(e).__name__
+                )

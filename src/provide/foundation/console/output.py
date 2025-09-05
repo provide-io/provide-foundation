@@ -11,7 +11,7 @@ from typing import Any
 
 import click
 
-from provide.foundation.cli.context import Context
+from provide.foundation.context import Context
 from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)

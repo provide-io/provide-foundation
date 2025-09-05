@@ -8,7 +8,7 @@ from typing import Any, TypeVar
 
 import click
 
-from provide.foundation.cli.context import Context
+from provide.foundation.context import Context
 
 F = TypeVar("F", bound=Callable[..., Any])
 

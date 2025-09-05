@@ -17,7 +17,7 @@ except PackageNotFoundError:  # pragma: no cover
 # New foundation components
 # Make the errors module available for detailed imports
 from provide.foundation import cli, config, errors, platform, process
-from provide.foundation.cli.context import Context
+from provide.foundation.context import Context
 
 # Console I/O functions
 from provide.foundation.console import perr, pin, pout

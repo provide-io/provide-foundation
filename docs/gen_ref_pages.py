@@ -1,6 +1,7 @@
 """Generate the API reference pages."""
 
 from pathlib import Path
+
 import mkdocs_gen_files
 
 # Map module paths to documentation paths
@@ -14,39 +15,39 @@ for path in sorted(src_root.rglob("*.py")):
     # Skip __pycache__ and test files
     if "__pycache__" in str(path) or "test" in path.name:
         continue
-    
+
     # Skip __init__.py files that are empty or just imports
     if path.name == "__init__.py" and path.stat().st_size < 100:
         continue
-    
+
     # Convert path to module path
     module_path = path.relative_to(src_root).with_suffix("")
-    
+
     # Convert to documentation path
     doc_path = Path("api", "reference") / module_path.with_suffix(".md")
-    
+
     # Calculate full module name
     full_doc_path = Path("api", "reference") / module_path.with_suffix(".md")
-    
+
     parts = tuple(module_path.parts)
-    
+
     # Skip private modules (starting with _)
     if any(part.startswith("_") and part != "__init__" for part in parts):
         continue
-    
+
     # Add to navigation
     if parts[-1] == "__init__":
         parts = parts[:-1]
         doc_path = doc_path.with_name("index.md")
         full_doc_path = full_doc_path.with_name("index.md")
-    
+
     nav[parts] = doc_path.as_posix()
-    
+
     # Generate the markdown file with mkdocstrings reference
     with mkdocs_gen_files.open(full_doc_path, "w") as fd:
         identifier = ".".join(parts)
         print(f"::: {identifier}", file=fd)
-    
+
     # Set edit path for the generated file
     mkdocs_gen_files.set_edit_path(full_doc_path, Path("src") / path.relative_to(src_root))
 

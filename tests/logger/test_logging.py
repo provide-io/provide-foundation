@@ -184,11 +184,11 @@ class TestConfigWarnings:
         # Invalid entries should be silently skipped, valid entries should be kept
         monkeypatch.setenv("PROVIDE_LOG_MODULE_LEVELS", module_levels_env)
         config = TelemetryConfig.from_env()
-        
+
         # Validate that the config loaded successfully
         assert config is not None
         assert isinstance(config.logging.module_levels, dict)
-        
+
         # Check that only valid entries are kept
         valid_log_levels = {"TRACE", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
         for module, level in config.logging.module_levels.items():

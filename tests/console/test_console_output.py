@@ -4,8 +4,8 @@ import json
 
 import pytest
 
-from provide.foundation import perr, logger, pout
-from provide.foundation.cli.context import Context
+from provide.foundation import perr, pout
+from provide.foundation.context import Context
 
 
 class TestConsoleOutput:

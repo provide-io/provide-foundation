@@ -20,6 +20,8 @@ from provide.foundation.logger.config import (
     LoggingConfig,
     TelemetryConfig,
 )
+from provide.foundation.logger.emoji.sets import BUILTIN_EMOJI_SETS
+
 # env.py removed - use TelemetryConfig.from_env() directly
 from provide.foundation.logger.processors import (
     _build_core_processors_list,
@@ -27,7 +29,6 @@ from provide.foundation.logger.processors import (
     _config_create_emoji_processors,
     _config_create_timestamp_processors,
 )
-from provide.foundation.logger.emoji.sets import BUILTIN_EMOJI_SETS
 
 
 def get_proc_name(proc: Any) -> str:
@@ -121,10 +122,9 @@ class TestTelemetryConfigFromEnvSemanticLayers:
         # _ensure_config_logger_handler removed - warnings now handled by config system
         config = TelemetryConfig.from_env()
         assert config.logging.custom_emoji_sets == []
-        assert (
-            "Invalid JSON in PROVIDE_LOG_CUSTOM_EMOJI_SETS"
-            in capsys.readouterr().err
-        )
+        captured = capsys.readouterr()
+        assert "Invalid JSON in configuration" in captured.out
+        assert "PROVIDE_LOG_CUSTOM_EMOJI_SETS" in captured.out
 
     def test_from_env_handles_type_error_in_custom_layer_data(
         self, monkeypatch, capsys: CaptureFixture
@@ -136,4 +136,6 @@ class TestTelemetryConfigFromEnvSemanticLayers:
         # _ensure_config_logger_handler removed - warnings now handled by config system
         config = TelemetryConfig.from_env()
         assert config.logging.custom_emoji_sets == []
-        assert "Error parsing data for a custom emoji set" in capsys.readouterr().err
+        captured = capsys.readouterr()
+        assert "Error parsing custom emoji set configuration" in captured.out
+        assert "PROVIDE_LOG_CUSTOM_EMOJI_SETS" in captured.out

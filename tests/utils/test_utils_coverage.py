@@ -2,11 +2,11 @@
 Additional tests for provide.foundation.utils to increase code coverage.
 """
 import io
-from attrs import define, field, fields
 from typing import Any
-import pytest
 
-from provide.foundation import logger, TelemetryConfig, setup_telemetry, LoggingConfig
+from attrs import define, field, fields
+
+from provide.foundation import LoggingConfig, TelemetryConfig, logger, setup_telemetry
 from provide.foundation.utils import timed_block
 from provide.foundation.utils.formatting import format_table, to_camel_case
 from provide.foundation.utils.parsing import auto_parse, parse_typed_value
