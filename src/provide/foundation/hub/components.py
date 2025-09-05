@@ -30,7 +30,6 @@ class ComponentCategory(Enum):
     CONFIG_SOURCE = "config_source" 
     PROCESSOR = "processor"
     ERROR_HANDLER = "error_handler"
-    SEMANTIC_LAYER = "semantic_layer"
     FORMATTER = "formatter"
     FILTER = "filter"
 
@@ -302,38 +301,6 @@ def execute_error_handlers(exception: Exception, context: dict[str, Any]) -> dic
     return None
 
 
-def get_semantic_layer_for_domain(domain: str) -> Any:
-    """Get semantic layer for domain with fallback to generic layer."""
-    with _registry_lock:
-        registry = get_component_registry()
-        
-        # Look for domain-specific layer
-        layer = registry.get(domain, ComponentCategory.SEMANTIC_LAYER.value)
-        if layer is not None:
-            return layer
-        
-        # Fall back to generic layer
-        generic_layer = registry.get("generic", ComponentCategory.SEMANTIC_LAYER.value)
-        if generic_layer is not None:
-            return generic_layer
-        
-        # Return basic fallback layer
-        from provide.foundation.semantic_layers import GenericSemanticLayer
-        return GenericSemanticLayer()
-
-
-def resolve_semantic_emoji(domain: str, action: str, status: str) -> str:
-    """Resolve emoji through semantic layer and emoji set integration."""
-    layer = get_semantic_layer_for_domain(domain)
-    
-    if hasattr(layer, "get_emoji_for_action"):
-        try:
-            return layer.get_emoji_for_action(f"{action}_{status}")
-        except Exception:
-            pass
-    
-    # Fall back to emoji set resolution
-    return resolve_emoji_for_domain(domain, status)
 
 
 def resolve_component_dependencies(name: str, dimension: str) -> dict[str, Any]:
@@ -551,16 +518,7 @@ def bootstrap_foundation() -> None:
         metadata={"default": True, "priority": 1}
     )
     
-    # Register environment config source
-    from provide.foundation.config.sources import EnvironmentConfigSource
-    env_source = EnvironmentConfigSource()
-    
-    registry.register(
-        name="environment",
-        value=env_source,
-        dimension=ComponentCategory.CONFIG_SOURCE.value,
-        metadata={"priority": 80}
-    )
+    # Config sources would be registered here when implemented
     
     # Register core processors
     def timestamp_processor(logger, method_name, event_dict):

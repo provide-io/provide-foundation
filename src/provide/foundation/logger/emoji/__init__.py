@@ -19,7 +19,7 @@ from provide.foundation.logger.emoji.sets import (
     LLM_EMOJI_SET,
 )
 from provide.foundation.logger.emoji.types import (
-    CustomDasEmojiSet,
+    EmojiSet,
     EmojiSetConfig,
     FieldToEmojiMapping,
 )
@@ -36,7 +36,7 @@ __all__ = [
     "LEGACY_DAS_EMOJI_SETS",
     "LEGACY_DAS_FIELD_DEFINITIONS",
     # Types
-    "CustomDasEmojiSet",
+    "EmojiSet",
     "EmojiSetConfig",
     "FieldToEmojiMapping",
     # Utilities

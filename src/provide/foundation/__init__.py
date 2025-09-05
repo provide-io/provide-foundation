@@ -53,7 +53,7 @@ from provide.foundation.logger.emoji.matrix import (
     show_emoji_matrix,
 )
 from provide.foundation.logger.emoji.types import (
-    CustomDasEmojiSet,
+    EmojiSet,
     EmojiSetConfig,
     FieldToEmojiMapping,
 )
@@ -76,7 +76,7 @@ __all__ = [
     # New foundation modules
     "Context",
     # Emoji Mapping classes
-    "CustomDasEmojiSet",
+    "EmojiSet",
     # Error handling essentials
     "FoundationError",
     # Type aliases

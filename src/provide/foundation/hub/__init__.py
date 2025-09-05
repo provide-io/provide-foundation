@@ -33,9 +33,8 @@ from provide.foundation.hub.commands import (
     register_command,
 )
 from provide.foundation.hub.components import (
-    BaseComponent,
-    discover_components,
-    register_component,
+    get_component_registry,
+    ComponentCategory,
 )
 from provide.foundation.hub.manager import (
     Hub,
@@ -45,14 +44,13 @@ from provide.foundation.hub.manager import (
 
 __all__ = [
     # Components
-    "BaseComponent",
+    "get_component_registry",
+    "ComponentCategory",
     # Hub
     "Hub",
     "build_click_command",
     "clear_hub",
-    "discover_components",
     "get_hub",
     # Commands
     "register_command",
-    "register_component",
 ]

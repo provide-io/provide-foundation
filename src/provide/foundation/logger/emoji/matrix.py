@@ -12,7 +12,7 @@ from provide.foundation.logger import (
 )
 
 # Import types for resolved config structure
-from provide.foundation.logger.emoji.types import CustomDasEmojiSet, FieldToEmojiMapping
+from provide.foundation.logger.emoji.types import EmojiSet, FieldToEmojiMapping
 
 PRIMARY_EMOJI: dict[str, str] = {
     "system": "⚙️",
@@ -100,7 +100,7 @@ TERTIARY_EMOJI: dict[str, str] = {
 }
 
 
-def _format_emoji_set_for_display(emoji_set: CustomDasEmojiSet) -> list[str]:
+def _format_emoji_set_for_display(emoji_set: EmojiSet) -> list[str]:
     lines = [
         f"  Emoji Set: '{emoji_set.name}' (Default Key: '{emoji_set.default_emoji_key}')"
     ]

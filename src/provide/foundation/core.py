@@ -27,7 +27,7 @@ from provide.foundation.logger.emoji.sets import (
     LEGACY_DAS_EMOJI_SETS,
 )
 from provide.foundation.logger.emoji.types import (
-    CustomDasEmojiSet,
+    EmojiSet,
     EmojiSetConfig,
     FieldToEmojiMapping,
 )
@@ -109,14 +109,14 @@ def _create_core_setup_logger(globally_disabled: bool = False) -> stdlib_logging
 
 _core_setup_logger = _create_core_setup_logger()
 
-ResolvedEmojiConfig = tuple[list[FieldToEmojiMapping], dict[str, CustomDasEmojiSet]]
+ResolvedEmojiConfig = tuple[list[FieldToEmojiMapping], dict[str, EmojiSet]]
 
 
 def _resolve_active_emoji_config(
     logging_config: LoggingConfig, builtin_emoji_registry: dict[str, EmojiSetConfig]
 ) -> ResolvedEmojiConfig:
     resolved_fields_dict: dict[str, FieldToEmojiMapping] = {}
-    resolved_emoji_sets_dict: dict[str, CustomDasEmojiSet] = {
+    resolved_emoji_sets_dict: dict[str, EmojiSet] = {
         s.name: s for s in LEGACY_DAS_EMOJI_SETS
     }
 
