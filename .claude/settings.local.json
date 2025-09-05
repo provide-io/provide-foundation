@@ -14,7 +14,8 @@
       "Bash(uv sync:*)",
       "Read(//Users/tim/code/gh/provide-io/**)",
       "Bash(PYTHONPATH=src python:*)",
-      "Bash(uv add:*)"
+      "Bash(uv add:*)",
+      "Bash(PLUGIN_PROTOCOL_VERSIONS=\"2,3,4\" python -c \"\nfrom pyvider.rpcplugin.config import rpcplugin_config\nprint(''Protocol versions:'', rpcplugin_config.plugin_protocol_versions)\nprint(''Type:'', type(rpcplugin_config.plugin_protocol_versions[0]))\n\")"
     ],
     "deny": [],
     "ask": [],
