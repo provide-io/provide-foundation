@@ -1,8 +1,6 @@
-# `provide.foundation`: Beautiful, Performant, Structured Logging for Python
+# provide.foundation
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/provide-io/provide-foundation/main/docs/assets/foundation-banner.png" alt="provide.foundation banner">
-</p>
+**A Comprehensive Python Foundation Library for Modern Applications**
 
 <p align="center">
     <a href="https://pypi.org/project/provide-foundation/">
@@ -19,249 +17,384 @@
     </a>
 </p>
 
-**`provide.foundation`** is a Python telemetry library, built on the robust `structlog`, that provides a beautiful, performant, and structured logging experience right out of the box. It is designed to make your logs not only machine-readable but also instantly scannable by human eyes, enhancing the developer experience in complex applications.
+---
+
+**provide.foundation** is a comprehensive foundation library for Python applications, offering structured logging, CLI utilities, configuration management, error handling, and essential application building blocks. Built with modern Python practices, it provides the core infrastructure that production applications need.
 
 ---
 
-## ✨ Key Features
-
-*   **🚀 Zero-Configuration Start**: Get beautiful, structured logs instantly without any setup.
-*   **🎨 Emoji-Enhanced Visual Parsing**: Unique emoji prefixes based on logger names and semantic context make logs instantly scannable in a sea of text.
-*   **🏛️ Semantic Logging**: Go beyond simple log levels with extensible Semantic Layers for domains like LLMs, HTTP, and Databases. Fall back to the classic Domain-Action-Status (DAS) pattern when needed.
-*   **⚡ High Performance**: Benchmarked at over 14,000 messages per second with full semantic processing, ensuring it's ready for production loads.
-*   **🔧 Flexible Configuration**: Configure via environment variables or programmatically for fine-grained control.
-*   **🧑‍💻 Developer-Friendly**: Thread-safe, async-ready, and equipped with comprehensive type hints for a modern development workflow.
-
-## 📦 Installation
-
-Install `provide.foundation` using `uv` (recommended) or `pip`:
+## Installation
 
 ```bash
+# Using uv (recommended)
 uv pip install provide-foundation
+
+# Using pip
+pip install provide-foundation
 ```
 
-## 🚀 Quick Start
+---
 
-Getting started is as simple as importing the global `logger` and using it.
+## What's Included
+
+### Core Components
+
+#### **Structured Logging**
+Beautiful, performant logging built on `structlog` with zero configuration required.
 
 ```python
-# examples/01_quick_start.py
 from provide.foundation import logger
 
-def main():
-    """A simple function to demonstrate logging."""
-    logger.info("Application starting up")
-    
-    try:
-        result = 1 / 0
-    except ZeroDivisionError:
-        logger.exception(
-            "An expected error occurred",
-            error_details="Attempted to divide by zero",
-            user_id="usr_123"
-        )
-    
-    logger.info("Application shutting down")
+logger.info("Application started", version="1.0.0")
+logger.error("Database connection failed", host="db.example.com", retry_count=3)
+```
+
+#### **CLI Framework**
+Build command-line interfaces with automatic help generation, configuration loading, and output formatting.
+
+```python
+import click
+from provide.foundation.cli import cli_command, setup_cli_logging
+
+@cli_command()
+@click.option("--name", help="Your name")
+def greet(name):
+    """A simple greeting command."""
+    logger.info("Greeting user", name=name)
+    print(f"Hello, {name}!")
+```
+
+#### **Configuration Management**
+Flexible configuration system supporting environment variables, files, and runtime updates.
+
+```python
+from provide.foundation.config import ConfigManager, BaseConfig
+
+class AppConfig(BaseConfig):
+    api_key: str
+    timeout: int = 30
+    debug: bool = False
+
+manager = ConfigManager()
+manager.register("app", AppConfig)
+config = manager.get_config("app")
+```
+
+#### **Error Handling**
+Comprehensive error handling with retry logic, circuit breakers, and error boundaries.
+
+```python
+from provide.foundation import retry_on_error, with_error_handling
+
+@retry_on_error(max_attempts=3, delay=1.0)
+def flaky_network_call():
+    return api.fetch_data()
+
+@with_error_handling(fallback={"status": "error"})
+def parse_response(data):
+    return json.loads(data)
+```
+
+#### **Console I/O**
+Enhanced console input/output with color support, JSON mode, and interactive prompts.
+
+```python
+from provide.foundation import pin, pout, perr
+
+# Colored output
+pout("Success!", color="green")
+perr("Error occurred", color="red")
+
+# Interactive input
+name = pin("What's your name?")
+password = pin("Enter password:", password=True)
+
+# JSON mode for scripts
+pout({"status": "ok", "data": results}, json=True)
+```
+
+#### **Registry Pattern**
+Flexible registry system for managing plugins, commands, and extensions.
+
+```python
+from provide.foundation.hub import Registry
+
+registry = Registry("plugins")
+registry.register("auth", AuthPlugin())
+registry.register("cache", CachePlugin())
+
+# Use registered items
+auth = registry.get("auth")
+all_plugins = registry.list_all()
+```
+
+#### **File Operations**
+Safe file operations with atomic writes, file locking, and path utilities.
+
+```python
+from provide.foundation.file import atomic_write, FileLock, ensure_directory
+
+# Atomic file writes
+atomic_write("config.json", json.dumps(data))
+
+# File locking
+with FileLock("data.lock"):
+    # Exclusive access to resource
+    process_data()
+
+# Path utilities
+ensure_directory("logs", mode=0o755)
+```
+
+#### **Process Management**
+Run and manage external processes with timeout, streaming output, and async support.
+
+```python
+from provide.foundation.process import run_command, AsyncCommandRunner
+
+# Synchronous execution
+result = run_command("git status", timeout=5.0)
+print(result.stdout)
+
+# Async execution with streaming
+async def build_project():
+    runner = AsyncCommandRunner()
+    async for line in runner.run_streaming("npm build"):
+        logger.info("Build output", line=line)
+```
+
+#### **Platform Detection**
+Comprehensive platform and environment detection utilities.
+
+```python
+from provide.foundation.platform import PlatformInfo
+
+info = PlatformInfo()
+print(f"OS: {info.os_name}")
+print(f"Python: {info.python_version}")
+print(f"In Docker: {info.in_docker}")
+print(f"In CI: {info.in_ci}")
+```
+
+---
+
+## Quick Start Examples
+
+### Building a CLI Application
+
+```python
+import click
+from provide.foundation import logger
+from provide.foundation.cli import cli_command, Context
+
+@click.group()
+@cli_command()
+@click.pass_context
+def cli(ctx):
+    """My application CLI."""
+    ctx.obj = Context()
+
+@cli.command()
+@cli_command()
+def status():
+    """Check application status."""
+    logger.info("Checking status")
+    # Your status logic here
+
+@cli.command()
+@cli_command()
+@click.option("--input", required=True, help="Input file")
+@click.option("--output", default="output.txt", help="Output file")
+def process(input, output):
+    """Process a file."""
+    logger.info("Processing", input=input, output=output)
+    # Your processing logic here
 
 if __name__ == "__main__":
-    main()```
-
-Run this script, and you'll see beautifully formatted, structured output right in your console:
-
-```[▶️] Application starting up
-[🔥] An expected error occurred error_details='Attempted to divide by zero' user_id='usr_123' exc_info=...
-[▶️] Application shutting down
+    cli()
 ```
 
-## 🏛️ Core Concepts
-
-### 1. The Global Logger
-
-For convenience, `provide.foundation` exposes a pre-configured, global logger instance named `logger`. You can import and use it anywhere in your application.
-
-```python
-from provide.foundation import logger
-
-logger.debug("This is a debug message")
-logger.info("User logged in", user_id=123, source="google_oauth")
-logger.warning("Disk space is running low", free_space_gb=5)
-logger.error("Failed to connect to database", db_host="prod.db.example.com")
-```
-
-### 2. Structured Logging
-
-`provide.foundation` is built around the principle of structured logging. Instead of embedding variables in log messages, you pass them as keyword arguments. This makes your logs machine-readable and consistent.
-
-```python
-# ❌ Anti-pattern: Unstructured logging
-logger.info(f"User {user_id} completed checkout for order {order_id}.")
-
-# ✅ Best practice: Structured logging
-logger.info(
-    "Checkout complete",
-    user_id=user_id,
-    order_id=order_id,
-)
-```
-
-### 3. Semantic Layers
-
-Semantic Layers provide a schema-driven way to define structured logging conventions for specific domains like HTTP, databases, or LLMs. When you log a message with keys that match a semantic layer, the library automatically adds contextual emoji prefixes.
-
-**Example using the `http` layer:**
-
-```python
-from provide.foundation import logger, setup_telemetry, TelemetryConfig, LoggingConfig
-
-# Enable the 'http' semantic layer
-config = TelemetryConfig(logging=LoggingConfig(enabled_semantic_layers=["http"]))
-setup_telemetry(config)
-
-# Log an HTTP request event
-logger.info(
-    "API request processed",
-    **{
-        "http.method": "GET",
-        "http.status_code": 200,
-        "http.url": "/api/v1/users",
-    }
-)
-```
-
-**Output:**
-```
-[➡️][✅] API request processed http.url=/api/v1/users
-```
-The `[➡️][✅]` prefix is automatically generated from the `http.method` ("GET") and `http.status_code` (200).
-
-### 4. The Domain-Action-Status (DAS) Fallback
-
-When no semantic layer matches, the system falls back to the classic DAS pattern. By providing `domain`, `action`, and `status` keys, you still get meaningful emoji prefixes.
-
-```python
-logger.info(
-    "User authentication successful",
-    domain="auth",      # 🔑
-    action="login",     # ➡️
-    status="success",   # ✅
-    user_id="usr_456"
-)
-```
-
-**Output:**
-```
-[🔑][➡️][✅] User authentication successful user_id='usr_456'
-```
-
-## 🔧 Configuration
-
-While `provide.foundation` works out of the box, you can easily configure it via environment variables or code.
-
-### Via Environment Variables
-
-This is the recommended way to configure the logger in production.
-
-#### Core Telemetry Variables (FOUNDATION_*)
-
-These control the core logging behavior:
-
-| Variable | Description | Default | Example |
-|---|---|---|---|
-| `FOUNDATION_SERVICE_NAME` | Sets the service name for all logs. | `None` | `my-api-service` |
-| `FOUNDATION_LOG_LEVEL` | Default log level. | `DEBUG` | `INFO` |
-| `FOUNDATION_LOG_CONSOLE_FORMATTER` | Output format. | `key_value` | `json` |
-| `FOUNDATION_LOG_ENABLED_EMOJI_SETS` | Comma-separated list of emoji sets to enable. | `""` | `http,database` |
-
-#### CLI Variables (PROVIDE_*)
-
-When using the CLI decorators, these environment variables are also available:
-
-| Variable | Description | Default | Example |
-|---|---|---|---|
-| `PROVIDE_LOG_LEVEL` | CLI log level override | - | `DEBUG` |
-| `PROVIDE_LOG_FORMAT` | CLI output format | `key_value` | `json` |
-| `PROVIDE_JSON_OUTPUT` | Force JSON output in CLI | `false` | `true` |
-| `PROVIDE_NO_COLOR` | Disable colored output | `false` | `true` |
-| `PROVIDE_NO_EMOJI` | Disable emoji in output | `false` | `true` |
-
-### Programmatic Configuration
-
-For more complex setups, configure the logger once at application startup.
+### Configuration-Driven Application
 
 ```python
 from provide.foundation import setup_telemetry, TelemetryConfig, LoggingConfig
+from provide.foundation.config import ConfigManager, BaseConfig
 
-config = TelemetryConfig(
-    service_name="my-awesome-app",
-    logging=LoggingConfig(
-        default_level="INFO",
-        console_formatter="json",
-        module_levels={
-            "noisy_library": "WARNING",
-        },
-        enabled_semantic_layers=["http", "database", "llm"],
-    )
-)
+# Define your configuration schema
+class DatabaseConfig(BaseConfig):
+    host: str = "localhost"
+    port: int = 5432
+    database: str = "myapp"
+    
+class AppConfig(BaseConfig):
+    debug: bool = False
+    workers: int = 4
+    database: DatabaseConfig = DatabaseConfig()
 
-setup_telemetry(config)
+# Setup logging
+setup_telemetry(TelemetryConfig(
+    service_name="my-app",
+    logging=LoggingConfig(default_level="INFO")
+))
+
+# Load configuration
+manager = ConfigManager()
+manager.register("app", AppConfig)
+config = manager.load_from_env()  # or load_from_file("config.yaml")
 ```
 
-## 🧑‍💻 Advanced Usage
+### Error-Resilient Service
 
-### Named Loggers
+```python
+from provide.foundation import logger, circuit_breaker
+from provide.foundation.errors import retry_on_error
 
-For better organization in larger applications, create named loggers. Each will have its own unique, consistent emoji prefix.
+class DataService:
+    @circuit_breaker(failure_threshold=5, recovery_timeout=60)
+    @retry_on_error(max_attempts=3, backoff="exponential")
+    def fetch_data(self, endpoint):
+        """Fetch data with automatic retry and circuit breaking."""
+        response = requests.get(endpoint)
+        response.raise_for_status()
+        return response.json()
+    
+    def process_safely(self, data):
+        """Process data with error boundaries."""
+        with error_boundary(logger, "data_processing"):
+            # Complex processing logic
+            return transform_data(data)
+```
+
+---
+
+## Configuration
+
+### Environment Variables
+
+All configuration can be controlled through environment variables:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `PROVIDE_SERVICE_NAME` | Service identifier in logs | `None` |
+| `PROVIDE_LOG_LEVEL` | Minimum log level | `DEBUG` |
+| `PROVIDE_LOG_CONSOLE_FORMATTER` | Output format (`key_value` or `json`) | `key_value` |
+| `PROVIDE_LOG_OMIT_TIMESTAMP` | Remove timestamps from console | `false` |
+| `PROVIDE_LOG_FILE` | Log to file path | `None` |
+| `PROVIDE_LOG_MODULE_LEVELS` | Per-module log levels | `""` |
+| `PROVIDE_CONFIG_PATH` | Configuration file path | `None` |
+| `PROVIDE_ENV` | Environment (dev/staging/prod) | `dev` |
+| `PROVIDE_DEBUG` | Enable debug mode | `false` |
+| `PROVIDE_JSON_OUTPUT` | Force JSON output | `false` |
+| `PROVIDE_NO_COLOR` | Disable colored output | `false` |
+
+### Configuration Files
+
+Support for YAML, JSON, TOML, and .env files:
+
+```yaml
+# config.yaml
+service_name: my-app
+environment: production
+
+logging:
+  level: INFO
+  formatter: json
+  file: /var/log/myapp.log
+
+database:
+  host: db.example.com
+  port: 5432
+  pool_size: 20
+```
+
+---
+
+## Advanced Features
+
+### Contextual Logging
 
 ```python
 from provide.foundation import logger
 
-db_logger = logger.get_logger("database")
-api_logger = logger.get_logger("api.v1.users")
+# Bind context to a logger
+request_logger = logger.bind(
+    request_id="req-123",
+    user_id="user-456"
+)
 
-db_logger.info("Connection pool initialized")
-api_logger.info("User lookup request received")
+# All logs include the bound context
+request_logger.info("Processing request")
+request_logger.error("Request failed", error_code=500)
 ```
 
-**Output:**
-```
-[🗄️] Connection pool initialized
-[🙋] User lookup request received
-```
-
-### `timed_block` Utility
-
-The `timed_block` context manager is a powerful utility for logging the duration and outcome of a block of code.
+### Timing and Profiling
 
 ```python
-import time
-from provide.foundation import logger, timed_block
+from provide.foundation import timed_block
 
-# Time a successful operation
-with timed_block(logger, "database_query", db_table="users"):
-    time.sleep(0.5)
-
-# Time a failing operation
-try:
-    with timed_block(logger, "payment_processing", transaction_id="txn_123"):
-        raise RuntimeError("Credit card declined")
-except RuntimeError:
-    pass
+with timed_block(logger, "database_query"):
+    results = db.query("SELECT * FROM users")
+# Automatically logs: "database_query completed duration_seconds=0.123"
 ```
 
-**Output:**
-```
-[▶️] database_query completed db_table=users duration_seconds=0.501
-[🔥] payment_processing failed transaction_id=txn_123 duration_seconds=0.0 error=...
+### Async Support
+
+```python
+import asyncio
+from provide.foundation import logger
+
+async def process_items(items):
+    for item in items:
+        logger.info("Processing", item_id=item.id)
+        await process_item(item)
+        
+# Thread-safe and async-safe logging
+asyncio.run(process_items(items))
 ```
 
-## 🤝 Contribution
+### Testing Utilities
 
-We welcome contributions! 
-*   **For developers**: Please see `DEVELOPMENT.md` and `CLAUDE.md` for setup and convention guides.
-*   **To report a bug or request a feature**: Please open an issue on our [GitHub repository](https://github.com/provide-io/provide-foundation).
+```python
+import pytest
+from provide.foundation.testing import captured_logs, temp_config
+
+def test_my_function():
+    with captured_logs() as logs:
+        my_function()
+    
+    assert "expected message" in logs.text
+    assert logs.records[0]["level"] == "info"
+
+def test_with_config():
+    with temp_config({"debug": True}):
+        assert config.debug is True
+```
+
+---
+
+## Performance
+
+- **Logging**: 14,000+ messages/second with full structured logging
+- **Configuration**: Lazy loading with caching for optimal performance  
+- **File Operations**: Atomic writes prevent corruption
+- **Process Management**: Efficient streaming with backpressure support
+
+---
+
+## Contributing
+
+We welcome contributions! Please see:
+- [DEVELOPMENT.md](DEVELOPMENT.md) - Development setup and guidelines
+- [GitHub Issues](https://github.com/provide-io/provide-foundation/issues) - Bug reports and feature requests
+
+---
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
 <p align="center">
-  Made with ❤️ by the team at <a href="https://provide.io">Provide</a>
+  Built by <a href="https://provide.io">Provide</a>
 </p>

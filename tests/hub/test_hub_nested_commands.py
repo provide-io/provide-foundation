@@ -16,6 +16,10 @@ class TestNestedCommandRegistration:
     def setup_method(self) -> None:
         """Clear the hub before each test."""
         clear_hub()
+    
+    def teardown_method(self) -> None:
+        """Clear the hub after each test."""
+        clear_hub()
 
     def test_register_command_with_parent(self) -> None:
         """Test registering a command with dot notation."""
@@ -403,6 +407,10 @@ class TestNestedCommandIntegration:
 
     def setup_method(self) -> None:
         """Clear the hub before each test."""
+        clear_hub()
+    
+    def teardown_method(self) -> None:
+        """Clear the hub after each test."""
         clear_hub()
 
     def test_complex_cli_structure(self) -> None:

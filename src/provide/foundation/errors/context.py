@@ -242,9 +242,12 @@ def capture_error_context(
     # Determine category based on error type if not provided
     if category is None:
         # Import here to avoid circular dependency
-        from provide.foundation.errors.auth import AuthenticationError, AuthorizationError
-        from provide.foundation.errors.integration import IntegrationError, NetworkError
+        from provide.foundation.errors.auth import (
+            AuthenticationError,
+            AuthorizationError,
+        )
         from provide.foundation.errors.config import ValidationError
+        from provide.foundation.errors.integration import IntegrationError, NetworkError
 
         if isinstance(
             error, ValidationError | AuthenticationError | AuthorizationError

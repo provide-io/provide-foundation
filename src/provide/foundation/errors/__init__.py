@@ -5,6 +5,9 @@ Provides a comprehensive exception hierarchy, error context management,
 and utilities for robust error handling throughout the application.
 """
 
+from provide.foundation.errors.auth import AuthenticationError, AuthorizationError
+from provide.foundation.errors.base import FoundationError
+from provide.foundation.errors.config import ConfigurationError, ValidationError
 from provide.foundation.errors.context import (
     ErrorCategory,
     ErrorContext,
@@ -17,18 +20,23 @@ from provide.foundation.errors.decorators import (
     suppress_and_log,
     with_error_handling,
 )
-from provide.foundation.errors.auth import AuthenticationError, AuthorizationError
-from provide.foundation.errors.base import FoundationError
-from provide.foundation.errors.config import ConfigurationError, ValidationError
-from provide.foundation.errors.integration import IntegrationError, NetworkError, TimeoutError
-from provide.foundation.errors.resources import AlreadyExistsError, NotFoundError, ResourceError
-from provide.foundation.errors.runtime import ConcurrencyError, RuntimeError, StateError
 from provide.foundation.errors.handlers import (
     ErrorHandler,
     error_boundary,
     handle_error,
     transactional,
 )
+from provide.foundation.errors.integration import (
+    IntegrationError,
+    NetworkError,
+    TimeoutError,
+)
+from provide.foundation.errors.resources import (
+    AlreadyExistsError,
+    NotFoundError,
+    ResourceError,
+)
+from provide.foundation.errors.runtime import ConcurrencyError, RuntimeError, StateError
 from provide.foundation.errors.types import (
     ErrorCode,
     ErrorMetadata,

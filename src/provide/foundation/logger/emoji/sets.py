@@ -14,8 +14,8 @@ from provide.foundation.logger.emoji.matrix import (
 )
 from provide.foundation.logger.emoji.types import (
     CustomDasEmojiSet,
-    FieldToEmojiMapping,
     EmojiSetConfig,
+    FieldToEmojiMapping,
 )
 
 # --- Core DAS Layer Definition (Internal representation) ---

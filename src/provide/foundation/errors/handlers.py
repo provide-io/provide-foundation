@@ -9,9 +9,16 @@ from typing import Any, TypeVar
 
 from attrs import define, field
 
-from provide.foundation.errors.context import capture_error_context
 from provide.foundation.errors.base import FoundationError
-from provide.foundation.logger import logger
+from provide.foundation.errors.context import capture_error_context
+
+
+def _get_logger():
+    """Get logger instance lazily to avoid circular imports."""
+    from provide.foundation.logger import logger
+
+    return logger
+
 
 T = TypeVar("T")
 
@@ -69,7 +76,7 @@ def error_boundary(
                 error_context.update(e.context)
 
             # Log the error
-            logger.error(
+            _get_logger().error(
                 f"Error caught in boundary: {e}", exc_info=True, **error_context
             )
 
@@ -79,7 +86,7 @@ def error_boundary(
                 on_error(e)
             except Exception as handler_error:
                 if log_errors:
-                    logger.error(
+                    _get_logger().error(
                         f"Error handler failed: {handler_error}",
                         exc_info=True,
                         original_error=str(e),
@@ -129,7 +136,7 @@ def transactional(
             commit()
     except Exception as e:
         if log_errors:
-            logger.error(
+            _get_logger().error(
                 "Transaction failed, rolling back", exc_info=True, error=str(e)
             )
 
@@ -139,7 +146,7 @@ def transactional(
                 on_error(e)
             except Exception as handler_error:
                 if log_errors:
-                    logger.error(
+                    _get_logger().error(
                         f"Transaction error handler failed: {handler_error}",
                         original_error=str(e),
                     )
@@ -148,10 +155,10 @@ def transactional(
         try:
             rollback()
             if log_errors:
-                logger.info("Transaction rolled back successfully")
+                _get_logger().info("Transaction rolled back successfully")
         except Exception as rollback_error:
             if log_errors:
-                logger.critical(
+                _get_logger().critical(
                     f"Rollback failed: {rollback_error}", original_error=str(e)
                 )
             # Re-raise the rollback error as it's more critical
@@ -198,7 +205,7 @@ def handle_error(
     # Log if requested
     if log:
         log_context = context.to_dict() if context else {}
-        logger.error(f"Handling error: {error}", exc_info=True, **log_context)
+        _get_logger().error(f"Handling error: {error}", exc_info=True, **log_context)
 
     # Re-raise if requested
     if reraise:
@@ -229,7 +236,9 @@ class ErrorHandler:
         >>> result = handler.handle(some_error)
     """
 
-    policies: dict[type[Exception], Callable[[Exception], Any]] = field(factory=lambda: {})
+    policies: dict[type[Exception], Callable[[Exception], Any]] = field(
+        factory=lambda: {}
+    )
     default_action: Callable[[Exception], Any] = field(default=lambda e: None)
     log_all: bool = True
     capture_context: bool = True
@@ -279,7 +288,7 @@ class ErrorHandler:
             # Check if we should re-raise unhandled
             if self.reraise_unhandled and handler is self.default_action:
                 if self.log_all:
-                    logger.warning(
+                    _get_logger().warning(
                         f"No handler for {type(error).__name__}, re-raising",
                         error=str(error),
                     )
@@ -293,7 +302,7 @@ class ErrorHandler:
         # Log if configured
         if self.log_all:
             log_context = context.to_dict() if context else {}
-            logger.info(
+            _get_logger().info(
                 f"Handling {type(error).__name__} with {handler.__name__}",
                 **log_context,
             )
@@ -303,7 +312,7 @@ class ErrorHandler:
             return handler(error)
         except Exception as handler_error:
             if self.log_all:
-                logger.error(
+                _get_logger().error(
                     f"Error handler failed: {handler_error}",
                     exc_info=True,
                     original_error=str(error),
@@ -346,6 +355,6 @@ def create_error_handler(**policies: Callable[[Exception], Any]) -> ErrorHandler
         ):
             error_policies[error_class] = handler_func
         else:
-            logger.warning(f"Unknown error type: {error_name}")
+            _get_logger().warning(f"Unknown error type: {error_name}")
 
     return ErrorHandler(policies=error_policies, default_action=default)

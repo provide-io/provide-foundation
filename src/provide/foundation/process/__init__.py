@@ -21,7 +21,7 @@ __all__ = [
     "CompletedProcess",
     "ProcessError",
     # Sync execution
-    "run_command", 
+    "run_command",
     "run_shell",
     "stream_command",
     # Async execution
