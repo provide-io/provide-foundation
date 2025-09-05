@@ -13,7 +13,7 @@ from pytest import CaptureFixture
 from structlog.dev import ConsoleRenderer
 from structlog.processors import JSONRenderer, TimeStamper
 
-from provide.foundation.logger.setup.emoji_resolver import resolve_active_emoji_config as _resolve_active_emoji_config
+from provide.foundation.logger.setup.emoji_resolver import resolve_active_emoji_config
 from provide.foundation.logger.config import (
     LoggingConfig,
     TelemetryConfig,
@@ -59,7 +59,7 @@ class TestConfigEmojiProcessors:
         config = LoggingConfig(
             logger_name_emoji_prefix_enabled=True, das_emoji_prefix_enabled=True
         )
-        resolved_config = _resolve_active_emoji_config(
+        resolved_config = resolve_active_emoji_config(
             config, BUILTIN_EMOJI_SETS
         )
         processors = _config_create_emoji_processors(config, resolved_config)
@@ -93,7 +93,7 @@ class TestBuildFormatterProcessorsList:
 class TestBuildCoreProcessorsList:
     def test_default_config(self) -> None:
         config = TelemetryConfig()
-        resolved_emoji_config = _resolve_active_emoji_config(
+        resolved_emoji_config = resolve_active_emoji_config(
             config.logging, BUILTIN_EMOJI_SETS
         )
         processors = _build_core_processors_list(config, resolved_emoji_config)

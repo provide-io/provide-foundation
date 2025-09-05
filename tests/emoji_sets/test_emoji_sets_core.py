@@ -13,10 +13,8 @@ from provide.foundation import (
     TelemetryConfig,
     logger as global_logger,
 )
-from provide.foundation.core import (
-    _resolve_active_emoji_config,
-    reset_foundation_setup_for_testing,
-)
+from provide.foundation.logger.setup.emoji_resolver import resolve_active_emoji_config
+from provide.foundation.testing.logger import reset_foundation_setup_for_testing
 from provide.foundation.logger.emoji.sets import (
     BUILTIN_EMOJI_SETS,
     HTTP_EMOJI_SET,
@@ -44,7 +42,7 @@ def auto_reset_telemetry():
 class TestResolveActiveEmojiConfig:
     def test_no_emoji_sets_enabled(self) -> None:
         lc = LoggingConfig()
-        resolved_fields, resolved_emoji_sets = _resolve_active_emoji_config(
+        resolved_fields, resolved_emoji_sets = resolve_active_emoji_config(
             lc, BUILTIN_EMOJI_SETS
         )
         assert resolved_fields == []
@@ -53,7 +51,7 @@ class TestResolveActiveEmojiConfig:
 
     def test_enable_multiple_builtin_emoji_sets_no_conflict(self) -> None:
         lc = LoggingConfig(enabled_emoji_sets=["llm", "http"])
-        resolved_fields, resolved_emoji_sets = _resolve_active_emoji_config(
+        resolved_fields, resolved_emoji_sets = resolve_active_emoji_config(
             lc, BUILTIN_EMOJI_SETS
         )
         llm_field_keys = {f.log_key for f in LLM_EMOJI_SET.field_definitions}
@@ -75,7 +73,7 @@ class TestResolveActiveEmojiConfig:
         )
         emoji_set2 = EmojiSetConfig(name="emoji_set2", field_definitions=[field2], priority=20)
         lc = LoggingConfig(custom_emoji_sets=[emoji_set1, emoji_set2])
-        resolved_fields, _ = _resolve_active_emoji_config(lc, {})
+        resolved_fields, _ = resolve_active_emoji_config(lc, {})
         assert (
             len(resolved_fields) == 1
             and resolved_fields[0].description == "from emoji_set2"
