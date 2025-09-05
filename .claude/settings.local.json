@@ -25,7 +25,8 @@
       "Bash(python:*)",
       "Bash(tree:*)",
       "Bash(grep:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(PROVIDE_LOG_LEVEL=INVALID_LEVEL python -c \"\nimport sys\nfrom provide.foundation.logger.config import LoggingConfig\n\nprint(''=== BEFORE CONFIG CREATION ==='', file=sys.stderr)\nconfig = LoggingConfig.from_env()\nprint(''=== AFTER CONFIG CREATION ==='', file=sys.stderr)\nprint(''Config created:'', config, file=sys.stderr)\n\")"
     ],
     "deny": [],
     "ask": [],

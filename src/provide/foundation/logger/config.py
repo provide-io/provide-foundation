@@ -27,6 +27,28 @@ def _get_config_logger():
     """Get logger for config warnings. Lazy import to avoid circular dependencies."""
     # Use basic structlog directly to avoid circular import with foundation logger
     import structlog
+    import sys
+
+    # Ensure structlog outputs to stderr instead of default stdout
+    try:
+        config = structlog.get_config()
+        factory = config.get('logger_factory')
+        if hasattr(factory, 'file') and (factory.file is None or factory.file is sys.stdout):
+            # Only reconfigure if using default stdout or None
+            structlog.configure(
+                processors=config.get('processors', [structlog.dev.ConsoleRenderer()]),
+                logger_factory=structlog.PrintLoggerFactory(file=sys.stderr),
+                wrapper_class=config.get('wrapper_class', structlog.BoundLogger),
+                cache_logger_on_first_use=config.get('cache_logger_on_first_use', True),
+            )
+    except Exception:
+        # Fallback configuration if anything goes wrong
+        structlog.configure(
+            processors=[structlog.dev.ConsoleRenderer()],
+            logger_factory=structlog.PrintLoggerFactory(file=sys.stderr),
+            wrapper_class=structlog.BoundLogger,
+            cache_logger_on_first_use=True,
+        )
 
     return structlog.get_logger("provide.foundation.logger.config")
 
@@ -110,7 +132,7 @@ class LoggingConfig(BaseConfig):
                 config_dict["default_level"] = level
             elif strict:
                 _get_config_logger().warning(
-                    "Invalid configuration value, using default",
+                    "[Foundation Config Warning] Invalid configuration value, using default",
                     config_key="PROVIDE_LOG_LEVEL",
                     invalid_value=level,
                     valid_options=list(_VALID_LOG_LEVEL_TUPLE),
@@ -123,7 +145,7 @@ class LoggingConfig(BaseConfig):
                 config_dict["console_formatter"] = formatter
             elif strict:
                 _get_config_logger().warning(
-                    "Invalid configuration value, using default",
+                    "[Foundation Config Warning] Invalid configuration value, using default",
                     config_key="PROVIDE_LOG_CONSOLE_FORMATTER",
                     invalid_value=formatter,
                     valid_options=list(_VALID_FORMATTER_TUPLE),
@@ -150,7 +172,7 @@ class LoggingConfig(BaseConfig):
                 config_dict["foundation_setup_log_level"] = foundation_level
             elif strict:
                 _get_config_logger().warning(
-                    "Invalid configuration value, using default",
+                    "[Foundation Config Warning] Invalid configuration value, using default",
                     config_key="FOUNDATION_LOG_LEVEL",
                     invalid_value=foundation_level,
                     valid_options=list(_VALID_LOG_LEVEL_TUPLE),
@@ -176,7 +198,7 @@ class LoggingConfig(BaseConfig):
                         levels_dict[module] = level
                     elif strict and module and level not in _VALID_LOG_LEVEL_TUPLE:
                         _get_config_logger().warning(
-                            "Invalid module log level, skipping",
+                            "[Foundation Config Warning] Invalid module log level, skipping",
                             config_key="PROVIDE_LOG_MODULE_LEVELS",
                             module_name=module,
                             invalid_level=level,
@@ -201,7 +223,7 @@ class LoggingConfig(BaseConfig):
             except json.JSONDecodeError as e:
                 if strict:
                     _get_config_logger().warning(
-                        "Invalid JSON in configuration",
+                        "[Foundation Config Warning] Invalid JSON in configuration",
                         config_key="PROVIDE_LOG_CUSTOM_EMOJI_SETS",
                         error=str(e),
                         config_value=custom_sets[:100] + "..."
@@ -211,7 +233,7 @@ class LoggingConfig(BaseConfig):
             except (TypeError, ValueError) as e:
                 if strict:
                     _get_config_logger().warning(
-                        "Error parsing custom emoji set configuration",
+                        "[Foundation Config Warning] Error parsing custom emoji set configuration",
                         config_key="PROVIDE_LOG_CUSTOM_EMOJI_SETS",
                         error=str(e),
                         error_type=type(e).__name__,
@@ -228,7 +250,7 @@ class LoggingConfig(BaseConfig):
             except json.JSONDecodeError as e:
                 if strict:
                     _get_config_logger().warning(
-                        "Invalid JSON in configuration",
+                        "[Foundation Config Warning] Invalid JSON in configuration",
                         config_key="PROVIDE_LOG_USER_DEFINED_EMOJI_SETS",
                         error=str(e),
                         config_value=user_sets[:100] + "..."
@@ -238,7 +260,7 @@ class LoggingConfig(BaseConfig):
             except (TypeError, ValueError) as e:
                 if strict:
                     _get_config_logger().warning(
-                        "Error parsing user emoji set configuration",
+                        "[Foundation Config Warning] Error parsing user emoji set configuration",
                         config_key="PROVIDE_LOG_USER_DEFINED_EMOJI_SETS",
                         error=str(e),
                         error_type=type(e).__name__,

@@ -180,15 +180,20 @@ Flexible registry system for managing components and commands.
 
 ```python
 # From examples/12_cli_application.py
-from provide.foundation.hub import Hub, register_component, BaseComponent
+from provide.foundation.hub import Hub
 
-@register_component("database", dimension="resource", version="1.0.0")
-class DatabaseResource(BaseComponent):
-    def _setup(self):
+class DatabaseResource:
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self.connected = False
+    
+    def __enter__(self):
         """Initialize database connection."""
         self.connected = True
+        return self
 
 hub = Hub()
+hub.add_component(DatabaseResource, name="database", dimension="resource", version="1.0.0")
 db_class = hub.get_component("database", dimension="resource")
 ```
 
