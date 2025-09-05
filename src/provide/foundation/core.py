@@ -84,13 +84,7 @@ def _create_core_setup_logger(globally_disabled: bool = False) -> stdlib_logging
             )
         )
     logger.addHandler(handler)
-    logger.setLevel(
-        getattr(
-            stdlib_logging,
-            os.getenv("PROVIDE_CORE_SETUP_LOG_LEVEL", "INFO").upper(),
-            stdlib_logging.INFO,
-        )
-    )
+    logger.setLevel(stdlib_logging.DEBUG)
     logger.propagate = False
     return logger
 
@@ -144,7 +138,7 @@ def _build_complete_processor_chain(
     formatter_processors = _build_formatter_processors_list(
         config.logging, _PROVIDE_LOG_STREAM
     )
-    _core_setup_logger.info(
+    _core_setup_logger.debug(
         f"📝➡️🎨 Configured {config.logging.console_formatter} renderer."
     )
     return cast(list[Any], core_processors + formatter_processors)
@@ -162,7 +156,7 @@ def _apply_structlog_configuration(processors: list[Any]) -> None:
         wrapper_class=cast(type[BindableLogger], structlog.BoundLogger),
         cache_logger_on_first_use=True,
     )
-    _core_setup_logger.info(
+    _core_setup_logger.debug(
         f"📝➡️✅ structlog configured. Wrapper: BoundLogger. Output: {stream_name}."
     )
 
@@ -175,7 +169,7 @@ def _configure_structlog_output(
 
 
 def _handle_globally_disabled_setup() -> None:
-    _core_setup_logger.info("⚙️➡️🚫 Foundation Telemetry globally disabled.")
+    _core_setup_logger.debug("⚙️➡️🚫 Foundation Telemetry globally disabled.")
     structlog.configure(
         processors=[],
         logger_factory=structlog.ReturnLoggerFactory(),
@@ -242,7 +236,7 @@ def _internal_setup(
     )
 
     if not current_config.globally_disabled:
-        _core_setup_logger.info("⚙️➡️🚀 Starting Foundation (structlog) setup...")
+        _core_setup_logger.debug("⚙️➡️🚀 Starting Foundation (structlog) setup...")
 
     resolved_emoji_config = _resolve_active_emoji_config(
         current_config.logging, BUILTIN_EMOJI_SETS
@@ -259,7 +253,7 @@ def _internal_setup(
     foundation_logger._LAZY_SETUP_STATE["done"] = True
 
     if not current_config.globally_disabled:
-        _core_setup_logger.info("⚙️➡️✅ Foundation (structlog) setup completed.")
+        _core_setup_logger.debug("⚙️➡️✅ Foundation (structlog) setup completed.")
 
 
 def setup_telemetry(config: TelemetryConfig | None = None) -> None:
@@ -308,7 +302,7 @@ async def shutdown_foundation_telemetry(timeout_millis: int = 5000) -> None:
     This does NOT perform a full reset, allowing test runners to clean up streams.
     """
     global _LOG_FILE_HANDLE
-    _core_setup_logger.info("🔌➡️🏁 Foundation Telemetry flush called.")
+    _core_setup_logger.debug("🔌➡️🏁 Foundation Telemetry flush called.")
     with _PROVIDE_SETUP_LOCK:
         if _LOG_FILE_HANDLE:
             try:

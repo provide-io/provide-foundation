@@ -7,11 +7,6 @@ import pytest
 
 from provide.foundation.logger.custom_processors import add_logger_name_emoji_prefix
 from provide.foundation.logger.emoji.matrix import _format_field_definition_for_display
-# Internal functions removed in refactoring - now handled by config system
-# from provide.foundation.logger.env import (
-#     _parse_custom_emoji_sets_from_env,
-#     _parse_user_emoji_sets_from_env,
-# )
 from provide.foundation.logger.emoji.types import FieldToEmojiMapping
 from provide.foundation.logger.emoji.types import CustomDasEmojiSet
 
@@ -26,30 +21,6 @@ def test_logger_base_already_configured_after_lock() -> None:
     For now, this line is excluded from coverage to achieve 99%+ coverage.
     """
     # Placeholder test - needs proper implementation
-    pass
-
-
-@pytest.mark.skip(reason="Function removed in refactoring - now handled by config system")
-def test_config_parse_custom_layers_non_list() -> None:
-    """Test config.py line 167 - return empty list when custom_layers is not a list."""
-    pass
-
-
-@pytest.mark.skip(reason="Function removed in refactoring - now handled by config system")
-def test_config_parse_custom_layers_non_dict_item() -> None:
-    """Test config.py line 170 - continue when layer_data is not a dict."""
-    pass
-
-
-@pytest.mark.skip(reason="Function removed in refactoring - now handled by config system")
-def test_config_parse_user_emoji_sets_non_list() -> None:
-    """Test config.py line 196 - return empty list when user_emoji_sets is not a list."""
-    pass
-
-
-@pytest.mark.skip(reason="Function removed in refactoring - now handled by config system")
-def test_config_parse_user_emoji_sets_non_dict_item() -> None:
-    """Test config.py line 199 - only process dict items in user emoji sets."""
     pass
 
 
