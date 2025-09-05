@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(uv sync:*)"
+      "Bash(uv sync:*)",
+      "Bash(source:*)",
+      "Bash(pytest:*)"
     ],
     "deny": [],
     "ask": [],
