@@ -104,7 +104,7 @@ case "$TFARCH" in
 esac
 
 # Workenv directory setup
-PROFILE="${PROVIDE_FOUNDATION_PROFILE:-default}"
+PROFILE="${PROVIDE_PROVIDE_PROFILE:-default}"
 if [ "$PROFILE" = "default" ]; then
     VENV_DIR="workenv/provide-foundation_${TFOS}_${TFARCH}"
 else

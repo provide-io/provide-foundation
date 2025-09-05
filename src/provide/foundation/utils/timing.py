@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 
 # Context variable for trace_id (applications can set this for request tracing)
-_FOUNDATION_CONTEXT_TRACE_ID = contextvars.ContextVar(
+_PROVIDE_CONTEXT_TRACE_ID = contextvars.ContextVar(
     "foundation_context_trace_id", default=None
 )
 
@@ -58,7 +58,7 @@ def timed_block(
     all_kvs.update(extra_kvs)
 
     # Try to get trace_id from context
-    trace_id = _FOUNDATION_CONTEXT_TRACE_ID.get()
+    trace_id = _PROVIDE_CONTEXT_TRACE_ID.get()
     if trace_id and "trace_id" not in all_kvs:
         all_kvs["trace_id"] = trace_id
 

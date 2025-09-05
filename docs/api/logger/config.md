@@ -154,12 +154,12 @@ def from_env(cls) -> "TelemetryConfig":
 ```
 
 **Environment Variables:**
-- `FOUNDATION_SERVICE_NAME`: Service name
-- `FOUNDATION_LOG_LEVEL`: Default log level
-- `FOUNDATION_LOG_FORMAT`: Console formatter
-- `FOUNDATION_DISABLE_EMOJI`: Disable emoji prefixes
-- `FOUNDATION_DISABLE_TIMESTAMPS`: Omit timestamps
-- `FOUNDATION_GLOBALLY_DISABLED`: Disable all telemetry
+- `PROVIDE_SERVICE_NAME`: Service name
+- `PROVIDE_LOG_LEVEL`: Default log level
+- `PROVIDE_LOG_FORMAT`: Console formatter
+- `PROVIDE_DISABLE_EMOJI`: Disable emoji prefixes
+- `PROVIDE_DISABLE_TIMESTAMPS`: Omit timestamps
+- `PROVIDE_GLOBALLY_DISABLED`: Disable all telemetry
 
 #### Usage Examples
 
@@ -209,21 +209,21 @@ The `from_env()` method reads the following environment variables:
 
 | Variable | Type | Description | Default |
 |----------|------|-------------|---------|
-| `FOUNDATION_SERVICE_NAME` | string | Service identifier | None |
-| `FOUNDATION_LOG_LEVEL` | LogLevelStr | Default log level | "DEBUG" |
-| `FOUNDATION_LOG_FORMAT` | ConsoleFormatterStr | Output format | "key_value" |
-| `FOUNDATION_DISABLE_EMOJI` | bool | Disable emoji prefixes | False |
-| `FOUNDATION_DISABLE_TIMESTAMPS` | bool | Omit timestamps | False |
-| `FOUNDATION_GLOBALLY_DISABLED` | bool | Disable all logging | False |
-| `FOUNDATION_MODULE_LOG_LEVELS` | string | Module levels (JSON) | {} |
+| `PROVIDE_SERVICE_NAME` | string | Service identifier | None |
+| `PROVIDE_LOG_LEVEL` | LogLevelStr | Default log level | "DEBUG" |
+| `PROVIDE_LOG_FORMAT` | ConsoleFormatterStr | Output format | "key_value" |
+| `PROVIDE_DISABLE_EMOJI` | bool | Disable emoji prefixes | False |
+| `PROVIDE_DISABLE_TIMESTAMPS` | bool | Omit timestamps | False |
+| `PROVIDE_GLOBALLY_DISABLED` | bool | Disable all logging | False |
+| `PROVIDE_MODULE_LOG_LEVELS` | string | Module levels (JSON) | {} |
 
 **Example environment setup:**
 ```bash
-export FOUNDATION_SERVICE_NAME="myapp"
-export FOUNDATION_LOG_LEVEL="INFO"
-export FOUNDATION_LOG_FORMAT="json"
-export FOUNDATION_DISABLE_EMOJI="false"
-export FOUNDATION_MODULE_LOG_LEVELS='{"requests": "WARNING", "urllib3": "ERROR"}'
+export PROVIDE_SERVICE_NAME="myapp"
+export PROVIDE_LOG_LEVEL="INFO"
+export PROVIDE_LOG_FORMAT="json"
+export PROVIDE_DISABLE_EMOJI="false"
+export PROVIDE_MODULE_LOG_LEVELS='{"requests": "WARNING", "urllib3": "ERROR"}'
 ```
 
 ## Immutability

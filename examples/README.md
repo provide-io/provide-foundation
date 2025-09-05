@@ -48,7 +48,7 @@ Here's a list of the available examples and what they demonstrate:
     Shows how to configure module-specific log levels, allowing different parts of an application to have different log verbosities (e.g., more verbose for a specific module, less for others).
 
 -   **`08_env_variables_config.py`**:
-    Illustrates how Foundation Telemetry can be configured entirely through environment variables (e.g., `FOUNDATION_LOG_LEVEL`, `FOUNDATION_SERVICE_NAME`), allowing for runtime adjustments without code changes.
+    Illustrates how Foundation Telemetry can be configured entirely through environment variables (e.g., `PROVIDE_LOG_LEVEL`, `PROVIDE_SERVICE_NAME`), allowing for runtime adjustments without code changes.
 
 -   **`09_async_usage.py`**:
     Provides examples of using Foundation Telemetry in asynchronous applications built with `asyncio`, including logging from async functions and using `shutdown_foundation_telemetry()`.

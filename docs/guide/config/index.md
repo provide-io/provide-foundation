@@ -203,12 +203,12 @@ def reload_config():
 
 ## Internal/Debug Variables
 
-For debugging, some `FOUNDATION_` prefixed variables are available:
+For debugging, some `PROVIDE_` prefixed variables are available:
 
 | Variable | Description | Use Case |
 |----------|-------------|----------|
-| `FOUNDATION_SHOW_EMOJI_MATRIX` | Display emoji mapping table | Debug emoji mappings |
-| `FOUNDATION_DEBUG` | Enable internal debug logging | Troubleshooting |
+| `PROVIDE_SHOW_EMOJI_MATRIX` | Display emoji mapping table | Debug emoji mappings |
+| `PROVIDE_DEBUG` | Enable internal debug logging | Troubleshooting |
 
 ⚠️ **Note**: These are for debugging only and may change between versions.
 
