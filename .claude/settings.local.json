@@ -6,7 +6,8 @@
       "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/provide-foundation/src python:*)",
       "Bash(pip install:*)",
       "Bash(uv pip install:*)",
-      "Bash(uv pip:*)"
+      "Bash(uv pip:*)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": [],
