@@ -4,7 +4,7 @@ Seamlessly extend provide.foundation with OpenTelemetry for distributed tracing,
 
 ## Overview
 
-provide.foundation's semantic layers are designed to **enhance OpenTelemetry**, not replace it. You get:
+provide.foundation's emoji sets are designed to **enhance OpenTelemetry**, not replace it. You get:
 - 🎯 OTEL-compliant field naming
 - 👀 Visual emoji enhancement for local development
 - 📊 Automatic span/metric enrichment
@@ -24,7 +24,7 @@ pip install provide-foundation[opentelemetry]
 from provide.foundation import logger
 from provide.foundation.otel import setup_otel
 
-# Configure OTEL with semantic layer enhancement
+# Configure OTEL with emoji set enhancement
 setup_otel(
     traces_endpoint="http://otel-collector:4317",
     metrics_endpoint="http://otel-collector:4317",
@@ -32,7 +32,7 @@ setup_otel(
     semantic_layers=True,  # Enable semantic enrichment
 )
 
-# Use semantic layers - automatically exports to OTEL
+# Use emoji sets - automatically exports to OTEL
 logger.info("http_request",
     **{
         "http.method": "GET",           # OTEL standard field
@@ -99,7 +99,7 @@ async def call_payment_service(order_id: str):
             headers=headers
         )
     
-    # Log with semantic layers
+    # Log with emoji sets
     logger.info("payment_service_response",
         **{
             "http.status_code": response.status_code,
@@ -117,13 +117,13 @@ async def call_payment_service(order_id: str):
 from provide.foundation.otel import setup_metrics
 from provide.foundation import logger
 
-# Setup metrics with semantic layer integration
+# Setup metrics with emoji set integration
 setup_metrics(
     export_interval_seconds=10,
     semantic_layer_metrics=True,  # Track layer usage
 )
 
-# Semantic layers automatically create metrics
+# Emoji sets automatically create metrics
 logger.info("http_request",
     **{
         "http.method": "POST",
@@ -150,7 +150,7 @@ order_counter = meter.create_counter(
 )
 
 def process_order(order_id: str):
-    # Log with semantic layers
+    # Log with emoji sets
     logger.info("order_processed",
         order_id=order_id,
         **{"order.total": 99.99}
@@ -199,9 +199,9 @@ logger.info("database_query",
 ### Field Mapping & Validation
 
 ```python
-from provide.foundation.semantic_layers import HTTP_LAYER
+from provide.foundation.emoji_sets import HTTP_EMOJI_SET
 
-# Semantic layers validate OTEL fields
+# Emoji sets validate OTEL fields
 try:
     logger.info("http_request",
         **{
@@ -236,7 +236,7 @@ from provide.foundation import logger
 baggage.set_baggage("user.id", "user-123")
 baggage.set_baggage("tenant.id", "tenant-456")
 
-# Semantic layers automatically include baggage
+# Emoji sets automatically include baggage
 logger.info("service_call",
     service="downstream",
     # Baggage is automatically added to logs and spans
@@ -248,7 +248,7 @@ logger.info("service_call",
 ```python
 from provide.foundation.otel import SemanticSampler
 
-# Sample based on semantic layer fields
+# Sample based on emoji set fields
 sampler = SemanticSampler(
     rules=[
         # Always sample errors
@@ -306,9 +306,9 @@ def otel_test_setup():
     exporter.clear()
 
 def test_semantic_otel_integration(otel_test_setup):
-    """Test that semantic layers create proper OTEL spans."""
+    """Test that emoji sets create proper OTEL spans."""
     
-    # Log with semantic layers
+    # Log with emoji sets
     logger.info("http_request",
         **{
             "http.method": "GET",
@@ -322,7 +322,7 @@ def test_semantic_otel_integration(otel_test_setup):
     assert spans[0].attributes["http.method"] == "GET"
     assert spans[0].attributes["http.status_code"] == 200
     
-    # Verify semantic layer was applied
+    # Verify emoji set was applied
     events = spans[0].events
     assert any("📥" in event.name for event in events)  # Emoji was added
 ```

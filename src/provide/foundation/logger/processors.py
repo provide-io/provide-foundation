@@ -24,7 +24,7 @@ from provide.foundation.types import (
 )
 
 if TYPE_CHECKING:
-    from provide.foundation.core import ResolvedSemanticConfig
+    from provide.foundation.core import ResolvedEmojiConfig
 
 _LEVEL_TO_NUMERIC: dict[LogLevelStr, int] = {
     "CRITICAL": stdlib_logging.CRITICAL,
@@ -69,7 +69,7 @@ def _config_create_timestamp_processors(
 
 
 def _config_create_emoji_processors(
-    logging_config: LoggingConfig, resolved_semantic_config: "ResolvedSemanticConfig"
+    logging_config: LoggingConfig, resolved_emoji_config: "ResolvedEmojiConfig"
 ) -> list[StructlogProcessor]:
     processors: list[StructlogProcessor] = []
     if logging_config.logger_name_emoji_prefix_enabled:
@@ -77,7 +77,7 @@ def _config_create_emoji_processors(
     if logging_config.das_emoji_prefix_enabled:
         # FIX: Create the processor as a closure with the resolved config
         resolved_field_definitions, resolved_emoji_sets_lookup = (
-            resolved_semantic_config
+            resolved_emoji_config
         )
 
         def add_das_emoji_prefix_closure(
@@ -92,7 +92,7 @@ def _config_create_emoji_processors(
 
             final_das_prefix_parts: list[str] = []
 
-            if resolved_field_definitions:  # New Layered Semantic System is active
+            if resolved_field_definitions:  # New Layered Emoji System is active
                 for field_def in resolved_field_definitions:
                     value_from_event = event_dict.get(field_def.log_key)
                     if value_from_event is not None and field_def.emoji_set_name:
@@ -159,7 +159,7 @@ def _config_create_emoji_processors(
 
 
 def _build_core_processors_list(
-    config: TelemetryConfig, resolved_semantic_config: "ResolvedSemanticConfig"
+    config: TelemetryConfig, resolved_emoji_config: "ResolvedEmojiConfig"
 ) -> list[StructlogProcessor]:
     log_cfg = config.logging
     processors: list[StructlogProcessor] = [
@@ -180,7 +180,7 @@ def _build_core_processors_list(
     if config.service_name is not None:
         processors.append(_config_create_service_name_processor(config.service_name))
     processors.extend(
-        _config_create_emoji_processors(log_cfg, resolved_semantic_config)
+        _config_create_emoji_processors(log_cfg, resolved_emoji_config)
     )
     return processors
 

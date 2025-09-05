@@ -12,7 +12,7 @@ from provide.foundation.types import (
     ConsoleFormatterStr,
     CustomDasEmojiSet,
     LogLevelStr,
-    SemanticLayer,
+    EmojiSetConfig,
 )
 
 
@@ -26,8 +26,8 @@ class LoggingConfig:
     logger_name_emoji_prefix_enabled: bool = field(default=True)
     das_emoji_prefix_enabled: bool = field(default=True)
     omit_timestamp: bool = field(default=False)
-    enabled_semantic_layers: list[str] = field(factory=lambda: [])
-    custom_semantic_layers: list[SemanticLayer] = field(factory=lambda: [])
+    enabled_emoji_sets: list[str] = field(factory=lambda: [])
+    custom_emoji_sets: list[EmojiSetConfig] = field(factory=lambda: [])
     user_defined_emoji_sets: list[CustomDasEmojiSet] = field(factory=lambda: [])
     log_file: Path | None = field(default=None)
 

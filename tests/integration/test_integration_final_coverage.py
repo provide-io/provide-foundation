@@ -7,10 +7,10 @@ from unittest.mock import patch
 from provide.foundation.logger.custom_processors import add_logger_name_emoji_prefix
 from provide.foundation.logger.emoji_matrix import _format_field_definition_for_display
 from provide.foundation.logger.env import (
-    _parse_custom_layers_from_env,
+    _parse_custom_emoji_sets_from_env,
     _parse_user_emoji_sets_from_env,
 )
-from provide.foundation.types import SemanticFieldDefinition
+from provide.foundation.types import FieldToEmojiMapping
 
 
 def test_logger_base_already_configured_after_lock() -> None:
@@ -31,9 +31,9 @@ def test_config_parse_custom_layers_non_list() -> None:
     """Test config.py line 167 - return empty list when custom_layers is not a list."""
     # Set environment variable to a non-list JSON value
     with patch.dict(
-        os.environ, {"FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS": '{"not": "a list"}'}
+        os.environ, {"FOUNDATION_LOG_CUSTOM_EMOJI_SETS": '{"not": "a list"}'}
     ):
-        result = _parse_custom_layers_from_env()
+        result = _parse_custom_emoji_sets_from_env()
         assert result == []
 
 
@@ -47,8 +47,8 @@ def test_config_parse_custom_layers_non_dict_item() -> None:
         ]
     )
 
-    with patch.dict(os.environ, {"FOUNDATION_LOG_CUSTOM_SEMANTIC_LAYERS": layers_json}):
-        result = _parse_custom_layers_from_env()
+    with patch.dict(os.environ, {"FOUNDATION_LOG_CUSTOM_EMOJI_SETS": layers_json}):
+        result = _parse_custom_emoji_sets_from_env()
         # Should only have the valid layer
         assert len(result) == 1
         assert result[0].name == "valid_layer"
@@ -149,7 +149,7 @@ def test_add_log_level_custom_with_existing_level() -> None:
 def test_format_field_definition_minimal() -> None:
     """Test emoji_matrix field definition formatting with minimal data."""
     # Test with only required field
-    field_def = SemanticFieldDefinition(log_key="test.key")
+    field_def = FieldToEmojiMapping(log_key="test.key")
     result = _format_field_definition_for_display(field_def)
     assert "Log Key: 'test.key'" in result
     assert "Desc:" not in result  # No description
@@ -158,7 +158,7 @@ def test_format_field_definition_minimal() -> None:
 
 def test_format_field_definition_with_emoji_no_override() -> None:
     """Test emoji_matrix field definition with emoji set but no override."""
-    field_def = SemanticFieldDefinition(
+    field_def = FieldToEmojiMapping(
         log_key="test.key",
         description="Test field",
         value_type="string",
@@ -172,7 +172,7 @@ def test_format_field_definition_with_emoji_no_override() -> None:
 
 def test_format_field_definition_full() -> None:
     """Test emoji_matrix field definition with all fields."""
-    field_def = SemanticFieldDefinition(
+    field_def = FieldToEmojiMapping(
         log_key="test.key",
         description="Test field",
         value_type="string",

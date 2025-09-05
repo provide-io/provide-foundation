@@ -1,10 +1,10 @@
-# Base
+# Custom
 
-::: provide.foundation.semantic.base
+::: provide.foundation.emoji_sets.custom
 
 ## Overview
 
-API documentation for Base.
+API documentation for Custom.
 
 ## Usage
 

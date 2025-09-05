@@ -61,12 +61,12 @@ if not hasattr(stdlib_logging, TRACE_LEVEL_NAME):  # pragma: no cover
         )
 
 
-# --- Semantic Layering Data Structures ---
+# --- Emoji Mapping Data Structures ---
 
 
 @define(frozen=True, slots=True)
 class CustomDasEmojiSet:
-    """A named set of emojis for a specific semantic category."""
+    """A named set of emojis for a specific category."""
 
     name: str = field()  # e.g., "component_types", "llm_operations", "request_outcomes"
     emojis: dict[str, str] = field(
@@ -78,9 +78,9 @@ class CustomDasEmojiSet:
 
 
 @define(frozen=True, slots=True)
-class SemanticFieldDefinition:
+class FieldToEmojiMapping:
     """
-    Defines a single semantic log key, its properties, and optional emoji mapping.
+    Defines a single log field key and its optional emoji mapping.
     """
 
     log_key: str = field()  # e.g., "http.method", "llm.request.model"
@@ -97,16 +97,16 @@ class SemanticFieldDefinition:
 
 
 @define(frozen=True, slots=True)
-class SemanticLayer:
+class EmojiSetConfig:
     """
-    Defines a semantic layer with its own emoji sets and field mappings.
-    Layers provide conventions for structured logging in specific domains.
+    Defines an emoji set configuration with emoji mappings for specific fields.
+    Provides visual enhancement for structured logging in specific domains.
     """
 
     name: str = field()  # e.g., "llm", "database", "http_client"
     description: str | None = field(default=None)
     emoji_sets: list[CustomDasEmojiSet] = field(factory=lambda: [])
-    field_definitions: list[SemanticFieldDefinition] = field(factory=lambda: [])
+    field_definitions: list[FieldToEmojiMapping] = field(factory=lambda: [])
     priority: int = field(
         default=0, converter=int
     )  # Higher priority layers take precedence in case of conflicts

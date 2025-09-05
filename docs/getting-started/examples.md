@@ -166,7 +166,7 @@ setup_logging(
 ### HTTP Request Logging
 
 ```python
-from provide.foundation.semantic_layers import HTTPLayer
+from provide.foundation.emoji_sets import HTTPLayer
 import time
 
 http = HTTPLayer()
@@ -186,7 +186,7 @@ http.request_completed(status=200, duration_ms=duration_ms)
 ### Database Query Logging
 
 ```python
-from provide.foundation.semantic_layers import DatabaseLayer
+from provide.foundation.emoji_sets import DatabaseLayer
 
 db = DatabaseLayer()
 
@@ -201,13 +201,13 @@ db.transaction_started()
 db.transaction_committed()
 ```
 
-### Custom Semantic Layer
+### Custom Emoji Set
 
 ```python
-from provide.foundation.semantic_layers import SemanticLayer, register_layer
+from provide.foundation.emoji_sets import EmojiSetConfig, register_layer
 
 @register_layer("cache")
-class CacheLayer(SemanticLayer):
+class CacheLayer(EmojiSetConfig):
     domain = "cache"
     
     def get(self, key: str, hit: bool, **kwargs):

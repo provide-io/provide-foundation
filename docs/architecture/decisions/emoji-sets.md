@@ -6,15 +6,15 @@
 
 ## Summary
 
-This document explains why we built semantic layers and how they enhance the provide.io ecosystem's logging capabilities.
+This document explains why we built emoji sets and how they enhance the provide.io ecosystem's logging capabilities.
 
 ## Context
 
-provide.foundation is an opinionated foundation library for the provide.io ecosystem. We needed domain-specific logging that provides the architecture and protocol for semantic layers in provide.foundation. Semantic layers provide domain-specific logging interfaces that enhance structured logging with contextual understanding and visual parsing through emojis.
+provide.foundation is an opinionated foundation library for the provide.io ecosystem. We needed domain-specific logging that provides the architecture and protocol for emoji sets in provide.foundation. Emoji sets provide domain-specific logging interfaces that enhance structured logging with contextual understanding and visual parsing through emojis.
 
 ## Motivation
 
-Traditional logging lacks domain context. When logging HTTP requests, database queries, or LLM interactions, developers must manually structure their logs with appropriate context and visual indicators. Semantic layers solve this by providing:
+Traditional logging lacks domain context. When logging HTTP requests, database queries, or LLM interactions, developers must manually structure their logs with appropriate context and visual indicators. Emoji sets solve this by providing:
 
 1. **Domain-specific interfaces** that understand the context
 2. **Automatic emoji mapping** for visual parsing
@@ -25,14 +25,14 @@ Traditional logging lacks domain context. When logging HTTP requests, database q
 
 ### Base Protocol
 
-All semantic layers must implement this interface:
+All emoji sets must implement this interface:
 
 ```python
 from abc import ABC, abstractmethod
 from typing import Any
 
-class SemanticLayer(ABC):
-    """Base semantic layer protocol."""
+class EmojiSetConfig(ABC):
+    """Base emoji set protocol."""
     
     @property
     @abstractmethod
@@ -86,7 +86,7 @@ EMOJI_MATRIX = {
 #### HTTP Layer
 
 ```python
-class HTTPLayer(SemanticLayer):
+class HTTPLayer(EmojiSetConfig):
     domain = "http"
     
     def request_started(self, method: str, path: str, **kwargs):
@@ -105,7 +105,7 @@ class HTTPLayer(SemanticLayer):
 #### Database Layer
 
 ```python
-class DatabaseLayer(SemanticLayer):
+class DatabaseLayer(EmojiSetConfig):
     domain = "database"
     
     def query_executed(self, query: str, duration_ms: float, **kwargs):
@@ -118,7 +118,7 @@ class DatabaseLayer(SemanticLayer):
 #### LLM Layer
 
 ```python
-class LLMLayer(SemanticLayer):
+class LLMLayer(EmojiSetConfig):
     domain = "llm"
     
     def generation_started(self, model: str, prompt_tokens: int, **kwargs):
@@ -135,7 +135,7 @@ class LLMLayer(SemanticLayer):
 ```python
 from provide.foundation.registry import Registry
 
-semantic_registry = Registry[SemanticLayer]()
+semantic_registry = Registry[EmojiSetConfig]()
 
 # Register layers
 semantic_registry.register("http", HTTPLayer)
@@ -164,7 +164,7 @@ custom = "myapp.layers:CustomLayer"
 ### Basic Usage
 
 ```python
-from provide.foundation.semantic_layers import http_layer
+from provide.foundation.emoji_sets import http_layer
 
 # Automatic emoji and formatting
 http_layer.request_started(method="GET", path="/api/users")
@@ -177,10 +177,10 @@ http_layer.request_completed(status=200, duration_ms=42)
 ### Custom Layer
 
 ```python
-from provide.foundation.semantic_layers import SemanticLayer, register_layer
+from provide.foundation.emoji_sets import EmojiSetConfig, register_layer
 
 @register_layer("payment")
-class PaymentLayer(SemanticLayer):
+class PaymentLayer(EmojiSetConfig):
     domain = "payment"
     
     EMOJI_MATRIX = {
@@ -199,7 +199,7 @@ class PaymentLayer(SemanticLayer):
 
 ```python
 from provide.foundation import logger
-from provide.foundation.semantic_layers import http_layer
+from provide.foundation.emoji_sets import http_layer
 
 with logger.bind(request_id="abc-123"):
     http_layer.request_started(method="POST", path="/api/orders")
@@ -219,8 +219,8 @@ This design introduces new functionality without breaking existing APIs. The tra
 ## Performance Impact
 
 Benchmarks show minimal overhead:
-- **Without semantic layers**: 14,000 msg/sec
-- **With semantic layers**: 13,500 msg/sec (3.5% overhead)
+- **Without emoji sets**: 14,000 msg/sec
+- **With emoji sets**: 13,500 msg/sec (3.5% overhead)
 - **With emoji mapping**: 13,200 msg/sec (5.7% overhead)
 
 ## References

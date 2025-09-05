@@ -1,6 +1,6 @@
-# tests/test_semantic_layers.py
+# tests/test_emoji_sets.py
 """
-Tests for Semantic Layer configuration, resolution, and processing.
+Tests for Emoji Layer configuration, resolution, and processing.
 """
 
 from collections.abc import Callable
@@ -14,23 +14,23 @@ from provide.foundation import (
     logger as global_logger,
 )
 from provide.foundation.core import (
-    _resolve_active_semantic_config,
+    _resolve_active_emoji_config,
     reset_foundation_setup_for_testing,
 )
-from provide.foundation.semantic_layers import (
-    BUILTIN_SEMANTIC_LAYERS,
-    HTTP_LAYER,
+from provide.foundation.emoji_sets import (
+    BUILTIN_EMOJI_SETS,
+    HTTP_EMOJI_SET,
     LEGACY_DAS_EMOJI_SETS,
-    LLM_LAYER,
+    LLM_EMOJI_SET,
 )
 from provide.foundation.types import (
     CustomDasEmojiSet,
-    SemanticFieldDefinition,
-    SemanticLayer,
+    FieldToEmojiMapping,
+    EmojiSetConfig,
 )
 
-ResolvedSemanticConfigForTest = tuple[
-    list[SemanticFieldDefinition], dict[str, CustomDasEmojiSet]
+ResolvedEmojiConfigForTest = tuple[
+    list[FieldToEmojiMapping], dict[str, CustomDasEmojiSet]
 ]
 
 
@@ -41,23 +41,23 @@ def auto_reset_telemetry():
     reset_foundation_setup_for_testing()
 
 
-class TestResolveActiveSemanticConfig:
+class TestResolveActiveEmojiConfig:
     def test_no_layers_enabled(self) -> None:
         lc = LoggingConfig()
-        resolved_fields, resolved_emoji_sets = _resolve_active_semantic_config(
-            lc, BUILTIN_SEMANTIC_LAYERS
+        resolved_fields, resolved_emoji_sets = _resolve_active_emoji_config(
+            lc, BUILTIN_EMOJI_SETS
         )
         assert resolved_fields == []
         for les in LEGACY_DAS_EMOJI_SETS:
             assert les.name in resolved_emoji_sets
 
     def test_enable_multiple_builtin_layers_no_conflict(self) -> None:
-        lc = LoggingConfig(enabled_semantic_layers=["llm", "http"])
-        resolved_fields, resolved_emoji_sets = _resolve_active_semantic_config(
-            lc, BUILTIN_SEMANTIC_LAYERS
+        lc = LoggingConfig(enabled_emoji_sets=["llm", "http"])
+        resolved_fields, resolved_emoji_sets = _resolve_active_emoji_config(
+            lc, BUILTIN_EMOJI_SETS
         )
-        llm_field_keys = {f.log_key for f in LLM_LAYER.field_definitions}
-        http_field_keys = {f.log_key for f in HTTP_LAYER.field_definitions}
+        llm_field_keys = {f.log_key for f in LLM_EMOJI_SET.field_definitions}
+        http_field_keys = {f.log_key for f in HTTP_EMOJI_SET.field_definitions}
         expected_field_count = len(llm_field_keys.union(http_field_keys))
         assert len(resolved_fields) == expected_field_count
         assert (
@@ -66,16 +66,16 @@ class TestResolveActiveSemanticConfig:
         )
 
     def test_layer_priority_for_field_definitions(self) -> None:
-        field1 = SemanticFieldDefinition(
+        field1 = FieldToEmojiMapping(
             log_key="shared_key", description="from layer1"
         )
-        layer1 = SemanticLayer(name="layer1", field_definitions=[field1], priority=10)
-        field2 = SemanticFieldDefinition(
+        layer1 = EmojiSetConfig(name="layer1", field_definitions=[field1], priority=10)
+        field2 = FieldToEmojiMapping(
             log_key="shared_key", description="from layer2"
         )
-        layer2 = SemanticLayer(name="layer2", field_definitions=[field2], priority=20)
-        lc = LoggingConfig(custom_semantic_layers=[layer1, layer2])
-        resolved_fields, _ = _resolve_active_semantic_config(lc, {})
+        layer2 = EmojiSetConfig(name="layer2", field_definitions=[field2], priority=20)
+        lc = LoggingConfig(custom_emoji_sets=[layer1, layer2])
+        resolved_fields, _ = _resolve_active_emoji_config(lc, {})
         assert (
             len(resolved_fields) == 1
             and resolved_fields[0].description == "from layer2"
@@ -99,7 +99,7 @@ class TestSetupWithLayers:
     ) -> None:
         config = TelemetryConfig(
             logging=LoggingConfig(
-                enabled_semantic_layers=["llm"],
+                enabled_emoji_sets=["llm"],
                 console_formatter="key_value",
                 das_emoji_prefix_enabled=True,
                 logger_name_emoji_prefix_enabled=False,
@@ -127,7 +127,7 @@ class TestSetupWithLayers:
         )
         config = TelemetryConfig(
             logging=LoggingConfig(
-                enabled_semantic_layers=["llm"],
+                enabled_emoji_sets=["llm"],
                 user_defined_emoji_sets=[my_llm_provider_emojis],
                 console_formatter="key_value",
                 das_emoji_prefix_enabled=True,
@@ -148,7 +148,7 @@ class TestSetupWithLayers:
         setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
         captured_stderr_for_foundation: io.StringIO,
     ) -> None:
-        monkeypatch.setenv("FOUNDATION_LOG_ENABLED_SEMANTIC_LAYERS", "http")
+        monkeypatch.setenv("FOUNDATION_LOG_ENABLED_EMOJI_SETS", "http")
         monkeypatch.setenv(
             "FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS",
             '[{"name": "http_method", "emojis": {"get": "🔽", "default": "🌐"}}]',

@@ -663,7 +663,7 @@ Context manager for timing and logging code blocks.
 **Parameters:**
 - `logger_instance` (FoundationLogger): Logger to use
 - `event_name` (str): Name of the operation being timed
-- `layer_keys` (dict, optional): Semantic layer keys
+- `layer_keys` (dict, optional): Emoji set keys
 - `initial_kvs` (dict, optional): Initial key-value pairs
 - `**extra_kvs`: Additional key-value pairs
 

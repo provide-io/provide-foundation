@@ -71,22 +71,22 @@ Omit timestamps from log output.
 omit_timestamp: bool = field(default=False)
 ```
 
-##### enabled_semantic_layers: list[str]
-List of enabled semantic layer names.
+##### enabled_emoji_sets: list[str]
+List of enabled emoji set names.
 
 ```python
-enabled_semantic_layers: list[str] = field(factory=lambda: [])
+enabled_emoji_sets: list[str] = field(factory=lambda: [])
 ```
 
-##### custom_semantic_layers: list[SemanticLayer]
-Custom semantic layer definitions.
+##### custom_emoji_sets: list[EmojiSetConfig]
+Custom emoji set definitions.
 
 ```python
-custom_semantic_layers: list[SemanticLayer] = field(factory=lambda: [])
+custom_emoji_sets: list[EmojiSetConfig] = field(factory=lambda: [])
 ```
 
 ##### user_defined_emoji_sets: list[CustomDasEmojiSet]
-User-defined emoji sets for semantic layers.
+User-defined emoji sets for emoji sets.
 
 ```python
 user_defined_emoji_sets: list[CustomDasEmojiSet] = field(factory=lambda: [])
