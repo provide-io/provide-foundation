@@ -17,7 +17,7 @@ import pytest
 import structlog
 
 from provide.foundation.core import (
-    _CORE_SETUP_LOGGER_NAME,
+    from provide.foundation.logger.setup.coordinator import _CORE_SETUP_LOGGER_NAME,
     _create_core_setup_logger,
 )
 from provide.foundation.logger import (
@@ -124,7 +124,7 @@ def test_config_dangling_emoji_set_reference(
 
 def test_core_create_logger_handler_close_fails() -> None:
     """Covers the exception handling when a handler's close() method fails."""
-    logger = stdlib_logging.getLogger(_CORE_SETUP_LOGGER_NAME)
+    logger = stdlib_logging.getLogger(from provide.foundation.logger.setup.coordinator import _CORE_SETUP_LOGGER_NAME)
     mock_handler = MagicMock(spec=stdlib_logging.StreamHandler)
     mock_handler.stream = io.StringIO()
     mock_handler.close.side_effect = RuntimeError("Cannot close")

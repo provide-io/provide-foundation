@@ -13,9 +13,7 @@ from pytest import CaptureFixture
 from structlog.dev import ConsoleRenderer
 from structlog.processors import JSONRenderer, TimeStamper
 
-from provide.foundation.core import (
-    _resolve_active_emoji_config,
-)
+from provide.foundation.logger.setup.emoji_resolver import resolve_active_emoji_config as _resolve_active_emoji_config
 from provide.foundation.logger.config import (
     LoggingConfig,
     TelemetryConfig,

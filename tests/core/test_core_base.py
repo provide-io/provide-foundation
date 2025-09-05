@@ -16,7 +16,7 @@ from pytest import CaptureFixture
 import structlog
 
 from provide.foundation.core import (
-    _CORE_SETUP_LOGGER_NAME,
+    from provide.foundation.logger.setup.coordinator import _CORE_SETUP_LOGGER_NAME,
     _create_core_setup_logger,
     _handle_globally_disabled_setup,
     reset_foundation_setup_for_testing,
@@ -56,7 +56,7 @@ class TestGetSafeStderr:
 
 class TestCreateCoreSetupLogger:
     def test_create_core_setup_logger_handler_close_exception(self) -> None:
-        logger = stdlib_logging.getLogger(_CORE_SETUP_LOGGER_NAME)
+        logger = stdlib_logging.getLogger(from provide.foundation.logger.setup.coordinator import _CORE_SETUP_LOGGER_NAME)
         original_handlers = list(logger.handlers)
         logger.handlers.clear()
         mock_handler_stream = io.StringIO()

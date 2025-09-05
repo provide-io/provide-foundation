@@ -46,7 +46,7 @@ def test_core_setup_logger_with_existing_handlers() -> None:
     test_logger = stdlib_logging.getLogger(test_logger_name)
     test_logger.addHandler(stdlib_logging.StreamHandler())
     test_logger.addHandler(stdlib_logging.StreamHandler())
-    with patch("provide.foundation.core._CORE_SETUP_LOGGER_NAME", test_logger_name):
+    with patch("provide.foundation.core.from provide.foundation.logger.setup.coordinator import _CORE_SETUP_LOGGER_NAME", test_logger_name):
         result_logger = _create_core_setup_logger(globally_disabled=False)
     assert result_logger.hasHandlers() and len(result_logger.handlers) == 1
 

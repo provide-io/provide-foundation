@@ -3,7 +3,8 @@
     "allow": [
       "Bash(uv sync:*)",
       "Bash(source:*)",
-      "Bash(pytest:*)"
+      "Bash(pytest:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": [],
