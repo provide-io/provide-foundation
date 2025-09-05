@@ -1141,6 +1141,7 @@ dev = [
     { name = "twine" },
     { name = "ty" },
     { name = "types-cryptography" },
+    { name = "types-toml" },
 ]
 docs = [
     { name = "mike" },
@@ -1185,6 +1186,7 @@ dev = [
     { name = "twine", specifier = ">=6.1.0" },
     { name = "ty", specifier = ">=0.0.1a6" },
     { name = "types-cryptography", specifier = ">=3.3.23.2" },
+    { name = "types-toml", specifier = ">=0.10.8.20240310" },
 ]
 docs = [
     { name = "mike", specifier = ">=2.0.0" },
@@ -1690,6 +1692,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/18/05/a57fe8bbed10fe4b739fac6e16c4e80c5199ce2f74ae67fa7d7f6e3750da/types-cryptography-3.3.23.2.tar.gz", hash = "sha256:09cc53f273dd4d8c29fa7ad11fefd9b734126d467960162397bc5e3e604dea75", size = 15461, upload-time = "2022-11-08T18:29:28.012Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b6/36/92dfe7e5056694e78caefd05b383140c74c7fcbfc63d26ee514c77f2d8a2/types_cryptography-3.3.23.2-py3-none-any.whl", hash = "sha256:b965d548f148f8e87f353ccf2b7bd92719fdf6c845ff7cedf2abb393a0643e4f", size = 30223, upload-time = "2022-11-08T18:29:26.848Z" },
+]
+
+[[package]]
+name = "types-toml"
+version = "0.10.8.20240310"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/86/47/3e4c75042792bff8e90d7991aa5c51812cc668828cc6cce711e97f63a607/types-toml-0.10.8.20240310.tar.gz", hash = "sha256:3d41501302972436a6b8b239c850b26689657e25281b48ff0ec06345b8830331", size = 4392, upload-time = "2024-03-10T02:18:37.518Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/da/a2/d32ab58c0b216912638b140ab2170ee4b8644067c293b170e19fba340ccc/types_toml-0.10.8.20240310-py3-none-any.whl", hash = "sha256:627b47775d25fa29977d9c70dc0cbab3f314f32c8d8d0c012f2ef5de7aaec05d", size = 4777, upload-time = "2024-03-10T02:18:36.568Z" },
 ]
 
 [[package]]
