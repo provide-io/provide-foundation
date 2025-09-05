@@ -3,7 +3,8 @@
     "allow": [
       "Bash(source env.sh)",
       "Bash(python:*)",
-      "Bash(echo $PYTHONPATH)"
+      "Bash(echo $PYTHONPATH)",
+      "Bash(export:*)"
     ],
     "deny": [],
     "ask": [],
