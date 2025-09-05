@@ -92,8 +92,8 @@ def __getattr__(name: str) -> Any:
                   "invalid_cert_pem", "invalid_key_pem", "malformed_cert_pem", "empty_cert",
                   "temporary_cert_file", "temporary_key_file", "cert_with_windows_line_endings",
                   "cert_with_utf8_bom", "cert_with_extra_whitespace", "external_ca_pem"]:
-        from provide.foundation.testing.crypto import *
-        return globals()[name]
+        import provide.foundation.testing.crypto as crypto_module
+        return getattr(crypto_module, name)
     
     # Hub fixtures
     elif name in ["default_container_directory"]:

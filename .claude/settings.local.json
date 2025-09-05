@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(PYTHONPATH=\"./src:.\" python -c \"\n# Test the unified testing module\nprint(''🧪 Testing unified testing module...'')\n\n# Test warning system\nfrom provide.foundation.testing import _is_testing_context\nprint(f''✅ Testing context detected: {_is_testing_context()}'')\n\n# Test lazy imports\nfrom provide.foundation.testing import reset_foundation_setup_for_testing\nprint(''✅ Logger testing utilities imported'')\n\nfrom provide.foundation.testing import set_log_stream_for_testing  \nprint(''✅ Stream testing utilities imported'')\n\nfrom provide.foundation.testing import MockContext\nprint(''✅ CLI testing utilities imported'')\n\n# Test that we can import everything at once\nfrom provide.foundation.testing import *\nprint(''✅ Unified import (import *) works'')\n\nprint(''🎉 Unified testing module working correctly!'')\n\")"
     ],
     "deny": [],
     "ask": [],

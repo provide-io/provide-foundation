@@ -12,8 +12,9 @@ import sys
 import threading
 from typing import TextIO
 
-# Import the actual stream management functions
-from provide.foundation.streams.core import _PROVIDE_LOG_STREAM, _STREAM_LOCK
+# Import the actual stream management variables
+import sys
+from provide.foundation.streams.core import get_log_stream
 
 
 def set_log_stream_for_testing(stream: TextIO | None) -> None:
@@ -26,9 +27,9 @@ def set_log_stream_for_testing(stream: TextIO | None) -> None:
     Args:
         stream: Stream to redirect to, or None to reset to stderr
     """
-    global _PROVIDE_LOG_STREAM
-    with _STREAM_LOCK:
-        _PROVIDE_LOG_STREAM = stream if stream is not None else sys.stderr
+    # Import the actual implementation from streams.core
+    from provide.foundation.streams.core import set_log_stream_for_testing as _set_stream
+    _set_stream(stream)
 
 
 def get_current_log_stream() -> TextIO:
@@ -38,7 +39,7 @@ def get_current_log_stream() -> TextIO:
     Returns:
         The current log stream being used by Foundation
     """
-    return _PROVIDE_LOG_STREAM
+    return get_log_stream()
 
 
 def reset_log_stream() -> None:
