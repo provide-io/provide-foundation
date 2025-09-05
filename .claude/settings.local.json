@@ -1,8 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(source:*)",
-      "Bash(PYTHONPATH=\"./src:.\" python -c \"\n# Test imports work\nfrom provide.foundation.streams import get_log_stream\nfrom provide.foundation.tracer import with_span, Span\nfrom provide.foundation.logger.setup import internal_setup\nprint(''✅ New architecture imports work'')\n\n# Test basic functionality\nwith with_span(''test_span'') as span:\n    span.set_tag(''test'', ''value'')\n    print(''✅ Tracer context management works'')\n\nfrom provide.foundation import setup_telemetry\nsetup_telemetry()\nprint(''✅ Setup works'')\n\nprint(''🎉 Reorganization successful - all subsystems work!'')\n\")"
+      "Bash(sed:*)"
     ],
     "deny": [],
     "ask": [],

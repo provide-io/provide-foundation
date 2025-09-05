@@ -123,7 +123,7 @@ class TestFoundationLogOutputIntegration:
         # This should trigger both core setup logger creation and config warning
         monkeypatch.setenv("PROVIDE_LOG_LEVEL", "INVALID_LEVEL")
         
-        from provide.foundation.core import reset_foundation_setup_for_testing
+        from provide.foundation.testing import reset_foundation_setup_for_testing
         reset_foundation_setup_for_testing()
         
         # Create config which will trigger warning
@@ -143,7 +143,7 @@ class TestFoundationLogOutputIntegration:
         monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "main")
         
         # Reset and setup telemetry with file logging
-        from provide.foundation.core import reset_foundation_setup_for_testing, setup_telemetry
+        from provide.foundation.testing import reset_foundation_setup_for_testing, setup_telemetry
         reset_foundation_setup_for_testing()
         
         config = TelemetryConfig.from_env()
@@ -168,7 +168,7 @@ class TestFoundationLogOutputIntegration:
         monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "stderr")
         
         # Reset and setup telemetry
-        from provide.foundation.core import reset_foundation_setup_for_testing, setup_telemetry
+        from provide.foundation.testing import reset_foundation_setup_for_testing, setup_telemetry
         reset_foundation_setup_for_testing()
         
         config = TelemetryConfig.from_env()
