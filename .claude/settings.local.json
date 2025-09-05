@@ -8,7 +8,15 @@
       "Bash(uv pip install:*)",
       "Bash(uv pip:*)",
       "WebSearch",
-      "Bash(PYTHONPATH=:*)"
+      "Bash(PYTHONPATH=:*)",
+      "Bash(for project in pyvider pyvider-components pyvider-rpcplugin garnish tofusoup wrknv)",
+      "Bash(do)",
+      "Bash(echo \"=== $project ===\")",
+      "Bash(if [[ -f \"/Users/tim/code/gh/provide-io/$project/pyproject.toml\" ]])",
+      "Bash(then)",
+      "Bash(else)",
+      "Bash(fi)",
+      "Bash(done)"
     ],
     "deny": [],
     "ask": [],
