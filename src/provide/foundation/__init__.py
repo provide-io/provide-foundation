@@ -63,7 +63,7 @@ from provide.foundation.types import (
 
 # New utility exports
 from provide.foundation.utils import timed_block
-from provide.foundation.version import __version__
+from provide.foundation._version import __version__
 
 __all__ = [
     # Core Emoji Dictionaries (available for direct use or reference)
