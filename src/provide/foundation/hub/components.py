@@ -7,7 +7,6 @@ component discovery, lifecycle management, and dependency resolution.
 """
 
 import asyncio
-from collections.abc import Callable, Iterator
 from enum import Enum
 import inspect
 import threading
@@ -15,7 +14,6 @@ from typing import Any, Protocol, TypeVar
 
 from attrs import define, field
 
-from provide.foundation.config.base import BaseConfig
 from provide.foundation.hub.registry import Registry, RegistryEntry
 from provide.foundation.logger import get_logger
 from provide.foundation.logger.emoji.types import EmojiSet
@@ -28,7 +26,7 @@ T = TypeVar("T")
 @define(frozen=True, slots=True)
 class ComponentInfo:
     """Information about a registered component."""
-    
+
     name: str = field()
     component_class: type[Any] = field()
     dimension: str = field(default="component")
@@ -41,9 +39,9 @@ class ComponentInfo:
 
 class ComponentCategory(Enum):
     """Predefined component categories for Foundation."""
-    
+
     EMOJI_SET = "emoji_set"
-    CONFIG_SOURCE = "config_source" 
+    CONFIG_SOURCE = "config_source"
     PROCESSOR = "processor"
     ERROR_HANDLER = "error_handler"
     FORMATTER = "formatter"
@@ -52,11 +50,11 @@ class ComponentCategory(Enum):
 
 class ComponentLifecycle(Protocol):
     """Protocol for components that support lifecycle management."""
-    
+
     async def initialize(self) -> None:
         """Initialize the component."""
         ...
-    
+
     async def cleanup(self) -> None:
         """Clean up the component."""
         ...
@@ -77,18 +75,21 @@ def find_emoji_set_for_domain(domain: str) -> EmojiSet | None:
     """Find the best emoji set for a given domain."""
     with _registry_lock:
         registry = get_component_registry()
-        
+
         # Get all emoji sets for this domain
         all_entries = list(registry)
         domain_sets = [
-            entry for entry in all_entries
-            if (entry.dimension == ComponentCategory.EMOJI_SET.value and
-                entry.metadata.get("domain") == domain)
+            entry
+            for entry in all_entries
+            if (
+                entry.dimension == ComponentCategory.EMOJI_SET.value
+                and entry.metadata.get("domain") == domain
+            )
         ]
-        
+
         if not domain_sets:
             return get_default_emoji_set()
-        
+
         # Sort by priority (highest first)
         domain_sets.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)
         return domain_sets[0].value
@@ -98,28 +99,31 @@ def get_default_emoji_set() -> EmojiSet:
     """Get the default emoji set for unknown domains."""
     with _registry_lock:
         registry = get_component_registry()
-        
+
         # Look for default emoji set
         all_entries = list(registry)
         default_sets = [
-            entry for entry in all_entries
-            if (entry.dimension == ComponentCategory.EMOJI_SET.value and
-                entry.metadata.get("default", False))
+            entry
+            for entry in all_entries
+            if (
+                entry.dimension == ComponentCategory.EMOJI_SET.value
+                and entry.metadata.get("default", False)
+            )
         ]
-        
+
         if default_sets:
             return default_sets[0].value
-        
+
         # Return built-in default
         return EmojiSet(
             name="default",
             emojis={
                 "success": "✅",
-                "error": "❌", 
+                "error": "❌",
                 "info": "ℹ️",
                 "warning": "⚠️",
                 "debug": "🔍",
-            }
+            },
         )
 
 
@@ -127,24 +131,27 @@ def resolve_emoji_for_domain(domain: str, action: str) -> str:
     """Resolve emoji for domain and action with priority ordering."""
     with _registry_lock:
         registry = get_component_registry()
-        
+
         # Get all emoji sets for this domain
         all_entries = list(registry)
         domain_sets = [
-            entry for entry in all_entries
-            if (entry.dimension == ComponentCategory.EMOJI_SET.value and
-                entry.metadata.get("domain") == domain)
+            entry
+            for entry in all_entries
+            if (
+                entry.dimension == ComponentCategory.EMOJI_SET.value
+                and entry.metadata.get("domain") == domain
+            )
         ]
-        
+
         # Sort by priority (highest first)
         domain_sets.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)
-        
+
         # Try each set in priority order
         for entry in domain_sets:
             emoji_set = entry.value
             if action in emoji_set.emojis:
                 return emoji_set.emojis[action]
-        
+
         # Fall back to default
         default_set = get_default_emoji_set()
         return default_set.emojis.get(action, "📝")
@@ -154,45 +161,46 @@ def get_composed_emoji_set(domain: str) -> EmojiSet:
     """Get composed emoji set combining all sets for a domain."""
     with _registry_lock:
         registry = get_component_registry()
-        
+
         # Get all emoji sets for this domain
         all_entries = list(registry)
         domain_sets = [
-            entry for entry in all_entries
-            if (entry.dimension == ComponentCategory.EMOJI_SET.value and
-                entry.metadata.get("domain") == domain)
+            entry
+            for entry in all_entries
+            if (
+                entry.dimension == ComponentCategory.EMOJI_SET.value
+                and entry.metadata.get("domain") == domain
+            )
         ]
-        
+
         # Sort by priority (lowest first for composition)
         domain_sets.sort(key=lambda e: e.metadata.get("priority", 0))
-        
+
         # Compose emojis
         composed_emojis = {}
         for entry in domain_sets:
             emoji_set = entry.value
             composed_emojis.update(emoji_set.emojis)
-        
-        return EmojiSet(
-            name=f"composed_{domain}",
-            emojis=composed_emojis
-        )
+
+        return EmojiSet(name=f"composed_{domain}", emojis=composed_emojis)
 
 
 def resolve_config_value(key: str) -> Any:
     """Resolve configuration value using priority-ordered sources."""
     with _registry_lock:
         registry = get_component_registry()
-        
+
         # Get all config sources
         all_entries = list(registry)
         config_sources = [
-            entry for entry in all_entries
+            entry
+            for entry in all_entries
             if entry.dimension == ComponentCategory.CONFIG_SOURCE.value
         ]
-        
+
         # Sort by priority (highest first)
         config_sources.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)
-        
+
         # Try each source
         for entry in config_sources:
             source = entry.value
@@ -203,7 +211,7 @@ def resolve_config_value(key: str) -> Any:
                         return value
                 except Exception:
                     continue
-        
+
         return None
 
 
@@ -211,14 +219,15 @@ def get_config_chain() -> list[RegistryEntry]:
     """Get configuration sources ordered by priority."""
     with _registry_lock:
         registry = get_component_registry()
-        
+
         # Get all config sources
         all_entries = list(registry)
         config_sources = [
-            entry for entry in all_entries
+            entry
+            for entry in all_entries
             if entry.dimension == ComponentCategory.CONFIG_SOURCE.value
         ]
-        
+
         # Sort by priority (highest first)
         config_sources.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)
         return config_sources
@@ -228,7 +237,7 @@ async def load_all_configs() -> dict[str, Any]:
     """Load configurations from all registered sources."""
     configs = {}
     chain = get_config_chain()
-    
+
     for entry in chain:
         source = entry.value
         if hasattr(source, "load_config"):
@@ -237,12 +246,14 @@ async def load_all_configs() -> dict[str, Any]:
                     source_config = await source.load_config()
                 else:
                     source_config = source.load_config()
-                
+
                 if source_config:
                     configs.update(source_config)
             except Exception as e:
-                log.warning("Config source failed to load", source=entry.name, error=str(e))
-    
+                log.warning(
+                    "Config source failed to load", source=entry.name, error=str(e)
+                )
+
     return configs
 
 
@@ -250,14 +261,15 @@ def get_processor_pipeline() -> list[RegistryEntry]:
     """Get log processors ordered by priority."""
     with _registry_lock:
         registry = get_component_registry()
-        
+
         # Get all processors
         all_entries = list(registry)
         processors = [
-            entry for entry in all_entries
+            entry
+            for entry in all_entries
             if entry.dimension == ComponentCategory.PROCESSOR.value
         ]
-        
+
         # Sort by priority (highest first)
         processors.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)
         return processors
@@ -266,43 +278,47 @@ def get_processor_pipeline() -> list[RegistryEntry]:
 def get_processors_for_stage(stage: str) -> list[RegistryEntry]:
     """Get processors for a specific processing stage."""
     pipeline = get_processor_pipeline()
-    return [
-        entry for entry in pipeline
-        if entry.metadata.get("stage") == stage
-    ]
+    return [entry for entry in pipeline if entry.metadata.get("stage") == stage]
 
 
 def get_handlers_for_exception(exception: Exception) -> list[RegistryEntry]:
     """Get error handlers that can handle the given exception type."""
     with _registry_lock:
         registry = get_component_registry()
-        
+
         # Get all error handlers
         all_entries = list(registry)
         handlers = [
-            entry for entry in all_entries
+            entry
+            for entry in all_entries
             if entry.dimension == ComponentCategory.ERROR_HANDLER.value
         ]
-        
+
         # Filter by exception type
         exception_type_name = type(exception).__name__
         matching_handlers = []
-        
+
         for entry in handlers:
             exception_types = entry.metadata.get("exception_types", [])
-            if any(exc_type in exception_type_name or exception_type_name in exc_type 
-                   for exc_type in exception_types):
+            if any(
+                exc_type in exception_type_name or exception_type_name in exc_type
+                for exc_type in exception_types
+            ):
                 matching_handlers.append(entry)
-        
+
         # Sort by priority (highest first)
-        matching_handlers.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)
+        matching_handlers.sort(
+            key=lambda e: e.metadata.get("priority", 0), reverse=True
+        )
         return matching_handlers
 
 
-def execute_error_handlers(exception: Exception, context: dict[str, Any]) -> dict[str, Any] | None:
+def execute_error_handlers(
+    exception: Exception, context: dict[str, Any]
+) -> dict[str, Any] | None:
     """Execute error handlers until one handles the exception."""
     handlers = get_handlers_for_exception(exception)
-    
+
     for entry in handlers:
         handler = entry.value
         try:
@@ -310,13 +326,11 @@ def execute_error_handlers(exception: Exception, context: dict[str, Any]) -> dic
             if result is not None:
                 return result
         except Exception as handler_error:
-            log.error("Error handler failed", 
-                     handler=entry.name, 
-                     error=str(handler_error))
-    
+            log.error(
+                "Error handler failed", handler=entry.name, error=str(handler_error)
+            )
+
     return None
-
-
 
 
 def resolve_component_dependencies(name: str, dimension: str) -> dict[str, Any]:
@@ -324,13 +338,13 @@ def resolve_component_dependencies(name: str, dimension: str) -> dict[str, Any]:
     with _registry_lock:
         registry = get_component_registry()
         entry = registry.get_entry(name, dimension)
-        
+
         if not entry:
             return {}
-        
+
         dependencies = {}
         dep_names = entry.metadata.get("dependencies", [])
-        
+
         for dep_name in dep_names:
             # Try same dimension first
             dep_component = registry.get(dep_name, dimension)
@@ -341,7 +355,7 @@ def resolve_component_dependencies(name: str, dimension: str) -> dict[str, Any]:
                 dep_component = registry.get(dep_name)
                 if dep_component is not None:
                     dependencies[dep_name] = dep_component
-        
+
         return dependencies
 
 
@@ -350,20 +364,20 @@ def check_component_health(name: str, dimension: str) -> dict[str, Any]:
     with _registry_lock:
         registry = get_component_registry()
         component = registry.get(name, dimension)
-        
+
         if not component:
             return {"status": "not_found"}
-        
+
         entry = registry.get_entry(name, dimension)
         if not entry.metadata.get("supports_health_check", False):
             return {"status": "no_health_check"}
-        
+
         if hasattr(component, "health_check"):
             try:
                 return component.health_check()
             except Exception as e:
                 return {"status": "error", "error": str(e)}
-        
+
         return {"status": "unknown"}
 
 
@@ -372,10 +386,10 @@ def get_component_config_schema(name: str, dimension: str) -> dict[str, Any] | N
     with _registry_lock:
         registry = get_component_registry()
         entry = registry.get_entry(name, dimension)
-        
+
         if not entry:
             return None
-        
+
         return entry.metadata.get("config_schema")
 
 
@@ -383,22 +397,22 @@ def get_or_initialize_component(name: str, dimension: str) -> Any:
     """Get component, initializing lazily if needed."""
     with _registry_lock:
         key = (name, dimension)
-        
+
         # Return already initialized component
         if key in _initialized_components:
             return _initialized_components[key]
-        
+
         registry = get_component_registry()
         entry = registry.get_entry(name, dimension)
-        
+
         if not entry:
             return None
-        
+
         # If already initialized, return it
         if entry.value is not None:
             _initialized_components[key] = entry.value
             return entry.value
-        
+
         # Initialize lazily
         if entry.metadata.get("lazy", False):
             factory = entry.metadata.get("factory")
@@ -411,16 +425,18 @@ def get_or_initialize_component(name: str, dimension: str) -> Any:
                         value=component,
                         dimension=dimension,
                         metadata=entry.metadata,
-                        replace=True
+                        replace=True,
                     )
                     _initialized_components[key] = component
                     return component
                 except Exception as e:
-                    log.error("Component initialization failed",
-                             component=name, 
-                             dimension=dimension,
-                             error=str(e))
-        
+                    log.error(
+                        "Component initialization failed",
+                        component=name,
+                        dimension=dimension,
+                        error=str(e),
+                    )
+
         return entry.value
 
 
@@ -428,17 +444,17 @@ async def initialize_async_component(name: str, dimension: str) -> Any:
     """Initialize component asynchronously."""
     with _registry_lock:
         key = (name, dimension)
-        
-        # Return already initialized component  
+
+        # Return already initialized component
         if key in _initialized_components:
             return _initialized_components[key]
-        
+
         registry = get_component_registry()
         entry = registry.get_entry(name, dimension)
-        
+
         if not entry:
             return None
-        
+
         # Initialize with async factory
         if entry.metadata.get("async", False):
             factory = entry.metadata.get("factory")
@@ -448,23 +464,25 @@ async def initialize_async_component(name: str, dimension: str) -> Any:
                         component = await factory()
                     else:
                         component = factory()
-                    
+
                     # Update registry
                     registry.register(
                         name=name,
                         value=component,
                         dimension=dimension,
                         metadata=entry.metadata,
-                        replace=True
+                        replace=True,
                     )
                     _initialized_components[key] = component
                     return component
                 except Exception as e:
-                    log.error("Async component initialization failed",
-                             component=name,
-                             dimension=dimension, 
-                             error=str(e))
-        
+                    log.error(
+                        "Async component initialization failed",
+                        component=name,
+                        dimension=dimension,
+                        error=str(e),
+                    )
+
         return entry.value
 
 
@@ -472,15 +490,12 @@ def cleanup_all_components(dimension: str | None = None) -> None:
     """Clean up all components in dimension."""
     with _registry_lock:
         registry = get_component_registry()
-        
+
         if dimension:
-            entries = [
-                entry for entry in registry
-                if entry.dimension == dimension
-            ]
+            entries = [entry for entry in registry if entry.dimension == dimension]
         else:
             entries = list(registry)
-        
+
         for entry in entries:
             if entry.metadata.get("supports_cleanup", False):
                 component = entry.value
@@ -505,57 +520,60 @@ def cleanup_all_components(dimension: str | None = None) -> None:
                         else:
                             cleanup_func()
                     except Exception as e:
-                        log.error("Component cleanup failed",
-                                 component=entry.name,
-                                 dimension=entry.dimension,
-                                 error=str(e))
+                        log.error(
+                            "Component cleanup failed",
+                            component=entry.name,
+                            dimension=entry.dimension,
+                            error=str(e),
+                        )
 
 
 def bootstrap_foundation() -> None:
     """Bootstrap Foundation with core registry components."""
     registry = get_component_registry()
-    
+
     # Register default emoji set
     default_emoji_set = EmojiSet(
         name="foundation_default",
         emojis={
             "success": "✅",
             "error": "❌",
-            "info": "ℹ️", 
+            "info": "ℹ️",
             "warning": "⚠️",
             "debug": "🔍",
-        }
+        },
     )
-    
+
     registry.register(
         name="default",
         value=default_emoji_set,
         dimension=ComponentCategory.EMOJI_SET.value,
-        metadata={"default": True, "priority": 1}
+        metadata={"default": True, "priority": 1},
     )
-    
+
     # Config sources would be registered here when implemented
-    
+
     # Register core processors
     def timestamp_processor(logger, method_name, event_dict):
         import time
+
         event_dict["timestamp"] = time.time()
         return event_dict
-    
+
     registry.register(
         name="timestamp",
         value=timestamp_processor,
         dimension=ComponentCategory.PROCESSOR.value,
-        metadata={"priority": 100, "stage": "pre_format"}
+        metadata={"priority": 100, "stage": "pre_format"},
     )
-    
+
     log.debug("Foundation bootstrap completed with registry components")
 
 
 def load_config_from_registry(config_class: type[T]) -> T:
     """Load configuration using registered config sources."""
     configs = {}
-    
+
     # Use sync version for now - async version needs event loop handling
     chain = get_config_chain()
     for entry in chain:
@@ -568,32 +586,33 @@ def load_config_from_registry(config_class: type[T]) -> T:
                         configs.update(source_config)
             except Exception as e:
                 log.warning("Config source failed", source=entry.name, error=str(e))
-    
+
     return config_class.from_dict(configs)
 
 
 async def initialize_all_async_components() -> None:
     """Initialize all async components in dependency order."""
     registry = get_component_registry()
-    
+
     # Get all async components
     async_components = [
-        entry for entry in registry
-        if entry.metadata.get("async", False)
+        entry for entry in registry if entry.metadata.get("async", False)
     ]
-    
+
     # Sort by priority for initialization order
     async_components.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)
-    
+
     # Initialize each component
     for entry in async_components:
         try:
             await initialize_async_component(entry.name, entry.dimension)
         except Exception as e:
-            log.error("Failed to initialize async component",
-                     component=entry.name,
-                     dimension=entry.dimension,
-                     error=str(e))
+            log.error(
+                "Failed to initialize async component",
+                component=entry.name,
+                dimension=entry.dimension,
+                error=str(e),
+            )
 
 
 def reset_registry_for_tests() -> None:
@@ -606,12 +625,12 @@ def reset_registry_for_tests() -> None:
 
 def discover_components(
     group: str,
-    dimension: str = "component", 
+    dimension: str = "component",
     registry: Registry | None = None,
 ) -> dict[str, type[Any]]:
     """
     Discover and register components from entry points.
-    
+
     This is a stub for the TDD implementation.
     """
     return {}

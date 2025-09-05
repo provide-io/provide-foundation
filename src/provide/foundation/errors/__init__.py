@@ -24,7 +24,6 @@ from provide.foundation.errors.decorators import (
     suppress_and_log,
     with_error_handling,
 )
-from provide.foundation.errors.safe_decorators import log_only_error_context
 from provide.foundation.errors.handlers import (
     ErrorHandler,
     error_boundary,
@@ -42,6 +41,7 @@ from provide.foundation.errors.resources import (
     ResourceError,
 )
 from provide.foundation.errors.runtime import ConcurrencyError, RuntimeError, StateError
+from provide.foundation.errors.safe_decorators import log_only_error_context
 from provide.foundation.errors.types import (
     ErrorCode,
     ErrorMetadata,

@@ -12,10 +12,10 @@ from attrs import define, field
 class EmojiSet:
     """
     Emoji set for registry-based component management.
-    
+
     This replaces EmojiSet and is used by the new component registry system.
     """
-    
+
     name: str = field()
     emojis: dict[str, str] = field(factory=lambda: {})
     default_emoji_key: str = field(default="default")
