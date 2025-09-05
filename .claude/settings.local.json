@@ -12,7 +12,8 @@
       "Bash(python:*)",
       "Bash(mkdocs build:*)",
       "Bash(timeout 30s pytest --tb=no -q)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": [],
