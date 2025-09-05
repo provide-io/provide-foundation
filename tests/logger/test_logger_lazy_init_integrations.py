@@ -396,7 +396,7 @@ class TestMigrationFromExplicitSetup:
         json_lines = [
             line
             for line in captured.err.splitlines()
-            if line.strip() and not line.startswith("[")
+            if line.strip() and line.startswith("{")
         ]
         assert len(json_lines) >= 2
 
@@ -434,7 +434,7 @@ class TestMigrationFromExplicitSetup:
         json_lines = [
             line
             for line in captured_explicit.err.splitlines()
-            if line.strip() and not line.startswith("[")
+            if line.strip() and line.startswith("{")
         ]
         log_data = json.loads(json_lines[0])
         assert log_data["service_name"] == "explicit-override"
@@ -481,7 +481,7 @@ class TestMigrationFromExplicitSetup:
             json_lines = [
                 line
                 for line in captured_explicit.err.splitlines()
-                if line.strip() and not line.startswith("[")
+                if line.strip() and line.startswith("{")
             ]
             log_data = json.loads(json_lines[0])
             assert log_data["service_name"] == "explicit-service"

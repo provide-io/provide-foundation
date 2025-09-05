@@ -11,9 +11,9 @@ Detailed specification of the structured logging format, including:
 - Timestamp formats
 - Context propagation
 
-### [Semantic Layer Protocol](semantic-protocol.md)
+### [Emoji Set Protocol](emoji-set-protocol.md)
 The protocol for implementing domain-specific emoji sets:
-- Layer interface specification
+- Emoji set interface specification
 - Event naming conventions
 - Metadata requirements
 - Extension points
@@ -75,7 +75,7 @@ All log messages follow this structure:
 }
 ```
 
-### Semantic Layer Interface
+### Emoji Set Interface
 
 ```python
 from abc import ABC, abstractmethod

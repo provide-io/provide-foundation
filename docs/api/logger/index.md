@@ -8,7 +8,7 @@ The logger system provides:
 - **Global Logger Instance** - Ready-to-use logger with structured output
 - **Factory Functions** - Create named/scoped loggers
 - **Configuration** - Telemetry and logging configuration classes
-- **Emoji System** - Visual log parsing with semantic emoji prefixes
+- **Emoji System** - Visual log parsing with contextual emoji prefixes
 - **Performance** - High-performance logging (>14,000 msg/sec)
 - **Thread Safety** - Async-compatible with thread safety
 

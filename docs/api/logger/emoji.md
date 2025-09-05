@@ -160,9 +160,9 @@ Tertiary Emojis ('status' key):
 
 Emoji sets output:
 ```
-Foundation Telemetry: Active Semantic Layer Emoji Contract
+Foundation Telemetry: Active Emoji Set Emoji Contract
 ======================================================================
-Active Semantic Field Definitions (Order determines prefix sequence):
+Active Contextual Field Definitions (Order determines prefix sequence):
 
 Field 1:
   Log Key: 'http_method'
@@ -175,7 +175,7 @@ Field 2:
   Emoji Set: 'http_status'
 
 ======================================================================
-Available Emoji Sets (Referenced by Semantic Field Definitions):
+Available Emoji Sets (Referenced by Contextual Field Definitions):
 
   Emoji Set: 'http_methods' (Default Key: 'unknown')
     📥  -> Get
@@ -292,12 +292,12 @@ def _format_emoji_set_for_display(emoji_set: CustomDasEmojiSet) -> list[str]:
 
 ### _format_field_definition_for_display(field_def)
 
-Format semantic field definition for console display.
+Format Contextual field definition for console display.
 
 ```python
 def _format_field_definition_for_display(field_def: FieldToEmojiMapping) -> str:
     """
-    Format semantic field definition for display.
+    Format Contextual field definition for display.
     
     Args:
         field_def: Field definition to format
@@ -313,7 +313,7 @@ The emoji system integrates with the log processors to automatically add emoji p
 
 1. **Logger Name Processing**: Adds emoji based on logger name patterns
 2. **DAS Processing**: Processes `domain`, `action`, `status` fields 
-3. **Semantic Processing**: Uses custom field definitions and emoji sets
+3. **Contextual Processing**: Uses custom field definitions and emoji sets
 4. **Fallback**: Uses default emoji when specific mappings not found
 
 ## Performance Considerations

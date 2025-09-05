@@ -352,11 +352,11 @@ def validate_path(value: str) -> bool:
 
 #### validate_version(value)
 
-Validate semantic version format.
+Validate Contextual version format.
 
 ```python
 def validate_version(value: str) -> bool:
-    """Validate semantic version."""
+    """Validate Contextual version."""
     # Validates format: MAJOR.MINOR.PATCH[-prerelease][+build]
 ```
 
