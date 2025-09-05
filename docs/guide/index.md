@@ -28,12 +28,12 @@ Comprehensive guide to using provide.foundation in your applications.
   </div>
 
   <div class="feature-card">
-    <h3>📝 Logging</h3>
-    <p>Master the logging capabilities of provide.foundation</p>
+    <h3>📝 Logging & Tracing</h3>
+    <p>Master logging and distributed tracing</p>
     <ul>
-      <li><a href="logging/basic/">Basic Usage</a></li>
+      <li><a href="logging/basic/">Basic Logging</a></li>
       <li><a href="logging/advanced/">Advanced Patterns</a></li>
-      <li><a href="logging/async/">Async Logging</a></li>
+      <li><a href="tracing/">Distributed Tracing</a></li>
       <li><a href="logging/performance/">Performance Tuning</a></li>
     </ul>
   </div>
@@ -170,7 +170,7 @@ for item in items:
 
 These advanced topics are covered in the existing guides:
 - **Custom Emoji Sets** - See [Emoji Sets Guide](concepts/emoji-sets.md)
-- **Distributed Tracing** - See [Logging Context Guide](logging/context.md)  
+- **Distributed Tracing** - See [Tracing Guide](tracing/)  
 - **Production Strategies** - See [Performance Guide](logging/performance.md)
 - **Error Handling** - See [Advanced Logging Guide](logging/advanced.md)
 
