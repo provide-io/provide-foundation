@@ -27,7 +27,7 @@ logging:
   no_color: false      # Enable colors
   file: /var/log/app.log
 
-semantic_layers:
+emoji_sets:
   enabled: true
   layers:
     - http
@@ -63,7 +63,7 @@ Best for programmatic generation and CI/CD:
     "no_color": true,
     "file": "/var/log/app.log"
   },
-  "semantic_layers": {
+  "emoji_sets": {
     "enabled": true,
     "layers": ["http", "database"],
     "timeout_ms": 10
@@ -94,7 +94,7 @@ format = "pretty"
 no_emoji = false
 no_color = false
 
-[semantic_layers]
+[emoji_sets]
 enabled = true
 layers = ["http", "database", "llm"]
 timeout_ms = 10
@@ -257,7 +257,7 @@ logging:          # Logging configuration
   format: string  # Output format
   # ... more logging options
 
-semantic_layers:  # Emoji set settings
+emoji_sets:  # Emoji set settings
   enabled: bool
   layers: list
   # ... more layer options
@@ -315,7 +315,7 @@ logging:
 ### Semantic Layers Section
 
 ```yaml
-semantic_layers:
+emoji_sets:
   enabled: true            # Enable layer processing
   
   layers:                  # Active layers
