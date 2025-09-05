@@ -40,6 +40,11 @@ from provide.foundation.errors.resources import (
     NotFoundError,
     ResourceError,
 )
+from provide.foundation.errors.process import (
+    CommandNotFoundError,
+    ProcessError,
+    ProcessTimeoutError,
+)
 from provide.foundation.errors.runtime import ConcurrencyError, RuntimeError, StateError
 from provide.foundation.errors.safe_decorators import log_only_error_context
 from provide.foundation.errors.types import (
@@ -52,6 +57,7 @@ __all__ = [
     "AlreadyExistsError",
     "AuthenticationError",
     "AuthorizationError",
+    "CommandNotFoundError",
     "ConcurrencyError",
     "ConfigurationError",
     "ConfigValidationError",
@@ -68,6 +74,8 @@ __all__ = [
     "IntegrationError",
     "NetworkError",
     "NotFoundError",
+    "ProcessError",
+    "ProcessTimeoutError",
     "ResourceError",
     "RetryPolicy",
     "RuntimeError",
