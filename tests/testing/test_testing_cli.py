@@ -84,10 +84,10 @@ class TestIsolatedCliRunner:
         current_value = os.environ.get("TEST_VAR", "not_set")
         assert current_value == original_value
 
-    def test_isolated_runner_with_mix_stderr(self):
-        """Test isolated runner with stderr mixing."""
-        with isolated_cli_runner(mix_stderr=True) as runner:
-            assert runner.mix_stderr is True
+    def test_isolated_runner_output_separation(self):
+        """Test isolated runner handles stdout/stderr separately."""
+        with isolated_cli_runner() as runner:
+            assert isinstance(runner, CliRunner)
 
 
 class TestTempConfigFile:

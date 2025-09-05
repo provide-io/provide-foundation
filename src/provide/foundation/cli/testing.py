@@ -41,19 +41,17 @@ class MockContext(Context):
 @contextmanager
 def isolated_cli_runner(
     env: dict[str, str] | None = None,
-    mix_stderr: bool = False,
 ):
     """
     Create an isolated test environment for CLI testing.
 
     Args:
         env: Environment variables to set
-        mix_stderr: Whether to mix stderr with stdout
 
     Yields:
         CliRunner instance in isolated filesystem
     """
-    runner = CliRunner(mix_stderr=mix_stderr)
+    runner = CliRunner()
 
     with runner.isolated_filesystem():
         # Set up environment

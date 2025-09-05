@@ -249,6 +249,9 @@ nav:
       - Context Management: guide/logging/context.md
       - Performance Tuning: guide/logging/performance.md
     
+    - Testing: guide/testing.md
+    - Advanced Usage: guide/advanced-usage.md
+    
     - CLI Framework:
       - guide/cli/index.md
       - Command Registration: guide/cli/commands.md
@@ -275,6 +278,9 @@ nav:
       - Processors: api/logger/processors.md
       - Emoji Matrix: api/logger/emoji.md
     
+    - Context:
+      - api/context/index.md
+    
     - Configuration:
       - api/config/index.md
       - Config Manager: api/config/manager.md
@@ -282,17 +288,34 @@ nav:
       - Loaders: api/config/loader.md
       - Schema: api/config/schema.md
     
+    - Emoji Sets:
+      - api/emoji_sets/index.md
+      - Base Layer: api/emoji_sets/base.md
+      - HTTP Layer: api/emoji_sets/http.md
+      - Database Layer: api/emoji_sets/database.md
+      - LLM Layer: api/emoji_sets/llm.md
+      - Custom Layers: api/emoji_sets/custom.md
+    
     - CLI:
       - api/cli/index.md
       - Decorators: api/cli/decorators.md
       - Testing: api/cli/testing.md
       - Utilities: api/cli/utils.md
     
+    - Core:
+      - api/core/index.md
+    
     - Hub:
       - api/hub/index.md
     
     - Utilities:
       - api/utils/index.md
+      - Console: api/utils/console.md
+      - Errors: api/utils/errors.md
+      - Hub Utils: api/utils/hub.md
+      - Platform: api/utils/platform.md
+      - Process: api/utils/process.md
+      - Registry: api/utils/registry.md
       - File Operations: api/file/index.md
       - Crypto: api/crypto/index.md
   

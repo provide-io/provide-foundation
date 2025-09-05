@@ -6,7 +6,6 @@ context mocking, isolated runners, and configuration helpers.
 """
 
 from contextlib import contextmanager
-import inspect
 import json
 import os
 from pathlib import Path
@@ -47,28 +46,17 @@ class MockContext(Context):
 @contextmanager
 def isolated_cli_runner(
     env: dict[str, str] | None = None,
-    mix_stderr: bool = False,
 ):
     """
     Create an isolated test environment for CLI testing.
 
     Args:
         env: Environment variables to set
-        mix_stderr: Whether to mix stderr with stdout
 
     Yields:
         CliRunner instance in isolated filesystem
     """
-    # Check if Click supports mix_stderr parameter
-    runner_sig = inspect.signature(CliRunner)
-    supports_mix_stderr = "mix_stderr" in runner_sig.parameters
-    
-    if supports_mix_stderr:
-        runner = CliRunner(mix_stderr=mix_stderr)
-    else:
-        runner = CliRunner()
-        # Add mix_stderr attribute for test compatibility
-        runner.mix_stderr = mix_stderr
+    runner = CliRunner()
 
     with runner.isolated_filesystem():
         # Set up environment
