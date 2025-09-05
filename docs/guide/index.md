@@ -68,25 +68,27 @@ Comprehensive guide to using provide.foundation in your applications.
 ```bash
 # Logging configuration
 export PROVIDE_LOG_LEVEL=DEBUG
-export PROVIDE_LOG_FORMAT=pretty
-export PROVIDE_ENABLE_EMOJI=true
+export PROVIDE_LOG_CONSOLE_FORMATTER=key_value  # or "json"
+export PROVIDE_LOG_OMIT_TIMESTAMP=false
 
-# Performance tuning
-export PROVIDE_MAX_PROCESSORS=4
-export PROVIDE_BUFFER_SIZE=1000
+# Service configuration
+export PROVIDE_SERVICE_NAME=my-service
+export PROVIDE_ENVIRONMENT=production
 ```
 
 ### Common Patterns
 
 #### Contextual Logging
 ```python
+# From examples/06_trace_logging.py
 from provide.foundation import logger
 
-with logger.bind(request_id="abc-123"):
-    logger.info("processing_started")
-    # All logs in this context include request_id
-    logger.debug("step_1_completed")
+# Add context via structured fields
+logger.info("processing_started", request_id="abc-123")
+logger.debug("step_1_completed", request_id="abc-123")
 ```
+
+See [examples/06_trace_logging.py](../../examples/06_trace_logging.py) for complete example.
 
 #### Error Handling
 ```python
@@ -100,7 +102,8 @@ def risky_operation():
 
 #### CLI with Subcommands
 ```python
-from provide.foundation.cli import register_command
+# From examples/12_cli_application.py
+from provide.foundation.hub import register_command
 
 @register_command("db.migrate")
 def migrate():
@@ -112,6 +115,8 @@ def seed():
     """Seed the database."""
     pass
 ```
+
+See [examples/12_cli_application.py](../../examples/12_cli_application.py) for complete example.
 
 ## Best Practices
 
@@ -127,22 +132,26 @@ logger.info("user_action",
 logger.info(f"User {user.id} logged in from {request.ip}")
 ```
 
-### 2. Leverage Semantic Layers
+### 2. Use Domain-Action-Status Pattern
 ```python
-from provide.foundation.emoji_sets import HTTPLayer
+# From examples/04_das_logging.py
+from provide.foundation import logger
 
-http = HTTPLayer()
-http.request_started(method="GET", path="/api/users")
-http.request_completed(status=200, duration_ms=42)
+logger.info("http_request_started", method="GET", path="/api/users")
+logger.info("http_request_completed", status=200, duration_ms=42)
 ```
 
-### 3. Context Management
+See [examples/04_das_logging.py](../../examples/04_das_logging.py) for complete example.
+
+### 3. Request Tracing
 ```python
-# Use context managers for request tracing
+# From examples/06_trace_logging.py
 async def handle_request(request):
-    with logger.bind(request_id=request.id):
-        # All logs include request_id
-        return await process(request)
+    # Add request_id to all logs for this request
+    logger.info("request_received", request_id=request.id)
+    result = await process(request)
+    logger.info("request_completed", request_id=request.id, result=result)
+    return result
 ```
 
 ### 4. Performance Optimization
@@ -152,10 +161,9 @@ logger.debug("detailed_info")  # Development only
 logger.info("important_event")  # Production
 logger.error("error_occurred")  # Always
 
-# Batch operations when possible
-with logger.batch():
-    for item in items:
-        logger.info("item_processed", item_id=item.id)
+# Log important events
+for item in items:
+    logger.info("item_processed", item_id=item.id)
 ```
 
 ## Advanced Topics
