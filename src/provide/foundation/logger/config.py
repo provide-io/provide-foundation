@@ -23,6 +23,13 @@ from provide.foundation.types import (
 )
 
 
+def _get_config_logger():
+    """Get logger for config warnings. Lazy import to avoid circular dependencies."""
+    # Use basic structlog directly to avoid circular import with foundation logger
+    import structlog
+    return structlog.get_logger("provide.foundation.logger.config")
+
+
 @define(slots=True, repr=False)
 class LoggingConfig(BaseConfig):
     """Configuration specific to logging behavior within Foundation Telemetry."""
@@ -101,11 +108,12 @@ class LoggingConfig(BaseConfig):
             if level in _VALID_LOG_LEVEL_TUPLE:
                 config_dict["default_level"] = level
             elif strict:
-                import sys
-
-                print(
-                    f"[Foundation Config Warning] Invalid PROVIDE_LOG_LEVEL '{level}'. Using default.",
-                    file=sys.stderr,
+                _get_config_logger().warning(
+                    "Invalid configuration value, using default",
+                    config_key="PROVIDE_LOG_LEVEL",
+                    invalid_value=level,
+                    valid_options=list(_VALID_LOG_LEVEL_TUPLE),
+                    default_value="DEBUG"
                 )
 
         if formatter := os.getenv("PROVIDE_LOG_CONSOLE_FORMATTER"):
@@ -113,11 +121,12 @@ class LoggingConfig(BaseConfig):
             if formatter in _VALID_FORMATTER_TUPLE:
                 config_dict["console_formatter"] = formatter
             elif strict:
-                import sys
-
-                print(
-                    f"[Foundation Config Warning] Invalid PROVIDE_LOG_CONSOLE_FORMATTER '{formatter}'. Using default.",
-                    file=sys.stderr,
+                _get_config_logger().warning(
+                    "Invalid configuration value, using default",
+                    config_key="PROVIDE_LOG_CONSOLE_FORMATTER", 
+                    invalid_value=formatter,
+                    valid_options=list(_VALID_FORMATTER_TUPLE),
+                    default_value="key_value"
                 )
 
         if omit_ts := os.getenv("PROVIDE_LOG_OMIT_TIMESTAMP"):
@@ -139,10 +148,12 @@ class LoggingConfig(BaseConfig):
             if foundation_level in _VALID_LOG_LEVEL_TUPLE:
                 config_dict["foundation_setup_log_level"] = foundation_level
             elif strict:
-                import sys
-                print(
-                    f"[Foundation Config Warning] Invalid FOUNDATION_LOG_LEVEL '{foundation_level}'. Using default.",
-                    file=sys.stderr,
+                _get_config_logger().warning(
+                    "Invalid configuration value, using default",
+                    config_key="FOUNDATION_LOG_LEVEL",
+                    invalid_value=foundation_level,
+                    valid_options=list(_VALID_LOG_LEVEL_TUPLE),
+                    default_value="INFO"
                 )
 
         if show_matrix := os.getenv("PROVIDE_SHOW_EMOJI_MATRIX"):
@@ -159,11 +170,12 @@ class LoggingConfig(BaseConfig):
                     if module and level in _VALID_LOG_LEVEL_TUPLE:
                         levels_dict[module] = level
                     elif strict and module and level not in _VALID_LOG_LEVEL_TUPLE:
-                        import sys
-
-                        print(
-                            f"[Foundation Config Warning] Invalid log level '{level}' for module '{module}'. Skipping.",
-                            file=sys.stderr,
+                        _get_config_logger().warning(
+                            "Invalid module log level, skipping",
+                            config_key="PROVIDE_LOG_MODULE_LEVELS",
+                            module_name=module,
+                            invalid_level=level,
+                            valid_options=list(_VALID_LOG_LEVEL_TUPLE)
                         )
             if levels_dict:
                 config_dict["module_levels"] = levels_dict
@@ -183,19 +195,19 @@ class LoggingConfig(BaseConfig):
                     ]
             except json.JSONDecodeError as e:
                 if strict:
-                    import sys
-
-                    print(
-                        f"[Foundation Config Warning] Invalid JSON in PROVIDE_LOG_CUSTOM_EMOJI_SETS: {e}",
-                        file=sys.stderr,
+                    _get_config_logger().warning(
+                        "Invalid JSON in configuration",
+                        config_key="PROVIDE_LOG_CUSTOM_EMOJI_SETS",
+                        error=str(e),
+                        config_value=custom_sets[:100] + "..." if len(custom_sets) > 100 else custom_sets
                     )
             except (TypeError, ValueError) as e:
                 if strict:
-                    import sys
-
-                    print(
-                        f"[Foundation Config Warning] Error parsing data for a custom emoji set: {e}",
-                        file=sys.stderr,
+                    _get_config_logger().warning(
+                        "Error parsing custom emoji set configuration", 
+                        config_key="PROVIDE_LOG_CUSTOM_EMOJI_SETS",
+                        error=str(e),
+                        error_type=type(e).__name__
                     )
 
         if user_sets := os.getenv("PROVIDE_LOG_USER_DEFINED_EMOJI_SETS"):
@@ -208,19 +220,19 @@ class LoggingConfig(BaseConfig):
                     ]
             except json.JSONDecodeError as e:
                 if strict:
-                    import sys
-
-                    print(
-                        f"[Foundation Config Warning] Invalid JSON in PROVIDE_LOG_USER_DEFINED_EMOJI_SETS: {e}",
-                        file=sys.stderr,
+                    _get_config_logger().warning(
+                        "Invalid JSON in configuration",
+                        config_key="PROVIDE_LOG_USER_DEFINED_EMOJI_SETS", 
+                        error=str(e),
+                        config_value=user_sets[:100] + "..." if len(user_sets) > 100 else user_sets
                     )
             except (TypeError, ValueError) as e:
                 if strict:
-                    import sys
-
-                    print(
-                        f"[Foundation Config Warning] Error parsing data for user emoji sets: {e}",
-                        file=sys.stderr,
+                    _get_config_logger().warning(
+                        "Error parsing user emoji set configuration",
+                        config_key="PROVIDE_LOG_USER_DEFINED_EMOJI_SETS",
+                        error=str(e),
+                        error_type=type(e).__name__
                     )
 
         return cls.from_dict(config_dict, source=ConfigSource.ENV)

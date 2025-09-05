@@ -122,10 +122,9 @@ class TestTelemetryConfigFromEnvSemanticLayers:
         # _ensure_config_logger_handler removed - warnings now handled by config system
         config = TelemetryConfig.from_env()
         assert config.logging.custom_emoji_sets == []
-        assert (
-            "Invalid JSON in PROVIDE_LOG_CUSTOM_EMOJI_SETS"
-            in capsys.readouterr().err
-        )
+        captured = capsys.readouterr()
+        assert "Invalid JSON in configuration" in captured.out
+        assert "PROVIDE_LOG_CUSTOM_EMOJI_SETS" in captured.out
 
     def test_from_env_handles_type_error_in_custom_layer_data(
         self, monkeypatch, capsys: CaptureFixture
@@ -137,4 +136,6 @@ class TestTelemetryConfigFromEnvSemanticLayers:
         # _ensure_config_logger_handler removed - warnings now handled by config system
         config = TelemetryConfig.from_env()
         assert config.logging.custom_emoji_sets == []
-        assert "Error parsing data for a custom emoji set" in capsys.readouterr().err
+        captured = capsys.readouterr()
+        assert "Error parsing custom emoji set configuration" in captured.out
+        assert "PROVIDE_LOG_CUSTOM_EMOJI_SETS" in captured.out
