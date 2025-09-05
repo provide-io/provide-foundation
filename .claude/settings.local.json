@@ -5,7 +5,8 @@
       "Bash(source:*)",
       "Bash(pytest:*)",
       "Bash(find:*)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(mkdocs serve:*)"
     ],
     "deny": [],
     "ask": [],
