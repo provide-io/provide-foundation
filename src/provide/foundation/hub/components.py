@@ -16,7 +16,7 @@ from typing import Any, Protocol, TypeVar
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.hub.registry import Registry, RegistryEntry
 from provide.foundation.logger import get_logger
-from provide.foundation.logger.emoji_matrix import EmojiSet
+from provide.foundation.logger.emoji.types import EmojiSet
 
 log = get_logger(__name__)
 

@@ -41,6 +41,18 @@ class FieldToEmojiMapping:
 
 
 @define(frozen=True, slots=True)
+class EmojiSet:
+    """
+    Simple emoji set for registry-based component management.
+    
+    This is used by the new component registry system for emoji management.
+    """
+    
+    name: str = field()
+    emojis: dict[str, str] = field(factory=lambda: {})
+
+
+@define(frozen=True, slots=True)
 class EmojiSetConfig:
     """
     Defines an emoji set configuration with emoji mappings for specific fields.
