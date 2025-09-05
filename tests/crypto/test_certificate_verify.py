@@ -197,7 +197,7 @@ async def test_verify_unsupported_key_type() -> None:
 
     with pytest.raises(
         CertificateError,
-        match="Cannot verify trust: Other certificate has no public key.",
+        match="Cannot verify trust: Other certificate has no public key",
     ):
         cert.verify_trust(mock_cert)
 
