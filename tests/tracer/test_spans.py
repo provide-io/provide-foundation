@@ -111,10 +111,10 @@ class TestSpan:
     
     def test_duration_ms_active_span(self):
         """Test duration calculation for active span."""
+        # Create span with known start time
+        span = Span("test_op", start_time=1000.0)
+        
         with patch('time.time') as mock_time:
-            mock_time.return_value = 1000.0
-            span = Span("test_op")
-            
             mock_time.return_value = 1001.5
             duration = span.duration_ms()
             
@@ -122,15 +122,12 @@ class TestSpan:
     
     def test_duration_ms_finished_span(self):
         """Test duration calculation for finished span."""
-        with patch('time.time') as mock_time:
-            mock_time.return_value = 1000.0
-            span = Span("test_op")
-            
-            mock_time.return_value = 1002.0
-            span.finish()
-            
-            duration = span.duration_ms()
-            assert duration == 2000.0  # 2 seconds = 2000ms
+        # Create span with known start and end times
+        span = Span("test_op", start_time=1000.0)
+        span.end_time = 1002.0
+        
+        duration = span.duration_ms()
+        assert duration == 2000.0  # 2 seconds = 2000ms
     
     def test_to_dict(self):
         """Test converting span to dictionary."""
