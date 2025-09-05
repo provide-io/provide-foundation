@@ -1,89 +1,56 @@
 """
-Component registration and management for the hub.
+Registry-based component management system for Foundation.
 
-This module provides decorators and utilities for registering and discovering
-components in the provide-io ecosystem.
+This module implements Foundation's end-state architecture where all internal
+components are managed through the Hub registry system. Provides centralized
+component discovery, lifecycle management, and dependency resolution.
 """
 
-from __future__ import annotations
+import asyncio
+from collections.abc import Callable, Iterator
+from enum import Enum
+import inspect
+import threading
+from typing import Any, Protocol, TypeVar
 
-from typing import Any, TypeVar, overload
-
-from attrs import define, field
-
-from provide.foundation.hub.registry import Registry
+from provide.foundation.config.base import BaseConfig
+from provide.foundation.hub.registry import Registry, RegistryEntry
 from provide.foundation.logger import get_logger
+from provide.foundation.logger.emoji_matrix import EmojiSet
 
 log = get_logger(__name__)
 
 T = TypeVar("T")
 
-# Global registry for components
+
+class ComponentCategory(Enum):
+    """Predefined component categories for Foundation."""
+    
+    EMOJI_SET = "emoji_set"
+    CONFIG_SOURCE = "config_source" 
+    PROCESSOR = "processor"
+    ERROR_HANDLER = "error_handler"
+    SEMANTIC_LAYER = "semantic_layer"
+    FORMATTER = "formatter"
+    FILTER = "filter"
+
+
+class ComponentLifecycle(Protocol):
+    """Protocol for components that support lifecycle management."""
+    
+    async def initialize(self) -> None:
+        """Initialize the component."""
+        ...
+    
+    async def cleanup(self) -> None:
+        """Clean up the component."""
+        ...
+
+
+# Global component registry
 _component_registry = Registry()
-
-
-@define(frozen=True, slots=True)
-class ComponentInfo:
-    """Information about a registered component."""
-
-    name: str
-    component_class: type[Any]
-    dimension: str = "component"
-    version: str | None = None
-    description: str | None = None
-    author: str | None = None
-    tags: list[str] = field(factory=lambda: [])
-    metadata: dict[str, Any] = field(factory=lambda: {})
-
-
-class BaseComponent:
-    """
-    Base class for hub components.
-
-    Components that extend this class can provide additional
-    lifecycle hooks and metadata.
-    """
-
-    def __init__(self, name: str | None = None, **kwargs: Any) -> None:
-        """
-        Initialize the component.
-
-        Args:
-            name: Component instance name
-            **kwargs: Additional configuration
-        """
-        self.name = name or self.__class__.__name__
-        self.config = kwargs
-        self._initialized = False
-
-    def initialize(self) -> None:
-        """Initialize the component. Called once before first use."""
-        if not self._initialized:
-            self._setup()
-            self._initialized = True
-
-    def _setup(self) -> None:
-        """Setup hook for subclasses to override if needed."""
-        pass
-
-    def cleanup(self) -> None:
-        """Cleanup resources used by the component."""
-        if self._initialized:
-            self._teardown()
-            self._initialized = False
-
-    def _teardown(self) -> None:
-        """Teardown hook for subclasses to override."""
-        pass
-
-    def __enter__(self) -> BaseComponent:
-        """Context manager entry."""
-        self.initialize()
-        return self
-
-    def __exit__(self, *args: Any) -> None:
-        """Context manager exit."""
-        self.cleanup()
+_registry_lock = threading.RLock()
+_initialized_components: dict[tuple[str, str], Any] = {}
 
 
 @overload
