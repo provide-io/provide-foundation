@@ -214,7 +214,7 @@ provide.foundation/
 │   ├── registry.py         # Command registry
 │   └── components.py       # Hub components
 ├── registry.py              # General registry pattern
-└── emoji_sets.py       # Domain-specific logging layers
+└── emoji_sets.py       # Domain-specific logging emoji sets
 ```
 
 ## Type Annotations

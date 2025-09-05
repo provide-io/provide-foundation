@@ -4,7 +4,8 @@
       "Bash(uv sync:*)",
       "Bash(source:*)",
       "Bash(pytest:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(sed:*)"
     ],
     "deny": [],
     "ask": [],

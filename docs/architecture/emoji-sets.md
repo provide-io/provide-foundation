@@ -71,9 +71,9 @@ class CustomDasEmojiSet:
         return self.emojis.get(key, self.emojis.get(self.default_emoji_key, ""))
 ```
 
-## Built-in Layer Specifications
+## Built-in Emoji Set Specifications
 
-### HTTP Layer Architecture
+### HTTP Emoji Set Architecture
 
 ```python
 HTTP_EMOJI_SET = EmojiSetConfig(
@@ -105,7 +105,7 @@ HTTP_EMOJI_SET = EmojiSetConfig(
 )
 ```
 
-### LLM Layer Architecture
+### LLM Emoji Set Architecture
 
 ```python
 LLM_EMOJI_SET = EmojiSetConfig(
@@ -138,7 +138,7 @@ LLM_EMOJI_SET = EmojiSetConfig(
 
 ## Processing Pipeline
 
-### 1. Layer Registration
+### 1. Emoji Set Registration
 
 Layers are registered at initialization:
 
@@ -163,7 +163,7 @@ ACTIVE_LAYERS = sorted(
 When a log event occurs:
 
 1. **Field Extraction**: Extract semantic fields from event dict
-2. **Layer Matching**: Find appropriate layer based on field keys
+2. **Emoji Set Matching**: Find appropriate layer based on field keys
 3. **Emoji Resolution**: Map field values to emojis
 4. **Validation**: Ensure field types and constraints
 5. **Enrichment**: Add layer metadata
@@ -172,7 +172,7 @@ When a log event occurs:
 def process_semantic_fields(event_dict: dict[str, Any]) -> dict[str, Any]:
     """Process event through emoji sets."""
     
-    # Find matching layer
+    # Find matching emoji set
     layer = find_matching_layer(event_dict)
     if not layer:
         return event_dict
@@ -212,7 +212,7 @@ def add_emoji_prefix(event_dict: dict[str, Any]) -> str:
 
 ## Performance Optimizations
 
-### 1. Lazy Layer Loading
+### 1. Lazy Emoji Set Loading
 
 Layers are only loaded when first used:
 
@@ -237,7 +237,7 @@ Emoji lookups are cached for performance:
 def get_emoji_for_value(
     value: str,
     emoji_set_name: str,
-    layer_name: str
+    emoji_set_name: str
 ) -> str:
     """Cached emoji lookup."""
     layer = BUILTIN_EMOJI_SETS[layer_name]
@@ -257,7 +257,7 @@ FIELD_PREFIX_INDEX = {
     "task.": TASK_QUEUE_EMOJI_SET,
 }
 
-def find_layer_for_event(event_dict: dict[str, Any]) -> EmojiSetConfig | None:
+def find_emoji_set_for_event(event_dict: dict[str, Any]) -> EmojiSetConfig | None:
     """Fast layer lookup using prefix index."""
     for key in event_dict:
         for prefix, layer in FIELD_PREFIX_INDEX.items():
@@ -268,14 +268,14 @@ def find_layer_for_event(event_dict: dict[str, Any]) -> EmojiSetConfig | None:
 
 ## Extensibility
 
-### Custom Layer Registration
+### Custom Emoji Set Registration
 
 Applications can register custom layers:
 
 ```python
-from provide.foundation.emoji_sets import register_layer
+from provide.foundation.emoji_sets import register_emoji_set
 
-@register_layer
+@register_emoji_set
 class PaymentLayer(EmojiSetConfig):
     name = "payment"
     priority = 75
@@ -328,7 +328,7 @@ LAYER_METRICS = {
     "llm": {"count": 0, "total_ms": 0},
 }
 
-def track_layer_performance(layer_name: str, duration_ms: float):
+def track_layer_performance(emoji_set_name: str, duration_ms: float):
     LAYER_METRICS[layer_name]["count"] += 1
     LAYER_METRICS[layer_name]["total_ms"] += duration_ms
 ```
