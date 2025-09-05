@@ -112,7 +112,10 @@ class FoundationLogger:
         self, level_method_name: str, event: str, **kwargs: Any
     ) -> None:
         self._ensure_configured()
-        log = self.get_logger("pyvider.dynamic_call")
+        
+        # Use the logger name from kwargs if provided, otherwise default
+        logger_name = kwargs.pop("_foundation_logger_name", "pyvider.dynamic_call")
+        log = self.get_logger(logger_name)
         
         # Handle trace level specially since PrintLogger doesn't have trace method
         if level_method_name == "trace":
@@ -139,6 +142,8 @@ class FoundationLogger:
     ) -> None:
         """Log trace-level event for detailed debugging."""
         formatted_event = self._format_message_with_args(event, args)
+        if _foundation_logger_name is not None:
+            kwargs["_foundation_logger_name"] = _foundation_logger_name
         self._log_with_level(TRACE_LEVEL_NAME.lower(), formatted_event, **kwargs)
 
     def debug(self, event: str, *args: Any, **kwargs: Any) -> None:
