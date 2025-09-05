@@ -19,33 +19,6 @@ from provide.foundation.logger.processors import (
 from provide.foundation.logger.setup.emoji_resolver import ResolvedEmojiConfig
 
 
-class PrintLoggerWithTrace:
-    """PrintLogger wrapper that supports trace method."""
-    
-    def __init__(self, file: TextIO):
-        self._print_logger = structlog.PrintLoggerFactory()(file)
-        self._file = file
-    
-    def trace(self, message: str) -> None:
-        """Support trace level logging."""
-        self._print_logger.debug(message)
-    
-    def __getattr__(self, name: str) -> Any:
-        """Delegate all other methods to the wrapped PrintLogger."""
-        return getattr(self._print_logger, name)
-
-
-class PrintLoggerFactoryWithTrace:
-    """Logger factory that creates PrintLoggerWithTrace instances."""
-    
-    def __init__(self, file: TextIO):
-        self._file = file
-    
-    def __call__(self, *args: Any, **kwargs: Any) -> PrintLoggerWithTrace:
-        """Create a new logger instance."""
-        return PrintLoggerWithTrace(self._file)
-
-
 def build_complete_processor_chain(
     config: TelemetryConfig, 
     resolved_emoji_config: ResolvedEmojiConfig,
@@ -79,7 +52,7 @@ def apply_structlog_configuration(processors: list[Any], log_stream: TextIO) -> 
     """
     structlog.configure(
         processors=processors,
-        logger_factory=PrintLoggerFactoryWithTrace(file=log_stream),
+        logger_factory=structlog.PrintLoggerFactory(file=log_stream),
         wrapper_class=cast(type[structlog.types.BindableLogger], structlog.BoundLogger),
         cache_logger_on_first_use=True,
     )

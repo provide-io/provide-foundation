@@ -113,7 +113,13 @@ class FoundationLogger:
     ) -> None:
         self._ensure_configured()
         log = self.get_logger("pyvider.dynamic_call")
-        getattr(log, level_method_name)(event, **kwargs)
+        
+        # Handle trace level specially since PrintLogger doesn't have trace method
+        if level_method_name == "trace":
+            kwargs["_foundation_level_hint"] = TRACE_LEVEL_NAME.lower()
+            log.msg(event, **kwargs)
+        else:
+            getattr(log, level_method_name)(event, **kwargs)
 
     def _format_message_with_args(self, event: str | Any, args: tuple[Any, ...]) -> str:
         """Format a log message with positional arguments using % formatting."""
