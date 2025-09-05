@@ -120,18 +120,6 @@ Step-by-step tutorials for integrations
 - **Cross-Platform**: Works on Linux, macOS, Windows
 - **Production Ready**: Thread-safe, battle-tested
 
-## 🔄 Migration from Other Libraries
-
-See our [migration guides](migration/index.md) for help moving from:
-- structlog
-- Python standard logging
-- Other logging frameworks
-
-The provide.foundation API offers:
-- Better performance
-- More features
-- Cleaner configuration
-- Enhanced error handling
 
 ## 🚦 System Requirements
 

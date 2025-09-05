@@ -172,10 +172,6 @@ extra_css:
 extra_javascript:
   - https://unpkg.com/mermaid@10/dist/mermaid.min.js
 
-extra:
-  mermaid:
-    enabled: true
-
 nav:
   - Home: index.md
   
@@ -191,12 +187,12 @@ nav:
     - Core Concepts:
       - guide/concepts/index.md
       - Structured Logging: guide/concepts/structured-logging.md
-      - Semantic Layers: guide/concepts/semantic-layers.md
+      - Emoji Sets: guide/concepts/emoji-sets.md
       - Emoji System: guide/concepts/emoji-system.md
       - Domain-Action-Status: guide/concepts/das-pattern.md
       - Performance: guide/concepts/performance.md
     
-    - Config:
+    - Configuration:
       - guide/config/index.md
       - Environment Variables: guide/config/environment.md
       - Config Files: guide/config/files.md
@@ -204,7 +200,6 @@ nav:
       - Best Practices: guide/config/best-practices.md
     
     - Logging:
-      - guide/logging/index.md
       - Basic Usage: guide/logging/basic.md
       - Advanced Patterns: guide/logging/advanced.md
       - Async Logging: guide/logging/async.md
@@ -218,15 +213,13 @@ nav:
       - Nested Commands: guide/cli/nested.md
       - Arguments & Options: guide/cli/arguments.md
       - Output Formatting: guide/cli/output.md
-      - Testing CLI Apps: guide/cli/testing.md
     
-    - System Utilities:
-      - guide/utilities/index.md
-      - Platform Detection: guide/utilities/platform.md
-      - Process Execution: guide/utilities/process.md
-      - Console Output: guide/utilities/console.md
-      - Registry Pattern: guide/utilities/registry.md
+    - Utilities:
+      - Console I/O: guide/utilities/console.md
       - Error Handling: guide/utilities/errors.md
+      - Platform Detection: guide/utilities/platform.md
+      - Process Management: guide/utilities/process.md
+      - Registry System: guide/utilities/registry.md
   
   
   - API Reference:
@@ -253,111 +246,23 @@ nav:
     
     - Hub:
       - api/hub/index.md
-      - Components: api/hub/components.md
-      - Registry: api/hub/registry.md
-      - Commands: api/hub/commands.md
     
     - Utilities:
       - api/utils/index.md
-      - Platform: api/platform/index.md
-      - Process: api/process/index.md
       - File Operations: api/file/index.md
       - Crypto: api/crypto/index.md
-      - Errors: api/errors/index.md
-
-  - Cookbook:
-    - cookbook/index.md
-    - Recipes:
-      - cookbook/recipes/index.md
-      - FastAPI Integration: cookbook/recipes/fastapi.md
-      - Django Integration: cookbook/recipes/django.md
-      - Flask Integration: cookbook/recipes/flask.md
-      - Celery Tasks: cookbook/recipes/celery.md
-      - Docker Logging: cookbook/recipes/docker.md
-      - Kubernetes Logging: cookbook/recipes/kubernetes.md
-      - CI/CD Pipelines: cookbook/recipes/ci-cd.md
-      - Testing Strategies: cookbook/recipes/testing.md
-    
-    - Examples:
-      - cookbook/examples/index.md
-      - Web Applications: cookbook/examples/web-app.md
-      - CLI Tools: cookbook/examples/cli-tool.md
-      - Data Pipelines: cookbook/examples/data-pipeline.md
-      - Microservices: cookbook/examples/microservices.md
-      - Machine Learning: cookbook/examples/ml-logging.md
-      - Async Services: cookbook/examples/async-services.md
-    
-    - Patterns:
-      - cookbook/patterns/index.md
-      - Error Boundaries: cookbook/patterns/error-boundaries.md
-      - Context Propagation: cookbook/patterns/context.md
-      - Request Tracing: cookbook/patterns/tracing.md
-      - Performance Monitoring: cookbook/patterns/monitoring.md
-      - Audit Logging: cookbook/patterns/audit.md
-  
-  - Tutorials:
-    - tutorials/index.md
-    - Building a CLI App: tutorials/cli-application.md
-    - FastAPI with Telemetry: tutorials/fastapi-integration.md
-    - Custom Semantic Layer: tutorials/custom-semantic-layer.md
-    - Production Logging: tutorials/production-logging.md
-    - Distributed Tracing: tutorials/distributed-tracing.md
   
   - Development:
     - development/index.md
     - Contributing: development/contributing.md
-    - Architecture: development/architecture.md
-    - Testing:
-      - development/testing/index.md
-      - Unit Tests: development/testing/unit.md
-      - Integration Tests: development/testing/integration.md
-      - Performance Tests: development/testing/performance.md
-      - Coverage Reports: development/testing/coverage.md
     - CI/CD: development/ci-cd.md
-    - Release Process: development/release.md
-    - Roadmap: development/roadmap.md
   
   - Architecture & Design:
     - architecture/index.md
     - Telemetry Format: architecture/telemetry-format.md
-    - Semantic Layer Design: architecture/semantic-layers.md
+    - Emoji Set Design: architecture/emoji-sets.md
     - Emoji System: architecture/emoji-system.md
     - Performance: architecture/performance.md
-    - Design Decisions:
-      - architecture/decisions/index.md
-      - Semantic Layers: architecture/decisions/semantic-layers.md
-      - Async Support: architecture/decisions/async-support.md
-      - Plugin System: architecture/decisions/plugins.md
-      - Distributed Tracing: architecture/decisions/tracing.md
-      - Metrics Integration: architecture/decisions/metrics.md
-  
-  - Troubleshooting:
-    - troubleshooting/index.md
-    - Common Issues: troubleshooting/common.md
-    - Platform-Specific:
-      - troubleshooting/platforms/index.md
-      - macOS: troubleshooting/platforms/macos.md
-      - Linux: troubleshooting/platforms/linux.md
-      - Windows: troubleshooting/platforms/windows.md
-      - Docker: troubleshooting/platforms/docker.md
-    - Performance Issues: troubleshooting/performance.md
-    - Configuration Problems: troubleshooting/configuration.md
-    - Error Messages: troubleshooting/errors.md
-    - FAQ: troubleshooting/faq.md
-  
-  - Migration:
-    - migration/index.md
-    - From structlog: migration/from-structlog.md
-    - From logging: migration/from-logging.md
-    - From pyvider: migration/from-pyvider.md
-    - API Changes: migration/api-changes.md
-  
-  - Community:
-    - community/index.md
-    - Support: community/support.md
-    - Discussions: community/discussions.md
-    - Blog: community/blog.md
-    - Showcase: community/showcase.md
 
 validation:
   omitted_files: warn

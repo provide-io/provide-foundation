@@ -39,7 +39,7 @@ logging:
   emoji: true
 
 telemetry:
-  semantic_layers: true
+  emoji_sets: true
   enabled_layers:
     - http
     - database

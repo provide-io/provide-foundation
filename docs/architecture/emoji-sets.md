@@ -282,7 +282,7 @@ class PaymentLayer(EmojiSetConfig):
     # ... configuration ...
 
 # Or programmatically
-register_semantic_layer(PAYMENT_LAYER)
+register_emoji_set(PAYMENT_LAYER)
 ```
 
 ### Layer Composition
@@ -308,14 +308,14 @@ class AIAPILayer(CompositeEmojiSetConfig):
 ```python
 # Global configuration
 TelemetryConfig(
-    enable_semantic_layers=True,
+    enable_emoji_sets=True,
     enabled_layers=["http", "llm"],  # Selective enabling
-    semantic_layer_timeout_ms=10,    # Processing timeout
+    emoji_set_timeout_ms=10,    # Processing timeout
 )
 
 # Per-logger configuration
 logger = get_logger(
-    semantic_layers_enabled=False  # Disable for performance-critical paths
+    emoji_sets_enabled=False  # Disable for performance-critical paths
 )
 ```
 
@@ -365,7 +365,7 @@ Emoji sets integrate seamlessly with structlog's processor chain:
 structlog.configure(
     processors=[
         structlog.stdlib.add_log_level,
-        semantic_layer_processor,  # Our emoji set
+        emoji_set_processor,  # Our emoji set
         add_emoji_prefix,          # Emoji addition
         structlog.processors.JSONRenderer(),
     ]
@@ -395,8 +395,8 @@ class SemanticOTELProcessor:
                 span.set_attribute(key, value)
         
         # Add provide.io-specific attributes
-        if "_semantic_layer" in event_dict:
-            span.set_attribute("provide.semantic_layer", event_dict["_semantic_layer"])
+        if "_emoji_set" in event_dict:
+            span.set_attribute("provide.emoji_set", event_dict["_emoji_set"])
         
         # Visual parsing in span events (not attributes)
         if "_emoji" in event_dict:
@@ -428,7 +428,7 @@ from provide.foundation.otel import setup_tracing
 setup_tracing(
     endpoint="otel-collector:4317",
     service_name="my-service",
-    semantic_layers_enabled=True,  # Enable semantic enrichment
+    emoji_sets_enabled=True,  # Enable emoji enrichment
     visual_span_events=True,        # Add emoji events to spans
 )
 
