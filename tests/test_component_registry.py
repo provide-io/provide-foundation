@@ -169,26 +169,29 @@ class TestEmojiSetRegistration:
         
         registry = get_component_registry()
         
+        # Use unique names for this test to avoid conflicts
+        domain_name = "priority_test_domain"
+        
         # Register low priority set
         low_priority_set = EmojiSet("low", {"success": "👍"})
         registry.register(
-            name="test_domain",
+            name="priority_low",
             value=low_priority_set,
             dimension=ComponentCategory.EMOJI_SET.value,
-            metadata={"domain": "test_domain", "priority": 10}
+            metadata={"domain": domain_name, "priority": 10}
         )
         
         # Register high priority set  
         high_priority_set = EmojiSet("high", {"success": "🎉"})
         registry.register(
-            name="test_domain_high",
+            name="priority_high",
             value=high_priority_set, 
             dimension=ComponentCategory.EMOJI_SET.value,
-            metadata={"domain": "test_domain", "priority": 90}
+            metadata={"domain": domain_name, "priority": 90}
         )
         
         # High priority should win
-        emoji = resolve_emoji_for_domain("test_domain", "success")
+        emoji = resolve_emoji_for_domain(domain_name, "success")
         assert emoji == "🎉"
 
     def test_emoji_set_composition(self):
@@ -198,6 +201,9 @@ class TestEmojiSetRegistration:
         
         registry = get_component_registry()
         
+        # Use unique domain name for this test
+        domain_name = "composition_test_domain"
+        
         # Register base set
         base_set = EmojiSet("base", {
             "success": "✅", 
@@ -205,10 +211,10 @@ class TestEmojiSetRegistration:
             "info": "ℹ️"
         })
         registry.register(
-            name="http_base",
+            name="composition_base",
             value=base_set,
             dimension=ComponentCategory.EMOJI_SET.value,
-            metadata={"domain": "http", "priority": 10, "composition": "base"}
+            metadata={"domain": domain_name, "priority": 10, "composition": "base"}
         )
         
         # Register extension set
@@ -217,14 +223,14 @@ class TestEmojiSetRegistration:
             "response": "📥",
         })
         registry.register(
-            name="http_extension", 
+            name="composition_extension", 
             value=extension_set,
             dimension=ComponentCategory.EMOJI_SET.value,
-            metadata={"domain": "http", "priority": 20, "composition": "extension"}
+            metadata={"domain": domain_name, "priority": 20, "composition": "extension"}
         )
         
         # Composed set should have all emojis
-        composed = get_composed_emoji_set("http")
+        composed = get_composed_emoji_set(domain_name)
         assert "success" in composed.emojis  # from base
         assert "request" in composed.emojis   # from extension
 
