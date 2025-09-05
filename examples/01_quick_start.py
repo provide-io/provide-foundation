@@ -1,6 +1,23 @@
 #!/usr/bin/env python3
-# examples/foundation_telemetry/01_quick_start.py
-"""Demonstrates quick start with default Foundation Telemetry configuration."""
+# examples/01_quick_start.py
+"""
+Quick Start Example - Basic Structured Logging
+
+This example demonstrates the simplest way to get started with provide.foundation's
+logging system. It shows how to:
+- Initialize the telemetry system with default settings
+- Use different log levels (info, debug, warning, error)
+- Include structured data in log messages
+
+Usage:
+    python examples/01_quick_start.py
+    
+    # Or with custom log level via environment
+    PROVIDE_LOG_LEVEL=ERROR python examples/01_quick_start.py
+
+Expected output:
+    Colored, emoji-prefixed log messages at different levels with structured data.
+"""
 
 from pathlib import Path
 import sys
@@ -19,11 +36,13 @@ from provide.foundation import logger, setup_telemetry  # noqa: E402
 
 def example_1_quick_start() -> None:
     """
-    Example 1: Demonstrates quick start logging with default configuration.
-
-    This shows how to start logging immediately after calling `setup_telemetry()`
-    without any custom configuration. It relies on built-in defaults or
-    environment variables if set.
+    Demonstrates basic structured logging with provide.foundation.
+    
+    Key concepts:
+    - setup_telemetry() initializes the logging system
+    - logger methods accept a message and keyword arguments for structured data
+    - Different log levels control what gets displayed
+    - Structured data makes logs searchable and analyzable
     """
     print("\n" + "=" * 60)
     print("🚀 Example 1: Quick Start")

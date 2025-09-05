@@ -1,12 +1,45 @@
 #!/usr/bin/env python3
+# examples/11_config_management.py
 """
-Example demonstrating the provide.foundation configuration system.
+Configuration Management Example - Complete Configuration System
 
-This shows how to:
-1. Define configuration classes
-2. Load from multiple sources (env, files, dict)
-3. Use validation and schemas
-4. Manage configurations with ConfigManager
+This comprehensive example demonstrates all aspects of provide.foundation's
+configuration system:
+
+1. Configuration Classes:
+   - BaseConfig for simple configurations
+   - EnvConfig for environment variable loading
+   - Nested configuration structures
+   
+2. Loading from Multiple Sources:
+   - Environment variables with PROVIDE_ prefix
+   - JSON and TOML configuration files
+   - Runtime dictionary updates
+   - Multi-source merging with precedence
+   
+3. Validation and Schemas:
+   - Type validation with attrs
+   - Custom validation methods
+   - Schema definitions with constraints
+   - Pattern matching for strings
+   
+4. Configuration Management:
+   - ConfigManager for centralized management
+   - Registration and retrieval
+   - Bulk updates and exports
+   
+Usage:
+    python examples/11_config_management.py
+    
+    # With environment variables
+    DB_HOST=prod.example.com DB_PORT=5433 python examples/11_config_management.py
+
+Expected output:
+    Demonstration of various configuration loading, validation, and management patterns.
+
+See also:
+    - examples/02_custom_configuration.py for custom telemetry configuration
+    - examples/08_env_variables_config.py for environment-specific patterns
 """
 
 from __future__ import annotations

@@ -1,12 +1,54 @@
 #!/usr/bin/env python
+# examples/12_cli_application.py
 """
-Foundation Hub Demo - Complete Example
+CLI Application Example - Complete Hub and Command System
 
-This example demonstrates:
-- Component registration with lifecycle
-- Command registration with Click integration
-- Multi-dimensional registry
-- Creating a full CLI application
+This comprehensive example demonstrates building a full CLI application
+with provide.foundation's hub system:
+
+1. Component System:
+   - BaseComponent for resources with lifecycle management
+   - @register_component decorator for automatic registration
+   - Multi-dimensional registry (resources, services, etc.)
+   - Context managers for setup/teardown
+   
+2. Command Registration:
+   - @register_command decorator for CLI commands
+   - Command categories and aliases
+   - Integration with Click framework
+   - Automatic help generation
+   
+3. Hub Management:
+   - Centralized component and command registry
+   - Dynamic CLI creation from registered commands
+   - Context passing between commands
+   
+4. Real-world Patterns:
+   - Resource lifecycle (database, cache)
+   - Service registration (logger)
+   - Status reporting
+   - Testing utilities
+   
+Usage:
+    # Run as CLI application
+    python examples/12_cli_application.py --help
+    python examples/12_cli_application.py status
+    python examples/12_cli_application.py test-resources
+    python examples/12_cli_application.py list --dimension resource
+    
+    # Or import and use programmatically
+    from examples.12_cli_application import Hub, DatabaseResource
+    hub = Hub()
+    with hub.get_component("database")("mydb") as db:
+        result = db.query("SELECT * FROM users")
+
+Expected output:
+    Interactive CLI with multiple commands demonstrating component lifecycle,
+    registry management, and command execution.
+
+See also:
+    - examples/03_named_loggers.py for logger component patterns
+    - examples/10_production_patterns.py for production CLI patterns
 """
 
 from provide.foundation.cli import echo_info, echo_success, echo_warning

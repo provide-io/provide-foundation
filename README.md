@@ -50,49 +50,51 @@ logger.error("Database connection failed", host="db.example.com", retry_count=3)
 ```
 
 #### **CLI Framework**
-Build command-line interfaces with automatic help generation, configuration loading, and output formatting.
+Build command-line interfaces with automatic help generation and component registration.
 
 ```python
-import click
-from provide.foundation.cli import cli_command, setup_cli_logging
+# From examples/12_cli_application.py
+from provide.foundation.hub import register_command
+from provide.foundation.cli import echo_success
 
-@cli_command()
-@click.option("--name", help="Your name")
-def greet(name):
-    """A simple greeting command."""
-    logger.info("Greeting user", name=name)
-    print(f"Hello, {name}!")
+@register_command("init", category="project")
+def init_command(name: str = "myproject", template: str = "default"):
+    """Initialize a new project."""
+    echo_success(f"Initializing project '{name}' with template '{template}'")
 ```
 
 #### **Configuration Management**
 Flexible configuration system supporting environment variables, files, and runtime updates.
 
 ```python
-from provide.foundation.config import ConfigManager, BaseConfig
+# From examples/11_config_management.py
+from provide.foundation.config import BaseConfig, ConfigManager, field
+from attrs import define
 
+@define
 class AppConfig(BaseConfig):
-    api_key: str
-    timeout: int = 30
-    debug: bool = False
+    app_name: str = field(default="my-app", description="Application name")
+    port: int = field(default=8080, description="Server port")
+    debug: bool = field(default=False, description="Debug mode")
 
 manager = ConfigManager()
-manager.register("app", AppConfig)
-config = manager.get_config("app")
+manager.register("app", config=AppConfig())
+config = manager.get("app")
 ```
 
 #### **Error Handling**
-Comprehensive error handling with retry logic, circuit breakers, and error boundaries.
+Comprehensive error handling with retry logic and error boundaries.
 
 ```python
-from provide.foundation import retry_on_error, with_error_handling
+# From examples/05_exception_handling.py
+from provide.foundation import logger, with_error_handling
 
-@retry_on_error(max_attempts=3, delay=1.0)
-def flaky_network_call():
-    return api.fetch_data()
-
-@with_error_handling(fallback={"status": "error"})
-def parse_response(data):
-    return json.loads(data)
+@with_error_handling
+def risky_operation():
+    """Operation that might fail."""
+    result = perform_calculation()
+    logger.info("operation_succeeded", result=result)
+    return result
 ```
 
 #### **Console I/O**
@@ -114,67 +116,23 @@ pout({"status": "ok", "data": results}, json=True)
 ```
 
 #### **Registry Pattern**
-Flexible registry system for managing plugins, commands, and extensions.
+Flexible registry system for managing components and commands.
 
 ```python
-from provide.foundation.hub import Registry
+# From examples/12_cli_application.py
+from provide.foundation.hub import Hub, register_component, BaseComponent
 
-registry = Registry("plugins")
-registry.register("auth", AuthPlugin())
-registry.register("cache", CachePlugin())
+@register_component("database", dimension="resource", version="1.0.0")
+class DatabaseResource(BaseComponent):
+    def _setup(self):
+        """Initialize database connection."""
+        self.connected = True
 
-# Use registered items
-auth = registry.get("auth")
-all_plugins = registry.list_all()
+hub = Hub()
+db_class = hub.get_component("database", dimension="resource")
 ```
 
-#### **File Operations**
-Safe file operations with atomic writes, file locking, and path utilities.
-
-```python
-from provide.foundation.file import atomic_write, FileLock, ensure_directory
-
-# Atomic file writes
-atomic_write("config.json", json.dumps(data))
-
-# File locking
-with FileLock("data.lock"):
-    # Exclusive access to resource
-    process_data()
-
-# Path utilities
-ensure_directory("logs", mode=0o755)
-```
-
-#### **Process Management**
-Run and manage external processes with timeout, streaming output, and async support.
-
-```python
-from provide.foundation.process import run_command, AsyncCommandRunner
-
-# Synchronous execution
-result = run_command("git status", timeout=5.0)
-print(result.stdout)
-
-# Async execution with streaming
-async def build_project():
-    runner = AsyncCommandRunner()
-    async for line in runner.run_streaming("npm build"):
-        logger.info("Build output", line=line)
-```
-
-#### **Platform Detection**
-Comprehensive platform and environment detection utilities.
-
-```python
-from provide.foundation.platform import PlatformInfo
-
-info = PlatformInfo()
-print(f"OS: {info.os_name}")
-print(f"Python: {info.python_version}")
-print(f"In Docker: {info.in_docker}")
-print(f"In CI: {info.in_ci}")
-```
+See [examples/](examples/) for more comprehensive examples.
 
 ---
 
@@ -183,86 +141,65 @@ print(f"In CI: {info.in_ci}")
 ### Building a CLI Application
 
 ```python
-import click
-from provide.foundation import logger
-from provide.foundation.cli import cli_command, Context
+# From examples/12_cli_application.py
+from provide.foundation.hub import Hub, register_command
+from provide.foundation.cli import echo_info, echo_success
 
-@click.group()
-@cli_command()
-@click.pass_context
-def cli(ctx):
-    """My application CLI."""
-    ctx.obj = Context()
-
-@cli.command()
-@cli_command()
-def status():
-    """Check application status."""
-    logger.info("Checking status")
-    # Your status logic here
-
-@cli.command()
-@cli_command()
-@click.option("--input", required=True, help="Input file")
-@click.option("--output", default="output.txt", help="Output file")
-def process(input, output):
-    """Process a file."""
-    logger.info("Processing", input=input, output=output)
-    # Your processing logic here
+@register_command("status", aliases=["st", "info"])
+def status_command(verbose: bool = False):
+    """Show system status."""
+    hub = Hub()
+    echo_info(f"Registered components: {len(hub.list_components())}")
+    echo_info(f"Registered commands: {len(hub.list_commands())}")
 
 if __name__ == "__main__":
+    hub = Hub()
+    cli = hub.create_cli(name="myapp", version="1.0.0")
     cli()
 ```
 
 ### Configuration-Driven Application
 
 ```python
-from provide.foundation import setup_telemetry, TelemetryConfig, LoggingConfig
-from provide.foundation.config import ConfigManager, BaseConfig
+# From examples/11_config_management.py and examples/08_env_variables_config.py
+from provide.foundation import setup_telemetry, logger
+from provide.foundation.config import EnvConfig, env_field, ConfigManager
+from attrs import define
 
-# Define your configuration schema
-class DatabaseConfig(BaseConfig):
-    host: str = "localhost"
-    port: int = 5432
-    database: str = "myapp"
-    
-class AppConfig(BaseConfig):
-    debug: bool = False
-    workers: int = 4
-    database: DatabaseConfig = DatabaseConfig()
+@define
+class DatabaseConfig(EnvConfig):
+    """Database configuration from environment."""
+    host: str = env_field(default="localhost", env_var="DB_HOST")
+    port: int = env_field(default=5432, env_var="DB_PORT", parser=int)
+    database: str = env_field(default="mydb", env_var="DB_NAME")
 
-# Setup logging
-setup_telemetry(TelemetryConfig(
-    service_name="my-app",
-    logging=LoggingConfig(default_level="INFO")
-))
+# Setup logging from environment
+setup_telemetry()  # Uses PROVIDE_* env vars automatically
 
 # Load configuration
-manager = ConfigManager()
-manager.register("app", AppConfig)
-config = manager.load_from_env()  # or load_from_file("config.yaml")
+db_config = DatabaseConfig.from_env()
+logger.info("Database configured", host=db_config.host, port=db_config.port)
 ```
 
-### Error-Resilient Service
+### Production Patterns
 
 ```python
-from provide.foundation import logger, circuit_breaker
-from provide.foundation.errors import retry_on_error
+# From examples/10_production_patterns.py
+from provide.foundation import logger, error_boundary
+import asyncio
 
-class DataService:
-    @circuit_breaker(failure_threshold=5, recovery_timeout=60)
-    @retry_on_error(max_attempts=3, backoff="exponential")
-    def fetch_data(self, endpoint):
-        """Fetch data with automatic retry and circuit breaking."""
-        response = requests.get(endpoint)
-        response.raise_for_status()
-        return response.json()
-    
-    def process_safely(self, data):
-        """Process data with error boundaries."""
-        with error_boundary(logger, "data_processing"):
-            # Complex processing logic
-            return transform_data(data)
+class ProductionService:
+    def __init__(self):
+        self.logger = logger.bind(component="production_service")
+        
+    async def process_batch(self, items):
+        """Process items with error boundaries."""
+        results = []
+        for item in items:
+            with error_boundary(self.logger, f"item_{item['id']}"):
+                result = await self.process_item(item)
+                results.append(result)
+        return results
 ```
 
 ---
@@ -314,17 +251,15 @@ database:
 ### Contextual Logging
 
 ```python
+# From examples/06_trace_logging.py
 from provide.foundation import logger
 
-# Bind context to a logger
-request_logger = logger.bind(
-    request_id="req-123",
-    user_id="user-456"
-)
-
-# All logs include the bound context
-request_logger.info("Processing request")
-request_logger.error("Request failed", error_code=500)
+# Add context via structured fields
+logger.info("request_processing",
+            request_id="req-123",
+            user_id="user-456",
+            method="GET",
+            path="/api/users")
 ```
 
 ### Timing and Profiling
@@ -352,23 +287,22 @@ async def process_items(items):
 asyncio.run(process_items(items))
 ```
 
-### Testing Utilities
+### Example Files
 
-```python
-import pytest
-from provide.foundation.testing import captured_logs, temp_config
+Complete working examples are available in the [examples/](examples/) directory:
 
-def test_my_function():
-    with captured_logs() as logs:
-        my_function()
-    
-    assert "expected message" in logs.text
-    assert logs.records[0]["level"] == "info"
-
-def test_with_config():
-    with temp_config({"debug": True}):
-        assert config.debug is True
-```
+- `01_quick_start.py` - Basic logging setup
+- `02_custom_configuration.py` - Custom telemetry configuration
+- `03_named_loggers.py` - Module-specific loggers
+- `04_das_logging.py` - Domain-Action-Status pattern
+- `05_exception_handling.py` - Error handling patterns
+- `06_trace_logging.py` - Distributed tracing
+- `07_module_filtering.py` - Log filtering by module
+- `08_env_variables_config.py` - Environment-based config
+- `09_async_usage.py` - Async logging patterns
+- `10_production_patterns.py` - Production best practices
+- `11_config_management.py` - Complete configuration system
+- `12_cli_application.py` - Full CLI application example
 
 ---
 
