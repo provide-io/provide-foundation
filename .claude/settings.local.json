@@ -21,7 +21,9 @@
       "Bash(echo:*)",
       "Bash(continue)",
       "Bash(find:*)",
-      "Bash(source env.sh)"
+      "Bash(source env.sh)",
+      "Bash(python:*)",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": [],
