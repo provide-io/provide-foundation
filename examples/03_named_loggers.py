@@ -2,15 +2,9 @@
 # examples/foundation_telemetry/03_named_loggers.py
 """Demonstrates usage of named loggers for different components."""
 
-from pathlib import Path
-import sys
-
 # Add src to path for examples
-example_dir = Path(__file__).resolve().parent.parent  # Go up one level to `examples`
-project_root = example_dir.parent
-src_path = project_root / "src"
-if src_path.exists() and str(src_path) not in sys.path:
-    sys.path.insert(0, str(src_path))
+from utils import setup_example_environment, print_example_header, print_example_completion
+setup_example_environment()
 
 from provide.foundation import logger, setup_telemetry  # noqa: E402
 
@@ -22,10 +16,7 @@ def example_3_named_loggers() -> None:
     Named loggers help in identifying the source of log messages and allow for
     module-specific log level filtering (shown in a later example).
     """
-    print("\n" + "=" * 60)
-    print("📛 Example 3: Named Loggers")
-    print(" Demonstrates: Creating and using component-specific loggers.")
-    print("=" * 60)
+    print_example_header(3, "Named Loggers", "Creating and using component-specific loggers.")
 
     # Re-initialize with defaults for this example
     setup_telemetry()
@@ -46,4 +37,4 @@ def example_3_named_loggers() -> None:
 
 if __name__ == "__main__":
     example_3_named_loggers()
-    print("\n✅ Example 3 completed.")
+    print_example_completion(3)
