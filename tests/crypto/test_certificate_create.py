@@ -33,7 +33,7 @@ async def test_create_x509_cert_serial_error() -> None:
 async def test_create_x509_cert_validity_error() -> None:
     """Test error in validity period calculation."""
     with mock.patch(
-        "provide.foundation.crypto.datetime",
+        "provide.foundation.crypto.certificates.datetime",
         side_effect=Exception("Time error"),
     ):
         with pytest.raises(CertificateError, match="Failed to initialize certificate"):
