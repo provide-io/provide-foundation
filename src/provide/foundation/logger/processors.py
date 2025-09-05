@@ -24,7 +24,7 @@ from provide.foundation.types import (
 )
 
 if TYPE_CHECKING:
-    from provide.foundation.core import ResolvedEmojiConfig
+    from provide.foundation.setup.emoji_resolver import ResolvedEmojiConfig
 
 _LEVEL_TO_NUMERIC: dict[LogLevelStr, int] = {
     "CRITICAL": stdlib_logging.CRITICAL,

@@ -13,7 +13,7 @@ from typing import Any
 
 import structlog
 
-from provide.foundation.logger import base as foundation_logger
+from provide.foundation.logger.core import logger as foundation_logger
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
 from provide.foundation.logger.emoji.sets import BUILTIN_EMOJI_SETS
 from provide.foundation.setup.emoji_resolver import resolve_active_emoji_config
@@ -93,9 +93,9 @@ def internal_setup(
     """
     # This function assumes the lock is already held.
     structlog.reset_defaults()
-    foundation_logger.logger._is_configured_by_setup = False
-    foundation_logger.logger._active_config = None
-    foundation_logger.logger._active_resolved_semantic_config = None
+    foundation_logger._is_configured_by_setup = False
+    foundation_logger._active_config = None
+    foundation_logger._active_resolved_semantic_config = None
     foundation_logger._LAZY_SETUP_STATE.update(
         {"done": False, "error": None, "in_progress": False}
     )
@@ -122,9 +122,9 @@ def internal_setup(
     else:
         configure_structlog_output(current_config, resolved_emoji_config, get_log_stream())
 
-    foundation_logger.logger._is_configured_by_setup = is_explicit_call
-    foundation_logger.logger._active_config = current_config
-    foundation_logger.logger._active_resolved_emoji_config = resolved_emoji_config
+    foundation_logger._is_configured_by_setup = is_explicit_call
+    foundation_logger._active_config = current_config
+    foundation_logger._active_resolved_emoji_config = resolved_emoji_config
     foundation_logger._LAZY_SETUP_STATE["done"] = True
 
     if not current_config.globally_disabled:
