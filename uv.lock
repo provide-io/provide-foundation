@@ -394,14 +394,14 @@ wheels = [
 
 [[package]]
 name = "griffe"
-version = "1.13.0"
+version = "1.14.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "colorama" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c6/b5/23b91f22b7b3a7f8f62223f6664946271c0f5cb4179605a3e6bbae863920/griffe-1.13.0.tar.gz", hash = "sha256:246ea436a5e78f7fbf5f24ca8a727bb4d2a4b442a2959052eea3d0bfe9a076e0", size = 412759, upload-time = "2025-08-26T13:27:11.422Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ec/d7/6c09dd7ce4c7837e4cdb11dce980cb45ae3cd87677298dc3b781b6bce7d3/griffe-1.14.0.tar.gz", hash = "sha256:9d2a15c1eca966d68e00517de5d69dd1bc5c9f2335ef6c1775362ba5b8651a13", size = 424684, upload-time = "2025-09-05T15:02:29.167Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/aa/8c/b7cfdd8dfe48f6b09f7353323732e1a290c388bd14f216947928dc85f904/griffe-1.13.0-py3-none-any.whl", hash = "sha256:470fde5b735625ac0a36296cd194617f039e9e83e301fcbd493e2b58382d0559", size = 139365, upload-time = "2025-08-26T13:27:09.882Z" },
+    { url = "https://files.pythonhosted.org/packages/2a/b1/9ff6578d789a89812ff21e4e0f80ffae20a65d5dd84e7a17873fe3b365be/griffe-1.14.0-py3-none-any.whl", hash = "sha256:0e9d52832cccf0f7188cfe585ba962d2674b241c01916d780925df34873bceb0", size = 144439, upload-time = "2025-09-05T15:02:27.511Z" },
 ]
 
 [[package]]
@@ -1483,7 +1483,7 @@ wheels = [
 
 [[package]]
 name = "reuse"
-version = "5.1.0"
+version = "5.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "attrs" },
@@ -1495,9 +1495,9 @@ dependencies = [
     { name = "python-debian" },
     { name = "tomlkit" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a4/1f/c8f63770f1f6dd1182eec4635f1d183ea48d4ddad49ef3be1c768cc60fa2/reuse-5.1.0.tar.gz", hash = "sha256:33292b44a9f78340bb8ccd37536d7b19d9b9158856841508b63028cae24753b5", size = 385385, upload-time = "2025-09-04T13:28:35.696Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/4b/f7/b59fe851b856d0932aedbf311a3d719f30783e27af6d05bb76d77072ab8f/reuse-5.1.1.tar.gz", hash = "sha256:a13914ed8b66b8e5956e96c63203c63d72b55280d348849ccc0eb314c73248cb", size = 419022, upload-time = "2025-09-05T14:50:01.049Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f3/7b/f901219bd2525c466d1ef5b841e51a4b61b40c5f1b57bf330e491a78cbc7/reuse-5.1.0-cp313-cp313-manylinux_2_41_x86_64.whl", hash = "sha256:398f1cf152bc4151f23b19a90229f8608ff41a28ddafa9a6c637463807f97455", size = 224222, upload-time = "2025-09-04T13:28:34.193Z" },
+    { url = "https://files.pythonhosted.org/packages/c9/95/12451ff8bc2c3e8a5755bc810a538de85444015d44353fc6f7ee8800c0bb/reuse-5.1.1-cp313-cp313-manylinux_2_41_x86_64.whl", hash = "sha256:15a68341949b7ddb3630d8d3a49d9537bbc143ee235dca77cc3f4047237c8299", size = 255386, upload-time = "2025-09-05T14:49:58.576Z" },
 ]
 
 [[package]]
