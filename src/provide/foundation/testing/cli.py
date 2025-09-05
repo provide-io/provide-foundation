@@ -6,6 +6,7 @@ context mocking, isolated runners, and configuration helpers.
 """
 
 from contextlib import contextmanager
+import inspect
 import json
 import os
 from pathlib import Path
@@ -58,7 +59,16 @@ def isolated_cli_runner(
     Yields:
         CliRunner instance in isolated filesystem
     """
-    runner = CliRunner(mix_stderr=mix_stderr)
+    # Check if Click supports mix_stderr parameter
+    runner_sig = inspect.signature(CliRunner)
+    supports_mix_stderr = "mix_stderr" in runner_sig.parameters
+    
+    if supports_mix_stderr:
+        runner = CliRunner(mix_stderr=mix_stderr)
+    else:
+        runner = CliRunner()
+        # Add mix_stderr attribute for test compatibility
+        runner.mix_stderr = mix_stderr
 
     with runner.isolated_filesystem():
         # Set up environment
