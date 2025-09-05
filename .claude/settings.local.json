@@ -9,7 +9,8 @@
       "Bash(FOUNDATION_LOG_LEVEL=DEBUG python -c \"from provide.foundation import logger; logger.info(''Testing with DEBUG level!'')\")",
       "Bash(uv build:*)",
       "Bash(find:*)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": [],
