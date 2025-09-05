@@ -11,7 +11,8 @@
       "Bash(find:*)",
       "Bash(sed:*)",
       "Bash(grep:*)",
-      "Bash(uv sync:*)"
+      "Bash(uv sync:*)",
+      "Read(//Users/tim/code/gh/provide-io/**)"
     ],
     "deny": [],
     "ask": [],
