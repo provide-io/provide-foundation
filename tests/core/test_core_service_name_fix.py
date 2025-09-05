@@ -27,15 +27,12 @@ def test_service_name_injection_fix() -> None:
     reset_foundation_setup_for_testing()
 
     # Set environment like the failing test
-    os.environ["FOUNDATION_SERVICE_NAME"] = "lazy-service-test"
-    os.environ["FOUNDATION_LOG_CONSOLE_FORMATTER"] = "json"
+    os.environ["PROVIDE_SERVICE_NAME"] = "lazy-service-test"
+    os.environ["PROVIDE_LOG_CONSOLE_FORMATTER"] = "json"
 
-    # Clear any existing emoji settings
-    for key in [
-        "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED",
-        "FOUNDATION_LOG_DAS_EMOJI_ENABLED",
-    ]:
-        os.environ.pop(key, None)
+    # Explicitly disable emoji settings for JSON output
+    os.environ["PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED"] = "false"
+    os.environ["PROVIDE_LOG_DAS_EMOJI_ENABLED"] = "false"
 
     # Capture output
     import io
@@ -88,8 +85,8 @@ def test_service_name_injection_fix() -> None:
     finally:
         _set_log_stream_for_testing(None)
         # Clean up env vars used in this test
-        os.environ.pop("FOUNDATION_SERVICE_NAME", None)
-        os.environ.pop("FOUNDATION_LOG_CONSOLE_FORMATTER", None)
+        os.environ.pop("PROVIDE_SERVICE_NAME", None)
+        os.environ.pop("PROVIDE_LOG_CONSOLE_FORMATTER", None)
 
 
 def test_key_value_still_has_emojis() -> None:
@@ -102,15 +99,12 @@ def test_key_value_still_has_emojis() -> None:
     reset_foundation_setup_for_testing()
 
     # Set environment for key-value format
-    os.environ.pop("FOUNDATION_SERVICE_NAME", None)
-    os.environ["FOUNDATION_LOG_CONSOLE_FORMATTER"] = "key_value"
+    os.environ.pop("PROVIDE_SERVICE_NAME", None)
+    os.environ["PROVIDE_LOG_CONSOLE_FORMATTER"] = "key_value"
 
-    # Clear any existing emoji settings
-    for key in [
-        "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED",
-        "FOUNDATION_LOG_DAS_EMOJI_ENABLED",
-    ]:
-        os.environ.pop(key, None)
+    # Enable emojis for key-value format (the test expects emojis)
+    os.environ["PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED"] = "true"
+    os.environ["PROVIDE_LOG_DAS_EMOJI_ENABLED"] = "true"
 
     # Capture output
     import io
@@ -134,7 +128,7 @@ def test_key_value_still_has_emojis() -> None:
     finally:
         _set_log_stream_for_testing(None)
         # Clean up env vars used in this test
-        os.environ.pop("FOUNDATION_LOG_CONSOLE_FORMATTER", None)
+        os.environ.pop("PROVIDE_LOG_CONSOLE_FORMATTER", None)
 
 
 # Removed __main__ block

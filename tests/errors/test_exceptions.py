@@ -17,7 +17,7 @@ class TestFoundationError:
         error = FoundationError("Test error")
         assert str(error) == "Test error"
         assert error.message == "Test error"
-        assert error.code == "FOUNDATION_ERROR"
+        assert error.code == "PROVIDE_ERROR"
         assert error.context == {}
         assert error.cause is None
 

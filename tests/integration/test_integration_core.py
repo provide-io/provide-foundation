@@ -39,6 +39,7 @@ from provide.foundation import (
     setup_telemetry,
     shutdown_foundation_telemetry,
 )
+from provide.foundation.config.types import ConfigSource
 
 
 def test_full_lifecycle_integration(
@@ -115,13 +116,13 @@ def test_environment_variable_integration() -> None:
     """
     # Define test environment variables
     env_vars = {
-        "FOUNDATION_SERVICE_NAME": "env-test-service",
-        "FOUNDATION_LOG_LEVEL": "WARNING",
-        "FOUNDATION_LOG_CONSOLE_FORMATTER": "key_value",
-        "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
-        "FOUNDATION_LOG_DAS_EMOJI_ENABLED": "true",
-        "FOUNDATION_LOG_OMIT_TIMESTAMP": "true",
-        "FOUNDATION_LOG_MODULE_LEVELS": "app.security:ERROR,app.auth:DEBUG",
+        "PROVIDE_SERVICE_NAME": "env-test-service",
+        "PROVIDE_LOG_LEVEL": "WARNING",
+        "PROVIDE_LOG_CONSOLE_FORMATTER": "key_value",
+        "PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
+        "PROVIDE_LOG_DAS_EMOJI_ENABLED": "true",
+        "PROVIDE_LOG_OMIT_TIMESTAMP": "true",
+        "PROVIDE_LOG_MODULE_LEVELS": "app.security:ERROR,app.auth:DEBUG",
     }
 
     # Save original environment values for restoration
@@ -383,10 +384,12 @@ def test_configuration_edge_cases() -> None:
     logger.info("This should be suppressed")
     logger.error("This should also be suppressed")
 
-    # Test configuration immutability (attrs frozen=True)
-    config_immut = TelemetryConfig(service_name="test")
-    with pytest.raises(AttributeError):
-        config_immut.service_name = "modified"  # type: ignore[misc]
+    # Test configuration mutability with BaseConfig
+    config_mut = TelemetryConfig(service_name="test")
+    # Direct mutation works now but update() is preferred
+    config_mut.update({"service_name": "modified"}, ConfigSource.RUNTIME)
+    assert config_mut.service_name == "modified"
+    assert config_mut.get_source("service_name") == ConfigSource.RUNTIME
 
 
 def test_repeated_setup_calls_integration(  # Renamed to avoid conflict

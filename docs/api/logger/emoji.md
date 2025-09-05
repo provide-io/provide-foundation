@@ -123,13 +123,13 @@ def show_emoji_matrix() -> None:
     Prints the active Foundation emoji logging contract to the console.
     If emoji sets are active, it displays their configuration.
     Otherwise, it displays the core DAS emoji mappings.
-    Activated by FOUNDATION_SHOW_EMOJI_MATRIX environment variable.
+    Activated by PROVIDE_SHOW_EMOJI_MATRIX environment variable.
     """
 ```
 
 **Activation:**
 ```bash
-export FOUNDATION_SHOW_EMOJI_MATRIX=true
+export PROVIDE_SHOW_EMOJI_MATRIX=true
 python your_app.py  # Will display emoji matrix on startup
 ```
 
@@ -249,16 +249,16 @@ log.info(
 
 ## Environment Variables
 
-### FOUNDATION_SHOW_EMOJI_MATRIX
+### PROVIDE_SHOW_EMOJI_MATRIX
 
 Enable emoji matrix display on startup.
 
 ```bash
-export FOUNDATION_SHOW_EMOJI_MATRIX=true
+export PROVIDE_SHOW_EMOJI_MATRIX=true
 # or
-export FOUNDATION_SHOW_EMOJI_MATRIX=1
+export PROVIDE_SHOW_EMOJI_MATRIX=1
 # or  
-export FOUNDATION_SHOW_EMOJI_MATRIX=yes
+export PROVIDE_SHOW_EMOJI_MATRIX=yes
 ```
 
 ### Emoji Control
@@ -266,9 +266,9 @@ export FOUNDATION_SHOW_EMOJI_MATRIX=yes
 Control emoji behavior through configuration:
 
 ```bash
-export FOUNDATION_DISABLE_EMOJI=true          # Disable all emoji
-export FOUNDATION_DISABLE_DAS_EMOJI=true     # Disable DAS emoji only
-export FOUNDATION_DISABLE_LOGGER_EMOJI=true  # Disable logger name emoji only
+export PROVIDE_DISABLE_EMOJI=true          # Disable all emoji
+export PROVIDE_DISABLE_DAS_EMOJI=true     # Disable DAS emoji only
+export PROVIDE_DISABLE_LOGGER_EMOJI=true  # Disable logger name emoji only
 ```
 
 ## Helper Functions

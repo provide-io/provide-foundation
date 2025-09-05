@@ -47,7 +47,7 @@ from provide.foundation import logger
 import os
 
 # Via environment variable (preferred)
-os.environ["FOUNDATION_LOG_LEVEL"] = "DEBUG"
+os.environ["PROVIDE_LOG_LEVEL"] = "DEBUG"
 
 # Note: The level can also be set in TelemetryConfig during setup
 ```
@@ -235,7 +235,7 @@ api_logger.info("endpoint_called", path="/users", method="GET")
 ### Pretty Format (Development)
 
 ```python
-os.environ["FOUNDATION_LOG_CONSOLE_FORMATTER"] = "key_value"  # Pretty format with emojis
+os.environ["PROVIDE_LOG_CONSOLE_FORMATTER"] = "key_value"  # Pretty format with emojis
 
 logger.info("server_started", port=8080, workers=4)
 # Output: ✅ server_started port=8080 workers=4
@@ -247,7 +247,7 @@ logger.error("database_error", error="Connection refused")
 ### JSON Format (Production)
 
 ```python
-os.environ["FOUNDATION_LOG_CONSOLE_FORMATTER"] = "json"
+os.environ["PROVIDE_LOG_CONSOLE_FORMATTER"] = "json"
 
 logger.info("server_started", port=8080, workers=4)
 # Output: {"event": "server_started", "level": "info", "port": 8080, "workers": 4, "timestamp": "2024-01-20T10:30:00Z"}
@@ -256,7 +256,7 @@ logger.info("server_started", port=8080, workers=4)
 ### Compact Format (CI/CD)
 
 ```python
-os.environ["FOUNDATION_LOG_CONSOLE_FORMATTER"] = "compact"
+os.environ["PROVIDE_LOG_CONSOLE_FORMATTER"] = "compact"
 
 logger.info("test_passed", test="auth", duration_ms=45)
 # Output: [INFO] test_passed test=auth duration_ms=45
@@ -265,7 +265,7 @@ logger.info("test_passed", test="auth", duration_ms=45)
 ### Plain Format (Debugging)
 
 ```python
-os.environ["FOUNDATION_LOG_CONSOLE_FORMATTER"] = "plain"
+os.environ["PROVIDE_LOG_CONSOLE_FORMATTER"] = "plain"
 
 logger.info("debug_info", step=1, status="ok")
 # Output: debug_info step=1 status=ok
@@ -294,7 +294,7 @@ logger.info("llm_completion", provider="openai")       # 🤖
 
 ```python
 # Via environment variable
-os.environ["FOUNDATION_LOG_DAS_EMOJI_ENABLED"] = "false"
+os.environ["PROVIDE_LOG_DAS_EMOJI_ENABLED"] = "false"
 
 # Or in configuration
 from provide.foundation.config import Config

@@ -101,3 +101,4 @@ uv publish                      # Publish to PyPI
 - no legacy implementation is needed. any refactoring will *replace* the logic. no migration. and the tests must the same as before. no migration.
 - no. more. backward compatibility. implement it the way i want in the target state
 - There should be *NO* hardcoded defaults. EVER
+- no backward compatibility.

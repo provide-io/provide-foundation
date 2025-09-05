@@ -8,7 +8,7 @@ from collections.abc import Callable
 import copy
 from typing import Any, TypeVar
 
-from attrs import NOTHING, Attribute, define, field as attrs_field, fields
+from attrs import NOTHING, Attribute, define, field as attrs_field, fields, setters
 
 from provide.foundation.config.types import ConfigDict, ConfigSource
 

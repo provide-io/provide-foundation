@@ -41,22 +41,22 @@ def test_config_from_env_malformed_json(
 ) -> None:
     """Covers error handling for invalid JSON in environment variables."""
     # Test malformed custom layers JSON
-    monkeypatch.setenv("FOUNDATION_LOG_CUSTOM_EMOJI_SETS", "[{'name': 'badjson'}]")
+    monkeypatch.setenv("PROVIDE_LOG_CUSTOM_EMOJI_SETS", "[{'name': 'badjson'}]")
     config = TelemetryConfig.from_env()
     assert config.logging.custom_emoji_sets == []
     assert (
-        "Invalid JSON in FOUNDATION_LOG_CUSTOM_EMOJI_SETS"
+        "Invalid JSON in PROVIDE_LOG_CUSTOM_EMOJI_SETS"
         in capsys.readouterr().err
     )
 
     # Test malformed user emoji sets JSON
     monkeypatch.setenv(
-        "FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS", "[{'name': 'badjson'}]"
+        "PROVIDE_LOG_USER_DEFINED_EMOJI_SETS", "[{'name': 'badjson'}]"
     )
     config = TelemetryConfig.from_env()
     assert config.logging.user_defined_emoji_sets == []
     assert (
-        "Invalid JSON in FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS"
+        "Invalid JSON in PROVIDE_LOG_USER_DEFINED_EMOJI_SETS"
         in capsys.readouterr().err
     )
 
@@ -67,7 +67,7 @@ def test_config_from_env_type_error_in_data(
     """Covers TypeError handling for malformed data within valid JSON."""
     # Test TypeError in custom layers (e.g., priority is not an int)
     custom_layers_json = json.dumps([{"name": "my_layer", "priority": "not-an-int"}])
-    monkeypatch.setenv("FOUNDATION_LOG_CUSTOM_EMOJI_SETS", custom_layers_json)
+    monkeypatch.setenv("PROVIDE_LOG_CUSTOM_EMOJI_SETS", custom_layers_json)
     config = TelemetryConfig.from_env()
     assert config.logging.custom_emoji_sets == []
     assert "Error parsing data for a custom emoji set" in capsys.readouterr().err
@@ -75,7 +75,7 @@ def test_config_from_env_type_error_in_data(
     # Test TypeError in user emoji sets (e.g., emojis is not a dict)
     # Note: The current implementation accepts a list, which may be overly permissive
     user_sets_json = json.dumps([{"name": "my_set", "emojis": ["not-a-dict"]}])
-    monkeypatch.setenv("FOUNDATION_LOG_USER_DEFINED_EMOJI_SETS", user_sets_json)
+    monkeypatch.setenv("PROVIDE_LOG_USER_DEFINED_EMOJI_SETS", user_sets_json)
     config = TelemetryConfig.from_env()
     # The implementation currently accepts this, though it probably shouldn't
     assert len(config.logging.user_defined_emoji_sets) == 1
@@ -201,7 +201,7 @@ def test_emoji_matrix_display_with_semantic_layers(
     captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     """Covers displaying the matrix when semantic layers are active."""
-    with patch.dict(os.environ, {"FOUNDATION_SHOW_EMOJI_MATRIX": "true"}):
+    with patch.dict(os.environ, {"PROVIDE_SHOW_EMOJI_MATRIX": "true"}):
         config = TelemetryConfig(
             logging=LoggingConfig(enabled_emoji_sets=["http"])
         )
@@ -214,7 +214,7 @@ def test_emoji_matrix_display_with_semantic_layers(
 
 def test_emoji_matrix_display_unresolved(capsys: pytest.CaptureFixture) -> None:
     """Covers displaying the matrix when config is not yet resolved."""
-    with patch.dict(os.environ, {"FOUNDATION_SHOW_EMOJI_MATRIX": "true"}):
+    with patch.dict(os.environ, {"PROVIDE_SHOW_EMOJI_MATRIX": "true"}):
         # Prevent lazy-init from running
         with patch.object(foundation_logger_base.logger, "_ensure_configured"):
             # Ensure the attribute that is checked is None

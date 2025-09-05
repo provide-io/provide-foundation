@@ -104,7 +104,7 @@ def test_emoji_matrix_display(
     assert captured_stderr_for_foundation.getvalue() == ""
 
     # Test that it prints when env var is set
-    with patch.dict(os.environ, {"FOUNDATION_SHOW_EMOJI_MATRIX": "true"}):
+    with patch.dict(os.environ, {"PROVIDE_SHOW_EMOJI_MATRIX": "true"}):
         # Use a simple config for the test
         setup_foundation_telemetry_for_test(TelemetryConfig())
         show_emoji_matrix()
@@ -123,7 +123,7 @@ def test_trace_level_custom_logger_name() -> None:
 
 
 def test_core_setup_environment_variable_edge_cases() -> None:
-    with patch.dict(os.environ, {"FOUNDATION_CORE_SETUP_LOG_LEVEL": "INVALID"}):
+    with patch.dict(os.environ, {"PROVIDE_CORE_SETUP_LOG_LEVEL": "INVALID"}):
         assert _create_core_setup_logger().level == 20
 
 

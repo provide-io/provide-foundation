@@ -71,3 +71,33 @@ class ValidationError(FoundationError):
 
     def _default_code(self) -> str:
         return "VALIDATION_ERROR"
+
+
+class ConfigValidationError(ValidationError):
+    """Raised when configuration validation fails.
+    
+    This is a specialized validation error for configuration-specific validation failures.
+    
+    Args:
+        message: Validation error message.
+        config_class: Optional name of the config class.
+        **kwargs: Additional context passed to ValidationError.
+    
+    Examples:
+        >>> raise ConfigValidationError("Invalid database configuration")
+        >>> raise ConfigValidationError("Port must be positive", field="port", value=-1)
+    """
+    
+    def __init__(
+        self,
+        message: str,
+        *,
+        config_class: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        if config_class:
+            kwargs.setdefault("context", {})["config.class"] = config_class
+        super().__init__(message, **kwargs)
+    
+    def _default_code(self) -> str:
+        return "CONFIG_VALIDATION_ERROR"

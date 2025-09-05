@@ -20,11 +20,7 @@ from provide.foundation.logger.config import (
     LoggingConfig,
     TelemetryConfig,
 )
-from provide.foundation.logger.env import (
-    _ensure_config_logger_handler,
-    config_warnings_logger,
-    from_env,
-)
+# env.py removed - use TelemetryConfig.from_env() directly
 from provide.foundation.logger.processors import (
     _build_core_processors_list,
     _build_formatter_processors_list,
@@ -111,22 +107,22 @@ class TestBuildCoreProcessorsList:
 class TestTelemetryConfigFromEnvSemanticLayers:
     def test_from_env_parses_enabled_emoji_sets(self, monkeypatch) -> None:
         monkeypatch.setenv(
-            "FOUNDATION_LOG_ENABLED_EMOJI_SETS", "llm, http , database "
+            "PROVIDE_LOG_ENABLED_EMOJI_SETS", "llm, http , database "
         )
-        config = from_env()
+        config = TelemetryConfig.from_env()
         assert config.logging.enabled_emoji_sets == ["llm", "http", "database"]
 
     def test_from_env_handles_malformed_custom_layers_json(
         self, monkeypatch, capsys: CaptureFixture
     ) -> None:
         monkeypatch.setenv(
-            "FOUNDATION_LOG_CUSTOM_EMOJI_SETS", "[{'name': 'badjson']"
+            "PROVIDE_LOG_CUSTOM_EMOJI_SETS", "[{'name': 'badjson']"
         )
-        _ensure_config_logger_handler(config_warnings_logger)
-        config = from_env()
+        # _ensure_config_logger_handler removed - warnings now handled by config system
+        config = TelemetryConfig.from_env()
         assert config.logging.custom_emoji_sets == []
         assert (
-            "Invalid JSON in FOUNDATION_LOG_CUSTOM_EMOJI_SETS"
+            "Invalid JSON in PROVIDE_LOG_CUSTOM_EMOJI_SETS"
             in capsys.readouterr().err
         )
 
@@ -136,8 +132,8 @@ class TestTelemetryConfigFromEnvSemanticLayers:
         custom_layers_json = json.dumps(
             [{"name": "my_layer", "priority": "not_an_int"}]
         )
-        monkeypatch.setenv("FOUNDATION_LOG_CUSTOM_EMOJI_SETS", custom_layers_json)
-        _ensure_config_logger_handler(config_warnings_logger)
-        config = from_env()
+        monkeypatch.setenv("PROVIDE_LOG_CUSTOM_EMOJI_SETS", custom_layers_json)
+        # _ensure_config_logger_handler removed - warnings now handled by config system
+        config = TelemetryConfig.from_env()
         assert config.logging.custom_emoji_sets == []
         assert "Error parsing data for a custom emoji set" in capsys.readouterr().err

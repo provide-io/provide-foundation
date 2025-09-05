@@ -10,7 +10,8 @@ from typing import Any
 
 from attrs import Attribute, define, fields
 
-from provide.foundation.config.base import BaseConfig, ConfigValidationError
+from provide.foundation.config.base import BaseConfig
+from provide.foundation.errors import ConfigValidationError
 from provide.foundation.config.types import ConfigDict
 
 

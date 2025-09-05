@@ -58,10 +58,10 @@ def test_service_name_no_emoji() -> None:
     reset_foundation_setup_for_testing()
 
     # Set environment to disable emojis for JSON format
-    os.environ["FOUNDATION_SERVICE_NAME"] = "test-service"
-    os.environ["FOUNDATION_LOG_CONSOLE_FORMATTER"] = "json"
-    os.environ["FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED"] = "false"
-    os.environ["FOUNDATION_LOG_DAS_EMOJI_ENABLED"] = "false"
+    os.environ["PROVIDE_SERVICE_NAME"] = "test-service"
+    os.environ["PROVIDE_LOG_CONSOLE_FORMATTER"] = "json"
+    os.environ["PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED"] = "false"
+    os.environ["PROVIDE_LOG_DAS_EMOJI_ENABLED"] = "false"
 
     # Capture output
     import io
@@ -105,10 +105,10 @@ def test_service_name_no_emoji() -> None:
         _set_log_stream_for_testing(None)
         # Clean up environment
         for key in [
-            "FOUNDATION_SERVICE_NAME",
-            "FOUNDATION_LOG_CONSOLE_FORMATTER",
-            "FOUNDATION_LOG_LOGGER_NAME_EMOJI_ENABLED",
-            "FOUNDATION_LOG_DAS_EMOJI_ENABLED",
+            "PROVIDE_SERVICE_NAME",
+            "PROVIDE_LOG_CONSOLE_FORMATTER",
+            "PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED",
+            "PROVIDE_LOG_DAS_EMOJI_ENABLED",
         ]:
             os.environ.pop(key, None)
 
@@ -125,8 +125,8 @@ def test_das_emoji_register_action() -> None:
     reset_foundation_setup_for_testing()
 
     # Enable DAS emojis
-    os.environ["FOUNDATION_LOG_DAS_EMOJI_ENABLED"] = "true"
-    os.environ["FOUNDATION_LOG_CONSOLE_FORMATTER"] = "key_value"
+    os.environ["PROVIDE_LOG_DAS_EMOJI_ENABLED"] = "true"
+    os.environ["PROVIDE_LOG_CONSOLE_FORMATTER"] = "key_value"
 
     import io
 
@@ -162,8 +162,8 @@ def test_das_emoji_register_action() -> None:
     finally:
         _set_log_stream_for_testing(None)
         for key in [
-            "FOUNDATION_LOG_DAS_EMOJI_ENABLED",
-            "FOUNDATION_LOG_CONSOLE_FORMATTER",
+            "PROVIDE_LOG_DAS_EMOJI_ENABLED",
+            "PROVIDE_LOG_CONSOLE_FORMATTER",
         ]:
             os.environ.pop(key, None)
 

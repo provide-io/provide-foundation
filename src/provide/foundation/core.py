@@ -38,8 +38,8 @@ from provide.foundation.logger.processors import (
 )
 from provide.foundation.utils.streams import get_safe_stderr
 
-_FOUNDATION_SETUP_LOCK = threading.Lock()
-_FOUNDATION_LOG_STREAM: TextIO = sys.stderr
+_PROVIDE_SETUP_LOCK = threading.Lock()
+_PROVIDE_LOG_STREAM: TextIO = sys.stderr
 _LOG_FILE_HANDLE: TextIO | None = None
 _CORE_SETUP_LOGGER_NAME = "provide.foundation.core_setup"
 _EXPLICIT_SETUP_DONE = False
@@ -49,14 +49,14 @@ _EXPLICIT_SETUP_DONE = False
 
 
 def _set_log_stream_for_testing(stream: TextIO | None) -> None:
-    global _FOUNDATION_LOG_STREAM
-    _FOUNDATION_LOG_STREAM = stream if stream is not None else sys.stderr
+    global _PROVIDE_LOG_STREAM
+    _PROVIDE_LOG_STREAM = stream if stream is not None else sys.stderr
 
 
 def _ensure_stderr_default() -> None:
-    global _FOUNDATION_LOG_STREAM
-    if _FOUNDATION_LOG_STREAM is sys.stdout:
-        _FOUNDATION_LOG_STREAM = sys.stderr
+    global _PROVIDE_LOG_STREAM
+    if _PROVIDE_LOG_STREAM is sys.stdout:
+        _PROVIDE_LOG_STREAM = sys.stderr
 
 
 def _create_core_setup_logger(globally_disabled: bool = False) -> stdlib_logging.Logger:
@@ -67,7 +67,7 @@ def _create_core_setup_logger(globally_disabled: bool = False) -> stdlib_logging
             if isinstance(h, stdlib_logging.StreamHandler) and h.stream not in (
                 sys.stdout,
                 sys.stderr,
-                _FOUNDATION_LOG_STREAM,
+                _PROVIDE_LOG_STREAM,
             ):
                 h.close()
         except Exception:
@@ -142,7 +142,7 @@ def _build_complete_processor_chain(
 ) -> list[Any]:
     core_processors = _build_core_processors_list(config, resolved_emoji_config)
     formatter_processors = _build_formatter_processors_list(
-        config.logging, _FOUNDATION_LOG_STREAM
+        config.logging, _PROVIDE_LOG_STREAM
     )
     _core_setup_logger.info(
         f"📝➡️🎨 Configured {config.logging.console_formatter} renderer."
@@ -153,12 +153,12 @@ def _build_complete_processor_chain(
 def _apply_structlog_configuration(processors: list[Any]) -> None:
     stream_name = (
         "sys.stderr"
-        if sys.stderr == _FOUNDATION_LOG_STREAM
+        if sys.stderr == _PROVIDE_LOG_STREAM
         else "custom stream (testing)"
     )
     structlog.configure(
         processors=processors,
-        logger_factory=structlog.PrintLoggerFactory(file=_FOUNDATION_LOG_STREAM),
+        logger_factory=structlog.PrintLoggerFactory(file=_PROVIDE_LOG_STREAM),
         wrapper_class=cast(type[BindableLogger], structlog.BoundLogger),
         cache_logger_on_first_use=True,
     )
@@ -188,11 +188,11 @@ def _reset_foundation_state() -> None:
     Internal function to reset `structlog` and Foundation Telemetry's state.
     """
     global \
-        _FOUNDATION_LOG_STREAM, \
+        _PROVIDE_LOG_STREAM, \
         _core_setup_logger, \
         _EXPLICIT_SETUP_DONE, \
         _LOG_FILE_HANDLE
-    with _FOUNDATION_SETUP_LOCK:
+    with _PROVIDE_SETUP_LOCK:
         structlog.reset_defaults()
         if _LOG_FILE_HANDLE:
             try:
@@ -206,7 +206,7 @@ def _reset_foundation_state() -> None:
         foundation_logger._LAZY_SETUP_STATE.update(
             {"done": False, "error": None, "in_progress": False}
         )
-        _FOUNDATION_LOG_STREAM = sys.stderr
+        _PROVIDE_LOG_STREAM = sys.stderr
         _EXPLICIT_SETUP_DONE = False
         _core_setup_logger = _create_core_setup_logger()
 
@@ -223,7 +223,7 @@ def _internal_setup(
 ) -> None:
     """
     The single, internal setup function that both explicit and lazy setup call.
-    It is protected by the _FOUNDATION_SETUP_LOCK in its callers.
+    It is protected by the _PROVIDE_SETUP_LOCK in its callers.
     """
     global _core_setup_logger
 
@@ -266,11 +266,11 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
     """
     Initializes or reconfigures the Foundation Telemetry system.
     """
-    global _EXPLICIT_SETUP_DONE, _LOG_FILE_HANDLE, _FOUNDATION_LOG_STREAM
-    with _FOUNDATION_SETUP_LOCK:
+    global _EXPLICIT_SETUP_DONE, _LOG_FILE_HANDLE, _PROVIDE_LOG_STREAM
+    with _PROVIDE_SETUP_LOCK:
         current_config = config if config is not None else TelemetryConfig.from_env()
 
-        if _LOG_FILE_HANDLE and _LOG_FILE_HANDLE is not _FOUNDATION_LOG_STREAM:
+        if _LOG_FILE_HANDLE and _LOG_FILE_HANDLE is not _PROVIDE_LOG_STREAM:
             try:
                 _LOG_FILE_HANDLE.close()
             except Exception:
@@ -279,8 +279,8 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
 
         log_file_path = getattr(current_config.logging, "log_file", None)
 
-        is_test_stream = _FOUNDATION_LOG_STREAM is not sys.stderr and not isinstance(
-            _FOUNDATION_LOG_STREAM, io.TextIOWrapper
+        is_test_stream = _PROVIDE_LOG_STREAM is not sys.stderr and not isinstance(
+            _PROVIDE_LOG_STREAM, io.TextIOWrapper
         )
 
         if log_file_path:
@@ -289,14 +289,14 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
                 _LOG_FILE_HANDLE = open(
                     log_file_path, "a", encoding="utf-8", buffering=1
                 )
-                _FOUNDATION_LOG_STREAM = _LOG_FILE_HANDLE
+                _PROVIDE_LOG_STREAM = _LOG_FILE_HANDLE
             except Exception as e:
                 _core_setup_logger.error(
                     f"Failed to open log file {log_file_path}: {e}"
                 )
-                _FOUNDATION_LOG_STREAM = get_safe_stderr()
+                _PROVIDE_LOG_STREAM = get_safe_stderr()
         elif not is_test_stream:
-            _FOUNDATION_LOG_STREAM = get_safe_stderr()
+            _PROVIDE_LOG_STREAM = get_safe_stderr()
 
         _internal_setup(current_config, is_explicit_call=True)
         _EXPLICIT_SETUP_DONE = True
@@ -309,7 +309,7 @@ async def shutdown_foundation_telemetry(timeout_millis: int = 5000) -> None:
     """
     global _LOG_FILE_HANDLE
     _core_setup_logger.info("🔌➡️🏁 Foundation Telemetry flush called.")
-    with _FOUNDATION_SETUP_LOCK:
+    with _PROVIDE_SETUP_LOCK:
         if _LOG_FILE_HANDLE:
             try:
                 # Only flush the handle, do not close or reset state.
