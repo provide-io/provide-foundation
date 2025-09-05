@@ -464,6 +464,12 @@ For debugging provide.foundation itself (not for production use):
 | `PROVIDE_SHOW_EMOJI_MATRIX` | Display emoji mapping table | Debug emoji assignments |
 | `PROVIDE_TRACE_PROCESSORS` | Trace log processor chain | Debug log pipeline |
 | `PROVIDE_PROFILE` | Enable profiling output | Performance analysis |
+| `FOUNDATION_LOG_OUTPUT` | Control Foundation internal log output | `stderr`, `stdout`, `main` - RPC compatibility |
+
+**`FOUNDATION_LOG_OUTPUT`** controls where Foundation's internal logging (config warnings, setup messages) is directed:
+- `stderr` (default): Safe for RPC plugins, won't interfere with stdout data streams
+- `stdout`: Direct to standard output 
+- `main`: Use the main application's configured log stream
 
 ⚠️ **Warning**: Internal variables may change between versions.
 
