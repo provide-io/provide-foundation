@@ -5,7 +5,7 @@
 [project]
 name = "provide-foundation"
 description = "Foundation Telemetry: An opinionated, developer-friendly telemetry wrapper for Python."
-version = "0.0.16"
+dynamic = ["version"]
 requires-python = ">=3.11"
 readme = "README.md"
 license = { text = "Apache-2.0" }
@@ -205,6 +205,9 @@ directory = "htmlcov" # Using an absolute path
 
 [tool.coverage.xml]
 output = "coverage.xml"
+
+[tool.setuptools.dynamic]
+version = {file = "VERSION"}
 
 [[tool.uv.index]]
 name = "testpypi"

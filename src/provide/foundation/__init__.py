@@ -6,12 +6,7 @@ Foundation Telemetry Library (structlog-based).
 Primary public interface for the library, re-exporting common components.
 """
 
-from importlib.metadata import PackageNotFoundError, version
-
-try:
-    __version__ = version("provide-foundation")
-except PackageNotFoundError:  # pragma: no cover
-    __version__ = "0.0.0-dev"
+from provide.foundation.version import __version__
 
 # Export config module for easy access
 # New foundation components
