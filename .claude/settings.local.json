@@ -10,7 +10,8 @@
       "Bash(uv build:*)",
       "Bash(find:*)",
       "Bash(sed:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(uv sync:*)"
     ],
     "deny": [],
     "ask": [],
