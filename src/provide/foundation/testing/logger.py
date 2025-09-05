@@ -24,8 +24,8 @@ def reset_foundation_state() -> None:
     - Stream state back to defaults
     - Lazy setup state tracking
     """
-    # Reset structlog configuration
-    structlog.reset_defaults()
+    # Reset structlog configuration to empty state
+    structlog.configure(processors=[], logger_factory=structlog.ReturnLoggerFactory())
     
     # Reset stream state
     reset_streams()
