@@ -294,6 +294,7 @@ nav:
       - HTTP Layer: api/emoji_sets/http.md
       - Database Layer: api/emoji_sets/database.md
       - LLM Layer: api/emoji_sets/llm.md
+      - Task Queue Layer: api/emoji_sets/task_queue.md
       - Custom Layers: api/emoji_sets/custom.md
     
     - CLI:

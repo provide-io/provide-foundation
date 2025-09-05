@@ -11,7 +11,8 @@
       "WebSearch",
       "Bash(python:*)",
       "Bash(mkdocs build:*)",
-      "Bash(timeout 30s pytest --tb=no -q)"
+      "Bash(timeout 30s pytest --tb=no -q)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": [],

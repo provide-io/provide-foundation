@@ -580,7 +580,11 @@ class TestDocumentedBehaviorCompliance:
 
     def test_documented_environment_variables(self, capsys: CaptureFixture) -> None:
         """Test all documented environment variables work with lazy initialization."""
+        from provide.foundation.testing import set_log_stream_for_testing
+        import sys
+        
         reset_foundation_setup_for_testing()
+        set_log_stream_for_testing(sys.stderr)
 
         documented_env_vars = {
             "PROVIDE_LOG_LEVEL": "DEBUG",
@@ -643,7 +647,11 @@ class TestDocumentedBehaviorCompliance:
 
     def test_backward_compatibility_promise(self, capsys: CaptureFixture) -> None:
         """Test that lazy initialization maintains backward compatibility."""
+        from provide.foundation.testing import set_log_stream_for_testing
+        import sys
+        
         reset_foundation_setup_for_testing()
+        set_log_stream_for_testing(sys.stderr)
 
         # Old code pattern: immediate logging without setup
         global_logger.info("Legacy immediate logging")
@@ -667,7 +675,11 @@ class TestDocumentedBehaviorCompliance:
 
     def test_thread_safety_guarantees(self, capsys: CaptureFixture) -> None:
         """Test documented thread safety guarantees."""
+        from provide.foundation.testing import set_log_stream_for_testing
+        import sys
+        
         reset_foundation_setup_for_testing()
+        set_log_stream_for_testing(sys.stderr)
 
         import time
 
@@ -720,7 +732,11 @@ class TestDocumentedBehaviorCompliance:
 
     def test_performance_requirements(self, capsys: CaptureFixture) -> None:
         """Test that lazy initialization meets performance requirements."""
+        from provide.foundation.testing import set_log_stream_for_testing
+        import sys
+        
         reset_foundation_setup_for_testing()
+        set_log_stream_for_testing(sys.stderr)
 
         import time
 
@@ -804,7 +820,11 @@ class TestLazyInitializationDocumentation:
 
     def test_environment_config_example(self, capsys: CaptureFixture) -> None:
         """Test the environment configuration example from documentation."""
+        from provide.foundation.testing import set_log_stream_for_testing
+        import sys
+        
         reset_foundation_setup_for_testing()
+        set_log_stream_for_testing(sys.stderr)
 
         # Example from docs: environment-based configuration
         with patch.dict(
