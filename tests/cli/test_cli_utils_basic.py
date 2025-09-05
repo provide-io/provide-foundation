@@ -16,6 +16,8 @@ from provide.foundation.cli.utils import (
     echo_warning,
     setup_cli_logging,
 )
+from provide.foundation.context import Context
+from provide.foundation.logger import TelemetryConfig
 
 
 class TestCliEchoFunctions:
@@ -89,19 +91,13 @@ class TestCliContext:
     def test_create_cli_context_default(self) -> None:
         """Test creating default CLI context."""
         ctx = create_cli_context()
-        assert ctx is not None
-        # Context doesn't have a 'name' attribute in current implementation
-        assert ctx.profile == "default"  # Check default profile instead
+        assert isinstance(ctx, Context)
+        assert ctx.profile == "default"
 
-    def test_create_cli_context_with_name(self) -> None:
-        """Test creating CLI context with custom profile."""
-        ctx = create_cli_context(profile="myapp")
-        assert ctx.profile == "myapp"  # Use profile instead of non-existent name
-
-    def test_create_cli_context_with_metadata(self) -> None:
-        """Test creating CLI context with debug flag."""
-        ctx = create_cli_context(debug=True)
-        # Context doesn't have metadata, but has debug flag
+    def test_create_cli_context_with_overrides(self) -> None:
+        """Test creating CLI context with overrides."""
+        ctx = create_cli_context(profile="myapp", debug=True)
+        assert ctx.profile == "myapp"
         assert ctx.debug is True
 
 
@@ -110,48 +106,31 @@ class TestCliAssertions:
 
     def test_assert_cli_success(self) -> None:
         """Test successful CLI result assertion."""
-        # Mock a successful result
-        result = MagicMock()
-        result.exit_code = 0
-        result.output = "Success"
-
-        # Should not raise
+        result = MagicMock(exit_code=0, output="Success")
         assert_cli_success(result)
         assert_cli_success(result, "Success")
 
     def test_assert_cli_success_with_wrong_output(self) -> None:
         """Test CLI success assertion with wrong output."""
-        result = MagicMock()
-        result.exit_code = 0
-        result.output = "Actual output"
-
+        result = MagicMock(exit_code=0, output="Actual output")
         with pytest.raises(AssertionError):
             assert_cli_success(result, "Expected output")
 
     def test_assert_cli_success_with_error_code(self) -> None:
         """Test CLI success assertion with error exit code."""
-        result = MagicMock()
-        result.exit_code = 1
-        result.output = "Error"
-
+        result = MagicMock(exit_code=1, output="Error")
         with pytest.raises(AssertionError):
             assert_cli_success(result)
 
     def test_assert_cli_error(self) -> None:
         """Test CLI error assertion."""
-        result = MagicMock()
-        result.exit_code = 1
-        result.output = "Error occurred"
-
-        # Should not raise
+        result = MagicMock(exit_code=1, output="Error occurred")
         assert_cli_error(result, exit_code=1)
         assert_cli_error(result, "Error occurred", exit_code=1)
 
     def test_assert_cli_error_with_wrong_code(self) -> None:
         """Test CLI error assertion with wrong exit code."""
-        result = MagicMock()
-        result.exit_code = 1
-
+        result = MagicMock(exit_code=1)
         with pytest.raises(AssertionError):
             assert_cli_error(result, exit_code=2)
 
@@ -159,26 +138,40 @@ class TestCliAssertions:
 class TestCliLogging:
     """Test CLI logging setup."""
 
-    @patch("provide.foundation.cli.utils.setup_logging")
-    def test_setup_cli_logging_default(self, mock_setup: MagicMock) -> None:
+    @patch("provide.foundation.cli.utils.setup_telemetry")
+    def test_setup_cli_logging_default(self, mock_setup_telemetry: MagicMock) -> None:
         """Test default CLI logging setup."""
-        setup_cli_logging()
-        mock_setup.assert_called_once()
+        ctx = create_cli_context()
+        setup_cli_logging(ctx)
+        mock_setup_telemetry.assert_called_once()
+        config_arg = mock_setup_telemetry.call_args.kwargs["config"]
+        assert isinstance(config_arg, TelemetryConfig)
+        assert config_arg.logging.default_level == "INFO"
+        assert config_arg.logging.console_formatter == "key_value"
 
-    @patch("provide.foundation.cli.utils.setup_logging")
-    def test_setup_cli_logging_verbose(self, mock_setup: MagicMock) -> None:
+    @patch("provide.foundation.cli.utils.setup_telemetry")
+    def test_setup_cli_logging_verbose(self, mock_setup_telemetry: MagicMock) -> None:
         """Test verbose CLI logging setup."""
-        setup_cli_logging(log_level="DEBUG")
-        mock_setup.assert_called_once_with(level="DEBUG", json_logs=False, log_file=None)
+        ctx = create_cli_context(log_level="DEBUG")
+        setup_cli_logging(ctx)
+        mock_setup_telemetry.assert_called_once()
+        config_arg = mock_setup_telemetry.call_args.kwargs["config"]
+        assert config_arg.logging.default_level == "DEBUG"
 
-    @patch("provide.foundation.cli.utils.setup_logging")
-    def test_setup_cli_logging_quiet(self, mock_setup: MagicMock) -> None:
+    @patch("provide.foundation.cli.utils.setup_telemetry")
+    def test_setup_cli_logging_quiet(self, mock_setup_telemetry: MagicMock) -> None:
         """Test quiet CLI logging setup."""
-        setup_cli_logging(log_level="ERROR")
-        mock_setup.assert_called_once_with(level="ERROR", json_logs=False, log_file=None)
+        ctx = create_cli_context(log_level="ERROR")
+        setup_cli_logging(ctx)
+        mock_setup_telemetry.assert_called_once()
+        config_arg = mock_setup_telemetry.call_args.kwargs["config"]
+        assert config_arg.logging.default_level == "ERROR"
 
-    @patch("provide.foundation.cli.utils.setup_logging")
-    def test_setup_cli_logging_json(self, mock_setup: MagicMock) -> None:
+    @patch("provide.foundation.cli.utils.setup_telemetry")
+    def test_setup_cli_logging_json(self, mock_setup_telemetry: MagicMock) -> None:
         """Test JSON CLI logging setup."""
-        setup_cli_logging(log_format="json")
-        mock_setup.assert_called_once_with(level="INFO", json_logs=True, log_file=None)
+        ctx = create_cli_context(json_output=True)
+        setup_cli_logging(ctx)
+        mock_setup_telemetry.assert_called_once()
+        config_arg = mock_setup_telemetry.call_args.kwargs["config"]
+        assert config_arg.logging.console_formatter == "json"
