@@ -67,6 +67,8 @@ from provide.foundation.crypto.certificates import (
     CertificateBase,
     CertificateConfig,
     CertificateError,
+    KeyType,
+    CurveType,
     create_ca,
     create_self_signed,
 )
@@ -133,8 +135,10 @@ __all__ = [
     
     # Advanced certificate classes
     "CertificateBase",
-    "CertificateConfig",
+    "CertificateConfig", 
     "CertificateError",
+    "KeyType",
+    "CurveType",
     
     # Legacy compatibility
     "generate_key_pair",

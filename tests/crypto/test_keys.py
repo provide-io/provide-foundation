@@ -24,7 +24,7 @@ KEY_TYPE_ECDSA = "ecdsa"
 async def test_generate_keypair_returns_keypair() -> None:
     """Ensure generate_keypair() returns correct type"""
     rsa_key_pair = generate_keypair(KEY_TYPE_RSA, key_size=2048) # Added key_size
-    ec_key_pair = generate_keypair(KEY_TYPE_ECDSA, curve_name="secp256r1") # Added curve_name for consistency
+    ec_key_pair = generate_keypair(KEY_TYPE_ECDSA, curve="secp256r1") # Added curve for consistency
 
     # Check tuple and key types for RSA
     assert isinstance(rsa_key_pair, tuple)
@@ -77,7 +77,7 @@ async def test_generate_invalid_rsa_key_size() -> None:
 async def test_generate_ec_keypair() -> None:
     """Test ECDSA keypair generation with a valid curve."""
     public_key, private_key = generate_keypair(
-        key_type=KEY_TYPE_ECDSA, curve_name="secp256r1"
+        key_type=KEY_TYPE_ECDSA, curve="secp256r1"
     )
     assert isinstance(public_key, ec.EllipticCurvePublicKey)
     assert isinstance(private_key, ec.EllipticCurvePrivateKey)
@@ -108,7 +108,7 @@ async def test_generate_ec_keypair_backend_failure() -> None:
 async def test_generate_invalid_ec_curve() -> None:
     """Test ECDSA key generation fails with an invalid curve name."""
     with pytest.raises(ValueError, match="Unsupported EC curve"):
-        generate_keypair(key_type=KEY_TYPE_ECDSA, curve_name="invalid_curve")
+        generate_keypair(key_type=KEY_TYPE_ECDSA, curve="invalid_curve")
 
 
 @pytest.mark.asyncio
