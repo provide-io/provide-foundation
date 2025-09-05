@@ -55,15 +55,10 @@ from provide.foundation.utils.parsing import (
     parse_list,
 )
 from provide.foundation.config.validators import (
-    validate_backoff_time,
     validate_choice,
-    validate_log_level,
-    validate_protocol_version,
-    validate_protocol_version_list,
-    validate_rate_limit,
-    validate_retry_count,
-    validate_timeout,
-    validate_transport_list,
+    validate_non_negative,
+    validate_positive,
+    validate_range,
 )
 
 __all__ = [
@@ -101,6 +96,11 @@ __all__ = [
     "parse_dict",
     "parse_list",
     "set_config",
+    # Validators
+    "validate_choice",
     "validate_config",
+    "validate_non_negative",
+    "validate_positive",
+    "validate_range",
     "validate_schema",
 ]
