@@ -12,7 +12,7 @@ from typing import Any, TypeVar, overload
 from attrs import define, field
 
 from provide.foundation.logger import get_logger
-from provide.foundation.registry import Registry
+from provide.foundation.hub.registry import Registry
 
 log = get_logger(__name__)
 

@@ -5,7 +5,7 @@ import os
 from unittest.mock import patch
 
 from provide.foundation.logger.custom_processors import add_logger_name_emoji_prefix
-from provide.foundation.logger.emoji_matrix import _format_field_definition_for_display
+from provide.foundation.logger.emoji.matrix import _format_field_definition_for_display
 from provide.foundation.logger.env import (
     _parse_custom_emoji_sets_from_env,
     _parse_user_emoji_sets_from_env,

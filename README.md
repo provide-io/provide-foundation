@@ -161,12 +161,28 @@ While `provide.foundation` works out of the box, you can easily configure it via
 
 This is the recommended way to configure the logger in production.
 
+#### Core Telemetry Variables (FOUNDATION_*)
+
+These control the core logging behavior:
+
 | Variable | Description | Default | Example |
 |---|---|---|---|
 | `FOUNDATION_SERVICE_NAME` | Sets the service name for all logs. | `None` | `my-api-service` |
 | `FOUNDATION_LOG_LEVEL` | Default log level. | `DEBUG` | `INFO` |
 | `FOUNDATION_LOG_CONSOLE_FORMATTER` | Output format. | `key_value` | `json` |
 | `FOUNDATION_LOG_ENABLED_EMOJI_SETS` | Comma-separated list of emoji sets to enable. | `""` | `http,database` |
+
+#### CLI Variables (PROVIDE_*)
+
+When using the CLI decorators, these environment variables are also available:
+
+| Variable | Description | Default | Example |
+|---|---|---|---|
+| `PROVIDE_LOG_LEVEL` | CLI log level override | - | `DEBUG` |
+| `PROVIDE_LOG_FORMAT` | CLI output format | `key_value` | `json` |
+| `PROVIDE_JSON_OUTPUT` | Force JSON output in CLI | `false` | `true` |
+| `PROVIDE_NO_COLOR` | Disable colored output | `false` | `true` |
+| `PROVIDE_NO_EMOJI` | Disable emoji in output | `false` | `true` |
 
 ### Programmatic Configuration
 

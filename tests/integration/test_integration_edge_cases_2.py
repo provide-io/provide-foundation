@@ -29,7 +29,7 @@ from provide.foundation.logger import (
 from provide.foundation.logger.custom_processors import (
     add_log_level_custom,
 )
-from provide.foundation.logger.emoji_matrix import show_emoji_matrix
+from provide.foundation.logger.emoji.matrix import show_emoji_matrix
 from provide.foundation.logger.processors import _build_formatter_processors_list
 from provide.foundation.types import EmojiSetConfig
 

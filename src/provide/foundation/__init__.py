@@ -20,7 +20,7 @@ from provide.foundation import cli, config, errors, platform, process
 
 # Console I/O functions
 from provide.foundation.console import perr, pin, pout
-from provide.foundation.context import Context
+from provide.foundation.cli.context import Context
 from provide.foundation.core import (
     setup_telemetry,
     shutdown_foundation_telemetry,
@@ -41,24 +41,25 @@ from provide.foundation.logger import (
     TelemetryConfig,
     get_logger,  # Factory function for creating loggers
     logger,  # Global logger instance
-    logger as plog,  # Alias for console logging
     setup_logging,  # Setup function
 )
 
 # Emoji exports
-from provide.foundation.logger.emoji_matrix import (
+from provide.foundation.logger.emoji.matrix import (
     PRIMARY_EMOJI,
     SECONDARY_EMOJI,
     TERTIARY_EMOJI,
     show_emoji_matrix,
 )
-from provide.foundation.registry import Registry, RegistryEntry
+from provide.foundation.hub.registry import Registry, RegistryEntry
 
 # New type exports for emoji mapping
 from provide.foundation.types import (
     ConsoleFormatterStr,
-    CustomDasEmojiSet,
     LogLevelStr,
+)
+from provide.foundation.logger.emoji.types import (
+    CustomDasEmojiSet,
     FieldToEmojiMapping,
     EmojiSetConfig,
 )
@@ -101,7 +102,6 @@ __all__ = [
     # Console input
     "pin",
     "platform",
-    "plog",  # Alias for logger
     # Console output
     "pout",
     "process",

@@ -17,8 +17,10 @@ from provide.foundation.types import (
     _VALID_FORMATTER_TUPLE,
     _VALID_LOG_LEVEL_TUPLE,
     ConsoleFormatterStr,
-    CustomDasEmojiSet,
     LogLevelStr,
+)
+from provide.foundation.logger.emoji.types import (
+    CustomDasEmojiSet,
     FieldToEmojiMapping,
     EmojiSetConfig,
 )

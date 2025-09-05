@@ -40,7 +40,7 @@ from provide.foundation.logger import (
     TelemetryConfig,
     logger as foundation_global_logger,
 )
-from provide.foundation.logger.emoji_matrix import (
+from provide.foundation.logger.emoji.matrix import (
     PRIMARY_EMOJI,
     SECONDARY_EMOJI,
     TERTIARY_EMOJI,
