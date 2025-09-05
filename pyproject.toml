@@ -111,7 +111,7 @@ norecursedirs = [
     "htmlcov", "docs/_build",
     ".hypothesis", # Added to address the warning
 ]
-addopts = "-ra -q --color=yes"
+addopts = "-ra -q --color=yes --benchmark-columns=min,max,mean,stddev,median,iqr,ops --benchmark-sort=mean"
 
 ################################################################################
 # Ruff Linter and Formatter Configuration
