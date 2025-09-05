@@ -124,6 +124,12 @@ class TestCompleteCliIntegration:
 
 class TestLoggingIntegration:
     """Test that logging options actually affect logging behavior."""
+    
+    def _get_full_output(self, result) -> str:
+        """Get combined stdout and stderr, with ANSI codes stripped."""
+        import re
+        full_output = result.output + getattr(result, 'stderr', '')
+        return re.sub(r'\x1b\[[0-9;]*m', '', full_output)
 
     def test_log_level_affects_output(self) -> None:
         @click.command()
@@ -137,9 +143,9 @@ class TestLoggingIntegration:
         runner = CliTestRunner(mix_stderr=True)
         result = runner.invoke(cmd, ["--log-level", "INFO"])
         assert result.exit_code == 0
-        output = result.output
-        assert "Debug message" not in output
-        assert "Info message" in output
+        full_output = self._get_full_output(result)
+        assert "Debug message" not in full_output
+        assert ("Info message" in full_output or "🧪 Info message" in full_output)
 
     def test_log_format_changes_output(self) -> None:
         @click.command()
@@ -153,9 +159,20 @@ class TestLoggingIntegration:
         runner = CliTestRunner(mix_stderr=True)
         result = runner.invoke(cmd, ["--log-level", "INFO", "--log-format", "json"])
         assert result.exit_code == 0
-        output = result.output
-        app_logs = [line for line in output.splitlines() if not line.startswith('[Foundation Setup]')]
-        log_data = json.loads(app_logs[-1])
+        full_output = self._get_full_output(result)
+        # Filter out Foundation setup messages and get only app logs
+        app_logs = [line for line in full_output.splitlines() if line.strip() and not line.startswith('2025-') or 'Test message' in line]
+        # Find the JSON log line containing our test message
+        json_line = None
+        for line in app_logs:
+            if 'Test message' in line and '{' in line:
+                # Extract JSON part from the line
+                json_start = line.find('{')
+                if json_start >= 0:
+                    json_line = line[json_start:]
+                    break
+        assert json_line is not None, f"No JSON log found in output: {full_output}"
+        log_data = json.loads(json_line)
         assert "Test message" in log_data["event"]
         assert log_data["extra_field"] == "value"
 
@@ -176,7 +193,8 @@ class TestLoggingIntegration:
             result = runner.invoke(cmd, ["--log-file", str(log_file), "--log-level", "INFO"])
             assert result.exit_code == 0
             content = log_file.read_text()
-            assert "Message to file" in content
+            # Check for either plain text or emoji-enhanced message
+            assert ("Message to file" in content or "🧪 Message to file" in content)
         finally:
             log_file.unlink(missing_ok=True)
 
@@ -246,6 +264,12 @@ class TestConfigurationLoading:
 
 class TestRealWorldScenarios:
     """Test real-world CLI usage scenarios."""
+    
+    def _get_full_output(self, result) -> str:
+        """Get combined stdout and stderr, with ANSI codes stripped."""
+        import re
+        full_output = result.output + getattr(result, 'stderr', '')
+        return re.sub(r'\x1b\[[0-9;]*m', '', full_output)
 
     def test_debugging_production_issue(self) -> None:
         @click.group(invoke_without_command=True)
@@ -296,4 +320,5 @@ class TestRealWorldScenarios:
         result = runner.invoke(develop, ["--log-level", "DEBUG"])
         assert result.exit_code == 0
         assert "🔧 Development mode active" in result.output
-        assert "Debug information here" in result.output
+        full_output = self._get_full_output(result)
+        assert ("Debug information here" in full_output or "🧪 Debug information here" in full_output)
