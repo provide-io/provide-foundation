@@ -1,32 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/provide-foundation/src python -c \"\nimport provide.foundation\nprint(''provide.foundation.__version__:'', provide.foundation.__version__)\n\")",
-      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/provide-foundation/src timeout 30s python -m pytest tests/ -k \"not slow\" --tb=short -x --maxfail=3)",
-      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/provide-foundation/src python:*)",
-      "Bash(pip install:*)",
-      "Bash(uv pip install:*)",
-      "Bash(uv pip:*)",
-      "WebSearch",
-      "Bash(PYTHONPATH=:*)",
-      "Bash(for project in pyvider pyvider-components pyvider-rpcplugin garnish tofusoup wrknv)",
-      "Bash(do)",
-      "Bash(echo \"=== $project ===\")",
-      "Bash(if [[ -f \"/Users/tim/code/gh/provide-io/$project/pyproject.toml\" ]])",
-      "Bash(then)",
-      "Bash(else)",
-      "Bash(fi)",
-      "Bash(done)",
-      "Bash(for:*)",
-      "Bash(echo:*)",
-      "Bash(continue)",
-      "Bash(find:*)",
       "Bash(source env.sh)",
       "Bash(python:*)",
-      "Bash(tree:*)",
-      "Bash(grep:*)",
-      "Bash(grep:*)",
-      "Bash(PROVIDE_LOG_LEVEL=INVALID_LEVEL python -c \"\nimport sys\nfrom provide.foundation.logger.config import LoggingConfig\n\nprint(''=== BEFORE CONFIG CREATION ==='', file=sys.stderr)\nconfig = LoggingConfig.from_env()\nprint(''=== AFTER CONFIG CREATION ==='', file=sys.stderr)\nprint(''Config created:'', config, file=sys.stderr)\n\")"
+      "Bash(echo $PYTHONPATH)"
     ],
     "deny": [],
     "ask": [],
