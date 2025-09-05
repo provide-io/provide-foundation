@@ -1030,8 +1030,6 @@ All utility functions are thread-safe:
 - [Process](process.md) - Process execution and command running
 - [Console](console.md) - Console I/O and user interaction
 - [Registry](registry.md) - Object registry and service location
-- [Errors](errors.md) - Error handling and exception utilities
-- [Hub](hub.md) - Component hub and CLI framework
 
 ## See Also
 

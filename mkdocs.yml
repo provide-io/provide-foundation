@@ -311,8 +311,6 @@ nav:
     - Utilities:
       - api/utils/index.md
       - Console: api/utils/console.md
-      - Errors: api/utils/errors.md
-      - Hub Utils: api/utils/hub.md
       - Platform: api/utils/platform.md
       - Process: api/utils/process.md
       - Registry: api/utils/registry.md
