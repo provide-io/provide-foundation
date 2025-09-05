@@ -30,7 +30,9 @@
       "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src:/Users/tim/code/gh/provide-foundation/src timeout 30s python -m pytest tests/handshake/ -v --tb=no)",
       "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src:/Users/tim/code/gh/provide-foundation/src timeout 30s python -m pytest tests/client/ -v --tb=no)",
       "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src:/Users/tim/code/gh/provide-foundation/src timeout 60s python -m pytest --tb=short -x --maxfail=3)",
-      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src:/Users/tim/code/gh/provide-foundation/src python -c \"\nfrom pyvider.rpcplugin.config import rpcplugin_config\nprint(''Current plugin_auto_mtls:'', rpcplugin_config.plugin_auto_mtls, type(rpcplugin_config.plugin_auto_mtls))\nprint(''Setting to string \"\"false\"\"...'')\nrpcplugin_config.plugin_auto_mtls = ''false''\nprint(''After setting to string:'', rpcplugin_config.plugin_auto_mtls, type(rpcplugin_config.plugin_auto_mtls))\n\")"
+      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src:/Users/tim/code/gh/provide-foundation/src python -c \"\nfrom pyvider.rpcplugin.config import rpcplugin_config\nprint(''Current plugin_auto_mtls:'', rpcplugin_config.plugin_auto_mtls, type(rpcplugin_config.plugin_auto_mtls))\nprint(''Setting to string \"\"false\"\"...'')\nrpcplugin_config.plugin_auto_mtls = ''false''\nprint(''After setting to string:'', rpcplugin_config.plugin_auto_mtls, type(rpcplugin_config.plugin_auto_mtls))\n\")",
+      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src:/Users/tim/code/gh/provide-foundation/src timeout 30s python -m pytest tests/server/test_server_rate_limiting.py::test_rate_limiter_denies_requests_when_limit_exceeded -v)",
+      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/pyvider-rpcplugin/src:/Users/tim/code/gh/provide-foundation/src timeout 30s python -m pytest tests/server/test_server_rate_limiting.py tests/transport/test_transport_suite.py tests/handshake/test_handshake_integration.py -v --tb=no)"
     ],
     "deny": [],
     "ask": [],
