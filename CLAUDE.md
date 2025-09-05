@@ -102,3 +102,4 @@ uv publish                      # Publish to PyPI
 - no. more. backward compatibility. implement it the way i want in the target state
 - There should be *NO* hardcoded defaults. EVER
 - no backward compatibility.
+- i do not need backward compatibility, migration logic, or transition comments and logic unless specifically asked.
