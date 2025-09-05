@@ -4,7 +4,7 @@ Visual log parsing system that provides emoji-enhanced log messages for rapid vi
 
 ## Overview
 
-The emoji system transforms log events into visually parseable messages using emoji prefixes. It supports Domain-Action-Status (DAS) patterns and semantic layer configurations.
+The emoji system transforms log events into visually parseable messages using emoji prefixes. It supports Domain-Action-Status (DAS) patterns and emoji set configurations.
 
 ## Core Emoji Mappings
 
@@ -121,7 +121,7 @@ Display the active emoji configuration to the console.
 def show_emoji_matrix() -> None:
     """
     Prints the active Foundation emoji logging contract to the console.
-    If semantic layers are active, it displays their configuration.
+    If emoji sets are active, it displays their configuration.
     Otherwise, it displays the core DAS emoji mappings.
     Activated by FOUNDATION_SHOW_EMOJI_MATRIX environment variable.
     """
@@ -158,7 +158,7 @@ Tertiary Emojis ('status' key):
   ...
 ```
 
-Semantic layers output:
+Emoji sets output:
 ```
 Foundation Telemetry: Active Semantic Layer Emoji Contract
 ======================================================================
@@ -216,7 +216,7 @@ logger.error(
 
 ### Semantic Layers
 
-With custom semantic layers configured:
+With custom emoji sets configured:
 
 ```python
 logger.info(
@@ -295,7 +295,7 @@ def _format_emoji_set_for_display(emoji_set: CustomDasEmojiSet) -> list[str]:
 Format semantic field definition for console display.
 
 ```python
-def _format_field_definition_for_display(field_def: SemanticFieldDefinition) -> str:
+def _format_field_definition_for_display(field_def: FieldToEmojiMapping) -> str:
     """
     Format semantic field definition for display.
     
@@ -325,7 +325,7 @@ The emoji system integrates with the log processors to automatically add emoji p
 
 ## Related Documentation
 
-- [Semantic Layers Guide](/guide/concepts/semantic-layers/) - Advanced emoji configuration
+- [Semantic Layers Guide](/guide/concepts/emoji-sets/) - Advanced emoji configuration
 - [Log Processors API](processors.md) - Processing pipeline
 - [Performance Guide](/guide/concepts/performance/) - Optimization strategies
 - [Configuration Guide](/guide/config/environment/) - Environment setup

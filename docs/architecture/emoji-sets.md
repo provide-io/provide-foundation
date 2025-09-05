@@ -1,12 +1,12 @@
-# Semantic Layer Architecture
+# Emoji Set Architecture
 
-Technical implementation details of provide.foundation's domain-specific telemetry interfaces.
+Technical implementation details of provide.foundation's emoji mapping system.
 
 ## System Overview
 
 ```mermaid
 graph TB
-    A[Application Code] --> B[Semantic Layer API]
+    A[Application Code] --> B[Emoji Set API]
     B --> C[Field Definitions]
     B --> D[Emoji Sets]
     B --> E[Validation Rules]
@@ -19,30 +19,30 @@ graph TB
 
 ## Core Components
 
-### 1. SemanticLayer Class
+### 1. EmojiSetConfig Class
 
-The base class that defines a semantic layer:
+The base class that defines an emoji set configuration:
 
 ```python
 @attrs.define(frozen=True, kw_only=True)
-class SemanticLayer:
-    """Defines a semantic telemetry layer."""
+class EmojiSetConfig:
+    """Defines an emoji set configuration."""
     
     name: str                                    # e.g., "http", "llm", "database"
     description: str                             # Human-readable description
     emoji_sets: list[CustomDasEmojiSet]        # Domain-specific emoji mappings
-    field_definitions: list[SemanticFieldDefinition]  # Field specifications
+    field_definitions: list[FieldToEmojiMapping]  # Field specifications
     priority: int = 50                          # Processing priority (higher = first)
 ```
 
 ### 2. Field Definitions
 
-Each field in a semantic layer is precisely defined:
+Each field mapping in an emoji set is precisely defined:
 
 ```python
 @attrs.define(frozen=True, kw_only=True)
-class SemanticFieldDefinition:
-    """Defines a semantic field with metadata."""
+class FieldToEmojiMapping:
+    """Defines a field-to-emoji mapping with metadata."""
     
     log_key: str                    # e.g., "http.method", "llm.provider"
     description: str = ""            # Field documentation
@@ -76,7 +76,7 @@ class CustomDasEmojiSet:
 ### HTTP Layer Architecture
 
 ```python
-HTTP_LAYER = SemanticLayer(
+HTTP_EMOJI_SET = EmojiSetConfig(
     name="http",
     priority=80,  # High priority for web apps
     emoji_sets=[
@@ -108,7 +108,7 @@ HTTP_LAYER = SemanticLayer(
 ### LLM Layer Architecture
 
 ```python
-LLM_LAYER = SemanticLayer(
+LLM_EMOJI_SET = EmojiSetConfig(
     name="llm",
     priority=100,  # Highest priority for AI-focused apps
     emoji_sets=[
@@ -143,16 +143,16 @@ LLM_LAYER = SemanticLayer(
 Layers are registered at initialization:
 
 ```python
-BUILTIN_SEMANTIC_LAYERS: dict[str, SemanticLayer] = {
-    "llm": LLM_LAYER,
-    "database": DATABASE_LAYER,
-    "http": HTTP_LAYER,
-    "task_queue": TASK_QUEUE_LAYER,
+BUILTIN_EMOJI_SETS: dict[str, EmojiSetConfig] = {
+    "llm": LLM_EMOJI_SET,
+    "database": DATABASE_EMOJI_SET,
+    "http": HTTP_EMOJI_SET,
+    "task_queue": TASK_QUEUE_EMOJI_SET,
 }
 
 # Sorted by priority for processing order
 ACTIVE_LAYERS = sorted(
-    BUILTIN_SEMANTIC_LAYERS.values(),
+    BUILTIN_EMOJI_SETS.values(),
     key=lambda x: x.priority,
     reverse=True
 )
@@ -170,7 +170,7 @@ When a log event occurs:
 
 ```python
 def process_semantic_fields(event_dict: dict[str, Any]) -> dict[str, Any]:
-    """Process event through semantic layers."""
+    """Process event through emoji sets."""
     
     # Find matching layer
     layer = find_matching_layer(event_dict)
@@ -219,10 +219,10 @@ Layers are only loaded when first used:
 ```python
 class LazyLayerRegistry:
     def __init__(self):
-        self._layers: dict[str, SemanticLayer] | None = None
+        self._layers: dict[str, EmojiSetConfig] | None = None
     
     @property
-    def layers(self) -> dict[str, SemanticLayer]:
+    def layers(self) -> dict[str, EmojiSetConfig]:
         if self._layers is None:
             self._layers = self._load_layers()
         return self._layers
@@ -240,7 +240,7 @@ def get_emoji_for_value(
     layer_name: str
 ) -> str:
     """Cached emoji lookup."""
-    layer = BUILTIN_SEMANTIC_LAYERS[layer_name]
+    layer = BUILTIN_EMOJI_SETS[layer_name]
     emoji_set = layer.get_emoji_set(emoji_set_name)
     return emoji_set.get_emoji(value)
 ```
@@ -251,13 +251,13 @@ Fields are indexed by prefix for fast matching:
 
 ```python
 FIELD_PREFIX_INDEX = {
-    "http.": HTTP_LAYER,
-    "db.": DATABASE_LAYER,
-    "llm.": LLM_LAYER,
-    "task.": TASK_QUEUE_LAYER,
+    "http.": HTTP_EMOJI_SET,
+    "db.": DATABASE_EMOJI_SET,
+    "llm.": LLM_EMOJI_SET,
+    "task.": TASK_QUEUE_EMOJI_SET,
 }
 
-def find_layer_for_event(event_dict: dict[str, Any]) -> SemanticLayer | None:
+def find_layer_for_event(event_dict: dict[str, Any]) -> EmojiSetConfig | None:
     """Fast layer lookup using prefix index."""
     for key in event_dict:
         for prefix, layer in FIELD_PREFIX_INDEX.items():
@@ -273,10 +273,10 @@ def find_layer_for_event(event_dict: dict[str, Any]) -> SemanticLayer | None:
 Applications can register custom layers:
 
 ```python
-from provide.foundation.semantic_layers import register_layer
+from provide.foundation.emoji_sets import register_layer
 
 @register_layer
-class PaymentLayer(SemanticLayer):
+class PaymentLayer(EmojiSetConfig):
     name = "payment"
     priority = 75
     # ... configuration ...
@@ -291,13 +291,13 @@ Layers can be composed for complex scenarios:
 
 ```python
 # Combine HTTP + LLM for AI API calls
-class AIAPILayer(CompositeSemanticLayer):
-    layers = [HTTP_LAYER, LLM_LAYER]
+class AIAPILayer(CompositeEmojiSetConfig):
+    layers = [HTTP_EMOJI_SET, LLM_EMOJI_SET]
     
     def process(self, event_dict):
         # Apply both HTTP and LLM semantics
-        event_dict = HTTP_LAYER.process(event_dict)
-        event_dict = LLM_LAYER.process(event_dict)
+        event_dict = HTTP_EMOJI_SET.process(event_dict)
+        event_dict = LLM_EMOJI_SET.process(event_dict)
         return event_dict
 ```
 
@@ -335,12 +335,12 @@ def track_layer_performance(layer_name: str, duration_ms: float):
 
 ## Thread Safety
 
-All semantic layer operations are thread-safe:
+All emoji set operations are thread-safe:
 
 ```python
 # Immutable configuration
 @attrs.define(frozen=True)  # Frozen = immutable
-class SemanticLayer:
+class EmojiSetConfig:
     ...
 
 # Thread-local storage for context
@@ -359,13 +359,13 @@ def with_semantic_context(**kwargs):
 
 ### With Structlog Processors
 
-Semantic layers integrate seamlessly with structlog's processor chain:
+Emoji sets integrate seamlessly with structlog's processor chain:
 
 ```python
 structlog.configure(
     processors=[
         structlog.stdlib.add_log_level,
-        semantic_layer_processor,  # Our semantic layer
+        semantic_layer_processor,  # Our emoji set
         add_emoji_prefix,          # Emoji addition
         structlog.processors.JSONRenderer(),
     ]
@@ -374,20 +374,20 @@ structlog.configure(
 
 ### With OpenTelemetry
 
-Semantic layers are designed to **extend and enhance OpenTelemetry**, not replace it:
+Emoji sets are designed to **extend and enhance OpenTelemetry**, not replace it:
 
 ```python
 from opentelemetry import trace, metrics
 from provide.foundation.otel import SemanticOTELProcessor
 
-# Semantic layers automatically enrich OTEL spans
+# Emoji sets automatically enrich OTEL spans
 tracer = trace.get_tracer(__name__)
 
 class SemanticOTELProcessor:
-    """Bridges semantic layers with OpenTelemetry."""
+    """Bridges emoji sets with OpenTelemetry."""
     
     def process_span(self, span: Span, event_dict: dict[str, Any]):
-        """Enrich OTEL span with semantic layer data."""
+        """Enrich OTEL span with emoji set data."""
         
         # Direct OTEL attribute mapping (already compatible!)
         for key, value in event_dict.items():
@@ -407,7 +407,7 @@ class SemanticOTELProcessor:
 # Automatic OTEL integration
 @with_otel_span("http.request")
 def handle_request(request):
-    # Semantic layers enhance the OTEL span
+    # Emoji sets enhance the OTEL span
     logger.info("http_request_started",
         **{
             "http.method": request.method,        # OTEL standard
@@ -424,7 +424,7 @@ def handle_request(request):
 ```python
 from provide.foundation.otel import setup_tracing
 
-# Configure OTEL with semantic layer enhancement
+# Configure OTEL with emoji set enhancement
 setup_tracing(
     endpoint="otel-collector:4317",
     service_name="my-service",
@@ -436,7 +436,7 @@ setup_tracing(
 with tracer.start_as_current_span("process_order") as span:
     logger.info("order_processing",
         order_id="123",
-        # Semantic layer adds emoji + validates fields
+        # Emoji set adds emoji + validates fields
         # OTEL span gets all attributes
     )
 ```
@@ -454,7 +454,7 @@ with tracer.start_as_current_span("process_order") as span:
 
 1. **No lock-in**: Can export to any OTEL-compatible backend
 2. **Best of both worlds**: Visual local development + standard production observability
-3. **Gradual adoption**: Use semantic layers alone, or with full OTEL
+3. **Gradual adoption**: Use emoji sets alone, or with full OTEL
 4. **Forward compatible**: As OTEL evolves, we evolve with it
 
 ### Why Domain-Specific?
@@ -473,7 +473,7 @@ with tracer.start_as_current_span("process_order") as span:
 
 ## Next Steps
 
-- 📖 [Creating Custom Layers](../tutorials/custom-semantic-layer.md)
-- 🔧 [API Reference](../api/semantic/index.md)
+- 📖 [Creating Custom Layers](../tutorials/custom-emoji-set.md)
+- 🔧 [API Reference](../api/emoji_sets/index.md)
 - 📚 [Usage Examples](../cookbook/recipes/index.md)
 - 🎨 [Emoji System Details](emoji-system.md)

@@ -12,7 +12,7 @@ Detailed specification of the structured logging format, including:
 - Context propagation
 
 ### [Semantic Layer Protocol](semantic-protocol.md)
-The protocol for implementing domain-specific semantic layers:
+The protocol for implementing domain-specific emoji sets:
 - Layer interface specification
 - Event naming conventions
 - Metadata requirements
@@ -38,7 +38,7 @@ The Foundation Enhancement Proposals (FEPs) document proposed changes and new fe
 
 ### Active FEPs
 
-- [FEP-001: Semantic Layers](feps/fep-001.md) - Core semantic layer architecture
+- [FEP-001: Semantic Layers](feps/fep-001.md) - Core emoji set architecture
 - [FEP-002: Async Support](feps/fep-002.md) - Asynchronous logging capabilities
 - [FEP-003: Plugin System](feps/fep-003.md) - Extensible plugin architecture
 - [FEP-004: Distributed Tracing](feps/fep-004.md) - OpenTelemetry integration
@@ -81,8 +81,8 @@ All log messages follow this structure:
 from abc import ABC, abstractmethod
 from typing import Any
 
-class SemanticLayer(ABC):
-    """Base interface for semantic layers."""
+class EmojiSetConfig(ABC):
+    """Base interface for emoji sets."""
     
     @property
     @abstractmethod
@@ -97,7 +97,7 @@ class SemanticLayer(ABC):
     
     @abstractmethod
     def format_event(self, event: dict[str, Any]) -> dict[str, Any]:
-        """Format event for this semantic layer."""
+        """Format event for this emoji set."""
         pass
 ```
 

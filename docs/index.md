@@ -9,7 +9,7 @@ Built on industry-standard libraries like `structlog`, `click`, and `attrs`, pro
 ### 🎯 Structured Logging
 - Beautiful, emoji-enhanced visual parsing
 - High-performance logging (>14,000 msg/sec)
-- Semantic layers for domain-specific logging
+- Emoji sets for visual log enhancement
 - Thread-safe and async-compatible
 
 ### 🖥️ CLI Framework
@@ -75,7 +75,7 @@ if result.returncode == 0:
 
 ### [Core Concepts](guide/concepts/index.md)
 - Structured logging principles
-- Semantic layers
+- Emoji sets
 - The emoji system
 - Configuration architecture
 

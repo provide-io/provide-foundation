@@ -19,7 +19,7 @@ from structlog.types import BindableLogger
 from provide.foundation.types import TRACE_LEVEL_NAME
 
 if TYPE_CHECKING:
-    from provide.foundation.core import ResolvedSemanticConfig
+    from provide.foundation.core import ResolvedEmojiConfig
     from provide.foundation.logger.config import TelemetryConfig
 
 _LAZY_SETUP_LOCK = threading.Lock()
@@ -43,7 +43,7 @@ class FoundationLogger:
         )
         self._is_configured_by_setup: bool = False
         self._active_config: TelemetryConfig | None = None
-        self._active_resolved_semantic_config: ResolvedSemanticConfig | None = None
+        self._active_resolved_emoji_config: ResolvedEmojiConfig | None = None
 
     def _check_structlog_already_disabled(self) -> bool:
         try:

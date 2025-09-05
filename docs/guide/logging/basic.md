@@ -296,7 +296,7 @@ logger.warning("Low disk space")         # ⚠️
 logger.error("Connection failed")        # ❌
 logger.debug("Debug information")        # 🐛
 
-# Semantic layer emoji
+# Emoji set emoji
 logger.info("http_request", method="GET", status=200)  # 📥 ✅
 logger.info("database_query", operation="SELECT")      # 🗄️
 logger.info("llm_completion", provider="openai")       # 🤖

@@ -1,8 +1,8 @@
-# Custom Semantic Layer
+# Custom Emoji Set
 
 ## Overview
 
-Documentation for Custom Semantic Layer.
+Documentation for Custom Emoji Set.
 
 ## Coming Soon
 

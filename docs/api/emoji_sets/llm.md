@@ -1,10 +1,10 @@
-# Database
+# Llm
 
-::: provide.foundation.semantic.database
+::: provide.foundation.emoji_sets.llm
 
 ## Overview
 
-API documentation for Database.
+API documentation for Llm.
 
 ## Usage
 
