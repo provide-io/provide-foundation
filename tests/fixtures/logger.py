@@ -7,7 +7,7 @@ from typing import TextIO
 import pytest
 
 from provide.foundation import TelemetryConfig, setup_telemetry
-from provide.foundation.core import _set_log_stream_for_testing
+from provide.foundation.setup.streams import set_log_stream_for_testing
 
 
 @pytest.fixture
@@ -19,9 +19,9 @@ def captured_stderr_for_foundation() -> Generator[TextIO]:
     to the test, and then restores the original stream.
     """
     current_test_stream = io.StringIO()
-    _set_log_stream_for_testing(current_test_stream)
+    set_log_stream_for_testing(current_test_stream)
     yield current_test_stream
-    _set_log_stream_for_testing(None)
+    set_log_stream_for_testing(None)
     current_test_stream.close()
 
 
