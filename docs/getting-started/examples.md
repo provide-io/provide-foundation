@@ -374,4 +374,4 @@ PROVIDE_LOG_LEVEL=DEBUG python examples/08_env_variables_config.py
 
 - Explore the [User Guide](../guide/index.md) for in-depth coverage
 - Check the [API Reference](../api/index.md) for complete documentation
-- Browse the [Cookbook](../cookbook/index.md) for advanced patterns
+- Review the [Architecture Documentation](../architecture/index.md) for technical details

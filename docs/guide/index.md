@@ -168,18 +168,14 @@ for item in items:
 
 ## Advanced Topics
 
-- [Creating Custom Emoji Sets](../tutorials/custom-emoji-set.md)
-- [Distributed Tracing](../tutorials/distributed-tracing.md)
-- [Production Logging Strategies](../tutorials/production-logging.md)
-- [Performance Monitoring](../cookbook/patterns/monitoring.md)
-
-## Migration Guides
-
-- [From structlog](../migration/from-structlog.md)
-- [From Python logging](../migration/from-logging.md)
+These advanced topics are covered in the existing guides:
+- **Custom Emoji Sets** - See [Emoji Sets Guide](concepts/emoji-sets.md)
+- **Distributed Tracing** - See [Logging Context Guide](logging/context.md)  
+- **Production Strategies** - See [Performance Guide](logging/performance.md)
+- **Error Handling** - See [Advanced Logging Guide](logging/advanced.md)
 
 ## Next Steps
 
 - Explore the [API Reference](../api/index.md) for detailed documentation
-- Check out the [Cookbook](../cookbook/index.md) for recipes and patterns
+- Browse the [Examples](../getting-started/examples.md) for practical patterns
 - Join the [Community](../community/index.md) for support and discussions

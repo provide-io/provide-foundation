@@ -112,8 +112,8 @@ Practical guides for common tasks:
 - CLI development
 - System utilities
 
-### [Tutorials](tutorials/fastapi-integration.md)
-Step-by-step tutorials for integrations
+### [Examples](getting-started/examples.md)
+Practical examples and code snippets
 
 ## 🎯 Why provide.foundation?
 

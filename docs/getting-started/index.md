@@ -112,7 +112,7 @@ logger.info("system_info",
 
 - 📖 Check the [User Guide](../guide/index.md)
 - 🔍 Browse the [API Reference](../api/index.md)
-- 🍳 Explore the [Cookbook](../cookbook/index.md)
+- 🏗️ Review the [Architecture](../architecture/index.md)
 - ❓ Read the [FAQ](../troubleshooting/faq.md)
 - 💬 Join the [Community](../community/index.md)
 
