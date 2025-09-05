@@ -269,6 +269,8 @@ nav:
     - Logger:
       - api/logger/index.md
       - Base Logger: api/logger/base.md
+      - Core Implementation: api/logger/core.md
+      - Factory Functions: api/logger/factories.md
       - Configuration: api/logger/config.md
       - Processors: api/logger/processors.md
       - Emoji Matrix: api/logger/emoji.md
