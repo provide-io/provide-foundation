@@ -1,4 +1,4 @@
-# Semantic Layers API
+# Emoji Sets API
 
 Domain-specific logging interfaces.
 

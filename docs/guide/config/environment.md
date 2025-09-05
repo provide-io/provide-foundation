@@ -51,7 +51,7 @@ export PROVIDE_LOG_FORMAT=compact
 export PROVIDE_NO_COLOR=true
 ```
 
-### Semantic Layers
+### Emoji Sets
 
 Configure domain-specific telemetry interfaces.
 

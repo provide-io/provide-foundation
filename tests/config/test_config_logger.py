@@ -103,7 +103,7 @@ class TestBuildCoreProcessorsList:
         )
 
 
-class TestTelemetryConfigFromEnvSemanticLayers:
+class TestTelemetryConfigFromEnvEmojiSets:
     def test_from_env_parses_enabled_emoji_sets(self, monkeypatch) -> None:
         monkeypatch.setenv(
             "PROVIDE_LOG_ENABLED_EMOJI_SETS", "llm, http , database "
@@ -111,7 +111,7 @@ class TestTelemetryConfigFromEnvSemanticLayers:
         config = TelemetryConfig.from_env()
         assert config.logging.enabled_emoji_sets == ["llm", "http", "database"]
 
-    def test_from_env_handles_malformed_custom_layers_json(
+    def test_from_env_handles_malformed_custom_emoji_sets_json(
         self, monkeypatch, capsys: CaptureFixture
     ) -> None:
         monkeypatch.setenv(
@@ -124,13 +124,13 @@ class TestTelemetryConfigFromEnvSemanticLayers:
         assert "Invalid JSON in configuration" in captured.err
         assert "PROVIDE_LOG_CUSTOM_EMOJI_SETS" in captured.err
 
-    def test_from_env_handles_type_error_in_custom_layer_data(
+    def test_from_env_handles_type_error_in_custom_emoji_set_data(
         self, monkeypatch, capsys: CaptureFixture
     ) -> None:
-        custom_layers_json = json.dumps(
-            [{"name": "my_layer", "priority": "not_an_int"}]
+        custom_emoji_sets_json = json.dumps(
+            [{"name": "my_emoji_set", "priority": "not_an_int"}]
         )
-        monkeypatch.setenv("PROVIDE_LOG_CUSTOM_EMOJI_SETS", custom_layers_json)
+        monkeypatch.setenv("PROVIDE_LOG_CUSTOM_EMOJI_SETS", custom_emoji_sets_json)
         # _ensure_config_logger_handler removed - warnings now handled by config system
         config = TelemetryConfig.from_env()
         assert config.logging.custom_emoji_sets == []

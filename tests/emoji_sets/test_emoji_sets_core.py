@@ -1,6 +1,6 @@
 # tests/test_emoji_sets.py
 """
-Tests for Emoji Layer configuration, resolution, and processing.
+Tests for Emoji Set configuration, resolution, and processing.
 """
 
 from collections.abc import Callable
@@ -42,7 +42,7 @@ def auto_reset_telemetry():
 
 
 class TestResolveActiveEmojiConfig:
-    def test_no_layers_enabled(self) -> None:
+    def test_no_emoji_sets_enabled(self) -> None:
         lc = LoggingConfig()
         resolved_fields, resolved_emoji_sets = _resolve_active_emoji_config(
             lc, BUILTIN_EMOJI_SETS
@@ -51,7 +51,7 @@ class TestResolveActiveEmojiConfig:
         for les in LEGACY_DAS_EMOJI_SETS:
             assert les.name in resolved_emoji_sets
 
-    def test_enable_multiple_builtin_layers_no_conflict(self) -> None:
+    def test_enable_multiple_builtin_emoji_sets_no_conflict(self) -> None:
         lc = LoggingConfig(enabled_emoji_sets=["llm", "http"])
         resolved_fields, resolved_emoji_sets = _resolve_active_emoji_config(
             lc, BUILTIN_EMOJI_SETS
@@ -65,24 +65,24 @@ class TestResolveActiveEmojiConfig:
             and "http_method" in resolved_emoji_sets
         )
 
-    def test_layer_priority_for_field_definitions(self) -> None:
+    def test_emoji_set_priority_for_field_definitions(self) -> None:
         field1 = FieldToEmojiMapping(
-            log_key="shared_key", description="from layer1"
+            log_key="shared_key", description="from emoji_set1"
         )
-        layer1 = EmojiSetConfig(name="layer1", field_definitions=[field1], priority=10)
+        emoji_set1 = EmojiSetConfig(name="emoji_set1", field_definitions=[field1], priority=10)
         field2 = FieldToEmojiMapping(
-            log_key="shared_key", description="from layer2"
+            log_key="shared_key", description="from emoji_set2"
         )
-        layer2 = EmojiSetConfig(name="layer2", field_definitions=[field2], priority=20)
-        lc = LoggingConfig(custom_emoji_sets=[layer1, layer2])
+        emoji_set2 = EmojiSetConfig(name="emoji_set2", field_definitions=[field2], priority=20)
+        lc = LoggingConfig(custom_emoji_sets=[emoji_set1, emoji_set2])
         resolved_fields, _ = _resolve_active_emoji_config(lc, {})
         assert (
             len(resolved_fields) == 1
-            and resolved_fields[0].description == "from layer2"
+            and resolved_fields[0].description == "from emoji_set2"
         )
 
 
-class TestSetupWithLayers:
+class TestSetupWithEmojiSets:
     def _filter_app_logs(self, output: str) -> str:
         return "\n".join(
             [
@@ -92,7 +92,7 @@ class TestSetupWithLayers:
             ]
         )
 
-    def test_setup_with_enabled_llm_layer(
+    def test_setup_with_enabled_llm_emoji_set(
         self,
         setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
         captured_stderr_for_foundation: io.StringIO,
@@ -117,7 +117,7 @@ class TestSetupWithLayers:
         captured = self._filter_app_logs(captured_stderr_for_foundation.getvalue())
         assert "[🤖][✍️][👍] LLM Generation" in captured
 
-    def test_setup_with_custom_layer_overriding_builtin_emojis(
+    def test_setup_with_custom_emoji_set_overriding_builtin_emojis(
         self,
         setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
         captured_stderr_for_foundation: io.StringIO,
@@ -142,7 +142,7 @@ class TestSetupWithLayers:
         captured = self._filter_app_logs(captured_stderr_for_foundation.getvalue())
         assert "[🧠MAX][💬][🔥] LLM Call" in captured
 
-    def test_env_var_parsing_for_layers(
+    def test_env_var_parsing_for_emoji_sets(
         self,
         monkeypatch: pytest.MonkeyPatch,
         setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],

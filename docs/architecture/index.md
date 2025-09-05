@@ -38,7 +38,7 @@ The Foundation Enhancement Proposals (FEPs) document proposed changes and new fe
 
 ### Active FEPs
 
-- [FEP-001: Semantic Layers](feps/fep-001.md) - Core emoji set architecture
+- [FEP-001: Emoji Sets](feps/fep-001.md) - Core emoji set architecture
 - [FEP-002: Async Support](feps/fep-002.md) - Asynchronous logging capabilities
 - [FEP-003: Plugin System](feps/fep-003.md) - Extensible plugin architecture
 - [FEP-004: Distributed Tracing](feps/fep-004.md) - OpenTelemetry integration

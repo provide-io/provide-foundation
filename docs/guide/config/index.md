@@ -113,7 +113,7 @@ graph TD
 | JSON Output | `PROVIDE_JSON_OUTPUT` | bool | `false` | Force JSON output |
 | No Color | `PROVIDE_NO_COLOR` | bool | `false` | Disable colored output |
 
-### Semantic Layers
+### Emoji Sets
 
 | Setting | Environment Variable | Type | Default | Description |
 |---------|---------------------|------|---------|-------------|

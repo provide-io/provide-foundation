@@ -52,8 +52,8 @@ uv publish                      # Publish to PyPI
    - Environment variable support
    - YAML/JSON file loading capabilities
 
-3. **Semantic Layers** (`src/provide/foundation/semantic_layers.py`)
-   - Extensible domain-specific logging layers (LLM, HTTP, Database)
+3. **Emoji Sets** (`src/provide/foundation/logger/emoji/sets.py`)
+   - Extensible domain-specific logging emoji sets (LLM, HTTP, Database)
    - Custom emoji mapping per domain
    - Falls back to classic Domain-Action-Status pattern
 
@@ -91,7 +91,7 @@ uv publish                      # Publish to PyPI
 
 - Always use modern Python 3.11+ type hints (e.g., `list[str]` not `List[str]`)
 - Maintain immutability in configuration objects
-- Follow existing emoji naming conventions in semantic layers
+- Follow existing emoji naming conventions in emoji sets
 - Preserve thread safety in all logging operations
 - Use `attrs` for data classes consistently
 - no migration, backward compatibility, or any of that kind of logic will be used. you must treat this as a prerelease in which i can do anything with .
