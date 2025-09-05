@@ -105,8 +105,9 @@ def temp_config_file(
             elif format == "toml":
                 try:
                     import tomli_w
-
-                    tomli_w.dump(content, f)
+                    # tomli_w needs the content as a string, not written to file handle
+                    toml_content = tomli_w.dumps(content)
+                    f.write(toml_content)
                 except ImportError:
                     # Fall back to manual formatting
                     for key, value in content.items():

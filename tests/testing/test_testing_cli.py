@@ -35,7 +35,7 @@ class TestMockContext:
         """Test that save_config calls are tracked."""
         ctx = MockContext()
         
-        with tempfile.NamedTemporaryFile() as tmp:
+        with tempfile.NamedTemporaryFile(suffix=".json") as tmp:
             tmp_path = Path(tmp.name)
             ctx.save_config(tmp_path)
             
