@@ -223,11 +223,11 @@ if __name__ == "__main__":
 ```python
 # From examples/11_config_management.py and examples/08_env_variables_config.py
 from provide.foundation import setup_telemetry, logger
-from provide.foundation.config import EnvConfig, env_field, ConfigManager
+from provide.foundation.config import RuntimeConfig, env_field, ConfigManager
 from attrs import define
 
 @define
-class DatabaseConfig(EnvConfig):
+class DatabaseConfig(RuntimeConfig):
     """Database configuration from environment."""
     host: str = env_field(default="localhost", env_var="DB_HOST")
     port: int = env_field(default=5432, env_var="DB_PORT", parser=int)

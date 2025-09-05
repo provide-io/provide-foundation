@@ -23,7 +23,9 @@
       "Bash(find:*)",
       "Bash(source env.sh)",
       "Bash(python:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(grep:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": [],

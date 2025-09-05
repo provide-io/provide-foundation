@@ -7,7 +7,7 @@ import pytest
 
 from provide.foundation.config.base import field
 from provide.foundation.config.env import (
-    EnvConfig,
+    RuntimeConfig,
     env_field,
     get_env,
 )
@@ -126,7 +126,7 @@ class TestEnvUtilities:
 
 
 @define
-class TestEnvConfig(EnvConfig):
+class TestRuntimeConfig(RuntimeConfig):
     """Test configuration that loads from environment."""
 
     app_name: str = env_field(default="test_app")
@@ -137,8 +137,8 @@ class TestEnvConfig(EnvConfig):
     custom_var: str = env_field(env_var="CUSTOM_ENV_VAR", default="")
 
 
-class TestEnvConfigClass:
-    """Test EnvConfig class functionality."""
+class TestRuntimeConfigClass:
+    """Test RuntimeConfig class functionality."""
 
     def test_from_env_with_prefix(self, monkeypatch) -> None:
         """Test loading from environment with prefix."""
@@ -148,7 +148,7 @@ class TestEnvConfigClass:
         monkeypatch.setenv("TEST_HOSTS", "host1,host2")
         monkeypatch.setenv("TEST_METADATA", "key1=val1,key2=val2")
 
-        config = TestEnvConfig.from_env(prefix="TEST")
+        config = TestRuntimeConfig.from_env(prefix="TEST")
 
         assert config.app_name == "my_app"
         assert config.port == 3000
@@ -160,12 +160,12 @@ class TestEnvConfigClass:
         """Test loading with custom environment variable name."""
         monkeypatch.setenv("CUSTOM_ENV_VAR", "custom_value")
 
-        config = TestEnvConfig.from_env()
+        config = TestRuntimeConfig.from_env()
         assert config.custom_var == "custom_value"
 
     def test_from_env_defaults(self) -> None:
         """Test loading with default values."""
-        config = TestEnvConfig.from_env()
+        config = TestRuntimeConfig.from_env()
 
         assert config.app_name == "test_app"
         assert config.port == 8080
@@ -175,7 +175,7 @@ class TestEnvConfigClass:
 
     def test_to_env_dict(self) -> None:
         """Test converting to environment variable dictionary."""
-        config = TestEnvConfig(
+        config = TestRuntimeConfig(
             app_name="my_app",
             port=3000,
             debug=True,
@@ -193,7 +193,7 @@ class TestEnvConfigClass:
 
     def test_to_env_dict_custom_delimiter(self) -> None:
         """Test converting with custom delimiter."""
-        config = TestEnvConfig(app_name="test")
+        config = TestRuntimeConfig(app_name="test")
         env_dict = config.to_env_dict(prefix="APP", delimiter="__")
 
         assert "APP__APP_NAME" in env_dict
@@ -202,7 +202,7 @@ class TestEnvConfigClass:
         """Test automatic type parsing."""
 
         @define
-        class AutoParseConfig(EnvConfig):
+        class AutoParseConfig(RuntimeConfig):
             str_val: str = field(default="")
             int_val: int = field(default=0)
             float_val: float = field(default=0.0)

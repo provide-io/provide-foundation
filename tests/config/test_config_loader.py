@@ -8,12 +8,12 @@ from attrs import define
 import pytest
 
 from provide.foundation.config.base import BaseConfig, field
-from provide.foundation.config.env import EnvConfig, env_field
+from provide.foundation.config.env import RuntimeConfig, env_field
 from provide.foundation.config.loader import (
     ChainedLoader,
     ConfigSource,
     DictConfigLoader,
-    EnvConfigLoader,
+    RuntimeConfigLoader,
     FileConfigLoader,
     MultiSourceLoader,
 )
@@ -32,7 +32,7 @@ class TestConfig(BaseConfig):
 
 
 @define
-class TestEnvConfig(EnvConfig):
+class TestRuntimeConfig(RuntimeConfig):
     """Test environment configuration."""
 
     name: str = env_field(default="test")
@@ -142,8 +142,8 @@ EXTRA_VAR="quoted value"
             await loader.load(TestConfig)
 
 
-class TestEnvConfigLoader:
-    """Test EnvConfigLoader."""
+class TestRuntimeConfigLoader:
+    """Test RuntimeConfigLoader."""
 
     @pytest.mark.asyncio
     async def test_load_with_prefix(self, monkeypatch) -> None:
@@ -152,10 +152,10 @@ class TestEnvConfigLoader:
         monkeypatch.setenv("APP_PORT", "7000")
         monkeypatch.setenv("APP_DEBUG", "true")
 
-        loader = EnvConfigLoader(prefix="APP")
+        loader = RuntimeConfigLoader(prefix="APP")
         assert loader.exists()
 
-        config = await loader.load(TestEnvConfig)
+        config = await loader.load(TestRuntimeConfig)
         assert config.name == "env_app"
         assert config.port == 7000
         assert config.debug is True
@@ -166,18 +166,18 @@ class TestEnvConfigLoader:
         monkeypatch.setenv("NAME", "no_prefix")
         monkeypatch.setenv("PORT", "8000")
 
-        loader = EnvConfigLoader()
-        config = await loader.load(TestEnvConfig)
+        loader = RuntimeConfigLoader()
+        config = await loader.load(TestRuntimeConfig)
 
         assert config.name == "no_prefix"
         assert config.port == 8000
 
     @pytest.mark.asyncio
     async def test_non_env_config(self) -> None:
-        """Test error with non-EnvConfig class."""
-        loader = EnvConfigLoader()
+        """Test error with non-RuntimeConfig class."""
+        loader = RuntimeConfigLoader()
 
-        with pytest.raises(TypeError, match="must inherit from EnvConfig"):
+        with pytest.raises(TypeError, match="must inherit from RuntimeConfig"):
             await loader.load(TestConfig)
 
 
@@ -222,14 +222,14 @@ class TestMultiSourceLoader:
 
         # Create loaders
         file_loader = FileConfigLoader(config_file)
-        env_loader = EnvConfigLoader()
+        env_loader = RuntimeConfigLoader()
         dict_loader = DictConfigLoader({"name": "runtime_name"})
 
         # Multi-source loader (order matters - later overrides earlier)
         loader = MultiSourceLoader(file_loader, env_loader, dict_loader)
         assert loader.exists()
 
-        config = await loader.load(TestEnvConfig)
+        config = await loader.load(TestRuntimeConfig)
 
         # Should have merged values with proper precedence
         assert config.name == "runtime_name"  # From dict (last)

@@ -178,4 +178,4 @@ These advanced topics are covered in the existing guides:
 
 - Explore the [API Reference](../api/index.md) for detailed documentation
 - Browse the [Examples](../getting-started/examples.md) for practical patterns
-- Join the [Community](../community/index.md) for support and discussions
+- Review the [Architecture](../architecture/index.md) for technical details

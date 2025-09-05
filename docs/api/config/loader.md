@@ -152,12 +152,12 @@ DATABASE_PORT=5432
 
 ### Environment-based Loaders
 
-### EnvConfigLoader
+### RuntimeConfigLoader
 
 Load configuration from environment variables.
 
 ```python
-class EnvConfigLoader(ConfigLoader):
+class RuntimeConfigLoader(ConfigLoader):
     """Load configuration from environment variables."""
     
     def __init__(
@@ -187,7 +187,7 @@ async def load(self, config_class: type[T]) -> T:
     """
     Load configuration from environment variables.
     
-    Note: config_class must inherit from EnvConfig
+    Note: config_class must inherit from RuntimeConfig
     """
 ```
 
@@ -208,8 +208,8 @@ def exists(self) -> bool:
 # MYAPP_DATABASE_PORT=5432
 # MYAPP_DEBUG=true
 
-loader = EnvConfigLoader(prefix="MYAPP")
-config = await loader.load(DatabaseConfig)  # Must inherit from EnvConfig
+loader = RuntimeConfigLoader(prefix="MYAPP")
+config = await loader.load(DatabaseConfig)  # Must inherit from RuntimeConfig
 ```
 
 ## Composite Loaders
@@ -279,7 +279,7 @@ class MultiSourceLoader(ConfigLoader):
 # Load with precedence: base config < environment < local overrides
 loader = MultiSourceLoader(
     FileConfigLoader("config/base.yaml"),     # Base configuration
-    EnvConfigLoader(prefix="APP"),            # Environment overrides  
+    RuntimeConfigLoader(prefix="APP"),            # Environment overrides  
     FileConfigLoader("config/local.yaml"),   # Local development overrides
 )
 
@@ -333,7 +333,7 @@ def create_loader_for_environment() -> ConfigLoader:
     
     base_loaders = [
         FileConfigLoader("config/base.yaml"),
-        EnvConfigLoader(prefix="APP"),
+        RuntimeConfigLoader(prefix="APP"),
     ]
     
     if env == "production":
