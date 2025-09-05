@@ -157,7 +157,9 @@ def _build_complete_processor_chain(
         config.logging, _PROVIDE_LOG_STREAM
     )
     _core_setup_logger.debug(
-        f"📝➡️🎨 Configured {config.logging.console_formatter} renderer."
+        "📝➡️🎨 Configured renderer",
+        formatter=config.logging.console_formatter,
+        log_level=config.logging.default_level
     )
     return cast(list[Any], core_processors + formatter_processors)
 
@@ -173,7 +175,10 @@ def _apply_structlog_configuration(processors: list[Any]) -> None:
         cache_logger_on_first_use=True,
     )
     _core_setup_logger.debug(
-        f"📝➡️✅ structlog configured. Wrapper: BoundLogger. Output: {stream_name}."
+        "📝➡️✅ structlog configured",
+        wrapper="BoundLogger", 
+        output=stream_name,
+        processor_count=len(processors)
     )
 
 
@@ -254,7 +259,12 @@ def _internal_setup(
     )
 
     if not current_config.globally_disabled:
-        _core_setup_logger.debug("⚙️➡️🚀 Starting Foundation (structlog) setup...")
+        _core_setup_logger.debug(
+            "⚙️➡️🚀 Starting Foundation (structlog) setup",
+            service_name=current_config.service_name,
+            log_level=current_config.logging.default_level,
+            formatter=current_config.logging.console_formatter
+        )
 
     resolved_emoji_config = _resolve_active_emoji_config(
         current_config.logging, BUILTIN_EMOJI_SETS
@@ -271,7 +281,14 @@ def _internal_setup(
     foundation_logger._LAZY_SETUP_STATE["done"] = True
 
     if not current_config.globally_disabled:
-        _core_setup_logger.debug("⚙️➡️✅ Foundation (structlog) setup completed.")
+        field_definitions, emoji_sets = resolved_emoji_config
+        _core_setup_logger.debug(
+            "⚙️➡️✅ Foundation (structlog) setup completed",
+            emoji_sets_enabled=len(field_definitions) > 0,
+            emoji_sets_count=len(emoji_sets),
+            processors_configured=True,
+            log_file_enabled=current_config.logging.log_file is not None
+        )
 
 
 def setup_telemetry(config: TelemetryConfig | None = None) -> None:
@@ -304,7 +321,10 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
                 _PROVIDE_LOG_STREAM = _LOG_FILE_HANDLE
             except Exception as e:
                 _core_setup_logger.error(
-                    f"Failed to open log file {log_file_path}: {e}"
+                    "Failed to open log file",
+                    log_file_path=str(log_file_path),
+                    error=str(e),
+                    error_type=type(e).__name__
                 )
                 _PROVIDE_LOG_STREAM = get_safe_stderr()
         elif not is_test_stream:
@@ -328,4 +348,8 @@ async def shutdown_foundation_telemetry(timeout_millis: int = 5000) -> None:
                 # The test fixture's reset will handle the final close.
                 _LOG_FILE_HANDLE.flush()
             except Exception as e:
-                _core_setup_logger.error(f"Failed to flush log file handle: {e}")
+                _core_setup_logger.error(
+                    "Failed to flush log file handle",
+                    error=str(e),
+                    error_type=type(e).__name__
+                )
