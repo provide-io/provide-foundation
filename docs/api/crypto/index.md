@@ -1,38 +1,94 @@
-# Crypto
+# Cryptographic Utilities API
 
-::: provide.foundation.crypto
+The `provide.foundation.crypto` module provides comprehensive cryptographic operations including hashing, digital signatures, key generation, and X.509 certificate management.
 
 ## Overview
 
-The crypto module provides secure cryptographic utilities for hashing, checksums, and data verification. It supports multiple algorithms and provides both low-level and high-level interfaces for common cryptographic operations.
+The crypto module is organized around common use cases:
+- **File & Data Hashing** - SHA-256, SHA-512, Blake2b with verification
+- **Digital Signatures** - Ed25519, ECDSA, RSA signing and verification
+- **Key Generation** - Secure key pair generation for multiple algorithms
+- **X.509 Certificates** - Certificate creation and management
+- **Checksum Operations** - Multi-algorithm checksum files
 
 ## Key Features
 
-- **Multiple Hash Algorithms**: Support for SHA-256, SHA-512, Blake2b, and more
-- **Secure Defaults**: Automatically uses secure algorithms (SHA-256 by default)
-- **File and Data Hashing**: Hash files, strings, byte data, or streams
-- **Checksum Verification**: Create and verify checksum files
-- **Stream Processing**: Memory-efficient hashing of large files
+- **Comprehensive Hashing**: SHA-256, SHA-512, Blake2b with file/stream support
+- **Digital Signatures**: Ed25519, ECDSA, RSA signing and verification
+- **Key Management**: Secure key generation for multiple algorithms
+- **X.509 Certificates**: Self-signed and CA certificate creation
+- **Checksum Operations**: Multi-algorithm checksum file support
+- **Security Focus**: Secure defaults with algorithm validation
+- **Performance**: Memory-efficient streaming for large files
 
 ## Quick Start
 
 ```python
-from provide.foundation.crypto import hash_string, verify_file, calculate_checksums
+from provide.foundation.crypto import hash_file, verify_file, sign_data
 
-# Hash a string
-digest = hash_string("hello world")
-print(f"Hash: {digest}")
+# Hash a file
+result = hash_file("document.pdf")
+print(f"SHA-256: {result.hex_digest}")
 
-# Verify file integrity
-is_valid = verify_file("myfile.txt", "expected_hash_here")
+# Verify against known hash
+is_valid = verify_file("document.pdf", "abc123...")
 
-# Calculate checksums for multiple files
-checksums = calculate_checksums(["file1.txt", "file2.txt"])
+# Digital signatures
+from provide.foundation.crypto import generate_signing_keypair
+private_key, public_key = generate_signing_keypair("ed25519")
+signature = sign_data(b"message", private_key)
 ```
 
 ## API Reference
 
-### Hash Functions
+## Core Functions
+
+### File & Data Hashing
+
+#### `hash_file(path, algorithm="sha256")`
+
+Calculate hash of a file with memory-efficient streaming.
+
+**Parameters:**
+- `path` (str | Path): Path to file
+- `algorithm` (str): Hash algorithm ("sha256", "sha512", "blake2b")
+
+**Returns:** `HashResult` with hex_digest, algorithm, and metadata
+
+```python
+from provide.foundation.crypto import hash_file
+
+result = hash_file("large_file.zip", algorithm="sha512")
+print(f"Hash: {result.hex_digest}")
+print(f"Size: {result.file_size} bytes")
+```
+
+#### `hash_data(data, algorithm="sha256")`
+
+Hash bytes or string data directly.
+
+```python
+from provide.foundation.crypto import hash_data
+
+# Hash bytes
+result = hash_data(b"Hello, World!")
+
+# Hash string (auto-encoded as UTF-8)
+result = hash_data("Hello, World!")
+print(result.hex_digest)
+```
+
+#### `hash_stream(stream, algorithm="sha256")`
+
+Hash data from a stream (file-like object).
+
+```python
+import io
+from provide.foundation.crypto import hash_stream
+
+stream = io.BytesIO(b"stream data")
+result = hash_stream(stream)
+```
 
 #### `hash_string(data, algorithm="sha256")`
 
@@ -57,101 +113,160 @@ print(digest)  # a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae
 digest = hash_string("hello", algorithm="blake2b")
 ```
 
-#### `hash_file(filepath, algorithm="sha256")`
+### File Verification
 
-Hash a file using the specified algorithm.
+#### `verify_file(path, expected_hash, algorithm="sha256")`
 
-**Parameters:**
-- `filepath` (str | Path): Path to the file to hash
-- `algorithm` (str, optional): Hash algorithm to use (default: "sha256")
+Verify a file against an expected hash.
 
-**Returns:**
-- `str`: Hexadecimal digest of the file hash
+**Returns:** `bool` - True if hash matches
 
-**Example:**
-```python
-from provide.foundation.crypto import hash_file
-
-digest = hash_file("myfile.txt")
-print(f"File hash: {digest}")
-```
-
-#### `hash_data(data, algorithm="sha256")`
-
-Hash bytes data using the specified algorithm.
-
-**Parameters:**
-- `data` (bytes): The bytes to hash
-- `algorithm` (str, optional): Hash algorithm to use (default: "sha256")
-
-**Returns:**
-- `str`: Hexadecimal digest of the hash
-
-**Example:**
-```python
-from provide.foundation.crypto import hash_data
-
-data = b"binary data here"
-digest = hash_data(data)
-```
-
-#### `hash_stream(stream, algorithm="sha256")`
-
-Hash data from a stream (file-like object) using the specified algorithm.
-
-**Parameters:**
-- `stream`: File-like object to read from
-- `algorithm` (str, optional): Hash algorithm to use (default: "sha256")
-
-**Returns:**
-- `str`: Hexadecimal digest of the hash
-
-**Example:**
-```python
-from provide.foundation.crypto import hash_stream
-import io
-
-stream = io.BytesIO(b"stream data")
-digest = hash_stream(stream)
-```
-
-### Checksum Functions
-
-#### `verify_file(filepath, expected_hash, algorithm="sha256")`
-
-Verify a file's integrity against an expected hash.
-
-**Parameters:**
-- `filepath` (str | Path): Path to the file to verify
-- `expected_hash` (str): Expected hash digest (hexadecimal)
-- `algorithm` (str, optional): Hash algorithm to use (default: "sha256")
-
-**Returns:**
-- `bool`: True if the file matches the expected hash
-
-**Example:**
 ```python
 from provide.foundation.crypto import verify_file
 
-# Verify file integrity
-is_valid = verify_file("document.pdf", "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3")
+is_valid = verify_file("document.pdf", "abc123...", "sha256")
 if is_valid:
-    print("File is valid")
-else:
-    print("File has been corrupted or modified")
+    print("File integrity verified")
 ```
 
 #### `verify_data(data, expected_hash, algorithm="sha256")`
 
-Verify data integrity against an expected hash.
+Verify data against an expected hash.
+
+```python
+from provide.foundation.crypto import verify_data
+
+is_valid = verify_data(b"data", "expected_hash")
+```
+
+### Digital Signatures
+
+#### `generate_signing_keypair(algorithm="ed25519")`
+
+Generate a key pair for digital signatures.
 
 **Parameters:**
-- `data` (bytes): The data to verify
-- `expected_hash` (str): Expected hash digest (hexadecimal)
-- `algorithm` (str, optional): Hash algorithm to use (default: "sha256")
+- `algorithm` (str): "ed25519", "ecdsa", or "rsa"
 
-**Returns:**
-- `bool`: True if the data matches the expected hash
+**Returns:** Tuple of (private_key, public_key)
+
+```python
+from provide.foundation.crypto import generate_signing_keypair
+
+# Ed25519 (recommended - fast, secure)
+private_key, public_key = generate_signing_keypair("ed25519")
+
+# ECDSA with P-256 curve
+private_key, public_key = generate_signing_keypair("ecdsa")
+
+# RSA with 2048-bit key
+private_key, public_key = generate_signing_keypair("rsa")
+```
+
+#### `sign_data(data, private_key, algorithm=None)`
+
+Sign data with a private key.
+
+```python
+from provide.foundation.crypto import sign_data
+
+signature = sign_data(b"message to sign", private_key)
+```
+
+#### `verify_signature(data, signature, public_key, algorithm=None)`
+
+Verify a signature against data and public key.
+
+**Returns:** `bool` - True if signature is valid
+
+```python
+from provide.foundation.crypto import verify_signature
+
+is_valid = verify_signature(b"message", signature, public_key)
+```
+
+### X.509 Certificates
+
+#### `create_self_signed(common_name, **kwargs)`
+
+Create a self-signed X.509 certificate.
+
+**Parameters:**
+- `common_name` (str): Certificate subject common name
+- `key_size` (int): RSA key size (default: 2048)
+- `valid_days` (int): Certificate validity period (default: 365)
+- `san_list` (list[str]): Subject Alternative Names
+
+**Returns:** Tuple of (certificate, private_key)
+
+```python
+from provide.foundation.crypto import create_self_signed
+
+cert, key = create_self_signed(
+    "example.com",
+    key_size=2048,
+    valid_days=365,
+    san_list=["www.example.com", "api.example.com"]
+)
+
+# Save certificate
+with open("cert.pem", "wb") as f:
+    f.write(cert.certificate_bytes)
+```
+
+#### `create_ca(common_name, **kwargs)`
+
+Create a Certificate Authority (CA) certificate.
+
+```python
+from provide.foundation.crypto import create_ca
+
+ca_cert, ca_key = create_ca("My CA", valid_days=3650)
+```
+
+### Key Generation
+
+#### `generate_keypair(algorithm, **kwargs)`
+
+General key pair generation function.
+
+```python
+from provide.foundation.crypto import generate_keypair
+
+# RSA key pair
+private_key, public_key = generate_keypair("rsa", key_size=2048)
+
+# ECDSA key pair
+private_key, public_key = generate_keypair("ecdsa", curve="secp256r1")
+
+# Ed25519 key pair
+private_key, public_key = generate_keypair("ed25519")
+```
+
+#### Specialized Key Generation
+
+```python
+from provide.foundation.crypto import (
+    generate_rsa_keypair,
+    generate_ec_keypair,
+    generate_ed25519_keypair,
+    generate_tls_keypair
+)
+
+# RSA for encryption/signing
+rsa_private, rsa_public = generate_rsa_keypair(key_size=2048)
+
+# Elliptic curve for signing
+ec_private, ec_public = generate_ec_keypair(curve="secp256r1")
+
+# Ed25519 for signing (fastest, most secure)
+ed_private, ed_public = generate_ed25519_keypair()
+
+# TLS-compatible key pair
+tls_private, tls_public = generate_tls_keypair()
+```
+
+### Checksum Operations
 
 #### `calculate_checksums(filepaths, algorithm="sha256")`
 

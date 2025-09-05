@@ -20,7 +20,8 @@
       "Bash(for:*)",
       "Bash(echo:*)",
       "Bash(continue)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(source env.sh)"
     ],
     "deny": [],
     "ask": [],
