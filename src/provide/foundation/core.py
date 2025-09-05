@@ -78,22 +78,19 @@ def _ensure_stderr_default() -> None:
         _PROVIDE_LOG_STREAM = sys.stderr
 
 
-def _create_core_setup_logger(globally_disabled: bool = False) -> stdlib_logging.Logger:
-    logger = stdlib_logging.getLogger(_CORE_SETUP_LOGGER_NAME)
-    for h in list(logger.handlers):
-        logger.removeHandler(h)
-        try:
-            if isinstance(h, stdlib_logging.StreamHandler) and h.stream not in (
-                sys.stdout,
-                sys.stderr,
-                _PROVIDE_LOG_STREAM,
-            ):
-                h.close()
-        except Exception:
-            pass
+def _create_core_setup_logger(globally_disabled: bool = False):
+    """Create a structlog logger for core setup messages."""
+    import structlog
     
     if globally_disabled:
-        handler = stdlib_logging.NullHandler()
+        # Configure structlog to be a no-op for core setup logger
+        structlog.configure(
+            processors=[],
+            logger_factory=structlog.ReturnLoggerFactory(),
+            wrapper_class=structlog.BoundLogger,
+            cache_logger_on_first_use=True,
+        )
+        return structlog.get_logger(_CORE_SETUP_LOGGER_NAME)
     else:
         # Get the foundation log output stream
         from provide.foundation.logger.config import LoggingConfig
@@ -105,18 +102,20 @@ def _create_core_setup_logger(globally_disabled: bool = False) -> stdlib_logging
         except Exception:
             # Fallback to stderr if config loading fails
             foundation_stream = get_safe_stderr()
-            
-        handler = stdlib_logging.StreamHandler(foundation_stream)
-        handler.setFormatter(
-            stdlib_logging.Formatter(
-                "[Foundation Setup] %(levelname)s (%(name)s): %(message)s"
-            )
+        
+        # Configure structlog for core setup logger
+        structlog.configure(
+            processors=[
+                structlog.processors.add_log_level,
+                structlog.processors.TimeStamper(fmt="iso"),
+                structlog.dev.ConsoleRenderer()
+            ],
+            logger_factory=structlog.PrintLoggerFactory(file=foundation_stream),
+            wrapper_class=structlog.BoundLogger,
+            cache_logger_on_first_use=True,
         )
-    
-    logger.addHandler(handler)
-    logger.setLevel(_get_foundation_log_level())
-    logger.propagate = False
-    return logger
+        
+        return structlog.get_logger(_CORE_SETUP_LOGGER_NAME)
 
 
 _core_setup_logger = _create_core_setup_logger()

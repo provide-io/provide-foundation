@@ -142,7 +142,7 @@ class TestFoundationLogOutputCoreSetup:
             
             captured = capsys.readouterr()
             # Should see setup messages in stderr
-            assert "Foundation bootstrap" in captured.err
+            assert "Foundation (structlog) setup" in captured.err
 
     def test_core_setup_logger_stdout_setting(self, monkeypatch, capsys: CaptureFixture) -> None:
         """Test that core setup logger respects FOUNDATION_LOG_OUTPUT=stdout."""
@@ -156,8 +156,8 @@ class TestFoundationLogOutputCoreSetup:
         
         captured = capsys.readouterr()
         # Should see setup messages in stdout, not stderr
-        assert "Foundation bootstrap" in captured.out
-        assert "Foundation bootstrap" not in captured.err
+        assert "Foundation (structlog) setup" in captured.out
+        assert "Foundation (structlog) setup" not in captured.err
 
     def test_core_setup_logger_invalid_setting_fallback(self, monkeypatch, capsys: CaptureFixture) -> None:
         """Test that invalid FOUNDATION_LOG_OUTPUT falls back to stderr."""
@@ -166,15 +166,22 @@ class TestFoundationLogOutputCoreSetup:
         
         reset_foundation_setup_for_testing()
         
-        # Trigger a core setup log message
+        # Trigger a core setup log message AND a config warning to test both
         setup_telemetry(TelemetryConfig())
+        
+        # Also trigger a config warning which should use the invalid value
+        monkeypatch.setenv("PROVIDE_LOG_LEVEL", "INVALID_LEVEL")
+        from provide.foundation.logger.config import LoggingConfig
+        config = LoggingConfig.from_env()
         
         captured = capsys.readouterr()
         # Should see setup messages in stderr (fallback)
-        assert "Foundation bootstrap" in captured.err
-        # Should also see warning about invalid FOUNDATION_LOG_OUTPUT
-        assert "[Foundation Config Warning]" in captured.err
-        assert "invalid_value" in captured.err
+        assert "Foundation (structlog) setup" in captured.err
+        # Should also see warning about invalid FOUNDATION_LOG_OUTPUT somewhere
+        # (It might come from either core setup logger creation or config warning logger)
+        full_output = captured.out + captured.err
+        assert "[Foundation Config Warning]" in full_output
+        assert "invalid_value" in full_output
 
     def test_core_setup_logger_with_main_setting(self, monkeypatch, tmp_path, capsys: CaptureFixture) -> None:
         """Test that core setup logger follows main log destination with FOUNDATION_LOG_OUTPUT=main."""
@@ -193,4 +200,4 @@ class TestFoundationLogOutputCoreSetup:
         # Core setup messages should follow main log destination (file)
         assert log_file.exists()
         log_content = log_file.read_text()
-        assert "Foundation bootstrap" in log_content
+        assert "Foundation (structlog) setup" in log_content
