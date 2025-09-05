@@ -216,12 +216,11 @@ def _build_formatter_processors_list(
             return _config_create_keyvalue_formatter_processors(output_stream)
         case _:
             # Unknown formatter, warn and default to key_value
-            # We can't use structlog here as we're in the middle of configuring it
-            # Write directly to stderr for the test to capture
-            import sys
-
-            sys.stderr.write(
-                f"Unknown formatter '{logging_config.console_formatter}'\n"
+            # Use core setup logger instead of direct sys.stderr write
+            from provide.foundation.core import _core_setup_logger
+            
+            _core_setup_logger.warning(
+                f"Unknown formatter '{logging_config.console_formatter}', using default 'key_value'. "
+                f"Valid formatters: ['json', 'key_value']"
             )
-            sys.stderr.flush()
             return _config_create_keyvalue_formatter_processors(output_stream)

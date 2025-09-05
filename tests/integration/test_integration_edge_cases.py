@@ -419,7 +419,7 @@ def test_configuration_immutability() -> None:
     # Direct assignment works now with BaseConfig
     config_telemetry.service_name = "modified"
     assert config_telemetry.service_name == "modified"
-    
+
     # But proper way is to use update()
     config_logging = LoggingConfig(default_level="INFO")
     config_logging.update({"default_level": "DEBUG"})

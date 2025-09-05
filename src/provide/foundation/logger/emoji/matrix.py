@@ -7,8 +7,6 @@ Defines the core DAS emoji mappings and provides utilities to display
 active emoji configurations (DAS or emoji set-based).
 """
 
-import os
-
 from provide.foundation.logger import (
     base as foundation_logger_base,  # For accessing the global logger instance
 )
@@ -133,11 +131,12 @@ def show_emoji_matrix() -> None:  # pragma: no cover
     Otherwise, it displays the core DAS emoji mappings.
     Activated by `PROVIDE_SHOW_EMOJI_MATRIX` environment variable.
     """
-    if os.getenv("PROVIDE_SHOW_EMOJI_MATRIX", "false").strip().lower() not in (
-        "true",
-        "1",
-        "yes",
-    ):
+    # Ensure the logger is configured to access the config
+    foundation_logger_base.logger._ensure_configured()
+    
+    # Get the show_emoji_matrix flag from the logging config
+    telemetry_config = getattr(foundation_logger_base.logger, "_active_config", None)
+    if not telemetry_config or not telemetry_config.logging.show_emoji_matrix:
         return
 
     matrix_logger = foundation_logger_base.logger.get_logger(

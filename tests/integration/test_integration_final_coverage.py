@@ -1,14 +1,11 @@
 """Tests to achieve 100% coverage - final missing lines."""
 
-import json
-import os
 from unittest.mock import patch
-import pytest
 
 from provide.foundation.logger.custom_processors import add_logger_name_emoji_prefix
 from provide.foundation.logger.emoji.matrix import _format_field_definition_for_display
 from provide.foundation.logger.emoji.types import FieldToEmojiMapping
-from provide.foundation.logger.emoji.types import CustomDasEmojiSet
+
 
 def test_logger_base_already_configured_after_lock() -> None:
     """Test line 72 - return when already configured after acquiring lock.

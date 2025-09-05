@@ -13,8 +13,8 @@ from provide.foundation.crypto import (
     hash_string,
 )
 from provide.foundation.crypto.hashing import hash_chunks, hash_file_multiple
-from provide.foundation.errors.resources import ResourceError
 from provide.foundation.errors.config import ValidationError
+from provide.foundation.errors.resources import ResourceError
 
 
 class TestHashFile:

@@ -4,8 +4,16 @@
 from provide.foundation.errors.auth import AuthenticationError, AuthorizationError
 from provide.foundation.errors.base import FoundationError
 from provide.foundation.errors.config import ConfigurationError, ValidationError
-from provide.foundation.errors.integration import IntegrationError, NetworkError, TimeoutError
-from provide.foundation.errors.resources import AlreadyExistsError, NotFoundError, ResourceError
+from provide.foundation.errors.integration import (
+    IntegrationError,
+    NetworkError,
+    TimeoutError,
+)
+from provide.foundation.errors.resources import (
+    AlreadyExistsError,
+    NotFoundError,
+    ResourceError,
+)
 from provide.foundation.errors.runtime import ConcurrencyError, RuntimeError, StateError
 
 

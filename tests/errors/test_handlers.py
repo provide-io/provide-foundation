@@ -7,7 +7,6 @@ import pytest
 
 from provide.foundation.errors.base import FoundationError
 from provide.foundation.errors.config import ValidationError
-from provide.foundation.errors.integration import NetworkError
 from provide.foundation.errors.handlers import (
     ErrorHandler,
     create_error_handler,
@@ -15,6 +14,7 @@ from provide.foundation.errors.handlers import (
     handle_error,
     transactional,
 )
+from provide.foundation.errors.integration import NetworkError
 
 
 class TestErrorBoundary:

@@ -7,7 +7,11 @@ and utilities for robust error handling throughout the application.
 
 from provide.foundation.errors.auth import AuthenticationError, AuthorizationError
 from provide.foundation.errors.base import FoundationError
-from provide.foundation.errors.config import ConfigurationError, ConfigValidationError, ValidationError
+from provide.foundation.errors.config import (
+    ConfigurationError,
+    ConfigValidationError,
+    ValidationError,
+)
 from provide.foundation.errors.context import (
     ErrorCategory,
     ErrorContext,
