@@ -87,24 +87,29 @@ class CertificateConfig(TypedDict):
     curve: NotRequired[CurveType]
 
 
-KeyPair: TypeAlias = rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey
-PublicKey: TypeAlias = rsa.RSAPublicKey | ec.EllipticCurvePublicKey
+if _HAS_CRYPTO:
+    KeyPair: TypeAlias = rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey
+    PublicKey: TypeAlias = rsa.RSAPublicKey | ec.EllipticCurvePublicKey
+else:
+    KeyPair: TypeAlias = None
+    PublicKey: TypeAlias = None
 
 
 @define(slots=True, frozen=True)
 class CertificateBase:
     """Immutable base certificate data."""
 
-    subject: x509.Name
-    issuer: x509.Name
-    public_key: PublicKey
+    subject: "x509.Name"
+    issuer: "x509.Name" 
+    public_key: "PublicKey"
     not_valid_before: datetime
     not_valid_after: datetime
     serial_number: int
 
     @classmethod
-    def create(cls, config: CertificateConfig) -> tuple[Self, KeyPair]:
+    def create(cls, config: CertificateConfig) -> tuple[Self, "KeyPair"]:
         """Create a new certificate base and private key."""
+        _require_crypto()
         try:
             logger.debug("📜📝🚀 CertificateBase.create: Starting base creation")
             not_valid_before = config["not_valid_before"]
@@ -163,7 +168,7 @@ class CertificateBase:
             raise CertificateError(f"Failed to generate certificate base: {e}") from e
 
     @staticmethod
-    def _create_name(common_name: str, org: str) -> x509.Name:
+    def _create_name(common_name: str, org: str) -> "x509.Name":
         """Helper method to construct an X.509 name."""
         return x509.Name(
             [
@@ -191,8 +196,8 @@ class Certificate:
     validity_days: int = field(default=DEFAULT_CERTIFICATE_VALIDITY_DAYS, kw_only=True)
 
     _base: CertificateBase = field(init=False, repr=False)
-    _private_key: KeyPair | None = field(init=False, default=None, repr=False)
-    _cert: X509Certificate = field(init=False, repr=False)
+    _private_key: "KeyPair | None" = field(init=False, default=None, repr=False)
+    _cert: "X509Certificate" = field(init=False, repr=False)
     _trust_chain: list["Certificate"] = field(init=False, factory=list, repr=False)
 
     cert: str = field(init=False, default="", repr=True)
@@ -549,7 +554,7 @@ class Certificate:
         return self._base.issuer.rfc4514_string()
 
     @property
-    def public_key(self) -> PublicKey | None:
+    def public_key(self) -> "PublicKey" | None:
         """Returns the public key object from the certificate."""
         if not hasattr(self, "_base"):
             return None
