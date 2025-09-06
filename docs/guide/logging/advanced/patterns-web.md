@@ -1,8 +1,6 @@
-# Integration Patterns
+# Web Framework Integration
 
-Common patterns for integrating provide.foundation logging with various frameworks and systems.
-
-## Web Framework Integration
+Integration patterns for web frameworks and HTTP applications.
 
 ### FastAPI Integration
 
