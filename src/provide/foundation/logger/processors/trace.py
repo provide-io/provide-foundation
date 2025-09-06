@@ -3,9 +3,15 @@
 from typing import Any, Dict
 
 # Note: Cannot import get_logger here due to circular dependency during setup
-# Will log directly when needed
-import logging
-log = logging.getLogger(__name__)
+# Use structlog directly for foundation-internal logging
+import structlog
+log = structlog.get_logger(__name__)
+
+# Import trace level constant
+from provide.foundation.logger.trace import TRACE_LEVEL_NUM
+
+# Add foundation-specific trace logging method
+log.foundation = lambda msg: log.log(level="trace", event=msg)
 
 # OpenTelemetry feature detection
 try:
@@ -42,11 +48,10 @@ def inject_trace_context(logger: Any, method_name: str, event_dict: Dict[str, An
                 if span_context.trace_flags:
                     event_dict["trace_flags"] = span_context.trace_flags
                     
-                # Use level 5 (below DEBUG=10) for trace-level logging
-                log.log(5, "🔍📝 Injected OpenTelemetry trace context into log")
+                log.foundation("🔍📝 Injected OpenTelemetry trace context into log")
                 return event_dict
         except Exception as e:
-            log.log(5, f"🔍⚠️ Failed to get OpenTelemetry trace context: {e}")
+            log.foundation(f"🔍⚠️ Failed to get OpenTelemetry trace context: {e}")
     
     # Fallback to Foundation's simple tracer context
     try:
@@ -58,13 +63,13 @@ def inject_trace_context(logger: Any, method_name: str, event_dict: Dict[str, An
         if current_span:
             event_dict["trace_id"] = current_span.trace_id
             event_dict["span_id"] = current_span.span_id
-            log.log(5, "🔍📝 Injected Foundation trace context into log")
+            log.foundation("🔍📝 Injected Foundation trace context into log")
         elif current_trace_id:
             event_dict["trace_id"] = current_trace_id
-            log.log(5, "🔍📝 Injected Foundation trace ID into log")
+            log.foundation("🔍📝 Injected Foundation trace ID into log")
             
     except Exception as e:
-        log.log(5, f"🔍⚠️ Failed to get Foundation trace context: {e}")
+        log.foundation(f"🔍⚠️ Failed to get Foundation trace context: {e}")
     
     return event_dict
 
