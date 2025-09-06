@@ -16,7 +16,7 @@ except ImportError:
     aiofiles = None
 
 from provide.foundation.config.base import BaseConfig
-from provide.foundation.config.env import EnvConfig
+from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.config.types import ConfigDict, ConfigFormat, ConfigSource
 from provide.foundation.errors.config import ConfigurationError
 from provide.foundation.errors.decorators import with_error_handling
@@ -184,7 +184,7 @@ class FileConfigLoader(ConfigLoader):
         return result
 
 
-class EnvConfigLoader(ConfigLoader):
+class RuntimeConfigLoader(ConfigLoader):
     """Load configuration from environment variables."""
 
     def __init__(
@@ -211,8 +211,8 @@ class EnvConfigLoader(ConfigLoader):
 
     async def load(self, config_class: type[T]) -> T:
         """Load configuration from environment variables."""
-        if not issubclass(config_class, EnvConfig):
-            raise TypeError(f"{config_class.__name__} must inherit from EnvConfig")
+        if not issubclass(config_class, RuntimeConfig):
+            raise TypeError(f"{config_class.__name__} must inherit from RuntimeConfig")
 
         return config_class.from_env(
             prefix=self.prefix,

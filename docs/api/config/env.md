@@ -113,12 +113,12 @@ class DatabaseConfig(BaseConfig):
 
 ## Classes
 
-### EnvConfig
+### RuntimeConfig
 
 Base configuration class that supports loading from environment variables.
 
 ```python
-class EnvConfig(BaseConfig):
+class RuntimeConfig(BaseConfig):
     """
     Configuration that can be loaded from environment variables.
     All methods are async to support async secret fetching and validation.
@@ -155,7 +155,7 @@ def from_env(
 **Example:**
 ```python
 @define(frozen=True)
-class DatabaseConfig(EnvConfig):
+class DatabaseConfig(RuntimeConfig):
     host: str = field(default="localhost")
     port: int = field(default=5432)
     username: str = field()
@@ -308,7 +308,7 @@ def parse_database_url(value: str) -> dict:
     }
 
 @define(frozen=True)
-class DatabaseConfig(EnvConfig):
+class DatabaseConfig(RuntimeConfig):
     connection: dict = env_field(
         env_var="DATABASE_URL", 
         parser=parse_database_url
@@ -341,7 +341,7 @@ except ValueError as e:
 
 ```python
 @define(frozen=True)
-class AppConfig(EnvConfig):
+class AppConfig(RuntimeConfig):
     name: str = field(default="myapp")
     debug: bool = field(default=False)
     port: int = field(default=8000)
@@ -362,7 +362,7 @@ config = AppConfig.from_env(prefix="APP")
 import json
 
 @define(frozen=True)
-class ServiceConfig(EnvConfig):
+class ServiceConfig(RuntimeConfig):
     services: list[str] = env_field(parser=lambda x: x.split(","))
     features: dict = env_field(parser=json.loads, default_factory=dict)
     timeout: float = env_field(parser=float, default=30.0)
@@ -379,7 +379,7 @@ config = ServiceConfig.from_env(prefix="SERVICE")
 
 ```python
 @define(frozen=True)
-class SecureConfig(EnvConfig):
+class SecureConfig(RuntimeConfig):
     database_password: str = field(sensitive=True)
     api_key: str = field(sensitive=True)
     jwt_secret: str = field(sensitive=True)
@@ -411,4 +411,4 @@ result = subprocess.run(
 - [Configuration Manager API](manager.md) - Centralized configuration management
 - [Configuration Loaders API](loader.md) - Multi-source loading
 - [Environment Configuration Guide](/guide/config/environment/) - Setup and best practices
-- [Docker Integration Guide](/cookbook/recipes/docker/) - Container deployment patterns
+- [Configuration Best Practices](../guide/config/best-practices.md) - Container and deployment patterns

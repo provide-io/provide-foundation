@@ -138,7 +138,7 @@ def env_field(
     return field(metadata=metadata, **kwargs)
 
 
-class EnvConfig(BaseConfig):
+class RuntimeConfig(BaseConfig):
     """
     Configuration that can be loaded from environment variables.
     All methods are async to support async secret fetching and validation.
@@ -205,7 +205,7 @@ class EnvConfig(BaseConfig):
                         raise ValueError(f"Failed to parse {env_var}: {e}")
                 else:
                     # Try to infer parser from type
-                    value = EnvConfig._auto_parse(attr, value)
+                    value = RuntimeConfig._auto_parse(attr, value)
 
                 data[attr.name] = value
 
@@ -285,7 +285,7 @@ class EnvConfig(BaseConfig):
                     raise ValueError(f"Failed to parse {env_var}: {e}")
             else:
                 # Try to infer parser from type
-                value = EnvConfig._auto_parse(attr, value)
+                value = RuntimeConfig._auto_parse(attr, value)
 
             data[field_name] = value
 

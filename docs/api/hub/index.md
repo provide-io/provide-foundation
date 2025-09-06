@@ -28,7 +28,7 @@ The Hub uses registry dimensions to organize different types of registrations:
 
 ### Discovery Mechanisms
 
-1. **Decorator Registration** - Direct registration using `@register_component` and `@register_command`
+1. **Direct Registration** - Hub-based registration using `hub.add_component()` and `@register_command`
 2. **Entry Point Discovery** - Automatic discovery from installed packages
 3. **Programmatic Registration** - Runtime registration via Hub methods
 
@@ -37,24 +37,31 @@ The Hub uses registry dimensions to organize different types of registrations:
 ### Basic Component Registration
 
 ```python
-from provide.foundation.hub.components import register_component, BaseComponent
+from provide.foundation.hub import Hub
 
-@register_component("database", version="1.0.0")
-class DatabaseService(BaseComponent):
+class DatabaseService:
     """Database connection service."""
     
-    def _setup(self):
-        self.connection = create_connection()
+    def __init__(self, name: str):
+        self.name = name
+        self.connection = None
         
-    def _teardown(self):
+    def __enter__(self):
+        self.connection = create_connection()
+        return self
+        
+    def __exit__(self, *args):
         self.connection.close()
 
     def query(self, sql: str):
         return self.connection.execute(sql)
 
-# Use the component
-db = DatabaseService()
-with db:
+# Register and use the component
+hub = Hub()
+hub.add_component(DatabaseService, name="database", version="1.0.0")
+
+db_class = hub.get_component("database")
+with db_class("mydb") as db:
     results = db.query("SELECT * FROM users")
 ```
 
@@ -120,19 +127,21 @@ class PluginInterface:
     def process(self, data):
         raise NotImplementedError
 
-# Register plugins
-@register_component("json_plugin", dimension="plugin")
+# Define plugins
 class JsonProcessor(PluginInterface):
     def process(self, data):
         return json.dumps(data)
 
-@register_component("xml_plugin", dimension="plugin")  
 class XmlProcessor(PluginInterface):
     def process(self, data):
         return dicttoxml(data)
 
-# Discover and use plugins
+# Register and use plugins
 hub = Hub()
+hub.add_component(JsonProcessor, name="json_plugin", dimension="plugin")
+hub.add_component(XmlProcessor, name="xml_plugin", dimension="plugin")
+
+# Or discover from entry points
 plugins = hub.discover_components("myapp.plugins", dimension="plugin")
 
 for name, plugin_class in plugins.items():
@@ -146,16 +155,19 @@ for name, plugin_class in plugins.items():
 ```python
 from provide.foundation.hub.manager import get_hub
 
-# Register services
-@register_component("logger_service")
+# Define services
 class LoggerService:
     def get_logger(self, name: str):
         return logging.getLogger(name)
 
-@register_component("config_service")
 class ConfigService:
     def get(self, key: str, default=None):
         return os.getenv(key, default)
+
+# Register services
+hub = get_hub()
+hub.add_component(LoggerService, name="logger_service")
+hub.add_component(ConfigService, name="config_service")
 
 # Use as service container
 hub = get_hub()
@@ -237,24 +249,25 @@ cli = hub.create_cli("myapp")
 ### Advanced Component Lifecycle
 
 ```python
-@register_component("advanced_service")
-class AdvancedService(BaseComponent):
+class AdvancedService:
     """Service with complex lifecycle."""
     
-    def __init__(self, **config):
-        super().__init__(**config)
+    def __init__(self, name: str, **config):
+        self.name = name
+        self.config = config
         self.connections = []
         self.background_tasks = []
     
-    def _setup(self):
+    def __enter__(self):
         # Initialize connections
-        self.db = self.config.get("database_url")
-        self.redis = self.config.get("redis_url")
+        self.db = create_db_connection(self.config.get("database_url"))
+        self.redis = create_redis_connection(self.config.get("redis_url"))
         
         # Start background tasks
         self.background_tasks.append(start_metrics_collector())
+        return self
         
-    def _teardown(self):
+    def __exit__(self, *args):
         # Stop background tasks
         for task in self.background_tasks:
             task.stop()
@@ -265,14 +278,14 @@ class AdvancedService(BaseComponent):
         if hasattr(self, "redis"):
             self.redis.close()
 
-# Use with lifecycle management
-service = AdvancedService(
-    database_url="postgresql://localhost/app",
-    redis_url="redis://localhost:6379"
-)
+# Register and use with hub
+hub = Hub()
+hub.add_component(AdvancedService, name="advanced_service")
 
-# Automatic lifecycle management
-with service:
+service_class = hub.get_component("advanced_service")
+with service_class("myservice", 
+                  database_url="postgresql://localhost/app",
+                  redis_url="redis://localhost:6379") as service:
     # Service is initialized here
     service.do_work()
     # Service is cleaned up automatically
@@ -322,13 +335,13 @@ def test_component_registration():
     # Use local hub for testing
     hub = Hub()
     
-    @register_component("test_service")
     class TestService:
         def get_value(self):
             return "test"
     
-    # Test registration
-    hub.add_component(TestService, "test")
+    # Register and test component
+    hub.add_component(TestService, name="test_service")
+    service_class = hub.get_component("test_service")
     service_class = hub.get_component("test")
     assert service_class == TestService
     

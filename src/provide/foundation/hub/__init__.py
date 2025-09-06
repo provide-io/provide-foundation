@@ -13,18 +13,19 @@ Key Features:
 - Type-safe decorators using Python 3.11+ features
 
 Example Usage:
-    >>> from provide.foundation.hub import Hub, register_component, register_command
+    >>> from provide.foundation.hub import Hub, register_command
     >>>
-    >>> @register_component("my_resource", version="1.0.0")
     >>> class MyResource:
-    >>>     pass
+    >>>     def __init__(self, name: str):
+    >>>         self.name = name
     >>>
     >>> @register_command("init")
     >>> def init_command():
     >>>     pass
     >>>
     >>> hub = Hub()
-    >>> resource = hub.get_component("my_resource")
+    >>> hub.add_component(MyResource, name="my_resource", version="1.0.0")
+    >>> resource_class = hub.get_component("my_resource")
     >>> command = hub.get_command("init")
 """
 

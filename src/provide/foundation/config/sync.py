@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any, TypeVar
 
 from provide.foundation.config.base import BaseConfig
-from provide.foundation.config.env import EnvConfig
+from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.config.loader import (
     DictConfigLoader,
     FileConfigLoader,
@@ -76,7 +76,7 @@ def load_config_from_env(
     Load configuration from environment variables (sync wrapper).
 
     Args:
-        config_class: Configuration class (must inherit from EnvConfig)
+        config_class: Configuration class (must inherit from RuntimeConfig)
         prefix: Prefix for environment variables
         delimiter: Delimiter between prefix and field name
         case_sensitive: Whether variable names are case-sensitive
@@ -84,8 +84,8 @@ def load_config_from_env(
     Returns:
         Configuration instance
     """
-    if not issubclass(config_class, EnvConfig):
-        raise TypeError(f"{config_class.__name__} must inherit from EnvConfig")
+    if not issubclass(config_class, RuntimeConfig):
+        raise TypeError(f"{config_class.__name__} must inherit from RuntimeConfig")
 
     return run_async(
         config_class.from_env(
@@ -141,9 +141,9 @@ def load_config_from_multiple(
         if source_type == "file":
             loaders.append(FileConfigLoader(source_data))
         elif source_type == "env":
-            from provide.foundation.config.loader import EnvConfigLoader
+            from provide.foundation.config.loader import RuntimeConfigLoader
 
-            loaders.append(EnvConfigLoader(prefix=source_data))
+            loaders.append(RuntimeConfigLoader(prefix=source_data))
         elif source_type == "dict":
             loaders.append(DictConfigLoader(source_data))
         else:

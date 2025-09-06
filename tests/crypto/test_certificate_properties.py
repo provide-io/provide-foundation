@@ -209,7 +209,7 @@ async def test_is_ca_extension_not_found_logs_debug(mocker):
 
     # Patch the logger from the certificate module
     mock_logger_debug = mocker.patch(
-        "provide.foundation.crypto.logger.debug"
+        "provide.foundation.crypto.certificates.logger.debug"
     )
 
     # Temporarily replace the _cert.extensions on the instance
@@ -224,7 +224,7 @@ async def test_is_ca_extension_not_found_logs_debug(mocker):
     assert cert_instance.is_ca is False  # is_ca should return False
 
     mock_logger_debug.assert_called_once_with(
-        "📜🔍⚠️ is_ca: Basic Constraints extension not found."
+        "📜🔍⚠️ is_ca: Basic Constraints extension not found"
     )
 
     # Restore original extensions if necessary, though for this test it's fine as instance is local
