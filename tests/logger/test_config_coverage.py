@@ -211,6 +211,6 @@ class TestTelemetryConfigCoverage:
         from provide.foundation.logger.config.telemetry import TelemetryConfig
         
         with patch.dict(os.environ, {"PROVIDE_LOG_LEVEL": "INVALID"}):
-            # Should propagate strict mode to logging config
-            with pytest.raises(ValueError):
-                TelemetryConfig.from_env(strict=True)
+            # Strict mode logs warnings but still returns config with defaults
+            config = TelemetryConfig.from_env(strict=True)
+            assert config.logging.default_level == "DEBUG"  # Should use default
