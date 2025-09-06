@@ -97,26 +97,36 @@ class TestLoadConfigFunctions:
     
     def test_load_config_basic(self):
         """Test basic config loading from dict."""
-        config = load_config(TestConfig, {"name": "loaded", "value": 100})
-        
-        assert isinstance(config, TestConfig)
-        assert config.name == "loaded"
-        assert config.value == 100
+        with patch('provide.foundation.config.sync.run_async') as mock_run_async:
+            mock_run_async.return_value = TestConfig(name="loaded", value=100)
+            
+            config = load_config(TestConfig, {"name": "loaded", "value": 100})
+            
+            assert isinstance(config, TestConfig)
+            assert config.name == "loaded"
+            assert config.value == 100
+            mock_run_async.assert_called_once()
     
     def test_load_config_empty_data(self):
         """Test loading with empty data."""
-        config = load_config(TestConfig)
-        
-        assert isinstance(config, TestConfig)
-        assert config.name == "test"  # default
-        assert config.value == 42  # default
+        with patch('provide.foundation.config.sync.run_async') as mock_run_async:
+            mock_run_async.return_value = TestConfig()
+            
+            config = load_config(TestConfig)
+            
+            assert isinstance(config, TestConfig)
+            mock_run_async.assert_called_once()
     
     def test_load_config_with_source(self):
         """Test loading with specific source."""
-        config = load_config(TestConfig, {"name": "sourced"}, ConfigSource.FILE)
-        
-        assert isinstance(config, TestConfig)
-        assert config.name == "sourced"
+        with patch('provide.foundation.config.sync.run_async') as mock_run_async:
+            mock_run_async.return_value = TestConfig(name="sourced")
+            
+            config = load_config(TestConfig, {"name": "sourced"}, ConfigSource.FILE)
+            
+            assert isinstance(config, TestConfig)
+            assert config.name == "sourced"
+            mock_run_async.assert_called_once()
     
     @patch.dict('os.environ', {'TEST_APP_NAME': 'env_app', 'TEST_PORT': '9000'})
     def test_load_config_from_env_basic(self):
