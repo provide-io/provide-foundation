@@ -96,7 +96,8 @@
       "Bash(ruff check:*)",
       "Bash(mypy:*)",
       "Bash(uv build:*)",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(pkill:*)"
     ],
     "deny": [],
     "ask": [],
