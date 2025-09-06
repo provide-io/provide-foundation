@@ -29,7 +29,11 @@
       "Bash(timeout 10s pytest tests/process/test_lifecycle.py::TestWaitForProcessOutput::test_wait_for_output_empty_pattern -vvv)",
       "Bash(timeout 10s pytest tests/logger/test_config_coverage.py::TestTelemetryConfigCoverage::test_telemetry_config_from_env_strict_mode -vvv)",
       "Bash(timeout 10s pytest tests/logger/test_config_coverage.py::TestTelemetryConfigCoverage::test_telemetry_config_from_env_strict_mode -v)",
-      "Bash(timeout 90s pytest -n auto --cov=provide.foundation --cov-branch --cov-report=term-missing --tb=short)"
+      "Bash(timeout 90s pytest -n auto --cov=provide.foundation --cov-branch --cov-report=term-missing --tb=short)",
+      "Bash(timeout 10s pytest tests/process/test_lifecycle.py::TestWaitForProcessOutput::test_wait_for_simple_output -vvv --tb=long)",
+      "Bash(timeout 10s pytest tests/test_component_registry.py::TestFoundationBootstrapIntegration::test_foundation_bootstraps_with_registry -vvv --tb=long)",
+      "Bash(timeout 30s pytest tests/process/test_lifecycle.py::TestWaitForProcessOutput::test_wait_for_simple_output tests/process/test_lifecycle.py::TestWaitForProcessOutput::test_wait_for_output_empty_pattern tests/process/test_lifecycle.py::TestWaitForProcessOutput::test_wait_for_complex_pattern tests/test_component_registry.py::TestFoundationBootstrapIntegration::test_foundation_bootstraps_with_registry -v)",
+      "Bash(timeout 10s pytest --cov=src/provide/foundation/hub/manager.py --cov-report=term-missing tests/ -k \"hub\" --tb=no -q)"
     ],
     "deny": [],
     "ask": [],
