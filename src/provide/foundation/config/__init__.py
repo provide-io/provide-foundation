@@ -54,6 +54,12 @@ from provide.foundation.utils.parsing import (
     parse_dict,
     parse_list,
 )
+from provide.foundation.config.validators import (
+    validate_choice,
+    validate_non_negative,
+    validate_positive,
+    validate_range,
+)
 
 __all__ = [
     # Base
@@ -90,6 +96,11 @@ __all__ = [
     "parse_dict",
     "parse_list",
     "set_config",
+    # Validators
+    "validate_choice",
     "validate_config",
+    "validate_non_negative",
+    "validate_positive",
+    "validate_range",
     "validate_schema",
 ]
