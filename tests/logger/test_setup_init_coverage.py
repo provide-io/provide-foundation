@@ -1,8 +1,33 @@
 """Test coverage for logger setup __init__ module."""
 
+import sys
+
 
 class TestLoggerSetupInitCoverage:
     """Test logger setup __init__ module functionality."""
+
+    def setup_method(self):
+        """Clear module state before each test to ensure isolation."""
+        # Clear logger setup modules from cache
+        modules_to_clear = [
+            'provide.foundation.logger.setup',
+            'provide.foundation.logger.setup.testing',
+            'provide.foundation.logger.setup.coordinator',
+        ]
+        
+        # Save modules that we might restore
+        self.saved_modules = {}
+        for mod in modules_to_clear:
+            if mod in sys.modules:
+                self.saved_modules[mod] = sys.modules[mod]
+                del sys.modules[mod]
+
+    def teardown_method(self):
+        """Restore module state after test if needed."""
+        # Only restore if we have saved modules and they're still not in cache
+        for mod_name, module in self.saved_modules.items():
+            if mod_name not in sys.modules:
+                sys.modules[mod_name] = module
 
     def test_internal_setup_import(self):
         """Test internal_setup can be imported."""

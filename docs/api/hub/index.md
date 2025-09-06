@@ -373,7 +373,7 @@ def teardown():
 
 ## Related Documentation
 
-- [Component Registration Guide](/guide/hub/components/) - Detailed component patterns
-- [CLI Integration Guide](/guide/cli/hub/) - Hub-based CLI development  
-- [Plugin Development Guide](/guide/hub/plugins/) - Creating and distributing plugins
-- [Registry Pattern Guide](/guide/concepts/registry/) - Understanding the registry system
+- [Components API](components.md) - Component registration patterns
+- [CLI Framework Guide](../../guide/cli/index.md) - CLI development with Hub  
+- [Advanced Usage Guide](../../guide/advanced/index.md) - Plugin patterns
+- [Registry Utils Guide](../../guide/utilities/registry.md) - Registry system patterns

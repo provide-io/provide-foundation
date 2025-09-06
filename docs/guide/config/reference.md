@@ -525,5 +525,5 @@ export FOUNDATION_LOG_LEVEL=DEBUG
 
 - [Configuration Best Practices](best-practices.md) - Configuration patterns and recommendations
 - [Environment Setup](environment.md) - Environment-specific configuration guide
-- [API Reference](../../api/config/) - Complete configuration API documentation
+- [API Reference](../../api/config/index.md) - Complete configuration API documentation
 - [Examples](../../getting-started/examples.md) - Working configuration examples

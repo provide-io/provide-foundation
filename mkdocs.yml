@@ -126,11 +126,21 @@ nav:
     - Logging:
       - guide/logging/index.md
       - Basic Usage: guide/logging/basic.md
-      - Advanced Patterns: guide/logging/advanced.md
+      - Advanced Patterns: 
+        - guide/logging/advanced.md
+        - Overview: guide/logging/advanced/index.md
+        - Filtering: guide/logging/advanced/filtering.md
+        - Patterns: guide/logging/advanced/patterns.md
+        - Processors: guide/logging/advanced/processors.md
       - Async Logging: guide/logging/async.md
       - Exception Handling: guide/logging/exceptions.md
       - Context Management: guide/logging/context.md
-      - Performance Tuning: guide/logging/performance.md
+      - Performance Tuning: 
+        - guide/logging/performance.md
+        - Overview: guide/logging/performance/index.md
+        - Benchmarks: guide/logging/performance/benchmarks.md
+        - Optimization: guide/logging/performance/optimization.md
+        - Sampling: guide/logging/performance/sampling.md
     - CLI Framework:
       - guide/cli/index.md
       - Commands: guide/cli/commands.md
@@ -151,6 +161,7 @@ nav:
       - guide/security/index.md
     - Advanced:
       - guide/advanced/index.md
+      - Advanced Usage: guide/advanced-usage.md
       - Custom Emoji Sets: guide/advanced/custom-emoji-sets.md
       - Custom Processors: guide/advanced/custom-processors.md
       - Integration Patterns: guide/advanced/integration-patterns.md

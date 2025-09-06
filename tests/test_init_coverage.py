@@ -22,6 +22,17 @@ class TestFoundationInit:
         for module_name in cli_modules:
             self.saved_cli_modules[module_name] = sys.modules[module_name]
             del sys.modules[module_name]
+            
+        # Also clear the main foundation module to reset any cached __getattr__ state
+        foundation_modules = [
+            name
+            for name in sys.modules.keys() 
+            if name == "provide.foundation"
+        ]
+        self.saved_foundation_modules = {}
+        for module_name in foundation_modules:
+            self.saved_foundation_modules[module_name] = sys.modules[module_name]
+            del sys.modules[module_name]
 
     def teardown_method(self):
         """Restore module state after each test."""
@@ -29,6 +40,10 @@ class TestFoundationInit:
 
         # Restore CLI modules
         for module_name, module in self.saved_cli_modules.items():
+            sys.modules[module_name] = module
+            
+        # Restore foundation modules
+        for module_name, module in self.saved_foundation_modules.items():
             sys.modules[module_name] = module
 
     def test_console_imports_available(self):

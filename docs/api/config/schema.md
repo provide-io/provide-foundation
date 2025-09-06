@@ -578,4 +578,4 @@ except ConfigValidationError as e:
 - [Configuration Base API](base.md) - BaseConfig and field definitions
 - [Configuration Manager API](manager.md) - Using schemas with ConfigManager
 - [Environment Config API](env.md) - Environment-specific validation
-- [Configuration Best Practices](/guide/config/best-practices/) - Validation strategies
+- [Configuration Best Practices](../../guide/config/best-practices.md) - Validation strategies

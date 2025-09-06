@@ -459,4 +459,4 @@ except ConfigurationError as e:
 - [Configuration Manager API](manager.md) - Using loaders with ConfigManager
 - [Environment Config API](env.md) - Environment variable loading
 - [Configuration Base API](base.md) - BaseConfig and field definitions
-- [Configuration Files Guide](/guide/config/files/) - File format details and locations
+- [Configuration Files Guide](../../guide/config/files.md) - File format details and locations
