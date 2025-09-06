@@ -51,6 +51,12 @@ class TestFoundationInit:
     def test_aaa_getattr_cli_click_missing(self):
         """Test __getattr__ CLI import with missing click dependency.""" 
         import provide.foundation
+        import sys
+        
+        # Clear any existing CLI module from cache
+        cli_module_key = 'provide.foundation.cli'
+        if cli_module_key in sys.modules:
+            del sys.modules[cli_module_key]
         
         def mock_import_func(name, *args, **kwargs):
             if name == 'provide.foundation.cli':
@@ -64,6 +70,12 @@ class TestFoundationInit:
     def test_aaa_getattr_cli_other_import_error(self):
         """Test __getattr__ CLI import with other ImportError."""
         import provide.foundation
+        import sys
+        
+        # Clear any existing CLI module from cache
+        cli_module_key = 'provide.foundation.cli'
+        if cli_module_key in sys.modules:
+            del sys.modules[cli_module_key]
         
         def mock_import_func(name, *args, **kwargs):
             if name == 'provide.foundation.cli':
