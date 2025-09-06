@@ -18,9 +18,36 @@ except ImportError:
     _HAS_CLICK = False
 
 from provide.foundation.logger import get_logger, logger as foundation_logger
-from provide.foundation.utils import TokenBucketRateLimiter
+import threading
 
 log = get_logger(__name__)
+
+class SimpleSyncRateLimiter:
+    """Simple synchronous rate limiter for the generate command."""
+    
+    def __init__(self, capacity: float, refill_rate: float):
+        self.capacity = capacity
+        self.refill_rate = refill_rate
+        self.tokens = capacity
+        self.last_refill = time.time()
+        self.lock = threading.Lock()
+    
+    def acquire(self) -> bool:
+        """Try to acquire a token."""
+        with self.lock:
+            now = time.time()
+            elapsed = now - self.last_refill
+            
+            # Refill tokens
+            tokens_to_add = elapsed * self.refill_rate
+            self.tokens = min(self.capacity, self.tokens + tokens_to_add)
+            self.last_refill = now
+            
+            # Try to consume a token
+            if self.tokens >= 1.0:
+                self.tokens -= 1.0
+                return True
+            return False
 
 # Cut-up phrases inspired by Burroughs
 BURROUGHS_PHRASES = [
@@ -235,11 +262,11 @@ if _HAS_CLICK:
             last_stats_time = start_time
             last_stats_sent = 0
             
-            # Set up Foundation's rate limiter
+            # Set up rate limiter
             # Configure with the target rate and a reasonable burst size
-            rate_limiter = TokenBucketRateLimiter(
-                rate=rate,  # tokens per second
-                capacity=min(rate * 2, 1000)  # Allow burst up to 2 seconds worth or 1000
+            rate_limiter = SimpleSyncRateLimiter(
+                capacity=min(rate * 2, 1000),  # Allow burst up to 2 seconds worth or 1000
+                refill_rate=rate  # tokens per second
             )
             
             # Track rate limiting
