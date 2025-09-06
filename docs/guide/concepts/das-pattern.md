@@ -15,4 +15,4 @@ Examples:
 
 - Predictable naming
 - Easy filtering
-- Clear semantics
+- Clear meaning

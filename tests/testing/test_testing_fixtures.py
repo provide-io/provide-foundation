@@ -87,7 +87,8 @@ class TestTestingFixtures:
         
         # We can't easily test the actual fixture without pytest running it,
         # but we can verify it's properly defined
-        assert hasattr(captured_stderr_for_foundation, '_pytestfixturefunction')
+        # In modern pytest (8+), fixtures have _fixture_function instead of _pytestfixturefunction
+        assert hasattr(captured_stderr_for_foundation, '_fixture_function')
 
     def test_telemetry_config_creation(self):
         """Test that TelemetryConfig can be created for fixtures."""

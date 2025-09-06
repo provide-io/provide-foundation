@@ -35,7 +35,7 @@ def logging_options(f: F) -> F:
     )(f)
     f = click.option(
         "--log-file",
-        type=click.Path(dir_okay=False, writable=True, resolve_path=True),
+        type=click.Path(dir_okay=False, writable=True, path_type=Path),
         default=None,
         envvar="PROVIDE_LOG_FILE",
         help="Write logs to file",
@@ -61,7 +61,7 @@ def config_options(f: F) -> F:
     f = click.option(
         "--config",
         "-c",
-        type=click.Path(exists=True, dir_okay=False, resolve_path=True),
+        type=click.Path(exists=True, dir_okay=False, path_type=Path),
         default=None,
         envvar="PROVIDE_CONFIG_FILE",
         help="Path to configuration file",

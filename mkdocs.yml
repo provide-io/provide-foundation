@@ -80,7 +80,49 @@ plugins:
         - en
   
   - autorefs
-  
+
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            # Docstring parsing
+            docstring_style: google
+            docstring_options:
+              ignore_init_summary: true
+            
+            # Source code linking
+            show_source: true
+            show_root_heading: true
+            show_root_toc_entry: true
+            show_root_full_path: false
+            show_root_members_full_path: false
+            
+            # Member display
+            show_bases: true
+            show_inheritance_diagram: false
+            show_if_no_docstring: true
+            inherited_members: false
+            members_order: source
+            group_by_category: true
+            show_category_heading: true
+            
+            # Signatures
+            show_signature_annotations: true
+            signature_crossrefs: true
+            separate_signature: false
+            
+            # Headings and navigation
+            heading_level: 2
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            
+            # Filtering
+            filters:
+              - "!^_"  # Hide private members
+              - "!^__.*__$"  # Hide special methods except in special cases
+            
+            # Cross-references
+            merge_init_into_class: true
   
   - section-index
   
@@ -207,6 +249,9 @@ nav:
       - Context Management: guide/logging/context.md
       - Performance Tuning: guide/logging/performance.md
     
+    - Testing: guide/testing.md
+    - Advanced Usage: guide/advanced-usage.md
+    
     - CLI Framework:
       - guide/cli/index.md
       - Command Registration: guide/cli/commands.md
@@ -227,9 +272,14 @@ nav:
     - Logger:
       - api/logger/index.md
       - Base Logger: api/logger/base.md
+      - Core Implementation: api/logger/core.md
+      - Factory Functions: api/logger/factories.md
       - Configuration: api/logger/config.md
       - Processors: api/logger/processors.md
       - Emoji Matrix: api/logger/emoji.md
+    
+    - Context:
+      - api/context/index.md
     
     - Configuration:
       - api/config/index.md
@@ -238,17 +288,31 @@ nav:
       - Loaders: api/config/loader.md
       - Schema: api/config/schema.md
     
+    - Emoji Sets:
+      - api/emoji_sets/index.md
+      - Base Layer: api/emoji_sets/base.md
+      - HTTP Layer: api/emoji_sets/http.md
+      - Database Layer: api/emoji_sets/database.md
+      - LLM Layer: api/emoji_sets/llm.md
+      - Task Queue Layer: api/emoji_sets/task_queue.md
+      - Custom Layers: api/emoji_sets/custom.md
+    
     - CLI:
       - api/cli/index.md
       - Decorators: api/cli/decorators.md
       - Testing: api/cli/testing.md
       - Utilities: api/cli/utils.md
     
+    - Core:
+      - api/core/index.md
+    
     - Hub:
       - api/hub/index.md
     
     - Utilities:
       - api/utils/index.md
+      - Console: api/utils/console.md
+      - Platform: api/utils/platform.md
       - File Operations: api/file/index.md
       - Crypto: api/crypto/index.md
   

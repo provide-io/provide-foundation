@@ -18,16 +18,16 @@ Emoji sets in provide.foundation are passive configuration objects that map fiel
 
 | Type | Used In | Purpose | Not Us Because |
 |------|---------|---------|----------------|
-| **BI Semantic Layer** | Data warehouses (Cube, dbt) | Business-friendly data abstraction | We're about logging, not data warehousing |
-| **Generic Semantic Logging** | Observability tools | Structured logging with types | We add domain-specific interfaces + visual parsing |
-| **OpenTelemetry Semantic Conventions** | Distributed tracing | Standardized attribute names | We're opinionated for provide.io, not a standard |
+| **BI Emoji Set** | Data warehouses (Cube, dbt) | Business-friendly data abstraction | We're about logging, not data warehousing |
+| **Generic Contextual Logging** | Observability tools | Structured logging with types | We add domain-specific interfaces + visual parsing |
+| **OpenTelemetry Contextual Conventions** | Distributed tracing | Standardized attribute names | We're opinionated for provide.io, not a standard |
 
 ### What We ARE
 
 **Domain-Specific Emoji Mapping Configurations** - Think of them as passive data structures that define how field values map to emojis during log formatting:
 
 ```python
-# How emoji sets actually work - just use regular logging with semantic field names
+# How emoji sets actually work - just use regular logging with Contextual field names
 logger.info("http_request", 
     **{"http.method": "GET", "http.status_code": 200, "http.target": "/api/users"})
 # The emoji processor automatically adds emojis based on field names
@@ -41,7 +41,7 @@ provide.foundation includes pre-configured layers for common domains:
 ### 1. HTTP Layer 🌐
 For web requests and responses:
 ```python
-# Just log with the semantic field names - emojis are added automatically
+# Just log with the Contextual field names - emojis are added automatically
 logger.info("http_request",
     **{"http.method": "POST",      # → 📤 (added by processor)
        "http.status_code": 201,     # → ✅ (added by processor)
@@ -52,7 +52,7 @@ logger.info("http_request",
 ### 2. Database Layer 🗄️
 For database operations:
 ```python
-# Log with semantic field names - emojis are mapped automatically
+# Log with Contextual field names - emojis are mapped automatically
 logger.info("db_operation",
     **{"db.system": "postgres",     # → 🐘 (added by processor)
        "db.operation": "insert",     # → ➕ (added by processor)
@@ -63,7 +63,7 @@ logger.info("db_operation",
 ### 3. LLM Layer 🤖
 For AI/ML model interactions:
 ```python
-# Log with semantic field names for automatic emoji mapping
+# Log with Contextual field names for automatic emoji mapping
 logger.info("llm_operation",
     **{"llm.provider": "anthropic", # → 📚 (added by processor)
        "llm.task": "generation",     # → ✍️ (added by processor)
@@ -75,7 +75,7 @@ logger.info("llm_operation",
 ### 4. Task Queue Layer 📨
 For async job processing:
 ```python
-# Log with semantic field names for automatic emoji mapping
+# Log with Contextual field names for automatic emoji mapping
 logger.info("task_completed",
     **{"task.system": "celery",     # → 🥕 (added by processor)
        "task.status": "success",     # → ✅ (added by processor)
@@ -153,7 +153,7 @@ PAYMENT_LAYER = EmojiSetConfig(
 # Register and use it
 from provide.foundation import logger
 
-# Log with your custom semantic fields
+# Log with your custom Contextual fields
 logger.info("payment_processed",
     **{"payment.method": "card",  # → 💳 (automatically mapped)
        "payment.amount": 99.99}
@@ -191,7 +191,7 @@ config = TelemetryConfig(
 
 ## Best Practices
 
-1. **Use the right layer** - Don't force HTTP semantics on database operations
+1. **Use the right layer** - Don't force HTTP conventions on database operations
 2. **Extend thoughtfully** - Create custom layers for truly distinct domains
 3. **Preserve context** - Emoji sets complement, not replace, structured logging
 4. **Monitor performance** - Disable in ultra-high-throughput scenarios if needed
@@ -249,7 +249,7 @@ The key enhancement: We add visual parsing and domain validation **on top of** O
 ## Summary
 
 provide.foundation's emoji sets are a unique feature that provides:
-- The structure of semantic logging
+- The structure of Contextual logging
 - The domain awareness of BI emoji sets
 - The visual parsing of emoji-enhanced output
 - The performance of optimized telemetry

@@ -1,6 +1,5 @@
 """Common CLI utilities for output, logging, and testing."""
 
-import inspect
 import json
 from typing import Any
 
@@ -137,21 +136,10 @@ def create_cli_context(**kwargs) -> Context:
 
 
 class CliTestRunner:
-    """
-    Test runner for CLI commands using Click's testing facilities.
-    This wrapper provides compatibility for different Click versions
-    regarding the 'mix_stderr' functionality.
-    """
+    """Test runner for CLI commands using Click's testing facilities."""
 
-    def __init__(self, mix_stderr: bool = False) -> None:
-        self._mix_stderr = mix_stderr
-        runner_sig = inspect.signature(CliRunner)
-        self._supports_mix_stderr = "mix_stderr" in runner_sig.parameters
-
-        if self._supports_mix_stderr:
-            self.runner = CliRunner(mix_stderr=self._mix_stderr)
-        else:
-            self.runner = CliRunner()
+    def __init__(self) -> None:
+        self.runner = CliRunner()
 
     def invoke(
         self,
@@ -162,10 +150,8 @@ class CliTestRunner:
         catch_exceptions: bool = True,
         **kwargs,
     ) -> Result:
-        """
-        Invoke a CLI command for testing.
-        """
-        result = self.runner.invoke(
+        """Invoke a CLI command for testing."""
+        return self.runner.invoke(
             cli,
             args=args,
             input=input,
@@ -173,14 +159,6 @@ class CliTestRunner:
             catch_exceptions=catch_exceptions,
             **kwargs,
         )
-
-        if not self._supports_mix_stderr and self._mix_stderr and result.stderr_bytes:
-            # Manually mix stderr into stdout by modifying the result object in-place.
-            # This is more robust than re-instantiating the Result object.
-            result.stdout_bytes += result.stderr_bytes
-            result.stderr_bytes = b""
-
-        return result
 
     def isolated_filesystem(self):
         """

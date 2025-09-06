@@ -36,12 +36,12 @@ Complete API documentation for provide.foundation.
   </div>
 
   <div class="feature-card">
-    <h3>🌐 Semantic & Advanced</h3>
-    <p>Domain-specific and advanced features</p>
+    <h3>🌐 Emoji Sets & Advanced</h3>
+    <p>Domain-specific emoji mappings and advanced features</p>
     <ul>
-      <li><a href="semantic/http/">HTTP Layer</a></li>
-      <li><a href="semantic/database/">Database Layer</a></li>
-      <li><a href="semantic/llm/">LLM Layer</a></li>
+      <li><a href="emoji_sets/http/">HTTP Layer</a></li>
+      <li><a href="emoji_sets/database/">Database Layer</a></li>
+      <li><a href="emoji_sets/llm/">LLM Layer</a></li>
     </ul>
   </div>
 </div>

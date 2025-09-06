@@ -4,7 +4,7 @@ Exception handling and logging patterns in provide.foundation.
 
 ## Overview
 
-provide.foundation provides comprehensive exception logging capabilities with automatic traceback capture, structured error context, and integration with the error handling system. Exception logging preserves full stack traces while adding semantic context for debugging.
+provide.foundation provides comprehensive exception logging capabilities with automatic traceback capture, structured error context, and integration with the error handling system. Exception logging preserves full stack traces while adding Contextual context for debugging.
 
 ## Basic Exception Logging
 

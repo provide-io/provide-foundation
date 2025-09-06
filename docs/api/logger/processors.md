@@ -231,9 +231,9 @@ logger.info(
 # Output: [🗄️][🔍][✅] Operation completed
 ```
 
-### Semantic Layer System
+### Emoji Set System
 
-Uses custom semantic field definitions and emoji sets:
+Uses custom Contextual field definitions and emoji sets:
 
 ```python
 # With custom emoji sets
