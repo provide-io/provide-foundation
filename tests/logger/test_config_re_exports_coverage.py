@@ -1,5 +1,6 @@
 """Comprehensive coverage tests for logger/config.py re-exports module."""
 
+import importlib
 import pytest
 
 
@@ -26,7 +27,7 @@ class TestLoggerConfigReExports:
     
     def test_all_exports_defined(self):
         """Test that __all__ exports are properly defined."""
-        import provide.foundation.logger.config as config_module
+        config_module = importlib.import_module('provide.foundation.logger.config')
         
         expected_exports = ["LoggingConfig", "TelemetryConfig"]
         
@@ -35,7 +36,7 @@ class TestLoggerConfigReExports:
     
     def test_all_exports_accessible(self):
         """Test that all items in __all__ are actually accessible."""
-        import provide.foundation.logger.config as config_module
+        config_module = importlib.import_module('provide.foundation.logger.config')
         
         for export_name in config_module.__all__:
             assert hasattr(config_module, export_name)
@@ -44,7 +45,7 @@ class TestLoggerConfigReExports:
     
     def test_module_docstring(self):
         """Test that module has proper docstring."""
-        import provide.foundation.logger.config as config_module
+        config_module = importlib.import_module('provide.foundation.logger.config')
         
         assert config_module.__doc__ is not None
         assert "Foundation Telemetry Configuration Module" in config_module.__doc__
@@ -66,7 +67,7 @@ class TestLoggerConfigReExports:
     def test_star_import_functionality(self):
         """Test that star imports work correctly."""
         # This simulates: from provide.foundation.logger.config import *
-        import provide.foundation.logger.config as config_module
+        config_module = importlib.import_module('provide.foundation.logger.config')
         
         # Get all items that would be imported with star import
         star_imports = {name: getattr(config_module, name) for name in config_module.__all__}
@@ -85,7 +86,7 @@ class TestLoggerConfigReExports:
     
     def test_no_additional_exports(self):
         """Test that only intended items are exported."""
-        import provide.foundation.logger.config as config_module
+        config_module = importlib.import_module('provide.foundation.logger.config')
         
         # Get all public attributes (not starting with _)
         public_attrs = [attr for attr in dir(config_module) if not attr.startswith('_')]
