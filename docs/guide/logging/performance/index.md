@@ -6,8 +6,8 @@ Advanced performance tuning techniques for high-throughput logging scenarios.
 
 This section covers performance optimization strategies for provide.foundation logging:
 
-- **[Benchmarks](performance/benchmarks.md)**: Performance benchmarks and testing
-- **[Optimization Techniques](performance/optimization.md)**: Configuration and code patterns for maximum performance  
-- **[Sampling Strategies](performance/sampling.md)**: Log sampling and rate limiting techniques
+- **[Benchmarks](benchmarks.md)**: Performance benchmarks and testing
+- **[Optimization Techniques](optimization.md)**: Configuration and code patterns for maximum performance  
+- **[Sampling Strategies](sampling.md)**: Log sampling and rate limiting techniques
 
 Each subsection provides detailed guidance for optimizing logging performance in production environments.
