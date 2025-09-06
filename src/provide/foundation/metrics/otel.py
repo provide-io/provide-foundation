@@ -40,10 +40,14 @@ def setup_opentelemetry_metrics(config: TelemetryConfig) -> None:
     Args:
         config: Telemetry configuration
     """
-    _require_otel_metrics()
-    
+    # Check if metrics are disabled first, before checking dependencies
     if not config.metrics_enabled or config.globally_disabled:
         log.debug("📊 OpenTelemetry metrics disabled")
+        return
+    
+    # Check if OpenTelemetry metrics are available
+    if not _HAS_OTEL_METRICS:
+        log.debug("📊 OpenTelemetry metrics not available (dependencies not installed)")
         return
     
     log.debug("📊🚀 Setting up OpenTelemetry metrics")

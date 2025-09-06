@@ -42,10 +42,14 @@ def setup_opentelemetry_tracing(config: TelemetryConfig) -> None:
     Args:
         config: Telemetry configuration
     """
-    _require_otel()
-    
+    # Check if tracing is disabled first, before checking dependencies
     if not config.tracing_enabled or config.globally_disabled:
         log.debug("🔍 OpenTelemetry tracing disabled")
+        return
+    
+    # Check if OpenTelemetry is available
+    if not _HAS_OTEL:
+        log.debug("🔍 OpenTelemetry tracing not available (dependencies not installed)")
         return
     
     log.debug("🔍🚀 Setting up OpenTelemetry tracing")
