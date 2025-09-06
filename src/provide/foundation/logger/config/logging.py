@@ -90,6 +90,31 @@ class LoggingConfig(BaseConfig):
         env_var="PROVIDE_SHOW_EMOJI_MATRIX",
         description="Whether to display emoji matrix on startup",
     )
+    rate_limit_enabled: bool = field(
+        default=False,
+        env_var="PROVIDE_LOG_RATE_LIMIT_ENABLED",
+        description="Enable rate limiting for log output",
+    )
+    rate_limit_global: float | None = field(
+        default=None,
+        env_var="PROVIDE_LOG_RATE_LIMIT_GLOBAL",
+        description="Global rate limit (logs per second)",
+    )
+    rate_limit_global_capacity: float | None = field(
+        default=None,
+        env_var="PROVIDE_LOG_RATE_LIMIT_GLOBAL_CAPACITY",
+        description="Global rate limit burst capacity",
+    )
+    rate_limit_per_logger: dict[str, tuple[float, float]] = field(
+        factory=lambda: {},
+        env_var="PROVIDE_LOG_RATE_LIMIT_PER_LOGGER",
+        description="Per-logger rate limits (format: logger1:rate:capacity,logger2:rate:capacity)",
+    )
+    rate_limit_emit_warnings: bool = field(
+        default=True,
+        env_var="PROVIDE_LOG_RATE_LIMIT_EMIT_WARNINGS",
+        description="Emit warnings when logs are rate limited",
+    )
 
     @classmethod
     def from_env(cls, strict: bool = True) -> "LoggingConfig":
@@ -170,6 +195,56 @@ class LoggingConfig(BaseConfig):
                 "1",
                 "yes",
             )
+
+        # Parse rate limiting configuration
+        if rate_limit_enabled := os.getenv("PROVIDE_LOG_RATE_LIMIT_ENABLED"):
+            config_dict["rate_limit_enabled"] = rate_limit_enabled.lower() == "true"
+        
+        if rate_limit_global := os.getenv("PROVIDE_LOG_RATE_LIMIT_GLOBAL"):
+            try:
+                config_dict["rate_limit_global"] = float(rate_limit_global)
+            except ValueError:
+                if strict:
+                    get_config_logger().warning(
+                        "[Foundation Config Warning] Invalid rate limit value",
+                        config_key="PROVIDE_LOG_RATE_LIMIT_GLOBAL",
+                        invalid_value=rate_limit_global,
+                    )
+        
+        if rate_limit_capacity := os.getenv("PROVIDE_LOG_RATE_LIMIT_GLOBAL_CAPACITY"):
+            try:
+                config_dict["rate_limit_global_capacity"] = float(rate_limit_capacity)
+            except ValueError:
+                if strict:
+                    get_config_logger().warning(
+                        "[Foundation Config Warning] Invalid rate limit capacity",
+                        config_key="PROVIDE_LOG_RATE_LIMIT_GLOBAL_CAPACITY",
+                        invalid_value=rate_limit_capacity,
+                    )
+        
+        if per_logger_limits := os.getenv("PROVIDE_LOG_RATE_LIMIT_PER_LOGGER"):
+            limits_dict = {}
+            for item in per_logger_limits.split(","):
+                parts = item.split(":")
+                if len(parts) == 3:
+                    logger_name, rate, capacity = parts
+                    try:
+                        limits_dict[logger_name.strip()] = (
+                            float(rate.strip()),
+                            float(capacity.strip())
+                        )
+                    except ValueError:
+                        if strict:
+                            get_config_logger().warning(
+                                "[Foundation Config Warning] Invalid per-logger rate limit",
+                                config_key="PROVIDE_LOG_RATE_LIMIT_PER_LOGGER",
+                                invalid_item=item,
+                            )
+            if limits_dict:
+                config_dict["rate_limit_per_logger"] = limits_dict
+        
+        if emit_warnings := os.getenv("PROVIDE_LOG_RATE_LIMIT_EMIT_WARNINGS"):
+            config_dict["rate_limit_emit_warnings"] = emit_warnings.lower() == "true"
 
         # Parse complex fields
         if module_levels := os.getenv("PROVIDE_LOG_MODULE_LEVELS"):
