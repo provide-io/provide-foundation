@@ -177,6 +177,19 @@ def _build_core_processors_list(
         structlog.processors.StackInfoRenderer(),
         structlog.dev.set_exc_info,
     ]
+    
+    # Add rate limiting processor if enabled
+    if log_cfg.rate_limit_enabled:
+        from provide.foundation.logger.ratelimit import create_rate_limiter_processor
+        
+        rate_limiter_processor = create_rate_limiter_processor(
+            global_rate=log_cfg.rate_limit_global,
+            global_capacity=log_cfg.rate_limit_global_capacity,
+            per_logger_rates=log_cfg.rate_limit_per_logger,
+            emit_warnings=log_cfg.rate_limit_emit_warnings,
+        )
+        processors.append(cast(StructlogProcessor, rate_limiter_processor))
+    
     processors.extend(_config_create_timestamp_processors(log_cfg.omit_timestamp))
     if config.service_name is not None:
         processors.append(_config_create_service_name_processor(config.service_name))

@@ -11,11 +11,15 @@ from provide.foundation.logger.ratelimit.limiters import (
     AsyncRateLimiter,
     GlobalRateLimiter,
 )
-from provide.foundation.logger.ratelimit.processor import RateLimiterProcessor
+from provide.foundation.logger.ratelimit.processor import (
+    RateLimiterProcessor,
+    create_rate_limiter_processor,
+)
 
 __all__ = [
     "SyncRateLimiter",
     "AsyncRateLimiter", 
     "GlobalRateLimiter",
     "RateLimiterProcessor",
+    "create_rate_limiter_processor",
 ]
