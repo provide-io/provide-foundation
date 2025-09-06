@@ -74,6 +74,11 @@ class FoundationLogger:
             ):
                 return
 
+            # If error was set while waiting for lock, use fallback.
+            if _LAZY_SETUP_STATE["error"]:
+                self._setup_emergency_fallback()
+                return
+
             # If still needs setup, perform lazy setup.
             if not _LAZY_SETUP_STATE["done"]:
                 self._perform_lazy_setup()
