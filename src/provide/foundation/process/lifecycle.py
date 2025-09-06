@@ -165,7 +165,11 @@ class ManagedProcess:
                     line = process.stderr.readline()
                     if not line:
                         break
-                    sys.stderr.write(line.decode("utf-8", errors="replace"))
+                    # Handle both bytes and string returns from subprocess
+                    if isinstance(line, bytes):
+                        sys.stderr.write(line.decode("utf-8", errors="replace"))
+                    else:
+                        sys.stderr.write(str(line))
                     sys.stderr.flush()
             except Exception as e:
                 plog.debug("Error in stderr relay", error=str(e))
@@ -197,10 +201,14 @@ class ManagedProcess:
         read_func = functools.partial(self._process.stdout.readline)
 
         try:
-            line_bytes = await asyncio.wait_for(
+            line_data = await asyncio.wait_for(
                 loop.run_in_executor(None, read_func), timeout=timeout
             )
-            return line_bytes.decode("utf-8", errors="replace").strip()
+            # Handle both bytes and string returns from subprocess
+            if isinstance(line_data, bytes):
+                return line_data.decode("utf-8", errors="replace").strip()
+            else:
+                return str(line_data).strip()
         except asyncio.TimeoutError as e:
             plog.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
@@ -228,10 +236,16 @@ class ManagedProcess:
         read_func = functools.partial(self._process.stdout.read, 1)
 
         try:
-            char_bytes = await asyncio.wait_for(
+            char_data = await asyncio.wait_for(
                 loop.run_in_executor(None, read_func), timeout=timeout
             )
-            return char_bytes.decode("utf-8", errors="replace") if char_bytes else ""
+            if not char_data:
+                return ""
+            # Handle both bytes and string returns from subprocess
+            if isinstance(char_data, bytes):
+                return char_data.decode("utf-8", errors="replace")
+            else:
+                return str(char_data)
         except asyncio.TimeoutError as e:
             plog.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
