@@ -22,11 +22,15 @@ def _reset_opentelemetry_providers() -> None:
     and stream closure issues by properly resetting the global providers.
     """
     try:
-        # Reset tracing provider
+        # Reset tracing provider by resetting the Once flag
         import opentelemetry.trace as otel_trace
-        # Create a new NoOpTracerProvider to reset state
+        if hasattr(otel_trace, '_TRACER_PROVIDER_SET_ONCE'):
+            once_obj = otel_trace._TRACER_PROVIDER_SET_ONCE
+            if hasattr(once_obj, '_done'):
+                once_obj._done = False
+        # Reset to NoOpTracerProvider
         from opentelemetry.trace import NoOpTracerProvider
-        otel_trace.set_tracer_provider(NoOpTracerProvider())
+        otel_trace._TRACER_PROVIDER = NoOpTracerProvider()
     except ImportError:
         # OpenTelemetry tracing not available
         pass
@@ -35,11 +39,15 @@ def _reset_opentelemetry_providers() -> None:
         pass
     
     try:
-        # Reset metrics provider
-        import opentelemetry.metrics as otel_metrics
-        # Create a new NoOpMeterProvider to reset state  
+        # Reset metrics provider by resetting the Once flag
+        import opentelemetry.metrics._internal as otel_metrics_internal
+        if hasattr(otel_metrics_internal, '_METER_PROVIDER_SET_ONCE'):
+            once_obj = otel_metrics_internal._METER_PROVIDER_SET_ONCE
+            if hasattr(once_obj, '_done'):
+                once_obj._done = False
+        # Reset to NoOpMeterProvider
         from opentelemetry.metrics import NoOpMeterProvider
-        otel_metrics.set_meter_provider(NoOpMeterProvider())
+        otel_metrics_internal._METER_PROVIDER = NoOpMeterProvider()
     except ImportError:
         # OpenTelemetry metrics not available
         pass
