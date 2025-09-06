@@ -10,25 +10,21 @@ provide.foundation's platform module provides comprehensive system detection cap
 
 ### Platform Info
 
-Get comprehensive platform information:
+Get comprehensive system information:
 
 ```python
-from provide.foundation.platform import get_platform_info
+from provide.foundation.platform import get_system_info
 
-info = get_platform_info()
-# {
-#     "os": "darwin",
-#     "os_version": "23.1.0",
-#     "arch": "arm64",
-#     "python_version": "3.11.5",
-#     "python_implementation": "CPython",
-#     "hostname": "macbook.local",
-#     "in_docker": False,
-#     "in_kubernetes": False
-# }
+info = get_system_info()
+print(f"OS: {info.os_name} {info.os_version}")
+print(f"Architecture: {info.arch}")
+print(f"Platform: {info.platform_string}")
+print(f"Python: {info.python_version}")
+print(f"Hostname: {info.hostname}")
 
-# Access specific info
-print(f"Running on {info['os']} {info['arch']}")
+# Convert to dictionary for logging
+info_dict = info.to_dict()
+logger.info("System information", **info_dict)
 ```
 
 ### Quick Checks
@@ -38,12 +34,12 @@ Simple platform checks:
 ```python
 from provide.foundation.platform import (
     is_linux,
-    is_macos,
+    is_macos, 
     is_windows,
     is_arm,
-    is_x86,
-    is_docker,
-    is_kubernetes
+    is_64bit,
+    get_os_name,
+    get_arch_name
 )
 
 if is_macos():
@@ -53,53 +49,103 @@ elif is_linux():
 elif is_windows():
     print("Running on Windows")
 
+# Get normalized names
+os_name = get_os_name()  # "linux", "macos", "windows"
+arch = get_arch_name()   # "x64", "arm64", "arm", "x86"
+
 if is_arm():
     print("ARM architecture detected")
-elif is_x86():
-    print("x86/x64 architecture detected")
+elif is_64bit():
+    print("64-bit architecture detected")
 
-if is_docker():
-    print("Running inside Docker container")
+print(f"Running on {os_name}-{arch}")
 ```
 
 ## Environment Detection
 
 ### Container Environments
 
-Detect containerized environments:
+Check for containerized environments by examining the system:
 
 ```python
-from provide.foundation.platform import (
-    detect_container,
-    get_container_info
-)
+import os
+from pathlib import Path
 
-# Check if in container
-container_type = detect_container()
-if container_type:
-    print(f"Running in {container_type}")
-    
-    # Get detailed container info
-    info = get_container_info()
-    # {
-    #     "type": "docker",
-    #     "id": "abc123...",
-    #     "hostname": "container-host",
-    #     "cgroup_limits": {...}
-    # }
+def is_docker():
+    """Check if running in Docker container."""
+    return Path("/.dockerenv").exists()
+
+def is_kubernetes():
+    """Check if running in Kubernetes."""
+    return (
+        os.environ.get("KUBERNETES_SERVICE_HOST") is not None or
+        Path("/var/run/secrets/kubernetes.io").exists()
+    )
+
+def detect_container_environment():
+    """Detect container environment type."""
+    if is_kubernetes():
+        return "kubernetes"
+    elif is_docker():
+        return "docker"
+    else:
+        return None
+
+env_type = detect_container_environment()
+if env_type:
+    print(f"Running in {env_type} environment")
 ```
 
 ### Cloud Environments
 
-Detect cloud platforms:
+Detect cloud platforms via metadata services:
 
 ```python
-from provide.foundation.platform import detect_cloud_provider
+import urllib.request
+
+def detect_cloud_provider():
+    """Detect cloud provider from metadata services."""
+    
+    # AWS EC2
+    try:
+        response = urllib.request.urlopen(
+            "http://169.254.169.254/latest/meta-data/instance-id",
+            timeout=1
+        )
+        if response.status == 200:
+            return "aws"
+    except:
+        pass
+    
+    # Google Cloud
+    try:
+        req = urllib.request.Request(
+            "http://metadata.google.internal/computeMetadata/v1/instance/id",
+            headers={"Metadata-Flavor": "Google"}
+        )
+        response = urllib.request.urlopen(req, timeout=1)
+        if response.status == 200:
+            return "gcp"
+    except:
+        pass
+    
+    # Azure
+    try:
+        req = urllib.request.Request(
+            "http://169.254.169.254/metadata/instance?api-version=2021-02-01",
+            headers={"Metadata": "true"}
+        )
+        response = urllib.request.urlopen(req, timeout=1)
+        if response.status == 200:
+            return "azure"
+    except:
+        pass
+    
+    return None
 
 cloud = detect_cloud_provider()
 if cloud:
     print(f"Running on {cloud}")
-    # AWS, GCP, Azure, etc.
 ```
 
 ## System Resources
@@ -107,36 +153,42 @@ if cloud:
 ### CPU Information
 
 ```python
-from provide.foundation.platform import get_cpu_info
+from provide.foundation.platform import get_system_info
 
-cpu = get_cpu_info()
-# {
-#     "count": 8,
-#     "physical_cores": 4,
-#     "model": "Apple M1",
-#     "frequency": "3.2 GHz",
-#     "architecture": "arm64"
-# }
+info = get_system_info()
 
-print(f"CPU: {cpu['model']} with {cpu['count']} cores")
+# CPU count is available if psutil is installed
+if info.cpu_count:
+    print(f"CPU cores: {info.cpu_count}")
+    
+    # Use for configuration
+    worker_count = min(info.cpu_count, 8)
+    print(f"Recommended workers: {worker_count}")
+else:
+    print("CPU information not available (install psutil for details)")
+    worker_count = 2  # Safe default
 ```
 
 ### Memory Information
 
 ```python
-from provide.foundation.platform import get_memory_info
+from provide.foundation.platform import get_system_info
 
-memory = get_memory_info()
-# {
-#     "total": 17179869184,  # bytes
-#     "available": 8589934592,
-#     "used": 8589934592,
-#     "percent": 50.0,
-#     "total_human": "16.0 GB",
-#     "available_human": "8.0 GB"
-# }
+info = get_system_info()
 
-print(f"Memory: {memory['available_human']} / {memory['total_human']}")
+# Memory information requires psutil
+if info.memory_total_gb:
+    print(f"Total memory: {info.memory_total_gb:.1f} GB")
+    
+    # Calculate memory limits
+    app_memory_limit_gb = info.memory_total_gb * 0.5  # Use 50% for app
+    print(f"App memory limit: {app_memory_limit_gb:.1f} GB")
+    
+    # Check if enough memory
+    if info.memory_total_gb < 1.0:
+        print("Warning: Low memory system detected")
+else:
+    print("Memory information not available (install psutil for details)")
 ```
 
 ## Python Environment

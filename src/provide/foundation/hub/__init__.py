@@ -33,8 +33,8 @@ from provide.foundation.hub.commands import (
     register_command,
 )
 from provide.foundation.hub.components import (
-    get_component_registry,
     ComponentCategory,
+    get_component_registry,
 )
 from provide.foundation.hub.manager import (
     Hub,

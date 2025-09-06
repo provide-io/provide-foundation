@@ -133,7 +133,7 @@ def show_emoji_matrix() -> None:  # pragma: no cover
     """
     # Ensure the logger is configured to access the config
     foundation_logger_base.logger._ensure_configured()
-    
+
     # Get the show_emoji_matrix flag from the logging config
     telemetry_config = getattr(foundation_logger_base.logger, "_active_config", None)
     if not telemetry_config or not telemetry_config.logging.show_emoji_matrix:

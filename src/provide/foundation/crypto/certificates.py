@@ -1,11 +1,11 @@
 """X.509 certificate generation and management."""
 
-import os
-import traceback
 from datetime import UTC, datetime, timedelta
 from enum import StrEnum, auto
 from functools import cached_property
+import os
 from pathlib import Path
+import traceback
 from typing import NotRequired, Self, TypeAlias, TypedDict, cast
 
 from attrs import Factory, define, field
@@ -18,25 +18,24 @@ from cryptography.x509 import Certificate as X509Certificate
 from cryptography.x509.oid import ExtendedKeyUsageOID, NameOID
 
 from provide.foundation import logger
-from provide.foundation.errors.config import ValidationError
 from provide.foundation.crypto.constants import (
-    DEFAULT_CERTIFICATE_VALIDITY_DAYS,
-    DEFAULT_CERTIFICATE_KEY_TYPE,
     DEFAULT_CERTIFICATE_CURVE,
+    DEFAULT_CERTIFICATE_KEY_TYPE,
+    DEFAULT_CERTIFICATE_VALIDITY_DAYS,
     DEFAULT_RSA_KEY_SIZE,
 )
-from provide.foundation.crypto.keys import generate_tls_keypair
+from provide.foundation.errors.config import ValidationError
 
 
 class CertificateError(ValidationError):
     """Certificate-related errors."""
-    
+
     def __init__(self, message: str, hint: str | None = None) -> None:
         super().__init__(
             message=message,
             field="certificate",
             value=None,
-            rule=hint or "Certificate operation failed"
+            rule=hint or "Certificate operation failed",
         )
 
 
@@ -178,7 +177,9 @@ class Certificate:
         """Handle loading or generation logic after attrs initialization."""
         try:
             if self.generate_keypair:
-                logger.debug("📜🔑🚀 Certificate.__attrs_post_init__: Generating new keypair")
+                logger.debug(
+                    "📜🔑🚀 Certificate.__attrs_post_init__: Generating new keypair"
+                )
 
                 now = datetime.now(UTC)
                 not_valid_before = now - timedelta(days=1)
@@ -231,9 +232,13 @@ class Certificate:
                 )
 
                 if self._cert is None:
-                    raise CertificateError("Certificate object (_cert) is None after creation")
-                    
-                self.cert = self._cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
+                    raise CertificateError(
+                        "Certificate object (_cert) is None after creation"
+                    )
+
+                self.cert = self._cert.public_bytes(serialization.Encoding.PEM).decode(
+                    "utf-8"
+                )
                 if self._private_key:
                     self.key = self._private_key.private_bytes(
                         encoding=serialization.Encoding.PEM,
@@ -243,17 +248,21 @@ class Certificate:
                 else:
                     self.key = None
 
-                logger.debug("📜🔑✅ Certificate.__attrs_post_init__: Generated cert and key")
+                logger.debug(
+                    "📜🔑✅ Certificate.__attrs_post_init__: Generated cert and key"
+                )
 
             else:
                 if not self.cert_pem_or_uri:
-                    raise CertificateError("cert_pem_or_uri required when not generating")
+                    raise CertificateError(
+                        "cert_pem_or_uri required when not generating"
+                    )
 
                 logger.debug("📜🔑🚀 Loading certificate from provided data")
                 cert_data = self._load_from_uri_or_pem(self.cert_pem_or_uri)
                 self.cert = cert_data
 
-                logger.debug(f"📜🔑🔍 Loading X.509 certificate from PEM data")
+                logger.debug("📜🔑🔍 Loading X.509 certificate from PEM data")
                 self._cert = x509.load_pem_x509_certificate(cert_data.encode("utf-8"))
                 logger.debug("📜🔑✅ X.509 certificate object loaded from PEM")
 
@@ -261,7 +270,7 @@ class Certificate:
                     logger.debug("📜🔑🚀 Loading private key")
                     key_data = self._load_from_uri_or_pem(self.key_pem_or_uri)
                     self.key = key_data
-                    
+
                     loaded_priv_key = load_pem_private_key(
                         key_data.encode("utf-8"), password=None
                     )
@@ -281,7 +290,9 @@ class Certificate:
                 loaded_not_valid_before = self._cert.not_valid_before_utc
                 loaded_not_valid_after = self._cert.not_valid_after_utc
                 if loaded_not_valid_before.tzinfo is None:
-                    loaded_not_valid_before = loaded_not_valid_before.replace(tzinfo=UTC)
+                    loaded_not_valid_before = loaded_not_valid_before.replace(
+                        tzinfo=UTC
+                    )
                 if loaded_not_valid_after.tzinfo is None:
                     loaded_not_valid_after = loaded_not_valid_after.replace(tzinfo=UTC)
 
@@ -388,7 +399,9 @@ class Certificate:
                         ),
                         key_agreement=(
                             True
-                            if isinstance(self._base.public_key, ec.EllipticCurvePublicKey)
+                            if isinstance(
+                                self._base.public_key, ec.EllipticCurvePublicKey
+                            )
                             else False
                         ),
                         content_commitment=False,
@@ -581,7 +594,7 @@ class Certificate:
         if not ca_certificate._private_key:
             raise CertificateError(
                 message="CA certificate's private key is not available for signing.",
-                hint="Ensure the CA certificate object was loaded or created with its private key."
+                hint="Ensure the CA certificate object was loaded or created with its private key.",
             )
         if not ca_certificate.is_ca:
             logger.warning(
@@ -647,7 +660,9 @@ class Certificate:
         )
 
         if not cert_obj._private_key:
-            raise CertificateError("Private key not generated for self-signed server certificate")
+            raise CertificateError(
+                "Private key not generated for self-signed server certificate"
+            )
 
         actual_x509_cert = cert_obj._create_x509_certificate(
             is_ca=False,
@@ -659,7 +674,9 @@ class Certificate:
             serialization.Encoding.PEM
         ).decode("utf-8")
 
-        logger.info(f"📜🔑✅ Successfully created self-signed SERVER certificate for CN={common_name}")
+        logger.info(
+            f"📜🔑✅ Successfully created self-signed SERVER certificate for CN={common_name}"
+        )
         return cert_obj
 
     def verify_trust(self, other_cert: Self) -> bool:
@@ -673,10 +690,14 @@ class Certificate:
         )
 
         if not other_cert.is_valid:
-            logger.debug("📜🔍⚠️ Trust verification failed: Other certificate is not valid")
+            logger.debug(
+                "📜🔍⚠️ Trust verification failed: Other certificate is not valid"
+            )
             return False
         if not other_cert.public_key:
-            raise CertificateError("Cannot verify trust: Other certificate has no public key")
+            raise CertificateError(
+                "Cannot verify trust: Other certificate has no public key"
+            )
 
         if self == other_cert:
             logger.debug(
@@ -685,14 +706,18 @@ class Certificate:
             return True
 
         if other_cert in self._trust_chain:
-            logger.debug("📜🔍✅ Trust verified: Other certificate found in trust chain")
+            logger.debug(
+                "📜🔍✅ Trust verified: Other certificate found in trust chain"
+            )
             return True
 
         for trusted_cert in self._trust_chain:
             logger.debug(
                 f"📜🔍🔁 Checking signature against trusted cert S/N {trusted_cert.serial_number}"
             )
-            if self._validate_signature(signed_cert=other_cert, signing_cert=trusted_cert):
+            if self._validate_signature(
+                signed_cert=other_cert, signing_cert=trusted_cert
+            ):
                 logger.debug(
                     f"📜🔍✅ Trust verified: Other cert signed by trusted cert S/N "
                     f"{trusted_cert.serial_number}"
@@ -705,10 +730,14 @@ class Certificate:
         )
         return False
 
-    def _validate_signature(self, signed_cert: "Certificate", signing_cert: "Certificate") -> bool:
+    def _validate_signature(
+        self, signed_cert: "Certificate", signing_cert: "Certificate"
+    ) -> bool:
         """Internal helper: Validates signature and issuer/subject match."""
         if not hasattr(signed_cert, "_cert") or not hasattr(signing_cert, "_cert"):
-            logger.error("📜🔍❌ Cannot validate signature: Certificate object(s) not initialized")
+            logger.error(
+                "📜🔍❌ Cannot validate signature: Certificate object(s) not initialized"
+            )
             return False
 
         if signed_cert._cert.issuer != signing_cert._cert.subject:
@@ -722,7 +751,9 @@ class Certificate:
         try:
             signing_public_key = signing_cert.public_key
             if not signing_public_key:
-                logger.error("📜🔍❌ Cannot validate signature: Signing certificate has no public key")
+                logger.error(
+                    "📜🔍❌ Cannot validate signature: Signing certificate has no public key"
+                )
                 return False
 
             signature = signed_cert._cert.signature
@@ -747,7 +778,9 @@ class Certificate:
                     ec.ECDSA(signature_hash_algorithm),
                 )
             else:
-                logger.error(f"📜🔍❌ Unsupported signing public key type: {type(signing_public_key)}")
+                logger.error(
+                    f"📜🔍❌ Unsupported signing public key type: {type(signing_public_key)}"
+                )
                 return False
 
             return True
@@ -800,7 +833,7 @@ class Certificate:
 def create_self_signed(
     common_name: str = "localhost",
     alt_names: list[str] | None = None,
-    organization: str = "Default Organization", 
+    organization: str = "Default Organization",
     validity_days: int = DEFAULT_CERTIFICATE_VALIDITY_DAYS,
     key_type: str = DEFAULT_CERTIFICATE_KEY_TYPE,
 ) -> Certificate:
@@ -820,7 +853,7 @@ def create_ca(
     validity_days: int = DEFAULT_CERTIFICATE_VALIDITY_DAYS * 2,  # CAs live longer
     key_type: str = DEFAULT_CERTIFICATE_KEY_TYPE,
 ) -> Certificate:
-    """Create a CA certificate (convenience function).""" 
+    """Create a CA certificate (convenience function)."""
     return Certificate.create_ca(
         common_name=common_name,
         organization_name=organization,

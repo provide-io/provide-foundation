@@ -40,7 +40,7 @@ pip install provide-foundation
 ### Core Components
 
 #### **Structured Logging**
-Beautiful, performant logging built on `structlog` with zero configuration required.
+Beautiful, performant logging built on `structlog` with emoji-enhanced visual parsing and zero configuration required.
 
 ```python
 from provide.foundation import logger
@@ -97,6 +97,36 @@ def risky_operation():
     return result
 ```
 
+#### **Cryptographic Utilities**
+Comprehensive cryptographic operations with modern algorithms and secure defaults.
+
+```python
+from provide.foundation.crypto import hash_file, create_self_signed, sign_data
+
+# File hashing and verification
+hash_result = hash_file("document.pdf", algorithm="sha256")
+
+# Digital signatures
+signature = sign_data(data, private_key, algorithm="ed25519")
+
+# Certificate generation
+cert, key = create_self_signed("example.com", key_size=2048)
+```
+
+#### **File Operations**
+Atomic file operations with format support and safety guarantees.
+
+```python
+from provide.foundation.file import atomic_write, read_json, safe_copy
+
+# Atomic file operations
+atomic_write("config.json", {"key": "value"})
+data = read_json("config.json")
+
+# Safe file operations
+safe_copy("source.txt", "backup.txt")
+```
+
 #### **Console I/O**
 Enhanced console input/output with color support, JSON mode, and interactive prompts.
 
@@ -113,6 +143,36 @@ password = pin("Enter password:", password=True)
 
 # JSON mode for scripts
 pout({"status": "ok", "data": results}, json=True)
+```
+
+#### **Platform Utilities**
+Cross-platform detection and system information gathering.
+
+```python
+from provide.foundation import platform
+
+# Platform detection
+if platform.is_linux():
+    logger.info("Running on Linux")
+
+system_info = platform.get_system_info()
+logger.info("System info", **system_info.to_dict())
+```
+
+#### **Process Execution**
+Safe subprocess execution with streaming and async support.
+
+```python
+from provide.foundation import process
+
+# Synchronous execution
+result = process.run_command(["git", "status"])
+if result.returncode == 0:
+    logger.info("Git status", output=result.stdout)
+
+# Streaming output
+for line in process.stream_command(["tail", "-f", "app.log"]):
+    logger.info("Log line", line=line)
 ```
 
 #### **Registry Pattern**
@@ -276,13 +336,17 @@ with timed_block(logger, "database_query"):
 
 ```python
 import asyncio
-from provide.foundation import logger
+from provide.foundation import logger, process
 
 async def process_items(items):
     for item in items:
         logger.info("Processing", item_id=item.id)
         await process_item(item)
-        
+
+# Async process execution
+result = await process.async_run_command(["curl", "-s", "api.example.com"])
+logger.info("API response", status=result.returncode)
+
 # Thread-safe and async-safe logging
 asyncio.run(process_items(items))
 ```
@@ -308,10 +372,12 @@ Complete working examples are available in the [examples/](examples/) directory:
 
 ## Performance
 
-- **Logging**: 14,000+ messages/second with full structured logging
-- **Configuration**: Lazy loading with caching for optimal performance  
-- **File Operations**: Atomic writes prevent corruption
-- **Process Management**: Efficient streaming with backpressure support
+- **Logging**: 14,000+ messages/second with emoji processing and structured logging
+- **Configuration**: Lazy loading with multi-source caching for optimal performance  
+- **File Operations**: Atomic writes with format detection prevent corruption
+- **Process Management**: Efficient streaming with async support and backpressure handling
+- **Cryptography**: Hardware-accelerated operations with secure algorithm defaults
+- **Platform Detection**: Cached system information for minimal overhead
 
 ---
 

@@ -26,9 +26,16 @@ Built on industry-standard libraries like `structlog`, `click`, and `attrs`, pro
 
 ### 🔧 System Utilities
 - **Platform Detection**: OS and architecture detection
-- **Process Execution**: Safe subprocess handling with logging
-- **Console Output**: Standardized stdout/stderr functions
-- **Registry Pattern**: Thread-safe object storage
+- **Process Execution**: Safe subprocess handling with async support
+- **File Operations**: Atomic operations with format support
+- **Console I/O**: Standardized input/output with color support
+- **Registry Pattern**: Thread-safe component management
+
+### 🔐 Cryptographic Operations
+- **Hash Functions**: SHA-256, SHA-512, Blake2b with file/stream support
+- **Digital Signatures**: Ed25519, ECDSA, RSA with verification
+- **Certificates**: X.509 certificate creation and management
+- **Key Generation**: Secure key generation for multiple algorithms
 
 ### 🛡️ Error Handling
 - Rich error context with metadata
@@ -39,12 +46,13 @@ Built on industry-standard libraries like `structlog`, `click`, and `attrs`, pro
 ## 🚀 Quick Start
 
 ```python
-from provide.foundation import plog, pout, perr
-from provide.foundation.cli import register_command
+from provide.foundation import logger, pout, perr
+from provide.foundation.hub import register_command
 from provide.foundation import platform, process
+from provide.foundation.crypto import hash_file
 
 # Structured logging with emojis
-plog.info("Starting application", version="1.0.0")
+logger.info("Starting application", version="1.0.0")
 
 # Console output
 pout("✅ Configuration loaded")
@@ -58,12 +66,16 @@ def deploy(environment: str = "staging"):
 
 # Platform detection
 info = platform.get_system_info()
-plog.info(f"Running on {info.platform}")
+logger.info("System info", **info.to_dict())
 
 # Process execution
 result = process.run_command(["git", "status"])
 if result.returncode == 0:
     pout("Repository is clean")
+
+# Cryptographic operations
+file_hash = hash_file("document.pdf")
+logger.info("File verified", hash=file_hash.hex_digest)
 ```
 
 ## 📚 Documentation Structure
@@ -82,13 +94,16 @@ if result.returncode == 0:
 ### [API Reference](api/index.md)
 Complete API documentation for all modules:
 - Logger and telemetry
-- CLI framework
+- CLI framework  
 - Configuration system
+- Cryptographic utilities
+- File operations
 - Platform utilities
 - Process execution
-- Console output
-- Registry pattern
+- Console I/O
+- Hub and registry
 - Error handling
+- Context management
 
 ### [User Guide](guide/index.md)
 Practical guides for common tasks:

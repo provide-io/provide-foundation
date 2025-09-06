@@ -218,7 +218,7 @@ def _build_formatter_processors_list(
             # Unknown formatter, warn and default to key_value
             # Use core setup logger instead of direct sys.stderr write
             from provide.foundation.core import _core_setup_logger
-            
+
             _core_setup_logger.warning(
                 f"Unknown formatter '{logging_config.console_formatter}', using default 'key_value'. "
                 f"Valid formatters: ['json', 'key_value']"
