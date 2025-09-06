@@ -37,12 +37,12 @@ dependencies = [
     "tomli_w>=1.0.0",
 ]
 
-[project.urls]
-Homepage = "https://foundation.provide.io"
-Documentation = "https://foundation.provide.io"
-Repository = "https://github.com/provide-io/provide-foundation"
-Issues = "https://github.com/provide-io/provide-foundation/issues"
-Examples = "https://github.com/provide-io/provide-foundation/tree/main/examples"
+# [project.urls]
+# Homepage = "https://foundation.provide.io"
+# Documentation = "https://foundation.provide.io"
+# Repository = "https://github.com/provide-io/provide-foundation"
+# Issues = "https://github.com/provide-io/provide-foundation/issues"
+# Examples = "https://github.com/provide-io/provide-foundation/tree/main/examples"
 
 
 [project.optional-dependencies]
@@ -71,8 +71,7 @@ dev = [
     "hypothesis>=6.131.28",
     "mypy>=1.8.0",
     "psutil>=7.0.0",
-    "pyrefly>=0.16.2",
-    "pytest>=7.4.0",
+    "pyrefly>=0.16.2", "pytest>=7.4.0",
     "pytest-asyncio>=0.21.0",
     "pytest-benchmark>=4.0.0",
     "pytest-cov>=4.1.0",
