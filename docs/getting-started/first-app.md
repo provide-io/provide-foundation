@@ -236,7 +236,7 @@ class TaskManager:
         self.max_tasks = config.get("task_manager.max_tasks", 1000)
 ```
 
-## Step 5: Understanding Semantic Layers
+## Step 5: Understanding Emoji Sets
 
 Emoji sets provide automatic emoji mapping for structured log fields:
 
@@ -298,7 +298,7 @@ This application demonstrates:
 ✅ **Configuration**: YAML-based configuration management
 ✅ **Error Handling**: Graceful error recovery with logging
 ✅ **Console Output**: User-friendly output with emojis
-✅ **Semantic Layers**: Domain-specific emoji mapping for visual log parsing
+✅ **Emoji Sets**: Domain-specific emoji mapping for visual log parsing
 
 ## Next Steps
 

@@ -117,7 +117,7 @@ class TestCompleteCliIntegration:
             cli, ["--log-level", "INFO", "--log-level", "DEBUG", "status"]
         )
         assert result.exit_code == 0
-        assert "Checking status" in result.output
+        assert ("Checking status" in result.output or "🧪 Checking status" in result.output)
 
 
 class TestLoggingIntegration:

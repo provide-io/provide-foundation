@@ -197,8 +197,8 @@ class TestConfigWarnings:
             assert module.strip() != "", "Empty module name should not be kept"
 
 
-class TestLoggingWithSemanticLayers:
-    def test_llm_layer_end_to_end(
+class TestLoggingWithEmojiSets:
+    def test_llm_emoji_set_end_to_end(
         self,
         setup_foundation_telemetry_for_test: callable,
         captured_stderr_for_foundation: "io.StringIO",
@@ -229,7 +229,7 @@ class TestLoggingWithSemanticLayers:
         assert "llm.output.tokens=250" in output
         assert "llm.provider=openai" not in output
 
-    def test_legacy_das_still_works_if_no_layers_active(
+    def test_legacy_das_still_works_if_no_emoji_sets_active(
         self,
         setup_foundation_telemetry_for_test: callable,
         captured_stderr_for_foundation: "io.StringIO",

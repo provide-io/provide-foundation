@@ -22,7 +22,7 @@ def test_lazy_setup_flags() -> None:
     """Test that lazy setup flags are set correctly."""
     print("=== Test 1: Lazy Setup Flags ===")
 
-    from provide.foundation.core import reset_foundation_setup_for_testing
+    from provide.foundation.testing import reset_foundation_setup_for_testing
 
     reset_foundation_setup_for_testing()
 
@@ -172,7 +172,7 @@ def test_thread_safety() -> None:
     """Test thread safety of lazy initialization."""
     print("\n=== Test 4: Thread Safety ===")
 
-    from provide.foundation.core import reset_foundation_setup_for_testing
+    from provide.foundation.testing import reset_foundation_setup_for_testing
 
     reset_foundation_setup_for_testing()
 

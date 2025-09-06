@@ -21,7 +21,7 @@ from pytest import CaptureFixture  # Added for capsys
 import structlog
 
 from provide.foundation import logger as global_logger
-from provide.foundation.core import reset_foundation_setup_for_testing
+from provide.foundation.testing import reset_foundation_setup_for_testing
 
 
 class TestExtremeEdgeCases:

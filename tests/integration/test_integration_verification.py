@@ -21,7 +21,7 @@ def test_basic_lazy_init() -> None:
     print("=== Test 1: Basic Lazy Initialization ===")
 
     # Reset any existing configuration
-    from provide.foundation.core import reset_foundation_setup_for_testing
+    from provide.foundation.testing import reset_foundation_setup_for_testing
 
     reset_foundation_setup_for_testing()
 
@@ -45,7 +45,7 @@ def test_service_name_injection() -> None:
     """Test service name injection with JSON format."""
     print("\n=== Test 2: Service Name Injection (JSON) ===")
 
-    from provide.foundation.core import reset_foundation_setup_for_testing
+    from provide.foundation.testing import reset_foundation_setup_for_testing
 
     reset_foundation_setup_for_testing()
 
@@ -63,7 +63,7 @@ def test_lazy_setup_flags() -> None:
     """Test that lazy setup flags are set correctly."""
     print("\n=== Test 3: Lazy Setup Flags ===")
 
-    from provide.foundation.core import reset_foundation_setup_for_testing
+    from provide.foundation.testing import reset_foundation_setup_for_testing
 
     reset_foundation_setup_for_testing()
 
@@ -87,7 +87,7 @@ def test_emergency_fallback() -> None:
     """Test emergency fallback doesn't crash."""
     print("\n=== Test 4: Emergency Fallback ===")
 
-    from provide.foundation.core import reset_foundation_setup_for_testing
+    from provide.foundation.testing import reset_foundation_setup_for_testing
 
     reset_foundation_setup_for_testing()
 

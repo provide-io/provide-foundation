@@ -22,7 +22,7 @@ def test_service_name_injection_fix() -> None:
     print("=== Testing Service Name Injection Fix ===")
 
     # Reset state
-    from provide.foundation.core import reset_foundation_setup_for_testing
+    from provide.foundation.testing import reset_foundation_setup_for_testing
 
     reset_foundation_setup_for_testing()
 
@@ -37,10 +37,10 @@ def test_service_name_injection_fix() -> None:
     # Capture output
     import io
 
-    from provide.foundation.core import _set_log_stream_for_testing
+    from provide.foundation.testing import set_log_stream_for_testing
 
     captured_output = io.StringIO()
-    _set_log_stream_for_testing(captured_output)
+    set_log_stream_for_testing(captured_output)
 
     try:
         # Test logging
@@ -83,7 +83,7 @@ def test_service_name_injection_fix() -> None:
             raise AssertionError("No log output found")
 
     finally:
-        _set_log_stream_for_testing(None)
+        set_log_stream_for_testing(None)
         # Clean up env vars used in this test
         os.environ.pop("PROVIDE_SERVICE_NAME", None)
         os.environ.pop("PROVIDE_LOG_CONSOLE_FORMATTER", None)
@@ -94,7 +94,7 @@ def test_key_value_still_has_emojis() -> None:
     print("\n=== Testing Key-Value Format Still Has Emojis ===")
 
     # Reset state
-    from provide.foundation.core import reset_foundation_setup_for_testing
+    from provide.foundation.testing import reset_foundation_setup_for_testing
 
     reset_foundation_setup_for_testing()
 
@@ -109,10 +109,10 @@ def test_key_value_still_has_emojis() -> None:
     # Capture output
     import io
 
-    from provide.foundation.core import _set_log_stream_for_testing
+    from provide.foundation.testing import set_log_stream_for_testing
 
     captured_output = io.StringIO()
-    _set_log_stream_for_testing(captured_output)
+    set_log_stream_for_testing(captured_output)
 
     try:
         from provide.foundation import logger
@@ -126,7 +126,7 @@ def test_key_value_still_has_emojis() -> None:
         print("✅ Key-value format still has emojis!")
 
     finally:
-        _set_log_stream_for_testing(None)
+        set_log_stream_for_testing(None)
         # Clean up env vars used in this test
         os.environ.pop("PROVIDE_LOG_CONSOLE_FORMATTER", None)
 

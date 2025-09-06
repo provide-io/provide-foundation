@@ -21,7 +21,7 @@ def test_lazy_setup_done_flag() -> None:
     print("=== Testing Lazy Setup Done Flag ===")
 
     # Reset state
-    from provide.foundation.core import reset_foundation_setup_for_testing
+    from provide.foundation.testing import reset_foundation_setup_for_testing
 
     reset_foundation_setup_for_testing()
 
@@ -56,7 +56,7 @@ def test_recursive_logging_protection() -> None:
     print("\n=== Testing Recursive Logging Protection ===")
 
     # Reset state
-    from provide.foundation.core import reset_foundation_setup_for_testing
+    from provide.foundation.testing import reset_foundation_setup_for_testing
 
     reset_foundation_setup_for_testing()
 

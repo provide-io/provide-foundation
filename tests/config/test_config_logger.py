@@ -13,9 +13,7 @@ from pytest import CaptureFixture
 from structlog.dev import ConsoleRenderer
 from structlog.processors import JSONRenderer, TimeStamper
 
-from provide.foundation.core import (
-    _resolve_active_emoji_config,
-)
+from provide.foundation.logger.setup.emoji_resolver import resolve_active_emoji_config
 from provide.foundation.logger.config import (
     LoggingConfig,
     TelemetryConfig,
@@ -61,7 +59,7 @@ class TestConfigEmojiProcessors:
         config = LoggingConfig(
             logger_name_emoji_prefix_enabled=True, das_emoji_prefix_enabled=True
         )
-        resolved_config = _resolve_active_emoji_config(
+        resolved_config = resolve_active_emoji_config(
             config, BUILTIN_EMOJI_SETS
         )
         processors = _config_create_emoji_processors(config, resolved_config)
@@ -95,7 +93,7 @@ class TestBuildFormatterProcessorsList:
 class TestBuildCoreProcessorsList:
     def test_default_config(self) -> None:
         config = TelemetryConfig()
-        resolved_emoji_config = _resolve_active_emoji_config(
+        resolved_emoji_config = resolve_active_emoji_config(
             config.logging, BUILTIN_EMOJI_SETS
         )
         processors = _build_core_processors_list(config, resolved_emoji_config)
@@ -105,7 +103,7 @@ class TestBuildCoreProcessorsList:
         )
 
 
-class TestTelemetryConfigFromEnvSemanticLayers:
+class TestTelemetryConfigFromEnvEmojiSets:
     def test_from_env_parses_enabled_emoji_sets(self, monkeypatch) -> None:
         monkeypatch.setenv(
             "PROVIDE_LOG_ENABLED_EMOJI_SETS", "llm, http , database "
@@ -113,7 +111,7 @@ class TestTelemetryConfigFromEnvSemanticLayers:
         config = TelemetryConfig.from_env()
         assert config.logging.enabled_emoji_sets == ["llm", "http", "database"]
 
-    def test_from_env_handles_malformed_custom_layers_json(
+    def test_from_env_handles_malformed_custom_emoji_sets_json(
         self, monkeypatch, capsys: CaptureFixture
     ) -> None:
         monkeypatch.setenv(
@@ -126,16 +124,66 @@ class TestTelemetryConfigFromEnvSemanticLayers:
         assert "Invalid JSON in configuration" in captured.err
         assert "PROVIDE_LOG_CUSTOM_EMOJI_SETS" in captured.err
 
-    def test_from_env_handles_type_error_in_custom_layer_data(
+    def test_from_env_handles_type_error_in_custom_emoji_set_data(
         self, monkeypatch, capsys: CaptureFixture
     ) -> None:
-        custom_layers_json = json.dumps(
-            [{"name": "my_layer", "priority": "not_an_int"}]
+        custom_emoji_sets_json = json.dumps(
+            [{"name": "my_emoji_set", "priority": "not_an_int"}]
         )
-        monkeypatch.setenv("PROVIDE_LOG_CUSTOM_EMOJI_SETS", custom_layers_json)
+        monkeypatch.setenv("PROVIDE_LOG_CUSTOM_EMOJI_SETS", custom_emoji_sets_json)
         # _ensure_config_logger_handler removed - warnings now handled by config system
         config = TelemetryConfig.from_env()
         assert config.logging.custom_emoji_sets == []
         captured = capsys.readouterr()
         assert "Error parsing custom emoji set configuration" in captured.err
         assert "PROVIDE_LOG_CUSTOM_EMOJI_SETS" in captured.err
+
+
+class TestFoundationLogOutputConfigIntegration:
+    """Test FOUNDATION_LOG_OUTPUT integration with config warnings."""
+
+    def test_config_warnings_respect_foundation_log_output_stdout(
+        self, monkeypatch, capsys: CaptureFixture
+    ) -> None:
+        """Test that config warnings go to stdout when FOUNDATION_LOG_OUTPUT=stdout."""
+        monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "stdout")
+        monkeypatch.setenv("PROVIDE_LOG_LEVEL", "INVALID_LEVEL")
+        
+        config = LoggingConfig.from_env()
+        captured = capsys.readouterr()
+        
+        # Warning should go to stdout, not stderr
+        assert "[Foundation Config Warning]" in captured.out
+        assert "[Foundation Config Warning]" not in captured.err
+
+    def test_config_warnings_respect_foundation_log_output_stderr_default(
+        self, monkeypatch, capsys: CaptureFixture
+    ) -> None:
+        """Test that config warnings go to stderr by default."""
+        # Ensure no FOUNDATION_LOG_OUTPUT is set (should default to stderr)
+        monkeypatch.delenv("FOUNDATION_LOG_OUTPUT", raising=False)
+        monkeypatch.setenv("PROVIDE_LOG_LEVEL", "INVALID_LEVEL")
+        
+        config = LoggingConfig.from_env()
+        captured = capsys.readouterr()
+        
+        # Warning should go to stderr (default behavior)
+        assert "[Foundation Config Warning]" in captured.err
+        assert "[Foundation Config Warning]" not in captured.out
+
+    def test_config_warnings_with_invalid_foundation_log_output(
+        self, monkeypatch, capsys: CaptureFixture
+    ) -> None:
+        """Test config warnings when FOUNDATION_LOG_OUTPUT has invalid value."""
+        monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "invalid_value")
+        monkeypatch.setenv("PROVIDE_LOG_LEVEL", "INVALID_LEVEL")
+        
+        config = LoggingConfig.from_env()
+        captured = capsys.readouterr()
+        
+        # Both warnings should go to stderr (fallback)
+        assert "[Foundation Config Warning]" in captured.err
+        # Should have warning about invalid FOUNDATION_LOG_OUTPUT
+        assert "FOUNDATION_LOG_OUTPUT" in captured.err
+        # Should also have warning about invalid PROVIDE_LOG_LEVEL
+        assert "PROVIDE_LOG_LEVEL" in captured.err

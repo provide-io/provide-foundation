@@ -15,10 +15,7 @@ import sys
 
 import pytest
 
-from provide.foundation.core import (
-    _set_log_stream_for_testing,
-    reset_foundation_setup_for_testing,
-)
+from provide.foundation.testing import set_log_stream_for_testing, reset_foundation_setup_for_testing
 
 _conftest_diag_logger_name = "provide.foundation.conftest_diag"
 
@@ -66,16 +63,14 @@ def manage_telemetry_reset_for_each_test() -> Generator[None]:
         )
     reset_foundation_setup_for_testing()
     # ensure_config_warnings_logger_configured call removed
-    _set_log_stream_for_testing(None)  # Ensure stream is reset to default stderr
+    set_log_stream_for_testing(None)  # Ensure stream is reset to default stderr
 
 
-# Import and re-export fixtures so they're available to all tests
-from tests.fixtures.hub import default_container_directory
-from tests.fixtures.logger import (
+# Import and re-export fixtures from the unified testing module
+from provide.foundation.testing import (
+    default_container_directory,
     captured_stderr_for_foundation,
     setup_foundation_telemetry_for_test,
-)
-from tests.fixtures.crypto import (
     client_cert,
     server_cert,
     ca_cert,

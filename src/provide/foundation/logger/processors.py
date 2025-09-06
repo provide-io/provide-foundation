@@ -24,7 +24,7 @@ from provide.foundation.types import (
 )
 
 if TYPE_CHECKING:
-    from provide.foundation.core import ResolvedEmojiConfig
+    from provide.foundation.logger.setup.emoji_resolver import ResolvedEmojiConfig
 
 _LEVEL_TO_NUMERIC: dict[LogLevelStr, int] = {
     "CRITICAL": stdlib_logging.CRITICAL,
@@ -216,10 +216,11 @@ def _build_formatter_processors_list(
             return _config_create_keyvalue_formatter_processors(output_stream)
         case _:
             # Unknown formatter, warn and default to key_value
-            # Use core setup logger instead of direct sys.stderr write
-            from provide.foundation.core import _core_setup_logger
-
-            _core_setup_logger.warning(
+            # Use setup coordinator logger
+            from provide.foundation.logger.setup.coordinator import create_core_setup_logger
+            
+            setup_logger = create_core_setup_logger()
+            setup_logger.warning(
                 f"Unknown formatter '{logging_config.console_formatter}', using default 'key_value'. "
                 f"Valid formatters: ['json', 'key_value']"
             )

@@ -86,7 +86,7 @@ The core modules provide the fundamental functionality of provide.foundation.
 ### Error Handling
 - [`provide.foundation.errors`](reference/provide/foundation/errors/index.md) - Error handling utilities
 
-## Semantic Layers
+## Emoji Sets
 
 Emoji sets provide domain-specific logging capabilities:
 

@@ -10,7 +10,7 @@ Comprehensive guide to using provide.foundation in your applications.
     <p>Understand the fundamental principles behind provide.foundation</p>
     <ul>
       <li><a href="concepts/structured-logging/">Structured Logging</a></li>
-      <li><a href="concepts/emoji-sets/">Semantic Layers</a></li>
+      <li><a href="concepts/emoji-sets/">Emoji Sets</a></li>
       <li><a href="concepts/emoji-system/">Emoji System</a></li>
       <li><a href="concepts/das-pattern/">Domain-Action-Status Pattern</a></li>
     </ul>
