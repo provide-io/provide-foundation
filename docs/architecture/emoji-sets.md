@@ -474,6 +474,6 @@ with tracer.start_as_current_span("process_order") as span:
 ## Next Steps
 
 - 📖 [Advanced Logging Guide](../guide/logging/advanced.md) for customization
-- 🔧 [API Reference](../api/emoji_sets/index.md) for complete documentation
+- 🔧 [API Reference](../api/emoji_sets/api-index.md) for complete documentation
 - 📚 [Usage Examples](../getting-started/examples.md) for practical patterns
 - 🎨 [Emoji System Details](emoji-system.md) for implementation details

@@ -456,7 +456,7 @@ except ConfigurationError as e:
 
 ## Related Documentation
 
-- [api-Configuration Manager API](manager.md) - Using loaders with ConfigManager
-- [api-Environment Config API](env.md) - Environment variable loading
-- [api-Configuration Base API](base.md) - BaseConfig and field definitions
+- [api-Configuration Manager API](api-manager.md) - Using loaders with ConfigManager
+- [api-Environment Config API](api-env.md) - Environment variable loading
+- [api-Configuration Base API](api-base.md) - BaseConfig and field definitions
 - [Configuration Files Guide](../../guide/config/files.md) - File format details and locations

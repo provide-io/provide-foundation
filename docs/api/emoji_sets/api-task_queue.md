@@ -527,9 +527,9 @@ task_log.info("task_status_update",
 
 ## Related Documentation
 
-- [api-Base Emoji Types](base.md) - Core emoji system interfaces
-- [api-Custom Emoji Sets](custom.md) - Creating custom emoji sets
-- [api-HTTP Emoji Set](http.md) - Web request logging emojis
-- [api-Database Emoji Set](database.md) - Database operation emojis
-- [api-LLM Emoji Set](llm.md) - AI/ML model logging emojis
+- [api-Base Emoji Types](api-base.md) - Core emoji system interfaces
+- [api-Custom Emoji Sets](api-custom.md) - Creating custom emoji sets
+- [api-HTTP Emoji Set](api-http.md) - Web request logging emojis
+- [api-Database Emoji Set](api-database.md) - Database operation emojis
+- [api-LLM Emoji Set](api-llm.md) - AI/ML model logging emojis
 - [Testing Guide](../../guide/testing.md) - Testing task queue logging

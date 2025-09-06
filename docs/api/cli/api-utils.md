@@ -495,7 +495,7 @@ def risky_operation():
 
 ## Related Documentation
 
-- [api-CLI Decorators API](decorators.md) - Standard CLI decorators
-- [api-CLI Testing API](testing.md) - Testing utilities
+- [api-CLI Decorators API](api-decorators.md) - Standard CLI decorators
+- [api-CLI Testing API](api-testing.md) - Testing utilities
 - [Context API](../context/api-index.md) - Context management
 - [CLI Guide](../../guide/cli/index.md) - Building CLI applications

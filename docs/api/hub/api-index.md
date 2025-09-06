@@ -105,16 +105,16 @@ if __name__ == "__main__":
 
 ## API Modules
 
-### [api-Hub Manager](manager.md)
+### [api-Hub Manager](api-manager.md)
 Central coordination class for components and commands with lifecycle management.
 
-### [api-Components](components.md)
+### [api-Components](api-components.md)
 Component registration system with decorator support and plugin discovery.
 
-### [api-Registry](registry.md)  
+### [api-Registry](api-registry.md)  
 Core registry pattern implementation for storing and retrieving registered items.
 
-### [api-Commands](commands.md)
+### [api-Commands](api-commands.md)
 Command registration and Click CLI integration with automatic parameter detection.
 
 ## Usage Patterns
@@ -373,7 +373,7 @@ def teardown():
 
 ## Related Documentation
 
-- [api-Components API](components.md) - Component registration patterns
+- [api-Components API](api-components.md) - Component registration patterns
 - [CLI Framework Guide](../../guide/cli/index.md) - CLI development with Hub  
 - [Advanced Usage Guide](../../guide/advanced/index.md) - Plugin patterns
 - [Registry Utils Guide](../../guide/utilities/registry.md) - Registry system patterns
