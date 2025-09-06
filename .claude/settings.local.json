@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Read(//Users/tim/code/gh/provide-io/**)"
+      "Read(//Users/tim/code/gh/provide-io/**)",
+      "Bash(timeout 5s mkdocs serve --watch-theme)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": [],
