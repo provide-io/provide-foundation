@@ -551,16 +551,17 @@ class TestAsyncRunnerEdgeCases:
             assert len(lines) == 0
     
     async def test_shell_command_kwargs_filtering(self):
-        """Test that shell kwarg is filtered from subprocess kwargs."""
+        """Test that invalid kwargs are filtered from subprocess kwargs."""
         with patch('asyncio.create_subprocess_shell') as mock_shell:
             mock_process = AsyncMock()
             mock_process.communicate = AsyncMock(return_value=(b'output', b''))
             mock_process.returncode = 0
             mock_shell.return_value = mock_process
             
-            await async_run_command("echo test", shell=True, extra_kwarg="value")
+            await async_run_command("echo test", shell=True, extra_kwarg="value", encoding="utf-8")
             
-            # Verify shell kwarg is filtered out from passed kwargs
+            # Verify invalid kwargs are filtered out, but valid ones are kept
             call_kwargs = mock_shell.call_args[1]
-            assert 'shell' not in call_kwargs
-            assert 'extra_kwarg' in call_kwargs
+            assert 'extra_kwarg' not in call_kwargs  # Invalid kwarg should be filtered
+            assert 'encoding' in call_kwargs  # Valid kwarg should be kept
+            assert 'shell' not in call_kwargs  # shell is handled separately, not passed as kwarg
