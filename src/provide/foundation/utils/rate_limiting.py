@@ -39,11 +39,12 @@ class TokenBucketRateLimiter:
         self._last_refill_timestamp: float = time.monotonic()
         self._lock: asyncio.Lock = asyncio.Lock()
         
-        # Avoid circular imports by getting logger lazily
+        # Cache logger instance to avoid repeated imports
+        self._logger = None
         try:
             from provide.foundation.logger import get_logger
-            logger = get_logger(__name__)
-            logger.debug(
+            self._logger = get_logger(__name__)
+            self._logger.debug(
                 "🔩🗑️ TokenBucketRateLimiter initialized: "
                 f"capacity={capacity}, refill_rate={refill_rate}"
             )
@@ -87,26 +88,18 @@ class TokenBucketRateLimiter:
 
             if self._tokens >= 1.0:
                 self._tokens -= 1.0
-                try:
-                    from provide.foundation.logger import get_logger
-                    logger = get_logger(__name__)
-                    logger.debug(
+                if self._logger:
+                    self._logger.debug(
                         "🔩🗑️✅ Request allowed. Tokens remaining: "
                         f"{self._tokens:.2f}/{self._capacity:.2f}"
                     )
-                except ImportError:
-                    pass
                 return True
             else:
-                try:
-                    from provide.foundation.logger import get_logger
-                    logger = get_logger(__name__)
-                    logger.warning(
+                if self._logger:
+                    self._logger.warning(
                         "🔩🗑️❌ Request denied. No tokens available. Tokens: "
                         f"{self._tokens:.2f}/{self._capacity:.2f}"
                     )
-                except ImportError:
-                    pass
                 return False
 
     async def get_current_tokens(self) -> float:
