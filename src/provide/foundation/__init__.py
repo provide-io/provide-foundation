@@ -9,7 +9,7 @@ Primary public interface for the library, re-exporting common components.
 # Export config module for easy access
 # New foundation components
 # Make the errors module available for detailed imports
-from provide.foundation import cli, config, errors, platform, process
+from provide.foundation import config, errors, platform, process
 
 # Console I/O functions
 from provide.foundation.console import perr, pin, pout
@@ -65,6 +65,22 @@ from provide.foundation.types import (
 from provide.foundation.utils import timed_block, TokenBucketRateLimiter
 from provide.foundation._version import __version__
 
+# CLI lazy loading support
+def __getattr__(name: str):
+    """Support lazy loading of optional modules."""
+    if name == "cli":
+        try:
+            from provide.foundation import cli
+            return cli
+        except ImportError as e:
+            if "click" in str(e):
+                raise ImportError(
+                    "CLI features require optional dependencies. Install with: "
+                    "pip install 'provide-foundation[cli]'"
+                ) from e
+            raise
+    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+
 __all__ = [
     # Core Emoji Dictionaries (available for direct use or reference)
     "PRIMARY_EMOJI",
@@ -94,7 +110,6 @@ __all__ = [
     "TelemetryConfig",
     # Version
     "__version__",
-    "cli",
     # Config module
     "config",
     "error_boundary",
