@@ -4,9 +4,25 @@
 """
 Foundation Tracer Module.
 
-Provides basic distributed tracing functionality without external dependencies.
-Simple, lightweight tracing for operation timing and context tracking.
+Provides distributed tracing functionality with optional OpenTelemetry integration.
+Falls back to simple, lightweight tracing when OpenTelemetry is not available.
 """
+
+# OpenTelemetry feature detection
+try:
+    from opentelemetry import trace as otel_trace
+    from opentelemetry.sdk.trace import TracerProvider
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor
+    from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter as OTLPGrpcSpanExporter
+    from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter as OTLPHttpSpanExporter
+    _HAS_OTEL = True
+except ImportError:
+    otel_trace = None
+    TracerProvider = None
+    BatchSpanProcessor = None
+    OTLPGrpcSpanExporter = None
+    OTLPHttpSpanExporter = None
+    _HAS_OTEL = False
 
 from provide.foundation.tracer.context import (
     get_current_span,
@@ -24,4 +40,5 @@ __all__ = [
     "get_trace_context",
     "set_current_span",
     "with_span",
+    "_HAS_OTEL",  # For internal use
 ]
