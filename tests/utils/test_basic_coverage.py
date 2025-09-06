@@ -12,19 +12,19 @@ class TestUtilsBasicCoverage:
 
         assert deps is not None
 
-    def test_check_dependency_function_exists(self):
-        """Test check_dependency function exists."""
-        from provide.foundation.utils.deps import check_dependency
+    def test_has_dependency_function_exists(self):
+        """Test has_dependency function exists."""
+        from provide.foundation.utils.deps import has_dependency
 
-        assert check_dependency is not None
-        assert callable(check_dependency)
+        assert has_dependency is not None
+        assert callable(has_dependency)
 
-    def test_check_dependency_basic_usage(self):
-        """Test check_dependency with basic built-in package."""
-        from provide.foundation.utils.deps import check_dependency
+    def test_has_dependency_basic_usage(self):
+        """Test has_dependency with basic built-in package."""
+        from provide.foundation.utils.deps import has_dependency
 
         # Test with a package that should always exist
-        result = check_dependency("sys")
+        result = has_dependency("sys")
         assert isinstance(result, bool)
 
     def test_env_module_imports(self):
