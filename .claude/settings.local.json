@@ -67,7 +67,8 @@
       "Bash(timeout 30s pytest tests/config/test_config_sync_coverage.py -v)",
       "Bash(timeout 20s pytest tests/config/test_config_sync_simple.py -v)",
       "Bash(timeout 15s pytest tests/config/test_config_sync_simple.py -v --tb=no)",
-      "Bash(timeout 20s pytest tests/test_init_coverage.py -v --tb=short)"
+      "Bash(timeout 20s pytest tests/test_init_coverage.py -v --tb=short)",
+      "Bash(timeout 10s pytest tests/test_version_simple.py -v)"
     ],
     "deny": [],
     "ask": [],
