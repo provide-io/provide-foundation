@@ -244,7 +244,16 @@ The key enhancement: We add visual parsing and domain validation **on top of** O
 - 📖 See [Architecture: Emoji Sets](../../architecture/emoji-sets.md) for implementation details
 - 🛠️ See [Advanced Logging Guide](../logging/advanced.md) for customization
 - 📚 Explore [Examples](../../getting-started/examples.md) for real-world usage
-- 🔧 Check [API Reference](../../api/emoji_sets/api-api-index.md) for all available fields
+- 🔧 Check [API Reference](../../api/emoji_sets/api-index.md) for all available fields
+
+## Related API Reference
+
+For detailed API documentation, see:
+- [Emoji Sets API](../../api/emoji_sets/api-index.md) - Overview and base classes
+- [HTTP Emoji Set API](../../api/emoji_sets/api-http.md) - HTTP request/response emoji mappings
+- [Database Emoji Set API](../../api/emoji_sets/api-database.md) - Database operation emoji mappings
+- [LLM Emoji Set API](../../api/emoji_sets/api-llm.md) - LLM interaction emoji mappings
+- [Custom Emoji Set API](../../api/emoji_sets/api-custom.md) - Creating custom emoji sets
 
 ## Summary
 

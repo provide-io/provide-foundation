@@ -2,6 +2,13 @@
 
 Comprehensive error handling utilities for robust applications.
 
+## Related API Reference
+
+For detailed API documentation, see:
+- [Error API Overview](../../api/errors/api-index.md) - Exception classes and utilities
+- [Error Decorators API](../../api/errors/api-decorators.md) - Decorator-based error handling
+- [Error Handlers API](../../api/errors/api-handlers.md) - Custom error handling logic
+
 ## Overview
 
 provide.foundation's error handling system provides structured exceptions, automatic retry logic, error decorators, and integration with the logging system. It ensures consistent error handling across applications with proper context preservation.
