@@ -17,7 +17,8 @@ except ImportError:
     click = None
     _HAS_CLICK = False
 
-from provide.foundation.logger import get_logger
+from provide.foundation.logger import get_logger, logger as foundation_logger
+from provide.foundation.utils import TokenBucketRateLimiter
 
 log = get_logger(__name__)
 
@@ -230,133 +231,227 @@ if _HAS_CLICK:
             logs_sent = 0
             logs_failed = 0
             logs_rate_limited = 0
-            batch = []
             start_time = time.time()
             last_stats_time = start_time
             last_stats_sent = 0
             
-            # For high-speed generation, use async batch sending
-            import concurrent.futures
-            import threading
+            # Set up Foundation's rate limiter
+            # Configure with the target rate and a reasonable burst size
+            rate_limiter = TokenBucketRateLimiter(
+                rate=rate,  # tokens per second
+                capacity=min(rate * 2, 1000)  # Allow burst up to 2 seconds worth or 1000
+            )
             
             # Track rate limiting
             rate_limit_detected = False
             consecutive_failures = 0
-            effective_rate = rate  # May be reduced if rate limiting detected
             
             def send_log_with_tracking(entry):
-                """Send log and track success/failure."""
+                """Send log using Foundation's logger and track success/failure."""
                 nonlocal logs_sent, logs_failed, logs_rate_limited, rate_limit_detected, consecutive_failures
                 
-                success = send_log(
-                    message=entry["message"],
-                    level=entry["level"],
-                    service=entry["service"],
-                    attributes=entry,
-                    client=client,
-                )
-                
-                if success:
+                try:
+                    # Get a logger for the service
+                    service_logger = get_logger(f"generated.{entry['service']}")
+                    
+                    # Use Foundation's logger with appropriate level
+                    level = entry["level"].lower()
+                    message = entry["message"]
+                    
+                    # Remove message and level from attributes since they're passed separately
+                    attrs = {k: v for k, v in entry.items() if k not in ["message", "level"]}
+                    
+                    # Call the appropriate log level method
+                    if level == "trace":
+                        service_logger.trace(message, **attrs)
+                    elif level == "debug":
+                        service_logger.debug(message, **attrs)
+                    elif level == "info":
+                        service_logger.info(message, **attrs)
+                    elif level == "warn" or level == "warning":
+                        service_logger.warning(message, **attrs)
+                    elif level == "error":
+                        service_logger.error(message, **attrs)
+                    elif level == "critical":
+                        service_logger.critical(message, **attrs)
+                    else:
+                        service_logger.info(message, **attrs)
+                    
+                    # Also send to OpenObserve if configured
+                    if client:
+                        from provide.foundation.observability.openobserve.otlp import send_log_bulk
+                        success = send_log_bulk(
+                            message=message,
+                            level=entry["level"],
+                            service=entry["service"],
+                            attributes=attrs,
+                            client=client,
+                        )
+                        if not success:
+                            logs_failed += 1
+                            consecutive_failures += 1
+                            if consecutive_failures >= 5 and not rate_limit_detected:
+                                rate_limit_detected = True
+                                logs_rate_limited = logs_failed
+                            elif rate_limit_detected:
+                                logs_rate_limited += 1
+                            return False
+                    
                     logs_sent += 1
                     consecutive_failures = 0
                     return True
-                else:
+                    
+                except Exception as e:
+                    log.debug(f"Failed to send log: {e}")
                     logs_failed += 1
                     consecutive_failures += 1
-                    
-                    # Detect rate limiting (multiple consecutive failures)
-                    if consecutive_failures >= 5 and not rate_limit_detected:
-                        rate_limit_detected = True
-                        logs_rate_limited = logs_failed
-                    elif rate_limit_detected:
-                        logs_rate_limited += 1
-                    
                     return False
             
             if count == 0:
-                # Continuous mode with high-speed support
+                # Continuous mode using Foundation's rate limiter with async workers
                 index = 0
-                with concurrent.futures.ThreadPoolExecutor(max_workers=min(10, int(rate/100) + 1)) as executor:
+                import concurrent.futures
+                import queue
+                import threading
+                
+                # Work queue for async processing
+                work_queue = queue.Queue(maxsize=int(rate * 2))  # Buffer up to 2 seconds of logs
+                
+                # Use thread pool for high-speed sending
+                # More workers for higher rates
+                num_workers = min(50, max(4, int(rate / 100)))
+                
+                with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
+                    # Start worker threads
                     futures = []
+                    
+                    def worker():
+                        """Worker thread that processes logs from queue."""
+                        while True:
+                            try:
+                                entry = work_queue.get(timeout=1)
+                                if entry is None:  # Shutdown signal
+                                    break
+                                send_log_with_tracking(entry)
+                                work_queue.task_done()
+                            except queue.Empty:
+                                continue
+                    
+                    # Start workers
+                    for _ in range(num_workers):
+                        futures.append(executor.submit(worker))
                     
                     while True:
                         current_time = time.time()
                         
-                        # Generate and submit logs at target rate
-                        logs_this_second = 0
-                        second_start = current_time
-                        
-                        while logs_this_second < effective_rate and (time.time() - second_start) < 1.0:
+                        # Try to acquire a token from the rate limiter
+                        if rate_limiter.acquire():
+                            # Token acquired, generate and queue log
                             entry = generate_log_entry(index)
-                            future = executor.submit(send_log_with_tracking, entry)
-                            futures.append(future)
-                            index += 1
-                            logs_this_second += 1
+                            try:
+                                work_queue.put_nowait(entry)
+                                index += 1
+                            except queue.Full:
+                                # Queue is full, we're generating faster than sending
+                                logs_rate_limited += 1
+                                if not rate_limit_detected:
+                                    rate_limit_detected = True
+                                    log.warning("⚠️ Queue full - cannot keep up with target rate")
+                        else:
+                            # Rate limited - track it
+                            logs_rate_limited += 1
+                            if not rate_limit_detected:
+                                rate_limit_detected = True
+                                log.debug("⚠️ Rate limiter activated - target rate exceeded")
                             
-                            # Micro-sleep for very high rates
-                            if rate > 100:
-                                time.sleep(0.001)  # 1ms between submissions
-                        
-                        # Clean up completed futures
-                        futures = [f for f in futures if not f.done()]
+                            # Small sleep to prevent busy waiting
+                            time.sleep(0.0001)
                         
                         # Print stats every second
                         if current_time - last_stats_time >= 1.0:
                             current_sent = logs_sent
                             current_rate = (current_sent - last_stats_sent) / (current_time - last_stats_time)
+                            tokens_available = rate_limiter.tokens
+                            queue_size = work_queue.qsize()
                             
-                            status = f"📊 Sent: {logs_sent:,} | Rate: {current_rate:.0f}/s"
+                            status = f"📊 Sent: {logs_sent:,} | Rate: {current_rate:.0f}/s | Tokens: {tokens_available:.0f}/{rate_limiter.capacity} | Queue: {queue_size}"
                             if logs_failed > 0:
                                 status += f" | Failed: {logs_failed:,}"
                             if rate_limit_detected:
-                                status += f" | ⚠️ RATE LIMITED ({logs_rate_limited:,})"
-                                # Adjust effective rate down
-                                effective_rate = max(effective_rate * 0.9, 10)
+                                status += f" | ⚠️ RATE LIMITED ({logs_rate_limited:,} throttled)"
                             
                             click.echo(status)
                             last_stats_time = current_time
                             last_stats_sent = current_sent
-                        
-                        # Sleep remainder of second if needed
-                        sleep_time = 1.0 - (time.time() - second_start)
-                        if sleep_time > 0:
-                            time.sleep(sleep_time)
                     
             else:
-                # Fixed count mode with high-speed support
-                with concurrent.futures.ThreadPoolExecutor(max_workers=min(20, int(rate/50) + 1)) as executor:
-                    futures = []
+                # Fixed count mode using Foundation's rate limiter with async workers
+                import concurrent.futures
+                import queue
+                
+                # Work queue for async processing
+                work_queue = queue.Queue(maxsize=min(1000, count))
+                
+                # Use thread pool for high-speed sending
+                num_workers = min(50, max(4, int(rate / 100)))
+                
+                with concurrent.futures.ThreadPoolExecutor(max_workers=num_workers) as executor:
+                    # Start worker threads
+                    def worker():
+                        """Worker thread that processes logs from queue."""
+                        while True:
+                            try:
+                                entry = work_queue.get(timeout=1)
+                                if entry is None:  # Shutdown signal
+                                    break
+                                send_log_with_tracking(entry)
+                                work_queue.task_done()
+                            except queue.Empty:
+                                continue
                     
+                    # Start workers
+                    workers = [executor.submit(worker) for _ in range(num_workers)]
+                    
+                    # Generate and queue logs
                     for i in range(count):
-                        entry = generate_log_entry(i)
-                        future = executor.submit(send_log_with_tracking, entry)
-                        futures.append(future)
+                        # Wait for rate limiter token
+                        while not rate_limiter.acquire():
+                            logs_rate_limited += 1
+                            if not rate_limit_detected:
+                                rate_limit_detected = True
+                                log.debug("⚠️ Rate limiter activated - target rate exceeded")
+                            time.sleep(0.0001)  # Very small sleep to prevent busy waiting
                         
-                        # Control submission rate
-                        if rate > 0:
-                            time.sleep(1.0 / rate)
+                        # Generate and queue log
+                        entry = generate_log_entry(i)
+                        work_queue.put(entry)
                         
                         # Print progress
-                        if (i + 1) % 100 == 0 or i == count - 1:
-                            # Wait for some futures to complete
-                            completed = sum(1 for f in futures if f.done())
+                        if (i + 1) % 100 == 0:
+                            current_time = time.time()
+                            elapsed = current_time - start_time
+                            current_rate = logs_sent / elapsed if elapsed > 0 else 0
+                            tokens_available = rate_limiter.tokens
+                            queue_size = work_queue.qsize()
                             
-                            status = f"📊 Progress: {i+1}/{count} submitted, {completed} completed"
-                            if logs_sent > 0:
-                                current_time = time.time()
-                                elapsed = current_time - start_time
-                                current_rate = logs_sent / elapsed if elapsed > 0 else 0
-                                status += f" | Rate: {current_rate:.0f}/s"
+                            status = f"📊 Progress: {i+1}/{count} | Sent: {logs_sent:,} | Rate: {current_rate:.0f}/s | Queue: {queue_size} | Tokens: {tokens_available:.0f}"
                             if logs_failed > 0:
                                 status += f" | Failed: {logs_failed}"
                             if rate_limit_detected:
-                                status += f" | ⚠️ RATE LIMITED"
+                                status += f" | ⚠️ THROTTLED ({logs_rate_limited:,})"
                             
                             click.echo(status)
                     
-                    # Wait for all to complete
-                    click.echo("⏳ Waiting for remaining logs to send...")
-                    concurrent.futures.wait(futures)
+                    # Wait for queue to empty
+                    click.echo("⏳ Waiting for queue to empty...")
+                    work_queue.join()
+                    
+                    # Shutdown workers
+                    for _ in range(num_workers):
+                        work_queue.put(None)
+                    
+                    # Wait for workers to finish
+                    concurrent.futures.wait(workers)
             
             elapsed = time.time() - start_time
             rate_actual = logs_sent / elapsed if elapsed > 0 else 0
