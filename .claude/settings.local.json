@@ -93,7 +93,8 @@
       "Bash(else)",
       "Bash(fi)",
       "Bash(uv pip:*)",
-      "Bash(ruff check:*)"
+      "Bash(ruff check:*)",
+      "Bash(mypy:*)"
     ],
     "deny": [],
     "ask": [],
