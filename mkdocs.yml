@@ -115,7 +115,13 @@ nav:
       - guide/config/index.md
       - Environment Variables: guide/config/environment.md
       - Config Files: guide/config/files.md
-      - Runtime Config: guide/config/runtime.md
+      - Runtime Config: 
+        - guide/config/runtime.md
+        - Overview: guide/config/runtime/index.md
+        - Remote Config: guide/config/runtime/remote.md
+        - Updates: guide/config/runtime/updates.md
+        - Watchers: guide/config/runtime/watchers.md
+      - Reference: guide/config/reference.md
       - Best Practices: guide/config/best-practices.md
     - Logging:
       - guide/logging/index.md
@@ -194,6 +200,7 @@ nav:
       - LLM: api/emoji_sets/llm.md
       - Task Queue: api/emoji_sets/task_queue.md
     - Context API: api/context/index.md
+    - Core API: api/core/index.md
     - File API: api/file/index.md
     - Crypto API: api/crypto/index.md
     - Platform API: api/platform/index.md
@@ -201,7 +208,9 @@ nav:
     - Streams API: api/streams/index.md
     - Testing API: api/testing/index.md
     - Tracer API: api/tracer/index.md
-    - Setup API: api/setup/index.md
+    - Setup API: 
+      - api/setup/index.md
+      - Setup Functions: api/setup.md
     - Console API: api/console/index.md
     - Utils API:
       - api/utils/index.md
