@@ -1,6 +1,7 @@
 """Directory operations and utilities."""
 
 from contextlib import contextmanager
+from typing import Generator
 from pathlib import Path
 import shutil
 import tempfile
@@ -62,7 +63,7 @@ def ensure_parent_dir(
 def temp_dir(
     prefix: str = "provide_",
     cleanup: bool = True,
-):
+) -> Generator[Path, None, None]:
     """Create temporary directory with automatic cleanup.
 
     Args:

@@ -29,7 +29,7 @@ def setup_logging(
     level: str | int = "INFO",
     json_logs: bool = False,
     log_file: str | None = None,
-    **kwargs,
+    **kwargs: Any,
 ) -> None:
     """
     Simple logging setup for basic use cases.

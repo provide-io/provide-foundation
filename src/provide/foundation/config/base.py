@@ -26,7 +26,7 @@ def field(
     env_var: str | None = None,
     env_prefix: str | None = None,
     sensitive: bool = False,
-    **kwargs,
+    **kwargs: Any,
 ) -> Any:
     """
     Enhanced attrs field with configuration-specific metadata.
