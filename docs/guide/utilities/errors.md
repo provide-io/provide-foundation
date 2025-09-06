@@ -446,5 +446,5 @@ def load_user_config():
 ## Related Topics
 
 - [Exception Logging](../logging/exceptions.md) - Logging exceptions
-- [Error Handling API](../../api/errors/index.md) - Error handling API reference
-- [Error Decorators](../../api/errors/decorators.md) - Error handling decorators
+- [Error Handling API](../../api/errors/api-api-index.md) - Error handling API reference
+- [Error Decorators](../../api/errors/api-decorators.md) - Error handling decorators

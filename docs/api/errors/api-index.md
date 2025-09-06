@@ -42,8 +42,8 @@ with error_boundary(ValidationError, log_errors=True):
 
 The error handling system is organized into several categories:
 
-- **[Exception Hierarchy](exceptions.md)**: Structured exceptions with rich context
-- **[Error Handling Decorators](decorators.md)**: Retry, fallback, and circuit breaker patterns
-- **[Handler System](handlers.md)**: Configurable error policies and integration support
+- **[api-Exception Hierarchy](exceptions.md)**: Structured exceptions with rich context
+- **[api-Error Handling Decorators](decorators.md)**: Retry, fallback, and circuit breaker patterns
+- **[api-Handler System](handlers.md)**: Configurable error policies and integration support
 
 Each section provides detailed documentation with examples and production-ready patterns.

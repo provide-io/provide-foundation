@@ -326,6 +326,6 @@ The emoji system integrates with the log processors to automatically add emoji p
 ## Related Documentation
 
 - [Emoji Sets Guide](../../guide/concepts/emoji-sets.md) - Advanced emoji configuration
-- [Log Processors API](processors.md) - Processing pipeline
+- [api-Log Processors API](processors.md) - Processing pipeline
 - [Performance Guide](../../guide/concepts/performance.md) - Optimization strategies
 - [Configuration Guide](../../guide/config/environment.md) - Environment setup

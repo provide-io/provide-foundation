@@ -471,7 +471,7 @@ for t in threads:
 
 ## See Also
 
-- [Process API](../process/index.md) - Process execution utilities
-- [Utils API](../utils/index.md) - Environment variable utilities
-- [Config API](../config/index.md) - Platform-aware configuration
+- [Process API](../process/api-index.md) - Process execution utilities
+- [Utils API](../utils/api-index.md) - Environment variable utilities
+- [Config API](../config/api-index.md) - Platform-aware configuration
 - [Platform Guide](../../guide/utilities/platform.md) - Platform detection patterns

@@ -123,7 +123,7 @@ setup_telemetry(config)
 
 ## Related Documentation
 
-- [Base Emoji Types](base.md) - Core emoji system interfaces
-- [Custom Emoji Sets](custom.md) - Creating custom emoji sets  
-- [Database Emoji Set](database.md) - Database operation emojis
+- [api-Base Emoji Types](base.md) - Core emoji system interfaces
+- [api-Custom Emoji Sets](custom.md) - Creating custom emoji sets  
+- [api-Database Emoji Set](database.md) - Database operation emojis
 - [Testing Guide](../../guide/testing.md) - Testing HTTP logging

@@ -244,7 +244,7 @@ The key enhancement: We add visual parsing and domain validation **on top of** O
 - 📖 See [Architecture: Emoji Sets](../../architecture/emoji-sets.md) for implementation details
 - 🛠️ See [Advanced Logging Guide](../logging/advanced.md) for customization
 - 📚 Explore [Examples](../../getting-started/examples.md) for real-world usage
-- 🔧 Check [API Reference](../../api/emoji_sets/index.md) for all available fields
+- 🔧 Check [API Reference](../../api/emoji_sets/api-api-index.md) for all available fields
 
 ## Summary
 

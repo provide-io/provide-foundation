@@ -8,4 +8,4 @@ API documentation for Platform utilities including system detection and informat
 
 ## Usage
 
-See [User Guide](../../guide/index.md) for usage examples.
+See [User Guide](../../guide/api-index.md) for usage examples.

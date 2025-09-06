@@ -746,8 +746,8 @@ def test_concurrent_logging(captured_stderr_for_foundation):
 
 ## See Also
 
-- [Logger API](../logger/index.md) - Foundation logging system
-- [Streams API](../streams/index.md) - Stream management and redirection
-- [Errors API](../errors/index.md) - Error handling and testing
+- [Logger API](../logger/api-index.md) - Foundation logging system
+- [Streams API](../streams/api-index.md) - Stream management and redirection
+- [Errors API](../errors/api-index.md) - Error handling and testing
 - [CLI Guide](../../guide/cli/index.md) - Command-line interface development
 - [Testing Guide](../../guide/testing.md) - Comprehensive testing practices

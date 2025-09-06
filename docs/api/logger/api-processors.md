@@ -279,7 +279,7 @@ processors.extend(_build_formatter_processors_list(config.logging, sys.stdout))
 
 ## Related Documentation
 
-- [FoundationLogger API](base.md) - Main logger interface
-- [Emoji System API](emoji.md) - Visual parsing system
+- [api-FoundationLogger API](base.md) - Main logger interface
+- [api-Emoji System API](emoji.md) - Visual parsing system
 - [Advanced Logging Guide](../../guide/logging/advanced/index.md) - Creating custom processors
 - [Emoji Sets Guide](../../guide/concepts/emoji-sets.md) - Advanced emoji system

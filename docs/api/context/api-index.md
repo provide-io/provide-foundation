@@ -342,4 +342,4 @@ if __name__ == "__main__":
 - [Configuration Guide](../../guide/config/index.md) - Detailed configuration patterns
 - [Logger Configuration](../logger/config.md) - Telemetry configuration integration
 - [Setup Functions](../setup.md) - Setup functions that use Context
-- [CLI Framework](../cli/index.md) - CLI integration patterns
+- [CLI Framework](../cli/api-index.md) - CLI integration patterns

@@ -8,12 +8,12 @@ The Emoji Sets system provides domain-specific visual enhancements to structured
 
 ## Available Emoji Sets
 
-- [Base Types](base.md) - Core types and interfaces
-- [HTTP Layer](http.md) - Web request and API logging
-- [Database Layer](database.md) - Database operations and queries
-- [LLM Layer](llm.md) - AI/ML model interactions
-- [Task Queue Layer](task_queue.md) - Asynchronous task processing
-- [Custom Layers](custom.md) - Creating custom emoji sets
+- [api-Base Types](base.md) - Core types and interfaces
+- [api-HTTP Layer](http.md) - Web request and API logging
+- [api-Database Layer](database.md) - Database operations and queries
+- [api-LLM Layer](llm.md) - AI/ML model interactions
+- [api-Task Queue Layer](task_queue.md) - Asynchronous task processing
+- [api-Custom Layers](custom.md) - Creating custom emoji sets
 
 ## Quick Start
 

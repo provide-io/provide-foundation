@@ -481,6 +481,6 @@ large_file_hash = hash_large_file("database_dump.sql")
 
 ## See Also
 
-- [File Module](../file/index.md) - For secure file operations
+- [File Module](../file/api-index.md) - For secure file operations
 - [Utils Guide](../../guide/utilities/index.md) - General utility patterns
 - [Security Guide](../../guide/security/index.md) - Security best practices

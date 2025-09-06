@@ -156,7 +156,7 @@ The core implementation handles various error conditions:
 
 ## Related Documentation
 
-- [Logger Base API](base.md) - Public interface and exports
-- [Logger Factories](factories.md) - Factory functions for logger creation
-- [Configuration](config.md) - Configuration classes and options
+- [api-Logger Base API](base.md) - Public interface and exports
+- [api-Logger Factories](factories.md) - Factory functions for logger creation
+- [api-Configuration](config.md) - Configuration classes and options
 - [Setup Guide](../../guide/logging/basic.md) - Basic usage patterns

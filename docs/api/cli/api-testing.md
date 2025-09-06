@@ -450,7 +450,7 @@ def test_command_performance():
 
 ## Related Documentation
 
-- [CLI Decorators API](decorators.md) - Standard CLI decorators
-- [CLI Utils API](utils.md) - CLI utilities and helpers
+- [api-CLI Decorators API](decorators.md) - Standard CLI decorators
+- [api-CLI Utils API](utils.md) - CLI utilities and helpers
 - [Hub Commands API](../hub/commands.md) - Hub-based command system
 - [CLI Guide](../../guide/cli/index.md) - CLI development guide

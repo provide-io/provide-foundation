@@ -391,7 +391,7 @@ class DocumentedEmojiSet(EmojiSetConfig):
 
 ## Related Documentation
 
-- [Emoji Base Types](base.md) - Core emoji set interfaces
-- [Built-in Emoji Sets](index.md) - Available built-in emoji sets
+- [api-Emoji Base Types](base.md) - Core emoji set interfaces
+- [api-Built-in Emoji Sets](index.md) - Available built-in emoji sets
 - [Advanced Usage Guide](../../guide/advanced-usage.md) - Advanced emoji patterns
 - [Testing Guide](../../guide/testing.md) - Testing emoji functionality

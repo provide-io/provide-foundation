@@ -691,7 +691,7 @@ data_transformer()
 
 ## See Also
 
-- [Context Module](../context/index.md) - For configuration and context management
+- [Context Module](../context/api-index.md) - For configuration and context management
 - [CLI Guide](../../guide/cli/index.md) - Building CLI applications  
-- [Logger Module](../logger/index.md) - For structured logging
-- [Process Module](../process/index.md) - For external command execution
+- [Logger Module](../logger/api-index.md) - For structured logging
+- [Process Module](../process/api-index.md) - For external command execution

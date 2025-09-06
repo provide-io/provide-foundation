@@ -506,4 +506,4 @@ registry.register(name, handler)  # May not be valid
 
 - [Command Registration](../cli/commands.md) - CLI commands
 - [Advanced Usage](../advanced/index.md) - Advanced patterns
-- [Hub System](../../api/hub/index.md) - Hub system API
+- [Hub System](../../api/hub/api-api-index.md) - Hub system API

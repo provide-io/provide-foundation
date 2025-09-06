@@ -490,5 +490,5 @@ The CLI framework is optimized for quick startup:
 - 🔀 [Nested Commands](nested.md) - Building command hierarchies
 - 🎯 [Arguments & Options](arguments.md) - Advanced argument handling
 - 🎨 [Output Formatting](output.md) - Rich terminal output
-- 🧪 [Testing CLI Apps](../../api/cli/testing.md) - Testing strategies
+- 🧪 [Testing CLI Apps](../../api/cli/api-testing.md) - Testing strategies
 - 🏠 [Back to User Guide](../index.md)

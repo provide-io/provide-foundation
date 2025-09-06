@@ -2,10 +2,10 @@
 
 Core provide.foundation APIs. For detailed documentation, see the specific module sections:
 
-- [Logger API](../logger/index.md) - Complete logging interface documentation
-- [Configuration API](../config/index.md) - Comprehensive configuration management
-- [Context Management](../context/index.md) - Application context handling
-- [Hub System](../hub/index.md) - Component and command registration
+- [Logger API](../logger/api-index.md) - Complete logging interface documentation
+- [Configuration API](../config/api-index.md) - Comprehensive configuration management
+- [Context Management](../context/api-index.md) - Application context handling
+- [Hub System](../hub/api-index.md) - Component and command registration
 
 ## Quick Reference
 

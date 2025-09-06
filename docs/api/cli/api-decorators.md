@@ -362,7 +362,7 @@ LOG_LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 ## Related Documentation
 
-- [CLI Utils API](utils.md) - CLI utilities and helpers  
-- [CLI Testing API](testing.md) - Testing utilities
-- [Context API](../context/index.md) - Context management
+- [api-CLI Utils API](utils.md) - CLI utilities and helpers  
+- [api-CLI Testing API](testing.md) - Testing utilities
+- [Context API](../context/api-index.md) - Context management
 - [Click Documentation](https://click.palletsprojects.com/) - Click framework reference

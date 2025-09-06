@@ -408,7 +408,7 @@ result = subprocess.run(
 
 ## Related Documentation
 
-- [Configuration Manager API](manager.md) - Centralized configuration management
-- [Configuration Loaders API](loader.md) - Multi-source loading
+- [api-Configuration Manager API](manager.md) - Centralized configuration management
+- [api-Configuration Loaders API](loader.md) - Multi-source loading
 - [Environment Configuration Guide](../../guide/config/environment.md) - Setup and best practices
 - [Configuration Best Practices](../../guide/config/best-practices.md) - Container and deployment patterns

@@ -142,5 +142,5 @@ def monitored_function():
 ## Next Steps
 
 - Check out the [User Guide](../guide/index.md) for detailed patterns
-- See the [API Reference](../api/index.md) for complete documentation
+- See the [API Reference](../api/api-index.md) for complete documentation
 - Review [Configuration](../guide/config/index.md) for setup options

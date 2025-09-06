@@ -626,7 +626,7 @@ process_text_files("documents", "processed_documents")
 
 ## See Also
 
-- [Crypto Module](../crypto/index.md) - For file integrity verification
-- [Context Module](../context/index.md) - For configuration management
-- [Process Module](../process/index.md) - For external command execution
+- [Crypto Module](../crypto/api-index.md) - For file integrity verification
+- [Context Module](../context/api-index.md) - For configuration management
+- [Process Module](../process/api-index.md) - For external command execution
 - [File Operations Guide](../../guide/utilities/files.md) - Usage patterns and examples

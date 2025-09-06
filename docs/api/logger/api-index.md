@@ -284,8 +284,8 @@ request_logger.info("Operation successful")
 
 ## See Also
 
-- [Base Logger](base.md) - Core logger implementation
-- [Configuration](config.md) - Configuration details
-- [Processors](processors.md) - Log processing pipeline
-- [Emoji Matrix](emoji.md) - Emoji mapping system
+- [api-Base Logger](base.md) - Core logger implementation
+- [api-Configuration](config.md) - Configuration details
+- [api-Processors](processors.md) - Log processing pipeline
+- [api-Emoji Matrix](emoji.md) - Emoji mapping system
 - [User Guide: Logging](../../guide/logging/index.md) - Usage patterns

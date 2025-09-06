@@ -534,7 +534,7 @@ else:
 
 ## See Also
 
-- [Logger API](../logger/index.md) - Main logging interface
-- [Process API](../process/index.md) - Process execution with stream handling
+- [Logger API](../logger/api-index.md) - Main logging interface
+- [Process API](../process/api-index.md) - Process execution with stream handling
 - [Testing Guide](../../guide/testing.md) - Testing with stream redirection
 - [Configuration Guide](../../guide/config/index.md) - Environment-based stream setup

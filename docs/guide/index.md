@@ -176,6 +176,6 @@ These advanced topics are covered in the existing guides:
 
 ## Next Steps
 
-- Explore the [API Reference](../api/index.md) for detailed documentation
+- Explore the [API Reference](../api/api-index.md) for detailed documentation
 - Browse the [Examples](../getting-started/examples.md) for practical patterns
 - Review the [Architecture](../architecture/index.md) for technical details
