@@ -150,7 +150,7 @@ class TestProcessError:
         assert error.stderr is None
     
     def test_process_error_with_whitespace_only_stdout(self):
-        """Test ProcessError with whitespace-only stdout (should be ignored)."""
+        """Test ProcessError with whitespace-only stdout (should be stripped to empty)."""
         error = ProcessError(
             "Whitespace output",
             command="space_cmd",
@@ -159,10 +159,10 @@ class TestProcessError:
         
         expected_message = "Whitespace output\nCommand: space_cmd"
         assert str(error) == expected_message
-        assert error.stdout is None
+        assert error.stdout == ""
     
     def test_process_error_with_whitespace_only_stderr(self):
-        """Test ProcessError with whitespace-only stderr (should be ignored)."""
+        """Test ProcessError with whitespace-only stderr (should be stripped to empty)."""
         error = ProcessError(
             "Whitespace errors",
             command="space_cmd",
@@ -171,7 +171,7 @@ class TestProcessError:
         
         expected_message = "Whitespace errors\nCommand: space_cmd"
         assert str(error) == expected_message
-        assert error.stderr is None
+        assert error.stderr == ""
     
     def test_process_error_with_extra_context(self):
         """Test ProcessError with extra context information."""
