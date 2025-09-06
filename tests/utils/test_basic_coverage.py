@@ -33,15 +33,19 @@ class TestUtilsBasicCoverage:
 
         assert env is not None
 
-    def test_parse_env_vars_function_exists(self):
-        """Test parse_env_vars function exists."""
+    def test_get_bool_function_exists(self):
+        """Test get_bool function exists."""
         try:
-            from provide.foundation.utils.env import parse_env_vars
+            from provide.foundation.utils.env import get_bool
 
-            assert parse_env_vars is not None
-            assert callable(parse_env_vars)
+            assert get_bool is not None
+            assert callable(get_bool)
+            
+            # Test with non-existent env var
+            result = get_bool("NON_EXISTENT_ENV_VAR", default=False)
+            assert result is False
         except ImportError:
-            pytest.skip("parse_env_vars not available")
+            pytest.skip("get_bool not available")
 
     def test_formatting_module_imports(self):
         """Test formatting module can be imported."""
@@ -49,15 +53,20 @@ class TestUtilsBasicCoverage:
 
         assert formatting is not None
 
-    def test_format_bytes_function_exists(self):
-        """Test format_bytes function exists."""
+    def test_format_size_function_exists(self):
+        """Test format_size function exists."""
         try:
-            from provide.foundation.utils.formatting import format_bytes
+            from provide.foundation.utils.formatting import format_size
 
-            assert format_bytes is not None
-            assert callable(format_bytes)
+            assert format_size is not None
+            assert callable(format_size)
+            
+            # Test basic functionality
+            result = format_size(1024)
+            assert isinstance(result, str)
+            assert "1.0" in result and "KB" in result
         except ImportError:
-            pytest.skip("format_bytes not available")
+            pytest.skip("format_size not available")
 
     def test_parsing_module_imports(self):
         """Test parsing module can be imported."""
@@ -65,15 +74,19 @@ class TestUtilsBasicCoverage:
 
         assert parsing is not None
 
-    def test_safe_parse_function_exists(self):
-        """Test safe_parse function exists."""
+    def test_parse_bool_function_exists(self):
+        """Test parse_bool function exists."""
         try:
-            from provide.foundation.utils.parsing import safe_parse_int
+            from provide.foundation.utils.parsing import parse_bool
 
-            assert safe_parse_int is not None
-            assert callable(safe_parse_int)
+            assert parse_bool is not None
+            assert callable(parse_bool)
+            
+            # Test basic functionality
+            assert parse_bool("true") is True
+            assert parse_bool("false") is False
         except ImportError:
-            pytest.skip("safe_parse_int not available")
+            pytest.skip("parse_bool not available")
 
     def test_timing_module_imports(self):
         """Test timing module can be imported."""
@@ -81,15 +94,15 @@ class TestUtilsBasicCoverage:
 
         assert timing is not None
 
-    def test_timing_context_manager_exists(self):
-        """Test timing context manager exists."""
+    def test_timed_block_context_manager_exists(self):
+        """Test timed_block context manager exists."""
         try:
-            from provide.foundation.utils.timing import timed_operation
+            from provide.foundation.utils.timing import timed_block
 
-            assert timed_operation is not None
-            assert callable(timed_operation)
+            assert timed_block is not None
+            assert callable(timed_block)
         except ImportError:
-            pytest.skip("timed_operation not available")
+            pytest.skip("timed_block not available")
 
     def test_streams_module_imports(self):
         """Test streams module can be imported."""

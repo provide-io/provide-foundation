@@ -18,25 +18,35 @@ class TestPlatformBasicCoverage:
 
         assert detection is not None
 
-    def test_is_container_function_exists(self):
-        """Test is_container function exists."""
+    def test_get_os_name_function_exists(self):
+        """Test get_os_name function exists."""
         try:
-            from provide.foundation.platform.detection import is_container
+            from provide.foundation.platform.detection import get_os_name
 
-            assert is_container is not None
-            assert callable(is_container)
+            assert get_os_name is not None
+            assert callable(get_os_name)
+            
+            # Test basic functionality
+            result = get_os_name()
+            assert isinstance(result, str)
+            assert len(result) > 0
         except ImportError:
-            pytest.skip("is_container not available")
+            pytest.skip("get_os_name not available")
 
-    def test_is_container_basic_call(self):
-        """Test is_container can be called."""
+    def test_get_arch_name_function_exists(self):
+        """Test get_arch_name function exists."""
         try:
-            from provide.foundation.platform.detection import is_container
+            from provide.foundation.platform.detection import get_arch_name
 
-            result = is_container()
-            assert isinstance(result, bool)
+            assert get_arch_name is not None
+            assert callable(get_arch_name)
+            
+            # Test basic functionality
+            result = get_arch_name()
+            assert isinstance(result, str)
+            assert len(result) > 0
         except ImportError:
-            pytest.skip("is_container not available")
+            pytest.skip("get_arch_name not available")
 
     def test_info_module_imports(self):
         """Test info module can be imported."""
@@ -44,25 +54,35 @@ class TestPlatformBasicCoverage:
 
         assert info is not None
 
-    def test_get_platform_info_function_exists(self):
-        """Test get_platform_info function exists."""
+    def test_get_system_info_function_exists(self):
+        """Test get_system_info function exists."""
         try:
-            from provide.foundation.platform.info import get_platform_info
+            from provide.foundation.platform.info import get_system_info
 
-            assert get_platform_info is not None
-            assert callable(get_platform_info)
+            assert get_system_info is not None
+            assert callable(get_system_info)
+            
+            # Test basic functionality
+            result = get_system_info()
+            assert result is not None
+            assert hasattr(result, 'os_name')
         except ImportError:
-            pytest.skip("get_platform_info not available")
+            pytest.skip("get_system_info not available")
 
-    def test_get_platform_info_basic_call(self):
-        """Test get_platform_info can be called."""
+    def test_platform_detection_functions(self):
+        """Test platform detection functions."""
         try:
-            from provide.foundation.platform.info import get_platform_info
+            from provide.foundation.platform.info import is_windows, is_macos, is_linux
 
-            result = get_platform_info()
-            assert isinstance(result, dict)
+            assert is_windows is not None and callable(is_windows)
+            assert is_macos is not None and callable(is_macos)
+            assert is_linux is not None and callable(is_linux)
+            
+            # Test basic functionality - exactly one should be true
+            results = [is_windows(), is_macos(), is_linux()]
+            assert sum(results) == 1  # Exactly one platform should be detected
         except ImportError:
-            pytest.skip("get_platform_info not available")
+            pytest.skip("platform detection functions not available")
 
 
 class TestTracerBasicCoverage:
