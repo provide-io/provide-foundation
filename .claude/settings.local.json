@@ -70,7 +70,8 @@
       "Bash(timeout 20s pytest tests/test_init_coverage.py -v --tb=short)",
       "Bash(timeout 10s pytest tests/test_version_simple.py -v)",
       "Bash(timeout 90s pytest --cov=provide.foundation --cov-branch --cov-report=term-missing --tb=no -q --ignore=tests/test_version_coverage.py --ignore=tests/config/test_config_sync_simple.py --ignore=tests/test_init_coverage.py)",
-      "Bash(timeout 90s pytest -n auto --cov=provide.foundation --cov-branch --cov-report=term-missing --tb=no -q --ignore=tests/test_version_coverage.py --ignore=tests/config/test_config_sync_simple.py --ignore=tests/test_init_coverage.py)"
+      "Bash(timeout 90s pytest -n auto --cov=provide.foundation --cov-branch --cov-report=term-missing --tb=no -q --ignore=tests/test_version_coverage.py --ignore=tests/config/test_config_sync_simple.py --ignore=tests/test_init_coverage.py)",
+      "Bash(timeout 90s pytest -n auto --cov=provide.foundation --cov-branch --cov-report=term --tb=no -q --ignore=tests/test_version_coverage.py --ignore=tests/config/test_config_sync_simple.py --ignore=tests/test_init_coverage.py)"
     ],
     "deny": [],
     "ask": [],
