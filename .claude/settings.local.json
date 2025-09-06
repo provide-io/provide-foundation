@@ -3,7 +3,8 @@
     "allow": [
       "Read(//Users/tim/code/gh/provide-io/**)",
       "Bash(timeout 5s mkdocs serve --watch-theme)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": [],
