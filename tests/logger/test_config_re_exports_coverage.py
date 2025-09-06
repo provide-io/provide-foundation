@@ -107,7 +107,7 @@ class TestConfigModuleIntegration:
         
         # Test LoggingConfig functionality
         logging_config = LoggingConfig()
-        assert hasattr(logging_config, 'log_level')
+        assert hasattr(logging_config, 'default_level')
         
         # Test TelemetryConfig functionality  
         telemetry_config = TelemetryConfig()
@@ -119,10 +119,10 @@ class TestConfigModuleIntegration:
         from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
         
         # Test that they can be instantiated and used as before
-        logging_config = LoggingConfig(log_level="INFO")
+        logging_config = LoggingConfig(default_level="INFO")
         telemetry_config = TelemetryConfig(service_name="test-service")
         
-        assert logging_config.log_level == "INFO"
+        assert logging_config.default_level == "INFO"
         assert telemetry_config.service_name == "test-service"
     
     def test_import_error_handling(self):
