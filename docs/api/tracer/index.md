@@ -412,8 +412,8 @@ def high_frequency_operation():
 ## Integration Examples
 
 Complete examples available in:
-- [examples/15_distributed_tracing.py](../../examples/15_distributed_tracing.py) - Complex tracing scenarios
-- [examples/16_simple_tracing.py](../../examples/16_simple_tracing.py) - Basic usage patterns
+- Complex distributed tracing scenarios
+- Basic usage patterns and examples
 
 ## See Also
 

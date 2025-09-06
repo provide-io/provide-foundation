@@ -85,6 +85,8 @@ extra_javascript:
   - javascripts/mermaid-init.js
 
 nav:
+  - Home: index.md
+  
   - Getting Started:
     - getting-started/index.md
     - Installation: getting-started/installation.md

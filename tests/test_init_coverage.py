@@ -8,6 +8,23 @@ from unittest.mock import patch, MagicMock
 class TestFoundationInit:
     """Test foundation __init__.py module coverage."""
     
+    def setup_method(self):
+        """Reset module state before each test."""
+        import sys
+        # Clear CLI module from cache to ensure fresh imports
+        cli_modules = [name for name in sys.modules.keys() if name.startswith('provide.foundation.cli')]
+        self.saved_cli_modules = {}
+        for module_name in cli_modules:
+            self.saved_cli_modules[module_name] = sys.modules[module_name]
+            del sys.modules[module_name]
+    
+    def teardown_method(self):
+        """Restore module state after each test."""
+        import sys
+        # Restore CLI modules
+        for module_name, module in self.saved_cli_modules.items():
+            sys.modules[module_name] = module
+    
     def test_console_imports_available(self):
         """Test console imports when available.""" 
         import provide.foundation
@@ -44,18 +61,15 @@ class TestFoundationInit:
             pass
     
     def test_getattr_cli_click_missing(self):
-        """Test __getattr__ CLI import with missing click dependency."""
+        """Test __getattr__ CLI import with missing click dependency.""" 
         import provide.foundation
         
-        # Mock the import to simulate click being missing
-        original_import = __builtins__['__import__']
-        
-        def mock_import(name, *args, **kwargs):
-            if name == 'provide.foundation.cli' or 'cli' in name:
+        def mock_import_func(name, *args, **kwargs):
+            if name == 'provide.foundation.cli':
                 raise ImportError("No module named 'click'")
-            return original_import(name, *args, **kwargs)
+            return __import__(name, *args, **kwargs)
         
-        with patch('builtins.__import__', side_effect=mock_import):
+        with patch('builtins.__import__', side_effect=mock_import_func):
             with pytest.raises(ImportError, match="CLI features require optional dependencies"):
                 _ = provide.foundation.cli
     
@@ -63,15 +77,12 @@ class TestFoundationInit:
         """Test __getattr__ CLI import with other ImportError."""
         import provide.foundation
         
-        # Mock the import to simulate other import error
-        original_import = __builtins__['__import__']
-        
-        def mock_import(name, *args, **kwargs):
-            if name == 'provide.foundation.cli' or 'cli' in name:
+        def mock_import_func(name, *args, **kwargs):
+            if name == 'provide.foundation.cli':
                 raise ImportError("Some other error")
-            return original_import(name, *args, **kwargs)
+            return __import__(name, *args, **kwargs)
         
-        with patch('builtins.__import__', side_effect=mock_import):
+        with patch('builtins.__import__', side_effect=mock_import_func):
             with pytest.raises(ImportError, match="Some other error"):
                 _ = provide.foundation.cli
     
