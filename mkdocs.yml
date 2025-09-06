@@ -48,7 +48,6 @@ theme:
 plugins:
   - search
   - autorefs
-  - mermaid2
   - mkdocstrings:
       default_handler: python
       handlers:
@@ -67,12 +66,20 @@ markdown_extensions:
   - tables
   - pymdownx.highlight:
       use_pygments: true
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
 
 extra_css:
   - stylesheets/extra.css
+
+extra_javascript:
+  - https://unpkg.com/mermaid@10/dist/mermaid.min.js
+  - javascripts/mermaid-init.js
 
 nav:
   - Home: index.md
