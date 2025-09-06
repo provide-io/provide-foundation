@@ -200,7 +200,8 @@ class TestWaitForProcessOutput:
     @pytest.mark.asyncio
     async def test_wait_for_output_timeout(self):
         """Test timeout when expected output doesn't appear."""
-        process = ManagedProcess(["echo", "hello world"])
+        # Use a longer-running process to test actual timeout
+        process = ManagedProcess(["sleep", "5"])
         process.launch()
         
         try:
