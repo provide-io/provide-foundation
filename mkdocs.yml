@@ -170,66 +170,66 @@ nav:
       - guide/testing.md
 
   - Reference:
-    - api/index.md
+    - api/api-index.md
     - Logger API: 
-      - api/logger/index.md
-      - Base: api/logger/base.md
-      - Config: api/logger/config.md
-      - Core: api/logger/core.md
-      - Emoji: api/logger/emoji.md
-      - Factories: api/logger/factories.md
-      - Processors: api/logger/processors.md
+      - api/logger/api-index.md
+      - Base: api/logger/api-base.md
+      - Config: api/logger/api-config.md
+      - Core: api/logger/api-core.md
+      - Emoji: api/logger/api-emoji.md
+      - Factories: api/logger/api-factories.md
+      - Processors: api/logger/api-processors.md
     - Configuration API:
-      - api/config/index.md
-      - Base: api/config/base.md
-      - Environment: api/config/env.md
-      - Loader: api/config/loader.md
-      - Manager: api/config/manager.md
-      - Schema: api/config/schema.md
+      - api/config/api-index.md
+      - Base: api/config/api-base.md
+      - Environment: api/config/api-env.md
+      - Loader: api/config/api-loader.md
+      - Manager: api/config/api-manager.md
+      - Schema: api/config/api-schema.md
     - CLI API:
-      - api/cli/index.md
-      - Decorators: api/cli/decorators.md
-      - Testing: api/cli/testing.md
-      - Utils: api/cli/utils.md
+      - api/cli/api-index.md
+      - Decorators: api/cli/api-decorators.md
+      - Testing: api/cli/api-testing.md
+      - Utils: api/cli/api-utils.md
     - Hub API:
-      - api/hub/index.md
-      - Commands: api/hub/commands.md
-      - Components: api/hub/components.md
-      - Manager: api/hub/manager.md
-      - Registry: api/hub/registry.md
+      - api/hub/api-index.md
+      - Commands: api/hub/api-commands.md
+      - Components: api/hub/api-components.md
+      - Manager: api/hub/api-manager.md
+      - Registry: api/hub/api-registry.md
     - Error API:
-      - api/errors/index.md
-      - Decorators: api/errors/decorators.md
-      - Exceptions: api/errors/exceptions.md
-      - Handlers: api/errors/handlers.md
+      - api/errors/api-index.md
+      - Decorators: api/errors/api-decorators.md
+      - Exceptions: api/errors/api-exceptions.md
+      - Handlers: api/errors/api-handlers.md
     - Emoji Sets API:
-      - api/emoji_sets/index.md
-      - Base: api/emoji_sets/base.md
-      - Custom: api/emoji_sets/custom.md
-      - Database: api/emoji_sets/database.md
-      - HTTP: api/emoji_sets/http.md
-      - LLM: api/emoji_sets/llm.md
-      - Task Queue: api/emoji_sets/task_queue.md
-    - Context API: api/context/index.md
-    - Core API: api/core/index.md
-    - File API: api/file/index.md
-    - Crypto API: api/crypto/index.md
-    - Platform API: api/platform/index.md
-    - Process API: api/process/index.md
-    - Streams API: api/streams/index.md
-    - Testing API: api/testing/index.md
-    - Tracer API: api/tracer/index.md
+      - api/emoji_sets/api-index.md
+      - Base: api/emoji_sets/api-base.md
+      - Custom: api/emoji_sets/api-custom.md
+      - Database: api/emoji_sets/api-database.md
+      - HTTP: api/emoji_sets/api-http.md
+      - LLM: api/emoji_sets/api-llm.md
+      - Task Queue: api/emoji_sets/api-task_queue.md
+    - Context API: api/context/api-index.md
+    - Core API: api/core/api-index.md
+    - File API: api/file/api-index.md
+    - Crypto API: api/crypto/api-index.md
+    - Platform API: api/platform/api-index.md
+    - Process API: api/process/api-index.md
+    - Streams API: api/streams/api-index.md
+    - Testing API: api/testing/api-index.md
+    - Tracer API: api/tracer/api-index.md
     - Setup API: 
-      - api/setup/index.md
-      - Setup Functions: api/setup.md
-    - Console API: api/console/index.md
+      - api/setup/api-index.md
+      - Setup Functions: api/api-setup.md
+    - Console API: api/console/api-index.md
     - Utils API:
-      - api/utils/index.md
-      - Console: api/utils/console.md
-      - Environment: api/utils/environment.md
-      - Formatting: api/utils/formatting.md
-      - Platform: api/utils/platform.md
-      - Timing: api/utils/timing.md
+      - api/utils/api-index.md
+      - Console: api/utils/api-console.md
+      - Environment: api/utils/api-environment.md
+      - Formatting: api/utils/api-formatting.md
+      - Platform: api/utils/api-platform.md
+      - Timing: api/utils/api-timing.md
 
   - Architecture:
     - architecture/index.md
