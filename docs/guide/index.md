@@ -88,7 +88,7 @@ logger.info("processing_started", request_id="abc-123")
 logger.debug("step_1_completed", request_id="abc-123")
 ```
 
-See [examples/06_trace_logging.py](../../examples/06_trace_logging.py) for complete example.
+See [examples/06_trace_logging.py](https://github.com/provide-io/provide-foundation/blob/main/examples/06_trace_logging.py) for complete example.
 
 #### Error Handling
 ```python
@@ -116,7 +116,7 @@ def seed():
     pass
 ```
 
-See [examples/12_cli_application.py](../../examples/12_cli_application.py) for complete example.
+See [examples/12_cli_application.py](https://github.com/provide-io/provide-foundation/blob/main/examples/12_cli_application.py) for complete example.
 
 ## Best Practices
 
@@ -141,7 +141,7 @@ logger.info("http_request_started", method="GET", path="/api/users")
 logger.info("http_request_completed", status=200, duration_ms=42)
 ```
 
-See [examples/04_das_logging.py](../../examples/04_das_logging.py) for complete example.
+See [examples/04_das_logging.py](https://github.com/provide-io/provide-foundation/blob/main/examples/04_das_logging.py) for complete example.
 
 ### 3. Request Tracing
 ```python
