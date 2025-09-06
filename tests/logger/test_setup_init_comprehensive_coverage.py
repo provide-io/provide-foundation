@@ -1,5 +1,6 @@
 """Comprehensive coverage tests for logger/setup/__init__.py module."""
 
+import importlib
 import pytest
 from unittest.mock import patch
 
@@ -50,7 +51,7 @@ class TestLoggerSetupInit:
     
     def test_all_exports_accessible(self):
         """Test that all items in __all__ are accessible."""
-        import provide.foundation.logger.setup as setup_module
+        setup_module = importlib.import_module('provide.foundation.logger.setup')
         
         for export_name in setup_module.__all__:
             assert hasattr(setup_module, export_name)
@@ -59,7 +60,7 @@ class TestLoggerSetupInit:
     
     def test_module_docstring(self):
         """Test that module has proper docstring."""
-        import provide.foundation.logger.setup as setup_module
+        setup_module = importlib.import_module('provide.foundation.logger.setup')
         
         assert setup_module.__doc__ is not None
         assert "Foundation Logger Setup Module" in setup_module.__doc__
@@ -88,20 +89,21 @@ class TestConditionalTestingImport:
         assert reset_for_testing is not None
         assert callable(reset_for_testing)
     
-    @patch('builtins.__import__')
-    def test_testing_import_failure_scenario(self, mock_import):
+    def test_testing_import_failure_scenario(self):
         """Test behavior when testing utilities import fails."""
+        import builtins
+        original_import = builtins.__import__
+        
         def import_side_effect(name, *args, **kwargs):
             if name == 'provide.foundation.logger.setup.testing':
                 raise ImportError("Testing module not available")
-            return __import__(name, *args, **kwargs)
+            return original_import(name, *args, **kwargs)
         
-        mock_import.side_effect = import_side_effect
-        
-        # Re-import the module to trigger the conditional logic
-        import importlib
-        import provide.foundation.logger.setup
-        importlib.reload(provide.foundation.logger.setup)
+        with patch('builtins.__import__', side_effect=import_side_effect):
+            # Re-import the module to trigger the conditional logic
+            import importlib
+            setup_module = importlib.import_module('provide.foundation.logger.setup')
+            importlib.reload(setup_module)
         
         # After reload with mocked import failure
         from provide.foundation.logger.setup import _has_testing, reset_for_testing
@@ -112,7 +114,7 @@ class TestConditionalTestingImport:
     
     def test_all_modification_with_testing(self):
         """Test that __all__ is properly modified when testing is available."""
-        import provide.foundation.logger.setup as setup_module
+        setup_module = importlib.import_module('provide.foundation.logger.setup')
         
         # Verify the conditional __all__ modification logic
         if setup_module._has_testing:
@@ -124,7 +126,7 @@ class TestConditionalTestingImport:
     
     def test_all_list_consistency(self):
         """Test that __all__ list is consistent with available exports."""
-        import provide.foundation.logger.setup as setup_module
+        setup_module = importlib.import_module('provide.foundation.logger.setup')
         
         # All items in __all__ should be available as attributes
         for item in setup_module.__all__:
@@ -166,7 +168,7 @@ class TestSetupModuleIntegration:
     
     def test_module_structure(self):
         """Test overall module structure and attributes."""
-        import provide.foundation.logger.setup as setup_module
+        setup_module = importlib.import_module('provide.foundation.logger.setup')
         
         # Should have the expected attributes
         assert hasattr(setup_module, '__all__')
@@ -196,7 +198,7 @@ class TestSetupModuleIntegration:
     
     def test_no_unexpected_exports(self):
         """Test that module doesn't export unexpected items."""
-        import provide.foundation.logger.setup as setup_module
+        setup_module = importlib.import_module('provide.foundation.logger.setup')
         
         # Get all public attributes (not starting with _)
         public_attrs = [attr for attr in dir(setup_module) 
@@ -214,7 +216,7 @@ class TestModuleDocumentation:
     
     def test_module_file_header(self):
         """Test that module has proper file header."""
-        import provide.foundation.logger.setup as setup_module
+        setup_module = importlib.import_module('provide.foundation.logger.setup')
         
         # Module should have docstring
         assert setup_module.__doc__ is not None
@@ -222,7 +224,7 @@ class TestModuleDocumentation:
     
     def test_docstring_content(self):
         """Test docstring contains expected content."""
-        import provide.foundation.logger.setup as setup_module
+        setup_module = importlib.import_module('provide.foundation.logger.setup')
         
         docstring = setup_module.__doc__
         expected_terms = [
@@ -237,7 +239,7 @@ class TestModuleDocumentation:
     
     def test_module_attributes_documented(self):
         """Test that key module attributes are appropriately documented."""
-        import provide.foundation.logger.setup as setup_module
+        setup_module = importlib.import_module('provide.foundation.logger.setup')
         
         # Key attributes should exist
         assert hasattr(setup_module, '__all__')

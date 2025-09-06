@@ -41,10 +41,13 @@ theme:
   features:
     - navigation.instant
     - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.sections
     - navigation.expand
     - navigation.indexes
+    - navigation.path
     - navigation.top
+    - header.autohide
     - content.code.copy
     - content.tabs.link
 
@@ -85,7 +88,12 @@ extra_javascript:
   - javascripts/mermaid-init.js
 
 nav:
-  - Home: index.md
+  - Information:
+    - Overview: index.md
+    - Features: information/features.md
+    - Use Cases: information/use-cases.md
+    - Architecture: information/architecture.md
+    - Changelog: information/changelog.md
   
   - Getting Started:
     - getting-started/index.md
@@ -94,7 +102,7 @@ nav:
     - First Application: getting-started/first-app.md
     - Examples: getting-started/examples.md
 
-  - User Guide:
+  - Guide:
     - guide/index.md
     - Core Concepts:
       - guide/concepts/index.md
@@ -119,25 +127,19 @@ nav:
     - CLI Framework:
       - guide/cli/index.md
 
-  - API Reference:
+  - Reference:
     - api/index.md
-    - Logger: api/logger/index.md
-    - Configuration: api/config/index.md
-    - Context: api/context/index.md
-    - CLI: api/cli/index.md
-    - Hub: api/hub/index.md
-    - File Operations: api/file/index.md
-    - Crypto: api/crypto/index.md
-    - Console I/O: api/utils/console.md
-    - Utilities: api/utils/index.md
+    - Logger API: api/logger/index.md
+    - Configuration API: api/config/index.md
+    - Context API: api/context/index.md
+    - CLI API: api/cli/index.md
+    - Hub API: api/hub/index.md
+    - File API: api/file/index.md
+    - Crypto API: api/crypto/index.md
+    - Console API: api/utils/console.md
+    - Utils API: api/utils/index.md
 
-  - Architecture:
-    - architecture/index.md
-    - Emoji System: architecture/emoji-system.md
-    - Performance: architecture/performance.md
-    - Telemetry Format: architecture/telemetry-format.md
-
-  - Development:
+  - Contributing:
     - development/index.md
     - Contributing: development/contributing.md
     - CI/CD: development/ci-cd.md
