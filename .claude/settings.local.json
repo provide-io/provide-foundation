@@ -42,7 +42,8 @@
       "Bash(timeout 10s pytest tests/testing/test_hub_fixtures_coverage.py -v)",
       "Bash(timeout 10s pytest tests/utils/test_streams_coverage.py -v)",
       "Bash(timeout 15s pytest tests/utils/test_streams_coverage.py -v)",
-      "Bash(timeout 90s pytest -n auto --cov=provide.foundation --cov-branch --cov-report=term-missing --tb=no -q)"
+      "Bash(timeout 90s pytest -n auto --cov=provide.foundation --cov-branch --cov-report=term-missing --tb=no -q)",
+      "Bash(timeout 10s pytest tests/logger/test_config_module_coverage.py -v)"
     ],
     "deny": [],
     "ask": [],
