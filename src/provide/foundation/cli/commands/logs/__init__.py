@@ -36,7 +36,7 @@ if _HAS_CLICK:
     from provide.foundation.cli.commands.logs.send import send_command
     from provide.foundation.cli.commands.logs.query import query_command
     from provide.foundation.cli.commands.logs.tail import tail_command
-    from provide.foundation.cli.commands.logs.generate import generate_command
+    from provide.foundation.cli.commands.logs.generate import generate_logs_command as generate_command
     
     # Register subcommands
     logs_group.add_command(send_command)
