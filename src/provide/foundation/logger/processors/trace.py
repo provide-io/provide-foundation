@@ -37,9 +37,11 @@ def inject_trace_context(logger: Any, method_name: str, event_dict: Dict[str, An
             if current_span and current_span.is_recording():
                 span_context = current_span.get_span_context()
                 
-                # Add OpenTelemetry trace and span IDs
-                event_dict["trace_id"] = f"{span_context.trace_id:032x}"
-                event_dict["span_id"] = f"{span_context.span_id:016x}"
+                # Add OpenTelemetry trace and span IDs (only if not already present)
+                if "trace_id" not in event_dict:
+                    event_dict["trace_id"] = f"{span_context.trace_id:032x}"
+                if "span_id" not in event_dict:
+                    event_dict["span_id"] = f"{span_context.span_id:016x}"
                 
                 # Add trace flags if present
                 if span_context.trace_flags:
@@ -59,10 +61,12 @@ def inject_trace_context(logger: Any, method_name: str, event_dict: Dict[str, An
         current_trace_id = get_current_trace_id()
         
         if current_span:
-            event_dict["trace_id"] = current_span.trace_id
-            event_dict["span_id"] = current_span.span_id
+            if "trace_id" not in event_dict:
+                event_dict["trace_id"] = current_span.trace_id
+            if "span_id" not in event_dict:
+                event_dict["span_id"] = current_span.span_id
             # Foundation trace context injected successfully
-        elif current_trace_id:
+        elif current_trace_id and "trace_id" not in event_dict:
             event_dict["trace_id"] = current_trace_id
             # Foundation trace ID injected successfully
             
