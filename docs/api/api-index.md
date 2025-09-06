@@ -309,6 +309,6 @@ class CustomLayer(EmojiSetConfig):
 
 ## See Also
 
-- [User Guide](../guide/api-index.md) - Learn concepts and patterns
-- [Getting Started](../getting-started/api-index.md) - Quick start and examples
-- [Architecture Documentation](../architecture/api-index.md) - Technical specifications
+- [User Guide](../guide/index.md) - Learn concepts and patterns
+- [Getting Started](../getting-started/index.md) - Quick start and examples
+- [Architecture Documentation](../architecture/index.md) - Technical specifications

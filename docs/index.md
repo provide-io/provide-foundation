@@ -91,7 +91,7 @@ logger.info("File verified", hash=file_hash.hex_digest)
 - The emoji system
 - Configuration architecture
 
-### [API Reference](api/index.md)
+### [API Reference](api/api-index.md)
 Complete API documentation for all modules:
 - Logger and telemetry
 - CLI framework  
