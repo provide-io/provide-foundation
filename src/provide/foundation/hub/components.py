@@ -46,6 +46,10 @@ class ComponentCategory(Enum):
     ERROR_HANDLER = "error_handler"
     FORMATTER = "formatter"
     FILTER = "filter"
+    TRANSPORT = "transport"
+    TRANSPORT_MIDDLEWARE = "transport.middleware"
+    TRANSPORT_AUTH = "transport.auth"
+    TRANSPORT_CACHE = "transport.cache"
 
 
 class ComponentLifecycle(Protocol):
