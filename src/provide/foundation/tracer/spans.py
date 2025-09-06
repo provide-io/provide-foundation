@@ -50,20 +50,13 @@ class Span:
     _active: bool = field(default=True, init=False, repr=False)
     
     def __post_init__(self) -> None:
-        """Initialize span after creation."""
+        """Initialize span after creation."""        
         # Try to create OpenTelemetry span if available
         if _HAS_OTEL:
             try:
                 tracer = otel_trace.get_tracer(__name__)
                 self._otel_span = tracer.start_span(self.name)
                 
-                # Sync OpenTelemetry span ID with our ID for consistency
-                if hasattr(self._otel_span, 'get_span_context'):
-                    span_context = self._otel_span.get_span_context()
-                    # Convert to hex string for consistency
-                    self.span_id = f"{span_context.span_id:016x}"
-                    self.trace_id = f"{span_context.trace_id:032x}"
-                    
                 log.debug(f"🔍✨ Created OpenTelemetry span: {self.name}")
             except Exception as e:
                 log.debug(f"🔍⚠️ Failed to create OpenTelemetry span: {e}")
