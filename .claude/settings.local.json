@@ -61,7 +61,9 @@
       "Bash(timeout 20s pytest tests/config/test_config_manager_coverage.py -v)",
       "Bash(timeout 30s pytest tests/config/test_schema_coverage.py -v)",
       "Bash(timeout 20s pytest tests/config/test_schema_coverage.py::TestSchemaFieldComprehensive::test_validate_all_constraints_combined -v)",
-      "Bash(timeout 60s pytest --cov=provide.foundation --cov-branch --cov-report=term-missing --tb=no -q)"
+      "Bash(timeout 60s pytest --cov=provide.foundation --cov-branch --cov-report=term-missing --tb=no -q)",
+      "Bash(timeout 15s pytest tests/logger/test_config_imports.py -v)",
+      "Bash(timeout 10s pytest tests/logger/test_config_imports.py -v)"
     ],
     "deny": [],
     "ask": [],

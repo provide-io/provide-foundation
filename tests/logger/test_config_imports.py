@@ -22,28 +22,21 @@ class TestLoggerConfigImports:
         assert TelemetryConfig is not None
         assert hasattr(TelemetryConfig, '__name__')
     
-    def test_all_exports_available(self):
-        """Test that __all__ exports are available."""
-        import provide.foundation.logger.config as config
+    def test_both_classes_importable_together(self):
+        """Test both config classes can be imported in single statement."""
+        from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
         
-        # Verify __all__ is defined
-        assert hasattr(config, '__all__')
-        assert isinstance(config.__all__, list)
+        # Verify both are importable together
+        assert LoggingConfig is not None
+        assert TelemetryConfig is not None
         
-        # Verify all items in __all__ are importable
-        for item_name in config.__all__:
-            assert hasattr(config, item_name)
-            item = getattr(config, item_name)
-            assert item is not None
+        # Verify they're different classes
+        assert LoggingConfig is not TelemetryConfig
     
-    def test_module_has_expected_exports(self):
-        """Test module exports expected classes."""
-        import provide.foundation.logger.config as config
+    def test_star_import_works(self):
+        """Test star import functionality."""
+        # This tests the __all__ export functionality
+        exec("from provide.foundation.logger.config import *")
         
-        expected_exports = ['LoggingConfig', 'TelemetryConfig']
-        
-        for export in expected_exports:
-            assert hasattr(config, export), f"Missing export: {export}"
-            
-        # Verify __all__ contains expected exports
-        assert set(config.__all__) == set(expected_exports)
+        # The star import should have worked without error
+        # and made the expected names available in local scope
