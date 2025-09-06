@@ -2,15 +2,9 @@
 # examples/foundation_telemetry/02_custom_configuration.py
 """Demonstrates custom configuration of Foundation Telemetry using TelemetryConfig and LoggingConfig."""
 
-from pathlib import Path
-import sys
-
 # Add src to path for examples
-example_dir = Path(__file__).resolve().parent.parent  # Go up one level to `examples`
-project_root = example_dir.parent
-src_path = project_root / "src"
-if src_path.exists() and str(src_path) not in sys.path:
-    sys.path.insert(0, str(src_path))
+from utils import setup_example_environment, print_example_header, print_example_completion
+setup_example_environment()
 
 from provide.foundation import (  # noqa: E402
     LoggingConfig,
@@ -28,10 +22,7 @@ def example_2_configuration() -> None:
     programmatically define settings like service name, default log level,
     console formatter (JSON), and emoji usage.
     """
-    print("\n" + "=" * 60)
-    print("⚙️ Example 2: Custom Configuration")
-    print(" Demonstrates: Setting service name, JSON format, log level, and emojis.")
-    print("=" * 60)
+    print_example_header(2, "Custom Configuration", "Setting service name, JSON format, log level, and emojis.")
 
     config = TelemetryConfig(
         service_name="example-service",
@@ -54,4 +45,4 @@ def example_2_configuration() -> None:
 
 if __name__ == "__main__":
     example_2_configuration()
-    print("\n✅ Example 2 completed.")
+    print_example_completion(2)
