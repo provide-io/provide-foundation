@@ -144,7 +144,7 @@ class TestGetVersion:
         with patch('provide.foundation._version._find_project_root') as mock_find_root:
             mock_find_root.return_value = None
             
-            with patch('provide.foundation._version.version') as mock_version:
+            with patch('importlib.metadata.version') as mock_version:
                 mock_version.return_value = "1.5.0"
                 
                 result = get_version()
@@ -159,7 +159,7 @@ class TestGetVersion:
                 
                 mock_find_root.return_value = temp_path
                 
-                with patch('provide.foundation._version.version') as mock_version:
+                with patch('importlib.metadata.version') as mock_version:
                     mock_version.return_value = "1.3.0"
                     
                     result = get_version()
@@ -193,7 +193,7 @@ class TestGetVersion:
         """Test that importlib.metadata import is covered."""
         with patch('provide.foundation._version._find_project_root', return_value=None):
             # This will test the import on line 44
-            with patch('provide.foundation._version.version', return_value="test-version"):
+            with patch('importlib.metadata.version', return_value="test-version"):
                 result = get_version()
                 assert result == "test-version"
     
@@ -204,7 +204,7 @@ class TestGetVersion:
             # Don't create VERSION file
             
             with patch('provide.foundation._version._find_project_root', return_value=temp_path):
-                with patch('provide.foundation._version.version', return_value="metadata-version"):
+                with patch('importlib.metadata.version', return_value="metadata-version"):
                     result = get_version()
                     assert result == "metadata-version"
 
