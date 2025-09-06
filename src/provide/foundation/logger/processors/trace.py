@@ -2,9 +2,10 @@
 
 from typing import Any, Dict
 
-from provide.foundation.logger import get_logger
-
-log = get_logger(__name__)
+# Note: Cannot import get_logger here due to circular dependency during setup
+# Will log directly when needed
+import logging
+log = logging.getLogger(__name__)
 
 # OpenTelemetry feature detection
 try:
