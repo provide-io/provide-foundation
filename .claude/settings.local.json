@@ -82,7 +82,8 @@
       "Bash(for page in \"\" \"getting-started/\" \"getting-started/installation/\" \"getting-started/quick-start/\" \"guide/\" \"api/\")",
       "Bash(do)",
       "Bash(echo:*)",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(for bad_page in \"cookbook/\" \"troubleshooting/\" \"architecture/semantic-layers/\")"
     ],
     "deny": [],
     "ask": [],
