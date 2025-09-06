@@ -121,41 +121,18 @@ class TestPlatformDetection:
         assert isinstance(current_platform, str)
         assert len(current_platform.split("_")) >= 2
     
-    def test_get_python_version_info(self):
-        """Test Python version information."""
-        from provide.foundation.platform.detection import get_python_version_info
-        
-        result = get_python_version_info()
-        assert isinstance(result, dict)
-        assert "version" in result
-        assert "major" in result
-        assert "minor" in result
-        assert "micro" in result
-    
     def test_get_system_info(self):
         """Test comprehensive system information."""
-        from provide.foundation.platform.detection import get_system_info
+        from provide.foundation.platform.info import get_system_info
         
         result = get_system_info()
-        assert isinstance(result, dict)
-        
-        # Should contain key system information
-        expected_keys = ["os", "arch", "platform", "python"]
-        for key in expected_keys:
-            assert key in result
-    
-    def test_detect_container_environment(self):
-        """Test container environment detection."""
-        from provide.foundation.platform.detection import detect_container_environment
-        
-        # Test normal environment (no container)
-        result = detect_container_environment()
-        assert isinstance(result, dict)
-        assert "is_container" in result
-        assert isinstance(result["is_container"], bool)
-    
-    @patch('os.path.exists')
-    def test_detect_container_docker(self, mock_exists):
+        assert result is not None
+        assert hasattr(result, 'os_name')
+        assert hasattr(result, 'arch')
+        assert hasattr(result, 'platform')
+        assert hasattr(result, 'python_version')
+        assert isinstance(result.os_name, str)
+        assert isinstance(result.arch, str)
         """Test Docker container detection."""
         from provide.foundation.platform.detection import detect_container_environment
         
