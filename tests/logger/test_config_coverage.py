@@ -84,7 +84,7 @@ class TestLoggingConfigCoverage:
         """Test logging config with JSON formatter enabled."""
         from provide.foundation.logger.config.logging import LoggingConfig
         
-        with patch.dict(os.environ, {"PROVIDE_JSON_LOGS": "true"}):
+        with patch.dict(os.environ, {"PROVIDE_LOG_CONSOLE_FORMATTER": "json"}):
             config = LoggingConfig.from_env()
             assert config.console_formatter == "json"
     
@@ -92,7 +92,7 @@ class TestLoggingConfigCoverage:
         """Test logging config with emojis disabled."""
         from provide.foundation.logger.config.logging import LoggingConfig
         
-        with patch.dict(os.environ, {"PROVIDE_DISABLE_EMOJIS": "true"}):
+        with patch.dict(os.environ, {"PROVIDE_LOG_DAS_EMOJI_ENABLED": "false"}):
             config = LoggingConfig.from_env()
             assert config.das_emoji_prefix_enabled is False
     
@@ -153,7 +153,7 @@ class TestLoggingConfigCoverage:
         ]
         
         for env_value, expected in boolean_tests:
-            with patch.dict(os.environ, {"PROVIDE_JSON_LOGS": env_value}):
+            with patch.dict(os.environ, {"PROVIDE_LOG_CONSOLE_FORMATTER": "json" if expected else "key_value"}):
                 config = LoggingConfig.from_env()
                 expected_formatter = "json" if expected else "key_value"
                 assert config.console_formatter == expected_formatter
