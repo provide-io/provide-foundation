@@ -39,6 +39,14 @@ from provide.foundation.utils.parsing import (
     parse_list,
     parse_typed_value,
 )
+from provide.foundation.utils.deps import (
+    DependencyStatus,
+    check_optional_deps,
+    get_available_features,
+    get_optional_dependencies,
+    has_dependency,
+    require_dependency,
+)
 from provide.foundation.utils.rate_limiting import TokenBucketRateLimiter
 from provide.foundation.utils.timing import timed_block
 
@@ -46,20 +54,26 @@ __all__ = [
     "EnvPrefix",
     # Parsing utilities
     "auto_parse",
+    # Dependency checking utilities
+    "check_optional_deps",
+    "DependencyStatus",
     "format_duration",
     "format_number",
     "format_percentage",
     # Formatting utilities
     "format_size",
     "format_table",
+    "get_available_features",
     # Environment utilities
     "get_bool",
     "get_dict",
     "get_float",
     "get_int",
     "get_list",
+    "get_optional_dependencies",
     "get_path",
     "get_str",
+    "has_dependency",
     "indent",
     "parse_bool",
     "parse_dict",
@@ -69,6 +83,7 @@ __all__ = [
     "parse_typed_value",
     "pluralize",
     "require",
+    "require_dependency",
     "strip_ansi",
     # Timing utilities
     "timed_block",

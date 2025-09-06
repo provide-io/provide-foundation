@@ -62,7 +62,11 @@ from provide.foundation.types import (
 )
 
 # New utility exports
-from provide.foundation.utils import timed_block, TokenBucketRateLimiter
+from provide.foundation.utils import (
+    check_optional_deps,
+    timed_block,
+    TokenBucketRateLimiter,
+)
 from provide.foundation._version import __version__
 
 # CLI lazy loading support
@@ -110,6 +114,8 @@ __all__ = [
     "TelemetryConfig",
     # Version
     "__version__",
+    # Dependency checking utility
+    "check_optional_deps",
     # Config module
     "config",
     "error_boundary",
