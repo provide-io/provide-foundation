@@ -14,6 +14,40 @@ from provide.foundation.logger.core import logger as foundation_logger, _LAZY_SE
 from provide.foundation.streams.file import reset_streams
 
 
+def _reset_opentelemetry_providers() -> None:
+    """
+    Reset OpenTelemetry providers to uninitialized state.
+    
+    This prevents "Overriding of current TracerProvider/MeterProvider" warnings
+    and stream closure issues by properly resetting the global providers.
+    """
+    try:
+        # Reset tracing provider
+        import opentelemetry.trace as otel_trace
+        # Create a new NoOpTracerProvider to reset state
+        from opentelemetry.trace import NoOpTracerProvider
+        otel_trace.set_tracer_provider(NoOpTracerProvider())
+    except ImportError:
+        # OpenTelemetry tracing not available
+        pass
+    except Exception:
+        # Ignore errors during reset
+        pass
+    
+    try:
+        # Reset metrics provider
+        import opentelemetry.metrics as otel_metrics
+        # Create a new NoOpMeterProvider to reset state  
+        from opentelemetry.metrics import NoOpMeterProvider
+        otel_metrics.set_meter_provider(NoOpMeterProvider())
+    except ImportError:
+        # OpenTelemetry metrics not available
+        pass
+    except Exception:
+        # Ignore errors during reset
+        pass
+
+
 def reset_foundation_state() -> None:
     """
     Internal function to reset structlog and Foundation's state.
@@ -31,8 +65,8 @@ def reset_foundation_state() -> None:
     # Reset stream state
     reset_streams()
     
-    # Skip OpenTelemetry reset for now to avoid breaking internal API assumptions
-    # The "already set" warnings are cosmetic and don't break functionality
+    # Reset OpenTelemetry providers to avoid "Overriding" warnings and stream closure
+    _reset_opentelemetry_providers()
     
     # Reset foundation logger state
     foundation_logger._is_configured_by_setup = False
