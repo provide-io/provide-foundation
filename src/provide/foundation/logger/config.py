@@ -12,7 +12,7 @@ from attrs import define
 from provide.foundation.config import BaseConfig, field
 from provide.foundation.config.types import ConfigSource
 from provide.foundation.logger.emoji.types import (
-    CustomDasEmojiSet,
+    EmojiSet,
     EmojiSetConfig,
 )
 from provide.foundation.types import (
@@ -74,7 +74,7 @@ class LoggingConfig(BaseConfig):
         env_var="PROVIDE_LOG_CUSTOM_EMOJI_SETS",
         description="JSON array of custom emoji set configurations",
     )
-    user_defined_emoji_sets: list[CustomDasEmojiSet] = field(
+    user_defined_emoji_sets: list[EmojiSet] = field(
         factory=lambda: [],
         env_var="PROVIDE_LOG_USER_DEFINED_EMOJI_SETS",
         description="JSON array of user-defined emoji sets",
@@ -215,7 +215,7 @@ class LoggingConfig(BaseConfig):
                 parsed = json.loads(user_sets)
                 if isinstance(parsed, list):
                     config_dict["user_defined_emoji_sets"] = [
-                        CustomDasEmojiSet(**item) if isinstance(item, dict) else item
+                        EmojiSet(**item) if isinstance(item, dict) else item
                         for item in parsed
                     ]
             except json.JSONDecodeError as e:

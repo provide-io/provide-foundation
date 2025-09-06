@@ -13,7 +13,7 @@ from provide.foundation.logger.emoji.matrix import (
     TERTIARY_EMOJI,
 )
 from provide.foundation.logger.emoji.types import (
-    CustomDasEmojiSet,
+    EmojiSet,
     EmojiSetConfig,
     FieldToEmojiMapping,
 )
@@ -21,14 +21,14 @@ from provide.foundation.logger.emoji.types import (
 # --- Core DAS Layer Definition (Internal representation) ---
 # This serves as the default Domain-Action-Status system when no custom layers are active.
 # It handles the standard keys "domain", "action", "status".
-LEGACY_DAS_EMOJI_SETS: list[CustomDasEmojiSet] = [
-    CustomDasEmojiSet(
+LEGACY_DAS_EMOJI_SETS: list[EmojiSet] = [
+    EmojiSet(
         name="_legacy_domain", emojis=PRIMARY_EMOJI, default_emoji_key="default"
     ),
-    CustomDasEmojiSet(
+    EmojiSet(
         name="_legacy_action", emojis=SECONDARY_EMOJI, default_emoji_key="default"
     ),
-    CustomDasEmojiSet(
+    EmojiSet(
         name="_legacy_status", emojis=TERTIARY_EMOJI, default_emoji_key="default"
     ),
 ]
@@ -41,8 +41,8 @@ LEGACY_DAS_FIELD_DEFINITIONS: list[FieldToEmojiMapping] = [
 # It's the default behavior used in the `add_das_emoji_prefix` processor.
 
 # --- LLM Layer ---
-LLM_EMOJI_SETS: list[CustomDasEmojiSet] = [
-    CustomDasEmojiSet(
+LLM_EMOJI_SETS: list[EmojiSet] = [
+    EmojiSet(
         name="llm_provider",
         emojis={
             "openai": "🤖",
@@ -56,7 +56,7 @@ LLM_EMOJI_SETS: list[CustomDasEmojiSet] = [
         },
         default_emoji_key="default",
     ),
-    CustomDasEmojiSet(
+    EmojiSet(
         name="llm_task",
         emojis={
             "generation": "✍️",
@@ -71,7 +71,7 @@ LLM_EMOJI_SETS: list[CustomDasEmojiSet] = [
         },
         default_emoji_key="default",
     ),
-    CustomDasEmojiSet(
+    EmojiSet(
         name="llm_outcome",
         emojis={
             "success": "👍",
@@ -151,8 +151,8 @@ LLM_EMOJI_SET = EmojiSetConfig(
 )
 
 # --- Database Layer ---
-DB_EMOJI_SETS: list[CustomDasEmojiSet] = [
-    CustomDasEmojiSet(
+DB_EMOJI_SETS: list[EmojiSet] = [
+    EmojiSet(
         name="db_system",
         emojis={
             "postgres": "🐘",
@@ -165,7 +165,7 @@ DB_EMOJI_SETS: list[CustomDasEmojiSet] = [
         },
         default_emoji_key="default",
     ),
-    CustomDasEmojiSet(
+    EmojiSet(
         name="db_operation",
         emojis={
             "query": "🔍",
@@ -182,7 +182,7 @@ DB_EMOJI_SETS: list[CustomDasEmojiSet] = [
         },
         default_emoji_key="default",
     ),
-    CustomDasEmojiSet(  # Can reuse llm_outcome or define specific DB outcomes
+    EmojiSet(  # Can reuse llm_outcome or define specific DB outcomes
         name="db_outcome",
         emojis={
             "success": "👍",
@@ -250,8 +250,8 @@ DATABASE_EMOJI_SET = EmojiSetConfig(
 )
 
 # --- HTTP Layer (Client/Server) ---
-HTTP_EMOJI_SETS: list[CustomDasEmojiSet] = [
-    CustomDasEmojiSet(
+HTTP_EMOJI_SETS: list[EmojiSet] = [
+    EmojiSet(
         name="http_method",
         emojis={
             "get": "📥",
@@ -265,7 +265,7 @@ HTTP_EMOJI_SETS: list[CustomDasEmojiSet] = [
         },
         default_emoji_key="default",
     ),
-    CustomDasEmojiSet(
+    EmojiSet(
         name="http_status_class",  # For 2xx, 3xx etc.
         emojis={
             "1xx": "ℹ️",
@@ -277,7 +277,7 @@ HTTP_EMOJI_SETS: list[CustomDasEmojiSet] = [
         },
         default_emoji_key="default",
     ),
-    CustomDasEmojiSet(
+    EmojiSet(
         name="http_target_type",  # For path, query, fragment
         emojis={"path": "🛣️", "query": "❓", "fragment": "#️⃣", "default": "🎯"},
         default_emoji_key="default",
@@ -372,8 +372,8 @@ HTTP_EMOJI_SET = EmojiSetConfig(
 )
 
 # --- Task Queue Layer ---
-TASK_QUEUE_EMOJI_SETS: list[CustomDasEmojiSet] = [
-    CustomDasEmojiSet(
+TASK_QUEUE_EMOJI_SETS: list[EmojiSet] = [
+    EmojiSet(
         name="task_system",
         emojis={
             "celery": "🥕",
@@ -385,7 +385,7 @@ TASK_QUEUE_EMOJI_SETS: list[CustomDasEmojiSet] = [
         },
         default_emoji_key="default",
     ),
-    CustomDasEmojiSet(
+    EmojiSet(
         name="task_status",
         emojis={
             "submitted": "➡️📨",
