@@ -30,6 +30,7 @@ from provide.foundation import (
     shutdown_foundation_telemetry,
 )
 from provide.foundation.testing import reset_foundation_setup_for_testing
+from tests.utils import TestEnvironment
 
 
 class TestRealWorldScenarios:
@@ -40,41 +41,47 @@ class TestRealWorldScenarios:
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
         
-        reset_foundation_setup_for_testing()
-        set_log_stream_for_testing(sys.stderr)
+        with TestEnvironment():
+            set_log_stream_for_testing(sys.stderr)
 
-        # Simulate web app startup sequence
-        global_logger.info("Starting web application")
+            # Simulate web app startup sequence
+            global_logger.info("Starting web application")
 
-        # Simulate middleware initialization
-        middleware_logger = global_logger.get_logger("app.middleware")
-        middleware_logger.info("Initializing authentication middleware")
-        middleware_logger.info("Initializing CORS middleware")
+            # Simulate middleware initialization
+            middleware_logger = global_logger.get_logger("app.middleware")
+            middleware_logger.info("Initializing authentication middleware")
+            middleware_logger.info("Initializing CORS middleware")
 
-        # Simulate route registration
-        routes_logger = global_logger.get_logger("app.routes")
-        routes_logger.debug("Registering /api/users route")
-        routes_logger.debug("Registering /api/auth route")
+            # Simulate route registration
+            routes_logger = global_logger.get_logger("app.routes")
+            routes_logger.debug("Registering /api/users route")
+            routes_logger.debug("Registering /api/auth route")
 
-        # Simulate database connection
-        db_logger = global_logger.get_logger("app.database")
-        db_logger.info("Connecting to database", host="localhost", port=5432)
+            # Simulate database connection
+            db_logger = global_logger.get_logger("app.database")
+            db_logger.info("Connecting to database", host="localhost", port=5432)
 
-        # Simulate server startup completion
-        global_logger.info("Web application started successfully", port=8080)
+            # Simulate server startup completion
+            global_logger.info("Web application started successfully", port=8080)
 
-        captured = capsys.readouterr()
-        assert "Starting web application" in captured.err
-        assert "Initializing authentication middleware" in captured.err
-        assert "Web application started successfully" in captured.err
+            captured = capsys.readouterr()
+            assert "Starting web application" in captured.err
+            assert "Initializing authentication middleware" in captured.err
+            assert "Web application started successfully" in captured.err
 
     def test_microservice_with_environment_config(self, capsys: CaptureFixture) -> None:
         """Test microservice startup with environment-based configuration."""
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
         
-        reset_foundation_setup_for_testing()
-        set_log_stream_for_testing(sys.stderr)
+        env_vars = {
+            "FOUNDATION_SERVICE_NAME": "payment-service",
+            "FOUNDATION_LOG_LEVEL": "DEBUG",
+            "FOUNDATION_LOG_FORMAT": "json"
+        }
+        
+        with TestEnvironment(env_vars):
+            set_log_stream_for_testing(sys.stderr)
 
         # Simulate microservice environment
         with patch.dict(
