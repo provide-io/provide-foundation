@@ -106,7 +106,41 @@ class Span:
                     log.debug(f"🔍✅ Finished OpenTelemetry span: {self.name}")
                 except Exception as e:
                     log.debug(f"🔍⚠️ Failed to finish OpenTelemetry span: {e}")
-            self._active = False
+    
+    def __enter__(self) -> "Span":
+        """Context manager entry."""
+        # Set this span as current in OpenTelemetry context if available
+        if self._otel_span and _HAS_OTEL:
+            try:
+                # OpenTelemetry spans are automatically set as current when started
+                pass
+            except Exception as e:
+                log.debug(f"🔍⚠️ Failed to set OpenTelemetry span context: {e}")
+        
+        # Also set in Foundation tracer context
+        try:
+            from provide.foundation.tracer.context import set_current_span
+            set_current_span(self)
+        except Exception as e:
+            log.debug(f"🔍⚠️ Failed to set Foundation span context: {e}")
+            
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+        """Context manager exit."""
+        # Handle exceptions
+        if exc_type is not None:
+            self.set_error(exc_val if exc_val else exc_type.__name__)
+        
+        # Finish the span
+        self.finish()
+        
+        # Clear from Foundation tracer context
+        try:
+            from provide.foundation.tracer.context import set_current_span
+            set_current_span(None)
+        except Exception as e:
+            log.debug(f"🔍⚠️ Failed to clear Foundation span context: {e}")
             
     def duration_ms(self) -> float:
         """Get the duration of the span in milliseconds."""
