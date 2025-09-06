@@ -137,3 +137,42 @@ class TestStreamsCoverage:
             mock_module = sys.modules['provide.foundation.streams']
             mock_module.get_log_stream = Mock(return_value=mock_stream)
             assert get_foundation_log_stream("main") is mock_stream
+    
+    def test_get_foundation_log_stream_main_with_import_error_path(self):
+        """Test get_foundation_log_stream main path specifically hitting ImportError handling."""
+        # Ensure the module is not in sys.modules to force ImportError
+        original_modules = sys.modules.copy()
+        
+        # Clear out potentially interfering modules
+        for module_name in list(sys.modules.keys()):
+            if 'provide.foundation.streams' in module_name:
+                del sys.modules[module_name]
+        
+        try:
+            # This should trigger the ImportError path and call get_safe_stderr()
+            stream = get_foundation_log_stream("main")
+            assert stream is sys.stderr
+        finally:
+            sys.modules.clear()
+            sys.modules.update(original_modules)
+    
+    def test_get_safe_stderr_edge_cases(self):
+        """Test get_safe_stderr edge cases."""
+        # Test when sys.stderr exists but is explicitly None
+        original_stderr = getattr(sys, 'stderr', None)
+        try:
+            sys.stderr = None
+            stream = get_safe_stderr()
+            assert isinstance(stream, io.StringIO)
+        finally:
+            sys.stderr = original_stderr
+    
+    def test_function_return_types(self):
+        """Test that functions return the expected types."""
+        stderr_stream = get_safe_stderr()
+        assert hasattr(stderr_stream, 'write')
+        assert hasattr(stderr_stream, 'flush')
+        
+        stdout_stream = get_foundation_log_stream("stdout")
+        assert hasattr(stdout_stream, 'write')
+        assert hasattr(stdout_stream, 'flush')
