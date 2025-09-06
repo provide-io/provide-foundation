@@ -57,7 +57,8 @@
       "Bash(timeout 15s pytest tests/logger/test_emoji_matrix_coverage.py -v)",
       "Bash(timeout 20s pytest tests/hub/test_components_advanced_coverage.py -v)",
       "Bash(timeout 20s pytest tests/config/test_config_env_coverage.py -v)",
-      "Bash(timeout 15s pytest tests/config/test_config_env_coverage.py -v --tb=short)"
+      "Bash(timeout 15s pytest tests/config/test_config_env_coverage.py -v --tb=short)",
+      "Bash(timeout 20s pytest tests/config/test_config_manager_coverage.py -v)"
     ],
     "deny": [],
     "ask": [],

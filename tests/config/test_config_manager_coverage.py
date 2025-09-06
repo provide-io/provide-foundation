@@ -386,12 +386,13 @@ class TestConfigManagerComprehensive:
     @pytest.mark.asyncio
     async def test_export_config(self):
         """Test exporting configuration as dictionary."""
-        self.manager._configs["test"] = self.test_config
-        self.test_config.to_dict = Mock(return_value={"name": "test", "count": 5})
+        mock_config = Mock(spec=BaseConfig)
+        mock_config.to_dict = Mock(return_value={"name": "test", "count": 5})
+        self.manager._configs["test"] = mock_config
         
         result = await self.manager.export("test", include_sensitive=True)
         
-        self.test_config.to_dict.assert_called_once_with(True)
+        mock_config.to_dict.assert_called_once_with(True)
         assert result == {"name": "test", "count": 5}
     
     @pytest.mark.asyncio
