@@ -197,8 +197,15 @@ def send_log_bulk(
         
         # Send via bulk API
         import requests
+        
+        # Build URL - check if client.url already includes /api/{org}
+        if f"/api/{client.organization}" in client.url:
+            url = f"{client.url}/_bulk"
+        else:
+            url = f"{client.url}/api/{client.organization}/_bulk"
+        
         response = requests.post(
-            f"{client.url}/api/{client.organization}/_bulk",
+            url,
             headers=client.session.headers,
             data=bulk_data,
             timeout=client.timeout,
