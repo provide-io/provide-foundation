@@ -39,7 +39,8 @@ from provide.foundation.logger import (
     TelemetryConfig,
     get_logger,  # Factory function for creating loggers
     logger,  # Global logger instance
-    setup_logging,  # Setup function
+    setup_logging,  # Setup function (backward compatibility)
+    setup_logger,   # Setup function (consistent naming)
 )
 
 # Emoji exports
@@ -134,7 +135,8 @@ __all__ = [
     "platform",
     "process",
     "retry_on_error",
-    "setup_logging",
+    "setup_logging",  # Backward compatibility
+    "setup_logger",   # Consistent naming
     "setup_telemetry",
     # Utilities
     "show_emoji_matrix",
