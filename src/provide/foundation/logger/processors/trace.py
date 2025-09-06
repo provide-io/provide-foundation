@@ -7,11 +7,8 @@ from typing import Any, Dict
 import structlog
 log = structlog.get_logger(__name__)
 
-# Import trace level constant
-from provide.foundation.logger.trace import TRACE_LEVEL_NUM
-
-# Add foundation-specific trace logging method
-log.foundation = lambda msg: log.log(level="trace", event=msg)
+# Note: Internal trace injection logging removed to avoid circular dependencies
+# and level registration issues during logger setup
 
 # OpenTelemetry feature detection
 try:
@@ -48,10 +45,11 @@ def inject_trace_context(logger: Any, method_name: str, event_dict: Dict[str, An
                 if span_context.trace_flags:
                     event_dict["trace_flags"] = span_context.trace_flags
                     
-                log.foundation("🔍📝 Injected OpenTelemetry trace context into log")
+                # Trace context injected successfully
                 return event_dict
-        except Exception as e:
-            log.foundation(f"🔍⚠️ Failed to get OpenTelemetry trace context: {e}")
+        except Exception:
+            # OpenTelemetry trace context unavailable - continue to fallback
+            pass
     
     # Fallback to Foundation's simple tracer context
     try:
@@ -63,13 +61,14 @@ def inject_trace_context(logger: Any, method_name: str, event_dict: Dict[str, An
         if current_span:
             event_dict["trace_id"] = current_span.trace_id
             event_dict["span_id"] = current_span.span_id
-            log.foundation("🔍📝 Injected Foundation trace context into log")
+            # Foundation trace context injected successfully
         elif current_trace_id:
             event_dict["trace_id"] = current_trace_id
-            log.foundation("🔍📝 Injected Foundation trace ID into log")
+            # Foundation trace ID injected successfully
             
-    except Exception as e:
-        log.foundation(f"🔍⚠️ Failed to get Foundation trace context: {e}")
+    except Exception:
+        # Foundation trace context unavailable - skip injection
+        pass
     
     return event_dict
 
