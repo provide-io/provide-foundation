@@ -19,6 +19,25 @@ def _require_click():
         )
 
 
+def _deps_command_impl(quiet: bool, check: str | None) -> None:
+    """Implementation of deps command logic."""
+    if check:
+        from provide.foundation.utils.deps import has_dependency
+        available = has_dependency(check)
+        if not quiet:
+            status = "✅" if available else "❌"
+            print(f"{status} {check}: {'Available' if available else 'Missing'}")
+            if not available:
+                print(f"Install with: pip install 'provide-foundation[{check}]'")
+        exit(0 if available else 1)
+    else:
+        # Check all dependencies
+        deps = check_optional_deps(quiet=quiet, return_status=True)
+        available_count = sum(1 for dep in deps if dep.available)
+        total_count = len(deps)
+        exit(0 if available_count == total_count else 1)
+
+
 if _HAS_CLICK:
     @click.command("deps")
     @click.option(
@@ -42,21 +61,7 @@ if _HAS_CLICK:
         - 0: All dependencies available (or specific one if --check used)
         - 1: Some dependencies missing (or specific one missing if --check used)
         """
-        if check:
-            from provide.foundation.utils.deps import has_dependency
-            available = has_dependency(check)
-            if not quiet:
-                status = "✅" if available else "❌"
-                print(f"{status} {check}: {'Available' if available else 'Missing'}")
-                if not available:
-                    print(f"Install with: pip install 'provide-foundation[{check}]'")
-            exit(0 if available else 1)
-        else:
-            # Check all dependencies
-            deps = check_optional_deps(quiet=quiet, return_status=True)
-            available_count = sum(1 for dep in deps if dep.available)
-            total_count = len(deps)
-            exit(0 if available_count == total_count else 1)
+        _deps_command_impl(quiet, check)
 else:
     # Stub for when click is not available
     def deps_command(*args, **kwargs):
