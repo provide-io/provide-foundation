@@ -344,6 +344,73 @@ else:
     perr("❌ Task failed")
 ```
 
+## Distributed Tracing Examples
+
+Foundation includes lightweight distributed tracing for operation timing and context tracking:
+
+### Simple Tracing
+
+```python
+# From examples/16_simple_tracing.py
+from provide.foundation.tracer import Span, with_span
+
+def simple_operation():
+    with Span("data_processing") as span:
+        span.set_tag("operation_type", "batch")
+        
+        # Simulate work
+        process_data()
+        
+        span.set_tag("records_processed", 1000)
+
+def hierarchical_operations():
+    with with_span("request_handler") as span:
+        span.set_tag("endpoint", "/api/users")
+        
+        # Child span created automatically
+        with with_span("database_query") as db_span:
+            db_span.set_tag("query", "SELECT * FROM users")
+            users = fetch_users()
+            db_span.set_tag("result_count", len(users))
+        
+        span.set_tag("response_size", len(users))
+```
+
+**See full example:** [examples/16_simple_tracing.py](../../examples/16_simple_tracing.py)
+
+### Complex Distributed Tracing
+
+```python
+# From examples/15_distributed_tracing.py
+from provide.foundation.tracer import with_span, get_trace_context
+import requests
+
+def handle_order_request():
+    with with_span("order_processing") as span:
+        span.set_tag("order_id", "ord_123")
+        
+        # Authentication
+        with with_span("authentication") as auth_span:
+            user = authenticate_user()
+            auth_span.set_tag("user_id", user.id)
+        
+        # Payment processing with external service
+        with with_span("payment_processing") as payment_span:
+            # Propagate trace context to external service
+            headers = {"Content-Type": "application/json"}
+            headers.update(get_trace_context())
+            
+            response = requests.post(
+                "https://payment.example.com/charge",
+                headers=headers,
+                json={"amount": 99.99}
+            )
+            
+            payment_span.set_tag("payment_status", response.status_code)
+```
+
+**See full example:** [examples/15_distributed_tracing.py](../../examples/15_distributed_tracing.py)
+
 ## Complete Working Examples
 
 All examples shown above are extracted from fully working example files in the [examples/](../../examples/) directory:
@@ -355,13 +422,15 @@ All examples shown above are extracted from fully working example files in the [
 | [03_named_loggers.py](../../examples/03_named_loggers.py) | Module-specific loggers | Named logger instances |
 | [04_das_logging.py](../../examples/04_das_logging.py) | Domain-Action-Status pattern | Structured event naming, emoji prefixes |
 | [05_exception_handling.py](../../examples/05_exception_handling.py) | Error handling patterns | Exception logging, error boundaries |
-| [06_trace_logging.py](../../examples/06_trace_logging.py) | Distributed tracing | Request IDs, context propagation |
+| [06_trace_logging.py](../../examples/06_trace_logging.py) | TRACE level logging | Ultra-verbose diagnostic output |
 | [07_module_filtering.py](../../examples/07_module_filtering.py) | Log filtering by module | Module-level configuration |
 | [08_env_variables_config.py](../../examples/08_env_variables_config.py) | Environment-based config | PROVIDE_* variables, env_field |
 | [09_async_usage.py](../../examples/09_async_usage.py) | Async logging patterns | asyncio integration |
 | [10_production_patterns.py](../../examples/10_production_patterns.py) | Production best practices | Performance, batching, monitoring |
 | [11_config_management.py](../../examples/11_config_management.py) | Complete config system | ConfigManager, loaders, validation |
 | [12_cli_application.py](../../examples/12_cli_application.py) | Full CLI application | Hub, commands, components |
+| [15_distributed_tracing.py](../../examples/15_distributed_tracing.py) | Complex tracing scenarios | Multi-service tracing, error handling |
+| [16_simple_tracing.py](../../examples/16_simple_tracing.py) | Basic tracing patterns | Span creation, hierarchical tracing |
 
 To run any example:
 ```bash

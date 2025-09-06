@@ -10,6 +10,7 @@ Complete API documentation for provide.foundation.
     <p>Fundamental logging and configuration</p>
     <ul>
       <li><a href="logger/index/">Logger System</a></li>
+      <li><a href="tracer/index/">Distributed Tracing</a></li>
       <li><a href="config/index/">Configuration</a></li>
       <li><a href="context/index/">Context Management</a></li>
     </ul>
@@ -172,6 +173,10 @@ provide.foundation/
 │   ├── config.py           # TelemetryConfig, LoggingConfig
 │   ├── processors.py       # Log processing pipeline
 │   └── emoji_matrix.py     # Visual emoji mappings
+├── tracer/                  # Distributed tracing system
+│   ├── spans.py            # Span class and management
+│   ├── context.py          # Context propagation and helpers
+│   └── __init__.py         # Public tracing API
 ├── console/                 # Standardized I/O functions
 │   ├── input.py            # pin(), pin_stream(), async variants
 │   └── output.py           # pout(), perr() functions
