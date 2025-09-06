@@ -105,3 +105,30 @@ class TestCryptoConstantsCoverage:
             result = constants.get_default_signature_algorithm()
             assert isinstance(result, str)
             assert result == "test_algorithm"
+    
+    def test_get_config_value_with_import_error(self):
+        """Test _get_config_value when config system is not available."""
+        with patch('builtins.__import__', side_effect=ImportError):
+            result = constants._get_config_value("test_key", "default_value")
+            assert result == "default_value"
+    
+    def test_get_default_hash_algorithm_function_call(self):
+        """Test get_default_hash_algorithm returns a string."""
+        with patch('provide.foundation.crypto.constants._get_config_value') as mock_get_config:
+            mock_get_config.return_value = "test_hash_algo"
+            
+            result = constants.get_default_hash_algorithm()
+            assert isinstance(result, str)
+            assert result == "test_hash_algo"
+    
+    def test_get_default_signature_algorithm_calls_get_config_value(self):
+        """Test get_default_signature_algorithm calls _get_config_value correctly."""
+        with patch('provide.foundation.crypto.constants._get_config_value') as mock_get_config:
+            mock_get_config.return_value = "custom_sig_algo"
+            
+            result = constants.get_default_signature_algorithm()
+            assert result == "custom_sig_algo"
+            mock_get_config.assert_called_once_with(
+                "signature_algorithm", 
+                constants.DEFAULT_SIGNATURE_ALGORITHM
+            )
