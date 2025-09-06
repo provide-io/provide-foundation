@@ -78,6 +78,9 @@ def close_log_streams() -> None:
     """Close file log streams and reset to stderr."""
     global _PROVIDE_LOG_STREAM, _LOG_FILE_HANDLE
     
+    # Import here to avoid circular dependency
+    from provide.foundation.streams.core import _is_in_click_testing
+    
     with _STREAM_LOCK:
         if _LOG_FILE_HANDLE:
             try:
@@ -85,9 +88,17 @@ def close_log_streams() -> None:
             except Exception:
                 pass
             _LOG_FILE_HANDLE = None
-        _PROVIDE_LOG_STREAM = sys.stderr
+        
+        # Don't reset stream to stderr if we're in Click testing context
+        if not _is_in_click_testing():
+            _PROVIDE_LOG_STREAM = sys.stderr
 
 
 def reset_streams() -> None:
     """Reset all stream state (for testing)."""
-    close_log_streams()
+    # Import here to avoid circular dependency
+    from provide.foundation.streams.core import _is_in_click_testing
+    
+    # Don't reset streams if we're in Click testing context
+    if not _is_in_click_testing():
+        close_log_streams()

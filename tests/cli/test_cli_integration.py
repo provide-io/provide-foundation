@@ -1,6 +1,7 @@
 """Integration tests for CLI functionality."""
 
 import json
+import os
 from pathlib import Path
 import tempfile
 
@@ -21,6 +22,20 @@ from provide.foundation.logger import get_logger
 
 class TestCompleteCliIntegration:
     """Test complete CLI with all options working together."""
+
+    def setup_method(self) -> None:
+        """Set up each test method."""
+        os.environ['CLICK_TESTING'] = '1'
+        # Reset Foundation state before each test to avoid conflicts
+        from provide.foundation.testing import reset_foundation_setup_for_testing
+        reset_foundation_setup_for_testing()
+    
+    def teardown_method(self) -> None:
+        """Clean up after each test method."""
+        os.environ.pop('CLICK_TESTING', None)
+        # Clean up again after the test 
+        from provide.foundation.testing import reset_foundation_setup_for_testing
+        reset_foundation_setup_for_testing()
 
     def create_test_cli(self):
         """Create a test CLI with all features."""
@@ -125,6 +140,20 @@ class TestCompleteCliIntegration:
 class TestLoggingIntegration:
     """Test that logging options actually affect logging behavior."""
     
+    def setup_method(self) -> None:
+        """Set up each test method."""
+        os.environ['CLICK_TESTING'] = '1'
+        # Reset Foundation state before each test to avoid conflicts
+        from provide.foundation.testing import reset_foundation_setup_for_testing
+        reset_foundation_setup_for_testing()
+    
+    def teardown_method(self) -> None:
+        """Clean up after each test method."""
+        os.environ.pop('CLICK_TESTING', None)
+        # Clean up again after the test 
+        from provide.foundation.testing import reset_foundation_setup_for_testing
+        reset_foundation_setup_for_testing()
+    
     def _get_full_output(self, result) -> str:
         """Get combined stdout and stderr, with ANSI codes stripped."""
         import re
@@ -193,6 +222,20 @@ class TestLoggingIntegration:
 class TestOutputFormatting:
     """Test output formatting options."""
 
+    def setup_method(self) -> None:
+        """Set up each test method."""
+        os.environ['CLICK_TESTING'] = '1'
+        # Reset Foundation state before each test to avoid conflicts
+        from provide.foundation.testing import reset_foundation_setup_for_testing
+        reset_foundation_setup_for_testing()
+    
+    def teardown_method(self) -> None:
+        """Clean up after each test method."""
+        os.environ.pop('CLICK_TESTING', None)
+        # Clean up again after the test 
+        from provide.foundation.testing import reset_foundation_setup_for_testing
+        reset_foundation_setup_for_testing()
+
     def test_json_output_format(self) -> None:
         @click.command()
         @output_options
@@ -234,6 +277,20 @@ class TestOutputFormatting:
 class TestConfigurationLoading:
     """Test configuration file and profile loading."""
 
+    def setup_method(self) -> None:
+        """Set up each test method."""
+        os.environ['CLICK_TESTING'] = '1'
+        # Reset Foundation state before each test to avoid conflicts
+        from provide.foundation.testing import reset_foundation_setup_for_testing
+        reset_foundation_setup_for_testing()
+    
+    def teardown_method(self) -> None:
+        """Clean up after each test method."""
+        os.environ.pop('CLICK_TESTING', None)
+        # Clean up again after the test 
+        from provide.foundation.testing import reset_foundation_setup_for_testing
+        reset_foundation_setup_for_testing()
+
     def test_config_file_loading(self) -> None:
         config_data = {"log_level": "WARNING", "profile": "testing"}
         with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
@@ -255,6 +312,20 @@ class TestConfigurationLoading:
 
 class TestRealWorldScenarios:
     """Test real-world CLI usage scenarios."""
+    
+    def setup_method(self) -> None:
+        """Set up each test method."""
+        os.environ['CLICK_TESTING'] = '1'
+        # Reset Foundation state before each test to avoid conflicts
+        from provide.foundation.testing import reset_foundation_setup_for_testing
+        reset_foundation_setup_for_testing()
+    
+    def teardown_method(self) -> None:
+        """Clean up after each test method."""
+        os.environ.pop('CLICK_TESTING', None)
+        # Clean up again after the test 
+        from provide.foundation.testing import reset_foundation_setup_for_testing
+        reset_foundation_setup_for_testing()
     
     def _get_full_output(self, result) -> str:
         """Get combined stdout and stderr, with ANSI codes stripped."""
