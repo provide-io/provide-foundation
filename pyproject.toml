@@ -59,6 +59,9 @@ all = [
     "provide-foundation[cli,crypto,opentelemetry]",
 ]
 
+[project.scripts]
+foundation = "provide.foundation.cli.main:cli [cli]"
+
 [dependency-groups]
 dev = [
     "bandit>=1.8.3",
