@@ -339,7 +339,7 @@ class TestManagedProcessContextManager:
     def test_context_manager_success(self):
         """Test successful context manager usage."""
         with ManagedProcess(["echo", "test"]) as proc:
-            proc.launch()
+            # No need to call launch() - context manager already does this
             assert proc.is_running() or proc.returncode is not None
         
         # Process should be cleaned up after context exit
@@ -349,7 +349,7 @@ class TestManagedProcessContextManager:
         """Test context manager cleanup on exception."""
         try:
             with ManagedProcess(["sleep", "10"]) as proc:
-                proc.launch()
+                # No need to call launch() - context manager already does this
                 raise ValueError("Test exception")
         except ValueError:
             pass
@@ -530,7 +530,7 @@ class TestProcessLifecycleIntegration:
     def test_full_lifecycle_simple_command(self):
         """Test full lifecycle with simple command."""
         with ManagedProcess(["echo", "hello world"]) as proc:
-            proc.launch()
+            # No need to call launch() - context manager already does this
             assert proc.is_running() or proc.returncode is not None
         
         # Should be cleaned up after context exit
@@ -543,7 +543,7 @@ class TestProcessLifecycleIntegration:
             sys.executable, "-c",
             "import sys; sys.stdout.write('ready\\n'); sys.stdout.flush(); input()"
         ], capture_output=True, text_mode=True) as proc:
-            proc.launch()
+            # No need to call launch() - context manager already does this
             
             # Wait for ready signal
             result = await wait_for_process_output(proc, ["ready"], timeout=5.0)
