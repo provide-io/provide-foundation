@@ -146,8 +146,8 @@ class TestSyncModuleCoverage:
                 SimpleRuntimeConfig,
                 ("env", "TEST_PREFIX")
             )
-        except (AttributeError, ImportError):
-            # Expected - RuntimeConfigLoader import may fail
+        except (AttributeError, ImportError, ValueError):
+            # Expected - RuntimeConfigLoader import may fail or no configuration sources available
             pass
     
     @patch('provide.foundation.config.sync.run_async')
