@@ -83,7 +83,8 @@
       "Bash(do)",
       "Bash(echo:*)",
       "Bash(done)",
-      "Bash(for bad_page in \"cookbook/\" \"troubleshooting/\" \"architecture/semantic-layers/\")"
+      "Bash(for bad_page in \"cookbook/\" \"troubleshooting/\" \"architecture/semantic-layers/\")",
+      "Bash(uv pip install:*)"
     ],
     "deny": [],
     "ask": [],

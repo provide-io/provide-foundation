@@ -48,6 +48,7 @@ theme:
 plugins:
   - search
   - autorefs
+  - mermaid2
   - mkdocstrings:
       default_handler: python
       handlers:
@@ -72,9 +73,6 @@ markdown_extensions:
 
 extra_css:
   - stylesheets/extra.css
-
-extra_javascript:
-  - https://unpkg.com/mermaid@10/dist/mermaid.min.js
 
 nav:
   - Home: index.md
