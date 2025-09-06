@@ -53,7 +53,7 @@ def _should_use_color(ctx: Context | None = None) -> bool:
     return sys.stdin.isatty()
 
 
-def pin(prompt: str = "", **kwargs) -> str | Any:
+def pin(prompt: str = "", **kwargs: Any) -> str | Any:
     """
     Input from stdin with optional prompt.
 
@@ -222,7 +222,7 @@ def pin_stream() -> Iterator[str]:
             plog.debug("📥 Input stream ended", lines=line_count)
 
 
-async def apin(prompt: str = "", **kwargs) -> str | Any:
+async def apin(prompt: str = "", **kwargs: Any) -> str | Any:
     """
     Async input from stdin with optional prompt.
 
