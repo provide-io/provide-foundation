@@ -11,7 +11,6 @@ from provide.foundation.hub import (
     clear_hub,
     get_hub,
     register_command,
-    register_component,
 )
 from provide.foundation.hub.registry import Registry
 from provide.foundation.logger import get_logger
@@ -116,24 +115,21 @@ class TestAsyncHubCompatibility:
         """Test Hub operations work within async functions."""
         hub = get_hub()
 
-        # Register components asynchronously
-        async def register_components() -> bool:
+        # Legacy test removed - register_component decorator no longer exists in current hub architecture
+        # This test was testing component registration via decorator which has been replaced
+        # by the registry-based component system
+        
+        # Test basic hub access in async context
+        async def test_hub_access() -> bool:
             for i in range(5):
-
-                @register_component(f"async_comp_{i}")
-                class AsyncComponent:
-                    pass
-
+                # Test hub access doesn't fail in async context
+                current_hub = get_hub()
+                assert current_hub is hub
                 await asyncio.sleep(0)
             return True
 
-        result = await register_components()
+        result = await test_hub_access()
         assert result is True
-
-        # Verify components registered
-        components = hub.list_components()
-        async_comps = [c for c in components if c.startswith("async_comp_")]
-        assert len(async_comps) == 5
 
     @pytest.mark.asyncio
     async def test_concurrent_async_hub_access(self) -> None:

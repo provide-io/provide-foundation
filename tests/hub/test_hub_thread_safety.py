@@ -10,7 +10,6 @@ from provide.foundation.hub import (
     clear_hub,
     get_hub,
     register_command,
-    register_component,
 )
 from provide.foundation.hub.registry import Registry
 
@@ -259,33 +258,39 @@ class TestHubThreadSafety:
         commands = hub.list_commands()
         assert len(commands) == 50
 
-    @pytest.mark.serial
+    # Legacy test removed - register_component decorator no longer exists
+    # Original test was for concurrent component registration via decorators
+    # which has been replaced by the registry-based component system
+    @pytest.mark.serial  
     def test_concurrent_component_registration(self) -> None:
-        """Test concurrent component registration."""
-        clear_hub()  # Ensure clean state
-        errors = []
+        """Test concurrent component registration - legacy test removed."""
+        # Test replacement: verify registry operations are thread-safe
+        clear_hub()
         hub = get_hub()
-
-        def register_components(thread_id: int) -> None:
-            """Register components from a thread."""
+        registry = hub._component_registry
+        errors = []
+        
+        def register_via_registry(thread_id: int) -> None:
+            """Register components via registry directly."""
             try:
                 for i in range(10):
-
-                    @register_component(f"comp_{thread_id}_{i}")
-                    class Component:
-                        pass
+                    registry.register(
+                        name=f"comp_{thread_id}_{i}",
+                        value=type(f"Component_{thread_id}_{i}", (), {}),
+                        dimension="component"
+                    )
             except Exception as e:
                 errors.append(f"Thread {thread_id}: {e}")
 
         # Run concurrent registrations
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-            futures = [executor.submit(register_components, i) for i in range(5)]
+            futures = [executor.submit(register_via_registry, i) for i in range(5)]
             concurrent.futures.wait(futures)
 
         assert len(errors) == 0, f"Errors occurred: {errors}"
 
         # Verify all components registered
-        components = hub.list_components()
+        components = registry.list_dimension("component") 
         assert len(components) == 50
 
     def test_hub_clear_thread_safety(self) -> None:

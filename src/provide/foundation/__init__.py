@@ -36,6 +36,9 @@ from provide.foundation.errors import (
     # Most commonly used decorators
     with_error_handling,
 )
+# Hub and Registry exports (public API)
+from provide.foundation.hub.components import ComponentCategory, get_component_registry
+from provide.foundation.hub.manager import Hub, clear_hub, get_hub
 from provide.foundation.hub.registry import Registry, RegistryEntry
 from provide.foundation.logger import (
     LoggingConfig,
@@ -82,8 +85,14 @@ __all__ = [
     # Type aliases
     "LogLevelStr",
     "LoggingConfig",
+    # Hub and Registry (public API)
     "Registry",
     "RegistryEntry",
+    "Hub",
+    "ComponentCategory",
+    "get_component_registry",
+    "get_hub",
+    "clear_hub",
     "FieldToEmojiMapping",
     "EmojiSetConfig",
     # Configuration classes
