@@ -37,7 +37,11 @@ def get_version() -> str:
     if project_root:
         version_file = project_root / "VERSION"
         if version_file.exists():
-            return version_file.read_text().strip()
+            try:
+                return version_file.read_text().strip()
+            except (IOError, OSError):
+                # Fall back to metadata if VERSION file can't be read
+                pass
 
     # Fallback to package metadata
     try:

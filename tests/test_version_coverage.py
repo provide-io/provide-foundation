@@ -5,6 +5,7 @@ from pathlib import Path
 from unittest.mock import patch, mock_open, MagicMock
 import pytest
 
+from importlib.metadata import PackageNotFoundError
 from provide.foundation._version import _find_project_root, get_version, __version__
 
 
@@ -170,7 +171,7 @@ class TestGetVersion:
         with patch('provide.foundation._version._find_project_root') as mock_find_root:
             mock_find_root.return_value = None
             
-            with patch('provide.foundation._version.version') as mock_version:
+            with patch('importlib.metadata.version') as mock_version:
                 from importlib.metadata import PackageNotFoundError
                 mock_version.side_effect = PackageNotFoundError("package not found")
                 
@@ -182,7 +183,7 @@ class TestGetVersion:
         # Mock _find_project_root to return None
         with patch('provide.foundation._version._find_project_root', return_value=None):
             # Mock importlib.metadata.version to raise PackageNotFoundError
-            with patch('provide.foundation._version.version') as mock_version:
+            with patch('importlib.metadata.version') as mock_version:
                 from importlib.metadata import PackageNotFoundError
                 mock_version.side_effect = PackageNotFoundError()
                 
@@ -262,7 +263,7 @@ class TestVersionEdgeCases:
             mock_find_root.return_value = mock_path
             
             # Should fall back to package metadata
-            with patch('provide.foundation._version.version', return_value="fallback-version"):
+            with patch('importlib.metadata.version', return_value="fallback-version"):
                 result = get_version()
                 assert result == "fallback-version"
     
@@ -290,10 +291,10 @@ class TestVersionEdgeCases:
         for root_return, file_exists, metadata_result, expected in scenarios:
             with patch('provide.foundation._version._find_project_root', return_value=root_return):
                 if isinstance(metadata_result, Exception):
-                    with patch('provide.foundation._version.version', side_effect=metadata_result):
+                    with patch('importlib.metadata.version', side_effect=metadata_result):
                         result = get_version()
                         assert result == expected
                 else:
-                    with patch('provide.foundation._version.version', return_value=metadata_result):
+                    with patch('importlib.metadata.version', return_value=metadata_result):
                         result = get_version()
                         assert result == expected
