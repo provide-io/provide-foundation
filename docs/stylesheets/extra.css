@@ -97,9 +97,11 @@
 }
 
 /* Top Navigation Tabs Enhancement */
-.md-tabs__link {
+.md-tabs__link,
+.md-tabs__link:hover,
+.md-tabs__link:focus {
   font-family: 'Chakra Petch', sans-serif !important;
-  font-weight: 600;
+  font-weight: 600 !important;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   transition: all 0.3s ease;
@@ -120,9 +122,11 @@
 }
 
 /* Breadcrumb enhancement */
-.md-path {
-  font-family: 'Chakra Petch', sans-serif;
-  font-weight: 500;
+.md-path,
+.md-path__item,
+.md-path__link {
+  font-family: 'Chakra Petch', sans-serif !important;
+  font-weight: 500 !important;
 }
 
 /* Navigation Enhancement - Clear Visual Hierarchy */
@@ -133,10 +137,12 @@
 }
 
 /* ALL top-level items (with or without children) - consistent styling with Chakra Petch */
-.md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link {
+.md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link,
+.md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link:hover,
+.md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link:focus {
   font-family: 'Chakra Petch', sans-serif !important;
-  font-weight: 700;
-  font-size: 0.9rem;
+  font-weight: 700 !important;
+  font-size: 0.9rem !important;
   color: var(--md-default-fg-color);
   text-transform: uppercase;
   letter-spacing: 0.025em;
@@ -430,6 +436,17 @@
 .md-version__current {
   font-weight: 600;
   color: var(--pf-primary);
+}
+
+/* Logo Enhancement */
+.md-logo img {
+  width: 2rem;
+  height: 2rem;
+}
+
+.md-nav__title .md-logo img {
+  width: 1.8rem;
+  height: 1.8rem;
 }
 
 /* Mobile Responsive Adjustments */
