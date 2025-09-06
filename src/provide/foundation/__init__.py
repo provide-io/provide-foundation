@@ -11,8 +11,13 @@ Primary public interface for the library, re-exporting common components.
 # Make the errors module available for detailed imports
 from provide.foundation import config, errors, platform, process
 
-# Console I/O functions
-from provide.foundation.console import perr, pin, pout
+# Console I/O functions (optional - require click)
+try:
+    from provide.foundation.console import perr, pin, pout
+    _HAS_CONSOLE = True
+except ImportError:
+    _HAS_CONSOLE = False
+    perr = pin = pout = None
 from provide.foundation.context import Context
 from provide.foundation.setup import (
     setup_telemetry,
@@ -117,12 +122,13 @@ __all__ = [
     "get_logger",
     # Core setup and logger
     "logger",
-    "perr",
-    # Console input
-    "pin",
+    # Console functions (only available if click installed)
+    *([
+        "perr",
+        "pin", 
+        "pout",
+    ] if _HAS_CONSOLE else []),
     "platform",
-    # Console output
-    "pout",
     "process",
     "retry_on_error",
     "setup_logging",
