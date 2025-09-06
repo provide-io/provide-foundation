@@ -23,7 +23,8 @@
       "Bash(timeout 15s pytest tests/process/ --tb=no -q)",
       "Bash(timeout 10s pytest tests/platform/test_platform_coverage.py --tb=no -q)",
       "Bash(timeout 10s pytest tests/streams/test_console_coverage.py --tb=no -q)",
-      "Bash(timeout 30s pytest tests/logger/test_config_coverage.py::TestLoggingConfigCoverage tests/platform/test_platform_coverage.py tests/streams/test_console_coverage.py tests/utils/test_utils_coverage.py tests/process/test_lifecycle.py --tb=no -q)"
+      "Bash(timeout 30s pytest tests/logger/test_config_coverage.py::TestLoggingConfigCoverage tests/platform/test_platform_coverage.py tests/streams/test_console_coverage.py tests/utils/test_utils_coverage.py tests/process/test_lifecycle.py --tb=no -q)",
+      "Bash(timeout 60s pytest -vvv -n auto --cov=provide.foundation --cov-branch --cov-report=term-missing)"
     ],
     "deny": [],
     "ask": [],
