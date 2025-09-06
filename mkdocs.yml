@@ -143,7 +143,12 @@ nav:
         - Processors: guide/logging/advanced/processors.md
       - Async Logging: guide/logging/async.md
       - Exception Handling: guide/logging/exceptions.md
-      - Context Management: guide/logging/context.md
+      - Context Management:
+        - guide/logging/context.md
+        - Basic Binding: guide/logging/context-basics.md
+        - Threading: guide/logging/context-threading.md
+        - Advanced: guide/logging/context-advanced.md
+        - Patterns: guide/logging/context-patterns.md
       - Performance Tuning: 
         - guide/logging/performance.md
         - Overview: guide/logging/performance/index.md
@@ -177,6 +182,9 @@ nav:
       - Performance Optimization: guide/advanced/performance-optimization.md
     - Testing:
       - guide/testing.md
+      - Basic Testing: guide/testing-basics.md
+      - Advanced Testing: guide/testing-advanced.md
+      - Performance Testing: guide/testing-performance.md
 
   - Reference:
     - api/api-index.md
