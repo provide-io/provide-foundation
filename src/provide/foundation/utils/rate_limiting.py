@@ -9,8 +9,6 @@ import asyncio
 import time
 from typing import final
 
-from provide.foundation import logger
-
 
 @final
 class TokenBucketRateLimiter:
@@ -40,10 +38,18 @@ class TokenBucketRateLimiter:
         self._tokens: float = float(capacity)  # Start with a full bucket
         self._last_refill_timestamp: float = time.monotonic()
         self._lock: asyncio.Lock = asyncio.Lock()
-        logger.debug(
-            "🔩🗑️ TokenBucketRateLimiter initialized: "
-            f"capacity={capacity}, refill_rate={refill_rate}"
-        )
+        
+        # Avoid circular imports by getting logger lazily
+        try:
+            from provide.foundation.logger import get_logger
+            logger = get_logger(__name__)
+            logger.debug(
+                "🔩🗑️ TokenBucketRateLimiter initialized: "
+                f"capacity={capacity}, refill_rate={refill_rate}"
+            )
+        except ImportError:
+            # Fallback if logger not available
+            pass
 
     async def _refill_tokens(self) -> None:
         """
@@ -81,16 +87,26 @@ class TokenBucketRateLimiter:
 
             if self._tokens >= 1.0:
                 self._tokens -= 1.0
-                logger.debug(
-                    "🔩🗑️✅ Request allowed. Tokens remaining: "
-                    f"{self._tokens:.2f}/{self._capacity:.2f}"
-                )
+                try:
+                    from provide.foundation.logger import get_logger
+                    logger = get_logger(__name__)
+                    logger.debug(
+                        "🔩🗑️✅ Request allowed. Tokens remaining: "
+                        f"{self._tokens:.2f}/{self._capacity:.2f}"
+                    )
+                except ImportError:
+                    pass
                 return True
             else:
-                logger.warning(
-                    "🔩🗑️❌ Request denied. No tokens available. Tokens: "
-                    f"{self._tokens:.2f}/{self._capacity:.2f}"
-                )
+                try:
+                    from provide.foundation.logger import get_logger
+                    logger = get_logger(__name__)
+                    logger.warning(
+                        "🔩🗑️❌ Request denied. No tokens available. Tokens: "
+                        f"{self._tokens:.2f}/{self._capacity:.2f}"
+                    )
+                except ImportError:
+                    pass
                 return False
 
     async def get_current_tokens(self) -> float:
