@@ -228,61 +228,149 @@ if _HAS_CLICK:
         
         try:
             logs_sent = 0
+            logs_failed = 0
+            logs_rate_limited = 0
             batch = []
             start_time = time.time()
+            last_stats_time = start_time
+            last_stats_sent = 0
+            
+            # For high-speed generation, use async batch sending
+            import concurrent.futures
+            import threading
+            
+            # Track rate limiting
+            rate_limit_detected = False
+            consecutive_failures = 0
+            effective_rate = rate  # May be reduced if rate limiting detected
+            
+            def send_log_with_tracking(entry):
+                """Send log and track success/failure."""
+                nonlocal logs_sent, logs_failed, logs_rate_limited, rate_limit_detected, consecutive_failures
+                
+                success = send_log(
+                    message=entry["message"],
+                    level=entry["level"],
+                    service=entry["service"],
+                    attributes=entry,
+                    client=client,
+                )
+                
+                if success:
+                    logs_sent += 1
+                    consecutive_failures = 0
+                    return True
+                else:
+                    logs_failed += 1
+                    consecutive_failures += 1
+                    
+                    # Detect rate limiting (multiple consecutive failures)
+                    if consecutive_failures >= 5 and not rate_limit_detected:
+                        rate_limit_detected = True
+                        logs_rate_limited = logs_failed
+                    elif rate_limit_detected:
+                        logs_rate_limited += 1
+                    
+                    return False
             
             if count == 0:
-                # Continuous mode
+                # Continuous mode with high-speed support
                 index = 0
-                while True:
-                    entry = generate_log_entry(index)
-                    success = send_log(
-                        message=entry["message"],
-                        level=entry["level"],
-                        service=entry["service"],
-                        attributes=entry,
-                        client=client,
-                    )
+                with concurrent.futures.ThreadPoolExecutor(max_workers=min(10, int(rate/100) + 1)) as executor:
+                    futures = []
                     
-                    if success:
-                        logs_sent += 1
-                        if logs_sent % 10 == 0:
-                            click.echo(f"✅ Sent {logs_sent} logs...")
-                    
-                    index += 1
-                    
-                    # Rate limiting
-                    time.sleep(1.0 / rate)
+                    while True:
+                        current_time = time.time()
+                        
+                        # Generate and submit logs at target rate
+                        logs_this_second = 0
+                        second_start = current_time
+                        
+                        while logs_this_second < effective_rate and (time.time() - second_start) < 1.0:
+                            entry = generate_log_entry(index)
+                            future = executor.submit(send_log_with_tracking, entry)
+                            futures.append(future)
+                            index += 1
+                            logs_this_second += 1
+                            
+                            # Micro-sleep for very high rates
+                            if rate > 100:
+                                time.sleep(0.001)  # 1ms between submissions
+                        
+                        # Clean up completed futures
+                        futures = [f for f in futures if not f.done()]
+                        
+                        # Print stats every second
+                        if current_time - last_stats_time >= 1.0:
+                            current_sent = logs_sent
+                            current_rate = (current_sent - last_stats_sent) / (current_time - last_stats_time)
+                            
+                            status = f"📊 Sent: {logs_sent:,} | Rate: {current_rate:.0f}/s"
+                            if logs_failed > 0:
+                                status += f" | Failed: {logs_failed:,}"
+                            if rate_limit_detected:
+                                status += f" | ⚠️ RATE LIMITED ({logs_rate_limited:,})"
+                                # Adjust effective rate down
+                                effective_rate = max(effective_rate * 0.9, 10)
+                            
+                            click.echo(status)
+                            last_stats_time = current_time
+                            last_stats_sent = current_sent
+                        
+                        # Sleep remainder of second if needed
+                        sleep_time = 1.0 - (time.time() - second_start)
+                        if sleep_time > 0:
+                            time.sleep(sleep_time)
                     
             else:
-                # Fixed count mode
-                for i in range(count):
-                    entry = generate_log_entry(i)
-                    batch.append(entry)
+                # Fixed count mode with high-speed support
+                with concurrent.futures.ThreadPoolExecutor(max_workers=min(20, int(rate/50) + 1)) as executor:
+                    futures = []
                     
-                    # Send batch when full or at end
-                    if len(batch) >= batch_size or i == count - 1:
-                        for log_entry in batch:
-                            success = send_log(
-                                message=log_entry["message"],
-                                level=log_entry["level"],
-                                service=log_entry["service"],
-                                attributes=log_entry,
-                                client=client,
-                            )
-                            if success:
-                                logs_sent += 1
+                    for i in range(count):
+                        entry = generate_log_entry(i)
+                        future = executor.submit(send_log_with_tracking, entry)
+                        futures.append(future)
                         
-                        click.echo(f"✅ Sent batch: {logs_sent}/{count} logs")
-                        batch = []
+                        # Control submission rate
+                        if rate > 0:
+                            time.sleep(1.0 / rate)
+                        
+                        # Print progress
+                        if (i + 1) % 100 == 0 or i == count - 1:
+                            # Wait for some futures to complete
+                            completed = sum(1 for f in futures if f.done())
+                            
+                            status = f"📊 Progress: {i+1}/{count} submitted, {completed} completed"
+                            if logs_sent > 0:
+                                current_time = time.time()
+                                elapsed = current_time - start_time
+                                current_rate = logs_sent / elapsed if elapsed > 0 else 0
+                                status += f" | Rate: {current_rate:.0f}/s"
+                            if logs_failed > 0:
+                                status += f" | Failed: {logs_failed}"
+                            if rate_limit_detected:
+                                status += f" | ⚠️ RATE LIMITED"
+                            
+                            click.echo(status)
+                    
+                    # Wait for all to complete
+                    click.echo("⏳ Waiting for remaining logs to send...")
+                    concurrent.futures.wait(futures)
             
             elapsed = time.time() - start_time
             rate_actual = logs_sent / elapsed if elapsed > 0 else 0
             
             click.echo(f"\n📊 Generation complete:")
-            click.echo(f"   Total sent: {logs_sent} logs")
+            click.echo(f"   Total sent: {logs_sent:,} logs")
+            click.echo(f"   Total failed: {logs_failed:,} logs")
+            if rate_limit_detected:
+                click.echo(f"   ⚠️  Rate limited: {logs_rate_limited:,} logs")
             click.echo(f"   Time: {elapsed:.2f}s")
-            click.echo(f"   Rate: {rate_actual:.1f} logs/second")
+            click.echo(f"   Target rate: {rate:.0f} logs/second")
+            click.echo(f"   Actual rate: {rate_actual:.1f} logs/second")
+            if rate_limit_detected and rate_actual < rate * 0.5:
+                click.echo(f"   ⚠️  Rate limiting detected - actual rate is {(rate_actual/rate)*100:.0f}% of target")
             
         except KeyboardInterrupt:
             click.echo(f"\n✋ Stopped. Generated {logs_sent} logs.")
