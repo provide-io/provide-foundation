@@ -97,7 +97,9 @@
       "Bash(mypy:*)",
       "Bash(uv build:*)",
       "Bash(echo:*)",
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(for file in *.md)",
+      "Bash(do mv \"$file\" \"api-$file\")"
     ],
     "deny": [],
     "ask": [],
