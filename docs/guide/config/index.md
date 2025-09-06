@@ -15,6 +15,14 @@ Configuration can be provided through (in order of precedence):
 3. **Configuration Files** - YAML, JSON, or TOML files
 4. **Defaults** - Sensible defaults for all settings
 
+## Configuration Guide
+
+- **[Complete Reference](reference.md)** - All configuration options and environment variables
+- **[Environment Variables](environment.md)** - Environment-based configuration
+- **[Configuration Files](files.md)** - File-based configuration
+- **[Runtime Configuration](runtime.md)** - Programmatic configuration
+- **[Best Practices](best-practices.md)** - Configuration patterns and recommendations
+
 ## Quick Start
 
 ### Environment Variables

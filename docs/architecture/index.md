@@ -11,46 +11,44 @@ Detailed specification of the structured logging format, including:
 - Timestamp formats
 - Context propagation
 
-### [Emoji Set Protocol](emoji-set-protocol.md)
-The protocol for implementing domain-specific emoji sets:
+### [Emoji System](emoji-system.md)
+The visual parsing system specification:
+- Domain-to-emoji mappings
+- Fallback patterns
+- Custom emoji configuration
 - Emoji set interface specification
+
+### [Emoji Sets](emoji-sets.md)
+Domain-specific emoji set implementations:
+- HTTP, Database, LLM emoji sets
 - Event naming conventions
 - Metadata requirements
 - Extension points
 
-### [Emoji Mapping System](emoji-mapping.md)
-Specification for the visual parsing system:
-- Domain-to-emoji mappings
-- Fallback patterns
-- Custom emoji configuration
-- Accessibility considerations
-
-### [Performance Benchmarks](benchmarks.md)
+### [Performance](performance.md)
 Performance specifications and benchmarks:
 - Throughput requirements (>14,000 msg/sec)
 - Latency targets
 - Memory usage guidelines
 - Optimization strategies
 
-## Enhancement Proposals (FEPs)
+## Implementation Status
 
-The Foundation Enhancement Proposals (FEPs) document proposed changes and new features for provide.foundation.
+### Stable Features
+- ✅ **Structured Logging**: Full implementation with emoji support
+- ✅ **Configuration System**: Environment variables, file loading, validation
+- ✅ **CLI Framework**: Command registration, nested commands, JSON output
+- ✅ **File Operations**: Atomic writes, format support, locking
+- ✅ **Cryptographic Utils**: Hashing, checksums, signatures, certificates
+- ✅ **Distributed Tracing**: Lightweight span-based tracing
+- ✅ **Error Handling**: Rich context, decorators, boundaries
 
-### Active FEPs
+### Experimental Features
+- 🧪 **Advanced Metrics**: Prometheus integration (planned)
+- 🧪 **OpenTelemetry Bridge**: OTEL compatibility layer (planned)
 
-- [FEP-001: Emoji Sets](feps/fep-001.md) - Core emoji set architecture
-- [FEP-002: Async Support](feps/fep-002.md) - Asynchronous logging capabilities
-- [FEP-003: Plugin System](feps/fep-003.md) - Extensible plugin architecture
-- [FEP-004: Distributed Tracing](feps/fep-004.md) - OpenTelemetry integration
-- [FEP-005: Metrics Integration](feps/fep-005.md) - Metrics collection and export
-
-### FEP Process
-
-1. **Draft**: Initial proposal with motivation and design
-2. **Discussion**: Community feedback and refinement
-3. **Accepted**: Approved for implementation
-4. **Final**: Implemented and stable
-5. **Rejected**: Not accepted for implementation
+### Deprecated Features
+- None currently
 
 ## Technical Standards
 
@@ -128,9 +126,8 @@ class EmojiSetConfig(ABC):
 - `provide.foundation.config`
 - `provide.foundation.platform`
 
-### Experimental APIs
-- `provide.foundation.metrics` (PEP-005)
-- `provide.foundation.tracing` (PEP-004)
+### Stable APIs  
+- `provide.foundation.tracer` - Distributed tracing functionality
 
 ### Deprecated APIs
 - None currently
