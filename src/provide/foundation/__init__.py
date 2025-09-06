@@ -38,7 +38,6 @@ from provide.foundation.logger import (
     LoggingConfig,
     TelemetryConfig,
     get_logger,  # Factory function for creating loggers
-    logger,  # Global logger instance
     setup_logging,  # Setup function (backward compatibility)
     setup_logger,   # Setup function (consistent naming)
 )
@@ -146,5 +145,8 @@ __all__ = [
     "TokenBucketRateLimiter",
     "with_error_handling",
 ]
+
+# Import the logger instance after all other imports to avoid module shadowing
+from provide.foundation.logger import logger
 
 # 🐍📝
