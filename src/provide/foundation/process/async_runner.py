@@ -222,7 +222,7 @@ async def async_stream_command(
             asyncio.subprocess.STDOUT if stream_stderr else asyncio.subprocess.PIPE
         )
         process = await asyncio.create_subprocess_exec(
-            *(cmd if isinstance(cmd, list) else [cmd]),
+            *(cmd if isinstance(cmd, list) else cmd.split()),
             cwd=cwd,
             env=run_env,
             stdout=asyncio.subprocess.PIPE,
