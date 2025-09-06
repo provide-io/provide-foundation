@@ -11,7 +11,12 @@ import json
 import sys
 from typing import Any, TypeVar
 
-import click
+try:
+    import click
+    _HAS_CLICK = True
+except ImportError:
+    click = None
+    _HAS_CLICK = False
 
 from provide.foundation.context import Context
 from provide.foundation.logger import get_logger
@@ -23,6 +28,8 @@ T = TypeVar("T")
 
 def _get_context() -> Context | None:
     """Get current context from Click or environment."""
+    if not _HAS_CLICK:
+        return None
     ctx = click.get_current_context(silent=True)
     if ctx and hasattr(ctx, "obj") and isinstance(ctx.obj, Context):
         return ctx.obj

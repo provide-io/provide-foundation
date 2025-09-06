@@ -9,7 +9,12 @@ import json
 import sys
 from typing import Any
 
-import click
+try:
+    import click
+    _HAS_CLICK = True
+except ImportError:
+    click = None
+    _HAS_CLICK = False
 
 from provide.foundation.context import Context
 from provide.foundation.logger import get_logger
@@ -19,6 +24,8 @@ log = get_logger(__name__)
 
 def _get_context() -> Context | None:
     """Get current context from Click or environment."""
+    if not _HAS_CLICK:
+        return None
     ctx = click.get_current_context(silent=True)
     if ctx and hasattr(ctx, "obj") and isinstance(ctx.obj, Context):
         return ctx.obj
@@ -101,10 +108,17 @@ def pout(message, **kwargs) -> None:
         bold = kwargs.get("bold", False)
         dim = kwargs.get("dim", False)
 
-        if (color or bold or dim) and _should_use_color(ctx, sys.stdout):
-            click.secho(output, fg=color, bold=bold, dim=dim, nl=nl)
+        if _HAS_CLICK:
+            if (color or bold or dim) and _should_use_color(ctx, sys.stdout):
+                click.secho(output, fg=color, bold=bold, dim=dim, nl=nl)
+            else:
+                click.echo(output, nl=nl)
         else:
-            click.echo(output, nl=nl)
+            # Fallback to standard Python print
+            if nl:
+                print(output, file=sys.stdout)
+            else:
+                print(output, file=sys.stdout, end="")
 
 
 def perr(message, **kwargs) -> None:
