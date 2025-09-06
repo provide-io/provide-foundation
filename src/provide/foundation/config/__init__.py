@@ -10,7 +10,7 @@ from provide.foundation.config.base import (
     field,
 )
 from provide.foundation.config.env import (
-    EnvConfig,
+    RuntimeConfig,
     env_field,
     get_env,
     get_env_async,
@@ -78,7 +78,7 @@ __all__ = [
     "ConfigValue",
     "DictConfigLoader",
     # Environment
-    "EnvConfig",
+    "RuntimeConfig",
     "FileConfigLoader",
     "MultiSourceLoader",
     "SchemaField",

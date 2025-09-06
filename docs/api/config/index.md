@@ -72,10 +72,10 @@ data = await config.to_dict()
 ### Environment Configuration
 
 ```python
-from provide.foundation.config.env import EnvConfig, env_field
+from provide.foundation.config.env import RuntimeConfig, env_field
 
 @define(frozen=True)
-class DatabaseConfig(EnvConfig):
+class DatabaseConfig(RuntimeConfig):
     host: str = env_field(env_var="DB_HOST", default="localhost")
     port: int = env_field(default=5432)
     password: str = env_field(sensitive=True)
@@ -110,7 +110,7 @@ app_config = await manager.get("app")
 ### [BaseConfig](base.md)
 Core configuration base class with field definitions, validation, and serialization.
 
-### [ConfigManager](manager.md) 
+### [ConfigManager](manager.md)
 Centralized configuration registry with lifecycle management and runtime updates.
 
 ### [Environment Config](env.md)
@@ -129,7 +129,7 @@ Schema definition and validation with async validators and type checking.
 ```python
 from provide.foundation.config.loader import (
     FileConfigLoader, 
-    EnvConfigLoader,
+    RuntimeConfigLoader,
     MultiSourceLoader
 )
 
@@ -137,7 +137,7 @@ from provide.foundation.config.loader import (
 loader = MultiSourceLoader(
     FileConfigLoader("config.yaml"),      # Base configuration
     FileConfigLoader("local.yaml"),      # Local overrides
-    EnvConfigLoader(prefix="MYAPP"),     # Environment overrides
+    RuntimeConfigLoader(prefix="MYAPP"),     # Environment overrides
 )
 
 config = await loader.load(AppConfig)

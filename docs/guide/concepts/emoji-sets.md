@@ -242,8 +242,8 @@ The key enhancement: We add visual parsing and domain validation **on top of** O
 ## Next Steps
 
 - 📖 See [Architecture: Semantic Layers](../../architecture/emoji-sets.md) for implementation details
-- 🛠️ Learn to [Create Custom Emoji Sets](../../tutorials/custom-emoji-set.md)
-- 📚 Explore [Cookbook Recipes](../../cookbook/recipes/index.md) for real-world usage
+- 🛠️ See [Advanced Logging Guide](../logging/advanced.md) for customization
+- 📚 Explore [Examples](../../getting-started/examples.md) for real-world usage
 - 🔧 Check [API Reference](../../api/emoji_sets/index.md) for all available fields
 
 ## Summary

@@ -7,10 +7,10 @@ This comprehensive example demonstrates building a full CLI application
 with provide.foundation's hub system:
 
 1. Component System:
-   - BaseComponent for resources with lifecycle management
-   - @register_component decorator for automatic registration
+   - Regular Python classes with context manager support
+   - Hub.add_component() method for registration
    - Multi-dimensional registry (resources, services, etc.)
-   - Context managers for setup/teardown
+   - Context managers for lifecycle management
    
 2. Command Registration:
    - @register_command decorator for CLI commands
@@ -39,7 +39,9 @@ Usage:
     # Or import and use programmatically
     from examples.12_cli_application import Hub, DatabaseResource
     hub = Hub()
-    with hub.get_component("database")("mydb") as db:
+    hub.add_component(DatabaseResource, name="database", dimension="resource")
+    db_class = hub.get_component("database", dimension="resource")
+    with db_class("mydb") as db:
         result = db.query("SELECT * FROM users")
 
 Expected output:
@@ -53,29 +55,28 @@ See also:
 
 from provide.foundation.cli import echo_info, echo_success, echo_warning
 from provide.foundation.context import Context
-from provide.foundation.hub import (
-    BaseComponent,
-    Hub,
-    register_command,
-    register_component,
-)
+from provide.foundation.hub import Hub, register_command
 
 # ==============================================================================
 # COMPONENTS
 # ==============================================================================
 
 
-@register_component("database", dimension="resource", version="1.0.0")
-class DatabaseResource(BaseComponent):
+class DatabaseResource:
     """Database connection resource with lifecycle management."""
 
-    def _setup(self) -> None:
-        """Initialize database connection."""
+    def __init__(self, name: str) -> None:
+        self.name = name
+        self.connected = False
+
+    def __enter__(self):
+        """Context manager entry."""
         echo_info(f"Connecting to database: {self.name}")
         self.connected = True
+        return self
 
-    def _teardown(self) -> None:
-        """Close database connection."""
+    def __exit__(self, *args):
+        """Context manager exit."""
         if self.connected:
             echo_info(f"Disconnecting from database: {self.name}")
             self.connected = False
@@ -87,17 +88,20 @@ class DatabaseResource(BaseComponent):
         return f"Query result for: {sql}"
 
 
-@register_component("cache", dimension="resource", version="1.0.0")
-class CacheResource(BaseComponent):
+class CacheResource:
     """Cache resource for fast data access."""
 
-    def _setup(self) -> None:
-        """Initialize cache."""
-        echo_info(f"Initializing cache: {self.name}")
+    def __init__(self, name: str) -> None:
+        self.name = name
         self.cache = {}
 
-    def _teardown(self) -> None:
-        """Clear cache."""
+    def __enter__(self):
+        """Context manager entry."""
+        echo_info(f"Initializing cache: {self.name}")
+        return self
+
+    def __exit__(self, *args):
+        """Context manager exit."""
         echo_info(f"Clearing cache: {self.name}")
         self.cache.clear()
 
@@ -110,7 +114,6 @@ class CacheResource(BaseComponent):
         self.cache[key] = value
 
 
-@register_component("logger", dimension="service", version="2.0.0")
 class LoggerService:
     """Simple logging service."""
 
@@ -224,6 +227,11 @@ def create_demo_cli():
     context = Context(log_level="INFO", profile="demo", debug=False)
 
     hub = Hub(context=context)
+
+    # Register components
+    hub.add_component(DatabaseResource, name="database", dimension="resource", version="1.0.0")
+    hub.add_component(CacheResource, name="cache", dimension="resource", version="1.0.0")
+    hub.add_component(LoggerService, name="logger", dimension="service", version="2.0.0")
 
     # Create CLI
     cli = hub.create_cli(

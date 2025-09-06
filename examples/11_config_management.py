@@ -8,7 +8,7 @@ configuration system:
 
 1. Configuration Classes:
    - BaseConfig for simple configurations
-   - EnvConfig for environment variable loading
+   - RuntimeConfig for environment variable loading
    - Nested configuration structures
    
 2. Loading from Multiple Sources:
@@ -65,7 +65,7 @@ from provide.foundation.config import (
     ConfigManager,
     ConfigSchema,
     DictConfigLoader,
-    EnvConfig,
+    RuntimeConfig,
     FileConfigLoader,
     MultiSourceLoader,
     SchemaField,
@@ -94,7 +94,7 @@ class AppConfig(BaseConfig):
 
 # Example 2: Environment-aware configuration
 @define
-class DatabaseConfig(EnvConfig):
+class DatabaseConfig(RuntimeConfig):
     """Database configuration that loads from environment."""
 
     host: str = env_field(
@@ -138,7 +138,7 @@ class ServerConfig(BaseConfig):
 
 
 @define
-class FullConfig(EnvConfig):
+class FullConfig(RuntimeConfig):
     """Complete application configuration."""
 
     app: AppConfig = field(factory=AppConfig)

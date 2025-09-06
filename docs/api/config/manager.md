@@ -343,7 +343,7 @@ async def load_config(
 
 ```python
 from provide.foundation.config.manager import ConfigManager
-from provide.foundation.config.loader import FileConfigLoader, EnvConfigLoader
+from provide.foundation.config.loader import FileConfigLoader, RuntimeConfigLoader
 from provide.foundation.config.schema import ConfigSchema, SchemaField
 
 # Create manager
@@ -393,14 +393,14 @@ asyncio.create_task(watch_config())
 dev_loader = MultiSourceLoader(
     FileConfigLoader("config/base.yaml"),
     FileConfigLoader("config/dev.yaml"),
-    EnvConfigLoader(prefix="DEV"),
+    RuntimeConfigLoader(prefix="DEV"),
 )
 
 # Production environment
 prod_loader = MultiSourceLoader(
     FileConfigLoader("config/base.yaml"),
     FileConfigLoader("config/prod.yaml"),
-    EnvConfigLoader(prefix="PROD"),
+    RuntimeConfigLoader(prefix="PROD"),
 )
 
 # Register based on environment
