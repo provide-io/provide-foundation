@@ -3,8 +3,19 @@
 Contributing to provide.foundation.
 
 - [Contributing](contributing.md) - How to contribute
-- [Architecture](architecture.md) - System architecture
-- [Testing](testing/index.md) - Testing strategy
 - [CI/CD](ci-cd.md) - Build pipeline
-- [Release Process](release.md) - How we release
-- [Roadmap](roadmap.md) - Future plans
+
+## Architecture
+
+See the [Architecture section](../architecture/index.md) for system design details.
+
+## Testing
+
+Run tests using pytest:
+```bash
+pytest                    # Run all tests
+pytest -n auto           # Run tests in parallel
+pytest tests/specific/   # Run specific tests
+```
+
+See the project's `pyproject.toml` for full test configuration.
