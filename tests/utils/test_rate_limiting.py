@@ -92,7 +92,8 @@ class TestTokenBucketRateLimiter:
         assert await limiter.is_allowed() is True
         
         tokens = await limiter.get_current_tokens()
-        assert tokens == 3.0
+        # Allow for small timing variations due to test execution time
+        assert abs(tokens - 3.0) < 0.01
 
     @pytest.mark.asyncio
     async def test_concurrent_access(self):
