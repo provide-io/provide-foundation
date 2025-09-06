@@ -115,6 +115,11 @@ class LoggingConfig(BaseConfig):
         env_var="PROVIDE_LOG_RATE_LIMIT_EMIT_WARNINGS",
         description="Emit warnings when logs are rate limited",
     )
+    rate_limit_summary_interval: float = field(
+        default=5.0,
+        env_var="PROVIDE_LOG_RATE_LIMIT_SUMMARY_INTERVAL",
+        description="Seconds between rate limit summary reports",
+    )
 
     @classmethod
     def from_env(cls, strict: bool = True) -> "LoggingConfig":
@@ -245,6 +250,17 @@ class LoggingConfig(BaseConfig):
         
         if emit_warnings := os.getenv("PROVIDE_LOG_RATE_LIMIT_EMIT_WARNINGS"):
             config_dict["rate_limit_emit_warnings"] = emit_warnings.lower() == "true"
+        
+        if summary_interval := os.getenv("PROVIDE_LOG_RATE_LIMIT_SUMMARY_INTERVAL"):
+            try:
+                config_dict["rate_limit_summary_interval"] = float(summary_interval)
+            except ValueError:
+                if strict:
+                    get_config_logger().warning(
+                        "[Foundation Config Warning] Invalid summary interval",
+                        config_key="PROVIDE_LOG_RATE_LIMIT_SUMMARY_INTERVAL",
+                        invalid_value=summary_interval,
+                    )
 
         # Parse complex fields
         if module_levels := os.getenv("PROVIDE_LOG_MODULE_LEVELS"):

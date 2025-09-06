@@ -187,6 +187,7 @@ def _build_core_processors_list(
             global_capacity=log_cfg.rate_limit_global_capacity,
             per_logger_rates=log_cfg.rate_limit_per_logger,
             emit_warnings=log_cfg.rate_limit_emit_warnings,
+            summary_interval=log_cfg.rate_limit_summary_interval,
         )
         processors.append(cast(StructlogProcessor, rate_limiter_processor))
     

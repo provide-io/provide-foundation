@@ -23,6 +23,7 @@ class RateLimiterProcessor:
         self,
         emit_warning_on_limit: bool = True,
         warning_interval_seconds: float = 60.0,
+        summary_interval_seconds: float = 5.0,
     ):
         """
         Initialize the rate limiter processor.
@@ -30,6 +31,7 @@ class RateLimiterProcessor:
         Args:
             emit_warning_on_limit: Whether to emit a warning when rate limited
             warning_interval_seconds: Minimum seconds between rate limit warnings
+            summary_interval_seconds: Interval for rate limit summary reports
         """
         self.rate_limiter = GlobalRateLimiter()
         self.emit_warning_on_limit = emit_warning_on_limit
@@ -41,7 +43,7 @@ class RateLimiterProcessor:
         # Track suppressed message counts
         self.suppressed_counts: dict[str, int] = {}
         self.last_summary_time = time.monotonic()
-        self.summary_interval = 60.0  # Emit summary every 60 seconds
+        self.summary_interval = summary_interval_seconds  # Emit summary periodically
     
     def __call__(
         self, 
@@ -116,10 +118,27 @@ class RateLimiterProcessor:
             from provide.foundation.logger import get_logger
             summary_logger = get_logger("provide.foundation.ratelimit.summary")
             
-            summary_logger.info(
-                f"📊 Rate limit summary: {total_suppressed} messages suppressed",
+            # Get current stats
+            stats = self.rate_limiter.get_stats()
+            
+            # Calculate rate limiting percentage
+            total_attempts = stats.get("global", {}).get("total_allowed", 0) + stats.get("global", {}).get("total_denied", 0)
+            if total_attempts > 0:
+                denial_rate = (stats.get("global", {}).get("total_denied", 0) / total_attempts) * 100
+            else:
+                denial_rate = 0
+            
+            # Format the summary message
+            summary_logger.warning(
+                f"⚠️ Rate limiting active: {total_suppressed:,} logs dropped in last {self.summary_interval}s | "
+                f"Denial rate: {denial_rate:.1f}% | "
+                f"Tokens: {stats.get('global', {}).get('tokens_available', 0):.0f}/{stats.get('global', {}).get('capacity', 0):.0f}",
                 suppressed_by_logger=dict(self.suppressed_counts),
-                stats=self.rate_limiter.get_stats(),
+                total_suppressed=total_suppressed,
+                denial_rate_percent=denial_rate,
+                tokens_available=stats.get("global", {}).get("tokens_available", 0),
+                capacity=stats.get("global", {}).get("capacity", 0),
+                refill_rate=stats.get("global", {}).get("refill_rate", 0),
             )
             
             # Reset counts after summary
@@ -134,6 +153,7 @@ def create_rate_limiter_processor(
     global_capacity: float | None = None,
     per_logger_rates: dict[str, tuple[float, float]] | None = None,
     emit_warnings: bool = True,
+    summary_interval: float = 5.0,
 ) -> RateLimiterProcessor:
     """
     Factory function to create and configure a rate limiter processor.
@@ -143,11 +163,15 @@ def create_rate_limiter_processor(
         global_capacity: Global burst capacity
         per_logger_rates: Dict of logger_name -> (rate, capacity) tuples
         emit_warnings: Whether to emit warnings when rate limited
+        summary_interval: Seconds between rate limit summary reports
         
     Returns:
         Configured RateLimiterProcessor instance
     """
-    processor = RateLimiterProcessor(emit_warning_on_limit=emit_warnings)
+    processor = RateLimiterProcessor(
+        emit_warning_on_limit=emit_warnings,
+        summary_interval_seconds=summary_interval
+    )
     
     # Configure the global rate limiter
     processor.rate_limiter.configure(
