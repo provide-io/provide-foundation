@@ -67,9 +67,10 @@ from provide.foundation.utils import (
     timed_block,
     TokenBucketRateLimiter,
 )
+
 from provide.foundation._version import __version__
 
-# CLI lazy loading support
+# Lazy loading support for optional modules
 def __getattr__(name: str):
     """Support lazy loading of optional modules."""
     if name == "cli":
@@ -83,6 +84,9 @@ def __getattr__(name: str):
                     "pip install 'provide-foundation[cli]'"
                 ) from e
             raise
+    elif name == "metrics":
+        from provide.foundation import metrics
+        return metrics
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
 
 __all__ = [

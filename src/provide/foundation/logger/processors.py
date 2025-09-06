@@ -23,6 +23,9 @@ from provide.foundation.types import (
     LogLevelStr,
 )
 
+# Import trace context processor
+from provide.foundation.logger.processors.trace import inject_trace_context
+
 if TYPE_CHECKING:
     from provide.foundation.logger.setup.emoji_resolver import ResolvedEmojiConfig
 
@@ -177,6 +180,11 @@ def _build_core_processors_list(
     processors.extend(_config_create_timestamp_processors(log_cfg.omit_timestamp))
     if config.service_name is not None:
         processors.append(_config_create_service_name_processor(config.service_name))
+    
+    # Add trace context injection if tracing is enabled
+    if config.tracing_enabled and not config.globally_disabled:
+        processors.append(cast(StructlogProcessor, inject_trace_context))
+    
     processors.extend(_config_create_emoji_processors(log_cfg, resolved_emoji_config))
     return processors
 
