@@ -94,7 +94,8 @@
       "Bash(fi)",
       "Bash(uv pip:*)",
       "Bash(ruff check:*)",
-      "Bash(mypy:*)"
+      "Bash(mypy:*)",
+      "Bash(uv build:*)"
     ],
     "deny": [],
     "ask": [],

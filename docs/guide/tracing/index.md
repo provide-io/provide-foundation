@@ -648,5 +648,5 @@ with with_span("user_registration"):
 
 - 📖 Review the complete [Tracer API Reference](../../api/tracer/)
 - 🛠️ See working examples in [examples/15_distributed_tracing.py](https://github.com/provide-io/provide-foundation/blob/main/examples/15_distributed_tracing.py)
-- 🔗 Learn about [Logger Integration](../logging/advanced.md#tracing-integration) 
-- ⚡ Optimize with [Performance Guidelines](../concepts/performance.md#tracing-performance)
+- 🔗 Learn about [Logger Integration](../logging/advanced.md) 
+- ⚡ Optimize with [Performance Guidelines](../concepts/performance.md)
