@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
 # examples/01_quick_start.py
 """
-Quick Start Example - Basic Structured Logging
+Quick Start Example - Structured Logging with Full Setup
 
-This example demonstrates the simplest way to get started with provide.foundation's
-logging system. It shows how to:
-- Initialize the telemetry system with default settings
-- Use different log levels (info, debug, warning, error)
-- Include structured data in log messages
+This example demonstrates how to use setup_telemetry() to configure logging,
+tracing, and metrics. It shows:
+- Using setup_telemetry() for full telemetry configuration
+- Different log levels (info, debug, warning, error)
+- Structured data in log messages
+- When tracing/metrics features are available
+
+Requirements:
+    pip install provide-foundation[opentelemetry]  # For tracing/metrics
+    # OR
+    pip install provide-foundation                 # Basic logging only
 
 Usage:
     python examples/01_quick_start.py
@@ -16,7 +22,7 @@ Usage:
     PROVIDE_LOG_LEVEL=ERROR python examples/01_quick_start.py
 
 Expected output:
-    Colored, emoji-prefixed log messages at different levels with structured data.
+    Colored, emoji-prefixed log messages with optional tracing/metrics setup.
 """
 
 from pathlib import Path
@@ -46,10 +52,12 @@ def example_1_quick_start() -> None:
     """
     print("\n" + "=" * 60)
     print("🚀 Example 1: Quick Start")
-    print(" Demonstrates: Logging with default settings after simple setup.")
+    print(" Demonstrates: Logging with full telemetry setup (tracing/metrics).")
+    print(" Note: If OpenTelemetry dependencies are missing, tracing/metrics are disabled.")
     print("=" * 60)
 
     # Initialize with defaults (or environment variables if set)
+    # This sets up logging + optional tracing/metrics if dependencies available
     setup_telemetry()
 
     # Start logging immediately
