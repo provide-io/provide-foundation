@@ -14,7 +14,7 @@ from provide.foundation import cli, config, errors, platform, process
 # Console I/O functions
 from provide.foundation.console import perr, pin, pout
 from provide.foundation.context import Context
-from provide.foundation.core import (
+from provide.foundation.setup import (
     setup_telemetry,
     shutdown_foundation_telemetry,
 )

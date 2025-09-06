@@ -18,8 +18,8 @@ from typing import Any
 import pytest
 
 from provide.foundation import LoggingConfig, TelemetryConfig, logger, setup_telemetry
-from provide.foundation.core import (
-    _set_log_stream_for_testing,
+from provide.foundation.testing import (
+    set_log_stream_for_testing,
     reset_foundation_setup_for_testing,
 )
 
@@ -28,11 +28,11 @@ from provide.foundation.core import (
 def capture_logs():
     """Context manager to capture log output during benchmarks."""
     captured = io.StringIO()
-    _set_log_stream_for_testing(captured)
+    set_log_stream_for_testing(captured)
     try:
         yield captured
     finally:
-        _set_log_stream_for_testing(None)
+        set_log_stream_for_testing(None)
 
 
 class TestBasicLoggingPerformance:

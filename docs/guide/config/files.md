@@ -312,7 +312,7 @@ logging:
     datacenter: us-west-2
 ```
 
-### Semantic Layers Section
+### Emoji Sets Section
 
 ```yaml
 emoji_sets:

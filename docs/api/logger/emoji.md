@@ -214,7 +214,7 @@ logger.error(
 # Output: [🗄️][🔗][❌] Database connection failed
 ```
 
-### Semantic Layers
+### Emoji Sets
 
 With custom emoji sets configured:
 
@@ -325,7 +325,7 @@ The emoji system integrates with the log processors to automatically add emoji p
 
 ## Related Documentation
 
-- [Semantic Layers Guide](/guide/concepts/emoji-sets/) - Advanced emoji configuration
+- [Emoji Sets Guide](/guide/concepts/emoji-sets/) - Advanced emoji configuration
 - [Log Processors API](processors.md) - Processing pipeline
 - [Performance Guide](/guide/concepts/performance/) - Optimization strategies
 - [Configuration Guide](/guide/config/environment/) - Environment setup
