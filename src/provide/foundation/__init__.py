@@ -7,17 +7,14 @@ Primary public interface for the library, re-exporting common components.
 """
 
 # Export config module for easy access
-# New foundation components  
+# New foundation components
 # Make the errors module available for detailed imports
 from provide.foundation import config, errors, platform, process
+from provide.foundation._version import __version__
 
 # Console I/O functions (always available - handles click dependency internally)
 from provide.foundation.console import perr, pin, pout
 from provide.foundation.context import Context
-from provide.foundation.setup import (
-    setup_telemetry,
-    shutdown_foundation_telemetry,
-)
 
 # Error handling exports - only the essentials
 from provide.foundation.errors import (
@@ -38,8 +35,8 @@ from provide.foundation.logger import (
     LoggingConfig,
     TelemetryConfig,
     get_logger,  # Factory function for creating loggers
+    setup_logger,  # Setup function (consistent naming)
     setup_logging,  # Setup function (backward compatibility)
-    setup_logger,   # Setup function (consistent naming)
 )
 
 # Emoji exports
@@ -54,6 +51,10 @@ from provide.foundation.logger.emoji.types import (
     EmojiSetConfig,
     FieldToEmojiMapping,
 )
+from provide.foundation.setup import (
+    setup_telemetry,
+    shutdown_foundation_telemetry,
+)
 
 # New type exports for emoji mapping
 from provide.foundation.types import (
@@ -63,12 +64,11 @@ from provide.foundation.types import (
 
 # New utility exports
 from provide.foundation.utils import (
+    TokenBucketRateLimiter,
     check_optional_deps,
     timed_block,
-    TokenBucketRateLimiter,
 )
 
-from provide.foundation._version import __version__
 
 # Lazy loading support for optional modules
 def __getattr__(name: str):
@@ -76,6 +76,7 @@ def __getattr__(name: str):
     if name == "cli":
         try:
             import provide.foundation.cli as cli
+
             return cli
         except ImportError as e:
             if "click" in str(e):
@@ -86,8 +87,10 @@ def __getattr__(name: str):
             raise
     elif name == "metrics":
         import provide.foundation.metrics as metrics
+
         return metrics
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+
 
 __all__ = [
     # Core Emoji Dictionaries (available for direct use or reference)
@@ -129,19 +132,19 @@ __all__ = [
     "logger",
     # Console functions (work with or without click)
     "perr",
-    "pin", 
+    "pin",
     "pout",
     "platform",
     "process",
     "retry_on_error",
     "setup_logging",  # Backward compatibility
-    "setup_logger",   # Consistent naming
+    "setup_logger",  # Consistent naming
     "setup_telemetry",
     # Utilities
     "show_emoji_matrix",
     "shutdown_foundation_telemetry",
     "timed_block",
-    # Rate limiting utilities  
+    # Rate limiting utilities
     "TokenBucketRateLimiter",
     "with_error_handling",
 ]

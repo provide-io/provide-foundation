@@ -12,7 +12,10 @@ from provide.foundation.logger.setup.coordinator import internal_setup
 
 # Import testing utilities conditionally
 try:
-    from provide.foundation.logger.setup.testing import reset_foundation_setup_for_testing as reset_for_testing
+    from provide.foundation.logger.setup.testing import (
+        reset_foundation_setup_for_testing as reset_for_testing,
+    )
+
     _has_testing = True
 except ImportError:
     _has_testing = False

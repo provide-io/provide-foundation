@@ -27,9 +27,7 @@ from provide.foundation.logger.emoji.types import (
     FieldToEmojiMapping,
 )
 
-ResolvedEmojiConfigForTest = tuple[
-    list[FieldToEmojiMapping], dict[str]
-]
+ResolvedEmojiConfigForTest = tuple[list[FieldToEmojiMapping], dict[str]]
 
 
 @pytest.fixture(autouse=True)
@@ -67,11 +65,15 @@ class TestResolveActiveEmojiConfig:
         field1 = FieldToEmojiMapping(
             log_key="shared_key", description="from emoji_set1"
         )
-        emoji_set1 = EmojiSetConfig(name="emoji_set1", field_definitions=[field1], priority=10)
+        emoji_set1 = EmojiSetConfig(
+            name="emoji_set1", field_definitions=[field1], priority=10
+        )
         field2 = FieldToEmojiMapping(
             log_key="shared_key", description="from emoji_set2"
         )
-        emoji_set2 = EmojiSetConfig(name="emoji_set2", field_definitions=[field2], priority=20)
+        emoji_set2 = EmojiSetConfig(
+            name="emoji_set2", field_definitions=[field2], priority=20
+        )
         lc = LoggingConfig(custom_emoji_sets=[emoji_set1, emoji_set2])
         resolved_fields, _ = resolve_active_emoji_config(lc, {})
         assert (

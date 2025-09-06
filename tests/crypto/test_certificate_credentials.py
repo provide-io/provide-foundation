@@ -83,9 +83,7 @@ def test_mock_channel_credentials_with_client_cert(client_cert) -> None:
     assert creds.certificate_chain == client_cert.cert.encode()
 
 
-def test_mock_server_credentials_with_server_cert(
-    server_cert, client_cert
-) -> None:
+def test_mock_server_credentials_with_server_cert(server_cert, client_cert) -> None:
     """Test creating server credentials using server certificate fixture."""
     pairs = [(server_cert.key.encode(), server_cert.cert.encode())]
     creds = mock_ssl_server_credentials(
@@ -137,7 +135,6 @@ def test_mock_server_credentials_validation_with_certs(
                 (server_cert.key, server_cert.cert)  # Not encoded to bytes
             ]
         )
-
 
 
 def test_mock_channel_credentials_none_values(client_cert) -> None:

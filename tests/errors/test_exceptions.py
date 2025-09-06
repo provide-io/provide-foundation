@@ -1,6 +1,5 @@
 """Tests for provide.foundation.errors.exceptions module."""
 
-
 from provide.foundation.errors.auth import AuthenticationError, AuthorizationError
 from provide.foundation.errors.base import FoundationError
 from provide.foundation.errors.config import ConfigurationError, ValidationError

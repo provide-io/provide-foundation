@@ -20,10 +20,28 @@ plog = get_logger(__name__)
 def _filter_subprocess_kwargs(kwargs: dict) -> dict:
     """Filter kwargs to only include valid subprocess parameters."""
     valid_subprocess_kwargs = {
-        'stdin', 'stdout', 'stderr', 'shell', 'cwd', 'env', 'universal_newlines', 
-        'startupinfo', 'creationflags', 'restore_signals', 'start_new_session',
-        'pass_fds', 'encoding', 'errors', 'text', 'executable', 'preexec_fn',
-        'close_fds', 'group', 'extra_groups', 'user', 'umask'
+        "stdin",
+        "stdout",
+        "stderr",
+        "shell",
+        "cwd",
+        "env",
+        "universal_newlines",
+        "startupinfo",
+        "creationflags",
+        "restore_signals",
+        "start_new_session",
+        "pass_fds",
+        "encoding",
+        "errors",
+        "text",
+        "executable",
+        "preexec_fn",
+        "close_fds",
+        "group",
+        "extra_groups",
+        "user",
+        "umask",
     }
     return {k: v for k, v in kwargs.items() if k in valid_subprocess_kwargs}
 

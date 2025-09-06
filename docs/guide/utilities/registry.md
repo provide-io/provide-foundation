@@ -505,5 +505,5 @@ registry.register(name, handler)  # May not be valid
 ## Related Topics
 
 - [Command Registration](../cli/commands.md) - CLI commands
-- [Plugin Development](../advanced/plugins.md) - Plugin patterns
-- [Dependency Injection](../patterns/di.md) - DI patterns
+- [Advanced Usage](../advanced/index.md) - Advanced patterns
+- [Hub System](../../api/hub/index.md) - Hub system API

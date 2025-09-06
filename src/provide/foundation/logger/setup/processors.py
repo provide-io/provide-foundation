@@ -6,7 +6,6 @@ Processor chain building for Foundation Telemetry.
 Handles the assembly of structlog processor chains including emoji processing.
 """
 
-import sys
 from typing import Any, TextIO, cast
 
 import structlog
@@ -20,32 +19,30 @@ from provide.foundation.logger.setup.emoji_resolver import ResolvedEmojiConfig
 
 
 def build_complete_processor_chain(
-    config: TelemetryConfig, 
+    config: TelemetryConfig,
     resolved_emoji_config: ResolvedEmojiConfig,
-    log_stream: TextIO
+    log_stream: TextIO,
 ) -> list[Any]:
     """
     Build the complete processor chain for structlog.
-    
+
     Args:
         config: Telemetry configuration
         resolved_emoji_config: Resolved emoji configuration
         log_stream: Output stream for logging
-        
+
     Returns:
         List of processors for structlog
     """
     core_processors = _build_core_processors_list(config, resolved_emoji_config)
-    formatter_processors = _build_formatter_processors_list(
-        config.logging, log_stream
-    )
+    formatter_processors = _build_formatter_processors_list(config.logging, log_stream)
     return cast(list[Any], core_processors + formatter_processors)
 
 
 def apply_structlog_configuration(processors: list[Any], log_stream: TextIO) -> None:
     """
     Apply the processor configuration to structlog.
-    
+
     Args:
         processors: List of processors to configure
         log_stream: Output stream for logging
@@ -59,19 +56,21 @@ def apply_structlog_configuration(processors: list[Any], log_stream: TextIO) -> 
 
 
 def configure_structlog_output(
-    config: TelemetryConfig, 
+    config: TelemetryConfig,
     resolved_emoji_config: ResolvedEmojiConfig,
-    log_stream: TextIO
+    log_stream: TextIO,
 ) -> None:
     """
     Configure structlog with the complete output chain.
-    
+
     Args:
         config: Telemetry configuration
         resolved_emoji_config: Resolved emoji configuration
         log_stream: Output stream for logging
     """
-    processors = build_complete_processor_chain(config, resolved_emoji_config, log_stream)
+    processors = build_complete_processor_chain(
+        config, resolved_emoji_config, log_stream
+    )
     apply_structlog_configuration(processors, log_stream)
 
 

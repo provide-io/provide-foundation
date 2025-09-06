@@ -40,7 +40,7 @@ class TestRealWorldScenarios:
         """Test lazy initialization in a web application startup scenario."""
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
-        
+
         with TestEnvironment():
             set_log_stream_for_testing(sys.stderr)
 
@@ -73,13 +73,13 @@ class TestRealWorldScenarios:
         """Test microservice startup with environment-based configuration."""
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
-        
+
         env_vars = {
             "FOUNDATION_SERVICE_NAME": "payment-service",
             "FOUNDATION_LOG_LEVEL": "DEBUG",
-            "FOUNDATION_LOG_FORMAT": "json"
+            "FOUNDATION_LOG_FORMAT": "json",
         }
-        
+
         with TestEnvironment(env_vars):
             set_log_stream_for_testing(sys.stderr)
 
@@ -155,7 +155,7 @@ class TestRealWorldScenarios:
         """Test lazy initialization in a data processing pipeline."""
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
-        
+
         reset_foundation_setup_for_testing()
         set_log_stream_for_testing(sys.stderr)
 
@@ -201,7 +201,7 @@ class TestRealWorldScenarios:
         """Test lazy initialization with concurrent worker processes."""
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
-        
+
         reset_foundation_setup_for_testing()
         set_log_stream_for_testing(sys.stderr)
 
@@ -250,7 +250,7 @@ class TestRealWorldScenarios:
         """Test lazy initialization in async web server scenario."""
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
-        
+
         reset_foundation_setup_for_testing()
         set_log_stream_for_testing(sys.stderr)
 
@@ -314,7 +314,7 @@ class TestRealWorldScenarios:
         """Test lazy initialization when used as a library component."""
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
-        
+
         reset_foundation_setup_for_testing()
         set_log_stream_for_testing(sys.stderr)
 
@@ -375,7 +375,7 @@ class TestMigrationFromExplicitSetup:
         """Test gradual migration from explicit setup to lazy initialization."""
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
-        
+
         reset_foundation_setup_for_testing()
         set_log_stream_for_testing(sys.stderr)
 
@@ -415,7 +415,7 @@ class TestMigrationFromExplicitSetup:
         """Test different initialization orders work correctly."""
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
-        
+
         reset_foundation_setup_for_testing()
         set_log_stream_for_testing(sys.stderr)
 
@@ -450,7 +450,7 @@ class TestMigrationFromExplicitSetup:
         """Test that explicit setup takes precedence over lazy initialization."""
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
-        
+
         reset_foundation_setup_for_testing()
         set_log_stream_for_testing(sys.stderr)
 
@@ -501,7 +501,7 @@ class TestProductionReadinessScenarios:
         """Test lazy initialization under high throughput."""
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
-        
+
         reset_foundation_setup_for_testing()
         set_log_stream_for_testing(sys.stderr)
 
@@ -533,7 +533,7 @@ class TestProductionReadinessScenarios:
         """Test memory stability with lazy initialization over time."""
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
-        
+
         reset_foundation_setup_for_testing()
         set_log_stream_for_testing(sys.stderr)
 
@@ -565,7 +565,7 @@ class TestProductionReadinessScenarios:
         """Test error resilience in production-like conditions."""
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
-        
+
         reset_foundation_setup_for_testing()
         set_log_stream_for_testing(sys.stderr)
 
@@ -605,7 +605,7 @@ class TestProductionReadinessScenarios:
         """Test graceful shutdown with lazy initialization."""
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
-        
+
         reset_foundation_setup_for_testing()
         set_log_stream_for_testing(sys.stderr)
 
@@ -641,7 +641,7 @@ class TestDocumentedBehaviorCompliance:
         """Test all documented environment variables work with lazy initialization."""
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
-        
+
         reset_foundation_setup_for_testing()
         set_log_stream_for_testing(sys.stderr)
 
@@ -708,7 +708,7 @@ class TestDocumentedBehaviorCompliance:
         """Test that lazy initialization maintains backward compatibility."""
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
-        
+
         reset_foundation_setup_for_testing()
         set_log_stream_for_testing(sys.stderr)
 
@@ -736,7 +736,7 @@ class TestDocumentedBehaviorCompliance:
         """Test documented thread safety guarantees."""
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
-        
+
         reset_foundation_setup_for_testing()
         set_log_stream_for_testing(sys.stderr)
 
@@ -793,7 +793,7 @@ class TestDocumentedBehaviorCompliance:
         """Test that lazy initialization meets performance requirements."""
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
-        
+
         reset_foundation_setup_for_testing()
         set_log_stream_for_testing(sys.stderr)
 
@@ -834,9 +834,9 @@ class TestLazyInitializationDocumentation:
         """Test the basic usage example from documentation."""
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
-        
+
         reset_foundation_setup_for_testing()
-        
+
         # Set up Foundation to log to stderr so capsys can capture it
         set_log_stream_for_testing(sys.stderr)
 
@@ -858,7 +858,7 @@ class TestLazyInitializationDocumentation:
         """Test the named logger example from documentation."""
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
-        
+
         reset_foundation_setup_for_testing()
         set_log_stream_for_testing(sys.stderr)
 
@@ -881,7 +881,7 @@ class TestLazyInitializationDocumentation:
         """Test the environment configuration example from documentation."""
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
-        
+
         reset_foundation_setup_for_testing()
         set_log_stream_for_testing(sys.stderr)
 
@@ -927,7 +927,7 @@ class TestLazyInitializationDocumentation:
         """Test the migration example from documentation."""
         from provide.foundation.testing import set_log_stream_for_testing
         import sys
-        
+
         reset_foundation_setup_for_testing()
         set_log_stream_for_testing(sys.stderr)
 

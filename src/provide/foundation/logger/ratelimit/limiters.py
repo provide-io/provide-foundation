@@ -16,11 +16,11 @@ class SyncRateLimiter:
     Synchronous token bucket rate limiter for controlling log output rates.
     Thread-safe implementation suitable for synchronous logging operations.
     """
-    
+
     def __init__(self, capacity: float, refill_rate: float):
         """
         Initialize the rate limiter.
-        
+
         Args:
             capacity: Maximum number of tokens (burst capacity)
             refill_rate: Tokens refilled per second
@@ -29,35 +29,35 @@ class SyncRateLimiter:
             raise ValueError("Capacity must be positive")
         if refill_rate <= 0:
             raise ValueError("Refill rate must be positive")
-            
+
         self.capacity = float(capacity)
         self.refill_rate = float(refill_rate)
         self.tokens = float(capacity)
         self.last_refill = time.monotonic()
         self.lock = threading.Lock()
-        
+
         # Track statistics
         self.total_allowed = 0
         self.total_denied = 0
         self.last_denied_time = None
-    
+
     def is_allowed(self) -> bool:
         """
         Check if a log message is allowed based on available tokens.
-        
+
         Returns:
             True if the log should be allowed, False if rate limited
         """
         with self.lock:
             now = time.monotonic()
             elapsed = now - self.last_refill
-            
+
             # Refill tokens based on elapsed time
             if elapsed > 0:
                 tokens_to_add = elapsed * self.refill_rate
                 self.tokens = min(self.capacity, self.tokens + tokens_to_add)
                 self.last_refill = now
-            
+
             # Try to consume a token
             if self.tokens >= 1.0:
                 self.tokens -= 1.0
@@ -67,7 +67,7 @@ class SyncRateLimiter:
                 self.total_denied += 1
                 self.last_denied_time = now
                 return False
-    
+
     def get_stats(self) -> dict[str, Any]:
         """Get rate limiter statistics."""
         with self.lock:
@@ -86,11 +86,11 @@ class AsyncRateLimiter:
     Asynchronous token bucket rate limiter.
     Uses asyncio.Lock for thread safety in async contexts.
     """
-    
+
     def __init__(self, capacity: float, refill_rate: float):
         """
         Initialize the async rate limiter.
-        
+
         Args:
             capacity: Maximum number of tokens (burst capacity)
             refill_rate: Tokens refilled per second
@@ -99,35 +99,35 @@ class AsyncRateLimiter:
             raise ValueError("Capacity must be positive")
         if refill_rate <= 0:
             raise ValueError("Refill rate must be positive")
-            
+
         self.capacity = float(capacity)
         self.refill_rate = float(refill_rate)
         self.tokens = float(capacity)
         self.last_refill = time.monotonic()
         self.lock = asyncio.Lock()
-        
+
         # Track statistics
         self.total_allowed = 0
         self.total_denied = 0
         self.last_denied_time = None
-    
+
     async def is_allowed(self) -> bool:
         """
         Check if a log message is allowed based on available tokens.
-        
+
         Returns:
             True if the log should be allowed, False if rate limited
         """
         async with self.lock:
             now = time.monotonic()
             elapsed = now - self.last_refill
-            
+
             # Refill tokens based on elapsed time
             if elapsed > 0:
                 tokens_to_add = elapsed * self.refill_rate
                 self.tokens = min(self.capacity, self.tokens + tokens_to_add)
                 self.last_refill = now
-            
+
             # Try to consume a token
             if self.tokens >= 1.0:
                 self.tokens -= 1.0
@@ -137,7 +137,7 @@ class AsyncRateLimiter:
                 self.total_denied += 1
                 self.last_denied_time = now
                 return False
-    
+
     async def get_stats(self) -> dict[str, Any]:
         """Get rate limiter statistics."""
         async with self.lock:
@@ -156,10 +156,10 @@ class GlobalRateLimiter:
     Global rate limiter singleton for Foundation's logging system.
     Manages per-logger and global rate limits.
     """
-    
+
     _instance = None
     _lock = threading.Lock()
-    
+
     def __new__(cls):
         if cls._instance is None:
             with cls._lock:
@@ -167,29 +167,29 @@ class GlobalRateLimiter:
                     cls._instance = super().__new__(cls)
                     cls._instance._initialized = False
         return cls._instance
-    
+
     def __init__(self):
         if self._initialized:
             return
-            
+
         self._initialized = True
         self.global_limiter = None
         self.logger_limiters: dict[str, SyncRateLimiter] = {}
         self.lock = threading.Lock()
-        
+
         # Default configuration (can be overridden)
         self.global_rate = None
         self.global_capacity = None
         self.per_logger_rates: dict[str, tuple[float, float]] = {}
-        
+
         # Queue configuration
         self.use_buffered = False
         self.max_queue_size = 1000
         self.max_memory_mb = None
         self.overflow_policy = "drop_oldest"
-    
+
     def configure(
-        self, 
+        self,
         global_rate: float | None = None,
         global_capacity: float | None = None,
         per_logger_rates: dict[str, tuple[float, float]] | None = None,
@@ -200,7 +200,7 @@ class GlobalRateLimiter:
     ):
         """
         Configure the global rate limiter.
-        
+
         Args:
             global_rate: Global logs per second limit
             global_capacity: Global burst capacity
@@ -215,13 +215,16 @@ class GlobalRateLimiter:
             self.max_queue_size = max_queue_size
             self.max_memory_mb = max_memory_mb
             self.overflow_policy = overflow_policy
-            
+
             if global_rate is not None and global_capacity is not None:
                 self.global_rate = global_rate
                 self.global_capacity = global_capacity
-                
+
                 if use_buffered:
-                    from provide.foundation.logger.ratelimit.queue_limiter import BufferedRateLimiter
+                    from provide.foundation.logger.ratelimit.queue_limiter import (
+                        BufferedRateLimiter,
+                    )
+
                     self.global_limiter = BufferedRateLimiter(
                         capacity=global_capacity,
                         refill_rate=global_rate,
@@ -230,21 +233,23 @@ class GlobalRateLimiter:
                     )
                 else:
                     self.global_limiter = SyncRateLimiter(global_capacity, global_rate)
-            
+
             if per_logger_rates:
                 self.per_logger_rates = per_logger_rates
                 # Create rate limiters for configured loggers
                 for logger_name, (rate, capacity) in per_logger_rates.items():
                     self.logger_limiters[logger_name] = SyncRateLimiter(capacity, rate)
-    
-    def is_allowed(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
+
+    def is_allowed(
+        self, logger_name: str, item: Any | None = None
+    ) -> tuple[bool, str | None]:
         """
         Check if a log from a specific logger is allowed.
-        
+
         Args:
             logger_name: Name of the logger
             item: Optional item for buffered tracking
-            
+
         Returns:
             Tuple of (allowed, reason) where reason is set if denied
         """
@@ -253,12 +258,15 @@ class GlobalRateLimiter:
             if logger_name in self.logger_limiters:
                 if not self.logger_limiters[logger_name].is_allowed():
                     return False, f"Logger '{logger_name}' rate limit exceeded"
-            
+
             # Check global limit
             if self.global_limiter:
                 if self.use_buffered:
                     # BufferedRateLimiter returns tuple
-                    from provide.foundation.logger.ratelimit.queue_limiter import BufferedRateLimiter
+                    from provide.foundation.logger.ratelimit.queue_limiter import (
+                        BufferedRateLimiter,
+                    )
+
                     if isinstance(self.global_limiter, BufferedRateLimiter):
                         allowed, reason = self.global_limiter.is_allowed(item)
                         if not allowed:
@@ -267,18 +275,20 @@ class GlobalRateLimiter:
                     # SyncRateLimiter returns bool
                     if not self.global_limiter.is_allowed():
                         return False, "Global rate limit exceeded"
-            
+
             return True, None
-    
+
     def get_stats(self) -> dict[str, Any]:
         """Get comprehensive rate limiting statistics."""
         with self.lock:
             stats = {
-                "global": self.global_limiter.get_stats() if self.global_limiter else None,
-                "per_logger": {}
+                "global": self.global_limiter.get_stats()
+                if self.global_limiter
+                else None,
+                "per_logger": {},
             }
-            
+
             for logger_name, limiter in self.logger_limiters.items():
                 stats["per_logger"][logger_name] = limiter.get_stats()
-            
+
             return stats

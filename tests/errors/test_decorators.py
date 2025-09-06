@@ -366,7 +366,9 @@ class TestSuppressAndLog:
 
         assert result == "default"
         mock_logger.return_value.warning.assert_called_once()
-        assert "Suppressed ValueError" in mock_logger.return_value.warning.call_args[0][0]
+        assert (
+            "Suppressed ValueError" in mock_logger.return_value.warning.call_args[0][0]
+        )
 
     @patch("provide.foundation.errors.decorators._get_logger")
     def test_logging_at_custom_level(self, mock_logger) -> None:
@@ -642,7 +644,10 @@ class TestCircuitBreaker:
             func()
 
         mock_logger.return_value.error.assert_called()
-        assert "Circuit breaker for func opened" in mock_logger.return_value.error.call_args[0][0]
+        assert (
+            "Circuit breaker for func opened"
+            in mock_logger.return_value.error.call_args[0][0]
+        )
 
     @patch("provide.foundation.errors.decorators._get_logger")
     def test_recovery_logged(self, mock_logger) -> None:
@@ -664,7 +669,9 @@ class TestCircuitBreaker:
         func(False)
 
         # Check for recovery log
-        info_calls = [call[0][0] for call in mock_logger.return_value.info.call_args_list]
+        info_calls = [
+            call[0][0] for call in mock_logger.return_value.info.call_args_list
+        ]
         assert any("closed after successful recovery" in call for call in info_calls)
 
     def test_circuit_breaker_decorator(self) -> None:

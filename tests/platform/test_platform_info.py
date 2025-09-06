@@ -10,7 +10,10 @@ class TestSystemInfo:
 
     @patch("provide.foundation.platform.info.get_os_name", return_value="darwin")
     @patch("provide.foundation.platform.info.get_arch_name", return_value="arm64")
-    @patch("provide.foundation.platform.info.get_platform_string", return_value="darwin_arm64")
+    @patch(
+        "provide.foundation.platform.info.get_platform_string",
+        return_value="darwin_arm64",
+    )
     @patch("provide.foundation.platform.info.get_os_version", return_value="14.2.1")
     @patch("provide.foundation.platform.info.get_cpu_type", return_value="Apple M2")
     @patch("platform.python_version", return_value="3.11.7")
@@ -77,7 +80,10 @@ class TestSystemInfo:
 
     @patch("provide.foundation.platform.info.get_os_name", return_value="linux")
     @patch("provide.foundation.platform.info.get_arch_name", return_value="amd64")
-    @patch("provide.foundation.platform.info.get_platform_string", return_value="linux_amd64")
+    @patch(
+        "provide.foundation.platform.info.get_platform_string",
+        return_value="linux_amd64",
+    )
     @patch("provide.foundation.platform.info.get_os_version", return_value=None)
     @patch("provide.foundation.platform.info.get_cpu_type", return_value=None)
     @patch("platform.python_version", return_value="3.10.0")

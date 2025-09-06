@@ -7,26 +7,29 @@ Handles file-based logging streams and file operations.
 """
 
 import io
-import sys
 from pathlib import Path
-from typing import TextIO
+import sys
 
-from provide.foundation.streams.core import _LOG_FILE_HANDLE, _PROVIDE_LOG_STREAM, _STREAM_LOCK
+from provide.foundation.streams.core import (
+    _LOG_FILE_HANDLE,
+    _PROVIDE_LOG_STREAM,
+    _STREAM_LOCK,
+)
 from provide.foundation.utils.streams import get_safe_stderr
 
 
 def configure_file_logging(log_file_path: str | None) -> None:
     """
     Configure file logging if a path is provided.
-    
+
     Args:
         log_file_path: Path to log file, or None to disable file logging
     """
     global _PROVIDE_LOG_STREAM, _LOG_FILE_HANDLE
-    
+
     # Import here to avoid circular dependency
     from provide.foundation.streams.core import _is_in_click_testing
-    
+
     with _STREAM_LOCK:
         # Don't modify streams if we're in Click testing context
         if _is_in_click_testing():
@@ -53,10 +56,7 @@ def configure_file_logging(log_file_path: str | None) -> None:
                 _PROVIDE_LOG_STREAM = _LOG_FILE_HANDLE
             except Exception as e:
                 # Log error to stderr and fall back
-                print(
-                    f"Failed to open log file {log_file_path}: {e}",
-                    file=sys.stderr
-                )
+                print(f"Failed to open log file {log_file_path}: {e}", file=sys.stderr)
                 _PROVIDE_LOG_STREAM = get_safe_stderr()
         elif not is_test_stream:
             _PROVIDE_LOG_STREAM = get_safe_stderr()
@@ -65,7 +65,7 @@ def configure_file_logging(log_file_path: str | None) -> None:
 def flush_log_streams() -> None:
     """Flush all log streams."""
     global _LOG_FILE_HANDLE
-    
+
     with _STREAM_LOCK:
         if _LOG_FILE_HANDLE:
             try:
@@ -77,10 +77,10 @@ def flush_log_streams() -> None:
 def close_log_streams() -> None:
     """Close file log streams and reset to stderr."""
     global _PROVIDE_LOG_STREAM, _LOG_FILE_HANDLE
-    
+
     # Import here to avoid circular dependency
     from provide.foundation.streams.core import _is_in_click_testing
-    
+
     with _STREAM_LOCK:
         if _LOG_FILE_HANDLE:
             try:
@@ -88,7 +88,7 @@ def close_log_streams() -> None:
             except Exception:
                 pass
             _LOG_FILE_HANDLE = None
-        
+
         # Don't reset stream to stderr if we're in Click testing context
         if not _is_in_click_testing():
             _PROVIDE_LOG_STREAM = sys.stderr
@@ -98,7 +98,7 @@ def reset_streams() -> None:
     """Reset all stream state (for testing)."""
     # Import here to avoid circular dependency
     from provide.foundation.streams.core import _is_in_click_testing
-    
+
     # Don't reset streams if we're in Click testing context
     if not _is_in_click_testing():
         close_log_streams()

@@ -39,7 +39,7 @@ def get_version() -> str:
         if version_file.exists():
             try:
                 return version_file.read_text().strip()
-            except (IOError, OSError):
+            except OSError:
                 # Fall back to metadata if VERSION file can't be read
                 pass
 

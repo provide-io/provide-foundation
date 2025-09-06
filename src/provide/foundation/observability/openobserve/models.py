@@ -10,13 +10,13 @@ from typing import Any
 @dataclass
 class SearchQuery:
     """Search query parameters for OpenObserve."""
-    
+
     sql: str
     start_time: int  # Microseconds since epoch
     end_time: int  # Microseconds since epoch
     from_offset: int = 0
     size: int = 100
-    
+
     def to_dict(self) -> dict[str, Any]:
         """Convert to API request format."""
         return {
@@ -33,7 +33,7 @@ class SearchQuery:
 @dataclass
 class SearchResponse:
     """Response from OpenObserve search API."""
-    
+
     hits: list[dict[str, Any]]
     total: int
     took: int  # Milliseconds
@@ -43,7 +43,7 @@ class SearchResponse:
     size: int = 0
     is_partial: bool = False
     function_error: list[str] = field(default_factory=list)
-    
+
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "SearchResponse":
         """Create from API response."""
@@ -63,14 +63,14 @@ class SearchResponse:
 @dataclass
 class StreamInfo:
     """Information about an OpenObserve stream."""
-    
+
     name: str
     storage_type: str
     stream_type: str
     doc_count: int = 0
     compressed_size: int = 0
     original_size: int = 0
-    
+
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "StreamInfo":
         """Create from API response."""
@@ -86,22 +86,22 @@ class StreamInfo:
 
 def parse_relative_time(time_str: str, now: datetime | None = None) -> int:
     """Parse relative time strings like '-1h', '-30m' to microseconds since epoch.
-    
+
     Args:
         time_str: Time string (e.g., '-1h', '-30m', 'now')
         now: Current time (for testing), defaults to datetime.now()
-        
+
     Returns:
         Microseconds since epoch
     """
     from datetime import timedelta
-    
+
     if now is None:
         now = datetime.now()
-    
+
     if time_str == "now":
         return int(now.timestamp() * 1_000_000)
-    
+
     if time_str.startswith("-"):
         # Parse relative time
         value = time_str[1:]
@@ -116,10 +116,10 @@ def parse_relative_time(time_str: str, now: datetime | None = None) -> int:
         else:
             # Assume seconds if no unit
             delta = timedelta(seconds=int(value))
-        
+
         target_time = now - delta
         return int(target_time.timestamp() * 1_000_000)
-    
+
     # Try to parse as timestamp
     try:
         timestamp = int(time_str)

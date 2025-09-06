@@ -7,14 +7,16 @@ Handles the core setup logic, state management, and setup logger creation.
 """
 
 import logging as stdlib_logging
-import sys
 import threading
 from typing import Any
 
 import structlog
 
-from provide.foundation.logger.core import logger as foundation_logger, _LAZY_SETUP_STATE
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
+from provide.foundation.logger.core import (
+    _LAZY_SETUP_STATE,
+    logger as foundation_logger,
+)
 from provide.foundation.logger.emoji.sets import BUILTIN_EMOJI_SETS
 from provide.foundation.logger.setup.emoji_resolver import resolve_active_emoji_config
 from provide.foundation.logger.setup.processors import (
@@ -60,23 +62,25 @@ def create_core_setup_logger(globally_disabled: bool = False) -> Any:
         # Get the foundation log output stream
         try:
             logging_config = LoggingConfig.from_env(strict=False)
-            foundation_stream = get_foundation_log_stream(logging_config.foundation_log_output)
+            foundation_stream = get_foundation_log_stream(
+                logging_config.foundation_log_output
+            )
         except Exception:
             # Fallback to stderr if config loading fails
             foundation_stream = get_safe_stderr()
-        
+
         # Configure structlog for core setup logger
         structlog.configure(
             processors=[
                 structlog.processors.add_log_level,
                 structlog.processors.TimeStamper(fmt="iso"),
-                structlog.dev.ConsoleRenderer()
+                structlog.dev.ConsoleRenderer(),
             ],
             logger_factory=structlog.PrintLoggerFactory(file=foundation_stream),
             wrapper_class=structlog.BoundLogger,
             cache_logger_on_first_use=True,
         )
-        
+
         return structlog.get_logger(_CORE_SETUP_LOGGER_NAME)
 
 
@@ -92,9 +96,7 @@ def internal_setup(
     foundation_logger._is_configured_by_setup = False
     foundation_logger._active_config = None
     foundation_logger._active_resolved_emoji_config = None
-    _LAZY_SETUP_STATE.update(
-        {"done": False, "error": None, "in_progress": False}
-    )
+    _LAZY_SETUP_STATE.update({"done": False, "error": None, "in_progress": False})
 
     current_config = config if config is not None else TelemetryConfig.from_env()
     core_setup_logger = create_core_setup_logger(
@@ -116,7 +118,9 @@ def internal_setup(
     if current_config.globally_disabled:
         handle_globally_disabled_setup()
     else:
-        configure_structlog_output(current_config, resolved_emoji_config, get_log_stream())
+        configure_structlog_output(
+            current_config, resolved_emoji_config, get_log_stream()
+        )
 
     foundation_logger._is_configured_by_setup = is_explicit_call
     foundation_logger._active_config = current_config

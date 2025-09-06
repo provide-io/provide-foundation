@@ -10,8 +10,8 @@ from provide.foundation.logger.base import (
     FoundationLogger,  # Class definition
     get_logger,  # Factory function
     logger,  # Global instance
+    setup_logger,  # Setup function (consistent naming)
     setup_logging,  # Setup function (backward compatibility)
-    setup_logger,   # Setup function (consistent naming)
 )
 from provide.foundation.logger.config import (
     LoggingConfig,
@@ -33,8 +33,8 @@ __all__ = [
     "TelemetryConfig",
     "get_logger",
     "logger",
+    "setup_logger",  # Consistent naming
     "setup_logging",  # Backward compatibility
-    "setup_logger",   # Consistent naming
     "show_emoji_matrix",
 ]
 

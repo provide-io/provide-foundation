@@ -23,8 +23,10 @@ KEY_TYPE_ECDSA = "ecdsa"
 @pytest.mark.asyncio
 async def test_generate_keypair_returns_keypair() -> None:
     """Ensure generate_keypair() returns correct type"""
-    rsa_key_pair = generate_keypair(KEY_TYPE_RSA, key_size=2048) # Added key_size
-    ec_key_pair = generate_keypair(KEY_TYPE_ECDSA, curve="secp256r1") # Added curve for consistency
+    rsa_key_pair = generate_keypair(KEY_TYPE_RSA, key_size=2048)  # Added key_size
+    ec_key_pair = generate_keypair(
+        KEY_TYPE_ECDSA, curve="secp256r1"
+    )  # Added curve for consistency
 
     # Check tuple and key types for RSA
     assert isinstance(rsa_key_pair, tuple)

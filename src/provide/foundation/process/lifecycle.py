@@ -6,14 +6,14 @@ proper lifecycle management, monitoring, and graceful shutdown capabilities.
 """
 
 import asyncio
+from collections.abc import Mapping
 import functools
 import os
+from pathlib import Path
 import subprocess
 import sys
 import threading
 import traceback
-from collections.abc import Mapping
-from pathlib import Path
 from typing import Any
 
 from provide.foundation.logger import get_logger
@@ -25,9 +25,9 @@ plog = get_logger(__name__)
 class ManagedProcess:
     """
     A managed subprocess with lifecycle support, monitoring, and graceful shutdown.
-    
+
     This class wraps subprocess.Popen with additional functionality for:
-    - Environment management  
+    - Environment management
     - Output streaming and monitoring
     - Health checks and process monitoring
     - Graceful shutdown with timeouts
@@ -209,7 +209,7 @@ class ManagedProcess:
                 return line_data.decode("utf-8", errors="replace").strip()
             else:
                 return str(line_data).strip()
-        except asyncio.TimeoutError as e:
+        except TimeoutError as e:
             plog.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
@@ -246,7 +246,7 @@ class ManagedProcess:
                 return char_data.decode("utf-8", errors="replace")
             else:
                 return str(char_data)
-        except asyncio.TimeoutError as e:
+        except TimeoutError as e:
             plog.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
@@ -264,7 +264,9 @@ class ManagedProcess:
             return True
 
         if self._process.poll() is not None:
-            plog.debug("Process already terminated", returncode=self._process.returncode)
+            plog.debug(
+                "Process already terminated", returncode=self._process.returncode
+            )
             return True
 
         plog.debug("🛑 Terminating managed process gracefully", pid=self._process.pid)

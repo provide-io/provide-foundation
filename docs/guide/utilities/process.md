@@ -482,5 +482,5 @@ run_command(cmd)  # May have sensitive vars
 ## Related Topics
 
 - [Error Handling](errors.md) - Process error handling
-- [Async Operations](../async/index.md) - Async patterns
+- [Async Logging](../logging/async.md) - Async logging patterns
 - [Platform Detection](platform.md) - Platform-specific behavior

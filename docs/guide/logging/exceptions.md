@@ -454,5 +454,5 @@ logger.error("Failed to process user",
 ## Related Topics
 
 - [Basic Usage](basic.md) - Core logging concepts
-- [Configuration](config.md) - Logger configuration  
+- [Configuration](../config/index.md) - Logger configuration  
 - [Async Logging](async.md) - Async error handling

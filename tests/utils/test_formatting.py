@@ -1,6 +1,5 @@
 """Tests for formatting utilities."""
 
-
 from provide.foundation.utils.formatting import (
     format_duration,
     format_number,

@@ -2,8 +2,8 @@
 OpenObserve API client.
 """
 
-import json
 from datetime import datetime
+import json
 from typing import Any
 from urllib.parse import urljoin
 
@@ -12,7 +12,10 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from provide.foundation.logger import get_logger
-from provide.foundation.observability.openobserve.auth import get_auth_headers, validate_credentials
+from provide.foundation.observability.openobserve.auth import (
+    get_auth_headers,
+    validate_credentials,
+)
 from provide.foundation.observability.openobserve.exceptions import (
     OpenObserveConfigError,
     OpenObserveConnectionError,
@@ -30,7 +33,7 @@ log = get_logger(__name__)
 
 class OpenObserveClient:
     """Client for interacting with OpenObserve API."""
-    
+
     def __init__(
         self,
         url: str,
@@ -41,7 +44,7 @@ class OpenObserveClient:
         max_retries: int = 3,
     ):
         """Initialize OpenObserve client.
-        
+
         Args:
             url: Base URL for OpenObserve API
             username: Username for authentication
@@ -54,7 +57,7 @@ class OpenObserveClient:
         self.username, self.password = validate_credentials(username, password)
         self.organization = organization
         self.timeout = timeout
-        
+
         # Setup session with retry logic
         self.session = requests.Session()
         retry = Retry(
@@ -65,42 +68,42 @@ class OpenObserveClient:
         adapter = HTTPAdapter(max_retries=retry)
         self.session.mount("http://", adapter)
         self.session.mount("https://", adapter)
-        
+
         # Set default headers
         self.session.headers.update(get_auth_headers(self.username, self.password))
-    
+
     @classmethod
     def from_config(cls) -> "OpenObserveClient":
         """Create client from TelemetryConfig.
-        
+
         Returns:
             Configured OpenObserveClient instance
-            
+
         Raises:
             OpenObserveConfigError: If configuration is missing
         """
         from provide.foundation.logger.config import TelemetryConfig
-        
+
         config = TelemetryConfig.from_env()
-        
+
         if not config.openobserve_url:
             raise OpenObserveConfigError(
                 "OpenObserve URL not configured. Set OPENOBSERVE_URL environment variable."
             )
-        
+
         if not config.openobserve_user or not config.openobserve_password:
             raise OpenObserveConfigError(
                 "OpenObserve credentials not configured. "
                 "Set OPENOBSERVE_USER and OPENOBSERVE_PASSWORD environment variables."
             )
-        
+
         return cls(
             url=config.openobserve_url,
             username=config.openobserve_user,
             password=config.openobserve_password,
             organization=config.openobserve_org,
         )
-    
+
     def _make_request(
         self,
         method: str,
@@ -109,22 +112,22 @@ class OpenObserveClient:
         json_data: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         """Make HTTP request to OpenObserve API.
-        
+
         Args:
             method: HTTP method
             endpoint: API endpoint path
             params: Query parameters
             json_data: JSON body data
-            
+
         Returns:
             Response data as dictionary
-            
+
         Raises:
             OpenObserveConnectionError: On connection errors
             OpenObserveQueryError: On API errors
         """
         url = urljoin(self.url, f"/api/{self.organization}/{endpoint}")
-        
+
         try:
             response = self.session.request(
                 method=method,
@@ -133,18 +136,20 @@ class OpenObserveClient:
                 json=json_data,
                 timeout=self.timeout,
             )
-            
+
             if response.status_code == 401:
-                raise OpenObserveConnectionError("Authentication failed. Check credentials.")
-            
+                raise OpenObserveConnectionError(
+                    "Authentication failed. Check credentials."
+                )
+
             response.raise_for_status()
-            
+
             # Handle empty responses
             if not response.content:
                 return {}
-            
+
             return response.json()
-            
+
         except requests.exceptions.ConnectionError as e:
             raise OpenObserveConnectionError(f"Failed to connect to OpenObserve: {e}")
         except requests.exceptions.Timeout as e:
@@ -161,7 +166,7 @@ class OpenObserveClient:
             raise OpenObserveQueryError(f"API error: {error_msg}")
         except Exception as e:
             raise OpenObserveQueryError(f"Unexpected error: {e}")
-    
+
     def search(
         self,
         sql: str,
@@ -171,28 +176,36 @@ class OpenObserveClient:
         from_offset: int = 0,
     ) -> SearchResponse:
         """Execute a search query.
-        
+
         Args:
             sql: SQL query to execute
             start_time: Start time (relative like "-1h" or microseconds)
             end_time: End time (relative like "now" or microseconds)
             size: Number of results to return
             from_offset: Offset for pagination
-            
+
         Returns:
             SearchResponse with results
         """
         # Parse time parameters
         now = datetime.now()
-        
+
         if start_time is None:
             start_time = "-1h"
         if end_time is None:
             end_time = "now"
-        
-        start_ts = parse_relative_time(str(start_time), now) if isinstance(start_time, str) else start_time
-        end_ts = parse_relative_time(str(end_time), now) if isinstance(end_time, str) else end_time
-        
+
+        start_ts = (
+            parse_relative_time(str(start_time), now)
+            if isinstance(start_time, str)
+            else start_time
+        )
+        end_ts = (
+            parse_relative_time(str(end_time), now)
+            if isinstance(end_time, str)
+            else end_time
+        )
+
         # Create query
         query = SearchQuery(
             sql=sql,
@@ -201,9 +214,9 @@ class OpenObserveClient:
             size=size,
             from_offset=from_offset,
         )
-        
+
         log.debug(f"Executing search query: {sql}")
-        
+
         # Make request
         response = self._make_request(
             method="POST",
@@ -211,25 +224,25 @@ class OpenObserveClient:
             params={"is_ui_histogram": "false", "is_multi_stream_search": "false"},
             json_data=query.to_dict(),
         )
-        
+
         # Handle errors in response
         if "error" in response:
             raise OpenObserveQueryError(f"Query error: {response['error']}")
-        
+
         result = SearchResponse.from_dict(response)
-        
+
         # Log any function errors
         if result.function_error:
             for error in result.function_error:
                 log.warning(f"Query warning: {error}")
-        
+
         log.info(f"Search completed: {len(result.hits)} hits, took {result.took}ms")
-        
+
         return result
-    
+
     def list_streams(self) -> list[StreamInfo]:
         """List available streams.
-        
+
         Returns:
             List of StreamInfo objects
         """
@@ -237,7 +250,7 @@ class OpenObserveClient:
             method="GET",
             endpoint="streams",
         )
-        
+
         streams = []
         if isinstance(response, dict):
             # Response is a dict of stream types to stream lists
@@ -247,41 +260,41 @@ class OpenObserveClient:
                         if isinstance(stream_data, dict):
                             stream_info = StreamInfo.from_dict(stream_data)
                             streams.append(stream_info)
-        
+
         return streams
-    
+
     def get_search_history(
         self,
         stream_name: str | None = None,
         size: int = 100,
     ) -> SearchResponse:
         """Get search history.
-        
+
         Args:
             stream_name: Filter by stream name
             size: Number of history entries to return
-            
+
         Returns:
             SearchResponse with history entries
         """
         request_data = {
             "size": size,
         }
-        
+
         if stream_name:
             request_data["stream_name"] = stream_name
-        
+
         response = self._make_request(
             method="POST",
             endpoint="_search_history",
             json_data=request_data,
         )
-        
+
         return SearchResponse.from_dict(response)
-    
+
     def test_connection(self) -> bool:
         """Test connection to OpenObserve.
-        
+
         Returns:
             True if connection successful
         """

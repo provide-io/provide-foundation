@@ -1,6 +1,7 @@
 """
 Additional tests for provide.foundation.utils to increase code coverage.
 """
+
 import io
 from typing import Any
 
@@ -66,24 +67,26 @@ class TestParsingCoverage:
 
     def test_auto_parse_with_string_type_hints(self) -> None:
         """Test auto_parse for attrs fields with string type hints."""
+
         @define
         class DummyConfig:
-            int_val: 'int'
-            bool_val: 'bool'
-            list_val: 'list'
-            dict_val: 'dict'
-            unknown_val: 'SomeUnknownType'
+            int_val: "int"
+            bool_val: "bool"
+            list_val: "list"
+            dict_val: "dict"
+            unknown_val: "SomeUnknownType"
 
         attrs_fields = {f.name: f for f in fields(DummyConfig)}
 
-        assert auto_parse(attrs_fields['int_val'], "42") == 42
-        assert auto_parse(attrs_fields['bool_val'], "true") is True
-        assert auto_parse(attrs_fields['list_val'], "a,b") == ["a", "b"]
-        assert auto_parse(attrs_fields['dict_val'], "k=v") == {"k": "v"}
-        assert auto_parse(attrs_fields['unknown_val'], "some_string") == "some_string"
+        assert auto_parse(attrs_fields["int_val"], "42") == 42
+        assert auto_parse(attrs_fields["bool_val"], "true") is True
+        assert auto_parse(attrs_fields["list_val"], "a,b") == ["a", "b"]
+        assert auto_parse(attrs_fields["dict_val"], "k=v") == {"k": "v"}
+        assert auto_parse(attrs_fields["unknown_val"], "some_string") == "some_string"
 
     def test_auto_parse_no_type_hint(self) -> None:
         """Test auto_parse for an attrs field with no type hint."""
+
         @define
         class NoTypeHintConfig:
             val: Any = field()
@@ -95,13 +98,15 @@ class TestParsingCoverage:
 class TestTimingCoverage:
     """Coverage for timing utility functions."""
 
-    def test_timed_block_context_modification(self, captured_stderr_for_foundation: io.StringIO) -> None:
+    def test_timed_block_context_modification(
+        self, captured_stderr_for_foundation: io.StringIO
+    ) -> None:
         """Test that modifying the context dict within a timed_block works."""
         setup_telemetry(TelemetryConfig())
 
         with timed_block(logger, "test_op") as ctx:
             ctx["records"] = 100
-            ctx["status_custom"] = "success" # Use a non-special key
+            ctx["status_custom"] = "success"  # Use a non-special key
 
         output = captured_stderr_for_foundation.getvalue()
         # Verify that the modifications to the context dict are present in the final log.
@@ -109,7 +114,9 @@ class TestTimingCoverage:
         assert "status_custom=success" in output
         assert "outcome=success" in output
 
-    def test_timed_block_debug_message(self, captured_stderr_for_foundation: io.StringIO) -> None:
+    def test_timed_block_debug_message(
+        self, captured_stderr_for_foundation: io.StringIO
+    ) -> None:
         """Test that the initial debug message is logged when level is DEBUG."""
         setup_telemetry(TelemetryConfig(logging=LoggingConfig(default_level="DEBUG")))
 
@@ -124,22 +131,22 @@ class TestTimingCoverage:
 
 class TestEnvUtilsCoverage:
     """Coverage for environment utilities."""
-    
+
     def test_get_bool_edge_cases(self):
         """Test edge cases for get_bool function."""
         import os
         from unittest.mock import patch
         from provide.foundation.utils.env import get_bool
         from provide.foundation.errors.config import ValidationError
-        
+
         # Test with empty string (should be False)
         with patch.dict(os.environ, {"TEST_BOOL": ""}):
             assert get_bool("TEST_BOOL") is False
-        
+
         # Test with whitespace
         with patch.dict(os.environ, {"TEST_BOOL": "  true  "}):
             assert get_bool("TEST_BOOL") is True
-        
+
         # Test invalid value raises ValidationError
         with patch.dict(os.environ, {"TEST_BOOL": "invalid"}):
             try:
@@ -147,45 +154,45 @@ class TestEnvUtilsCoverage:
                 assert False, "Should have raised ValidationError"
             except ValidationError as e:
                 assert "Invalid boolean value" in str(e)
-    
+
     def test_get_int_edge_cases(self):
         """Test edge cases for get_int function."""
         import os
         from unittest.mock import patch
         from provide.foundation.utils.env import get_int
         from provide.foundation.errors.config import ValidationError
-        
+
         # Test negative numbers
         with patch.dict(os.environ, {"TEST_INT": "-42"}):
             assert get_int("TEST_INT") == -42
-        
+
         # Test zero
         with patch.dict(os.environ, {"TEST_INT": "0"}):
             assert get_int("TEST_INT") == 0
-        
+
         # Test invalid value raises ValidationError
         with patch.dict(os.environ, {"TEST_INT": "not_a_number"}):
             try:
                 get_int("TEST_INT")
-                assert False, "Should have raised ValidationError"  
+                assert False, "Should have raised ValidationError"
             except ValidationError as e:
                 assert "Invalid integer value" in str(e)
-    
+
     def test_get_float_edge_cases(self):
-        """Test edge cases for get_float function.""" 
+        """Test edge cases for get_float function."""
         import os
         from unittest.mock import patch
         from provide.foundation.utils.env import get_float
         from provide.foundation.errors.config import ValidationError
-        
+
         # Test scientific notation
         with patch.dict(os.environ, {"TEST_FLOAT": "1e-3"}):
             assert get_float("TEST_FLOAT") == 0.001
-        
+
         # Test negative float
         with patch.dict(os.environ, {"TEST_FLOAT": "-3.14"}):
             assert get_float("TEST_FLOAT") == -3.14
-        
+
         # Test invalid value
         with patch.dict(os.environ, {"TEST_FLOAT": "not_a_float"}):
             try:
@@ -193,20 +200,18 @@ class TestEnvUtilsCoverage:
                 assert False, "Should have raised ValidationError"
             except ValidationError as e:
                 assert "Invalid float value" in str(e)
-    
+
     def test_get_str_with_default(self):
         """Test get_str with default value."""
         import os
         from unittest.mock import patch
         from provide.foundation.utils.env import get_str
-        
+
         # Test with missing env var (should use default)
         result = get_str("NON_EXISTENT_STR", default="default_value")
         assert result == "default_value"
-        
+
         # Test with existing env var
         with patch.dict(os.environ, {"TEST_STR": "actual_value"}):
-            result = get_str("TEST_STR", default="default_value") 
+            result = get_str("TEST_STR", default="default_value")
             assert result == "actual_value"
-
-

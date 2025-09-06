@@ -410,5 +410,5 @@ async def process_batch(items):
 ## Related Topics
 
 - [Basic Usage](basic.md) - Core logging concepts
-- [Configuration](config.md) - Logger configuration
+- [Configuration](../config/index.md) - Logger configuration
 - [Exceptions](exceptions.md) - Exception logging patterns

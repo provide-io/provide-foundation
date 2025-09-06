@@ -25,16 +25,18 @@ class TestCompleteCliIntegration:
 
     def setup_method(self) -> None:
         """Set up each test method."""
-        os.environ['CLICK_TESTING'] = '1'
+        os.environ["CLICK_TESTING"] = "1"
         # Reset Foundation state before each test to avoid conflicts
         from provide.foundation.testing import reset_foundation_setup_for_testing
+
         reset_foundation_setup_for_testing()
-    
+
     def teardown_method(self) -> None:
         """Clean up after each test method."""
-        os.environ.pop('CLICK_TESTING', None)
-        # Clean up again after the test 
+        os.environ.pop("CLICK_TESTING", None)
+        # Clean up again after the test
         from provide.foundation.testing import reset_foundation_setup_for_testing
+
         reset_foundation_setup_for_testing()
 
     def create_test_cli(self):
@@ -56,7 +58,6 @@ class TestCompleteCliIntegration:
             if click_ctx.invoked_subcommand is None:
                 logger = get_logger(__name__)
                 logger.info("CLI root command executed.")
-
 
         @cli.group()
         @pass_context
@@ -109,7 +110,13 @@ class TestCompleteCliIntegration:
         # Correct invocation: options for parent go BEFORE subcommand
         result = runner.invoke(cli, ["--no-emoji", "status"])
         assert result.exit_code == 0
-        output = "\n".join([line for line in result.output.strip().split("\n") if not line.startswith('[Foundation Setup]')])
+        output = "\n".join(
+            [
+                line
+                for line in result.output.strip().split("\n")
+                if not line.startswith("[Foundation Setup]")
+            ]
+        )
         assert "Application is healthy" in output
         assert "🟢" not in output
 
@@ -139,33 +146,36 @@ class TestCompleteCliIntegration:
 
 class TestLoggingIntegration:
     """Test that logging options actually affect logging behavior."""
-    
+
     def setup_method(self) -> None:
         """Set up each test method."""
-        os.environ['CLICK_TESTING'] = '1'
+        os.environ["CLICK_TESTING"] = "1"
         # Reset Foundation state before each test to avoid conflicts
         from provide.foundation.testing import reset_foundation_setup_for_testing
+
         reset_foundation_setup_for_testing()
-    
+
     def teardown_method(self) -> None:
         """Clean up after each test method."""
-        os.environ.pop('CLICK_TESTING', None)
-        # Clean up again after the test 
+        os.environ.pop("CLICK_TESTING", None)
+        # Clean up again after the test
         from provide.foundation.testing import reset_foundation_setup_for_testing
+
         reset_foundation_setup_for_testing()
-    
+
     def _get_full_output(self, result) -> str:
         """Get combined stdout and stderr, with ANSI codes stripped."""
         import re
+
         # Try multiple ways to get all output
         full_output = result.output
         # Add stderr if it exists
-        if hasattr(result, 'stderr') and result.stderr:
+        if hasattr(result, "stderr") and result.stderr:
             full_output += result.stderr
         # Add stderr_bytes if it exists (decoded)
-        if hasattr(result, 'stderr_bytes') and result.stderr_bytes:
-            full_output += result.stderr_bytes.decode('utf-8', errors='ignore')
-        return re.sub(r'\x1b\[[0-9;]*m', '', full_output)
+        if hasattr(result, "stderr_bytes") and result.stderr_bytes:
+            full_output += result.stderr_bytes.decode("utf-8", errors="ignore")
+        return re.sub(r"\x1b\[[0-9;]*m", "", full_output)
 
     def test_log_level_affects_output(self) -> None:
         @click.command()
@@ -176,6 +186,7 @@ class TestLoggingIntegration:
             logger = get_logger(__name__)
             logger.debug("Debug message")
             logger.info("Info message")
+
         runner = CliTestRunner()
         result = runner.invoke(cmd, ["--log-level", "INFO"])
         assert result.exit_code == 0
@@ -192,6 +203,7 @@ class TestLoggingIntegration:
             setup_cli_logging(ctx)
             logger = get_logger(__name__)
             logger.info("Test message", extra_field="value")
+
         runner = CliTestRunner()
         result = runner.invoke(cmd, ["--log-level", "INFO", "--log-format", "json"])
         assert result.exit_code == 0
@@ -202,6 +214,7 @@ class TestLoggingIntegration:
         with tempfile.NamedTemporaryFile(mode="w", suffix=".log", delete=False) as f:
             log_file = Path(f.name)
         try:
+
             @click.command()
             @flexible_options
             @pass_context
@@ -212,7 +225,9 @@ class TestLoggingIntegration:
                 # File uses line buffering, so it should be written immediately
 
             runner = CliTestRunner()
-            result = runner.invoke(cmd, ["--log-file", str(log_file), "--log-level", "INFO"])
+            result = runner.invoke(
+                cmd, ["--log-file", str(log_file), "--log-level", "INFO"]
+            )
             assert result.exit_code == 0
             # The key test is that CLI setup with log file option worked correctly
         finally:
@@ -224,16 +239,18 @@ class TestOutputFormatting:
 
     def setup_method(self) -> None:
         """Set up each test method."""
-        os.environ['CLICK_TESTING'] = '1'
+        os.environ["CLICK_TESTING"] = "1"
         # Reset Foundation state before each test to avoid conflicts
         from provide.foundation.testing import reset_foundation_setup_for_testing
+
         reset_foundation_setup_for_testing()
-    
+
     def teardown_method(self) -> None:
         """Clean up after each test method."""
-        os.environ.pop('CLICK_TESTING', None)
-        # Clean up again after the test 
+        os.environ.pop("CLICK_TESTING", None)
+        # Clean up again after the test
         from provide.foundation.testing import reset_foundation_setup_for_testing
+
         reset_foundation_setup_for_testing()
 
     def test_json_output_format(self) -> None:
@@ -245,6 +262,7 @@ class TestOutputFormatting:
                 click.echo(json.dumps({"result": "success", "count": 42}))
             else:
                 click.echo("Result: success (42 items)")
+
         runner = CliTestRunner()
         result = runner.invoke(cmd, ["--json"])
         assert result.exit_code == 0
@@ -257,6 +275,7 @@ class TestOutputFormatting:
         @pass_context
         def cmd(ctx: Context, **kwargs) -> None:
             click.secho("Colored text", fg="green", color=not ctx.no_color)
+
         runner = CliTestRunner()
         result = runner.invoke(cmd, ["--no-color"])
         assert result.exit_code == 0
@@ -268,6 +287,7 @@ class TestOutputFormatting:
         @pass_context
         def cmd(ctx: Context, **kwargs) -> None:
             click.echo("✅ Success" if not ctx.no_emoji else "Success")
+
         runner = CliTestRunner()
         result = runner.invoke(cmd, ["--no-emoji"])
         assert result.exit_code == 0
@@ -279,16 +299,18 @@ class TestConfigurationLoading:
 
     def setup_method(self) -> None:
         """Set up each test method."""
-        os.environ['CLICK_TESTING'] = '1'
+        os.environ["CLICK_TESTING"] = "1"
         # Reset Foundation state before each test to avoid conflicts
         from provide.foundation.testing import reset_foundation_setup_for_testing
+
         reset_foundation_setup_for_testing()
-    
+
     def teardown_method(self) -> None:
         """Clean up after each test method."""
-        os.environ.pop('CLICK_TESTING', None)
-        # Clean up again after the test 
+        os.environ.pop("CLICK_TESTING", None)
+        # Clean up again after the test
         from provide.foundation.testing import reset_foundation_setup_for_testing
+
         reset_foundation_setup_for_testing()
 
     def test_config_file_loading(self) -> None:
@@ -297,11 +319,13 @@ class TestConfigurationLoading:
             json.dump(config_data, f)
             config_file = Path(f.name)
         try:
+
             @click.command()
             @flexible_options
             @pass_context
             def cmd(ctx: Context, **kwargs) -> None:
                 click.echo(f"profile={ctx.profile}")
+
             runner = CliTestRunner()
             result = runner.invoke(cmd, ["--config", str(config_file)])
             assert result.exit_code == 0
@@ -312,33 +336,36 @@ class TestConfigurationLoading:
 
 class TestRealWorldScenarios:
     """Test real-world CLI usage scenarios."""
-    
+
     def setup_method(self) -> None:
         """Set up each test method."""
-        os.environ['CLICK_TESTING'] = '1'
+        os.environ["CLICK_TESTING"] = "1"
         # Reset Foundation state before each test to avoid conflicts
         from provide.foundation.testing import reset_foundation_setup_for_testing
+
         reset_foundation_setup_for_testing()
-    
+
     def teardown_method(self) -> None:
         """Clean up after each test method."""
-        os.environ.pop('CLICK_TESTING', None)
-        # Clean up again after the test 
+        os.environ.pop("CLICK_TESTING", None)
+        # Clean up again after the test
         from provide.foundation.testing import reset_foundation_setup_for_testing
+
         reset_foundation_setup_for_testing()
-    
+
     def _get_full_output(self, result) -> str:
         """Get combined stdout and stderr, with ANSI codes stripped."""
         import re
+
         # Try multiple ways to get all output
         full_output = result.output
         # Add stderr if it exists
-        if hasattr(result, 'stderr') and result.stderr:
+        if hasattr(result, "stderr") and result.stderr:
             full_output += result.stderr
         # Add stderr_bytes if it exists (decoded)
-        if hasattr(result, 'stderr_bytes') and result.stderr_bytes:
-            full_output += result.stderr_bytes.decode('utf-8', errors='ignore')
-        return re.sub(r'\x1b\[[0-9;]*m', '', full_output)
+        if hasattr(result, "stderr_bytes") and result.stderr_bytes:
+            full_output += result.stderr_bytes.decode("utf-8", errors="ignore")
+        return re.sub(r"\x1b\[[0-9;]*m", "", full_output)
 
     def test_debugging_production_issue(self) -> None:
         @click.group(invoke_without_command=True)
@@ -347,6 +374,7 @@ class TestRealWorldScenarios:
         @pass_context
         def cli(ctx: Context, **kwargs) -> None:
             setup_cli_logging(ctx)
+
         @cli.command()
         @pass_context
         def diagnose(ctx: Context) -> None:
@@ -355,6 +383,7 @@ class TestRealWorldScenarios:
                 assert ctx.json_output is True
                 assert ctx.log_file is not None
             click.echo(json.dumps({"diagnosis": "complete"}))
+
         runner = CliTestRunner()
         with tempfile.NamedTemporaryFile(suffix=".log", delete=False) as f:
             log_file = Path(f.name)
@@ -362,10 +391,13 @@ class TestRealWorldScenarios:
             result = runner.invoke(
                 cli,
                 [
-                    "--profile", "production",
-                    "--log-level", "DEBUG",
+                    "--profile",
+                    "production",
+                    "--log-level",
+                    "DEBUG",
                     "--json",
-                    "--log-file", str(log_file),
+                    "--log-file",
+                    str(log_file),
                     "diagnose",
                 ],
             )
@@ -385,6 +417,7 @@ class TestRealWorldScenarios:
             logger = get_logger(__name__)
             logger.debug("Debug information here")
             click.echo("🔧 Development mode active")
+
         runner = CliTestRunner()
         result = runner.invoke(develop, ["--log-level", "DEBUG"])
         assert result.exit_code == 0

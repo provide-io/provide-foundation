@@ -4,7 +4,7 @@
 """
 Foundation Streams Module.
 
-Provides stream management functionality including console, file, 
+Provides stream management functionality including console, file,
 and core stream operations.
 """
 
@@ -34,7 +34,7 @@ __all__ = [
     # File stream functions
     "configure_file_logging",
     "flush_log_streams",
-    "close_log_streams", 
+    "close_log_streams",
     "reset_streams",
     # Console stream functions
     "get_console_stream",

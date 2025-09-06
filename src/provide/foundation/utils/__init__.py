@@ -4,6 +4,14 @@ Utility modules for provide.foundation.
 Common utilities that can be used across the foundation and by other packages.
 """
 
+from provide.foundation.utils.deps import (
+    DependencyStatus,
+    check_optional_deps,
+    get_available_features,
+    get_optional_dependencies,
+    has_dependency,
+    require_dependency,
+)
 from provide.foundation.utils.env import (
     EnvPrefix,
     get_bool,
@@ -38,14 +46,6 @@ from provide.foundation.utils.parsing import (
     parse_dict,
     parse_list,
     parse_typed_value,
-)
-from provide.foundation.utils.deps import (
-    DependencyStatus,
-    check_optional_deps,
-    get_available_features,
-    get_optional_dependencies,
-    has_dependency,
-    require_dependency,
 )
 from provide.foundation.utils.rate_limiting import TokenBucketRateLimiter
 from provide.foundation.utils.timing import timed_block

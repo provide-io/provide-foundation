@@ -2,6 +2,7 @@
 
 try:
     import click
+
     _HAS_CLICK = True
 except ImportError:
     click = None
@@ -23,6 +24,7 @@ def _deps_command_impl(quiet: bool, check: str | None) -> None:
     """Implementation of deps command logic."""
     if check:
         from provide.foundation.utils.deps import has_dependency
+
         available = has_dependency(check)
         if not quiet:
             status = "✅" if available else "❌"
@@ -39,24 +41,20 @@ def _deps_command_impl(quiet: bool, check: str | None) -> None:
 
 
 if _HAS_CLICK:
+
     @click.command("deps")
     @click.option(
-        "--quiet", 
-        "-q", 
-        is_flag=True, 
-        help="Suppress output, just return exit code"
+        "--quiet", "-q", is_flag=True, help="Suppress output, just return exit code"
     )
     @click.option(
-        "--check", 
-        metavar="DEPENDENCY", 
-        help="Check specific dependency only"
+        "--check", metavar="DEPENDENCY", help="Check specific dependency only"
     )
     def deps_command(quiet: bool, check: str | None) -> None:
         """Check optional dependency status.
-        
+
         Shows which optional dependencies are available and provides
         installation instructions for missing ones.
-        
+
         Exit codes:
         - 0: All dependencies available (or specific one if --check used)
         - 1: Some dependencies missing (or specific one missing if --check used)

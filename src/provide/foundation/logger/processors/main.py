@@ -18,13 +18,13 @@ from provide.foundation.logger.custom_processors import (
     add_logger_name_emoji_prefix,
     filter_by_level_custom,
 )
+
+# Import trace context processor
+from provide.foundation.logger.processors.trace import inject_trace_context
 from provide.foundation.types import (
     TRACE_LEVEL_NUM,
     LogLevelStr,
 )
-
-# Import trace context processor
-from provide.foundation.logger.processors.trace import inject_trace_context
 
 if TYPE_CHECKING:
     from provide.foundation.logger.setup.emoji_resolver import ResolvedEmojiConfig
@@ -177,11 +177,11 @@ def _build_core_processors_list(
         structlog.processors.StackInfoRenderer(),
         structlog.dev.set_exc_info,
     ]
-    
+
     # Add rate limiting processor if enabled
     if log_cfg.rate_limit_enabled:
         from provide.foundation.logger.ratelimit import create_rate_limiter_processor
-        
+
         rate_limiter_processor = create_rate_limiter_processor(
             global_rate=log_cfg.rate_limit_global,
             global_capacity=log_cfg.rate_limit_global_capacity,
@@ -193,15 +193,15 @@ def _build_core_processors_list(
             overflow_policy=log_cfg.rate_limit_overflow_policy,
         )
         processors.append(cast(StructlogProcessor, rate_limiter_processor))
-    
+
     processors.extend(_config_create_timestamp_processors(log_cfg.omit_timestamp))
     if config.service_name is not None:
         processors.append(_config_create_service_name_processor(config.service_name))
-    
+
     # Add trace context injection if tracing is enabled
     if config.tracing_enabled and not config.globally_disabled:
         processors.append(cast(StructlogProcessor, inject_trace_context))
-    
+
     processors.extend(_config_create_emoji_processors(log_cfg, resolved_emoji_config))
     return processors
 
@@ -242,8 +242,10 @@ def _build_formatter_processors_list(
         case _:
             # Unknown formatter, warn and default to key_value
             # Use setup coordinator logger
-            from provide.foundation.logger.setup.coordinator import create_core_setup_logger
-            
+            from provide.foundation.logger.setup.coordinator import (
+                create_core_setup_logger,
+            )
+
             setup_logger = create_core_setup_logger()
             setup_logger.warning(
                 f"Unknown formatter '{logging_config.console_formatter}', using default 'key_value'. "

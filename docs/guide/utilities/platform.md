@@ -425,6 +425,6 @@ def detect_environment():
 
 ## Related Topics
 
-- [Configuration](../configuration/index.md) - Platform-specific config
+- [Configuration](../config/index.md) - Configuration system
 - [Process Management](process.md) - Process utilities
 - [Logging](../logging/basic.md) - Platform-aware logging

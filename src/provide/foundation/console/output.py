@@ -11,6 +11,7 @@ from typing import Any
 
 try:
     import click
+
     _HAS_CLICK = True
 except ImportError:
     click = None
