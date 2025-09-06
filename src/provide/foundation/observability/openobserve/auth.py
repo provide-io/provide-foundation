@@ -3,7 +3,6 @@ Authentication handling for OpenObserve.
 """
 
 import base64
-from typing import Tuple
 
 from provide.foundation.observability.openobserve.exceptions import OpenObserveAuthenticationError
 
@@ -49,7 +48,7 @@ def get_auth_headers(username: str | None, password: str | None) -> dict[str, st
     }
 
 
-def validate_credentials(username: str | None, password: str | None) -> Tuple[str, str]:
+def validate_credentials(username: str | None, password: str | None) -> tuple[str, str]:
     """Validate and return OpenObserve credentials.
     
     Args:
