@@ -98,18 +98,23 @@ class RateLimiterProcessor:
         # Check if we should emit a summary
         now = time.monotonic()
         if now - self.last_summary_time >= self.summary_interval:
-            if self.suppressed_counts:
-                # Log summary of suppressed messages
-                # This will be processed in the next iteration
-                self._emit_summary()
-                self.last_summary_time = now
+            # Always check and emit summary if there's been any rate limiting
+            self._emit_summary()
+            self.last_summary_time = now
         
         return event_dict
     
     def _emit_summary(self):
         """Emit a summary of rate-limited messages."""
-        if not self.suppressed_counts:
-            return
+        # Get current stats first to check if any rate limiting has occurred
+        stats = self.rate_limiter.get_stats()
+        
+        # Check if there's been any rate limiting activity
+        global_stats = stats.get("global", {})
+        total_denied = global_stats.get("total_denied", 0)
+        
+        if not self.suppressed_counts and total_denied == 0:
+            return  # No rate limiting activity to report
             
         total_suppressed = sum(self.suppressed_counts.values())
         
@@ -118,13 +123,11 @@ class RateLimiterProcessor:
             from provide.foundation.logger import get_logger
             summary_logger = get_logger("provide.foundation.ratelimit.summary")
             
-            # Get current stats
-            stats = self.rate_limiter.get_stats()
-            
             # Calculate rate limiting percentage
-            total_attempts = stats.get("global", {}).get("total_allowed", 0) + stats.get("global", {}).get("total_denied", 0)
+            total_allowed = global_stats.get("total_allowed", 0)
+            total_attempts = total_allowed + total_denied
             if total_attempts > 0:
-                denial_rate = (stats.get("global", {}).get("total_denied", 0) / total_attempts) * 100
+                denial_rate = (total_denied / total_attempts) * 100
             else:
                 denial_rate = 0
             
@@ -132,13 +135,15 @@ class RateLimiterProcessor:
             summary_logger.warning(
                 f"⚠️ Rate limiting active: {total_suppressed:,} logs dropped in last {self.summary_interval}s | "
                 f"Denial rate: {denial_rate:.1f}% | "
-                f"Tokens: {stats.get('global', {}).get('tokens_available', 0):.0f}/{stats.get('global', {}).get('capacity', 0):.0f}",
-                suppressed_by_logger=dict(self.suppressed_counts),
+                f"Tokens: {global_stats.get('tokens_available', 0):.0f}/{global_stats.get('capacity', 0):.0f}",
+                suppressed_by_logger=dict(self.suppressed_counts) if self.suppressed_counts else {},
                 total_suppressed=total_suppressed,
+                total_denied_overall=total_denied,
+                total_allowed_overall=total_allowed,
                 denial_rate_percent=denial_rate,
-                tokens_available=stats.get("global", {}).get("tokens_available", 0),
-                capacity=stats.get("global", {}).get("capacity", 0),
-                refill_rate=stats.get("global", {}).get("refill_rate", 0),
+                tokens_available=global_stats.get("tokens_available", 0),
+                capacity=global_stats.get("capacity", 0),
+                refill_rate=global_stats.get("refill_rate", 0),
             )
             
             # Reset counts after summary
