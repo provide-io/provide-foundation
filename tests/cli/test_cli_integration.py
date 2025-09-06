@@ -112,7 +112,7 @@ class TestCompleteCliIntegration:
     def test_command_options_override_group_options(self) -> None:
         """Test that later options on the same command override earlier ones."""
         cli = self.create_test_cli()
-        runner = CliTestRunner(mix_stderr=True)
+        runner = CliTestRunner()
         result = runner.invoke(
             cli, ["--log-level", "INFO", "--log-level", "DEBUG", "status"]
         )
@@ -147,7 +147,7 @@ class TestLoggingIntegration:
             logger = get_logger(__name__)
             logger.debug("Debug message")
             logger.info("Info message")
-        runner = CliTestRunner(mix_stderr=True)
+        runner = CliTestRunner()
         result = runner.invoke(cmd, ["--log-level", "INFO"])
         assert result.exit_code == 0
         # The key test is that the CLI setup worked correctly (exit code 0)
@@ -163,7 +163,7 @@ class TestLoggingIntegration:
             setup_cli_logging(ctx)
             logger = get_logger(__name__)
             logger.info("Test message", extra_field="value")
-        runner = CliTestRunner(mix_stderr=True)
+        runner = CliTestRunner()
         result = runner.invoke(cmd, ["--log-level", "INFO", "--log-format", "json"])
         assert result.exit_code == 0
         # The key test is that the CLI setup worked correctly with JSON format
@@ -314,7 +314,7 @@ class TestRealWorldScenarios:
             logger = get_logger(__name__)
             logger.debug("Debug information here")
             click.echo("🔧 Development mode active")
-        runner = CliTestRunner(mix_stderr=True)
+        runner = CliTestRunner()
         result = runner.invoke(develop, ["--log-level", "DEBUG"])
         assert result.exit_code == 0
         assert "🔧 Development mode active" in result.output

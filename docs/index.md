@@ -127,7 +127,7 @@ Practical examples and code snippets
 - **Extensible**: Plugin system via Registry
 - **Composable**: Mix and match components
 - **Well-Documented**: Comprehensive API docs
-- **Stable API**: Semantic versioning
+- **Stable API**: Contextual versioning
 
 ### For DevOps Teams
 - **Observable**: Structured logs for analysis

@@ -1,6 +1,6 @@
 # The Emoji System
 
-Visual parsing through semantic emoji mapping.
+Visual parsing through Contextual emoji mapping.
 
 ## Philosophy
 

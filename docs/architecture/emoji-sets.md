@@ -162,14 +162,14 @@ ACTIVE_LAYERS = sorted(
 
 When a log event occurs:
 
-1. **Field Extraction**: Extract semantic fields from event dict
+1. **Field Extraction**: Extract Contextual fields from event dict
 2. **Emoji Set Matching**: Find appropriate layer based on field keys
 3. **Emoji Resolution**: Map field values to emojis
 4. **Validation**: Ensure field types and constraints
 5. **Enrichment**: Add layer metadata
 
 ```python
-def process_semantic_fields(event_dict: dict[str, Any]) -> dict[str, Any]:
+def process_contextual_fields(event_dict: dict[str, Any]) -> dict[str, Any]:
     """Process event through emoji sets."""
     
     # Find matching emoji set
@@ -295,7 +295,7 @@ class AIAPILayer(CompositeEmojiSetConfig):
     layers = [HTTP_EMOJI_SET, LLM_EMOJI_SET]
     
     def process(self, event_dict):
-        # Apply both HTTP and LLM semantics
+        # Apply both HTTP and LLM mappings
         event_dict = HTTP_EMOJI_SET.process(event_dict)
         event_dict = LLM_EMOJI_SET.process(event_dict)
         return event_dict
@@ -346,13 +346,13 @@ class EmojiSetConfig:
 # Thread-local storage for context
 THREAD_LOCAL = threading.local()
 
-def with_semantic_context(**kwargs):
+def with_contextual_context(**kwargs):
     """Thread-safe context manager."""
-    THREAD_LOCAL.semantic_context = kwargs
+    THREAD_LOCAL.contextual_context = kwargs
     try:
         yield
     finally:
-        THREAD_LOCAL.semantic_context = None
+        THREAD_LOCAL.contextual_context = None
 ```
 
 ## Integration Points
@@ -378,12 +378,12 @@ Emoji sets are designed to **extend and enhance OpenTelemetry**, not replace it:
 
 ```python
 from opentelemetry import trace, metrics
-from provide.foundation.otel import SemanticOTELProcessor
+from provide.foundation.otel import ContextualOTELProcessor
 
 # Emoji sets automatically enrich OTEL spans
 tracer = trace.get_tracer(__name__)
 
-class SemanticOTELProcessor:
+class ContextualOTELProcessor:
     """Bridges emoji sets with OpenTelemetry."""
     
     def process_span(self, span: Span, event_dict: dict[str, Any]):

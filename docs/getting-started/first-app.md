@@ -243,7 +243,7 @@ Emoji sets provide automatic emoji mapping for structured log fields:
 ```python
 from provide.foundation import logger
 
-# When you log with semantic field names, emojis are added automatically
+# When you log with Contextual field names, emojis are added automatically
 # For example, if HTTP emoji set is enabled:
 
 logger.info("http_request",
@@ -251,7 +251,7 @@ logger.info("http_request",
        "http.status_code": 200,      # Automatically gets ✅ emoji
        "http.target": "/api/tasks"})
 
-# For task operations, you can define custom semantic fields:
+# For task operations, you can define custom Contextual fields:
 from provide.foundation.types import EmojiSetConfig, CustomDasEmojiSet, FieldToEmojiMapping
 
 # Define emoji mappings for task operations

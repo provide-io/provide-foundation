@@ -1,10 +1,10 @@
 # Platform
 
-::: provide.foundation.utils.platform
+::: provide.foundation.platform
 
 ## Overview
 
-API documentation for Platform.
+API documentation for Platform utilities including system detection and information gathering.
 
 ## Usage
 

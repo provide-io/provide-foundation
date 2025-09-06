@@ -60,7 +60,7 @@ Configure domain-specific telemetry interfaces.
 | `PROVIDE_EMOJI_SETS` | bool | `true` | Enable emoji set processing |
 | `PROVIDE_ENABLED_LAYERS` | list | all | Comma-separated list of layers to enable |
 | `PROVIDE_LAYER_TIMEOUT_MS` | int | `10` | Maximum processing time per layer |
-| `PROVIDE_LAYER_EMOJI` | bool | `true` | Add emoji based on semantic context |
+| `PROVIDE_LAYER_EMOJI` | bool | `true` | Add emoji based on Contextual context |
 | `PROVIDE_LAYER_VALIDATION` | bool | `true` | Validate field types and values |
 | `PROVIDE_LAYER_CACHE_SIZE` | int | `1024` | LRU cache size for emoji lookups |
 

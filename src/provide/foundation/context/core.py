@@ -285,7 +285,10 @@ class Context:
                 raise ImportError("PyYAML required for YAML support")
             content = yaml.safe_dump(data, default_flow_style=False)
         else:
-            raise ValueError(f"Unsupported config format: {path.suffix}")
+            if not path.suffix:
+                raise ValueError(f"Unsupported config format: no file extension for {path}")
+            else:
+                raise ValueError(f"Unsupported config format: {path.suffix}")
 
         path.write_text(content)
 
