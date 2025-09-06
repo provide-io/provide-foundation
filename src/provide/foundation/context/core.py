@@ -87,7 +87,7 @@ class Context:
         """
         # Use the main TelemetryConfig system for parsing
         telemetry_config = TelemetryConfig.from_env(strict=False)
-        
+
         kwargs = {}
 
         # Map telemetry config values to CLI context
@@ -96,24 +96,26 @@ class Context:
             kwargs["log_format"] = telemetry_config.logging.console_formatter
         if telemetry_config.logging.log_file:
             kwargs["log_file"] = telemetry_config.logging.log_file
-        
+
         # CLI-specific environment variables that don't exist in TelemetryConfig
         if profile := os.environ.get(f"{prefix}_PROFILE"):
             kwargs["profile"] = profile
-        
+
         if debug := os.environ.get(f"{prefix}_DEBUG"):
             kwargs["debug"] = debug.lower() in ("true", "1", "yes", "on")
-        
+
         if json_output := os.environ.get(f"{prefix}_JSON_OUTPUT"):
             kwargs["json_output"] = json_output.lower() in ("true", "1", "yes", "on")
-        
+
         if config_file := os.environ.get(f"{prefix}_CONFIG_FILE"):
             kwargs["config_file"] = Path(config_file)
-        
+
         # Map emoji settings to no_emoji (inverted)
-        kwargs["no_emoji"] = not (telemetry_config.logging.logger_name_emoji_prefix_enabled and 
-                                  telemetry_config.logging.das_emoji_prefix_enabled)
-        
+        kwargs["no_emoji"] = not (
+            telemetry_config.logging.logger_name_emoji_prefix_enabled
+            and telemetry_config.logging.das_emoji_prefix_enabled
+        )
+
         # Check for explicit NO_COLOR override
         if no_color := os.environ.get(f"{prefix}_NO_COLOR"):
             kwargs["no_color"] = no_color.lower() in ("true", "1", "yes", "on")

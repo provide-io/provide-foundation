@@ -52,7 +52,7 @@ See also:
 """
 
 from provide.foundation.cli import echo_info, echo_success, echo_warning
-from provide.foundation.cli.context import Context
+from provide.foundation.context import Context
 from provide.foundation.hub import (
     BaseComponent,
     Hub,

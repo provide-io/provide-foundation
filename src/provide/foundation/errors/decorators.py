@@ -475,5 +475,3 @@ def circuit_breaker(
         expected_exception=expected_exception,
     )
     return breaker
-
-

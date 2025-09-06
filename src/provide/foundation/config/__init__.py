@@ -45,6 +45,12 @@ from provide.foundation.config.types import (
     ConfigSource,
     ConfigValue,
 )
+from provide.foundation.config.validators import (
+    validate_choice,
+    validate_non_negative,
+    validate_positive,
+    validate_range,
+)
 from provide.foundation.errors.config import (
     ConfigurationError as ConfigError,
     ValidationError as ConfigValidationError,
@@ -53,12 +59,6 @@ from provide.foundation.utils.parsing import (
     parse_bool,
     parse_dict,
     parse_list,
-)
-from provide.foundation.config.validators import (
-    validate_choice,
-    validate_non_negative,
-    validate_positive,
-    validate_range,
 )
 
 __all__ = [

@@ -53,6 +53,7 @@ def _get_foundation_log_level() -> int:
     if _FOUNDATION_LOG_LEVEL is None:
         # Use the proper config system to get the Foundation setup log level
         from provide.foundation.logger.config import LoggingConfig
+
         logging_config = LoggingConfig.from_env(strict=False)
         level_str = logging_config.foundation_setup_log_level.upper()
         _FOUNDATION_LOG_LEVEL = getattr(
@@ -159,7 +160,7 @@ def _build_complete_processor_chain(
     _core_setup_logger.debug(
         "📝➡️🎨 Configured renderer",
         formatter=config.logging.console_formatter,
-        log_level=config.logging.default_level
+        log_level=config.logging.default_level,
     )
     return cast(list[Any], core_processors + formatter_processors)
 
@@ -176,9 +177,9 @@ def _apply_structlog_configuration(processors: list[Any]) -> None:
     )
     _core_setup_logger.debug(
         "📝➡️✅ structlog configured",
-        wrapper="BoundLogger", 
+        wrapper="BoundLogger",
         output=stream_name,
-        processor_count=len(processors)
+        processor_count=len(processors),
     )
 
 
@@ -263,7 +264,7 @@ def _internal_setup(
             "⚙️➡️🚀 Starting Foundation (structlog) setup",
             service_name=current_config.service_name,
             log_level=current_config.logging.default_level,
-            formatter=current_config.logging.console_formatter
+            formatter=current_config.logging.console_formatter,
         )
 
     resolved_emoji_config = _resolve_active_emoji_config(
@@ -287,7 +288,7 @@ def _internal_setup(
             emoji_sets_enabled=len(field_definitions) > 0,
             emoji_sets_count=len(emoji_sets),
             processors_configured=True,
-            log_file_enabled=current_config.logging.log_file is not None
+            log_file_enabled=current_config.logging.log_file is not None,
         )
 
 
@@ -324,7 +325,7 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
                     "Failed to open log file",
                     log_file_path=str(log_file_path),
                     error=str(e),
-                    error_type=type(e).__name__
+                    error_type=type(e).__name__,
                 )
                 _PROVIDE_LOG_STREAM = get_safe_stderr()
         elif not is_test_stream:
@@ -351,5 +352,5 @@ async def shutdown_foundation_telemetry(timeout_millis: int = 5000) -> None:
                 _core_setup_logger.error(
                     "Failed to flush log file handle",
                     error=str(e),
-                    error_type=type(e).__name__
+                    error_type=type(e).__name__,
                 )

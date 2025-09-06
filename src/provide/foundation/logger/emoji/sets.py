@@ -22,15 +22,11 @@ from provide.foundation.logger.emoji.types import (
 # This serves as the default Domain-Action-Status system when no custom layers are active.
 # It handles the standard keys "domain", "action", "status".
 LEGACY_DAS_EMOJI_SETS: list[EmojiSet] = [
-    EmojiSet(
-        name="_legacy_domain", emojis=PRIMARY_EMOJI, default_emoji_key="default"
-    ),
+    EmojiSet(name="_legacy_domain", emojis=PRIMARY_EMOJI, default_emoji_key="default"),
     EmojiSet(
         name="_legacy_action", emojis=SECONDARY_EMOJI, default_emoji_key="default"
     ),
-    EmojiSet(
-        name="_legacy_status", emojis=TERTIARY_EMOJI, default_emoji_key="default"
-    ),
+    EmojiSet(name="_legacy_status", emojis=TERTIARY_EMOJI, default_emoji_key="default"),
 ]
 LEGACY_DAS_FIELD_DEFINITIONS: list[FieldToEmojiMapping] = [
     FieldToEmojiMapping(log_key="domain", emoji_set_name="_legacy_domain"),
