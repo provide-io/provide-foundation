@@ -38,8 +38,11 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://pyvider.com/"
-Repository = "https://github.com/provider-io/provide-foundation"
+Homepage = "https://foundation.provide.io"
+Documentation = "https://foundation.provide.io"
+Repository = "https://github.com/provide-io/provide-foundation"
+Issues = "https://github.com/provide-io/provide-foundation/issues"
+Examples = "https://github.com/provide-io/provide-foundation/tree/main/examples"
 
 
 [project.optional-dependencies]

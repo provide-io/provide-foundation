@@ -91,7 +91,9 @@
       "Bash(if [ -f \"docs/$file\" ])",
       "Bash(then)",
       "Bash(else)",
-      "Bash(fi)"
+      "Bash(fi)",
+      "Bash(uv pip:*)",
+      "Bash(ruff check:*)"
     ],
     "deny": [],
     "ask": [],
