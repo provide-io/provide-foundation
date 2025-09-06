@@ -8,7 +8,9 @@
       "Bash(source env.sh)",
       "Bash(pytest:*)",
       "Bash(uv sync:*)",
-      "Bash(uv add:*)"
+      "Bash(uv add:*)",
+      "Bash(pip install:*)",
+      "Bash(uv pip install:*)"
     ],
     "deny": [],
     "ask": [],
