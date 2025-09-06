@@ -48,19 +48,7 @@ class TestFoundationInit:
         assert callable(provide.foundation.pin)
         assert callable(provide.foundation.pout)
     
-    def test_getattr_cli_success(self):
-        """Test __getattr__ for successful CLI import."""
-        import provide.foundation
-        
-        # Try to access cli attribute - this should work if click is available
-        try:
-            cli = provide.foundation.cli
-            assert cli is not None
-        except ImportError:
-            # Expected if click is not available
-            pass
-    
-    def test_getattr_cli_click_missing(self):
+    def test_aaa_getattr_cli_click_missing(self):
         """Test __getattr__ CLI import with missing click dependency.""" 
         import provide.foundation
         
@@ -73,7 +61,7 @@ class TestFoundationInit:
             with pytest.raises(ImportError, match="CLI features require optional dependencies"):
                 _ = provide.foundation.cli
     
-    def test_getattr_cli_other_import_error(self):
+    def test_aaa_getattr_cli_other_import_error(self):
         """Test __getattr__ CLI import with other ImportError."""
         import provide.foundation
         
@@ -85,6 +73,18 @@ class TestFoundationInit:
         with patch('builtins.__import__', side_effect=mock_import_func):
             with pytest.raises(ImportError, match="Some other error"):
                 _ = provide.foundation.cli
+
+    def test_getattr_cli_success(self):
+        """Test __getattr__ for successful CLI import."""
+        import provide.foundation
+        
+        # Try to access cli attribute - this should work if click is available
+        try:
+            cli = provide.foundation.cli
+            assert cli is not None
+        except ImportError:
+            # Expected if click is not available
+            pass
     
     def test_getattr_invalid_attribute(self):
         """Test __getattr__ with invalid attribute name."""
