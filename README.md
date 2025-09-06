@@ -399,31 +399,6 @@ Complete working examples are available in the [examples/](examples/) directory:
 
 ---
 
-## Performance
-
-- **Logging**: 14,000+ messages/second with emoji processing and structured logging
-- **Configuration**: Lazy loading with multi-source caching for optimal performance  
-- **File Operations**: Atomic writes with format detection prevent corruption
-- **Process Management**: Efficient streaming with async support and backpressure handling
-- **Cryptography**: Hardware-accelerated operations with secure algorithm defaults
-- **Platform Detection**: Cached system information for minimal overhead
-
----
-
-## Contributing
-
-We welcome contributions! Please see:
-- [DEVELOPMENT.md](DEVELOPMENT.md) - Development setup and guidelines
-- [GitHub Issues](https://github.com/provide-io/provide-foundation/issues) - Bug reports and feature requests
-
----
-
-## License
-
-MIT License - see [LICENSE](LICENSE) file for details.
-
----
-
 <p align="center">
-  Built by <a href="https://provide.io">Provide</a>
+  Built by <a href="https://provide.io">provide.io</a>
 </p>
