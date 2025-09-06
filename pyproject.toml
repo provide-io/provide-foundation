@@ -60,6 +60,7 @@ dev = [
     "pyrefly>=0.16.2",
     "pytest>=7.4.0",
     "pytest-asyncio>=0.21.0",
+    "pytest-benchmark>=4.0.0",
     "pytest-cov>=4.1.0",
     "pytest-xdist>=3.3.0",
     "pyyaml>=6.0.2",
@@ -110,7 +111,7 @@ norecursedirs = [
     "htmlcov", "docs/_build",
     ".hypothesis", # Added to address the warning
 ]
-addopts = "-ra -q --color=yes"
+addopts = "-ra -q --color=yes --benchmark-columns=min,max,mean,stddev,median,iqr,ops --benchmark-sort=mean"
 
 ################################################################################
 # Ruff Linter and Formatter Configuration
