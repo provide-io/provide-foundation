@@ -18,22 +18,18 @@ class TestFoundationInit:
             assert provide.foundation.pin is not None
             assert provide.foundation.pout is not None
     
-    def test_console_imports_unavailable(self):
-        """Test console imports when click is not available."""
-        # This simulates the ImportError case for console imports
-        # The actual test of lines 18-20 happens during import
+    def test_console_imports_always_available(self):
+        """Test console imports are always available."""
+        # Console functions should always exist (they handle click availability internally)
         import provide.foundation
         
-        # Check the _HAS_CONSOLE flag exists
-        assert hasattr(provide.foundation, '_HAS_CONSOLE')
-        
-        # Either console functions exist or they're None
-        if provide.foundation._HAS_CONSOLE:
-            assert provide.foundation.perr is not None
-        else:
-            assert provide.foundation.perr is None
-            assert provide.foundation.pin is None
-            assert provide.foundation.pout is None
+        # Console functions should always be available and callable
+        assert provide.foundation.perr is not None
+        assert provide.foundation.pin is not None
+        assert provide.foundation.pout is not None
+        assert callable(provide.foundation.perr)
+        assert callable(provide.foundation.pin)
+        assert callable(provide.foundation.pout)
     
     def test_getattr_cli_success(self):
         """Test __getattr__ for successful CLI import."""
@@ -113,13 +109,9 @@ class TestFoundationInit:
         # The console exports should be conditionally included
         console_exports = ['perr', 'pin', 'pout']
         
-        if provide.foundation._HAS_CONSOLE:
-            for export in console_exports:
-                assert export in provide.foundation.__all__
-        else:
-            # If console is not available, these should not be in __all__
-            for export in console_exports:
-                assert export not in provide.foundation.__all__
+        # Console functions should always be available and in __all__
+        for export in console_exports:
+            assert export in provide.foundation.__all__
     
     def test_core_imports_available(self):
         """Test that core imports are available."""
@@ -210,12 +202,14 @@ class TestModuleAttributes:
         assert isinstance(provide.foundation.__version__, str)
         assert len(provide.foundation.__version__) > 0
     
-    def test_has_console_flag(self):
-        """Test _HAS_CONSOLE flag."""
+    def test_console_functions_available(self):
+        """Test console functions are available."""
         import provide.foundation
         
-        assert hasattr(provide.foundation, '_HAS_CONSOLE')
-        assert isinstance(provide.foundation._HAS_CONSOLE, bool)
+        # Console functions should always be available
+        assert hasattr(provide.foundation, 'perr')
+        assert hasattr(provide.foundation, 'pin')
+        assert hasattr(provide.foundation, 'pout')
     
     def test_type_exports(self):
         """Test type exports."""
