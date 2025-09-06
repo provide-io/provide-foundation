@@ -17,7 +17,8 @@
       "Bash(tree:*)",
       "Bash(timeout 10s pytest tests/utils/test_utils_coverage.py --tb=no -q)",
       "Bash(timeout 15s pytest tests/platform/test_platform_coverage.py --tb=no -q)",
-      "Bash(timeout 10s pytest tests/streams/test_console_coverage.py::TestFileStreams -x --tb=no)"
+      "Bash(timeout 10s pytest tests/streams/test_console_coverage.py::TestFileStreams -x --tb=no)",
+      "Bash(timeout 10s pytest tests/logger/test_config_coverage.py::TestLoggingConfigCoverage -v)"
     ],
     "deny": [],
     "ask": [],
