@@ -42,10 +42,11 @@ def inject_trace_context(logger: Any, method_name: str, event_dict: Dict[str, An
                 if span_context.trace_flags:
                     event_dict["trace_flags"] = span_context.trace_flags
                     
-                log.debug("🔍📝 Injected OpenTelemetry trace context into log")
+                # Use level 5 (below DEBUG=10) for trace-level logging
+                log.log(5, "🔍📝 Injected OpenTelemetry trace context into log")
                 return event_dict
         except Exception as e:
-            log.debug(f"🔍⚠️ Failed to get OpenTelemetry trace context: {e}")
+            log.log(5, f"🔍⚠️ Failed to get OpenTelemetry trace context: {e}")
     
     # Fallback to Foundation's simple tracer context
     try:
@@ -57,13 +58,13 @@ def inject_trace_context(logger: Any, method_name: str, event_dict: Dict[str, An
         if current_span:
             event_dict["trace_id"] = current_span.trace_id
             event_dict["span_id"] = current_span.span_id
-            log.debug("🔍📝 Injected Foundation trace context into log")
+            log.log(5, "🔍📝 Injected Foundation trace context into log")
         elif current_trace_id:
             event_dict["trace_id"] = current_trace_id
-            log.debug("🔍📝 Injected Foundation trace ID into log")
+            log.log(5, "🔍📝 Injected Foundation trace ID into log")
             
     except Exception as e:
-        log.debug(f"🔍⚠️ Failed to get Foundation trace context: {e}")
+        log.log(5, f"🔍⚠️ Failed to get Foundation trace context: {e}")
     
     return event_dict
 
