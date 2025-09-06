@@ -119,32 +119,39 @@
   color: var(--md-default-fg-color--light);
   padding: 0.1rem 0 0.1rem 1rem;
   margin: 0.05rem 0;
+  background-color: transparent;
+  border-radius: 4px;
+  transition: all 0.3s ease;
 }
 
 /* Nested articles under sub-headings - further indented */
 .md-nav--primary .md-nav__item .md-nav__item .md-nav__item:not(.md-nav__item--nested) > .md-nav__link {
   padding-left: 1.5rem;
+  background-color: transparent;
+  transition: all 0.3s ease;
 }
 
 /* Deep nested articles */
 .md-nav--primary .md-nav__item .md-nav__item .md-nav__item .md-nav__item:not(.md-nav__item--nested) > .md-nav__link {
   padding-left: 2rem;
+  background-color: transparent;
+  transition: all 0.3s ease;
 }
 
-/* Hover states for articles */
+/* Hover states for articles - smooth transitions with opacity-based backgrounds */
 .md-nav--primary .md-nav__item .md-nav__item:not(.md-nav__item--nested) > .md-nav__link:hover {
   color: var(--pf-primary);
-  background-color: var(--md-accent-bg-color);
-  border-radius: 4px;
+  background-color: rgba(99, 102, 241, 0.1);
   padding-left: 1.2rem;
-  transition: all 0.2s ease;
 }
 
 .md-nav--primary .md-nav__item .md-nav__item .md-nav__item:not(.md-nav__item--nested) > .md-nav__link:hover {
+  background-color: rgba(99, 102, 241, 0.08);
   padding-left: 1.7rem;
 }
 
 .md-nav--primary .md-nav__item .md-nav__item .md-nav__item .md-nav__item:not(.md-nav__item--nested) > .md-nav__link:hover {
+  background-color: rgba(99, 102, 241, 0.06);
   padding-left: 2.2rem;
 }
 
