@@ -82,80 +82,70 @@
   border-left-color: var(--pf-error);
 }
 
-/* Navigation Enhancement - Improved Tree Structure */
-.md-nav__item--nested > .md-nav__link {
-  font-weight: 600;
+/* Navigation Enhancement - Clear Visual Hierarchy */
+
+/* Top level navigation items - main sections */
+.md-nav--primary > .md-nav__list > .md-nav__item {
+  margin: 0.3rem 0;
 }
 
-.md-nav__item--active > .md-nav__link {
-  color: var(--pf-primary);
-  font-weight: 600;
-}
-
-/* Better visual hierarchy for navigation tree */
-.md-nav--primary .md-nav__item {
-  margin: 0.15rem 0;
-}
-
-.md-nav--primary .md-nav__item .md-nav__item {
-  margin: 0.05rem 0;
-  padding-left: 0.8rem;
-}
-
-.md-nav--primary .md-nav__item .md-nav__item .md-nav__item {
-  padding-left: 1.6rem;
-  margin: 0.02rem 0;
-}
-
-.md-nav--primary .md-nav__item .md-nav__item .md-nav__item .md-nav__item {
-  padding-left: 2.4rem;
-}
-
-/* Make section headers more distinct */
+/* Section headings (with children) - bold, left-aligned */
 .md-nav__item--nested > .md-nav__link {
   font-weight: 700;
-  color: var(--md-default-fg-color);
   font-size: 0.9rem;
+  color: var(--md-default-fg-color);
   text-transform: uppercase;
   letter-spacing: 0.025em;
-  margin: 0.5rem 0 0.2rem 0;
+  padding: 0.4rem 0 0.2rem 0;
   border-bottom: 1px solid var(--md-default-fg-color--lightest);
-  padding-bottom: 0.2rem;
+  margin-bottom: 0.2rem;
 }
 
-/* Style nested items differently */
-.md-nav__item .md-nav__item > .md-nav__link {
+/* Sub-headings under main sections - left-aligned with heading text, slightly smaller */
+.md-nav--primary .md-nav__item .md-nav__item--nested > .md-nav__link {
+  font-weight: 600;
   font-size: 0.85rem;
-  color: var(--md-default-fg-color--light);
-  padding: 0.15rem 0;
+  text-transform: none;
+  letter-spacing: 0;
+  border-bottom: none;
+  padding: 0.2rem 0;
+  margin: 0.1rem 0;
 }
 
-.md-nav__item .md-nav__item > .md-nav__link:hover {
+/* Articles without children - indented to show they're content, not headings */
+.md-nav--primary .md-nav__item .md-nav__item:not(.md-nav__item--nested) > .md-nav__link {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--md-default-fg-color--light);
+  padding: 0.1rem 0 0.1rem 1rem;
+  margin: 0.05rem 0;
+}
+
+/* Nested articles under sub-headings - further indented */
+.md-nav--primary .md-nav__item .md-nav__item .md-nav__item:not(.md-nav__item--nested) > .md-nav__link {
+  padding-left: 1.5rem;
+}
+
+/* Deep nested articles */
+.md-nav--primary .md-nav__item .md-nav__item .md-nav__item .md-nav__item:not(.md-nav__item--nested) > .md-nav__link {
+  padding-left: 2rem;
+}
+
+/* Hover states for articles */
+.md-nav--primary .md-nav__item .md-nav__item:not(.md-nav__item--nested) > .md-nav__link:hover {
   color: var(--pf-primary);
   background-color: var(--md-accent-bg-color);
   border-radius: 4px;
-  padding-left: 0.5rem;
+  padding-left: 1.2rem;
   transition: all 0.2s ease;
 }
 
-/* Add visual indicators for tree levels */
-.md-nav__item .md-nav__item::before {
-  content: "";
-  position: absolute;
-  left: 0.2rem;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background-color: var(--md-default-fg-color--lightest);
-  opacity: 0.5;
+.md-nav--primary .md-nav__item .md-nav__item .md-nav__item:not(.md-nav__item--nested) > .md-nav__link:hover {
+  padding-left: 1.7rem;
 }
 
-.md-nav__item .md-nav__item .md-nav__item::before {
-  left: 1rem;
-}
-
-.md-nav__item .md-nav__item .md-nav__item .md-nav__item::before {
-  left: 1.8rem;
+.md-nav--primary .md-nav__item .md-nav__item .md-nav__item .md-nav__item:not(.md-nav__item--nested) > .md-nav__link:hover {
+  padding-left: 2.2rem;
 }
 
 /* Current page highlight */
