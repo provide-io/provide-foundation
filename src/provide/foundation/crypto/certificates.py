@@ -554,7 +554,7 @@ class Certificate:
         return self._base.issuer.rfc4514_string()
 
     @property
-    def public_key(self) -> "PublicKey" | None:
+    def public_key(self) -> "PublicKey | None":
         """Returns the public key object from the certificate."""
         if not hasattr(self, "_base"):
             return None
