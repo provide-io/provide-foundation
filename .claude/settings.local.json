@@ -14,7 +14,8 @@
       "Bash(timeout 30s pytest --tb=no -q)",
       "Bash(curl:*)",
       "Bash(grep:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(timeout 10s pytest tests/utils/test_utils_coverage.py --tb=no -q)"
     ],
     "deny": [],
     "ask": [],
