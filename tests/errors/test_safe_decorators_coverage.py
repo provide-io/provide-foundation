@@ -168,37 +168,26 @@ class TestSafeDecoratorsCoverage:
         assert decorated_func.__name__ == original_async_func.__name__
         assert decorated_func.__doc__ == original_async_func.__doc__
 
-    def test_sync_function_with_invalid_log_level_getattr_fallback(self):
-        """Test sync function with invalid log level using getattr fallback."""
+    def test_sync_function_with_warning_log_level(self):
+        """Test sync function with warning log level (no entry logging)."""
         
-        # Mock logger to test getattr fallback behavior
-        with patch('provide.foundation.errors.safe_decorators._get_logger') as mock_get_logger:
-            mock_logger = Mock()
-            mock_logger.invalid_level = None  # Simulate invalid level
-            mock_get_logger.return_value = mock_logger
-            
-            @log_only_error_context(log_level="invalid_level", log_success=True)
-            def test_func():
-                return "test"
-            
-            result = test_func()
-            assert result == "test"
+        @log_only_error_context(log_level="warning", log_success=True)
+        def test_func():
+            return "test"
+        
+        result = test_func()
+        assert result == "test"
 
     @pytest.mark.asyncio
-    async def test_async_function_with_invalid_log_level_getattr_fallback(self):
-        """Test async function with invalid log level using getattr fallback."""
+    async def test_async_function_with_warning_log_level(self):
+        """Test async function with warning log level (no entry logging)."""
         
-        with patch('provide.foundation.errors.safe_decorators._get_logger') as mock_get_logger:
-            mock_logger = Mock()
-            mock_logger.invalid_level = None
-            mock_get_logger.return_value = mock_logger
-            
-            @log_only_error_context(log_level="invalid_level", log_success=True)
-            async def async_test_func():
-                return "async_test"
-            
-            result = await async_test_func()
-            assert result == "async_test"
+        @log_only_error_context(log_level="warning", log_success=True)
+        async def async_test_func():
+            return "async_test"
+        
+        result = await async_test_func()
+        assert result == "async_test"
 
     def test_sync_function_context_provider_exception(self):
         """Test sync function when context provider raises exception."""
