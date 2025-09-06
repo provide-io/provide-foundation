@@ -272,6 +272,8 @@ async def test_universal_client_connection_pooling():
 @pytest.mark.asyncio 
 async def test_universal_client_error_handling():
     """Test client error handling through middleware."""
+    from unittest.mock import patch, AsyncMock
+    
     client = UniversalClient()
     
     # Test with connection error

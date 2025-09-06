@@ -2,50 +2,71 @@
 Transport-specific error types.
 """
 
-from attrs import define, field
+from typing import TYPE_CHECKING
 
 from provide.foundation.errors.base import FoundationError
-from provide.foundation.transport.base import Request, Response
+
+if TYPE_CHECKING:
+    from provide.foundation.transport.base import Request, Response
 
 
-@define
 class TransportError(FoundationError):
     """Base transport error."""
     
-    request: Request | None = None
+    def __init__(
+        self, 
+        message: str,
+        *,
+        request: "Request | None" = None,
+        **kwargs
+    ):
+        super().__init__(message, **kwargs)
+        self.request = request
 
 
-@define  
 class TransportConnectionError(TransportError):
     """Transport connection failed."""
     pass
 
 
-@define
 class TransportTimeoutError(TransportError):
     """Transport request timed out."""
     pass
 
 
-@define
 class HTTPResponseError(TransportError):
     """HTTP response error (4xx/5xx status codes)."""
     
-    status_code: int = field()
-    response: Response = field()
+    def __init__(
+        self,
+        message: str,
+        *,
+        status_code: int,
+        response: "Response",
+        **kwargs
+    ):
+        super().__init__(message, **kwargs)
+        self.status_code = status_code
+        self.response = response
 
 
-@define
 class TransportConfigurationError(TransportError):
     """Transport configuration error."""
     pass
 
 
-@define
 class TransportNotFoundError(TransportError):
     """No transport found for the given URI scheme."""
     
-    scheme: str = field()
+    def __init__(
+        self,
+        message: str,
+        *,
+        scheme: str,
+        **kwargs
+    ):
+        super().__init__(message, **kwargs)
+        self.scheme = scheme
 
 
 __all__ = [

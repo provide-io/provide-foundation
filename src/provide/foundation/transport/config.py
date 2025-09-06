@@ -68,7 +68,7 @@ class HTTPConfig(TransportConfig):
             pool_connections = int(os.environ.get("HTTP_POOL_CONNECTIONS", "10"))
             pool_maxsize = int(os.environ.get("HTTP_POOL_MAXSIZE", "100"))
             follow_redirects = os.environ.get("HTTP_FOLLOW_REDIRECTS", "true").lower() == "true"
-            http2 = os.environ.get("HTTP_USE_HTTP2", "true").lower() == "true"
+            http2 = os.environ.get("HTTP_USE_HTTP2", "false").lower() == "true"
             max_redirects = int(os.environ.get("HTTP_MAX_REDIRECTS", "5"))
             
             config = cls(
