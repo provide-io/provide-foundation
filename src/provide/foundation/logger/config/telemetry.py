@@ -72,6 +72,33 @@ class TelemetryConfig(BaseConfig):
         env_var="OTEL_TRACE_SAMPLE_RATE", 
         description="Sampling rate for traces (0.0 to 1.0)",
     )
+    
+    # OpenObserve configuration
+    openobserve_url: str | None = field(
+        default=None,
+        env_var="OPENOBSERVE_URL",
+        description="OpenObserve API endpoint URL",
+    )
+    openobserve_org: str = field(
+        default="default",
+        env_var="OPENOBSERVE_ORG",
+        description="OpenObserve organization name",
+    )
+    openobserve_user: str | None = field(
+        default=None,
+        env_var="OPENOBSERVE_USER",
+        description="OpenObserve username for authentication",
+    )
+    openobserve_password: str | None = field(
+        default=None,
+        env_var="OPENOBSERVE_PASSWORD",
+        description="OpenObserve password for authentication",
+    )
+    openobserve_stream: str = field(
+        default="default",
+        env_var="OPENOBSERVE_STREAM",
+        description="Default OpenObserve stream name",
+    )
 
     @classmethod
     def from_env(cls, strict: bool = True) -> "TelemetryConfig":
@@ -122,6 +149,22 @@ class TelemetryConfig(BaseConfig):
                 if strict:
                     raise
                 # Use default value in non-strict mode
+        
+        # OpenObserve configuration
+        if openobserve_url := os.getenv("OPENOBSERVE_URL"):
+            config_dict["openobserve_url"] = openobserve_url
+        
+        if openobserve_org := os.getenv("OPENOBSERVE_ORG"):
+            config_dict["openobserve_org"] = openobserve_org
+        
+        if openobserve_user := os.getenv("OPENOBSERVE_USER"):
+            config_dict["openobserve_user"] = openobserve_user
+        
+        if openobserve_password := os.getenv("OPENOBSERVE_PASSWORD"):
+            config_dict["openobserve_password"] = openobserve_password
+        
+        if openobserve_stream := os.getenv("OPENOBSERVE_STREAM"):
+            config_dict["openobserve_stream"] = openobserve_stream
 
         # Load logging config from env
         config_dict["logging"] = LoggingConfig.from_env(strict=strict)
