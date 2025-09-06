@@ -123,20 +123,25 @@ class TestDepsCommandWithoutClick:
         """Test deps_command raises error when click not available."""
         # This test simulates when click is not installed
         import sys
+        import importlib
         old_click = sys.modules.get('click')
         sys.modules['click'] = None
         try:
-            import importlib
             import provide.foundation.cli.commands.deps as deps_module
             importlib.reload(deps_module)
             
             with pytest.raises(ImportError, match="CLI commands require optional dependencies"):
                 deps_module.deps_command()
         finally:
+            # Restore click module
             if old_click:
                 sys.modules['click'] = old_click
             else:
                 sys.modules.pop('click', None)
+            
+            # Reload the module again to restore its original state
+            import provide.foundation.cli.commands.deps as deps_module
+            importlib.reload(deps_module)
     
     def test_require_click_raises_error(self):
         """Test _require_click raises appropriate error."""
@@ -153,20 +158,25 @@ class TestDepsCommandWithoutClick:
         """Test deps_command stub ignores args and raises error."""
         # Test the stub function behavior
         import sys
+        import importlib
         old_click = sys.modules.get('click')
         sys.modules['click'] = None
         try:
-            import importlib
             import provide.foundation.cli.commands.deps as deps_module
             importlib.reload(deps_module)
             
             with pytest.raises(ImportError, match="CLI commands require optional dependencies"):
                 deps_module.deps_command("arg1", "arg2")
         finally:
+            # Restore click module
             if old_click:
                 sys.modules['click'] = old_click
             else:
                 sys.modules.pop('click', None)
+            
+            # Reload the module again to restore its original state
+            import provide.foundation.cli.commands.deps as deps_module
+            importlib.reload(deps_module)
 
 
 class TestDepsCommandDecorators:

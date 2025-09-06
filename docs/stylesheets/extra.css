@@ -124,6 +124,18 @@
   transition: all 0.3s ease;
 }
 
+/* Top-level articles (no parent sections) - should be indented like sub-articles */
+.md-nav--primary > .md-nav__list > .md-nav__item:not(.md-nav__item--nested) > .md-nav__link {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--md-default-fg-color--light);
+  padding: 0.1rem 0 0.1rem 1rem;
+  margin: 0.05rem 0;
+  background-color: transparent;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
 /* Nested articles under sub-headings - further indented */
 .md-nav--primary .md-nav__item .md-nav__item .md-nav__item:not(.md-nav__item--nested) > .md-nav__link {
   padding-left: 1.5rem;
@@ -139,7 +151,8 @@
 }
 
 /* Hover states for articles - smooth transitions with opacity-based backgrounds */
-.md-nav--primary .md-nav__item .md-nav__item:not(.md-nav__item--nested) > .md-nav__link:hover {
+.md-nav--primary .md-nav__item .md-nav__item:not(.md-nav__item--nested) > .md-nav__link:hover,
+.md-nav--primary > .md-nav__list > .md-nav__item:not(.md-nav__item--nested) > .md-nav__link:hover {
   color: var(--pf-primary);
   background-color: rgba(99, 102, 241, 0.1);
   padding-left: 1.2rem;
@@ -157,9 +170,10 @@
 
 /* Current page highlight */
 .md-nav__item--active > .md-nav__link {
-  background-color: var(--md-accent-bg-color);
+  background-color: rgba(99, 102, 241, 0.15);
   border-radius: 4px;
-  padding-left: 0.5rem;
+  color: var(--pf-primary);
+  font-weight: 500;
   border-left: 3px solid var(--pf-primary);
 }
 
