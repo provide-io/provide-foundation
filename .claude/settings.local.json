@@ -54,7 +54,8 @@
       "Bash(timeout 10s pytest tests/logger/test_setup_init_coverage.py -v)",
       "Bash(timeout 60s pytest -n auto --cov=provide.foundation --cov-branch --cov-report=term-missing --tb=no -q)",
       "Bash(timeout 10s pytest tests/logger/test_logger_config_module_coverage.py --cov=src/provide/foundation/logger/config.py --cov-report=term-missing -v)",
-      "Bash(timeout 15s pytest tests/logger/test_emoji_matrix_coverage.py -v)"
+      "Bash(timeout 15s pytest tests/logger/test_emoji_matrix_coverage.py -v)",
+      "Bash(timeout 20s pytest tests/hub/test_components_advanced_coverage.py -v)"
     ],
     "deny": [],
     "ask": [],

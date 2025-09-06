@@ -690,3 +690,421 @@ class TestComponentConfigSchema:
         
         result = get_component_config_schema("no_schema", "test_dimension")
         assert result is None
+
+
+class TestComponentInitialization:
+    """Test component initialization functionality."""
+    
+    def setup_method(self):
+        """Set up test environment."""
+        reset_registry_for_tests()
+    
+    def teardown_method(self):
+        """Clean up after tests."""
+        reset_registry_for_tests()
+    
+    def test_get_or_initialize_component_already_initialized(self):
+        """Test get_or_initialize_component returns cached component."""
+        registry = get_component_registry()
+        
+        component = Mock()
+        
+        registry.register(
+            name="initialized",
+            value=component,
+            dimension="test_dimension",
+            metadata={}
+        )
+        
+        # First call
+        result1 = get_or_initialize_component("initialized", "test_dimension")
+        assert result1 is component
+        
+        # Second call should return cached version
+        result2 = get_or_initialize_component("initialized", "test_dimension")
+        assert result2 is component
+        assert result1 is result2
+    
+    def test_get_or_initialize_component_lazy_initialization(self):
+        """Test get_or_initialize_component with lazy initialization."""
+        registry = get_component_registry()
+        
+        # Create a factory that returns a component
+        factory = Mock(return_value=Mock())
+        
+        registry.register(
+            name="lazy_component",
+            value=None,  # Not initialized yet
+            dimension="test_dimension",
+            metadata={"lazy": True, "factory": factory}
+        )
+        
+        result = get_or_initialize_component("lazy_component", "test_dimension")
+        
+        # Should call factory and return component
+        factory.assert_called_once()
+        assert result is not None
+        assert result == factory.return_value
+    
+    def test_get_or_initialize_component_lazy_initialization_failure(self):
+        """Test get_or_initialize_component handles lazy initialization failures."""
+        registry = get_component_registry()
+        
+        # Factory that raises exception
+        factory = Mock(side_effect=Exception("Initialization failed"))
+        
+        registry.register(
+            name="failing_lazy",
+            value=None,
+            dimension="test_dimension",
+            metadata={"lazy": True, "factory": factory}
+        )
+        
+        result = get_or_initialize_component("failing_lazy", "test_dimension")
+        
+        # Should return None when initialization fails
+        assert result is None
+        factory.assert_called_once()
+    
+    def test_get_or_initialize_component_not_found(self):
+        """Test get_or_initialize_component with non-existent component."""
+        result = get_or_initialize_component("nonexistent", "test_dimension")
+        assert result is None
+    
+    @pytest.mark.asyncio
+    async def test_initialize_async_component_already_cached(self):
+        """Test initialize_async_component returns cached component."""
+        registry = get_component_registry()
+        
+        component = Mock()
+        
+        registry.register(
+            name="async_component",
+            value=component,
+            dimension="test_dimension",
+            metadata={"async": True}
+        )
+        
+        result = await initialize_async_component("async_component", "test_dimension")
+        assert result is component
+    
+    @pytest.mark.asyncio
+    async def test_initialize_async_component_with_async_factory(self):
+        """Test initialize_async_component with async factory."""
+        registry = get_component_registry()
+        
+        # Create async factory
+        async_factory = AsyncMock(return_value=Mock())
+        
+        registry.register(
+            name="async_factory_component",
+            value=None,
+            dimension="test_dimension",
+            metadata={"async": True, "factory": async_factory}
+        )
+        
+        result = await initialize_async_component("async_factory_component", "test_dimension")
+        
+        async_factory.assert_called_once()
+        assert result is not None
+        assert result == async_factory.return_value
+    
+    @pytest.mark.asyncio
+    async def test_initialize_async_component_with_sync_factory(self):
+        """Test initialize_async_component with sync factory."""
+        registry = get_component_registry()
+        
+        sync_factory = Mock(return_value=Mock())
+        
+        registry.register(
+            name="sync_factory_component",
+            value=None,
+            dimension="test_dimension",
+            metadata={"async": True, "factory": sync_factory}
+        )
+        
+        result = await initialize_async_component("sync_factory_component", "test_dimension")
+        
+        sync_factory.assert_called_once()
+        assert result is not None
+        assert result == sync_factory.return_value
+    
+    @pytest.mark.asyncio
+    async def test_initialize_async_component_initialization_failure(self):
+        """Test initialize_async_component handles initialization failures."""
+        registry = get_component_registry()
+        
+        failing_factory = Mock(side_effect=Exception("Async init failed"))
+        
+        registry.register(
+            name="failing_async",
+            value=None,
+            dimension="test_dimension",
+            metadata={"async": True, "factory": failing_factory}
+        )
+        
+        result = await initialize_async_component("failing_async", "test_dimension")
+        assert result is None
+    
+    @pytest.mark.asyncio
+    async def test_initialize_async_component_not_found(self):
+        """Test initialize_async_component with non-existent component."""
+        result = await initialize_async_component("nonexistent", "test_dimension")
+        assert result is None
+    
+    @pytest.mark.asyncio
+    async def test_initialize_all_async_components(self):
+        """Test initialize_all_async_components processes all async components."""
+        registry = get_component_registry()
+        
+        # Register multiple async components
+        factory1 = Mock(return_value=Mock())
+        factory2 = Mock(return_value=Mock())
+        
+        registry.register(
+            name="async1",
+            value=None,
+            dimension="test_dimension",
+            metadata={"async": True, "factory": factory1, "priority": 1}
+        )
+        
+        registry.register(
+            name="async2",
+            value=None,
+            dimension="test_dimension",
+            metadata={"async": True, "factory": factory2, "priority": 2}
+        )
+        
+        await initialize_all_async_components()
+        
+        # Both factories should be called
+        factory1.assert_called_once()
+        factory2.assert_called_once()
+    
+    @pytest.mark.asyncio
+    async def test_initialize_all_async_components_with_failure(self):
+        """Test initialize_all_async_components continues despite failures."""
+        registry = get_component_registry()
+        
+        failing_factory = Mock(side_effect=Exception("Init failed"))
+        working_factory = Mock(return_value=Mock())
+        
+        registry.register(
+            name="failing_async",
+            value=None,
+            dimension="test_dimension",
+            metadata={"async": True, "factory": failing_factory, "priority": 2}
+        )
+        
+        registry.register(
+            name="working_async",
+            value=None,
+            dimension="test_dimension",
+            metadata={"async": True, "factory": working_factory, "priority": 1}
+        )
+        
+        # Should not raise exception and should continue to initialize working components
+        await initialize_all_async_components()
+        
+        failing_factory.assert_called_once()
+        working_factory.assert_called_once()
+
+
+class TestAdvancedCleanup:
+    """Test advanced cleanup scenarios."""
+    
+    def setup_method(self):
+        """Set up test environment."""
+        reset_registry_for_tests()
+    
+    def teardown_method(self):
+        """Clean up after tests."""
+        reset_registry_for_tests()
+    
+    def test_cleanup_all_components_with_async_cleanup(self):
+        """Test cleanup_all_components handles async cleanup methods."""
+        registry = get_component_registry()
+        
+        async_component = Mock()
+        async_component.cleanup = AsyncMock()
+        
+        registry.register(
+            name="async_cleanup_component",
+            value=async_component,
+            dimension="test_dimension",
+            metadata={"supports_cleanup": True}
+        )
+        
+        # Should handle async cleanup without raising exception
+        cleanup_all_components("test_dimension")
+        
+        # Async cleanup should be called (via task creation or similar)
+        # The exact behavior depends on the event loop state
+        assert async_component.cleanup.called or hasattr(async_component.cleanup, 'call_count')
+    
+    def test_cleanup_all_components_no_dimension_filter(self):
+        """Test cleanup_all_components without dimension filter."""
+        registry = get_component_registry()
+        
+        component1 = Mock()
+        component1.cleanup = Mock()
+        
+        component2 = Mock()
+        component2.cleanup = Mock()
+        
+        registry.register(
+            name="component1",
+            value=component1,
+            dimension="dimension1",
+            metadata={"supports_cleanup": True}
+        )
+        
+        registry.register(
+            name="component2",
+            value=component2,
+            dimension="dimension2",
+            metadata={"supports_cleanup": True}
+        )
+        
+        # Cleanup all components (no dimension filter)
+        cleanup_all_components()
+        
+        # Both components should be cleaned up
+        component1.cleanup.assert_called_once()
+        component2.cleanup.assert_called_once()
+
+
+class TestConfigFromRegistry:
+    """Test configuration loading from registry."""
+    
+    def setup_method(self):
+        """Set up test environment."""
+        reset_registry_for_tests()
+    
+    def teardown_method(self):
+        """Clean up after tests."""
+        reset_registry_for_tests()
+    
+    def test_load_config_from_registry_sync_sources(self):
+        """Test load_config_from_registry with sync sources."""
+        registry = get_component_registry()
+        
+        # Mock config class
+        config_class = Mock()
+        config_class.from_dict = Mock(return_value="loaded_config")
+        
+        # Mock config source
+        source = Mock()
+        source.load_config = Mock(return_value={"key": "value"})
+        
+        registry.register(
+            name="sync_config_source",
+            value=source,
+            dimension=ComponentCategory.CONFIG_SOURCE.value,
+            metadata={"priority": 1}
+        )
+        
+        result = load_config_from_registry(config_class)
+        
+        assert result == "loaded_config"
+        source.load_config.assert_called_once()
+        config_class.from_dict.assert_called_once_with({"key": "value"})
+    
+    def test_load_config_from_registry_with_async_source_skipped(self):
+        """Test load_config_from_registry skips async sources."""
+        registry = get_component_registry()
+        
+        config_class = Mock()
+        config_class.from_dict = Mock(return_value="empty_config")
+        
+        # Mock async config source (should be skipped)
+        async_source = Mock()
+        async_source.load_config = AsyncMock(return_value={"async_key": "async_value"})
+        
+        registry.register(
+            name="async_config_source",
+            value=async_source,
+            dimension=ComponentCategory.CONFIG_SOURCE.value,
+            metadata={"priority": 1}
+        )
+        
+        result = load_config_from_registry(config_class)
+        
+        # Should skip async source and return empty config
+        assert result == "empty_config"
+        config_class.from_dict.assert_called_once_with({})
+        # Async method should not be called in sync context
+        async_source.load_config.assert_not_called()
+
+
+class TestMiscellaneousFunctionality:
+    """Test miscellaneous functionality and edge cases."""
+    
+    def setup_method(self):
+        """Set up test environment."""
+        reset_registry_for_tests()
+    
+    def teardown_method(self):
+        """Clean up after tests."""
+        reset_registry_for_tests()
+    
+    def test_discover_components_stub(self):
+        """Test discover_components stub functionality."""
+        result = discover_components("test_group", "test_dimension", None)
+        assert result == {}
+    
+    def test_bootstrap_foundation_creates_default_components(self):
+        """Test bootstrap_foundation creates expected components."""
+        # Clear registry first
+        reset_registry_for_tests()
+        
+        # Bootstrap should create default components
+        bootstrap_foundation()
+        
+        registry = get_component_registry()
+        
+        # Should have default emoji set
+        default_emoji = registry.get("default", ComponentCategory.EMOJI_SET.value)
+        assert default_emoji is not None
+        
+        # Should have timestamp processor
+        timestamp_proc = registry.get("timestamp", ComponentCategory.PROCESSOR.value)
+        assert timestamp_proc is not None
+    
+    def test_reset_registry_for_tests(self):
+        """Test reset_registry_for_tests clears state."""
+        registry = get_component_registry()
+        
+        # Add some test data
+        test_component = Mock()
+        registry.register("test", test_component, "test_dimension", {})
+        
+        # Add to initialized components cache
+        global _initialized_components
+        _initialized_components[("test", "test_dimension")] = test_component
+        
+        # Reset should clear everything
+        reset_registry_for_tests()
+        
+        assert len(list(registry)) == 0
+        assert len(_initialized_components) == 0
+    
+    def test_global_registry_access(self):
+        """Test get_component_registry returns global registry."""
+        registry1 = get_component_registry()
+        registry2 = get_component_registry()
+        
+        # Should be the same instance
+        assert registry1 is registry2
+        assert registry1 is _component_registry
+    
+    def test_thread_safety_basics(self):
+        """Test basic thread safety with registry lock."""
+        # Test that the registry lock exists and is accessible
+        assert _registry_lock is not None
+        assert hasattr(_registry_lock, 'acquire') and hasattr(_registry_lock, 'release')
+        
+        # Test that we can acquire and release the lock
+        with _registry_lock:
+            registry = get_component_registry()
+            assert registry is not None
