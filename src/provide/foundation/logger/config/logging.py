@@ -120,6 +120,21 @@ class LoggingConfig(BaseConfig):
         env_var="PROVIDE_LOG_RATE_LIMIT_SUMMARY_INTERVAL",
         description="Seconds between rate limit summary reports",
     )
+    rate_limit_max_queue_size: int = field(
+        default=1000,
+        env_var="PROVIDE_LOG_RATE_LIMIT_MAX_QUEUE_SIZE",
+        description="Maximum number of logs to queue when rate limited",
+    )
+    rate_limit_max_memory_mb: float | None = field(
+        default=None,
+        env_var="PROVIDE_LOG_RATE_LIMIT_MAX_MEMORY_MB",
+        description="Maximum memory (MB) for queued logs",
+    )
+    rate_limit_overflow_policy: str = field(
+        default="drop_oldest",
+        env_var="PROVIDE_LOG_RATE_LIMIT_OVERFLOW_POLICY",
+        description="Policy when queue is full: drop_oldest, drop_newest, or block",
+    )
 
     @classmethod
     def from_env(cls, strict: bool = True) -> "LoggingConfig":
@@ -261,6 +276,40 @@ class LoggingConfig(BaseConfig):
                         config_key="PROVIDE_LOG_RATE_LIMIT_SUMMARY_INTERVAL",
                         invalid_value=summary_interval,
                     )
+        
+        if max_queue := os.getenv("PROVIDE_LOG_RATE_LIMIT_MAX_QUEUE_SIZE"):
+            try:
+                config_dict["rate_limit_max_queue_size"] = int(max_queue)
+            except ValueError:
+                if strict:
+                    get_config_logger().warning(
+                        "[Foundation Config Warning] Invalid max queue size",
+                        config_key="PROVIDE_LOG_RATE_LIMIT_MAX_QUEUE_SIZE",
+                        invalid_value=max_queue,
+                    )
+        
+        if max_memory := os.getenv("PROVIDE_LOG_RATE_LIMIT_MAX_MEMORY_MB"):
+            try:
+                config_dict["rate_limit_max_memory_mb"] = float(max_memory)
+            except ValueError:
+                if strict:
+                    get_config_logger().warning(
+                        "[Foundation Config Warning] Invalid max memory",
+                        config_key="PROVIDE_LOG_RATE_LIMIT_MAX_MEMORY_MB",
+                        invalid_value=max_memory,
+                    )
+        
+        if overflow_policy := os.getenv("PROVIDE_LOG_RATE_LIMIT_OVERFLOW_POLICY"):
+            valid_policies = ("drop_oldest", "drop_newest", "block")
+            if overflow_policy in valid_policies:
+                config_dict["rate_limit_overflow_policy"] = overflow_policy
+            elif strict:
+                get_config_logger().warning(
+                    "[Foundation Config Warning] Invalid overflow policy",
+                    config_key="PROVIDE_LOG_RATE_LIMIT_OVERFLOW_POLICY",
+                    invalid_value=overflow_policy,
+                    valid_options=list(valid_policies),
+                )
 
         # Parse complex fields
         if module_levels := os.getenv("PROVIDE_LOG_MODULE_LEVELS"):

@@ -181,12 +181,22 @@ class GlobalRateLimiter:
         self.global_rate = None
         self.global_capacity = None
         self.per_logger_rates: dict[str, tuple[float, float]] = {}
+        
+        # Queue configuration
+        self.use_buffered = False
+        self.max_queue_size = 1000
+        self.max_memory_mb = None
+        self.overflow_policy = "drop_oldest"
     
     def configure(
         self, 
         global_rate: float | None = None,
         global_capacity: float | None = None,
-        per_logger_rates: dict[str, tuple[float, float]] | None = None
+        per_logger_rates: dict[str, tuple[float, float]] | None = None,
+        use_buffered: bool = False,
+        max_queue_size: int = 1000,
+        max_memory_mb: float | None = None,
+        overflow_policy: str = "drop_oldest",
     ):
         """
         Configure the global rate limiter.
@@ -195,12 +205,31 @@ class GlobalRateLimiter:
             global_rate: Global logs per second limit
             global_capacity: Global burst capacity
             per_logger_rates: Dict of logger_name -> (rate, capacity) tuples
+            use_buffered: Use buffered rate limiter with tracking
+            max_queue_size: Maximum queue size for buffered limiter
+            max_memory_mb: Maximum memory for buffered limiter
+            overflow_policy: What to do when queue is full
         """
         with self.lock:
+            self.use_buffered = use_buffered
+            self.max_queue_size = max_queue_size
+            self.max_memory_mb = max_memory_mb
+            self.overflow_policy = overflow_policy
+            
             if global_rate is not None and global_capacity is not None:
                 self.global_rate = global_rate
                 self.global_capacity = global_capacity
-                self.global_limiter = SyncRateLimiter(global_capacity, global_rate)
+                
+                if use_buffered:
+                    from provide.foundation.logger.ratelimit.queue_limiter import BufferedRateLimiter
+                    self.global_limiter = BufferedRateLimiter(
+                        capacity=global_capacity,
+                        refill_rate=global_rate,
+                        buffer_size=max_queue_size,
+                        track_dropped=True,
+                    )
+                else:
+                    self.global_limiter = SyncRateLimiter(global_capacity, global_rate)
             
             if per_logger_rates:
                 self.per_logger_rates = per_logger_rates
@@ -208,12 +237,13 @@ class GlobalRateLimiter:
                 for logger_name, (rate, capacity) in per_logger_rates.items():
                     self.logger_limiters[logger_name] = SyncRateLimiter(capacity, rate)
     
-    def is_allowed(self, logger_name: str) -> tuple[bool, str | None]:
+    def is_allowed(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
         """
         Check if a log from a specific logger is allowed.
         
         Args:
             logger_name: Name of the logger
+            item: Optional item for buffered tracking
             
         Returns:
             Tuple of (allowed, reason) where reason is set if denied
@@ -226,8 +256,17 @@ class GlobalRateLimiter:
             
             # Check global limit
             if self.global_limiter:
-                if not self.global_limiter.is_allowed():
-                    return False, "Global rate limit exceeded"
+                if self.use_buffered:
+                    # BufferedRateLimiter returns tuple
+                    from provide.foundation.logger.ratelimit.queue_limiter import BufferedRateLimiter
+                    if isinstance(self.global_limiter, BufferedRateLimiter):
+                        allowed, reason = self.global_limiter.is_allowed(item)
+                        if not allowed:
+                            return False, reason or "Global rate limit exceeded"
+                else:
+                    # SyncRateLimiter returns bool
+                    if not self.global_limiter.is_allowed():
+                        return False, "Global rate limit exceeded"
             
             return True, None
     

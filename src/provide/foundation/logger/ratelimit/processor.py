@@ -64,8 +64,8 @@ class RateLimiterProcessor:
         """
         logger_name = event_dict.get("logger_name", "unknown")
         
-        # Check if this log is allowed
-        allowed, reason = self.rate_limiter.is_allowed(logger_name)
+        # Check if this log is allowed (pass event_dict for tracking)
+        allowed, reason = self.rate_limiter.is_allowed(logger_name, event_dict)
         
         if not allowed:
             # Track suppressed count
@@ -159,6 +159,9 @@ def create_rate_limiter_processor(
     per_logger_rates: dict[str, tuple[float, float]] | None = None,
     emit_warnings: bool = True,
     summary_interval: float = 5.0,
+    max_queue_size: int = 1000,
+    max_memory_mb: float | None = None,
+    overflow_policy: str = "drop_oldest",
 ) -> RateLimiterProcessor:
     """
     Factory function to create and configure a rate limiter processor.
@@ -169,6 +172,9 @@ def create_rate_limiter_processor(
         per_logger_rates: Dict of logger_name -> (rate, capacity) tuples
         emit_warnings: Whether to emit warnings when rate limited
         summary_interval: Seconds between rate limit summary reports
+        max_queue_size: Maximum queue size when buffering
+        max_memory_mb: Maximum memory for buffered logs
+        overflow_policy: Policy when queue is full
         
     Returns:
         Configured RateLimiterProcessor instance
@@ -178,11 +184,18 @@ def create_rate_limiter_processor(
         summary_interval_seconds=summary_interval
     )
     
+    # Determine if we should use buffered rate limiting
+    use_buffered = max_queue_size > 0 and overflow_policy in ("drop_oldest", "drop_newest")
+    
     # Configure the global rate limiter
     processor.rate_limiter.configure(
         global_rate=global_rate,
         global_capacity=global_capacity,
         per_logger_rates=per_logger_rates,
+        use_buffered=use_buffered,
+        max_queue_size=max_queue_size,
+        max_memory_mb=max_memory_mb,
+        overflow_policy=overflow_policy,
     )
     
     return processor
