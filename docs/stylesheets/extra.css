@@ -1,5 +1,8 @@
 /* Custom CSS for provide.foundation Documentation */
 
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+
 /* Color Variables */
 :root {
   --pf-primary: #6366f1;  /* Indigo */
@@ -23,6 +26,17 @@
 .md-typeset {
   font-size: 0.9rem;
   line-height: 1.7;
+}
+
+/* Headings using Chakra Petch */
+.md-typeset h1, .md-typeset .h1,
+.md-typeset h2, .md-typeset .h2,
+.md-typeset h3, .md-typeset .h3,
+.md-typeset h4, .md-typeset .h4,
+.md-typeset h5, .md-typeset .h5,
+.md-typeset h6, .md-typeset .h6 {
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: bold;
 }
 
 .md-typeset h1 {
@@ -174,7 +188,18 @@
   border-radius: 4px;
   color: var(--pf-primary);
   font-weight: 500;
-  border-left: 3px solid var(--pf-primary);
+  position: relative;
+}
+
+.md-nav__item--active > .md-nav__link::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: var(--pf-primary);
+  border-radius: 0 2px 2px 0;
 }
 
 /* Tabs Styling */
