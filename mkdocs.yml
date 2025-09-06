@@ -12,6 +12,7 @@ theme:
   name: material
   language: en
   custom_dir: overrides
+  logo: assets/images/logo.svg
   
   palette:
     # Light mode
@@ -83,8 +84,6 @@ extra_javascript:
   - javascripts/mermaid-init.js
 
 nav:
-  - Home: index.md
-  
   - Getting Started:
     - getting-started/index.md
     - Installation: getting-started/installation.md
@@ -97,7 +96,7 @@ nav:
     - Core Concepts:
       - guide/concepts/index.md
       - Structured Logging: guide/concepts/structured-logging.md
-      - Emoji Sets: guide/concepts/semantic-layers.md
+      - Emoji Sets: guide/concepts/emoji-sets.md
       - Emoji System: guide/concepts/emoji-system.md
       - Domain-Action-Status Pattern: guide/concepts/das-pattern.md
       - Performance: guide/concepts/performance.md
@@ -116,7 +115,6 @@ nav:
       - Performance Tuning: guide/logging/performance.md
     - CLI Framework:
       - guide/cli/index.md
-      - Console I/O: docs/guides/console-io.md
 
   - API Reference:
     - api/index.md
@@ -129,31 +127,14 @@ nav:
     - Crypto: api/crypto/index.md
     - Console I/O: api/utils/console.md
     - Utilities: api/utils/index.md
-  
-  - Cookbook:
-    - cookbook/index.md
-    - Recipes:
-      - cookbook/recipes/index.md
-      - OpenTelemetry: cookbook/recipes/opentelemetry.md
-    - Patterns: cookbook/patterns/index.md
-    - Examples: cookbook/examples/index.md
 
   - Architecture:
     - architecture/index.md
-    - Emoji Sets: architecture/semantic-layers.md
-    - Design Decisions:
-      - architecture/decisions/index.md
-      - Emoji Sets: architecture/decisions/semantic-layers.md
+    - Emoji System: architecture/emoji-system.md
+    - Performance: architecture/performance.md
+    - Telemetry Format: architecture/telemetry-format.md
 
   - Development:
     - development/index.md
     - Contributing: development/contributing.md
     - CI/CD: development/ci-cd.md
-    - Local Testing (act): development/testing/act.md
-
-  - Troubleshooting:
-    - troubleshooting/index.md
-    - FAQ: troubleshooting/faq.md
-    - Common Issues: troubleshooting/common.md
-    - Configuration: troubleshooting/configuration.md
-    - Platform Specific: troubleshooting/platforms/index.md

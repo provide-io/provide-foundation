@@ -86,7 +86,12 @@
       "Bash(for bad_page in \"cookbook/\" \"troubleshooting/\" \"architecture/semantic-layers/\")",
       "Bash(uv pip install:*)",
       "Read(//private/tmp/**)",
-      "Bash(kill:*)"
+      "Bash(kill:*)",
+      "Bash(for file in \"guide/concepts/emoji-sets.md\" \"guide/config/runtime.md\" \"architecture/emoji-system.md\" \"architecture/performance.md\" \"architecture/telemetry-format.md\")",
+      "Bash(if [ -f \"docs/$file\" ])",
+      "Bash(then)",
+      "Bash(else)",
+      "Bash(fi)"
     ],
     "deny": [],
     "ask": [],

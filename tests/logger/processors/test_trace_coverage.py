@@ -297,7 +297,7 @@ class TestTraceProcessorLogging:
     """Test logging behavior in trace processor."""
     
     def test_debug_logging_on_successful_otel_injection(self):
-        """Test debug logging when OpenTelemetry trace is injected."""
+        """Test successful OpenTelemetry trace injection (no internal logging)."""
         from provide.foundation.logger.processors.trace import inject_trace_context
         
         mock_span = Mock()
@@ -312,37 +312,34 @@ class TestTraceProcessorLogging:
             with patch('provide.foundation.logger.processors.trace.otel_trace') as mock_otel:
                 mock_otel.get_current_span.return_value = mock_span
                 
-                with patch('provide.foundation.logger.processors.trace.log') as mock_log:
-                    event_dict = {'event': 'test'}
-                    inject_trace_context(None, 'info', event_dict)
-                    
-                    # Check debug logging was called
-                    mock_log.debug.assert_called_with(
-                        "🔍📝 Injected OpenTelemetry trace context into log"
-                    )
+                event_dict = {'event': 'test'}
+                result = inject_trace_context(None, 'info', event_dict)
+                
+                # Check trace context was injected
+                assert 'trace_id' in result
+                assert 'span_id' in result
+                assert result['trace_id'] == f"{0x123:032x}"
+                assert result['span_id'] == f"{0x456:016x}"
     
     def test_debug_logging_on_otel_failure(self):
-        """Test debug logging when OpenTelemetry fails."""
+        """Test OpenTelemetry failure handling (fallback to Foundation tracer)."""
         from provide.foundation.logger.processors.trace import inject_trace_context
         
         with patch('provide.foundation.logger.processors.trace._HAS_OTEL', True):
             with patch('provide.foundation.logger.processors.trace.otel_trace') as mock_otel:
                 mock_otel.get_current_span.side_effect = ValueError("Test error")
                 
-                with patch('provide.foundation.logger.processors.trace.log') as mock_log:
-                    with patch('provide.foundation.tracer.context.get_current_trace_id',
-                              return_value=None):
-                        event_dict = {'event': 'test'}
-                        inject_trace_context(None, 'info', event_dict)
-                        
-                        # Check debug logging was called with error
-                        mock_log.debug.assert_called()
-                        call_args = mock_log.debug.call_args[0][0]
-                        assert "Failed to get OpenTelemetry trace context" in call_args
-                        assert "Test error" in call_args
+                with patch('provide.foundation.tracer.context.get_current_trace_id',
+                          return_value="foundation_trace_123"):
+                    event_dict = {'event': 'test'}
+                    result = inject_trace_context(None, 'info', event_dict)
+                    
+                    # Check fallback to Foundation tracer worked
+                    assert 'trace_id' in result
+                    assert result['trace_id'] == 'foundation_trace_123'
     
     def test_debug_logging_on_foundation_injection(self):
-        """Test debug logging when Foundation trace is injected."""
+        """Test successful Foundation trace injection (no internal logging)."""
         from provide.foundation.logger.processors.trace import inject_trace_context
         
         with patch('provide.foundation.logger.processors.trace._HAS_OTEL', False):
@@ -354,28 +351,26 @@ class TestTraceProcessorLogging:
                       return_value='trace-123'):
                 with patch('provide.foundation.tracer.context.get_current_span',
                           return_value=mock_span):
-                    with patch('provide.foundation.logger.processors.trace.log') as mock_log:
-                        event_dict = {'event': 'test'}
-                        inject_trace_context(None, 'info', event_dict)
-                        
-                        # Check debug logging was called
-                        mock_log.debug.assert_called_with(
-                            "🔍📝 Injected Foundation trace context into log"
-                        )
+                    event_dict = {'event': 'test'}
+                    result = inject_trace_context(None, 'info', event_dict)
+                    
+                    # Check Foundation trace context was injected
+                    assert 'trace_id' in result
+                    assert 'span_id' in result
+                    assert result['trace_id'] == 'trace-123'
+                    assert result['span_id'] == 'span-456'
     
     def test_debug_logging_on_foundation_failure(self):
-        """Test debug logging when Foundation tracer fails."""
+        """Test Foundation tracer failure handling (no internal logging)."""
         from provide.foundation.logger.processors.trace import inject_trace_context
         
         with patch('provide.foundation.logger.processors.trace._HAS_OTEL', False):
             with patch('provide.foundation.tracer.context.get_current_trace_id',
                       side_effect=RuntimeError("Foundation error")):
-                with patch('provide.foundation.logger.processors.trace.log') as mock_log:
-                    event_dict = {'event': 'test'}
-                    inject_trace_context(None, 'info', event_dict)
-                    
-                    # Check debug logging was called with error
-                    mock_log.debug.assert_called()
-                    call_args = mock_log.debug.call_args[0][0]
-                    assert "Failed to get Foundation trace context" in call_args
-                    assert "Foundation error" in call_args
+                event_dict = {'event': 'test'}
+                result = inject_trace_context(None, 'info', event_dict)
+                
+                # Check that no trace context was injected due to error
+                assert 'trace_id' not in result or result.get('trace_id') is None
+                # Should still return the original event dict
+                assert result['event'] == 'test'
