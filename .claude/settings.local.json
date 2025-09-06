@@ -36,7 +36,8 @@
       "Bash(timeout 10s pytest --cov=src/provide/foundation/hub/manager.py --cov-report=term-missing tests/ -k \"hub\" --tb=no -q)",
       "Bash(timeout 15s pytest tests/hub/test_hub_manager_coverage.py -v)",
       "Bash(timeout 10s pytest tests/hub/test_hub_manager_coverage.py -v)",
-      "Bash(timeout 20s pytest tests/process/test_process_runner_coverage.py -v)"
+      "Bash(timeout 20s pytest tests/process/test_process_runner_coverage.py -v)",
+      "Bash(timeout 10s pytest tests/process/test_process_runner_coverage.py -v)"
     ],
     "deny": [],
     "ask": [],
