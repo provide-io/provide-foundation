@@ -164,7 +164,14 @@ def perr(message, **kwargs) -> None:
         bold = kwargs.get("bold", False)
         dim = kwargs.get("dim", False)
 
-        if (color or bold or dim) and _should_use_color(ctx, sys.stderr):
-            click.secho(output, fg=color, bold=bold, dim=dim, err=True, nl=nl)
+        if _HAS_CLICK:
+            if (color or bold or dim) and _should_use_color(ctx, sys.stderr):
+                click.secho(output, fg=color, bold=bold, dim=dim, err=True, nl=nl)
+            else:
+                click.echo(output, err=True, nl=nl)
         else:
-            click.echo(output, err=True, nl=nl)
+            # Fallback to standard Python print
+            if nl:
+                print(output, file=sys.stderr)
+            else:
+                print(output, file=sys.stderr, end="")
