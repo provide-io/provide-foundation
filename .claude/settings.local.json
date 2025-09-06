@@ -21,7 +21,8 @@
       "Bash(timeout 10s pytest tests/logger/test_config_coverage.py::TestLoggingConfigCoverage -v)",
       "Bash(timeout 15s pytest tests/process/test_lifecycle.py --tb=short -v)",
       "Bash(timeout 15s pytest tests/process/ --tb=no -q)",
-      "Bash(timeout 10s pytest tests/platform/test_platform_coverage.py --tb=no -q)"
+      "Bash(timeout 10s pytest tests/platform/test_platform_coverage.py --tb=no -q)",
+      "Bash(timeout 10s pytest tests/streams/test_console_coverage.py --tb=no -q)"
     ],
     "deny": [],
     "ask": [],
