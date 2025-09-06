@@ -256,28 +256,22 @@ class TestDogfoodingPerformance:
         # Performance validated by benchmark output - setup completes quickly
 
     def test_core_setup_logger_performance(self, benchmark):
-        """Benchmark the core setup logger with structured fields."""
-        config = TelemetryConfig(
-            logging=LoggingConfig(
-                foundation_setup_log_level="DEBUG",
+        """Benchmark the Foundation setup process with structured logging."""
+        def foundation_setup_cycle():
+            """Test the Foundation setup/reset cycle performance."""
+            reset_foundation_setup_for_testing()
+            config = TelemetryConfig(
+                logging=LoggingConfig(
+                    foundation_setup_log_level="DEBUG",
+                )
             )
-        )
+            with capture_logs():
+                setup_telemetry(config)
+
+        # The benchmark fixture handles timing and statistical analysis
+        benchmark(foundation_setup_cycle)
         
-        with capture_logs():
-            setup_telemetry(config)
-            
-            # Import core setup logger to test directly
-            from provide.foundation.core import _core_setup_logger
-
-            def core_logger_messages():
-                """Test core setup logger performance."""
-                for i in range(100):
-                    _core_setup_logger.debug(f"Setup message {i}")
-
-            # The benchmark fixture handles timing and statistical analysis
-            benchmark(core_logger_messages)
-            
-            # Performance validated by benchmark output - core logger maintains speed
+        # Performance validated by benchmark output - setup cycle maintains speed
 
 
 class TestLargePayloadPerformance:
