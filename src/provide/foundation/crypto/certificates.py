@@ -356,11 +356,11 @@ class Certificate:
 
     def _create_x509_certificate(
         self,
-        issuer_name_override: x509.Name | None = None,
-        signing_key_override: KeyPair | None = None,
+        issuer_name_override: "x509.Name | None" = None,
+        signing_key_override: "KeyPair | None" = None,
         is_ca: bool = False,
         is_client_cert: bool = False,
-    ) -> X509Certificate:
+    ) -> "X509Certificate":
         """Internal helper to build and sign the X.509 certificate object."""
         if not hasattr(self, "_base"):
             raise CertificateError("Cannot create certificate without base information")
