@@ -270,9 +270,14 @@ class TestProcessorRegistration:
 
     def test_processor_pipeline_ordering(self):
         """Processors must be executed in priority order."""
-        from provide.foundation.hub.components import get_processor_pipeline
+        from provide.foundation.hub.components import get_processor_pipeline, bootstrap_foundation
         
         pipeline = get_processor_pipeline()
+        
+        # If pipeline is empty (due to test isolation), re-bootstrap
+        if len(pipeline) == 0:
+            bootstrap_foundation()
+            pipeline = get_processor_pipeline()
         
         # Pipeline should be ordered by priority
         assert len(pipeline) > 0
