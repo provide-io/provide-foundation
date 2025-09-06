@@ -13,7 +13,8 @@
       "Bash(mkdocs build:*)",
       "Bash(timeout 30s pytest --tb=no -q)",
       "Bash(curl:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": [],
