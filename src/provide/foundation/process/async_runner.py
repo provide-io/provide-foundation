@@ -17,6 +17,17 @@ from provide.foundation.process.runner import (
 plog = get_logger(__name__)
 
 
+def _filter_subprocess_kwargs(kwargs: dict) -> dict:
+    """Filter kwargs to only include valid subprocess parameters."""
+    valid_subprocess_kwargs = {
+        'stdin', 'stdout', 'stderr', 'shell', 'cwd', 'env', 'universal_newlines', 
+        'startupinfo', 'creationflags', 'restore_signals', 'start_new_session',
+        'pass_fds', 'encoding', 'errors', 'text', 'executable', 'preexec_fn',
+        'close_fds', 'group', 'extra_groups', 'user', 'umask'
+    }
+    return {k: v for k, v in kwargs.items() if k in valid_subprocess_kwargs}
+
+
 async def async_run_command(
     cmd: list[str] | str,
     cwd: str | Path | None = None,
@@ -74,7 +85,7 @@ async def async_run_command(
                 stdout=asyncio.subprocess.PIPE if capture_output else None,
                 stderr=asyncio.subprocess.PIPE if capture_output else None,
                 stdin=asyncio.subprocess.PIPE if input else None,
-                **{k: v for k, v in kwargs.items() if k != "shell"},
+                **_filter_subprocess_kwargs(kwargs),
             )
         else:
             # For non-shell commands, use create_subprocess_exec with unpacked args
@@ -85,7 +96,7 @@ async def async_run_command(
                 stdout=asyncio.subprocess.PIPE if capture_output else None,
                 stderr=asyncio.subprocess.PIPE if capture_output else None,
                 stdin=asyncio.subprocess.PIPE if input else None,
-                **{k: v for k, v in kwargs.items() if k != "shell"},
+                **_filter_subprocess_kwargs(kwargs),
             )
 
         # Communicate with process
@@ -216,7 +227,7 @@ async def async_stream_command(
             env=run_env,
             stdout=asyncio.subprocess.PIPE,
             stderr=stderr_handling,
-            **kwargs,
+            **_filter_subprocess_kwargs(kwargs),
         )
 
         # Stream output with optional timeout
