@@ -24,7 +24,13 @@ def configure_file_logging(log_file_path: str | None) -> None:
     """
     global _PROVIDE_LOG_STREAM, _LOG_FILE_HANDLE
     
+    # Import here to avoid circular dependency
+    from provide.foundation.streams.core import _is_in_click_testing
+    
     with _STREAM_LOCK:
+        # Don't modify streams if we're in Click testing context
+        if _is_in_click_testing():
+            return
         # Close existing file handle if it exists
         if _LOG_FILE_HANDLE and _LOG_FILE_HANDLE is not _PROVIDE_LOG_STREAM:
             try:
