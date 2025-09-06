@@ -26,13 +26,14 @@ def _get_logger():
 
 
 def with_error_handling(
+    func: F | None = None,
     *,
     fallback: Any = None,
     log_errors: bool = True,
     context_provider: Callable[[], dict[str, Any]] | None = None,
     error_mapper: Callable[[Exception], Exception] | None = None,
     suppress: tuple[type[Exception], ...] | None = None,
-) -> Callable[[F], F]:
+) -> Callable[[F], F] | F:
     """Decorator for automatic error handling with logging.
 
     Args:
@@ -138,7 +139,13 @@ def with_error_handling(
 
             return wrapper  # type: ignore
 
-    return decorator
+    # Support both @with_error_handling and @with_error_handling(...) forms
+    if func is None:
+        # Called as @with_error_handling(...) with arguments
+        return decorator
+    else:
+        # Called as @with_error_handling (no parentheses)
+        return decorator(func)
 
 
 def retry_on_error(
