@@ -1,4 +1,6 @@
-## Thread-Local Context
+# Threading and Concurrency
+
+Managing context in concurrent environments and across thread boundaries.
 
 ### Thread Context Manager
 

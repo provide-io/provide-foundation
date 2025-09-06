@@ -1,6 +1,6 @@
-# Context Management
+# Basic Context Binding
 
-Advanced context propagation and management patterns for provide.foundation logging.
+Fundamental context operations and simple context management patterns.
 
 ## Overview
 
