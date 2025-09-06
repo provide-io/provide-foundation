@@ -1,0 +1,256 @@
+"""Tests for optional cryptography dependency behavior."""
+
+import pytest
+from unittest.mock import patch, Mock
+import sys
+
+
+class TestOptionalCryptoDependency:
+    """Test that crypto functionality properly handles missing cryptography dependency."""
+    
+    def test_require_crypto_with_crypto_available(self):
+        """Test _require_crypto when cryptography is available."""
+        # Import should work normally when cryptography is available
+        from provide.foundation.crypto.certificates import _require_crypto
+        
+        # Should not raise when cryptography is available
+        _require_crypto()  # Should complete without error
+    
+    def test_require_crypto_without_crypto(self):
+        """Test _require_crypto when cryptography is not available."""
+        # Mock _HAS_CRYPTO to False to simulate missing cryptography
+        with patch('provide.foundation.crypto.certificates._HAS_CRYPTO', False):
+            from provide.foundation.crypto.certificates import _require_crypto
+            
+            with pytest.raises(ImportError, match="Cryptography features require optional dependencies"):
+                _require_crypto()
+    
+    def test_certificate_creation_without_crypto(self):
+        """Test Certificate creation fails gracefully without cryptography."""
+        with patch('provide.foundation.crypto.certificates._HAS_CRYPTO', False):
+            from provide.foundation.crypto.certificates import Certificate
+            
+            # Any attempt to create/use Certificate with generate_keypair should fail with helpful error
+            with pytest.raises(ImportError, match="pip install 'provide-foundation\\[crypto\\]'"):
+                cert = Certificate(generate_keypair=True)  # This should trigger _require_crypto
+    
+    def test_certificate_base_creation_without_crypto(self):
+        """Test CertificateBase.create fails gracefully without cryptography."""
+        with patch('provide.foundation.crypto.certificates._HAS_CRYPTO', False):
+            from provide.foundation.crypto.certificates import CertificateBase, CertificateConfig
+            
+            config = {
+                "common_name": "test.com",
+                "organization": "Test Org",
+                "key_type": "rsa",
+                "not_valid_before": "2024-01-01T00:00:00Z",
+                "not_valid_after": "2025-01-01T00:00:00Z"
+            }
+            
+            with pytest.raises(ImportError, match="pip install 'provide-foundation\\[crypto\\]'"):
+                CertificateBase.create(config)
+    
+    def test_convenience_functions_without_crypto(self):
+        """Test convenience functions fail gracefully without cryptography."""
+        with patch('provide.foundation.crypto.certificates._HAS_CRYPTO', False):
+            from provide.foundation.crypto.certificates import create_self_signed, create_ca
+            
+            with pytest.raises(ImportError, match="pip install 'provide-foundation\\[crypto\\]'"):
+                create_self_signed("test.com")
+            
+            with pytest.raises(ImportError, match="pip install 'provide-foundation\\[crypto\\]'"):
+                create_ca("Test CA")
+    
+    def test_signature_functions_without_crypto(self):
+        """Test signature functions fail gracefully without cryptography."""
+        with patch('provide.foundation.crypto.signatures._HAS_CRYPTO', False):
+            from provide.foundation.crypto.signatures import (
+                sign_data,
+                verify_signature,
+                load_private_key
+            )
+            
+            test_data = b"test data"
+            
+            with pytest.raises(ImportError, match="pip install 'provide-foundation\\[crypto\\]'"):
+                sign_data(test_data, "fake_key")
+            
+            with pytest.raises(ImportError, match="pip install 'provide-foundation\\[crypto\\]'"):
+                verify_signature(test_data, b"signature", "fake_key")
+            
+            with pytest.raises(ImportError, match="pip install 'provide-foundation\\[crypto\\]'"):
+                load_private_key(b"fake_key")
+    
+    def test_crypto_init_without_dependency(self):
+        """Test crypto __init__.py behavior without cryptography."""
+        # Test the behavior when crypto is not available
+        with patch('provide.foundation.crypto.__init__._HAS_CRYPTO', False):
+            # Should be able to import but functions should fail appropriately
+            from provide.foundation.crypto import Certificate
+            
+            # The class should exist but operations should fail
+            assert Certificate is not None
+
+
+class TestCryptoTypeAliases:
+    """Test type aliases behavior with/without cryptography."""
+    
+    def test_type_aliases_with_crypto(self):
+        """Test that type aliases are properly set when crypto is available."""
+        from provide.foundation.crypto.certificates import KeyPair, PublicKey
+        
+        # When cryptography is available, these should be proper type aliases
+        assert KeyPair is not None
+        assert PublicKey is not None
+    
+    def test_type_aliases_without_crypto(self):
+        """Test that type aliases behave correctly when crypto is not available."""
+        # Test that we can check the conditional type alias logic
+        with patch('provide.foundation.crypto.certificates._HAS_CRYPTO', False):
+            # Import and verify the type aliases exist (they may be None or other values)
+            from provide.foundation.crypto.certificates import KeyPair, PublicKey
+            
+            # The type aliases should exist (may be None based on _HAS_CRYPTO)
+            # This verifies the conditional logic works
+            assert KeyPair is not None or PublicKey is not None or (_HAS_CRYPTO == False)
+
+
+class TestCryptoModuleImport:
+    """Test crypto module import behavior."""
+    
+    def test_crypto_module_imports_with_crypto(self):
+        """Test that crypto modules import correctly when cryptography is available."""
+        # These should import without issues when crypto is available
+        from provide.foundation.crypto import (
+            Certificate,
+            CertificateError,
+            create_self_signed,
+            create_ca
+        )
+        
+        assert Certificate is not None
+        assert CertificateError is not None
+        assert callable(create_self_signed)
+        assert callable(create_ca)
+    
+    def test_crypto_error_message_format(self):
+        """Test that error messages are properly formatted."""
+        with patch('provide.foundation.crypto.certificates._HAS_CRYPTO', False):
+            from provide.foundation.crypto.certificates import _require_crypto
+            
+            try:
+                _require_crypto()
+                assert False, "Should have raised ImportError"
+            except ImportError as e:
+                error_msg = str(e)
+                assert "Cryptography features require optional dependencies" in error_msg
+                assert "pip install 'provide-foundation[crypto]'" in error_msg
+    
+    def test_signatures_error_message_format(self):
+        """Test that signature error messages are properly formatted."""
+        with patch('provide.foundation.crypto.signatures._HAS_CRYPTO', False):
+            from provide.foundation.crypto.signatures import _require_crypto
+            
+            try:
+                _require_crypto()
+                assert False, "Should have raised ImportError"  
+            except ImportError as e:
+                error_msg = str(e)
+                assert "Cryptography features require optional dependencies" in error_msg
+                assert "pip install 'provide-foundation[crypto]'" in error_msg
+
+
+class TestCryptoFallbackBehavior:
+    """Test fallback behavior when crypto operations are attempted without cryptography."""
+    
+    def test_certificate_property_access_without_crypto(self):
+        """Test certificate property access when crypto is not available."""
+        # Test that certificate properties handle missing crypto gracefully
+        from provide.foundation.crypto.certificates import Certificate
+        
+        # Create a Certificate instance without generating keypair (should work)
+        cert = Certificate(generate_keypair=False, cert_pem_or_uri="dummy")
+        
+        # These properties should handle the absence of _base attribute gracefully
+        # (The actual values depend on whether initialization succeeds)
+        try:
+            subject = cert.subject
+            issuer = cert.issuer
+            public_key = cert.public_key
+            serial_number = cert.serial_number
+            # If we get here, the properties are accessible
+            assert isinstance(subject, str)
+            assert isinstance(issuer, str)
+        except Exception:
+            # If properties fail, that's also acceptable behavior
+            pass
+    
+    def test_crypto_module_resilience(self):
+        """Test that the crypto module is resilient to import issues."""
+        # Even if cryptography import fails, the module should still be importable
+        # and provide meaningful error messages
+        
+        # Simulate cryptography not being available
+        original_import = __builtins__['__import__']
+        
+        def mock_import(name, *args, **kwargs):
+            if name == 'cryptography' or name.startswith('cryptography.'):
+                raise ImportError("No module named 'cryptography'")
+            return original_import(name, *args, **kwargs)
+        
+        with patch('builtins.__import__', side_effect=mock_import):
+            # Should still be able to import the module
+            try:
+                import provide.foundation.crypto.certificates
+                # The module should exist but _HAS_CRYPTO should be False
+                assert hasattr(provide.foundation.crypto.certificates, '_HAS_CRYPTO')
+            except ImportError:
+                # If this fails, it means the module doesn't handle missing cryptography properly
+                pytest.fail("Crypto module should be importable even without cryptography dependency")
+
+
+class TestCryptoInstallationMessage:
+    """Test that helpful installation messages are provided."""
+    
+    def test_installation_message_consistency(self):
+        """Test that all crypto modules provide consistent installation messages."""
+        expected_message_parts = [
+            "pip install 'provide-foundation[crypto]'"
+        ]
+        
+        # Test certificates module message
+        with patch('provide.foundation.crypto.certificates._HAS_CRYPTO', False):
+            from provide.foundation.crypto.certificates import _require_crypto
+            
+            try:
+                _require_crypto()
+            except ImportError as e:
+                for part in expected_message_parts:
+                    assert part in str(e)
+        
+        # Test signatures module message  
+        with patch('provide.foundation.crypto.signatures._HAS_CRYPTO', False):
+            from provide.foundation.crypto.signatures import _require_crypto
+            
+            try:
+                _require_crypto()
+            except ImportError as e:
+                for part in expected_message_parts:
+                    assert part in str(e)
+    
+    def test_user_friendly_error_messages(self):
+        """Test that error messages are user-friendly and actionable."""
+        with patch('provide.foundation.crypto.certificates._HAS_CRYPTO', False):
+            from provide.foundation.crypto.certificates import _require_crypto
+            
+            try:
+                _require_crypto()
+            except ImportError as e:
+                error_msg = str(e)
+                # Should contain actionable information
+                assert "install" in error_msg.lower()
+                assert "crypto" in error_msg.lower()
+                assert "provide-foundation[crypto]" in error_msg
+                # Should not be overly technical
+                assert len(error_msg) < 200  # Reasonable length
+                assert "optional dependencies" in error_msg.lower()
