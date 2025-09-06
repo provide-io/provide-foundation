@@ -35,7 +35,8 @@
       "Bash(timeout 30s pytest tests/process/test_lifecycle.py::TestWaitForProcessOutput::test_wait_for_simple_output tests/process/test_lifecycle.py::TestWaitForProcessOutput::test_wait_for_output_empty_pattern tests/process/test_lifecycle.py::TestWaitForProcessOutput::test_wait_for_complex_pattern tests/test_component_registry.py::TestFoundationBootstrapIntegration::test_foundation_bootstraps_with_registry -v)",
       "Bash(timeout 10s pytest --cov=src/provide/foundation/hub/manager.py --cov-report=term-missing tests/ -k \"hub\" --tb=no -q)",
       "Bash(timeout 15s pytest tests/hub/test_hub_manager_coverage.py -v)",
-      "Bash(timeout 10s pytest tests/hub/test_hub_manager_coverage.py -v)"
+      "Bash(timeout 10s pytest tests/hub/test_hub_manager_coverage.py -v)",
+      "Bash(timeout 20s pytest tests/process/test_process_runner_coverage.py -v)"
     ],
     "deny": [],
     "ask": [],

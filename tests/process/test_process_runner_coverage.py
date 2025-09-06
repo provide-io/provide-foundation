@@ -9,9 +9,9 @@ import pytest
 
 from provide.foundation.process.runner import (
     run_command,
-    get_command_output,
+    run_command_simple,
     stream_command,
-    run_shell_command,
+    run_shell,
 )
 from provide.foundation.errors.runtime import ProcessError
 
@@ -57,10 +57,10 @@ class TestProcessRunnerCoverage:
         )
         assert "false" in result.stdout
 
-    def test_get_command_output_strips_whitespace(self):
-        """Test that get_command_output strips whitespace from output."""
+    def test_run_command_simple_strips_whitespace(self):
+        """Test that run_command_simple strips whitespace from output."""
         # Test with a command that outputs whitespace
-        output = get_command_output(["echo", "  test  "])
+        output = run_command_simple(["echo", "  test  "])
         assert output == "test"
 
     def test_stream_command_with_path_cwd(self):
@@ -113,46 +113,46 @@ class TestProcessRunnerCoverage:
             # Should handle the OSError gracefully and continue
             assert len(lines) >= 0
 
-    def test_run_shell_command_basic(self):
-        """Test run_shell_command basic functionality."""
-        result = run_shell_command("echo test")
+    def test_run_shell_basic(self):
+        """Test run_shell basic functionality."""
+        result = run_shell("echo test")
         assert "test" in result.stdout
 
-    def test_run_shell_command_with_pipes(self):
-        """Test run_shell_command with shell pipes."""
-        result = run_shell_command("echo 'hello world' | grep hello")
+    def test_run_shell_with_pipes(self):
+        """Test run_shell with shell pipes."""
+        result = run_shell("echo 'hello world' | grep hello")
         assert "hello" in result.stdout
 
-    def test_run_shell_command_failure_handling(self):
-        """Test run_shell_command with command failure."""
+    def test_run_shell_failure_handling(self):
+        """Test run_shell with command failure."""
         with pytest.raises(ProcessError):
-            run_shell_command("exit 1", check=True)
+            run_shell("exit 1", check=True)
 
-    def test_run_shell_command_with_cwd_path(self):
-        """Test run_shell_command with Path object as cwd."""
+    def test_run_shell_with_cwd_path(self):
+        """Test run_shell with Path object as cwd."""
         with tempfile.TemporaryDirectory() as tmpdir:
             path_cwd = Path(tmpdir)
-            result = run_shell_command("pwd", cwd=path_cwd)
+            result = run_shell("pwd", cwd=path_cwd)
             assert tmpdir in result.stdout
 
-    def test_run_shell_command_env_inheritance_and_override(self):
-        """Test run_shell_command inherits and overrides environment variables."""
+    def test_run_shell_env_inheritance_and_override(self):
+        """Test run_shell inherits and overrides environment variables."""
         env = {"SHELL_TEST_VAR": "shell_value"}
-        result = run_shell_command(
+        result = run_shell(
             "python -c \"import os; print(os.environ.get('SHELL_TEST_VAR', 'not_found'))\"",
             env=env
         )
         assert "shell_value" in result.stdout
 
-    @patch('subprocess.run')
-    def test_run_command_handles_subprocess_timeout(self, mock_run):
-        """Test run_command handles subprocess.TimeoutExpired."""
-        mock_run.side_effect = subprocess.TimeoutExpired("cmd", 1.0)
+    def test_run_command_handles_timeout(self):
+        """Test run_command handles timeout."""
+        from provide.foundation.errors.integration import TimeoutError
         
-        with pytest.raises(ProcessError) as exc_info:
-            run_command(["sleep", "2"], timeout=1.0, check=True)
+        # Use a real timeout test
+        with pytest.raises(TimeoutError) as exc_info:
+            run_command(["sleep", "2"], timeout=0.1, check=True)
         
-        assert "timed out after 1.0 seconds" in str(exc_info.value)
+        assert "timed out" in str(exc_info.value)
 
     @patch('subprocess.run')
     def test_run_command_handles_subprocess_error(self, mock_run):
