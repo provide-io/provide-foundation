@@ -67,7 +67,7 @@ def test_lazy_setup_flags() -> None:
 
     reset_foundation_setup_for_testing()
 
-    from provide.foundation.logger.base import _LAZY_SETUP_STATE  # Changed
+    from provide.foundation.logger.core import _LAZY_SETUP_STATE  # Changed
 
     print(f"Initial state - _LAZY_SETUP_STATE: {_LAZY_SETUP_STATE}")
 
