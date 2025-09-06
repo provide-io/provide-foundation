@@ -24,7 +24,7 @@ from provide.foundation.logger.emoji.sets import (
     LLM_EMOJI_SET,
 )
 from provide.foundation.logger.emoji.types import (
-    CustomDasEmojiSet,
+    EmojiSet,
     EmojiSetConfig,
     FieldToEmojiMapping,
 )
@@ -122,7 +122,7 @@ class TestSetupWithLayers:
         setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
         captured_stderr_for_foundation: io.StringIO,
     ) -> None:
-        my_llm_provider_emojis = CustomDasEmojiSet(
+        my_llm_provider_emojis = EmojiSet(
             name="llm_provider", emojis={"openai": "🧠MAX", "default": "💡CUST"}
         )
         config = TelemetryConfig(
