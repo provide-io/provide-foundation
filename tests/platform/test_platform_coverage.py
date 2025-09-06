@@ -133,3 +133,4 @@ class TestPlatformDetection:
         assert hasattr(result, 'python_version')
         assert isinstance(result.os_name, str)
         assert isinstance(result.arch, str)
+
