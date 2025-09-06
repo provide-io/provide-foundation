@@ -124,6 +124,7 @@
   border-bottom: none;
   padding: 0.2rem 0;
   margin: 0.1rem 0;
+  padding-left: 0;
 }
 
 /* Articles without children - indented to show they're content, not headings */
@@ -362,6 +363,7 @@
 .md-footer {
   background: linear-gradient(135deg, var(--pf-primary), var(--pf-accent));
   transition: none;
+  margin-top: auto;
 }
 
 .md-footer-meta {
@@ -375,6 +377,24 @@
 
 .md-footer__link {
   transition: background-color 0.2s ease;
+}
+
+/* Fix footer navigation font sizes */
+.md-footer__title {
+  font-size: 0.8rem;
+}
+
+.md-footer__direction {
+  font-size: 0.7rem;
+}
+
+/* Prevent footer from pushing content */
+.md-main__inner {
+  margin-bottom: 0;
+}
+
+.md-content {
+  padding-bottom: 1rem;
 }
 
 /* Version Selector */
