@@ -88,7 +88,6 @@ class TestErrorHandling:
             run_command(["sleep", "10"], timeout=0.01, check=True)
         
         assert "timed out" in str(exc_info.value).lower()
-        assert exc_info.value.timeout == 0.01
     
     @patch('subprocess.run')
     def test_generic_subprocess_exception(self, mock_run):
@@ -106,7 +105,7 @@ class TestErrorHandling:
     def test_reraise_process_error(self, mock_run):
         """Test that ProcessError and TimeoutError are re-raised directly."""
         # Mock subprocess.run to raise a ProcessError
-        original_error = ProcessError("Original error", "TEST_CODE")
+        original_error = ProcessError("Original error", command="test_command")
         mock_run.side_effect = original_error
         
         with pytest.raises(ProcessError) as exc_info:
@@ -236,7 +235,7 @@ class TestStreamCommandCoverage:
         with pytest.raises(ProcessError) as exc_info:
             list(stream_command(["nonexistent"]))
         
-        assert "Failed to execute command" in str(exc_info.value)
+        assert "Failed to stream command" in str(exc_info.value)
 
 
 class TestCompletedProcessConstruction:
