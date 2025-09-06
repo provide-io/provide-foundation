@@ -726,27 +726,25 @@ class TestFoundationBootstrapIntegration:
 
     def test_foundation_bootstraps_with_registry(self):
         """Foundation initialization must use registry for all components."""
-        from provide.foundation.hub.components import get_component_registry
+        from provide.foundation.hub.components import get_component_registry, bootstrap_foundation, ComponentCategory
         
         # Bootstrap already happens on import, just check registry state
         registry = get_component_registry()
         
-        # Verify core components are registered
-        from provide.foundation.hub.components import ComponentCategory, get_component_registry
+        # If registry is empty (due to test isolation), re-bootstrap
+        emoji_sets = registry.list_dimension(ComponentCategory.EMOJI_SET.value)
+        processors = registry.list_dimension(ComponentCategory.PROCESSOR.value)
         
-        registry = get_component_registry()
+        if len(emoji_sets) == 0 and len(processors) == 0:
+            bootstrap_foundation()
+            # Re-fetch after bootstrap
+            emoji_sets = registry.list_dimension(ComponentCategory.EMOJI_SET.value)
+            processors = registry.list_dimension(ComponentCategory.PROCESSOR.value)
         
         # Should have default emoji sets
-        emoji_sets = registry.list_dimension(ComponentCategory.EMOJI_SET.value)
         assert len(emoji_sets) > 0
         
-        # Config sources not implemented yet, check other components
-        emoji_sets = registry.list_dimension(ComponentCategory.EMOJI_SET.value)
-        processors = registry.list_dimension(ComponentCategory.PROCESSOR.value)
-        assert len(emoji_sets) > 0 or len(processors) > 0  # At least some components
-        
         # Should have processors
-        processors = registry.list_dimension(ComponentCategory.PROCESSOR.value)
         assert len(processors) > 0
 
     def test_foundation_logger_uses_registry_components(self):
