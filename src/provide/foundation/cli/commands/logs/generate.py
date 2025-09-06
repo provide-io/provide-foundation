@@ -92,7 +92,7 @@ if _HAS_CLICK:
         "-r",
         type=float,
         default=10.0,
-        help="Logs per second (for continuous mode)",
+        help="Target logs per second (can go up to 10000/s)",
     )
     @click.option(
         "--style",
