@@ -6,18 +6,13 @@ Foundation Telemetry Library (structlog-based).
 Primary public interface for the library, re-exporting common components.
 """
 
-# Check console availability
-try:
-    from provide.foundation.console import perr, pin, pout
-    _HAS_CONSOLE = True
-except ImportError:
-    _HAS_CONSOLE = False
-    perr = pin = pout = None
-
 # Export config module for easy access
-# New foundation components
+# New foundation components  
 # Make the errors module available for detailed imports
 from provide.foundation import config, errors, platform, process
+
+# Console I/O functions (always available - handles click dependency internally)
+from provide.foundation.console import perr, pin, pout
 from provide.foundation.context import Context
 from provide.foundation.setup import (
     setup_telemetry,
@@ -136,8 +131,6 @@ __all__ = [
     "perr",
     "pin", 
     "pout",
-    # Console availability flag
-    "_HAS_CONSOLE",
     "platform",
     "process",
     "retry_on_error",

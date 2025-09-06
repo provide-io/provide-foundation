@@ -6,6 +6,7 @@ repo_url: https://github.com/provide-io/provide-foundation
 repo_name: provide-io/provide-foundation
 edit_uri: edit/main/docs/
 copyright: Copyright &copy; 2024-2025 provide.io
+docs_dir: docs
 
 theme:
   name: material
@@ -35,178 +36,39 @@ theme:
     code: Fira Code
   
   features:
-    # Navigation
     - navigation.instant
-    - navigation.instant.prefetch
-    - navigation.instant.progress
-    - navigation.tracking
     - navigation.tabs
-    - navigation.tabs.sticky
     - navigation.sections
-    - navigation.prune
-    - navigation.path
+    - navigation.expand
     - navigation.indexes
     - navigation.top
-    - navigation.footer
-    
-    # Table of contents
-    - toc.follow
-    - toc.integrate
-    
-    # Search
-    - search.suggest
-    - search.highlight
-    - search.share
-    
-    # Content
     - content.code.copy
-    - content.code.select
-    - content.code.annotate
     - content.tabs.link
-    - content.tooltips
-    - content.action.edit
-    - content.action.view
-    
-    # Header
-    - header.autohide
-    
-    # Announce
-    - announce.dismiss
 
 plugins:
-  - search:
-      separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
-      lang:
-        - en
-  
+  - search
   - autorefs
-
   - mkdocstrings:
+      default_handler: python
       handlers:
         python:
+          paths: [src]
           options:
-            # Docstring parsing
             docstring_style: google
-            docstring_options:
-              ignore_init_summary: true
-            
-            # Source code linking
-            show_source: true
+            show_source: false
             show_root_heading: true
-            show_root_toc_entry: true
-            show_root_full_path: false
-            show_root_members_full_path: false
-            
-            # Member display
-            show_bases: true
-            show_inheritance_diagram: false
-            show_if_no_docstring: true
-            inherited_members: false
-            members_order: source
-            group_by_category: true
-            show_category_heading: true
-            
-            # Signatures
-            show_signature_annotations: true
-            signature_crossrefs: true
-            separate_signature: false
-            
-            # Headings and navigation
-            heading_level: 2
-            show_symbol_type_heading: true
-            show_symbol_type_toc: true
-            
-            # Filtering
-            filters:
-              - "!^_"  # Hide private members
-              - "!^__.*__$"  # Hide special methods except in special cases
-            
-            # Cross-references
-            merge_init_into_class: true
-  
-  - section-index
-  
 
 markdown_extensions:
-  # Python Markdown
-  - abbr
   - admonition
   - attr_list
-  - def_list
-  - footnotes
-  - md_in_html
   - toc:
       permalink: true
-      toc_depth: 3
   - tables
-  - meta
-  
-  # Python Markdown Extensions
-  - pymdownx.arithmatex:
-      generic: true
-  - pymdownx.betterem:
-      smart_enable: all
-  - pymdownx.caret
-  - pymdownx.mark
-  - pymdownx.tilde
-  - pymdownx.details
-  - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.highlight:
-      anchor_linenums: true
-      line_spans: __span
-      pygments_lang_class: true
       use_pygments: true
-      auto_title: true
-      linenums: true
-  - pymdownx.inlinehilite
-  - pymdownx.keys
-  - pymdownx.smartsymbols
-  - pymdownx.snippets:
-      check_paths: true
-  - pymdownx.superfences:
-      custom_fences:
-        - name: mermaid
-          class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true
-      combine_header_slug: true
-  - pymdownx.tasklist:
-      custom_checkbox: true
-  - pymdownx.critic:
-      mode: view
-  - pymdownx.magiclink:
-      normalize_issue_symbols: true
-      repo_url_shorthand: true
-      user: provide-io
-      repo: provide-foundation
-
-extra:
-  version:
-    provider: mike
-    default: latest
-  
-  social:
-    - icon: fontawesome/brands/github
-      link: https://github.com/provide-io/provide-foundation
-    - icon: fontawesome/brands/python
-      link: https://pypi.org/project/provide-foundation/
-    - icon: fontawesome/solid/globe
-      link: https://provide.io
-  
-  analytics:
-    provider: google
-    property: G-XXXXXXXXXX
-    
-  consent:
-    title: Cookie consent
-    description: >-
-      We use cookies to recognize your repeated visits and preferences, as well
-      as to measure the effectiveness of our documentation and whether users
-      find what they're searching for. With your consent, you're helping us to
-      make our documentation better.
 
 extra_css:
   - stylesheets/extra.css
@@ -223,24 +85,22 @@ nav:
     - Quick Start: getting-started/quick-start.md
     - First Application: getting-started/first-app.md
     - Examples: getting-started/examples.md
-  
+
   - User Guide:
     - guide/index.md
     - Core Concepts:
       - guide/concepts/index.md
       - Structured Logging: guide/concepts/structured-logging.md
-      - Emoji Sets: guide/concepts/emoji-sets.md
+      - Emoji Sets: guide/concepts/semantic-layers.md
       - Emoji System: guide/concepts/emoji-system.md
-      - Domain-Action-Status: guide/concepts/das-pattern.md
+      - Domain-Action-Status Pattern: guide/concepts/das-pattern.md
       - Performance: guide/concepts/performance.md
-    
     - Configuration:
       - guide/config/index.md
       - Environment Variables: guide/config/environment.md
       - Config Files: guide/config/files.md
       - Runtime Config: guide/config/runtime.md
       - Best Practices: guide/config/best-practices.md
-    
     - Logging:
       - Basic Usage: guide/logging/basic.md
       - Advanced Patterns: guide/logging/advanced.md
@@ -248,92 +108,46 @@ nav:
       - Exception Handling: guide/logging/exceptions.md
       - Context Management: guide/logging/context.md
       - Performance Tuning: guide/logging/performance.md
-    
-    - Testing: guide/testing.md
-    - Advanced Usage: guide/advanced-usage.md
-    
     - CLI Framework:
       - guide/cli/index.md
-      - Command Registration: guide/cli/commands.md
-      - Nested Commands: guide/cli/nested.md
-      - Arguments & Options: guide/cli/arguments.md
-      - Output Formatting: guide/cli/output.md
-    
-    - Utilities:
-      - Console I/O: guide/utilities/console.md
-      - Error Handling: guide/utilities/errors.md
-      - Platform Detection: guide/utilities/platform.md
-      - Process Management: guide/utilities/process.md
-      - Registry System: guide/utilities/registry.md
-  
-  
+      - Console I/O: docs/guides/console-io.md
+
   - API Reference:
     - api/index.md
-    - Logger:
-      - api/logger/index.md
-      - Base Logger: api/logger/base.md
-      - Core Implementation: api/logger/core.md
-      - Factory Functions: api/logger/factories.md
-      - Configuration: api/logger/config.md
-      - Processors: api/logger/processors.md
-      - Emoji Matrix: api/logger/emoji.md
-    
-    - Context:
-      - api/context/index.md
-    
-    - Configuration:
-      - api/config/index.md
-      - Config Manager: api/config/manager.md
-      - Environment: api/config/env.md
-      - Loaders: api/config/loader.md
-      - Schema: api/config/schema.md
-    
-    - Emoji Sets:
-      - api/emoji_sets/index.md
-      - Base Layer: api/emoji_sets/base.md
-      - HTTP Layer: api/emoji_sets/http.md
-      - Database Layer: api/emoji_sets/database.md
-      - LLM Layer: api/emoji_sets/llm.md
-      - Task Queue Layer: api/emoji_sets/task_queue.md
-      - Custom Layers: api/emoji_sets/custom.md
-    
-    - CLI:
-      - api/cli/index.md
-      - Decorators: api/cli/decorators.md
-      - Testing: api/cli/testing.md
-      - Utilities: api/cli/utils.md
-    
-    - Core:
-      - api/core/index.md
-    
-    - Hub:
-      - api/hub/index.md
-    
-    - Utilities:
-      - api/utils/index.md
-      - Console: api/utils/console.md
-      - Platform: api/utils/platform.md
-      - File Operations: api/file/index.md
-      - Crypto: api/crypto/index.md
+    - Logger: api/logger/index.md
+    - Configuration: api/config/index.md
+    - Context: api/context/index.md
+    - CLI: api/cli/index.md
+    - Hub: api/hub/index.md
+    - File Operations: api/file/index.md
+    - Crypto: api/crypto/index.md
+    - Console I/O: api/utils/console.md
+    - Utilities: api/utils/index.md
   
+  - Cookbook:
+    - cookbook/index.md
+    - Recipes:
+      - cookbook/recipes/index.md
+      - OpenTelemetry: cookbook/recipes/opentelemetry.md
+    - Patterns: cookbook/patterns/index.md
+    - Examples: cookbook/examples/index.md
+
+  - Architecture:
+    - architecture/index.md
+    - Emoji Sets: architecture/semantic-layers.md
+    - Design Decisions:
+      - architecture/decisions/index.md
+      - Emoji Sets: architecture/decisions/semantic-layers.md
+
   - Development:
     - development/index.md
     - Contributing: development/contributing.md
     - CI/CD: development/ci-cd.md
-  
-  - Architecture & Design:
-    - architecture/index.md
-    - Telemetry Format: architecture/telemetry-format.md
-    - Emoji Set Design: architecture/emoji-sets.md
-    - Emoji System: architecture/emoji-system.md
-    - Performance: architecture/performance.md
+    - Local Testing (act): development/testing/act.md
 
-validation:
-  omitted_files: warn
-  absolute_links: warn
-  unrecognized_links: warn
-
-watch:
-  - src/provide
-  - docs
-  - mkdocs.yml
+  - Troubleshooting:
+    - troubleshooting/index.md
+    - FAQ: troubleshooting/faq.md
+    - Common Issues: troubleshooting/common.md
+    - Configuration: troubleshooting/configuration.md
+    - Platform Specific: troubleshooting/platforms/index.md
