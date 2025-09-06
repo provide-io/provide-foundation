@@ -230,7 +230,7 @@ class TestSchemaFieldComprehensive:
             name="complex_field",
             type=str,
             required=True,
-            choices=["valid_option", "another_valid_option"],
+            choices=["valid_option", "another_valid_option", "short", "UPPER_CASE"],  # Add values to test different constraints
             pattern=r"^[a-z_]+$",
             validator=custom_validator
         )
@@ -248,8 +248,11 @@ class TestSchemaFieldComprehensive:
         with pytest.raises(ConfigValidationError, match="Value must be one of"):
             await field_obj.validate("invalid_choice")
         
+        with pytest.raises(ConfigValidationError, match="Value does not match pattern"):
+            await field_obj.validate("UPPER_CASE")  # In choices, but fails pattern (uppercase)
+        
         with pytest.raises(ConfigValidationError, match="Custom validation failed"):
-            await field_obj.validate("INVALID_PATTERN")  # Fails custom validation due to uppercase
+            await field_obj.validate("short")  # In choices, matches pattern, but fails custom validator (len <= 5)
 
 
 class TestConfigSchemaComprehensive:
