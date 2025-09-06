@@ -1,6 +1,6 @@
-# Welcome to provide.foundation
+# Welcome to the Provide Foundation
 
-**`provide.foundation`** is a comprehensive Python foundation library that provides structured logging, CLI framework, configuration management, and system utilities for building robust applications.
+**The Provide Foundation** is a comprehensive Python library that provides structured logging, CLI framework, configuration management, and system utilities for building robust applications.
 
 Built on industry-standard libraries like `structlog`, `click`, and `attrs`, provide.foundation offers a batteries-included development experience with beautiful console output, powerful error handling, and cross-platform system utilities.
 

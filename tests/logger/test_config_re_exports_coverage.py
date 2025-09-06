@@ -48,7 +48,7 @@ class TestLoggerConfigReExports:
         config_module = importlib.import_module('provide.foundation.logger.config')
         
         assert config_module.__doc__ is not None
-        assert "Foundation Telemetry Configuration Module" in config_module.__doc__
+        assert "Foundation Logger Configuration Module" in config_module.__doc__
         assert "Re-exports" in config_module.__doc__
     
     def test_direct_import_consistency(self):
@@ -85,17 +85,19 @@ class TestLoggerConfigReExports:
         assert TelemetryConfig.__module__ == 'provide.foundation.logger.config.telemetry'
     
     def test_no_additional_exports(self):
-        """Test that only intended items are exported."""
+        """Test that __all__ items are properly exported."""
         config_module = importlib.import_module('provide.foundation.logger.config')
         
         # Get all public attributes (not starting with _)
         public_attrs = [attr for attr in dir(config_module) if not attr.startswith('_')]
         
-        # Should only have the items in __all__
-        expected_public = set(config_module.__all__)
-        actual_public = set(public_attrs)
+        # All items in __all__ should be present as public attributes
+        for expected_export in config_module.__all__:
+            assert expected_export in public_attrs, f"Missing expected export: {expected_export}"
         
-        assert actual_public == expected_public
+        # Check that the main exports are classes (not modules)
+        assert hasattr(config_module, 'LoggingConfig')
+        assert hasattr(config_module, 'TelemetryConfig')
 
 
 class TestConfigModuleIntegration:

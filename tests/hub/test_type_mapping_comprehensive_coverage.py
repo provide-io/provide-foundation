@@ -198,8 +198,8 @@ class TestExtractClickTypeEdgeCases:
         with patch('provide.foundation.hub.type_mapping.get_origin', return_value=typing.Union):
             with patch('provide.foundation.hub.type_mapping.get_args', return_value=()):
                 result = extract_click_type(MockUnion)
-                # Should return the original annotation when no args
-                assert result is MockUnion
+                # Should return str as safe default when union has no args
+                assert result is str
     
     def test_extract_union_args_attribute(self):
         """Test union with __args__ attribute."""
@@ -227,8 +227,8 @@ class TestExtractClickTypeEdgeCases:
         with patch('provide.foundation.hub.type_mapping.get_origin', return_value=typing.Union):
             with patch('provide.foundation.hub.type_mapping.get_args', return_value=()):
                 result = extract_click_type("mock_annotation")
-                # Should return original annotation when no union args
-                assert result == "mock_annotation"
+                # Should return str as safe default when union has no args
+                assert result is str
     
     def test_extract_non_generic_type(self):
         """Test extraction of non-generic types."""
