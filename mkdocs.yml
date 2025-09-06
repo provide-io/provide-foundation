@@ -129,8 +129,17 @@ nav:
       - Advanced Patterns: 
         - guide/logging/advanced.md
         - Overview: guide/logging/advanced/index.md
-        - Filtering: guide/logging/advanced/filtering.md
-        - Patterns: guide/logging/advanced/patterns.md
+        - Filtering: 
+          - guide/logging/advanced/filtering.md
+          - Level-Based: guide/logging/advanced/filtering-levels.md
+          - Content-Based: guide/logging/advanced/filtering-content.md
+          - Contextual: guide/logging/advanced/filtering-context.md
+        - Integration Patterns:
+          - guide/logging/advanced/patterns.md
+          - Web Frameworks: guide/logging/advanced/patterns-web.md
+          - Database: guide/logging/advanced/patterns-database.md
+          - Messaging: guide/logging/advanced/patterns-messaging.md
+          - Async: guide/logging/advanced/patterns-async.md
         - Processors: guide/logging/advanced/processors.md
       - Async Logging: guide/logging/async.md
       - Exception Handling: guide/logging/exceptions.md

@@ -1,8 +1,6 @@
-# Advanced Filtering
+# Level-Based Filtering
 
-Sophisticated filtering techniques for controlling log output in complex applications.
-
-## Level-Based Filtering
+Using log levels to control verbosity and manage log volume.
 
 ### Module-Specific Levels
 

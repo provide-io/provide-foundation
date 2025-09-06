@@ -4,7 +4,11 @@
       "Read(//Users/tim/code/gh/provide-io/**)",
       "Bash(timeout 5s mkdocs serve --watch-theme)",
       "Bash(find:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(source env.sh)",
+      "Bash(pytest:*)",
+      "Bash(uv sync:*)",
+      "Bash(uv add:*)"
     ],
     "deny": [],
     "ask": [],

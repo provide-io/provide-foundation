@@ -2,7 +2,7 @@
 Transport-specific error types.
 """
 
-from attrs import define
+from attrs import define, field
 
 from provide.foundation.errors.base import FoundationError
 from provide.foundation.transport.base import Request, Response
@@ -31,8 +31,8 @@ class TransportTimeoutError(TransportError):
 class HTTPResponseError(TransportError):
     """HTTP response error (4xx/5xx status codes)."""
     
-    status_code: int
-    response: Response
+    status_code: int = field()
+    response: Response = field()
 
 
 @define
@@ -45,7 +45,7 @@ class TransportConfigurationError(TransportError):
 class TransportNotFoundError(TransportError):
     """No transport found for the given URI scheme."""
     
-    scheme: str
+    scheme: str = field()
 
 
 __all__ = [
