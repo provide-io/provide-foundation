@@ -67,40 +67,17 @@ class TestFindProjectRoot:
     
     def test_find_project_root_not_exists(self):
         """Test finding project root when no VERSION file exists."""
-        with patch('provide.foundation._version.Path') as mock_path:
-            # Mock Path to simulate no VERSION file found
-            mock_file = MagicMock()
-            mock_current = MagicMock()
-            mock_current.parent = MagicMock()  # Different object
-            mock_current.__ne__ = lambda self, other: True  # Never equal to parent
+        # Create a temporary directory without VERSION file 
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
+            nested_dir = temp_path / "subdir"
+            nested_dir.mkdir()
             
-            # Set up the chain to eventually reach filesystem root
-            filesystem_root = MagicMock()
-            filesystem_root.parent = filesystem_root  # Root points to itself
-            filesystem_root.__ne__ = lambda self, other: self is not other
-            
-            # Simulate directory traversal that reaches root
-            traversal_chain = [mock_current, filesystem_root]
-            
-            def side_effect(*args):
-                if len(traversal_chain) > 1:
-                    current = traversal_chain.pop(0)
-                    current.parent = traversal_chain[0] if traversal_chain else filesystem_root
-                    version_file_mock = MagicMock()
-                    version_file_mock.exists.return_value = False
-                    current.__truediv__ = lambda self, name: version_file_mock
-                    return current
-                else:
-                    # Return filesystem root
-                    return filesystem_root
-            
-            mock_path.return_value.parent = mock_current
-            mock_current.__truediv__ = lambda self, name: MagicMock(exists=lambda: False)
-            
-            # Actually test the real function - it should handle the case where no VERSION is found
-            result = _find_project_root()
-            # Result could be None or a valid Path depending on actual project structure
-            assert result is None or isinstance(result, Path)
+            # Mock __file__ to be in the nested directory
+            with patch('provide.foundation._version.__file__', str(nested_dir / "_version.py")):
+                result = _find_project_root()
+                # Should return None since there's no VERSION file anywhere in the hierarchy
+                assert result is None
     
     def test_find_project_root_filesystem_root_reached(self):
         """Test _find_project_root when filesystem root is reached without finding VERSION."""
