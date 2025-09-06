@@ -24,6 +24,7 @@ from provide.foundation.errors.decorators import (
     suppress_and_log,
     with_error_handling,
 )
+from provide.foundation.errors.safe_decorators import log_only_error_context
 from provide.foundation.errors.handlers import (
     ErrorHandler,
     error_boundary,
@@ -78,6 +79,7 @@ __all__ = [
     "error_boundary",
     "fallback_on_error",
     "handle_error",
+    "log_only_error_context",
     "retry_on_error",
     "suppress_and_log",
     "transactional",

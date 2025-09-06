@@ -7,7 +7,7 @@ config files, CLI args, etc.) to proper Python types based on type hints.
 
 from __future__ import annotations
 
-from typing import Any, TypeVar, get_origin
+from typing import Any, TypeVar, get_origin, get_args
 
 T = TypeVar("T")
 
@@ -164,7 +164,19 @@ def parse_typed_value(value: str, target_type: type) -> Any:
     origin = get_origin(target_type)
 
     if origin == list:
-        return parse_list(value)
+        # Handle list[T] - convert each item to the specified type
+        args = get_args(target_type)
+        if args and len(args) > 0:
+            item_type = args[0]
+            str_list = parse_list(value)
+            try:
+                # Convert each item to the target type
+                return [parse_typed_value(item, item_type) for item in str_list]
+            except (ValueError, TypeError) as e:
+                raise ValueError(f"Cannot convert list items to {item_type.__name__}: {e}")
+        else:
+            # list without type parameter, return as list[str]
+            return parse_list(value)
     elif origin == dict:
         return parse_dict(value)
     elif origin is None:
