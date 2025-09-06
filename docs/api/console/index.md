@@ -704,7 +704,7 @@ pout("All workers completed", color="green", bold=True)
 
 ## See Also
 
-- [Context API](../context/) - Foundation context system
-- [CLI Guide](../../guide/cli/) - Building CLI applications
-- [Logger API](../logger/) - Structured logging integration
-- [Testing API](../testing/) - Testing console interactions
+- [Context API](../context/index.md) - Foundation context system
+- [CLI Guide](../../guide/cli/index.md) - Building CLI applications
+- [Logger API](../logger/index.md) - Structured logging integration
+- [Testing API](../testing/index.md) - Testing console interactions

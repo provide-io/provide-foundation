@@ -743,7 +743,7 @@ def main():
 
 ## See Also
 
-- [Logger API](../logger/) - Foundation logging system
-- [Configuration API](../config/) - Configuration management
-- [Testing API](../testing/) - Testing utilities and fixtures  
-- [Context API](../context/) - Context management system
+- [Logger API](../logger/index.md) - Foundation logging system
+- [Configuration API](../config/index.md) - Configuration management
+- [Testing API](../testing/index.md) - Testing utilities and fixtures  
+- [Context API](../context/index.md) - Context management system

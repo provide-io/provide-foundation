@@ -417,6 +417,6 @@ Complete examples available in:
 
 ## See Also
 
-- [Tracing User Guide](../../guide/tracing/) - Conceptual guide and patterns
-- [Logger Integration](../logger/) - Combining tracing with structured logging
+- [Tracing User Guide](../../guide/tracing/index.md) - Conceptual guide and patterns
+- [Logger Integration](../logger/index.md) - Combining tracing with structured logging
 - [Performance Guide](../../guide/concepts/performance.md) - Optimization strategies

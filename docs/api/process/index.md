@@ -658,7 +658,7 @@ for t in threads:
 
 ## See Also
 
-- [Platform API](../platform/) - Platform detection for process configuration
-- [Logging API](../logger/) - Structured logging integration
-- [Utils API](../utils/) - Environment and utility functions
+- [Platform API](../platform/index.md) - Platform detection for process configuration
+- [Logging API](../logger/index.md) - Structured logging integration
+- [Utils API](../utils/index.md) - Environment and utility functions
 - [Process Guide](../../guide/utilities/process.md) - Process execution patterns

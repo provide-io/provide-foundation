@@ -33,7 +33,7 @@ Comprehensive guide to using provide.foundation in your applications.
     <ul>
       <li><a href="logging/basic/">Basic Logging</a></li>
       <li><a href="logging/advanced/">Advanced Patterns</a></li>
-      <li><a href="tracing/">Distributed Tracing</a></li>
+      <li><a href="tracing/index.md">Distributed Tracing</a></li>
       <li><a href="logging/performance/">Performance Tuning</a></li>
     </ul>
   </div>
@@ -170,7 +170,7 @@ for item in items:
 
 These advanced topics are covered in the existing guides:
 - **Custom Emoji Sets** - See [Emoji Sets Guide](concepts/emoji-sets.md)
-- **Distributed Tracing** - See [Tracing Guide](tracing/)  
+- **Distributed Tracing** - See [Tracing Guide](tracing/index.md)  
 - **Production Strategies** - See [Performance Guide](logging/performance.md)
 - **Error Handling** - See [Advanced Logging Guide](logging/advanced.md)
 

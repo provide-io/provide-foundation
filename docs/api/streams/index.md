@@ -534,7 +534,7 @@ else:
 
 ## See Also
 
-- [Logger API](../logger/) - Main logging interface
-- [Process API](../process/) - Process execution with stream handling
-- [Testing Guide](../../guide/testing/) - Testing with stream redirection
-- [Configuration Guide](../../guide/configuration/) - Environment-based stream setup
+- [Logger API](../logger/index.md) - Main logging interface
+- [Process API](../process/index.md) - Process execution with stream handling
+- [Testing Guide](../../guide/testing.md) - Testing with stream redirection
+- [Configuration Guide](../../guide/config/index.md) - Environment-based stream setup

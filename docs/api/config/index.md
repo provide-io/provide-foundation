@@ -211,7 +211,7 @@ Configuration objects are immutable (frozen) and thread-safe. The ConfigManager 
 
 ## Related Documentation
 
-- [Environment Configuration Guide](/guide/config/environment/) - Environment setup
-- [Configuration Files Guide](/guide/config/files/) - File formats and locations
-- [Runtime Configuration Guide](/guide/config/runtime/) - Dynamic updates
-- [Configuration Best Practices](/guide/config/best-practices/) - Recommended patterns
+- [Environment Configuration Guide](../../guide/config/environment.md) - Environment setup
+- [Configuration Files Guide](../../guide/config/files.md) - File formats and locations
+- [Runtime Configuration Guide](../../guide/config/runtime.md) - Dynamic updates
+- [Configuration Best Practices](../../guide/config/best-practices.md) - Recommended patterns

@@ -8,7 +8,8 @@ import structlog
 from provide.foundation.core import (
     reset_foundation_setup_for_testing,
 )
-from provide.foundation.logger.base import _LAZY_SETUP_STATE, FoundationLogger
+from provide.foundation.logger.core import _LAZY_SETUP_STATE
+from provide.foundation.logger.base import FoundationLogger
 
 
 def test_ensure_stderr_default() -> None:

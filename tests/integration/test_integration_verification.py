@@ -96,7 +96,7 @@ def test_emergency_fallback() -> None:
     test_logger = FoundationLogger()
 
     # Trigger emergency fallback by setting error state
-    from provide.foundation.logger.base import (
+    from provide.foundation.logger.core import (
         _LAZY_SETUP_STATE,  # Ensure we use the state dict
     )
 

@@ -410,5 +410,5 @@ result = subprocess.run(
 
 - [Configuration Manager API](manager.md) - Centralized configuration management
 - [Configuration Loaders API](loader.md) - Multi-source loading
-- [Environment Configuration Guide](/guide/config/environment/) - Setup and best practices
+- [Environment Configuration Guide](../../guide/config/environment.md) - Setup and best practices
 - [Configuration Best Practices](../../guide/config/best-practices.md) - Container and deployment patterns
