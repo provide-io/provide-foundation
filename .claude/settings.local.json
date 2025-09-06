@@ -49,7 +49,8 @@
       "Bash(timeout 10s pytest tests/crypto/test_constants_coverage.py -v)",
       "Bash(timeout 15s pytest tests/cli/test_cli_testing_coverage.py -v)",
       "Bash(timeout 20s pytest tests/config/test_schema_coverage.py -v)",
-      "Bash(timeout 15s pytest tests/config/test_schema_simple_coverage.py -v)"
+      "Bash(timeout 15s pytest tests/config/test_schema_simple_coverage.py -v)",
+      "Bash(timeout 10s pytest tests/logger/test_logger_config_module_coverage.py -v)"
     ],
     "deny": [],
     "ask": [],
