@@ -368,18 +368,56 @@ async def wait_for_process_output(
     # This is crucial for processes that exit very quickly
     try:
         # Read all available lines first
-        while True:
-            line = await process.read_line_async(timeout=0.01)
-            if line:
-                buffer += line
-                plog.debug("Read initial line", line=line[:100])
-                if all(part in buffer for part in expected_parts):
-                    plog.debug("Found expected pattern in initial read")
-                    return buffer
-            else:
+        for _ in range(10):  # Try up to 10 lines initially
+            try:
+                line = await process.read_line_async(timeout=0.01)
+                if line:
+                    buffer += line
+                    plog.debug("Read initial line", line=line[:100])
+                    if all(part in buffer for part in expected_parts):
+                        plog.debug("Found expected pattern in initial read")
+                        return buffer
+            except (TimeoutError, Exception):
                 break
-    except (TimeoutError, Exception):
+    except Exception:
         pass
+    
+    # Small delay to let output buffers flush
+    await asyncio.sleep(0.02)
+    
+    # If process already exited, try to get all its output immediately
+    if not process.is_running() and process._process and process._process.stdout:
+        try:
+            # Force flush and read everything available
+            process._process.stdout.flush()
+            
+            # Try multiple read methods to get the data
+            # Method 1: readline until empty
+            for _ in range(100):
+                line = process._process.stdout.readline()
+                if line:
+                    if isinstance(line, bytes):
+                        buffer += line.decode("utf-8", errors="replace")
+                    else:
+                        buffer += str(line)
+                else:
+                    break
+                    
+            # Method 2: read any remaining data
+            remaining = process._process.stdout.read()
+            if remaining:
+                if isinstance(remaining, bytes):
+                    buffer += remaining.decode("utf-8", errors="replace")
+                else:
+                    buffer += str(remaining)
+                    
+            plog.debug("Read from exited process", buffer_size=len(buffer), buffer_preview=buffer[:100])
+                
+            if all(part in buffer for part in expected_parts):
+                plog.debug("Found expected pattern in exited process output")
+                return buffer
+        except Exception as e:
+            plog.debug("Could not read remaining output", error=str(e))
 
     while (loop.time() - start_time) < timeout:
         # Try to read output first before checking if process is running
