@@ -20,6 +20,7 @@ from provide.foundation.config.loader import (
 )
 from provide.foundation.config.manager import ConfigManager
 from provide.foundation.config.types import ConfigDict, ConfigSource
+from provide.foundation.config.loader import ConfigLoader
 
 T = TypeVar("T", bound=BaseConfig)
 
@@ -227,9 +228,14 @@ class SyncConfigManager:
     Provides a sync interface to the async ConfigManager.
     """
 
-    def __init__(self) -> None:
-        """Initialize sync config manager."""
+    def __init__(self, loader: ConfigLoader | None = None) -> None:
+        """Initialize sync config manager.
+        
+        Args:
+            loader: Optional config loader for loading configurations.
+        """
         self._async_manager = ConfigManager()
+        self._loader = loader
 
     def register(self, name: str, config: BaseConfig | None = None, **kwargs) -> None:
         """Register a configuration (sync)."""
@@ -239,9 +245,28 @@ class SyncConfigManager:
         """Get a configuration by name (sync)."""
         return run_async(self._async_manager.get(name))
 
-    def load(self, name: str, config_class: type[T], loader=None) -> T:
-        """Load a configuration (sync)."""
-        return run_async(self._async_manager.load(name, config_class, loader))
+    def load(self, name: str | None = None, config_class: type[T] | None = None) -> T | ConfigDict:
+        """Load a configuration (sync).
+        
+        Args:
+            name: Optional name for storing in manager.
+            config_class: Optional config class to instantiate.
+            
+        Returns:
+            Config instance if config_class provided, otherwise dict.
+        """
+        if self._loader:
+            config_dict = run_async(self._loader.load())
+            if config_class:
+                return run_async(config_class.from_dict(config_dict))
+            return config_dict
+        
+        # Fallback to manager's load if we have a name
+        if name and config_class:
+            return run_async(self._async_manager.load(name, config_class, self._loader))
+        
+        # Return empty dict or default instance
+        return config_class() if config_class else {}
 
     def update(
         self,
