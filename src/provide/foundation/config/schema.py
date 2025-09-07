@@ -43,7 +43,7 @@ class SchemaField:
         """
         # Check required
         if self.required and value is None:
-            raise ConfigValidationError(self.name, value, "Field is required")
+            raise ConfigValidationError("Field is required", field=self.name, value=value)
 
         # Skip further validation for None values
         if value is None:
@@ -52,26 +52,32 @@ class SchemaField:
         # Check type
         if self.type is not None and not isinstance(value, self.type):
             raise ConfigValidationError(
-                self.name,
-                value,
                 f"Expected type {self.type.__name__}, got {type(value).__name__}",
+                field=self.name,
+                value=value
             )
 
         # Check choices
         if self.choices is not None and value not in self.choices:
             raise ConfigValidationError(
-                self.name, value, f"Value must be one of {self.choices}"
+                f"Value must be one of {self.choices}",
+                field=self.name,
+                value=value
             )
 
         # Check min/max
         if self.min_value is not None and value < self.min_value:
             raise ConfigValidationError(
-                self.name, value, f"Value must be >= {self.min_value}"
+                f"Value must be >= {self.min_value}",
+                field=self.name,
+                value=value
             )
 
         if self.max_value is not None and value > self.max_value:
             raise ConfigValidationError(
-                self.name, value, f"Value must be <= {self.max_value}"
+                f"Value must be <= {self.max_value}",
+                field=self.name,
+                value=value
             )
 
         # Check pattern
@@ -80,7 +86,9 @@ class SchemaField:
 
             if not re.match(self.pattern, value):
                 raise ConfigValidationError(
-                    self.name, value, f"Value does not match pattern: {self.pattern}"
+                    f"Value does not match pattern: {self.pattern}",
+                    field=self.name,
+                    value=value
                 )
 
         # Custom validator
@@ -92,12 +100,14 @@ class SchemaField:
                     result = await result
                 if not result:
                     raise ConfigValidationError(
-                        self.name, value, "Custom validation failed"
+                        "Custom validation failed",
+                        field=self.name,
+                        value=value
                     )
             except ConfigValidationError:
                 raise
             except Exception as e:
-                raise ConfigValidationError(self.name, value, f"Validation error: {e}")
+                raise ConfigValidationError(f"Validation error: {e}", field=self.name, value=value)
 
 
 class ConfigSchema:
@@ -131,7 +141,7 @@ class ConfigSchema:
         # Check required fields
         for field in self.fields:
             if field.required and field.name not in data:
-                raise ConfigValidationError(field.name, None, "Required field missing")
+                raise ConfigValidationError("Required field missing", field=field.name)
 
         # Validate each field
         for key, value in data.items():
@@ -222,7 +232,7 @@ async def validate_schema(config: BaseConfig, schema: ConfigSchema) -> None:
     Raises:
         ConfigValidationError: If validation fails
     """
-    data = await config.to_dict(include_sensitive=True)
+    data = config.to_dict(include_sensitive=True)
     await schema.validate(data)
 
 
