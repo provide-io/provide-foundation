@@ -22,7 +22,8 @@
       "Bash(curl:*)",
       "Bash(mkdocs serve:*)",
       "Bash(flavor:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(/Users/tim/code/gh/provide-io/provide-foundation/workenv/provide-foundation_darwin_arm64/bin/python -m pytest tests/process/test_lifecycle_comprehensive_coverage.py::TestWaitForProcessOutput::test_wait_for_output_success -v)"
     ],
     "deny": [],
     "ask": [],
