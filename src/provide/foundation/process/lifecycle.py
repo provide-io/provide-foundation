@@ -368,6 +368,10 @@ async def wait_for_process_output(
         # Check if process is still running
         if not process.is_running():
             returncode = process.returncode
+            # Check if we have all expected parts in buffer before raising error
+            if all(part in buffer for part in expected_parts):
+                plog.debug("Found expected pattern in buffer (process exited)")
+                return buffer
             plog.error("Process exited unexpectedly", returncode=returncode)
             raise ProcessError(f"Process exited with code {returncode}")
 
