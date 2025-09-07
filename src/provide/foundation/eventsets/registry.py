@@ -9,11 +9,8 @@ from typing import Any
 
 from provide.foundation.errors.resources import AlreadyExistsError, NotFoundError
 from provide.foundation.hub.registry import Registry
-from provide.foundation.logger import get_logger
 
 from provide.foundation.eventsets.types import EventSetConfig
-
-logger = get_logger(__name__)
 
 
 class EventSetRegistry(Registry):
@@ -34,21 +31,7 @@ class EventSetRegistry(Registry):
         Raises:
             AlreadyExistsError: If an event set with this name already exists
         """
-        try:
-            self.register("eventset", config.name, config, metadata={"priority": config.priority})
-            logger.debug(
-                "Registered event set",
-                name=config.name,
-                priority=config.priority,
-                field_count=len(config.field_mappings),
-                set_count=len(config.event_sets)
-            )
-        except AlreadyExistsError:
-            logger.warning(
-                "Event set already registered",
-                name=config.name
-            )
-            raise
+        self.register("eventset", config.name, config, metadata={"priority": config.priority})
     
     def get_event_set(self, name: str) -> EventSetConfig:
         """
@@ -88,7 +71,6 @@ class EventSetRegistry(Registry):
         """
         sets_path = Path(__file__).parent / "sets"
         if not sets_path.exists():
-            logger.debug("No sets directory found for auto-discovery")
             return
         
         # Import all modules in the sets directory
@@ -106,37 +88,13 @@ class EventSetRegistry(Registry):
                     if isinstance(event_set, EventSetConfig):
                         try:
                             self.register_event_set(event_set)
-                            logger.debug(
-                                "Auto-discovered event set",
-                                module=module_name,
-                                name=event_set.name
-                            )
                         except AlreadyExistsError:
-                            logger.debug(
-                                "Event set already registered during discovery",
-                                module=module_name,
-                                name=event_set.name
-                            )
+                            pass  # Already registered
                     else:
-                        logger.warning(
-                            "EVENT_SET is not an EventSetConfig",
-                            module=module_name,
-                            type=type(event_set).__name__
-                        )
+                        pass  # Not an EventSetConfig
                         
-            except ImportError as e:
-                logger.warning(
-                    "Failed to import event set module",
-                    module=module_name,
-                    error=str(e)
-                )
-            except Exception as e:
-                logger.error(
-                    "Error during event set discovery",
-                    module=module_name,
-                    error=str(e),
-                    error_type=type(e).__name__
-                )
+            except (ImportError, Exception):
+                pass  # Skip modules that fail to import
 
 
 # Global registry instance

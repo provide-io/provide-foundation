@@ -4,12 +4,8 @@ Event set resolution and enrichment logic.
 
 from typing import Any
 
-from provide.foundation.logger import get_logger
-
 from provide.foundation.eventsets.registry import get_registry
 from provide.foundation.eventsets.types import EventSet, EventSetConfig, FieldMapping
-
-logger = get_logger(__name__)
 
 
 class EventSetResolver:
@@ -43,22 +39,11 @@ class EventSetResolver:
             for event_set in config.event_sets:
                 if event_set.name not in self._event_sets:
                     self._event_sets[event_set.name] = event_set
-                    logger.debug(
-                        "Added event set to resolver",
-                        name=event_set.name,
-                        visual_markers=len(event_set.visual_markers),
-                        metadata_fields=len(event_set.metadata_fields)
-                    )
             
             # Add field mappings
             self._field_mappings.extend(config.field_mappings)
         
         self._resolved = True
-        logger.debug(
-            "Event sets resolved",
-            total_mappings=len(self._field_mappings),
-            total_sets=len(self._event_sets)
-        )
     
     def enrich_event(self, event_dict: dict[str, Any]) -> dict[str, Any]:
         """
