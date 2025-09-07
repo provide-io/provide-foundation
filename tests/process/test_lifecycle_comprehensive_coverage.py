@@ -410,10 +410,10 @@ class TestManagedProcessEdgeCases:
         assert proc._stderr_thread is None
 
 
-@pytest.mark.asyncio
 class TestWaitForProcessOutput:
     """Test wait_for_process_output function."""
 
+    @pytest.mark.asyncio
     async def test_wait_for_output_success(self):
         """Test successful output waiting."""
         proc = ManagedProcess(
@@ -438,6 +438,7 @@ class TestWaitForProcessOutput:
         proc._process.wait()
         proc.cleanup()
 
+    @pytest.mark.asyncio
     async def test_wait_for_output_timeout(self):
         """Test timeout when expected output never comes."""
         proc = ManagedProcess(
@@ -455,6 +456,7 @@ class TestWaitForProcessOutput:
         proc.terminate_gracefully()
         proc.cleanup()
 
+    @pytest.mark.asyncio
     async def test_wait_for_output_process_exits(self):
         """Test when process exits before expected output."""
         proc = ManagedProcess(
