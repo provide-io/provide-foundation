@@ -9,12 +9,12 @@ from attrs import define, field
 
 
 @define(frozen=True, slots=True)
-class EventSet:
+class EventMapping:
     """
-    A set of event enrichment mappings for a specific domain.
+    Individual event enrichment mapping for a specific domain.
     
     Attributes:
-        name: Unique identifier for this event set
+        name: Unique identifier for this mapping
         visual_markers: Mapping of values to visual indicators (e.g., emojis)
         metadata_fields: Additional metadata to attach based on values
         transformations: Value transformation functions
@@ -49,20 +49,20 @@ class FieldMapping:
 
 
 @define(frozen=True, slots=True)
-class EventSetConfig:
+class EventSet:
     """
-    Configuration for a complete event enrichment domain.
+    Complete event enrichment domain definition.
     
     Attributes:
-        name: Unique identifier for this configuration
+        name: Unique identifier for this event set
         description: Human-readable description
-        event_sets: List of EventSet definitions
-        field_mappings: List of field-to-event-set mappings
-        priority: Higher priority configs override lower ones
+        mappings: List of EventMapping definitions
+        field_mappings: List of field-to-mapping associations
+        priority: Higher priority sets override lower ones
     """
     
     name: str
     description: str | None = field(default=None)
-    event_sets: list[EventSet] = field(factory=lambda: [])
+    mappings: list[EventMapping] = field(factory=lambda: [])
     field_mappings: list[FieldMapping] = field(factory=lambda: [])
     priority: int = field(default=0, converter=int)
