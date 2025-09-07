@@ -40,7 +40,6 @@ class ComponentInfo:
 class ComponentCategory(Enum):
     """Predefined component categories for Foundation."""
 
-    EMOJI_SET = "emoji_set"
     CONFIG_SOURCE = "config_source"
     PROCESSOR = "processor"
     ERROR_HANDLER = "error_handler"
@@ -74,119 +73,6 @@ def get_component_registry() -> Registry:
     """Get the global component registry."""
     return _component_registry
 
-
-def find_emoji_set_for_domain(domain: str) -> EventMapping | None:
-    """Find the best emoji set for a given domain."""
-    with _registry_lock:
-        registry = get_component_registry()
-
-        # Get all emoji sets for this domain
-        all_entries = list(registry)
-        domain_sets = [
-            entry
-            for entry in all_entries
-            if (
-                entry.dimension == ComponentCategory.EMOJI_SET.value
-                and entry.metadata.get("domain") == domain
-            )
-        ]
-
-        if not domain_sets:
-            return get_default_emoji_set()
-
-        # Sort by priority (highest first)
-        domain_sets.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)
-        return domain_sets[0].value
-
-
-def get_default_emoji_set() -> EventMapping:
-    """Get the default emoji set for unknown domains."""
-    with _registry_lock:
-        registry = get_component_registry()
-
-        # Look for default emoji set
-        all_entries = list(registry)
-        default_sets = [
-            entry
-            for entry in all_entries
-            if (
-                entry.dimension == ComponentCategory.EMOJI_SET.value
-                and entry.metadata.get("default", False)
-            )
-        ]
-
-        if default_sets:
-            return default_sets[0].value
-
-        # Return built-in default
-        return EventMapping(
-            name="default",
-            emojis={
-                "success": "✅",
-                "error": "❌",
-                "info": "ℹ️",
-                "warning": "⚠️",
-                "debug": "🔍",
-            },
-        )
-
-
-def resolve_emoji_for_domain(domain: str, action: str) -> str:
-    """Resolve emoji for domain and action with priority ordering."""
-    with _registry_lock:
-        registry = get_component_registry()
-
-        # Get all emoji sets for this domain
-        all_entries = list(registry)
-        domain_sets = [
-            entry
-            for entry in all_entries
-            if (
-                entry.dimension == ComponentCategory.EMOJI_SET.value
-                and entry.metadata.get("domain") == domain
-            )
-        ]
-
-        # Sort by priority (highest first)
-        domain_sets.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)
-
-        # Try each set in priority order
-        for entry in domain_sets:
-            emoji_set = entry.value
-            if action in emoji_set.emojis:
-                return emoji_set.emojis[action]
-
-        # Fall back to default
-        default_set = get_default_emoji_set()
-        return default_set.emojis.get(action, "📝")
-
-
-def get_composed_emoji_set(domain: str) -> EventMapping:
-    """Get composed emoji set combining all sets for a domain."""
-    with _registry_lock:
-        registry = get_component_registry()
-
-        # Get all emoji sets for this domain
-        all_entries = list(registry)
-        domain_sets = [
-            entry
-            for entry in all_entries
-            if (
-                entry.dimension == ComponentCategory.EMOJI_SET.value
-                and entry.metadata.get("domain") == domain
-            )
-        ]
-
-        # Sort by priority (lowest first for composition)
-        domain_sets.sort(key=lambda e: e.metadata.get("priority", 0))
-
-        # Compose emojis
-        composed_emojis = {}
-        for entry in domain_sets:
-            emoji_set = entry.value
-            composed_emojis.update(emoji_set.emojis)
-
-        return EventMapping(name=f"composed_{domain}", emojis=composed_emojis)
 
 
 def resolve_config_value(key: str) -> Any:
