@@ -67,18 +67,18 @@ class ManagedProcess:
         self.stderr_relay = stderr_relay
         self.kwargs = kwargs
 
-        # Build environment
-        if env is not None:
-            # If env is explicitly provided, use it as-is
-            self._env = dict(env)
-        else:
-            # Only if no env provided, copy current environment and clean coverage vars
-            self._env = os.environ.copy()
-            # Clean coverage-related environment variables from subprocess
-            # to prevent interference with output capture during testing
-            for key in list(self._env.keys()):
-                if key.startswith(('COVERAGE', 'COV_CORE')):
-                    self._env.pop(key, None)
+        # Build environment - always start with current environment
+        self._env = os.environ.copy()
+        
+        # Clean coverage-related environment variables from subprocess
+        # to prevent interference with output capture during testing
+        for key in list(self._env.keys()):
+            if key.startswith(('COVERAGE', 'COV_CORE')):
+                self._env.pop(key, None)
+        
+        # Merge in any provided environment variables
+        if env:
+            self._env.update(env)
 
         # Process state
         self._process: subprocess.Popen[bytes] | None = None
