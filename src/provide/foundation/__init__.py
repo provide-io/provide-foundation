@@ -6,23 +6,15 @@ Foundation Telemetry Library (structlog-based).
 Primary public interface for the library, re-exporting common components.
 """
 
-# Check console availability
-try:
-    from provide.foundation.console import perr, pin, pout
-    _HAS_CONSOLE = True
-except ImportError:
-    _HAS_CONSOLE = False
-    perr = pin = pout = None
-
 # Export config module for easy access
 # New foundation components
 # Make the errors module available for detailed imports
 from provide.foundation import config, errors, platform, process
+from provide.foundation._version import __version__
+
+# Console I/O functions (always available - handles click dependency internally)
+from provide.foundation.console import perr, pin, pout
 from provide.foundation.context import Context
-from provide.foundation.setup import (
-    setup_telemetry,
-    shutdown_foundation_telemetry,
-)
 
 # Error handling exports - only the essentials
 from provide.foundation.errors import (
@@ -43,8 +35,8 @@ from provide.foundation.logger import (
     LoggingConfig,
     TelemetryConfig,
     get_logger,  # Factory function for creating loggers
-    logger,  # Global logger instance
-    setup_logging,  # Setup function
+    setup_logger,  # Setup function (consistent naming)
+    setup_logging,  # Setup function (backward compatibility)
 )
 
 # Emoji exports
@@ -59,6 +51,10 @@ from provide.foundation.logger.emoji.types import (
     EmojiSetConfig,
     FieldToEmojiMapping,
 )
+from provide.foundation.setup import (
+    setup_telemetry,
+    shutdown_foundation_telemetry,
+)
 
 # New type exports for emoji mapping
 from provide.foundation.types import (
@@ -68,19 +64,19 @@ from provide.foundation.types import (
 
 # New utility exports
 from provide.foundation.utils import (
+    TokenBucketRateLimiter,
     check_optional_deps,
     timed_block,
-    TokenBucketRateLimiter,
 )
 
-from provide.foundation._version import __version__
 
 # Lazy loading support for optional modules
 def __getattr__(name: str):
     """Support lazy loading of optional modules."""
     if name == "cli":
         try:
-            from provide.foundation import cli
+            import provide.foundation.cli as cli
+
             return cli
         except ImportError as e:
             if "click" in str(e):
@@ -90,9 +86,11 @@ def __getattr__(name: str):
                 ) from e
             raise
     elif name == "metrics":
-        from provide.foundation import metrics
+        import provide.foundation.metrics as metrics
+
         return metrics
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+
 
 __all__ = [
     # Core Emoji Dictionaries (available for direct use or reference)
@@ -134,22 +132,24 @@ __all__ = [
     "logger",
     # Console functions (work with or without click)
     "perr",
-    "pin", 
+    "pin",
     "pout",
-    # Console availability flag
-    "_HAS_CONSOLE",
     "platform",
     "process",
     "retry_on_error",
-    "setup_logging",
+    "setup_logging",  # Backward compatibility
+    "setup_logger",  # Consistent naming
     "setup_telemetry",
     # Utilities
     "show_emoji_matrix",
     "shutdown_foundation_telemetry",
     "timed_block",
-    # Rate limiting utilities  
+    # Rate limiting utilities
     "TokenBucketRateLimiter",
     "with_error_handling",
 ]
+
+# Import the logger instance after all other imports to avoid module shadowing
+from provide.foundation.logger import logger
 
 # 🐍📝

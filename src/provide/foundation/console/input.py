@@ -13,6 +13,7 @@ from typing import Any, TypeVar
 
 try:
     import click
+
     _HAS_CLICK = True
 except ImportError:
     click = None
@@ -52,7 +53,7 @@ def _should_use_color(ctx: Context | None = None) -> bool:
     return sys.stdin.isatty()
 
 
-def pin(prompt: str = "", **kwargs) -> str | Any:
+def pin(prompt: str = "", **kwargs: Any) -> str | Any:
     """
     Input from stdin with optional prompt.
 
@@ -154,24 +155,25 @@ def pin(prompt: str = "", **kwargs) -> str | Any:
                 display_prompt = f"{prompt} [{kwargs['default']}]: "
             elif prompt and not prompt.endswith(": "):
                 display_prompt = f"{prompt}: "
-            
+
             if kwargs.get("password") or kwargs.get("hide_input"):
                 import getpass
+
                 user_input = getpass.getpass(display_prompt)
             else:
                 user_input = input(display_prompt)
-            
+
             # Handle default value
             if not user_input and "default" in kwargs:
                 user_input = str(kwargs["default"])
-            
+
             # Type conversion
             if type_func := kwargs.get("type"):
                 try:
                     return type_func(user_input)
                 except (TypeError, ValueError):
                     return user_input
-            
+
             return user_input
 
 
@@ -220,7 +222,7 @@ def pin_stream() -> Iterator[str]:
             plog.debug("📥 Input stream ended", lines=line_count)
 
 
-async def apin(prompt: str = "", **kwargs) -> str | Any:
+async def apin(prompt: str = "", **kwargs: Any) -> str | Any:
     """
     Async input from stdin with optional prompt.
 

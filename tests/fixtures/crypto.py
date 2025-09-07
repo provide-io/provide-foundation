@@ -62,13 +62,11 @@ VXHTAdc/bLFFy9kybQqo300Rv6ViW2I=
     return Certificate(cert_pem_or_uri=cert_pem, key_pem_or_uri=key_pem)
 
 
-@pytest.fixture(scope="module") 
+@pytest.fixture(scope="module")
 def ca_cert():
     """Create a self-signed CA certificate for testing."""
     return Certificate.create_ca(
-        common_name="Test CA",
-        organization_name="Test Organization", 
-        validity_days=365
+        common_name="Test CA", organization_name="Test Organization", validity_days=365
     )
 
 
@@ -127,13 +125,13 @@ def temporary_key_file(tmp_path, client_cert) -> str:
 @pytest.fixture
 def cert_with_windows_line_endings(client_cert) -> str:
     """Returns a certificate PEM with Windows line endings."""
-    return client_cert.cert.replace('\n', '\r\n')
+    return client_cert.cert.replace("\n", "\r\n")
 
 
 @pytest.fixture
 def cert_with_utf8_bom(client_cert) -> str:
     """Returns a certificate PEM with UTF-8 BOM."""
-    return '\ufeff' + client_cert.cert
+    return "\ufeff" + client_cert.cert
 
 
 @pytest.fixture

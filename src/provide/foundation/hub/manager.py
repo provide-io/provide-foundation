@@ -13,6 +13,7 @@ from typing import Any
 
 try:
     import click
+
     _HAS_CLICK = True
 except ImportError:
     click = None
@@ -74,7 +75,7 @@ class Hub:
         self.context = context or Context()
         self._component_registry = component_registry or get_component_registry()
         self._command_registry = command_registry or get_command_registry()
-        self._cli_group: "click.Group | None" = None
+        self._cli_group: click.Group | None = None
 
     # Component Management
 
@@ -216,7 +217,7 @@ class Hub:
 
     def add_command(
         self,
-        func: "Callable[..., Any] | click.Command",
+        func: Callable[..., Any] | click.Command,
         name: str | None = None,
         **kwargs: Any,
     ) -> CommandInfo:
@@ -303,10 +304,10 @@ class Hub:
         name: str = "cli",
         version: str | None = None,
         **kwargs: Any,
-    ) -> "click.Group":
+    ) -> click.Group:
         """
         Create a Click CLI with all registered commands.
-        
+
         Requires click to be installed.
 
         Args:
@@ -325,8 +326,10 @@ class Hub:
             >>>     cli()
         """
         if not _HAS_CLICK:
-            raise ImportError("CLI creation requires: pip install 'provide-foundation[cli]'")
-            
+            raise ImportError(
+                "CLI creation requires: pip install 'provide-foundation[cli]'"
+            )
+
         from provide.foundation.hub.commands import create_command_group
 
         # Use create_command_group which now handles nested groups
@@ -339,7 +342,7 @@ class Hub:
         self._cli_group = cli
         return cli
 
-    def add_cli_group(self, group: "click.Group") -> None:
+    def add_cli_group(self, group: click.Group) -> None:
         """
         Add an existing Click group to the hub.
 

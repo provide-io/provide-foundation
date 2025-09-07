@@ -192,7 +192,9 @@ class TestConfigWarnings:
         # Check that only valid entries are kept
         valid_log_levels = {"TRACE", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
         for module, level in config.logging.module_levels.items():
-            assert level in valid_log_levels, f"Invalid level {level} for module {module}"
+            assert level in valid_log_levels, (
+                f"Invalid level {level} for module {module}"
+            )
             # Empty module names should not be kept
             assert module.strip() != "", "Empty module name should not be kept"
 
@@ -258,12 +260,12 @@ class TestFactoriesModule:
     ) -> None:
         """Test that setup_logging function works with basic parameters."""
         from provide.foundation.logger.factories import setup_logging
-        
+
         # Use the setup_logging convenience function
         setup_logging(level="DEBUG", json_logs=False)
-        
+
         # Test that the logger works after setup
         global_logger.debug("Test debug message after setup_logging")
-        
+
         output = captured_stderr_for_foundation.getvalue()
         assert "Test debug message after setup_logging" in output

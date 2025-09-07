@@ -116,4 +116,4 @@ You will see the following output in your console, beautifully formatted and ins
 
 Congratulations! You've successfully used `provide.foundation` to produce structured, human-readable logs.
 
-Next, dive into the [**Core Concepts**](../core-concepts/structured-logging.md) to understand the principles that make this library so powerful.
+Next, dive into the [**Core Concepts**](../guide/concepts/structured-logging.md) to understand the principles that make this library so powerful.

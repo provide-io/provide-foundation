@@ -30,9 +30,9 @@ class TestSchemaFieldSimple:
             min_value=1,
             max_value=10,
             pattern=r"\d+",
-            sensitive=True
+            sensitive=True,
         )
-        
+
         assert field.name == "test_field"
         assert field.type == str
         assert field.required is True
@@ -47,7 +47,7 @@ class TestSchemaFieldSimple:
     def test_schema_field_defaults(self):
         """Test SchemaField with default values."""
         field = SchemaField(name="test_field")
-        
+
         assert field.name == "test_field"
         assert field.type is None
         assert field.required is False
@@ -76,7 +76,7 @@ class TestConfigSchemaSimple:
             SchemaField(name="field2", type=int),
         ]
         schema = ConfigSchema(fields)
-        
+
         assert len(schema.fields) == 2
         assert "field1" in schema._field_map
         assert "field2" in schema._field_map
@@ -85,78 +85,88 @@ class TestConfigSchemaSimple:
         """Test ConfigSchema add_field method."""
         schema = ConfigSchema()
         field = SchemaField(name="new_field", type=str)
-        
+
         schema.add_field(field)
-        
+
         assert field in schema.fields
         assert schema._field_map["new_field"] == field
 
     def test_config_schema_apply_defaults_empty_data(self):
         """Test ConfigSchema apply_defaults with empty data."""
-        schema = ConfigSchema([
-            SchemaField(name="field1", default="default_value"),
-            SchemaField(name="field2", default=42),
-        ])
-        
+        schema = ConfigSchema(
+            [
+                SchemaField(name="field1", default="default_value"),
+                SchemaField(name="field2", default=42),
+            ]
+        )
+
         result = schema.apply_defaults({})
-        
+
         assert result == {"field1": "default_value", "field2": 42}
 
     def test_config_schema_apply_defaults_partial_data(self):
         """Test ConfigSchema apply_defaults with partial data."""
-        schema = ConfigSchema([
-            SchemaField(name="field1", default="default_value"),
-            SchemaField(name="field2", default=42),
-        ])
-        
+        schema = ConfigSchema(
+            [
+                SchemaField(name="field1", default="default_value"),
+                SchemaField(name="field2", default=42),
+            ]
+        )
+
         data = {"field1": "custom_value"}
         result = schema.apply_defaults(data)
-        
+
         assert result == {"field1": "custom_value", "field2": 42}
 
     def test_config_schema_apply_defaults_no_defaults(self):
         """Test ConfigSchema apply_defaults with fields having no defaults."""
-        schema = ConfigSchema([
-            SchemaField(name="field1"),
-            SchemaField(name="field2"),
-        ])
-        
+        schema = ConfigSchema(
+            [
+                SchemaField(name="field1"),
+                SchemaField(name="field2"),
+            ]
+        )
+
         data = {"field1": "value"}
         result = schema.apply_defaults(data)
-        
+
         assert result == {"field1": "value"}
 
     def test_config_schema_apply_defaults_none_default(self):
         """Test ConfigSchema apply_defaults with None defaults."""
-        schema = ConfigSchema([
-            SchemaField(name="field1", default=None),
-            SchemaField(name="field2", default="real_default"),
-        ])
-        
+        schema = ConfigSchema(
+            [
+                SchemaField(name="field1", default=None),
+                SchemaField(name="field2", default="real_default"),
+            ]
+        )
+
         result = schema.apply_defaults({})
-        
+
         # None defaults are not applied
         assert result == {"field2": "real_default"}
 
     def test_config_schema_filter_extra_fields(self):
         """Test ConfigSchema filter_extra_fields."""
-        schema = ConfigSchema([
-            SchemaField(name="field1"),
-            SchemaField(name="field2"),
-        ])
-        
+        schema = ConfigSchema(
+            [
+                SchemaField(name="field1"),
+                SchemaField(name="field2"),
+            ]
+        )
+
         data = {"field1": "value1", "field2": "value2", "extra_field": "extra"}
         result = schema.filter_extra_fields(data)
-        
+
         assert result == {"field1": "value1", "field2": "value2"}
 
     def test_config_schema_filter_extra_fields_empty_schema(self):
         """Test ConfigSchema filter_extra_fields with empty schema."""
         schema = ConfigSchema([])
-        
+
         data = {"field1": "value1", "field2": "value2"}
         result = schema.filter_extra_fields(data)
-        
+
         assert result == {}
 
     def test_config_schema_attr_to_schema_field_required(self):
@@ -168,9 +178,9 @@ class TestConfigSchemaSimple:
         mock_attr.factory = None
         mock_attr.type = str
         mock_attr.metadata = {"description": "Test field"}
-        
+
         schema_field = ConfigSchema._attr_to_schema_field(mock_attr)
-        
+
         assert schema_field.name == "test_field"
         assert schema_field.type == str
         assert schema_field.required is True
@@ -184,9 +194,9 @@ class TestConfigSchemaSimple:
         mock_attr.factory = None
         mock_attr.type = str
         mock_attr.metadata = {"sensitive": True}
-        
+
         schema_field = ConfigSchema._attr_to_schema_field(mock_attr)
-        
+
         assert schema_field.name == "test_field"
         assert schema_field.required is False
         assert schema_field.default == "default_value"
@@ -200,9 +210,9 @@ class TestConfigSchemaSimple:
         mock_attr.factory = lambda: []
         mock_attr.type = list
         mock_attr.metadata = {}
-        
+
         schema_field = ConfigSchema._attr_to_schema_field(mock_attr)
-        
+
         assert schema_field.name == "test_field"
         assert schema_field.required is False
 
@@ -242,7 +252,7 @@ class TestValidators:
     def test_validate_url_malformed_url_exception(self):
         """Test validate_url handles malformed URLs that raise exceptions."""
         # Test with a mock that raises exception
-        with patch('urllib.parse.urlparse', side_effect=Exception):
+        with patch("urllib.parse.urlparse", side_effect=Exception):
             assert validate_url("any-url") is False
 
     def test_validate_email_valid_emails(self):
@@ -273,7 +283,7 @@ class TestValidators:
 
     def test_validate_path_invalid_path_exception(self):
         """Test validate_path handles paths that raise exceptions."""
-        with patch('pathlib.Path', side_effect=Exception):
+        with patch("pathlib.Path", side_effect=Exception):
             assert validate_path("any-path") is False
 
     def test_validate_version_valid_versions(self):

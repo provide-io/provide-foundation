@@ -9,6 +9,7 @@ import traceback
 from typing import NotRequired, Self, TypeAlias, TypedDict, cast
 
 from attrs import Factory, define, field
+
 try:
     from cryptography import x509
     from cryptography.hazmat.backends import default_backend
@@ -17,6 +18,7 @@ try:
     from cryptography.hazmat.primitives.serialization import load_pem_private_key
     from cryptography.x509 import Certificate as X509Certificate
     from cryptography.x509.oid import ExtendedKeyUsageOID, NameOID
+
     _HAS_CRYPTO = True
 except ImportError:
     # Stub out cryptography types for type hints
@@ -100,7 +102,7 @@ class CertificateBase:
     """Immutable base certificate data."""
 
     subject: "x509.Name"
-    issuer: "x509.Name" 
+    issuer: "x509.Name"
     public_key: "PublicKey"
     not_valid_before: datetime
     not_valid_after: datetime

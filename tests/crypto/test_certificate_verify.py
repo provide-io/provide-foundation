@@ -265,7 +265,9 @@ async def test_certificate_mismatched_issuer() -> None:
 @pytest.mark.asyncio
 async def test_certificate_self_signature_validation() -> None:
     """Ensure a generated self-signed certificate's signature is valid."""
-    cert = Certificate(generate_keypair=True, key_type="ecdsa", ecdsa_curve="secp384r1") # Using a common type
+    cert = Certificate(
+        generate_keypair=True, key_type="ecdsa", ecdsa_curve="secp384r1"
+    )  # Using a common type
 
     # A freshly generated self-signed certificate should have a valid signature
     # when verified against its own public key.
@@ -277,6 +279,7 @@ async def test_certificate_self_signature_validation() -> None:
         "Self-signed certificate signature should be valid, but "
         "_validate_signature returned False."
     )
+
 
 @pytest.mark.asyncio
 async def test_certificate_key_usage_extension_failure() -> None:

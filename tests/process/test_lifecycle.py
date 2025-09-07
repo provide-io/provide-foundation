@@ -40,14 +40,14 @@ class TestManagedProcess:
     def test_launch_and_cleanup(self):
         """Test basic process launch and cleanup."""
         process = ManagedProcess(["echo", "hello"])
-        
+
         # Process should not be running initially
         assert not process.is_running()
         assert process.pid is None
 
         # Launch the process
         process.launch()
-        
+
         # Process should be running (briefly)
         assert process.process is not None
         assert process.pid is not None
@@ -61,16 +61,16 @@ class TestManagedProcess:
         """Test that launching twice raises an error."""
         process = ManagedProcess(["echo", "hello"])
         process.launch()
-        
+
         with pytest.raises(RuntimeError, match="already been started"):
             process.launch()
-        
+
         process.cleanup()
 
     def test_launch_invalid_command_raises_error(self):
         """Test that invalid command raises ProcessError."""
         process = ManagedProcess(["nonexistent_command_12345"])
-        
+
         with pytest.raises(ProcessError, match="Failed to launch process"):
             process.launch()
 
@@ -79,21 +79,21 @@ class TestManagedProcess:
         # Use a longer-running command for better testing
         process = ManagedProcess(["sleep", "10"])
         process.launch()
-        
+
         # Process should be running
         assert process.is_running()
-        
+
         # Terminate gracefully
         result = process.terminate_gracefully(timeout=2.0)
         assert result is True  # Should terminate gracefully
         assert not process.is_running()
-        
+
         process.cleanup()
 
     def test_terminate_not_running_process(self):
         """Test terminating a process that's not running."""
         process = ManagedProcess(["echo", "hello"])
-        
+
         # Should return True for not-running process
         result = process.terminate_gracefully()
         assert result is True
@@ -112,7 +112,7 @@ class TestManagedProcess:
         """Test async line reading."""
         process = ManagedProcess(["echo", "hello world"])
         process.launch()
-        
+
         try:
             line = await process.read_line_async(timeout=5.0)
             assert "hello world" in line
@@ -125,7 +125,7 @@ class TestManagedProcess:
         """Test reading from process without stdout."""
         process = ManagedProcess(["echo", "hello"], capture_output=False)
         process.launch()
-        
+
         try:
             with pytest.raises(ProcessError, match="stdout not available"):
                 await process.read_line_async()
@@ -138,7 +138,7 @@ class TestManagedProcess:
         """Test read timeout."""
         process = ManagedProcess(["sleep", "10"])
         process.launch()
-        
+
         try:
             with pytest.raises(TimeoutError, match="Read timeout"):
                 await process.read_line_async(timeout=0.1)
@@ -152,7 +152,7 @@ class TestManagedProcess:
         # Use printf to output without newline
         process = ManagedProcess(["printf", "a"])
         process.launch()
-        
+
         try:
             char = await process.read_char_async(timeout=5.0)
             assert char == "a"
@@ -169,7 +169,7 @@ class TestWaitForProcessOutput:
         """Test waiting for simple output pattern."""
         process = ManagedProcess(["echo", "hello|world|test"])
         process.launch()
-        
+
         try:
             output = await wait_for_process_output(
                 process, expected_parts=["|"], timeout=5.0
@@ -185,12 +185,10 @@ class TestWaitForProcessOutput:
         # Simulate a handshake-like output with multiple separators
         process = ManagedProcess(["echo", "1|2|protocol|4|5|6"])
         process.launch()
-        
+
         try:
             output = await wait_for_process_output(
-                process,
-                expected_parts=["|", "protocol"],
-                timeout=5.0
+                process, expected_parts=["|", "protocol"], timeout=5.0
             )
             assert "1|2|protocol|4|5|6" in output
         finally:
@@ -203,13 +201,11 @@ class TestWaitForProcessOutput:
         # Use a longer-running process to test actual timeout
         process = ManagedProcess(["sleep", "5"])
         process.launch()
-        
+
         try:
             with pytest.raises(TimeoutError, match="Expected pattern"):
                 await wait_for_process_output(
-                    process,
-                    expected_parts=["nonexistent_pattern"], 
-                    timeout=0.5
+                    process, expected_parts=["nonexistent_pattern"], timeout=0.5
                 )
         finally:
             process.terminate_gracefully()
@@ -220,16 +216,14 @@ class TestWaitForProcessOutput:
         """Test behavior when process exits before pattern found."""
         process = ManagedProcess(["echo", "hello"])
         process.launch()
-        
+
         # Wait a bit for the echo to complete
         await asyncio.sleep(0.1)
-        
+
         try:
             with pytest.raises(ProcessError, match="Process exited"):
                 await wait_for_process_output(
-                    process,
-                    expected_parts=["nonexistent_pattern"],
-                    timeout=2.0
+                    process, expected_parts=["nonexistent_pattern"], timeout=2.0
                 )
         finally:
             process.cleanup()
@@ -239,14 +233,14 @@ class TestWaitForProcessOutput:
         """Test with empty expected parts."""
         process = ManagedProcess(["echo", "hello"])
         process.launch()
-        
+
         try:
             output = await wait_for_process_output(
                 process,
                 expected_parts=[],  # Empty pattern should match immediately
-                timeout=5.0
+                timeout=5.0,
             )
             assert "hello" in output
         finally:
-            process.terminate_gracefully()  
+            process.terminate_gracefully()
             process.cleanup()

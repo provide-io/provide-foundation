@@ -4,6 +4,7 @@ Main CLI entry point for Foundation.
 
 try:
     import click
+
     _HAS_CLICK = True
 except ImportError:
     click = None
@@ -20,34 +21,41 @@ def _require_click():
 
 
 if _HAS_CLICK:
+
     @click.group()
     @click.version_option()
     def cli():
         """Foundation CLI - Telemetry and observability tools."""
         pass
-    
+
     # Register commands from commands module
     try:
         from provide.foundation.cli.commands.deps import deps_command
+
         cli.add_command(deps_command)
     except ImportError:
         pass
-    
+
     # Register logs commands
     try:
         from provide.foundation.cli.commands.logs import logs_group
+
         cli.add_command(logs_group)
     except ImportError:
         pass
-    
+
     # Register OpenObserve commands if available
     try:
-        from provide.foundation.observability.openobserve.commands import openobserve_group
+        from provide.foundation.observability.openobserve.commands import (
+            openobserve_group,
+        )
+
         cli.add_command(openobserve_group)
     except ImportError:
         pass
-    
+
 else:
+
     def cli():
         """CLI stub when click is not available."""
         _require_click()

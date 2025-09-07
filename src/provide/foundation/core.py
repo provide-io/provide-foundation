@@ -5,16 +5,16 @@
 Foundation Telemetry Core Setup Functions.
 """
 
+from provide.foundation.logger.setup.emoji_resolver import ResolvedEmojiConfig
 from provide.foundation.setup import (
+    reset_foundation_setup_for_testing,
     setup_telemetry,
     shutdown_foundation_telemetry,
-    reset_foundation_setup_for_testing,
 )
-from provide.foundation.logger.setup.emoji_resolver import ResolvedEmojiConfig
 
 __all__ = [
-    "setup_telemetry",
-    "shutdown_foundation_telemetry", 
-    "reset_foundation_setup_for_testing",
     "ResolvedEmojiConfig",
+    "reset_foundation_setup_for_testing",
+    "setup_telemetry",
+    "shutdown_foundation_telemetry",
 ]

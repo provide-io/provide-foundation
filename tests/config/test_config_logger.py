@@ -75,18 +75,14 @@ class TestBuildCoreProcessorsList:
 
 class TestTelemetryConfigFromEnvEmojiSets:
     def test_from_env_parses_enabled_emoji_sets(self, monkeypatch) -> None:
-        monkeypatch.setenv(
-            "PROVIDE_LOG_ENABLED_EMOJI_SETS", "llm, http , database "
-        )
+        monkeypatch.setenv("PROVIDE_LOG_ENABLED_EMOJI_SETS", "llm, http , database ")
         config = TelemetryConfig.from_env()
         assert config.logging.enabled_emoji_sets == ["llm", "http", "database"]
 
     def test_from_env_handles_malformed_custom_emoji_sets_json(
         self, monkeypatch, capsys: CaptureFixture
     ) -> None:
-        monkeypatch.setenv(
-            "PROVIDE_LOG_CUSTOM_EMOJI_SETS", "[{'name': 'badjson']"
-        )
+        monkeypatch.setenv("PROVIDE_LOG_CUSTOM_EMOJI_SETS", "[{'name': 'badjson']")
         # _ensure_config_logger_handler removed - warnings now handled by config system
         config = TelemetryConfig.from_env()
         assert config.logging.custom_emoji_sets == []
@@ -118,10 +114,10 @@ class TestFoundationLogOutputConfigIntegration:
         """Test that config warnings go to stdout when FOUNDATION_LOG_OUTPUT=stdout."""
         monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "stdout")
         monkeypatch.setenv("PROVIDE_LOG_LEVEL", "INVALID_LEVEL")
-        
+
         config = LoggingConfig.from_env()
         captured = capsys.readouterr()
-        
+
         # Warning should go to stdout, not stderr
         assert "[Foundation Config Warning]" in captured.out
         assert "[Foundation Config Warning]" not in captured.err
@@ -133,10 +129,10 @@ class TestFoundationLogOutputConfigIntegration:
         # Ensure no FOUNDATION_LOG_OUTPUT is set (should default to stderr)
         monkeypatch.delenv("FOUNDATION_LOG_OUTPUT", raising=False)
         monkeypatch.setenv("PROVIDE_LOG_LEVEL", "INVALID_LEVEL")
-        
+
         config = LoggingConfig.from_env()
         captured = capsys.readouterr()
-        
+
         # Warning should go to stderr (default behavior)
         assert "[Foundation Config Warning]" in captured.err
         assert "[Foundation Config Warning]" not in captured.out
@@ -147,10 +143,10 @@ class TestFoundationLogOutputConfigIntegration:
         """Test config warnings when FOUNDATION_LOG_OUTPUT has invalid value."""
         monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "invalid_value")
         monkeypatch.setenv("PROVIDE_LOG_LEVEL", "INVALID_LEVEL")
-        
+
         config = LoggingConfig.from_env()
         captured = capsys.readouterr()
-        
+
         # Both warnings should go to stderr (fallback)
         assert "[Foundation Config Warning]" in captured.err
         # Should have warning about invalid FOUNDATION_LOG_OUTPUT

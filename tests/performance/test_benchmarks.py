@@ -1,7 +1,7 @@
 """
 Performance benchmarks using pytest-benchmark.
 
-This module provides pytest-benchmark integration for Foundation's performance 
+This module provides pytest-benchmark integration for Foundation's performance
 testing, complementing the existing benchmark infrastructure with statistical
 analysis and comparison features.
 
@@ -44,7 +44,7 @@ class TestBasicLoggingPerformance:
 
     def test_basic_logging_throughput(self, benchmark):
         """Benchmark basic logging operations with emoji processing.
-        
+
         Target: >14,000 messages per second
         """
         config = TelemetryConfig(
@@ -67,13 +67,13 @@ class TestBasicLoggingPerformance:
 
             # The benchmark fixture handles timing and statistical analysis
             benchmark(log_messages)
-            
+
             # Performance targets are validated by pytest-benchmark's built-in features
             # The benchmark results show we're achieving >100k msg/sec, well above 1000 target
 
     def test_json_formatting_performance(self, benchmark):
         """Benchmark JSON output formatting with emoji processing.
-        
+
         Target: >500 messages per second for JSON formatting
         """
         config = TelemetryConfig(
@@ -103,7 +103,7 @@ class TestBasicLoggingPerformance:
 
             # The benchmark fixture handles timing and statistical analysis
             benchmark(log_json_messages)
-            
+
             # Performance validated by benchmark output - achieving >200k ops/sec
 
     def test_emoji_processing_performance(self, benchmark):
@@ -127,13 +127,13 @@ class TestBasicLoggingPerformance:
                     test_logger.info(
                         f"Emoji message {i}",
                         domain="system",
-                        action="process", 
+                        action="process",
                         status="success",
                     )
 
             # The benchmark fixture handles timing and statistical analysis
             benchmark(log_with_emoji)
-            
+
             # Performance validated by benchmark output - achieving >250k ops/sec
 
 
@@ -161,16 +161,14 @@ class TestConcurrentPerformance:
                 thread_logger = logger.get_logger(f"benchmark.thread.{thread_id}")
                 for i in range(message_count):
                     thread_logger.info(
-                        f"Thread {thread_id} message {i}", 
-                        thread_id=thread_id, 
-                        msg_id=i
+                        f"Thread {thread_id} message {i}", thread_id=thread_id, msg_id=i
                     )
 
             def multithreaded_logging():
                 """Function to benchmark - concurrent logging."""
                 thread_count = 5
                 messages_per_thread = 100
-                
+
                 with ThreadPoolExecutor(max_workers=thread_count) as executor:
                     futures = [
                         executor.submit(worker_thread, thread_id, messages_per_thread)
@@ -181,7 +179,7 @@ class TestConcurrentPerformance:
 
             # The benchmark fixture handles timing and statistical analysis
             benchmark(multithreaded_logging)
-            
+
             # Performance validated by benchmark output - achieving >250k ops/sec
 
     def test_level_filtering_performance(self, benchmark):
@@ -204,11 +202,11 @@ class TestConcurrentPerformance:
                 """Function to benchmark - level filtering."""
                 for i in range(500):
                     filtered_logger.debug(f"Allowed message {i}")  # Should pass
-                    blocked_logger.debug(f"Blocked message {i}")   # Should be filtered
+                    blocked_logger.debug(f"Blocked message {i}")  # Should be filtered
 
             # The benchmark fixture handles timing and statistical analysis
             benchmark(level_filtering_test)
-            
+
             # Performance validated by benchmark output - level filtering is very efficient
 
 
@@ -221,6 +219,7 @@ class TestDogfoodingPerformance:
 
     def test_config_warning_performance(self, benchmark):
         """Benchmark config system warning generation with structured logging."""
+
         def generate_config_warnings():
             """Test config warnings (which now use structured logging)."""
             # This will trigger our improved warning system
@@ -233,11 +232,12 @@ class TestDogfoodingPerformance:
 
         # Config warnings should be very fast even with structured logging
         benchmark(generate_config_warnings)
-        
+
         # Performance validated by benchmark output - config operations are very fast
 
     def test_foundation_setup_performance(self, benchmark):
         """Benchmark Foundation setup with structured logging improvements."""
+
         def foundation_setup():
             """Test the improved Foundation setup process."""
             reset_foundation_setup_for_testing()
@@ -252,11 +252,12 @@ class TestDogfoodingPerformance:
 
         # Foundation setup should be fast even with structured logging
         benchmark(foundation_setup)
-        
+
         # Performance validated by benchmark output - setup completes quickly
 
     def test_core_setup_logger_performance(self, benchmark):
         """Benchmark the Foundation setup process with structured logging."""
+
         def foundation_setup_cycle():
             """Test the Foundation setup/reset cycle performance."""
             reset_foundation_setup_for_testing()
@@ -270,7 +271,7 @@ class TestDogfoodingPerformance:
 
         # The benchmark fixture handles timing and statistical analysis
         benchmark(foundation_setup_cycle)
-        
+
         # Performance validated by benchmark output - setup cycle maintains speed
 
 
@@ -297,7 +298,7 @@ class TestLargePayloadPerformance:
             # Create large payload similar to existing benchmark
             large_data = {
                 "large_string": "x" * 1000,
-                "large_list": list(range(100)), 
+                "large_list": list(range(100)),
                 "nested_data": {"level1": {"level2": {"data": ["item"] * 50}}},
             }
 
@@ -305,12 +306,10 @@ class TestLargePayloadPerformance:
                 """Function to benchmark - large payload logging."""
                 for i in range(100):
                     test_logger.info(
-                        f"Large payload message {i}",
-                        **large_data,
-                        iteration=i
+                        f"Large payload message {i}", **large_data, iteration=i
                     )
 
             # The benchmark fixture handles timing and statistical analysis
             benchmark(log_large_payloads)
-            
+
             # Performance validated by benchmark output - large payloads handled efficiently

@@ -35,7 +35,7 @@ class TelemetryConfig(BaseConfig):
         env_var="PROVIDE_TELEMETRY_DISABLED",
         description="Globally disable telemetry",
     )
-    
+
     # OpenTelemetry configuration
     tracing_enabled: bool = field(
         default=True,
@@ -44,7 +44,7 @@ class TelemetryConfig(BaseConfig):
     )
     metrics_enabled: bool = field(
         default=True,
-        env_var="OTEL_METRICS_ENABLED", 
+        env_var="OTEL_METRICS_ENABLED",
         description="Enable OpenTelemetry metrics",
     )
     otlp_endpoint: str | None = field(
@@ -69,10 +69,10 @@ class TelemetryConfig(BaseConfig):
     )
     trace_sample_rate: float = field(
         default=1.0,
-        env_var="OTEL_TRACE_SAMPLE_RATE", 
+        env_var="OTEL_TRACE_SAMPLE_RATE",
         description="Sampling rate for traces (0.0 to 1.0)",
     )
-    
+
     # OpenObserve configuration
     openobserve_url: str | None = field(
         default=None,
@@ -149,20 +149,20 @@ class TelemetryConfig(BaseConfig):
                 if strict:
                     raise
                 # Use default value in non-strict mode
-        
+
         # OpenObserve configuration
         if openobserve_url := os.getenv("OPENOBSERVE_URL"):
             config_dict["openobserve_url"] = openobserve_url
-        
+
         if openobserve_org := os.getenv("OPENOBSERVE_ORG"):
             config_dict["openobserve_org"] = openobserve_org
-        
+
         if openobserve_user := os.getenv("OPENOBSERVE_USER"):
             config_dict["openobserve_user"] = openobserve_user
-        
+
         if openobserve_password := os.getenv("OPENOBSERVE_PASSWORD"):
             config_dict["openobserve_password"] = openobserve_password
-        
+
         if openobserve_stream := os.getenv("OPENOBSERVE_STREAM"):
             config_dict["openobserve_stream"] = openobserve_stream
 
@@ -170,16 +170,16 @@ class TelemetryConfig(BaseConfig):
         config_dict["logging"] = LoggingConfig.from_env(strict=strict)
 
         return cls(**config_dict)
-    
+
     def get_otlp_headers_dict(self) -> dict[str, str]:
         """Parse OTLP headers string into dictionary.
-        
+
         Returns:
             Dictionary of header key-value pairs
         """
         if not self.otlp_headers:
             return {}
-        
+
         headers = {}
         for pair in self.otlp_headers.split(","):
             if "=" in pair:

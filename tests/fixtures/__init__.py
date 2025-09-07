@@ -27,7 +27,7 @@ __all__ = [
     "setup_foundation_telemetry_for_test",
     # Crypto fixtures
     "client_cert",
-    "server_cert", 
+    "server_cert",
     "ca_cert",
     "valid_cert_pem",
     "valid_key_pem",
@@ -39,6 +39,6 @@ __all__ = [
     "temporary_key_file",
     "cert_with_windows_line_endings",
     "cert_with_utf8_bom",
-    "cert_with_extra_whitespace", 
+    "cert_with_extra_whitespace",
     "external_ca_pem",
 ]

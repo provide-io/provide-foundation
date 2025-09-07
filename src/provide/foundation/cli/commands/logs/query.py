@@ -4,6 +4,7 @@ Query logs command for Foundation CLI.
 
 try:
     import click
+
     _HAS_CLICK = True
 except ImportError:
     click = None
@@ -15,6 +16,7 @@ log = get_logger(__name__)
 
 
 if _HAS_CLICK:
+
     @click.command("query")
     @click.option(
         "--sql",
@@ -63,38 +65,40 @@ if _HAS_CLICK:
         help="Output format",
     )
     @click.pass_context
-    def query_command(ctx, sql, current_trace, trace_id, level, service, last, stream, size, format):
+    def query_command(
+        ctx, sql, current_trace, trace_id, level, service, last, stream, size, format
+    ):
         """Query logs from OpenObserve.
-        
+
         Examples:
             # Query recent logs
             foundation logs query --last 30m
-            
+
             # Query errors
             foundation logs query --level ERROR --last 1h
-            
+
             # Query by current trace
             foundation logs query --current-trace
-            
+
             # Query by specific trace
             foundation logs query --trace-id abc123def456
-            
+
             # Query by service
             foundation logs query --service auth-service --last 15m
-            
+
             # Custom SQL query
             foundation logs query --sql "SELECT * FROM default WHERE duration_ms > 1000"
         """
         from provide.foundation.observability.openobserve import (
-            search_logs,
             format_output,
+            search_logs,
         )
-        
+
         client = ctx.obj.get("client")
         if not client:
             click.echo("Error: OpenObserve not configured.", err=True)
             return 1
-        
+
         # Build SQL query if not provided
         if not sql:
             # Handle current trace
@@ -102,13 +106,17 @@ if _HAS_CLICK:
                 try:
                     # Try OpenTelemetry first
                     from opentelemetry import trace
+
                     current_span = trace.get_current_span()
                     if current_span and current_span.is_recording():
                         span_context = current_span.get_span_context()
                         trace_id = f"{span_context.trace_id:032x}"
                     else:
                         # Try Foundation tracer
-                        from provide.foundation.tracer.context import get_current_trace_id
+                        from provide.foundation.tracer.context import (
+                            get_current_trace_id,
+                        )
+
                         trace_id = get_current_trace_id()
                         if not trace_id:
                             click.echo("No active trace found.", err=True)
@@ -116,7 +124,7 @@ if _HAS_CLICK:
                 except ImportError:
                     click.echo("Tracing not available.", err=True)
                     return 1
-            
+
             # Build WHERE clause
             conditions = []
             if trace_id:
@@ -125,10 +133,10 @@ if _HAS_CLICK:
                 conditions.append(f"level = '{level}'")
             if service:
                 conditions.append(f"service = '{service}'")
-            
+
             where_clause = f"WHERE {' AND '.join(conditions)}" if conditions else ""
             sql = f"SELECT * FROM {stream} {where_clause} ORDER BY _timestamp DESC LIMIT {size}"
-        
+
         # Execute query
         try:
             response = search_logs(
@@ -138,23 +146,26 @@ if _HAS_CLICK:
                 size=size,
                 client=client,
             )
-            
+
             # Format and display results
             if response.total == 0:
                 click.echo("No logs found matching the query.")
             else:
                 output = format_output(response, format_type=format)
                 click.echo(output)
-                
+
                 # Show summary for non-summary formats
                 if format != "summary":
-                    click.echo(f"\n📊 Found {response.total} logs, showing {len(response.hits)}")
-                    
+                    click.echo(
+                        f"\n📊 Found {response.total} logs, showing {len(response.hits)}"
+                    )
+
         except Exception as e:
             click.echo(f"Query failed: {e}", err=True)
             return 1
-    
+
 else:
+
     def query_command(*args, **kwargs):
         """Query command stub when click is not available."""
         raise ImportError(

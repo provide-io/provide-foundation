@@ -1,49 +1,49 @@
-# Welcome to provide.foundation
+# Welcome to the Provide Foundation
 
-**`provide.foundation`** is a comprehensive Python foundation library that provides structured logging, CLI framework, configuration management, and system utilities for building robust applications.
+**The Provide Foundation** is a comprehensive Python library that provides structured logging, CLI framework, configuration management, and system utilities for building robust applications.
 
 Built on industry-standard libraries like `structlog`, `click`, and `attrs`, provide.foundation offers a batteries-included development experience with beautiful console output, powerful error handling, and cross-platform system utilities.
 
-## ✨ Key Features
+## Key Features
 
-### 🎯 Structured Logging
+### Structured Logging
 - Beautiful, emoji-enhanced visual parsing
 - High-performance logging (>14,000 msg/sec)
 - Emoji sets for visual log enhancement
 - Thread-safe and async-compatible
 
-### 🖥️ CLI Framework
+### CLI Framework
 - Decorator-based command registration
 - Nested commands with dot notation
 - Automatic help generation
 - JSON output mode support
 
-### ⚙️ Configuration Management
+### Configuration Management
 - Environment variable support
 - Multi-source configuration loading
 - Type-safe with attrs classes
 - YAML, JSON, and TOML support
 
-### 🔧 System Utilities
+### System Utilities
 - **Platform Detection**: OS and architecture detection
 - **Process Execution**: Safe subprocess handling with async support
 - **File Operations**: Atomic operations with format support
 - **Console I/O**: Standardized input/output with color support
 - **Registry Pattern**: Thread-safe component management
 
-### 🔐 Cryptographic Operations
+### Cryptographic Operations
 - **Hash Functions**: SHA-256, SHA-512, Blake2b with file/stream support
 - **Digital Signatures**: Ed25519, ECDSA, RSA with verification
 - **Certificates**: X.509 certificate creation and management
 - **Key Generation**: Secure key generation for multiple algorithms
 
-### 🛡️ Error Handling
+### Error Handling
 - Rich error context with metadata
 - Retry decorators
 - Error boundaries for graceful degradation
 - Structured error logging
 
-## 🚀 Quick Start
+## Quick Start
 
 ```python
 from provide.foundation import logger, pout, perr
@@ -91,7 +91,7 @@ logger.info("File verified", hash=file_hash.hex_digest)
 - The emoji system
 - Configuration architecture
 
-### [API Reference](api/index.md)
+### [API Reference](api/api-index.md)
 Complete API documentation for all modules:
 - Logger and telemetry
 - CLI framework  

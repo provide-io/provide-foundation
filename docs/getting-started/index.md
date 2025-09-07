@@ -111,7 +111,7 @@ logger.info("system_info",
 ## Need Help?
 
 - 📖 Check the [User Guide](../guide/index.md)
-- 🔍 Browse the [API Reference](../api/index.md)  
+- 🔍 Browse the [API Reference](../api/api-index.md)  
 - 🏗️ Review the [Architecture](../architecture/index.md)
 - 💡 See [Examples](examples.md) for practical patterns
 

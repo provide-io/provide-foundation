@@ -261,7 +261,7 @@ class TestHubThreadSafety:
     # Legacy test removed - register_component decorator no longer exists
     # Original test was for concurrent component registration via decorators
     # which has been replaced by the registry-based component system
-    @pytest.mark.serial  
+    @pytest.mark.serial
     def test_concurrent_component_registration(self) -> None:
         """Test concurrent component registration - legacy test removed."""
         # Test replacement: verify registry operations are thread-safe
@@ -269,7 +269,7 @@ class TestHubThreadSafety:
         hub = get_hub()
         registry = hub._component_registry
         errors = []
-        
+
         def register_via_registry(thread_id: int) -> None:
             """Register components via registry directly."""
             try:
@@ -277,7 +277,7 @@ class TestHubThreadSafety:
                     registry.register(
                         name=f"comp_{thread_id}_{i}",
                         value=type(f"Component_{thread_id}_{i}", (), {}),
-                        dimension="component"
+                        dimension="component",
                     )
             except Exception as e:
                 errors.append(f"Thread {thread_id}: {e}")
@@ -290,7 +290,7 @@ class TestHubThreadSafety:
         assert len(errors) == 0, f"Errors occurred: {errors}"
 
         # Verify all components registered
-        components = registry.list_dimension("component") 
+        components = registry.list_dimension("component")
         assert len(components) == 50
 
     def test_hub_clear_thread_safety(self) -> None:

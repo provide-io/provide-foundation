@@ -5,11 +5,10 @@
 Queue-based rate limiter with overflow protection for Foundation's logging system.
 """
 
-import queue
+from collections import deque
 import sys
 import threading
 import time
-from collections import deque
 from typing import Any, Literal
 
 
@@ -18,7 +17,7 @@ class QueuedRateLimiter:
     Rate limiter with a queue for buffering logs.
     Drops oldest messages when queue is full (FIFO overflow).
     """
-    
+
     def __init__(
         self,
         capacity: float,
@@ -29,7 +28,7 @@ class QueuedRateLimiter:
     ):
         """
         Initialize the queued rate limiter.
-        
+
         Args:
             capacity: Maximum tokens (burst capacity)
             refill_rate: Tokens per second
@@ -43,51 +42,55 @@ class QueuedRateLimiter:
             raise ValueError("Refill rate must be positive")
         if max_queue_size <= 0:
             raise ValueError("Max queue size must be positive")
-            
+
         self.capacity = float(capacity)
         self.refill_rate = float(refill_rate)
         self.tokens = float(capacity)
         self.last_refill = time.monotonic()
-        
+
         # Queue management
         self.max_queue_size = max_queue_size
-        self.max_memory_bytes = int(max_memory_mb * 1024 * 1024) if max_memory_mb else None
+        self.max_memory_bytes = (
+            int(max_memory_mb * 1024 * 1024) if max_memory_mb else None
+        )
         self.overflow_policy = overflow_policy
-        
+
         # Use deque for efficient FIFO operations
-        self.pending_queue = deque(maxlen=max_queue_size if overflow_policy == "drop_oldest" else None)
+        self.pending_queue = deque(
+            maxlen=max_queue_size if overflow_policy == "drop_oldest" else None
+        )
         self.queue_lock = threading.Lock()
-        
+
         # Track statistics
         self.total_queued = 0
         self.total_dropped = 0
         self.total_processed = 0
         self.estimated_memory = 0
-        
+
         # Worker thread for processing queue
         self.running = True
         self.worker_thread = threading.Thread(target=self._process_queue, daemon=True)
         self.worker_thread.start()
-    
+
     def _estimate_size(self, item: Any) -> int:
         """Estimate memory size of an item."""
         # Simple estimation - can be made more sophisticated
         return sys.getsizeof(item)
-    
+
     def _refill_tokens(self) -> None:
         """Refill tokens based on elapsed time."""
         now = time.monotonic()
         elapsed = now - self.last_refill
-        
+
         if elapsed > 0:
             tokens_to_add = elapsed * self.refill_rate
             self.tokens = min(self.capacity, self.tokens + tokens_to_add)
             self.last_refill = now
-    
+
     def enqueue(self, item: Any) -> tuple[bool, str | None]:
         """
         Add item to queue for rate-limited processing.
-        
+
         Returns:
             Tuple of (accepted, reason) where reason is set if rejected
         """
@@ -97,8 +100,11 @@ class QueuedRateLimiter:
                 item_size = self._estimate_size(item)
                 if self.estimated_memory + item_size > self.max_memory_bytes:
                     self.total_dropped += 1
-                    return False, f"Memory limit exceeded ({self.estimated_memory / 1024 / 1024:.1f}MB)"
-            
+                    return (
+                        False,
+                        f"Memory limit exceeded ({self.estimated_memory / 1024 / 1024:.1f}MB)",
+                    )
+
             # Check queue size
             if len(self.pending_queue) >= self.max_queue_size:
                 if self.overflow_policy == "drop_newest":
@@ -107,7 +113,11 @@ class QueuedRateLimiter:
                 elif self.overflow_policy == "drop_oldest":
                     # deque with maxlen automatically drops oldest
                     if len(self.pending_queue) > 0:
-                        old_item = self.pending_queue[0] if len(self.pending_queue) == self.max_queue_size else None
+                        old_item = (
+                            self.pending_queue[0]
+                            if len(self.pending_queue) == self.max_queue_size
+                            else None
+                        )
                         if old_item and self.max_memory_bytes:
                             self.estimated_memory -= self._estimate_size(old_item)
                         self.total_dropped += 1
@@ -115,43 +125,43 @@ class QueuedRateLimiter:
                     # In block mode, we would need to wait
                     # For now, just reject
                     return False, "Queue full (blocking not implemented)"
-            
+
             # Add to queue
             self.pending_queue.append(item)
             self.total_queued += 1
-            
+
             if self.max_memory_bytes:
                 self.estimated_memory += self._estimate_size(item)
-            
+
             return True, None
-    
+
     def _process_queue(self):
         """Worker thread that processes queued items."""
         while self.running:
             with self.queue_lock:
                 self._refill_tokens()
-                
+
                 # Process items while we have tokens
                 while self.tokens >= 1.0 and self.pending_queue:
                     item = self.pending_queue.popleft()
                     self.tokens -= 1.0
                     self.total_processed += 1
-                    
+
                     if self.max_memory_bytes:
                         self.estimated_memory -= self._estimate_size(item)
-                    
+
                     # Here we would actually process the item
                     # For logging, this would mean emitting the log
                     self._process_item(item)
-            
+
             # Sleep briefly to avoid busy waiting
             time.sleep(0.01)
-    
+
     def _process_item(self, item: Any):
         """Process a single item from the queue."""
         # This would be overridden to actually emit the log
         pass
-    
+
     def get_stats(self) -> dict[str, Any]:
         """Get queue statistics."""
         with self.queue_lock:
@@ -164,11 +174,15 @@ class QueuedRateLimiter:
                 "total_queued": self.total_queued,
                 "total_dropped": self.total_dropped,
                 "total_processed": self.total_processed,
-                "estimated_memory_mb": self.estimated_memory / 1024 / 1024 if self.max_memory_bytes else None,
-                "max_memory_mb": self.max_memory_bytes / 1024 / 1024 if self.max_memory_bytes else None,
+                "estimated_memory_mb": self.estimated_memory / 1024 / 1024
+                if self.max_memory_bytes
+                else None,
+                "max_memory_mb": self.max_memory_bytes / 1024 / 1024
+                if self.max_memory_bytes
+                else None,
                 "overflow_policy": self.overflow_policy,
             }
-    
+
     def shutdown(self):
         """Shutdown the worker thread."""
         self.running = False
@@ -181,7 +195,7 @@ class BufferedRateLimiter:
     Simple synchronous rate limiter with overflow buffer.
     Does not use a worker thread - processes inline.
     """
-    
+
     def __init__(
         self,
         capacity: float,
@@ -191,7 +205,7 @@ class BufferedRateLimiter:
     ):
         """
         Initialize buffered rate limiter.
-        
+
         Args:
             capacity: Maximum tokens (burst capacity)
             refill_rate: Tokens per second
@@ -202,43 +216,43 @@ class BufferedRateLimiter:
             raise ValueError("Capacity must be positive")
         if refill_rate <= 0:
             raise ValueError("Refill rate must be positive")
-            
+
         self.capacity = float(capacity)
         self.refill_rate = float(refill_rate)
         self.tokens = float(capacity)
         self.last_refill = time.monotonic()
         self.lock = threading.Lock()
-        
+
         # Track dropped items
         self.buffer_size = buffer_size
         self.track_dropped = track_dropped
         self.dropped_buffer = deque(maxlen=buffer_size) if track_dropped else None
-        
+
         # Statistics
         self.total_allowed = 0
         self.total_denied = 0
         self.total_bytes_dropped = 0
-    
+
     def is_allowed(self, item: Any | None = None) -> tuple[bool, str | None]:
         """
         Check if item is allowed based on rate limit.
-        
+
         Args:
             item: Optional item to track if dropped
-            
+
         Returns:
             Tuple of (allowed, reason)
         """
         with self.lock:
             now = time.monotonic()
             elapsed = now - self.last_refill
-            
+
             # Refill tokens
             if elapsed > 0:
                 tokens_to_add = elapsed * self.refill_rate
                 self.tokens = min(self.capacity, self.tokens + tokens_to_add)
                 self.last_refill = now
-            
+
             # Try to consume token
             if self.tokens >= 1.0:
                 self.tokens -= 1.0
@@ -246,26 +260,28 @@ class BufferedRateLimiter:
                 return True, None
             else:
                 self.total_denied += 1
-                
+
                 # Track dropped item
                 if self.track_dropped and item is not None:
-                    self.dropped_buffer.append({
-                        "time": now,
-                        "item": item,
-                        "size": sys.getsizeof(item),
-                    })
+                    self.dropped_buffer.append(
+                        {
+                            "time": now,
+                            "item": item,
+                            "size": sys.getsizeof(item),
+                        }
+                    )
                     self.total_bytes_dropped += sys.getsizeof(item)
-                
+
                 return False, f"Rate limit exceeded (tokens: {self.tokens:.1f})"
-    
+
     def get_dropped_samples(self, count: int = 10) -> list[Any]:
         """Get recent dropped items for debugging."""
         if not self.track_dropped or not self.dropped_buffer:
             return []
-        
+
         with self.lock:
             return list(self.dropped_buffer)[-count:]
-    
+
     def get_stats(self) -> dict[str, Any]:
         """Get statistics."""
         with self.lock:
@@ -277,9 +293,13 @@ class BufferedRateLimiter:
                 "total_denied": self.total_denied,
                 "total_bytes_dropped": self.total_bytes_dropped,
             }
-            
+
             if self.track_dropped and self.dropped_buffer:
                 stats["dropped_buffer_size"] = len(self.dropped_buffer)
-                stats["oldest_dropped_age"] = time.monotonic() - self.dropped_buffer[0]["time"] if self.dropped_buffer else 0
-            
+                stats["oldest_dropped_age"] = (
+                    time.monotonic() - self.dropped_buffer[0]["time"]
+                    if self.dropped_buffer
+                    else 0
+                )
+
             return stats

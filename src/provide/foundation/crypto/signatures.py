@@ -3,6 +3,7 @@
 try:
     from cryptography.exceptions import InvalidSignature
     from cryptography.hazmat.primitives.asymmetric import ed25519
+
     _HAS_CRYPTO = True
 except ImportError:
     InvalidSignature = None

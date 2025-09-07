@@ -1,5 +1,8 @@
 /* Custom CSS for provide.foundation Documentation */
 
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap');
+
 /* Color Variables */
 :root {
   --pf-primary: #6366f1;  /* Indigo */
@@ -23,6 +26,17 @@
 .md-typeset {
   font-size: 0.9rem;
   line-height: 1.7;
+}
+
+/* Headings using Chakra Petch */
+.md-typeset h1, .md-typeset .h1,
+.md-typeset h2, .md-typeset .h2,
+.md-typeset h3, .md-typeset .h3,
+.md-typeset h4, .md-typeset .h4,
+.md-typeset h5, .md-typeset .h5,
+.md-typeset h6, .md-typeset .h6 {
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: bold;
 }
 
 .md-typeset h1 {
@@ -82,14 +96,136 @@
   border-left-color: var(--pf-error);
 }
 
-/* Navigation Enhancement */
-.md-nav__item--nested > .md-nav__link {
-  font-weight: 600;
+/* Top Navigation Tabs Enhancement */
+.md-tabs__link,
+.md-tabs__link:hover,
+.md-tabs__link:focus {
+  font-family: 'Chakra Petch', sans-serif !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+  border-radius: 4px 4px 0 0;
 }
 
-.md-nav__item--active > .md-nav__link {
+/* Active tab highlighting with subtle underline */
+.md-tabs__item--active .md-tabs__link {
+  color: var(--pf-primary) !important;
+  background-color: rgba(99, 102, 241, 0.08);
+  border-bottom: 3px solid var(--pf-primary);
+}
+
+/* Hover state for tabs */
+.md-tabs__link:hover {
+  background-color: rgba(99, 102, 241, 0.05);
   color: var(--pf-primary);
+}
+
+/* Breadcrumb enhancement */
+.md-path,
+.md-path__item,
+.md-path__link {
+  font-family: 'Chakra Petch', sans-serif !important;
+  font-weight: 500 !important;
+}
+
+/* Navigation Enhancement - Clear Visual Hierarchy */
+
+/* Top level navigation items - main sections */
+.md-nav--primary > .md-nav__list > .md-nav__item {
+  margin: 0.3rem 0;
+}
+
+/* ALL top-level items (with or without children) - consistent styling with Chakra Petch */
+.md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link,
+.md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link:hover,
+.md-nav--primary > .md-nav__list > .md-nav__item > .md-nav__link:focus {
+  font-family: 'Chakra Petch', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 0.9rem !important;
+  color: var(--md-default-fg-color);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  padding: 0.6rem 0 0.4rem 0;
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+  margin-bottom: 0.4rem;
+}
+
+/* Child items under ANY top-level item - all indented consistently */
+.md-nav--primary .md-nav__item .md-nav__link {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 400;
+  padding: 0.3rem 0 0.3rem 1rem;
+  margin: 0.1rem 0;
+  color: var(--md-default-fg-color--light);
+  text-transform: none;
+  letter-spacing: 0;
+  border-bottom: none;
+  background-color: transparent;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+/* Section headers within nav (if they have children) - slightly different styling */
+.md-nav--primary .md-nav__item .md-nav__item--nested > .md-nav__link {
   font-weight: 600;
+  padding-left: 0.5rem;
+  font-size: 0.88rem;
+  color: var(--md-default-fg-color);
+}
+
+/* Nested articles under sub-headings - further indented */
+.md-nav--primary .md-nav__item .md-nav__item .md-nav__item:not(.md-nav__item--nested) > .md-nav__link {
+  padding-left: 1.5rem;
+  background-color: transparent;
+  transition: all 0.3s ease;
+}
+
+/* Deep nested articles */
+.md-nav--primary .md-nav__item .md-nav__item .md-nav__item .md-nav__item:not(.md-nav__item--nested) > .md-nav__link {
+  padding-left: 2rem;
+  background-color: transparent;
+  transition: all 0.3s ease;
+}
+
+/* Hover states for articles - smooth transitions with opacity-based backgrounds */
+.md-nav--primary .md-nav__item .md-nav__item:not(.md-nav__item--nested) > .md-nav__link:hover,
+.md-nav--primary > .md-nav__list > .md-nav__item:not(.md-nav__item--nested) > .md-nav__link:hover {
+  color: var(--pf-primary);
+  background-color: rgba(99, 102, 241, 0.1);
+  padding-left: 1.2rem;
+}
+
+.md-nav--primary .md-nav__item .md-nav__item .md-nav__item:not(.md-nav__item--nested) > .md-nav__link:hover {
+  background-color: rgba(99, 102, 241, 0.08);
+  padding-left: 1.7rem;
+}
+
+.md-nav--primary .md-nav__item .md-nav__item .md-nav__item .md-nav__item:not(.md-nav__item--nested) > .md-nav__link:hover {
+  background-color: rgba(99, 102, 241, 0.06);
+  padding-left: 2.2rem;
+}
+
+/* Current page highlight */
+.md-nav__item--active > .md-nav__link {
+  background-color: rgba(99, 102, 241, 0.15);
+  border-radius: 4px;
+  color: var(--pf-primary);
+  font-weight: 500;
+  position: relative;
+  padding-left: 0.8rem;
+}
+
+.md-nav__item--active > .md-nav__link::before {
+  content: "";
+  position: absolute;
+  left: -3px;
+  top: 2px;
+  bottom: 2px;
+  width: 3px;
+  background-color: var(--pf-primary);
+  border-radius: 0 2px 2px 0;
 }
 
 /* Tabs Styling */
@@ -125,7 +261,8 @@
 .md-typeset table th {
   background-color: var(--pf-primary);
   color: white;
-  font-weight: 600;
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: bold;
   text-transform: uppercase;
   font-size: 0.8rem;
   letter-spacing: 0.05em;
@@ -214,6 +351,17 @@
   color: var(--pf-primary);
 }
 
+/* Logo Enhancement */
+.md-logo img {
+  width: 2rem;
+  height: 2rem;
+}
+
+.md-nav__title .md-logo img {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
 /* Copy Button Enhancement */
 .md-clipboard {
   color: var(--md-default-fg-color--light);
@@ -249,16 +397,56 @@
 /* Footer Enhancement */
 .md-footer {
   background: linear-gradient(135deg, var(--pf-primary), var(--pf-accent));
+  transition: none;
+  margin-top: auto;
 }
 
 .md-footer-meta {
   background: transparent;
 }
 
+/* Prevent footer animation/twitching */
+.md-footer__inner {
+  transition: none;
+}
+
+.md-footer__link {
+  transition: background-color 0.2s ease;
+}
+
+/* Fix footer navigation font sizes */
+.md-footer__title {
+  font-size: 0.8rem;
+}
+
+.md-footer__direction {
+  font-size: 0.7rem;
+}
+
+/* Prevent footer from pushing content */
+.md-main__inner {
+  margin-bottom: 0;
+}
+
+.md-content {
+  padding-bottom: 1rem;
+}
+
 /* Version Selector */
 .md-version__current {
   font-weight: 600;
   color: var(--pf-primary);
+}
+
+/* Logo Enhancement */
+.md-logo img {
+  width: 2rem;
+  height: 2rem;
+}
+
+.md-nav__title .md-logo img {
+  width: 1.8rem;
+  height: 1.8rem;
 }
 
 /* Mobile Responsive Adjustments */

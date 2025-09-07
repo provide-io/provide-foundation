@@ -18,9 +18,7 @@ class TestRegistryEntry:
     def test_create_registry_entry(self) -> None:
         """Test creating a registry entry."""
         entry = RegistryEntry(
-            name="test_item",
-            dimension="test_dim",
-            value="test_value"
+            name="test_item", dimension="test_dim", value="test_value"
         )
 
         assert entry.name == "test_item"
@@ -32,10 +30,7 @@ class TestRegistryEntry:
         """Test registry entry with metadata."""
         meta = {"version": "1.0", "author": "test"}
         entry = RegistryEntry(
-            name="test_item",
-            dimension="test_dim",
-            value="test_value",
-            metadata=meta
+            name="test_item", dimension="test_dim", value="test_value", metadata=meta
         )
 
         assert entry.metadata == meta
@@ -43,9 +38,7 @@ class TestRegistryEntry:
     def test_registry_entry_key_property(self) -> None:
         """Test the key property."""
         entry = RegistryEntry(
-            name="test_item",
-            dimension="test_dim",
-            value="test_value"
+            name="test_item", dimension="test_dim", value="test_value"
         )
 
         assert entry.key == ("test_dim", "test_item")
@@ -53,9 +46,7 @@ class TestRegistryEntry:
     def test_registry_entry_immutable(self) -> None:
         """Test that registry entry is immutable."""
         entry = RegistryEntry(
-            name="test_item",
-            dimension="test_dim",
-            value="test_value"
+            name="test_item", dimension="test_dim", value="test_value"
         )
 
         with pytest.raises(AttributeError):
@@ -64,14 +55,10 @@ class TestRegistryEntry:
     def test_registry_entry_equality(self) -> None:
         """Test registry entry equality."""
         entry1 = RegistryEntry(
-            name="test_item",
-            dimension="test_dim",
-            value="test_value"
+            name="test_item", dimension="test_dim", value="test_value"
         )
         entry2 = RegistryEntry(
-            name="test_item",
-            dimension="test_dim",
-            value="test_value"
+            name="test_item", dimension="test_dim", value="test_value"
         )
 
         assert entry1 == entry2
@@ -114,13 +101,11 @@ class TestCommandInfo:
 
     def test_create_command_info(self) -> None:
         """Test creating command info."""
+
         def test_func() -> None:
             pass
 
-        cmd = CommandInfo(
-            name="test_command",
-            func=test_func
-        )
+        cmd = CommandInfo(name="test_command", func=test_func)
 
         assert cmd.name == "test_command"
         assert cmd.func is test_func
@@ -131,6 +116,7 @@ class TestCommandInfo:
 
     def test_command_info_with_all_fields(self) -> None:
         """Test command info with all fields."""
+
         def test_func() -> None:
             pass
 
@@ -140,7 +126,7 @@ class TestCommandInfo:
             description="Test command description",
             aliases=["tc", "test"],
             hidden=True,
-            metadata={"category": "testing"}
+            metadata={"category": "testing"},
         )
 
         assert cmd.description == "Test command description"
@@ -150,13 +136,11 @@ class TestCommandInfo:
 
     def test_command_info_immutable(self) -> None:
         """Test that command info is immutable."""
+
         def test_func() -> None:
             pass
 
-        cmd = CommandInfo(
-            name="test_command",
-            func=test_func
-        )
+        cmd = CommandInfo(name="test_command", func=test_func)
 
         with pytest.raises(AttributeError):
             cmd.name = "new_name"  # type: ignore
@@ -171,10 +155,7 @@ class TestComponentInfo:
         class TestComponent:
             pass
 
-        comp_info = ComponentInfo(
-            name="test_component",
-            component_class=TestComponent
-        )
+        comp_info = ComponentInfo(name="test_component", component_class=TestComponent)
 
         assert comp_info.name == "test_component"
         assert comp_info.component_class is TestComponent
@@ -195,7 +176,7 @@ class TestComponentInfo:
             dimension="custom_dimension",
             description="Test component description",
             version="1.0.0",
-            metadata={"author": "test", "tags": ["test", "component"]}
+            metadata={"author": "test", "tags": ["test", "component"]},
         )
 
         assert comp_info.dimension == "custom_dimension"
@@ -209,10 +190,7 @@ class TestComponentInfo:
         class TestComponent:
             pass
 
-        comp_info = ComponentInfo(
-            name="test_component",
-            component_class=TestComponent
-        )
+        comp_info = ComponentInfo(name="test_component", component_class=TestComponent)
 
         with pytest.raises(AttributeError):
             comp_info.name = "new_name"  # type: ignore
@@ -224,14 +202,10 @@ class TestComponentInfo:
             pass
 
         comp_info1 = ComponentInfo(
-            name="test_component",
-            component_class=TestComponent,
-            version="1.0.0"
+            name="test_component", component_class=TestComponent, version="1.0.0"
         )
         comp_info2 = ComponentInfo(
-            name="test_component",
-            component_class=TestComponent,
-            version="1.0.0"
+            name="test_component", component_class=TestComponent, version="1.0.0"
         )
 
         assert comp_info1 == comp_info2

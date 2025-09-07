@@ -38,11 +38,12 @@ class TokenBucketRateLimiter:
         self._tokens: float = float(capacity)  # Start with a full bucket
         self._last_refill_timestamp: float = time.monotonic()
         self._lock: asyncio.Lock = asyncio.Lock()
-        
+
         # Cache logger instance to avoid repeated imports
         self._logger = None
         try:
             from provide.foundation.logger import get_logger
+
             self._logger = get_logger(__name__)
             self._logger.debug(
                 "🔩🗑️ TokenBucketRateLimiter initialized: "

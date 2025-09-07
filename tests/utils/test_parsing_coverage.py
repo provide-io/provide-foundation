@@ -117,6 +117,7 @@ class TestParsingCoverage:
         """Test parse_typed_value with typed list."""
         # Test list[int]
         from typing import List
+
         result = parse_typed_value("1,2,3", list[int])
         assert result == [1, 2, 3]
 
@@ -135,18 +136,20 @@ class TestParsingCoverage:
         """Test parse_typed_value with dict types."""
         # Test with typing origin
         from typing import Dict
+
         result = parse_typed_value("a=1,b=2", dict[str, str])
         assert result == {"a": "1", "b": "2"}
-        
+
         # Test with plain dict
         result = parse_typed_value("a=1,b=2", dict)
         assert result == {"a": "1", "b": "2"}
 
     def test_parse_typed_value_unknown_type(self):
         """Test parse_typed_value with unknown type returns string."""
+
         class CustomType:
             pass
-            
+
         result = parse_typed_value("test", CustomType)
         assert result == "test"
 
@@ -155,7 +158,7 @@ class TestParsingCoverage:
         # Mock an attrs field
         mock_field = Mock()
         mock_field.type = int
-        
+
         result = auto_parse(mock_field, "42")
         assert result == 42
 
@@ -163,7 +166,7 @@ class TestParsingCoverage:
         """Test auto_parse with string type name."""
         mock_field = Mock()
         mock_field.type = "int"
-        
+
         result = auto_parse(mock_field, "42")
         assert result == 42
 
@@ -171,7 +174,7 @@ class TestParsingCoverage:
         """Test auto_parse with unknown string type name."""
         mock_field = Mock()
         mock_field.type = "unknown_type"
-        
+
         result = auto_parse(mock_field, "test")
         assert result == "test"
 
@@ -179,14 +182,14 @@ class TestParsingCoverage:
         """Test auto_parse without type returns string."""
         mock_field = Mock()
         mock_field.type = None
-        
+
         result = auto_parse(mock_field, "test")
         assert result == "test"
 
     def test_auto_parse_without_type_attribute(self):
         """Test auto_parse without type attribute returns string."""
         mock_field = Mock(spec=[])  # No type attribute
-        
+
         result = auto_parse(mock_field, "test")
         assert result == "test"
 
@@ -194,7 +197,7 @@ class TestParsingCoverage:
         """Test parse_typed_value with list type that has no generic args."""
         # Create a mock type that looks like list but without args
         from typing import get_origin, get_args
-        
+
         # Test with typing.List that might not have args in some cases
         result = parse_typed_value("a,b,c", list)
         assert result == ["a", "b", "c"]
@@ -203,13 +206,13 @@ class TestParsingCoverage:
         """Test auto_parse with all supported string type mappings."""
         mappings = [
             ("int", "42", 42),
-            ("float", "3.14", 3.14), 
+            ("float", "3.14", 3.14),
             ("str", "test", "test"),
             ("bool", "true", True),
             ("list", "a,b,c", ["a", "b", "c"]),
             ("dict", "a=1,b=2", {"a": "1", "b": "2"}),
         ]
-        
+
         for type_str, value, expected in mappings:
             mock_field = Mock()
             mock_field.type = type_str

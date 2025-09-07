@@ -11,6 +11,7 @@ from typing import Any
 
 try:
     import click
+
     _HAS_CLICK = True
 except ImportError:
     click = None
@@ -64,7 +65,7 @@ def _output_json(data: Any, stream=sys.stdout) -> None:
         )
 
 
-def pout(message, **kwargs) -> None:
+def pout(message: Any, **kwargs: Any) -> None:
     """
     Output message to stdout.
 
@@ -121,7 +122,7 @@ def pout(message, **kwargs) -> None:
                 print(output, file=sys.stdout, end="")
 
 
-def perr(message, **kwargs) -> None:
+def perr(message: Any, **kwargs: Any) -> None:
     """
     Output message to stderr.
 

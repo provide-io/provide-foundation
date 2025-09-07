@@ -1,4 +1,4 @@
-site_name: provide.foundation Documentation
+site_name: Provide Foundation Documentation
 site_description: Beautiful, Performant, Structured Logging for Python - Enterprise-grade telemetry built on structlog
 site_author: provide.io
 site_url: https://foundation.provide.io
@@ -6,10 +6,14 @@ repo_url: https://github.com/provide-io/provide-foundation
 repo_name: provide-io/provide-foundation
 edit_uri: edit/main/docs/
 copyright: Copyright &copy; 2024-2025 provide.io
+docs_dir: docs
 
 theme:
   name: material
   language: en
+  custom_dir: overrides
+  logo: assets/images/logo.svg
+  favicon: assets/images/logo.svg
   
   palette:
     # Light mode
@@ -31,140 +35,43 @@ theme:
         name: Switch to light mode
   
   font:
-    text: Inter
+    text: Poppins
     code: Fira Code
   
   features:
-    # Navigation
     - navigation.instant
-    - navigation.instant.prefetch
-    - navigation.instant.progress
-    - navigation.tracking
     - navigation.tabs
     - navigation.tabs.sticky
     - navigation.sections
-    - navigation.prune
-    - navigation.path
+    - navigation.expand
     - navigation.indexes
+    - navigation.path
     - navigation.top
-    - navigation.footer
-    
-    # Table of contents
-    - toc.follow
-    - toc.integrate
-    
-    # Search
-    - search.suggest
-    - search.highlight
-    - search.share
-    
-    # Content
-    - content.code.copy
-    - content.code.select
-    - content.code.annotate
-    - content.tabs.link
-    - content.tooltips
-    - content.action.edit
-    - content.action.view
-    
-    # Header
     - header.autohide
-    
-    # Announce
-    - announce.dismiss
+    - content.code.copy
+    - content.tabs.link
 
 plugins:
-  - search:
-      separator: '[\s\u200b\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
-      lang:
-        - en
-  
+  - search
   - autorefs
-
   - mkdocstrings:
+      default_handler: python
       handlers:
         python:
+          paths: [src]
           options:
-            # Docstring parsing
             docstring_style: google
-            docstring_options:
-              ignore_init_summary: true
-            
-            # Source code linking
-            show_source: true
+            show_source: false
             show_root_heading: true
-            show_root_toc_entry: true
-            show_root_full_path: false
-            show_root_members_full_path: false
-            
-            # Member display
-            show_bases: true
-            show_inheritance_diagram: false
-            show_if_no_docstring: true
-            inherited_members: false
-            members_order: source
-            group_by_category: true
-            show_category_heading: true
-            
-            # Signatures
-            show_signature_annotations: true
-            signature_crossrefs: true
-            separate_signature: false
-            
-            # Headings and navigation
-            heading_level: 2
-            show_symbol_type_heading: true
-            show_symbol_type_toc: true
-            
-            # Filtering
-            filters:
-              - "!^_"  # Hide private members
-              - "!^__.*__$"  # Hide special methods except in special cases
-            
-            # Cross-references
-            merge_init_into_class: true
-  
-  - section-index
-  
 
 markdown_extensions:
-  # Python Markdown
-  - abbr
   - admonition
   - attr_list
-  - def_list
-  - footnotes
-  - md_in_html
   - toc:
       permalink: true
-      toc_depth: 3
   - tables
-  - meta
-  
-  # Python Markdown Extensions
-  - pymdownx.arithmatex:
-      generic: true
-  - pymdownx.betterem:
-      smart_enable: all
-  - pymdownx.caret
-  - pymdownx.mark
-  - pymdownx.tilde
-  - pymdownx.details
-  - pymdownx.emoji:
-      emoji_index: !!python/name:material.extensions.emoji.twemoji
-      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.highlight:
-      anchor_linenums: true
-      line_spans: __span
-      pygments_lang_class: true
       use_pygments: true
-      auto_title: true
-      linenums: true
-  - pymdownx.inlinehilite
-  - pymdownx.keys
-  - pymdownx.smartsymbols
-  - pymdownx.snippets:
-      check_paths: true
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
@@ -172,50 +79,21 @@ markdown_extensions:
           format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
-      combine_header_slug: true
-  - pymdownx.tasklist:
-      custom_checkbox: true
-  - pymdownx.critic:
-      mode: view
-  - pymdownx.magiclink:
-      normalize_issue_symbols: true
-      repo_url_shorthand: true
-      user: provide-io
-      repo: provide-foundation
-
-extra:
-  version:
-    provider: mike
-    default: latest
-  
-  social:
-    - icon: fontawesome/brands/github
-      link: https://github.com/provide-io/provide-foundation
-    - icon: fontawesome/brands/python
-      link: https://pypi.org/project/provide-foundation/
-    - icon: fontawesome/solid/globe
-      link: https://provide.io
-  
-  analytics:
-    provider: google
-    property: G-XXXXXXXXXX
-    
-  consent:
-    title: Cookie consent
-    description: >-
-      We use cookies to recognize your repeated visits and preferences, as well
-      as to measure the effectiveness of our documentation and whether users
-      find what they're searching for. With your consent, you're helping us to
-      make our documentation better.
 
 extra_css:
   - stylesheets/extra.css
 
 extra_javascript:
   - https://unpkg.com/mermaid@10/dist/mermaid.min.js
+  - javascripts/mermaid-init.js
 
 nav:
-  - Home: index.md
+  - Information:
+    - Overview: index.md
+    - Features: information/features.md
+    - Use Cases: information/use-cases.md
+    - Architecture: information/architecture.md
+    - Changelog: information/changelog.md
   
   - Getting Started:
     - getting-started/index.md
@@ -223,117 +101,144 @@ nav:
     - Quick Start: getting-started/quick-start.md
     - First Application: getting-started/first-app.md
     - Examples: getting-started/examples.md
-  
-  - User Guide:
+
+  - Guide:
     - guide/index.md
     - Core Concepts:
       - guide/concepts/index.md
       - Structured Logging: guide/concepts/structured-logging.md
       - Emoji Sets: guide/concepts/emoji-sets.md
       - Emoji System: guide/concepts/emoji-system.md
-      - Domain-Action-Status: guide/concepts/das-pattern.md
+      - Domain-Action-Status Pattern: guide/concepts/das-pattern.md
       - Performance: guide/concepts/performance.md
-    
     - Configuration:
       - guide/config/index.md
       - Environment Variables: guide/config/environment.md
       - Config Files: guide/config/files.md
-      - Runtime Config: guide/config/runtime.md
+      - Runtime Config: 
+        - guide/config/runtime.md
+        - Overview: guide/config/runtime/index.md
+        - Remote Config: guide/config/runtime/remote.md
+        - Updates: guide/config/runtime/updates.md
+        - Watchers: guide/config/runtime/watchers.md
+      - Reference: guide/config/reference.md
       - Best Practices: guide/config/best-practices.md
-    
     - Logging:
+      - guide/logging/index.md
       - Basic Usage: guide/logging/basic.md
-      - Advanced Patterns: guide/logging/advanced.md
+      - Advanced Patterns: 
+        - guide/logging/advanced.md
+        - Overview: guide/logging/advanced/index.md
+        - Filtering: guide/logging/advanced/filtering.md
+        - Patterns: guide/logging/advanced/patterns.md
+        - Processors: guide/logging/advanced/processors.md
       - Async Logging: guide/logging/async.md
       - Exception Handling: guide/logging/exceptions.md
       - Context Management: guide/logging/context.md
-      - Performance Tuning: guide/logging/performance.md
-    
-    - Testing: guide/testing.md
-    - Advanced Usage: guide/advanced-usage.md
-    
+      - Performance Tuning: 
+        - guide/logging/performance.md
+        - Overview: guide/logging/performance/index.md
+        - Benchmarks: guide/logging/performance/benchmarks.md
+        - Optimization: guide/logging/performance/optimization.md
+        - Sampling: guide/logging/performance/sampling.md
     - CLI Framework:
       - guide/cli/index.md
-      - Command Registration: guide/cli/commands.md
+      - Commands: guide/cli/commands.md
       - Nested Commands: guide/cli/nested.md
-      - Arguments & Options: guide/cli/arguments.md
-      - Output Formatting: guide/cli/output.md
-    
+      - Arguments: guide/cli/arguments.md
+      - Output: guide/cli/output.md
+    - Distributed Tracing:
+      - guide/tracing/index.md
     - Utilities:
-      - Console I/O: guide/utilities/console.md
-      - Error Handling: guide/utilities/errors.md
-      - Platform Detection: guide/utilities/platform.md
-      - Process Management: guide/utilities/process.md
-      - Registry System: guide/utilities/registry.md
-  
-  
-  - API Reference:
-    - api/index.md
-    - Logger:
-      - api/logger/index.md
-      - Base Logger: api/logger/base.md
-      - Core Implementation: api/logger/core.md
-      - Factory Functions: api/logger/factories.md
-      - Configuration: api/logger/config.md
-      - Processors: api/logger/processors.md
-      - Emoji Matrix: api/logger/emoji.md
-    
-    - Context:
-      - api/context/index.md
-    
-    - Configuration:
-      - api/config/index.md
-      - Config Manager: api/config/manager.md
-      - Environment: api/config/env.md
-      - Loaders: api/config/loader.md
-      - Schema: api/config/schema.md
-    
-    - Emoji Sets:
-      - api/emoji_sets/index.md
-      - Base Layer: api/emoji_sets/base.md
-      - HTTP Layer: api/emoji_sets/http.md
-      - Database Layer: api/emoji_sets/database.md
-      - LLM Layer: api/emoji_sets/llm.md
-      - Task Queue Layer: api/emoji_sets/task_queue.md
-      - Custom Layers: api/emoji_sets/custom.md
-    
-    - CLI:
-      - api/cli/index.md
-      - Decorators: api/cli/decorators.md
-      - Testing: api/cli/testing.md
-      - Utilities: api/cli/utils.md
-    
-    - Core:
-      - api/core/index.md
-    
-    - Hub:
-      - api/hub/index.md
-    
-    - Utilities:
-      - api/utils/index.md
-      - Console: api/utils/console.md
-      - Platform: api/utils/platform.md
-      - File Operations: api/file/index.md
-      - Crypto: api/crypto/index.md
-  
-  - Development:
+      - guide/utilities/index.md
+      - Console: guide/utilities/console.md
+      - Errors: guide/utilities/errors.md
+      - Files: guide/utilities/files.md
+      - Platform: guide/utilities/platform.md
+      - Process: guide/utilities/process.md
+      - Registry: guide/utilities/registry.md
+    - Security:
+      - guide/security/index.md
+    - Advanced:
+      - guide/advanced/index.md
+      - Advanced Usage: guide/advanced-usage.md
+      - Custom Emoji Sets: guide/advanced/custom-emoji-sets.md
+      - Custom Processors: guide/advanced/custom-processors.md
+      - Integration Patterns: guide/advanced/integration-patterns.md
+      - Performance Optimization: guide/advanced/performance-optimization.md
+    - Testing:
+      - guide/testing.md
+
+  - Reference:
+    - api/api-index.md
+    - Logger API: 
+      - api/logger/api-index.md
+      - Base: api/logger/api-base.md
+      - Config: api/logger/api-config.md
+      - Core: api/logger/api-core.md
+      - Emoji: api/logger/api-emoji.md
+      - Factories: api/logger/api-factories.md
+      - Processors: api/logger/api-processors.md
+    - Configuration API:
+      - api/config/api-index.md
+      - Base: api/config/api-base.md
+      - Environment: api/config/api-env.md
+      - Loader: api/config/api-loader.md
+      - Manager: api/config/api-manager.md
+      - Schema: api/config/api-schema.md
+    - CLI API:
+      - api/cli/api-index.md
+      - Decorators: api/cli/api-decorators.md
+      - Testing: api/cli/api-testing.md
+      - Utils: api/cli/api-utils.md
+    - Hub API:
+      - api/hub/api-index.md
+      - Commands: api/hub/api-commands.md
+      - Components: api/hub/api-components.md
+      - Manager: api/hub/api-manager.md
+      - Registry: api/hub/api-registry.md
+    - Error API:
+      - api/errors/api-index.md
+      - Decorators: api/errors/api-decorators.md
+      - Exceptions: api/errors/api-exceptions.md
+      - Handlers: api/errors/api-handlers.md
+    - Emoji Sets API:
+      - api/emoji_sets/api-index.md
+      - Base: api/emoji_sets/api-base.md
+      - Custom: api/emoji_sets/api-custom.md
+      - Database: api/emoji_sets/api-database.md
+      - HTTP: api/emoji_sets/api-http.md
+      - LLM: api/emoji_sets/api-llm.md
+      - Task Queue: api/emoji_sets/api-task_queue.md
+    - Context API: api/context/api-index.md
+    - Core API: api/core/api-index.md
+    - File API: api/file/api-index.md
+    - Crypto API: api/crypto/api-index.md
+    - Platform API: api/platform/api-index.md
+    - Process API: api/process/api-index.md
+    - Streams API: api/streams/api-index.md
+    - Testing API: api/testing/api-index.md
+    - Tracer API: api/tracer/api-index.md
+    - Setup API: 
+      - api/setup/api-index.md
+      - Setup Functions: api/api-setup.md
+    - Console API: api/console/api-index.md
+    - Utils API:
+      - api/utils/api-index.md
+      - Console: api/utils/api-console.md
+      - Environment: api/utils/api-environment.md
+      - Formatting: api/utils/api-formatting.md
+      - Platform: api/utils/api-platform.md
+      - Timing: api/utils/api-timing.md
+
+  - Architecture:
+    - architecture/index.md
+    - Emoji Sets: architecture/emoji-sets.md
+    - Emoji System: architecture/emoji-system.md
+    - Performance: architecture/performance.md
+    - Telemetry Format: architecture/telemetry-format.md
+
+  - Contributing:
     - development/index.md
     - Contributing: development/contributing.md
     - CI/CD: development/ci-cd.md
-  
-  - Architecture & Design:
-    - architecture/index.md
-    - Telemetry Format: architecture/telemetry-format.md
-    - Emoji Set Design: architecture/emoji-sets.md
-    - Emoji System: architecture/emoji-system.md
-    - Performance: architecture/performance.md
-
-validation:
-  omitted_files: warn
-  absolute_links: warn
-  unrecognized_links: warn
-
-watch:
-  - src/provide
-  - docs
-  - mkdocs.yml

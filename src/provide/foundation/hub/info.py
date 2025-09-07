@@ -4,8 +4,10 @@ from collections.abc import Callable
 from typing import Any
 
 from attrs import define, field
+
 try:
     import click
+
     _HAS_CLICK = True
 except ImportError:
     click = None
