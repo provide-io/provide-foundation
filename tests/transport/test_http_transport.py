@@ -62,7 +62,7 @@ async def test_http_transport_get(http_transport, httpx_mock: HTTPXMock):
     
     assert response.status == 200
     assert response.is_success()
-    assert response.headers["Content-Type"] == "application/json"
+    assert response.headers["content-type"] == "application/json"
     
     data = response.json()
     assert data["users"][0]["name"] == "John"
