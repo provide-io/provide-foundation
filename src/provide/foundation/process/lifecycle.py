@@ -365,19 +365,12 @@ async def wait_for_process_output(
     )
 
     while (loop.time() - start_time) < timeout:
-        # Check if process is still running
-        if not process.is_running():
-            returncode = process.returncode
-            # Check if we have all expected parts in buffer before raising error
-            if all(part in buffer for part in expected_parts):
-                plog.debug("Found expected pattern in buffer (process exited)")
-                return buffer
-            plog.error("Process exited unexpectedly", returncode=returncode)
-            raise ProcessError(f"Process exited with code {returncode}")
-
+        # Try to read output first before checking if process is running
+        # This ensures we capture output from processes that exit quickly
+        
         try:
             # Try to read a line first
-            line = await process.read_line_async(timeout=2.0)
+            line = await process.read_line_async(timeout=0.1)
             if line:
                 buffer += line
                 plog.debug("Read line from process", line=line[:100])
@@ -386,10 +379,28 @@ async def wait_for_process_output(
                 if all(part in buffer for part in expected_parts):
                     plog.debug("Found expected pattern in buffer")
                     return buffer
-
         except TimeoutError:
-            plog.debug("Line read timeout, trying character-by-character")
+            pass  # Normal timeout, continue
+            
+        # Now check if process is still running
+        if not process.is_running():
+            # Try one more read to get any remaining output
+            try:
+                line = await process.read_line_async(timeout=0.1)
+                if line:
+                    buffer += line
+            except TimeoutError:
+                pass
+                
+            returncode = process.returncode
+            # Check if we have all expected parts in buffer before raising error
+            if all(part in buffer for part in expected_parts):
+                plog.debug("Found expected pattern in buffer (process exited)")
+                return buffer
+            plog.error("Process exited unexpectedly", returncode=returncode)
+            raise ProcessError(f"Process exited with code {returncode}")
 
+        # Continue with character-by-character reading if needed
         try:
             # Fall back to character-by-character reading
             char = await process.read_char_async(timeout=1.0)
