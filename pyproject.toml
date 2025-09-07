@@ -184,7 +184,7 @@ parallel = true
 
 [tool.coverage.report]
 show_missing = true
-skip_covered = false
+skip_covered = true
 fail_under = 80 # Set this to a realistic target once you get >0%
 precision = 2
 exclude_lines = [

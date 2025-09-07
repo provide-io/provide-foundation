@@ -62,7 +62,7 @@ from provide.foundation.types import (
 )
 
 # New utility exports
-from provide.foundation.utils import timed_block
+from provide.foundation.utils import timed_block, TokenBucketRateLimiter
 from provide.foundation._version import __version__
 
 __all__ = [
@@ -116,6 +116,8 @@ __all__ = [
     "show_emoji_matrix",
     "shutdown_foundation_telemetry",
     "timed_block",
+    # Rate limiting utilities  
+    "TokenBucketRateLimiter",
     "with_error_handling",
 ]
 

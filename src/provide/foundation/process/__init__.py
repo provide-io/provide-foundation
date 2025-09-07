@@ -1,6 +1,7 @@
 """Process execution utilities.
 
-Provides sync and async subprocess execution with consistent error handling.
+Provides sync and async subprocess execution with consistent error handling,
+and advanced process lifecycle management.
 """
 
 from provide.foundation.errors.runtime import ProcessError
@@ -8,6 +9,10 @@ from provide.foundation.process.async_runner import (
     async_run_command,
     async_run_shell,
     async_stream_command,
+)
+from provide.foundation.process.lifecycle import (
+    ManagedProcess,
+    wait_for_process_output,
 )
 from provide.foundation.process.runner import (
     CompletedProcess,
@@ -28,4 +33,7 @@ __all__ = [
     "async_run_command",
     "async_run_shell",
     "async_stream_command",
+    # Process lifecycle management
+    "ManagedProcess",
+    "wait_for_process_output",
 ]

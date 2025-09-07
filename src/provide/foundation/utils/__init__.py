@@ -39,6 +39,7 @@ from provide.foundation.utils.parsing import (
     parse_list,
     parse_typed_value,
 )
+from provide.foundation.utils.rate_limiting import TokenBucketRateLimiter
 from provide.foundation.utils.timing import timed_block
 
 __all__ = [
@@ -72,6 +73,8 @@ __all__ = [
     # Timing utilities
     "timed_block",
     "to_camel_case",
+    # Rate limiting utilities
+    "TokenBucketRateLimiter",
     "to_kebab_case",
     "to_snake_case",
     "truncate",
