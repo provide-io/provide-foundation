@@ -6,7 +6,10 @@ from pathlib import Path
 import sys
 from typing import Any, TypeVar
 
-import click
+try:
+    import click
+except ImportError:
+    click = None
 
 from provide.foundation.context import Context
 

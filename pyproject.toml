@@ -33,8 +33,6 @@ classifiers = [
 dependencies = [
     "aiofiles>=23.2.1",
     "attrs>=23.1.0",
-    "click>=8.1.7",
-    "cryptography>=45.0.7",
     "structlog>=25.3.0",
     "tomli_w>=1.0.0",
 ]
@@ -45,12 +43,24 @@ Repository = "https://github.com/provider-io/provide-foundation"
 
 
 [project.optional-dependencies]
+cli = [
+    "click>=8.1.7",
+]
+crypto = [
+    "cryptography>=45.0.7",
+]
 opentelemetry = [
     "opentelemetry-api>=1.22.0",
     "opentelemetry-sdk>=1.22.0",
     "opentelemetry-exporter-otlp-proto-grpc>=1.22.0",
     "opentelemetry-exporter-otlp-proto-http>=1.22.0",
 ]
+all = [
+    "provide-foundation[cli,crypto,opentelemetry]",
+]
+
+[project.scripts]
+foundation = "provide.foundation.cli.main:cli [cli]"
 
 [dependency-groups]
 dev = [

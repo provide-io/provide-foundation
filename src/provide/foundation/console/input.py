@@ -11,7 +11,12 @@ import json
 import sys
 from typing import Any, TypeVar
 
-import click
+try:
+    import click
+    _HAS_CLICK = True
+except ImportError:
+    click = None
+    _HAS_CLICK = False
 
 from provide.foundation.context import Context
 from provide.foundation.logger import get_logger
@@ -23,6 +28,8 @@ T = TypeVar("T")
 
 def _get_context() -> Context | None:
     """Get current context from Click or environment."""
+    if not _HAS_CLICK:
+        return None
     ctx = click.get_current_context(silent=True)
     if ctx and hasattr(ctx, "obj") and isinstance(ctx.obj, Context):
         return ctx.obj
@@ -82,7 +89,10 @@ def pin(prompt: str = "", **kwargs) -> str | Any:
             if sys.stdin.isatty():
                 # Interactive mode, still show prompt to stderr
                 if prompt:
-                    click.echo(prompt, err=True, nl=False)
+                    if _HAS_CLICK:
+                        click.echo(prompt, err=True, nl=False)
+                    else:
+                        print(prompt, file=sys.stderr, end="")
 
             line = sys.stdin.readline().strip()
 
@@ -127,15 +137,42 @@ def pin(prompt: str = "", **kwargs) -> str | Any:
         if "value_proc" in kwargs:
             prompt_kwargs["value_proc"] = kwargs["value_proc"]
 
-        # Apply color/formatting to prompt if requested and supported
-        styled_prompt = prompt
-        if _should_use_color(ctx):
-            color = kwargs.get("color")
-            bold = kwargs.get("bold", False)
-            if color or bold:
-                styled_prompt = click.style(prompt, fg=color, bold=bold)
+        if _HAS_CLICK:
+            # Apply color/formatting to prompt if requested and supported
+            styled_prompt = prompt
+            if _should_use_color(ctx):
+                color = kwargs.get("color")
+                bold = kwargs.get("bold", False)
+                if color or bold:
+                    styled_prompt = click.style(prompt, fg=color, bold=bold)
 
-        return click.prompt(styled_prompt, **prompt_kwargs)
+            return click.prompt(styled_prompt, **prompt_kwargs)
+        else:
+            # Fallback to standard Python input
+            display_prompt = prompt
+            if kwargs.get("default") and kwargs.get("show_default", True):
+                display_prompt = f"{prompt} [{kwargs['default']}]: "
+            elif prompt and not prompt.endswith(": "):
+                display_prompt = f"{prompt}: "
+            
+            if kwargs.get("password") or kwargs.get("hide_input"):
+                import getpass
+                user_input = getpass.getpass(display_prompt)
+            else:
+                user_input = input(display_prompt)
+            
+            # Handle default value
+            if not user_input and "default" in kwargs:
+                user_input = str(kwargs["default"])
+            
+            # Type conversion
+            if type_func := kwargs.get("type"):
+                try:
+                    return type_func(user_input)
+                except (TypeError, ValueError):
+                    return user_input
+            
+            return user_input
 
 
 def pin_stream() -> Iterator[str]:

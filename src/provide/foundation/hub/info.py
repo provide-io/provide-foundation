@@ -4,7 +4,12 @@ from collections.abc import Callable
 from typing import Any
 
 from attrs import define, field
-import click
+try:
+    import click
+    _HAS_CLICK = True
+except ImportError:
+    click = None
+    _HAS_CLICK = False
 
 
 @define(frozen=True, slots=True)
@@ -18,7 +23,7 @@ class CommandInfo:
     hidden: bool = False
     category: str | None = None
     metadata: dict[str, Any] = field(factory=lambda: {})
-    click_command: click.Command | None = None
+    click_command: "click.Command | None" = None
     parent: str | None = None  # Parent path extracted from dot notation
 
 

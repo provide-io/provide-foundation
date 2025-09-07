@@ -3,9 +3,19 @@
 from collections.abc import Callable
 from typing import Any, TypeVar, overload
 
-import click
+try:
+    import click
+    _HAS_CLICK = True
+except ImportError:
+    click = None
+    _HAS_CLICK = False
 
-from provide.foundation.hub.click_builder import ensure_parent_groups
+# Defer click_builder import to avoid circular dependency
+def _get_ensure_parent_groups():
+    if not _HAS_CLICK:
+        return None
+    from provide.foundation.hub.click_builder import ensure_parent_groups
+    return ensure_parent_groups
 from provide.foundation.hub.info import CommandInfo
 from provide.foundation.hub.registry import Registry, get_command_registry
 from provide.foundation.logger import get_logger
@@ -146,8 +156,11 @@ def _register_command_func(
             parent = ".".join(parts[:-1])
             command_name = parts[-1]
 
-            # Auto-create parent groups if they don't exist
-            ensure_parent_groups(parent, reg)
+            # Auto-create parent groups if they don't exist (click only)
+            if _HAS_CLICK:
+                ensure_parent_groups_fn = _get_ensure_parent_groups()
+                if ensure_parent_groups_fn:
+                    ensure_parent_groups_fn(parent, reg)
         else:
             parent = None
             command_name = name

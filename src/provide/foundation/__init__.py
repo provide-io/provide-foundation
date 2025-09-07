@@ -6,13 +6,18 @@ Foundation Telemetry Library (structlog-based).
 Primary public interface for the library, re-exporting common components.
 """
 
+# Check console availability
+try:
+    from provide.foundation.console import perr, pin, pout
+    _HAS_CONSOLE = True
+except ImportError:
+    _HAS_CONSOLE = False
+    perr = pin = pout = None
+
 # Export config module for easy access
 # New foundation components
 # Make the errors module available for detailed imports
-from provide.foundation import cli, config, errors, platform, process
-
-# Console I/O functions
-from provide.foundation.console import perr, pin, pout
+from provide.foundation import config, errors, platform, process
 from provide.foundation.context import Context
 from provide.foundation.setup import (
     setup_telemetry,
@@ -62,8 +67,32 @@ from provide.foundation.types import (
 )
 
 # New utility exports
-from provide.foundation.utils import timed_block, TokenBucketRateLimiter
+from provide.foundation.utils import (
+    check_optional_deps,
+    timed_block,
+    TokenBucketRateLimiter,
+)
+
 from provide.foundation._version import __version__
+
+# Lazy loading support for optional modules
+def __getattr__(name: str):
+    """Support lazy loading of optional modules."""
+    if name == "cli":
+        try:
+            from provide.foundation import cli
+            return cli
+        except ImportError as e:
+            if "click" in str(e):
+                raise ImportError(
+                    "CLI features require optional dependencies. Install with: "
+                    "pip install 'provide-foundation[cli]'"
+                ) from e
+            raise
+    elif name == "metrics":
+        from provide.foundation import metrics
+        return metrics
+    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
 
 __all__ = [
     # Core Emoji Dictionaries (available for direct use or reference)
@@ -94,7 +123,8 @@ __all__ = [
     "TelemetryConfig",
     # Version
     "__version__",
-    "cli",
+    # Dependency checking utility
+    "check_optional_deps",
     # Config module
     "config",
     "error_boundary",
@@ -102,12 +132,13 @@ __all__ = [
     "get_logger",
     # Core setup and logger
     "logger",
+    # Console functions (work with or without click)
     "perr",
-    # Console input
-    "pin",
-    "platform",
-    # Console output
+    "pin", 
     "pout",
+    # Console availability flag
+    "_HAS_CONSOLE",
+    "platform",
     "process",
     "retry_on_error",
     "setup_logging",

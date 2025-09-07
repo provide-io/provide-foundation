@@ -33,6 +33,20 @@ uv pip install provide-foundation
 pip install provide-foundation
 ```
 
+### Optional Dependencies
+
+provide.foundation has optional feature sets that require additional dependencies:
+
+| Feature | Install Command | Required For |
+|---------|----------------|--------------|
+| **Basic logging** | `pip install provide-foundation` | Core logging functionality |
+| **CLI framework** | `pip install provide-foundation[cli]` | Command-line interface features |
+| **Cryptography** | `pip install provide-foundation[crypto]` | Hash functions, digital signatures, certificates |
+| **OpenTelemetry** | `pip install provide-foundation[opentelemetry]` | Distributed tracing and metrics |
+| **All features** | `pip install provide-foundation[all]` | Everything above |
+
+> **Quick Start Tip**: For immediate use with just logging, install the base package. Add extras as needed.
+
 ---
 
 ## What's Included
@@ -43,14 +57,21 @@ pip install provide-foundation
 Beautiful, performant logging built on `structlog` with emoji-enhanced visual parsing and zero configuration required.
 
 ```python
+# Simple usage - works immediately with base install
 from provide.foundation import logger
 
 logger.info("Application started", version="1.0.0")
 logger.error("Database connection failed", host="db.example.com", retry_count=3)
+
+# Full setup with tracing/metrics (requires [opentelemetry] extra)
+from provide.foundation import setup_telemetry
+setup_telemetry()  # Configures logging + optional tracing/metrics
 ```
 
 #### **CLI Framework**
 Build command-line interfaces with automatic help generation and component registration.
+
+> **Requires**: `pip install provide-foundation[cli]`
 
 ```python
 # From examples/12_cli_application.py
@@ -99,6 +120,8 @@ def risky_operation():
 
 #### **Cryptographic Utilities**
 Comprehensive cryptographic operations with modern algorithms and secure defaults.
+
+> **Requires**: `pip install provide-foundation[crypto]`
 
 ```python
 from provide.foundation.crypto import hash_file, create_self_signed, sign_data
@@ -360,7 +383,8 @@ asyncio.run(process_items(items))
 
 Complete working examples are available in the [examples/](examples/) directory:
 
-- `01_quick_start.py` - Basic logging setup
+- `00_simple_start.py` - Zero-setup logging (base install)
+- `01_quick_start.py` - Full telemetry setup (requires [opentelemetry])
 - `02_custom_configuration.py` - Custom telemetry configuration
 - `03_named_loggers.py` - Module-specific loggers
 - `04_das_logging.py` - Domain-Action-Status pattern

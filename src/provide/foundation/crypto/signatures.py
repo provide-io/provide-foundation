@@ -1,7 +1,13 @@
 """Digital signature operations using Ed25519."""
 
-from cryptography.exceptions import InvalidSignature
-from cryptography.hazmat.primitives.asymmetric import ed25519
+try:
+    from cryptography.exceptions import InvalidSignature
+    from cryptography.hazmat.primitives.asymmetric import ed25519
+    _HAS_CRYPTO = True
+except ImportError:
+    InvalidSignature = None
+    ed25519 = None
+    _HAS_CRYPTO = False
 
 from provide.foundation import logger
 from provide.foundation.crypto.constants import (
@@ -9,6 +15,15 @@ from provide.foundation.crypto.constants import (
     ED25519_PUBLIC_KEY_SIZE,
     ED25519_SIGNATURE_SIZE,
 )
+
+
+def _require_crypto() -> None:
+    """Ensure cryptography is available."""
+    if not _HAS_CRYPTO:
+        raise ImportError(
+            "Cryptography features require optional dependencies. "
+            "Install with: pip install 'provide-foundation[crypto]'"
+        )
 
 
 def generate_ed25519_keypair() -> tuple[bytes, bytes]:
@@ -19,6 +34,7 @@ def generate_ed25519_keypair() -> tuple[bytes, bytes]:
             - private_key_bytes: 32-byte Ed25519 private key seed
             - public_key_bytes: 32-byte Ed25519 public key
     """
+    _require_crypto()
     logger.debug("🔐 Generating Ed25519 key pair")
 
     # Generate a new Ed25519 private key
@@ -51,6 +67,7 @@ def sign_data(data: bytes, private_key: bytes) -> bytes:
     Raises:
         ValueError: If private key is wrong size
     """
+    _require_crypto()
     if len(private_key) != ED25519_PRIVATE_KEY_SIZE:
         raise ValueError(
             f"Private key must be {ED25519_PRIVATE_KEY_SIZE} bytes, "
@@ -83,6 +100,7 @@ def verify_signature(data: bytes, signature: bytes, public_key: bytes) -> bool:
     Returns:
         bool: True if signature is valid, False otherwise
     """
+    _require_crypto()
     if len(signature) != ED25519_SIGNATURE_SIZE:
         logger.warning(
             f"❌ Invalid signature size: expected {ED25519_SIGNATURE_SIZE}, "
@@ -121,4 +139,5 @@ def generate_signing_keypair() -> tuple[bytes, bytes]:
     Returns:
         tuple: (private_key_bytes, public_key_bytes)
     """
+    _require_crypto()
     return generate_ed25519_keypair()

@@ -4,12 +4,31 @@
 
 This guide will walk you through the absolute basics of using `provide.foundation`. You'll see how to import the global logger and log different kinds of messages.
 
+### Two Ways to Get Started
+
+**Option 1: Simple Logging (Zero Setup)**
+```python
+# Works immediately with: pip install provide-foundation
+from provide.foundation import logger
+
+logger.info("Hello, world!")
+```
+
+**Option 2: Full Telemetry Setup**
+```python 
+# For tracing/metrics: pip install provide-foundation[opentelemetry]
+from provide.foundation import setup_telemetry, logger
+
+setup_telemetry()  # Configures logging + optional tracing/metrics
+logger.info("Hello, world!")
+```
+
 ### Your First Log Messages
 
 The easiest way to start is to import the global `logger` instance and call its methods. Create a Python file named `app.py` with the following content:
 
 ```python
-# app.py
+# app.py - Simple approach (no setup needed)
 from provide.foundation import logger
 
 def main():
@@ -41,6 +60,25 @@ def main():
 if __name__ == "__main__":
     main()
 
+```
+
+### Alternative: Full Setup with Tracing
+
+If you need distributed tracing and metrics, install the OpenTelemetry extras and use `setup_telemetry()`:
+
+```python
+# app_full.py - With tracing/metrics (requires [opentelemetry] extra)
+from provide.foundation import setup_telemetry, logger
+
+def main():
+    # Configure logging, tracing, and metrics
+    setup_telemetry()
+    
+    logger.info("Application starting with full telemetry")
+    # ... rest of your code
+
+if __name__ == "__main__":
+    main()
 ```
 
 ### Running the Example
