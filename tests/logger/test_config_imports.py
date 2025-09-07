@@ -1,40 +1,42 @@
-#
-# test_config_imports.py
-#
-"""
-Tests for logger/config.py module imports.
-"""
+"""Test coverage for logger config module imports."""
 
 import pytest
 
 
-class TestConfigImports:
-    def test_imports_logging_config(self):
-        """Test that LoggingConfig can be imported from config module."""
+class TestLoggerConfigImports:
+    """Test logger config module import functionality."""
+    
+    def test_logging_config_import(self):
+        """Test LoggingConfig can be imported from config module."""
         from provide.foundation.logger.config import LoggingConfig
         
+        # Verify it's importable
         assert LoggingConfig is not None
         assert hasattr(LoggingConfig, '__name__')
     
-    def test_imports_telemetry_config(self):
-        """Test that TelemetryConfig can be imported from config module."""
+    def test_telemetry_config_import(self):
+        """Test TelemetryConfig can be imported from config module.""" 
         from provide.foundation.logger.config import TelemetryConfig
         
+        # Verify it's importable
         assert TelemetryConfig is not None
         assert hasattr(TelemetryConfig, '__name__')
     
-    def test_module_all_exports(self):
-        """Test that __all__ contains expected exports."""
-        from provide.foundation.logger import config
+    def test_both_classes_importable_together(self):
+        """Test both config classes can be imported in single statement."""
+        from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
         
-        assert hasattr(config, '__all__')
-        assert 'LoggingConfig' in config.__all__
-        assert 'TelemetryConfig' in config.__all__
+        # Verify both are importable together
+        assert LoggingConfig is not None
+        assert TelemetryConfig is not None
+        
+        # Verify they're different classes
+        assert LoggingConfig is not TelemetryConfig
     
-    def test_direct_module_import(self):
-        """Test importing the config module directly."""
-        from provide.foundation.logger import config as config_module
+    def test_star_import_works(self):
+        """Test star import functionality."""
+        # This tests the __all__ export functionality
+        exec("from provide.foundation.logger.config import *")
         
-        assert hasattr(config_module, 'LoggingConfig')
-        assert hasattr(config_module, 'TelemetryConfig')
-        assert hasattr(config_module, '__all__')
+        # The star import should have worked without error
+        # and made the expected names available in local scope

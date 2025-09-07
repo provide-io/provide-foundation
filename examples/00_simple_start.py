@@ -1,0 +1,74 @@
+#!/usr/bin/env python3
+# examples/00_simple_start.py
+"""
+Simple Start Example - Zero Setup Logging
+
+This example demonstrates the simplest possible usage of provide.foundation.
+No setup required - just import and use the logger immediately.
+
+Usage:
+    pip install provide-foundation
+    python examples/00_simple_start.py
+
+Expected output:
+    Colored, emoji-prefixed log messages with structured data.
+"""
+
+from pathlib import Path
+import sys
+
+# Add src to path for examples
+example_dir = Path(__file__).resolve().parent.parent
+project_root = example_dir.parent 
+src_path = project_root / "src"
+if src_path.exists() and str(src_path) not in sys.path:
+    sys.path.insert(0, str(src_path))
+
+# Simple import and immediate usage - no setup needed
+from provide.foundation import logger  # noqa: E402
+
+
+def simple_logging_example() -> None:
+    """
+    Demonstrates the simplest possible logging usage.
+    
+    Key points:
+    - No setup_telemetry() call needed
+    - Works with base install: pip install provide-foundation
+    - Automatic initialization on first use
+    - Structured logging with emoji prefixes
+    """
+    print("\n" + "=" * 60)
+    print("✨ Simple Start - Zero Setup Required")
+    print(" Just import logger and start logging immediately!")
+    print("=" * 60)
+
+    # Start logging immediately - no configuration needed
+    logger.info("Hello from provide.foundation!", component="simple_example")
+    
+    # Structured logging with context
+    logger.info(
+        "User session started",
+        user_id="user_123", 
+        session_id="sess_456",
+        source="web_app"
+    )
+    
+    # Different log levels
+    logger.debug("Debug information", debug_level=1)
+    logger.warning("This is a warning", severity="low")
+    logger.error("Something went wrong", error_code="ERR001")
+    
+    # Exception logging
+    try:
+        result = 10 / 0
+    except ZeroDivisionError:
+        logger.exception("Division by zero occurred", operation="calculate")
+    
+    logger.info("Example completed successfully!")
+
+
+if __name__ == "__main__":
+    simple_logging_example()
+    print("\n🎉 That's it! No setup required - logging just works.")
+    print("💡 For advanced features like tracing, see other examples.")

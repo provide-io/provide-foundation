@@ -9,13 +9,29 @@ import traceback
 from typing import NotRequired, Self, TypeAlias, TypedDict, cast
 
 from attrs import Factory, define, field
-from cryptography import x509
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.asymmetric import ec, padding, rsa
-from cryptography.hazmat.primitives.serialization import load_pem_private_key
-from cryptography.x509 import Certificate as X509Certificate
-from cryptography.x509.oid import ExtendedKeyUsageOID, NameOID
+try:
+    from cryptography import x509
+    from cryptography.hazmat.backends import default_backend
+    from cryptography.hazmat.primitives import hashes, serialization
+    from cryptography.hazmat.primitives.asymmetric import ec, padding, rsa
+    from cryptography.hazmat.primitives.serialization import load_pem_private_key
+    from cryptography.x509 import Certificate as X509Certificate
+    from cryptography.x509.oid import ExtendedKeyUsageOID, NameOID
+    _HAS_CRYPTO = True
+except ImportError:
+    # Stub out cryptography types for type hints
+    x509 = None
+    default_backend = None
+    hashes = None
+    serialization = None
+    ec = None
+    padding = None
+    rsa = None
+    load_pem_private_key = None
+    X509Certificate = None
+    ExtendedKeyUsageOID = None
+    NameOID = None
+    _HAS_CRYPTO = False
 
 from provide.foundation import logger
 from provide.foundation.crypto.constants import (
@@ -25,6 +41,15 @@ from provide.foundation.crypto.constants import (
     DEFAULT_RSA_KEY_SIZE,
 )
 from provide.foundation.errors.config import ValidationError
+
+
+def _require_crypto():
+    """Ensure cryptography is available for crypto operations."""
+    if not _HAS_CRYPTO:
+        raise ImportError(
+            "Cryptography features require optional dependencies. Install with: "
+            "pip install 'provide-foundation[crypto]'"
+        )
 
 
 class CertificateError(ValidationError):
@@ -62,24 +87,29 @@ class CertificateConfig(TypedDict):
     curve: NotRequired[CurveType]
 
 
-KeyPair: TypeAlias = rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey
-PublicKey: TypeAlias = rsa.RSAPublicKey | ec.EllipticCurvePublicKey
+if _HAS_CRYPTO:
+    KeyPair: TypeAlias = rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey
+    PublicKey: TypeAlias = rsa.RSAPublicKey | ec.EllipticCurvePublicKey
+else:
+    KeyPair: TypeAlias = None
+    PublicKey: TypeAlias = None
 
 
 @define(slots=True, frozen=True)
 class CertificateBase:
     """Immutable base certificate data."""
 
-    subject: x509.Name
-    issuer: x509.Name
-    public_key: PublicKey
+    subject: "x509.Name"
+    issuer: "x509.Name" 
+    public_key: "PublicKey"
     not_valid_before: datetime
     not_valid_after: datetime
     serial_number: int
 
     @classmethod
-    def create(cls, config: CertificateConfig) -> tuple[Self, KeyPair]:
+    def create(cls, config: CertificateConfig) -> tuple[Self, "KeyPair"]:
         """Create a new certificate base and private key."""
+        _require_crypto()
         try:
             logger.debug("📜📝🚀 CertificateBase.create: Starting base creation")
             not_valid_before = config["not_valid_before"]
@@ -138,7 +168,7 @@ class CertificateBase:
             raise CertificateError(f"Failed to generate certificate base: {e}") from e
 
     @staticmethod
-    def _create_name(common_name: str, org: str) -> x509.Name:
+    def _create_name(common_name: str, org: str) -> "x509.Name":
         """Helper method to construct an X.509 name."""
         return x509.Name(
             [
@@ -166,8 +196,8 @@ class Certificate:
     validity_days: int = field(default=DEFAULT_CERTIFICATE_VALIDITY_DAYS, kw_only=True)
 
     _base: CertificateBase = field(init=False, repr=False)
-    _private_key: KeyPair | None = field(init=False, default=None, repr=False)
-    _cert: X509Certificate = field(init=False, repr=False)
+    _private_key: "KeyPair | None" = field(init=False, default=None, repr=False)
+    _cert: "X509Certificate" = field(init=False, repr=False)
     _trust_chain: list["Certificate"] = field(init=False, factory=list, repr=False)
 
     cert: str = field(init=False, default="", repr=True)
@@ -326,11 +356,11 @@ class Certificate:
 
     def _create_x509_certificate(
         self,
-        issuer_name_override: x509.Name | None = None,
-        signing_key_override: KeyPair | None = None,
+        issuer_name_override: "x509.Name | None" = None,
+        signing_key_override: "KeyPair | None" = None,
         is_ca: bool = False,
         is_client_cert: bool = False,
-    ) -> X509Certificate:
+    ) -> "X509Certificate":
         """Internal helper to build and sign the X.509 certificate object."""
         if not hasattr(self, "_base"):
             raise CertificateError("Cannot create certificate without base information")
@@ -524,7 +554,7 @@ class Certificate:
         return self._base.issuer.rfc4514_string()
 
     @property
-    def public_key(self) -> PublicKey | None:
+    def public_key(self) -> "PublicKey | None":
         """Returns the public key object from the certificate."""
         if not hasattr(self, "_base"):
             return None
@@ -836,8 +866,9 @@ def create_self_signed(
     organization: str = "Default Organization",
     validity_days: int = DEFAULT_CERTIFICATE_VALIDITY_DAYS,
     key_type: str = DEFAULT_CERTIFICATE_KEY_TYPE,
-) -> Certificate:
+) -> "Certificate":
     """Create a self-signed certificate (convenience function)."""
+    _require_crypto()
     return Certificate.create_self_signed_server_cert(
         common_name=common_name,
         organization_name=organization,
@@ -852,8 +883,9 @@ def create_ca(
     organization: str = "Default CA Organization",
     validity_days: int = DEFAULT_CERTIFICATE_VALIDITY_DAYS * 2,  # CAs live longer
     key_type: str = DEFAULT_CERTIFICATE_KEY_TYPE,
-) -> Certificate:
+) -> "Certificate":
     """Create a CA certificate (convenience function)."""
+    _require_crypto()
     return Certificate.create_ca(
         common_name=common_name,
         organization_name=organization,

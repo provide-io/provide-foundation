@@ -24,8 +24,6 @@ from provide.foundation.logger.emoji.sets import BUILTIN_EMOJI_SETS
 from provide.foundation.logger.processors import (
     _build_core_processors_list,
     _build_formatter_processors_list,
-    _config_create_emoji_processors,
-    _config_create_timestamp_processors,
 )
 
 
@@ -39,35 +37,6 @@ def get_proc_name(proc: Any) -> str:
     if isinstance(proc, ConsoleRenderer):
         return "ConsoleRenderer"
     return proc.__class__.__name__ if hasattr(proc, "__class__") else str(type(proc))
-
-
-class TestConfigTimestampProcessors:
-    def test_timestamp_processors_default(self) -> None:
-        processors = _config_create_timestamp_processors(omit_timestamp=False)
-        assert len(processors) == 1 and get_proc_name(processors[0]) == "TimeStamper"
-
-    def test_timestamp_processors_omitted(self) -> None:
-        processors = _config_create_timestamp_processors(omit_timestamp=True)
-        assert (
-            len(processors) == 2
-            and get_proc_name(processors[1]) == "pop_timestamp_processor"
-        )
-
-
-class TestConfigEmojiProcessors:
-    def test_all_emojis_enabled(self) -> None:
-        config = LoggingConfig(
-            logger_name_emoji_prefix_enabled=True, das_emoji_prefix_enabled=True
-        )
-        resolved_config = resolve_active_emoji_config(
-            config, BUILTIN_EMOJI_SETS
-        )
-        processors = _config_create_emoji_processors(config, resolved_config)
-        assert (
-            len(processors) == 2
-            and get_proc_name(processors[0]) == "add_logger_name_emoji_prefix"
-            and callable(processors[1])
-        )
 
 
 class TestBuildFormatterProcessorsList:
@@ -97,10 +66,11 @@ class TestBuildCoreProcessorsList:
             config.logging, BUILTIN_EMOJI_SETS
         )
         processors = _build_core_processors_list(config, resolved_emoji_config)
-        assert (
-            len(processors) == 8
-            and get_proc_name(processors[6]) == "add_logger_name_emoji_prefix"
-        )
+        proc_names = [get_proc_name(p) for p in processors]
+        assert len(processors) == 9
+        # Check that inject_trace_context and add_logger_name_emoji_prefix are present
+        assert "inject_trace_context" in proc_names
+        assert "add_logger_name_emoji_prefix" in proc_names
 
 
 class TestTelemetryConfigFromEnvEmojiSets:
