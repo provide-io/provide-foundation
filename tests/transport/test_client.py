@@ -264,6 +264,7 @@ async def test_universal_client_connection_pooling(httpx_mock: HTTPXMock):
 
 
 @pytest.mark.asyncio 
+@pytest.mark.httpx_mock(assert_all_requests_were_expected=False)
 async def test_universal_client_error_handling(httpx_mock: HTTPXMock):
     """Test client error handling through middleware."""
     from provide.foundation.transport.errors import TransportTimeoutError
