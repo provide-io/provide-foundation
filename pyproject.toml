@@ -71,6 +71,8 @@ foundation = "provide.foundation.cli.main:cli [cli]"
 [dependency-groups]
 dev = [
     "bandit>=1.8.3",
+    "cryptography>=45.0.7",
+    "h2>=4.3.0",
     "hypothesis>=6.131.28",
     "mypy>=1.8.0",
     "psutil>=7.0.0",

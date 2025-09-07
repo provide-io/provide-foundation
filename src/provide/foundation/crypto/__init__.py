@@ -179,4 +179,6 @@ __all__ = [
     "CurveType",
     # Legacy compatibility
     "generate_key_pair",
+    # Internal flags (for tests)
+    "_HAS_CRYPTO",
 ]
