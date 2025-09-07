@@ -378,22 +378,12 @@ async def wait_for_process_output(
                     return buffer
 
         except TimeoutError:
-            plog.debug("Read timeout, checking process status")
-            
-        # Check if process is still running
-        if not process.is_running():
-            returncode = process.returncode
-            # For processes that exit successfully (code 0), check buffer one more time
-            if returncode == 0 and all(part in buffer for part in expected_parts):
-                plog.debug("Found expected pattern (process exited successfully)")
-                return buffer
-            plog.error("Process exited unexpectedly", returncode=returncode)
-            raise ProcessError(f"Process exited with code {returncode}")
+            plog.debug("Read timeout, continuing")
 
         # Continue with character-by-character reading if needed
         try:
             # Fall back to character-by-character reading
-            char = await process.read_char_async(timeout=1.0)
+            char = await process.read_char_async(timeout=0.5)
             if char:
                 buffer += char
                 plog.debug("Read character", char=repr(char), buffer_size=len(buffer))
@@ -404,8 +394,25 @@ async def wait_for_process_output(
                     return buffer
 
         except TimeoutError:
-            await asyncio.sleep(0.25)
+            pass
+        
+        # Check if process has exited
+        if not process.is_running():
+            returncode = process.returncode
+            # Check buffer one final time before giving up
+            if all(part in buffer for part in expected_parts):
+                plog.debug("Found expected pattern (process exited)")
+                return buffer
+            # Only raise error if we didn't get expected output
+            if returncode != 0:
+                plog.error("Process exited with error", returncode=returncode)
+                raise ProcessError(f"Process exited with code {returncode}")
+            # For exit code 0, continue trying until timeout
 
+    # Final check of buffer before timeout error
+    if all(part in buffer for part in expected_parts):
+        return buffer
+        
     raise TimeoutError(
         f"Expected pattern {expected_parts} not found within {timeout}s timeout"
     )
