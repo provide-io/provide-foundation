@@ -2,13 +2,13 @@
 Database operations event set for Foundation.
 """
 
-from provide.foundation.eventsets.types import EventSet, EventSetConfig, FieldMapping
+from provide.foundation.eventsets.types import EventSet, EventMapping, FieldMapping
 
-EVENT_SET = EventSetConfig(
+EVENT_SET = EventSet(
     name="database",
     description="Database interaction and query enrichment",
-    event_sets=[
-        EventSet(
+    mappings=[
+        EventMapping(
             name="db_system",
             visual_markers={
                 "postgres": "🐘",
@@ -29,7 +29,7 @@ EVENT_SET = EventSetConfig(
             },
             default_key="default"
         ),
-        EventSet(
+        EventMapping(
             name="db_operation",
             visual_markers={
                 "query": "🔍",
@@ -53,7 +53,7 @@ EVENT_SET = EventSetConfig(
             },
             default_key="default"
         ),
-        EventSet(
+        EventMapping(
             name="db_outcome",
             visual_markers={
                 "success": "👍",
@@ -73,46 +73,50 @@ EVENT_SET = EventSetConfig(
     field_mappings=[
         FieldMapping(
             log_key="db.system",
+            event_set_name="database",
             description="Database system type",
-            value_type="string",
-            event_set_name="db_system"
+            value_type="string"
         ),
         FieldMapping(
             log_key="db.operation",
+            event_set_name="database",
             description="Database operation performed",
-            value_type="string",
-            event_set_name="db_operation"
+            value_type="string"
         ),
         FieldMapping(
             log_key="db.outcome",
+            event_set_name="database",
             description="Operation outcome",
-            value_type="string",
-            event_set_name="db_outcome"
+            value_type="string"
         ),
         FieldMapping(
             log_key="db.statement",
+            event_set_name="database",
             description="SQL or query statement",
             value_type="string"
         ),
         FieldMapping(
             log_key="db.table",
+            event_set_name="database",
             description="Table name",
             value_type="string",
-            event_set_name="db_system",
             default_override_key="default"
         ),
         FieldMapping(
             log_key="db.rows_affected",
+            event_set_name="database",
             description="Number of rows affected",
             value_type="integer"
         ),
         FieldMapping(
             log_key="duration_ms",
+            event_set_name="database",
             description="Query duration in milliseconds",
             value_type="integer"
         ),
         FieldMapping(
             log_key="trace_id",
+            event_set_name="database",
             description="Distributed trace ID",
             value_type="string"
         ),

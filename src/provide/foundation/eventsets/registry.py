@@ -35,7 +35,7 @@ class EventSetRegistry(Registry):
             AlreadyExistsError: If an event set with this name already exists
         """
         try:
-            self.register("eventset", event_set.name, event_set, metadata={"priority": event_set.priority})
+            self.register(event_set.name, event_set, "eventset", metadata={"priority": event_set.priority})
             logger.debug(
                 "Registered event set",
                 name=event_set.name,

@@ -2,13 +2,13 @@
 Task queue and async job processing event set for Foundation.
 """
 
-from provide.foundation.eventsets.types import EventSet, EventSetConfig, FieldMapping
+from provide.foundation.eventsets.types import EventSet, EventMapping, FieldMapping
 
-EVENT_SET = EventSetConfig(
+EVENT_SET = EventSet(
     name="task_queue",
     description="Asynchronous task queue operation enrichment",
-    event_sets=[
-        EventSet(
+    mappings=[
+        EventMapping(
             name="task_system",
             visual_markers={
                 "celery": "🥕",
@@ -27,7 +27,7 @@ EVENT_SET = EventSetConfig(
             },
             default_key="default"
         ),
-        EventSet(
+        EventMapping(
             name="task_status",
             visual_markers={
                 "submitted": "➡️📨",
@@ -56,43 +56,49 @@ EVENT_SET = EventSetConfig(
     field_mappings=[
         FieldMapping(
             log_key="task.system",
+            event_set_name="task_queue",
             description="Task queue system",
-            value_type="string",
-            event_set_name="task_system"
+            value_type="string"
         ),
         FieldMapping(
             log_key="task.status",
+            event_set_name="task_queue",
             description="Task execution status",
-            value_type="string",
-            event_set_name="task_status"
+            value_type="string"
         ),
         FieldMapping(
             log_key="task.id",
+            event_set_name="task_queue",
             description="Unique task identifier",
             value_type="string"
         ),
         FieldMapping(
             log_key="task.name",
+            event_set_name="task_queue",
             description="Task or job name",
             value_type="string"
         ),
         FieldMapping(
             log_key="task.queue_name",
+            event_set_name="task_queue",
             description="Queue name",
             value_type="string"
         ),
         FieldMapping(
             log_key="task.retries",
+            event_set_name="task_queue",
             description="Retry attempt count",
             value_type="integer"
         ),
         FieldMapping(
             log_key="duration_ms",
+            event_set_name="task_queue",
             description="Task execution duration",
             value_type="integer"
         ),
         FieldMapping(
             log_key="trace_id",
+            event_set_name="task_queue",
             description="Distributed trace ID",
             value_type="string"
         ),

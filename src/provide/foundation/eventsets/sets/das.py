@@ -106,18 +106,18 @@ EVENT_SET = EventSet(
     field_mappings=[
         FieldMapping(
             log_key="domain",
-            description="System domain or component",
-            event_set_name="domain"
+            event_set_name="das",
+            description="System domain or component"
         ),
         FieldMapping(
             log_key="action",
-            description="Action being performed",
-            event_set_name="action"
+            event_set_name="das",
+            description="Action being performed"
         ),
         FieldMapping(
             log_key="status",
-            description="Status or outcome of the action",
-            event_set_name="status"
+            event_set_name="das",
+            description="Status or outcome of the action"
         ),
     ],
     priority=0
