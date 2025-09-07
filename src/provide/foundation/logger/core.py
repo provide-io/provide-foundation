@@ -16,7 +16,6 @@ from provide.foundation.types import TRACE_LEVEL_NAME
 
 if TYPE_CHECKING:
     from provide.foundation.logger.config import TelemetryConfig
-    from provide.foundation.logger.setup.emoji_resolver import ResolvedEmojiConfig
 
 _LAZY_SETUP_LOCK = threading.Lock()
 _LAZY_SETUP_STATE: dict[str, Any] = {"done": False, "error": None, "in_progress": False}
@@ -31,7 +30,6 @@ class FoundationLogger:
         )
         self._is_configured_by_setup: bool = False
         self._active_config: TelemetryConfig | None = None
-        self._active_resolved_emoji_config: ResolvedEmojiConfig | None = None
 
     def _check_structlog_already_disabled(self) -> bool:
         try:

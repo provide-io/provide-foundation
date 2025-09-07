@@ -52,7 +52,6 @@ def apply_structlog_configuration(processors: list[Any], log_stream: TextIO) -> 
 
 def configure_structlog_output(
     config: TelemetryConfig,
-    resolved_emoji_config: ResolvedEmojiConfig,
     log_stream: TextIO,
 ) -> None:
     """
@@ -60,11 +59,10 @@ def configure_structlog_output(
 
     Args:
         config: Telemetry configuration
-        resolved_emoji_config: Resolved emoji configuration
         log_stream: Output stream for logging
     """
     processors = build_complete_processor_chain(
-        config, resolved_emoji_config, log_stream
+        config, log_stream
     )
     apply_structlog_configuration(processors, log_stream)
 
