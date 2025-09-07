@@ -72,7 +72,9 @@ class EventSetRegistry(Registry):
         Returns:
             List of EventSet objects sorted by descending priority
         """
-        entries = list(self.list_dimension("eventset"))
+        names = self.list_dimension("eventset")
+        entries = [self.get_entry(name, "eventset") for name in names]
+        entries = [entry for entry in entries if entry is not None]
         entries.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)
         return [entry.value for entry in entries]
     
