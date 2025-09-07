@@ -174,8 +174,8 @@ class BaseConfig:
         Returns:
             Configuration instance
         """
-        # Filter data to only include fields defined in the class
-        field_names = {f.name for f in fields(cls)}
+        # Filter data to only include fields defined in the class, excluding private fields
+        field_names = {f.name for f in fields(cls) if not f.name.startswith('_')}
         filtered_data = {k: v for k, v in data.items() if k in field_names}
 
         # Create instance
