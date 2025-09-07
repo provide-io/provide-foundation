@@ -420,7 +420,7 @@ class TestWaitForProcessOutput:
             [
                 sys.executable,
                 "-c",
-                "import sys, time; sys.stdout.write('start|middle|end\\n'); sys.stdout.flush()",
+                "import sys; print('start|middle|end', flush=True); sys.exit(0)",
             ],
             capture_output=True,
             text_mode=True,
@@ -552,7 +552,7 @@ class TestProcessLifecycleIntegration:
             [
                 sys.executable,
                 "-c",
-                "import sys; sys.stdout.write('ready\\n'); sys.stdout.flush(); input()",
+                "import sys; print('ready', flush=True); import time; time.sleep(10)",
             ],
             capture_output=True,
             text_mode=True,
