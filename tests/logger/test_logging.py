@@ -248,3 +248,22 @@ class TestLoggingWithEmojiSets:
         output = captured_stderr_for_foundation.getvalue()
         assert "[🔑][➡️][✅] Legacy system test" in output
         assert "domain=auth" not in output
+
+
+class TestFactoriesModule:
+    def test_setup_logging_basic(
+        self,
+        setup_foundation_telemetry_for_test: callable,
+        captured_stderr_for_foundation: "io.StringIO",
+    ) -> None:
+        """Test that setup_logging function works with basic parameters."""
+        from provide.foundation.logger.factories import setup_logging
+        
+        # Use the setup_logging convenience function
+        setup_logging(level="DEBUG", json_logs=False)
+        
+        # Test that the logger works after setup
+        global_logger.debug("Test debug message after setup_logging")
+        
+        output = captured_stderr_for_foundation.getvalue()
+        assert "Test debug message after setup_logging" in output
