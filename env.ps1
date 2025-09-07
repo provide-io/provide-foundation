@@ -99,7 +99,7 @@ $TFARCH = switch ([System.Environment]::Is64BitOperatingSystem) {
 }
 
 # Workenv directory setup
-$Profile = if ($env:PROVIDE_PROVIDE_PROFILE) { $env:PROVIDE_PROVIDE_PROFILE } else { "default" }
+$Profile = if ($env:PROVIDE_FOUNDATION_PROFILE) { $env:PROVIDE_FOUNDATION_PROFILE } else { "default" }
 if ($Profile -eq "default") {
     $VenvDir = "workenv/provide-foundation_${TFOS}_${TFARCH}"
 } else {
