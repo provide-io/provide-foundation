@@ -364,6 +364,23 @@ async def wait_for_process_output(
         timeout=timeout,
     )
 
+    # First, try to read any already available output
+    # This is crucial for processes that exit very quickly
+    try:
+        # Read all available lines first
+        while True:
+            line = await process.read_line_async(timeout=0.01)
+            if line:
+                buffer += line
+                plog.debug("Read initial line", line=line[:100])
+                if all(part in buffer for part in expected_parts):
+                    plog.debug("Found expected pattern in initial read")
+                    return buffer
+            else:
+                break
+    except (TimeoutError, Exception):
+        pass
+
     while (loop.time() - start_time) < timeout:
         # Try to read output first before checking if process is running
         # This ensures we capture output from processes that exit quickly
