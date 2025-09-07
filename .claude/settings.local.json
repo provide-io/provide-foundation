@@ -20,7 +20,8 @@
       "Bash(python:*)",
       "Bash(mkdocs build:*)",
       "Bash(curl:*)",
-      "Bash(mkdocs serve:*)"
+      "Bash(mkdocs serve:*)",
+      "Bash(flavor:*)"
     ],
     "deny": [],
     "ask": [],
