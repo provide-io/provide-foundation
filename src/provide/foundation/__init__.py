@@ -88,15 +88,15 @@ def __getattr__(name: str):
 
 
 __all__ = [
-    # Core Emoji Dictionaries (available for direct use or reference)
-    "PRIMARY_EMOJI",
-    "SECONDARY_EMOJI",
-    "TERTIARY_EMOJI",
+    # Event enrichment utilities
+    "show_event_matrix",
     "ConsoleFormatterStr",
     # New foundation modules
     "Context",
-    # Emoji Mapping classes
-    "EmojiSet",
+    # Event set types
+    "EventMapping",
+    "EventSet",
+    "FieldMapping",
     # Error handling essentials
     "FoundationError",
     # Type aliases
