@@ -110,8 +110,6 @@ __all__ = [
     "get_component_registry",
     "get_hub",
     "clear_hub",
-    "FieldToEmojiMapping",
-    "EmojiSetConfig",
     # Configuration classes
     "TelemetryConfig",
     # Version
@@ -136,7 +134,6 @@ __all__ = [
     "setup_logger",  # Consistent naming
     "setup_telemetry",
     # Utilities
-    "show_emoji_matrix",
     "shutdown_foundation_telemetry",
     "timed_block",
     # Rate limiting utilities
