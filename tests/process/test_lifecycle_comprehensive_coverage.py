@@ -410,6 +410,7 @@ class TestManagedProcessEdgeCases:
         assert proc._stderr_thread is None
 
 
+@pytest.mark.serial  # These tests have timing issues with parallel execution
 class TestWaitForProcessOutput:
     """Test wait_for_process_output function."""
 
@@ -532,6 +533,7 @@ class TestWaitForProcessOutput:
         proc.cleanup()
 
 
+@pytest.mark.serial  # These tests have timing issues with parallel execution
 class TestProcessLifecycleIntegration:
     """Integration tests for process lifecycle functionality."""
 
