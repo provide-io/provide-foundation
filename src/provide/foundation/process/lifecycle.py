@@ -384,12 +384,27 @@ async def wait_for_process_output(
             
         # Now check if process is still running
         if not process.is_running():
-            # Try one more read to get any remaining output
+            # Try to read any remaining output (both line and char by char)
             try:
-                line = await process.read_line_async(timeout=0.1)
-                if line:
-                    buffer += line
-            except TimeoutError:
+                while True:
+                    line = await process.read_line_async(timeout=0.05)
+                    if line:
+                        buffer += line
+                        plog.debug("Read remaining line", line=line[:100])
+                    else:
+                        break
+            except (TimeoutError, Exception):
+                pass
+            
+            # Also try character by character for any remaining data
+            try:
+                while True:
+                    char = await process.read_char_async(timeout=0.05)
+                    if char:
+                        buffer += char
+                    else:
+                        break
+            except (TimeoutError, Exception):
                 pass
                 
             returncode = process.returncode
@@ -397,7 +412,7 @@ async def wait_for_process_output(
             if all(part in buffer for part in expected_parts):
                 plog.debug("Found expected pattern in buffer (process exited)")
                 return buffer
-            plog.error("Process exited unexpectedly", returncode=returncode)
+            plog.error("Process exited unexpectedly", returncode=returncode, buffer=buffer[:200])
             raise ProcessError(f"Process exited with code {returncode}")
 
         # Continue with character-by-character reading if needed
