@@ -1,221 +1,164 @@
-"""Test coverage for emoji matrix module."""
+"""Test coverage for EventSet integration with logging."""
 
 from unittest.mock import Mock, patch
 import pytest
 
-from provide.foundation.logger.emoji import matrix
-from provide.foundation.logger.emoji.types import EmojiSet, FieldToEmojiMapping
+from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping
+from provide.foundation.eventsets.registry import get_registry, discover_event_sets
+from provide.foundation.eventsets.resolver import get_resolver
 
 
-class TestEmojiMatrixCoverage:
-    """Test emoji matrix functionality."""
+class TestEventSetIntegration:
+    """Test EventSet integration with logging system."""
 
-    def test_primary_emoji_constants(self):
-        """Test PRIMARY_EMOJI constant is defined correctly."""
-        assert "system" in matrix.PRIMARY_EMOJI
-        assert matrix.PRIMARY_EMOJI["system"] == "⚙️"
-        assert "default" in matrix.PRIMARY_EMOJI
-        assert matrix.PRIMARY_EMOJI["default"] == "❓"
+    def test_event_mapping_creation(self):
+        """Test EventMapping creation with visual markers."""
+        mapping = EventMapping(
+            name="test_mapping",
+            visual_markers={"success": "✅", "error": "❌", "info": "ℹ️"},
+            default_key="default"
+        )
+        
+        assert mapping.name == "test_mapping"
+        assert mapping.visual_markers["success"] == "✅"
+        assert mapping.visual_markers["error"] == "❌"
+        assert mapping.visual_markers["info"] == "ℹ️"
+        assert mapping.default_key == "default"
 
-        # Check it's a proper dict
-        assert isinstance(matrix.PRIMARY_EMOJI, dict)
-        assert len(matrix.PRIMARY_EMOJI) > 10
-
-    def test_secondary_emoji_constants(self):
-        """Test SECONDARY_EMOJI constant is defined correctly."""
-        assert "init" in matrix.SECONDARY_EMOJI
-        assert matrix.SECONDARY_EMOJI["init"] == "🌱"
-        assert "default" in matrix.SECONDARY_EMOJI
-        assert matrix.SECONDARY_EMOJI["default"] == "❓"
-
-        # Check it's a proper dict
-        assert isinstance(matrix.SECONDARY_EMOJI, dict)
-        assert len(matrix.SECONDARY_EMOJI) > 10
-
-    def test_tertiary_emoji_constants(self):
-        """Test TERTIARY_EMOJI constant is defined correctly."""
-        assert "success" in matrix.TERTIARY_EMOJI
-        assert matrix.TERTIARY_EMOJI["success"] == "✅"
-        assert "default" in matrix.TERTIARY_EMOJI
-        assert matrix.TERTIARY_EMOJI["default"] == "➡️"
-
-        # Check it's a proper dict
-        assert isinstance(matrix.TERTIARY_EMOJI, dict)
-        assert len(matrix.TERTIARY_EMOJI) > 10
-
-    def test_format_emoji_set_for_display(self):
-        """Test _format_emoji_set_for_display function."""
-        emoji_set = EmojiSet(
+    def test_event_set_creation(self):
+        """Test EventSet creation with mappings and field mappings."""
+        mapping = EventMapping(
+            name="status",
+            visual_markers={"success": "✅", "error": "❌"}
+        )
+        
+        field_mapping = FieldMapping(
+            log_key="status",
+            event_set_name="test_set"
+        )
+        
+        event_set = EventSet(
             name="test_set",
-            emojis={"key1": "🔥", "key2": "⭐", "abc": "🎯"},
-            default_emoji_key="key1",
+            description="Test event set",
+            mappings=[mapping],
+            field_mappings=[field_mapping],
+            priority=50
         )
+        
+        assert event_set.name == "test_set"
+        assert event_set.description == "Test event set"
+        assert len(event_set.mappings) == 1
+        assert len(event_set.field_mappings) == 1
+        assert event_set.priority == 50
 
-        result = matrix._format_emoji_set_for_display(emoji_set)
-
-        assert isinstance(result, list)
-        assert len(result) >= 4  # Header + at least 3 emoji lines
-
-        # Check header
-        assert "test_set" in result[0]
-        assert "key1" in result[0]
-
-        # Check content has sorted emoji mappings
-        content = "\n".join(result[1:])
-        assert "🎯  -> Abc" in content  # abc should be capitalized and sorted first
-        assert "🔥  -> Key1" in content
-        assert "⭐  -> Key2" in content
-
-    def test_format_field_definition_for_display_basic(self):
-        """Test _format_field_definition_for_display with basic field definition."""
-        field_def = FieldToEmojiMapping(
-            log_key="test_key",
-            description=None,
-            value_type=None,
-            emoji_set_name=None,
-            default_emoji_override_key=None,
-        )
-
-        result = matrix._format_field_definition_for_display(field_def)
-
-        assert isinstance(result, str)
-        assert "Log Key: 'test_key'" in result
-        assert "Desc:" not in result  # No description
-        assert "Type:" not in result  # No value_type
-        assert "Emoji Set:" not in result  # No emoji_set_name
-
-    def test_format_field_definition_for_display_complete(self):
-        """Test _format_field_definition_for_display with complete field definition."""
-        field_def = FieldToEmojiMapping(
-            log_key="complete_key",
-            description="Test description",
+    def test_field_mapping_creation(self):
+        """Test FieldMapping creation with various fields."""
+        field_mapping = FieldMapping(
+            log_key="test.field",
+            event_set_name="test_set",
+            description="Test field mapping",
             value_type="string",
-            emoji_set_name="test_set",
-            default_emoji_override_key="override_key",
+            default_value="default"
         )
+        
+        assert field_mapping.log_key == "test.field"
+        assert field_mapping.event_set_name == "test_set"
+        assert field_mapping.description == "Test field mapping"
+        assert field_mapping.value_type == "string"
+        assert field_mapping.default_value == "default"
 
-        result = matrix._format_field_definition_for_display(field_def)
+    def test_event_set_discovery(self):
+        """Test event set discovery functionality."""
+        discover_event_sets()
+        registry = get_registry()
+        event_sets = registry.list_event_sets()
+        
+        # Should discover built-in event sets
+        names = [es.name for es in event_sets]
+        assert "das" in names
+        assert "http" in names
+        assert "llm" in names
 
-        assert "Log Key: 'complete_key'" in result
-        assert "Desc: Test description" in result
-        assert "Type: string" in result
-        assert "Emoji Set: 'test_set'" in result
-        assert "Default Emoji Key (Override): 'override_key'" in result
+    def test_event_enrichment_resolver(self):
+        """Test event enrichment through resolver."""
+        discover_event_sets()
+        resolver = get_resolver()
+        
+        # Test DAS event enrichment
+        event = {
+            "event": "Test message",
+            "domain": "system",
+            "action": "start",
+            "status": "success"
+        }
+        
+        enriched = resolver.enrich_event(event.copy())
+        
+        # Should have visual markers added
+        assert "⚙️" in enriched["event"] or "🚀" in enriched["event"] or "✅" in enriched["event"]
 
-    def test_format_field_definition_for_display_partial(self):
-        """Test _format_field_definition_for_display with partial field definition."""
-        field_def = FieldToEmojiMapping(
-            log_key="partial_key",
-            description="Partial desc",
-            value_type=None,
-            emoji_set_name="partial_set",
-            default_emoji_override_key=None,  # No override
+    def test_registry_event_set_priority_ordering(self):
+        """Test that event sets are ordered by priority."""
+        discover_event_sets()
+        registry = get_registry()
+        event_sets = registry.list_event_sets()
+        
+        # Should be sorted by descending priority
+        priorities = [es.priority for es in event_sets]
+        assert priorities == sorted(priorities, reverse=True)
+
+    def test_event_mapping_with_metadata_and_transformations(self):
+        """Test EventMapping with metadata fields and transformations."""
+        def uppercase_transform(value):
+            return str(value).upper() if value else value
+        
+        mapping = EventMapping(
+            name="status_mapping",
+            visual_markers={"success": "✅", "error": "❌"},
+            metadata_fields={"success_meta": {"type": "boolean", "value": True}},
+            transformations={"uppercase": uppercase_transform},
+            default_key="info"
         )
+        
+        assert mapping.name == "status_mapping"
+        assert "success" in mapping.visual_markers
+        assert "success_meta" in mapping.metadata_fields
+        assert "uppercase" in mapping.transformations
+        assert mapping.default_key == "info"
+        
+        # Test transformation
+        result = mapping.transformations["uppercase"]("hello")
+        assert result == "HELLO"
 
-        result = matrix._format_field_definition_for_display(field_def)
-
-        assert "Log Key: 'partial_key'" in result
-        assert "Desc: Partial desc" in result
-        assert "Type:" not in result  # No value_type
-        assert "Emoji Set: 'partial_set'" in result
-        assert "Default Emoji Key (Override):" not in result  # No override
-
-    def test_show_emoji_matrix_disabled(self):
-        """Test show_emoji_matrix when disabled."""
-        mock_logger = Mock()
-        mock_logger._ensure_configured = Mock()
-
-        # Mock telemetry config to disable show_emoji_matrix
-        mock_config = Mock()
-        mock_config.logging.show_emoji_matrix = False
-        mock_logger._active_config = mock_config
-
-        with patch(
-            "provide.foundation.logger.emoji.matrix.foundation_logger_base.logger",
-            mock_logger,
-        ):
-            matrix.show_emoji_matrix()
-
-            # Should configure but not proceed
-            mock_logger._ensure_configured.assert_called_once()
-
-    def test_show_emoji_matrix_no_config(self):
-        """Test show_emoji_matrix when no config is available."""
-        mock_logger = Mock()
-        mock_logger._ensure_configured = Mock()
-        mock_logger._active_config = None  # No config
-
-        with patch(
-            "provide.foundation.logger.emoji.matrix.foundation_logger_base.logger",
-            mock_logger,
-        ):
-            matrix.show_emoji_matrix()
-
-            # Should configure but not proceed
-            mock_logger._ensure_configured.assert_called_once()
-
-    def test_show_emoji_matrix_with_core_das(self):
-        """Test show_emoji_matrix with core DAS emoji system active."""
-        mock_logger = Mock()
-        mock_logger._ensure_configured = Mock()
-
-        # Mock telemetry config to enable show_emoji_matrix
-        mock_config = Mock()
-        mock_config.logging.show_emoji_matrix = True
-        mock_logger._active_config = mock_config
-
-        # Mock no resolved emoji config (means core DAS is active)
-        mock_logger._active_resolved_emoji_config = None
-
-        # Mock the get_logger method
-        mock_matrix_logger = Mock()
-        mock_logger.get_logger.return_value = mock_matrix_logger
-
-        with patch(
-            "provide.foundation.logger.emoji.matrix.foundation_logger_base.logger",
-            mock_logger,
-        ):
-            matrix.show_emoji_matrix()
-
-            # Should get the matrix logger
-            mock_logger.get_logger.assert_called_once_with(
-                "provide.foundation.emoji_matrix_display"
-            )
-
-            # Should log the core DAS info
-            mock_matrix_logger.info.assert_called_once()
-            logged_content = mock_matrix_logger.info.call_args[0][0]
-            assert (
-                "Foundation Telemetry: Emoji configuration not yet resolved or available."
-                in logged_content
-            )
-
-    def test_emoji_constants_have_defaults(self):
-        """Test that all emoji constant dicts have 'default' keys."""
-        assert "default" in matrix.PRIMARY_EMOJI
-        assert "default" in matrix.SECONDARY_EMOJI
-        assert "default" in matrix.TERTIARY_EMOJI
-
-    def test_emoji_constants_are_dicts(self):
-        """Test that emoji constants are proper dictionaries."""
-        assert isinstance(matrix.PRIMARY_EMOJI, dict)
-        assert isinstance(matrix.SECONDARY_EMOJI, dict)
-        assert isinstance(matrix.TERTIARY_EMOJI, dict)
-
-        # Should have substantial content
-        assert len(matrix.PRIMARY_EMOJI) > 5
-        assert len(matrix.SECONDARY_EMOJI) > 5
-        assert len(matrix.TERTIARY_EMOJI) > 5
-
-    def test_emoji_values_are_strings(self):
-        """Test that emoji values are all strings."""
-        for emoji_dict in [
-            matrix.PRIMARY_EMOJI,
-            matrix.SECONDARY_EMOJI,
-            matrix.TERTIARY_EMOJI,
-        ]:
-            for key, value in emoji_dict.items():
-                assert isinstance(key, str), f"Key {key} is not a string"
-                assert isinstance(value, str), (
-                    f"Value {value} for key {key} is not a string"
-                )
+    def test_event_set_with_complex_configuration(self):
+        """Test EventSet with complex mappings and configurations."""
+        domain_mapping = EventMapping(
+            name="domain",
+            visual_markers={"system": "⚙️", "user": "👤", "api": "🔗"}
+        )
+        
+        action_mapping = EventMapping(
+            name="action", 
+            visual_markers={"start": "🚀", "complete": "🏁", "error": "💥"}
+        )
+        
+        field_mapping = FieldMapping(
+            log_key="system.status",
+            event_set_name="complex_test",
+            description="System status field",
+            value_type="string"
+        )
+        
+        event_set = EventSet(
+            name="complex_test",
+            description="Complex test event set",
+            mappings=[domain_mapping, action_mapping],
+            field_mappings=[field_mapping],
+            priority=100
+        )
+        
+        assert len(event_set.mappings) == 2
+        assert event_set.mappings[0].name == "domain"
+        assert event_set.mappings[1].name == "action"
+        assert len(event_set.field_mappings) == 1
+        assert event_set.field_mappings[0].log_key == "system.status"
