@@ -71,6 +71,12 @@ class ManagedProcess:
         self._env = os.environ.copy()
         if env:
             self._env.update(env)
+        
+        # Clean coverage-related environment variables from subprocess
+        # to prevent interference with output capture during testing
+        for key in list(self._env.keys()):
+            if key.startswith(('COVERAGE', 'COV_CORE')):
+                self._env.pop(key, None)
 
         # Process state
         self._process: subprocess.Popen[bytes] | None = None
