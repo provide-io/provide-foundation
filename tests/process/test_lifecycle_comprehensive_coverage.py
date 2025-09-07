@@ -416,6 +416,14 @@ class TestWaitForProcessOutput:
     @pytest.mark.asyncio
     async def test_wait_for_output_success(self):
         """Test successful output waiting."""
+        # Clear coverage environment to avoid interference with subprocess
+        import os
+        env = os.environ.copy()
+        env.pop('COVERAGE_PROCESS_START', None)
+        env.pop('COV_CORE_SOURCE', None)
+        env.pop('COV_CORE_CONFIG', None)
+        env.pop('COV_CORE_DATAFILE', None)
+        
         proc = ManagedProcess(
             [
                 sys.executable,
@@ -424,6 +432,7 @@ class TestWaitForProcessOutput:
             ],
             capture_output=True,
             text_mode=True,
+            env=env,
         )
         proc.launch()
 
@@ -548,6 +557,14 @@ class TestProcessLifecycleIntegration:
     @pytest.mark.asyncio
     async def test_full_lifecycle_with_output_waiting(self):
         """Test full lifecycle with output waiting."""
+        # Clear coverage environment to avoid interference with subprocess
+        import os
+        env = os.environ.copy()
+        env.pop('COVERAGE_PROCESS_START', None)
+        env.pop('COV_CORE_SOURCE', None)
+        env.pop('COV_CORE_CONFIG', None)
+        env.pop('COV_CORE_DATAFILE', None)
+        
         with ManagedProcess(
             [
                 sys.executable,
@@ -556,6 +573,7 @@ class TestProcessLifecycleIntegration:
             ],
             capture_output=True,
             text_mode=True,
+            env=env,
         ) as proc:
             # No need to call launch() - context manager already does this
 
