@@ -364,26 +364,35 @@ async def wait_for_process_output(
         timeout=timeout,
     )
 
+    # Small initial delay to let process start and output buffer
+    await asyncio.sleep(0.05)
+    
     # First, try to read any already available output
     # This is crucial for processes that exit very quickly
     try:
-        # Read all available lines first
+        # Read all available lines first with reasonable timeout
         for _ in range(10):  # Try up to 10 lines initially
             try:
-                line = await process.read_line_async(timeout=0.01)
+                line = await process.read_line_async(timeout=0.1)
                 if line:
-                    buffer += line
+                    # Don't strip - keep the exact output
+                    if not line.endswith('\n'):
+                        buffer += line + '\n'
+                    else:
+                        buffer += line
                     plog.debug("Read initial line", line=line[:100])
                     if all(part in buffer for part in expected_parts):
                         plog.debug("Found expected pattern in initial read")
                         return buffer
-            except (TimeoutError, Exception):
+                else:
+                    break
+            except TimeoutError:
+                break
+            except Exception as e:
+                plog.debug("Error in initial read", error=str(e))
                 break
     except Exception:
         pass
-    
-    # Small delay to let output buffers flush
-    await asyncio.sleep(0.02)
     
     # If process already exited, try to get all its output immediately
     if not process.is_running() and process._process and process._process.stdout:
