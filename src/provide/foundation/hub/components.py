@@ -539,7 +539,7 @@ def bootstrap_foundation() -> None:
     # Register default emoji set
     default_emoji_set = EventMapping(
         name="foundation_default",
-        emojis={
+        visual_markers={
             "success": "✅",
             "error": "❌",
             "info": "ℹ️",

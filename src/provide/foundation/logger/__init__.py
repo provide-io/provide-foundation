@@ -17,12 +17,8 @@ from provide.foundation.logger.config import (
     LoggingConfig,
     TelemetryConfig,
 )
-from provide.foundation.eventsets.display import (
-    show_event_matrix,  # Utility to display event set configurations
-)
 
 __all__ = [
-    "show_event_matrix",
     "FoundationLogger",
     "LoggingConfig",
     "TelemetryConfig",
