@@ -17,17 +17,12 @@ from provide.foundation.logger.config import (
     LoggingConfig,
     TelemetryConfig,
 )
-from provide.foundation.logger.emoji.matrix import (
-    PRIMARY_EMOJI,  # Core domain emojis
-    SECONDARY_EMOJI,  # Core action emojis
-    TERTIARY_EMOJI,  # Core status emojis
-    show_emoji_matrix,  # Utility to display emoji configurations
+from provide.foundation.eventsets.display import (
+    show_event_matrix,  # Utility to display event set configurations
 )
 
 __all__ = [
-    "PRIMARY_EMOJI",
-    "SECONDARY_EMOJI",
-    "TERTIARY_EMOJI",
+    "show_event_matrix",
     "FoundationLogger",
     "LoggingConfig",
     "TelemetryConfig",
@@ -35,7 +30,6 @@ __all__ = [
     "logger",
     "setup_logger",  # Consistent naming
     "setup_logging",  # Backward compatibility
-    "show_emoji_matrix",
 ]
 
 # 🐍📝

@@ -2,13 +2,13 @@
 HTTP request/response event set for Foundation.
 """
 
-from provide.foundation.eventsets.types import EventSet, EventSetConfig, FieldMapping
+from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping
 
-EVENT_SET = EventSetConfig(
+EVENT_SET = EventSet(
     name="http",
     description="HTTP client and server interaction enrichment",
-    event_sets=[
-        EventSet(
+    mappings=[
+        EventMapping(
             name="http_method",
             visual_markers={
                 "get": "📥",
@@ -22,7 +22,7 @@ EVENT_SET = EventSetConfig(
             },
             default_key="default"
         ),
-        EventSet(
+        EventMapping(
             name="http_status_class",
             visual_markers={
                 "1xx": "ℹ️",
@@ -39,7 +39,7 @@ EVENT_SET = EventSetConfig(
             },
             default_key="default"
         ),
-        EventSet(
+        EventMapping(
             name="http_target_type",
             visual_markers={
                 "path": "🛣️",

@@ -16,7 +16,7 @@ from attrs import define, field
 
 from provide.foundation.hub.registry import Registry, RegistryEntry
 from provide.foundation.logger import get_logger
-from provide.foundation.logger.emoji.types import EmojiSet
+from provide.foundation.eventsets.types import EventMapping
 
 log = get_logger(__name__)
 
@@ -75,7 +75,7 @@ def get_component_registry() -> Registry:
     return _component_registry
 
 
-def find_emoji_set_for_domain(domain: str) -> EmojiSet | None:
+def find_emoji_set_for_domain(domain: str) -> EventMapping | None:
     """Find the best emoji set for a given domain."""
     with _registry_lock:
         registry = get_component_registry()
@@ -99,7 +99,7 @@ def find_emoji_set_for_domain(domain: str) -> EmojiSet | None:
         return domain_sets[0].value
 
 
-def get_default_emoji_set() -> EmojiSet:
+def get_default_emoji_set() -> EventMapping:
     """Get the default emoji set for unknown domains."""
     with _registry_lock:
         registry = get_component_registry()
@@ -119,7 +119,7 @@ def get_default_emoji_set() -> EmojiSet:
             return default_sets[0].value
 
         # Return built-in default
-        return EmojiSet(
+        return EventMapping(
             name="default",
             emojis={
                 "success": "✅",
@@ -161,7 +161,7 @@ def resolve_emoji_for_domain(domain: str, action: str) -> str:
         return default_set.emojis.get(action, "📝")
 
 
-def get_composed_emoji_set(domain: str) -> EmojiSet:
+def get_composed_emoji_set(domain: str) -> EventMapping:
     """Get composed emoji set combining all sets for a domain."""
     with _registry_lock:
         registry = get_component_registry()
@@ -186,7 +186,7 @@ def get_composed_emoji_set(domain: str) -> EmojiSet:
             emoji_set = entry.value
             composed_emojis.update(emoji_set.emojis)
 
-        return EmojiSet(name=f"composed_{domain}", emojis=composed_emojis)
+        return EventMapping(name=f"composed_{domain}", emojis=composed_emojis)
 
 
 def resolve_config_value(key: str) -> Any:
@@ -537,7 +537,7 @@ def bootstrap_foundation() -> None:
     registry = get_component_registry()
 
     # Register default emoji set
-    default_emoji_set = EmojiSet(
+    default_emoji_set = EventMapping(
         name="foundation_default",
         emojis={
             "success": "✅",

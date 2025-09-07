@@ -1,14 +1,14 @@
 """
-Domain-Action-Status (DAS) event set for Foundation.
+Domain-Action-Status (DAS) event set.
 """
 
-from provide.foundation.eventsets.types import EventSet, EventSetConfig, FieldMapping
+from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping
 
-EVENT_SET = EventSetConfig(
+EVENT_SET = EventSet(
     name="das",
     description="Core Domain-Action-Status event enrichment",
-    event_sets=[
-        EventSet(
+    mappings=[
+        EventMapping(
             name="domain",
             visual_markers={
                 "system": "⚙️",
@@ -37,7 +37,7 @@ EVENT_SET = EventSetConfig(
             },
             default_key="default"
         ),
-        EventSet(
+        EventMapping(
             name="action",
             visual_markers={
                 "init": "🌱",
@@ -76,7 +76,7 @@ EVENT_SET = EventSetConfig(
             },
             default_key="default"
         ),
-        EventSet(
+        EventMapping(
             name="status",
             visual_markers={
                 "success": "✅",
@@ -120,5 +120,5 @@ EVENT_SET = EventSetConfig(
             event_set_name="status"
         ),
     ],
-    priority=0  # Base priority, can be overridden by other sets
+    priority=0
 )
