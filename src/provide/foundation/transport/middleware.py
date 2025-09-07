@@ -12,6 +12,7 @@ from attrs import define, field
 from provide.foundation.hub import get_component_registry
 from provide.foundation.hub.components import ComponentCategory
 from provide.foundation.logger import get_logger
+from provide.foundation.metrics import counter, histogram
 from provide.foundation.transport.base import Request, Response
 from provide.foundation.transport.errors import TransportError
 
@@ -48,10 +49,15 @@ class LoggingMiddleware(Middleware):
     async def process_request(self, request: Request) -> Request:
         """Log outgoing request."""
         if self.log_requests:
-            log.info(f"🚀 {request.method} {request.uri}")
+            log.info(
+                f"🚀 {request.method} {request.uri}",
+                method=request.method,
+                uri=str(request.uri),
+                headers=dict(request.headers) if hasattr(request, 'headers') else {},
+            )
             
             if self.log_bodies and request.body:
-                log.trace("Request body", body=request.body)
+                log.trace("Request body", body=request.body, method=request.method, uri=str(request.uri))
         
         return request
     
@@ -59,16 +65,35 @@ class LoggingMiddleware(Middleware):
         """Log incoming response."""
         if self.log_responses:
             status_emoji = self._get_status_emoji(response.status)
-            log.info(f"{status_emoji} {response.status} ({response.elapsed_ms:.0f}ms)")
+            log.info(
+                f"{status_emoji} {response.status} ({response.elapsed_ms:.0f}ms)",
+                status_code=response.status,
+                elapsed_ms=response.elapsed_ms,
+                method=response.request.method if response.request else None,
+                uri=str(response.request.uri) if response.request else None,
+                headers=dict(response.headers) if hasattr(response, 'headers') else {},
+            )
             
             if self.log_bodies and response.body:
-                log.trace("Response body", body=response.text[:500])  # Truncate large bodies
+                log.trace(
+                    "Response body", 
+                    body=response.text[:500],  # Truncate large bodies
+                    status_code=response.status,
+                    method=response.request.method if response.request else None,
+                    uri=str(response.request.uri) if response.request else None,
+                )
         
         return response
     
     async def process_error(self, error: Exception, request: Request) -> Exception:
         """Log errors."""
-        log.error(f"❌ {request.method} {request.uri} failed: {error}")
+        log.error(
+            f"❌ {request.method} {request.uri} failed: {error}",
+            method=request.method,
+            uri=str(request.uri),
+            error_type=error.__class__.__name__,
+            error_message=str(error),
+        )
         return error
     
     def _get_status_emoji(self, status_code: int) -> str:
@@ -145,9 +170,24 @@ class RetryMiddleware(Middleware):
 
 @define
 class MetricsMiddleware(Middleware):
-    """Middleware for collecting transport metrics."""
+    """Middleware for collecting transport metrics using foundation.metrics."""
     
-    metrics: dict[str, Any] = field(factory=dict, init=False)
+    # Create metrics instances
+    _request_counter = counter(
+        "transport_requests_total",
+        description="Total number of transport requests",
+        unit="requests"
+    )
+    _request_duration = histogram(
+        "transport_request_duration_seconds", 
+        description="Duration of transport requests",
+        unit="seconds"
+    )
+    _error_counter = counter(
+        "transport_errors_total",
+        description="Total number of transport errors", 
+        unit="errors"
+    )
     
     async def process_request(self, request: Request) -> Request:
         """Record request start time."""
@@ -158,41 +198,36 @@ class MetricsMiddleware(Middleware):
         """Record response metrics."""
         if response.request and "start_time" in response.request.metadata:
             start_time = response.request.metadata["start_time"]
-            total_time = time.perf_counter() - start_time
+            duration = time.perf_counter() - start_time
             
-            # Update metrics
             method = response.request.method
-            status = response.status
+            status_class = f"{response.status // 100}xx"
             
-            if method not in self.metrics:
-                self.metrics[method] = {"count": 0, "total_time": 0.0, "statuses": {}}
+            # Record metrics with labels
+            self._request_counter.add(1, {
+                "method": method,
+                "status_code": str(response.status),
+                "status_class": status_class
+            })
             
-            self.metrics[method]["count"] += 1
-            self.metrics[method]["total_time"] += total_time
-            
-            if status not in self.metrics[method]["statuses"]:
-                self.metrics[method]["statuses"][status] = 0
-            self.metrics[method]["statuses"][status] += 1
+            self._request_duration.record(duration, {
+                "method": method,
+                "status_class": status_class
+            })
         
         return response
     
     async def process_error(self, error: Exception, request: Request) -> Exception:
         """Record error metrics."""
         method = request.method
+        error_type = error.__class__.__name__
         
-        if method not in self.metrics:
-            self.metrics[method] = {"count": 0, "total_time": 0.0, "errors": 0}
+        self._error_counter.add(1, {
+            "method": method,
+            "error_type": error_type
+        })
         
-        self.metrics[method]["errors"] = self.metrics[method].get("errors", 0) + 1
         return error
-    
-    def get_metrics(self) -> dict[str, Any]:
-        """Get collected metrics."""
-        return dict(self.metrics)
-    
-    def reset_metrics(self) -> None:
-        """Reset collected metrics."""
-        self.metrics.clear()
 
 
 @define

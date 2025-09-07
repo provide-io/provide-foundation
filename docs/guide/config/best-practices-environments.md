@@ -1,8 +1,6 @@
-# Configuration Best Practices
+# Environment Configuration
 
-Production-ready configuration strategies for provide.foundation applications.
-
-## Environment-Specific Configuration
+Managing different deployment environments and environment-specific settings.
 
 ### Development Environment
 

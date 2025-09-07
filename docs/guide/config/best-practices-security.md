@@ -1,4 +1,6 @@
-## Configuration Hierarchy
+# Security & Hierarchy
+
+Configuration security practices and hierarchical organization.
 
 ### 1. Use Multiple Layers
 
