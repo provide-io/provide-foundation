@@ -15,8 +15,8 @@ import structlog
 from provide.foundation.types import TRACE_LEVEL_NAME
 
 if TYPE_CHECKING:
-    from provide.foundation.logger.setup.emoji_resolver import ResolvedEmojiConfig
     from provide.foundation.logger.config import TelemetryConfig
+    from provide.foundation.logger.setup.emoji_resolver import ResolvedEmojiConfig
 
 _LAZY_SETUP_LOCK = threading.Lock()
 _LAZY_SETUP_STATE: dict[str, Any] = {"done": False, "error": None, "in_progress": False}
@@ -30,8 +30,8 @@ class FoundationLogger:
             logger_name=f"{self.__class__.__module__}.{self.__class__.__name__}"
         )
         self._is_configured_by_setup: bool = False
-        self._active_config: "TelemetryConfig | None" = None
-        self._active_resolved_emoji_config: "ResolvedEmojiConfig | None" = None
+        self._active_config: TelemetryConfig | None = None
+        self._active_resolved_emoji_config: ResolvedEmojiConfig | None = None
 
     def _check_structlog_already_disabled(self) -> bool:
         try:
@@ -86,7 +86,7 @@ class FoundationLogger:
     def _perform_lazy_setup(self) -> None:
         """Perform the actual lazy setup of the logging system."""
         from provide.foundation.logger.setup.coordinator import internal_setup
-        
+
         try:
             _LAZY_SETUP_STATE["in_progress"] = True
             internal_setup(is_explicit_call=False)
@@ -99,7 +99,7 @@ class FoundationLogger:
     def _setup_emergency_fallback(self) -> None:
         """Set up emergency fallback logging when normal setup fails."""
         from provide.foundation.utils.streams import get_safe_stderr
-        
+
         with contextlib.suppress(Exception):
             structlog.configure(
                 processors=[structlog.dev.ConsoleRenderer()],
@@ -117,11 +117,11 @@ class FoundationLogger:
         self, level_method_name: str, event: str, **kwargs: Any
     ) -> None:
         self._ensure_configured()
-        
+
         # Use the logger name from kwargs if provided, otherwise default
         logger_name = kwargs.pop("_foundation_logger_name", "pyvider.dynamic_call")
         log = self.get_logger(logger_name)
-        
+
         # Handle trace level specially since PrintLogger doesn't have trace method
         if level_method_name == "trace":
             kwargs["_foundation_level_hint"] = TRACE_LEVEL_NAME.lower()
@@ -187,10 +187,10 @@ class FoundationLogger:
     def bind(self, **kwargs: Any) -> Any:
         """
         Create a new logger with additional context bound to it.
-        
+
         Args:
             **kwargs: Key-value pairs to bind to the logger
-            
+
         Returns:
             A new logger instance with the bound context
         """
@@ -201,10 +201,10 @@ class FoundationLogger:
     def unbind(self, *keys: str) -> Any:
         """
         Create a new logger with specified keys removed from context.
-        
+
         Args:
             *keys: Context keys to remove
-            
+
         Returns:
             A new logger instance without the specified keys
         """
@@ -216,10 +216,10 @@ class FoundationLogger:
         """
         Create a new logger with specified keys removed from context.
         Does not raise an error if keys don't exist.
-        
+
         Args:
             *keys: Context keys to remove
-            
+
         Returns:
             A new logger instance without the specified keys
         """

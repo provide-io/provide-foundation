@@ -118,7 +118,7 @@ class TestAsyncHubCompatibility:
         # Legacy test removed - register_component decorator no longer exists in current hub architecture
         # This test was testing component registration via decorator which has been replaced
         # by the registry-based component system
-        
+
         # Test basic hub access in async context
         async def test_hub_access() -> bool:
             for i in range(5):

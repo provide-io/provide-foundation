@@ -62,8 +62,12 @@ class TestAsyncRunCommand:
     async def test_command_with_env(self) -> None:
         """Test command with custom environment."""
         result = await async_run_command(
-            [sys.executable, "-c", "import os; print(os.environ.get('TEST_VAR', 'not set'))"],
-            env={"TEST_VAR": "test_value", "PATH": "/usr/bin:/bin"}
+            [
+                sys.executable,
+                "-c",
+                "import os; print(os.environ.get('TEST_VAR', 'not set'))",
+            ],
+            env={"TEST_VAR": "test_value", "PATH": "/usr/bin:/bin"},
         )
 
         assert "test_value" in result.stdout
@@ -71,10 +75,7 @@ class TestAsyncRunCommand:
     @pytest.mark.asyncio
     async def test_command_with_input(self) -> None:
         """Test command with input."""
-        result = await async_run_command(
-            ["cat"],
-            input=b"test input"
-        )
+        result = await async_run_command(["cat"], input=b"test input")
 
         assert "test input" in result.stdout
 
@@ -82,18 +83,12 @@ class TestAsyncRunCommand:
     async def test_command_timeout(self) -> None:
         """Test command timeout."""
         with pytest.raises(TimeoutError):
-            await async_run_command(
-                ["sleep", "10"],
-                timeout=0.1
-            )
+            await async_run_command(["sleep", "10"], timeout=0.1)
 
     @pytest.mark.asyncio
     async def test_capture_output_false(self) -> None:
         """Test with capture_output=False."""
-        result = await async_run_command(
-            ["echo", "hello"],
-            capture_output=False
-        )
+        result = await async_run_command(["echo", "hello"], capture_output=False)
 
         assert result.stdout == ""
         assert result.stderr == ""
@@ -124,7 +119,7 @@ class TestAsyncStreamCommand:
 
         async for line in async_stream_command(
             [sys.executable, "-c", "import sys; sys.stderr.write('error\\n')"],
-            stream_stderr=True
+            stream_stderr=True,
         ):
             lines.append(line)
 
@@ -134,10 +129,7 @@ class TestAsyncStreamCommand:
     async def test_stream_with_timeout(self) -> None:
         """Test streaming with timeout."""
         with pytest.raises(TimeoutError):
-            async for _ in async_stream_command(
-                ["sleep", "10"],
-                timeout=0.1
-            ):
+            async for _ in async_stream_command(["sleep", "10"], timeout=0.1):
                 pass
 
 

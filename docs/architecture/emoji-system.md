@@ -333,4 +333,4 @@ config = TelemetryConfig(
 - [Telemetry Format](telemetry-format.md) - Message structure specification
 - [Emoji Sets](emoji-sets.md) - Domain-specific emoji implementations  
 - [Performance Architecture](performance.md) - Performance impact analysis
-- [Logging Guide](../guide/logging/) - Using emojis in practice
+- [Logging Guide](../guide/logging/index.md) - Using emojis in practice

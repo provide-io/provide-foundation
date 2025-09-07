@@ -595,6 +595,14 @@ logger.error("Failed to connect to database")       # Error
 logger.critical("System out of memory")            # Critical
 ```
 
+## Related API Reference
+
+For detailed API documentation, see:
+- [Logger Base API](../../api/logger/api-base.md) - Core logger implementation and global logger instance
+- [Logger Config API](../../api/logger/api-config.md) - Configuration classes and environment variables
+- [Logger Factories API](../../api/logger/api-factories.md) - Logger creation and setup functions
+- [Logger Processors API](../../api/logger/api-processors.md) - Log processing pipeline and formatters
+
 ## Next Steps
 
 - 📚 [Advanced Logging](advanced.md) - Advanced patterns and techniques

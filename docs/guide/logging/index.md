@@ -306,7 +306,7 @@ def register_user(email, password):
 
 - 📖 **[Configuration Guide](../config/index.md)** - Configuring logging behavior
 - 🔍 **[Tracing Guide](../tracing/index.md)** - Distributed tracing integration  
-- 📊 **[API Reference](../../api/logger/index.md)** - Complete logging API
+- 📊 **[API Reference](../../api/logger/api-api-index.md)** - Complete logging API
 - 🏗️ **[Architecture](../../architecture/index.md)** - Technical specifications
 - 💡 **[Examples](../../getting-started/examples.md)** - Working code examples
 

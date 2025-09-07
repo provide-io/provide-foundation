@@ -7,25 +7,25 @@ Provides rate limiters and processors for controlling log output rates.
 """
 
 from provide.foundation.logger.ratelimit.limiters import (
-    SyncRateLimiter,
     AsyncRateLimiter,
     GlobalRateLimiter,
-)
-from provide.foundation.logger.ratelimit.queue_limiter import (
-    QueuedRateLimiter,
-    BufferedRateLimiter,
+    SyncRateLimiter,
 )
 from provide.foundation.logger.ratelimit.processor import (
     RateLimiterProcessor,
     create_rate_limiter_processor,
 )
+from provide.foundation.logger.ratelimit.queue_limiter import (
+    BufferedRateLimiter,
+    QueuedRateLimiter,
+)
 
 __all__ = [
-    "SyncRateLimiter",
-    "AsyncRateLimiter", 
+    "AsyncRateLimiter",
+    "BufferedRateLimiter",
     "GlobalRateLimiter",
     "QueuedRateLimiter",
-    "BufferedRateLimiter",
     "RateLimiterProcessor",
+    "SyncRateLimiter",
     "create_rate_limiter_processor",
 ]

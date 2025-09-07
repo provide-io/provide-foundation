@@ -219,7 +219,7 @@ class LoggingConfig(BaseConfig):
         # Parse rate limiting configuration
         if rate_limit_enabled := os.getenv("PROVIDE_LOG_RATE_LIMIT_ENABLED"):
             config_dict["rate_limit_enabled"] = rate_limit_enabled.lower() == "true"
-        
+
         if rate_limit_global := os.getenv("PROVIDE_LOG_RATE_LIMIT_GLOBAL"):
             try:
                 config_dict["rate_limit_global"] = float(rate_limit_global)
@@ -230,7 +230,7 @@ class LoggingConfig(BaseConfig):
                         config_key="PROVIDE_LOG_RATE_LIMIT_GLOBAL",
                         invalid_value=rate_limit_global,
                     )
-        
+
         if rate_limit_capacity := os.getenv("PROVIDE_LOG_RATE_LIMIT_GLOBAL_CAPACITY"):
             try:
                 config_dict["rate_limit_global_capacity"] = float(rate_limit_capacity)
@@ -241,7 +241,7 @@ class LoggingConfig(BaseConfig):
                         config_key="PROVIDE_LOG_RATE_LIMIT_GLOBAL_CAPACITY",
                         invalid_value=rate_limit_capacity,
                     )
-        
+
         if per_logger_limits := os.getenv("PROVIDE_LOG_RATE_LIMIT_PER_LOGGER"):
             limits_dict = {}
             for item in per_logger_limits.split(","):
@@ -251,7 +251,7 @@ class LoggingConfig(BaseConfig):
                     try:
                         limits_dict[logger_name.strip()] = (
                             float(rate.strip()),
-                            float(capacity.strip())
+                            float(capacity.strip()),
                         )
                     except ValueError:
                         if strict:
@@ -262,10 +262,10 @@ class LoggingConfig(BaseConfig):
                             )
             if limits_dict:
                 config_dict["rate_limit_per_logger"] = limits_dict
-        
+
         if emit_warnings := os.getenv("PROVIDE_LOG_RATE_LIMIT_EMIT_WARNINGS"):
             config_dict["rate_limit_emit_warnings"] = emit_warnings.lower() == "true"
-        
+
         if summary_interval := os.getenv("PROVIDE_LOG_RATE_LIMIT_SUMMARY_INTERVAL"):
             try:
                 config_dict["rate_limit_summary_interval"] = float(summary_interval)
@@ -276,7 +276,7 @@ class LoggingConfig(BaseConfig):
                         config_key="PROVIDE_LOG_RATE_LIMIT_SUMMARY_INTERVAL",
                         invalid_value=summary_interval,
                     )
-        
+
         if max_queue := os.getenv("PROVIDE_LOG_RATE_LIMIT_MAX_QUEUE_SIZE"):
             try:
                 config_dict["rate_limit_max_queue_size"] = int(max_queue)
@@ -287,7 +287,7 @@ class LoggingConfig(BaseConfig):
                         config_key="PROVIDE_LOG_RATE_LIMIT_MAX_QUEUE_SIZE",
                         invalid_value=max_queue,
                     )
-        
+
         if max_memory := os.getenv("PROVIDE_LOG_RATE_LIMIT_MAX_MEMORY_MB"):
             try:
                 config_dict["rate_limit_max_memory_mb"] = float(max_memory)
@@ -298,7 +298,7 @@ class LoggingConfig(BaseConfig):
                         config_key="PROVIDE_LOG_RATE_LIMIT_MAX_MEMORY_MB",
                         invalid_value=max_memory,
                     )
-        
+
         if overflow_policy := os.getenv("PROVIDE_LOG_RATE_LIMIT_OVERFLOW_POLICY"):
             valid_policies = ("drop_oldest", "drop_newest", "block")
             if overflow_policy in valid_policies:

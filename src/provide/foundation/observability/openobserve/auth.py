@@ -4,16 +4,18 @@ Authentication handling for OpenObserve.
 
 import base64
 
-from provide.foundation.observability.openobserve.exceptions import OpenObserveAuthenticationError
+from provide.foundation.observability.openobserve.exceptions import (
+    OpenObserveAuthenticationError,
+)
 
 
 def encode_basic_auth(username: str, password: str) -> str:
     """Encode username and password for Basic authentication.
-    
+
     Args:
         username: OpenObserve username
         password: OpenObserve password
-        
+
     Returns:
         Base64 encoded auth string
     """
@@ -24,14 +26,14 @@ def encode_basic_auth(username: str, password: str) -> str:
 
 def get_auth_headers(username: str | None, password: str | None) -> dict[str, str]:
     """Get authentication headers for OpenObserve API.
-    
+
     Args:
         username: OpenObserve username
         password: OpenObserve password
-        
+
     Returns:
         Dictionary with Authorization header
-        
+
     Raises:
         OpenObserveAuthenticationError: If credentials are missing
     """
@@ -40,7 +42,7 @@ def get_auth_headers(username: str | None, password: str | None) -> dict[str, st
             "OpenObserve credentials not configured. "
             "Set OPENOBSERVE_USER and OPENOBSERVE_PASSWORD environment variables."
         )
-    
+
     auth_token = encode_basic_auth(username, password)
     return {
         "Authorization": f"Basic {auth_token}",
@@ -50,21 +52,21 @@ def get_auth_headers(username: str | None, password: str | None) -> dict[str, st
 
 def validate_credentials(username: str | None, password: str | None) -> tuple[str, str]:
     """Validate and return OpenObserve credentials.
-    
+
     Args:
         username: OpenObserve username
         password: OpenObserve password
-        
+
     Returns:
         Tuple of (username, password)
-        
+
     Raises:
         OpenObserveAuthenticationError: If credentials are invalid
     """
     if not username:
         raise OpenObserveAuthenticationError("OpenObserve username is required")
-    
+
     if not password:
         raise OpenObserveAuthenticationError("OpenObserve password is required")
-    
+
     return username, password

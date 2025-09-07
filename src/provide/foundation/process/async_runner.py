@@ -17,6 +17,35 @@ from provide.foundation.process.runner import (
 plog = get_logger(__name__)
 
 
+def _filter_subprocess_kwargs(kwargs: dict) -> dict:
+    """Filter kwargs to only include valid subprocess parameters."""
+    valid_subprocess_kwargs = {
+        "stdin",
+        "stdout",
+        "stderr",
+        "shell",
+        "cwd",
+        "env",
+        "universal_newlines",
+        "startupinfo",
+        "creationflags",
+        "restore_signals",
+        "start_new_session",
+        "pass_fds",
+        "encoding",
+        "errors",
+        "text",
+        "executable",
+        "preexec_fn",
+        "close_fds",
+        "group",
+        "extra_groups",
+        "user",
+        "umask",
+    }
+    return {k: v for k, v in kwargs.items() if k in valid_subprocess_kwargs}
+
+
 async def async_run_command(
     cmd: list[str] | str,
     cwd: str | Path | None = None,
@@ -74,7 +103,7 @@ async def async_run_command(
                 stdout=asyncio.subprocess.PIPE if capture_output else None,
                 stderr=asyncio.subprocess.PIPE if capture_output else None,
                 stdin=asyncio.subprocess.PIPE if input else None,
-                **{k: v for k, v in kwargs.items() if k != "shell"},
+                **_filter_subprocess_kwargs(kwargs),
             )
         else:
             # For non-shell commands, use create_subprocess_exec with unpacked args
@@ -85,7 +114,7 @@ async def async_run_command(
                 stdout=asyncio.subprocess.PIPE if capture_output else None,
                 stderr=asyncio.subprocess.PIPE if capture_output else None,
                 stdin=asyncio.subprocess.PIPE if input else None,
-                **{k: v for k, v in kwargs.items() if k != "shell"},
+                **_filter_subprocess_kwargs(kwargs),
             )
 
         # Communicate with process
@@ -111,8 +140,8 @@ async def async_run_command(
             stdout, stderr = await process.communicate(input=input)
 
         # Decode output
-        stdout_str = stdout.decode() if stdout else ""
-        stderr_str = stderr.decode() if stderr else ""
+        stdout_str = stdout.decode(errors="replace") if stdout else ""
+        stderr_str = stderr.decode(errors="replace") if stderr else ""
 
         completed = CompletedProcess(
             args=cmd,
@@ -211,12 +240,12 @@ async def async_stream_command(
             asyncio.subprocess.STDOUT if stream_stderr else asyncio.subprocess.PIPE
         )
         process = await asyncio.create_subprocess_exec(
-            *(cmd if isinstance(cmd, list) else [cmd]),
+            *(cmd if isinstance(cmd, list) else cmd.split()),
             cwd=cwd,
             env=run_env,
             stdout=asyncio.subprocess.PIPE,
             stderr=stderr_handling,
-            **kwargs,
+            **_filter_subprocess_kwargs(kwargs),
         )
 
         # Stream output with optional timeout
@@ -246,7 +275,7 @@ async def async_stream_command(
                             if not line:
                                 break  # EOF
 
-                            lines.append(line.decode().rstrip())
+                            lines.append(line.decode(errors="replace").rstrip())
                     except builtins.TimeoutError:
                         process.kill()
                         await process.wait()
@@ -281,7 +310,7 @@ async def async_stream_command(
             # No timeout - stream normally
             if process.stdout:
                 async for line in process.stdout:
-                    yield line.decode().rstrip()
+                    yield line.decode(errors="replace").rstrip()
 
             # Wait for process to complete
             await process.wait()

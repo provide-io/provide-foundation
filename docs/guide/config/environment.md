@@ -2,6 +2,13 @@
 
 Complete reference for configuring provide.foundation through environment variables.
 
+## Related API Reference
+
+For detailed API documentation, see:
+- [Config Base API](../../api/config/api-base.md) - Base configuration classes
+- [Config Environment API](../../api/config/api-env.md) - Environment variable loading
+- [Config Manager API](../../api/config/api-manager.md) - Configuration management
+
 ## Overview
 
 provide.foundation uses environment variables with the **`PROVIDE_`** prefix for all user-facing configuration. This ensures:

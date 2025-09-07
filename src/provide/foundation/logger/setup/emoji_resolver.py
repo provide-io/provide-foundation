@@ -22,11 +22,11 @@ def resolve_active_emoji_config(
 ) -> ResolvedEmojiConfig:
     """
     Resolve the active emoji configuration from multiple sources.
-    
+
     Args:
         logging_config: The logging configuration
         builtin_emoji_registry: Registry of built-in emoji sets
-        
+
     Returns:
         Tuple of (field_definitions, emoji_sets_dict)
     """

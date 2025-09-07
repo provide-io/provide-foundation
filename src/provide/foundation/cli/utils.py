@@ -7,12 +7,12 @@ import click
 from click.testing import CliRunner, Result
 
 from provide.foundation.context import Context
-from provide.foundation.setup import setup_telemetry
 from provide.foundation.logger import (
     LoggingConfig,
     TelemetryConfig,
     get_logger,
 )
+from provide.foundation.setup import setup_telemetry
 
 log = get_logger(__name__)
 

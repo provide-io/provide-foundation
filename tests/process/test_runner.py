@@ -56,35 +56,30 @@ class TestRunCommand:
     def test_command_with_env(self) -> None:
         """Test command with custom environment."""
         result = run_command(
-            [sys.executable, "-c", "import os; print(os.environ.get('TEST_VAR', 'not set'))"],
-            env={"TEST_VAR": "test_value", "PATH": "/usr/bin:/bin"}
+            [
+                sys.executable,
+                "-c",
+                "import os; print(os.environ.get('TEST_VAR', 'not set'))",
+            ],
+            env={"TEST_VAR": "test_value", "PATH": "/usr/bin:/bin"},
         )
 
         assert "test_value" in result.stdout
 
     def test_command_with_input(self) -> None:
         """Test command with input."""
-        result = run_command(
-            ["cat"],
-            input=b"test input"
-        )
+        result = run_command(["cat"], input=b"test input")
 
         assert "test input" in result.stdout
 
     def test_command_timeout(self) -> None:
         """Test command timeout."""
         with pytest.raises(TimeoutError):
-            run_command(
-                ["sleep", "10"],
-                timeout=0.1
-            )
+            run_command(["sleep", "10"], timeout=0.1)
 
     def test_capture_output_false(self) -> None:
         """Test with capture_output=False."""
-        result = run_command(
-            ["echo", "hello"],
-            capture_output=False
-        )
+        result = run_command(["echo", "hello"], capture_output=False)
 
         assert result.stdout == ""
         assert result.stderr == ""
@@ -120,7 +115,7 @@ class TestStreamCommand:
 
         for line in stream_command(
             [sys.executable, "-c", "import sys; sys.stderr.write('error\\n')"],
-            stream_stderr=True
+            stream_stderr=True,
         ):
             lines.append(line)
 
@@ -129,10 +124,7 @@ class TestStreamCommand:
     def test_stream_with_timeout(self) -> None:
         """Test streaming with timeout."""
         with pytest.raises(TimeoutError):
-            for _ in stream_command(
-                ["sleep", "10"],
-                timeout=0.1
-            ):
+            for _ in stream_command(["sleep", "10"], timeout=0.1):
                 pass
 
 
@@ -171,7 +163,7 @@ class TestRunShell:
         """Test shell with environment variables."""
         result = run_shell(
             "echo $TEST_VAR",
-            env={"TEST_VAR": "test_value", "PATH": "/usr/bin:/bin", "SHELL": "/bin/sh"}
+            env={"TEST_VAR": "test_value", "PATH": "/usr/bin:/bin", "SHELL": "/bin/sh"},
         )
 
         assert "test_value" in result.stdout

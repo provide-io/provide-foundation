@@ -32,6 +32,7 @@ try:
         create_ca,
         create_self_signed,
     )
+
     _HAS_CRYPTO = True
 except ImportError:
     Certificate = None
@@ -88,6 +89,7 @@ try:
         sign_data,
         verify_signature,
     )
+
     if not _HAS_CRYPTO:
         _HAS_CRYPTO = True
 except ImportError:

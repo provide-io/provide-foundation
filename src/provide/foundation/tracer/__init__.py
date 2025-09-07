@@ -11,10 +11,15 @@ Falls back to simple, lightweight tracing when OpenTelemetry is not available.
 # OpenTelemetry feature detection
 try:
     from opentelemetry import trace as otel_trace
+    from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (
+        OTLPSpanExporter as OTLPGrpcSpanExporter,
+    )
+    from opentelemetry.exporter.otlp.proto.http.trace_exporter import (
+        OTLPSpanExporter as OTLPHttpSpanExporter,
+    )
     from opentelemetry.sdk.trace import TracerProvider
     from opentelemetry.sdk.trace.export import BatchSpanProcessor
-    from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter as OTLPGrpcSpanExporter
-    from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter as OTLPHttpSpanExporter
+
     _HAS_OTEL = True
 except ImportError:
     otel_trace = None
@@ -34,11 +39,11 @@ from provide.foundation.tracer.context import (
 from provide.foundation.tracer.spans import Span
 
 __all__ = [
+    "_HAS_OTEL",  # For internal use
     "Span",
-    "get_current_span", 
+    "get_current_span",
     "get_current_trace_id",
     "get_trace_context",
     "set_current_span",
     "with_span",
-    "_HAS_OTEL",  # For internal use
 ]

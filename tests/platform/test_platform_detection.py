@@ -24,10 +24,10 @@ class TestPlatformDetection:
             # Test Darwin/macOS
             mock_system.return_value = "Darwin"
             assert get_os_name() == "darwin"
-            
+
             mock_system.return_value = "Linux"
             assert get_os_name() == "linux"
-            
+
             mock_system.return_value = "Windows"
             assert get_os_name() == "windows"
 
@@ -36,7 +36,7 @@ class TestPlatformDetection:
         with patch("platform.system") as mock_system:
             mock_system.return_value = "DARWIN"
             assert get_os_name() == "darwin"
-            
+
             mock_system.return_value = "linux"
             assert get_os_name() == "linux"
 
@@ -45,7 +45,7 @@ class TestPlatformDetection:
         with patch("platform.system", side_effect=RuntimeError("Test error")):
             with pytest.raises(PlatformError) as exc_info:
                 get_os_name()
-            
+
             assert exc_info.value.code == "PLATFORM_OS_DETECTION_FAILED"
             assert exc_info.value.message == "Failed to detect operating system"
 
@@ -55,21 +55,21 @@ class TestPlatformDetection:
             # Test x86_64/amd64
             mock_machine.return_value = "x86_64"
             assert get_arch_name() == "amd64"
-            
+
             mock_machine.return_value = "AMD64"
             assert get_arch_name() == "amd64"
-            
+
             # Test ARM variants
             mock_machine.return_value = "aarch64"
             assert get_arch_name() == "arm64"
-            
+
             mock_machine.return_value = "ARM64"
             assert get_arch_name() == "arm64"
-            
+
             # Test legacy x86
             mock_machine.return_value = "i686"
             assert get_arch_name() == "x86"
-            
+
             mock_machine.return_value = "i586"
             assert get_arch_name() == "x86"
 
@@ -84,7 +84,7 @@ class TestPlatformDetection:
         with patch("platform.machine", side_effect=RuntimeError("Test error")):
             with pytest.raises(PlatformError) as exc_info:
                 get_arch_name()
-            
+
             assert exc_info.value.code == "PLATFORM_ARCH_DETECTION_FAILED"
             assert exc_info.value.message == "Failed to detect architecture"
 
@@ -94,42 +94,52 @@ class TestPlatformDetection:
         """Test get_platform_string combines OS and arch."""
         mock_os.return_value = "darwin"
         mock_arch.return_value = "arm64"
-        
+
         result = get_platform_string()
         assert result == "darwin_arm64"
 
     def test_get_os_version_darwin(self) -> None:
         """Test get_os_version for Darwin/macOS."""
-        with patch("platform.system", return_value="Darwin"), \
-             patch("platform.mac_ver", return_value=("14.2.1", "", "")):
+        with (
+            patch("platform.system", return_value="Darwin"),
+            patch("platform.mac_ver", return_value=("14.2.1", "", "")),
+        ):
             version = get_os_version()
             assert version == "14.2.1"
 
     def test_get_os_version_linux(self) -> None:
         """Test get_os_version for Linux."""
-        with patch("platform.system", return_value="Linux"), \
-             patch("platform.release", return_value="5.15.0-91-generic"):
+        with (
+            patch("platform.system", return_value="Linux"),
+            patch("platform.release", return_value="5.15.0-91-generic"),
+        ):
             version = get_os_version()
             assert version == "5.15"
 
     def test_get_os_version_windows(self) -> None:
         """Test get_os_version for Windows."""
-        with patch("platform.system", return_value="Windows"), \
-             patch("platform.version", return_value="10.0.19045"):
+        with (
+            patch("platform.system", return_value="Windows"),
+            patch("platform.version", return_value="10.0.19045"),
+        ):
             version = get_os_version()
             assert version == "10.0.19045"
 
     def test_get_os_version_fallback(self) -> None:
         """Test get_os_version fallback to platform.release."""
-        with patch("platform.system", return_value="UnknownOS"), \
-             patch("platform.release", return_value="1.0.0"):
+        with (
+            patch("platform.system", return_value="UnknownOS"),
+            patch("platform.release", return_value="1.0.0"),
+        ):
             version = get_os_version()
             assert version == "1.0.0"
 
     def test_get_os_version_none(self) -> None:
         """Test get_os_version returns None when unavailable."""
-        with patch("platform.system", return_value="UnknownOS"), \
-             patch("platform.release", return_value=""):
+        with (
+            patch("platform.system", return_value="UnknownOS"),
+            patch("platform.release", return_value=""),
+        ):
             version = get_os_version()
             assert version is None
 
@@ -141,13 +151,18 @@ class TestPlatformDetection:
 
     def test_get_cpu_type_intel(self) -> None:
         """Test get_cpu_type for Intel processors."""
-        with patch("platform.processor", return_value="Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz"):
+        with patch(
+            "platform.processor",
+            return_value="Intel(R) Core(TM) i7-9750H CPU @ 2.60GHz",
+        ):
             cpu_type = get_cpu_type()
             assert cpu_type == "Intel Core i7"
 
     def test_get_cpu_type_amd_ryzen(self) -> None:
         """Test get_cpu_type for AMD Ryzen processors."""
-        with patch("platform.processor", return_value="AMD Ryzen 7 3700X 8-Core Processor"):
+        with patch(
+            "platform.processor", return_value="AMD Ryzen 7 3700X 8-Core Processor"
+        ):
             cpu_type = get_cpu_type()
             assert cpu_type == "AMD Ryzen 7"
 
@@ -205,7 +220,7 @@ class TestPlatformDetection:
         os_name, arch_name = normalize_platform_components("macOS", "aarch64")
         assert os_name == "darwin"
         assert arch_name == "arm64"
-        
+
         # Test Windows variations
         os_name, arch_name = normalize_platform_components("win32", "i686")
         assert os_name == "windows"

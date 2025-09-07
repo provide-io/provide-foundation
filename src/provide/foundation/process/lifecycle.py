@@ -6,14 +6,14 @@ proper lifecycle management, monitoring, and graceful shutdown capabilities.
 """
 
 import asyncio
+from collections.abc import Mapping
 import functools
 import os
+from pathlib import Path
 import subprocess
 import sys
 import threading
 import traceback
-from collections.abc import Mapping
-from pathlib import Path
 from typing import Any
 
 from provide.foundation.logger import get_logger
@@ -25,9 +25,9 @@ plog = get_logger(__name__)
 class ManagedProcess:
     """
     A managed subprocess with lifecycle support, monitoring, and graceful shutdown.
-    
+
     This class wraps subprocess.Popen with additional functionality for:
-    - Environment management  
+    - Environment management
     - Output streaming and monitoring
     - Health checks and process monitoring
     - Graceful shutdown with timeouts
@@ -165,7 +165,11 @@ class ManagedProcess:
                     line = process.stderr.readline()
                     if not line:
                         break
-                    sys.stderr.write(line.decode("utf-8", errors="replace"))
+                    # Handle both bytes and string returns from subprocess
+                    if isinstance(line, bytes):
+                        sys.stderr.write(line.decode("utf-8", errors="replace"))
+                    else:
+                        sys.stderr.write(str(line))
                     sys.stderr.flush()
             except Exception as e:
                 plog.debug("Error in stderr relay", error=str(e))
@@ -197,11 +201,15 @@ class ManagedProcess:
         read_func = functools.partial(self._process.stdout.readline)
 
         try:
-            line_bytes = await asyncio.wait_for(
+            line_data = await asyncio.wait_for(
                 loop.run_in_executor(None, read_func), timeout=timeout
             )
-            return line_bytes.decode("utf-8", errors="replace").strip()
-        except asyncio.TimeoutError as e:
+            # Handle both bytes and string returns from subprocess
+            if isinstance(line_data, bytes):
+                return line_data.decode("utf-8", errors="replace").strip()
+            else:
+                return str(line_data).strip()
+        except TimeoutError as e:
             plog.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
@@ -228,11 +236,17 @@ class ManagedProcess:
         read_func = functools.partial(self._process.stdout.read, 1)
 
         try:
-            char_bytes = await asyncio.wait_for(
+            char_data = await asyncio.wait_for(
                 loop.run_in_executor(None, read_func), timeout=timeout
             )
-            return char_bytes.decode("utf-8", errors="replace") if char_bytes else ""
-        except asyncio.TimeoutError as e:
+            if not char_data:
+                return ""
+            # Handle both bytes and string returns from subprocess
+            if isinstance(char_data, bytes):
+                return char_data.decode("utf-8", errors="replace")
+            else:
+                return str(char_data)
+        except TimeoutError as e:
             plog.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
@@ -250,7 +264,9 @@ class ManagedProcess:
             return True
 
         if self._process.poll() is not None:
-            plog.debug("Process already terminated", returncode=self._process.returncode)
+            plog.debug(
+                "Process already terminated", returncode=self._process.returncode
+            )
             return True
 
         plog.debug("🛑 Terminating managed process gracefully", pid=self._process.pid)

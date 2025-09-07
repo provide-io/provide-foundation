@@ -33,7 +33,7 @@ Comprehensive guide to using provide.foundation in your applications.
     <ul>
       <li><a href="logging/basic/">Basic Logging</a></li>
       <li><a href="logging/advanced/">Advanced Patterns</a></li>
-      <li><a href="tracing/">Distributed Tracing</a></li>
+      <li><a href="tracing/index.md">Distributed Tracing</a></li>
       <li><a href="logging/performance/">Performance Tuning</a></li>
     </ul>
   </div>
@@ -88,7 +88,7 @@ logger.info("processing_started", request_id="abc-123")
 logger.debug("step_1_completed", request_id="abc-123")
 ```
 
-See [examples/06_trace_logging.py](../../examples/06_trace_logging.py) for complete example.
+See [examples/06_trace_logging.py](https://github.com/provide-io/provide-foundation/blob/main/examples/06_trace_logging.py) for complete example.
 
 #### Error Handling
 ```python
@@ -116,7 +116,7 @@ def seed():
     pass
 ```
 
-See [examples/12_cli_application.py](../../examples/12_cli_application.py) for complete example.
+See [examples/12_cli_application.py](https://github.com/provide-io/provide-foundation/blob/main/examples/12_cli_application.py) for complete example.
 
 ## Best Practices
 
@@ -141,7 +141,7 @@ logger.info("http_request_started", method="GET", path="/api/users")
 logger.info("http_request_completed", status=200, duration_ms=42)
 ```
 
-See [examples/04_das_logging.py](../../examples/04_das_logging.py) for complete example.
+See [examples/04_das_logging.py](https://github.com/provide-io/provide-foundation/blob/main/examples/04_das_logging.py) for complete example.
 
 ### 3. Request Tracing
 ```python
@@ -170,12 +170,12 @@ for item in items:
 
 These advanced topics are covered in the existing guides:
 - **Custom Emoji Sets** - See [Emoji Sets Guide](concepts/emoji-sets.md)
-- **Distributed Tracing** - See [Tracing Guide](tracing/)  
+- **Distributed Tracing** - See [Tracing Guide](tracing/index.md)  
 - **Production Strategies** - See [Performance Guide](logging/performance.md)
 - **Error Handling** - See [Advanced Logging Guide](logging/advanced.md)
 
 ## Next Steps
 
-- Explore the [API Reference](../api/index.md) for detailed documentation
+- Explore the [API Reference](../api/api-index.md) for detailed documentation
 - Browse the [Examples](../getting-started/examples.md) for practical patterns
 - Review the [Architecture](../architecture/index.md) for technical details

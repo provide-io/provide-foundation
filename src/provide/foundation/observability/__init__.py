@@ -8,6 +8,7 @@ Only available when OpenTelemetry dependencies are installed.
 # OpenTelemetry feature detection
 try:
     from opentelemetry import trace as otel_trace
+
     _HAS_OTEL = True
 except ImportError:
     otel_trace = None
@@ -21,14 +22,16 @@ if _HAS_OTEL:
             search_logs,
             stream_logs,
         )
-        
+
         # Commands will auto-register if click is available
         try:
-            from provide.foundation.observability.openobserve.commands import openobserve_group
+            from provide.foundation.observability.openobserve.commands import (
+                openobserve_group,
+            )
         except ImportError:
             # Click not available, skip command registration
             pass
-        
+
         __all__ = [
             "OpenObserveClient",
             "search_logs",
@@ -43,7 +46,7 @@ else:
 
 def is_openobserve_available() -> bool:
     """Check if OpenObserve integration is available.
-    
+
     Returns:
         True if OpenTelemetry and OpenObserve are available
     """

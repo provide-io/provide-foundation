@@ -32,7 +32,7 @@ def get_foundation_log_stream(output_setting: str) -> TextIO:
 
     Notes:
         - "stderr": Returns sys.stderr (default, RPC-safe)
-        - "stdout": Returns sys.stdout  
+        - "stdout": Returns sys.stdout
         - "main": Returns the main logger stream from _PROVIDE_LOG_STREAM
         - Invalid values default to sys.stderr with warning
     """
@@ -42,6 +42,7 @@ def get_foundation_log_stream(output_setting: str) -> TextIO:
         # Import here to avoid circular dependency
         try:
             from provide.foundation.streams import get_log_stream
+
             return get_log_stream()
         except ImportError:
             # Fallback if setup module not available during initialization
@@ -53,11 +54,12 @@ def get_foundation_log_stream(output_setting: str) -> TextIO:
         # Import config logger here to avoid circular dependency
         try:
             from provide.foundation.logger.config import _get_config_logger
+
             _get_config_logger().warning(
                 "[Foundation Config Warning] Invalid FOUNDATION_LOG_OUTPUT value, using stderr",
                 invalid_value=output_setting,
                 valid_options=["stderr", "stdout", "main"],
-                default_used="stderr"
+                default_used="stderr",
             )
         except ImportError:
             # During early initialization, just use stderr silently

@@ -2,6 +2,14 @@
 
 Learn how to register and organize CLI commands using provide.foundation's hub system.
 
+## Related API Reference
+
+For detailed API documentation, see:
+- [CLI Decorators API](../../api/cli/api-decorators.md) - Command registration decorators
+- [CLI Utils API](../../api/cli/api-utils.md) - CLI utility functions
+- [Hub Commands API](../../api/hub/api-commands.md) - Command management
+- [Hub Registry API](../../api/hub/api-registry.md) - Component registry
+
 ## Overview
 
 The command registration system provides a declarative way to build CLI applications with automatic command discovery, nested groups, and metadata management. Commands are registered using the `@register_command` decorator.

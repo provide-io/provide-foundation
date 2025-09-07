@@ -67,7 +67,7 @@ def test_lazy_setup_flags() -> None:
 
     reset_foundation_setup_for_testing()
 
-    from provide.foundation.logger.base import _LAZY_SETUP_STATE  # Changed
+    from provide.foundation.logger.core import _LAZY_SETUP_STATE  # Changed
 
     print(f"Initial state - _LAZY_SETUP_STATE: {_LAZY_SETUP_STATE}")
 
@@ -96,7 +96,7 @@ def test_emergency_fallback() -> None:
     test_logger = FoundationLogger()
 
     # Trigger emergency fallback by setting error state
-    from provide.foundation.logger.base import (
+    from provide.foundation.logger.core import (
         _LAZY_SETUP_STATE,  # Ensure we use the state dict
     )
 

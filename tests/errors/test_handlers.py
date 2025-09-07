@@ -130,7 +130,9 @@ class TestErrorBoundary:
 
             # Should log both the original error and callback error
             assert mock_logger.return_value.error.call_count == 2
-            assert "callback failed" in str(mock_logger.return_value.error.call_args_list[1])
+            assert "callback failed" in str(
+                mock_logger.return_value.error.call_args_list[1]
+            )
 
     def test_default_catches_all_exceptions(self) -> Never:
         """Test that empty catch list defaults to Exception."""
@@ -196,7 +198,9 @@ class TestTransactional:
             with transactional(rollback, log_errors=True):
                 raise ValueError("test")
 
-        mock_logger.return_value.info.assert_called_with("Transaction rolled back successfully")
+        mock_logger.return_value.info.assert_called_with(
+            "Transaction rolled back successfully"
+        )
 
     def test_rollback_failure_raises_rollback_error(self) -> Never:
         """Test that rollback failure raises the rollback error."""
@@ -427,7 +431,10 @@ class TestErrorHandler:
             handler.handle(ValueError("test"))
 
         mock_logger.return_value.warning.assert_called()
-        assert "No handler for ValueError" in mock_logger.return_value.warning.call_args[0][0]
+        assert (
+            "No handler for ValueError"
+            in mock_logger.return_value.warning.call_args[0][0]
+        )
 
     @patch("provide.foundation.errors.handlers._get_logger")
     def test_logging_enabled(self, mock_logger) -> None:

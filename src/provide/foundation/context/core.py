@@ -286,7 +286,9 @@ class Context:
             content = yaml.safe_dump(data, default_flow_style=False)
         else:
             if not path.suffix:
-                raise ValueError(f"Unsupported config format: no file extension for {path}")
+                raise ValueError(
+                    f"Unsupported config format: no file extension for {path}"
+                )
             else:
                 raise ValueError(f"Unsupported config format: {path.suffix}")
 

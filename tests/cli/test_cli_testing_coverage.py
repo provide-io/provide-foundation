@@ -12,7 +12,7 @@ from click.testing import CliRunner
 
 from provide.foundation.cli.testing import (
     MockContext,
-    isolated_cli_runner, 
+    isolated_cli_runner,
     temp_config_file,
     create_test_cli,
     mock_logger,
@@ -34,10 +34,10 @@ class TestMockContext:
         """Test MockContext tracks save_config calls."""
         mock_ctx = MockContext()
         test_path = Path("/test/config.json")
-        
-        with patch.object(MockContext.__bases__[0], 'save_config') as mock_super_save:
+
+        with patch.object(MockContext.__bases__[0], "save_config") as mock_super_save:
             mock_ctx.save_config(test_path)
-            
+
         assert test_path in mock_ctx.saved_configs
         mock_super_save.assert_called_once_with(test_path)
 
@@ -45,10 +45,10 @@ class TestMockContext:
         """Test MockContext tracks load_config calls."""
         mock_ctx = MockContext()
         test_path = Path("/test/config.json")
-        
-        with patch.object(MockContext.__bases__[0], 'load_config') as mock_super_load:
+
+        with patch.object(MockContext.__bases__[0], "load_config") as mock_super_load:
             mock_ctx.load_config(test_path)
-            
+
         assert test_path in mock_ctx.loaded_configs
         mock_super_load.assert_called_once_with(test_path)
 
@@ -56,20 +56,20 @@ class TestMockContext:
         """Test MockContext save_config with string path."""
         mock_ctx = MockContext()
         test_path = "/test/config.json"
-        
-        with patch.object(MockContext.__bases__[0], 'save_config') as mock_super_save:
+
+        with patch.object(MockContext.__bases__[0], "save_config") as mock_super_save:
             mock_ctx.save_config(test_path)
-            
+
         assert test_path in mock_ctx.saved_configs
 
     def test_mock_context_load_config_with_string_path(self):
         """Test MockContext load_config with string path."""
         mock_ctx = MockContext()
         test_path = "/test/config.json"
-        
-        with patch.object(MockContext.__bases__[0], 'load_config') as mock_super_load:
+
+        with patch.object(MockContext.__bases__[0], "load_config") as mock_super_load:
             mock_ctx.load_config(test_path)
-            
+
         assert test_path in mock_ctx.loaded_configs
 
 
@@ -84,7 +84,7 @@ class TestIsolatedCliRunner:
     def test_isolated_cli_runner_with_env_variables(self):
         """Test isolated_cli_runner with environment variables."""
         test_env = {"TEST_CLI_VAR": "test_value", "ANOTHER_VAR": "another_value"}
-        
+
         with isolated_cli_runner(env=test_env):
             assert os.environ.get("TEST_CLI_VAR") == "test_value"
             assert os.environ.get("ANOTHER_VAR") == "another_value"
@@ -98,7 +98,7 @@ class TestIsolatedCliRunner:
         # Set existing variable
         os.environ["EXISTING_VAR"] = "original_value"
         test_env = {"EXISTING_VAR": "modified_value"}
-        
+
         try:
             with isolated_cli_runner(env=test_env):
                 assert os.environ.get("EXISTING_VAR") == "modified_value"
@@ -114,7 +114,7 @@ class TestIsolatedCliRunner:
         # Ensure variable doesn't exist initially
         os.environ.pop("NON_EXISTENT_VAR", None)
         test_env = {"NON_EXISTENT_VAR": "new_value"}
-        
+
         with isolated_cli_runner(env=test_env):
             assert os.environ.get("NON_EXISTENT_VAR") == "new_value"
 
@@ -128,11 +128,11 @@ class TestTempConfigFile:
     def test_temp_config_file_json_dict(self):
         """Test temp_config_file with JSON dict content."""
         config_data = {"key1": "value1", "key2": 42, "key3": True}
-        
+
         with temp_config_file(config_data, "json") as config_path:
             assert config_path.exists()
             assert config_path.suffix == ".json"
-            
+
             with open(config_path) as f:
                 loaded_data = json.load(f)
             assert loaded_data == config_data
@@ -143,11 +143,11 @@ class TestTempConfigFile:
     def test_temp_config_file_json_string(self):
         """Test temp_config_file with JSON string content."""
         config_string = '{"test": "json string"}'
-        
+
         with temp_config_file(config_string, "json") as config_path:
             assert config_path.exists()
             assert config_path.suffix == ".json"
-            
+
             with open(config_path) as f:
                 content = f.read()
             assert content == config_string
@@ -155,11 +155,11 @@ class TestTempConfigFile:
     def test_temp_config_file_toml_dict_with_tomli_w(self):
         """Test temp_config_file with TOML dict content using tomli_w."""
         config_data = {"key1": "value1", "key2": 42}
-        
-        with patch('builtins.__import__') as mock_import:
+
+        with patch("builtins.__import__") as mock_import:
             mock_tomli_w = Mock()
             mock_import.return_value = mock_tomli_w
-            
+
             with temp_config_file(config_data, "toml") as config_path:
                 assert config_path.exists()
                 assert config_path.suffix == ".toml"
@@ -167,28 +167,28 @@ class TestTempConfigFile:
     def test_temp_config_file_toml_dict_fallback(self):
         """Test temp_config_file with TOML dict content using fallback."""
         config_data = {"string_key": "value1", "int_key": 42, "bool_key": True}
-        
-        with patch('builtins.__import__', side_effect=ImportError):
+
+        with patch("builtins.__import__", side_effect=ImportError):
             with temp_config_file(config_data, "toml") as config_path:
                 assert config_path.exists()
                 assert config_path.suffix == ".toml"
-                
+
                 with open(config_path) as f:
                     content = f.read()
-                
+
                 # Check fallback format
                 assert 'string_key = "value1"' in content
-                assert 'int_key = 42' in content
-                assert 'bool_key = True' in content
+                assert "int_key = 42" in content
+                assert "bool_key = True" in content
 
     def test_temp_config_file_yaml_dict_with_yaml(self):
         """Test temp_config_file with YAML dict content using PyYAML."""
         config_data = {"key1": "value1", "key2": [1, 2, 3]}
-        
-        with patch('builtins.__import__') as mock_import:
+
+        with patch("builtins.__import__") as mock_import:
             mock_yaml = Mock()
             mock_import.return_value = mock_yaml
-            
+
             with temp_config_file(config_data, "yaml") as config_path:
                 assert config_path.exists()
                 assert config_path.suffix == ".yaml"
@@ -196,8 +196,8 @@ class TestTempConfigFile:
     def test_temp_config_file_yaml_dict_no_yaml_import_error(self):
         """Test temp_config_file with YAML dict content raises ImportError without PyYAML."""
         config_data = {"key1": "value1"}
-        
-        with patch('builtins.__import__', side_effect=ImportError):
+
+        with patch("builtins.__import__", side_effect=ImportError):
             with pytest.raises(ImportError, match="PyYAML required for YAML testing"):
                 with temp_config_file(config_data, "yaml") as config_path:
                     pass
@@ -206,7 +206,7 @@ class TestTempConfigFile:
         """Test temp_config_file cleans up file even on exception."""
         config_data = {"test": "data"}
         config_path = None
-        
+
         try:
             with temp_config_file(config_data, "json") as path:
                 config_path = path
@@ -214,7 +214,7 @@ class TestTempConfigFile:
                 raise ValueError("Test exception")
         except ValueError:
             pass
-        
+
         # File should still be cleaned up
         assert config_path is not None
         assert not config_path.exists()
@@ -236,6 +236,7 @@ class TestCreateTestCli:
 
     def test_create_test_cli_with_commands(self):
         """Test create_test_cli with additional commands."""
+
         @click.command()
         def test_cmd():
             """Test command."""
@@ -248,7 +249,7 @@ class TestCreateTestCli:
 
         commands = [test_cmd, another_cmd]
         cli = create_test_cli(commands=commands)
-        
+
         # Click normalizes command names - underscores become hyphens, but function names are used
         assert "test" in cli.commands or "test-cmd" in cli.commands
         assert "another" in cli.commands or "another-cmd" in cli.commands
@@ -257,7 +258,7 @@ class TestCreateTestCli:
         """Test create_test_cli creates proper context."""
         cli = create_test_cli()
         runner = CliRunner()
-        
+
         # Test that the CLI runs without error
         result = runner.invoke(cli, ["--help"])
         assert result.exit_code == 0
@@ -276,30 +277,30 @@ class TestMockLogger:
     def test_mock_logger_creation(self):
         """Test mock_logger creates proper mock."""
         logger = mock_logger()
-        assert hasattr(logger, 'debug')
-        assert hasattr(logger, 'info')
-        assert hasattr(logger, 'warning')
-        assert hasattr(logger, 'error')
-        assert hasattr(logger, 'critical')
+        assert hasattr(logger, "debug")
+        assert hasattr(logger, "info")
+        assert hasattr(logger, "warning")
+        assert hasattr(logger, "error")
+        assert hasattr(logger, "critical")
 
     def test_mock_logger_methods_callable(self):
         """Test mock_logger methods are callable."""
         logger = mock_logger()
-        
+
         # Should not raise exceptions
         logger.debug("test message")
         logger.info("test message")
-        logger.warning("test message")  
+        logger.warning("test message")
         logger.error("test message")
         logger.critical("test message")
 
     def test_mock_logger_call_tracking(self):
         """Test mock_logger methods track calls."""
         logger = mock_logger()
-        
+
         logger.debug("debug message")
         logger.info("info message", extra="data")
-        
+
         logger.debug.assert_called_once_with("debug message")
         logger.info.assert_called_once_with("info message", extra="data")
 
@@ -311,7 +312,7 @@ class TestCliTestCase:
         """Test CliTestCase setup_method."""
         test_case = CliTestCase()
         test_case.setup_method()
-        
+
         assert isinstance(test_case.runner, CliRunner)
         assert test_case.temp_files == []
 
@@ -319,14 +320,14 @@ class TestCliTestCase:
         """Test CliTestCase teardown_method."""
         test_case = CliTestCase()
         test_case.setup_method()
-        
+
         # Create a real temporary file
         with tempfile.NamedTemporaryFile(delete=False) as f:
             temp_path = Path(f.name)
-        
+
         test_case.temp_files.append(temp_path)
         assert temp_path.exists()
-        
+
         test_case.teardown_method()
         assert not temp_path.exists()
 
@@ -334,11 +335,11 @@ class TestCliTestCase:
         """Test CliTestCase teardown_method handles missing files."""
         test_case = CliTestCase()
         test_case.setup_method()
-        
+
         # Add non-existent file to temp_files
         non_existent_path = Path("/tmp/non_existent_file_12345")
         test_case.temp_files.append(non_existent_path)
-        
+
         # Should not raise exception
         test_case.teardown_method()
 
@@ -346,11 +347,11 @@ class TestCliTestCase:
         """Test CliTestCase invoke method."""
         test_case = CliTestCase()
         test_case.setup_method()
-        
+
         @click.command()
         def test_cmd():
             click.echo("hello")
-        
+
         result = test_case.invoke(test_cmd)
         assert result.output.strip() == "hello"
 
@@ -358,14 +359,14 @@ class TestCliTestCase:
         """Test CliTestCase create_temp_file method."""
         test_case = CliTestCase()
         test_case.setup_method()
-        
+
         content = "test file content"
         temp_path = test_case.create_temp_file(content=content, suffix=".txt")
-        
+
         assert temp_path.exists()
         assert temp_path.suffix == ".txt"
         assert temp_path in test_case.temp_files
-        
+
         with open(temp_path) as f:
             assert f.read() == content
 
@@ -373,70 +374,70 @@ class TestCliTestCase:
         """Test CliTestCase create_temp_file with empty content."""
         test_case = CliTestCase()
         test_case.setup_method()
-        
+
         temp_path = test_case.create_temp_file()
         assert temp_path.exists()
-        
+
         with open(temp_path) as f:
             assert f.read() == ""
 
     def test_cli_test_case_assert_json_output_valid(self):
         """Test CliTestCase assert_json_output with valid JSON."""
         test_case = CliTestCase()
-        
+
         # Mock result object
         mock_result = Mock()
         mock_result.output = '{"key1": "value1", "key2": 42}'
-        
+
         expected = {"key1": "value1", "key2": 42}
-        
+
         # Should not raise
         test_case.assert_json_output(mock_result, expected)
 
     def test_cli_test_case_assert_json_output_partial_match(self):
         """Test CliTestCase assert_json_output with partial expected data."""
         test_case = CliTestCase()
-        
+
         mock_result = Mock()
         mock_result.output = '{"key1": "value1", "key2": 42, "key3": "extra"}'
-        
+
         expected = {"key1": "value1", "key2": 42}
-        
+
         # Should not raise - only checks expected keys
         test_case.assert_json_output(mock_result, expected)
 
     def test_cli_test_case_assert_json_output_invalid_json(self):
         """Test CliTestCase assert_json_output with invalid JSON."""
         test_case = CliTestCase()
-        
+
         mock_result = Mock()
         mock_result.output = "not valid json"
-        
+
         expected = {"key": "value"}
-        
+
         with pytest.raises(AssertionError, match="Output is not valid JSON"):
             test_case.assert_json_output(mock_result, expected)
 
     def test_cli_test_case_assert_json_output_missing_key(self):
         """Test CliTestCase assert_json_output with missing key."""
         test_case = CliTestCase()
-        
+
         mock_result = Mock()
         mock_result.output = '{"key1": "value1"}'
-        
+
         expected = {"key1": "value1", "missing_key": "value"}
-        
+
         with pytest.raises(AssertionError, match="Key 'missing_key' not in output"):
             test_case.assert_json_output(mock_result, expected)
 
     def test_cli_test_case_assert_json_output_value_mismatch(self):
         """Test CliTestCase assert_json_output with value mismatch."""
         test_case = CliTestCase()
-        
+
         mock_result = Mock()
         mock_result.output = '{"key1": "wrong_value"}'
-        
+
         expected = {"key1": "expected_value"}
-        
+
         with pytest.raises(AssertionError, match="Value mismatch for 'key1'"):
             test_case.assert_json_output(mock_result, expected)
