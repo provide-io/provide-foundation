@@ -230,7 +230,7 @@ All configuration objects are immutable (`frozen=True` in attrs), making them th
 
 ## Related Documentation
 
-- [api-Logger Base](base.md) - Main logger interface that uses these configurations
-- [api-Logger Core](core.md) - Core implementation that applies configuration
+- [api-Logger Base](api-base.md) - Main logger interface that uses these configurations
+- [api-Logger Core](api-core.md) - Core implementation that applies configuration
 - [Setup Functions](../../api/api-setup.md) - Functions that use configuration
 - [Configuration Guide](../../guide/config/index.md) - Detailed configuration guide

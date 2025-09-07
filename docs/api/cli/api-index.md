@@ -4,9 +4,9 @@ Command-line interface framework for provide.foundation.
 
 ## Available Modules
 
-- [api-Decorators](decorators.md) - Command registration and argument decorators
-- [api-Utilities](utils.md) - CLI utilities and helper functions
-- [api-Testing](testing.md) - CLI testing utilities
+- [api-Decorators](api-decorators.md) - Command registration and argument decorators
+- [api-Utilities](api-utils.md) - CLI utilities and helper functions
+- [api-Testing](api-testing.md) - CLI testing utilities
 
 ## Quick Reference
 

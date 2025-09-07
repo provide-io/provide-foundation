@@ -420,7 +420,7 @@ db_log.info("operation_completed",
 
 ## Related Documentation
 
-- [api-Base Emoji Types](base.md) - Core emoji system interfaces
-- [api-Custom Emoji Sets](custom.md) - Creating custom emoji sets
-- [api-HTTP Emoji Set](http.md) - Web request logging emojis
+- [api-Base Emoji Types](api-base.md) - Core emoji system interfaces
+- [api-Custom Emoji Sets](api-custom.md) - Creating custom emoji sets
+- [api-HTTP Emoji Set](api-http.md) - Web request logging emojis
 - [Testing Guide](../../guide/testing.md) - Testing database logging

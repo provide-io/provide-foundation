@@ -107,19 +107,19 @@ app_config = await manager.get("app")
 
 ## API Modules
 
-### [api-BaseConfig](base.md)
+### [api-BaseConfig](api-base.md)
 Core configuration base class with field definitions, validation, and serialization.
 
-### [api-ConfigManager](manager.md)
+### [api-ConfigManager](api-manager.md)
 Centralized configuration registry with lifecycle management and runtime updates.
 
-### [api-Environment Config](env.md)
+### [api-Environment Config](api-env.md)
 Environment variable loading with async secret support and type coercion.
 
-### [api-Config Loaders](loader.md)
+### [api-Config Loaders](api-loader.md)
 File and multi-source configuration loading with format detection.
 
-### [api-Config Schema](schema.md)
+### [api-Config Schema](api-schema.md)
 Schema definition and validation with async validators and type checking.
 
 ## Usage Patterns

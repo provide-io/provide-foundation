@@ -49,8 +49,8 @@ with timed_block(logger, "data_processing") as ctx:
 
 The utilities are organized into several categories:
 
-- **[api-Environment Utilities](environment.md)**: Type-safe environment variable parsing
-- **[api-String Formatting](formatting.md)**: Human-readable formatting functions
-- **[api-Timing Utilities](timing.md)**: Performance measurement and logging tools
+- **[api-Environment Utilities](api-environment.md)**: Type-safe environment variable parsing
+- **[api-String Formatting](api-formatting.md)**: Human-readable formatting functions
+- **[api-Timing Utilities](api-timing.md)**: Performance measurement and logging tools
 
 Each section provides detailed documentation with examples and usage patterns.

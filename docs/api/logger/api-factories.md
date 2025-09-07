@@ -231,7 +231,7 @@ test_log.error("Test failure", test="test_user_login", reason="timeout")
 
 ## Related Documentation
 
-- [api-Logger Core](core.md) - Core FoundationLogger implementation  
-- [api-Logger Base](base.md) - Main logger interface
-- [api-Configuration](config.md) - Full configuration system
+- [api-Logger Core](api-core.md) - Core FoundationLogger implementation  
+- [api-Logger Base](api-base.md) - Main logger interface
+- [api-Configuration](api-config.md) - Full configuration system
 - [Setup Guide](../../guide/logging/basic.md) - Basic logging usage
