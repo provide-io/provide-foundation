@@ -410,17 +410,17 @@ class TestManagedProcessEdgeCases:
         assert proc._stderr_thread is None
 
 
-@pytest.mark.asyncio
 class TestWaitForProcessOutput:
     """Test wait_for_process_output function."""
 
+    @pytest.mark.asyncio
     async def test_wait_for_output_success(self):
         """Test successful output waiting."""
         proc = ManagedProcess(
             [
                 sys.executable,
                 "-c",
-                "import sys, time; sys.stdout.write('start|middle|end\\n'); sys.stdout.flush()",
+                "import sys; print('start|middle|end', flush=True)",
             ],
             capture_output=True,
             text_mode=True,
@@ -438,6 +438,7 @@ class TestWaitForProcessOutput:
         proc._process.wait()
         proc.cleanup()
 
+    @pytest.mark.asyncio
     async def test_wait_for_output_timeout(self):
         """Test timeout when expected output never comes."""
         proc = ManagedProcess(
@@ -455,6 +456,7 @@ class TestWaitForProcessOutput:
         proc.terminate_gracefully()
         proc.cleanup()
 
+    @pytest.mark.asyncio
     async def test_wait_for_output_process_exits(self):
         """Test when process exits before expected output."""
         proc = ManagedProcess(
@@ -530,6 +532,7 @@ class TestWaitForProcessOutput:
         proc.cleanup()
 
 
+@pytest.mark.serial  # These tests have timing issues with parallel execution
 class TestProcessLifecycleIntegration:
     """Integration tests for process lifecycle functionality."""
 
@@ -549,7 +552,7 @@ class TestProcessLifecycleIntegration:
             [
                 sys.executable,
                 "-c",
-                "import sys; sys.stdout.write('ready\\n'); sys.stdout.flush(); input()",
+                "import sys; print('ready', flush=True); import time; time.sleep(10)",
             ],
             capture_output=True,
             text_mode=True,
