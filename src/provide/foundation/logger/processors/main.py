@@ -76,17 +76,19 @@ def _config_create_event_enrichment_processors(
     if logging_config.logger_name_emoji_prefix_enabled:
         processors.append(cast(StructlogProcessor, add_logger_name_emoji_prefix))
     if logging_config.das_emoji_prefix_enabled:
-        # Use the new event sets system
-        from provide.foundation.eventsets.resolver import get_resolver
-        from provide.foundation.eventsets.registry import discover_event_sets
-        
-        # Ensure event sets are discovered
-        discover_event_sets()
-        resolver = get_resolver()
-
         def add_event_enrichment_processor(
             _logger: Any, _method_name: str, event_dict: structlog.types.EventDict
         ) -> structlog.types.EventDict:
+            # Lazy import to avoid circular dependency
+            from provide.foundation.eventsets.resolver import get_resolver
+            from provide.foundation.eventsets.registry import discover_event_sets
+            
+            # Initialize on first use
+            if not hasattr(add_event_enrichment_processor, '_initialized'):
+                discover_event_sets()
+                add_event_enrichment_processor._initialized = True
+            
+            resolver = get_resolver()
             return resolver.enrich_event(event_dict)
 
         processors.append(cast(StructlogProcessor, add_event_enrichment_processor))
