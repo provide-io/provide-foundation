@@ -71,96 +71,32 @@ def _config_create_timestamp_processors(
     return processors
 
 
-def _config_create_emoji_processors(
-    logging_config: LoggingConfig, resolved_emoji_config: "ResolvedEmojiConfig"
+def _config_create_event_enrichment_processors(
+    logging_config: LoggingConfig
 ) -> list[StructlogProcessor]:
     processors: list[StructlogProcessor] = []
     if logging_config.logger_name_emoji_prefix_enabled:
         processors.append(cast(StructlogProcessor, add_logger_name_emoji_prefix))
     if logging_config.das_emoji_prefix_enabled:
-        # FIX: Create the processor as a closure with the resolved config
-        resolved_field_definitions, resolved_emoji_sets_lookup = resolved_emoji_config
+        # Use the new event sets system
+        from provide.foundation.eventsets.resolver import get_resolver
+        from provide.foundation.eventsets.registry import discover_event_sets
+        
+        # Ensure event sets are discovered
+        discover_event_sets()
+        resolver = get_resolver()
 
-        def add_das_emoji_prefix_closure(
+        def add_event_enrichment_processor(
             _logger: Any, _method_name: str, event_dict: structlog.types.EventDict
         ) -> structlog.types.EventDict:
-            # This inner function now has access to the resolved config from its closure scope
-            from provide.foundation.logger.emoji.matrix import (
-                PRIMARY_EMOJI,
-                SECONDARY_EMOJI,
-                TERTIARY_EMOJI,
-            )
+            return resolver.enrich_event(event_dict)
 
-            final_das_prefix_parts: list[str] = []
-
-            if resolved_field_definitions:  # New Layered Emoji System is active
-                for field_def in resolved_field_definitions:
-                    value_from_event = event_dict.get(field_def.log_key)
-                    if value_from_event is not None and field_def.emoji_set_name:
-                        event_dict.pop(field_def.log_key, None)
-                        emoji_set = resolved_emoji_sets_lookup.get(
-                            field_def.emoji_set_name
-                        )
-                        if emoji_set:
-                            value_str_lower = str(value_from_event).lower()
-                            specific_emoji = emoji_set.emojis.get(value_str_lower)
-                            default_key = (
-                                field_def.default_emoji_override_key
-                                or emoji_set.default_emoji_key
-                            )
-                            default_emoji = emoji_set.emojis.get(default_key, "❓")
-                            chosen_emoji = (
-                                specific_emoji
-                                if specific_emoji is not None
-                                else default_emoji
-                            )
-                            final_das_prefix_parts.append(f"[{chosen_emoji}]")
-                        else:
-                            final_das_prefix_parts.append("[❓]")
-            else:  # Fallback to Core DAS System
-                domain = event_dict.pop("domain", None)
-                action = event_dict.pop("action", None)
-                status = event_dict.pop("status", None)
-                if domain or action or status:
-                    domain_emoji = (
-                        PRIMARY_EMOJI.get(str(domain).lower(), PRIMARY_EMOJI["default"])
-                        if domain
-                        else PRIMARY_EMOJI["default"]
-                    )
-                    action_emoji = (
-                        SECONDARY_EMOJI.get(
-                            str(action).lower(), SECONDARY_EMOJI["default"]
-                        )
-                        if action
-                        else SECONDARY_EMOJI["default"]
-                    )
-                    status_emoji = (
-                        TERTIARY_EMOJI.get(
-                            str(status).lower(), TERTIARY_EMOJI["default"]
-                        )
-                        if status
-                        else TERTIARY_EMOJI["default"]
-                    )
-                    final_das_prefix_parts.extend(
-                        [f"[{domain_emoji}]", f"[{action_emoji}]", f"[{status_emoji}]"]
-                    )
-
-            if final_das_prefix_parts:
-                final_das_prefix_str = "".join(final_das_prefix_parts)
-                event_msg = event_dict.get("event")
-                event_dict["event"] = (
-                    f"{final_das_prefix_str} {event_msg}"
-                    if event_msg is not None
-                    else final_das_prefix_str
-                )
-            return event_dict
-
-        processors.append(cast(StructlogProcessor, add_das_emoji_prefix_closure))
+        processors.append(cast(StructlogProcessor, add_event_enrichment_processor))
     return processors
 
 
 def _build_core_processors_list(
-    config: TelemetryConfig, resolved_emoji_config: "ResolvedEmojiConfig"
+    config: TelemetryConfig
 ) -> list[StructlogProcessor]:
     log_cfg = config.logging
     processors: list[StructlogProcessor] = [
@@ -202,7 +138,7 @@ def _build_core_processors_list(
     if config.tracing_enabled and not config.globally_disabled:
         processors.append(cast(StructlogProcessor, inject_trace_context))
 
-    processors.extend(_config_create_emoji_processors(log_cfg, resolved_emoji_config))
+    processors.extend(_config_create_event_enrichment_processors(log_cfg))
     return processors
 
 

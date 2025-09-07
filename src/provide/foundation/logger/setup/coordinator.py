@@ -17,8 +17,6 @@ from provide.foundation.logger.core import (
     _LAZY_SETUP_STATE,
     logger as foundation_logger,
 )
-from provide.foundation.logger.emoji.sets import BUILTIN_EMOJI_SETS
-from provide.foundation.logger.setup.emoji_resolver import resolve_active_emoji_config
 from provide.foundation.logger.setup.processors import (
     configure_structlog_output,
     handle_globally_disabled_setup,
@@ -95,7 +93,6 @@ def internal_setup(
     structlog.reset_defaults()
     foundation_logger._is_configured_by_setup = False
     foundation_logger._active_config = None
-    foundation_logger._active_resolved_emoji_config = None
     _LAZY_SETUP_STATE.update({"done": False, "error": None, "in_progress": False})
 
     current_config = config if config is not None else TelemetryConfig.from_env()
@@ -111,28 +108,21 @@ def internal_setup(
             formatter=current_config.logging.console_formatter,
         )
 
-    resolved_emoji_config = resolve_active_emoji_config(
-        current_config.logging, BUILTIN_EMOJI_SETS
-    )
 
     if current_config.globally_disabled:
         handle_globally_disabled_setup()
     else:
         configure_structlog_output(
-            current_config, resolved_emoji_config, get_log_stream()
+            current_config, get_log_stream()
         )
 
     foundation_logger._is_configured_by_setup = is_explicit_call
     foundation_logger._active_config = current_config
-    foundation_logger._active_resolved_emoji_config = resolved_emoji_config
     _LAZY_SETUP_STATE["done"] = True
 
     if not current_config.globally_disabled:
-        field_definitions, emoji_sets = resolved_emoji_config
         core_setup_logger.debug(
             "⚙️➡️✅ Foundation (structlog) setup completed",
-            emoji_sets_enabled=len(field_definitions) > 0,
-            emoji_sets_count=len(emoji_sets),
             processors_configured=True,
             log_file_enabled=current_config.logging.log_file is not None,
         )
