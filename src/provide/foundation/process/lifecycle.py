@@ -68,15 +68,17 @@ class ManagedProcess:
         self.kwargs = kwargs
 
         # Build environment
-        self._env = os.environ.copy()
-        if env:
-            self._env.update(env)
-        
-        # Clean coverage-related environment variables from subprocess
-        # to prevent interference with output capture during testing
-        for key in list(self._env.keys()):
-            if key.startswith(('COVERAGE', 'COV_CORE')):
-                self._env.pop(key, None)
+        if env is not None:
+            # If env is explicitly provided, use it as-is
+            self._env = dict(env)
+        else:
+            # Only if no env provided, copy current environment and clean coverage vars
+            self._env = os.environ.copy()
+            # Clean coverage-related environment variables from subprocess
+            # to prevent interference with output capture during testing
+            for key in list(self._env.keys()):
+                if key.startswith(('COVERAGE', 'COV_CORE')):
+                    self._env.pop(key, None)
 
         # Process state
         self._process: subprocess.Popen[bytes] | None = None
@@ -396,12 +398,32 @@ async def wait_for_process_output(
                 plog.debug("Found expected pattern after process exit")
                 return buffer
             
-            # If exit code is non-zero and we don't have the pattern, fail
-            if last_exit_code != 0:
-                plog.error("Process exited with error", returncode=last_exit_code, buffer=buffer[:200])
-                raise ProcessError(f"Process exited with code {last_exit_code}")
-            
-            # For exit code 0, continue trying as output might still be buffered
+            # If process exited and we don't have the pattern, fail
+            if last_exit_code is not None:
+                if last_exit_code != 0:
+                    plog.error("Process exited with error", returncode=last_exit_code, buffer=buffer[:200])
+                    raise ProcessError(f"Process exited with code {last_exit_code}")
+                else:
+                    # For exit code 0, give it a small window to collect buffered output
+                    await asyncio.sleep(0.1)
+                    # Try one more time to drain output
+                    if process._process and process._process.stdout:
+                        try:
+                            remaining = process._process.stdout.read()
+                            if remaining:
+                                if isinstance(remaining, bytes):
+                                    buffer += remaining.decode("utf-8", errors="replace")
+                                else:
+                                    buffer += str(remaining)
+                        except Exception:
+                            pass
+                    # Final check
+                    if all(part in buffer for part in expected_parts):
+                        plog.debug("Found expected pattern after final drain")
+                        return buffer
+                    # Process exited cleanly but pattern not found
+                    plog.error("Process exited without expected output", returncode=0, buffer=buffer[:200])
+                    raise ProcessError(f"Process exited with code {last_exit_code} before expected output found")
         
         try:
             # Try to read a line with short timeout
