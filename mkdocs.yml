@@ -114,27 +114,59 @@ nav:
     - Configuration:
       - guide/config/index.md
       - Environment Variables: guide/config/environment.md
-      - Config Files: guide/config/files.md
+      - Config Files: 
+        - guide/config/files.md
+        - File Formats: guide/config/files-formats.md
+        - Loading: guide/config/files-loading.md
+        - Advanced Features: guide/config/files-advanced.md
       - Runtime Config: 
         - guide/config/runtime.md
         - Overview: guide/config/runtime/index.md
-        - Remote Config: guide/config/runtime/remote.md
+        - Remote Config:
+          - guide/config/runtime/remote.md
+          - HTTP Loading: guide/config/runtime/remote-http.md
+          - Cloud Services: guide/config/runtime/remote-cloud.md
+          - Polling & Updates: guide/config/runtime/remote-polling.md
+          - Resilience Patterns: guide/config/runtime/remote-resilience.md
         - Updates: guide/config/runtime/updates.md
-        - Watchers: guide/config/runtime/watchers.md
+        - Configuration Watchers:
+          - guide/config/runtime/watchers.md
+          - File Watching: guide/config/runtime/watchers-files.md
+          - Environment Monitoring: guide/config/runtime/watchers-environment.md
+          - Multi-Source Sync: guide/config/runtime/watchers-sync.md
       - Reference: guide/config/reference.md
-      - Best Practices: guide/config/best-practices.md
+      - Best Practices:
+        - guide/config/best-practices.md
+        - Environment Management: guide/config/best-practices-environments.md
+        - Security: guide/config/best-practices-security.md
+        - Validation: guide/config/best-practices-validation.md
+        - Testing & Patterns: guide/config/best-practices-patterns.md
     - Logging:
       - guide/logging/index.md
       - Basic Usage: guide/logging/basic.md
       - Advanced Patterns: 
         - guide/logging/advanced.md
         - Overview: guide/logging/advanced/index.md
-        - Filtering: guide/logging/advanced/filtering.md
-        - Patterns: guide/logging/advanced/patterns.md
+        - Filtering: 
+          - guide/logging/advanced/filtering.md
+          - Level-Based: guide/logging/advanced/filtering-levels.md
+          - Content-Based: guide/logging/advanced/filtering-content.md
+          - Contextual: guide/logging/advanced/filtering-context.md
+        - Integration Patterns:
+          - guide/logging/advanced/patterns.md
+          - Web Frameworks: guide/logging/advanced/patterns-web.md
+          - Database: guide/logging/advanced/patterns-database.md
+          - Messaging: guide/logging/advanced/patterns-messaging.md
+          - Async: guide/logging/advanced/patterns-async.md
         - Processors: guide/logging/advanced/processors.md
       - Async Logging: guide/logging/async.md
       - Exception Handling: guide/logging/exceptions.md
-      - Context Management: guide/logging/context.md
+      - Context Management:
+        - guide/logging/context.md
+        - Basic Binding: guide/logging/context-basics.md
+        - Threading: guide/logging/context-threading.md
+        - Advanced: guide/logging/context-advanced.md
+        - Patterns: guide/logging/context-patterns.md
       - Performance Tuning: 
         - guide/logging/performance.md
         - Overview: guide/logging/performance/index.md
@@ -168,6 +200,9 @@ nav:
       - Performance Optimization: guide/advanced/performance-optimization.md
     - Testing:
       - guide/testing.md
+      - Basic Testing: guide/testing-basics.md
+      - Advanced Testing: guide/testing-advanced.md
+      - Performance Testing: guide/testing-performance.md
 
   - Reference:
     - api/api-index.md
@@ -217,7 +252,13 @@ nav:
     - Platform API: api/platform/api-index.md
     - Process API: api/process/api-index.md
     - Streams API: api/streams/api-index.md
-    - Testing API: api/testing/api-index.md
+    - Testing API:
+      - api/testing/api-index.md
+      - Stream Testing: api/testing/api-streams.md
+      - Logger Management: api/testing/api-logger.md
+      - CLI Testing: api/testing/api-cli.md
+      - Crypto Fixtures: api/testing/api-crypto.md
+      - Context Detection: api/testing/api-context.md
     - Tracer API: api/tracer/api-index.md
     - Setup API: 
       - api/setup/api-index.md

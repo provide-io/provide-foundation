@@ -87,7 +87,7 @@ class TestDepsCommandWithClick:
 
             mock_dep = Mock(available=True)
             with patch(
-                "provide.foundation.utils.deps.check_optional_deps",
+                "provide.foundation.cli.commands.deps.check_optional_deps",
                 return_value=[mock_dep, mock_dep],
             ):
                 with pytest.raises(SystemExit) as exc_info:

@@ -98,6 +98,21 @@ def reset_foundation_setup_for_testing() -> None:
     Foundation logging state between test runs.
     """
     reset_foundation_state()
+    
+    # Clear and re-initialize the hub for test isolation
+    try:
+        from provide.foundation.hub.manager import clear_hub
+        clear_hub()
+    except ImportError:
+        pass
+    
+    # Re-register HTTP transport for tests that need it
+    try:
+        from provide.foundation.transport.http import _register_http_transport
+        _register_http_transport()
+    except ImportError:
+        # Transport module not available
+        pass
 
 
 __all__ = [

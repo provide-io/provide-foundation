@@ -51,9 +51,22 @@ jobs:
               python ${example}
           done
 
+      - name: 📚 Build and Validate MkDocs
+        run: |
+          source env.sh
+          # Build with strict mode (fails on warnings)
+          mkdocs build --clean --strict
+          echo "✅ MkDocs build completed successfully with no warnings"
+
       - name: 🔗 Validate README Links
         run: |
           # Install markdown link checker
           npm install -g markdown-link-check
           markdown-link-check README.md --config .github/markdown-link-check.json
+        continue-on-error: true
+
+      - name: 🔗 Check Documentation Links
+        run: |
+          # Check all markdown files in docs directory
+          find docs -name "*.md" -exec markdown-link-check {} \;
         continue-on-error: true
