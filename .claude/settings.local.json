@@ -14,7 +14,8 @@
       "Bash(python -m pytest tests/transport/test_middleware.py::test_metrics_middleware -v)",
       "Bash(python -m pytest tests/transport/ -v)",
       "Bash(python -m pytest tests/transport/test_client.py::test_universal_client_get -v -s)",
-      "Bash(python -m pytest tests/transport/test_client.py::test_universal_client_get -v)"
+      "Bash(python -m pytest tests/transport/test_client.py::test_universal_client_get -v)",
+      "Bash(python -m pytest tests/transport/test_middleware.py -v)"
     ],
     "deny": [],
     "ask": [],
