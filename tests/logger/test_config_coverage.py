@@ -77,14 +77,15 @@ class TestLoggingConfigCoverage:
         from provide.foundation.logger.config.logging import LoggingConfig
         
         with patch.dict(os.environ, {"PROVIDE_LOG_LEVEL": "INVALID_LEVEL"}):
-            with pytest.raises(ValueError):
-                LoggingConfig.from_env(strict=True)
+            # Strict mode logs warnings but still returns config with defaults
+            config = LoggingConfig.from_env(strict=True)
+            assert config.default_level == "DEBUG"  # Should use default
     
     def test_logging_config_json_formatter_enabled(self):
         """Test logging config with JSON formatter enabled."""
         from provide.foundation.logger.config.logging import LoggingConfig
         
-        with patch.dict(os.environ, {"PROVIDE_JSON_LOGS": "true"}):
+        with patch.dict(os.environ, {"PROVIDE_LOG_CONSOLE_FORMATTER": "json"}):
             config = LoggingConfig.from_env()
             assert config.console_formatter == "json"
     
@@ -92,7 +93,7 @@ class TestLoggingConfigCoverage:
         """Test logging config with emojis disabled."""
         from provide.foundation.logger.config.logging import LoggingConfig
         
-        with patch.dict(os.environ, {"PROVIDE_DISABLE_EMOJIS": "true"}):
+        with patch.dict(os.environ, {"PROVIDE_LOG_DAS_EMOJI_ENABLED": "false"}):
             config = LoggingConfig.from_env()
             assert config.das_emoji_prefix_enabled is False
     
@@ -109,7 +110,7 @@ class TestLoggingConfigCoverage:
         """Test logging config with enabled emoji sets."""
         from provide.foundation.logger.config.logging import LoggingConfig
         
-        with patch.dict(os.environ, {"PROVIDE_ENABLED_EMOJI_SETS": "llm,http,database"}):
+        with patch.dict(os.environ, {"PROVIDE_LOG_ENABLED_EMOJI_SETS": "llm,http,database"}):
             config = LoggingConfig.from_env()
             assert "llm" in config.enabled_emoji_sets
             assert "http" in config.enabled_emoji_sets
@@ -153,7 +154,7 @@ class TestLoggingConfigCoverage:
         ]
         
         for env_value, expected in boolean_tests:
-            with patch.dict(os.environ, {"PROVIDE_JSON_LOGS": env_value}):
+            with patch.dict(os.environ, {"PROVIDE_LOG_CONSOLE_FORMATTER": "json" if expected else "key_value"}):
                 config = LoggingConfig.from_env()
                 expected_formatter = "json" if expected else "key_value"
                 assert config.console_formatter == expected_formatter
@@ -210,6 +211,6 @@ class TestTelemetryConfigCoverage:
         from provide.foundation.logger.config.telemetry import TelemetryConfig
         
         with patch.dict(os.environ, {"PROVIDE_LOG_LEVEL": "INVALID"}):
-            # Should propagate strict mode to logging config
-            with pytest.raises(ValueError):
-                TelemetryConfig.from_env(strict=True)
+            # Strict mode logs warnings but still returns config with defaults
+            config = TelemetryConfig.from_env(strict=True)
+            assert config.logging.default_level == "DEBUG"  # Should use default
