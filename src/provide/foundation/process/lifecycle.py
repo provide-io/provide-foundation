@@ -357,6 +357,7 @@ async def wait_for_process_output(
     loop = asyncio.get_event_loop()
     start_time = loop.time()
     buffer = ""
+    last_exit_code = None
 
     plog.debug(
         "⏳ Waiting for process output pattern",
@@ -365,9 +366,40 @@ async def wait_for_process_output(
     )
 
     while (loop.time() - start_time) < timeout:
+        # Check if process has exited
+        if not process.is_running():
+            last_exit_code = process.returncode
+            plog.debug("Process exited", returncode=last_exit_code)
+            
+            # Try to drain any remaining output from the pipes
+            if process._process and process._process.stdout:
+                try:
+                    # Non-blocking read of any remaining data
+                    remaining = process._process.stdout.read()
+                    if remaining:
+                        if isinstance(remaining, bytes):
+                            buffer += remaining.decode("utf-8", errors="replace")
+                        else:
+                            buffer += str(remaining)
+                        plog.debug("Read remaining output from exited process", size=len(remaining))
+                except Exception:
+                    pass
+            
+            # Check buffer after draining
+            if all(part in buffer for part in expected_parts):
+                plog.debug("Found expected pattern after process exit")
+                return buffer
+            
+            # If exit code is non-zero and we don't have the pattern, fail
+            if last_exit_code != 0:
+                plog.error("Process exited with error", returncode=last_exit_code, buffer=buffer[:200])
+                raise ProcessError(f"Process exited with code {last_exit_code}")
+            
+            # For exit code 0, continue trying as output might still be buffered
+        
         try:
-            # Try to read a line with reasonable timeout
-            line = await process.read_line_async(timeout=0.5)
+            # Try to read a line with short timeout
+            line = await process.read_line_async(timeout=0.1)
             if line:
                 buffer += line + "\n"  # Add newline back since readline strips it
                 plog.debug("Read line from process", line=line[:100])
@@ -378,41 +410,25 @@ async def wait_for_process_output(
                     return buffer
 
         except TimeoutError:
-            plog.debug("Read timeout, continuing")
-
-        # Continue with character-by-character reading if needed
-        try:
-            # Fall back to character-by-character reading
-            char = await process.read_char_async(timeout=0.5)
-            if char:
-                buffer += char
-                plog.debug("Read character", char=repr(char), buffer_size=len(buffer))
-
-                # Check pattern again
-                if all(part in buffer for part in expected_parts):
-                    plog.debug("Found expected pattern in buffer (char mode)")
-                    return buffer
-
-        except TimeoutError:
             pass
-        
-        # Check if process has exited
-        if not process.is_running():
-            returncode = process.returncode
-            # Check buffer one final time before giving up
-            if all(part in buffer for part in expected_parts):
-                plog.debug("Found expected pattern (process exited)")
-                return buffer
-            # Only raise error if we didn't get expected output
-            if returncode != 0:
-                plog.error("Process exited with error", returncode=returncode)
-                raise ProcessError(f"Process exited with code {returncode}")
-            # For exit code 0, continue trying until timeout
+        except Exception:
+            # Process might have exited, continue
+            pass
+
+        # Short sleep to avoid busy loop
+        await asyncio.sleep(0.01)
 
     # Final check of buffer before timeout error
     if all(part in buffer for part in expected_parts):
         return buffer
-        
+    
+    # If process exited with 0 but we didn't get output, that's still a timeout
+    plog.error(
+        "Timeout waiting for pattern",
+        expected_parts=expected_parts,
+        buffer=buffer[:200],
+        last_exit_code=last_exit_code,
+    )
     raise TimeoutError(
         f"Expected pattern {expected_parts} not found within {timeout}s timeout"
     )
