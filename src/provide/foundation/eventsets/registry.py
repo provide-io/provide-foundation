@@ -4,22 +4,25 @@ Event set registry and discovery for the Foundation event enrichment system.
 
 import importlib
 import pkgutil
+import threading
 from pathlib import Path
-from typing import Any
 
 from provide.foundation.errors.resources import AlreadyExistsError, NotFoundError
-from provide.foundation.hub.registry import Registry
 
 from provide.foundation.eventsets.types import EventSetConfig
 
 
-class EventSetRegistry(Registry):
+class EventSetRegistry:
     """
     Registry for event set configurations.
     
-    Extends the foundation Registry to provide specialized
-    methods for event set registration and discovery.
+    Thread-safe registry for managing event set configurations.
     """
+    
+    def __init__(self) -> None:
+        """Initialize the registry."""
+        self._lock = threading.RLock()
+        self._configs: dict[str, EventSetConfig] = {}
     
     def register_event_set(self, config: EventSetConfig) -> None:
         """
@@ -31,7 +34,10 @@ class EventSetRegistry(Registry):
         Raises:
             AlreadyExistsError: If an event set with this name already exists
         """
-        self.register("eventset", config.name, config, metadata={"priority": config.priority})
+        with self._lock:
+            if config.name in self._configs:
+                raise AlreadyExistsError(f"Event set '{config.name}' already registered")
+            self._configs[config.name] = config
     
     def get_event_set(self, name: str) -> EventSetConfig:
         """
@@ -46,10 +52,10 @@ class EventSetRegistry(Registry):
         Raises:
             NotFoundError: If no event set with this name exists
         """
-        entry = self.get("eventset", name)
-        if entry is None:
-            raise NotFoundError(f"Event set '{name}' not found")
-        return entry.value
+        with self._lock:
+            if name not in self._configs:
+                raise NotFoundError(f"Event set '{name}' not found")
+            return self._configs[name]
     
     def list_event_sets(self) -> list[EventSetConfig]:
         """
@@ -58,9 +64,10 @@ class EventSetRegistry(Registry):
         Returns:
             List of EventSetConfig objects sorted by descending priority
         """
-        entries = list(self.list_dimension("eventset"))
-        entries.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)
-        return [entry.value for entry in entries]
+        with self._lock:
+            configs = list(self._configs.values())
+            configs.sort(key=lambda c: c.priority, reverse=True)
+            return configs
     
     def discover_sets(self) -> None:
         """
