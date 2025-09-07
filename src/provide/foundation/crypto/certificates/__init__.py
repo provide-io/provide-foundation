@@ -58,6 +58,7 @@ __all__ = [
     "KeyType",
     "create_self_signed",
     "create_ca",
+    "_require_crypto",  # For testing
 ]
 
 
@@ -533,6 +534,24 @@ class Certificate:
             "not in chain, and not signed by any cert in chain"
         )
         return False
+
+    def _create_x509_certificate(
+        self,
+        issuer_name_override: "x509.Name | None" = None,
+        signing_key_override: "KeyPair | None" = None,
+        is_ca: bool = False,
+        is_client_cert: bool = False,
+    ) -> "X509Certificate":
+        """Internal helper to build and sign the X.509 certificate object."""
+        return create_x509_certificate(
+            base=self._base,
+            private_key=self._private_key,
+            alt_names=self.alt_names,
+            issuer_name_override=issuer_name_override,
+            signing_key_override=signing_key_override,
+            is_ca=is_ca,
+            is_client_cert=is_client_cert,
+        )
 
     def _validate_signature(
         self, signed_cert: "Certificate", signing_cert: "Certificate"

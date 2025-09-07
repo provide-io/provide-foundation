@@ -19,7 +19,7 @@ class TestOptionalCryptoDependency:
     def test_require_crypto_without_crypto(self):
         """Test _require_crypto when cryptography is not available."""
         # Mock _HAS_CRYPTO to False to simulate missing cryptography
-        with patch("provide.foundation.crypto.certificates._HAS_CRYPTO", False):
+        with patch("provide.foundation.crypto.certificates.base._HAS_CRYPTO", False):
             from provide.foundation.crypto.certificates import _require_crypto
 
             with pytest.raises(
@@ -29,7 +29,7 @@ class TestOptionalCryptoDependency:
 
     def test_certificate_creation_without_crypto(self):
         """Test Certificate creation fails gracefully without cryptography."""
-        with patch("provide.foundation.crypto.certificates._HAS_CRYPTO", False):
+        with patch("provide.foundation.crypto.certificates.base._HAS_CRYPTO", False):
             from provide.foundation.crypto.certificates import (
                 Certificate,
                 CertificateError,
@@ -46,7 +46,7 @@ class TestOptionalCryptoDependency:
 
     def test_certificate_base_creation_without_crypto(self):
         """Test CertificateBase.create fails gracefully without cryptography."""
-        with patch("provide.foundation.crypto.certificates._HAS_CRYPTO", False):
+        with patch("provide.foundation.crypto.certificates.base._HAS_CRYPTO", False):
             from provide.foundation.crypto.certificates import (
                 CertificateBase,
                 CertificateConfig,
@@ -67,7 +67,7 @@ class TestOptionalCryptoDependency:
 
     def test_convenience_functions_without_crypto(self):
         """Test convenience functions fail gracefully without cryptography."""
-        with patch("provide.foundation.crypto.certificates._HAS_CRYPTO", False):
+        with patch("provide.foundation.crypto.certificates.base._HAS_CRYPTO", False):
             from provide.foundation.crypto.certificates import (
                 create_self_signed,
                 create_ca,
@@ -134,7 +134,7 @@ class TestCryptoTypeAliases:
     def test_type_aliases_without_crypto(self):
         """Test that type aliases behave correctly when crypto is not available."""
         # Test that we can check the conditional type alias logic
-        with patch("provide.foundation.crypto.certificates._HAS_CRYPTO", False):
+        with patch("provide.foundation.crypto.certificates.base._HAS_CRYPTO", False):
             # Import and verify the type aliases exist (they may be None or other values)
             from provide.foundation.crypto.certificates import KeyPair, PublicKey
 
@@ -165,7 +165,7 @@ class TestCryptoModuleImport:
 
     def test_crypto_error_message_format(self):
         """Test that error messages are properly formatted."""
-        with patch("provide.foundation.crypto.certificates._HAS_CRYPTO", False):
+        with patch("provide.foundation.crypto.certificates.base._HAS_CRYPTO", False):
             from provide.foundation.crypto.certificates import _require_crypto
 
             try:
@@ -242,7 +242,7 @@ class TestCryptoInstallationMessage:
         expected_message_parts = ["pip install 'provide-foundation[crypto]'"]
 
         # Test certificates module message
-        with patch("provide.foundation.crypto.certificates._HAS_CRYPTO", False):
+        with patch("provide.foundation.crypto.certificates.base._HAS_CRYPTO", False):
             from provide.foundation.crypto.certificates import _require_crypto
 
             try:
@@ -263,7 +263,7 @@ class TestCryptoInstallationMessage:
 
     def test_user_friendly_error_messages(self):
         """Test that error messages are user-friendly and actionable."""
-        with patch("provide.foundation.crypto.certificates._HAS_CRYPTO", False):
+        with patch("provide.foundation.crypto.certificates.base._HAS_CRYPTO", False):
             from provide.foundation.crypto.certificates import _require_crypto
 
             try:
