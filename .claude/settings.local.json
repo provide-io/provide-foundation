@@ -17,7 +17,8 @@
       "Bash(python -m pytest tests/transport/test_client.py::test_universal_client_get -v)",
       "Bash(python -m pytest tests/transport/test_middleware.py -v)",
       "Bash(python -m pytest tests/transport/test_middleware.py tests/transport/test_config.py -v)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(mkdocs build:*)"
     ],
     "deny": [],
     "ask": [],
