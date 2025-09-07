@@ -232,56 +232,47 @@ async def test_universal_client_timeout(httpx_mock: HTTPXMock):
 
 
 @pytest.mark.asyncio
-async def test_universal_client_connection_pooling():
+async def test_universal_client_connection_pooling(httpx_mock: HTTPXMock):
     """Test that client reuses connections for same scheme."""
     client = UniversalClient()
     
     # This tests the internal transport caching mechanism
     # Multiple requests to same scheme should reuse transport
     
-    from unittest.mock import patch, AsyncMock
+    # Mock responses for both requests
+    httpx_mock.add_response(
+        method="GET",
+        url="https://api.example.com/test1",
+        json={"ok": True},
+        status_code=200,
+    )
+    httpx_mock.add_response(
+        method="GET",
+        url="https://api.example.com/test2",
+        json={"ok": True},
+        status_code=200,
+    )
     
-    with patch('provide.foundation.transport.http.httpx.AsyncClient') as mock_client_class:
-        mock_client = AsyncMock()
-        mock_client_class.return_value = mock_client
+    async with client:
+        # Make multiple requests
+        await client.get("https://api.example.com/test1")
+        await client.get("https://api.example.com/test2")
         
-        # Mock response
-        mock_response = AsyncMock()
-        mock_response.status_code = 200
-        mock_response.headers = {}
-        mock_response.content = b'{"ok": true}'
-        mock_response.reason_phrase = "OK"
-        mock_response.http_version = "1.1"
-        mock_response.encoding = "utf-8"
-        mock_response.is_redirect = False
-        mock_response.url = "https://api.example.com/test1"
-        
-        mock_client.request.return_value = mock_response
-        
-        async with client:
-            # Make multiple requests
-            await client.get("https://api.example.com/test1")
-            await client.get("https://api.example.com/test2")
-        
-        # Should have created only one transport instance
+        # Should have created only one transport instance (check inside context)
         assert len(client._transports) == 1
         assert "https" in client._transports
 
 
 @pytest.mark.asyncio 
-async def test_universal_client_error_handling():
+async def test_universal_client_error_handling(httpx_mock: HTTPXMock):
     """Test client error handling through middleware."""
-    from unittest.mock import patch, AsyncMock
+    from provide.foundation.transport.errors import TransportTimeoutError
     
     client = UniversalClient()
     
-    # Test with connection error
-    with patch('provide.foundation.transport.registry.get_transport') as mock_get_transport:
-        mock_transport = AsyncMock()
-        mock_transport.execute.side_effect = Exception("Connection failed")
-        mock_get_transport.return_value = mock_transport
-        
-        with pytest.raises(Exception) as exc_info:
-            await client.get("https://api.example.com/error")
-        
-        assert "Connection failed" in str(exc_info.value)
+    # Test with timeout error (httpx_mock without response causes timeout)
+    with pytest.raises(TransportTimeoutError) as exc_info:
+        await client.get("https://api.example.com/error")
+    
+    # The error message should indicate a timeout
+    assert "Request timed out" in str(exc_info.value)
