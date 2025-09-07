@@ -18,7 +18,9 @@
       "Bash(python -m pytest tests/transport/test_middleware.py -v)",
       "Bash(python -m pytest tests/transport/test_middleware.py tests/transport/test_config.py -v)",
       "Bash(python:*)",
-      "Bash(mkdocs build:*)"
+      "Bash(mkdocs build:*)",
+      "Bash(curl:*)",
+      "Bash(mkdocs serve:*)"
     ],
     "deny": [],
     "ask": [],
