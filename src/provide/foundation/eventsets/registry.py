@@ -1,73 +1,80 @@
 """
-Event set registry and discovery for the Foundation event enrichment system.
+Event set registry and discovery.
 """
 
 import importlib
 import pkgutil
-import threading
 from pathlib import Path
 
 from provide.foundation.errors.resources import AlreadyExistsError, NotFoundError
+from provide.foundation.hub.registry import Registry
+from provide.foundation.logger.setup.coordinator import create_core_setup_logger
 
-from provide.foundation.eventsets.types import EventSetConfig
+from provide.foundation.eventsets.types import EventSet
+
+# Bootstrap logger that doesn't trigger full logger setup
+logger = create_core_setup_logger()
 
 
-class EventSetRegistry:
+class EventSetRegistry(Registry):
     """
-    Registry for event set configurations.
+    Registry for event set definitions using foundation Registry.
     
-    Thread-safe registry for managing event set configurations.
+    Extends the foundation Registry to provide specialized
+    methods for event set registration and discovery.
     """
     
-    def __init__(self) -> None:
-        """Initialize the registry."""
-        self._lock = threading.RLock()
-        self._configs: dict[str, EventSetConfig] = {}
-    
-    def register_event_set(self, config: EventSetConfig) -> None:
+    def register_event_set(self, event_set: EventSet) -> None:
         """
-        Register an event set configuration.
+        Register an event set definition.
         
         Args:
-            config: The EventSetConfig to register
+            event_set: The EventSet to register
             
         Raises:
             AlreadyExistsError: If an event set with this name already exists
         """
-        with self._lock:
-            if config.name in self._configs:
-                raise AlreadyExistsError(f"Event set '{config.name}' already registered")
-            self._configs[config.name] = config
+        try:
+            self.register("eventset", event_set.name, event_set, metadata={"priority": event_set.priority})
+            logger.debug(
+                "Registered event set",
+                name=event_set.name,
+                priority=event_set.priority,
+                field_count=len(event_set.field_mappings),
+                mapping_count=len(event_set.mappings)
+            )
+        except AlreadyExistsError:
+            logger.warning("Event set already registered", name=event_set.name)
+            raise
     
-    def get_event_set(self, name: str) -> EventSetConfig:
+    def get_event_set(self, name: str) -> EventSet:
         """
-        Retrieve an event set configuration by name.
+        Retrieve an event set by name.
         
         Args:
             name: The name of the event set
             
         Returns:
-            The EventSetConfig
+            The EventSet
             
         Raises:
             NotFoundError: If no event set with this name exists
         """
-        with self._lock:
-            if name not in self._configs:
-                raise NotFoundError(f"Event set '{name}' not found")
-            return self._configs[name]
+        entry = self.get("eventset", name)
+        if entry is None:
+            raise NotFoundError(f"Event set '{name}' not found")
+        return entry.value
     
-    def list_event_sets(self) -> list[EventSetConfig]:
+    def list_event_sets(self) -> list[EventSet]:
         """
         List all registered event sets sorted by priority.
         
         Returns:
-            List of EventSetConfig objects sorted by descending priority
+            List of EventSet objects sorted by descending priority
         """
-        with self._lock:
-            configs = list(self._configs.values())
-            configs.sort(key=lambda c: c.priority, reverse=True)
-            return configs
+        entries = list(self.list_dimension("eventset"))
+        entries.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)
+        return [entry.value for entry in entries]
     
     def discover_sets(self) -> None:
         """
@@ -78,9 +85,9 @@ class EventSetRegistry:
         """
         sets_path = Path(__file__).parent / "sets"
         if not sets_path.exists():
+            logger.debug("No sets directory found for auto-discovery")
             return
         
-        # Import all modules in the sets directory
         for module_info in pkgutil.iter_modules([str(sets_path)]):
             if module_info.ispkg:
                 continue
@@ -89,19 +96,42 @@ class EventSetRegistry:
             try:
                 module = importlib.import_module(module_name)
                 
-                # Look for EVENT_SET constant
                 if hasattr(module, "EVENT_SET"):
                     event_set = getattr(module, "EVENT_SET")
-                    if isinstance(event_set, EventSetConfig):
+                    if isinstance(event_set, EventSet):
                         try:
                             self.register_event_set(event_set)
+                            logger.debug(
+                                "Auto-discovered event set",
+                                module=module_name,
+                                name=event_set.name
+                            )
                         except AlreadyExistsError:
-                            pass  # Already registered
+                            logger.debug(
+                                "Event set already registered during discovery",
+                                module=module_name,
+                                name=event_set.name
+                            )
                     else:
-                        pass  # Not an EventSetConfig
+                        logger.warning(
+                            "EVENT_SET is not an EventSet",
+                            module=module_name,
+                            type=type(event_set).__name__
+                        )
                         
-            except (ImportError, Exception):
-                pass  # Skip modules that fail to import
+            except ImportError as e:
+                logger.debug(
+                    "Failed to import event set module",
+                    module=module_name,
+                    error=str(e)
+                )
+            except Exception as e:
+                logger.warning(
+                    "Error during event set discovery",
+                    module=module_name,
+                    error=str(e),
+                    error_type=type(e).__name__
+                )
 
 
 # Global registry instance
@@ -113,14 +143,14 @@ def get_registry() -> EventSetRegistry:
     return _registry
 
 
-def register_event_set(config: EventSetConfig) -> None:
+def register_event_set(event_set: EventSet) -> None:
     """
-    Register an event set configuration in the global registry.
+    Register an event set in the global registry.
     
     Args:
-        config: The EventSetConfig to register
+        event_set: The EventSet to register
     """
-    _registry.register_event_set(config)
+    _registry.register_event_set(event_set)
 
 
 def discover_event_sets() -> None:
