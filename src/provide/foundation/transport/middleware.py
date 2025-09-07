@@ -204,16 +204,16 @@ class MetricsMiddleware(Middleware):
             status_class = f"{response.status // 100}xx"
             
             # Record metrics with labels
-            self._request_counter.add(1, {
-                "method": method,
-                "status_code": str(response.status),
-                "status_class": status_class
-            })
+            self._request_counter.inc(1, 
+                method=method,
+                status_code=str(response.status),
+                status_class=status_class
+            )
             
-            self._request_duration.record(duration, {
-                "method": method,
-                "status_class": status_class
-            })
+            self._request_duration.observe(duration,
+                method=method,
+                status_class=status_class
+            )
         
         return response
     
@@ -222,10 +222,10 @@ class MetricsMiddleware(Middleware):
         method = request.method
         error_type = error.__class__.__name__
         
-        self._error_counter.add(1, {
-            "method": method,
-            "error_type": error_type
-        })
+        self._error_counter.inc(1,
+            method=method,
+            error_type=error_type
+        )
         
         return error
 

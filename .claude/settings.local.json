@@ -10,7 +10,8 @@
       "Bash(uv sync:*)",
       "Bash(uv add:*)",
       "Bash(pip install:*)",
-      "Bash(uv pip install:*)"
+      "Bash(uv pip install:*)",
+      "Bash(python -m pytest tests/transport/test_middleware.py::test_metrics_middleware -v)"
     ],
     "deny": [],
     "ask": [],
