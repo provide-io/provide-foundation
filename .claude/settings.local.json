@@ -21,7 +21,8 @@
       "Bash(mkdocs build:*)",
       "Bash(curl:*)",
       "Bash(mkdocs serve:*)",
-      "Bash(flavor:*)"
+      "Bash(flavor:*)",
+      "Bash(rm:*)"
     ],
     "deny": [],
     "ask": [],
