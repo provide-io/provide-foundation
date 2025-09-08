@@ -1,121 +1,163 @@
-"""TAR archive implementation with explicit capabilities."""
+"""TAR archive implementation."""
 
 import tarfile
 from pathlib import Path
-from typing import Callable, Optional
+
+from attrs import define, field
 
 from provide.foundation.archive.base import BaseArchive, ArchiveError
-from provide.foundation.archive.capabilities import (
-    ArchiveCapability, 
-    CapabilityMixin,
-    requires_capability,
-)
+from provide.foundation.logger import get_logger
+
+logger = get_logger(__name__)
 
 
-class TarArchive(BaseArchive, CapabilityMixin):
+@define(slots=True)
+class TarArchive(BaseArchive):
     """
     TAR archive implementation.
     
-    Capabilities: BUNDLE + METADATA + STREAMING + DETERMINISTIC
-    - Can bundle multiple files/directories ✓
-    - Can preserve metadata (permissions, timestamps) ✓  
-    - Can stream without temp files ✓
-    - Can create deterministic output ✓
-    - Cannot compress (use gzip archiver in composite) ✗
-    - Cannot encrypt ✗
+    Creates and extracts TAR archives with optional metadata preservation
+    and deterministic output for reproducible builds.
     """
     
-    # EXPLICIT capability declaration - baked into the spec
-    capabilities = (
-        ArchiveCapability.BUNDLE |
-        ArchiveCapability.METADATA | 
-        ArchiveCapability.PERMISSIONS |
-        ArchiveCapability.TIMESTAMPS |
-        ArchiveCapability.STREAMING |
-        ArchiveCapability.DETERMINISTIC
-    )
+    deterministic: bool = field(default=True)
+    preserve_metadata: bool = field(default=True)
+    preserve_permissions: bool = field(default=True)
     
-    def __init__(self, 
-                 deterministic: bool = True,
-                 preserve_permissions: bool = True,
-                 tar_filter: Optional[Callable] = None):
+    def create(self, source: Path, output: Path) -> Path:
         """
-        Initialize TAR archiver.
+        Create TAR archive from source.
         
         Args:
-            deterministic: Create reproducible output
-            preserve_permissions: Preserve file permissions
-            tar_filter: Custom TarInfo filter function
+            source: Source file or directory to archive
+            output: Output TAR file path
+            
+        Returns:
+            Path to created archive
+            
+        Raises:
+            ArchiveError: If archive creation fails
         """
-        self.deterministic = deterministic
-        self.preserve_permissions = preserve_permissions
-        self.tar_filter = tar_filter
-        
-        # Validate that our configuration matches our capabilities
-        if not preserve_permissions:
-            # If not preserving permissions, remove that capability
-            self.capabilities &= ~ArchiveCapability.PERMISSIONS
-
-    @requires_capability(ArchiveCapability.BUNDLE)
-    def create(self, source: Path, output: Path) -> Path:
-        """Create TAR archive from source."""
         try:
+            output.parent.mkdir(parents=True, exist_ok=True)
+            
             with tarfile.open(output, "w") as tar:
                 if source.is_dir():
-                    self._add_directory(tar, source)
+                    # Add all files in directory
+                    for item in sorted(source.rglob("*")):
+                        if item.is_file():
+                            arcname = item.relative_to(source.parent)
+                            self._add_file(tar, item, arcname)
                 else:
-                    self._add_file(tar, source)
+                    # Add single file
+                    self._add_file(tar, source, source.name)
+            
+            logger.debug(f"Created TAR archive: {output}")
             return output
+            
         except Exception as e:
             raise ArchiveError(f"Failed to create TAR archive: {e}") from e
 
     def extract(self, archive: Path, output: Path) -> Path:
-        """Extract TAR archive to output directory."""
+        """
+        Extract TAR archive to output directory.
+        
+        Args:
+            archive: TAR archive file path
+            output: Output directory path
+            
+        Returns:
+            Path to extraction directory
+            
+        Raises:
+            ArchiveError: If extraction fails
+        """
         try:
             output.mkdir(parents=True, exist_ok=True)
+            
             with tarfile.open(archive, "r") as tar:
+                # Security check - prevent path traversal
+                for member in tar.getmembers():
+                    if member.name.startswith("/") or ".." in member.name:
+                        raise ArchiveError(f"Unsafe path in archive: {member.name}")
+                
+                # Extract all
                 tar.extractall(output)
+            
+            logger.debug(f"Extracted TAR archive to: {output}")
             return output
+            
         except Exception as e:
             raise ArchiveError(f"Failed to extract TAR archive: {e}") from e
 
     def validate(self, archive: Path) -> bool:
-        """Validate TAR archive integrity."""
+        """
+        Validate TAR archive integrity.
+        
+        Args:
+            archive: TAR archive file path
+            
+        Returns:
+            True if archive is valid, False otherwise
+        """
         try:
             with tarfile.open(archive, "r") as tar:
                 # Try to read all members
-                for member in tar:
+                for member in tar.getmembers():
+                    # Just checking we can read the metadata
                     pass
             return True
         except Exception:
             return False
-
-    @requires_capability(ArchiveCapability.BUNDLE)
-    def add_file(self, archive_path: Path, file_path: Path, arcname: str = None):
-        """Add a single file to existing TAR archive."""
-        # This method explicitly requires BUNDLE capability
-        pass
-
-    @requires_capability(ArchiveCapability.METADATA)  
-    def set_file_metadata(self, file_path: Path, metadata: dict):
-        """Set metadata for a file in the archive."""
-        # This method explicitly requires METADATA capability
-        pass
-
-    def set_compression_level(self, level: int):
+    
+    def list_contents(self, archive: Path) -> list[str]:
         """
-        This method will ALWAYS fail because TAR doesn't have COMPRESS capability.
-        The @requires_capability decorator will catch this.
+        List contents of TAR archive.
+        
+        Args:
+            archive: TAR archive file path
+            
+        Returns:
+            List of file paths in archive
+            
+        Raises:
+            ArchiveError: If listing fails
         """
-        # Note: No @requires_capability decorator - this will fail at class validation
-        raise ArchiveError("TAR archiver cannot compress - use CompositeArchive with GzipArchive")
-
-    def _add_directory(self, tar: tarfile.TarFile, directory: Path):
-        """Add directory contents to tar."""
-        # Implementation details...
-        pass
-
-    def _add_file(self, tar: tarfile.TarFile, file_path: Path):  
-        """Add single file to tar."""
-        # Implementation details...
-        pass
+        try:
+            contents = []
+            with tarfile.open(archive, "r") as tar:
+                for member in tar.getmembers():
+                    if member.isfile():
+                        contents.append(member.name)
+            return sorted(contents)
+        except Exception as e:
+            raise ArchiveError(f"Failed to list TAR contents: {e}") from e
+    
+    def _add_file(self, tar: tarfile.TarFile, file_path: Path, arcname: str | Path) -> None:
+        """
+        Add single file to TAR archive.
+        
+        Args:
+            tar: Open TarFile object
+            file_path: Path to file to add
+            arcname: Name in archive
+        """
+        tarinfo = tar.gettarinfo(str(file_path), str(arcname))
+        
+        if self.deterministic:
+            # Set consistent metadata for reproducible archives
+            tarinfo.uid = 0
+            tarinfo.gid = 0
+            tarinfo.uname = ""
+            tarinfo.gname = ""
+            tarinfo.mtime = 0
+        
+        if not self.preserve_permissions:
+            # Normalize permissions
+            if tarinfo.isfile():
+                tarinfo.mode = 0o644
+            elif tarinfo.isdir():
+                tarinfo.mode = 0o755
+        
+        with open(file_path, "rb") as f:
+            tar.addfile(tarinfo, f)
