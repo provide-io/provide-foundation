@@ -107,6 +107,8 @@ try:
     test_function()
     
     print("Calling teardown_method...")
+    import time
+    time.sleep(1)  # Give some time
     teardown_method()
     
     print("Test completed successfully!")
