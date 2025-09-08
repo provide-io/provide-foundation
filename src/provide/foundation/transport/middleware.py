@@ -291,7 +291,7 @@ def register_middleware(
         replace=True,
     )
     
-    log.trace(f"Registered middleware {middleware_class.__name__} as '{name}'")
+    log.debug(f"Registered middleware {middleware_class.__name__} as '{name}'")
 
 
 def get_middleware_by_category(category: str = "transport.middleware") -> list[type[Middleware]]:

@@ -28,17 +28,8 @@ def get_logger(
     Returns:
         Configured structlog logger instance
     """
-    # Register emoji hierarchy if provided
-    if emoji_hierarchy and name:
-        from provide.foundation.logger.emoji.hierarchy import register_emoji_hierarchy
-        # Extract base module from name for hierarchy registration
-        base_module = name.split('.')[0]
-        register_emoji_hierarchy(base_module, emoji_hierarchy)
-    
-    # Register single emoji if provided
-    if emoji and name:
-        from provide.foundation.logger.emoji.hierarchy import register_single_emoji
-        register_single_emoji(name, emoji)
+    # Emoji hierarchy removed - using event sets now
+    # emoji and emoji_hierarchy parameters are deprecated
     
     return logger.get_logger(name)
 

@@ -3,8 +3,7 @@
 from unittest.mock import patch
 
 from provide.foundation.logger.custom_processors import add_logger_name_emoji_prefix
-from provide.foundation.logger.emoji.matrix import _format_field_definition_for_display
-from provide.foundation.logger.emoji.types import FieldToEmojiMapping
+from provide.foundation.eventsets.types import FieldMapping
 
 
 def test_logger_base_already_configured_after_lock() -> None:
@@ -86,42 +85,35 @@ def test_add_log_level_custom_with_existing_level() -> None:
     assert result["level"] == "debug"  # Should be updated from hint
 
 
-def test_format_field_definition_minimal() -> None:
-    """Test emoji_matrix field definition formatting with minimal data."""
+def test_field_mapping_creation() -> None:
+    """Test EventSet FieldMapping creation."""
     # Test with only required field
-    field_def = FieldToEmojiMapping(log_key="test.key")
-    result = _format_field_definition_for_display(field_def)
-    assert "Log Key: 'test.key'" in result
-    assert "Desc:" not in result  # No description
-    assert "Type:" not in result  # No type
+    field_mapping = FieldMapping(log_key="test.key", event_set_name="test_set")
+    assert field_mapping.log_key == "test.key"
+    assert field_mapping.event_set_name == "test_set"
 
 
-def test_format_field_definition_with_emoji_no_override() -> None:
-    """Test emoji_matrix field definition with emoji set but no override."""
-    field_def = FieldToEmojiMapping(
+def test_field_mapping_with_optional_fields() -> None:
+    """Test EventSet FieldMapping with optional fields."""
+    field_mapping = FieldMapping(
         log_key="test.key",
+        event_set_name="test_set",
         description="Test field",
         value_type="string",
-        emoji_set_name="test_set",
-        # No default_emoji_override_key
+        default_value="default",
     )
-    result = _format_field_definition_for_display(field_def)
-    assert "Emoji Set: 'test_set'" in result
-    assert "Default Emoji Key (Override)" not in result
+    assert field_mapping.log_key == "test.key"
+    assert field_mapping.event_set_name == "test_set"
+    assert field_mapping.description == "Test field"
+    assert field_mapping.value_type == "string"
+    assert field_mapping.default_value == "default"
 
 
-def test_format_field_definition_full() -> None:
-    """Test emoji_matrix field definition with all fields."""
-    field_def = FieldToEmojiMapping(
-        log_key="test.key",
-        description="Test field",
-        value_type="string",
-        emoji_set_name="test_set",
-        default_emoji_override_key="custom_default",
-    )
-    result = _format_field_definition_for_display(field_def)
-    assert "Log Key: 'test.key'" in result
-    assert "Desc: Test field" in result
-    assert "Type: string" in result
-    assert "Emoji Set: 'test_set'" in result
-    assert "Default Emoji Key (Override): 'custom_default'" in result
+def test_field_mapping_minimal() -> None:
+    """Test EventSet FieldMapping with minimal data."""
+    field_mapping = FieldMapping(log_key="test.key", event_set_name="test_set")
+    assert field_mapping.log_key == "test.key"
+    assert field_mapping.event_set_name == "test_set"
+    assert field_mapping.description is None
+    assert field_mapping.value_type is None
+    assert field_mapping.default_value is None
