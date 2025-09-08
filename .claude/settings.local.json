@@ -62,7 +62,8 @@
       "Bash(FLAVOR_LOG_LEVEL=debug dist/flavor.psp --version)",
       "Bash(FLAVOR_LOG_LEVEL=debug ./dist/taster.psp --version)",
       "Bash(./dist/taster.psp --version)",
-      "Bash(./build/package-builder.py)"
+      "Bash(./build/package-builder.py)",
+      "Bash(FOUNDATION_LOG_LEVEL=ERROR python -c \"from provide.foundation.logger.config import TelemetryConfig; TelemetryConfig.from_env()\")"
     ],
     "deny": [],
     "ask": [],
