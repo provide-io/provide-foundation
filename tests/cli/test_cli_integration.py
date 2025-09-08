@@ -94,46 +94,19 @@ class TestCompleteCliIntegration:
 
     def test_options_at_group_level(self) -> None:
         """Test that options work at the group level."""
-        # Simplified test that works
-        @click.command()
-        @flexible_options
-        @output_options
-        @pass_context
-        def simple_status(ctx: Context, **kwargs) -> None:
-            for key, value in kwargs.items():
-                if value is not None:
-                    setattr(ctx, key, value)
-            setup_cli_logging(ctx)
-            if ctx.json_output:
-                click.echo(json.dumps({"status": "healthy", "uptime": 3600}))
-            else:
-                click.echo("Application is healthy")
-        
+        cli = self.create_test_cli()
         runner = CliTestRunner()
-        result = runner.invoke(simple_status, ["--log-level", "DEBUG", "--json"])
+        result = runner.invoke(cli, ["--log-level", "DEBUG", "--json", "status"])
         assert result.exit_code == 0
         output = json.loads(result.output.strip().split("\n")[-1])
         assert output["status"] == "healthy"
 
     def test_options_are_available_to_subcommand(self) -> None:
         """Test that options passed to the group are available to the subcommand."""
-        # Simplified test using simple command instead of complex group
-        @click.command()
-        @flexible_options
-        @output_options
-        @pass_context
-        def status_cmd(ctx: Context, **kwargs) -> None:
-            for key, value in kwargs.items():
-                if value is not None:
-                    setattr(ctx, key, value)
-            setup_cli_logging(ctx)
-            if not ctx.no_emoji:
-                click.echo("🟢 Application is healthy")
-            else:
-                click.echo("Application is healthy")
-        
+        cli = self.create_test_cli()
         runner = CliTestRunner()
-        result = runner.invoke(status_cmd, ["--no-emoji"])
+        # Correct invocation: options for parent go BEFORE subcommand
+        result = runner.invoke(cli, ["--no-emoji", "status"])
         assert result.exit_code == 0
         output = "\n".join(
             [
@@ -147,26 +120,10 @@ class TestCompleteCliIntegration:
 
     def test_nested_groups_inherit_options(self) -> None:
         """Test that nested groups inherit options."""
-        # Simplified test using simple command instead of nested groups
-        @click.command()
-        @flexible_options
-        @output_options
-        @pass_context
-        def migrate_cmd(ctx: Context, **kwargs) -> None:
-            for key, value in kwargs.items():
-                if value is not None:
-                    setattr(ctx, key, value)
-            setup_cli_logging(ctx)
-            logger = get_logger(__name__)
-            logger.info("Running migrations")
-            if ctx.json_output:
-                click.echo(json.dumps({"status": "success", "migrations": 5}))
-            else:
-                click.echo("✅ Applied 5 migrations")
-        
+        cli = self.create_test_cli()
         runner = CliTestRunner()
         result = runner.invoke(
-            migrate_cmd, ["--json", "--log-level", "WARNING"]
+            cli, ["--json", "--log-level", "WARNING", "database", "migrate"]
         )
         assert result.exit_code == 0
         output = json.loads(result.output.strip().split("\n")[-1])
@@ -174,23 +131,10 @@ class TestCompleteCliIntegration:
 
     def test_command_options_override_group_options(self) -> None:
         """Test that later options on the same command override earlier ones."""
-        # Simplified test using simple command
-        @click.command()
-        @flexible_options
-        @output_options
-        @pass_context
-        def status_cmd(ctx: Context, **kwargs) -> None:
-            for key, value in kwargs.items():
-                if value is not None:
-                    setattr(ctx, key, value)
-            setup_cli_logging(ctx)
-            logger = get_logger(__name__)
-            logger.debug("Checking status")
-            click.echo("Application is healthy")
-        
+        cli = self.create_test_cli()
         runner = CliTestRunner()
         result = runner.invoke(
-            status_cmd, ["--log-level", "INFO", "--log-level", "DEBUG"]
+            cli, ["--log-level", "INFO", "--log-level", "DEBUG", "status"]
         )
         assert result.exit_code == 0
         # The important part is that the command succeeded - the status message may go to logs
