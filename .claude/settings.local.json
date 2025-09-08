@@ -45,7 +45,8 @@
       "Bash(cargo build:*)",
       "Bash(go build:*)",
       "Bash(./scripts/pretaster:*)",
-      "Bash(./build.sh:*)"
+      "Bash(./build.sh:*)",
+      "Bash(./tests/test-pretaster.sh:*)"
     ],
     "deny": [],
     "ask": [],
