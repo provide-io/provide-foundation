@@ -46,7 +46,9 @@
       "Bash(go build:*)",
       "Bash(./scripts/pretaster:*)",
       "Bash(./build.sh:*)",
-      "Bash(./tests/test-pretaster.sh:*)"
+      "Bash(./tests/test-pretaster.sh:*)",
+      "Bash(/Users/tim/code/gh/provide-io/flavorpack/helpers/taster/dist/taster-go.psp:*)",
+      "Bash(tar:*)"
     ],
     "deny": [],
     "ask": [],
