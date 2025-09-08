@@ -49,7 +49,9 @@
       "Bash(./tests/test-pretaster.sh:*)",
       "Bash(/Users/tim/code/gh/provide-io/flavorpack/helpers/taster/dist/taster-go.psp:*)",
       "Bash(tar:*)",
-      "Read(//private/tmp/**)"
+      "Read(//private/tmp/**)",
+      "Bash(./dist/echo-test.psp:*)",
+      "Bash(./dist/shell-test.psp)"
     ],
     "deny": [],
     "ask": [],
