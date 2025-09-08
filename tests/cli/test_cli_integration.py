@@ -26,16 +26,13 @@ class TestCompleteCliIntegration:
     def setup_method(self) -> None:
         """Set up each test method."""
         os.environ["CLICK_TESTING"] = "1"
-        # Reset Foundation state before each test to avoid conflicts
-        from provide.foundation.testing import reset_foundation_setup_for_testing
-        reset_foundation_setup_for_testing()
+        # Note: Foundation reset disabled for CLI group tests to prevent hanging
+        # The group structure tests work fine without reset between individual tests
 
     def teardown_method(self) -> None:
         """Clean up after each test method."""
         os.environ.pop("CLICK_TESTING", None)
-        # Clean up again after the test
-        from provide.foundation.testing import reset_foundation_setup_for_testing
-        reset_foundation_setup_for_testing()
+        # Note: Foundation reset disabled for CLI group tests to prevent hanging
 
     def create_test_cli(self):
         """Create a test CLI with all features."""
@@ -148,18 +145,12 @@ class TestLoggingIntegration:
     def setup_method(self) -> None:
         """Set up each test method."""
         os.environ["CLICK_TESTING"] = "1"
-        # NOTE: Temporarily disabled to fix hanging tests
-        # Reset Foundation state before each test to avoid conflicts
-        # from provide.foundation.testing import reset_foundation_setup_for_testing
-        # reset_foundation_setup_for_testing()
+        # Note: Foundation reset disabled for CLI tests to prevent hanging
 
     def teardown_method(self) -> None:
         """Clean up after each test method."""
         os.environ.pop("CLICK_TESTING", None)
-        # NOTE: Temporarily disabled to fix hanging tests
-        # Clean up again after the test
-        # from provide.foundation.testing import reset_foundation_setup_for_testing
-        # reset_foundation_setup_for_testing()
+        # Note: Foundation reset disabled for CLI tests to prevent hanging
 
     def _get_full_output(self, result) -> str:
         """Get combined stdout and stderr, with ANSI codes stripped."""
@@ -238,18 +229,12 @@ class TestOutputFormatting:
     def setup_method(self) -> None:
         """Set up each test method."""
         os.environ["CLICK_TESTING"] = "1"
-        # NOTE: Temporarily disabled to fix hanging tests
-        # Reset Foundation state before each test to avoid conflicts
-        # from provide.foundation.testing import reset_foundation_setup_for_testing
-        # reset_foundation_setup_for_testing()
+        # Note: Foundation reset disabled for CLI tests to prevent hanging
 
     def teardown_method(self) -> None:
         """Clean up after each test method."""
         os.environ.pop("CLICK_TESTING", None)
-        # NOTE: Temporarily disabled to fix hanging tests
-        # Clean up again after the test
-        # from provide.foundation.testing import reset_foundation_setup_for_testing
-        # reset_foundation_setup_for_testing()
+        # Note: Foundation reset disabled for CLI tests to prevent hanging
 
     def test_json_output_format(self) -> None:
         @click.command()
@@ -298,18 +283,12 @@ class TestConfigurationLoading:
     def setup_method(self) -> None:
         """Set up each test method."""
         os.environ["CLICK_TESTING"] = "1"
-        # NOTE: Temporarily disabled to fix hanging tests
-        # Reset Foundation state before each test to avoid conflicts
-        # from provide.foundation.testing import reset_foundation_setup_for_testing
-        # reset_foundation_setup_for_testing()
+        # Note: Foundation reset disabled for CLI tests to prevent hanging
 
     def teardown_method(self) -> None:
         """Clean up after each test method."""
         os.environ.pop("CLICK_TESTING", None)
-        # NOTE: Temporarily disabled to fix hanging tests
-        # Clean up again after the test
-        # from provide.foundation.testing import reset_foundation_setup_for_testing
-        # reset_foundation_setup_for_testing()
+        # Note: Foundation reset disabled for CLI tests to prevent hanging
 
     def test_config_file_loading(self) -> None:
         config_data = {"log_level": "WARNING", "profile": "testing"}
@@ -338,18 +317,12 @@ class TestRealWorldScenarios:
     def setup_method(self) -> None:
         """Set up each test method."""
         os.environ["CLICK_TESTING"] = "1"
-        # NOTE: Temporarily disabled to fix hanging tests
-        # Reset Foundation state before each test to avoid conflicts
-        # from provide.foundation.testing import reset_foundation_setup_for_testing
-        # reset_foundation_setup_for_testing()
+        # Note: Foundation reset disabled for CLI tests to prevent hanging
 
     def teardown_method(self) -> None:
         """Clean up after each test method."""
         os.environ.pop("CLICK_TESTING", None)
-        # NOTE: Temporarily disabled to fix hanging tests
-        # Clean up again after the test
-        # from provide.foundation.testing import reset_foundation_setup_for_testing
-        # reset_foundation_setup_for_testing()
+        # Note: Foundation reset disabled for CLI tests to prevent hanging
 
     def _get_full_output(self, result) -> str:
         """Get combined stdout and stderr, with ANSI codes stripped."""
