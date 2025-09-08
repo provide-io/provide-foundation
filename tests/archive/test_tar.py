@@ -108,11 +108,11 @@ class TestTarArchive:
     def test_error_handling(self, tar_archive, temp_directory):
         """Test error handling in TAR operations."""
         temp_path = temp_directory
-            
-            # Test creating archive from non-existent source
-            with pytest.raises(ArchiveError):
-                tar_archive.create(temp_path / "nonexistent", temp_path / "test.tar")
-            
-            # Test extracting non-existent archive
-            with pytest.raises(ArchiveError):
-                tar_archive.extract(temp_path / "nonexistent.tar", temp_path / "output")
+        
+        # Test creating archive from non-existent source
+        with pytest.raises(ArchiveError):
+            tar_archive.create(temp_path / "nonexistent", temp_path / "test.tar")
+        
+        # Test extracting non-existent archive
+        with pytest.raises(ArchiveError):
+            tar_archive.extract(temp_path / "nonexistent.tar", temp_path / "output")

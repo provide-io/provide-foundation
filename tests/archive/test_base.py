@@ -91,56 +91,56 @@ class TestBaseArchiveCommonBehavior:
     def test_create_returns_output_path(self, mock_archiver, temp_directory):
         """The create method should return the output path."""
         temp_path = temp_directory
-            source = temp_path / "source"
-            source.mkdir()
-            output = temp_path / "output.archive"
-            
-            result = mock_archiver.create(source, output)
-            
-            assert result == output
-            assert output.exists()
+        source = temp_path / "source"
+        source.mkdir()
+        output = temp_path / "output.archive"
+        
+        result = mock_archiver.create(source, output)
+        
+        assert result == output
+        assert output.exists()
 
     def test_extract_returns_output_path(self, mock_archiver, temp_directory):
         """The extract method should return the output path."""
         temp_path = temp_directory
-            archive = temp_path / "test.archive"
-            archive.touch()
-            output = temp_path / "extracted"
-            
-            result = mock_archiver.extract(archive, output)
-            
-            assert result == output
-            assert output.exists()
+        archive = temp_path / "test.archive"
+        archive.touch()
+        output = temp_path / "extracted"
+        
+        result = mock_archiver.extract(archive, output)
+        
+        assert result == output
+        assert output.exists()
 
     def test_validate_returns_boolean(self, mock_archiver, temp_directory):
         """The validate method should return a boolean."""
         temp_path = temp_directory
-            
-            # Valid archive (exists)
-            valid_archive = temp_path / "valid.archive"
-            valid_archive.touch()
-            assert mock_archiver.validate(valid_archive) is True
-            
-            # Invalid archive (doesn't exist)
-            invalid_archive = temp_path / "invalid.archive"
-            assert mock_archiver.validate(invalid_archive) is False
+        
+        # Valid archive (exists)
+        valid_archive = temp_path / "valid.archive"
+        valid_archive.touch()
+        assert mock_archiver.validate(valid_archive) is True
+        
+        # Invalid archive (doesn't exist)
+        invalid_archive = temp_path / "invalid.archive"
+        assert mock_archiver.validate(invalid_archive) is False
 
     def test_methods_accept_path_objects(self, mock_archiver, temp_directory):
         """All methods should accept Path objects as arguments."""
         temp_path = temp_directory
-            source = temp_path / "source"
-            source.mkdir()
-            archive = temp_path / "test.archive"
-            output = temp_path / "output"
-            
-            # All these should work with Path objects
-            result1 = mock_archiver.create(source, archive)
-            result2 = mock_archiver.extract(archive, output)
-            result3 = mock_archiver.validate(archive)
-            
-            assert isinstance(result1, Path)
-            assert isinstance(result2, Path)
-            assert isinstance(result3, bool)
+        source = temp_path / "source"
+        source.mkdir()
+        archive = temp_path / "test.archive"
+        output = temp_path / "output"
+        
+        # All these should work with Path objects
+        result1 = mock_archiver.create(source, archive)
+        result2 = mock_archiver.extract(archive, output)
+        result3 = mock_archiver.validate(archive)
+        
+        assert isinstance(result1, Path)
+        assert isinstance(result2, Path)
+        assert isinstance(result3, bool)
 
     def test_error_handling_pattern(self):
         """Test that implementations should raise ArchiveError for failures."""

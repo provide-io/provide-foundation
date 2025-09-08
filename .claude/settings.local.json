@@ -27,7 +27,10 @@
       "Bash(for:*)",
       "Bash(done)",
       "Bash(pkill:*)",
-      "Bash(source:*)"
+      "Bash(source:*)",
+      "Bash(do)",
+      "Bash(echo \"Fixing $file\")",
+      "Bash(sed:*)"
     ],
     "deny": [],
     "ask": [],

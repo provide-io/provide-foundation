@@ -148,20 +148,20 @@ class TestZipArchive:
     def test_error_handling(self, zip_archive, temp_directory):
         """Test error handling in ZIP operations."""
         temp_path = temp_directory
-            
-            # Test creating archive from non-existent source
-            with pytest.raises(ArchiveError):
-                zip_archive.create(temp_path / "nonexistent", temp_path / "test.zip")
-            
-            # Test extracting non-existent archive
-            with pytest.raises(ArchiveError):
-                zip_archive.extract(temp_path / "nonexistent.zip", temp_path / "output")
-            
-            # Test extracting non-existent file from archive
-            test_archive = temp_path / "test.zip"
-            empty_dir = temp_path / "empty"
-            empty_dir.mkdir()
-            zip_archive.create(empty_dir, test_archive)
-            
-            with pytest.raises(ArchiveError):
-                zip_archive.extract_file(test_archive, "nonexistent.txt", temp_path / "out.txt")
+        
+        # Test creating archive from non-existent source
+        with pytest.raises(ArchiveError):
+            zip_archive.create(temp_path / "nonexistent", temp_path / "test.zip")
+        
+        # Test extracting non-existent archive
+        with pytest.raises(ArchiveError):
+            zip_archive.extract(temp_path / "nonexistent.zip", temp_path / "output")
+        
+        # Test extracting non-existent file from archive
+        test_archive = temp_path / "test.zip"
+        empty_dir = temp_path / "empty"
+        empty_dir.mkdir()
+        zip_archive.create(empty_dir, test_archive)
+        
+        with pytest.raises(ArchiveError):
+            zip_archive.extract_file(test_archive, "nonexistent.txt", temp_path / "out.txt")

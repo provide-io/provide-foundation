@@ -133,24 +133,24 @@ class TestGzipCompressor:
     def test_error_handling(self, gzip_compressor, temp_directory):
         """Test error handling in GZIP operations."""
         temp_path = temp_directory
-            
-            # Test compressing non-existent file
-            with pytest.raises(ArchiveError):
-                gzip_compressor.compress_file(
-                    temp_path / "nonexistent.txt",
-                    temp_path / "output.gz"
-                )
-            
-            # Test decompressing invalid data
-            invalid_file = temp_path / "invalid.gz"
-            invalid_file.write_text("not gzip data")
-            
-            with pytest.raises(ArchiveError):
-                gzip_compressor.decompress_file(
-                    invalid_file,
-                    temp_path / "output.txt"
-                )
-            
-            # Test decompressing invalid bytes
-            with pytest.raises(ArchiveError):
-                gzip_compressor.decompress_bytes(b"not gzip data")
+        
+        # Test compressing non-existent file
+        with pytest.raises(ArchiveError):
+            gzip_compressor.compress_file(
+                temp_path / "nonexistent.txt",
+                temp_path / "output.gz"
+            )
+        
+        # Test decompressing invalid data
+        invalid_file = temp_path / "invalid.gz"
+        invalid_file.write_text("not gzip data")
+        
+        with pytest.raises(ArchiveError):
+            gzip_compressor.decompress_file(
+                invalid_file,
+                temp_path / "output.txt"
+            )
+        
+        # Test decompressing invalid bytes
+        with pytest.raises(ArchiveError):
+            gzip_compressor.decompress_bytes(b"not gzip data")

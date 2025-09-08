@@ -36,16 +36,16 @@ class TestOperationChain:
     def test_tar_gzip_chain(self, test_files_structure):
         """Test tar -> gzip chain."""
         temp_path, source = test_files_structure
-            
-            output = temp_path / "archive.tar.gz"
-            
-            chain = OperationChain(operations=['tar', 'gzip'])
-            result = chain.execute(source, output)
-            
-            assert result == output
-            assert output.exists()
-            # Should have gzip magic number
-            assert output.read_bytes()[:2] == b'\x1f\x8b'
+        
+        output = temp_path / "archive.tar.gz"
+        
+        chain = OperationChain(operations=['tar', 'gzip'])
+        result = chain.execute(source, output)
+        
+        assert result == output
+        assert output.exists()
+        # Should have gzip magic number
+        assert output.read_bytes()[:2] == b'\x1f\x8b'
 
     def test_reverse_chain(self, temp_directory):
         """Test reversing operation chain for extraction."""
@@ -54,18 +54,18 @@ class TestOperationChain:
         # Create test file
         source = temp_path / "test.txt"
         source.write_text("Test content")
-            
-            # Compress with chain
-            compressed = temp_path / "test.gz"
-            chain = OperationChain(operations=['gzip'])
-            chain.execute(source, compressed)
-            
-            # Reverse chain to decompress
-            decompressed = temp_path / "decompressed.txt"
-            result = chain.reverse(compressed, decompressed)
-            
-            assert result == decompressed
-            assert decompressed.read_text() == "Test content"
+        
+        # Compress with chain
+        compressed = temp_path / "test.gz"
+        chain = OperationChain(operations=['gzip'])
+        chain.execute(source, compressed)
+        
+        # Reverse chain to decompress
+        decompressed = temp_path / "decompressed.txt"
+        result = chain.reverse(compressed, decompressed)
+        
+        assert result == decompressed
+        assert decompressed.read_text() == "Test content"
 
     def test_invalid_operation(self, temp_directory):
         """Test chain with invalid operation."""
@@ -73,11 +73,11 @@ class TestOperationChain:
         source = temp_path / "test.txt"
         source.write_text("test")
         output = temp_path / "output"
-            
-            chain = OperationChain(operations=['invalid_op'])
-            
-            with pytest.raises(ArchiveError, match="Unknown operation"):
-                chain.execute(source, output)
+        
+        chain = OperationChain(operations=['invalid_op'])
+        
+        with pytest.raises(ArchiveError, match="Unknown operation"):
+            chain.execute(source, output)
 
 
 class TestArchiveOperations:
@@ -172,31 +172,31 @@ class TestArchiveOperations:
     def test_detect_format_by_magic(self, temp_directory):
         """Test format detection by magic numbers."""
         temp_path = temp_directory
-            
-            # Create gzip file
-            gzip_file = temp_path / "test.dat"
-            gzip_file.write_bytes(b'\x1f\x8b' + b'rest of file')
-            assert ArchiveOperations.detect_format(gzip_file) == ['gunzip']
-            
-            # Create bzip2 file
-            bz2_file = temp_path / "test2.dat"
-            bz2_file.write_bytes(b'BZh' + b'rest of file')
-            assert ArchiveOperations.detect_format(bz2_file) == ['bunzip2']
-            
-            # Create zip file
-            zip_file = temp_path / "test3.dat"
-            zip_file.write_bytes(b'PK\x03\x04' + b'rest of file')
-            assert ArchiveOperations.detect_format(zip_file) == ['unzip']
+        
+        # Create gzip file
+        gzip_file = temp_path / "test.dat"
+        gzip_file.write_bytes(b'\x1f\x8b' + b'rest of file')
+        assert ArchiveOperations.detect_format(gzip_file) == ['gunzip']
+        
+        # Create bzip2 file
+        bz2_file = temp_path / "test2.dat"
+        bz2_file.write_bytes(b'BZh' + b'rest of file')
+        assert ArchiveOperations.detect_format(bz2_file) == ['bunzip2']
+        
+        # Create zip file
+        zip_file = temp_path / "test3.dat"
+        zip_file.write_bytes(b'PK\x03\x04' + b'rest of file')
+        assert ArchiveOperations.detect_format(zip_file) == ['unzip']
 
     def test_detect_unknown_format(self, temp_directory):
         """Test detecting unknown format."""
         temp_path = temp_directory
-            
-            unknown = temp_path / "unknown.xyz"
-            unknown.write_text("unknown format")
-            
-            with pytest.raises(ArchiveError, match="Cannot detect format"):
-                ArchiveOperations.detect_format(unknown)
+        
+        unknown = temp_path / "unknown.xyz"
+        unknown.write_text("unknown format")
+        
+        with pytest.raises(ArchiveError, match="Cannot detect format"):
+            ArchiveOperations.detect_format(unknown)
 
     def test_deterministic_archives(self, test_dir):
         """Test deterministic archive creation."""

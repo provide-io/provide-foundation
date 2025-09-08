@@ -132,24 +132,24 @@ class TestBzip2Compressor:
     def test_error_handling(self, bzip2_compressor, temp_directory):
         """Test error handling in BZIP2 operations."""
         temp_path = temp_directory
-            
-            # Test compressing non-existent file
-            with pytest.raises(ArchiveError):
-                bzip2_compressor.compress_file(
-                    temp_path / "nonexistent.txt",
-                    temp_path / "output.bz2"
-                )
-            
-            # Test decompressing invalid data
-            invalid_file = temp_path / "invalid.bz2"
-            invalid_file.write_text("not bzip2 data")
-            
-            with pytest.raises(ArchiveError):
-                bzip2_compressor.decompress_file(
-                    invalid_file,
-                    temp_path / "output.txt"
-                )
-            
-            # Test decompressing invalid bytes
-            with pytest.raises(ArchiveError):
-                bzip2_compressor.decompress_bytes(b"not bzip2 data")
+        
+        # Test compressing non-existent file
+        with pytest.raises(ArchiveError):
+            bzip2_compressor.compress_file(
+                temp_path / "nonexistent.txt",
+                temp_path / "output.bz2"
+            )
+        
+        # Test decompressing invalid data
+        invalid_file = temp_path / "invalid.bz2"
+        invalid_file.write_text("not bzip2 data")
+        
+        with pytest.raises(ArchiveError):
+            bzip2_compressor.decompress_file(
+                invalid_file,
+                temp_path / "output.txt"
+            )
+        
+        # Test decompressing invalid bytes
+        with pytest.raises(ArchiveError):
+            bzip2_compressor.decompress_bytes(b"not bzip2 data")
