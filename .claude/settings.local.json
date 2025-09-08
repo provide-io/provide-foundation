@@ -43,7 +43,8 @@
       "Bash(workenv/wrkenv_darwin_arm64/bin/flavor pack:*)",
       "Bash(timeout:*)",
       "Bash(cargo build:*)",
-      "Bash(go build:*)"
+      "Bash(go build:*)",
+      "Bash(./scripts/pretaster:*)"
     ],
     "deny": [],
     "ask": [],
