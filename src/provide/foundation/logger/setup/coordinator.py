@@ -81,10 +81,40 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
             foundation_stream = get_safe_stderr()
 
         # Configure structlog for core setup logger
+        from provide.foundation.logger.custom_processors import filter_by_level_custom
+        from provide.foundation.types import LogLevelStr
+        
+        # Get the foundation log level and convert to LogLevelStr  
+        log_level = get_foundation_log_level()
+        level_names = {
+            stdlib_logging.CRITICAL: "CRITICAL",
+            stdlib_logging.ERROR: "ERROR", 
+            stdlib_logging.WARNING: "WARNING",
+            stdlib_logging.INFO: "INFO",
+            stdlib_logging.DEBUG: "DEBUG",
+            stdlib_logging.NOTSET: "DEBUG",
+        }
+        level_str: LogLevelStr = level_names.get(log_level, "INFO")
+        
+        # Level mapping for the filter
+        level_to_numeric_map = {
+            "CRITICAL": stdlib_logging.CRITICAL,
+            "ERROR": stdlib_logging.ERROR,
+            "WARNING": stdlib_logging.WARNING, 
+            "INFO": stdlib_logging.INFO,
+            "DEBUG": stdlib_logging.DEBUG,
+            "NOTSET": stdlib_logging.NOTSET,
+        }
+        
         structlog.configure(
             processors=[
                 structlog.processors.add_log_level,
                 structlog.processors.TimeStamper(fmt="iso"),
+                filter_by_level_custom(
+                    default_level_str=level_str,
+                    module_levels={},  # No per-module levels for setup logger
+                    level_to_numeric_map=level_to_numeric_map,
+                ),
                 structlog.dev.ConsoleRenderer(),
             ],
             logger_factory=structlog.PrintLoggerFactory(file=foundation_stream),
