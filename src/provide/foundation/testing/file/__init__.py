@@ -13,6 +13,13 @@ from provide.foundation.testing.file.fixtures import (
     nested_directory_structure,
     empty_directory,
     readonly_file,
+    temp_named_file,
+    temp_file_with_content,
+    temp_binary_file,
+    temp_csv_file,
+    temp_json_file,
+    temp_symlink,
+    temp_executable_file,
 )
 
 __all__ = [
@@ -23,4 +30,11 @@ __all__ = [
     "nested_directory_structure",
     "empty_directory",
     "readonly_file",
+    "temp_named_file",
+    "temp_file_with_content",
+    "temp_binary_file",
+    "temp_csv_file",
+    "temp_json_file",
+    "temp_symlink",
+    "temp_executable_file",
 ]

@@ -95,7 +95,7 @@ def __getattr__(name: str) -> Any:
         return getattr(fixtures_module, name)
     
     # Import submodules directly
-    elif name in ["archive", "common", "file", "process", "transport"]:
+    elif name in ["archive", "common", "file", "process", "transport", "mocking", "time", "threading"]:
         import importlib
         return importlib.import_module(f"provide.foundation.testing.{name}")
     
