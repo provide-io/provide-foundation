@@ -39,6 +39,7 @@ class FieldMapping:
         value_type: Expected type of the field value
         event_set_name: Name of the EventSet to use for enrichment
         default_override_key: Override the default key for this specific field
+        default_value: Default value to use if field is not present
     """
     
     log_key: str
@@ -46,6 +47,7 @@ class FieldMapping:
     value_type: str | None = field(default=None)
     event_set_name: str | None = field(default=None)
     default_override_key: str | None = field(default=None)
+    default_value: Any | None = field(default=None)
 
 
 @define(frozen=True, slots=True)
