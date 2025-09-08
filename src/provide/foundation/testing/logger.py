@@ -89,11 +89,13 @@ def reset_foundation_state() -> None:
     structlog.reset_defaults()
 
     # Reset stream state
-    # NOTE: Temporarily disabled as it can cause hanging in CLI tests
-    # reset_streams()
+    reset_streams()
 
     # Reset OpenTelemetry providers to avoid "Overriding" warnings and stream closure
-    _reset_opentelemetry_providers()
+    # Note: OpenTelemetry providers are designed to prevent override for safety.
+    # In test environments, we suppress this reset to avoid hanging/blocking.
+    # The warnings are harmless in test context.
+    # _reset_opentelemetry_providers()
 
     # Reset foundation logger state
     foundation_logger._is_configured_by_setup = False
@@ -113,21 +115,19 @@ def reset_foundation_setup_for_testing() -> None:
     reset_foundation_state()
     
     # Clear and re-initialize the hub for test isolation
-    # NOTE: Temporarily disabled as it can cause hanging in CLI tests
-    # try:
-    #     from provide.foundation.hub.manager import clear_hub
-    #     clear_hub()
-    # except ImportError:
-    #     pass
+    try:
+        from provide.foundation.hub.manager import clear_hub
+        clear_hub()
+    except ImportError:
+        pass
     
     # Re-register HTTP transport for tests that need it
-    # NOTE: Temporarily disabled as it can cause hanging in CLI tests
-    # try:
-    #     from provide.foundation.transport.http import _register_http_transport
-    #     _register_http_transport()
-    # except ImportError:
-    #     # Transport module not available
-    #     pass
+    try:
+        from provide.foundation.transport.http import _register_http_transport
+        _register_http_transport()
+    except ImportError:
+        # Transport module not available
+        pass
 
 
 __all__ = [
