@@ -25,41 +25,52 @@ def _reset_opentelemetry_providers() -> None:
     and stream closure issues by properly resetting the global providers.
     """
     try:
-        # Reset tracing provider by resetting the Once flag
+        # Reset tracing provider more thoroughly
         import opentelemetry.trace as otel_trace
-
+        
+        # Reset the Once flag to allow re-initialization
         if hasattr(otel_trace, "_TRACER_PROVIDER_SET_ONCE"):
             once_obj = otel_trace._TRACER_PROVIDER_SET_ONCE
             if hasattr(once_obj, "_done"):
                 once_obj._done = False
+            if hasattr(once_obj, "_lock"):
+                with once_obj._lock:
+                    once_obj._done = False
+        
         # Reset to NoOpTracerProvider
         from opentelemetry.trace import NoOpTracerProvider
-
-        otel_trace._TRACER_PROVIDER = NoOpTracerProvider()
+        otel_trace.set_tracer_provider(NoOpTracerProvider())
+        
     except ImportError:
         # OpenTelemetry tracing not available
         pass
     except Exception:
-        # Ignore errors during reset
+        # Ignore errors during reset - better to continue than fail
         pass
 
     try:
-        # Reset metrics provider by resetting the Once flag
+        # Reset metrics provider more thoroughly
+        import opentelemetry.metrics as otel_metrics
         import opentelemetry.metrics._internal as otel_metrics_internal
-
+        
+        # Reset the Once flag to allow re-initialization
         if hasattr(otel_metrics_internal, "_METER_PROVIDER_SET_ONCE"):
             once_obj = otel_metrics_internal._METER_PROVIDER_SET_ONCE
             if hasattr(once_obj, "_done"):
                 once_obj._done = False
+            if hasattr(once_obj, "_lock"):
+                with once_obj._lock:
+                    once_obj._done = False
+        
         # Reset to NoOpMeterProvider
         from opentelemetry.metrics import NoOpMeterProvider
-
-        otel_metrics_internal._METER_PROVIDER = NoOpMeterProvider()
+        otel_metrics.set_meter_provider(NoOpMeterProvider())
+        
     except ImportError:
         # OpenTelemetry metrics not available
         pass
     except Exception:
-        # Ignore errors during reset
+        # Ignore errors during reset - better to continue than fail
         pass
 
 
@@ -82,8 +93,7 @@ def reset_foundation_state() -> None:
     # reset_streams()
 
     # Reset OpenTelemetry providers to avoid "Overriding" warnings and stream closure
-    # NOTE: Temporarily disabled as it can cause hanging in CLI tests
-    # _reset_opentelemetry_providers()
+    _reset_opentelemetry_providers()
 
     # Reset foundation logger state
     foundation_logger._is_configured_by_setup = False
@@ -99,24 +109,8 @@ def reset_foundation_setup_for_testing() -> None:
     This function ensures clean test isolation by resetting all
     Foundation logging state between test runs.
     """
-    # Minimal reset to avoid hanging issues in CLI tests
-    try:
-        # Only reset structlog state - avoid stream and provider resets
-        import structlog
-        structlog.reset_defaults()
-        
-        # Reset foundation logger state minimally
-        from provide.foundation.logger.core import (
-            _LAZY_SETUP_STATE,
-            logger as foundation_logger,
-        )
-        foundation_logger._is_configured_by_setup = False
-        foundation_logger._active_config = None
-        foundation_logger._active_resolved_emoji_config = None
-        _LAZY_SETUP_STATE.update({"done": False, "error": None, "in_progress": False})
-    except Exception:
-        # If anything fails, just ignore - testing should still work
-        pass
+    # Full reset but with improved OpenTelemetry handling
+    reset_foundation_state()
     
     # Clear and re-initialize the hub for test isolation
     # NOTE: Temporarily disabled as it can cause hanging in CLI tests
