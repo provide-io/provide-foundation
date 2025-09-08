@@ -12,8 +12,6 @@ import pytest
 from provide.foundation.hub.components import (
     ComponentCategory,
     get_component_registry,
-    find_emoji_set_for_domain,
-    get_default_emoji_set,
     resolve_config_value,
     get_config_chain,
     cleanup_all_components,
@@ -225,65 +223,3 @@ class TestConfigSourceFunctionality:
         registry.clear()
 
 
-class TestEmojiSetFunctionality:
-    """Test emoji set functionality coverage."""
-
-    def test_find_emoji_set_for_domain_fallback_to_default(self):
-        """Test that unknown domains fall back to default emoji set."""
-        registry = get_component_registry()
-
-        # Ensure no domain-specific sets are registered for our test domain
-        result = find_emoji_set_for_domain("nonexistent_domain")
-
-        # Should return default emoji set
-        assert result is not None
-        assert isinstance(result, EmojiSet)
-
-        # Cleanup
-        registry.clear()
-
-    def test_find_emoji_set_for_domain_with_priority(self):
-        """Test emoji set selection respects priority ordering."""
-        registry = get_component_registry()
-
-        # Create emoji sets with different priorities
-        low_priority_set = EmojiSet("low", {"info": "🔵"})
-        high_priority_set = EmojiSet("high", {"info": "🔴"})
-
-        registry.register(
-            name="low_priority_emoji_set",
-            value=low_priority_set,
-            dimension=ComponentCategory.EMOJI_SET.value,
-            metadata={"domain": "test_domain", "priority": 1},
-        )
-
-        registry.register(
-            name="high_priority_emoji_set",
-            value=high_priority_set,
-            dimension=ComponentCategory.EMOJI_SET.value,
-            metadata={"domain": "test_domain", "priority": 2},
-        )
-
-        # Should return highest priority set
-        result = find_emoji_set_for_domain("test_domain")
-        assert result is high_priority_set
-
-        # Cleanup
-        registry.clear()
-
-    def test_get_default_emoji_set_fallback(self):
-        """Test default emoji set retrieval."""
-        registry = get_component_registry()
-
-        # Clear any existing emoji sets
-        registry.clear()
-
-        # Bootstrap to ensure default set exists
-        bootstrap_foundation()
-
-        default_set = get_default_emoji_set()
-        assert default_set is not None
-        assert isinstance(default_set, EmojiSet)
-
-        # Should be the default emoji set
-        assert default_set.name == "foundation_default"
