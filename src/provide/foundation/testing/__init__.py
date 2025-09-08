@@ -94,7 +94,12 @@ def __getattr__(name: str) -> Any:
 
         return getattr(fixtures_module, name)
     
-    # File testing utilities
+    # Import submodules directly
+    elif name in ["archive", "common", "file", "process", "transport"]:
+        import importlib
+        return importlib.import_module(f"provide.foundation.testing.{name}")
+    
+    # File testing utilities (backward compatibility)
     elif name in [
         "temp_directory",
         "test_files_structure",
@@ -104,11 +109,10 @@ def __getattr__(name: str) -> Any:
         "empty_directory",
         "readonly_file",
     ]:
-        import provide.foundation.testing.files as files_module
-
-        return getattr(files_module, name)
+        import provide.foundation.testing.file.fixtures as file_module
+        return getattr(file_module, name)
     
-    # Async testing utilities
+    # Process/async testing utilities (backward compatibility)
     elif name in [
         "clean_event_loop",
         "async_timeout",
@@ -121,11 +125,10 @@ def __getattr__(name: str) -> Any:
         "async_lock",
         "mock_async_sleep",
     ]:
-        import provide.foundation.testing.async_helpers as async_module
-
-        return getattr(async_module, name)
+        import provide.foundation.testing.process.fixtures as process_module
+        return getattr(process_module, name)
     
-    # Mock utilities
+    # Common mock utilities (backward compatibility)
     elif name in [
         "mock_http_config",
         "mock_telemetry_config",
@@ -138,11 +141,10 @@ def __getattr__(name: str) -> Any:
         "mock_file_system",
         "mock_subprocess",
     ]:
-        import provide.foundation.testing.mocks as mocks_module
-
-        return getattr(mocks_module, name)
+        import provide.foundation.testing.common.fixtures as common_module
+        return getattr(common_module, name)
     
-    # Network testing utilities
+    # Transport/network testing utilities (backward compatibility)
     elif name in [
         "free_port",
         "mock_server",
@@ -154,9 +156,20 @@ def __getattr__(name: str) -> Any:
         "network_timeout",
         "mock_http_headers",
     ]:
-        import provide.foundation.testing.network as network_module
-
-        return getattr(network_module, name)
+        import provide.foundation.testing.transport.fixtures as transport_module
+        return getattr(transport_module, name)
+    
+    # Archive testing utilities
+    elif name in [
+        "archive_test_content",
+        "large_file_for_compression",
+        "multi_format_archives",
+        "archive_with_permissions",
+        "corrupted_archives",
+        "archive_stress_test_files",
+    ]:
+        import provide.foundation.testing.archive.fixtures as archive_module
+        return getattr(archive_module, name)
 
     # Crypto fixtures (many fixtures)
     elif name in [
