@@ -36,7 +36,8 @@
       "Bash(echo \"Updating $file\")",
       "Bash(if ! grep -q \"from provide.foundation.testing.file import\" \"$file\")",
       "Bash(fi)",
-      "Bash(gh workflow:*)"
+      "Bash(gh workflow:*)",
+      "Bash(timeout 120 pytest -n auto --tb=no --quiet --timeout=10)"
     ],
     "deny": [],
     "ask": [],
