@@ -15,6 +15,9 @@ import sys
 
 import pytest
 
+# Set DEBUG log level for all tests
+os.environ.setdefault("PROVIDE_LOG_LEVEL", "DEBUG")
+
 from provide.foundation.testing import (
     set_log_stream_for_testing,
     reset_foundation_setup_for_testing,
