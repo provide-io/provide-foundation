@@ -52,7 +52,8 @@
       "Read(//private/tmp/**)",
       "Bash(./dist/echo-test.psp:*)",
       "Bash(./dist/shell-test.psp)",
-      "Read(//Users/tim/.cache/flavor/workenv/echo-test/**)"
+      "Read(//Users/tim/.cache/flavor/workenv/echo-test/**)",
+      "Bash(/Users/tim/code/gh/provide-io/flavorpack/ingredients/bin/flavor-go-builder-darwin_arm64 --manifest configs/test-echo.json --launcher-bin /Users/tim/code/gh/provide-io/flavorpack/ingredients/bin/flavor-go-launcher-darwin_arm64 --output dist/echo-test-fixed.psp --key-seed test123)"
     ],
     "deny": [],
     "ask": [],
