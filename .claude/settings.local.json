@@ -42,7 +42,8 @@
       "Bash(workenv/wrkenv_darwin_arm64/bin/python:*)",
       "Bash(workenv/wrkenv_darwin_arm64/bin/flavor pack:*)",
       "Bash(timeout:*)",
-      "Bash(cargo build:*)"
+      "Bash(cargo build:*)",
+      "Bash(go build:*)"
     ],
     "deny": [],
     "ask": [],
