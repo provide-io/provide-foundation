@@ -81,7 +81,8 @@ def reset_foundation_state() -> None:
     reset_streams()
 
     # Reset OpenTelemetry providers to avoid "Overriding" warnings and stream closure
-    _reset_opentelemetry_providers()
+    # NOTE: Temporarily disabled as it can cause hanging in CLI tests
+    # _reset_opentelemetry_providers()
 
     # Reset foundation logger state
     foundation_logger._is_configured_by_setup = False
