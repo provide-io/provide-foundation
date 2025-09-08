@@ -171,7 +171,7 @@ def test_find_files_non_recursive(temp_directory) -> None:
     (temp_directory / "subdir" / "test3.py").write_text("code")
 
     # Find Python files non-recursively
-    files = find_files("*.py", root=temp_dir, recursive=False)
+    files = find_files("*.py", root=temp_directory, recursive=False)
 
     assert len(files) == 2
     names = {f.name for f in files}

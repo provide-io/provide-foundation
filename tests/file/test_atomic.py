@@ -145,7 +145,7 @@ def test_atomic_write_handles_errors(temp_directory) -> None:
         atomic_write(path, b"Data")
 
     # Check no temp files left behind
-    temp_files = list(temp_dir.glob(".actually_a_dir.*.tmp"))
+    temp_files = list(temp_directory.glob(".actually_a_dir.*.tmp"))
     assert len(temp_files) == 0
 
 
