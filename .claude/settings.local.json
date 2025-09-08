@@ -51,7 +51,8 @@
       "Bash(tar:*)",
       "Read(//private/tmp/**)",
       "Bash(./dist/echo-test.psp:*)",
-      "Bash(./dist/shell-test.psp)"
+      "Bash(./dist/shell-test.psp)",
+      "Read(//Users/tim/.cache/flavor/workenv/echo-test/**)"
     ],
     "deny": [],
     "ask": [],
