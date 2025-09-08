@@ -57,7 +57,8 @@
       "Bash(FLAVOR_LOG_LEVEL=debug FLAVOR_INSECURE=1 /Users/tim/code/gh/provide-io/flavorpack/dist/flavor.psp --version)",
       "Bash(/Users/tim/code/gh/provide-io/flavorpack/ingredients/bin/flavor-rs-builder-darwin_arm64:*)",
       "Bash(FLAVOR_INSECURE=1 dist/flavor-fixed.psp --version)",
-      "Bash(xxd:*)"
+      "Bash(xxd:*)",
+      "Bash(make:*)"
     ],
     "deny": [],
     "ask": [],
