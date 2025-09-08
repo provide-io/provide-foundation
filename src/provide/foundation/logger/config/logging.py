@@ -28,7 +28,7 @@ class LoggingConfig(BaseConfig):
     """Configuration specific to logging behavior within Foundation Telemetry."""
 
     default_level: LogLevelStr = field(
-        default="DEBUG",
+        default="WARNING",
         env_var="PROVIDE_LOG_LEVEL",
         description="Default logging level",
     )
