@@ -101,6 +101,9 @@ docs = [
     "mkdocs-section-index>=0.3.0",
     "mike>=2.0.0",
 ]
+protobuf = [
+    "protobuf>=6.32.0",
+]
 
 ################################################################################
 # Pytest Configuration
