@@ -1,6 +1,5 @@
 """Tests for GZIP compression implementation."""
 
-import tempfile
 from pathlib import Path
 from io import BytesIO
 
@@ -19,16 +18,9 @@ class TestGzipCompressor:
         return GzipCompressor()
 
     @pytest.fixture
-    def test_file(self):
+    def test_file(self, temp_file):
         """Create a test file."""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
-            f.write("This is test content for compression.\n" * 100)
-            temp_path = Path(f.name)
-        
-        yield temp_path
-        
-        # Cleanup
-        temp_path.unlink(missing_ok=True)
+        return temp_file("This is test content for compression.\n" * 100, ".txt")
 
     def test_compress_file(self, gzip_compressor, test_file):
         """Test compressing a file."""
@@ -138,10 +130,9 @@ class TestGzipCompressor:
         with pytest.raises(ValueError):
             GzipCompressor(level=10)
 
-    def test_error_handling(self, gzip_compressor):
+    def test_error_handling(self, gzip_compressor, temp_directory):
         """Test error handling in GZIP operations."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = Path(temp_dir)
+        temp_path = temp_directory
             
             # Test compressing non-existent file
             with pytest.raises(ArchiveError):

@@ -1,6 +1,5 @@
 """Tests for TAR archive implementation."""
 
-import tempfile
 from pathlib import Path
 
 import pytest
@@ -17,30 +16,9 @@ class TestTarArchive:
         """Create a TAR archive instance."""
         return TarArchive()
 
-    @pytest.fixture
-    def test_files(self):
-        """Create test files in a temporary directory."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = Path(temp_dir)
-            
-            # Create test directory structure
-            source = temp_path / "source"
-            source.mkdir()
-            
-            # Create test files
-            (source / "file1.txt").write_text("Content 1")
-            (source / "file2.txt").write_text("Content 2")
-            
-            # Create subdirectory with files
-            subdir = source / "subdir"
-            subdir.mkdir()
-            (subdir / "file3.txt").write_text("Content 3")
-            
-            yield temp_path, source
-
-    def test_create_tar_archive(self, tar_archive, test_files):
+    def test_create_tar_archive(self, tar_archive, test_files_structure):
         """Test creating a TAR archive."""
-        temp_path, source = test_files
+        temp_path, source = test_files_structure
         output = temp_path / "test.tar"
         
         result = tar_archive.create(source, output)
@@ -49,9 +27,9 @@ class TestTarArchive:
         assert output.exists()
         assert output.stat().st_size > 0
 
-    def test_extract_tar_archive(self, tar_archive, test_files):
+    def test_extract_tar_archive(self, tar_archive, test_files_structure):
         """Test extracting a TAR archive."""
-        temp_path, source = test_files
+        temp_path, source = test_files_structure
         archive = temp_path / "test.tar"
         output = temp_path / "extracted"
         
@@ -67,9 +45,9 @@ class TestTarArchive:
         assert (output / "source" / "file1.txt").read_text() == "Content 1"
         assert (output / "source" / "subdir" / "file3.txt").exists()
 
-    def test_validate_tar_archive(self, tar_archive, test_files):
+    def test_validate_tar_archive(self, tar_archive, test_files_structure):
         """Test validating a TAR archive."""
-        temp_path, source = test_files
+        temp_path, source = test_files_structure
         archive = temp_path / "test.tar"
         
         # Create valid archive
@@ -84,9 +62,9 @@ class TestTarArchive:
         # Test non-existent file
         assert tar_archive.validate(temp_path / "nonexistent.tar") is False
 
-    def test_deterministic_mode(self, test_files):
+    def test_deterministic_mode(self, test_files_structure):
         """Test deterministic TAR creation."""
-        temp_path, source = test_files
+        temp_path, source = test_files_structure
         
         # Create two archives with deterministic mode
         tar1 = TarArchive(deterministic=True)
@@ -104,9 +82,9 @@ class TestTarArchive:
         assert tar1.validate(output1)
         assert tar2.validate(output2)
 
-    def test_preserve_permissions(self, test_files):
+    def test_preserve_permissions(self, test_files_structure):
         """Test permission preservation."""
-        temp_path, source = test_files
+        temp_path, source = test_files_structure
         
         # Set specific permissions
         test_file = source / "executable.sh"
@@ -127,10 +105,9 @@ class TestTarArchive:
         # Check if executable bit is preserved (at least for owner)
         assert extracted_file.stat().st_mode & 0o100
 
-    def test_error_handling(self, tar_archive):
+    def test_error_handling(self, tar_archive, temp_directory):
         """Test error handling in TAR operations."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = Path(temp_dir)
+        temp_path = temp_directory
             
             # Test creating archive from non-existent source
             with pytest.raises(ArchiveError):

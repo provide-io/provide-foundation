@@ -1,6 +1,5 @@
 """Tests for the BaseArchive abstract interface."""
 
-import tempfile
 from abc import ABCMeta
 from pathlib import Path
 from unittest.mock import Mock
@@ -89,10 +88,9 @@ class TestBaseArchiveCommonBehavior:
         
         return MockArchiver()
 
-    def test_create_returns_output_path(self, mock_archiver):
+    def test_create_returns_output_path(self, mock_archiver, temp_directory):
         """The create method should return the output path."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = Path(temp_dir)
+        temp_path = temp_directory
             source = temp_path / "source"
             source.mkdir()
             output = temp_path / "output.archive"
@@ -102,10 +100,9 @@ class TestBaseArchiveCommonBehavior:
             assert result == output
             assert output.exists()
 
-    def test_extract_returns_output_path(self, mock_archiver):
+    def test_extract_returns_output_path(self, mock_archiver, temp_directory):
         """The extract method should return the output path."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = Path(temp_dir)
+        temp_path = temp_directory
             archive = temp_path / "test.archive"
             archive.touch()
             output = temp_path / "extracted"
@@ -115,10 +112,9 @@ class TestBaseArchiveCommonBehavior:
             assert result == output
             assert output.exists()
 
-    def test_validate_returns_boolean(self, mock_archiver):
+    def test_validate_returns_boolean(self, mock_archiver, temp_directory):
         """The validate method should return a boolean."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = Path(temp_dir)
+        temp_path = temp_directory
             
             # Valid archive (exists)
             valid_archive = temp_path / "valid.archive"
@@ -129,10 +125,9 @@ class TestBaseArchiveCommonBehavior:
             invalid_archive = temp_path / "invalid.archive"
             assert mock_archiver.validate(invalid_archive) is False
 
-    def test_methods_accept_path_objects(self, mock_archiver):
+    def test_methods_accept_path_objects(self, mock_archiver, temp_directory):
         """All methods should accept Path objects as arguments."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = Path(temp_dir)
+        temp_path = temp_directory
             source = temp_path / "source"
             source.mkdir()
             archive = temp_path / "test.archive"
