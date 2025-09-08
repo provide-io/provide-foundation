@@ -148,14 +148,14 @@ def test_touch_creates_parent_dirs(temp_directory) -> None:
 def test_find_files_basic(temp_directory) -> None:
     """Test finding files with basic pattern."""
     # Create test files
-    (temp_dir / "test1.py").write_text("code")
-    (temp_dir / "test2.py").write_text("code")
-    (temp_dir / "test.txt").write_text("text")
-    (temp_dir / "subdir").mkdir()
-    (temp_dir / "subdir" / "test3.py").write_text("code")
+    (temp_directory / "test1.py").write_text("code")
+    (temp_directory / "test2.py").write_text("code")
+    (temp_directory / "test.txt").write_text("text")
+    (temp_directory / "subdir").mkdir()
+    (temp_directory / "subdir" / "test3.py").write_text("code")
 
     # Find Python files
-    files = find_files("*.py", root=temp_dir)
+    files = find_files("*.py", root=temp_directory)
 
     assert len(files) == 3
     names = {f.name for f in files}
@@ -165,10 +165,10 @@ def test_find_files_basic(temp_directory) -> None:
 def test_find_files_non_recursive(temp_directory) -> None:
     """Test non-recursive file finding."""
     # Create test files
-    (temp_dir / "test1.py").write_text("code")
-    (temp_dir / "test2.py").write_text("code")
-    (temp_dir / "subdir").mkdir()
-    (temp_dir / "subdir" / "test3.py").write_text("code")
+    (temp_directory / "test1.py").write_text("code")
+    (temp_directory / "test2.py").write_text("code")
+    (temp_directory / "subdir").mkdir()
+    (temp_directory / "subdir" / "test3.py").write_text("code")
 
     # Find Python files non-recursively
     files = find_files("*.py", root=temp_dir, recursive=False)
@@ -181,15 +181,15 @@ def test_find_files_non_recursive(temp_directory) -> None:
 def test_find_files_nested_pattern(temp_directory) -> None:
     """Test finding files with nested pattern."""
     # Create test structure
-    (temp_dir / "src").mkdir()
-    (temp_dir / "src" / "main.py").write_text("code")
-    (temp_dir / "tests").mkdir()
-    (temp_dir / "tests" / "test_main.py").write_text("test")
-    (temp_dir / "docs").mkdir()
-    (temp_dir / "docs" / "readme.md").write_text("docs")
+    (temp_directory / "src").mkdir()
+    (temp_directory / "src" / "main.py").write_text("code")
+    (temp_directory / "tests").mkdir()
+    (temp_directory / "tests" / "test_main.py").write_text("test")
+    (temp_directory / "docs").mkdir()
+    (temp_directory / "docs" / "readme.md").write_text("docs")
 
     # Find files in tests directory
-    files = find_files("tests/*.py", root=temp_dir)
+    files = find_files("tests/*.py", root=temp_directory)
 
     assert len(files) == 1
     assert files[0].name == "test_main.py"
@@ -207,10 +207,10 @@ def test_find_files_missing_root(temp_directory) -> None:
 def test_find_files_excludes_directories(temp_directory) -> None:
     """Test find_files excludes directories."""
     # Create files and directories
-    (temp_dir / "file.txt").write_text("content")
-    (temp_dir / "dir.txt").mkdir()  # Directory with .txt name
+    (temp_directory / "file.txt").write_text("content")
+    (temp_directory / "dir.txt").mkdir()  # Directory with .txt name
 
-    files = find_files("*.txt", root=temp_dir)
+    files = find_files("*.txt", root=temp_directory)
 
     assert len(files) == 1
     assert files[0].name == "file.txt"
