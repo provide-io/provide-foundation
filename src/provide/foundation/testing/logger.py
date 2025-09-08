@@ -99,9 +99,24 @@ def reset_foundation_setup_for_testing() -> None:
     This function ensures clean test isolation by resetting all
     Foundation logging state between test runs.
     """
-    # NOTE: Temporarily disabled as it can cause hanging in CLI tests
-    # reset_foundation_state()
-    pass
+    # Minimal reset to avoid hanging issues in CLI tests
+    try:
+        # Only reset structlog state - avoid stream and provider resets
+        import structlog
+        structlog.reset_defaults()
+        
+        # Reset foundation logger state minimally
+        from provide.foundation.logger.core import (
+            _LAZY_SETUP_STATE,
+            logger as foundation_logger,
+        )
+        foundation_logger._is_configured_by_setup = False
+        foundation_logger._active_config = None
+        foundation_logger._active_resolved_emoji_config = None
+        _LAZY_SETUP_STATE.update({"done": False, "error": None, "in_progress": False})
+    except Exception:
+        # If anything fails, just ignore - testing should still work
+        pass
     
     # Clear and re-initialize the hub for test isolation
     # NOTE: Temporarily disabled as it can cause hanging in CLI tests
