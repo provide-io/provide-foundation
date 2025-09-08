@@ -30,7 +30,12 @@
       "Bash(source:*)",
       "Bash(do)",
       "Bash(echo \"Fixing $file\")",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(if grep -q \"import tempfile\" \"$file\")",
+      "Bash(then)",
+      "Bash(echo \"Updating $file\")",
+      "Bash(if ! grep -q \"from provide.foundation.testing.file import\" \"$file\")",
+      "Bash(fi)"
     ],
     "deny": [],
     "ask": [],

@@ -2,11 +2,10 @@
 
 import os
 from pathlib import Path
-import tempfile
 from typing import Never
 
 import pytest
-
+from provide.foundation.testing.file import temp_directory
 from provide.foundation.file.directory import (
     ensure_dir,
     ensure_parent_dir,
@@ -15,7 +14,7 @@ from provide.foundation.file.directory import (
 )
 
 
-@pytest.fixture
+
 def base_temp_dir():
     """Create a base temporary directory for tests."""
     with tempfile.TemporaryDirectory() as td:
@@ -122,7 +121,7 @@ def test_ensure_parent_dir_root_file(base_temp_dir) -> None:
 
 
 def test_temp_dir_creates_and_cleans() -> None:
-    """Test temp_dir context manager creates and cleans up."""
+    """Test temp_directory context manager creates and cleans up."""
     temp_path = None
 
     with temp_dir(prefix="test_") as td:
@@ -141,7 +140,7 @@ def test_temp_dir_creates_and_cleans() -> None:
 
 
 def test_temp_dir_no_cleanup() -> None:
-    """Test temp_dir without cleanup."""
+    """Test temp_directory without cleanup."""
     temp_path = None
 
     with temp_dir(prefix="test_", cleanup=False) as td:
@@ -161,7 +160,7 @@ def test_temp_dir_no_cleanup() -> None:
 
 
 def test_temp_dir_exception_still_cleans() -> Never:
-    """Test temp_dir cleans up even on exception."""
+    """Test temp_directory cleans up even on exception."""
     temp_path = None
 
     with pytest.raises(ValueError), temp_dir() as td:

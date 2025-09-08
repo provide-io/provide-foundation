@@ -1,11 +1,10 @@
 """Tests for file utility functions."""
 
 from pathlib import Path
-import tempfile
 import time
 
 import pytest
-
+from provide.foundation.testing.file import temp_directory
 from provide.foundation.file.utils import (
     backup_file,
     find_files,
@@ -15,16 +14,12 @@ from provide.foundation.file.utils import (
 )
 
 
-@pytest.fixture
-def temp_dir():
-    """Create a temporary directory for tests."""
-    with tempfile.TemporaryDirectory() as td:
-        yield Path(td)
 
 
-def test_get_size_existing_file(temp_dir) -> None:
+
+def test_get_size_existing_file(temp_directory) -> None:
     """Test getting size of existing file."""
-    path = temp_dir / "test.txt"
+    path = temp_directory / "test.txt"
     content = b"Hello, World!"
     path.write_bytes(content)
 
@@ -32,35 +27,35 @@ def test_get_size_existing_file(temp_dir) -> None:
     assert size == len(content)
 
 
-def test_get_size_missing_file(temp_dir) -> None:
+def test_get_size_missing_file(temp_directory) -> None:
     """Test getting size of missing file returns 0."""
-    path = temp_dir / "nonexistent.txt"
+    path = temp_directory / "nonexistent.txt"
 
     size = get_size(path)
     assert size == 0
 
 
-def test_get_size_empty_file(temp_dir) -> None:
+def test_get_size_empty_file(temp_directory) -> None:
     """Test getting size of empty file."""
-    path = temp_dir / "empty.txt"
+    path = temp_directory / "empty.txt"
     path.touch()
 
     size = get_size(path)
     assert size == 0
 
 
-def test_get_size_with_string_path(temp_dir) -> None:
+def test_get_size_with_string_path(temp_directory) -> None:
     """Test get_size accepts string path."""
-    path = temp_dir / "test.txt"
+    path = temp_directory / "test.txt"
     path.write_bytes(b"test")
 
     size = get_size(str(path))
     assert size == 4
 
 
-def test_get_mtime_existing_file(temp_dir) -> None:
+def test_get_mtime_existing_file(temp_directory) -> None:
     """Test getting modification time of existing file."""
-    path = temp_dir / "test.txt"
+    path = temp_directory / "test.txt"
     before = time.time()
     path.write_text("content")
     after = time.time()
@@ -70,26 +65,26 @@ def test_get_mtime_existing_file(temp_dir) -> None:
     assert before <= mtime <= after
 
 
-def test_get_mtime_missing_file(temp_dir) -> None:
+def test_get_mtime_missing_file(temp_directory) -> None:
     """Test getting mtime of missing file returns None."""
-    path = temp_dir / "nonexistent.txt"
+    path = temp_directory / "nonexistent.txt"
 
     mtime = get_mtime(path)
     assert mtime is None
 
 
-def test_get_mtime_with_string_path(temp_dir) -> None:
+def test_get_mtime_with_string_path(temp_directory) -> None:
     """Test get_mtime accepts string path."""
-    path = temp_dir / "test.txt"
+    path = temp_directory / "test.txt"
     path.write_text("test")
 
     mtime = get_mtime(str(path))
     assert mtime is not None
 
 
-def test_touch_creates_file(temp_dir) -> None:
+def test_touch_creates_file(temp_directory) -> None:
     """Test touch creates new file."""
-    path = temp_dir / "new.txt"
+    path = temp_directory / "new.txt"
 
     touch(path)
 
@@ -98,9 +93,9 @@ def test_touch_creates_file(temp_dir) -> None:
     assert path.stat().st_size == 0
 
 
-def test_touch_updates_existing_file(temp_dir) -> None:
+def test_touch_updates_existing_file(temp_directory) -> None:
     """Test touch updates timestamp of existing file."""
-    path = temp_dir / "existing.txt"
+    path = temp_directory / "existing.txt"
     path.write_text("content")
 
     # Get original mtime
@@ -118,10 +113,10 @@ def test_touch_updates_existing_file(temp_dir) -> None:
     assert path.read_text() == "content"
 
 
-def test_touch_with_mode(temp_dir) -> None:
+def test_touch_with_mode(temp_directory) -> None:
     """Test touch creates file with specific mode."""
 
-    path = temp_dir / "test.txt"
+    path = temp_directory / "test.txt"
     mode = 0o600
 
     touch(path, mode=mode)
@@ -130,18 +125,18 @@ def test_touch_with_mode(temp_dir) -> None:
     assert path.stat().st_mode & 0o777 == mode
 
 
-def test_touch_exist_not_ok(temp_dir) -> None:
+def test_touch_exist_not_ok(temp_directory) -> None:
     """Test touch raises when exist_ok=False."""
-    path = temp_dir / "test.txt"
+    path = temp_directory / "test.txt"
     path.write_text("content")
 
     with pytest.raises(FileExistsError):
         touch(path, exist_ok=False)
 
 
-def test_touch_creates_parent_dirs(temp_dir) -> None:
+def test_touch_creates_parent_dirs(temp_directory) -> None:
     """Test touch creates parent directories."""
-    path = temp_dir / "subdir" / "nested" / "file.txt"
+    path = temp_directory / "subdir" / "nested" / "file.txt"
 
     touch(path)
 
@@ -150,7 +145,7 @@ def test_touch_creates_parent_dirs(temp_dir) -> None:
     assert path.parent.parent.exists()
 
 
-def test_find_files_basic(temp_dir) -> None:
+def test_find_files_basic(temp_directory) -> None:
     """Test finding files with basic pattern."""
     # Create test files
     (temp_dir / "test1.py").write_text("code")
@@ -167,7 +162,7 @@ def test_find_files_basic(temp_dir) -> None:
     assert names == {"test1.py", "test2.py", "test3.py"}
 
 
-def test_find_files_non_recursive(temp_dir) -> None:
+def test_find_files_non_recursive(temp_directory) -> None:
     """Test non-recursive file finding."""
     # Create test files
     (temp_dir / "test1.py").write_text("code")
@@ -183,7 +178,7 @@ def test_find_files_non_recursive(temp_dir) -> None:
     assert names == {"test1.py", "test2.py"}
 
 
-def test_find_files_nested_pattern(temp_dir) -> None:
+def test_find_files_nested_pattern(temp_directory) -> None:
     """Test finding files with nested pattern."""
     # Create test structure
     (temp_dir / "src").mkdir()
@@ -200,16 +195,16 @@ def test_find_files_nested_pattern(temp_dir) -> None:
     assert files[0].name == "test_main.py"
 
 
-def test_find_files_missing_root(temp_dir) -> None:
+def test_find_files_missing_root(temp_directory) -> None:
     """Test find_files with non-existent root."""
-    root = temp_dir / "nonexistent"
+    root = temp_directory / "nonexistent"
 
     files = find_files("*.py", root=root)
 
     assert files == []
 
 
-def test_find_files_excludes_directories(temp_dir) -> None:
+def test_find_files_excludes_directories(temp_directory) -> None:
     """Test find_files excludes directories."""
     # Create files and directories
     (temp_dir / "file.txt").write_text("content")
@@ -221,9 +216,9 @@ def test_find_files_excludes_directories(temp_dir) -> None:
     assert files[0].name == "file.txt"
 
 
-def test_backup_file_basic(temp_dir) -> None:
+def test_backup_file_basic(temp_directory) -> None:
     """Test basic file backup."""
-    path = temp_dir / "test.txt"
+    path = temp_directory / "test.txt"
     content = "Original content"
     path.write_text(content)
 
@@ -236,9 +231,9 @@ def test_backup_file_basic(temp_dir) -> None:
     assert path.exists()  # Original still exists
 
 
-def test_backup_file_with_timestamp(temp_dir) -> None:
+def test_backup_file_with_timestamp(temp_directory) -> None:
     """Test backup with timestamp."""
-    path = temp_dir / "test.txt"
+    path = temp_directory / "test.txt"
     content = "Original content"
     path.write_text(content)
 
@@ -253,9 +248,9 @@ def test_backup_file_with_timestamp(temp_dir) -> None:
     assert backup_path.read_text() == content
 
 
-def test_backup_file_custom_suffix(temp_dir) -> None:
+def test_backup_file_custom_suffix(temp_directory) -> None:
     """Test backup with custom suffix."""
-    path = temp_dir / "test.txt"
+    path = temp_directory / "test.txt"
     path.write_text("content")
 
     backup_path = backup_file(path, suffix=".backup")
@@ -264,9 +259,9 @@ def test_backup_file_custom_suffix(temp_dir) -> None:
     assert backup_path.name == "test.txt.backup"
 
 
-def test_backup_file_multiple_backups(temp_dir) -> None:
+def test_backup_file_multiple_backups(temp_directory) -> None:
     """Test creating multiple backups."""
-    path = temp_dir / "test.txt"
+    path = temp_directory / "test.txt"
     path.write_text("version 1")
 
     # First backup
@@ -291,20 +286,20 @@ def test_backup_file_multiple_backups(temp_dir) -> None:
     assert backup3.exists()
 
 
-def test_backup_file_missing_source(temp_dir) -> None:
+def test_backup_file_missing_source(temp_directory) -> None:
     """Test backup of non-existent file returns None."""
-    path = temp_dir / "nonexistent.txt"
+    path = temp_directory / "nonexistent.txt"
 
     backup_path = backup_file(path)
 
     assert backup_path is None
 
 
-def test_backup_file_preserves_metadata(temp_dir) -> None:
+def test_backup_file_preserves_metadata(temp_directory) -> None:
     """Test backup preserves file metadata."""
     import os
 
-    path = temp_dir / "test.txt"
+    path = temp_directory / "test.txt"
     path.write_text("content")
     os.chmod(path, 0o600)
 

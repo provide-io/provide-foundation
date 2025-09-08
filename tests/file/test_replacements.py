@@ -2,10 +2,9 @@
 """Test that replacements in other packages work correctly."""
 
 from pathlib import Path
-import tempfile
 
 import pytest
-
+from provide.foundation.testing.file import temp_directory
 
 def test_flavorpack_atomic_replacements(tmp_path: Path) -> None:
     """Test flavorpack atomic operations are properly replaced."""
