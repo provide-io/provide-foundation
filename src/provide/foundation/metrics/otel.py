@@ -1,9 +1,9 @@
 """OpenTelemetry metrics integration."""
 
-from provide.foundation.logger import get_logger
 from provide.foundation.logger.config.telemetry import TelemetryConfig
+from provide.foundation.logger.setup import get_vanilla_logger
 
-log = get_logger(__name__)
+slog = get_vanilla_logger(__name__)
 
 # Feature detection
 try:
@@ -47,15 +47,15 @@ def setup_opentelemetry_metrics(config: TelemetryConfig) -> None:
     """
     # Check if metrics are disabled first, before checking dependencies
     if not config.metrics_enabled or config.globally_disabled:
-        log.debug("📊 OpenTelemetry metrics disabled")
+        slog.debug("📊 OpenTelemetry metrics disabled")
         return
 
     # Check if OpenTelemetry metrics are available
     if not _HAS_OTEL_METRICS:
-        log.debug("📊 OpenTelemetry metrics not available (dependencies not installed)")
+        slog.debug("📊 OpenTelemetry metrics not available (dependencies not installed)")
         return
 
-    log.debug("📊🚀 Setting up OpenTelemetry metrics")
+    slog.debug("📊🚀 Setting up OpenTelemetry metrics")
 
     # Create resource with service information
     resource_attrs = {}
@@ -73,7 +73,7 @@ def setup_opentelemetry_metrics(config: TelemetryConfig) -> None:
         endpoint = config.otlp_endpoint
         headers = config.get_otlp_headers_dict()
 
-        log.debug(f"📊📤 Configuring OTLP metrics exporter: {endpoint}")
+        slog.debug(f"📊📤 Configuring OTLP metrics exporter: {endpoint}")
 
         # Choose exporter based on protocol
         if config.otlp_protocol == "grpc":
@@ -91,7 +91,7 @@ def setup_opentelemetry_metrics(config: TelemetryConfig) -> None:
         reader = PeriodicExportingMetricReader(exporter, export_interval_millis=60000)
         readers.append(reader)
 
-        log.debug(f"✅ OTLP metrics exporter configured: {config.otlp_protocol}")
+        slog.debug(f"✅ OTLP metrics exporter configured: {config.otlp_protocol}")
 
     # Create meter provider
     meter_provider = MeterProvider(resource=resource, metric_readers=readers)
@@ -105,7 +105,7 @@ def setup_opentelemetry_metrics(config: TelemetryConfig) -> None:
     meter = otel_metrics.get_meter(__name__)
     _set_meter(meter)
 
-    log.info("📊✅ OpenTelemetry metrics setup complete")
+    slog.info("📊✅ OpenTelemetry metrics setup complete")
 
 
 def shutdown_opentelemetry_metrics() -> None:
@@ -117,6 +117,6 @@ def shutdown_opentelemetry_metrics() -> None:
         meter_provider = otel_metrics.get_meter_provider()
         if hasattr(meter_provider, "shutdown"):
             meter_provider.shutdown()
-            log.debug("📊🛑 OpenTelemetry meter provider shutdown")
+            slog.debug("📊🛑 OpenTelemetry meter provider shutdown")
     except Exception as e:
-        log.warning(f"⚠️ Error shutting down OpenTelemetry metrics: {e}")
+        slog.warning(f"⚠️ Error shutting down OpenTelemetry metrics: {e}")

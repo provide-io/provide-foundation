@@ -8,12 +8,12 @@ from pathlib import Path
 
 from provide.foundation.errors.resources import AlreadyExistsError, NotFoundError
 from provide.foundation.hub.registry import Registry
-from provide.foundation.logger.setup.coordinator import create_core_setup_logger
+from provide.foundation.logger.setup.coordinator import create_foundation_internal_logger
 
 from provide.foundation.eventsets.types import EventSet
 
 # Bootstrap logger that doesn't trigger full logger setup
-logger = create_core_setup_logger()
+logger = create_foundation_internal_logger()
 
 
 class EventSetRegistry(Registry):
