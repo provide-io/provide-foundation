@@ -56,7 +56,8 @@
       "Bash(/Users/tim/code/gh/provide-io/flavorpack/ingredients/bin/flavor-go-builder-darwin_arm64 --manifest configs/test-echo.json --launcher-bin /Users/tim/code/gh/provide-io/flavorpack/ingredients/bin/flavor-go-launcher-darwin_arm64 --output dist/echo-test-fixed.psp --key-seed test123)",
       "Bash(FLAVOR_LOG_LEVEL=debug FLAVOR_INSECURE=1 /Users/tim/code/gh/provide-io/flavorpack/dist/flavor.psp --version)",
       "Bash(/Users/tim/code/gh/provide-io/flavorpack/ingredients/bin/flavor-rs-builder-darwin_arm64:*)",
-      "Bash(FLAVOR_INSECURE=1 dist/flavor-fixed.psp --version)"
+      "Bash(FLAVOR_INSECURE=1 dist/flavor-fixed.psp --version)",
+      "Bash(xxd:*)"
     ],
     "deny": [],
     "ask": [],
