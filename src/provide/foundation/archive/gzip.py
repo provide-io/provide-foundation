@@ -9,6 +9,8 @@ from typing import BinaryIO
 from attrs import define, field
 
 from provide.foundation.archive.base import ArchiveError
+from provide.foundation.file import ensure_parent_dir
+from provide.foundation.file.utils import get_size
 from provide.foundation.logger import get_logger
 
 logger = get_logger(__name__)
@@ -81,7 +83,7 @@ class GzipCompressor:
             ArchiveError: If compression fails
         """
         try:
-            output_path.parent.mkdir(parents=True, exist_ok=True)
+            ensure_parent_dir(output_path)
             
             with open(input_path, 'rb') as f_in:
                 with gzip.open(output_path, 'wb', compresslevel=self.level) as f_out:
@@ -108,7 +110,7 @@ class GzipCompressor:
             ArchiveError: If decompression fails
         """
         try:
-            output_path.parent.mkdir(parents=True, exist_ok=True)
+            ensure_parent_dir(output_path)
             
             with gzip.open(input_path, 'rb') as f_in:
                 with open(output_path, 'wb') as f_out:

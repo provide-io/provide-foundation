@@ -6,6 +6,7 @@ from pathlib import Path
 from attrs import define, field
 
 from provide.foundation.archive.base import BaseArchive, ArchiveError
+from provide.foundation.file import ensure_parent_dir
 from provide.foundation.logger import get_logger
 
 logger = get_logger(__name__)
@@ -39,7 +40,7 @@ class TarArchive(BaseArchive):
             ArchiveError: If archive creation fails
         """
         try:
-            output.parent.mkdir(parents=True, exist_ok=True)
+            ensure_parent_dir(output)
             
             with tarfile.open(output, "w") as tar:
                 if source.is_dir():
