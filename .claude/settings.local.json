@@ -35,7 +35,8 @@
       "Bash(then)",
       "Bash(echo \"Updating $file\")",
       "Bash(if ! grep -q \"from provide.foundation.testing.file import\" \"$file\")",
-      "Bash(fi)"
+      "Bash(fi)",
+      "Bash(gh workflow:*)"
     ],
     "deny": [],
     "ask": [],
