@@ -93,6 +93,70 @@ def __getattr__(name: str) -> Any:
         import provide.foundation.testing.fixtures as fixtures_module
 
         return getattr(fixtures_module, name)
+    
+    # File testing utilities
+    elif name in [
+        "temp_directory",
+        "test_files_structure",
+        "temp_file",
+        "binary_file",
+        "nested_directory_structure",
+        "empty_directory",
+        "readonly_file",
+    ]:
+        import provide.foundation.testing.files as files_module
+
+        return getattr(files_module, name)
+    
+    # Async testing utilities
+    elif name in [
+        "clean_event_loop",
+        "async_timeout",
+        "mock_async_process",
+        "async_stream_reader",
+        "event_loop_policy",
+        "async_context_manager",
+        "async_iterator",
+        "async_queue",
+        "async_lock",
+        "mock_async_sleep",
+    ]:
+        import provide.foundation.testing.async_helpers as async_module
+
+        return getattr(async_module, name)
+    
+    # Mock utilities
+    elif name in [
+        "mock_http_config",
+        "mock_telemetry_config",
+        "mock_config_source",
+        "mock_event_emitter",
+        "mock_transport",
+        "mock_metrics_collector",
+        "mock_cache",
+        "mock_database",
+        "mock_file_system",
+        "mock_subprocess",
+    ]:
+        import provide.foundation.testing.mocks as mocks_module
+
+        return getattr(mocks_module, name)
+    
+    # Network testing utilities
+    elif name in [
+        "free_port",
+        "mock_server",
+        "httpx_mock_responses",
+        "mock_websocket",
+        "mock_dns_resolver",
+        "tcp_client_server",
+        "mock_ssl_context",
+        "network_timeout",
+        "mock_http_headers",
+    ]:
+        import provide.foundation.testing.network as network_module
+
+        return getattr(network_module, name)
 
     # Crypto fixtures (many fixtures)
     elif name in [
