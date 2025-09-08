@@ -44,7 +44,8 @@
       "Bash(timeout:*)",
       "Bash(cargo build:*)",
       "Bash(go build:*)",
-      "Bash(./scripts/pretaster:*)"
+      "Bash(./scripts/pretaster:*)",
+      "Bash(./build.sh:*)"
     ],
     "deny": [],
     "ask": [],
