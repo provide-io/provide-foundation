@@ -2,8 +2,6 @@
 
 import zipfile
 from pathlib import Path
-from typing import Optional
-
 from attrs import define, field
 
 from provide.foundation.archive.base import BaseArchive, ArchiveError
@@ -24,7 +22,7 @@ class ZipArchive(BaseArchive):
     
     compression_level: int = field(default=6)  # Compression level 0-9 (0=store, 9=best)
     compression_type: int = field(default=zipfile.ZIP_DEFLATED)
-    password: Optional[str] = field(default=None)
+    password: bytes | None = field(default=None)
     
     @compression_level.validator
     def _validate_level(self, attribute, value):
@@ -54,13 +52,13 @@ class ZipArchive(BaseArchive):
                 compresslevel=self.compression_level
             ) as zf:
                 if self.password:
-                    zf.setpassword(self.password.encode())
+                    zf.setpassword(self.password)
                 
                 if source.is_dir():
                     # Add all files in directory
                     for item in sorted(source.rglob("*")):
                         if item.is_file():
-                            arcname = item.relative_to(source.parent)
+                            arcname = item.relative_to(source)
                             zf.write(item, arcname)
                 else:
                     # Add single file
@@ -91,7 +89,7 @@ class ZipArchive(BaseArchive):
             
             with zipfile.ZipFile(archive, 'r') as zf:
                 if self.password:
-                    zf.setpassword(self.password.encode())
+                    zf.setpassword(self.password)
                 
                 # Security check - prevent path traversal
                 for member in zf.namelist():
@@ -144,7 +142,7 @@ class ZipArchive(BaseArchive):
         except Exception as e:
             raise ArchiveError(f"Failed to list ZIP contents: {e}") from e
     
-    def add_file(self, archive: Path, file: Path, arcname: Optional[str] = None) -> None:
+    def add_file(self, archive: Path, file: Path, arcname: str | None = None) -> None:
         """
         Add file to existing ZIP archive.
         
@@ -159,7 +157,7 @@ class ZipArchive(BaseArchive):
         try:
             with zipfile.ZipFile(archive, 'a', compression=self.compression_type) as zf:
                 if self.password:
-                    zf.setpassword(self.password.encode())
+                    zf.setpassword(self.password)
                 
                 zf.write(file, arcname or file.name)
             
@@ -186,7 +184,7 @@ class ZipArchive(BaseArchive):
         try:
             with zipfile.ZipFile(archive, 'r') as zf:
                 if self.password:
-                    zf.setpassword(self.password.encode())
+                    zf.setpassword(self.password)
                 
                 # Security check
                 if member.startswith("/") or ".." in member:

@@ -89,8 +89,23 @@ class OperationChain:
         Raises:
             ArchiveError: If any operation fails
         """
-        # Reverse the operations for extraction
-        reversed_ops = list(reversed(self.operations))
+        # Reverse the operations and invert them
+        reverse_map = {
+            'tar': 'untar',
+            'untar': 'tar',
+            'gzip': 'gunzip', 
+            'gunzip': 'gzip',
+            'bzip2': 'bunzip2',
+            'bunzip2': 'bzip2',
+            'zip': 'unzip',
+            'unzip': 'zip',
+        }
+        
+        reversed_ops = []
+        for op in reversed(self.operations):
+            reversed_op = reverse_map.get(op.lower(), op)
+            reversed_ops.append(reversed_op)
+        
         reversed_chain = OperationChain(operations=reversed_ops)
         return reversed_chain.execute(source, output)
     
