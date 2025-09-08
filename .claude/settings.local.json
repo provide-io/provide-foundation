@@ -37,7 +37,9 @@
       "Bash(if ! grep -q \"from provide.foundation.testing.file import\" \"$file\")",
       "Bash(fi)",
       "Bash(gh workflow:*)",
-      "Bash(timeout 120 pytest -n auto --tb=no --quiet --timeout=10)"
+      "Bash(timeout 120 pytest -n auto --tb=no --quiet --timeout=10)",
+      "Bash(workenv/wrkenv_darwin_arm64/bin/python -c \"import flavor.cli; print(''✅ FlavorPack imports successfully'')\")",
+      "Bash(workenv/wrkenv_darwin_arm64/bin/python:*)"
     ],
     "deny": [],
     "ask": [],
