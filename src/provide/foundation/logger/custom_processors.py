@@ -131,16 +131,7 @@ _EMOJI_CACHE_SIZE_LIMIT: int = 1000
 
 
 def _compute_emoji_for_logger_name(logger_name: str) -> str:
-    # First check hierarchy system
-    try:
-        from provide.foundation.logger.emoji.hierarchy import get_emoji_for_logger
-        hierarchy_emoji = get_emoji_for_logger(logger_name)
-        if hierarchy_emoji != "🔹":  # Default fallback emoji
-            return hierarchy_emoji
-    except ImportError:
-        pass  # Hierarchy system not available
-    
-    # Fallback to original system
+    # Original keyword-based system
     for keyword in _SORTED_LOGGER_NAME_EMOJI_KEYWORDS:
         if keyword == "default":
             continue

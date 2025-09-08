@@ -14,7 +14,7 @@ from attrs import define
 from provide.foundation.config import BaseConfig, field
 from provide.foundation.config.types import ConfigSource
 from provide.foundation.logger.config.base import get_config_logger
-from provide.foundation.logger.emoji.types import EmojiSet, EmojiSetConfig
+from provide.foundation.eventsets.types import EventMapping, EventSet
 from provide.foundation.types import (
     _VALID_FORMATTER_TUPLE,
     _VALID_LOG_LEVEL_TUPLE,
@@ -62,12 +62,12 @@ class LoggingConfig(BaseConfig):
         env_var="PROVIDE_LOG_ENABLED_EMOJI_SETS",
         description="Comma-separated list of emoji sets to enable",
     )
-    custom_emoji_sets: list[EmojiSetConfig] = field(
+    custom_emoji_sets: list[EventSet] = field(
         factory=lambda: [],
         env_var="PROVIDE_LOG_CUSTOM_EMOJI_SETS",
         description="JSON array of custom emoji set configurations",
     )
-    user_defined_emoji_sets: list[EmojiSet] = field(
+    user_defined_emoji_sets: list[EventMapping] = field(
         factory=lambda: [],
         env_var="PROVIDE_LOG_USER_DEFINED_EMOJI_SETS",
         description="JSON array of user-defined emoji sets",
@@ -342,7 +342,7 @@ class LoggingConfig(BaseConfig):
                 parsed = json.loads(custom_sets)
                 if isinstance(parsed, list):
                     config_dict["custom_emoji_sets"] = [
-                        EmojiSetConfig(**item) if isinstance(item, dict) else item
+                        EventSet(**item) if isinstance(item, dict) else item
                         for item in parsed
                     ]
             except json.JSONDecodeError as e:
@@ -369,7 +369,7 @@ class LoggingConfig(BaseConfig):
                 parsed = json.loads(user_sets)
                 if isinstance(parsed, list):
                     config_dict["user_defined_emoji_sets"] = [
-                        EmojiSet(**item) if isinstance(item, dict) else item
+                        EventMapping(**item) if isinstance(item, dict) else item
                         for item in parsed
                     ]
             except json.JSONDecodeError as e:

@@ -19,7 +19,7 @@ from provide.foundation.hub.components import (
     cleanup_all_components,
     bootstrap_foundation,
 )
-from provide.foundation.logger.emoji.types import EmojiSet
+from provide.foundation.eventsets.types import EventMapping
 
 
 class TestComponentLifecycle:

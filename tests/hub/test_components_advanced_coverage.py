@@ -37,7 +37,7 @@ from provide.foundation.hub.components import (
     _registry_lock,
     _initialized_components,
 )
-from provide.foundation.logger.emoji.types import EmojiSet
+from provide.foundation.eventsets.types import EventMapping
 from provide.foundation.hub.registry import Registry, RegistryEntry
 
 
@@ -108,8 +108,8 @@ class TestEmojiResolution:
         """Test resolve_emoji_for_domain finds specific action."""
         registry = get_component_registry()
 
-        emoji_set = EmojiSet(
-            name="test_set", emojis={"success": "✅", "error": "❌", "info": "ℹ️"}
+        emoji_set = EventMapping(
+            name="test_set", visual_markers={"success": "✅", "error": "❌", "info": "ℹ️"}
         )
 
         registry.register(
@@ -135,8 +135,8 @@ class TestEmojiResolution:
         """Test emoji resolution respects priority ordering."""
         registry = get_component_registry()
 
-        low_priority_set = EmojiSet("low", {"info": "🔵"})
-        high_priority_set = EmojiSet("high", {"info": "🔴"})
+        low_priority_set = EventMapping("low", visual_markers={"info": "🔵"})
+        high_priority_set = EventMapping("high", visual_markers={"info": "🔴"})
 
         registry.register(
             name="low_priority",
@@ -159,8 +159,8 @@ class TestEmojiResolution:
         """Test get_composed_emoji_set combines multiple sets."""
         registry = get_component_registry()
 
-        set1 = EmojiSet("set1", {"info": "ℹ️", "success": "✅"})
-        set2 = EmojiSet("set2", {"error": "❌", "info": "🔵"})  # Override info
+        set1 = EventMapping("set1", visual_markers={"info": "ℹ️", "success": "✅"})
+        set2 = EventMapping("set2", visual_markers={"error": "❌", "info": "🔵"})  # Override info
 
         registry.register(
             name="set1",
@@ -179,9 +179,9 @@ class TestEmojiResolution:
         composed = get_composed_emoji_set("compose_test")
 
         assert composed.name == "composed_compose_test"
-        assert composed.emojis["success"] == "✅"  # From set1
-        assert composed.emojis["error"] == "❌"  # From set2
-        assert composed.emojis["info"] == "🔵"  # set2 overrides set1 (higher priority)
+        assert composed.visual_markers["success"] == "✅"  # From set1
+        assert composed.visual_markers["error"] == "❌"  # From set2
+        assert composed.visual_markers["info"] == "🔵"  # set2 overrides set1 (higher priority)
 
 
 class TestAsyncConfigLoading:

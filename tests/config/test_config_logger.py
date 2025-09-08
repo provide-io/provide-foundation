@@ -13,12 +13,11 @@ from pytest import CaptureFixture
 from structlog.dev import ConsoleRenderer
 from structlog.processors import JSONRenderer, TimeStamper
 
-from provide.foundation.logger.setup.emoji_resolver import resolve_active_emoji_config
 from provide.foundation.logger.config import (
     LoggingConfig,
     TelemetryConfig,
 )
-from provide.foundation.logger.emoji.sets import BUILTIN_EMOJI_SETS
+from provide.foundation.eventsets.registry import discover_event_sets, get_registry
 
 # env.py removed - use TelemetryConfig.from_env() directly
 from provide.foundation.logger.processors import (
@@ -62,10 +61,9 @@ class TestBuildFormatterProcessorsList:
 class TestBuildCoreProcessorsList:
     def test_default_config(self) -> None:
         config = TelemetryConfig()
-        resolved_emoji_config = resolve_active_emoji_config(
-            config.logging, BUILTIN_EMOJI_SETS
-        )
-        processors = _build_core_processors_list(config, resolved_emoji_config)
+        # Event sets auto-discovered now
+        discover_event_sets()
+        processors = _build_core_processors_list(config)
         proc_names = [get_proc_name(p) for p in processors]
         assert len(processors) == 9
         # Check that inject_trace_context and add_logger_name_emoji_prefix are present
@@ -73,7 +71,7 @@ class TestBuildCoreProcessorsList:
         assert "add_logger_name_emoji_prefix" in proc_names
 
 
-class TestTelemetryConfigFromEnvEmojiSets:
+class TestTelemetryConfigFromEnvEventSets:
     def test_from_env_parses_enabled_emoji_sets(self, monkeypatch) -> None:
         monkeypatch.setenv("PROVIDE_LOG_ENABLED_EMOJI_SETS", "llm, http , database ")
         config = TelemetryConfig.from_env()

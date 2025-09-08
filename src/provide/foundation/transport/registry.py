@@ -48,7 +48,7 @@ def register_transport(
         replace=True,  # Allow re-registration
     )
     
-    log.trace(f"Registered transport {transport_class.__name__} for schemes: {schemes}")
+    log.debug(f"Registered transport {transport_class.__name__} for schemes: {schemes}")
 
 
 def get_transport_for_scheme(scheme: str) -> type[Transport]:

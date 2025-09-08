@@ -15,12 +15,8 @@ from provide.foundation.logger.processors import (
     _build_core_processors_list,
     _build_formatter_processors_list,
 )
-from provide.foundation.logger.setup.emoji_resolver import ResolvedEmojiConfig
-
-
 def build_complete_processor_chain(
     config: TelemetryConfig,
-    resolved_emoji_config: ResolvedEmojiConfig,
     log_stream: TextIO,
 ) -> list[Any]:
     """
@@ -28,13 +24,12 @@ def build_complete_processor_chain(
 
     Args:
         config: Telemetry configuration
-        resolved_emoji_config: Resolved emoji configuration
         log_stream: Output stream for logging
 
     Returns:
         List of processors for structlog
     """
-    core_processors = _build_core_processors_list(config, resolved_emoji_config)
+    core_processors = _build_core_processors_list(config)
     formatter_processors = _build_formatter_processors_list(config.logging, log_stream)
     return cast(list[Any], core_processors + formatter_processors)
 
@@ -57,7 +52,6 @@ def apply_structlog_configuration(processors: list[Any], log_stream: TextIO) -> 
 
 def configure_structlog_output(
     config: TelemetryConfig,
-    resolved_emoji_config: ResolvedEmojiConfig,
     log_stream: TextIO,
 ) -> None:
     """
@@ -65,11 +59,10 @@ def configure_structlog_output(
 
     Args:
         config: Telemetry configuration
-        resolved_emoji_config: Resolved emoji configuration
         log_stream: Output stream for logging
     """
     processors = build_complete_processor_chain(
-        config, resolved_emoji_config, log_stream
+        config, log_stream
     )
     apply_structlog_configuration(processors, log_stream)
 

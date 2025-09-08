@@ -39,17 +39,12 @@ from provide.foundation.logger import (
     setup_logging,  # Setup function (backward compatibility)
 )
 
-# Emoji exports
-from provide.foundation.logger.emoji.matrix import (
-    PRIMARY_EMOJI,
-    SECONDARY_EMOJI,
-    TERTIARY_EMOJI,
-    show_emoji_matrix,
-)
-from provide.foundation.logger.emoji.types import (
-    EmojiSet,
-    EmojiSetConfig,
-    FieldToEmojiMapping,
+# Event set exports
+from provide.foundation.eventsets.display import show_event_matrix
+from provide.foundation.eventsets.types import (
+    EventMapping,
+    EventSet,
+    FieldMapping,
 )
 from provide.foundation.setup import (
     setup_telemetry,
@@ -93,15 +88,15 @@ def __getattr__(name: str):
 
 
 __all__ = [
-    # Core Emoji Dictionaries (available for direct use or reference)
-    "PRIMARY_EMOJI",
-    "SECONDARY_EMOJI",
-    "TERTIARY_EMOJI",
+    # Event enrichment utilities
+    "show_event_matrix",
     "ConsoleFormatterStr",
     # New foundation modules
     "Context",
-    # Emoji Mapping classes
-    "EmojiSet",
+    # Event set types
+    "EventMapping",
+    "EventSet",
+    "FieldMapping",
     # Error handling essentials
     "FoundationError",
     # Type aliases
