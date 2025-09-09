@@ -86,7 +86,7 @@ class Context:
             New Context instance with values from environment
         """
         # Use the main TelemetryConfig system for parsing
-        telemetry_config = TelemetryConfig.from_env(strict=False)
+        telemetry_config = TelemetryConfig.from_env()
 
         kwargs = {}
 

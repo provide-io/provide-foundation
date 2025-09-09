@@ -194,18 +194,43 @@ def parse_typed_value(value: str, target_type: type) -> Any:
 
 def auto_parse(attr: Any, value: str) -> Any:
     """
-    Automatically parse value based on an attrs field's type.
+    Automatically parse value based on an attrs field's type and metadata.
 
-    This is a convenience wrapper for parse_typed_value that extracts
-    the type from an attrs field.
+    This function first checks for a converter in the field's metadata,
+    then falls back to type-based parsing.
 
     Args:
         attr: attrs field (from fields(Class))
         value: String value to parse
 
     Returns:
-        Parsed value based on field type
+        Parsed value based on field type or converter
+
+    Examples:
+        >>> from attrs import define, field, fields
+        >>> @define
+        ... class Config:
+        ...     count: int = field()
+        ...     enabled: bool = field()
+        ...     custom: str = field(converter=lambda x: x.upper())
+        >>> c = Config(count=0, enabled=False, custom="")
+        >>> auto_parse(fields(Config).count, "42")
+        42
+        >>> auto_parse(fields(Config).enabled, "true")
+        True
+        >>> auto_parse(fields(Config).custom, "hello")
+        'HELLO'
     """
+    # Check for converter in metadata first
+    if hasattr(attr, 'metadata') and attr.metadata:
+        converter = attr.metadata.get('converter')
+        if converter and callable(converter):
+            try:
+                return converter(value)
+            except Exception:
+                # If converter fails, fall back to type-based parsing
+                pass
+    
     # Get type hint from attrs field
     if hasattr(attr, "type") and attr.type is not None:
         field_type = attr.type
