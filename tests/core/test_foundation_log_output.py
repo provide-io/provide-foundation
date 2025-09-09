@@ -73,7 +73,7 @@ class TestFoundationLogOutputEnvironmentVariable:
         """Test that non-strict mode doesn't generate warnings for invalid values."""
         monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "invalid_value")
 
-        config = LoggingConfig.from_env(strict=False)
+        config = LoggingConfig.from_env()
         # Should use default value
         assert config.foundation_log_output == "stderr"
 

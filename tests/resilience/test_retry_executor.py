@@ -458,7 +458,7 @@ class TestRetryExecutorLogging:
                 executor.execute_sync(mock_func)
         
         # Should log the final failure
-        mock_logger.error.assert_called()
+        assert mock_logger.error.called
         log_message = mock_logger.error.call_args[0][0]
         assert "attempts failed" in log_message.lower()
 

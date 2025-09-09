@@ -68,7 +68,7 @@ class TestLoggingConfigCoverage:
         from provide.foundation.logger.config.logging import LoggingConfig
 
         with patch.dict(os.environ, {"PROVIDE_LOG_LEVEL": "INVALID_LEVEL"}):
-            config = LoggingConfig.from_env(strict=False)
+            config = LoggingConfig.from_env()
             # Should not raise error in non-strict mode
             assert config is not None
 
@@ -78,7 +78,7 @@ class TestLoggingConfigCoverage:
 
         with patch.dict(os.environ, {"PROVIDE_LOG_LEVEL": "INVALID_LEVEL"}):
             # Strict mode logs warnings but still returns config with defaults
-            config = LoggingConfig.from_env(strict=True)
+            config = LoggingConfig.from_env()
             assert config.default_level == "WARNING"  # Should use production default
 
     def test_logging_config_json_formatter_enabled(self):
@@ -220,5 +220,5 @@ class TestTelemetryConfigCoverage:
 
         with patch.dict(os.environ, {"PROVIDE_LOG_LEVEL": "INVALID"}):
             # Strict mode logs warnings but still returns config with defaults
-            config = TelemetryConfig.from_env(strict=True)
+            config = TelemetryConfig.from_env()
             assert config.logging.default_level == "WARNING"  # Should use production default

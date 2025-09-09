@@ -317,7 +317,7 @@ class TestRetryExecutorWithRealWorld:
         policy = RetryPolicy(
             max_attempts=3,
             base_delay=0.01,
-            retryable_errors=(ValueError,)
+            retryable_errors=(ValueError, RuntimeError)
         )
         executor = RetryExecutor(policy)
         

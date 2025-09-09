@@ -21,36 +21,6 @@ from provide.foundation.config.types import ConfigSource
 T = TypeVar("T")
 
 
-def _auto_parse(attr: Any, value: str) -> Any:
-    """
-    Simple auto-parser for common types.
-    """
-    # If a converter is specified in metadata, use it
-    if converter := attr.metadata.get("converter"):
-        return converter(value)
-    
-    # Get type hint from attrs field
-    if hasattr(attr, "type") and attr.type is not None:
-        field_type = attr.type
-        
-        # Handle Optional types
-        origin = getattr(field_type, "__origin__", None)
-        if origin is type(None) or origin is type(str | None):
-            if value == "" or value.lower() == "none":
-                return None
-        
-        # Simple type conversions
-        if field_type == bool or field_type == "bool":
-            return value.lower() in ("true", "yes", "1", "on")
-        elif field_type == int or field_type == "int":
-            return int(value)
-        elif field_type == float or field_type == "float":
-            return float(value)
-    
-    # Default to string
-    return value
-
-
 async def get_env_async(
     var_name: str,
     default: str | None = None,
@@ -232,7 +202,8 @@ class RuntimeConfig(BaseConfig):
                         raise ValueError(f"Failed to parse {env_var}: {e}")
                 else:
                     # Try to infer parser from type
-                    value = _auto_parse(attr, value)
+                    from provide.foundation.utils.parsing import auto_parse
+                    value = auto_parse(attr, value)
 
                 data[attr.name] = value
 
@@ -312,7 +283,8 @@ class RuntimeConfig(BaseConfig):
                     raise ValueError(f"Failed to parse {env_var}: {e}")
             else:
                 # Try to infer parser from type
-                value = RuntimeConfig._auto_parse(attr, value)
+                from provide.foundation.utils.parsing import auto_parse
+                value = auto_parse(attr, value)
 
             data[field_name] = value
 
@@ -334,20 +306,6 @@ class RuntimeConfig(BaseConfig):
         except Exception as e:
             raise ValueError(f"Failed to read secret from file '{file_path}': {e}")
 
-    @staticmethod
-    def _auto_parse(attr: Any, value: str) -> Any:
-        """
-        Automatically parse value based on field type.
-
-        Args:
-            attr: Field attribute
-            value: String value to parse
-
-        Returns:
-            Parsed value
-        """
-        # Use the utility function from utils.parsing
-        return auto_parse(attr, value)
 
     def to_env_dict(self, prefix: str = "", delimiter: str = "_") -> dict[str, str]:
         """
