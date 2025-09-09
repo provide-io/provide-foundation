@@ -16,6 +16,7 @@ from provide.foundation.config.converters import (
     parse_console_formatter,
     parse_float_with_validation,
     parse_log_level,
+    parse_log_level_lenient,
     parse_module_levels,
     parse_rate_limits,
     validate_log_level,
@@ -36,7 +37,7 @@ class LoggingConfig(RuntimeConfig):
     default_level: LogLevelStr = field(
         default="WARNING",
         env_var="PROVIDE_LOG_LEVEL",
-        converter=parse_log_level,
+        converter=parse_log_level_lenient,
         validator=validate_log_level,
         description="Default logging level",
     )
