@@ -117,9 +117,9 @@ class TestLoggingConfigCoverage:
         
         # Event sets should be available through registry
         registry = get_registry()
-        assert registry.has("eventset", "llm")
-        assert registry.has("eventset", "http")
-        assert registry.has("eventset", "database")
+        assert ("eventset", "llm") in registry
+        assert ("eventset", "http") in registry
+        assert ("eventset", "database") in registry
 
     def test_logging_config_log_level_name_mapping(self):
         """Test logging config level name mappings."""

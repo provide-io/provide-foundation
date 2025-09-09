@@ -81,9 +81,9 @@ class TestTelemetryConfigFromEnvEventSets:
         registry = get_registry()
         
         # Check that event sets are registered
-        assert registry.has("eventset", "llm")
-        assert registry.has("eventset", "http")
-        assert registry.has("eventset", "database")
+        assert ("eventset", "llm") in registry
+        assert ("eventset", "http") in registry
+        assert ("eventset", "database") in registry
     
     def test_logging_config_no_emoji_sets(self) -> None:
         """Verify LoggingConfig doesn't have deprecated emoji_sets fields."""

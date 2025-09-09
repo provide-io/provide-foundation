@@ -220,7 +220,7 @@ class TestLoggingWithEmojiSets:
         # Ensure LLM event set is registered
         from provide.foundation.eventsets.registry import get_registry
         registry = get_registry()
-        assert registry.has("eventset", "llm")
+        assert ("eventset", "llm") in registry
         
         global_logger.info(
             "LLM generated response",
