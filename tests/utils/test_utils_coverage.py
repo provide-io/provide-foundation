@@ -102,7 +102,9 @@ class TestTimingCoverage:
         self, captured_stderr_for_foundation: io.StringIO
     ) -> None:
         """Test that modifying the context dict within a timed_block works."""
-        setup_telemetry(TelemetryConfig())
+        from provide.foundation.logger.config.logging import LoggingConfig
+        config = TelemetryConfig(logging=LoggingConfig(default_level="INFO"))
+        setup_telemetry(config)
 
         with timed_block(logger, "test_op") as ctx:
             ctx["records"] = 100
