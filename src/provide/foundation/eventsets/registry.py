@@ -108,6 +108,20 @@ class EventSetRegistry(Registry):
                                 module=module_name,
                                 name=event_set.name
                             )
+                            
+                            # Also register in the component registry
+                            from provide.foundation.hub.components import get_component_registry, ComponentCategory
+                            comp_registry = get_component_registry()
+                            try:
+                                comp_registry.register(
+                                    name=event_set.name,
+                                    value=event_set,
+                                    dimension=ComponentCategory.EVENT_SET.value,
+                                    metadata={"priority": event_set.priority}
+                                )
+                            except Exception:
+                                pass  # Already registered
+                                
                         except AlreadyExistsError:
                             logger.debug(
                                 "Event set already registered during discovery",
