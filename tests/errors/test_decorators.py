@@ -268,7 +268,7 @@ class TestFallbackOnError:
     def test_specific_exception_types(self) -> None:
         """Test fallback for specific exception types."""
 
-        def fallback() -> str:
+        def fallback(error_type: str) -> str:
             return "fallback"
 
         @fallback_on_error(fallback, ValueError, KeyError)
