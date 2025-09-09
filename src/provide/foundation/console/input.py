@@ -19,7 +19,7 @@ except ImportError:
     click = None
     _HAS_CLICK = False
 
-from provide.foundation.context import Context
+from provide.foundation.context import CLIContext
 from provide.foundation.logger import get_logger
 
 plog = get_logger(__name__)
@@ -27,24 +27,24 @@ plog = get_logger(__name__)
 T = TypeVar("T")
 
 
-def _get_context() -> Context | None:
+def _get_context() -> CLIContext | None:
     """Get current context from Click or environment."""
     if not _HAS_CLICK:
         return None
     ctx = click.get_current_context(silent=True)
-    if ctx and hasattr(ctx, "obj") and isinstance(ctx.obj, Context):
+    if ctx and hasattr(ctx, "obj") and isinstance(ctx.obj, CLIContext):
         return ctx.obj
     return None
 
 
-def _should_use_json(ctx: Context | None = None) -> bool:
+def _should_use_json(ctx: CLIContext | None = None) -> bool:
     """Determine if JSON output should be used."""
     if ctx is None:
         ctx = _get_context()
     return ctx.json_output if ctx else False
 
 
-def _should_use_color(ctx: Context | None = None) -> bool:
+def _should_use_color(ctx: CLIContext | None = None) -> bool:
     """Determine if color output should be used."""
     if ctx is None:
         ctx = _get_context()

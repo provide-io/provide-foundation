@@ -6,7 +6,7 @@ from typing import Any
 import click
 from click.testing import CliRunner, Result
 
-from provide.foundation.context import Context
+from provide.foundation.context import CLIContext
 from provide.foundation.logger import (
     LoggingConfig,
     TelemetryConfig,
@@ -85,17 +85,17 @@ def echo_info(message: str, json_output: bool = False) -> None:
 
 
 def setup_cli_logging(
-    ctx: Context,
+    ctx: CLIContext,
 ) -> None:
     """
-    Setup logging for CLI applications using a Context object.
+    Setup logging for CLI applications using a CLIContext object.
 
     This function is the designated way to configure logging within a CLI
     application built with foundation. It uses the provided context object
     to construct a full TelemetryConfig and initializes the system.
 
     Args:
-        ctx: The foundation Context, populated by CLI decorators.
+        ctx: The foundation CLIContext, populated by CLI decorators.
     """
     console_formatter = "json" if ctx.json_output else ctx.log_format
 
@@ -116,9 +116,9 @@ def setup_cli_logging(
     setup_telemetry(config=telemetry_config)
 
 
-def create_cli_context(**kwargs) -> Context:
+def create_cli_context(**kwargs) -> CLIContext:
     """
-    Create a Context for CLI usage.
+    Create a CLIContext for CLI usage.
 
     Loads from environment, then overlays any provided kwargs.
 
@@ -126,9 +126,9 @@ def create_cli_context(**kwargs) -> Context:
         **kwargs: Override values for the context
 
     Returns:
-        Configured Context instance
+        Configured CLIContext instance
     """
-    ctx = Context.from_env()
+    ctx = CLIContext.from_env()
     for key, value in kwargs.items():
         if value is not None and hasattr(ctx, key):
             setattr(ctx, key, value)

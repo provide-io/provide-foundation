@@ -11,13 +11,13 @@ from unittest.mock import MagicMock
 import click
 from click.testing import CliRunner
 
-from provide.foundation.context import Context
+from provide.foundation.context import CLIContext
 from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
 
 
-class MockContext(Context):
+class MockContext(CLIContext):
     """Mock context for testing that tracks method calls."""
 
     def __init__(self, **kwargs) -> None:
@@ -150,7 +150,7 @@ def create_test_cli(
     @click.pass_context
     def cli(ctx, **kwargs) -> None:
         """Test CLI for testing."""
-        ctx.obj = Context(**{k: v for k, v in kwargs.items() if v is not None})
+        ctx.obj = CLIContext(**{k: v for k, v in kwargs.items() if v is not None})
 
     if commands:
         for cmd in commands:

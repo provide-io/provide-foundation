@@ -11,7 +11,7 @@ try:
 except ImportError:
     click = None
 
-from provide.foundation.context import Context
+from provide.foundation.context import CLIContext
 
 F = TypeVar("F", bound=Callable[..., Any])
 
@@ -186,9 +186,9 @@ def error_handler(f: F) -> F:
 
 def pass_context(f: F) -> F:
     """
-    Decorator to pass the foundation Context to a command.
+    Decorator to pass the foundation CLIContext to a command.
 
-    Creates or retrieves a Context from Click's context object
+    Creates or retrieves a CLIContext from Click's context object
     and passes it as the first argument to the decorated function.
     """
 
@@ -197,15 +197,15 @@ def pass_context(f: F) -> F:
     def wrapper(ctx: click.Context, *args, **kwargs):
         # Get or create foundation context
         if not hasattr(ctx, "obj") or ctx.obj is None:
-            ctx.obj = Context()
-        elif not isinstance(ctx.obj, Context):
+            ctx.obj = CLIContext()
+        elif not isinstance(ctx.obj, CLIContext):
             # If obj exists but isn't a Context, wrap it
             if isinstance(ctx.obj, dict):
-                ctx.obj = Context.from_dict(ctx.obj)
+                ctx.obj = CLIContext.from_dict(ctx.obj)
             else:
-                # Store existing obj and create new Context
+                # Store existing obj and create new CLIContext
                 old_obj = ctx.obj
-                ctx.obj = Context()
+                ctx.obj = CLIContext()
                 ctx.obj._cli_data = old_obj
 
         # Update context from command options
