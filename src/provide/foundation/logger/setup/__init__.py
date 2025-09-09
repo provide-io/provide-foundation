@@ -8,7 +8,10 @@ Handles structured logging configuration, processor setup, and emoji resolution.
 Provides the core setup functionality for the Foundation logging system.
 """
 
-from provide.foundation.logger.setup.coordinator import internal_setup
+from provide.foundation.logger.setup.coordinator import (
+    get_vanilla_logger,
+    internal_setup,
+)
 
 # Import testing utilities conditionally
 try:
@@ -22,6 +25,7 @@ except ImportError:
     reset_for_testing = None
 
 __all__ = [
+    "get_vanilla_logger",
     "internal_setup",
 ]
 

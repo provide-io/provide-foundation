@@ -31,22 +31,35 @@ _FOUNDATION_LOG_LEVEL: int | None = None
 
 
 def get_foundation_log_level() -> int:
-    """Get the Foundation log level from LoggingConfig, checking only once."""
+    """Get Foundation log level for setup phase, safely."""
     global _FOUNDATION_LOG_LEVEL
     if _FOUNDATION_LOG_LEVEL is None:
-        # Use the proper config system to get the Foundation setup log level
-        logging_config = LoggingConfig.from_env(strict=False)
-        level_str = logging_config.foundation_setup_log_level.upper()
-        _FOUNDATION_LOG_LEVEL = getattr(
-            stdlib_logging,
-            level_str,
-            stdlib_logging.INFO,  # Default fallback
-        )
+        import os
+        
+        # Direct env read - avoid config imports that cause circular deps
+        level_str = os.environ.get("FOUNDATION_LOG_LEVEL", "INFO").upper()
+        
+        # Validate and map to numeric level
+        valid_levels = {
+            "CRITICAL": stdlib_logging.CRITICAL,
+            "ERROR": stdlib_logging.ERROR,
+            "WARNING": stdlib_logging.WARNING,
+            "INFO": stdlib_logging.INFO,
+            "DEBUG": stdlib_logging.DEBUG,
+            "NOTSET": stdlib_logging.NOTSET,
+        }
+        
+        _FOUNDATION_LOG_LEVEL = valid_levels.get(level_str, stdlib_logging.INFO)
     return _FOUNDATION_LOG_LEVEL
 
 
-def create_core_setup_logger(globally_disabled: bool = False) -> Any:
-    """Create a structlog logger for core setup messages."""
+def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
+    """
+    Create Foundation's internal setup logger (structlog).
+    
+    This is used internally by Foundation during its own initialization.
+    Components should use get_vanilla_logger() instead.
+    """
     if globally_disabled:
         # Configure structlog to be a no-op for core setup logger
         structlog.configure(
@@ -82,6 +95,55 @@ def create_core_setup_logger(globally_disabled: bool = False) -> Any:
         return structlog.get_logger(_CORE_SETUP_LOGGER_NAME)
 
 
+def get_vanilla_logger(name: str):
+    """
+    Get a vanilla Python logger without Foundation enhancements.
+    
+    This provides a plain Python logger that respects FOUNDATION_LOG_LEVEL
+    but doesn't trigger Foundation's initialization. Use this for logging
+    during Foundation's setup phase or when you need to avoid circular
+    dependencies.
+    
+    Args:
+        name: Logger name (e.g., "provide.foundation.otel.setup")
+    
+    Returns:
+        A standard Python logging.Logger instance
+        
+    Note:
+        "Vanilla" means plain/unmodified Python logging, without
+        Foundation's features like emoji prefixes or structured logging.
+    """
+    import logging
+    import sys
+    import os
+    
+    slog = logging.getLogger(name)
+    
+    # Configure only once per logger
+    if not slog.handlers:
+        log_level = get_foundation_log_level()
+        slog.setLevel(log_level)
+        
+        # Respect FOUNDATION_LOG_OUTPUT setting
+        output = os.environ.get("FOUNDATION_LOG_OUTPUT", "stderr").lower()
+        stream = sys.stderr if output != "stdout" else sys.stdout
+        
+        handler = logging.StreamHandler(stream)
+        handler.setLevel(log_level)
+        formatter = logging.Formatter(
+            '%(asctime)s [%(levelname)-5s] %(message)s',
+            datefmt='%Y-%m-%dT%H:%M:%S'
+        )
+        handler.setFormatter(formatter)
+        slog.addHandler(handler)
+        
+        # Don't propagate to avoid duplicate messages
+        slog.propagate = False
+    
+    return slog
+
+
 def internal_setup(
     config: TelemetryConfig | None = None, is_explicit_call: bool = False
 ) -> None:
@@ -96,7 +158,7 @@ def internal_setup(
     _LAZY_SETUP_STATE.update({"done": False, "error": None, "in_progress": False})
 
     current_config = config if config is not None else TelemetryConfig.from_env()
-    core_setup_logger = create_core_setup_logger(
+    core_setup_logger = create_foundation_internal_logger(
         globally_disabled=current_config.globally_disabled
     )
 

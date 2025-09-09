@@ -1,6 +1,9 @@
 """OpenTelemetry integration for Foundation tracer."""
 
 from provide.foundation.logger.config.telemetry import TelemetryConfig
+from provide.foundation.logger.setup import get_vanilla_logger
+
+slog = get_vanilla_logger(__name__)
 
 # Feature detection
 try:
@@ -88,12 +91,12 @@ def setup_opentelemetry_tracing(config: TelemetryConfig) -> None:
         processor = BatchSpanProcessor(exporter)
         tracer_provider.add_span_processor(processor)
 
-        log.debug(f"✅ OTLP span exporter configured: {config.otlp_protocol}")
+        slog.debug(f"✅ OTLP span exporter configured: {config.otlp_protocol}")
 
     # Set the global tracer provider
     otel_trace.set_tracer_provider(tracer_provider)
 
-    log.info("🔍✅ OpenTelemetry tracing setup complete")
+    slog.info("🔍✅ OpenTelemetry tracing setup complete")
 
 
 def get_otel_tracer(name: str) -> "otel_trace.Tracer | None":
@@ -123,6 +126,6 @@ def shutdown_opentelemetry() -> None:
         tracer_provider = otel_trace.get_tracer_provider()
         if hasattr(tracer_provider, "shutdown"):
             tracer_provider.shutdown()
-            log.debug("🔍🛑 OpenTelemetry tracer provider shutdown")
+            slog.debug("🔍🛑 OpenTelemetry tracer provider shutdown")
     except Exception as e:
-        log.warning(f"⚠️ Error shutting down OpenTelemetry: {e}")
+        slog.warning(f"⚠️ Error shutting down OpenTelemetry: {e}")
