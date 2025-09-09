@@ -167,20 +167,6 @@ def create_test_cli(
     return cli
 
 
-def mock_logger():
-    """
-    Create a mock logger for testing.
-
-    Returns:
-        MagicMock with common logger methods
-    """
-    mock = MagicMock()
-    mock.debug = MagicMock()
-    mock.info = MagicMock()
-    mock.warning = MagicMock()
-    mock.error = MagicMock()
-    mock.critical = MagicMock()
-    return mock
 
 
 class CliTestCase:

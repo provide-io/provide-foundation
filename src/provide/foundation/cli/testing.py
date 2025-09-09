@@ -17,25 +17,6 @@ from provide.foundation.logger import get_logger
 log = get_logger(__name__)
 
 
-class MockContext(CLIContext):
-    """Mock context for testing that tracks method calls."""
-
-    def __init__(self, **kwargs) -> None:
-        """Initialize mock context with tracking."""
-        super().__init__(**kwargs)
-        self.calls = []
-        self.saved_configs = []
-        self.loaded_configs = []
-
-    def save_config(self, path: str | Path) -> None:
-        """Track save_config calls."""
-        self.saved_configs.append(path)
-        super().save_config(path)
-
-    def load_config(self, path: str | Path) -> None:
-        """Track load_config calls."""
-        self.loaded_configs.append(path)
-        super().load_config(path)
 
 
 @contextmanager
@@ -159,20 +140,6 @@ def create_test_cli(
     return cli
 
 
-def mock_logger():
-    """
-    Create a mock logger for testing.
-
-    Returns:
-        MagicMock with common logger methods
-    """
-    mock = MagicMock()
-    mock.debug = MagicMock()
-    mock.info = MagicMock()
-    mock.warning = MagicMock()
-    mock.error = MagicMock()
-    mock.critical = MagicMock()
-    return mock
 
 
 class CliTestCase:

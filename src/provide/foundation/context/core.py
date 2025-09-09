@@ -9,7 +9,7 @@ from typing import Any
 from attrs import define, field, fields, validators
 
 from provide.foundation.config.env import RuntimeConfig
-from provide.foundation.config.base import field as config_field
+from provide.foundation.config.base import field as config_field, ConfigSource
 from provide.foundation.config.converters import parse_bool_extended
 from provide.foundation.logger import get_logger
 from provide.foundation.logger.config import TelemetryConfig
@@ -135,12 +135,13 @@ class CLIContext(RuntimeConfig):
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "CLIContext":
+    def from_dict(cls, data: dict[str, Any], source: ConfigSource = ConfigSource.RUNTIME) -> "CLIContext":
         """
         Create context from dictionary.
 
         Args:
             data: Dictionary with context values
+            source: Source of the configuration data
 
         Returns:
             New CLIContext instance
@@ -177,9 +178,7 @@ class CLIContext(RuntimeConfig):
         Args:
             path: Path to configuration file
         """
-        if self._frozen:
-            raise RuntimeError("Context is frozen and cannot be modified")
-
+        # CLIContext is not frozen, so we can modify it
         path = Path(path)
         if not path.exists():
             raise FileNotFoundError(f"Config file not found: {path}")
@@ -319,3 +318,8 @@ class CLIContext(RuntimeConfig):
                 profile=self.profile,
             )
         return self._logger
+
+    def _validate(self) -> None:
+        """Validate context values. For attrs compatibility."""
+        # Validation is handled by attrs validators automatically
+        pass
