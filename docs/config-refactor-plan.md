@@ -206,14 +206,183 @@ config = LoggingConfig.from_env(prefix="PROVIDE_LOG")
 5. **Maintainability**: Adding new env vars only requires field declaration
 6. **Features**: Automatic support for file-based secrets, source tracking, etc.
 
-## Testing Requirements
+## Testing Requirements & Coverage Plan
 
-- [ ] Ensure all existing tests pass with new implementation
-- [ ] Add tests for custom converters
-- [ ] Test nested config loading (TelemetryConfig with LoggingConfig)
-- [ ] Test validation error handling
-- [ ] Test file-based secret loading
-- [ ] Test precedence when multiple sources exist
+### Existing Test Files to Update
+
+1. **tests/config/test_config_logger.py**
+   - Update `TestTelemetryConfigFromEnv` class to test RuntimeConfig inheritance
+   - Remove tests for emoji sets functionality (dead code)
+   - Add tests for converter functions
+   - Test that field metadata is properly used
+
+2. **tests/logger/test_config_coverage.py**
+   - Update environment variable loading tests
+   - Remove emoji sets related assertions
+   - Add coverage for new converter functions
+
+3. **tests/transport/test_transport_config.py** (create if doesn't exist)
+   - Test TransportConfig with RuntimeConfig inheritance
+   - Test HTTPConfig with proper field converters
+   - Test environment variable precedence
+
+### New Test Files to Create
+
+1. **tests/config/test_converters.py**
+   ```python
+   # Test all converter functions:
+   - test_parse_log_level()
+   - test_parse_module_levels()
+   - test_parse_rate_limits()
+   - test_parse_float_with_validation()
+   - test_parse_bool_extended()
+   ```
+
+2. **tests/config/test_runtime_config.py**
+   ```python
+   # Test RuntimeConfig.from_env() behavior:
+   - test_from_env_with_prefix()
+   - test_from_env_case_sensitivity()
+   - test_from_env_file_secrets()
+   - test_from_env_with_converters()
+   - test_from_env_with_validators()
+   - test_from_env_source_tracking()
+   ```
+
+### Test Coverage Matrix
+
+| Component | Current Coverage | Target Coverage | Notes |
+|-----------|-----------------|-----------------|-------|
+| LoggingConfig.from_env() | Manual parsing tested | RuntimeConfig.from_env() tested | Remove 200+ lines of manual tests |
+| TelemetryConfig.from_env() | Manual parsing tested | RuntimeConfig.from_env() tested | Simplify test assertions |
+| TransportConfig.from_env() | Basic tests | Full converter coverage | Add edge case tests |
+| Field converters | None | 100% coverage | New test file |
+| Field validators | Inline in from_env() | Field-level coverage | Test at field definition |
+| Emoji sets | Tested but unused | Remove tests | Dead code cleanup |
+
+### Specific Test Cases
+
+#### 1. Environment Variable Loading
+```python
+@pytest.mark.parametrize("env_vars,expected", [
+    # Test basic types
+    ({"PROVIDE_LOG_LEVEL": "DEBUG"}, {"default_level": "DEBUG"}),
+    ({"PROVIDE_LOG_LEVEL": "invalid"}, ValidationError),  # Should fail
+    
+    # Test complex parsing
+    ({"PROVIDE_LOG_MODULE_LEVELS": "auth:TRACE,db:ERROR"}, 
+     {"module_levels": {"auth": "TRACE", "db": "ERROR"}}),
+    
+    # Test rate limits
+    ({"PROVIDE_LOG_RATE_LIMIT_PER_LOGGER": "api:10:100,worker:5:50"},
+     {"rate_limit_per_logger": {"api": (10.0, 100.0), "worker": (5.0, 50.0)}}),
+])
+def test_logging_config_from_env(monkeypatch, env_vars, expected):
+    for key, value in env_vars.items():
+        monkeypatch.setenv(key, value)
+    
+    if isinstance(expected, type) and issubclass(expected, Exception):
+        with pytest.raises(expected):
+            LoggingConfig.from_env()
+    else:
+        config = LoggingConfig.from_env()
+        for key, value in expected.items():
+            assert getattr(config, key) == value
+```
+
+#### 2. Converter Functions
+```python
+def test_parse_module_levels():
+    # Valid input
+    result = parse_module_levels("auth.service:DEBUG,database:ERROR")
+    assert result == {"auth.service": "DEBUG", "database": "ERROR"}
+    
+    # Empty input
+    assert parse_module_levels("") == {}
+    
+    # Invalid format (missing colon)
+    assert parse_module_levels("auth.service") == {}  # Skip invalid
+    
+    # Whitespace handling
+    result = parse_module_levels(" auth : DEBUG , database : ERROR ")
+    assert result == {"auth": "DEBUG", "database": "ERROR"}
+```
+
+#### 3. Field Validation
+```python
+def test_field_level_validation():
+    # Test that validation happens at field level
+    with pytest.raises(ValueError, match="Invalid port"):
+        HTTPConfig(port=70000)  # Out of range
+    
+    # Test converter + validator chain
+    config = HTTPConfig.from_env()  # PROVIDE_HTTP_PORT="8080"
+    assert config.port == 8080
+    assert isinstance(config.port, int)
+```
+
+#### 4. Source Tracking
+```python
+def test_config_source_tracking():
+    # Load from environment
+    monkeypatch.setenv("PROVIDE_LOG_LEVEL", "DEBUG")
+    config = LoggingConfig.from_env()
+    
+    assert config.get_source("default_level") == ConfigSource.ENV
+    assert config.get_source("console_formatter") == ConfigSource.DEFAULT
+```
+
+### Dead Code Removal Tests
+
+1. **Remove from tests/config/test_config_logger.py**:
+   - `test_from_env_parses_enabled_emoji_sets`
+   - `test_from_env_handles_malformed_custom_emoji_sets_json`
+   - All emoji sets related test methods
+
+2. **Remove from tests/logger/test_config_coverage.py**:
+   - Assertions checking `config.enabled_emoji_sets`
+   - Assertions checking `config.custom_emoji_sets`
+
+### Migration Test Strategy
+
+1. **Phase 1: Parallel Testing**
+   - Keep old `from_env()` methods temporarily
+   - Add new test that compares old vs new implementation:
+   ```python
+   def test_migration_compatibility():
+       # Set up complex environment
+       setup_test_environment()
+       
+       # Load with old method
+       old_config = LoggingConfig.from_env_legacy()
+       
+       # Load with new RuntimeConfig method
+       new_config = LoggingConfig.from_env()
+       
+       # Compare all fields
+       assert old_config.to_dict() == new_config.to_dict()
+   ```
+
+2. **Phase 2: Cutover**
+   - Remove legacy `from_env()` methods
+   - Remove compatibility tests
+   - Ensure all tests use RuntimeConfig.from_env()
+
+### Performance Tests
+
+```python
+def test_config_loading_performance(benchmark):
+    # Set up environment with many variables
+    setup_complex_environment()
+    
+    # Benchmark new implementation
+    result = benchmark(LoggingConfig.from_env)
+    
+    # Should be faster than old implementation
+    # Old: ~500 lines of manual parsing
+    # New: Automated field iteration
+    assert benchmark.stats['mean'] < 0.001  # Less than 1ms
+```
 
 ## Migration Notes
 
@@ -221,3 +390,14 @@ config = LoggingConfig.from_env(prefix="PROVIDE_LOG")
 - Internal implementation becomes cleaner and more maintainable
 - Field metadata is now actually used instead of being decorative
 - Validation happens at parse time, not after object creation
+- Dead code (emoji sets) removed - if anyone was trying to use these features, they weren't working anyway
+
+## Clean Code Benefits After Refactor
+
+1. **Single Source of Truth**: Field definitions contain all metadata (env var name, converter, validator)
+2. **DRY Principle**: No duplicate parsing logic across config classes
+3. **Type Safety**: Converters ensure correct types at field level
+4. **Testability**: Each converter/validator can be tested independently
+5. **Maintainability**: Adding a new env var only requires adding a field definition
+6. **Consistency**: All configs use the same loading mechanism
+7. **Dead Code Removal**: ~100 lines of unused emoji sets code removed
