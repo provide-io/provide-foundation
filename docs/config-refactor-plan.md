@@ -29,9 +29,9 @@ The codebase has a sophisticated configuration system (`BaseConfig`, `RuntimeCon
 ### Phase 2: Enhance Field Declarations
 - [ ] Add converter for `module_levels` field (parse "module1:LEVEL,module2:LEVEL")
 - [ ] Add converter for `rate_limit_per_logger` field (parse "logger1:rate:capacity")
-- [ ] Remove unused emoji sets fields (`enabled_emoji_sets`, `custom_emoji_sets`, `user_defined_emoji_sets`) - these are parsed but never used
+- [ ] Exclude emoji sets fields from config (not implemented in logger)
 - [ ] Add validators to fields instead of post-validation
-- [ ] Remove manual parsing logic from `from_env()` methods
+- [ ] Use declarative field definitions instead of manual parsing
 
 ### Phase 3: Centralize Simple Environment Checks
 - [ ] Create `StreamConfig` class for console settings
@@ -88,9 +88,8 @@ class LoggingConfig(RuntimeConfig):
         description="Per-module log levels",
     )
     
-    # NOTE: The emoji sets fields (enabled_emoji_sets, custom_emoji_sets, 
-    # user_defined_emoji_sets) have been REMOVED as they were parsed but
-    # never actually used in the logger implementation - dead code cleanup
+    # Emoji sets functionality is not implemented in the logger
+    # These fields should not be present in the refactored version
     # ... other fields with proper converters ...
     
     # No more from_env() method needed! RuntimeConfig handles it
@@ -164,8 +163,9 @@ def parse_module_levels(value: str) -> dict[str, LogLevelStr]:
             result[module.strip()] = parse_log_level(level.strip())
     return result
 
-# NOTE: Removed parse_comma_list and parse_json_emoji_sets as the emoji sets
-# functionality is not actually implemented - these fields were dead code
+def parse_comma_list(value: str) -> list[str]:
+    """Parse comma-separated list."""
+    return [item.strip() for item in value.split(",") if item.strip()]
 
 def parse_rate_limits(value: str) -> dict[str, tuple[float, float]]:
     """Parse logger:rate:capacity format."""
@@ -258,7 +258,7 @@ config = LoggingConfig.from_env(prefix="PROVIDE_LOG")
 | TransportConfig.from_env() | Basic tests | Full converter coverage | Add edge case tests |
 | Field converters | None | 100% coverage | New test file |
 | Field validators | Inline in from_env() | Field-level coverage | Test at field definition |
-| Emoji sets | Tested but unused | Remove tests | Dead code cleanup |
+| Emoji sets | N/A | N/A | Not implemented |
 
 ### Specific Test Cases
 
@@ -332,16 +332,12 @@ def test_config_source_tracking():
     assert config.get_source("console_formatter") == ConfigSource.DEFAULT
 ```
 
-### Dead Code Removal Tests
+### Tests Not Needed
 
-1. **Remove from tests/config/test_config_logger.py**:
+1. **Emoji sets tests** (functionality not implemented):
    - `test_from_env_parses_enabled_emoji_sets`
    - `test_from_env_handles_malformed_custom_emoji_sets_json`
-   - All emoji sets related test methods
-
-2. **Remove from tests/logger/test_config_coverage.py**:
-   - Assertions checking `config.enabled_emoji_sets`
-   - Assertions checking `config.custom_emoji_sets`
+   - Assertions checking emoji sets fields
 
 ### Migration Test Strategy
 
@@ -390,7 +386,7 @@ def test_config_loading_performance(benchmark):
 - Internal implementation becomes cleaner and more maintainable
 - Field metadata is now actually used instead of being decorative
 - Validation happens at parse time, not after object creation
-- Dead code (emoji sets) removed - if anyone was trying to use these features, they weren't working anyway
+- Emoji sets fields excluded (functionality not implemented in logger)
 
 ## Clean Code Benefits After Refactor
 
@@ -400,4 +396,4 @@ def test_config_loading_performance(benchmark):
 4. **Testability**: Each converter/validator can be tested independently
 5. **Maintainability**: Adding a new env var only requires adding a field definition
 6. **Consistency**: All configs use the same loading mechanism
-7. **Dead Code Removal**: ~100 lines of unused emoji sets code removed
+7. **Clean Architecture**: Only implemented features are exposed in config
