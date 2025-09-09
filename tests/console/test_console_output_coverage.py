@@ -440,14 +440,12 @@ class TestEdgeCases:
             output = json.loads(args[0])
             assert output["test"] == "data"
 
-            # Verify the error handling code paths exist in the source
+            # Verify the error handling decorator exists in the source
             import inspect
 
             source = inspect.getsource(_output_json)
-            assert "try:" in source
-            assert "except" in source
-            assert "TypeError" in source
-            assert "ValueError" in source
+            assert "@with_error_handling" in source
+            assert "suppress=(TypeError, ValueError, AttributeError)" in source
 
     def test_context_auto_retrieval_in_functions(self):
         """Test that pout and perr retrieve context automatically."""

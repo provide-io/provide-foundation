@@ -57,10 +57,10 @@ class TestConsoleFormatterParsing:
 
     def test_parse_console_formatter_invalid(self):
         """Test parsing invalid formatters raises error."""
-        with pytest.raises(ValueError, match="Invalid formatter"):
+        with pytest.raises(ValueError, match="Invalid console formatter"):
             parse_console_formatter("xml")
         
-        with pytest.raises(ValueError, match="Invalid formatter"):
+        with pytest.raises(ValueError, match="Invalid console formatter"):
             parse_console_formatter("yaml")
 
 
