@@ -9,6 +9,7 @@ Handles console-specific stream operations and formatting.
 import sys
 from typing import TextIO
 
+from provide.foundation.streams.config import get_stream_config
 from provide.foundation.streams.core import get_log_stream
 
 
@@ -25,16 +26,14 @@ def is_tty() -> bool:
 
 def supports_color() -> bool:
     """Check if the current stream supports color output."""
-    import os
-
-    # Check NO_COLOR environment variable
-    if os.getenv("NO_COLOR"):
+    config = get_stream_config()
+    
+    if config.no_color:
         return False
-
-    # Check FORCE_COLOR environment variable
-    if os.getenv("FORCE_COLOR"):
+    
+    if config.force_color:
         return True
-
+    
     # Check if we're in a TTY
     return is_tty()
 
