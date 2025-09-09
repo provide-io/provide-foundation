@@ -238,6 +238,9 @@ class TestFoundationBootstrapIntegration:
 
         if len(event_sets) == 0 and len(processors) == 0:
             bootstrap_foundation()
+            # Also trigger event set discovery if needed
+            from provide.foundation.eventsets.registry import discover_event_sets
+            discover_event_sets()
             # Re-fetch after bootstrap
             event_sets = registry.list_dimension(ComponentCategory.EVENT_SET.value)
             processors = registry.list_dimension(ComponentCategory.PROCESSOR.value)
