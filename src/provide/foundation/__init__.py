@@ -9,7 +9,7 @@ Primary public interface for the library, re-exporting common components.
 # Export config module for easy access
 # New foundation components
 # Make the errors module available for detailed imports
-from provide.foundation import config, errors, platform, process
+from provide.foundation import config, errors, platform, process, resilience
 from provide.foundation._version import __version__
 
 # Console I/O functions (always available - handles click dependency internally)
@@ -33,6 +33,7 @@ from provide.foundation.resilience import (
     circuit_breaker,
     fallback,
     RetryPolicy,
+    RetryExecutor,
     BackoffStrategy,
     CircuitBreaker,
     CircuitState,
@@ -143,14 +144,17 @@ __all__ = [
     "process",
     # Resilience patterns
     "retry",
-    "retry_on_error",
-    "circuit_breaker",
+    "circuit_breaker", 
     "fallback",
     "RetryPolicy",
+    "RetryExecutor",
     "BackoffStrategy",
     "CircuitBreaker",
-    "CircuitState",
+    "CircuitState", 
     "FallbackChain",
+    # Backward compatibility (deprecated)
+    "retry_on_error",
+    "resilience",  # The resilience module for detailed imports
     "setup_logging",  # Backward compatibility
     "setup_logger",  # Consistent naming
     "setup_telemetry",
