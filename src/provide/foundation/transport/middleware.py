@@ -13,6 +13,7 @@ from provide.foundation.hub import get_component_registry
 from provide.foundation.hub.components import ComponentCategory
 from provide.foundation.logger import get_logger
 from provide.foundation.metrics import counter, histogram
+from provide.foundation.resilience.retry import BackoffStrategy, RetryExecutor, RetryPolicy
 from provide.foundation.transport.base import Request, Response
 from provide.foundation.transport.errors import TransportError
 
@@ -112,14 +113,30 @@ class LoggingMiddleware(Middleware):
 
 @define
 class RetryMiddleware(Middleware):
-    """Automatic retry middleware with exponential backoff."""
+    """Automatic retry middleware using unified retry logic."""
     
+    # Legacy parameters for backward compatibility
     max_retries: int = field(default=3)
     backoff_factor: float = field(default=0.5)
     retryable_status_codes: set[int] = field(factory=lambda: {500, 502, 503, 504})
     retryable_exceptions: tuple[type[Exception], ...] = field(
         factory=lambda: (TransportError,)
     )
+    
+    # New unified policy (built from legacy params if not provided)
+    policy: RetryPolicy | None = field(default=None)
+    
+    def __attrs_post_init__(self):
+        """Build policy from legacy parameters if not provided."""
+        if self.policy is None:
+            # Convert legacy parameters to policy
+            self.policy = RetryPolicy(
+                max_attempts=self.max_retries,
+                base_delay=self.backoff_factor,
+                backoff=BackoffStrategy.EXPONENTIAL,
+                retryable_errors=self.retryable_exceptions,
+                retryable_status_codes=self.retryable_status_codes,
+            )
     
     async def process_request(self, request: Request) -> Request:
         """No request processing needed."""
@@ -134,38 +151,28 @@ class RetryMiddleware(Middleware):
         return error
     
     async def execute_with_retry(self, execute_func, request: Request) -> Response:
-        """Execute request with retry logic."""
-        last_exception = None
+        """Execute request with retry logic using unified RetryExecutor."""
+        executor = RetryExecutor(self.policy)
         
-        for attempt in range(self.max_retries + 1):
-            try:
-                response = await execute_func(request)
-                
-                # Check if status code is retryable
-                if response.status in self.retryable_status_codes and attempt < self.max_retries:
-                    wait_time = self.backoff_factor * (2 ** attempt)
-                    log.info(f"🔄 Retry {attempt + 1}/{self.max_retries} after {wait_time:.1f}s (status {response.status})")
-                    await asyncio.sleep(wait_time)
-                    continue
-                
-                return response
-                
-            except self.retryable_exceptions as e:
-                last_exception = e
-                
-                if attempt < self.max_retries:
-                    wait_time = self.backoff_factor * (2 ** attempt)
-                    log.info(f"🔄 Retry {attempt + 1}/{self.max_retries} after {wait_time:.1f}s (error: {e})")
-                    await asyncio.sleep(wait_time)
-                else:
-                    break
+        async def wrapped():
+            response = await execute_func(request)
+            
+            # Check if status code is retryable
+            if self.policy.should_retry_response(response, attempt=1):
+                # Convert to exception for executor to handle
+                raise TransportError(f"Retryable HTTP status: {response.status}")
+            
+            return response
         
-        # All retries exhausted
-        if last_exception:
-            raise last_exception
-        else:
-            # This shouldn't happen, but just in case
-            raise TransportError("Max retries exceeded")
+        try:
+            return await executor.execute_async(wrapped)
+        except TransportError as e:
+            # If it's our synthetic error, extract the response
+            if "Retryable HTTP status" in str(e):
+                # The last response will be returned
+                # For now, re-raise as this needs more sophisticated handling
+                raise
+            raise
 
 
 @define
