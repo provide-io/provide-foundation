@@ -6,6 +6,8 @@ from pathlib import Path
 import shutil
 import tempfile
 
+from provide.foundation.errors.decorators import with_error_handling
+from provide.foundation.errors.context import error_boundary
 from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
@@ -80,17 +82,12 @@ def temp_dir(
         yield temp_path
     finally:
         if cleanup and temp_path and temp_path.exists():
-            try:
+            with error_boundary("temp directory cleanup", suppress=Exception):
                 shutil.rmtree(temp_path)
                 log.debug("Cleaned up temp directory", path=str(temp_path))
-            except Exception as e:
-                log.warning(
-                    "Failed to cleanup temp directory",
-                    path=str(temp_path),
-                    error=str(e),
-                )
 
 
+@with_error_handling(fallback=False, suppress=(FileNotFoundError,) if False else ())
 def safe_rmtree(
     path: Path | str,
     missing_ok: bool = True,
@@ -109,21 +106,15 @@ def safe_rmtree(
     """
     path = Path(path)
 
-    try:
-        if path.exists():
-            shutil.rmtree(path)
-            log.debug("Removed directory tree", path=str(path))
-            return True
-        elif missing_ok:
-            log.debug("Directory already absent", path=str(path))
-            return False
-        else:
-            raise FileNotFoundError(f"Directory does not exist: {path}")
-    except Exception as e:
-        if not path.exists() and missing_ok:
-            return False
-        log.error("Failed to remove directory tree", path=str(path), error=str(e))
-        raise
+    if path.exists():
+        shutil.rmtree(path)
+        log.debug("Removed directory tree", path=str(path))
+        return True
+    elif missing_ok:
+        log.debug("Directory already absent", path=str(path))
+        return False
+    else:
+        raise FileNotFoundError(f"Directory does not exist: {path}")
 
 
 __all__ = [
