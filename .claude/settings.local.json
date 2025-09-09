@@ -22,7 +22,8 @@
       "Bash(timeout 30 pytest tests/crypto/test_certificate_lifecycle.py::test_certificate_validity_period_error -xvs)",
       "Bash(timeout 30 pytest tests/crypto/test_certificate_loading.py::test_load_key_value_error -xvs)",
       "Bash(timeout 30 pytest tests/crypto/test_certificate_properties.py::test_is_ca_extension_not_found_logs_debug -xvs)",
-      "Bash(timeout 30 pytest tests/crypto/test_optional_crypto_dependency.py::TestCryptoFallbackBehavior::test_crypto_module_resilience -xvs)"
+      "Bash(timeout 30 pytest tests/crypto/test_optional_crypto_dependency.py::TestCryptoFallbackBehavior::test_crypto_module_resilience -xvs)",
+      "Bash(PROVIDE_LOG_LEVEL=CRITICAL pytest tests/cli/test_cli_utils_basic.py::TestCliLogging::test_setup_cli_logging_default -xvs --tb=short)"
     ],
     "deny": [],
     "ask": [],
