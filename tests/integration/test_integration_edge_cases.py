@@ -28,24 +28,34 @@ from provide.foundation.testing import reset_foundation_setup_for_testing
 def test_invalid_environment_variables_handling(
     monkeypatch, capsys
 ) -> None:  # Added capsys
-    """Tests handling of invalid environment variables."""
-    # Define cases with expected warning snippet, or None if specific warning isn't critical/expected
-    invalid_env_cases = [
-        (
+    """Tests handling of invalid environment variables with strict validation."""
+    # Define cases that should raise ValueError with strict validation
+    strict_validation_cases = [
+        ("PROVIDE_LOG_LEVEL", "INVALID_LEVEL", "Invalid log level 'INVALID_LEVEL'"),
+        ("PROVIDE_LOG_CONSOLE_FORMATTER", "invalid_formatter", "Invalid console formatter 'invalid_formatter'"),
+    ]
+    
+    # Test cases that should raise exceptions
+    for env_var, invalid_value, expected_error in strict_validation_cases:
+        # Clear all env vars that might interfere
+        possible_interfering_vars = [
             "PROVIDE_LOG_LEVEL",
-            "INVALID_LEVEL",
-            "Invalid PROVIDE_LOG_LEVEL 'INVALID_LEVEL'",
-        ),
-        (
-            "PROVIDE_LOG_CONSOLE_FORMATTER",
-            "invalid_formatter",
-            "Invalid PROVIDE_LOG_CONSOLE_FORMATTER 'invalid_formatter'",
-        ),
-        (
-            "PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED",
-            "maybe",
-            None,
-        ),  # bool parsing defaults, no specific warning expected by from_env
+            "PROVIDE_LOG_CONSOLE_FORMATTER", 
+            "PROVIDE_LOG_MODULE_LEVELS",
+        ]
+        for var_to_clear in possible_interfering_vars:
+            monkeypatch.delenv(var_to_clear, raising=False)
+            
+        # Set the invalid value
+        monkeypatch.setenv(env_var, invalid_value)
+        
+        # Should raise ValueError with strict validation
+        with pytest.raises(ValueError, match=expected_error):
+            TelemetryConfig.from_env()
+    
+    # Define cases that should handle invalid values gracefully (bool parsing)
+    lenient_cases = [
+        ("PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED", "maybe"),
         (
             "PROVIDE_LOG_DAS_EMOJI_ENABLED",
             "sometimes",
