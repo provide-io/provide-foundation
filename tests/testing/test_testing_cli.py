@@ -15,9 +15,9 @@ from provide.foundation.testing.cli import (
     isolated_cli_runner,
     temp_config_file,
     create_test_cli,
-    mock_logger,
     CliTestCase,
 )
+from provide.foundation.testing.logger import mock_logger
 
 
 class TestMockContext:

@@ -15,8 +15,8 @@ from provide.foundation.testing import (
     isolated_cli_runner,
     temp_config_file,
     create_test_cli,
-    mock_logger,
     CliTestCase,
+    mock_logger,
 )
 
 
