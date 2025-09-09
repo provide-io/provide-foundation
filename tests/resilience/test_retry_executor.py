@@ -457,12 +457,6 @@ class TestRetryExecutorLogging:
             with pytest.raises(ValueError):
                 executor.execute_sync(mock_func)
         
-        # Debug: check all calls made to the mock logger
-        print(f"Mock logger called: {mock_logger.called}")
-        print(f"Error calls: {mock_logger.error.call_count}")
-        print(f"Info calls: {mock_logger.info.call_count}")
-        print(f"All method calls: {mock_logger.method_calls}")
-        
         # Should log the final failure
         assert mock_logger.error.called
         log_message = mock_logger.error.call_args[0][0]

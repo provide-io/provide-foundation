@@ -212,11 +212,7 @@ class RetryExecutor:
             except Exception as e:
                 last_exception = e
                 
-                # Check if we should retry this error
-                if not self.policy.should_retry(e, attempt):
-                    raise
-                
-                # Don't retry on last attempt
+                # Don't retry on last attempt - log and raise
                 if attempt >= self.policy.max_attempts:
                     logger.error(
                         f"All {self.policy.max_attempts} retry attempts failed",
@@ -224,6 +220,10 @@ class RetryExecutor:
                         error=str(e),
                         error_type=type(e).__name__,
                     )
+                    raise
+                
+                # Check if we should retry this error
+                if not self.policy.should_retry(e, attempt):
                     raise
                 
                 # Calculate delay
@@ -278,11 +278,7 @@ class RetryExecutor:
             except Exception as e:
                 last_exception = e
                 
-                # Check if we should retry this error
-                if not self.policy.should_retry(e, attempt):
-                    raise
-                
-                # Don't retry on last attempt
+                # Don't retry on last attempt - log and raise
                 if attempt >= self.policy.max_attempts:
                     logger.error(
                         f"All {self.policy.max_attempts} retry attempts failed",
@@ -290,6 +286,10 @@ class RetryExecutor:
                         error=str(e),
                         error_type=type(e).__name__,
                     )
+                    raise
+                
+                # Check if we should retry this error
+                if not self.policy.should_retry(e, attempt):
                     raise
                 
                 # Calculate delay
