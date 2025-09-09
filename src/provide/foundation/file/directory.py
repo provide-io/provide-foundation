@@ -7,7 +7,7 @@ import shutil
 import tempfile
 
 from provide.foundation.errors.decorators import with_error_handling
-from provide.foundation.errors.context import error_boundary
+from provide.foundation.errors.handlers import error_boundary
 from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
@@ -82,7 +82,7 @@ def temp_dir(
         yield temp_path
     finally:
         if cleanup and temp_path and temp_path.exists():
-            with error_boundary("temp directory cleanup", suppress=Exception):
+            with error_boundary(Exception, reraise=False):
                 shutil.rmtree(temp_path)
                 log.debug("Cleaned up temp directory", path=str(temp_path))
 
