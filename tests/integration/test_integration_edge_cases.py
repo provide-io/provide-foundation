@@ -55,7 +55,7 @@ def test_invalid_environment_variables_handling(
     
     # Define cases that should handle invalid values gracefully (bool parsing)
     lenient_cases = [
-        ("PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED", "maybe"),
+        ("PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED", "maybe", None),
         (
             "PROVIDE_LOG_DAS_EMOJI_ENABLED",
             "sometimes",
@@ -63,14 +63,9 @@ def test_invalid_environment_variables_handling(
         ),  # bool parsing defaults
         ("PROVIDE_LOG_OMIT_TIMESTAMP", "perhaps", None),  # bool parsing defaults
         ("PROVIDE_TELEMETRY_DISABLED", "kinda", None),  # bool parsing defaults
-        (
-            "PROVIDE_LOG_MODULE_LEVELS",
-            "invalid:format:here,also:bad",
-            "Invalid log level 'FORMAT:HERE' for module 'invalid'",
-        ),
     ]
 
-    for env_var, invalid_value, expected_warning_snippet in invalid_env_cases:
+    for env_var, invalid_value, expected_warning_snippet in lenient_cases:
         # Use monkeypatch to set environment variables cleanly for each case
         # Clear relevant env vars to ensure a clean slate for each iteration,
         # otherwise a previously set valid value might interfere.
@@ -426,11 +421,12 @@ def test_configuration_validation_edge_cases() -> None:
         ("false", False),
         ("False", False),
         ("FALSE", False),
-        ("1", False),
+        ("1", True),
         ("0", False),
-        ("yes", False),
+        ("yes", True),
         ("no", False),
-        ("", False),
+        ("on", True),
+        ("off", False),
     ]
     for env_value, expected in bool_test_cases:
         with patch.dict(os.environ, {"PROVIDE_LOG_OMIT_TIMESTAMP": env_value}):

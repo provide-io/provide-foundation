@@ -65,7 +65,7 @@ def parse_console_formatter(value: str) -> ConsoleFormatterStr:
     formatter = value.lower()
     if formatter not in _VALID_FORMATTER_TUPLE:
         raise ValueError(
-            f"Invalid formatter '{value}'. Valid options: {', '.join(_VALID_FORMATTER_TUPLE)}"
+            f"Invalid console formatter '{value}'. Valid options: {', '.join(_VALID_FORMATTER_TUPLE)}"
         )
     return formatter
 
@@ -240,14 +240,19 @@ def parse_bool_strict(value: str | bool) -> bool:
         Boolean value
         
     Raises:
+        TypeError: If value is not a string or bool
         ValueError: If the value cannot be parsed as boolean
     """
+    # Check type first
+    if not isinstance(value, (str, bool)):
+        raise TypeError(f"Boolean field requires str or bool, got {type(value).__name__}")
+    
     # If already a bool, return as-is
     if isinstance(value, bool):
         return value
     
     # Convert to string and parse
-    value_lower = str(value).lower().strip()
+    value_lower = value.lower().strip()
     
     if value_lower in ("true", "yes", "1", "on"):
         return True

@@ -56,13 +56,13 @@ class CLIContext(RuntimeConfig):
     debug: bool = config_field(
         default=False,
         env_var="PROVIDE_DEBUG",
-        converter=parse_bool_extended,
+        converter=parse_bool_strict,
         description="Enable debug mode"
     )
     json_output: bool = config_field(
         default=False,
         env_var="PROVIDE_JSON_OUTPUT",
-        converter=parse_bool_extended,
+        converter=parse_bool_strict,
         description="Output in JSON format"
     )
     config_file: Path | None = config_field(
@@ -85,13 +85,13 @@ class CLIContext(RuntimeConfig):
     no_color: bool = config_field(
         default=False,
         env_var="NO_COLOR",
-        converter=parse_bool_extended,
+        converter=parse_bool_strict,
         description="Disable colored output"
     )
     no_emoji: bool = config_field(
         default=False,
         env_var="PROVIDE_NO_EMOJI",
-        converter=parse_bool_extended,
+        converter=parse_bool_strict,
         description="Disable emoji in output"
     )
 
