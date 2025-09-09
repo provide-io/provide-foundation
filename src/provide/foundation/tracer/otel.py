@@ -1,9 +1,6 @@
 """OpenTelemetry integration for Foundation tracer."""
 
-from provide.foundation.logger import get_logger
 from provide.foundation.logger.config.telemetry import TelemetryConfig
-
-log = get_logger(__name__)
 
 # Feature detection
 try:
@@ -49,15 +46,11 @@ def setup_opentelemetry_tracing(config: TelemetryConfig) -> None:
     """
     # Check if tracing is disabled first, before checking dependencies
     if not config.tracing_enabled or config.globally_disabled:
-        log.debug("🔍 OpenTelemetry tracing disabled")
         return
 
     # Check if OpenTelemetry is available
     if not _HAS_OTEL:
-        log.debug("🔍 OpenTelemetry tracing not available (dependencies not installed)")
         return
-
-    log.debug("🔍🚀 Setting up OpenTelemetry tracing")
 
     # Create resource with service information
     resource_attrs = {}
@@ -77,7 +70,7 @@ def setup_opentelemetry_tracing(config: TelemetryConfig) -> None:
         endpoint = config.otlp_traces_endpoint or config.otlp_endpoint
         headers = config.get_otlp_headers_dict()
 
-        log.debug(f"🔍📤 Configuring OTLP exporter: {endpoint}")
+        # Configuring OTLP exporter
 
         # Choose exporter based on protocol
         if config.otlp_protocol == "grpc":
