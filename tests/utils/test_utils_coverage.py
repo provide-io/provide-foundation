@@ -94,6 +94,37 @@ class TestParsingCoverage:
         no_type_field = fields(NoTypeHintConfig).val
         assert auto_parse(no_type_field, "a_string") == "a_string"
 
+    def test_auto_parse_with_converter_metadata(self) -> None:
+        """Test auto_parse uses converter from metadata first."""
+        
+        @define
+        class ConfigWithConverter:
+            uppercase_val: str = field(metadata={'converter': lambda x: x.upper()})
+            int_val: int = field(metadata={'converter': lambda x: int(x) * 2})
+            no_converter: str = field()
+        
+        attrs_fields = {f.name: f for f in fields(ConfigWithConverter)}
+        
+        # Test that converter in metadata is used
+        assert auto_parse(attrs_fields["uppercase_val"], "hello") == "HELLO"
+        assert auto_parse(attrs_fields["int_val"], "5") == 10
+        
+        # Test fallback to type-based parsing when no converter
+        assert auto_parse(attrs_fields["no_converter"], "plain") == "plain"
+        
+    def test_auto_parse_converter_fallback(self) -> None:
+        """Test auto_parse falls back to type parsing if converter fails."""
+        
+        @define 
+        class ConfigWithFailingConverter:
+            # Converter that always fails
+            val: int = field(metadata={'converter': lambda x: int(x[100])})
+        
+        failing_field = fields(ConfigWithFailingConverter).val
+        
+        # Should fall back to type-based parsing when converter fails
+        assert auto_parse(failing_field, "42") == 42
+
 
 class TestTimingCoverage:
     """Coverage for timing utility functions."""

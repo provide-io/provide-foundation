@@ -30,7 +30,8 @@
       "Bash(timeout 30 pytest tests/errors/ -q --tb=no)",
       "Bash(timeout 30 pytest tests/errors/ -q --tb=short)",
       "Bash(timeout 30 pytest tests/config/test_converters.py -xvs)",
-      "Bash(timeout 30 python -m pytest:*)"
+      "Bash(timeout 30 python -m pytest:*)",
+      "Bash(timeout 30 pytest tests/config/test_config_logger.py::TestTelemetryConfigFromEnvEventSets::test_logging_config_no_emoji_sets -xvs)"
     ],
     "deny": [],
     "ask": [],
