@@ -18,6 +18,9 @@ import pytest
 # Set DEBUG log level for all tests
 os.environ.setdefault("PROVIDE_LOG_LEVEL", "DEBUG")
 
+# Suppress testing warnings for cleaner test output
+os.environ["FOUNDATION_SUPPRESS_TESTING_WARNINGS"] = "true"
+
 from provide.foundation.testing import (
     set_log_stream_for_testing,
     reset_foundation_setup_for_testing,
