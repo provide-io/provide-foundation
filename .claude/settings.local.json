@@ -14,7 +14,8 @@
       "Bash(timeout 30 pytest tests/logger/test_logger_real_world_scenarios.py::TestRealWorldScenarios::test_library_integration_scenario -xvs)",
       "Bash(timeout 30 pytest tests/tools/test_downloader.py::TestToolDownloader::test_download_parallel -xvs)",
       "Bash(timeout 30 pytest tests/test_component_registry_core.py::TestFoundationBootstrapIntegration::test_foundation_bootstraps_with_registry -xvs)",
-      "Bash(timeout 30 pytest tests/logger/test_logger_real_world_scenarios.py::TestMigrationFromExplicitSetup::test_mixed_initialization_order -xvs)"
+      "Bash(timeout 30 pytest tests/logger/test_logger_real_world_scenarios.py::TestMigrationFromExplicitSetup::test_mixed_initialization_order -xvs)",
+      "Bash(timeout 30 pytest tests/hub/test_components_cleanup_misc.py::TestMiscellaneousFunctionality::test_bootstrap_foundation_creates_default_components -xvs)"
     ],
     "deny": [],
     "ask": [],
