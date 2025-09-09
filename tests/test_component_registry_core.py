@@ -240,11 +240,13 @@ class TestFoundationBootstrapIntegration:
             pass
         
         # Trigger event set discovery
-        from provide.foundation.eventsets.registry import discover_event_sets
+        from provide.foundation.eventsets.registry import discover_event_sets, get_registry as get_eventset_registry
         discover_event_sets()
             
         # Fetch after bootstrap
-        event_sets = registry.list_dimension(ComponentCategory.EVENT_SET.value)
+        # Event sets are in their own registry, not the component registry
+        event_registry = get_eventset_registry()
+        event_sets = event_registry.list_event_sets()
         processors = registry.list_dimension(ComponentCategory.PROCESSOR.value)
 
         # Should have default event sets
