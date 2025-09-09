@@ -5,7 +5,7 @@ Domain-Action-Status (DAS) event set.
 from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping
 
 EVENT_SET = EventSet(
-    name="das",
+    name="default",
     description="Core Domain-Action-Status event enrichment",
     mappings=[
         EventMapping(
@@ -106,19 +106,23 @@ EVENT_SET = EventSet(
     field_mappings=[
         FieldMapping(
             log_key="domain",
-            event_set_name="das",
+            event_set_name="default",
             description="System domain or component"
         ),
         FieldMapping(
             log_key="action",
-            event_set_name="das",
+            event_set_name="default",
             description="Action being performed"
         ),
         FieldMapping(
             log_key="status",
-            event_set_name="das",
+            event_set_name="default",
             description="Status or outcome of the action"
         ),
     ],
     priority=0
 )
+
+# Alias for backward compatibility
+das_event_set = EVENT_SET
+default_event_set = EVENT_SET

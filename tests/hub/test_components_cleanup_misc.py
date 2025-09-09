@@ -176,9 +176,9 @@ class TestMiscellaneousFunctionality:
 
         registry = get_component_registry()
 
-        # Should have DAS event set (registered during module discovery)
-        das_event_set = registry.get("das", ComponentCategory.EVENT_SET.value)
-        assert das_event_set is not None
+        # Should have default event set (registered during module discovery)
+        default_event_set = registry.get("default", ComponentCategory.EVENT_SET.value)
+        assert default_event_set is not None
 
         # Should have timestamp processor
         timestamp_proc = registry.get("timestamp", ComponentCategory.PROCESSOR.value)
