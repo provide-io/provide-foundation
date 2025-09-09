@@ -245,28 +245,18 @@ class SyncConfigManager:
         """Get a configuration by name (sync)."""
         return run_async(self._async_manager.get(name))
 
-    def load(self, name: str | None = None, config_class: type[T] | None = None) -> T | ConfigDict:
+    def load(self, name: str, config_class: type[T], loader: ConfigLoader | None = None) -> T:
         """Load a configuration (sync).
         
         Args:
-            name: Optional name for storing in manager.
-            config_class: Optional config class to instantiate.
+            name: Configuration name
+            config_class: Configuration class
+            loader: Optional loader (uses registered if None)
             
         Returns:
-            Config instance if config_class provided, otherwise dict.
+            Configuration instance
         """
-        if self._loader:
-            config_dict = run_async(self._loader.load())
-            if config_class:
-                return run_async(config_class.from_dict(config_dict))
-            return config_dict
-        
-        # Fallback to manager's load if we have a name
-        if name and config_class:
-            return run_async(self._async_manager.load(name, config_class, self._loader))
-        
-        # Return empty dict or default instance
-        return config_class() if config_class else {}
+        return run_async(self._async_manager.load(name, config_class, loader))
 
     def update(
         self,

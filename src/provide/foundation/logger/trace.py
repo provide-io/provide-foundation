@@ -36,3 +36,30 @@ if not hasattr(stdlib_logging, TRACE_LEVEL_NAME):  # pragma: no cover
         (cast(Any, stdlib_logging.root)).trace = trace.__get__(
             stdlib_logging.root, stdlib_logging.Logger
         )
+
+# Also patch PrintLogger from structlog to support trace method
+try:
+    import structlog
+    from structlog import PrintLogger
+    
+    if not hasattr(PrintLogger, "trace"):  # pragma: no cover
+        def trace_for_print_logger(
+            self: PrintLogger, msg: object, *args: object, **kwargs: object
+        ) -> None:  # pragma: no cover
+            # PrintLogger doesn't have level checking, so just format and print like other methods
+            if args:
+                try:
+                    formatted_msg = str(msg) % args
+                except (TypeError, ValueError):
+                    formatted_msg = f"{msg} {args}"
+            else:
+                formatted_msg = str(msg)
+            
+            # Use the same output mechanism as other PrintLogger methods
+            self._file.write(formatted_msg + "\n")
+            self._file.flush()
+        
+        PrintLogger.trace = trace_for_print_logger  # type: ignore[attr-defined]
+        
+except ImportError:  # pragma: no cover
+    pass

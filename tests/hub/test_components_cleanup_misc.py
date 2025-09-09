@@ -176,9 +176,9 @@ class TestMiscellaneousFunctionality:
 
         registry = get_component_registry()
 
-        # Should have default emoji set
-        default_emoji = registry.get("default", ComponentCategory.EMOJI_SET.value)
-        assert default_emoji is not None
+        # Should have default event set
+        default_event_set = registry.get("default", ComponentCategory.EVENT_SET.value)
+        assert default_event_set is not None
 
         # Should have timestamp processor
         timestamp_proc = registry.get("timestamp", ComponentCategory.PROCESSOR.value)
