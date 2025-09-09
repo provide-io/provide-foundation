@@ -10,7 +10,7 @@ import pytest
 import click
 from click.testing import CliRunner
 
-from provide.foundation.cli.testing import (
+from provide.foundation.testing import (
     MockContext,
     isolated_cli_runner,
     temp_config_file,
