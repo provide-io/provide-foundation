@@ -115,28 +115,15 @@ class LoggingMiddleware(Middleware):
 class RetryMiddleware(Middleware):
     """Automatic retry middleware using unified retry logic."""
     
-    # Legacy parameters for backward compatibility
-    max_retries: int = field(default=3)
-    backoff_factor: float = field(default=0.5)
-    retryable_status_codes: set[int] = field(factory=lambda: {500, 502, 503, 504})
-    retryable_exceptions: tuple[type[Exception], ...] = field(
-        factory=lambda: (TransportError,)
+    policy: RetryPolicy = field(
+        factory=lambda: RetryPolicy(
+            max_attempts=3,
+            base_delay=0.5,
+            backoff=BackoffStrategy.EXPONENTIAL,
+            retryable_errors=(TransportError,),
+            retryable_status_codes={500, 502, 503, 504},
+        )
     )
-    
-    # New unified policy (built from legacy params if not provided)
-    policy: RetryPolicy | None = field(default=None)
-    
-    def __attrs_post_init__(self):
-        """Build policy from legacy parameters if not provided."""
-        if self.policy is None:
-            # Convert legacy parameters to policy
-            self.policy = RetryPolicy(
-                max_attempts=self.max_retries,
-                base_delay=self.backoff_factor,
-                backoff=BackoffStrategy.EXPONENTIAL,
-                retryable_errors=self.retryable_exceptions,
-                retryable_status_codes=self.retryable_status_codes,
-            )
     
     async def process_request(self, request: Request) -> Request:
         """No request processing needed."""
