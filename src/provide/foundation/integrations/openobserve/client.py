@@ -12,16 +12,16 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from provide.foundation.logger import get_logger
-from provide.foundation.observability.openobserve.auth import (
+from provide.foundation.integrations.openobserve.auth import (
     get_auth_headers,
     validate_credentials,
 )
-from provide.foundation.observability.openobserve.exceptions import (
+from provide.foundation.integrations.openobserve.exceptions import (
     OpenObserveConfigError,
     OpenObserveConnectionError,
     OpenObserveQueryError,
 )
-from provide.foundation.observability.openobserve.models import (
+from provide.foundation.integrations.openobserve.models import (
     SearchQuery,
     SearchResponse,
     StreamInfo,
@@ -74,7 +74,7 @@ class OpenObserveClient:
 
     @classmethod
     def from_config(cls) -> "OpenObserveClient":
-        """Create client from TelemetryConfig.
+        """Create client from OpenObserveConfig.
 
         Returns:
             Configured OpenObserveClient instance
@@ -82,26 +82,26 @@ class OpenObserveClient:
         Raises:
             OpenObserveConfigError: If configuration is missing
         """
-        from provide.foundation.logger.config import TelemetryConfig
+        from provide.foundation.integrations.openobserve.config import OpenObserveConfig
 
-        config = TelemetryConfig.from_env()
+        config = OpenObserveConfig.from_env()
 
-        if not config.openobserve_url:
+        if not config.url:
             raise OpenObserveConfigError(
                 "OpenObserve URL not configured. Set OPENOBSERVE_URL environment variable."
             )
 
-        if not config.openobserve_user or not config.openobserve_password:
+        if not config.user or not config.password:
             raise OpenObserveConfigError(
                 "OpenObserve credentials not configured. "
                 "Set OPENOBSERVE_USER and OPENOBSERVE_PASSWORD environment variables."
             )
 
         return cls(
-            url=config.openobserve_url,
-            username=config.openobserve_user,
-            password=config.openobserve_password,
-            organization=config.openobserve_org,
+            url=config.url,
+            username=config.user,
+            password=config.password,
+            organization=config.org or "default",
         )
 
     def _make_request(

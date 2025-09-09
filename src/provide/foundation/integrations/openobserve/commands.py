@@ -18,7 +18,7 @@ log = get_logger(__name__)
 
 
 if _HAS_CLICK:
-    from provide.foundation.observability.openobserve import (
+    from provide.foundation.integrations.openobserve import (
         OpenObserveClient,
         format_output,
         search_logs,
@@ -198,7 +198,7 @@ if _HAS_CLICK:
             return 1
 
         try:
-            from provide.foundation.observability.openobserve import search_errors
+            from provide.foundation.integrations.openobserve import search_errors
 
             response = search_errors(
                 stream=stream,
@@ -240,7 +240,7 @@ if _HAS_CLICK:
             return 1
 
         try:
-            from provide.foundation.observability.openobserve import search_by_trace_id
+            from provide.foundation.integrations.openobserve import search_by_trace_id
 
             response = search_by_trace_id(
                 trace_id=trace_id,

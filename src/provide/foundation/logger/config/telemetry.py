@@ -5,8 +5,6 @@
 TelemetryConfig class for Foundation telemetry configuration.
 """
 
-import os
-
 from attrs import define
 
 from provide.foundation.config.env import RuntimeConfig
@@ -27,14 +25,12 @@ class TelemetryConfig(RuntimeConfig):
     service_name: str | None = field(
         default=None,
         env_var="PROVIDE_SERVICE_NAME",
-        converter=parse_service_name_with_otel_fallback,
-        description="Service name for telemetry (falls back to OTEL_SERVICE_NAME)",
+        description="Service name for telemetry",
     )
     service_version: str | None = field(
         default=None,
         env_var="PROVIDE_SERVICE_VERSION",
-        converter=parse_service_version_with_otel_fallback,
-        description="Service version for telemetry (falls back to OTEL_SERVICE_VERSION)",
+        description="Service version for telemetry",
     )
     logging: LoggingConfig = field(
         factory=lambda: LoggingConfig.from_env(),
@@ -89,32 +85,6 @@ class TelemetryConfig(RuntimeConfig):
         description="Sampling rate for traces (0.0 to 1.0)",
     )
 
-    # OpenObserve configuration
-    openobserve_url: str | None = field(
-        default=None,
-        env_var="OPENOBSERVE_URL",
-        description="OpenObserve API endpoint URL",
-    )
-    openobserve_org: str = field(
-        default="default",
-        env_var="OPENOBSERVE_ORG",
-        description="OpenObserve organization name",
-    )
-    openobserve_user: str | None = field(
-        default=None,
-        env_var="OPENOBSERVE_USER",
-        description="OpenObserve username for authentication",
-    )
-    openobserve_password: str | None = field(
-        default=None,
-        env_var="OPENOBSERVE_PASSWORD",
-        description="OpenObserve password for authentication",
-    )
-    openobserve_stream: str = field(
-        default="default",
-        env_var="OPENOBSERVE_STREAM",
-        description="Default OpenObserve stream name",
-    )
 
 
     def get_otlp_headers_dict(self) -> dict[str, str]:
