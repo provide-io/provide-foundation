@@ -274,35 +274,31 @@ class TestCreateTestCli:
 class TestMockLogger:
     """Test mock_logger function."""
 
-    def test_mock_logger_creation(self):
+    def test_mock_logger_creation(self, mock_logger):
         """Test mock_logger creates proper mock."""
-        logger = mock_logger()
-        assert hasattr(logger, "debug")
-        assert hasattr(logger, "info")
-        assert hasattr(logger, "warning")
-        assert hasattr(logger, "error")
-        assert hasattr(logger, "critical")
+        assert hasattr(mock_logger, "debug")
+        assert hasattr(mock_logger, "info")
+        assert hasattr(mock_logger, "warning")
+        assert hasattr(mock_logger, "error")
+        assert hasattr(mock_logger, "critical")
 
-    def test_mock_logger_methods_callable(self):
+    def test_mock_logger_methods_callable(self, mock_logger):
         """Test mock_logger methods are callable."""
-        logger = mock_logger()
-
         # Should not raise exceptions
-        logger.debug("test message")
-        logger.info("test message")
-        logger.warning("test message")
-        logger.error("test message")
-        logger.critical("test message")
+        mock_logger.debug("test message")
+        mock_logger.info("test message")
+        mock_logger.warning("test message")
+        mock_logger.error("test message")
+        mock_logger.critical("test message")
 
-    def test_mock_logger_call_tracking(self):
+    def test_mock_logger_call_tracking(self, mock_logger):
         """Test mock_logger methods track calls."""
-        logger = mock_logger()
 
-        logger.debug("debug message")
-        logger.info("info message", extra="data")
+        mock_logger.debug("debug message")
+        mock_logger.info("info message", extra="data")
 
-        logger.debug.assert_called_once_with("debug message")
-        logger.info.assert_called_once_with("info message", extra="data")
+        mock_logger.debug.assert_called_once_with("debug message")
+        mock_logger.info.assert_called_once_with("info message", extra="data")
 
 
 class TestCliTestCase:
