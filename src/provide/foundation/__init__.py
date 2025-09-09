@@ -22,6 +22,7 @@ from provide.foundation.errors import (
     FoundationError,
     # Most commonly used handlers
     error_boundary,
+    retry_on_error,
     # Most commonly used decorators
     with_error_handling,
 )
@@ -138,6 +139,7 @@ __all__ = [
     "process",
     # Resilience patterns
     "retry",
+    "retry_on_error",
     "circuit_breaker",
     "RetryPolicy",
     "BackoffStrategy",
