@@ -3,6 +3,7 @@ Fallback implementation for graceful degradation.
 """
 
 import asyncio
+import functools
 from typing import Any, Callable, TypeVar
 
 from attrs import define, field
@@ -36,11 +37,13 @@ class FallbackChain:
     def execute(self, primary_func: Callable[..., T], *args, **kwargs) -> T:
         """Execute primary function with fallback chain (sync)."""
         # Try primary function first
+        primary_exception = None
         try:
             result = primary_func(*args, **kwargs)
             logger.trace("Primary function succeeded", func=getattr(primary_func, '__name__', 'anonymous'))
             return result
         except Exception as e:
+            primary_exception = e
             if not isinstance(e, self.expected_exceptions):
                 # Unexpected exception type, don't use fallbacks
                 logger.debug(
@@ -88,11 +91,15 @@ class FallbackChain:
         # Raise the last exception from fallbacks, or original if no fallbacks
         if last_exception is not None:
             raise last_exception
-        raise  # Re-raise original exception
+        if primary_exception is not None:
+            raise primary_exception
+        # This should never happen but provide fallback
+        raise RuntimeError("Fallback chain execution failed with no recorded exceptions")
     
     async def execute_async(self, primary_func: Callable[..., T], *args, **kwargs) -> T:
         """Execute primary function with fallback chain (async)."""
         # Try primary function first
+        primary_exception = None
         try:
             if asyncio.iscoroutinefunction(primary_func):
                 result = await primary_func(*args, **kwargs)
@@ -101,6 +108,7 @@ class FallbackChain:
             logger.trace("Primary function succeeded", func=getattr(primary_func, '__name__', 'anonymous'))
             return result
         except Exception as e:
+            primary_exception = e
             if not isinstance(e, self.expected_exceptions):
                 # Unexpected exception type, don't use fallbacks
                 logger.debug(
@@ -151,7 +159,10 @@ class FallbackChain:
         # Raise the last exception from fallbacks, or original if no fallbacks
         if last_exception is not None:
             raise last_exception
-        raise  # Re-raise original exception
+        if primary_exception is not None:
+            raise primary_exception
+        # This should never happen but provide fallback
+        raise RuntimeError("Fallback chain execution failed with no recorded exceptions")
 
 
 def fallback(*fallback_funcs: Callable[..., T]) -> Callable:
@@ -169,10 +180,12 @@ def fallback(*fallback_funcs: Callable[..., T]) -> Callable:
             chain.add_fallback(fallback_func)
         
         if asyncio.iscoroutinefunction(primary_func):
+            @functools.wraps(primary_func)
             async def async_wrapper(*args, **kwargs):
                 return await chain.execute_async(primary_func, *args, **kwargs)
             return async_wrapper
         else:
+            @functools.wraps(primary_func)
             def sync_wrapper(*args, **kwargs):
                 return chain.execute(primary_func, *args, **kwargs)
             return sync_wrapper
