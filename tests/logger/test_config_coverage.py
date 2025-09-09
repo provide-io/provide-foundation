@@ -64,22 +64,22 @@ class TestLoggingConfigCoverage:
     """Test logging config functionality."""
 
     def test_logging_config_from_env_invalid_level(self):
-        """Test logging config with invalid log level."""
+        """Test logging config with invalid log level raises clear error."""
         from provide.foundation.logger.config.logging import LoggingConfig
 
         with patch.dict(os.environ, {"PROVIDE_LOG_LEVEL": "INVALID_LEVEL"}):
-            config = LoggingConfig.from_env()
-            # Should not raise error in non-strict mode
-            assert config is not None
+            with pytest.raises(ValueError) as exc_info:
+                LoggingConfig.from_env()
+            assert "Invalid log level 'INVALID_LEVEL'" in str(exc_info.value)
+            assert "TRACE, DEBUG, INFO, WARNING, ERROR, CRITICAL" in str(exc_info.value)
 
     def test_logging_config_from_env_strict_mode(self):
-        """Test logging config in strict mode with invalid values."""
+        """Test logging config with valid log level works correctly."""
         from provide.foundation.logger.config.logging import LoggingConfig
 
-        with patch.dict(os.environ, {"PROVIDE_LOG_LEVEL": "INVALID_LEVEL"}):
-            # Strict mode logs warnings but still returns config with defaults
+        with patch.dict(os.environ, {"PROVIDE_LOG_LEVEL": "DEBUG"}):
             config = LoggingConfig.from_env()
-            assert config.default_level == "WARNING"  # Should use production default
+            assert config.default_level == "DEBUG"
 
     def test_logging_config_json_formatter_enabled(self):
         """Test logging config with JSON formatter enabled."""
@@ -218,10 +218,10 @@ class TestTelemetryConfigCoverage:
             assert config.logging.default_level == "DEBUG"
 
     def test_telemetry_config_from_env_strict_mode(self):
-        """Test telemetry config in strict mode."""
+        """Test telemetry config with invalid log level raises clear error."""
         from provide.foundation.logger.config.telemetry import TelemetryConfig
 
         with patch.dict(os.environ, {"PROVIDE_LOG_LEVEL": "INVALID"}):
-            # Strict mode logs warnings but still returns config with defaults
-            config = TelemetryConfig.from_env()
-            assert config.logging.default_level == "WARNING"  # Should use production default
+            with pytest.raises(ValueError) as exc_info:
+                TelemetryConfig.from_env()
+            assert "Invalid log level 'INVALID'" in str(exc_info.value)

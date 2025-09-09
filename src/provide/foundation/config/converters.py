@@ -48,21 +48,6 @@ def parse_log_level(value: str) -> LogLevelStr:
     return level
 
 
-def parse_log_level_lenient(value: str) -> LogLevelStr:
-    """
-    Parse log level with fallback to WARNING on error.
-    
-    Args:
-        value: Log level string (case-insensitive)
-        
-    Returns:
-        Valid log level string in uppercase, or "WARNING" if invalid
-    """
-    try:
-        return parse_log_level(value)
-    except (ValueError, AttributeError, TypeError):
-        return "WARNING"
-
 
 def parse_console_formatter(value: str) -> ConsoleFormatterStr:
     """
