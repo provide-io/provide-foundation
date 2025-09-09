@@ -75,7 +75,7 @@ async def test_verify_expired_certificate() -> None:
 async def test_certificate_validity_period_error() -> None:
     """Ensure validity period calculation failures raise CertificateError."""
     with mock.patch(
-        "provide.foundation.crypto.certificates.datetime",
+        "provide.foundation.crypto.certificates.generator.datetime",
         side_effect=Exception("Time error"),
     ):
         with pytest.raises(CertificateError, match="Failed to initialize certificate"):
