@@ -158,6 +158,8 @@ class TestTempConfigFile:
 
         with patch("builtins.__import__") as mock_import:
             mock_tomli_w = Mock()
+            # Mock dumps method to return a proper TOML string
+            mock_tomli_w.dumps.return_value = 'key1 = "value1"\nkey2 = 42\n'
             mock_import.return_value = mock_tomli_w
 
             with temp_config_file(config_data, "toml") as config_path:

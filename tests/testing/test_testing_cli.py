@@ -184,7 +184,9 @@ class TestMockLogger:
         methods = ["debug", "info", "warning", "error", "critical"]
         for method in methods:
             assert hasattr(mock_logger, method)
-            assert isinstance(getattr(mock_logger, method), MagicMock)
+            # mock_logger creates Mock objects, not MagicMock
+            from unittest.mock import Mock
+            assert isinstance(getattr(mock_logger, method), Mock)
 
     def test_mock_logger_methods_callable(self, mock_logger):
         """Test that mock logger methods are callable."""
