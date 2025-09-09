@@ -90,12 +90,6 @@ class LoggingConfig(RuntimeConfig):
         converter=lambda x: x.lower() if x else "stderr",
         description="Output destination for Foundation internal messages (stderr, stdout, main)",
     )
-    show_emoji_matrix: bool = field(
-        default=False,
-        env_var="PROVIDE_SHOW_EMOJI_MATRIX",
-        converter=parse_bool_extended,
-        description="Whether to display emoji matrix on startup",
-    )
     rate_limit_enabled: bool = field(
         default=False,
         env_var="PROVIDE_LOG_RATE_LIMIT_ENABLED",

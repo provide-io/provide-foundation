@@ -14,7 +14,7 @@ from provide.foundation._version import __version__
 
 # Console I/O functions (always available - handles click dependency internally)
 from provide.foundation.console import perr, pin, pout
-from provide.foundation.context import Context
+from provide.foundation.context import CLIContext, Context
 
 # Error handling exports - only the essentials
 from provide.foundation.errors import (
@@ -105,7 +105,8 @@ __all__ = [
     "show_event_matrix",
     "ConsoleFormatterStr",
     # New foundation modules
-    "Context",
+    "CLIContext",
+    "Context",  # Backward compatibility
     # Event set types
     "EventMapping",
     "EventSet",

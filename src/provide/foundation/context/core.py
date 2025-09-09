@@ -30,13 +30,13 @@ VALID_LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 
 
 @define(slots=True, frozen=False)
-class Context:
+class CLIContext:
     """
-    Unified context for configuration and CLI state.
+    Runtime context for CLI execution and state management.
 
-    Combines configuration management with runtime state for CLI tools
-    and services. Supports loading from files, environment variables,
-    and programmatic updates.
+    Manages CLI-specific settings, output formatting, and runtime state
+    during command execution. Supports loading from files, environment variables,
+    and programmatic updates during CLI command execution.
     """
 
     log_level: str = field(
@@ -75,7 +75,7 @@ class Context:
         pass
 
     @classmethod
-    def from_env(cls, prefix: str = "PROVIDE") -> "Context":
+    def from_env(cls, prefix: str = "PROVIDE") -> "CLIContext":
         """
         Create context from environment variables using TelemetryConfig system.
 
@@ -83,7 +83,7 @@ class Context:
             prefix: Environment variable prefix (default: PROVIDE)
 
         Returns:
-            New Context instance with values from environment
+            New CLIContext instance with values from environment
         """
         # Use the main TelemetryConfig system for parsing
         telemetry_config = TelemetryConfig.from_env()
@@ -170,7 +170,7 @@ class Context:
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "Context":
+    def from_dict(cls, data: dict[str, Any]) -> "CLIContext":
         """
         Create context from dictionary.
 
@@ -178,7 +178,7 @@ class Context:
             data: Dictionary with context values
 
         Returns:
-            New Context instance
+            New CLIContext instance
         """
         kwargs = {}
 
@@ -294,16 +294,16 @@ class Context:
 
         path.write_text(content)
 
-    def merge(self, other: "Context", override_defaults: bool = False) -> "Context":
+    def merge(self, other: "CLIContext", override_defaults: bool = False) -> "CLIContext":
         """
         Merge with another context, with other taking precedence.
 
         Args:
-            other: Context to merge with
+            other: CLIContext to merge with
             override_defaults: If False, only override if other's value differs from its class default
 
         Returns:
-            New merged Context instance
+            New merged CLIContext instance
         """
         merged_data = self.to_dict()
         other_data = other.to_dict()
@@ -318,7 +318,7 @@ class Context:
             from attrs import Factory
 
             defaults = {}
-            for f in fields(Context):
+            for f in fields(CLIContext):
                 if not f.name.startswith("_"):  # Skip private fields
                     if isinstance(f.default, Factory):
                         defaults[f.name] = f.default.factory()
@@ -333,7 +333,7 @@ class Context:
                         continue
                     merged_data[key] = value
 
-        return Context.from_dict(merged_data)
+        return CLIContext.from_dict(merged_data)
 
     def freeze(self) -> None:
         """Freeze context to prevent further modifications."""
@@ -341,7 +341,7 @@ class Context:
         # This is kept for API compatibility but does nothing
         self._frozen = True
 
-    def copy(self) -> "Context":
+    def copy(self) -> "CLIContext":
         """Create a deep copy of the context."""
         return copy.deepcopy(self)
 
