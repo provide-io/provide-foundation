@@ -3,7 +3,8 @@
     "allow": [
       "Bash(timeout 30 pytest tests/cli/test_cli_integration.py::TestCompleteCliIntegration::test_options_at_group_level -v)",
       "Bash(timeout 60 pytest tests/ -q --tb=no)",
-      "Bash(timeout 30 pytest tests/ -q --tb=no)"
+      "Bash(timeout 30 pytest tests/ -q --tb=no)",
+      "Bash(timeout 30 pytest tests/logger/test_logger_production_compliance.py::TestProductionCompliance::test_exception_tracebacks_correct -xvs)"
     ],
     "deny": [],
     "ask": [],
