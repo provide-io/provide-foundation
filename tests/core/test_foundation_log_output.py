@@ -132,14 +132,13 @@ class TestFoundationLogOutputIntegration:
         config = TelemetryConfig.from_env()
         setup_telemetry(config)
 
-        # Trigger a config warning
-        monkeypatch.setenv("PROVIDE_LOG_LEVEL", "INVALID_LEVEL")
-        config = LoggingConfig.from_env()
-
         # Foundation messages should follow main log destination (file)
-        # The important behavior is that the file routing works
-        # Config creation should succeed with file-based routing
-        assert config is not None
+        # Test that config creation works properly with file-based routing
+        test_config = LoggingConfig.from_env()
+        assert test_config is not None
+        
+        # The important behavior is that FOUNDATION_LOG_OUTPUT=main is respected
+        assert test_config.foundation_log_output == "main"
 
     def test_foundation_log_output_stderr_with_main_to_file(
         self, monkeypatch, tmp_path, capsys: CaptureFixture
@@ -160,11 +159,9 @@ class TestFoundationLogOutputIntegration:
         config = TelemetryConfig.from_env()
         setup_telemetry(config)
 
-        # Trigger a config warning
-        monkeypatch.setenv("PROVIDE_LOG_LEVEL", "INVALID_LEVEL")
-        config = LoggingConfig.from_env()
-
-        captured = capsys.readouterr()
-        # The important behavior is that stderr routing works independently of file routing
-        # Config creation should succeed
-        assert config is not None
+        # Test that stderr routing works independently of file routing
+        test_config = LoggingConfig.from_env()
+        assert test_config is not None
+        
+        # The important behavior is that FOUNDATION_LOG_OUTPUT=stderr is respected
+        assert test_config.foundation_log_output == "stderr"
