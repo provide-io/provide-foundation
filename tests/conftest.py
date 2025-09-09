@@ -18,13 +18,20 @@ import pytest
 # Set DEBUG log level for all tests
 os.environ.setdefault("PROVIDE_LOG_LEVEL", "DEBUG")
 
-# Suppress testing warnings for cleaner test output
+# Temporarily suppress testing warnings only for the import
+with_suppression = os.environ.get("FOUNDATION_SUPPRESS_TESTING_WARNINGS")
 os.environ["FOUNDATION_SUPPRESS_TESTING_WARNINGS"] = "true"
 
 from provide.foundation.testing import (
     set_log_stream_for_testing,
     reset_foundation_setup_for_testing,
 )
+
+# Restore original warning suppression state
+if with_suppression is None:
+    os.environ.pop("FOUNDATION_SUPPRESS_TESTING_WARNINGS", None)
+else:
+    os.environ["FOUNDATION_SUPPRESS_TESTING_WARNINGS"] = with_suppression
 
 _conftest_diag_logger_name = "provide.foundation.conftest_diag"
 
