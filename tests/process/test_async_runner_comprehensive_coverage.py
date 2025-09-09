@@ -9,6 +9,9 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
+# Mark all tests in this file to run serially to avoid event loop issues
+pytestmark = pytest.mark.serial
+
 from provide.foundation.process.async_runner import (
     async_run_command,
     async_stream_command,
