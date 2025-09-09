@@ -39,7 +39,7 @@ class TestComponentRegistryArchitecture:
 
         # These are the core component categories Foundation must support
         expected_categories = {
-            ComponentCategory.EMOJI_SET,
+            ComponentCategory.EVENT_SET,
             ComponentCategory.CONFIG_SOURCE,
             ComponentCategory.PROCESSOR,
             ComponentCategory.ERROR_HANDLER,
@@ -233,17 +233,17 @@ class TestFoundationBootstrapIntegration:
         registry = get_component_registry()
 
         # If registry is empty (due to test isolation), re-bootstrap
-        emoji_sets = registry.list_dimension(ComponentCategory.EMOJI_SET.value)
+        event_sets = registry.list_dimension(ComponentCategory.EVENT_SET.value)
         processors = registry.list_dimension(ComponentCategory.PROCESSOR.value)
 
-        if len(emoji_sets) == 0 and len(processors) == 0:
+        if len(event_sets) == 0 and len(processors) == 0:
             bootstrap_foundation()
             # Re-fetch after bootstrap
-            emoji_sets = registry.list_dimension(ComponentCategory.EMOJI_SET.value)
+            event_sets = registry.list_dimension(ComponentCategory.EVENT_SET.value)
             processors = registry.list_dimension(ComponentCategory.PROCESSOR.value)
 
-        # Should have default emoji sets
-        assert len(emoji_sets) > 0
+        # Should have default event sets
+        assert len(event_sets) > 0
 
         # Should have processors
         assert len(processors) > 0
@@ -256,18 +256,27 @@ class TestFoundationBootstrapIntegration:
         # Create logger
         logger = get_logger("test.registry")
 
-        # Logger should use registry for emoji resolution
+        # Logger should use registry for event set resolution
         registry = get_component_registry()
 
-        # Mock an emoji set in registry
+        # Mock an event set in registry
         from provide.foundation.hub.components import ComponentCategory
-        from provide.foundation.logger.emoji.types import EmojiSet
+        from provide.foundation.eventsets.types import EventSet, EventMapping
 
-        test_emoji_set = EmojiSet("test", {"info": "🔍"})
+        test_event_mapping = EventMapping(
+            name="info",
+            emoji="🔍",
+            description="Information event"
+        )
+        test_event_set = EventSet(
+            name="test",
+            description="Test event set",
+            mappings=[test_event_mapping]
+        )
         registry.register(
             name="test_domain_logger",  # Use unique name
-            value=test_emoji_set,
-            dimension=ComponentCategory.EMOJI_SET.value,
+            value=test_event_set,
+            dimension=ComponentCategory.EVENT_SET.value,
             metadata={"domain": "test", "priority": 100},
         )
 

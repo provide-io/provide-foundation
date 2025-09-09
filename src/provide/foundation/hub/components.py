@@ -49,6 +49,7 @@ class ComponentCategory(Enum):
     TRANSPORT_MIDDLEWARE = "transport.middleware"
     TRANSPORT_AUTH = "transport.auth"
     TRANSPORT_CACHE = "transport.cache"
+    EVENT_SET = "eventset"
 
 
 class ComponentLifecycle(Protocol):
