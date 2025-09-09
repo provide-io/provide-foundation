@@ -163,6 +163,33 @@ def parse_rate_limits(value: str) -> dict[str, tuple[float, float]]:
     return result
 
 
+def parse_foundation_log_output(value: str) -> str:
+    """
+    Parse and validate foundation log output destination.
+    
+    Args:
+        value: Output destination string
+        
+    Returns:
+        Valid output destination (stderr, stdout, main)
+        
+    Raises:
+        ValueError: If the value is invalid
+    """
+    if not value:
+        return "stderr"
+        
+    normalized = value.lower().strip()
+    valid_options = ("stderr", "stdout", "main")
+    
+    if normalized in valid_options:
+        return normalized
+    else:
+        raise ValueError(
+            f"Invalid foundation log output '{value}'. Valid options: {', '.join(valid_options)}"
+        )
+
+
 def parse_comma_list(value: str) -> list[str]:
     """
     Parse comma-separated list of strings.

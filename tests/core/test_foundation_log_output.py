@@ -8,9 +8,9 @@ Tests for FOUNDATION_LOG_OUTPUT environment variable functionality.
 import io
 import os
 import sys
-from unittest.mock import MagicMock, patch
 
 import pytest
+from unittest.mock import MagicMock, patch
 from pytest import CaptureFixture
 
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
@@ -51,35 +51,16 @@ class TestFoundationLogOutputEnvironmentVariable:
             config = LoggingConfig.from_env()
             assert config.foundation_log_output == expected_value
 
-    def test_foundation_log_output_invalid_value_with_warning(
-        self, monkeypatch, capsys: CaptureFixture
+    def test_foundation_log_output_invalid_value_raises_error(
+        self, monkeypatch
     ) -> None:
-        """Test that invalid values generate warnings and use default."""
+        """Test that invalid values raise ValueError (strict validation)."""
         monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "invalid_value")
 
-        config = LoggingConfig.from_env()
-        # Should use default value
-        assert config.foundation_log_output == "stderr"
+        # Should raise ValueError with strict validation
+        with pytest.raises(ValueError, match="Invalid foundation log output 'invalid_value'"):
+            LoggingConfig.from_env()
 
-        # Should generate warning
-        captured = capsys.readouterr()
-        assert "[Foundation Config Warning]" in captured.err
-        assert "FOUNDATION_LOG_OUTPUT" in captured.err
-        assert "invalid_value" in captured.err
-
-    def test_foundation_log_output_non_strict_mode(
-        self, monkeypatch, capsys: CaptureFixture
-    ) -> None:
-        """Test that non-strict mode doesn't generate warnings for invalid values."""
-        monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "invalid_value")
-
-        config = LoggingConfig.from_env()
-        # Should use default value
-        assert config.foundation_log_output == "stderr"
-
-        # Should NOT generate warning in non-strict mode
-        captured = capsys.readouterr()
-        assert "[Foundation Config Warning]" not in captured.err
 
 
 class TestFoundationLogStreamUtility:
