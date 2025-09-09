@@ -179,10 +179,10 @@ def _build_formatter_processors_list(
             # Unknown formatter, warn and default to key_value
             # Use setup coordinator logger
             from provide.foundation.logger.setup.coordinator import (
-                create_core_setup_logger,
+                create_foundation_internal_logger,
             )
 
-            setup_logger = create_core_setup_logger()
+            setup_logger = create_foundation_internal_logger()
             setup_logger.warning(
                 f"Unknown formatter '{logging_config.console_formatter}', using default 'key_value'. "
                 f"Valid formatters: ['json', 'key_value']"
