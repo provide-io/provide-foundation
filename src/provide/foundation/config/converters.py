@@ -370,6 +370,24 @@ def validate_overflow_policy(instance: Any, attribute: Any, value: str) -> None:
         )
 
 
+def parse_service_name_with_otel_fallback(value: str | None) -> str | None:
+    """Parse service name with OTEL_SERVICE_NAME fallback."""
+    if value:
+        return value
+    # Check OTEL standard env var as fallback
+    import os
+    return os.environ.get("OTEL_SERVICE_NAME")
+
+
+def parse_service_version_with_otel_fallback(value: str | None) -> str | None:
+    """Parse service version with OTEL_SERVICE_VERSION fallback."""
+    if value:
+        return value
+    # Check OTEL standard env var as fallback
+    import os
+    return os.environ.get("OTEL_SERVICE_VERSION")
+
+
 __all__ = [
     # Parsers/Converters
     "parse_log_level",
@@ -383,6 +401,8 @@ __all__ = [
     "parse_json_dict",
     "parse_json_list",
     "parse_headers",
+    "parse_service_name_with_otel_fallback",
+    "parse_service_version_with_otel_fallback",
     # Validators
     "validate_log_level",
     "validate_sample_rate",

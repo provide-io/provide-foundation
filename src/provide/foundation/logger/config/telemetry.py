@@ -27,14 +27,14 @@ class TelemetryConfig(RuntimeConfig):
     service_name: str | None = field(
         default=None,
         env_var="PROVIDE_SERVICE_NAME",
-        converter=lambda x: x or os.getenv("OTEL_SERVICE_NAME"),
-        description="Service name for telemetry (also checks OTEL_SERVICE_NAME)",
+        converter=parse_service_name_with_otel_fallback,
+        description="Service name for telemetry (falls back to OTEL_SERVICE_NAME)",
     )
     service_version: str | None = field(
         default=None,
         env_var="PROVIDE_SERVICE_VERSION",
-        converter=lambda x: x or os.getenv("OTEL_SERVICE_VERSION"),
-        description="Service version for telemetry (also checks OTEL_SERVICE_VERSION)",
+        converter=parse_service_version_with_otel_fallback,
+        description="Service version for telemetry (falls back to OTEL_SERVICE_VERSION)",
     )
     logging: LoggingConfig = field(
         factory=lambda: LoggingConfig.from_env(),
