@@ -13,7 +13,6 @@ from typing import Any, TypeVar
 from attrs import define, field
 
 from provide.foundation.errors.base import FoundationError
-from provide.foundation.errors.types import RetryPolicy
 
 F = TypeVar("F", bound=Callable[..., Any])
 
