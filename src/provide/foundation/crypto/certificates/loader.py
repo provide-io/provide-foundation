@@ -126,5 +126,5 @@ def load_certificate_from_pem(
             extra={"error": str(e), "trace": traceback.format_exc()},
         )
         raise CertificateError(
-            f"Failed to load certificate. Original error: {type(e).__name__}"
+            f"Failed to initialize certificate. Original error: {type(e).__name__}"
         ) from e

@@ -19,7 +19,8 @@
       "Bash(timeout 30 pytest tests/crypto/ -q --tb=short)",
       "Bash(timeout 30 pytest tests/crypto/test_certificate_create.py::test_create_x509_cert_subject_error -xvs)",
       "Bash(timeout 30 pytest tests/crypto/ -q --tb=no)",
-      "Bash(timeout 30 pytest tests/crypto/test_certificate_lifecycle.py::test_certificate_validity_period_error -xvs)"
+      "Bash(timeout 30 pytest tests/crypto/test_certificate_lifecycle.py::test_certificate_validity_period_error -xvs)",
+      "Bash(timeout 30 pytest tests/crypto/test_certificate_loading.py::test_load_key_value_error -xvs)"
     ],
     "deny": [],
     "ask": [],
