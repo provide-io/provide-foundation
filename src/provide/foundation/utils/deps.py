@@ -5,8 +5,8 @@ from typing import NamedTuple
 
 def _get_logger():
     """Lazy logger import to avoid circular dependencies."""
-    from provide.foundation.logger import logger
-    return logger
+    from provide.foundation.logger import get_logger
+    return get_logger(__name__)
 
 
 class DependencyStatus(NamedTuple):
