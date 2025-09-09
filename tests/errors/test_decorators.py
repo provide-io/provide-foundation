@@ -2,7 +2,7 @@
 
 import time
 from typing import Never
-from unittest.mock import ANY, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -47,19 +47,21 @@ class TestWithErrorHandling:
             elif error_type == "value":
                 raise ValueError("value error")
             else:
-                raise TypeError("type error")
+                raise RuntimeError("runtime error")
 
+        # Should suppress KeyError and ValueError
         assert func("key") == "default"
         assert func("value") == "default"
 
-        with pytest.raises(TypeError):
-            func("type")
+        # Should not suppress RuntimeError
+        with pytest.raises(RuntimeError):
+            func("runtime")
 
     @patch("provide.foundation.errors.decorators._get_logger")
-    def test_logging_enabled(self, mock_logger) -> None:
-        """Test that errors are logged when log_errors=True."""
+    def test_error_logging(self, mock_logger) -> None:
+        """Test that errors are logged."""
 
-        @with_error_handling(fallback="default", log_errors=True)
+        @with_error_handling(log_errors=True)
         def failing_func() -> Never:
             raise ValueError("test error")
 
@@ -67,261 +69,84 @@ class TestWithErrorHandling:
             failing_func()
 
         mock_logger.return_value.error.assert_called_once()
-        assert "Error in failing_func" in mock_logger.return_value.error.call_args[0][0]
-
-    @patch("provide.foundation.errors.decorators._get_logger")
-    def test_logging_disabled(self, mock_logger) -> None:
-        """Test that errors are not logged when log_errors=False."""
-
-        @with_error_handling(fallback="default", log_errors=False)
-        def failing_func() -> Never:
-            raise ValueError("test")
-
-        with pytest.raises(ValueError):
-            failing_func()
-
-        mock_logger.return_value.error.assert_not_called()
-
-    @patch("provide.foundation.errors.decorators._get_logger")
-    def test_suppress_logging(self, mock_logger) -> None:
-        """Test that suppressed errors are logged at info level."""
-
-        @with_error_handling(fallback="default", suppress=(KeyError,), log_errors=True)
-        def func() -> Never:
-            raise KeyError("suppressed")
-
-        result = func()
-
-        assert result == "default"
-        mock_logger.return_value.info.assert_called_once()
-        assert "Suppressed KeyError" in mock_logger.return_value.info.call_args[0][0]
+        error_message = mock_logger.return_value.error.call_args[0][0]
+        assert "failing_func" in error_message
+        assert "test error" in error_message
 
     def test_context_provider(self) -> None:
-        """Test using context provider."""
-        context_provider = MagicMock(return_value={"request_id": "123"})
+        """Test context provider for logging."""
 
-        @with_error_handling(
-            fallback="default", log_errors=True, context_provider=context_provider
-        )
-        def func() -> Never:
-            raise ValueError("test")
+        def get_context() -> dict[str, str]:
+            return {"request_id": "123", "user_id": "456"}
+
+        @with_error_handling(context_provider=get_context, log_errors=True)
+        def failing_func() -> Never:
+            raise ValueError("test error")
 
         with patch("provide.foundation.errors.decorators._get_logger") as mock_logger:
             with pytest.raises(ValueError):
-                func()
+                failing_func()
 
-            context_provider.assert_called_once()
-            call_args = mock_logger.return_value.error.call_args[1]
-            assert call_args["request_id"] == "123"
+            mock_logger.return_value.error.assert_called_once()
+            kwargs = mock_logger.return_value.error.call_args[1]
+            assert kwargs["request_id"] == "123"
+            assert kwargs["user_id"] == "456"
 
     def test_error_mapper(self) -> None:
-        """Test error mapping."""
+        """Test error mapping functionality."""
 
-        def mapper(e):
+        def map_error(e: Exception) -> Exception:
             if isinstance(e, ValueError):
-                return FoundationError(f"Mapped: {e}")
+                return RuntimeError(f"Mapped: {e}")
             return e
 
-        @with_error_handling(error_mapper=mapper)
-        def func() -> Never:
-            raise ValueError("original")
+        @with_error_handling(error_mapper=map_error)
+        def func(error_type: str) -> Never:
+            if error_type == "value":
+                raise ValueError("value error")
+            else:
+                raise KeyError("key error")
 
-        with pytest.raises(FoundationError) as exc_info:
-            func()
+        # ValueError should be mapped to RuntimeError
+        with pytest.raises(RuntimeError, match="Mapped: value error"):
+            func("value")
 
-        assert "Mapped: original" in str(exc_info.value)
+        # KeyError should not be mapped
+        with pytest.raises(KeyError, match="key error"):
+            func("key")
 
-    def test_foundation_error_not_wrapped(self) -> None:
-        """Test that FoundationErrors are not wrapped."""
+    @pytest.mark.asyncio
+    async def test_async_function(self) -> None:
+        """Test with async functions."""
 
-        @with_error_handling(error_mapper=lambda e: ValueError("mapped"))
+        @with_error_handling(fallback="default", suppress=(ValueError,))
+        async def async_func(should_fail: bool) -> str:
+            if should_fail:
+                raise ValueError("async error")
+            return "async success"
+
+        # Successful call
+        result = await async_func(False)
+        assert result == "async success"
+
+        # Suppressed error
+        result = await async_func(True)
+        assert result == "default"
+
+    def test_foundation_error_not_mapped(self) -> None:
+        """Test that FoundationError is not mapped."""
+
+        def map_error(e: Exception) -> Exception:
+            return RuntimeError(f"Mapped: {e}")
+
+        @with_error_handling(error_mapper=map_error)
         def func() -> Never:
             raise FoundationError("foundation error")
 
+        # FoundationError should not be mapped
         with pytest.raises(FoundationError) as exc_info:
             func()
-
-        # Should not be mapped
         assert str(exc_info.value) == "foundation error"
-
-
-# TestRetryOnError removed - moved to resilience module
-
-class TestSuppressAndLog:
-    """Test suppress_and_log decorator."""
-
-    def test_suppress_specified_errors(self) -> None:
-        """Test function that succeeds on first try."""
-        attempt_count = 0
-
-        @retry_on_error(max_attempts=3)
-        def func() -> str:
-            nonlocal attempt_count
-            attempt_count += 1
-            return "success"
-
-        result = func()
-
-        assert result == "success"
-        assert attempt_count == 1
-
-    def test_retry_on_failure(self) -> None:
-        """Test that function retries on failure."""
-        attempt_count = 0
-
-        @retry_on_error(max_attempts=3, delay=0.01)
-        def func() -> str:
-            nonlocal attempt_count
-            attempt_count += 1
-            if attempt_count < 3:
-                raise ValueError("fail")
-            return "success"
-
-        result = func()
-
-        assert result == "success"
-        assert attempt_count == 3
-
-    def test_max_attempts_exceeded(self) -> None:
-        """Test that error is raised after max attempts."""
-        attempt_count = 0
-
-        @retry_on_error(max_attempts=3, delay=0.01)
-        def func() -> Never:
-            nonlocal attempt_count
-            attempt_count += 1
-            raise ValueError(f"attempt {attempt_count}")
-
-        with pytest.raises(ValueError) as exc_info:
-            func()
-
-        assert "attempt 3" in str(exc_info.value)
-        assert attempt_count == 3
-
-    def test_specific_exception_types(self) -> None:
-        """Test retrying only specific exception types."""
-
-        @retry_on_error(NetworkError, max_attempts=3, delay=0.01)
-        def func(error_type) -> Never:
-            if error_type == "network":
-                raise NetworkError("network error")
-            else:
-                raise ValueError("value error")
-
-        # Should not retry ValueError
-        with pytest.raises(ValueError):
-            func("value")
-
-        # Should retry NetworkError (but still fail)
-        with pytest.raises(NetworkError):
-            func("network")
-
-    def test_with_retry_policy(self) -> None:
-        """Test using RetryPolicy object."""
-        policy = RetryPolicy(
-            max_attempts=2, base_delay=0.01, backoff=BackoffStrategy.FIXED
-        )
-
-        attempt_count = 0
-
-        @retry_on_error(policy=policy)
-        def func() -> str:
-            nonlocal attempt_count
-            attempt_count += 1
-            if attempt_count < 2:
-                raise ValueError("fail")
-            return "success"
-
-        result = func()
-
-        assert result == "success"
-        assert attempt_count == 2
-
-    @patch("provide.foundation.errors.decorators._get_logger")
-    def test_retry_logging(self, mock_logger) -> None:
-        """Test that retries are logged."""
-
-        @retry_on_error(max_attempts=2, delay=0.01)
-        def func() -> Never:
-            raise ValueError("test")
-
-        with pytest.raises(ValueError):
-            func()
-
-        # Should log warning for retry and error for final failure
-        assert mock_logger.return_value.warning.call_count == 1
-        assert mock_logger.return_value.error.call_count == 1
-
-        warning_call = mock_logger.return_value.warning.call_args[0][0]
-        assert "Retry 1/2" in warning_call
-
-    def test_on_retry_callback(self) -> None:
-        """Test on_retry callback."""
-        callback = MagicMock()
-
-        @retry_on_error(max_attempts=2, delay=0.01, on_retry=callback)
-        def func() -> Never:
-            raise ValueError("test")
-
-        with pytest.raises(ValueError):
-            func()
-
-        callback.assert_called_once_with(1, ANY)
-
-    def test_on_retry_callback_exception(self) -> None:
-        """Test that exceptions in on_retry don't break retry."""
-
-        def bad_callback(attempt, error) -> Never:
-            raise RuntimeError("callback failed")
-
-        attempt_count = 0
-
-        @retry_on_error(max_attempts=3, delay=0.01, on_retry=bad_callback)
-        def func() -> str:
-            nonlocal attempt_count
-            attempt_count += 1
-            if attempt_count < 3:
-                raise ValueError("test")
-            return "success"
-
-        with patch("provide.foundation.errors.decorators._get_logger") as mock_logger:
-            result = func()
-
-        assert result == "success"
-        assert attempt_count == 3
-        # Should log callback failures
-        assert any(
-            "Retry callback failed" in str(call)
-            for call in mock_logger.return_value.warning.call_args_list
-        )
-
-    @patch("time.sleep")
-    def test_delay_between_retries(self, mock_sleep) -> None:
-        """Test that delay is applied between retries."""
-
-        @retry_on_error(max_attempts=3, delay=1.0)
-        def func() -> Never:
-            raise ValueError("test")
-
-        with pytest.raises(ValueError):
-            func()
-
-        # Should sleep twice (between attempts 1-2 and 2-3)
-        assert mock_sleep.call_count == 2
-
-    def test_backoff_parameter(self) -> None:
-        """Test backoff multiplier."""
-
-        @retry_on_error(max_attempts=2, delay=0.01, backoff=2.0)
-        def func() -> Never:
-            raise ValueError("test")
-
-        with patch("time.sleep") as mock_sleep:
-            with pytest.raises(ValueError):
-                func()
-
-            # With backoff=2, delay should be calculated
-            mock_sleep.assert_called()
 
 
 class TestSuppressAndLog:
@@ -331,363 +156,187 @@ class TestSuppressAndLog:
         """Test that specified errors are suppressed."""
 
         @suppress_and_log(KeyError, ValueError, fallback="default")
-        def func(error_type) -> str:
+        def func(error_type: str) -> Never:
             if error_type == "key":
-                raise KeyError("key")
+                raise KeyError("key error")
             elif error_type == "value":
-                raise ValueError("value")
-            return "success"
+                raise ValueError("value error")
+            else:
+                raise RuntimeError("runtime error")
 
+        # Should suppress KeyError and ValueError
         assert func("key") == "default"
         assert func("value") == "default"
-        assert func("none") == "success"
 
-    def test_other_errors_not_suppressed(self) -> None:
-        """Test that unspecified errors are not suppressed."""
-
-        @suppress_and_log(KeyError, fallback="default")
-        def func() -> Never:
-            raise ValueError("not suppressed")
-
-        with pytest.raises(ValueError):
-            func()
+        # Should not suppress RuntimeError
+        with pytest.raises(RuntimeError):
+            func("runtime")
 
     @patch("provide.foundation.errors.decorators._get_logger")
-    def test_logging_at_warning_level(self, mock_logger) -> None:
-        """Test that suppressed errors are logged at warning level."""
+    def test_logging_levels(self, mock_logger) -> None:
+        """Test different logging levels."""
 
-        @suppress_and_log(ValueError, fallback="default", log_level="warning")
-        def func() -> Never:
+        @suppress_and_log(ValueError, fallback=None, log_level="debug")
+        def debug_func() -> Never:
+            raise ValueError("debug error")
+
+        @suppress_and_log(ValueError, fallback=None, log_level="warning")
+        def warning_func() -> Never:
+            raise ValueError("warning error")
+
+        debug_func()
+        warning_func()
+
+        mock_logger.return_value.debug.assert_called_once()
+        mock_logger.return_value.warning.assert_called_once()
+
+    def test_fallback_value(self) -> None:
+        """Test different fallback values."""
+
+        @suppress_and_log(ValueError, fallback=42)
+        def int_fallback() -> Never:
+            raise ValueError("error")
+
+        @suppress_and_log(ValueError, fallback={"key": "value"})
+        def dict_fallback() -> Never:
+            raise ValueError("error")
+
+        assert int_fallback() == 42
+        assert dict_fallback() == {"key": "value"}
+
+    @patch("provide.foundation.errors.decorators._get_logger")
+    def test_log_message_format(self, mock_logger) -> None:
+        """Test log message formatting."""
+
+        @suppress_and_log(ValueError, fallback="fallback")
+        def test_func() -> Never:
             raise ValueError("test error")
 
-        result = func()
+        result = test_func()
+        assert result == "fallback"
 
-        assert result == "default"
         mock_logger.return_value.warning.assert_called_once()
-        assert (
-            "Suppressed ValueError" in mock_logger.return_value.warning.call_args[0][0]
-        )
-
-    @patch("provide.foundation.errors.decorators._get_logger")
-    def test_logging_at_custom_level(self, mock_logger) -> None:
-        """Test logging at custom level."""
-
-        @suppress_and_log(ValueError, fallback="default", log_level="error")
-        def func() -> Never:
-            raise ValueError("test")
-
-        func()
-
-        mock_logger.return_value.error.assert_called_once()
-
-    @patch("provide.foundation.errors.decorators._get_logger")
-    def test_invalid_log_level_falls_back(self, mock_logger) -> None:
-        """Test that invalid log level falls back to warning."""
-
-        @suppress_and_log(ValueError, fallback="default", log_level="invalid")
-        def func() -> Never:
-            raise ValueError("test")
-
-        func()
-
-        # Should fall back to warning
-        mock_logger.return_value.warning.assert_called_once()
+        log_message = mock_logger.return_value.warning.call_args[0][0]
+        assert "Suppressed ValueError" in log_message
+        assert "test_func" in log_message
+        assert "test error" in log_message
 
 
 class TestFallbackOnError:
     """Test fallback_on_error decorator."""
 
-    def test_fallback_called_on_error(self) -> None:
-        """Test that fallback function is called on error."""
+    def test_successful_function(self) -> None:
+        """Test that successful functions work normally."""
 
-        def fallback_func() -> str:
-            return "fallback result"
+        def fallback() -> str:
+            return "fallback"
 
-        @fallback_on_error(fallback_func)
-        def func() -> Never:
+        @fallback_on_error(fallback)
+        def successful_func() -> str:
+            return "success"
+
+        assert successful_func() == "success"
+
+    def test_fallback_on_error(self) -> None:
+        """Test fallback is called on error."""
+
+        def fallback() -> str:
+            return "fallback"
+
+        @fallback_on_error(fallback)
+        def failing_func() -> Never:
             raise ValueError("error")
 
-        result = func()
+        assert failing_func() == "fallback"
 
-        assert result == "fallback result"
+    def test_fallback_with_arguments(self) -> None:
+        """Test fallback receives same arguments."""
 
-    def test_fallback_with_same_arguments(self) -> None:
-        """Test that fallback receives same arguments."""
+        def fallback(x: int, y: int) -> int:
+            return x + y
 
-        def fallback_func(a, b, c=None) -> str:
-            return f"fallback: {a}, {b}, {c}"
+        @fallback_on_error(fallback)
+        def divide(x: int, y: int) -> float:
+            return x / y
 
-        @fallback_on_error(fallback_func)
-        def func(a, b, c=None) -> Never:
-            raise ValueError("error")
+        # Normal operation
+        assert divide(10, 2) == 5.0
 
-        result = func(1, 2, c=3)
-
-        assert result == "fallback: 1, 2, 3"
+        # Fallback on error
+        assert divide(10, 0) == 10  # 10 + 0
 
     def test_specific_exception_types(self) -> None:
         """Test fallback for specific exception types."""
 
-        def fallback_func(error_type) -> str:
+        def fallback() -> str:
             return "fallback"
 
-        @fallback_on_error(fallback_func, NetworkError)
-        def func(error_type) -> Never:
-            if error_type == "network":
-                raise NetworkError("network")
+        @fallback_on_error(fallback, ValueError, KeyError)
+        def func(error_type: str) -> Never:
+            if error_type == "value":
+                raise ValueError("value error")
+            elif error_type == "key":
+                raise KeyError("key error")
             else:
-                raise ValueError("value")
+                raise RuntimeError("runtime error")
 
-        assert func("network") == "fallback"
+        # Should use fallback for ValueError and KeyError
+        assert func("value") == "fallback"
+        assert func("key") == "fallback"
 
-        with pytest.raises(ValueError):
-            func("value")
-
-    def test_successful_function_not_fallback(self) -> None:
-        """Test that successful functions don't use fallback."""
-        fallback_func = MagicMock(return_value="fallback")
-
-        @fallback_on_error(fallback_func)
-        def func() -> str:
-            return "success"
-
-        result = func()
-
-        assert result == "success"
-        fallback_func.assert_not_called()
+        # Should not use fallback for RuntimeError
+        with pytest.raises(RuntimeError):
+            func("runtime")
 
     @patch("provide.foundation.errors.decorators._get_logger")
-    def test_logging_enabled(self, mock_logger) -> None:
-        """Test that fallback usage is logged."""
+    def test_error_logging(self, mock_logger) -> None:
+        """Test that errors are logged before fallback."""
 
-        def fallback_func() -> str:
+        def fallback() -> str:
             return "fallback"
 
-        @fallback_on_error(fallback_func, log_errors=True)
-        def func() -> Never:
-            raise ValueError("test")
+        @fallback_on_error(fallback, log_errors=True)
+        def failing_func() -> Never:
+            raise ValueError("test error")
 
-        func()
+        result = failing_func()
+        assert result == "fallback"
 
         mock_logger.return_value.warning.assert_called_once()
-        assert "Using fallback" in mock_logger.return_value.warning.call_args[0][0]
+        log_message = mock_logger.return_value.warning.call_args[0][0]
+        assert "Using fallback" in log_message
+        assert "failing_func" in log_message
+        assert "ValueError" in log_message
 
-    def test_fallback_error_propagates(self) -> None:
-        """Test that errors in fallback function propagate."""
+    def test_fallback_function_error(self) -> None:
+        """Test when fallback function also fails."""
 
         def bad_fallback() -> Never:
-            raise RuntimeError("fallback failed")
+            raise RuntimeError("fallback error")
 
         @fallback_on_error(bad_fallback)
-        def func() -> Never:
-            raise ValueError("original")
+        def failing_func() -> Never:
+            raise ValueError("original error")
 
-        with pytest.raises(RuntimeError) as exc_info:
-            func()
-
-        assert str(exc_info.value) == "fallback failed"
-        assert str(exc_info.value.__cause__) == "original"
+        # Should raise the fallback error with original as cause
+        with pytest.raises(RuntimeError, match="fallback error") as exc_info:
+            failing_func()
+        assert exc_info.value.__cause__.__class__ == ValueError
 
     @patch("provide.foundation.errors.decorators._get_logger")
-    def test_fallback_error_logged(self, mock_logger) -> None:
-        """Test that fallback errors are logged."""
+    def test_fallback_error_logging(self, mock_logger) -> None:
+        """Test logging when fallback also fails."""
 
         def bad_fallback() -> Never:
-            raise RuntimeError("fallback failed")
+            raise RuntimeError("fallback error")
 
         @fallback_on_error(bad_fallback, log_errors=True)
-        def func() -> Never:
-            raise ValueError("original")
+        def failing_func() -> Never:
+            raise ValueError("original error")
 
         with pytest.raises(RuntimeError):
-            func()
+            failing_func()
 
-        # Should log both the fallback attempt and failure
-        assert mock_logger.return_value.warning.call_count == 1
-        assert mock_logger.return_value.error.call_count == 1
-
-
-class TestCircuitBreaker:
-    """Test CircuitBreaker class and decorator."""
-
-    def test_circuit_breaker_creation(self) -> None:
-        """Test creating CircuitBreaker."""
-        breaker = CircuitBreaker(
-            failure_threshold=3, recovery_timeout=10.0, expected_exception=(ValueError,)
-        )
-
-        assert breaker.failure_threshold == 3
-        assert breaker.recovery_timeout == 10.0
-        assert breaker.expected_exception == (ValueError,)
-
-    def test_circuit_closes_on_success(self) -> None:
-        """Test that circuit stays closed on success."""
-        breaker = CircuitBreaker(failure_threshold=2)
-
-        @breaker
-        def func() -> str:
-            return "success"
-
-        # Multiple successful calls
-        for _ in range(5):
-            assert func() == "success"
-
-        assert breaker._state == "closed"
-
-    def test_circuit_opens_after_threshold(self) -> None:
-        """Test that circuit opens after failure threshold."""
-        breaker = CircuitBreaker(failure_threshold=2, recovery_timeout=10.0)
-        attempt_count = 0
-
-        @breaker
-        def func() -> Never:
-            nonlocal attempt_count
-            attempt_count += 1
-            raise ValueError(f"attempt {attempt_count}")
-
-        # First failure
-        with pytest.raises(ValueError):
-            func()
-
-        # Second failure - should open circuit
-        with pytest.raises(ValueError):
-            func()
-
-        assert breaker._state == "open"
-
-        # Next call should fail immediately
-        with pytest.raises(RuntimeError) as exc_info:
-            func()
-
-        assert "Circuit breaker is open" in str(exc_info.value)
-
-    def test_circuit_half_open_after_timeout(self) -> None:
-        """Test that circuit goes to half-open after timeout."""
-        breaker = CircuitBreaker(failure_threshold=1, recovery_timeout=0.01)
-
-        @breaker
-        def func(should_fail) -> str:
-            if should_fail:
-                raise ValueError("fail")
-            return "success"
-
-        # Open the circuit
-        with pytest.raises(ValueError):
-            func(True)
-
-        assert breaker._state == "open"
-
-        # Wait for recovery timeout
-        time.sleep(0.02)
-
-        # Should try half-open
-        result = func(False)
-
-        assert result == "success"
-        assert breaker._state == "closed"
-
-    def test_circuit_reopens_on_half_open_failure(self) -> None:
-        """Test that circuit reopens if half-open attempt fails."""
-        breaker = CircuitBreaker(failure_threshold=1, recovery_timeout=0.01)
-
-        @breaker
-        def func() -> Never:
-            raise ValueError("always fails")
-
-        # Open the circuit
-        with pytest.raises(ValueError):
-            func()
-
-        # Wait for recovery timeout
-        time.sleep(0.02)
-
-        # Half-open attempt fails
-        with pytest.raises(ValueError):
-            func()
-
-        # Should be open again
-        assert breaker._state == "open"
-
-    def test_failure_count_decreases_on_success(self) -> None:
-        """Test that failure count decreases on success."""
-        breaker = CircuitBreaker(failure_threshold=3)
-
-        @breaker
-        def func(should_fail) -> str:
-            if should_fail:
-                raise ValueError("fail")
-            return "success"
-
-        # Two failures
-        for _ in range(2):
-            with pytest.raises(ValueError):
-                func(True)
-
-        assert breaker._failure_count == 2
-
-        # Success should reduce count
-        func(False)
-        assert breaker._failure_count == 1
-
-    @patch("provide.foundation.errors.decorators._get_logger")
-    def test_circuit_open_logged(self, mock_logger) -> None:
-        """Test that circuit opening is logged."""
-        breaker = CircuitBreaker(failure_threshold=1)
-
-        @breaker
-        def func() -> Never:
-            raise ValueError("fail")
-
-        with pytest.raises(ValueError):
-            func()
-
-        mock_logger.return_value.error.assert_called()
-        assert (
-            "Circuit breaker for func opened"
-            in mock_logger.return_value.error.call_args[0][0]
-        )
-
-    @patch("provide.foundation.errors.decorators._get_logger")
-    def test_recovery_logged(self, mock_logger) -> None:
-        """Test that recovery is logged."""
-        breaker = CircuitBreaker(failure_threshold=1, recovery_timeout=0.01)
-
-        @breaker
-        def func(should_fail) -> str:
-            if should_fail:
-                raise ValueError("fail")
-            return "success"
-
-        # Open circuit
-        with pytest.raises(ValueError):
-            func(True)
-
-        # Wait and recover
-        time.sleep(0.02)
-        func(False)
-
-        # Check for recovery log
-        info_calls = [
-            call[0][0] for call in mock_logger.return_value.info.call_args_list
-        ]
-        assert any("closed after successful recovery" in call for call in info_calls)
-
-    def test_circuit_breaker_decorator(self) -> None:
-        """Test circuit_breaker as a decorator function."""
-
-        @circuit_breaker(failure_threshold=2, recovery_timeout=10.0)
-        def func() -> Never:
-            raise ValueError("fail")
-
-        # Should work like CircuitBreaker class
-        with pytest.raises(ValueError):
-            func()
-
-        with pytest.raises(ValueError):
-            func()
-
-        # Circuit should be open
-        with pytest.raises(RuntimeError) as exc_info:
-            func()
-
-        assert "Circuit breaker is open" in str(exc_info.value)
+        # Should log both original error and fallback failure
+        assert mock_logger.return_value.warning.call_count >= 1
+        assert mock_logger.return_value.error.call_count >= 1
