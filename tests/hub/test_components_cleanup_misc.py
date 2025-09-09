@@ -185,8 +185,13 @@ class TestMiscellaneousFunctionality:
         # Trigger event set discovery
         discover_event_sets()
 
+        # Debug: Check what's in the registry
+        event_sets = registry.list_dimension(ComponentCategory.EVENT_SET.value)
+        print(f"DEBUG: Event sets after discovery: {event_sets}")
+        
         # Should have default event set (registered during module discovery)
         default_event_set = registry.get("default", ComponentCategory.EVENT_SET.value)
+        print(f"DEBUG: Default event set: {default_event_set}")
         assert default_event_set is not None
 
     def test_reset_registry_for_tests(self):
