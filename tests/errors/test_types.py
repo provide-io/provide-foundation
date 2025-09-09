@@ -61,10 +61,21 @@ class TestErrorCode:
         assert ErrorCode.SYSTEM_INTERNAL.value == "SYS_004"
         assert ErrorCode.SYSTEM_PANIC.value == "SYS_005"
 
-    def test_error_code_is_string(self) -> None:
-        """Test that error codes are strings."""
-        assert isinstance(ErrorCode.CONFIG_INVALID.value, str)
-        assert ErrorCode.VALIDATION_TYPE.value == "VAL_001"
+    def test_error_code_grouping(self) -> None:
+        """Test that error codes are properly grouped by prefix."""
+        # Config codes start with CFG
+        assert all(
+            code.value.startswith("CFG")
+            for code in ErrorCode
+            if "CONFIG" in code.name
+        )
+
+        # Validation codes start with VAL
+        assert all(
+            code.value.startswith("VAL")
+            for code in ErrorCode
+            if "VALIDATION" in code.name
+        )
 
 
 class TestErrorMetadata:
@@ -87,37 +98,39 @@ class TestErrorMetadata:
         """Test creating ErrorMetadata with values."""
         meta = ErrorMetadata(
             request_id="req_123",
-            user_id="usr_456",
+            user_id="user_456",
             session_id="sess_789",
-            correlation_id="corr_abc",
+            correlation_id="corr_012",
             retry_count=3,
-            retry_after=30.0,
-            help_url="https://help.example.com",
-            support_id="ticket_xyz",
+            retry_after=5.0,
+            help_url="https://example.com/help",
+            support_id="sup_345",
         )
 
         assert meta.request_id == "req_123"
-        assert meta.user_id == "usr_456"
+        assert meta.user_id == "user_456"
         assert meta.session_id == "sess_789"
-        assert meta.correlation_id == "corr_abc"
+        assert meta.correlation_id == "corr_012"
         assert meta.retry_count == 3
-        assert meta.retry_after == 30.0
-        assert meta.help_url == "https://help.example.com"
-        assert meta.support_id == "ticket_xyz"
+        assert meta.retry_after == 5.0
+        assert meta.help_url == "https://example.com/help"
+        assert meta.support_id == "sup_345"
 
     def test_to_dict_excludes_none(self) -> None:
         """Test that to_dict excludes None values."""
-        meta = ErrorMetadata(request_id="req_123", retry_count=2)
+        meta = ErrorMetadata(request_id="req_123", retry_count=0)
 
         result = meta.to_dict()
 
-        assert result == {"request_id": "req_123", "retry_count": 2}
+        assert result == {"request_id": "req_123", "retry_count": 0}
         assert "user_id" not in result
         assert "session_id" not in result
 
-    def test_to_dict_includes_zero_values(self) -> None:
-        """Test that to_dict includes zero/false values."""
-        meta = ErrorMetadata(retry_count=0, retry_after=0.0)
+    def test_to_dict_includes_non_none(self) -> None:
+        """Test that to_dict includes all non-None values."""
+        meta = ErrorMetadata(
+            request_id="req_123", retry_count=0, retry_after=0.0  # 0 is not None
+        )
 
         result = meta.to_dict()
 
@@ -137,146 +150,6 @@ class TestErrorResponse:
 
         assert response.error_code == "TEST_001"
         assert response.message == "Test error message"
-        assert response.details is None
-        assert response.metadata is None
-        assert isinstance(response.timestamp, str)
-
-    def test_creation_with_details(self) -> None:
-        """Test fixed backoff strategy."""
-        policy = RetryPolicy(
-            backoff=BackoffStrategy.FIXED, base_delay=5.0, jitter=False
-        )
-
-        assert policy.calculate_delay(1) == 5.0
-        assert policy.calculate_delay(2) == 5.0
-        assert policy.calculate_delay(3) == 5.0
-
-    def test_calculate_delay_linear(self) -> None:
-        """Test linear backoff strategy."""
-        policy = RetryPolicy(
-            backoff=BackoffStrategy.LINEAR, base_delay=2.0, jitter=False
-        )
-
-        assert policy.calculate_delay(1) == 2.0
-        assert policy.calculate_delay(2) == 4.0
-        assert policy.calculate_delay(3) == 6.0
-
-    def test_calculate_delay_exponential(self) -> None:
-        """Test exponential backoff strategy."""
-        policy = RetryPolicy(
-            backoff=BackoffStrategy.EXPONENTIAL, base_delay=2.0, jitter=False
-        )
-
-        assert policy.calculate_delay(1) == 2.0  # 2 * 2^0
-        assert policy.calculate_delay(2) == 4.0  # 2 * 2^1
-        assert policy.calculate_delay(3) == 8.0  # 2 * 2^2
-        assert policy.calculate_delay(4) == 16.0  # 2 * 2^3
-
-    def test_calculate_delay_fibonacci(self) -> None:
-        """Test fibonacci backoff strategy."""
-        policy = RetryPolicy(
-            backoff=BackoffStrategy.FIBONACCI, base_delay=1.0, jitter=False
-        )
-
-        assert policy.calculate_delay(1) == 1.0  # fib(1) = 1
-        assert policy.calculate_delay(2) == 1.0  # fib(2) = 1
-        assert policy.calculate_delay(3) == 2.0  # fib(3) = 2
-        assert policy.calculate_delay(4) == 3.0  # fib(4) = 3
-        assert policy.calculate_delay(5) == 5.0  # fib(5) = 5
-
-    def test_calculate_delay_max_cap(self) -> None:
-        """Test that delay is capped at max_delay."""
-        policy = RetryPolicy(
-            backoff=BackoffStrategy.EXPONENTIAL,
-            base_delay=10.0,
-            max_delay=20.0,
-            jitter=False,
-        )
-
-        assert policy.calculate_delay(1) == 10.0
-        assert policy.calculate_delay(2) == 20.0  # Would be 20, at cap
-        assert policy.calculate_delay(3) == 20.0  # Would be 40, capped at 20
-        assert policy.calculate_delay(10) == 20.0  # Still capped
-
-    def test_calculate_delay_zero_attempt(self) -> None:
-        """Test that zero or negative attempts return 0."""
-        policy = RetryPolicy(jitter=False)
-
-        assert policy.calculate_delay(0) == 0
-        assert policy.calculate_delay(-1) == 0
-
-    @patch("random.random")
-    def test_calculate_delay_with_jitter(self, mock_random) -> None:
-        """Test that jitter adds randomness."""
-        # Mock random to return predictable values
-        mock_random.return_value = 0.5  # Middle of range
-
-        policy = RetryPolicy(
-            backoff=BackoffStrategy.FIXED, base_delay=10.0, jitter=True
-        )
-
-        # With jitter, should be 10.0 * (0.75 + 0.5 * 0.5) = 10.0 * 1.0 = 10.0
-        assert policy.calculate_delay(1) == 10.0
-
-        # Test with different random value
-        mock_random.return_value = 0.0  # Minimum
-        assert policy.calculate_delay(1) == 7.5  # 10.0 * 0.75
-
-        mock_random.return_value = 1.0  # Maximum
-        assert policy.calculate_delay(1) == 12.5  # 10.0 * 1.25
-
-    def test_calculate_delay_unknown_strategy(self) -> None:
-        """Test fallback for unknown strategy."""
-        policy = RetryPolicy(jitter=False)
-        # Manually set invalid strategy
-        policy.backoff = "invalid"  # type: ignore
-
-        assert policy.calculate_delay(1) == 1.0  # Falls back to base_delay
-
-    def test_should_retry_within_attempts(self) -> None:
-        """Test should_retry within attempt limit."""
-        policy = RetryPolicy(max_attempts=3)
-
-        assert policy.should_retry(Exception(), 1) is True
-        assert policy.should_retry(Exception(), 2) is True
-        assert policy.should_retry(Exception(), 3) is False  # At limit
-        assert policy.should_retry(Exception(), 4) is False  # Over limit
-
-    def test_should_retry_with_retryable_errors(self) -> None:
-        """Test should_retry with specific error types."""
-        policy = RetryPolicy(max_attempts=5, retryable_errors=(ValueError, KeyError))
-
-        # Retryable errors
-        assert policy.should_retry(ValueError(), 1) is True
-        assert policy.should_retry(KeyError(), 1) is True
-
-        # Non-retryable error
-        assert policy.should_retry(TypeError(), 1) is False
-        assert policy.should_retry(Exception(), 1) is False
-
-    def test_should_retry_respects_both_conditions(self) -> None:
-        """Test that both attempt limit and error type are checked."""
-        policy = RetryPolicy(max_attempts=2, retryable_errors=(ValueError,))
-
-        # Within limit and retryable
-        assert policy.should_retry(ValueError(), 1) is True
-
-        # At limit but retryable type
-        assert policy.should_retry(ValueError(), 2) is False
-
-        # Within limit but not retryable
-        assert policy.should_retry(TypeError(), 1) is False
-
-
-class TestErrorResponse:
-    """Test ErrorResponse class."""
-
-    def test_creation_basic(self) -> None:
-        """Test basic ErrorResponse creation."""
-        response = ErrorResponse(error_code="VAL_001", message="Validation failed")
-
-        assert response.error_code == "VAL_001"
-        assert response.message == "Validation failed"
         assert response.details is None
         assert response.metadata is None
         assert isinstance(response.timestamp, str)
