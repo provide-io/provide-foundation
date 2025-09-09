@@ -33,7 +33,7 @@ async def test_create_x509_cert_serial_error() -> None:
 async def test_create_x509_cert_validity_error() -> None:
     """Test error in validity period calculation."""
     with mock.patch(
-        "provide.foundation.crypto.certificates.datetime",
+        "provide.foundation.crypto.certificates.generator.datetime",
         side_effect=Exception("Time error"),
     ):
         with pytest.raises(CertificateError, match="Failed to initialize certificate"):
@@ -109,7 +109,7 @@ def test_certificate_base_create_unsupported_key_type_str(mocker):
         "not_valid_after": now + timedelta(days=30),
     }
     mock_logger_error = mocker.patch(
-        "provide.foundation.crypto.certificates.logger.error", new=MagicMock()
+        "provide.foundation.crypto.certificates.base.logger.error", new=MagicMock()
     )
 
     with pytest.raises(CertificateError) as excinfo:
@@ -130,7 +130,7 @@ def test_certificate_base_create_unsupported_key_type_str(mocker):
 async def test_certificate_init_invalid_ecdsa_curve(mocker):
     """Test Certificate instantiation with an invalid ecdsa_curve string."""
     mock_logger_error = mocker.patch(
-        "provide.foundation.crypto.certificates.logger.error", new=MagicMock()
+        "provide.foundation.crypto.certificates.generator.logger.error", new=MagicMock()
     )
 
     with pytest.raises(CertificateError) as excinfo:
@@ -143,7 +143,7 @@ async def test_certificate_init_invalid_ecdsa_curve(mocker):
 
     mock_logger_error.assert_called_once()
     args, kwargs = mock_logger_error.call_args
-    assert "Certificate.__attrs_post_init__: Failed" in args[0]
+    assert "Failed to generate certificate" in args[0]
     assert "Unsupported ECDSA curve: invalid_curve_name" in kwargs.get("extra", {}).get(
         "error", ""
     )

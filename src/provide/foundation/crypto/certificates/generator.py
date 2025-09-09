@@ -134,5 +134,5 @@ def generate_certificate(
             extra={"error": str(e), "trace": traceback.format_exc()},
         )
         raise CertificateError(
-            f"Failed to generate certificate. Original error: {type(e).__name__}"
+            f"Failed to initialize certificate. Original error: {type(e).__name__}"
         ) from e
