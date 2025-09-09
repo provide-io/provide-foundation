@@ -298,6 +298,7 @@ class TestRetryExecutorWithRealWorld:
                             # Success, close circuit
                             self.is_open = False
                             self.failure_count = 0
+                            self.half_open_attempts = 0  # Reset half-open counter
                             return result
                         except Exception:
                             # Still failing, stay open
@@ -306,11 +307,15 @@ class TestRetryExecutorWithRealWorld:
                         raise RuntimeError("Circuit breaker is open")
                 
                 try:
-                    return await func(*args, **kwargs)
+                    result = await func(*args, **kwargs)
+                    # Success, reset failure count
+                    self.failure_count = 0
+                    return result
                 except Exception as e:
                     self.failure_count += 1
                     if self.failure_count >= self.failure_threshold:
                         self.is_open = True
+                        self.half_open_attempts = 0  # Reset when opening
                     raise
         
         breaker = CircuitBreaker(failure_threshold=2)
@@ -339,6 +344,7 @@ class TestRetryExecutorWithRealWorld:
         
         # Reset for recovery test
         call_count = 3  # Next call will succeed
+        breaker.half_open_attempts = 0  # Reset half-open attempts for clean recovery test
         
         # Try again - circuit attempts half-open
         result = await executor.execute_async(breaker.call, flaky_service)
