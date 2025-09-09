@@ -69,7 +69,7 @@ def parse_console_formatter(value: str) -> ConsoleFormatterStr:
     return formatter
 
 
-def parse_module_levels(value: str) -> dict[str, LogLevelStr]:
+def parse_module_levels(value: str | dict[str, str]) -> dict[str, LogLevelStr]:
     """
     Parse module-specific log levels from string format.
     
@@ -77,11 +77,22 @@ def parse_module_levels(value: str) -> dict[str, LogLevelStr]:
     Example: "auth.service:DEBUG,database:ERROR"
     
     Args:
-        value: Comma-separated module:level pairs
+        value: Comma-separated module:level pairs or dict
         
     Returns:
         Dictionary mapping module names to log levels
     """
+    # If already a dict, validate and return
+    if isinstance(value, dict):
+        result = {}
+        for module, level in value.items():
+            try:
+                result[module] = parse_log_level(level)
+            except ValueError:
+                # Skip invalid levels silently
+                continue
+        return result
+    
     if not value or not value.strip():
         return {}
     

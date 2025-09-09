@@ -221,7 +221,15 @@ def auto_parse(attr: Any, value: str) -> Any:
         >>> auto_parse(fields(Config).custom, "hello")
         'HELLO'
     """
-    # Check for converter in metadata first
+    # Check for attrs field converter first
+    if hasattr(attr, 'converter') and attr.converter is not None:
+        try:
+            return attr.converter(value)
+        except Exception:
+            # If converter fails, fall back to type-based parsing
+            pass
+    
+    # Check for converter in metadata as fallback
     if hasattr(attr, 'metadata') and attr.metadata:
         converter = attr.metadata.get('converter')
         if converter and callable(converter):
