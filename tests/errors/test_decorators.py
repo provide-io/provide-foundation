@@ -8,15 +8,11 @@ import pytest
 
 from provide.foundation.errors.base import FoundationError
 from provide.foundation.errors.decorators import (
-    CircuitBreaker,
-    circuit_breaker,
     fallback_on_error,
-    retry_on_error,
     suppress_and_log,
     with_error_handling,
 )
 from provide.foundation.errors.integration import NetworkError
-from provide.foundation.errors.types import BackoffStrategy, RetryPolicy
 
 
 class TestWithErrorHandling:
@@ -149,10 +145,12 @@ class TestWithErrorHandling:
         assert str(exc_info.value) == "foundation error"
 
 
-class TestRetryOnError:
-    """Test retry_on_error decorator."""
+# TestRetryOnError removed - moved to resilience module
 
-    def test_successful_on_first_try(self) -> None:
+class TestSuppressAndLog:
+    """Test suppress_and_log decorator."""
+
+    def test_suppress_specified_errors(self) -> None:
         """Test function that succeeds on first try."""
         attempt_count = 0
 
