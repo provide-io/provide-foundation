@@ -30,7 +30,7 @@ class TestToolVerifier:
     def test_verify_checksum_sha256(self, verifier, test_file):
         """Test SHA256 checksum verification."""
         # SHA256 of "test content"
-        expected = "1eebdf4fdc9fc7bf283031b93f9aef3338de9052fde2e59e7563e6aec5c2e290"
+        expected = "6ae8a75555209fd6c44157c0aed8016e763ff435a19cf186f76863140143ff72"
         
         assert verifier.verify_checksum(test_file, expected) is True
         assert verifier.verify_checksum(test_file, expected, algo="sha256") is True
@@ -39,8 +39,8 @@ class TestToolVerifier:
     def test_verify_checksum_sha512(self, verifier, test_file):
         """Test SHA512 checksum verification."""
         # SHA512 of "test content"
-        expected = ("7f100b68f4c27d63e82c00ccfafae87021a1a768c583d0f6b42e19286a35e6eb"
-                   "c96f3e7b3c8e604ad837e1e62abb3477e8e3a0e7fa3f18e0417e5e2ea1dc98a9")
+        expected = ("0cbf4caef38047bba9a24e621a961484e5d2a92176a859e7eb27df343dd34eb9"
+                   "8d538a6c5f4da1ce302ec250b821cc001e46cc97a704988297185a4df7e99602")
         
         assert verifier.verify_checksum(test_file, expected, algo="sha512") is True
         assert verifier.verify_checksum(test_file, "wrong", algo="sha512") is False
@@ -48,7 +48,7 @@ class TestToolVerifier:
     def test_verify_checksum_md5(self, verifier, test_file):
         """Test MD5 checksum verification."""
         # MD5 of "test content"
-        expected = "9d432f0e2607a95f151fa09d26e9f982"
+        expected = "9473fdd0d880a43c21b7778d34872157"
         
         assert verifier.verify_checksum(test_file, expected, algo="md5") is True
         assert verifier.verify_checksum(test_file, "wrong", algo="md5") is False
@@ -56,8 +56,8 @@ class TestToolVerifier:
     def test_verify_checksum_blake2b(self, verifier, test_file):
         """Test BLAKE2b checksum verification."""
         # BLAKE2b of "test content"
-        expected = ("77a00b8ccdd8c82cf008b5e388c7a357d97c15fe88c088bbeb949ad5c8373e7b"
-                   "6e97bb887c3fc59f34e1cc948ca7e024e3f03c93c0e8bf6d3bb8df96e93f0064")
+        expected = ("3b077f22c156b622ae1f4343bb71227b6373c22fa8a0ae42ab80bc6e2fcb7c1d"
+                   "409c1c647ba39164b699ebf84e519492cab2fd52cb798462f3b9e3d64884dd30")
         
         assert verifier.verify_checksum(test_file, expected, algo="blake2b") is True
         assert verifier.verify_checksum(test_file, "wrong", algo="blake2b") is False
@@ -82,7 +82,7 @@ class TestToolVerifier:
         large_file.write_bytes(content)
         
         # SHA256 of 10MB of 'x'
-        expected = "52f5fcafee165dff82421a96187bddb31e32797c6f829a0ad3fb7c625f083279"
+        expected = "462a12a876c0364e4f1f3d12ed33dcae125f1198010ff78d8f4c3f4de0412d49"
         
         assert verifier.verify_checksum(large_file, expected) is True
     
