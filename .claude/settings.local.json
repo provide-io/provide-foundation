@@ -6,7 +6,9 @@
       "Bash(timeout 30 pytest tests/ -q --tb=no)",
       "Bash(timeout 30 pytest tests/logger/test_logger_production_compliance.py::TestProductionCompliance::test_exception_tracebacks_correct -xvs)",
       "Bash(timeout 30 pytest tests/logger/test_logging.py::TestLoggingWithEmojiSets::test_legacy_das_still_works_if_no_emoji_sets_active -xvs)",
-      "Bash(timeout 30 pytest tests/logger/test_logging.py::TestLoggingWithEmojiSets::test_llm_emoji_set_end_to_end -xvs)"
+      "Bash(timeout 30 pytest tests/logger/test_logging.py::TestLoggingWithEmojiSets::test_llm_emoji_set_end_to_end -xvs)",
+      "Bash(timeout 30 pytest tests/core/test_core_fixes.py::test_das_emoji_register_action -xvs)",
+      "Bash(timeout 30 pytest tests/core/test_core_fixes.py::test_service_name_no_emoji -xvs)"
     ],
     "deny": [],
     "ask": [],
