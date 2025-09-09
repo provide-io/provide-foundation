@@ -29,9 +29,7 @@ The codebase has a sophisticated configuration system (`BaseConfig`, `RuntimeCon
 ### Phase 2: Enhance Field Declarations
 - [ ] Add converter for `module_levels` field (parse "module1:LEVEL,module2:LEVEL")
 - [ ] Add converter for `rate_limit_per_logger` field (parse "logger1:rate:capacity")
-- [ ] Add converter for `enabled_emoji_sets` field (parse comma-separated list)
-- [ ] Add converter for `custom_emoji_sets` field (parse JSON array)
-- [ ] Add converter for `user_defined_emoji_sets` field (parse JSON array)
+- [ ] Remove unused emoji sets fields (`enabled_emoji_sets`, `custom_emoji_sets`, `user_defined_emoji_sets`) - these are parsed but never used
 - [ ] Add validators to fields instead of post-validation
 - [ ] Remove manual parsing logic from `from_env()` methods
 
@@ -90,19 +88,9 @@ class LoggingConfig(RuntimeConfig):
         description="Per-module log levels",
     )
     
-    enabled_emoji_sets: list[str] = field(
-        factory=lambda: [],
-        env_var="PROVIDE_LOG_ENABLED_EMOJI_SETS",
-        converter=parse_comma_list,  # Parse comma-separated values
-        description="Comma-separated list of emoji sets to enable",
-    )
-    
-    custom_emoji_sets: list[EventSet] = field(
-        factory=lambda: [],
-        env_var="PROVIDE_LOG_CUSTOM_EMOJI_SETS",
-        converter=parse_json_emoji_sets,  # Parse JSON array
-        description="JSON array of custom emoji set configurations",
-    )
+    # NOTE: The emoji sets fields (enabled_emoji_sets, custom_emoji_sets, 
+    # user_defined_emoji_sets) have been REMOVED as they were parsed but
+    # never actually used in the logger implementation - dead code cleanup
     # ... other fields with proper converters ...
     
     # No more from_env() method needed! RuntimeConfig handles it
@@ -176,19 +164,8 @@ def parse_module_levels(value: str) -> dict[str, LogLevelStr]:
             result[module.strip()] = parse_log_level(level.strip())
     return result
 
-def parse_comma_list(value: str) -> list[str]:
-    """Parse comma-separated list."""
-    return [item.strip() for item in value.split(",") if item.strip()]
-
-def parse_json_emoji_sets(value: str) -> list[EventSet]:
-    """Parse JSON array of emoji set configurations."""
-    import json
-    try:
-        data = json.loads(value)
-        # Convert to EventSet objects
-        return [EventSet(**item) if isinstance(item, dict) else item for item in data]
-    except json.JSONDecodeError as e:
-        raise ValueError(f"Invalid JSON for emoji sets: {e}")
+# NOTE: Removed parse_comma_list and parse_json_emoji_sets as the emoji sets
+# functionality is not actually implemented - these fields were dead code
 
 def parse_rate_limits(value: str) -> dict[str, tuple[float, float]]:
     """Parse logger:rate:capacity format."""
