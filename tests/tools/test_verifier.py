@@ -97,8 +97,8 @@ class TestToolVerifier:
         # Create shasums file
         shasums = tmp_path / "SHA256SUMS"
         shasums.write_text(
-            "7e532e16e41907ffd664331e1f89677b7a2e0c0bc8ed8e87b385bf373f75d2b8  file1.txt\n"
-            "c3a1e953f5e04b25c86ff5e4258e295f6e63b6cd8f13b973f87a15b95df8f47c  file2.txt\n"
+            "d0b425e00e15a0d36b9b361f02bab63563aed6cb4665083905386c55d5b679fa  file1.txt\n"
+            "dab741b6289e7dccc1ed42330cae1accc2b755ce8079c2cd5d4b5366c9f769a6  file2.txt\n"
         )
         
         assert verifier.verify_shasums_file(shasums, file1) is True

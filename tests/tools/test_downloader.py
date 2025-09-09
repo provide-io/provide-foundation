@@ -207,8 +207,8 @@ class TestToolDownloader:
         file_path.write_text("test content")
         
         # SHA256 of "test content" is:
-        # 1eebdf4fdc9fc7bf283031b93f9aef3338de9052fde2e59e7563e6aec5c2e290
-        expected = "1eebdf4fdc9fc7bf283031b93f9aef3338de9052fde2e59e7563e6aec5c2e290"
+        # 6ae8a75555209fd6c44157c0aed8016e763ff435a19cf186f76863140143ff72
+        expected = "6ae8a75555209fd6c44157c0aed8016e763ff435a19cf186f76863140143ff72"
         
         result = downloader.verify_checksum(file_path, expected)
         assert result is True
