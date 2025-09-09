@@ -33,7 +33,8 @@
       "Bash(timeout 30 python -m pytest:*)",
       "Bash(timeout 30 pytest tests/config/test_config_logger.py::TestTelemetryConfigFromEnvEventSets::test_logging_config_no_emoji_sets -xvs)",
       "Bash(PYTHONPATH=src python -m pytest tests/utils/test_utils_coverage.py::TestParsingCoverage::test_auto_parse_with_converter_metadata -xvs)",
-      "Bash(PYTHONPATH=src python -c \"from provide.foundation.utils.parsing import auto_parse; print(''Import works'')\")"
+      "Bash(PYTHONPATH=src python -c \"from provide.foundation.utils.parsing import auto_parse; print(''Import works'')\")",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "ask": [],
