@@ -133,86 +133,8 @@ def retry(
     return decorator
 
 
-@define(kw_only=True, slots=True)
-class CircuitBreaker:
-    """Circuit breaker pattern for preventing cascading failures.
-
-    Attributes:
-        failure_threshold: Number of failures before opening circuit.
-        recovery_timeout: Seconds to wait before attempting recovery.
-        expected_exception: Exception types that trigger the breaker.
-    """
-
-    failure_threshold: int = 5
-    recovery_timeout: float = 60.0
-    expected_exception: tuple[type[Exception], ...] = field(default=(Exception,))
-
-    # Internal state
-    _failure_count: int = field(init=False, default=0)
-    _last_failure_time: float | None = field(init=False, default=None)
-    _state: str = field(init=False, default="closed")  # closed, open, half_open
-
-    def __call__(self, func: F) -> F:
-        """Decorator to apply circuit breaker to a function."""
-
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            # Check circuit state
-            if self._state == "open":
-                # Check if we should try half-open
-                if (
-                    self._last_failure_time
-                    and (time.time() - self._last_failure_time) > self.recovery_timeout
-                ):
-                    self._state = "half_open"
-                    _get_logger().info(
-                        f"Circuit breaker for {func.__name__} entering half-open state",
-                        function=func.__name__,
-                    )
-                else:
-                    raise RuntimeError(f"Circuit breaker is open for {func.__name__}")
-
-            try:
-                result = func(*args, **kwargs)
-
-                # Success - reset on half-open or reduce failure count
-                if self._state == "half_open":
-                    self._state = "closed"
-                    self._failure_count = 0
-                    _get_logger().info(
-                        f"Circuit breaker for {func.__name__} closed after successful recovery",
-                        function=func.__name__,
-                    )
-                elif self._failure_count > 0:
-                    self._failure_count = max(0, self._failure_count - 1)
-
-                return result
-
-            except self.expected_exception as e:
-                self._failure_count += 1
-                self._last_failure_time = time.time()
-
-                # Check if we should open the circuit
-                if self._failure_count >= self.failure_threshold:
-                    self._state = "open"
-                    _get_logger().error(
-                        f"Circuit breaker for {func.__name__} opened after {self._failure_count} failures",
-                        function=func.__name__,
-                        failures=self._failure_count,
-                        error=str(e),
-                    )
-                else:
-                    _get_logger().warning(
-                        f"Circuit breaker for {func.__name__} failure {self._failure_count}/{self.failure_threshold}",
-                        function=func.__name__,
-                        failures=self._failure_count,
-                        threshold=self.failure_threshold,
-                        error=str(e),
-                    )
-
-                raise
-
-        return wrapper  # type: ignore
+# Import CircuitBreaker from circuit module
+from provide.foundation.resilience.circuit import CircuitBreaker
 
 
 def circuit_breaker(
@@ -240,25 +162,58 @@ def circuit_breaker(
         recovery_timeout=recovery_timeout,
         expected_exception=expected_exception,
     )
-    return breaker
+    
+    def decorator(func: F) -> F:
+        @functools.wraps(func)
+        def sync_wrapper(*args, **kwargs):
+            return breaker.call(func, *args, **kwargs)
+        
+        @functools.wraps(func)
+        async def async_wrapper(*args, **kwargs):
+            return await breaker.call_async(func, *args, **kwargs)
+        
+        if asyncio.iscoroutinefunction(func):
+            return async_wrapper  # type: ignore
+        else:
+            return sync_wrapper  # type: ignore
+    
+    return decorator
 
 
-# Placeholder for fallback decorator
-def fallback(
-    fallback_value: Any = None,
-    fallback_function: Callable[..., Any] | None = None,
-) -> Callable[[F], F]:
+def fallback(*fallback_funcs: Callable[..., Any]) -> Callable[[F], F]:
     """
-    Fallback decorator (to be implemented).
+    Fallback decorator using FallbackChain.
     
     Args:
-        fallback_value: Static fallback value
-        fallback_function: Function to call for fallback
+        *fallback_funcs: Functions to use as fallbacks, in order of preference
     
     Returns:
-        Decorated function with fallback
+        Decorated function with fallback chain
+        
+    Examples:
+        >>> def backup_api():
+        ...     return "backup result"
+        ...
+        >>> @fallback(backup_api)
+        ... def primary_api():
+        ...     return external_api_call()
     """
+    from provide.foundation.resilience.fallback import FallbackChain
+    
     def decorator(func: F) -> F:
-        # TODO: Implement fallback logic
-        return func
+        chain = FallbackChain()
+        for fallback_func in fallback_funcs:
+            chain.add_fallback(fallback_func)
+        
+        if asyncio.iscoroutinefunction(func):
+            @functools.wraps(func)
+            async def async_wrapper(*args, **kwargs):
+                return await chain.execute_async(func, *args, **kwargs)
+            return async_wrapper  # type: ignore
+        else:
+            @functools.wraps(func)
+            def sync_wrapper(*args, **kwargs):
+                return chain.execute(func, *args, **kwargs)
+            return sync_wrapper  # type: ignore
+    
     return decorator

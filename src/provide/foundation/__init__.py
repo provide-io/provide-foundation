@@ -31,8 +31,12 @@ from provide.foundation.errors import (
 from provide.foundation.resilience import (
     retry,
     circuit_breaker,
+    fallback,
     RetryPolicy,
     BackoffStrategy,
+    CircuitBreaker,
+    CircuitState,
+    FallbackChain,
 )
 
 # Hub and Registry exports (public API)
@@ -141,8 +145,12 @@ __all__ = [
     "retry",
     "retry_on_error",
     "circuit_breaker",
+    "fallback",
     "RetryPolicy",
     "BackoffStrategy",
+    "CircuitBreaker",
+    "CircuitState",
+    "FallbackChain",
     "setup_logging",  # Backward compatibility
     "setup_logger",  # Consistent naming
     "setup_telemetry",
