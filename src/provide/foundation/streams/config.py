@@ -30,6 +30,13 @@ class StreamConfig(RuntimeConfig):
         description="Force color output even when not in TTY",
     )
     
+    click_testing: bool = field(
+        default=False,
+        env_var="CLICK_TESTING",
+        converter=parse_bool_extended,
+        description="Indicates if running inside Click testing framework",
+    )
+    
 
     def supports_color(self) -> bool:
         """

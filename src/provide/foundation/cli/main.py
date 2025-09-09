@@ -46,7 +46,7 @@ if _HAS_CLICK:
 
     # Register OpenObserve commands if available
     try:
-        from provide.foundation.observability.openobserve.commands import (
+        from provide.foundation.integrations.openobserve.commands import (
             openobserve_group,
         )
 

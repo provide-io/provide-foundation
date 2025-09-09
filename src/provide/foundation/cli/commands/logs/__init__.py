@@ -28,7 +28,7 @@ if _HAS_CLICK:
 
         # Try to get OpenObserve client if available
         try:
-            from provide.foundation.observability.openobserve import OpenObserveClient
+            from provide.foundation.integrations.openobserve import OpenObserveClient
 
             ctx.obj["client"] = OpenObserveClient.from_config()
         except Exception as e:

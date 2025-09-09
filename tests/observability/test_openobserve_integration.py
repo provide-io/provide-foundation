@@ -173,7 +173,7 @@ class TestOpenObserveIntegration:
 
         # Now query the data
         print(f"\n🔍 Querying ingested logs...")
-        from provide.foundation.observability.openobserve import (
+        from provide.foundation.integrations.openobserve import (
             OpenObserveClient,
             search_logs,
             aggregate_by_level,
