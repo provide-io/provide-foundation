@@ -9,9 +9,9 @@ import os
 
 from attrs import define
 
-from provide.foundation.config import (
-    RuntimeConfig,
-    field,
+from provide.foundation.config.env import RuntimeConfig
+from provide.foundation.config.base import field
+from provide.foundation.config.converters import (
     parse_bool_extended,
     parse_headers,
     parse_sample_rate,

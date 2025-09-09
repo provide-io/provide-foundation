@@ -8,11 +8,22 @@ parse and validate environment variable values into the correct types.
 import json
 from typing import Any
 
-from provide.foundation.types import (
-    _VALID_FORMATTER_TUPLE,
-    _VALID_LOG_LEVEL_TUPLE,
-    ConsoleFormatterStr,
-    LogLevelStr,
+# Type definitions to avoid circular imports
+LogLevelStr = str
+ConsoleFormatterStr = str
+
+_VALID_LOG_LEVEL_TUPLE = (
+    "TRACE",
+    "DEBUG",
+    "INFO",
+    "WARNING",
+    "ERROR",
+    "CRITICAL",
+)
+
+_VALID_FORMATTER_TUPLE = (
+    "key_value",
+    "json",
 )
 
 
@@ -156,19 +167,24 @@ def parse_comma_list(value: str) -> list[str]:
     return [item.strip() for item in value.split(",") if item.strip()]
 
 
-def parse_bool_extended(value: str) -> bool:
+def parse_bool_extended(value: str | bool) -> bool:
     """
     Parse boolean from string with extended format support.
     
     Recognizes: true/false, yes/no, 1/0, on/off (case-insensitive)
     
     Args:
-        value: Boolean string representation
+        value: Boolean string representation or bool
         
     Returns:
         Boolean value
     """
-    value_lower = value.lower().strip()
+    # If already a bool, return as-is
+    if isinstance(value, bool):
+        return value
+    
+    # Convert to string and parse
+    value_lower = str(value).lower().strip()
     return value_lower in ("true", "yes", "1", "on")
 
 
