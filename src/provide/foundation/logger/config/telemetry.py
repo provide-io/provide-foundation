@@ -9,6 +9,7 @@ from attrs import define
 
 from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.config.base import field
+import os
 from provide.foundation.config.converters import (
     parse_bool_extended,
     parse_headers,
@@ -18,14 +19,18 @@ from provide.foundation.config.converters import (
 from provide.foundation.logger.config.logging import LoggingConfig
 
 
+def _get_service_name() -> str | None:
+    """Get service name from OTEL_SERVICE_NAME or PROVIDE_SERVICE_NAME."""
+    return os.getenv("OTEL_SERVICE_NAME") or os.getenv("PROVIDE_SERVICE_NAME")
+
+
 @define(slots=True, repr=False)
 class TelemetryConfig(RuntimeConfig):
     """Main configuration object for the Foundation Telemetry system."""
 
     service_name: str | None = field(
-        default=None,
-        env_var="PROVIDE_SERVICE_NAME",
-        description="Service name for telemetry",
+        factory=_get_service_name,
+        description="Service name for telemetry (from OTEL_SERVICE_NAME or PROVIDE_SERVICE_NAME)",
     )
     service_version: str | None = field(
         default=None,
