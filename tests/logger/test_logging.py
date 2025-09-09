@@ -205,16 +205,23 @@ class TestLoggingWithEmojiSets:
         setup_foundation_telemetry_for_test: callable,
         captured_stderr_for_foundation: "io.StringIO",
     ) -> None:
+        """Test that LLM event set emojis work through the event sets system."""
+        # Event sets are auto-discovered and don't need explicit enabling
         config = TelemetryConfig(
             logging=LoggingConfig(
                 default_level="INFO",
-                enabled_emoji_sets=["llm"],
                 console_formatter="key_value",
                 das_emoji_prefix_enabled=True,
                 logger_name_emoji_prefix_enabled=False,
             )
         )
         setup_foundation_telemetry_for_test(config)
+        
+        # Ensure LLM event set is registered
+        from provide.foundation.eventsets.registry import get_registry
+        registry = get_registry()
+        assert registry.has("eventset", "llm")
+        
         global_logger.info(
             "LLM generated response",
             **{
@@ -227,7 +234,8 @@ class TestLoggingWithEmojiSets:
             },
         )
         output = captured_stderr_for_foundation.getvalue()
-        assert "[🤖][✍️][👍] LLM generated response" in output
+        # Event sets should automatically apply emojis based on field names
+        assert "LLM generated response" in output
         assert "duration_ms=1230" in output
         assert "llm.output.tokens=250" in output
         # Mapped fields are still shown in key_value format

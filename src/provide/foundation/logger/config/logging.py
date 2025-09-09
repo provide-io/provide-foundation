@@ -5,10 +5,7 @@
 LoggingConfig class for Foundation logger configuration.
 """
 
-import json
-import sys
 from pathlib import Path
-from typing import Any
 
 from attrs import define
 
@@ -30,22 +27,6 @@ from provide.foundation.types import (
     ConsoleFormatterStr,
     LogLevelStr,
 )
-
-
-def parse_custom_emoji_sets(value: str) -> list[dict[str, Any]]:
-    """Parse custom emoji sets from JSON string."""
-    try:
-        data = json.loads(value)
-        if not isinstance(data, list):
-            raise ValueError("Custom emoji sets must be a list")
-        return data
-    except json.JSONDecodeError as e:
-        # Log warning to stderr
-        print(f"Invalid JSON in configuration for PROVIDE_LOG_CUSTOM_EMOJI_SETS: {e}", file=sys.stderr)
-        return []
-    except Exception as e:
-        print(f"Error parsing custom emoji sets: {e}", file=sys.stderr)
-        return []
 
 
 @define(slots=True, repr=False)
@@ -89,18 +70,7 @@ class LoggingConfig(RuntimeConfig):
         converter=parse_bool_extended,
         description="Omit timestamps from console output",
     )
-    enabled_emoji_sets: list[str] = field(
-        factory=lambda: [],
-        env_var="PROVIDE_LOG_ENABLED_EMOJI_SETS",
-        converter=lambda x: [s.strip() for s in x.split(",")] if x else [],
-        description="Enabled emoji sets for logging",
-    )
-    custom_emoji_sets: list[dict[str, Any]] = field(
-        factory=lambda: [],
-        env_var="PROVIDE_LOG_CUSTOM_EMOJI_SETS",
-        converter=lambda x: parse_custom_emoji_sets(x) if x else [],
-        description="Custom emoji set definitions (JSON format)",
-    )
+    # Event sets have replaced emoji sets - these fields are deprecated
     log_file: Path | None = field(
         default=None,
         env_var="PROVIDE_LOG_FILE",
