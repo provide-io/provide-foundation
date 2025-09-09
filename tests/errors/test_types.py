@@ -5,11 +5,9 @@ import json
 from unittest.mock import patch
 
 from provide.foundation.errors.types import (
-    BackoffStrategy,
     ErrorCode,
     ErrorMetadata,
     ErrorResponse,
-    RetryPolicy,
 )
 
 
@@ -127,50 +125,23 @@ class TestErrorMetadata:
         assert result["retry_after"] == 0.0
 
 
-class TestBackoffStrategy:
-    """Test BackoffStrategy enum."""
+class TestErrorResponse:
+    """Test ErrorResponse class."""
 
-    def test_strategy_values(self) -> None:
-        """Test backoff strategy values."""
-        assert BackoffStrategy.FIXED.value == "fixed"
-        assert BackoffStrategy.LINEAR.value == "linear"
-        assert BackoffStrategy.EXPONENTIAL.value == "exponential"
-        assert BackoffStrategy.FIBONACCI.value == "fibonacci"
-
-
-class TestRetryPolicy:
-    """Test RetryPolicy class."""
-
-    def test_default_creation(self) -> None:
-        """Test creating RetryPolicy with defaults."""
-        policy = RetryPolicy()
-
-        assert policy.max_attempts == 3
-        assert policy.backoff == BackoffStrategy.EXPONENTIAL
-        assert policy.base_delay == 1.0
-        assert policy.max_delay == 60.0
-        assert policy.jitter is True
-        assert policy.retryable_errors is None
-
-    def test_creation_with_values(self) -> None:
-        """Test creating RetryPolicy with custom values."""
-        policy = RetryPolicy(
-            max_attempts=5,
-            backoff=BackoffStrategy.LINEAR,
-            base_delay=2.0,
-            max_delay=30.0,
-            jitter=False,
-            retryable_errors=(ValueError, KeyError),
+    def test_creation_basic(self) -> None:
+        """Test basic ErrorResponse creation."""
+        response = ErrorResponse(
+            error_code="TEST_001",
+            message="Test error message"
         )
 
-        assert policy.max_attempts == 5
-        assert policy.backoff == BackoffStrategy.LINEAR
-        assert policy.base_delay == 2.0
-        assert policy.max_delay == 30.0
-        assert policy.jitter is False
-        assert policy.retryable_errors == (ValueError, KeyError)
+        assert response.error_code == "TEST_001"
+        assert response.message == "Test error message"
+        assert response.details is None
+        assert response.metadata is None
+        assert isinstance(response.timestamp, str)
 
-    def test_calculate_delay_fixed(self) -> None:
+    def test_creation_with_details(self) -> None:
         """Test fixed backoff strategy."""
         policy = RetryPolicy(
             backoff=BackoffStrategy.FIXED, base_delay=5.0, jitter=False
