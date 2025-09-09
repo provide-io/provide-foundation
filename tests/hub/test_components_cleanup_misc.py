@@ -172,6 +172,8 @@ class TestMiscellaneousFunctionality:
         
         # Clear registries first
         reset_registry_for_tests()
+        
+        # Clear the event registry
         event_registry = get_eventset_registry()
         event_registry.clear()
 
@@ -184,12 +186,16 @@ class TestMiscellaneousFunctionality:
         timestamp_proc = registry.get("timestamp", ComponentCategory.PROCESSOR.value)
         assert timestamp_proc is not None
         
-        # Trigger event set discovery
+        # Trigger event set discovery (this should register them fresh)
         discover_event_sets()
 
         # Event sets should be in the EventSetRegistry, not ComponentRegistry
         event_sets = event_registry.list_event_sets()
-        assert len(event_sets) > 0, f"No event sets found. Registry contents: {list(event_registry)}"
+        assert len(event_sets) > 0, f"No event sets found. Registry has {len(list(event_registry))} entries"
+        
+        # Check what event sets we have
+        event_set_names = [es.name for es in event_sets]
+        assert "default" in event_set_names, f"'default' not found in event sets: {event_set_names}"
         
         # Should have default event set (registered during module discovery)
         default_event_set = event_registry.get_event_set("default")
