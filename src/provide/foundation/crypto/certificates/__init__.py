@@ -9,6 +9,7 @@ from provide.foundation.crypto.certificates.base import (
     KeyPair,
     KeyType,
     PublicKey,
+    _HAS_CRYPTO,
     _require_crypto,
 )
 from provide.foundation.crypto.certificates.certificate import Certificate
@@ -28,5 +29,6 @@ __all__ = [
     "KeyType",
     "create_self_signed",
     "create_ca",
+    "_HAS_CRYPTO",  # For testing
     "_require_crypto",  # For testing
 ]

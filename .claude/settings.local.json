@@ -20,7 +20,9 @@
       "Bash(timeout 30 pytest tests/crypto/test_certificate_create.py::test_create_x509_cert_subject_error -xvs)",
       "Bash(timeout 30 pytest tests/crypto/ -q --tb=no)",
       "Bash(timeout 30 pytest tests/crypto/test_certificate_lifecycle.py::test_certificate_validity_period_error -xvs)",
-      "Bash(timeout 30 pytest tests/crypto/test_certificate_loading.py::test_load_key_value_error -xvs)"
+      "Bash(timeout 30 pytest tests/crypto/test_certificate_loading.py::test_load_key_value_error -xvs)",
+      "Bash(timeout 30 pytest tests/crypto/test_certificate_properties.py::test_is_ca_extension_not_found_logs_debug -xvs)",
+      "Bash(timeout 30 pytest tests/crypto/test_optional_crypto_dependency.py::TestCryptoFallbackBehavior::test_crypto_module_resilience -xvs)"
     ],
     "deny": [],
     "ask": [],
