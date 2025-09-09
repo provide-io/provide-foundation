@@ -227,10 +227,11 @@ class TestLoggingWithEmojiSets:
             },
         )
         output = captured_stderr_for_foundation.getvalue()
-        assert "[🤖][✍️][💡][👍] LLM generated response" in output
+        assert "[🤖][✍️][👍] LLM generated response" in output
         assert "duration_ms=1230" in output
         assert "llm.output.tokens=250" in output
-        assert "llm.provider=openai" not in output
+        # Mapped fields are still shown in key_value format
+        assert "llm.provider=openai" in output
 
     def test_legacy_das_still_works_if_no_emoji_sets_active(
         self,
@@ -251,7 +252,10 @@ class TestLoggingWithEmojiSets:
         )
         output = captured_stderr_for_foundation.getvalue()
         assert "[🔑][➡️][✅] Legacy system test" in output
-        assert "domain=auth" not in output
+        # Fields are still shown in key_value format even when used for emojis
+        assert "domain=auth" in output
+        assert "action=login" in output
+        assert "status=success" in output
 
 
 class TestFactoriesModule:

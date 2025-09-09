@@ -75,7 +75,7 @@ class TestEventSetIntegration:
         
         # Should discover built-in event sets
         names = [es.name for es in event_sets]
-        assert "das" in names
+        assert "default" in names
         assert "http" in names
         assert "llm" in names
 

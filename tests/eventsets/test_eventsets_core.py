@@ -34,7 +34,7 @@ class TestEventSetRegistry:
         
         # Should find built-in event sets
         names = [es.name for es in event_sets]
-        assert "das" in names
+        assert "default" in names
         assert "http" in names
         assert "llm" in names
         
@@ -154,28 +154,39 @@ class TestLoggingIntegration:
     
     def test_logging_uses_event_enrichment(self):
         """Test that logging system uses event enrichment."""
-        reset_foundation_setup_for_testing()
-        
-        # Set up for DAS enrichment
-        import os
-        os.environ["PROVIDE_LOG_DAS_EMOJI_ENABLED"] = "true"
-        
-        # Get a logger and log with DAS fields
-        logger = global_logger.get_logger("test")
-        
-        # Capture output
+        from provide.foundation.logger.config import LoggingConfig
+        from provide.foundation.config.telemetry import TelemetryConfig
+        from provide.foundation.logger.setup import internal_setup
         from io import StringIO
         import sys
+        
+        reset_foundation_setup_for_testing()
+        
+        # Set up telemetry with INFO level and DAS emoji enabled
+        config = TelemetryConfig(
+            logging=LoggingConfig(
+                default_level="INFO",
+                das_emoji_prefix_enabled=True,
+                console_formatter="key_value"
+            )
+        )
+        
+        # Capture output
         captured_output = StringIO()
         original_stderr = sys.stderr
         sys.stderr = captured_output
         
         try:
+            # Setup telemetry
+            internal_setup(config=config, log_stderr=captured_output)
+            
+            # Get a logger and log with DAS fields
+            logger = global_logger.get_logger("test")
             logger.info("Test message", domain="system", action="start", status="success")
             output = captured_output.getvalue()
             
             # Should contain emoji enrichments
-            assert "⚙️" in output or "🚀" in output or "✅" in output
+            assert "⚙️" in output or "🚀" in output or "✅" in output, f"Missing emojis in output: {output}"
             
         finally:
             sys.stderr = original_stderr

@@ -168,11 +168,16 @@ class TestMiscellaneousFunctionality:
 
     def test_bootstrap_foundation_creates_default_components(self):
         """Test bootstrap_foundation creates expected components."""
+        from provide.foundation.eventsets.registry import discover_event_sets
+        
         # Clear registry first
         reset_registry_for_tests()
 
         # Bootstrap should create default components
         bootstrap_foundation()
+        
+        # Trigger event set discovery
+        discover_event_sets()
 
         registry = get_component_registry()
 
