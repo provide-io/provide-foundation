@@ -265,8 +265,7 @@ class TestFoundationBootstrapIntegration:
 
         test_event_mapping = EventMapping(
             name="info",
-            emoji="🔍",
-            description="Information event"
+            visual_markers={"default": "🔍"}
         )
         test_event_set = EventSet(
             name="test",
