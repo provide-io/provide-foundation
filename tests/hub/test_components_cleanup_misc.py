@@ -170,8 +170,10 @@ class TestMiscellaneousFunctionality:
         """Test bootstrap_foundation creates expected components."""
         from provide.foundation.eventsets.registry import discover_event_sets, get_registry as get_eventset_registry
         
-        # Clear registry first
+        # Clear registries first
         reset_registry_for_tests()
+        event_registry = get_eventset_registry()
+        event_registry.clear()
 
         # Bootstrap should create default components
         bootstrap_foundation()
@@ -186,8 +188,8 @@ class TestMiscellaneousFunctionality:
         discover_event_sets()
 
         # Event sets should be in the EventSetRegistry, not ComponentRegistry
-        event_registry = get_eventset_registry()
         event_sets = event_registry.list_event_sets()
+        assert len(event_sets) > 0, f"No event sets found. Registry contents: {list(event_registry)}"
         
         # Should have default event set (registered during module discovery)
         default_event_set = event_registry.get_event_set("default")
