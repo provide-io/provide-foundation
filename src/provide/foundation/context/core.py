@@ -10,7 +10,7 @@ from attrs import define, field, fields, validators
 
 from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.config.base import field as config_field, ConfigSource
-from provide.foundation.config.converters import parse_bool_extended
+from provide.foundation.config.converters import parse_bool_strict
 from provide.foundation.logger import get_logger
 from provide.foundation.logger.config import TelemetryConfig
 

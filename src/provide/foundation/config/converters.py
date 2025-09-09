@@ -227,6 +227,36 @@ def parse_bool_extended(value: str | bool) -> bool:
     return value_lower in ("true", "yes", "1", "on")
 
 
+def parse_bool_strict(value: str | bool) -> bool:
+    """
+    Parse boolean from string with strict validation.
+    
+    Recognizes: true/false, yes/no, 1/0, on/off (case-insensitive)
+    
+    Args:
+        value: Boolean string representation or bool
+        
+    Returns:
+        Boolean value
+        
+    Raises:
+        ValueError: If the value cannot be parsed as boolean
+    """
+    # If already a bool, return as-is
+    if isinstance(value, bool):
+        return value
+    
+    # Convert to string and parse
+    value_lower = str(value).lower().strip()
+    
+    if value_lower in ("true", "yes", "1", "on"):
+        return True
+    elif value_lower in ("false", "no", "0", "off"):
+        return False
+    else:
+        raise ValueError(f"Invalid boolean value '{value}'. Valid options: true/false, yes/no, 1/0, on/off")
+
+
 def parse_float_with_validation(
     value: str, min_val: float | None = None, max_val: float | None = None
 ) -> float:
