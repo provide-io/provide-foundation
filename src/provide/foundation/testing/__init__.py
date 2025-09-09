@@ -93,6 +93,83 @@ def __getattr__(name: str) -> Any:
         import provide.foundation.testing.fixtures as fixtures_module
 
         return getattr(fixtures_module, name)
+    
+    # Import submodules directly
+    elif name in ["archive", "common", "file", "process", "transport", "mocking", "time", "threading"]:
+        import importlib
+        return importlib.import_module(f"provide.foundation.testing.{name}")
+    
+    # File testing utilities (backward compatibility)
+    elif name in [
+        "temp_directory",
+        "test_files_structure",
+        "temp_file",
+        "binary_file",
+        "nested_directory_structure",
+        "empty_directory",
+        "readonly_file",
+    ]:
+        import provide.foundation.testing.file.fixtures as file_module
+        return getattr(file_module, name)
+    
+    # Process/async testing utilities (backward compatibility)
+    elif name in [
+        "clean_event_loop",
+        "async_timeout",
+        "mock_async_process",
+        "async_stream_reader",
+        "event_loop_policy",
+        "async_context_manager",
+        "async_iterator",
+        "async_queue",
+        "async_lock",
+        "mock_async_sleep",
+    ]:
+        import provide.foundation.testing.process.fixtures as process_module
+        return getattr(process_module, name)
+    
+    # Common mock utilities (backward compatibility)
+    elif name in [
+        "mock_http_config",
+        "mock_telemetry_config",
+        "mock_config_source",
+        "mock_event_emitter",
+        "mock_transport",
+        "mock_metrics_collector",
+        "mock_cache",
+        "mock_database",
+        "mock_file_system",
+        "mock_subprocess",
+    ]:
+        import provide.foundation.testing.common.fixtures as common_module
+        return getattr(common_module, name)
+    
+    # Transport/network testing utilities (backward compatibility)
+    elif name in [
+        "free_port",
+        "mock_server",
+        "httpx_mock_responses",
+        "mock_websocket",
+        "mock_dns_resolver",
+        "tcp_client_server",
+        "mock_ssl_context",
+        "network_timeout",
+        "mock_http_headers",
+    ]:
+        import provide.foundation.testing.transport.fixtures as transport_module
+        return getattr(transport_module, name)
+    
+    # Archive testing utilities
+    elif name in [
+        "archive_test_content",
+        "large_file_for_compression",
+        "multi_format_archives",
+        "archive_with_permissions",
+        "corrupted_archives",
+        "archive_stress_test_files",
+    ]:
+        import provide.foundation.testing.archive.fixtures as archive_module
+        return getattr(archive_module, name)
 
     # Crypto fixtures (many fixtures)
     elif name in [

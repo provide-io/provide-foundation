@@ -2,26 +2,21 @@
 
 import os
 from pathlib import Path
-import tempfile
 import threading
 import time
 from typing import Never
 
 import pytest
-
+from provide.foundation.testing.file import temp_directory
 from provide.foundation.file.lock import FileLock, LockError
 
 
-@pytest.fixture
-def temp_dir():
-    """Create a temporary directory for tests."""
-    with tempfile.TemporaryDirectory() as td:
-        yield Path(td)
 
 
-def test_file_lock_acquire_release(temp_dir) -> None:
+
+def test_file_lock_acquire_release(temp_directory) -> None:
     """Test basic lock acquire and release."""
-    lock_path = temp_dir / "test.lock"
+    lock_path = temp_directory / "test.lock"
     lock = FileLock(lock_path)
 
     # Acquire lock
@@ -36,9 +31,9 @@ def test_file_lock_acquire_release(temp_dir) -> None:
     assert not lock_path.exists()
 
 
-def test_file_lock_context_manager(temp_dir) -> None:
+def test_file_lock_context_manager(temp_directory) -> None:
     """Test lock as context manager."""
-    lock_path = temp_dir / "test.lock"
+    lock_path = temp_directory / "test.lock"
 
     with FileLock(lock_path) as lock:
         assert lock.locked
@@ -49,9 +44,9 @@ def test_file_lock_context_manager(temp_dir) -> None:
     assert not lock_path.exists()
 
 
-def test_file_lock_non_blocking(temp_dir) -> None:
+def test_file_lock_non_blocking(temp_directory) -> None:
     """Test non-blocking lock acquisition."""
-    lock_path = temp_dir / "test.lock"
+    lock_path = temp_directory / "test.lock"
     lock1 = FileLock(lock_path)
     lock2 = FileLock(lock_path)
 
@@ -70,9 +65,9 @@ def test_file_lock_non_blocking(temp_dir) -> None:
     lock2.release()
 
 
-def test_file_lock_timeout(temp_dir) -> None:
+def test_file_lock_timeout(temp_directory) -> None:
     """Test lock acquisition timeout."""
-    lock_path = temp_dir / "test.lock"
+    lock_path = temp_directory / "test.lock"
     lock1 = FileLock(lock_path)
     lock2 = FileLock(lock_path, timeout=0.5)
 
@@ -91,9 +86,9 @@ def test_file_lock_timeout(temp_dir) -> None:
     lock1.release()
 
 
-def test_file_lock_multiple_releases(temp_dir) -> None:
+def test_file_lock_multiple_releases(temp_directory) -> None:
     """Test multiple releases are safe."""
-    lock_path = temp_dir / "test.lock"
+    lock_path = temp_directory / "test.lock"
     lock = FileLock(lock_path)
 
     lock.acquire()
@@ -104,9 +99,9 @@ def test_file_lock_multiple_releases(temp_dir) -> None:
     assert not lock_path.exists()
 
 
-def test_file_lock_stale_detection(temp_dir) -> None:
+def test_file_lock_stale_detection(temp_directory) -> None:
     """Test stale lock detection and removal."""
-    lock_path = temp_dir / "test.lock"
+    lock_path = temp_directory / "test.lock"
 
     # Create a lock file with non-existent PID
     lock_path.write_text("99999999")  # Unlikely to be a real PID
@@ -119,9 +114,9 @@ def test_file_lock_stale_detection(temp_dir) -> None:
     lock.release()
 
 
-def test_file_lock_concurrent_access(temp_dir) -> None:
+def test_file_lock_concurrent_access(temp_directory) -> None:
     """Test concurrent lock access from threads."""
-    lock_path = temp_dir / "test.lock"
+    lock_path = temp_directory / "test.lock"
     results = []
 
     def worker(worker_id) -> None:
@@ -146,9 +141,9 @@ def test_file_lock_concurrent_access(temp_dir) -> None:
     assert set(results) == {0, 1, 2}
 
 
-def test_file_lock_exception_in_context(temp_dir) -> Never:
+def test_file_lock_exception_in_context(temp_directory) -> Never:
     """Test lock is released even when exception occurs."""
-    lock_path = temp_dir / "test.lock"
+    lock_path = temp_directory / "test.lock"
 
     with pytest.raises(ValueError), FileLock(lock_path) as lock:
         assert lock.locked
@@ -159,9 +154,9 @@ def test_file_lock_exception_in_context(temp_dir) -> Never:
     assert not lock_path.exists()
 
 
-def test_file_lock_different_process_ownership(temp_dir) -> None:
+def test_file_lock_different_process_ownership(temp_directory) -> None:
     """Test lock doesn't release if owned by different process."""
-    lock_path = temp_dir / "test.lock"
+    lock_path = temp_directory / "test.lock"
 
     # Create lock file owned by different PID
     different_pid = os.getpid() + 1
@@ -180,9 +175,9 @@ def test_file_lock_different_process_ownership(temp_dir) -> None:
     lock_path.unlink()
 
 
-def test_file_lock_check_interval(temp_dir) -> None:
+def test_file_lock_check_interval(temp_directory) -> None:
     """Test custom check interval."""
-    lock_path = temp_dir / "test.lock"
+    lock_path = temp_directory / "test.lock"
     lock1 = FileLock(lock_path)
     lock2 = FileLock(lock_path, timeout=1.0, check_interval=0.3)
 
@@ -217,9 +212,9 @@ def test_file_lock_check_interval(temp_dir) -> None:
     assert checks > 0  # At least some checks happened
 
 
-def test_file_lock_invalid_lock_content(temp_dir) -> None:
+def test_file_lock_invalid_lock_content(temp_directory) -> None:
     """Test handling of invalid lock file content."""
-    lock_path = temp_dir / "test.lock"
+    lock_path = temp_directory / "test.lock"
 
     # Create lock file with invalid content
     lock_path.write_text("not_a_pid")

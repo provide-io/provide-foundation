@@ -12,6 +12,9 @@ from unittest.mock import Mock, MagicMock, patch, call
 
 import pytest
 
+# Mark all tests in this file to run serially to avoid event loop issues
+pytestmark = pytest.mark.serial
+
 from provide.foundation.process.lifecycle import ManagedProcess, wait_for_process_output
 from provide.foundation.process.runner import ProcessError
 

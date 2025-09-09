@@ -71,9 +71,11 @@ def manage_telemetry_reset_for_each_test() -> Generator[None]:
 
 # Import and re-export fixtures from the unified testing module
 from provide.foundation.testing import (
+    # Original fixtures
     default_container_directory,
     captured_stderr_for_foundation,
     setup_foundation_telemetry_for_test,
+    # Crypto fixtures
     client_cert,
     server_cert,
     ca_cert,
@@ -89,10 +91,34 @@ from provide.foundation.testing import (
     cert_with_utf8_bom,
     cert_with_extra_whitespace,
     external_ca_pem,
+    # New file fixtures
+    temp_directory,
+    test_files_structure,
+    temp_file,
+    binary_file,
+    nested_directory_structure,
+    empty_directory,
+    readonly_file,
+    # New async fixtures
+    clean_event_loop,
+    async_timeout,
+    mock_async_process,
+    async_stream_reader,
+    # New mock fixtures
+    mock_http_config,
+    mock_telemetry_config,
+    mock_logger,
+    mock_transport,
+    mock_cache,
+    # New network fixtures
+    free_port,
+    mock_server,
+    httpx_mock_responses,
 )
 
 # Re-export for pytest discovery
 __all__ = [
+    # Original exports
     "captured_stderr_for_foundation",
     "default_container_directory",
     "setup_foundation_telemetry_for_test",
@@ -112,4 +138,27 @@ __all__ = [
     "cert_with_utf8_bom",
     "cert_with_extra_whitespace",
     "external_ca_pem",
+    # New file fixtures
+    "temp_directory",
+    "test_files_structure",
+    "temp_file",
+    "binary_file",
+    "nested_directory_structure",
+    "empty_directory",
+    "readonly_file",
+    # New async fixtures
+    "clean_event_loop",
+    "async_timeout",
+    "mock_async_process",
+    "async_stream_reader",
+    # New mock fixtures
+    "mock_http_config",
+    "mock_telemetry_config",
+    "mock_logger",
+    "mock_transport",
+    "mock_cache",
+    # New network fixtures
+    "free_port",
+    "mock_server",
+    "httpx_mock_responses",
 ]

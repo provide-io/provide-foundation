@@ -1,6 +1,5 @@
 """Tests for the BaseArchive abstract interface."""
 
-import tempfile
 from abc import ABCMeta
 from pathlib import Path
 from unittest.mock import Mock
@@ -89,63 +88,59 @@ class TestBaseArchiveCommonBehavior:
         
         return MockArchiver()
 
-    def test_create_returns_output_path(self, mock_archiver):
+    def test_create_returns_output_path(self, mock_archiver, temp_directory):
         """The create method should return the output path."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = Path(temp_dir)
-            source = temp_path / "source"
-            source.mkdir()
-            output = temp_path / "output.archive"
-            
-            result = mock_archiver.create(source, output)
-            
-            assert result == output
-            assert output.exists()
+        temp_path = temp_directory
+        source = temp_path / "source"
+        source.mkdir()
+        output = temp_path / "output.archive"
+        
+        result = mock_archiver.create(source, output)
+        
+        assert result == output
+        assert output.exists()
 
-    def test_extract_returns_output_path(self, mock_archiver):
+    def test_extract_returns_output_path(self, mock_archiver, temp_directory):
         """The extract method should return the output path."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = Path(temp_dir)
-            archive = temp_path / "test.archive"
-            archive.touch()
-            output = temp_path / "extracted"
-            
-            result = mock_archiver.extract(archive, output)
-            
-            assert result == output
-            assert output.exists()
+        temp_path = temp_directory
+        archive = temp_path / "test.archive"
+        archive.touch()
+        output = temp_path / "extracted"
+        
+        result = mock_archiver.extract(archive, output)
+        
+        assert result == output
+        assert output.exists()
 
-    def test_validate_returns_boolean(self, mock_archiver):
+    def test_validate_returns_boolean(self, mock_archiver, temp_directory):
         """The validate method should return a boolean."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = Path(temp_dir)
-            
-            # Valid archive (exists)
-            valid_archive = temp_path / "valid.archive"
-            valid_archive.touch()
-            assert mock_archiver.validate(valid_archive) is True
-            
-            # Invalid archive (doesn't exist)
-            invalid_archive = temp_path / "invalid.archive"
-            assert mock_archiver.validate(invalid_archive) is False
+        temp_path = temp_directory
+        
+        # Valid archive (exists)
+        valid_archive = temp_path / "valid.archive"
+        valid_archive.touch()
+        assert mock_archiver.validate(valid_archive) is True
+        
+        # Invalid archive (doesn't exist)
+        invalid_archive = temp_path / "invalid.archive"
+        assert mock_archiver.validate(invalid_archive) is False
 
-    def test_methods_accept_path_objects(self, mock_archiver):
+    def test_methods_accept_path_objects(self, mock_archiver, temp_directory):
         """All methods should accept Path objects as arguments."""
-        with tempfile.TemporaryDirectory() as temp_dir:
-            temp_path = Path(temp_dir)
-            source = temp_path / "source"
-            source.mkdir()
-            archive = temp_path / "test.archive"
-            output = temp_path / "output"
-            
-            # All these should work with Path objects
-            result1 = mock_archiver.create(source, archive)
-            result2 = mock_archiver.extract(archive, output)
-            result3 = mock_archiver.validate(archive)
-            
-            assert isinstance(result1, Path)
-            assert isinstance(result2, Path)
-            assert isinstance(result3, bool)
+        temp_path = temp_directory
+        source = temp_path / "source"
+        source.mkdir()
+        archive = temp_path / "test.archive"
+        output = temp_path / "output"
+        
+        # All these should work with Path objects
+        result1 = mock_archiver.create(source, archive)
+        result2 = mock_archiver.extract(archive, output)
+        result3 = mock_archiver.validate(archive)
+        
+        assert isinstance(result1, Path)
+        assert isinstance(result2, Path)
+        assert isinstance(result3, bool)
 
     def test_error_handling_pattern(self):
         """Test that implementations should raise ArchiveError for failures."""

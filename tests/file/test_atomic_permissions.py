@@ -2,10 +2,9 @@
 
 import os
 from pathlib import Path
-import tempfile
 
 import pytest
-
+from provide.foundation.testing.file import temp_directory
 from provide.foundation.file.atomic import (
     atomic_replace,
     atomic_write,
@@ -13,20 +12,16 @@ from provide.foundation.file.atomic import (
 )
 
 
-@pytest.fixture
-def temp_dir():
-    """Create a temporary directory for tests."""
-    with tempfile.TemporaryDirectory() as td:
-        yield Path(td)
 
 
-def test_os_replace_preserves_permissions(temp_dir) -> None:
+
+def test_os_replace_preserves_permissions(temp_directory) -> None:
     """Test that os.replace behavior with permissions."""
-    target = temp_dir / "target.txt"
+    target = temp_directory / "target.txt"
     target.write_bytes(b"Original")
     os.chmod(target, 0o600)
 
-    temp = temp_dir / "temp.txt"
+    temp = temp_directory / "temp.txt"
     temp.write_bytes(b"New content")
     # Temp file gets default permissions
     temp_mode = temp.stat().st_mode & 0o777
@@ -39,9 +34,9 @@ def test_os_replace_preserves_permissions(temp_dir) -> None:
     assert target.stat().st_mode & 0o777 == temp_mode
 
 
-def test_atomic_write_default_preserves_existing(temp_dir) -> None:
+def test_atomic_write_default_preserves_existing(temp_directory) -> None:
     """Test atomic_write preserves existing permissions by default."""
-    path = temp_dir / "test.txt"
+    path = temp_directory / "test.txt"
     path.write_bytes(b"Original")
     os.chmod(path, 0o600)
 
@@ -52,9 +47,9 @@ def test_atomic_write_default_preserves_existing(temp_dir) -> None:
     assert path.stat().st_mode & 0o777 == 0o600
 
 
-def test_atomic_write_explicit_preserve_true(temp_dir) -> None:
+def test_atomic_write_explicit_preserve_true(temp_directory) -> None:
     """Test atomic_write with preserve_mode=True."""
-    path = temp_dir / "test.txt"
+    path = temp_directory / "test.txt"
     path.write_bytes(b"Original")
     os.chmod(path, 0o600)
 
@@ -64,9 +59,9 @@ def test_atomic_write_explicit_preserve_true(temp_dir) -> None:
     assert path.stat().st_mode & 0o777 == 0o600
 
 
-def test_atomic_write_preserve_false_on_existing(temp_dir) -> None:
+def test_atomic_write_preserve_false_on_existing(temp_directory) -> None:
     """Test atomic_write with preserve_mode=False on existing file."""
-    path = temp_dir / "test.txt"
+    path = temp_directory / "test.txt"
     path.write_bytes(b"Original")
     os.chmod(path, 0o600)
 
@@ -81,9 +76,9 @@ def test_atomic_write_preserve_false_on_existing(temp_dir) -> None:
     assert mode >= 0o644, f"Mode should be at least 0o644: {oct(mode)}"
 
 
-def test_atomic_write_preserve_false_on_new(temp_dir) -> None:
+def test_atomic_write_preserve_false_on_new(temp_directory) -> None:
     """Test atomic_write with preserve_mode=False on new file."""
-    path = temp_dir / "new.txt"
+    path = temp_directory / "new.txt"
 
     # Create with preserve_mode=False (shouldn't matter for new files)
     atomic_write(path, b"Content", preserve_mode=False)
@@ -94,9 +89,9 @@ def test_atomic_write_preserve_false_on_new(temp_dir) -> None:
     assert mode >= 0o644  # At least readable
 
 
-def test_atomic_write_explicit_mode_overrides(temp_dir) -> None:
+def test_atomic_write_explicit_mode_overrides(temp_directory) -> None:
     """Test that explicit mode overrides both existing and preserve_mode."""
-    path = temp_dir / "test.txt"
+    path = temp_directory / "test.txt"
     path.write_bytes(b"Original")
     os.chmod(path, 0o777)  # Very permissive
 
@@ -111,9 +106,9 @@ def test_atomic_write_explicit_mode_overrides(temp_dir) -> None:
     assert path.stat().st_mode & 0o777 == 0o644
 
 
-def test_atomic_replace_default_preserves(temp_dir) -> None:
+def test_atomic_replace_default_preserves(temp_directory) -> None:
     """Test atomic_replace preserves by default."""
-    path = temp_dir / "test.txt"
+    path = temp_directory / "test.txt"
     path.write_bytes(b"Original")
     os.chmod(path, 0o600)
 
@@ -123,9 +118,9 @@ def test_atomic_replace_default_preserves(temp_dir) -> None:
     assert path.stat().st_mode & 0o777 == 0o600
 
 
-def test_atomic_replace_explicit_preserve_true(temp_dir) -> None:
+def test_atomic_replace_explicit_preserve_true(temp_directory) -> None:
     """Test atomic_replace with preserve_mode=True."""
-    path = temp_dir / "test.txt"
+    path = temp_directory / "test.txt"
     path.write_bytes(b"Original")
     os.chmod(path, 0o600)
 
@@ -135,9 +130,9 @@ def test_atomic_replace_explicit_preserve_true(temp_dir) -> None:
     assert path.stat().st_mode & 0o777 == 0o600
 
 
-def test_atomic_replace_preserve_false(temp_dir) -> None:
+def test_atomic_replace_preserve_false(temp_directory) -> None:
     """Test atomic_replace with preserve_mode=False."""
-    path = temp_dir / "test.txt"
+    path = temp_directory / "test.txt"
     path.write_bytes(b"Original")
     os.chmod(path, 0o600)
 
@@ -150,9 +145,9 @@ def test_atomic_replace_preserve_false(temp_dir) -> None:
     assert mode >= 0o644, f"Mode should be at least 0o644: {oct(mode)}"
 
 
-def test_atomic_write_text_preserve_modes(temp_dir) -> None:
+def test_atomic_write_text_preserve_modes(temp_directory) -> None:
     """Test atomic_write_text permission handling."""
-    path = temp_dir / "test.txt"
+    path = temp_directory / "test.txt"
     path.write_text("Original")
     os.chmod(path, 0o600)
 
@@ -171,11 +166,11 @@ def test_atomic_write_text_preserve_modes(temp_dir) -> None:
     assert mode >= 0o644, f"Mode should be at least 0o644: {oct(mode)}"
 
 
-def test_permission_preservation_with_umask(temp_dir) -> None:
+def test_permission_preservation_with_umask(temp_directory) -> None:
     """Test how umask affects default permissions."""
     original_umask = os.umask(0o022)  # Standard umask
     try:
-        path = temp_dir / "test.txt"
+        path = temp_directory / "test.txt"
 
         # Create new file with atomic_write - mkstemp creates with 0o600
         # so the umask doesn't affect it unless we're not preserving
@@ -186,7 +181,7 @@ def test_permission_preservation_with_umask(temp_dir) -> None:
         assert mode in (0o600, 0o644), f"Expected 0o600 or 0o644, got {oct(mode)}"
 
         # Test with preserve_mode=False to get default permissions
-        path3 = temp_dir / "test3.txt"
+        path3 = temp_directory / "test3.txt"
         atomic_write(path3, b"Content", preserve_mode=False)
         mode3 = path3.stat().st_mode & 0o777
         # With preserve_mode=False and umask 0o022, should be 0o644
@@ -196,7 +191,7 @@ def test_permission_preservation_with_umask(temp_dir) -> None:
 
         # Now test with different umask
         os.umask(0o077)  # Restrictive umask
-        path2 = temp_dir / "test2.txt"
+        path2 = temp_directory / "test2.txt"
         atomic_write(path2, b"Content", preserve_mode=False)
         mode2 = path2.stat().st_mode & 0o777
         # With umask 0o077, default should be 0o600 (0o666 & ~0o077)
