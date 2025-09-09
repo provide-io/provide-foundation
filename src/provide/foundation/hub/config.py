@@ -124,6 +124,11 @@ def load_config_from_registry(config_class: type[T]) -> T:
             source = entry.value
             if hasattr(source, "load_config"):
                 try:
+                    # Skip async sources in sync context
+                    if inspect.iscoroutinefunction(source.load_config):
+                        log.debug("Skipping async config source in sync context", source=entry.name)
+                        continue
+                    
                     source_data = source.load_config()
                     if source_data:
                         config_data.update(source_data)
