@@ -113,12 +113,19 @@ class CLIContext(RuntimeConfig):
         if self._frozen:
             raise RuntimeError("Context is frozen and cannot be modified")
 
-        env_ctx = self.from_env(prefix=prefix)
-
-        # Update all fields from environment
+        # Create default instance and environment instance
+        default_ctx = self.__class__()  # All defaults
+        env_ctx = self.from_env(prefix=prefix)  # Environment + defaults
+        
+        # Only update fields where environment differs from default
         for attr in fields(self.__class__):
             if not attr.name.startswith("_"):  # Skip private fields
-                setattr(self, attr.name, getattr(env_ctx, attr.name))
+                default_value = getattr(default_ctx, attr.name)
+                env_value = getattr(env_ctx, attr.name)
+                
+                # If environment value differs from default, it came from env
+                if env_value != default_value:
+                    setattr(self, attr.name, env_value)
 
     def to_dict(self) -> dict[str, Any]:
         """Convert context to dictionary."""
