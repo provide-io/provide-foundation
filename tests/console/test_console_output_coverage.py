@@ -186,12 +186,12 @@ class TestOutputJson:
             assert "value" in args[0]
             assert kwargs["file"] is mock_stream
 
-            # Verify the error handling code exists in the function
+            # Verify the error handling decorator exists in the function
             import inspect
 
             source = inspect.getsource(_output_json)
-            assert "except (TypeError, ValueError)" in source
-            assert "JSON encoding failed" in source
+            assert "@with_error_handling" in source
+            assert "suppress=(TypeError, ValueError, AttributeError)" in source
 
     def test_output_json_default_stream(self):
         """Test _output_json with default stdout stream."""
