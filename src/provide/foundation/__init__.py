@@ -22,9 +22,16 @@ from provide.foundation.errors import (
     FoundationError,
     # Most commonly used handlers
     error_boundary,
-    retry_on_error,
     # Most commonly used decorators
     with_error_handling,
+)
+
+# Resilience exports
+from provide.foundation.resilience import (
+    retry,
+    circuit_breaker,
+    RetryPolicy,
+    BackoffStrategy,
 )
 
 # Hub and Registry exports (public API)
@@ -129,7 +136,11 @@ __all__ = [
     "pout",
     "platform",
     "process",
-    "retry_on_error",
+    # Resilience patterns
+    "retry",
+    "circuit_breaker",
+    "RetryPolicy",
+    "BackoffStrategy",
     "setup_logging",  # Backward compatibility
     "setup_logger",  # Consistent naming
     "setup_telemetry",
