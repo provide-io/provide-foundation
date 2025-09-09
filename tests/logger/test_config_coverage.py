@@ -106,20 +106,13 @@ class TestLoggingConfigCoverage:
             assert config.log_file is not None
             assert str(config.log_file) == "/tmp/test.log"
 
-    def test_logging_config_event_sets_replaced_emoji_sets(self):
-        """Test that event sets have replaced emoji sets."""
+    def test_logging_config_no_emoji_sets_fields(self):
+        """Test that deprecated emoji sets fields don't exist."""
         from provide.foundation.logger.config.logging import LoggingConfig
-        from provide.foundation.eventsets.registry import get_registry
         
         config = LoggingConfig.from_env()
         # Emoji sets fields should not exist
         assert not hasattr(config, 'enabled_emoji_sets')
-        
-        # Event sets should be available through registry
-        registry = get_registry()
-        assert ("eventset", "llm") in registry
-        assert ("eventset", "http") in registry
-        assert ("eventset", "database") in registry
 
     def test_logging_config_log_level_name_mapping(self):
         """Test logging config level name mappings."""

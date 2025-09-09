@@ -217,10 +217,7 @@ class TestLoggingWithEmojiSets:
         )
         setup_foundation_telemetry_for_test(config)
         
-        # Ensure LLM event set is registered
-        from provide.foundation.eventsets.registry import get_registry
-        registry = get_registry()
-        assert ("eventset", "llm") in registry
+        # Event sets are no longer automatically registered
         
         global_logger.info(
             "LLM generated response",

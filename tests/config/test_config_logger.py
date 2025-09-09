@@ -74,16 +74,6 @@ class TestBuildCoreProcessorsList:
 class TestTelemetryConfigFromEnvEventSets:
     """Tests for deprecated emoji sets - now replaced by event sets."""
     
-    def test_event_sets_replaced_emoji_sets(self) -> None:
-        """Verify that event sets have replaced emoji sets."""
-        # Event sets are now handled through the eventsets module
-        from provide.foundation.eventsets.registry import get_registry
-        registry = get_registry()
-        
-        # Check that event sets are registered
-        assert ("eventset", "llm") in registry
-        assert ("eventset", "http") in registry
-        assert ("eventset", "database") in registry
     
     def test_logging_config_no_emoji_sets(self) -> None:
         """Verify LoggingConfig doesn't have deprecated emoji_sets fields."""
