@@ -154,8 +154,7 @@ class TestLoggingIntegration:
     
     def test_logging_uses_event_enrichment(self):
         """Test that logging system uses event enrichment."""
-        from provide.foundation.logger.config import LoggingConfig
-        from provide.foundation.config.telemetry import TelemetryConfig
+        from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
         from provide.foundation.logger.setup import internal_setup
         from io import StringIO
         import sys
@@ -178,7 +177,7 @@ class TestLoggingIntegration:
         
         try:
             # Setup telemetry
-            internal_setup(config=config, log_stderr=captured_output)
+            internal_setup(config=config)
             
             # Get a logger and log with DAS fields
             logger = global_logger.get_logger("test")

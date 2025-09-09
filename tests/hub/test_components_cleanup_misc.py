@@ -176,18 +176,18 @@ class TestMiscellaneousFunctionality:
         # Bootstrap should create default components
         bootstrap_foundation()
         
+        registry = get_component_registry()
+        
+        # Should have timestamp processor
+        timestamp_proc = registry.get("timestamp", ComponentCategory.PROCESSOR.value)
+        assert timestamp_proc is not None
+        
         # Trigger event set discovery
         discover_event_sets()
-
-        registry = get_component_registry()
 
         # Should have default event set (registered during module discovery)
         default_event_set = registry.get("default", ComponentCategory.EVENT_SET.value)
         assert default_event_set is not None
-
-        # Should have timestamp processor
-        timestamp_proc = registry.get("timestamp", ComponentCategory.PROCESSOR.value)
-        assert timestamp_proc is not None
 
     def test_reset_registry_for_tests(self):
         """Test reset_registry_for_tests clears state."""
