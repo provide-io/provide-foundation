@@ -180,19 +180,20 @@ class TestTelemetryConfigCoverage:
             config = TelemetryConfig.from_env()
             assert config.service_name == "provide-service"
 
-    def test_telemetry_config_from_env_otel_priority(self):
-        """Test that OTEL_SERVICE_NAME takes priority over PROVIDE_SERVICE_NAME."""
+    def test_telemetry_config_from_env_provide_service_name_only(self):
+        """Test that PROVIDE_SERVICE_NAME is used (OTEL_SERVICE_NAME is ignored)."""
         from provide.foundation.logger.config.telemetry import TelemetryConfig
 
         with patch.dict(
             os.environ,
             {
-                "OTEL_SERVICE_NAME": "otel-service",
+                "OTEL_SERVICE_NAME": "otel-service",  # This should be ignored
                 "PROVIDE_SERVICE_NAME": "provide-service",
             },
         ):
             config = TelemetryConfig.from_env()
-            assert config.service_name == "otel-service"
+            # OTEL is optional and no longer has priority
+            assert config.service_name == "provide-service"
 
     def test_telemetry_config_globally_disabled(self):
         """Test telemetry config with global disable flag."""
