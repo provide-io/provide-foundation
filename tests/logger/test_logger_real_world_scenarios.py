@@ -428,7 +428,10 @@ class TestMigrationFromExplicitSetup:
         # Now explicit setup (should override)
         explicit_config = TelemetryConfig(
             service_name="explicit-override",
-            logging=LoggingConfig(console_formatter="json"),
+            logging=LoggingConfig(
+                default_level="INFO",
+                console_formatter="json"
+            ),
         )
         setup_telemetry(explicit_config)
 

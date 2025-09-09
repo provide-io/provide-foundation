@@ -484,7 +484,10 @@ class TestLazyInitializationDocumentation:
         # New code: explicit setup still works
         config = TelemetryConfig(
             service_name="migrated-service",
-            logging=LoggingConfig(console_formatter="json"),
+            logging=LoggingConfig(
+                default_level="INFO",
+                console_formatter="json"
+            ),
         )
         setup_telemetry(config)
 
