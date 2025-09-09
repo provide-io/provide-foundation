@@ -168,7 +168,7 @@ class TestMiscellaneousFunctionality:
 
     def test_bootstrap_foundation_creates_default_components(self):
         """Test bootstrap_foundation creates expected components."""
-        from provide.foundation.eventsets.registry import discover_event_sets
+        from provide.foundation.eventsets.registry import discover_event_sets, get_registry as get_eventset_registry
         
         # Clear registry first
         reset_registry_for_tests()
@@ -185,13 +185,12 @@ class TestMiscellaneousFunctionality:
         # Trigger event set discovery
         discover_event_sets()
 
-        # Debug: Check what's in the registry
-        event_sets = registry.list_dimension(ComponentCategory.EVENT_SET.value)
-        print(f"DEBUG: Event sets after discovery: {event_sets}")
+        # Event sets should be in the EventSetRegistry, not ComponentRegistry
+        event_registry = get_eventset_registry()
+        event_sets = event_registry.list_event_sets()
         
         # Should have default event set (registered during module discovery)
-        default_event_set = registry.get("default", ComponentCategory.EVENT_SET.value)
-        print(f"DEBUG: Default event set: {default_event_set}")
+        default_event_set = event_registry.get_event_set("default")
         assert default_event_set is not None
 
     def test_reset_registry_for_tests(self):
