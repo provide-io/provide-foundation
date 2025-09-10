@@ -441,5 +441,5 @@ def test_performance_regression():
 ## See Also
 
 - [Telemetry Format](telemetry-format.md) - Message structure impact on performance
-- [Emoji System](emoji-system.md) - Emoji resolution performance analysis
+- [Event Enrichment](../guide/concepts/event-enrichment.md) - Event enrichment performance analysis
 - [Logging Guide](../guide/logging/performance.md) - Performance tuning in practice
