@@ -8,6 +8,8 @@ parse and validate environment variable values into the correct types.
 import json
 from typing import Any
 
+from provide.foundation.errors.decorators import with_error_handling
+
 # Type definitions to avoid circular imports
 LogLevelStr = str
 ConsoleFormatterStr = str
@@ -70,6 +72,11 @@ def parse_console_formatter(value: str) -> ConsoleFormatterStr:
     return formatter
 
 
+@with_error_handling(
+    fallback={},
+    suppress=(ValueError, KeyError),
+    context_provider=lambda: {"function": "parse_module_levels"}
+)
 def parse_module_levels(value: str | dict[str, str]) -> dict[str, LogLevelStr]:
     """
     Parse module-specific log levels from string format.
@@ -262,6 +269,9 @@ def parse_bool_strict(value: str | bool) -> bool:
         raise ValueError(f"Invalid boolean value '{value}'. Valid options: true/false, yes/no, 1/0, on/off")
 
 
+@with_error_handling(
+    context_provider=lambda: {"function": "parse_float_with_validation"}
+)
 def parse_float_with_validation(
     value: str, min_val: float | None = None, max_val: float | None = None
 ) -> float:

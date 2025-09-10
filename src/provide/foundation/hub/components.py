@@ -14,6 +14,7 @@ from typing import Any, Protocol, TypeVar
 
 from attrs import define, field
 
+from provide.foundation.errors.decorators import with_error_handling
 from provide.foundation.hub.registry import Registry, RegistryEntry
 from provide.foundation.logger import get_logger
 from provide.foundation.eventsets.types import EventMapping
@@ -76,6 +77,7 @@ def get_component_registry() -> Registry:
 
 
 
+@with_error_handling(fallback=None, suppress=(Exception,))
 def resolve_config_value(key: str) -> Any:
     """Resolve configuration value using priority-ordered sources."""
     with _registry_lock:
@@ -96,6 +98,7 @@ def resolve_config_value(key: str) -> Any:
         for entry in config_sources:
             source = entry.value
             if hasattr(source, "get_value"):
+                # Try to get value, continue on error
                 try:
                     value = source.get_value(key)
                     if value is not None:
@@ -124,6 +127,10 @@ def get_config_chain() -> list[RegistryEntry]:
         return config_sources
 
 
+@with_error_handling(
+    fallback={},
+    context_provider=lambda: {"function": "load_all_configs"}
+)
 async def load_all_configs() -> dict[str, Any]:
     """Load configurations from all registered sources."""
     configs = {}
@@ -204,6 +211,10 @@ def get_handlers_for_exception(exception: Exception) -> list[RegistryEntry]:
         return matching_handlers
 
 
+@with_error_handling(
+    fallback=None,
+    context_provider=lambda: {"function": "execute_error_handlers"}
+)
 def execute_error_handlers(
     exception: Exception, context: dict[str, Any]
 ) -> dict[str, Any] | None:
@@ -250,6 +261,10 @@ def resolve_component_dependencies(name: str, dimension: str) -> dict[str, Any]:
         return dependencies
 
 
+@with_error_handling(
+    fallback={"status": "error"},
+    context_provider=lambda: {"function": "check_component_health"}
+)
 def check_component_health(name: str, dimension: str) -> dict[str, Any]:
     """Check component health status."""
     with _registry_lock:
