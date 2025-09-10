@@ -41,21 +41,18 @@ jobs:
 
       - name: 🎨 Run Ruff Linting
         run: |
-          source env.sh
-          ruff check src/ examples/ --output-format=github
+          uv run ruff check src/ examples/ --output-format=github
         continue-on-error: true
 
 
       - name: 📏 Run Ruff Formatting Check
         run: |
-          source env.sh
-          ruff format --check src/ examples/
+          uv run ruff format --check src/ examples/
         continue-on-error: true
 
       - name: 🏷️ Run MyPy Type Checking
         run: |
-          source env.sh
-          mypy src/ --show-error-codes --pretty
+          uv run mypy src/ --show-error-codes --pretty
         continue-on-error: true
 
   # ==================================================================================
@@ -91,8 +88,7 @@ jobs:
       - name: 🧪 Run Tests with Coverage
         shell: bash
         run: |
-          source env.sh
-          pytest tests/ \
+          uv run pytest tests/ \
             --cov=provide.foundation \
             --cov-report=xml \
             --cov-branch \
@@ -158,12 +154,10 @@ jobs:
 
       - name: 🔍 Version Consistency Check
         run: |
-          source env.sh
-          python scripts/version_checker.py
+          uv run python scripts/version_checker.py
 
       - name: 🏗️ Build Package
         run: |
-          source env.sh
           uv build
 
       - name: 🧪 Test Package Installation
@@ -213,20 +207,17 @@ jobs:
 
       - name: 🧪 Run Full Integration Suite
         run: |
-          source env.sh
-          pytest tests/test_integration.py -v --tb=short
+          uv run pytest tests/test_integration.py -v --tb=short
         continue-on-error: true
 
       - name: ⚠️ Run Edge Case Tests
         run: |
-          source env.sh
-          pytest tests/test_edge_cases.py -v --tb=short
+          uv run pytest tests/test_edge_cases.py -v --tb=short
         continue-on-error: true
 
       - name: 🔥 Run Coverage Completion Tests
         run: |
-          source env.sh
-          pytest tests/test_coverage_completion.py -v
+          uv run pytest tests/test_coverage_completion.py -v
         continue-on-error: true
 
   # ==================================================================================
