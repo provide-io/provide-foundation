@@ -9,6 +9,7 @@ except ImportError:
     _HAS_CLICK = False
 
 from provide.foundation.utils.deps import check_optional_deps
+from provide.foundation import logger
 
 
 def _require_click():
@@ -28,9 +29,9 @@ def _deps_command_impl(quiet: bool, check: str | None) -> None:
         available = has_dependency(check)
         if not quiet:
             status = "✅" if available else "❌"
-            print(f"{status} {check}: {'Available' if available else 'Missing'}")
+            logger.info(f"{status} {check}: {'Available' if available else 'Missing'}")
             if not available:
-                print(f"Install with: pip install 'provide-foundation[{check}]'")
+                logger.info(f"Install with: pip install 'provide-foundation[{check}]'")
         exit(0 if available else 1)
     else:
         # Check all dependencies
