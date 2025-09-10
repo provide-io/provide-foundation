@@ -10,6 +10,11 @@ from provide.foundation.process.async_runner import (
     async_run_shell,
     async_stream_command,
 )
+from provide.foundation.process.exit import (
+    exit_success,
+    exit_error,
+    exit_interrupted,
+)
 from provide.foundation.process.lifecycle import (
     ManagedProcess,
     wait_for_process_output,
@@ -36,4 +41,8 @@ __all__ = [
     # Process lifecycle management
     "ManagedProcess",
     "wait_for_process_output",
+    # Exit utilities
+    "exit_success",
+    "exit_error",
+    "exit_interrupted",
 ]

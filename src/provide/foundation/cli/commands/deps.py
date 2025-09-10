@@ -8,8 +8,9 @@ except ImportError:
     click = None
     _HAS_CLICK = False
 
-from provide.foundation.utils.deps import check_optional_deps
+from provide.foundation.utils.deps import check_optional_deps, has_dependency
 from provide.foundation.console.output import pout
+from provide.foundation.process import exit_success, exit_error
 
 
 def _require_click():
@@ -24,21 +25,25 @@ def _require_click():
 def _deps_command_impl(quiet: bool, check: str | None) -> None:
     """Implementation of deps command logic."""
     if check:
-        from provide.foundation.utils.deps import has_dependency
-
         available = has_dependency(check)
         if not quiet:
             status = "✅" if available else "❌"
             pout(f"{status} {check}: {'Available' if available else 'Missing'}")
             if not available:
                 pout(f"Install with: pip install 'provide-foundation[{check}]'")
-        exit(0 if available else 1)
+        if available:
+            exit_success()
+        else:
+            exit_error("Dependency check failed")
     else:
         # Check all dependencies
         deps = check_optional_deps(quiet=quiet, return_status=True)
         available_count = sum(1 for dep in deps if dep.available)
         total_count = len(deps)
-        exit(0 if available_count == total_count else 1)
+        if available_count == total_count:
+            exit_success()
+        else:
+            exit_error(f"Missing {total_count - available_count} dependencies")
 
 
 if _HAS_CLICK:

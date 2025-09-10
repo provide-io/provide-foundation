@@ -9,6 +9,7 @@ from typing import Any, Callable, TypeVar
 
 from attrs import define, field
 
+from provide.foundation.config.defaults import DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT
 from provide.foundation.resilience.retry import BackoffStrategy, RetryExecutor, RetryPolicy
 
 F = TypeVar("F", bound=Callable[..., Any])
@@ -139,7 +140,7 @@ from provide.foundation.resilience.circuit import CircuitBreaker
 
 def circuit_breaker(
     failure_threshold: int = 5,
-    recovery_timeout: float = 60.0,
+    recovery_timeout: float = DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT,
     expected_exception: tuple[type[Exception], ...] = (Exception,),
 ) -> Callable[[F], F]:
     """Create a circuit breaker decorator.

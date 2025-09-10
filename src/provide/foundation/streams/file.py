@@ -10,6 +10,7 @@ import io
 from pathlib import Path
 import sys
 
+from provide.foundation.console.output import perr
 from provide.foundation.streams.core import (
     _LOG_FILE_HANDLE,
     _PROVIDE_LOG_STREAM,
@@ -56,7 +57,7 @@ def configure_file_logging(log_file_path: str | None) -> None:
                 _PROVIDE_LOG_STREAM = _LOG_FILE_HANDLE
             except Exception as e:
                 # Log error to stderr and fall back
-                print(f"Failed to open log file {log_file_path}: {e}", file=sys.stderr)
+                perr(f"Failed to open log file {log_file_path}: {e}")
                 _PROVIDE_LOG_STREAM = get_safe_stderr()
         elif not is_test_stream:
             _PROVIDE_LOG_STREAM = get_safe_stderr()
@@ -71,7 +72,7 @@ def flush_log_streams() -> None:
             try:
                 _LOG_FILE_HANDLE.flush()
             except Exception as e:
-                print(f"Failed to flush log file handle: {e}", file=sys.stderr)
+                perr(f"Failed to flush log file handle: {e}")
 
 
 def close_log_streams() -> None:

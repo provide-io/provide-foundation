@@ -16,6 +16,12 @@ import threading
 import traceback
 from typing import Any
 
+from provide.foundation.config.defaults import (
+    DEFAULT_PROCESS_READLINE_TIMEOUT,
+    DEFAULT_PROCESS_READCHAR_TIMEOUT,
+    DEFAULT_PROCESS_TERMINATE_TIMEOUT,
+    DEFAULT_PROCESS_WAIT_TIMEOUT,
+)
 from provide.foundation.errors.decorators import with_error_handling
 from provide.foundation.logger import get_logger
 from provide.foundation.process.runner import ProcessError
@@ -180,7 +186,7 @@ class ManagedProcess:
         self._stderr_thread.start()
         plog.debug("🚀 Started stderr relay thread")
 
-    async def read_line_async(self, timeout: float = 2.0) -> str:
+    async def read_line_async(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
         """
         Read a line from stdout asynchronously with timeout.
 
@@ -215,7 +221,7 @@ class ManagedProcess:
             plog.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def read_char_async(self, timeout: float = 1.0) -> str:
+    async def read_char_async(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
         """
         Read a single character from stdout asynchronously.
 
@@ -252,7 +258,7 @@ class ManagedProcess:
             plog.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    def terminate_gracefully(self, timeout: float = 7.0) -> bool:
+    def terminate_gracefully(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
         """
         Terminate the process gracefully with a timeout.
 
@@ -334,7 +340,7 @@ class ManagedProcess:
 async def wait_for_process_output(
     process: ManagedProcess,
     expected_parts: list[str],
-    timeout: float = 10.0,
+    timeout: float = DEFAULT_PROCESS_WAIT_TIMEOUT,
     buffer_size: int = 1024,
 ) -> str:
     """
