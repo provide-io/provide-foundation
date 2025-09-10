@@ -17,12 +17,12 @@ from provide.foundation.cli.decorators import (
 )
 from provide.foundation.cli.testing import (
     CliTestCase,
-    MockContext,
     create_test_cli,
     isolated_cli_runner,
-    mock_logger,
     temp_config_file,
 )
+from provide.foundation.testing.cli import MockContext
+from provide.foundation.testing.logger import mock_logger
 from provide.foundation.cli.utils import (
     CliTestRunner,
     assert_cli_error,

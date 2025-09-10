@@ -66,7 +66,6 @@ def __getattr__(name: str) -> Any:
         "isolated_cli_runner",
         "temp_config_file",
         "create_test_cli",
-        "mock_logger",
         "CliTestCase",
         "click_testing_mode",
     ]:
@@ -75,7 +74,12 @@ def __getattr__(name: str) -> Any:
         return getattr(cli_module, name)
 
     # Logger testing utilities
-    elif name in ["reset_foundation_setup_for_testing", "reset_foundation_state"]:
+    elif name in [
+        "reset_foundation_setup_for_testing",
+        "reset_foundation_state",
+        "mock_logger",
+        "mock_logger_factory",
+    ]:
         import provide.foundation.testing.logger as logger_module
 
         return getattr(logger_module, name)

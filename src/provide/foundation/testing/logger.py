@@ -9,12 +9,86 @@ and ensuring test isolation for the Foundation logging system.
 """
 
 import structlog
+import pytest
+from unittest.mock import Mock
 
 from provide.foundation.logger.core import (
     _LAZY_SETUP_STATE,
     logger as foundation_logger,
 )
 from provide.foundation.streams.file import reset_streams
+
+
+@pytest.fixture
+def mock_logger():
+    """
+    Comprehensive mock logger for testing.
+    
+    Provides compatibility with both stdlib logging and structlog interfaces,
+    including method call tracking and common logger attributes.
+    
+    Returns:
+        Mock logger with debug, info, warning, error methods and structlog compatibility.
+    """
+    logger = Mock()
+    logger.debug = Mock()
+    logger.info = Mock()
+    logger.warning = Mock()
+    logger.warn = Mock()  # Alias for warning
+    logger.error = Mock()
+    logger.exception = Mock()
+    logger.critical = Mock()
+    logger.fatal = Mock()  # Alias for critical
+    
+    # Add common logger attributes
+    logger.name = "mock_logger"
+    logger.level = 10  # DEBUG level
+    logger.handlers = []
+    logger.disabled = False
+    
+    # Add structlog compatibility methods
+    logger.bind = Mock(return_value=logger)
+    logger.unbind = Mock(return_value=logger)
+    logger.new = Mock(return_value=logger)
+    logger.msg = Mock()  # Alternative to info
+    
+    # Add trace method for Foundation's extended logging
+    logger.trace = Mock()
+    
+    return logger
+
+
+def mock_logger_factory():
+    """
+    Factory function to create mock loggers outside of pytest context.
+    
+    Useful for unit tests that need a mock logger but aren't using pytest fixtures.
+    
+    Returns:
+        Mock logger with the same interface as the pytest fixture.
+    """
+    logger = Mock()
+    logger.debug = Mock()
+    logger.info = Mock()
+    logger.warning = Mock()
+    logger.warn = Mock()
+    logger.error = Mock()
+    logger.exception = Mock()
+    logger.critical = Mock()
+    logger.fatal = Mock()
+    
+    logger.name = "mock_logger"
+    logger.level = 10
+    logger.handlers = []
+    logger.disabled = False
+    
+    logger.bind = Mock(return_value=logger)
+    logger.unbind = Mock(return_value=logger)
+    logger.new = Mock(return_value=logger)
+    logger.msg = Mock()
+    logger.trace = Mock()
+    
+    return logger
 
 
 def _reset_opentelemetry_providers() -> None:
@@ -133,4 +207,6 @@ def reset_foundation_setup_for_testing() -> None:
 __all__ = [
     "reset_foundation_setup_for_testing",
     "reset_foundation_state",
+    "mock_logger",
+    "mock_logger_factory",
 ]

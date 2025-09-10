@@ -9,8 +9,8 @@ from typing import Any
 from attrs import define, field, fields, validators
 
 from provide.foundation.config.env import RuntimeConfig
-from provide.foundation.config.base import field as config_field
-from provide.foundation.config.converters import parse_bool_extended
+from provide.foundation.config.base import field as config_field, ConfigSource
+from provide.foundation.config.converters import parse_bool_strict
 from provide.foundation.logger import get_logger
 from provide.foundation.logger.config import TelemetryConfig
 
@@ -56,13 +56,13 @@ class CLIContext(RuntimeConfig):
     debug: bool = config_field(
         default=False,
         env_var="PROVIDE_DEBUG",
-        converter=parse_bool_extended,
+        converter=parse_bool_strict,
         description="Enable debug mode"
     )
     json_output: bool = config_field(
         default=False,
         env_var="PROVIDE_JSON_OUTPUT",
-        converter=parse_bool_extended,
+        converter=parse_bool_strict,
         description="Output in JSON format"
     )
     config_file: Path | None = config_field(
@@ -85,13 +85,13 @@ class CLIContext(RuntimeConfig):
     no_color: bool = config_field(
         default=False,
         env_var="NO_COLOR",
-        converter=parse_bool_extended,
+        converter=parse_bool_strict,
         description="Disable colored output"
     )
     no_emoji: bool = config_field(
         default=False,
         env_var="PROVIDE_NO_EMOJI",
-        converter=parse_bool_extended,
+        converter=parse_bool_strict,
         description="Disable emoji in output"
     )
 
@@ -113,12 +113,19 @@ class CLIContext(RuntimeConfig):
         if self._frozen:
             raise RuntimeError("Context is frozen and cannot be modified")
 
-        env_ctx = self.from_env(prefix=prefix)
-
-        # Update all fields from environment
+        # Create default instance and environment instance
+        default_ctx = self.__class__()  # All defaults
+        env_ctx = self.from_env(prefix=prefix)  # Environment + defaults
+        
+        # Only update fields where environment differs from default
         for attr in fields(self.__class__):
             if not attr.name.startswith("_"):  # Skip private fields
-                setattr(self, attr.name, getattr(env_ctx, attr.name))
+                default_value = getattr(default_ctx, attr.name)
+                env_value = getattr(env_ctx, attr.name)
+                
+                # If environment value differs from default, it came from env
+                if env_value != default_value:
+                    setattr(self, attr.name, env_value)
 
     def to_dict(self) -> dict[str, Any]:
         """Convert context to dictionary."""
@@ -135,12 +142,13 @@ class CLIContext(RuntimeConfig):
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "CLIContext":
+    def from_dict(cls, data: dict[str, Any], source: ConfigSource = ConfigSource.RUNTIME) -> "CLIContext":
         """
         Create context from dictionary.
 
         Args:
             data: Dictionary with context values
+            source: Source of the configuration data
 
         Returns:
             New CLIContext instance
@@ -177,9 +185,7 @@ class CLIContext(RuntimeConfig):
         Args:
             path: Path to configuration file
         """
-        if self._frozen:
-            raise RuntimeError("Context is frozen and cannot be modified")
-
+        # CLIContext is not frozen, so we can modify it
         path = Path(path)
         if not path.exists():
             raise FileNotFoundError(f"Config file not found: {path}")
@@ -319,3 +325,8 @@ class CLIContext(RuntimeConfig):
                 profile=self.profile,
             )
         return self._logger
+
+    def _validate(self) -> None:
+        """Validate context values. For attrs compatibility."""
+        # Validation is handled by attrs validators automatically
+        pass

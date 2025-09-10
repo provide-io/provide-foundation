@@ -37,33 +37,6 @@ def mock_http_config():
     )
 
 
-@pytest.fixture
-def mock_logger():
-    """
-    Mock logger with captured method calls.
-    
-    Returns:
-        Mock logger with debug, info, warning, error methods.
-    """
-    logger = Mock()
-    logger.debug = Mock()
-    logger.info = Mock()
-    logger.warning = Mock()
-    logger.error = Mock()
-    logger.exception = Mock()
-    logger.critical = Mock()
-    
-    # Add common logger attributes
-    logger.name = "mock_logger"
-    logger.level = 10  # DEBUG level
-    logger.handlers = []
-    logger.disabled = False
-    
-    # Add bind method for structlog compatibility
-    logger.bind = Mock(return_value=logger)
-    logger.unbind = Mock(return_value=logger)
-    
-    return logger
 
 
 @pytest.fixture
