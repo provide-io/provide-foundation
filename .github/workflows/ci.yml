@@ -180,15 +180,28 @@ jobs:
           # Create clean environment for package testing
           uv venv .venv_test
           source .venv_test/bin/activate
-          uv pip install dist/*.whl
+          # List what was built
+          ls -la dist/ || echo "No dist directory found"
+          # Install the wheel if it exists, otherwise install the tar.gz
+          if ls dist/*.whl 1> /dev/null 2>&1; then
+            uv pip install dist/*.whl
+          elif ls dist/*.tar.gz 1> /dev/null 2>&1; then
+            uv pip install dist/*.tar.gz
+          else
+            echo "Warning: No built packages found in dist/"
+            exit 1
+          fi
+          # Test the installation
           python -c "from provide.foundation import logger; logger.info('Package test successful')"
 
       - name: 📈 Upload Package Artifacts
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
-          name: package-dist
+          name: package-dist-${{ matrix.os }}-${{ matrix.python-version }}
           path: |
             dist/
+          if-no-files-found: warn
 
   # ==================================================================================
   # 🏁 Integration Tests
