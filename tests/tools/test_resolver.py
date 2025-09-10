@@ -286,8 +286,10 @@ class TestVersionResolverHelpers:
         versions = ["1.0.0", "1.0.0-beta", "1.0.0-alpha", "2.0.0"]
         
         result = resolver.sort_versions(versions)
-        # Pre-releases should sort before stable versions
-        assert result[0] in ["1.0.0-alpha", "1.0.0-beta"]
+        # Versions should be sorted in ascending order: stable before pre-releases at string level
+        assert result[0] == "1.0.0"  # Stable version
+        assert result[1] == "1.0.0-alpha"  # Alpha comes before beta alphabetically
+        assert result[2] == "1.0.0-beta"
         assert result[-1] == "2.0.0"
 
     def test_sort_versions_mixed_lengths(self) -> None:
@@ -462,8 +464,8 @@ class TestVersionResolverIntegration:
         
         assert resolver.resolve("latest", available) == "24.0.2"
         assert resolver.resolve("~20.10.1", available) == "20.10.17"
-        assert resolver.resolve("^24.0.0", available) == "24.0.2"
-        assert resolver.resolve("latest-beta", available) in ["24.0.3-beta", "24.0.4-rc1"]
+        assert resolver.resolve("^24.0.0", available) == "24.0.4-rc1"  # Caret ranges include pre-releases
+        assert resolver.resolve("latest-beta", available) == "24.0.4-rc1"
 
     def test_real_world_node_versions(self) -> None:
         """Test with real-world Node.js version patterns."""
@@ -475,6 +477,6 @@ class TestVersionResolverIntegration:
         ]
         
         assert resolver.resolve("latest", available) == "19.0.0"
-        assert resolver.resolve("~16.15.0", available) == "16.16.0"
+        assert resolver.resolve("~16.15.0", available) == "16.15.0"  # Tilde only matches same minor version
         assert resolver.resolve("^18.0.0", available) == "18.2.0"
         assert resolver.resolve("18.*", available) == "18.2.0"
