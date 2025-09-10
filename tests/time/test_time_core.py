@@ -1,10 +1,11 @@
 """Tests for Foundation time utilities."""
 
-import pytest
+from datetime import UTC, datetime
 import time
-from datetime import datetime, timezone
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 from zoneinfo import ZoneInfo
+
+import pytest
 
 from provide.foundation.time import provide_now, provide_sleep, provide_time
 
@@ -28,9 +29,9 @@ class TestProvideTime:
     def test_provide_time_uses_time_module(self, mock_time):
         """Test provide_time calls time.time()."""
         mock_time.time.return_value = 1234567890.0
-        
+
         result = provide_time()
-        
+
         assert result == 1234567890.0
         mock_time.time.assert_called_once()
 
@@ -50,7 +51,7 @@ class TestProvideSleep:
         start = time.time()
         provide_sleep(0.1)
         end = time.time()
-        
+
         # Allow some tolerance for timing
         elapsed = end - start
         assert 0.09 <= elapsed <= 0.2
@@ -60,7 +61,7 @@ class TestProvideSleep:
         start = time.time()
         provide_sleep(0.0)
         end = time.time()
-        
+
         # Should return immediately
         elapsed = end - start
         assert elapsed < 0.01
@@ -81,7 +82,7 @@ class TestProvideSleep:
         start = time.time()
         provide_sleep(0.05)
         end = time.time()
-        
+
         elapsed = end - start
         assert 0.04 <= elapsed <= 0.1
 
@@ -129,9 +130,11 @@ class TestProvideNow:
         """Test provide_now with different timezones."""
         utc_now = provide_now("UTC")
         ny_now = provide_now("America/New_York")
-        
+
         # They should be at roughly the same time but different timezones
-        time_diff = abs((utc_now.replace(tzinfo=None) - ny_now.replace(tzinfo=None)).total_seconds())
+        time_diff = abs(
+            (utc_now.replace(tzinfo=None) - ny_now.replace(tzinfo=None)).total_seconds()
+        )
         # Should be within a few hours (timezone offset)
         assert time_diff <= 24 * 3600  # Less than 24 hours difference
 
@@ -140,9 +143,9 @@ class TestProvideNow:
         """Test provide_now calls datetime.now()."""
         mock_dt = MagicMock()
         mock_datetime.now.return_value = mock_dt
-        
+
         result = provide_now()
-        
+
         assert result is mock_dt
         mock_datetime.now.assert_called_once_with()
 
@@ -151,9 +154,9 @@ class TestProvideNow:
         """Test provide_now with timezone calls datetime.now() with timezone."""
         mock_dt = MagicMock()
         mock_datetime.now.return_value = mock_dt
-        
+
         result = provide_now("UTC")
-        
+
         assert result is mock_dt
         # Should be called with ZoneInfo object
         args, kwargs = mock_datetime.now.call_args
@@ -169,26 +172,26 @@ class TestTimeUtilitiesIntegration:
         """Test that time utilities work together consistently."""
         start_time = provide_time()
         start_dt = provide_now()
-        
+
         provide_sleep(0.1)
-        
+
         end_time = provide_time()
         end_dt = provide_now()
-        
+
         # Both should advance by roughly the same amount
         time_diff = end_time - start_time
         dt_diff = (end_dt - start_dt).total_seconds()
-        
+
         assert abs(time_diff - dt_diff) < 0.05  # Small tolerance
 
     def test_time_utilities_with_timezone(self):
         """Test time utilities with timezone awareness."""
         utc_now = provide_now("UTC")
         timestamp = provide_time()
-        
+
         # Convert timestamp to UTC datetime for comparison
-        utc_from_timestamp = datetime.fromtimestamp(timestamp, tz=timezone.utc)
-        
+        utc_from_timestamp = datetime.fromtimestamp(timestamp, tz=UTC)
+
         # Should be very close
         diff = abs((utc_now - utc_from_timestamp).total_seconds())
         assert diff < 1.0  # Within 1 second
@@ -196,19 +199,18 @@ class TestTimeUtilitiesIntegration:
     def test_performance_comparison(self):
         """Test performance of Foundation utilities vs standard library."""
         import time as std_time
-        from datetime import datetime as std_datetime
-        
+
         # Test provide_time vs time.time
         start = std_time.time()
         for _ in range(1000):
             provide_time()
         foundation_time = std_time.time() - start
-        
+
         start = std_time.time()
         for _ in range(1000):
             std_time.time()
         standard_time = std_time.time() - start
-        
+
         # Foundation time should be reasonably close to standard time
         # Allow 10x overhead at most (very generous)
         assert foundation_time < standard_time * 10
@@ -218,7 +220,7 @@ class TestTimeUtilitiesIntegration:
         # provide_sleep with negative value
         with pytest.raises(ValueError):
             provide_sleep(-1)
-            
+
         # provide_now with invalid timezone should raise ZoneInfo error
         with pytest.raises(Exception):  # ZoneInfo will raise specific exception
             provide_now("Invalid/Timezone")

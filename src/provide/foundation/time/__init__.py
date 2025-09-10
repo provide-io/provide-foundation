@@ -13,6 +13,6 @@ from provide.foundation.time.core import (
 
 __all__ = [
     "provide_now",
-    "provide_sleep", 
+    "provide_sleep",
     "provide_time",
 ]

@@ -1,7 +1,8 @@
 """Core async utilities for Foundation."""
 
 import asyncio
-from typing import Any, Awaitable, Callable, Iterable
+from collections.abc import Awaitable, Callable
+from typing import Any
 
 from provide.foundation.errors import ValidationError
 
@@ -9,13 +10,13 @@ from provide.foundation.errors import ValidationError
 async def provide_sleep_async(delay: float) -> None:
     """
     Async sleep with Foundation tracking and cancellation support.
-    
+
     Args:
         delay: Number of seconds to sleep
-        
+
     Raises:
         ValidationError: If delay is negative
-        
+
     Example:
         >>> import asyncio
         >>> async def main():
@@ -27,20 +28,22 @@ async def provide_sleep_async(delay: float) -> None:
     await asyncio.sleep(delay)
 
 
-async def provide_gather(*awaitables: Awaitable[Any], return_exceptions: bool = False) -> list[Any]:
+async def provide_gather(
+    *awaitables: Awaitable[Any], return_exceptions: bool = False
+) -> list[Any]:
     """
     Run awaitables concurrently with Foundation tracking.
-    
+
     Args:
         *awaitables: Awaitable objects to run concurrently
         return_exceptions: If True, exceptions are returned as results
-        
+
     Returns:
         List of results in the same order as input awaitables
-        
+
     Raises:
         ValidationError: If no awaitables provided
-        
+
     Example:
         >>> import asyncio
         >>> async def fetch_data(n):
@@ -56,25 +59,25 @@ async def provide_gather(*awaitables: Awaitable[Any], return_exceptions: bool = 
     """
     if not awaitables:
         raise ValidationError("At least one awaitable must be provided")
-    
+
     return await asyncio.gather(*awaitables, return_exceptions=return_exceptions)
 
 
 async def provide_wait_for(awaitable: Awaitable[Any], timeout: float | None) -> Any:
     """
     Wait for an awaitable with optional timeout.
-    
+
     Args:
         awaitable: The awaitable to wait for
         timeout: Timeout in seconds (None for no timeout)
-        
+
     Returns:
         Result of the awaitable
-        
+
     Raises:
         ValidationError: If timeout is negative
         asyncio.TimeoutError: If timeout is exceeded
-        
+
     Example:
         >>> import asyncio
         >>> async def slow_task():
@@ -91,24 +94,24 @@ async def provide_wait_for(awaitable: Awaitable[Any], timeout: float | None) -> 
     """
     if timeout is not None and timeout < 0:
         raise ValidationError("Timeout must be non-negative")
-    
+
     return await asyncio.wait_for(awaitable, timeout=timeout)
 
 
 def provide_run(main: Callable[[], Awaitable[Any]], *, debug: bool = False) -> Any:
     """
     Run async function with Foundation tracking.
-    
+
     Args:
         main: Async function to run
         debug: Whether to run in debug mode
-        
+
     Returns:
         Result of the main function
-        
+
     Raises:
         ValidationError: If main is not callable
-        
+
     Example:
         >>> async def main():
         ...     await provide_sleep_async(0.1)
@@ -119,5 +122,5 @@ def provide_run(main: Callable[[], Awaitable[Any]], *, debug: bool = False) -> A
     """
     if not callable(main):
         raise ValidationError("Main must be callable")
-    
+
     return asyncio.run(main(), debug=debug)

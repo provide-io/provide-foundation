@@ -1,18 +1,17 @@
 """Core time utilities for Foundation."""
 
-import time
 from datetime import datetime
-from typing import Optional
+import time
 from zoneinfo import ZoneInfo
 
 
 def provide_time() -> float:
     """
     Get current time with Foundation tracking.
-    
+
     Returns:
         Current time as seconds since epoch
-        
+
     Example:
         >>> current_time = provide_time()
         >>> isinstance(current_time, float)
@@ -24,10 +23,10 @@ def provide_time() -> float:
 def provide_sleep(seconds: float) -> None:
     """
     Sleep with Foundation tracking and interruption support.
-    
+
     Args:
         seconds: Number of seconds to sleep
-        
+
     Example:
         >>> provide_sleep(0.1)  # Sleep for 100ms
     """
@@ -39,13 +38,13 @@ def provide_sleep(seconds: float) -> None:
 def provide_now(tz: str | ZoneInfo | None = None) -> datetime:
     """
     Get current datetime with timezone awareness.
-    
+
     Args:
         tz: Timezone (string name, ZoneInfo object, or None for local)
-        
+
     Returns:
         Current datetime with timezone information
-        
+
     Example:
         >>> now = provide_now()
         >>> now.tzinfo is not None
@@ -60,5 +59,5 @@ def provide_now(tz: str | ZoneInfo | None = None) -> datetime:
         zone = ZoneInfo(tz)
     else:
         zone = tz
-        
+
     return datetime.now(zone)
