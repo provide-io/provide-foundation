@@ -22,7 +22,10 @@
       "Bash(mkdocs build:*)",
       "Bash(PYTHONPATH=../src python 01_quick_start.py)",
       "Bash(head:*)",
-      "Bash(tree:*)"
+      "Bash(tree:*)",
+      "Bash(/dev/null)",
+      "Bash(echo \"✅ $f works\")",
+      "Bash(echo:*)"
     ],
     "deny": [],
     "ask": [],

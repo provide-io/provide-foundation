@@ -163,7 +163,14 @@ class TestSyncModuleCoverage:
             tmp_file.write(b"{}")
             tmp_file.flush()
             with patch("provide.foundation.config.sync.run_async") as mock_run_async:
-                mock_run_async.return_value = SimpleTestConfig()
+                # Set up mock to properly handle the coroutine
+                def mock_run(coro):
+                    # Close the coroutine to avoid warnings
+                    if hasattr(coro, 'close'):
+                        coro.close()
+                    return SimpleTestConfig()
+                
+                mock_run_async.side_effect = mock_run
                 try:
                     load_config_from_multiple(SimpleTestConfig, ("file", tmp_file.name))
                 except Exception:
