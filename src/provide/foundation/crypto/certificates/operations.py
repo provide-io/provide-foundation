@@ -30,7 +30,7 @@ from provide.foundation.crypto.constants import (
     DEFAULT_CERTIFICATE_VALIDITY_DAYS,
     DEFAULT_RSA_KEY_SIZE,
 )
-from .base import CertificateBase, CertificateError, KeyPair, PublicKey
+from provide.foundation.crypto.certificates.base import CertificateBase, CertificateError, KeyPair, PublicKey
 
 
 def create_x509_certificate(
