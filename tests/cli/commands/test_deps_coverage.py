@@ -38,13 +38,13 @@ class TestDepsCommandWithClick:
             with patch(
                 "provide.foundation.utils.deps.has_dependency", return_value=True
             ):
-                with patch("builtins.print") as mock_print:
+                with patch("provide.foundation.console.output.pout") as mock_pout:
                     with pytest.raises(SystemExit) as exc_info:
                         # Simulate click calling the function
                         deps_command.callback(quiet=False, check="crypto")
 
                     assert exc_info.value.code == 0
-                    mock_print.assert_called_once_with("✅ crypto: Available")
+                    mock_pout.assert_called_once_with("✅ crypto: Available")
 
     def test_deps_command_check_specific_missing(self):
         """Test checking specific missing dependency."""
@@ -54,14 +54,14 @@ class TestDepsCommandWithClick:
             with patch(
                 "provide.foundation.utils.deps.has_dependency", return_value=False
             ):
-                with patch("builtins.print") as mock_print:
+                with patch("provide.foundation.console.output.pout") as mock_pout:
                     with pytest.raises(SystemExit) as exc_info:
                         deps_command.callback(quiet=False, check="crypto")
 
                     assert exc_info.value.code == 1
-                    assert mock_print.call_count == 2
-                    mock_print.assert_any_call("❌ crypto: Missing")
-                    mock_print.assert_any_call(
+                    assert mock_pout.call_count == 2
+                    mock_pout.assert_any_call("❌ crypto: Missing")
+                    mock_pout.assert_any_call(
                         "Install with: pip install 'provide-foundation[crypto]'"
                     )
 
