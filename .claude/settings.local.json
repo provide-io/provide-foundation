@@ -25,7 +25,8 @@
       "Bash(tree:*)",
       "Bash(/dev/null)",
       "Bash(echo \"✅ $f works\")",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "Bash(PYTHONPATH=src python examples/transport/01_http_client.py)"
     ],
     "deny": [],
     "ask": [],
