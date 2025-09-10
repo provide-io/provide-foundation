@@ -20,18 +20,12 @@ from provide.foundation.utils.streams import get_safe_stderr
 
 def _safe_error_output(message: str) -> None:
     """
-    Output error message to stderr, using Foundation utilities when available.
+    Output error message to stderr using basic print to avoid circular dependencies.
     
-    Uses lazy import to avoid circular dependency during initialization.
-    Falls back to print() if Foundation utilities aren't available yet.
+    This function intentionally uses print() instead of Foundation's perr() to prevent
+    circular import issues during stream initialization and teardown phases.
     """
-    try:
-        # Lazy import to avoid circular dependency
-        from provide.foundation.console.output import perr
-        perr(message)
-    except (ImportError, AttributeError):
-        # Fallback during early initialization
-        print(message, file=sys.stderr)
+    print(message, file=sys.stderr)
 
 
 def configure_file_logging(log_file_path: str | None) -> None:
