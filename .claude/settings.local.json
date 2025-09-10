@@ -20,7 +20,8 @@
       "Bash(mkdocs serve:*)",
       "Bash(pkill:*)",
       "Bash(mkdocs build:*)",
-      "Bash(PYTHONPATH=../src python 01_quick_start.py)"
+      "Bash(PYTHONPATH=../src python 01_quick_start.py)",
+      "Bash(head:*)"
     ],
     "deny": [],
     "ask": [],
