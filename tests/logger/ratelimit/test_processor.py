@@ -70,7 +70,7 @@ class TestRateLimiterProcessor:
         
         # Configure rate limiter with very restrictive limits
         processor.rate_limiter.configure(
-            per_logger_rates={"test.logger": (0.1, 0.5)}  # Very low rate
+            per_logger_rates={"test.logger": (0.1, 1.0)}  # Very low rate, capacity=1.0
         )
         
         event_dict = {
@@ -101,7 +101,7 @@ class TestRateLimiterProcessor:
         
         # Configure restrictive limits
         processor.rate_limiter.configure(
-            per_logger_rates={"test.logger": (0.1, 0.5)}
+            per_logger_rates={"test.logger": (0.1, 1.0)}
         )
         
         event_dict = {
@@ -137,7 +137,7 @@ class TestRateLimiterProcessor:
         
         # Configure restrictive limits
         processor.rate_limiter.configure(
-            per_logger_rates={"test.logger": (0.1, 0.5)}
+            per_logger_rates={"test.logger": (0.1, 1.0)}
         )
         
         event_dict = {
