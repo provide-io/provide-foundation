@@ -18,6 +18,22 @@ from provide.foundation.streams.core import (
 from provide.foundation.utils.streams import get_safe_stderr
 
 
+def _safe_error_output(message: str) -> None:
+    """
+    Output error message to stderr, using Foundation utilities when available.
+    
+    Uses lazy import to avoid circular dependency during initialization.
+    Falls back to print() if Foundation utilities aren't available yet.
+    """
+    try:
+        # Lazy import to avoid circular dependency
+        from provide.foundation.console.output import perr
+        perr(message)
+    except (ImportError, AttributeError):
+        # Fallback during early initialization
+        print(message, file=sys.stderr)
+
+
 def configure_file_logging(log_file_path: str | None) -> None:
     """
     Configure file logging if a path is provided.
@@ -56,7 +72,7 @@ def configure_file_logging(log_file_path: str | None) -> None:
                 _PROVIDE_LOG_STREAM = _LOG_FILE_HANDLE
             except Exception as e:
                 # Log error to stderr and fall back
-                print(f"Failed to open log file {log_file_path}: {e}", file=sys.stderr)
+                _safe_error_output(f"Failed to open log file {log_file_path}: {e}")
                 _PROVIDE_LOG_STREAM = get_safe_stderr()
         elif not is_test_stream:
             _PROVIDE_LOG_STREAM = get_safe_stderr()
@@ -71,7 +87,7 @@ def flush_log_streams() -> None:
             try:
                 _LOG_FILE_HANDLE.flush()
             except Exception as e:
-                print(f"Failed to flush log file handle: {e}", file=sys.stderr)
+                _safe_error_output(f"Failed to flush log file handle: {e}")
 
 
 def close_log_streams() -> None:
