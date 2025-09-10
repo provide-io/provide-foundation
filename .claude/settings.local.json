@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(PYTHONPATH=src python -c \"print(''PYTHONPATH works'')\")"
+      "Bash(PYTHONPATH=src python -c \"print(''PYTHONPATH works'')\")",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)"
     ],
     "deny": [],
     "ask": [],
