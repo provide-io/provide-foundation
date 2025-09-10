@@ -15,7 +15,8 @@
       "Bash(then echo \"$dir\")",
       "Bash(fi)",
       "Bash(timeout:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(FOUNDATION_LOG_LEVEL=DEBUG python -c \"from provide.foundation import console, process, transport, file\")"
     ],
     "deny": [],
     "ask": [],
