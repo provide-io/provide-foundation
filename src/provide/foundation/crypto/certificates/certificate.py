@@ -11,7 +11,7 @@ try:
     from cryptography.hazmat.primitives import serialization
     from cryptography.hazmat.primitives.asymmetric import ec, rsa
     from cryptography.x509 import Certificate as X509Certificate
-    
+
     _HAS_CRYPTO = True
 except ImportError:
     x509 = None
@@ -22,11 +22,17 @@ except ImportError:
     _HAS_CRYPTO = False
 
 from provide.foundation import logger
-from provide.foundation.crypto.certificates.base import CertificateBase, CertificateError, PublicKey
+from provide.foundation.crypto.certificates.base import (
+    CertificateBase,
+    CertificateError,
+    PublicKey,
+)
 from provide.foundation.crypto.certificates.generator import generate_certificate
 from provide.foundation.crypto.certificates.loader import load_certificate_from_pem
 from provide.foundation.crypto.certificates.operations import create_x509_certificate
-from provide.foundation.crypto.certificates.trust import verify_trust as verify_trust_impl
+from provide.foundation.crypto.certificates.trust import (
+    verify_trust as verify_trust_impl,
+)
 from provide.foundation.crypto.constants import (
     DEFAULT_CERTIFICATE_CURVE,
     DEFAULT_CERTIFICATE_KEY_TYPE,
@@ -83,13 +89,10 @@ class Certificate:
         else:
             # Load existing certificate
             if not self.cert_pem_or_uri:
-                raise CertificateError(
-                    "cert_pem_or_uri required when not generating"
-                )
-            
+                raise CertificateError("cert_pem_or_uri required when not generating")
+
             base, x509_cert, private_key, cert_pem, key_pem = load_certificate_from_pem(
-                self.cert_pem_or_uri,
-                self.key_pem_or_uri
+                self.cert_pem_or_uri, self.key_pem_or_uri
             )
             self._base = base
             self._cert = x509_cert
@@ -174,9 +177,14 @@ class Certificate:
     ) -> "Certificate":
         """Creates a new self-signed CA certificate."""
         from provide.foundation.crypto.certificates.factory import create_ca_certificate
+
         return create_ca_certificate(
-            common_name, organization_name, validity_days, 
-            key_type, key_size, ecdsa_curve
+            common_name,
+            organization_name,
+            validity_days,
+            key_type,
+            key_size,
+            ecdsa_curve,
         )
 
     @classmethod
@@ -193,10 +201,20 @@ class Certificate:
         is_client_cert: bool = False,
     ) -> "Certificate":
         """Creates a new certificate signed by the provided CA certificate."""
-        from provide.foundation.crypto.certificates.factory import create_signed_certificate
+        from provide.foundation.crypto.certificates.factory import (
+            create_signed_certificate,
+        )
+
         return create_signed_certificate(
-            ca_certificate, common_name, organization_name, validity_days,
-            alt_names, key_type, key_size, ecdsa_curve, is_client_cert
+            ca_certificate,
+            common_name,
+            organization_name,
+            validity_days,
+            alt_names,
+            key_type,
+            key_size,
+            ecdsa_curve,
+            is_client_cert,
         )
 
     @classmethod
@@ -211,10 +229,18 @@ class Certificate:
         ecdsa_curve: str = DEFAULT_CERTIFICATE_CURVE,
     ) -> "Certificate":
         """Creates a new self-signed end-entity certificate suitable for a server."""
-        from provide.foundation.crypto.certificates.factory import create_self_signed_server_cert
+        from provide.foundation.crypto.certificates.factory import (
+            create_self_signed_server_cert,
+        )
+
         return create_self_signed_server_cert(
-            common_name, organization_name, validity_days,
-            alt_names, key_type, key_size, ecdsa_curve
+            common_name,
+            organization_name,
+            validity_days,
+            alt_names,
+            key_type,
+            key_size,
+            ecdsa_curve,
         )
 
     def verify_trust(self, other_cert: Self) -> bool:
@@ -243,7 +269,10 @@ class Certificate:
         self, signed_cert: "Certificate", signing_cert: "Certificate"
     ) -> bool:
         """Internal helper: Validates signature and issuer/subject match."""
-        from provide.foundation.crypto.certificates.trust import validate_signature_wrapper
+        from provide.foundation.crypto.certificates.trust import (
+            validate_signature_wrapper,
+        )
+
         return validate_signature_wrapper(signed_cert, signing_cert)
 
     def __eq__(self, other: object) -> bool:

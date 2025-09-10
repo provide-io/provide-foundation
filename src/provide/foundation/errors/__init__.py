@@ -6,8 +6,6 @@ and utilities for robust error handling throughout the application.
 """
 
 from provide.foundation.errors.auth import AuthenticationError, AuthorizationError
-# Re-export from resilience module for compatibility
-from provide.foundation.resilience.decorators import retry as retry_on_error
 from provide.foundation.errors.base import FoundationError
 from provide.foundation.errors.config import (
     ConfigurationError,
@@ -52,6 +50,9 @@ from provide.foundation.errors.types import (
     ErrorCode,
     ErrorMetadata,
 )
+
+# Re-export from resilience module for compatibility
+from provide.foundation.resilience.decorators import retry as retry_on_error
 
 __all__ = [
     "AlreadyExistsError",

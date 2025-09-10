@@ -2,10 +2,9 @@
 Search operations for OpenObserve.
 """
 
-
-from provide.foundation.logger import get_logger
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.integrations.openobserve.models import SearchResponse
+from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
 

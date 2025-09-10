@@ -35,7 +35,7 @@ EVENT_SET = EventSet(
                 "payment": "💳",
                 "default": "❓",
             },
-            default_key="default"
+            default_key="default",
         ),
         EventMapping(
             name="action",
@@ -74,7 +74,7 @@ EVENT_SET = EventSet(
                 "register": "⚙️",
                 "default": "❓",
             },
-            default_key="default"
+            default_key="default",
         ),
         EventMapping(
             name="status",
@@ -100,27 +100,27 @@ EVENT_SET = EventSet(
                 "ready": "👍",
                 "default": "➡️",
             },
-            default_key="default"
+            default_key="default",
         ),
     ],
     field_mappings=[
         FieldMapping(
             log_key="domain",
             event_set_name="default",
-            description="System domain or component"
+            description="System domain or component",
         ),
         FieldMapping(
             log_key="action",
             event_set_name="default",
-            description="Action being performed"
+            description="Action being performed",
         ),
         FieldMapping(
             log_key="status",
             event_set_name="default",
-            description="Status or outcome of the action"
+            description="Status or outcome of the action",
         ),
     ],
-    priority=0
+    priority=0,
 )
 
 # Alias for backward compatibility

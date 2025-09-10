@@ -17,8 +17,8 @@ import traceback
 from typing import Any
 
 from provide.foundation.config.defaults import (
-    DEFAULT_PROCESS_READLINE_TIMEOUT,
     DEFAULT_PROCESS_READCHAR_TIMEOUT,
+    DEFAULT_PROCESS_READLINE_TIMEOUT,
     DEFAULT_PROCESS_TERMINATE_TIMEOUT,
     DEFAULT_PROCESS_WAIT_TIMEOUT,
 )
@@ -76,13 +76,13 @@ class ManagedProcess:
 
         # Build environment - always start with current environment
         self._env = os.environ.copy()
-        
+
         # Clean coverage-related environment variables from subprocess
         # to prevent interference with output capture during testing
         for key in list(self._env.keys()):
-            if key.startswith(('COVERAGE', 'COV_CORE')):
+            if key.startswith(("COVERAGE", "COV_CORE")):
                 self._env.pop(key, None)
-        
+
         # Merge in any provided environment variables
         if env:
             self._env.update(env)
@@ -120,7 +120,9 @@ class ManagedProcess:
         return self._process.poll() is None
 
     @with_error_handling(
-        error_mapper=lambda e: ProcessError(f"Failed to launch process: {e}") if not isinstance(e, (ProcessError, RuntimeError)) else e
+        error_mapper=lambda e: ProcessError(f"Failed to launch process: {e}")
+        if not isinstance(e, (ProcessError, RuntimeError))
+        else e
     )
     def launch(self) -> None:
         """
@@ -186,7 +188,9 @@ class ManagedProcess:
         self._stderr_thread.start()
         plog.debug("🚀 Started stderr relay thread")
 
-    async def read_line_async(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
+    async def read_line_async(
+        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
+    ) -> str:
         """
         Read a line from stdout asynchronously with timeout.
 
@@ -221,7 +225,9 @@ class ManagedProcess:
             plog.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def read_char_async(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
+    async def read_char_async(
+        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
+    ) -> str:
         """
         Read a single character from stdout asynchronously.
 
@@ -258,7 +264,9 @@ class ManagedProcess:
             plog.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    def terminate_gracefully(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
+    def terminate_gracefully(
+        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
+    ) -> bool:
         """
         Terminate the process gracefully with a timeout.
 
@@ -378,7 +386,7 @@ async def wait_for_process_output(
         if not process.is_running():
             last_exit_code = process.returncode
             plog.debug("Process exited", returncode=last_exit_code)
-            
+
             # Try to drain any remaining output from the pipes
             if process._process and process._process.stdout:
                 try:
@@ -389,19 +397,26 @@ async def wait_for_process_output(
                             buffer += remaining.decode("utf-8", errors="replace")
                         else:
                             buffer += str(remaining)
-                        plog.debug("Read remaining output from exited process", size=len(remaining))
+                        plog.debug(
+                            "Read remaining output from exited process",
+                            size=len(remaining),
+                        )
                 except Exception:
                     pass
-            
+
             # Check buffer after draining
             if all(part in buffer for part in expected_parts):
                 plog.debug("Found expected pattern after process exit")
                 return buffer
-            
+
             # If process exited and we don't have the pattern, fail
             if last_exit_code is not None:
                 if last_exit_code != 0:
-                    plog.error("Process exited with error", returncode=last_exit_code, buffer=buffer[:200])
+                    plog.error(
+                        "Process exited with error",
+                        returncode=last_exit_code,
+                        buffer=buffer[:200],
+                    )
                     raise ProcessError(f"Process exited with code {last_exit_code}")
                 else:
                     # For exit code 0, give it a small window to collect buffered output
@@ -412,7 +427,9 @@ async def wait_for_process_output(
                             remaining = process._process.stdout.read()
                             if remaining:
                                 if isinstance(remaining, bytes):
-                                    buffer += remaining.decode("utf-8", errors="replace")
+                                    buffer += remaining.decode(
+                                        "utf-8", errors="replace"
+                                    )
                                 else:
                                     buffer += str(remaining)
                         except Exception:
@@ -422,9 +439,15 @@ async def wait_for_process_output(
                         plog.debug("Found expected pattern after final drain")
                         return buffer
                     # Process exited cleanly but pattern not found
-                    plog.error("Process exited without expected output", returncode=0, buffer=buffer[:200])
-                    raise ProcessError(f"Process exited with code {last_exit_code} before expected output found")
-        
+                    plog.error(
+                        "Process exited without expected output",
+                        returncode=0,
+                        buffer=buffer[:200],
+                    )
+                    raise ProcessError(
+                        f"Process exited with code {last_exit_code} before expected output found"
+                    )
+
         try:
             # Try to read a line with short timeout
             line = await process.read_line_async(timeout=0.1)
@@ -449,7 +472,7 @@ async def wait_for_process_output(
     # Final check of buffer before timeout error
     if all(part in buffer for part in expected_parts):
         return buffer
-    
+
     # If process exited with 0 but we didn't get output, that's still a timeout
     plog.error(
         "Timeout waiting for pattern",

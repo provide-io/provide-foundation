@@ -2,18 +2,19 @@
 
 import sys
 
-from provide.foundation.config.defaults import EXIT_SUCCESS, EXIT_ERROR, EXIT_SIGINT
+from provide.foundation.config.defaults import EXIT_ERROR, EXIT_SIGINT, EXIT_SUCCESS
 
 
 def _get_logger():
     """Get logger instance lazily to avoid circular imports."""
     from provide.foundation.logger import logger
+
     return logger
 
 
 def exit_success(message: str | None = None) -> None:
     """Exit with success status.
-    
+
     Args:
         message: Optional message to log before exiting
     """
@@ -25,7 +26,7 @@ def exit_success(message: str | None = None) -> None:
 
 def exit_error(message: str | None = None, code: int = EXIT_ERROR) -> None:
     """Exit with error status.
-    
+
     Args:
         message: Optional error message to log before exiting
         code: Exit code to use (defaults to EXIT_ERROR)
@@ -38,7 +39,7 @@ def exit_error(message: str | None = None, code: int = EXIT_ERROR) -> None:
 
 def exit_interrupted(message: str = "Process interrupted") -> None:
     """Exit due to interrupt signal (SIGINT).
-    
+
     Args:
         message: Message to log before exiting
     """

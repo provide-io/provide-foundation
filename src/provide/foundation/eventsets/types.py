@@ -12,7 +12,7 @@ from attrs import define, field
 class EventMapping:
     """
     Individual event enrichment mapping for a specific domain.
-    
+
     Attributes:
         name: Unique identifier for this mapping
         visual_markers: Mapping of values to visual indicators (e.g., emojis)
@@ -20,7 +20,7 @@ class EventMapping:
         transformations: Value transformation functions
         default_key: Key to use when no specific match is found
     """
-    
+
     name: str
     visual_markers: dict[str, str] = field(factory=lambda: {})
     metadata_fields: dict[str, dict[str, Any]] = field(factory=lambda: {})
@@ -32,7 +32,7 @@ class EventMapping:
 class FieldMapping:
     """
     Maps a log field to an event set for enrichment.
-    
+
     Attributes:
         log_key: The field key in log events (e.g., "http.method", "llm.provider")
         description: Human-readable description of this field
@@ -41,7 +41,7 @@ class FieldMapping:
         default_override_key: Override the default key for this specific field
         default_value: Default value to use if field is not present
     """
-    
+
     log_key: str
     description: str | None = field(default=None)
     value_type: str | None = field(default=None)
@@ -54,7 +54,7 @@ class FieldMapping:
 class EventSet:
     """
     Complete event enrichment domain definition.
-    
+
     Attributes:
         name: Unique identifier for this event set
         description: Human-readable description
@@ -62,7 +62,7 @@ class EventSet:
         field_mappings: List of field-to-mapping associations
         priority: Higher priority sets override lower ones
     """
-    
+
     name: str
     description: str | None = field(default=None)
     mappings: list[EventMapping] = field(factory=lambda: [])

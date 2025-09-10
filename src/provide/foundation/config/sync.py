@@ -14,13 +14,13 @@ from typing import Any, TypeVar
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.config.loader import (
+    ConfigLoader,
     DictConfigLoader,
     FileConfigLoader,
     MultiSourceLoader,
 )
 from provide.foundation.config.manager import ConfigManager
 from provide.foundation.config.types import ConfigDict, ConfigSource
-from provide.foundation.config.loader import ConfigLoader
 
 T = TypeVar("T", bound=BaseConfig)
 
@@ -230,7 +230,7 @@ class SyncConfigManager:
 
     def __init__(self, loader: ConfigLoader | None = None) -> None:
         """Initialize sync config manager.
-        
+
         Args:
             loader: Optional config loader for loading configurations.
         """
@@ -245,14 +245,16 @@ class SyncConfigManager:
         """Get a configuration by name (sync)."""
         return run_async(self._async_manager.get(name))
 
-    def load(self, name: str, config_class: type[T], loader: ConfigLoader | None = None) -> T:
+    def load(
+        self, name: str, config_class: type[T], loader: ConfigLoader | None = None
+    ) -> T:
         """Load a configuration (sync).
-        
+
         Args:
             name: Configuration name
             config_class: Configuration class
             loader: Optional loader (uses registered if None)
-            
+
         Returns:
             Configuration instance
         """

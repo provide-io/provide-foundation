@@ -7,7 +7,7 @@ Structlog processors for Foundation Telemetry.
 
 import json
 import logging as stdlib_logging
-from typing import TYPE_CHECKING, Any, TextIO, cast
+from typing import Any, TextIO, cast
 
 import structlog
 
@@ -25,7 +25,6 @@ from provide.foundation.types import (
     TRACE_LEVEL_NUM,
     LogLevelStr,
 )
-
 
 _LEVEL_TO_NUMERIC: dict[LogLevelStr, int] = {
     "CRITICAL": stdlib_logging.CRITICAL,
@@ -70,24 +69,25 @@ def _config_create_timestamp_processors(
 
 
 def _config_create_event_enrichment_processors(
-    logging_config: LoggingConfig
+    logging_config: LoggingConfig,
 ) -> list[StructlogProcessor]:
     processors: list[StructlogProcessor] = []
     if logging_config.logger_name_emoji_prefix_enabled:
         processors.append(cast(StructlogProcessor, add_logger_name_emoji_prefix))
     if logging_config.das_emoji_prefix_enabled:
+
         def add_event_enrichment_processor(
             _logger: Any, _method_name: str, event_dict: structlog.types.EventDict
         ) -> structlog.types.EventDict:
             # Lazy import to avoid circular dependency
-            from provide.foundation.eventsets.resolver import get_resolver
             from provide.foundation.eventsets.registry import discover_event_sets
-            
+            from provide.foundation.eventsets.resolver import get_resolver
+
             # Initialize on first use
-            if not hasattr(add_event_enrichment_processor, '_initialized'):
+            if not hasattr(add_event_enrichment_processor, "_initialized"):
                 discover_event_sets()
                 add_event_enrichment_processor._initialized = True
-            
+
             resolver = get_resolver()
             return resolver.enrich_event(event_dict)
 
@@ -95,9 +95,7 @@ def _config_create_event_enrichment_processors(
     return processors
 
 
-def _build_core_processors_list(
-    config: TelemetryConfig
-) -> list[StructlogProcessor]:
+def _build_core_processors_list(config: TelemetryConfig) -> list[StructlogProcessor]:
     log_cfg = config.logging
     processors: list[StructlogProcessor] = [
         structlog.contextvars.merge_contextvars,

@@ -48,12 +48,12 @@ def _should_use_color(ctx: CLIContext | None = None, stream=None) -> bool:
         ctx = _get_context()
 
     # Check FORCE_COLOR first (enables color even for non-TTY)
-    force_color = os.environ.get('FORCE_COLOR', '').lower()
-    if force_color in ('1', 'true', 'yes'):
+    force_color = os.environ.get("FORCE_COLOR", "").lower()
+    if force_color in ("1", "true", "yes"):
         return True
 
     # Check NO_COLOR (disables color even for TTY)
-    if os.environ.get('NO_COLOR'):
+    if os.environ.get("NO_COLOR"):
         return False
 
     # Check context no_color setting
@@ -80,7 +80,7 @@ def _output_json(data: Any, stream=sys.stdout) -> None:
 @with_error_handling(
     fallback=None,
     suppress=(OSError, IOError, UnicodeEncodeError),
-    context_provider=lambda: {"function": "pout"}
+    context_provider=lambda: {"function": "pout"},
 )
 def pout(message: Any, **kwargs: Any) -> None:
     """
@@ -142,7 +142,7 @@ def pout(message: Any, **kwargs: Any) -> None:
 @with_error_handling(
     fallback=None,
     suppress=(OSError, IOError, UnicodeEncodeError),
-    context_provider=lambda: {"function": "perr"}
+    context_provider=lambda: {"function": "perr"},
 )
 def perr(message: Any, **kwargs: Any) -> None:
     """

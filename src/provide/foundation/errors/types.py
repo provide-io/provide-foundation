@@ -118,7 +118,6 @@ class ErrorMetadata:
         return result
 
 
-
 @define(kw_only=True, slots=True)
 class ErrorResponse:
     """Structured error response for APIs and external interfaces.

@@ -2,7 +2,7 @@
 Large Language Model (LLM) interaction event set for Foundation.
 """
 
-from provide.foundation.eventsets.types import EventSet, EventMapping, FieldMapping
+from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping
 
 EVENT_SET = EventSet(
     name="llm",
@@ -27,7 +27,7 @@ EVENT_SET = EventSet(
                 "meta": {"llm.vendor": "meta", "llm.api": "llama"},
                 "mistral": {"llm.vendor": "mistral", "llm.api": "mistral"},
             },
-            default_key="default"
+            default_key="default",
         ),
         EventMapping(
             name="llm_task",
@@ -49,7 +49,7 @@ EVENT_SET = EventSet(
                 "chat": {"llm.type": "conversational"},
                 "tool_use": {"llm.type": "function_calling"},
             },
-            default_key="default"
+            default_key="default",
         ),
         EventMapping(
             name="llm_outcome",
@@ -70,7 +70,7 @@ EVENT_SET = EventSet(
                 "filtered_input": {"llm.filtered": True, "llm.filter_type": "input"},
                 "filtered_output": {"llm.filtered": True, "llm.filter_type": "output"},
             },
-            default_key="default"
+            default_key="default",
         ),
     ],
     field_mappings=[
@@ -78,62 +78,62 @@ EVENT_SET = EventSet(
             log_key="llm.provider",
             event_set_name="llm",
             description="LLM provider name",
-            value_type="string"
+            value_type="string",
         ),
         FieldMapping(
             log_key="llm.task",
             event_set_name="llm",
             description="LLM task type",
-            value_type="string"
+            value_type="string",
         ),
         FieldMapping(
             log_key="llm.model",
             event_set_name="llm",
             description="Model identifier",
-            value_type="string"
+            value_type="string",
         ),
         FieldMapping(
             log_key="llm.outcome",
             event_set_name="llm",
             description="Operation outcome",
-            value_type="string"
+            value_type="string",
         ),
         FieldMapping(
             log_key="llm.input.tokens",
             event_set_name="llm",
             description="Input token count",
-            value_type="integer"
+            value_type="integer",
         ),
         FieldMapping(
             log_key="llm.output.tokens",
             event_set_name="llm",
             description="Output token count",
-            value_type="integer"
+            value_type="integer",
         ),
         FieldMapping(
             log_key="llm.tool.name",
             event_set_name="llm",
             description="Tool/function name",
-            value_type="string"
+            value_type="string",
         ),
         FieldMapping(
             log_key="llm.tool.call_id",
             event_set_name="llm",
             description="Tool call identifier",
-            value_type="string"
+            value_type="string",
         ),
         FieldMapping(
             log_key="duration_ms",
             event_set_name="llm",
             description="LLM operation duration",
-            value_type="integer"
+            value_type="integer",
         ),
         FieldMapping(
             log_key="trace_id",
             event_set_name="llm",
             description="Distributed trace ID",
-            value_type="string"
+            value_type="string",
         ),
     ],
-    priority=100  # High priority for LLM operations
+    priority=100,  # High priority for LLM operations
 )

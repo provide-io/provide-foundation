@@ -27,17 +27,12 @@ from provide.foundation.errors import (
     with_error_handling,
 )
 
-# Resilience exports
-from provide.foundation.resilience import (
-    retry,
-    circuit_breaker,
-    fallback,
-    RetryPolicy,
-    RetryExecutor,
-    BackoffStrategy,
-    CircuitBreaker,
-    CircuitState,
-    FallbackChain,
+# Event set exports
+from provide.foundation.eventsets.display import show_event_matrix
+from provide.foundation.eventsets.types import (
+    EventMapping,
+    EventSet,
+    FieldMapping,
 )
 
 # Hub and Registry exports (public API)
@@ -52,12 +47,17 @@ from provide.foundation.logger import (
     setup_logging,  # Setup function (backward compatibility)
 )
 
-# Event set exports
-from provide.foundation.eventsets.display import show_event_matrix
-from provide.foundation.eventsets.types import (
-    EventMapping,
-    EventSet,
-    FieldMapping,
+# Resilience exports
+from provide.foundation.resilience import (
+    BackoffStrategy,
+    CircuitBreaker,
+    CircuitState,
+    FallbackChain,
+    RetryExecutor,
+    RetryPolicy,
+    circuit_breaker,
+    fallback,
+    retry,
 )
 from provide.foundation.setup import (
     setup_telemetry,
@@ -145,13 +145,13 @@ __all__ = [
     "process",
     # Resilience patterns
     "retry",
-    "circuit_breaker", 
+    "circuit_breaker",
     "fallback",
     "RetryPolicy",
     "RetryExecutor",
     "BackoffStrategy",
     "CircuitBreaker",
-    "CircuitState", 
+    "CircuitState",
     "FallbackChain",
     # Backward compatibility (deprecated)
     "retry_on_error",

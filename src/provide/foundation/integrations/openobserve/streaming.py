@@ -9,13 +9,13 @@ from typing import Any
 
 import requests
 
-from provide.foundation.logger import get_logger
 from provide.foundation.integrations.openobserve.auth import get_auth_headers
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.integrations.openobserve.exceptions import (
     OpenObserveStreamingError,
 )
 from provide.foundation.integrations.openobserve.models import parse_relative_time
+from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
 

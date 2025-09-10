@@ -5,7 +5,7 @@ from enum import StrEnum, auto
 import traceback
 from typing import NotRequired, Self, TypeAlias, TypedDict
 
-from attrs import define, field
+from attrs import define
 
 try:
     from cryptography import x509

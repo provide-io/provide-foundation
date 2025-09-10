@@ -8,9 +8,9 @@ except ImportError:
     click = None
     _HAS_CLICK = False
 
-from provide.foundation.utils.deps import check_optional_deps, has_dependency
 from provide.foundation.console.output import pout
-from provide.foundation.process import exit_success, exit_error
+from provide.foundation.process import exit_error, exit_success
+from provide.foundation.utils.deps import check_optional_deps, has_dependency
 
 
 def _require_click():

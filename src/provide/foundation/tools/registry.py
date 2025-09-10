@@ -19,32 +19,32 @@ log = get_logger(__name__)
 class ToolRegistry:
     """
     Wrapper around the hub registry for tool management.
-    
+
     Uses the main hub registry with dimension="tool_manager"
     to avoid namespace pollution while leveraging existing
     registry infrastructure.
     """
-    
+
     DIMENSION = "tool_manager"
-    
+
     def __init__(self):
         """Initialize the tool registry."""
         self.hub = get_hub()
         self._discover_tools()
-    
+
     def _discover_tools(self) -> None:
         """
         Auto-discover tool managers via entry points.
-        
+
         Looks for entry points in the "wrknv.tools" group
         and automatically registers them.
         """
         try:
             # Get entry points for tool managers
-            if hasattr(importlib.metadata, 'entry_points'):
+            if hasattr(importlib.metadata, "entry_points"):
                 # Python 3.10+
                 eps = importlib.metadata.entry_points()
-                if hasattr(eps, 'select'):
+                if hasattr(eps, "select"):
                     # Python 3.10+ with select method
                     group_eps = eps.select(group="wrknv.tools")
                 else:
@@ -54,7 +54,7 @@ class ToolRegistry:
                 # Python 3.8-3.9
                 eps = importlib.metadata.entry_points()
                 group_eps = eps.get("wrknv.tools", [])
-            
+
             for ep in group_eps:
                 try:
                     manager_class = ep.load()
@@ -64,16 +64,16 @@ class ToolRegistry:
                     log.warning(f"Failed to load tool manager {ep.name}: {e}")
         except Exception as e:
             log.debug(f"Entry point discovery not available: {e}")
-    
+
     def register_tool_manager(
         self,
         name: str,
         manager_class: type[BaseToolManager],
-        aliases: list[str] | None = None
+        aliases: list[str] | None = None,
     ) -> None:
         """
         Register a tool manager with the hub.
-        
+
         Args:
             name: Tool name (e.g., "terraform").
             manager_class: Tool manager class.
@@ -85,7 +85,7 @@ class ToolRegistry:
             "executable": manager_class.executable_name,
             "platforms": manager_class.supported_platforms,
         }
-        
+
         # Register with hub
         self.hub.registry.register(
             name=name,
@@ -93,35 +93,33 @@ class ToolRegistry:
             dimension=self.DIMENSION,
             metadata=metadata,
             aliases=aliases,
-            replace=True  # Allow re-registration for updates
+            replace=True,  # Allow re-registration for updates
         )
-        
+
         log.info(f"Registered tool manager: {name}")
-    
+
     def get_tool_manager_class(self, name: str) -> type[BaseToolManager] | None:
         """
         Get a tool manager class by name.
-        
+
         Args:
             name: Tool name or alias.
-            
+
         Returns:
             Tool manager class, or None if not found.
         """
         return self.hub.registry.get(name, dimension=self.DIMENSION)
-    
+
     def create_tool_manager(
-        self,
-        name: str,
-        config: BaseConfig
+        self, name: str, config: BaseConfig
     ) -> BaseToolManager | None:
         """
         Create a tool manager instance.
-        
+
         Args:
             name: Tool name or alias.
             config: Configuration object.
-            
+
         Returns:
             Tool manager instance, or None if not found.
         """
@@ -129,42 +127,42 @@ class ToolRegistry:
         if manager_class:
             return manager_class(config)
         return None
-    
+
     def list_tools(self) -> list[tuple[str, dict[str, Any]]]:
         """
         List all registered tools.
-        
+
         Returns:
             List of (name, metadata) tuples.
         """
         tools = []
         for name, entry in self.hub.registry.list_dimension(self.DIMENSION):
-            metadata = entry.metadata if hasattr(entry, 'metadata') else {}
+            metadata = entry.metadata if hasattr(entry, "metadata") else {}
             tools.append((name, metadata))
         return tools
-    
+
     def get_tool_info(self, name: str) -> dict[str, Any] | None:
         """
         Get information about a specific tool.
-        
+
         Args:
             name: Tool name or alias.
-            
+
         Returns:
             Tool metadata dictionary, or None if not found.
         """
         entry = self.hub.registry.get_entry(name, dimension=self.DIMENSION)
-        if entry and hasattr(entry, 'metadata'):
+        if entry and hasattr(entry, "metadata"):
             return entry.metadata
         return None
-    
+
     def is_tool_registered(self, name: str) -> bool:
         """
         Check if a tool is registered.
-        
+
         Args:
             name: Tool name or alias.
-            
+
         Returns:
             True if registered, False otherwise.
         """
@@ -178,7 +176,7 @@ _tool_registry: ToolRegistry | None = None
 def get_tool_registry() -> ToolRegistry:
     """
     Get the global tool registry instance.
-    
+
     Returns:
         Tool registry instance.
     """
@@ -189,13 +187,11 @@ def get_tool_registry() -> ToolRegistry:
 
 
 def register_tool_manager(
-    name: str,
-    manager_class: type[BaseToolManager],
-    aliases: list[str] | None = None
+    name: str, manager_class: type[BaseToolManager], aliases: list[str] | None = None
 ) -> None:
     """
     Register a tool manager with the global registry.
-    
+
     Args:
         name: Tool name.
         manager_class: Tool manager class.
@@ -205,17 +201,14 @@ def register_tool_manager(
     registry.register_tool_manager(name, manager_class, aliases)
 
 
-def get_tool_manager(
-    name: str,
-    config: BaseConfig
-) -> BaseToolManager | None:
+def get_tool_manager(name: str, config: BaseConfig) -> BaseToolManager | None:
     """
     Get a tool manager instance from the global registry.
-    
+
     Args:
         name: Tool name or alias.
         config: Configuration object.
-        
+
     Returns:
         Tool manager instance, or None if not found.
     """

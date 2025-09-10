@@ -1,9 +1,14 @@
 """Certificate factory methods."""
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from provide.foundation.crypto.certificates.certificate import Certificate
+
 try:
     from cryptography import x509
     from cryptography.hazmat.primitives import serialization
-    
+
     _HAS_CRYPTO = True
 except ImportError:
     x509 = None
@@ -11,7 +16,10 @@ except ImportError:
     _HAS_CRYPTO = False
 
 from provide.foundation import logger
-from provide.foundation.crypto.certificates.base import CertificateError, _require_crypto
+from provide.foundation.crypto.certificates.base import (
+    CertificateError,
+    _require_crypto,
+)
 from provide.foundation.crypto.certificates.operations import create_x509_certificate
 from provide.foundation.crypto.constants import (
     DEFAULT_CERTIFICATE_CURVE,
@@ -32,7 +40,7 @@ def create_ca_certificate(
     """Creates a new self-signed CA certificate."""
     # Import here to avoid circular dependency
     from provide.foundation.crypto.certificates.certificate import Certificate
-    
+
     logger.info(
         f"📜🔑🏭 Creating new CA certificate: CN={common_name}, Org={organization_name}"
     )
@@ -76,7 +84,7 @@ def create_signed_certificate(
     """Creates a new certificate signed by the provided CA certificate."""
     # Import here to avoid circular dependency
     from provide.foundation.crypto.certificates.certificate import Certificate
-    
+
     logger.info(
         f"📜🔑🏭 Creating new certificate signed by CA '{ca_certificate.subject}': "
         f"CN={common_name}, Org={organization_name}, ClientCert={is_client_cert}"
@@ -91,7 +99,7 @@ def create_signed_certificate(
             f"📜🔑⚠️ Signing certificate (Subject: {ca_certificate.subject}) "
             "is not marked as a CA. This might lead to validation issues."
         )
-    
+
     new_cert_obj = Certificate(
         generate_keypair=True,
         common_name=common_name,
@@ -102,7 +110,7 @@ def create_signed_certificate(
         key_size=key_size,
         ecdsa_curve=ecdsa_curve,
     )
-    
+
     signed_x509_cert = create_x509_certificate(
         base=new_cert_obj._base,
         private_key=new_cert_obj._private_key,
@@ -112,12 +120,12 @@ def create_signed_certificate(
         is_ca=False,
         is_client_cert=is_client_cert,
     )
-    
+
     new_cert_obj._cert = signed_x509_cert
     new_cert_obj.cert = signed_x509_cert.public_bytes(
         serialization.Encoding.PEM
     ).decode("utf-8")
-    
+
     logger.info(
         f"📜🔑✅ Successfully created and signed certificate for "
         f"CN={common_name} by CA='{ca_certificate.subject}'"
@@ -137,12 +145,12 @@ def create_self_signed_server_cert(
     """Creates a new self-signed end-entity certificate suitable for a server."""
     # Import here to avoid circular dependency
     from provide.foundation.crypto.certificates.certificate import Certificate
-    
+
     logger.info(
         f"📜🔑🏭 Creating new self-signed SERVER certificate: "
         f"CN={common_name}, Org={organization_name}"
     )
-    
+
     cert_obj = Certificate(
         generate_keypair=True,
         common_name=common_name,
@@ -153,12 +161,12 @@ def create_self_signed_server_cert(
         key_size=key_size,
         ecdsa_curve=ecdsa_curve,
     )
-    
+
     if not cert_obj._private_key:
         raise CertificateError(
             "Private key not generated for self-signed server certificate"
         )
-    
+
     actual_x509_cert = create_x509_certificate(
         base=cert_obj._base,
         private_key=cert_obj._private_key,
@@ -166,12 +174,12 @@ def create_self_signed_server_cert(
         is_ca=False,
         is_client_cert=False,
     )
-    
+
     cert_obj._cert = actual_x509_cert
-    cert_obj.cert = actual_x509_cert.public_bytes(
-        serialization.Encoding.PEM
-    ).decode("utf-8")
-    
+    cert_obj.cert = actual_x509_cert.public_bytes(serialization.Encoding.PEM).decode(
+        "utf-8"
+    )
+
     logger.info(
         f"📜🔑✅ Successfully created self-signed SERVER certificate for CN={common_name}"
     )
