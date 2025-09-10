@@ -380,6 +380,10 @@ class TestRateLimiterProcessor:
 class TestCreateRateLimiterProcessor:
     """Test create_rate_limiter_processor factory function."""
 
+    def setup_method(self) -> None:
+        """Reset GlobalRateLimiter singleton before each test."""
+        GlobalRateLimiter._instance = None
+
     def test_create_rate_limiter_processor_basic(self) -> None:
         """Test basic processor creation."""
         processor = create_rate_limiter_processor()
@@ -478,6 +482,10 @@ class TestCreateRateLimiterProcessor:
 
 class TestRateLimiterProcessorIntegration:
     """Integration tests for rate limiter processor."""
+
+    def setup_method(self) -> None:
+        """Reset GlobalRateLimiter singleton before each test."""
+        GlobalRateLimiter._instance = None
 
     @patch("provide.foundation.logger.get_logger")
     def test_processor_with_structlog_pipeline(self, mock_get_logger) -> None:
