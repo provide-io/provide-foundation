@@ -5,7 +5,6 @@ Fixtures for thread barriers, events, conditions, and other synchronization prim
 """
 
 import threading
-from typing import Optional
 
 import pytest
 
@@ -20,7 +19,7 @@ def thread_barrier():
     """
     barriers = []
     
-    def _create_barrier(n_threads: int, timeout: Optional[float] = None) -> threading.Barrier:
+    def _create_barrier(n_threads: int, timeout: float | None = None) -> threading.Barrier:
         """
         Create a barrier for synchronizing threads.
         

@@ -8,7 +8,7 @@ Provides OpenTelemetry integration when available, falls back to simple tracing.
 
 from dataclasses import dataclass, field
 import time
-from typing import Any, Optional
+from typing import Any
 import uuid
 
 from provide.foundation.logger import get_logger
@@ -47,7 +47,7 @@ class Span:
     error: str | None = None
 
     # Internal OpenTelemetry span (when available)
-    _otel_span: Optional["otel_trace.Span"] = field(
+    _otel_span: "otel_trace.Span" | None = field(
         default=None, init=False, repr=False
     )
     _active: bool = field(default=True, init=False, repr=False)
