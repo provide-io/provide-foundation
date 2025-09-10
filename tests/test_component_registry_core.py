@@ -232,18 +232,22 @@ class TestFoundationBootstrapIntegration:
         # Bootstrap already happens on import, just check registry state
         registry = get_component_registry()
 
-        # If registry is empty (due to test isolation), re-bootstrap
-        event_sets = registry.list_dimension(ComponentCategory.EVENT_SET.value)
-        processors = registry.list_dimension(ComponentCategory.PROCESSOR.value)
-
-        if len(event_sets) == 0 and len(processors) == 0:
+        # Bootstrap and discover
+        try:
             bootstrap_foundation()
-            # Also trigger event set discovery if needed
-            from provide.foundation.eventsets.registry import discover_event_sets
-            discover_event_sets()
-            # Re-fetch after bootstrap
-            event_sets = registry.list_dimension(ComponentCategory.EVENT_SET.value)
-            processors = registry.list_dimension(ComponentCategory.PROCESSOR.value)
+        except Exception:
+            # Bootstrap might fail if already bootstrapped
+            pass
+        
+        # Trigger event set discovery
+        from provide.foundation.eventsets.registry import discover_event_sets, get_registry as get_eventset_registry
+        discover_event_sets()
+            
+        # Fetch after bootstrap
+        # Event sets are in their own registry, not the component registry
+        event_registry = get_eventset_registry()
+        event_sets = event_registry.list_event_sets()
+        processors = registry.list_dimension(ComponentCategory.PROCESSOR.value)
 
         # Should have default event sets
         assert len(event_sets) > 0

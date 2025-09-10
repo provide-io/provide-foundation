@@ -140,7 +140,13 @@ def test_logger_with_extreme_names(
     captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     """Tests logger behavior with extreme names."""
-    setup_foundation_telemetry_for_test(None)
+    config = TelemetryConfig(
+        logging=LoggingConfig(
+            default_level="INFO",
+            console_formatter="key_value"
+        )
+    )
+    setup_foundation_telemetry_for_test(config)
 
     extreme_names = [
         "",  # Empty string
@@ -180,7 +186,13 @@ def test_log_message_edge_cases(
     captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     """Tests logging with edge case message content."""
-    setup_foundation_telemetry_for_test(None)
+    config = TelemetryConfig(
+        logging=LoggingConfig(
+            default_level="INFO",
+            console_formatter="key_value"
+        )
+    )
+    setup_foundation_telemetry_for_test(config)
     test_logger = logger.get_logger("edge.test")
 
     edge_case_messages: list[Any] = [  # Allow Any for diverse test inputs
@@ -219,7 +231,13 @@ def test_logger_args_formatting_edge_cases(
     captured_stderr_for_foundation: io.StringIO,
 ) -> None:
     """Tests logger argument formatting edge cases using FoundationLogger's methods."""
-    setup_foundation_telemetry_for_test(None)
+    config = TelemetryConfig(
+        logging=LoggingConfig(
+            default_level="INFO",
+            console_formatter="key_value"
+        )
+    )
+    setup_foundation_telemetry_for_test(config)
     # Using the global logger instance which has the FoundationLogger methods
 
     test_cases: list[tuple[str, tuple[Any, ...], bool]] = [

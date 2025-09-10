@@ -28,6 +28,7 @@ def test_service_name_injection_fix() -> None:
 
     # Set environment like the failing test
     os.environ["PROVIDE_SERVICE_NAME"] = "lazy-service-test"
+    os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
     os.environ["PROVIDE_LOG_CONSOLE_FORMATTER"] = "json"
 
     # Explicitly disable emoji settings for JSON output
@@ -100,6 +101,7 @@ def test_key_value_still_has_emojis() -> None:
 
     # Set environment for key-value format
     os.environ.pop("PROVIDE_SERVICE_NAME", None)
+    os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
     os.environ["PROVIDE_LOG_CONSOLE_FORMATTER"] = "key_value"
 
     # Enable emojis for key-value format (the test expects emojis)

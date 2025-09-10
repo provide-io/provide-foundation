@@ -103,3 +103,4 @@ uv publish                      # Publish to PyPI
 - There should be *NO* hardcoded defaults. EVER
 - no backward compatibility.
 - i do not need backward compatibility, migration logic, or transition comments and logic unless specifically asked.
+- do not write functions to "go around tests" unless i ask.

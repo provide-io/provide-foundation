@@ -59,6 +59,7 @@ def test_service_name_no_emoji() -> None:
 
     # Set environment to disable emojis for JSON format
     os.environ["PROVIDE_SERVICE_NAME"] = "test-service"
+    os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
     os.environ["PROVIDE_LOG_CONSOLE_FORMATTER"] = "json"
     os.environ["PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED"] = "false"
     os.environ["PROVIDE_LOG_DAS_EMOJI_ENABLED"] = "false"
@@ -125,6 +126,7 @@ def test_das_emoji_register_action() -> None:
     reset_foundation_setup_for_testing()
 
     # Enable DAS emojis
+    os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
     os.environ["PROVIDE_LOG_DAS_EMOJI_ENABLED"] = "true"
     os.environ["PROVIDE_LOG_CONSOLE_FORMATTER"] = "key_value"
 

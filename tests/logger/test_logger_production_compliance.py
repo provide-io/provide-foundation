@@ -42,6 +42,8 @@ class TestProductionReadinessScenarios:
         import sys
 
         reset_foundation_setup_for_testing()
+        import os
+        os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
         # Simulate high-throughput logging
@@ -74,6 +76,8 @@ class TestProductionReadinessScenarios:
         import sys
 
         reset_foundation_setup_for_testing()
+        import os
+        os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
         import gc
@@ -106,6 +110,8 @@ class TestProductionReadinessScenarios:
         import sys
 
         reset_foundation_setup_for_testing()
+        import os
+        os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
         # Simulate various error conditions
@@ -146,6 +152,8 @@ class TestProductionReadinessScenarios:
         import sys
 
         reset_foundation_setup_for_testing()
+        import os
+        os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
         # Simulate application lifecycle
@@ -182,6 +190,8 @@ class TestDocumentedBehaviorCompliance:
         import sys
 
         reset_foundation_setup_for_testing()
+        import os
+        os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
         documented_env_vars = {
@@ -249,6 +259,8 @@ class TestDocumentedBehaviorCompliance:
         import sys
 
         reset_foundation_setup_for_testing()
+        import os
+        os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
         # Old code pattern: immediate logging without setup
@@ -277,6 +289,8 @@ class TestDocumentedBehaviorCompliance:
         import sys
 
         reset_foundation_setup_for_testing()
+        import os
+        os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
         import time
@@ -334,6 +348,8 @@ class TestDocumentedBehaviorCompliance:
         import sys
 
         reset_foundation_setup_for_testing()
+        import os
+        os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
         import time
@@ -375,6 +391,8 @@ class TestLazyInitializationDocumentation:
         import sys
 
         reset_foundation_setup_for_testing()
+        import os
+        os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
 
         # Set up Foundation to log to stderr so capsys can capture it
         set_log_stream_for_testing(sys.stderr)
@@ -399,6 +417,8 @@ class TestLazyInitializationDocumentation:
         import sys
 
         reset_foundation_setup_for_testing()
+        import os
+        os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
         # Example from docs: component-specific loggers
@@ -422,6 +442,8 @@ class TestLazyInitializationDocumentation:
         import sys
 
         reset_foundation_setup_for_testing()
+        import os
+        os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
         # Example from docs: environment-based configuration
@@ -468,6 +490,8 @@ class TestLazyInitializationDocumentation:
         import sys
 
         reset_foundation_setup_for_testing()
+        import os
+        os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
         # Example from docs: gradual migration
@@ -484,7 +508,10 @@ class TestLazyInitializationDocumentation:
         # New code: explicit setup still works
         config = TelemetryConfig(
             service_name="migrated-service",
-            logging=LoggingConfig(console_formatter="json"),
+            logging=LoggingConfig(
+                default_level="INFO",
+                console_formatter="json"
+            ),
         )
         setup_telemetry(config)
 

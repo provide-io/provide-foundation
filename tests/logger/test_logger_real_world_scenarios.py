@@ -157,6 +157,8 @@ class TestRealWorldScenarios:
         import sys
 
         reset_foundation_setup_for_testing()
+        import os
+        os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
         # Simulate data pipeline stages
@@ -203,6 +205,8 @@ class TestRealWorldScenarios:
         import sys
 
         reset_foundation_setup_for_testing()
+        import os
+        os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
         def worker_task(worker_id: int, task_count: int) -> list[str]:
@@ -252,6 +256,8 @@ class TestRealWorldScenarios:
         import sys
 
         reset_foundation_setup_for_testing()
+        import os
+        os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
         # Simulate async web server
@@ -316,6 +322,8 @@ class TestRealWorldScenarios:
         import sys
 
         reset_foundation_setup_for_testing()
+        import os
+        os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
         # Simulate library that uses pyvider for internal logging
@@ -377,6 +385,8 @@ class TestMigrationFromExplicitSetup:
         import sys
 
         reset_foundation_setup_for_testing()
+        import os
+        os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
         # Phase 1: Old code with explicit setup
@@ -417,6 +427,8 @@ class TestMigrationFromExplicitSetup:
         import sys
 
         reset_foundation_setup_for_testing()
+        import os
+        os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
         # Scenario 1: Lazy init first, then explicit setup
@@ -428,7 +440,10 @@ class TestMigrationFromExplicitSetup:
         # Now explicit setup (should override)
         explicit_config = TelemetryConfig(
             service_name="explicit-override",
-            logging=LoggingConfig(console_formatter="json"),
+            logging=LoggingConfig(
+                default_level="INFO",
+                console_formatter="json"
+            ),
         )
         setup_telemetry(explicit_config)
 
@@ -452,6 +467,8 @@ class TestMigrationFromExplicitSetup:
         import sys
 
         reset_foundation_setup_for_testing()
+        import os
+        os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
         # Set environment for lazy init
