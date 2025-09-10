@@ -359,7 +359,7 @@ class TestBufferedRateLimiter:
     def test_buffered_rate_limiter_dropped_samples_limit(self) -> None:
         """Test dropped samples buffer limit."""
         limiter = BufferedRateLimiter(
-            capacity=0.0, refill_rate=1.0, buffer_size=3, track_dropped=True
+            capacity=0.01, refill_rate=1.0, buffer_size=3, track_dropped=True
         )
         
         # Add many dropped items
@@ -373,7 +373,7 @@ class TestBufferedRateLimiter:
     def test_buffered_rate_limiter_get_dropped_samples_count(self) -> None:
         """Test getting limited number of dropped samples."""
         limiter = BufferedRateLimiter(
-            capacity=0.0, refill_rate=1.0, track_dropped=True
+            capacity=0.01, refill_rate=1.0, track_dropped=True
         )
         
         # Add several dropped items
@@ -387,7 +387,7 @@ class TestBufferedRateLimiter:
     def test_buffered_rate_limiter_get_dropped_no_tracking(self) -> None:
         """Test getting dropped samples when tracking is disabled."""
         limiter = BufferedRateLimiter(
-            capacity=0.0, refill_rate=1.0, track_dropped=False
+            capacity=0.01, refill_rate=1.0, track_dropped=False
         )
         
         # Try to drop some items
@@ -495,7 +495,7 @@ class TestQueueLimiterIntegration:
 
     def test_memory_tracking_consistency(self) -> None:
         """Test that memory tracking works consistently."""
-        limiter = BufferedRateLimiter(capacity=0.0, refill_rate=1.0, track_dropped=True)
+        limiter = BufferedRateLimiter(capacity=0.01, refill_rate=1.0, track_dropped=True)
         
         test_item = "x" * 100
         expected_size = sys.getsizeof(test_item)

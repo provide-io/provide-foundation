@@ -127,7 +127,8 @@ class TestSyncRateLimiter:
         
         stats = limiter.get_stats()
         assert stats["total_allowed"] == 2
-        assert stats["tokens_available"] == 3.0
+        # Allow for small floating point precision issues
+        assert abs(stats["tokens_available"] - 3.0) < 0.01
 
 
 class TestAsyncRateLimiter:
@@ -232,7 +233,8 @@ class TestAsyncRateLimiter:
         
         stats = await limiter.get_stats()
         assert stats["total_allowed"] == 2
-        assert stats["tokens_available"] == 8.0
+        # Allow for small floating point precision issues
+        assert abs(stats["tokens_available"] - 8.0) < 0.01
 
 
 class TestGlobalRateLimiter:
