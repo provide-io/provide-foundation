@@ -3,7 +3,8 @@
     "allow": [
       "Bash(PYTHONPATH=src python -c \"print(''PYTHONPATH works'')\")",
       "Bash(gh run list:*)",
-      "Bash(gh run view:*)"
+      "Bash(gh run view:*)",
+      "Bash(gh workflow:*)"
     ],
     "deny": [],
     "ask": [],
