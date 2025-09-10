@@ -107,8 +107,7 @@ nav:
     - Core Concepts:
       - guide/concepts/index.md
       - Structured Logging: guide/concepts/structured-logging.md
-      - Emoji Sets: guide/concepts/emoji-sets.md
-      - Emoji System: guide/concepts/emoji-system.md
+      - Event Enrichment: guide/concepts/event-enrichment.md
       - Domain-Action-Status Pattern: guide/concepts/das-pattern.md
       - Performance: guide/concepts/performance.md
     - Configuration:
@@ -122,18 +121,6 @@ nav:
       - Runtime Config: 
         - guide/config/runtime.md
         - Overview: guide/config/runtime/index.md
-        - Remote Config:
-          - guide/config/runtime/remote.md
-          - HTTP Loading: guide/config/runtime/remote-http.md
-          - Cloud Services: guide/config/runtime/remote-cloud.md
-          - Polling & Updates: guide/config/runtime/remote-polling.md
-          - Resilience Patterns: guide/config/runtime/remote-resilience.md
-        - Updates: guide/config/runtime/updates.md
-        - Configuration Watchers:
-          - guide/config/runtime/watchers.md
-          - File Watching: guide/config/runtime/watchers-files.md
-          - Environment Monitoring: guide/config/runtime/watchers-environment.md
-          - Multi-Source Sync: guide/config/runtime/watchers-sync.md
       - Reference: guide/config/reference.md
       - Best Practices:
         - guide/config/best-practices.md
@@ -211,7 +198,6 @@ nav:
       - Base: api/logger/api-base.md
       - Config: api/logger/api-config.md
       - Core: api/logger/api-core.md
-      - Emoji: api/logger/api-emoji.md
       - Factories: api/logger/api-factories.md
       - Processors: api/logger/api-processors.md
     - Configuration API:
@@ -237,14 +223,14 @@ nav:
       - Decorators: api/errors/api-decorators.md
       - Exceptions: api/errors/api-exceptions.md
       - Handlers: api/errors/api-handlers.md
-    - Emoji Sets API:
-      - api/emoji_sets/api-index.md
-      - Base: api/emoji_sets/api-base.md
-      - Custom: api/emoji_sets/api-custom.md
-      - Database: api/emoji_sets/api-database.md
-      - HTTP: api/emoji_sets/api-http.md
-      - LLM: api/emoji_sets/api-llm.md
-      - Task Queue: api/emoji_sets/api-task_queue.md
+    - Event Sets API:
+      - api/eventsets/api-index.md
+      - Types: api/eventsets/api-types.md
+      - Registry: api/eventsets/api-registry.md
+      - Display: api/eventsets/api-display.md
+    - Resilience API: api/resilience/api-index.md
+    - Transport API: api/transport/api-index.md
+    - Metrics API: api/metrics/api-index.md
     - Context API: api/context/api-index.md
     - Core API: api/core/api-index.md
     - File API: api/file/api-index.md
@@ -274,8 +260,6 @@ nav:
 
   - Architecture:
     - architecture/index.md
-    - Emoji Sets: architecture/emoji-sets.md
-    - Emoji System: architecture/emoji-system.md
     - Performance: architecture/performance.md
     - Telemetry Format: architecture/telemetry-format.md
 
