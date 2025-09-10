@@ -14,10 +14,10 @@ These patterns help build robust applications that can handle transient failures
 
 ## Core Components
 
-- [Retry](api-retry.md) - RetryPolicy, RetryExecutor, BackoffStrategy
-- [Circuit Breaker](api-circuit.md) - CircuitBreaker, CircuitState
-- [Fallback](api-fallback.md) - FallbackChain
-- [Decorators](api-decorators.md) - @retry, @circuit_breaker, @fallback
+- **Retry** - RetryPolicy, RetryExecutor, BackoffStrategy
+- **Circuit Breaker** - CircuitBreaker, CircuitState  
+- **Fallback** - FallbackChain
+- **Decorators** - @retry, @circuit_breaker, @fallback
 
 ## Quick Start
 
