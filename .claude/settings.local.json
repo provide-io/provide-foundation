@@ -4,7 +4,8 @@
       "Bash(PYTHONPATH=src python -c \"print(''PYTHONPATH works'')\")",
       "Bash(gh run list:*)",
       "Bash(gh run view:*)",
-      "Bash(gh workflow:*)"
+      "Bash(gh workflow:*)",
+      "Bash(gh run watch:*)"
     ],
     "deny": [],
     "ask": [],
