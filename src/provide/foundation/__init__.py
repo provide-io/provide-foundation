@@ -9,12 +9,12 @@ Primary public interface for the library, re-exporting common components.
 # Export config module for easy access
 # New foundation components
 # Make the errors module available for detailed imports
-from provide.foundation import config, errors, platform, process
+from provide.foundation import config, errors, platform, process, resilience
 from provide.foundation._version import __version__
 
 # Console I/O functions (always available - handles click dependency internally)
 from provide.foundation.console import perr, pin, pout
-from provide.foundation.context import Context
+from provide.foundation.context import CLIContext, Context
 
 # Error handling exports - only the essentials
 from provide.foundation.errors import (
@@ -25,6 +25,19 @@ from provide.foundation.errors import (
     retry_on_error,
     # Most commonly used decorators
     with_error_handling,
+)
+
+# Resilience exports
+from provide.foundation.resilience import (
+    retry,
+    circuit_breaker,
+    fallback,
+    RetryPolicy,
+    RetryExecutor,
+    BackoffStrategy,
+    CircuitBreaker,
+    CircuitState,
+    FallbackChain,
 )
 
 # Hub and Registry exports (public API)
@@ -92,7 +105,8 @@ __all__ = [
     "show_event_matrix",
     "ConsoleFormatterStr",
     # New foundation modules
-    "Context",
+    "CLIContext",
+    "Context",  # Backward compatibility
     # Event set types
     "EventMapping",
     "EventSet",
@@ -129,7 +143,19 @@ __all__ = [
     "pout",
     "platform",
     "process",
+    # Resilience patterns
+    "retry",
+    "circuit_breaker", 
+    "fallback",
+    "RetryPolicy",
+    "RetryExecutor",
+    "BackoffStrategy",
+    "CircuitBreaker",
+    "CircuitState", 
+    "FallbackChain",
+    # Backward compatibility (deprecated)
     "retry_on_error",
+    "resilience",  # The resilience module for detailed imports
     "setup_logging",  # Backward compatibility
     "setup_logger",  # Consistent naming
     "setup_telemetry",

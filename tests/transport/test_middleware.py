@@ -66,11 +66,15 @@ async def test_metrics_middleware():
 @pytest.mark.asyncio 
 async def test_retry_middleware():
     """Test retry middleware configuration."""
-    middleware = RetryMiddleware(
-        max_retries=2,
-        backoff_factor=0.1,  # Fast for testing
+    from provide.foundation.resilience.retry import RetryPolicy, BackoffStrategy
+    
+    policy = RetryPolicy(
+        max_attempts=3,
+        base_delay=0.1,  # Fast for testing
+        backoff=BackoffStrategy.EXPONENTIAL,
         retryable_status_codes={500, 503},
     )
+    middleware = RetryMiddleware(policy=policy)
     
     request = Request(uri="https://api.example.com/test", method="GET")
     
@@ -197,11 +201,15 @@ async def test_middleware_order():
 @pytest.mark.asyncio
 async def test_retry_middleware_execute():
     """Test retry middleware execute_with_retry method."""
-    middleware = RetryMiddleware(
-        max_retries=2,
-        backoff_factor=0.01,  # Very fast for testing
+    from provide.foundation.resilience.retry import RetryPolicy, BackoffStrategy
+    
+    policy = RetryPolicy(
+        max_attempts=3,
+        base_delay=0.01,  # Very fast for testing
+        backoff=BackoffStrategy.EXPONENTIAL,
         retryable_status_codes={500},
     )
+    middleware = RetryMiddleware(policy=policy)
     
     request = Request(uri="https://api.example.com/test", method="GET")
     call_count = 0

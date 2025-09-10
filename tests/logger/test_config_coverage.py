@@ -64,22 +64,22 @@ class TestLoggingConfigCoverage:
     """Test logging config functionality."""
 
     def test_logging_config_from_env_invalid_level(self):
-        """Test logging config with invalid log level."""
+        """Test logging config with invalid log level raises clear error."""
         from provide.foundation.logger.config.logging import LoggingConfig
 
         with patch.dict(os.environ, {"PROVIDE_LOG_LEVEL": "INVALID_LEVEL"}):
-            config = LoggingConfig.from_env(strict=False)
-            # Should not raise error in non-strict mode
-            assert config is not None
+            with pytest.raises(ValueError) as exc_info:
+                LoggingConfig.from_env()
+            assert "Invalid log level 'INVALID_LEVEL'" in str(exc_info.value)
+            assert "TRACE, DEBUG, INFO, WARNING, ERROR, CRITICAL" in str(exc_info.value)
 
     def test_logging_config_from_env_strict_mode(self):
-        """Test logging config in strict mode with invalid values."""
+        """Test logging config with valid log level works correctly."""
         from provide.foundation.logger.config.logging import LoggingConfig
 
-        with patch.dict(os.environ, {"PROVIDE_LOG_LEVEL": "INVALID_LEVEL"}):
-            # Strict mode logs warnings but still returns config with defaults
-            config = LoggingConfig.from_env(strict=True)
-            assert config.default_level == "WARNING"  # Should use production default
+        with patch.dict(os.environ, {"PROVIDE_LOG_LEVEL": "DEBUG"}):
+            config = LoggingConfig.from_env()
+            assert config.default_level == "DEBUG"
 
     def test_logging_config_json_formatter_enabled(self):
         """Test logging config with JSON formatter enabled."""
@@ -106,17 +106,20 @@ class TestLoggingConfigCoverage:
             assert config.log_file is not None
             assert str(config.log_file) == "/tmp/test.log"
 
-    def test_logging_config_enabled_emoji_sets(self):
-        """Test logging config with enabled emoji sets."""
+    def test_logging_config_event_sets_replaced_emoji_sets(self):
+        """Test that event sets have replaced emoji sets."""
         from provide.foundation.logger.config.logging import LoggingConfig
-
-        with patch.dict(
-            os.environ, {"PROVIDE_LOG_ENABLED_EMOJI_SETS": "llm,http,database"}
-        ):
-            config = LoggingConfig.from_env()
-            assert "llm" in config.enabled_emoji_sets
-            assert "http" in config.enabled_emoji_sets
-            assert "database" in config.enabled_emoji_sets
+        from provide.foundation.eventsets.registry import get_registry
+        
+        config = LoggingConfig.from_env()
+        # Emoji sets fields should not exist
+        assert not hasattr(config, 'enabled_emoji_sets')
+        
+        # Event sets should be available through registry
+        registry = get_registry()
+        assert registry.has("eventset", "llm")
+        assert registry.has("eventset", "http")
+        assert registry.has("eventset", "database")
 
     def test_logging_config_log_level_name_mapping(self):
         """Test logging config level name mappings."""
@@ -215,10 +218,10 @@ class TestTelemetryConfigCoverage:
             assert config.logging.default_level == "DEBUG"
 
     def test_telemetry_config_from_env_strict_mode(self):
-        """Test telemetry config in strict mode."""
+        """Test telemetry config with invalid log level raises clear error."""
         from provide.foundation.logger.config.telemetry import TelemetryConfig
 
         with patch.dict(os.environ, {"PROVIDE_LOG_LEVEL": "INVALID"}):
-            # Strict mode logs warnings but still returns config with defaults
-            config = TelemetryConfig.from_env(strict=True)
-            assert config.logging.default_level == "WARNING"  # Should use production default
+            with pytest.raises(ValueError) as exc_info:
+                TelemetryConfig.from_env()
+            assert "Invalid log level 'INVALID'" in str(exc_info.value)

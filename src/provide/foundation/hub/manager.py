@@ -19,7 +19,7 @@ except ImportError:
     click = None
     _HAS_CLICK = False
 
-from provide.foundation.context import Context
+from provide.foundation.context import CLIContext
 from provide.foundation.errors.config import ValidationError
 from provide.foundation.errors.decorators import with_error_handling
 from provide.foundation.errors.resources import AlreadyExistsError
@@ -60,7 +60,7 @@ class Hub:
 
     def __init__(
         self,
-        context: Context | None = None,
+        context: CLIContext | None = None,
         component_registry: Registry | None = None,
         command_registry: Registry | None = None,
     ) -> None:
@@ -68,11 +68,11 @@ class Hub:
         Initialize the hub.
 
         Args:
-            context: Foundation context for configuration
+            context: Foundation CLIContext for configuration
             component_registry: Custom component registry
             command_registry: Custom command registry
         """
-        self.context = context or Context()
+        self.context = context or CLIContext()
         self._component_registry = component_registry or get_component_registry()
         self._command_registry = command_registry or get_command_registry()
         self._cli_group: click.Group | None = None

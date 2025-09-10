@@ -72,35 +72,25 @@ class TestBuildCoreProcessorsList:
 
 
 class TestTelemetryConfigFromEnvEventSets:
-    def test_from_env_parses_enabled_emoji_sets(self, monkeypatch) -> None:
-        monkeypatch.setenv("PROVIDE_LOG_ENABLED_EMOJI_SETS", "llm, http , database ")
+    """Tests for deprecated emoji sets - now replaced by event sets."""
+    
+    def test_event_sets_replaced_emoji_sets(self) -> None:
+        """Verify that event sets have replaced emoji sets."""
+        # Event sets are now handled through the eventsets module
+        from provide.foundation.eventsets.registry import get_registry
+        registry = get_registry()
+        
+        # Check that event sets are registered
+        assert registry.has("eventset", "llm")
+        assert registry.has("eventset", "http")
+        assert registry.has("eventset", "database")
+    
+    def test_logging_config_no_emoji_sets(self) -> None:
+        """Verify LoggingConfig doesn't have deprecated emoji_sets fields."""
         config = TelemetryConfig.from_env()
-        assert config.logging.enabled_emoji_sets == ["llm", "http", "database"]
-
-    def test_from_env_handles_malformed_custom_emoji_sets_json(
-        self, monkeypatch, capsys: CaptureFixture
-    ) -> None:
-        monkeypatch.setenv("PROVIDE_LOG_CUSTOM_EMOJI_SETS", "[{'name': 'badjson']")
-        # _ensure_config_logger_handler removed - warnings now handled by config system
-        config = TelemetryConfig.from_env()
-        assert config.logging.custom_emoji_sets == []
-        captured = capsys.readouterr()
-        assert "Invalid JSON in configuration" in captured.err
-        assert "PROVIDE_LOG_CUSTOM_EMOJI_SETS" in captured.err
-
-    def test_from_env_handles_type_error_in_custom_emoji_set_data(
-        self, monkeypatch, capsys: CaptureFixture
-    ) -> None:
-        custom_emoji_sets_json = json.dumps(
-            [{"name": "my_emoji_set", "priority": "not_an_int"}]
-        )
-        monkeypatch.setenv("PROVIDE_LOG_CUSTOM_EMOJI_SETS", custom_emoji_sets_json)
-        # _ensure_config_logger_handler removed - warnings now handled by config system
-        config = TelemetryConfig.from_env()
-        assert config.logging.custom_emoji_sets == []
-        captured = capsys.readouterr()
-        assert "Error parsing custom emoji set configuration" in captured.err
-        assert "PROVIDE_LOG_CUSTOM_EMOJI_SETS" in captured.err
+        # These fields should not exist anymore
+        assert not hasattr(config.logging, 'enabled_emoji_sets')
+        assert not hasattr(config.logging, 'custom_emoji_sets')
 
 
 class TestFoundationLogOutputConfigIntegration:

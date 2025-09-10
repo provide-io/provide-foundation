@@ -8,9 +8,11 @@ from typing import Any
 
 from attrs import define, field, fields, validators
 
+from provide.foundation.config.env import RuntimeConfig
+from provide.foundation.config.base import field as config_field
+from provide.foundation.config.converters import parse_bool_extended
 from provide.foundation.logger import get_logger
 from provide.foundation.logger.config import TelemetryConfig
-from provide.foundation.utils.parsing import parse_bool
 
 try:
     import tomli as tomllib
@@ -29,36 +31,68 @@ except ImportError:
 VALID_LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 
 
-@define(slots=True, frozen=False)
-class Context:
+@define(slots=True, repr=False)
+class CLIContext(RuntimeConfig):
     """
-    Unified context for configuration and CLI state.
+    Runtime context for CLI execution and state management.
 
-    Combines configuration management with runtime state for CLI tools
-    and services. Supports loading from files, environment variables,
-    and programmatic updates.
+    Manages CLI-specific settings, output formatting, and runtime state
+    during command execution. Supports loading from files, environment variables,
+    and programmatic updates during CLI command execution.
     """
 
-    log_level: str = field(
-        default="INFO", validator=validators.in_(VALID_LOG_LEVELS), converter=str.upper
+    log_level: str = config_field(
+        default="INFO",
+        env_var="PROVIDE_LOG_LEVEL",
+        converter=str.upper,
+        validator=validators.in_(VALID_LOG_LEVELS),
+        description="Logging level for CLI output"
     )
-    profile: str = field(default="default")
-    debug: bool = field(default=False, converter=lambda x: parse_bool(x, strict=True))
-    json_output: bool = field(
-        default=False, converter=lambda x: parse_bool(x, strict=True)
+    profile: str = config_field(
+        default="default",
+        env_var="PROVIDE_PROFILE",
+        description="Configuration profile to use"
     )
-    config_file: Path | None = field(
-        default=None, converter=lambda x: Path(x) if x else None
+    debug: bool = config_field(
+        default=False,
+        env_var="PROVIDE_DEBUG",
+        converter=parse_bool_extended,
+        description="Enable debug mode"
     )
-    log_file: Path | None = field(
-        default=None, converter=lambda x: Path(x) if x else None
+    json_output: bool = config_field(
+        default=False,
+        env_var="PROVIDE_JSON_OUTPUT",
+        converter=parse_bool_extended,
+        description="Output in JSON format"
     )
-    log_format: str = field(default="key_value")
-    no_color: bool = field(
-        default=False, converter=lambda x: parse_bool(x, strict=True)
+    config_file: Path | None = config_field(
+        default=None,
+        env_var="PROVIDE_CONFIG_FILE",
+        converter=lambda x: Path(x) if x else None,
+        description="Path to configuration file"
     )
-    no_emoji: bool = field(
-        default=False, converter=lambda x: parse_bool(x, strict=True)
+    log_file: Path | None = config_field(
+        default=None,
+        env_var="PROVIDE_LOG_FILE",
+        converter=lambda x: Path(x) if x else None,
+        description="Path to log file"
+    )
+    log_format: str = config_field(
+        default="key_value",
+        env_var="PROVIDE_LOG_FORMAT",
+        description="Log output format (key_value or json)"
+    )
+    no_color: bool = config_field(
+        default=False,
+        env_var="NO_COLOR",
+        converter=parse_bool_extended,
+        description="Disable colored output"
+    )
+    no_emoji: bool = config_field(
+        default=False,
+        env_var="PROVIDE_NO_EMOJI",
+        converter=parse_bool_extended,
+        description="Disable emoji in output"
     )
 
     # Private fields - using Factory for mutable defaults
@@ -69,62 +103,9 @@ class Context:
         """Post-initialization hook."""
         pass  # Validation is handled by attrs validators
 
-    def _validate(self) -> None:
-        """Validate context values. For attrs compatibility."""
-        # Validation is handled by attrs validators automatically
-        pass
-
-    @classmethod
-    def from_env(cls, prefix: str = "PROVIDE") -> "Context":
-        """
-        Create context from environment variables using TelemetryConfig system.
-
-        Args:
-            prefix: Environment variable prefix (default: PROVIDE)
-
-        Returns:
-            New Context instance with values from environment
-        """
-        # Use the main TelemetryConfig system for parsing
-        telemetry_config = TelemetryConfig.from_env(strict=False)
-
-        kwargs = {}
-
-        # Map telemetry config values to CLI context
-        kwargs["log_level"] = telemetry_config.logging.default_level
-        if telemetry_config.logging.console_formatter:
-            kwargs["log_format"] = telemetry_config.logging.console_formatter
-        if telemetry_config.logging.log_file:
-            kwargs["log_file"] = telemetry_config.logging.log_file
-
-        # CLI-specific environment variables that don't exist in TelemetryConfig
-        if profile := os.environ.get(f"{prefix}_PROFILE"):
-            kwargs["profile"] = profile
-
-        if debug := os.environ.get(f"{prefix}_DEBUG"):
-            kwargs["debug"] = debug.lower() in ("true", "1", "yes", "on")
-
-        if json_output := os.environ.get(f"{prefix}_JSON_OUTPUT"):
-            kwargs["json_output"] = json_output.lower() in ("true", "1", "yes", "on")
-
-        if config_file := os.environ.get(f"{prefix}_CONFIG_FILE"):
-            kwargs["config_file"] = Path(config_file)
-
-        # Map emoji settings to no_emoji (inverted)
-        kwargs["no_emoji"] = not (
-            telemetry_config.logging.logger_name_emoji_prefix_enabled
-            and telemetry_config.logging.das_emoji_prefix_enabled
-        )
-
-        # Check for explicit NO_COLOR override
-        if no_color := os.environ.get(f"{prefix}_NO_COLOR"):
-            kwargs["no_color"] = no_color.lower() in ("true", "1", "yes", "on")
-
-        return cls(**kwargs)
-
     def update_from_env(self, prefix: str = "PROVIDE") -> None:
         """
-        Update context from environment variables using TelemetryConfig system.
+        Update context from environment variables.
 
         Args:
             prefix: Environment variable prefix (default: PROVIDE)
@@ -132,28 +113,12 @@ class Context:
         if self._frozen:
             raise RuntimeError("Context is frozen and cannot be modified")
 
-        env_ctx = self.from_env(prefix)
+        env_ctx = self.from_env(prefix=prefix)
 
-        # Update values from TelemetryConfig (these are always updated since they're the primary source)
-        self.log_level = env_ctx.log_level
-        self.log_format = env_ctx.log_format
-        if env_ctx.log_file:
-            self.log_file = env_ctx.log_file
-        self.no_emoji = env_ctx.no_emoji
-
-        # Update CLI-specific values only if explicitly set in environment
-        if os.environ.get(f"{prefix}_PROFILE"):
-            self.profile = env_ctx.profile
-        if os.environ.get(f"{prefix}_DEBUG"):
-            self.debug = env_ctx.debug
-        if os.environ.get(f"{prefix}_JSON_OUTPUT"):
-            self.json_output = env_ctx.json_output
-        if os.environ.get(f"{prefix}_CONFIG_FILE"):
-            self.config_file = env_ctx.config_file
-        if os.environ.get(f"{prefix}_NO_COLOR"):
-            self.no_color = env_ctx.no_color
-
-        self._validate()
+        # Update all fields from environment
+        for attr in fields(self.__class__):
+            if not attr.name.startswith("_"):  # Skip private fields
+                setattr(self, attr.name, getattr(env_ctx, attr.name))
 
     def to_dict(self) -> dict[str, Any]:
         """Convert context to dictionary."""
@@ -170,7 +135,7 @@ class Context:
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "Context":
+    def from_dict(cls, data: dict[str, Any]) -> "CLIContext":
         """
         Create context from dictionary.
 
@@ -178,7 +143,7 @@ class Context:
             data: Dictionary with context values
 
         Returns:
-            New Context instance
+            New CLIContext instance
         """
         kwargs = {}
 
@@ -294,16 +259,16 @@ class Context:
 
         path.write_text(content)
 
-    def merge(self, other: "Context", override_defaults: bool = False) -> "Context":
+    def merge(self, other: "CLIContext", override_defaults: bool = False) -> "CLIContext":
         """
         Merge with another context, with other taking precedence.
 
         Args:
-            other: Context to merge with
+            other: CLIContext to merge with
             override_defaults: If False, only override if other's value differs from its class default
 
         Returns:
-            New merged Context instance
+            New merged CLIContext instance
         """
         merged_data = self.to_dict()
         other_data = other.to_dict()
@@ -318,7 +283,7 @@ class Context:
             from attrs import Factory
 
             defaults = {}
-            for f in fields(Context):
+            for f in fields(CLIContext):
                 if not f.name.startswith("_"):  # Skip private fields
                     if isinstance(f.default, Factory):
                         defaults[f.name] = f.default.factory()
@@ -333,7 +298,7 @@ class Context:
                         continue
                     merged_data[key] = value
 
-        return Context.from_dict(merged_data)
+        return CLIContext.from_dict(merged_data)
 
     def freeze(self) -> None:
         """Freeze context to prevent further modifications."""
@@ -341,7 +306,7 @@ class Context:
         # This is kept for API compatibility but does nothing
         self._frozen = True
 
-    def copy(self) -> "Context":
+    def copy(self) -> "CLIContext":
         """Create a deep copy of the context."""
         return copy.deepcopy(self)
 

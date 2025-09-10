@@ -23,17 +23,6 @@ from provide.foundation.logger import get_logger
 class TestCompleteCliIntegration:
     """Test complete CLI with all options working together."""
 
-    def setup_method(self) -> None:
-        """Set up each test method."""
-        os.environ["CLICK_TESTING"] = "1"
-        # Note: Foundation reset disabled for CLI group tests to prevent hanging
-        # The group structure tests work fine without reset between individual tests
-
-    def teardown_method(self) -> None:
-        """Clean up after each test method."""
-        os.environ.pop("CLICK_TESTING", None)
-        # Note: Foundation reset disabled for CLI group tests to prevent hanging
-
     def create_test_cli(self):
         """Create a test CLI with all features."""
 
@@ -89,7 +78,7 @@ class TestCompleteCliIntegration:
 
         return cli
 
-    def test_options_at_group_level(self) -> None:
+    def test_options_at_group_level(self, click_testing_mode) -> None:
         """Test that options work at the group level."""
         # Use simple command structure for reliable testing
         @click.command()
@@ -112,7 +101,7 @@ class TestCompleteCliIntegration:
         output = json.loads(result.output.strip().split("\n")[-1])
         assert output["status"] == "healthy"
 
-    def test_options_are_available_to_subcommand(self) -> None:
+    def test_options_are_available_to_subcommand(self, click_testing_mode) -> None:
         """Test that options passed to the group are available to the subcommand."""
         # Use simple command to test option availability
         @click.command()
@@ -134,7 +123,7 @@ class TestCompleteCliIntegration:
         assert "Application is healthy" in result.output
         assert "🟢" not in result.output
 
-    def test_nested_groups_inherit_options(self) -> None:
+    def test_nested_groups_inherit_options(self, click_testing_mode) -> None:
         """Test that nested groups inherit options."""
         # Test with simple command that simulates nested behavior
         @click.command()
@@ -156,7 +145,7 @@ class TestCompleteCliIntegration:
         output = json.loads(result.output.strip().split("\n")[-1])
         assert output["status"] == "success"
 
-    def test_command_options_override_group_options(self) -> None:
+    def test_command_options_override_group_options(self, click_testing_mode) -> None:
         """Test that later options on the same command override earlier ones."""
         # Test option override behavior with simple command
         @click.command()
@@ -180,16 +169,6 @@ class TestCompleteCliIntegration:
 class TestLoggingIntegration:
     """Test that logging options actually affect logging behavior."""
 
-    def setup_method(self) -> None:
-        """Set up each test method."""
-        os.environ["CLICK_TESTING"] = "1"
-        # Note: Foundation reset disabled for CLI tests to prevent hanging
-
-    def teardown_method(self) -> None:
-        """Clean up after each test method."""
-        os.environ.pop("CLICK_TESTING", None)
-        # Note: Foundation reset disabled for CLI tests to prevent hanging
-
     def _get_full_output(self, result) -> str:
         """Get combined stdout and stderr, with ANSI codes stripped."""
         import re
@@ -204,7 +183,7 @@ class TestLoggingIntegration:
             full_output += result.stderr_bytes.decode("utf-8", errors="ignore")
         return re.sub(r"\x1b\[[0-9;]*m", "", full_output)
 
-    def test_log_level_affects_output(self) -> None:
+    def test_log_level_affects_output(self, click_testing_mode) -> None:
         @click.command()
         @flexible_options
         @pass_context
@@ -221,7 +200,7 @@ class TestLoggingIntegration:
         # Log messages go to stderr which is captured by pytest, not by Click
         # This test validates that log level filtering is configured properly
 
-    def test_log_format_changes_output(self) -> None:
+    def test_log_format_changes_output(self, click_testing_mode) -> None:
         @click.command()
         @flexible_options
         @output_options
@@ -240,7 +219,7 @@ class TestLoggingIntegration:
         assert result.exit_code == 0
         assert "Log format test successful" in result.output
 
-    def test_log_file_writes_to_file(self) -> None:
+    def test_log_file_writes_to_file(self, click_testing_mode) -> None:
         with tempfile.NamedTemporaryFile(mode="w", suffix=".log", delete=False) as f:
             log_file = Path(f.name)
         try:
@@ -270,17 +249,7 @@ class TestLoggingIntegration:
 class TestOutputFormatting:
     """Test output formatting options."""
 
-    def setup_method(self) -> None:
-        """Set up each test method."""
-        os.environ["CLICK_TESTING"] = "1"
-        # Note: Foundation reset disabled for CLI tests to prevent hanging
-
-    def teardown_method(self) -> None:
-        """Clean up after each test method."""
-        os.environ.pop("CLICK_TESTING", None)
-        # Note: Foundation reset disabled for CLI tests to prevent hanging
-
-    def test_json_output_format(self) -> None:
+    def test_json_output_format(self, click_testing_mode) -> None:
         @click.command()
         @output_options
         @pass_context
@@ -296,7 +265,7 @@ class TestOutputFormatting:
         output = json.loads(result.output)
         assert output["result"] == "success"
 
-    def test_no_color_option(self) -> None:
+    def test_no_color_option(self, click_testing_mode) -> None:
         @click.command()
         @output_options
         @pass_context
@@ -308,7 +277,7 @@ class TestOutputFormatting:
         assert result.exit_code == 0
         assert "\x1b" not in result.output
 
-    def test_no_emoji_option(self) -> None:
+    def test_no_emoji_option(self, click_testing_mode) -> None:
         @click.command()
         @output_options
         @pass_context
@@ -324,17 +293,7 @@ class TestOutputFormatting:
 class TestConfigurationLoading:
     """Test configuration file and profile loading."""
 
-    def setup_method(self) -> None:
-        """Set up each test method."""
-        os.environ["CLICK_TESTING"] = "1"
-        # Note: Foundation reset disabled for CLI tests to prevent hanging
-
-    def teardown_method(self) -> None:
-        """Clean up after each test method."""
-        os.environ.pop("CLICK_TESTING", None)
-        # Note: Foundation reset disabled for CLI tests to prevent hanging
-
-    def test_config_file_loading(self) -> None:
+    def test_config_file_loading(self, click_testing_mode) -> None:
         config_data = {"log_level": "WARNING", "profile": "testing"}
         with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump(config_data, f)
@@ -358,16 +317,6 @@ class TestConfigurationLoading:
 class TestRealWorldScenarios:
     """Test real-world CLI usage scenarios."""
 
-    def setup_method(self) -> None:
-        """Set up each test method."""
-        os.environ["CLICK_TESTING"] = "1"
-        # Note: Foundation reset disabled for CLI tests to prevent hanging
-
-    def teardown_method(self) -> None:
-        """Clean up after each test method."""
-        os.environ.pop("CLICK_TESTING", None)
-        # Note: Foundation reset disabled for CLI tests to prevent hanging
-
     def _get_full_output(self, result) -> str:
         """Get combined stdout and stderr, with ANSI codes stripped."""
         import re
@@ -382,7 +331,7 @@ class TestRealWorldScenarios:
             full_output += result.stderr_bytes.decode("utf-8", errors="ignore")
         return re.sub(r"\x1b\[[0-9;]*m", "", full_output)
 
-    def test_debugging_production_issue(self) -> None:
+    def test_debugging_production_issue(self, click_testing_mode) -> None:
         # Use simple command instead of complex group to avoid hanging
         @click.command()
         @flexible_options
@@ -421,7 +370,7 @@ class TestRealWorldScenarios:
         finally:
             log_file.unlink(missing_ok=True)
 
-    def test_interactive_development(self) -> None:
+    def test_interactive_development(self, click_testing_mode) -> None:
         @click.command()
         @flexible_options
         @output_options

@@ -15,14 +15,15 @@ from unittest.mock import MagicMock
 
 import click
 from click.testing import CliRunner
+import pytest
 
-from provide.foundation.context import Context
+from provide.foundation.context import CLIContext
 from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
 
 
-class MockContext(Context):
+class MockContext(CLIContext):
     """Mock context for testing that tracks method calls."""
 
     def __init__(self, **kwargs) -> None:
@@ -157,7 +158,7 @@ def create_test_cli(
     @click.pass_context
     def cli(ctx, **kwargs) -> None:
         """Test CLI for testing."""
-        ctx.obj = Context(**{k: v for k, v in kwargs.items() if v is not None})
+        ctx.obj = CLIContext(**{k: v for k, v in kwargs.items() if v is not None})
 
     if commands:
         for cmd in commands:
@@ -225,3 +226,29 @@ class CliTestCase:
             assert output[key] == value, (
                 f"Value mismatch for '{key}': {output[key]} != {value}"
             )
+
+
+@pytest.fixture
+def click_testing_mode():
+    """
+    Pytest fixture to enable Click testing mode.
+    
+    Sets CLICK_TESTING=1 environment variable for the duration of the test,
+    then restores the original value. This fixture makes it easy to enable
+    Click testing mode without manual environment variable management.
+    
+    Usage:
+        def test_my_cli(click_testing_mode):
+            # Test CLI code here - CLICK_TESTING is automatically set
+            pass
+    """
+    original_value = os.environ.get("CLICK_TESTING")
+    os.environ["CLICK_TESTING"] = "1"
+    
+    try:
+        yield
+    finally:
+        if original_value is None:
+            os.environ.pop("CLICK_TESTING", None)
+        else:
+            os.environ["CLICK_TESTING"] = original_value

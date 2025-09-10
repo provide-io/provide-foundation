@@ -68,6 +68,7 @@ def __getattr__(name: str) -> Any:
         "create_test_cli",
         "mock_logger",
         "CliTestCase",
+        "click_testing_mode",
     ]:
         import provide.foundation.testing.cli as cli_module
 

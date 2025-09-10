@@ -10,12 +10,12 @@ from typing import Any
 import requests
 
 from provide.foundation.logger import get_logger
-from provide.foundation.observability.openobserve.auth import get_auth_headers
-from provide.foundation.observability.openobserve.client import OpenObserveClient
-from provide.foundation.observability.openobserve.exceptions import (
+from provide.foundation.integrations.openobserve.auth import get_auth_headers
+from provide.foundation.integrations.openobserve.client import OpenObserveClient
+from provide.foundation.integrations.openobserve.exceptions import (
     OpenObserveStreamingError,
 )
-from provide.foundation.observability.openobserve.models import parse_relative_time
+from provide.foundation.integrations.openobserve.models import parse_relative_time
 
 log = get_logger(__name__)
 

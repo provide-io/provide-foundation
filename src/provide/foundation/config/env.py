@@ -17,9 +17,6 @@ from attrs import fields
 
 from provide.foundation.config.base import BaseConfig, field
 from provide.foundation.config.types import ConfigSource
-from provide.foundation.utils.parsing import (
-    auto_parse,
-)
 
 T = TypeVar("T")
 
@@ -205,7 +202,8 @@ class RuntimeConfig(BaseConfig):
                         raise ValueError(f"Failed to parse {env_var}: {e}")
                 else:
                     # Try to infer parser from type
-                    value = RuntimeConfig._auto_parse(attr, value)
+                    from provide.foundation.utils.parsing import auto_parse
+                    value = auto_parse(attr, value)
 
                 data[attr.name] = value
 
@@ -285,7 +283,8 @@ class RuntimeConfig(BaseConfig):
                     raise ValueError(f"Failed to parse {env_var}: {e}")
             else:
                 # Try to infer parser from type
-                value = RuntimeConfig._auto_parse(attr, value)
+                from provide.foundation.utils.parsing import auto_parse
+                value = auto_parse(attr, value)
 
             data[field_name] = value
 
@@ -307,20 +306,6 @@ class RuntimeConfig(BaseConfig):
         except Exception as e:
             raise ValueError(f"Failed to read secret from file '{file_path}': {e}")
 
-    @staticmethod
-    def _auto_parse(attr: Any, value: str) -> Any:
-        """
-        Automatically parse value based on field type.
-
-        Args:
-            attr: Field attribute
-            value: String value to parse
-
-        Returns:
-            Parsed value
-        """
-        # Use the utility function from utils.parsing
-        return auto_parse(attr, value)
 
     def to_env_dict(self, prefix: str = "", delimiter: str = "_") -> dict[str, str]:
         """

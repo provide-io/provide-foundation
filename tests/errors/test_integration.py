@@ -12,9 +12,9 @@ import pytest
 from provide.foundation import (
     FoundationError,
     error_boundary,
-    retry_on_error,
     with_error_handling,
 )
+from provide.foundation.resilience import retry
 from provide.foundation.errors import (
     AlreadyExistsError,
     AuthenticationError,
@@ -30,10 +30,10 @@ from provide.foundation.errors.context import (
     capture_error_context,
 )
 from provide.foundation.errors.decorators import (
-    circuit_breaker,
     fallback_on_error,
     suppress_and_log,
 )
+from provide.foundation.resilience import circuit_breaker
 from provide.foundation.errors.handlers import (
     ErrorHandler,
     handle_error,
@@ -138,7 +138,7 @@ class TestErrorSystemIntegration:
         attempt_count = 0
 
         @circuit_breaker(failure_threshold=3, recovery_timeout=0.01)
-        @retry_on_error(max_attempts=2, delay=0.01)
+        @retry(max_attempts=2, base_delay=0.01)
         def unreliable_service() -> str:
             nonlocal attempt_count
             attempt_count += 1
@@ -273,7 +273,7 @@ class TestErrorSystemIntegration:
         call_log = []
 
         # Strategy 1: Retry with exponential backoff
-        @retry_on_error(max_attempts=3, delay=0.01, backoff=2.0)
+        @retry(max_attempts=3, base_delay=0.01)
         def retry_strategy() -> str:
             call_log.append("retry")
             if len([c for c in call_log if c == "retry"]) < 3:
@@ -511,7 +511,7 @@ class TestRealWorldScenarios:
         """Simulate microservice communication error handling."""
         service_calls = []
 
-        @retry_on_error(NetworkError, max_attempts=3, delay=0.01)
+        @retry(NetworkError, max_attempts=3, base_delay=0.01)
         @circuit_breaker(failure_threshold=5, recovery_timeout=0.1)
         def call_user_service(user_id):
             service_calls.append(("user-service", user_id))
