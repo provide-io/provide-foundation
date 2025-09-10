@@ -219,6 +219,10 @@ ignore_missing_imports = true
 source = ["provide.foundation"]
 branch = true
 parallel = true
+omit = [
+    "*/provide/foundation/testing/*",
+    "*/testing/*"
+]
 
 [tool.coverage.report]
 show_missing = true
