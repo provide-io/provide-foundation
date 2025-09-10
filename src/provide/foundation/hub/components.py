@@ -165,8 +165,8 @@ from provide.foundation.hub.processors import (
     get_processors_for_stage,
 )
 
-# Bootstrap on module import
-bootstrap_foundation()
+# Bootstrap will happen lazily on first hub access to avoid circular imports
+# bootstrap_foundation()
 
 
 __all__ = [
