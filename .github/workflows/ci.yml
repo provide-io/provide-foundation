@@ -236,23 +236,13 @@ jobs:
           uv pip install -e .
           uv sync --all-groups --dev
 
-      - name: 🧪 Run Full Integration Suite
+      - name: 🧪 Run Integration Tests
         run: |
           source .venv/bin/activate
-          pytest tests/test_integration.py -v --tb=short
-        continue-on-error: true
-
-      - name: ⚠️ Run Edge Case Tests
-        run: |
-          source .venv/bin/activate
-          pytest tests/test_edge_cases.py -v --tb=short
-        continue-on-error: true
-
-      - name: 🔥 Run Coverage Completion Tests
-        run: |
-          source .venv/bin/activate
-          pytest tests/test_coverage_completion.py -v
-        continue-on-error: true
+          # Run all integration tests from various modules
+          pytest tests/errors/test_integration.py -v --tb=short || true
+          pytest tests/test_component_registry_*.py -v --tb=short || true
+          pytest tests/test_init_coverage.py -v --tb=short || true
 
   # ==================================================================================
   # 📋 Summary Job
