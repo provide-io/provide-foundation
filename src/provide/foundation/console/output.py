@@ -42,7 +42,7 @@ def _should_use_json(ctx: CLIContext | None = None) -> bool:
     return ctx.json_output if ctx else False
 
 
-def _should_use_color(ctx: CLIContext | None = None, stream=None) -> bool:
+def _should_use_color(ctx: CLIContext | None = None, stream: Any = None) -> bool:
     """Determine if color output should be used."""
     if ctx is None:
         ctx = _get_context()
@@ -68,7 +68,7 @@ def _should_use_color(ctx: CLIContext | None = None, stream=None) -> bool:
 
 
 @with_error_handling(fallback=None, suppress=(TypeError, ValueError, AttributeError))
-def _output_json(data: Any, stream=sys.stdout) -> None:
+def _output_json(data: Any, stream: Any = sys.stdout) -> None:
     """Output data as JSON."""
     json_str = json.dumps(data, indent=2, default=str)
     if _HAS_CLICK:

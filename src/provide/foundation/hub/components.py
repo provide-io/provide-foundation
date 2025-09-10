@@ -115,7 +115,7 @@ def bootstrap_foundation() -> None:
     registry = get_component_registry()
 
     # Register core processors
-    def timestamp_processor(logger, method_name, event_dict):
+    def timestamp_processor(logger: object, method_name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
         import time
 
         event_dict["timestamp"] = time.time()

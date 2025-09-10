@@ -26,7 +26,7 @@ class ZipArchive(BaseArchive):
     password: bytes | None = field(default=None)
 
     @compression_level.validator
-    def _validate_level(self, attribute, value):
+    def _validate_level(self, attribute: object, value: int) -> None:
         if not 0 <= value <= 9:
             raise ValueError(f"Compression level must be 0-9, got {value}")
 

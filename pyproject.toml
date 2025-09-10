@@ -122,11 +122,13 @@ pythonpath = ["src", "."]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*", "*Tests"]
 python_functions = ["test_*", "*_test"]
+addopts = "-m 'not integration' -rFE -q --color=yes --benchmark-columns=min,max,mean,stddev,median,iqr,ops --benchmark-sort=mean --dist loadscope"
 markers = [
     "serial: run tests serially to avoid event loop conflicts",
     "async_unsafe: async tests that must run serially",
     "unit: fast unit tests",
     "integration: integration tests requiring setup",
+    "integration.openobserve: OpenObserve integration tests",
     "slow: tests taking >1s",
     "fast: tests taking <100ms",
     # Module markers
@@ -153,7 +155,6 @@ norecursedirs = [
     ".hypothesis", # Added to address the warning
 ]
 # Changed from -ra to -rFE to suppress skipped test output
-addopts = "-rFE -q --color=yes --benchmark-columns=min,max,mean,stddev,median,iqr,ops --benchmark-sort=mean --dist loadscope"
 
 ################################################################################
 # Ruff Linter and Formatter Configuration

@@ -22,7 +22,7 @@ def validate_choice(choices: list[Any]) -> Callable[[Any, Any, Any], None]:
         Validator function
     """
 
-    def validator(instance, attribute, value):
+    def validator(instance: object, attribute: object, value: Any) -> None:
         if value not in choices:
             raise ValidationError(
                 f"Invalid value '{value}' for {attribute.name}. "
@@ -46,7 +46,7 @@ def validate_range(
         Validator function
     """
 
-    def validator(instance, attribute, value):
+    def validator(instance: object, attribute: object, value: Any) -> None:
         if not isinstance(value, (int, float)):
             raise ValidationError(f"Value must be a number, got {type(value).__name__}")
 
@@ -58,7 +58,7 @@ def validate_range(
     return validator
 
 
-def validate_positive(instance, attribute, value):
+def validate_positive(instance: object, attribute: object, value: Any) -> None:
     """
     Validate that a numeric value is positive.
     """
@@ -69,7 +69,7 @@ def validate_positive(instance, attribute, value):
         raise ValidationError(f"Value must be positive, got {value}")
 
 
-def validate_non_negative(instance, attribute, value):
+def validate_non_negative(instance: object, attribute: object, value: Any) -> None:
     """
     Validate that a numeric value is non-negative.
     """

@@ -164,7 +164,7 @@ class FileLock:
         self.acquire()
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> bool:
         """Context manager exit."""
         self.release()
         return False  # Don't suppress exceptions

@@ -26,7 +26,7 @@ class GzipCompressor:
     level: int = field(default=6)  # Compression level 1-9 (1=fast, 9=best)
 
     @level.validator
-    def _validate_level(self, attribute, value):
+    def _validate_level(self, attribute: object, value: int) -> None:
         if not 1 <= value <= 9:
             raise ValueError(f"Compression level must be 1-9, got {value}")
 

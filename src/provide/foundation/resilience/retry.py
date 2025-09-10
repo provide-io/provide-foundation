@@ -60,19 +60,19 @@ class RetryPolicy:
     retryable_status_codes: set[int] | None = field(default=None)
 
     @max_attempts.validator
-    def _validate_max_attempts(self, attribute, value):
+    def _validate_max_attempts(self, attribute: object, value: int) -> None:
         """Validate max_attempts is at least 1."""
         if value < 1:
             raise ValueError("max_attempts must be at least 1")
 
     @base_delay.validator
-    def _validate_base_delay(self, attribute, value):
+    def _validate_base_delay(self, attribute: object, value: float) -> None:
         """Validate base_delay is positive."""
         if value < 0:
             raise ValueError("base_delay must be positive")
 
     @max_delay.validator
-    def _validate_max_delay(self, attribute, value):
+    def _validate_max_delay(self, attribute: object, value: float) -> None:
         """Validate max_delay is positive and >= base_delay."""
         if value < 0:
             raise ValueError("max_delay must be positive")

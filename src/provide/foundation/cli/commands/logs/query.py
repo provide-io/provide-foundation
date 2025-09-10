@@ -66,8 +66,8 @@ if _HAS_CLICK:
     )
     @click.pass_context
     def query_command(
-        ctx, sql, current_trace, trace_id, level, service, last, stream, size, format
-    ):
+        ctx: click.Context, sql: str | None, current_trace: bool, trace_id: str | None, level: str | None, service: str | None, last: str, stream: str, size: int, format: str
+    ) -> int | None:
         """Query logs from OpenObserve.
 
         Examples:
@@ -166,7 +166,7 @@ if _HAS_CLICK:
 
 else:
 
-    def query_command(*args, **kwargs):
+    def query_command(*args: object, **kwargs: object) -> None:
         """Query command stub when click is not available."""
         raise ImportError(
             "CLI commands require optional dependencies. "

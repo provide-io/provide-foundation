@@ -25,7 +25,7 @@ from provide.foundation.config.types import ConfigDict, ConfigSource
 T = TypeVar("T", bound=BaseConfig)
 
 
-def run_async(coro):
+def run_async(coro: Any) -> Any:
     """
     Run an async coroutine in a sync context.
 

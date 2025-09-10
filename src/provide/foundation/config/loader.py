@@ -150,7 +150,7 @@ class FileConfigLoader(ConfigLoader):
                 format=str(self.format),
             )
 
-    def _ini_to_dict(self, parser) -> ConfigDict:
+    def _ini_to_dict(self, parser: object) -> ConfigDict:
         """Convert INI parser to dictionary."""
         result = {}
         for section in parser.sections():

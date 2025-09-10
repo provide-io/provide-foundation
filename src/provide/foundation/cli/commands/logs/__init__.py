@@ -21,7 +21,7 @@ if _HAS_CLICK:
 
     @click.group("logs", help="Send and query logs with OpenTelemetry integration")
     @click.pass_context
-    def logs_group(ctx):
+    def logs_group(ctx: click.Context) -> None:
         """Logs management commands with OTEL correlation."""
         # Store shared context
         ctx.ensure_object(dict)
@@ -53,7 +53,7 @@ if _HAS_CLICK:
 
 else:
     # Stub when click is not available
-    def logs_group(*args, **kwargs):
+    def logs_group(*args: object, **kwargs: object) -> None:
         """Logs command stub when click is not available."""
         raise ImportError(
             "CLI commands require optional dependencies. "

@@ -20,31 +20,31 @@ class ConfigSource(Enum):
     ENV = 20
     RUNTIME = 30  # Highest precedence
 
-    def __lt__(self, other):
+    def __lt__(self, other: object) -> bool:
         """Enable comparison for precedence."""
         if not isinstance(other, ConfigSource):
             return NotImplemented
         return self.value < other.value
 
-    def __le__(self, other):
+    def __le__(self, other: object) -> bool:
         """Enable <= comparison for precedence."""
         if not isinstance(other, ConfigSource):
             return NotImplemented
         return self.value <= other.value
 
-    def __gt__(self, other):
+    def __gt__(self, other: object) -> bool:
         """Enable > comparison for precedence."""
         if not isinstance(other, ConfigSource):
             return NotImplemented
         return self.value > other.value
 
-    def __ge__(self, other):
+    def __ge__(self, other: object) -> bool:
         """Enable >= comparison for precedence."""
         if not isinstance(other, ConfigSource):
             return NotImplemented
         return self.value >= other.value
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         """Enable == comparison for precedence."""
         if not isinstance(other, ConfigSource):
             return NotImplemented

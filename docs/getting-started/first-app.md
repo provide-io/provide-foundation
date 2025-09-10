@@ -5,7 +5,7 @@ Build a complete application using provide.foundation's logging, CLI, and config
 ## What We'll Build
 
 A simple task manager CLI that demonstrates:
-- Structured logging with emoji sets
+- Structured logging with event enrichment
 - CLI command registration
 - Configuration management
 - Error handling
