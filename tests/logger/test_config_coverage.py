@@ -172,13 +172,19 @@ class TestTelemetryConfigCoverage:
             config = TelemetryConfig.from_env()
             assert config.service_name == "test-service"
 
-    def test_telemetry_config_from_env_provide_service_name(self):
-        """Test telemetry config using PROVIDE_SERVICE_NAME."""
+    def test_telemetry_config_from_env_service_name_default_none(self):
+        """Test telemetry config service_name defaults to None when not set."""
         from provide.foundation.logger.config.telemetry import TelemetryConfig
 
-        with patch.dict(os.environ, {"PROVIDE_SERVICE_NAME": "provide-service"}):
+        # Test without any service name environment variables
+        with patch.dict(os.environ, {}, clear=False):
+            # Remove both service name env vars if they exist
+            if "OTEL_SERVICE_NAME" in os.environ:
+                del os.environ["OTEL_SERVICE_NAME"]
+            if "PROVIDE_SERVICE_NAME" in os.environ:
+                del os.environ["PROVIDE_SERVICE_NAME"]
             config = TelemetryConfig.from_env()
-            assert config.service_name == "provide-service"
+            assert config.service_name is None
 
     def test_telemetry_config_from_env_provide_service_name_only(self):
         """Test that PROVIDE_SERVICE_NAME is used (OTEL_SERVICE_NAME is ignored)."""

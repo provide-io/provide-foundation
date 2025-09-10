@@ -24,7 +24,7 @@ class TelemetryConfig(RuntimeConfig):
 
     service_name: str | None = field(
         default=None,
-        env_var="PROVIDE_SERVICE_NAME",
+        env_var="OTEL_SERVICE_NAME",
         description="Service name for telemetry",
     )
     service_version: str | None = field(
