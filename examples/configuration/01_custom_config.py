@@ -3,6 +3,17 @@
 """Demonstrates custom configuration of Foundation Telemetry using TelemetryConfig and LoggingConfig."""
 
 # Add src to path for examples
+from pathlib import Path
+import sys
+
+example_file = Path(__file__).resolve()
+project_root = example_file.parent.parent.parent
+src_path = project_root / "src"
+if src_path.exists() and str(src_path) not in sys.path:
+    sys.path.insert(0, str(src_path))
+
+# Import utils from parent directory
+sys.path.insert(0, str(example_file.parent.parent))
 from utils import setup_example_environment, print_example_header, print_example_completion
 setup_example_environment()
 
