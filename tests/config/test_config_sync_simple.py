@@ -281,6 +281,14 @@ class TestSyncConfigManager:
     @patch("provide.foundation.config.sync.run_async")
     def test_update(self, mock_run_async):
         """Test update method."""
+        # Set up mock to properly handle the coroutine
+        def mock_run(coro):
+            # Close the coroutine to avoid warnings
+            if hasattr(coro, 'close'):
+                coro.close()
+            return None
+        
+        mock_run_async.side_effect = mock_run
         manager = SyncConfigManager()
 
         manager.update("test", {"name": "updated"})
