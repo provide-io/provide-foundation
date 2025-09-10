@@ -25,8 +25,8 @@ def main():
     # Create context from environment
     ctx = Context.from_env()
     
-    # Setup telemetry with context
-    setup_telemetry(ctx.to_telemetry_config())
+    # Setup telemetry (uses environment configuration automatically)
+    setup_telemetry()
     
     # Application startup
     logger.info("application_startup", version="1.0.0", profile=ctx.profile)

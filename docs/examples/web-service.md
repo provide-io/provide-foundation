@@ -203,7 +203,7 @@ async def create_user(user_data: dict[str, Any]):
 async def startup_event():
     """Application startup event."""
     ctx = Context.from_env()
-    setup_telemetry(ctx.to_telemetry_config())
+    setup_telemetry()
     
     logger.info("service_startup",
                 service="example-web-service",
@@ -367,7 +367,7 @@ def create_production_app():
         service_version="1.0.0"
     )
     
-    setup_telemetry(ctx.to_telemetry_config())
+    setup_telemetry()
     return app
 ```
 

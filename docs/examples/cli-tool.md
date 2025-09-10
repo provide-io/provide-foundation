@@ -107,10 +107,9 @@ def status_command():
 def setup_cli():
     """Setup CLI application with telemetry."""
     ctx = Context.from_env()
-    setup_telemetry(ctx.to_telemetry_config())
+    setup_telemetry()
     
     logger.info("cli_initialized", 
-                service_name=ctx.service_name,
                 profile=ctx.profile)
 
 

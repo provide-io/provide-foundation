@@ -375,7 +375,7 @@ async def main():
     """Main entry point for the data pipeline."""
     # Setup context and telemetry
     ctx = Context.from_env()
-    setup_telemetry(ctx.to_telemetry_config())
+    setup_telemetry()
     
     logger.info("application_start",
                 service="data-pipeline",
