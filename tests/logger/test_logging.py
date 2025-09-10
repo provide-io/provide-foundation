@@ -207,6 +207,7 @@ class TestLoggingWithEmojiSets:
     ) -> None:
         config = TelemetryConfig(
             logging=LoggingConfig(
+                default_level="INFO",
                 enabled_emoji_sets=["llm"],
                 console_formatter="key_value",
                 das_emoji_prefix_enabled=True,
@@ -238,6 +239,7 @@ class TestLoggingWithEmojiSets:
     ) -> None:
         config = TelemetryConfig(
             logging=LoggingConfig(
+                default_level="INFO",
                 console_formatter="key_value",
                 das_emoji_prefix_enabled=True,
                 logger_name_emoji_prefix_enabled=False,

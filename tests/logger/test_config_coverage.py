@@ -79,7 +79,7 @@ class TestLoggingConfigCoverage:
         with patch.dict(os.environ, {"PROVIDE_LOG_LEVEL": "INVALID_LEVEL"}):
             # Strict mode logs warnings but still returns config with defaults
             config = LoggingConfig.from_env(strict=True)
-            assert config.default_level == "DEBUG"  # Should use default
+            assert config.default_level == "WARNING"  # Should use production default
 
     def test_logging_config_json_formatter_enabled(self):
         """Test logging config with JSON formatter enabled."""
@@ -221,4 +221,4 @@ class TestTelemetryConfigCoverage:
         with patch.dict(os.environ, {"PROVIDE_LOG_LEVEL": "INVALID"}):
             # Strict mode logs warnings but still returns config with defaults
             config = TelemetryConfig.from_env(strict=True)
-            assert config.logging.default_level == "DEBUG"  # Should use default
+            assert config.logging.default_level == "WARNING"  # Should use production default

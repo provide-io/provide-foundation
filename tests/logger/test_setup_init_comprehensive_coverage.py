@@ -47,11 +47,11 @@ class TestLoggerSetupInit:
         from provide.foundation.logger.setup import __all__, _has_testing
 
         if _has_testing:
-            expected_exports = ["internal_setup", "reset_for_testing"]
+            expected_exports = ["get_vanilla_logger", "internal_setup", "reset_for_testing"]
             assert set(__all__) == set(expected_exports)
         else:
-            expected_exports = ["internal_setup"]
-            assert __all__ == expected_exports
+            expected_exports = ["get_vanilla_logger", "internal_setup"]
+            assert set(__all__) == set(expected_exports)
 
     def test_all_exports_accessible(self):
         """Test that all items in __all__ are accessible."""

@@ -86,8 +86,8 @@ def test_invalid_environment_variables_handling(
         # Verify fallback to defaults for the specific var being tested
         if env_var == "PROVIDE_LOG_LEVEL":
             assert (
-                config.logging.default_level == "DEBUG"
-            )  # Default from DEFAULT_ENV_CONFIG or fallback in from_env
+                config.logging.default_level == "WARNING"
+            )  # Production default fallback when invalid value provided
         elif env_var == "PROVIDE_LOG_CONSOLE_FORMATTER":
             assert (
                 config.logging.console_formatter == "key_value"
