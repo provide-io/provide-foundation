@@ -373,7 +373,7 @@ def test_configuration_edge_cases() -> None:
     # Test with minimal configuration
     minimal_config = TelemetryConfig()
     assert minimal_config.service_name is None
-    assert minimal_config.logging.default_level == "DEBUG"
+    assert minimal_config.logging.default_level == "WARNING"  # Production default
     assert minimal_config.globally_disabled is False
 
     # Test with disabled telemetry

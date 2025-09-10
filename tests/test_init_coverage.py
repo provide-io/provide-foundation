@@ -175,22 +175,18 @@ class TestFoundationInit:
         assert hasattr(provide.foundation, "FoundationError")
         assert hasattr(provide.foundation, "__version__")
 
-    def test_emoji_exports(self):
-        """Test emoji-related exports."""
+    def test_eventset_exports(self):
+        """Test event set-related exports."""
         import provide.foundation
 
-        # Test emoji exports
-        emoji_exports = [
-            "PRIMARY_EMOJI",
-            "SECONDARY_EMOJI",
-            "TERTIARY_EMOJI",
-            "show_emoji_matrix",
-            "EmojiSet",
-            "EmojiSetConfig",
-            "FieldToEmojiMapping",
+        # Test event set exports (replacement for emoji system)
+        eventset_exports = [
+            "EventSet",
+            "EventMapping",
+            "FieldMapping",
         ]
 
-        for export in emoji_exports:
+        for export in eventset_exports:
             assert hasattr(provide.foundation, export), f"Missing export: {export}"
 
     def test_hub_exports(self):

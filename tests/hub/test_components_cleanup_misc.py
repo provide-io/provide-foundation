@@ -176,7 +176,7 @@ class TestMiscellaneousFunctionality:
 
         registry = get_component_registry()
 
-        # Should have default event set
+        # Should have default event set (registered during module discovery)
         default_event_set = registry.get("default", ComponentCategory.EVENT_SET.value)
         assert default_event_set is not None
 

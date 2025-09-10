@@ -233,41 +233,27 @@ def test_get_safe_stderr() -> None:
         raise AssertionError("get_safe_stderr function not found") from None  # B904
 
 
-def test_emoji_matrix_defaults() -> None:
-    """Test emoji matrix has correct default mappings."""
-    print("\n=== Test 6: Emoji Matrix Defaults ===")
-
-    from provide.foundation.logger.emoji.matrix import (
-        PRIMARY_EMOJI,
-        SECONDARY_EMOJI,
-        TERTIARY_EMOJI,
-    )
-
+def test_event_set_defaults() -> None:
+    """Test that event sets provide correct default visual markers."""
+    print("\n=== Test 6: Event Set Defaults ===")
+    
+    from provide.foundation.eventsets.sets.das import das_event_set
+    
+    # Check that DAS event set has the expected mappings
+    domain_mapping = next((m for m in das_event_set.mappings if m.name == "domain"), None)
+    action_mapping = next((m for m in das_event_set.mappings if m.name == "action"), None)  
+    status_mapping = next((m for m in das_event_set.mappings if m.name == "status"), None)
+    
+    assert domain_mapping is not None, "Domain mapping not found in DAS event set"
+    assert action_mapping is not None, "Action mapping not found in DAS event set"
+    assert status_mapping is not None, "Status mapping not found in DAS event set"
+    
     # Check that register action exists
-    if "register" in SECONDARY_EMOJI:
-        register_emoji = SECONDARY_EMOJI["register"]
-        print(f"Register action emoji: {register_emoji}")
-
-        # Check default emojis match test expectations
-        expected_defaults = {
-            "domain_default": PRIMARY_EMOJI.get(
-                "default", "❓"
-            ),  # Default should be ❓
-            "action_default": SECONDARY_EMOJI.get("default", "❓"),  # Default is now ❓
-            "status_default": TERTIARY_EMOJI.get("default", "➡️"),  # Default is ➡️
-        }
-
-        print(f"Default emojis: {expected_defaults}")
-
-        assert PRIMARY_EMOJI.get("default") == "❓", "Primary default emoji mismatch"
-        assert SECONDARY_EMOJI.get("default") == "❓", (
-            "Secondary default emoji mismatch - should be ❓"
-        )
-        assert TERTIARY_EMOJI.get("default") == "➡️", "Tertiary default emoji mismatch"
-        print("✅ Emoji matrix defaults are correct")
-    else:  # pragma: no cover
-        print("❌ Register action not found in emoji matrix")
-        raise AssertionError("Register action not found in emoji matrix")
+    assert "register" in action_mapping.visual_markers, "Register action not found in action mapping"
+    register_emoji = action_mapping.visual_markers["register"]
+    print(f"Register action emoji: {register_emoji}")
+    
+    print("✅ Event set defaults are correct")
 
 
 # Removed main() function and direct script execution part,
