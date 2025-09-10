@@ -38,7 +38,7 @@ class TestRateLimiterProcessor:
         assert processor.warning_interval_seconds == 60.0
         assert processor.summary_interval == 5.0
 
-    @patch("provide.foundation.logger.ratelimit.processor.get_logger")
+    @patch("provide.foundation.logger.get_logger")
     def test_rate_limiter_processor_allows_when_no_limits(self, mock_get_logger) -> None:
         """Test processor allows events when no rate limits are configured."""
         # Mock logger to prevent actual logging during summary
@@ -57,7 +57,7 @@ class TestRateLimiterProcessor:
         result = processor(None, "info", event_dict)
         assert result == event_dict
 
-    @patch("provide.foundation.logger.ratelimit.processor.get_logger")
+    @patch("provide.foundation.logger.get_logger")
     def test_rate_limiter_processor_blocks_when_limited(self, mock_get_logger) -> None:
         """Test processor blocks events when rate limited."""
         mock_logger = MagicMock()
@@ -87,7 +87,7 @@ class TestRateLimiterProcessor:
         with pytest.raises(structlog.DropEvent):
             processor(None, "info", event_dict.copy())
 
-    @patch("provide.foundation.logger.ratelimit.processor.get_logger")
+    @patch("provide.foundation.logger.get_logger")
     def test_rate_limiter_processor_emits_warning_on_limit(self, mock_get_logger) -> None:
         """Test processor emits warning when rate limited."""
         mock_logger = MagicMock()
@@ -123,7 +123,7 @@ class TestRateLimiterProcessor:
         assert result["original_logger"] == "test.logger"
         assert result["_rate_limit_warning"] is True
 
-    @patch("provide.foundation.logger.ratelimit.processor.get_logger")
+    @patch("provide.foundation.logger.get_logger")
     def test_rate_limiter_processor_warning_interval(self, mock_get_logger) -> None:
         """Test processor respects warning interval."""
         mock_logger = MagicMock()
@@ -164,7 +164,7 @@ class TestRateLimiterProcessor:
         result = processor(None, "info", event_dict.copy())
         assert "_rate_limit_warning" in result
 
-    @patch("provide.foundation.logger.ratelimit.processor.get_logger")
+    @patch("provide.foundation.logger.get_logger")
     def test_rate_limiter_processor_tracks_suppressed_counts(self, mock_get_logger) -> None:
         """Test processor tracks suppressed message counts."""
         mock_logger = MagicMock()
@@ -196,7 +196,7 @@ class TestRateLimiterProcessor:
         # Check suppressed count
         assert processor.suppressed_counts["test.logger"] == 3
 
-    @patch("provide.foundation.logger.ratelimit.processor.get_logger")
+    @patch("provide.foundation.logger.get_logger")
     def test_rate_limiter_processor_different_loggers(self, mock_get_logger) -> None:
         """Test processor handles different loggers independently."""
         mock_logger = MagicMock()
@@ -225,7 +225,7 @@ class TestRateLimiterProcessor:
         result2_again = processor(None, "info", event2.copy())
         assert result2_again == event2
 
-    @patch("provide.foundation.logger.ratelimit.processor.get_logger")
+    @patch("provide.foundation.logger.get_logger")
     def test_rate_limiter_processor_unknown_logger(self, mock_get_logger) -> None:
         """Test processor handles unknown logger names gracefully."""
         mock_logger = MagicMock()
@@ -243,7 +243,7 @@ class TestRateLimiterProcessor:
         result = processor(None, "info", event_dict)
         assert result == event_dict
 
-    @patch("provide.foundation.logger.ratelimit.processor.get_logger")
+    @patch("provide.foundation.logger.get_logger")
     def test_rate_limiter_processor_emit_summary(self, mock_get_logger) -> None:
         """Test processor emits periodic summaries."""
         mock_logger = MagicMock()
@@ -282,7 +282,7 @@ class TestRateLimiterProcessor:
         call_args = mock_logger.warning.call_args
         assert "Rate limiting active" in call_args[0][0]
 
-    @patch("provide.foundation.logger.ratelimit.processor.get_logger")
+    @patch("provide.foundation.logger.get_logger")
     def test_rate_limiter_processor_summary_no_activity(self, mock_get_logger) -> None:
         """Test processor doesn't emit summary when no rate limiting occurs."""
         mock_logger = MagicMock()
@@ -307,7 +307,7 @@ class TestRateLimiterProcessor:
         # Should not have called the logger
         mock_logger.warning.assert_not_called()
 
-    @patch("provide.foundation.logger.ratelimit.processor.get_logger")
+    @patch("provide.foundation.logger.get_logger")
     def test_rate_limiter_processor_summary_exception_handling(self, mock_get_logger) -> None:
         """Test processor handles exceptions during summary emission."""
         mock_get_logger.side_effect = Exception("Logger unavailable")
@@ -321,7 +321,7 @@ class TestRateLimiterProcessor:
         # Should clear counts even if logging fails
         assert processor.suppressed_counts == {}
 
-    @patch("provide.foundation.logger.ratelimit.processor.get_logger")
+    @patch("provide.foundation.logger.get_logger")
     def test_rate_limiter_processor_callable_interface(self, mock_get_logger) -> None:
         """Test processor implements proper callable interface."""
         mock_logger = MagicMock()
@@ -440,7 +440,7 @@ class TestCreateRateLimiterProcessor:
 class TestRateLimiterProcessorIntegration:
     """Integration tests for rate limiter processor."""
 
-    @patch("provide.foundation.logger.ratelimit.processor.get_logger")
+    @patch("provide.foundation.logger.get_logger")
     def test_processor_with_structlog_pipeline(self, mock_get_logger) -> None:
         """Test processor works in structlog pipeline."""
         mock_logger = MagicMock()
@@ -497,7 +497,7 @@ class TestRateLimiterProcessorIntegration:
         # Should be reasonably fast (< 0.5 seconds for 1000 events)
         assert elapsed < 0.5
 
-    @patch("provide.foundation.logger.ratelimit.processor.get_logger")
+    @patch("provide.foundation.logger.get_logger")
     def test_processor_multiple_logger_names(self, mock_get_logger) -> None:
         """Test processor handles multiple logger names correctly."""
         mock_logger = MagicMock()
