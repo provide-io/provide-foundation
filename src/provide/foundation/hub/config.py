@@ -122,9 +122,14 @@ def load_config_from_registry(config_class: type[T]) -> T:
         chain = get_config_chain()
         for entry in chain:
             source = entry.value
-            if hasattr(source, "get_all_values"):
+            if hasattr(source, "load_config"):
                 try:
-                    source_data = source.get_all_values()
+                    # Skip async sources in sync context
+                    if inspect.iscoroutinefunction(source.load_config):
+                        log.debug("Skipping async config source in sync context", source=entry.name)
+                        continue
+                    
+                    source_data = source.load_config()
                     if source_data:
                         config_data.update(source_data)
                 except Exception as e:
