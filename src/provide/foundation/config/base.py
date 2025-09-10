@@ -87,7 +87,7 @@ class BaseConfig:
     _source_map: dict[str, ConfigSource] = attrs_field(init=False, factory=lambda: {})
     _original_values: dict[str, Any] = attrs_field(init=False, factory=lambda: {})
 
-    def __attrs_post_init__(self):
+    def __attrs_post_init__(self) -> None:
         """Post-initialization hook for subclasses."""
         # The _source_map and _original_values are now handled by attrs with factory
         # Note: validate() is now async, so we can't call it here

@@ -95,7 +95,7 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
         return structlog.get_logger(_CORE_SETUP_LOGGER_NAME)
 
 
-def get_vanilla_logger(name: str):
+def get_vanilla_logger(name: str) -> object:
     """
     Get a vanilla Python logger without Foundation enhancements.
 

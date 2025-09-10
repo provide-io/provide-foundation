@@ -79,7 +79,7 @@ from provide.foundation.utils import (
 
 
 # Lazy loading support for optional modules
-def __getattr__(name: str):
+def __getattr__(name: str) -> object:
     """Support lazy loading of optional modules."""
     if name == "cli":
         try:

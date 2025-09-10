@@ -13,7 +13,7 @@ from provide.foundation.process import exit_error, exit_success
 from provide.foundation.utils.deps import check_optional_deps, has_dependency
 
 
-def _require_click():
+def _require_click() -> None:
     """Ensure click is available for CLI commands."""
     if not _HAS_CLICK:
         raise ImportError(
@@ -68,7 +68,7 @@ if _HAS_CLICK:
         _deps_command_impl(quiet, check)
 else:
     # Stub for when click is not available
-    def deps_command(*args, **kwargs):
+    def deps_command(*args: object, **kwargs: object) -> None:
         """Deps command stub when click is not available."""
         _require_click()
 
