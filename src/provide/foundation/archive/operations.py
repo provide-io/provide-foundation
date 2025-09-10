@@ -12,6 +12,7 @@ from provide.foundation.archive.gzip import GzipCompressor
 from provide.foundation.archive.bzip2 import Bzip2Compressor
 from provide.foundation.archive.zip import ZipArchive
 from provide.foundation.file import ensure_parent_dir
+from provide.foundation.file.safe import safe_delete
 from provide.foundation.logger import get_logger
 
 logger = get_logger(__name__)
@@ -68,12 +69,9 @@ class OperationChain:
         except Exception as e:
             raise ArchiveError(f"Operation chain failed: {e}") from e
         finally:
-            # Clean up temp files
+            # Clean up temp files using Foundation's safe file operations
             for temp in temp_files:
-                try:
-                    temp.unlink()
-                except Exception:
-                    pass
+                safe_delete(temp, missing_ok=True)
     
     def reverse(self, source: Path, output: Path) -> Path:
         """

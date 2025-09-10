@@ -19,6 +19,7 @@ except ImportError:
     _HAS_CLICK = False
 
 from provide.foundation.context import CLIContext
+from provide.foundation.errors.decorators import with_error_handling
 from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
@@ -66,19 +67,21 @@ def _should_use_color(ctx: CLIContext | None = None, stream=None) -> bool:
     return sys.stdout.isatty() or sys.stderr.isatty()
 
 
+@with_error_handling(fallback=None, suppress=(TypeError, ValueError, AttributeError))
 def _output_json(data: Any, stream=sys.stdout) -> None:
     """Output data as JSON."""
-    try:
-        json_str = json.dumps(data, indent=2, default=str)
+    json_str = json.dumps(data, indent=2, default=str)
+    if _HAS_CLICK:
         click.echo(json_str, file=stream)
-    except (TypeError, ValueError) as e:
-        # Fallback to string representation
-        click.echo(
-            json.dumps({"error": f"JSON encoding failed: {e}", "data": str(data)}),
-            file=stream,
-        )
+    else:
+        print(json_str, file=stream)
 
 
+@with_error_handling(
+    fallback=None,
+    suppress=(OSError, IOError, UnicodeEncodeError),
+    context_provider=lambda: {"function": "pout"}
+)
 def pout(message: Any, **kwargs: Any) -> None:
     """
     Output message to stdout.
@@ -136,6 +139,11 @@ def pout(message: Any, **kwargs: Any) -> None:
                 print(output, file=sys.stdout, end="")
 
 
+@with_error_handling(
+    fallback=None,
+    suppress=(OSError, IOError, UnicodeEncodeError),
+    context_provider=lambda: {"function": "perr"}
+)
 def perr(message: Any, **kwargs: Any) -> None:
     """
     Output message to stderr.

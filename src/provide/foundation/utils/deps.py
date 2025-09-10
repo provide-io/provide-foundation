@@ -119,8 +119,9 @@ def check_optional_deps(
     deps = get_optional_dependencies()
 
     if not quiet:
-        print("📦 provide-foundation Optional Dependencies Status")
-        print("=" * 50)
+        log = _get_logger()
+        log.info("📦 provide-foundation Optional Dependencies Status")
+        log.info("=" * 50)
 
         available_count = sum(1 for dep in deps if dep.available)
         total_count = len(deps)
@@ -128,27 +129,26 @@ def check_optional_deps(
         for dep in deps:
             status_icon = "✅" if dep.available else "❌"
             version_info = f" (v{dep.version})" if dep.version else ""
-            print(f"  {status_icon} {dep.name}{version_info}")
-            print(f"     {dep.description}")
+            log.info(f"  {status_icon} {dep.name}{version_info}")
+            log.info(f"     {dep.description}")
             if not dep.available:
-                print(
+                log.info(
                     f"     Install with: pip install 'provide-foundation[{dep.name}]'"
                 )
-            print()
 
-        print(
+        log.info(
             f"📊 Summary: {available_count}/{total_count} optional dependencies available"
         )
 
         if available_count == total_count:
-            print("🎉 All optional features are available!")
+            log.info("🎉 All optional features are available!")
         elif available_count == 0:
-            print(
+            log.info(
                 "💡 Install optional features with: pip install 'provide-foundation[all]'"
             )
         else:
             missing = [dep.name for dep in deps if not dep.available]
-            print(f"💡 Missing features: {', '.join(missing)}")
+            log.info(f"💡 Missing features: {', '.join(missing)}")
 
     if return_status:
         return deps
