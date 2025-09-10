@@ -31,8 +31,8 @@ import sys
 # Add src to path for examples
 # This allows the example script to find the `provide.foundation` module
 # when run directly from the `examples` directory or the project root.
-example_dir = Path(__file__).resolve().parent.parent  # Go up one level to `examples`
-project_root = example_dir.parent
+example_file = Path(__file__).resolve()
+project_root = example_file.parent.parent  # Go up from examples to project root
 src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
