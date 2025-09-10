@@ -48,12 +48,14 @@ class TestToolCache:
 
     def test_init_default_cache_dir(self) -> None:
         """Test initialization with default cache directory."""
-        with patch("pathlib.Path.home") as mock_home:
+        with patch("pathlib.Path.home") as mock_home, \
+             patch("pathlib.Path.mkdir") as mock_mkdir:
             mock_home.return_value = Path("/mock/home")
 
             cache = ToolCache()
             expected_dir = Path("/mock/home") / ".wrknv" / "cache"
             assert cache.cache_dir == expected_dir
+            mock_mkdir.assert_called_once_with(parents=True, exist_ok=True)
 
     def test_init_custom_cache_dir(self, temp_cache_dir: Path) -> None:
         """Test initialization with custom cache directory."""

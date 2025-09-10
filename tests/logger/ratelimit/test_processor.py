@@ -457,10 +457,11 @@ class TestRateLimiterProcessorIntegration:
         )
         
         # Configure a simple structlog logger
+        cap = structlog.testing.LogCapture()
         structlog.configure(
             processors=[processor, structlog.dev.ConsoleRenderer()],
             wrapper_class=structlog.make_filtering_bound_logger(20),  # INFO level
-            logger_factory=structlog.testing.LogCapture,
+            logger_factory=lambda: cap,
             cache_logger_on_first_use=True,
         )
         
