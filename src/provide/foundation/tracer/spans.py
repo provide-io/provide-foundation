@@ -47,7 +47,7 @@ class Span:
     error: str | None = None
 
     # Internal OpenTelemetry span (when available)
-    _otel_span: "otel_trace.Span" | None = field(
+    _otel_span: "otel_trace.Span | None" = field(
         default=None, init=False, repr=False
     )
     _active: bool = field(default=True, init=False, repr=False)
