@@ -17,7 +17,9 @@
       "Bash(timeout:*)",
       "Bash(curl:*)",
       "Bash(FOUNDATION_LOG_LEVEL=DEBUG python -c \"from provide.foundation import console, process, transport, file\")",
-      "Bash(mkdocs serve:*)"
+      "Bash(mkdocs serve:*)",
+      "Bash(pkill:*)",
+      "Bash(mkdocs build:*)"
     ],
     "deny": [],
     "ask": [],

@@ -366,10 +366,10 @@ class TestProvideRun:
         assert result == "test"
         mock_asyncio.run.assert_called_once()
         args, kwargs = mock_asyncio.run.call_args
-        # Should be called with a callable function (main)
+        # Should be called with a coroutine object (main() returns a coroutine)
         import inspect
 
-        assert callable(args[0])
+        assert inspect.iscoroutine(args[0])
         assert kwargs["debug"] is True
 
     def test_provide_run_with_debug_false(self):
