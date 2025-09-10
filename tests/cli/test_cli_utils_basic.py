@@ -147,8 +147,8 @@ class TestCliLogging:
         mock_setup_telemetry.assert_called_once()
         config_arg = mock_setup_telemetry.call_args.kwargs["config"]
         assert isinstance(config_arg, TelemetryConfig)
-        # Default context log level is INFO, unless overridden by environment (DEBUG in tests)
-        expected_level = "DEBUG" if "PROVIDE_LOG_LEVEL" in os.environ else "INFO"
+        # Default context log level is INFO, unless overridden by environment
+        expected_level = os.environ.get("PROVIDE_LOG_LEVEL", "INFO")
         assert config_arg.logging.default_level == expected_level
         assert config_arg.logging.console_formatter == "key_value"
 

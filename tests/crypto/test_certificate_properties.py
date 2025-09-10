@@ -209,7 +209,7 @@ async def test_is_ca_extension_not_found_logs_debug(mocker):
 
     # Patch the logger from the certificate module
     mock_logger_debug = mocker.patch(
-        "provide.foundation.crypto.certificates.logger.debug"
+        "provide.foundation.crypto.certificates.certificate.logger.debug"
     )
 
     # Temporarily replace the _cert.extensions on the instance

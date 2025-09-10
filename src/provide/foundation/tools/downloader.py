@@ -6,7 +6,7 @@ parallel downloads, and mirror support.
 """
 
 import hashlib
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Callable
 
@@ -150,26 +150,24 @@ class ToolDownloader:
             urls: List of (url, destination) tuples.
             
         Returns:
-            List of downloaded file paths.
+            List of downloaded file paths in the same order as input.
             
         Raises:
             DownloadError: If any download fails.
         """
-        results = []
         errors = []
         
         with ThreadPoolExecutor(max_workers=4) as executor:
-            # Submit all downloads
-            future_to_url = {
-                executor.submit(
-                    self.download_with_progress, url, dest
-                ): (url, dest)
+            # Submit all downloads, maintaining order with index
+            futures = [
+                executor.submit(self.download_with_progress, url, dest)
                 for url, dest in urls
-            }
+            ]
             
-            # Collect results
-            for future in as_completed(future_to_url):
-                url, dest = future_to_url[future]
+            # Collect results in order
+            results = []
+            for i, future in enumerate(futures):
+                url, dest = urls[i]
                 try:
                     result = future.result()
                     results.append(result)
