@@ -359,7 +359,14 @@ class TestProvideRun:
         async def main():
             return "test"
 
-        mock_asyncio.run.return_value = "test"
+        # Set up mock to properly handle the coroutine
+        def mock_run(coro, **kwargs):
+            # Close the coroutine to avoid warnings
+            if hasattr(coro, 'close'):
+                coro.close()
+            return "test"
+        
+        mock_asyncio.run.side_effect = mock_run
 
         result = provide_run(main, debug=True)
 
