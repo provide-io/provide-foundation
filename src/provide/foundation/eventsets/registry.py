@@ -60,10 +60,10 @@ class EventSetRegistry(Registry):
         Raises:
             NotFoundError: If no event set with this name exists
         """
-        entry = self.get("eventset", name)
-        if entry is None:
+        event_set = self.get(name, "eventset")
+        if event_set is None:
             raise NotFoundError(f"Event set '{name}' not found")
-        return entry.value
+        return event_set
     
     def list_event_sets(self) -> list[EventSet]:
         """
