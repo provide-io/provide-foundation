@@ -545,7 +545,7 @@ class TestAsyncRunnerEdgeCases:
         """Test timeout handling in communicate method."""
         mock_process = AsyncMock()
         mock_process.communicate = AsyncMock(side_effect=asyncio.TimeoutError())
-        mock_process.kill = AsyncMock()
+        mock_process.kill = Mock()  # Use regular Mock to avoid coroutine warnings
         mock_process.wait = AsyncMock()
 
         with patch("asyncio.create_subprocess_exec", return_value=mock_process):
@@ -575,7 +575,7 @@ class TestAsyncRunnerEdgeCases:
         mock_stdout = AsyncMock()
         mock_stdout.readline = AsyncMock(side_effect=asyncio.TimeoutError())
         mock_process.stdout = mock_stdout
-        mock_process.kill = AsyncMock()
+        mock_process.kill = Mock()  # Use regular Mock to avoid coroutine warnings
         mock_process.wait = AsyncMock()
 
         with patch("asyncio.create_subprocess_exec", return_value=mock_process):
@@ -594,7 +594,7 @@ class TestAsyncRunnerEdgeCases:
         """Test stream when process has no stdout."""
         mock_process = AsyncMock()
         mock_process.stdout = None
-        mock_process.wait = AsyncMock()
+        mock_process.wait = AsyncMock(return_value=None)  # Provide explicit return value
         mock_process.returncode = 0
 
         with patch("asyncio.create_subprocess_exec", return_value=mock_process):

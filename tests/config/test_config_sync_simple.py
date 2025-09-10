@@ -69,10 +69,17 @@ class TestSyncModuleCoverage:
         mock_executor_instance.submit.return_value = mock_future
         mock_executor.return_value.__enter__.return_value = mock_executor_instance
 
-        async def test_coro():
-            return "test_result"
+        # Mock asyncio.run to avoid creating actual coroutine
+        with patch("asyncio.run") as mock_run:
+            mock_run.return_value = "test_result"
+            
+            async def test_coro():
+                return "test_result"
 
-        result = run_async(test_coro())
+            # Create coroutine and immediately close it to avoid warning
+            coro = test_coro()
+            result = run_async(coro)
+            coro.close()
 
         assert result == "from_executor"
         mock_executor.assert_called_once()
@@ -134,20 +141,24 @@ class TestSyncModuleCoverage:
         with tempfile.NamedTemporaryFile(suffix=".json") as tmp_file:
             tmp_file.write(b"{}")
             tmp_file.flush()
-            try:
-                load_config_from_multiple(SimpleTestConfig, ("file", tmp_file.name))
-            except Exception:
-                # Expected - API may have issues but we tested the path
-                pass
+            with patch("provide.foundation.config.sync.run_async") as mock_run_async:
+                mock_run_async.return_value = SimpleTestConfig()
+                try:
+                    load_config_from_multiple(SimpleTestConfig, ("file", tmp_file.name))
+                except Exception:
+                    # Expected - API may have issues but we tested the path
+                    pass
 
     def test_load_config_from_multiple_env_source(self):
         """Test load_config_from_multiple with env source."""
         # Test the code path for env source
-        try:
-            load_config_from_multiple(SimpleRuntimeConfig, ("env", "TEST_PREFIX"))
-        except (AttributeError, ImportError, ValueError):
-            # Expected - RuntimeConfigLoader import may fail or no configuration sources available
-            pass
+        with patch("provide.foundation.config.sync.run_async") as mock_run_async:
+            mock_run_async.return_value = SimpleRuntimeConfig()
+            try:
+                load_config_from_multiple(SimpleRuntimeConfig, ("env", "TEST_PREFIX"))
+            except (AttributeError, ImportError, ValueError):
+                # Expected - RuntimeConfigLoader import may fail or no configuration sources available
+                pass
 
     @patch("provide.foundation.config.sync.run_async")
     def test_load_config_from_multiple_dict_source(self, mock_run_async):

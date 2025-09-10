@@ -246,8 +246,15 @@ class TestProvideWaitFor:
         async def task():
             return "test"
 
-        with pytest.raises(ValidationError, match="Timeout must be non-negative"):
-            await provide_wait_for(task(), timeout=-1.0)
+        # Create coroutine but properly handle it to avoid warning
+        coro = task()
+        try:
+            with pytest.raises(ValidationError, match="Timeout must be non-negative"):
+                await provide_wait_for(coro, timeout=-1.0)
+        finally:
+            # Close coroutine if it wasn't consumed
+            if coro.cr_frame is not None:
+                coro.close()
 
     @pytest.mark.asyncio
     async def test_provide_wait_for_zero_timeout(self):
@@ -359,10 +366,10 @@ class TestProvideRun:
         assert result == "test"
         mock_asyncio.run.assert_called_once()
         args, kwargs = mock_asyncio.run.call_args
-        # Should be called with a coroutine object (main() returns a coroutine)
+        # Should be called with a callable function (main)
         import inspect
 
-        assert inspect.iscoroutine(args[0]) or callable(args[0])
+        assert callable(args[0])
         assert kwargs["debug"] is True
 
     def test_provide_run_with_debug_false(self):

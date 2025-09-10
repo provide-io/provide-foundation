@@ -235,13 +235,20 @@ nav:
     - Resilience API: api/resilience/api-index.md
     - Transport API: api/transport/api-index.md
     - Metrics API: api/metrics/api-index.md
+    - Archive API: api/archive/api-index.md
+    - Async Tools API: api/asynctools/api-index.md
     - Context API: api/context/api-index.md
     - Core API: api/core/api-index.md
+    - Environment API: api/env/api-index.md
     - File API: api/file/api-index.md
     - Crypto API: api/crypto/api-index.md
+    - Integrations API: api/integrations/api-index.md
+    - Observability API: api/observability/api-index.md
     - Platform API: api/platform/api-index.md
     - Process API: api/process/api-index.md
+    - Serialization API: api/serialization/api-index.md
     - Streams API: api/streams/api-index.md
+    - Tools API: api/tools/api-index.md
     - Testing API:
       - api/testing/api-index.md
       - Stream Testing: api/testing/api-streams.md
