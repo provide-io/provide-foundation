@@ -16,6 +16,7 @@ import threading
 import traceback
 from typing import Any
 
+from provide.foundation.errors.decorators import with_error_handling
 from provide.foundation.logger import get_logger
 from provide.foundation.process.runner import ProcessError
 
@@ -112,6 +113,10 @@ class ManagedProcess:
             return False
         return self._process.poll() is None
 
+    @with_error_handling(
+        error_mapper=lambda e: ProcessError(f"Failed to launch process: {e}") if not isinstance(e, (ProcessError, RuntimeError)) else e,
+        context_provider=lambda: {"method": "launch", "command": " ".join(self.command) if hasattr(self, 'command') else "unknown"}
+    )
     def launch(self) -> None:
         """
         Launch the managed process.
@@ -125,37 +130,27 @@ class ManagedProcess:
 
         plog.debug("🚀 Launching managed process", command=" ".join(self.command))
 
-        try:
-            self._process = subprocess.Popen(
-                self.command,
-                cwd=self.cwd,
-                env=self._env,
-                stdout=subprocess.PIPE if self.capture_output else None,
-                stderr=subprocess.PIPE if self.capture_output else None,
-                text=self.text_mode,
-                bufsize=self.bufsize,
-                **self.kwargs,
-            )
-            self._started = True
+        self._process = subprocess.Popen(
+            self.command,
+            cwd=self.cwd,
+            env=self._env,
+            stdout=subprocess.PIPE if self.capture_output else None,
+            stderr=subprocess.PIPE if self.capture_output else None,
+            text=self.text_mode,
+            bufsize=self.bufsize,
+            **self.kwargs,
+        )
+        self._started = True
 
-            plog.info(
-                "🚀 Managed process started successfully",
-                pid=self._process.pid,
-                command=" ".join(self.command),
-            )
+        plog.info(
+            "🚀 Managed process started successfully",
+            pid=self._process.pid,
+            command=" ".join(self.command),
+        )
 
-            # Start stderr relay if enabled
-            if self.stderr_relay and self._process.stderr:
-                self._start_stderr_relay()
-
-        except Exception as e:
-            plog.error(
-                "🚀❌ Failed to launch managed process",
-                command=" ".join(self.command),
-                error=str(e),
-                trace=traceback.format_exc(),
-            )
-            raise ProcessError(f"Failed to launch process: {e}") from e
+        # Start stderr relay if enabled
+        if self.stderr_relay and self._process.stderr:
+            self._start_stderr_relay()
 
     def _start_stderr_relay(self) -> None:
         """Start a background thread to relay stderr output."""

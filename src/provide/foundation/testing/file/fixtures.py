@@ -11,6 +11,8 @@ from collections.abc import Generator
 
 import pytest
 
+from provide.foundation.file.safe import safe_delete
+
 
 @pytest.fixture
 def temp_directory() -> Generator[Path, None, None]:
@@ -87,7 +89,7 @@ def temp_file():
     
     # Cleanup all created files
     for path in created_files:
-        path.unlink(missing_ok=True)
+        safe_delete(path, missing_ok=True)
 
 
 @pytest.fixture
@@ -105,7 +107,7 @@ def binary_file() -> Generator[Path, None, None]:
         path = Path(f.name)
     
     yield path
-    path.unlink(missing_ok=True)
+    safe_delete(path, missing_ok=True)
 
 
 @pytest.fixture
@@ -170,7 +172,7 @@ def readonly_file() -> Generator[Path, None, None]:
     
     # Restore write permission for cleanup
     path.chmod(0o644)
-    path.unlink(missing_ok=True)
+    safe_delete(path, missing_ok=True)
 
 
 @pytest.fixture
@@ -238,7 +240,7 @@ def temp_named_file():
     
     # Cleanup
     for path in created_files:
-        path.unlink(missing_ok=True)
+        safe_delete(path, missing_ok=True)
 
 
 @pytest.fixture
@@ -283,7 +285,7 @@ def temp_file_with_content():
     
     # Cleanup
     for path in created_files:
-        path.unlink(missing_ok=True)
+        safe_delete(path, missing_ok=True)
 
 
 @pytest.fixture
@@ -336,7 +338,7 @@ def temp_binary_file():
     
     # Cleanup
     for path in created_files:
-        path.unlink(missing_ok=True)
+        safe_delete(path, missing_ok=True)
 
 
 @pytest.fixture
@@ -384,7 +386,7 @@ def temp_csv_file():
     
     # Cleanup
     for path in created_files:
-        path.unlink(missing_ok=True)
+        safe_delete(path, missing_ok=True)
 
 
 @pytest.fixture
@@ -429,7 +431,7 @@ def temp_json_file():
     
     # Cleanup
     for path in created_files:
-        path.unlink(missing_ok=True)
+        safe_delete(path, missing_ok=True)
 
 
 @pytest.fixture
@@ -473,7 +475,7 @@ def temp_symlink():
     
     # Cleanup
     for link in created_links:
-        link.unlink(missing_ok=True)
+        safe_delete(link, missing_ok=True)
 
 
 @pytest.fixture
@@ -520,4 +522,4 @@ def temp_executable_file():
     
     # Cleanup
     for path in created_files:
-        path.unlink(missing_ok=True)
+        safe_delete(path, missing_ok=True)
