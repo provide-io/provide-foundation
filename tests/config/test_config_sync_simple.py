@@ -174,7 +174,14 @@ class TestSyncModuleCoverage:
         """Test load_config_from_multiple with env source."""
         # Test the code path for env source
         with patch("provide.foundation.config.sync.run_async") as mock_run_async:
-            mock_run_async.return_value = SimpleRuntimeConfig()
+            # Set up mock to properly handle the coroutine
+            def mock_run(coro):
+                # Close the coroutine to avoid warnings
+                if hasattr(coro, 'close'):
+                    coro.close()
+                return SimpleRuntimeConfig()
+            
+            mock_run_async.side_effect = mock_run
             try:
                 load_config_from_multiple(SimpleRuntimeConfig, ("env", "TEST_PREFIX"))
             except (AttributeError, ImportError, ValueError):
