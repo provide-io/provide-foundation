@@ -14,7 +14,8 @@
       "Bash([ ! -f \"src/provide/foundation/$dir.py\" ])",
       "Bash(then echo \"$dir\")",
       "Bash(fi)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": [],
