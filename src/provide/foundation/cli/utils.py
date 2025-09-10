@@ -6,6 +6,7 @@ from typing import Any
 import click
 from click.testing import CliRunner, Result
 
+from provide.foundation.console.output import pout, perr
 from provide.foundation.context import CLIContext
 from provide.foundation.logger import (
     LoggingConfig,
@@ -25,7 +26,10 @@ def echo_json(data: Any, err: bool = False) -> None:
         data: Data to output as JSON
         err: Whether to output to stderr
     """
-    click.echo(json.dumps(data, indent=2, default=str), err=err)
+    if err:
+        perr(data)
+    else:
+        pout(data)
 
 
 def echo_error(message: str, json_output: bool = False) -> None:
@@ -37,9 +41,9 @@ def echo_error(message: str, json_output: bool = False) -> None:
         json_output: Whether to output as JSON
     """
     if json_output:
-        echo_json({"error": message}, err=True)
+        perr(message, json_key="error")
     else:
-        click.secho(f"✗ {message}", fg="red", err=True)
+        perr(f"✗ {message}", color="red")
 
 
 def echo_success(message: str, json_output: bool = False) -> None:
@@ -51,9 +55,9 @@ def echo_success(message: str, json_output: bool = False) -> None:
         json_output: Whether to output as JSON
     """
     if json_output:
-        echo_json({"success": message})
+        pout(message, json_key="success")
     else:
-        click.secho(f"✓ {message}", fg="green")
+        pout(f"✓ {message}", color="green")
 
 
 def echo_warning(message: str, json_output: bool = False) -> None:
@@ -65,9 +69,9 @@ def echo_warning(message: str, json_output: bool = False) -> None:
         json_output: Whether to output as JSON
     """
     if json_output:
-        echo_json({"warning": message}, err=True)
+        perr(message, json_key="warning")
     else:
-        click.secho(f"⚠ {message}", fg="yellow", err=True)
+        perr(f"⚠ {message}", color="yellow")
 
 
 def echo_info(message: str, json_output: bool = False) -> None:
@@ -79,9 +83,9 @@ def echo_info(message: str, json_output: bool = False) -> None:
         json_output: Whether to output as JSON
     """
     if json_output:
-        echo_json({"info": message})
+        pout(message, json_key="info")
     else:
-        click.echo(f"ℹ {message}")
+        pout(f"ℹ {message}")
 
 
 def setup_cli_logging(

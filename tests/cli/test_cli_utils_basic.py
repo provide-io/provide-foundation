@@ -24,66 +24,65 @@ from provide.foundation.logger import TelemetryConfig
 class TestCliEchoFunctions:
     """Test CLI echo functions."""
 
-    @patch("click.echo")
-    def test_echo_json(self, mock_echo: MagicMock) -> None:
+    @patch("provide.foundation.cli.utils.pout")
+    def test_echo_json(self, mock_pout: MagicMock) -> None:
         """Test JSON output."""
         data = {"key": "value", "number": 42}
         echo_json(data)
-        mock_echo.assert_called_once()
-        output = mock_echo.call_args[0][0]
-        parsed = json.loads(output)
-        assert parsed == data
+        mock_pout.assert_called_once_with(data)
 
-    @patch("click.secho")
-    def test_echo_error_text(self, mock_secho: MagicMock) -> None:
+    @patch("provide.foundation.cli.utils.perr")
+    def test_echo_error_text(self, mock_perr: MagicMock) -> None:
         """Test error message output."""
         echo_error("Something went wrong")
-        mock_secho.assert_called_once()
-        output = mock_secho.call_args[0][0]
-        assert "Something went wrong" in output
-        assert mock_secho.call_args[1]["err"] is True
+        mock_perr.assert_called_once()
+        call_args = mock_perr.call_args
+        assert "Something went wrong" in call_args[0][0]
+        assert call_args[1]["color"] == "red"
 
-    @patch("click.echo")
-    def test_echo_error_json(self, mock_echo: MagicMock) -> None:
+    @patch("provide.foundation.cli.utils.perr")
+    def test_echo_error_json(self, mock_perr: MagicMock) -> None:
         """Test error message as JSON."""
         echo_error("Something went wrong", json_output=True)
-        mock_echo.assert_called_once()
-        output = mock_echo.call_args[0][0]
-        parsed = json.loads(output)
-        assert parsed["error"] == "Something went wrong"
+        mock_perr.assert_called_once()
+        call_args = mock_perr.call_args
+        assert call_args[0][0] == "Something went wrong"
+        assert call_args[1]["json_key"] == "error"
 
-    @patch("click.secho")
-    def test_echo_success_text(self, mock_secho: MagicMock) -> None:
+    @patch("provide.foundation.cli.utils.pout")
+    def test_echo_success_text(self, mock_pout: MagicMock) -> None:
         """Test success message output."""
         echo_success("Operation completed")
-        mock_secho.assert_called_once()
-        output = mock_secho.call_args[0][0]
-        assert "Operation completed" in output
+        mock_pout.assert_called_once()
+        call_args = mock_pout.call_args
+        assert "Operation completed" in call_args[0][0]
+        assert call_args[1]["color"] == "green"
 
-    @patch("click.echo")
-    def test_echo_success_json(self, mock_echo: MagicMock) -> None:
+    @patch("provide.foundation.cli.utils.pout")
+    def test_echo_success_json(self, mock_pout: MagicMock) -> None:
         """Test success message as JSON."""
         echo_success("Operation completed", json_output=True)
-        mock_echo.assert_called_once()
-        output = mock_echo.call_args[0][0]
-        parsed = json.loads(output)
-        assert parsed["success"] == "Operation completed"
+        mock_pout.assert_called_once()
+        call_args = mock_pout.call_args
+        assert call_args[0][0] == "Operation completed"
+        assert call_args[1]["json_key"] == "success"
 
-    @patch("click.secho")
-    def test_echo_warning_text(self, mock_secho: MagicMock) -> None:
+    @patch("provide.foundation.cli.utils.perr")
+    def test_echo_warning_text(self, mock_perr: MagicMock) -> None:
         """Test warning message output."""
         echo_warning("Be careful")
-        mock_secho.assert_called_once()
-        output = mock_secho.call_args[0][0]
-        assert "Be careful" in output
+        mock_perr.assert_called_once()
+        call_args = mock_perr.call_args
+        assert "Be careful" in call_args[0][0]
+        assert call_args[1]["color"] == "yellow"
 
-    @patch("click.echo")
-    def test_echo_info_text(self, mock_echo: MagicMock) -> None:
+    @patch("provide.foundation.cli.utils.pout")
+    def test_echo_info_text(self, mock_pout: MagicMock) -> None:
         """Test info message output."""
         echo_info("FYI")
-        mock_echo.assert_called_once()
-        output = mock_echo.call_args[0][0]
-        assert "FYI" in output
+        mock_pout.assert_called_once()
+        call_args = mock_pout.call_args
+        assert "FYI" in call_args[0][0]
 
 
 class TestCliContext:

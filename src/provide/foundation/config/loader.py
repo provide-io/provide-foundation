@@ -21,6 +21,7 @@ from provide.foundation.config.types import ConfigDict, ConfigFormat, ConfigSour
 from provide.foundation.errors.config import ConfigurationError
 from provide.foundation.errors.decorators import with_error_handling
 from provide.foundation.errors.resources import NotFoundError
+from provide.foundation.file.safe import safe_read_text
 
 T = TypeVar("T", bound=BaseConfig)
 
@@ -113,9 +114,14 @@ class FileConfigLoader(ConfigLoader):
             async with aiofiles.open(self.path, encoding=self.encoding) as f:
                 content = await f.read()
         else:
-            # Fallback to synchronous read
-            with open(self.path, encoding=self.encoding) as f:
-                content = f.read()
+            # Fallback to synchronous read using Foundation's safe file operations
+            content = safe_read_text(self.path, encoding=self.encoding)
+            if not content:
+                raise ConfigurationError(
+                    f"Failed to read config file: {self.path}",
+                    code="CONFIG_READ_ERROR",
+                    path=str(self.path),
+                )
 
         if self.format == ConfigFormat.JSON:
             return json.loads(content)

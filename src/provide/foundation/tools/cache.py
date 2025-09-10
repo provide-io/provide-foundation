@@ -10,6 +10,8 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 from provide.foundation.errors import FoundationError
+from provide.foundation.file.atomic import atomic_write
+from provide.foundation.file.safe import safe_read_text
 from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
@@ -49,20 +51,20 @@ class ToolCache:
         Returns:
             Cache metadata dictionary.
         """
-        if self.metadata_file.exists():
+        content = safe_read_text(self.metadata_file, default="{}")
+        if content:
             try:
-                with self.metadata_file.open() as f:
-                    return json.load(f)
+                return json.loads(content)
             except Exception as e:
-                log.warning(f"Failed to load cache metadata: {e}")
+                log.warning(f"Failed to parse cache metadata: {e}")
         
         return {}
     
     def _save_metadata(self) -> None:
         """Save cache metadata to disk."""
         try:
-            with self.metadata_file.open("w") as f:
-                json.dump(self.metadata, f, indent=2)
+            content = json.dumps(self.metadata, indent=2)
+            atomic_write(self.metadata_file, content)
         except Exception as e:
             log.error(f"Failed to save cache metadata: {e}")
     
