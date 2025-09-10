@@ -233,7 +233,11 @@ nav:
       - Registry: api/eventsets/api-registry.md
       - Display: api/eventsets/api-display.md
     - Resilience API: api/resilience/api-index.md
-    - Transport API: api/transport/api-index.md
+    - Transport API:
+      - api/transport/api-index.md
+      - Registry: api/transport/registry.md
+      - Client: api/transport/client.md
+      - Middleware: api/transport/middleware.md
     - Metrics API: api/metrics/api-index.md
     - Archive API: api/archive/api-index.md
     - Async Tools API: api/asynctools/api-index.md
