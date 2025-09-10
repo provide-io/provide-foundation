@@ -8,7 +8,12 @@
       "Bash(gh run watch:*)",
       "Bash(gh api:*)",
       "WebSearch",
-      "Bash(sort:*)"
+      "Bash(sort:*)",
+      "Bash(while read dir)",
+      "Bash([ ! -d \"src/provide/foundation/$dir\" ])",
+      "Bash([ ! -f \"src/provide/foundation/$dir.py\" ])",
+      "Bash(then echo \"$dir\")",
+      "Bash(fi)"
     ],
     "deny": [],
     "ask": [],

@@ -433,6 +433,9 @@ def get_hub() -> Hub:
         # Double-check after acquiring lock
         if _global_hub is None:
             _global_hub = Hub()
+            # Bootstrap foundation components now that hub is ready
+            from provide.foundation.hub.components import bootstrap_foundation
+            bootstrap_foundation()
 
     return _global_hub
 
