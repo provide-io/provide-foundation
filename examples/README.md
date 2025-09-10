@@ -1,61 +1,95 @@
-# Foundation Telemetry Examples
+# Foundation Examples
 
-This directory contains a collection of executable Python scripts demonstrating various features and usage patterns of the `provide-foundation` library. Each script is designed to be run independently and showcases a specific aspect of the library.
+This directory contains practical examples demonstrating various features and usage patterns of provide-foundation. Examples are organized by feature area for easy discovery and learning.
 
-## Running the Examples
+## Directory Structure
 
-To run an example script:
+### [telemetry/](telemetry/) - Core Logging and Telemetry
+- `01_basic_logging.py` - Zero-setup logging with Foundation
+- `02_structured_logging.py` - Structured logging with full telemetry setup
+- `03_named_loggers.py` - Component-specific named loggers  
+- `04_das_pattern.py` - Domain-Action-Status structured logging
+- `05_exception_handling.py` - Exception logging with automatic tracebacks
+- `06_trace_logging.py` - TRACE level logging for verbose output
+- `07_module_filtering.py` - Module-specific log level configuration
 
-1.  **Navigate to this directory** in your terminal:
-    ```bash
-    cd examples/foundation_telemetry
-    ```
+### [configuration/](configuration/) - Configuration Management
+- `01_custom_config.py` - Custom TelemetryConfig and LoggingConfig
+- `02_env_variables.py` - Environment variable configuration
+- `03_config_management.py` - Complete configuration system with file loading
 
-2.  **Execute the desired Python script**:
-    ```bash
-    python <example_file_name>.py
-    ```
-    For example, to run the quick start example:
-    ```bash
-    python 01_quick_start.py
-    ```
+### [async/](async/) - Asynchronous Programming
+- `01_async_usage.py` - Using Foundation with asyncio applications
 
-Each script will print output to the console, typically including formatted log messages that demonstrate the feature being showcased. The `sys.path` is manipulated at the beginning of each script to ensure it can find the `provide.foundation` module from the project's `src` directory.
+### [cli/](cli/) - Command Line Interface Development
+- `01_cli_application.py` - Complete CLI with Hub and command system
 
-## Example Files
+### [transport/](transport/) - HTTP Client and Networking
+- `01_http_client.py` - HTTP requests with middleware and error handling
 
-Here's a list of the available examples and what they demonstrate:
+### [tracing/](tracing/) - Distributed Tracing
+- `01_simple_tracing.py` - Basic tracing with Foundation
+- `02_distributed_tracing.py` - Distributed tracing across services
 
--   **`01_quick_start.py`**:
-    Shows the most basic setup and logging calls using the default configuration of Foundation Telemetry.
+### [integration/](integration/) - Third-Party Integrations
+- `01_celery_integration.py` - Integration with Celery task queue
 
--   **`02_custom_configuration.py`**:
-    Illustrates how to programmatically configure Foundation Telemetry using `TelemetryConfig` and `LoggingConfig` objects to control aspects like service name, log levels, and output formats (e.g., JSON).
+### [production/](production/) - Production Patterns
+- `01_production_patterns.py` - Production-ready logging and monitoring
 
--   **`03_named_loggers.py`**:
-    Demonstrates creating and using component-specific named loggers obtained via `logger.get_logger()`, which helps in identifying log sources and enabling fine-grained filtering.
+## Running Examples
 
--   **`04_das_logging.py`**:
-    Showcases Domain-Action-Status (DAS) structured logging. This pattern uses `domain`, `action`, and `status` keys in log events for semantic meaning, often enhanced with emojis.
+Navigate to any directory and run the examples:
 
--   **`05_exception_handling.py`**:
-    Illustrates how to properly log Python exceptions, ensuring that tracebacks are automatically included in the log output using `logger.exception()`.
+```bash
+# Core telemetry features
+cd telemetry
+python 01_basic_logging.py
 
--   **`06_trace_logging.py`**:
-    Demonstrates the usage of the custom `TRACE` log level, which is intended for ultra-verbose diagnostic output, and how to enable it.
+# Configuration management
+cd configuration  
+python 01_custom_config.py
 
--   **`07_module_filtering.py`**:
-    Shows how to configure module-specific log levels, allowing different parts of an application to have different log verbosities (e.g., more verbose for a specific module, less for others).
+# HTTP client usage
+cd transport
+python 01_http_client.py
 
--   **`08_env_variables_config.py`**:
-    Illustrates how Foundation Telemetry can be configured entirely through environment variables (e.g., `PROVIDE_LOG_LEVEL`, `PROVIDE_SERVICE_NAME`), allowing for runtime adjustments without code changes.
+# CLI development
+cd cli
+python 01_cli_application.py
+```
 
--   **`09_async_usage.py`**:
-    Provides examples of using Foundation Telemetry in asynchronous applications built with `asyncio`, including logging from async functions and using `shutdown_foundation_telemetry()`.
+## Example Categories
 
--   **`10_production_patterns.py`**:
-    Demonstrates logging patterns and configurations suitable for production environments, such as structured JSON logging, appropriate log levels, and logging key business events or health metrics.
+### Getting Started
+Start with `telemetry/01_basic_logging.py` for the simplest introduction, then explore `telemetry/02_structured_logging.py` for a complete setup.
 
-## Exploration
+### Configuration
+Learn how to configure Foundation through code (`configuration/01_custom_config.py`) or environment variables (`configuration/02_env_variables.py`).
 
-Feel free to explore, modify, and run these examples to better understand the capabilities and configuration options of the `provide-foundation` library. Each script is self-contained and can be a good starting point for integrating Foundation Telemetry into your own projects.
+### Production Use
+See `production/01_production_patterns.py` for patterns suitable for production deployments with structured JSON logging and health metrics.
+
+### Advanced Features
+Explore tracing, transport clients, and integrations for building robust distributed systems.
+
+## Common Patterns
+
+All examples demonstrate these Foundation patterns:
+
+- **Structured Logging**: Key-value logging with contextual information
+- **Configuration**: Environment-based configuration without hardcoded defaults
+- **Error Handling**: Comprehensive error logging with tracebacks
+- **Performance**: Efficient logging suitable for high-throughput applications
+- **Observability**: Built-in metrics and tracing capabilities
+
+## Shared Utilities
+
+- `utils.py` - Common utilities used across examples
+
+## Documentation
+
+For complete API documentation, see:
+- [Foundation Documentation](../docs/)
+- [API Reference](../docs/api/)
+- [User Guide](../docs/guide/)

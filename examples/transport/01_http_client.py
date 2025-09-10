@@ -19,7 +19,7 @@ from pathlib import Path
 
 # Add project root to path for imports
 example_file = Path(__file__).resolve()
-project_root = example_file.parent.parent
+project_root = example_file.parent.parent.parent
 sys.path.insert(0, str(project_root / "src"))
 
 from provide.foundation import setup_telemetry, logger

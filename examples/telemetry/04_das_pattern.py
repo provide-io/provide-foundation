@@ -7,7 +7,7 @@ import sys
 
 # Add src to path for examples
 example_file = Path(__file__).resolve()
-project_root = example_file.parent.parent  # Go up from examples to project root
+project_root = example_file.parent.parent.parent  # Go up from examples to project root
 # Line removed - project_root already set above
 src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
