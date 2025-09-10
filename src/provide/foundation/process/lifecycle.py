@@ -114,8 +114,7 @@ class ManagedProcess:
         return self._process.poll() is None
 
     @with_error_handling(
-        error_mapper=lambda e: ProcessError(f"Failed to launch process: {e}") if not isinstance(e, (ProcessError, RuntimeError)) else e,
-        context_provider=lambda: {"method": "launch", "command": " ".join(self.command) if hasattr(self, 'command') else "unknown"}
+        error_mapper=lambda e: ProcessError(f"Failed to launch process: {e}") if not isinstance(e, (ProcessError, RuntimeError)) else e
     )
     def launch(self) -> None:
         """
