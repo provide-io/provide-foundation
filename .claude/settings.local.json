@@ -6,7 +6,8 @@
       "Bash(gh run view:*)",
       "Bash(gh workflow:*)",
       "Bash(gh run watch:*)",
-      "Bash(gh api:*)"
+      "Bash(gh api:*)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": [],
