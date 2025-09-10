@@ -153,7 +153,7 @@ norecursedirs = [
     ".hypothesis", # Added to address the warning
 ]
 # Changed from -ra to -rFE to suppress skipped test output
-addopts = "-rFE -q --color=yes --benchmark-columns=min,max,mean,stddev,median,iqr,ops --benchmark-sort=mean"
+addopts = "-rFE -q --color=yes --benchmark-columns=min,max,mean,stddev,median,iqr,ops --benchmark-sort=mean --dist worksteal"
 
 ################################################################################
 # Ruff Linter and Formatter Configuration
