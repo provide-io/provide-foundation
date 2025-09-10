@@ -45,10 +45,27 @@ from provide.foundation.config.types import (
     ConfigSource,
     ConfigValue,
 )
+from provide.foundation.config.converters import (
+    parse_bool_extended,
+    parse_comma_list,
+    parse_console_formatter,
+    parse_float_with_validation,
+    parse_headers,
+    parse_json_dict,
+    parse_json_list,
+    parse_log_level,
+    parse_module_levels,
+    parse_rate_limits,
+    parse_sample_rate,
+    validate_log_level,
+    validate_non_negative,
+    validate_overflow_policy,
+    validate_port,
+    validate_positive,
+    validate_sample_rate,
+)
 from provide.foundation.config.validators import (
     validate_choice,
-    validate_non_negative,
-    validate_positive,
     validate_range,
 )
 from provide.foundation.errors.config import (
@@ -96,11 +113,27 @@ __all__ = [
     "parse_dict",
     "parse_list",
     "set_config",
+    # Converters
+    "parse_bool_extended",
+    "parse_comma_list",
+    "parse_console_formatter",
+    "parse_float_with_validation",
+    "parse_headers",
+    "parse_json_dict",
+    "parse_json_list",
+    "parse_log_level",
+    "parse_module_levels",
+    "parse_rate_limits",
+    "parse_sample_rate",
     # Validators
     "validate_choice",
     "validate_config",
+    "validate_log_level",
     "validate_non_negative",
+    "validate_overflow_policy",
+    "validate_port",
     "validate_positive",
     "validate_range",
+    "validate_sample_rate",
     "validate_schema",
 ]

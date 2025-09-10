@@ -228,7 +228,7 @@ class TestDogfoodingPerformance:
                 console_formatter="key_value",
             )
             # The from_env() method includes our structured warning improvements
-            LoggingConfig.from_env(strict=False)
+            LoggingConfig.from_env()
 
         # Config warnings should be very fast even with structured logging
         benchmark(generate_config_warnings)

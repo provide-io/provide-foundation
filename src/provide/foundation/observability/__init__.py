@@ -17,7 +17,7 @@ except ImportError:
 # Only import OpenObserve if OpenTelemetry is available
 if _HAS_OTEL:
     try:
-        from provide.foundation.observability.openobserve import (
+        from provide.foundation.integrations.openobserve import (
             OpenObserveClient,
             search_logs,
             stream_logs,
@@ -25,7 +25,7 @@ if _HAS_OTEL:
 
         # Commands will auto-register if click is available
         try:
-            from provide.foundation.observability.openobserve.commands import (
+            from provide.foundation.integrations.openobserve.commands import (
                 openobserve_group,
             )
         except ImportError:

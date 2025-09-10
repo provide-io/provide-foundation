@@ -78,6 +78,8 @@ from provide.foundation.testing import (
     default_container_directory,
     captured_stderr_for_foundation,
     setup_foundation_telemetry_for_test,
+    # CLI fixtures
+    click_testing_mode,
     # Crypto fixtures
     client_cert,
     server_cert,
@@ -125,6 +127,8 @@ __all__ = [
     "captured_stderr_for_foundation",
     "default_container_directory",
     "setup_foundation_telemetry_for_test",
+    # CLI exports
+    "click_testing_mode",
     # Crypto fixtures
     "client_cert",
     "server_cert",

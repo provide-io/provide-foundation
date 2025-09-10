@@ -72,7 +72,7 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
     else:
         # Get the foundation log output stream
         try:
-            logging_config = LoggingConfig.from_env(strict=False)
+            logging_config = LoggingConfig.from_env()
             foundation_stream = get_foundation_log_stream(
                 logging_config.foundation_log_output
             )

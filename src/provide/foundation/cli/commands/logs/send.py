@@ -83,7 +83,7 @@ if _HAS_CLICK:
             # Send with JSON attributes
             foundation logs send -m "Error occurred" -j '{"error_code": 500, "path": "/api/users"}'
         """
-        from provide.foundation.observability.openobserve.otlp import send_log
+        from provide.foundation.integrations.openobserve.otlp import send_log
 
         # Get message from stdin if not provided
         if not message:

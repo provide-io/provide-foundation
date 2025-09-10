@@ -69,7 +69,7 @@ if _HAS_CLICK:
             # Tail with JSON output
             foundation logs tail --format json
         """
-        from provide.foundation.observability.openobserve import (
+        from provide.foundation.integrations.openobserve import (
             format_output,
             tail_logs,
         )

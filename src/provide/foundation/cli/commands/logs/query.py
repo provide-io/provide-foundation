@@ -89,7 +89,7 @@ if _HAS_CLICK:
             # Custom SQL query
             foundation logs query --sql "SELECT * FROM default WHERE duration_ms > 1000"
         """
-        from provide.foundation.observability.openobserve import (
+        from provide.foundation.integrations.openobserve import (
             format_output,
             search_logs,
         )

@@ -2,9 +2,11 @@
 
 from typing import NamedTuple
 
-from provide.foundation.logger import get_logger
 
-log = get_logger(__name__)
+def _get_logger():
+    """Lazy logger import to avoid circular dependencies."""
+    from provide.foundation.logger import get_logger
+    return get_logger(__name__)
 
 
 class DependencyStatus(NamedTuple):

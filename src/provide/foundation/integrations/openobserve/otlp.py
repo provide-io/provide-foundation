@@ -7,7 +7,7 @@ import json
 from typing import Any
 
 from provide.foundation.logger import get_logger
-from provide.foundation.observability.openobserve.client import OpenObserveClient
+from provide.foundation.integrations.openobserve.client import OpenObserveClient
 
 log = get_logger(__name__)
 

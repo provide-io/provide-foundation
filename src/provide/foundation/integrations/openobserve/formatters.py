@@ -8,7 +8,7 @@ import io
 import json
 from typing import Any
 
-from provide.foundation.observability.openobserve.models import SearchResponse
+from provide.foundation.integrations.openobserve.models import SearchResponse
 
 
 def format_json(response: SearchResponse | dict[str, Any], pretty: bool = True) -> str:

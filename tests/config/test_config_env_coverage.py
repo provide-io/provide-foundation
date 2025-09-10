@@ -353,14 +353,16 @@ class TestRuntimeConfigAdvanced:
             assert config.prefixed == "prefixed_value"
 
     def test_auto_parse_method(self):
-        """Test _auto_parse static method."""
+        """Test auto_parse function."""
+        from provide.foundation.utils.parsing import auto_parse
         # Create a mock attribute
         mock_attr = Mock()
         mock_attr.type = int
         mock_attr.name = "test_field"
+        mock_attr.metadata = {}
 
         # Test auto parsing
-        result = RuntimeConfig._auto_parse(mock_attr, "42")
+        result = auto_parse(mock_attr, "42")
         assert result == 42
 
     def test_to_env_dict_comprehensive(self):

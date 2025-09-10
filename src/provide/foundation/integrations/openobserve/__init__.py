@@ -1,11 +1,12 @@
 """
 OpenObserve integration for Foundation.
 
-Provides log querying and streaming capabilities when OpenTelemetry is available.
+Provides log querying and streaming capabilities as an optional integration.
 """
 
-from provide.foundation.observability.openobserve.client import OpenObserveClient
-from provide.foundation.observability.openobserve.exceptions import (
+from provide.foundation.integrations.openobserve.client import OpenObserveClient
+from provide.foundation.integrations.openobserve.config import OpenObserveConfig
+from provide.foundation.integrations.openobserve.exceptions import (
     OpenObserveAuthenticationError,
     OpenObserveConfigError,
     OpenObserveConnectionError,
@@ -13,7 +14,7 @@ from provide.foundation.observability.openobserve.exceptions import (
     OpenObserveQueryError,
     OpenObserveStreamingError,
 )
-from provide.foundation.observability.openobserve.formatters import (
+from provide.foundation.integrations.openobserve.formatters import (
     format_csv,
     format_json,
     format_log_line,
@@ -21,13 +22,13 @@ from provide.foundation.observability.openobserve.formatters import (
     format_summary,
     format_table,
 )
-from provide.foundation.observability.openobserve.models import (
+from provide.foundation.integrations.openobserve.models import (
     SearchQuery,
     SearchResponse,
     StreamInfo,
     parse_relative_time,
 )
-from provide.foundation.observability.openobserve.search import (
+from provide.foundation.integrations.openobserve.search import (
     aggregate_by_level,
     get_current_trace_logs,
     search_by_level,
@@ -36,13 +37,15 @@ from provide.foundation.observability.openobserve.search import (
     search_errors,
     search_logs,
 )
-from provide.foundation.observability.openobserve.streaming import (
+from provide.foundation.integrations.openobserve.streaming import (
     stream_logs,
     stream_search_http2,
     tail_logs,
 )
 
 __all__ = [
+    # Configuration
+    "OpenObserveConfig",
     # Client
     "OpenObserveClient",
     # Search functions

@@ -10,6 +10,8 @@ import sys
 import threading
 from typing import TextIO
 
+from provide.foundation.streams.config import get_stream_config
+
 _PROVIDE_LOG_STREAM: TextIO = sys.stderr
 _LOG_FILE_HANDLE: TextIO | None = None
 _STREAM_LOCK = threading.Lock()
@@ -18,10 +20,11 @@ _STREAM_LOCK = threading.Lock()
 def _is_in_click_testing() -> bool:
     """Check if we're running inside Click's testing framework."""
     import inspect
-    import os
-
+    
+    config = get_stream_config()
+    
     # Check environment variables for Click testing
-    if os.getenv("CLICK_TESTING"):
+    if config.click_testing:
         return True
 
     # Check the call stack for Click's testing module or CLI integration tests

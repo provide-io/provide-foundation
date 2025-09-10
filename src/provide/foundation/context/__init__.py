@@ -1,12 +1,16 @@
 """
 Core context management for provide-foundation.
 
-Provides unified application context that bridges configuration, runtime state,
-and presentation concerns across the foundation library.
+Provides CLI runtime context for managing command execution state,
+output formatting, and CLI-specific settings.
 """
 
-from provide.foundation.context.core import Context
+from provide.foundation.context.core import CLIContext
+
+# Backward compatibility
+Context = CLIContext
 
 __all__ = [
-    "Context",
+    "CLIContext",
+    "Context",  # Backward compatibility
 ]
