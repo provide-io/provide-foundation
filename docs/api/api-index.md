@@ -30,19 +30,19 @@ Complete API documentation for provide.foundation.
     <h3>🖥️ Console & CLI</h3>
     <p>User interaction and command-line tools</p>
     <ul>
-      <li><a href="utils/console/">Console I/O</a></li>
+      <li><a href="console/">Console I/O</a></li>
       <li><a href="cli/decorators/">CLI Decorators</a></li>
       <li><a href="hub/index/">Command Hub</a></li>
     </ul>
   </div>
 
   <div class="feature-card">
-    <h3>🌐 Emoji Sets & Advanced</h3>
-    <p>Domain-specific emoji mappings and advanced features</p>
+    <h3>🌐 Event Sets & Resilience</h3>
+    <p>Event enrichment and reliability patterns</p>
     <ul>
-      <li><a href="emoji_sets/http/">HTTP Layer</a></li>
-      <li><a href="emoji_sets/database/">Database Layer</a></li>
-      <li><a href="emoji_sets/llm/">LLM Layer</a></li>
+      <li><a href="eventsets/">Event Sets</a></li>
+      <li><a href="resilience/">Resilience Patterns</a></li>
+      <li><a href="errors/">Error Handling</a></li>
     </ul>
   </div>
 </div>
@@ -51,7 +51,7 @@ Complete API documentation for provide.foundation.
 
 ### Logger
 
-The main logging interface with structured, emoji-enhanced output:
+The main logging interface with structured, event-enriched output:
 
 ```python
 from provide.foundation import logger, get_logger

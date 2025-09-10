@@ -42,7 +42,7 @@ class OpenObserveClient:
         organization: str = "default",
         timeout: int = 30,
         max_retries: int = 3,
-    ):
+    ) -> None:
         """Initialize OpenObserve client.
 
         Args:

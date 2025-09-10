@@ -20,7 +20,7 @@ def mock_factory():
         Function that creates mock objects with common configurations.
     """
 
-    def _create_mock(name: str = None, **kwargs) -> Mock:
+    def _create_mock(name: str | None = None, **kwargs) -> Mock:
         """
         Create a mock with standard configuration.
 
@@ -51,7 +51,7 @@ def magic_mock_factory():
         Function that creates MagicMock objects with common configurations.
     """
 
-    def _create_magic_mock(name: str = None, **kwargs) -> MagicMock:
+    def _create_magic_mock(name: str | None = None, **kwargs) -> MagicMock:
         """
         Create a MagicMock with standard configuration.
 
@@ -77,7 +77,7 @@ def async_mock_factory():
     """
 
     def _create_async_mock(
-        name: str = None, return_value=None, side_effect=None, **kwargs
+        name: str | None = None, return_value: object = None, side_effect: object = None, **kwargs
     ) -> AsyncMock:
         """
         Create an AsyncMock with standard configuration.
