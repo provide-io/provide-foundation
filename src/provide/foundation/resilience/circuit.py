@@ -8,7 +8,9 @@ from typing import Callable, TypeVar
 
 from attrs import define, field
 
-from provide.foundation.logger import logger
+from provide.foundation.logger import get_logger
+
+logger = get_logger(__name__)
 
 T = TypeVar("T")
 
