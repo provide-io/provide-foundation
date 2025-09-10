@@ -10,10 +10,15 @@ from provide.foundation.logger.ratelimit.processor import (
     RateLimiterProcessor,
     create_rate_limiter_processor,
 )
+from provide.foundation.logger.ratelimit.limiters import GlobalRateLimiter
 
 
 class TestRateLimiterProcessor:
     """Test RateLimiterProcessor class."""
+
+    def setup_method(self) -> None:
+        """Reset GlobalRateLimiter singleton before each test."""
+        GlobalRateLimiter._instance = None
 
     def test_rate_limiter_processor_init(self) -> None:
         """Test RateLimiterProcessor initialization."""
