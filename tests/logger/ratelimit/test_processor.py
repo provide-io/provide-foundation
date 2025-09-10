@@ -6,11 +6,11 @@ from unittest.mock import MagicMock, patch
 import pytest
 import structlog
 
+from provide.foundation.logger.ratelimit.limiters import GlobalRateLimiter
 from provide.foundation.logger.ratelimit.processor import (
     RateLimiterProcessor,
     create_rate_limiter_processor,
 )
-from provide.foundation.logger.ratelimit.limiters import GlobalRateLimiter
 
 
 class TestRateLimiterProcessor:
