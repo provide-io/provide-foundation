@@ -5,7 +5,7 @@ Provides consistent async/await patterns, task management,
 and async context utilities for Foundation applications.
 """
 
-from provide.foundation.async.core import (
+from provide.foundation.asynctools.core import (
     provide_gather,
     provide_run,
     provide_sleep_async,
