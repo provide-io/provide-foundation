@@ -115,7 +115,7 @@ def test_logger_base_error_while_waiting_for_lock() -> None:
     _LAZY_SETUP_STATE["error"] = None
     _LAZY_SETUP_STATE["in_progress"] = False
 
-    def set_error():
+    def set_error() -> MagicMock:
         _LAZY_SETUP_STATE["error"] = Exception("Error from other thread")
         return MagicMock()
 
