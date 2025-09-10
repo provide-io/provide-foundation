@@ -16,13 +16,21 @@ Practical examples demonstrating provide-foundation features and patterns.
 ### Data Pipeline
 [Data Pipeline](data-pipeline.md) - Data processing with error handling
 
+### Transport Client
+HTTP client usage with middleware, error handling, and streaming
+
 ## Running Examples
 
 All examples are available in the project's `examples/` directory:
 
 ```bash
 cd examples
-python 01_quick_start.py
+python 01_quick_start.py         # Basic logging and telemetry
+python 02_basic_app.py           # Application structure
+python 03_cli_tool.py            # CLI development  
+python 04_web_service.py         # HTTP service
+python 05_data_pipeline.py       # Data processing
+python 06_transport_client.py    # HTTP client
 ```
 
 Each example is self-contained and demonstrates specific features:
@@ -31,6 +39,7 @@ Each example is self-contained and demonstrates specific features:
 - **Configuration management** from environment and files  
 - **Error handling** with resilience patterns
 - **CLI development** with automatic help generation
+- **HTTP client operations** with middleware and retries
 - **Performance monitoring** with metrics collection
 
 ## Example Patterns
