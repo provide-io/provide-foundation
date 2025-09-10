@@ -35,7 +35,8 @@
       "Bash(PYTHONPATH=src python -m pytest tests/utils/test_utils_coverage.py::TestParsingCoverage::test_auto_parse_with_converter_metadata -xvs)",
       "Bash(PYTHONPATH=src python -c \"from provide.foundation.utils.parsing import auto_parse; print(''Import works'')\")",
       "Bash(timeout:*)",
-      "Bash(/bin/ls src/provide/foundation/config/*.py)"
+      "Bash(/bin/ls src/provide/foundation/config/*.py)",
+      "Bash(PYTHONPATH=src python -c \"\ntry:\n    from provide.foundation.config.defaults import EXIT_SUCCESS\n    print(''✅ Defaults import works'')\nexcept Exception as e:\n    print(f''❌ Error: {e}'')\n    import traceback\n    traceback.print_exc()\n\")"
     ],
     "deny": [],
     "ask": [],
