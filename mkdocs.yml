@@ -102,6 +102,13 @@ nav:
     - First Application: getting-started/first-app.md
     - Examples: getting-started/examples.md
 
+  - Examples:
+    - examples/index.md
+    - Basic Application: examples/basic-app.md
+    - CLI Tool: examples/cli-tool.md
+    - Web Service: examples/web-service.md
+    - Data Pipeline: examples/data-pipeline.md
+
   - Guide:
     - guide/index.md
     - Core Concepts:
@@ -118,9 +125,7 @@ nav:
         - File Formats: guide/config/files-formats.md
         - Loading: guide/config/files-loading.md
         - Advanced Features: guide/config/files-advanced.md
-      - Runtime Config: 
-        - guide/config/runtime.md
-        - Overview: guide/config/runtime/index.md
+      - Runtime Config: guide/config/runtime.md
       - Reference: guide/config/reference.md
       - Best Practices:
         - guide/config/best-practices.md
@@ -181,7 +186,6 @@ nav:
     - Advanced:
       - guide/advanced/index.md
       - Advanced Usage: guide/advanced-usage.md
-      - Custom Emoji Sets: guide/advanced/custom-emoji-sets.md
       - Custom Processors: guide/advanced/custom-processors.md
       - Integration Patterns: guide/advanced/integration-patterns.md
       - Performance Optimization: guide/advanced/performance-optimization.md
