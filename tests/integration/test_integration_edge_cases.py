@@ -28,24 +28,34 @@ from provide.foundation.testing import reset_foundation_setup_for_testing
 def test_invalid_environment_variables_handling(
     monkeypatch, capsys
 ) -> None:  # Added capsys
-    """Tests handling of invalid environment variables."""
-    # Define cases with expected warning snippet, or None if specific warning isn't critical/expected
-    invalid_env_cases = [
-        (
+    """Tests handling of invalid environment variables with strict validation."""
+    # Define cases that should raise ValueError with strict validation
+    strict_validation_cases = [
+        ("PROVIDE_LOG_LEVEL", "INVALID_LEVEL", "Invalid log level 'INVALID_LEVEL'"),
+        ("PROVIDE_LOG_CONSOLE_FORMATTER", "invalid_formatter", "Invalid console formatter 'invalid_formatter'"),
+    ]
+    
+    # Test cases that should raise exceptions
+    for env_var, invalid_value, expected_error in strict_validation_cases:
+        # Clear all env vars that might interfere
+        possible_interfering_vars = [
             "PROVIDE_LOG_LEVEL",
-            "INVALID_LEVEL",
-            "Invalid PROVIDE_LOG_LEVEL 'INVALID_LEVEL'",
-        ),
-        (
-            "PROVIDE_LOG_CONSOLE_FORMATTER",
-            "invalid_formatter",
-            "Invalid PROVIDE_LOG_CONSOLE_FORMATTER 'invalid_formatter'",
-        ),
-        (
-            "PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED",
-            "maybe",
-            None,
-        ),  # bool parsing defaults, no specific warning expected by from_env
+            "PROVIDE_LOG_CONSOLE_FORMATTER", 
+            "PROVIDE_LOG_MODULE_LEVELS",
+        ]
+        for var_to_clear in possible_interfering_vars:
+            monkeypatch.delenv(var_to_clear, raising=False)
+            
+        # Set the invalid value
+        monkeypatch.setenv(env_var, invalid_value)
+        
+        # Should raise ValueError with strict validation
+        with pytest.raises(ValueError, match=expected_error):
+            TelemetryConfig.from_env()
+    
+    # Define cases that should handle invalid values gracefully (bool parsing)
+    lenient_cases = [
+        ("PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED", "maybe", None),
         (
             "PROVIDE_LOG_DAS_EMOJI_ENABLED",
             "sometimes",
@@ -53,14 +63,9 @@ def test_invalid_environment_variables_handling(
         ),  # bool parsing defaults
         ("PROVIDE_LOG_OMIT_TIMESTAMP", "perhaps", None),  # bool parsing defaults
         ("PROVIDE_TELEMETRY_DISABLED", "kinda", None),  # bool parsing defaults
-        (
-            "PROVIDE_LOG_MODULE_LEVELS",
-            "invalid:format:here,also:bad",
-            "Invalid log level 'FORMAT:HERE' for module 'invalid'",
-        ),
     ]
 
-    for env_var, invalid_value, expected_warning_snippet in invalid_env_cases:
+    for env_var, invalid_value, expected_warning_snippet in lenient_cases:
         # Use monkeypatch to set environment variables cleanly for each case
         # Clear relevant env vars to ensure a clean slate for each iteration,
         # otherwise a previously set valid value might interfere.
@@ -416,11 +421,12 @@ def test_configuration_validation_edge_cases() -> None:
         ("false", False),
         ("False", False),
         ("FALSE", False),
-        ("1", False),
+        ("1", True),
         ("0", False),
-        ("yes", False),
+        ("yes", True),
         ("no", False),
-        ("", False),
+        ("on", True),
+        ("off", False),
     ]
     for env_value, expected in bool_test_cases:
         with patch.dict(os.environ, {"PROVIDE_LOG_OMIT_TIMESTAMP": env_value}):

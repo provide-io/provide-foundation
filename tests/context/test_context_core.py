@@ -6,7 +6,7 @@ import tempfile
 
 import pytest
 
-from provide.foundation.context import Context
+from provide.foundation.context import CLIContext as Context
 
 
 class TestContext:

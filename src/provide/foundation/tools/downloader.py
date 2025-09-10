@@ -12,6 +12,7 @@ from typing import Callable
 
 from provide.foundation.errors import FoundationError
 from provide.foundation.logger import get_logger
+from provide.foundation.resilience import retry, fallback
 from provide.foundation.transport import UniversalClient
 
 log = get_logger(__name__)
@@ -71,6 +72,7 @@ class ToolDownloader:
             except Exception as e:
                 log.warning(f"Progress callback failed: {e}")
     
+    @retry(max_attempts=3, base_delay=1.0)
     def download_with_progress(
         self,
         url: str,
@@ -186,7 +188,7 @@ class ToolDownloader:
         dest: Path
     ) -> Path:
         """
-        Try multiple mirrors until one succeeds.
+        Try multiple mirrors until one succeeds using fallback pattern.
         
         Args:
             mirrors: List of mirror URLs to try.
@@ -198,16 +200,25 @@ class ToolDownloader:
         Raises:
             DownloadError: If all mirrors fail.
         """
-        errors = []
+        from provide.foundation.resilience.fallback import FallbackChain
         
+        if not mirrors:
+            raise DownloadError("No mirrors provided")
+        
+        # Create fallback functions for each mirror
+        fallback_funcs = []
         for mirror_url in mirrors:
-            try:
-                log.debug(f"Trying mirror: {mirror_url}")
-                return self.download_with_progress(mirror_url, dest)
-            except Exception as e:
-                log.warning(f"Mirror {mirror_url} failed: {e}")
-                errors.append((mirror_url, str(e)))
-                continue
+            def create_mirror_func(url):
+                def mirror_download():
+                    log.debug(f"Trying mirror: {url}")
+                    return self.download_with_progress(url, dest)
+                return mirror_download
+            fallback_funcs.append(create_mirror_func(mirror_url))
         
-        # All mirrors failed
-        raise DownloadError(f"All mirrors failed: {errors}")
+        # Use FallbackChain to try mirrors in order
+        chain = FallbackChain(fallbacks=fallback_funcs[1:])  # All but first are fallbacks
+        
+        try:
+            return chain.execute(fallback_funcs[0])  # First is primary
+        except Exception as e:
+            raise DownloadError(f"All mirrors failed: {e}")

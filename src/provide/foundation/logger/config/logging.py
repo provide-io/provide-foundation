@@ -15,6 +15,7 @@ from provide.foundation.config.converters import (
     parse_bool_extended,
     parse_console_formatter,
     parse_float_with_validation,
+    parse_foundation_log_output,
     parse_log_level,
     parse_module_levels,
     parse_rate_limits,
@@ -87,7 +88,7 @@ class LoggingConfig(RuntimeConfig):
     foundation_log_output: str = field(
         default="stderr",
         env_var="FOUNDATION_LOG_OUTPUT",
-        converter=lambda x: x.lower() if x else "stderr",
+        converter=parse_foundation_log_output,
         description="Output destination for Foundation internal messages (stderr, stdout, main)",
     )
     rate_limit_enabled: bool = field(

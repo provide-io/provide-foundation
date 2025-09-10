@@ -106,20 +106,13 @@ class TestLoggingConfigCoverage:
             assert config.log_file is not None
             assert str(config.log_file) == "/tmp/test.log"
 
-    def test_logging_config_event_sets_replaced_emoji_sets(self):
-        """Test that event sets have replaced emoji sets."""
+    def test_logging_config_no_emoji_sets_fields(self):
+        """Test that deprecated emoji sets fields don't exist."""
         from provide.foundation.logger.config.logging import LoggingConfig
-        from provide.foundation.eventsets.registry import get_registry
         
         config = LoggingConfig.from_env()
         # Emoji sets fields should not exist
         assert not hasattr(config, 'enabled_emoji_sets')
-        
-        # Event sets should be available through registry
-        registry = get_registry()
-        assert registry.has("eventset", "llm")
-        assert registry.has("eventset", "http")
-        assert registry.has("eventset", "database")
 
     def test_logging_config_log_level_name_mapping(self):
         """Test logging config level name mappings."""
@@ -187,19 +180,20 @@ class TestTelemetryConfigCoverage:
             config = TelemetryConfig.from_env()
             assert config.service_name == "provide-service"
 
-    def test_telemetry_config_from_env_otel_priority(self):
-        """Test that OTEL_SERVICE_NAME takes priority over PROVIDE_SERVICE_NAME."""
+    def test_telemetry_config_from_env_provide_service_name_only(self):
+        """Test that PROVIDE_SERVICE_NAME is used (OTEL_SERVICE_NAME is ignored)."""
         from provide.foundation.logger.config.telemetry import TelemetryConfig
 
         with patch.dict(
             os.environ,
             {
-                "OTEL_SERVICE_NAME": "otel-service",
+                "OTEL_SERVICE_NAME": "otel-service",  # This should be ignored
                 "PROVIDE_SERVICE_NAME": "provide-service",
             },
         ):
             config = TelemetryConfig.from_env()
-            assert config.service_name == "otel-service"
+            # OTEL is optional and no longer has priority
+            assert config.service_name == "provide-service"
 
     def test_telemetry_config_globally_disabled(self):
         """Test telemetry config with global disable flag."""

@@ -10,13 +10,13 @@ import pytest
 import click
 from click.testing import CliRunner
 
-from provide.foundation.cli.testing import (
+from provide.foundation.testing import (
     MockContext,
     isolated_cli_runner,
     temp_config_file,
     create_test_cli,
-    mock_logger,
     CliTestCase,
+    mock_logger,
 )
 
 
@@ -158,6 +158,8 @@ class TestTempConfigFile:
 
         with patch("builtins.__import__") as mock_import:
             mock_tomli_w = Mock()
+            # Mock dumps method to return a proper TOML string
+            mock_tomli_w.dumps.return_value = 'key1 = "value1"\nkey2 = 42\n'
             mock_import.return_value = mock_tomli_w
 
             with temp_config_file(config_data, "toml") as config_path:
@@ -274,35 +276,31 @@ class TestCreateTestCli:
 class TestMockLogger:
     """Test mock_logger function."""
 
-    def test_mock_logger_creation(self):
+    def test_mock_logger_creation(self, mock_logger):
         """Test mock_logger creates proper mock."""
-        logger = mock_logger()
-        assert hasattr(logger, "debug")
-        assert hasattr(logger, "info")
-        assert hasattr(logger, "warning")
-        assert hasattr(logger, "error")
-        assert hasattr(logger, "critical")
+        assert hasattr(mock_logger, "debug")
+        assert hasattr(mock_logger, "info")
+        assert hasattr(mock_logger, "warning")
+        assert hasattr(mock_logger, "error")
+        assert hasattr(mock_logger, "critical")
 
-    def test_mock_logger_methods_callable(self):
+    def test_mock_logger_methods_callable(self, mock_logger):
         """Test mock_logger methods are callable."""
-        logger = mock_logger()
-
         # Should not raise exceptions
-        logger.debug("test message")
-        logger.info("test message")
-        logger.warning("test message")
-        logger.error("test message")
-        logger.critical("test message")
+        mock_logger.debug("test message")
+        mock_logger.info("test message")
+        mock_logger.warning("test message")
+        mock_logger.error("test message")
+        mock_logger.critical("test message")
 
-    def test_mock_logger_call_tracking(self):
+    def test_mock_logger_call_tracking(self, mock_logger):
         """Test mock_logger methods track calls."""
-        logger = mock_logger()
 
-        logger.debug("debug message")
-        logger.info("info message", extra="data")
+        mock_logger.debug("debug message")
+        mock_logger.info("info message", extra="data")
 
-        logger.debug.assert_called_once_with("debug message")
-        logger.info.assert_called_once_with("info message", extra="data")
+        mock_logger.debug.assert_called_once_with("debug message")
+        mock_logger.info.assert_called_once_with("info message", extra="data")
 
 
 class TestCliTestCase:

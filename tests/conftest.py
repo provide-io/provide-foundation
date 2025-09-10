@@ -80,6 +80,8 @@ from provide.foundation.testing import (
     setup_foundation_telemetry_for_test,
     # CLI fixtures
     click_testing_mode,
+    # Logger fixtures
+    mock_logger,
     # Crypto fixtures
     client_cert,
     server_cert,
@@ -129,6 +131,8 @@ __all__ = [
     "setup_foundation_telemetry_for_test",
     # CLI exports
     "click_testing_mode",
+    # Logger exports
+    "mock_logger",
     # Crypto fixtures
     "client_cert",
     "server_cert",

@@ -6,6 +6,7 @@ for JSON mode, colors, and proper stream separation.
 """
 
 import json
+import os
 import sys
 from typing import Any
 
@@ -44,6 +45,19 @@ def _should_use_color(ctx: CLIContext | None = None, stream=None) -> bool:
     """Determine if color output should be used."""
     if ctx is None:
         ctx = _get_context()
+
+    # Check FORCE_COLOR first (enables color even for non-TTY)
+    force_color = os.environ.get('FORCE_COLOR', '').lower()
+    if force_color in ('1', 'true', 'yes'):
+        return True
+
+    # Check NO_COLOR (disables color even for TTY)
+    if os.environ.get('NO_COLOR'):
+        return False
+
+    # Check context no_color setting
+    if ctx and ctx.no_color:
+        return False
 
     # Check if stream is a TTY
     if stream:

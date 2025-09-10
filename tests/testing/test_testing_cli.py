@@ -15,9 +15,9 @@ from provide.foundation.testing.cli import (
     isolated_cli_runner,
     temp_config_file,
     create_test_cli,
-    mock_logger,
     CliTestCase,
 )
+from provide.foundation.testing.logger import mock_logger
 
 
 class TestMockContext:
@@ -179,25 +179,23 @@ class TestCreateTestCli:
 class TestMockLogger:
     """Test mock logger creation."""
 
-    def test_mock_logger_has_methods(self):
+    def test_mock_logger_has_methods(self, mock_logger):
         """Test that mock logger has all expected methods."""
-        logger = mock_logger()
-
         methods = ["debug", "info", "warning", "error", "critical"]
         for method in methods:
-            assert hasattr(logger, method)
-            assert isinstance(getattr(logger, method), MagicMock)
+            assert hasattr(mock_logger, method)
+            # mock_logger creates Mock objects, not MagicMock
+            from unittest.mock import Mock
+            assert isinstance(getattr(mock_logger, method), Mock)
 
-    def test_mock_logger_methods_callable(self):
+    def test_mock_logger_methods_callable(self, mock_logger):
         """Test that mock logger methods are callable."""
-        logger = mock_logger()
-
         # Should not raise any exceptions
-        logger.debug("test")
-        logger.info("test")
-        logger.warning("test")
-        logger.error("test")
-        logger.critical("test")
+        mock_logger.debug("test")
+        mock_logger.info("test")
+        mock_logger.warning("test")
+        mock_logger.error("test")
+        mock_logger.critical("test")
 
 
 class TestCliTestCase:

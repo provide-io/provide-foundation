@@ -65,7 +65,7 @@ def parse_console_formatter(value: str) -> ConsoleFormatterStr:
     formatter = value.lower()
     if formatter not in _VALID_FORMATTER_TUPLE:
         raise ValueError(
-            f"Invalid formatter '{value}'. Valid options: {', '.join(_VALID_FORMATTER_TUPLE)}"
+            f"Invalid console formatter '{value}'. Valid options: {', '.join(_VALID_FORMATTER_TUPLE)}"
         )
     return formatter
 
@@ -163,6 +163,33 @@ def parse_rate_limits(value: str) -> dict[str, tuple[float, float]]:
     return result
 
 
+def parse_foundation_log_output(value: str) -> str:
+    """
+    Parse and validate foundation log output destination.
+    
+    Args:
+        value: Output destination string
+        
+    Returns:
+        Valid output destination (stderr, stdout, main)
+        
+    Raises:
+        ValueError: If the value is invalid
+    """
+    if not value:
+        return "stderr"
+        
+    normalized = value.lower().strip()
+    valid_options = ("stderr", "stdout", "main")
+    
+    if normalized in valid_options:
+        return normalized
+    else:
+        raise ValueError(
+            f"Invalid foundation log output '{value}'. Valid options: {', '.join(valid_options)}"
+        )
+
+
 def parse_comma_list(value: str) -> list[str]:
     """
     Parse comma-separated list of strings.
@@ -198,6 +225,41 @@ def parse_bool_extended(value: str | bool) -> bool:
     # Convert to string and parse
     value_lower = str(value).lower().strip()
     return value_lower in ("true", "yes", "1", "on")
+
+
+def parse_bool_strict(value: str | bool) -> bool:
+    """
+    Parse boolean from string with strict validation.
+    
+    Recognizes: true/false, yes/no, 1/0, on/off (case-insensitive)
+    
+    Args:
+        value: Boolean string representation or bool
+        
+    Returns:
+        Boolean value
+        
+    Raises:
+        TypeError: If value is not a string or bool
+        ValueError: If the value cannot be parsed as boolean
+    """
+    # Check type first
+    if not isinstance(value, (str, bool)):
+        raise TypeError(f"Boolean field requires str or bool, got {type(value).__name__}")
+    
+    # If already a bool, return as-is
+    if isinstance(value, bool):
+        return value
+    
+    # Convert to string and parse
+    value_lower = value.lower().strip()
+    
+    if value_lower in ("true", "yes", "1", "on"):
+        return True
+    elif value_lower in ("false", "no", "0", "off"):
+        return False
+    else:
+        raise ValueError(f"Invalid boolean value '{value}'. Valid options: true/false, yes/no, 1/0, on/off")
 
 
 def parse_float_with_validation(

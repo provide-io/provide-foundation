@@ -7,7 +7,6 @@ in any project that depends on provide.foundation.
 
 from provide.foundation.testing.common.fixtures import (
     mock_http_config,
-    mock_logger,
     mock_telemetry_config,
     mock_config_source,
     mock_event_emitter,
@@ -21,7 +20,6 @@ from provide.foundation.testing.common.fixtures import (
 
 __all__ = [
     "mock_http_config",
-    "mock_logger",
     "mock_telemetry_config",
     "mock_config_source",
     "mock_event_emitter",
