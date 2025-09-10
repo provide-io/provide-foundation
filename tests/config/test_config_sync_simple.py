@@ -293,7 +293,14 @@ class TestSyncConfigManager:
     @patch("provide.foundation.config.sync.run_async")
     def test_export(self, mock_run_async):
         """Test export method."""
-        mock_run_async.return_value = {"name": "exported"}
+        # Set up mock to properly handle the coroutine
+        def mock_run(coro):
+            # Close the coroutine to avoid warnings
+            if hasattr(coro, 'close'):
+                coro.close()
+            return {"name": "exported"}
+        
+        mock_run_async.side_effect = mock_run
         manager = SyncConfigManager()
 
         result = manager.export("test")
@@ -307,7 +314,14 @@ class TestSyncConfigManager:
     @patch("provide.foundation.config.sync.run_async")
     def test_export_all(self, mock_run_async):
         """Test export_all method."""
-        mock_run_async.return_value = {"test": {"name": "exported"}}
+        # Set up mock to properly handle the coroutine
+        def mock_run(coro):
+            # Close the coroutine to avoid warnings
+            if hasattr(coro, 'close'):
+                coro.close()
+            return {"test": {"name": "exported"}}
+        
+        mock_run_async.side_effect = mock_run
         manager = SyncConfigManager()
 
         result = manager.export_all()
