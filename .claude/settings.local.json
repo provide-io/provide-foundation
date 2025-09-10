@@ -19,7 +19,8 @@
       "Bash(FOUNDATION_LOG_LEVEL=DEBUG python -c \"from provide.foundation import console, process, transport, file\")",
       "Bash(mkdocs serve:*)",
       "Bash(pkill:*)",
-      "Bash(mkdocs build:*)"
+      "Bash(mkdocs build:*)",
+      "Bash(PYTHONPATH=../src python 01_quick_start.py)"
     ],
     "deny": [],
     "ask": [],
