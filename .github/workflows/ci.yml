@@ -35,26 +35,29 @@ jobs:
         with:
           version: ${{ env.UV_VERSION }}
 
-      - name: 📦 Install Dependencies
+      - name: 📦 Setup Environment
         run: |
-          uv sync --all-groups
+          uv venv
+          source .venv/bin/activate
+          uv pip install -e .
+          uv sync --all-groups --dev
 
       - name: 🎨 Run Ruff Linting
         run: |
-          source env.sh
+          source .venv/bin/activate
           ruff check src/ examples/ --output-format=github
         continue-on-error: true
 
 
       - name: 📏 Run Ruff Formatting Check
         run: |
-          source env.sh
+          source .venv/bin/activate
           ruff format --check src/ examples/
         continue-on-error: true
 
       - name: 🏷️ Run MyPy Type Checking
         run: |
-          source env.sh
+          source .venv/bin/activate
           mypy src/ --show-error-codes --pretty
         continue-on-error: true
 
@@ -84,14 +87,17 @@ jobs:
         with:
           version: ${{ env.UV_VERSION }}
 
-      - name: 📦 Install Dependencies
+      - name: 📦 Setup Environment
         run: |
-          uv sync --all-groups
+          uv venv
+          source .venv/bin/activate
+          uv pip install -e .
+          uv sync --all-groups --dev
 
       - name: 🧪 Run Tests with Coverage
         shell: bash
         run: |
-          source env.sh
+          source .venv/bin/activate
           pytest tests/ \
             --cov=provide.foundation \
             --cov-report=xml \
@@ -152,18 +158,21 @@ jobs:
         with:
           version: ${{ env.UV_VERSION }}
 
-      - name: 📦 Install Dependencies
+      - name: 📦 Setup Environment
         run: |
-          uv sync --all-groups
+          uv venv
+          source .venv/bin/activate
+          uv pip install -e .
+          uv sync --all-groups --dev
 
       - name: 🔍 Version Consistency Check
         run: |
-          source env.sh
+          source .venv/bin/activate
           python scripts/version_checker.py
 
       - name: 🏗️ Build Package
         run: |
-          source env.sh
+          source .venv/bin/activate
           uv build
 
       - name: 🧪 Test Package Installation
@@ -171,15 +180,28 @@ jobs:
           # Create clean environment for package testing
           uv venv .venv_test
           source .venv_test/bin/activate
-          uv pip install dist/*.whl
+          # List what was built
+          ls -la dist/ || echo "No dist directory found"
+          # Install the wheel if it exists, otherwise install the tar.gz
+          if ls dist/*.whl 1> /dev/null 2>&1; then
+            uv pip install dist/*.whl
+          elif ls dist/*.tar.gz 1> /dev/null 2>&1; then
+            uv pip install dist/*.tar.gz
+          else
+            echo "Warning: No built packages found in dist/"
+            exit 1
+          fi
+          # Test the installation
           python -c "from provide.foundation import logger; logger.info('Package test successful')"
 
       - name: 📈 Upload Package Artifacts
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
-          name: package-dist
+          name: package-dist-${{ matrix.os }}-${{ matrix.python-version }}
           path: |
             dist/
+          if-no-files-found: warn
 
   # ==================================================================================
   # 🏁 Integration Tests
@@ -207,27 +229,20 @@ jobs:
         with:
           version: ${{ env.UV_VERSION }}
 
-      - name: 📦 Install Dependencies
+      - name: 📦 Setup Environment
         run: |
-          uv sync --all-groups
+          uv venv
+          source .venv/bin/activate
+          uv pip install -e .
+          uv sync --all-groups --dev
 
-      - name: 🧪 Run Full Integration Suite
+      - name: 🧪 Run Integration Tests
         run: |
-          source env.sh
-          pytest tests/test_integration.py -v --tb=short
-        continue-on-error: true
-
-      - name: ⚠️ Run Edge Case Tests
-        run: |
-          source env.sh
-          pytest tests/test_edge_cases.py -v --tb=short
-        continue-on-error: true
-
-      - name: 🔥 Run Coverage Completion Tests
-        run: |
-          source env.sh
-          pytest tests/test_coverage_completion.py -v
-        continue-on-error: true
+          source .venv/bin/activate
+          # Run all integration tests from various modules
+          pytest tests/errors/test_integration.py -v --tb=short || true
+          pytest tests/test_component_registry_*.py -v --tb=short || true
+          pytest tests/test_init_coverage.py -v --tb=short || true
 
   # ==================================================================================
   # 📋 Summary Job

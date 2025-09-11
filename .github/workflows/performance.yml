@@ -37,9 +37,12 @@ jobs:
         with:
           version: ${{ env.UV_VERSION }}
 
-      - name: 📦 Install Dependencies
+      - name: 📦 Setup Environment
         run: |
-          uv sync --all-groups
+          uv venv
+          source .venv/bin/activate
+          uv pip install -e .
+          uv sync --all-groups --dev
 
       - name: 📊 Run Standard Benchmarks
         run: |
