@@ -5,8 +5,7 @@ Reusable mock objects for configuration, logging, and other common
 testing scenarios across the provide-io ecosystem.
 """
 
-from unittest.mock import Mock, MagicMock, PropertyMock
-from typing import Any
+from unittest.mock import Mock, PropertyMock
 
 import pytest
 
@@ -18,12 +17,12 @@ from provide.foundation.logger.config.logging import LoggingConfig
 def mock_http_config():
     """
     Standard HTTP configuration for testing.
-    
+
     Returns:
         HTTPConfig with common test settings.
     """
     from provide.foundation.transport.config import HTTPConfig
-    
+
     return HTTPConfig(
         timeout=30.0,
         max_retries=3,
@@ -37,13 +36,11 @@ def mock_http_config():
     )
 
 
-
-
 @pytest.fixture
 def mock_telemetry_config():
     """
     Standard telemetry configuration for testing.
-    
+
     Returns:
         TelemetryConfig with debug logging enabled.
     """
@@ -59,7 +56,7 @@ def mock_telemetry_config():
 def mock_config_source():
     """
     Mock configuration source for testing config loading.
-    
+
     Returns:
         Mock that simulates a configuration source.
     """
@@ -70,7 +67,7 @@ def mock_config_source():
     source.watch = Mock()
     source.priority = 100
     source.name = "mock_source"
-    
+
     return source
 
 
@@ -78,7 +75,7 @@ def mock_config_source():
 def mock_event_emitter():
     """
     Mock event emitter for testing event-driven components.
-    
+
     Returns:
         Mock with emit, on, off methods.
     """
@@ -89,7 +86,7 @@ def mock_event_emitter():
     emitter.once = Mock()
     emitter.listeners = Mock(return_value=[])
     emitter.remove_all_listeners = Mock()
-    
+
     return emitter
 
 
@@ -97,7 +94,7 @@ def mock_event_emitter():
 def mock_transport():
     """
     Mock transport for testing network operations.
-    
+
     Returns:
         Mock transport with request/response methods.
     """
@@ -108,7 +105,7 @@ def mock_transport():
     transport.put = Mock(return_value={"status": 200, "data": {}})
     transport.delete = Mock(return_value={"status": 204})
     transport.close = Mock()
-    
+
     return transport
 
 
@@ -116,7 +113,7 @@ def mock_transport():
 def mock_metrics_collector():
     """
     Mock metrics collector for testing instrumentation.
-    
+
     Returns:
         Mock with common metrics methods.
     """
@@ -127,13 +124,13 @@ def mock_metrics_collector():
     collector.histogram = Mock()
     collector.timer = Mock()
     collector.flush = Mock()
-    
+
     # Add context manager support for timing
     timer_cm = Mock()
     timer_cm.__enter__ = Mock(return_value=timer_cm)
     timer_cm.__exit__ = Mock(return_value=None)
     collector.timer.return_value = timer_cm
-    
+
     return collector
 
 
@@ -141,12 +138,12 @@ def mock_metrics_collector():
 def mock_cache():
     """
     Mock cache for testing caching behavior.
-    
+
     Returns:
         Mock with get, set, delete, clear methods.
     """
     cache_data = {}
-    
+
     cache = Mock()
     cache.get = Mock(side_effect=lambda k, default=None: cache_data.get(k, default))
     cache.set = Mock(side_effect=lambda k, v, ttl=None: cache_data.update({k: v}))
@@ -154,10 +151,10 @@ def mock_cache():
     cache.clear = Mock(side_effect=cache_data.clear)
     cache.exists = Mock(side_effect=lambda k: k in cache_data)
     cache.keys = Mock(return_value=list(cache_data.keys()))
-    
+
     # Store reference to data for test assertions
     cache._data = cache_data
-    
+
     return cache
 
 
@@ -165,7 +162,7 @@ def mock_cache():
 def mock_database():
     """
     Mock database connection for testing.
-    
+
     Returns:
         Mock with execute, fetch, commit, rollback methods.
     """
@@ -178,11 +175,11 @@ def mock_database():
     db.rollback = Mock()
     db.close = Mock()
     db.is_connected = PropertyMock(return_value=True)
-    
+
     # Add context manager support
     db.__enter__ = Mock(return_value=db)
     db.__exit__ = Mock(return_value=None)
-    
+
     return db
 
 
@@ -190,7 +187,7 @@ def mock_database():
 def mock_file_system():
     """
     Mock file system operations.
-    
+
     Returns:
         Mock with read, write, exists, delete methods.
     """
@@ -203,7 +200,7 @@ def mock_file_system():
     fs.rmdir = Mock()
     fs.list = Mock(return_value=[])
     fs.stat = Mock(return_value=Mock(st_size=1024, st_mtime=0))
-    
+
     return fs
 
 
@@ -211,19 +208,19 @@ def mock_file_system():
 def mock_subprocess():
     """
     Mock subprocess for testing command execution.
-    
+
     Returns:
         Mock with run, Popen methods.
     """
     subprocess = Mock()
-    
+
     # Mock run method
     result = Mock()
     result.returncode = 0
     result.stdout = "output"
     result.stderr = ""
     subprocess.run = Mock(return_value=result)
-    
+
     # Mock Popen
     process = Mock()
     process.communicate = Mock(return_value=("output", ""))
@@ -232,5 +229,5 @@ def mock_subprocess():
     process.poll = Mock(return_value=0)
     process.wait = Mock(return_value=0)
     subprocess.Popen = Mock(return_value=process)
-    
+
     return subprocess

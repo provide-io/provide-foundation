@@ -47,9 +47,7 @@ class Span:
     error: str | None = None
 
     # Internal OpenTelemetry span (when available)
-    _otel_span: "otel_trace.Span | None" = field(
-        default=None, init=False, repr=False
-    )
+    _otel_span: "otel_trace.Span | None" = field(default=None, init=False, repr=False)
     _active: bool = field(default=True, init=False, repr=False)
 
     def __post_init__(self) -> None:
@@ -162,13 +160,3 @@ class Span:
             "status": self.status,
             "error": self.error,
         }
-
-    def __enter__(self):
-        """Context manager entry."""
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """Context manager exit."""
-        if exc_type is not None:
-            self.set_error(f"{exc_type.__name__}: {exc_val}")
-        self.finish()

@@ -66,8 +66,8 @@ if _HAS_CLICK:
     )
     @click.pass_context
     def send_command(
-        ctx, message, level, service, json_attrs, attr, trace_id, span_id, use_otlp
-    ):
+        ctx: click.Context, message: str | None, level: str, service: str | None, json_attrs: str | None, attr: tuple[str, ...], trace_id: str | None, span_id: str | None, use_otlp: bool
+    ) -> int | None:
         """Send a log entry to OpenObserve.
 
         Examples:

@@ -9,7 +9,10 @@ from attrs import define, field
 
 from provide.foundation.logger import get_logger
 from provide.foundation.transport.base import Request, Response
-from provide.foundation.transport.middleware import MiddlewarePipeline, create_default_pipeline
+from provide.foundation.transport.middleware import (
+    MiddlewarePipeline,
+    create_default_pipeline,
+)
 from provide.foundation.transport.registry import get_transport
 from provide.foundation.transport.types import Data, Headers, HTTPMethod, Params
 
@@ -19,12 +22,12 @@ log = get_logger(__name__)
 @define
 class UniversalClient:
     """Universal client that works with any transport via Hub registry."""
-    
+
     middleware: MiddlewarePipeline = field(factory=create_default_pipeline)
     default_headers: Headers = field(factory=dict)
     default_timeout: float | None = field(default=None)
     _transports: dict[str, Any] = field(factory=dict, init=False)
-    
+
     async def request(
         self,
         uri: str,
@@ -34,11 +37,11 @@ class UniversalClient:
         params: Params | None = None,
         body: Data = None,
         timeout: float | None = None,
-        **kwargs
+        **kwargs,
     ) -> Response:
         """
         Make a request using appropriate transport.
-        
+
         Args:
             uri: Full URI to make request to
             method: HTTP method or protocol-specific method
@@ -47,19 +50,19 @@ class UniversalClient:
             body: Request body (dict for JSON, str/bytes for raw)
             timeout: Request timeout override
             **kwargs: Additional request metadata
-            
+
         Returns:
             Response from the transport
         """
         # Normalize method
         if isinstance(method, HTTPMethod):
             method = method.value
-        
+
         # Merge headers
         request_headers = dict(self.default_headers)
         if headers:
             request_headers.update(headers)
-        
+
         # Create request object
         request = Request(
             uri=uri,
@@ -70,92 +73,86 @@ class UniversalClient:
             timeout=timeout or self.default_timeout,
             metadata=kwargs,
         )
-        
+
         # Process through middleware
         request = await self.middleware.process_request(request)
-        
+
         try:
             # Get transport for this URI
             transport = await self._get_transport(request.transport_type.value)
-            
+
             # Execute request
             response = await transport.execute(request)
-            
+
             # Process response through middleware
             response = await self.middleware.process_response(response)
-            
+
             return response
-            
+
         except Exception as e:
             # Process error through middleware
             e = await self.middleware.process_error(e, request)
             raise e
-    
+
     async def stream(
-        self,
-        uri: str,
-        method: str | HTTPMethod = HTTPMethod.GET,
-        **kwargs
+        self, uri: str, method: str | HTTPMethod = HTTPMethod.GET, **kwargs
     ) -> AsyncIterator[bytes]:
         """
         Stream data from URI.
-        
+
         Args:
             uri: URI to stream from
             method: HTTP method or protocol-specific method
             **kwargs: Additional request parameters
-            
+
         Yields:
             Chunks of response data
         """
         # Normalize method
         if isinstance(method, HTTPMethod):
             method = method.value
-        
+
         # Create request
         request = Request(
-            uri=uri,
-            method=method,
-            headers=dict(self.default_headers),
-            **kwargs
+            uri=uri, method=method, headers=dict(self.default_headers), **kwargs
         )
-        
+
         # Get transport
         transport = await self._get_transport(request.transport_type.value)
-        
+
         # Stream response
         log.info(f"🌊 Streaming {method} {uri}")
         async for chunk in transport.stream(request):
             yield chunk
-    
+
     async def get(self, uri: str, **kwargs) -> Response:
         """GET request."""
         return await self.request(uri, HTTPMethod.GET, **kwargs)
-    
+
     async def post(self, uri: str, **kwargs) -> Response:
         """POST request."""
         return await self.request(uri, HTTPMethod.POST, **kwargs)
-    
+
     async def put(self, uri: str, **kwargs) -> Response:
         """PUT request."""
         return await self.request(uri, HTTPMethod.PUT, **kwargs)
-    
+
     async def patch(self, uri: str, **kwargs) -> Response:
         """PATCH request."""
         return await self.request(uri, HTTPMethod.PATCH, **kwargs)
-    
+
     async def delete(self, uri: str, **kwargs) -> Response:
         """DELETE request."""
         return await self.request(uri, HTTPMethod.DELETE, **kwargs)
-    
+
     async def head(self, uri: str, **kwargs) -> Response:
         """HEAD request."""
         return await self.request(uri, HTTPMethod.HEAD, **kwargs)
-    
+
     async def options(self, uri: str, **kwargs) -> Response:
         """OPTIONS request."""
         return await self.request(uri, HTTPMethod.OPTIONS, **kwargs)
-    
+
     async def _get_transport(self, scheme: str) -> Any:
         """Get or create transport for scheme."""
         if scheme not in self._transports:
@@ -163,13 +160,13 @@ class UniversalClient:
             transport = get_transport(f"{scheme}://example.com")
             await transport.connect()
             self._transports[scheme] = transport
-        
+
         return self._transports[scheme]
-    
+
     async def __aenter__(self) -> "UniversalClient":
         """Context manager entry."""
         return self
-    
+
     async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
         """Context manager exit - cleanup all transports."""
         for transport in self._transports.values():
@@ -193,9 +190,7 @@ def get_default_client() -> UniversalClient:
 
 
 async def request(
-    uri: str,
-    method: str | HTTPMethod = HTTPMethod.GET,
-    **kwargs
+    uri: str, method: str | HTTPMethod = HTTPMethod.GET, **kwargs
 ) -> Response:
     """Make a request using the default client."""
     client = get_default_client()
@@ -253,14 +248,14 @@ async def stream(uri: str, **kwargs) -> AsyncIterator[bytes]:
 
 __all__ = [
     "UniversalClient",
-    "get_default_client",
-    "request",
-    "get",
-    "post",
-    "put", 
-    "patch",
     "delete",
+    "get",
+    "get_default_client",
     "head",
     "options",
+    "patch",
+    "post",
+    "put",
+    "request",
     "stream",
 ]

@@ -113,7 +113,7 @@ def histogram(name: str, description: str = "", unit: str = "") -> "SimpleHistog
     return SimpleHistogram(name)
 
 
-def _set_meter(meter) -> None:
+def _set_meter(meter: object) -> None:
     """Set the global meter instance (internal use only)."""
     global _meter
     _meter = meter

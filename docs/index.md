@@ -7,9 +7,9 @@ Built on industry-standard libraries like `structlog`, `click`, and `attrs`, pro
 ## Key Features
 
 ### Structured Logging
-- Beautiful, emoji-enhanced visual parsing
+- Beautiful, event-enriched structured logging
 - High-performance logging (>14,000 msg/sec)
-- Emoji sets for visual log enhancement
+- Event sets for log enrichment
 - Thread-safe and async-compatible
 
 ### CLI Framework
@@ -51,7 +51,7 @@ from provide.foundation.hub import register_command
 from provide.foundation import platform, process
 from provide.foundation.crypto import hash_file
 
-# Structured logging with emojis
+# Structured logging with event enrichment
 logger.info("Starting application", version="1.0.0")
 
 # Console output
@@ -87,8 +87,7 @@ logger.info("File verified", hash=file_hash.hex_digest)
 
 ### [Core Concepts](guide/concepts/index.md)
 - Structured logging principles
-- Emoji sets
-- The emoji system
+- Event enrichment system
 - Configuration architecture
 
 ### [API Reference](api/api-index.md)

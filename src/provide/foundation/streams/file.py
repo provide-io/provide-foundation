@@ -21,7 +21,7 @@ from provide.foundation.utils.streams import get_safe_stderr
 def _safe_error_output(message: str) -> None:
     """
     Output error message to stderr using basic print to avoid circular dependencies.
-    
+
     This function intentionally uses print() instead of Foundation's perr() to prevent
     circular import issues during stream initialization and teardown phases.
     """

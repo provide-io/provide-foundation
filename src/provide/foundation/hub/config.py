@@ -5,7 +5,6 @@ Provides functions for resolving configuration values from registered sources,
 loading configurations, and managing the configuration chain.
 """
 
-import asyncio
 import inspect
 from typing import Any, TypeVar
 
@@ -20,7 +19,12 @@ log = get_logger(__name__)
 
 def _get_registry_and_lock():
     """Get registry and lock from components module."""
-    from provide.foundation.hub.components import get_component_registry, _registry_lock, ComponentCategory
+    from provide.foundation.hub.components import (
+        ComponentCategory,
+        _registry_lock,
+        get_component_registry,
+    )
+
     return get_component_registry(), _registry_lock, ComponentCategory
 
 
@@ -28,7 +32,7 @@ def _get_registry_and_lock():
 def resolve_config_value(key: str) -> Any:
     """Resolve configuration value using priority-ordered sources."""
     registry, registry_lock, ComponentCategory = _get_registry_and_lock()
-    
+
     with registry_lock:
         # Get all config sources
         all_entries = list(registry)
@@ -59,7 +63,7 @@ def resolve_config_value(key: str) -> Any:
 def get_config_chain() -> list[RegistryEntry]:
     """Get configuration sources ordered by priority."""
     registry, registry_lock, ComponentCategory = _get_registry_and_lock()
-    
+
     with registry_lock:
         # Get all config sources
         all_entries = list(registry)
@@ -75,8 +79,7 @@ def get_config_chain() -> list[RegistryEntry]:
 
 
 @with_error_handling(
-    fallback={},
-    context_provider=lambda: {"function": "load_all_configs"}
+    fallback={}, context_provider=lambda: {"function": "load_all_configs"}
 )
 async def load_all_configs() -> dict[str, Any]:
     """Load configurations from all registered sources."""
@@ -105,19 +108,19 @@ async def load_all_configs() -> dict[str, Any]:
 def load_config_from_registry(config_class: type[T]) -> T:
     """
     Load configuration from registry sources.
-    
+
     Args:
         config_class: Configuration class to instantiate
-        
+
     Returns:
         Configuration instance loaded from registry sources
     """
     registry, registry_lock, ComponentCategory = _get_registry_and_lock()
-    
+
     with registry_lock:
         # Get configuration data from registry
         config_data = {}
-        
+
         # Load from all config sources
         chain = get_config_chain()
         for entry in chain:
@@ -126,26 +129,29 @@ def load_config_from_registry(config_class: type[T]) -> T:
                 try:
                     # Skip async sources in sync context
                     if inspect.iscoroutinefunction(source.load_config):
-                        log.debug("Skipping async config source in sync context", source=entry.name)
+                        log.debug(
+                            "Skipping async config source in sync context",
+                            source=entry.name,
+                        )
                         continue
-                    
+
                     source_data = source.load_config()
                     if source_data:
                         config_data.update(source_data)
                 except Exception as e:
                     log.warning(
-                        "Failed to load config from source", 
-                        source=entry.name, 
-                        error=str(e)
+                        "Failed to load config from source",
+                        source=entry.name,
+                        error=str(e),
                     )
-        
+
         # Create config instance
         return config_class.from_dict(config_data)
 
 
 __all__ = [
-    "resolve_config_value",
-    "get_config_chain", 
+    "get_config_chain",
     "load_all_configs",
     "load_config_from_registry",
+    "resolve_config_value",
 ]

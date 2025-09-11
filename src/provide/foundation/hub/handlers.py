@@ -15,14 +15,19 @@ log = get_logger(__name__)
 
 def _get_registry_and_lock():
     """Get registry and lock from components module."""
-    from provide.foundation.hub.components import get_component_registry, _registry_lock, ComponentCategory
+    from provide.foundation.hub.components import (
+        ComponentCategory,
+        _registry_lock,
+        get_component_registry,
+    )
+
     return get_component_registry(), _registry_lock, ComponentCategory
 
 
 def get_handlers_for_exception(exception: Exception) -> list[RegistryEntry]:
     """Get error handlers that can handle the given exception type."""
     registry, registry_lock, ComponentCategory = _get_registry_and_lock()
-    
+
     with registry_lock:
         # Get all error handlers
         all_entries = list(registry)
@@ -53,7 +58,10 @@ def get_handlers_for_exception(exception: Exception) -> list[RegistryEntry]:
 
 @with_error_handling(
     fallback=None,
-    context_provider=lambda: {"function": "execute_error_handlers", "module": "hub.handlers"}
+    context_provider=lambda: {
+        "function": "execute_error_handlers",
+        "module": "hub.handlers",
+    },
 )
 def execute_error_handlers(
     exception: Exception, context: dict[str, Any]
@@ -76,6 +84,6 @@ def execute_error_handlers(
 
 
 __all__ = [
-    "get_handlers_for_exception",
     "execute_error_handlers",
+    "get_handlers_for_exception",
 ]

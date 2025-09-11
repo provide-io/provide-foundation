@@ -50,7 +50,7 @@ if _HAS_CLICK:
         help="Output format",
     )
     @click.pass_context
-    def tail_command(ctx, stream, filter_sql, lines, follow, format):
+    def tail_command(ctx: click.Context, stream: str, filter_sql: str | None, lines: int, follow: bool, format: str) -> int | None:
         """Tail logs in real-time (like 'tail -f').
 
         Examples:
@@ -104,7 +104,7 @@ if _HAS_CLICK:
 
 else:
 
-    def tail_command(*args, **kwargs):
+    def tail_command(*args: object, **kwargs: object) -> None:
         """Tail command stub when click is not available."""
         raise ImportError(
             "CLI commands require optional dependencies. "

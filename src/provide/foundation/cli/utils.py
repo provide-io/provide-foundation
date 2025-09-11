@@ -1,12 +1,11 @@
 """Common CLI utilities for output, logging, and testing."""
 
-import json
 from typing import Any
 
 import click
 from click.testing import CliRunner, Result
 
-from provide.foundation.console.output import pout, perr
+from provide.foundation.console.output import perr, pout
 from provide.foundation.context import CLIContext
 from provide.foundation.logger import (
     LoggingConfig,

@@ -20,9 +20,9 @@ _STREAM_LOCK = threading.Lock()
 def _is_in_click_testing() -> bool:
     """Check if we're running inside Click's testing framework."""
     import inspect
-    
+
     config = get_stream_config()
-    
+
     # Check environment variables for Click testing
     if config.click_testing:
         return True

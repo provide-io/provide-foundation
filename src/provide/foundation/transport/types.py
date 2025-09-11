@@ -13,7 +13,7 @@ Data: TypeAlias = dict[str, Any] | bytes | str | None
 
 class TransportType(str, Enum):
     """Supported transport types."""
-    
+
     HTTP = "http"
     HTTPS = "https"
     WS = "ws"
@@ -26,7 +26,7 @@ class TransportType(str, Enum):
 
 class HTTPMethod(str, Enum):
     """HTTP methods."""
-    
+
     GET = "GET"
     POST = "POST"
     PUT = "PUT"
@@ -37,9 +37,9 @@ class HTTPMethod(str, Enum):
 
 
 __all__ = [
-    "Headers",
-    "Params", 
     "Data",
-    "TransportType",
     "HTTPMethod",
+    "Headers",
+    "Params",
+    "TransportType",
 ]

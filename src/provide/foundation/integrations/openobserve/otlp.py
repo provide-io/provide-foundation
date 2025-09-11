@@ -6,8 +6,8 @@ from datetime import datetime
 import json
 from typing import Any
 
-from provide.foundation.logger import get_logger
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
+from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
 
@@ -15,7 +15,7 @@ log = get_logger(__name__)
 try:
     from opentelemetry import trace
     from opentelemetry.exporter.otlp.proto.http._log_exporter import OTLPLogExporter
-    from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler
+    from opentelemetry.sdk._logs import LoggerProvider
     from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
     from opentelemetry.sdk.resources import Resource
     from opentelemetry.semconv.resource import ResourceAttributes

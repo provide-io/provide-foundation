@@ -4,7 +4,6 @@ Transport configuration with Foundation config integration.
 
 from attrs import define
 
-from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.config.base import field
 from provide.foundation.config.converters import (
     parse_bool_extended,
@@ -12,6 +11,7 @@ from provide.foundation.config.converters import (
     validate_non_negative,
     validate_positive,
 )
+from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.config.loader import RuntimeConfigLoader
 from provide.foundation.config.manager import register_config
 from provide.foundation.logger import get_logger
@@ -22,7 +22,7 @@ log = get_logger(__name__)
 @define(slots=True, repr=False)
 class TransportConfig(RuntimeConfig):
     """Base configuration for all transports."""
-    
+
     timeout: float = field(
         default=30.0,
         env_var="PROVIDE_TRANSPORT_TIMEOUT",
@@ -50,13 +50,12 @@ class TransportConfig(RuntimeConfig):
         converter=parse_bool_extended,
         description="Whether to verify SSL certificates",
     )
-    
 
 
 @define(slots=True, repr=False)
 class HTTPConfig(TransportConfig):
     """HTTP-specific configuration."""
-    
+
     pool_connections: int = field(
         default=10,
         env_var="PROVIDE_HTTP_POOL_CONNECTIONS",
@@ -90,7 +89,6 @@ class HTTPConfig(TransportConfig):
         validator=validate_non_negative,
         description="Maximum number of redirects to follow",
     )
-    
 
 
 async def register_transport_configs() -> None:
@@ -106,10 +104,10 @@ async def register_transport_configs() -> None:
                 "max_retries": 3,
                 "retry_backoff_factor": 0.5,
                 "verify_ssl": True,
-            }
+            },
         )
-        
-        # Register HTTPConfig  
+
+        # Register HTTPConfig
         await register_config(
             name="transport.http",
             config=None,  # Will be loaded on demand
@@ -124,17 +122,17 @@ async def register_transport_configs() -> None:
                 "follow_redirects": True,
                 "http2": False,
                 "max_redirects": 5,
-            }
+            },
         )
-        
+
         log.trace("Successfully registered transport configurations with ConfigManager")
-        
+
     except Exception as e:
         log.warning("Failed to register transport configurations", error=str(e))
 
 
 __all__ = [
-    "TransportConfig",
     "HTTPConfig",
+    "TransportConfig",
     "register_transport_configs",
 ]

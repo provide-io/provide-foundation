@@ -54,7 +54,7 @@ provide.foundation has optional feature sets that require additional dependencie
 ### Core Components
 
 #### **Structured Logging**
-Beautiful, performant logging built on `structlog` with emoji-enhanced visual parsing and zero configuration required.
+Beautiful, performant logging built on `structlog` with event-enriched structured logging and zero configuration required.
 
 ```python
 # Simple usage - works immediately with base install

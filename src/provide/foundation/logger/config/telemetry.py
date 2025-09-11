@@ -5,24 +5,25 @@
 TelemetryConfig class for Foundation telemetry configuration.
 """
 
+import os
+
 from attrs import define
 
-from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.config.base import field
-from provide.foundation.config.defaults import (
-    DEFAULT_TELEMETRY_GLOBALLY_DISABLED,
-    DEFAULT_TRACING_ENABLED,
-    DEFAULT_METRICS_ENABLED,
-    DEFAULT_OTLP_PROTOCOL,
-    DEFAULT_TRACE_SAMPLE_RATE,
-)
-import os
 from provide.foundation.config.converters import (
     parse_bool_extended,
     parse_headers,
     parse_sample_rate,
     validate_sample_rate,
 )
+from provide.foundation.config.defaults import (
+    DEFAULT_METRICS_ENABLED,
+    DEFAULT_OTLP_PROTOCOL,
+    DEFAULT_TELEMETRY_GLOBALLY_DISABLED,
+    DEFAULT_TRACE_SAMPLE_RATE,
+    DEFAULT_TRACING_ENABLED,
+)
+from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.logger.config.logging import LoggingConfig
 
 
@@ -45,8 +46,7 @@ class TelemetryConfig(RuntimeConfig):
         description="Service version for telemetry",
     )
     logging: LoggingConfig = field(
-        factory=lambda: LoggingConfig.from_env(),
-        description="Logging configuration"
+        factory=lambda: LoggingConfig.from_env(), description="Logging configuration"
     )
     globally_disabled: bool = field(
         default=DEFAULT_TELEMETRY_GLOBALLY_DISABLED,
@@ -96,8 +96,6 @@ class TelemetryConfig(RuntimeConfig):
         validator=validate_sample_rate,
         description="Sampling rate for traces (0.0 to 1.0)",
     )
-
-
 
     def get_otlp_headers_dict(self) -> dict[str, str]:
         """Get OTLP headers dictionary.

@@ -9,7 +9,7 @@ import os
 import sys
 
 
-def get_config_logger():
+def get_config_logger() -> object:
     """Get logger for config warnings that respects FOUNDATION_LOG_OUTPUT."""
     import structlog
 

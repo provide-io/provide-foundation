@@ -88,12 +88,12 @@ export PROVIDE_LOG_OMIT_TIMESTAMP=true
 export PROVIDE_LOG_FILE=/var/log/myapp.log
 ```
 
-### Emoji System Configuration
+### Event Enrichment Configuration
 
 #### `PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED`
 **Type:** `boolean`  
 **Default:** `true`  
-**Description:** Enable emoji prefixes based on logger names.
+**Description:** Enable visual markers based on logger names.
 
 ```bash
 export PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED=false
@@ -102,35 +102,20 @@ export PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED=false
 #### `PROVIDE_LOG_DAS_EMOJI_ENABLED`
 **Type:** `boolean`  
 **Default:** `true`  
-**Description:** Enable Domain-Action-Status emoji prefixes.
+**Description:** Enable Domain-Action-Status visual markers.
 
 ```bash
 export PROVIDE_LOG_DAS_EMOJI_ENABLED=false
 ```
 
-#### `PROVIDE_LOG_ENABLED_EMOJI_SETS`
+#### `PROVIDE_LOG_ENABLED_EVENT_SETS`
 **Type:** `string` (comma-separated list)  
 **Default:** `[]` (empty)  
-**Valid Values:** `"http"`, `"database"`, `"llm"`, `"task_queue"`  
-**Description:** Emoji sets to enable.
+**Valid Values:** `"http"`, `"database"`, `"system"`  
+**Description:** Event sets to enable for enrichment.
 
 ```bash
-export PROVIDE_LOG_ENABLED_EMOJI_SETS="http,database,llm"
-```
-
-#### `PROVIDE_LOG_CUSTOM_EMOJI_SETS`
-**Type:** `string` (JSON array)  
-**Default:** `[]` (empty)  
-**Description:** Custom emoji set configurations.
-
-```bash
-export PROVIDE_LOG_CUSTOM_EMOJI_SETS='[{
-  "enabled": true,
-  "das_mapping": {
-    "api_request_started": "🌐",
-    "database_query_executed": "🗄️"
-  }
-}]'
+export PROVIDE_LOG_ENABLED_EVENT_SETS="http,database,system"
 ```
 
 ### Internal Configuration
@@ -205,9 +190,7 @@ config = LoggingConfig(
 | `logger_name_emoji_prefix_enabled` | `bool` | `True` | Logger name emoji prefixes |
 | `das_emoji_prefix_enabled` | `bool` | `True` | DAS emoji prefixes |
 | `omit_timestamp` | `bool` | `False` | Omit timestamps |
-| `enabled_emoji_sets` | `list[str]` | `[]` | Enabled emoji sets |
-| `custom_emoji_sets` | `list[EmojiSetConfig]` | `[]` | Custom emoji sets |
-| `user_defined_emoji_sets` | `list[EmojiSet]` | `[]` | User-defined emoji sets |
+| `enabled_event_sets` | `list[str]` | `[]` | Enabled event sets |
 | `log_file` | `Path \| None` | `None` | Log file path |
 
 #### Methods
@@ -235,7 +218,7 @@ logging:
     database: "DEBUG"
     auth: "WARNING"
   das_emoji_prefix_enabled: true
-  enabled_emoji_sets:
+  enabled_event_sets:
     - "http"
     - "database"
 ```
@@ -253,7 +236,7 @@ logging:
       "auth": "WARNING"
     },
     "das_emoji_prefix_enabled": true,
-    "enabled_emoji_sets": ["http", "database"]
+    "enabled_event_sets": ["http", "database"]
   }
 }
 ```
@@ -267,7 +250,7 @@ service_name = "my-service"
 default_level = "INFO"
 console_formatter = "json"
 das_emoji_prefix_enabled = true
-enabled_emoji_sets = ["http", "database"]
+enabled_event_sets = ["http", "database"]
 
 [logging.module_levels]
 database = "DEBUG"
@@ -302,7 +285,7 @@ export PROVIDE_SERVICE_NAME="myapp-dev"
 export PROVIDE_LOG_LEVEL=DEBUG
 export PROVIDE_LOG_CONSOLE_FORMATTER=key_value
 export PROVIDE_LOG_DAS_EMOJI_ENABLED=true
-export PROVIDE_LOG_ENABLED_EMOJI_SETS="http,database"
+export PROVIDE_LOG_ENABLED_EVENT_SETS="http,database"
 ```
 
 ### Production Environment

@@ -2,8 +2,8 @@
 
 from attrs import define
 
-from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.config.base import field
+from provide.foundation.config.env import RuntimeConfig
 
 
 @define(slots=True, repr=False)

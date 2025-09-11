@@ -98,12 +98,22 @@ def __getattr__(name: str) -> Any:
         import provide.foundation.testing.fixtures as fixtures_module
 
         return getattr(fixtures_module, name)
-    
+
     # Import submodules directly
-    elif name in ["archive", "common", "file", "process", "transport", "mocking", "time", "threading"]:
+    elif name in [
+        "archive",
+        "common",
+        "file",
+        "process",
+        "transport",
+        "mocking",
+        "time",
+        "threading",
+    ]:
         import importlib
+
         return importlib.import_module(f"provide.foundation.testing.{name}")
-    
+
     # File testing utilities (backward compatibility)
     elif name in [
         "temp_directory",
@@ -115,8 +125,9 @@ def __getattr__(name: str) -> Any:
         "readonly_file",
     ]:
         import provide.foundation.testing.file.fixtures as file_module
+
         return getattr(file_module, name)
-    
+
     # Process/async testing utilities (backward compatibility)
     elif name in [
         "clean_event_loop",
@@ -131,8 +142,9 @@ def __getattr__(name: str) -> Any:
         "mock_async_sleep",
     ]:
         import provide.foundation.testing.process.fixtures as process_module
+
         return getattr(process_module, name)
-    
+
     # Common mock utilities (backward compatibility)
     elif name in [
         "mock_http_config",
@@ -147,8 +159,9 @@ def __getattr__(name: str) -> Any:
         "mock_subprocess",
     ]:
         import provide.foundation.testing.common.fixtures as common_module
+
         return getattr(common_module, name)
-    
+
     # Transport/network testing utilities (backward compatibility)
     elif name in [
         "free_port",
@@ -162,8 +175,9 @@ def __getattr__(name: str) -> Any:
         "mock_http_headers",
     ]:
         import provide.foundation.testing.transport.fixtures as transport_module
+
         return getattr(transport_module, name)
-    
+
     # Archive testing utilities
     elif name in [
         "archive_test_content",
@@ -174,6 +188,7 @@ def __getattr__(name: str) -> Any:
         "archive_stress_test_files",
     ]:
         import provide.foundation.testing.archive.fixtures as archive_module
+
         return getattr(archive_module, name)
 
     # Crypto fixtures (many fixtures)

@@ -353,12 +353,12 @@ minimal_config = TelemetryConfig(
 
 **Built-in Performance Metrics**:
 ```python
-from provide.foundation.logger import get_performance_stats
+from provide.foundation.metrics import get_meter
 
-stats = get_performance_stats()
-print(f"Messages logged: {stats.message_count}")
-print(f"Average latency: {stats.average_latency_us:.2f}μs")
-print(f"Cache hit ratio: {stats.cache_hit_ratio:.2%}")
+meter = get_meter("performance_monitoring")
+message_counter = meter.create_counter("messages_logged_total")
+latency_histogram = meter.create_histogram("log_latency_seconds")
+# Metrics are automatically collected and exported
 ```
 
 ## Performance Regression Testing

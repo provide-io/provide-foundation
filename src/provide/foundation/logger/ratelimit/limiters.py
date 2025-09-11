@@ -17,7 +17,7 @@ class SyncRateLimiter:
     Thread-safe implementation suitable for synchronous logging operations.
     """
 
-    def __init__(self, capacity: float, refill_rate: float):
+    def __init__(self, capacity: float, refill_rate: float) -> None:
         """
         Initialize the rate limiter.
 
@@ -87,7 +87,7 @@ class AsyncRateLimiter:
     Uses asyncio.Lock for thread safety in async contexts.
     """
 
-    def __init__(self, capacity: float, refill_rate: float):
+    def __init__(self, capacity: float, refill_rate: float) -> None:
         """
         Initialize the async rate limiter.
 
@@ -160,7 +160,7 @@ class GlobalRateLimiter:
     _instance = None
     _lock = threading.Lock()
 
-    def __new__(cls):
+    def __new__(cls) -> "GlobalRateLimiter":
         if cls._instance is None:
             with cls._lock:
                 if cls._instance is None:
@@ -168,7 +168,7 @@ class GlobalRateLimiter:
                     cls._instance._initialized = False
         return cls._instance
 
-    def __init__(self):
+    def __init__(self) -> None:
         if self._initialized:
             return
 

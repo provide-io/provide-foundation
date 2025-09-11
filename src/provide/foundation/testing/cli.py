@@ -11,7 +11,6 @@ import os
 from pathlib import Path
 import tempfile
 from typing import Any
-from unittest.mock import MagicMock
 
 import click
 from click.testing import CliRunner
@@ -167,8 +166,6 @@ def create_test_cli(
     return cli
 
 
-
-
 class CliTestCase:
     """Base class for CLI test cases with common utilities."""
 
@@ -218,11 +215,11 @@ class CliTestCase:
 def click_testing_mode():
     """
     Pytest fixture to enable Click testing mode.
-    
+
     Sets CLICK_TESTING=1 environment variable for the duration of the test,
     then restores the original value. This fixture makes it easy to enable
     Click testing mode without manual environment variable management.
-    
+
     Usage:
         def test_my_cli(click_testing_mode):
             # Test CLI code here - CLICK_TESTING is automatically set
@@ -230,7 +227,7 @@ def click_testing_mode():
     """
     original_value = os.environ.get("CLICK_TESTING")
     os.environ["CLICK_TESTING"] = "1"
-    
+
     try:
         yield
     finally:
