@@ -230,7 +230,7 @@ See [examples/](examples/) for more comprehensive examples.
 ### Building a CLI Application
 
 ```python
-# From examples/12_cli_application.py
+# From examples/cli/01_cli_application.py
 from provide.foundation.hub import Hub, register_command
 from provide.foundation.cli import echo_info, echo_success
 
@@ -250,7 +250,7 @@ if __name__ == "__main__":
 ### Configuration-Driven Application
 
 ```python
-# From examples/11_config_management.py and examples/08_env_variables_config.py
+# From examples/configuration/03_config_management.py and examples/configuration/02_env_variables.py
 from provide.foundation import setup_telemetry, logger
 from provide.foundation.config import RuntimeConfig, env_field, ConfigManager
 from attrs import define
@@ -273,7 +273,7 @@ logger.info("Database configured", host=db_config.host, port=db_config.port)
 ### Production Patterns
 
 ```python
-# From examples/10_production_patterns.py
+# From examples/production/01_production_patterns.py
 from provide.foundation import logger, error_boundary
 import asyncio
 
@@ -302,16 +302,23 @@ All configuration can be controlled through environment variables:
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `PROVIDE_SERVICE_NAME` | Service identifier in logs | `None` |
-| `PROVIDE_LOG_LEVEL` | Minimum log level | `DEBUG` |
+| `PROVIDE_LOG_LEVEL` | Minimum log level | `WARNING` |
 | `PROVIDE_LOG_CONSOLE_FORMATTER` | Output format (`key_value` or `json`) | `key_value` |
 | `PROVIDE_LOG_OMIT_TIMESTAMP` | Remove timestamps from console | `false` |
 | `PROVIDE_LOG_FILE` | Log to file path | `None` |
-| `PROVIDE_LOG_MODULE_LEVELS` | Per-module log levels | `""` |
-| `PROVIDE_CONFIG_PATH` | Configuration file path | `None` |
-| `PROVIDE_ENV` | Environment (dev/staging/prod) | `dev` |
-| `PROVIDE_DEBUG` | Enable debug mode | `false` |
-| `PROVIDE_JSON_OUTPUT` | Force JSON output | `false` |
-| `PROVIDE_NO_COLOR` | Disable colored output | `false` |
+| `PROVIDE_LOG_MODULE_LEVELS` | Per-module log levels (format: module1:LEVEL,module2:LEVEL) | `""` |
+| `PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED` | Enable emoji prefixes based on logger names | `true` |
+| `PROVIDE_LOG_DAS_EMOJI_ENABLED` | Enable Domain-Action-Status emoji prefixes | `true` |
+| `PROVIDE_TELEMETRY_DISABLED` | Globally disable telemetry | `false` |
+| `PROVIDE_SERVICE_VERSION` | Service version for telemetry | `None` |
+| `FOUNDATION_LOG_LEVEL` | Log level for Foundation internal setup messages | `INFO` |
+| `OTEL_SERVICE_NAME` | OpenTelemetry service name (takes precedence over PROVIDE_SERVICE_NAME) | `None` |
+| `OTEL_TRACING_ENABLED` | Enable OpenTelemetry tracing | `true` |
+| `OTEL_METRICS_ENABLED` | Enable OpenTelemetry metrics | `true` |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | OTLP endpoint for traces and metrics | `None` |
+| `OTEL_EXPORTER_OTLP_HEADERS` | Headers for OTLP requests (key1=value1,key2=value2) | `""` |
+| `OTEL_EXPORTER_OTLP_PROTOCOL` | OTLP protocol (grpc, http/protobuf) | `http/protobuf` |
+| `OTEL_TRACE_SAMPLE_RATE` | Sampling rate for traces (0.0 to 1.0) | `1.0` |
 
 ### Configuration Files
 
@@ -340,7 +347,7 @@ database:
 ### Contextual Logging
 
 ```python
-# From examples/06_trace_logging.py
+# From examples/telemetry/06_trace_logging.py
 from provide.foundation import logger
 
 # Add context via structured fields
