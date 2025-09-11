@@ -1,7 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(PYTHONPATH=src python -c \"\nfrom provide.foundation.config import BaseConfig, field\n\nclass TestConfig(BaseConfig):\n    name: str = field(default=''test'')\n\nconfig = TestConfig()\nprint(''Works without define decorator:'', config.name)\n\")"
+      "Bash(FOUNDATION_LOG_LEVEL=INFO PYTHONPATH=src python examples/configuration/03_config_management.py)"
     ],
     "deny": [],
     "ask": [],
