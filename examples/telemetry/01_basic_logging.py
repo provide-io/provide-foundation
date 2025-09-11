@@ -26,7 +26,7 @@ if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
 # Simple import and immediate usage - no setup needed
-from provide.foundation import logger  # noqa: E402
+from provide.foundation import logger, pout  # noqa: E402
 
 
 def simple_logging_example() -> None:
@@ -39,10 +39,10 @@ def simple_logging_example() -> None:
     - Automatic initialization on first use
     - Structured logging with emoji prefixes
     """
-    print("\n" + "=" * 60)
-    print("✨ Simple Start - Zero Setup Required")
-    print(" Just import logger and start logging immediately!")
-    print("=" * 60)
+    pout("\n" + "=" * 60)
+    pout("✨ Simple Start - Zero Setup Required")
+    pout(" Just import logger and start logging immediately!")
+    pout("=" * 60)
 
     # Start logging immediately - no configuration needed
     logger.info("Hello from provide.foundation!", component="simple_example")
@@ -71,5 +71,5 @@ def simple_logging_example() -> None:
 
 if __name__ == "__main__":
     simple_logging_example()
-    print("\n🎉 That's it! No setup required - logging just works.")
-    print("💡 For advanced features like tracing, see other examples.")
+    pout("\n🎉 That's it! No setup required - logging just works.")
+    pout("💡 For advanced features like tracing, see other examples.")
