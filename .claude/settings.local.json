@@ -9,7 +9,11 @@
       "Bash(PROVIDE_LOG_LEVEL=INFO PYTHONPATH=src python examples/telemetry/04_das_pattern.py)",
       "Bash(PYTHONPATH=src timeout 3 python examples/tracing/02_distributed_tracing.py)",
       "Bash(PYTHONPATH=src timeout 5 python examples/integration/01a_basic_task_queue.py)",
-      "Bash(PYTHONPATH=src timeout 3 python examples/integration/01a_basic_task_queue.py)"
+      "Bash(PYTHONPATH=src timeout 3 python examples/integration/01a_basic_task_queue.py)",
+      "Bash(PYTHONPATH=src timeout 2 python examples/telemetry/03_named_loggers.py)",
+      "Bash(/dev/null)",
+      "Bash(PYTHONPATH=src timeout 2 python examples/async/01_async_usage.py)",
+      "Bash(PYTHONPATH=src timeout 2 python examples/integration/01a_basic_task_queue.py)"
     ],
     "deny": [],
     "ask": [],
