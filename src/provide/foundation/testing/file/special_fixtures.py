@@ -8,10 +8,10 @@ symbolic links, and executable files.
 from collections.abc import Generator
 from pathlib import Path
 import stat
-import tempfile
 
 import pytest
 
+from provide.foundation.file import temp_file as foundation_temp_file
 from provide.foundation.file.safe import safe_delete
 
 
@@ -23,11 +23,10 @@ def binary_file() -> Generator[Path, None, None]:
     Yields:
         Path to a binary file containing sample binary data.
     """
-    with tempfile.NamedTemporaryFile(mode="wb", suffix=".bin", delete=False) as f:
+    with foundation_temp_file(suffix=".bin", text=False, cleanup=False) as path:
         # Write some binary data
-        f.write(b"\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09")
-        f.write(b"\xff\xfe\xfd\xfc\xfb\xfa\xf9\xf8\xf7\xf6")
-        path = Path(f.name)
+        path.write_bytes(b"\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09" +
+                        b"\xff\xfe\xfd\xfc\xfb\xfa\xf9\xf8\xf7\xf6")
 
     yield path
     safe_delete(path, missing_ok=True)
@@ -41,9 +40,8 @@ def readonly_file() -> Generator[Path, None, None]:
     Yields:
         Path to a read-only file.
     """
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
-        f.write("Read-only content")
-        path = Path(f.name)
+    with foundation_temp_file(suffix=".txt", text=True, cleanup=False) as path:
+        path.write_text("Read-only content")
 
     # Make file read-only
     path.chmod(0o444)
@@ -79,8 +77,8 @@ def temp_symlink():
         target = Path(target)
 
         if link_name is None:
-            with tempfile.NamedTemporaryFile(delete=True) as f:
-                link_name = Path(f.name + "_link")
+            with foundation_temp_file(cleanup=True) as temp_path:
+                link_name = Path(str(temp_path) + "_link")
         else:
             link_name = Path(link_name)
 
@@ -117,9 +115,8 @@ def temp_executable_file():
         Returns:
             Path to created executable file
         """
-        with tempfile.NamedTemporaryFile(mode="w", suffix=suffix, delete=False) as f:
-            f.write(content)
-            path = Path(f.name)
+        with foundation_temp_file(suffix=suffix, text=True, cleanup=False) as path:
+            path.write_text(content)
 
         # Make executable
         current = path.stat().st_mode

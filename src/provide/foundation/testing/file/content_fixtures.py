@@ -129,14 +129,12 @@ def temp_file_with_content():
         Returns:
             Path to created file
         """
-        with tempfile.NamedTemporaryFile(
-            mode="wb" if isinstance(content, bytes) else "w",
-            suffix=suffix,
-            delete=False,
-            encoding=None if isinstance(content, bytes) else encoding,
-        ) as f:
-            f.write(content)
-            path = Path(f.name)
+        # Use Foundation's temp_file
+        with foundation_temp_file(suffix=suffix, text=not isinstance(content, bytes), cleanup=False) as path:
+            if isinstance(content, bytes):
+                path.write_bytes(content)
+            else:
+                path.write_text(content, encoding=encoding)
 
         created_files.append(path)
         return path
@@ -178,9 +176,8 @@ def temp_binary_file():
             repetitions = size // len(pattern) + 1
             content = (pattern * repetitions)[:size]
 
-        with tempfile.NamedTemporaryFile(mode="wb", suffix=suffix, delete=False) as f:
-            f.write(content)
-            path = Path(f.name)
+        with foundation_temp_file(suffix=suffix, text=False, cleanup=False) as path:
+            path.write_bytes(content)
 
         created_files.append(path)
         return path
@@ -214,11 +211,11 @@ def temp_csv_file():
         Returns:
             Path to created CSV file
         """
-        with tempfile.NamedTemporaryFile(mode="w", suffix=suffix, delete=False, newline="") as f:
-            writer = csv.writer(f)
-            writer.writerow(headers)
-            writer.writerows(rows)
-            path = Path(f.name)
+        with foundation_temp_file(suffix=suffix, text=True, cleanup=False) as path:
+            with open(path, 'w', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow(headers)
+                writer.writerows(rows)
 
         created_files.append(path)
         return path
@@ -252,9 +249,9 @@ def temp_json_file():
         Returns:
             Path to created JSON file
         """
-        with tempfile.NamedTemporaryFile(mode="w", suffix=suffix, delete=False) as f:
-            json.dump(data, f, indent=indent)
-            path = Path(f.name)
+        with foundation_temp_file(suffix=suffix, text=True, cleanup=False) as path:
+            with open(path, 'w') as f:
+                json.dump(data, f, indent=indent)
 
         created_files.append(path)
         return path
