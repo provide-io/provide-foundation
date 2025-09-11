@@ -25,7 +25,8 @@
       "Bash(then echo \"Missing: docs/$file\")",
       "Bash(__NEW_LINE__ fi)",
       "Bash(__NEW_LINE__ done)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(xargs ls:*)"
     ],
     "deny": [],
     "ask": [],
