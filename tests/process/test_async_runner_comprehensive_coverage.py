@@ -559,8 +559,13 @@ class TestAsyncRunnerEdgeCases:
     async def test_decode_error_handling(self):
         """Test handling of decode errors in output."""
         # Mock process with invalid UTF-8 bytes
-        mock_process = AsyncMock()
-        mock_process.communicate = AsyncMock(return_value=(b"\xff\xfe", b""))
+        mock_process = Mock()
+        
+        # Use async function instead of AsyncMock to avoid coroutine warnings
+        async def mock_communicate(input=None):
+            return (b"\xff\xfe", b"")
+        
+        mock_process.communicate = mock_communicate
         mock_process.returncode = 0
 
         with patch("asyncio.create_subprocess_exec", return_value=mock_process):
@@ -592,9 +597,14 @@ class TestAsyncRunnerEdgeCases:
 
     async def test_stream_no_stdout(self):
         """Test stream when process has no stdout."""
-        mock_process = AsyncMock()
+        mock_process = Mock()
         mock_process.stdout = None
-        mock_process.wait = AsyncMock(return_value=None)  # Provide explicit return value
+        
+        # Use async function instead of AsyncMock to avoid coroutine warnings
+        async def mock_wait():
+            return None
+        
+        mock_process.wait = mock_wait
         mock_process.returncode = 0
 
         with patch("asyncio.create_subprocess_exec", return_value=mock_process):
