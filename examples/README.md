@@ -83,9 +83,11 @@ All examples demonstrate these Foundation patterns:
 - **Performance**: Efficient logging suitable for high-throughput applications
 - **Observability**: Built-in metrics and tracing capabilities
 
-## Shared Utilities
+## Notes
 
-- `utils.py` - Common utilities used across examples
+- All examples use Foundation's native console utilities (`pout`, `perr`) instead of `print()`
+- Examples demonstrate proper dogfooding by using only Foundation's own tools and dependencies
+- No external network calls - transport examples use Foundation's mocking utilities
 
 ## Documentation
 
