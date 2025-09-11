@@ -278,11 +278,11 @@ if __name__ == '__main__':
     pout("🔄 Running Celery integration example...")
     pout("📝 Make sure you have a Celery worker running:")
     pout("   celery -A 01_celery_integration worker --loglevel=info")
-    pout()
+    pout("")
     
     run_example_tasks()
     
-    pout()
+    pout("\n✅ Celery integration example completed!")
     pout("✅ Example completed! Check the logs for structured Celery task tracking.")
     pout("🔍 Key features demonstrated:")
     pout("   • Task lifecycle logging (start, success, failure)")
