@@ -28,7 +28,7 @@ RSAKeyPair = tuple[rsa.RSAPublicKey, rsa.RSAPrivateKey]
 ECKeyPair = tuple[ec.EllipticCurvePublicKey, ec.EllipticCurvePrivateKey]
 Ed25519KeyPair = tuple[bytes, bytes]
 
-KeyPairType = Union[RSAKeyPair, ECKeyPair, Ed25519KeyPair]
+KeyPairType = RSAKeyPair | ECKeyPair | Ed25519KeyPair
 
 
 def generate_rsa_keypair(key_size: int = DEFAULT_RSA_KEY_SIZE) -> RSAKeyPair:

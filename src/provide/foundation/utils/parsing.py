@@ -149,19 +149,19 @@ def parse_typed_value(value: str, target_type: type) -> Any:
         return None
 
     # Handle basic types
-    if target_type == bool:
+    if target_type is bool:
         return parse_bool(value)
-    elif target_type == int:
+    elif target_type is int:
         return int(value)
-    elif target_type == float:
+    elif target_type is float:
         return float(value)
-    elif target_type == str:
+    elif target_type is str:
         return value
 
     # Handle generic types using typing module
     origin = get_origin(target_type)
 
-    if origin == list:
+    if origin is list:
         # Handle list[T] - convert each item to the specified type
         args = get_args(target_type)
         if args and len(args) > 0:
@@ -177,13 +177,13 @@ def parse_typed_value(value: str, target_type: type) -> Any:
         else:
             # list without type parameter, return as list[str]
             return parse_list(value)
-    elif origin == dict:
+    elif origin is dict:
         return parse_dict(value)
     elif origin is None:
         # Not a generic type, try direct conversion
-        if target_type == list:
+        if target_type is list:
             return parse_list(value)
-        elif target_type == dict:
+        elif target_type is dict:
             return parse_dict(value)
 
     # Default to string

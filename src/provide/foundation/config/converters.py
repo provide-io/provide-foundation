@@ -291,7 +291,7 @@ def parse_float_with_validation(
     try:
         result = float(value)
     except (ValueError, TypeError) as e:
-        raise ValueError(f"Invalid float value '{value}': {e}")
+        raise ValueError(f"Invalid float value '{value}': {e}") from e
 
     if min_val is not None and result < min_val:
         raise ValueError(f"Value {result} is below minimum {min_val}")
@@ -340,7 +340,7 @@ def parse_json_dict(value: str) -> dict[str, Any]:
             raise ValueError(f"Expected JSON object, got {type(result).__name__}")
         return result
     except json.JSONDecodeError as e:
-        raise ValueError(f"Invalid JSON: {e}")
+        raise ValueError(f"Invalid JSON: {e}") from e
 
 
 def parse_json_list(value: str) -> list[Any]:
@@ -365,7 +365,7 @@ def parse_json_list(value: str) -> list[Any]:
             raise ValueError(f"Expected JSON array, got {type(result).__name__}")
         return result
     except json.JSONDecodeError as e:
-        raise ValueError(f"Invalid JSON: {e}")
+        raise ValueError(f"Invalid JSON: {e}") from e
 
 
 def parse_headers(value: str) -> dict[str, str]:
