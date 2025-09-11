@@ -6,6 +6,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 import structlog
 
+from provide.foundation.logger.ratelimit.limiters import GlobalRateLimiter
 from provide.foundation.logger.ratelimit.processor import (
     RateLimiterProcessor,
     create_rate_limiter_processor,
@@ -14,6 +15,10 @@ from provide.foundation.logger.ratelimit.processor import (
 
 class TestRateLimiterProcessor:
     """Test RateLimiterProcessor class."""
+
+    def setup_method(self) -> None:
+        """Reset GlobalRateLimiter singleton before each test."""
+        GlobalRateLimiter._instance = None
 
     def test_rate_limiter_processor_init(self) -> None:
         """Test RateLimiterProcessor initialization."""
@@ -375,6 +380,10 @@ class TestRateLimiterProcessor:
 class TestCreateRateLimiterProcessor:
     """Test create_rate_limiter_processor factory function."""
 
+    def setup_method(self) -> None:
+        """Reset GlobalRateLimiter singleton before each test."""
+        GlobalRateLimiter._instance = None
+
     def test_create_rate_limiter_processor_basic(self) -> None:
         """Test basic processor creation."""
         processor = create_rate_limiter_processor()
@@ -473,6 +482,10 @@ class TestCreateRateLimiterProcessor:
 
 class TestRateLimiterProcessorIntegration:
     """Integration tests for rate limiter processor."""
+
+    def setup_method(self) -> None:
+        """Reset GlobalRateLimiter singleton before each test."""
+        GlobalRateLimiter._instance = None
 
     @patch("provide.foundation.logger.get_logger")
     def test_processor_with_structlog_pipeline(self, mock_get_logger) -> None:
