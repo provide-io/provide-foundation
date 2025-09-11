@@ -18,6 +18,7 @@ from provide.foundation import (  # noqa: E402
     logger,
     setup_telemetry,
 )
+from provide.foundation.console.output import pout  # noqa: E402
 
 
 def example_8_environment_configuration() -> None:
@@ -27,10 +28,10 @@ def example_8_environment_configuration() -> None:
     Foundation Telemetry can be configured using `PROVIDE_*` environment variables,
     allowing settings to be changed without code modification.
     """
-    print("\n" + "=" * 60)
-    print("🌍 Example 8: Environment Configuration")
-    print(" Demonstrates: Configuring telemetry via environment variables.")
-    print("=" * 60)
+    pout("\n" + "=" * 60)
+    pout("🌍 Example 8: Environment Configuration")
+    pout(" Demonstrates: Configuring telemetry via environment variables.")
+    pout("=" * 60)
 
     # Set environment variables for this example
     # (In a real scenario, these would be set in the shell or deployment environment)
@@ -89,4 +90,4 @@ def example_8_environment_configuration() -> None:
 
 if __name__ == "__main__":
     example_8_environment_configuration()
-    print("\n✅ Example 8 completed.")
+    pout("\n✅ Example 8 completed.")

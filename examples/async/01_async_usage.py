@@ -19,6 +19,7 @@ from provide.foundation import (  # noqa: E402
     setup_telemetry,
     shutdown_foundation_telemetry,
 )
+from provide.foundation.console.output import pout  # noqa: E402
 
 
 async def example_9_async_usage() -> None:
@@ -28,10 +29,10 @@ async def example_9_async_usage() -> None:
     Covers logging from async functions and using the `shutdown_foundation_telemetry`
     async function.
     """
-    print("\n" + "=" * 60)
-    print("⚡ Example 9: Async Usage")
-    print(" Demonstrates: Logging from asyncio tasks and async shutdown.")
-    print("=" * 60)
+    pout("\n" + "=" * 60)
+    pout("⚡ Example 9: Async Usage")
+    pout(" Demonstrates: Logging from asyncio tasks and async shutdown.")
+    pout("=" * 60)
 
     setup_telemetry()  # Default configuration
 
@@ -59,4 +60,4 @@ async def example_9_async_usage() -> None:
 
 if __name__ == "__main__":
     asyncio.run(example_9_async_usage())
-    print("\n✅ Example 9 completed.")
+    pout("\n✅ Example 9 completed.")

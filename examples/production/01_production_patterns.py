@@ -19,6 +19,7 @@ from provide.foundation import (  # noqa: E402
     logger,
     setup_telemetry,
 )
+from provide.foundation.console.output import pout  # noqa: E402
 from provide.foundation.core import reset_foundation_setup_for_testing  # noqa: E402
 
 
@@ -30,10 +31,10 @@ def example_10_production_patterns() -> None:
     as default, DEBUG for specific problematic modules), and logging key business
     events or health metrics.
     """
-    print("\n" + "=" * 60)
-    print("🏭 Example 10: Production Patterns")
-    print(" Demonstrates: Logging patterns suitable for production environments.")
-    print("=" * 60)
+    pout("\n" + "=" * 60)
+    pout("🏭 Example 10: Production Patterns")
+    pout(" Demonstrates: Logging patterns suitable for production environments.")
+    pout("=" * 60)
 
     # Production-like configuration
     prod_config = TelemetryConfig(
@@ -109,4 +110,4 @@ if __name__ == "__main__":
     # and is not affected by previous example runs if scripts were concatenated.
     reset_foundation_setup_for_testing()
     example_10_production_patterns()
-    print("\n✅ Example 10 completed.")
+    pout("\n✅ Example 10 completed.")

@@ -16,6 +16,7 @@ if src_path.exists() and str(src_path) not in sys.path:
 from typing import Never  # noqa: E402
 
 from provide.foundation import logger, setup_telemetry  # noqa: E402
+from provide.foundation.console.output import pout  # noqa: E402
 
 
 def example_5_exception_handling() -> None:
@@ -25,10 +26,10 @@ def example_5_exception_handling() -> None:
     The `logger.exception()` method automatically captures and logs the current
     exception's traceback information along with the error message.
     """
-    print("\n" + "=" * 60)
-    print("💥 Example 5: Exception Handling")
-    print(" Demonstrates: Using logger.exception() to log errors with tracebacks.")
-    print("=" * 60)
+    pout("\n" + "=" * 60)
+    pout("💥 Example 5: Exception Handling")
+    pout(" Demonstrates: Using logger.exception() to log errors with tracebacks.")
+    pout("=" * 60)
 
     setup_telemetry()  # Default configuration
 
@@ -67,4 +68,4 @@ def example_5_exception_handling() -> None:
 
 if __name__ == "__main__":
     example_5_exception_handling()
-    print("\n✅ Example 5 completed.")
+    pout("\n✅ Example 5 completed.")
