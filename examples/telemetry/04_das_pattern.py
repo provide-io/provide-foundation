@@ -17,6 +17,7 @@ from provide.foundation import (  # noqa: E402
     LoggingConfig,
     TelemetryConfig,
     logger,
+    pout,
     setup_telemetry,
 )
 
@@ -29,12 +30,12 @@ def example_4_das_logging() -> None:
     with `domain`, `action`, and `status` keys, which are then visually
     represented by emojis if DAS emoji prefixing is enabled.
     """
-    print("\n" + "=" * 60)
-    print("🏗️ Example 4: Domain-Action-Status (DAS) Logging")
-    print(
+    pout("\n" + "=" * 60)
+    pout("🏗️ Example 4: Domain-Action-Status (DAS) Logging")
+    pout(
         " Demonstrates: Using domain, action, status for semantic, emoji-enhanced logs."
     )
-    print("=" * 60)
+    pout("=" * 60)
 
     # Ensure DAS emojis are enabled (default is True, but explicit for clarity)
     setup_telemetry(
@@ -93,4 +94,4 @@ def example_4_das_logging() -> None:
 
 if __name__ == "__main__":
     example_4_das_logging()
-    print("\n✅ Example 4 completed.")
+    pout("\n✅ Example 4 completed.")

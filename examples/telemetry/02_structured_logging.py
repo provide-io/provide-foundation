@@ -37,7 +37,7 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from provide.foundation import logger, setup_telemetry  # noqa: E402
+from provide.foundation import logger, pout, setup_telemetry  # noqa: E402
 
 
 def example_1_quick_start() -> None:
@@ -50,11 +50,11 @@ def example_1_quick_start() -> None:
     - Different log levels control what gets displayed
     - Structured data makes logs searchable and analyzable
     """
-    print("\n" + "=" * 60)
-    print("🚀 Example 1: Quick Start")
-    print(" Demonstrates: Logging with full telemetry setup (tracing/metrics).")
-    print(" Note: If OpenTelemetry dependencies are missing, tracing/metrics are disabled.")
-    print("=" * 60)
+    pout("\n" + "=" * 60)
+    pout("🚀 Example 1: Quick Start")
+    pout(" Demonstrates: Logging with full telemetry setup (tracing/metrics).")
+    pout(" Note: If OpenTelemetry dependencies are missing, tracing/metrics are disabled.")
+    pout("=" * 60)
 
     # Initialize with defaults (or environment variables if set)
     # This sets up logging + optional tracing/metrics if dependencies available
@@ -69,4 +69,4 @@ def example_1_quick_start() -> None:
 
 if __name__ == "__main__":
     example_1_quick_start()
-    print("\n✅ Example 1 completed.")
+    pout("\n✅ Example 1 completed.")

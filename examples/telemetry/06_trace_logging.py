@@ -17,6 +17,7 @@ from provide.foundation import (  # noqa: E402
     LoggingConfig,
     TelemetryConfig,
     logger,
+    pout,
     setup_telemetry,
 )
 
@@ -28,10 +29,10 @@ def example_6_trace_logging() -> None:
     TRACE is a highly verbose level, numerically lower than DEBUG. This example
     shows how to enable and use it for detailed diagnostic logging.
     """
-    print("\n" + "=" * 60)
-    print("👣 Example 6: TRACE Level Logging")
-    print(" Demonstrates: Using the ultra-verbose TRACE log level.")
-    print("=" * 60)
+    pout("\n" + "=" * 60)
+    pout("👣 Example 6: TRACE Level Logging")
+    pout(" Demonstrates: Using the ultra-verbose TRACE log level.")
+    pout("=" * 60)
 
     # Enable trace level globally or for specific modules
     config = TelemetryConfig(
@@ -64,4 +65,4 @@ def example_6_trace_logging() -> None:
 
 if __name__ == "__main__":
     example_6_trace_logging()
-    print("\n✅ Example 6 completed.")
+    pout("\n✅ Example 6 completed.")

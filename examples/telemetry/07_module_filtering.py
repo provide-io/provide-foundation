@@ -17,6 +17,7 @@ from provide.foundation import (  # noqa: E402
     LoggingConfig,
     TelemetryConfig,
     logger,
+    pout,
     setup_telemetry,
 )
 
@@ -28,10 +29,10 @@ def example_7_module_level_filtering() -> None:
     This allows different parts of an application to have varying log verbosity
     (e.g., more verbose for a problematic module, less for noisy ones).
     """
-    print("\n" + "=" * 60)
-    print("🎛️ Example 7: Module-Level Filtering")
-    print(" Demonstrates: Setting different log levels for different modules.")
-    print("=" * 60)
+    pout("\n" + "=" * 60)
+    pout("🎛️ Example 7: Module-Level Filtering")
+    pout(" Demonstrates: Setting different log levels for different modules.")
+    pout("=" * 60)
 
     config = TelemetryConfig(
         logging=LoggingConfig(
@@ -73,4 +74,4 @@ def example_7_module_level_filtering() -> None:
 
 if __name__ == "__main__":
     example_7_module_level_filtering()
-    print("\n✅ Example 7 completed.")
+    pout("\n✅ Example 7 completed.")
