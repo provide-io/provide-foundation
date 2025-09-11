@@ -47,7 +47,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 import sys
-import tempfile
+# Using Foundation file utilities instead of tempfile
 
 # Add src to path for examples
 example_dir = Path(__file__).resolve().parent
@@ -60,7 +60,7 @@ if src_path.exists() and str(src_path) not in sys.path:
 from attrs import define
 
 # Import using the new simplified imports
-from provide.foundation import logger
+from provide.foundation import logger, pout
 from provide.foundation.config import (
     BaseConfig,
     ConfigManager,
@@ -75,6 +75,7 @@ from provide.foundation.config import (
     parse_bool,
     parse_list,
 )
+from provide.foundation.file import temp_dir
 
 
 # Example 1: Simple configuration class
@@ -153,9 +154,9 @@ class FullConfig(RuntimeConfig):
 
 def example_basic_usage() -> None:
     """Example: Basic configuration usage."""
-    print("\n" + "=" * 60)
-    print("Example 1: Basic Configuration Usage")
-    print("=" * 60)
+    pout("\n" + "=" * 60)
+    pout("Example 1: Basic Configuration Usage")
+    pout("=" * 60)
 
     # Create configuration
     config = AppConfig(app_name="example-app", version="2.0.0", debug=True, port=3000)
@@ -179,9 +180,9 @@ def example_basic_usage() -> None:
 
 def example_env_loading() -> None:
     """Example: Loading from environment variables."""
-    print("\n" + "=" * 60)
-    print("Example 2: Environment Variable Loading")
-    print("=" * 60)
+    pout("\n" + "=" * 60)
+    pout("Example 2: Environment Variable Loading")
+    pout("=" * 60)
 
     # Set some environment variables
     os.environ["DB_HOST"] = "prod.db.example.com"
@@ -208,13 +209,12 @@ def example_env_loading() -> None:
 
 def example_file_loading() -> None:
     """Example: Loading from configuration files."""
-    print("\n" + "=" * 60)
-    print("Example 3: File-based Configuration")
-    print("=" * 60)
+    pout("\n" + "=" * 60)
+    pout("Example 3: File-based Configuration")
+    pout("=" * 60)
 
-    # Create temporary config files
-    with tempfile.TemporaryDirectory() as tmpdir:
-        tmppath = Path(tmpdir)
+    # Create temporary config files using Foundation utilities
+    with temp_dir() as tmppath:
 
         # JSON config
         json_file = tmppath / "config.json"
@@ -250,15 +250,15 @@ port = 9000
 
 def example_multi_source() -> None:
     """Example: Multi-source configuration with precedence."""
-    print("\n" + "=" * 60)
-    print("Example 4: Multi-source Configuration")
-    print("=" * 60)
+    pout("\n" + "=" * 60)
+    pout("Example 4: Multi-source Configuration")
+    pout("=" * 60)
 
     import asyncio
 
-    with tempfile.TemporaryDirectory() as tmpdir:
+    with temp_dir() as tmppath:
         # Create default config file
-        default_file = Path(tmpdir) / "defaults.json"
+        default_file = tmppath / "defaults.json"
         default_file.write_text("""{
             "app_name": "default-app",
             "version": "1.0.0",
@@ -291,9 +291,9 @@ def example_multi_source() -> None:
 
 def example_schema_validation() -> None:
     """Example: Schema definition and validation."""
-    print("\n" + "=" * 60)
-    print("Example 5: Schema Validation")
-    print("=" * 60)
+    pout("\n" + "=" * 60)
+    pout("Example 5: Schema Validation")
+    pout("=" * 60)
 
     import asyncio
 
@@ -352,9 +352,9 @@ def example_schema_validation() -> None:
 
 def example_config_manager() -> None:
     """Example: Using ConfigManager for centralized management."""
-    print("\n" + "=" * 60)
-    print("Example 6: Configuration Manager")
-    print("=" * 60)
+    pout("\n" + "=" * 60)
+    pout("Example 6: Configuration Manager")
+    pout("=" * 60)
 
     import asyncio
 
