@@ -20,6 +20,7 @@ from provide.foundation import (  # noqa: E402
     shutdown_foundation_telemetry,
 )
 from provide.foundation.console.output import pout  # noqa: E402
+from provide.foundation.logger.config import TelemetryConfig, LoggingConfig  # noqa: E402
 
 
 async def example_9_async_usage() -> None:
@@ -34,21 +35,48 @@ async def example_9_async_usage() -> None:
     pout(" Demonstrates: Logging from asyncio tasks and async shutdown.")
     pout("=" * 60)
 
-    setup_telemetry()  # Default configuration
-
-    async def async_task(task_id: int) -> None:
-        task_logger = logger.get_logger(f"async_task.{task_id}")
-        task_logger.info("Async task started", task_id=task_id)
-        await asyncio.sleep(0.01)  # Simulate async work
-        task_logger.debug("Async task processing step 1", progress=50)
-        await asyncio.sleep(0.01)
-        task_logger.info("Async task completed", task_id=task_id, duration_ms=20)
-
-    # Run multiple async tasks concurrently
-    await asyncio.gather(
-        async_task(1),
-        async_task(2),
+    setup_telemetry(
+        TelemetryConfig(
+            logging=LoggingConfig(default_level="INFO")
+        )
     )
+
+    async def async_task(task_id: int, task_type: str) -> dict[str, int]:
+        """Simulate an async task with realistic operations."""
+        task_logger = logger.get_logger(f"async_worker.{task_type}")
+        task_logger.info("Async task started", task_id=task_id, task_type=task_type)
+        
+        # Simulate different types of async work
+        if task_type == "data_processing":
+            await asyncio.sleep(0.02)  # Simulate data processing
+            task_logger.info("Processing data batch", task_id=task_id, records_processed=150)
+            await asyncio.sleep(0.01)
+            task_logger.info("Data validation completed", task_id=task_id, errors_found=0)
+        elif task_type == "api_call":
+            await asyncio.sleep(0.015)  # Simulate API call
+            task_logger.info("API request sent", task_id=task_id, endpoint="/api/v1/users")
+            await asyncio.sleep(0.01)
+            task_logger.info("API response received", task_id=task_id, status_code=200, response_time_ms=25)
+        
+        result = {"task_id": task_id, "duration_ms": 30 + task_id * 5}
+        task_logger.info("Async task completed", task_id=task_id, **result)
+        return result
+
+    # Demonstrate concurrent async operations with different types
+    logger.info("Starting batch of concurrent async tasks")
+    results = await asyncio.gather(
+        async_task(1, "data_processing"),
+        async_task(2, "api_call"),
+        async_task(3, "data_processing"),
+        async_task(4, "api_call"),
+    )
+    
+    # Process results
+    total_duration = sum(r["duration_ms"] for r in results)
+    logger.info("All async tasks completed", 
+               tasks_completed=len(results),
+               total_duration_ms=total_duration,
+               avg_duration_ms=total_duration // len(results))
 
     # Demonstrate async shutdown (currently logs a message)
     logger.info("Initiating telemetry shutdown...")
