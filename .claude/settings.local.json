@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(FOUNDATION_LOG_LEVEL=INFO PYTHONPATH=src python examples/configuration/03_config_management.py)"
+      "Bash(FOUNDATION_LOG_LEVEL=INFO PYTHONPATH=src python examples/configuration/03_config_management.py)",
+      "Bash(PYTHONPATH=src python examples/integration/01_celery_integration.py)"
     ],
     "deny": [],
     "ask": [],

@@ -5,23 +5,34 @@ Celery Integration Example
 Demonstrates how to integrate provide.foundation logging with Celery
 for comprehensive task tracking and monitoring.
 
+Installation:
+    pip install celery redis  # or pip install 'provide-foundation[celery]' if added to extras
+
 Usage:
+    # Start Redis (required for Celery broker):
+    redis-server
+    
     # Start Celery worker in one terminal:
-    celery -A 17_celery_integration worker --loglevel=info
+    celery -A 01_celery_integration worker --loglevel=info
     
     # Run tasks in another terminal:
-    python 17_celery_integration.py
+    python 01_celery_integration.py
 """
 
-import time
 from typing import Any, Optional
-from celery import Celery
-from celery.signals import (
-    task_prerun, task_postrun, task_failure, 
-    worker_ready, worker_shutdown
-)
 
-from provide.foundation import get_logger, setup_telemetry
+# Handle optional Celery dependency
+try:
+    from celery import Celery
+    from celery.signals import (
+        task_prerun, task_postrun, task_failure, 
+        worker_ready, worker_shutdown
+    )
+    CELERY_AVAILABLE = True
+except ImportError:
+    CELERY_AVAILABLE = False
+
+from provide.foundation import get_logger, setup_telemetry, pout, perr
 from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
 
 # Setup telemetry for Celery
@@ -42,6 +53,12 @@ def setup_celery_logging():
         )
     )
     setup_telemetry(config)
+
+if not CELERY_AVAILABLE:
+    perr("❌ Celery is not installed!")
+    perr("💡 Install with: pip install celery redis")
+    perr("🔗 Or add to pyproject.toml extras: 'provide-foundation[celery]'")
+    exit(1)
 
 setup_celery_logging()
 
@@ -157,8 +174,7 @@ def add_numbers(x: int, y: int) -> int:
     task_logger = CeleryTaskLogger("add_numbers")
     task_logger.logger.debug("performing_addition", x=x, y=y)
     
-    # Simulate some processing time
-    time.sleep(0.1)
+    # In real applications, this would be actual computation
     
     result = x + y
     task_logger.logger.debug("addition_complete", result=result)
@@ -176,7 +192,6 @@ def process_data(data: list) -> dict:
     processed_items = []
     for i, item in enumerate(data):
         # Simulate processing
-        time.sleep(0.01)
         processed_items.append(item.upper() if isinstance(item, str) else item)
         
         if i % 100 == 0:  # Log progress every 100 items
@@ -205,7 +220,6 @@ def failing_task() -> str:
     task_logger.logger.info("about_to_fail")
     
     # Simulate some work before failing
-    time.sleep(0.2)
     
     raise ValueError("This task always fails for demonstration purposes")
 
@@ -261,18 +275,18 @@ def run_example_tasks():
 
 if __name__ == '__main__':
     # This will only run the client side - you need to start a Celery worker separately
-    print("🔄 Running Celery integration example...")
-    print("📝 Make sure you have a Celery worker running:")
-    print("   celery -A 17_celery_integration worker --loglevel=info")
-    print()
+    pout("🔄 Running Celery integration example...")
+    pout("📝 Make sure you have a Celery worker running:")
+    pout("   celery -A 01_celery_integration worker --loglevel=info")
+    pout()
     
     run_example_tasks()
     
-    print()
-    print("✅ Example completed! Check the logs for structured Celery task tracking.")
-    print("🔍 Key features demonstrated:")
-    print("   • Task lifecycle logging (start, success, failure)")
-    print("   • Worker event tracking")
-    print("   • Progress logging for long tasks")
-    print("   • Error handling with structured context")
-    print("   • Task correlation with IDs")
+    pout()
+    pout("✅ Example completed! Check the logs for structured Celery task tracking.")
+    pout("🔍 Key features demonstrated:")
+    pout("   • Task lifecycle logging (start, success, failure)")
+    pout("   • Worker event tracking")
+    pout("   • Progress logging for long tasks")
+    pout("   • Error handling with structured context")
+    pout("   • Task correlation with IDs")
