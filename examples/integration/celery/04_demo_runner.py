@@ -253,7 +253,7 @@ showing real-world task processing patterns including:
     if DEMO_MODE:
         # Run in demo mode with in-process worker
         pout("🎮 Running in DEMO MODE - No Redis Required!")
-        pout("   Using memory broker for demonstration")
+        pout("   Using filesystem broker for demonstration")
         pout("")
 
         # Start demo worker
@@ -269,7 +269,7 @@ showing real-world task processing patterns including:
         pout("   1. Redis running: redis-server")
         pout("   2. Celery worker: celery -A examples.integration.celery.setup_and_config worker --loglevel=info")
         pout("")
-        pout("💡 Tip: Run with --demo flag to use memory broker without Redis")
+        pout("💡 Tip: Run with --demo flag to use filesystem broker without Redis")
         pout("")
 
         demonstrate_task_workflows()

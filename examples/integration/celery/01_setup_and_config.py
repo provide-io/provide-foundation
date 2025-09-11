@@ -74,11 +74,26 @@ setup_celery_logging(demo_mode=DEMO_MODE)
 
 # Create Celery app with appropriate config
 if DEMO_MODE:
-    # Use memory broker for demo (no Redis needed)
+    # Use filesystem broker for demo (no Redis needed)
     app = Celery('celery_rich_demo')
+    
+    # Setup filesystem directories
+    temp_dir = Path("/tmp/celery_demo")
+    temp_dir.mkdir(exist_ok=True)
+    
+    # Create required directories for filesystem transport
+    (temp_dir / 'out').mkdir(exist_ok=True)
+    (temp_dir / 'processed').mkdir(exist_ok=True)
+    (temp_dir / 'results').mkdir(exist_ok=True)
+    
     app.conf.update(
-        broker='memory://',
-        result_backend='cache+memory://',
+        broker_url='filesystem://',
+        broker_transport_options={
+            'data_folder_in': str(temp_dir / 'out'),
+            'data_folder_out': str(temp_dir / 'out'),
+            'data_folder_processed': str(temp_dir / 'processed'),
+        },
+        result_backend=f'file://{temp_dir}/results',
         task_always_eager=False,  # Still use worker pool
         task_eager_propagates=True,
         task_serializer='json',

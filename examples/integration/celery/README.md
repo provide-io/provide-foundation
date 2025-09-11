@@ -9,7 +9,7 @@ This directory contains a comprehensive example of integrating provide.foundatio
 pip install celery
 
 # Optional: Redis for production mode
-# For demo mode, Redis is not required (uses in-memory broker)
+# For demo mode, Redis is not required (uses filesystem broker)
 ```
 
 ## File Structure
@@ -24,7 +24,7 @@ pip install celery
 ### Demo Mode (No Redis Required)
 
 ```bash
-# Run with in-memory broker for demonstration
+# Run with filesystem broker for demonstration
 python examples/integration/celery/04_demo_runner.py --demo
 ```
 
