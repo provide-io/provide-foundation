@@ -69,7 +69,7 @@ def example_3_named_loggers() -> None:
                    response_time_ms=156, response_size_bytes=1024)
     
     # Show that different components can log independently
-    logger.info("Main application event", component="core", event="health_check")
+    logger.info("Main application event", component="core", event_type="health_check")
 
 
 if __name__ == "__main__":

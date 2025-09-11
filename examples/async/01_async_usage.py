@@ -58,7 +58,7 @@ async def example_9_async_usage() -> None:
             await asyncio.sleep(0.01)
             task_logger.info("API response received", task_id=task_id, status_code=200, response_time_ms=25)
         
-        result = {"task_id": task_id, "duration_ms": 30 + task_id * 5}
+        result = {"duration_ms": 30 + task_id * 5}
         task_logger.info("Async task completed", task_id=task_id, **result)
         return result
 

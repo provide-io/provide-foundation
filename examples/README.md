@@ -32,6 +32,7 @@ This directory contains practical examples demonstrating various features and us
 - `02_distributed_tracing.py` - Distributed tracing across services
 
 ### [integration/](integration/) - Third-Party Integrations
+- `01a_basic_task_queue.py` - Task queue patterns with async workers (no external deps)
 - `01_celery_integration.py` - Integration with Celery task queue
 
 ### [production/](production/) - Production Patterns
