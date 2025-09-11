@@ -119,9 +119,15 @@ class ToolDownloader:
         # Ensure parent directory exists
         dest.parent.mkdir(parents=True, exist_ok=True)
 
-        # Use the transport client's request method for streaming
+        # Handle both real clients and mocked clients
         try:
-            response = await self.client.request(url, "GET")
+            # Check if client.request is a coroutine function (real client)
+            import inspect
+            if inspect.iscoroutinefunction(self.client.request):
+                response = await self.client.request(url, "GET")
+            else:
+                # For mocked clients, call synchronously
+                response = self.client.request(url, "GET")
             
             # Get total size if available
             total_size = int(response.headers.get("content-length", 0))
