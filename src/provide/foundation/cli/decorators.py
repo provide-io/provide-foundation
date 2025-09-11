@@ -12,6 +12,7 @@ except ImportError:
     click = None
 
 from provide.foundation.context import CLIContext
+from provide.foundation.process import exit_error, exit_interrupted
 
 F = TypeVar("F", bound=Callable[..., Any])
 
@@ -162,7 +163,7 @@ def error_handler(f: F) -> F:
         except KeyboardInterrupt:
             if not json_output:
                 click.secho("\nInterrupted by user", fg="yellow", err=True)
-            sys.exit(130)  # Standard exit code for SIGINT
+            exit_interrupted()
         except Exception as e:
             if debug:
                 # In debug mode, show full traceback
@@ -179,7 +180,7 @@ def error_handler(f: F) -> F:
             else:
                 click.secho(f"Error: {e}", fg="red", err=True)
 
-            sys.exit(1)
+            exit_error(f"Command failed: {str(e)}")
 
     return wrapper
 
