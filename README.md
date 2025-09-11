@@ -325,6 +325,9 @@ All configuration can be controlled through environment variables:
 | `OTEL_TRACE_SAMPLE_RATE` | Sampling rate for traces (0.0 to 1.0) | `1.0` |
 
 **Rate Limiting Configuration:**
+
+| Variable | Description | Default |
+|----------|-------------|---------|
 | `PROVIDE_LOG_RATE_LIMIT_ENABLED` | Enable rate limiting for log output | `false` |
 | `PROVIDE_LOG_RATE_LIMIT_GLOBAL` | Global rate limit (logs per second) | `None` |
 | `PROVIDE_LOG_RATE_LIMIT_GLOBAL_CAPACITY` | Global rate limit burst capacity | `None` |
