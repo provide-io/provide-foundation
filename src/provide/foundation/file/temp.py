@@ -5,13 +5,13 @@ from pathlib import Path
 import shutil
 import tempfile
 
-from provide.foundation.errors.handlers import error_boundary
-from provide.foundation.file.defaults import (
+from provide.foundation.config.defaults import (
     DEFAULT_TEMP_CLEANUP,
     DEFAULT_TEMP_PREFIX,
     DEFAULT_TEMP_SUFFIX,
     DEFAULT_TEMP_TEXT_MODE,
 )
+from provide.foundation.errors.handlers import error_boundary
 from provide.foundation.file.safe import safe_delete
 from provide.foundation.logger import get_logger
 
@@ -32,11 +32,11 @@ def get_temp_dir() -> Path:
 
 
 def temp_file(
-    suffix: str = "",
-    prefix: str = "provide_",
+    suffix: str = DEFAULT_TEMP_SUFFIX,
+    prefix: str = DEFAULT_TEMP_PREFIX,
     dir: Path | str | None = None,
-    text: bool = False,
-    cleanup: bool = True,
+    text: bool = DEFAULT_TEMP_TEXT_MODE,
+    cleanup: bool = DEFAULT_TEMP_CLEANUP,
 ) -> Generator[Path, None, None]:
     """Create a temporary file with automatic cleanup.
 
@@ -78,10 +78,10 @@ def temp_file(
 
 def temp_file_with_content(
     content: bytes | str,
-    suffix: str = "",
-    prefix: str = "provide_",
+    suffix: str = DEFAULT_TEMP_SUFFIX,
+    prefix: str = DEFAULT_TEMP_PREFIX,
     dir: Path | str | None = None,
-    cleanup: bool = True,
+    cleanup: bool = DEFAULT_TEMP_CLEANUP,
 ) -> Generator[Path, None, None]:
     """Create a temporary file with initial content.
 
@@ -109,8 +109,8 @@ def temp_file_with_content(
 
 
 def temp_dir(
-    prefix: str = "provide_",
-    cleanup: bool = True,
+    prefix: str = DEFAULT_TEMP_PREFIX,
+    cleanup: bool = DEFAULT_TEMP_CLEANUP,
 ) -> Generator[Path, None, None]:
     """Create temporary directory with automatic cleanup.
 
