@@ -85,20 +85,19 @@ def temp_named_file():
         if isinstance(dir, Path):
             dir = str(dir)
 
-        f = tempfile.NamedTemporaryFile(mode=mode, suffix=suffix, prefix=prefix, dir=dir, delete=delete)
-
-        if content is not None:
-            if isinstance(content, str):
-                if "b" in mode:
-                    f.write(content.encode())
+        with tempfile.NamedTemporaryFile(
+            mode=mode, suffix=suffix, prefix=prefix, dir=dir, delete=delete
+        ) as f:
+            if content is not None:
+                if isinstance(content, str):
+                    if "b" in mode:
+                        f.write(content.encode())
+                    else:
+                        f.write(content)
                 else:
                     f.write(content)
-            else:
-                f.write(content)
-            f.flush()
-
-        path = Path(f.name)
-        f.close()
+                f.flush()
+            path = Path(f.name)
 
         if not delete:
             created_files.append(path)

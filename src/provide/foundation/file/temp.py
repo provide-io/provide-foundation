@@ -1,6 +1,7 @@
 """Temporary file and directory utilities."""
 
 from collections.abc import Generator
+from contextlib import contextmanager
 from pathlib import Path
 import shutil
 import tempfile
@@ -18,19 +19,20 @@ from provide.foundation.logger import get_logger
 log = get_logger(__name__)
 
 
-def get_temp_dir() -> Path:
-    """Get the system temporary directory.
+def get_system_temp_dir() -> Path:
+    """Get the operating system's temporary directory.
 
     Returns:
-        Path to the system temp directory
+        Path to the OS temp directory
 
     Example:
-        >>> temp_path = get_temp_dir()
+        >>> temp_path = get_system_temp_dir()
         >>> print(temp_path)  # e.g., /tmp or C:\\Users\\...\\Temp
     """
     return Path(tempfile.gettempdir())
 
 
+@contextmanager
 def temp_file(
     suffix: str = DEFAULT_TEMP_SUFFIX,
     prefix: str = DEFAULT_TEMP_PREFIX,
@@ -76,38 +78,9 @@ def temp_file(
                 log.debug("Cleaned up temp file", path=str(temp_path))
 
 
-def temp_file_with_content(
-    content: bytes | str,
-    suffix: str = DEFAULT_TEMP_SUFFIX,
-    prefix: str = DEFAULT_TEMP_PREFIX,
-    dir: Path | str | None = None,
-    cleanup: bool = DEFAULT_TEMP_CLEANUP,
-) -> Generator[Path, None, None]:
-    """Create a temporary file with initial content.
-
-    Args:
-        content: Content to write to the file
-        suffix: File suffix (e.g., '.txt', '.json')
-        prefix: File name prefix
-        dir: Directory for the temp file (None = system temp)
-        cleanup: Whether to remove file on exit
-
-    Yields:
-        Path object for the temporary file with content
-
-    Example:
-        >>> with temp_file_with_content('{"key": "value"}', suffix='.json') as tmp:
-        ...     data = json.loads(tmp.read_text())
-        ...     process_data(data)
-    """
-    with temp_file(suffix=suffix, prefix=prefix, dir=dir, text=isinstance(content, str), cleanup=cleanup) as tmp:
-        if isinstance(content, str):
-            tmp.write_text(content)
-        else:
-            tmp.write_bytes(content)
-        yield tmp
 
 
+@contextmanager
 def temp_dir(
     prefix: str = DEFAULT_TEMP_PREFIX,
     cleanup: bool = DEFAULT_TEMP_CLEANUP,
