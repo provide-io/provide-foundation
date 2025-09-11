@@ -107,7 +107,7 @@ class RateLimiterProcessor:
         stats = self.rate_limiter.get_stats()
 
         # Check if there's been any rate limiting activity
-        global_stats = stats.get("global", {})
+        global_stats = stats.get("global") or {}
         total_denied = global_stats.get("total_denied", 0)
 
         if not self.suppressed_counts and total_denied == 0:

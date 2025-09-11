@@ -64,7 +64,7 @@ class ToolCache:
         """Save cache metadata to disk."""
         try:
             content = json.dumps(self.metadata, indent=2)
-            atomic_write(self.metadata_file, content)
+            atomic_write(self.metadata_file, content.encode('utf-8'))
         except Exception as e:
             log.error(f"Failed to save cache metadata: {e}")
     
