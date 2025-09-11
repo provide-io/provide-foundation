@@ -7,9 +7,9 @@ including color support and testing mode detection.
 
 from attrs import define
 
-from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.config.base import field
 from provide.foundation.config.converters import parse_bool_extended
+from provide.foundation.config.env import RuntimeConfig
 
 
 @define(slots=True, repr=False)
@@ -22,35 +22,34 @@ class StreamConfig(RuntimeConfig):
         converter=parse_bool_extended,
         description="Disable color output in console",
     )
-    
+
     force_color: bool = field(
         default=False,
         env_var="FORCE_COLOR",
         converter=parse_bool_extended,
         description="Force color output even when not in TTY",
     )
-    
+
     click_testing: bool = field(
         default=False,
         env_var="CLICK_TESTING",
         converter=parse_bool_extended,
         description="Indicates if running inside Click testing framework",
     )
-    
 
     def supports_color(self) -> bool:
         """
         Determine if the console supports color output.
-        
+
         Returns:
             True if color is supported, False otherwise
         """
         if self.no_color:
             return False
-        
+
         if self.force_color:
             return True
-        
+
         # Additional logic for TTY detection would go here
         # For now, just return based on the flags
         return not self.no_color
@@ -63,7 +62,7 @@ _stream_config: StreamConfig | None = None
 def get_stream_config() -> StreamConfig:
     """
     Get the global stream configuration instance.
-    
+
     Returns:
         StreamConfig instance loaded from environment
     """

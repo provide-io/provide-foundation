@@ -205,7 +205,7 @@ def generate_logs_command(
     error_rate: float,
     enable_rate_limit: bool,
     rate_limit: float,
-):
+) -> None:
     """Generate logs to test OpenObserve integration with Foundation's rate limiting."""
 
     click.echo("🚀 Starting log generation...")
@@ -351,7 +351,7 @@ def generate_logs_command(
 
 if not _HAS_CLICK:
 
-    def generate_logs_command(*args, **kwargs):
+    def generate_logs_command(*args: object, **kwargs: object) -> None:
         raise ImportError(
             "Click is required for CLI commands. Install with: pip install click"
         )

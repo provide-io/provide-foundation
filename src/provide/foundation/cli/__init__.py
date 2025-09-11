@@ -21,8 +21,6 @@ from provide.foundation.cli.testing import (
     isolated_cli_runner,
     temp_config_file,
 )
-from provide.foundation.testing.cli import MockContext
-from provide.foundation.testing.logger import mock_logger
 from provide.foundation.cli.utils import (
     CliTestRunner,
     assert_cli_error,
@@ -35,6 +33,8 @@ from provide.foundation.cli.utils import (
     echo_warning,
     setup_cli_logging,
 )
+from provide.foundation.testing.cli import MockContext
+from provide.foundation.testing.logger import mock_logger
 
 __all__ = [
     "CliTestCase",

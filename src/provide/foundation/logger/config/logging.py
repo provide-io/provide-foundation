@@ -9,22 +9,7 @@ from pathlib import Path
 
 from attrs import define
 
-from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.config.base import field
-from provide.foundation.config.defaults import (
-    DEFAULT_LOG_LEVEL,
-    DEFAULT_CONSOLE_FORMATTER,
-    DEFAULT_LOGGER_NAME_EMOJI_ENABLED,
-    DEFAULT_DAS_EMOJI_ENABLED,
-    DEFAULT_OMIT_TIMESTAMP,
-    DEFAULT_FOUNDATION_SETUP_LOG_LEVEL,
-    DEFAULT_FOUNDATION_LOG_OUTPUT,
-    DEFAULT_RATE_LIMIT_ENABLED,
-    DEFAULT_RATE_LIMIT_EMIT_WARNINGS,
-    DEFAULT_RATE_LIMIT_GLOBAL,
-    DEFAULT_RATE_LIMIT_GLOBAL_CAPACITY,
-    DEFAULT_RATE_LIMIT_OVERFLOW_POLICY,
-)
 from provide.foundation.config.converters import (
     parse_bool_extended,
     parse_console_formatter,
@@ -34,10 +19,24 @@ from provide.foundation.config.converters import (
     parse_module_levels,
     parse_rate_limits,
     validate_log_level,
-    validate_non_negative,
     validate_overflow_policy,
     validate_positive,
 )
+from provide.foundation.config.defaults import (
+    DEFAULT_CONSOLE_FORMATTER,
+    DEFAULT_DAS_EMOJI_ENABLED,
+    DEFAULT_FOUNDATION_LOG_OUTPUT,
+    DEFAULT_FOUNDATION_SETUP_LOG_LEVEL,
+    DEFAULT_LOG_LEVEL,
+    DEFAULT_LOGGER_NAME_EMOJI_ENABLED,
+    DEFAULT_OMIT_TIMESTAMP,
+    DEFAULT_RATE_LIMIT_EMIT_WARNINGS,
+    DEFAULT_RATE_LIMIT_ENABLED,
+    DEFAULT_RATE_LIMIT_GLOBAL,
+    DEFAULT_RATE_LIMIT_GLOBAL_CAPACITY,
+    DEFAULT_RATE_LIMIT_OVERFLOW_POLICY,
+)
+from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.types import (
     ConsoleFormatterStr,
     LogLevelStr,
@@ -90,7 +89,7 @@ class LoggingConfig(RuntimeConfig):
         default=None,
         env_var="PROVIDE_LOG_FILE",
         converter=lambda x: Path(x) if x else None,
-        description="Path to log file"
+        description="Path to log file",
     )
     foundation_setup_log_level: LogLevelStr = field(
         default=DEFAULT_FOUNDATION_SETUP_LOG_LEVEL,
@@ -138,7 +137,9 @@ class LoggingConfig(RuntimeConfig):
     rate_limit_summary_interval: float = field(
         default=DEFAULT_RATE_LIMIT_GLOBAL,
         env_var="PROVIDE_LOG_RATE_LIMIT_SUMMARY_INTERVAL",
-        converter=lambda x: parse_float_with_validation(x, min_val=0.0) if x else DEFAULT_RATE_LIMIT_GLOBAL,
+        converter=lambda x: parse_float_with_validation(x, min_val=0.0)
+        if x
+        else DEFAULT_RATE_LIMIT_GLOBAL,
         validator=validate_positive,
         description="Seconds between rate limit summary reports",
     )
@@ -161,4 +162,3 @@ class LoggingConfig(RuntimeConfig):
         validator=validate_overflow_policy,
         description="Policy when queue is full: drop_oldest, drop_newest, or block",
     )
-

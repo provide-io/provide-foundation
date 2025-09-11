@@ -2,7 +2,7 @@
 Task queue and async job processing event set for Foundation.
 """
 
-from provide.foundation.eventsets.types import EventSet, EventMapping, FieldMapping
+from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping
 
 EVENT_SET = EventSet(
     name="task_queue",
@@ -25,7 +25,7 @@ EVENT_SET = EventSet(
                 "kafka": {"task.broker": "kafka", "task.streaming": True},
                 "rabbitmq": {"task.broker": "amqp"},
             },
-            default_key="default"
+            default_key="default",
         ),
         EventMapping(
             name="task_status",
@@ -50,7 +50,7 @@ EVENT_SET = EventSet(
                 "failure": {"task.state": "failed", "task.success": False},
                 "revoked": {"task.state": "cancelled"},
             },
-            default_key="default"
+            default_key="default",
         ),
     ],
     field_mappings=[
@@ -58,50 +58,50 @@ EVENT_SET = EventSet(
             log_key="task.system",
             event_set_name="task_queue",
             description="Task queue system",
-            value_type="string"
+            value_type="string",
         ),
         FieldMapping(
             log_key="task.status",
             event_set_name="task_queue",
             description="Task execution status",
-            value_type="string"
+            value_type="string",
         ),
         FieldMapping(
             log_key="task.id",
             event_set_name="task_queue",
             description="Unique task identifier",
-            value_type="string"
+            value_type="string",
         ),
         FieldMapping(
             log_key="task.name",
             event_set_name="task_queue",
             description="Task or job name",
-            value_type="string"
+            value_type="string",
         ),
         FieldMapping(
             log_key="task.queue_name",
             event_set_name="task_queue",
             description="Queue name",
-            value_type="string"
+            value_type="string",
         ),
         FieldMapping(
             log_key="task.retries",
             event_set_name="task_queue",
             description="Retry attempt count",
-            value_type="integer"
+            value_type="integer",
         ),
         FieldMapping(
             log_key="duration_ms",
             event_set_name="task_queue",
             description="Task execution duration",
-            value_type="integer"
+            value_type="integer",
         ),
         FieldMapping(
             log_key="trace_id",
             event_set_name="task_queue",
             description="Distributed trace ID",
-            value_type="string"
+            value_type="string",
         ),
     ],
-    priority=70
+    priority=70,
 )

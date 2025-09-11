@@ -7,7 +7,7 @@ try:
     from cryptography import x509
     from cryptography.hazmat.primitives import serialization
     from cryptography.hazmat.primitives.asymmetric import ec, rsa
-    
+
     _HAS_CRYPTO = True
 except ImportError:
     x509 = None
@@ -28,7 +28,6 @@ from provide.foundation.crypto.certificates.operations import create_x509_certif
 from provide.foundation.crypto.constants import (
     DEFAULT_CERTIFICATE_CURVE,
     DEFAULT_CERTIFICATE_KEY_TYPE,
-    DEFAULT_CERTIFICATE_VALIDITY_DAYS,
     DEFAULT_RSA_KEY_SIZE,
 )
 
@@ -43,20 +42,26 @@ def generate_certificate(
     alt_names: list[str] | None = None,
     is_ca: bool = False,
     is_client_cert: bool = False,
-) -> tuple[CertificateBase, "x509.Certificate", "rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey", str, str]:
+) -> tuple[
+    CertificateBase,
+    "x509.Certificate",
+    "rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey",
+    str,
+    str,
+]:
     """
     Generate a new certificate with a keypair.
-    
+
     Returns:
         Tuple of (CertificateBase, X509Certificate, private_key, cert_pem, key_pem)
     """
     try:
         logger.debug("📜🔑🚀 Generating new keypair")
-        
+
         now = datetime.now(UTC)
         not_valid_before = now - timedelta(days=1)
         not_valid_after = now + timedelta(days=validity_days)
-        
+
         # Parse key type
         normalized_key_type_str = key_type.lower()
         match normalized_key_type_str:
@@ -69,21 +74,19 @@ def generate_certificate(
                     f"Unsupported key_type string: '{key_type}'. "
                     "Must be 'rsa' or 'ecdsa'."
                 )
-        
+
         # Configure key parameters
         gen_curve: CurveType | None = None
         gen_key_size = None
-        
+
         if gen_key_type == KeyType.ECDSA:
             try:
                 gen_curve = CurveType[ecdsa_curve.upper()]
             except KeyError as e_curve:
-                raise ValueError(
-                    f"Unsupported ECDSA curve: {ecdsa_curve}"
-                ) from e_curve
+                raise ValueError(f"Unsupported ECDSA curve: {ecdsa_curve}") from e_curve
         else:  # RSA
             gen_key_size = key_size
-        
+
         # Build configuration
         conf: CertificateConfig = {
             "common_name": common_name,
@@ -98,10 +101,10 @@ def generate_certificate(
         if gen_key_size is not None:
             conf["key_size"] = gen_key_size
         logger.debug(f"📜🔑🚀 Generation config: {conf}")
-        
+
         # Generate base certificate and private key
         base, private_key = CertificateBase.create(conf)
-        
+
         # Create X.509 certificate
         x509_cert = create_x509_certificate(
             base=base,
@@ -110,12 +113,10 @@ def generate_certificate(
             is_ca=is_ca,
             is_client_cert=is_client_cert,
         )
-        
+
         if x509_cert is None:
-            raise CertificateError(
-                "Certificate object (_cert) is None after creation"
-            )
-        
+            raise CertificateError("Certificate object (_cert) is None after creation")
+
         # Convert to PEM format
         cert_pem = x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
         key_pem = private_key.private_bytes(
@@ -123,11 +124,11 @@ def generate_certificate(
             format=serialization.PrivateFormat.PKCS8,
             encryption_algorithm=serialization.NoEncryption(),
         ).decode("utf-8")
-        
+
         logger.debug("📜🔑✅ Generated cert and key")
-        
+
         return base, x509_cert, private_key, cert_pem, key_pem
-        
+
     except Exception as e:
         logger.error(
             f"📜❌ Failed to generate certificate. Error: {type(e).__name__}: {e}",

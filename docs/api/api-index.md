@@ -23,6 +23,8 @@ Complete API documentation for provide.foundation.
       <li><a href="file/index/">File Operations</a></li>
       <li><a href="crypto/index/">Cryptographic Utils</a></li>
       <li><a href="utils/index/">Environment & Utils</a></li>
+      <li><a href="transport/">Transport Layer</a></li>
+      <li><a href="metrics/">Metrics Collection</a></li>
     </ul>
   </div>
 
@@ -30,19 +32,19 @@ Complete API documentation for provide.foundation.
     <h3>🖥️ Console & CLI</h3>
     <p>User interaction and command-line tools</p>
     <ul>
-      <li><a href="utils/console/">Console I/O</a></li>
+      <li><a href="console/">Console I/O</a></li>
       <li><a href="cli/decorators/">CLI Decorators</a></li>
       <li><a href="hub/index/">Command Hub</a></li>
     </ul>
   </div>
 
   <div class="feature-card">
-    <h3>🌐 Emoji Sets & Advanced</h3>
-    <p>Domain-specific emoji mappings and advanced features</p>
+    <h3>🌐 Event Sets & Resilience</h3>
+    <p>Event enrichment and reliability patterns</p>
     <ul>
-      <li><a href="emoji_sets/http/">HTTP Layer</a></li>
-      <li><a href="emoji_sets/database/">Database Layer</a></li>
-      <li><a href="emoji_sets/llm/">LLM Layer</a></li>
+      <li><a href="eventsets/">Event Sets</a></li>
+      <li><a href="resilience/">Resilience Patterns</a></li>
+      <li><a href="errors/">Error Handling</a></li>
     </ul>
   </div>
 </div>
@@ -51,7 +53,7 @@ Complete API documentation for provide.foundation.
 
 ### Logger
 
-The main logging interface with structured, emoji-enhanced output:
+The main logging interface with structured, event-enriched output:
 
 ```python
 from provide.foundation import logger, get_logger
@@ -219,7 +221,7 @@ provide.foundation/
 │   ├── registry.py         # Command registry
 │   └── components.py       # Hub components
 ├── registry.py              # General registry pattern
-└── emoji_sets.py       # Domain-specific logging emoji sets
+└── eventsets/          # Event enrichment system
 ```
 
 ## Type Annotations
@@ -278,16 +280,21 @@ def custom_processor(logger, method_name, event_dict):
 add_processor(custom_processor)
 ```
 
-### Custom Emoji Sets
+### Custom Event Sets
 
 ```python
-from provide.foundation.emoji_sets import EmojiSetConfig
+from provide.foundation.eventsets.types import EventSet, EventMapping
 
-class CustomLayer(EmojiSetConfig):
-    domain = "custom"
-    
-    def get_emoji(self, action: str, status: str) -> str:
-        return "🔧"
+custom_event_set = EventSet(
+    name="custom",
+    description="Custom event enrichment",
+    mappings=[
+        EventMapping(
+            name="status", 
+            visual_markers={"success": "🔧", "error": "❌"}
+        )
+    ]
+)
 ```
 
 ## Performance Characteristics
@@ -298,6 +305,36 @@ class CustomLayer(EmojiSetConfig):
 | With context | 85μs | 11,700/sec |
 | JSON format | 62μs | 16,100/sec |
 | With emoji | 78μs | 12,800/sec |
+
+## Deprecations and Backward Compatibility
+
+### Deprecated Functions
+
+⚠️ **The following functions are deprecated and will be removed in a future version:**
+
+- `retry_on_error` - Use `@retry` decorator from `provide.foundation.resilience` instead
+- `setup_logging` - Use `setup_telemetry` for comprehensive telemetry setup
+
+```python
+# ❌ Deprecated
+from provide.foundation import retry_on_error, setup_logging
+
+# ✅ Recommended  
+from provide.foundation.resilience import retry
+from provide.foundation import setup_telemetry
+```
+
+### Migration from Emoji Sets
+
+The emoji system has been replaced with a more flexible event enrichment system:
+
+```python
+# ❌ Old (removed)
+from provide.foundation.logger.emoji.sets import HttpEmojiSet
+
+# ✅ New
+from provide.foundation.eventsets.types import EventSet, EventMapping
+```
 
 ## Version Compatibility
 

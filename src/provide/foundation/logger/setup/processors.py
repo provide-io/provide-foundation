@@ -15,6 +15,8 @@ from provide.foundation.logger.processors import (
     _build_core_processors_list,
     _build_formatter_processors_list,
 )
+
+
 def build_complete_processor_chain(
     config: TelemetryConfig,
     log_stream: TextIO,
@@ -61,9 +63,7 @@ def configure_structlog_output(
         config: Telemetry configuration
         log_stream: Output stream for logging
     """
-    processors = build_complete_processor_chain(
-        config, log_stream
-    )
+    processors = build_complete_processor_chain(config, log_stream)
     apply_structlog_configuration(processors, log_stream)
 
 

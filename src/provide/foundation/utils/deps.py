@@ -6,6 +6,7 @@ from typing import NamedTuple
 def _get_logger():
     """Lazy logger import to avoid circular dependencies."""
     from provide.foundation.logger import get_logger
+
     return get_logger(__name__)
 
 
@@ -21,7 +22,7 @@ class DependencyStatus(NamedTuple):
 def _check_click() -> DependencyStatus:
     """Check click availability."""
     try:
-        import click
+        import click  # noqa: F401
 
         # Use importlib.metadata to avoid deprecation warning
         try:
@@ -68,7 +69,7 @@ def _check_cryptography() -> DependencyStatus:
 def _check_opentelemetry() -> DependencyStatus:
     """Check OpenTelemetry availability."""
     try:
-        import opentelemetry
+        import opentelemetry  # noqa: F401
 
         try:
             from importlib.metadata import version

@@ -3,7 +3,6 @@
 from collections.abc import Callable
 import functools
 from pathlib import Path
-import sys
 from typing import Any, TypeVar
 
 try:

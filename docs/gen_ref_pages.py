@@ -86,14 +86,14 @@ The core modules provide the fundamental functionality of provide.foundation.
 ### Error Handling
 - [`provide.foundation.errors`](reference/provide/foundation/errors/index.md) - Error handling utilities
 
-## Emoji Sets
+## Event Sets
 
-Emoji sets provide domain-specific logging capabilities:
+Event sets provide domain-specific log enrichment:
 
-- [`provide.foundation.emoji_sets`](reference/provide/foundation/emoji_sets.md) - Base emoji set system
-- HTTP Layer - Web request/response logging
-- Database Layer - Database query logging
-- LLM Layer - Language model interaction logging
+- [`provide.foundation.eventsets`](reference/provide/foundation/eventsets/index.md) - Event enrichment system
+- Event mapping and visual markers
+- Registry and discovery system
+- Display utilities
 
 ## Usage Examples
 
@@ -121,9 +121,9 @@ def hello_command(name: str = "World"):
 ### Configuration Management
 
 ```python
-from provide.foundation.config import Config
+from provide.foundation.config import BaseConfig
 
-config = Config.from_env()
+config = BaseConfig.from_env()
 print(f"Debug mode: {config.debug}")
 ```
 

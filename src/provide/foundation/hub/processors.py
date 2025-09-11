@@ -10,14 +10,19 @@ from provide.foundation.hub.registry import RegistryEntry
 
 def _get_registry_and_lock():
     """Get registry and lock from components module."""
-    from provide.foundation.hub.components import get_component_registry, _registry_lock, ComponentCategory
+    from provide.foundation.hub.components import (
+        ComponentCategory,
+        _registry_lock,
+        get_component_registry,
+    )
+
     return get_component_registry(), _registry_lock, ComponentCategory
 
 
 def get_processor_pipeline() -> list[RegistryEntry]:
     """Get log processors ordered by priority."""
     registry, registry_lock, ComponentCategory = _get_registry_and_lock()
-    
+
     with registry_lock:
         # Get all processors
         all_entries = list(registry)

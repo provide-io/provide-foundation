@@ -24,13 +24,12 @@ except ImportError:
     _HAS_CRYPTO = False
 
 from provide.foundation import logger
-from provide.foundation.crypto.constants import (
-    DEFAULT_CERTIFICATE_CURVE,
-    DEFAULT_CERTIFICATE_KEY_TYPE,
-    DEFAULT_CERTIFICATE_VALIDITY_DAYS,
-    DEFAULT_RSA_KEY_SIZE,
+from provide.foundation.crypto.certificates.base import (
+    CertificateBase,
+    CertificateError,
+    KeyPair,
+    PublicKey,
 )
-from provide.foundation.crypto.certificates.base import CertificateBase, CertificateError, KeyPair, PublicKey
 
 
 def create_x509_certificate(
@@ -46,8 +45,12 @@ def create_x509_certificate(
     try:
         logger.debug("📜📝🚀 create_x509_certificate: Building certificate")
 
-        actual_issuer_name = issuer_name_override if issuer_name_override else base.issuer
-        actual_signing_key = signing_key_override if signing_key_override else private_key
+        actual_issuer_name = (
+            issuer_name_override if issuer_name_override else base.issuer
+        )
+        actual_signing_key = (
+            signing_key_override if signing_key_override else private_key
+        )
 
         if not actual_signing_key:
             raise CertificateError(
@@ -147,7 +150,11 @@ def create_x509_certificate(
         raise CertificateError("Failed to create X.509 certificate object") from e
 
 
-def validate_signature(signed_cert_obj: "X509Certificate", signing_cert_obj: "X509Certificate", signing_public_key: "PublicKey") -> bool:
+def validate_signature(
+    signed_cert_obj: "X509Certificate",
+    signing_cert_obj: "X509Certificate",
+    signing_public_key: "PublicKey",
+) -> bool:
     """Internal helper: Validates signature and issuer/subject match."""
     if signed_cert_obj.issuer != signing_cert_obj.subject:
         logger.debug(

@@ -12,11 +12,14 @@ import pytest
 import requests
 
 
-# Skip tests if OpenObserve is not available
-pytestmark = pytest.mark.skipif(
-    not os.getenv("OPENOBSERVE_URL"),
-    reason="OpenObserve not configured (set OPENOBSERVE_URL)",
-)
+# Skip tests if OpenObserve is not available  
+pytestmark = [
+    pytest.mark.integration,
+    pytest.mark.skipif(
+        not os.getenv("OPENOBSERVE_URL"),
+        reason="OpenObserve not configured (set OPENOBSERVE_URL)",
+    ),
+]
 
 
 class TestOpenObserveIntegration:

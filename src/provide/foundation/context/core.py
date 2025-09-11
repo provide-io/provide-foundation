@@ -2,17 +2,15 @@
 
 import copy
 import json
-import os
 from pathlib import Path
 from typing import Any
 
 from attrs import define, field, fields, validators
 
-from provide.foundation.config.env import RuntimeConfig
-from provide.foundation.config.base import field as config_field, ConfigSource
+from provide.foundation.config.base import ConfigSource, field as config_field
 from provide.foundation.config.converters import parse_bool_strict
+from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.logger import get_logger
-from provide.foundation.logger.config import TelemetryConfig
 
 try:
     import tomli as tomllib
@@ -46,53 +44,53 @@ class CLIContext(RuntimeConfig):
         env_var="PROVIDE_LOG_LEVEL",
         converter=str.upper,
         validator=validators.in_(VALID_LOG_LEVELS),
-        description="Logging level for CLI output"
+        description="Logging level for CLI output",
     )
     profile: str = config_field(
         default="default",
         env_var="PROVIDE_PROFILE",
-        description="Configuration profile to use"
+        description="Configuration profile to use",
     )
     debug: bool = config_field(
         default=False,
         env_var="PROVIDE_DEBUG",
         converter=parse_bool_strict,
-        description="Enable debug mode"
+        description="Enable debug mode",
     )
     json_output: bool = config_field(
         default=False,
         env_var="PROVIDE_JSON_OUTPUT",
         converter=parse_bool_strict,
-        description="Output in JSON format"
+        description="Output in JSON format",
     )
     config_file: Path | None = config_field(
         default=None,
         env_var="PROVIDE_CONFIG_FILE",
         converter=lambda x: Path(x) if x else None,
-        description="Path to configuration file"
+        description="Path to configuration file",
     )
     log_file: Path | None = config_field(
         default=None,
         env_var="PROVIDE_LOG_FILE",
         converter=lambda x: Path(x) if x else None,
-        description="Path to log file"
+        description="Path to log file",
     )
     log_format: str = config_field(
         default="key_value",
         env_var="PROVIDE_LOG_FORMAT",
-        description="Log output format (key_value or json)"
+        description="Log output format (key_value or json)",
     )
     no_color: bool = config_field(
         default=False,
         env_var="NO_COLOR",
         converter=parse_bool_strict,
-        description="Disable colored output"
+        description="Disable colored output",
     )
     no_emoji: bool = config_field(
         default=False,
         env_var="PROVIDE_NO_EMOJI",
         converter=parse_bool_strict,
-        description="Disable emoji in output"
+        description="Disable emoji in output",
     )
 
     # Private fields - using Factory for mutable defaults
@@ -116,13 +114,13 @@ class CLIContext(RuntimeConfig):
         # Create default instance and environment instance
         default_ctx = self.__class__()  # All defaults
         env_ctx = self.from_env(prefix=prefix)  # Environment + defaults
-        
+
         # Only update fields where environment differs from default
         for attr in fields(self.__class__):
             if not attr.name.startswith("_"):  # Skip private fields
                 default_value = getattr(default_ctx, attr.name)
                 env_value = getattr(env_ctx, attr.name)
-                
+
                 # If environment value differs from default, it came from env
                 if env_value != default_value:
                     setattr(self, attr.name, env_value)
@@ -142,7 +140,9 @@ class CLIContext(RuntimeConfig):
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any], source: ConfigSource = ConfigSource.RUNTIME) -> "CLIContext":
+    def from_dict(
+        cls, data: dict[str, Any], source: ConfigSource = ConfigSource.RUNTIME
+    ) -> "CLIContext":
         """
         Create context from dictionary.
 
@@ -265,7 +265,9 @@ class CLIContext(RuntimeConfig):
 
         path.write_text(content)
 
-    def merge(self, other: "CLIContext", override_defaults: bool = False) -> "CLIContext":
+    def merge(
+        self, other: "CLIContext", override_defaults: bool = False
+    ) -> "CLIContext":
         """
         Merge with another context, with other taking precedence.
 

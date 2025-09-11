@@ -87,7 +87,7 @@ class BaseConfig:
     _source_map: dict[str, ConfigSource] = attrs_field(init=False, factory=lambda: {})
     _original_values: dict[str, Any] = attrs_field(init=False, factory=lambda: {})
 
-    def __attrs_post_init__(self):
+    def __attrs_post_init__(self) -> None:
         """Post-initialization hook for subclasses."""
         # The _source_map and _original_values are now handled by attrs with factory
         # Note: validate() is now async, so we can't call it here
@@ -175,7 +175,7 @@ class BaseConfig:
             Configuration instance
         """
         # Filter data to only include fields defined in the class, excluding private fields
-        field_names = {f.name for f in fields(cls) if not f.name.startswith('_')}
+        field_names = {f.name for f in fields(cls) if not f.name.startswith("_")}
         filtered_data = {k: v for k, v in data.items() if k in field_names}
 
         # Create instance

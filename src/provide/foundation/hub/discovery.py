@@ -12,14 +12,15 @@ from provide.foundation.hub.registry import Registry
 
 def _get_registry_and_lock():
     """Get registry and lock from components module."""
-    from provide.foundation.hub.components import get_component_registry, _registry_lock
+    from provide.foundation.hub.components import _registry_lock, get_component_registry
+
     return get_component_registry(), _registry_lock
 
 
 def resolve_component_dependencies(name: str, dimension: str) -> dict[str, Any]:
     """Resolve component dependencies recursively."""
     registry, registry_lock = _get_registry_and_lock()
-    
+
     with registry_lock:
         entry = registry.get_entry(name, dimension)
 
@@ -57,6 +58,6 @@ def discover_components(
 
 
 __all__ = [
-    "resolve_component_dependencies",
     "discover_components",
+    "resolve_component_dependencies",
 ]

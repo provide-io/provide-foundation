@@ -6,7 +6,6 @@ import os
 from pathlib import Path
 import tempfile
 from typing import Any
-from unittest.mock import MagicMock
 
 import click
 from click.testing import CliRunner
@@ -15,8 +14,6 @@ from provide.foundation.context import CLIContext
 from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
-
-
 
 
 @contextmanager
@@ -138,8 +135,6 @@ def create_test_cli(
             cli.add_command(cmd)
 
     return cli
-
-
 
 
 class CliTestCase:

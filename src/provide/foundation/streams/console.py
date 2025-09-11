@@ -27,13 +27,13 @@ def is_tty() -> bool:
 def supports_color() -> bool:
     """Check if the current stream supports color output."""
     config = get_stream_config()
-    
+
     if config.no_color:
         return False
-    
+
     if config.force_color:
         return True
-    
+
     # Check if we're in a TTY
     return is_tty()
 

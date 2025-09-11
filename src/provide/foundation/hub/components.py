@@ -6,8 +6,8 @@ components are managed through the Hub registry system. Provides centralized
 component discovery, lifecycle management, and dependency resolution.
 """
 
-import threading
 from enum import Enum
+import threading
 from typing import Any, Protocol
 
 from attrs import define, field
@@ -73,7 +73,10 @@ def get_component_registry() -> Registry:
 
 @with_error_handling(
     fallback={"status": "error"},
-    context_provider=lambda: {"function": "check_component_health", "module": "hub.components"}
+    context_provider=lambda: {
+        "function": "check_component_health",
+        "module": "hub.components",
+    },
 )
 def check_component_health(name: str, dimension: str) -> dict[str, Any]:
     """Check component health status."""
@@ -112,7 +115,7 @@ def bootstrap_foundation() -> None:
     registry = get_component_registry()
 
     # Register core processors
-    def timestamp_processor(logger, method_name, event_dict):
+    def timestamp_processor(logger: object, method_name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
         import time
 
         event_dict["timestamp"] = time.time()
@@ -138,43 +141,38 @@ def reset_registry_for_tests() -> None:
 
 # Import and re-export functions from specialized modules
 from provide.foundation.hub.config import (
-    resolve_config_value,
     get_config_chain,
     load_all_configs,
     load_config_from_registry,
+    resolve_config_value,
 )
-
+from provide.foundation.hub.discovery import (
+    discover_components,
+    resolve_component_dependencies,
+)
 from provide.foundation.hub.handlers import (
-    get_handlers_for_exception,
     execute_error_handlers,
+    get_handlers_for_exception,
 )
-
 from provide.foundation.hub.lifecycle import (
-    get_or_initialize_component,
-    initialize_async_component,
     cleanup_all_components,
+    get_or_initialize_component,
     initialize_all_async_components,
+    initialize_async_component,
 )
-
 from provide.foundation.hub.processors import (
     get_processor_pipeline,
     get_processors_for_stage,
 )
 
-from provide.foundation.hub.discovery import (
-    resolve_component_dependencies,
-    discover_components,
-)
-
-
-# Bootstrap on module import
-bootstrap_foundation()
+# Bootstrap will happen lazily on first hub access to avoid circular imports
+# bootstrap_foundation()
 
 
 __all__ = [
     # Core classes
     "ComponentInfo",
-    "ComponentCategory", 
+    "ComponentCategory",
     "ComponentLifecycle",
     # Registry access
     "get_component_registry",
@@ -189,7 +187,7 @@ __all__ = [
     "get_config_chain",
     "load_all_configs",
     "load_config_from_registry",
-    "get_handlers_for_exception", 
+    "get_handlers_for_exception",
     "execute_error_handlers",
     "get_or_initialize_component",
     "initialize_async_component",

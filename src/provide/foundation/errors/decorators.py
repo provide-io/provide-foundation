@@ -144,7 +144,6 @@ def with_error_handling(
         return decorator(func)
 
 
-
 def suppress_and_log(
     *exceptions: type[Exception],
     fallback: Any = None,
@@ -249,5 +248,3 @@ def fallback_on_error(
         return wrapper  # type: ignore
 
     return decorator
-
-

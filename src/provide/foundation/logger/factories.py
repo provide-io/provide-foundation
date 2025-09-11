@@ -13,7 +13,7 @@ from provide.foundation.logger.core import logger
 def get_logger(
     name: str | None = None,
     emoji: str | None = None,
-    emoji_hierarchy: dict[str, str] | None = None
+    emoji_hierarchy: dict[str, str] | None = None,
 ) -> Any:
     """
     Get a logger instance with the given name and optional emoji customization.
@@ -30,7 +30,7 @@ def get_logger(
     """
     # Emoji hierarchy removed - using event sets now
     # emoji and emoji_hierarchy parameters are deprecated
-    
+
     return logger.get_logger(name)
 
 

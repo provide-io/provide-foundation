@@ -8,9 +8,10 @@ Provides utilities for resetting logger state, managing configurations,
 and ensuring test isolation for the Foundation logging system.
 """
 
-import structlog
-import pytest
 from unittest.mock import Mock
+
+import pytest
+import structlog
 
 from provide.foundation.logger.core import (
     _LAZY_SETUP_STATE,
@@ -23,10 +24,10 @@ from provide.foundation.streams.file import reset_streams
 def mock_logger():
     """
     Comprehensive mock logger for testing.
-    
+
     Provides compatibility with both stdlib logging and structlog interfaces,
     including method call tracking and common logger attributes.
-    
+
     Returns:
         Mock logger with debug, info, warning, error methods and structlog compatibility.
     """
@@ -39,31 +40,31 @@ def mock_logger():
     logger.exception = Mock()
     logger.critical = Mock()
     logger.fatal = Mock()  # Alias for critical
-    
+
     # Add common logger attributes
     logger.name = "mock_logger"
     logger.level = 10  # DEBUG level
     logger.handlers = []
     logger.disabled = False
-    
+
     # Add structlog compatibility methods
     logger.bind = Mock(return_value=logger)
     logger.unbind = Mock(return_value=logger)
     logger.new = Mock(return_value=logger)
     logger.msg = Mock()  # Alternative to info
-    
+
     # Add trace method for Foundation's extended logging
     logger.trace = Mock()
-    
+
     return logger
 
 
 def mock_logger_factory():
     """
     Factory function to create mock loggers outside of pytest context.
-    
+
     Useful for unit tests that need a mock logger but aren't using pytest fixtures.
-    
+
     Returns:
         Mock logger with the same interface as the pytest fixture.
     """
@@ -76,18 +77,18 @@ def mock_logger_factory():
     logger.exception = Mock()
     logger.critical = Mock()
     logger.fatal = Mock()
-    
+
     logger.name = "mock_logger"
     logger.level = 10
     logger.handlers = []
     logger.disabled = False
-    
+
     logger.bind = Mock(return_value=logger)
     logger.unbind = Mock(return_value=logger)
     logger.new = Mock(return_value=logger)
     logger.msg = Mock()
     logger.trace = Mock()
-    
+
     return logger
 
 
@@ -101,7 +102,7 @@ def _reset_opentelemetry_providers() -> None:
     try:
         # Reset tracing provider more thoroughly
         import opentelemetry.trace as otel_trace
-        
+
         # Reset the Once flag to allow re-initialization
         if hasattr(otel_trace, "_TRACER_PROVIDER_SET_ONCE"):
             once_obj = otel_trace._TRACER_PROVIDER_SET_ONCE
@@ -110,11 +111,12 @@ def _reset_opentelemetry_providers() -> None:
             if hasattr(once_obj, "_lock"):
                 with once_obj._lock:
                     once_obj._done = False
-        
+
         # Reset to NoOpTracerProvider
         from opentelemetry.trace import NoOpTracerProvider
+
         otel_trace.set_tracer_provider(NoOpTracerProvider())
-        
+
     except ImportError:
         # OpenTelemetry tracing not available
         pass
@@ -126,7 +128,7 @@ def _reset_opentelemetry_providers() -> None:
         # Reset metrics provider more thoroughly
         import opentelemetry.metrics as otel_metrics
         import opentelemetry.metrics._internal as otel_metrics_internal
-        
+
         # Reset the Once flag to allow re-initialization
         if hasattr(otel_metrics_internal, "_METER_PROVIDER_SET_ONCE"):
             once_obj = otel_metrics_internal._METER_PROVIDER_SET_ONCE
@@ -135,11 +137,12 @@ def _reset_opentelemetry_providers() -> None:
             if hasattr(once_obj, "_lock"):
                 with once_obj._lock:
                     once_obj._done = False
-        
+
         # Reset to NoOpMeterProvider
         from opentelemetry.metrics import NoOpMeterProvider
+
         otel_metrics.set_meter_provider(NoOpMeterProvider())
-        
+
     except ImportError:
         # OpenTelemetry metrics not available
         pass
@@ -187,17 +190,19 @@ def reset_foundation_setup_for_testing() -> None:
     """
     # Full reset but with improved OpenTelemetry handling
     reset_foundation_state()
-    
+
     # Clear and re-initialize the hub for test isolation
     try:
         from provide.foundation.hub.manager import clear_hub
+
         clear_hub()
     except ImportError:
         pass
-    
+
     # Re-register HTTP transport for tests that need it
     try:
         from provide.foundation.transport.http import _register_http_transport
+
         _register_http_transport()
     except ImportError:
         # Transport module not available
@@ -205,8 +210,8 @@ def reset_foundation_setup_for_testing() -> None:
 
 
 __all__ = [
-    "reset_foundation_setup_for_testing",
-    "reset_foundation_state",
     "mock_logger",
     "mock_logger_factory",
+    "reset_foundation_setup_for_testing",
+    "reset_foundation_state",
 ]

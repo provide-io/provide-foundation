@@ -26,8 +26,8 @@ Example:
 
 from provide.foundation.tools.base import (
     BaseToolManager,
-    ToolMetadata,
     ToolError,
+    ToolMetadata,
 )
 from provide.foundation.tools.cache import ToolCache
 from provide.foundation.tools.downloader import ToolDownloader

@@ -203,6 +203,7 @@ class RuntimeConfig(BaseConfig):
                 else:
                     # Try to infer parser from type
                     from provide.foundation.utils.parsing import auto_parse
+
                     value = auto_parse(attr, value)
 
                 data[attr.name] = value
@@ -284,6 +285,7 @@ class RuntimeConfig(BaseConfig):
             else:
                 # Try to infer parser from type
                 from provide.foundation.utils.parsing import auto_parse
+
                 value = auto_parse(attr, value)
 
             data[field_name] = value
@@ -305,7 +307,6 @@ class RuntimeConfig(BaseConfig):
                     return content.strip()
         except Exception as e:
             raise ValueError(f"Failed to read secret from file '{file_path}': {e}")
-
 
     def to_env_dict(self, prefix: str = "", delimiter: str = "_") -> dict[str, str]:
         """

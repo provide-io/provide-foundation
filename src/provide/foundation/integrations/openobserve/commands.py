@@ -27,7 +27,7 @@ if _HAS_CLICK:
 
     @click.group("openobserve", help="Query and manage OpenObserve logs")
     @click.pass_context
-    def openobserve_group(ctx):
+    def openobserve_group(ctx: click.Context) -> None:
         """OpenObserve log querying and streaming commands."""
         # Initialize client and store in context
         try:
@@ -75,7 +75,7 @@ if _HAS_CLICK:
         help="Pretty print JSON output",
     )
     @click.pass_obj
-    def query_command(client, sql, start, end, size, format, pretty):
+    def query_command(client: "OpenObserveClient | None", sql: str, start: str, end: str, size: int, format: str, pretty: bool) -> int | None:
         """Execute SQL query against OpenObserve logs."""
         if client is None:
             click.echo(
@@ -134,7 +134,7 @@ if _HAS_CLICK:
         help="Output format",
     )
     @click.pass_obj
-    def tail_command(client, stream, filter_sql, lines, follow, format):
+    def tail_command(client: "OpenObserveClient | None", stream: str, filter_sql: str | None, lines: int, follow: bool, format: str) -> int | None:
         """Tail logs from OpenObserve (like 'tail -f')."""
         if client is None:
             click.echo(
@@ -191,7 +191,7 @@ if _HAS_CLICK:
         help="Output format",
     )
     @click.pass_obj
-    def errors_command(client, stream, start, size, format):
+    def errors_command(client: "OpenObserveClient | None", stream: str, start: str, size: int, format: str) -> int | None:
         """Search for error logs."""
         if client is None:
             click.echo("OpenObserve not configured.", err=True)
@@ -233,7 +233,7 @@ if _HAS_CLICK:
         help="Output format",
     )
     @click.pass_obj
-    def trace_command(client, trace_id, stream, format):
+    def trace_command(client: "OpenObserveClient | None", trace_id: str, stream: str, format: str) -> int | None:
         """Search for logs by trace ID."""
         if client is None:
             click.echo("OpenObserve not configured.", err=True)
@@ -260,7 +260,7 @@ if _HAS_CLICK:
 
     @openobserve_group.command("streams")
     @click.pass_obj
-    def streams_command(client):
+    def streams_command(client: "OpenObserveClient | None") -> int | None:
         """List available streams."""
         if client is None:
             click.echo("OpenObserve not configured.", err=True)
@@ -297,7 +297,7 @@ if _HAS_CLICK:
         help="Filter by stream name",
     )
     @click.pass_obj
-    def history_command(client, size, stream):
+    def history_command(client: "OpenObserveClient | None", size: int, stream: str | None) -> int | None:
         """View search history."""
         if client is None:
             click.echo("OpenObserve not configured.", err=True)
@@ -326,7 +326,7 @@ if _HAS_CLICK:
 
     @openobserve_group.command("test")
     @click.pass_obj
-    def test_command(client):
+    def test_command(client: "OpenObserveClient | None") -> int | None:
         """Test connection to OpenObserve."""
         if client is None:
             click.echo("OpenObserve not configured.", err=True)
@@ -347,7 +347,7 @@ if _HAS_CLICK:
 
 else:
     # Stub when click is not available
-    def openobserve_group(*args, **kwargs):
+    def openobserve_group(*args: object, **kwargs: object) -> None:
         """OpenObserve command stub when click is not available."""
         raise ImportError(
             "CLI commands require optional dependencies. "

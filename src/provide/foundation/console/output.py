@@ -42,18 +42,18 @@ def _should_use_json(ctx: CLIContext | None = None) -> bool:
     return ctx.json_output if ctx else False
 
 
-def _should_use_color(ctx: CLIContext | None = None, stream=None) -> bool:
+def _should_use_color(ctx: CLIContext | None = None, stream: Any = None) -> bool:
     """Determine if color output should be used."""
     if ctx is None:
         ctx = _get_context()
 
     # Check FORCE_COLOR first (enables color even for non-TTY)
-    force_color = os.environ.get('FORCE_COLOR', '').lower()
-    if force_color in ('1', 'true', 'yes'):
+    force_color = os.environ.get("FORCE_COLOR", "").lower()
+    if force_color in ("1", "true", "yes"):
         return True
 
     # Check NO_COLOR (disables color even for TTY)
-    if os.environ.get('NO_COLOR'):
+    if os.environ.get("NO_COLOR"):
         return False
 
     # Check context no_color setting
@@ -68,7 +68,7 @@ def _should_use_color(ctx: CLIContext | None = None, stream=None) -> bool:
 
 
 @with_error_handling(fallback=None, suppress=(TypeError, ValueError, AttributeError))
-def _output_json(data: Any, stream=sys.stdout) -> None:
+def _output_json(data: Any, stream: Any = sys.stdout) -> None:
     """Output data as JSON."""
     json_str = json.dumps(data, indent=2, default=str)
     if _HAS_CLICK:
@@ -80,7 +80,7 @@ def _output_json(data: Any, stream=sys.stdout) -> None:
 @with_error_handling(
     fallback=None,
     suppress=(OSError, IOError, UnicodeEncodeError),
-    context_provider=lambda: {"function": "pout"}
+    context_provider=lambda: {"function": "pout"},
 )
 def pout(message: Any, **kwargs: Any) -> None:
     """
@@ -142,7 +142,7 @@ def pout(message: Any, **kwargs: Any) -> None:
 @with_error_handling(
     fallback=None,
     suppress=(OSError, IOError, UnicodeEncodeError),
-    context_provider=lambda: {"function": "perr"}
+    context_provider=lambda: {"function": "perr"},
 )
 def perr(message: Any, **kwargs: Any) -> None:
     """

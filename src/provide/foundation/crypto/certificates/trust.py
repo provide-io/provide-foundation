@@ -1,9 +1,14 @@
 """Certificate trust chain and verification utilities."""
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from provide.foundation.crypto.certificates.certificate import Certificate
+
 try:
     from cryptography import x509
     from cryptography.hazmat.primitives.asymmetric import ec, rsa
-    
+
     _HAS_CRYPTO = True
 except ImportError:
     x509 = None
@@ -23,45 +28,41 @@ def verify_trust(
 ) -> bool:
     """
     Verifies if the other_cert is trusted based on this certificate's trust chain.
-    
+
     Args:
         cert: The certificate doing the verification
         other_cert: The certificate to verify
         trust_chain: List of trusted certificates
-        
+
     Returns:
         True if the certificate is trusted, False otherwise
     """
     if other_cert is None:
         raise CertificateError("Cannot verify trust: other_cert is None")
-    
+
     logger.debug(
         f"📜🔍🚀 Verifying trust for cert S/N {other_cert.serial_number} "
         f"against chain of S/N {cert.serial_number}"
     )
-    
+
     if not other_cert.is_valid:
-        logger.debug(
-            "📜🔍⚠️ Trust verification failed: Other certificate is not valid"
-        )
+        logger.debug("📜🔍⚠️ Trust verification failed: Other certificate is not valid")
         return False
     if not other_cert.public_key:
         raise CertificateError(
             "Cannot verify trust: Other certificate has no public key"
         )
-    
+
     if cert == other_cert:
         logger.debug(
             "📜🔍✅ Trust verified: Certificates are identical (based on subject/serial)"
         )
         return True
-    
+
     if other_cert in trust_chain:
-        logger.debug(
-            "📜🔍✅ Trust verified: Other certificate found in trust chain"
-        )
+        logger.debug("📜🔍✅ Trust verified: Other certificate found in trust chain")
         return True
-    
+
     for trusted_cert in trust_chain:
         logger.debug(
             f"📜🔍🔁 Checking signature against trusted cert S/N {trusted_cert.serial_number}"
@@ -74,7 +75,7 @@ def verify_trust(
                 f"{trusted_cert.serial_number}"
             )
             return True
-    
+
     logger.debug(
         "📜🔍❌ Trust verification failed: Other certificate not identical, "
         "not in chain, and not signed by any cert in chain"
@@ -83,16 +84,15 @@ def verify_trust(
 
 
 def validate_signature_wrapper(
-    signed_cert: "Certificate", 
-    signing_cert: "Certificate"
+    signed_cert: "Certificate", signing_cert: "Certificate"
 ) -> bool:
     """
     Internal helper: Validates signature and issuer/subject match.
-    
+
     Args:
         signed_cert: The certificate that was signed
         signing_cert: The certificate that did the signing
-        
+
     Returns:
         True if signature is valid, False otherwise
     """
@@ -101,7 +101,7 @@ def validate_signature_wrapper(
             "📜🔍❌ Cannot validate signature: Certificate object(s) not initialized"
         )
         return False
-    
+
     return validate_signature(
         signed_cert._cert, signing_cert._cert, signing_cert.public_key
     )

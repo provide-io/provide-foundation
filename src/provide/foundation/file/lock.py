@@ -5,7 +5,6 @@ from pathlib import Path
 import time
 
 from provide.foundation.config.defaults import DEFAULT_FILE_LOCK_TIMEOUT
-from provide.foundation.errors.decorators import with_error_handling
 from provide.foundation.errors.resources import LockError
 from provide.foundation.logger import get_logger
 
@@ -160,12 +159,12 @@ class FileLock:
 
         return False
 
-    def __enter__(self):
+    def __enter__(self) -> "FileLock":
         """Context manager entry."""
         self.acquire()
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> bool:
         """Context manager exit."""
         self.release()
         return False  # Don't suppress exceptions
