@@ -3,8 +3,8 @@
 import contextlib
 import os
 from pathlib import Path
-import tempfile
 
+from provide.foundation.file.temp import secure_temp_file
 from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
@@ -47,8 +47,8 @@ def atomic_write(
     path.parent.mkdir(parents=True, exist_ok=True)
 
     # Create temp file in same directory for atomic rename
-    # Note: mkstemp creates files with 0o600 by default for security
-    fd, temp_path = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp")
+    # Note: secure_temp_file creates files with 0o600 by default for security
+    fd, temp_path = secure_temp_file(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp")
 
     try:
         with os.fdopen(fd, "wb") as f:
