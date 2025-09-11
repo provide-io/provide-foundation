@@ -97,7 +97,7 @@ task_start_times = {}
 task_contexts = {}  # Store additional context per task
 
 
-def setup_signal_handlers(app, demo_mode: bool = False):
+def setup_signal_handlers(app):
     """Set up all Celery signal handlers."""
     
     # Import task logger after app setup
@@ -111,7 +111,8 @@ def setup_signal_handlers(app, demo_mode: bool = False):
             hostname=sender.hostname,
             python_version=platform.python_version(),
             cpu_count=os.cpu_count(),
-            demo_mode=demo_mode
+            transport="filesystem",
+            backend="file"
         )
 
     @worker_process_init.connect

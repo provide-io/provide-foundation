@@ -6,13 +6,12 @@ This module contains the core Celery app setup, configuration, and
 telemetry initialization for the provide.foundation Celery integration example.
 
 Part 1 of 4: Setup and Configuration
-- Celery app initialization with demo and production modes
+- Celery app initialization with filesystem backend
 - Telemetry configuration for structured logging
-- Memory broker support for demo mode (no Redis required)
-- Production Redis configuration
+- Self-contained operation (no Redis required)
 
 Usage:
-    from examples.integration.celery.setup_and_config import app, setup_celery_logging, DEMO_MODE
+    from examples.integration.celery.setup_and_config import app, setup_celery_logging
 """
 
 from datetime import datetime
@@ -41,10 +40,10 @@ from provide.foundation.logger.config import (  # noqa: E402
 )
 
 
-def setup_celery_logging(demo_mode: bool = False):
+def setup_celery_logging():
     """Configure comprehensive logging for Celery workers."""
     config = TelemetryConfig(
-        service_name="celery-rich-demo" if demo_mode else "celery-worker",
+        service_name="celery-foundation-example",
         logging=LoggingConfig(
             default_level="INFO",
             console_formatter="json",
@@ -64,78 +63,51 @@ def setup_celery_logging(demo_mode: bool = False):
 if not CELERY_AVAILABLE:
     perr("❌ Celery is not installed!")
     perr("💡 Install with: pip install celery")
-    perr("📝 Redis is optional for demo mode")
+    perr("📝 This example uses filesystem backend (no Redis required)")
     exit(1)
 
-# Check if running in demo mode
-DEMO_MODE = '--demo' in sys.argv
+# Configure telemetry for the example
+setup_celery_logging()
 
-setup_celery_logging(demo_mode=DEMO_MODE)
+# Create Celery app with filesystem backend
+app = Celery('celery_foundation_example')
 
-# Create Celery app with appropriate config
-if DEMO_MODE:
-    # Use filesystem broker for demo (no Redis needed)
-    app = Celery('celery_rich_demo')
-    
-    # Setup filesystem directories
-    temp_dir = Path("/tmp/celery_demo")
-    temp_dir.mkdir(exist_ok=True)
-    
-    # Create required directories for filesystem transport
-    (temp_dir / 'out').mkdir(exist_ok=True)
-    (temp_dir / 'processed').mkdir(exist_ok=True)
-    (temp_dir / 'results').mkdir(exist_ok=True)
-    
-    app.conf.update(
-        broker_url='filesystem://',
-        broker_transport_options={
-            'data_folder_in': str(temp_dir / 'out'),
-            'data_folder_out': str(temp_dir / 'out'),
-            'data_folder_processed': str(temp_dir / 'processed'),
-        },
-        result_backend=f'file://{temp_dir}/results',
-        task_always_eager=False,  # Still use worker pool
-        task_eager_propagates=True,
-        task_serializer='json',
-        accept_content=['json'],
-        result_serializer='json',
-        timezone='UTC',
-        enable_utc=True,
-        # Task execution limits
-        task_soft_time_limit=60,
-        task_time_limit=120,
-        # Retry configuration
-        task_default_retry_delay=5,
-        task_max_retries=3,
-        # Result expiration
-        result_expires=3600,
-        # Worker configuration
-        worker_prefetch_multiplier=4,
-        worker_max_tasks_per_child=1000,
-    )
-else:
-    # Production-like Redis configuration
-    app = Celery('celery_logging_example')
-    app.conf.update(
-        broker='redis://localhost:6379/0',
-        result_backend='redis://localhost:6379/0',
-        task_serializer='json',
-        accept_content=['json'],
-        result_serializer='json',
-        timezone='UTC',
-        enable_utc=True,
-        # Task execution limits
-        task_soft_time_limit=60,
-        task_time_limit=120,
-        # Retry configuration
-        task_default_retry_delay=5,
-        task_max_retries=3,
-        # Result expiration
-        result_expires=3600,
-        # Worker configuration
-        worker_prefetch_multiplier=4,
-        worker_max_tasks_per_child=1000,
-    )
+# Setup filesystem directories
+temp_dir = Path("/tmp/celery_foundation")
+temp_dir.mkdir(exist_ok=True)
+
+# Create required directories for filesystem transport
+(temp_dir / 'out').mkdir(exist_ok=True)
+(temp_dir / 'processed').mkdir(exist_ok=True)
+(temp_dir / 'results').mkdir(exist_ok=True)
+
+app.conf.update(
+    broker_url='filesystem://',
+    broker_transport_options={
+        'data_folder_in': str(temp_dir / 'out'),
+        'data_folder_out': str(temp_dir / 'out'),
+        'data_folder_processed': str(temp_dir / 'processed'),
+    },
+    result_backend=f'file://{temp_dir}/results',
+    task_always_eager=False,  # Use actual worker pool
+    task_eager_propagates=True,
+    task_serializer='json',
+    accept_content=['json'],
+    result_serializer='json',
+    timezone='UTC',
+    enable_utc=True,
+    # Task execution limits
+    task_soft_time_limit=60,
+    task_time_limit=120,
+    # Retry configuration
+    task_default_retry_delay=5,
+    task_max_retries=3,
+    # Result expiration
+    result_expires=3600,
+    # Worker configuration
+    worker_prefetch_multiplier=4,
+    worker_max_tasks_per_child=1000,
+)
 
 
 class CeleryTaskLogger:
@@ -211,6 +183,6 @@ class CeleryTaskLogger:
 
 if __name__ == '__main__':
     pout(f"🔧 Celery app configured: {app.main}")
-    pout(f"🎮 Demo mode: {DEMO_MODE}")
     pout(f"📊 Broker: {app.conf.broker_url}")
     pout(f"💾 Result backend: {app.conf.result_backend}")
+    pout(f"📁 Working directory: {temp_dir}")
