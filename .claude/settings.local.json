@@ -24,7 +24,8 @@
       "Bash(while read file)",
       "Bash(then echo \"Missing: docs/$file\")",
       "Bash(__NEW_LINE__ fi)",
-      "Bash(__NEW_LINE__ done)"
+      "Bash(__NEW_LINE__ done)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": [],
