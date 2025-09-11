@@ -35,6 +35,18 @@ class MockToolManager(BaseToolManager):
         """Get installation directory."""
         return self.tools_dir / self.tool_name / version
 
+    def get_available_versions(self) -> list[str]:
+        """Get available versions."""
+        return ["1.0.0", "1.1.0", "2.0.0"]
+
+    def get_metadata(self) -> dict[str, str]:
+        """Get tool metadata."""
+        return {
+            "name": self.tool_name,
+            "executable": self.executable_name,
+            "platforms": ",".join(self.supported_platforms),
+        }
+
 
 class AnotherMockToolManager(BaseToolManager):
     """Another mock tool manager for testing."""
@@ -50,6 +62,18 @@ class AnotherMockToolManager(BaseToolManager):
     def get_install_dir(self, version: str):
         """Get installation directory."""
         return self.tools_dir / self.tool_name / version
+
+    def get_available_versions(self) -> list[str]:
+        """Get available versions."""
+        return ["1.0.0", "2.0.0"]
+
+    def get_metadata(self) -> dict[str, str]:
+        """Get tool metadata."""
+        return {
+            "name": self.tool_name,
+            "executable": self.executable_name,
+            "platforms": ",".join(self.supported_platforms),
+        }
 
 
 @pytest.fixture
@@ -306,7 +330,7 @@ class TestDiscoverTools:
                 mock_entry_points.assert_called_once()
                 mock_ep.load.assert_called_once()
 
-    def test_discover_tools_load_error(self, mock_hub, caplog):
+    def test_discover_tools_load_error(self, mock_hub, capsys):
         """Test handling of tool load errors during discovery."""
         # Mock entry point that fails to load
         mock_ep = Mock()
@@ -321,19 +345,21 @@ class TestDiscoverTools:
                 registry = ToolRegistry()
 
                 # Should not crash, just log warning
-                assert "Failed to load tool manager broken_tool" in caplog.text
+                captured = capsys.readouterr()
+                assert "Failed to load tool manager broken_tool" in captured.err
 
     def test_discover_tools_no_entry_points(self, mock_hub, caplog):
         """Test when entry points are not available."""
-        with patch("provide.foundation.tools.registry.get_hub", return_value=mock_hub):
-            with patch(
-                "importlib.metadata.entry_points",
-                side_effect=AttributeError("No entry_points"),
-            ):
-                registry = ToolRegistry()
+        with caplog.at_level("DEBUG"):
+            with patch("provide.foundation.tools.registry.get_hub", return_value=mock_hub):
+                with patch(
+                    "importlib.metadata.entry_points",
+                    side_effect=AttributeError("No entry_points"),
+                ):
+                    registry = ToolRegistry()
 
-                # Should not crash, just log debug message
-                assert "Entry point discovery not available" in caplog.text
+                    # Should not crash, just log debug message
+                    assert "Entry point discovery not available" in caplog.text
 
 
 class TestGlobalFunctions:
@@ -363,7 +389,8 @@ class TestGlobalFunctions:
         """Test global get_tool_manager function."""
         with patch("provide.foundation.tools.registry.get_tool_registry") as mock_get:
             mock_registry = Mock()
-            mock_registry.create_tool_manager.return_value = MockToolManager(config)
+            mock_tool_manager = MockToolManager(config)
+            mock_registry.create_tool_manager.return_value = mock_tool_manager
             mock_get.return_value = mock_registry
 
             result = get_tool_manager("tool", config)
