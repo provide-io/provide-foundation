@@ -26,7 +26,9 @@
       "Bash(/dev/null)",
       "Bash(echo \"✅ $f works\")",
       "Bash(echo:*)",
-      "Bash(PYTHONPATH=src python examples/transport/01_http_client.py)"
+      "Bash(PYTHONPATH=src python examples/transport/01_http_client.py)",
+      "Bash(FOUNDATION_LOG_LEVEL=INFO PYTHONPATH=src python examples/transport/01_http_client.py)",
+      "Read(//private/tmp/**)"
     ],
     "deny": [],
     "ask": [],
