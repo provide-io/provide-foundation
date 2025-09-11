@@ -5,7 +5,8 @@
       "Bash(PYTHONPATH=src python examples/integration/01_celery_integration.py)",
       "Bash(PYTHONPATH=src python examples/production/02_error_handling.py)",
       "Bash(PYTHONPATH=src python:*)",
-      "Bash(awk:*)"
+      "Bash(awk:*)",
+      "Bash(PROVIDE_LOG_LEVEL=INFO PYTHONPATH=src python examples/telemetry/04_das_pattern.py)"
     ],
     "deny": [],
     "ask": [],
