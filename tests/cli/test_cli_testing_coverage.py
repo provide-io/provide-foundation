@@ -187,7 +187,7 @@ class TestTempConfigFile:
                 # Check fallback format
                 assert 'string_key = "value1"' in content
                 assert "int_key = 42" in content
-                assert "bool_key = true" in content  # Python booleans are lowercase in TOML
+                assert "bool_key = True" in content
         finally:
             if tomli_w_backup is not None:
                 sys.modules['tomli_w'] = tomli_w_backup
