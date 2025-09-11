@@ -9,6 +9,13 @@ from attrs import define
 
 from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.config.base import field
+from provide.foundation.config.defaults import (
+    DEFAULT_TELEMETRY_GLOBALLY_DISABLED,
+    DEFAULT_TRACING_ENABLED,
+    DEFAULT_METRICS_ENABLED,
+    DEFAULT_OTLP_PROTOCOL,
+    DEFAULT_TRACE_SAMPLE_RATE,
+)
 import os
 from provide.foundation.config.converters import (
     parse_bool_extended,
@@ -42,7 +49,7 @@ class TelemetryConfig(RuntimeConfig):
         description="Logging configuration"
     )
     globally_disabled: bool = field(
-        default=False,
+        default=DEFAULT_TELEMETRY_GLOBALLY_DISABLED,
         env_var="PROVIDE_TELEMETRY_DISABLED",
         converter=parse_bool_extended,
         description="Globally disable telemetry",
@@ -50,13 +57,13 @@ class TelemetryConfig(RuntimeConfig):
 
     # OpenTelemetry configuration
     tracing_enabled: bool = field(
-        default=True,
+        default=DEFAULT_TRACING_ENABLED,
         env_var="OTEL_TRACING_ENABLED",
         converter=parse_bool_extended,
         description="Enable OpenTelemetry tracing",
     )
     metrics_enabled: bool = field(
-        default=True,
+        default=DEFAULT_METRICS_ENABLED,
         env_var="OTEL_METRICS_ENABLED",
         converter=parse_bool_extended,
         description="Enable OpenTelemetry metrics",
@@ -78,12 +85,12 @@ class TelemetryConfig(RuntimeConfig):
         description="Headers to send with OTLP requests (key1=value1,key2=value2)",
     )
     otlp_protocol: str = field(
-        default="http/protobuf",
+        default=DEFAULT_OTLP_PROTOCOL,
         env_var="OTEL_EXPORTER_OTLP_PROTOCOL",
         description="OTLP protocol (grpc, http/protobuf)",
     )
     trace_sample_rate: float = field(
-        default=1.0,
+        default=DEFAULT_TRACE_SAMPLE_RATE,
         env_var="OTEL_TRACE_SAMPLE_RATE",
         converter=parse_sample_rate,
         validator=validate_sample_rate,
