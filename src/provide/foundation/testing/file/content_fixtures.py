@@ -9,10 +9,10 @@ import csv
 import json
 from pathlib import Path
 import random
-import tempfile
 
 import pytest
 
+from provide.foundation.file import temp_file as foundation_temp_file
 from provide.foundation.file.safe import safe_delete
 
 
@@ -37,11 +37,10 @@ def temp_file():
         Returns:
             Path to the created temporary file
         """
-        with tempfile.NamedTemporaryFile(mode="w", suffix=suffix, delete=False) as f:
-            f.write(content)
-            path = Path(f.name)
-        created_files.append(path)
-        return path
+        with foundation_temp_file(suffix=suffix, text=True, cleanup=False) as path:
+            path.write_text(content)
+            created_files.append(path)
+            return path
 
     yield _make_temp_file
 
@@ -85,19 +84,16 @@ def temp_named_file():
         if isinstance(dir, Path):
             dir = str(dir)
 
-        with tempfile.NamedTemporaryFile(
-            mode=mode, suffix=suffix, prefix=prefix, dir=dir, delete=delete
-        ) as f:
+        # Use Foundation's temp_file with cleanup=False since we manage cleanup
+        with foundation_temp_file(suffix=suffix, prefix=prefix, dir=dir, text="b" not in mode, cleanup=False) as path:
             if content is not None:
                 if isinstance(content, str):
                     if "b" in mode:
-                        f.write(content.encode())
+                        path.write_bytes(content.encode())
                     else:
-                        f.write(content)
+                        path.write_text(content)
                 else:
-                    f.write(content)
-                f.flush()
-            path = Path(f.name)
+                    path.write_bytes(content)
 
         if not delete:
             created_files.append(path)
