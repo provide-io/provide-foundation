@@ -2,23 +2,48 @@
 
 We welcome contributions to provide.foundation! This guide will help you get started with development, testing, and submitting contributions.
 
-## Quick Start
+## Prerequisites
 
-### Environment Setup
+> **Important:** This project uses `uv` for Python environment and package management.
 
-**IMPORTANT**: Always use `source env.sh` to set up your development environment:
+### Install UV
+
+Visit [UV Documentation](https://github.com/astral-sh/uv) for more information.
 
 ```bash
-git clone https://github.com/provide-io/provide-foundation.git
-cd provide-foundation
-source env.sh
+# On macOS and Linux.
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# On Windows.
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# Using pipx (if you prefer)
+pipx install uv
+
+# Update UV to latest version
+uv self update
 ```
 
-This script:
-- Sets up Python 3.11+ virtual environment in `workenv/` 
-- Installs all development dependencies with `uv`
-- Configures PYTHONPATH and development tools
-- Works across platforms (Linux, macOS, Windows)
+## Quick Start
+
+### Development Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/provide-io/provide-foundation.git
+cd provide-foundation
+
+# Create virtual environment
+uv venv
+
+# Activate virtual environment
+source .venv/bin/activate  # On Linux/macOS
+# or
+.venv\Scripts\activate     # On Windows
+
+# Install dependencies
+uv sync
+```
 
 ### Development Workflow
 
