@@ -1,0 +1,403 @@
+"""
+Tests for the tool registry system.
+
+Tests registration, discovery, and retrieval of tool managers
+through the hub-based registry infrastructure.
+"""
+
+import importlib.metadata
+from unittest.mock import MagicMock, Mock, patch
+
+import pytest
+
+from provide.foundation.config import BaseConfig
+from provide.foundation.tools.base import BaseToolManager
+from provide.foundation.tools.registry import (
+    ToolRegistry,
+    get_tool_manager,
+    get_tool_registry,
+    register_tool_manager,
+)
+
+
+class MockToolManager(BaseToolManager):
+    """Mock tool manager for testing."""
+
+    tool_name = "mocktool"
+    executable_name = "mocktool"
+    supported_platforms = ["darwin", "linux"]
+
+    def get_download_info(self, version: str) -> tuple[str, str | None]:
+        """Get download URL and checksum."""
+        return f"https://example.com/mocktool-{version}.tar.gz", "abc123"
+
+    def get_install_dir(self, version: str):
+        """Get installation directory."""
+        return self.tools_dir / self.tool_name / version
+
+
+class AnotherMockToolManager(BaseToolManager):
+    """Another mock tool manager for testing."""
+
+    tool_name = "anothertool"
+    executable_name = "anothertool"
+    supported_platforms = ["windows"]
+
+    def get_download_info(self, version: str) -> tuple[str, str | None]:
+        """Get download URL and checksum."""
+        return f"https://example.com/anothertool-{version}.zip", None
+
+    def get_install_dir(self, version: str):
+        """Get installation directory."""
+        return self.tools_dir / self.tool_name / version
+
+
+@pytest.fixture
+def mock_hub():
+    """Create a mock hub with registry."""
+    hub = MagicMock()
+    hub.registry = MagicMock()
+    hub.registry.register = MagicMock()
+    hub.registry.get = MagicMock()
+    hub.registry.get_entry = MagicMock()
+    hub.registry.list_dimension = MagicMock()
+    return hub
+
+
+@pytest.fixture
+def registry(mock_hub):
+    """Create a tool registry with mocked hub."""
+    with patch("provide.foundation.tools.registry.get_hub", return_value=mock_hub):
+        with patch.object(ToolRegistry, "_discover_tools"):
+            return ToolRegistry()
+
+
+@pytest.fixture
+def config():
+    """Create a base config for testing."""
+    return BaseConfig()
+
+
+class TestToolRegistry:
+    """Tests for ToolRegistry class."""
+
+    def test_init(self, mock_hub):
+        """Test registry initialization."""
+        with patch("provide.foundation.tools.registry.get_hub", return_value=mock_hub):
+            with patch.object(ToolRegistry, "_discover_tools") as mock_discover:
+                registry = ToolRegistry()
+                assert registry.hub == mock_hub
+                mock_discover.assert_called_once()
+
+    def test_register_tool_manager(self, registry):
+        """Test registering a tool manager."""
+        registry.register_tool_manager("mocktool", MockToolManager)
+
+        # Verify registration call
+        registry.hub.registry.register.assert_called_once_with(
+            name="mocktool",
+            value=MockToolManager,
+            dimension=ToolRegistry.DIMENSION,
+            metadata={
+                "tool_name": "mocktool",
+                "executable": "mocktool",
+                "platforms": ["darwin", "linux"],
+            },
+            aliases=None,
+            replace=True,
+        )
+
+    def test_register_tool_manager_with_aliases(self, registry):
+        """Test registering a tool manager with aliases."""
+        aliases = ["mt", "mock"]
+        registry.register_tool_manager("mocktool", MockToolManager, aliases=aliases)
+
+        # Verify registration with aliases
+        registry.hub.registry.register.assert_called_once_with(
+            name="mocktool",
+            value=MockToolManager,
+            dimension=ToolRegistry.DIMENSION,
+            metadata={
+                "tool_name": "mocktool",
+                "executable": "mocktool",
+                "platforms": ["darwin", "linux"],
+            },
+            aliases=aliases,
+            replace=True,
+        )
+
+    def test_get_tool_manager_class(self, registry):
+        """Test retrieving a tool manager class."""
+        registry.hub.registry.get.return_value = MockToolManager
+
+        result = registry.get_tool_manager_class("mocktool")
+
+        assert result == MockToolManager
+        registry.hub.registry.get.assert_called_once_with(
+            "mocktool", dimension=ToolRegistry.DIMENSION
+        )
+
+    def test_get_tool_manager_class_not_found(self, registry):
+        """Test retrieving a non-existent tool manager."""
+        registry.hub.registry.get.return_value = None
+
+        result = registry.get_tool_manager_class("nonexistent")
+
+        assert result is None
+        registry.hub.registry.get.assert_called_once_with(
+            "nonexistent", dimension=ToolRegistry.DIMENSION
+        )
+
+    def test_create_tool_manager(self, registry, config):
+        """Test creating a tool manager instance."""
+        registry.hub.registry.get.return_value = MockToolManager
+
+        result = registry.create_tool_manager("mocktool", config)
+
+        assert isinstance(result, MockToolManager)
+        assert result.config == config
+
+    def test_create_tool_manager_not_found(self, registry, config):
+        """Test creating a non-existent tool manager."""
+        registry.hub.registry.get.return_value = None
+
+        result = registry.create_tool_manager("nonexistent", config)
+
+        assert result is None
+
+    def test_list_tools(self, registry):
+        """Test listing all registered tools."""
+        # Mock registry entries
+        mock_entry1 = Mock()
+        mock_entry1.metadata = {"tool_name": "tool1", "executable": "tool1"}
+
+        mock_entry2 = Mock()
+        mock_entry2.metadata = {"tool_name": "tool2", "executable": "tool2"}
+
+        registry.hub.registry.list_dimension.return_value = [
+            ("tool1", mock_entry1),
+            ("tool2", mock_entry2),
+        ]
+
+        result = registry.list_tools()
+
+        assert len(result) == 2
+        assert result[0] == ("tool1", {"tool_name": "tool1", "executable": "tool1"})
+        assert result[1] == ("tool2", {"tool_name": "tool2", "executable": "tool2"})
+
+    def test_list_tools_no_metadata(self, registry):
+        """Test listing tools when entry has no metadata."""
+        mock_entry = Mock(spec=[])  # No metadata attribute
+
+        registry.hub.registry.list_dimension.return_value = [("tool1", mock_entry)]
+
+        result = registry.list_tools()
+
+        assert len(result) == 1
+        assert result[0] == ("tool1", {})
+
+    def test_get_tool_info(self, registry):
+        """Test getting information about a specific tool."""
+        mock_entry = Mock()
+        mock_entry.metadata = {
+            "tool_name": "mocktool",
+            "executable": "mocktool",
+            "platforms": ["darwin", "linux"],
+        }
+
+        registry.hub.registry.get_entry.return_value = mock_entry
+
+        result = registry.get_tool_info("mocktool")
+
+        assert result == {
+            "tool_name": "mocktool",
+            "executable": "mocktool",
+            "platforms": ["darwin", "linux"],
+        }
+        registry.hub.registry.get_entry.assert_called_once_with(
+            "mocktool", dimension=ToolRegistry.DIMENSION
+        )
+
+    def test_get_tool_info_not_found(self, registry):
+        """Test getting info for non-existent tool."""
+        registry.hub.registry.get_entry.return_value = None
+
+        result = registry.get_tool_info("nonexistent")
+
+        assert result is None
+
+    def test_get_tool_info_no_metadata(self, registry):
+        """Test getting info when entry has no metadata."""
+        mock_entry = Mock(spec=[])  # No metadata attribute
+        registry.hub.registry.get_entry.return_value = mock_entry
+
+        result = registry.get_tool_info("tool")
+
+        assert result is None
+
+    def test_is_tool_registered(self, registry):
+        """Test checking if a tool is registered."""
+        registry.hub.registry.get.return_value = MockToolManager
+
+        assert registry.is_tool_registered("mocktool") is True
+
+        registry.hub.registry.get.return_value = None
+        assert registry.is_tool_registered("nonexistent") is False
+
+
+class TestDiscoverTools:
+    """Tests for tool discovery via entry points."""
+
+    @pytest.mark.skipif(
+        not hasattr(importlib.metadata, "entry_points"),
+        reason="Entry points not available",
+    )
+    def test_discover_tools_python_310_plus(self, mock_hub):
+        """Test tool discovery on Python 3.10+."""
+        # Mock entry points
+        mock_ep = Mock()
+        mock_ep.name = "discovered_tool"
+        mock_ep.load.return_value = MockToolManager
+
+        mock_eps = Mock()
+        mock_eps.select.return_value = [mock_ep]
+
+        with patch("provide.foundation.tools.registry.get_hub", return_value=mock_hub):
+            with patch(
+                "importlib.metadata.entry_points", return_value=mock_eps
+            ) as mock_entry_points:
+                registry = ToolRegistry()
+
+                # Verify discovery
+                mock_entry_points.assert_called_once()
+                mock_eps.select.assert_called_once_with(group="wrknv.tools")
+                mock_ep.load.assert_called_once()
+
+                # Verify registration
+                registry.hub.registry.register.assert_called_with(
+                    name="discovered_tool",
+                    value=MockToolManager,
+                    dimension=ToolRegistry.DIMENSION,
+                    metadata={
+                        "tool_name": "mocktool",
+                        "executable": "mocktool",
+                        "platforms": ["darwin", "linux"],
+                    },
+                    aliases=None,
+                    replace=True,
+                )
+
+    def test_discover_tools_fallback(self, mock_hub):
+        """Test tool discovery with fallback for older API."""
+        # Mock entry points
+        mock_ep = Mock()
+        mock_ep.name = "discovered_tool"
+        mock_ep.load.return_value = MockToolManager
+
+        mock_eps = {"wrknv.tools": [mock_ep]}
+
+        with patch("provide.foundation.tools.registry.get_hub", return_value=mock_hub):
+            with patch(
+                "importlib.metadata.entry_points", return_value=mock_eps
+            ) as mock_entry_points:
+                registry = ToolRegistry()
+
+                # Verify discovery
+                mock_entry_points.assert_called_once()
+                mock_ep.load.assert_called_once()
+
+    def test_discover_tools_load_error(self, mock_hub, caplog):
+        """Test handling of tool load errors during discovery."""
+        # Mock entry point that fails to load
+        mock_ep = Mock()
+        mock_ep.name = "broken_tool"
+        mock_ep.load.side_effect = ImportError("Cannot import tool")
+
+        mock_eps = Mock()
+        mock_eps.select.return_value = [mock_ep]
+
+        with patch("provide.foundation.tools.registry.get_hub", return_value=mock_hub):
+            with patch("importlib.metadata.entry_points", return_value=mock_eps):
+                registry = ToolRegistry()
+
+                # Should not crash, just log warning
+                assert "Failed to load tool manager broken_tool" in caplog.text
+
+    def test_discover_tools_no_entry_points(self, mock_hub, caplog):
+        """Test when entry points are not available."""
+        with patch("provide.foundation.tools.registry.get_hub", return_value=mock_hub):
+            with patch(
+                "importlib.metadata.entry_points",
+                side_effect=AttributeError("No entry_points"),
+            ):
+                registry = ToolRegistry()
+
+                # Should not crash, just log debug message
+                assert "Entry point discovery not available" in caplog.text
+
+
+class TestGlobalFunctions:
+    """Tests for global registry functions."""
+
+    def test_get_tool_registry_singleton(self):
+        """Test that get_tool_registry returns a singleton."""
+        with patch("provide.foundation.tools.registry.get_hub"):
+            with patch.object(ToolRegistry, "_discover_tools"):
+                registry1 = get_tool_registry()
+                registry2 = get_tool_registry()
+                assert registry1 is registry2
+
+    def test_register_tool_manager_global(self):
+        """Test global register_tool_manager function."""
+        with patch("provide.foundation.tools.registry.get_tool_registry") as mock_get:
+            mock_registry = Mock()
+            mock_get.return_value = mock_registry
+
+            register_tool_manager("tool", MockToolManager, ["alias1", "alias2"])
+
+            mock_registry.register_tool_manager.assert_called_once_with(
+                "tool", MockToolManager, ["alias1", "alias2"]
+            )
+
+    def test_get_tool_manager_global(self, config):
+        """Test global get_tool_manager function."""
+        with patch("provide.foundation.tools.registry.get_tool_registry") as mock_get:
+            mock_registry = Mock()
+            mock_registry.create_tool_manager.return_value = MockToolManager(config)
+            mock_get.return_value = mock_registry
+
+            result = get_tool_manager("tool", config)
+
+            assert isinstance(result, MockToolManager)
+            mock_registry.create_tool_manager.assert_called_once_with("tool", config)
+
+
+class TestMultipleToolManagers:
+    """Tests for handling multiple tool managers."""
+
+    def test_register_multiple_tools(self, registry):
+        """Test registering multiple different tools."""
+        registry.register_tool_manager("tool1", MockToolManager)
+        registry.register_tool_manager("tool2", AnotherMockToolManager)
+
+        assert registry.hub.registry.register.call_count == 2
+
+        # Verify both registrations
+        calls = registry.hub.registry.register.call_args_list
+
+        assert calls[0][1]["name"] == "tool1"
+        assert calls[0][1]["value"] == MockToolManager
+        assert calls[0][1]["metadata"]["tool_name"] == "mocktool"
+
+        assert calls[1][1]["name"] == "tool2"
+        assert calls[1][1]["value"] == AnotherMockToolManager
+        assert calls[1][1]["metadata"]["tool_name"] == "anothertool"
+
+    def test_replace_existing_tool(self, registry):
+        """Test that re-registration replaces existing tool."""
+        registry.register_tool_manager("tool", MockToolManager)
+        registry.register_tool_manager("tool", AnotherMockToolManager)
+
+        # Both calls should have replace=True
+        calls = registry.hub.registry.register.call_args_list
+        assert all(call[1]["replace"] is True for call in calls)
