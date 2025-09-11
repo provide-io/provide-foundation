@@ -1,11 +1,10 @@
 """Tests for TAR archive implementation."""
 
-from pathlib import Path
 
 import pytest
 
-from provide.foundation.archive.tar import TarArchive
 from provide.foundation.archive.base import ArchiveError
+from provide.foundation.archive.tar import TarArchive
 
 
 class TestTarArchive:
@@ -20,9 +19,9 @@ class TestTarArchive:
         """Test creating a TAR archive."""
         temp_path, source = test_files_structure
         output = temp_path / "test.tar"
-        
+
         result = tar_archive.create(source, output)
-        
+
         assert result == output
         assert output.exists()
         assert output.stat().st_size > 0
@@ -32,13 +31,13 @@ class TestTarArchive:
         temp_path, source = test_files_structure
         archive = temp_path / "test.tar"
         output = temp_path / "extracted"
-        
+
         # Create archive first
         tar_archive.create(source, archive)
-        
+
         # Extract it
         result = tar_archive.extract(archive, output)
-        
+
         assert result == output
         assert output.exists()
         assert (output / "source" / "file1.txt").exists()
@@ -49,33 +48,33 @@ class TestTarArchive:
         """Test validating a TAR archive."""
         temp_path, source = test_files_structure
         archive = temp_path / "test.tar"
-        
+
         # Create valid archive
         tar_archive.create(source, archive)
         assert tar_archive.validate(archive) is True
-        
+
         # Test invalid archive
         invalid = temp_path / "invalid.tar"
         invalid.write_text("not a tar file")
         assert tar_archive.validate(invalid) is False
-        
+
         # Test non-existent file
         assert tar_archive.validate(temp_path / "nonexistent.tar") is False
 
     def test_deterministic_mode(self, test_files_structure):
         """Test deterministic TAR creation."""
         temp_path, source = test_files_structure
-        
+
         # Create two archives with deterministic mode
         tar1 = TarArchive(deterministic=True)
         tar2 = TarArchive(deterministic=True)
-        
+
         output1 = temp_path / "test1.tar"
         output2 = temp_path / "test2.tar"
-        
+
         tar1.create(source, output1)
         tar2.create(source, output2)
-        
+
         # Files should have same content (deterministic)
         # Note: Exact byte comparison might not work due to timestamps,
         # but we can verify both are valid
@@ -85,21 +84,21 @@ class TestTarArchive:
     def test_preserve_permissions(self, test_files_structure):
         """Test permission preservation."""
         temp_path, source = test_files_structure
-        
+
         # Set specific permissions
         test_file = source / "executable.sh"
         test_file.write_text("#!/bin/bash\necho test")
         test_file.chmod(0o755)
-        
+
         # Create archive with permission preservation
         tar = TarArchive(preserve_permissions=True)
         archive = temp_path / "perms.tar"
         tar.create(source, archive)
-        
+
         # Extract and check permissions
         output = temp_path / "extracted"
         tar.extract(archive, output)
-        
+
         extracted_file = output / "source" / "executable.sh"
         assert extracted_file.exists()
         # Check if executable bit is preserved (at least for owner)
@@ -108,11 +107,11 @@ class TestTarArchive:
     def test_error_handling(self, tar_archive, temp_directory):
         """Test error handling in TAR operations."""
         temp_path = temp_directory
-        
+
         # Test creating archive from non-existent source
         with pytest.raises(ArchiveError):
             tar_archive.create(temp_path / "nonexistent", temp_path / "test.tar")
-        
+
         # Test extracting non-existent archive
         with pytest.raises(ArchiveError):
             tar_archive.extract(temp_path / "nonexistent.tar", temp_path / "output")

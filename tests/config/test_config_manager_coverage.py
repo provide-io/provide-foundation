@@ -1,21 +1,22 @@
 """Comprehensive coverage tests for config manager module."""
 
-import pytest
 from unittest.mock import AsyncMock, Mock
+
 from attrs import define
+import pytest
 
 from provide.foundation.config.base import BaseConfig, field
+from provide.foundation.config.loader import ConfigLoader
 from provide.foundation.config.manager import (
     ConfigManager,
-    get_config,
-    set_config,
-    register_config,
-    load_config,
     _manager,
+    get_config,
+    load_config,
+    register_config,
+    set_config,
 )
-from provide.foundation.config.loader import ConfigLoader
 from provide.foundation.config.schema import ConfigSchema, SchemaField
-from provide.foundation.config.types import ConfigSource, ConfigDict
+from provide.foundation.config.types import ConfigSource
 
 
 @define

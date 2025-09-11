@@ -6,17 +6,8 @@ priority chains, and thread-safe component access patterns.
 """
 
 import asyncio
-from collections.abc import AsyncIterator, Iterator
 import threading
-from typing import Any
-from unittest.mock import Mock, AsyncMock
-
-import pytest
-from structlog.typing import EventDict
-
-from provide.foundation.config.base import BaseConfig
-from provide.foundation.hub.registry import Registry, RegistryEntry
-from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
+from unittest.mock import Mock
 
 
 class TestErrorHandlerComponents:
@@ -68,7 +59,6 @@ class TestErrorHandlerComponents:
         from provide.foundation.hub.components import (
             ComponentCategory,
             get_component_registry,
-            execute_error_handlers,
         )
 
         registry = get_component_registry()
@@ -288,8 +278,8 @@ class TestThreadSafeComponentAccess:
     def test_component_cleanup_on_shutdown(self):
         """Components must support cleanup on shutdown."""
         from provide.foundation.hub.components import (
-            get_component_registry,
             cleanup_all_components,
+            get_component_registry,
         )
 
         registry = get_component_registry()

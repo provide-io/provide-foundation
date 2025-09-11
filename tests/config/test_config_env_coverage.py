@@ -1,20 +1,19 @@
 """Comprehensive coverage tests for config/env.py module."""
 
-import asyncio
 import os
-from unittest.mock import Mock, patch, AsyncMock
 import tempfile
-import pytest
+from unittest.mock import AsyncMock, Mock, patch
+
 from attrs import define
+import pytest
 
 from provide.foundation.config.base import field
 from provide.foundation.config.env import (
     RuntimeConfig,
     env_field,
-    get_env,
     get_env_async,
 )
-from provide.foundation.utils.parsing import parse_bool, parse_list, parse_dict
+from provide.foundation.utils.parsing import parse_bool, parse_dict, parse_list
 
 
 class TestAsyncEnvFunctions:
@@ -92,6 +91,7 @@ class TestAiofilesImportHandling:
         with patch.dict("sys.modules", {"aiofiles": None}):
             # Re-import the module to test the import error path
             import importlib
+
             import provide.foundation.config.env
 
             importlib.reload(provide.foundation.config.env)

@@ -1,24 +1,19 @@
 """Advanced cleanup, config loading, and miscellaneous tests for hub components module."""
 
-import asyncio
-from unittest.mock import Mock, AsyncMock, patch
-import pytest
-import inspect
-import threading
+from unittest.mock import AsyncMock, Mock
 
 from provide.foundation.hub.components import (
     ComponentCategory,
-    get_component_registry,
-    cleanup_all_components,
-    load_config_from_registry,
-    discover_components,
-    bootstrap_foundation,
-    reset_registry_for_tests,
-    _initialized_components,
     _component_registry,
+    _initialized_components,
     _registry_lock,
+    bootstrap_foundation,
+    cleanup_all_components,
+    discover_components,
+    get_component_registry,
+    load_config_from_registry,
+    reset_registry_for_tests,
 )
-from provide.foundation.hub.registry import Registry, RegistryEntry
 
 
 class TestAdvancedCleanup:
@@ -168,11 +163,14 @@ class TestMiscellaneousFunctionality:
 
     def test_bootstrap_foundation_creates_default_components(self):
         """Test bootstrap_foundation creates expected components."""
-        from provide.foundation.eventsets.registry import discover_event_sets, get_registry as get_eventset_registry
-        
+        from provide.foundation.eventsets.registry import (
+            discover_event_sets,
+            get_registry as get_eventset_registry,
+        )
+
         # Clear registries first
         reset_registry_for_tests()
-        
+
         # Clear the event registry and reset discovery state
         event_registry = get_eventset_registry()
         event_registry.clear()
@@ -181,24 +179,24 @@ class TestMiscellaneousFunctionality:
 
         # Bootstrap should create default components
         bootstrap_foundation()
-        
+
         registry = get_component_registry()
-        
+
         # Should have timestamp processor
         timestamp_proc = registry.get("timestamp", ComponentCategory.PROCESSOR.value)
         assert timestamp_proc is not None
-        
+
         # Trigger event set discovery (this should register them fresh)
         discover_event_sets()
 
         # Event sets should be in the EventSetRegistry, not ComponentRegistry
         event_sets = event_registry.list_event_sets()
         assert len(event_sets) > 0, f"No event sets found. Registry has {len(list(event_registry))} entries"
-        
+
         # Check what event sets we have
         event_set_names = [es.name for es in event_sets]
         assert "default" in event_set_names, f"'default' not found in event sets: {event_set_names}"
-        
+
         # Should have default event set (registered during module discovery)
         default_event_set = event_registry.get_event_set("default")
         assert default_event_set is not None

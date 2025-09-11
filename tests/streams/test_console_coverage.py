@@ -5,7 +5,6 @@
 Tests to achieve coverage for console and streams functionality.
 """
 
-import pytest
 
 
 class TestFileStreams:

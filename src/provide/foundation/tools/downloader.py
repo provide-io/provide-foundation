@@ -5,10 +5,10 @@ Provides capabilities for downloading tools with progress tracking,
 parallel downloads, and mirror support.
 """
 
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
 from pathlib import Path
-from typing import Callable
 
 from provide.foundation.errors import FoundationError
 from provide.foundation.logger import get_logger

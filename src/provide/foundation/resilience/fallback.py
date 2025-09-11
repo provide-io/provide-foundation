@@ -3,8 +3,9 @@ Fallback implementation for graceful degradation.
 """
 
 import asyncio
+from collections.abc import Callable
 import functools
-from typing import Callable, TypeVar
+from typing import TypeVar
 
 from attrs import define, field
 

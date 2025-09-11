@@ -1,12 +1,12 @@
 """Additional tests for safe decorators to improve code coverage."""
 
 import asyncio
-from unittest.mock import Mock, patch
+
 import pytest
 
 from provide.foundation.errors.safe_decorators import (
-    log_only_error_context,
     _get_logger,
+    log_only_error_context,
 )
 
 

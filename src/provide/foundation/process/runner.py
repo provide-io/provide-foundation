@@ -250,7 +250,7 @@ def stream_command(
             universal_newlines=True,
             **kwargs,
         )
-        
+
         try:
             if timeout is not None:
                 start_time = time.time()

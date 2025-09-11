@@ -30,14 +30,14 @@ def reset_foundation_state() -> None:
     foundation_logger._active_config = None
     foundation_logger._active_resolved_emoji_config = None
     _LAZY_SETUP_STATE.update({"done": False, "error": None, "in_progress": False})
-    
+
     # Reset event set registry and discovery state
     try:
         from provide.foundation.eventsets.registry import clear_registry
         clear_registry()
     except ImportError:
         pass  # Event sets may not be available in all test environments
-    
+
     # Reset setup logger cache
     try:
         from provide.foundation.logger.setup.coordinator import reset_setup_logger_cache

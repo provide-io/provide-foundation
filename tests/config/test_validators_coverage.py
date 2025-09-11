@@ -1,13 +1,14 @@
 """Additional tests for config validators to improve code coverage."""
 
 from unittest.mock import Mock
+
 import pytest
 
 from provide.foundation.config.validators import (
     validate_choice,
-    validate_range,
-    validate_positive,
     validate_non_negative,
+    validate_positive,
+    validate_range,
 )
 from provide.foundation.errors.config import ValidationError
 
@@ -212,12 +213,12 @@ class TestValidatorsCoverage:
         attribute.name = "numeric_field"
 
         # Test with different numeric types
-        validate_positive(instance, attribute, int(5))
-        validate_positive(instance, attribute, float(5.0))
+        validate_positive(instance, attribute, 5)
+        validate_positive(instance, attribute, 5.0)
 
-        validate_non_negative(instance, attribute, int(0))
-        validate_non_negative(instance, attribute, float(0.0))
+        validate_non_negative(instance, attribute, 0)
+        validate_non_negative(instance, attribute, 0.0)
 
         range_validator = validate_range(0, 10)
-        range_validator(instance, attribute, int(5))
-        range_validator(instance, attribute, float(5.5))
+        range_validator(instance, attribute, 5)
+        range_validator(instance, attribute, 5.5)

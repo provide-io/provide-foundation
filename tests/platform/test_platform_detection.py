@@ -1,9 +1,10 @@
 """Tests for platform detection functions."""
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
+from provide.foundation.errors.platform import PlatformError
 from provide.foundation.platform.detection import (
     get_arch_name,
     get_cpu_type,
@@ -12,7 +13,6 @@ from provide.foundation.platform.detection import (
     get_platform_string,
     normalize_platform_components,
 )
-from provide.foundation.errors.platform import PlatformError
 
 
 class TestPlatformDetection:

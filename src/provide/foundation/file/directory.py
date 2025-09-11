@@ -1,10 +1,10 @@
 """Directory operations and utilities."""
 
+from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path
 import shutil
 import tempfile
-from typing import Generator
 
 from provide.foundation.errors.decorators import with_error_handling
 from provide.foundation.errors.handlers import error_boundary

@@ -1,13 +1,11 @@
 """Integration tests for CLI functionality."""
 
 import json
-import os
 from pathlib import Path
 import tempfile
 
 import click
 
-from provide.foundation.context import Context
 from provide.foundation.cli.decorators import (
     flexible_options,
     output_options,
@@ -17,6 +15,7 @@ from provide.foundation.cli.utils import (
     CliTestRunner,
     setup_cli_logging,
 )
+from provide.foundation.context import Context
 from provide.foundation.logger import get_logger
 
 
@@ -94,7 +93,7 @@ class TestCompleteCliIntegration:
                 click.echo(json.dumps({"status": "healthy", "uptime": 3600}))
             else:
                 click.echo("Application is healthy")
-        
+
         runner = CliTestRunner()
         result = runner.invoke(status_cmd, ["--log-level", "DEBUG", "--json"])
         assert result.exit_code == 0
@@ -116,7 +115,7 @@ class TestCompleteCliIntegration:
                 click.echo("🟢 Application is healthy")
             else:
                 click.echo("Application is healthy")
-        
+
         runner = CliTestRunner()
         result = runner.invoke(status_cmd, ["--no-emoji"])
         assert result.exit_code == 0
@@ -138,7 +137,7 @@ class TestCompleteCliIntegration:
                 click.echo(json.dumps({"status": "success", "migrations": 5}))
             else:
                 click.echo("✅ Applied 5 migrations")
-        
+
         runner = CliTestRunner()
         result = runner.invoke(migrate_cmd, ["--json", "--log-level", "WARNING"])
         assert result.exit_code == 0
@@ -150,7 +149,7 @@ class TestCompleteCliIntegration:
         # Test option override behavior with simple command
         @click.command()
         @flexible_options
-        @output_options  
+        @output_options
         @pass_context
         def status_cmd(ctx: Context, **kwargs) -> None:
             for key, value in kwargs.items():
@@ -159,7 +158,7 @@ class TestCompleteCliIntegration:
             # Verify that the final log_level value is DEBUG
             assert ctx.log_level == "DEBUG"
             click.echo("Application is healthy")
-        
+
         runner = CliTestRunner()
         result = runner.invoke(status_cmd, ["--log-level", "INFO", "--log-level", "DEBUG"])
         assert result.exit_code == 0

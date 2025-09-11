@@ -1,12 +1,10 @@
 """Tests for basic CLI utility functions."""
 
-import json
 import os
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-from provide.foundation.context import Context
 from provide.foundation.cli.utils import (
     assert_cli_error,
     assert_cli_success,
@@ -18,6 +16,7 @@ from provide.foundation.cli.utils import (
     echo_warning,
     setup_cli_logging,
 )
+from provide.foundation.context import Context
 from provide.foundation.logger import TelemetryConfig
 
 

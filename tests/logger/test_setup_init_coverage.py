@@ -14,7 +14,7 @@ class TestLoggerSetupInitCoverage:
             'provide.foundation.logger.setup.testing',
             'provide.foundation.logger.setup.coordinator',
         ]
-        
+
         # Save modules that we might restore
         self.saved_modules = {}
         for mod in modules_to_clear:
@@ -51,10 +51,10 @@ class TestLoggerSetupInitCoverage:
 
     def test_coordinator_import_available(self):
         """Test that internal_setup comes from coordinator module."""
+        from provide.foundation.logger.setup import internal_setup
         from provide.foundation.logger.setup.coordinator import (
             internal_setup as coord_setup,
         )
-        from provide.foundation.logger.setup import internal_setup
 
         # Should be the same function
         assert internal_setup == coord_setup

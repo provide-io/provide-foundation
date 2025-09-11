@@ -1,22 +1,18 @@
 """Component health, configuration schema, and initialization tests for hub components module."""
 
-import asyncio
-from unittest.mock import Mock, AsyncMock, patch
+from unittest.mock import AsyncMock, Mock
+
 import pytest
-import inspect
-import threading
 
 from provide.foundation.hub.components import (
-    ComponentCategory,
-    get_component_registry,
     check_component_health,
     get_component_config_schema,
+    get_component_registry,
     get_or_initialize_component,
-    initialize_async_component,
     initialize_all_async_components,
+    initialize_async_component,
     reset_registry_for_tests,
 )
-from provide.foundation.hub.registry import Registry, RegistryEntry
 
 
 class TestComponentHealth:

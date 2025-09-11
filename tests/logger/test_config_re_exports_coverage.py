@@ -1,7 +1,6 @@
 """Comprehensive coverage tests for logger/config.py re-exports module."""
 
 import importlib
-import pytest
 
 
 class TestLoggerConfigReExports:

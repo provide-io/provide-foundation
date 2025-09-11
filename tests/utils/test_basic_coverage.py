@@ -40,7 +40,7 @@ class TestUtilsBasicCoverage:
 
             assert get_bool is not None
             assert callable(get_bool)
-            
+
             # Test with non-existent env var
             result = get_bool("NON_EXISTENT_ENV_VAR", default=False)
             assert result is False
@@ -60,7 +60,7 @@ class TestUtilsBasicCoverage:
 
             assert format_size is not None
             assert callable(format_size)
-            
+
             # Test basic functionality
             result = format_size(1024)
             assert isinstance(result, str)
@@ -81,7 +81,7 @@ class TestUtilsBasicCoverage:
 
             assert parse_bool is not None
             assert callable(parse_bool)
-            
+
             # Test basic functionality
             assert parse_bool("true") is True
             assert parse_bool("false") is False

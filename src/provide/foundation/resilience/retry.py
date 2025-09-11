@@ -6,10 +6,11 @@ eliminating duplication between decorators and middleware.
 """
 
 import asyncio
+from collections.abc import Callable
 from enum import Enum
 import random
 import time
-from typing import Any, Callable, TypeVar
+from typing import Any, TypeVar
 
 from attrs import define, field, validators
 

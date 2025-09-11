@@ -3,7 +3,6 @@
 import sys
 import threading
 import time
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -25,7 +24,7 @@ class TestQueuedRateLimiter:
             max_memory_mb=1.0,
             overflow_policy="drop_oldest",
         )
-        
+
         assert limiter.capacity == 10.0
         assert limiter.refill_rate == 2.0
         assert limiter.max_queue_size == 100
@@ -33,7 +32,7 @@ class TestQueuedRateLimiter:
         assert limiter.overflow_policy == "drop_oldest"
         assert limiter.running is True
         assert limiter.worker_thread.is_alive()
-        
+
         # Clean up
         limiter.shutdown()
 
@@ -41,7 +40,7 @@ class TestQueuedRateLimiter:
         """Test QueuedRateLimiter raises error for invalid capacity."""
         with pytest.raises(ValueError, match="Capacity must be positive"):
             QueuedRateLimiter(capacity=0, refill_rate=1.0)
-        
+
         with pytest.raises(ValueError, match="Capacity must be positive"):
             QueuedRateLimiter(capacity=-1.0, refill_rate=1.0)
 
@@ -49,7 +48,7 @@ class TestQueuedRateLimiter:
         """Test QueuedRateLimiter raises error for invalid refill rate."""
         with pytest.raises(ValueError, match="Refill rate must be positive"):
             QueuedRateLimiter(capacity=10.0, refill_rate=0)
-        
+
         with pytest.raises(ValueError, match="Refill rate must be positive"):
             QueuedRateLimiter(capacity=10.0, refill_rate=-1.0)
 
@@ -57,7 +56,7 @@ class TestQueuedRateLimiter:
         """Test QueuedRateLimiter raises error for invalid queue size."""
         with pytest.raises(ValueError, match="Max queue size must be positive"):
             QueuedRateLimiter(capacity=10.0, refill_rate=1.0, max_queue_size=0)
-        
+
         with pytest.raises(ValueError, match="Max queue size must be positive"):
             QueuedRateLimiter(capacity=10.0, refill_rate=1.0, max_queue_size=-1)
 
@@ -66,18 +65,18 @@ class TestQueuedRateLimiter:
         limiter = QueuedRateLimiter(
             capacity=10.0, refill_rate=5.0, max_queue_size=10
         )
-        
+
         try:
             # Enqueue some items
             for i in range(5):
                 accepted, reason = limiter.enqueue(f"item_{i}")
                 assert accepted is True
                 assert reason is None
-            
+
             stats = limiter.get_stats()
             assert stats["queue_size"] == 5
             assert stats["total_queued"] == 5
-            
+
         finally:
             limiter.shutdown()
 
@@ -87,18 +86,18 @@ class TestQueuedRateLimiter:
         limiter = QueuedRateLimiter(
             capacity=10.0, refill_rate=5.0, max_queue_size=100, max_memory_mb=0.001
         )
-        
+
         try:
             # Try to add items that exceed memory limit
             large_item = "x" * 1000  # ~1KB item
-            
+
             accepted, reason = limiter.enqueue(large_item)
             assert accepted is False
             assert "Memory limit exceeded" in reason
-            
+
             stats = limiter.get_stats()
             assert stats["total_dropped"] == 1
-            
+
         finally:
             limiter.shutdown()
 
@@ -107,21 +106,21 @@ class TestQueuedRateLimiter:
         limiter = QueuedRateLimiter(
             capacity=10.0, refill_rate=0.1, max_queue_size=3, overflow_policy="drop_oldest"
         )
-        
+
         try:
             # Fill queue to capacity
             for i in range(3):
                 accepted, reason = limiter.enqueue(f"item_{i}")
                 assert accepted is True
-            
+
             # Add one more item - should drop oldest
             accepted, reason = limiter.enqueue("item_new")
             assert accepted is True
-            
+
             stats = limiter.get_stats()
             assert stats["queue_size"] == 3  # Still at max
             assert stats["total_dropped"] == 1  # One item dropped
-            
+
         finally:
             limiter.shutdown()
 
@@ -130,22 +129,22 @@ class TestQueuedRateLimiter:
         limiter = QueuedRateLimiter(
             capacity=10.0, refill_rate=0.1, max_queue_size=2, overflow_policy="drop_newest"
         )
-        
+
         try:
             # Fill queue to capacity
             for i in range(2):
                 accepted, reason = limiter.enqueue(f"item_{i}")
                 assert accepted is True
-            
+
             # Try to add one more - should be rejected
             accepted, reason = limiter.enqueue("item_rejected")
             assert accepted is False
             assert "Queue full" in reason
-            
+
             stats = limiter.get_stats()
             assert stats["queue_size"] == 2
             assert stats["total_dropped"] == 1
-            
+
         finally:
             limiter.shutdown()
 
@@ -154,65 +153,65 @@ class TestQueuedRateLimiter:
         limiter = QueuedRateLimiter(
             capacity=10.0, refill_rate=0.1, max_queue_size=1, overflow_policy="block"
         )
-        
+
         try:
             # Fill queue
             accepted, reason = limiter.enqueue("item_1")
             assert accepted is True
-            
+
             # Try to add another - should be blocked (rejected for now)
             accepted, reason = limiter.enqueue("item_2")
             assert accepted is False
             assert "blocking not implemented" in reason
-            
+
         finally:
             limiter.shutdown()
 
     def test_queued_rate_limiter_processing(self) -> None:
         """Test that queued items are processed over time."""
         processed_items = []
-        
+
         class TestQueuedRateLimiter(QueuedRateLimiter):
             def _process_item(self, item):
                 processed_items.append(item)
-        
+
         limiter = TestQueuedRateLimiter(
             capacity=2.0, refill_rate=10.0, max_queue_size=10
         )
-        
+
         try:
             # Enqueue items
             for i in range(5):
                 limiter.enqueue(f"item_{i}")
-            
+
             # Wait for processing
             time.sleep(0.3)
-            
+
             # Some items should have been processed
             assert len(processed_items) > 0
-            
+
             stats = limiter.get_stats()
             assert stats["total_processed"] > 0
-            
+
         finally:
             limiter.shutdown()
 
     def test_queued_rate_limiter_estimate_size(self) -> None:
         """Test memory size estimation."""
         limiter = QueuedRateLimiter(capacity=10.0, refill_rate=1.0)
-        
+
         try:
             # Test size estimation
             small_item = "test"
             large_item = "x" * 1000
-            
+
             small_size = limiter._estimate_size(small_item)
             large_size = limiter._estimate_size(large_item)
-            
+
             assert large_size > small_size
             assert small_size == sys.getsizeof(small_item)
             assert large_size == sys.getsizeof(large_item)
-            
+
         finally:
             limiter.shutdown()
 
@@ -221,40 +220,40 @@ class TestQueuedRateLimiter:
         limiter = QueuedRateLimiter(
             capacity=5.0, refill_rate=2.0, max_queue_size=10, max_memory_mb=1.0
         )
-        
+
         try:
             stats = limiter.get_stats()
-            
+
             # Check all expected fields are present
             expected_fields = {
                 "queue_size", "max_queue_size", "tokens_available", "capacity",
                 "refill_rate", "total_queued", "total_dropped", "total_processed",
                 "estimated_memory_mb", "max_memory_mb", "overflow_policy"
             }
-            
+
             for field in expected_fields:
                 assert field in stats
-            
+
             assert stats["capacity"] == 5.0
             assert stats["refill_rate"] == 2.0
             assert stats["max_queue_size"] == 10
             assert stats["overflow_policy"] == "drop_oldest"
-            
+
         finally:
             limiter.shutdown()
 
     def test_queued_rate_limiter_shutdown(self) -> None:
         """Test proper shutdown."""
         limiter = QueuedRateLimiter(capacity=10.0, refill_rate=1.0)
-        
+
         assert limiter.running is True
         assert limiter.worker_thread.is_alive()
-        
+
         limiter.shutdown()
-        
+
         # Give it time to shut down
         time.sleep(0.1)
-        
+
         assert limiter.running is False
         assert not limiter.worker_thread.is_alive()
 
@@ -267,7 +266,7 @@ class TestBufferedRateLimiter:
         limiter = BufferedRateLimiter(
             capacity=10.0, refill_rate=2.0, buffer_size=50, track_dropped=True
         )
-        
+
         assert limiter.capacity == 10.0
         assert limiter.refill_rate == 2.0
         assert limiter.buffer_size == 50
@@ -278,7 +277,7 @@ class TestBufferedRateLimiter:
         """Test BufferedRateLimiter validation."""
         with pytest.raises(ValueError, match="Capacity must be positive"):
             BufferedRateLimiter(capacity=0, refill_rate=1.0)
-        
+
         with pytest.raises(ValueError, match="Refill rate must be positive"):
             BufferedRateLimiter(capacity=10.0, refill_rate=-1.0)
 
@@ -287,27 +286,27 @@ class TestBufferedRateLimiter:
         limiter = BufferedRateLimiter(
             capacity=10.0, refill_rate=2.0, track_dropped=False
         )
-        
+
         assert limiter.track_dropped is False
         assert limiter.dropped_buffer is None
 
     def test_buffered_rate_limiter_allows_within_capacity(self) -> None:
         """Test BufferedRateLimiter allows requests within capacity."""
         limiter = BufferedRateLimiter(capacity=3.0, refill_rate=1.0)
-        
+
         # First 3 should be allowed
         allowed, reason = limiter.is_allowed()
         assert allowed is True
         assert reason is None
-        
+
         allowed, reason = limiter.is_allowed()
         assert allowed is True
         assert reason is None
-        
+
         allowed, reason = limiter.is_allowed()
         assert allowed is True
         assert reason is None
-        
+
         # Fourth should be denied
         allowed, reason = limiter.is_allowed()
         assert allowed is False
@@ -317,19 +316,19 @@ class TestBufferedRateLimiter:
     def test_buffered_rate_limiter_refill_tokens(self) -> None:
         """Test token refilling over time."""
         limiter = BufferedRateLimiter(capacity=2.0, refill_rate=10.0)
-        
+
         # Exhaust tokens
         limiter.is_allowed()
         limiter.is_allowed()
         allowed, _ = limiter.is_allowed()
         assert allowed is False
-        
+
         # Wait for refill
         time.sleep(0.15)  # 1.5 tokens
-        
+
         allowed, _ = limiter.is_allowed()
         assert allowed is True
-        
+
         allowed, _ = limiter.is_allowed()  # Should still be denied
         assert allowed is False
 
@@ -338,18 +337,18 @@ class TestBufferedRateLimiter:
         limiter = BufferedRateLimiter(
             capacity=1.0, refill_rate=1.0, track_dropped=True
         )
-        
+
         # Allow one
         allowed, _ = limiter.is_allowed("item1")
         assert allowed is True
-        
+
         # Deny the rest
         allowed, _ = limiter.is_allowed("item2")
         assert allowed is False
-        
+
         allowed, _ = limiter.is_allowed("item3")
         assert allowed is False
-        
+
         # Check dropped samples
         dropped = limiter.get_dropped_samples()
         assert len(dropped) == 2
@@ -361,11 +360,11 @@ class TestBufferedRateLimiter:
         limiter = BufferedRateLimiter(
             capacity=0.01, refill_rate=1.0, buffer_size=3, track_dropped=True
         )
-        
+
         # Add many dropped items
         for i in range(10):
             limiter.is_allowed(f"item_{i}")
-        
+
         # Should only keep last 3
         dropped = limiter.get_dropped_samples()
         assert len(dropped) <= 3
@@ -375,11 +374,11 @@ class TestBufferedRateLimiter:
         limiter = BufferedRateLimiter(
             capacity=0.01, refill_rate=1.0, track_dropped=True
         )
-        
+
         # Add several dropped items
         for i in range(5):
             limiter.is_allowed(f"item_{i}")
-        
+
         # Get limited samples
         dropped = limiter.get_dropped_samples(count=2)
         assert len(dropped) <= 2
@@ -389,11 +388,11 @@ class TestBufferedRateLimiter:
         limiter = BufferedRateLimiter(
             capacity=0.01, refill_rate=1.0, track_dropped=False
         )
-        
+
         # Try to drop some items
         limiter.is_allowed("item1")
         limiter.is_allowed("item2")
-        
+
         # Should return empty list
         dropped = limiter.get_dropped_samples()
         assert dropped == []
@@ -403,14 +402,14 @@ class TestBufferedRateLimiter:
         limiter = BufferedRateLimiter(
             capacity=5.0, refill_rate=2.0, track_dropped=True
         )
-        
+
         # Allow some, deny some
         limiter.is_allowed("allowed1")
         limiter.is_allowed("allowed2")
         limiter.is_allowed("denied1")  # This will be denied due to capacity
-        
+
         stats = limiter.get_stats()
-        
+
         assert stats["capacity"] == 5.0
         assert stats["refill_rate"] == 2.0
         assert stats["total_allowed"] >= 2
@@ -423,15 +422,15 @@ class TestBufferedRateLimiter:
         limiter = BufferedRateLimiter(
             capacity=1.0, refill_rate=1.0, track_dropped=True
         )
-        
+
         # Fill capacity then add more
         limiter.is_allowed("allowed")
         limiter.is_allowed("denied1")
         time.sleep(0.01)  # Small gap for age calculation
         limiter.is_allowed("denied2")
-        
+
         stats = limiter.get_stats()
-        
+
         assert "dropped_buffer_size" in stats
         assert "oldest_dropped_age" in stats
         assert stats["dropped_buffer_size"] > 0
@@ -441,27 +440,27 @@ class TestBufferedRateLimiter:
         """Test thread safety of BufferedRateLimiter."""
         limiter = BufferedRateLimiter(capacity=100.0, refill_rate=50.0)
         results = []
-        
+
         def worker():
             for i in range(20):
                 allowed, _ = limiter.is_allowed(f"item_{threading.current_thread().ident}_{i}")
                 results.append(allowed)
-        
+
         threads = [threading.Thread(target=worker) for _ in range(5)]
-        
+
         for thread in threads:
             thread.start()
-        
+
         for thread in threads:
             thread.join()
-        
+
         # Some should be allowed, some denied
         allowed_count = sum(results)
         denied_count = len(results) - allowed_count
-        
+
         assert allowed_count > 0
         assert allowed_count <= 100  # Within capacity
-        
+
         stats = limiter.get_stats()
         assert stats["total_allowed"] == allowed_count
         assert stats["total_denied"] == denied_count
@@ -474,39 +473,39 @@ class TestQueueLimiterIntegration:
         """Test that different queue limiters have similar core behavior."""
         buffered = BufferedRateLimiter(capacity=5.0, refill_rate=2.0)
         queued = QueuedRateLimiter(capacity=5.0, refill_rate=2.0, max_queue_size=10)
-        
+
         try:
             # Both should start similarly
             b_allowed, _ = buffered.is_allowed()
             q_accepted, _ = queued.enqueue("test")
-            
+
             assert b_allowed is True
             assert q_accepted is True
-            
+
             # Both should track statistics
             b_stats = buffered.get_stats()
             q_stats = queued.get_stats()
-            
+
             assert b_stats["capacity"] == q_stats["capacity"]
             assert b_stats["refill_rate"] == q_stats["refill_rate"]
-            
+
         finally:
             queued.shutdown()
 
     def test_memory_tracking_consistency(self) -> None:
         """Test that memory tracking works consistently."""
         limiter = BufferedRateLimiter(capacity=0.01, refill_rate=1.0, track_dropped=True)
-        
+
         test_item = "x" * 100
         expected_size = sys.getsizeof(test_item)
-        
+
         # Should be denied and tracked
         allowed, _ = limiter.is_allowed(test_item)
         assert allowed is False
-        
+
         stats = limiter.get_stats()
         assert stats["total_bytes_dropped"] == expected_size
-        
+
         dropped = limiter.get_dropped_samples()
         assert len(dropped) == 1
         assert dropped[0]["size"] == expected_size
@@ -514,19 +513,19 @@ class TestQueueLimiterIntegration:
     def test_queue_limiter_performance(self) -> None:
         """Test performance characteristics of queue limiters."""
         limiter = BufferedRateLimiter(capacity=1000.0, refill_rate=500.0)
-        
+
         start_time = time.time()
-        
+
         # Make many requests quickly
         allowed_count = 0
         for i in range(1000):
             allowed, _ = limiter.is_allowed(f"item_{i}")
             if allowed:
                 allowed_count += 1
-        
+
         end_time = time.time()
         elapsed = end_time - start_time
-        
+
         # Should be reasonably fast
         assert elapsed < 0.5
         assert allowed_count > 0
@@ -534,10 +533,10 @@ class TestQueueLimiterIntegration:
     def test_edge_case_zero_capacity(self) -> None:
         """Test edge case with zero capacity."""
         limiter = BufferedRateLimiter(capacity=0.01, refill_rate=1.0)  # Very small capacity
-        
+
         # First request might be allowed due to initial fractional token
         allowed, _ = limiter.is_allowed()
-        
+
         # Subsequent requests should definitely be denied
         allowed2, reason = limiter.is_allowed()
         assert allowed2 is False
@@ -546,7 +545,7 @@ class TestQueueLimiterIntegration:
     def test_edge_case_very_high_rates(self) -> None:
         """Test edge case with very high refill rates."""
         limiter = BufferedRateLimiter(capacity=1000.0, refill_rate=10000.0)
-        
+
         # Should handle high rates without issues
         for _ in range(100):
             allowed, _ = limiter.is_allowed()

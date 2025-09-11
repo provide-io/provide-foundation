@@ -16,11 +16,11 @@ class TestHubInitBasicCoverage:
         """Test core hub imports are available."""
         from provide.foundation.hub import (
             ComponentCategory,
-            get_component_registry,
-            register_command,
             Hub,
             clear_hub,
+            get_component_registry,
             get_hub,
+            register_command,
         )
 
         assert ComponentCategory is not None
@@ -41,6 +41,7 @@ class TestHubInitBasicCoverage:
         """Test get_click_commands when click is available."""
         try:
             import click  # noqa: F401
+
             from provide.foundation.hub import get_click_commands
 
             result = get_click_commands()
@@ -87,7 +88,7 @@ class TestHubInitBasicCoverage:
         # Check some expected exports
         expected_exports = [
             "get_component_registry",
-            "ComponentCategory", 
+            "ComponentCategory",
             "Hub",
             "clear_hub",
             "get_hub",
@@ -100,8 +101,8 @@ class TestHubInitBasicCoverage:
 
     def test_all_exported_items_importable(self):
         """Test all items in __all__ can be imported."""
-        from provide.foundation.hub import __all__
         import provide.foundation.hub as hub_module
+        from provide.foundation.hub import __all__
 
         for item_name in __all__:
             # Should be able to get the item

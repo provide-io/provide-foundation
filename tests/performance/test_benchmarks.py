@@ -9,18 +9,14 @@ The benchmarks validate that Foundation maintains >14,000 msg/sec performance
 even after internal improvements like dogfooding structured logging.
 """
 
-import asyncio
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 import io
-from typing import Any
-
-import pytest
 
 from provide.foundation import LoggingConfig, TelemetryConfig, logger, setup_telemetry
 from provide.foundation.testing import (
-    set_log_stream_for_testing,
     reset_foundation_setup_for_testing,
+    set_log_stream_for_testing,
 )
 
 

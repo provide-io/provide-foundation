@@ -5,8 +5,8 @@
 Tests to achieve full coverage for platform detection and info modules.
 """
 
-import platform
-from unittest.mock import patch, Mock
+from unittest.mock import patch
+
 import pytest
 
 
@@ -43,8 +43,8 @@ class TestPlatformDetection:
 
     def test_get_os_name_exception_handling(self):
         """Test OS name detection with exception."""
-        from provide.foundation.platform.detection import get_os_name
         from provide.foundation.errors.platform import PlatformError
+        from provide.foundation.platform.detection import get_os_name
 
         with patch("platform.system", side_effect=Exception("Platform error")):
             with pytest.raises(PlatformError) as exc_info:
@@ -90,8 +90,8 @@ class TestPlatformDetection:
 
     def test_get_arch_name_exception_handling(self):
         """Test architecture detection with exception."""
-        from provide.foundation.platform.detection import get_arch_name
         from provide.foundation.errors.platform import PlatformError
+        from provide.foundation.platform.detection import get_arch_name
 
         with patch("platform.machine", side_effect=Exception("Machine error")):
             with pytest.raises(PlatformError) as exc_info:

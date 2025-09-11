@@ -6,7 +6,6 @@ from unittest.mock import patch
 
 import pytest
 
-from provide.foundation.context import Context
 from provide.foundation.console.input import (
     apin,
     apin_lines,
@@ -15,6 +14,7 @@ from provide.foundation.console.input import (
     pin_lines,
     pin_stream,
 )
+from provide.foundation.context import Context
 
 
 class TestPin:
@@ -63,12 +63,11 @@ class TestPin:
         ctx.json_output = True
 
         test_input = '{"key": "value"}'
-        with patch("sys.stdin", StringIO(test_input)):
-            with patch(
-                "provide.foundation.console.input._get_context", return_value=ctx
-            ):
-                result = pin("Enter JSON: ")
-                assert result == {"key": "value"}
+        with patch("sys.stdin", StringIO(test_input)), patch(
+            "provide.foundation.console.input._get_context", return_value=ctx
+        ):
+            result = pin("Enter JSON: ")
+            assert result == {"key": "value"}
 
     def test_pin_json_mode_with_plain_text(self):
         """Test pin() in JSON mode with plain text input."""
@@ -76,12 +75,11 @@ class TestPin:
         ctx.json_output = True
 
         test_input = "plain text\n"
-        with patch("sys.stdin", StringIO(test_input)):
-            with patch(
-                "provide.foundation.console.input._get_context", return_value=ctx
-            ):
-                result = pin("Enter: ")
-                assert result == "plain text"
+        with patch("sys.stdin", StringIO(test_input)), patch(
+            "provide.foundation.console.input._get_context", return_value=ctx
+        ):
+            result = pin("Enter: ")
+            assert result == "plain text"
 
     def test_pin_json_mode_with_json_key(self):
         """Test pin() in JSON mode with json_key."""
@@ -89,12 +87,11 @@ class TestPin:
         ctx.json_output = True
 
         test_input = "test value\n"
-        with patch("sys.stdin", StringIO(test_input)):
-            with patch(
-                "provide.foundation.console.input._get_context", return_value=ctx
-            ):
-                result = pin("Enter: ", json_key="input")
-                assert result == {"input": "test value"}
+        with patch("sys.stdin", StringIO(test_input)), patch(
+            "provide.foundation.console.input._get_context", return_value=ctx
+        ):
+            result = pin("Enter: ", json_key="input")
+            assert result == {"input": "test value"}
 
 
 class TestPinStream:
@@ -131,12 +128,11 @@ class TestPinStream:
         ctx.json_output = True
 
         test_input = '["item1", "item2", "item3"]'
-        with patch("sys.stdin", StringIO(test_input)):
-            with patch(
-                "provide.foundation.console.input._get_context", return_value=ctx
-            ):
-                lines = list(pin_stream())
-                assert lines == ["item1", "item2", "item3"]
+        with patch("sys.stdin", StringIO(test_input)), patch(
+            "provide.foundation.console.input._get_context", return_value=ctx
+        ):
+            lines = list(pin_stream())
+            assert lines == ["item1", "item2", "item3"]
 
     def test_pin_stream_json_mode_object(self):
         """Test pin_stream() in JSON mode with object."""
@@ -144,12 +140,11 @@ class TestPinStream:
         ctx.json_output = True
 
         test_input = '{"key": "value"}'
-        with patch("sys.stdin", StringIO(test_input)):
-            with patch(
-                "provide.foundation.console.input._get_context", return_value=ctx
-            ):
-                lines = list(pin_stream())
-                assert lines == ['{"key": "value"}']
+        with patch("sys.stdin", StringIO(test_input)), patch(
+            "provide.foundation.console.input._get_context", return_value=ctx
+        ):
+            lines = list(pin_stream())
+            assert lines == ['{"key": "value"}']
 
     def test_pin_stream_json_mode_fallback(self):
         """Test pin_stream() JSON mode fallback for invalid JSON."""
@@ -157,12 +152,11 @@ class TestPinStream:
         ctx.json_output = True
 
         test_input = "plain\ntext\nlines\n"
-        with patch("sys.stdin", StringIO(test_input)):
-            with patch(
-                "provide.foundation.console.input._get_context", return_value=ctx
-            ):
-                lines = list(pin_stream())
-                assert lines == ["plain", "text", "lines"]
+        with patch("sys.stdin", StringIO(test_input)), patch(
+            "provide.foundation.console.input._get_context", return_value=ctx
+        ):
+            lines = list(pin_stream())
+            assert lines == ["plain", "text", "lines"]
 
 
 class TestPinLines:

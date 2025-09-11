@@ -5,10 +5,11 @@ Advanced fixtures for concurrent execution, synchronization testing, deadlock de
 and exception handling in threaded code.
 """
 
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 import threading
 import time
-from typing import Any, Callable, Optional
+from typing import Any
 
 import pytest
 
@@ -103,7 +104,7 @@ def thread_synchronizer():
         def __init__(self):
             self.checkpoints = {}
 
-        def checkpoint(self, name: str, thread_id: Optional[int] = None):
+        def checkpoint(self, name: str, thread_id: int | None = None):
             """
             Record that a thread reached a checkpoint.
 
@@ -175,7 +176,7 @@ def deadlock_detector():
             self.locks_held = {}  # thread_id -> set of locks
             self.lock = threading.Lock()
 
-        def acquire(self, lock_name: str, thread_id: Optional[int] = None):
+        def acquire(self, lock_name: str, thread_id: int | None = None):
             """Record lock acquisition."""
             thread_id = thread_id or threading.get_ident()
             with self.lock:
@@ -183,7 +184,7 @@ def deadlock_detector():
                     self.locks_held[thread_id] = set()
                 self.locks_held[thread_id].add(lock_name)
 
-        def release(self, lock_name: str, thread_id: Optional[int] = None):
+        def release(self, lock_name: str, thread_id: int | None = None):
             """Record lock release."""
             thread_id = thread_id or threading.get_ident()
             with self.lock:

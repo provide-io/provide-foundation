@@ -64,7 +64,7 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
     Returns the same logger instance when called multiple times (singleton pattern).
     """
     global _CACHED_SETUP_LOGGER
-    
+
     # Return cached logger if already created
     if _CACHED_SETUP_LOGGER is not None:
         return _CACHED_SETUP_LOGGER
@@ -101,7 +101,7 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
             cache_logger_on_first_use=True,
         )
 
-        _CACHED_SETUP_LOGGER = structlog.get_logger(_CORE_SETUP_LOGGER_NAME) 
+        _CACHED_SETUP_LOGGER = structlog.get_logger(_CORE_SETUP_LOGGER_NAME)
         return _CACHED_SETUP_LOGGER
 
 

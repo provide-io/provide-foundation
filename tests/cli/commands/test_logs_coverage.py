@@ -16,6 +16,7 @@ class TestLogsCLIBasicCoverage:
         """Test logs_group is available when click is installed."""
         try:
             import click  # noqa: F401
+
             from provide.foundation.cli.commands.logs import logs_group
 
             assert logs_group is not None
@@ -35,7 +36,9 @@ class TestLogsCLIBasicCoverage:
     def test_generate_command_import(self):
         """Test generate command can be imported."""
         try:
-            from provide.foundation.cli.commands.logs.generate import generate_logs_command
+            from provide.foundation.cli.commands.logs.generate import (
+                generate_logs_command,
+            )
 
             assert generate_logs_command is not None
         except ImportError:

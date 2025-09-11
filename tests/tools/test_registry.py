@@ -5,9 +5,8 @@ Tests registration, discovery, and retrieval of tool managers
 through the hub-based registry infrastructure.
 """
 
-import importlib.metadata
 from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 

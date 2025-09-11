@@ -6,18 +6,16 @@ Unit tests for processor assembly helper functions in provide.foundation.config.
 """
 
 import io
-import json
 from typing import Any
 
-from pytest import CaptureFixture
 from structlog.dev import ConsoleRenderer
 from structlog.processors import JSONRenderer, TimeStamper
 
+from provide.foundation.eventsets.registry import discover_event_sets
 from provide.foundation.logger.config import (
     LoggingConfig,
     TelemetryConfig,
 )
-from provide.foundation.eventsets.registry import discover_event_sets, get_registry
 
 # env.py removed - use TelemetryConfig.from_env() directly
 from provide.foundation.logger.processors import (
@@ -73,8 +71,8 @@ class TestBuildCoreProcessorsList:
 
 class TestTelemetryConfigFromEnvEventSets:
     """Tests for deprecated emoji sets - now replaced by event sets."""
-    
-    
+
+
     def test_logging_config_no_emoji_sets(self) -> None:
         """Verify LoggingConfig doesn't have deprecated emoji_sets fields."""
         config = TelemetryConfig.from_env()

@@ -8,7 +8,6 @@ import click
 from click.testing import CliRunner
 import pytest
 
-from provide.foundation.context import Context
 from provide.foundation.cli.decorators import (
     config_options,
     error_handler,
@@ -19,6 +18,7 @@ from provide.foundation.cli.decorators import (
     standard_options,
     version_option,
 )
+from provide.foundation.context import Context
 
 
 class TestLoggingOptions:

@@ -1,7 +1,8 @@
 """Comprehensive coverage tests for hub/__init__.py module."""
 
+from unittest.mock import patch
+
 import pytest
-from unittest.mock import patch, Mock
 
 
 class TestHubInitImports:
@@ -10,13 +11,13 @@ class TestHubInitImports:
     def test_core_imports_available(self):
         """Test that core hub imports are available."""
         from provide.foundation.hub import (
-            register_command,
             ComponentCategory,
-            get_component_registry,
             Hub,
             clear_hub,
-            get_hub,
             get_click_commands,
+            get_component_registry,
+            get_hub,
+            register_command,
         )
 
         # All should be callable or accessible
@@ -106,9 +107,8 @@ class TestHubGetattrLazyLoading:
             hub_module,
             "get_click_commands",
             side_effect=ImportError("click not available"),
-        ):
-            with pytest.raises(ImportError, match="click not available"):
-                _ = hub_module.build_click_command
+        ), pytest.raises(ImportError, match="click not available"):
+            _ = hub_module.build_click_command
 
     def test_getattr_nonexistent_attribute(self):
         """Test __getattr__ with non-existent attribute."""
@@ -207,8 +207,9 @@ class TestClickDependencyHandling:
 
     def test_import_error_detection_logic_exists(self):
         """Test that ImportError detection logic exists in the code."""
-        import provide.foundation.hub as hub_module
         import inspect
+
+        import provide.foundation.hub as hub_module
 
         # Check that the get_click_commands function has the right structure
         source = inspect.getsource(hub_module.get_click_commands)

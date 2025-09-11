@@ -2,13 +2,13 @@
 
 import structlog
 
-from provide.foundation.testing.logger import (
-    reset_foundation_state,
-    reset_foundation_setup_for_testing,
-)
 from provide.foundation.logger.core import (
-    logger as foundation_logger,
     _LAZY_SETUP_STATE,
+    logger as foundation_logger,
+)
+from provide.foundation.testing.logger import (
+    reset_foundation_setup_for_testing,
+    reset_foundation_state,
 )
 
 
@@ -119,4 +119,4 @@ class TestLoggerTestingUtilities:
         reset_foundation_setup_for_testing()
 
         assert foundation_logger._is_configured_by_setup == initial_config_state
-        assert _LAZY_SETUP_STATE == initial_lazy_state
+        assert initial_lazy_state == _LAZY_SETUP_STATE

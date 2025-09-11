@@ -4,9 +4,9 @@ Basic threading test fixtures.
 Core fixtures for creating threads, thread pools, mocks, and thread-local storage.
 """
 
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 import threading
-from typing import Callable
 from unittest.mock import Mock
 
 import pytest

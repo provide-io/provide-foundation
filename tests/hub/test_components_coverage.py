@@ -5,19 +5,15 @@
 Tests to cover missing lines in hub/components.py for 100% coverage.
 """
 
-import asyncio
-from unittest.mock import Mock, AsyncMock
-import pytest
+from unittest.mock import Mock
 
 from provide.foundation.hub.components import (
     ComponentCategory,
-    get_component_registry,
-    resolve_config_value,
-    get_config_chain,
     cleanup_all_components,
-    bootstrap_foundation,
+    get_component_registry,
+    get_config_chain,
+    resolve_config_value,
 )
-from provide.foundation.eventsets.types import EventMapping
 
 
 class TestComponentLifecycle:

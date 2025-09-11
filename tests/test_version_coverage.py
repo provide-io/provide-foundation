@@ -1,12 +1,11 @@
 """Comprehensive coverage tests for _version.py module."""
 
-import tempfile
-from pathlib import Path
-from unittest.mock import patch, mock_open, MagicMock
-import pytest
-
 from importlib.metadata import PackageNotFoundError
-from provide.foundation._version import _find_project_root, get_version, __version__
+from pathlib import Path
+import tempfile
+from unittest.mock import MagicMock, patch
+
+from provide.foundation._version import __version__, _find_project_root, get_version
 
 
 class TestFindProjectRoot:
@@ -187,12 +186,11 @@ class TestGetVersion:
 
             with patch(
                 "provide.foundation._version._find_project_root", return_value=temp_path
+            ), patch(
+                "importlib.metadata.version", return_value="metadata-version"
             ):
-                with patch(
-                    "importlib.metadata.version", return_value="metadata-version"
-                ):
-                    result = get_version()
-                    assert result == "metadata-version"
+                result = get_version()
+                assert result == "metadata-version"
 
 
 class TestVersionModule:
@@ -224,9 +222,9 @@ class TestVersionModule:
     def test_module_imports(self):
         """Test module can be imported and basic functionality works."""
         from provide.foundation._version import (
-            get_version,
-            _find_project_root,
             __version__,
+            _find_project_root,
+            get_version,
         )
 
         # All imports should work
@@ -246,7 +244,7 @@ class TestVersionEdgeCases:
 
             # Simulate file exists but read_text raises an error
             mock_version_file.exists.return_value = True
-            mock_version_file.read_text.side_effect = IOError("Permission denied")
+            mock_version_file.read_text.side_effect = OSError("Permission denied")
 
             mock_path.__truediv__ = lambda self, name: mock_version_file
             mock_find_root.return_value = mock_path

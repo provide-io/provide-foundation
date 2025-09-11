@@ -6,18 +6,6 @@ and processor pipeline management through the registry system.
 """
 
 import asyncio
-from collections.abc import AsyncIterator, Iterator
-import threading
-from typing import Any
-from unittest.mock import Mock, AsyncMock
-
-import pytest
-from structlog.typing import EventDict
-
-from provide.foundation.config.base import BaseConfig
-from provide.foundation.hub.registry import Registry, RegistryEntry
-from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
-
 
 # Configuration source tests removed - module doesn't exist yet
 
@@ -60,8 +48,8 @@ class TestProcessorRegistration:
     def test_processor_pipeline_ordering(self):
         """Processors must be executed in priority order."""
         from provide.foundation.hub.components import (
-            get_processor_pipeline,
             bootstrap_foundation,
+            get_processor_pipeline,
         )
 
         pipeline = get_processor_pipeline()

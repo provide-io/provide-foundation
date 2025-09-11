@@ -7,8 +7,7 @@ Additional tests to achieve full coverage for process/async_runner.py.
 
 import asyncio
 import sys
-from pathlib import Path
-from unittest.mock import patch, Mock, AsyncMock
+from unittest.mock import patch
 
 import pytest
 

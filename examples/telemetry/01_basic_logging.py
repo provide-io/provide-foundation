@@ -23,7 +23,7 @@ import sys
 # Add src to path for examples
 example_file = Path(__file__).resolve()
 project_root = example_file.parent.parent.parent
-# Line removed - project_root already set above 
+# Line removed - project_root already set above
 src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
@@ -49,26 +49,26 @@ def simple_logging_example() -> None:
 
     # Start logging immediately - no configuration needed
     logger.info("Hello from provide.foundation!", component="simple_example")
-    
+
     # Structured logging with context
     logger.info(
         "User session started",
-        user_id="user_123", 
+        user_id="user_123",
         session_id="sess_456",
         source="web_app"
     )
-    
+
     # Different log levels
     logger.debug("Debug information", debug_level=1)
     logger.warning("This is a warning", severity="low")
     logger.error("Something went wrong", error_code="ERR001")
-    
+
     # Exception logging
     try:
         result = 10 / 0
     except ZeroDivisionError:
         logger.exception("Division by zero occurred", operation="calculate")
-    
+
     logger.info("Example completed successfully!")
 
 

@@ -14,7 +14,6 @@ from provide.foundation import (
     error_boundary,
     with_error_handling,
 )
-from provide.foundation.resilience import retry
 from provide.foundation.errors import (
     AlreadyExistsError,
     AuthenticationError,
@@ -33,13 +32,13 @@ from provide.foundation.errors.decorators import (
     fallback_on_error,
     suppress_and_log,
 )
-from provide.foundation.resilience import circuit_breaker
 from provide.foundation.errors.handlers import (
     ErrorHandler,
     handle_error,
     transactional,
 )
 from provide.foundation.errors.types import ErrorCode, ErrorMetadata
+from provide.foundation.resilience import circuit_breaker, retry
 
 
 class TestErrorSystemIntegration:

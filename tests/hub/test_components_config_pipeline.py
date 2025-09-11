@@ -1,20 +1,17 @@
 """Configuration and Pipeline tests for hub components module."""
 
-import asyncio
-from unittest.mock import Mock, AsyncMock, patch
+from unittest.mock import AsyncMock, Mock
+
 import pytest
-import inspect
-import threading
 
 from provide.foundation.hub.components import (
     ComponentCategory,
     get_component_registry,
-    load_all_configs,
     get_processor_pipeline,
     get_processors_for_stage,
+    load_all_configs,
     reset_registry_for_tests,
 )
-from provide.foundation.hub.registry import Registry, RegistryEntry
 
 
 class TestAsyncConfigLoading:

@@ -1,15 +1,13 @@
 """Tests for common testing fixtures."""
 
 import io
-from typing import TextIO
 
 import pytest
 
+from provide.foundation import TelemetryConfig
 from provide.foundation.testing.fixtures import (
     captured_stderr_for_foundation,
-    setup_foundation_telemetry_for_test,
 )
-from provide.foundation import TelemetryConfig
 
 
 class TestTestingFixtures:
@@ -82,7 +80,6 @@ class TestTestingFixtures:
 
     def test_fixture_type_annotations(self):
         """Test that fixture functions have correct type annotations."""
-        from provide.foundation.testing.fixtures import captured_stderr_for_foundation
 
         # Check that the function exists and is callable
         assert callable(captured_stderr_for_foundation)

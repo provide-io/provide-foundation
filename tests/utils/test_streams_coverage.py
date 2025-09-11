@@ -2,12 +2,11 @@
 
 import io
 import sys
-from unittest.mock import patch, Mock
-import pytest
+from unittest.mock import Mock, patch
 
 from provide.foundation.utils.streams import (
-    get_safe_stderr,
     get_foundation_log_stream,
+    get_safe_stderr,
 )
 
 

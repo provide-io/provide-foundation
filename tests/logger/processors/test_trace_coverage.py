@@ -1,8 +1,6 @@
 """Comprehensive tests for logger/processors/trace.py module."""
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
-import logging
+from unittest.mock import Mock, patch
 
 
 class TestTraceProcessorWithOtel:
@@ -58,16 +56,15 @@ class TestTraceProcessorWithOtel:
                 with patch(
                     "provide.foundation.tracer.context.get_current_trace_id",
                     return_value="foundation-trace-123",
+                ), patch(
+                    "provide.foundation.tracer.context.get_current_span",
+                    return_value=mock_foundation_span,
                 ):
-                    with patch(
-                        "provide.foundation.tracer.context.get_current_span",
-                        return_value=mock_foundation_span,
-                    ):
-                        event_dict = {"event": "test"}
-                        result = inject_trace_context(None, "info", event_dict)
+                    event_dict = {"event": "test"}
+                    result = inject_trace_context(None, "info", event_dict)
 
-                        assert result["trace_id"] == "foundation-trace-123"
-                        assert result["span_id"] == "foundation-span-456"
+                    assert result["trace_id"] == "foundation-trace-123"
+                    assert result["span_id"] == "foundation-span-456"
 
     def test_inject_trace_context_otel_exception(self):
         """Test handling exception in OpenTelemetry code."""
@@ -87,16 +84,15 @@ class TestTraceProcessorWithOtel:
                 with patch(
                     "provide.foundation.tracer.context.get_current_trace_id",
                     return_value="fallback-trace",
+                ), patch(
+                    "provide.foundation.tracer.context.get_current_span",
+                    return_value=mock_fallback_span,
                 ):
-                    with patch(
-                        "provide.foundation.tracer.context.get_current_span",
-                        return_value=mock_fallback_span,
-                    ):
-                        event_dict = {"event": "test"}
-                        result = inject_trace_context(None, "info", event_dict)
+                    event_dict = {"event": "test"}
+                    result = inject_trace_context(None, "info", event_dict)
 
-                        assert result["trace_id"] == "fallback-trace"
-                        assert result["span_id"] == "fallback-span"
+                    assert result["trace_id"] == "fallback-trace"
+                    assert result["span_id"] == "fallback-span"
 
     def test_inject_trace_context_no_trace_flags(self):
         """Test when OpenTelemetry span has no trace flags."""
@@ -140,16 +136,15 @@ class TestTraceProcessorWithoutOtel:
             with patch(
                 "provide.foundation.tracer.context.get_current_trace_id",
                 return_value="foundation-trace-xyz",
+            ), patch(
+                "provide.foundation.tracer.context.get_current_span",
+                return_value=mock_span,
             ):
-                with patch(
-                    "provide.foundation.tracer.context.get_current_span",
-                    return_value=mock_span,
-                ):
-                    event_dict = {"event": "test"}
-                    result = inject_trace_context(None, "info", event_dict)
+                event_dict = {"event": "test"}
+                result = inject_trace_context(None, "info", event_dict)
 
-                    assert result["trace_id"] == "foundation-trace-xyz"
-                    assert result["span_id"] == "foundation-span-abc"
+                assert result["trace_id"] == "foundation-trace-xyz"
+                assert result["span_id"] == "foundation-span-abc"
 
     def test_inject_trace_context_no_current_span(self):
         """Test when there's no current span."""
@@ -281,12 +276,11 @@ class TestShouldInjectTraceContext:
                 with patch(
                     "provide.foundation.tracer.context.get_current_span",
                     return_value=None,
+                ), patch(
+                    "provide.foundation.tracer.context.get_current_trace_id",
+                    return_value=None,
                 ):
-                    with patch(
-                        "provide.foundation.tracer.context.get_current_trace_id",
-                        return_value=None,
-                    ):
-                        assert should_inject_trace_context() is False
+                    assert should_inject_trace_context() is False
 
     def test_should_inject_otel_exception_foundation_fallback(self):
         """Test fallback to Foundation when OpenTelemetry fails."""
@@ -429,19 +423,18 @@ class TestTraceProcessorLogging:
             with patch(
                 "provide.foundation.tracer.context.get_current_trace_id",
                 return_value="trace-123",
+            ), patch(
+                "provide.foundation.tracer.context.get_current_span",
+                return_value=mock_span,
             ):
-                with patch(
-                    "provide.foundation.tracer.context.get_current_span",
-                    return_value=mock_span,
-                ):
-                    event_dict = {"event": "test"}
-                    result = inject_trace_context(None, "info", event_dict)
+                event_dict = {"event": "test"}
+                result = inject_trace_context(None, "info", event_dict)
 
-                    # Check Foundation trace context was injected
-                    assert "trace_id" in result
-                    assert "span_id" in result
-                    assert result["trace_id"] == "trace-123"
-                    assert result["span_id"] == "span-456"
+                # Check Foundation trace context was injected
+                assert "trace_id" in result
+                assert "span_id" in result
+                assert result["trace_id"] == "trace-123"
+                assert result["span_id"] == "span-456"
 
     def test_debug_logging_on_foundation_failure(self):
         """Test Foundation tracer failure handling (no internal logging)."""

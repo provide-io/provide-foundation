@@ -17,7 +17,10 @@ from typing import Never  # noqa: E402
 
 from provide.foundation import logger, setup_telemetry  # noqa: E402
 from provide.foundation.console.output import pout  # noqa: E402
-from provide.foundation.logger.config import TelemetryConfig, LoggingConfig  # noqa: E402
+from provide.foundation.logger.config import (  # noqa: E402
+    LoggingConfig,
+    TelemetryConfig,
+)
 
 
 def example_5_exception_handling() -> None:

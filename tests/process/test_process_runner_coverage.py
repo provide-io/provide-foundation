@@ -1,19 +1,19 @@
 """Additional tests for process runner to improve code coverage."""
 
-import os
+from pathlib import Path
 import subprocess
 import tempfile
-from pathlib import Path
-from unittest.mock import patch, Mock
+from unittest.mock import patch
+
 import pytest
 
+from provide.foundation.errors.runtime import ProcessError
 from provide.foundation.process.runner import (
     run_command,
     run_command_simple,
-    stream_command,
     run_shell,
+    stream_command,
 )
-from provide.foundation.errors.runtime import ProcessError
 
 
 class TestProcessRunnerCoverage:

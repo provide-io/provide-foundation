@@ -1,20 +1,15 @@
 """Error handling and dependency resolution tests for hub components module."""
 
-import asyncio
-from unittest.mock import Mock, AsyncMock, patch
-import pytest
-import inspect
-import threading
+from unittest.mock import Mock
 
 from provide.foundation.hub.components import (
     ComponentCategory,
+    execute_error_handlers,
     get_component_registry,
     get_handlers_for_exception,
-    execute_error_handlers,
-    resolve_component_dependencies,
     reset_registry_for_tests,
+    resolve_component_dependencies,
 )
-from provide.foundation.hub.registry import Registry, RegistryEntry
 
 
 class TestErrorHandlers:

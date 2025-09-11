@@ -1,7 +1,6 @@
 """Tests for atomic file operations."""
 
 import os
-from pathlib import Path
 
 import pytest
 
@@ -10,7 +9,6 @@ from provide.foundation.file.atomic import (
     atomic_write,
     atomic_write_text,
 )
-from provide.foundation.testing.file import temp_directory
 
 
 def test_atomic_write_creates_file(temp_directory) -> None:

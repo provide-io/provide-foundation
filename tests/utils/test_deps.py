@@ -1,21 +1,21 @@
 """Comprehensive tests for utils/deps.py module."""
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
 import sys
-from typing import Any
+from unittest.mock import Mock, patch
+
+import pytest
 
 from provide.foundation.utils.deps import (
     DependencyStatus,
     _check_click,
     _check_cryptography,
     _check_opentelemetry,
-    get_optional_dependencies,
+    _get_logger,
     check_optional_deps,
+    get_available_features,
+    get_optional_dependencies,
     has_dependency,
     require_dependency,
-    get_available_features,
-    _get_logger,
 )
 
 

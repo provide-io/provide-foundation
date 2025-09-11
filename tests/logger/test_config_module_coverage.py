@@ -1,7 +1,5 @@
 """Comprehensive tests for logger/config.py module."""
 
-import pytest
-from unittest.mock import patch, Mock
 
 
 class TestLoggerConfigModule:
@@ -70,4 +68,4 @@ class TestLoggerConfigModule:
         assert "LoggingConfig" in exec_globals
         assert "TelemetryConfig" in exec_globals
         # Should only import what's in __all__
-        assert len([k for k in exec_globals.keys() if not k.startswith("__")]) == 2
+        assert len([k for k in exec_globals if not k.startswith("__")]) == 2
