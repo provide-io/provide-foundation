@@ -30,7 +30,24 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from examples.integration.celery.setup_and_config import app, CeleryTaskLogger
+# Add current directory to path for local imports
+current_dir = Path(__file__).parent
+if str(current_dir) not in sys.path:
+    sys.path.insert(0, str(current_dir))
+
+# Load setup_and_config module by file path
+import importlib.util
+
+def load_module_from_file(name, filepath):
+    spec = importlib.util.spec_from_file_location(name, filepath)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+current_dir = Path(__file__).parent
+setup_config = load_module_from_file("setup_and_config", current_dir / "01_setup_and_config.py")
+app = setup_config.app
+CeleryTaskLogger = setup_config.CeleryTaskLogger
 from provide.foundation import logger
 
 # Cut-Up Phrases (from original cut_up_chuck.py)

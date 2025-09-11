@@ -28,18 +28,38 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
+# Add current directory to path for local imports
+current_dir = Path(__file__).parent
+if str(current_dir) not in sys.path:
+    sys.path.insert(0, str(current_dir))
+
 from provide.foundation import logger, pout  # noqa: E402
 
 # Import our setup and tasks
-from examples.integration.celery.setup_and_config import app  # noqa: E402
-from examples.integration.celery.metrics_and_signals import metrics, setup_signal_handlers  # noqa: E402
-from examples.integration.celery.tasks import (  # noqa: E402
-    process_payment,
-    generate_report,
-    send_notification,
-    process_batch_data,
-    cleanup_old_data
-)
+import importlib.util
+
+# Load modules by file path to handle hyphenated names
+def load_module_from_file(name, filepath):
+    spec = importlib.util.spec_from_file_location(name, filepath)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+# Load local modules
+current_dir = Path(__file__).parent
+setup_config = load_module_from_file("setup_and_config", current_dir / "01_setup_and_config.py")
+metrics_signals = load_module_from_file("metrics_and_signals", current_dir / "02_metrics_and_signals.py")
+tasks_module = load_module_from_file("tasks", current_dir / "03_tasks.py")
+
+# Extract needed objects
+app = setup_config.app
+metrics = metrics_signals.metrics
+setup_signal_handlers = metrics_signals.setup_signal_handlers
+process_payment = tasks_module.process_payment
+generate_report = tasks_module.generate_report
+send_notification = tasks_module.send_notification
+process_batch_data = tasks_module.process_batch_data
+cleanup_old_data = tasks_module.cleanup_old_data
 
 # Try to import Celery workflow tools
 try:

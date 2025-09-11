@@ -32,18 +32,38 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
+# Add current directory to path for local imports
+current_dir = Path(__file__).parent
+if str(current_dir) not in sys.path:
+    sys.path.insert(0, str(current_dir))
+
 from provide.foundation import logger, pout
-from examples.integration.celery.setup_and_config import app
-from examples.integration.celery.metrics_and_signals import metrics, setup_signal_handlers
-from examples.integration.celery.cut_up_chuck_tasks import (
-    generate_log_entry,
-    generate_batch,
-    detect_anomaly,
-    system_heartbeat,
-    continuous_generator,
-    CUT_UP_PHRASES,
-    LOGGER_CONTEXTS
-)
+
+# Load modules by file path
+import importlib.util
+
+def load_module_from_file(name, filepath):
+    spec = importlib.util.spec_from_file_location(name, filepath)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+current_dir = Path(__file__).parent
+setup_config = load_module_from_file("setup_and_config", current_dir / "01_setup_and_config.py")
+metrics_signals = load_module_from_file("metrics_and_signals", current_dir / "02_metrics_and_signals.py")
+cut_up_tasks = load_module_from_file("cut_up_chuck_tasks", current_dir / "05_cut_up_chuck_tasks.py")
+
+# Extract needed objects
+app = setup_config.app
+metrics = metrics_signals.metrics
+setup_signal_handlers = metrics_signals.setup_signal_handlers
+generate_log_entry = cut_up_tasks.generate_log_entry
+generate_batch = cut_up_tasks.generate_batch
+detect_anomaly = cut_up_tasks.detect_anomaly
+system_heartbeat = cut_up_tasks.system_heartbeat
+continuous_generator = cut_up_tasks.continuous_generator
+CUT_UP_PHRASES = cut_up_tasks.CUT_UP_PHRASES
+LOGGER_CONTEXTS = cut_up_tasks.LOGGER_CONTEXTS
 
 # Try to import Celery workflow tools
 try:

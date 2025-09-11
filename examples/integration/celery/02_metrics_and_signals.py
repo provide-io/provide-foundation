@@ -101,7 +101,18 @@ def setup_signal_handlers(app):
     """Set up all Celery signal handlers."""
     
     # Import task logger after app setup
-    from examples.integration.celery.setup_and_config import CeleryTaskLogger
+    import importlib.util
+    from pathlib import Path
+    
+    def load_module_from_file(name, filepath):
+        spec = importlib.util.spec_from_file_location(name, filepath)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+    
+    current_dir = Path(__file__).parent
+    setup_config = load_module_from_file("setup_and_config", current_dir / "01_setup_and_config.py")
+    CeleryTaskLogger = setup_config.CeleryTaskLogger
     
     @worker_ready.connect
     def worker_ready_handler(sender, **kwargs):
