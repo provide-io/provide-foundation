@@ -20,7 +20,7 @@ class SchemaField:
     """Schema definition for a configuration field."""
 
     name: str
-    type: type | None = None
+    field_type: type | None = None
     required: bool = False
     default: Any = None
     description: str | None = None
@@ -52,9 +52,9 @@ class SchemaField:
             return
 
         # Check type
-        if self.type is not None and not isinstance(value, self.type):
+        if self.field_type is not None and not isinstance(value, self.field_type):
             raise ConfigValidationError(
-                f"Expected type {self.type.__name__}, got {type(value).__name__}",
+                f"Expected type {self.field_type.__name__}, got {type(value).__name__}",
                 field=self.name,
                 value=value,
             )
@@ -209,7 +209,7 @@ class ConfigSchema:
         # Create schema field
         return SchemaField(
             name=attr.name,
-            type=field_type,
+            field_type=field_type,
             required=required,
             default=attr.default if attr.default is not None else None,
             description=description,
