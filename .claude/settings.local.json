@@ -28,7 +28,8 @@
       "Bash(echo:*)",
       "Bash(PYTHONPATH=src python examples/transport/01_http_client.py)",
       "Bash(FOUNDATION_LOG_LEVEL=INFO PYTHONPATH=src python examples/transport/01_http_client.py)",
-      "Read(//private/tmp/**)"
+      "Read(//private/tmp/**)",
+      "Bash(PYTHONPATH=src python examples/configuration/03_config_management.py)"
     ],
     "deny": [],
     "ask": [],
