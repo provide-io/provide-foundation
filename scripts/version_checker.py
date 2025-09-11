@@ -25,13 +25,14 @@ import tomllib
 
 def load_pyproject_version() -> str:
     """
-    Load version from pyproject.toml.
+    Load version from pyproject.toml or VERSION file for dynamic versioning.
 
     This function reads the project configuration file and extracts
     the version string for validation against other version sources.
+    Handles both static and dynamic versioning.
 
     Returns:
-        The version string from pyproject.toml.
+        The version string from pyproject.toml or VERSION file.
 
     Raises:
         FileNotFoundError: If pyproject.toml is not found.
@@ -44,9 +45,27 @@ def load_pyproject_version() -> str:
     with pyproject_path.open("rb") as f:
         data = tomllib.load(f)
 
+    # Check for static version first
     version = data.get("project", {}).get("version")
+    
+    # If no static version, check for dynamic versioning
     if not version:
-        raise ValueError("No version found in pyproject.toml")
+        dynamic_fields = data.get("project", {}).get("dynamic", [])
+        if "version" in dynamic_fields:
+            # Check for setuptools dynamic version configuration
+            dynamic_config = data.get("tool", {}).get("setuptools", {}).get("dynamic", {})
+            version_config = dynamic_config.get("version", {})
+            
+            if "file" in version_config:
+                version_file = Path(version_config["file"])
+                if version_file.exists():
+                    version = version_file.read_text().strip()
+                else:
+                    raise FileNotFoundError(f"Version file {version_file} not found")
+            else:
+                raise ValueError("Dynamic version configured but no file specified")
+        else:
+            raise ValueError("No version found in pyproject.toml")
 
     return version
 
@@ -119,7 +138,8 @@ def validate_version_format(version: str) -> bool:
 
     # Basic semantic versioning pattern
     # Allows: 1.0.0, 1.0.0-rc1, 1.0.0-beta.1, 1.0.0+build.1
-    pattern = r"^(\d+)\.(\d+)\.(\d+)(?:-([a-zA-Z0-9\-\.]+))?(?:\+([a-zA-Z0-9\-\.]+))?$"
+    # Also allows dev versions: 0.0.0.dev0, 0.0.0.dev2, etc.
+    pattern = r"^(\d+)\.(\d+)\.(\d+)(\.dev\d+)?(?:-([a-zA-Z0-9\-\.]+))?(?:\+([a-zA-Z0-9\-\.]+))?$"
 
     if not re.match(pattern, version):
         return False
