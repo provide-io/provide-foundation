@@ -10,8 +10,6 @@ and building trace hierarchies without external dependencies.
 """
 
 import asyncio
-import random
-import time
 from typing import Dict, Any
 
 from provide.foundation import logger, setup_telemetry
@@ -43,11 +41,8 @@ def simulate_database_query(query: str, params: Dict[str, Any] = None) -> Dict[s
                    trace_id=trace_ctx["trace_id"],
                    span_id=trace_ctx["span_id"])
         
-        # Simulate query execution time
-        execution_time = random.uniform(0.01, 0.1)
-        time.sleep(execution_time)
-        
-        span.set_tag("execution_time_ms", execution_time * 1000)
+        # In real applications, this would be an actual database query
+        # No artificial delays needed for demonstration
         
         # Simulate occasional errors
         if random.random() < 0.1:  # 10% error rate

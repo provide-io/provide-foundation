@@ -9,7 +9,6 @@ Demonstrates how to add operation timing and context tracking
 to your applications without external dependencies.
 """
 
-import time
 from typing import Dict, List
 
 from provide.foundation import logger, setup_telemetry
@@ -33,8 +32,8 @@ def fetch_user_data(user_id: int) -> Dict:
                    user_id=user_id,
                    trace_id=trace_ctx["trace_id"])
         
-        # Simulate database query
-        time.sleep(0.1)
+        # Simulate database query with real work
+        # In real applications, this would be an actual database call
         
         # Log completion with timing
         logger.info("User data fetched",
@@ -65,7 +64,6 @@ def process_order(order_data: Dict) -> Dict:
             validation_span.set_tag("validation_type", "inventory_check")
             
             logger.info("Validating order", trace_id=trace_ctx["trace_id"])
-            time.sleep(0.05)
             
             # Simulate validation logic
             if len(order_data["items"]) == 0:
@@ -78,7 +76,6 @@ def process_order(order_data: Dict) -> Dict:
             calc_span.set_tag("currency", "USD")
             
             logger.info("Calculating order total", trace_id=trace_ctx["trace_id"])
-            time.sleep(0.02)
             
             total = sum(item["price"] * item["quantity"] for item in order_data["items"])
             calc_span.set_tag("total_amount", total)
@@ -91,7 +88,6 @@ def process_order(order_data: Dict) -> Dict:
             logger.info("Processing payment",
                        amount=total,
                        trace_id=trace_ctx["trace_id"])
-            time.sleep(0.15)
             
             # Simulate payment processing
             payment_span.set_tag("payment_status", "completed")
