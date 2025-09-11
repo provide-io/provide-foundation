@@ -6,11 +6,11 @@ from typing import Never
 
 import pytest
 
+from provide.foundation.file import temp_dir
 from provide.foundation.file.directory import (
     ensure_dir,
     ensure_parent_dir,
     safe_rmtree,
-    temp_dir,
 )
 
 
