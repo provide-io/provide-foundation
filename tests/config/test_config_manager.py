@@ -12,15 +12,15 @@ from provide.foundation.config.manager import ConfigManager
 
 
 @define
-class TestConfig(BaseConfig):
-    """Test configuration class."""
+class SampleConfig(BaseConfig):
+    """Sample configuration class for testing."""
 
     name: str = "test"
     value: int = 42
     enabled: bool = True
 
 
-class TestConfigManager:
+class SampleConfigManager:
     """Test ConfigManager class."""
 
     @pytest.mark.asyncio
@@ -36,7 +36,7 @@ class TestConfigManager:
     async def test_register_config(self) -> None:
         """Test registering a configuration."""
         manager = ConfigManager()
-        config = TestConfig()
+        config = SampleConfig()
 
         await manager.register("test", config)
 
@@ -47,7 +47,7 @@ class TestConfigManager:
     async def test_get_config(self) -> None:
         """Test getting a configuration."""
         manager = ConfigManager()
-        config = TestConfig()
+        config = SampleConfig()
 
         await manager.register("test", config)
         retrieved = await manager.get("test")
@@ -66,20 +66,20 @@ class TestConfigManager:
     async def test_get_config_with_type(self) -> None:
         """Test getting configuration with type checking."""
         manager = ConfigManager()
-        config = TestConfig()
+        config = SampleConfig()
 
         await manager.register("test", config)
         retrieved = await manager.get("test")
 
         assert retrieved is config
-        assert isinstance(retrieved, TestConfig)
+        assert isinstance(retrieved, SampleConfig)
 
     @pytest.mark.asyncio
     async def test_get_all_configs(self) -> None:
         """Test getting all configurations."""
         manager = ConfigManager()
-        config1 = TestConfig(name="config1")
-        config2 = TestConfig(name="config2")
+        config1 = SampleConfig(name="config1")
+        config2 = SampleConfig(name="config2")
 
         await manager.register("test1", config1)
         await manager.register("test2", config2)
@@ -93,7 +93,7 @@ class TestConfigManager:
     async def test_remove_config(self) -> None:
         """Test removing a configuration."""
         manager = ConfigManager()
-        config = TestConfig()
+        config = SampleConfig()
 
         await manager.register("test", config)
         manager.remove("test")  # remove is sync
@@ -104,8 +104,8 @@ class TestConfigManager:
     async def test_clear_configs(self) -> None:
         """Test clearing all configurations."""
         manager = ConfigManager()
-        await manager.register("test1", TestConfig())
-        await manager.register("test2", TestConfig())
+        await manager.register("test1", SampleConfig())
+        await manager.register("test2", SampleConfig())
 
         manager.clear()  # clear is sync
 
@@ -117,7 +117,7 @@ class TestConfigManager:
         manager = ConfigManager()
 
         data = {"name": "updated", "value": 100}
-        config = await manager.load_from_dict("test", TestConfig, data)
+        config = await manager.load_from_dict("test", SampleConfig, data)
 
         assert config is not None
         assert config.name == "updated"
@@ -127,7 +127,7 @@ class TestConfigManager:
     async def test_export_to_dict(self) -> None:
         """Test exporting configuration to dictionary."""
         manager = ConfigManager()
-        config = TestConfig(name="export_test", value=99)
+        config = SampleConfig(name="export_test", value=99)
         await manager.register("test", config)
 
         exported = await manager.export_to_dict()
@@ -143,10 +143,10 @@ class TestConfigManager:
 
         # Mock loader
         mock_loader = AsyncMock()
-        mock_loader.load.return_value = TestConfig(name="reloaded")
+        mock_loader.load.return_value = SampleConfig(name="reloaded")
         manager.add_loader("test", mock_loader)
 
-        config = TestConfig()
+        config = SampleConfig()
         await manager.register("test", config)
 
         await manager.reload("test")
@@ -161,8 +161,8 @@ class TestConfigManager:
         """Test validating all configurations."""
         manager = ConfigManager()
 
-        config1 = AsyncMock(spec=TestConfig)
-        config2 = AsyncMock(spec=TestConfig)
+        config1 = AsyncMock(spec=SampleConfig)
+        config2 = AsyncMock(spec=SampleConfig)
 
         await manager.register("test1", config1)
         await manager.register("test2", config2)
@@ -178,19 +178,19 @@ class TestConfigManager:
         manager = ConfigManager()
 
         # First call creates
-        config1 = await manager.get_or_create("test", TestConfig)
+        config1 = await manager.get_or_create("test", SampleConfig)
         assert config1 is not None
-        assert isinstance(config1, TestConfig)
+        assert isinstance(config1, SampleConfig)
 
         # Second call gets existing
-        config2 = await manager.get_or_create("test", TestConfig)
+        config2 = await manager.get_or_create("test", SampleConfig)
         assert config2 is config1
 
     @pytest.mark.asyncio
     async def test_update_config(self) -> None:
         """Test updating a configuration."""
         manager = ConfigManager()
-        config = TestConfig()
+        config = SampleConfig()
         await manager.register("test", config)
 
         await manager.update("test", {"name": "updated", "value": 200})
