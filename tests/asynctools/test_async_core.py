@@ -264,8 +264,15 @@ class TestProvideWaitFor:
             return "instant"
 
         # Zero timeout should raise TimeoutError even for immediate tasks
-        with pytest.raises(asyncio.TimeoutError):
-            await provide_wait_for(instant_task(), timeout=0.0)
+        # Create coroutine and properly handle it to avoid warning
+        coro = instant_task()
+        try:
+            with pytest.raises(asyncio.TimeoutError):
+                await provide_wait_for(coro, timeout=0.0)
+        finally:
+            # Close coroutine if it wasn't consumed
+            if coro.cr_frame is not None:
+                coro.close()
 
     @pytest.mark.asyncio
     @patch("provide.foundation.asynctools.core.asyncio")
