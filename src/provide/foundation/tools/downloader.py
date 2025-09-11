@@ -90,23 +90,65 @@ class ToolDownloader:
         Raises:
             DownloadError: If download or verification fails.
         """
+        # Use asyncio to run the async download
+        import asyncio
+        
+        try:
+            # Get or create event loop
+            loop = asyncio.get_event_loop()
+        except RuntimeError:
+            # No event loop in current thread, create one
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+        
+        try:
+            return loop.run_until_complete(self._async_download_with_progress(url, dest, checksum))
+        except Exception as e:
+            if loop.is_running():
+                # If loop is already running, we need to handle this differently
+                # This can happen in testing environments
+                raise DownloadError(f"Cannot download in running event loop: {e}")
+            raise
+
+    async def _async_download_with_progress(
+        self, url: str, dest: Path, checksum: str | None = None
+    ) -> Path:
+        """Async implementation of download with progress."""
         log.debug(f"Downloading {url} to {dest}")
 
         # Ensure parent directory exists
         dest.parent.mkdir(parents=True, exist_ok=True)
 
-        # Stream download with progress
-        with self.client.stream("GET", url) as response:
+        # Use the transport client's request method for streaming
+        try:
+            response = await self.client.request(url, "GET")
+            
             # Get total size if available
             total_size = int(response.headers.get("content-length", 0))
             downloaded = 0
 
             # Write to file and report progress
             with dest.open("wb") as f:
-                for chunk in response.iter_bytes(8192):
-                    f.write(chunk)
-                    downloaded += len(chunk)
+                # Get the content as bytes
+                content = response.content
+                if isinstance(content, bytes):
+                    f.write(content)
+                    downloaded = len(content)
                     self._report_progress(downloaded, total_size)
+                else:
+                    # If content is a stream, read it chunk by chunk
+                    chunk_size = 8192
+                    while True:
+                        chunk = content[:chunk_size] if hasattr(content, '__getitem__') else bytes()
+                        if not chunk:
+                            break
+                        f.write(chunk)
+                        downloaded += len(chunk)
+                        self._report_progress(downloaded, total_size)
+                        content = content[chunk_size:] if hasattr(content, '__getitem__') else bytes()
+
+        except Exception as e:
+            raise DownloadError(f"Download failed: {e}")
 
         # Verify checksum if provided
         if checksum:
