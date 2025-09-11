@@ -6,7 +6,8 @@
       "Bash(PYTHONPATH=src python examples/production/02_error_handling.py)",
       "Bash(PYTHONPATH=src python:*)",
       "Bash(awk:*)",
-      "Bash(PROVIDE_LOG_LEVEL=INFO PYTHONPATH=src python examples/telemetry/04_das_pattern.py)"
+      "Bash(PROVIDE_LOG_LEVEL=INFO PYTHONPATH=src python examples/telemetry/04_das_pattern.py)",
+      "Bash(PYTHONPATH=src timeout 3 python examples/tracing/02_distributed_tracing.py)"
     ],
     "deny": [],
     "ask": [],

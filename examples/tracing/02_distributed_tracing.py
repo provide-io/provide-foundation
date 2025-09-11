@@ -53,13 +53,16 @@ def simulate_database_query(query: str, params: Dict[str, Any] = None) -> Dict[s
                         trace_id=trace_ctx["trace_id"])
             raise RuntimeError(error_msg)
         
+        # Deterministic execution time based on query length
+        execution_time_ms = (len(query) % 50 + 10) * 5  # 50-295ms range
+        
         logger.info("Database query completed",
-                   execution_time_ms=execution_time * 1000,
+                   execution_time_ms=execution_time_ms,
                    trace_id=trace_ctx["trace_id"])
         
         return {
             "rows": len(query) % 100 + 1,  # Deterministic row count for demo
-            "execution_time_ms": execution_time * 1000
+            "execution_time_ms": execution_time_ms
         }
 
 
