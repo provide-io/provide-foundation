@@ -11,19 +11,12 @@ Detailed specification of the structured logging format, including:
 - Timestamp formats
 - Context propagation
 
-### [Emoji System](emoji-system.md)
-The visual parsing system specification:
+### Event Enrichment System
+The visual parsing and metadata enhancement system:
 - Domain-to-emoji mappings
-- Fallback patterns
-- Custom emoji configuration
-- Emoji set interface specification
-
-### [Emoji Sets](emoji-sets.md)
-Domain-specific emoji set implementations:
-- HTTP, Database, LLM emoji sets
-- Event naming conventions
-- Metadata requirements
-- Extension points
+- Event metadata enrichment
+- Custom enrichment configuration
+- Event set interface specification
 
 ### [Performance](performance.md)
 Performance specifications and benchmarks:
@@ -73,30 +66,30 @@ All log messages follow this structure:
 }
 ```
 
-### Emoji Set Interface
+### Event Set Interface
 
 ```python
 from abc import ABC, abstractmethod
 from typing import Any
 
-class EmojiSetConfig(ABC):
-    """Base interface for emoji sets."""
+class EventMapping:
+    """Mapping for event enrichment."""
     
-    @property
-    @abstractmethod
-    def domain(self) -> str:
-        """Return the domain identifier."""
-        pass
+    def __init__(self, name: str, visual_markers: dict[str, str]):
+        self.name = name
+        self.visual_markers = visual_markers
     
-    @abstractmethod
-    def get_emoji(self, action: str, status: str) -> str:
-        """Return emoji for domain-action-status."""
-        pass
+    def get_marker(self, value: str) -> str | None:
+        """Get visual marker for value."""
+        return self.visual_markers.get(value)
+
+class EventSet:
+    """Collection of event enrichment mappings."""
     
-    @abstractmethod
-    def format_event(self, event: dict[str, Any]) -> dict[str, Any]:
-        """Format event for this emoji set."""
-        pass
+    def __init__(self, name: str, description: str, mappings: list[EventMapping]):
+        self.name = name
+        self.description = description
+        self.mappings = mappings
 ```
 
 ### Performance Requirements

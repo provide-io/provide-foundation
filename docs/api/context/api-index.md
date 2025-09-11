@@ -335,7 +335,7 @@ if __name__ == "__main__":
 
 ## API Reference
 
-::: provide.foundation.context.core.Context
+::: provide.foundation.context.core.CLIContext
 
 ## Related Documentation
 

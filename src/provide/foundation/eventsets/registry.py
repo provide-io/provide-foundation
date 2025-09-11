@@ -50,7 +50,7 @@ class EventSetRegistry(Registry):
                 mapping_count=len(event_set.mappings),
             )
         except AlreadyExistsError:
-            logger.warning("Event set already registered", name=event_set.name)
+            logger.trace("Event set already registered", name=event_set.name)
             raise
 
     def get_event_set(self, name: str) -> EventSet:
@@ -115,7 +115,7 @@ class EventSetRegistry(Registry):
                                 name=event_set.name,
                             )
                         except AlreadyExistsError:
-                            logger.debug(
+                            logger.trace(
                                 "Event set already registered during discovery",
                                 module=module_name,
                                 name=event_set.name,
@@ -144,6 +144,7 @@ class EventSetRegistry(Registry):
 
 # Global registry instance
 _registry = EventSetRegistry()
+_discovery_completed = False
 
 
 def get_registry() -> EventSetRegistry:
@@ -163,4 +164,27 @@ def register_event_set(event_set: EventSet) -> None:
 
 def discover_event_sets() -> None:
     """Auto-discover and register all event sets."""
+    global _discovery_completed
+    if _discovery_completed:
+        logger.trace("Event set discovery already completed, skipping")
+        return
+    
+    logger.debug("Starting event set discovery")
     _registry.discover_sets()
+    _discovery_completed = True
+    logger.debug("Event set discovery completed")
+
+
+def reset_discovery_state() -> None:
+    """Reset discovery state for testing."""
+    global _discovery_completed
+    _discovery_completed = False
+    logger.trace("Event set discovery state reset")
+
+
+def clear_registry() -> None:
+    """Clear the registry for testing."""
+    global _registry, _discovery_completed
+    _registry = EventSetRegistry()
+    _discovery_completed = False
+    logger.trace("Event set registry cleared")

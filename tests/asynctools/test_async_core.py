@@ -246,8 +246,15 @@ class TestProvideWaitFor:
         async def task():
             return "test"
 
-        with pytest.raises(ValidationError, match="Timeout must be non-negative"):
-            await provide_wait_for(task(), timeout=-1.0)
+        # Create coroutine but properly handle it to avoid warning
+        coro = task()
+        try:
+            with pytest.raises(ValidationError, match="Timeout must be non-negative"):
+                await provide_wait_for(coro, timeout=-1.0)
+        finally:
+            # Close coroutine if it wasn't consumed
+            if coro.cr_frame is not None:
+                coro.close()
 
     @pytest.mark.asyncio
     async def test_provide_wait_for_zero_timeout(self):
@@ -257,8 +264,15 @@ class TestProvideWaitFor:
             return "instant"
 
         # Zero timeout should raise TimeoutError even for immediate tasks
-        with pytest.raises(asyncio.TimeoutError):
-            await provide_wait_for(instant_task(), timeout=0.0)
+        # Create coroutine and properly handle it to avoid warning
+        coro = instant_task()
+        try:
+            with pytest.raises(asyncio.TimeoutError):
+                await provide_wait_for(coro, timeout=0.0)
+        finally:
+            # Close coroutine if it wasn't consumed
+            if coro.cr_frame is not None:
+                coro.close()
 
     @pytest.mark.asyncio
     @patch("provide.foundation.asynctools.core.asyncio")
@@ -352,7 +366,14 @@ class TestProvideRun:
         async def main():
             return "test"
 
-        mock_asyncio.run.return_value = "test"
+        # Set up mock to properly handle the coroutine
+        def mock_run(coro, **kwargs):
+            # Close the coroutine to avoid warnings
+            if hasattr(coro, 'close'):
+                coro.close()
+            return "test"
+        
+        mock_asyncio.run.side_effect = mock_run
 
         result = provide_run(main, debug=True)
 
@@ -362,7 +383,7 @@ class TestProvideRun:
         # Should be called with a coroutine object (main() returns a coroutine)
         import inspect
 
-        assert inspect.iscoroutine(args[0]) or callable(args[0])
+        assert inspect.iscoroutine(args[0])
         assert kwargs["debug"] is True
 
     def test_provide_run_with_debug_false(self):

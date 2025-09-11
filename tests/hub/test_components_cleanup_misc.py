@@ -173,9 +173,11 @@ class TestMiscellaneousFunctionality:
         # Clear registries first
         reset_registry_for_tests()
         
-        # Clear the event registry
+        # Clear the event registry and reset discovery state
         event_registry = get_eventset_registry()
         event_registry.clear()
+        from provide.foundation.eventsets.registry import reset_discovery_state
+        reset_discovery_state()
 
         # Bootstrap should create default components
         bootstrap_foundation()

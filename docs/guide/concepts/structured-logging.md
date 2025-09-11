@@ -300,8 +300,7 @@ The small change from string interpolation to structured fields yields massive i
 
 ## Next Steps
 
-- 🎭 [Emoji Sets](emoji-sets.md) - Domain-specific logging interfaces
+- 🎨 [Event Enrichment](event-enrichment.md) - Visual markers and metadata
 - 🎯 [DAS Pattern](das-pattern.md) - Domain-Action-Status naming
-- 🎨 [Emoji System](emoji-system.md) - Visual log parsing
 - ⚡ [Performance](performance.md) - Optimization strategies
 - 🏠 [Back to Concepts](index.md)

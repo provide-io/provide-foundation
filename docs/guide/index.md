@@ -10,8 +10,7 @@ Comprehensive guide to using provide.foundation in your applications.
     <p>Understand the fundamental principles behind provide.foundation</p>
     <ul>
       <li><a href="concepts/structured-logging/">Structured Logging</a></li>
-      <li><a href="concepts/emoji-sets/">Emoji Sets</a></li>
-      <li><a href="concepts/emoji-system/">Emoji System</a></li>
+      <li><a href="concepts/event-enrichment/">Event Enrichment</a></li>
       <li><a href="concepts/das-pattern/">Domain-Action-Status Pattern</a></li>
     </ul>
   </div>
@@ -169,7 +168,7 @@ for item in items:
 ## Advanced Topics
 
 These advanced topics are covered in the existing guides:
-- **Custom Emoji Sets** - See [Emoji Sets Guide](concepts/emoji-sets.md)
+- **Event Enrichment** - See [Event Enrichment Guide](concepts/event-enrichment.md)
 - **Distributed Tracing** - See [Tracing Guide](tracing/index.md)  
 - **Production Strategies** - See [Performance Guide](logging/performance.md)
 - **Error Handling** - See [Advanced Logging Guide](logging/advanced.md)
