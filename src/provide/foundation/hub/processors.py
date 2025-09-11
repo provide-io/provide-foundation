@@ -26,11 +26,7 @@ def get_processor_pipeline() -> list[RegistryEntry]:
     with registry_lock:
         # Get all processors
         all_entries = list(registry)
-        processors = [
-            entry
-            for entry in all_entries
-            if entry.dimension == ComponentCategory.PROCESSOR.value
-        ]
+        processors = [entry for entry in all_entries if entry.dimension == ComponentCategory.PROCESSOR.value]
 
         # Sort by priority (highest first)
         processors.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)

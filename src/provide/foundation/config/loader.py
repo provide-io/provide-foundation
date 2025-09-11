@@ -191,9 +191,7 @@ class FileConfigLoader(ConfigLoader):
 class RuntimeConfigLoader(ConfigLoader):
     """Load configuration from environment variables."""
 
-    def __init__(
-        self, prefix: str = "", delimiter: str = "_", case_sensitive: bool = False
-    ) -> None:
+    def __init__(self, prefix: str = "", delimiter: str = "_", case_sensitive: bool = False) -> None:
         """
         Initialize environment configuration loader.
 
@@ -228,9 +226,7 @@ class RuntimeConfigLoader(ConfigLoader):
 class DictConfigLoader(ConfigLoader):
     """Load configuration from a dictionary."""
 
-    def __init__(
-        self, data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME
-    ) -> None:
+    def __init__(self, data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME) -> None:
         """
         Initialize dictionary configuration loader.
 

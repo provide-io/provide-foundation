@@ -62,13 +62,10 @@ class _LevelFilter:
     ) -> None:
         self.default_numeric_level: int = level_to_numeric_map[default_level_str]
         self.module_numeric_levels: dict[str, int] = {
-            module: level_to_numeric_map[level_str]
-            for module, level_str in module_levels.items()
+            module: level_to_numeric_map[level_str] for module, level_str in module_levels.items()
         }
         self.level_to_numeric_map = level_to_numeric_map
-        self.sorted_module_paths: list[str] = sorted(
-            self.module_numeric_levels.keys(), key=len, reverse=True
-        )
+        self.sorted_module_paths: list[str] = sorted(self.module_numeric_levels.keys(), key=len, reverse=True)
 
     def __call__(
         self, _logger: Any, _method_name: str, event_dict: structlog.types.EventDict

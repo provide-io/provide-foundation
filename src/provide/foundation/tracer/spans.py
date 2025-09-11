@@ -83,9 +83,7 @@ class Span:
         if self._otel_span and Status and StatusCode:
             try:
                 self._otel_span.set_status(Status(StatusCode.ERROR, str(error)))
-                self._otel_span.record_exception(
-                    error if isinstance(error, Exception) else Exception(error)
-                )
+                self._otel_span.record_exception(error if isinstance(error, Exception) else Exception(error))
             except Exception as e:
                 log.debug(f"🔍⚠️ Failed to set OpenTelemetry error: {e}")
 

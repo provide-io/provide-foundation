@@ -54,9 +54,7 @@ def search_by_trace_id(
     Returns:
         SearchResponse with matching logs
     """
-    sql = (
-        f"SELECT * FROM {stream} WHERE trace_id = '{trace_id}' ORDER BY _timestamp ASC"
-    )
+    sql = f"SELECT * FROM {stream} WHERE trace_id = '{trace_id}' ORDER BY _timestamp ASC"
     return search_logs(sql=sql, start_time="-24h", client=client)
 
 

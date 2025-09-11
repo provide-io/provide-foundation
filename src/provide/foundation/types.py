@@ -6,9 +6,7 @@ from typing import Literal
 
 from provide.foundation.logger.trace import TRACE_LEVEL_NAME, TRACE_LEVEL_NUM
 
-LogLevelStr = Literal[
-    "CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE", "NOTSET"
-]
+LogLevelStr = Literal["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE", "NOTSET"]
 
 _VALID_LOG_LEVEL_TUPLE: tuple[LogLevelStr, ...] = (
     "CRITICAL",

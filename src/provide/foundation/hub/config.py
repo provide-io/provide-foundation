@@ -37,9 +37,7 @@ def resolve_config_value(key: str) -> Any:
         # Get all config sources
         all_entries = list(registry)
         config_sources = [
-            entry
-            for entry in all_entries
-            if entry.dimension == ComponentCategory.CONFIG_SOURCE.value
+            entry for entry in all_entries if entry.dimension == ComponentCategory.CONFIG_SOURCE.value
         ]
 
         # Sort by priority (highest first)
@@ -68,9 +66,7 @@ def get_config_chain() -> list[RegistryEntry]:
         # Get all config sources
         all_entries = list(registry)
         config_sources = [
-            entry
-            for entry in all_entries
-            if entry.dimension == ComponentCategory.CONFIG_SOURCE.value
+            entry for entry in all_entries if entry.dimension == ComponentCategory.CONFIG_SOURCE.value
         ]
 
         # Sort by priority (highest first)
@@ -78,9 +74,7 @@ def get_config_chain() -> list[RegistryEntry]:
         return config_sources
 
 
-@with_error_handling(
-    fallback={}, context_provider=lambda: {"function": "load_all_configs"}
-)
+@with_error_handling(fallback={}, context_provider=lambda: {"function": "load_all_configs"})
 async def load_all_configs() -> dict[str, Any]:
     """Load configurations from all registered sources."""
     configs = {}
@@ -98,9 +92,7 @@ async def load_all_configs() -> dict[str, Any]:
                 if source_config:
                     configs.update(source_config)
             except Exception as e:
-                log.warning(
-                    "Config source failed to load", source=entry.name, error=str(e)
-                )
+                log.warning("Config source failed to load", source=entry.name, error=str(e))
 
     return configs
 

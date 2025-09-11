@@ -110,9 +110,7 @@ def property_mock_factory():
         Function that creates PropertyMock objects.
     """
 
-    def _create_property_mock(
-        return_value=None, side_effect=None, **kwargs
-    ) -> PropertyMock:
+    def _create_property_mock(return_value=None, side_effect=None, **kwargs) -> PropertyMock:
         """
         Create a PropertyMock.
 
@@ -124,9 +122,7 @@ def property_mock_factory():
         Returns:
             Configured PropertyMock object
         """
-        return PropertyMock(
-            return_value=return_value, side_effect=side_effect, **kwargs
-        )
+        return PropertyMock(return_value=return_value, side_effect=side_effect, **kwargs)
 
     return _create_property_mock
 

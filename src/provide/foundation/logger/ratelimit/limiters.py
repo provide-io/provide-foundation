@@ -240,9 +240,7 @@ class GlobalRateLimiter:
                 for logger_name, (rate, capacity) in per_logger_rates.items():
                     self.logger_limiters[logger_name] = SyncRateLimiter(capacity, rate)
 
-    def is_allowed(
-        self, logger_name: str, item: Any | None = None
-    ) -> tuple[bool, str | None]:
+    def is_allowed(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
         """
         Check if a log from a specific logger is allowed.
 
@@ -282,9 +280,7 @@ class GlobalRateLimiter:
         """Get comprehensive rate limiting statistics."""
         with self.lock:
             stats = {
-                "global": self.global_limiter.get_stats()
-                if self.global_limiter
-                else None,
+                "global": self.global_limiter.get_stats() if self.global_limiter else None,
                 "per_logger": {},
             }
 

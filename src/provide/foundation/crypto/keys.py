@@ -45,8 +45,7 @@ def generate_rsa_keypair(key_size: int = DEFAULT_RSA_KEY_SIZE) -> RSAKeyPair:
     """
     if key_size not in SUPPORTED_RSA_SIZES:
         raise ValueError(
-            f"Unsupported RSA key size: {key_size}. "
-            f"Supported sizes: {sorted(SUPPORTED_RSA_SIZES)}"
+            f"Unsupported RSA key size: {key_size}. Supported sizes: {sorted(SUPPORTED_RSA_SIZES)}"
         )
 
     logger.debug(f"🔑 Generating RSA key pair (size: {key_size})")
@@ -75,10 +74,7 @@ def generate_ec_keypair(curve: str = DEFAULT_ECDSA_CURVE) -> ECKeyPair:
         AttributeError: If curve name is invalid
     """
     if curve not in SUPPORTED_EC_CURVES:
-        raise ValueError(
-            f"Unsupported EC curve: {curve}. "
-            f"Supported curves: {sorted(SUPPORTED_EC_CURVES)}"
-        )
+        raise ValueError(f"Unsupported EC curve: {curve}. Supported curves: {sorted(SUPPORTED_EC_CURVES)}")
 
     logger.debug(f"🔑 Generating ECDSA key pair (curve: {curve})")
 
@@ -113,10 +109,7 @@ def generate_keypair(
     key_type_lower = key_type.lower()
 
     if key_type_lower not in SUPPORTED_KEY_TYPES:
-        raise ValueError(
-            f"Unsupported key type: {key_type}. "
-            f"Supported types: {sorted(SUPPORTED_KEY_TYPES)}"
-        )
+        raise ValueError(f"Unsupported key type: {key_type}. Supported types: {sorted(SUPPORTED_KEY_TYPES)}")
 
     match key_type_lower:
         case "rsa":
@@ -134,9 +127,7 @@ def generate_keypair(
         case "ed25519":
             # Ed25519 has fixed parameters
             if key_size is not None or curve is not None:
-                logger.warning(
-                    "🔑 Ed25519 has fixed parameters - ignoring key_size/curve"
-                )
+                logger.warning("🔑 Ed25519 has fixed parameters - ignoring key_size/curve")
             return generate_ed25519_keypair()
 
         case _:

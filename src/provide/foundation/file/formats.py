@@ -60,9 +60,7 @@ def write_json(
     path = Path(path)
 
     try:
-        content = json.dumps(
-            data, indent=indent, sort_keys=sort_keys, ensure_ascii=False
-        )
+        content = json.dumps(data, indent=indent, sort_keys=sort_keys, ensure_ascii=False)
 
         if atomic:
             atomic_write_text(path, content, encoding=encoding)

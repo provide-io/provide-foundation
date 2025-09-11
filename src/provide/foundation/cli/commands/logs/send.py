@@ -66,7 +66,15 @@ if _HAS_CLICK:
     )
     @click.pass_context
     def send_command(
-        ctx: click.Context, message: str | None, level: str, service: str | None, json_attrs: str | None, attr: tuple[str, ...], trace_id: str | None, span_id: str | None, use_otlp: bool
+        ctx: click.Context,
+        message: str | None,
+        level: str,
+        service: str | None,
+        json_attrs: str | None,
+        attr: tuple[str, ...],
+        trace_id: str | None,
+        span_id: str | None,
+        use_otlp: bool,
     ) -> int | None:
         """Send a log entry to OpenObserve.
 
@@ -88,9 +96,7 @@ if _HAS_CLICK:
         # Get message from stdin if not provided
         if not message:
             if sys.stdin.isatty():
-                click.echo(
-                    "Error: No message provided. Use -m or pipe input.", err=True
-                )
+                click.echo("Error: No message provided. Use -m or pipe input.", err=True)
                 return 1
             message = sys.stdin.read().strip()
             if not message:
@@ -111,9 +117,7 @@ if _HAS_CLICK:
         # Add key=value attributes
         for kv in attr:
             if "=" not in kv:
-                click.echo(
-                    f"Error: Invalid attribute format '{kv}'. Use key=value.", err=True
-                )
+                click.echo(f"Error: Invalid attribute format '{kv}'. Use key=value.", err=True)
                 return 1
             key, value = kv.split("=", 1)
             # Try to parse value as number
@@ -145,9 +149,7 @@ if _HAS_CLICK:
             )
 
             if success:
-                click.echo(
-                    f"✅ Log sent successfully via {'OTLP' if use_otlp else 'bulk API'}"
-                )
+                click.echo(f"✅ Log sent successfully via {'OTLP' if use_otlp else 'bulk API'}")
             else:
                 click.echo("❌ Failed to send log", err=True)
                 return 1
@@ -161,6 +163,5 @@ else:
     def send_command(*args, **kwargs):
         """Send command stub when click is not available."""
         raise ImportError(
-            "CLI commands require optional dependencies. "
-            "Install with: pip install 'provide-foundation[cli]'"
+            "CLI commands require optional dependencies. Install with: pip install 'provide-foundation[cli]'"
         )

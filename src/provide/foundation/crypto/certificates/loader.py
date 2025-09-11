@@ -85,9 +85,7 @@ def load_certificate_from_pem(
             logger.debug("📜🔑🚀 Loading private key")
             key_data = load_from_uri_or_pem(key_pem_or_uri)
 
-            loaded_priv_key = load_pem_private_key(
-                key_data.encode("utf-8"), password=None
-            )
+            loaded_priv_key = load_pem_private_key(key_data.encode("utf-8"), password=None)
             if not isinstance(
                 loaded_priv_key,
                 rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey,
@@ -108,9 +106,7 @@ def load_certificate_from_pem(
             loaded_not_valid_after = loaded_not_valid_after.replace(tzinfo=UTC)
 
         cert_public_key = x509_cert.public_key()
-        if not isinstance(
-            cert_public_key, rsa.RSAPublicKey | ec.EllipticCurvePublicKey
-        ):
+        if not isinstance(cert_public_key, rsa.RSAPublicKey | ec.EllipticCurvePublicKey):
             raise CertificateError(
                 f"Certificate's public key is of unsupported type: {type(cert_public_key)}. "
                 "Expected RSA or ECDSA public key."
@@ -133,6 +129,4 @@ def load_certificate_from_pem(
             f"📜❌ Failed to load certificate. Error: {type(e).__name__}: {e}",
             extra={"error": str(e), "trace": traceback.format_exc()},
         )
-        raise CertificateError(
-            f"Failed to initialize certificate. Original error: {type(e).__name__}"
-        ) from e
+        raise CertificateError(f"Failed to initialize certificate. Original error: {type(e).__name__}") from e

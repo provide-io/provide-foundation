@@ -48,9 +48,7 @@ def atomic_write(
 
     # Create temp file in same directory for atomic rename
     # Note: mkstemp creates files with 0o600 by default for security
-    fd, temp_path = tempfile.mkstemp(
-        dir=path.parent, prefix=f".{path.name}.", suffix=".tmp"
-    )
+    fd, temp_path = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp")
 
     try:
         with os.fdopen(fd, "wb") as f:

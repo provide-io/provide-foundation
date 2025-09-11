@@ -44,9 +44,7 @@ def parse_log_level(value: str) -> LogLevelStr:
     """
     level = value.upper()
     if level not in _VALID_LOG_LEVEL_TUPLE:
-        raise ValueError(
-            f"Invalid log level '{value}'. Valid options: {', '.join(_VALID_LOG_LEVEL_TUPLE)}"
-        )
+        raise ValueError(f"Invalid log level '{value}'. Valid options: {', '.join(_VALID_LOG_LEVEL_TUPLE)}")
     return level
 
 
@@ -188,9 +186,7 @@ def parse_foundation_log_output(value: str) -> str:
     if normalized in valid_options:
         return normalized
     else:
-        raise ValueError(
-            f"Invalid foundation log output '{value}'. Valid options: {', '.join(valid_options)}"
-        )
+        raise ValueError(f"Invalid foundation log output '{value}'. Valid options: {', '.join(valid_options)}")
 
 
 def parse_comma_list(value: str) -> list[str]:
@@ -248,9 +244,7 @@ def parse_bool_strict(value: str | bool) -> bool:
     """
     # Check type first
     if not isinstance(value, (str, bool)):
-        raise TypeError(
-            f"Boolean field requires str or bool, got {type(value).__name__}"
-        )
+        raise TypeError(f"Boolean field requires str or bool, got {type(value).__name__}")
 
     # If already a bool, return as-is
     if isinstance(value, bool):
@@ -264,9 +258,7 @@ def parse_bool_strict(value: str | bool) -> bool:
     elif value_lower in ("false", "no", "0", "off"):
         return False
     else:
-        raise ValueError(
-            f"Invalid boolean value '{value}'. Valid options: true/false, yes/no, 1/0, on/off"
-        )
+        raise ValueError(f"Invalid boolean value '{value}'. Valid options: true/false, yes/no, 1/0, on/off")
 
 
 # Temporarily remove error handling to break circular import
@@ -419,17 +411,13 @@ def validate_log_level(instance: Any, attribute: Any, value: str) -> None:
 def validate_sample_rate(instance: Any, attribute: Any, value: float) -> None:
     """Validate that a sample rate is between 0.0 and 1.0."""
     if not 0.0 <= value <= 1.0:
-        raise ValueError(
-            f"Sample rate {value} for {attribute.name} must be between 0.0 and 1.0"
-        )
+        raise ValueError(f"Sample rate {value} for {attribute.name} must be between 0.0 and 1.0")
 
 
 def validate_port(instance: Any, attribute: Any, value: int) -> None:
     """Validate that a port number is valid."""
     if not 1 <= value <= 65535:
-        raise ValueError(
-            f"Port {value} for {attribute.name} must be between 1 and 65535"
-        )
+        raise ValueError(f"Port {value} for {attribute.name} must be between 1 and 65535")
 
 
 def validate_positive(instance: Any, attribute: Any, value: float | int) -> None:

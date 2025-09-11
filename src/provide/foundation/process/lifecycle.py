@@ -188,9 +188,7 @@ class ManagedProcess:
         self._stderr_thread.start()
         plog.debug("🚀 Started stderr relay thread")
 
-    async def read_line_async(
-        self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT
-    ) -> str:
+    async def read_line_async(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
         """
         Read a line from stdout asynchronously with timeout.
 
@@ -213,9 +211,7 @@ class ManagedProcess:
         read_func = functools.partial(self._process.stdout.readline)
 
         try:
-            line_data = await asyncio.wait_for(
-                loop.run_in_executor(None, read_func), timeout=timeout
-            )
+            line_data = await asyncio.wait_for(loop.run_in_executor(None, read_func), timeout=timeout)
             # Handle both bytes and string returns from subprocess
             if isinstance(line_data, bytes):
                 return line_data.decode("utf-8", errors="replace").strip()
@@ -225,9 +221,7 @@ class ManagedProcess:
             plog.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
-    async def read_char_async(
-        self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT
-    ) -> str:
+    async def read_char_async(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
         """
         Read a single character from stdout asynchronously.
 
@@ -250,9 +244,7 @@ class ManagedProcess:
         read_func = functools.partial(self._process.stdout.read, 1)
 
         try:
-            char_data = await asyncio.wait_for(
-                loop.run_in_executor(None, read_func), timeout=timeout
-            )
+            char_data = await asyncio.wait_for(loop.run_in_executor(None, read_func), timeout=timeout)
             if not char_data:
                 return ""
             # Handle both bytes and string returns from subprocess
@@ -264,9 +256,7 @@ class ManagedProcess:
             plog.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
 
-    def terminate_gracefully(
-        self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT
-    ) -> bool:
+    def terminate_gracefully(self, timeout: float = DEFAULT_PROCESS_TERMINATE_TIMEOUT) -> bool:
         """
         Terminate the process gracefully with a timeout.
 
@@ -280,9 +270,7 @@ class ManagedProcess:
             return True
 
         if self._process.poll() is not None:
-            plog.debug(
-                "Process already terminated", returncode=self._process.returncode
-            )
+            plog.debug("Process already terminated", returncode=self._process.returncode)
             return True
 
         plog.debug("🛑 Terminating managed process gracefully", pid=self._process.pid)
@@ -427,9 +415,7 @@ async def wait_for_process_output(
                             remaining = process._process.stdout.read()
                             if remaining:
                                 if isinstance(remaining, bytes):
-                                    buffer += remaining.decode(
-                                        "utf-8", errors="replace"
-                                    )
+                                    buffer += remaining.decode("utf-8", errors="replace")
                                 else:
                                     buffer += str(remaining)
                         except Exception:
@@ -480,6 +466,4 @@ async def wait_for_process_output(
         buffer=buffer[:200],
         last_exit_code=last_exit_code,
     )
-    raise TimeoutError(
-        f"Expected pattern {expected_parts} not found within {timeout}s timeout"
-    )
+    raise TimeoutError(f"Expected pattern {expected_parts} not found within {timeout}s timeout")

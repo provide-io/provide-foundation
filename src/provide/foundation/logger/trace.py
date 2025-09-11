@@ -30,12 +30,8 @@ if not hasattr(stdlib_logging, TRACE_LEVEL_NAME):  # pragma: no cover
 
     if not hasattr(stdlib_logging.Logger, "trace"):  # pragma: no cover
         stdlib_logging.Logger.trace = trace  # type: ignore[attr-defined]
-    if stdlib_logging.root and not hasattr(
-        stdlib_logging.root, "trace"
-    ):  # pragma: no cover
-        (cast(Any, stdlib_logging.root)).trace = trace.__get__(
-            stdlib_logging.root, stdlib_logging.Logger
-        )
+    if stdlib_logging.root and not hasattr(stdlib_logging.root, "trace"):  # pragma: no cover
+        (cast(Any, stdlib_logging.root)).trace = trace.__get__(stdlib_logging.root, stdlib_logging.Logger)
 
 # Also patch PrintLogger from structlog to support trace method
 try:

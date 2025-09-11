@@ -70,10 +70,7 @@ def generate_certificate(
             case "ecdsa":
                 gen_key_type = KeyType.ECDSA
             case _:
-                raise ValueError(
-                    f"Unsupported key_type string: '{key_type}'. "
-                    "Must be 'rsa' or 'ecdsa'."
-                )
+                raise ValueError(f"Unsupported key_type string: '{key_type}'. Must be 'rsa' or 'ecdsa'.")
 
         # Configure key parameters
         gen_curve: CurveType | None = None
@@ -134,6 +131,4 @@ def generate_certificate(
             f"📜❌ Failed to generate certificate. Error: {type(e).__name__}: {e}",
             extra={"error": str(e), "trace": traceback.format_exc()},
         )
-        raise CertificateError(
-            f"Failed to initialize certificate. Original error: {type(e).__name__}"
-        ) from e
+        raise CertificateError(f"Failed to initialize certificate. Original error: {type(e).__name__}") from e

@@ -73,9 +73,7 @@ class ToolDownloader:
                 log.warning(f"Progress callback failed: {e}")
 
     @retry(max_attempts=3, base_delay=1.0)
-    def download_with_progress(
-        self, url: str, dest: Path, checksum: str | None = None
-    ) -> Path:
+    def download_with_progress(self, url: str, dest: Path, checksum: str | None = None) -> Path:
         """
         Download a file with progress reporting.
 
@@ -155,10 +153,7 @@ class ToolDownloader:
 
         with ThreadPoolExecutor(max_workers=4) as executor:
             # Submit all downloads, maintaining order with index
-            futures = [
-                executor.submit(self.download_with_progress, url, dest)
-                for url, dest in urls
-            ]
+            futures = [executor.submit(self.download_with_progress, url, dest) for url, dest in urls]
 
             # Collect results in order
             results = []
@@ -209,9 +204,7 @@ class ToolDownloader:
             fallback_funcs.append(create_mirror_func(mirror_url))
 
         # Use FallbackChain to try mirrors in order
-        chain = FallbackChain(
-            fallbacks=fallback_funcs[1:]
-        )  # All but first are fallbacks
+        chain = FallbackChain(fallbacks=fallback_funcs[1:])  # All but first are fallbacks
 
         try:
             return chain.execute(fallback_funcs[0])  # First is primary

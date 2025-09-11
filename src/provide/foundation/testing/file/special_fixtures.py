@@ -106,9 +106,7 @@ def temp_executable_file():
     """
     created_files = []
 
-    def _make_executable(
-        content: str = "#!/bin/sh\necho 'test'\n", suffix: str = ".sh"
-    ) -> Path:
+    def _make_executable(content: str = "#!/bin/sh\necho 'test'\n", suffix: str = ".sh") -> Path:
         """
         Create a temporary executable file.
 

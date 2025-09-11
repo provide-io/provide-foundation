@@ -141,9 +141,7 @@ class ToolCache:
                 log.debug(f"Invalidated cache for {key}")
         else:
             # Invalidate all versions of tool
-            keys_to_remove = [
-                k for k in self.metadata if self.metadata[k].get("tool") == tool
-            ]
+            keys_to_remove = [k for k in self.metadata if self.metadata[k].get("tool") == tool]
             for key in keys_to_remove:
                 del self.metadata[key]
                 log.debug(f"Invalidated cache for {key}")
@@ -247,9 +245,7 @@ class ToolCache:
         Returns:
             Number of entries removed.
         """
-        expired_keys = [
-            key for key, entry in self.metadata.items() if self._is_expired(entry)
-        ]
+        expired_keys = [key for key, entry in self.metadata.items() if self._is_expired(entry)]
 
         for key in expired_keys:
             del self.metadata[key]

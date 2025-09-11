@@ -110,9 +110,7 @@ class ToolRegistry:
         """
         return self.hub.registry.get(name, dimension=self.DIMENSION)
 
-    def create_tool_manager(
-        self, name: str, config: BaseConfig
-    ) -> BaseToolManager | None:
+    def create_tool_manager(self, name: str, config: BaseConfig) -> BaseToolManager | None:
         """
         Create a tool manager instance.
 

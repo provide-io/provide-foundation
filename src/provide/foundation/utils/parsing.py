@@ -171,9 +171,7 @@ def parse_typed_value(value: str, target_type: type) -> Any:
                 # Convert each item to the target type
                 return [parse_typed_value(item, item_type) for item in str_list]
             except (ValueError, TypeError) as e:
-                raise ValueError(
-                    f"Cannot convert list items to {item_type.__name__}: {e}"
-                )
+                raise ValueError(f"Cannot convert list items to {item_type.__name__}: {e}")
         else:
             # list without type parameter, return as list[str]
             return parse_list(value)

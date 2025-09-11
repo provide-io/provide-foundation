@@ -377,20 +377,14 @@ def benchmark_timer():
         @property
         def avg_time(self) -> float:
             """Get average execution time."""
-            return (
-                sum(self.measurements) / len(self.measurements)
-                if self.measurements
-                else 0.0
-            )
+            return sum(self.measurements) / len(self.measurements) if self.measurements else 0.0
 
         def assert_faster_than(self, seconds: float):
             """Assert all measurements were faster than threshold."""
             if not self.measurements:
                 raise AssertionError("No measurements taken")
             if self.max_time > seconds:
-                raise AssertionError(
-                    f"Maximum time {self.max_time:.3f}s exceeded threshold {seconds:.3f}s"
-                )
+                raise AssertionError(f"Maximum time {self.max_time:.3f}s exceeded threshold {seconds:.3f}s")
 
     return BenchmarkTimer()
 

@@ -85,9 +85,7 @@ def temp_named_file():
         if isinstance(dir, Path):
             dir = str(dir)
 
-        f = tempfile.NamedTemporaryFile(
-            mode=mode, suffix=suffix, prefix=prefix, dir=dir, delete=delete
-        )
+        f = tempfile.NamedTemporaryFile(mode=mode, suffix=suffix, prefix=prefix, dir=dir, delete=delete)
 
         if content is not None:
             if isinstance(content, str):
@@ -124,9 +122,7 @@ def temp_file_with_content():
     """
     created_files = []
 
-    def _make_file(
-        content: str | bytes, suffix: str = ".txt", encoding: str = "utf-8"
-    ) -> Path:
+    def _make_file(content: str | bytes, suffix: str = ".txt", encoding: str = "utf-8") -> Path:
         """
         Create a temporary file with content.
 
@@ -167,9 +163,7 @@ def temp_binary_file():
     """
     created_files = []
 
-    def _make_binary(
-        size: int = 1024, pattern: bytes = None, suffix: str = ".bin"
-    ) -> Path:
+    def _make_binary(size: int = 1024, pattern: bytes = None, suffix: str = ".bin") -> Path:
         """
         Create a temporary binary file.
 
@@ -225,9 +219,7 @@ def temp_csv_file():
         Returns:
             Path to created CSV file
         """
-        with tempfile.NamedTemporaryFile(
-            mode="w", suffix=suffix, delete=False, newline=""
-        ) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=suffix, delete=False, newline="") as f:
             writer = csv.writer(f)
             writer.writerow(headers)
             writer.writerows(rows)

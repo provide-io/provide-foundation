@@ -15,8 +15,7 @@ def _require_click():
     """Ensure click is available for CLI."""
     if not _HAS_CLICK:
         raise ImportError(
-            "CLI requires optional dependencies. "
-            "Install with: pip install 'provide-foundation[cli]'"
+            "CLI requires optional dependencies. Install with: pip install 'provide-foundation[cli]'"
         )
 
 

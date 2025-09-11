@@ -153,9 +153,7 @@ class TransportBase(ABC):
 
     async def stream(self, request: Request) -> AsyncIterator[bytes]:
         """Default streaming implementation (not supported)."""
-        raise NotImplementedError(
-            f"{self.__class__.__name__} does not support streaming"
-        )
+        raise NotImplementedError(f"{self.__class__.__name__} does not support streaming")
 
     async def __aenter__(self) -> "TransportBase":
         await self.connect()

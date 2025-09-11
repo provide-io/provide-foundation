@@ -206,9 +206,7 @@ class CliTestCase:
 
         for key, value in expected.items():
             assert key in output, f"Key '{key}' not in output"
-            assert output[key] == value, (
-                f"Value mismatch for '{key}': {output[key]} != {value}"
-            )
+            assert output[key] == value, f"Value mismatch for '{key}': {output[key]} != {value}"
 
 
 @pytest.fixture

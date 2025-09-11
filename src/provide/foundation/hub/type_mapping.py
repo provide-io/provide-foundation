@@ -29,9 +29,7 @@ def extract_click_type(annotation: Any) -> type:
     args = get_args(annotation)
 
     # Handle Union types (including Optional which is Union[T, None])
-    if origin is typing.Union or (
-        hasattr(types, "UnionType") and isinstance(annotation, types.UnionType)
-    ):
+    if origin is typing.Union or (hasattr(types, "UnionType") and isinstance(annotation, types.UnionType)):
         # For Python 3.10+ union syntax (str | None)
         if hasattr(annotation, "__args__"):
             args = annotation.__args__

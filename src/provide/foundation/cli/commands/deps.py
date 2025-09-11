@@ -17,8 +17,7 @@ def _require_click() -> None:
     """Ensure click is available for CLI commands."""
     if not _HAS_CLICK:
         raise ImportError(
-            "CLI commands require optional dependencies. "
-            "Install with: pip install 'provide-foundation[cli]'"
+            "CLI commands require optional dependencies. Install with: pip install 'provide-foundation[cli]'"
         )
 
 
@@ -49,12 +48,8 @@ def _deps_command_impl(quiet: bool, check: str | None) -> None:
 if _HAS_CLICK:
 
     @click.command("deps")
-    @click.option(
-        "--quiet", "-q", is_flag=True, help="Suppress output, just return exit code"
-    )
-    @click.option(
-        "--check", metavar="DEPENDENCY", help="Check specific dependency only"
-    )
+    @click.option("--quiet", "-q", is_flag=True, help="Suppress output, just return exit code")
+    @click.option("--check", metavar="DEPENDENCY", help="Check specific dependency only")
     def deps_command(quiet: bool, check: str | None) -> None:
         """Check optional dependency status.
 

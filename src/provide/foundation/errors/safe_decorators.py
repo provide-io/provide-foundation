@@ -55,9 +55,7 @@ def log_only_error_context(
                 # Log function entry if debug/trace level
                 if log_level in ("debug", "trace"):
                     log_method = getattr(logger, log_level)
-                    log_method(
-                        f"Entering {func.__name__}", function=func.__name__, **context
-                    )
+                    log_method(f"Entering {func.__name__}", function=func.__name__, **context)
 
                 try:
                     result = await func(*args, **kwargs)
@@ -97,9 +95,7 @@ def log_only_error_context(
                 # Log function entry if debug/trace level
                 if log_level in ("debug", "trace"):
                     log_method = getattr(logger, log_level)
-                    log_method(
-                        f"Entering {func.__name__}", function=func.__name__, **context
-                    )
+                    log_method(f"Entering {func.__name__}", function=func.__name__, **context)
 
                 try:
                     result = func(*args, **kwargs)

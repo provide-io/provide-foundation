@@ -73,9 +73,7 @@ class SimpleGauge:
                 self._otel_gauge.add(
                     value
                     - self._labels_values.get(
-                        ",".join(f"{k}={v}" for k, v in sorted(labels.items()))
-                        if labels
-                        else "",
+                        ",".join(f"{k}={v}" for k, v in sorted(labels.items())) if labels else "",
                         0,
                     ),
                     attributes=labels,

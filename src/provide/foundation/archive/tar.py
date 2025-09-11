@@ -134,9 +134,7 @@ class TarArchive(BaseArchive):
         except Exception as e:
             raise ArchiveError(f"Failed to list TAR contents: {e}") from e
 
-    def _add_file(
-        self, tar: tarfile.TarFile, file_path: Path, arcname: str | Path
-    ) -> None:
+    def _add_file(self, tar: tarfile.TarFile, file_path: Path, arcname: str | Path) -> None:
         """
         Add single file to TAR archive.
 

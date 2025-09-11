@@ -52,9 +52,7 @@ class Certificate:
     key_size: int = field(default=DEFAULT_RSA_KEY_SIZE, kw_only=True)
     ecdsa_curve: str = field(default=DEFAULT_CERTIFICATE_CURVE, kw_only=True)
     common_name: str = field(default="localhost", kw_only=True)
-    alt_names: list[str] | None = field(
-        default=Factory(lambda: ["localhost"]), kw_only=True
-    )
+    alt_names: list[str] | None = field(default=Factory(lambda: ["localhost"]), kw_only=True)
     organization_name: str = field(default="Default Organization", kw_only=True)
     validity_days: int = field(default=DEFAULT_CERTIFICATE_VALIDITY_DAYS, kw_only=True)
 
@@ -126,9 +124,7 @@ class Certificate:
         if not hasattr(self, "_cert"):
             return False
         try:
-            ext = self._cert.extensions.get_extension_for_oid(
-                x509.oid.ExtensionOID.BASIC_CONSTRAINTS
-            )
+            ext = self._cert.extensions.get_extension_for_oid(x509.oid.ExtensionOID.BASIC_CONSTRAINTS)
             if isinstance(ext.value, x509.BasicConstraints):
                 return ext.value.ca
             return False
@@ -265,9 +261,7 @@ class Certificate:
             is_client_cert=is_client_cert,
         )
 
-    def _validate_signature(
-        self, signed_cert: "Certificate", signing_cert: "Certificate"
-    ) -> bool:
+    def _validate_signature(self, signed_cert: "Certificate", signing_cert: "Certificate") -> bool:
         """Internal helper: Validates signature and issuer/subject match."""
         from provide.foundation.crypto.certificates.trust import (
             validate_signature_wrapper,
@@ -282,8 +276,7 @@ class Certificate:
         if not hasattr(self, "_base") or not hasattr(other, "_base"):
             return False
         eq = (
-            self._base.subject == other._base.subject
-            and self._base.serial_number == other._base.serial_number
+            self._base.subject == other._base.subject and self._base.serial_number == other._base.serial_number
         )
         return eq
 

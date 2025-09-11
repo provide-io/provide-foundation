@@ -135,12 +135,7 @@ def get_cpu_type() -> str | None:
                     if match:
                         return f"AMD Ryzen {match.group(1)}"
                 return "AMD"
-            elif (
-                "Apple" in processor
-                or "M1" in processor
-                or "M2" in processor
-                or "M3" in processor
-            ):
+            elif "Apple" in processor or "M1" in processor or "M2" in processor or "M3" in processor:
                 # Apple Silicon
                 match = re.search(r"(M\d+\w*)", processor)
                 if match:

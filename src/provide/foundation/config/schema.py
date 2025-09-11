@@ -43,9 +43,7 @@ class SchemaField:
         """
         # Check required
         if self.required and value is None:
-            raise ConfigValidationError(
-                "Field is required", field=self.name, value=value
-            )
+            raise ConfigValidationError("Field is required", field=self.name, value=value)
 
         # Skip further validation for None values
         if value is None:
@@ -61,20 +59,14 @@ class SchemaField:
 
         # Check choices
         if self.choices is not None and value not in self.choices:
-            raise ConfigValidationError(
-                f"Value must be one of {self.choices}", field=self.name, value=value
-            )
+            raise ConfigValidationError(f"Value must be one of {self.choices}", field=self.name, value=value)
 
         # Check min/max
         if self.min_value is not None and value < self.min_value:
-            raise ConfigValidationError(
-                f"Value must be >= {self.min_value}", field=self.name, value=value
-            )
+            raise ConfigValidationError(f"Value must be >= {self.min_value}", field=self.name, value=value)
 
         if self.max_value is not None and value > self.max_value:
-            raise ConfigValidationError(
-                f"Value must be <= {self.max_value}", field=self.name, value=value
-            )
+            raise ConfigValidationError(f"Value must be <= {self.max_value}", field=self.name, value=value)
 
         # Check pattern
         if self.pattern is not None and isinstance(value, str):
@@ -95,15 +87,11 @@ class SchemaField:
                 if asyncio.iscoroutine(result) or asyncio.isfuture(result):
                     result = await result
                 if not result:
-                    raise ConfigValidationError(
-                        "Custom validation failed", field=self.name, value=value
-                    )
+                    raise ConfigValidationError("Custom validation failed", field=self.name, value=value)
             except ConfigValidationError:
                 raise
             except Exception as e:
-                raise ConfigValidationError(
-                    f"Validation error: {e}", field=self.name, value=value
-                )
+                raise ConfigValidationError(f"Validation error: {e}", field=self.name, value=value)
 
 
 class ConfigSchema:

@@ -326,9 +326,7 @@ class Hub:
             >>>     cli()
         """
         if not _HAS_CLICK:
-            raise ImportError(
-                "CLI creation requires: pip install 'provide-foundation[cli]'"
-            )
+            raise ImportError("CLI creation requires: pip install 'provide-foundation[cli]'")
 
         from provide.foundation.hub.commands import create_command_group
 
@@ -435,6 +433,7 @@ def get_hub() -> Hub:
             _global_hub = Hub()
             # Bootstrap foundation components now that hub is ready
             from provide.foundation.hub.components import bootstrap_foundation
+
             bootstrap_foundation()
 
     return _global_hub

@@ -52,9 +52,7 @@ def setup_opentelemetry_metrics(config: TelemetryConfig) -> None:
 
     # Check if OpenTelemetry metrics are available
     if not _HAS_OTEL_METRICS:
-        slog.debug(
-            "📊 OpenTelemetry metrics not available (dependencies not installed)"
-        )
+        slog.debug("📊 OpenTelemetry metrics not available (dependencies not installed)")
         return
 
     slog.debug("📊🚀 Setting up OpenTelemetry metrics")
