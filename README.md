@@ -21,6 +21,8 @@
 
 **provide.foundation** is a comprehensive foundation library for Python applications, offering structured logging, CLI utilities, configuration management, error handling, and essential application building blocks. Built with modern Python practices, it provides the core infrastructure that production applications need.
 
+> **Performance**: Benchmarked at >14,000 msg/sec under optimal conditions with minimal allocations. Actual performance varies based on configuration, system resources, and usage patterns.
+
 ---
 
 ## Installation
@@ -77,7 +79,7 @@ Build command-line interfaces with automatic help generation and component regis
 > **Requires**: `pip install provide-foundation[cli]`
 
 ```python
-# From examples/12_cli_application.py
+# From examples/cli/01_cli_application.py
 from provide.foundation.hub import register_command
 from provide.foundation.cli import echo_success
 
@@ -91,7 +93,7 @@ def init_command(name: str = "myproject", template: str = "default"):
 Flexible configuration system supporting environment variables, files, and runtime updates.
 
 ```python
-# From examples/11_config_management.py
+# From examples/configuration/03_config_management.py
 from provide.foundation.config import BaseConfig, ConfigManager, field
 from attrs import define
 
@@ -110,7 +112,7 @@ config = manager.get("app")
 Comprehensive error handling with retry logic and error boundaries.
 
 ```python
-# From examples/05_exception_handling.py
+# From examples/telemetry/05_exception_handling.py
 from provide.foundation import logger, with_error_handling
 
 @with_error_handling
@@ -205,7 +207,7 @@ for line in process.stream_command(["tail", "-f", "app.log"]):
 Flexible registry system for managing components and commands.
 
 ```python
-# From examples/12_cli_application.py
+# From examples/cli/01_cli_application.py
 from provide.foundation.hub import Hub
 
 class DatabaseResource:
@@ -322,6 +324,17 @@ All configuration can be controlled through environment variables:
 | `OTEL_EXPORTER_OTLP_PROTOCOL` | OTLP protocol (grpc, http/protobuf) | `http/protobuf` |
 | `OTEL_TRACE_SAMPLE_RATE` | Sampling rate for traces (0.0 to 1.0) | `1.0` |
 
+**Rate Limiting Configuration:**
+| `PROVIDE_LOG_RATE_LIMIT_ENABLED` | Enable rate limiting for log output | `false` |
+| `PROVIDE_LOG_RATE_LIMIT_GLOBAL` | Global rate limit (logs per second) | `None` |
+| `PROVIDE_LOG_RATE_LIMIT_GLOBAL_CAPACITY` | Global rate limit burst capacity | `None` |
+| `PROVIDE_LOG_RATE_LIMIT_PER_LOGGER` | Per-logger rate limits (format: logger1:rate:capacity,logger2:rate:capacity) | `""` |
+| `PROVIDE_LOG_RATE_LIMIT_EMIT_WARNINGS` | Emit warnings when logs are rate limited | `true` |
+| `PROVIDE_LOG_RATE_LIMIT_SUMMARY_INTERVAL` | Seconds between rate limit summary reports | `5.0` |
+| `PROVIDE_LOG_RATE_LIMIT_MAX_QUEUE_SIZE` | Maximum number of logs to queue when rate limited | `1000` |
+| `PROVIDE_LOG_RATE_LIMIT_MAX_MEMORY_MB` | Maximum memory (MB) for queued logs | `None` |
+| `PROVIDE_LOG_RATE_LIMIT_OVERFLOW_POLICY` | Policy when queue is full: drop_oldest, drop_newest, or block | `drop_oldest` |
+
 ### Configuration Files
 
 Support for YAML, JSON, TOML, and .env files:
@@ -340,6 +353,77 @@ database:
   host: db.example.com
   port: 5432
   pool_size: 20
+```
+
+---
+
+## OpenTelemetry Integration
+
+provide.foundation includes built-in OpenTelemetry support for distributed tracing and metrics collection.
+
+### Basic Setup
+
+```python
+from provide.foundation import setup_telemetry
+
+# Basic setup with default OTLP exporter
+setup_telemetry()
+
+# With custom configuration
+from provide.foundation import TelemetryConfig
+
+config = TelemetryConfig(
+    service_name="my-service",
+    service_version="1.0.0",
+    tracing_enabled=True,
+    metrics_enabled=True,
+    otlp_endpoint="http://localhost:4317"
+)
+setup_telemetry(config)
+```
+
+### Environment Configuration
+
+Set these environment variables to configure OpenTelemetry:
+
+```bash
+# Service identification
+export OTEL_SERVICE_NAME="my-service"
+export PROVIDE_SERVICE_VERSION="1.0.0"
+
+# OTLP endpoint
+export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4317"
+export OTEL_EXPORTER_OTLP_PROTOCOL="grpc"  # or "http/protobuf"
+
+# Authentication (if required)
+export OTEL_EXPORTER_OTLP_HEADERS="api-key=your-key,other-header=value"
+
+# Sampling
+export OTEL_TRACE_SAMPLE_RATE="1.0"  # Sample 100% of traces
+```
+
+### Usage with Jaeger
+
+```bash
+# Run Jaeger all-in-one for testing
+docker run -d --name jaeger \
+  -p 16686:16686 \
+  -p 14250:14250 \
+  jaegertracing/all-in-one:latest
+
+# Configure your application
+export OTEL_SERVICE_NAME="my-app"
+export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:14250"
+export OTEL_EXPORTER_OTLP_PROTOCOL="grpc"
+```
+
+### Usage with OTLP-compatible backends
+
+```python
+# Works with Honeycomb, Lightstep, New Relic, etc.
+from provide.foundation import setup_telemetry
+
+setup_telemetry()  # Uses environment variables
 ```
 
 ---

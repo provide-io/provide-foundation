@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# examples/15_distributed_tracing.py
+# examples/tracing/02_distributed_tracing.py
 #
 """
 Example demonstrating Foundation's built-in distributed tracing capabilities.

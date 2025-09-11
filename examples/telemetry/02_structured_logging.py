@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# examples/01_quick_start.py
+# examples/telemetry/02_structured_logging.py
 """
 Quick Start Example - Structured Logging with Full Setup
 
@@ -16,10 +16,10 @@ Requirements:
     pip install provide-foundation                 # Basic logging only
 
 Usage:
-    python examples/01_quick_start.py
+    python examples/telemetry/02_structured_logging.py
     
     # Or with custom log level via environment
-    PROVIDE_LOG_LEVEL=ERROR python examples/01_quick_start.py
+    PROVIDE_LOG_LEVEL=ERROR python examples/telemetry/02_structured_logging.py
 
 Expected output:
     Colored, emoji-prefixed log messages with optional tracing/metrics setup.

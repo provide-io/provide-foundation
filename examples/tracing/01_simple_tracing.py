@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# examples/16_simple_tracing.py
+# examples/tracing/01_simple_tracing.py
 #
 """
 Simple example showing basic tracing with Foundation.

@@ -13,7 +13,13 @@
       "Bash(PYTHONPATH=src timeout 2 python examples/telemetry/03_named_loggers.py)",
       "Bash(/dev/null)",
       "Bash(PYTHONPATH=src timeout 2 python examples/async/01_async_usage.py)",
-      "Bash(PYTHONPATH=src timeout 2 python examples/integration/01a_basic_task_queue.py)"
+      "Bash(PYTHONPATH=src timeout 2 python examples/integration/01a_basic_task_queue.py)",
+      "Bash(PYTHONPATH=src timeout 10 python examples/integration/01_celery_integration.py --demo)",
+      "Bash(pip install:*)",
+      "Bash(PYTHONPATH=src timeout 15 python examples/integration/01_celery_integration.py --demo)",
+      "Bash(timeout:*)",
+      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/flavorpack/workenv/wrkenv_darwin_arm64/lib/python3.11/site-packages:/Users/tim/code/gh/provide-io/provide-foundation/src python -c \"import celery; print(''Celery version:'', celery.__version__)\")",
+      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/flavorpack/workenv/wrkenv_darwin_arm64/lib/python3.11/site-packages:/Users/tim/code/gh/provide-io/provide-foundation/src timeout 15 python examples/integration/01_celery_integration.py --demo)"
     ],
     "deny": [],
     "ask": [],
