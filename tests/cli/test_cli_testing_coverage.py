@@ -155,32 +155,39 @@ class TestTempConfigFile:
         """Test temp_config_file with TOML dict content using tomli_w."""
         config_data = {"key1": "value1", "key2": 42}
 
-        with patch("builtins.__import__") as mock_import:
-            mock_tomli_w = Mock()
+        with patch.dict("sys.modules", {"tomli_w": Mock()}):
+            import sys
+            mock_tomli_w = sys.modules["tomli_w"]
             # Mock dumps method to return a proper TOML string
             mock_tomli_w.dumps.return_value = 'key1 = "value1"\nkey2 = 42\n'
-            mock_import.return_value = mock_tomli_w
 
             with temp_config_file(config_data, "toml") as config_path:
                 assert config_path.exists()
                 assert config_path.suffix == ".toml"
+                
+                # Verify content was written
+                content = config_path.read_text()
+                assert 'key1 = "value1"' in content
+                assert 'key2 = 42' in content
 
     def test_temp_config_file_toml_dict_fallback(self):
         """Test temp_config_file with TOML dict content using fallback."""
         config_data = {"string_key": "value1", "int_key": 42, "bool_key": True}
 
-        with patch("builtins.__import__", side_effect=ImportError):
-            with temp_config_file(config_data, "toml") as config_path:
-                assert config_path.exists()
-                assert config_path.suffix == ".toml"
+        # Mock only the tomli_w import to fail
+        with patch.dict("sys.modules", {"tomli_w": None}):
+            with patch("provide.foundation.cli.testing.import_module", side_effect=ImportError("No module named 'tomli_w'")):
+                with temp_config_file(config_data, "toml") as config_path:
+                    assert config_path.exists()
+                    assert config_path.suffix == ".toml"
 
-                with open(config_path) as f:
-                    content = f.read()
+                    with open(config_path) as f:
+                        content = f.read()
 
-                # Check fallback format
-                assert 'string_key = "value1"' in content
-                assert "int_key = 42" in content
-                assert "bool_key = True" in content
+                    # Check fallback format
+                    assert 'string_key = "value1"' in content
+                    assert "int_key = 42" in content
+                    assert "bool_key = True" in content
 
     def test_temp_config_file_yaml_dict_with_yaml(self):
         """Test temp_config_file with YAML dict content using PyYAML."""
