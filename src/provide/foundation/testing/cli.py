@@ -9,7 +9,6 @@ from contextlib import contextmanager
 import json
 import os
 from pathlib import Path
-import tempfile
 from typing import Any
 
 import click
@@ -17,6 +16,7 @@ from click.testing import CliRunner
 import pytest
 
 from provide.foundation.context import CLIContext
+from provide.foundation.file import temp_file as foundation_temp_file
 from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
@@ -94,39 +94,34 @@ def temp_config_file(
     """
     suffix = f".{format}"
 
-    with tempfile.NamedTemporaryFile(
-        mode="w",
-        suffix=suffix,
-        delete=False,
-    ) as f:
-        if isinstance(content, dict):
-            if format == "json":
-                json.dump(content, f, indent=2)
-            elif format == "toml":
-                try:
-                    import tomli_w
+    with foundation_temp_file(suffix=suffix, text=True, cleanup=False) as config_path:
+        with open(config_path, 'w') as f:
+            if isinstance(content, dict):
+                if format == "json":
+                    json.dump(content, f, indent=2)
+                elif format == "toml":
+                    try:
+                        import tomli_w
 
-                    # tomli_w needs the content as a string, not written to file handle
-                    toml_content = tomli_w.dumps(content)
-                    f.write(toml_content)
-                except ImportError:
-                    # Fall back to manual formatting
-                    for key, value in content.items():
-                        if isinstance(value, str):
-                            f.write(f'{key} = "{value}"\n')
-                        else:
-                            f.write(f"{key} = {value}\n")
-            elif format == "yaml":
-                try:
-                    import yaml
+                        # tomli_w needs the content as a string, not written to file handle
+                        toml_content = tomli_w.dumps(content)
+                        f.write(toml_content)
+                    except ImportError:
+                        # Fall back to manual formatting
+                        for key, value in content.items():
+                            if isinstance(value, str):
+                                f.write(f'{key} = "{value}"\n')
+                            else:
+                                f.write(f"{key} = {value}\n")
+                elif format == "yaml":
+                    try:
+                        import yaml
 
-                    yaml.safe_dump(content, f)
-                except ImportError:
-                    raise ImportError("PyYAML required for YAML testing")
-        else:
-            f.write(content)
-
-        config_path = Path(f.name)
+                        yaml.safe_dump(content, f)
+                    except ImportError:
+                        raise ImportError("PyYAML required for YAML testing")
+            else:
+                f.write(content)
 
     try:
         yield config_path
@@ -186,13 +181,8 @@ class CliTestCase:
 
     def create_temp_file(self, content: str = "", suffix: str = "") -> Path:
         """Create a temporary file that will be cleaned up."""
-        with tempfile.NamedTemporaryFile(
-            mode="w",
-            suffix=suffix,
-            delete=False,
-        ) as f:
-            f.write(content)
-            path = Path(f.name)
+        with foundation_temp_file(suffix=suffix, text=True, cleanup=False) as path:
+            path.write_text(content)
 
         self.temp_files.append(path)
         return path
