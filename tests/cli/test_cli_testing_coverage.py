@@ -3,6 +3,7 @@
 import json
 import os
 from pathlib import Path
+import sys
 import tempfile
 from unittest.mock import Mock, patch
 
@@ -155,12 +156,10 @@ class TestTempConfigFile:
         """Test temp_config_file with TOML dict content using tomli_w."""
         config_data = {"key1": "value1", "key2": 42}
 
-        with patch.dict("sys.modules", {"tomli_w": Mock()}):
-            import sys
-            mock_tomli_w = sys.modules["tomli_w"]
-            # Mock dumps method to return a proper TOML string
-            mock_tomli_w.dumps.return_value = 'key1 = "value1"\nkey2 = 42\n'
-
+        mock_tomli_w = Mock()
+        mock_tomli_w.dumps.return_value = 'key1 = "value1"\nkey2 = 42\n'
+        
+        with patch.dict("sys.modules", {"tomli_w": mock_tomli_w}):
             with temp_config_file(config_data, "toml") as config_path:
                 assert config_path.exists()
                 assert config_path.suffix == ".toml"
@@ -174,41 +173,58 @@ class TestTempConfigFile:
         """Test temp_config_file with TOML dict content using fallback."""
         config_data = {"string_key": "value1", "int_key": 42, "bool_key": True}
 
-        # Mock only the tomli_w import to fail
-        with patch.dict("sys.modules", {"tomli_w": None}):
-            with patch("provide.foundation.cli.testing.import_module", side_effect=ImportError("No module named 'tomli_w'")):
-                with temp_config_file(config_data, "toml") as config_path:
-                    assert config_path.exists()
-                    assert config_path.suffix == ".toml"
+        # Remove tomli_w from sys.modules to simulate it not being installed
+        import sys
+        tomli_w_backup = sys.modules.pop('tomli_w', None)
+        try:
+            with temp_config_file(config_data, "toml") as config_path:
+                assert config_path.exists()
+                assert config_path.suffix == ".toml"
 
-                    with open(config_path) as f:
-                        content = f.read()
+                with open(config_path) as f:
+                    content = f.read()
 
-                    # Check fallback format
-                    assert 'string_key = "value1"' in content
-                    assert "int_key = 42" in content
-                    assert "bool_key = True" in content
+                # Check fallback format
+                assert 'string_key = "value1"' in content
+                assert "int_key = 42" in content
+                assert "bool_key = True" in content
+        finally:
+            if tomli_w_backup is not None:
+                sys.modules['tomli_w'] = tomli_w_backup
 
     def test_temp_config_file_yaml_dict_with_yaml(self):
         """Test temp_config_file with YAML dict content using PyYAML."""
         config_data = {"key1": "value1", "key2": [1, 2, 3]}
 
-        with patch("builtins.__import__") as mock_import:
-            mock_yaml = Mock()
-            mock_import.return_value = mock_yaml
-
+        mock_yaml = Mock()
+        # Mock safe_dump to write something
+        def mock_safe_dump(data, file):
+            file.write("key1: value1\nkey2:\n- 1\n- 2\n- 3\n")
+        mock_yaml.safe_dump = mock_safe_dump
+        
+        with patch.dict("sys.modules", {"yaml": mock_yaml}):
             with temp_config_file(config_data, "yaml") as config_path:
                 assert config_path.exists()
                 assert config_path.suffix == ".yaml"
+                
+                # Verify some content was written
+                content = config_path.read_text()
+                assert len(content) > 0
 
     def test_temp_config_file_yaml_dict_no_yaml_import_error(self):
         """Test temp_config_file with YAML dict content raises ImportError without PyYAML."""
         config_data = {"key1": "value1"}
 
-        with patch("builtins.__import__", side_effect=ImportError):
+        # Remove yaml from sys.modules to simulate it not being installed
+        import sys
+        yaml_backup = sys.modules.pop('yaml', None)
+        try:
             with pytest.raises(ImportError, match="PyYAML required for YAML testing"):
                 with temp_config_file(config_data, "yaml") as config_path:
                     pass
+        finally:
+            if yaml_backup is not None:
+                sys.modules['yaml'] = yaml_backup
 
     def test_temp_config_file_cleanup_on_exception(self):
         """Test temp_config_file cleans up file even on exception."""
