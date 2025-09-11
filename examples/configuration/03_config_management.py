@@ -56,7 +56,7 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from attrs import define
+# Using Foundation's configuration system (which uses attrs internally)
 
 # Import using the new simplified imports
 from provide.foundation import logger
@@ -77,7 +77,6 @@ from provide.foundation.config import (
 
 
 # Example 1: Simple configuration class
-@define
 class AppConfig(BaseConfig):
     """Application configuration."""
 
@@ -93,7 +92,6 @@ class AppConfig(BaseConfig):
 
 
 # Example 2: Environment-aware configuration
-@define
 class DatabaseConfig(RuntimeConfig):
     """Database configuration that loads from environment."""
 
@@ -124,7 +122,6 @@ class DatabaseConfig(RuntimeConfig):
 
 
 # Example 3: Complex nested configuration
-@define
 class ServerConfig(BaseConfig):
     """Server configuration with nested components."""
 
@@ -137,7 +134,6 @@ class ServerConfig(BaseConfig):
     )
 
 
-@define
 class FullConfig(RuntimeConfig):
     """Complete application configuration."""
 
