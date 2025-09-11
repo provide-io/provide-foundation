@@ -19,8 +19,8 @@ class TestConfigSchemaComprehensive:
 
     def test_init_with_fields(self):
         """Test ConfigSchema initialization with fields."""
-        field1 = SchemaField(name="field1", type=str)
-        field2 = SchemaField(name="field2", type=int)
+        field1 = SchemaField(name="field1", field_type=str)
+        field2 = SchemaField(name="field2", field_type=int)
 
         schema = ConfigSchema([field1, field2])
 
@@ -40,7 +40,7 @@ class TestConfigSchemaComprehensive:
     def test_add_field(self):
         """Test adding field to schema."""
         schema = ConfigSchema()
-        field_obj = SchemaField(name="new_field", type=str)
+        field_obj = SchemaField(name="new_field", field_type=str)
 
         schema.add_field(field_obj)
 
@@ -62,8 +62,8 @@ class TestConfigSchemaComprehensive:
     @pytest.mark.asyncio
     async def test_validate_all_required_fields_present(self):
         """Test validation passes when all required fields present."""
-        required_field = SchemaField(name="required_field", required=True, type=str)
-        optional_field = SchemaField(name="optional_field", required=False, type=int)
+        required_field = SchemaField(name="required_field", required=True, field_type=str)
+        optional_field = SchemaField(name="optional_field", required=False, field_type=int)
         schema = ConfigSchema([required_field, optional_field])
 
         data = {"required_field": "value"}  # Optional field missing but that's OK
@@ -74,7 +74,7 @@ class TestConfigSchemaComprehensive:
     @pytest.mark.asyncio
     async def test_validate_field_validation_error(self):
         """Test validation propagates field validation errors."""
-        field_obj = SchemaField(name="test_field", type=int)
+        field_obj = SchemaField(name="test_field", field_type=int)
         schema = ConfigSchema([field_obj])
 
         data = {"test_field": "not_an_int"}
@@ -85,7 +85,7 @@ class TestConfigSchemaComprehensive:
     @pytest.mark.asyncio
     async def test_validate_unknown_fields_ignored(self):
         """Test validation ignores unknown fields."""
-        field_obj = SchemaField(name="known_field", type=str)
+        field_obj = SchemaField(name="known_field", field_type=str)
         schema = ConfigSchema([field_obj])
 
         data = {"known_field": "value", "unknown_field": "ignored"}
@@ -95,7 +95,7 @@ class TestConfigSchemaComprehensive:
 
     def test_apply_defaults_no_defaults(self):
         """Test apply_defaults with no default values."""
-        field_obj = SchemaField(name="test_field", type=str)
+        field_obj = SchemaField(name="test_field", field_type=str)
         schema = ConfigSchema([field_obj])
 
         data = {"test_field": "value"}
@@ -106,8 +106,8 @@ class TestConfigSchemaComprehensive:
 
     def test_apply_defaults_with_defaults(self):
         """Test apply_defaults applies missing default values."""
-        field1 = SchemaField(name="field1", type=str, default="default1")
-        field2 = SchemaField(name="field2", type=int, default=42)
+        field1 = SchemaField(name="field1", field_type=str, default="default1")
+        field2 = SchemaField(name="field2", field_type=int, default=42)
         schema = ConfigSchema([field1, field2])
 
         data = {"field1": "custom_value"}  # field2 missing
@@ -117,7 +117,7 @@ class TestConfigSchemaComprehensive:
 
     def test_apply_defaults_existing_values_preserved(self):
         """Test apply_defaults doesn't overwrite existing values."""
-        field_obj = SchemaField(name="test_field", type=str, default="default_value")
+        field_obj = SchemaField(name="test_field", field_type=str, default="default_value")
         schema = ConfigSchema([field_obj])
 
         data = {"test_field": "existing_value"}
@@ -127,7 +127,7 @@ class TestConfigSchemaComprehensive:
 
     def test_apply_defaults_none_default_ignored(self):
         """Test apply_defaults ignores None default values."""
-        field_obj = SchemaField(name="test_field", type=str, default=None)
+        field_obj = SchemaField(name="test_field", field_type=str, default=None)
         schema = ConfigSchema([field_obj])
 
         data = {}
@@ -137,8 +137,8 @@ class TestConfigSchemaComprehensive:
 
     def test_filter_extra_fields(self):
         """Test filter_extra_fields removes unknown fields."""
-        field1 = SchemaField(name="known_field1", type=str)
-        field2 = SchemaField(name="known_field2", type=int)
+        field1 = SchemaField(name="known_field1", field_type=str)
+        field2 = SchemaField(name="known_field2", field_type=int)
         schema = ConfigSchema([field1, field2])
 
         data = {
@@ -180,7 +180,7 @@ class TestConfigSchemaComprehensive:
 
         name_field = schema._field_map["name"]
         assert name_field.name == "name"
-        assert name_field.type == str
+        assert name_field.field_type == str
         assert name_field.default == "test"
 
     def test_from_config_class_with_metadata(self):
@@ -212,7 +212,7 @@ class TestConfigSchemaComprehensive:
 
         assert field_obj.required is True
         assert field_obj.name == "required_field"
-        assert field_obj.type == str
+        assert field_obj.field_type == str
 
     def test_attr_to_schema_field_optional_with_default(self):
         """Test _attr_to_schema_field optional field with default."""
@@ -253,7 +253,7 @@ class TestConfigSchemaComprehensive:
 
         field_obj = ConfigSchema._attr_to_schema_field(attr)
 
-        assert field_obj.type is None
+        assert field_obj.field_type is None
 
 
 class TestValidateSchema:
@@ -268,7 +268,7 @@ class TestValidateSchema:
             name: str = field(default="test")
 
         config = TestConfig(name="valid_name")
-        schema = ConfigSchema([SchemaField(name="name", type=str)])
+        schema = ConfigSchema([SchemaField(name="name", field_type=str)])
 
         # Should not raise
         await validate_schema(config, schema)
@@ -280,7 +280,7 @@ class TestValidateSchema:
         mock_config = Mock(spec=BaseConfig)
         mock_config.to_dict = Mock(return_value={"name": 123})  # Wrong type
 
-        schema = ConfigSchema([SchemaField(name="name", type=str)])
+        schema = ConfigSchema([SchemaField(name="name", field_type=str)])
 
         with pytest.raises(ConfigValidationError, match="Expected type str"):
             await validate_schema(mock_config, schema)
