@@ -2,7 +2,7 @@
 
 import tempfile
 from pathlib import Path
-from typing import Callable, Optional
+from typing import Callable
 
 from attrs import define, field
 
