@@ -42,6 +42,7 @@ provide.foundation has optional feature sets that require additional dependencie
 | **Basic logging** | `pip install provide-foundation` | Core logging functionality |
 | **CLI framework** | `pip install provide-foundation[cli]` | Command-line interface features |
 | **Cryptography** | `pip install provide-foundation[crypto]` | Hash functions, digital signatures, certificates |
+| **HTTP Transport** | `pip install provide-foundation[transport]` | HTTP client utilities and transport features |
 | **OpenTelemetry** | `pip install provide-foundation[opentelemetry]` | Distributed tracing and metrics |
 | **All features** | `pip install provide-foundation[all]` | Everything above |
 
@@ -383,19 +384,20 @@ asyncio.run(process_items(items))
 
 Complete working examples are available in the [examples/](examples/) directory:
 
-- `00_simple_start.py` - Zero-setup logging (base install)
-- `01_quick_start.py` - Full telemetry setup (requires [opentelemetry])
-- `02_custom_configuration.py` - Custom telemetry configuration
-- `03_named_loggers.py` - Module-specific loggers
-- `04_das_logging.py` - Domain-Action-Status pattern
-- `05_exception_handling.py` - Error handling patterns
-- `06_trace_logging.py` - Distributed tracing
-- `07_module_filtering.py` - Log filtering by module
-- `08_env_variables_config.py` - Environment-based config
-- `09_async_usage.py` - Async logging patterns
-- `10_production_patterns.py` - Production best practices
-- `11_config_management.py` - Complete configuration system
-- `12_cli_application.py` - Full CLI application example
+- `examples/telemetry/01_basic_logging.py` - Zero-setup logging (base install)
+- `examples/telemetry/02_structured_logging.py` - Structured logging with context
+- `examples/telemetry/03_named_loggers.py` - Module-specific loggers
+- `examples/telemetry/04_das_pattern.py` - Domain-Action-Status pattern
+- `examples/telemetry/05_exception_handling.py` - Error handling patterns
+- `examples/telemetry/06_trace_logging.py` - Distributed tracing
+- `examples/telemetry/07_module_filtering.py` - Log filtering by module
+- `examples/configuration/02_env_variables.py` - Environment-based config
+- `examples/async/01_async_usage.py` - Async logging patterns
+- `examples/production/01_production_patterns.py` - Production best practices
+- `examples/configuration/03_config_management.py` - Complete configuration system
+- `examples/cli/01_cli_application.py` - Full CLI application example
+- `examples/tracing/01_simple_tracing.py` - OpenTelemetry tracing setup
+- `examples/tracing/02_distributed_tracing.py` - Distributed tracing patterns
 
 ---
 
