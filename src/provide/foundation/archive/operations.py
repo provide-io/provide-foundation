@@ -1,7 +1,6 @@
 """Archive operation chains and helpers."""
 
 from pathlib import Path
-import tempfile
 
 from attrs import define, field
 
@@ -10,7 +9,7 @@ from provide.foundation.archive.bzip2 import Bzip2Compressor
 from provide.foundation.archive.gzip import GzipCompressor
 from provide.foundation.archive.tar import TarArchive
 from provide.foundation.archive.zip import ZipArchive
-from provide.foundation.file import ensure_parent_dir
+from provide.foundation.file import ensure_parent_dir, temp_file
 from provide.foundation.file.safe import safe_delete
 from provide.foundation.logger import get_logger
 
@@ -54,9 +53,9 @@ class OperationChain:
                 else:
                     # Intermediate operation, use temp file
                     suffix = self._get_suffix_for_operation(op)
-                    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as temp:
-                        temp_path = temp.name
-                    next_output = Path(temp_path)
+                    # Use Foundation's temp_file with cleanup=False so we manage it
+                    with temp_file(suffix=suffix, cleanup=False) as temp_path:
+                        next_output = temp_path
                     temp_files.append(next_output)
 
                 # Execute operation
