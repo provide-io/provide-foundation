@@ -175,7 +175,8 @@ class TestToolInstaller:
             # Create file with unsafe path
             info = tarfile.TarInfo("../../../etc/passwd")
             info.size = 13
-            tf.addfile(info, fileobj=tempfile.BytesIO(b"unsafe content"))
+            from io import BytesIO
+            tf.addfile(info, fileobj=BytesIO(b"unsafe content"))
         
         dest_dir = temp_dir / "extracted"
         
@@ -200,7 +201,8 @@ class TestToolInstaller:
             with tarfile.open(tar_path, mode) as tf:
                 info = tarfile.TarInfo("test.txt")
                 info.size = len(content)
-                tf.addfile(info, fileobj=tempfile.BytesIO(content.encode()))
+                from io import BytesIO
+                tf.addfile(info, fileobj=BytesIO(content.encode()))
             
             installer.extract_tar(tar_path, dest_dir)
             assert (dest_dir / "test.txt").exists()
@@ -349,7 +351,8 @@ class TestToolInstaller:
         
         latest_link = install_dir.parent / "latest"
         assert latest_link.is_symlink()
-        assert latest_link.resolve() == install_dir
+        # Use samefile to compare since resolve() may add /private prefix on macOS
+        assert latest_link.resolve().samefile(install_dir)
 
     @pytest.mark.skipif(platform.system() == "Windows", reason="Symlink test")
     def test_create_symlinks_replaces_existing(self, installer, temp_dir, sample_metadata):
@@ -372,7 +375,7 @@ class TestToolInstaller:
         installer.create_symlinks(new_dir, sample_metadata)
         
         # Should point to new version
-        assert latest_link.resolve() == new_dir
+        assert latest_link.resolve().samefile(new_dir)
 
     def test_install_zip_full_workflow(self, installer, sample_zip, temp_dir, sample_metadata):
         """Test complete installation workflow for ZIP file."""
