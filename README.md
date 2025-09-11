@@ -538,6 +538,7 @@ Complete working examples are available in the [examples/](examples/) directory:
 - `examples/cli/01_cli_application.py` - Full CLI application example
 - `examples/tracing/01_simple_tracing.py` - OpenTelemetry tracing setup
 - `examples/tracing/02_distributed_tracing.py` - Distributed tracing patterns
+- `examples/integration/celery/` - Celery task processing integration (requires `pip install celery`)
 
 ---
 
