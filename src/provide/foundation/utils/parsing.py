@@ -5,8 +5,6 @@ Provides utilities for converting string values (from environment variables,
 config files, CLI args, etc.) to proper Python types based on type hints.
 """
 
-from __future__ import annotations
-
 from typing import Any, TypeVar, get_args, get_origin
 
 T = TypeVar("T")
