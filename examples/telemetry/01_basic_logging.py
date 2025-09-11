@@ -12,6 +12,9 @@ Usage:
 
 Expected output:
     Colored, emoji-prefixed log messages with structured data.
+    
+To see INFO-level messages:
+    PROVIDE_LOG_LEVEL=INFO python examples/telemetry/01_basic_logging.py
 """
 
 from pathlib import Path

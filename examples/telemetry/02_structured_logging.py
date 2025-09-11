@@ -38,6 +38,7 @@ if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
 from provide.foundation import logger, pout, setup_telemetry  # noqa: E402
+from provide.foundation.logger.config import TelemetryConfig, LoggingConfig  # noqa: E402
 
 
 def example_1_quick_start() -> None:
@@ -56,9 +57,13 @@ def example_1_quick_start() -> None:
     pout(" Note: If OpenTelemetry dependencies are missing, tracing/metrics are disabled.")
     pout("=" * 60)
 
-    # Initialize with defaults (or environment variables if set)
+    # Initialize with INFO level for better visibility in examples
     # This sets up logging + optional tracing/metrics if dependencies available
-    setup_telemetry()
+    setup_telemetry(
+        TelemetryConfig(
+            logging=LoggingConfig(default_level="INFO")
+        )
+    )
 
     # Start logging immediately
     logger.info("Application started", version="1.0.0", component="main_app")
