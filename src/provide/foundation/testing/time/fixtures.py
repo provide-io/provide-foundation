@@ -7,7 +7,7 @@ across the provide-io ecosystem.
 
 import time
 import datetime
-from typing import Any, Callable, Optional
+from typing import Any, Callable
 from collections.abc import Generator
 from unittest.mock import Mock, patch
 
@@ -23,7 +23,7 @@ def freeze_time():
         Function that freezes time and returns a context manager.
     """
     class FrozenTime:
-        def __init__(self, frozen_time: Optional[datetime.datetime] = None):
+        def __init__(self, frozen_time: datetime.datetime | None = None):
             self.frozen_time = frozen_time or datetime.datetime.now()
             self.original_time = time.time
             self.original_datetime = datetime.datetime
@@ -56,7 +56,7 @@ def freeze_time():
                 if hasattr(p, 'return_value'):
                     p.return_value = self.frozen_time.timestamp()
     
-    def _freeze(at: Optional[datetime.datetime] = None) -> FrozenTime:
+    def _freeze(at: datetime.datetime | None = None) -> FrozenTime:
         """
         Freeze time at a specific point.
         
@@ -134,7 +134,7 @@ def time_machine():
             self.patches = []
             self.is_frozen = False
         
-        def freeze(self, at: Optional[float] = None):
+        def freeze(self, at: float | None = None):
             """Freeze time at a specific timestamp."""
             self.is_frozen = True
             self.current_time = at or time.time()

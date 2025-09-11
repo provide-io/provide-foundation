@@ -100,7 +100,23 @@ uv publish                      # Publish to PyPI
 - use async in pytests where appropriate.
 - no legacy implementation is needed. any refactoring will *replace* the logic. no migration. and the tests must the same as before. no migration.
 - no. more. backward compatibility. implement it the way i want in the target state
-- There should be *NO* hardcoded defaults. EVER
+- There should be *NO* inline defaults. EVER. Defaults should come from configuration modules or environment variables, not inline in field definitions.
 - no backward compatibility.
 - i do not need backward compatibility, migration logic, or transition comments and logic unless specifically asked.
 - do not write functions to "go around tests" unless i ask.
+
+## Output Guidelines for CLI and Logging
+
+**IMPORTANT**: Use the correct output method for the context:
+
+- **CLI User-Facing Output**: Use `pout()` for standard output and `perr()` for error messages
+  - These are in `provide.foundation.console.output`
+  - Never use `print()` directly in CLI commands
+  - Example: `pout("✅ Operation successful")` or `perr("❌ Operation failed")`
+
+- **Application Logging**: Use `logger` strictly for internal logging/debugging
+  - Import with: `from provide.foundation import logger`
+  - Example: `logger.debug("Internal state changed", state=new_state)`
+
+- **Low-Level Infrastructure**: Only use `print()` to stderr where using Foundation logger would create circular dependencies
+  - Example: In `streams/file.py` where the logger itself depends on these components
