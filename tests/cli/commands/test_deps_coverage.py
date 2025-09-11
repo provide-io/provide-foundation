@@ -36,7 +36,7 @@ class TestDepsCommandWithClick:
             from provide.foundation.cli.commands.deps import deps_command
 
             with patch(
-                "provide.foundation.utils.deps.has_dependency", return_value=True
+                "provide.foundation.cli.commands.deps.has_dependency", return_value=True
             ):
                 with patch("provide.foundation.console.output.click.echo") as mock_echo:
                     with pytest.raises(SystemExit) as exc_info:
@@ -52,7 +52,7 @@ class TestDepsCommandWithClick:
             from provide.foundation.cli.commands.deps import deps_command
 
             with patch(
-                "provide.foundation.utils.deps.has_dependency", return_value=False
+                "provide.foundation.cli.commands.deps.has_dependency", return_value=False
             ):
                 with patch("provide.foundation.console.output.click.echo") as mock_echo:
                     with pytest.raises(SystemExit) as exc_info:
@@ -71,7 +71,7 @@ class TestDepsCommandWithClick:
             from provide.foundation.cli.commands.deps import deps_command
 
             with patch(
-                "provide.foundation.utils.deps.has_dependency", return_value=True
+                "provide.foundation.cli.commands.deps.has_dependency", return_value=True
             ):
                 with patch("builtins.print") as mock_print:
                     with pytest.raises(SystemExit) as exc_info:

@@ -4,6 +4,8 @@ import os
 from pathlib import Path
 import time
 
+from provide.foundation.config.defaults import DEFAULT_FILE_LOCK_TIMEOUT
+from provide.foundation.errors.decorators import with_error_handling
 from provide.foundation.errors.resources import LockError
 from provide.foundation.logger import get_logger
 
@@ -25,7 +27,7 @@ class FileLock:
     def __init__(
         self,
         path: Path | str,
-        timeout: float = 10.0,
+        timeout: float = DEFAULT_FILE_LOCK_TIMEOUT,
         check_interval: float = 0.1,
     ) -> None:
         """Initialize file lock.
