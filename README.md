@@ -25,6 +25,8 @@
 
 ## Installation
 
+**Requirements**: Python 3.11 or higher
+
 ```bash
 # Using uv (recommended)
 uv pip install provide-foundation
