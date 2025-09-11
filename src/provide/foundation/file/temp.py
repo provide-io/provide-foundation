@@ -19,17 +19,56 @@ from provide.foundation.logger import get_logger
 log = get_logger(__name__)
 
 
-def get_system_temp_dir() -> Path:
+def system_temp_dir() -> Path:
     """Get the operating system's temporary directory.
 
     Returns:
         Path to the OS temp directory
 
     Example:
-        >>> temp_path = get_system_temp_dir()
+        >>> temp_path = system_temp_dir()
         >>> print(temp_path)  # e.g., /tmp or C:\\Users\\...\\Temp
     """
     return Path(tempfile.gettempdir())
+
+
+def secure_temp_file(
+    suffix: str = DEFAULT_TEMP_SUFFIX,
+    prefix: str = DEFAULT_TEMP_PREFIX,
+    dir: Path | str | None = None,
+) -> tuple[int, Path]:
+    """Create a secure temporary file with restricted permissions.
+
+    This is similar to tempfile.mkstemp but uses Foundation's defaults.
+    The file is created with permissions 0o600 (owner read/write only).
+    
+    Use this when you need:
+    - Direct file descriptor access (for os.fdopen, os.fsync, etc.)
+    - Atomic file operations
+    - Maximum security (restricted permissions)
+
+    Args:
+        suffix: File suffix
+        prefix: File name prefix  
+        dir: Directory for the temp file (None = system temp)
+
+    Returns:
+        Tuple of (file_descriptor, Path) - caller must close the fd
+
+    Example:
+        >>> fd, path = secure_temp_file(suffix='.tmp')
+        >>> try:
+        ...     with os.fdopen(fd, 'wb') as f:
+        ...         f.write(b'data')
+        ...         os.fsync(f.fileno())
+        ... finally:
+        ...     path.unlink(missing_ok=True)
+    """
+    if dir and isinstance(dir, Path):
+        dir = str(dir)
+    
+    fd, temp_path = tempfile.mkstemp(suffix=suffix, prefix=prefix, dir=dir)
+    return fd, Path(temp_path)
 
 
 @contextmanager

@@ -35,7 +35,7 @@ from provide.foundation.file.safe import (
     safe_read,
     safe_read_text,
 )
-from provide.foundation.file.temp import get_system_temp_dir, temp_dir, temp_file
+from provide.foundation.file.temp import secure_temp_file, system_temp_dir, temp_dir, temp_file
 from provide.foundation.file.utils import (
     backup_file,
     find_files,
@@ -60,8 +60,6 @@ __all__ = [
     "get_mtime",
     # From utils
     "get_size",
-    # From temp
-    "get_system_temp_dir",
     # From formats
     "read_json",
     "read_toml",
@@ -73,6 +71,9 @@ __all__ = [
     "safe_read",
     "safe_read_text",
     "safe_rmtree",
+    # From temp
+    "secure_temp_file",
+    "system_temp_dir",
     "temp_dir",
     "temp_file",
     "touch",
