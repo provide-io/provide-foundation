@@ -28,6 +28,7 @@ _PROVIDE_SETUP_LOCK = threading.Lock()
 _CORE_SETUP_LOGGER_NAME = "provide.foundation.core_setup"
 _EXPLICIT_SETUP_DONE = False
 _FOUNDATION_LOG_LEVEL: int | None = None
+_CACHED_SETUP_LOGGER: Any | None = None
 
 
 def get_foundation_log_level() -> int:
@@ -59,7 +60,14 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
 
     This is used internally by Foundation during its own initialization.
     Components should use get_vanilla_logger() instead.
+    
+    Returns the same logger instance when called multiple times (singleton pattern).
     """
+    global _CACHED_SETUP_LOGGER
+    
+    # Return cached logger if already created
+    if _CACHED_SETUP_LOGGER is not None:
+        return _CACHED_SETUP_LOGGER
     if globally_disabled:
         # Configure structlog to be a no-op for core setup logger
         structlog.configure(
@@ -68,7 +76,8 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
             wrapper_class=structlog.BoundLogger,
             cache_logger_on_first_use=True,
         )
-        return structlog.get_logger(_CORE_SETUP_LOGGER_NAME)
+        _CACHED_SETUP_LOGGER = structlog.get_logger(_CORE_SETUP_LOGGER_NAME)
+        return _CACHED_SETUP_LOGGER
     else:
         # Get the foundation log output stream
         try:
@@ -92,7 +101,14 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
             cache_logger_on_first_use=True,
         )
 
-        return structlog.get_logger(_CORE_SETUP_LOGGER_NAME)
+        _CACHED_SETUP_LOGGER = structlog.get_logger(_CORE_SETUP_LOGGER_NAME) 
+        return _CACHED_SETUP_LOGGER
+
+
+def reset_setup_logger_cache() -> None:
+    """Reset the cached setup logger for testing."""
+    global _CACHED_SETUP_LOGGER
+    _CACHED_SETUP_LOGGER = None
 
 
 def get_vanilla_logger(name: str) -> object:
@@ -170,8 +186,10 @@ def internal_setup(
         )
 
     if current_config.globally_disabled:
+        core_setup_logger.trace("Setting up globally disabled telemetry")
         handle_globally_disabled_setup()
     else:
+        core_setup_logger.trace("Configuring structlog output processors")
         configure_structlog_output(current_config, get_log_stream())
 
     foundation_logger._is_configured_by_setup = is_explicit_call

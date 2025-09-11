@@ -9,7 +9,7 @@ Primary public interface for the library, re-exporting common components.
 # Export config module for easy access
 # New foundation components
 # Make the errors module available for detailed imports
-from provide.foundation import config, errors, platform, process, resilience
+from provide.foundation import config, errors, platform, process, resilience, tracer
 from provide.foundation._version import __version__
 
 # Console I/O functions (always available - handles click dependency internally)
@@ -164,6 +164,7 @@ __all__ = [
     "timed_block",
     # Rate limiting utilities
     "TokenBucketRateLimiter",
+    "tracer",  # The tracer module for distributed tracing
     "with_error_handling",
 ]
 

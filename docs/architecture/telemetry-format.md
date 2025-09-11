@@ -415,6 +415,5 @@ Complete JSON Schema available for validation:
 
 ## See Also
 
-- [Emoji System Specification](emoji-system.md) - Visual parsing enhancement
+- [Event Enrichment](../guide/concepts/event-enrichment.md) - Visual parsing and metadata enhancement
 - [Performance Architecture](performance.md) - Throughput and latency specifications
-- [Emoji Sets](emoji-sets.md) - Domain-specific emoji mappings

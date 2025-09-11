@@ -468,4 +468,4 @@ The ConfigManager is designed for concurrent access. All async operations are sa
 - [api-Configuration Base API](api-base.md) - BaseConfig and field definitions
 - [api-Configuration Loaders API](api-loader.md) - Loading from various sources
 - [api-Configuration Schema API](api-schema.md) - Validation and schema definition
-- [Runtime Configuration Guide](../../guide/config/runtime/index.md) - Dynamic configuration updates
+- [Runtime Configuration Guide](../../guide/config/runtime.md) - Dynamic configuration updates

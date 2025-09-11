@@ -31,7 +31,7 @@ response = await post(
 )
 
 # Response handling
-if response.status_code == 200:
+if response.status == 200:
     user_data = response.json()
     logger.info("user_created", user_id=user_data["id"])
 ```
@@ -43,14 +43,13 @@ from provide.foundation.transport import UniversalClient
 
 # Create client with configuration
 client = UniversalClient(
-    base_url="https://api.example.com",
-    timeout=30.0,
-    headers={"Authorization": "Bearer token123"}
+    default_headers={"Authorization": "Bearer token123"},
+    default_timeout=30.0
 )
 
 # Use for multiple requests
-users = await client.get("/users")
-user = await client.post("/users", body={"name": "Alice"})
+users = await client.get("https://api.example.com/users")
+user = await client.post("https://api.example.com/users", body={"name": "Alice"})
 ```
 
 ## Core Components
@@ -78,15 +77,13 @@ Full-featured HTTP client with middleware support:
 from provide.foundation.transport import UniversalClient
 
 client = UniversalClient(
-    base_url="https://api.example.com",
-    timeout=30.0,
-    headers={"User-Agent": "MyApp/1.0"},
-    follow_redirects=True
+    default_headers={"User-Agent": "MyApp/1.0"},
+    default_timeout=30.0
 )
 
 # Client methods mirror HTTP functions
-response = await client.get("/endpoint")
-response = await client.post("/endpoint", body=data)
+response = await client.get("https://api.example.com/endpoint")
+response = await client.post("https://api.example.com/endpoint", body=data)
 ```
 
 ## Middleware System
@@ -99,26 +96,23 @@ The transport layer supports middleware for cross-cutting concerns:
 from provide.foundation.transport.middleware import (
     LoggingMiddleware,
     RetryMiddleware,
-    AuthMiddleware
+    MetricsMiddleware,
+    create_default_pipeline
 )
 
 # Configure middleware
+pipeline = create_default_pipeline()
 client = UniversalClient(
-    base_url="https://api.example.com",
-    middleware=[
-        LoggingMiddleware(),
-        RetryMiddleware(max_attempts=3),
-        AuthMiddleware(token="bearer_token")
-    ]
+    middleware=pipeline
 )
 ```
 
 ### Custom Middleware
 
 ```python
-from provide.foundation.transport.middleware import BaseMiddleware
+from provide.foundation.transport.middleware import Middleware
 
-class CustomMiddleware(BaseMiddleware):
+class CustomMiddleware(Middleware):
     async def process_request(self, request):
         """Process outgoing request."""
         request.headers["X-Custom-Header"] = "value"
@@ -126,12 +120,19 @@ class CustomMiddleware(BaseMiddleware):
     
     async def process_response(self, response):
         """Process incoming response."""
-        if response.status_code >= 400:
-            logger.warning("http_error", status=response.status_code)
+        if response.status >= 400:
+            logger.warning("http_error", status=response.status)
         return response
+    
+    async def process_error(self, error, request):
+        """Process errors during request."""
+        logger.error("transport_error", error=str(error))
+        return error
 
 # Use custom middleware
-client = UniversalClient(middleware=[CustomMiddleware()])
+from provide.foundation.transport.middleware import MiddlewarePipeline
+pipeline = MiddlewarePipeline([CustomMiddleware()])
+client = UniversalClient(middleware=pipeline)
 ```
 
 ## Configuration
@@ -141,33 +142,33 @@ Transport configuration through environment variables:
 ```bash
 # Base configuration
 export PROVIDE_TRANSPORT_TIMEOUT=30.0
-export PROVIDE_TRANSPORT_MAX_REDIRECTS=5
+export PROVIDE_TRANSPORT_MAX_RETRIES=3
+export PROVIDE_TRANSPORT_RETRY_BACKOFF_FACTOR=0.5
 export PROVIDE_TRANSPORT_VERIFY_SSL=true
 
 # HTTP-specific configuration  
-export PROVIDE_HTTP_USER_AGENT="MyApp/1.0"
-export PROVIDE_HTTP_MAX_CONNECTIONS=100
-export PROVIDE_HTTP_MAX_KEEPALIVE_CONNECTIONS=20
-
-# Retry configuration
-export PROVIDE_TRANSPORT_RETRY_ATTEMPTS=3
-export PROVIDE_TRANSPORT_RETRY_BACKOFF=exponential
+export PROVIDE_HTTP_POOL_CONNECTIONS=10
+export PROVIDE_HTTP_POOL_MAXSIZE=100
+export PROVIDE_HTTP_FOLLOW_REDIRECTS=true
+export PROVIDE_HTTP_USE_HTTP2=false
+export PROVIDE_HTTP_MAX_REDIRECTS=5
 ```
 
 ### Programmatic Configuration
 
 ```python
-from provide.foundation.transport.config import TransportConfig
+from provide.foundation.transport.config import HTTPConfig
 
-config = TransportConfig(
+config = HTTPConfig(
     timeout=60.0,
     max_redirects=10,
     verify_ssl=True,
-    user_agent="MyApp/2.0",
-    max_connections=50
+    pool_connections=20,
+    pool_maxsize=200
 )
 
-client = UniversalClient(config=config)
+# Configuration is applied globally through environment variables
+# Individual client instances use middleware for customization
 ```
 
 ## Error Handling
@@ -176,22 +177,28 @@ Transport operations integrate with Foundation's error handling:
 
 ```python
 from provide.foundation.transport import get
-from provide.foundation.transport.exceptions import (
+from provide.foundation.transport.errors import (
     TransportError,
-    TimeoutError,
-    ConnectionError
+    TransportTimeoutError,
+    TransportConnectionError,
+    HTTPResponseError,
+    TransportNotFoundError,
 )
 
 try:
     response = await get("https://api.example.com/data")
     return response.json()
     
-except TimeoutError:
-    logger.error("request_timeout", url=url)
+except TransportTimeoutError:
+    logger.error("request_timeout", url="https://api.example.com/data")
     return None
     
-except ConnectionError as e:
+except TransportConnectionError as e:
     logger.error("connection_failed", error=str(e))
+    return None
+    
+except HTTPResponseError as e:
+    logger.error("http_error", status=e.status_code, error=str(e))
     return None
     
 except TransportError as e:
@@ -270,40 +277,42 @@ with open("downloaded.zip", "wb") as f:
 ### Authentication
 
 ```python
-from provide.foundation.transport.auth import BearerAuth, BasicAuth
-
-# Bearer token authentication
+# Authentication through headers
 client = UniversalClient(
-    auth=BearerAuth("your_token_here")
+    default_headers={"Authorization": "Bearer your_token_here"}
 )
 
-# Basic authentication
+# Basic authentication via headers
+import base64
+auth_string = base64.b64encode(b"username:password").decode("ascii")
 client = UniversalClient(
-    auth=BasicAuth("username", "password")
+    default_headers={"Authorization": f"Basic {auth_string}"}
 )
 ```
 
 ## Testing
 
-Test transport operations using Foundation's testing utilities:
+Test transport operations using pytest-httpx:
 
 ```python
-from provide.foundation.testing.transport import MockTransport
+import pytest
+from pytest_httpx import HTTPXMock
+from provide.foundation.transport import get
 
-def test_api_call():
-    with MockTransport() as mock:
-        mock.add_response(
-            "GET", 
-            "https://api.example.com/users",
-            json={"users": [{"id": 1, "name": "John"}]},
-            status=200
-        )
-        
-        response = await get("https://api.example.com/users")
-        data = response.json()
-        
-        assert len(data["users"]) == 1
-        assert data["users"][0]["name"] == "John"
+@pytest.mark.asyncio
+async def test_api_call(httpx_mock: HTTPXMock):
+    httpx_mock.add_response(
+        method="GET", 
+        url="https://api.example.com/users",
+        json={"users": [{"id": 1, "name": "John"}]},
+        status_code=200
+    )
+    
+    response = await get("https://api.example.com/users")
+    data = response.json()
+    
+    assert len(data["users"]) == 1
+    assert data["users"][0]["name"] == "John"
 ```
 
 ## API Reference

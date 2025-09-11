@@ -69,10 +69,17 @@ class TestSyncModuleCoverage:
         mock_executor_instance.submit.return_value = mock_future
         mock_executor.return_value.__enter__.return_value = mock_executor_instance
 
-        async def test_coro():
-            return "test_result"
+        # Mock asyncio.run to avoid creating actual coroutine
+        with patch("asyncio.run") as mock_run:
+            mock_run.return_value = "test_result"
+            
+            async def test_coro():
+                return "test_result"
 
-        result = run_async(test_coro())
+            # Create coroutine and immediately close it to avoid warning
+            coro = test_coro()
+            result = run_async(coro)
+            coro.close()
 
         assert result == "from_executor"
         mock_executor.assert_called_once()
@@ -80,7 +87,14 @@ class TestSyncModuleCoverage:
     def test_load_config_function_calls_run_async(self):
         """Test load_config function structure."""
         with patch("provide.foundation.config.sync.run_async") as mock_run_async:
-            mock_run_async.return_value = SimpleTestConfig(name="mocked")
+            # Set up mock to properly handle the coroutine
+            def mock_run(coro):
+                # Close the coroutine to avoid warnings
+                if hasattr(coro, 'close'):
+                    coro.close()
+                return SimpleTestConfig(name="mocked")
+            
+            mock_run_async.side_effect = mock_run
 
             # Test with data
             load_config(SimpleTestConfig, {"name": "test"})
@@ -108,7 +122,14 @@ class TestSyncModuleCoverage:
     @patch("provide.foundation.config.sync.run_async")
     def test_load_config_from_file_creates_loader(self, mock_run_async):
         """Test load_config_from_file creates FileConfigLoader."""
-        mock_run_async.return_value = SimpleTestConfig()
+        # Set up mock to properly handle the coroutine
+        def mock_run(coro):
+            # Close the coroutine to avoid warnings
+            if hasattr(coro, 'close'):
+                coro.close()
+            return SimpleTestConfig()
+        
+        mock_run_async.side_effect = mock_run
 
         # Create a temp file to use
         with tempfile.NamedTemporaryFile(suffix=".json") as tmp_file:
@@ -119,7 +140,14 @@ class TestSyncModuleCoverage:
     @patch("provide.foundation.config.sync.run_async")
     def test_load_config_from_file_with_options(self, mock_run_async):
         """Test load_config_from_file with format and encoding."""
-        mock_run_async.return_value = SimpleTestConfig()
+        # Set up mock to properly handle the coroutine
+        def mock_run(coro):
+            # Close the coroutine to avoid warnings
+            if hasattr(coro, 'close'):
+                coro.close()
+            return SimpleTestConfig()
+        
+        mock_run_async.side_effect = mock_run
 
         with tempfile.NamedTemporaryFile() as tmp_file:
             load_config_from_file(
@@ -134,25 +162,50 @@ class TestSyncModuleCoverage:
         with tempfile.NamedTemporaryFile(suffix=".json") as tmp_file:
             tmp_file.write(b"{}")
             tmp_file.flush()
-            try:
-                load_config_from_multiple(SimpleTestConfig, ("file", tmp_file.name))
-            except Exception:
-                # Expected - API may have issues but we tested the path
-                pass
+            with patch("provide.foundation.config.sync.run_async") as mock_run_async:
+                # Set up mock to properly handle the coroutine
+                def mock_run(coro):
+                    # Close the coroutine to avoid warnings
+                    if hasattr(coro, 'close'):
+                        coro.close()
+                    return SimpleTestConfig()
+                
+                mock_run_async.side_effect = mock_run
+                try:
+                    load_config_from_multiple(SimpleTestConfig, ("file", tmp_file.name))
+                except Exception:
+                    # Expected - API may have issues but we tested the path
+                    pass
 
     def test_load_config_from_multiple_env_source(self):
         """Test load_config_from_multiple with env source."""
         # Test the code path for env source
-        try:
-            load_config_from_multiple(SimpleRuntimeConfig, ("env", "TEST_PREFIX"))
-        except (AttributeError, ImportError, ValueError):
-            # Expected - RuntimeConfigLoader import may fail or no configuration sources available
-            pass
+        with patch("provide.foundation.config.sync.run_async") as mock_run_async:
+            # Set up mock to properly handle the coroutine
+            def mock_run(coro):
+                # Close the coroutine to avoid warnings
+                if hasattr(coro, 'close'):
+                    coro.close()
+                return SimpleRuntimeConfig()
+            
+            mock_run_async.side_effect = mock_run
+            try:
+                load_config_from_multiple(SimpleRuntimeConfig, ("env", "TEST_PREFIX"))
+            except (AttributeError, ImportError, ValueError):
+                # Expected - RuntimeConfigLoader import may fail or no configuration sources available
+                pass
 
     @patch("provide.foundation.config.sync.run_async")
     def test_load_config_from_multiple_dict_source(self, mock_run_async):
         """Test load_config_from_multiple with dict source."""
-        mock_run_async.return_value = SimpleTestConfig()
+        # Set up mock to properly handle the coroutine
+        def mock_run(coro):
+            # Close the coroutine to avoid warnings
+            if hasattr(coro, 'close'):
+                coro.close()
+            return SimpleTestConfig()
+        
+        mock_run_async.side_effect = mock_run
 
         load_config_from_multiple(SimpleTestConfig, ("dict", {"name": "test"}))
 
@@ -166,6 +219,14 @@ class TestSyncModuleCoverage:
     @patch("provide.foundation.config.sync.run_async")
     def test_validate_config_calls_run_async(self, mock_run_async):
         """Test validate_config calls run_async."""
+        # Set up mock to properly handle the coroutine
+        def mock_run(coro):
+            # Close the coroutine to avoid warnings
+            if hasattr(coro, 'close'):
+                coro.close()
+            return None
+        
+        mock_run_async.side_effect = mock_run
         config = SimpleTestConfig()
 
         validate_config(config)
@@ -175,6 +236,14 @@ class TestSyncModuleCoverage:
     @patch("provide.foundation.config.sync.run_async")
     def test_update_config_calls_run_async(self, mock_run_async):
         """Test update_config calls run_async."""
+        # Set up mock to properly handle the coroutine
+        def mock_run(coro):
+            # Close the coroutine to avoid warnings
+            if hasattr(coro, 'close'):
+                coro.close()
+            return None
+        
+        mock_run_async.side_effect = mock_run
         config = SimpleTestConfig()
 
         update_config(config, {"name": "updated"})
@@ -187,7 +256,14 @@ class TestSyncModuleCoverage:
     @patch("provide.foundation.config.sync.run_async")
     def test_config_to_dict_calls_run_async(self, mock_run_async):
         """Test config_to_dict calls run_async."""
-        mock_run_async.return_value = {"name": "test"}
+        # Set up mock to properly handle the coroutine
+        def mock_run(coro):
+            # Close the coroutine to avoid warnings
+            if hasattr(coro, 'close'):
+                coro.close()
+            return {"name": "test"}
+        
+        mock_run_async.side_effect = mock_run
         config = SimpleTestConfig()
 
         result = config_to_dict(config)
@@ -201,7 +277,14 @@ class TestSyncModuleCoverage:
     @patch("provide.foundation.config.sync.run_async")
     def test_clone_config_calls_run_async(self, mock_run_async):
         """Test clone_config calls run_async."""
-        mock_run_async.return_value = SimpleTestConfig(name="cloned")
+        # Set up mock to properly handle the coroutine
+        def mock_run(coro):
+            # Close the coroutine to avoid warnings
+            if hasattr(coro, 'close'):
+                coro.close()
+            return SimpleTestConfig(name="cloned")
+        
+        mock_run_async.side_effect = mock_run
         config = SimpleTestConfig()
 
         result = clone_config(config)
@@ -211,7 +294,14 @@ class TestSyncModuleCoverage:
     @patch("provide.foundation.config.sync.run_async")
     def test_diff_configs_calls_run_async(self, mock_run_async):
         """Test diff_configs calls run_async."""
-        mock_run_async.return_value = {"name": ("old", "new")}
+        # Set up mock to properly handle the coroutine
+        def mock_run(coro):
+            # Close the coroutine to avoid warnings
+            if hasattr(coro, 'close'):
+                coro.close()
+            return {"name": ("old", "new")}
+        
+        mock_run_async.side_effect = mock_run
         config1 = SimpleTestConfig(name="old")
         config2 = SimpleTestConfig(name="new")
 
@@ -232,6 +322,14 @@ class TestSyncConfigManager:
     @patch("provide.foundation.config.sync.run_async")
     def test_register(self, mock_run_async):
         """Test register method."""
+        # Set up mock to properly handle the coroutine
+        def mock_run(coro):
+            # Close the coroutine to avoid warnings
+            if hasattr(coro, 'close'):
+                coro.close()
+            return None
+        
+        mock_run_async.side_effect = mock_run
         manager = SyncConfigManager()
         config = SimpleTestConfig()
 
@@ -245,7 +343,14 @@ class TestSyncConfigManager:
     @patch("provide.foundation.config.sync.run_async")
     def test_get(self, mock_run_async):
         """Test get method."""
-        mock_run_async.return_value = SimpleTestConfig()
+        # Set up mock to properly handle the coroutine
+        def mock_run(coro):
+            # Close the coroutine to avoid warnings
+            if hasattr(coro, 'close'):
+                coro.close()
+            return SimpleTestConfig()
+        
+        mock_run_async.side_effect = mock_run
         manager = SyncConfigManager()
 
         result = manager.get("test")
@@ -255,7 +360,14 @@ class TestSyncConfigManager:
     @patch("provide.foundation.config.sync.run_async")
     def test_load(self, mock_run_async):
         """Test load method."""
-        mock_run_async.return_value = SimpleTestConfig()
+        # Set up mock to properly handle the coroutine
+        def mock_run(coro):
+            # Close the coroutine to avoid warnings
+            if hasattr(coro, 'close'):
+                coro.close()
+            return SimpleTestConfig()
+        
+        mock_run_async.side_effect = mock_run
         manager = SyncConfigManager()
 
         result = manager.load("test", SimpleTestConfig)
@@ -270,6 +382,14 @@ class TestSyncConfigManager:
     @patch("provide.foundation.config.sync.run_async")
     def test_update(self, mock_run_async):
         """Test update method."""
+        # Set up mock to properly handle the coroutine
+        def mock_run(coro):
+            # Close the coroutine to avoid warnings
+            if hasattr(coro, 'close'):
+                coro.close()
+            return None
+        
+        mock_run_async.side_effect = mock_run
         manager = SyncConfigManager()
 
         manager.update("test", {"name": "updated"})
@@ -282,7 +402,14 @@ class TestSyncConfigManager:
     @patch("provide.foundation.config.sync.run_async")
     def test_export(self, mock_run_async):
         """Test export method."""
-        mock_run_async.return_value = {"name": "exported"}
+        # Set up mock to properly handle the coroutine
+        def mock_run(coro):
+            # Close the coroutine to avoid warnings
+            if hasattr(coro, 'close'):
+                coro.close()
+            return {"name": "exported"}
+        
+        mock_run_async.side_effect = mock_run
         manager = SyncConfigManager()
 
         result = manager.export("test")
@@ -296,7 +423,14 @@ class TestSyncConfigManager:
     @patch("provide.foundation.config.sync.run_async")
     def test_export_all(self, mock_run_async):
         """Test export_all method."""
-        mock_run_async.return_value = {"test": {"name": "exported"}}
+        # Set up mock to properly handle the coroutine
+        def mock_run(coro):
+            # Close the coroutine to avoid warnings
+            if hasattr(coro, 'close'):
+                coro.close()
+            return {"test": {"name": "exported"}}
+        
+        mock_run_async.side_effect = mock_run
         manager = SyncConfigManager()
 
         result = manager.export_all()

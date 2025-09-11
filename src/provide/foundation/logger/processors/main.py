@@ -85,8 +85,12 @@ def _config_create_event_enrichment_processors(
 
             # Initialize on first use
             if not hasattr(add_event_enrichment_processor, "_initialized"):
+                from provide.foundation.logger.setup.coordinator import create_foundation_internal_logger
+                setup_logger = create_foundation_internal_logger()
+                setup_logger.trace("Initializing event enrichment processor")
                 discover_event_sets()
                 add_event_enrichment_processor._initialized = True
+                setup_logger.trace("Event enrichment processor initialized")
 
             resolver = get_resolver()
             return resolver.enrich_event(event_dict)

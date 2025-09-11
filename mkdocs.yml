@@ -102,13 +102,19 @@ nav:
     - First Application: getting-started/first-app.md
     - Examples: getting-started/examples.md
 
+  - Examples:
+    - examples/index.md
+    - Basic Application: examples/basic-app.md
+    - CLI Tool: examples/cli-tool.md
+    - Web Service: examples/web-service.md
+    - Data Pipeline: examples/data-pipeline.md
+
   - Guide:
     - guide/index.md
     - Core Concepts:
       - guide/concepts/index.md
       - Structured Logging: guide/concepts/structured-logging.md
-      - Emoji Sets: guide/concepts/emoji-sets.md
-      - Emoji System: guide/concepts/emoji-system.md
+      - Event Enrichment: guide/concepts/event-enrichment.md
       - Domain-Action-Status Pattern: guide/concepts/das-pattern.md
       - Performance: guide/concepts/performance.md
     - Configuration:
@@ -119,21 +125,7 @@ nav:
         - File Formats: guide/config/files-formats.md
         - Loading: guide/config/files-loading.md
         - Advanced Features: guide/config/files-advanced.md
-      - Runtime Config: 
-        - guide/config/runtime.md
-        - Overview: guide/config/runtime/index.md
-        - Remote Config:
-          - guide/config/runtime/remote.md
-          - HTTP Loading: guide/config/runtime/remote-http.md
-          - Cloud Services: guide/config/runtime/remote-cloud.md
-          - Polling & Updates: guide/config/runtime/remote-polling.md
-          - Resilience Patterns: guide/config/runtime/remote-resilience.md
-        - Updates: guide/config/runtime/updates.md
-        - Configuration Watchers:
-          - guide/config/runtime/watchers.md
-          - File Watching: guide/config/runtime/watchers-files.md
-          - Environment Monitoring: guide/config/runtime/watchers-environment.md
-          - Multi-Source Sync: guide/config/runtime/watchers-sync.md
+      - Runtime Config: guide/config/runtime.md
       - Reference: guide/config/reference.md
       - Best Practices:
         - guide/config/best-practices.md
@@ -194,7 +186,6 @@ nav:
     - Advanced:
       - guide/advanced/index.md
       - Advanced Usage: guide/advanced-usage.md
-      - Custom Emoji Sets: guide/advanced/custom-emoji-sets.md
       - Custom Processors: guide/advanced/custom-processors.md
       - Integration Patterns: guide/advanced/integration-patterns.md
       - Performance Optimization: guide/advanced/performance-optimization.md
@@ -211,7 +202,6 @@ nav:
       - Base: api/logger/api-base.md
       - Config: api/logger/api-config.md
       - Core: api/logger/api-core.md
-      - Emoji: api/logger/api-emoji.md
       - Factories: api/logger/api-factories.md
       - Processors: api/logger/api-processors.md
     - Configuration API:
@@ -237,21 +227,32 @@ nav:
       - Decorators: api/errors/api-decorators.md
       - Exceptions: api/errors/api-exceptions.md
       - Handlers: api/errors/api-handlers.md
-    - Emoji Sets API:
-      - api/emoji_sets/api-index.md
-      - Base: api/emoji_sets/api-base.md
-      - Custom: api/emoji_sets/api-custom.md
-      - Database: api/emoji_sets/api-database.md
-      - HTTP: api/emoji_sets/api-http.md
-      - LLM: api/emoji_sets/api-llm.md
-      - Task Queue: api/emoji_sets/api-task_queue.md
+    - Event Sets API:
+      - api/eventsets/api-index.md
+      - Types: api/eventsets/api-types.md
+      - Registry: api/eventsets/api-registry.md
+      - Display: api/eventsets/api-display.md
+    - Resilience API: api/resilience/api-index.md
+    - Transport API:
+      - api/transport/api-index.md
+      - Registry: api/transport/registry.md
+      - Client: api/transport/client.md
+      - Middleware: api/transport/middleware.md
+    - Metrics API: api/metrics/api-index.md
+    - Archive API: api/archive/api-index.md
+    - Async Tools API: api/asynctools/api-index.md
     - Context API: api/context/api-index.md
     - Core API: api/core/api-index.md
+    - Environment API: api/env/api-index.md
     - File API: api/file/api-index.md
     - Crypto API: api/crypto/api-index.md
+    - Integrations API: api/integrations/api-index.md
+    - Observability API: api/observability/api-index.md
     - Platform API: api/platform/api-index.md
     - Process API: api/process/api-index.md
+    - Serialization API: api/serialization/api-index.md
     - Streams API: api/streams/api-index.md
+    - Tools API: api/tools/api-index.md
     - Testing API:
       - api/testing/api-index.md
       - Stream Testing: api/testing/api-streams.md
@@ -274,8 +275,6 @@ nav:
 
   - Architecture:
     - architecture/index.md
-    - Emoji Sets: architecture/emoji-sets.md
-    - Emoji System: architecture/emoji-system.md
     - Performance: architecture/performance.md
     - Telemetry Format: architecture/telemetry-format.md
 

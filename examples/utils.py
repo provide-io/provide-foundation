@@ -3,6 +3,8 @@
 import sys
 from pathlib import Path
 
+from provide.foundation.console.output import pout
+
 
 def setup_example_environment() -> Path:
     """
@@ -25,12 +27,12 @@ def setup_example_environment() -> Path:
 
 def print_example_header(example_num: int, title: str, description: str) -> None:
     """Print a standardized example header."""
-    print(f"\n{'=' * 60}")
-    print(f"🔢 Example {example_num}: {title}")
-    print(f" Demonstrates: {description}")
-    print("=" * 60)
+    pout(f"\n{'=' * 60}")
+    pout(f"🔢 Example {example_num}: {title}")
+    pout(f" Demonstrates: {description}")
+    pout("=" * 60)
 
 
 def print_example_completion(example_num: int) -> None:
     """Print a standardized example completion message."""
-    print(f"\n✅ Example {example_num} completed.")
+    pout(f"\n✅ Example {example_num} completed.")

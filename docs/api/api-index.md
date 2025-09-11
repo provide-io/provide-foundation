@@ -306,36 +306,6 @@ custom_event_set = EventSet(
 | JSON format | 62μs | 16,100/sec |
 | With emoji | 78μs | 12,800/sec |
 
-## Deprecations and Backward Compatibility
-
-### Deprecated Functions
-
-⚠️ **The following functions are deprecated and will be removed in a future version:**
-
-- `retry_on_error` - Use `@retry` decorator from `provide.foundation.resilience` instead
-- `setup_logging` - Use `setup_telemetry` for comprehensive telemetry setup
-
-```python
-# ❌ Deprecated
-from provide.foundation import retry_on_error, setup_logging
-
-# ✅ Recommended  
-from provide.foundation.resilience import retry
-from provide.foundation import setup_telemetry
-```
-
-### Migration from Emoji Sets
-
-The emoji system has been replaced with a more flexible event enrichment system:
-
-```python
-# ❌ Old (removed)
-from provide.foundation.logger.emoji.sets import HttpEmojiSet
-
-# ✅ New
-from provide.foundation.eventsets.types import EventSet, EventMapping
-```
-
 ## Version Compatibility
 
 | provide.foundation | Python | API Stability |
