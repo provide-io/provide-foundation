@@ -215,16 +215,20 @@ class TestTempConfigFile:
         """Test temp_config_file with YAML dict content raises ImportError without PyYAML."""
         config_data = {"key1": "value1"}
 
-        # Remove yaml from sys.modules to simulate it not being installed
+        # Mock the import to raise ImportError
         import sys
-        yaml_backup = sys.modules.pop('yaml', None)
-        try:
+        import builtins
+        original_import = builtins.__import__
+        
+        def mock_import(name, *args, **kwargs):
+            if name == 'yaml':
+                raise ImportError("No module named 'yaml'")
+            return original_import(name, *args, **kwargs)
+        
+        with patch('builtins.__import__', side_effect=mock_import):
             with pytest.raises(ImportError, match="PyYAML required for YAML testing"):
                 with temp_config_file(config_data, "yaml") as config_path:
                     pass
-        finally:
-            if yaml_backup is not None:
-                sys.modules['yaml'] = yaml_backup
 
     def test_temp_config_file_cleanup_on_exception(self):
         """Test temp_config_file cleans up file even on exception."""
