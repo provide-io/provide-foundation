@@ -44,8 +44,8 @@ def simulate_database_query(query: str, params: Dict[str, Any] = None) -> Dict[s
         # In real applications, this would be an actual database query
         # No artificial delays needed for demonstration
         
-        # Simulate occasional errors
-        if random.random() < 0.1:  # 10% error rate
+        # Simulate occasional errors (deterministic for demo)
+        if len(query) % 10 == 0:  # Every 10th query fails for demo
             error_msg = f"Database timeout for query: {query[:50]}..."
             span.set_error(error_msg)
             logger.error("Database query failed",
@@ -58,7 +58,7 @@ def simulate_database_query(query: str, params: Dict[str, Any] = None) -> Dict[s
                    trace_id=trace_ctx["trace_id"])
         
         return {
-            "rows": random.randint(0, 100),
+            "rows": len(query) % 100 + 1,  # Deterministic row count for demo
             "execution_time_ms": execution_time * 1000
         }
 
@@ -76,11 +76,11 @@ def call_external_service(service_name: str, endpoint: str) -> Dict[str, Any]:
                    endpoint=endpoint,
                    trace_id=trace_ctx["trace_id"])
         
-        # Simulate network call
-        response_time = random.uniform(0.05, 0.3)
-        time.sleep(response_time)
+        # Simulate network call (deterministic for demo)
+        response_time = (len(service_name) % 10 + 1) * 0.03  # Deterministic timing
         
-        status_code = random.choice([200, 200, 200, 404, 500])  # Mostly success
+        # Deterministic status codes for demo
+        status_code = 200 if len(endpoint) % 5 != 0 else (404 if len(endpoint) % 3 == 0 else 500)
         span.set_tag("status_code", status_code)
         span.set_tag("response_time_ms", response_time * 1000)
         
@@ -123,7 +123,6 @@ def process_user_registration(user_data: Dict[str, Any]) -> Dict[str, Any]:
                 validation_span.set_tag("fields_count", len(user_data))
                 
                 # Simulate validation
-                time.sleep(0.01)
                 
                 required_fields = ["email", "password", "name"]
                 missing_fields = [f for f in required_fields if f not in user_data]
@@ -157,7 +156,7 @@ def process_user_registration(user_data: Dict[str, Any]) -> Dict[str, Any]:
                 }
             )
             
-            user_id = random.randint(1000, 9999)
+            user_id = 1000 + (i * 123) % 9000  # Deterministic user IDs for demo
             span.set_tag("user_id", user_id)
             
             # Step 4: Send welcome email (external service)
@@ -226,7 +225,7 @@ async def async_user_operations():
                 user_span.set_tag("user_id", user_id)
                 
                 # Simulate async work
-                await asyncio.sleep(random.uniform(0.1, 0.3))
+                # In real applications, this would be actual work
                 
                 # Simulate database update
                 result = simulate_database_query(
@@ -265,7 +264,7 @@ def trace_analysis_example():
             "email": f"user{i}@example.com",
             "name": f"User {i}",
             "password": "secure_password",
-            "type": random.choice(["standard", "premium"])
+            "type": "premium" if i % 2 == 0 else "standard"  # Deterministic type
         }
         
         try:
@@ -298,7 +297,6 @@ def main():
         span.set_tag("component", "demo")
         
         logger.info("Performing simple operation")
-        time.sleep(0.05)
         
         span.set_tag("operation_result", "success")
         logger.info("Simple operation completed", 
@@ -325,10 +323,8 @@ def main():
     manual_span.set_tag("method", "manual")
     
     # Do some work
-    time.sleep(0.02)
     manual_span.set_tag("checkpoint_1", "passed")
     
-    time.sleep(0.03)
     manual_span.set_tag("checkpoint_2", "passed")
     
     manual_span.finish()
