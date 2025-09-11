@@ -76,7 +76,9 @@ def temp_config_file(
                     try:
                         import tomli_w
 
-                        tomli_w.dump(content, f)
+                        # tomli_w.dumps returns a string
+                        toml_content = tomli_w.dumps(content)
+                        f.write(toml_content)
                     except ImportError:
                         # Fall back to manual formatting
                         for key, value in content.items():
