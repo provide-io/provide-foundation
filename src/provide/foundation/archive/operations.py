@@ -54,9 +54,9 @@ class OperationChain:
                 else:
                     # Intermediate operation, use temp file
                     suffix = self._get_suffix_for_operation(op)
-                    temp = tempfile.NamedTemporaryFile(suffix=suffix, delete=False)
-                    temp.close()
-                    next_output = Path(temp.name)
+                    with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as temp:
+                        temp_path = temp.name
+                    next_output = Path(temp_path)
                     temp_files.append(next_output)
 
                 # Execute operation
