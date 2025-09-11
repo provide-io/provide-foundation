@@ -36,6 +36,7 @@ This directory contains practical examples demonstrating various features and us
 
 ### [production/](production/) - Production Patterns
 - `01_production_patterns.py` - Production-ready logging and monitoring
+- `02_error_handling.py` - Comprehensive error handling with resilience patterns
 
 ## Running Examples
 
