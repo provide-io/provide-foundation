@@ -370,11 +370,21 @@ def test_configuration_edge_cases() -> None:
     This test verifies that configuration objects behave correctly
     in various edge cases and maintain their immutability guarantees.
     """
-    # Test with minimal configuration
-    minimal_config = TelemetryConfig()
-    assert minimal_config.service_name is None
-    assert minimal_config.logging.default_level == "WARNING"  # Production default
-    assert minimal_config.globally_disabled is False
+    # Save and temporarily clear PROVIDE_LOG_LEVEL to test true defaults
+    original_log_level = os.environ.get("PROVIDE_LOG_LEVEL")
+    if "PROVIDE_LOG_LEVEL" in os.environ:
+        del os.environ["PROVIDE_LOG_LEVEL"]
+    
+    try:
+        # Test with minimal configuration (true defaults)
+        minimal_config = TelemetryConfig()
+        assert minimal_config.service_name is None
+        assert minimal_config.logging.default_level == "WARNING"  # Production default
+        assert minimal_config.globally_disabled is False
+    finally:
+        # Restore original environment
+        if original_log_level is not None:
+            os.environ["PROVIDE_LOG_LEVEL"] = original_log_level
 
     # Test with disabled telemetry
     disabled_config = TelemetryConfig(globally_disabled=True)
