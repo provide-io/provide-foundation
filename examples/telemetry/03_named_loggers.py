@@ -12,12 +12,9 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-# Import utils from parent directory
-sys.path.insert(0, str(example_file.parent.parent))
-from utils import setup_example_environment, print_example_header, print_example_completion
-setup_example_environment()
+# Already have path setup above
 
-from provide.foundation import logger, setup_telemetry  # noqa: E402
+from provide.foundation import logger, setup_telemetry, pout  # noqa: E402
 
 
 def example_3_named_loggers() -> None:
@@ -27,7 +24,10 @@ def example_3_named_loggers() -> None:
     Named loggers help in identifying the source of log messages and allow for
     module-specific log level filtering (shown in a later example).
     """
-    print_example_header(3, "Named Loggers", "Creating and using component-specific loggers.")
+    pout("=" * 60)
+    pout("🔢 Example 3: Named Loggers")
+    pout(" Demonstrates: Creating and using component-specific loggers.")
+    pout("=" * 60)
 
     # Re-initialize with defaults for this example
     setup_telemetry()
@@ -48,4 +48,4 @@ def example_3_named_loggers() -> None:
 
 if __name__ == "__main__":
     example_3_named_loggers()
-    print_example_completion(3)
+    pout("\n✅ Example 3 completed.")

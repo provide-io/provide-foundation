@@ -12,16 +12,12 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-# Import utils from parent directory
-sys.path.insert(0, str(example_file.parent.parent))
-from utils import setup_example_environment, print_example_header, print_example_completion
-setup_example_environment()
-
 from provide.foundation import (  # noqa: E402
     LoggingConfig,
     TelemetryConfig,
     logger,
     setup_telemetry,
+    pout,  # Foundation console output
 )
 
 
@@ -33,7 +29,10 @@ def example_2_configuration() -> None:
     programmatically define settings like service name, default log level,
     console formatter (JSON), and emoji usage.
     """
-    print_example_header(2, "Custom Configuration", "Setting service name, JSON format, log level, and emojis.")
+    pout("=" * 60)
+    pout("🔢 Example 2: Custom Configuration")
+    pout(" Demonstrates: Setting service name, JSON format, log level, and emojis.")
+    pout("=" * 60)
 
     config = TelemetryConfig(
         service_name="example-service",
@@ -56,4 +55,4 @@ def example_2_configuration() -> None:
 
 if __name__ == "__main__":
     example_2_configuration()
-    print_example_completion(2)
+    pout("\n✅ Example 2 completed.")
