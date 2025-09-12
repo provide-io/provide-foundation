@@ -1,73 +1,129 @@
 """
-Configuration field validators.
+Validation functions for configuration field values.
 
-Provides common validation functions for configuration fields.
-Domain-specific validators should be implemented in their respective packages.
+These validators are used with the attrs `validator` parameter to validate
+field values after conversion. They provide consistent error messages and
+follow attrs validator conventions.
 """
 
-from collections.abc import Callable
 from typing import Any
 
-from provide.foundation.errors.config import ValidationError
+from provide.foundation.config.parsers.base import (
+    _format_invalid_value_error,
+    _format_validation_error,
+    _VALID_LOG_LEVEL_TUPLE,
+    _VALID_OVERFLOW_POLICY_TUPLE,
+)
 
 
-def validate_choice(choices: list[Any]) -> Callable[[Any, Any, Any], None]:
-    """
-    Create a validator that ensures the value is one of the allowed choices.
-
-    Args:
-        choices: List of allowed values
-
-    Returns:
-        Validator function
-    """
-
-    def validator(instance: object, attribute: object, value: Any) -> None:
-        if value not in choices:
-            raise ValidationError(f"Invalid value '{value}' for {attribute.name}. Must be one of: {choices}")
-
-    return validator
+def validate_log_level(instance: Any, attribute: Any, value: str) -> None:
+    """Validate that a log level is valid."""
+    if value not in _VALID_LOG_LEVEL_TUPLE:
+        raise ValueError(
+            _format_invalid_value_error(
+                attribute.name, value, valid_options=list(_VALID_LOG_LEVEL_TUPLE)
+            )
+        )
 
 
-def validate_range(min_value: float, max_value: float) -> Callable[[Any, Any, Any], None]:
-    """
-    Create a validator that ensures the value is within a numeric range.
-
-    Args:
-        min_value: Minimum allowed value (inclusive)
-        max_value: Maximum allowed value (inclusive)
-
-    Returns:
-        Validator function
-    """
-
-    def validator(instance: object, attribute: object, value: Any) -> None:
-        if not isinstance(value, (int, float)):
-            raise ValidationError(f"Value must be a number, got {type(value).__name__}")
-
-        if not (min_value <= value <= max_value):
-            raise ValidationError(f"Value must be between {min_value} and {max_value}, got {value}")
-
-    return validator
+def validate_sample_rate(instance: Any, attribute: Any, value: float) -> None:
+    """Validate that a sample rate is between 0.0 and 1.0."""
+    if not 0.0 <= value <= 1.0:
+        raise ValueError(
+            _format_validation_error(attribute.name, value, "must be between 0.0 and 1.0")
+        )
 
 
-def validate_positive(instance: object, attribute: object, value: Any) -> None:
-    """
-    Validate that a numeric value is positive.
-    """
-    if not isinstance(value, (int, float)):
-        raise ValidationError(f"Value must be a number, got {type(value).__name__}")
+def validate_port(instance: Any, attribute: Any, value: int) -> None:
+    """Validate that a port number is valid."""
+    if not 1 <= value <= 65535:
+        raise ValueError(
+            _format_validation_error(attribute.name, value, "must be between 1 and 65535")
+        )
 
+
+def validate_positive(instance: Any, attribute: Any, value: float | int) -> None:
+    """Validate that a value is positive."""
     if value <= 0:
-        raise ValidationError(f"Value must be positive, got {value}")
+        raise ValueError(
+            _format_validation_error(attribute.name, value, "must be positive")
+        )
 
 
-def validate_non_negative(instance: object, attribute: object, value: Any) -> None:
-    """
-    Validate that a numeric value is non-negative.
-    """
-    if not isinstance(value, (int, float)):
-        raise ValidationError(f"Value must be a number, got {type(value).__name__}")
-
+def validate_non_negative(instance: Any, attribute: Any, value: float | int) -> None:
+    """Validate that a value is non-negative."""
     if value < 0:
-        raise ValidationError(f"Value must be non-negative, got {value}")
+        raise ValueError(
+            _format_validation_error(attribute.name, value, "must be non-negative")
+        )
+
+
+def validate_overflow_policy(instance: Any, attribute: Any, value: str) -> None:
+    """Validate rate limit overflow policy."""
+    if value not in _VALID_OVERFLOW_POLICY_TUPLE:
+        raise ValueError(
+            _format_invalid_value_error(
+                attribute.name, value, valid_options=list(_VALID_OVERFLOW_POLICY_TUPLE)
+            )
+        )
+
+
+def validate_choice(choices: list[Any]):
+    """
+    Create a validator that ensures value is one of the given choices.
+    
+    Args:
+        choices: List of valid choices
+        
+    Returns:
+        Validator function for use with attrs
+    """
+    def validator(instance: Any, attribute: Any, value: Any) -> None:
+        if value not in choices:
+            # Import ValidationError locally to avoid circular imports
+            from provide.foundation.errors.config import ValidationError
+            raise ValidationError(
+                f"Invalid value '{value}' for {attribute.name}. "
+                f"Must be one of: {choices!r}"
+            )
+    return validator
+
+
+def validate_range(min_val: float, max_val: float):
+    """
+    Create a validator that ensures value is within the given numeric range.
+    
+    Args:
+        min_val: Minimum allowed value (inclusive)
+        max_val: Maximum allowed value (inclusive)
+        
+    Returns:
+        Validator function for use with attrs
+    """
+    def validator(instance: Any, attribute: Any, value: Any) -> None:
+        # Import ValidationError locally to avoid circular imports
+        from provide.foundation.errors.config import ValidationError
+        
+        # Check if value is numeric
+        if not isinstance(value, (int, float)):
+            raise ValidationError(
+                f"Value must be a number, got {type(value).__name__}"
+            )
+        
+        if not (min_val <= value <= max_val):
+            raise ValidationError(
+                f"Value must be between {min_val} and {max_val}, got {value}"
+            )
+    return validator
+
+
+__all__ = [
+    "validate_log_level",
+    "validate_sample_rate",
+    "validate_port",
+    "validate_positive", 
+    "validate_non_negative",
+    "validate_overflow_policy",
+    "validate_choice",
+    "validate_range",
+]
