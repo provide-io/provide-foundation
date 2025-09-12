@@ -29,7 +29,7 @@ class TestCompleteCliIntegration:
         @flexible_options
         @output_options
         @pass_context
-        def cli(ctx: Context, **kwargs) -> None:
+        def cli(ctx: CLIContext, **kwargs) -> None:
             """Test CLI application."""
             for key, value in kwargs.items():
                 if value is not None:
@@ -44,14 +44,14 @@ class TestCompleteCliIntegration:
 
         @cli.group()
         @pass_context
-        def database(ctx: Context) -> None:
+        def database(ctx: CLIContext) -> None:
             """Database management commands."""
             # No need to re-configure logging, it's inherited via context.
             pass
 
         @database.command()
         @pass_context
-        def migrate(ctx: Context) -> None:
+        def migrate(ctx: CLIContext) -> None:
             """Run database migrations."""
             logger = get_logger(__name__)
             logger.info("Running migrations")
@@ -62,7 +62,7 @@ class TestCompleteCliIntegration:
 
         @cli.command()
         @pass_context
-        def status(ctx: Context) -> None:
+        def status(ctx: CLIContext) -> None:
             """Show application status."""
             # No need to re-configure logging.
             logger = get_logger(__name__)
@@ -84,7 +84,7 @@ class TestCompleteCliIntegration:
         @flexible_options
         @output_options
         @pass_context
-        def status_cmd(ctx: Context, **kwargs) -> None:
+        def status_cmd(ctx: CLIContext, **kwargs) -> None:
             for key, value in kwargs.items():
                 if value is not None:
                     setattr(ctx, key, value)
@@ -107,7 +107,7 @@ class TestCompleteCliIntegration:
         @flexible_options
         @output_options
         @pass_context
-        def status_cmd(ctx: Context, **kwargs) -> None:
+        def status_cmd(ctx: CLIContext, **kwargs) -> None:
             for key, value in kwargs.items():
                 if value is not None:
                     setattr(ctx, key, value)
@@ -129,7 +129,7 @@ class TestCompleteCliIntegration:
         @flexible_options
         @output_options
         @pass_context
-        def migrate_cmd(ctx: Context, **kwargs) -> None:
+        def migrate_cmd(ctx: CLIContext, **kwargs) -> None:
             for key, value in kwargs.items():
                 if value is not None:
                     setattr(ctx, key, value)
@@ -151,7 +151,7 @@ class TestCompleteCliIntegration:
         @flexible_options
         @output_options
         @pass_context
-        def status_cmd(ctx: Context, **kwargs) -> None:
+        def status_cmd(ctx: CLIContext, **kwargs) -> None:
             for key, value in kwargs.items():
                 if value is not None:
                     setattr(ctx, key, value)
@@ -186,7 +186,7 @@ class TestLoggingIntegration:
         @click.command()
         @flexible_options
         @pass_context
-        def cmd(ctx: Context, **kwargs) -> None:
+        def cmd(ctx: CLIContext, **kwargs) -> None:
             setup_cli_logging(ctx)
             logger = get_logger(__name__)
             logger.debug("Debug message")
@@ -204,7 +204,7 @@ class TestLoggingIntegration:
         @flexible_options
         @output_options
         @pass_context
-        def cmd(ctx: Context, **kwargs) -> None:
+        def cmd(ctx: CLIContext, **kwargs) -> None:
             # Skip full telemetry setup to avoid stream closure issues
             for key, value in kwargs.items():
                 if value is not None:
@@ -226,7 +226,7 @@ class TestLoggingIntegration:
             @click.command()
             @flexible_options
             @pass_context
-            def cmd(ctx: Context, **kwargs) -> None:
+            def cmd(ctx: CLIContext, **kwargs) -> None:
                 # Skip full telemetry setup to avoid stream closure issues
                 for key, value in kwargs.items():
                     if value is not None:
@@ -252,7 +252,7 @@ class TestOutputFormatting:
         @click.command()
         @output_options
         @pass_context
-        def cmd(ctx: Context, **kwargs) -> None:
+        def cmd(ctx: CLIContext, **kwargs) -> None:
             if ctx.json_output:
                 click.echo(json.dumps({"result": "success", "count": 42}))
             else:
@@ -268,7 +268,7 @@ class TestOutputFormatting:
         @click.command()
         @output_options
         @pass_context
-        def cmd(ctx: Context, **kwargs) -> None:
+        def cmd(ctx: CLIContext, **kwargs) -> None:
             click.secho("Colored text", fg="green", color=not ctx.no_color)
 
         runner = CliTestRunner()
@@ -280,7 +280,7 @@ class TestOutputFormatting:
         @click.command()
         @output_options
         @pass_context
-        def cmd(ctx: Context, **kwargs) -> None:
+        def cmd(ctx: CLIContext, **kwargs) -> None:
             click.echo("✅ Success" if not ctx.no_emoji else "Success")
 
         runner = CliTestRunner()
@@ -302,7 +302,7 @@ class TestConfigurationLoading:
             @click.command()
             @flexible_options
             @pass_context
-            def cmd(ctx: Context, **kwargs) -> None:
+            def cmd(ctx: CLIContext, **kwargs) -> None:
                 click.echo(f"profile={ctx.profile}")
 
             runner = CliTestRunner()
@@ -336,7 +336,7 @@ class TestRealWorldScenarios:
         @flexible_options
         @output_options
         @pass_context
-        def diagnose_cmd(ctx: Context, **kwargs) -> None:
+        def diagnose_cmd(ctx: CLIContext, **kwargs) -> None:
             for key, value in kwargs.items():
                 if value is not None:
                     setattr(ctx, key, value)
@@ -374,7 +374,7 @@ class TestRealWorldScenarios:
         @flexible_options
         @output_options
         @pass_context
-        def develop(ctx: Context, **kwargs) -> None:
+        def develop(ctx: CLIContext, **kwargs) -> None:
             # Skip full telemetry setup to avoid stream closure issues
             for key, value in kwargs.items():
                 if value is not None:

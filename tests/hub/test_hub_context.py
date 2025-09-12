@@ -98,7 +98,7 @@ class TestContext:
             "log_file": "/var/log/app.log",
         }
 
-        ctx = Context.from_dict(data)
+        ctx = CLIContext.from_dict(data)
 
         assert ctx.log_level == "WARNING"
         assert ctx.profile == "staging"
