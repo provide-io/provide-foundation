@@ -1,20 +1,18 @@
 # pyvider/rpcplugin/tests/crypto/test_certificate_verify.py
 
+from datetime import UTC, datetime, timedelta
+from unittest import mock
+
 import pytest
 
-from datetime import datetime, timedelta, timezone
-
-from unittest import mock
 # Removed: import sys
 # Removed: from cryptography.hazmat.primitives.asymmetric import ec
 # Removed: from cryptography.exceptions import InvalidSignature
-
-from provide.foundation.crypto import CertificateError
-
 from provide.foundation.crypto import (
     Certificate,
     CertificateBase,
     CertificateConfig,
+    CertificateError,
     KeyType,
 )
 
@@ -245,8 +243,8 @@ async def test_certificate_naive_datetime() -> None:
         not_valid_after=naive_time + timedelta(days=365),
     )
     base, _ = CertificateBase.create(config)
-    assert base.not_valid_before.tzinfo is timezone.utc
-    assert base.not_valid_after.tzinfo is timezone.utc
+    assert base.not_valid_before.tzinfo is UTC
+    assert base.not_valid_after.tzinfo is UTC
 
 
 @pytest.mark.asyncio
@@ -289,9 +287,8 @@ async def test_certificate_key_usage_extension_failure() -> None:
     with mock.patch(
         "cryptography.x509.CertificateBuilder.add_extension",
         side_effect=Exception("Mock failure"),
-    ):
-        with pytest.raises(CertificateError, match="Failed to create"):
-            cert._create_x509_certificate()
+    ), pytest.raises(CertificateError, match="Failed to create"):
+        cert._create_x509_certificate()
 
 
 @pytest.mark.asyncio

@@ -44,19 +44,17 @@ from provide.foundation.errors import (  # noqa: E402
     NetworkError,
     NotFoundError,
     ValidationError,
+    capture_error_context,
     error_boundary,
     with_error_handling,
-    capture_error_context,
-    retry_on_error,
 )
 from provide.foundation.resilience import (  # noqa: E402
-    RetryPolicy,
     BackoffStrategy,
 )
 from provide.foundation.resilience.decorators import (  # noqa: E402
-    retry,
     circuit_breaker,
     fallback,
+    retry,
 )
 
 
@@ -79,28 +77,28 @@ def example_error_handling() -> None:
     # Example 1: Error Boundary Context Manager
     pout("\n🔒 Example 1: Error Boundary Context Manager")
     logger.info("Demonstrating error_boundary context manager")
-    
+
     def risky_database_operation(fail: bool = False) -> dict[str, str]:
         """Simulate a database operation that might fail."""
         if fail:
             raise NetworkError("Database connection timeout", error_code="DB_TIMEOUT")
         return {"status": "success", "data": "user_data"}
-    
+
     # Error boundary with structured handling
     result = None
     with error_boundary(NetworkError, log_errors=True, reraise=False):
         result = risky_database_operation(fail=True)
-    
+
     # If we reach here and result is None, the operation failed
     if result is None:
         logger.warning("Database operation failed, using cached data")
         result = {"status": "cached", "data": "cached_user_data"}
-    
+
     logger.info("Operation completed", result=result)
 
     # Example 2: with_error_handling Decorator
     pout("\n🎯 Example 2: with_error_handling Decorator")
-    
+
     @with_error_handling(
         fallback={"error": "Service unavailable"},
         suppress=(NetworkError, ValidationError),
@@ -113,41 +111,41 @@ def example_error_handling() -> None:
         if user_id == "network_fail":
             raise NetworkError("External service unavailable")
         return {"user_id": user_id, "name": "John Doe", "email": "john@example.com"}
-    
+
     # Test successful case
     logger.info("Testing successful user fetch")
     profile = fetch_user_profile("user123")
     logger.info("User profile fetched", profile=profile)
-    
+
     # Test error cases with automatic handling
     logger.info("Testing validation error case")
     profile = fetch_user_profile("invalid")
     logger.info("Validation error handled", fallback_result=profile)
-    
+
     logger.info("Testing network error case")
     profile = fetch_user_profile("network_fail")
     logger.info("Network error handled", fallback_result=profile)
 
     # Example 3: Custom Foundation Exceptions
     pout("\n🏗️ Example 3: Custom Foundation Exceptions")
-    
+
     class UserServiceError(FoundationError):
         """Custom exception for user service operations."""
         error_code = "USER_SERVICE_ERROR"
-        
+
         def __init__(self, message: str, user_id: str | None = None):
             super().__init__(message)
             self.user_id = user_id
-    
+
     def process_user_action(user_id: str, action: str) -> dict[str, str]:
         """Process user action with custom error handling."""
         if action == "delete_admin":
             raise UserServiceError(
-                f"Cannot delete admin user: {user_id}", 
+                f"Cannot delete admin user: {user_id}",
                 user_id=user_id
             )
         return {"user_id": user_id, "action": action, "status": "completed"}
-    
+
     try:
         result = process_user_action("admin_user", "delete_admin")
     except UserServiceError as e:
@@ -165,10 +163,10 @@ def example_error_handling() -> None:
 
     # Example 4: Retry Patterns with Foundation
     pout("\n🔄 Example 4: Retry Patterns and Resilience")
-    
+
     # Simple retry with decorator
     attempt_count = 0
-    
+
     @retry(
         NetworkError,
         max_attempts=3,
@@ -179,37 +177,37 @@ def example_error_handling() -> None:
         """Simulate an unreliable API call."""
         nonlocal attempt_count
         attempt_count += 1
-        
+
         logger.info(f"API call attempt {attempt_count}")
-        
+
         if attempt_count < 3:
             raise NetworkError(f"API temporarily unavailable (attempt {attempt_count})")
-        
+
         return {"status": "success", "data": "api_response"}
-    
+
     logger.info("Testing retry pattern")
     try:
         result = unreliable_api_call()
         logger.info("API call succeeded after retries", result=result)
     except NetworkError as e:
         logger.error("API call failed after all retries", error=str(e))
-    
+
     # Reset for next example
     attempt_count = 0
 
     # Example 5: Circuit Breaker Pattern
     pout("\n⚡ Example 5: Circuit Breaker Pattern")
-    
+
     @circuit_breaker(failure_threshold=2, recovery_timeout=0.5)
     def external_service_call(should_fail: bool = False) -> dict[str, str]:
         """External service call with circuit breaker protection."""
         if should_fail:
             raise NetworkError("External service is down")
         return {"status": "success", "service": "external_api"}
-    
+
     # Test circuit breaker
     logger.info("Testing circuit breaker pattern")
-    
+
     # First few calls will fail and trigger circuit breaker
     for i in range(4):
         try:
@@ -220,7 +218,7 @@ def example_error_handling() -> None:
 
     # Example 6: Fallback Chains
     pout("\n🎯 Example 6: Fallback Strategies")
-    
+
     @fallback(
         lambda: {"source": "cache", "data": "cached_response"},
         lambda: {"source": "default", "data": "default_response"}
@@ -229,14 +227,14 @@ def example_error_handling() -> None:
         """Get data with multiple fallback strategies."""
         # Simulate primary service failure
         raise NetworkError("Primary service unavailable")
-    
+
     logger.info("Testing fallback strategies")
     result = get_data_with_fallback()
     logger.info("Fallback strategy used", result=result)
 
     # Example 7: Error Context Enrichment
     pout("\n📋 Example 7: Error Context Enrichment")
-    
+
     def complex_operation_with_context() -> None:
         """Operation with rich error context."""
         operation_context = {
@@ -245,14 +243,14 @@ def example_error_handling() -> None:
             "request_id": "req_abcdef",
             "timestamp": "2024-01-15T10:30:00Z"
         }
-        
+
         try:
             # Simulate an operation that fails
             raise NotFoundError("Resource not found in database")
         except NotFoundError as e:
             # Enrich error with operational context
             error_context = capture_error_context(e)
-            
+
             logger.error(
                 "Complex operation failed with enriched context",
                 error=str(e),
@@ -262,7 +260,7 @@ def example_error_handling() -> None:
                 action="fetch_resource",
                 status="error"
             )
-    
+
     logger.info("Testing error context enrichment")
     complex_operation_with_context()
 

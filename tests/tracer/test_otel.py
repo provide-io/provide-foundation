@@ -1,15 +1,16 @@
 """Comprehensive tests for tracer/otel.py module."""
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
 import sys
+from unittest.mock import Mock, patch
+
+import pytest
 
 from provide.foundation.tracer.otel import (
-    _require_otel,
-    setup_opentelemetry_tracing,
-    get_otel_tracer,
-    shutdown_opentelemetry,
     _HAS_OTEL,
+    _require_otel,
+    get_otel_tracer,
+    setup_opentelemetry_tracing,
+    shutdown_opentelemetry,
 )
 
 
@@ -48,18 +49,18 @@ class TestSetupOpentelemetryTracing:
             "otlp_protocol": "grpc",
         }
         defaults.update(kwargs)
-        
+
         config = Mock()
         for key, value in defaults.items():
             setattr(config, key, value)
-        
+
         config.get_otlp_headers_dict.return_value = {"x-api-key": "test-key"}
         return config
 
     def test_setup_tracing_disabled(self) -> None:
         """Test setup when tracing is disabled."""
         config = self.create_mock_config(tracing_enabled=False)
-        
+
         with patch("provide.foundation.tracer.otel._HAS_OTEL", True):
             # Should return early without setting up tracing
             setup_opentelemetry_tracing(config)
@@ -68,7 +69,7 @@ class TestSetupOpentelemetryTracing:
     def test_setup_globally_disabled(self) -> None:
         """Test setup when globally disabled."""
         config = self.create_mock_config(globally_disabled=True)
-        
+
         with patch("provide.foundation.tracer.otel._HAS_OTEL", True):
             setup_opentelemetry_tracing(config)
             # No assertions needed - function should return without error
@@ -76,7 +77,7 @@ class TestSetupOpentelemetryTracing:
     def test_setup_otel_not_available(self) -> None:
         """Test setup when OpenTelemetry is not available."""
         config = self.create_mock_config()
-        
+
         with patch("provide.foundation.tracer.otel._HAS_OTEL", False):
             setup_opentelemetry_tracing(config)
             # No assertions needed - function should return without error
@@ -87,11 +88,11 @@ class TestSetupOpentelemetryTracing:
             otlp_endpoint=None,
             otlp_traces_endpoint=None
         )
-        
+
         mock_resource = Mock()
         mock_sampler = Mock()
         mock_tracer_provider = Mock()
-        
+
         with patch("provide.foundation.tracer.otel._HAS_OTEL", True):
             with patch("provide.foundation.tracer.otel.Resource") as mock_resource_class:
                 with patch("provide.foundation.tracer.otel.TraceIdRatioBased") as mock_sampler_class:
@@ -131,13 +132,13 @@ class TestSetupOpentelemetryTracing:
             otlp_endpoint="http://localhost:4317",
             otlp_protocol="grpc"
         )
-        
+
         mock_resource = Mock()
         mock_sampler = Mock()
         mock_tracer_provider = Mock()
         mock_exporter = Mock()
         mock_processor = Mock()
-        
+
         with patch("provide.foundation.tracer.otel._HAS_OTEL", True):
             with patch("provide.foundation.tracer.otel.Resource") as mock_resource_class:
                 with patch("provide.foundation.tracer.otel.TraceIdRatioBased") as mock_sampler_class:
@@ -175,13 +176,13 @@ class TestSetupOpentelemetryTracing:
             otlp_traces_endpoint="http://localhost:4318/v1/traces",
             otlp_protocol="http"
         )
-        
+
         mock_resource = Mock()
         mock_sampler = Mock()
         mock_tracer_provider = Mock()
         mock_exporter = Mock()
         mock_processor = Mock()
-        
+
         with patch("provide.foundation.tracer.otel._HAS_OTEL", True):
             with patch("provide.foundation.tracer.otel.Resource") as mock_resource_class:
                 with patch("provide.foundation.tracer.otel.TraceIdRatioBased") as mock_sampler_class:
@@ -214,13 +215,13 @@ class TestSetupOpentelemetryTracing:
             otlp_traces_endpoint="http://localhost:4318/v1/traces",
             otlp_protocol="http"
         )
-        
+
         mock_resource = Mock()
         mock_sampler = Mock()
         mock_tracer_provider = Mock()
         mock_exporter = Mock()
         mock_processor = Mock()
-        
+
         with patch("provide.foundation.tracer.otel._HAS_OTEL", True):
             with patch("provide.foundation.tracer.otel.Resource") as mock_resource_class:
                 with patch("provide.foundation.tracer.otel.TraceIdRatioBased") as mock_sampler_class:
@@ -249,11 +250,11 @@ class TestSetupOpentelemetryTracing:
             service_name=None,
             service_version=None
         )
-        
+
         mock_resource = Mock()
         mock_sampler = Mock()
         mock_tracer_provider = Mock()
-        
+
         with patch("provide.foundation.tracer.otel._HAS_OTEL", True):
             with patch("provide.foundation.tracer.otel.Resource") as mock_resource_class:
                 with patch("provide.foundation.tracer.otel.TraceIdRatioBased") as mock_sampler_class:
@@ -282,7 +283,7 @@ class TestGetOtelTracer:
     def test_get_tracer_success(self) -> None:
         """Test getting tracer successfully."""
         mock_tracer = Mock()
-        
+
         with patch("provide.foundation.tracer.otel._HAS_OTEL", True):
             with patch("provide.foundation.tracer.otel.otel_trace") as mock_trace:
                 mock_trace.get_tracer.return_value = mock_tracer
@@ -316,7 +317,7 @@ class TestShutdownOpentelemetry:
         """Test successful shutdown."""
         mock_tracer_provider = Mock()
         mock_tracer_provider.shutdown = Mock()
-        
+
         with patch("provide.foundation.tracer.otel._HAS_OTEL", True):
             with patch("provide.foundation.tracer.otel.otel_trace") as mock_trace:
                 with patch("provide.foundation.tracer.otel.slog") as mock_log:
@@ -330,7 +331,7 @@ class TestShutdownOpentelemetry:
     def test_shutdown_no_shutdown_method(self) -> None:
         """Test shutdown when tracer provider has no shutdown method."""
         mock_tracer_provider = Mock(spec=[])  # No shutdown method
-        
+
         with patch("provide.foundation.tracer.otel._HAS_OTEL", True):
             with patch("provide.foundation.tracer.otel.otel_trace") as mock_trace:
                 with patch("provide.foundation.tracer.otel.slog") as mock_log:
@@ -360,7 +361,6 @@ class TestModuleFeatureDetection:
         """Test that _HAS_OTEL is properly detected."""
         # This test verifies the current state - in our test environment,
         # OpenTelemetry might or might not be installed
-        from provide.foundation.tracer.otel import _HAS_OTEL
         assert isinstance(_HAS_OTEL, bool)
 
     def test_import_stubs_when_otel_missing(self) -> None:
@@ -377,19 +377,20 @@ class TestModuleFeatureDetection:
             "opentelemetry.sdk.trace.export",
             "opentelemetry.sdk.trace.sampling",
         ]
-        
+
         # Remove OpenTelemetry modules temporarily
         for module in otel_modules:
             if module in sys.modules:
                 original_modules[module] = sys.modules[module]
                 del sys.modules[module]
-        
+
         try:
             # Force re-import to trigger the ImportError path
             import importlib
+
             import provide.foundation.tracer.otel as otel_module
             importlib.reload(otel_module)
-            
+
             # If we reach here and _HAS_OTEL is False, verify stubs are None
             if not otel_module._HAS_OTEL:
                 assert otel_module.otel_trace is None
@@ -403,7 +404,7 @@ class TestModuleFeatureDetection:
             # Restore original modules
             for module, original in original_modules.items():
                 sys.modules[module] = original
-            
+
             # Reload the module again to restore its original state
             import provide.foundation.tracer.otel as otel_module
             importlib.reload(otel_module)
@@ -424,7 +425,7 @@ class TestIntegration:
         config.otlp_traces_endpoint = None
         config.otlp_protocol = "grpc"
         config.get_otlp_headers_dict.return_value = {"authorization": "Bearer test-token"}
-        
+
         with patch("provide.foundation.tracer.otel._HAS_OTEL", True):
             with patch("provide.foundation.tracer.otel.Resource") as mock_resource_class:
                 with patch("provide.foundation.tracer.otel.TraceIdRatioBased") as mock_sampler_class:
@@ -439,7 +440,7 @@ class TestIntegration:
                                     mock_exporter = Mock()
                                     mock_processor = Mock()
                                     mock_tracer = Mock()
-                                    
+
                                     mock_resource_class.create.return_value = mock_resource
                                     mock_sampler_class.return_value = mock_sampler
                                     mock_provider_class.return_value = mock_tracer_provider
@@ -464,16 +465,16 @@ class TestIntegration:
         config = Mock()
         config.tracing_enabled = True
         config.globally_disabled = False
-        
+
         with patch("provide.foundation.tracer.otel._HAS_OTEL", False):
             # All these should work without error
             setup_opentelemetry_tracing(config)
-            
+
             tracer = get_otel_tracer("test")
             assert tracer is None
-            
+
             shutdown_opentelemetry()
-            
+
             # _require_otel should raise
             with pytest.raises(ImportError):
                 _require_otel()

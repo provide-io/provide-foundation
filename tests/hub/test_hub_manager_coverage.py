@@ -1,12 +1,10 @@
 """Additional tests for Hub manager to improve code coverage."""
 
-import click
 from unittest.mock import Mock, patch
-import pytest
+
+import click
 
 from provide.foundation.hub.manager import Hub
-from provide.foundation.hub.components import ComponentInfo
-from provide.foundation.hub.commands import CommandInfo
 
 
 class TestHubManagerCoverage:

@@ -1,7 +1,8 @@
 # pyvider/rpcplugin/tests/test_certificate_credentials.py
 
-import pytest
 from dataclasses import dataclass
+
+import pytest
 
 # Fixtures will be available via tests.fixtures through conftest.py
 # from tests.fixtures.crypto import client_cert, server_cert

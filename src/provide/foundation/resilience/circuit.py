@@ -2,9 +2,10 @@
 Circuit breaker implementation for preventing cascading failures.
 """
 
+from collections.abc import Callable
 from enum import Enum
 import time
-from typing import Callable, TypeVar
+from typing import TypeVar
 
 from attrs import define, field
 

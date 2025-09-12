@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Never
 
 import pytest
-from provide.foundation.testing.file import temp_directory
+
 from provide.foundation.file.directory import (
     ensure_dir,
     ensure_parent_dir,

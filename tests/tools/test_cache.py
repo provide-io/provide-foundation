@@ -5,10 +5,10 @@ Tests the TTL-based caching system for installed tools,
 including cache operations, TTL handling, and metadata management.
 """
 
-import json
-import tempfile
 from datetime import datetime, timedelta
+import json
 from pathlib import Path
+import tempfile
 from unittest.mock import patch
 
 import pytest

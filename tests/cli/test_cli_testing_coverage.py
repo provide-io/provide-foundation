@@ -4,19 +4,18 @@ import json
 import os
 from pathlib import Path
 import tempfile
-from unittest.mock import patch, Mock
-import pytest
+from unittest.mock import Mock, patch
 
 import click
 from click.testing import CliRunner
+import pytest
 
 from provide.foundation.testing import (
+    CliTestCase,
     MockContext,
+    create_test_cli,
     isolated_cli_runner,
     temp_config_file,
-    create_test_cli,
-    CliTestCase,
-    mock_logger,
 )
 
 

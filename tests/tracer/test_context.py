@@ -4,20 +4,19 @@
 """Tests for Foundation tracer context management."""
 
 import contextvars
-from unittest.mock import patch
 
 import pytest
 
 from provide.foundation.tracer.context import (
+    SpanContext,
+    _current_span,
+    _current_trace_id,
+    create_child_span,
     get_current_span,
     get_current_trace_id,
     get_trace_context,
     set_current_span,
     with_span,
-    create_child_span,
-    SpanContext,
-    _current_span,
-    _current_trace_id,
 )
 from provide.foundation.tracer.spans import Span
 
@@ -130,9 +129,8 @@ class TestSpanContext:
         """Test SpanContext handling exceptions."""
         span = Span("test_op")
 
-        with pytest.raises(ValueError):
-            with SpanContext(span):
-                raise ValueError("Test error")
+        with pytest.raises(ValueError), SpanContext(span):
+            raise ValueError("Test error")
 
         assert span._active is False
         assert span.status == "error"
@@ -194,9 +192,8 @@ class TestWithSpanHelper:
 
     def test_with_span_handles_exception(self):
         """Test with_span handling exceptions."""
-        with pytest.raises(RuntimeError):
-            with with_span("failing_op") as span:
-                raise RuntimeError("Operation failed")
+        with pytest.raises(RuntimeError), with_span("failing_op") as span:
+            raise RuntimeError("Operation failed")
 
         assert span.status == "error"
         assert span.error == "RuntimeError: Operation failed"

@@ -1,13 +1,10 @@
 """Tests for component registration functionality."""
 
-import pytest
 
-from provide.foundation.errors import AlreadyExistsError
 from provide.foundation.hub.components import (
     discover_components,
 )
-from provide.foundation.hub.manager import clear_hub, get_hub
-
+from provide.foundation.hub.manager import clear_hub
 
 # Legacy component registration tests removed - replaced by registry-based architecture
 #

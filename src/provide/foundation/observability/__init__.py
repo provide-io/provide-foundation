@@ -27,7 +27,7 @@ if _HAS_OTEL:
         try:
             from provide.foundation.integrations.openobserve.commands import (
                 openobserve_group,
-            )  # noqa: F401
+            )
         except ImportError:
             # Click not available, skip command registration
             pass

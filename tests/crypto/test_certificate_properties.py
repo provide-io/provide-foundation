@@ -1,15 +1,13 @@
 # pyvider/rpcplugin/tests/crypto/test_certificate_properties.py
 
-import pytest
-
 from unittest import mock
 
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric import rsa, ec
+from cryptography.hazmat.primitives.asymmetric import ec, rsa
+import pytest
 
-from provide.foundation.crypto import CertificateError
-from provide.foundation.crypto import Certificate
+from provide.foundation.crypto import Certificate, CertificateError
 
 # Fixtures will be available via tests.fixtures through conftest.py
 # from tests.fixtures.crypto import client_cert, server_cert

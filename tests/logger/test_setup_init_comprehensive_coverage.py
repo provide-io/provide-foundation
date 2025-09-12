@@ -1,7 +1,6 @@
 """Comprehensive coverage tests for logger/setup/__init__.py module."""
 
 import importlib
-import pytest
 from unittest.mock import patch
 
 
@@ -26,7 +25,7 @@ class TestLoggerSetupInit:
 
     def test_reset_for_testing_with_testing_available(self):
         """Test reset_for_testing import when testing module is available."""
-        from provide.foundation.logger.setup import reset_for_testing, _has_testing
+        from provide.foundation.logger.setup import _has_testing, reset_for_testing
 
         # Should be available in normal test environment
         assert _has_testing is True
@@ -161,7 +160,7 @@ class TestSetupModuleIntegration:
 
     def test_reset_for_testing_functionality(self):
         """Test that reset_for_testing function works when available."""
-        from provide.foundation.logger.setup import reset_for_testing, _has_testing
+        from provide.foundation.logger.setup import _has_testing, reset_for_testing
 
         if _has_testing:
             assert callable(reset_for_testing)
@@ -228,7 +227,7 @@ class TestSetupModuleIntegration:
         public_attrs = [
             attr
             for attr in dir(setup_module)
-            if not attr.startswith("_") and not attr in ["reset_for_testing"]
+            if not attr.startswith("_") and attr not in ["reset_for_testing"]
         ]
 
         # Should only contain items from __all__ (minus conditional exports)

@@ -1,14 +1,11 @@
 """Comprehensive coverage tests for process/lifecycle.py module."""
 
-import asyncio
-import os
-import subprocess
+from pathlib import Path
 import sys
 import tempfile
 import threading
 import time
-from pathlib import Path
-from unittest.mock import Mock, MagicMock, patch, call
+from unittest.mock import Mock, patch
 
 import pytest
 

@@ -2,8 +2,8 @@
 
 from unittest.mock import patch
 
-from provide.foundation.logger.custom_processors import add_logger_name_emoji_prefix
 from provide.foundation.eventsets.types import FieldMapping
+from provide.foundation.logger.custom_processors import add_logger_name_emoji_prefix
 
 
 def test_logger_base_already_configured_after_lock() -> None:

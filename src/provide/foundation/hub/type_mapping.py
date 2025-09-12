@@ -11,7 +11,7 @@ def extract_click_type(annotation: Any) -> type:
 
     Handles:
     - Union types (str | None, Union[str, None])
-    - Optional types (Optional[str])
+    - Optional types (str | None)
     - Regular types (str, int, bool)
 
     Args:

@@ -1,15 +1,15 @@
 """Additional tests for parsing utilities to improve code coverage."""
 
-import pytest
-from typing import get_origin, get_args
 from unittest.mock import Mock
 
+import pytest
+
 from provide.foundation.utils.parsing import (
-    parse_bool,
-    parse_list,
-    parse_dict,
-    parse_typed_value,
     auto_parse,
+    parse_bool,
+    parse_dict,
+    parse_list,
+    parse_typed_value,
 )
 
 
@@ -116,7 +116,6 @@ class TestParsingCoverage:
     def test_parse_typed_value_with_typed_list(self):
         """Test parse_typed_value with typed list."""
         # Test list[int]
-        from typing import List
 
         result = parse_typed_value("1,2,3", list[int])
         assert result == [1, 2, 3]
@@ -135,7 +134,6 @@ class TestParsingCoverage:
     def test_parse_typed_value_with_dict_type(self):
         """Test parse_typed_value with dict types."""
         # Test with typing origin
-        from typing import Dict
 
         result = parse_typed_value("a=1,b=2", dict[str, str])
         assert result == {"a": "1", "b": "2"}
@@ -196,7 +194,6 @@ class TestParsingCoverage:
     def test_parse_typed_value_list_without_args(self):
         """Test parse_typed_value with list type that has no generic args."""
         # Create a mock type that looks like list but without args
-        from typing import get_origin, get_args
 
         # Test with typing.List that might not have args in some cases
         result = parse_typed_value("a,b,c", list)

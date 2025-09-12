@@ -1,8 +1,8 @@
 """Tests for optional cryptography dependency behavior."""
 
+from unittest.mock import patch
+
 import pytest
-from unittest.mock import patch, Mock
-import sys
 
 
 class TestOptionalCryptoDependency:
@@ -49,7 +49,6 @@ class TestOptionalCryptoDependency:
         with patch("provide.foundation.crypto.certificates.base._HAS_CRYPTO", False):
             from provide.foundation.crypto.certificates import (
                 CertificateBase,
-                CertificateConfig,
             )
 
             config = {
@@ -69,8 +68,8 @@ class TestOptionalCryptoDependency:
         """Test convenience functions fail gracefully without cryptography."""
         with patch("provide.foundation.crypto.certificates.base._HAS_CRYPTO", False):
             from provide.foundation.crypto.certificates import (
-                create_self_signed,
                 create_ca,
+                create_self_signed,
             )
 
             with pytest.raises(
@@ -87,9 +86,9 @@ class TestOptionalCryptoDependency:
         """Test signature functions fail gracefully without cryptography."""
         with patch("provide.foundation.crypto.signatures._HAS_CRYPTO", False):
             from provide.foundation.crypto.signatures import (
+                generate_ed25519_keypair,
                 sign_data,
                 verify_signature,
-                generate_ed25519_keypair,
             )
 
             test_data = b"test data"
@@ -154,8 +153,8 @@ class TestCryptoModuleImport:
         from provide.foundation.crypto import (
             Certificate,
             CertificateError,
-            create_self_signed,
             create_ca,
+            create_self_signed,
         )
 
         assert Certificate is not None

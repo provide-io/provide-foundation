@@ -1,9 +1,6 @@
 """Additional tests for testing hub fixtures to improve code coverage."""
 
 from pathlib import Path
-import pytest
-
-from provide.foundation.testing.hub import default_container_directory
 
 
 class TestHubFixturesCoverage:

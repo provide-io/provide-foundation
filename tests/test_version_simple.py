@@ -1,11 +1,12 @@
 """Simple coverage tests for _version.py module."""
 
-import tempfile
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+import tempfile
+from unittest.mock import MagicMock, patch
+
 import pytest
 
-from provide.foundation._version import _find_project_root, get_version, __version__
+from provide.foundation._version import __version__, _find_project_root, get_version
 
 
 class TestVersionSimpleCoverage:
@@ -198,9 +199,9 @@ class TestVersionModuleBehavior:
     def test_imports_work(self):
         """Test that all module imports work."""
         from provide.foundation._version import (
+            __version__,
             _find_project_root,
             get_version,
-            __version__,
         )
 
         # All should be callable/accessible

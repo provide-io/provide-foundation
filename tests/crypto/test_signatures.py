@@ -3,13 +3,13 @@
 import pytest
 
 from provide.foundation.crypto import (
+    ED25519_PRIVATE_KEY_SIZE,
+    ED25519_PUBLIC_KEY_SIZE,
+    ED25519_SIGNATURE_SIZE,
     generate_ed25519_keypair,
     generate_signing_keypair,
     sign_data,
     verify_signature,
-    ED25519_PRIVATE_KEY_SIZE,
-    ED25519_PUBLIC_KEY_SIZE,
-    ED25519_SIGNATURE_SIZE,
 )
 
 

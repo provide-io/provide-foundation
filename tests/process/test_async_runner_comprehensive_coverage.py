@@ -1,10 +1,8 @@
 """Comprehensive coverage tests for process/async_runner.py module."""
 
-import asyncio
-import os
+from pathlib import Path
 import sys
 import tempfile
-from pathlib import Path
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
@@ -12,10 +10,12 @@ import pytest
 # Mark all tests in this file to run serially to avoid event loop issues
 pytestmark = pytest.mark.serial
 
+import builtins
+
 from provide.foundation.process.async_runner import (
     async_run_command,
-    async_stream_command,
     async_run_shell,
+    async_stream_command,
 )
 from provide.foundation.process.runner import (
     CompletedProcess,
@@ -201,18 +201,16 @@ class TestAsyncRunCommand:
         # Mock to raise ProcessError in the try block
         with patch(
             "asyncio.create_subprocess_exec", side_effect=ProcessError("test error")
-        ):
-            with pytest.raises(ProcessError, match="test error"):
-                await async_run_command(["echo", "test"])
+        ), pytest.raises(ProcessError, match="test error"):
+            await async_run_command(["echo", "test"])
 
     async def test_timeout_error_reraise(self):
         """Test that TimeoutError is re-raised correctly."""
         # Mock to raise TimeoutError in the try block
         with patch(
             "asyncio.create_subprocess_exec", side_effect=TimeoutError("timeout error")
-        ):
-            with pytest.raises(TimeoutError, match="timeout error"):
-                await async_run_command(["echo", "test"])
+        ), pytest.raises(TimeoutError, match="timeout error"):
+            await async_run_command(["echo", "test"])
 
 
 @pytest.mark.asyncio
@@ -392,21 +390,19 @@ class TestAsyncStreamCommand:
         """Test that ProcessError is re-raised in stream."""
         with patch(
             "asyncio.create_subprocess_exec", side_effect=ProcessError("stream error")
-        ):
-            with pytest.raises(ProcessError, match="stream error"):
-                lines = []
-                async for line in async_stream_command(["echo", "test"]):
-                    lines.append(line)
+        ), pytest.raises(ProcessError, match="stream error"):
+            lines = []
+            async for line in async_stream_command(["echo", "test"]):
+                lines.append(line)
 
     async def test_stream_timeout_error_reraise(self):
         """Test that TimeoutError is re-raised in stream."""
         with patch(
             "asyncio.create_subprocess_exec", side_effect=TimeoutError("stream timeout")
-        ):
-            with pytest.raises(TimeoutError, match="stream timeout"):
-                lines = []
-                async for line in async_stream_command(["echo", "test"]):
-                    lines.append(line)
+        ), pytest.raises(TimeoutError, match="stream timeout"):
+            lines = []
+            async for line in async_stream_command(["echo", "test"]):
+                lines.append(line)
 
     async def test_stream_string_command(self):
         """Test stream execution with string command."""
@@ -537,19 +533,18 @@ class TestAsyncRunnerEdgeCases:
         with patch(
             "asyncio.create_subprocess_exec",
             side_effect=OSError("Process creation failed"),
-        ):
-            with pytest.raises(ProcessError, match="Failed to execute async command"):
-                await async_run_command(["echo", "test"])
+        ), pytest.raises(ProcessError, match="Failed to execute async command"):
+            await async_run_command(["echo", "test"])
 
     async def test_mock_communicate_timeout(self):
         """Test timeout handling in communicate method."""
         mock_process = AsyncMock()
-        mock_process.communicate = AsyncMock(side_effect=asyncio.TimeoutError())
+        mock_process.communicate = AsyncMock(side_effect=builtins.TimeoutError())
         mock_process.kill = Mock()  # Use regular Mock to avoid coroutine warnings
         mock_process.wait = AsyncMock()
 
         with patch("asyncio.create_subprocess_exec", return_value=mock_process):
-            with patch("asyncio.wait_for", side_effect=asyncio.TimeoutError()):
+            with patch("asyncio.wait_for", side_effect=builtins.TimeoutError()):
                 with pytest.raises(TimeoutError, match="Command timed out after"):
                     await async_run_command(["echo", "test"], timeout=1.0)
 
@@ -560,11 +555,11 @@ class TestAsyncRunnerEdgeCases:
         """Test handling of decode errors in output."""
         # Mock process with invalid UTF-8 bytes
         mock_process = Mock()
-        
+
         # Use async function instead of AsyncMock to avoid coroutine warnings
         async def mock_communicate(input=None):
             return (b"\xff\xfe", b"")
-        
+
         mock_process.communicate = mock_communicate
         mock_process.returncode = 0
 
@@ -578,13 +573,13 @@ class TestAsyncRunnerEdgeCases:
         """Test stream timeout during readline operations."""
         mock_process = AsyncMock()
         mock_stdout = AsyncMock()
-        mock_stdout.readline = AsyncMock(side_effect=asyncio.TimeoutError())
+        mock_stdout.readline = AsyncMock(side_effect=builtins.TimeoutError())
         mock_process.stdout = mock_stdout
         mock_process.kill = Mock()  # Use regular Mock to avoid coroutine warnings
         mock_process.wait = AsyncMock()
 
         with patch("asyncio.create_subprocess_exec", return_value=mock_process):
-            with patch("asyncio.wait_for", side_effect=asyncio.TimeoutError()):
+            with patch("asyncio.wait_for", side_effect=builtins.TimeoutError()):
                 with pytest.raises(TimeoutError, match="Command timed out after"):
                     lines = []
                     async for line in async_stream_command(
@@ -599,11 +594,11 @@ class TestAsyncRunnerEdgeCases:
         """Test stream when process has no stdout."""
         mock_process = Mock()
         mock_process.stdout = None
-        
+
         # Use async function instead of AsyncMock to avoid coroutine warnings
         async def mock_wait():
             return None
-        
+
         mock_process.wait = mock_wait
         mock_process.returncode = 0
 

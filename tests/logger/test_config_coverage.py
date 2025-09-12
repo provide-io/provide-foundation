@@ -6,7 +6,8 @@ Tests to improve coverage for logger configuration files.
 """
 
 import os
-from unittest.mock import patch, Mock
+from unittest.mock import patch
+
 import pytest
 
 
@@ -109,7 +110,7 @@ class TestLoggingConfigCoverage:
     def test_logging_config_no_emoji_sets_fields(self):
         """Test that deprecated emoji sets fields don't exist."""
         from provide.foundation.logger.config.logging import LoggingConfig
-        
+
         config = LoggingConfig.from_env()
         # Emoji sets fields should not exist
         assert not hasattr(config, 'enabled_emoji_sets')

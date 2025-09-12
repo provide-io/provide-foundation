@@ -21,7 +21,7 @@ class TestCLIMainCoverage:
 
     def test_require_click_raises_when_no_click(self):
         """Test _require_click raises ImportError when click not available."""
-        from provide.foundation.cli.main import _require_click, _HAS_CLICK
+        from provide.foundation.cli.main import _HAS_CLICK, _require_click
 
         if not _HAS_CLICK:
             with pytest.raises(ImportError, match="CLI requires optional dependencies"):
@@ -40,6 +40,7 @@ class TestCLIMainCoverage:
         """Test CLI group is available when click is installed."""
         try:
             import click  # noqa: F401
+
             from provide.foundation.cli.main import cli
 
             assert cli is not None

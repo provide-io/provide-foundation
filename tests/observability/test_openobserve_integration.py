@@ -2,17 +2,16 @@
 Integration test for OpenObserve that generates and queries logs.
 """
 
+from datetime import datetime, timedelta
 import json
 import os
 import random
 import time
-from datetime import datetime, timedelta
 
 import pytest
 import requests
 
-
-# Skip tests if OpenObserve is not available  
+# Skip tests if OpenObserve is not available
 pytestmark = [
     pytest.mark.integration,
     pytest.mark.skipif(
@@ -145,7 +144,7 @@ class TestOpenObserveIntegration:
     def test_bulk_ingestion_and_query(self):
         """Test ingesting 1000 logs and querying them."""
         # Generate logs
-        print(f"\n📝 Generating 1000 log entries...")
+        print("\n📝 Generating 1000 log entries...")
         bulk_data = self.generate_bulk_logs(1000)
 
         # Send bulk request
@@ -175,11 +174,10 @@ class TestOpenObserveIntegration:
         time.sleep(2)
 
         # Now query the data
-        print(f"\n🔍 Querying ingested logs...")
+        print("\n🔍 Querying ingested logs...")
         from provide.foundation.integrations.openobserve import (
             OpenObserveClient,
             search_logs,
-            aggregate_by_level,
         )
 
         # Set up client
@@ -289,7 +287,7 @@ class TestOpenObserveIntegration:
         elapsed = time.time() - start_time
         rate = total_logs / elapsed
 
-        print(f"\n✅ Rapid ingestion complete:")
+        print("\n✅ Rapid ingestion complete:")
         print(f"   - Total logs: {total_logs}")
         print(f"   - Time: {elapsed:.2f}s")
         print(f"   - Rate: {rate:.0f} logs/second")

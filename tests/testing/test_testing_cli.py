@@ -4,20 +4,18 @@ import json
 import os
 from pathlib import Path
 import tempfile
-from unittest.mock import MagicMock
 
-import pytest
 import click
 from click.testing import CliRunner
+import pytest
 
 from provide.foundation.testing.cli import (
+    CliTestCase,
     MockContext,
+    create_test_cli,
     isolated_cli_runner,
     temp_config_file,
-    create_test_cli,
-    CliTestCase,
 )
-from provide.foundation.testing.logger import mock_logger
 
 
 class TestMockContext:

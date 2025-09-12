@@ -5,15 +5,13 @@
 Tests for file stream functionality.
 """
 
-import tempfile
 from pathlib import Path
-
-import pytest
+import tempfile
 
 from provide.foundation.streams.file import (
+    close_log_streams,
     configure_file_logging,
     flush_log_streams,
-    close_log_streams,
 )
 
 

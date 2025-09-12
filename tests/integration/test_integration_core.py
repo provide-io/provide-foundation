@@ -374,7 +374,7 @@ def test_configuration_edge_cases() -> None:
     original_log_level = os.environ.get("PROVIDE_LOG_LEVEL")
     if "PROVIDE_LOG_LEVEL" in os.environ:
         del os.environ["PROVIDE_LOG_LEVEL"]
-    
+
     try:
         # Test with minimal configuration (true defaults)
         minimal_config = TelemetryConfig()

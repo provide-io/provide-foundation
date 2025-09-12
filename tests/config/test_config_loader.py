@@ -13,9 +13,9 @@ from provide.foundation.config.loader import (
     ChainedLoader,
     ConfigSource,
     DictConfigLoader,
-    RuntimeConfigLoader,
     FileConfigLoader,
     MultiSourceLoader,
+    RuntimeConfigLoader,
 )
 from provide.foundation.config.types import ConfigFormat
 from provide.foundation.errors import ConfigurationError, NotFoundError

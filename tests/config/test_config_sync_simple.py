@@ -1,30 +1,29 @@
 """Simple coverage tests for config/sync.py module focusing on covering code lines."""
 
-import asyncio
 import tempfile
-from pathlib import Path
-from unittest.mock import Mock, patch, AsyncMock
-import pytest
+from unittest.mock import Mock, patch
+
 from attrs import define, field
+import pytest
 
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.config.sync import (
-    run_async,
+    SyncConfigManager,
+    clone_config,
+    config_to_dict,
+    diff_configs,
+    get_config,
     load_config,
     load_config_from_env,
     load_config_from_file,
     load_config_from_multiple,
-    validate_config,
-    update_config,
-    config_to_dict,
-    clone_config,
-    diff_configs,
-    SyncConfigManager,
-    sync_manager,
-    get_config,
-    set_config,
     register_config,
+    run_async,
+    set_config,
+    sync_manager,
+    update_config,
+    validate_config,
 )
 from provide.foundation.config.types import ConfigSource
 
@@ -72,7 +71,7 @@ class TestSyncModuleCoverage:
         # Mock asyncio.run to avoid creating actual coroutine
         with patch("asyncio.run") as mock_run:
             mock_run.return_value = "test_result"
-            
+
             async def test_coro():
                 return "test_result"
 
@@ -93,7 +92,7 @@ class TestSyncModuleCoverage:
                 if hasattr(coro, 'close'):
                     coro.close()
                 return SimpleTestConfig(name="mocked")
-            
+
             mock_run_async.side_effect = mock_run
 
             # Test with data
@@ -128,7 +127,7 @@ class TestSyncModuleCoverage:
             if hasattr(coro, 'close'):
                 coro.close()
             return SimpleTestConfig()
-        
+
         mock_run_async.side_effect = mock_run
 
         # Create a temp file to use
@@ -146,7 +145,7 @@ class TestSyncModuleCoverage:
             if hasattr(coro, 'close'):
                 coro.close()
             return SimpleTestConfig()
-        
+
         mock_run_async.side_effect = mock_run
 
         with tempfile.NamedTemporaryFile() as tmp_file:
@@ -169,7 +168,7 @@ class TestSyncModuleCoverage:
                     if hasattr(coro, 'close'):
                         coro.close()
                     return SimpleTestConfig()
-                
+
                 mock_run_async.side_effect = mock_run
                 try:
                     load_config_from_multiple(SimpleTestConfig, ("file", tmp_file.name))
@@ -187,7 +186,7 @@ class TestSyncModuleCoverage:
                 if hasattr(coro, 'close'):
                     coro.close()
                 return SimpleRuntimeConfig()
-            
+
             mock_run_async.side_effect = mock_run
             try:
                 load_config_from_multiple(SimpleRuntimeConfig, ("env", "TEST_PREFIX"))
@@ -204,7 +203,7 @@ class TestSyncModuleCoverage:
             if hasattr(coro, 'close'):
                 coro.close()
             return SimpleTestConfig()
-        
+
         mock_run_async.side_effect = mock_run
 
         load_config_from_multiple(SimpleTestConfig, ("dict", {"name": "test"}))
@@ -225,7 +224,7 @@ class TestSyncModuleCoverage:
             if hasattr(coro, 'close'):
                 coro.close()
             return None
-        
+
         mock_run_async.side_effect = mock_run
         config = SimpleTestConfig()
 
@@ -242,7 +241,7 @@ class TestSyncModuleCoverage:
             if hasattr(coro, 'close'):
                 coro.close()
             return None
-        
+
         mock_run_async.side_effect = mock_run
         config = SimpleTestConfig()
 
@@ -262,7 +261,7 @@ class TestSyncModuleCoverage:
             if hasattr(coro, 'close'):
                 coro.close()
             return {"name": "test"}
-        
+
         mock_run_async.side_effect = mock_run
         config = SimpleTestConfig()
 
@@ -283,7 +282,7 @@ class TestSyncModuleCoverage:
             if hasattr(coro, 'close'):
                 coro.close()
             return SimpleTestConfig(name="cloned")
-        
+
         mock_run_async.side_effect = mock_run
         config = SimpleTestConfig()
 
@@ -300,7 +299,7 @@ class TestSyncModuleCoverage:
             if hasattr(coro, 'close'):
                 coro.close()
             return {"name": ("old", "new")}
-        
+
         mock_run_async.side_effect = mock_run
         config1 = SimpleTestConfig(name="old")
         config2 = SimpleTestConfig(name="new")
@@ -328,7 +327,7 @@ class TestSyncConfigManager:
             if hasattr(coro, 'close'):
                 coro.close()
             return None
-        
+
         mock_run_async.side_effect = mock_run
         manager = SyncConfigManager()
         config = SimpleTestConfig()
@@ -349,7 +348,7 @@ class TestSyncConfigManager:
             if hasattr(coro, 'close'):
                 coro.close()
             return SimpleTestConfig()
-        
+
         mock_run_async.side_effect = mock_run
         manager = SyncConfigManager()
 
@@ -366,7 +365,7 @@ class TestSyncConfigManager:
             if hasattr(coro, 'close'):
                 coro.close()
             return SimpleTestConfig()
-        
+
         mock_run_async.side_effect = mock_run
         manager = SyncConfigManager()
 
@@ -388,7 +387,7 @@ class TestSyncConfigManager:
             if hasattr(coro, 'close'):
                 coro.close()
             return None
-        
+
         mock_run_async.side_effect = mock_run
         manager = SyncConfigManager()
 
@@ -408,7 +407,7 @@ class TestSyncConfigManager:
             if hasattr(coro, 'close'):
                 coro.close()
             return {"name": "exported"}
-        
+
         mock_run_async.side_effect = mock_run
         manager = SyncConfigManager()
 
@@ -429,7 +428,7 @@ class TestSyncConfigManager:
             if hasattr(coro, 'close'):
                 coro.close()
             return {"test": {"name": "exported"}}
-        
+
         mock_run_async.side_effect = mock_run
         manager = SyncConfigManager()
 

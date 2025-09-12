@@ -1,18 +1,16 @@
 """Tests for unified key generation."""
 
-import pytest
-
+import time
 from unittest import mock
 
-import time
-
-from cryptography.hazmat.primitives.asymmetric import rsa, ec
+from cryptography.hazmat.primitives.asymmetric import ec, rsa
+import pytest
 
 from provide.foundation.crypto import (
     Certificate,
-    generate_rsa_keypair,
     generate_ec_keypair,
     generate_keypair,
+    generate_rsa_keypair,
 )
 
 # Constants for compatibility
@@ -63,9 +61,8 @@ async def test_generate_rsa_keypair_backend_failure() -> None:
     with mock.patch(
         "cryptography.hazmat.primitives.asymmetric.rsa.generate_private_key",
         side_effect=Exception("Backend failure"),
-    ):
-        with pytest.raises(Exception, match="Backend failure"):
-            generate_rsa_keypair(2048)
+    ), pytest.raises(Exception, match="Backend failure"):
+        generate_rsa_keypair(2048)
 
 
 @pytest.mark.asyncio
@@ -101,9 +98,8 @@ async def test_generate_ec_keypair_backend_failure() -> None:
     with mock.patch(
         "cryptography.hazmat.primitives.asymmetric.ec.generate_private_key",
         side_effect=Exception("Backend failure"),
-    ):
-        with pytest.raises(Exception, match="Backend failure"):
-            generate_ec_keypair("secp256r1")
+    ), pytest.raises(Exception, match="Backend failure"):
+        generate_ec_keypair("secp256r1")
 
 
 @pytest.mark.asyncio

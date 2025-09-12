@@ -6,11 +6,10 @@ Tests for FOUNDATION_LOG_OUTPUT environment variable functionality.
 """
 
 import io
-import os
 import sys
+from unittest.mock import patch
 
 import pytest
-from unittest.mock import MagicMock, patch
 from pytest import CaptureFixture
 
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
@@ -124,8 +123,8 @@ class TestFoundationLogOutputIntegration:
         monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "main")
 
         # Reset and setup telemetry with file logging
-        from provide.foundation.testing import reset_foundation_setup_for_testing
         from provide.foundation.setup import setup_telemetry
+        from provide.foundation.testing import reset_foundation_setup_for_testing
 
         reset_foundation_setup_for_testing()
 
@@ -136,7 +135,7 @@ class TestFoundationLogOutputIntegration:
         # Test that config creation works properly with file-based routing
         test_config = LoggingConfig.from_env()
         assert test_config is not None
-        
+
         # The important behavior is that FOUNDATION_LOG_OUTPUT=main is respected
         assert test_config.foundation_log_output == "main"
 
@@ -151,8 +150,8 @@ class TestFoundationLogOutputIntegration:
         monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "stderr")
 
         # Reset and setup telemetry
-        from provide.foundation.testing import reset_foundation_setup_for_testing
         from provide.foundation.setup import setup_telemetry
+        from provide.foundation.testing import reset_foundation_setup_for_testing
 
         reset_foundation_setup_for_testing()
 
@@ -162,6 +161,6 @@ class TestFoundationLogOutputIntegration:
         # Test that stderr routing works independently of file routing
         test_config = LoggingConfig.from_env()
         assert test_config is not None
-        
+
         # The important behavior is that FOUNDATION_LOG_OUTPUT=stderr is respected
         assert test_config.foundation_log_output == "stderr"

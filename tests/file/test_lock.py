@@ -1,17 +1,13 @@
 """Tests for file locking."""
 
 import os
-from pathlib import Path
 import threading
 import time
 from typing import Never
 
 import pytest
-from provide.foundation.testing.file import temp_directory
+
 from provide.foundation.file.lock import FileLock, LockError
-
-
-
 
 
 def test_file_lock_acquire_release(temp_directory) -> None:

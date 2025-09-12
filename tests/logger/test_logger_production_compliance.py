@@ -10,16 +10,13 @@ and performance requirements for lazy initialization functionality.
 """
 
 import asyncio
-from concurrent.futures import ThreadPoolExecutor, as_completed
 import contextlib
 import json
 import os
 import threading
 import time
-from typing import Any
 from unittest.mock import patch
 
-import pytest
 from pytest import CaptureFixture  # Added for capsys
 
 from provide.foundation import (
@@ -30,7 +27,6 @@ from provide.foundation import (
     shutdown_foundation_telemetry,
 )
 from provide.foundation.testing import reset_foundation_setup_for_testing
-from tests.utils import TestEnvironment
 
 
 class TestProductionReadinessScenarios:
@@ -38,11 +34,11 @@ class TestProductionReadinessScenarios:
 
     def test_high_throughput_scenario(self, capsys: CaptureFixture) -> None:
         """Test lazy initialization under high throughput."""
-        from provide.foundation.testing import set_log_stream_for_testing
         import sys
 
+        from provide.foundation.testing import set_log_stream_for_testing
+
         reset_foundation_setup_for_testing()
-        import os
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -72,11 +68,11 @@ class TestProductionReadinessScenarios:
 
     def test_memory_stability_scenario(self, capsys: CaptureFixture) -> None:
         """Test memory stability with lazy initialization over time."""
-        from provide.foundation.testing import set_log_stream_for_testing
         import sys
 
+        from provide.foundation.testing import set_log_stream_for_testing
+
         reset_foundation_setup_for_testing()
-        import os
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -106,11 +102,11 @@ class TestProductionReadinessScenarios:
 
     def test_error_resilience_scenario(self, capsys: CaptureFixture) -> None:
         """Test error resilience in production-like conditions."""
-        from provide.foundation.testing import set_log_stream_for_testing
         import sys
 
+        from provide.foundation.testing import set_log_stream_for_testing
+
         reset_foundation_setup_for_testing()
-        import os
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -148,11 +144,11 @@ class TestProductionReadinessScenarios:
 
     def test_graceful_shutdown_scenario(self, capsys: CaptureFixture) -> None:
         """Test graceful shutdown with lazy initialization."""
-        from provide.foundation.testing import set_log_stream_for_testing
         import sys
 
+        from provide.foundation.testing import set_log_stream_for_testing
+
         reset_foundation_setup_for_testing()
-        import os
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -169,7 +165,6 @@ class TestProductionReadinessScenarios:
             await shutdown_foundation_telemetry()
 
         # Run shutdown
-        import asyncio
 
         asyncio.run(test_shutdown())
 
@@ -186,11 +181,11 @@ class TestDocumentedBehaviorCompliance:
 
     def test_documented_environment_variables(self, capsys: CaptureFixture) -> None:
         """Test all documented environment variables work with lazy initialization."""
-        from provide.foundation.testing import set_log_stream_for_testing
         import sys
 
+        from provide.foundation.testing import set_log_stream_for_testing
+
         reset_foundation_setup_for_testing()
-        import os
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -255,11 +250,11 @@ class TestDocumentedBehaviorCompliance:
 
     def test_backward_compatibility_promise(self, capsys: CaptureFixture) -> None:
         """Test that lazy initialization maintains backward compatibility."""
-        from provide.foundation.testing import set_log_stream_for_testing
         import sys
 
+        from provide.foundation.testing import set_log_stream_for_testing
+
         reset_foundation_setup_for_testing()
-        import os
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -285,11 +280,11 @@ class TestDocumentedBehaviorCompliance:
 
     def test_thread_safety_guarantees(self, capsys: CaptureFixture) -> None:
         """Test documented thread safety guarantees."""
-        from provide.foundation.testing import set_log_stream_for_testing
         import sys
 
+        from provide.foundation.testing import set_log_stream_for_testing
+
         reset_foundation_setup_for_testing()
-        import os
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -344,11 +339,11 @@ class TestDocumentedBehaviorCompliance:
 
     def test_performance_requirements(self, capsys: CaptureFixture) -> None:
         """Test that lazy initialization meets performance requirements."""
-        from provide.foundation.testing import set_log_stream_for_testing
         import sys
 
+        from provide.foundation.testing import set_log_stream_for_testing
+
         reset_foundation_setup_for_testing()
-        import os
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -387,11 +382,11 @@ class TestLazyInitializationDocumentation:
 
     def test_basic_usage_example(self, capsys: CaptureFixture) -> None:
         """Test the basic usage example from documentation."""
-        from provide.foundation.testing import set_log_stream_for_testing
         import sys
 
+        from provide.foundation.testing import set_log_stream_for_testing
+
         reset_foundation_setup_for_testing()
-        import os
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
 
         # Set up Foundation to log to stderr so capsys can capture it
@@ -413,11 +408,11 @@ class TestLazyInitializationDocumentation:
 
     def test_named_logger_example(self, capsys: CaptureFixture) -> None:
         """Test the named logger example from documentation."""
-        from provide.foundation.testing import set_log_stream_for_testing
         import sys
 
+        from provide.foundation.testing import set_log_stream_for_testing
+
         reset_foundation_setup_for_testing()
-        import os
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -438,11 +433,11 @@ class TestLazyInitializationDocumentation:
 
     def test_environment_config_example(self, capsys: CaptureFixture) -> None:
         """Test the environment configuration example from documentation."""
-        from provide.foundation.testing import set_log_stream_for_testing
         import sys
 
+        from provide.foundation.testing import set_log_stream_for_testing
+
         reset_foundation_setup_for_testing()
-        import os
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -486,20 +481,17 @@ class TestLazyInitializationDocumentation:
 
     def test_migration_example(self, capsys: CaptureFixture) -> None:
         """Test the migration example from documentation."""
-        from provide.foundation.testing import set_log_stream_for_testing
         import sys
 
+        from provide.foundation.testing import set_log_stream_for_testing
+
         reset_foundation_setup_for_testing()
-        import os
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
         # Example from docs: gradual migration
         from provide.foundation import (
-            LoggingConfig,
-            TelemetryConfig,
             logger,
-            setup_telemetry,
         )
 
         # Old code: works immediately without setup

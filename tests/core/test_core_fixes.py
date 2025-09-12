@@ -51,8 +51,8 @@ def test_service_name_no_emoji() -> None:
     print("\n=== Test 2: Service Name Without Emoji (JSON) ===")
 
     from provide.foundation.testing import (
-        set_log_stream_for_testing,
         reset_foundation_setup_for_testing,
+        set_log_stream_for_testing,
     )
 
     reset_foundation_setup_for_testing()
@@ -119,8 +119,8 @@ def test_das_emoji_register_action() -> None:
     print("\n=== Test 3: DAS Emoji Register Action ===")
 
     from provide.foundation.testing import (
-        set_log_stream_for_testing,
         reset_foundation_setup_for_testing,
+        set_log_stream_for_testing,
     )
 
     reset_foundation_setup_for_testing()
@@ -238,23 +238,23 @@ def test_get_safe_stderr() -> None:
 def test_event_set_defaults() -> None:
     """Test that event sets provide correct default visual markers."""
     print("\n=== Test 6: Event Set Defaults ===")
-    
+
     from provide.foundation.eventsets.sets.das import das_event_set
-    
+
     # Check that DAS event set has the expected mappings
     domain_mapping = next((m for m in das_event_set.mappings if m.name == "domain"), None)
-    action_mapping = next((m for m in das_event_set.mappings if m.name == "action"), None)  
+    action_mapping = next((m for m in das_event_set.mappings if m.name == "action"), None)
     status_mapping = next((m for m in das_event_set.mappings if m.name == "status"), None)
-    
+
     assert domain_mapping is not None, "Domain mapping not found in DAS event set"
     assert action_mapping is not None, "Action mapping not found in DAS event set"
     assert status_mapping is not None, "Status mapping not found in DAS event set"
-    
+
     # Check that register action exists
     assert "register" in action_mapping.visual_markers, "Register action not found in action mapping"
     register_emoji = action_mapping.visual_markers["register"]
     print(f"Register action emoji: {register_emoji}")
-    
+
     print("✅ Event set defaults are correct")
 
 

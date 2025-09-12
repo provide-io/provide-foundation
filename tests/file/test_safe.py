@@ -1,9 +1,8 @@
 """Tests for safe file operations."""
 
-from pathlib import Path
 
 import pytest
-from provide.foundation.testing.file import temp_directory
+
 from provide.foundation.file.safe import (
     safe_copy,
     safe_delete,
@@ -11,9 +10,6 @@ from provide.foundation.file.safe import (
     safe_read,
     safe_read_text,
 )
-
-
-
 
 
 def test_safe_read_existing_file(temp_directory) -> None:

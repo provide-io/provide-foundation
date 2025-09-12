@@ -1,7 +1,7 @@
 """Shared utilities for Foundation Telemetry examples."""
 
-import sys
 from pathlib import Path
+import sys
 
 from provide.foundation.console.output import pout
 
@@ -17,11 +17,11 @@ def setup_example_environment() -> Path:
     examples_dir = Path(__file__).resolve().parent
     project_root = examples_dir.parent
     src_path = project_root / "src"
-    
+
     # Add src to path if it exists and isn't already there
     if src_path.exists() and str(src_path) not in sys.path:
         sys.path.insert(0, str(src_path))
-    
+
     return project_root
 
 
