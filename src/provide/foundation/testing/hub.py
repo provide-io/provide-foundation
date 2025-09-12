@@ -6,9 +6,10 @@ including container directories and component registration scenarios.
 """
 
 from pathlib import Path
-import tempfile
 
 import pytest
+
+from provide.foundation.file import temp_dir as foundation_temp_dir
 
 
 @pytest.fixture(scope="session")
@@ -19,5 +20,5 @@ def default_container_directory():
     This fixture is used by tests that need a temporary directory
     for container-related operations.
     """
-    with tempfile.TemporaryDirectory() as tmp_dir:
-        yield Path(tmp_dir)
+    with foundation_temp_dir() as tmp_dir:
+        yield tmp_dir
