@@ -8,11 +8,8 @@ parse and validate environment variable values into the correct types.
 import json
 from typing import Any
 
-# Error handling decorator temporarily removed to break circular import
-
-# Type definitions to avoid circular imports
-LogLevelStr = str
-ConsoleFormatterStr = str
+# Import proper types (circular import resolved by type reorganization)
+from provide.foundation.logger.types import LogLevelStr, ConsoleFormatterStr
 
 _VALID_LOG_LEVEL_TUPLE = (
     "TRACE",
@@ -69,8 +66,7 @@ def parse_console_formatter(value: str) -> ConsoleFormatterStr:
     return formatter
 
 
-# Temporarily remove error handling to break circular import
-# @with_error_handling(...)
+# TODO: Add back error handling decorator once circular imports are fully resolved
 def parse_module_levels(value: str | dict[str, str]) -> dict[str, LogLevelStr]:
     """
     Parse module-specific log levels from string format.
@@ -207,16 +203,32 @@ def parse_comma_list(value: str) -> list[str]:
 
 def parse_bool_extended(value: str | bool) -> bool:
     """
-    Parse boolean from string with extended format support.
+    Parse boolean from string with lenient/forgiving interpretation.
 
-    Recognizes: true/false, yes/no, 1/0, on/off (case-insensitive)
-    Returns False for any unrecognized string (lenient parsing).
+    This is the **lenient** boolean parser - designed for user-facing configuration
+    where we want to be forgiving of various inputs. Any unrecognized string 
+    defaults to False rather than raising an error.
+
+    **Use Cases:**
+    - Environment variables set by end users
+    - Feature flags that should default to "off" if misconfigured  
+    - Optional telemetry settings where failure should not break the system
+
+    **Recognized True Values:** true, yes, 1, on (case-insensitive)
+    **Recognized False Values:** false, no, 0, off (case-insensitive) 
+    **Default Behavior:** Any other string → False (no error)
 
     Args:
-        value: Boolean string representation or bool
+        value: Boolean string representation or actual bool
 
     Returns:
-        Boolean value
+        Boolean value (defaults to False for unrecognized strings)
+
+    Examples:
+        >>> parse_bool_extended("yes")  # True
+        >>> parse_bool_extended("FALSE")  # False  
+        >>> parse_bool_extended("invalid")  # False (no error)
+        >>> parse_bool_extended(True)  # True
     """
     # If already a bool, return as-is
     if isinstance(value, bool):
@@ -230,23 +242,43 @@ def parse_bool_extended(value: str | bool) -> bool:
 
 def parse_bool_strict(value: str | bool) -> bool:
     """
-    Parse boolean from string with strict validation.
+    Parse boolean from string with strict validation and clear error messages.
 
-    Recognizes: true/false, yes/no, 1/0, on/off (case-insensitive)
+    This is the **strict** boolean parser - designed for internal APIs and critical
+    configuration where invalid values should cause immediate failure with helpful
+    error messages.
+
+    **Use Cases:**
+    - Internal API parameters where precision matters
+    - Critical system configurations where misconfiguration is dangerous
+    - Programmatic configuration where clear validation errors help developers
+
+    **Recognized True Values:** true, yes, 1, on (case-insensitive)
+    **Recognized False Values:** false, no, 0, off (case-insensitive)
+    **Error Behavior:** Raises ValueError with helpful message for invalid values
 
     Args:
-        value: Boolean string representation or bool
+        value: Boolean string representation or actual bool
 
     Returns:
-        Boolean value
+        Boolean value (never defaults - raises on invalid input)
 
     Raises:
         TypeError: If value is not a string or bool
-        ValueError: If the value cannot be parsed as boolean
+        ValueError: If string value cannot be parsed as boolean
+
+    Examples:
+        >>> parse_bool_strict("yes")  # True
+        >>> parse_bool_strict("FALSE")  # False
+        >>> parse_bool_strict("invalid")  # ValueError with helpful message
+        >>> parse_bool_strict(42)  # TypeError
     """
-    # Check type first
+    # Check type first for clear error messages
     if not isinstance(value, (str, bool)):
-        raise TypeError(f"Boolean field requires str or bool, got {type(value).__name__}")
+        raise TypeError(
+            f"Boolean field requires str or bool, got {type(value).__name__}. "
+            f"Received value: {value!r}"
+        )
 
     # If already a bool, return as-is
     if isinstance(value, bool):
@@ -260,11 +292,14 @@ def parse_bool_strict(value: str | bool) -> bool:
     elif value_lower in ("false", "no", "0", "off"):
         return False
     else:
-        raise ValueError(f"Invalid boolean value '{value}'. Valid options: true/false, yes/no, 1/0, on/off")
+        raise ValueError(
+            f"Invalid boolean value '{value}'. "
+            f"Valid options: true/false, yes/no, 1/0, on/off (case-insensitive). "
+            f"Use parse_bool_extended() for lenient parsing that defaults to False."
+        )
 
 
-# Temporarily remove error handling to break circular import
-# @with_error_handling(...)
+# TODO: Add back error handling decorator once circular imports are fully resolved
 def parse_float_with_validation(
     value: str, min_val: float | None = None, max_val: float | None = None
 ) -> float:
