@@ -304,13 +304,13 @@ class TestPassContext:
         assert "context_created" in result.output
 
     def test_updates_context_from_options(self) -> None:
-        """Test that Context is updated with CLI options."""
+        """Test that CLIContext is updated with CLI options."""
 
         @click.command()
         @logging_options
         @output_options
         @pass_context
-        def cmd(ctx: Context, **kwargs) -> None:
+        def cmd(ctx: CLIContext, **kwargs) -> None:
             click.echo(f"log_level={getattr(ctx, 'log_level', None)}")
             click.echo(f"log_format={getattr(ctx, 'log_format', None)}")
             click.echo(f"json_output={getattr(ctx, 'json_output', None)}")
@@ -330,7 +330,7 @@ class TestPassContext:
         @click.command()
         @logging_options
         @pass_context
-        def cmd(ctx: Context, **kwargs) -> None:
+        def cmd(ctx: CLIContext, **kwargs) -> None:
             # These should have been removed from kwargs
             assert "log_level" not in kwargs
             assert "log_file" not in kwargs
