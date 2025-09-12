@@ -204,7 +204,7 @@ class TestValidatorsCoverage:
 
         with pytest.raises(ValidationError) as exc_info:
             validate_non_negative(instance, attribute, -0.5)
-        assert "Value must be non-negative, got -0.5" in str(exc_info.value)
+        assert "Value -0.5 for non_negative_field must be non-negative" in str(exc_info.value)
 
     def test_validators_with_different_numeric_types(self):
         """Test validators work with different numeric types."""
