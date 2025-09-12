@@ -77,11 +77,12 @@ class PerformanceMonitor:
 
     def start(self) -> None:
         """Start monitoring."""
-        self.start_time = time.perf_counter()
-        self.start_memory = get_memory_usage()
-        self.max_memory = self.start_memory
-        self.message_count = 0
-        self.monitoring = True
+        with self._lock:
+            self.start_time = time.perf_counter()
+            self.start_memory = get_memory_usage()
+            self.max_memory = self.start_memory
+            self.message_count = 0
+            self.monitoring = True
 
     def record_message(self) -> None:
         """Record a message and update stats."""
@@ -95,21 +96,28 @@ class PerformanceMonitor:
 
     def get_stats(self) -> dict[str, Any]:
         """Get current performance statistics."""
-        if not self.monitoring:
-            return {}
+        with self._lock:
+            if not self.monitoring:
+                return {}
 
-        duration = time.perf_counter() - self.start_time
-        current_memory = get_memory_usage()
+            duration = time.perf_counter() - self.start_time
+            current_memory = get_memory_usage()
+            
+            # Copy values while holding lock
+            message_count = self.message_count
+            start_memory = self.start_memory
+            max_memory = self.max_memory
 
+        # Calculate derived values outside the lock
         return {
             "duration_seconds": duration,
-            "message_count": self.message_count,
-            "messages_per_second": self.message_count / duration if duration > 0 else 0,
-            "start_memory_mb": self.start_memory,
+            "message_count": message_count,
+            "messages_per_second": message_count / duration if duration > 0 else 0,
+            "start_memory_mb": start_memory,
             "current_memory_mb": current_memory,
-            "max_memory_mb": self.max_memory,
-            "memory_delta_mb": current_memory - self.start_memory,
-            "memory_peak_delta_mb": self.max_memory - self.start_memory,
+            "max_memory_mb": max_memory,
+            "memory_delta_mb": current_memory - start_memory,
+            "memory_peak_delta_mb": max_memory - start_memory,
         }
 
 
