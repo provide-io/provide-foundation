@@ -290,12 +290,12 @@ class TestPassContext:
     """Test pass_context decorator."""
 
     def test_creates_context_if_none(self) -> None:
-        """Test that Context is created if ctx.obj is None."""
+        """Test that CLIContext is created if ctx.obj is None."""
 
         @click.command()
         @pass_context
-        def cmd(ctx: Context) -> None:
-            assert isinstance(ctx, Context)
+        def cmd(ctx: CLIContext) -> None:
+            assert isinstance(ctx, CLIContext)
             click.echo("context_created")
 
         runner = CliRunner()
