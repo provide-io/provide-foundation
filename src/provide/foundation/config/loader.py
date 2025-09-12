@@ -2,8 +2,6 @@
 Configuration loaders for various sources.
 """
 
-from __future__ import annotations
-
 from abc import ABC, abstractmethod
 import json
 import os

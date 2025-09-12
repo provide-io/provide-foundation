@@ -5,8 +5,6 @@ These wrappers allow using the async config system in synchronous contexts
 like CLI tools, scripts, and frameworks that don't support async.
 """
 
-from __future__ import annotations
-
 import asyncio
 from pathlib import Path
 from typing import Any, TypeVar
