@@ -210,6 +210,7 @@ def parse_bool_extended(value: str | bool) -> bool:
     Parse boolean from string with extended format support.
 
     Recognizes: true/false, yes/no, 1/0, on/off (case-insensitive)
+    Returns False for any unrecognized string (lenient parsing).
 
     Args:
         value: Boolean string representation or bool
@@ -217,10 +218,14 @@ def parse_bool_extended(value: str | bool) -> bool:
     Returns:
         Boolean value
     """
-    from provide.foundation.utils.parsing import parse_bool
-    
-    # Use the base implementation with non-strict mode
-    return parse_bool(value, strict=False)
+    # If already a bool, return as-is
+    if isinstance(value, bool):
+        return value
+
+    # Convert to string and parse
+    value_lower = str(value).lower().strip()
+    # Only return True for explicit true values, everything else is False
+    return value_lower in ("true", "yes", "1", "on")
 
 
 def parse_bool_strict(value: str | bool) -> bool:
@@ -239,10 +244,23 @@ def parse_bool_strict(value: str | bool) -> bool:
         TypeError: If value is not a string or bool
         ValueError: If the value cannot be parsed as boolean
     """
-    from provide.foundation.utils.parsing import parse_bool
-    
-    # Use the base implementation with strict mode
-    return parse_bool(value, strict=True)
+    # Check type first
+    if not isinstance(value, (str, bool)):
+        raise TypeError(f"Boolean field requires str or bool, got {type(value).__name__}")
+
+    # If already a bool, return as-is
+    if isinstance(value, bool):
+        return value
+
+    # Convert to string and parse
+    value_lower = value.lower().strip()
+
+    if value_lower in ("true", "yes", "1", "on"):
+        return True
+    elif value_lower in ("false", "no", "0", "off"):
+        return False
+    else:
+        raise ValueError(f"Invalid boolean value '{value}'. Valid options: true/false, yes/no, 1/0, on/off")
 
 
 # Temporarily remove error handling to break circular import
