@@ -27,7 +27,8 @@
       "Bash(__NEW_LINE__ done)",
       "WebSearch",
       "Bash(xargs ls:*)",
-      "Bash(PYTHONPATH=src pytest tests/config/test_converters.py::TestFoundationLogOutputParsing -v)"
+      "Bash(PYTHONPATH=src pytest tests/config/test_converters.py::TestFoundationLogOutputParsing -v)",
+      "Bash(PYTHONPATH=src pytest tests/config/test_converters.py::TestBoolStrictParsing -v)"
     ],
     "deny": [],
     "ask": [],
