@@ -1,8 +1,9 @@
 """Coverage tests for foundation __init__.py module."""
 
 import sys
+from unittest.mock import patch
+
 import pytest
-from unittest.mock import patch, MagicMock
 
 
 class TestFoundationInit:
@@ -10,7 +11,6 @@ class TestFoundationInit:
 
     def setup_method(self):
         """Reset module state before each test."""
-        import sys
 
         # Clear CLI module from cache to ensure fresh imports
         cli_modules = [
@@ -22,11 +22,11 @@ class TestFoundationInit:
         for module_name in cli_modules:
             self.saved_cli_modules[module_name] = sys.modules[module_name]
             del sys.modules[module_name]
-            
+
         # Also clear the main foundation module to reset any cached __getattr__ state
         foundation_modules = [
             name
-            for name in sys.modules.keys() 
+            for name in sys.modules.keys()
             if name == "provide.foundation"
         ]
         self.saved_foundation_modules = {}
@@ -36,12 +36,11 @@ class TestFoundationInit:
 
     def teardown_method(self):
         """Restore module state after each test."""
-        import sys
 
         # Restore CLI modules
         for module_name, module in self.saved_cli_modules.items():
             sys.modules[module_name] = module
-            
+
         # Restore foundation modules
         for module_name, module in self.saved_foundation_modules.items():
             sys.modules[module_name] = module
@@ -72,7 +71,6 @@ class TestFoundationInit:
     def test_aaa_getattr_cli_click_missing(self):
         """Test __getattr__ CLI import with missing click dependency."""
         import provide.foundation
-        import sys
 
         # Clear any existing CLI module from cache
         cli_module_key = "provide.foundation.cli"
@@ -93,7 +91,6 @@ class TestFoundationInit:
     def test_aaa_getattr_cli_other_import_error(self):
         """Test __getattr__ CLI import with other ImportError."""
         import provide.foundation
-        import sys
 
         # Clear any existing CLI module from cache
         cli_module_key = "provide.foundation.cli"

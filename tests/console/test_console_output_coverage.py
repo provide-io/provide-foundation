@@ -2,17 +2,15 @@
 
 import json
 import sys
-from io import StringIO
-from unittest.mock import patch, Mock, MagicMock
-import pytest
+from unittest.mock import Mock, patch
 
 from provide.foundation.console.output import (
     _get_context,
-    _should_use_json,
-    _should_use_color,
     _output_json,
-    pout,
+    _should_use_color,
+    _should_use_json,
     perr,
+    pout,
 )
 from provide.foundation.context import Context
 
@@ -454,15 +452,14 @@ class TestEdgeCases:
 
         with patch(
             "provide.foundation.console.output._get_context", return_value=mock_ctx
-        ) as mock_get_ctx:
-            with patch("provide.foundation.console.output._HAS_CLICK", True):
-                with patch("provide.foundation.console.output.click") as mock_click:
-                    # Don't pass ctx explicitly
-                    pout("test")
+        ) as mock_get_ctx, patch("provide.foundation.console.output._HAS_CLICK", True):
+            with patch("provide.foundation.console.output.click") as mock_click:
+                # Don't pass ctx explicitly
+                pout("test")
 
-                    # Should call _get_context
-                    mock_get_ctx.assert_called()
-                    mock_click.echo.assert_called_once()
+                # Should call _get_context
+                mock_get_ctx.assert_called()
+                mock_click.echo.assert_called_once()
 
     def test_multiple_formatting_options(self):
         """Test multiple formatting options together."""

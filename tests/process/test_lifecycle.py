@@ -1,9 +1,8 @@
 """Tests for process lifecycle management."""
 
 import asyncio
-import sys
 from pathlib import Path
-from typing import Any
+
 import pytest
 
 from provide.foundation.process.lifecycle import ManagedProcess, wait_for_process_output

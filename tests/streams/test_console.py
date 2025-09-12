@@ -3,12 +3,9 @@
 #
 """Tests for Foundation streams console module."""
 
-import io
 import os
 import sys
 from unittest.mock import Mock, patch
-
-import pytest
 
 from provide.foundation.streams.console import (
     get_console_stream,
@@ -89,7 +86,7 @@ class TestSupportsColor:
     def setup_method(self):
         """Clean up environment variables before each test."""
         from provide.foundation.streams.config import reset_stream_config
-        
+
         # Store original values
         self.original_no_color = os.environ.get("NO_COLOR")
         self.original_force_color = os.environ.get("FORCE_COLOR")
@@ -97,14 +94,14 @@ class TestSupportsColor:
         # Clean up
         os.environ.pop("NO_COLOR", None)
         os.environ.pop("FORCE_COLOR", None)
-        
+
         # Reset cached stream config
         reset_stream_config()
 
     def teardown_method(self):
         """Restore environment variables after each test."""
         from provide.foundation.streams.config import reset_stream_config
-        
+
         # Restore original values
         if self.original_no_color is not None:
             os.environ["NO_COLOR"] = self.original_no_color
@@ -115,14 +112,14 @@ class TestSupportsColor:
             os.environ["FORCE_COLOR"] = self.original_force_color
         else:
             os.environ.pop("FORCE_COLOR", None)
-            
+
         # Reset stream config to pick up restored environment
         reset_stream_config()
 
     def test_no_color_environment_disables_color(self):
         """Test that NO_COLOR environment variable disables color."""
         from provide.foundation.streams.config import reset_stream_config
-        
+
         os.environ["NO_COLOR"] = "1"
         reset_stream_config()  # Reset to pick up new env var
 
@@ -131,7 +128,7 @@ class TestSupportsColor:
     def test_force_color_environment_enables_color(self):
         """Test that FORCE_COLOR environment variable enables color."""
         from provide.foundation.streams.config import reset_stream_config
-        
+
         os.environ["FORCE_COLOR"] = "1"
         reset_stream_config()  # Reset to pick up new env var
 
@@ -139,8 +136,8 @@ class TestSupportsColor:
 
     def test_force_color_overrides_tty_check(self):
         """Test that FORCE_COLOR works even with non-TTY."""
-        from provide.foundation.streams.core import set_log_stream_for_testing
         from provide.foundation.streams.config import reset_stream_config
+        from provide.foundation.streams.core import set_log_stream_for_testing
 
         os.environ["FORCE_COLOR"] = "1"
         reset_stream_config()  # Reset to pick up new env var

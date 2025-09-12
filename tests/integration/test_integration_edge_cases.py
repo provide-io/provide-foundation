@@ -34,25 +34,25 @@ def test_invalid_environment_variables_handling(
         ("PROVIDE_LOG_LEVEL", "INVALID_LEVEL", "Invalid log level 'INVALID_LEVEL'"),
         ("PROVIDE_LOG_CONSOLE_FORMATTER", "invalid_formatter", "Invalid console formatter 'invalid_formatter'"),
     ]
-    
+
     # Test cases that should raise exceptions
     for env_var, invalid_value, expected_error in strict_validation_cases:
         # Clear all env vars that might interfere
         possible_interfering_vars = [
             "PROVIDE_LOG_LEVEL",
-            "PROVIDE_LOG_CONSOLE_FORMATTER", 
+            "PROVIDE_LOG_CONSOLE_FORMATTER",
             "PROVIDE_LOG_MODULE_LEVELS",
         ]
         for var_to_clear in possible_interfering_vars:
             monkeypatch.delenv(var_to_clear, raising=False)
-            
+
         # Set the invalid value
         monkeypatch.setenv(env_var, invalid_value)
-        
+
         # Should raise ValueError with strict validation
         with pytest.raises(ValueError, match=expected_error):
             TelemetryConfig.from_env()
-    
+
     # Define cases that should handle invalid values gracefully (bool parsing)
     lenient_cases = [
         ("PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED", "maybe", None),

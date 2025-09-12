@@ -1,17 +1,18 @@
 """Simplified tests for config schema to improve code coverage."""
 
 from unittest.mock import Mock, patch
+
 import pytest
 
 from provide.foundation.config.schema import (
-    SchemaField,
     ConfigSchema,
-    validate_port,
-    validate_url,
+    SchemaField,
     validate_email,
     validate_path,
-    validate_version,
+    validate_port,
+    validate_url,
     validate_url_accessible,
+    validate_version,
 )
 
 

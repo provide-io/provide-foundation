@@ -20,7 +20,10 @@ from provide.foundation import (  # noqa: E402
     shutdown_foundation_telemetry,
 )
 from provide.foundation.console.output import pout  # noqa: E402
-from provide.foundation.logger.config import TelemetryConfig, LoggingConfig  # noqa: E402
+from provide.foundation.logger.config import (  # noqa: E402
+    LoggingConfig,
+    TelemetryConfig,
+)
 
 
 async def example_9_async_usage() -> None:
@@ -45,7 +48,7 @@ async def example_9_async_usage() -> None:
         """Simulate an async task with realistic operations."""
         task_logger = logger.get_logger(f"async_worker.{task_type}")
         task_logger.info("Async task started", task_id=task_id, task_type=task_type)
-        
+
         # Simulate different types of async work
         if task_type == "data_processing":
             await asyncio.sleep(0.02)  # Simulate data processing
@@ -57,7 +60,7 @@ async def example_9_async_usage() -> None:
             task_logger.info("API request sent", task_id=task_id, endpoint="/api/v1/users")
             await asyncio.sleep(0.01)
             task_logger.info("API response received", task_id=task_id, status_code=200, response_time_ms=25)
-        
+
         result = {"duration_ms": 30 + task_id * 5}
         task_logger.info("Async task completed", task_id=task_id, **result)
         return result
@@ -70,10 +73,10 @@ async def example_9_async_usage() -> None:
         async_task(3, "data_processing"),
         async_task(4, "api_call"),
     )
-    
+
     # Process results
     total_duration = sum(r["duration_ms"] for r in results)
-    logger.info("All async tasks completed", 
+    logger.info("All async tasks completed",
                tasks_completed=len(results),
                total_duration_ms=total_duration,
                avg_duration_ms=total_duration // len(results))

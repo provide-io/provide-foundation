@@ -1,7 +1,8 @@
 """Comprehensive coverage tests for hub/commands.py module."""
 
+from unittest.mock import patch
+
 import pytest
-from unittest.mock import patch, Mock
 
 
 class TestHubCommandsImports:
@@ -10,9 +11,9 @@ class TestHubCommandsImports:
     def test_core_imports_available(self):
         """Test that core command imports are always available."""
         from provide.foundation.hub.commands import (
-            register_command,
             CommandInfo,
             get_command_registry,
+            register_command,
         )
 
         # Core functionality should always be available
@@ -176,8 +177,8 @@ class TestGetattrLogic:
         import provide.foundation.hub.commands as commands_module
 
         # Both should be accessible
-        build_cmd = getattr(commands_module, "build_click_command")
-        create_grp = getattr(commands_module, "create_command_group")
+        build_cmd = commands_module.build_click_command
+        create_grp = commands_module.create_command_group
 
         assert callable(build_cmd)
         assert callable(create_grp)
@@ -188,7 +189,7 @@ class TestGetattrLogic:
         import provide.foundation.hub.commands as commands_module
 
         # Directly access to trigger the name == "build_click_command" branch
-        result = getattr(commands_module, "build_click_command")
+        result = commands_module.build_click_command
         assert callable(result)
 
     def test_getattr_branch_coverage_create_command_group(self):
@@ -197,7 +198,7 @@ class TestGetattrLogic:
         import provide.foundation.hub.commands as commands_module
 
         # Directly access to trigger the name == "create_command_group" branch
-        result = getattr(commands_module, "create_command_group")
+        result = commands_module.create_command_group
         assert callable(result)
 
     def test_getattr_multiple_accesses_consistent(self):
@@ -205,8 +206,8 @@ class TestGetattrLogic:
         import provide.foundation.hub.commands as commands_module
 
         # Multiple accesses should return the same function
-        build1 = getattr(commands_module, "build_click_command")
-        build2 = getattr(commands_module, "build_click_command")
+        build1 = commands_module.build_click_command
+        build2 = commands_module.build_click_command
 
         assert build1 is build2
 
@@ -225,9 +226,9 @@ class TestModuleBehavior:
     def test_core_functionality_without_click_features(self):
         """Test that core functionality works independent of click features."""
         from provide.foundation.hub.commands import (
-            register_command,
             CommandInfo,
             get_command_registry,
+            register_command,
         )
 
         # Core functionality should always work
@@ -312,8 +313,9 @@ class TestErrorMessages:
 
     def test_click_error_detection_logic(self):
         """Test the logic that detects click-related errors."""
-        import provide.foundation.hub.commands as commands_module
         import inspect
+
+        import provide.foundation.hub.commands as commands_module
 
         # Verify the error detection logic exists in the source
         source = inspect.getsource(commands_module)

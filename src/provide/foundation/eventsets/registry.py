@@ -105,7 +105,7 @@ class EventSetRegistry(Registry):
                 module = importlib.import_module(module_name)
 
                 if hasattr(module, "EVENT_SET"):
-                    event_set = getattr(module, "EVENT_SET")
+                    event_set = module.EVENT_SET
                     if isinstance(event_set, EventSet):
                         try:
                             self.register_event_set(event_set)
@@ -168,7 +168,7 @@ def discover_event_sets() -> None:
     if _discovery_completed:
         logger.trace("Event set discovery already completed, skipping")
         return
-    
+
     logger.debug("Starting event set discovery")
     _registry.discover_sets()
     _discovery_completed = True

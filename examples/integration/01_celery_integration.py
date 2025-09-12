@@ -31,17 +31,15 @@ Usage:
     python 01_celery_integration.py
 """
 
-import asyncio
-import random
-import time
-from datetime import datetime, timedelta
-from typing import Any
-from pathlib import Path
-import sys
-import json
-import threading
 from collections import defaultdict
+from datetime import datetime, timedelta
 import os
+from pathlib import Path
+import random
+import sys
+import threading
+import time
+from typing import Any
 
 # Add src to path for examples
 example_file = Path(__file__).resolve()
@@ -52,20 +50,29 @@ if src_path.exists() and str(src_path) not in sys.path:
 
 # Handle optional Celery dependency
 try:
-    from celery import Celery, Task, group, chain, chord
-    from celery.signals import (
-        task_prerun, task_postrun, task_failure, task_retry,
-        worker_ready, worker_shutdown, worker_process_init,
-        beat_init, celeryd_after_setup
-    )
+    from celery import Celery, Task, chain, chord, group
     from celery.result import AsyncResult
+    from celery.signals import (
+        beat_init,
+        celeryd_after_setup,
+        task_failure,
+        task_postrun,
+        task_prerun,
+        task_retry,
+        worker_process_init,
+        worker_ready,
+        worker_shutdown,
+    )
     CELERY_AVAILABLE = True
 except ImportError:
     CELERY_AVAILABLE = False
 
-from provide.foundation import logger, setup_telemetry, pout, perr  # noqa: E402
-from provide.foundation.logger.config import TelemetryConfig, LoggingConfig  # noqa: E402
-from provide.foundation.errors import error_boundary  # noqa: E402
+from provide.foundation import logger, perr, pout, setup_telemetry  # noqa: E402
+from provide.foundation.logger.config import (  # noqa: E402
+    LoggingConfig,
+    TelemetryConfig,
+)
+
 
 # Setup telemetry for Celery
 def setup_celery_logging(demo_mode: bool = False):
@@ -77,7 +84,7 @@ def setup_celery_logging(demo_mode: bool = False):
             console_formatter="json",
             module_levels={
                 "celery.worker": "INFO",
-                "celery.task": "INFO", 
+                "celery.task": "INFO",
                 "celery.beat": "INFO",
                 "celery.app.trace": "INFO",
                 "billiard": "WARNING",
@@ -138,7 +145,7 @@ else:
         # Task execution limits
         task_soft_time_limit=60,
         task_time_limit=120,
-        # Retry configuration  
+        # Retry configuration
         task_default_retry_delay=5,
         task_max_retries=3,
         # Result expiration
@@ -157,18 +164,18 @@ class TaskMetrics:
         self.error_counts = defaultdict(int)
         self.retry_counts = defaultdict(int)
         self.lock = threading.Lock()
-    
+
     def record_execution(self, task_name: str, duration: float, success: bool):
         with self.lock:
             self.task_counts[task_name] += 1
             self.task_durations[task_name].append(duration)
             if not success:
                 self.error_counts[task_name] += 1
-    
+
     def record_retry(self, task_name: str):
         with self.lock:
             self.retry_counts[task_name] += 1
-    
+
     def get_stats(self) -> dict[str, Any]:
         with self.lock:
             stats = {}
@@ -187,11 +194,11 @@ metrics = TaskMetrics()
 
 class CeleryTaskLogger:
     """Enhanced task-specific logging with metrics."""
-    
+
     def __init__(self, task_name: str):
         self.logger = logger.get_logger(f"celery.task.{task_name}")
         self.task_name = task_name
-    
+
     def log_task_start(self, task_id: str, args: tuple, kwargs: dict):
         """Log task execution start with context."""
         self.logger.info("task_started",
@@ -204,7 +211,7 @@ class CeleryTaskLogger:
             queue="default",
             worker_hostname=app.conf.get('worker_hostname', 'unknown')
         )
-    
+
     def log_task_progress(self, task_id: str, current: int, total: int, message: str = ""):
         """Log task progress for long-running tasks."""
         progress_pct = round((current / total) * 100, 1) if total > 0 else 0
@@ -216,7 +223,7 @@ class CeleryTaskLogger:
             progress_pct=progress_pct,
             message=message
         )
-    
+
     def log_task_success(self, task_id: str, result: Any, duration: float):
         """Log successful task completion with metrics."""
         metrics.record_execution(self.task_name, duration, True)
@@ -228,7 +235,7 @@ class CeleryTaskLogger:
             success=True,
             total_executions=metrics.task_counts[self.task_name]
         )
-    
+
     def log_task_failure(self, task_id: str, error: Exception, duration: float):
         """Log task failure with context."""
         metrics.record_execution(self.task_name, duration, False)
@@ -241,7 +248,7 @@ class CeleryTaskLogger:
             success=False,
             total_errors=metrics.error_counts[self.task_name]
         )
-    
+
     def log_task_retry(self, task_id: str, exc: Exception, countdown: int, retry_count: int):
         """Log task retry attempt."""
         metrics.record_retry(self.task_name)
@@ -279,7 +286,7 @@ def worker_process_init_handler(sender, **kwargs):
         parent_pid=os.getppid()
     )
 
-@worker_shutdown.connect  
+@worker_shutdown.connect
 def worker_shutdown_handler(sender, **kwargs):
     """Log when worker shuts down with final metrics."""
     stats = metrics.get_stats()
@@ -303,7 +310,7 @@ def setup_periodic_monitoring(sender, instance, **kwargs):
                     total_errors=sum(s['errors'] for s in stats.values()),
                     total_retries=sum(s['retries'] for s in stats.values())
                 )
-    
+
     # Start monitoring in background thread
     monitor_thread = threading.Thread(target=monitor_health, daemon=True)
     monitor_thread.start()
@@ -329,7 +336,7 @@ def task_postrun_handler(sender, task_id, task, args, kwargs, retval, state, **k
     duration = time.time() - task_start_times.pop(task_id, time.time())
     context = task_contexts.pop(task_id, {})
     task_logger = CeleryTaskLogger(task.name)
-    
+
     if state == 'SUCCESS':
         task_logger.log_task_success(task_id, retval, duration)
     else:
@@ -367,37 +374,37 @@ def task_retry_handler(sender, request, reason, einfo, **kwargs):
 def process_payment(self, order_id: str, amount: float, payment_method: str) -> dict[str, Any]:
     """Process payment with retry logic and detailed logging."""
     task_logger = CeleryTaskLogger("process_payment")
-    
+
     task_logger.logger.info("processing_payment",
         order_id=order_id,
         amount=amount,
         payment_method=payment_method,
         retry_count=self.request.retries
     )
-    
+
     try:
         # Simulate payment processing
         if random.random() < 0.3:  # 30% chance of transient failure
             raise ConnectionError("Payment gateway timeout")
-        
+
         # Simulate processing time
         time.sleep(random.uniform(0.5, 2.0))
-        
+
         transaction_id = f"txn_{order_id}_{int(time.time())}"
-        
+
         task_logger.logger.info("payment_successful",
             order_id=order_id,
             transaction_id=transaction_id,
             amount=amount
         )
-        
+
         return {
             "status": "success",
             "transaction_id": transaction_id,
             "amount": amount,
             "timestamp": datetime.utcnow().isoformat()
         }
-        
+
     except ConnectionError as exc:
         task_logger.logger.warning("payment_gateway_error",
             order_id=order_id,
@@ -412,13 +419,13 @@ def process_payment(self, order_id: str, amount: float, payment_method: str) -> 
 def generate_report(self, report_type: str, date_range: dict[str, str], user_id: str) -> dict[str, Any]:
     """Generate report with progress tracking."""
     task_logger = CeleryTaskLogger("generate_report")
-    
+
     task_logger.logger.info("report_generation_started",
         report_type=report_type,
         date_range=date_range,
         user_id=user_id
     )
-    
+
     # Simulate report generation with progress updates
     total_steps = 5
     steps = [
@@ -428,27 +435,27 @@ def generate_report(self, report_type: str, date_range: dict[str, str], user_id:
         "Generating visualizations",
         "Creating PDF"
     ]
-    
+
     for i, step in enumerate(steps, 1):
         task_logger.log_task_progress(self.request.id, i, total_steps, step)
-        
+
         # Update task state for real-time monitoring
         self.update_state(
             state='PROGRESS',
             meta={'current': i, 'total': total_steps, 'status': step}
         )
-        
+
         # Simulate work
         time.sleep(random.uniform(0.5, 1.5))
-    
+
     report_url = f"https://reports.example.com/{report_type}_{self.request.id}.pdf"
-    
+
     task_logger.logger.info("report_generation_complete",
         report_type=report_type,
         report_url=report_url,
         user_id=user_id
     )
-    
+
     return {
         "status": "complete",
         "report_url": report_url,
@@ -460,19 +467,19 @@ def generate_report(self, report_type: str, date_range: dict[str, str], user_id:
 def send_notification(user_id: str, notification_type: str, payload: dict[str, Any]) -> dict[str, Any]:
     """Send user notification with delivery tracking."""
     task_logger = CeleryTaskLogger("send_notification")
-    
+
     task_logger.logger.info("sending_notification",
         user_id=user_id,
         notification_type=notification_type,
         channels=["email", "push", "sms"]
     )
-    
+
     results = {}
-    
+
     # Simulate multi-channel delivery
     for channel in ["email", "push", "sms"]:
         success = random.random() > 0.1  # 90% success rate
-        
+
         if success:
             task_logger.logger.info(f"{channel}_notification_sent",
                 user_id=user_id,
@@ -487,7 +494,7 @@ def send_notification(user_id: str, notification_type: str, payload: dict[str, A
                 notification_type=notification_type
             )
             results[channel] = {"status": "failed", "error": "Delivery failed"}
-    
+
     return {
         "user_id": user_id,
         "notification_type": notification_type,
@@ -499,21 +506,21 @@ def send_notification(user_id: str, notification_type: str, payload: dict[str, A
 def process_batch_data(batch_id: str, items: list[dict[str, Any]]) -> dict[str, Any]:
     """Process batch data with item-level error handling."""
     task_logger = CeleryTaskLogger("process_batch_data")
-    
+
     task_logger.logger.info("batch_processing_started",
         batch_id=batch_id,
         item_count=len(items)
     )
-    
+
     processed = []
     failed = []
-    
+
     for i, item in enumerate(items):
         try:
             # Simulate processing with occasional failures
             if random.random() < 0.05:  # 5% failure rate
                 raise ValueError(f"Invalid data in item {item.get('id', i)}")
-            
+
             # Process item
             processed_item = {
                 **item,
@@ -521,7 +528,7 @@ def process_batch_data(batch_id: str, items: list[dict[str, Any]]) -> dict[str, 
                 "batch_id": batch_id
             }
             processed.append(processed_item)
-            
+
         except Exception as e:
             task_logger.logger.warning("batch_item_failed",
                 batch_id=batch_id,
@@ -529,7 +536,7 @@ def process_batch_data(batch_id: str, items: list[dict[str, Any]]) -> dict[str, 
                 error=str(e)
             )
             failed.append({"index": i, "error": str(e)})
-    
+
     task_logger.logger.info("batch_processing_complete",
         batch_id=batch_id,
         total_items=len(items),
@@ -537,7 +544,7 @@ def process_batch_data(batch_id: str, items: list[dict[str, Any]]) -> dict[str, 
         failed_count=len(failed),
         success_rate=round(len(processed) / len(items) * 100, 1)
     )
-    
+
     return {
         "batch_id": batch_id,
         "processed": len(processed),
@@ -550,41 +557,41 @@ def process_batch_data(batch_id: str, items: list[dict[str, Any]]) -> dict[str, 
 def cleanup_old_data(days_to_keep: int = 30) -> dict[str, Any]:
     """Cleanup old data with detailed logging."""
     task_logger = CeleryTaskLogger("cleanup_old_data")
-    
+
     task_logger.logger.info("cleanup_started",
         days_to_keep=days_to_keep,
         cutoff_date=(datetime.utcnow() - timedelta(days=days_to_keep)).isoformat()
     )
-    
+
     # Simulate cleanup of different data types
     cleanup_results = {}
     data_types = ["logs", "temp_files", "cache_entries", "expired_sessions"]
-    
+
     for data_type in data_types:
         # Simulate cleanup with random counts
         cleaned = random.randint(100, 10000)
         size_mb = random.uniform(10, 500)
-        
+
         task_logger.logger.info(f"cleaned_{data_type}",
             data_type=data_type,
             items_removed=cleaned,
             space_freed_mb=round(size_mb, 2)
         )
-        
+
         cleanup_results[data_type] = {
             "items_removed": cleaned,
             "space_freed_mb": round(size_mb, 2)
         }
-    
+
     total_items = sum(r["items_removed"] for r in cleanup_results.values())
     total_space = sum(r["space_freed_mb"] for r in cleanup_results.values())
-    
+
     task_logger.logger.info("cleanup_complete",
         total_items_removed=total_items,
         total_space_freed_mb=round(total_space, 2),
         data_types_cleaned=len(data_types)
     )
-    
+
     return {
         "status": "complete",
         "results": cleanup_results,
@@ -595,17 +602,17 @@ def cleanup_old_data(days_to_keep: int = 30) -> dict[str, Any]:
 def run_demo_worker():
     """Run a demo worker in the same process for demonstration."""
     pout("\n🚀 Starting in-process demo worker...")
-    
+
     # Start worker in a thread
     from celery.worker import WorkController
-    
+
     def start_worker():
         worker = WorkController(app=app, loglevel='INFO')
         worker.start()
-    
+
     worker_thread = threading.Thread(target=start_worker, daemon=True)
     worker_thread.start()
-    
+
     # Give worker time to start
     time.sleep(2)
     pout("✅ Demo worker started!\n")
@@ -613,16 +620,16 @@ def run_demo_worker():
 def demonstrate_task_workflows():
     """Demonstrate various task workflow patterns."""
     demo_logger = logger.get_logger("celery.demo")
-    
+
     pout("\n" + "=" * 60)
     pout("🎯 Demonstrating Rich Celery Task Patterns")
     pout("=" * 60)
-    
+
     # 1. Simple task execution with retries
     pout("\n1️⃣ Payment Processing with Automatic Retries")
     payment_task = process_payment.delay("order_123", 99.99, "credit_card")
     demo_logger.info("submitted_payment_task", task_id=payment_task.id)
-    
+
     # 2. Long-running task with progress tracking
     pout("\n2️⃣ Report Generation with Progress Tracking")
     report_task = generate_report.delay(
@@ -631,7 +638,7 @@ def demonstrate_task_workflows():
         "user_456"
     )
     demo_logger.info("submitted_report_task", task_id=report_task.id)
-    
+
     # Monitor progress
     for _ in range(3):
         time.sleep(1)
@@ -643,7 +650,7 @@ def demonstrate_task_workflows():
                 total=meta.get('total', 0),
                 status=meta.get('status', '')
             )
-    
+
     # 3. Multi-channel notification
     pout("\n3️⃣ Multi-Channel Notification Delivery")
     notification_task = send_notification.delay(
@@ -652,7 +659,7 @@ def demonstrate_task_workflows():
         {"order_id": "order_123", "amount": 99.99}
     )
     demo_logger.info("submitted_notification_task", task_id=notification_task.id)
-    
+
     # 4. Batch processing with error handling
     pout("\n4️⃣ Batch Data Processing with Item-Level Error Handling")
     batch_items = [
@@ -660,11 +667,11 @@ def demonstrate_task_workflows():
         for i in range(50)
     ]
     batch_task = process_batch_data.delay("batch_001", batch_items)
-    demo_logger.info("submitted_batch_task", 
+    demo_logger.info("submitted_batch_task",
         task_id=batch_task.id,
         item_count=len(batch_items)
     )
-    
+
     # 5. Task chains and workflows
     pout("\n5️⃣ Task Chain: Payment → Notification → Cleanup")
     workflow = chain(
@@ -674,7 +681,7 @@ def demonstrate_task_workflows():
     )
     workflow_result = workflow.apply_async()
     demo_logger.info("submitted_workflow", workflow_id=workflow_result.id)
-    
+
     # 6. Parallel task group
     pout("\n6️⃣ Parallel Task Group: Multiple Payments")
     payment_group = group(
@@ -682,28 +689,28 @@ def demonstrate_task_workflows():
         for i in range(5)
     )
     group_result = payment_group.apply_async()
-    demo_logger.info("submitted_parallel_group", 
+    demo_logger.info("submitted_parallel_group",
         group_id=group_result.id,
         task_count=5
     )
-    
+
     # Wait for some results
     pout("\n⏳ Waiting for task results...")
     time.sleep(3)
-    
+
     # Collect results
     try:
         payment_result = payment_task.get(timeout=5)
-        demo_logger.info("payment_task_completed", 
+        demo_logger.info("payment_task_completed",
             task_id=payment_task.id,
             result=payment_result
         )
     except Exception as e:
-        demo_logger.error("payment_task_error", 
+        demo_logger.error("payment_task_error",
             task_id=payment_task.id,
             error=str(e)
         )
-    
+
     try:
         report_result = report_task.get(timeout=5)
         demo_logger.info("report_task_completed",
@@ -715,7 +722,7 @@ def demonstrate_task_workflows():
             task_id=report_task.id,
             error=str(e)
         )
-    
+
     try:
         notification_result = notification_task.get(timeout=5)
         demo_logger.info("notification_task_completed",
@@ -727,7 +734,7 @@ def demonstrate_task_workflows():
             task_id=notification_task.id,
             error=str(e)
         )
-    
+
     try:
         batch_result = batch_task.get(timeout=5)
         demo_logger.info("batch_task_completed",
@@ -741,7 +748,7 @@ def demonstrate_task_workflows():
             task_id=batch_task.id,
             error=str(e)
         )
-    
+
     # Display final metrics
     pout("\n📊 Task Execution Metrics")
     pout("=" * 40)
@@ -753,7 +760,7 @@ def demonstrate_task_workflows():
         pout(f"   Avg Duration: {task_stats['avg_duration_ms']}ms")
         pout(f"   Errors: {task_stats['errors']}")
         pout(f"   Retries: {task_stats['retries']}")
-    
+
     demo_logger.info("demo_completed", final_metrics=stats)
 
 if __name__ == '__main__':
@@ -762,13 +769,13 @@ if __name__ == '__main__':
         pout("🎮 Running in DEMO MODE - No Redis Required!")
         pout("   Using memory broker for demonstration")
         pout("")
-        
+
         # Start demo worker
         run_demo_worker()
-        
+
         # Run demonstrations
         demonstrate_task_workflows()
-        
+
     else:
         # Production mode with Redis
         pout("🔄 Running Celery Integration Example (Production Mode)")
@@ -778,9 +785,9 @@ if __name__ == '__main__':
         pout("")
         pout("💡 Tip: Run with --demo flag to use memory broker without Redis")
         pout("")
-        
+
         demonstrate_task_workflows()
-    
+
     pout("\n✅ Rich Celery Integration Example Completed!")
     pout("\n🎯 Key Patterns Demonstrated:")
     pout("   • Payment processing with automatic retries")

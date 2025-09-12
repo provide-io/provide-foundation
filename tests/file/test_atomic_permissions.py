@@ -1,18 +1,12 @@
 """Tests for atomic file operations permission handling."""
 
 import os
-from pathlib import Path
 
-import pytest
-from provide.foundation.testing.file import temp_directory
 from provide.foundation.file.atomic import (
     atomic_replace,
     atomic_write,
     atomic_write_text,
 )
-
-
-
 
 
 def test_os_replace_preserves_permissions(temp_directory) -> None:

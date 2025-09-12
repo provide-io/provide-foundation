@@ -1,8 +1,7 @@
 """Tests for provide.foundation.errors.decorators module."""
 
-import time
 from typing import Never
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -12,7 +11,6 @@ from provide.foundation.errors.decorators import (
     suppress_and_log,
     with_error_handling,
 )
-from provide.foundation.errors.integration import NetworkError
 
 
 class TestWithErrorHandling:

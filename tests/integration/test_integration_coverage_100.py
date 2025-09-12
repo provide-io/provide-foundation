@@ -16,7 +16,7 @@ def test_ensure_stderr_default() -> None:
     """Test that ensure_stderr_default switches from stdout to stderr."""
     from provide.foundation import streams
     from provide.foundation.streams import ensure_stderr_default
-    
+
     # Reset stream state first
     from provide.foundation.streams.file import reset_streams
     reset_streams()

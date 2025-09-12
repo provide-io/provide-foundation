@@ -1,9 +1,10 @@
 """Tests for certificate creation and error handling."""
 
-import pytest
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from unittest import mock
 from unittest.mock import MagicMock
+
+import pytest
 
 from provide.foundation.crypto import (
     Certificate,
@@ -35,9 +36,8 @@ async def test_create_x509_cert_validity_error() -> None:
     with mock.patch(
         "provide.foundation.crypto.certificates.generator.datetime",
         side_effect=Exception("Time error"),
-    ):
-        with pytest.raises(CertificateError, match="Failed to initialize certificate"):
-            Certificate(generate_keypair=True)
+    ), pytest.raises(CertificateError, match="Failed to initialize certificate"):
+        Certificate(generate_keypair=True)
 
 
 @pytest.mark.asyncio
@@ -48,9 +48,8 @@ async def test_certificate_extension_failure() -> None:
     with mock.patch(
         "cryptography.x509.CertificateBuilder.add_extension",
         side_effect=Exception("Mock failure"),
-    ):
-        with pytest.raises(CertificateError, match="Failed to create"):
-            cert._create_x509_certificate()
+    ), pytest.raises(CertificateError, match="Failed to create"):
+        cert._create_x509_certificate()
 
 
 @pytest.mark.asyncio
@@ -59,9 +58,8 @@ async def test_create_x509_cert_builder_error() -> None:
     with mock.patch(
         "cryptography.x509.CertificateBuilder.subject_name",
         side_effect=Exception("Builder error"),
-    ):
-        with pytest.raises(CertificateError, match="Failed to initialize certificate"):
-            Certificate(generate_keypair=True)
+    ), pytest.raises(CertificateError, match="Failed to initialize certificate"):
+        Certificate(generate_keypair=True)
 
 
 @pytest.mark.asyncio
@@ -72,15 +70,14 @@ async def test_create_x509_cert_extension_error() -> None:
     with mock.patch(
         "cryptography.x509.CertificateBuilder.add_extension",
         side_effect=Exception("Mock failure"),
-    ):
-        with pytest.raises(CertificateError, match="Failed to create"):
-            cert._create_x509_certificate()
+    ), pytest.raises(CertificateError, match="Failed to create"):
+        cert._create_x509_certificate()
 
 
 @pytest.mark.asyncio
 async def test_create_invalid_key_type() -> None:
     """Ensure unsupported key types raise CertificateError when passed to CertificateBase.create."""
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     config: CertificateConfig = {  # Explicitly type hint for clarity
         "common_name": "test",
         "organization": "test",
@@ -98,7 +95,7 @@ async def test_create_invalid_key_type() -> None:
 
 def test_certificate_base_create_unsupported_key_type_str(mocker):
     """Test CertificateBase.create with an unsupported string for key_type in config."""
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     # Prepare a config with an unsupported key_type string
     config: CertificateConfig = {
         "common_name": "test_unsupported",

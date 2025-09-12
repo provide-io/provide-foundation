@@ -16,8 +16,8 @@ from provide.foundation import (  # noqa: E402
     LoggingConfig,
     TelemetryConfig,
     logger,
-    setup_telemetry,
     pout,  # Foundation console output
+    setup_telemetry,
 )
 
 

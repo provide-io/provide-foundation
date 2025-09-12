@@ -1,21 +1,11 @@
 """Basic coverage tests for hub components module - ComponentInfo, Category, and Emoji functionality."""
 
-import asyncio
-from unittest.mock import Mock, AsyncMock, patch
-import pytest
-import inspect
-import threading
+from unittest.mock import Mock
 
 from provide.foundation.hub.components import (
-    ComponentInfo,
     ComponentCategory,
-    ComponentLifecycle,
-    get_component_registry,
-    reset_registry_for_tests,
-    bootstrap_foundation,
+    ComponentInfo,
 )
-from provide.foundation.eventsets.types import EventMapping
-from provide.foundation.hub.registry import Registry, RegistryEntry
 
 
 class TestComponentInfo:

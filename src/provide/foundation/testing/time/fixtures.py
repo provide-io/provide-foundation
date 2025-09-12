@@ -5,9 +5,10 @@ Fixtures for mocking time, freezing time, and testing time-dependent code
 across the provide-io ecosystem.
 """
 
+from collections.abc import Callable
 import datetime
 import time
-from typing import Any, Callable
+from typing import Any
 from unittest.mock import Mock, patch
 
 import pytest

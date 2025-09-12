@@ -179,7 +179,7 @@ def error_handler(f: F) -> F:
             else:
                 click.secho(f"Error: {e}", fg="red", err=True)
 
-            exit_error(f"Command failed: {str(e)}")
+            exit_error(f"Command failed: {e!s}")
 
     return wrapper
 

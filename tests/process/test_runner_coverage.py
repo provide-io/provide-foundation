@@ -5,10 +5,8 @@
 Additional tests to achieve full coverage for process/runner.py.
 """
 
-import subprocess
 import sys
-from pathlib import Path
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 
 import pytest
 

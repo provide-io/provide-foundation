@@ -1,8 +1,9 @@
 """Comprehensive tests for cli/commands/deps.py module."""
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
 import sys
+from unittest.mock import Mock, patch
+
+import pytest
 
 
 class TestDepsCommandWithClick:
@@ -24,6 +25,7 @@ class TestDepsCommandWithClick:
 
                 # Re-import to get the decorated version
                 import importlib
+
                 import provide.foundation.cli.commands.deps as deps_module
 
                 importlib.reload(deps_module)
@@ -37,14 +39,13 @@ class TestDepsCommandWithClick:
 
             with patch(
                 "provide.foundation.cli.commands.deps.has_dependency", return_value=True
-            ):
-                with patch("provide.foundation.console.output.click.echo") as mock_echo:
-                    with pytest.raises(SystemExit) as exc_info:
-                        # Simulate click calling the function
-                        deps_command.callback(quiet=False, check="crypto")
+            ), patch("provide.foundation.console.output.click.echo") as mock_echo:
+                with pytest.raises(SystemExit) as exc_info:
+                    # Simulate click calling the function
+                    deps_command.callback(quiet=False, check="crypto")
 
-                    assert exc_info.value.code == 0
-                    mock_echo.assert_called_once_with("✅ crypto: Available", nl=True)
+                assert exc_info.value.code == 0
+                mock_echo.assert_called_once_with("✅ crypto: Available", nl=True)
 
     def test_deps_command_check_specific_missing(self):
         """Test checking specific missing dependency."""
@@ -72,13 +73,12 @@ class TestDepsCommandWithClick:
 
             with patch(
                 "provide.foundation.cli.commands.deps.has_dependency", return_value=True
-            ):
-                with patch("builtins.print") as mock_print:
-                    with pytest.raises(SystemExit) as exc_info:
-                        deps_command.callback(quiet=True, check="cli")
+            ), patch("builtins.print") as mock_print:
+                with pytest.raises(SystemExit) as exc_info:
+                    deps_command.callback(quiet=True, check="cli")
 
-                    assert exc_info.value.code == 0
-                    mock_print.assert_not_called()
+                assert exc_info.value.code == 0
+                mock_print.assert_not_called()
 
     def test_deps_command_check_all_available(self):
         """Test checking all dependencies when all available."""
@@ -138,7 +138,6 @@ class TestDepsCommandWithoutClick:
     def test_deps_command_without_click(self):
         """Test deps_command raises error when click not available."""
         # This test simulates when click is not installed
-        import sys
         import importlib
 
         old_click = sys.modules.get("click")
@@ -178,7 +177,6 @@ class TestDepsCommandWithoutClick:
     def test_deps_command_stub_with_args(self):
         """Test deps_command stub ignores args and raises error."""
         # Test the stub function behavior
-        import sys
         import importlib
 
         old_click = sys.modules.get("click")

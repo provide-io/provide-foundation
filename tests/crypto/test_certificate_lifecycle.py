@@ -1,14 +1,11 @@
 # pyvider/rpcplugin/tests/test_certificate_verify.py
 
-import pytest
-
-from datetime import datetime, timezone
-
+from datetime import UTC, datetime
 from unittest import mock
 
+import pytest
 
-from provide.foundation.crypto import CertificateError
-from provide.foundation.crypto import Certificate
+from provide.foundation.crypto import Certificate, CertificateError
 
 # Fixtures will be available via tests.fixtures through conftest.py
 # from tests.fixtures.crypto import client_cert
@@ -40,7 +37,7 @@ async def test_expired_certificate() -> None:
     # compared to the current real time.
     # datetime.now(timezone.utc) inside the test will be slightly after
     # the datetime.now(timezone.utc) used inside Certificate's __attrs_post_init__.
-    current_real_now = datetime.now(timezone.utc)
+    current_real_now = datetime.now(UTC)
     assert expired_cert._base.not_valid_after < current_real_now, (
         f"Certificate expiry date {expired_cert._base.not_valid_after} should be before current time {current_real_now}"
     )
@@ -51,7 +48,7 @@ async def test_expired_certificate() -> None:
 @pytest.mark.asyncio
 async def test_certificate_validity_period(client_cert) -> None:
     """Test certificate validity period checking."""
-    now = datetime.now(timezone.utc)  # ✅ Ensure timezone-aware datetime
+    now = datetime.now(UTC)  # ✅ Ensure timezone-aware datetime
     assert client_cert._base.not_valid_before <= now
     assert now <= client_cert._base.not_valid_after
     assert client_cert.is_valid  # ✅ No function call () since it's @cached_property
@@ -77,9 +74,8 @@ async def test_certificate_validity_period_error() -> None:
     with mock.patch(
         "provide.foundation.crypto.certificates.generator.datetime",
         side_effect=Exception("Time error"),
-    ):
-        with pytest.raises(CertificateError, match="Failed to initialize certificate"):
-            Certificate(generate_keypair=True)
+    ), pytest.raises(CertificateError, match="Failed to initialize certificate"):
+        Certificate(generate_keypair=True)
 
 
 @pytest.mark.asyncio
@@ -90,9 +86,8 @@ async def test_certificate_extension_addition_failure() -> None:
     with mock.patch(
         "cryptography.x509.CertificateBuilder.add_extension",
         side_effect=Exception("Mock failure"),
-    ):
-        with pytest.raises(CertificateError, match="Failed to create"):
-            cert._create_x509_certificate()
+    ), pytest.raises(CertificateError, match="Failed to create"):
+        cert._create_x509_certificate()
 
 
 @pytest.mark.asyncio

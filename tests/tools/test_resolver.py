@@ -1,8 +1,7 @@
 """Tests for Foundation tool version resolver."""
 
-import pytest
 
-from provide.foundation.tools.resolver import VersionResolver, ResolutionError
+from provide.foundation.tools.resolver import VersionResolver
 
 
 class TestVersionResolver:
@@ -23,7 +22,7 @@ class TestVersionResolver:
         """Test resolving 'latest' to stable version."""
         resolver = VersionResolver()
         available = ["1.0.0", "1.1.0", "2.0.0", "2.1.0-beta", "1.5.0-alpha"]
-        
+
         result = resolver.resolve("latest", available)
         assert result == "2.0.0"
 
@@ -31,7 +30,7 @@ class TestVersionResolver:
         """Test resolving 'latest-beta' to pre-release version."""
         resolver = VersionResolver()
         available = ["1.0.0", "1.1.0", "2.0.0", "2.1.0-beta", "1.5.0-alpha"]
-        
+
         result = resolver.resolve("latest-beta", available)
         assert result == "2.1.0-beta"
 
@@ -39,7 +38,7 @@ class TestVersionResolver:
         """Test resolving 'latest-prerelease' alias."""
         resolver = VersionResolver()
         available = ["1.0.0", "2.1.0-beta", "1.5.0-alpha"]
-        
+
         result = resolver.resolve("latest-prerelease", available)
         assert result == "2.1.0-beta"
 
@@ -47,7 +46,7 @@ class TestVersionResolver:
         """Test resolving 'latest-any' to any version."""
         resolver = VersionResolver()
         available = ["1.0.0", "1.1.0", "2.0.0", "2.1.0-beta", "3.0.0-alpha"]
-        
+
         result = resolver.resolve("latest-any", available)
         assert result == "3.0.0-alpha"
 
@@ -55,7 +54,7 @@ class TestVersionResolver:
         """Test resolving exact version match."""
         resolver = VersionResolver()
         available = ["1.0.0", "1.1.0", "2.0.0"]
-        
+
         result = resolver.resolve("1.1.0", available)
         assert result == "1.1.0"
 
@@ -63,7 +62,7 @@ class TestVersionResolver:
         """Test resolving exact version with no match."""
         resolver = VersionResolver()
         available = ["1.0.0", "1.1.0", "2.0.0"]
-        
+
         result = resolver.resolve("1.2.0", available)
         assert result is None
 
@@ -71,7 +70,7 @@ class TestVersionResolver:
         """Test resolving tilde range (~1.2.3)."""
         resolver = VersionResolver()
         available = ["1.2.0", "1.2.3", "1.2.5", "1.3.0", "2.0.0"]
-        
+
         result = resolver.resolve("~1.2.3", available)
         assert result == "1.2.5"
 
@@ -79,7 +78,7 @@ class TestVersionResolver:
         """Test resolving tilde range without patch version."""
         resolver = VersionResolver()
         available = ["1.2.0", "1.2.3", "1.2.5", "1.3.0", "2.0.0"]
-        
+
         result = resolver.resolve("~1.2", available)
         assert result == "1.2.5"
 
@@ -87,7 +86,7 @@ class TestVersionResolver:
         """Test resolving caret range (^1.2.3)."""
         resolver = VersionResolver()
         available = ["1.2.0", "1.2.3", "1.5.0", "2.0.0", "0.9.0"]
-        
+
         result = resolver.resolve("^1.2.3", available)
         assert result == "1.5.0"
 
@@ -95,7 +94,7 @@ class TestVersionResolver:
         """Test resolving wildcard for patch version."""
         resolver = VersionResolver()
         available = ["1.2.0", "1.2.3", "1.2.5", "1.3.0", "2.0.0"]
-        
+
         result = resolver.resolve("1.2.*", available)
         assert result == "1.2.5"
 
@@ -103,7 +102,7 @@ class TestVersionResolver:
         """Test resolving wildcard for minor version."""
         resolver = VersionResolver()
         available = ["1.0.0", "1.2.3", "1.5.0", "2.0.0"]
-        
+
         result = resolver.resolve("1.*", available)
         assert result == "1.5.0"
 
@@ -111,7 +110,7 @@ class TestVersionResolver:
         """Test resolving wildcard with no matches."""
         resolver = VersionResolver()
         available = ["1.0.0", "1.2.3", "2.0.0"]
-        
+
         result = resolver.resolve("3.*", available)
         assert result is None
 
@@ -119,7 +118,7 @@ class TestVersionResolver:
         """Test that whitespace in spec is trimmed."""
         resolver = VersionResolver()
         available = ["1.0.0", "2.0.0"]
-        
+
         result = resolver.resolve("  latest  ", available)
         assert result == "2.0.0"
 
@@ -131,7 +130,7 @@ class TestVersionResolverHelpers:
         """Test get_latest_stable with no stable versions."""
         resolver = VersionResolver()
         versions = ["1.0.0-alpha", "2.0.0-beta", "3.0.0-rc"]
-        
+
         result = resolver.get_latest_stable(versions)
         assert result is None
 
@@ -139,7 +138,7 @@ class TestVersionResolverHelpers:
         """Test get_latest_stable with mixed versions."""
         resolver = VersionResolver()
         versions = ["1.0.0", "1.0.0-alpha", "2.0.0", "2.0.0-beta"]
-        
+
         result = resolver.get_latest_stable(versions)
         assert result == "2.0.0"
 
@@ -147,7 +146,7 @@ class TestVersionResolverHelpers:
         """Test get_latest_prerelease with no pre-releases."""
         resolver = VersionResolver()
         versions = ["1.0.0", "2.0.0", "3.0.0"]
-        
+
         result = resolver.get_latest_prerelease(versions)
         assert result is None
 
@@ -155,7 +154,7 @@ class TestVersionResolverHelpers:
         """Test get_latest_prerelease with mixed versions."""
         resolver = VersionResolver()
         versions = ["1.0.0", "1.0.0-alpha", "2.0.0", "2.0.0-beta"]
-        
+
         result = resolver.get_latest_prerelease(versions)
         assert result == "2.0.0-beta"
 
@@ -276,7 +275,7 @@ class TestVersionResolverHelpers:
         """Test sort_versions with basic sorting."""
         resolver = VersionResolver()
         versions = ["2.0.0", "1.0.0", "1.5.0", "3.0.0"]
-        
+
         result = resolver.sort_versions(versions)
         assert result == ["1.0.0", "1.5.0", "2.0.0", "3.0.0"]
 
@@ -284,7 +283,7 @@ class TestVersionResolverHelpers:
         """Test sort_versions with pre-release versions."""
         resolver = VersionResolver()
         versions = ["1.0.0", "1.0.0-beta", "1.0.0-alpha", "2.0.0"]
-        
+
         result = resolver.sort_versions(versions)
         # Versions should be sorted in ascending order: stable before pre-releases at string level
         assert result[0] == "1.0.0"  # Stable version
@@ -296,7 +295,7 @@ class TestVersionResolverHelpers:
         """Test sort_versions with different version lengths."""
         resolver = VersionResolver()
         versions = ["1.0", "1.0.0", "1.0.1", "2.0"]
-        
+
         result = resolver.sort_versions(versions)
         assert result == ["1.0", "1.0.0", "1.0.1", "2.0"]
 
@@ -308,7 +307,7 @@ class TestVersionResolverEdgeCases:
         """Test tilde resolution with invalid base version."""
         resolver = VersionResolver()
         available = ["1.0.0", "2.0.0"]
-        
+
         result = resolver.resolve("~invalid", available)
         assert result is None
 
@@ -316,7 +315,7 @@ class TestVersionResolverEdgeCases:
         """Test tilde resolution with insufficient version parts."""
         resolver = VersionResolver()
         available = ["1.0.0", "2.0.0"]
-        
+
         result = resolver.resolve("~1", available)
         assert result is None
 
@@ -324,7 +323,7 @@ class TestVersionResolverEdgeCases:
         """Test caret resolution with invalid base version."""
         resolver = VersionResolver()
         available = ["1.0.0", "2.0.0"]
-        
+
         result = resolver.resolve("^invalid", available)
         assert result is None
 
@@ -332,7 +331,7 @@ class TestVersionResolverEdgeCases:
         """Test wildcard resolution with invalid regex pattern."""
         resolver = VersionResolver()
         available = ["1.0.0", "2.0.0"]
-        
+
         # This should not crash, just return None
         result = resolver.resolve("[", available)
         assert result is None
@@ -341,7 +340,7 @@ class TestVersionResolverEdgeCases:
         """Test tilde resolution where available versions are invalid."""
         resolver = VersionResolver()
         available = ["invalid", "also-invalid", "1.2.3"]
-        
+
         result = resolver.resolve("~1.2.0", available)
         assert result == "1.2.3"
 
@@ -349,7 +348,7 @@ class TestVersionResolverEdgeCases:
         """Test caret resolution with mix of valid and invalid versions."""
         resolver = VersionResolver()
         available = ["invalid", "1.0.0", "1.5.0", "bad-version", "2.0.0"]
-        
+
         result = resolver.resolve("^1.0.0", available)
         assert result == "1.5.0"
 
@@ -370,7 +369,7 @@ class TestVersionResolverEdgeCases:
         """Test sorting with some invalid versions."""
         resolver = VersionResolver()
         versions = ["1.0.0", "invalid", "2.0.0", "also-bad"]
-        
+
         result = resolver.sort_versions(versions)
         # Should not crash, and valid versions should be in order
         valid_versions = [v for v in result if resolver.parse_version(v)]
@@ -389,18 +388,18 @@ class TestVersionResolverIntegration:
             "2.0.0", "2.0.1", "2.1.0",
             "3.0.0-alpha", "3.0.0-beta", "3.0.0"
         ]
-        
+
         # Tilde should get latest patch
         assert resolver.resolve("~1.0.1", available) == "1.0.2"
         assert resolver.resolve("~1.1.0", available) == "1.1.1"
-        
+
         # Caret should get latest minor
         assert resolver.resolve("^1.0.0", available) == "1.2.0"
         assert resolver.resolve("^2.0.0", available) == "2.1.0"
-        
+
         # Latest should get stable
         assert resolver.resolve("latest", available) == "3.0.0"
-        
+
         # Latest beta should get pre-release
         assert resolver.resolve("latest-beta", available) == "3.0.0-beta"
 
@@ -411,7 +410,7 @@ class TestVersionResolverIntegration:
             "v0.1.0", "v0.2.0", "v1.0.0",
             "v1.1.0", "v2.0.0", "v2.0.0-beta"
         ]
-        
+
         # Should handle v prefixes
         assert resolver.resolve("latest", available) == "v2.0.0"
         assert resolver.resolve("^v1.0.0", available) == "v1.1.0"
@@ -425,31 +424,31 @@ class TestVersionResolverIntegration:
             "2.0.0a1", "2.0.0b1", "2.0.0rc1",
             "2.0.0", "2.0.0.dev1"
         ]
-        
+
         # Should identify Python pre-releases
         assert resolver.is_prerelease("2.0.0a1") is True
         assert resolver.is_prerelease("2.0.0b1") is True
         assert resolver.is_prerelease("2.0.0rc1") is True
         assert resolver.is_prerelease("2.0.0.dev1") is True
-        
+
         assert resolver.resolve("latest", available) == "2.0.0"
         assert resolver.resolve("latest-beta", available) in ["2.0.0rc1", "2.0.0.dev1"]
 
     def test_performance_with_large_version_list(self) -> None:
         """Test performance with many versions."""
         resolver = VersionResolver()
-        
+
         # Generate lots of versions
         available = []
         for major in range(1, 6):
             for minor in range(0, 10):
                 for patch in range(0, 10):
                     available.append(f"{major}.{minor}.{patch}")
-        
+
         # Should still be fast
         result = resolver.resolve("latest", available)
         assert result == "5.9.9"
-        
+
         result = resolver.resolve("^2.5.0", available)
         assert result == "2.9.9"
 
@@ -461,7 +460,7 @@ class TestVersionResolverIntegration:
             "24.0.0", "24.0.1", "24.0.2",
             "24.0.3-beta", "24.0.4-rc1"
         ]
-        
+
         assert resolver.resolve("latest", available) == "24.0.2"
         assert resolver.resolve("~20.10.1", available) == "20.10.17"
         assert resolver.resolve("^24.0.0", available) == "24.0.4-rc1"  # Caret ranges include pre-releases
@@ -475,7 +474,7 @@ class TestVersionResolverIntegration:
             "18.0.0", "18.1.0", "18.2.0",
             "19.0.0-pre", "19.0.0"
         ]
-        
+
         assert resolver.resolve("latest", available) == "19.0.0"
         assert resolver.resolve("~16.15.0", available) == "16.15.0"  # Tilde only matches same minor version
         assert resolver.resolve("^18.0.0", available) == "18.2.0"

@@ -1,20 +1,20 @@
 """Comprehensive tests for transport/registry.py module."""
 
-import pytest
-from unittest.mock import Mock, patch, MagicMock
-from typing import Any
+from unittest.mock import Mock, patch
 
-from provide.foundation.transport.registry import (
-    register_transport,
-    get_transport_for_scheme,
-    get_transport,
-    list_registered_transports,
-    get_transport_info,
-)
-from provide.foundation.transport.base import Transport
-from provide.foundation.transport.types import TransportType
-from provide.foundation.transport.errors import TransportNotFoundError
+import pytest
+
 from provide.foundation.hub.components import ComponentCategory
+from provide.foundation.transport.base import Transport
+from provide.foundation.transport.errors import TransportNotFoundError
+from provide.foundation.transport.registry import (
+    get_transport,
+    get_transport_for_scheme,
+    get_transport_info,
+    list_registered_transports,
+    register_transport,
+)
+from provide.foundation.transport.types import TransportType
 
 
 class MockTransport(Transport):
@@ -38,7 +38,7 @@ class TestRegisterTransport:
     def test_register_transport_basic(self) -> None:
         """Test basic transport registration."""
         mock_registry = Mock()
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             register_transport(
                 transport_type=TransportType.HTTP,
@@ -61,7 +61,7 @@ class TestRegisterTransport:
     def test_register_transport_default_schemes(self) -> None:
         """Test transport registration with default schemes."""
         mock_registry = Mock()
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             register_transport(
                 transport_type=TransportType.HTTP,
@@ -75,7 +75,7 @@ class TestRegisterTransport:
     def test_register_transport_with_metadata(self) -> None:
         """Test transport registration with additional metadata."""
         mock_registry = Mock()
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             register_transport(
                 transport_type=TransportType.HTTP,
@@ -96,7 +96,7 @@ class TestRegisterTransport:
     def test_register_transport_logging(self) -> None:
         """Test that transport registration logs debug message."""
         mock_registry = Mock()
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             with patch("provide.foundation.transport.registry.log") as mock_log:
                 register_transport(
@@ -121,7 +121,7 @@ class TestGetTransportForScheme:
         mock_entry.value = MockTransport
 
         mock_registry = [mock_entry]
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             with patch("provide.foundation.transport.registry.log") as mock_log:
                 result = get_transport_for_scheme("http")
@@ -139,7 +139,7 @@ class TestGetTransportForScheme:
         mock_entry.value = MockTransport
 
         mock_registry = [mock_entry]
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             result = get_transport_for_scheme("HTTP")
             assert result == MockTransport
@@ -147,7 +147,7 @@ class TestGetTransportForScheme:
     def test_get_transport_for_scheme_not_found(self) -> None:
         """Test getting transport for unregistered scheme."""
         mock_registry = []
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             with pytest.raises(TransportNotFoundError) as exc_info:
                 get_transport_for_scheme("unknown")
@@ -163,7 +163,7 @@ class TestGetTransportForScheme:
         mock_entry.value = MockTransport
 
         mock_registry = [mock_entry]
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             with pytest.raises(TransportNotFoundError):
                 get_transport_for_scheme("http")
@@ -176,7 +176,7 @@ class TestGetTransportForScheme:
         mock_entry.value = MockTransport
 
         mock_registry = [mock_entry]
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             with pytest.raises(TransportNotFoundError):
                 get_transport_for_scheme("http")
@@ -193,7 +193,7 @@ class TestGetTransport:
         mock_entry.value = MockTransport
 
         mock_registry = [mock_entry]
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             result = get_transport("http://example.com")
 
@@ -207,7 +207,7 @@ class TestGetTransport:
         mock_entry.value = MockTransport
 
         mock_registry = [mock_entry]
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             result = get_transport("https://secure.example.com/path")
 
@@ -221,7 +221,7 @@ class TestGetTransport:
         mock_entry.value = MockTransport
 
         mock_registry = [mock_entry]
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             result = get_transport("custom://user:pass@host:port/path?query=value#fragment")
 
@@ -230,7 +230,7 @@ class TestGetTransport:
     def test_get_transport_not_found(self) -> None:
         """Test getting transport for unsupported scheme."""
         mock_registry = []
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             with pytest.raises(TransportNotFoundError):
                 get_transport("unknown://example.com")
@@ -242,7 +242,7 @@ class TestListRegisteredTransports:
     def test_list_registered_transports_empty(self) -> None:
         """Test listing transports when none are registered."""
         mock_registry = []
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             result = list_registered_transports()
 
@@ -261,7 +261,7 @@ class TestListRegisteredTransports:
         }
 
         mock_registry = [mock_entry]
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             result = list_registered_transports()
 
@@ -301,7 +301,7 @@ class TestListRegisteredTransports:
         mock_entry3.metadata = {}
 
         mock_registry = [mock_entry1, mock_entry2, mock_entry3]
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             result = list_registered_transports()
 
@@ -319,7 +319,7 @@ class TestListRegisteredTransports:
         mock_entry.metadata = {}  # Missing schemes and transport_type
 
         mock_registry = [mock_entry]
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             result = list_registered_transports()
 
@@ -350,7 +350,7 @@ class TestGetTransportInfo:
         }
 
         mock_registry = [mock_entry]
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             result = get_transport_info("http")
 
@@ -379,7 +379,7 @@ class TestGetTransportInfo:
         }
 
         mock_registry = [mock_entry]
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             result = get_transport_info("https")
 
@@ -404,7 +404,7 @@ class TestGetTransportInfo:
         mock_entry.metadata = {"schemes": ["http"], "transport_type": TransportType.HTTP}
 
         mock_registry = [mock_entry]
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             result = get_transport_info("HTTP")
 
@@ -414,7 +414,7 @@ class TestGetTransportInfo:
     def test_get_transport_info_not_found(self) -> None:
         """Test getting transport info for non-existent transport."""
         mock_registry = []
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             result = get_transport_info("nonexistent")
 
@@ -429,7 +429,7 @@ class TestGetTransportInfo:
         mock_entry.metadata = {"schemes": ["http"]}
 
         mock_registry = [mock_entry]
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             result = get_transport_info("http")
 
@@ -444,7 +444,7 @@ class TestGetTransportInfo:
         mock_entry.metadata = {"transport_type": TransportType.HTTP}  # No schemes
 
         mock_registry = [mock_entry]
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             # Should find by name
             result = get_transport_info("minimal")
@@ -464,7 +464,7 @@ class TestGetTransportInfo:
         mock_entry.metadata = {"schemes": ["https"], "transport_type": TransportType.HTTP}  # Scheme doesn't match
 
         mock_registry = [mock_entry]
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             result = get_transport_info("http")
 
@@ -481,7 +481,7 @@ class TestIntegration:
         mock_registry_data = []
         mock_registry = Mock()
         mock_registry.__iter__ = lambda self: iter(mock_registry_data)
-        
+
         def mock_register(name, value, dimension, metadata, replace):
             entry = Mock()
             entry.name = name
@@ -491,7 +491,7 @@ class TestIntegration:
             mock_registry_data.append(entry)
 
         mock_registry.register = mock_register
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             # Register a transport
             register_transport(
@@ -536,7 +536,7 @@ class TestIntegration:
         mock_registry_data = []
         mock_registry = Mock()
         mock_registry.__iter__ = lambda self: iter(mock_registry_data)
-        
+
         def mock_register(name, value, dimension, metadata, replace):
             entry = Mock()
             entry.name = name
@@ -546,7 +546,7 @@ class TestIntegration:
             mock_registry_data.append(entry)
 
         mock_registry.register = mock_register
-        
+
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             # Register multiple transports
             register_transport(
@@ -554,7 +554,7 @@ class TestIntegration:
                 transport_class=MockTransport,
                 schemes=["http", "https"]
             )
-            
+
             register_transport(
                 transport_type=TransportType.WS,
                 transport_class=MockTransport,

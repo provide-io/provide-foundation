@@ -13,7 +13,7 @@ class TestRetryPolicyConfiguration:
     def test_default_configuration(self):
         """Test default policy configuration."""
         policy = RetryPolicy()
-        
+
         assert policy.max_attempts == 3
         assert policy.backoff == BackoffStrategy.EXPONENTIAL
         assert policy.base_delay == 1.0
@@ -33,7 +33,7 @@ class TestRetryPolicyConfiguration:
             retryable_errors=(ValueError, TypeError),
             retryable_status_codes={500, 503}
         )
-        
+
         assert policy.max_attempts == 5
         assert policy.backoff == BackoffStrategy.LINEAR
         assert policy.base_delay == 2.0
@@ -46,9 +46,9 @@ class TestRetryPolicyConfiguration:
         """Test that invalid max_attempts raises error."""
         with pytest.raises(ValueError) as exc_info:
             RetryPolicy(max_attempts=0)
-        
+
         assert "at least 1" in str(exc_info.value).lower()
-        
+
         with pytest.raises(ValueError):
             RetryPolicy(max_attempts=-1)
 
@@ -56,12 +56,12 @@ class TestRetryPolicyConfiguration:
         """Test that invalid delays raise errors."""
         with pytest.raises(ValueError) as exc_info:
             RetryPolicy(base_delay=-1.0)
-        
+
         assert "positive" in str(exc_info.value).lower()
-        
+
         with pytest.raises(ValueError):
             RetryPolicy(max_delay=-1.0)
-        
+
         with pytest.raises(ValueError):
             RetryPolicy(base_delay=10.0, max_delay=5.0)  # max < base
 
@@ -76,7 +76,7 @@ class TestRetryPolicyDelayCalculation:
             base_delay=2.0,
             jitter=False
         )
-        
+
         assert policy.calculate_delay(1) == 2.0
         assert policy.calculate_delay(2) == 2.0
         assert policy.calculate_delay(3) == 2.0
@@ -89,7 +89,7 @@ class TestRetryPolicyDelayCalculation:
             base_delay=2.0,
             jitter=False
         )
-        
+
         assert policy.calculate_delay(1) == 2.0
         assert policy.calculate_delay(2) == 4.0
         assert policy.calculate_delay(3) == 6.0
@@ -102,7 +102,7 @@ class TestRetryPolicyDelayCalculation:
             base_delay=2.0,
             jitter=False
         )
-        
+
         assert policy.calculate_delay(1) == 2.0   # 2 * 2^0
         assert policy.calculate_delay(2) == 4.0   # 2 * 2^1
         assert policy.calculate_delay(3) == 8.0   # 2 * 2^2
@@ -115,7 +115,7 @@ class TestRetryPolicyDelayCalculation:
             base_delay=1.0,
             jitter=False
         )
-        
+
         assert policy.calculate_delay(1) == 1.0  # fib(1) = 1
         assert policy.calculate_delay(2) == 1.0  # fib(2) = 1
         assert policy.calculate_delay(3) == 2.0  # fib(3) = 2
@@ -131,7 +131,7 @@ class TestRetryPolicyDelayCalculation:
             max_delay=50.0,
             jitter=False
         )
-        
+
         assert policy.calculate_delay(1) == 10.0
         assert policy.calculate_delay(2) == 20.0
         assert policy.calculate_delay(3) == 40.0
@@ -141,7 +141,7 @@ class TestRetryPolicyDelayCalculation:
     def test_zero_attempt_returns_zero(self):
         """Test that attempt 0 returns 0 delay."""
         policy = RetryPolicy(base_delay=5.0, jitter=False)
-        
+
         assert policy.calculate_delay(0) == 0
         assert policy.calculate_delay(-1) == 0
 
@@ -152,16 +152,16 @@ class TestRetryPolicyDelayCalculation:
             base_delay=10.0,
             jitter=True
         )
-        
+
         # Collect multiple delay calculations
         delays = [policy.calculate_delay(1) for _ in range(100)]
-        
+
         # All should be within ±25% of base delay
         assert all(7.5 <= d <= 12.5 for d in delays)
-        
+
         # Should have variation (not all the same)
         assert len(set(delays)) > 1
-        
+
         # Mean should be close to base delay
         mean_delay = sum(delays) / len(delays)
         assert 9.5 <= mean_delay <= 10.5
@@ -173,7 +173,7 @@ class TestRetryPolicyShouldRetry:
     def test_should_retry_within_attempts(self):
         """Test should_retry returns True within max attempts."""
         policy = RetryPolicy(max_attempts=3)
-        
+
         error = ValueError("test")
         assert policy.should_retry(error, 1) is True
         assert policy.should_retry(error, 2) is True
@@ -186,15 +186,15 @@ class TestRetryPolicyShouldRetry:
             max_attempts=5,
             retryable_errors=(ValueError, TypeError)
         )
-        
+
         # Retryable errors
         assert policy.should_retry(ValueError("test"), 1) is True
         assert policy.should_retry(TypeError("test"), 1) is True
-        
+
         # Non-retryable errors
         assert policy.should_retry(RuntimeError("test"), 1) is False
         assert policy.should_retry(KeyError("test"), 1) is False
-        
+
         # Even retryable errors stop at max attempts
         assert policy.should_retry(ValueError("test"), 5) is False
 
@@ -204,7 +204,7 @@ class TestRetryPolicyShouldRetry:
             max_attempts=3,
             retryable_errors=None
         )
-        
+
         assert policy.should_retry(ValueError("test"), 1) is True
         assert policy.should_retry(RuntimeError("test"), 1) is True
         assert policy.should_retry(Exception("test"), 1) is True
@@ -216,22 +216,22 @@ class TestRetryPolicyShouldRetry:
             max_attempts=3,
             retryable_status_codes={500, 502, 503}
         )
-        
+
         # Mock response objects
         class MockResponse:
             def __init__(self, status):
                 self.status = status
-        
+
         # Retryable status codes
         assert policy.should_retry_response(MockResponse(500), 1) is True
         assert policy.should_retry_response(MockResponse(502), 1) is True
         assert policy.should_retry_response(MockResponse(503), 1) is True
-        
+
         # Non-retryable status codes
         assert policy.should_retry_response(MockResponse(200), 1) is False
         assert policy.should_retry_response(MockResponse(404), 1) is False
         assert policy.should_retry_response(MockResponse(400), 1) is False
-        
+
         # Respects max attempts
         assert policy.should_retry_response(MockResponse(500), 3) is False
 
@@ -241,11 +241,11 @@ class TestRetryPolicyShouldRetry:
             max_attempts=3,
             retryable_status_codes=None
         )
-        
+
         class MockResponse:
             def __init__(self, status):
                 self.status = status
-        
+
         assert policy.should_retry_response(MockResponse(500), 1) is False
         assert policy.should_retry_response(MockResponse(200), 1) is False
 
@@ -260,19 +260,19 @@ class TestRetryPolicyComparison:
             backoff=BackoffStrategy.EXPONENTIAL,
             base_delay=1.0
         )
-        
+
         policy2 = RetryPolicy(
             max_attempts=3,
             backoff=BackoffStrategy.EXPONENTIAL,
             base_delay=1.0
         )
-        
+
         policy3 = RetryPolicy(
             max_attempts=5,  # Different
             backoff=BackoffStrategy.EXPONENTIAL,
             base_delay=1.0
         )
-        
+
         assert policy1 == policy2
         assert policy1 != policy3
         assert policy2 != policy3
@@ -282,20 +282,20 @@ class TestRetryPolicyComparison:
         policy1 = RetryPolicy(max_attempts=3)
         policy2 = RetryPolicy(max_attempts=3)
         policy3 = RetryPolicy(max_attempts=5)
-        
+
         # Should be hashable
         policy_set = {policy1, policy2, policy3}
-        
+
         # policy1 and policy2 are equal, so set should have 2 items
         assert len(policy_set) == 2
 
     def test_immutable(self):
         """Test that policy is immutable (frozen)."""
         policy = RetryPolicy(max_attempts=3)
-        
+
         with pytest.raises(AttributeError):
             policy.max_attempts = 5
-        
+
         with pytest.raises(AttributeError):
             policy.base_delay = 10.0
 
@@ -310,7 +310,7 @@ class TestRetryPolicyStringRepresentation:
             backoff=BackoffStrategy.LINEAR,
             base_delay=2.0
         )
-        
+
         repr_str = repr(policy)
         assert "RetryPolicy" in repr_str
         assert "max_attempts=5" in repr_str
@@ -323,7 +323,7 @@ class TestRetryPolicyStringRepresentation:
             max_attempts=3,
             backoff=BackoffStrategy.EXPONENTIAL
         )
-        
+
         str_repr = str(policy)
         assert "3 attempts" in str_repr.lower() or "max_attempts=3" in str_repr
         assert "exponential" in str_repr.lower()

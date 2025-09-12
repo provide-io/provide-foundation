@@ -1,11 +1,10 @@
 # pyvider/rpcplugin/tests/crypto/test_certificate_loading.py
 
-import pytest
 from unittest import mock
 
+import pytest
 
-from provide.foundation.crypto import Certificate
-from provide.foundation.crypto import CertificateError
+from provide.foundation.crypto import Certificate, CertificateError
 
 # Fixtures will be available via tests.fixtures through conftest.py
 # from tests.fixtures.crypto import client_cert, temporary_cert_file, valid_cert_pem, temporary_key_file, invalid_cert_pem, malformed_cert_pem, empty_cert
@@ -59,9 +58,8 @@ async def test_load_key_type_error(
     with mock.patch(
         "cryptography.hazmat.primitives.serialization.load_pem_private_key",
         side_effect=TypeError("Password required"),
-    ):
-        with pytest.raises(CertificateError, match="Failed to initialize certificate"):
-            Certificate(cert_pem_or_uri=valid_cert_pem, key_pem_or_uri="SOME_KEY")
+    ), pytest.raises(CertificateError, match="Failed to initialize certificate"):
+        Certificate(cert_pem_or_uri=valid_cert_pem, key_pem_or_uri="SOME_KEY")
 
 
 @pytest.mark.asyncio

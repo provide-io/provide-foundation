@@ -4,9 +4,9 @@ import io
 import sys
 
 from provide.foundation.testing.streams import (
-    set_log_stream_for_testing,
     get_current_log_stream,
     reset_log_stream,
+    set_log_stream_for_testing,
 )
 
 

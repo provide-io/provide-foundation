@@ -1,17 +1,13 @@
 # pyvider/rpcplugin/tests/crypto/test_certificate_chains.py
 
-import pytest
-
+from datetime import UTC, datetime
 from unittest import mock
 
-from datetime import datetime, timezone
-
 from cryptography import x509
-
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
+import pytest
 
 from provide.foundation.crypto import Certificate, CertificateError
-
 
 # Fixtures will be available via tests.fixtures through conftest.py
 # from tests.fixtures.crypto import client_cert, server_cert
@@ -102,7 +98,7 @@ def test_certificate_extensions(client_cert) -> None:
 @pytest.mark.asyncio
 async def test_certificate_validity_period(client_cert) -> None:
     """Test certificate validity period checking."""
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     assert client_cert._cert.not_valid_before_utc <= now
     assert now <= client_cert._cert.not_valid_after_utc
     assert client_cert.is_valid

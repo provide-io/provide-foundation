@@ -3,8 +3,9 @@ Resilience decorators for retry, circuit breaker, and fallback patterns.
 """
 
 import asyncio
+from collections.abc import Callable
 import functools
-from typing import Any, Callable, TypeVar
+from typing import Any, TypeVar
 
 from provide.foundation.config.defaults import DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT
 from provide.foundation.resilience.retry import (

@@ -47,7 +47,7 @@ def load_pyproject_version() -> str:
 
     # Check for static version first
     version = data.get("project", {}).get("version")
-    
+
     # If no static version, check for dynamic versioning
     if not version:
         dynamic_fields = data.get("project", {}).get("dynamic", [])
@@ -55,7 +55,7 @@ def load_pyproject_version() -> str:
             # Check for setuptools dynamic version configuration
             dynamic_config = data.get("tool", {}).get("setuptools", {}).get("dynamic", {})
             version_config = dynamic_config.get("version", {})
-            
+
             if "file" in version_config:
                 version_file = Path(version_config["file"])
                 if version_file.exists():

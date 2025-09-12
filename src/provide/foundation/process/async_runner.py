@@ -117,7 +117,7 @@ async def async_run_command(
                 stdin=asyncio.subprocess.PIPE if input else None,
                 **_filter_subprocess_kwargs(kwargs),
             )
-        
+
         try:
 
             # Communicate with process
@@ -188,13 +188,13 @@ async def async_run_command(
                     process.stdout.feed_eof()
                 if process.stderr and process.stderr != asyncio.subprocess.PIPE and not process.stderr.at_eof():
                     process.stderr.feed_eof()
-                
+
                 # Ensure process is terminated
                 if process.returncode is None:
                     process.terminate()
                     try:
                         await asyncio.wait_for(process.wait(), timeout=1.0)
-                    except asyncio.TimeoutError:
+                    except builtins.TimeoutError:
                         process.kill()
                         await process.wait()
 
@@ -270,7 +270,7 @@ async def async_stream_command(
             stderr=stderr_handling,
             **_filter_subprocess_kwargs(kwargs),
         )
-        
+
         try:
             # Stream output with optional timeout
             if timeout:
@@ -358,13 +358,13 @@ async def async_stream_command(
                     process.stdout.feed_eof()
                 if process.stderr and process.stderr != asyncio.subprocess.STDOUT and not process.stderr.at_eof():
                     process.stderr.feed_eof()
-                
+
                 # Ensure process is terminated
                 if process.returncode is None:
                     process.terminate()
                     try:
                         await asyncio.wait_for(process.wait(), timeout=1.0)
-                    except asyncio.TimeoutError:
+                    except builtins.TimeoutError:
                         process.kill()
                         await process.wait()
 

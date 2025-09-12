@@ -5,18 +5,9 @@ This test suite defines Foundation's core registry architecture, metadata handli
 and bootstrap integration. No backward compatibility is maintained.
 """
 
-import asyncio
-from collections.abc import AsyncIterator, Iterator
-import threading
-from typing import Any
-from unittest.mock import Mock, AsyncMock
+from unittest.mock import AsyncMock, Mock
 
-import pytest
-from structlog.typing import EventDict
-
-from provide.foundation.config.base import BaseConfig
-from provide.foundation.hub.registry import Registry, RegistryEntry
-from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
+from provide.foundation.hub.registry import Registry
 
 
 class TestComponentRegistryArchitecture:
@@ -166,8 +157,8 @@ class TestComponentMetadataAndVersioning:
     def test_component_health_monitoring(self):
         """Components must support health checking."""
         from provide.foundation.hub.components import (
-            get_component_registry,
             check_component_health,
+            get_component_registry,
         )
 
         registry = get_component_registry()
@@ -189,8 +180,8 @@ class TestComponentMetadataAndVersioning:
     def test_component_configuration_schema(self):
         """Components must declare configuration schema."""
         from provide.foundation.hub.components import (
-            get_component_registry,
             get_component_config_schema,
+            get_component_registry,
         )
 
         registry = get_component_registry()
@@ -224,9 +215,9 @@ class TestFoundationBootstrapIntegration:
     def test_foundation_bootstraps_with_registry(self):
         """Foundation initialization must use registry for all components."""
         from provide.foundation.hub.components import (
-            get_component_registry,
-            bootstrap_foundation,
             ComponentCategory,
+            bootstrap_foundation,
+            get_component_registry,
         )
 
         # Bootstrap already happens on import, just check registry state
@@ -238,11 +229,14 @@ class TestFoundationBootstrapIntegration:
         except Exception:
             # Bootstrap might fail if already bootstrapped
             pass
-        
+
         # Trigger event set discovery
-        from provide.foundation.eventsets.registry import discover_event_sets, get_registry as get_eventset_registry
+        from provide.foundation.eventsets.registry import (
+            discover_event_sets,
+            get_registry as get_eventset_registry,
+        )
         discover_event_sets()
-            
+
         # Fetch after bootstrap
         # Event sets are in their own registry, not the component registry
         event_registry = get_eventset_registry()
@@ -257,8 +251,8 @@ class TestFoundationBootstrapIntegration:
 
     def test_foundation_logger_uses_registry_components(self):
         """Foundation logger must use registry for all component access."""
-        from provide.foundation.logger import get_logger
         from provide.foundation.hub.components import get_component_registry
+        from provide.foundation.logger import get_logger
 
         # Create logger
         logger = get_logger("test.registry")
@@ -267,8 +261,8 @@ class TestFoundationBootstrapIntegration:
         registry = get_component_registry()
 
         # Mock an event set in registry
+        from provide.foundation.eventsets.types import EventMapping, EventSet
         from provide.foundation.hub.components import ComponentCategory
-        from provide.foundation.eventsets.types import EventSet, EventMapping
 
         test_event_mapping = EventMapping(
             name="info",

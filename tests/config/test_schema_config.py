@@ -1,21 +1,15 @@
 """Comprehensive coverage tests for ConfigSchema class and schema validation."""
 
-import asyncio
-import pytest
-from unittest.mock import Mock, AsyncMock
+from unittest.mock import Mock
+
 from attrs import define, field
+import pytest
 
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.schema import (
-    SchemaField,
     ConfigSchema,
+    SchemaField,
     validate_schema,
-    validate_port,
-    validate_url,
-    validate_email,
-    validate_path,
-    validate_version,
-    validate_url_accessible,
 )
 from provide.foundation.errors import ConfigValidationError
 

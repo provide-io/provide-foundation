@@ -1,7 +1,6 @@
 """Additional tests for crypto constants to improve code coverage."""
 
-from unittest.mock import patch, Mock
-import pytest
+from unittest.mock import patch
 
 from provide.foundation.crypto import constants
 
@@ -18,7 +17,7 @@ class TestCryptoConstantsCoverage:
     def test_rsa_constants(self):
         """Test RSA constants are defined correctly."""
         assert constants.DEFAULT_RSA_KEY_SIZE == 2048
-        assert constants.SUPPORTED_RSA_SIZES == {2048, 3072, 4096}
+        assert {2048, 3072, 4096} == constants.SUPPORTED_RSA_SIZES
         assert 2048 in constants.SUPPORTED_RSA_SIZES
         assert 3072 in constants.SUPPORTED_RSA_SIZES
         assert 4096 in constants.SUPPORTED_RSA_SIZES
@@ -26,16 +25,16 @@ class TestCryptoConstantsCoverage:
     def test_ecdsa_constants(self):
         """Test ECDSA constants are defined correctly."""
         assert constants.DEFAULT_ECDSA_CURVE == "secp384r1"
-        assert constants.SUPPORTED_EC_CURVES == {
+        assert {
             "secp256r1",
             "secp384r1",
             "secp521r1",
-        }
+        } == constants.SUPPORTED_EC_CURVES
         assert "secp384r1" in constants.SUPPORTED_EC_CURVES
 
     def test_key_type_constants(self):
         """Test key type constants."""
-        assert constants.SUPPORTED_KEY_TYPES == {"rsa", "ecdsa", "ed25519"}
+        assert {"rsa", "ecdsa", "ed25519"} == constants.SUPPORTED_KEY_TYPES
         assert "ed25519" in constants.SUPPORTED_KEY_TYPES
         assert "rsa" in constants.SUPPORTED_KEY_TYPES
         assert "ecdsa" in constants.SUPPORTED_KEY_TYPES

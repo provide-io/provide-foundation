@@ -372,7 +372,7 @@ class TestProvideRun:
             if hasattr(coro, 'close'):
                 coro.close()
             return "test"
-        
+
         mock_asyncio.run.side_effect = mock_run
 
         result = provide_run(main, debug=True)

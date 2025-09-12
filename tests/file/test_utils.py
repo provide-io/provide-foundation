@@ -1,10 +1,9 @@
 """Tests for file utility functions."""
 
-from pathlib import Path
 import time
 
 import pytest
-from provide.foundation.testing.file import temp_directory
+
 from provide.foundation.file.utils import (
     backup_file,
     find_files,
@@ -12,9 +11,6 @@ from provide.foundation.file.utils import (
     get_size,
     touch,
 )
-
-
-
 
 
 def test_get_size_existing_file(temp_directory) -> None:

@@ -10,7 +10,6 @@ from provide.foundation.transport import (
     Response,
     TransportType,
     get_transport,
-    register_transport,
 )
 from provide.foundation.transport.base import TransportBase
 from provide.foundation.transport.errors import TransportNotFoundError
@@ -18,10 +17,10 @@ from provide.foundation.transport.errors import TransportNotFoundError
 
 class MockTransport(TransportBase):
     """Mock transport for testing."""
-    
+
     def supports(self, transport_type: TransportType) -> bool:
         return transport_type.value == "mock"
-    
+
     async def execute(self, request: Request) -> Response:
         return Response(
             status=200,
@@ -41,7 +40,7 @@ def test_request_creation():
         params={"limit": 10},
         body={"data": "test"},
     )
-    
+
     assert request.uri == "https://api.example.com/users"
     assert request.method == "GET"
     assert request.headers["Authorization"] == "Bearer token"
@@ -54,7 +53,7 @@ def test_request_creation():
 def test_response_creation():
     """Test Response object creation and methods."""
     request = Request(uri="https://api.example.com/test")
-    
+
     response = Response(
         status=200,
         headers={"Content-Type": "application/json"},
@@ -62,7 +61,7 @@ def test_response_creation():
         elapsed_ms=150.0,
         request=request,
     )
-    
+
     assert response.status == 200
     assert response.is_success() is True
     assert response.text == '{"message": "success"}'
@@ -75,17 +74,17 @@ def test_response_error_status():
     response_404 = Response(status=404)
     response_500 = Response(status=500)
     response_200 = Response(status=200)
-    
+
     assert response_404.is_success() is False
     assert response_500.is_success() is False
     assert response_200.is_success() is True
-    
+
     with pytest.raises(Exception):  # HTTPResponseError
         response_404.raise_for_status()
-    
+
     with pytest.raises(Exception):  # HTTPResponseError
         response_500.raise_for_status()
-    
+
     # Should not raise
     response_200.raise_for_status()
 
@@ -94,11 +93,11 @@ def test_transport_registration():
     """Test transport registration and discovery."""
     # For testing, we'll use HTTP transport that's already registered
     from provide.foundation.transport.http import HTTPTransport
-    
+
     # Test retrieval of existing transport
     transport = get_transport("https://example.com/test")
     assert isinstance(transport, HTTPTransport)
-    
+
     # Test error for unknown scheme
     with pytest.raises(TransportNotFoundError):
         get_transport("unknown://example.com")
@@ -108,15 +107,15 @@ def test_transport_registration():
 async def test_mock_transport():
     """Test mock transport execution."""
     transport = MockTransport()
-    
+
     request = Request(
         uri="mock://example.com/test",
         method="GET",
     )
-    
+
     async with transport:
         response = await transport.execute(request)
-    
+
     assert response.status == 200
     assert response.headers["Content-Type"] == "application/json"
     assert response.json()["success"] is True
@@ -126,7 +125,7 @@ async def test_mock_transport():
 def test_http_method_enum():
     """Test HTTPMethod enum values."""
     assert HTTPMethod.GET == "GET"
-    assert HTTPMethod.POST == "POST" 
+    assert HTTPMethod.POST == "POST"
     assert HTTPMethod.PUT == "PUT"
     assert HTTPMethod.PATCH == "PATCH"
     assert HTTPMethod.DELETE == "DELETE"

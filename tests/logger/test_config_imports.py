@@ -1,6 +1,5 @@
 """Test coverage for logger config module imports."""
 
-import pytest
 
 
 class TestLoggerConfigImports:

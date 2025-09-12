@@ -202,11 +202,10 @@ class TestExtractClickTypeEdgeCases:
         # Mock get_origin and get_args to simulate edge case
         with patch(
             "provide.foundation.hub.type_mapping.get_origin", return_value=typing.Union
-        ):
-            with patch("provide.foundation.hub.type_mapping.get_args", return_value=()):
-                result = extract_click_type(MockUnion)
-                # Should return str as safe default when union has no args
-                assert result is str
+        ), patch("provide.foundation.hub.type_mapping.get_args", return_value=()):
+            result = extract_click_type(MockUnion)
+            # Should return str as safe default when union has no args
+            assert result is str
 
     def test_extract_union_args_attribute(self):
         """Test union with __args__ attribute."""
@@ -217,35 +216,32 @@ class TestExtractClickTypeEdgeCases:
         # Mock to simulate Python 3.10+ union
         with patch(
             "provide.foundation.hub.type_mapping.get_origin", return_value=typing.Union
-        ):
-            with patch("provide.foundation.hub.type_mapping.get_args", return_value=()):
-                # Should use __args__ when available
-                mock_union = MockUnionWithArgs()
-                result = extract_click_type(mock_union)
-                assert result is str  # First non-None type
+        ), patch("provide.foundation.hub.type_mapping.get_args", return_value=()):
+            # Should use __args__ when available
+            mock_union = MockUnionWithArgs()
+            result = extract_click_type(mock_union)
+            assert result is str  # First non-None type
 
     def test_extract_union_all_none_types(self):
         """Test union containing only None-equivalent types."""
         # Create a mock annotation with only None types
         with patch(
             "provide.foundation.hub.type_mapping.get_origin", return_value=typing.Union
+        ), patch(
+            "provide.foundation.hub.type_mapping.get_args",
+            return_value=(type(None), type(None)),
         ):
-            with patch(
-                "provide.foundation.hub.type_mapping.get_args",
-                return_value=(type(None), type(None)),
-            ):
-                result = extract_click_type("mock_annotation")
-                assert result is str  # Should default to str
+            result = extract_click_type("mock_annotation")
+            assert result is str  # Should default to str
 
     def test_extract_empty_union_args(self):
         """Test union with empty args list."""
         with patch(
             "provide.foundation.hub.type_mapping.get_origin", return_value=typing.Union
-        ):
-            with patch("provide.foundation.hub.type_mapping.get_args", return_value=()):
-                result = extract_click_type("mock_annotation")
-                # Should return str as safe default when union has no args
-                assert result is str
+        ), patch("provide.foundation.hub.type_mapping.get_args", return_value=()):
+            result = extract_click_type("mock_annotation")
+            # Should return str as safe default when union has no args
+            assert result is str
 
     def test_extract_non_generic_type(self):
         """Test extraction of non-generic types."""
@@ -255,14 +251,13 @@ class TestExtractClickTypeEdgeCases:
 
     def test_extract_complex_generic_type(self):
         """Test extraction of complex generic types that aren't unions."""
-        from typing import List, Dict
 
         # These should be returned as-is since they're not unions
-        result_list = extract_click_type(List[str])
-        result_dict = extract_click_type(Dict[str, int])
+        result_list = extract_click_type(list[str])
+        result_dict = extract_click_type(dict[str, int])
 
-        assert result_list == List[str]
-        assert result_dict == Dict[str, int]
+        assert result_list == list[str]
+        assert result_dict == dict[str, int]
 
 
 class TestExtractClickTypeUnionTypeComparisons:
@@ -340,8 +335,8 @@ class TestTypeMappingIntegration:
             name: str,
             count: int,
             enabled: bool,
-            optional_value: Optional[str],
-            union_value: Union[str, int],
+            optional_value: str | None,
+            union_value: str | int,
         ) -> None:
             pass
 
@@ -367,7 +362,7 @@ class TestTypeMappingIntegration:
     def test_type_mapping_with_nested_annotations(self):
         """Test type mapping with nested type annotations."""
         # Test nested Optional and Union types
-        nested_optional = Optional[Union[str, int]]
+        nested_optional = Optional[str | int]
         result = extract_click_type(nested_optional)
 
         # Should extract the first non-None type from the union

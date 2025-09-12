@@ -96,32 +96,32 @@ class TestParsingCoverage:
 
     def test_auto_parse_with_converter_metadata(self) -> None:
         """Test auto_parse uses converter from metadata first."""
-        
+
         @define
         class ConfigWithConverter:
             uppercase_val: str = field(metadata={'converter': lambda x: x.upper()})
             int_val: int = field(metadata={'converter': lambda x: int(x) * 2})
             no_converter: str = field()
-        
+
         attrs_fields = {f.name: f for f in fields(ConfigWithConverter)}
-        
+
         # Test that converter in metadata is used
         assert auto_parse(attrs_fields["uppercase_val"], "hello") == "HELLO"
         assert auto_parse(attrs_fields["int_val"], "5") == 10
-        
+
         # Test fallback to type-based parsing when no converter
         assert auto_parse(attrs_fields["no_converter"], "plain") == "plain"
-        
+
     def test_auto_parse_converter_fallback(self) -> None:
         """Test auto_parse falls back to type parsing if converter fails."""
-        
-        @define 
+
+        @define
         class ConfigWithFailingConverter:
             # Converter that always fails
             val: int = field(metadata={'converter': lambda x: int(x[100])})
-        
+
         failing_field = fields(ConfigWithFailingConverter).val
-        
+
         # Should fall back to type-based parsing when converter fails
         assert auto_parse(failing_field, "42") == 42
 
@@ -169,8 +169,9 @@ class TestEnvUtilsCoverage:
         """Test edge cases for get_bool function."""
         import os
         from unittest.mock import patch
-        from provide.foundation.utils.env import get_bool
+
         from provide.foundation.errors.config import ValidationError
+        from provide.foundation.utils.env import get_bool
 
         # Test with empty string (should be False)
         with patch.dict(os.environ, {"TEST_BOOL": ""}):
@@ -192,8 +193,9 @@ class TestEnvUtilsCoverage:
         """Test edge cases for get_int function."""
         import os
         from unittest.mock import patch
-        from provide.foundation.utils.env import get_int
+
         from provide.foundation.errors.config import ValidationError
+        from provide.foundation.utils.env import get_int
 
         # Test negative numbers
         with patch.dict(os.environ, {"TEST_INT": "-42"}):
@@ -215,8 +217,9 @@ class TestEnvUtilsCoverage:
         """Test edge cases for get_float function."""
         import os
         from unittest.mock import patch
-        from provide.foundation.utils.env import get_float
+
         from provide.foundation.errors.config import ValidationError
+        from provide.foundation.utils.env import get_float
 
         # Test scientific notation
         with patch.dict(os.environ, {"TEST_FLOAT": "1e-3"}):
@@ -238,6 +241,7 @@ class TestEnvUtilsCoverage:
         """Test get_str with default value."""
         import os
         from unittest.mock import patch
+
         from provide.foundation.utils.env import get_str
 
         # Test with missing env var (should use default)

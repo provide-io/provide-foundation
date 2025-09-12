@@ -1,9 +1,8 @@
 """Comprehensive coverage tests for errors/process.py module."""
 
-import pytest
 from provide.foundation.errors.process import (
-    ProcessError,
     CommandNotFoundError,
+    ProcessError,
     ProcessTimeoutError,
 )
 

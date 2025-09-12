@@ -216,9 +216,9 @@ class TestLoggingWithEmojiSets:
             )
         )
         setup_foundation_telemetry_for_test(config)
-        
+
         # Event sets are no longer automatically registered
-        
+
         global_logger.info(
             "LLM generated response",
             **{

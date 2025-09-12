@@ -1,11 +1,9 @@
 """Test coverage for EventSet integration with logging."""
 
-from unittest.mock import Mock, patch
-import pytest
 
-from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping
-from provide.foundation.eventsets.registry import get_registry, discover_event_sets
+from provide.foundation.eventsets.registry import discover_event_sets, get_registry
 from provide.foundation.eventsets.resolver import get_resolver
+from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping
 
 
 class TestEventSetIntegration:
@@ -18,7 +16,7 @@ class TestEventSetIntegration:
             visual_markers={"success": "✅", "error": "❌", "info": "ℹ️"},
             default_key="default"
         )
-        
+
         assert mapping.name == "test_mapping"
         assert mapping.visual_markers["success"] == "✅"
         assert mapping.visual_markers["error"] == "❌"
@@ -31,12 +29,12 @@ class TestEventSetIntegration:
             name="status",
             visual_markers={"success": "✅", "error": "❌"}
         )
-        
+
         field_mapping = FieldMapping(
             log_key="status",
             event_set_name="test_set"
         )
-        
+
         event_set = EventSet(
             name="test_set",
             description="Test event set",
@@ -44,7 +42,7 @@ class TestEventSetIntegration:
             field_mappings=[field_mapping],
             priority=50
         )
-        
+
         assert event_set.name == "test_set"
         assert event_set.description == "Test event set"
         assert len(event_set.mappings) == 1
@@ -60,7 +58,7 @@ class TestEventSetIntegration:
             value_type="string",
             default_value="default"
         )
-        
+
         assert field_mapping.log_key == "test.field"
         assert field_mapping.event_set_name == "test_set"
         assert field_mapping.description == "Test field mapping"
@@ -72,7 +70,7 @@ class TestEventSetIntegration:
         discover_event_sets()
         registry = get_registry()
         event_sets = registry.list_event_sets()
-        
+
         # Should discover built-in event sets
         names = [es.name for es in event_sets]
         assert "default" in names
@@ -83,7 +81,7 @@ class TestEventSetIntegration:
         """Test event enrichment through resolver."""
         discover_event_sets()
         resolver = get_resolver()
-        
+
         # Test DAS event enrichment
         event = {
             "event": "Test message",
@@ -91,9 +89,9 @@ class TestEventSetIntegration:
             "action": "start",
             "status": "success"
         }
-        
+
         enriched = resolver.enrich_event(event.copy())
-        
+
         # Should have visual markers added
         assert "⚙️" in enriched["event"] or "🚀" in enriched["event"] or "✅" in enriched["event"]
 
@@ -102,7 +100,7 @@ class TestEventSetIntegration:
         discover_event_sets()
         registry = get_registry()
         event_sets = registry.list_event_sets()
-        
+
         # Should be sorted by descending priority
         priorities = [es.priority for es in event_sets]
         assert priorities == sorted(priorities, reverse=True)
@@ -111,7 +109,7 @@ class TestEventSetIntegration:
         """Test EventMapping with metadata fields and transformations."""
         def uppercase_transform(value):
             return str(value).upper() if value else value
-        
+
         mapping = EventMapping(
             name="status_mapping",
             visual_markers={"success": "✅", "error": "❌"},
@@ -119,13 +117,13 @@ class TestEventSetIntegration:
             transformations={"uppercase": uppercase_transform},
             default_key="info"
         )
-        
+
         assert mapping.name == "status_mapping"
         assert "success" in mapping.visual_markers
         assert "success_meta" in mapping.metadata_fields
         assert "uppercase" in mapping.transformations
         assert mapping.default_key == "info"
-        
+
         # Test transformation
         result = mapping.transformations["uppercase"]("hello")
         assert result == "HELLO"
@@ -136,19 +134,19 @@ class TestEventSetIntegration:
             name="domain",
             visual_markers={"system": "⚙️", "user": "👤", "api": "🔗"}
         )
-        
+
         action_mapping = EventMapping(
-            name="action", 
+            name="action",
             visual_markers={"start": "🚀", "complete": "🏁", "error": "💥"}
         )
-        
+
         field_mapping = FieldMapping(
             log_key="system.status",
             event_set_name="complex_test",
             description="System status field",
             value_type="string"
         )
-        
+
         event_set = EventSet(
             name="complex_test",
             description="Complex test event set",
@@ -156,7 +154,7 @@ class TestEventSetIntegration:
             field_mappings=[field_mapping],
             priority=100
         )
-        
+
         assert len(event_set.mappings) == 2
         assert event_set.mappings[0].name == "domain"
         assert event_set.mappings[1].name == "action"
