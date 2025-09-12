@@ -203,20 +203,18 @@ class ArchiveOperations:
         output.mkdir(parents=True, exist_ok=True)
 
         # Decompress to temp file
-        with tempfile.NamedTemporaryFile(suffix=".tar", delete=False) as temp:
-            temp_tar = Path(temp.name)
+        with temp_file(suffix=".tar", cleanup=False) as temp_tar:
+            try:
+                gzip = GzipCompressor()
+                gzip.decompress_file(archive, temp_tar)
 
-        try:
-            gzip = GzipCompressor()
-            gzip.decompress_file(archive, temp_tar)
-
-            # Extract tar
-            tar = TarArchive()
-            return tar.extract(temp_tar, output)
-        finally:
-            # Clean up temp file
-            if temp_tar.exists():
-                temp_tar.unlink()
+                # Extract tar
+                tar = TarArchive()
+                return tar.extract(temp_tar, output)
+            finally:
+                # Clean up temp file
+                if temp_tar.exists():
+                    temp_tar.unlink()
 
     @staticmethod
     def create_tar_bz2(source: Path, output: Path, deterministic: bool = True) -> Path:
@@ -268,20 +266,18 @@ class ArchiveOperations:
         output.mkdir(parents=True, exist_ok=True)
 
         # Decompress to temp file
-        with tempfile.NamedTemporaryFile(suffix=".tar", delete=False) as temp:
-            temp_tar = Path(temp.name)
+        with temp_file(suffix=".tar", cleanup=False) as temp_tar:
+            try:
+                bz2 = Bzip2Compressor()
+                bz2.decompress_file(archive, temp_tar)
 
-        try:
-            bz2 = Bzip2Compressor()
-            bz2.decompress_file(archive, temp_tar)
-
-            # Extract tar
-            tar = TarArchive()
-            return tar.extract(temp_tar, output)
-        finally:
-            # Clean up temp file
-            if temp_tar.exists():
-                temp_tar.unlink()
+                # Extract tar
+                tar = TarArchive()
+                return tar.extract(temp_tar, output)
+            finally:
+                # Clean up temp file
+                if temp_tar.exists():
+                    temp_tar.unlink()
 
     @staticmethod
     def detect_format(file: Path) -> list[str]:
