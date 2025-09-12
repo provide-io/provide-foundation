@@ -97,11 +97,22 @@ task_start_times = {}
 task_contexts = {}  # Store additional context per task
 
 
-def setup_signal_handlers(app, demo_mode: bool = False):
+def setup_signal_handlers(app):
     """Set up all Celery signal handlers."""
     
     # Import task logger after app setup
-    from examples.integration.celery.setup_and_config import CeleryTaskLogger
+    import importlib.util
+    from pathlib import Path
+    
+    def load_module_from_file(name, filepath):
+        spec = importlib.util.spec_from_file_location(name, filepath)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+    
+    current_dir = Path(__file__).parent
+    setup_config = load_module_from_file("setup_and_config", current_dir / "01_setup_and_config.py")
+    CeleryTaskLogger = setup_config.CeleryTaskLogger
     
     @worker_ready.connect
     def worker_ready_handler(sender, **kwargs):
@@ -111,7 +122,8 @@ def setup_signal_handlers(app, demo_mode: bool = False):
             hostname=sender.hostname,
             python_version=platform.python_version(),
             cpu_count=os.cpu_count(),
-            demo_mode=demo_mode
+            transport="filesystem",
+            backend="file"
         )
 
     @worker_process_init.connect
