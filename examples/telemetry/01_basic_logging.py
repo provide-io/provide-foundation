@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# examples/00_simple_start.py
+# examples/telemetry/01_basic_logging.py
 """
 Simple Start Example - Zero Setup Logging
 
@@ -8,10 +8,13 @@ No setup required - just import and use the logger immediately.
 
 Usage:
     pip install provide-foundation
-    python examples/00_simple_start.py
+    python examples/telemetry/01_basic_logging.py
 
 Expected output:
     Colored, emoji-prefixed log messages with structured data.
+    
+To see INFO-level messages:
+    PROVIDE_LOG_LEVEL=INFO python examples/telemetry/01_basic_logging.py
 """
 
 from pathlib import Path

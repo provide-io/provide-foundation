@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# examples/12_cli_application.py
+# examples/cli/01_cli_application.py
 """
 CLI Application Example - Complete Hub and Command System
 
@@ -31,13 +31,13 @@ with provide.foundation's hub system:
    
 Usage:
     # Run as CLI application
-    python examples/12_cli_application.py --help
-    python examples/12_cli_application.py status
-    python examples/12_cli_application.py test-resources
-    python examples/12_cli_application.py list --dimension resource
+    python examples/cli/01_cli_application.py --help
+    python examples/cli/01_cli_application.py status
+    python examples/cli/01_cli_application.py test-resources
+    python examples/cli/01_cli_application.py list --dimension resource
     
     # Or import and use programmatically
-    from examples.12_cli_application import Hub, DatabaseResource
+    from examples.cli.01_cli_application import Hub, DatabaseResource
     hub = Hub()
     hub.add_component(DatabaseResource, name="database", dimension="resource")
     db_class = hub.get_component("database", dimension="resource")

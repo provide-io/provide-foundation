@@ -21,9 +21,13 @@
 
 **provide.foundation** is a comprehensive foundation library for Python applications, offering structured logging, CLI utilities, configuration management, error handling, and essential application building blocks. Built with modern Python practices, it provides the core infrastructure that production applications need.
 
+> **Performance**: Benchmarked at >14,000 msg/sec under optimal conditions with minimal allocations. Actual performance varies based on configuration, system resources, and usage patterns.
+
 ---
 
 ## Installation
+
+**Requirements**: Python 3.11 or higher
 
 ```bash
 # Using uv (recommended)
@@ -42,6 +46,7 @@ provide.foundation has optional feature sets that require additional dependencie
 | **Basic logging** | `pip install provide-foundation` | Core logging functionality |
 | **CLI framework** | `pip install provide-foundation[cli]` | Command-line interface features |
 | **Cryptography** | `pip install provide-foundation[crypto]` | Hash functions, digital signatures, certificates |
+| **HTTP Transport** | `pip install provide-foundation[transport]` | HTTP client utilities and transport features |
 | **OpenTelemetry** | `pip install provide-foundation[opentelemetry]` | Distributed tracing and metrics |
 | **All features** | `pip install provide-foundation[all]` | Everything above |
 
@@ -74,7 +79,7 @@ Build command-line interfaces with automatic help generation and component regis
 > **Requires**: `pip install provide-foundation[cli]`
 
 ```python
-# From examples/12_cli_application.py
+# From examples/cli/01_cli_application.py
 from provide.foundation.hub import register_command
 from provide.foundation.cli import echo_success
 
@@ -88,7 +93,7 @@ def init_command(name: str = "myproject", template: str = "default"):
 Flexible configuration system supporting environment variables, files, and runtime updates.
 
 ```python
-# From examples/11_config_management.py
+# From examples/configuration/03_config_management.py
 from provide.foundation.config import BaseConfig, ConfigManager, field
 from attrs import define
 
@@ -107,7 +112,7 @@ config = manager.get("app")
 Comprehensive error handling with retry logic and error boundaries.
 
 ```python
-# From examples/05_exception_handling.py
+# From examples/telemetry/05_exception_handling.py
 from provide.foundation import logger, with_error_handling
 
 @with_error_handling
@@ -202,7 +207,7 @@ for line in process.stream_command(["tail", "-f", "app.log"]):
 Flexible registry system for managing components and commands.
 
 ```python
-# From examples/12_cli_application.py
+# From examples/cli/01_cli_application.py
 from provide.foundation.hub import Hub
 
 class DatabaseResource:
@@ -229,7 +234,7 @@ See [examples/](examples/) for more comprehensive examples.
 ### Building a CLI Application
 
 ```python
-# From examples/12_cli_application.py
+# From examples/cli/01_cli_application.py
 from provide.foundation.hub import Hub, register_command
 from provide.foundation.cli import echo_info, echo_success
 
@@ -249,7 +254,7 @@ if __name__ == "__main__":
 ### Configuration-Driven Application
 
 ```python
-# From examples/11_config_management.py and examples/08_env_variables_config.py
+# From examples/configuration/03_config_management.py and examples/configuration/02_env_variables.py
 from provide.foundation import setup_telemetry, logger
 from provide.foundation.config import RuntimeConfig, env_field, ConfigManager
 from attrs import define
@@ -272,7 +277,7 @@ logger.info("Database configured", host=db_config.host, port=db_config.port)
 ### Production Patterns
 
 ```python
-# From examples/10_production_patterns.py
+# From examples/production/01_production_patterns.py
 from provide.foundation import logger, error_boundary
 import asyncio
 
@@ -301,16 +306,34 @@ All configuration can be controlled through environment variables:
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `PROVIDE_SERVICE_NAME` | Service identifier in logs | `None` |
-| `PROVIDE_LOG_LEVEL` | Minimum log level | `DEBUG` |
+| `PROVIDE_LOG_LEVEL` | Minimum log level | `WARNING` |
 | `PROVIDE_LOG_CONSOLE_FORMATTER` | Output format (`key_value` or `json`) | `key_value` |
 | `PROVIDE_LOG_OMIT_TIMESTAMP` | Remove timestamps from console | `false` |
 | `PROVIDE_LOG_FILE` | Log to file path | `None` |
-| `PROVIDE_LOG_MODULE_LEVELS` | Per-module log levels | `""` |
-| `PROVIDE_CONFIG_PATH` | Configuration file path | `None` |
-| `PROVIDE_ENV` | Environment (dev/staging/prod) | `dev` |
-| `PROVIDE_DEBUG` | Enable debug mode | `false` |
-| `PROVIDE_JSON_OUTPUT` | Force JSON output | `false` |
-| `PROVIDE_NO_COLOR` | Disable colored output | `false` |
+| `PROVIDE_LOG_MODULE_LEVELS` | Per-module log levels (format: module1:LEVEL,module2:LEVEL) | `""` |
+| `PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED` | Enable emoji prefixes based on logger names | `true` |
+| `PROVIDE_LOG_DAS_EMOJI_ENABLED` | Enable Domain-Action-Status emoji prefixes | `true` |
+| `PROVIDE_TELEMETRY_DISABLED` | Globally disable telemetry | `false` |
+| `PROVIDE_SERVICE_VERSION` | Service version for telemetry | `None` |
+| `FOUNDATION_LOG_LEVEL` | Log level for Foundation internal setup messages | `INFO` |
+| `OTEL_SERVICE_NAME` | OpenTelemetry service name (takes precedence over PROVIDE_SERVICE_NAME) | `None` |
+| `OTEL_TRACING_ENABLED` | Enable OpenTelemetry tracing | `true` |
+| `OTEL_METRICS_ENABLED` | Enable OpenTelemetry metrics | `true` |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | OTLP endpoint for traces and metrics | `None` |
+| `OTEL_EXPORTER_OTLP_HEADERS` | Headers for OTLP requests (key1=value1,key2=value2) | `""` |
+| `OTEL_EXPORTER_OTLP_PROTOCOL` | OTLP protocol (grpc, http/protobuf) | `http/protobuf` |
+| `OTEL_TRACE_SAMPLE_RATE` | Sampling rate for traces (0.0 to 1.0) | `1.0` |
+
+**Rate Limiting Configuration:**
+| `PROVIDE_LOG_RATE_LIMIT_ENABLED` | Enable rate limiting for log output | `false` |
+| `PROVIDE_LOG_RATE_LIMIT_GLOBAL` | Global rate limit (logs per second) | `None` |
+| `PROVIDE_LOG_RATE_LIMIT_GLOBAL_CAPACITY` | Global rate limit burst capacity | `None` |
+| `PROVIDE_LOG_RATE_LIMIT_PER_LOGGER` | Per-logger rate limits (format: logger1:rate:capacity,logger2:rate:capacity) | `""` |
+| `PROVIDE_LOG_RATE_LIMIT_EMIT_WARNINGS` | Emit warnings when logs are rate limited | `true` |
+| `PROVIDE_LOG_RATE_LIMIT_SUMMARY_INTERVAL` | Seconds between rate limit summary reports | `5.0` |
+| `PROVIDE_LOG_RATE_LIMIT_MAX_QUEUE_SIZE` | Maximum number of logs to queue when rate limited | `1000` |
+| `PROVIDE_LOG_RATE_LIMIT_MAX_MEMORY_MB` | Maximum memory (MB) for queued logs | `None` |
+| `PROVIDE_LOG_RATE_LIMIT_OVERFLOW_POLICY` | Policy when queue is full: drop_oldest, drop_newest, or block | `drop_oldest` |
 
 ### Configuration Files
 
@@ -334,12 +357,83 @@ database:
 
 ---
 
+## OpenTelemetry Integration
+
+provide.foundation includes built-in OpenTelemetry support for distributed tracing and metrics collection.
+
+### Basic Setup
+
+```python
+from provide.foundation import setup_telemetry
+
+# Basic setup with default OTLP exporter
+setup_telemetry()
+
+# With custom configuration
+from provide.foundation import TelemetryConfig
+
+config = TelemetryConfig(
+    service_name="my-service",
+    service_version="1.0.0",
+    tracing_enabled=True,
+    metrics_enabled=True,
+    otlp_endpoint="http://localhost:4317"
+)
+setup_telemetry(config)
+```
+
+### Environment Configuration
+
+Set these environment variables to configure OpenTelemetry:
+
+```bash
+# Service identification
+export OTEL_SERVICE_NAME="my-service"
+export PROVIDE_SERVICE_VERSION="1.0.0"
+
+# OTLP endpoint
+export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4317"
+export OTEL_EXPORTER_OTLP_PROTOCOL="grpc"  # or "http/protobuf"
+
+# Authentication (if required)
+export OTEL_EXPORTER_OTLP_HEADERS="api-key=your-key,other-header=value"
+
+# Sampling
+export OTEL_TRACE_SAMPLE_RATE="1.0"  # Sample 100% of traces
+```
+
+### Usage with Jaeger
+
+```bash
+# Run Jaeger all-in-one for testing
+docker run -d --name jaeger \
+  -p 16686:16686 \
+  -p 14250:14250 \
+  jaegertracing/all-in-one:latest
+
+# Configure your application
+export OTEL_SERVICE_NAME="my-app"
+export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:14250"
+export OTEL_EXPORTER_OTLP_PROTOCOL="grpc"
+```
+
+### Usage with OTLP-compatible backends
+
+```python
+# Works with Honeycomb, Lightstep, New Relic, etc.
+from provide.foundation import setup_telemetry
+
+setup_telemetry()  # Uses environment variables
+```
+
+---
+
 ## Advanced Features
 
 ### Contextual Logging
 
 ```python
-# From examples/06_trace_logging.py
+# From examples/telemetry/06_trace_logging.py
 from provide.foundation import logger
 
 # Add context via structured fields
@@ -383,19 +477,20 @@ asyncio.run(process_items(items))
 
 Complete working examples are available in the [examples/](examples/) directory:
 
-- `00_simple_start.py` - Zero-setup logging (base install)
-- `01_quick_start.py` - Full telemetry setup (requires [opentelemetry])
-- `02_custom_configuration.py` - Custom telemetry configuration
-- `03_named_loggers.py` - Module-specific loggers
-- `04_das_logging.py` - Domain-Action-Status pattern
-- `05_exception_handling.py` - Error handling patterns
-- `06_trace_logging.py` - Distributed tracing
-- `07_module_filtering.py` - Log filtering by module
-- `08_env_variables_config.py` - Environment-based config
-- `09_async_usage.py` - Async logging patterns
-- `10_production_patterns.py` - Production best practices
-- `11_config_management.py` - Complete configuration system
-- `12_cli_application.py` - Full CLI application example
+- `examples/telemetry/01_basic_logging.py` - Zero-setup logging (base install)
+- `examples/telemetry/02_structured_logging.py` - Structured logging with context
+- `examples/telemetry/03_named_loggers.py` - Module-specific loggers
+- `examples/telemetry/04_das_pattern.py` - Domain-Action-Status pattern
+- `examples/telemetry/05_exception_handling.py` - Error handling patterns
+- `examples/telemetry/06_trace_logging.py` - Distributed tracing
+- `examples/telemetry/07_module_filtering.py` - Log filtering by module
+- `examples/configuration/02_env_variables.py` - Environment-based config
+- `examples/async/01_async_usage.py` - Async logging patterns
+- `examples/production/01_production_patterns.py` - Production best practices
+- `examples/configuration/03_config_management.py` - Complete configuration system
+- `examples/cli/01_cli_application.py` - Full CLI application example
+- `examples/tracing/01_simple_tracing.py` - OpenTelemetry tracing setup
+- `examples/tracing/02_distributed_tracing.py` - Distributed tracing patterns
 
 ---
 

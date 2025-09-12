@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# examples/11_config_management.py
+# examples/configuration/03_config_management.py
 """
 Configuration Management Example - Complete Configuration System
 
@@ -29,10 +29,10 @@ configuration system:
    - Bulk updates and exports
    
 Usage:
-    python examples/11_config_management.py
+    python examples/configuration/03_config_management.py
     
     # With environment variables
-    DB_HOST=prod.example.com DB_PORT=5433 python examples/11_config_management.py
+    DB_HOST=prod.example.com DB_PORT=5433 python examples/configuration/03_config_management.py
 
 Expected output:
     Demonstration of various configuration loading, validation, and management patterns.

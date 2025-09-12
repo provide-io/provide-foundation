@@ -8,7 +8,7 @@ Built on industry-standard libraries like `structlog`, `click`, and `attrs`, pro
 
 ### Structured Logging
 - Beautiful, event-enriched structured logging
-- High-performance logging (>14,000 msg/sec)
+- High-performance logging (>14,000 msg/sec under optimal conditions)
 - Event sets for log enrichment
 - Thread-safe and async-compatible
 

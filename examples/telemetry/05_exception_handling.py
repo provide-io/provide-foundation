@@ -17,6 +17,7 @@ from typing import Never  # noqa: E402
 
 from provide.foundation import logger, setup_telemetry  # noqa: E402
 from provide.foundation.console.output import pout  # noqa: E402
+from provide.foundation.logger.config import TelemetryConfig, LoggingConfig  # noqa: E402
 
 
 def example_5_exception_handling() -> None:
@@ -31,7 +32,11 @@ def example_5_exception_handling() -> None:
     pout(" Demonstrates: Using logger.exception() to log errors with tracebacks.")
     pout("=" * 60)
 
-    setup_telemetry()  # Default configuration
+    setup_telemetry(
+        TelemetryConfig(
+            logging=LoggingConfig(default_level="INFO")
+        )
+    )
 
     def risky_operation() -> Never:
         """A function that is expected to raise an exception."""

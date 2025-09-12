@@ -79,7 +79,7 @@ export PROVIDE_ENVIRONMENT=production
 
 #### Contextual Logging
 ```python
-# From examples/06_trace_logging.py
+# From examples/telemetry/06_trace_logging.py
 from provide.foundation import logger
 
 # Add context via structured fields
@@ -87,7 +87,7 @@ logger.info("processing_started", request_id="abc-123")
 logger.debug("step_1_completed", request_id="abc-123")
 ```
 
-See [examples/06_trace_logging.py](https://github.com/provide-io/provide-foundation/blob/main/examples/06_trace_logging.py) for complete example.
+See [examples/telemetry/06_trace_logging.py](https://github.com/provide-io/provide-foundation/blob/main/examples/telemetry/06_trace_logging.py) for complete example.
 
 #### Error Handling
 ```python
@@ -101,7 +101,7 @@ def risky_operation():
 
 #### CLI with Subcommands
 ```python
-# From examples/12_cli_application.py
+# From examples/cli/01_cli_application.py
 from provide.foundation.hub import register_command
 
 @register_command("db.migrate")
@@ -115,7 +115,7 @@ def seed():
     pass
 ```
 
-See [examples/12_cli_application.py](https://github.com/provide-io/provide-foundation/blob/main/examples/12_cli_application.py) for complete example.
+See [examples/cli/01_cli_application.py](https://github.com/provide-io/provide-foundation/blob/main/examples/cli/01_cli_application.py) for complete example.
 
 ## Best Practices
 
@@ -133,18 +133,18 @@ logger.info(f"User {user.id} logged in from {request.ip}")
 
 ### 2. Use Domain-Action-Status Pattern
 ```python
-# From examples/04_das_logging.py
+# From examples/telemetry/04_das_pattern.py
 from provide.foundation import logger
 
 logger.info("http_request_started", method="GET", path="/api/users")
 logger.info("http_request_completed", status=200, duration_ms=42)
 ```
 
-See [examples/04_das_logging.py](https://github.com/provide-io/provide-foundation/blob/main/examples/04_das_logging.py) for complete example.
+See [examples/telemetry/04_das_pattern.py](https://github.com/provide-io/provide-foundation/blob/main/examples/telemetry/04_das_pattern.py) for complete example.
 
 ### 3. Request Tracing
 ```python
-# From examples/06_trace_logging.py
+# From examples/telemetry/06_trace_logging.py
 async def handle_request(request):
     # Add request_id to all logs for this request
     logger.info("request_received", request_id=request.id)

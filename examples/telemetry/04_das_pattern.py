@@ -37,9 +37,14 @@ def example_4_das_logging() -> None:
     )
     pout("=" * 60)
 
-    # Ensure DAS emojis are enabled (default is True, but explicit for clarity)
+    # Ensure DAS emojis are enabled with INFO level for better visibility
     setup_telemetry(
-        TelemetryConfig(logging=LoggingConfig(das_emoji_prefix_enabled=True))
+        TelemetryConfig(
+            logging=LoggingConfig(
+                das_emoji_prefix_enabled=True,
+                default_level="INFO"
+            )
+        )
     )
 
     # Authentication events

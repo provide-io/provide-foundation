@@ -37,12 +37,12 @@ dependencies = [
     "tomli_w>=1.0.0",
 ]
 
-# [project.urls]
-# Homepage = "https://foundation.provide.io"
-# Documentation = "https://foundation.provide.io"
-# Repository = "https://github.com/provide-io/provide-foundation"
-# Issues = "https://github.com/provide-io/provide-foundation/issues"
-# Examples = "https://github.com/provide-io/provide-foundation/tree/main/examples"
+[project.urls]
+Homepage = "https://github.com/provide-io/provide-foundation"
+Documentation = "https://provide-io.github.io/provide-foundation/"
+Repository = "https://github.com/provide-io/provide-foundation"
+Issues = "https://github.com/provide-io/provide-foundation/issues"
+Examples = "https://github.com/provide-io/provide-foundation/tree/main/examples"
 
 
 [project.optional-dependencies]
