@@ -8,6 +8,34 @@ parse and validate environment variable values into the correct types.
 import json
 from typing import Any
 
+# Standardized error message formatting utilities
+
+
+def _format_invalid_value_error(
+    field_name: str,
+    value: Any,
+    valid_options: list[str] | None = None,
+    expected_type: str | None = None,
+    additional_info: str | None = None
+) -> str:
+    """Create standardized invalid value error message."""
+    parts = [f"Invalid {field_name} '{value}'."]
+    
+    if valid_options:
+        parts.append(f"Valid options: {', '.join(valid_options)}")
+    elif expected_type:
+        parts.append(f"Expected: {expected_type}")
+    
+    if additional_info:
+        parts.append(additional_info)
+    
+    return " ".join(parts)
+
+
+def _format_validation_error(field_name: str, value: Any, constraint: str) -> str:
+    """Create standardized validation error message.""" 
+    return f"Value {value} for {field_name} {constraint}"
+
 # Use string type annotations to avoid circular imports during runtime
 # Type checking imports are only available during static analysis
 from typing import TYPE_CHECKING
@@ -48,7 +76,11 @@ def parse_log_level(value: str) -> "LogLevelStr":
     """
     level = value.upper()
     if level not in _VALID_LOG_LEVEL_TUPLE:
-        raise ValueError(f"Invalid log level '{value}'. Valid options: {', '.join(_VALID_LOG_LEVEL_TUPLE)}")
+        raise ValueError(
+            _format_invalid_value_error(
+                "log_level", value, valid_options=list(_VALID_LOG_LEVEL_TUPLE)
+            )
+        )
     return level
 
 
@@ -68,7 +100,9 @@ def parse_console_formatter(value: str) -> "ConsoleFormatterStr":
     formatter = value.lower()
     if formatter not in _VALID_FORMATTER_TUPLE:
         raise ValueError(
-            f"Invalid console formatter '{value}'. Valid options: {', '.join(_VALID_FORMATTER_TUPLE)}"
+            _format_invalid_value_error(
+                "console_formatter", value, valid_options=list(_VALID_FORMATTER_TUPLE)
+            )
         )
     return formatter
 
@@ -230,7 +264,11 @@ def parse_foundation_log_output(value: str) -> str:
     if normalized in valid_options:
         return normalized
     else:
-        raise ValueError(f"Invalid foundation log output '{value}'. Valid options: {', '.join(valid_options)}")
+        raise ValueError(
+            _format_invalid_value_error(
+                "foundation_log_output", value, valid_options=list(valid_options)
+            )
+        )
 
 
 def parse_comma_list(value: str) -> list[str]:
@@ -341,9 +379,11 @@ def parse_bool_strict(value: str | bool) -> bool:
         return False
     else:
         raise ValueError(
-            f"Invalid boolean value '{value}'. "
-            f"Valid options: true/false, yes/no, 1/0, on/off (case-insensitive). "
-            f"Use parse_bool_extended() for lenient parsing that defaults to False."
+            _format_invalid_value_error(
+                "boolean", value, 
+                valid_options=["true", "false", "yes", "no", "1", "0", "on", "off"],
+                additional_info="Use parse_bool_extended() for lenient parsing that defaults to False"
+            )
         )
 
 
@@ -368,13 +408,19 @@ def parse_float_with_validation(
     try:
         result = float(value)
     except (ValueError, TypeError) as e:
-        raise ValueError(f"Invalid float value '{value}': {e}") from e
+        raise ValueError(
+            _format_invalid_value_error("float", value, expected_type="float")
+        ) from e
 
     if min_val is not None and result < min_val:
-        raise ValueError(f"Value {result} is below minimum {min_val}")
+        raise ValueError(
+            _format_validation_error("float", result, f"must be >= {min_val}")
+        )
 
     if max_val is not None and result > max_val:
-        raise ValueError(f"Value {result} is above maximum {max_val}")
+        raise ValueError(
+            _format_validation_error("float", result, f"must be <= {max_val}")
+        )
 
     return result
 
@@ -414,10 +460,16 @@ def parse_json_dict(value: str) -> dict[str, Any]:
     try:
         result = json.loads(value)
         if not isinstance(result, dict):
-            raise ValueError(f"Expected JSON object, got {type(result).__name__}")
+            raise ValueError(
+                _format_invalid_value_error(
+                    "json_dict", type(result).__name__, expected_type="JSON object"
+                )
+            )
         return result
     except json.JSONDecodeError as e:
-        raise ValueError(f"Invalid JSON: {e}") from e
+        raise ValueError(
+            _format_invalid_value_error("json_dict", value, expected_type="valid JSON")
+        ) from e
 
 
 def parse_json_list(value: str) -> list[Any]:
@@ -439,10 +491,16 @@ def parse_json_list(value: str) -> list[Any]:
     try:
         result = json.loads(value)
         if not isinstance(result, list):
-            raise ValueError(f"Expected JSON array, got {type(result).__name__}")
+            raise ValueError(
+                _format_invalid_value_error(
+                    "json_list", type(result).__name__, expected_type="JSON array"
+                )
+            )
         return result
     except json.JSONDecodeError as e:
-        raise ValueError(f"Invalid JSON: {e}") from e
+        raise ValueError(
+            _format_invalid_value_error("json_list", value, expected_type="valid JSON")
+        ) from e
 
 
 def parse_headers(value: str) -> dict[str, str]:
@@ -510,33 +568,42 @@ def validate_log_level(instance: Any, attribute: Any, value: str) -> None:
     """Validate that a log level is valid."""
     if value not in _VALID_LOG_LEVEL_TUPLE:
         raise ValueError(
-            f"Invalid log level '{value}' for {attribute.name}. "
-            f"Valid options: {', '.join(_VALID_LOG_LEVEL_TUPLE)}"
+            _format_invalid_value_error(
+                attribute.name, value, valid_options=list(_VALID_LOG_LEVEL_TUPLE)
+            )
         )
 
 
 def validate_sample_rate(instance: Any, attribute: Any, value: float) -> None:
     """Validate that a sample rate is between 0.0 and 1.0."""
     if not 0.0 <= value <= 1.0:
-        raise ValueError(f"Sample rate {value} for {attribute.name} must be between 0.0 and 1.0")
+        raise ValueError(
+            _format_validation_error(attribute.name, value, "must be between 0.0 and 1.0")
+        )
 
 
 def validate_port(instance: Any, attribute: Any, value: int) -> None:
     """Validate that a port number is valid."""
     if not 1 <= value <= 65535:
-        raise ValueError(f"Port {value} for {attribute.name} must be between 1 and 65535")
+        raise ValueError(
+            _format_validation_error(attribute.name, value, "must be between 1 and 65535")
+        )
 
 
 def validate_positive(instance: Any, attribute: Any, value: float | int) -> None:
     """Validate that a value is positive."""
     if value <= 0:
-        raise ValueError(f"Value {value} for {attribute.name} must be positive")
+        raise ValueError(
+            _format_validation_error(attribute.name, value, "must be positive")
+        )
 
 
 def validate_non_negative(instance: Any, attribute: Any, value: float | int) -> None:
     """Validate that a value is non-negative."""
     if value < 0:
-        raise ValueError(f"Value {value} for {attribute.name} must be non-negative")
+        raise ValueError(
+            _format_validation_error(attribute.name, value, "must be non-negative")
+        )
 
 
 def validate_overflow_policy(instance: Any, attribute: Any, value: str) -> None:
@@ -544,8 +611,9 @@ def validate_overflow_policy(instance: Any, attribute: Any, value: str) -> None:
     valid_policies = ("drop_oldest", "drop_newest", "block")
     if value not in valid_policies:
         raise ValueError(
-            f"Invalid overflow policy '{value}' for {attribute.name}. "
-            f"Valid options: {', '.join(valid_policies)}"
+            _format_invalid_value_error(
+                attribute.name, value, valid_options=list(valid_policies)
+            )
         )
 
 
@@ -555,8 +623,10 @@ __all__ = [
     "parse_console_formatter",
     "parse_module_levels",
     "parse_rate_limits",
+    "parse_foundation_log_output",
     "parse_comma_list",
     "parse_bool_extended",
+    "parse_bool_strict",
     "parse_float_with_validation",
     "parse_sample_rate",
     "parse_json_dict",

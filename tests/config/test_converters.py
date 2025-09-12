@@ -41,10 +41,10 @@ class TestLogLevelParsing:
 
     def test_parse_log_level_invalid(self):
         """Test parsing invalid log levels raises error."""
-        with pytest.raises(ValueError, match="Invalid log level"):
+        with pytest.raises(ValueError, match="Invalid log_level"):
             parse_log_level("INVALID")
 
-        with pytest.raises(ValueError, match="Invalid log level"):
+        with pytest.raises(ValueError, match="Invalid log_level"):
             parse_log_level("")
 
 
@@ -59,10 +59,10 @@ class TestConsoleFormatterParsing:
 
     def test_parse_console_formatter_invalid(self):
         """Test parsing invalid formatters raises error."""
-        with pytest.raises(ValueError, match="Invalid console formatter"):
+        with pytest.raises(ValueError, match="Invalid console_formatter"):
             parse_console_formatter("xml")
 
-        with pytest.raises(ValueError, match="Invalid console formatter"):
+        with pytest.raises(ValueError, match="Invalid console_formatter"):
             parse_console_formatter("yaml")
 
 
@@ -163,10 +163,10 @@ class TestFloatValidationParsing:
         """Test parsing with range validation."""
         assert parse_float_with_validation("5.0", min_val=0.0, max_val=10.0) == 5.0
 
-        with pytest.raises(ValueError, match="below minimum"):
+        with pytest.raises(ValueError, match="must be >= 0.0"):
             parse_float_with_validation("-1.0", min_val=0.0)
 
-        with pytest.raises(ValueError, match="above maximum"):
+        with pytest.raises(ValueError, match="must be <= 10.0"):
             parse_float_with_validation("11.0", max_val=10.0)
 
     def test_parse_float_with_validation_invalid(self):
@@ -186,10 +186,10 @@ class TestSampleRateParsing:
 
     def test_parse_sample_rate_invalid_range(self):
         """Test parsing sample rates outside 0-1 range."""
-        with pytest.raises(ValueError, match="below minimum"):
+        with pytest.raises(ValueError, match="must be >= 0.0"):
             parse_sample_rate("-0.1")
 
-        with pytest.raises(ValueError, match="above maximum"):
+        with pytest.raises(ValueError, match="must be <= 1.0"):
             parse_sample_rate("1.1")
 
 
@@ -259,10 +259,10 @@ class TestJsonParsing:
 
     def test_parse_json_dict_invalid(self):
         """Test parsing invalid JSON raises error."""
-        with pytest.raises(ValueError, match="Invalid JSON"):
+        with pytest.raises(ValueError, match="Invalid json_dict"):
             parse_json_dict("not json")
 
-        with pytest.raises(ValueError, match="Expected JSON object"):
+        with pytest.raises(ValueError, match="Invalid json_dict"):
             parse_json_dict('["list", "not", "dict"]')
 
     def test_parse_json_list_valid(self):
@@ -277,10 +277,10 @@ class TestJsonParsing:
 
     def test_parse_json_list_invalid(self):
         """Test parsing invalid JSON raises error."""
-        with pytest.raises(ValueError, match="Invalid JSON"):
+        with pytest.raises(ValueError, match="Invalid json_list"):
             parse_json_list("not json")
 
-        with pytest.raises(ValueError, match="Expected JSON array"):
+        with pytest.raises(ValueError, match="Invalid json_list"):
             parse_json_list('{"key": "value"}')
 
 
@@ -294,7 +294,7 @@ class TestValidators:
         validate_log_level(None, type('attr', (), {'name': 'test'})(), "INFO")
 
         # Invalid level should raise
-        with pytest.raises(ValueError, match="Invalid log level"):
+        with pytest.raises(ValueError, match="Invalid test"):
             validate_log_level(None, type('attr', (), {'name': 'test'})(), "INVALID")
 
     def test_validate_sample_rate(self):
@@ -361,10 +361,10 @@ class TestValidators:
         validate_overflow_policy(None, type('attr', (), {'name': 'test'})(), "block")
 
         # Invalid policies should raise
-        with pytest.raises(ValueError, match="Invalid overflow policy"):
+        with pytest.raises(ValueError, match="Invalid test"):
             validate_overflow_policy(None, type('attr', (), {'name': 'test'})(), "invalid")
 
-        with pytest.raises(ValueError, match="Invalid overflow policy"):
+        with pytest.raises(ValueError, match="Invalid test"):
             validate_overflow_policy(None, type('attr', (), {'name': 'test'})(), "")
 
 
@@ -394,10 +394,10 @@ class TestFoundationLogOutputParsing:
 
     def test_parse_foundation_log_output_invalid(self):
         """Test parsing invalid destinations raises error."""
-        with pytest.raises(ValueError, match="Invalid foundation log output"):
+        with pytest.raises(ValueError, match="Invalid foundation_log_output"):
             parse_foundation_log_output("invalid")
 
-        with pytest.raises(ValueError, match="Invalid foundation log output"):
+        with pytest.raises(ValueError, match="Invalid foundation_log_output"):
             parse_foundation_log_output("console")
 
 
@@ -431,13 +431,13 @@ class TestBoolStrictParsing:
 
     def test_parse_bool_strict_invalid_value(self):
         """Test strict parsing rejects invalid string values."""
-        with pytest.raises(ValueError, match="Invalid boolean value"):
+        with pytest.raises(ValueError, match="Invalid boolean"):
             parse_bool_strict("invalid")
             
-        with pytest.raises(ValueError, match="Invalid boolean value"):
+        with pytest.raises(ValueError, match="Invalid boolean"):
             parse_bool_strict("")
             
-        with pytest.raises(ValueError, match="Invalid boolean value"):
+        with pytest.raises(ValueError, match="Invalid boolean"):
             parse_bool_strict("maybe")
 
     def test_parse_bool_strict_invalid_type(self):

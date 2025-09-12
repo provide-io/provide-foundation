@@ -30,7 +30,9 @@
       "Bash(PYTHONPATH=src pytest tests/config/test_converters.py::TestFoundationLogOutputParsing -v)",
       "Bash(PYTHONPATH=src pytest tests/config/test_converters.py::TestBoolStrictParsing -v)",
       "Bash(PYTHONPATH=src pytest tests/config/test_converters.py::TestModuleLevelsDictInput -v)",
-      "Bash(PYTHONPATH=src pytest tests/config/test_converters.py -v)"
+      "Bash(PYTHONPATH=src pytest tests/config/test_converters.py -v)",
+      "Bash(PYTHONPATH=src pytest tests/config/test_converters.py::TestBoolStrictParsing::test_parse_bool_strict_invalid_value -v)",
+      "Bash(PYTHONPATH=src pytest tests/config/test_converters.py -x -v)"
     ],
     "deny": [],
     "ask": [],
