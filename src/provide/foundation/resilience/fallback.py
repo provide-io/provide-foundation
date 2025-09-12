@@ -22,9 +22,7 @@ class FallbackChain:
     """
 
     fallbacks: list[Callable[..., T]] = field(factory=list)
-    expected_exceptions: tuple[type[Exception], ...] = field(
-        factory=lambda: (Exception,)
-    )
+    expected_exceptions: tuple[type[Exception], ...] = field(factory=lambda: (Exception,))
 
     def add_fallback(self, fallback_func: Callable[..., T]) -> None:
         """Add a fallback function to the chain."""
@@ -98,9 +96,7 @@ class FallbackChain:
         if primary_exception is not None:
             raise primary_exception
         # This should never happen but provide fallback
-        raise RuntimeError(
-            "Fallback chain execution failed with no recorded exceptions"
-        )
+        raise RuntimeError("Fallback chain execution failed with no recorded exceptions")
 
     async def execute_async(self, primary_func: Callable[..., T], *args, **kwargs) -> T:
         """Execute primary function with fallback chain (async)."""
@@ -171,9 +167,7 @@ class FallbackChain:
         if primary_exception is not None:
             raise primary_exception
         # This should never happen but provide fallback
-        raise RuntimeError(
-            "Fallback chain execution failed with no recorded exceptions"
-        )
+        raise RuntimeError("Fallback chain execution failed with no recorded exceptions")
 
 
 def fallback(*fallback_funcs: Callable[..., T]) -> Callable:

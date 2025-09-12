@@ -133,7 +133,7 @@ def build_click_command(
             param_type = extract_click_type(param.annotation)
 
             # Use type annotation
-            if param_type == bool:
+            if param_type is bool:
                 decorated_func = click.option(
                     option_name,
                     is_flag=True,

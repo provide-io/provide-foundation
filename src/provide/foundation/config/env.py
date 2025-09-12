@@ -55,7 +55,7 @@ async def get_env_async(
                 value = await f.read()
                 value = value.strip()
         except Exception as e:
-            raise ValueError(f"Failed to read secret from file '{file_path}': {e}")
+            raise ValueError(f"Failed to read secret from file '{file_path}': {e}") from e
 
     return value
 
@@ -98,7 +98,7 @@ def get_env(
             with open(file_path) as f:
                 value = f.read().strip()
         except Exception as e:
-            raise ValueError(f"Failed to read secret from file '{file_path}': {e}")
+            raise ValueError(f"Failed to read secret from file '{file_path}': {e}") from e
 
     return value
 
@@ -186,9 +186,7 @@ class RuntimeConfig(BaseConfig):
                         with open(file_path) as f:
                             value = f.read().strip()
                     except Exception as e:
-                        raise ValueError(
-                            f"Failed to read secret from file '{file_path}': {e}"
-                        )
+                        raise ValueError(f"Failed to read secret from file '{file_path}': {e}") from e
 
                 # Apply parser if specified
                 parser = attr.metadata.get("env_parser")
@@ -197,7 +195,7 @@ class RuntimeConfig(BaseConfig):
                     try:
                         value = parser(value)
                     except Exception as e:
-                        raise ValueError(f"Failed to parse {env_var}: {e}")
+                        raise ValueError(f"Failed to parse {env_var}: {e}") from e
                 else:
                     # Try to infer parser from type
                     from provide.foundation.utils.parsing import auto_parse
@@ -263,9 +261,7 @@ class RuntimeConfig(BaseConfig):
         # Execute all async reads in parallel
         if async_tasks:
             async_results = await asyncio.gather(*async_tasks.values())
-            for field_name, value in zip(
-                async_tasks.keys(), async_results, strict=False
-            ):
+            for field_name, value in zip(async_tasks.keys(), async_results, strict=False):
                 # Find the attribute
                 attr = next(a for a in fields(cls) if a.name == field_name)
                 sync_values[field_name] = (attr, value)
@@ -279,7 +275,7 @@ class RuntimeConfig(BaseConfig):
                 try:
                     value = parser(value)
                 except Exception as e:
-                    raise ValueError(f"Failed to parse {env_var}: {e}")
+                    raise ValueError(f"Failed to parse {env_var}: {e}") from e
             else:
                 # Try to infer parser from type
                 from provide.foundation.utils.parsing import auto_parse
@@ -304,7 +300,7 @@ class RuntimeConfig(BaseConfig):
                     content = f.read()
                     return content.strip()
         except Exception as e:
-            raise ValueError(f"Failed to read secret from file '{file_path}': {e}")
+            raise ValueError(f"Failed to read secret from file '{file_path}': {e}") from e
 
     def to_env_dict(self, prefix: str = "", delimiter: str = "_") -> dict[str, str]:
         """

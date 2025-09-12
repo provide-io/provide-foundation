@@ -50,12 +50,8 @@ class RetryPolicy:
 
     max_attempts: int = field(default=3, validator=validators.instance_of(int))
     backoff: BackoffStrategy = field(default=BackoffStrategy.EXPONENTIAL)
-    base_delay: float = field(
-        default=1.0, validator=validators.instance_of((int, float))
-    )
-    max_delay: float = field(
-        default=60.0, validator=validators.instance_of((int, float))
-    )
+    base_delay: float = field(default=1.0, validator=validators.instance_of((int, float)))
+    max_delay: float = field(default=60.0, validator=validators.instance_of((int, float)))
     jitter: bool = field(default=True)
     retryable_errors: tuple[type[Exception], ...] | None = field(default=None)
     retryable_status_codes: set[int] | None = field(default=None)
@@ -249,9 +245,7 @@ class RetryExecutor:
                     try:
                         self.on_retry(attempt, e)
                     except Exception as callback_error:
-                        logger.warning(
-                            "Retry callback failed", error=str(callback_error)
-                        )
+                        logger.warning("Retry callback failed", error=str(callback_error))
 
                 # Wait before retry
                 time.sleep(delay)
@@ -317,9 +311,7 @@ class RetryExecutor:
                         else:
                             self.on_retry(attempt, e)
                     except Exception as callback_error:
-                        logger.warning(
-                            "Retry callback failed", error=str(callback_error)
-                        )
+                        logger.warning("Retry callback failed", error=str(callback_error))
 
                 # Wait before retry
                 await asyncio.sleep(delay)

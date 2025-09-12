@@ -60,7 +60,7 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
 
     This is used internally by Foundation during its own initialization.
     Components should use get_vanilla_logger() instead.
-    
+
     Returns the same logger instance when called multiple times (singleton pattern).
     """
     global _CACHED_SETUP_LOGGER
@@ -82,9 +82,7 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
         # Get the foundation log output stream
         try:
             logging_config = LoggingConfig.from_env()
-            foundation_stream = get_foundation_log_stream(
-                logging_config.foundation_log_output
-            )
+            foundation_stream = get_foundation_log_stream(logging_config.foundation_log_output)
         except Exception:
             # Fallback to stderr if config loading fails
             foundation_stream = get_safe_stderr()
@@ -147,9 +145,7 @@ def get_vanilla_logger(name: str) -> object:
 
         handler = logging.StreamHandler(stream)
         handler.setLevel(log_level)
-        formatter = logging.Formatter(
-            "%(asctime)s [%(levelname)-5s] %(message)s", datefmt="%Y-%m-%dT%H:%M:%S"
-        )
+        formatter = logging.Formatter("%(asctime)s [%(levelname)-5s] %(message)s", datefmt="%Y-%m-%dT%H:%M:%S")
         handler.setFormatter(formatter)
         slog.addHandler(handler)
 
@@ -159,9 +155,7 @@ def get_vanilla_logger(name: str) -> object:
     return slog
 
 
-def internal_setup(
-    config: TelemetryConfig | None = None, is_explicit_call: bool = False
-) -> None:
+def internal_setup(config: TelemetryConfig | None = None, is_explicit_call: bool = False) -> None:
     """
     The single, internal setup function that both explicit and lazy setup call.
     It is protected by the _PROVIDE_SETUP_LOCK in its callers.
@@ -173,9 +167,7 @@ def internal_setup(
     _LAZY_SETUP_STATE.update({"done": False, "error": None, "in_progress": False})
 
     current_config = config if config is not None else TelemetryConfig.from_env()
-    core_setup_logger = create_foundation_internal_logger(
-        globally_disabled=current_config.globally_disabled
-    )
+    core_setup_logger = create_foundation_internal_logger(globally_disabled=current_config.globally_disabled)
 
     if not current_config.globally_disabled:
         core_setup_logger.debug(

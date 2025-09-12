@@ -167,9 +167,7 @@ async def initialize_all_async_components() -> None:
     registry, _, _ = _get_registry_and_globals()
 
     # Get all async components
-    async_components = [
-        entry for entry in registry if entry.metadata.get("async", False)
-    ]
+    async_components = [entry for entry in registry if entry.metadata.get("async", False)]
 
     # Sort by priority for initialization order
     async_components.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)

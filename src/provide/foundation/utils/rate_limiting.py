@@ -46,8 +46,7 @@ class TokenBucketRateLimiter:
 
             self._logger = get_logger(__name__)
             self._logger.debug(
-                "🔩🗑️ TokenBucketRateLimiter initialized: "
-                f"capacity={capacity}, refill_rate={refill_rate}"
+                f"🔩🗑️ TokenBucketRateLimiter initialized: capacity={capacity}, refill_rate={refill_rate}"
             )
         except ImportError:
             # Fallback if logger not available
@@ -91,8 +90,7 @@ class TokenBucketRateLimiter:
                 self._tokens -= 1.0
                 if self._logger:
                     self._logger.debug(
-                        "🔩🗑️✅ Request allowed. Tokens remaining: "
-                        f"{self._tokens:.2f}/{self._capacity:.2f}"
+                        f"🔩🗑️✅ Request allowed. Tokens remaining: {self._tokens:.2f}/{self._capacity:.2f}"
                     )
                 return True
             else:

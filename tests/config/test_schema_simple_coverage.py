@@ -23,7 +23,7 @@ class TestSchemaFieldSimple:
         """Test SchemaField initialization."""
         field = SchemaField(
             name="test_field",
-            type=str,
+            field_type=str,
             required=True,
             default="default",
             description="Test field",
@@ -35,7 +35,7 @@ class TestSchemaFieldSimple:
         )
 
         assert field.name == "test_field"
-        assert field.type == str
+        assert field.field_type == str
         assert field.required is True
         assert field.default == "default"
         assert field.description == "Test field"
@@ -50,7 +50,7 @@ class TestSchemaFieldSimple:
         field = SchemaField(name="test_field")
 
         assert field.name == "test_field"
-        assert field.type is None
+        assert field.field_type is None
         assert field.required is False
         assert field.default is None
         assert field.description is None
@@ -73,8 +73,8 @@ class TestConfigSchemaSimple:
     def test_config_schema_initialization_with_fields(self):
         """Test ConfigSchema initialization with fields."""
         fields = [
-            SchemaField(name="field1", type=str),
-            SchemaField(name="field2", type=int),
+            SchemaField(name="field1", field_type=str),
+            SchemaField(name="field2", field_type=int),
         ]
         schema = ConfigSchema(fields)
 
@@ -85,7 +85,7 @@ class TestConfigSchemaSimple:
     def test_config_schema_add_field(self):
         """Test ConfigSchema add_field method."""
         schema = ConfigSchema()
-        field = SchemaField(name="new_field", type=str)
+        field = SchemaField(name="new_field", field_type=str)
 
         schema.add_field(field)
 
@@ -183,7 +183,7 @@ class TestConfigSchemaSimple:
         schema_field = ConfigSchema._attr_to_schema_field(mock_attr)
 
         assert schema_field.name == "test_field"
-        assert schema_field.type == str
+        assert schema_field.field_type == str
         assert schema_field.required is True
         assert schema_field.description == "Test field"
 

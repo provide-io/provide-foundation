@@ -34,9 +34,7 @@ class CircuitBreaker:
 
     failure_threshold: int = field(default=5)
     recovery_timeout: float = field(default=60.0)  # seconds
-    expected_exception: tuple[type[Exception], ...] = field(
-        factory=lambda: (Exception,)
-    )
+    expected_exception: tuple[type[Exception], ...] = field(factory=lambda: (Exception,))
 
     # Internal state
     _state: CircuitState = field(default=CircuitState.CLOSED, init=False)

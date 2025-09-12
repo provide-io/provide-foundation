@@ -24,7 +24,7 @@ class TestSchemaFieldComprehensive:
     @pytest.mark.asyncio
     async def test_validate_required_field_present(self):
         """Test validation passes for present required field."""
-        field_obj = SchemaField(name="test_field", required=True, type=str)
+        field_obj = SchemaField(name="test_field", required=True, field_type=str)
 
         # Should not raise
         await field_obj.validate("test_value")
@@ -40,7 +40,7 @@ class TestSchemaFieldComprehensive:
     @pytest.mark.asyncio
     async def test_validate_type_mismatch(self):
         """Test validation fails for type mismatch."""
-        field_obj = SchemaField(name="test_field", type=int)
+        field_obj = SchemaField(name="test_field", field_type=int)
 
         with pytest.raises(ConfigValidationError, match="Expected type int, got str"):
             await field_obj.validate("not_an_int")
@@ -48,7 +48,7 @@ class TestSchemaFieldComprehensive:
     @pytest.mark.asyncio
     async def test_validate_type_correct(self):
         """Test validation passes for correct type."""
-        field_obj = SchemaField(name="test_field", type=int)
+        field_obj = SchemaField(name="test_field", field_type=int)
 
         # Should not raise
         await field_obj.validate(42)
@@ -230,7 +230,7 @@ class TestSchemaFieldComprehensive:
 
         field_obj = SchemaField(
             name="complex_field",
-            type=str,
+            field_type=str,
             required=True,
             choices=[
                 "valid_option",
@@ -272,7 +272,7 @@ class TestSchemaFieldEdgeCases:
     @pytest.mark.asyncio
     async def test_validate_none_with_type_check(self):
         """Test that None values skip type checking."""
-        field_obj = SchemaField(name="test", type=int, required=False)
+        field_obj = SchemaField(name="test", field_type=int, required=False)
 
         # Should not raise even though None is not an int
         await field_obj.validate(None)
@@ -281,7 +281,7 @@ class TestSchemaFieldEdgeCases:
     async def test_validate_comparison_operators_edge_cases(self):
         """Test min/max validation with various types."""
         # String comparison
-        field_obj = SchemaField(name="test", type=str, min_value="b", max_value="y")
+        field_obj = SchemaField(name="test", field_type=str, min_value="b", max_value="y")
 
         await field_obj.validate("m")  # Should pass
 
@@ -317,7 +317,7 @@ class TestSchemaFieldEdgeCases:
 
         field_obj = SchemaField(
             name="complex",
-            type=str,
+            field_type=str,
             required=True,
             min_value="aaa",  # Alphabetically
             max_value="zzz",

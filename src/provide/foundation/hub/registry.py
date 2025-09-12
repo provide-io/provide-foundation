@@ -176,10 +176,7 @@ class Registry:
     def list_all(self) -> dict[str, list[str]]:
         """List all dimensions and their items."""
         with self._lock:
-            return {
-                dimension: list(items.keys())
-                for dimension, items in self._registry.items()
-            }
+            return {dimension: list(items.keys()) for dimension, items in self._registry.items()}
 
     def remove(
         self,
@@ -198,9 +195,7 @@ class Registry:
                     del self._registry[dimension][name]
 
                     aliases_to_remove = [
-                        alias
-                        for alias, (dim, n) in self._aliases.items()
-                        if dim == dimension and n == name
+                        alias for alias, (dim, n) in self._aliases.items() if dim == dimension and n == name
                     ]
                     for alias in aliases_to_remove:
                         del self._aliases[alias]
@@ -213,9 +208,7 @@ class Registry:
                         del dim_registry[name]
 
                         aliases_to_remove = [
-                            alias
-                            for alias, (d, n) in self._aliases.items()
-                            if d == dim_key and n == name
+                            alias for alias, (d, n) in self._aliases.items() if d == dim_key and n == name
                         ]
                         for alias in aliases_to_remove:
                             del self._aliases[alias]
@@ -231,11 +224,7 @@ class Registry:
             if dimension is not None:
                 self._registry[dimension].clear()
 
-                aliases_to_remove = [
-                    alias
-                    for alias, (dim, _) in self._aliases.items()
-                    if dim == dimension
-                ]
+                aliases_to_remove = [alias for alias, (dim, _) in self._aliases.items() if dim == dimension]
                 for alias in aliases_to_remove:
                     del self._aliases[alias]
             else:

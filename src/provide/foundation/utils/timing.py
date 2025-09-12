@@ -15,9 +15,7 @@ if TYPE_CHECKING:
 
 
 # Context variable for trace_id (applications can set this for request tracing)
-_PROVIDE_CONTEXT_TRACE_ID = contextvars.ContextVar(
-    "foundation_context_trace_id", default=None
-)
+_PROVIDE_CONTEXT_TRACE_ID = contextvars.ContextVar("foundation_context_trace_id", default=None)
 
 
 @contextmanager

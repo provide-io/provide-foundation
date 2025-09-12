@@ -183,9 +183,7 @@ def async_test_client():
 
         async def post(self, url: str, data=None, **kwargs) -> dict:
             """Mock POST request."""
-            self.requests.append(
-                {"method": "POST", "url": url, "data": data, "kwargs": kwargs}
-            )
+            self.requests.append({"method": "POST", "url": url, "data": data, "kwargs": kwargs})
             return self.responses.get(url, {"status": 200, "body": "OK"})
 
         async def close(self):

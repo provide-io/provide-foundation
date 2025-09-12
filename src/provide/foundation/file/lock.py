@@ -59,9 +59,7 @@ class FileLock:
         while True:
             try:
                 # Try to create lock file exclusively
-                fd = os.open(
-                    str(self.path), os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644
-                )
+                fd = os.open(str(self.path), os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644)
                 try:
                     # Write our PID to the lock file
                     os.write(fd, str(self.pid).encode())
@@ -149,9 +147,7 @@ class FileLock:
                     return False
                 except ProcessLookupError:
                     # Process doesn't exist, lock is stale
-                    log.warning(
-                        "Removing stale lock", path=str(self.path), stale_pid=lock_pid
-                    )
+                    log.warning("Removing stale lock", path=str(self.path), stale_pid=lock_pid)
                     self.path.unlink()
                     return True
         except Exception as e:

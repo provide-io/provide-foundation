@@ -50,15 +50,11 @@ class QueuedRateLimiter:
 
         # Queue management
         self.max_queue_size = max_queue_size
-        self.max_memory_bytes = (
-            int(max_memory_mb * 1024 * 1024) if max_memory_mb else None
-        )
+        self.max_memory_bytes = int(max_memory_mb * 1024 * 1024) if max_memory_mb else None
         self.overflow_policy = overflow_policy
 
         # Use deque for efficient FIFO operations
-        self.pending_queue = deque(
-            maxlen=max_queue_size if overflow_policy == "drop_oldest" else None
-        )
+        self.pending_queue = deque(maxlen=max_queue_size if overflow_policy == "drop_oldest" else None)
         self.queue_lock = threading.Lock()
 
         # Track statistics
@@ -114,9 +110,7 @@ class QueuedRateLimiter:
                     # deque with maxlen automatically drops oldest
                     if len(self.pending_queue) > 0:
                         old_item = (
-                            self.pending_queue[0]
-                            if len(self.pending_queue) == self.max_queue_size
-                            else None
+                            self.pending_queue[0] if len(self.pending_queue) == self.max_queue_size else None
                         )
                         if old_item and self.max_memory_bytes:
                             self.estimated_memory -= self._estimate_size(old_item)
@@ -174,12 +168,8 @@ class QueuedRateLimiter:
                 "total_queued": self.total_queued,
                 "total_dropped": self.total_dropped,
                 "total_processed": self.total_processed,
-                "estimated_memory_mb": self.estimated_memory / 1024 / 1024
-                if self.max_memory_bytes
-                else None,
-                "max_memory_mb": self.max_memory_bytes / 1024 / 1024
-                if self.max_memory_bytes
-                else None,
+                "estimated_memory_mb": self.estimated_memory / 1024 / 1024 if self.max_memory_bytes else None,
+                "max_memory_mb": self.max_memory_bytes / 1024 / 1024 if self.max_memory_bytes else None,
                 "overflow_policy": self.overflow_policy,
             }
 
@@ -297,9 +287,7 @@ class BufferedRateLimiter:
             if self.track_dropped and self.dropped_buffer:
                 stats["dropped_buffer_size"] = len(self.dropped_buffer)
                 stats["oldest_dropped_age"] = (
-                    time.monotonic() - self.dropped_buffer[0]["time"]
-                    if self.dropped_buffer
-                    else 0
+                    time.monotonic() - self.dropped_buffer[0]["time"] if self.dropped_buffer else 0
                 )
 
             return stats

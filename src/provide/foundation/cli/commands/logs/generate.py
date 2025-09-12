@@ -107,9 +107,7 @@ def generate_span_id() -> str:
     return span_id
 
 
-def generate_log_entry(
-    index: int, style: str = "normal", error_rate: float = 0.1
-) -> dict[str, Any]:
+def generate_log_entry(index: int, style: str = "normal", error_rate: float = 0.1) -> dict[str, Any]:
     """
     Generate a single log entry with optional error simulation.
 
@@ -146,9 +144,7 @@ def generate_log_entry(
         "service": random.choice(SERVICE_NAMES),
         "operation": random.choice(OPERATIONS),
         "iteration": index,
-        "trace_id": generate_trace_id()
-        if index % 10 == 0
-        else f"trace_{(_trace_counter - 1):08d}",
+        "trace_id": generate_trace_id() if index % 10 == 0 else f"trace_{(_trace_counter - 1):08d}",
         "span_id": generate_span_id(),
         "duration_ms": random.randint(10, 5000),
     }
@@ -173,17 +169,13 @@ def generate_log_entry(
     # Add domain/action/status for DAS emoji system
     entry["domain"] = random.choice(["user", "system", "data", "api", None])
     entry["action"] = random.choice(["create", "read", "update", "delete", None])
-    entry["status"] = (
-        "error" if is_error else random.choice(["success", "pending", None])
-    )
+    entry["status"] = "error" if is_error else random.choice(["success", "pending", None])
 
     return entry
 
 
 @click.command(name="generate")
-@click.option(
-    "-n", "--count", default=100, help="Number of logs to generate (0 for continuous)"
-)
+@click.option("-n", "--count", default=100, help="Number of logs to generate (0 for continuous)")
 @click.option("-r", "--rate", default=10.0, help="Logs per second rate")
 @click.option("-s", "--stream", default="default", help="Target stream name")
 @click.option(
@@ -193,9 +185,7 @@ def generate_log_entry(
     help="Message generation style",
 )
 @click.option("-e", "--error-rate", default=0.1, help="Error rate (0.0 to 1.0)")
-@click.option(
-    "--enable-rate-limit", is_flag=True, help="Enable Foundation's rate limiting"
-)
+@click.option("--enable-rate-limit", is_flag=True, help="Enable Foundation's rate limiting")
 @click.option("--rate-limit", default=100.0, help="Rate limit (logs/s) when enabled")
 def generate_logs_command(
     count: int,
@@ -285,9 +275,7 @@ def generate_logs_command(
 
                 # Print stats every second
                 if current_time - last_stats_time >= 1.0:
-                    current_rate = (logs_sent - last_stats_sent) / (
-                        current_time - last_stats_time
-                    )
+                    current_rate = (logs_sent - last_stats_sent) / (current_time - last_stats_time)
 
                     status = f"📊 Sent: {logs_sent:,} | Rate: {current_rate:.0f}/s"
                     if logs_failed > 0:
@@ -352,6 +340,4 @@ def generate_logs_command(
 if not _HAS_CLICK:
 
     def generate_logs_command(*args: object, **kwargs: object) -> None:
-        raise ImportError(
-            "Click is required for CLI commands. Install with: pip install click"
-        )
+        raise ImportError("Click is required for CLI commands. Install with: pip install click")

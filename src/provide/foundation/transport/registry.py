@@ -71,9 +71,7 @@ def get_transport_for_scheme(scheme: str) -> type[Transport]:
         if entry.dimension == ComponentCategory.TRANSPORT.value:
             schemes = entry.metadata.get("schemes", [])
             if scheme.lower() in schemes:
-                log.trace(
-                    f"Found transport {entry.value.__name__} for scheme '{scheme}'"
-                )
+                log.trace(f"Found transport {entry.value.__name__} for scheme '{scheme}'")
                 return entry.value
 
     raise TransportNotFoundError(

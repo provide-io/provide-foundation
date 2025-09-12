@@ -57,9 +57,7 @@ def counter(name: str, description: str = "", unit: str = "") -> "SimpleCounter"
     """
     if _HAS_OTEL_METRICS and _meter:
         try:
-            otel_counter = _meter.create_counter(
-                name=name, description=description, unit=unit
-            )
+            otel_counter = _meter.create_counter(name=name, description=description, unit=unit)
             return SimpleCounter(name, otel_counter=otel_counter)
         except Exception:
             pass
@@ -80,9 +78,7 @@ def gauge(name: str, description: str = "", unit: str = "") -> "SimpleGauge":
     """
     if _HAS_OTEL_METRICS and _meter:
         try:
-            otel_gauge = _meter.create_up_down_counter(
-                name=name, description=description, unit=unit
-            )
+            otel_gauge = _meter.create_up_down_counter(name=name, description=description, unit=unit)
             return SimpleGauge(name, otel_gauge=otel_gauge)
         except Exception:
             pass
@@ -103,9 +99,7 @@ def histogram(name: str, description: str = "", unit: str = "") -> "SimpleHistog
     """
     if _HAS_OTEL_METRICS and _meter:
         try:
-            otel_histogram = _meter.create_histogram(
-                name=name, description=description, unit=unit
-            )
+            otel_histogram = _meter.create_histogram(name=name, description=description, unit=unit)
             return SimpleHistogram(name, otel_histogram=otel_histogram)
         except Exception:
             pass

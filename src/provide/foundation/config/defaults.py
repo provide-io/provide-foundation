@@ -65,3 +65,24 @@ DEFAULT_TEST_CHECKPOINT_TIMEOUT = 5.0
 EXIT_SUCCESS = 0
 EXIT_ERROR = 1
 EXIT_SIGINT = 130  # Standard exit code for SIGINT
+
+# =================================
+# Temporary file/directory defaults
+# =================================
+DEFAULT_TEMP_PREFIX = "provide_"
+DEFAULT_TEMP_SUFFIX = ""
+DEFAULT_TEMP_CLEANUP = True
+DEFAULT_TEMP_TEXT_MODE = False
+
+# =================================
+# Directory operation defaults
+# =================================
+DEFAULT_DIR_MODE = 0o755
+DEFAULT_DIR_PARENTS = True
+DEFAULT_MISSING_OK = True
+
+# =================================
+# Atomic write defaults
+# =================================
+DEFAULT_ATOMIC_MODE = 0o644
+DEFAULT_ATOMIC_ENCODING = "utf-8"

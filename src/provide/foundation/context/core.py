@@ -140,9 +140,7 @@ class CLIContext(RuntimeConfig):
         }
 
     @classmethod
-    def from_dict(
-        cls, data: dict[str, Any], source: ConfigSource = ConfigSource.RUNTIME
-    ) -> "CLIContext":
+    def from_dict(cls, data: dict[str, Any], source: ConfigSource = ConfigSource.RUNTIME) -> "CLIContext":
         """
         Create context from dictionary.
 
@@ -257,17 +255,13 @@ class CLIContext(RuntimeConfig):
             content = yaml.safe_dump(data, default_flow_style=False)
         else:
             if not path.suffix:
-                raise ValueError(
-                    f"Unsupported config format: no file extension for {path}"
-                )
+                raise ValueError(f"Unsupported config format: no file extension for {path}")
             else:
                 raise ValueError(f"Unsupported config format: {path.suffix}")
 
         path.write_text(content)
 
-    def merge(
-        self, other: "CLIContext", override_defaults: bool = False
-    ) -> "CLIContext":
+    def merge(self, other: "CLIContext", override_defaults: bool = False) -> "CLIContext":
         """
         Merge with another context, with other taking precedence.
 

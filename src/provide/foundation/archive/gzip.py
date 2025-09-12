@@ -42,9 +42,7 @@ class GzipCompressor:
             ArchiveError: If compression fails
         """
         try:
-            with gzip.GzipFile(
-                fileobj=output_stream, mode="wb", compresslevel=self.level
-            ) as gz:
+            with gzip.GzipFile(fileobj=output_stream, mode="wb", compresslevel=self.level) as gz:
                 shutil.copyfileobj(input_stream, gz)
             logger.debug(f"Compressed data with GZIP level {self.level}")
         except Exception as e:

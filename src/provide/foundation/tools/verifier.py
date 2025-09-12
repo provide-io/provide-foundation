@@ -35,9 +35,7 @@ class ToolVerifier:
     SUPPORTED_ALGORITHMS = ["sha256", "sha512", "md5", "blake2b"]
     CHUNK_SIZE = 8192  # Read files in 8KB chunks
 
-    def verify_checksum(
-        self, file_path: Path, expected: str, algo: HashAlgo = "sha256"
-    ) -> bool:
+    def verify_checksum(self, file_path: Path, expected: str, algo: HashAlgo = "sha256") -> bool:
         """
         Verify file checksum.
 
@@ -73,10 +71,7 @@ class ToolVerifier:
         matches = actual == expected
 
         if not matches:
-            log.warning(
-                f"Checksum mismatch for {file_path.name}: "
-                f"expected {expected}, got {actual}"
-            )
+            log.warning(f"Checksum mismatch for {file_path.name}: expected {expected}, got {actual}")
 
         return matches
 
@@ -116,9 +111,7 @@ class ToolVerifier:
         log.warning(f"{target_file.name} not found in {shasums_file}")
         return False
 
-    def verify_signature(
-        self, file_path: Path, signature: str, public_key: str | None = None
-    ) -> bool:
+    def verify_signature(self, file_path: Path, signature: str, public_key: str | None = None) -> bool:
         """
         Verify GPG/PGP signature.
 

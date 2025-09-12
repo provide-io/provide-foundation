@@ -108,9 +108,7 @@ class HTTPTransport(TransportBase):
 
             # Log response with status emoji
             status_emoji = self._get_status_emoji(httpx_response.status_code)
-            log.info(
-                f"{status_emoji} {httpx_response.status_code} ({elapsed_ms:.0f}ms)"
-            )
+            log.info(f"{status_emoji} {httpx_response.status_code} ({elapsed_ms:.0f}ms)")
 
             # Create response object
             response = Response(
@@ -132,28 +130,20 @@ class HTTPTransport(TransportBase):
 
         except httpx.ConnectError as e:
             log.error(f"❌ Connection failed: {e}")
-            raise TransportConnectionError(
-                f"Failed to connect: {e}", request=request
-            ) from e
+            raise TransportConnectionError(f"Failed to connect: {e}", request=request) from e
 
         except httpx.TimeoutException as e:
             elapsed_ms = (time.perf_counter() - start_time) * 1000
             log.error(f"⏱️ Request timed out ({elapsed_ms:.0f}ms)")
-            raise TransportTimeoutError(
-                f"Request timed out: {e}", request=request
-            ) from e
+            raise TransportTimeoutError(f"Request timed out: {e}", request=request) from e
 
         except httpx.RequestError as e:
             log.error(f"❌ Request failed: {e}")
-            raise TransportConnectionError(
-                f"Request failed: {e}", request=request
-            ) from e
+            raise TransportConnectionError(f"Request failed: {e}", request=request) from e
 
         except Exception as e:
             log.error(f"❌ Unexpected error: {e}", exc_info=True)
-            raise TransportConnectionError(
-                f"Unexpected error: {e}", request=request
-            ) from e
+            raise TransportConnectionError(f"Unexpected error: {e}", request=request) from e
 
     async def stream(self, request: Request) -> AsyncIterator[bytes]:
         """Stream HTTP response."""
@@ -181,19 +171,13 @@ class HTTPTransport(TransportBase):
                     yield chunk
 
         except httpx.ConnectError as e:
-            raise TransportConnectionError(
-                f"Failed to connect: {e}", request=request
-            ) from e
+            raise TransportConnectionError(f"Failed to connect: {e}", request=request) from e
 
         except httpx.TimeoutException as e:
-            raise TransportTimeoutError(
-                f"Stream timed out: {e}", request=request
-            ) from e
+            raise TransportTimeoutError(f"Stream timed out: {e}", request=request) from e
 
         except httpx.RequestError as e:
-            raise TransportConnectionError(
-                f"Stream failed: {e}", request=request
-            ) from e
+            raise TransportConnectionError(f"Stream failed: {e}", request=request) from e
 
     def _get_status_emoji(self, status_code: int) -> str:
         """Get emoji for HTTP status code."""

@@ -77,11 +77,7 @@ def retry(
         ...     pass
     """
     # Handle decorator without parentheses
-    if (
-        len(exceptions) == 1
-        and callable(exceptions[0])
-        and not isinstance(exceptions[0], type)
-    ):
+    if len(exceptions) == 1 and callable(exceptions[0]) and not isinstance(exceptions[0], type):
         # Called as @retry without parentheses
         func = exceptions[0]
         executor = RetryExecutor(RetryPolicy())

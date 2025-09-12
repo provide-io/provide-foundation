@@ -50,7 +50,9 @@ if _HAS_CLICK:
         help="Output format",
     )
     @click.pass_context
-    def tail_command(ctx: click.Context, stream: str, filter_sql: str | None, lines: int, follow: bool, format: str) -> int | None:
+    def tail_command(
+        ctx: click.Context, stream: str, filter_sql: str | None, lines: int, follow: bool, format: str
+    ) -> int | None:
         """Tail logs in real-time (like 'tail -f').
 
         Examples:
@@ -107,6 +109,5 @@ else:
     def tail_command(*args: object, **kwargs: object) -> None:
         """Tail command stub when click is not available."""
         raise ImportError(
-            "CLI commands require optional dependencies. "
-            "Install with: pip install 'provide-foundation[cli]'"
+            "CLI commands require optional dependencies. Install with: pip install 'provide-foundation[cli]'"
         )

@@ -7,9 +7,10 @@ and standard test directory layouts.
 
 from collections.abc import Generator
 from pathlib import Path
-import tempfile
 
 import pytest
+
+from provide.foundation.file import temp_dir as foundation_temp_dir
 
 
 @pytest.fixture
@@ -20,8 +21,8 @@ def temp_directory() -> Generator[Path, None, None]:
     Yields:
         Path to the temporary directory.
     """
-    with tempfile.TemporaryDirectory() as temp_dir:
-        yield Path(temp_dir)
+    with foundation_temp_dir() as temp_dir:
+        yield temp_dir
 
 
 @pytest.fixture
@@ -39,8 +40,7 @@ def test_files_structure() -> Generator[tuple[Path, Path], None, None]:
     Yields:
         Tuple of (temp_path, source_path)
     """
-    with tempfile.TemporaryDirectory() as temp_dir:
-        path = Path(temp_dir)
+    with foundation_temp_dir() as path:
         source = path / "source"
         source.mkdir()
 
@@ -72,8 +72,7 @@ def nested_directory_structure() -> Generator[Path, None, None]:
     Yields:
         Path to the root of the structure.
     """
-    with tempfile.TemporaryDirectory() as temp_dir:
-        root = Path(temp_dir)
+    with foundation_temp_dir() as root:
 
         # Create nested structure
         deep_dir = root / "level1" / "level2" / "level3"
@@ -95,8 +94,8 @@ def empty_directory() -> Generator[Path, None, None]:
     Yields:
         Path to an empty directory.
     """
-    with tempfile.TemporaryDirectory() as temp_dir:
-        yield Path(temp_dir)
+    with foundation_temp_dir() as temp_dir:
+        yield temp_dir
 
 
 __all__ = [

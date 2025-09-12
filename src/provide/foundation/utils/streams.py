@@ -14,11 +14,7 @@ def get_safe_stderr() -> TextIO:
     Returns:
         A writable text stream, either sys.stderr or io.StringIO()
     """
-    return (
-        sys.stderr
-        if hasattr(sys, "stderr") and sys.stderr is not None
-        else io.StringIO()
-    )
+    return sys.stderr if hasattr(sys, "stderr") and sys.stderr is not None else io.StringIO()
 
 
 def get_foundation_log_stream(output_setting: str) -> TextIO:

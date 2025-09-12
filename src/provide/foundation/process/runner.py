@@ -268,9 +268,7 @@ def stream_command(
                         if elapsed >= timeout:
                             process.kill()
                             process.wait()
-                            plog.error(
-                                "⏱️ Stream timed out", command=cmd_str, timeout=timeout
-                            )
+                            plog.error("⏱️ Stream timed out", command=cmd_str, timeout=timeout)
                             raise TimeoutError(
                                 f"Command timed out after {timeout}s: {cmd_str}",
                                 code="PROCESS_STREAM_TIMEOUT",
@@ -280,9 +278,7 @@ def stream_command(
 
                         # Use select with timeout
                         remaining = timeout - elapsed
-                        ready, _, _ = select.select(
-                            [process.stdout], [], [], min(0.1, remaining)
-                        )
+                        ready, _, _ = select.select([process.stdout], [], [], min(0.1, remaining))
 
                         if ready:
                             try:

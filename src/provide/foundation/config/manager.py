@@ -95,9 +95,7 @@ class ConfigManager:
         """
         self._configs[name] = config
 
-    async def load(
-        self, name: str, config_class: type[T], loader: ConfigLoader | None = None
-    ) -> T:
+    async def load(self, name: str, config_class: type[T], loader: ConfigLoader | None = None) -> T:
         """
         Load a configuration.
 
@@ -259,9 +257,7 @@ class ConfigManager:
 
         return self._configs[name].to_dict(include_sensitive)
 
-    async def export_all(
-        self, include_sensitive: bool = False
-    ) -> dict[str, ConfigDict]:
+    async def export_all(self, include_sensitive: bool = False) -> dict[str, ConfigDict]:
         """
         Export all configurations.
 
@@ -277,15 +273,11 @@ class ConfigManager:
         return result
 
     # Alias for export_all
-    async def export_to_dict(
-        self, include_sensitive: bool = False
-    ) -> dict[str, ConfigDict]:
+    async def export_to_dict(self, include_sensitive: bool = False) -> dict[str, ConfigDict]:
         """Export all configs to dict. Alias for export_all."""
         return await self.export_all(include_sensitive)
 
-    async def load_from_dict(
-        self, name: str, config_class: type[T], data: ConfigDict
-    ) -> T:
+    async def load_from_dict(self, name: str, config_class: type[T], data: ConfigDict) -> T:
         """Load config from dictionary."""
         config = config_class.from_dict(data)
         self._configs[name] = config
@@ -306,9 +298,7 @@ class ConfigManager:
                 if hasattr(schema, "validate"):
                     await schema.validate(config_dict)
 
-    async def get_or_create(
-        self, name: str, config_class: type[T], defaults: ConfigDict | None = None
-    ) -> T:
+    async def get_or_create(self, name: str, config_class: type[T], defaults: ConfigDict | None = None) -> T:
         """Get existing config or create new one with defaults."""
         existing = await self.get(name)
         if existing is not None:
@@ -368,9 +358,7 @@ async def register_config(
     await _manager.register(name, config, schema, loader, defaults)
 
 
-async def load_config(
-    name: str, config_class: type[T], loader: ConfigLoader | None = None
-) -> T:
+async def load_config(name: str, config_class: type[T], loader: ConfigLoader | None = None) -> T:
     """
     Load a configuration using the global manager.
 

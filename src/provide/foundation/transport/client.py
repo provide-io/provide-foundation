@@ -113,9 +113,7 @@ class UniversalClient:
             method = method.value
 
         # Create request
-        request = Request(
-            uri=uri, method=method, headers=dict(self.default_headers), **kwargs
-        )
+        request = Request(uri=uri, method=method, headers=dict(self.default_headers), **kwargs)
 
         # Get transport
         transport = await self._get_transport(request.transport_type.value)
@@ -189,9 +187,7 @@ def get_default_client() -> UniversalClient:
     return _default_client
 
 
-async def request(
-    uri: str, method: str | HTTPMethod = HTTPMethod.GET, **kwargs
-) -> Response:
+async def request(uri: str, method: str | HTTPMethod = HTTPMethod.GET, **kwargs) -> Response:
     """Make a request using the default client."""
     client = get_default_client()
     return await client.request(uri, method, **kwargs)

@@ -45,20 +45,12 @@ class ProcessError(FoundationError):
             full_message += "\nProcess timed out"
 
         if stdout:
-            stdout_str = (
-                stdout.decode("utf-8", "replace")
-                if isinstance(stdout, bytes)
-                else stdout
-            )
+            stdout_str = stdout.decode("utf-8", "replace") if isinstance(stdout, bytes) else stdout
             if stdout_str.strip():
                 full_message += f"\n--- STDOUT ---\n{stdout_str.strip()}"
 
         if stderr:
-            stderr_str = (
-                stderr.decode("utf-8", "replace")
-                if isinstance(stderr, bytes)
-                else stderr
-            )
+            stderr_str = stderr.decode("utf-8", "replace") if isinstance(stderr, bytes) else stderr
             if stderr_str.strip():
                 full_message += f"\n--- STDERR ---\n{stderr_str.strip()}"
 

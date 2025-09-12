@@ -203,9 +203,7 @@ def clone_config(config: T) -> T:
     return run_async(config.clone())
 
 
-def diff_configs(
-    config1: BaseConfig, config2: BaseConfig
-) -> dict[str, tuple[Any, Any]]:
+def diff_configs(config1: BaseConfig, config2: BaseConfig) -> dict[str, tuple[Any, Any]]:
     """
     Compare two configurations (sync wrapper).
 
@@ -243,9 +241,7 @@ class SyncConfigManager:
         """Get a configuration by name (sync)."""
         return run_async(self._async_manager.get(name))
 
-    def load(
-        self, name: str, config_class: type[T], loader: ConfigLoader | None = None
-    ) -> T:
+    def load(self, name: str, config_class: type[T], loader: ConfigLoader | None = None) -> T:
         """Load a configuration (sync).
 
         Args:

@@ -45,17 +45,11 @@ def create_x509_certificate(
     try:
         logger.debug("📜📝🚀 create_x509_certificate: Building certificate")
 
-        actual_issuer_name = (
-            issuer_name_override if issuer_name_override else base.issuer
-        )
-        actual_signing_key = (
-            signing_key_override if signing_key_override else private_key
-        )
+        actual_issuer_name = issuer_name_override if issuer_name_override else base.issuer
+        actual_signing_key = signing_key_override if signing_key_override else private_key
 
         if not actual_signing_key:
-            raise CertificateError(
-                "Cannot sign certificate without a signing key (either own or override)"
-            )
+            raise CertificateError("Cannot sign certificate without a signing key (either own or override)")
 
         builder = (
             x509.CertificateBuilder()
@@ -69,9 +63,7 @@ def create_x509_certificate(
 
         san_list = [x509.DNSName(name) for name in (alt_names or []) if name]
         if san_list:
-            builder = builder.add_extension(
-                x509.SubjectAlternativeName(san_list), critical=False
-            )
+            builder = builder.add_extension(x509.SubjectAlternativeName(san_list), critical=False)
             logger.debug(f"📜📝✅ Added SANs: {alt_names or []}")
 
         builder = builder.add_extension(
@@ -99,16 +91,9 @@ def create_x509_certificate(
                 x509.KeyUsage(
                     digital_signature=True,
                     key_encipherment=(
-                        True
-                        if not is_client_cert
-                        and isinstance(base.public_key, rsa.RSAPublicKey)
-                        else False
+                        True if not is_client_cert and isinstance(base.public_key, rsa.RSAPublicKey) else False
                     ),
-                    key_agreement=(
-                        True
-                        if isinstance(base.public_key, ec.EllipticCurvePublicKey)
-                        else False
-                    ),
+                    key_agreement=(True if isinstance(base.public_key, ec.EllipticCurvePublicKey) else False),
                     content_commitment=False,
                     data_encipherment=False,
                     key_cert_sign=False,
@@ -166,9 +151,7 @@ def validate_signature(
 
     try:
         if not signing_public_key:
-            logger.error(
-                "📜🔍❌ Cannot validate signature: Signing certificate has no public key"
-            )
+            logger.error("📜🔍❌ Cannot validate signature: Signing certificate has no public key")
             return False
 
         signature = signed_cert_obj.signature
@@ -193,9 +176,7 @@ def validate_signature(
                 ec.ECDSA(signature_hash_algorithm),
             )
         else:
-            logger.error(
-                f"📜🔍❌ Unsupported signing public key type: {type(signing_public_key)}"
-            )
+            logger.error(f"📜🔍❌ Unsupported signing public key type: {type(signing_public_key)}")
             return False
 
         return True

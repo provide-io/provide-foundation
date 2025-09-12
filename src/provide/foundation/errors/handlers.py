@@ -76,9 +76,7 @@ def error_boundary(
                 error_context.update(e.context)
 
             # Log the error
-            _get_logger().error(
-                f"Error caught in boundary: {e}", exc_info=True, **error_context
-            )
+            _get_logger().error(f"Error caught in boundary: {e}", exc_info=True, **error_context)
 
         # Call error handler if provided
         if on_error:
@@ -136,9 +134,7 @@ def transactional(
             commit()
     except Exception as e:
         if log_errors:
-            _get_logger().error(
-                "Transaction failed, rolling back", exc_info=True, error=str(e)
-            )
+            _get_logger().error("Transaction failed, rolling back", exc_info=True, error=str(e))
 
         # Call error handler if provided
         if on_error:
@@ -158,9 +154,7 @@ def transactional(
                 _get_logger().info("Transaction rolled back successfully")
         except Exception as rollback_error:
             if log_errors:
-                _get_logger().critical(
-                    f"Rollback failed: {rollback_error}", original_error=str(e)
-                )
+                _get_logger().critical(f"Rollback failed: {rollback_error}", original_error=str(e))
             # Re-raise the rollback error as it's more critical
             raise rollback_error from e
 
@@ -236,17 +230,13 @@ class ErrorHandler:
         >>> result = handler.handle(some_error)
     """
 
-    policies: dict[type[Exception], Callable[[Exception], Any]] = field(
-        factory=lambda: {}
-    )
+    policies: dict[type[Exception], Callable[[Exception], Any]] = field(factory=lambda: {})
     default_action: Callable[[Exception], Any] = field(default=lambda e: None)
     log_all: bool = True
     capture_context: bool = True
     reraise_unhandled: bool = False
 
-    def add_policy(
-        self, error_type: type[Exception], handler: Callable[[Exception], Any]
-    ) -> "ErrorHandler":
+    def add_policy(self, error_type: type[Exception], handler: Callable[[Exception], Any]) -> "ErrorHandler":
         """Add or update a handler policy for an error type.
 
         Args:
@@ -348,11 +338,7 @@ def create_error_handler(**policies: Callable[[Exception], Any]) -> ErrorHandler
     for error_name, handler_func in policies.items():
         # Try to get the error class from errors module
         error_class = getattr(errors_module, error_name, None)
-        if (
-            error_class
-            and isinstance(error_class, type)
-            and issubclass(error_class, Exception)
-        ):
+        if error_class and isinstance(error_class, type) and issubclass(error_class, Exception):
             error_policies[error_class] = handler_func
         else:
             _get_logger().warning(f"Unknown error type: {error_name}")
