@@ -147,6 +147,7 @@ filterwarnings = [
     "ignore:cannot collect test class .* because it has a __init__ constructor:pytest.PytestCollectionWarning",
     "ignore:.* KqueueSelector constructor:pytest.PytestCollectionWarning",
     "ignore:.* KqueueSelector constructor:pytest.PytestCollectionWarning",
+    "ignore:coroutine .* was never awaited:RuntimeWarning",
 ]
 norecursedirs = [
     ".git", ".hg", ".svn", "*_build", "build", "dist", "*.egg-info",
