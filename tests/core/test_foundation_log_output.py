@@ -57,7 +57,7 @@ class TestFoundationLogOutputEnvironmentVariable:
         monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "invalid_value")
 
         # Should raise ValueError with strict validation
-        with pytest.raises(ValueError, match="Invalid foundation log output 'invalid_value'"):
+        with pytest.raises(ValueError, match="Invalid foundation_log_output 'invalid_value'"):
             LoggingConfig.from_env()
 
 
