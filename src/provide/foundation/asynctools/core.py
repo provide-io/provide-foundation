@@ -28,9 +28,7 @@ async def provide_sleep_async(delay: float) -> None:
     await asyncio.sleep(delay)
 
 
-async def provide_gather(
-    *awaitables: Awaitable[Any], return_exceptions: bool = False
-) -> list[Any]:
+async def provide_gather(*awaitables: Awaitable[Any], return_exceptions: bool = False) -> list[Any]:
     """
     Run awaitables concurrently with Foundation tracking.
 

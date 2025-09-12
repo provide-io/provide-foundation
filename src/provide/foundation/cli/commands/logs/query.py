@@ -66,7 +66,16 @@ if _HAS_CLICK:
     )
     @click.pass_context
     def query_command(
-        ctx: click.Context, sql: str | None, current_trace: bool, trace_id: str | None, level: str | None, service: str | None, last: str, stream: str, size: int, format: str
+        ctx: click.Context,
+        sql: str | None,
+        current_trace: bool,
+        trace_id: str | None,
+        level: str | None,
+        service: str | None,
+        last: str,
+        stream: str,
+        size: int,
+        format: str,
     ) -> int | None:
         """Query logs from OpenObserve.
 
@@ -156,9 +165,7 @@ if _HAS_CLICK:
 
                 # Show summary for non-summary formats
                 if format != "summary":
-                    click.echo(
-                        f"\n📊 Found {response.total} logs, showing {len(response.hits)}"
-                    )
+                    click.echo(f"\n📊 Found {response.total} logs, showing {len(response.hits)}")
 
         except Exception as e:
             click.echo(f"Query failed: {e}", err=True)
@@ -169,6 +176,5 @@ else:
     def query_command(*args: object, **kwargs: object) -> None:
         """Query command stub when click is not available."""
         raise ImportError(
-            "CLI commands require optional dependencies. "
-            "Install with: pip install 'provide-foundation[cli]'"
+            "CLI commands require optional dependencies. Install with: pip install 'provide-foundation[cli]'"
         )

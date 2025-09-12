@@ -48,9 +48,7 @@ def mock_server(free_port) -> Generator[dict[str, Any], None, None]:
 
         def do_GET(self):
             """Handle GET requests."""
-            requests_received.append(
-                {"method": "GET", "path": self.path, "headers": dict(self.headers)}
-            )
+            requests_received.append({"method": "GET", "path": self.path, "headers": dict(self.headers)})
 
             response = responses.get(self.path, {"status": 404, "body": b"Not Found"})
             self.send_response(response["status"])

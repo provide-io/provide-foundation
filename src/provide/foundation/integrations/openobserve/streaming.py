@@ -43,9 +43,7 @@ def stream_logs(
         client = OpenObserveClient.from_config()
 
     # Track the last seen timestamp to avoid duplicates
-    last_timestamp = (
-        parse_relative_time(start_time) if start_time else parse_relative_time("-1m")
-    )
+    last_timestamp = parse_relative_time(start_time) if start_time else parse_relative_time("-1m")
     seen_ids = set()
 
     log.info(f"Starting log stream with query: {sql}")
@@ -75,9 +73,7 @@ def stream_logs(
 
                     # Update last timestamp
                     if timestamp > last_timestamp:
-                        last_timestamp = (
-                            timestamp + 1
-                        )  # Add 1 microsecond to avoid duplicates
+                        last_timestamp = timestamp + 1  # Add 1 microsecond to avoid duplicates
 
             if new_count > 0:
                 log.debug(f"Streamed {new_count} new log entries")
@@ -122,9 +118,7 @@ def stream_search_http2(
         client = OpenObserveClient.from_config()
 
     # Parse times
-    start_ts = (
-        parse_relative_time(start_time) if start_time else parse_relative_time("-1h")
-    )
+    start_ts = parse_relative_time(start_time) if start_time else parse_relative_time("-1h")
     end_ts = parse_relative_time(end_time) if end_time else parse_relative_time("now")
 
     # Prepare request
@@ -200,9 +194,7 @@ def tail_logs(
     """
     # Build SQL query
     where_clause = f"WHERE {filter_sql}" if filter_sql else ""
-    sql = (
-        f"SELECT * FROM {stream} {where_clause} ORDER BY _timestamp DESC LIMIT {lines}"
-    )
+    sql = f"SELECT * FROM {stream} {where_clause} ORDER BY _timestamp DESC LIMIT {lines}"
 
     if client is None:
         client = OpenObserveClient.from_config()

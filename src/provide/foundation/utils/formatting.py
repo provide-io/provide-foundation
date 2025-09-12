@@ -133,9 +133,7 @@ def format_number(num: int | float, precision: int | None = None) -> str:
         return f"{num:,.{precision}f}"
 
 
-def format_percentage(
-    value: float, precision: int = 1, include_sign: bool = False
-) -> str:
+def format_percentage(value: float, precision: int = 1, include_sign: bool = False) -> str:
     """Format value as percentage.
 
     Args:
@@ -163,9 +161,7 @@ def format_percentage(
     return formatted
 
 
-def truncate(
-    text: str, max_length: int, suffix: str = "...", whole_words: bool = True
-) -> str:
+def truncate(text: str, max_length: int, suffix: str = "...", whole_words: bool = True) -> str:
     """Truncate text to maximum length.
 
     Args:
@@ -257,9 +253,7 @@ def indent(text: str, spaces: int = 2, first_line: bool = True) -> str:
     return "\n".join(result)
 
 
-def wrap_text(
-    text: str, width: int = 80, indent_first: int = 0, indent_rest: int = 0
-) -> str:
+def wrap_text(text: str, width: int = 80, indent_first: int = 0, indent_rest: int = 0) -> str:
     """Wrap text to specified width.
 
     Args:
@@ -388,9 +382,7 @@ def to_camel_case(text: str, upper_first: bool = False) -> str:
     return "".join(result)
 
 
-def format_table(
-    headers: list[str], rows: list[list[Any]], alignment: list[str] | None = None
-) -> str:
+def format_table(headers: list[str], rows: list[list[Any]], alignment: list[str] | None = None) -> str:
     """Format data as ASCII table.
 
     Args:

@@ -205,9 +205,7 @@ class BaseToolManager(ABC):
 
         resolved = self.resolver.resolve(spec, available)
         if not resolved:
-            raise ToolNotFoundError(
-                f"Cannot resolve version '{spec}' for {self.tool_name}"
-            )
+            raise ToolNotFoundError(f"Cannot resolve version '{spec}' for {self.tool_name}")
 
         log.debug(f"Resolved {self.tool_name} version {spec} to {resolved}")
         return resolved
@@ -253,9 +251,7 @@ class BaseToolManager(ABC):
         if metadata.checksum:
             if not self.verifier.verify_checksum(artifact_path, metadata.checksum):
                 artifact_path.unlink()
-                raise ToolVerificationError(
-                    f"Checksum verification failed for {self.tool_name} {version}"
-                )
+                raise ToolVerificationError(f"Checksum verification failed for {self.tool_name} {version}")
 
         # Install
         install_path = self.installer.install(artifact_path, metadata)

@@ -138,9 +138,7 @@ class OpenObserveClient:
             )
 
             if response.status_code == 401:
-                raise OpenObserveConnectionError(
-                    "Authentication failed. Check credentials."
-                )
+                raise OpenObserveConnectionError("Authentication failed. Check credentials.")
 
             response.raise_for_status()
 
@@ -195,16 +193,8 @@ class OpenObserveClient:
         if end_time is None:
             end_time = "now"
 
-        start_ts = (
-            parse_relative_time(str(start_time), now)
-            if isinstance(start_time, str)
-            else start_time
-        )
-        end_ts = (
-            parse_relative_time(str(end_time), now)
-            if isinstance(end_time, str)
-            else end_time
-        )
+        start_ts = parse_relative_time(str(start_time), now) if isinstance(start_time, str) else start_time
+        end_ts = parse_relative_time(str(end_time), now) if isinstance(end_time, str) else end_time
 
         # Create query
         query = SearchQuery(

@@ -75,7 +75,15 @@ if _HAS_CLICK:
         help="Pretty print JSON output",
     )
     @click.pass_obj
-    def query_command(client: "OpenObserveClient | None", sql: str, start: str, end: str, size: int, format: str, pretty: bool) -> int | None:
+    def query_command(
+        client: "OpenObserveClient | None",
+        sql: str,
+        start: str,
+        end: str,
+        size: int,
+        format: str,
+        pretty: bool,
+    ) -> int | None:
         """Execute SQL query against OpenObserve logs."""
         if client is None:
             click.echo(
@@ -134,7 +142,14 @@ if _HAS_CLICK:
         help="Output format",
     )
     @click.pass_obj
-    def tail_command(client: "OpenObserveClient | None", stream: str, filter_sql: str | None, lines: int, follow: bool, format: str) -> int | None:
+    def tail_command(
+        client: "OpenObserveClient | None",
+        stream: str,
+        filter_sql: str | None,
+        lines: int,
+        follow: bool,
+        format: str,
+    ) -> int | None:
         """Tail logs from OpenObserve (like 'tail -f')."""
         if client is None:
             click.echo(
@@ -191,7 +206,9 @@ if _HAS_CLICK:
         help="Output format",
     )
     @click.pass_obj
-    def errors_command(client: "OpenObserveClient | None", stream: str, start: str, size: int, format: str) -> int | None:
+    def errors_command(
+        client: "OpenObserveClient | None", stream: str, start: str, size: int, format: str
+    ) -> int | None:
         """Search for error logs."""
         if client is None:
             click.echo("OpenObserve not configured.", err=True)
@@ -233,7 +250,9 @@ if _HAS_CLICK:
         help="Output format",
     )
     @click.pass_obj
-    def trace_command(client: "OpenObserveClient | None", trace_id: str, stream: str, format: str) -> int | None:
+    def trace_command(
+        client: "OpenObserveClient | None", trace_id: str, stream: str, format: str
+    ) -> int | None:
         """Search for logs by trace ID."""
         if client is None:
             click.echo("OpenObserve not configured.", err=True)
@@ -350,8 +369,7 @@ else:
     def openobserve_group(*args: object, **kwargs: object) -> None:
         """OpenObserve command stub when click is not available."""
         raise ImportError(
-            "CLI commands require optional dependencies. "
-            "Install with: pip install 'provide-foundation[cli]'"
+            "CLI commands require optional dependencies. Install with: pip install 'provide-foundation[cli]'"
         )
 
     __all__ = []

@@ -211,9 +211,7 @@ class MetricsMiddleware(Middleware):
                 status_class=status_class,
             )
 
-            self._request_duration.observe(
-                duration, method=method, status_class=status_class
-            )
+            self._request_duration.observe(duration, method=method, status_class=status_class)
 
         return response
 

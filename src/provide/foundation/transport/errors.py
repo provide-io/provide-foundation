@@ -33,9 +33,7 @@ class TransportTimeoutError(TransportError):
 class HTTPResponseError(TransportError):
     """HTTP response error (4xx/5xx status codes)."""
 
-    def __init__(
-        self, message: str, *, status_code: int, response: "Response", **kwargs
-    ):
+    def __init__(self, message: str, *, status_code: int, response: "Response", **kwargs):
         super().__init__(message, **kwargs)
         self.status_code = status_code
         self.response = response

@@ -31,11 +31,7 @@ def get_handlers_for_exception(exception: Exception) -> list[RegistryEntry]:
     with registry_lock:
         # Get all error handlers
         all_entries = list(registry)
-        handlers = [
-            entry
-            for entry in all_entries
-            if entry.dimension == ComponentCategory.ERROR_HANDLER.value
-        ]
+        handlers = [entry for entry in all_entries if entry.dimension == ComponentCategory.ERROR_HANDLER.value]
 
         # Filter by exception type
         exception_type_name = type(exception).__name__
@@ -50,9 +46,7 @@ def get_handlers_for_exception(exception: Exception) -> list[RegistryEntry]:
                 matching_handlers.append(entry)
 
         # Sort by priority (highest first)
-        matching_handlers.sort(
-            key=lambda e: e.metadata.get("priority", 0), reverse=True
-        )
+        matching_handlers.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)
         return matching_handlers
 
 
@@ -63,9 +57,7 @@ def get_handlers_for_exception(exception: Exception) -> list[RegistryEntry]:
         "module": "hub.handlers",
     },
 )
-def execute_error_handlers(
-    exception: Exception, context: dict[str, Any]
-) -> dict[str, Any] | None:
+def execute_error_handlers(exception: Exception, context: dict[str, Any]) -> dict[str, Any] | None:
     """Execute error handlers until one handles the exception."""
     handlers = get_handlers_for_exception(exception)
 
@@ -76,9 +68,7 @@ def execute_error_handlers(
             if result is not None:
                 return result
         except Exception as handler_error:
-            log.error(
-                "Error handler failed", handler=entry.name, error=str(handler_error)
-            )
+            log.error("Error handler failed", handler=entry.name, error=str(handler_error))
 
     return None
 

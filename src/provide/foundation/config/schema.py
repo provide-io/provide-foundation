@@ -20,7 +20,7 @@ class SchemaField:
     """Schema definition for a configuration field."""
 
     name: str
-    type: type | None = None
+    field_type: type | None = None
     required: bool = False
     default: Any = None
     description: str | None = None
@@ -43,38 +43,30 @@ class SchemaField:
         """
         # Check required
         if self.required and value is None:
-            raise ConfigValidationError(
-                "Field is required", field=self.name, value=value
-            )
+            raise ConfigValidationError("Field is required", field=self.name, value=value)
 
         # Skip further validation for None values
         if value is None:
             return
 
         # Check type
-        if self.type is not None and not isinstance(value, self.type):
+        if self.field_type is not None and not isinstance(value, self.field_type):
             raise ConfigValidationError(
-                f"Expected type {self.type.__name__}, got {type(value).__name__}",
+                f"Expected type {self.field_type.__name__}, got {type(value).__name__}",
                 field=self.name,
                 value=value,
             )
 
         # Check choices
         if self.choices is not None and value not in self.choices:
-            raise ConfigValidationError(
-                f"Value must be one of {self.choices}", field=self.name, value=value
-            )
+            raise ConfigValidationError(f"Value must be one of {self.choices}", field=self.name, value=value)
 
         # Check min/max
         if self.min_value is not None and value < self.min_value:
-            raise ConfigValidationError(
-                f"Value must be >= {self.min_value}", field=self.name, value=value
-            )
+            raise ConfigValidationError(f"Value must be >= {self.min_value}", field=self.name, value=value)
 
         if self.max_value is not None and value > self.max_value:
-            raise ConfigValidationError(
-                f"Value must be <= {self.max_value}", field=self.name, value=value
-            )
+            raise ConfigValidationError(f"Value must be <= {self.max_value}", field=self.name, value=value)
 
         # Check pattern
         if self.pattern is not None and isinstance(value, str):
@@ -95,15 +87,11 @@ class SchemaField:
                 if asyncio.iscoroutine(result) or asyncio.isfuture(result):
                     result = await result
                 if not result:
-                    raise ConfigValidationError(
-                        "Custom validation failed", field=self.name, value=value
-                    )
+                    raise ConfigValidationError("Custom validation failed", field=self.name, value=value)
             except ConfigValidationError:
                 raise
             except Exception as e:
-                raise ConfigValidationError(
-                    f"Validation error: {e}", field=self.name, value=value
-                )
+                raise ConfigValidationError(f"Validation error: {e}", field=self.name, value=value)
 
 
 class ConfigSchema:
@@ -209,7 +197,7 @@ class ConfigSchema:
         # Create schema field
         return SchemaField(
             name=attr.name,
-            type=field_type,
+            field_type=field_type,
             required=required,
             default=attr.default if attr.default is not None else None,
             description=description,

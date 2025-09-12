@@ -12,9 +12,7 @@ from typing import Any
 from provide.foundation.tracer.spans import Span
 
 # Context variable to track the current span
-_current_span: contextvars.ContextVar[Span | None] = contextvars.ContextVar(
-    "current_span", default=None
-)
+_current_span: contextvars.ContextVar[Span | None] = contextvars.ContextVar("current_span", default=None)
 
 # Context variable to track the current trace ID
 _current_trace_id: contextvars.ContextVar[str | None] = contextvars.ContextVar(

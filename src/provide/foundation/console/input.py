@@ -269,10 +269,7 @@ async def apin_stream() -> AsyncIterator[str]:
             try:
                 data = json.load(sys.stdin)
                 if isinstance(data, list):
-                    return [
-                        json.dumps(item) if not isinstance(item, str) else item
-                        for item in data
-                    ]
+                    return [json.dumps(item) if not isinstance(item, str) else item for item in data]
                 else:
                     return [json.dumps(data)]
             except json.JSONDecodeError:
@@ -303,9 +300,7 @@ async def apin_stream() -> AsyncIterator[str]:
 
                     line = line_bytes.decode("utf-8").rstrip("\n\r")
                     line_count += 1
-                    plog.trace(
-                        "📥 Async stream line", line_num=line_count, length=len(line)
-                    )
+                    plog.trace("📥 Async stream line", line_num=line_count, length=len(line))
                     yield line
 
                 except asyncio.CancelledError:

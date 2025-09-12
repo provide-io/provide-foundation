@@ -46,9 +46,7 @@ def archive_test_content() -> Generator[tuple[Path, dict[str, str]], None, None]
             if isinstance(content, str):
                 file_path.write_text(content)
             else:
-                file_path.write_bytes(
-                    content.encode() if isinstance(content, str) else content
-                )
+                file_path.write_bytes(content.encode() if isinstance(content, str) else content)
 
         yield source, content_map
 
@@ -90,9 +88,7 @@ def multi_format_archives() -> Generator[dict[str, Path], None, None]:
 
         # GZIP file (magic: 1f 8b)
         gzip_file = temp_dir / "sample.gz"
-        gzip_file.write_bytes(
-            b"\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\x03" + b"compressed data"
-        )
+        gzip_file.write_bytes(b"\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\x03" + b"compressed data")
         archives["gzip"] = gzip_file
 
         # BZIP2 file (magic: BZh)

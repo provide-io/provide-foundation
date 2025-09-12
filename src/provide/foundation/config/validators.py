@@ -24,17 +24,12 @@ def validate_choice(choices: list[Any]) -> Callable[[Any, Any, Any], None]:
 
     def validator(instance: object, attribute: object, value: Any) -> None:
         if value not in choices:
-            raise ValidationError(
-                f"Invalid value '{value}' for {attribute.name}. "
-                f"Must be one of: {choices}"
-            )
+            raise ValidationError(f"Invalid value '{value}' for {attribute.name}. Must be one of: {choices}")
 
     return validator
 
 
-def validate_range(
-    min_value: float, max_value: float
-) -> Callable[[Any, Any, Any], None]:
+def validate_range(min_value: float, max_value: float) -> Callable[[Any, Any, Any], None]:
     """
     Create a validator that ensures the value is within a numeric range.
 
@@ -51,9 +46,7 @@ def validate_range(
             raise ValidationError(f"Value must be a number, got {type(value).__name__}")
 
         if not (min_value <= value <= max_value):
-            raise ValidationError(
-                f"Value must be between {min_value} and {max_value}, got {value}"
-            )
+            raise ValidationError(f"Value must be between {min_value} and {max_value}, got {value}")
 
     return validator
 

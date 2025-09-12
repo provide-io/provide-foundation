@@ -34,6 +34,7 @@ def reset_foundation_state() -> None:
     # Reset event set registry and discovery state
     try:
         from provide.foundation.eventsets.registry import clear_registry
+
         clear_registry()
     except ImportError:
         pass  # Event sets may not be available in all test environments
@@ -41,6 +42,7 @@ def reset_foundation_state() -> None:
     # Reset setup logger cache
     try:
         from provide.foundation.logger.setup.coordinator import reset_setup_logger_cache
+
         reset_setup_logger_cache()
     except ImportError:
         pass

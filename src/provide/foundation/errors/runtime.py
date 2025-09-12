@@ -147,13 +147,9 @@ class ConcurrencyError(FoundationError):
         if conflict_type:
             kwargs.setdefault("context", {})["concurrency.type"] = conflict_type
         if version_expected is not None:
-            kwargs.setdefault("context", {})["concurrency.version_expected"] = str(
-                version_expected
-            )
+            kwargs.setdefault("context", {})["concurrency.version_expected"] = str(version_expected)
         if version_actual is not None:
-            kwargs.setdefault("context", {})["concurrency.version_actual"] = str(
-                version_actual
-            )
+            kwargs.setdefault("context", {})["concurrency.version_actual"] = str(version_actual)
         super().__init__(message, **kwargs)
 
     def _default_code(self) -> str:

@@ -137,9 +137,7 @@ class LoggingConfig(RuntimeConfig):
     rate_limit_summary_interval: float = field(
         default=DEFAULT_RATE_LIMIT_GLOBAL,
         env_var="PROVIDE_LOG_RATE_LIMIT_SUMMARY_INTERVAL",
-        converter=lambda x: parse_float_with_validation(x, min_val=0.0)
-        if x
-        else DEFAULT_RATE_LIMIT_GLOBAL,
+        converter=lambda x: parse_float_with_validation(x, min_val=0.0) if x else DEFAULT_RATE_LIMIT_GLOBAL,
         validator=validate_positive,
         description="Seconds between rate limit summary reports",
     )

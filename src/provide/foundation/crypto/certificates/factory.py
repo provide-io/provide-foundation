@@ -41,9 +41,7 @@ def create_ca_certificate(
     # Import here to avoid circular dependency
     from provide.foundation.crypto.certificates.certificate import Certificate
 
-    logger.info(
-        f"📜🔑🏭 Creating new CA certificate: CN={common_name}, Org={organization_name}"
-    )
+    logger.info(f"📜🔑🏭 Creating new CA certificate: CN={common_name}, Org={organization_name}")
     ca_cert_obj = Certificate(
         generate_keypair=True,
         common_name=common_name,
@@ -64,9 +62,7 @@ def create_ca_certificate(
         is_client_cert=False,
     )
     ca_cert_obj._cert = actual_ca_x509_cert
-    ca_cert_obj.cert = actual_ca_x509_cert.public_bytes(
-        serialization.Encoding.PEM
-    ).decode("utf-8")
+    ca_cert_obj.cert = actual_ca_x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
     return ca_cert_obj
 
 
@@ -122,9 +118,7 @@ def create_signed_certificate(
     )
 
     new_cert_obj._cert = signed_x509_cert
-    new_cert_obj.cert = signed_x509_cert.public_bytes(
-        serialization.Encoding.PEM
-    ).decode("utf-8")
+    new_cert_obj.cert = signed_x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
 
     logger.info(
         f"📜🔑✅ Successfully created and signed certificate for "
@@ -147,8 +141,7 @@ def create_self_signed_server_cert(
     from provide.foundation.crypto.certificates.certificate import Certificate
 
     logger.info(
-        f"📜🔑🏭 Creating new self-signed SERVER certificate: "
-        f"CN={common_name}, Org={organization_name}"
+        f"📜🔑🏭 Creating new self-signed SERVER certificate: CN={common_name}, Org={organization_name}"
     )
 
     cert_obj = Certificate(
@@ -163,9 +156,7 @@ def create_self_signed_server_cert(
     )
 
     if not cert_obj._private_key:
-        raise CertificateError(
-            "Private key not generated for self-signed server certificate"
-        )
+        raise CertificateError("Private key not generated for self-signed server certificate")
 
     actual_x509_cert = create_x509_certificate(
         base=cert_obj._base,
@@ -176,13 +167,9 @@ def create_self_signed_server_cert(
     )
 
     cert_obj._cert = actual_x509_cert
-    cert_obj.cert = actual_x509_cert.public_bytes(serialization.Encoding.PEM).decode(
-        "utf-8"
-    )
+    cert_obj.cert = actual_x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
 
-    logger.info(
-        f"📜🔑✅ Successfully created self-signed SERVER certificate for CN={common_name}"
-    )
+    logger.info(f"📜🔑✅ Successfully created self-signed SERVER certificate for CN={common_name}")
     return cert_obj
 
 

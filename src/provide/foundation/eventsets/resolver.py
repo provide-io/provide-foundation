@@ -86,9 +86,7 @@ class EventSetResolver:
 
             # Apply metadata fields
             if value_str in event_mapping.metadata_fields:
-                for meta_key, meta_value in event_mapping.metadata_fields[
-                    value_str
-                ].items():
+                for meta_key, meta_value in event_mapping.metadata_fields[value_str].items():
                     if meta_key not in event_dict:
                         event_dict[meta_key] = meta_value
 
@@ -100,9 +98,7 @@ class EventSetResolver:
 
         return event_dict
 
-    def _find_event_mapping_for_field(
-        self, field_key: str, field_value: Any
-    ) -> EventMapping | None:
+    def _find_event_mapping_for_field(self, field_key: str, field_value: Any) -> EventMapping | None:
         """
         Find the appropriate EventMapping for a given field.
 

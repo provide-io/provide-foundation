@@ -28,9 +28,7 @@ def concurrent_executor():
             self.results = []
             self.exceptions = []
 
-        def run_concurrent(
-            self, func: Callable, args_list: list[tuple], max_workers: int = 4
-        ) -> list[Any]:
+        def run_concurrent(self, func: Callable, args_list: list[tuple], max_workers: int = 4) -> list[Any]:
             """
             Run function concurrently with different arguments.
 
@@ -117,9 +115,7 @@ def thread_synchronizer():
                 self.checkpoints[name] = []
             self.checkpoints[name].append((thread_id, time.time()))
 
-        def wait_for_checkpoint(
-            self, name: str, count: int, timeout: float = 5.0
-        ) -> bool:
+        def wait_for_checkpoint(self, name: str, count: int, timeout: float = 5.0) -> bool:
             """
             Wait for N threads to reach a checkpoint.
 
@@ -150,10 +146,7 @@ def thread_synchronizer():
             """
             if checkpoint not in self.checkpoints:
                 return []
-            return [
-                tid
-                for tid, _ in sorted(self.checkpoints[checkpoint], key=lambda x: x[1])
-            ]
+            return [tid for tid, _ in sorted(self.checkpoints[checkpoint], key=lambda x: x[1])]
 
         def clear(self):
             """Clear all checkpoints."""
@@ -201,9 +194,7 @@ def deadlock_detector():
             # Simplified check - in practice would need wait-for graph
             with self.lock:
                 # Check if multiple threads hold multiple locks
-                multi_lock_threads = [
-                    tid for tid, locks in self.locks_held.items() if len(locks) > 1
-                ]
+                multi_lock_threads = [tid for tid, locks in self.locks_held.items() if len(locks) > 1]
                 return len(multi_lock_threads) > 1
 
         def get_held_locks(self) -> dict[int, set[str]]:
@@ -264,9 +255,7 @@ def thread_exception_handler():
             """Assert no exceptions were raised."""
             with self.lock:
                 if self.exceptions:
-                    raise AssertionError(
-                        f"Thread exceptions occurred: {self.exceptions}"
-                    )
+                    raise AssertionError(f"Thread exceptions occurred: {self.exceptions}")
 
     return ThreadExceptionHandler()
 

@@ -183,9 +183,7 @@ def assert_cli_success(result: Result, expected_output: str | None = None) -> No
 
     if expected_output and expected_output not in result.output:
         raise AssertionError(
-            f"Expected output not found.\n"
-            f"Expected: {expected_output}\n"
-            f"Actual: {result.output}"
+            f"Expected output not found.\nExpected: {expected_output}\nActual: {result.output}"
         )
 
 
@@ -201,13 +199,7 @@ def assert_cli_error(
         raise AssertionError(f"Command succeeded unexpectedly\nOutput: {result.output}")
 
     if exit_code is not None and result.exit_code != exit_code:
-        raise AssertionError(
-            f"Wrong exit code.\nExpected: {exit_code}\nActual: {result.exit_code}"
-        )
+        raise AssertionError(f"Wrong exit code.\nExpected: {exit_code}\nActual: {result.exit_code}")
 
     if expected_error and expected_error not in result.output:
-        raise AssertionError(
-            f"Expected error not found.\n"
-            f"Expected: {expected_error}\n"
-            f"Actual: {result.output}"
-        )
+        raise AssertionError(f"Expected error not found.\nExpected: {expected_error}\nActual: {result.output}")

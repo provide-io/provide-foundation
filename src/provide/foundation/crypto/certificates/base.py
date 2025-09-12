@@ -116,8 +116,7 @@ class CertificateBase:
                 not_valid_after = not_valid_after.replace(tzinfo=UTC)
 
             logger.debug(
-                f"📜⏳✅ CertificateBase.create: Using validity: "
-                f"{not_valid_before} to {not_valid_after}"
+                f"📜⏳✅ CertificateBase.create: Using validity: {not_valid_before} to {not_valid_after}"
             )
 
             private_key: KeyPair
@@ -125,18 +124,14 @@ class CertificateBase:
                 case KeyType.RSA:
                     key_size = config.get("key_size", DEFAULT_RSA_KEY_SIZE)
                     logger.debug(f"📜🔑🚀 Generating RSA key (size: {key_size})")
-                    private_key = rsa.generate_private_key(
-                        public_exponent=65537, key_size=key_size
-                    )
+                    private_key = rsa.generate_private_key(public_exponent=65537, key_size=key_size)
                 case KeyType.ECDSA:
                     curve_choice = config.get("curve", CurveType.SECP384R1)
                     logger.debug(f"📜🔑🚀 Generating ECDSA key (curve: {curve_choice})")
                     curve = getattr(ec, curve_choice.name)()
                     private_key = ec.generate_private_key(curve)
                 case _:
-                    raise ValueError(
-                        f"Internal Error: Unsupported key type: {config['key_type']}"
-                    )
+                    raise ValueError(f"Internal Error: Unsupported key type: {config['key_type']}")
 
             subject = cls._create_name(config["common_name"], config["organization"])
             issuer = cls._create_name(config["common_name"], config["organization"])

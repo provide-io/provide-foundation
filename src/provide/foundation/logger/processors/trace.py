@@ -21,9 +21,7 @@ except ImportError:
     _HAS_OTEL = False
 
 
-def inject_trace_context(
-    logger: Any, method_name: str, event_dict: dict[str, Any]
-) -> dict[str, Any]:
+def inject_trace_context(logger: Any, method_name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
     """Processor to inject trace context into log records.
 
     Args:

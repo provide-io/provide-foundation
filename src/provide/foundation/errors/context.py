@@ -249,9 +249,7 @@ def capture_error_context(
         from provide.foundation.errors.config import ValidationError
         from provide.foundation.errors.integration import IntegrationError, NetworkError
 
-        if isinstance(
-            error, ValidationError | AuthenticationError | AuthorizationError
-        ):
+        if isinstance(error, ValidationError | AuthenticationError | AuthorizationError):
             category = ErrorCategory.USER
         elif isinstance(error, IntegrationError | NetworkError):
             category = ErrorCategory.EXTERNAL

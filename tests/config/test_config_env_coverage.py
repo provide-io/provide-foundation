@@ -180,11 +180,10 @@ class TestAsyncRuntimeConfig:
         secret_files = []
         try:
             for i in range(2):  # Reduced to 2 for simplicity
-                temp_file = tempfile.NamedTemporaryFile(mode="w", delete=False)
-                temp_file.write(f"secret_{i}\n")
-                temp_file.flush()
-                temp_file.close()
-                secret_files.append(temp_file.name)
+                with tempfile.NamedTemporaryFile(mode="w", delete=False) as temp_file:
+                    temp_file.write(f"secret_{i}\n")
+                    temp_file.flush()
+                    secret_files.append(temp_file.name)
 
             with patch.dict(
                 os.environ,

@@ -134,9 +134,7 @@ class RateLimiterProcessor:
                 f"⚠️ Rate limiting active: {total_suppressed:,} logs dropped in last {self.summary_interval}s | "
                 f"Denial rate: {denial_rate:.1f}% | "
                 f"Tokens: {global_stats.get('tokens_available', 0):.0f}/{global_stats.get('capacity', 0):.0f}",
-                suppressed_by_logger=dict(self.suppressed_counts)
-                if self.suppressed_counts
-                else {},
+                suppressed_by_logger=dict(self.suppressed_counts) if self.suppressed_counts else {},
                 total_suppressed=total_suppressed,
                 total_denied_overall=total_denied,
                 total_allowed_overall=total_allowed,

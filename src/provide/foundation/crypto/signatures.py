@@ -49,9 +49,7 @@ def generate_ed25519_keypair() -> tuple[bytes, bytes]:
     assert len(private_key_bytes) == ED25519_PRIVATE_KEY_SIZE
     assert len(public_key_bytes) == ED25519_PUBLIC_KEY_SIZE
 
-    logger.debug(
-        f"✅ Generated Ed25519 key pair (public: {len(public_key_bytes)} bytes)"
-    )
+    logger.debug(f"✅ Generated Ed25519 key pair (public: {len(public_key_bytes)} bytes)")
     return private_key_bytes, public_key_bytes
 
 
@@ -70,10 +68,7 @@ def sign_data(data: bytes, private_key: bytes) -> bytes:
     """
     _require_crypto()
     if len(private_key) != ED25519_PRIVATE_KEY_SIZE:
-        raise ValueError(
-            f"Private key must be {ED25519_PRIVATE_KEY_SIZE} bytes, "
-            f"got {len(private_key)}"
-        )
+        raise ValueError(f"Private key must be {ED25519_PRIVATE_KEY_SIZE} bytes, got {len(private_key)}")
 
     logger.debug(f"🔏 Signing {len(data)} bytes of data with Ed25519")
 
@@ -103,16 +98,12 @@ def verify_signature(data: bytes, signature: bytes, public_key: bytes) -> bool:
     """
     _require_crypto()
     if len(signature) != ED25519_SIGNATURE_SIZE:
-        logger.warning(
-            f"❌ Invalid signature size: expected {ED25519_SIGNATURE_SIZE}, "
-            f"got {len(signature)}"
-        )
+        logger.warning(f"❌ Invalid signature size: expected {ED25519_SIGNATURE_SIZE}, got {len(signature)}")
         return False
 
     if len(public_key) != ED25519_PUBLIC_KEY_SIZE:
         logger.warning(
-            f"❌ Invalid public key size: expected {ED25519_PUBLIC_KEY_SIZE}, "
-            f"got {len(public_key)}"
+            f"❌ Invalid public key size: expected {ED25519_PUBLIC_KEY_SIZE}, got {len(public_key)}"
         )
         return False
 

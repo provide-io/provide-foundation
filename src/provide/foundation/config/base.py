@@ -161,9 +161,7 @@ class BaseConfig:
         return result
 
     @classmethod
-    def from_dict(
-        cls: type[T], data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME
-    ) -> T:
+    def from_dict(cls: type[T], data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME) -> T:
         """
         Create configuration from dictionary.
 
@@ -188,9 +186,7 @@ class BaseConfig:
 
         return instance
 
-    def update(
-        self, updates: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME
-    ) -> None:
+    def update(self, updates: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME) -> None:
         """
         Update configuration with new values.
 
@@ -256,9 +252,7 @@ class BaseConfig:
             Dictionary of differences (field_name: (self_value, other_value))
         """
         if not isinstance(other, self.__class__):
-            raise TypeError(
-                f"Cannot compare {self.__class__.__name__} with {other.__class__.__name__}"
-            )
+            raise TypeError(f"Cannot compare {self.__class__.__name__} with {other.__class__.__name__}")
 
         differences = {}
 

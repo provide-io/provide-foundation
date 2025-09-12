@@ -50,9 +50,7 @@ class FoundationLogger:
         This method is thread-safe and handles setup failures gracefully.
         """
         # Fast path for already configured loggers.
-        if self._is_configured_by_setup or (
-            _LAZY_SETUP_STATE["done"] and not _LAZY_SETUP_STATE["error"]
-        ):
+        if self._is_configured_by_setup or (_LAZY_SETUP_STATE["done"] and not _LAZY_SETUP_STATE["error"]):
             return
 
         # If setup is in progress by another thread, or failed previously, use fallback.
@@ -67,9 +65,7 @@ class FoundationLogger:
         # Acquire lock to perform setup.
         with _LAZY_SETUP_LOCK:
             # Double-check state after acquiring lock, as another thread might have finished.
-            if self._is_configured_by_setup or (
-                _LAZY_SETUP_STATE["done"] and not _LAZY_SETUP_STATE["error"]
-            ):
+            if self._is_configured_by_setup or (_LAZY_SETUP_STATE["done"] and not _LAZY_SETUP_STATE["error"]):
                 return
 
             # If error was set while waiting for lock, use fallback.
@@ -111,9 +107,7 @@ class FoundationLogger:
         effective_name = name if name is not None else "pyvider.default"
         return structlog.get_logger().bind(logger_name=effective_name)
 
-    def _log_with_level(
-        self, level_method_name: str, event: str, **kwargs: Any
-    ) -> None:
+    def _log_with_level(self, level_method_name: str, event: str, **kwargs: Any) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default

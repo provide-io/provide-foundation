@@ -38,9 +38,7 @@ def test_thread():
             Started thread instance
         """
         kwargs = kwargs or {}
-        thread = threading.Thread(
-            target=target, args=args, kwargs=kwargs, daemon=daemon
-        )
+        thread = threading.Thread(target=target, args=args, kwargs=kwargs, daemon=daemon)
         threads.append(thread)
         thread.start()
         return thread

@@ -241,9 +241,7 @@ def async_task_group():
             if not self.tasks:
                 return []
 
-            done, pending = await asyncio.wait(
-                self.tasks, timeout=timeout, return_when=asyncio.ALL_COMPLETED
-            )
+            done, pending = await asyncio.wait(self.tasks, timeout=timeout, return_when=asyncio.ALL_COMPLETED)
 
             if pending:
                 for task in pending:
@@ -285,9 +283,7 @@ def async_condition_waiter():
         Function to wait for conditions with timeout.
     """
 
-    async def _wait_for(
-        condition: Callable[[], bool], timeout: float = 5.0, interval: float = 0.1
-    ):
+    async def _wait_for(condition: Callable[[], bool], timeout: float = 5.0, interval: float = 0.1):
         """
         Wait for a condition to become true.
 

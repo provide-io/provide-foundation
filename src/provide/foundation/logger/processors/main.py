@@ -88,6 +88,7 @@ def _config_create_event_enrichment_processors(
                 from provide.foundation.logger.setup.coordinator import (
                     create_foundation_internal_logger,
                 )
+
                 setup_logger = create_foundation_internal_logger()
                 setup_logger.trace("Initializing event enrichment processor")
                 discover_event_sets()
@@ -165,9 +166,7 @@ def _config_create_keyvalue_formatter_processors(
     is_tty = hasattr(output_stream, "isatty") and output_stream.isatty()
     return [
         cast(StructlogProcessor, pop_logger_name_processor),
-        structlog.dev.ConsoleRenderer(
-            colors=is_tty, exception_formatter=structlog.dev.plain_traceback
-        ),
+        structlog.dev.ConsoleRenderer(colors=is_tty, exception_formatter=structlog.dev.plain_traceback),
     ]
 
 

@@ -55,9 +55,7 @@ def send_log_otlp(
 
         # Create resource with service info
         resource_attrs = {
-            ResourceAttributes.SERVICE_NAME: service
-            or config.service_name
-            or "foundation",
+            ResourceAttributes.SERVICE_NAME: service or config.service_name or "foundation",
         }
         if config.service_version:
             resource_attrs[ResourceAttributes.SERVICE_VERSION] = config.service_version
@@ -74,9 +72,7 @@ def send_log_otlp(
         # Determine endpoint for logs
         if config.otlp_traces_endpoint:
             # Replace /traces with /logs
-            logs_endpoint = config.otlp_traces_endpoint.replace(
-                "/v1/traces", "/v1/logs"
-            )
+            logs_endpoint = config.otlp_traces_endpoint.replace("/v1/traces", "/v1/logs")
         else:
             logs_endpoint = f"{config.otlp_endpoint}/v1/logs"
 
@@ -201,12 +197,7 @@ def send_log_bulk(
 
         # Format as bulk request
         stream = config.openobserve_stream
-        bulk_data = (
-            json.dumps({"index": {"_index": stream}})
-            + "\n"
-            + json.dumps(log_entry)
-            + "\n"
-        )
+        bulk_data = json.dumps({"index": {"_index": stream}}) + "\n" + json.dumps(log_entry) + "\n"
 
         # Send via bulk API
         import requests
@@ -300,9 +291,7 @@ def create_otlp_logger_provider() -> Any | None:
 
         logs_endpoint = f"{config.otlp_endpoint}/v1/logs"
         if config.otlp_traces_endpoint:
-            logs_endpoint = config.otlp_traces_endpoint.replace(
-                "/v1/traces", "/v1/logs"
-            )
+            logs_endpoint = config.otlp_traces_endpoint.replace("/v1/traces", "/v1/logs")
 
         exporter = OTLPLogExporter(
             endpoint=logs_endpoint,

@@ -78,9 +78,7 @@ async def async_run_command(
         TimeoutError: If timeout is exceeded
     """
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
-    plog.info(
-        "🚀 Running async command", command=cmd_str, cwd=str(cwd) if cwd else None
-    )
+    plog.info("🚀 Running async command", command=cmd_str, cwd=str(cwd) if cwd else None)
 
     # Prepare environment, disabling foundation telemetry by default
     run_env = os.environ.copy()
@@ -119,7 +117,6 @@ async def async_run_command(
             )
 
         try:
-
             # Communicate with process
             if timeout:
                 try:
@@ -130,9 +127,7 @@ async def async_run_command(
                 except builtins.TimeoutError:
                     process.kill()
                     await process.wait()
-                    plog.error(
-                        "⏱️ Async command timed out", command=cmd_str, timeout=timeout
-                    )
+                    plog.error("⏱️ Async command timed out", command=cmd_str, timeout=timeout)
                     raise TimeoutError(
                         f"Command timed out after {timeout}s: {cmd_str}",
                         code="PROCESS_ASYNC_TIMEOUT",
@@ -186,7 +181,11 @@ async def async_run_command(
                     process.stdin.close()
                 if process.stdout and not process.stdout.at_eof():
                     process.stdout.feed_eof()
-                if process.stderr and process.stderr != asyncio.subprocess.PIPE and not process.stderr.at_eof():
+                if (
+                    process.stderr
+                    and process.stderr != asyncio.subprocess.PIPE
+                    and not process.stderr.at_eof()
+                ):
                     process.stderr.feed_eof()
 
                 # Ensure process is terminated
@@ -241,9 +240,7 @@ async def async_stream_command(
         TimeoutError: If timeout is exceeded
     """
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
-    plog.info(
-        "🌊 Streaming async command", command=cmd_str, cwd=str(cwd) if cwd else None
-    )
+    plog.info("🌊 Streaming async command", command=cmd_str, cwd=str(cwd) if cwd else None)
 
     # Prepare environment, disabling foundation telemetry by default
     run_env = os.environ.copy()
@@ -259,9 +256,7 @@ async def async_stream_command(
     try:
         # Create subprocess
         # Merge stderr to stdout for streaming, as we always want to see errors
-        stderr_handling = (
-            asyncio.subprocess.STDOUT if stream_stderr else asyncio.subprocess.PIPE
-        )
+        stderr_handling = asyncio.subprocess.STDOUT if stream_stderr else asyncio.subprocess.PIPE
         process = await asyncio.create_subprocess_exec(
             *(cmd if isinstance(cmd, list) else cmd.split()),
             cwd=cwd,
@@ -303,9 +298,7 @@ async def async_stream_command(
                         except builtins.TimeoutError:
                             process.kill()
                             await process.wait()
-                            plog.error(
-                                "⏱️ Async stream timed out", command=cmd_str, timeout=timeout
-                            )
+                            plog.error("⏱️ Async stream timed out", command=cmd_str, timeout=timeout)
                             raise TimeoutError(
                                 f"Command timed out after {timeout}s: {cmd_str}",
                                 code="PROCESS_ASYNC_STREAM_TIMEOUT",
@@ -356,7 +349,11 @@ async def async_stream_command(
                     process.stdin.close()
                 if process.stdout and not process.stdout.at_eof():
                     process.stdout.feed_eof()
-                if process.stderr and process.stderr != asyncio.subprocess.STDOUT and not process.stderr.at_eof():
+                if (
+                    process.stderr
+                    and process.stderr != asyncio.subprocess.STDOUT
+                    and not process.stderr.at_eof()
+                ):
                     process.stderr.feed_eof()
 
                 # Ensure process is terminated

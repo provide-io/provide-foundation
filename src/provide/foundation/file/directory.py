@@ -1,13 +1,9 @@
 """Directory operations and utilities."""
 
-from collections.abc import Generator
-from contextlib import contextmanager
 from pathlib import Path
 import shutil
-import tempfile
 
 from provide.foundation.errors.decorators import with_error_handling
-from provide.foundation.errors.handlers import error_boundary
 from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
@@ -59,32 +55,6 @@ def ensure_parent_dir(
         return ensure_dir(parent, mode=mode, parents=True)
 
     return parent
-
-
-@contextmanager
-def temp_dir(
-    prefix: str = "provide_",
-    cleanup: bool = True,
-) -> Generator[Path, None, None]:
-    """Create temporary directory with automatic cleanup.
-
-    Args:
-        prefix: Directory name prefix
-        cleanup: Whether to remove directory on exit
-
-    Yields:
-        Path object for the temporary directory
-    """
-    temp_path = None
-    try:
-        temp_path = Path(tempfile.mkdtemp(prefix=prefix))
-        log.debug("Created temp directory", path=str(temp_path))
-        yield temp_path
-    finally:
-        if cleanup and temp_path and temp_path.exists():
-            with error_boundary(Exception, reraise=False):
-                shutil.rmtree(temp_path)
-                log.debug("Cleaned up temp directory", path=str(temp_path))
 
 
 @with_error_handling(fallback=False, suppress=(FileNotFoundError,) if False else ())

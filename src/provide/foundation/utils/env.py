@@ -144,9 +144,7 @@ def get_path(name: str, default: Path | str | None = None) -> Path | None:
     return Path(expanded)
 
 
-def get_list(
-    name: str, default: list[str] | None = None, separator: str = ","
-) -> list[str]:
+def get_list(name: str, default: list[str] | None = None, separator: str = ",") -> list[str]:
     """Get list from environment variable.
 
     Args:
@@ -321,9 +319,7 @@ class EnvPrefix:
         """Get path with prefix."""
         return get_path(self._make_name(name), default)
 
-    def get_list(
-        self, name: str, default: list[str] | None = None, separator: str = ","
-    ) -> list[str]:
+    def get_list(self, name: str, default: list[str] | None = None, separator: str = ",") -> list[str]:
         """Get list with prefix."""
         return get_list(self._make_name(name), default, separator)
 
@@ -335,9 +331,7 @@ class EnvPrefix:
         key_value_separator: str = "=",
     ) -> dict[str, str]:
         """Get dictionary with prefix."""
-        return get_dict(
-            self._make_name(name), default, item_separator, key_value_separator
-        )
+        return get_dict(self._make_name(name), default, item_separator, key_value_separator)
 
     def require(self, name: str, type_hint: type[T] | None = None) -> Any:
         """Require variable with prefix."""
@@ -400,9 +394,7 @@ def parse_duration(value: str) -> int:
     matches = re.findall(pattern, value.lower())
 
     if not matches:
-        raise ValidationError(
-            f"Invalid duration format: {value}", value=value, rule="duration"
-        )
+        raise ValidationError(f"Invalid duration format: {value}", value=value, rule="duration")
 
     units = {
         "s": 1,
@@ -415,9 +407,7 @@ def parse_duration(value: str) -> int:
         if unit in units:
             total_seconds += int(amount) * units[unit]
         else:
-            raise ValidationError(
-                f"Unknown duration unit: {unit}", value=value, rule="duration_unit"
-            )
+            raise ValidationError(f"Unknown duration unit: {unit}", value=value, rule="duration_unit")
 
     return total_seconds
 
@@ -469,9 +459,7 @@ def parse_size(value: str) -> int:
     }
 
     if unit not in units:
-        raise ValidationError(
-            f"Unknown size unit: {unit}", value=value, rule="size_unit"
-        )
+        raise ValidationError(f"Unknown size unit: {unit}", value=value, rule="size_unit")
 
     return int(amount * units[unit])
 
