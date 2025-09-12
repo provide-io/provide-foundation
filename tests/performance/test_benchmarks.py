@@ -14,7 +14,7 @@ from contextlib import contextmanager
 import io
 
 from provide.foundation import LoggingConfig, TelemetryConfig, logger, setup_telemetry
-from provide.foundation.testing import (
+from provide.testkit import (
     reset_foundation_setup_for_testing,
     set_log_stream_for_testing,
 )

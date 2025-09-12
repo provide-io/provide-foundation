@@ -41,7 +41,13 @@
       "Bash(PYTHONPATH=src pytest tests/hub/ -v)",
       "Bash(PYTHONPATH=src pytest tests/config/test_converters.py::TestValidators::test_validate_overflow_policy -v)",
       "Bash(PYTHONPATH=src pytest tests/config/test_validators_coverage.py -v)",
-      "Bash(PYTHONPATH=src pytest tests/config/ -v)"
+      "Bash(PYTHONPATH=src pytest tests/config/ -v)",
+      "Bash(PYTHONPATH=src pytest tests/cli/ -x --tb=short)",
+      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/provide-testkit/src:/Users/tim/code/gh/provide-io/provide-foundation/src python -c \"from provide.testkit import MockContext; print(''✅ TestKit import successful'')\")",
+      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/provide-testkit/src:/Users/tim/code/gh/provide-io/provide-foundation/src python -c \"import provide.testkit.cli; print(''✅ CLI testing imports work'')\")",
+      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/provide-testkit/src:/Users/tim/code/gh/provide-io/provide-foundation/src pytest tests/cli/test_cli_testing_coverage.py -v --tb=short)",
+      "Bash(PYTHONPATH=src pytest tests/cli/test_cli_testing_coverage.py -v --tb=short)",
+      "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/provide-testkit/src python -c \"import provide.testkit; print(''SUCCESS'')\")"
     ],
     "deny": [],
     "ask": [],

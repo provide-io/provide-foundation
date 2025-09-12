@@ -26,7 +26,7 @@ from provide.foundation import (
     setup_telemetry,
     shutdown_foundation_telemetry,
 )
-from provide.foundation.testing import reset_foundation_setup_for_testing
+from provide.testkit import reset_foundation_setup_for_testing
 
 
 class TestProductionReadinessScenarios:
@@ -36,7 +36,7 @@ class TestProductionReadinessScenarios:
         """Test lazy initialization under high throughput."""
         import sys
 
-        from provide.foundation.testing import set_log_stream_for_testing
+        from provide.testkit import set_log_stream_for_testing
 
         reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
@@ -70,7 +70,7 @@ class TestProductionReadinessScenarios:
         """Test memory stability with lazy initialization over time."""
         import sys
 
-        from provide.foundation.testing import set_log_stream_for_testing
+        from provide.testkit import set_log_stream_for_testing
 
         reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
@@ -104,7 +104,7 @@ class TestProductionReadinessScenarios:
         """Test error resilience in production-like conditions."""
         import sys
 
-        from provide.foundation.testing import set_log_stream_for_testing
+        from provide.testkit import set_log_stream_for_testing
 
         reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
@@ -146,7 +146,7 @@ class TestProductionReadinessScenarios:
         """Test graceful shutdown with lazy initialization."""
         import sys
 
-        from provide.foundation.testing import set_log_stream_for_testing
+        from provide.testkit import set_log_stream_for_testing
 
         reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
@@ -183,7 +183,7 @@ class TestDocumentedBehaviorCompliance:
         """Test all documented environment variables work with lazy initialization."""
         import sys
 
-        from provide.foundation.testing import set_log_stream_for_testing
+        from provide.testkit import set_log_stream_for_testing
 
         reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
@@ -252,7 +252,7 @@ class TestDocumentedBehaviorCompliance:
         """Test that lazy initialization maintains backward compatibility."""
         import sys
 
-        from provide.foundation.testing import set_log_stream_for_testing
+        from provide.testkit import set_log_stream_for_testing
 
         reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
@@ -282,7 +282,7 @@ class TestDocumentedBehaviorCompliance:
         """Test documented thread safety guarantees."""
         import sys
 
-        from provide.foundation.testing import set_log_stream_for_testing
+        from provide.testkit import set_log_stream_for_testing
 
         reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
@@ -341,7 +341,7 @@ class TestDocumentedBehaviorCompliance:
         """Test that lazy initialization meets performance requirements."""
         import sys
 
-        from provide.foundation.testing import set_log_stream_for_testing
+        from provide.testkit import set_log_stream_for_testing
 
         reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
@@ -384,7 +384,7 @@ class TestLazyInitializationDocumentation:
         """Test the basic usage example from documentation."""
         import sys
 
-        from provide.foundation.testing import set_log_stream_for_testing
+        from provide.testkit import set_log_stream_for_testing
 
         reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
@@ -410,7 +410,7 @@ class TestLazyInitializationDocumentation:
         """Test the named logger example from documentation."""
         import sys
 
-        from provide.foundation.testing import set_log_stream_for_testing
+        from provide.testkit import set_log_stream_for_testing
 
         reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
@@ -435,7 +435,7 @@ class TestLazyInitializationDocumentation:
         """Test the environment configuration example from documentation."""
         import sys
 
-        from provide.foundation.testing import set_log_stream_for_testing
+        from provide.testkit import set_log_stream_for_testing
 
         reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
@@ -483,7 +483,7 @@ class TestLazyInitializationDocumentation:
         """Test the migration example from documentation."""
         import sys
 
-        from provide.foundation.testing import set_log_stream_for_testing
+        from provide.testkit import set_log_stream_for_testing
 
         reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"

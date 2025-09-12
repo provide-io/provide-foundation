@@ -22,7 +22,7 @@ def test_lazy_setup_flags() -> None:
     """Test that lazy setup flags are set correctly."""
     print("=== Test 1: Lazy Setup Flags ===")
 
-    from provide.foundation.testing import reset_foundation_setup_for_testing
+    from provide.testkit import reset_foundation_setup_for_testing
 
     reset_foundation_setup_for_testing()
 
@@ -50,7 +50,7 @@ def test_service_name_no_emoji() -> None:
     """Test service name injection without emoji prefix for JSON format."""
     print("\n=== Test 2: Service Name Without Emoji (JSON) ===")
 
-    from provide.foundation.testing import (
+    from provide.testkit import (
         reset_foundation_setup_for_testing,
         set_log_stream_for_testing,
     )
@@ -118,7 +118,7 @@ def test_das_emoji_register_action() -> None:
     """Test that register action has proper emoji mapping."""
     print("\n=== Test 3: DAS Emoji Register Action ===")
 
-    from provide.foundation.testing import (
+    from provide.testkit import (
         reset_foundation_setup_for_testing,
         set_log_stream_for_testing,
     )
@@ -174,7 +174,7 @@ def test_thread_safety() -> None:
     """Test thread safety of lazy initialization."""
     print("\n=== Test 4: Thread Safety ===")
 
-    from provide.foundation.testing import reset_foundation_setup_for_testing
+    from provide.testkit import reset_foundation_setup_for_testing
 
     reset_foundation_setup_for_testing()
 

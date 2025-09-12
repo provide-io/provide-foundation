@@ -11,7 +11,7 @@ import click
 from click.testing import CliRunner
 import pytest
 
-from provide.foundation.testing import (
+from provide.testkit import (
     CliTestCase,
     MockContext,
     create_test_cli,

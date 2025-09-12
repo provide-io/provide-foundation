@@ -15,7 +15,7 @@ from provide.foundation.eventsets.types import (
     EventSet,
     FieldMapping,
 )
-from provide.foundation.testing.logger import reset_foundation_setup_for_testing
+from provide.testkit.logger import reset_foundation_setup_for_testing
 
 
 class TestEventSetRegistry:

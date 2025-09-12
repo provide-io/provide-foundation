@@ -101,7 +101,7 @@ class TestFoundationLogOutputIntegration:
         """Test that FOUNDATION_LOG_OUTPUT routing works for configuration."""
         monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "stdout")
 
-        from provide.foundation.testing import reset_foundation_setup_for_testing
+        from provide.testkit import reset_foundation_setup_for_testing
 
         reset_foundation_setup_for_testing()
 
@@ -124,7 +124,7 @@ class TestFoundationLogOutputIntegration:
 
         # Reset and setup telemetry with file logging
         from provide.foundation.setup import setup_telemetry
-        from provide.foundation.testing import reset_foundation_setup_for_testing
+        from provide.testkit import reset_foundation_setup_for_testing
 
         reset_foundation_setup_for_testing()
 
@@ -151,7 +151,7 @@ class TestFoundationLogOutputIntegration:
 
         # Reset and setup telemetry
         from provide.foundation.setup import setup_telemetry
-        from provide.foundation.testing import reset_foundation_setup_for_testing
+        from provide.testkit import reset_foundation_setup_for_testing
 
         reset_foundation_setup_for_testing()
 

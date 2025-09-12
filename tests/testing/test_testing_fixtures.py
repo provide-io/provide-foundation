@@ -5,7 +5,7 @@ import io
 import pytest
 
 from provide.foundation import TelemetryConfig
-from provide.foundation.testing.fixtures import (
+from provide.testkit.fixtures import (
     captured_stderr_for_foundation,
 )
 
