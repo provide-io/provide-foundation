@@ -48,7 +48,8 @@
       "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/provide-testkit/src:/Users/tim/code/gh/provide-io/provide-foundation/src pytest tests/cli/test_cli_testing_coverage.py -v --tb=short)",
       "Bash(PYTHONPATH=src pytest tests/cli/test_cli_testing_coverage.py -v --tb=short)",
       "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/provide-testkit/src python -c \"import provide.testkit; print(''SUCCESS'')\")",
-      "Bash(PYTHONPATH=src pytest tests/logger/test_logger_production_compliance.py::TestDocumentedBehaviorCompliance::test_immediate_usage_patterns -v)"
+      "Bash(PYTHONPATH=src pytest tests/logger/test_logger_production_compliance.py::TestDocumentedBehaviorCompliance::test_immediate_usage_patterns -v)",
+      "Bash(PYTHONPATH=src pytest tests/hub/test_hub_context.py::TestContext::test_context_from_dict tests/cli/test_cli_integration.py::TestLoggingIntegration::test_log_level_affects_output tests/cli/test_cli_integration.py::TestLoggingIntegration::test_log_format_changes_output tests/cli/test_cli_integration.py::TestOutputFormatting::test_json_output_format -v)"
     ],
     "deny": [],
     "ask": [],
