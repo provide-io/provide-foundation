@@ -2,8 +2,6 @@
 Configuration manager for centralized configuration management.
 """
 
-from __future__ import annotations
-
 from typing import TypeVar
 
 from provide.foundation.config.base import BaseConfig
