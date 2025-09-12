@@ -36,7 +36,8 @@
       "Bash(PYTHONPATH=src pytest tests/core/test_foundation_log_output.py::TestFoundationLogOutputEnvironmentVariable::test_foundation_log_output_invalid_value_raises_error -v)",
       "Bash(PYTHONPATH=src pytest tests/integration/test_integration_edge_cases.py::test_invalid_environment_variables_handling -v)",
       "Bash(PYTHONPATH=src pytest tests/logger/test_config_coverage.py::TestLoggingConfigCoverage::test_logging_config_from_env_invalid_level -v)",
-      "Bash(PYTHONPATH=src pytest tests/logger/test_config_coverage.py::TestTelemetryConfigCoverage::test_telemetry_config_from_env_strict_mode -v)"
+      "Bash(PYTHONPATH=src pytest tests/logger/test_config_coverage.py::TestTelemetryConfigCoverage::test_telemetry_config_from_env_strict_mode -v)",
+      "Bash(PYTHONPATH=src pytest tests/hub/test_hub_components.py -v)"
     ],
     "deny": [],
     "ask": [],
