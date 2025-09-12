@@ -6,9 +6,11 @@ import pytest
 
 from provide.foundation.config.converters import (
     parse_bool_extended,
+    parse_bool_strict,
     parse_comma_list,
     parse_console_formatter,
     parse_float_with_validation,
+    parse_foundation_log_output,
     parse_headers,
     parse_json_dict,
     parse_json_list,
@@ -364,3 +366,112 @@ class TestValidators:
 
         with pytest.raises(ValueError, match="Invalid overflow policy"):
             validate_overflow_policy(None, type('attr', (), {'name': 'test'})(), "")
+
+
+class TestFoundationLogOutputParsing:
+    """Test foundation log output destination parsing."""
+
+    def test_parse_foundation_log_output_valid(self):
+        """Test parsing valid output destinations."""
+        assert parse_foundation_log_output("stderr") == "stderr"
+        assert parse_foundation_log_output("stdout") == "stdout"
+        assert parse_foundation_log_output("main") == "main"
+        
+        # Case insensitive
+        assert parse_foundation_log_output("STDERR") == "stderr"
+        assert parse_foundation_log_output("StdOut") == "stdout"
+        assert parse_foundation_log_output("MAIN") == "main"
+
+    def test_parse_foundation_log_output_empty(self):
+        """Test parsing empty string defaults to stderr."""
+        assert parse_foundation_log_output("") == "stderr"
+        assert parse_foundation_log_output(None) == "stderr"
+
+    def test_parse_foundation_log_output_whitespace(self):
+        """Test whitespace handling."""
+        assert parse_foundation_log_output("  stderr  ") == "stderr"
+        assert parse_foundation_log_output("  STDOUT  ") == "stdout"
+
+    def test_parse_foundation_log_output_invalid(self):
+        """Test parsing invalid destinations raises error."""
+        with pytest.raises(ValueError, match="Invalid foundation log output"):
+            parse_foundation_log_output("invalid")
+
+        with pytest.raises(ValueError, match="Invalid foundation log output"):
+            parse_foundation_log_output("console")
+
+
+class TestBoolStrictParsing:
+    """Test strict boolean parsing."""
+
+    @pytest.mark.parametrize("value,expected", [
+        ("true", True),
+        ("True", True), 
+        ("TRUE", True),
+        ("yes", True),
+        ("Yes", True),
+        ("1", True),
+        ("on", True),
+        ("ON", True),
+        ("false", False),
+        ("False", False),
+        ("no", False),
+        ("0", False), 
+        ("off", False),
+        ("OFF", False),
+    ])
+    def test_parse_bool_strict_valid(self, value, expected):
+        """Test parsing valid boolean representations."""
+        assert parse_bool_strict(value) == expected
+
+    def test_parse_bool_strict_bool_input(self):
+        """Test parsing actual bool values."""
+        assert parse_bool_strict(True) is True
+        assert parse_bool_strict(False) is False
+
+    def test_parse_bool_strict_invalid_value(self):
+        """Test strict parsing rejects invalid string values."""
+        with pytest.raises(ValueError, match="Invalid boolean value"):
+            parse_bool_strict("invalid")
+            
+        with pytest.raises(ValueError, match="Invalid boolean value"):
+            parse_bool_strict("")
+            
+        with pytest.raises(ValueError, match="Invalid boolean value"):
+            parse_bool_strict("maybe")
+
+    def test_parse_bool_strict_invalid_type(self):
+        """Test strict parsing rejects non-string, non-bool types."""
+        with pytest.raises(TypeError, match="Boolean field requires str or bool"):
+            parse_bool_strict(42)
+            
+        with pytest.raises(TypeError, match="Boolean field requires str or bool"):
+            parse_bool_strict([])
+            
+        with pytest.raises(TypeError, match="Boolean field requires str or bool"):
+            parse_bool_strict(None)
+
+    def test_parse_bool_strict_whitespace(self):
+        """Test whitespace handling in strict mode."""
+        assert parse_bool_strict("  true  ") is True
+        assert parse_bool_strict("  false  ") is False
+
+
+class TestModuleLevelsDictInput:
+    """Test module levels parsing with dict input."""
+    
+    def test_parse_module_levels_dict_valid(self):
+        """Test parsing dict input with valid levels."""
+        input_dict = {"auth": "debug", "database": "ERROR", "api": "Info"}
+        result = parse_module_levels(input_dict)
+        assert result == {"auth": "DEBUG", "database": "ERROR", "api": "INFO"}
+        
+    def test_parse_module_levels_dict_invalid(self):
+        """Test dict input with some invalid levels."""
+        input_dict = {"auth": "DEBUG", "bad": "INVALID_LEVEL", "api": "INFO"}
+        result = parse_module_levels(input_dict)
+        assert result == {"auth": "DEBUG", "api": "INFO"}  # Invalid level skipped
+        
+    def test_parse_module_levels_dict_empty(self):
+        """Test parsing empty dict."""
+        assert parse_module_levels({}) == {}

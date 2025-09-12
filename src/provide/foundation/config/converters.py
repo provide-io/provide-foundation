@@ -8,8 +8,15 @@ parse and validate environment variable values into the correct types.
 import json
 from typing import Any
 
-# Import proper types (circular import resolved by type reorganization)
-from provide.foundation.logger.types import LogLevelStr, ConsoleFormatterStr
+# Use string type annotations to avoid circular imports during runtime
+# Type checking imports are only available during static analysis
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from provide.foundation.logger.types import LogLevelStr, ConsoleFormatterStr
+else:
+    LogLevelStr = str
+    ConsoleFormatterStr = str
 
 _VALID_LOG_LEVEL_TUPLE = (
     "TRACE",
@@ -26,7 +33,7 @@ _VALID_FORMATTER_TUPLE = (
 )
 
 
-def parse_log_level(value: str) -> LogLevelStr:
+def parse_log_level(value: str) -> "LogLevelStr":
     """
     Parse and validate log level string.
 
@@ -45,7 +52,7 @@ def parse_log_level(value: str) -> LogLevelStr:
     return level
 
 
-def parse_console_formatter(value: str) -> ConsoleFormatterStr:
+def parse_console_formatter(value: str) -> "ConsoleFormatterStr":
     """
     Parse and validate console formatter string.
 
@@ -67,18 +74,40 @@ def parse_console_formatter(value: str) -> ConsoleFormatterStr:
 
 
 # TODO: Add back error handling decorator once circular imports are fully resolved
-def parse_module_levels(value: str | dict[str, str]) -> dict[str, LogLevelStr]:
+def parse_module_levels(value: str | dict[str, str]) -> dict[str, "LogLevelStr"]:
     """
     Parse module-specific log levels from string format.
 
-    Format: "module1:LEVEL,module2:LEVEL"
-    Example: "auth.service:DEBUG,database:ERROR"
+    **Format Requirements:**
+    - String format: "module1:LEVEL,module2:LEVEL" (comma-separated pairs)
+    - Dict format: Already parsed dictionary (validated and returned)
+    - Log levels must be valid: TRACE, DEBUG, INFO, WARNING, ERROR, CRITICAL
+    - Module names are trimmed of whitespace
+    - Invalid log levels are silently ignored
+
+    **Examples:**
+        >>> parse_module_levels("auth.service:DEBUG,database:ERROR")
+        {'auth.service': 'DEBUG', 'database': 'ERROR'}
+        
+        >>> parse_module_levels("api:INFO")  # Single module
+        {'api': 'INFO'}
+        
+        >>> parse_module_levels({"web": "warning"})  # Dict input (case normalized)
+        {'web': 'WARNING'}
+        
+        >>> parse_module_levels("api:INFO,bad:INVALID,db:ERROR")  # Partial success
+        {'api': 'INFO', 'db': 'ERROR'}
 
     Args:
-        value: Comma-separated module:level pairs or dict
+        value: Comma-separated module:level pairs or pre-parsed dict
 
     Returns:
-        Dictionary mapping module names to log levels
+        Dictionary mapping module names to validated log level strings.
+        Invalid entries are silently ignored.
+
+    Note:
+        This parser is lenient by design - invalid log levels are skipped rather than
+        raising errors to allow partial configuration success in production environments.
     """
     # If already a dict, validate and return
     if isinstance(value, dict):
@@ -122,14 +151,33 @@ def parse_rate_limits(value: str) -> dict[str, tuple[float, float]]:
     """
     Parse per-logger rate limits from string format.
 
-    Format: "logger1:rate:capacity,logger2:rate:capacity"
-    Example: "api:10.0:100.0,worker:5.0:50.0"
+    **Format Requirements:**
+    - Comma-separated triplets: "logger1:rate:capacity,logger2:rate:capacity"
+    - Rate and capacity must be valid float numbers
+    - Logger names are trimmed of whitespace
+    - Empty logger names are ignored
+    - Invalid entries are silently skipped to allow partial success
+
+    **Examples:**
+        >>> parse_rate_limits("api:10.0:100.0,worker:5.0:50.0")
+        {'api': (10.0, 100.0), 'worker': (5.0, 50.0)}
+        
+        >>> parse_rate_limits("db:1.5:25.0")  # Single entry
+        {'db': (1.5, 25.0)}
+        
+        >>> parse_rate_limits("api:10:100,invalid:bad,worker:5:50")  # Partial success
+        {'api': (10.0, 100.0), 'worker': (5.0, 50.0)}
 
     Args:
         value: Comma-separated logger:rate:capacity triplets
 
     Returns:
-        Dictionary mapping logger names to (rate, capacity) tuples
+        Dictionary mapping logger names to (rate, capacity) tuples.
+        Invalid entries are silently ignored.
+
+    Note:
+        This parser is lenient by design - invalid entries are skipped rather than
+        raising errors to allow partial configuration success in production environments.
     """
     if not value or not value.strip():
         return {}
@@ -142,7 +190,7 @@ def parse_rate_limits(value: str) -> dict[str, tuple[float, float]]:
 
         parts = item.split(":")
         if len(parts) != 3:
-            # Skip invalid entries silently
+            # Skip entries that don't have exactly 3 parts (logger:rate:capacity)
             continue
 
         logger, rate_str, capacity_str = parts
@@ -154,7 +202,7 @@ def parse_rate_limits(value: str) -> dict[str, tuple[float, float]]:
                 capacity = float(capacity_str.strip())
                 result[logger] = (rate, capacity)
             except (ValueError, TypeError):
-                # Skip invalid numbers silently
+                # Skip entries where rate or capacity cannot be parsed as floats
                 continue
 
     return result
@@ -401,14 +449,36 @@ def parse_headers(value: str) -> dict[str, str]:
     """
     Parse HTTP headers from string format.
 
-    Format: "key1=value1,key2=value2"
-    Example: "Authorization=Bearer token,Content-Type=application/json"
+    **Format Requirements:**
+    - Comma-separated key=value pairs: "key1=value1,key2=value2"
+    - Header names and values are trimmed of whitespace
+    - Empty header names are ignored
+    - Each pair must contain exactly one '=' separator
+    - Invalid pairs are silently skipped
+
+    **Examples:**
+        >>> parse_headers("Authorization=Bearer token,Content-Type=application/json")
+        {'Authorization': 'Bearer token', 'Content-Type': 'application/json'}
+        
+        >>> parse_headers("X-API-Key=secret123")  # Single header
+        {'X-API-Key': 'secret123'}
+        
+        >>> parse_headers("valid=ok,invalid-no-equals,another=good")  # Partial success
+        {'valid': 'ok', 'another': 'good'}
+        
+        >>> parse_headers("empty-value=")  # Empty values allowed
+        {'empty-value': ''}
 
     Args:
-        value: Comma-separated key=value pairs
+        value: Comma-separated key=value pairs for HTTP headers
 
     Returns:
-        Dictionary of headers
+        Dictionary of header name-value pairs.
+        Invalid entries are silently ignored.
+
+    Note:
+        This parser is lenient by design - invalid header pairs are skipped rather than
+        raising errors to allow partial configuration success in production environments.
     """
     if not value or not value.strip():
         return {}
