@@ -41,7 +41,7 @@ class TestContext:
         os.environ["PROVIDE_JSON_OUTPUT"] = "1"
 
         try:
-            ctx = Context.from_env()
+            ctx = CLIContext.from_env()
 
             assert ctx.log_level == "WARNING"
             assert ctx.profile == "production"
