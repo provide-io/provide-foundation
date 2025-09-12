@@ -317,34 +317,20 @@ parse_bool_strict(42)
 # TypeError: Boolean field requires str or bool, got int. Received value: 42
 ```
 
-## Migration Guide
+## Usage Examples
 
-### From Manual Parsing
+### Modern Pattern - Validated Parsing
 
-```python  
-# ❌ Before: Manual parsing with inconsistent error handling
-def parse_bool_env(value: str) -> bool:
-    if value.lower() in ("true", "1", "yes"):
-        return True
-    elif value.lower() in ("false", "0", "no"):  
-        return False
-    else:
-        raise ValueError(f"Bad boolean: {value}")
-
-# ✅ After: Use Foundation converters
+```python
 from provide.foundation.config.converters import parse_bool_strict
 
 # Automatic handling of case, whitespace, comprehensive value recognition
 enabled = parse_bool_strict(env_value)
 ```
 
-### From Basic Type Conversion
+### Modern Pattern - Validated Numeric Conversion
 
 ```python
-# ❌ Before: Basic conversion without validation  
-sample_rate = float(os.environ.get("SAMPLE_RATE", "0.1"))
-
-# ✅ After: Validated parsing with clear errors
 from provide.foundation.config.converters import parse_sample_rate
 sample_rate = parse_sample_rate(os.environ.get("SAMPLE_RATE", "0.1"))
 ```

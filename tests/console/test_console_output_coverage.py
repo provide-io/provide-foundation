@@ -12,7 +12,7 @@ from provide.foundation.console.output import (
     perr,
     pout,
 )
-from provide.foundation.context import Context
+from provide.foundation.context import CLIContext
 
 
 class TestGetContext:
@@ -39,7 +39,7 @@ class TestGetContext:
         with patch("provide.foundation.console.output._HAS_CLICK", True):
             with patch("provide.foundation.console.output.click") as mock_click:
                 mock_ctx = Mock()
-                mock_context_obj = Context()
+                mock_context_obj = CLIContext()
                 mock_ctx.obj = mock_context_obj
                 mock_click.get_current_context.return_value = mock_ctx
 

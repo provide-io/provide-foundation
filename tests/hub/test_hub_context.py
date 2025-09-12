@@ -6,7 +6,7 @@ import tempfile
 
 import pytest
 
-from provide.foundation.context import Context
+from provide.foundation.context import CLIContext
 
 
 class TestContext:
@@ -14,7 +14,7 @@ class TestContext:
 
     def test_context_initialization(self) -> None:
         """Test basic context initialization."""
-        ctx = Context(log_level="DEBUG", profile="dev", debug=True)
+        ctx = CLIContext(log_level="DEBUG", profile="dev", debug=True)
 
         assert ctx.log_level == "DEBUG"
         assert ctx.profile == "dev"
@@ -23,7 +23,7 @@ class TestContext:
 
     def test_context_defaults(self) -> None:
         """Test context default values."""
-        ctx = Context()
+        ctx = CLIContext()
 
         assert ctx.log_level == "INFO"
         assert ctx.profile == "default"
@@ -56,7 +56,7 @@ class TestContext:
 
     def test_context_update_from_env(self) -> None:
         """Test updating existing context from environment."""
-        ctx = Context(log_level="INFO", profile="dev")
+        ctx = CLIContext(log_level="INFO", profile="dev")
 
         os.environ["PROVIDE_LOG_LEVEL"] = "ERROR"
 
@@ -69,7 +69,7 @@ class TestContext:
 
     def test_context_to_dict(self) -> None:
         """Test converting context to dictionary."""
-        ctx = Context(
+        ctx = CLIContext(
             log_level="DEBUG",
             profile="test",
             debug=True,
@@ -119,7 +119,7 @@ json_output = true
             config_path = f.name
 
         try:
-            ctx = Context()
+            ctx = CLIContext()
             ctx.load_config(config_path)
 
             assert ctx.log_level == "ERROR"
@@ -143,7 +143,7 @@ json_output = true
             config_path = f.name
 
         try:
-            ctx = Context()
+            ctx = CLIContext()
             ctx.load_config(config_path)
 
             assert ctx.log_level == "WARNING"
@@ -167,7 +167,7 @@ json_output: true
             config_path = f.name
 
         try:
-            ctx = Context()
+            ctx = CLIContext()
             ctx.load_config(config_path)
 
             assert ctx.log_level == "INFO"
@@ -179,7 +179,7 @@ json_output: true
 
     def test_context_save_config(self) -> None:
         """Test saving configuration to file."""
-        ctx = Context(
+        ctx = CLIContext(
             log_level="DEBUG",
             profile="test",
             debug=True,
@@ -193,7 +193,7 @@ json_output: true
             ctx.save_config(config_path)
 
             # Load it back
-            new_ctx = Context()
+            new_ctx = CLIContext()
             new_ctx.load_config(config_path)
 
             assert new_ctx.log_level == ctx.log_level
@@ -205,8 +205,8 @@ json_output: true
 
     def test_context_merge(self) -> None:
         """Test merging contexts with precedence."""
-        base_ctx = Context(log_level="INFO", profile="base", debug=False)
-        override_ctx = Context(log_level="DEBUG", debug=True)
+        base_ctx = CLIContext(log_level="INFO", profile="base", debug=False)
+        override_ctx = CLIContext(log_level="DEBUG", debug=True)
 
         merged = base_ctx.merge(override_ctx)
 
@@ -216,7 +216,7 @@ json_output: true
 
     def test_context_logger_property(self) -> None:
         """Test lazy logger initialization."""
-        ctx = Context(log_level="DEBUG")
+        ctx = CLIContext(log_level="DEBUG")
 
         # Logger should be created on first access
         assert ctx._logger is None
@@ -231,15 +231,15 @@ json_output: true
         """Test context value validation."""
         # Invalid log level should raise
         with pytest.raises(ValueError, match="must be in"):
-            Context(log_level="INVALID")
+            CLIContext(log_level="INVALID")
 
         # Invalid string values should raise ValueError
         with pytest.raises(ValueError):
-            Context(debug="not_a_bool")
+            CLIContext(debug="not_a_bool")
 
         # Non-string/non-bool types should raise TypeError
         with pytest.raises(TypeError):
-            Context(json_output=123)
+            CLIContext(json_output=123)
 
     def test_context_environment_precedence(self) -> None:
         """Test that environment variables override config file."""
@@ -253,7 +253,7 @@ profile = "config_profile"
         os.environ["PROVIDE_LOG_LEVEL"] = "DEBUG"
 
         try:
-            ctx = Context()
+            ctx = CLIContext()
             ctx.load_config(config_path)
             ctx.update_from_env()
 
@@ -265,7 +265,7 @@ profile = "config_profile"
 
     def test_context_immutable_after_freeze(self) -> None:
         """Test that context can be frozen to prevent changes."""
-        ctx = Context(log_level="INFO")
+        ctx = CLIContext(log_level="INFO")
         ctx.freeze()
 
         # With attrs, we can't dynamically freeze attributes
@@ -275,7 +275,7 @@ profile = "config_profile"
 
     def test_context_copy(self) -> None:
         """Test creating a copy of context."""
-        ctx = Context(log_level="DEBUG", profile="original")
+        ctx = CLIContext(log_level="DEBUG", profile="original")
         copy = ctx.copy()
 
         assert copy.log_level == ctx.log_level

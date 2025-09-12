@@ -5,7 +5,7 @@ This module provides a unified import interface for all converters and validator
 while the actual implementations are organized in focused submodules.
 """
 
-# Re-export all functions from the parsers package for backward compatibility
+# Re-export all functions from the parsers package
 from provide.foundation.config.parsers import *
 
 # Import all items explicitly to satisfy __all__ definition

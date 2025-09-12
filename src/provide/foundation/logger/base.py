@@ -18,5 +18,5 @@ __all__ = [
     "get_logger",
     "logger",
     "setup_logger",  # New consistent naming
-    "setup_logging",  # Keep for backward compatibility
+    "setup_logging",  # Legacy function name
 ]
