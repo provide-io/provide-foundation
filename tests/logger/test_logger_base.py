@@ -19,7 +19,6 @@ from provide.foundation.logger.types import TRACE_LEVEL_NAME
 
 if TYPE_CHECKING:
     from provide.foundation.config import TelemetryConfig
-    from provide.foundation.core import ResolvedSemanticConfig
 
 _LAZY_SETUP_LOCK = threading.Lock()
 _LAZY_SETUP_STATE: dict[str, Any] = {"done": False, "error": None, "in_progress": False}
@@ -105,7 +104,7 @@ class FoundationLogger:
         """
         Executes lazy setup by calling the main internal setup function.
         """
-        from provide.foundation.core import _internal_setup
+        from provide.foundation.logger.setup.coordinator import internal_setup as _internal_setup
 
         # Calling _internal_setup with no config will make it use from_env()
         # and is_explicit_call=False will be used.

@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 
 import structlog
 
-from provide.foundation.core import (
+from provide.foundation.setup import (
     reset_foundation_setup_for_testing,
 )
 from provide.foundation.logger.base import FoundationLogger

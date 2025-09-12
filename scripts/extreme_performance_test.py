@@ -37,7 +37,7 @@ from provide.foundation import (
     logger,
     setup_telemetry,
 )
-from provide.foundation.core import (
+from provide.foundation.logger.setup.testing import (
     _set_log_stream_for_testing,
     reset_foundation_setup_for_testing,
 )
