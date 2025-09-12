@@ -29,7 +29,8 @@
       "Bash(xargs ls:*)",
       "Bash(PYTHONPATH=src pytest tests/config/test_converters.py::TestFoundationLogOutputParsing -v)",
       "Bash(PYTHONPATH=src pytest tests/config/test_converters.py::TestBoolStrictParsing -v)",
-      "Bash(PYTHONPATH=src pytest tests/config/test_converters.py::TestModuleLevelsDictInput -v)"
+      "Bash(PYTHONPATH=src pytest tests/config/test_converters.py::TestModuleLevelsDictInput -v)",
+      "Bash(PYTHONPATH=src pytest tests/config/test_converters.py -v)"
     ],
     "deny": [],
     "ask": [],
