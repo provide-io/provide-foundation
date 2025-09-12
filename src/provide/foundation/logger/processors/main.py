@@ -21,7 +21,7 @@ from provide.foundation.logger.custom_processors import (
 
 # Import trace context processor
 from provide.foundation.logger.processors.trace import inject_trace_context
-from provide.foundation.types import (
+from provide.foundation.logger.types import (
     TRACE_LEVEL_NUM,
     LogLevelStr,
 )

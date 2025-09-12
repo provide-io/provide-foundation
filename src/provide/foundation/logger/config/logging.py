@@ -37,7 +37,7 @@ from provide.foundation.config.defaults import (
     DEFAULT_RATE_LIMIT_OVERFLOW_POLICY,
 )
 from provide.foundation.config.env import RuntimeConfig
-from provide.foundation.types import (
+from provide.foundation.logger.types import (
     ConsoleFormatterStr,
     LogLevelStr,
 )

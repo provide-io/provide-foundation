@@ -15,7 +15,7 @@ from typing import TYPE_CHECKING, Any, TextIO, cast
 import structlog
 from structlog.types import BindableLogger
 
-from provide.foundation.types import TRACE_LEVEL_NAME
+from provide.foundation.logger.types import TRACE_LEVEL_NAME
 
 if TYPE_CHECKING:
     from provide.foundation.config import TelemetryConfig
