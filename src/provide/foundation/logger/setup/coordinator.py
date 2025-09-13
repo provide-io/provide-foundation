@@ -79,12 +79,12 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
         _CACHED_SETUP_LOGGER = structlog.get_logger(_CORE_SETUP_LOGGER_NAME)
         return _CACHED_SETUP_LOGGER
     else:
-        # Get the foundation log output stream
+        # Get the foundation log output stream, respecting test stream redirection
         try:
-            logging_config = LoggingConfig.from_env()
-            foundation_stream = get_foundation_log_stream(logging_config.foundation_log_output)
+            # Use get_log_stream() which respects test stream redirection
+            foundation_stream = get_log_stream()
         except Exception:
-            # Fallback to stderr if config loading fails
+            # Fallback to stderr if stream access fails
             foundation_stream = get_safe_stderr()
 
         # Configure structlog for core setup logger
