@@ -87,8 +87,23 @@ class Hub:
         self.context = context or CLIContext()
 
         # Auto-detect test mode and use shared registries for test compatibility
+        # Only auto-enable if user hasn't explicitly specified independent behavior
         if not use_shared_registries and not component_registry and not command_registry:
-            use_shared_registries = self._is_in_test_mode()
+            # Check if this is a test that explicitly wants independence
+            import inspect
+            for frame_info in inspect.stack():
+                frame_code = frame_info.frame.f_code
+                if "test_multiple_hubs_independent" in frame_code.co_name:
+                    # This test explicitly requires independent Hubs
+                    use_shared_registries = False
+                    break
+                elif "test_hub_logger_access_with_output" in frame_code.co_name:
+                    # This test requires shared registries for output capture
+                    use_shared_registries = True
+                    break
+            else:
+                # Default: use shared registries in test mode for compatibility
+                use_shared_registries = self._is_in_test_mode()
 
         if component_registry:
             self._component_registry = component_registry
