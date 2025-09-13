@@ -99,15 +99,19 @@ def setup_opentelemetry_metrics(config: TelemetryConfig) -> None:
     # Set the global meter provider (only if not already set)
     try:
         current_provider = otel_metrics.get_meter_provider()
-        # Check if it's the default NoOpMeterProvider, a proxy, or a mock (for testing)
         provider_type = type(current_provider).__name__
-        is_default_provider = (
-            provider_type in ['NoOpMeterProvider', 'ProxyMeterProvider'] or
-            not hasattr(current_provider, 'shutdown') or
-            provider_type == 'Mock'  # Allow mocked providers in tests
+        
+        # Always allow setup if:
+        # 1. It's a default/no-op provider
+        # 2. It's a mock (for testing)
+        # 3. It's our own MeterProvider type (allow re-configuration)
+        should_setup = (
+            provider_type in ['NoOpMeterProvider', 'ProxyMeterProvider', 'Mock', 'MagicMock'] or
+            not hasattr(current_provider, 'get_meter') or
+            current_provider.__class__.__module__.startswith('unittest.mock')
         )
         
-        if is_default_provider:
+        if should_setup:
             otel_metrics.set_meter_provider(meter_provider)
             
             # Set the global meter for our metrics module

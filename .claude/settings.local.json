@@ -55,7 +55,9 @@
       "Bash(PYTHONPATH=src pytest tests/hub/test_hub_context.py tests/cli/test_cli_integration.py tests/console/ tests/logger/test_logger_production_compliance.py::TestDocumentedBehaviorCompliance::test_immediate_usage_patterns -x)",
       "Bash(PYTHONPATH=src pytest tests/async/test_async_core.py -v)",
       "Bash(PYTHONPATH=src pytest tests/concurrency/test_async_core.py -v)",
-      "Bash(PYTHONPATH=src pytest tests/concurrency/test_async_core.py::TestAsyncSleep::test_async_sleep_actually_sleeps -v)"
+      "Bash(PYTHONPATH=src pytest tests/concurrency/test_async_core.py::TestAsyncSleep::test_async_sleep_actually_sleeps -v)",
+      "Bash(PYTHONPATH=src pytest tests/tracer/test_otel.py::TestSetupOpentelemetryTracing::test_setup_basic_without_otlp -v)",
+      "Bash(PYTHONPATH=src pytest tests/tracer/test_otel.py::TestSetupOpentelemetryTracing::test_setup_with_grpc_otlp tests/tracer/test_otel.py::TestSetupOpentelemetryTracing::test_setup_with_http_otlp -v)"
     ],
     "deny": [],
     "ask": [],

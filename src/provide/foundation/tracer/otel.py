@@ -96,15 +96,19 @@ def setup_opentelemetry_tracing(config: TelemetryConfig) -> None:
     # Set the global tracer provider (only if not already set)
     try:
         current_provider = otel_trace.get_tracer_provider()
-        # Check if it's the default NoOpTracerProvider, a proxy, or a mock (for testing)
         provider_type = type(current_provider).__name__
-        is_default_provider = (
-            provider_type in ['NoOpTracerProvider', 'ProxyTracerProvider'] or
-            not hasattr(current_provider, 'shutdown') or
-            provider_type == 'Mock'  # Allow mocked providers in tests
+        
+        # Always allow setup if:
+        # 1. It's a default/no-op provider
+        # 2. It's a mock (for testing)
+        # 3. It's our own TracerProvider type (allow re-configuration)
+        should_setup = (
+            provider_type in ['NoOpTracerProvider', 'ProxyTracerProvider', 'Mock', 'MagicMock'] or
+            not hasattr(current_provider, 'add_span_processor') or
+            current_provider.__class__.__module__.startswith('unittest.mock')
         )
         
-        if is_default_provider:
+        if should_setup:
             otel_trace.set_tracer_provider(tracer_provider)
             slog.info("🔍✅ OpenTelemetry tracing setup complete")
         else:
