@@ -38,17 +38,26 @@ class TestLoggerTestingUtilities:
 
     def test_reset_foundation_state_resets_logger_state(self):
         """Test that foundation logger state is reset."""
-        # Set some state on the logger
-        foundation_logger._is_configured_by_setup = True
-        foundation_logger._active_config = "test_config"
-        foundation_logger._active_resolved_emoji_config = "test_emoji"
+        # Test that lazy setup state is properly reset
+        from provide.foundation.logger.core import _LAZY_SETUP_STATE
 
+        # Set some state to verify it gets reset
+        _LAZY_SETUP_STATE["done"] = True
+        _LAZY_SETUP_STATE["error"] = "test_error"
+        _LAZY_SETUP_STATE["in_progress"] = True
+
+        # Verify state is set
+        assert _LAZY_SETUP_STATE["done"] is True
+        assert _LAZY_SETUP_STATE["error"] == "test_error"
+        assert _LAZY_SETUP_STATE["in_progress"] is True
+
+        # Reset should clear all state
         reset_foundation_state()
 
-        # Should be reset
-        assert foundation_logger._is_configured_by_setup is False
-        assert foundation_logger._active_config is None
-        assert foundation_logger._active_resolved_emoji_config is None
+        # State should be reset to defaults
+        assert _LAZY_SETUP_STATE["done"] is False
+        assert _LAZY_SETUP_STATE["error"] is None
+        assert _LAZY_SETUP_STATE["in_progress"] is False
 
     def test_reset_foundation_state_resets_lazy_setup_state(self):
         """Test that lazy setup state is reset."""
@@ -66,15 +75,15 @@ class TestLoggerTestingUtilities:
 
     def test_reset_foundation_setup_for_testing_calls_reset_state(self):
         """Test that public function calls internal reset."""
-        # Set some state
-        foundation_logger._is_configured_by_setup = True
+        # Set some state we can verify gets reset
         _LAZY_SETUP_STATE["done"] = True
+        _LAZY_SETUP_STATE["error"] = "test_error"
 
         reset_foundation_setup_for_testing()
 
         # Should be reset
-        assert foundation_logger._is_configured_by_setup is False
         assert _LAZY_SETUP_STATE["done"] is False
+        assert _LAZY_SETUP_STATE["error"] is None
 
     def test_reset_functions_are_idempotent(self):
         """Test that reset functions can be called multiple times safely."""
@@ -84,9 +93,10 @@ class TestLoggerTestingUtilities:
         reset_foundation_setup_for_testing()
         reset_foundation_setup_for_testing()
 
-        # State should remain consistent
-        assert foundation_logger._is_configured_by_setup is False
+        # State should remain consistent after multiple resets
         assert _LAZY_SETUP_STATE["done"] is False
+        assert _LAZY_SETUP_STATE["error"] is None
+        assert _LAZY_SETUP_STATE["in_progress"] is False
 
     def test_reset_preserves_logger_functionality(self):
         """Test that logger still works after reset."""

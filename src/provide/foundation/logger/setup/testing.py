@@ -25,10 +25,20 @@ def reset_foundation_state() -> None:
     # Reset stream state
     reset_streams()
 
-    # Reset foundation logger state
-    foundation_logger._is_configured_by_setup = False
-    foundation_logger._active_config = None
-    foundation_logger._active_resolved_emoji_config = None
+    # Reset foundation logger state (via Hub)
+    try:
+        from provide.foundation.hub.manager import clear_hub
+        clear_hub()  # This will reset all Hub and logger state
+    except ImportError:
+        # Fallback for legacy logger instances
+        try:
+            foundation_logger._is_configured_by_setup = False
+            foundation_logger._active_config = None
+            foundation_logger._active_resolved_emoji_config = None
+        except (AttributeError, TypeError):
+            # Skip if foundation_logger is a proxy without direct attribute access
+            pass
+
     _LAZY_SETUP_STATE.update({"done": False, "error": None, "in_progress": False})
 
     # Reset event set registry and discovery state
