@@ -15,8 +15,17 @@ from attrs import define, field, validators
 
 from provide.foundation.resilience.types import BackoffStrategy
 
-# Use lazy logger initialization to avoid circular imports
+# Initialize logger immediately for test compatibility, with fallback for circular imports
 _logger = None
+logger = None
+
+try:
+    from provide.foundation.logger import get_logger
+    logger = get_logger(__name__)
+    _logger = logger
+except (ImportError, RecursionError):
+    # Fallback for circular import scenarios
+    logger = None
 
 
 def _get_logger():
@@ -28,10 +37,6 @@ def _get_logger():
         # Set module-level logger for test compatibility
         logger = _logger
     return _logger
-
-
-# Module-level logger attribute (set by _get_logger on first call)
-logger = None
 
 T = TypeVar("T")
 
