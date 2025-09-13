@@ -3,7 +3,7 @@
 import io
 import sys
 
-from provide.foundation.testing.streams import (
+from provide.testkit.streams import (
     get_current_log_stream,
     reset_log_stream,
     set_log_stream_for_testing,
@@ -122,7 +122,7 @@ class TestStreamTestingUtilities:
 
     def test_stream_with_actual_logging(self):
         """Test that stream redirection works with actual Foundation logging."""
-        from provide.foundation.testing import reset_foundation_setup_for_testing
+        from provide.testkit import reset_foundation_setup_for_testing
 
         # Reset foundation state
         reset_foundation_setup_for_testing()

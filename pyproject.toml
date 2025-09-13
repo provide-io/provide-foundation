@@ -75,6 +75,7 @@ dev = [
     "h2>=4.3.0",
     "hypothesis>=6.131.28",
     "mypy>=1.8.0",
+    "provide-testkit",
     "psutil>=7.0.0",
     "pyrefly>=0.16.2",
     "pytest>=7.4.0",
