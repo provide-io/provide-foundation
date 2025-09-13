@@ -174,19 +174,6 @@ def generate_log_entry(index: int, style: str = "normal", error_rate: float = 0.
     return entry
 
 
-@click.command(name="generate")
-@click.option("-n", "--count", default=100, help="Number of logs to generate (0 for continuous)")
-@click.option("-r", "--rate", default=10.0, help="Logs per second rate")
-@click.option("-s", "--stream", default="default", help="Target stream name")
-@click.option(
-    "--style",
-    type=click.Choice(["normal", "burroughs"]),
-    default="normal",
-    help="Message generation style",
-)
-@click.option("-e", "--error-rate", default=0.1, help="Error rate (0.0 to 1.0)")
-@click.option("--enable-rate-limit", is_flag=True, help="Enable Foundation's rate limiting")
-@click.option("--rate-limit", default=100.0, help="Rate limit (logs/s) when enabled")
 def _print_generation_config(count: int, rate: float, stream: str, style: str, error_rate: float, enable_rate_limit: bool, rate_limit: float) -> None:
     """Print the configuration for log generation."""
     click.echo("🚀 Starting log generation...")
@@ -319,6 +306,19 @@ def _generate_fixed_count_logs(count: int, rate: float, style: str, error_rate: 
     return logs_sent, logs_failed, logs_rate_limited
 
 
+@click.command(name="generate")
+@click.option("-n", "--count", default=100, help="Number of logs to generate (0 for continuous)")
+@click.option("-r", "--rate", default=10.0, help="Logs per second rate")
+@click.option("-s", "--stream", default="default", help="Target stream name")
+@click.option(
+    "--style",
+    type=click.Choice(["normal", "burroughs"]),
+    default="normal",
+    help="Message generation style",
+)
+@click.option("-e", "--error-rate", default=0.1, help="Error rate (0.0 to 1.0)")
+@click.option("--enable-rate-limit", is_flag=True, help="Enable Foundation's rate limiting")
+@click.option("--rate-limit", default=100.0, help="Rate limit (logs/s) when enabled")
 def generate_logs_command(
     count: int,
     rate: float,
