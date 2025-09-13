@@ -20,9 +20,23 @@ except ImportError:
 
 from provide.foundation.context import CLIContext
 from provide.foundation.errors.decorators import with_error_handling
-from provide.foundation.logger import get_logger
 
-log = get_logger(__name__)
+# Use lazy logger initialization to avoid circular imports
+_logger = None
+
+
+def _get_logger():
+    """Get logger lazily to avoid circular import issues."""
+    global _logger
+    if _logger is None:
+        try:
+            from provide.foundation.logger import get_logger
+            _logger = get_logger(__name__)
+        except ImportError:
+            # Fallback to structlog during initialization
+            import structlog
+            _logger = structlog.get_logger(__name__)
+    return _logger
 
 
 def _get_context() -> CLIContext | None:
