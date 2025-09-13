@@ -109,6 +109,18 @@ def reset_setup_logger_cache() -> None:
     _CACHED_SETUP_LOGGER = None
 
 
+def reset_foundation_log_level_cache() -> None:
+    """Reset the cached Foundation log level for testing."""
+    global _FOUNDATION_LOG_LEVEL
+    _FOUNDATION_LOG_LEVEL = None
+
+
+def reset_coordinator_state() -> None:
+    """Reset all coordinator state for testing."""
+    reset_setup_logger_cache()
+    reset_foundation_log_level_cache()
+
+
 def get_vanilla_logger(name: str) -> object:
     """
     Get a vanilla Python logger without Foundation enhancements.
