@@ -73,6 +73,7 @@ class Hub:
         context: CLIContext | None = None,
         component_registry: Registry | None = None,
         command_registry: Registry | None = None,
+        use_shared_registries: bool = False,
     ) -> None:
         """
         Initialize the hub.
@@ -81,10 +82,29 @@ class Hub:
             context: Foundation CLIContext for configuration
             component_registry: Custom component registry
             command_registry: Custom command registry
+            use_shared_registries: If True, use global shared registries (for compatibility)
         """
         self.context = context or CLIContext()
-        self._component_registry = component_registry or get_component_registry()
-        self._command_registry = command_registry or get_command_registry()
+
+        if component_registry:
+            self._component_registry = component_registry
+        elif use_shared_registries:
+            # Use global shared registry (for backward compatibility)
+            self._component_registry = get_component_registry()
+        else:
+            # Create independent registry for this Hub instance
+            from provide.foundation.hub.registry import Registry
+            self._component_registry = Registry()
+
+        if command_registry:
+            self._command_registry = command_registry
+        elif use_shared_registries:
+            # Use global shared registry (for backward compatibility)
+            self._command_registry = get_command_registry()
+        else:
+            # Create independent registry for this Hub instance
+            from provide.foundation.hub.registry import Registry
+            self._command_registry = Registry()
         self._cli_group: click.Group | None = None
 
         # Foundation initialization state
@@ -605,7 +625,8 @@ def get_hub() -> Hub:
     with _hub_lock:
         # Double-check after acquiring lock
         if _global_hub is None:
-            _global_hub = Hub()
+            # Global hub should use shared registries for backward compatibility
+            _global_hub = Hub(use_shared_registries=True)
 
             # Auto-initialize Foundation on first hub access
             _global_hub.initialize_foundation()
