@@ -50,7 +50,7 @@ def setup_foundation(config: TelemetryConfig | None = None) -> None:
 
     hub = get_hub()
     if config:
-        hub.initialize_foundation(config)
+        hub.initialize_foundation(config, force=True)
 
     # Handle legacy subsystems that aren't yet in Hub
     current_config = config if config is not None else TelemetryConfig.from_env()
@@ -89,7 +89,7 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
 
     hub = get_hub()
     if config:
-        hub.initialize_foundation(config)
+        hub.initialize_foundation(config, force=True)
 
     # Handle legacy subsystems that aren't yet in Hub
     current_config = config if config is not None else TelemetryConfig.from_env()
