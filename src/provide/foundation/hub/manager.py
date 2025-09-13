@@ -130,24 +130,25 @@ class Hub:
         import os
         import sys
 
-        # Check for pytest environment indicators
+        # Primary indicator: pytest current test environment variable
         if "PYTEST_CURRENT_TEST" in os.environ:
             return True
 
+        # Check if pytest is currently imported and active
         if "pytest" in sys.modules:
-            return True
-
-        # Check for pytest in command line arguments
-        if any("pytest" in arg for arg in sys.argv):
-            return True
-
-        # Check for common test module patterns
-        for module_name in sys.modules:
-            if "test" in module_name.lower() or "pytest" in module_name.lower():
+            # Additional check: make sure we're actually running in a test context
+            if any("pytest" in arg for arg in sys.argv):
                 return True
 
-        # Check for unittest runner
-        if "unittest" in sys.modules:
+            # Check if pytest is actively running by looking for test-related stack frames
+            import inspect
+            for frame_info in inspect.stack():
+                filename = frame_info.filename or ""
+                if "pytest" in filename or "/test_" in filename or "conftest.py" in filename:
+                    return True
+
+        # Check for unittest runner in active execution
+        if "unittest" in sys.modules and any("unittest" in arg for arg in sys.argv):
             return True
 
         return False
