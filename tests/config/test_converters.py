@@ -25,6 +25,7 @@ from provide.foundation.config.converters import (
     validate_positive,
     validate_sample_rate,
 )
+from provide.foundation.errors.config import ValidationError
 
 
 class TestLogLevelParsing:
@@ -294,7 +295,7 @@ class TestValidators:
         validate_log_level(None, type('attr', (), {'name': 'test'})(), "INFO")
 
         # Invalid level should raise
-        with pytest.raises(ValueError, match="Invalid test"):
+        with pytest.raises(ValidationError, match="Invalid test"):
             validate_log_level(None, type('attr', (), {'name': 'test'})(), "INVALID")
 
     def test_validate_sample_rate(self):
@@ -305,10 +306,10 @@ class TestValidators:
         validate_sample_rate(None, type('attr', (), {'name': 'test'})(), 1.0)
 
         # Invalid rates should raise
-        with pytest.raises(ValueError, match="must be between"):
+        with pytest.raises(ValidationError, match="must be between"):
             validate_sample_rate(None, type('attr', (), {'name': 'test'})(), -0.1)
 
-        with pytest.raises(ValueError, match="must be between"):
+        with pytest.raises(ValidationError, match="must be between"):
             validate_sample_rate(None, type('attr', (), {'name': 'test'})(), 1.1)
 
     def test_validate_port(self):
@@ -319,10 +320,10 @@ class TestValidators:
         validate_port(None, type('attr', (), {'name': 'test'})(), 65535)
 
         # Invalid ports should raise
-        with pytest.raises(ValueError, match="must be between"):
+        with pytest.raises(ValidationError, match="must be between"):
             validate_port(None, type('attr', (), {'name': 'test'})(), 0)
 
-        with pytest.raises(ValueError, match="must be between"):
+        with pytest.raises(ValidationError, match="must be between"):
             validate_port(None, type('attr', (), {'name': 'test'})(), 65536)
 
     def test_validate_positive(self):
@@ -333,10 +334,10 @@ class TestValidators:
         validate_positive(None, type('attr', (), {'name': 'test'})(), 100)
 
         # Invalid values should raise
-        with pytest.raises(ValueError, match="must be positive"):
+        with pytest.raises(ValidationError, match="must be positive"):
             validate_positive(None, type('attr', (), {'name': 'test'})(), 0)
 
-        with pytest.raises(ValueError, match="must be positive"):
+        with pytest.raises(ValidationError, match="must be positive"):
             validate_positive(None, type('attr', (), {'name': 'test'})(), -1)
 
     def test_validate_non_negative(self):
@@ -347,10 +348,10 @@ class TestValidators:
         validate_non_negative(None, type('attr', (), {'name': 'test'})(), 100)
 
         # Invalid values should raise
-        with pytest.raises(ValueError, match="must be non-negative"):
+        with pytest.raises(ValidationError, match="must be non-negative"):
             validate_non_negative(None, type('attr', (), {'name': 'test'})(), -1)
 
-        with pytest.raises(ValueError, match="must be non-negative"):
+        with pytest.raises(ValidationError, match="must be non-negative"):
             validate_non_negative(None, type('attr', (), {'name': 'test'})(), -0.1)
 
     def test_validate_overflow_policy(self):
@@ -361,10 +362,10 @@ class TestValidators:
         validate_overflow_policy(None, type('attr', (), {'name': 'test'})(), "block")
 
         # Invalid policies should raise
-        with pytest.raises(ValueError, match="Invalid test"):
+        with pytest.raises(ValidationError, match="Invalid test"):
             validate_overflow_policy(None, type('attr', (), {'name': 'test'})(), "invalid")
 
-        with pytest.raises(ValueError, match="Invalid test"):
+        with pytest.raises(ValidationError, match="Invalid test"):
             validate_overflow_policy(None, type('attr', (), {'name': 'test'})(), "")
 
 
