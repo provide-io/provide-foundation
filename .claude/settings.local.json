@@ -3,7 +3,8 @@
     "allow": [
       "Bash(PYTHONPATH=src pytest tests/cli/commands/test_deps_coverage.py::TestDepsCommandModuleImport::test_module_imports_successfully -v --tb=short)",
       "Bash(PYTHONPATH=src pytest tests/cli/commands/test_deps_coverage.py::TestDepsCommandModuleImport::test_click_import_handling -v --tb=short)",
-      "Bash(awk:*)"
+      "Bash(awk:*)",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "ask": [],
