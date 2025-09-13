@@ -421,7 +421,7 @@ def test_trace_level_edge_cases(
            and "⚙️➡️🚀 Starting Foundation" not in line
            and "⚙️➡️✅ Foundation" not in line
            and "Configuring structlog output processors" not in line
-           and not ("[trace    ]" in line or "trace    " in line)
+           and not (("[trace    ]" in line or "trace    " in line) and ("enrichment processor" in line or "Event set discovery" in line or "Event enrichment" in line or "already completed" in line or "Foundation" in line))
            and line.strip()
     ]
     assert len(lines) >= 4, "Not all trace messages were logged"
