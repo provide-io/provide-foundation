@@ -97,6 +97,16 @@ class TelemetryConfig(RuntimeConfig):
         description="Sampling rate for traces (0.0 to 1.0)",
     )
 
+    @classmethod
+    def from_env(cls, **kwargs):
+        """
+        Load configuration from environment variables.
+        
+        This method explicitly provides the from_env() interface
+        to ensure it's available on TelemetryConfig directly.
+        """
+        return super().from_env(**kwargs)
+
     def get_otlp_headers_dict(self) -> dict[str, str]:
         """Get OTLP headers dictionary.
 

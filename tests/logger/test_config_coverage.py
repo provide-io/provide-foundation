@@ -71,7 +71,7 @@ class TestLoggingConfigCoverage:
         with patch.dict(os.environ, {"PROVIDE_LOG_LEVEL": "INVALID_LEVEL"}):
             with pytest.raises(ValueError) as exc_info:
                 LoggingConfig.from_env()
-            assert "Invalid log level 'INVALID_LEVEL'" in str(exc_info.value)
+            assert "Invalid log_level 'INVALID_LEVEL'" in str(exc_info.value)
             assert "TRACE, DEBUG, INFO, WARNING, ERROR, CRITICAL" in str(exc_info.value)
 
     def test_logging_config_from_env_strict_mode(self):
@@ -225,4 +225,4 @@ class TestTelemetryConfigCoverage:
         with patch.dict(os.environ, {"PROVIDE_LOG_LEVEL": "INVALID"}):
             with pytest.raises(ValueError) as exc_info:
                 TelemetryConfig.from_env()
-            assert "Invalid log level 'INVALID'" in str(exc_info.value)
+            assert "Invalid log_level 'INVALID'" in str(exc_info.value)

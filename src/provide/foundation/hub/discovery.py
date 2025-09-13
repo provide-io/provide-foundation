@@ -52,9 +52,67 @@ def discover_components(
     """
     Discover and register components from entry points.
 
-    This is a stub for the TDD implementation.
+    Args:
+        group: Entry point group name (e.g., 'provide.components')
+        dimension: Registry dimension for components
+        registry: Optional registry to use (defaults to global registry)
+
+    Returns:
+        Dictionary mapping component names to their classes
     """
-    return {}
+    try:
+        import importlib.metadata as metadata
+    except ImportError:
+        # Python < 3.8 fallback
+        import importlib_metadata as metadata  # type: ignore
+
+    discovered = {}
+    
+    # If no registry provided, get the global component registry
+    if registry is None:
+        registry, _ = _get_registry_and_lock()
+    
+    # Discover all entry points in the specified group
+    try:
+        entry_points = metadata.entry_points()
+        if hasattr(entry_points, 'select'):
+            # Python 3.10+ API
+            group_entries = entry_points.select(group=group)
+        else:
+            # Python 3.8-3.9 API
+            group_entries = entry_points.get(group, [])
+        
+        for entry_point in group_entries:
+            try:
+                # Load the component class
+                component_class = entry_point.load()
+                
+                # Register in the provided registry
+                registry.register(
+                    name=entry_point.name,
+                    value=component_class,
+                    dimension=dimension,
+                    metadata={
+                        'entry_point': entry_point.name,
+                        'module': entry_point.module,
+                        'discovered': True,
+                    }
+                )
+                
+                discovered[entry_point.name] = component_class
+                
+            except Exception as e:
+                # Log error but continue discovering other components
+                import sys
+                print(f"Failed to load entry point {entry_point.name}: {e}", file=sys.stderr)
+                continue
+                
+    except Exception as e:
+        # If entry points can't be read, return empty dict
+        import sys
+        print(f"Failed to discover entry points for group {group}: {e}", file=sys.stderr)
+    
+    return discovered
 
 
 __all__ = [

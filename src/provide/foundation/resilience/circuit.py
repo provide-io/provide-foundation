@@ -3,25 +3,17 @@ Circuit breaker implementation for preventing cascading failures.
 """
 
 from collections.abc import Callable
-from enum import Enum
 import time
 from typing import TypeVar
 
 from attrs import define, field
 
 from provide.foundation.logger import get_logger
+from provide.foundation.resilience.types import CircuitState
 
 logger = get_logger(__name__)
 
 T = TypeVar("T")
-
-
-class CircuitState(Enum):
-    """Circuit breaker states."""
-
-    CLOSED = "closed"  # Normal operation
-    OPEN = "open"  # Circuit is open, failing fast
-    HALF_OPEN = "half_open"  # Testing if service has recovered
 
 
 @define(kw_only=True, slots=True)
