@@ -14,9 +14,18 @@ from attrs import define, field
 
 from provide.foundation.errors.decorators import with_error_handling
 from provide.foundation.hub.registry import Registry
-from provide.foundation.logger import get_logger
 
-log = get_logger(__name__)
+# Use lazy logger initialization to avoid circular imports
+_logger = None
+
+
+def _get_logger():
+    """Get logger lazily to avoid circular import issues."""
+    global _logger
+    if _logger is None:
+        from provide.foundation.logger import get_logger
+        _logger = get_logger(__name__)
+    return _logger
 
 
 @define(frozen=True, slots=True)
@@ -128,7 +137,7 @@ def bootstrap_foundation() -> None:
         metadata={"priority": 100, "stage": "pre_format"},
     )
 
-    log.debug("Foundation bootstrap completed with registry components")
+    _get_logger().debug("Foundation bootstrap completed with registry components")
 
 
 def reset_registry_for_tests() -> None:

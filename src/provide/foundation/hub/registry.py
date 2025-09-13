@@ -12,9 +12,18 @@ from typing import Any
 from attrs import define, field
 
 from provide.foundation.errors.resources import AlreadyExistsError
-from provide.foundation.logger import get_logger
 
-log = get_logger(__name__)
+# Use lazy logger initialization to avoid circular imports
+_logger = None
+
+
+def _get_logger():
+    """Get logger lazily to avoid circular import issues."""
+    global _logger
+    if _logger is None:
+        from provide.foundation.logger import get_logger
+        _logger = get_logger(__name__)
+    return _logger
 
 
 @define(frozen=True, slots=True)
@@ -98,7 +107,7 @@ class Registry:
                 for alias in aliases:
                     self._aliases[alias] = (dimension, name)
 
-            log.debug(
+            _get_logger().debug(
                 "Registered item",
                 name=name,
                 dimension=dimension,
@@ -200,7 +209,7 @@ class Registry:
                     for alias in aliases_to_remove:
                         del self._aliases[alias]
 
-                    log.debug("Removed item", name=name, dimension=dimension)
+                    _get_logger().debug("Removed item", name=name, dimension=dimension)
                     return True
             else:
                 for dim_key, dim_registry in self._registry.items():
@@ -213,7 +222,7 @@ class Registry:
                         for alias in aliases_to_remove:
                             del self._aliases[alias]
 
-                        log.debug("Removed item", name=name, dimension=dim_key)
+                        _get_logger().debug("Removed item", name=name, dimension=dim_key)
                         return True
 
             return False
