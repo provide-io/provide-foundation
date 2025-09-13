@@ -412,25 +412,32 @@ class Hub:
         if dimension != "command" or dimension is None:
             self._component_registry.clear(dimension=dimension)
 
+        # Reset Foundation initialization state when clearing all or foundation-specific dimensions
+        if dimension is None or dimension in ("singleton", "foundation"):
+            self._foundation_initialized = False
+            self._foundation_config = None
+            self._foundation_logger_instance = None
+
     # Foundation Lifecycle Management
 
-    def initialize_foundation(self, config=None) -> None:
+    def initialize_foundation(self, config=None, force: bool = False) -> None:
         """
         Initialize Foundation system through Hub.
 
         Single initialization method replacing all setup_* functions.
-        Thread-safe and idempotent.
+        Thread-safe and idempotent, unless force=True.
 
         Args:
             config: Optional TelemetryConfig (defaults to from_env)
+            force: If True, force re-initialization even if already initialized
         """
-        # Fast path if already initialized
-        if self._foundation_initialized:
+        # Fast path if already initialized and not forcing
+        if self._foundation_initialized and not force:
             return
 
         with self._foundation_init_lock:
-            # Double-check after acquiring lock
-            if self._foundation_initialized:
+            # Double-check after acquiring lock (unless forcing)
+            if self._foundation_initialized and not force:
                 return
 
             # Lazy import to avoid circular imports during module loading
