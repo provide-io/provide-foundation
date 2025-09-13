@@ -254,7 +254,7 @@ class Registry:
         """Iterate over all registry entries."""
         with self._lock:
             # Create a snapshot to avoid holding lock during iteration
-            entries = []
+            entries: list[RegistryEntry] = []
             for dim_registry in self._registry.values():
                 entries.extend(dim_registry.values())
         # Yield outside the lock

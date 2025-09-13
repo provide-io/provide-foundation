@@ -5,7 +5,7 @@ Handles parsing of domain-specific telemetry configuration like log levels,
 console formatters, and foundation-specific output settings.
 """
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from provide.foundation.config.parsers.base import (
     _format_invalid_value_error,
@@ -40,7 +40,7 @@ def parse_log_level(value: str) -> "LogLevelStr":
                 "log_level", value, valid_options=list(_VALID_LOG_LEVEL_TUPLE)
             )
         )
-    return level
+    return cast("LogLevelStr", level)
 
 
 def parse_console_formatter(value: str) -> "ConsoleFormatterStr":
@@ -63,7 +63,7 @@ def parse_console_formatter(value: str) -> "ConsoleFormatterStr":
                 "console_formatter", value, valid_options=list(_VALID_FORMATTER_TUPLE)
             )
         )
-    return formatter
+    return cast("ConsoleFormatterStr", formatter)
 
 
 def parse_foundation_log_output(value: str) -> str:
