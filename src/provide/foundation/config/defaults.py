@@ -86,3 +86,23 @@ DEFAULT_MISSING_OK = True
 # =================================
 DEFAULT_ATOMIC_MODE = 0o644
 DEFAULT_ATOMIC_ENCODING = "utf-8"
+
+# =================================
+# Factory functions for mutable defaults
+# =================================
+
+def default_empty_dict() -> dict[str, str]:
+    """Factory for empty string dictionaries."""
+    return {}
+
+def default_module_levels() -> dict[str, str]:
+    """Factory for module log levels dictionary."""
+    return {}
+
+def default_rate_limits() -> dict[str, tuple[float, float]]:
+    """Factory for per-logger rate limits dictionary."""
+    return {}
+
+def default_otlp_headers() -> dict[str, str]:
+    """Factory for OTLP headers dictionary."""
+    return {}
