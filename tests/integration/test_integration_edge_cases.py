@@ -31,8 +31,8 @@ def test_invalid_environment_variables_handling(
     """Tests handling of invalid environment variables with strict validation."""
     # Define cases that should raise ValueError with strict validation
     strict_validation_cases = [
-        ("PROVIDE_LOG_LEVEL", "INVALID_LEVEL", "Invalid log level 'INVALID_LEVEL'"),
-        ("PROVIDE_LOG_CONSOLE_FORMATTER", "invalid_formatter", "Invalid console formatter 'invalid_formatter'"),
+        ("PROVIDE_LOG_LEVEL", "INVALID_LEVEL", "Invalid log_level 'INVALID_LEVEL'"),
+        ("PROVIDE_LOG_CONSOLE_FORMATTER", "invalid_formatter", "Invalid console_formatter 'invalid_formatter'"),
     ]
 
     # Test cases that should raise exceptions

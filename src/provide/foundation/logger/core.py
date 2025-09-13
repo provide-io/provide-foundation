@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, Any
 
 import structlog
 
-from provide.foundation.types import TRACE_LEVEL_NAME
+from provide.foundation.logger.types import TRACE_LEVEL_NAME
 
 if TYPE_CHECKING:
     from provide.foundation.logger.config import TelemetryConfig

@@ -40,6 +40,10 @@ from provide.foundation.hub.manager import (
     clear_hub,
     get_hub,
 )
+from provide.foundation.hub.registry import (
+    Registry,
+    RegistryEntry,
+)
 
 
 # CLI features (require click) - lazy loaded
@@ -77,6 +81,9 @@ __all__ = [
     # Components
     "get_component_registry",
     "ComponentCategory",
+    # Registry
+    "Registry",
+    "RegistryEntry",
     # Hub
     "Hub",
     "clear_hub",

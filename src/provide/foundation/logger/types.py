@@ -1,5 +1,5 @@
 """
-Core type definitions and constants for Foundation.
+Logger type definitions and constants.
 """
 
 from typing import Literal

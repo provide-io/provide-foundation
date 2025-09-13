@@ -7,7 +7,6 @@ eliminating duplication between decorators and middleware.
 
 import asyncio
 from collections.abc import Callable
-from enum import Enum
 import random
 import time
 from typing import Any, TypeVar
@@ -15,19 +14,11 @@ from typing import Any, TypeVar
 from attrs import define, field, validators
 
 from provide.foundation.logger import get_logger
+from provide.foundation.resilience.types import BackoffStrategy
 
 logger = get_logger(__name__)
 
 T = TypeVar("T")
-
-
-class BackoffStrategy(str, Enum):
-    """Backoff strategies for retry delays."""
-
-    FIXED = "fixed"  # Same delay every time
-    LINEAR = "linear"  # Linear increase (delay * attempt)
-    EXPONENTIAL = "exponential"  # Exponential increase (delay * 2^attempt)
-    FIBONACCI = "fibonacci"  # Fibonacci sequence delays
 
 
 @define(frozen=True, kw_only=True)

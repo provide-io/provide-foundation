@@ -64,8 +64,8 @@ from provide.foundation.setup import (
     shutdown_foundation_telemetry,
 )
 
-# New type exports for emoji mapping
-from provide.foundation.types import (
+# Logger type exports
+from provide.foundation.logger.types import (
     ConsoleFormatterStr,
     LogLevelStr,
 )
