@@ -62,7 +62,8 @@
       "Bash(PYTHONPATH=src pytest tests/logger/test_logger_production_compliance.py::TestDocumentedBehaviorCompliance::test_immediate_usage_patterns -v -s)",
       "Bash(PYTHONPATH=src pytest tests/logger/test_logger_production_compliance.py::TestDocumentedBehaviorCompliance -v)",
       "Bash(PYTHONPATH=src pytest tests/cli/commands/test_deps_coverage.py::TestDepsCommandModuleImport::test_module_imports_successfully -v -s --tb=short)",
-      "Bash(PYTHONPATH=src pytest tests/logger/test_logger_production_compliance.py::TestDocumentedBehaviorCompliance::test_immediate_usage_patterns -v --tb=long)"
+      "Bash(PYTHONPATH=src pytest tests/logger/test_logger_production_compliance.py::TestDocumentedBehaviorCompliance::test_immediate_usage_patterns -v --tb=long)",
+      "Bash(PYTHONPATH=src timeout 10 python -c \"\nimport sys\ntry:\n    import provide.foundation.cli.commands.deps\n    print(''✅ CLI deps module imported successfully'')\n    print(f''Has deps_command: {hasattr(provide.foundation.cli.commands.deps, \"\"deps_command\"\")}'')\n    print(f''__all__ = {provide.foundation.cli.commands.deps.__all__}'')\nexcept RecursionError as e:\n    print(f''❌ RecursionError during import: {e}'')\n    import traceback\n    traceback.print_exc(limit=10)\nexcept Exception as e:\n    print(f''❌ Other error: {e}'')\n    import traceback\n    traceback.print_exc()\n\")"
     ],
     "deny": [],
     "ask": [],
