@@ -86,7 +86,12 @@ def test_full_lifecycle_integration(
     lines = [
         line
         for line in output.strip().splitlines()
-        if not line.startswith("[Foundation Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]")
+           and "⚙️➡️🚀 Starting Foundation" not in line
+           and "⚙️➡️✅ Foundation" not in line
+           and "Configuring structlog output processors" not in line
+           and not ("] [trace    ]" in line and ("Starting Foundation" in line or "Foundation" in line or "processors" in line or "enrichment processor" in line))
+           and line.strip()
     ]
 
     assert len(lines) >= 4, f"Expected at least 4 log lines, got {len(lines)}"
@@ -197,7 +202,7 @@ def test_high_volume_logging_performance(
            and "⚙️➡️🚀 Starting Foundation" not in line
            and "⚙️➡️✅ Foundation" not in line
            and "Configuring structlog output processors" not in line
-           and "[trace" not in line
+           and not ("] [trace    ]" in line and ("Starting Foundation" in line or "Foundation" in line or "processors" in line or "enrichment processor" in line))
            and line.strip()
     ]
 
@@ -255,7 +260,12 @@ def test_thread_safety_concurrent_logging(
     lines = [
         line
         for line in output.strip().splitlines()
-        if not line.startswith("[Foundation Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]")
+           and "⚙️➡️🚀 Starting Foundation" not in line
+           and "⚙️➡️✅ Foundation" not in line
+           and "Configuring structlog output processors" not in line
+           and not ("] [trace    ]" in line and ("Starting Foundation" in line or "Foundation" in line or "processors" in line or "enrichment processor" in line))
+           and line.strip()
     ]
 
     expected_messages = thread_count * messages_per_thread
@@ -362,7 +372,12 @@ def test_error_recovery_and_resilience(
     lines = [
         line
         for line in output.strip().splitlines()
-        if not line.startswith("[Foundation Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]")
+           and "⚙️➡️🚀 Starting Foundation" not in line
+           and "⚙️➡️✅ Foundation" not in line
+           and "Configuring structlog output processors" not in line
+           and not ("] [trace    ]" in line and ("Starting Foundation" in line or "Foundation" in line or "processors" in line or "enrichment processor" in line))
+           and line.strip()
     ]
 
     assert len(lines) >= len(test_cases), "Not all test messages were logged"
@@ -550,7 +565,12 @@ def test_module_level_filtering_comprehensive(
     filtered_lines = [
         line
         for line in output.strip().splitlines()
-        if not line.startswith("[Foundation Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]")
+           and "⚙️➡️🚀 Starting Foundation" not in line
+           and "⚙️➡️✅ Foundation" not in line
+           and "Configuring structlog output processors" not in line
+           and not ("] [trace    ]" in line and ("Starting Foundation" in line or "Foundation" in line or "processors" in line or "enrichment processor" in line))
+           and line.strip()
     ]
 
     expected_messages_count = sum(
