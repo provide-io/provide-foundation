@@ -126,8 +126,8 @@ def write_yaml(
     """
     try:
         import yaml
-    except ImportError:
-        raise ImportError("PyYAML is required for YAML operations")
+    except ImportError as e:
+        raise ImportError("PyYAML is required for YAML operations") from e
 
     path = Path(path)
 
@@ -204,8 +204,8 @@ def write_toml(
     """
     try:
         import tomli_w
-    except ImportError:
-        raise ImportError("tomli-w is required for TOML write operations")
+    except ImportError as e:
+        raise ImportError("tomli-w is required for TOML write operations") from e
 
     path = Path(path)
 

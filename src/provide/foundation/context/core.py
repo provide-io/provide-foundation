@@ -246,8 +246,8 @@ class CLIContext(RuntimeConfig):
                 import tomli_w
 
                 content = tomli_w.dumps(data)
-            except ImportError:
-                raise ImportError("tomli_w required for TOML writing")
+            except ImportError as e:
+                raise ImportError("tomli_w required for TOML writing") from e
         elif path.suffix == ".json":
             content = json.dumps(data, indent=2)
         elif path.suffix in (".yaml", ".yml"):
