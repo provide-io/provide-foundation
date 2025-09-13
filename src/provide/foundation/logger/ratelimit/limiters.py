@@ -39,7 +39,7 @@ class SyncRateLimiter:
         # Track statistics
         self.total_allowed = 0
         self.total_denied = 0
-        self.last_denied_time = None
+        self.last_denied_time: float | None = None
 
     def is_allowed(self) -> bool:
         """
@@ -109,7 +109,7 @@ class AsyncRateLimiter:
         # Track statistics
         self.total_allowed = 0
         self.total_denied = 0
-        self.last_denied_time = None
+        self.last_denied_time: float | None = None
 
     async def is_allowed(self) -> bool:
         """
@@ -159,6 +159,7 @@ class GlobalRateLimiter:
 
     _instance = None
     _lock = threading.Lock()
+    _initialized: bool
 
     def __new__(cls) -> "GlobalRateLimiter":
         if cls._instance is None:
@@ -173,19 +174,19 @@ class GlobalRateLimiter:
             return
 
         self._initialized = True
-        self.global_limiter = None
+        self.global_limiter: Any = None
         self.logger_limiters: dict[str, SyncRateLimiter] = {}
         self.lock = threading.Lock()
 
         # Default configuration (can be overridden)
-        self.global_rate = None
-        self.global_capacity = None
+        self.global_rate: float | None = None
+        self.global_capacity: float | None = None
         self.per_logger_rates: dict[str, tuple[float, float]] = {}
 
         # Queue configuration
         self.use_buffered = False
         self.max_queue_size = 1000
-        self.max_memory_mb = None
+        self.max_memory_mb: float | None = None
         self.overflow_policy = "drop_oldest"
 
     def configure(
@@ -279,7 +280,7 @@ class GlobalRateLimiter:
     def get_stats(self) -> dict[str, Any]:
         """Get comprehensive rate limiting statistics."""
         with self.lock:
-            stats = {
+            stats: dict[str, Any] = {
                 "global": self.global_limiter.get_stats() if self.global_limiter else None,
                 "per_logger": {},
             }
