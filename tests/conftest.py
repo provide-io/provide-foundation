@@ -83,54 +83,53 @@ def manage_telemetry_reset_for_each_test() -> Generator[None]:
 
 
 # Import and re-export fixtures from the unified testing module
-# Temporarily disabled to debug hanging issue
-# from provide.testkit import (
-#     async_stream_reader,
-#     async_timeout,
-#     binary_file,
-#     ca_cert,
-#     captured_stderr_for_foundation,
-#     cert_with_extra_whitespace,
-#     cert_with_utf8_bom,
-#     cert_with_windows_line_endings,
-#     # New async fixtures
-#     clean_event_loop,
-#     # CLI fixtures
-#     click_testing_mode,
-#     # Logger fixtures
-#     client_cert,
-#     # Original fixtures
-#     default_container_directory,
-#     empty_cert,
-#     empty_directory,
-#     external_ca_pem,
-#     # New network fixtures
-#     free_port,
-#     httpx_mock_responses,
-#     invalid_cert_pem,
-#     invalid_key_pem,
-#     malformed_cert_pem,
-#     mock_async_process,
-#     mock_cache,
-#     # New mock fixtures
-#     mock_http_config,
-#     mock_logger,
-#     mock_server,
-#     mock_telemetry_config,
-#     mock_transport,
-#     nested_directory_structure,
-#     readonly_file,
-#     server_cert,
-#     setup_foundation_telemetry_for_test,
-#     # New file fixtures
-#     temp_directory,
-#     temp_file,
-#     temporary_cert_file,
-#     temporary_key_file,
-#     test_files_structure,
-#     valid_cert_pem,
-#     valid_key_pem,
-# )
+from provide.testkit import (
+    async_stream_reader,
+    async_timeout,
+    binary_file,
+    ca_cert,
+    captured_stderr_for_foundation,
+    cert_with_extra_whitespace,
+    cert_with_utf8_bom,
+    cert_with_windows_line_endings,
+    # New async fixtures
+    clean_event_loop,
+    # CLI fixtures
+    click_testing_mode,
+    # Logger fixtures
+    client_cert,
+    # Original fixtures
+    default_container_directory,
+    empty_cert,
+    empty_directory,
+    external_ca_pem,
+    # New network fixtures
+    free_port,
+    httpx_mock_responses,
+    invalid_cert_pem,
+    invalid_key_pem,
+    malformed_cert_pem,
+    mock_async_process,
+    mock_cache,
+    # New mock fixtures
+    mock_http_config,
+    mock_logger,
+    mock_server,
+    mock_telemetry_config,
+    mock_transport,
+    nested_directory_structure,
+    readonly_file,
+    server_cert,
+    setup_foundation_telemetry_for_test,
+    # New file fixtures
+    temp_directory,
+    temp_file,
+    temporary_cert_file,
+    temporary_key_file,
+    test_files_structure,
+    valid_cert_pem,
+    valid_key_pem,
+)
 
 # Re-export for pytest discovery
 __all__ = [
