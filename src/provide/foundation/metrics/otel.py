@@ -96,16 +96,22 @@ def setup_opentelemetry_metrics(config: TelemetryConfig) -> None:
     # Create meter provider
     meter_provider = MeterProvider(resource=resource, metric_readers=readers)
 
-    # Set the global meter provider
-    otel_metrics.set_meter_provider(meter_provider)
-
-    # Set the global meter for our metrics module
-    from provide.foundation.metrics import _set_meter
-
-    meter = otel_metrics.get_meter(__name__)
-    _set_meter(meter)
-
-    slog.info("📊✅ OpenTelemetry metrics setup complete")
+    # Set the global meter provider (only if not already set)
+    current_provider = otel_metrics.get_meter_provider()
+    # Check if it's the default NoOpMeterProvider or a proxy
+    if (type(current_provider).__name__ in ['NoOpMeterProvider', 'ProxyMeterProvider'] or 
+        not hasattr(current_provider, 'shutdown')):
+        otel_metrics.set_meter_provider(meter_provider)
+        
+        # Set the global meter for our metrics module
+        from provide.foundation.metrics import _set_meter
+        
+        meter = otel_metrics.get_meter(__name__)
+        _set_meter(meter)
+        
+        slog.info("📊✅ OpenTelemetry metrics setup complete")
+    else:
+        slog.debug("📊 OpenTelemetry meter provider already configured")
 
 
 def shutdown_opentelemetry_metrics() -> None:

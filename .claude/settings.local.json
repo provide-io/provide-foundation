@@ -54,7 +54,8 @@
       "Bash(PYTHONPATH=src pytest tests/hub/test_hub_context.py::TestContext::test_context_from_env -v)",
       "Bash(PYTHONPATH=src pytest tests/hub/test_hub_context.py tests/cli/test_cli_integration.py tests/console/ tests/logger/test_logger_production_compliance.py::TestDocumentedBehaviorCompliance::test_immediate_usage_patterns -x)",
       "Bash(PYTHONPATH=src pytest tests/async/test_async_core.py -v)",
-      "Bash(PYTHONPATH=src pytest tests/concurrency/test_async_core.py -v)"
+      "Bash(PYTHONPATH=src pytest tests/concurrency/test_async_core.py -v)",
+      "Bash(PYTHONPATH=src pytest tests/concurrency/test_async_core.py::TestAsyncSleep::test_async_sleep_actually_sleeps -v)"
     ],
     "deny": [],
     "ask": [],
