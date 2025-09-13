@@ -21,11 +21,17 @@ _logger = None
 
 def _get_logger():
     """Get logger lazily to avoid circular import issues."""
-    global _logger
+    global _logger, logger
     if _logger is None:
         from provide.foundation.logger import get_logger
         _logger = get_logger(__name__)
+        # Set module-level logger for test compatibility
+        logger = _logger
     return _logger
+
+
+# Module-level logger attribute (set by _get_logger on first call)
+logger = None
 
 T = TypeVar("T")
 

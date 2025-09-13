@@ -163,7 +163,7 @@ class Hub:
             replace=False,  # Don't allow replacement by default
         )
 
-        log.info(
+        _get_logger().info(
             "Added component to hub",
             name=component_name,
             dimension=dimension,
@@ -284,7 +284,7 @@ class Hub:
         if self._cli_group and click_command:
             self._cli_group.add_command(click_command)
 
-        log.info(
+        _get_logger().info(
             "Added command to hub",
             name=command_name,
             aliases=info.aliases,
@@ -380,9 +380,9 @@ class Hub:
             if hasattr(component_class, "initialize"):
                 try:
                     component_class.initialize()
-                    log.debug(f"Initialized component: {entry.name}")
+                    _get_logger().debug(f"Initialized component: {entry.name}")
                 except Exception as e:
-                    log.error(f"Failed to initialize {entry.name}: {e}")
+                    _get_logger().error(f"Failed to initialize {entry.name}: {e}")
 
     def cleanup(self) -> None:
         """Cleanup all components that support cleanup."""
@@ -394,9 +394,9 @@ class Hub:
             if hasattr(component_class, "cleanup"):
                 try:
                     component_class.cleanup()
-                    log.debug(f"Cleaned up component: {entry.name}")
+                    _get_logger().debug(f"Cleaned up component: {entry.name}")
                 except Exception as e:
-                    log.error(f"Failed to cleanup {entry.name}: {e}")
+                    _get_logger().error(f"Failed to cleanup {entry.name}: {e}")
 
     def clear(self, dimension: str | None = None) -> None:
         """
