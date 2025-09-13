@@ -24,7 +24,7 @@ _LAZY_SETUP_STATE: dict[str, Any] = {"done": False, "error": None, "in_progress"
 class FoundationLogger:
     """A `structlog`-based logger providing a standardized logging interface."""
 
-    def __init__(self, hub=None) -> None:
+    def __init__(self, hub: Any = None) -> None:
         self._internal_logger = structlog.get_logger().bind(
             logger_name=f"{self.__class__.__module__}.{self.__class__.__name__}"
         )
