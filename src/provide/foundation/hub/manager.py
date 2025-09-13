@@ -440,6 +440,14 @@ class Hub:
             if self._foundation_initialized and not force:
                 return
 
+            # Check if config is already locked by explicit config from another Hub
+            existing_entry = self._component_registry.get_entry("foundation.config", "singleton")
+            if existing_entry and existing_entry.metadata.get("locked", False) and not force:
+                # Use existing locked config instead of reinitializing
+                self._foundation_config = existing_entry.value
+                self._foundation_initialized = True
+                return
+
             # Lazy import to avoid circular imports during module loading
             from provide.foundation.logger.config import TelemetryConfig
 
@@ -456,11 +464,17 @@ class Hub:
                 self._foundation_config = TelemetryConfig()
 
             # Register Foundation config as singleton
+            # Mark explicit configs to prevent environment overrides
+            is_explicit_config = config is not None
             self._component_registry.register(
                 name="foundation.config",
                 value=self._foundation_config,
                 dimension="singleton",
-                metadata={"initialized": True},
+                metadata={
+                    "initialized": True,
+                    "explicit_config": is_explicit_config,
+                    "locked": is_explicit_config  # Lock explicit configs from being replaced
+                },
                 replace=True,
             )
 
