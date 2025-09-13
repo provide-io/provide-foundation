@@ -10,12 +10,14 @@ import os
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import TextIO
 from unittest.mock import patch
 
 import pytest
 
 from provide.foundation.hub.manager import Hub, clear_hub, get_hub
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
+from provide.testkit.fixtures import captured_stderr_for_foundation
 
 
 class TestHubInitialization:
@@ -28,6 +30,11 @@ class TestHubInitialization:
     def teardown_method(self):
         """Clean up after each test."""
         clear_hub()
+
+    @pytest.fixture(autouse=True)
+    def setup_test_output(self, captured_stderr_for_foundation: TextIO):
+        """Setup output capture for all tests."""
+        self.captured_output = captured_stderr_for_foundation
 
     def test_hub_lazy_initialization(self):
         """Test that Hub auto-initializes Foundation on first access."""
@@ -111,8 +118,8 @@ class TestHubInitialization:
         assert len(hubs) == 10
         assert all(hub is hubs[0] for hub in hubs)
 
-    def test_hub_logger_access(self):
-        """Test getting loggers through Hub."""
+    def test_hub_logger_access_with_output(self):
+        """Test getting loggers through Hub and verify output."""
         hub = get_hub()
 
         # Should be able to get loggers
@@ -122,8 +129,17 @@ class TestHubInitialization:
         assert logger1 is not None
         assert logger2 is not None
 
-        # Different names should work
-        assert logger1 != logger2
+        # Test logging and verify output is captured
+        test_message1 = "Test message from module1"
+        test_message2 = "Test message from module2"
+
+        logger1.info(test_message1)
+        logger2.info(test_message2)
+
+        # Check that messages were captured
+        output = self.captured_output.getvalue()
+        assert test_message1 in output
+        assert test_message2 in output
 
     def test_hub_initialization_order_independence(self):
         """Test that initialization order doesn't matter."""
