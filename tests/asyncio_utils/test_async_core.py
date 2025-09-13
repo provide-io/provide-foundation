@@ -6,7 +6,7 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from provide.foundation.asynctools import (
+from provide.foundation.asyncio_utils import (
     async_gather,
     async_run,
     async_sleep,
@@ -47,7 +47,7 @@ class TestAsyncSleep:
             await async_sleep(-1.0)
 
     @pytest.mark.asyncio
-    @patch("provide.foundation.asynctools.core.asyncio")
+    @patch("provide.foundation.asyncio_utils.core.asyncio")
     async def test_async_sleep_uses_asyncio_module(self, mock_asyncio):
         """Test async_sleep calls asyncio.sleep()."""
         mock_asyncio.sleep = AsyncMock()
@@ -188,7 +188,7 @@ class TestAsyncGather:
         assert results == [42, "hello", [1, 2, 3], {"key": "value"}]
 
     @pytest.mark.asyncio
-    @patch("provide.foundation.asynctools.core.asyncio")
+    @patch("provide.foundation.asyncio_utils.core.asyncio")
     async def test_async_gather_uses_asyncio_module(self, mock_asyncio):
         """Test async_gather calls asyncio.gather()."""
         mock_coro1 = AsyncMock(return_value="result1")
@@ -275,7 +275,7 @@ class TestAsyncWaitFor:
                 coro.close()
 
     @pytest.mark.asyncio
-    @patch("provide.foundation.asynctools.core.asyncio")
+    @patch("provide.foundation.asyncio_utils.core.asyncio")
     async def test_async_wait_for_uses_asyncio_module(self, mock_asyncio):
         """Test async_wait_for calls asyncio.wait_for()."""
         mock_coro = AsyncMock(return_value="result")
@@ -359,7 +359,7 @@ class TestAsyncRun:
         with pytest.raises(RuntimeError, match="Main failed"):
             async_run(failing_main)
 
-    @patch("provide.foundation.asynctools.core.asyncio")
+    @patch("provide.foundation.asyncio_utils.core.asyncio")
     def test_async_run_uses_asyncio_module(self, mock_asyncio):
         """Test async_run calls asyncio.run()."""
 

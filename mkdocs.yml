@@ -239,7 +239,7 @@ nav:
       - Middleware: api/transport/middleware.md
     - Metrics API: api/metrics/api-index.md
     - Archive API: api/archive/api-index.md
-    - Async Tools API: api/asynctools/api-index.md
+    - Asyncio Utils API: api/asyncio_utils/api-index.md
     - Context API: api/context/api-index.md
     - Core API: api/core/api-index.md
     - Environment API: api/env/api-index.md
