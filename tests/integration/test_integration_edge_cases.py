@@ -185,7 +185,7 @@ def test_logger_with_extreme_names(
            and "⚙️➡️🚀 Starting Foundation" not in line
            and "⚙️➡️✅ Foundation" not in line
            and "Configuring structlog output processors" not in line
-           and not ("] [trace    ]" in line)
+           and not ("[trace    ]" in line or "trace    " in line)
            and line.strip()
     ]
     assert len(lines) == len(extreme_names)
@@ -235,7 +235,7 @@ def test_log_message_edge_cases(
            and "⚙️➡️🚀 Starting Foundation" not in line
            and "⚙️➡️✅ Foundation" not in line
            and "Configuring structlog output processors" not in line
-           and not ("] [trace    ]" in line)
+           and not ("[trace    ]" in line or "trace    " in line)
            and line.strip()
     ]
     assert len(lines) >= len(edge_case_messages)
@@ -305,7 +305,7 @@ def test_logger_args_formatting_edge_cases(
            and "⚙️➡️🚀 Starting Foundation" not in line
            and "⚙️➡️✅ Foundation" not in line
            and "Configuring structlog output processors" not in line
-           and not ("] [trace    ]" in line)
+           and not ("[trace    ]" in line or "trace    " in line)
            and line.strip()
     ]
     assert len(lines) == len(test_cases), (
@@ -421,7 +421,7 @@ def test_trace_level_edge_cases(
            and "⚙️➡️🚀 Starting Foundation" not in line
            and "⚙️➡️✅ Foundation" not in line
            and "Configuring structlog output processors" not in line
-           and not ("] [trace    ]" in line)
+           and not ("[trace    ]" in line or "trace    " in line)
            and line.strip()
     ]
     assert len(lines) >= 4, "Not all trace messages were logged"
@@ -500,7 +500,7 @@ def test_performance_with_disabled_features(
            and "⚙️➡️🚀 Starting Foundation" not in line
            and "⚙️➡️✅ Foundation" not in line
            and "Configuring structlog output processors" not in line
-           and not ("] [trace    ]" in line)
+           and not ("[trace    ]" in line or "trace    " in line)
            and line.strip()
     ]
     assert len(lines) == message_count
