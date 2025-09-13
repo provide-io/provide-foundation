@@ -26,8 +26,8 @@ from provide.foundation import (
     logger as global_logger,
     setup_telemetry,
 )
-from provide.foundation.testing import reset_foundation_setup_for_testing
-from tests.utils import TestEnvironment
+from provide.testkit import reset_foundation_setup_for_testing
+from provide.testkit import TestEnvironment
 
 
 class TestRealWorldScenarios:
@@ -69,7 +69,7 @@ class TestRealWorldScenarios:
         """Test microservice startup with environment-based configuration."""
         import sys
 
-        from provide.foundation.testing import set_log_stream_for_testing
+        from provide.testkit import set_log_stream_for_testing
 
         env_vars = {
             "FOUNDATION_SERVICE_NAME": "payment-service",
@@ -152,7 +152,7 @@ class TestRealWorldScenarios:
         """Test lazy initialization in a data processing pipeline."""
         import sys
 
-        from provide.foundation.testing import set_log_stream_for_testing
+        from provide.testkit import set_log_stream_for_testing
 
         reset_foundation_setup_for_testing()
         import os
@@ -201,7 +201,7 @@ class TestRealWorldScenarios:
         """Test lazy initialization with concurrent worker processes."""
         import sys
 
-        from provide.foundation.testing import set_log_stream_for_testing
+        from provide.testkit import set_log_stream_for_testing
 
         reset_foundation_setup_for_testing()
         import os
@@ -253,7 +253,7 @@ class TestRealWorldScenarios:
         """Test lazy initialization in async web server scenario."""
         import sys
 
-        from provide.foundation.testing import set_log_stream_for_testing
+        from provide.testkit import set_log_stream_for_testing
 
         reset_foundation_setup_for_testing()
         import os
@@ -320,7 +320,7 @@ class TestRealWorldScenarios:
         """Test lazy initialization when used as a library component."""
         import sys
 
-        from provide.foundation.testing import set_log_stream_for_testing
+        from provide.testkit import set_log_stream_for_testing
 
         reset_foundation_setup_for_testing()
         import os
@@ -384,7 +384,7 @@ class TestMigrationFromExplicitSetup:
         """Test gradual migration from explicit setup to lazy initialization."""
         import sys
 
-        from provide.foundation.testing import set_log_stream_for_testing
+        from provide.testkit import set_log_stream_for_testing
 
         reset_foundation_setup_for_testing()
         import os
@@ -427,7 +427,7 @@ class TestMigrationFromExplicitSetup:
         """Test different initialization orders work correctly."""
         import sys
 
-        from provide.foundation.testing import set_log_stream_for_testing
+        from provide.testkit import set_log_stream_for_testing
 
         reset_foundation_setup_for_testing()
         import os
@@ -468,7 +468,7 @@ class TestMigrationFromExplicitSetup:
         """Test that explicit setup takes precedence over lazy initialization."""
         import sys
 
-        from provide.foundation.testing import set_log_stream_for_testing
+        from provide.testkit import set_log_stream_for_testing
 
         reset_foundation_setup_for_testing()
         import os

@@ -22,7 +22,7 @@ from provide.foundation import (
     logger,  # This is the global FoundationLogger instance
     setup_telemetry,
 )
-from provide.foundation.testing import reset_foundation_setup_for_testing
+from provide.testkit import reset_foundation_setup_for_testing
 
 
 def test_invalid_environment_variables_handling(

@@ -22,7 +22,7 @@ os.environ.setdefault("PROVIDE_LOG_LEVEL", "DEBUG")
 with_suppression = os.environ.get("FOUNDATION_SUPPRESS_TESTING_WARNINGS")
 os.environ["FOUNDATION_SUPPRESS_TESTING_WARNINGS"] = "true"
 
-from provide.foundation.testing import (
+from provide.testkit import (
     reset_foundation_setup_for_testing,
     set_log_stream_for_testing,
 )
@@ -83,7 +83,7 @@ def manage_telemetry_reset_for_each_test() -> Generator[None]:
 
 
 # Import and re-export fixtures from the unified testing module
-from provide.foundation.testing import (
+from provide.testkit import (
     async_stream_reader,
     async_timeout,
     binary_file,

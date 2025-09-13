@@ -9,7 +9,7 @@ import click
 from click.testing import CliRunner
 import pytest
 
-from provide.foundation.testing.cli import (
+from provide.testkit.cli import (
     CliTestCase,
     MockContext,
     create_test_cli,

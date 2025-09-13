@@ -160,12 +160,12 @@ class TestValidatorsCoverage:
         # Zero should fail
         with pytest.raises(ValidationError) as exc_info:
             validate_positive(instance, attribute, 0)
-        assert "Value must be positive, got 0" in str(exc_info.value)
+        assert "Value 0 for positive_field must be positive" in str(exc_info.value)
 
         # Negative should fail
         with pytest.raises(ValidationError) as exc_info:
             validate_positive(instance, attribute, -1)
-        assert "Value must be positive, got -1" in str(exc_info.value)
+        assert "Value -1 for positive_field must be positive" in str(exc_info.value)
 
     def test_validate_non_negative_valid_values(self):
         """Test validate_non_negative with valid non-negative values."""
@@ -200,7 +200,7 @@ class TestValidatorsCoverage:
         # Negative values should fail
         with pytest.raises(ValidationError) as exc_info:
             validate_non_negative(instance, attribute, -1)
-        assert "Value must be non-negative, got -1" in str(exc_info.value)
+        assert "Value -1 for non_negative_field must be non-negative" in str(exc_info.value)
 
         with pytest.raises(ValidationError) as exc_info:
             validate_non_negative(instance, attribute, -0.5)
