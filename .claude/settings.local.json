@@ -61,7 +61,8 @@
       "Bash(PYTHONPATH=src pytest tests/tracer/test_otel.py -v)",
       "Bash(PYTHONPATH=src pytest tests/logger/test_logger_production_compliance.py::TestDocumentedBehaviorCompliance::test_immediate_usage_patterns -v -s)",
       "Bash(PYTHONPATH=src pytest tests/logger/test_logger_production_compliance.py::TestDocumentedBehaviorCompliance -v)",
-      "Bash(PYTHONPATH=src pytest tests/cli/commands/test_deps_coverage.py::TestDepsCommandModuleImport::test_module_imports_successfully -v -s --tb=short)"
+      "Bash(PYTHONPATH=src pytest tests/cli/commands/test_deps_coverage.py::TestDepsCommandModuleImport::test_module_imports_successfully -v -s --tb=short)",
+      "Bash(PYTHONPATH=src pytest tests/logger/test_logger_production_compliance.py::TestDocumentedBehaviorCompliance::test_immediate_usage_patterns -v --tb=long)"
     ],
     "deny": [],
     "ask": [],
