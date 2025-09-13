@@ -443,7 +443,12 @@ class Hub:
             # Lazy import to avoid circular imports during module loading
             from provide.foundation.logger.config import TelemetryConfig
 
-            self._foundation_config = config or TelemetryConfig.from_env()
+            # Handle config loading with graceful fallback
+            try:
+                self._foundation_config = config or TelemetryConfig.from_env()
+            except Exception:
+                # Fallback to minimal default config if loading fails
+                self._foundation_config = TelemetryConfig()
 
             # Register Foundation config as singleton
             self._component_registry.register(
