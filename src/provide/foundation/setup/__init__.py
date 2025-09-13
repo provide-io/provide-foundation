@@ -84,7 +84,26 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
         stacklevel=2,
     )
 
-    setup_foundation(config)
+    # Route directly through Hub to avoid double warnings
+    from provide.foundation.hub.manager import get_hub
+
+    hub = get_hub()
+    if config:
+        hub.initialize_foundation(config)
+
+    # Handle legacy subsystems that aren't yet in Hub
+    current_config = config if config is not None else TelemetryConfig.from_env()
+
+    # Configure file logging if specified (legacy)
+    log_file_path = getattr(current_config.logging, "log_file", None)
+    configure_file_logging(log_file_path)
+
+    # Initialize OpenTelemetry tracing and metrics if available and enabled (legacy)
+    setup_opentelemetry_tracing(current_config)
+    setup_opentelemetry_metrics(current_config)
+
+    global _EXPLICIT_SETUP_DONE
+    _EXPLICIT_SETUP_DONE = True
 
 
 async def shutdown_foundation(timeout_millis: int = 5000) -> None:

@@ -235,7 +235,7 @@ class TestBackwardCompatibility:
 
         # Should be able to use with new Hub API
         hub = get_hub()
-        hub.initialize_foundation(telemetry_config)
+        hub.initialize_foundation(telemetry_config, force=True)
 
         # Configuration should be stored correctly
         stored_config = hub.get_foundation_config()
