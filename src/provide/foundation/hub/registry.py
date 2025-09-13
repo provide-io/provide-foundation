@@ -21,8 +21,9 @@ def _get_logger():
     """Get logger lazily to avoid circular import issues."""
     global _logger
     if _logger is None:
-        from provide.foundation.logger import get_logger
-        _logger = get_logger(__name__)
+        # Use structlog directly to avoid circular imports during Hub initialization
+        import structlog
+        _logger = structlog.get_logger(__name__)
     return _logger
 
 

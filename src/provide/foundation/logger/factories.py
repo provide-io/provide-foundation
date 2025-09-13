@@ -30,10 +30,14 @@ def get_logger(
     # Emoji hierarchy removed - using event sets now
     # emoji and emoji_hierarchy parameters are deprecated
 
-    from provide.foundation.hub.manager import get_hub
-
-    hub = get_hub()
-    return hub.get_foundation_logger(name)
+    try:
+        from provide.foundation.hub.manager import get_hub
+        hub = get_hub()
+        return hub.get_foundation_logger(name)
+    except ImportError:
+        # Fallback to basic structlog if hub is not available due to circular import
+        import structlog
+        return structlog.get_logger(name)
 
 
 def setup_logging(
