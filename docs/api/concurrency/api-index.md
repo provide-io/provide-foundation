@@ -1,10 +1,10 @@
-# Asyncio Utils API
+# Concurrency API
 
 Core async utilities that wrap Python's asyncio with Foundation tracking and validation.
 
 ## Overview
 
-The `asyncio_utils` module provides a minimal set of async utilities that add Foundation-specific features like validation and error handling to standard asyncio operations.
+The `concurrency` module provides a minimal set of async utilities that add Foundation-specific features like validation and error handling to standard asyncio operations.
 
 ## Current API
 
@@ -13,7 +13,7 @@ The `asyncio_utils` module provides a minimal set of async utilities that add Fo
 Async sleep with Foundation tracking and cancellation support.
 
 ```python
-from provide.foundation.asyncio_utils import async_sleep
+from provide.foundation.concurrency import async_sleep
 
 async def main():
     # Sleep for 1 second
@@ -28,7 +28,7 @@ async def main():
 Run awaitables concurrently with Foundation tracking.
 
 ```python
-from provide.foundation.asyncio_utils import async_gather
+from provide.foundation.concurrency import async_gather
 
 async def fetch_data(n):
     await async_sleep(0.1)
@@ -57,7 +57,7 @@ async def main():
 Wait for an awaitable with optional timeout.
 
 ```python
-from provide.foundation.asyncio_utils import async_wait_for
+from provide.foundation.concurrency import async_wait_for
 import asyncio
 
 async def slow_task():
@@ -80,7 +80,7 @@ async def main():
 Run async function with Foundation tracking.
 
 ```python
-from provide.foundation.asyncio_utils import async_run
+from provide.foundation.concurrency import async_run
 
 async def main():
     await async_sleep(0.1)
@@ -106,7 +106,7 @@ result = async_run(main, debug=True)
 All functions raise `ValidationError` for invalid inputs:
 
 ```python
-from provide.foundation.asyncio_utils import async_sleep, async_wait_for
+from provide.foundation.concurrency import async_sleep, async_wait_for
 from provide.foundation.errors import ValidationError
 
 # These raise ValidationError
@@ -121,7 +121,7 @@ async_run("not callable")  # Non-callable input
 ### Combining Multiple Utilities
 
 ```python
-from provide.foundation.asyncio_utils import (
+from provide.foundation.concurrency import (
     async_gather,
     async_sleep,
     async_wait_for,
