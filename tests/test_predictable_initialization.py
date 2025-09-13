@@ -90,8 +90,8 @@ class TestPredictableInitialization:
             hub = get_hub()
 
             config = hub.get_foundation_config()
-            # Should use default level (INFO)
-            assert config.logging.default_level == "INFO"
+            # Should use default level (WARNING)
+            assert config.logging.default_level == "WARNING"
 
     def test_error_recovery_predictable(self):
         """Test predictable behavior when errors occur."""
