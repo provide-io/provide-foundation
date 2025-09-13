@@ -248,8 +248,8 @@ class TestDocumentedBehaviorCompliance:
         assert "[🔑][➡️][✅]" in das_logs[0]["event"]
         # Should NOT have logger name emoji prefix before DAS
 
-    def test_backward_compatibility_promise(self, capsys: CaptureFixture) -> None:
-        """Test that lazy initialization maintains backward compatibility."""
+    def test_immediate_usage_patterns(self, capsys: CaptureFixture) -> None:
+        """Test that lazy initialization supports immediate usage patterns."""
         import sys
 
         from provide.testkit import set_log_stream_for_testing
@@ -258,25 +258,25 @@ class TestDocumentedBehaviorCompliance:
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
-        # Old code pattern: immediate logging without setup
-        global_logger.info("Legacy immediate logging")
+        # Immediate logging without explicit setup
+        global_logger.info("Immediate logging works")
 
-        # Old code pattern: named logger creation
-        legacy_logger = global_logger.get_logger("legacy.component")
-        legacy_logger.warning("Legacy component warning")
+        # Named logger creation
+        component_logger = global_logger.get_logger("component.service")
+        component_logger.warning("Component service warning")
 
-        # Old code pattern: exception logging
+        # Exception logging
         try:
-            raise RuntimeError("Legacy exception")
+            raise RuntimeError("Test exception")
         except RuntimeError:
-            legacy_logger.exception("Legacy exception handling")
+            component_logger.exception("Exception handling")
 
-        # Should work exactly as before
+        # Verify all patterns work with lazy initialization
         captured = capsys.readouterr()
-        assert "Legacy immediate logging" in captured.err
-        assert "Legacy component warning" in captured.err
-        assert "Legacy exception handling" in captured.err
-        assert "RuntimeError: Legacy exception" in captured.err
+        assert "Immediate logging works" in captured.err
+        assert "Component service warning" in captured.err
+        assert "Exception handling" in captured.err
+        assert "RuntimeError: Test exception" in captured.err
 
     def test_thread_safety_guarantees(self, capsys: CaptureFixture) -> None:
         """Test documented thread safety guarantees."""

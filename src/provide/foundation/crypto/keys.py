@@ -168,7 +168,7 @@ def generate_tls_keypair(
         raise ValueError(f"TLS key type must be 'ecdsa' or 'rsa', got {key_type}")
 
 
-# Legacy compatibility functions (for smooth migration)
+# Legacy functions
 def generate_key_pair() -> Ed25519KeyPair:
     """Legacy compatibility function.
 

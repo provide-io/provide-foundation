@@ -18,7 +18,7 @@ from provide.foundation.cli.decorators import (
     standard_options,
     version_option,
 )
-from provide.foundation.context import Context
+from provide.foundation.context import CLIContext
 
 
 class TestLoggingOptions:
