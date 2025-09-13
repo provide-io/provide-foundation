@@ -193,7 +193,12 @@ def test_high_volume_logging_performance(
     lines = [
         line
         for line in output.strip().splitlines()
-        if not line.startswith("[Foundation Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]")
+           and "⚙️➡️🚀 Starting Foundation" not in line
+           and "⚙️➡️✅ Foundation" not in line
+           and "Configuring structlog output processors" not in line
+           and "[trace" not in line
+           and line.strip()
     ]
 
     assert len(lines) == message_count, (
