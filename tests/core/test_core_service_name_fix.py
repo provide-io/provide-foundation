@@ -62,14 +62,15 @@ def test_service_name_injection_fix() -> None:
         print(f"Raw output: {output!r}")
 
         # Parse JSON
-        lines = [
-            line
+        # Filter to get only JSON lines (they start with '{')
+        json_lines = [
+            line.strip()
             for line in output.strip().splitlines()
-            if line.strip() and not line.startswith("[")
+            if line.strip().startswith('{')
         ]
 
-        if lines:
-            log_data = json.loads(lines[0])
+        if json_lines:
+            log_data = json.loads(json_lines[0])
             print(f"Parsed JSON: {json.dumps(log_data, indent=2)}")
 
             # Check expectations
@@ -88,8 +89,9 @@ def test_service_name_injection_fix() -> None:
             print("✅ Service name injection test PASSED!")
 
         else:
-            print("❌ No log output found!")
-            raise AssertionError("No log output found")
+            print("❌ No JSON log output found!")
+            print(f"Full output: {output}")
+            raise AssertionError("No JSON log output found")
 
     finally:
         set_log_stream_for_testing(None)

@@ -84,14 +84,15 @@ def test_service_name_no_emoji() -> None:
         logger.info("Message with service name")
 
         output = captured_output.getvalue()
-        lines = [
-            line
+        # Filter to get only JSON lines (they start with '{')
+        json_lines = [
+            line.strip()
             for line in output.strip().splitlines()
-            if line.strip() and not line.startswith("[")
+            if line.strip().startswith('{')
         ]
 
-        if lines:
-            log_data = json.loads(lines[0])
+        if json_lines:
+            log_data = json.loads(json_lines[0])
             expected_event = "Message with service name"
             actual_event = log_data.get("event", "")
 
@@ -108,8 +109,9 @@ def test_service_name_no_emoji() -> None:
                 print("❌ Service name injection test failed")
                 raise AssertionError("Service name injection test failed")
         else:
-            print("❌ No log output found")
-            raise AssertionError("No log output found")
+            print("❌ No JSON log output found")
+            print(f"Full output: {output}")
+            raise AssertionError("No JSON log output found")
     finally:
         set_log_stream_for_testing(None)
         # Clean up environment
