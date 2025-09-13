@@ -4,6 +4,8 @@ from unittest.mock import patch
 
 import pytest
 
+from provide.foundation.crypto import _HAS_CRYPTO
+
 
 class TestOptionalCryptoDependency:
     """Test that crypto functionality properly handles missing cryptography dependency."""
@@ -40,7 +42,7 @@ class TestOptionalCryptoDependency:
             with pytest.raises(
                 CertificateError, match="Failed to initialize certificate"
             ):
-                cert = Certificate(
+                Certificate(
                     generate_keypair=True, key_type="rsa"
                 )  # This should trigger _require_crypto
 
@@ -204,7 +206,7 @@ class TestCryptoFallbackBehavior:
         # When crypto is not available, even basic Certificate creation should fail
         # if it tries to parse invalid PEM data
         with pytest.raises(Exception):  # Could be CertificateError or ImportError
-            cert = Certificate(generate_keypair=False, cert_pem_or_uri="dummy")
+            Certificate(generate_keypair=False, cert_pem_or_uri="dummy")
 
     def test_crypto_module_resilience(self):
         """Test that the crypto module is resilient to import issues."""

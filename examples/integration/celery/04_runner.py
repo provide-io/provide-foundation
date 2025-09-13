@@ -63,7 +63,7 @@ cleanup_old_data = tasks_module.cleanup_old_data
 
 # Try to import Celery workflow tools
 try:
-    from celery import chain, chord, group
+    from celery import chain, group
     CELERY_WORKFLOWS_AVAILABLE = True
 except ImportError:
     CELERY_WORKFLOWS_AVAILABLE = False

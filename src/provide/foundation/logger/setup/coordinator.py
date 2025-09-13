@@ -12,7 +12,7 @@ from typing import Any
 
 import structlog
 
-from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
+from provide.foundation.logger.config import TelemetryConfig
 from provide.foundation.logger.core import (
     _LAZY_SETUP_STATE,
     logger as foundation_logger,
@@ -22,7 +22,7 @@ from provide.foundation.logger.setup.processors import (
     handle_globally_disabled_setup,
 )
 from provide.foundation.streams import get_log_stream
-from provide.foundation.utils.streams import get_foundation_log_stream, get_safe_stderr
+from provide.foundation.utils.streams import get_safe_stderr
 
 _PROVIDE_SETUP_LOCK = threading.Lock()
 _CORE_SETUP_LOGGER_NAME = "provide.foundation.core_setup"

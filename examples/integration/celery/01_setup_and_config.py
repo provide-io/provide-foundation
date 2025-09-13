@@ -14,8 +14,6 @@ Usage:
     from examples.integration.celery.setup_and_config import app, setup_celery_logging
 """
 
-from datetime import datetime
-import os
 from pathlib import Path
 import sys
 

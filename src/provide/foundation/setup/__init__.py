@@ -133,6 +133,7 @@ async def shutdown_foundation_telemetry(timeout_millis: int = 5000) -> None:
 
 
 __all__ = [
+    "internal_setup",
     "reset_foundation_setup_for_testing",
     "setup_foundation",
     "setup_telemetry",  # Legacy alias

@@ -3,7 +3,6 @@
 import json
 import os
 from pathlib import Path
-import sys
 import tempfile
 from unittest.mock import Mock, patch
 
@@ -57,7 +56,7 @@ class TestMockContext:
         mock_ctx = MockContext()
         test_path = "/test/config.json"
 
-        with patch.object(MockContext.__bases__[0], "save_config") as mock_super_save:
+        with patch.object(MockContext.__bases__[0], "save_config"):
             mock_ctx.save_config(test_path)
 
         assert test_path in mock_ctx.saved_configs
@@ -67,7 +66,7 @@ class TestMockContext:
         mock_ctx = MockContext()
         test_path = "/test/config.json"
 
-        with patch.object(MockContext.__bases__[0], "load_config") as mock_super_load:
+        with patch.object(MockContext.__bases__[0], "load_config"):
             mock_ctx.load_config(test_path)
 
         assert test_path in mock_ctx.loaded_configs
@@ -216,7 +215,6 @@ class TestTempConfigFile:
         config_data = {"key1": "value1"}
 
         # Mock the import to raise ImportError
-        import sys
         import builtins
         original_import = builtins.__import__
         
@@ -227,7 +225,7 @@ class TestTempConfigFile:
         
         with patch('builtins.__import__', side_effect=mock_import):
             with pytest.raises(ImportError, match="PyYAML required for YAML testing"):
-                with temp_config_file(config_data, "yaml") as config_path:
+                with temp_config_file(config_data, "yaml"):
                     pass
 
     def test_temp_config_file_cleanup_on_exception(self):

@@ -148,7 +148,7 @@ def process_user_registration(user_data: dict[str, Any]) -> dict[str, Any]:
                 raise ValueError(error_msg)
 
             # Step 3: Create user record
-            user_result = simulate_database_query(
+            simulate_database_query(
                 "INSERT INTO users (email, name, password_hash) VALUES (?, ?, ?)",
                 {
                     "email": user_data["email"],
@@ -157,12 +157,12 @@ def process_user_registration(user_data: dict[str, Any]) -> dict[str, Any]:
                 }
             )
 
-            user_id = 1000 + (i * 123) % 9000  # Deterministic user IDs for demo
+            user_id = 1000 + (hash(user_data["email"]) * 123) % 9000  # Deterministic user IDs for demo
             span.set_tag("user_id", user_id)
 
             # Step 4: Send welcome email (external service)
             try:
-                email_result = call_external_service("email_service", "/send_welcome")
+                call_external_service("email_service", "/send_welcome")
                 span.set_tag("welcome_email_sent", True)
             except RuntimeError as e:
                 # Don't fail registration if email fails
@@ -173,7 +173,7 @@ def process_user_registration(user_data: dict[str, Any]) -> dict[str, Any]:
 
             # Step 5: Log to analytics service
             try:
-                analytics_result = call_external_service("analytics", "/track_registration")
+                call_external_service("analytics", "/track_registration")
                 span.set_tag("analytics_tracked", True)
             except RuntimeError as e:
                 # Don't fail registration if analytics fails

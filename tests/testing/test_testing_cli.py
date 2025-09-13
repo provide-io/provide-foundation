@@ -65,7 +65,7 @@ class TestIsolatedCliRunner:
         """Test isolated runner with environment variables."""
         test_env = {"TEST_VAR": "test_value"}
 
-        with isolated_cli_runner(env=test_env) as runner:
+        with isolated_cli_runner(env=test_env):
             assert os.environ.get("TEST_VAR") == "test_value"
 
         # Should be cleaned up

@@ -427,7 +427,7 @@ class TestToolInstaller:
         install_dir = temp_dir / "install"
         sample_metadata.install_path = install_dir
 
-        result = installer.install(binary_file, sample_metadata)
+        installer.install(binary_file, sample_metadata)
 
         # Should be installed as binary
         assert (install_dir / "bin" / "testtool").exists()

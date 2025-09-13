@@ -19,7 +19,7 @@ class TestDepsCommandWithClick:
         """Test deps command when click is available."""
         with patch("provide.foundation.cli.commands.deps._HAS_CLICK", True):
             with patch("provide.foundation.cli.commands.deps.click") as mock_click:
-                mock_command = Mock()
+                Mock()
                 mock_click.command.return_value = lambda f: f
                 mock_click.option.return_value = lambda f: f
 

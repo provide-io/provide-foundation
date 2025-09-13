@@ -17,7 +17,6 @@ import pytest
 
 from provide.foundation.hub.manager import Hub, clear_hub, get_hub
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
-from provide.testkit.fixtures import captured_stderr_for_foundation
 
 
 class TestHubInitialization:

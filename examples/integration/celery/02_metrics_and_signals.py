@@ -36,7 +36,6 @@ from provide.foundation import logger  # noqa: E402
 # Import Celery signal types
 try:
     from celery.signals import (
-        beat_init,
         celeryd_after_setup,
         task_failure,
         task_postrun,
@@ -197,7 +196,7 @@ def setup_signal_handlers(app):
     def task_failure_handler(sender, task_id, exception, args, kwargs, traceback, einfo, **kwds):
         """Log task failures with full context."""
         duration = time.time() - task_start_times.pop(task_id, time.time())
-        context = task_contexts.get(task_id, {})
+        task_contexts.get(task_id, {})
         task_logger = CeleryTaskLogger(sender.name)
         task_logger.log_task_failure(task_id, exception, duration, metrics)
 

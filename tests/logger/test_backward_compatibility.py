@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import warnings
 
-import pytest
 
 from provide.foundation.hub.manager import clear_hub, get_hub
 

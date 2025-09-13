@@ -35,7 +35,7 @@ class TestComponentDiscovery:
 
     def test_discover_components_with_mock_entry_points(self, monkeypatch) -> None:
         """Test component discovery with mocked entry points."""
-        from unittest.mock import Mock, MagicMock
+        from unittest.mock import Mock
         import importlib.metadata as metadata
 
         # Create a mock entry point

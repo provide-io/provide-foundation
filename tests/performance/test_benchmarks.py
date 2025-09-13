@@ -219,7 +219,7 @@ class TestDogfoodingPerformance:
         def generate_config_warnings():
             """Test config warnings (which now use structured logging)."""
             # This will trigger our improved warning system
-            config = LoggingConfig(
+            LoggingConfig(
                 default_level="INFO",
                 console_formatter="key_value",
             )

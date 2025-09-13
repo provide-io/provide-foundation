@@ -65,7 +65,7 @@ def simple_logging_example() -> None:
 
     # Exception logging
     try:
-        result = 10 / 0
+        pass
     except ZeroDivisionError:
         logger.exception("Division by zero occurred", operation="calculate")
 

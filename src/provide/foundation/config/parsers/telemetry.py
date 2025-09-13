@@ -11,7 +11,6 @@ from provide.foundation.config.parsers.base import (
     _format_invalid_value_error,
     _VALID_LOG_LEVEL_TUPLE,
     _VALID_FORMATTER_TUPLE,
-    _VALID_FOUNDATION_LOG_OUTPUT_TUPLE,
 )
 
 if TYPE_CHECKING:

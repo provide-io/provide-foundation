@@ -16,14 +16,12 @@ Usage:
     python 06_cut_up_chuck_runner.py
 """
 
-import asyncio
 from pathlib import Path
 import random
 import signal
 import sys
 import threading
 import time
-from typing import Any
 
 # Add src to path for examples
 example_file = Path(__file__).resolve()
@@ -67,7 +65,7 @@ LOGGER_CONTEXTS = cut_up_tasks.LOGGER_CONTEXTS
 
 # Try to import Celery workflow tools
 try:
-    from celery import chain, chord, group
+    from celery import chain, group
     CELERY_WORKFLOWS_AVAILABLE = True
 except ImportError:
     CELERY_WORKFLOWS_AVAILABLE = False

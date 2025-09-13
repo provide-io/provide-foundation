@@ -18,11 +18,9 @@ Usage:
     python scripts/celery_verification.py
 """
 
-import asyncio
 import json
 from pathlib import Path
 import random
-import subprocess
 import sys
 import threading
 import time
@@ -37,7 +35,7 @@ if src_path.exists() and str(src_path) not in sys.path:
 # Setup Celery app (reuse Celery integration setup)
 sys.path.insert(0, str(project_root / "examples/integration/celery"))
 from setup_and_config import app, CeleryTaskLogger
-from metrics_and_signals import metrics, setup_signal_handlers
+from metrics_and_signals import setup_signal_handlers
 
 from provide.foundation import logger, pout
 
@@ -198,7 +196,7 @@ def verify_extreme_test_segment(self, test_type: str, duration_seconds: int = 10
                 if message_count % 100 == 0:
                     time.sleep(0.001)  # Tiny pause every 100 messages
                     
-            except Exception as e:
+            except Exception:
                 error_count += 1
                 if error_count > 10:  # Stop if too many errors
                     break
@@ -268,16 +266,16 @@ def verify_cut_up_chuck_segment(self, duration_seconds: int = 30) -> dict[str, A
             # Mix of different task types
             if iteration % 5 == 0:
                 # Generate batch
-                batch_task = generate_batch.delay(f"verify_batch_{iteration}", random.randint(3, 7))
+                generate_batch.delay(f"verify_batch_{iteration}", random.randint(3, 7))
                 batches_generated += 1
             else:
                 # Generate single entry
-                entry_task = generate_log_entry.delay(iteration + 10000)  # Offset to avoid collision
+                generate_log_entry.delay(iteration + 10000)  # Offset to avoid collision
                 entries_generated += 1
             
             # Occasional anomaly
             if iteration % 8 == 0:
-                anomaly_task = detect_anomaly.delay()
+                detect_anomaly.delay()
                 anomalies_detected += 1
             
             # Small delay to prevent overwhelming

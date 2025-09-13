@@ -322,24 +322,24 @@ def continuous_generator(self, duration_minutes: int = 2, entries_per_minute: in
         # Regular log entries (bulk of traffic)
         if iteration % 5 == 0:
             # Generate batch every 5 iterations
-            batch_task = generate_batch.delay(
+            generate_batch.delay(
                 f"continuous_{int(time.time())}_{total_batches}",
                 random.randint(3, 8)
             )
             total_batches += 1
         else:
             # Generate individual entries
-            entry_task = generate_log_entry.delay(iteration)
+            generate_log_entry.delay(iteration)
             total_entries += 1
         
         # Anomaly detection (every 7 iterations, like original)
         if iteration % 7 == 0:
-            anomaly_task = detect_anomaly.delay()
+            detect_anomaly.delay()
             total_anomalies += 1
         
         # System heartbeat (every 10 iterations)
         if iteration % 10 == 0:
-            heartbeat_task = system_heartbeat.delay()
+            system_heartbeat.delay()
             total_heartbeats += 1
         
         # Sleep to maintain rate (approximate)

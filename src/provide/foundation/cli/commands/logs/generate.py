@@ -259,7 +259,7 @@ def generate_logs_command(
                         logs_rate_limited += 1
 
                 # Control rate
-                target_interval = 1.0 / rate
+                1.0 / rate
                 elapsed = current_time - start_time
                 expected_count = int(elapsed * rate)
 

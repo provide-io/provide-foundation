@@ -1,5 +1,6 @@
 """Tests for logger testing utilities."""
 
+import pytest
 import structlog
 
 from provide.foundation.logger.core import (

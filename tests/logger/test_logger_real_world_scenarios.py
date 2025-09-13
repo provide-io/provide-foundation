@@ -57,7 +57,7 @@ class TestRealWorldScenarios:
             global_logger.info("Web application started successfully", port=8080)
 
         # Read the captured output after the TestEnvironment context
-        captured = capsys.readouterr()
+        capsys.readouterr()
 
         # The test verifies that the logger is working, regardless of specific output format
         # Since we can see the log messages in the pytest capture but capsys isn't capturing them,
