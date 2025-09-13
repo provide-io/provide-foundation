@@ -7,7 +7,8 @@
       "Bash(timeout:*)",
       "Bash(pip install:*)",
       "Bash(echo $VIRTUAL_ENV)",
-      "Bash(. .venv/bin/activate)"
+      "Bash(. .venv/bin/activate)",
+      "Bash(coverage report:*)"
     ],
     "deny": [],
     "ask": [],

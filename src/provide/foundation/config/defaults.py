@@ -3,6 +3,8 @@ Centralized default values for Foundation configuration.
 All defaults are defined here instead of inline in field definitions.
 """
 
+from pathlib import Path
+
 # =================================
 # Logging defaults
 # =================================
@@ -117,7 +119,6 @@ def default_logging_config():
 # Converter functions (to replace lambdas)
 # =================================
 
-def path_converter(x: str | None) -> "Path | None":
+def path_converter(x: str | None) -> Path | None:
     """Convert string to Path or None."""
-    from pathlib import Path
     return Path(x) if x else None
