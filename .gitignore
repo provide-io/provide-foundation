@@ -394,3 +394,4 @@ workenv/
 # act (GitHub Actions testing)
 .secrets
 .env.local
+site
