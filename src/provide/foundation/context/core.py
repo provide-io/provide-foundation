@@ -9,6 +9,7 @@ from attrs import define, field, fields, validators
 
 from provide.foundation.config.base import ConfigSource, field as config_field
 from provide.foundation.config.converters import parse_bool_strict
+from provide.foundation.config.defaults import path_converter
 from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.logger import get_logger
 
@@ -66,13 +67,13 @@ class CLIContext(RuntimeConfig):
     config_file: Path | None = config_field(
         default=None,
         env_var="PROVIDE_CONFIG_FILE",
-        converter=lambda x: Path(x) if x else None,
+        converter=path_converter,
         description="Path to configuration file",
     )
     log_file: Path | None = config_field(
         default=None,
         env_var="PROVIDE_LOG_FILE",
-        converter=lambda x: Path(x) if x else None,
+        converter=path_converter,
         description="Path to log file",
     )
     log_format: str = config_field(

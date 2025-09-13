@@ -35,6 +35,8 @@ from provide.foundation.config.defaults import (
     DEFAULT_RATE_LIMIT_GLOBAL,
     DEFAULT_RATE_LIMIT_GLOBAL_CAPACITY,
     DEFAULT_RATE_LIMIT_OVERFLOW_POLICY,
+    default_module_levels,
+    default_rate_limits,\n    path_converter,
 )
 from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.logger.types import (
@@ -55,7 +57,7 @@ class LoggingConfig(RuntimeConfig):
         description="Default logging level",
     )
     module_levels: dict[str, LogLevelStr] = field(
-        factory=lambda: {},
+        factory=default_module_levels,
         env_var="PROVIDE_LOG_MODULE_LEVELS",
         converter=parse_module_levels,
         description="Per-module log levels (format: module1:LEVEL,module2:LEVEL)",
@@ -88,7 +90,7 @@ class LoggingConfig(RuntimeConfig):
     log_file: Path | None = field(
         default=None,
         env_var="PROVIDE_LOG_FILE",
-        converter=lambda x: Path(x) if x else None,
+        converter=path_converter,
         description="Path to log file",
     )
     foundation_setup_log_level: LogLevelStr = field(
@@ -123,7 +125,7 @@ class LoggingConfig(RuntimeConfig):
         description="Global rate limit burst capacity",
     )
     rate_limit_per_logger: dict[str, tuple[float, float]] = field(
-        factory=lambda: {},
+        factory=default_rate_limits,
         env_var="PROVIDE_LOG_RATE_LIMIT_PER_LOGGER",
         converter=parse_rate_limits,
         description="Per-logger rate limits (format: logger1:rate:capacity,logger2:rate:capacity)",

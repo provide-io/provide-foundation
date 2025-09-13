@@ -106,3 +106,18 @@ def default_rate_limits() -> dict[str, tuple[float, float]]:
 def default_otlp_headers() -> dict[str, str]:
     """Factory for OTLP headers dictionary."""
     return {}
+
+def default_logging_config():
+    """Factory for LoggingConfig instance."""
+    # Import here to avoid circular imports
+    from provide.foundation.logger.config.logging import LoggingConfig
+    return LoggingConfig.from_env()
+
+# =================================
+# Converter functions (to replace lambdas)
+# =================================
+
+def path_converter(x: str | None) -> Path | None:
+    """Convert string to Path or None."""
+    from pathlib import Path
+    return Path(x) if x else None

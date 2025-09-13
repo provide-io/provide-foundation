@@ -22,6 +22,8 @@ from provide.foundation.config.defaults import (
     DEFAULT_TELEMETRY_GLOBALLY_DISABLED,
     DEFAULT_TRACE_SAMPLE_RATE,
     DEFAULT_TRACING_ENABLED,
+    default_logging_config,
+    default_otlp_headers,
 )
 from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.logger.config.logging import LoggingConfig
@@ -46,7 +48,7 @@ class TelemetryConfig(RuntimeConfig):
         description="Service version for telemetry",
     )
     logging: LoggingConfig = field(
-        factory=lambda: LoggingConfig.from_env(), description="Logging configuration"
+        factory=default_logging_config, description="Logging configuration"
     )
     globally_disabled: bool = field(
         default=DEFAULT_TELEMETRY_GLOBALLY_DISABLED,
@@ -79,7 +81,7 @@ class TelemetryConfig(RuntimeConfig):
         description="OTLP endpoint specifically for traces",
     )
     otlp_headers: dict[str, str] = field(
-        factory=lambda: {},
+        factory=default_otlp_headers,
         env_var="OTEL_EXPORTER_OTLP_HEADERS",
         converter=parse_headers,
         description="Headers to send with OTLP requests (key1=value1,key2=value2)",
