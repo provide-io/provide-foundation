@@ -224,7 +224,7 @@ def list_command(dimension: str | None = None) -> None:
 def create_demo_cli():
     """Create the demo CLI application."""
     # Create hub with context
-    context = Context(log_level="INFO", profile="demo", debug=False)
+    context = CLIContext(log_level="INFO", profile="demo", debug=False)
 
     hub = Hub(context=context)
 
