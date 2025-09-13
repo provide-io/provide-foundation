@@ -266,10 +266,10 @@ class TestLoggingWithEmojiSets:
 class TestFactoriesModule:
     def test_setup_logging_basic(
         self,
-        setup_foundation_telemetry_for_test: callable,
-        captured_stderr_for_foundation: "io.StringIO",
+        capsys: CaptureFixture[str],
     ) -> None:
         """Test that setup_logging function works with basic parameters."""
+        import sys
         from provide.foundation.logger.factories import setup_logging
 
         # Use the setup_logging convenience function
@@ -278,5 +278,9 @@ class TestFactoriesModule:
         # Test that the logger works after setup
         global_logger.debug("Test debug message after setup_logging")
 
-        output = captured_stderr_for_foundation.getvalue()
-        assert "Test debug message after setup_logging" in output
+        # Flush stderr to ensure output is captured
+        sys.stderr.flush()
+
+        # Capture stderr since setup_logging reinitializes the foundation
+        captured = capsys.readouterr()
+        assert "Test debug message after setup_logging" in captured.err
