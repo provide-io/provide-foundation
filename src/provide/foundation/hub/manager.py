@@ -77,6 +77,12 @@ class Hub:
         self._command_registry = command_registry or get_command_registry()
         self._cli_group: click.Group | None = None
 
+        # Foundation initialization state
+        self._foundation_initialized = False
+        self._foundation_config = None
+        self._foundation_logger_instance = None
+        self._foundation_init_lock = threading.Lock()
+
     # Component Management
 
     @with_error_handling(
@@ -396,6 +402,131 @@ class Hub:
         if dimension != "command" or dimension is None:
             self._component_registry.clear(dimension=dimension)
 
+    # Foundation Lifecycle Management
+
+    def initialize_foundation(self, config=None) -> None:
+        """
+        Initialize Foundation system through Hub.
+
+        Single initialization method replacing all setup_* functions.
+        Thread-safe and idempotent.
+
+        Args:
+            config: Optional TelemetryConfig (defaults to from_env)
+        """
+        # Fast path if already initialized
+        if self._foundation_initialized:
+            return
+
+        with self._foundation_init_lock:
+            # Double-check after acquiring lock
+            if self._foundation_initialized:
+                return
+
+            # Lazy import to avoid circular imports during module loading
+            from provide.foundation.logger.config import TelemetryConfig
+
+            self._foundation_config = config or TelemetryConfig.from_env()
+
+            # Register Foundation config as singleton
+            self._component_registry.register(
+                name="foundation.config",
+                value=self._foundation_config,
+                dimension="singleton",
+                metadata={"initialized": True},
+                replace=True,
+            )
+
+            # Initialize and register logger instance
+            self._initialize_foundation_logger()
+
+            self._foundation_initialized = True
+
+            # Use Hub's own logger (will be available after init)
+            if hasattr(self, '_get_hub_logger'):
+                logger = self._get_hub_logger()
+                logger.info(
+                    "Foundation initialized through Hub",
+                    config_source="explicit" if config else "environment",
+                )
+
+    def _initialize_foundation_logger(self) -> None:
+        """Initialize the Foundation logger system through Hub."""
+        # Lazy import to avoid circular imports during module loading
+        from provide.foundation.logger.core import FoundationLogger
+
+        try:
+            # Create logger instance with Hub dependency
+            logger_instance = FoundationLogger(hub=self)
+
+            # Setup logger with configuration
+            logger_instance.setup(self._foundation_config)
+
+            # Register logger instance as singleton
+            self._component_registry.register(
+                name="foundation.logger.instance",
+                value=logger_instance,
+                dimension="singleton",
+                metadata={"initialized": True},
+                replace=True,
+            )
+
+            self._foundation_logger_instance = logger_instance
+
+        except Exception as e:
+            # If logger setup fails, continue with emergency fallback
+            # This ensures Hub remains functional even if logging fails
+            import sys
+            print(f"Warning: Foundation logger setup failed: {e}", file=sys.stderr)
+            print("Continuing with emergency fallback logger", file=sys.stderr)
+
+    def get_foundation_logger(self, name: str | None = None) -> Any:
+        """
+        Get Foundation logger instance through Hub.
+
+        Auto-initializes Foundation if not already done.
+        Thread-safe with fallback behavior.
+
+        Args:
+            name: Logger name (e.g., module name)
+
+        Returns:
+            Configured logger instance
+        """
+        # Ensure Foundation is initialized
+        if not self._foundation_initialized:
+            self.initialize_foundation()
+
+        # Get logger instance from registry
+        logger_instance = self._component_registry.get("foundation.logger.instance", "singleton")
+
+        if logger_instance:
+            return logger_instance.get_logger(name)
+
+        # Emergency fallback if logger instance not available
+        import structlog
+        return structlog.get_logger(name or "fallback")
+
+    def is_foundation_initialized(self) -> bool:
+        """Check if Foundation system is initialized."""
+        return self._foundation_initialized
+
+    def get_foundation_config(self):
+        """Get the current Foundation configuration."""
+        if not self._foundation_initialized:
+            self.initialize_foundation()
+
+        return self._component_registry.get("foundation.config", "singleton")
+
+    def _get_hub_logger(self):
+        """Get logger for Hub internal use."""
+        if self._foundation_logger_instance:
+            return self._foundation_logger_instance.get_logger(__name__)
+
+        # Fallback during initialization
+        import structlog
+        return structlog.get_logger(__name__)
+
     def __enter__(self) -> Hub:
         """Context manager entry."""
         self.initialize()
@@ -416,9 +547,10 @@ def get_hub() -> Hub:
     Get the global hub instance.
 
     Thread-safe: Uses double-checked locking pattern for efficient lazy initialization.
+    Auto-initializes Foundation on first access.
 
     Returns:
-        Global Hub instance (created if needed)
+        Global Hub instance (created and initialized if needed)
     """
     global _global_hub
 
@@ -431,10 +563,17 @@ def get_hub() -> Hub:
         # Double-check after acquiring lock
         if _global_hub is None:
             _global_hub = Hub()
-            # Bootstrap foundation components now that hub is ready
-            from provide.foundation.hub.components import bootstrap_foundation
 
-            bootstrap_foundation()
+            # Auto-initialize Foundation on first hub access
+            _global_hub.initialize_foundation()
+
+            # Bootstrap foundation components now that hub is ready
+            try:
+                from provide.foundation.hub.components import bootstrap_foundation
+                bootstrap_foundation()
+            except ImportError:
+                # Bootstrap function might not exist yet, that's okay
+                pass
 
     return _global_hub
 
