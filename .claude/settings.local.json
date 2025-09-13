@@ -5,7 +5,8 @@
       "Bash(PYTHONPATH=src pytest tests/cli/commands/test_deps_coverage.py::TestDepsCommandModuleImport::test_click_import_handling -v --tb=short)",
       "Bash(awk:*)",
       "Bash(timeout:*)",
-      "Bash(pip install:*)"
+      "Bash(pip install:*)",
+      "Bash(echo $VIRTUAL_ENV)"
     ],
     "deny": [],
     "ask": [],
