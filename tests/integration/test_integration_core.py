@@ -90,7 +90,7 @@ def test_full_lifecycle_integration(
            and "⚙️➡️🚀 Starting Foundation" not in line
            and "⚙️➡️✅ Foundation" not in line
            and "Configuring structlog output processors" not in line
-           and not ("] [trace    ]" in line and ("Starting Foundation" in line or "Foundation" in line or "processors" in line or "enrichment processor" in line))
+           and not ("] [trace    ]" in line and ("Starting Foundation" in line or "Foundation" in line or "processors" in line or "enrichment processor" in line or "Event set discovery" in line or "Event enrichment" in line))
            and line.strip()
     ]
 
@@ -202,7 +202,7 @@ def test_high_volume_logging_performance(
            and "⚙️➡️🚀 Starting Foundation" not in line
            and "⚙️➡️✅ Foundation" not in line
            and "Configuring structlog output processors" not in line
-           and not ("] [trace    ]" in line and ("Starting Foundation" in line or "Foundation" in line or "processors" in line or "enrichment processor" in line))
+           and not ("] [trace    ]" in line and ("Starting Foundation" in line or "Foundation" in line or "processors" in line or "enrichment processor" in line or "Event set discovery" in line or "Event enrichment" in line))
            and line.strip()
     ]
 
@@ -264,7 +264,7 @@ def test_thread_safety_concurrent_logging(
            and "⚙️➡️🚀 Starting Foundation" not in line
            and "⚙️➡️✅ Foundation" not in line
            and "Configuring structlog output processors" not in line
-           and not ("] [trace    ]" in line and ("Starting Foundation" in line or "Foundation" in line or "processors" in line or "enrichment processor" in line))
+           and not ("] [trace    ]" in line and ("Starting Foundation" in line or "Foundation" in line or "processors" in line or "enrichment processor" in line or "Event set discovery" in line or "Event enrichment" in line))
            and line.strip()
     ]
 
@@ -376,7 +376,7 @@ def test_error_recovery_and_resilience(
            and "⚙️➡️🚀 Starting Foundation" not in line
            and "⚙️➡️✅ Foundation" not in line
            and "Configuring structlog output processors" not in line
-           and not ("] [trace    ]" in line and ("Starting Foundation" in line or "Foundation" in line or "processors" in line or "enrichment processor" in line))
+           and not ("] [trace    ]" in line and ("Starting Foundation" in line or "Foundation" in line or "processors" in line or "enrichment processor" in line or "Event set discovery" in line or "Event enrichment" in line))
            and line.strip()
     ]
 
