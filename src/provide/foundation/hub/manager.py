@@ -495,7 +495,7 @@ class Hub:
 
     # Foundation Lifecycle Management
 
-    def initialize_foundation(self, config=None, force: bool = False) -> None:
+    def initialize_foundation(self, config: Any = None, force: bool = False) -> None:
         """
         Initialize Foundation system through Hub.
 
