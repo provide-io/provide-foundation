@@ -215,7 +215,7 @@ def parse_headers(value: str) -> dict[str, str]:
 
 
 __all__ = [
+    "parse_headers",
     "parse_module_levels",
     "parse_rate_limits",
-    "parse_headers",
 ]

@@ -148,12 +148,12 @@ def validate_range(min_val: float, max_val: float):
 
 
 __all__ = [
+    "validate_choice",
     "validate_log_level",
-    "validate_sample_rate",
-    "validate_port",
-    "validate_positive",
     "validate_non_negative",
     "validate_overflow_policy",
-    "validate_choice",
+    "validate_port",
+    "validate_positive",
     "validate_range",
+    "validate_sample_rate",
 ]

@@ -27,18 +27,18 @@ from provide.foundation.streams.file import (
 )
 
 __all__ = [
-    # Core stream functions
-    "get_log_stream",
-    "set_log_stream_for_testing",
-    "ensure_stderr_default",
+    "close_log_streams",
     # File stream functions
     "configure_file_logging",
+    "ensure_stderr_default",
     "flush_log_streams",
-    "close_log_streams",
-    "reset_streams",
     # Console stream functions
     "get_console_stream",
+    # Core stream functions
+    "get_log_stream",
     "is_tty",
+    "reset_streams",
+    "set_log_stream_for_testing",
     "supports_color",
     "write_to_console",
 ]

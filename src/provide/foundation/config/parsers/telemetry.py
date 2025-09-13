@@ -96,7 +96,7 @@ def parse_foundation_log_output(value: str) -> str:
 
 
 __all__ = [
-    "parse_log_level",
     "parse_console_formatter",
     "parse_foundation_log_output",
+    "parse_log_level",
 ]

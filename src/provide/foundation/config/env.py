@@ -8,7 +8,7 @@ import os
 from typing import Any, TypeVar
 
 try:
-    import aiofiles
+    import aiofiles  # type: ignore[import-untyped]
 except ImportError:
     aiofiles = None
 from attrs import fields

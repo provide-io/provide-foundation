@@ -115,7 +115,7 @@ def format_table(response: SearchResponse, columns: list[str] | None = None) -> 
 
     # Try to use tabulate if available
     try:
-        from tabulate import tabulate
+        from tabulate import tabulate  # type: ignore[import-untyped]
 
         # Prepare data
         headers = columns
@@ -226,7 +226,7 @@ def format_summary(response: SearchResponse) -> str:
             lines.append(f"  - {error}")
 
     # Add level distribution if available
-    level_counts = {}
+    level_counts: dict[str, int] = {}
     for hit in response.hits:
         level = hit.get("level", "UNKNOWN")
         level_counts[level] = level_counts.get(level, 0) + 1

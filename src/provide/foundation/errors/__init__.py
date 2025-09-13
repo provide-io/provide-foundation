@@ -60,8 +60,8 @@ __all__ = [
     "AuthorizationError",
     "CommandNotFoundError",
     "ConcurrencyError",
-    "ConfigurationError",
     "ConfigValidationError",
+    "ConfigurationError",
     "ErrorCategory",
     # Types
     "ErrorCode",

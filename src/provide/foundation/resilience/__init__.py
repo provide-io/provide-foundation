@@ -20,17 +20,17 @@ from provide.foundation.resilience.retry import (
 )
 
 __all__ = [
-    # Core retry functionality
-    "RetryPolicy",
-    "RetryExecutor",
     "BackoffStrategy",
     # Circuit breaker
     "CircuitBreaker",
     "CircuitState",
     # Fallback
     "FallbackChain",
-    # Decorators
-    "retry",
+    "RetryExecutor",
+    # Core retry functionality
+    "RetryPolicy",
     "circuit_breaker",
     "fallback",
+    # Decorators
+    "retry",
 ]

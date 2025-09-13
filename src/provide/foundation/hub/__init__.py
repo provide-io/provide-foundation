@@ -78,18 +78,18 @@ def __getattr__(name: str):
 
 
 __all__ = [
-    # Components
-    "get_component_registry",
     "ComponentCategory",
+    # Hub
+    "Hub",
     # Registry
     "Registry",
     "RegistryEntry",
-    # Hub
-    "Hub",
     "clear_hub",
+    # CLI features (lazy loaded)
+    "get_click_commands",
+    # Components
+    "get_component_registry",
     "get_hub",
     # Commands (core)
     "register_command",
-    # CLI features (lazy loaded)
-    "get_click_commands",
 ]

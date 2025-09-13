@@ -71,12 +71,12 @@ _VALID_OVERFLOW_POLICY_TUPLE = (
 )
 
 __all__ = [
-    "_format_invalid_value_error",
-    "_format_validation_error",
-    "_VALID_LOG_LEVEL_TUPLE",
     "_VALID_FORMATTER_TUPLE",
     "_VALID_FOUNDATION_LOG_OUTPUT_TUPLE",
+    "_VALID_LOG_LEVEL_TUPLE",
     "_VALID_OVERFLOW_POLICY_TUPLE",
-    "LogLevelStr",
     "ConsoleFormatterStr",
+    "LogLevelStr",
+    "_format_invalid_value_error",
+    "_format_validation_error",
 ]

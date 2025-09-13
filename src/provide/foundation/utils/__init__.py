@@ -51,12 +51,14 @@ from provide.foundation.utils.rate_limiting import TokenBucketRateLimiter
 from provide.foundation.utils.timing import timed_block
 
 __all__ = [
+    "DependencyStatus",
     "EnvPrefix",
+    # Rate limiting utilities
+    "TokenBucketRateLimiter",
     # Parsing utilities
     "auto_parse",
     # Dependency checking utilities
     "check_optional_deps",
-    "DependencyStatus",
     "format_duration",
     "format_number",
     "format_percentage",
@@ -88,8 +90,6 @@ __all__ = [
     # Timing utilities
     "timed_block",
     "to_camel_case",
-    # Rate limiting utilities
-    "TokenBucketRateLimiter",
     "to_kebab_case",
     "to_snake_case",
     "truncate",

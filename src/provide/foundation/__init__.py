@@ -101,69 +101,69 @@ def __getattr__(name: str) -> object:
 
 
 __all__ = [
-    # Event enrichment utilities
-    "show_event_matrix",
-    "ConsoleFormatterStr",
+    "BackoffStrategy",
     # New foundation modules
     "CLIContext",
+    "CircuitBreaker",
+    "CircuitState",
+    "ComponentCategory",
+    "ConsoleFormatterStr",
     "Context",  # Legacy context support
     # Event set types
     "EventMapping",
     "EventSet",
+    "FallbackChain",
     "FieldMapping",
     # Error handling essentials
     "FoundationError",
+    "Hub",
     # Type aliases
     "LogLevelStr",
     "LoggingConfig",
     # Hub and Registry (public API)
     "Registry",
     "RegistryEntry",
-    "Hub",
-    "ComponentCategory",
-    "get_component_registry",
-    "get_hub",
-    "clear_hub",
+    "RetryExecutor",
+    "RetryPolicy",
     # Configuration classes
     "TelemetryConfig",
+    # Rate limiting utilities
+    "TokenBucketRateLimiter",
     # Version
     "__version__",
     # Dependency checking utility
     "check_optional_deps",
+    "circuit_breaker",
+    "clear_hub",
     # Config module
     "config",
     "error_boundary",
     "errors",  # The errors module for detailed imports
+    "fallback",
+    "get_component_registry",
+    "get_hub",
     "get_logger",
     # Core setup and logger
     "logger",
     # Console functions (work with or without click)
     "perr",
     "pin",
-    "pout",
     "platform",
+    "pout",
     "process",
+    "resilience",  # The resilience module for detailed imports
     # Resilience patterns
     "retry",
-    "circuit_breaker",
-    "fallback",
-    "RetryPolicy",
-    "RetryExecutor",
-    "BackoffStrategy",
-    "CircuitBreaker",
-    "CircuitState",
-    "FallbackChain",
     # Legacy patterns
     "retry_on_error",
-    "resilience",  # The resilience module for detailed imports
-    "setup_logging",  # Legacy setup function
     "setup_logger",  # Consistent naming
+    "setup_logging",  # Legacy setup function
     "setup_telemetry",
+    # Event enrichment utilities
+    "show_event_matrix",
     # Utilities
     "shutdown_foundation_telemetry",
     "timed_block",
-    # Rate limiting utilities
-    "TokenBucketRateLimiter",
     "tracer",  # The tracer module for distributed tracing
     "with_error_handling",
 ]

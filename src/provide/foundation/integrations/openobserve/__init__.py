@@ -44,39 +44,39 @@ from provide.foundation.integrations.openobserve.streaming import (
 )
 
 __all__ = [
-    # Configuration
-    "OpenObserveConfig",
+    "OpenObserveAuthenticationError",
     # Client
     "OpenObserveClient",
-    # Search functions
-    "search_logs",
-    "search_by_trace_id",
-    "search_by_level",
-    "search_errors",
-    "search_by_service",
-    "aggregate_by_level",
-    "get_current_trace_logs",
-    # Streaming functions
-    "stream_logs",
-    "stream_search_http2",
-    "tail_logs",
+    # Configuration
+    "OpenObserveConfig",
+    "OpenObserveConfigError",
+    "OpenObserveConnectionError",
+    # Exceptions
+    "OpenObserveError",
+    "OpenObserveQueryError",
+    "OpenObserveStreamingError",
     # Models
     "SearchQuery",
     "SearchResponse",
     "StreamInfo",
-    "parse_relative_time",
+    "aggregate_by_level",
+    "format_csv",
     # Formatters
     "format_json",
     "format_log_line",
-    "format_table",
-    "format_csv",
-    "format_summary",
     "format_output",
-    # Exceptions
-    "OpenObserveError",
-    "OpenObserveConnectionError",
-    "OpenObserveAuthenticationError",
-    "OpenObserveQueryError",
-    "OpenObserveStreamingError",
-    "OpenObserveConfigError",
+    "format_summary",
+    "format_table",
+    "get_current_trace_logs",
+    "parse_relative_time",
+    "search_by_level",
+    "search_by_service",
+    "search_by_trace_id",
+    "search_errors",
+    # Search functions
+    "search_logs",
+    # Streaming functions
+    "stream_logs",
+    "stream_search_http2",
+    "tail_logs",
 ]

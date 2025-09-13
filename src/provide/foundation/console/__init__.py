@@ -15,15 +15,15 @@ from provide.foundation.console.input import (
 from provide.foundation.console.output import perr, pout
 
 __all__ = [
-    # Output functions
-    "perr",
-    "pout",
-    # Input functions
-    "pin",
-    "pin_lines",
-    "pin_stream",
     # Async input functions
     "apin",
     "apin_lines",
     "apin_stream",
+    # Output functions
+    "perr",
+    # Input functions
+    "pin",
+    "pin_lines",
+    "pin_stream",
+    "pout",
 ]
