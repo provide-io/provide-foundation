@@ -90,7 +90,7 @@ class TestCliContext:
     def test_create_cli_context_default(self) -> None:
         """Test creating default CLI context."""
         ctx = create_cli_context()
-        assert isinstance(ctx, Context)
+        assert isinstance(ctx, CLIContext)
         assert ctx.profile == "default"
 
     def test_create_cli_context_with_overrides(self) -> None:
