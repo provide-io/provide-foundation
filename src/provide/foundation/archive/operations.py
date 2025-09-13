@@ -280,22 +280,10 @@ class ArchiveOperations:
                     temp_tar.unlink()
 
     @staticmethod
-    def detect_format(file: Path) -> list[str]:
-        """
-        Detect archive format and return operation chain.
+    def _detect_format_by_extension(filename: str) -> list[str] | None:
+        """Detect archive format by file extension."""
+        name = filename.lower()
 
-        Args:
-            file: File path to analyze
-
-        Returns:
-            List of operations needed to extract
-
-        Raises:
-            ArchiveError: If format cannot be detected
-        """
-        name = file.name.lower()
-
-        # Check by extension
         if name.endswith(".tar.gz") or name.endswith(".tgz"):
             return ["gunzip", "untar"]
         elif name.endswith(".tar.bz2") or name.endswith(".tbz2"):
@@ -309,7 +297,11 @@ class ArchiveOperations:
         elif name.endswith(".zip"):
             return ["unzip"]
 
-        # Check by magic numbers
+        return None
+
+    @staticmethod
+    def _detect_format_by_magic(file: Path) -> list[str] | None:
+        """Detect archive format by magic numbers."""
         try:
             with open(file, "rb") as f:
                 magic = f.read(4)
@@ -324,5 +316,31 @@ class ArchiveOperations:
                 return ["untar"]
         except Exception:
             pass
+
+        return None
+
+    @staticmethod
+    def detect_format(file: Path) -> list[str]:
+        """
+        Detect archive format and return operation chain.
+
+        Args:
+            file: File path to analyze
+
+        Returns:
+            List of operations needed to extract
+
+        Raises:
+            ArchiveError: If format cannot be detected
+        """
+        # Try extension-based detection first
+        operations = ArchiveOperations._detect_format_by_extension(file.name)
+        if operations is not None:
+            return operations
+
+        # Fall back to magic number detection
+        operations = ArchiveOperations._detect_format_by_magic(file)
+        if operations is not None:
+            return operations
 
         raise ArchiveError(f"Cannot detect format of {file}")
