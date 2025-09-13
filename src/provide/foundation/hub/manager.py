@@ -445,7 +445,12 @@ class Hub:
 
             # Handle config loading with graceful fallback
             try:
-                self._foundation_config = config or TelemetryConfig.from_env()
+                if config:
+                    # Use explicit config as-is to maintain precedence
+                    self._foundation_config = config
+                else:
+                    # Load from environment when no explicit config
+                    self._foundation_config = TelemetryConfig.from_env()
             except Exception:
                 # Fallback to minimal default config if loading fails
                 self._foundation_config = TelemetryConfig()
