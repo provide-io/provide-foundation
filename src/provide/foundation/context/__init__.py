@@ -7,10 +7,10 @@ output formatting, and CLI-specific settings.
 
 from provide.foundation.context.core import CLIContext
 
-# Backward compatibility
+# Legacy compatibility
 Context = CLIContext
 
 __all__ = [
     "CLIContext",
-    "Context",  # Backward compatibility
+    "Context",  # Legacy alias
 ]

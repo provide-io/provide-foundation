@@ -16,7 +16,7 @@ from provide.foundation.cli.utils import (
     echo_warning,
     setup_cli_logging,
 )
-from provide.foundation.context import Context
+from provide.foundation.context import CLIContext
 from provide.foundation.logger import TelemetryConfig
 
 

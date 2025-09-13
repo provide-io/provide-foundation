@@ -44,7 +44,7 @@ from provide.foundation.logger import (
     TelemetryConfig,
     get_logger,  # Factory function for creating loggers
     setup_logger,  # Setup function (consistent naming)
-    setup_logging,  # Setup function (backward compatibility)
+    setup_logging,  # Setup function
 )
 
 # Resilience exports
@@ -106,7 +106,7 @@ __all__ = [
     "ConsoleFormatterStr",
     # New foundation modules
     "CLIContext",
-    "Context",  # Backward compatibility
+    "Context",  # Legacy context support
     # Event set types
     "EventMapping",
     "EventSet",
@@ -153,10 +153,10 @@ __all__ = [
     "CircuitBreaker",
     "CircuitState",
     "FallbackChain",
-    # Backward compatibility (deprecated)
+    # Legacy patterns
     "retry_on_error",
     "resilience",  # The resilience module for detailed imports
-    "setup_logging",  # Backward compatibility
+    "setup_logging",  # Legacy setup function
     "setup_logger",  # Consistent naming
     "setup_telemetry",
     # Utilities

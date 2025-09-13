@@ -14,7 +14,7 @@ from provide.foundation.console.input import (
     pin_lines,
     pin_stream,
 )
-from provide.foundation.context import Context
+from provide.foundation.context import CLIContext
 
 
 class TestPin:
@@ -59,7 +59,7 @@ class TestPin:
 
     def test_pin_json_mode(self):
         """Test pin() in JSON mode."""
-        ctx = Context()
+        ctx = CLIContext()
         ctx.json_output = True
 
         test_input = '{"key": "value"}'
@@ -71,7 +71,7 @@ class TestPin:
 
     def test_pin_json_mode_with_plain_text(self):
         """Test pin() in JSON mode with plain text input."""
-        ctx = Context()
+        ctx = CLIContext()
         ctx.json_output = True
 
         test_input = "plain text\n"
@@ -83,7 +83,7 @@ class TestPin:
 
     def test_pin_json_mode_with_json_key(self):
         """Test pin() in JSON mode with json_key."""
-        ctx = Context()
+        ctx = CLIContext()
         ctx.json_output = True
 
         test_input = "test value\n"
@@ -124,7 +124,7 @@ class TestPinStream:
 
     def test_pin_stream_json_mode_array(self):
         """Test pin_stream() in JSON mode with array."""
-        ctx = Context()
+        ctx = CLIContext()
         ctx.json_output = True
 
         test_input = '["item1", "item2", "item3"]'
@@ -136,7 +136,7 @@ class TestPinStream:
 
     def test_pin_stream_json_mode_object(self):
         """Test pin_stream() in JSON mode with object."""
-        ctx = Context()
+        ctx = CLIContext()
         ctx.json_output = True
 
         test_input = '{"key": "value"}'
@@ -148,7 +148,7 @@ class TestPinStream:
 
     def test_pin_stream_json_mode_fallback(self):
         """Test pin_stream() JSON mode fallback for invalid JSON."""
-        ctx = Context()
+        ctx = CLIContext()
         ctx.json_output = True
 
         test_input = "plain\ntext\nlines\n"
@@ -286,7 +286,7 @@ class TestAsyncStreamIntegration:
     @pytest.mark.asyncio
     async def test_apin_stream_json_mode_async(self):
         """Test async streaming in JSON mode."""
-        ctx = Context()
+        ctx = CLIContext()
         ctx.json_output = True
 
         test_data = ["item1", "item2", "item3"]
@@ -312,7 +312,7 @@ class TestEdgeCases:
 
     def test_pin_json_error_handling(self):
         """Test pin() handles JSON errors gracefully."""
-        ctx = Context()
+        ctx = CLIContext()
         ctx.json_output = True
 
         # Simulate an error reading stdin

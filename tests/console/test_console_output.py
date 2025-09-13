@@ -5,7 +5,7 @@ import json
 import pytest
 
 from provide.foundation import perr, pout
-from provide.foundation.context import Context
+from provide.foundation.context import CLIContext
 
 
 class TestConsoleOutput:
@@ -85,7 +85,7 @@ class TestConsoleOutput:
         import click
 
         ctx = click.Context(click.Command("test"))
-        ctx.obj = Context(json_output=True)
+        ctx.obj = CLIContext(json_output=True)
 
         def mock_get_current_context(*args, **kwargs):
             return ctx
@@ -104,7 +104,7 @@ class TestConsoleOutput:
         import click
 
         ctx = click.Context(click.Command("test"))
-        ctx.obj = Context(json_output=True)
+        ctx.obj = CLIContext(json_output=True)
 
         def mock_get_current_context(*args, **kwargs):
             return ctx
@@ -122,7 +122,7 @@ class TestConsoleOutput:
         import click
 
         ctx = click.Context(click.Command("test"))
-        ctx.obj = Context(json_output=True)
+        ctx.obj = CLIContext(json_output=True)
 
         def mock_get_current_context(*args, **kwargs):
             return ctx

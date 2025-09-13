@@ -123,6 +123,6 @@ EVENT_SET = EventSet(
     priority=0,
 )
 
-# Alias for backward compatibility
+# Legacy aliases
 das_event_set = EVENT_SET
 default_event_set = EVENT_SET

@@ -54,7 +54,7 @@ See also:
 """
 
 from provide.foundation.cli import echo_info, echo_success, echo_warning
-from provide.foundation.context import Context
+from provide.foundation.context import CLIContext
 from provide.foundation.hub import Hub, register_command
 
 # ==============================================================================

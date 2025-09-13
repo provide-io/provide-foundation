@@ -27,8 +27,10 @@ def with_error_handling(
     fallback: Any = None,
     log_errors: bool = True,
     context_provider: Callable[[], dict[str, Any]] | None = None,
+    context: dict[str, Any] | None = None,
     error_mapper: Callable[[Exception], Exception] | None = None,
     suppress: tuple[type[Exception], ...] | None = None,
+    reraise: bool = True,
 ) -> Callable[[F], F] | F:
     """Decorator for automatic error handling with logging.
 
@@ -36,8 +38,10 @@ def with_error_handling(
         fallback: Value to return when an error occurs.
         log_errors: Whether to log errors.
         context_provider: Function that provides additional logging context.
+        context: Static context dict to include in logs (alternative to context_provider).
         error_mapper: Function to transform exceptions before re-raising.
         suppress: Tuple of exception types to suppress (return fallback instead).
+        reraise: Whether to re-raise exceptions after logging (default: True).
 
     Returns:
         Decorated function.
@@ -53,6 +57,14 @@ def with_error_handling(
         ... def process_request():
         ...     # errors will be logged with request_id
         ...     pass
+
+        >>> @with_error_handling(
+        ...     reraise=False,
+        ...     context={"component": "orchestrator", "method": "run"}
+        ... )
+        ... def run():
+        ...     # errors will be logged but not re-raised
+        ...     pass
     """
 
     def decorator(func: F) -> F:
@@ -63,27 +75,36 @@ def with_error_handling(
                 try:
                     return await func(*args, **kwargs)
                 except Exception as e:
+                    # Build context from either context_provider or context parameter
+                    log_context = {}
+                    if context_provider:
+                        log_context.update(context_provider())
+                    if context:
+                        log_context.update(context)
+
                     # Check if we should suppress this error
                     if suppress and isinstance(e, suppress):
                         if log_errors:
-                            context = context_provider() if context_provider else {}
                             _get_logger().info(
                                 f"Suppressed {type(e).__name__} in {func.__name__}",
                                 function=func.__name__,
                                 error=str(e),
-                                **context,
+                                **log_context,
                             )
                         return fallback
 
                     # Log the error if configured
                     if log_errors:
-                        context = context_provider() if context_provider else {}
                         _get_logger().error(
                             f"Error in {func.__name__}: {e}",
                             exc_info=True,
                             function=func.__name__,
-                            **context,
+                            **log_context,
                         )
+
+                    # If reraise=False, return fallback instead of raising
+                    if not reraise:
+                        return fallback
 
                     # Map the error if mapper provided
                     if error_mapper and not isinstance(e, FoundationError):
@@ -102,27 +123,36 @@ def with_error_handling(
                 try:
                     return func(*args, **kwargs)
                 except Exception as e:
+                    # Build context from either context_provider or context parameter
+                    log_context = {}
+                    if context_provider:
+                        log_context.update(context_provider())
+                    if context:
+                        log_context.update(context)
+
                     # Check if we should suppress this error
                     if suppress and isinstance(e, suppress):
                         if log_errors:
-                            context = context_provider() if context_provider else {}
                             _get_logger().info(
                                 f"Suppressed {type(e).__name__} in {func.__name__}",
                                 function=func.__name__,
                                 error=str(e),
-                                **context,
+                                **log_context,
                             )
                         return fallback
 
                     # Log the error if configured
                     if log_errors:
-                        context = context_provider() if context_provider else {}
                         _get_logger().error(
                             f"Error in {func.__name__}: {e}",
                             exc_info=True,
                             function=func.__name__,
-                            **context,
+                            **log_context,
                         )
+
+                    # If reraise=False, return fallback instead of raising
+                    if not reraise:
+                        return fallback
 
                     # Map the error if mapper provided
                     if error_mapper and not isinstance(e, FoundationError):
