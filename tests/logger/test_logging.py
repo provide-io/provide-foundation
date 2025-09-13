@@ -264,23 +264,38 @@ class TestLoggingWithEmojiSets:
 
 
 class TestFactoriesModule:
-    def test_setup_logging_basic(self) -> None:
+    def test_setup_logging_basic(
+        self,
+        setup_foundation_telemetry_for_test: callable,
+        captured_stderr_for_foundation: "io.StringIO",
+    ) -> None:
         """Test that setup_logging function works with basic parameters."""
-        import io
-        import sys
-        from unittest.mock import patch
         from provide.foundation.logger.factories import setup_logging
 
-        # Capture stderr manually using StringIO
-        captured_stderr = io.StringIO()
+        # First set up the foundation with test fixtures
+        from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
 
-        with patch('sys.stderr', captured_stderr):
-            # Use the setup_logging convenience function
+        config = TelemetryConfig(
+            logging=LoggingConfig(
+                default_level="DEBUG",
+                console_formatter="key_value",
+            )
+        )
+        setup_foundation_telemetry_for_test(config)
+
+        # Now test that setup_logging issues deprecation warning but still works
+        import warnings
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
             setup_logging(level="DEBUG", json_logs=False)
 
-            # Test that the logger works after setup
-            global_logger.debug("Test debug message after setup_logging")
+            # Verify deprecation warning was issued
+            assert len(w) == 1
+            assert issubclass(w[0].category, DeprecationWarning)
+            assert "setup_logging() is deprecated" in str(w[0].message)
 
-        # Check the captured output
-        output = captured_stderr.getvalue()
+        # Test that the logger still works after setup_logging call
+        global_logger.debug("Test debug message after setup_logging")
+
+        output = captured_stderr_for_foundation.getvalue()
         assert "Test debug message after setup_logging" in output
