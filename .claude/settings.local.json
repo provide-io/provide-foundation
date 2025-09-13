@@ -6,7 +6,8 @@
       "Bash(awk:*)",
       "Bash(timeout:*)",
       "Bash(pip install:*)",
-      "Bash(echo $VIRTUAL_ENV)"
+      "Bash(echo $VIRTUAL_ENV)",
+      "Bash(. .venv/bin/activate)"
     ],
     "deny": [],
     "ask": [],
