@@ -61,7 +61,7 @@ from provide.foundation.resilience.decorators import (  # noqa: E402
 def example_error_handling() -> None:
     """
     Demonstrates Foundation's comprehensive error handling patterns.
-    
+
     This example shows how to use Foundation's error handling utilities
     to build robust applications with proper error management, logging,
     and recovery strategies.

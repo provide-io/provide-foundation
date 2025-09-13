@@ -10,27 +10,27 @@ configuration system:
    - BaseConfig for simple configurations
    - RuntimeConfig for environment variable loading
    - Nested configuration structures
-   
+
 2. Loading from Multiple Sources:
    - Environment variables with PROVIDE_ prefix
    - JSON and TOML configuration files
    - Runtime dictionary updates
    - Multi-source merging with precedence
-   
+
 3. Validation and Schemas:
    - Type validation with attrs
    - Custom validation methods
    - Schema definitions with constraints
    - Pattern matching for strings
-   
+
 4. Configuration Management:
    - ConfigManager for centralized management
    - Registration and retrieval
    - Bulk updates and exports
-   
+
 Usage:
     python examples/configuration/03_config_management.py
-    
+
     # With environment variables
     DB_HOST=prod.example.com DB_PORT=5433 python examples/configuration/03_config_management.py
 

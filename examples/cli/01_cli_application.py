@@ -11,31 +11,31 @@ with provide.foundation's hub system:
    - Hub.add_component() method for registration
    - Multi-dimensional registry (resources, services, etc.)
    - Context managers for lifecycle management
-   
+
 2. Command Registration:
    - @register_command decorator for CLI commands
    - Command categories and aliases
    - Integration with Click framework
    - Automatic help generation
-   
+
 3. Hub Management:
    - Centralized component and command registry
    - Dynamic CLI creation from registered commands
    - Context passing between commands
-   
+
 4. Real-world Patterns:
    - Resource lifecycle (database, cache)
    - Service registration (logger)
    - Status reporting
    - Testing utilities
-   
+
 Usage:
     # Run as CLI application
     python examples/cli/01_cli_application.py --help
     python examples/cli/01_cli_application.py status
     python examples/cli/01_cli_application.py test-resources
     python examples/cli/01_cli_application.py list --dimension resource
-    
+
     # Or import and use programmatically
     from examples.cli.01_cli_application import Hub, DatabaseResource
     hub = Hub()

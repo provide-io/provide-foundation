@@ -12,7 +12,7 @@ Usage:
 
 Expected output:
     Colored, emoji-prefixed log messages with structured data.
-    
+
 To see INFO-level messages:
     PROVIDE_LOG_LEVEL=INFO python examples/telemetry/01_basic_logging.py
 """
@@ -35,7 +35,7 @@ from provide.foundation import logger, pout  # noqa: E402
 def simple_logging_example() -> None:
     """
     Demonstrates the simplest possible logging usage.
-    
+
     Key points:
     - No setup_telemetry() call needed
     - Works with base install: pip install provide-foundation

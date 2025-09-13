@@ -25,20 +25,20 @@ def _format_invalid_value_error(
 ) -> str:
     """Create standardized invalid value error message."""
     parts = [f"Invalid {field_name} '{value}'."]
-    
+
     if valid_options:
         parts.append(f"Valid options: {', '.join(valid_options)}")
     elif expected_type:
         parts.append(f"Expected: {expected_type}")
-    
+
     if additional_info:
         parts.append(additional_info)
-    
+
     return " ".join(parts)
 
 
 def _format_validation_error(field_name: str, value: Any, constraint: str) -> str:
-    """Create standardized validation error message.""" 
+    """Create standardized validation error message."""
     return f"Value {value} for {field_name} {constraint}"
 
 
@@ -46,7 +46,7 @@ def _format_validation_error(field_name: str, value: Any, constraint: str) -> st
 
 _VALID_LOG_LEVEL_TUPLE = (
     "TRACE",
-    "DEBUG", 
+    "DEBUG",
     "INFO",
     "WARNING",
     "ERROR",
@@ -66,13 +66,13 @@ _VALID_FOUNDATION_LOG_OUTPUT_TUPLE = (
 
 _VALID_OVERFLOW_POLICY_TUPLE = (
     "drop_oldest",
-    "drop_newest", 
+    "drop_newest",
     "block",
 )
 
 __all__ = [
     "_format_invalid_value_error",
-    "_format_validation_error", 
+    "_format_validation_error",
     "_VALID_LOG_LEVEL_TUPLE",
     "_VALID_FORMATTER_TUPLE",
     "_VALID_FOUNDATION_LOG_OUTPUT_TUPLE",

@@ -6,7 +6,7 @@ Demonstrates Foundation logging for task queue patterns using Python's
 built-in asyncio and queue modules. This shows the patterns without
 requiring Celery or Redis.
 
-This example simulates task queuing, processing, and monitoring that 
+This example simulates task queuing, processing, and monitoring that
 would be used in production task queue systems.
 
 Usage:

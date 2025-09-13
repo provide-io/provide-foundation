@@ -98,21 +98,21 @@ task_contexts = {}  # Store additional context per task
 
 def setup_signal_handlers(app):
     """Set up all Celery signal handlers."""
-    
+
     # Import task logger after app setup
     import importlib.util
     from pathlib import Path
-    
+
     def load_module_from_file(name, filepath):
         spec = importlib.util.spec_from_file_location(name, filepath)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         return module
-    
+
     current_dir = Path(__file__).parent
     setup_config = load_module_from_file("setup_and_config", current_dir / "01_setup_and_config.py")
     CeleryTaskLogger = setup_config.CeleryTaskLogger
-    
+
     @worker_ready.connect
     def worker_ready_handler(sender, **kwargs):
         """Log when worker is ready with system info."""
@@ -215,14 +215,14 @@ def setup_signal_handlers(app):
 
 if __name__ == '__main__':
     from provide.foundation import pout
-    
+
     pout("📊 Task Metrics System")
     pout("=" * 30)
-    
+
     # Demo the metrics system
     metrics.record_execution("test_task", 1.5, True)
     metrics.record_execution("test_task", 2.1, False)
     metrics.record_retry("test_task")
-    
+
     stats = metrics.get_stats()
     pout(f"Demo stats: {stats}")

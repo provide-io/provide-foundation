@@ -97,7 +97,7 @@ def format_table(response: SearchResponse, columns: list[str] | None = None) -> 
     # Determine columns
     if columns is None:
         # Get all unique keys from hits
-        all_keys = set()
+        all_keys: set[str] = set()
         for hit in response.hits:
             all_keys.update(hit.keys())
         # Sort columns, putting common ones first
@@ -175,7 +175,7 @@ def format_csv(response: SearchResponse, columns: list[str] | None = None) -> st
 
     # Determine columns
     if columns is None:
-        all_keys = set()
+        all_keys: set[str] = set()
         for hit in response.hits:
             all_keys.update(hit.keys())
         columns = sorted(all_keys)

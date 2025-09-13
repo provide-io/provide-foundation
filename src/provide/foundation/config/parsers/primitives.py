@@ -16,16 +16,16 @@ def parse_bool_extended(value: str | bool) -> bool:
     Parse boolean from string with lenient/forgiving interpretation.
 
     This is the **lenient** boolean parser - designed for user-facing configuration
-    where we want to be forgiving of various inputs. Any unrecognized string 
+    where we want to be forgiving of various inputs. Any unrecognized string
     defaults to False rather than raising an error.
 
     **Use Cases:**
     - Environment variables set by end users
-    - Feature flags that should default to "off" if misconfigured  
+    - Feature flags that should default to "off" if misconfigured
     - Optional telemetry settings where failure should not break the system
 
     **Recognized True Values:** true, yes, 1, on (case-insensitive)
-    **Recognized False Values:** false, no, 0, off (case-insensitive) 
+    **Recognized False Values:** false, no, 0, off (case-insensitive)
     **Default Behavior:** Any other string → False (no error)
 
     Args:
@@ -36,7 +36,7 @@ def parse_bool_extended(value: str | bool) -> bool:
 
     Examples:
         >>> parse_bool_extended("yes")  # True
-        >>> parse_bool_extended("FALSE")  # False  
+        >>> parse_bool_extended("FALSE")  # False
         >>> parse_bool_extended("invalid")  # False (no error)
         >>> parse_bool_extended(True)  # True
     """
@@ -104,7 +104,7 @@ def parse_bool_strict(value: str | bool) -> bool:
     else:
         raise ValueError(
             _format_invalid_value_error(
-                "boolean", value, 
+                "boolean", value,
                 valid_options=["true", "false", "yes", "no", "1", "0", "on", "off"],
                 additional_info="Use parse_bool_extended() for lenient parsing that defaults to False"
             )
@@ -244,7 +244,7 @@ def parse_json_list(value: str) -> list[Any]:
 
 __all__ = [
     "parse_bool_extended",
-    "parse_bool_strict", 
+    "parse_bool_strict",
     "parse_float_with_validation",
     "parse_sample_rate",
     "parse_comma_list",

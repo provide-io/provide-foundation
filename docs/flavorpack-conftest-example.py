@@ -120,7 +120,7 @@ def sample_wheel_metadata():
 def sample_package_structure(test_files_structure):
     """
     Create a sample Python package structure for testing.
-    
+
     Extends the foundation test_files_structure fixture.
     """
     temp_path, source = test_files_structure

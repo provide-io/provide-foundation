@@ -42,7 +42,7 @@ from provide.foundation.config.validators import (
 __all__ = [
     # Parsers/Converters
     "parse_log_level",
-    "parse_console_formatter", 
+    "parse_console_formatter",
     "parse_module_levels",
     "parse_rate_limits",
     "parse_foundation_log_output",
@@ -59,7 +59,7 @@ __all__ = [
     "validate_sample_rate",
     "validate_port",
     "validate_positive",
-    "validate_non_negative", 
+    "validate_non_negative",
     "validate_overflow_policy",
     "validate_choice",
     "validate_range",

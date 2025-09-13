@@ -377,7 +377,7 @@ class TestFoundationLogOutputParsing:
         assert parse_foundation_log_output("stderr") == "stderr"
         assert parse_foundation_log_output("stdout") == "stdout"
         assert parse_foundation_log_output("main") == "main"
-        
+
         # Case insensitive
         assert parse_foundation_log_output("STDERR") == "stderr"
         assert parse_foundation_log_output("StdOut") == "stdout"
@@ -407,7 +407,7 @@ class TestBoolStrictParsing:
 
     @pytest.mark.parametrize("value,expected", [
         ("true", True),
-        ("True", True), 
+        ("True", True),
         ("TRUE", True),
         ("yes", True),
         ("Yes", True),
@@ -417,7 +417,7 @@ class TestBoolStrictParsing:
         ("false", False),
         ("False", False),
         ("no", False),
-        ("0", False), 
+        ("0", False),
         ("off", False),
         ("OFF", False),
     ])
@@ -434,10 +434,10 @@ class TestBoolStrictParsing:
         """Test strict parsing rejects invalid string values."""
         with pytest.raises(ValueError, match="Invalid boolean"):
             parse_bool_strict("invalid")
-            
+
         with pytest.raises(ValueError, match="Invalid boolean"):
             parse_bool_strict("")
-            
+
         with pytest.raises(ValueError, match="Invalid boolean"):
             parse_bool_strict("maybe")
 
@@ -445,10 +445,10 @@ class TestBoolStrictParsing:
         """Test strict parsing rejects non-string, non-bool types."""
         with pytest.raises(TypeError, match="Boolean field requires str or bool"):
             parse_bool_strict(42)
-            
+
         with pytest.raises(TypeError, match="Boolean field requires str or bool"):
             parse_bool_strict([])
-            
+
         with pytest.raises(TypeError, match="Boolean field requires str or bool"):
             parse_bool_strict(None)
 
@@ -460,19 +460,19 @@ class TestBoolStrictParsing:
 
 class TestModuleLevelsDictInput:
     """Test module levels parsing with dict input."""
-    
+
     def test_parse_module_levels_dict_valid(self):
         """Test parsing dict input with valid levels."""
         input_dict = {"auth": "debug", "database": "ERROR", "api": "Info"}
         result = parse_module_levels(input_dict)
         assert result == {"auth": "DEBUG", "database": "ERROR", "api": "INFO"}
-        
+
     def test_parse_module_levels_dict_invalid(self):
         """Test dict input with some invalid levels."""
         input_dict = {"auth": "DEBUG", "bad": "INVALID_LEVEL", "api": "INFO"}
         result = parse_module_levels(input_dict)
         assert result == {"auth": "DEBUG", "api": "INFO"}  # Invalid level skipped
-        
+
     def test_parse_module_levels_dict_empty(self):
         """Test parsing empty dict."""
         assert parse_module_levels({}) == {}

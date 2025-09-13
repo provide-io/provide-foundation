@@ -101,7 +101,7 @@ class TelemetryConfig(RuntimeConfig):
     def from_env(cls, **kwargs):
         """
         Load configuration from environment variables.
-        
+
         This method explicitly provides the from_env() interface
         to ensure it's available on TelemetryConfig directly.
         """

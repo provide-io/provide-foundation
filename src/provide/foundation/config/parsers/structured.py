@@ -34,13 +34,13 @@ def parse_module_levels(value: str | dict[str, str]) -> dict[str, "LogLevelStr"]
     **Examples:**
         >>> parse_module_levels("auth.service:DEBUG,database:ERROR")
         {'auth.service': 'DEBUG', 'database': 'ERROR'}
-        
+
         >>> parse_module_levels("api:INFO")  # Single module
         {'api': 'INFO'}
-        
+
         >>> parse_module_levels({"web": "warning"})  # Dict input (case normalized)
         {'web': 'WARNING'}
-        
+
         >>> parse_module_levels("api:INFO,bad:INVALID,db:ERROR")  # Partial success
         {'api': 'INFO', 'db': 'ERROR'}
 
@@ -107,10 +107,10 @@ def parse_rate_limits(value: str) -> dict[str, tuple[float, float]]:
     **Examples:**
         >>> parse_rate_limits("api:10.0:100.0,worker:5.0:50.0")
         {'api': (10.0, 100.0), 'worker': (5.0, 50.0)}
-        
+
         >>> parse_rate_limits("db:1.5:25.0")  # Single entry
         {'db': (1.5, 25.0)}
-        
+
         >>> parse_rate_limits("api:10:100,invalid:bad,worker:5:50")  # Partial success
         {'api': (10.0, 100.0), 'worker': (5.0, 50.0)}
 
@@ -170,13 +170,13 @@ def parse_headers(value: str) -> dict[str, str]:
     **Examples:**
         >>> parse_headers("Authorization=Bearer token,Content-Type=application/json")
         {'Authorization': 'Bearer token', 'Content-Type': 'application/json'}
-        
+
         >>> parse_headers("X-API-Key=secret123")  # Single header
         {'X-API-Key': 'secret123'}
-        
+
         >>> parse_headers("valid=ok,invalid-no-equals,another=good")  # Partial success
         {'valid': 'ok', 'another': 'good'}
-        
+
         >>> parse_headers("empty-value=")  # Empty values allowed
         {'empty-value': ''}
 
@@ -216,6 +216,6 @@ def parse_headers(value: str) -> dict[str, str]:
 
 __all__ = [
     "parse_module_levels",
-    "parse_rate_limits", 
+    "parse_rate_limits",
     "parse_headers",
 ]

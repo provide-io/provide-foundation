@@ -5,7 +5,7 @@
 """
 Simple example showing basic tracing with Foundation.
 
-Demonstrates how to add operation timing and context tracking 
+Demonstrates how to add operation timing and context tracking
 to your applications without external dependencies.
 """
 
