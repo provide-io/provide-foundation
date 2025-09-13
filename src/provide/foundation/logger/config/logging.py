@@ -36,7 +36,8 @@ from provide.foundation.config.defaults import (
     DEFAULT_RATE_LIMIT_GLOBAL_CAPACITY,
     DEFAULT_RATE_LIMIT_OVERFLOW_POLICY,
     default_module_levels,
-    default_rate_limits,\n    path_converter,
+    default_rate_limits,
+    path_converter,
 )
 from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.logger.types import (
