@@ -10,7 +10,6 @@ import pytest
 from provide.foundation.hub import (
     clear_hub,
     get_hub,
-    register_command,
 )
 from provide.foundation.hub.registry import Registry
 from provide.foundation.logger import get_logger
@@ -325,14 +324,21 @@ class TestAsyncTaskCoordination:
             await asyncio.sleep(0.001)  # Simulate async processing
             events.append((event_type, data))
 
-        # Register event handlers as commands
+        # Register event handlers as commands using Hub's registry
         async def setup_handlers() -> None:
+            registry = hub.get_command_registry()
             for event_type in ["start", "process", "complete"]:
-
-                @register_command(f"handle_{event_type}")
                 async def handler() -> None:
                     await event_handler(event_type, {"timestamp": time.time()})
 
+                # Register directly with hub's registry instead of decorator
+                from provide.foundation.hub.info import CommandInfo
+                info = CommandInfo(
+                    name=f"handle_{event_type}",
+                    func=handler,
+                    description=f"Handle {event_type} event",
+                )
+                registry.register(f"handle_{event_type}", info, dimension="command")
                 await asyncio.sleep(0)
 
         await setup_handlers()
