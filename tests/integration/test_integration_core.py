@@ -198,6 +198,7 @@ def test_high_volume_logging_performance(
         if not line.startswith("[Foundation Setup]")
            and "⚙️➡️🚀 Starting Foundation" not in line
            and "⚙️➡️✅ Foundation" not in line
+           and "⚙️ Foundation initialized through Hub" not in line
            and "Configuring structlog output processors" not in line
            and not ("[trace    ]" in line or "trace    " in line)
            and line.strip()
@@ -259,6 +260,7 @@ def test_thread_safety_concurrent_logging(
         if not line.startswith("[Foundation Setup]")
            and "⚙️➡️🚀 Starting Foundation" not in line
            and "⚙️➡️✅ Foundation" not in line
+           and "⚙️ Foundation initialized through Hub" not in line
            and "Configuring structlog output processors" not in line
            and not ("[trace    ]" in line or "trace    " in line)
            and line.strip()
@@ -370,6 +372,7 @@ def test_error_recovery_and_resilience(
         if not line.startswith("[Foundation Setup]")
            and "⚙️➡️🚀 Starting Foundation" not in line
            and "⚙️➡️✅ Foundation" not in line
+           and "⚙️ Foundation initialized through Hub" not in line
            and "Configuring structlog output processors" not in line
            and not ("[trace    ]" in line or "trace    " in line)
            and line.strip()
@@ -561,6 +564,7 @@ def test_module_level_filtering_comprehensive(
         if not line.startswith("[Foundation Setup]")
            and "⚙️➡️🚀 Starting Foundation" not in line
            and "⚙️➡️✅ Foundation" not in line
+           and "⚙️ Foundation initialized through Hub" not in line
            and "Configuring structlog output processors" not in line
            and not ("] [trace    ]" in line and ("Starting Foundation" in line or "Foundation" in line or "processors" in line or "enrichment processor" in line))
            and line.strip()
