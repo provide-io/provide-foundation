@@ -56,39 +56,25 @@ class TestBackwardCompatibility:
         logger2.info("Factory test 2")
         logger3.info("Factory test 3")
 
-    def test_setup_functions_work_with_warnings(self):
-        """Test that old setup functions still work but show warnings."""
-        from provide.foundation.logger.factories import setup_logging
-        from provide.foundation.setup import setup_foundation, setup_telemetry
+    def test_hub_api_works(self):
+        """Test that new Hub API works as replacement for setup functions."""
+        from provide.foundation import get_hub
+        from provide.foundation.logger.config import TelemetryConfig
 
-        # setup_foundation should work with warning
-        with warnings.catch_warnings(record=True) as w:
-            warnings.simplefilter("always")
-            setup_foundation()
-            assert len(w) == 1
-            assert issubclass(w[0].category, DeprecationWarning)
-            assert "setup_foundation() is deprecated" in str(w[0].message)
+        # Hub initialization should work
+        hub = get_hub()
+        config = TelemetryConfig()
+        hub.initialize_foundation(config, force=True)
 
-        # setup_telemetry should work with warning
-        with warnings.catch_warnings(record=True) as w:
-            warnings.simplefilter("always")
-            setup_telemetry()
-            assert len(w) == 1
-            assert issubclass(w[0].category, DeprecationWarning)
-            assert "setup_telemetry() is deprecated" in str(w[0].message)
-
-        # setup_logging should work with warning
-        with warnings.catch_warnings(record=True) as w:
-            warnings.simplefilter("always")
-            setup_logging(level="DEBUG")
-            assert len(w) == 1
-            assert issubclass(w[0].category, DeprecationWarning)
-            assert "setup_logging() is deprecated" in str(w[0].message)
+        # Should be able to get logger after Hub initialization
+        logger = hub.get_foundation_logger("test")
+        assert logger is not None
+        logger.info("Hub test message")
 
     def test_setup_functions_with_config(self):
         """Test that setup functions work with explicit config."""
         from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
-        from provide.foundation.setup import setup_foundation
+        from provide.foundation import get_hub
 
         config = TelemetryConfig(
             logging=LoggingConfig(default_level="WARNING"),
@@ -106,12 +92,13 @@ class TestBackwardCompatibility:
     def test_mixed_old_and_new_api(self):
         """Test that old and new APIs can be mixed."""
         from provide.foundation.logger import get_logger
-        from provide.foundation.setup import setup_foundation
+        from provide.foundation import get_hub
 
         # Use old setup first
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", DeprecationWarning)
-            setup_foundation()
+            hub = get_hub()
+            hub.initialize_foundation(force=True)
 
         # Then use new API
         hub = get_hub()
