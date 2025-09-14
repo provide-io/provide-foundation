@@ -86,6 +86,7 @@ uv publish                      # Publish to PyPI
 1. **ModuleNotFoundError for dependencies**: Run `source env.sh` to ensure proper environment setup
 2. **Test failures related to from_env**: The `TelemetryConfig.from_env()` method needs to be properly exposed as a class method
 3. **Import errors**: Ensure PYTHONPATH includes both `src/` and project root
+4. **Asyncio debug messages**: The logger automatically suppresses asyncio DEBUG messages (e.g., "Using selector: KqueueSelector") via module-level configuration. Override with `PROVIDE_LOG_MODULE_LEVELS="asyncio:DEBUG"` if needed.
 
 ## Development Guidelines
 
@@ -120,5 +121,28 @@ uv publish                      # Publish to PyPI
 
 - **Low-Level Infrastructure**: Only use `print()` to stderr where using Foundation logger would create circular dependencies
   - Example: In `streams/file.py` where the logger itself depends on these components
+
+## Third-Party Module Log Control
+
+The logging system provides fine-grained control over third-party module logging via module-level configuration:
+
+### Default Suppressions
+
+- **asyncio**: Set to INFO level to suppress debug messages like "Using selector: KqueueSelector"
+
+### Environment Variable Override
+
+Control module-specific log levels via `PROVIDE_LOG_MODULE_LEVELS`:
+
+```bash
+# Allow asyncio debug messages
+export PROVIDE_LOG_MODULE_LEVELS="asyncio:DEBUG"
+
+# Multiple modules (suppress urllib3 info, allow asyncio debug)
+export PROVIDE_LOG_MODULE_LEVELS="urllib3:WARNING,asyncio:DEBUG"
+
+# Suppress multiple third-party modules
+export PROVIDE_LOG_MODULE_LEVELS="asyncio:WARNING,urllib3:ERROR,requests:WARNING"
+```
+
 - it is okay to use future annotation for unquoted types.
-- it is okay to use futures for unquoted annotations.

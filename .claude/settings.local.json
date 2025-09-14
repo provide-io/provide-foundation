@@ -1,9 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(__NEW_LINE__ echo \"\")",
-      "Bash(__NEW_LINE__ echo \"=== Skipped Test Summary ===\")",
-      "Bash(__NEW_LINE__ grep -r \"@pytest.mark.skip\\|pytest.skip(\" tests --include=\"*.py\")"
+      "Bash(PYTHONPATH=src pytest tests/logger/test_asyncio_suppression.py -v)"
     ],
     "deny": [],
     "ask": [],
