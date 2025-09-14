@@ -121,6 +121,53 @@ def parse_dict(
     return result
 
 
+def _parse_basic_type(value: str, target_type: type) -> Any:
+    """Parse basic types (bool, int, float, str)."""
+    if target_type is bool:
+        return parse_bool(value)
+    if target_type is int:
+        return int(value)
+    if target_type is float:
+        return float(value)
+    if target_type is str:
+        return value
+    return None  # Not a basic type
+
+
+def _parse_list_type(value: str, target_type: type) -> list[Any]:
+    """Parse list types, including parameterized lists like list[int]."""
+    args = get_args(target_type)
+    if args and len(args) > 0:
+        item_type = args[0]
+        str_list = parse_list(value)
+        try:
+            # Convert each item to the target type
+            return [parse_typed_value(item, item_type) for item in str_list]
+        except (ValueError, TypeError) as e:
+            raise ValueError(f"Cannot convert list items to {item_type.__name__}: {e}")
+    else:
+        # list without type parameter, return as list[str]
+        return parse_list(value)
+
+
+def _parse_generic_type(value: str, target_type: type) -> Any:
+    """Parse generic types (list, dict, etc.)."""
+    origin = get_origin(target_type)
+
+    if origin is list:
+        return _parse_list_type(value, target_type)
+    elif origin is dict:
+        return parse_dict(value)
+    elif origin is None:
+        # Not a generic type, try direct conversion
+        if target_type is list:
+            return parse_list(value)
+        if target_type is dict:
+            return parse_dict(value)
+
+    return None  # Not a recognized generic type
+
+
 def parse_typed_value(value: str, target_type: type) -> Any:
     """Parse a string value to a specific type.
 
@@ -146,41 +193,15 @@ def parse_typed_value(value: str, target_type: type) -> Any:
     if value is None:
         return None
 
-    # Handle basic types
-    if target_type is bool:
-        return parse_bool(value)
-    if target_type is int:
-        return int(value)
-    if target_type is float:
-        return float(value)
-    if target_type is str:
-        return value
+    # Try basic types first
+    result = _parse_basic_type(value, target_type)
+    if result is not None or target_type in (bool, int, float, str):
+        return result
 
-    # Handle generic types using typing module
-    origin = get_origin(target_type)
-
-    if origin is list:
-        # Handle list[T] - convert each item to the specified type
-        args = get_args(target_type)
-        if args and len(args) > 0:
-            item_type = args[0]
-            str_list = parse_list(value)
-            try:
-                # Convert each item to the target type
-                return [parse_typed_value(item, item_type) for item in str_list]
-            except (ValueError, TypeError) as e:
-                raise ValueError(f"Cannot convert list items to {item_type.__name__}: {e}")
-        else:
-            # list without type parameter, return as list[str]
-            return parse_list(value)
-    elif origin is dict:
-        return parse_dict(value)
-    elif origin is None:
-        # Not a generic type, try direct conversion
-        if target_type is list:
-            return parse_list(value)
-        if target_type is dict:
-            return parse_dict(value)
+    # Try generic types
+    result = _parse_generic_type(value, target_type)
+    if result is not None:
+        return result
 
     # Default to string
     return value
