@@ -20,7 +20,7 @@ from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
     logger,  # This is the global FoundationLogger instance
-    setup_telemetry,
+    get_hub,
 )
 
 
@@ -351,7 +351,8 @@ def test_concurrent_setup_calls() -> None:
 
     def setup_worker(config: TelemetryConfig) -> None:
         try:
-            setup_telemetry(config)
+            hub = get_hub()
+            hub.initialize_foundation(config, force=True)
             setup_results.append(config.service_name)
         except Exception as e:  # pragma: no cover
             exceptions.append(e)
@@ -384,7 +385,8 @@ def test_memory_usage_with_large_configs() -> None:
     )
 
     try:
-        setup_telemetry(config)
+        hub = get_hub()
+        hub.initialize_foundation(config, force=True)
         for i in range(0, 100, 10):
             test_logger = logger.get_logger(f"module.{i}.submodule.5")
             test_logger.info(f"Message from module {i}")
