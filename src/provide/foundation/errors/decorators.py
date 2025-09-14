@@ -63,6 +63,73 @@ def with_error_handling(
 
     """
 
+    def _build_error_context() -> dict[str, Any]:
+        """Build logging context from provider and static context."""
+        log_context = {}
+        if context_provider:
+            log_context.update(context_provider())
+        if context:
+            log_context.update(context)
+        return log_context
+
+    def _should_suppress_error(exception: Exception) -> bool:
+        """Check if the error should be suppressed."""
+        return suppress is not None and isinstance(exception, suppress)
+
+    def _log_suppressed_error(exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+        """Log a suppressed error."""
+        if log_errors:
+            from provide.foundation.hub.foundation import get_foundation_logger
+            get_foundation_logger().info(
+                f"Suppressed {type(exception).__name__} in {func_name}",
+                function=func_name,
+                error=str(exception),
+                **log_context,
+            )
+
+    def _log_error(exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+        """Log an error with full details."""
+        if log_errors:
+            from provide.foundation.hub.foundation import get_foundation_logger
+            get_foundation_logger().error(
+                f"Error in {func_name}: {exception}",
+                exc_info=True,
+                function=func_name,
+                **log_context,
+            )
+
+    def _handle_error_mapping(exception: Exception) -> Exception:
+        """Apply error mapping if configured."""
+        if error_mapper and not isinstance(exception, FoundationError):
+            mapped = error_mapper(exception)
+            if mapped is not exception:
+                return mapped
+        return exception
+
+    def _process_error(exception: Exception, func_name: str) -> Any:
+        """Process an error according to configuration."""
+        log_context = _build_error_context()
+
+        # Check if we should suppress this error
+        if _should_suppress_error(exception):
+            _log_suppressed_error(exception, func_name, log_context)
+            return fallback
+
+        # Log the error if configured
+        _log_error(exception, func_name, log_context)
+
+        # If reraise=False, return fallback instead of raising
+        if not reraise:
+            return fallback
+
+        # Map the error if mapper provided and raise
+        mapped_error = _handle_error_mapping(exception)
+        if mapped_error is not exception:
+            raise mapped_error from exception
+
+        # Re-raise the original error
+        raise exception
+
     def decorator(func: F) -> F:
         if inspect.iscoroutinefunction(func):
 
@@ -71,47 +138,7 @@ def with_error_handling(
                 try:
                     return await func(*args, **kwargs)
                 except Exception as e:
-                    # Build context from either context_provider or context parameter
-                    log_context = {}
-                    if context_provider:
-                        log_context.update(context_provider())
-                    if context:
-                        log_context.update(context)
-
-                    # Check if we should suppress this error
-                    if suppress and isinstance(e, suppress):
-                        if log_errors:
-                            from provide.foundation.hub.foundation import get_foundation_logger
-                            get_foundation_logger().info(
-                                f"Suppressed {type(e).__name__} in {func.__name__}",
-                                function=func.__name__,
-                                error=str(e),
-                                **log_context,
-                            )
-                        return fallback
-
-                    # Log the error if configured
-                    if log_errors:
-                        from provide.foundation.hub.foundation import get_foundation_logger
-                        get_foundation_logger().error(
-                            f"Error in {func.__name__}: {e}",
-                            exc_info=True,
-                            function=func.__name__,
-                            **log_context,
-                        )
-
-                    # If reraise=False, return fallback instead of raising
-                    if not reraise:
-                        return fallback
-
-                    # Map the error if mapper provided
-                    if error_mapper and not isinstance(e, FoundationError):
-                        mapped = error_mapper(e)
-                        if mapped is not e:
-                            raise mapped from e
-
-                    # Re-raise the original error
-                    raise
+                    return _process_error(e, func.__name__)
 
             return async_wrapper  # type: ignore
 
@@ -120,47 +147,7 @@ def with_error_handling(
             try:
                 return func(*args, **kwargs)
             except Exception as e:
-                # Build context from either context_provider or context parameter
-                log_context = {}
-                if context_provider:
-                    log_context.update(context_provider())
-                if context:
-                    log_context.update(context)
-
-                # Check if we should suppress this error
-                if suppress and isinstance(e, suppress):
-                    if log_errors:
-                        from provide.foundation.hub.foundation import get_foundation_logger
-                        get_foundation_logger().info(
-                            f"Suppressed {type(e).__name__} in {func.__name__}",
-                            function=func.__name__,
-                            error=str(e),
-                            **log_context,
-                        )
-                    return fallback
-
-                # Log the error if configured
-                if log_errors:
-                    from provide.foundation.hub.foundation import get_foundation_logger
-                    get_foundation_logger().error(
-                        f"Error in {func.__name__}: {e}",
-                        exc_info=True,
-                        function=func.__name__,
-                        **log_context,
-                    )
-
-                # If reraise=False, return fallback instead of raising
-                if not reraise:
-                    return fallback
-
-                # Map the error if mapper provided
-                if error_mapper and not isinstance(e, FoundationError):
-                    mapped = error_mapper(e)
-                    if mapped is not e:
-                        raise mapped from e
-
-                # Re-raise the original error
-                raise
+                return _process_error(e, func.__name__)
 
         return wrapper  # type: ignore
 
