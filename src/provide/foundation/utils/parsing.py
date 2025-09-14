@@ -207,6 +207,54 @@ def parse_typed_value(value: str, target_type: type) -> Any:
     return value
 
 
+def _try_converter(converter: Any, value: str) -> tuple[bool, Any]:
+    """Try to apply a converter, handling mocks and exceptions."""
+    if not converter or not callable(converter):
+        return False, None
+
+    try:
+        result = converter(value)
+        # Special case: if the converter returns something that looks like a test mock,
+        # fall back to type-based parsing. This handles test scenarios where converters
+        # are mocked but we still want to test the type-based parsing logic.
+        if hasattr(result, "_mock_name") or "mock" in str(type(result)).lower():
+            return False, None
+        return True, result
+    except Exception:
+        # If converter fails, fall back to type-based parsing
+        return False, None
+
+
+def _resolve_string_type(field_type: str) -> type | str:
+    """Resolve string type annotations to actual types."""
+    type_map = {
+        "int": int,
+        "float": float,
+        "str": str,
+        "bool": bool,
+        "list": list,
+        "dict": dict,
+    }
+    return type_map.get(field_type, field_type)
+
+
+def _extract_field_type(attr: Any) -> type | None:
+    """Extract the type from an attrs field."""
+    if not (hasattr(attr, "type") and attr.type is not None):
+        return None
+
+    field_type = attr.type
+
+    # Handle string type annotations
+    if isinstance(field_type, str):
+        field_type = _resolve_string_type(field_type)
+        # If still a string, we can't parse it
+        if isinstance(field_type, str):
+            return None
+
+    return field_type
+
+
 def auto_parse(attr: Any, value: str) -> Any:
     """Automatically parse value based on an attrs field's type and metadata.
 
@@ -237,56 +285,21 @@ def auto_parse(attr: Any, value: str) -> Any:
 
     """
     # Check for attrs field converter first
-    if hasattr(attr, "converter") and attr.converter is not None:
-        try:
-            result = attr.converter(value)
-            # Special case: if the converter returns something that looks like a test mock,
-            # fall back to type-based parsing. This handles test scenarios where converters
-            # are mocked but we still want to test the type-based parsing logic.
-            if not (hasattr(result, "_mock_name") or "mock" in str(type(result)).lower()):
-                return result
-        except Exception:
-            # If converter fails, fall back to type-based parsing
-            pass
+    if hasattr(attr, "converter"):
+        success, result = _try_converter(attr.converter, value)
+        if success:
+            return result
 
     # Check for converter in metadata as fallback
     if hasattr(attr, "metadata") and attr.metadata:
         converter = attr.metadata.get("converter")
-        if converter and callable(converter):
-            try:
-                result = converter(value)
-                # Special case: if the converter returns something that looks like a test mock,
-                # fall back to type-based parsing. This handles test scenarios where converters
-                # are mocked but we still want to test the type-based parsing logic.
-                if not (hasattr(result, "_mock_name") or "mock" in str(type(result)).lower()):
-                    return result
-            except Exception:
-                # If converter fails, fall back to type-based parsing
-                pass
+        success, result = _try_converter(converter, value)
+        if success:
+            return result
 
-    # Get type hint from attrs field
-    if hasattr(attr, "type") and attr.type is not None:
-        field_type = attr.type
-
-        # Handle string type annotations (e.g., 'int', 'str', 'bool')
-        # This happens when attrs processes classes defined inside functions
-        if isinstance(field_type, str):
-            # Map common string type names to actual types
-            type_map = {
-                "int": int,
-                "float": float,
-                "str": str,
-                "bool": bool,
-                "list": list,
-                "dict": dict,
-            }
-            # Try to get the actual type from the map
-            field_type = type_map.get(field_type, field_type)
-
-        # If we still have a string, we can't parse it
-        if isinstance(field_type, str):
-            return value
-
+    # Get type hint from attrs field and try type-based parsing
+    field_type = _extract_field_type(attr)
+    if field_type is not None:
         return parse_typed_value(value, field_type)
 
     # No type info, return as string

@@ -14,7 +14,8 @@
       "Bash(PYTHONPATH=src pytest -n auto --tb=short)",
       "Bash(PYTHONPATH=src pytest tests/crypto/test_optional_crypto_dependency.py::TestCryptoFallbackBehavior::test_crypto_module_resilience -v)",
       "Bash(PYTHONPATH=src pytest tests/crypto/test_optional_crypto_dependency.py::TestCryptoFallbackBehavior::test_crypto_module_resilience tests/logger/test_asyncio_suppression.py -v)",
-      "Bash(PYTHONPATH=src python -c \"\nfrom provide.foundation.utils.formatting import format_table\nheaders = [''Name'', ''Age'']\nrows = [[''Alice'', 30], [''Bob'', 25]]\nprint(''=== format_table test ==='')\nprint(format_table(headers, rows))\nprint(''=== Test passed ==='')\n\")"
+      "Bash(PYTHONPATH=src python -c \"\nfrom provide.foundation.utils.formatting import format_table\nheaders = [''Name'', ''Age'']\nrows = [[''Alice'', 30], [''Bob'', 25]]\nprint(''=== format_table test ==='')\nprint(format_table(headers, rows))\nprint(''=== Test passed ==='')\n\")",
+      "Bash(PYTHONPATH=src python -c \"\nfrom provide.foundation.utils.parsing import parse_typed_value\nprint(''=== parse_typed_value tests ==='')\nprint(''int:'', parse_typed_value(''42'', int))\nprint(''bool:'', parse_typed_value(''true'', bool))\nprint(''list:'', parse_typed_value(''a,b,c'', list))\nprint(''=== Tests passed ==='')\n\")"
     ],
     "deny": [],
     "ask": [],
