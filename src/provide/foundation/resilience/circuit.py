@@ -9,17 +9,6 @@ from attrs import define, field
 
 from provide.foundation.resilience.types import CircuitState
 
-# Use lazy logger initialization to avoid circular imports
-_logger = None
-
-
-def _get_logger():
-    """Get logger lazily to avoid circular import issues."""
-    global _logger
-    if _logger is None:
-        from provide.foundation.logger import get_logger
-        _logger = get_logger(__name__)
-    return _logger
 
 T = TypeVar("T")
 
@@ -63,7 +52,8 @@ class CircuitBreaker:
     def _record_success(self) -> None:
         """Record successful execution."""
         if self._state == CircuitState.HALF_OPEN:
-            _get_logger().info(
+            from provide.foundation.hub.foundation import get_foundation_logger
+        get_foundation_logger().info(
                 "Circuit breaker recovered - closing circuit",
                 state="half_open->closed",
                 failure_count=self._failure_count,
@@ -82,7 +72,8 @@ class CircuitBreaker:
             # Failed during recovery attempt
             self._state = CircuitState.OPEN
             self._next_attempt_time = self._last_failure_time + self.recovery_timeout
-            _get_logger().warning(
+            from provide.foundation.hub.foundation import get_foundation_logger
+            get_foundation_logger().warning(
                 "Circuit breaker recovery failed - opening circuit",
                 state="half_open->open",
                 failure_count=self._failure_count,
@@ -92,7 +83,8 @@ class CircuitBreaker:
             # Threshold exceeded, open circuit
             self._state = CircuitState.OPEN
             self._next_attempt_time = self._last_failure_time + self.recovery_timeout
-            _get_logger().error(
+            from provide.foundation.hub.foundation import get_foundation_logger
+            get_foundation_logger().error(
                 "Circuit breaker opened due to failures",
                 state="closed->open",
                 failure_count=self._failure_count,
@@ -106,7 +98,8 @@ class CircuitBreaker:
         if self._state == CircuitState.OPEN:
             if self._should_attempt_reset():
                 self._state = CircuitState.HALF_OPEN
-                _get_logger().info(
+                from provide.foundation.hub.foundation import get_foundation_logger
+        get_foundation_logger().info(
                     "Circuit breaker attempting recovery",
                     state="open->half_open",
                     failure_count=self._failure_count,
@@ -132,7 +125,8 @@ class CircuitBreaker:
         if self._state == CircuitState.OPEN:
             if self._should_attempt_reset():
                 self._state = CircuitState.HALF_OPEN
-                _get_logger().info(
+                from provide.foundation.hub.foundation import get_foundation_logger
+        get_foundation_logger().info(
                     "Circuit breaker attempting recovery",
                     state="open->half_open",
                     failure_count=self._failure_count,
@@ -154,7 +148,8 @@ class CircuitBreaker:
 
     def reset(self) -> None:
         """Manually reset the circuit breaker."""
-        _get_logger().info(
+        from provide.foundation.hub.foundation import get_foundation_logger
+        get_foundation_logger().info(
             "Circuit breaker manually reset",
             previous_state=self._state.value,
             failure_count=self._failure_count,
