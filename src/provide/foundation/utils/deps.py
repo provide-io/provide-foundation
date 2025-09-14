@@ -3,11 +3,6 @@
 from typing import NamedTuple
 
 
-def _get_logger():
-    """Lazy logger import to avoid circular dependencies."""
-    from provide.foundation.logger import get_logger
-
-    return get_logger(__name__)
 
 
 class DependencyStatus(NamedTuple):
@@ -120,7 +115,8 @@ def check_optional_deps(*, quiet: bool = False, return_status: bool = False) -> 
     deps = get_optional_dependencies()
 
     if not quiet:
-        log = _get_logger()
+        from provide.foundation.hub.foundation import get_foundation_logger
+        log = get_foundation_logger()
         log.info("📦 provide-foundation Optional Dependencies Status")
         log.info("=" * 50)
 

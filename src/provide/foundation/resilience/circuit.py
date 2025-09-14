@@ -99,7 +99,7 @@ class CircuitBreaker:
             if self._should_attempt_reset():
                 self._state = CircuitState.HALF_OPEN
                 from provide.foundation.hub.foundation import get_foundation_logger
-        get_foundation_logger().info(
+                get_foundation_logger().info(
                     "Circuit breaker attempting recovery",
                     state="open->half_open",
                     failure_count=self._failure_count,
@@ -126,7 +126,7 @@ class CircuitBreaker:
             if self._should_attempt_reset():
                 self._state = CircuitState.HALF_OPEN
                 from provide.foundation.hub.foundation import get_foundation_logger
-        get_foundation_logger().info(
+                get_foundation_logger().info(
                     "Circuit breaker attempting recovery",
                     state="open->half_open",
                     failure_count=self._failure_count,
