@@ -6,12 +6,10 @@ that are already installed and valid.
 """
 
 from datetime import datetime, timedelta
-import json
 from pathlib import Path
 
 from provide.foundation.errors import FoundationError
-from provide.foundation.file.atomic import atomic_write
-from provide.foundation.file.safe import safe_read_text
+from provide.foundation.file.formats import read_json, write_json
 from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
@@ -51,22 +49,11 @@ class ToolCache:
         Returns:
             Cache metadata dictionary.
         """
-        content = safe_read_text(self.metadata_file, default="{}")
-        if content:
-            try:
-                return json.loads(content)
-            except Exception as e:
-                log.warning(f"Failed to parse cache metadata: {e}")
-
-        return {}
+        return read_json(self.metadata_file, default={})
 
     def _save_metadata(self) -> None:
         """Save cache metadata to disk."""
-        try:
-            content = json.dumps(self.metadata, indent=2)
-            atomic_write(self.metadata_file, content.encode("utf-8"))
-        except Exception as e:
-            log.error(f"Failed to save cache metadata: {e}")
+        write_json(self.metadata_file, self.metadata, indent=2)
 
     def get(self, tool: str, version: str) -> Path | None:
         """
