@@ -8,13 +8,13 @@ console formatters, and foundation-specific output settings.
 from typing import TYPE_CHECKING, cast
 
 from provide.foundation.config.parsers.base import (
-    _format_invalid_value_error,
-    _VALID_LOG_LEVEL_TUPLE,
     _VALID_FORMATTER_TUPLE,
+    _VALID_LOG_LEVEL_TUPLE,
+    _format_invalid_value_error,
 )
 
 if TYPE_CHECKING:
-    from provide.foundation.logger.types import LogLevelStr, ConsoleFormatterStr
+    from provide.foundation.logger.types import ConsoleFormatterStr, LogLevelStr
 else:
     LogLevelStr = str
     ConsoleFormatterStr = str

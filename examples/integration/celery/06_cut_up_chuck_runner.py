@@ -35,10 +35,11 @@ current_dir = Path(__file__).parent
 if str(current_dir) not in sys.path:
     sys.path.insert(0, str(current_dir))
 
-from provide.foundation import logger, pout
-
 # Load modules by file path
 import importlib.util
+
+from provide.foundation import logger, pout
+
 
 def load_module_from_file(name, filepath):
     spec = importlib.util.spec_from_file_location(name, filepath)

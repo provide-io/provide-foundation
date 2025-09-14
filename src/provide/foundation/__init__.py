@@ -47,6 +47,12 @@ from provide.foundation.logger import (
     setup_logging,  # Setup function
 )
 
+# Logger type exports
+from provide.foundation.logger.types import (
+    ConsoleFormatterStr,
+    LogLevelStr,
+)
+
 # Resilience exports
 from provide.foundation.resilience import (
     BackoffStrategy,
@@ -62,12 +68,6 @@ from provide.foundation.resilience import (
 from provide.foundation.setup import (
     setup_telemetry,
     shutdown_foundation_telemetry,
-)
-
-# Logger type exports
-from provide.foundation.logger.types import (
-    ConsoleFormatterStr,
-    LogLevelStr,
 )
 
 # New utility exports

@@ -8,8 +8,6 @@ from unittest.mock import Mock, patch
 
 import click
 from click.testing import CliRunner
-import pytest
-
 from provide.testkit import (
     CliTestCase,
     MockContext,
@@ -17,6 +15,7 @@ from provide.testkit import (
     isolated_cli_runner,
     temp_config_file,
 )
+import pytest
 
 
 class TestMockContext:

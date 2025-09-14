@@ -38,6 +38,7 @@ if str(current_dir) not in sys.path:
 # Load setup_and_config module by file path
 import importlib.util
 
+
 def load_module_from_file(name, filepath):
     spec = importlib.util.spec_from_file_location(name, filepath)
     module = importlib.util.module_from_spec(spec)

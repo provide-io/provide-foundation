@@ -123,8 +123,9 @@ class TestFoundationLogOutputIntegration:
         monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "main")
 
         # Reset and setup telemetry with file logging
-        from provide.foundation.setup import setup_telemetry
         from provide.testkit import reset_foundation_setup_for_testing
+
+        from provide.foundation.setup import setup_telemetry
 
         reset_foundation_setup_for_testing()
 
@@ -150,8 +151,9 @@ class TestFoundationLogOutputIntegration:
         monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "stderr")
 
         # Reset and setup telemetry
-        from provide.foundation.setup import setup_telemetry
         from provide.testkit import reset_foundation_setup_for_testing
+
+        from provide.foundation.setup import setup_telemetry
 
         reset_foundation_setup_for_testing()
 

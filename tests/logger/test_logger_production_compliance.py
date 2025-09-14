@@ -17,6 +17,7 @@ import threading
 import time
 from unittest.mock import patch
 
+from provide.testkit import reset_foundation_setup_for_testing
 from pytest import CaptureFixture  # Added for capsys
 
 from provide.foundation import (
@@ -26,7 +27,6 @@ from provide.foundation import (
     setup_telemetry,
     shutdown_foundation_telemetry,
 )
-from provide.testkit import reset_foundation_setup_for_testing
 
 
 class TestProductionReadinessScenarios:

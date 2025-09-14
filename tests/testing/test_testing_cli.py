@@ -7,8 +7,6 @@ import tempfile
 
 import click
 from click.testing import CliRunner
-import pytest
-
 from provide.testkit.cli import (
     CliTestCase,
     MockContext,
@@ -16,6 +14,7 @@ from provide.testkit.cli import (
     isolated_cli_runner,
     temp_config_file,
 )
+import pytest
 
 
 class TestMockContext:

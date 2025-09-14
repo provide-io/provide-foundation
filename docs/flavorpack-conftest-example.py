@@ -5,8 +5,6 @@ This file should be placed at flavorpack/tests/conftest.py to provide
 foundation testing fixtures to all flavorpack tests.
 """
 
-import pytest
-
 # Import foundation testing utilities
 from provide.foundation.testing import (
     async_stream_reader,
@@ -38,6 +36,7 @@ from provide.foundation.testing import (
     temp_file,
     test_files_structure,
 )
+import pytest
 
 # Re-export for pytest discovery
 __all__ = [

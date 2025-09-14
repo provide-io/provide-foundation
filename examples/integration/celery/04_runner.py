@@ -33,10 +33,11 @@ current_dir = Path(__file__).parent
 if str(current_dir) not in sys.path:
     sys.path.insert(0, str(current_dir))
 
-from provide.foundation import logger, pout  # noqa: E402
-
 # Import our setup and tasks
 import importlib.util
+
+from provide.foundation import logger, pout  # noqa: E402
+
 
 # Load modules by file path to handle hyphenated names
 def load_module_from_file(name, filepath):

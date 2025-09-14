@@ -33,7 +33,7 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from examples.integration.celery.setup_and_config import app, CeleryTaskLogger
+from examples.integration.celery.setup_and_config import CeleryTaskLogger, app
 
 
 @app.task(bind=True, max_retries=3)

@@ -5,10 +5,10 @@ Provides shared error formatting functions and common constants
 used across all parser modules.
 """
 
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from provide.foundation.logger.types import LogLevelStr, ConsoleFormatterStr
+    from provide.foundation.logger.types import ConsoleFormatterStr, LogLevelStr
 else:
     LogLevelStr = str
     ConsoleFormatterStr = str

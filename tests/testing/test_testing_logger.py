@@ -1,15 +1,15 @@
 """Tests for logger testing utilities."""
 
+from provide.testkit.logger import (
+    reset_foundation_setup_for_testing,
+    reset_foundation_state,
+)
 import pytest
 import structlog
 
 from provide.foundation.logger.core import (
     _LAZY_SETUP_STATE,
     logger as foundation_logger,
-)
-from provide.testkit.logger import (
-    reset_foundation_setup_for_testing,
-    reset_foundation_state,
 )
 
 

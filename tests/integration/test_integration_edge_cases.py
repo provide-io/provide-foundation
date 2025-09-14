@@ -14,6 +14,7 @@ import os
 from typing import Any  # Added for type hints
 from unittest.mock import patch
 
+from provide.testkit import reset_foundation_setup_for_testing
 import pytest
 
 from provide.foundation import (
@@ -22,7 +23,6 @@ from provide.foundation import (
     logger,  # This is the global FoundationLogger instance
     setup_telemetry,
 )
-from provide.testkit import reset_foundation_setup_for_testing
 
 
 def test_invalid_environment_variables_handling(

@@ -270,10 +270,9 @@ class TestFactoriesModule:
         captured_stderr_for_foundation: "io.StringIO",
     ) -> None:
         """Test that setup_logging function works with basic parameters."""
-        from provide.foundation.logger.factories import setup_logging
-
         # First set up the foundation with test fixtures
-        from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
+        from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
+        from provide.foundation.logger.factories import setup_logging
 
         config = TelemetryConfig(
             logging=LoggingConfig(

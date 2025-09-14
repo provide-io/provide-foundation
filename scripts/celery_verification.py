@@ -34,8 +34,8 @@ if src_path.exists() and str(src_path) not in sys.path:
 
 # Setup Celery app (reuse Celery integration setup)
 sys.path.insert(0, str(project_root / "examples/integration/celery"))
-from setup_and_config import app, CeleryTaskLogger
 from metrics_and_signals import setup_signal_handlers
+from setup_and_config import CeleryTaskLogger, app
 
 from provide.foundation import logger, pout
 
@@ -87,7 +87,7 @@ def verify_benchmark_segment(self, test_name: str, iterations: int = 1000) -> di
         else:
             # Custom benchmark - simulate intensive logging
             from provide.foundation import setup_telemetry
-            from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
+            from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
 
             config = TelemetryConfig(
                 service_name=f"verification-{test_name}",
@@ -162,7 +162,7 @@ def verify_extreme_test_segment(self, test_type: str, duration_seconds: int = 10
     try:
         # Setup high-throughput logger
         from provide.foundation import setup_telemetry
-        from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
+        from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
 
         config = TelemetryConfig(
             service_name=f"extreme-test-{test_type}",
@@ -252,7 +252,7 @@ def verify_cut_up_chuck_segment(self, duration_seconds: int = 30) -> dict[str, A
 
     try:
         # Import cut-up chuck tasks
-        from cut_up_chuck_tasks import generate_log_entry, generate_batch, detect_anomaly
+        from cut_up_chuck_tasks import detect_anomaly, generate_batch, generate_log_entry
 
         entries_generated = 0
         batches_generated = 0

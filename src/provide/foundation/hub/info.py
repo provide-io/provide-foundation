@@ -1,8 +1,8 @@
 """Command information and metadata structures."""
 
 from collections.abc import Callable
-from typing import Any
 from types import ModuleType
+from typing import Any
 
 from attrs import define, field
 

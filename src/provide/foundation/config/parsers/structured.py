@@ -7,7 +7,6 @@ Handles parsing of structured data like dictionaries with specific formats
 
 from typing import TYPE_CHECKING
 
-
 if TYPE_CHECKING:
     from provide.foundation.logger.types import LogLevelStr
 else:

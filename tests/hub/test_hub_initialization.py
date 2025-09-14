@@ -6,10 +6,10 @@ Tests for the unified initialization through Hub, replacing legacy setup functio
 
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import os
 import threading
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import TextIO
 from unittest.mock import patch
 

@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import warnings
 
-
 from provide.foundation.hub.manager import clear_hub, get_hub
 
 
@@ -60,8 +59,8 @@ class TestBackwardCompatibility:
 
     def test_setup_functions_work_with_warnings(self):
         """Test that old setup functions still work but show warnings."""
-        from provide.foundation.setup import setup_foundation, setup_telemetry
         from provide.foundation.logger.factories import setup_logging
+        from provide.foundation.setup import setup_foundation, setup_telemetry
 
         # setup_foundation should work with warning
         with warnings.catch_warnings(record=True) as w:
@@ -162,7 +161,7 @@ class TestBackwardCompatibility:
 
     def test_no_breaking_changes(self):
         """Test that no existing functionality is broken."""
-        from provide.foundation.logger import logger, get_logger
+        from provide.foundation.logger import get_logger, logger
 
         # All logger methods should still exist and work
         logger.trace("Trace message")
@@ -186,6 +185,7 @@ class TestBackwardCompatibility:
     def test_thread_safety_maintained(self):
         """Test that thread safety is maintained during transition."""
         import threading
+
         from provide.foundation.logger import get_logger
 
         results = []

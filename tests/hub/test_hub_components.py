@@ -35,8 +35,8 @@ class TestComponentDiscovery:
 
     def test_discover_components_with_mock_entry_points(self, monkeypatch) -> None:
         """Test component discovery with mocked entry points."""
-        from unittest.mock import Mock
         import importlib.metadata as metadata
+        from unittest.mock import Mock
 
         # Create a mock entry point
         mock_entry_point = Mock()
@@ -62,8 +62,8 @@ class TestComponentDiscovery:
 
     def test_discover_components_handles_load_errors(self, monkeypatch) -> None:
         """Test that component discovery handles loading errors gracefully."""
-        from unittest.mock import Mock
         import importlib.metadata as metadata
+        from unittest.mock import Mock
 
         # Create a mock entry point that fails to load
         mock_entry_point = Mock()
@@ -87,8 +87,9 @@ class TestComponentDiscovery:
 
     def test_discover_components_registers_in_hub(self, monkeypatch) -> None:
         """Test that discovered components are registered in the hub registry."""
-        from unittest.mock import Mock
         import importlib.metadata as metadata
+        from unittest.mock import Mock
+
         from provide.foundation.hub.components import get_component_registry
 
         # Create a mock entry point
