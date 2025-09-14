@@ -118,9 +118,9 @@ class TestGenerateLogEntry:
 
     def setup_method(self):
         """Reset counters and random seed before each test."""
-        global _trace_counter, _span_counter
-        _trace_counter = 0
-        _span_counter = 0
+        import provide.foundation.cli.commands.logs.generate as generate_module
+        generate_module._trace_counter = 0
+        generate_module._span_counter = 0
         random.seed(42)  # For deterministic tests
 
     def test_generate_log_entry_basic(self):
@@ -245,7 +245,7 @@ class TestHelperFunctions:
         # Should have called click.echo multiple times
         assert mock_click.echo.call_count >= 4
 
-    @patch('provide.foundation.cli.commands.logs.generate.GlobalRateLimiter')
+    @patch('provide.foundation.logger.ratelimit.GlobalRateLimiter')
     def test_configure_rate_limiter_enabled(self, mock_limiter_class):
         """Test _configure_rate_limiter with rate limiting enabled."""
         from provide.foundation.cli.commands.logs.generate import _configure_rate_limiter
@@ -293,7 +293,7 @@ class TestHelperFunctions:
         assert logs_rate_limited == 0
 
         mock_get_logger.assert_called_once_with("generated.test-service")
-        mock_logger.info.assert_called_once_with("test message", extra_field="value")
+        mock_logger.info.assert_called_once_with("test message", service="test-service", extra_field="value")
 
     @patch('provide.foundation.cli.commands.logs.generate.get_logger')
     def test_send_log_entry_failure(self, mock_get_logger):
