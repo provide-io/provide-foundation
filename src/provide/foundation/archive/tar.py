@@ -77,13 +77,28 @@ class TarArchive(BaseArchive):
             output.mkdir(parents=True, exist_ok=True)
 
             with tarfile.open(archive, "r") as tar:
-                # Security check - prevent path traversal
+                # Security check - prevent path traversal and validate members
+                safe_members = []
                 for member in tar.getmembers():
                     if member.name.startswith("/") or ".." in member.name:
                         raise ArchiveError(f"Unsafe path in archive: {member.name}")
 
-                # Extract all
-                tar.extractall(output)
+                    # Additional security checks
+                    if member.islnk() or member.issym():
+                        # Check that symlinks don't escape extraction directory
+                        link_path = Path(output) / member.name
+                        target = Path(member.linkname) if member.islnk() else Path(member.linkname)
+                        if not target.is_absolute():
+                            target = link_path.parent / target
+                        try:
+                            target.resolve().relative_to(Path(output).resolve())
+                        except ValueError:
+                            raise ArchiveError(f"Unsafe symlink in archive: {member.name} -> {member.linkname}")
+
+                    safe_members.append(member)
+
+                # Extract only validated members
+                tar.extractall(output, members=safe_members)
 
             logger.debug(f"Extracted TAR archive to: {output}")
             return output
