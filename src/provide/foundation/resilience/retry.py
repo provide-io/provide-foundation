@@ -240,7 +240,10 @@ class RetryExecutor:
                 time.sleep(delay)
 
         # Should never reach here, but for safety
-        raise last_exception
+        if last_exception is not None:
+            raise last_exception
+        else:
+            raise RuntimeError("No exception captured during retry attempts")
 
     async def execute_async(self, func: Callable[..., T], *args, **kwargs) -> T:
         """Execute asynchronous function with retry logic.

@@ -71,7 +71,7 @@ def is_in_click_testing() -> bool:
 
         # Also check for common Click testing patterns
         locals_self = frame_info.frame.f_locals.get("self")
-        if hasattr(locals_self, "runner"):
+        if locals_self is not None and hasattr(locals_self, "runner"):
             runner = locals_self.runner
             if hasattr(runner, "invoke") and "CliRunner" in str(type(runner)):
                 return True

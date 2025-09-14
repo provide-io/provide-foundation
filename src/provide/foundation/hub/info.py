@@ -1,8 +1,13 @@
 """Command information and metadata structures."""
 
+from __future__ import annotations
+
 from collections.abc import Callable
 from types import ModuleType
-from typing import Any
+from typing import Any, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import click as click_module
 
 from attrs import define, field
 
@@ -10,9 +15,11 @@ try:
     import click
 
     _HAS_CLICK = True
+    _click_module: ModuleType | None = click
 except ImportError:
-    click: ModuleType | None = None
+    click = None  # type: ignore[assignment]
     _HAS_CLICK = False
+    _click_module = None
 
 
 @define(frozen=True, slots=True)

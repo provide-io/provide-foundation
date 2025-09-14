@@ -44,10 +44,13 @@ def _check_cryptography() -> DependencyStatus:
     try:
         import cryptography
 
+        # Get version safely
+        version = getattr(cryptography, "__version__", "unknown")
+
         return DependencyStatus(
             name="cryptography",
             available=True,
-            version=cryptography.__version__,
+            version=version,
             description="Crypto features (keys, certificates, signatures)",
         )
     except ImportError:
