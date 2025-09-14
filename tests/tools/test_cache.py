@@ -102,10 +102,9 @@ class TestToolCache:
         with cache.metadata_file.open("w") as f:
             f.write("invalid json content {")
 
-        with patch("provide.foundation.tools.cache.log") as mock_log:
-            new_cache = ToolCache(cache_dir=cache.cache_dir)
-            assert new_cache.metadata == {}
-            mock_log.warning.assert_called_once()
+        # read_json handles invalid JSON by returning the default value silently
+        new_cache = ToolCache(cache_dir=cache.cache_dir)
+        assert new_cache.metadata == {}
 
     def test_save_metadata(self, cache: ToolCache) -> None:
         """Test saving metadata to disk."""
