@@ -9,9 +9,17 @@ import asyncio
 import inspect
 from typing import Any
 
-from provide.foundation.logger import get_logger
+# Use lazy logger initialization to avoid circular imports
+_logger = None
 
-log = get_logger(__name__)
+
+def _get_logger():
+    """Get logger lazily to avoid circular import issues."""
+    global _logger
+    if _logger is None:
+        from provide.foundation.logger import get_logger
+        _logger = get_logger(__name__)
+    return _logger
 
 
 def _get_registry_and_globals():
@@ -63,7 +71,7 @@ def get_or_initialize_component(name: str, dimension: str) -> Any:
                     initialized_components[key] = component
                     return component
                 except Exception as e:
-                    log.error(
+                    _get_logger().error(
                         "Component initialization failed",
                         component=name,
                         dimension=dimension,
@@ -110,7 +118,7 @@ async def initialize_async_component(name: str, dimension: str) -> Any:
                     initialized_components[key] = component
                     return component
                 except Exception as e:
-                    log.error(
+                    _get_logger().error(
                         "Async component initialization failed",
                         component=name,
                         dimension=dimension,
@@ -154,7 +162,7 @@ def cleanup_all_components(dimension: str | None = None) -> None:
                         else:
                             cleanup_func()
                     except Exception as e:
-                        log.error(
+                        _get_logger().error(
                             "Component cleanup failed",
                             component=entry.name,
                             dimension=entry.dimension,
@@ -177,7 +185,7 @@ async def initialize_all_async_components() -> None:
         try:
             await initialize_async_component(entry.name, entry.dimension)
         except Exception as e:
-            log.error(
+            _get_logger().error(
                 "Failed to initialize async component",
                 component=entry.name,
                 dimension=entry.dimension,

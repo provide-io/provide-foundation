@@ -24,12 +24,32 @@ _LAZY_SETUP_STATE: dict[str, Any] = {"done": False, "error": None, "in_progress"
 class FoundationLogger:
     """A `structlog`-based logger providing a standardized logging interface."""
 
-    def __init__(self) -> None:
+    def __init__(self, hub=None) -> None:
         self._internal_logger = structlog.get_logger().bind(
             logger_name=f"{self.__class__.__module__}.{self.__class__.__name__}"
         )
         self._is_configured_by_setup: bool = False
         self._active_config: TelemetryConfig | None = None
+        self._hub = hub  # Hub dependency for DI pattern
+
+    def setup(self, config: "TelemetryConfig") -> None:
+        """
+        Setup the logger with configuration from Hub.
+
+        Args:
+            config: TelemetryConfig to use for setup
+        """
+        self._active_config = config
+        self._is_configured_by_setup = True
+
+        # Run the internal setup process
+        try:
+            from provide.foundation.logger.setup.coordinator import internal_setup
+            internal_setup(config, is_explicit_call=True)
+        except Exception as e:
+            # Fallback to emergency setup if regular setup fails
+            self._setup_emergency_fallback()
+            raise e
 
     def _check_structlog_already_disabled(self) -> bool:
         try:
@@ -47,10 +67,26 @@ class FoundationLogger:
     def _ensure_configured(self) -> None:
         """
         Ensures the logger is configured, performing lazy setup if necessary.
+        Uses Hub for configuration when available, falls back to legacy setup.
         This method is thread-safe and handles setup failures gracefully.
         """
         # Fast path for already configured loggers.
-        if self._is_configured_by_setup or (_LAZY_SETUP_STATE["done"] and not _LAZY_SETUP_STATE["error"]):
+        if self._is_configured_by_setup:
+            return
+
+        # If we have a Hub, try to get configuration from it
+        if self._hub is not None:
+            try:
+                config = self._hub.get_foundation_config()
+                if config and not self._is_configured_by_setup:
+                    self.setup(config)
+                return
+            except Exception:
+                # If Hub setup fails, fall through to legacy setup
+                pass
+
+        # Legacy setup path for backward compatibility
+        if _LAZY_SETUP_STATE["done"] and not _LAZY_SETUP_STATE["error"]:
             return
 
         # If setup is in progress by another thread, or failed previously, use fallback.
@@ -227,5 +263,39 @@ class FoundationLogger:
             super().__setattr__(name, value)
 
 
-# Global logger instance
-logger: FoundationLogger = FoundationLogger()
+# Global logger function - gets logger through Hub
+def get_global_logger() -> FoundationLogger:
+    """
+    Get the global FoundationLogger instance through Hub.
+
+    This replaces the old global logger instance with Hub-based access.
+    Auto-initializes Foundation if not already done.
+
+    Returns:
+        FoundationLogger instance from Hub
+    """
+    from provide.foundation.hub.manager import get_hub
+
+    hub = get_hub()
+    logger_instance = hub._component_registry.get("foundation.logger.instance", "singleton")
+
+    if logger_instance:
+        return logger_instance
+
+    # Emergency fallback - create standalone logger
+    return FoundationLogger()
+
+
+# Backward compatibility: provide global logger object with lazy access
+class GlobalLoggerProxy:
+    """Proxy object that forwards all attribute access to Hub-based logger."""
+
+    def __getattr__(self, name: str):
+        return getattr(get_global_logger(), name)
+
+    def __call__(self, *args, **kwargs):
+        return get_global_logger()(*args, **kwargs)
+
+
+# Global logger instance (now a proxy)
+logger = GlobalLoggerProxy()
