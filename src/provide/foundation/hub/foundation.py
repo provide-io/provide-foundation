@@ -104,9 +104,14 @@ class FoundationManager:
         from provide.foundation.logger.core import FoundationLogger
 
         try:
-            # Create logger instance - we'll need to modify FoundationLogger
-            # to accept a registry instead of full Hub
-            logger_instance = FoundationLogger(registry=self._registry, config=self._config)
+            # Create logger instance with Hub-like interface
+            # For now, we'll create a minimal wrapper to avoid circular dependencies
+            hub_wrapper = type('HubWrapper', (), {
+                '_component_registry': self._registry,
+                '_foundation_config': self._config
+            })()
+
+            logger_instance = FoundationLogger(hub=hub_wrapper)
 
             # Setup logger with configuration
             logger_instance.setup(self._config)
