@@ -4,6 +4,7 @@ Send logs command for Foundation CLI.
 
 import json
 import sys
+from typing import NoReturn
 
 try:
     import click

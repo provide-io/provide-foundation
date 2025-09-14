@@ -7,7 +7,7 @@ Command to generate logs for testing OpenObserve integration with Foundation's r
 
 import random
 import time
-from typing import Any
+from typing import Any, NoReturn
 
 try:
     import click
