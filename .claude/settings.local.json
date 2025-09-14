@@ -8,7 +8,8 @@
       "Bash(PYTHONPATH=src pytest tests/config/test_defaults.py::TestFactoryFunctions::test_default_module_levels -v)",
       "Bash(PYTHONPATH=src pytest tests/config/test_defaults.py::TestFactoryFunctions::test_default_module_levels tests/logger/test_asyncio_suppression.py -v)",
       "Bash(PYTHONPATH=src pytest tests/logger/test_asyncio_suppression.py::TestAsyncioDebugSuppression::test_structlog_asyncio_info_messages_still_logged -v -s)",
-      "Bash(PYTHONPATH=src coverage run -m pytest -x)"
+      "Bash(PYTHONPATH=src coverage run -m pytest -x)",
+      "Bash(export PYTHONPATH=src)"
     ],
     "deny": [],
     "ask": [],
