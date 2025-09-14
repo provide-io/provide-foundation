@@ -92,7 +92,10 @@ class TestTarArchiveEdgeCases:
         with tarfile.open(archive, "w") as tar:
             info = tarfile.TarInfo(name="../../../etc/passwd")
             info.size = 12
-            tar.addfile(info, fileobj=tempfile.SpooledTemporaryFile())
+            with tempfile.SpooledTemporaryFile() as spool:
+                spool.write(b"fake content")
+                spool.seek(0)
+                tar.addfile(info, fileobj=spool)
 
         output = temp_path / "extracted"
 
@@ -271,7 +274,10 @@ class TestTarArchiveEdgeCases:
             # Add regular file
             info1 = tarfile.TarInfo(name="file1.txt")
             info1.size = 12
-            tar.addfile(info1, fileobj=tempfile.SpooledTemporaryFile(initial_bytes=b"test content"))
+            with tempfile.SpooledTemporaryFile() as spool:
+                spool.write(b"test content")
+                spool.seek(0)
+                tar.addfile(info1, fileobj=spool)
 
             # Add hardlink to the file
             info2 = tarfile.TarInfo(name="hardlink.txt")
