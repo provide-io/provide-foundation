@@ -133,7 +133,8 @@ class TestToolCache:
         cache.cache_dir.chmod(0o444)
 
         with patch("provide.foundation.tools.cache.log") as mock_log:
-            cache._save_metadata()
+            with pytest.raises(Exception):  # write_json will raise after logging
+                cache._save_metadata()
             mock_log.error.assert_called_once()
 
         # Restore permissions

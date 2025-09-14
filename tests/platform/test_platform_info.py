@@ -124,7 +124,10 @@ class TestSystemInfo:
         assert info.hostname is None
         assert info.username is None
         assert info.home_dir == "/home/user"
-        assert info.temp_dir == "/tmp"  # Default value
+        # temp_dir should be the actual system temp directory when no env vars set
+        from provide.foundation.file.temp import system_temp_dir
+        expected_temp_dir = str(system_temp_dir())
+        assert info.temp_dir == expected_temp_dir
         assert info.num_cpus is None
         # Memory info may or may not be available depending on psutil
         # So we just check the attributes exist
