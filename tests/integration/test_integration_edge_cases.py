@@ -185,6 +185,7 @@ def test_logger_with_extreme_names(
            and "⚙️➡️✅ Foundation" not in line
            and "⚙️ Foundation initialized through Hub" not in line
            and "Configuring structlog output processors" not in line
+           and "🗣️ Registered item" not in line
            and not ("[trace    ]" in line or "trace    " in line)
            and line.strip()
     ]
@@ -236,6 +237,7 @@ def test_log_message_edge_cases(
            and "⚙️➡️✅ Foundation" not in line
            and "⚙️ Foundation initialized through Hub" not in line
            and "Configuring structlog output processors" not in line
+           and "🗣️ Registered item" not in line
            and not ("[trace    ]" in line or "trace    " in line)
            and line.strip()
     ]
@@ -307,6 +309,7 @@ def test_logger_args_formatting_edge_cases(
            and "⚙️➡️✅ Foundation" not in line
            and "⚙️ Foundation initialized through Hub" not in line
            and "Configuring structlog output processors" not in line
+           and "🗣️ Registered item" not in line
            and not ("[trace    ]" in line or "trace    " in line)
            and line.strip()
     ]
@@ -505,6 +508,7 @@ def test_performance_with_disabled_features(
            and "⚙️➡️✅ Foundation" not in line
            and "⚙️ Foundation initialized through Hub" not in line
            and "Configuring structlog output processors" not in line
+           and "🗣️ Registered item" not in line
            and not ("[trace    ]" in line or "trace    " in line)
            and line.strip()
     ]
