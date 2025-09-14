@@ -7,20 +7,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0-beta.1] - 2025-01-13
+
 ### Added
-- Initial release of provide.foundation
+- Initial beta release of provide.foundation
 - Structured logging with emoji-enhanced visual parsing
-- CLI framework with command registration
-- Configuration management system
-- Cryptographic utilities (hash, signatures, certificates)  
+- CLI framework with command registration and comprehensive subcommands
+- Configuration management system with environment variable support
+- Cryptographic utilities (hash, signatures, certificates)
 - File operations with atomic write support
-- Console I/O with color support
+- Console I/O with color support and proper output handling
 - Platform detection and system utilities
 - Process execution with streaming support
 - Error handling with retry logic and error boundaries
 - Registry pattern for component management
 - OpenTelemetry integration for distributed tracing
+- OpenObserve integration for log aggregation
+- Rate limiting with token bucket algorithm
 - Comprehensive example suite
+
+### Improved
+- **Code Quality**: Reduced cyclomatic complexity violations from 41 to 39 (C901)
+- **Error Handling**: Improved exception chaining patterns (B904)
+- **Type Safety**: Enhanced type annotations and resolved type errors
+- **Test Coverage**: Increased from 79.84% to 82.50% (exceeding 80% target)
+- **Import Organization**: Fixed all 45 import sorting issues (I001)
+- **Code Organization**: Fixed all 22 unsorted __all__ declarations
+
+### Fixed
+- Complex function refactoring in CLI commands (query, send, generate)
+- Type annotation errors in configuration parsers
+- Missing imports for NoReturn, Callable, and other typing constructs
+- Exception chaining in error handling
+- Click decorator placement in CLI commands
+
+### Added Tests
+- Comprehensive config error handling tests (33 new tests, 100% coverage)
+- CLI logs generate command tests (30 new tests, coverage improved from 18.48% to 61.96%)
+- Config defaults tests (39 new tests, 100% coverage)
+
+### Technical Improvements
+- Moved from lambda factories to proper named functions in config defaults
+- Enhanced type safety with proper cast() usage for string literals
+- Improved function complexity through strategic helper function extraction
+- Better separation of concerns in CLI command implementations
 
 ### Dependencies
 - Python 3.11+ required
