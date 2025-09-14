@@ -13,10 +13,19 @@ from typing import Any, TypeVar
 
 from attrs import define, field, validators
 
-from provide.foundation.logger import get_logger
 from provide.foundation.resilience.types import BackoffStrategy
 
-logger = get_logger(__name__)
+# Use lazy logger initialization to avoid circular imports
+_logger = None
+
+
+def _get_logger():
+    """Get logger lazily to avoid circular import issues."""
+    global _logger
+    if _logger is None:
+        from provide.foundation.logger import get_logger
+        _logger = get_logger(__name__)
+    return _logger
 
 T = TypeVar("T")
 
@@ -206,7 +215,7 @@ class RetryExecutor:
 
                 # Don't retry on last attempt - log and raise
                 if attempt >= self.policy.max_attempts:
-                    logger.error(
+                    _get_logger().error(
                         f"All {self.policy.max_attempts} retry attempts failed",
                         attempts=self.policy.max_attempts,
                         error=str(e),
@@ -222,7 +231,7 @@ class RetryExecutor:
                 delay = self.policy.calculate_delay(attempt)
 
                 # Log retry attempt
-                logger.info(
+                _get_logger().info(
                     f"Retry {attempt}/{self.policy.max_attempts} after {delay:.2f}s",
                     attempt=attempt,
                     max_attempts=self.policy.max_attempts,
@@ -236,7 +245,7 @@ class RetryExecutor:
                     try:
                         self.on_retry(attempt, e)
                     except Exception as callback_error:
-                        logger.warning("Retry callback failed", error=str(callback_error))
+                        _get_logger().warning("Retry callback failed", error=str(callback_error))
 
                 # Wait before retry
                 time.sleep(delay)
@@ -269,7 +278,7 @@ class RetryExecutor:
 
                 # Don't retry on last attempt - log and raise
                 if attempt >= self.policy.max_attempts:
-                    logger.error(
+                    _get_logger().error(
                         f"All {self.policy.max_attempts} retry attempts failed",
                         attempts=self.policy.max_attempts,
                         error=str(e),
@@ -285,7 +294,7 @@ class RetryExecutor:
                 delay = self.policy.calculate_delay(attempt)
 
                 # Log retry attempt
-                logger.info(
+                _get_logger().info(
                     f"Retry {attempt}/{self.policy.max_attempts} after {delay:.2f}s",
                     attempt=attempt,
                     max_attempts=self.policy.max_attempts,
@@ -302,7 +311,7 @@ class RetryExecutor:
                         else:
                             self.on_retry(attempt, e)
                     except Exception as callback_error:
-                        logger.warning("Retry callback failed", error=str(callback_error))
+                        _get_logger().warning("Retry callback failed", error=str(callback_error))
 
                 # Wait before retry
                 await asyncio.sleep(delay)

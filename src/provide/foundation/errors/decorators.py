@@ -16,9 +16,9 @@ F = TypeVar("F", bound=Callable[..., Any])
 
 def _get_logger():
     """Get logger instance lazily to avoid circular imports."""
-    from provide.foundation.logger import logger
-
-    return logger
+    # Use structlog directly to avoid circular imports during initialization
+    import structlog
+    return structlog.get_logger(__name__)
 
 
 def with_error_handling(

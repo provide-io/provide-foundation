@@ -29,40 +29,61 @@ def setup_foundation(config: TelemetryConfig | None = None) -> None:
     """
     Initialize the Foundation system with all its subsystems.
 
-    This orchestrates:
-    - Logging system setup
-    - Stream configuration
-    - Future: Tracer initialization
+    DEPRECATED: Foundation now auto-initializes on first use through Hub.
+    For explicit configuration, use Hub.initialize_foundation(config).
 
     Args:
         config: Optional configuration to use. If None, loads from environment.
     """
+    import warnings
+
+    warnings.warn(
+        "setup_foundation() is deprecated. Foundation now auto-initializes on first use. "
+        "For explicit configuration, use: from provide.foundation import get_hub; "
+        "get_hub().initialize_foundation(config)",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+
+    # Route through Hub instead of legacy setup
+    from provide.foundation.hub.manager import get_hub
+
+    hub = get_hub()
+    if config:
+        hub.initialize_foundation(config)
+
+    # Handle legacy subsystems that aren't yet in Hub
+    current_config = config if config is not None else TelemetryConfig.from_env()
+
+    # Configure file logging if specified (legacy)
+    log_file_path = getattr(current_config.logging, "log_file", None)
+    configure_file_logging(log_file_path)
+
+    # Initialize OpenTelemetry tracing and metrics if available and enabled (legacy)
+    setup_opentelemetry_tracing(current_config)
+    setup_opentelemetry_metrics(current_config)
+
     global _EXPLICIT_SETUP_DONE
-
-    with _PROVIDE_SETUP_LOCK:
-        current_config = config if config is not None else TelemetryConfig.from_env()
-
-        # Configure file logging if specified
-        log_file_path = getattr(current_config.logging, "log_file", None)
-        configure_file_logging(log_file_path)
-
-        # Run the main logging setup
-        internal_setup(current_config, is_explicit_call=True)
-
-        # Initialize OpenTelemetry tracing and metrics if available and enabled
-        setup_opentelemetry_tracing(current_config)
-        setup_opentelemetry_metrics(current_config)
-
-        _EXPLICIT_SETUP_DONE = True
+    _EXPLICIT_SETUP_DONE = True
 
 
 def setup_telemetry(config: TelemetryConfig | None = None) -> None:
     """
     Legacy alias for setup_foundation.
 
+    DEPRECATED: Use Hub.initialize_foundation(config) instead.
+
     Args:
         config: Optional configuration to use. If None, loads from environment.
     """
+    import warnings
+
+    warnings.warn(
+        "setup_telemetry() is deprecated. Use get_hub().initialize_foundation(config) instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+
     setup_foundation(config)
 
 
