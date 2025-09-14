@@ -239,6 +239,32 @@ class Certificate:
             ecdsa_curve,
         )
 
+    @classmethod
+    def create_self_signed_client_cert(
+        cls,
+        common_name: str,
+        organization_name: str,
+        validity_days: int,
+        alt_names: list[str] | None = None,
+        key_type: str = DEFAULT_CERTIFICATE_KEY_TYPE,
+        key_size: int = DEFAULT_RSA_KEY_SIZE,
+        ecdsa_curve: str = DEFAULT_CERTIFICATE_CURVE,
+    ) -> "Certificate":
+        """Creates a new self-signed end-entity certificate suitable for a client."""
+        from provide.foundation.crypto.certificates.factory import (
+            create_self_signed_client_cert,
+        )
+
+        return create_self_signed_client_cert(
+            common_name,
+            organization_name,
+            validity_days,
+            alt_names,
+            key_type,
+            key_size,
+            ecdsa_curve,
+        )
+
     def verify_trust(self, other_cert: Self) -> bool:
         """Verifies if the `other_cert` is trusted based on this certificate's trust chain."""
         return verify_trust_impl(self, other_cert, self._trust_chain)
