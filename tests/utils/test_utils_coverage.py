@@ -6,7 +6,7 @@ from typing import Any
 
 from attrs import define, field, fields
 
-from provide.foundation import LoggingConfig, TelemetryConfig, logger, setup_telemetry
+from provide.foundation import LoggingConfig, TelemetryConfig, logger, get_hub
 from provide.foundation.utils import timed_block
 from provide.foundation.utils.formatting import format_table, to_camel_case
 from provide.foundation.utils.parsing import auto_parse, parse_typed_value
@@ -134,7 +134,8 @@ class TestTimingCoverage:
         """Test that modifying the context dict within a timed_block works."""
         from provide.foundation.logger.config.logging import LoggingConfig
         config = TelemetryConfig(logging=LoggingConfig(default_level="INFO"))
-        setup_telemetry(config)
+        hub = get_hub()
+        hub.initialize_foundation(config, force=True)
 
         with timed_block(logger, "test_op") as ctx:
             ctx["records"] = 100
@@ -150,7 +151,8 @@ class TestTimingCoverage:
         self, captured_stderr_for_foundation: io.StringIO,
     ) -> None:
         """Test that the initial debug message is logged when level is DEBUG."""
-        setup_telemetry(TelemetryConfig(logging=LoggingConfig(default_level="DEBUG")))
+        hub = get_hub()
+        hub.initialize_foundation(TelemetryConfig(logging=LoggingConfig(default_level="DEBUG")), force=True)
 
         with timed_block(logger, "debug_test_op"):
             pass

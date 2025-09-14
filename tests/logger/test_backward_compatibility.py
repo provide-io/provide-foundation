@@ -135,10 +135,8 @@ class TestBackwardCompatibility:
         module_logger.info("Module logger test")
 
         # Pattern 3: Setup then use (provide-testkit pattern)
-        from provide.foundation.setup import setup_telemetry
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", DeprecationWarning)
-            setup_telemetry()
+        hub = get_hub()
+        hub.initialize_foundation(force=True)
 
         logger.info("After setup test")
 

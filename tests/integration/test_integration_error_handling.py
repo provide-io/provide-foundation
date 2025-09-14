@@ -140,11 +140,12 @@ class TestErrorHandlingIntegration:
 
     def test_error_logging_integration(self, captured_stderr_for_foundation) -> None:
         """Test that errors are properly logged."""
-        from provide.foundation import TelemetryConfig, setup_telemetry
+        from provide.foundation import TelemetryConfig, get_hub
         from provide.foundation.errors.decorators import with_error_handling
 
         # Setup telemetry
-        setup_telemetry(TelemetryConfig())
+        hub = get_hub()
+        hub.initialize_foundation(TelemetryConfig(), force=True)
 
         @with_error_handling(log_errors=True)
         def failing_func() -> Never:
