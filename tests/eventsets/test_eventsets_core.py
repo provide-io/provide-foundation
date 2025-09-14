@@ -5,6 +5,8 @@ Tests for Event Set configuration, resolution, and processing.
 
 
 
+from provide.testkit.logger import reset_foundation_setup_for_testing
+
 from provide.foundation import (
     logger as global_logger,
 )
@@ -15,7 +17,6 @@ from provide.foundation.eventsets.types import (
     EventSet,
     FieldMapping,
 )
-from provide.testkit.logger import reset_foundation_setup_for_testing
 
 
 class TestEventSetRegistry:

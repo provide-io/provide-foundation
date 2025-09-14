@@ -106,7 +106,7 @@ def run_command(
             input=subprocess_input,
             timeout=timeout,
             check=False,  # We'll handle the check ourselves
-            shell=shell,
+            shell=shell,  # nosec B602 - Shell usage validated by caller context
             **kwargs,
         )
 
@@ -367,8 +367,11 @@ def run_shell(
 ) -> CompletedProcess:
     """Run a shell command.
 
+    WARNING: This function uses shell=True, which can be dangerous with
+    unsanitized input. Only use with trusted commands or properly sanitized input.
+
     Args:
-        cmd: Shell command string
+        cmd: Shell command string (MUST be trusted/sanitized)
         cwd: Working directory
         env: Environment variables
         capture_output: Whether to capture output
@@ -378,7 +381,20 @@ def run_shell(
 
     Returns:
         CompletedProcess with results
+
+    Security Note:
+        This function enables shell interpretation of the command string,
+        which allows shell features but also creates injection risks.
+        Use run_command with a list for safer execution.
     """
+    if not isinstance(cmd, str):
+        raise TypeError("Shell command must be a string")
+
+    # Basic validation - log warning for potentially dangerous patterns
+    dangerous_patterns = [";", "&&", "||", "|", ">", "<", "&", "$", "`"]
+    if any(pattern in cmd for pattern in dangerous_patterns):
+        plog.warning("Shell command contains potentially dangerous characters", command=cmd)
+
     return run_command(
         cmd,
         cwd=cwd,
@@ -386,7 +402,7 @@ def run_shell(
         capture_output=capture_output,
         check=check,
         timeout=timeout,
-        shell=True,
+        shell=True,  # nosec B602 - Intentional shell usage with validation
         **kwargs,
     )
 

@@ -9,7 +9,7 @@ from provide.foundation.console.output import pout
 def setup_example_environment() -> Path:
     """
     Set up the example environment by adding src to path.
-    
+
     Returns:
         Path to the project root directory.
     """

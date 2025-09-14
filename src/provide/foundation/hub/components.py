@@ -187,31 +187,31 @@ from provide.foundation.hub.processors import (
 
 
 __all__ = [
+    "ComponentCategory",
     # Core classes
     "ComponentInfo",
-    "ComponentCategory",
     "ComponentLifecycle",
-    # Registry access
-    "get_component_registry",
-    # Health and schema
-    "check_component_health",
-    "get_component_config_schema",
     # Bootstrap and testing
     "bootstrap_foundation",
-    "reset_registry_for_tests",
-    # Re-exported from specialized modules
-    "resolve_config_value",
-    "get_config_chain",
-    "load_all_configs",
-    "load_config_from_registry",
-    "get_handlers_for_exception",
-    "execute_error_handlers",
-    "get_or_initialize_component",
-    "initialize_async_component",
+    # Health and schema
+    "check_component_health",
     "cleanup_all_components",
-    "initialize_all_async_components",
+    "discover_components",
+    "execute_error_handlers",
+    "get_component_config_schema",
+    # Registry access
+    "get_component_registry",
+    "get_config_chain",
+    "get_handlers_for_exception",
+    "get_or_initialize_component",
     "get_processor_pipeline",
     "get_processors_for_stage",
+    "initialize_all_async_components",
+    "initialize_async_component",
+    "load_all_configs",
+    "load_config_from_registry",
+    "reset_registry_for_tests",
     "resolve_component_dependencies",
-    "discover_components",
+    # Re-exported from specialized modules
+    "resolve_config_value",
 ]

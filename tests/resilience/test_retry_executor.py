@@ -487,14 +487,14 @@ class TestRetryExecutorEdgeCases:
         """Test that max_attempts=0 raises an error."""
         with pytest.raises(ValueError) as exc_info:
             policy = RetryPolicy(max_attempts=0)
-            executor = RetryExecutor(policy)
+            RetryExecutor(policy)
 
         assert "at least 1" in str(exc_info.value).lower()
 
     def test_negative_delay_raises(self):
         """Test that negative delay raises an error."""
         with pytest.raises(ValueError) as exc_info:
-            policy = RetryPolicy(base_delay=-1.0)
+            RetryPolicy(base_delay=-1.0)
 
         assert "positive" in str(exc_info.value).lower() or "negative" in str(exc_info.value).lower()
 

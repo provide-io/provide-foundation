@@ -3,7 +3,6 @@
 from typing import Any, Protocol
 
 # Import RegistryEntry from its canonical location
-from provide.foundation.hub.registry import RegistryEntry
 
 
 class Registrable(Protocol):

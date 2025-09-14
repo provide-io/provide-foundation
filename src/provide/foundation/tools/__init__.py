@@ -43,12 +43,12 @@ from provide.foundation.tools.verifier import ToolVerifier
 __all__ = [
     # Base classes
     "BaseToolManager",
-    "ToolMetadata",
-    "ToolError",
     # Components
     "ToolCache",
     "ToolDownloader",
+    "ToolError",
     "ToolInstaller",
+    "ToolMetadata",
     "ToolVerifier",
     "VersionResolver",
     # Registry functions

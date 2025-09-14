@@ -54,7 +54,7 @@ class QueuedRateLimiter:
         self.overflow_policy = overflow_policy
 
         # Use deque for efficient FIFO operations
-        self.pending_queue = deque(maxlen=max_queue_size if overflow_policy == "drop_oldest" else None)
+        self.pending_queue: deque[Any] = deque(maxlen=max_queue_size if overflow_policy == "drop_oldest" else None)
         self.queue_lock = threading.Lock()
 
         # Track statistics
@@ -216,7 +216,7 @@ class BufferedRateLimiter:
         # Track dropped items
         self.buffer_size = buffer_size
         self.track_dropped = track_dropped
-        self.dropped_buffer = deque(maxlen=buffer_size) if track_dropped else None
+        self.dropped_buffer: deque[Any] | None = deque(maxlen=buffer_size) if track_dropped else None
 
         # Statistics
         self.total_allowed = 0
@@ -252,7 +252,7 @@ class BufferedRateLimiter:
                 self.total_denied += 1
 
                 # Track dropped item
-                if self.track_dropped and item is not None:
+                if self.track_dropped and item is not None and self.dropped_buffer is not None:
                     self.dropped_buffer.append(
                         {
                             "time": now,

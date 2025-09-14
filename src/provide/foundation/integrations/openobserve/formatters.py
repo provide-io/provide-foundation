@@ -97,7 +97,7 @@ def format_table(response: SearchResponse, columns: list[str] | None = None) -> 
     # Determine columns
     if columns is None:
         # Get all unique keys from hits
-        all_keys = set()
+        all_keys: set[str] = set()
         for hit in response.hits:
             all_keys.update(hit.keys())
         # Sort columns, putting common ones first
@@ -115,7 +115,7 @@ def format_table(response: SearchResponse, columns: list[str] | None = None) -> 
 
     # Try to use tabulate if available
     try:
-        from tabulate import tabulate
+        from tabulate import tabulate  # type: ignore[import-untyped]
 
         # Prepare data
         headers = columns
@@ -175,7 +175,7 @@ def format_csv(response: SearchResponse, columns: list[str] | None = None) -> st
 
     # Determine columns
     if columns is None:
-        all_keys = set()
+        all_keys: set[str] = set()
         for hit in response.hits:
             all_keys.update(hit.keys())
         columns = sorted(all_keys)
@@ -226,7 +226,7 @@ def format_summary(response: SearchResponse) -> str:
             lines.append(f"  - {error}")
 
     # Add level distribution if available
-    level_counts = {}
+    level_counts: dict[str, int] = {}
     for hit in response.hits:
         level = hit.get("level", "UNKNOWN")
         level_counts[level] = level_counts.get(level, 0) + 1

@@ -25,7 +25,7 @@ if _HAS_OTEL:
 
         # Commands will auto-register if click is available
         try:
-            from provide.foundation.integrations.openobserve.commands import (
+            from provide.foundation.integrations.openobserve.commands import (  # noqa: F401
                 openobserve_group,
             )
         except ImportError:

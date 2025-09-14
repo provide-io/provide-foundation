@@ -436,7 +436,7 @@ class TestAsyncUtilitiesIntegration:
 
         async def complex_workflow():
             # Phase 1: Gather initial data
-            initial_data = await async_gather(
+            await async_gather(
                 async_sleep(0.01),
                 async_sleep(0.01),
             )

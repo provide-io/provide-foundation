@@ -104,45 +104,45 @@ from provide.foundation.transport.registry import (
 from provide.foundation.transport.types import HTTPMethod, TransportType
 
 __all__ = [
-    # Core abstractions
-    "Request",
-    "Response",
-    # Configuration
-    "TransportConfig",
     "HTTPConfig",
-    # Types
-    "TransportType",
     "HTTPMethod",
-    # Errors
-    "TransportError",
-    "TransportConnectionError",
-    "TransportTimeoutError",
     "HTTPResponseError",
-    "TransportNotFoundError",
     # Transport implementations
     "HTTPTransport",
+    "LoggingMiddleware",
+    "MetricsMiddleware",
     # Middleware
     "Middleware",
     "MiddlewarePipeline",
-    "LoggingMiddleware",
+    # Core abstractions
+    "Request",
+    "Response",
     "RetryMiddleware",
-    "MetricsMiddleware",
-    "create_default_pipeline",
-    # Registry
-    "register_transport",
-    "get_transport",
-    "get_transport_info",
-    "list_registered_transports",
+    # Configuration
+    "TransportConfig",
+    "TransportConnectionError",
+    # Errors
+    "TransportError",
+    "TransportNotFoundError",
+    "TransportTimeoutError",
+    # Types
+    "TransportType",
     # Client API
     "UniversalClient",
-    "get_default_client",
-    "request",
+    "create_default_pipeline",
+    "delete",
     "get",
+    "get_default_client",
+    "get_transport",
+    "get_transport_info",
+    "head",
+    "list_registered_transports",
+    "options",
+    "patch",
     "post",
     "put",
-    "patch",
-    "delete",
-    "head",
-    "options",
+    # Registry
+    "register_transport",
+    "request",
     "stream",
 ]

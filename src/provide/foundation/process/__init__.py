@@ -29,20 +29,20 @@ from provide.foundation.process.runner import (
 __all__ = [
     # Core types
     "CompletedProcess",
+    # Process lifecycle management
+    "ManagedProcess",
     "ProcessError",
-    # Sync execution
-    "run_command",
-    "run_shell",
-    "stream_command",
     # Async execution
     "async_run_command",
     "async_run_shell",
     "async_stream_command",
-    # Process lifecycle management
-    "ManagedProcess",
-    "wait_for_process_output",
-    # Exit utilities
-    "exit_success",
     "exit_error",
     "exit_interrupted",
+    # Exit utilities
+    "exit_success",
+    # Sync execution
+    "run_command",
+    "run_shell",
+    "stream_command",
+    "wait_for_process_output",
 ]

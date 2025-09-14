@@ -145,7 +145,7 @@ class TestSetupOpentelemetryTracing:
                     with patch("provide.foundation.tracer.otel.TracerProvider") as mock_provider_class:
                         with patch("provide.foundation.tracer.otel.OTLPGrpcSpanExporter") as mock_exporter_class:
                             with patch("provide.foundation.tracer.otel.BatchSpanProcessor") as mock_processor_class:
-                                with patch("provide.foundation.tracer.otel.otel_trace") as mock_trace:
+                                with patch("provide.foundation.tracer.otel.otel_trace"):
                                     with patch("provide.foundation.tracer.otel.slog") as mock_log:
                                         mock_resource_class.create.return_value = mock_resource
                                         mock_sampler_class.return_value = mock_sampler

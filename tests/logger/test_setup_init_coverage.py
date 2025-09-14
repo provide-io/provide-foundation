@@ -66,7 +66,7 @@ class TestLoggerSetupInitCoverage:
         assert "internal_setup" in __all__
         # reset_for_testing should be included if testing utilities are available
         try:
-            from provide.foundation.logger.setup.testing import (
+            from provide.foundation.logger.setup.testing import (  # noqa: F401
                 reset_foundation_setup_for_testing,
             )
 
@@ -82,7 +82,7 @@ class TestLoggerSetupInitCoverage:
 
         # Check if testing module is actually importable
         try:
-            from provide.foundation.logger.setup.testing import (
+            from provide.foundation.logger.setup.testing import (  # noqa: F401
                 reset_foundation_setup_for_testing,
             )
 

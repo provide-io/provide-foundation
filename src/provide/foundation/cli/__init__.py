@@ -29,24 +29,24 @@ from provide.foundation.cli.utils import (
 )
 
 __all__ = [
-    # Decorators
-    "config_options",
-    "error_handler",
-    "flexible_options",
-    "logging_options",
-    "output_options",
-    "pass_context",
-    "standard_options",
-    "version_option",
     # Utilities
     "CliTestRunner",
     "assert_cli_error",
     "assert_cli_success",
+    # Decorators
+    "config_options",
     "create_cli_context",
     "echo_error",
     "echo_info",
     "echo_json",
     "echo_success",
     "echo_warning",
+    "error_handler",
+    "flexible_options",
+    "logging_options",
+    "output_options",
+    "pass_context",
     "setup_cli_logging",
+    "standard_options",
+    "version_option",
 ]

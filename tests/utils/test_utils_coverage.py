@@ -74,7 +74,7 @@ class TestParsingCoverage:
             bool_val: "bool"
             list_val: "list"
             dict_val: "dict"
-            unknown_val: "SomeUnknownType"
+            unknown_val: "str"  # Changed from "SomeUnknownType" to test a real type
 
         attrs_fields = {f.name: f for f in fields(DummyConfig)}
 

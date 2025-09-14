@@ -17,6 +17,7 @@ import threading
 import time
 from unittest.mock import patch
 
+from provide.testkit import reset_foundation_setup_for_testing
 from pytest import CaptureFixture  # Added for capsys
 
 from provide.foundation import (
@@ -26,7 +27,6 @@ from provide.foundation import (
     setup_telemetry,
     shutdown_foundation_telemetry,
 )
-from provide.testkit import reset_foundation_setup_for_testing
 
 
 class TestProductionReadinessScenarios:
@@ -277,7 +277,7 @@ class TestDocumentedBehaviorCompliance:
         assert "Component service warning" in captured.err
         assert "Exception handling" in captured.err
         # Check for exception details (more flexible pattern matching)
-        assert ("RuntimeError: Test exception" in captured.err or 
+        assert ("RuntimeError: Test exception" in captured.err or
                 "Test exception" in captured.err), f"Exception details not found in: {captured.err}"
 
     def test_thread_safety_guarantees(self, capsys: CaptureFixture) -> None:

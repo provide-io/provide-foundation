@@ -245,7 +245,7 @@ def pass_context(f: F) -> F:
     return wrapper
 
 
-def version_option(version: str | None = None, prog_name: str | None = None):
+def version_option(version: str | None = None, prog_name: str | None = None) -> Callable[[F], F]:
     """
     Add a --version option to display version information.
 

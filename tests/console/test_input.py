@@ -329,7 +329,7 @@ class TestEdgeCases:
 
         with patch("sys.stdin", StringIO(test_input)):
             with patch("provide.foundation.console.input.plog") as mock_log:
-                lines = list(pin_stream())
+                list(pin_stream())
 
                 # Check debug logging
                 mock_log.debug.assert_called()

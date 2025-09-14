@@ -6,10 +6,10 @@ Tests for the unified initialization through Hub, replacing legacy setup functio
 
 from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import os
 import threading
 import time
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import TextIO
 from unittest.mock import patch
 
@@ -17,7 +17,6 @@ import pytest
 
 from provide.foundation.hub.manager import Hub, clear_hub, get_hub
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
-from provide.testkit.fixtures import captured_stderr_for_foundation
 
 
 class TestHubInitialization:

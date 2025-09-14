@@ -41,7 +41,7 @@ def secure_temp_file(
 
     This is similar to tempfile.mkstemp but uses Foundation's defaults.
     The file is created with permissions 0o600 (owner read/write only).
-    
+
     Use this when you need:
     - Direct file descriptor access (for os.fdopen, os.fsync, etc.)
     - Atomic file operations
@@ -49,7 +49,7 @@ def secure_temp_file(
 
     Args:
         suffix: File suffix
-        prefix: File name prefix  
+        prefix: File name prefix
         dir: Directory for the temp file (None = system temp)
 
     Returns:
@@ -66,7 +66,7 @@ def secure_temp_file(
     """
     if dir and isinstance(dir, Path):
         dir = str(dir)
-    
+
     fd, temp_path = tempfile.mkstemp(suffix=suffix, prefix=prefix, dir=dir)
     return fd, Path(temp_path)
 

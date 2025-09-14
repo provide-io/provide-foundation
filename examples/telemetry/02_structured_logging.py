@@ -17,7 +17,7 @@ Requirements:
 
 Usage:
     python examples/telemetry/02_structured_logging.py
-    
+
     # Or with custom log level via environment
     PROVIDE_LOG_LEVEL=ERROR python examples/telemetry/02_structured_logging.py
 
@@ -47,7 +47,7 @@ from provide.foundation.logger.config import (  # noqa: E402
 def example_1_quick_start() -> None:
     """
     Demonstrates basic structured logging with provide.foundation.
-    
+
     Key concepts:
     - setup_telemetry() initializes the logging system
     - logger methods accept a message and keyword arguments for structured data

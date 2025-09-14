@@ -3,6 +3,8 @@ Centralized default values for Foundation configuration.
 All defaults are defined here instead of inline in field definitions.
 """
 
+from pathlib import Path
+
 # =================================
 # Logging defaults
 # =================================
@@ -86,3 +88,37 @@ DEFAULT_MISSING_OK = True
 # =================================
 DEFAULT_ATOMIC_MODE = 0o644
 DEFAULT_ATOMIC_ENCODING = "utf-8"
+
+# =================================
+# Factory functions for mutable defaults
+# =================================
+
+def default_empty_dict() -> dict[str, str]:
+    """Factory for empty string dictionaries."""
+    return {}
+
+def default_module_levels() -> dict[str, str]:
+    """Factory for module log levels dictionary."""
+    return {}
+
+def default_rate_limits() -> dict[str, tuple[float, float]]:
+    """Factory for per-logger rate limits dictionary."""
+    return {}
+
+def default_otlp_headers() -> dict[str, str]:
+    """Factory for OTLP headers dictionary."""
+    return {}
+
+def default_logging_config() -> "LoggingConfig":
+    """Factory for LoggingConfig instance."""
+    # Import here to avoid circular imports
+    from provide.foundation.logger.config.logging import LoggingConfig
+    return LoggingConfig.from_env()
+
+# =================================
+# Converter functions (to replace lambdas)
+# =================================
+
+def path_converter(x: str | None) -> Path | None:
+    """Convert string to Path or None."""
+    return Path(x) if x else None

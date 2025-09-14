@@ -7,8 +7,6 @@ import tempfile
 
 import click
 from click.testing import CliRunner
-import pytest
-
 from provide.testkit.cli import (
     CliTestCase,
     MockContext,
@@ -16,6 +14,7 @@ from provide.testkit.cli import (
     isolated_cli_runner,
     temp_config_file,
 )
+import pytest
 
 
 class TestMockContext:
@@ -65,7 +64,7 @@ class TestIsolatedCliRunner:
         """Test isolated runner with environment variables."""
         test_env = {"TEST_VAR": "test_value"}
 
-        with isolated_cli_runner(env=test_env) as runner:
+        with isolated_cli_runner(env=test_env):
             assert os.environ.get("TEST_VAR") == "test_value"
 
         # Should be cleaned up
