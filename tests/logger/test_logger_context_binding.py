@@ -25,7 +25,19 @@ def get_log_entries(output: TextIO) -> list[dict[str, Any]]:
     for line in output.getvalue().strip().split("\n"):
         if line and not line.startswith("[Foundation Setup]"):
             try:
-                entries.append(json.loads(line))
+                entry = json.loads(line)
+                # Filter out Hub system logs (registration, setup, bootstrap logs)
+                if ("event" in entry and
+                    any(hub_event in entry["event"] for hub_event in [
+                        "🗣️ Registered item",
+                        "⚙️ Registered",
+                        "🗣️ Foundation bootstrap",
+                        "⚙️➡️🚀 Starting Foundation",
+                        "⚙️➡️✅ Foundation",
+                        "⚙️ Foundation initialized"
+                    ])):
+                    continue
+                entries.append(entry)
             except json.JSONDecodeError:
                 # Skip non-JSON lines
                 continue
