@@ -82,7 +82,7 @@ def error_boundary(
             except Exception as handler_error:
                 if log_errors:
                     from provide.foundation.hub.foundation import get_foundation_logger
-            get_foundation_logger().error(
+                    get_foundation_logger().error(
                         f"Error handler failed: {handler_error}",
                         exc_info=True,
                         original_error=str(e),
@@ -143,7 +143,7 @@ def transactional(
             except Exception as handler_error:
                 if log_errors:
                     from provide.foundation.hub.foundation import get_foundation_logger
-            get_foundation_logger().error(
+                    get_foundation_logger().error(
                         f"Transaction error handler failed: {handler_error}",
                         original_error=str(e),
                     )
