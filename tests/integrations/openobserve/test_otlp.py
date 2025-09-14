@@ -291,17 +291,31 @@ class TestSendLogBulk:
         """Test that bulk function creates client when none provided."""
         from provide.foundation.integrations.openobserve.otlp import send_log_bulk
 
+        # Mock client with required attributes
         mock_client = Mock()
+        mock_client.url = "http://test-client:5080"
+        mock_client.organization = "test-org"
+        mock_client.timeout = 30
+        mock_client.session.headers = {"Authorization": "Bearer test-token"}
+
+        # Mock config
         mock_config = Mock()
         mock_config.service_name = "test-service"
+        mock_config.openobserve_stream = "test-stream"
+
+        # Mock successful response
+        mock_response = Mock()
+        mock_response.status_code = 200
 
         with patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class, \
              patch('provide.foundation.integrations.openobserve.otlp.OpenObserveClient') as mock_client_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.datetime') as mock_datetime:
+             patch('provide.foundation.integrations.openobserve.otlp.datetime') as mock_datetime, \
+             patch('requests.post') as mock_post:
 
             mock_config_class.from_env.return_value = mock_config
             mock_client_class.from_config.return_value = mock_client
             mock_datetime.now.return_value.timestamp.return_value = 1234567890.0
+            mock_post.return_value = mock_response
 
             result = send_log_bulk("Test message")
 
@@ -312,11 +326,25 @@ class TestSendLogBulk:
         """Test exception handling in bulk log sending."""
         from provide.foundation.integrations.openobserve.otlp import send_log_bulk
 
+        # Mock client with required attributes
         mock_client = Mock()
-        mock_client._make_request.side_effect = Exception("Bulk API error")
+        mock_client.url = "http://error-test:5080"
+        mock_client.organization = "error-org"
+        mock_client.timeout = 30
+        mock_client.session.headers = {"Authorization": "Bearer error-token"}
 
-        with patch('provide.foundation.logger.config.TelemetryConfig'), \
-             patch('provide.foundation.integrations.openobserve.otlp.datetime'):
+        # Mock config
+        mock_config = Mock()
+        mock_config.service_name = "error-service"
+        mock_config.openobserve_stream = "error-stream"
+
+        with patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class, \
+             patch('provide.foundation.integrations.openobserve.otlp.datetime') as mock_datetime, \
+             patch('requests.post') as mock_post:
+
+            mock_config_class.from_env.return_value = mock_config
+            mock_datetime.now.return_value.timestamp.return_value = 1234567890.0
+            mock_post.side_effect = Exception("Bulk API error")
 
             result = send_log_bulk("Test message", client=mock_client)
 
