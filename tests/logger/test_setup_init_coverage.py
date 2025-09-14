@@ -11,7 +11,6 @@ class TestLoggerSetupInitCoverage:
         # Clear logger setup modules from cache
         modules_to_clear = [
             "provide.foundation.logger.setup",
-            "provide.foundation.logger.setup.testing",
             "provide.foundation.logger.setup.coordinator",
         ]
 
@@ -64,31 +63,13 @@ class TestLoggerSetupInitCoverage:
         from provide.foundation.logger.setup import __all__
 
         assert "internal_setup" in __all__
-        # reset_for_testing should be included if testing utilities are available
-        try:
-            from provide.foundation.logger.setup.testing import (  # noqa: F401
-                reset_foundation_setup_for_testing,
-            )
+        # Testing utilities have been moved to testkit
+        # reset_foundation_setup_for_testing is now in provide.testkit.logger
+        assert "reset_for_testing" not in __all__
 
-            # If testing module is importable, reset_for_testing should be exported
-            assert "reset_for_testing" in __all__
-        except ImportError:
-            # If testing module is not available, that's okay for this test
-            pass
+    def test_no_testing_flag(self):
+        """Test that _has_testing flag no longer exists since testing was moved to testkit."""
+        from provide.foundation.logger import setup
 
-    def test_has_testing_flag(self):
-        """Test _has_testing flag is consistent with testing module availability."""
-        from provide.foundation.logger.setup import _has_testing
-
-        # Check if testing module is actually importable
-        try:
-            from provide.foundation.logger.setup.testing import (  # noqa: F401
-                reset_foundation_setup_for_testing,
-            )
-
-            testing_available = True
-        except ImportError:
-            testing_available = False
-
-        # _has_testing should match actual availability
-        assert _has_testing == testing_available
+        # _has_testing should not exist anymore
+        assert not hasattr(setup, '_has_testing')
