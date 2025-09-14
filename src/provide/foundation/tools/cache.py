@@ -53,7 +53,11 @@ class ToolCache:
 
     def _save_metadata(self) -> None:
         """Save cache metadata to disk."""
-        write_json(self.metadata_file, self.metadata, indent=2)
+        try:
+            write_json(self.metadata_file, self.metadata, indent=2)
+        except Exception as e:
+            log.error(f"Failed to save cache metadata: {e}")
+            raise
 
     def get(self, tool: str, version: str) -> Path | None:
         """
