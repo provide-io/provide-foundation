@@ -102,7 +102,7 @@ class PerformanceMonitor:
 
             duration = time.perf_counter() - self.start_time
             current_memory = get_memory_usage()
-            
+
             # Copy values while holding lock
             message_count = self.message_count
             start_memory = self.start_memory

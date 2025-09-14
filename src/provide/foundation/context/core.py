@@ -1,7 +1,6 @@
 """Unified context for configuration and CLI state management."""
 
 import copy
-import json
 from pathlib import Path
 from typing import Any
 
@@ -9,21 +8,10 @@ from attrs import define, field, fields, validators
 
 from provide.foundation.config.base import ConfigSource, field as config_field
 from provide.foundation.config.converters import parse_bool_strict
+from provide.foundation.config.defaults import path_converter
 from provide.foundation.config.env import RuntimeConfig
+from provide.foundation.file.formats import read_json, read_toml, read_yaml, write_json, write_toml, write_yaml
 from provide.foundation.logger import get_logger
-
-try:
-    import tomli as tomllib
-except ImportError:
-    try:
-        import tomllib
-    except ImportError:
-        tomllib = None
-
-try:
-    import yaml
-except ImportError:
-    yaml = None
 
 
 VALID_LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
@@ -66,13 +54,13 @@ class CLIContext(RuntimeConfig):
     config_file: Path | None = config_field(
         default=None,
         env_var="PROVIDE_CONFIG_FILE",
-        converter=lambda x: Path(x) if x else None,
+        converter=path_converter,
         description="Path to configuration file",
     )
     log_file: Path | None = config_field(
         default=None,
         env_var="PROVIDE_LOG_FILE",
-        converter=lambda x: Path(x) if x else None,
+        converter=path_converter,
         description="Path to log file",
     )
     log_format: str = config_field(
@@ -185,21 +173,12 @@ class CLIContext(RuntimeConfig):
         """
         # CLIContext is not frozen, so we can modify it
         path = Path(path)
-        if not path.exists():
-            raise FileNotFoundError(f"Config file not found: {path}")
-
-        content = path.read_text()
-
         if path.suffix in (".toml", ".tml"):
-            if tomllib is None:
-                raise ImportError("tomli/tomllib required for TOML support")
-            data = tomllib.loads(content)
+            data = read_toml(path)
         elif path.suffix == ".json":
-            data = json.loads(content)
+            data = read_json(path)
         elif path.suffix in (".yaml", ".yml"):
-            if yaml is None:
-                raise ImportError("PyYAML required for YAML support")
-            data = yaml.safe_load(content)
+            data = read_yaml(path)
         else:
             raise ValueError(f"Unsupported config format: {path.suffix}")
 
@@ -241,25 +220,16 @@ class CLIContext(RuntimeConfig):
         data = {k: v for k, v in data.items() if v is not None}
 
         if path.suffix in (".toml", ".tml"):
-            try:
-                import tomli_w
-
-                content = tomli_w.dumps(data)
-            except ImportError:
-                raise ImportError("tomli_w required for TOML writing")
+            write_toml(path, data)
         elif path.suffix == ".json":
-            content = json.dumps(data, indent=2)
+            write_json(path, data, indent=2)
         elif path.suffix in (".yaml", ".yml"):
-            if yaml is None:
-                raise ImportError("PyYAML required for YAML support")
-            content = yaml.safe_dump(data, default_flow_style=False)
+            write_yaml(path, data, default_flow_style=False)
         else:
             if not path.suffix:
                 raise ValueError(f"Unsupported config format: no file extension for {path}")
             else:
                 raise ValueError(f"Unsupported config format: {path.suffix}")
-
-        path.write_text(content)
 
     def merge(self, other: "CLIContext", override_defaults: bool = False) -> "CLIContext":
         """

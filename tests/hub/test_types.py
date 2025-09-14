@@ -6,9 +6,9 @@ import pytest
 
 from provide.foundation.hub.components import ComponentInfo
 from provide.foundation.hub.info import CommandInfo
+from provide.foundation.hub.registry import RegistryEntry
 from provide.foundation.hub.types import (
     Registrable,
-    RegistryEntry,
 )
 
 

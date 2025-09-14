@@ -299,7 +299,7 @@ class TestDiscoverTools:
 
         with patch("provide.foundation.tools.registry.get_hub", return_value=mock_hub):
             with patch("importlib.metadata.entry_points", return_value=mock_eps) as patch_entry_points:
-                registry = ToolRegistry()
+                ToolRegistry()
 
                 # Verify discovery
                 patch_entry_points.assert_called_once()
@@ -331,7 +331,7 @@ class TestDiscoverTools:
 
         with patch("provide.foundation.tools.registry.get_hub", return_value=mock_hub):
             with patch("importlib.metadata.entry_points", return_value=mock_eps) as patch_entry_points:
-                registry = ToolRegistry()
+                ToolRegistry()
 
                 # Verify discovery
                 patch_entry_points.assert_called_once()

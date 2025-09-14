@@ -7,7 +7,7 @@ Command to generate logs for testing OpenObserve integration with Foundation's r
 
 import random
 import time
-from typing import Any
+from typing import Any, NoReturn
 
 try:
     import click
@@ -121,7 +121,7 @@ def generate_log_entry(index: int, style: str = "normal", error_rate: float = 0.
     """
     # Choose message based on style
     if style == "burroughs":
-        message = random.choice(BURROUGHS_PHRASES)
+        message = random.choice(BURROUGHS_PHRASES)  # nosec B311 - Test data generation
     else:
         # Normal tech-style messages
         operations = [
@@ -133,27 +133,27 @@ def generate_log_entry(index: int, style: str = "normal", error_rate: float = 0.
             "synced",
         ]
         objects = ["request", "query", "data", "event", "message", "transaction"]
-        message = f"Successfully {random.choice(operations)} {random.choice(objects)}"
+        message = f"Successfully {random.choice(operations)} {random.choice(objects)}"  # nosec B311 - Test data
 
     # Generate error condition
-    is_error = random.random() < error_rate
+    is_error = random.random() < error_rate  # nosec B311 - Test data generation
 
     # Base entry
     entry = {
         "message": message,
-        "service": random.choice(SERVICE_NAMES),
-        "operation": random.choice(OPERATIONS),
+        "service": random.choice(SERVICE_NAMES),  # nosec B311 - Test data
+        "operation": random.choice(OPERATIONS),  # nosec B311 - Test data
         "iteration": index,
         "trace_id": generate_trace_id() if index % 10 == 0 else f"trace_{(_trace_counter - 1):08d}",
         "span_id": generate_span_id(),
-        "duration_ms": random.randint(10, 5000),
+        "duration_ms": random.randint(10, 5000),  # nosec B311 - Test data
     }
 
     # Add error fields if this is an error
     if is_error:
         entry["level"] = "error"
-        entry["error_code"] = random.choice([400, 404, 500, 503])
-        entry["error_type"] = random.choice(
+        entry["error_code"] = random.choice([400, 404, 500, 503])  # nosec B311 - Test data
+        entry["error_type"] = random.choice(  # nosec B311 - Test data
             [
                 "ValidationError",
                 "ServiceUnavailable",
@@ -164,14 +164,146 @@ def generate_log_entry(index: int, style: str = "normal", error_rate: float = 0.
         )
     else:
         # Random log level for non-errors
-        entry["level"] = random.choice(["debug", "info", "warning"])
+        entry["level"] = random.choice(["debug", "info", "warning"])  # nosec B311 - Test data
 
     # Add domain/action/status for DAS emoji system
-    entry["domain"] = random.choice(["user", "system", "data", "api", None])
-    entry["action"] = random.choice(["create", "read", "update", "delete", None])
-    entry["status"] = "error" if is_error else random.choice(["success", "pending", None])
+    entry["domain"] = random.choice(["user", "system", "data", "api", None])  # nosec B311 - Test data
+    entry["action"] = random.choice(["create", "read", "update", "delete", None])  # nosec B311 - Test data
+    entry["status"] = "error" if is_error else random.choice(["success", "pending", None])  # nosec B311 - Test data
 
     return entry
+
+
+def _print_generation_config(count: int, rate: float, stream: str, style: str, error_rate: float, enable_rate_limit: bool, rate_limit: float) -> None:
+    """Print the configuration for log generation."""
+    click.echo("🚀 Starting log generation...")
+    click.echo(f"   Style: {style}")
+    click.echo(f"   Error rate: {int(error_rate * 100)}%")
+    click.echo(f"   Target stream: {stream}")
+
+    if count == 0:
+        click.echo(f"   Mode: Continuous at {rate} logs/second")
+    else:
+        click.echo(f"   Count: {count} logs at {rate} logs/second")
+
+    if enable_rate_limit:
+        click.echo(f"   ⚠️ Foundation rate limiting enabled: {rate_limit} logs/s max")
+
+    click.echo("   Press Ctrl+C to stop\n")
+
+
+def _configure_rate_limiter(enable_rate_limit: bool, rate_limit: float) -> None:
+    """Configure Foundation's rate limiting if enabled."""
+    if enable_rate_limit:
+        from provide.foundation.logger.ratelimit import GlobalRateLimiter
+        limiter = GlobalRateLimiter()
+        limiter.configure(
+            global_rate=rate_limit,
+            global_capacity=rate_limit * 2,  # Allow burst up to 2x the rate
+        )
+
+
+def _send_log_entry(entry: dict[str, Any], logs_sent: int, logs_failed: int, logs_rate_limited: int) -> tuple[int, int, int]:
+    """Send a log entry and update counters."""
+    try:
+        service_logger = get_logger(f"generated.{entry['service']}")
+        level = entry.pop("level", "info")
+        message = entry.pop("message")
+        getattr(service_logger, level)(message, **entry)
+        logs_sent += 1
+    except Exception as e:
+        logs_failed += 1
+        if "rate limit" in str(e).lower():
+            logs_rate_limited += 1
+    return logs_sent, logs_failed, logs_rate_limited
+
+
+def _print_stats(current_time: float, last_stats_time: float, logs_sent: int, last_stats_sent: int,
+                logs_failed: int, enable_rate_limit: bool, logs_rate_limited: int) -> tuple[float, int]:
+    """Print generation statistics and return updated tracking values."""
+    if current_time - last_stats_time >= 1.0:
+        current_rate = (logs_sent - last_stats_sent) / (current_time - last_stats_time)
+
+        status = f"📊 Sent: {logs_sent:,} | Rate: {current_rate:.0f}/s"
+        if logs_failed > 0:
+            status += f" | Failed: {logs_failed:,}"
+        if enable_rate_limit and logs_rate_limited > 0:
+            status += f" | ⚠️ Rate limited: {logs_rate_limited:,}"
+
+        click.echo(status)
+        return current_time, logs_sent
+    return last_stats_time, last_stats_sent
+
+
+def _print_final_stats(logs_sent: int, logs_failed: int, logs_rate_limited: int,
+                      total_time: float, rate: float, enable_rate_limit: bool) -> None:
+    """Print final generation statistics."""
+    actual_rate = logs_sent / total_time if total_time > 0 else 0
+
+    click.echo("\n📊 Generation complete:")
+    click.echo(f"   Total sent: {logs_sent} logs")
+    click.echo(f"   Total failed: {logs_failed} logs")
+    if enable_rate_limit:
+        click.echo(f"   ⚠️  Rate limited: {logs_rate_limited} logs")
+    click.echo(f"   Time: {total_time:.2f}s")
+    click.echo(f"   Target rate: {rate} logs/second")
+    click.echo(f"   Actual rate: {actual_rate:.1f} logs/second")
+
+
+def _generate_continuous_logs(rate: float, style: str, error_rate: float, enable_rate_limit: bool, logs_rate_limited: int) -> tuple[int, int, int]:
+    """Generate logs in continuous mode."""
+    logs_sent = 0
+    logs_failed = 0
+    start_time = time.time()
+    last_stats_time = start_time
+    last_stats_sent = 0
+    index = 0
+
+    while True:
+        current_time = time.time()
+
+        # Generate and send log entry
+        entry = generate_log_entry(index, style, error_rate)
+        index += 1
+        logs_sent, logs_failed, logs_rate_limited = _send_log_entry(entry, logs_sent, logs_failed, logs_rate_limited)
+
+        # Control rate
+        elapsed = current_time - start_time
+        expected_count = int(elapsed * rate)
+
+        if logs_sent >= expected_count:
+            next_time = start_time + (logs_sent / rate)
+            sleep_time = next_time - time.time()
+            if sleep_time > 0:
+                time.sleep(sleep_time)
+
+        # Print stats
+        last_stats_time, last_stats_sent = _print_stats(
+            current_time, last_stats_time, logs_sent, last_stats_sent,
+            logs_failed, enable_rate_limit, logs_rate_limited
+        )
+
+
+def _generate_fixed_count_logs(count: int, rate: float, style: str, error_rate: float) -> tuple[int, int, int]:
+    """Generate a fixed number of logs."""
+    logs_sent = 0
+    logs_failed = 0
+    logs_rate_limited = 0
+
+    for i in range(count):
+        entry = generate_log_entry(i, style, error_rate)
+        logs_sent, logs_failed, logs_rate_limited = _send_log_entry(entry, logs_sent, logs_failed, logs_rate_limited)
+
+        # Control rate
+        if rate > 0:
+            time.sleep(1.0 / rate)
+
+        # Print progress
+        if (i + 1) % max(1, count // 10) == 0:
+            progress = (i + 1) / count * 100
+            click.echo(f"Progress: {progress:.0f}% ({i + 1}/{count})")
+
+    return logs_sent, logs_failed, logs_rate_limited
 
 
 @click.command(name="generate")
@@ -197,147 +329,29 @@ def generate_logs_command(
     rate_limit: float,
 ) -> None:
     """Generate logs to test OpenObserve integration with Foundation's rate limiting."""
+    _print_generation_config(count, rate, stream, style, error_rate, enable_rate_limit, rate_limit)
+    _configure_rate_limiter(enable_rate_limit, rate_limit)
 
-    click.echo("🚀 Starting log generation...")
-    click.echo(f"   Style: {style}")
-    click.echo(f"   Error rate: {int(error_rate * 100)}%")
-    click.echo(f"   Target stream: {stream}")
-
-    if count == 0:
-        click.echo(f"   Mode: Continuous at {rate} logs/second")
-    else:
-        click.echo(f"   Count: {count} logs at {rate} logs/second")
-
-    if enable_rate_limit:
-        click.echo(f"   ⚠️ Foundation rate limiting enabled: {rate_limit} logs/s max")
-
-        # Configure Foundation's rate limiting
-        from provide.foundation.logger.ratelimit import GlobalRateLimiter
-
-        limiter = GlobalRateLimiter()
-        limiter.configure(
-            global_rate=rate_limit,
-            global_capacity=rate_limit * 2,  # Allow burst up to 2x the rate
-        )
-
-    click.echo("   Press Ctrl+C to stop\n")
-
-    # Track statistics
-    logs_sent = 0
-    logs_failed = 0
-    logs_rate_limited = 0
     start_time = time.time()
-    last_stats_time = start_time
-    last_stats_sent = 0
+    logs_sent = logs_failed = logs_rate_limited = 0
 
     try:
         if count == 0:
-            # Continuous mode
-            index = 0
-            while True:
-                current_time = time.time()
-
-                # Generate log entry
-                entry = generate_log_entry(index, style, error_rate)
-                index += 1
-
-                # Send using Foundation's logger
-                try:
-                    service_logger = get_logger(f"generated.{entry['service']}")
-
-                    # Extract level and remove from entry
-                    level = entry.pop("level", "info")
-                    message = entry.pop("message")
-
-                    # Log at appropriate level
-                    getattr(service_logger, level)(message, **entry)
-                    logs_sent += 1
-
-                except Exception as e:
-                    logs_failed += 1
-                    if "rate limit" in str(e).lower():
-                        logs_rate_limited += 1
-
-                # Control rate
-                target_interval = 1.0 / rate
-                elapsed = current_time - start_time
-                expected_count = int(elapsed * rate)
-
-                if logs_sent < expected_count:
-                    # We're behind, no sleep
-                    pass
-                else:
-                    # We're on track or ahead, sleep until next interval
-                    next_time = start_time + (logs_sent / rate)
-                    sleep_time = next_time - time.time()
-                    if sleep_time > 0:
-                        time.sleep(sleep_time)
-
-                # Print stats every second
-                if current_time - last_stats_time >= 1.0:
-                    current_rate = (logs_sent - last_stats_sent) / (current_time - last_stats_time)
-
-                    status = f"📊 Sent: {logs_sent:,} | Rate: {current_rate:.0f}/s"
-                    if logs_failed > 0:
-                        status += f" | Failed: {logs_failed:,}"
-                    if enable_rate_limit and logs_rate_limited > 0:
-                        status += f" | ⚠️ Rate limited: {logs_rate_limited:,}"
-
-                    click.echo(status)
-                    last_stats_time = current_time
-                    last_stats_sent = logs_sent
-
+            logs_sent, logs_failed, logs_rate_limited = _generate_continuous_logs(
+                rate, style, error_rate, enable_rate_limit, logs_rate_limited
+            )
         else:
-            # Fixed count mode
-            for i in range(count):
-                # Generate log entry
-                entry = generate_log_entry(i, style, error_rate)
-
-                # Send using Foundation's logger
-                try:
-                    service_logger = get_logger(f"generated.{entry['service']}")
-
-                    # Extract level and remove from entry
-                    level = entry.pop("level", "info")
-                    message = entry.pop("message")
-
-                    # Log at appropriate level
-                    getattr(service_logger, level)(message, **entry)
-                    logs_sent += 1
-
-                except Exception as e:
-                    logs_failed += 1
-                    if "rate limit" in str(e).lower():
-                        logs_rate_limited += 1
-
-                # Control rate
-                if rate > 0:
-                    time.sleep(1.0 / rate)
-
-                # Print progress
-                if (i + 1) % max(1, count // 10) == 0:
-                    progress = (i + 1) / count * 100
-                    click.echo(f"Progress: {progress:.0f}% ({i + 1}/{count})")
-
+            logs_sent, logs_failed, logs_rate_limited = _generate_fixed_count_logs(
+                count, rate, style, error_rate
+            )
     except KeyboardInterrupt:
         click.echo("\n\n⛔ Generation interrupted by user")
-
     finally:
-        # Print final statistics
         total_time = time.time() - start_time
-        actual_rate = logs_sent / total_time if total_time > 0 else 0
-
-        click.echo("\n📊 Generation complete:")
-        click.echo(f"   Total sent: {logs_sent} logs")
-        click.echo(f"   Total failed: {logs_failed} logs")
-        if enable_rate_limit:
-            click.echo(f"   ⚠️  Rate limited: {logs_rate_limited} logs")
-        click.echo(f"   Time: {total_time:.2f}s")
-        click.echo(f"   Target rate: {rate} logs/second")
-        click.echo(f"   Actual rate: {actual_rate:.1f} logs/second")
+        _print_final_stats(logs_sent, logs_failed, logs_rate_limited, total_time, rate, enable_rate_limit)
 
 
 if not _HAS_CLICK:
 
-    def generate_logs_command(*args: object, **kwargs: object) -> None:
+    def generate_logs_command(*args: object, **kwargs: object) -> NoReturn:
         raise ImportError("Click is required for CLI commands. Install with: pip install click")

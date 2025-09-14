@@ -3,14 +3,11 @@
 import json
 import os
 from pathlib import Path
-import sys
 import tempfile
 from unittest.mock import Mock, patch
 
 import click
 from click.testing import CliRunner
-import pytest
-
 from provide.testkit import (
     CliTestCase,
     MockContext,
@@ -18,6 +15,7 @@ from provide.testkit import (
     isolated_cli_runner,
     temp_config_file,
 )
+import pytest
 
 
 class TestMockContext:
@@ -57,7 +55,7 @@ class TestMockContext:
         mock_ctx = MockContext()
         test_path = "/test/config.json"
 
-        with patch.object(MockContext.__bases__[0], "save_config") as mock_super_save:
+        with patch.object(MockContext.__bases__[0], "save_config"):
             mock_ctx.save_config(test_path)
 
         assert test_path in mock_ctx.saved_configs
@@ -67,7 +65,7 @@ class TestMockContext:
         mock_ctx = MockContext()
         test_path = "/test/config.json"
 
-        with patch.object(MockContext.__bases__[0], "load_config") as mock_super_load:
+        with patch.object(MockContext.__bases__[0], "load_config"):
             mock_ctx.load_config(test_path)
 
         assert test_path in mock_ctx.loaded_configs
@@ -158,12 +156,12 @@ class TestTempConfigFile:
 
         mock_tomli_w = Mock()
         mock_tomli_w.dumps.return_value = 'key1 = "value1"\nkey2 = 42\n'
-        
+
         with patch.dict("sys.modules", {"tomli_w": mock_tomli_w}):
             with temp_config_file(config_data, "toml") as config_path:
                 assert config_path.exists()
                 assert config_path.suffix == ".toml"
-                
+
                 # Verify content was written
                 content = config_path.read_text()
                 assert 'key1 = "value1"' in content
@@ -201,12 +199,12 @@ class TestTempConfigFile:
         def mock_safe_dump(data, file):
             file.write("key1: value1\nkey2:\n- 1\n- 2\n- 3\n")
         mock_yaml.safe_dump = mock_safe_dump
-        
+
         with patch.dict("sys.modules", {"yaml": mock_yaml}):
             with temp_config_file(config_data, "yaml") as config_path:
                 assert config_path.exists()
                 assert config_path.suffix == ".yaml"
-                
+
                 # Verify some content was written
                 content = config_path.read_text()
                 assert len(content) > 0
@@ -216,18 +214,17 @@ class TestTempConfigFile:
         config_data = {"key1": "value1"}
 
         # Mock the import to raise ImportError
-        import sys
         import builtins
         original_import = builtins.__import__
-        
+
         def mock_import(name, *args, **kwargs):
             if name == 'yaml':
                 raise ImportError("No module named 'yaml'")
             return original_import(name, *args, **kwargs)
-        
+
         with patch('builtins.__import__', side_effect=mock_import):
             with pytest.raises(ImportError, match="PyYAML required for YAML testing"):
-                with temp_config_file(config_data, "yaml") as config_path:
+                with temp_config_file(config_data, "yaml"):
                     pass
 
     def test_temp_config_file_cleanup_on_exception(self):

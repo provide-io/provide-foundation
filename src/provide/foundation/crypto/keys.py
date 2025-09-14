@@ -1,6 +1,6 @@
 """Unified key generation for all cryptographic algorithms."""
 
-from typing import Any, Protocol, Union
+from typing import Any, Protocol
 
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
 

@@ -91,7 +91,7 @@ class SchemaField:
             except ConfigValidationError:
                 raise
             except Exception as e:
-                raise ConfigValidationError(f"Validation error: {e}", field=self.name, value=value)
+                raise ConfigValidationError(f"Validation error: {e}", field=self.name, value=value) from e
 
 
 class ConfigSchema:

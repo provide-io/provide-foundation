@@ -13,11 +13,12 @@ from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 import io
 
-from provide.foundation import LoggingConfig, TelemetryConfig, logger, setup_telemetry
 from provide.testkit import (
     reset_foundation_setup_for_testing,
     set_log_stream_for_testing,
 )
+
+from provide.foundation import LoggingConfig, TelemetryConfig, logger, setup_telemetry
 
 
 @contextmanager
@@ -219,7 +220,7 @@ class TestDogfoodingPerformance:
         def generate_config_warnings():
             """Test config warnings (which now use structured logging)."""
             # This will trigger our improved warning system
-            config = LoggingConfig(
+            LoggingConfig(
                 default_level="INFO",
                 console_formatter="key_value",
             )

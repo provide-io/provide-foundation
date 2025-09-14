@@ -116,7 +116,7 @@ class TestDownloaderIntegration:
             dest = temp_dir / "checksum_test.bin"
 
             # First download to get the actual checksum
-            result = downloader.download_with_progress(url, dest)
+            downloader.download_with_progress(url, dest)
 
             # Calculate checksum
             hasher = hashlib.sha256()

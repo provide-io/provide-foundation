@@ -41,7 +41,7 @@ class FoundationLogger:
         )
         self._is_configured_by_setup: bool = False
         self._active_config: TelemetryConfig | None = None
-        self._active_resolved_semantic_config: ResolvedSemanticConfig | None = None
+        # self._active_resolved_semantic_config: ResolvedSemanticConfig | None = None  # Removed: ResolvedSemanticConfig no longer exists
 
     def _check_structlog_already_disabled(self) -> bool:
         try:

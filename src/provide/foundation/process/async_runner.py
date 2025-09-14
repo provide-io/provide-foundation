@@ -389,8 +389,11 @@ async def async_run_shell(
 ) -> CompletedProcess:
     """Run a shell command asynchronously.
 
+    WARNING: This function uses shell=True, which can be dangerous with
+    unsanitized input. Only use with trusted commands or properly sanitized input.
+
     Args:
-        cmd: Shell command string
+        cmd: Shell command string (MUST be trusted/sanitized)
         cwd: Working directory
         env: Environment variables
         capture_output: Whether to capture output
@@ -400,6 +403,11 @@ async def async_run_shell(
 
     Returns:
         CompletedProcess with results
+
+    Security Note:
+        This function enables shell interpretation of the command string,
+        which allows shell features but also creates injection risks.
+        Use async_run_command with a list for safer execution.
     """
     return await async_run_command(
         cmd,
@@ -408,6 +416,6 @@ async def async_run_shell(
         capture_output=capture_output,
         check=check,
         timeout=timeout,
-        shell=True,
+        shell=True,  # nosec B604 - Intentional shell usage with caller validation
         **kwargs,
     )

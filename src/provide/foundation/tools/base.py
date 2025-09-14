@@ -241,8 +241,9 @@ class BaseToolManager(ABC):
         if not metadata.download_url:
             raise ToolInstallError(f"No download URL for {self.tool_name} {version}")
 
-        # Download
-        download_path = Path("/tmp") / f"{self.tool_name}-{version}"
+        # Download to secure temporary directory
+        from provide.foundation.file.temp import system_temp_dir
+        download_path = system_temp_dir() / f"{self.tool_name}-{version}"
         artifact_path = self.downloader.download_with_progress(
             metadata.download_url, download_path, metadata.checksum
         )

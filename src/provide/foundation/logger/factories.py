@@ -72,8 +72,8 @@ def setup_logging(
         log_file: Optional file path to write logs
         **kwargs: Additional configuration options
     """
-    import warnings
     from pathlib import Path
+    import warnings
 
     warnings.warn(
         "setup_logging() is deprecated. Foundation now auto-initializes on first use. "

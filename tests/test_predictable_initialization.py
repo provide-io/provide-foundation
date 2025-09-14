@@ -7,15 +7,12 @@ across different usage patterns and scenarios.
 
 from __future__ import annotations
 
-import os
-import tempfile
-import threading
-import time
 from concurrent.futures import ThreadPoolExecutor
+import os
 from pathlib import Path
+import tempfile
+import time
 from unittest.mock import patch
-
-import pytest
 
 from provide.foundation.hub.manager import Hub, clear_hub, get_hub
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
@@ -284,8 +281,9 @@ class TestPredictableInitialization:
     def test_memory_usage_predictable(self):
         """Test that memory usage is predictable and doesn't leak."""
         import gc
-        import psutil
         import os
+
+        import psutil
 
         process = psutil.Process(os.getpid())
 

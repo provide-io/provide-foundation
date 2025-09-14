@@ -14,7 +14,7 @@ Part 3 of 4: Task Definitions
 
 Usage:
     from examples.integration.celery.tasks import process_payment, generate_report
-    
+
     # Execute tasks
     result = process_payment.delay("order_123", 99.99, "credit_card")
 """
@@ -33,7 +33,7 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from examples.integration.celery.setup_and_config import app, CeleryTaskLogger
+from examples.integration.celery.setup_and_config import CeleryTaskLogger, app
 
 
 @app.task(bind=True, max_retries=3)
@@ -272,10 +272,10 @@ def cleanup_old_data(days_to_keep: int = 30) -> dict[str, Any]:
 
 if __name__ == '__main__':
     from provide.foundation import pout
-    
+
     pout("🎯 Celery Tasks Available:")
     pout("• process_payment - Payment processing with retries")
     pout("• generate_report - Report generation with progress")
-    pout("• send_notification - Multi-channel notifications")  
+    pout("• send_notification - Multi-channel notifications")
     pout("• process_batch_data - Batch processing with error handling")
     pout("• cleanup_old_data - Data cleanup operations")

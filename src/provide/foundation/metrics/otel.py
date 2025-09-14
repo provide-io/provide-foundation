@@ -100,7 +100,7 @@ def setup_opentelemetry_metrics(config: TelemetryConfig) -> None:
     try:
         current_provider = otel_metrics.get_meter_provider()
         provider_type = type(current_provider).__name__
-        
+
         # Always allow setup if:
         # 1. It's a default/no-op provider
         # 2. It's a mock (for testing)
@@ -110,29 +110,29 @@ def setup_opentelemetry_metrics(config: TelemetryConfig) -> None:
             not hasattr(current_provider, 'get_meter') or
             current_provider.__class__.__module__.startswith('unittest.mock')
         )
-        
+
         if should_setup:
             otel_metrics.set_meter_provider(meter_provider)
-            
+
             # Set the global meter for our metrics module
             from provide.foundation.metrics import _set_meter
-            
+
             meter = otel_metrics.get_meter(__name__)
             _set_meter(meter)
-            
+
             slog.info("📊✅ OpenTelemetry metrics setup complete")
         else:
             slog.debug("📊 OpenTelemetry meter provider already configured")
     except Exception:
         # If get_meter_provider fails for any reason, proceed with setup
         otel_metrics.set_meter_provider(meter_provider)
-        
+
         # Set the global meter for our metrics module
         from provide.foundation.metrics import _set_meter
-        
+
         meter = otel_metrics.get_meter(__name__)
         _set_meter(meter)
-        
+
         slog.info("📊✅ OpenTelemetry metrics setup complete")
 
 

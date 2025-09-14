@@ -197,7 +197,7 @@ class ZipArchive(BaseArchive):
                     return output / member
                 else:
                     ensure_parent_dir(output)
-                    with zf.open(member) as source, open(output, "wb") as target:
+                    with zf.open(member) as source, output.open("wb") as target:
                         target.write(source.read())
                     return output
 

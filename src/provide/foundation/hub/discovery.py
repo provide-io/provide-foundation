@@ -67,11 +67,11 @@ def discover_components(
         import importlib_metadata as metadata  # type: ignore
 
     discovered = {}
-    
+
     # If no registry provided, get the global component registry
     if registry is None:
         registry, _ = _get_registry_and_lock()
-    
+
     # Discover all entry points in the specified group
     try:
         entry_points = metadata.entry_points()
@@ -81,12 +81,12 @@ def discover_components(
         else:
             # Python 3.8-3.9 API
             group_entries = entry_points.get(group, [])
-        
+
         for entry_point in group_entries:
             try:
                 # Load the component class
                 component_class = entry_point.load()
-                
+
                 # Register in the provided registry
                 registry.register(
                     name=entry_point.name,
@@ -98,20 +98,20 @@ def discover_components(
                         'discovered': True,
                     }
                 )
-                
+
                 discovered[entry_point.name] = component_class
-                
+
             except Exception as e:
                 # Log error but continue discovering other components
                 import sys
                 print(f"Failed to load entry point {entry_point.name}: {e}", file=sys.stderr)
                 continue
-                
+
     except Exception as e:
         # If entry points can't be read, return empty dict
         import sys
         print(f"Failed to discover entry points for group {group}: {e}", file=sys.stderr)
-    
+
     return discovered
 
 

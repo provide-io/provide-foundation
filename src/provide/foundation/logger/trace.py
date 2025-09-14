@@ -55,7 +55,7 @@ try:
             self._file.write(formatted_msg + "\n")
             self._file.flush()
 
-        PrintLogger.trace = trace_for_print_logger  # type: ignore[attr-defined]
+        PrintLogger.trace = trace_for_print_logger
 
 except ImportError:  # pragma: no cover
     pass

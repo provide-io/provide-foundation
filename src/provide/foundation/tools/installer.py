@@ -106,12 +106,23 @@ class ToolInstaller:
         dest.mkdir(parents=True, exist_ok=True)
 
         with zipfile.ZipFile(archive, "r") as zf:
-            # Check for unsafe paths
-            for member in zf.namelist():
-                if member.startswith("/") or ".." in member:
-                    raise InstallError(f"Unsafe path in archive: {member}")
+            # Check for unsafe paths and validate members
+            safe_members = []
+            for member_name in zf.namelist():
+                if member_name.startswith("/") or ".." in member_name:
+                    raise InstallError(f"Unsafe path in archive: {member_name}")
 
-            zf.extractall(dest)
+                # Additional security check for path traversal
+                member_path = Path(dest) / member_name
+                try:
+                    member_path.resolve().relative_to(dest.resolve())
+                except ValueError:
+                    raise InstallError(f"Path traversal detected in archive: {member_name}")
+
+                safe_members.append(member_name)
+
+            # Extract only validated members
+            zf.extractall(dest, members=safe_members)
 
     def extract_tar(self, archive: Path, dest: Path) -> None:
         """
@@ -135,12 +146,35 @@ class ToolInstaller:
             mode = "r:xz"
 
         with tarfile.open(archive, mode) as tf:
-            # Check for unsafe paths
+            # Check for unsafe paths and validate members
+            safe_members = []
             for member in tf.getmembers():
                 if member.name.startswith("/") or ".." in member.name:
                     raise InstallError(f"Unsafe path in archive: {member.name}")
 
-            tf.extractall(dest)
+                # Additional security checks for symlinks
+                if member.islnk() or member.issym():
+                    # Check that symlinks don't escape extraction directory
+                    link_path = Path(dest) / member.name
+                    target = Path(member.linkname) if member.islnk() else Path(member.linkname)
+                    if not target.is_absolute():
+                        target = link_path.parent / target
+                    try:
+                        target.resolve().relative_to(Path(dest).resolve())
+                    except ValueError:
+                        raise InstallError(f"Unsafe symlink in archive: {member.name} -> {member.linkname}")
+
+                # Path traversal check
+                member_path = Path(dest) / member.name
+                try:
+                    member_path.resolve().relative_to(dest.resolve())
+                except ValueError:
+                    raise InstallError(f"Path traversal detected in archive: {member.name}")
+
+                safe_members.append(member)
+
+            # Extract only validated members
+            tf.extractall(dest, members=safe_members)
 
     def is_binary(self, file_path: Path) -> bool:
         """

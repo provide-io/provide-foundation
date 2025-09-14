@@ -149,9 +149,9 @@ class OpenObserveClient:
             return response.json()
 
         except requests.exceptions.ConnectionError as e:
-            raise OpenObserveConnectionError(f"Failed to connect to OpenObserve: {e}")
+            raise OpenObserveConnectionError(f"Failed to connect to OpenObserve: {e}") from e
         except requests.exceptions.Timeout as e:
-            raise OpenObserveConnectionError(f"Request timed out: {e}")
+            raise OpenObserveConnectionError(f"Request timed out: {e}") from e
         except requests.exceptions.HTTPError as e:
             # Try to extract error message from response
             error_msg = str(e)
@@ -161,9 +161,9 @@ class OpenObserveClient:
                     error_msg = error_data["message"]
             except (json.JSONDecodeError, AttributeError):
                 pass
-            raise OpenObserveQueryError(f"API error: {error_msg}")
+            raise OpenObserveQueryError(f"API error: {error_msg}") from e
         except Exception as e:
-            raise OpenObserveQueryError(f"Unexpected error: {e}")
+            raise OpenObserveQueryError(f"Unexpected error: {e}") from e
 
     def search(
         self,

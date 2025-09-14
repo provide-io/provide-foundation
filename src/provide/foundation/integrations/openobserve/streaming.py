@@ -184,14 +184,28 @@ def tail_logs(
 
     Args:
         stream: Stream name to tail
-        filter_sql: Optional SQL WHERE clause for filtering
+        filter_sql: Optional SQL WHERE clause for filtering (TRUSTED input only)
         follow: If True, continue streaming new logs
         lines: Number of initial lines to show
         client: OpenObserve client
 
     Yields:
         Log entries
+
+    Security Note:
+        filter_sql parameter must be from trusted sources as it's inserted
+        directly into SQL query. For user inputs, use parameterized search functions.
     """
+    import re
+
+    # Sanitize stream name to prevent SQL injection
+    if not re.match(r'^[a-zA-Z0-9_]+$', stream):
+        raise ValueError(f"Invalid stream name: {stream}")
+
+    # Validate lines parameter
+    if not isinstance(lines, int) or lines <= 0 or lines > 10000:
+        raise ValueError(f"Invalid lines parameter: {lines}")
+
     # Build SQL query
     where_clause = f"WHERE {filter_sql}" if filter_sql else ""
     sql = f"SELECT * FROM {stream} {where_clause} ORDER BY _timestamp DESC LIMIT {lines}"
