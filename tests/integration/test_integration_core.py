@@ -570,6 +570,7 @@ def test_module_level_filtering_comprehensive(
            and "⚙️➡️✅ Foundation" not in line
            and "⚙️ Foundation initialized through Hub" not in line
            and "Configuring structlog output processors" not in line
+           and "🗣️ Registered item" not in line
            and not ("] [trace    ]" in line and ("Starting Foundation" in line or "Foundation" in line or "processors" in line or "enrichment processor" in line))
            and line.strip()
     ]
