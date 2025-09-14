@@ -353,5 +353,5 @@ def generate_logs_command(
 
 if not _HAS_CLICK:
 
-    def generate_logs_command(*args: object, **kwargs: object) -> None:
+    def generate_logs_command(*args: object, **kwargs: object) -> NoReturn:
         raise ImportError("Click is required for CLI commands. Install with: pip install click")

@@ -6,7 +6,7 @@ field values after conversion. They provide consistent error messages and
 follow attrs validator conventions.
 """
 
-from typing import Any
+from typing import Any, Callable
 
 from provide.foundation.config.parsers.base import (
     _VALID_LOG_LEVEL_TUPLE,
@@ -98,7 +98,7 @@ def validate_overflow_policy(instance: Any, attribute: Any, value: str) -> None:
         )
 
 
-def validate_choice(choices: list[Any]):
+def validate_choice(choices: list[Any]) -> Callable[[Any, Any, Any], None]:
     """
     Create a validator that ensures value is one of the given choices.
 
@@ -119,7 +119,7 @@ def validate_choice(choices: list[Any]):
     return validator
 
 
-def validate_range(min_val: float, max_val: float):
+def validate_range(min_val: float, max_val: float) -> Callable[[Any, Any, Any], None]:
     """
     Create a validator that ensures value is within the given numeric range.
 
