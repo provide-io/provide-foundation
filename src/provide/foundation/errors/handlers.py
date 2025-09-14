@@ -313,7 +313,7 @@ class ErrorHandler:
         except Exception as handler_error:
             if self.log_all:
                 from provide.foundation.hub.foundation import get_foundation_logger
-            get_foundation_logger().error(
+                get_foundation_logger().error(
                     f"Error handler failed: {handler_error}",
                     exc_info=True,
                     original_error=str(error),
