@@ -9,7 +9,8 @@
       "Bash(PYTHONPATH=src pytest tests/conversion/test_inference_concurrency_safety.py::TestInferenceConcurrencySafety::test_concurrent_inference_is_isolated tests/validation/test_enterprise_recursion.py::TestAdvancedRecursionDetection::test_handles_legitimate_deep_nesting -v)",
       "Bash(PYTHONPATH=src pytest --tb=no -q)",
       "Bash(PYTHONPATH=src mypy src/ --show-error-codes --no-error-summary)",
-      "Bash(PYTHONPATH=src mypy src/)"
+      "Bash(PYTHONPATH=src mypy src/)",
+      "Bash(PYTHONPATH=src pytest --run-benchmarks -v)"
     ],
     "deny": [],
     "ask": [],
