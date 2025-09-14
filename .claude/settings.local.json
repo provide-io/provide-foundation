@@ -12,7 +12,8 @@
       "Bash(export PYTHONPATH=src)",
       "Bash(PYTHONPATH=src pytest tests/crypto/test_optional_crypto_dependency.py::TestCryptoFallbackBehavior::test_crypto_module_resilience -v --tb=short)",
       "Bash(PYTHONPATH=src pytest -n auto --tb=short)",
-      "Bash(PYTHONPATH=src pytest tests/crypto/test_optional_crypto_dependency.py::TestCryptoFallbackBehavior::test_crypto_module_resilience -v)"
+      "Bash(PYTHONPATH=src pytest tests/crypto/test_optional_crypto_dependency.py::TestCryptoFallbackBehavior::test_crypto_module_resilience -v)",
+      "Bash(PYTHONPATH=src pytest tests/crypto/test_optional_crypto_dependency.py::TestCryptoFallbackBehavior::test_crypto_module_resilience tests/logger/test_asyncio_suppression.py -v)"
     ],
     "deny": [],
     "ask": [],
