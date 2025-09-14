@@ -53,7 +53,7 @@ class CircuitBreaker:
         """Record successful execution."""
         if self._state == CircuitState.HALF_OPEN:
             from provide.foundation.hub.foundation import get_foundation_logger
-        get_foundation_logger().info(
+            get_foundation_logger().info(
                 "Circuit breaker recovered - closing circuit",
                 state="half_open->closed",
                 failure_count=self._failure_count,
