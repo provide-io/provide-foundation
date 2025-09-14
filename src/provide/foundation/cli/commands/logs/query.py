@@ -52,12 +52,34 @@ def _build_query_sql(
     size: int
 ) -> str:
     """Build SQL query with WHERE conditions."""
+    import re
+
+    # Sanitize stream name - only allow alphanumeric and underscores
+    if not re.match(r'^[a-zA-Z0-9_]+$', stream):
+        raise ValueError(f"Invalid stream name: {stream}")
+
+    # Sanitize size parameter
+    if not isinstance(size, int) or size <= 0 or size > 10000:
+        raise ValueError(f"Invalid size parameter: {size}")
+
     conditions = []
     if trace_id:
+        # Sanitize trace_id - should be hex string or UUID format
+        if not re.match(r'^[a-fA-F0-9\-]+$', trace_id):
+            raise ValueError(f"Invalid trace_id format: {trace_id}")
         conditions.append(f"trace_id = '{trace_id}'")
+
     if level:
+        # Sanitize level - only allow known log levels
+        valid_levels = {'TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'CRITICAL', 'trace', 'debug', 'info', 'warn', 'error', 'critical'}
+        if level not in valid_levels:
+            raise ValueError(f"Invalid log level: {level}")
         conditions.append(f"level = '{level}'")
+
     if service:
+        # Sanitize service name - allow alphanumeric, hyphens, underscores, dots
+        if not re.match(r'^[a-zA-Z0-9_\-\.]+$', service):
+            raise ValueError(f"Invalid service name: {service}")
         conditions.append(f"service = '{service}'")
 
     where_clause = f"WHERE {' AND '.join(conditions)}" if conditions else ""

@@ -65,7 +65,9 @@ def get_system_info() -> SystemInfo:
     # User info
     username = os.environ.get("USER") or os.environ.get("USERNAME")
     home_dir = os.path.expanduser("~")
-    temp_dir = os.environ.get("TMPDIR") or os.environ.get("TEMP") or "/tmp"
+    # Use secure temp directory - prefer environment variables over hardcoded path
+    import tempfile
+    temp_dir = os.environ.get("TMPDIR") or os.environ.get("TEMP") or tempfile.gettempdir()
 
     # CPU info
     num_cpus = None

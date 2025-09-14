@@ -2,11 +2,43 @@
 Search operations for OpenObserve.
 """
 
+import re
+
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.integrations.openobserve.models import SearchResponse
 from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
+
+
+def _sanitize_stream_name(stream: str) -> str:
+    """Sanitize stream name to prevent SQL injection."""
+    if not re.match(r'^[a-zA-Z0-9_]+$', stream):
+        raise ValueError(f"Invalid stream name: {stream}")
+    return stream
+
+
+def _sanitize_trace_id(trace_id: str) -> str:
+    """Sanitize trace ID to prevent SQL injection."""
+    # Allow hex strings and UUID format (with hyphens)
+    if not re.match(r'^[a-fA-F0-9\-]+$', trace_id):
+        raise ValueError(f"Invalid trace_id format: {trace_id}")
+    return trace_id
+
+
+def _sanitize_log_level(level: str) -> str:
+    """Sanitize log level to prevent SQL injection."""
+    valid_levels = {'TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'CRITICAL', 'trace', 'debug', 'info', 'warn', 'error', 'critical'}
+    if level not in valid_levels:
+        raise ValueError(f"Invalid log level: {level}")
+    return level
+
+
+def _sanitize_service_name(service: str) -> str:
+    """Sanitize service name to prevent SQL injection."""
+    if not re.match(r'^[a-zA-Z0-9_\-\.]+$', service):
+        raise ValueError(f"Invalid service name: {service}")
+    return service
 
 
 def search_logs(
@@ -54,7 +86,10 @@ def search_by_trace_id(
     Returns:
         SearchResponse with matching logs
     """
-    sql = f"SELECT * FROM {stream} WHERE trace_id = '{trace_id}' ORDER BY _timestamp ASC"
+    # Sanitize inputs to prevent SQL injection
+    safe_stream = _sanitize_stream_name(stream)
+    safe_trace_id = _sanitize_trace_id(trace_id)
+    sql = f"SELECT * FROM {safe_stream} WHERE trace_id = '{safe_trace_id}' ORDER BY _timestamp ASC"
     return search_logs(sql=sql, start_time="-24h", client=client)
 
 
@@ -79,7 +114,10 @@ def search_by_level(
     Returns:
         SearchResponse with matching logs
     """
-    sql = f"SELECT * FROM {stream} WHERE level = '{level}' ORDER BY _timestamp DESC"
+    # Sanitize inputs to prevent SQL injection
+    safe_stream = _sanitize_stream_name(stream)
+    safe_level = _sanitize_log_level(level)
+    sql = f"SELECT * FROM {safe_stream} WHERE level = '{safe_level}' ORDER BY _timestamp DESC"
     return search_logs(
         sql=sql,
         start_time=start_time,
@@ -136,7 +174,10 @@ def search_by_service(
     Returns:
         SearchResponse with matching logs
     """
-    sql = f"SELECT * FROM {stream} WHERE service = '{service}' ORDER BY _timestamp DESC"
+    # Sanitize inputs to prevent SQL injection
+    safe_stream = _sanitize_stream_name(stream)
+    safe_service = _sanitize_service_name(service)
+    sql = f"SELECT * FROM {safe_stream} WHERE service = '{safe_service}' ORDER BY _timestamp DESC"
     return search_logs(
         sql=sql,
         start_time=start_time,
@@ -163,7 +204,9 @@ def aggregate_by_level(
     Returns:
         Dictionary mapping level to count
     """
-    sql = f"SELECT level, COUNT(*) as count FROM {stream} GROUP BY level"
+    # Sanitize stream name to prevent SQL injection
+    safe_stream = _sanitize_stream_name(stream)
+    sql = f"SELECT level, COUNT(*) as count FROM {safe_stream} GROUP BY level"
     response = search_logs(
         sql=sql,
         start_time=start_time,
