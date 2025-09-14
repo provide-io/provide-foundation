@@ -123,6 +123,9 @@ class TestAsyncioDebugSuppression:
 
         # Use DEBUG overall level but asyncio at INFO level to test module-specific filtering
         with patch.dict("os.environ", {"PROVIDE_LOG_LEVEL": "DEBUG"}):
+            # Clear structlog configuration to ensure clean test
+            structlog.reset_defaults()
+
             config = TelemetryConfig.from_env()
             configure_structlog_output(config, log_output)
 
