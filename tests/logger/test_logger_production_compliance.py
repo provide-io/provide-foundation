@@ -37,9 +37,8 @@ class TestProductionReadinessScenarios:
 
         from provide.testkit import set_log_stream_for_testing
 
-        reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
-        set_log_stream_for_testing(sys.stderr)
+        reset_foundation_setup_for_testing()
 
         # Simulate high-throughput logging
         start_time = time.time()
@@ -53,12 +52,18 @@ class TestProductionReadinessScenarios:
 
         captured = capsys.readouterr()
 
+        # Debug: print what was captured
+        print(f"DEBUG: captured.out: {repr(captured.out[:200])}")
+        print(f"DEBUG: captured.err: {repr(captured.err[:200])}")
+        print(f"DEBUG: captured.err line count: {len(captured.err.splitlines())}")
+
         # Verify all messages were logged
         log_lines = [
             line
             for line in captured.err.splitlines()
             if "High throughput message" in line
         ]
+        print(f"DEBUG: log_lines count: {len(log_lines)}")
         assert len(log_lines) == message_count
 
         # Verify reasonable performance
