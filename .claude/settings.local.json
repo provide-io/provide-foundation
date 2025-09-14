@@ -12,7 +12,8 @@
       "Bash(coverage run -m pytest:*)",
       "Bash(coverage run:*)",
       "Read(//Users/tim/code/gh/**)",
-      "Read(//private/tmp/**)"
+      "Read(//private/tmp/**)",
+      "Bash(sort:*)"
     ],
     "deny": [],
     "ask": [],
