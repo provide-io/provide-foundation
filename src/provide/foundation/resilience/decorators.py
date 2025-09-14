@@ -95,7 +95,7 @@ def retry(
 
     if policy is None:
         # Build policy from parameters
-        policy_kwargs = {}
+        policy_kwargs: dict[str, Any] = {}
 
         if max_attempts is not None:
             policy_kwargs["max_attempts"] = max_attempts

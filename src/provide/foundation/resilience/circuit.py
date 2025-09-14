@@ -2,7 +2,7 @@
 
 from collections.abc import Callable
 import time
-from typing import TypeVar
+from typing import Awaitable, TypeVar
 
 from attrs import define, field
 
@@ -121,7 +121,7 @@ class CircuitBreaker:
                 self._record_failure(e)
             raise
 
-    async def call_async(self, func: Callable[..., T], *args, **kwargs) -> T:
+    async def call_async(self, func: Callable[..., Awaitable[T]], *args, **kwargs) -> T:
         """Execute async function with circuit breaker protection."""
         # Check if circuit is open
         if self._state == CircuitState.OPEN:

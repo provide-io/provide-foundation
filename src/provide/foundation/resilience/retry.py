@@ -8,7 +8,7 @@ import asyncio
 from collections.abc import Callable
 import random
 import time
-from typing import Any, TypeVar
+from typing import Any, Awaitable, TypeVar
 
 from attrs import define, field, validators
 
@@ -248,7 +248,7 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during retry attempts")
 
-    async def execute_async(self, func: Callable[..., T], *args, **kwargs) -> T:
+    async def execute_async(self, func: Callable[..., Awaitable[T]], *args, **kwargs) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -318,4 +318,7 @@ class RetryExecutor:
                 await asyncio.sleep(delay)
 
         # Should never reach here, but for safety
-        raise last_exception
+        if last_exception is not None:
+            raise last_exception
+        else:
+            raise RuntimeError("No exception captured during async retry attempts")
