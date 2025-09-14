@@ -89,6 +89,7 @@ def test_full_lifecycle_integration(
            and "⚙️➡️✅ Foundation" not in line
            and "⚙️ Foundation initialized through Hub" not in line
            and "Configuring structlog output processors" not in line
+           and "🗣️ Registered item" not in line
            and not ("[trace    ]" in line or "trace    " in line)
            and line.strip()
     ]
@@ -200,6 +201,7 @@ def test_high_volume_logging_performance(
            and "⚙️➡️✅ Foundation" not in line
            and "⚙️ Foundation initialized through Hub" not in line
            and "Configuring structlog output processors" not in line
+           and "🗣️ Registered item" not in line
            and not ("[trace    ]" in line or "trace    " in line)
            and line.strip()
     ]
@@ -262,6 +264,7 @@ def test_thread_safety_concurrent_logging(
            and "⚙️➡️✅ Foundation" not in line
            and "⚙️ Foundation initialized through Hub" not in line
            and "Configuring structlog output processors" not in line
+           and "🗣️ Registered item" not in line
            and not ("[trace    ]" in line or "trace    " in line)
            and line.strip()
     ]
@@ -374,6 +377,7 @@ def test_error_recovery_and_resilience(
            and "⚙️➡️✅ Foundation" not in line
            and "⚙️ Foundation initialized through Hub" not in line
            and "Configuring structlog output processors" not in line
+           and "🗣️ Registered item" not in line
            and not ("[trace    ]" in line or "trace    " in line)
            and line.strip()
     ]
