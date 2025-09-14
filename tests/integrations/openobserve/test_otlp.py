@@ -243,7 +243,7 @@ class TestSendLogBulk:
         mock_config = Mock()
         mock_config.service_name = "bulk-service"
 
-        with patch('provide.foundation.integrations.openobserve.otlp.TelemetryConfig') as mock_config_class, \
+        with patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class, \
              patch('provide.foundation.integrations.openobserve.otlp.datetime') as mock_datetime:
 
             mock_config_class.from_env.return_value = mock_config
@@ -283,7 +283,7 @@ class TestSendLogBulk:
         mock_config = Mock()
         mock_config.service_name = "test-service"
 
-        with patch('provide.foundation.integrations.openobserve.otlp.TelemetryConfig') as mock_config_class, \
+        with patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class, \
              patch('provide.foundation.integrations.openobserve.otlp.OpenObserveClient') as mock_client_class, \
              patch('provide.foundation.integrations.openobserve.otlp.datetime') as mock_datetime:
 
@@ -303,7 +303,7 @@ class TestSendLogBulk:
         mock_client = Mock()
         mock_client._make_request.side_effect = Exception("Bulk API error")
 
-        with patch('provide.foundation.integrations.openobserve.otlp.TelemetryConfig'), \
+        with patch('provide.foundation.logger.config.TelemetryConfig'), \
              patch('provide.foundation.integrations.openobserve.otlp.datetime'):
 
             result = send_log_bulk("Test message", client=mock_client)
@@ -534,7 +534,7 @@ class TestOTLPIntegration:
         mock_config = Mock()
         mock_config.service_name = "structure-test"
 
-        with patch('provide.foundation.integrations.openobserve.otlp.TelemetryConfig') as mock_config_class, \
+        with patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class, \
              patch('provide.foundation.integrations.openobserve.otlp.datetime') as mock_datetime:
 
             mock_config_class.from_env.return_value = mock_config
