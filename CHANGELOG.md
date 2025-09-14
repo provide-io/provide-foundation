@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0-beta.2] - 2025-01-14
+
+### Removed (Breaking Changes)
+- **BREAKING**: Removed deprecated `setup_foundation()` function - use `get_hub().initialize_foundation(config)` instead
+- **BREAKING**: Removed deprecated `setup_telemetry()` function - use `get_hub().initialize_foundation(config)` instead
+- **BREAKING**: Removed deprecated `setup_logging()` function - Foundation now auto-initializes on first use
+- **BREAKING**: Removed deprecated `emoji` and `emoji_hierarchy` parameters from `get_logger()` - replaced by event sets
+
+### Fixed
+- Fixed RecursionError in Foundation `__getattr__` method that caused infinite loops when importing CLI modules
+- Fixed `provide.foundation.hub` module access through lazy loading
+- Resolved security vulnerabilities identified by bandit scan (tarfile extraction, shell injection, SQL injection)
+
+### Improved
+- **Code Quality**: Comprehensive "dogfooding" - Foundation now uses its own utilities consistently throughout codebase
+- **Security**: All high/medium severity security findings addressed
+- **API Surface**: Simplified API by removing all deprecated functions and parameters
+- **Documentation**: Updated example files to use modern Hub-based initialization
+
+### Changed
+- All setup functions now route through Hub-based initialization system
+- Examples updated to demonstrate Hub-based configuration instead of deprecated setup functions
+
 ## [0.1.0-beta.1] - 2025-01-13
 
 ### Added

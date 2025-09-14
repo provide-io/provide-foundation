@@ -42,8 +42,6 @@ from provide.foundation.logger import (
     LoggingConfig,
     TelemetryConfig,
     get_logger,  # Factory function for creating loggers
-    setup_logger,  # Setup function (consistent naming)
-    setup_logging,  # Setup function
 )
 
 # Logger type exports
@@ -65,7 +63,6 @@ from provide.foundation.resilience import (
     retry,
 )
 from provide.foundation.setup import (
-    setup_telemetry,
     shutdown_foundation_telemetry,
 )
 
@@ -155,9 +152,6 @@ __all__ = [
     "retry",
     # Legacy patterns
     "retry_on_error",
-    "setup_logger",  # Consistent naming
-    "setup_logging",  # Legacy setup function
-    "setup_telemetry",
     # Event enrichment utilities
     "show_event_matrix",
     # Utilities
