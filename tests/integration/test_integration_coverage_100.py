@@ -7,9 +7,7 @@ import structlog
 
 from provide.foundation.logger.base import FoundationLogger
 from provide.foundation.logger.core import _LAZY_SETUP_STATE
-from provide.foundation.setup import (
-    reset_foundation_setup_for_testing,
-)
+from provide.testkit import reset_foundation_setup_for_testing
 
 
 def test_ensure_stderr_default() -> None:
