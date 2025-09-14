@@ -175,5 +175,5 @@ class TarArchive(BaseArchive):
             elif tarinfo.isdir():
                 tarinfo.mode = 0o755
 
-        with open(file_path, "rb") as f:
+        with file_path.open("rb") as f:
             tar.addfile(tarinfo, f)

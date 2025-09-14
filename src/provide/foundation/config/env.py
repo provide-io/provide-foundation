@@ -94,9 +94,11 @@ def get_env(
     # Handle file-based secrets synchronously
     if secret_file and value.startswith("file://"):
         file_path = value[7:]  # Remove "file://" prefix
+        from provide.foundation.file.safe import safe_read_text
         try:
-            with open(file_path) as f:
-                value = f.read().strip()
+            value = safe_read_text(file_path, default="").strip()
+            if not value:
+                raise ValueError(f"Secret file is empty: {file_path}")
         except Exception as e:
             raise ValueError(f"Failed to read secret from file '{file_path}': {e}") from e
 
@@ -182,9 +184,11 @@ class RuntimeConfig(BaseConfig):
                 if value.startswith("file://"):
                     # Read synchronously
                     file_path = value[7:]
+                    from provide.foundation.file.safe import safe_read_text
                     try:
-                        with open(file_path) as f:
-                            value = f.read().strip()
+                        value = safe_read_text(file_path, default="").strip()
+                        if not value:
+                            raise ValueError(f"Secret file is empty: {file_path}")
                     except Exception as e:
                         raise ValueError(f"Failed to read secret from file '{file_path}': {e}") from e
 
@@ -296,9 +300,11 @@ class RuntimeConfig(BaseConfig):
                     return content.strip()
             else:
                 # Fallback to synchronous read
-                with open(file_path) as f:
-                    content = f.read()
-                    return content.strip()
+                from provide.foundation.file.safe import safe_read_text
+                content = safe_read_text(file_path, default="")
+                if not content:
+                    raise ValueError(f"Secret file is empty: {file_path}")
+                return content.strip()
         except Exception as e:
             raise ValueError(f"Failed to read secret from file '{file_path}': {e}") from e
 

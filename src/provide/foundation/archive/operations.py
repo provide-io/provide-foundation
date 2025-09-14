@@ -303,7 +303,7 @@ class ArchiveOperations:
     def _detect_format_by_magic(file: Path) -> list[str] | None:
         """Detect archive format by magic numbers."""
         try:
-            with open(file, "rb") as f:
+            with file.open("rb") as f:
                 magic = f.read(4)
 
             if magic[:2] == b"\x1f\x8b":  # gzip
