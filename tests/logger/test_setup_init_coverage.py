@@ -36,17 +36,16 @@ class TestLoggerSetupInitCoverage:
         assert callable(internal_setup)
 
     def test_conditional_import_success(self):
-        """Test conditional import functionality works correctly."""
-        from provide.foundation.logger.setup import _has_testing, reset_for_testing
+        """Test that setup module works without testing functionality."""
+        from provide.foundation.logger import setup
 
-        # Test the consistency of the conditional import logic
-        if _has_testing:
-            # If _has_testing is True, reset_for_testing should be available
-            assert reset_for_testing is not None
-            assert callable(reset_for_testing)
-        else:
-            # If _has_testing is False, reset_for_testing should be None
-            assert reset_for_testing is None
+        # The setup module should work normally without testing components
+        assert hasattr(setup, 'internal_setup')
+        assert callable(setup.internal_setup)
+
+        # These testing-related items should not exist in the main setup module
+        assert not hasattr(setup, '_has_testing')
+        assert not hasattr(setup, 'reset_for_testing')
 
     def test_coordinator_import_available(self):
         """Test that internal_setup comes from coordinator module."""

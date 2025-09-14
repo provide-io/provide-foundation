@@ -8,7 +8,7 @@ Primary public interface for the library, re-exporting common components.
 # Export config module for easy access
 # New foundation components
 # Make the errors module available for detailed imports
-from provide.foundation import config, errors, platform, process, resilience, tracer
+from provide.foundation import config, errors, hub, platform, process, resilience, tracer
 from provide.foundation._version import __version__
 
 # Console I/O functions (always available - handles click dependency internally)
@@ -139,6 +139,7 @@ __all__ = [
     "get_component_registry",
     "get_hub",
     "get_logger",
+    "hub",
     # Core setup and logger
     "logger",
     # Console functions (work with or without click)
