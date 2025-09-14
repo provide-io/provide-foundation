@@ -76,10 +76,44 @@ uv publish                      # Publish to PyPI
 
 ## Testing Strategy
 
+### Core Testing Requirements
+
+**CRITICAL**: When testing provide-foundation or any application that uses it, `provide-testkit` MUST be available and used. This is non-negotiable.
+
+- **provide-testkit dependency**: Required in dev dependencies (already configured)
+- **Foundation reset**: ALWAYS use `reset_foundation_setup_for_testing()` in test fixtures
+- **Log stream control**: Use `set_log_stream_for_testing()` for capturing Foundation logs
+- **Context detection**: Testkit automatically detects testing environments
+
+### Standard Testing Pattern
+
+```python
+import pytest
+from provide.testkit import (
+    reset_foundation_setup_for_testing,
+    set_log_stream_for_testing,
+)
+
+@pytest.fixture(autouse=True)
+def reset_foundation():
+    """Reset Foundation state before each test."""
+    reset_foundation_setup_for_testing()
+```
+
+### Testing Infrastructure
+
 - Comprehensive test coverage including unit, integration, and property-based tests
 - Tests use `pytest` with async support via `pytest-asyncio`
 - Parallel test execution with `pytest-xdist`
 - Coverage tracking with `pytest-cov`
+- **Foundation-specific fixtures**: All provided by provide-testkit
+
+### Development Requirement
+
+If `provide-testkit` is not available in the environment, **PAUSE DEVELOPMENT** and install it:
+```bash
+uv add provide-testkit --group dev
+```
 
 ## Common Issues & Solutions
 
