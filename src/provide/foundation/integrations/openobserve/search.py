@@ -28,8 +28,8 @@ def _sanitize_trace_id(trace_id: str) -> str:
 
 def _sanitize_log_level(level: str) -> str:
     """Sanitize log level to prevent SQL injection."""
-    valid_levels = {'TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'CRITICAL', 'trace', 'debug', 'info', 'warn', 'error', 'critical'}
-    if level not in valid_levels:
+    from provide.foundation.config.parsers.base import _VALID_LOG_LEVEL_TUPLE
+    if level not in _VALID_LOG_LEVEL_TUPLE:
         raise ValueError(f"Invalid log level: {level}")
     return level
 

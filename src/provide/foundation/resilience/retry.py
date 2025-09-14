@@ -119,7 +119,7 @@ class RetryPolicy:
 
         # Add jitter if configured (±25% random variation)
         if self.jitter:
-            jitter_factor = 0.75 + (random.random() * 0.5)
+            jitter_factor = 0.75 + (random.random() * 0.5)  # nosec B311 - Retry jitter timing
             delay *= jitter_factor
 
         return delay

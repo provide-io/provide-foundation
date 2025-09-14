@@ -70,9 +70,9 @@ def _build_query_sql(
         conditions.append(f"trace_id = '{trace_id}'")
 
     if level:
-        # Sanitize level - only allow known log levels
-        valid_levels = {'TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'CRITICAL', 'trace', 'debug', 'info', 'warn', 'error', 'critical'}
-        if level not in valid_levels:
+        # Sanitize level using Foundation's existing validation
+        from provide.foundation.config.parsers.base import _VALID_LOG_LEVEL_TUPLE
+        if level not in _VALID_LOG_LEVEL_TUPLE:
             raise ValueError(f"Invalid log level: {level}")
         conditions.append(f"level = '{level}'")
 

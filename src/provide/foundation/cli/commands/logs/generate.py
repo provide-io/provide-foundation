@@ -121,7 +121,7 @@ def generate_log_entry(index: int, style: str = "normal", error_rate: float = 0.
     """
     # Choose message based on style
     if style == "burroughs":
-        message = random.choice(BURROUGHS_PHRASES)
+        message = random.choice(BURROUGHS_PHRASES)  # nosec B311 - Test data generation
     else:
         # Normal tech-style messages
         operations = [
@@ -133,27 +133,27 @@ def generate_log_entry(index: int, style: str = "normal", error_rate: float = 0.
             "synced",
         ]
         objects = ["request", "query", "data", "event", "message", "transaction"]
-        message = f"Successfully {random.choice(operations)} {random.choice(objects)}"
+        message = f"Successfully {random.choice(operations)} {random.choice(objects)}"  # nosec B311 - Test data
 
     # Generate error condition
-    is_error = random.random() < error_rate
+    is_error = random.random() < error_rate  # nosec B311 - Test data generation
 
     # Base entry
     entry = {
         "message": message,
-        "service": random.choice(SERVICE_NAMES),
-        "operation": random.choice(OPERATIONS),
+        "service": random.choice(SERVICE_NAMES),  # nosec B311 - Test data
+        "operation": random.choice(OPERATIONS),  # nosec B311 - Test data
         "iteration": index,
         "trace_id": generate_trace_id() if index % 10 == 0 else f"trace_{(_trace_counter - 1):08d}",
         "span_id": generate_span_id(),
-        "duration_ms": random.randint(10, 5000),
+        "duration_ms": random.randint(10, 5000),  # nosec B311 - Test data
     }
 
     # Add error fields if this is an error
     if is_error:
         entry["level"] = "error"
-        entry["error_code"] = random.choice([400, 404, 500, 503])
-        entry["error_type"] = random.choice(
+        entry["error_code"] = random.choice([400, 404, 500, 503])  # nosec B311 - Test data
+        entry["error_type"] = random.choice(  # nosec B311 - Test data
             [
                 "ValidationError",
                 "ServiceUnavailable",
@@ -164,12 +164,12 @@ def generate_log_entry(index: int, style: str = "normal", error_rate: float = 0.
         )
     else:
         # Random log level for non-errors
-        entry["level"] = random.choice(["debug", "info", "warning"])
+        entry["level"] = random.choice(["debug", "info", "warning"])  # nosec B311 - Test data
 
     # Add domain/action/status for DAS emoji system
-    entry["domain"] = random.choice(["user", "system", "data", "api", None])
-    entry["action"] = random.choice(["create", "read", "update", "delete", None])
-    entry["status"] = "error" if is_error else random.choice(["success", "pending", None])
+    entry["domain"] = random.choice(["user", "system", "data", "api", None])  # nosec B311 - Test data
+    entry["action"] = random.choice(["create", "read", "update", "delete", None])  # nosec B311 - Test data
+    entry["status"] = "error" if is_error else random.choice(["success", "pending", None])  # nosec B311 - Test data
 
     return entry
 
