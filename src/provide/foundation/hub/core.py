@@ -21,7 +21,7 @@ from provide.foundation.errors.decorators import with_error_handling
 from provide.foundation.errors.resources import AlreadyExistsError
 from provide.foundation.hub.commands import CommandInfo
 from provide.foundation.hub.components import ComponentInfo
-from provide.foundation.hub.registry import Registry
+from provide.foundation.hub.registry import Registry, get_command_registry
 
 
 def _get_logger():
@@ -57,7 +57,7 @@ class CoreHub:
         """
         self.context = context or CLIContext()
         self._component_registry = component_registry or Registry()
-        self._command_registry = command_registry or Registry()
+        self._command_registry = command_registry or get_command_registry()
         self._cli_group: click.Group | None = None
 
     # Component Management

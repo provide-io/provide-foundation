@@ -10,6 +10,7 @@ import pytest
 from provide.foundation.hub import (
     clear_hub,
     get_hub,
+    register_command,
 )
 from provide.foundation.hub.registry import Registry
 from provide.foundation.logger import get_logger
