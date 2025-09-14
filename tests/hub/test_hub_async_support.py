@@ -325,18 +325,14 @@ class TestAsyncTaskCoordination:
             await asyncio.sleep(0.001)  # Simulate async processing
             events.append((event_type, data))
 
-        # Register event handlers as commands using Hub's add_command method
+        # Register event handlers as commands using decorator
         async def setup_handlers() -> None:
             for event_type in ["start", "process", "complete"]:
+
+                @register_command(f"handle_{event_type}")
                 async def handler() -> None:
                     await event_handler(event_type, {"timestamp": time.time()})
 
-                # Register directly with hub using add_command instead of decorator
-                hub.add_command(
-                    func=handler,
-                    name=f"handle_{event_type}",
-                    description=f"Handle {event_type} event",
-                )
                 await asyncio.sleep(0)
 
         await setup_handlers()
