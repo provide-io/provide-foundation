@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Development Environment Setup
 
-**IMPORTANT**: Use `source env.sh` to set up the environment. This script provisions a virtual environment in `workenv/` (NOT `.venv`). The environment setup handles:
+**IMPORTANT**: Use `source workenv/env.sh` to set up the environment. This script provisions a virtual environment in `workenv/` (NOT `.venv`). The environment setup handles:
 - Python 3.11+ requirement
 - UV package manager for dependency management
 - Platform-specific virtual environments (e.g., `workenv/provide-foundation_darwin_arm64`)
@@ -17,7 +17,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 # Environment setup (always use this instead of manual venv creation)
-source env.sh
+source workenv/env.sh
 
 # Run tests
 pytest                           # Run all tests
@@ -83,7 +83,7 @@ uv publish                      # Publish to PyPI
 
 ## Common Issues & Solutions
 
-1. **ModuleNotFoundError for dependencies**: Run `source env.sh` to ensure proper environment setup
+1. **ModuleNotFoundError for dependencies**: Run `source workenv/env.sh` to ensure proper environment setup
 2. **Test failures related to from_env**: The `TelemetryConfig.from_env()` method needs to be properly exposed as a class method
 3. **Import errors**: Ensure PYTHONPATH includes both `src/` and project root
 4. **Asyncio debug messages**: The logger automatically suppresses asyncio DEBUG messages (e.g., "Using selector: KqueueSelector") via module-level configuration. Override with `PROVIDE_LOG_MODULE_LEVELS="asyncio:DEBUG"` if needed.
