@@ -121,3 +121,4 @@ uv publish                      # Publish to PyPI
 - **Low-Level Infrastructure**: Only use `print()` to stderr where using Foundation logger would create circular dependencies
   - Example: In `streams/file.py` where the logger itself depends on these components
 - it is okay to use future annotation for unquoted types.
+- it is okay to use futures for unquoted annotations.

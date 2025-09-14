@@ -22,8 +22,8 @@ from pytest import CaptureFixture  # Added for capsys
 from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
-    logger as global_logger,
     get_hub,
+    logger as global_logger,
     shutdown_foundation_telemetry,
 )
 
@@ -33,7 +33,6 @@ class TestProductionReadinessScenarios:
 
     def test_high_throughput_scenario(self, captured_stderr_for_foundation) -> None:
         """Test lazy initialization under high throughput."""
-        import io
 
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         reset_foundation_setup_for_testing()

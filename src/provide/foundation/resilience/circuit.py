@@ -9,7 +9,6 @@ from attrs import define, field
 
 from provide.foundation.resilience.types import CircuitState
 
-
 T = TypeVar("T")
 
 

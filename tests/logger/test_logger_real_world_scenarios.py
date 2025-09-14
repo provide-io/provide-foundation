@@ -23,8 +23,8 @@ from pytest import CaptureFixture  # Added for capsys
 from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
-    logger as global_logger,
     get_hub,
+    logger as global_logger,
 )
 
 

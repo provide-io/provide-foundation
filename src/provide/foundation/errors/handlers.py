@@ -12,9 +12,6 @@ from attrs import define, field
 from provide.foundation.errors.base import FoundationError
 from provide.foundation.errors.context import capture_error_context
 
-
-
-
 T = TypeVar("T")
 
 

@@ -7,7 +7,6 @@ import functools
 from typing import Any, TypeVar
 
 from provide.foundation.config.defaults import DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT
-from provide.foundation.hub.foundation import get_foundation_logger
 from provide.foundation.resilience.retry import (
     BackoffStrategy,
     RetryExecutor,

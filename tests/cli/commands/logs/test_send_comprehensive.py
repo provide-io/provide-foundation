@@ -1,10 +1,7 @@
 """Comprehensive tests for CLI logs send command."""
 
-import json
-import sys
 from io import StringIO
-from unittest.mock import Mock, patch, MagicMock
-import pytest
+from unittest.mock import Mock, patch
 
 
 class TestGetMessageFromInput:
@@ -344,7 +341,7 @@ class TestSendCommandWithoutClick:
 
     def test_command_import_availability(self):
         """Test that the command function can be imported and _HAS_CLICK exists."""
-        from provide.foundation.cli.commands.logs.send import send_command, _HAS_CLICK
+        from provide.foundation.cli.commands.logs.send import _HAS_CLICK, send_command
 
         # Function should exist regardless of click availability
         assert callable(send_command)

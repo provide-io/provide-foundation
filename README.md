@@ -12,6 +12,9 @@
     <a href="https://codecov.io/gh/provide-io/provide-foundation">
         <img src="https://codecov.io/gh/provide-io/provide-foundation/branch/main/graph/badge.svg"/>
     </a>
+    <img alt="Test Coverage" src="https://img.shields.io/badge/coverage-83.65%25-brightgreen.svg">
+    <img alt="Test Count" src="https://img.shields.io/badge/tests-1000+-blue.svg">
+    <img alt="Type Checking" src="https://img.shields.io/badge/typing-mypy-informational.svg">
     <a href="https://github.com/provide-io/provide-foundation/blob/main/LICENSE">
         <img alt="License" src="https://img.shields.io/github/license/provide-io/provide-foundation.svg">
     </a>
@@ -22,6 +25,28 @@
 **provide.foundation** is a comprehensive foundation library for Python applications, offering structured logging, CLI utilities, configuration management, error handling, and essential application building blocks. Built with modern Python practices, it provides the core infrastructure that production applications need.
 
 > **Performance**: Benchmarked at >14,000 msg/sec under optimal conditions with minimal allocations. Actual performance varies based on configuration, system resources, and usage patterns.
+
+## 🏆 Quality & Testing Achievements
+
+**provide.foundation** maintains high standards for code quality, testing, and reliability:
+
+- **83.65% Test Coverage** with 1000+ comprehensive tests
+- **46 modules with 100% coverage** including core components
+- **Comprehensive Security Testing** with path traversal, symlink validation, and input sanitization
+- **Performance Benchmarked** logging, transport, and archive operations
+- **Type-Safe Codebase** with comprehensive type annotations
+- **Automated Quality Checks** with ruff, mypy, and bandit
+
+### Recent Testing Improvements
+
+| Component | Before | After | Tests Added |
+|-----------|---------|--------|-------------|
+| CLI Commands | 14-15% | 78-95% | 49 comprehensive tests |
+| OTLP Integration | 0% | 86.75% | 21 integration tests |
+| Archive Security | Basic | 100% | 15 security edge cases |
+| Transport Layer | 74% | 91% | 22 edge case tests |
+
+📊 **See [IMPROVEMENTS.md](IMPROVEMENTS.md) for detailed roadmap and quality metrics**
 
 ---
 

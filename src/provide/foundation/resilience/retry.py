@@ -14,7 +14,6 @@ from attrs import define, field, validators
 
 from provide.foundation.resilience.types import BackoffStrategy
 
-
 T = TypeVar("T")
 
 

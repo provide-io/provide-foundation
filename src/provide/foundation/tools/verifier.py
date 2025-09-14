@@ -11,7 +11,6 @@ from typing import Literal
 from provide.foundation.errors import FoundationError
 
 
-
 class VerificationError(FoundationError):
     """Raised when verification fails."""
 

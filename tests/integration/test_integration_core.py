@@ -34,8 +34,8 @@ import pytest
 from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
-    logger,
     get_hub,
+    logger,
     shutdown_foundation_telemetry,
 )
 from provide.foundation.config.types import ConfigSource

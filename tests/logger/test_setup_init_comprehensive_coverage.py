@@ -1,7 +1,6 @@
 """Comprehensive coverage tests for logger/setup/__init__.py module."""
 
 import importlib
-from unittest.mock import patch
 
 
 class TestLoggerSetupInit:

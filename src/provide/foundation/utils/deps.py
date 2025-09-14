@@ -3,8 +3,6 @@
 from typing import NamedTuple
 
 
-
-
 class DependencyStatus(NamedTuple):
     """Status of an optional dependency."""
 

@@ -1,7 +1,8 @@
 """Simplified tests for CLI logs query command focused on coverage."""
 
-import pytest
 from unittest.mock import Mock, patch
+
+import pytest
 
 
 class TestBuildQuerySql:
@@ -225,7 +226,7 @@ class TestQueryCommandWithoutClick:
 
     def test_command_import_availability(self):
         """Test that the module can be imported and function exists."""
-        from provide.foundation.cli.commands.logs.query import query_command, _HAS_CLICK
+        from provide.foundation.cli.commands.logs.query import _HAS_CLICK, query_command
 
         # Function should exist regardless of click availability
         assert callable(query_command)

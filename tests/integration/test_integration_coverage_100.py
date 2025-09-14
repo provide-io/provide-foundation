@@ -3,11 +3,11 @@
 import sys
 from unittest.mock import MagicMock, patch
 
+from provide.testkit import reset_foundation_setup_for_testing
 import structlog
 
 from provide.foundation.logger.base import FoundationLogger
 from provide.foundation.logger.core import _LAZY_SETUP_STATE
-from provide.testkit import reset_foundation_setup_for_testing
 
 
 def test_ensure_stderr_default() -> None:

@@ -73,8 +73,8 @@ class TestBackwardCompatibility:
 
     def test_setup_functions_with_config(self):
         """Test that setup functions work with explicit config."""
-        from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
         from provide.foundation import get_hub
+        from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
 
         config = TelemetryConfig(
             logging=LoggingConfig(default_level="WARNING"),
@@ -91,8 +91,8 @@ class TestBackwardCompatibility:
 
     def test_mixed_old_and_new_api(self):
         """Test that old and new APIs can be mixed."""
-        from provide.foundation.logger import get_logger
         from provide.foundation import get_hub
+        from provide.foundation.logger import get_logger
 
         # Use old setup first
         with warnings.catch_warnings():
