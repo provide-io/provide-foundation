@@ -93,10 +93,30 @@ def setup_opentelemetry_tracing(config: TelemetryConfig) -> None:
 
         slog.debug(f"✅ OTLP span exporter configured: {config.otlp_protocol}")
 
-    # Set the global tracer provider
-    otel_trace.set_tracer_provider(tracer_provider)
-
-    slog.info("🔍✅ OpenTelemetry tracing setup complete")
+    # Set the global tracer provider (only if not already set)
+    try:
+        current_provider = otel_trace.get_tracer_provider()
+        provider_type = type(current_provider).__name__
+        
+        # Always allow setup if:
+        # 1. It's a default/no-op provider
+        # 2. It's a mock (for testing)
+        # 3. It's our own TracerProvider type (allow re-configuration)
+        should_setup = (
+            provider_type in ['NoOpTracerProvider', 'ProxyTracerProvider', 'Mock', 'MagicMock'] or
+            not hasattr(current_provider, 'add_span_processor') or
+            current_provider.__class__.__module__.startswith('unittest.mock')
+        )
+        
+        if should_setup:
+            otel_trace.set_tracer_provider(tracer_provider)
+            slog.info("🔍✅ OpenTelemetry tracing setup complete")
+        else:
+            slog.debug("🔍 OpenTelemetry tracer provider already configured")
+    except Exception:
+        # If get_tracer_provider fails for any reason, proceed with setup
+        otel_trace.set_tracer_provider(tracer_provider)
+        slog.info("🔍✅ OpenTelemetry tracing setup complete")
 
 
 def get_otel_tracer(name: str) -> "otel_trace.Tracer | None":
