@@ -4,7 +4,8 @@
       "Bash(PYTHONPATH=src pytest tests/logger/test_asyncio_suppression.py tests/config/test_defaults.py -v -q)",
       "Bash(PYTHONPATH=src pytest tests/conversion/test_inference_concurrency_safety.py::TestInferenceConcurrencySafety::test_concurrent_inference_is_isolated -xvs)",
       "Bash(PYTHONPATH=src pytest tests/validation/test_enterprise_recursion.py::TestAdvancedRecursionDetection::test_handles_legitimate_deep_nesting -xvs)",
-      "Bash(PYTHONPATH=src pytest -x --tb=short)"
+      "Bash(PYTHONPATH=src pytest -x --tb=short)",
+      "Bash(PYTHONPATH=src pytest tests/conversion/test_inference_cache_context.py::TestInferenceCacheContext::test_nested_context_reuses_existing_cache -xvs)"
     ],
     "deny": [],
     "ask": [],
