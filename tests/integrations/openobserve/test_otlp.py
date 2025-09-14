@@ -240,14 +240,25 @@ class TestSendLogBulk:
 
         # Mock dependencies
         mock_client = Mock()
+        mock_client.url = "http://localhost:5080"
+        mock_client.organization = "default"
+        mock_client.timeout = 30
+        mock_client.session.headers = {"Authorization": "Basic token"}
+
         mock_config = Mock()
         mock_config.service_name = "bulk-service"
+        mock_config.openobserve_stream = "logs"
+
+        mock_response = Mock()
+        mock_response.status_code = 200
 
         with patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.datetime') as mock_datetime:
+             patch('provide.foundation.integrations.openobserve.otlp.datetime') as mock_datetime, \
+             patch('requests.post') as mock_post:
 
             mock_config_class.from_env.return_value = mock_config
             mock_datetime.now.return_value.timestamp.return_value = 1234567890.123456
+            mock_post.return_value = mock_response
 
             result = send_log_bulk(
                 message="Bulk test message",
@@ -259,21 +270,22 @@ class TestSendLogBulk:
 
             assert result is True
 
-            # Verify client method call
-            mock_client._make_request.assert_called_once_with(
-                method="POST",
-                endpoint="_bulk",
-                json_data={
-                    "index": "default",
-                    "records": [{
-                        "_timestamp": 1234567890123456,
-                        "level": "ERROR",
-                        "message": "Bulk test message",
-                        "service": "custom-service",
-                        "error_code": 500
-                    }]
-                }
-            )
+            # Verify requests.post call
+            mock_post.assert_called_once()
+            call_args = mock_post.call_args
+
+            # First argument is the URL
+            assert call_args[0][0] == "http://localhost:5080/api/default/_bulk"
+
+            # Keyword arguments
+            assert call_args[1]['headers'] == {"Authorization": "Basic token"}
+            assert call_args[1]['timeout'] == 30
+
+            # Verify bulk data format contains expected log entry
+            bulk_data = call_args[1]['data']
+            assert "Bulk test message" in bulk_data
+            assert "ERROR" in bulk_data
+            assert "custom-service" in bulk_data
 
     def test_send_log_bulk_creates_client_when_none_provided(self):
         """Test that bulk function creates client when none provided."""
