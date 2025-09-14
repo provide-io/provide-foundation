@@ -26,20 +26,22 @@ class TestAsyncioDebugSuppression:
         # Create a string buffer to capture log output
         log_output = StringIO()
 
-        # Configure Foundation logging
-        config = TelemetryConfig.from_env()
-        configure_structlog_output(config, log_output)
+        # Configure Foundation logging with WARNING overall level (higher than asyncio's INFO)
+        # so that the module-level filtering is the limiting factor
+        with patch.dict("os.environ", {"PROVIDE_LOG_LEVEL": "WARNING"}):
+            config = TelemetryConfig.from_env()
+            configure_structlog_output(config, log_output)
 
-        # Get a structlog logger for asyncio namespace
-        logger = structlog.get_logger("asyncio")
+            # Get a structlog logger for asyncio namespace
+            logger = structlog.get_logger("asyncio")
 
-        # Log a debug message that should be suppressed
-        logger.debug("Using selector: KqueueSelector")
+            # Log a debug message that should be suppressed
+            logger.debug("Using selector: KqueueSelector")
 
-        # Verify no debug message was written (due to module-level filtering)
-        captured_output = log_output.getvalue()
-        assert "Using selector: KqueueSelector" not in captured_output
-        assert "KqueueSelector" not in captured_output
+            # Verify no debug message was written (due to module-level filtering)
+            captured_output = log_output.getvalue()
+            assert "Using selector: KqueueSelector" not in captured_output
+            assert "KqueueSelector" not in captured_output
 
     def test_structlog_asyncio_info_messages_still_logged(self):
         """Test that structlog asyncio INFO and higher messages are still logged."""
