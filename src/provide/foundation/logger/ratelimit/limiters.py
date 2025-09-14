@@ -198,7 +198,7 @@ class GlobalRateLimiter:
         max_queue_size: int = 1000,
         max_memory_mb: float | None = None,
         overflow_policy: str = "drop_oldest",
-    ):
+    ) -> None:
         """
         Configure the global rate limiter.
 

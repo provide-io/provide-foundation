@@ -629,14 +629,14 @@ class Hub:
         """Check if Foundation system is initialized."""
         return self._foundation_initialized
 
-    def get_foundation_config(self):
+    def get_foundation_config(self) -> "TelemetryConfig | None":
         """Get the current Foundation configuration."""
         if not self._foundation_initialized:
             self.initialize_foundation()
 
         return self._component_registry.get("foundation.config", "singleton")
 
-    def _get_hub_logger(self):
+    def _get_hub_logger(self) -> Any:
         """Get logger for Hub internal use."""
         if self._foundation_logger_instance:
             return self._foundation_logger_instance.get_logger(__name__)

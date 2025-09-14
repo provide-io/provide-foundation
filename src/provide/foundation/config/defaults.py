@@ -109,7 +109,7 @@ def default_otlp_headers() -> dict[str, str]:
     """Factory for OTLP headers dictionary."""
     return {}
 
-def default_logging_config():
+def default_logging_config() -> "LoggingConfig":
     """Factory for LoggingConfig instance."""
     # Import here to avoid circular imports
     from provide.foundation.logger.config.logging import LoggingConfig

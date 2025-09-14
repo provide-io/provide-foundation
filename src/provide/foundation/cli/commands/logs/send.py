@@ -160,7 +160,7 @@ if _HAS_CLICK:
 
 else:
 
-    def send_command(*args, **kwargs):
+    def send_command(*args: object, **kwargs: object) -> NoReturn:
         """Send command stub when click is not available."""
         raise ImportError(
             "CLI commands require optional dependencies. Install with: pip install 'provide-foundation[cli]'"
