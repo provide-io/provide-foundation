@@ -10,7 +10,8 @@
       "Bash(. .venv/bin/activate)",
       "Bash(coverage report:*)",
       "Bash(coverage run -m pytest:*)",
-      "Bash(coverage run:*)"
+      "Bash(coverage run:*)",
+      "Read(//Users/tim/code/gh/**)"
     ],
     "deny": [],
     "ask": [],
