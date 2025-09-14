@@ -2,6 +2,8 @@
 Query logs command for Foundation CLI.
 """
 
+from typing import Any, NoReturn
+
 try:
     import click
 
@@ -195,34 +197,12 @@ if _HAS_CLICK:
 
             sql = _build_query_sql(trace_id, level, service, stream, size)
 
-        # Execute query
-        try:
-            response = search_logs(
-                sql=sql,
-                start_time=f"-{last}" if last else "-1h",
-                end_time="now",
-                size=size,
-                client=client,
-            )
-
-            # Format and display results
-            if response.total == 0:
-                click.echo("No logs found matching the query.")
-            else:
-                output = format_output(response, format_type=format)
-                click.echo(output)
-
-                # Show summary for non-summary formats
-                if format != "summary":
-                    click.echo(f"\n📊 Found {response.total} logs, showing {len(response.hits)}")
-
-        except Exception as e:
-            click.echo(f"Query failed: {e}", err=True)
-            return 1
+        # Execute query and display results
+        return _execute_and_display_query(sql, last, size, format, client)
 
 else:
 
-    def query_command(*args: object, **kwargs: object) -> None:
+    def query_command(*args: object, **kwargs: object) -> NoReturn:
         """Query command stub when click is not available."""
         raise ImportError(
             "CLI commands require optional dependencies. Install with: pip install 'provide-foundation[cli]'"

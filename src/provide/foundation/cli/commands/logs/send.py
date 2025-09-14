@@ -4,7 +4,8 @@ Send logs command for Foundation CLI.
 
 import json
 import sys
-from typing import NoReturn
+import time
+from typing import Any, NoReturn
 
 try:
     import click
@@ -17,6 +18,100 @@ except ImportError:
 from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
+
+
+def _get_message_from_input(message: str | None) -> tuple[str | None, int]:
+    """Get message from argument or stdin. Returns (message, error_code)."""
+    if message:
+        return message, 0
+
+    if sys.stdin.isatty():
+        click.echo("Error: No message provided. Use -m or pipe input.", err=True)
+        return None, 1
+
+    stdin_message = sys.stdin.read().strip()
+    if not stdin_message:
+        click.echo("Error: Empty message from stdin.", err=True)
+        return None, 1
+
+    return stdin_message, 0
+
+
+def _build_attributes(json_attrs: str | None, attr: tuple[str, ...]) -> tuple[dict[str, Any], int]:
+    """Build attributes dict from JSON and key=value pairs. Returns (attributes, error_code)."""
+    attributes = {}
+
+    # Add JSON attributes
+    if json_attrs:
+        try:
+            attributes.update(json.loads(json_attrs))
+        except json.JSONDecodeError as e:
+            click.echo(f"Error: Invalid JSON attributes: {e}", err=True)
+            return {}, 1
+
+    # Add key=value attributes
+    for kv_pair in attr:
+        try:
+            key, value = kv_pair.split("=", 1)
+            # Try to parse as number, boolean, or keep as string
+            if value.lower() in ("true", "false"):
+                attributes[key] = value.lower() == "true"
+            elif value.isdigit():
+                attributes[key] = int(value)
+            elif "." in value and value.replace(".", "").replace("-", "").isdigit():
+                attributes[key] = float(value)
+            else:
+                attributes[key] = value
+        except ValueError:
+            click.echo(f"Error: Invalid attribute format '{kv_pair}'. Use key=value.", err=True)
+            return {}, 1
+
+    return attributes, 0
+
+
+def _send_log_entry(message: str, level: str, service: str | None, attributes: dict[str, Any],
+                   trace_id: str | None, span_id: str | None, use_otlp: bool) -> int:
+    """Send the log entry using appropriate method."""
+    from provide.foundation.integrations.openobserve.otlp import send_log
+
+    try:
+        if use_otlp:
+            # Send via OTLP
+            send_log(
+                message=message,
+                level=level,
+                service_name=service,
+                attributes=attributes,
+                trace_id=trace_id,
+                span_id=span_id,
+            )
+            click.echo("✓ Log sent via OTLP")
+        else:
+            # Send via HTTP API
+            from provide.foundation.integrations.openobserve import ingest_logs
+
+            # Build log record
+            log_record = {
+                "timestamp": int(time.time() * 1000000),  # microseconds
+                "message": message,
+                "level": level,
+                **attributes,
+            }
+
+            if service:
+                log_record["service"] = service
+            if trace_id:
+                log_record["trace_id"] = trace_id
+            if span_id:
+                log_record["span_id"] = span_id
+
+            ingest_logs([log_record])
+            click.echo("✓ Log sent via HTTP API")
+
+        return 0
+    except Exception as e:
+        click.echo(f"✗ Failed to send log: {e}", err=True)
+        return 1
 
 
 if _HAS_CLICK:
@@ -92,72 +187,18 @@ if _HAS_CLICK:
             # Send with JSON attributes
             foundation logs send -m "Error occurred" -j '{"error_code": 500, "path": "/api/users"}'
         """
-        from provide.foundation.integrations.openobserve.otlp import send_log
-
-        # Get message from stdin if not provided
-        if not message:
-            if sys.stdin.isatty():
-                click.echo("Error: No message provided. Use -m or pipe input.", err=True)
-                return 1
-            message = sys.stdin.read().strip()
-            if not message:
-                click.echo("Error: Empty message from stdin.", err=True)
-                return 1
+        # Get message from input
+        final_message, error_code = _get_message_from_input(message)
+        if error_code != 0:
+            return error_code
 
         # Build attributes
-        attributes = {}
+        attributes, error_code = _build_attributes(json_attrs, attr)
+        if error_code != 0:
+            return error_code
 
-        # Add JSON attributes
-        if json_attrs:
-            try:
-                attributes.update(json.loads(json_attrs))
-            except json.JSONDecodeError as e:
-                click.echo(f"Error: Invalid JSON attributes: {e}", err=True)
-                return 1
-
-        # Add key=value attributes
-        for kv in attr:
-            if "=" not in kv:
-                click.echo(f"Error: Invalid attribute format '{kv}'. Use key=value.", err=True)
-                return 1
-            key, value = kv.split("=", 1)
-            # Try to parse value as number
-            try:
-                if "." in value:
-                    value = float(value)
-                else:
-                    value = int(value)
-            except ValueError:
-                pass  # Keep as string
-            attributes[key] = value
-
-        # Add explicit trace/span IDs if provided
-        if trace_id:
-            attributes["trace_id"] = trace_id
-        if span_id:
-            attributes["span_id"] = span_id
-
-        # Send the log
-        try:
-            client = ctx.obj.get("client")
-            success = send_log(
-                message=message,
-                level=level,
-                service=service,
-                attributes=attributes if attributes else None,
-                prefer_otlp=use_otlp,
-                client=client,
-            )
-
-            if success:
-                click.echo(f"✅ Log sent successfully via {'OTLP' if use_otlp else 'bulk API'}")
-            else:
-                click.echo("❌ Failed to send log", err=True)
-                return 1
-
-        except Exception as e:
-            click.echo(f"Error: {e}", err=True)
-            return 1
+        # Send the log entry
+        return _send_log_entry(final_message, level, service, attributes, trace_id, span_id, use_otlp)
 
 else:
 
