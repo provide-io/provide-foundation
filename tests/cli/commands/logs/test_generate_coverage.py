@@ -19,25 +19,25 @@ from provide.foundation.cli.commands.logs.generate import (
 class TestConstants:
     """Test module constants."""
 
-    def test_burroughs_phrases_exist(self):
+    def test_burroughs_phrases_exist(self) -> None:
         """Test that Burroughs phrases are defined."""
         assert isinstance(BURROUGHS_PHRASES, list)
         assert len(BURROUGHS_PHRASES) > 0
         assert all(isinstance(phrase, str) for phrase in BURROUGHS_PHRASES)
 
-    def test_service_names_exist(self):
+    def test_service_names_exist(self) -> None:
         """Test that service names are defined."""
         assert isinstance(SERVICE_NAMES, list)
         assert len(SERVICE_NAMES) > 0
         assert all(isinstance(name, str) for name in SERVICE_NAMES)
 
-    def test_operations_exist(self):
+    def test_operations_exist(self) -> None:
         """Test that operations are defined."""
         assert isinstance(OPERATIONS, list)
         assert len(OPERATIONS) > 0
         assert all(isinstance(op, str) for op in OPERATIONS)
 
-    def test_has_click_flag_exists(self):
+    def test_has_click_flag_exists(self) -> None:
         """Test that _HAS_CLICK flag is defined."""
         from provide.foundation.cli.commands.logs.generate import _HAS_CLICK
 
@@ -47,13 +47,13 @@ class TestConstants:
 class TestTraceSpanGeneration:
     """Test trace and span ID generation."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Reset counters before each test."""
         import provide.foundation.cli.commands.logs.generate as generate_module
         generate_module._trace_counter = 0
         generate_module._span_counter = 0
 
-    def test_generate_trace_id(self):
+    def test_generate_trace_id(self) -> None:
         """Test trace ID generation."""
         trace_id = generate_trace_id()
         assert trace_id == "trace_00000000"
@@ -62,7 +62,7 @@ class TestTraceSpanGeneration:
         trace_id_2 = generate_trace_id()
         assert trace_id_2 == "trace_00000001"
 
-    def test_generate_span_id(self):
+    def test_generate_span_id(self) -> None:
         """Test span ID generation."""
         span_id = generate_span_id()
         assert span_id == "span_00000000"
@@ -71,11 +71,11 @@ class TestTraceSpanGeneration:
         span_id_2 = generate_span_id()
         assert span_id_2 == "span_00000001"
 
-    def test_trace_id_thread_safety(self):
+    def test_trace_id_thread_safety(self) -> None:
         """Test that trace ID generation is thread-safe."""
         trace_ids = []
 
-        def generate_multiple():
+        def generate_multiple() -> None:
             for _ in range(10):
                 trace_ids.append(generate_trace_id())
 
@@ -90,11 +90,11 @@ class TestTraceSpanGeneration:
         assert len(trace_ids) == 50
         assert len(set(trace_ids)) == 50
 
-    def test_span_id_thread_safety(self):
+    def test_span_id_thread_safety(self) -> None:
         """Test that span ID generation is thread-safe."""
         span_ids = []
 
-        def generate_multiple():
+        def generate_multiple() -> None:
             for _ in range(10):
                 span_ids.append(generate_span_id())
 
@@ -113,14 +113,14 @@ class TestTraceSpanGeneration:
 class TestGenerateLogEntry:
     """Test log entry generation."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Reset counters and random seed before each test."""
         import provide.foundation.cli.commands.logs.generate as generate_module
         generate_module._trace_counter = 0
         generate_module._span_counter = 0
         random.seed(42)  # For deterministic tests
 
-    def test_generate_log_entry_basic(self):
+    def test_generate_log_entry_basic(self) -> None:
         """Test basic log entry generation."""
         entry = generate_log_entry(0)
 
@@ -139,7 +139,7 @@ class TestGenerateLogEntry:
         assert isinstance(entry["duration_ms"], int)
         assert 10 <= entry["duration_ms"] <= 5000
 
-    def test_generate_log_entry_normal_style(self):
+    def test_generate_log_entry_normal_style(self) -> None:
         """Test log entry generation with normal style."""
         entry = generate_log_entry(0, style="normal")
 
@@ -152,14 +152,14 @@ class TestGenerateLogEntry:
         assert any(op in message for op in operations)
         assert any(obj in message for obj in objects)
 
-    def test_generate_log_entry_burroughs_style(self):
+    def test_generate_log_entry_burroughs_style(self) -> None:
         """Test log entry generation with Burroughs style."""
         entry = generate_log_entry(0, style="burroughs")
 
         message = entry["message"]
         assert message in BURROUGHS_PHRASES
 
-    def test_generate_log_entry_error_rate_zero(self):
+    def test_generate_log_entry_error_rate_zero(self) -> None:
         """Test log entry generation with zero error rate."""
         # Generate multiple entries to ensure no errors
         for i in range(20):
@@ -171,7 +171,7 @@ class TestGenerateLogEntry:
             assert entry["level"] in ["debug", "info", "warning"]
             assert entry["status"] in ["success", "pending", None]
 
-    def test_generate_log_entry_error_rate_one(self):
+    def test_generate_log_entry_error_rate_one(self) -> None:
         """Test log entry generation with 100% error rate."""
         entry = generate_log_entry(0, error_rate=1.0)
 
@@ -186,7 +186,7 @@ class TestGenerateLogEntry:
         ]
         assert entry["status"] == "error"
 
-    def test_generate_log_entry_domain_action_status(self):
+    def test_generate_log_entry_domain_action_status(self) -> None:
         """Test DAS (Domain-Action-Status) fields."""
         entry = generate_log_entry(0)
 
@@ -201,7 +201,7 @@ class TestGenerateLogEntry:
         if entry["status"] is not None:
             assert entry["status"] in ["success", "pending", "error"]
 
-    def test_generate_log_entry_trace_id_logic(self):
+    def test_generate_log_entry_trace_id_logic(self) -> None:
         """Test trace ID assignment logic."""
         # Index 0 should generate new trace ID
         entry_0 = generate_log_entry(0)
@@ -216,7 +216,7 @@ class TestGenerateLogEntry:
         entry_10 = generate_log_entry(10)
         assert entry_10["trace_id"] == "trace_00000001"
 
-    def test_generate_log_entry_unique_span_ids(self):
+    def test_generate_log_entry_unique_span_ids(self) -> None:
         """Test that each entry gets a unique span ID."""
         entries = [generate_log_entry(i) for i in range(5)]
         span_ids = [entry["span_id"] for entry in entries]
@@ -230,7 +230,7 @@ class TestHelperFunctions:
     """Test helper functions from the generate module."""
 
     @patch("provide.foundation.cli.commands.logs.generate.click")
-    def test_print_generation_config(self, mock_click):
+    def test_print_generation_config(self, mock_click) -> None:
         """Test _print_generation_config function."""
         from provide.foundation.cli.commands.logs.generate import _print_generation_config
 
@@ -243,7 +243,7 @@ class TestHelperFunctions:
         assert mock_click.echo.call_count >= 4
 
     @patch("provide.foundation.logger.ratelimit.GlobalRateLimiter")
-    def test_configure_rate_limiter_enabled(self, mock_limiter_class):
+    def test_configure_rate_limiter_enabled(self, mock_limiter_class) -> None:
         """Test _configure_rate_limiter with rate limiting enabled."""
         from provide.foundation.cli.commands.logs.generate import _configure_rate_limiter
 
@@ -258,7 +258,7 @@ class TestHelperFunctions:
             global_capacity=200.0,
         )
 
-    def test_configure_rate_limiter_disabled(self):
+    def test_configure_rate_limiter_disabled(self) -> None:
         """Test _configure_rate_limiter with rate limiting disabled."""
         from provide.foundation.cli.commands.logs.generate import _configure_rate_limiter
 
@@ -266,7 +266,7 @@ class TestHelperFunctions:
         _configure_rate_limiter(enable_rate_limit=False, rate_limit=100.0)
 
     @patch("provide.foundation.cli.commands.logs.generate.get_logger")
-    def test_send_log_entry_success(self, mock_get_logger):
+    def test_send_log_entry_success(self, mock_get_logger) -> None:
         """Test _send_log_entry success case."""
         from provide.foundation.cli.commands.logs.generate import _send_log_entry
 
@@ -293,7 +293,7 @@ class TestHelperFunctions:
         mock_logger.info.assert_called_once_with("test message", service="test-service", extra_field="value")
 
     @patch("provide.foundation.cli.commands.logs.generate.get_logger")
-    def test_send_log_entry_failure(self, mock_get_logger):
+    def test_send_log_entry_failure(self, mock_get_logger) -> None:
         """Test _send_log_entry failure case."""
         from provide.foundation.cli.commands.logs.generate import _send_log_entry
 
@@ -317,7 +317,7 @@ class TestHelperFunctions:
         assert logs_rate_limited == 0
 
     @patch("provide.foundation.cli.commands.logs.generate.get_logger")
-    def test_send_log_entry_rate_limited(self, mock_get_logger):
+    def test_send_log_entry_rate_limited(self, mock_get_logger) -> None:
         """Test _send_log_entry rate limit case."""
         from provide.foundation.cli.commands.logs.generate import _send_log_entry
 
@@ -342,7 +342,7 @@ class TestHelperFunctions:
 
     @patch("provide.foundation.cli.commands.logs.generate.click")
     @patch("provide.foundation.cli.commands.logs.generate.time")
-    def test_print_stats(self, mock_time, mock_click):
+    def test_print_stats(self, mock_time, mock_click) -> None:
         """Test _print_stats function."""
         from provide.foundation.cli.commands.logs.generate import _print_stats
 
@@ -359,7 +359,7 @@ class TestHelperFunctions:
         mock_click.echo.assert_called_once()
 
     @patch("provide.foundation.cli.commands.logs.generate.click")
-    def test_print_final_stats(self, mock_click):
+    def test_print_final_stats(self, mock_click) -> None:
         """Test _print_final_stats function."""
         from provide.foundation.cli.commands.logs.generate import _print_final_stats
 
@@ -375,7 +375,7 @@ class TestHelperFunctions:
 class TestClickIntegration:
     """Test Click command integration when Click is available."""
 
-    def test_generate_logs_command_exists(self):
+    def test_generate_logs_command_exists(self) -> None:
         """Test that generate_logs_command exists."""
         try:
             from provide.foundation.cli.commands.logs.generate import generate_logs_command
@@ -384,7 +384,7 @@ class TestClickIntegration:
         except ImportError:
             pytest.skip("Click not available")
 
-    def test_has_click_flag_consistency(self):
+    def test_has_click_flag_consistency(self) -> None:
         """Test _HAS_CLICK flag matches actual click availability."""
         from provide.foundation.cli.commands.logs.generate import _HAS_CLICK
 
@@ -396,7 +396,7 @@ class TestClickIntegration:
 
         assert expected == _HAS_CLICK
 
-    def test_command_stub_when_click_missing(self):
+    def test_command_stub_when_click_missing(self) -> None:
         """Test command stub behavior when click is missing."""
         # This test verifies that the stub function exists
         # We can't easily test the actual ImportError behavior without mocking imports
@@ -413,7 +413,7 @@ class TestClickIntegration:
 class TestLogEntryDataIntegrity:
     """Test data integrity and consistency of generated log entries."""
 
-    def test_log_entry_field_types(self):
+    def test_log_entry_field_types(self) -> None:
         """Test that log entry fields have correct types."""
         entry = generate_log_entry(5, style="normal", error_rate=0.5)
 
@@ -434,7 +434,7 @@ class TestLogEntryDataIntegrity:
         # Level field
         assert entry["level"] in ["debug", "info", "warning", "error"]
 
-    def test_error_entry_consistency(self):
+    def test_error_entry_consistency(self) -> None:
         """Test that error entries have consistent fields."""
         # Generate entries until we get an error (with high error rate)
         for _ in range(50):  # Try up to 50 times
@@ -452,7 +452,7 @@ class TestLogEntryDataIntegrity:
         else:
             pytest.fail("Could not generate error entry in 50 attempts")
 
-    def test_message_generation_consistency(self):
+    def test_message_generation_consistency(self) -> None:
         """Test message generation consistency across styles."""
         # Normal style messages
         normal_entries = [generate_log_entry(i, style="normal") for i in range(10)]

@@ -121,7 +121,7 @@ class TestAsyncHubCompatibility:
 
         # Test basic hub access in async context
         async def test_hub_access() -> bool:
-            for i in range(5):
+            for _i in range(5):
                 # Test hub access doesn't fail in async context
                 current_hub = get_hub()
                 assert current_hub is hub

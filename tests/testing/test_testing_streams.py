@@ -13,15 +13,15 @@ from provide.testkit.streams import (
 class TestStreamTestingUtilities:
     """Test stream testing helper functions."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up each test with clean stream state."""
         reset_log_stream()
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up after each test."""
         reset_log_stream()
 
-    def test_set_log_stream_for_testing_with_stringio(self):
+    def test_set_log_stream_for_testing_with_stringio(self) -> None:
         """Test setting log stream to StringIO."""
         test_stream = io.StringIO()
 
@@ -30,7 +30,7 @@ class TestStreamTestingUtilities:
         current_stream = get_current_log_stream()
         assert current_stream is test_stream
 
-    def test_set_log_stream_for_testing_with_none(self):
+    def test_set_log_stream_for_testing_with_none(self) -> None:
         """Test resetting log stream with None."""
         test_stream = io.StringIO()
         set_log_stream_for_testing(test_stream)
@@ -41,14 +41,14 @@ class TestStreamTestingUtilities:
         current_stream = get_current_log_stream()
         assert current_stream is sys.stderr
 
-    def test_get_current_log_stream_default(self):
+    def test_get_current_log_stream_default(self) -> None:
         """Test that default stream is stderr."""
         reset_log_stream()
 
         current_stream = get_current_log_stream()
         assert current_stream is sys.stderr
 
-    def test_reset_log_stream_function(self):
+    def test_reset_log_stream_function(self) -> None:
         """Test the reset_log_stream convenience function."""
         test_stream = io.StringIO()
         set_log_stream_for_testing(test_stream)
@@ -62,7 +62,7 @@ class TestStreamTestingUtilities:
         # Should be back to stderr
         assert get_current_log_stream() is sys.stderr
 
-    def test_stream_isolation_between_tests(self):
+    def test_stream_isolation_between_tests(self) -> None:
         """Test that stream changes don't leak between tests."""
         # This test should start with stderr (due to setup_method)
         assert get_current_log_stream() is sys.stderr
@@ -74,7 +74,7 @@ class TestStreamTestingUtilities:
 
         # teardown_method should clean this up automatically
 
-    def test_multiple_stream_changes(self):
+    def test_multiple_stream_changes(self) -> None:
         """Test multiple stream changes work correctly."""
         stream1 = io.StringIO()
         stream2 = io.StringIO()
@@ -91,14 +91,14 @@ class TestStreamTestingUtilities:
         set_log_stream_for_testing(None)
         assert get_current_log_stream() is sys.stderr
 
-    def test_stream_functions_thread_safe(self):
+    def test_stream_functions_thread_safe(self) -> None:
         """Test that stream functions handle threading correctly."""
         import threading
         import time
 
         results = {}
 
-        def set_and_get_stream(stream_id):
+        def set_and_get_stream(stream_id) -> None:
             test_stream = io.StringIO()
             set_log_stream_for_testing(test_stream)
             time.sleep(0.01)  # Small delay to test race conditions
@@ -120,7 +120,7 @@ class TestStreamTestingUtilities:
         # but the functions should not crash
         assert len(results) == 3
 
-    def test_stream_with_actual_logging(self):
+    def test_stream_with_actual_logging(self) -> None:
         """Test that stream redirection works with actual Foundation logging."""
         from provide.testkit import reset_foundation_setup_for_testing
 

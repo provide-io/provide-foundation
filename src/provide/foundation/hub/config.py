@@ -106,7 +106,7 @@ def load_config_from_registry(config_class: type[T]) -> T:
         Configuration instance loaded from registry sources
 
     """
-    registry, registry_lock, ComponentCategory = _get_registry_and_lock()
+    _registry, registry_lock, _ComponentCategory = _get_registry_and_lock()
 
     with registry_lock:
         # Get configuration data from registry

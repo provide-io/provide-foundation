@@ -131,51 +131,51 @@ from provide.testkit import (
 
 # Re-export for pytest discovery
 __all__ = [
+    "async_stream_reader",
+    "async_timeout",
+    "binary_file",
+    "ca_cert",
     # Original exports
     "captured_stderr_for_foundation",
-    "default_container_directory",
-    "setup_foundation_telemetry_for_test",
+    "cert_with_extra_whitespace",
+    "cert_with_utf8_bom",
+    "cert_with_windows_line_endings",
+    # New async fixtures
+    "clean_event_loop",
     # CLI exports
     "click_testing_mode",
-    # Logger exports
-    "mock_logger",
     # Crypto fixtures
     "client_cert",
-    "server_cert",
-    "ca_cert",
-    "valid_cert_pem",
-    "valid_key_pem",
+    "default_container_directory",
+    "empty_cert",
+    "empty_directory",
+    "external_ca_pem",
+    # New network fixtures
+    "free_port",
+    "httpx_mock_responses",
     "invalid_cert_pem",
     "invalid_key_pem",
     "malformed_cert_pem",
-    "empty_cert",
-    "temporary_cert_file",
-    "temporary_key_file",
-    "cert_with_windows_line_endings",
-    "cert_with_utf8_bom",
-    "cert_with_extra_whitespace",
-    "external_ca_pem",
-    # New file fixtures
-    "temp_directory",
-    "test_files_structure",
-    "temp_file",
-    "binary_file",
-    "nested_directory_structure",
-    "empty_directory",
-    "readonly_file",
-    # New async fixtures
-    "clean_event_loop",
-    "async_timeout",
     "mock_async_process",
-    "async_stream_reader",
+    "mock_cache",
     # New mock fixtures
     "mock_http_config",
-    "mock_telemetry_config",
+    # Logger exports
     "mock_logger",
-    "mock_transport",
-    "mock_cache",
-    # New network fixtures
-    "free_port",
+    "mock_logger",
     "mock_server",
-    "httpx_mock_responses",
+    "mock_telemetry_config",
+    "mock_transport",
+    "nested_directory_structure",
+    "readonly_file",
+    "server_cert",
+    "setup_foundation_telemetry_for_test",
+    # New file fixtures
+    "temp_directory",
+    "temp_file",
+    "temporary_cert_file",
+    "temporary_key_file",
+    "test_files_structure",
+    "valid_cert_pem",
+    "valid_key_pem",
 ]

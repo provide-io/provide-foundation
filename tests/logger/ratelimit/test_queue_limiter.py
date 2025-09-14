@@ -114,7 +114,7 @@ class TestQueuedRateLimiter:
                 assert accepted is True
 
             # Add one more item - should drop oldest
-            accepted, reason = limiter.enqueue("item_new")
+            accepted, _reason = limiter.enqueue("item_new")
             assert accepted is True
 
             stats = limiter.get_stats()
@@ -172,7 +172,7 @@ class TestQueuedRateLimiter:
         processed_items = []
 
         class TestQueuedRateLimiter(QueuedRateLimiter):
-            def _process_item(self, item):
+            def _process_item(self, item) -> None:
                 processed_items.append(item)
 
         limiter = TestQueuedRateLimiter(
@@ -441,7 +441,7 @@ class TestBufferedRateLimiter:
         limiter = BufferedRateLimiter(capacity=100.0, refill_rate=50.0)
         results = []
 
-        def worker():
+        def worker() -> None:
             for i in range(20):
                 allowed, _ = limiter.is_allowed(f"item_{threading.current_thread().ident}_{i}")
                 results.append(allowed)
@@ -535,7 +535,7 @@ class TestQueueLimiterIntegration:
         limiter = BufferedRateLimiter(capacity=0.01, refill_rate=1.0)  # Very small capacity
 
         # First request might be allowed due to initial fractional token
-        allowed, _ = limiter.is_allowed()
+        _allowed, _ = limiter.is_allowed()
 
         # Subsequent requests should definitely be denied
         allowed2, reason = limiter.is_allowed()

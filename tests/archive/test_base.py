@@ -11,12 +11,12 @@ from provide.foundation.archive.base import ArchiveError, BaseArchive
 class TestBaseArchiveInterface:
     """Test the BaseArchive abstract interface."""
 
-    def test_base_archive_is_abstract(self):
+    def test_base_archive_is_abstract(self) -> None:
         """BaseArchive should be an abstract class that cannot be instantiated."""
         with pytest.raises(TypeError):
             BaseArchive()
 
-    def test_base_archive_has_required_methods(self):
+    def test_base_archive_has_required_methods(self) -> None:
         """BaseArchive should define the required abstract methods."""
         # Check that BaseArchive has the required abstract methods
         abstract_methods = BaseArchive.__abstractmethods__
@@ -24,11 +24,11 @@ class TestBaseArchiveInterface:
 
         assert abstract_methods == expected_methods
 
-    def test_base_archive_uses_abc_meta(self):
+    def test_base_archive_uses_abc_meta(self) -> None:
         """BaseArchive should use ABCMeta as its metaclass."""
         assert BaseArchive.__class__ is ABCMeta
 
-    def test_concrete_implementation_must_implement_all_methods(self):
+    def test_concrete_implementation_must_implement_all_methods(self) -> None:
         """A concrete implementation must implement all abstract methods."""
 
         # Incomplete implementation (missing extract and validate)
@@ -39,7 +39,7 @@ class TestBaseArchiveInterface:
         with pytest.raises(TypeError):
             IncompleteArchiver()
 
-    def test_concrete_implementation_with_all_methods_works(self):
+    def test_concrete_implementation_with_all_methods_works(self) -> None:
         """A concrete implementation with all methods should work."""
 
         class CompleteArchiver(BaseArchive):
@@ -56,7 +56,7 @@ class TestBaseArchiveInterface:
         archiver = CompleteArchiver()
         assert archiver is not None
 
-    def test_archive_error_inheritance(self):
+    def test_archive_error_inheritance(self) -> None:
         """ArchiveError should inherit from Exception."""
         error = ArchiveError("test error")
         assert isinstance(error, Exception)
@@ -87,7 +87,7 @@ class TestBaseArchiveCommonBehavior:
 
         return MockArchiver()
 
-    def test_create_returns_output_path(self, mock_archiver, temp_directory):
+    def test_create_returns_output_path(self, mock_archiver, temp_directory) -> None:
         """The create method should return the output path."""
         temp_path = temp_directory
         source = temp_path / "source"
@@ -99,7 +99,7 @@ class TestBaseArchiveCommonBehavior:
         assert result == output
         assert output.exists()
 
-    def test_extract_returns_output_path(self, mock_archiver, temp_directory):
+    def test_extract_returns_output_path(self, mock_archiver, temp_directory) -> None:
         """The extract method should return the output path."""
         temp_path = temp_directory
         archive = temp_path / "test.archive"
@@ -111,7 +111,7 @@ class TestBaseArchiveCommonBehavior:
         assert result == output
         assert output.exists()
 
-    def test_validate_returns_boolean(self, mock_archiver, temp_directory):
+    def test_validate_returns_boolean(self, mock_archiver, temp_directory) -> None:
         """The validate method should return a boolean."""
         temp_path = temp_directory
 
@@ -124,7 +124,7 @@ class TestBaseArchiveCommonBehavior:
         invalid_archive = temp_path / "invalid.archive"
         assert mock_archiver.validate(invalid_archive) is False
 
-    def test_methods_accept_path_objects(self, mock_archiver, temp_directory):
+    def test_methods_accept_path_objects(self, mock_archiver, temp_directory) -> None:
         """All methods should accept Path objects as arguments."""
         temp_path = temp_directory
         source = temp_path / "source"
@@ -141,7 +141,7 @@ class TestBaseArchiveCommonBehavior:
         assert isinstance(result2, Path)
         assert isinstance(result3, bool)
 
-    def test_error_handling_pattern(self):
+    def test_error_handling_pattern(self) -> None:
         """Test that implementations should raise ArchiveError for failures."""
 
         class FailingArchiver(BaseArchive):

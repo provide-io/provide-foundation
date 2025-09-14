@@ -18,13 +18,13 @@ from provide.foundation.context import CLIContext
 class TestGetContext:
     """Test _get_context function."""
 
-    def test_get_context_no_click(self):
+    def test_get_context_no_click(self) -> None:
         """Test _get_context when click is not available."""
         with patch("provide.foundation.console.output._HAS_CLICK", False):
             result = _get_context()
             assert result is None
 
-    def test_get_context_click_no_context(self):
+    def test_get_context_click_no_context(self) -> None:
         """Test _get_context when click has no current context."""
         with patch("provide.foundation.console.output._HAS_CLICK", True):
             with patch("provide.foundation.console.output.click") as mock_click:
@@ -34,7 +34,7 @@ class TestGetContext:
                 assert result is None
                 mock_click.get_current_context.assert_called_once_with(silent=True)
 
-    def test_get_context_click_with_context_obj(self):
+    def test_get_context_click_with_context_obj(self) -> None:
         """Test _get_context when click has context with proper obj."""
         with patch("provide.foundation.console.output._HAS_CLICK", True):
             with patch("provide.foundation.console.output.click") as mock_click:
@@ -46,7 +46,7 @@ class TestGetContext:
                 result = _get_context()
                 assert result is mock_context_obj
 
-    def test_get_context_click_with_invalid_obj(self):
+    def test_get_context_click_with_invalid_obj(self) -> None:
         """Test _get_context when click context has invalid obj."""
         with patch("provide.foundation.console.output._HAS_CLICK", True):
             with patch("provide.foundation.console.output.click") as mock_click:
@@ -61,7 +61,7 @@ class TestGetContext:
 class TestShouldUseJson:
     """Test _should_use_json function."""
 
-    def test_should_use_json_with_context_true(self):
+    def test_should_use_json_with_context_true(self) -> None:
         """Test _should_use_json with context that has json_output=True."""
         mock_ctx = Mock()
         mock_ctx.json_output = True
@@ -69,7 +69,7 @@ class TestShouldUseJson:
         result = _should_use_json(mock_ctx)
         assert result is True
 
-    def test_should_use_json_with_context_false(self):
+    def test_should_use_json_with_context_false(self) -> None:
         """Test _should_use_json with context that has json_output=False."""
         mock_ctx = Mock()
         mock_ctx.json_output = False
@@ -77,12 +77,12 @@ class TestShouldUseJson:
         result = _should_use_json(mock_ctx)
         assert result is False
 
-    def test_should_use_json_no_context(self):
+    def test_should_use_json_no_context(self) -> None:
         """Test _should_use_json with no context."""
         result = _should_use_json(None)
         assert result is False
 
-    def test_should_use_json_auto_get_context(self):
+    def test_should_use_json_auto_get_context(self) -> None:
         """Test _should_use_json automatically gets context when not provided."""
         with patch("provide.foundation.console.output._get_context") as mock_get_ctx:
             mock_ctx = Mock()
@@ -97,7 +97,7 @@ class TestShouldUseJson:
 class TestShouldUseColor:
     """Test _should_use_color function."""
 
-    def test_should_use_color_with_stream_tty(self):
+    def test_should_use_color_with_stream_tty(self) -> None:
         """Test _should_use_color with a stream that is TTY."""
         mock_stream = Mock()
         mock_stream.isatty.return_value = True
@@ -105,7 +105,7 @@ class TestShouldUseColor:
         result = _should_use_color(None, mock_stream)
         assert result is True
 
-    def test_should_use_color_with_stream_not_tty(self):
+    def test_should_use_color_with_stream_not_tty(self) -> None:
         """Test _should_use_color with a stream that is not TTY."""
         mock_stream = Mock()
         mock_stream.isatty.return_value = False
@@ -113,14 +113,14 @@ class TestShouldUseColor:
         result = _should_use_color(None, mock_stream)
         assert result is False
 
-    def test_should_use_color_stream_no_isatty(self):
+    def test_should_use_color_stream_no_isatty(self) -> None:
         """Test _should_use_color with stream that has no isatty method."""
         mock_stream = Mock(spec=[])  # Mock with no isatty method
 
         result = _should_use_color(None, mock_stream)
         assert result is False  # lambda: False should be called
 
-    def test_should_use_color_no_stream_stdout_tty(self):
+    def test_should_use_color_no_stream_stdout_tty(self) -> None:
         """Test _should_use_color with no stream, stdout is TTY."""
         with patch("sys.stdout") as mock_stdout, patch("sys.stderr") as mock_stderr:
             mock_stdout.isatty.return_value = True
@@ -129,7 +129,7 @@ class TestShouldUseColor:
             result = _should_use_color()
             assert result is True
 
-    def test_should_use_color_no_stream_stderr_tty(self):
+    def test_should_use_color_no_stream_stderr_tty(self) -> None:
         """Test _should_use_color with no stream, stderr is TTY."""
         with patch("sys.stdout") as mock_stdout, patch("sys.stderr") as mock_stderr:
             mock_stdout.isatty.return_value = False
@@ -138,7 +138,7 @@ class TestShouldUseColor:
             result = _should_use_color()
             assert result is True
 
-    def test_should_use_color_no_stream_neither_tty(self):
+    def test_should_use_color_no_stream_neither_tty(self) -> None:
         """Test _should_use_color with no stream, neither stdout nor stderr are TTY."""
         with patch("sys.stdout") as mock_stdout, patch("sys.stderr") as mock_stderr:
             mock_stdout.isatty.return_value = False
@@ -151,7 +151,7 @@ class TestShouldUseColor:
 class TestOutputJson:
     """Test _output_json function."""
 
-    def test_output_json_success(self):
+    def test_output_json_success(self) -> None:
         """Test _output_json with successful JSON encoding."""
         with patch("provide.foundation.console.output.click") as mock_click:
             data = {"key": "value"}
@@ -165,7 +165,7 @@ class TestOutputJson:
             assert "value" in args[0]
             assert kwargs["file"] is mock_stream
 
-    def test_output_json_encoding_error_path(self):
+    def test_output_json_encoding_error_path(self) -> None:
         """Test that _output_json has error handling path."""
         with patch("provide.foundation.console.output.click") as mock_click:
             # Test the normal successful path
@@ -188,7 +188,7 @@ class TestOutputJson:
             assert "@with_error_handling" in source
             assert "suppress=(TypeError, ValueError, AttributeError)" in source
 
-    def test_output_json_default_stream(self):
+    def test_output_json_default_stream(self) -> None:
         """Test _output_json with default stdout stream."""
         with patch("provide.foundation.console.output.click") as mock_click:
             data = {"test": True}
@@ -203,7 +203,7 @@ class TestOutputJson:
 class TestPoutFunction:
     """Test pout function."""
 
-    def test_pout_simple_message(self):
+    def test_pout_simple_message(self) -> None:
         """Test pout with simple string message."""
         with patch("provide.foundation.console.output._HAS_CLICK", True):
             with patch("provide.foundation.console.output.click") as mock_click:
@@ -214,7 +214,7 @@ class TestPoutFunction:
 
                     mock_click.echo.assert_called_once_with("Hello world", nl=True)
 
-    def test_pout_json_mode_with_key(self):
+    def test_pout_json_mode_with_key(self) -> None:
         """Test pout in JSON mode with json_key."""
         mock_ctx = Mock()
         mock_ctx.json_output = True
@@ -228,7 +228,7 @@ class TestPoutFunction:
                 {"message": "test message"}, sys.stdout,
             )
 
-    def test_pout_json_mode_no_key(self):
+    def test_pout_json_mode_no_key(self) -> None:
         """Test pout in JSON mode without json_key."""
         mock_ctx = Mock()
         mock_ctx.json_output = True
@@ -240,7 +240,7 @@ class TestPoutFunction:
 
             mock_output_json.assert_called_once_with({"data": "value"}, sys.stdout)
 
-    def test_pout_with_prefix(self):
+    def test_pout_with_prefix(self) -> None:
         """Test pout with prefix option."""
         with patch("provide.foundation.console.output._HAS_CLICK", True):
             with patch("provide.foundation.console.output.click") as mock_click:
@@ -251,7 +251,7 @@ class TestPoutFunction:
 
                     mock_click.echo.assert_called_once_with("INFO: message", nl=True)
 
-    def test_pout_with_colors_and_formatting(self):
+    def test_pout_with_colors_and_formatting(self) -> None:
         """Test pout with color and formatting options."""
         mock_ctx = Mock()
         mock_ctx.json_output = False
@@ -274,7 +274,7 @@ class TestPoutFunction:
                         "colored message", fg="red", bold=True, dim=False, nl=True,
                     )
 
-    def test_pout_no_color_support(self):
+    def test_pout_no_color_support(self) -> None:
         """Test pout when colors are not supported."""
         mock_ctx = Mock()
         mock_ctx.json_output = False
@@ -289,7 +289,7 @@ class TestPoutFunction:
 
                     mock_click.echo.assert_called_once_with("message", nl=True)
 
-    def test_pout_no_click_fallback(self):
+    def test_pout_no_click_fallback(self) -> None:
         """Test pout fallback when click is not available."""
         with patch("provide.foundation.console.output._HAS_CLICK", False):
             with patch("builtins.print") as mock_print:
@@ -297,7 +297,7 @@ class TestPoutFunction:
 
                 mock_print.assert_called_once_with("fallback message", file=sys.stdout)
 
-    def test_pout_no_click_fallback_no_newline(self):
+    def test_pout_no_click_fallback_no_newline(self) -> None:
         """Test pout fallback without newline when click is not available."""
         with patch("provide.foundation.console.output._HAS_CLICK", False):
             with patch("builtins.print") as mock_print:
@@ -307,7 +307,7 @@ class TestPoutFunction:
                     "no newline", file=sys.stdout, end="",
                 )
 
-    def test_pout_newline_aliases(self):
+    def test_pout_newline_aliases(self) -> None:
         """Test pout handles both nl and newline parameters."""
         with patch("provide.foundation.console.output._HAS_CLICK", True):
             with patch("provide.foundation.console.output.click") as mock_click:
@@ -327,7 +327,7 @@ class TestPoutFunction:
 class TestPerrFunction:
     """Test perr function."""
 
-    def test_perr_simple_message(self):
+    def test_perr_simple_message(self) -> None:
         """Test perr with simple string message."""
         with patch("provide.foundation.console.output._HAS_CLICK", True):
             with patch("provide.foundation.console.output.click") as mock_click:
@@ -340,7 +340,7 @@ class TestPerrFunction:
                         "Error message", err=True, nl=True,
                     )
 
-    def test_perr_json_mode_with_key(self):
+    def test_perr_json_mode_with_key(self) -> None:
         """Test perr in JSON mode with json_key."""
         mock_ctx = Mock()
         mock_ctx.json_output = True
@@ -354,7 +354,7 @@ class TestPerrFunction:
                 {"error": "error occurred"}, sys.stderr,
             )
 
-    def test_perr_json_mode_no_key(self):
+    def test_perr_json_mode_no_key(self) -> None:
         """Test perr in JSON mode without json_key."""
         mock_ctx = Mock()
         mock_ctx.json_output = True
@@ -366,7 +366,7 @@ class TestPerrFunction:
 
             mock_output_json.assert_called_once_with({"error": "details"}, sys.stderr)
 
-    def test_perr_with_colors_and_formatting(self):
+    def test_perr_with_colors_and_formatting(self) -> None:
         """Test perr with color and formatting options."""
         mock_ctx = Mock()
         mock_ctx.json_output = False
@@ -388,7 +388,7 @@ class TestPerrFunction:
                         nl=True,
                     )
 
-    def test_perr_no_click_fallback(self):
+    def test_perr_no_click_fallback(self) -> None:
         """Test perr fallback when click is not available."""
         with patch("provide.foundation.console.output._HAS_CLICK", False):
             with patch("builtins.print") as mock_print:
@@ -396,7 +396,7 @@ class TestPerrFunction:
 
                 mock_print.assert_called_once_with("error fallback", file=sys.stderr)
 
-    def test_perr_no_click_fallback_no_newline(self):
+    def test_perr_no_click_fallback_no_newline(self) -> None:
         """Test perr fallback without newline when click is not available."""
         with patch("provide.foundation.console.output._HAS_CLICK", False):
             with patch("builtins.print") as mock_print:
@@ -410,7 +410,7 @@ class TestPerrFunction:
 class TestEdgeCases:
     """Test edge cases and error conditions."""
 
-    def test_click_import_error_handling(self):
+    def test_click_import_error_handling(self) -> None:
         """Test that the module handles click import errors gracefully."""
         # This tests the import error handling at lines 15-17
         with patch("provide.foundation.console.output._HAS_CLICK", False):
@@ -424,7 +424,7 @@ class TestEdgeCases:
                     pout("test message")
                     mock_print.assert_called_once()
 
-    def test_json_encoding_successful_path(self):
+    def test_json_encoding_successful_path(self) -> None:
         """Test successful JSON encoding and verify error handling exists."""
         with patch("provide.foundation.console.output.click") as mock_click:
             # Test normal case works
@@ -442,7 +442,7 @@ class TestEdgeCases:
             assert "@with_error_handling" in source
             assert "suppress=(TypeError, ValueError, AttributeError)" in source
 
-    def test_context_auto_retrieval_in_functions(self):
+    def test_context_auto_retrieval_in_functions(self) -> None:
         """Test that pout and perr retrieve context automatically."""
         mock_ctx = Mock()
         mock_ctx.json_output = False
@@ -458,7 +458,7 @@ class TestEdgeCases:
                 mock_get_ctx.assert_called()
                 mock_click.echo.assert_called_once()
 
-    def test_multiple_formatting_options(self):
+    def test_multiple_formatting_options(self) -> None:
         """Test multiple formatting options together."""
         mock_ctx = Mock()
         mock_ctx.json_output = False

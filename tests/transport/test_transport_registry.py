@@ -20,7 +20,7 @@ from provide.foundation.transport.types import TransportType
 class MockTransport(Transport):
     """Mock transport implementation for testing."""
 
-    def __init__(self, uri: str | None = None):
+    def __init__(self, uri: str | None = None) -> None:
         self.uri = uri
 
     async def send(self, data: bytes, **kwargs) -> bytes:
@@ -481,7 +481,7 @@ class TestIntegration:
         mock_registry = Mock()
         mock_registry.__iter__ = lambda self: iter(mock_registry_data)
 
-        def mock_register(name, value, dimension, metadata, replace):
+        def mock_register(name, value, dimension, metadata, replace) -> None:
             entry = Mock()
             entry.name = name
             entry.value = value
@@ -536,7 +536,7 @@ class TestIntegration:
         mock_registry = Mock()
         mock_registry.__iter__ = lambda self: iter(mock_registry_data)
 
-        def mock_register(name, value, dimension, metadata, replace):
+        def mock_register(name, value, dimension, metadata, replace) -> None:
             entry = Mock()
             entry.name = name
             entry.value = value

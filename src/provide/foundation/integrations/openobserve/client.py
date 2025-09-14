@@ -247,7 +247,7 @@ class OpenObserveClient:
         streams = []
         if isinstance(response, dict):
             # Response is a dict of stream types to stream lists
-            for stream_type, stream_list in response.items():
+            for _stream_type, stream_list in response.items():
                 if isinstance(stream_list, list):
                     for stream_data in stream_list:
                         if isinstance(stream_data, dict):

@@ -5,7 +5,7 @@
 class TestLoggerConfigImports:
     """Test logger config module import functionality."""
 
-    def test_logging_config_import(self):
+    def test_logging_config_import(self) -> None:
         """Test LoggingConfig can be imported from config module."""
         from provide.foundation.logger.config import LoggingConfig
 
@@ -13,7 +13,7 @@ class TestLoggerConfigImports:
         assert LoggingConfig is not None
         assert hasattr(LoggingConfig, "__name__")
 
-    def test_telemetry_config_import(self):
+    def test_telemetry_config_import(self) -> None:
         """Test TelemetryConfig can be imported from config module."""
         from provide.foundation.logger.config import TelemetryConfig
 
@@ -21,7 +21,7 @@ class TestLoggerConfigImports:
         assert TelemetryConfig is not None
         assert hasattr(TelemetryConfig, "__name__")
 
-    def test_both_classes_importable_together(self):
+    def test_both_classes_importable_together(self) -> None:
         """Test both config classes can be imported in single statement."""
         from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
 
@@ -32,7 +32,7 @@ class TestLoggerConfigImports:
         # Verify they're different classes
         assert LoggingConfig is not TelemetryConfig
 
-    def test_star_import_works(self):
+    def test_star_import_works(self) -> None:
         """Test star import functionality."""
         # This tests the __all__ export functionality
         exec("from provide.foundation.logger.config import *")

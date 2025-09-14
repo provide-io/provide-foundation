@@ -13,12 +13,12 @@ from provide.foundation.utils.streams import (
 class TestStreamsCoverage:
     """Test stream utilities for improved coverage."""
 
-    def test_get_safe_stderr_normal_case(self):
+    def test_get_safe_stderr_normal_case(self) -> None:
         """Test get_safe_stderr returns sys.stderr normally."""
         stream = get_safe_stderr()
         assert stream is sys.stderr
 
-    def test_get_safe_stderr_fallback_when_stderr_none(self):
+    def test_get_safe_stderr_fallback_when_stderr_none(self) -> None:
         """Test get_safe_stderr fallback when sys.stderr is None."""
         original_stderr = sys.stderr
         try:
@@ -28,12 +28,12 @@ class TestStreamsCoverage:
         finally:
             sys.stderr = original_stderr
 
-    def test_get_safe_stderr_fallback_when_hasattr_false(self):
+    def test_get_safe_stderr_fallback_when_hasattr_false(self) -> None:
         """Test get_safe_stderr fallback when hasattr returns False."""
         # Mock hasattr to return False for 'stderr' attribute
         with patch("builtins.hasattr") as mock_hasattr:
 
-            def hasattr_side_effect(obj, attr):
+            def hasattr_side_effect(obj, attr) -> bool:
                 if obj is sys and attr == "stderr":
                     return False
                 return True  # Return True for other calls
@@ -42,17 +42,17 @@ class TestStreamsCoverage:
             stream = get_safe_stderr()
             assert isinstance(stream, io.StringIO)
 
-    def test_get_foundation_log_stream_stdout(self):
+    def test_get_foundation_log_stream_stdout(self) -> None:
         """Test get_foundation_log_stream with stdout setting."""
         stream = get_foundation_log_stream("stdout")
         assert stream is sys.stdout
 
-    def test_get_foundation_log_stream_stderr(self):
+    def test_get_foundation_log_stream_stderr(self) -> None:
         """Test get_foundation_log_stream with stderr setting."""
         stream = get_foundation_log_stream("stderr")
         assert stream is sys.stderr
 
-    def test_get_foundation_log_stream_main_success(self):
+    def test_get_foundation_log_stream_main_success(self) -> None:
         """Test get_foundation_log_stream with main setting - success case."""
         mock_stream = Mock()
 
@@ -65,7 +65,7 @@ class TestStreamsCoverage:
             assert stream is mock_stream
             mock_module.get_log_stream.assert_called_once()
 
-    def test_get_foundation_log_stream_main_import_error(self):
+    def test_get_foundation_log_stream_main_import_error(self) -> None:
         """Test get_foundation_log_stream with main setting - ImportError fallback."""
         # Force ImportError by removing the module from sys.modules if it exists
         original_modules = sys.modules.copy()
@@ -83,7 +83,7 @@ class TestStreamsCoverage:
             sys.modules.clear()
             sys.modules.update(original_modules)
 
-    def test_get_foundation_log_stream_invalid_value_with_logger(self):
+    def test_get_foundation_log_stream_invalid_value_with_logger(self) -> None:
         """Test get_foundation_log_stream with invalid value and logger available."""
         mock_logger = Mock()
 
@@ -106,7 +106,7 @@ class TestStreamsCoverage:
             assert call_args[1]["valid_options"] == ["stderr", "stdout", "main"]
             assert call_args[1]["default_used"] == "stderr"
 
-    def test_get_foundation_log_stream_invalid_value_no_logger(self):
+    def test_get_foundation_log_stream_invalid_value_no_logger(self) -> None:
         """Test get_foundation_log_stream with invalid value and no logger available."""
         # Remove the config module to simulate ImportError
         original_modules = sys.modules.copy()
@@ -123,7 +123,7 @@ class TestStreamsCoverage:
             sys.modules.clear()
             sys.modules.update(original_modules)
 
-    def test_get_foundation_log_stream_all_valid_options(self):
+    def test_get_foundation_log_stream_all_valid_options(self) -> None:
         """Test get_foundation_log_stream with all valid options."""
         # Test stderr
         assert get_foundation_log_stream("stderr") is sys.stderr
@@ -138,7 +138,7 @@ class TestStreamsCoverage:
             mock_module.get_log_stream = Mock(return_value=mock_stream)
             assert get_foundation_log_stream("main") is mock_stream
 
-    def test_get_foundation_log_stream_main_with_import_error_path(self):
+    def test_get_foundation_log_stream_main_with_import_error_path(self) -> None:
         """Test get_foundation_log_stream main path specifically hitting ImportError handling."""
         # Ensure the module is not in sys.modules to force ImportError
         original_modules = sys.modules.copy()
@@ -156,7 +156,7 @@ class TestStreamsCoverage:
             sys.modules.clear()
             sys.modules.update(original_modules)
 
-    def test_get_safe_stderr_edge_cases(self):
+    def test_get_safe_stderr_edge_cases(self) -> None:
         """Test get_safe_stderr edge cases."""
         # Test when sys.stderr exists but is explicitly None
         original_stderr = getattr(sys, "stderr", None)
@@ -167,7 +167,7 @@ class TestStreamsCoverage:
         finally:
             sys.stderr = original_stderr
 
-    def test_function_return_types(self):
+    def test_function_return_types(self) -> None:
         """Test that functions return the expected types."""
         stderr_stream = get_safe_stderr()
         assert hasattr(stderr_stream, "write")

@@ -22,7 +22,7 @@ from provide.foundation.tracer import (
 setup_telemetry()
 
 
-def simulate_database_query(query: str, params: dict[str, Any] = None) -> dict[str, Any]:
+def simulate_database_query(query: str, params: dict[str, Any] | None = None) -> dict[str, Any]:
     """Simulate a database query with tracing."""
     with with_span("database_query") as span:
         span.set_tag("query_type", query.split()[0].upper())
@@ -203,7 +203,7 @@ def process_user_registration(user_data: dict[str, Any]) -> dict[str, Any]:
             raise
 
 
-async def async_user_operations():
+async def async_user_operations() -> None:
     """Example of tracing async operations."""
     logger.info("Starting async user operations example")
 
@@ -252,7 +252,7 @@ async def async_user_operations():
                    trace_id=trace_ctx["trace_id"])
 
 
-def trace_analysis_example():
+def trace_analysis_example() -> None:
     """Example showing how to analyze trace data."""
     logger.info("=== Trace Analysis Example ===")
 
@@ -287,7 +287,7 @@ def trace_analysis_example():
                    min_duration_ms=round(min_duration, 2))
 
 
-def main():
+def main() -> None:
     """Main demonstration of tracing capabilities."""
     logger.info("🔍 Starting Foundation Tracing Demo")
 

@@ -22,7 +22,7 @@ class QueuedRateLimiter:
         max_queue_size: int = 1000,
         max_memory_mb: float | None = None,
         overflow_policy: Literal["drop_oldest", "drop_newest", "block"] = "drop_oldest",
-    ):
+    ) -> None:
         """Initialize the queued rate limiter.
 
         Args:
@@ -128,7 +128,7 @@ class QueuedRateLimiter:
 
             return True, None
 
-    def _process_queue(self):
+    def _process_queue(self) -> None:
         """Worker thread that processes queued items."""
         while self.running:
             with self.queue_lock:
@@ -150,7 +150,7 @@ class QueuedRateLimiter:
             # Sleep briefly to avoid busy waiting
             time.sleep(0.01)
 
-    def _process_item(self, item: Any):
+    def _process_item(self, item: Any) -> None:
         """Process a single item from the queue."""
         # This would be overridden to actually emit the log
 
@@ -189,7 +189,7 @@ class BufferedRateLimiter:
         refill_rate: float,
         buffer_size: int = 100,
         track_dropped: bool = True,
-    ):
+    ) -> None:
         """Initialize buffered rate limiter.
 
         Args:

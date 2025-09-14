@@ -21,7 +21,7 @@ class RateLimiterProcessor:
         emit_warning_on_limit: bool = True,
         warning_interval_seconds: float = 60.0,
         summary_interval_seconds: float = 5.0,
-    ):
+    ) -> None:
         """Initialize the rate limiter processor.
 
         Args:
@@ -101,7 +101,7 @@ class RateLimiterProcessor:
 
         return event_dict
 
-    def _emit_summary(self):
+    def _emit_summary(self) -> None:
         """Emit a summary of rate-limited messages."""
         # Get current stats first to check if any rate limiting has occurred
         stats = self.rate_limiter.get_stats()
@@ -124,10 +124,7 @@ class RateLimiterProcessor:
             # Calculate rate limiting percentage
             total_allowed = global_stats.get("total_allowed", 0)
             total_attempts = total_allowed + total_denied
-            if total_attempts > 0:
-                denial_rate = (total_denied / total_attempts) * 100
-            else:
-                denial_rate = 0
+            denial_rate = total_denied / total_attempts * 100 if total_attempts > 0 else 0
 
             # Format the summary message
             summary_logger.warning(

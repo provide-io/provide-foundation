@@ -194,7 +194,7 @@ async def test_is_ca_extension_not_found() -> None:
 
 
 @pytest.mark.asyncio
-async def test_is_ca_extension_not_found_logs_debug(mocker):
+async def test_is_ca_extension_not_found_logs_debug(mocker) -> None:
     """Test is_ca property logs debug when BasicConstraints extension is not found."""
     # Create a Certificate instance (it will generate a real cert initially)
     cert_instance = Certificate(generate_keypair=True)

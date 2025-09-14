@@ -14,7 +14,7 @@ from provide.foundation.transport.middleware import MetricsMiddleware
 
 
 @pytest.mark.asyncio
-async def test_universal_client_get(httpx_mock: HTTPXMock):
+async def test_universal_client_get(httpx_mock: HTTPXMock) -> None:
     """Test UniversalClient GET request."""
     httpx_mock.add_response(
         method="GET",
@@ -31,7 +31,7 @@ async def test_universal_client_get(httpx_mock: HTTPXMock):
 
 
 @pytest.mark.asyncio
-async def test_universal_client_post(httpx_mock: HTTPXMock):
+async def test_universal_client_post(httpx_mock: HTTPXMock) -> None:
     """Test UniversalClient POST request."""
     httpx_mock.add_response(
         method="POST",
@@ -53,7 +53,7 @@ async def test_universal_client_post(httpx_mock: HTTPXMock):
 
 
 @pytest.mark.asyncio
-async def test_universal_client_all_methods(httpx_mock: HTTPXMock):
+async def test_universal_client_all_methods(httpx_mock: HTTPXMock) -> None:
     """Test all HTTP methods through UniversalClient."""
     # Mock responses for all methods
     for method in ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"]:
@@ -88,7 +88,7 @@ async def test_universal_client_all_methods(httpx_mock: HTTPXMock):
 
 
 @pytest.mark.asyncio
-async def test_universal_client_with_headers(httpx_mock: HTTPXMock):
+async def test_universal_client_with_headers(httpx_mock: HTTPXMock) -> None:
     """Test client with default and request headers."""
     httpx_mock.add_response(
         method="GET",
@@ -112,7 +112,7 @@ async def test_universal_client_with_headers(httpx_mock: HTTPXMock):
 
 
 @pytest.mark.asyncio
-async def test_universal_client_middleware():
+async def test_universal_client_middleware() -> None:
     """Test client with custom middleware."""
     client = UniversalClient()
 
@@ -151,7 +151,7 @@ async def test_universal_client_middleware():
 
 
 @pytest.mark.asyncio
-async def test_convenience_functions(httpx_mock: HTTPXMock):
+async def test_convenience_functions(httpx_mock: HTTPXMock) -> None:
     """Test module-level convenience functions."""
     httpx_mock.add_response(
         method="GET",
@@ -182,7 +182,7 @@ async def test_convenience_functions(httpx_mock: HTTPXMock):
 
 
 @pytest.mark.asyncio
-async def test_universal_client_streaming(httpx_mock: HTTPXMock):
+async def test_universal_client_streaming(httpx_mock: HTTPXMock) -> None:
     """Test client streaming functionality."""
     content = b"line1\nline2\nline3\n"
 
@@ -203,7 +203,7 @@ async def test_universal_client_streaming(httpx_mock: HTTPXMock):
     assert b"".join(chunks) == content
 
 
-def test_default_client_singleton():
+def test_default_client_singleton() -> None:
     """Test that default client is a singleton."""
     client1 = get_default_client()
     client2 = get_default_client()
@@ -212,7 +212,7 @@ def test_default_client_singleton():
 
 
 @pytest.mark.asyncio
-async def test_universal_client_timeout(httpx_mock: HTTPXMock):
+async def test_universal_client_timeout(httpx_mock: HTTPXMock) -> None:
     """Test client with custom timeout."""
     httpx_mock.add_response(
         method="GET",
@@ -230,7 +230,7 @@ async def test_universal_client_timeout(httpx_mock: HTTPXMock):
 
 
 @pytest.mark.asyncio
-async def test_universal_client_connection_pooling(httpx_mock: HTTPXMock):
+async def test_universal_client_connection_pooling(httpx_mock: HTTPXMock) -> None:
     """Test that client reuses connections for same scheme."""
     client = UniversalClient()
 
@@ -263,7 +263,7 @@ async def test_universal_client_connection_pooling(httpx_mock: HTTPXMock):
 
 @pytest.mark.asyncio
 @pytest.mark.httpx_mock(assert_all_requests_were_expected=False)
-async def test_universal_client_error_handling(httpx_mock: HTTPXMock):
+async def test_universal_client_error_handling(httpx_mock: HTTPXMock) -> None:
     """Test client error handling through middleware."""
     from provide.foundation.transport.errors import TransportTimeoutError
 

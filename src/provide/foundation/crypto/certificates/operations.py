@@ -91,9 +91,9 @@ def create_x509_certificate(
                 x509.KeyUsage(
                     digital_signature=True,
                     key_encipherment=(
-                        True if not is_client_cert and isinstance(base.public_key, rsa.RSAPublicKey) else False
+                        bool(not is_client_cert and isinstance(base.public_key, rsa.RSAPublicKey))
                     ),
-                    key_agreement=(True if isinstance(base.public_key, ec.EllipticCurvePublicKey) else False),
+                    key_agreement=(bool(isinstance(base.public_key, ec.EllipticCurvePublicKey))),
                     content_commitment=False,
                     data_encipherment=False,
                     key_cert_sign=False,

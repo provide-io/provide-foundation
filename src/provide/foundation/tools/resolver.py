@@ -141,11 +141,7 @@ class VersionResolver:
         ]
 
         version_lower = version.lower()
-        for pattern in prerelease_patterns:
-            if re.search(pattern, version_lower):
-                return True
-
-        return False
+        return any(re.search(pattern, version_lower) for pattern in prerelease_patterns)
 
     def resolve_tilde(self, base: str, available: list[str]) -> str | None:
         """Resolve tilde range (~1.2.3 means >=1.2.3 <1.3.0).
@@ -169,14 +165,13 @@ class VersionResolver:
             matches = []
             for v in available:
                 v_parts = self.parse_version(v)
-                if len(v_parts) >= 2:
-                    if v_parts[0] == major and v_parts[1] == minor:
-                        if len(parts) >= 3:
-                            # If patch specified, must be >= base patch
-                            if len(v_parts) >= 3 and v_parts[2] >= parts[2]:
-                                matches.append(v)
-                        else:
+                if len(v_parts) >= 2 and v_parts[0] == major and v_parts[1] == minor:
+                    if len(parts) >= 3:
+                        # If patch specified, must be >= base patch
+                        if len(v_parts) >= 3 and v_parts[2] >= parts[2]:
                             matches.append(v)
+                    else:
+                        matches.append(v)
 
             if matches:
                 return self.sort_versions(matches)[-1]

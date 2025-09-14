@@ -6,7 +6,7 @@ import importlib
 class TestLoggerConfigReExports:
     """Test logger/config.py re-exports functionality."""
 
-    def test_logging_config_import(self):
+    def test_logging_config_import(self) -> None:
         """Test LoggingConfig can be imported from logger.config."""
         from provide.foundation.logger.config import LoggingConfig
 
@@ -18,7 +18,7 @@ class TestLoggerConfigReExports:
 
         assert LoggingConfig is OriginalLoggingConfig
 
-    def test_telemetry_config_import(self):
+    def test_telemetry_config_import(self) -> None:
         """Test TelemetryConfig can be imported from logger.config."""
         from provide.foundation.logger.config import TelemetryConfig
 
@@ -30,7 +30,7 @@ class TestLoggerConfigReExports:
 
         assert TelemetryConfig is OriginalTelemetryConfig
 
-    def test_all_exports_defined(self):
+    def test_all_exports_defined(self) -> None:
         """Test that __all__ exports are properly defined."""
         config_module = importlib.import_module("provide.foundation.logger.config")
 
@@ -39,7 +39,7 @@ class TestLoggerConfigReExports:
         assert hasattr(config_module, "__all__")
         assert config_module.__all__ == expected_exports
 
-    def test_all_exports_accessible(self):
+    def test_all_exports_accessible(self) -> None:
         """Test that all items in __all__ are actually accessible."""
         config_module = importlib.import_module("provide.foundation.logger.config")
 
@@ -48,7 +48,7 @@ class TestLoggerConfigReExports:
             export_item = getattr(config_module, export_name)
             assert export_item is not None
 
-    def test_module_docstring(self):
+    def test_module_docstring(self) -> None:
         """Test that module has proper docstring."""
         config_module = importlib.import_module("provide.foundation.logger.config")
 
@@ -56,7 +56,7 @@ class TestLoggerConfigReExports:
         assert "Foundation Logger Configuration Module" in config_module.__doc__
         assert "Re-exports" in config_module.__doc__
 
-    def test_direct_import_consistency(self):
+    def test_direct_import_consistency(self) -> None:
         """Test that direct imports and re-exports are consistent."""
         # Import via re-export
         from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
@@ -73,7 +73,7 @@ class TestLoggerConfigReExports:
         assert LoggingConfig is DirectLoggingConfig
         assert TelemetryConfig is DirectTelemetryConfig
 
-    def test_star_import_functionality(self):
+    def test_star_import_functionality(self) -> None:
         """Test that star imports work correctly."""
         # This simulates: from provide.foundation.logger.config import *
         config_module = importlib.import_module("provide.foundation.logger.config")
@@ -87,7 +87,7 @@ class TestLoggerConfigReExports:
         assert "TelemetryConfig" in star_imports
         assert len(star_imports) == 2
 
-    def test_re_export_module_attributes(self):
+    def test_re_export_module_attributes(self) -> None:
         """Test that re-exported classes maintain their module attributes."""
         from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
 
@@ -97,7 +97,7 @@ class TestLoggerConfigReExports:
             TelemetryConfig.__module__ == "provide.foundation.logger.config.telemetry"
         )
 
-    def test_no_additional_exports(self):
+    def test_no_additional_exports(self) -> None:
         """Test that __all__ items are properly exported."""
         config_module = importlib.import_module("provide.foundation.logger.config")
 
@@ -118,7 +118,7 @@ class TestLoggerConfigReExports:
 class TestConfigModuleIntegration:
     """Test integration aspects of the config re-export module."""
 
-    def test_config_classes_are_functional(self):
+    def test_config_classes_are_functional(self) -> None:
         """Test that re-exported config classes are functional."""
         from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
 
@@ -130,7 +130,7 @@ class TestConfigModuleIntegration:
         telemetry_config = TelemetryConfig()
         assert hasattr(telemetry_config, "service_name")
 
-    def test_backwards_compatibility(self):
+    def test_backwards_compatibility(self) -> None:
         """Test that the re-export module maintains backwards compatibility."""
         # These imports should work for backwards compatibility
         from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
@@ -142,7 +142,7 @@ class TestConfigModuleIntegration:
         assert logging_config.default_level == "INFO"
         assert telemetry_config.service_name == "test-service"
 
-    def test_import_error_handling(self):
+    def test_import_error_handling(self) -> None:
         """Test behavior when underlying modules have issues."""
         # This is more of a structural test to ensure the imports work
         # In a real scenario, if the underlying modules fail, this should too

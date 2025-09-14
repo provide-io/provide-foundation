@@ -11,7 +11,7 @@ log = get_logger(__name__)
 class SimpleCounter:
     """Counter metric that increments monotonically."""
 
-    def __init__(self, name: str, otel_counter: Any | None = None):
+    def __init__(self, name: str, otel_counter: Any | None = None) -> None:
         self.name = name
         self._otel_counter = otel_counter
         self._value = 0
@@ -48,7 +48,7 @@ class SimpleCounter:
 class SimpleGauge:
     """Gauge metric that can go up or down."""
 
-    def __init__(self, name: str, otel_gauge: Any | None = None):
+    def __init__(self, name: str, otel_gauge: Any | None = None) -> None:
         self.name = name
         self._otel_gauge = otel_gauge
         self._value = 0
@@ -122,7 +122,7 @@ class SimpleGauge:
 class SimpleHistogram:
     """Histogram metric for recording distributions of values."""
 
-    def __init__(self, name: str, otel_histogram: Any | None = None):
+    def __init__(self, name: str, otel_histogram: Any | None = None) -> None:
         self.name = name
         self._otel_histogram = otel_histogram
         self._observations: list[float] = []

@@ -168,10 +168,7 @@ class RuntimeConfig(BaseConfig):
                 field_prefix = attr.metadata.get("env_prefix", prefix)
                 field_name = attr.name.upper() if not case_sensitive else attr.name
 
-                if field_prefix:
-                    env_var = f"{field_prefix}{delimiter}{field_name}"
-                else:
-                    env_var = field_name
+                env_var = f"{field_prefix}{delimiter}{field_name}" if field_prefix else field_name
 
             # Get value from environment
             raw_value = os.environ.get(env_var)
@@ -244,10 +241,7 @@ class RuntimeConfig(BaseConfig):
                 field_prefix = attr.metadata.get("env_prefix", prefix)
                 field_name = attr.name.upper() if not case_sensitive else attr.name
 
-                if field_prefix:
-                    env_var = f"{field_prefix}{delimiter}{field_name}"
-                else:
-                    env_var = field_name
+                env_var = f"{field_prefix}{delimiter}{field_name}" if field_prefix else field_name
 
             # Get value from environment
             raw_value = os.environ.get(env_var)
@@ -335,10 +329,7 @@ class RuntimeConfig(BaseConfig):
                 field_prefix = attr.metadata.get("env_prefix", prefix)
                 field_name = attr.name.upper()
 
-                if field_prefix:
-                    env_var = f"{field_prefix}{delimiter}{field_name}"
-                else:
-                    env_var = field_name
+                env_var = f"{field_prefix}{delimiter}{field_name}" if field_prefix else field_name
 
             # Convert value to string
             if isinstance(value, bool):

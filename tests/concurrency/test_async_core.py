@@ -2,6 +2,7 @@
 
 import asyncio
 import time
+from typing import Never
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -19,7 +20,7 @@ class TestAsyncSleep:
     """Test async_sleep function."""
 
     @pytest.mark.asyncio
-    async def test_async_sleep_actually_sleeps(self):
+    async def test_async_sleep_actually_sleeps(self) -> None:
         """Test async_sleep actually sleeps for the specified duration."""
         start = time.time()
         await async_sleep(0.1)
@@ -30,7 +31,7 @@ class TestAsyncSleep:
         assert 0.05 <= elapsed <= 0.2
 
     @pytest.mark.asyncio
-    async def test_async_sleep_zero(self):
+    async def test_async_sleep_zero(self) -> None:
         """Test async_sleep with zero duration."""
         start = time.time()
         await async_sleep(0.0)
@@ -41,21 +42,21 @@ class TestAsyncSleep:
         assert elapsed < 0.01
 
     @pytest.mark.asyncio
-    async def test_async_sleep_negative_raises_error(self):
+    async def test_async_sleep_negative_raises_error(self) -> None:
         """Test async_sleep raises error for negative duration."""
         with pytest.raises(ValidationError, match="Sleep delay must be non-negative"):
             await async_sleep(-1.0)
 
     @pytest.mark.asyncio
     @patch("provide.foundation.concurrency.core.asyncio")
-    async def test_async_sleep_uses_asyncio_module(self, mock_asyncio):
+    async def test_async_sleep_uses_asyncio_module(self, mock_asyncio) -> None:
         """Test async_sleep calls asyncio.sleep()."""
         mock_asyncio.sleep = AsyncMock()
         await async_sleep(0.5)
         mock_asyncio.sleep.assert_called_once_with(0.5)
 
     @pytest.mark.asyncio
-    async def test_async_sleep_with_float_seconds(self):
+    async def test_async_sleep_with_float_seconds(self) -> None:
         """Test async_sleep works with float values."""
         start = time.time()
         await async_sleep(0.05)
@@ -65,10 +66,10 @@ class TestAsyncSleep:
         assert 0.04 <= elapsed <= 0.1
 
     @pytest.mark.asyncio
-    async def test_async_sleep_cancellation(self):
+    async def test_async_sleep_cancellation(self) -> None:
         """Test async_sleep can be cancelled."""
 
-        async def cancel_sleep():
+        async def cancel_sleep() -> str:
             task = asyncio.create_task(async_sleep(1.0))
             await asyncio.sleep(0.01)  # Let it start
             task.cancel()
@@ -86,7 +87,7 @@ class TestAsyncGather:
     """Test async_gather function."""
 
     @pytest.mark.asyncio
-    async def test_async_gather_basic_multiple_tasks(self):
+    async def test_async_gather_basic_multiple_tasks(self) -> None:
         """Test async_gather with multiple async tasks."""
 
         async def multiply(n, factor):
@@ -98,7 +99,7 @@ class TestAsyncGather:
         assert results == [6, 20, 42]
 
     @pytest.mark.asyncio
-    async def test_async_gather_preserves_order(self):
+    async def test_async_gather_preserves_order(self) -> None:
         """Test async_gather preserves order of results."""
 
         async def delayed_return(value, delay):
@@ -115,10 +116,10 @@ class TestAsyncGather:
         assert results == ["first", "second", "third"]
 
     @pytest.mark.asyncio
-    async def test_async_gather_single_task(self):
+    async def test_async_gather_single_task(self) -> None:
         """Test async_gather with single task."""
 
-        async def single_task():
+        async def single_task() -> str:
             await async_sleep(0.01)
             return "done"
 
@@ -126,7 +127,7 @@ class TestAsyncGather:
         assert results == ["done"]
 
     @pytest.mark.asyncio
-    async def test_async_gather_no_tasks_raises_error(self):
+    async def test_async_gather_no_tasks_raises_error(self) -> None:
         """Test async_gather raises error when no awaitables provided."""
         with pytest.raises(
             ValidationError, match="At least one awaitable must be provided",
@@ -134,26 +135,26 @@ class TestAsyncGather:
             await async_gather()
 
     @pytest.mark.asyncio
-    async def test_async_gather_with_exception_default(self):
+    async def test_async_gather_with_exception_default(self) -> None:
         """Test async_gather propagates exceptions by default."""
 
-        async def success_task():
+        async def success_task() -> str:
             return "success"
 
-        async def failing_task():
+        async def failing_task() -> Never:
             raise RuntimeError("Test error")
 
         with pytest.raises(RuntimeError, match="Test error"):
             await async_gather(success_task(), failing_task())
 
     @pytest.mark.asyncio
-    async def test_async_gather_with_return_exceptions_true(self):
+    async def test_async_gather_with_return_exceptions_true(self) -> None:
         """Test async_gather returns exceptions when return_exceptions=True."""
 
-        async def success_task():
+        async def success_task() -> str:
             return "success"
 
-        async def failing_task():
+        async def failing_task() -> Never:
             raise RuntimeError("Test error")
 
         results = await async_gather(
@@ -166,13 +167,13 @@ class TestAsyncGather:
         assert str(results[1]) == "Test error"
 
     @pytest.mark.asyncio
-    async def test_async_gather_different_return_types(self):
+    async def test_async_gather_different_return_types(self) -> None:
         """Test async_gather with different return types."""
 
-        async def return_int():
+        async def return_int() -> int:
             return 42
 
-        async def return_str():
+        async def return_str() -> str:
             return "hello"
 
         async def return_list():
@@ -189,7 +190,7 @@ class TestAsyncGather:
 
     @pytest.mark.asyncio
     @patch("provide.foundation.concurrency.core.asyncio")
-    async def test_async_gather_uses_asyncio_module(self, mock_asyncio):
+    async def test_async_gather_uses_asyncio_module(self, mock_asyncio) -> None:
         """Test async_gather calls asyncio.gather()."""
         mock_coro1 = AsyncMock(return_value="result1")
         mock_coro2 = AsyncMock(return_value="result2")
@@ -207,10 +208,10 @@ class TestAsyncWaitFor:
     """Test async_wait_for function."""
 
     @pytest.mark.asyncio
-    async def test_async_wait_for_completes_within_timeout(self):
+    async def test_async_wait_for_completes_within_timeout(self) -> None:
         """Test async_wait_for completes when task finishes within timeout."""
 
-        async def quick_task():
+        async def quick_task() -> str:
             await async_sleep(0.01)
             return "completed"
 
@@ -218,10 +219,10 @@ class TestAsyncWaitFor:
         assert result == "completed"
 
     @pytest.mark.asyncio
-    async def test_async_wait_for_raises_timeout_error(self):
+    async def test_async_wait_for_raises_timeout_error(self) -> None:
         """Test async_wait_for raises TimeoutError when timeout exceeded."""
 
-        async def slow_task():
+        async def slow_task() -> str:
             await async_sleep(0.2)
             return "too slow"
 
@@ -229,10 +230,10 @@ class TestAsyncWaitFor:
             await async_wait_for(slow_task(), timeout=0.05)
 
     @pytest.mark.asyncio
-    async def test_async_wait_for_no_timeout(self):
+    async def test_async_wait_for_no_timeout(self) -> None:
         """Test async_wait_for works with no timeout."""
 
-        async def task():
+        async def task() -> str:
             await async_sleep(0.01)
             return "no timeout"
 
@@ -240,10 +241,10 @@ class TestAsyncWaitFor:
         assert result == "no timeout"
 
     @pytest.mark.asyncio
-    async def test_async_wait_for_negative_timeout_raises_error(self):
+    async def test_async_wait_for_negative_timeout_raises_error(self) -> None:
         """Test async_wait_for raises error for negative timeout."""
 
-        async def task():
+        async def task() -> str:
             return "test"
 
         # Create coroutine but properly handle it to avoid warning
@@ -257,10 +258,10 @@ class TestAsyncWaitFor:
                 coro.close()
 
     @pytest.mark.asyncio
-    async def test_async_wait_for_zero_timeout(self):
+    async def test_async_wait_for_zero_timeout(self) -> None:
         """Test async_wait_for with zero timeout raises TimeoutError."""
 
-        async def instant_task():
+        async def instant_task() -> str:
             return "instant"
 
         # Zero timeout should raise TimeoutError even for immediate tasks
@@ -276,7 +277,7 @@ class TestAsyncWaitFor:
 
     @pytest.mark.asyncio
     @patch("provide.foundation.concurrency.core.asyncio")
-    async def test_async_wait_for_uses_asyncio_module(self, mock_asyncio):
+    async def test_async_wait_for_uses_asyncio_module(self, mock_asyncio) -> None:
         """Test async_wait_for calls asyncio.wait_for()."""
         mock_coro = AsyncMock(return_value="result")
         mock_asyncio.wait_for = AsyncMock(return_value="result")
@@ -290,10 +291,10 @@ class TestAsyncWaitFor:
         assert kwargs.get("timeout") == 1.0 or (len(args) >= 2 and args[1] == 1.0)
 
     @pytest.mark.asyncio
-    async def test_async_wait_for_propagates_exceptions(self):
+    async def test_async_wait_for_propagates_exceptions(self) -> None:
         """Test async_wait_for propagates exceptions from awaitable."""
 
-        async def failing_task():
+        async def failing_task() -> Never:
             raise ValueError("Task failed")
 
         with pytest.raises(ValueError, match="Task failed"):
@@ -303,26 +304,26 @@ class TestAsyncWaitFor:
 class TestAsyncRun:
     """Test async_run function."""
 
-    def test_async_run_basic_async_function(self):
+    def test_async_run_basic_async_function(self) -> None:
         """Test async_run executes basic async function."""
 
-        async def main():
+        async def main() -> str:
             await async_sleep(0.01)
             return "hello world"
 
         result = async_run(main)
         assert result == "hello world"
 
-    def test_async_run_with_return_value(self):
+    def test_async_run_with_return_value(self) -> None:
         """Test async_run returns value from async function."""
 
-        async def compute():
+        async def compute() -> int:
             return 2 + 2
 
         result = async_run(compute)
         assert result == 4
 
-    def test_async_run_with_complex_return_value(self):
+    def test_async_run_with_complex_return_value(self) -> None:
         """Test async_run handles complex return values."""
 
         async def complex_data():
@@ -339,7 +340,7 @@ class TestAsyncRun:
         assert result["nested"]["key"] == "value"
         assert result["result"] == [None, None]  # sleep returns None
 
-    def test_async_run_non_callable_raises_error(self):
+    def test_async_run_non_callable_raises_error(self) -> None:
         """Test async_run raises error for non-callable input."""
         with pytest.raises(ValidationError, match="Main must be callable"):
             async_run("not callable")
@@ -350,24 +351,24 @@ class TestAsyncRun:
         with pytest.raises(ValidationError, match="Main must be callable"):
             async_run(None)
 
-    def test_async_run_propagates_exceptions(self):
+    def test_async_run_propagates_exceptions(self) -> None:
         """Test async_run propagates exceptions from async function."""
 
-        async def failing_main():
+        async def failing_main() -> Never:
             raise RuntimeError("Main failed")
 
         with pytest.raises(RuntimeError, match="Main failed"):
             async_run(failing_main)
 
     @patch("provide.foundation.concurrency.core.asyncio")
-    def test_async_run_uses_asyncio_module(self, mock_asyncio):
+    def test_async_run_uses_asyncio_module(self, mock_asyncio) -> None:
         """Test async_run calls asyncio.run()."""
 
-        async def main():
+        async def main() -> str:
             return "test"
 
         # Set up mock to properly handle the coroutine
-        def mock_run(coro, **kwargs):
+        def mock_run(coro, **kwargs) -> str:
             # Close the coroutine to avoid warnings
             if hasattr(coro, "close"):
                 coro.close()
@@ -386,16 +387,16 @@ class TestAsyncRun:
         assert inspect.iscoroutine(args[0])
         assert kwargs["debug"] is True
 
-    def test_async_run_with_debug_false(self):
+    def test_async_run_with_debug_false(self) -> None:
         """Test async_run with debug=False."""
 
-        async def main():
+        async def main() -> str:
             return "debug false"
 
         result = async_run(main, debug=False)
         assert result == "debug false"
 
-    def test_async_run_with_async_generator(self):
+    def test_async_run_with_async_generator(self) -> None:
         """Test async_run doesn't work with async generators (by design)."""
 
         async def async_gen():
@@ -412,7 +413,7 @@ class TestAsyncUtilitiesIntegration:
     """Integration tests for async utilities."""
 
     @pytest.mark.asyncio
-    async def test_async_utilities_work_together(self):
+    async def test_async_utilities_work_together(self) -> None:
         """Test async utilities work together in complex scenarios."""
 
         async def task_with_timeout(value, delay):
@@ -431,7 +432,7 @@ class TestAsyncUtilitiesIntegration:
         result = await main_workflow()
         assert result == 12  # (1*2) + (2*2) + (3*2)
 
-    def test_async_run_with_complex_async_workflow(self):
+    def test_async_run_with_complex_async_workflow(self) -> None:
         """Test async_run with complex async workflow."""
 
         async def complex_workflow():
@@ -455,14 +456,14 @@ class TestAsyncUtilitiesIntegration:
         assert result == 6
 
     @pytest.mark.asyncio
-    async def test_error_handling_across_utilities(self):
+    async def test_error_handling_across_utilities(self) -> None:
         """Test error handling across multiple async utilities."""
 
-        async def failing_task():
+        async def failing_task() -> Never:
             await async_sleep(0.01)
             raise ValueError("Task failed")
 
-        async def success_task():
+        async def success_task() -> str:
             await async_sleep(0.01)
             return "success"
 
@@ -475,10 +476,10 @@ class TestAsyncUtilitiesIntegration:
             await async_wait_for(failing_task(), timeout=1.0)
 
     @pytest.mark.asyncio
-    async def test_cancellation_support(self):
+    async def test_cancellation_support(self) -> None:
         """Test cancellation support across utilities."""
 
-        async def cancellable_workflow():
+        async def cancellable_workflow() -> str | None:
             try:
                 # This should be cancellable
                 await async_gather(
@@ -502,7 +503,7 @@ class TestAsyncUtilitiesIntegration:
         assert result in ["cancelled", "task cancelled"]
 
     @pytest.mark.asyncio
-    async def test_performance_comparison(self):
+    async def test_performance_comparison(self) -> None:
         """Test performance characteristics of async utilities."""
 
         async def fast_task(n):
@@ -526,7 +527,7 @@ class TestAsyncUtilitiesIntegration:
         assert concurrent_time < sequential_time
         assert sequential_results == concurrent_results
 
-    def test_async_utilities_error_messages(self):
+    def test_async_utilities_error_messages(self) -> None:
         """Test that async utilities provide helpful error messages."""
         # Test async_run error message
         try:

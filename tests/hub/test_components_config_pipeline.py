@@ -17,16 +17,16 @@ from provide.foundation.hub.components import (
 class TestAsyncConfigLoading:
     """Test async configuration loading functionality."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test environment."""
         reset_registry_for_tests()
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up after tests."""
         reset_registry_for_tests()
 
     @pytest.mark.asyncio
-    async def test_load_all_configs_async_sources(self):
+    async def test_load_all_configs_async_sources(self) -> None:
         """Test load_all_configs with async config sources."""
         registry = get_component_registry()
 
@@ -58,7 +58,7 @@ class TestAsyncConfigLoading:
         assert configs["sync_key"] == "sync_value"
 
     @pytest.mark.asyncio
-    async def test_load_all_configs_with_exception(self):
+    async def test_load_all_configs_with_exception(self) -> None:
         """Test load_all_configs handles source exceptions."""
         registry = get_component_registry()
 
@@ -92,15 +92,15 @@ class TestAsyncConfigLoading:
 class TestProcessorPipeline:
     """Test processor pipeline functionality."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test environment."""
         reset_registry_for_tests()
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up after tests."""
         reset_registry_for_tests()
 
-    def test_get_processor_pipeline(self):
+    def test_get_processor_pipeline(self) -> None:
         """Test get_processor_pipeline returns processors ordered by priority."""
         registry = get_component_registry()
 
@@ -137,7 +137,7 @@ class TestProcessorPipeline:
         assert pipeline[1].value is proc3  # priority 2
         assert pipeline[2].value is proc1  # priority 1
 
-    def test_get_processors_for_stage(self):
+    def test_get_processors_for_stage(self) -> None:
         """Test get_processors_for_stage filters by stage."""
         registry = get_component_registry()
 

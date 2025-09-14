@@ -80,7 +80,7 @@ class TestSyncRateLimiter:
         limiter = SyncRateLimiter(capacity=100.0, refill_rate=50.0)
         results = []
 
-        def worker():
+        def worker() -> None:
             for _ in range(20):
                 result = limiter.is_allowed()
                 results.append(result)
@@ -250,7 +250,7 @@ class TestGlobalRateLimiter:
         """Test GlobalRateLimiter singleton is thread-safe."""
         instances = []
 
-        def create_instance():
+        def create_instance() -> None:
             instances.append(GlobalRateLimiter())
 
         threads = [threading.Thread(target=create_instance) for _ in range(10)]

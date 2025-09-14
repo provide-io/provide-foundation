@@ -21,20 +21,20 @@ from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
 class TestHubInitialization:
     """Test Hub-based Foundation initialization."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Reset Hub state before each test."""
         clear_hub()
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up after each test."""
         clear_hub()
 
     @pytest.fixture(autouse=True)
-    def setup_test_output(self, captured_stderr_for_foundation: TextIO):
+    def setup_test_output(self, captured_stderr_for_foundation: TextIO) -> None:
         """Setup output capture for all tests."""
         self.captured_output = captured_stderr_for_foundation
 
-    def test_hub_lazy_initialization(self):
+    def test_hub_lazy_initialization(self) -> None:
         """Test that Hub auto-initializes Foundation on first access."""
         # Getting hub should auto-initialize Foundation
         hub = get_hub()
@@ -47,7 +47,7 @@ class TestHubInitialization:
         assert logger_instance is not None
         assert config is not None
 
-    def test_hub_idempotent_initialization(self):
+    def test_hub_idempotent_initialization(self) -> None:
         """Test that multiple initialization calls are safe."""
         hub = Hub()
 
@@ -65,7 +65,7 @@ class TestHubInitialization:
         ]
         assert len(entries) == 1
 
-    def test_hub_config_precedence(self):
+    def test_hub_config_precedence(self) -> None:
         """Test that explicit config takes precedence over environment."""
         # Create custom config
         custom_config = TelemetryConfig(
@@ -79,7 +79,7 @@ class TestHubInitialization:
         stored_config = hub.get_foundation_config()
         assert stored_config.logging.default_level == "DEBUG"
 
-    def test_hub_environment_config_fallback(self):
+    def test_hub_environment_config_fallback(self) -> None:
         """Test fallback to environment configuration."""
         with patch.dict(os.environ, {"PROVIDE_LOG_LEVEL": "WARNING"}):
             hub = Hub()
@@ -88,12 +88,12 @@ class TestHubInitialization:
             config = hub.get_foundation_config()
             assert config.logging.default_level == "WARNING"
 
-    def test_hub_thread_safety(self):
+    def test_hub_thread_safety(self) -> None:
         """Test thread-safe Hub initialization."""
         hubs = []
         errors = []
 
-        def get_hub_thread():
+        def get_hub_thread() -> None:
             try:
                 hub = get_hub()
                 hubs.append(hub)
@@ -116,7 +116,7 @@ class TestHubInitialization:
         assert len(hubs) == 10
         assert all(hub is hubs[0] for hub in hubs)
 
-    def test_hub_logger_access_with_output(self):
+    def test_hub_logger_access_with_output(self) -> None:
         """Test getting loggers through Hub and verify output."""
         hub = get_hub()
 
@@ -139,7 +139,7 @@ class TestHubInitialization:
         assert test_message1 in output
         assert test_message2 in output
 
-    def test_hub_initialization_order_independence(self):
+    def test_hub_initialization_order_independence(self) -> None:
         """Test that initialization order doesn't matter."""
         # Get logger before explicit hub access
         from provide.foundation.logger.factories import get_logger
@@ -159,7 +159,7 @@ class TestHubInitialization:
         logger1.info("test message 1")
         logger2.info("test message 2")
 
-    def test_hub_error_recovery(self):
+    def test_hub_error_recovery(self) -> None:
         """Test graceful fallback on initialization errors."""
         hub = Hub()
 
@@ -174,7 +174,7 @@ class TestHubInitialization:
             logger = hub.get_foundation_logger("test")
             assert logger is not None
 
-    def test_hub_deterministic_state(self):
+    def test_hub_deterministic_state(self) -> None:
         """Test that same config produces same state."""
         config = TelemetryConfig(
             logging=LoggingConfig(default_level="INFO"),
@@ -197,13 +197,13 @@ class TestHubInitialization:
 
         assert config1.logging.default_level == config2.logging.default_level
 
-    def test_hub_concurrent_logger_creation(self):
+    def test_hub_concurrent_logger_creation(self) -> None:
         """Test concurrent logger creation through Hub."""
         hub = get_hub()
         loggers = []
         errors = []
 
-        def create_logger(name_suffix: int):
+        def create_logger(name_suffix: int) -> None:
             try:
                 logger = hub.get_foundation_logger(f"test.concurrent.{name_suffix}")
                 loggers.append(logger)
@@ -230,7 +230,7 @@ class TestHubInitialization:
         # All loggers should be functional
         assert all(logger is not None for logger in loggers)
 
-    def test_hub_performance_requirements(self):
+    def test_hub_performance_requirements(self) -> None:
         """Test that Hub meets performance requirements."""
         # Test initialization speed
         start_time = time.time()

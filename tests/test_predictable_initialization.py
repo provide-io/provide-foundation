@@ -20,15 +20,15 @@ from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
 class TestPredictableInitialization:
     """Test predictable initialization behavior."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Reset state before each test."""
         clear_hub()
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up after each test."""
         clear_hub()
 
-    def test_initialization_order_independence(self):
+    def test_initialization_order_independence(self) -> None:
         """Test that components work regardless of initialization order."""
         # Scenario 1: Get logger before hub
         from provide.foundation.logger.factories import get_logger
@@ -55,7 +55,7 @@ class TestPredictableInitialization:
         # All scenarios should work predictably
         assert True  # If we get here, all worked
 
-    def test_configuration_precedence_predictable(self):
+    def test_configuration_precedence_predictable(self) -> None:
         """Test that config precedence is predictable and documented."""
         # 1. Explicit config should always win
         explicit_config = TelemetryConfig(
@@ -89,7 +89,7 @@ class TestPredictableInitialization:
             # Should use default level (WARNING)
             assert config.logging.default_level == "WARNING"
 
-    def test_error_recovery_predictable(self):
+    def test_error_recovery_predictable(self) -> None:
         """Test predictable behavior when errors occur."""
         hub = Hub()
 
@@ -107,7 +107,7 @@ class TestPredictableInitialization:
             # Logger should work
             logger.info("Fallback logger works")
 
-    def test_deterministic_state_across_restarts(self):
+    def test_deterministic_state_across_restarts(self) -> None:
         """Test that same inputs produce same state."""
         config = TelemetryConfig(
             logging=LoggingConfig(
@@ -141,12 +141,12 @@ class TestPredictableInitialization:
         # States should be identical
         assert state1 == state2
 
-    def test_concurrent_initialization_deterministic(self):
+    def test_concurrent_initialization_deterministic(self) -> None:
         """Test that concurrent initialization produces deterministic results."""
         results = []
         errors = []
 
-        def init_worker(worker_id: int):
+        def init_worker(worker_id: int) -> None:
             try:
                 hub = get_hub()
                 logger = hub.get_foundation_logger(f"worker.{worker_id}")
@@ -180,7 +180,7 @@ class TestPredictableInitialization:
             assert result["initialized"] is True
             assert result["logger_works"] is True
 
-    def test_resource_cleanup_predictable(self):
+    def test_resource_cleanup_predictable(self) -> None:
         """Test predictable resource cleanup."""
         hub = get_hub()
 
@@ -205,7 +205,7 @@ class TestPredictableInitialization:
         new_logger = new_hub.get_foundation_logger("test.after.cleanup")
         new_logger.info("Post-cleanup message")
 
-    def test_file_logging_predictable(self):
+    def test_file_logging_predictable(self) -> None:
         """Test predictable file logging behavior."""
         with tempfile.TemporaryDirectory() as tmpdir:
             log_file = Path(tmpdir) / "test.log"
@@ -228,7 +228,7 @@ class TestPredictableInitialization:
             # This test mainly ensures no errors occur
             assert True  # If we get here, file logging didn't crash
 
-    def test_multiple_hubs_independent(self):
+    def test_multiple_hubs_independent(self) -> None:
         """Test that multiple Hub instances are independent."""
         # Create two separate hubs
         hub1 = Hub()
@@ -256,7 +256,7 @@ class TestPredictableInitialization:
         logger1.info("Hub1 message")
         logger2.info("Hub2 message")
 
-    def test_performance_consistent(self):
+    def test_performance_consistent(self) -> None:
         """Test that performance is consistent across runs."""
         times = []
 
@@ -277,7 +277,7 @@ class TestPredictableInitialization:
 
         assert max_time < avg_time * 10, f"Performance inconsistent: max={max_time:.3f}, avg={avg_time:.3f}"
 
-    def test_memory_usage_predictable(self):
+    def test_memory_usage_predictable(self) -> None:
         """Test that memory usage is predictable and doesn't leak."""
         import gc
         import os
@@ -291,7 +291,7 @@ class TestPredictableInitialization:
         baseline_memory = process.memory_info().rss
 
         # Create and clear hubs multiple times
-        for i in range(10):
+        for _i in range(10):
             hub = get_hub()
             loggers = [
                 hub.get_foundation_logger(f"memory.test.{j}")
@@ -316,7 +316,7 @@ class TestPredictableInitialization:
             f"{max_growth / 1024 / 1024:.1f}MB"
         )
 
-    def test_logger_naming_consistent(self):
+    def test_logger_naming_consistent(self) -> None:
         """Test that logger naming is consistent and predictable."""
         hub = get_hub()
 
@@ -348,7 +348,7 @@ class TestPredictableInitialization:
             # but should be functionally equivalent
             logger2.info(f"Second test message for {name}")
 
-    def test_exception_handling_predictable(self):
+    def test_exception_handling_predictable(self) -> None:
         """Test that exception handling is predictable."""
         hub = get_hub()
         logger = hub.get_foundation_logger("test.exceptions")

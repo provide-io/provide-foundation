@@ -359,7 +359,7 @@ def example_config_manager() -> None:
 
     import asyncio
 
-    async def async_example():
+    async def async_example() -> None:
         # Create manager
         manager = ConfigManager()
 

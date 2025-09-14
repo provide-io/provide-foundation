@@ -11,28 +11,28 @@ import pytest
 class TestTestingWarnings:
     """Test the warning system for testing helpers."""
 
-    def test_is_testing_context_detects_pytest(self):
+    def test_is_testing_context_detects_pytest(self) -> None:
         """Test that pytest context is detected."""
         # pytest should already be in sys.modules
         from provide.testkit import _is_testing_context
 
         assert _is_testing_context() is True
 
-    def test_is_testing_context_detects_unittest(self):
+    def test_is_testing_context_detects_unittest(self) -> None:
         """Test that unittest context is detected."""
         from provide.testkit import _is_testing_context
 
         with patch.dict(sys.modules, {"unittest": True}):
             assert _is_testing_context() is True
 
-    def test_is_testing_context_detects_env_var(self):
+    def test_is_testing_context_detects_env_var(self) -> None:
         """Test that TESTING environment variable is detected."""
         from provide.testkit import _is_testing_context
 
         with patch.dict(os.environ, {"TESTING": "true"}):
             assert _is_testing_context() is True
 
-    def test_is_testing_context_detects_pytest_current_test(self):
+    def test_is_testing_context_detects_pytest_current_test(self) -> None:
         """Test that PYTEST_CURRENT_TEST is detected."""
         from provide.testkit import _is_testing_context
 
@@ -41,14 +41,14 @@ class TestTestingWarnings:
         ):
             assert _is_testing_context() is True
 
-    def test_is_testing_context_detects_argv(self):
+    def test_is_testing_context_detects_argv(self) -> None:
         """Test that pytest in argv is detected."""
         from provide.testkit import _is_testing_context
 
         with patch.object(sys, "argv", ["python", "-m", "pytest"]):
             assert _is_testing_context() is True
 
-    def test_warn_testing_active_issues_warning(self):
+    def test_warn_testing_active_issues_warning(self) -> None:
         """Test that warning is issued when testing helpers are active."""
         from provide.testkit import _warn_testing_active
 
@@ -60,7 +60,7 @@ class TestTestingWarnings:
             assert "Foundation testing helpers are active" in str(w[0].message)
             assert w[0].category == UserWarning
 
-    def test_warning_suppression_env_var(self):
+    def test_warning_suppression_env_var(self) -> None:
         """Test that warnings can be suppressed via environment variable."""
         from provide.testkit import _warn_testing_active
 
@@ -71,7 +71,7 @@ class TestTestingWarnings:
 
                 assert len(w) == 0
 
-    def test_should_warn_logic(self):
+    def test_should_warn_logic(self) -> None:
         """Test the _should_warn function logic."""
         from provide.testkit import _should_warn
 
@@ -79,21 +79,21 @@ class TestTestingWarnings:
         with patch.dict(os.environ, {"FOUNDATION_SUPPRESS_TESTING_WARNINGS": "1"}):
             assert _should_warn() is False
 
-    def test_lazy_import_works(self):
+    def test_lazy_import_works(self) -> None:
         """Test that lazy imports work correctly."""
         # Import a specific function to trigger lazy loading
         from provide.testkit import reset_foundation_setup_for_testing
 
         assert callable(reset_foundation_setup_for_testing)
 
-    def test_lazy_import_raises_for_nonexistent(self):
+    def test_lazy_import_raises_for_nonexistent(self) -> None:
         """Test that lazy import raises AttributeError for non-existent attributes."""
         import provide.testkit as testing
 
         with pytest.raises(AttributeError):
             _ = testing.nonexistent_function
 
-    def test_all_expected_functions_available(self):
+    def test_all_expected_functions_available(self) -> None:
         """Test that all expected functions are available in __all__."""
         from provide.testkit import __all__
 
@@ -111,7 +111,7 @@ class TestTestingWarnings:
         for func in expected_functions:
             assert func in __all__, f"{func} not in __all__"
 
-    def test_warning_issued_on_import(self):
+    def test_warning_issued_on_import(self) -> None:
         """Test that warning is issued when testing module is imported."""
         # This test is tricky because the module is already imported
         # We'll test the warning mechanism indirectly

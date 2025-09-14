@@ -16,7 +16,7 @@ from provide.foundation.logger.core import (
 class TestLoggerTestingUtilities:
     """Test logger testing helper functions."""
 
-    def test_reset_foundation_state_resets_structlog(self):
+    def test_reset_foundation_state_resets_structlog(self) -> None:
         """Test that reset_foundation_state resets structlog."""
         # Configure structlog with custom processors
         original_processors = [structlog.processors.add_log_level]
@@ -37,7 +37,7 @@ class TestLoggerTestingUtilities:
             default_config["processors"] != original_processors
         )  # Should be different from our custom config
 
-    def test_reset_foundation_state_resets_logger_state(self):
+    def test_reset_foundation_state_resets_logger_state(self) -> None:
         """Test that foundation logger state is reset."""
         # Test that lazy setup state is properly reset
         from provide.foundation.logger.core import _LAZY_SETUP_STATE
@@ -69,7 +69,7 @@ class TestLoggerTestingUtilities:
         # The logger should work after reset
         logger_instance.info("test message after reset")
 
-    def test_reset_foundation_state_resets_lazy_setup_state(self):
+    def test_reset_foundation_state_resets_lazy_setup_state(self) -> None:
         """Test that lazy setup state is reset and system remains functional."""
         # Modify lazy setup state
         _LAZY_SETUP_STATE.update(
@@ -90,7 +90,7 @@ class TestLoggerTestingUtilities:
         # The logger should work correctly after reset
         logger_instance.debug("test message after lazy setup reset")
 
-    def test_reset_foundation_setup_for_testing_calls_reset_state(self):
+    def test_reset_foundation_setup_for_testing_calls_reset_state(self) -> None:
         """Test that public function calls internal reset."""
         # Set some state we can verify gets reset
         _LAZY_SETUP_STATE["done"] = True
@@ -102,7 +102,7 @@ class TestLoggerTestingUtilities:
         assert _LAZY_SETUP_STATE["done"] is False
         assert _LAZY_SETUP_STATE["error"] is None
 
-    def test_reset_functions_are_idempotent(self):
+    def test_reset_functions_are_idempotent(self) -> None:
         """Test that reset functions can be called multiple times safely."""
         # Should not raise any exceptions
         reset_foundation_state()
@@ -115,7 +115,7 @@ class TestLoggerTestingUtilities:
         assert _LAZY_SETUP_STATE["error"] is None
         assert _LAZY_SETUP_STATE["in_progress"] is False
 
-    def test_reset_preserves_logger_functionality(self):
+    def test_reset_preserves_logger_functionality(self) -> None:
         """Test that logger still works after reset."""
         reset_foundation_setup_for_testing()
 
@@ -129,7 +129,7 @@ class TestLoggerTestingUtilities:
         except Exception as e:
             pytest.fail(f"Logger should work after reset, but got: {e}")
 
-    def test_reset_state_full_cycle(self):
+    def test_reset_state_full_cycle(self) -> None:
         """Test full cycle of setup, use, and reset."""
         # Start with clean state
         reset_foundation_setup_for_testing()

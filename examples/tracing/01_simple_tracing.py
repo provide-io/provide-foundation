@@ -139,7 +139,7 @@ def batch_process_users(user_ids: list[int]) -> list[dict]:
         return results
 
 
-def main():
+def main() -> None:
     """Simple tracing demonstration."""
     logger.info("🔍 Simple Tracing Demo")
 

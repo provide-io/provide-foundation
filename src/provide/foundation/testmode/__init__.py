@@ -24,10 +24,10 @@ __all__ = [
     # Test detection
     "is_in_click_testing",
     "is_in_test_mode",
-    "should_use_shared_registries",
     # Internal reset APIs (for testkit use)
     "reset_hub_state",
     "reset_logger_state",
     "reset_streams_state",
     "reset_structlog_state",
+    "should_use_shared_registries",
 ]

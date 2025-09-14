@@ -406,17 +406,17 @@ def collect_verification_results(self, results: list[dict[str, Any]]) -> dict[st
 class CeleryVerificationRunner:
     """Orchestrates distributed verification of Foundation scripts."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.logger = logger.get_logger("celery.verification")
         self.results = []
 
-    def start_worker(self):
+    def start_worker(self) -> None:
         """Start the verification worker."""
         pout("\n🚀 Starting verification worker...")
 
         from celery.worker import WorkController
 
-        def run_worker():
+        def run_worker() -> None:
             try:
                 worker = WorkController(app=app, loglevel="INFO")
                 worker.start()
@@ -429,7 +429,7 @@ class CeleryVerificationRunner:
         time.sleep(2)
         pout("✅ Verification worker started!\n")
 
-    def run_distributed_benchmarks(self):
+    def run_distributed_benchmarks(self) -> None:
         """Run benchmark tests across distributed workers."""
         pout("\n📊 Running Distributed Benchmark Verification")
         pout("=" * 55)
@@ -461,7 +461,7 @@ class CeleryVerificationRunner:
                 self.logger.error("benchmark_task_failed", test=benchmark_tests[i], error=str(e))
                 pout(f"   ❌ {benchmark_tests[i]}: Failed")
 
-    def run_distributed_extreme_tests(self):
+    def run_distributed_extreme_tests(self) -> None:
         """Run extreme performance tests across distributed workers."""
         pout("\n🔥 Running Distributed Extreme Performance Tests")
         pout("=" * 55)
@@ -491,7 +491,7 @@ class CeleryVerificationRunner:
                 self.logger.error("extreme_test_failed", test=extreme_tests[i], error=str(e))
                 pout(f"   ❌ {extreme_tests[i]}: Failed")
 
-    def run_distributed_cutup_verification(self):
+    def run_distributed_cutup_verification(self) -> None:
         """Run cut-up chuck verification across distributed workers."""
         pout("\n✂️  Running Distributed Cut-Up Chuck Verification")
         pout("=" * 55)
@@ -514,7 +514,7 @@ class CeleryVerificationRunner:
                 self.logger.error("cutup_verification_failed", segment=i+1, error=str(e))
                 pout(f"   ❌ Segment {i+1}: Failed")
 
-    def generate_final_report(self):
+    def generate_final_report(self) -> None:
         """Generate and display final verification report."""
         if not self.results:
             pout("\n❌ No results to aggregate")
@@ -565,7 +565,7 @@ class CeleryVerificationRunner:
             self.logger.error("report_generation_failed", error=str(e))
             pout(f"\n❌ Report generation failed: {e}")
 
-    def run_complete_verification(self):
+    def run_complete_verification(self) -> None:
         """Run the complete distributed verification suite."""
         pout("""
 ╔══════════════════════════════════════════════════════════════════╗
@@ -607,7 +607,7 @@ Verifies all Foundation scripts using distributed Celery tasks:
             pout(f"\n💥 Verification suite error: {e}")
 
 
-def main():
+def main() -> None:
     """Main entry point."""
     verifier = CeleryVerificationRunner()
     verifier.run_complete_verification()

@@ -12,7 +12,7 @@ from provide.foundation.hub.registry import Registry
 class TestComponentRegistryArchitecture:
     """Test the core component registry architecture."""
 
-    def test_foundation_uses_global_component_registry(self):
+    def test_foundation_uses_global_component_registry(self) -> None:
         """Foundation must use a single global registry for all components."""
         from provide.foundation.hub.components import get_component_registry
 
@@ -23,7 +23,7 @@ class TestComponentRegistryArchitecture:
         registry2 = get_component_registry()
         assert registry is registry2
 
-    def test_component_categories_are_predefined(self):
+    def test_component_categories_are_predefined(self) -> None:
         """Component registry must support predefined categories."""
         from provide.foundation.hub.components import ComponentCategory
 
@@ -42,7 +42,7 @@ class TestComponentRegistryArchitecture:
             assert isinstance(category.value, str)
             assert len(category.value) > 0
 
-    def test_component_registry_supports_metadata(self):
+    def test_component_registry_supports_metadata(self) -> None:
         """All registered components must support rich metadata."""
         from provide.foundation.hub.components import get_component_registry
 
@@ -69,7 +69,7 @@ class TestComponentRegistryArchitecture:
         assert entry.metadata["dependencies"] == ["other_component"]
         assert entry.metadata["priority"] == 100
 
-    def test_component_lifecycle_management(self):
+    def test_component_lifecycle_management(self) -> None:
         """Components must support initialization and cleanup lifecycle."""
         from provide.foundation.hub.components import (
             ComponentLifecycle,
@@ -98,7 +98,7 @@ class TestComponentRegistryArchitecture:
 class TestComponentMetadataAndVersioning:
     """Test component metadata and versioning support."""
 
-    def test_component_versioning_support(self):
+    def test_component_versioning_support(self) -> None:
         """All components must support version metadata."""
         from provide.foundation.hub.components import get_component_registry
 
@@ -121,7 +121,7 @@ class TestComponentMetadataAndVersioning:
         assert entry.metadata["api_version"] == "v1"
         assert "2.1.0" in entry.metadata["compatibility"]
 
-    def test_component_dependency_tracking(self):
+    def test_component_dependency_tracking(self) -> None:
         """Components must track dependencies on other components."""
         from provide.foundation.hub.components import (
             get_component_registry,
@@ -153,7 +153,7 @@ class TestComponentMetadataAndVersioning:
         assert "dependency_component" in deps
         assert deps["dependency_component"] is dependency
 
-    def test_component_health_monitoring(self):
+    def test_component_health_monitoring(self) -> None:
         """Components must support health checking."""
         from provide.foundation.hub.components import (
             check_component_health,
@@ -176,7 +176,7 @@ class TestComponentMetadataAndVersioning:
         health = check_component_health("monitored_component", "test")
         assert health["status"] == "healthy"
 
-    def test_component_configuration_schema(self):
+    def test_component_configuration_schema(self) -> None:
         """Components must declare configuration schema."""
         from provide.foundation.hub.components import (
             get_component_config_schema,
@@ -211,7 +211,7 @@ class TestComponentMetadataAndVersioning:
 class TestFoundationBootstrapIntegration:
     """Test Foundation's bootstrap process using registry components."""
 
-    def test_foundation_bootstraps_with_registry(self):
+    def test_foundation_bootstraps_with_registry(self) -> None:
         """Foundation initialization must use registry for all components."""
         from provide.foundation.hub.components import (
             ComponentCategory,
@@ -248,7 +248,7 @@ class TestFoundationBootstrapIntegration:
         # Should have processors
         assert len(processors) > 0
 
-    def test_foundation_logger_uses_registry_components(self):
+    def test_foundation_logger_uses_registry_components(self) -> None:
         """Foundation logger must use registry for all component access."""
         from provide.foundation.hub.components import get_component_registry
         from provide.foundation.logger import get_logger
@@ -283,11 +283,11 @@ class TestFoundationBootstrapIntegration:
         logger.info("Testing registry integration", domain="test")
         # This test passes if no exceptions are raised
 
-    def test_configuration_loading_through_registry(self):
+    def test_configuration_loading_through_registry(self) -> None:
         """Configuration loading must use registered config sources."""
         # This test would verify config loading when config sources are implemented
 
-    async def test_async_component_coordination(self):
+    async def test_async_component_coordination(self) -> None:
         """Registry must coordinate async component initialization."""
         from provide.foundation.hub.components import initialize_all_async_components
 
@@ -296,7 +296,7 @@ class TestFoundationBootstrapIntegration:
 
         # This test passes if all async components initialize without error
 
-    def test_registry_state_isolation_in_tests(self):
+    def test_registry_state_isolation_in_tests(self) -> None:
         """Each test must have isolated registry state."""
         from provide.foundation.hub.components import (
             get_component_registry,

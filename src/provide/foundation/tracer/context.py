@@ -62,7 +62,7 @@ class SpanContext:
     Automatically sets and clears the current span.
     """
 
-    def __init__(self, span: Span):
+    def __init__(self, span: Span) -> None:
         self.span = span
         self.previous_span: Span | None = None
 

@@ -312,7 +312,7 @@ def create_default_pipeline() -> MiddlewarePipeline:
 
 
 # Auto-register built-in middleware
-def _register_builtin_middleware():
+def _register_builtin_middleware() -> None:
     """Register built-in middleware with the Hub."""
     try:
         register_middleware(

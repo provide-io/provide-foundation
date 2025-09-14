@@ -19,7 +19,7 @@ class TestOperationChain:
         """Create a test file."""
         return temp_file("Test content for operation chains\n" * 100, ".txt")
 
-    def test_single_operation(self, test_file):
+    def test_single_operation(self, test_file) -> None:
         """Test chain with single operation."""
         output = test_file.with_suffix(".gz")
 
@@ -33,7 +33,7 @@ class TestOperationChain:
         finally:
             output.unlink(missing_ok=True)
 
-    def test_tar_gzip_chain(self, test_files_structure):
+    def test_tar_gzip_chain(self, test_files_structure) -> None:
         """Test tar -> gzip chain."""
         temp_path, source = test_files_structure
 
@@ -47,7 +47,7 @@ class TestOperationChain:
         # Should have gzip magic number
         assert output.read_bytes()[:2] == b"\x1f\x8b"
 
-    def test_reverse_chain(self, temp_directory):
+    def test_reverse_chain(self, temp_directory) -> None:
         """Test reversing operation chain for extraction."""
         temp_path = temp_directory
 
@@ -67,7 +67,7 @@ class TestOperationChain:
         assert result == decompressed
         assert decompressed.read_text() == "Test content"
 
-    def test_invalid_operation(self, temp_directory):
+    def test_invalid_operation(self, temp_directory) -> None:
         """Test chain with invalid operation."""
         temp_path = temp_directory
         source = temp_path / "test.txt"
@@ -93,7 +93,7 @@ class TestArchiveOperations:
         (source / "subdir" / "file3.txt").write_text("Content 3" * 100)
         return temp_path, source
 
-    def test_create_tar_gz(self, test_dir):
+    def test_create_tar_gz(self, test_dir) -> None:
         """Test creating tar.gz archive."""
         temp_path, source = test_dir
         output = temp_path / "archive.tar.gz"
@@ -107,7 +107,7 @@ class TestArchiveOperations:
         # Should have gzip magic number
         assert output.read_bytes()[:2] == b"\x1f\x8b"
 
-    def test_extract_tar_gz(self, test_dir):
+    def test_extract_tar_gz(self, test_dir) -> None:
         """Test extracting tar.gz archive."""
         temp_path, source = test_dir
         archive = temp_path / "archive.tar.gz"
@@ -124,7 +124,7 @@ class TestArchiveOperations:
         assert "Content 1" in (extracted / "source" / "file1.txt").read_text()
         assert (extracted / "source" / "subdir" / "file3.txt").exists()
 
-    def test_create_tar_bz2(self, test_dir):
+    def test_create_tar_bz2(self, test_dir) -> None:
         """Test creating tar.bz2 archive."""
         temp_path, source = test_dir
         output = temp_path / "archive.tar.bz2"
@@ -136,7 +136,7 @@ class TestArchiveOperations:
         # Should have bzip2 magic number
         assert output.read_bytes()[:3] == b"BZh"
 
-    def test_extract_tar_bz2(self, test_dir):
+    def test_extract_tar_bz2(self, test_dir) -> None:
         """Test extracting tar.bz2 archive."""
         temp_path, source = test_dir
         archive = temp_path / "archive.tar.bz2"
@@ -152,7 +152,7 @@ class TestArchiveOperations:
         assert (extracted / "source" / "file1.txt").exists()
         assert "Content 1" in (extracted / "source" / "file1.txt").read_text()
 
-    def test_detect_format_by_extension(self):
+    def test_detect_format_by_extension(self) -> None:
         """Test format detection by file extension."""
         test_cases = [
             ("archive.tar.gz", ["gunzip", "untar"]),
@@ -169,7 +169,7 @@ class TestArchiveOperations:
             ops = ArchiveOperations.detect_format(Path(filename))
             assert ops == expected_ops
 
-    def test_detect_format_by_magic(self, temp_directory):
+    def test_detect_format_by_magic(self, temp_directory) -> None:
         """Test format detection by magic numbers."""
         temp_path = temp_directory
 
@@ -188,7 +188,7 @@ class TestArchiveOperations:
         zip_file.write_bytes(b"PK\x03\x04" + b"rest of file")
         assert ArchiveOperations.detect_format(zip_file) == ["unzip"]
 
-    def test_detect_unknown_format(self, temp_directory):
+    def test_detect_unknown_format(self, temp_directory) -> None:
         """Test detecting unknown format."""
         temp_path = temp_directory
 
@@ -198,7 +198,7 @@ class TestArchiveOperations:
         with pytest.raises(ArchiveError, match="Cannot detect format"):
             ArchiveOperations.detect_format(unknown)
 
-    def test_deterministic_archives(self, test_dir):
+    def test_deterministic_archives(self, test_dir) -> None:
         """Test deterministic archive creation."""
         temp_path, source = test_dir
 

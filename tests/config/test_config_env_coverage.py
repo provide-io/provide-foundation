@@ -20,26 +20,26 @@ class TestAsyncEnvFunctions:
     """Test async environment variable functions."""
 
     @pytest.mark.asyncio
-    async def test_get_env_async_existing_variable(self):
+    async def test_get_env_async_existing_variable(self) -> None:
         """Test get_env_async with existing environment variable."""
         with patch.dict(os.environ, {"TEST_ASYNC_VAR": "async_value"}):
             result = await get_env_async("TEST_ASYNC_VAR")
             assert result == "async_value"
 
     @pytest.mark.asyncio
-    async def test_get_env_async_missing_with_default(self):
+    async def test_get_env_async_missing_with_default(self) -> None:
         """Test get_env_async with missing variable and default."""
         result = await get_env_async("MISSING_ASYNC_VAR", default="default_value")
         assert result == "default_value"
 
     @pytest.mark.asyncio
-    async def test_get_env_async_missing_required(self):
+    async def test_get_env_async_missing_required(self) -> None:
         """Test get_env_async with missing required variable."""
         with pytest.raises(ValueError, match="Required environment variable"):
             await get_env_async("MISSING_REQUIRED_VAR", required=True)
 
     @pytest.mark.asyncio
-    async def test_get_env_async_file_secret(self):
+    async def test_get_env_async_file_secret(self) -> None:
         """Test get_env_async with file-based secret."""
         with tempfile.NamedTemporaryFile(mode="w", delete=False) as temp_file:
             temp_file.write("secret_content\n")
@@ -65,7 +65,7 @@ class TestAsyncEnvFunctions:
                 os.unlink(temp_file.name)
 
     @pytest.mark.asyncio
-    async def test_get_env_async_file_secret_error(self):
+    async def test_get_env_async_file_secret_error(self) -> None:
         """Test get_env_async with file reading error."""
         with patch.dict(os.environ, {"ASYNC_SECRET": "file:///nonexistent/file"}):
             with patch("provide.foundation.config.env.aiofiles") as mock_aiofiles:
@@ -75,7 +75,7 @@ class TestAsyncEnvFunctions:
                     await get_env_async("ASYNC_SECRET")
 
     @pytest.mark.asyncio
-    async def test_get_env_async_no_secret_file_support(self):
+    async def test_get_env_async_no_secret_file_support(self) -> None:
         """Test get_env_async with secret_file=False."""
         with patch.dict(os.environ, {"ASYNC_VAR": "file://should_not_read"}):
             result = await get_env_async("ASYNC_VAR", secret_file=False)
@@ -85,7 +85,7 @@ class TestAsyncEnvFunctions:
 class TestAiofilesImportHandling:
     """Test handling of aiofiles import."""
 
-    def test_aiofiles_not_available(self):
+    def test_aiofiles_not_available(self) -> None:
         """Test behavior when aiofiles is not available."""
         # This tests the import error handling at lines 14-15
         with patch.dict("sys.modules", {"aiofiles": None}):
@@ -113,7 +113,7 @@ class TestAsyncRuntimeConfig:
         api_key: str = env_field(env_var="API_SECRET", default="")
 
     @pytest.mark.asyncio
-    async def test_from_env_async_basic(self):
+    async def test_from_env_async_basic(self) -> None:
         """Test basic async environment loading."""
         with patch.dict(
             os.environ,
@@ -130,7 +130,7 @@ class TestAsyncRuntimeConfig:
             assert config.debug is True
 
     @pytest.mark.asyncio
-    async def test_from_env_async_with_file_secrets(self):
+    async def test_from_env_async_with_file_secrets(self) -> None:
         """Test async environment loading with file-based secrets."""
         with tempfile.NamedTemporaryFile(mode="w", delete=False) as temp_file:
             temp_file.write("secret_api_key\n")
@@ -164,7 +164,7 @@ class TestAsyncRuntimeConfig:
                 os.unlink(temp_file.name)
 
     @pytest.mark.asyncio
-    async def test_from_env_async_no_async_secrets(self):
+    async def test_from_env_async_no_async_secrets(self) -> None:
         """Test async loading with use_async_secrets=False."""
         with patch.dict(os.environ, {"ASYNC_APP_NAME": "sync_app"}):
             config = await self.AsyncTestConfig.from_env_async(
@@ -174,7 +174,7 @@ class TestAsyncRuntimeConfig:
             assert config.app_name == "sync_app"
 
     @pytest.mark.asyncio
-    async def test_from_env_async_parallel_secret_reading(self):
+    async def test_from_env_async_parallel_secret_reading(self) -> None:
         """Test parallel async secret reading."""
         # Create multiple secret files
         secret_files = []
@@ -223,14 +223,14 @@ class TestAsyncRuntimeConfig:
                     os.unlink(file_path)
 
     @pytest.mark.asyncio
-    async def test_from_env_async_parser_error(self):
+    async def test_from_env_async_parser_error(self) -> None:
         """Test async loading with parser error."""
         with patch.dict(os.environ, {"ASYNC_PORT": "invalid_port"}):
             with pytest.raises(ValueError, match="Failed to parse"):
                 await self.AsyncTestConfig.from_env_async(prefix="ASYNC")
 
     @pytest.mark.asyncio
-    async def test_read_secret_async_without_aiofiles(self):
+    async def test_read_secret_async_without_aiofiles(self) -> None:
         """Test _read_secret_async fallback when aiofiles not available."""
         with tempfile.NamedTemporaryFile(mode="w", delete=False) as temp_file:
             temp_file.write("fallback_secret\n")
@@ -245,7 +245,7 @@ class TestAsyncRuntimeConfig:
                 os.unlink(temp_file.name)
 
     @pytest.mark.asyncio
-    async def test_read_secret_async_file_error(self):
+    async def test_read_secret_async_file_error(self) -> None:
         """Test _read_secret_async with file error."""
         with pytest.raises(ValueError, match="Failed to read secret from file"):
             await RuntimeConfig._read_secret_async("/nonexistent/file")
@@ -254,25 +254,25 @@ class TestAsyncRuntimeConfig:
 class TestEnvFieldCreation:
     """Test env_field function."""
 
-    def test_env_field_with_env_var(self):
+    def test_env_field_with_env_var(self) -> None:
         """Test env_field with explicit env_var."""
         field_obj = env_field(env_var="CUSTOM_VAR", default="test")
 
         assert field_obj.metadata.get("env_var") == "CUSTOM_VAR"
 
-    def test_env_field_with_env_prefix(self):
+    def test_env_field_with_env_prefix(self) -> None:
         """Test env_field with env_prefix."""
         field_obj = env_field(env_prefix="PREFIX", default="test")
 
         assert field_obj.metadata.get("env_prefix") == "PREFIX"
 
-    def test_env_field_with_parser(self):
+    def test_env_field_with_parser(self) -> None:
         """Test env_field with custom parser."""
         field_obj = env_field(parser=int, default=0)
 
         assert field_obj.metadata.get("env_parser") == int
 
-    def test_env_field_with_all_options(self):
+    def test_env_field_with_all_options(self) -> None:
         """Test env_field with all options."""
         field_obj = env_field(
             env_var="FULL_VAR", env_prefix="FULL", parser=str.upper, default="test",
@@ -298,7 +298,7 @@ class TestRuntimeConfigAdvanced:
         custom: str = env_field(env_var="SPECIAL_VAR", default="")
         prefixed: str = env_field(env_prefix="CUSTOM", default="")
 
-    def test_from_env_case_sensitive(self):
+    def test_from_env_case_sensitive(self) -> None:
         """Test from_env with case_sensitive=True."""
         with patch.dict(
             os.environ,
@@ -314,7 +314,7 @@ class TestRuntimeConfigAdvanced:
             # COUNT should not match count field
             assert config.count == 0  # default value
 
-    def test_from_env_file_secret_sync(self):
+    def test_from_env_file_secret_sync(self) -> None:
         """Test from_env with file-based secrets (sync version)."""
         with tempfile.NamedTemporaryFile(mode="w", delete=False) as temp_file:
             temp_file.write("sync_secret_value\n")
@@ -332,26 +332,26 @@ class TestRuntimeConfigAdvanced:
             finally:
                 os.unlink(temp_file.name)
 
-    def test_from_env_file_secret_error_sync(self):
+    def test_from_env_file_secret_error_sync(self) -> None:
         """Test from_env with file reading error (sync version)."""
         with patch.dict(os.environ, {"SPECIAL_VAR": "file:///nonexistent/file"}):
             with pytest.raises(ValueError, match="Failed to read secret from file"):
                 self.AdvancedConfig.from_env()
 
-    def test_from_env_parser_error_sync(self):
+    def test_from_env_parser_error_sync(self) -> None:
         """Test from_env with parser error (sync version)."""
         with patch.dict(os.environ, {"COUNT": "not_a_number"}):
             # The auto parser should handle int conversion
             with pytest.raises(ValueError):
                 self.AdvancedConfig.from_env()
 
-    def test_from_env_env_prefix_field(self):
+    def test_from_env_env_prefix_field(self) -> None:
         """Test from_env with field-specific env_prefix."""
         with patch.dict(os.environ, {"CUSTOM_PREFIXED": "prefixed_value"}):
             config = self.AdvancedConfig.from_env()
             assert config.prefixed == "prefixed_value"
 
-    def test_auto_parse_method(self):
+    def test_auto_parse_method(self) -> None:
         """Test auto_parse function."""
         from provide.foundation.utils.parsing import auto_parse
         # Create a mock attribute
@@ -364,7 +364,7 @@ class TestRuntimeConfigAdvanced:
         result = auto_parse(mock_attr, "42")
         assert result == 42
 
-    def test_to_env_dict_comprehensive(self):
+    def test_to_env_dict_comprehensive(self) -> None:
         """Test to_env_dict with comprehensive values."""
         config = self.AdvancedConfig(
             name="test_app",
@@ -386,7 +386,7 @@ class TestRuntimeConfigAdvanced:
         assert env_dict["SPECIAL_VAR"] == "custom_val"  # Uses custom env_var
         assert env_dict["CUSTOM_PREFIXED"] == "prefix_val"  # Uses custom env_prefix
 
-    def test_to_env_dict_skip_none_values(self):
+    def test_to_env_dict_skip_none_values(self) -> None:
         """Test to_env_dict skips None values."""
         config = self.AdvancedConfig(
             name="test",
@@ -400,7 +400,7 @@ class TestRuntimeConfigAdvanced:
         assert "COUNT" not in env_dict  # None value skipped
         assert env_dict["ENABLED"] == "false"  # False is included
 
-    def test_to_env_dict_boolean_conversion(self):
+    def test_to_env_dict_boolean_conversion(self) -> None:
         """Test to_env_dict boolean value conversion."""
         config = self.AdvancedConfig(enabled=True)
         env_dict = config.to_env_dict()
@@ -410,7 +410,7 @@ class TestRuntimeConfigAdvanced:
         env_dict = config.to_env_dict()
         assert env_dict["ENABLED"] == "false"
 
-    def test_to_env_dict_other_types(self):
+    def test_to_env_dict_other_types(self) -> None:
         """Test to_env_dict with other value types."""
 
         @define

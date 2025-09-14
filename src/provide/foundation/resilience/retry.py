@@ -165,7 +165,7 @@ class RetryExecutor:
         self,
         policy: RetryPolicy,
         on_retry: Callable[[int, Exception], None] | None = None,
-    ):
+    ) -> None:
         """Initialize retry executor.
 
         Args:

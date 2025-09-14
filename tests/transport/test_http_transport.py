@@ -38,7 +38,7 @@ def http_transport(http_config):
 
 
 @pytest.mark.asyncio
-async def test_http_transport_get(http_transport, httpx_mock: HTTPXMock):
+async def test_http_transport_get(http_transport, httpx_mock: HTTPXMock) -> None:
     """Test HTTP GET request."""
     # Mock response
     httpx_mock.add_response(
@@ -68,7 +68,7 @@ async def test_http_transport_get(http_transport, httpx_mock: HTTPXMock):
 
 
 @pytest.mark.asyncio
-async def test_http_transport_post_json(http_transport, httpx_mock: HTTPXMock):
+async def test_http_transport_post_json(http_transport, httpx_mock: HTTPXMock) -> None:
     """Test HTTP POST with JSON body."""
     httpx_mock.add_response(
         method="POST",
@@ -96,7 +96,7 @@ async def test_http_transport_post_json(http_transport, httpx_mock: HTTPXMock):
 
 
 @pytest.mark.asyncio
-async def test_http_transport_error_status(http_transport, httpx_mock: HTTPXMock):
+async def test_http_transport_error_status(http_transport, httpx_mock: HTTPXMock) -> None:
     """Test HTTP error status handling."""
     httpx_mock.add_response(
         method="GET",
@@ -119,7 +119,7 @@ async def test_http_transport_error_status(http_transport, httpx_mock: HTTPXMock
 
 
 @pytest.mark.asyncio
-async def test_http_transport_connection_error(http_transport, httpx_mock: HTTPXMock):
+async def test_http_transport_connection_error(http_transport, httpx_mock: HTTPXMock) -> None:
     """Test connection error handling."""
     httpx_mock.add_exception(httpx.ConnectError("Connection failed"))
 
@@ -137,7 +137,7 @@ async def test_http_transport_connection_error(http_transport, httpx_mock: HTTPX
 
 
 @pytest.mark.asyncio
-async def test_http_transport_timeout(http_transport, httpx_mock: HTTPXMock):
+async def test_http_transport_timeout(http_transport, httpx_mock: HTTPXMock) -> None:
     """Test timeout error handling."""
     httpx_mock.add_exception(httpx.TimeoutException("Request timed out"))
 
@@ -155,7 +155,7 @@ async def test_http_transport_timeout(http_transport, httpx_mock: HTTPXMock):
 
 
 @pytest.mark.asyncio
-async def test_http_transport_streaming(http_transport, httpx_mock: HTTPXMock):
+async def test_http_transport_streaming(http_transport, httpx_mock: HTTPXMock) -> None:
     """Test HTTP streaming response."""
     content = b"chunk1\nchunk2\nchunk3\n"
 
@@ -187,7 +187,7 @@ async def test_http_transport_streaming(http_transport, httpx_mock: HTTPXMock):
 
 
 @pytest.mark.asyncio
-async def test_http_transport_context_manager(http_transport, httpx_mock: HTTPXMock):
+async def test_http_transport_context_manager(http_transport, httpx_mock: HTTPXMock) -> None:
     """Test transport context manager behavior."""
     httpx_mock.add_response(
         method="GET",
@@ -210,7 +210,7 @@ async def test_http_transport_context_manager(http_transport, httpx_mock: HTTPXM
     assert http_transport._client is None
 
 
-def test_http_transport_supports():
+def test_http_transport_supports() -> None:
     """Test transport scheme support."""
     transport = HTTPTransport()
 
@@ -223,7 +223,7 @@ def test_http_transport_supports():
 
 
 @pytest.mark.asyncio
-async def test_http_transport_parameters(http_transport, httpx_mock: HTTPXMock):
+async def test_http_transport_parameters(http_transport, httpx_mock: HTTPXMock) -> None:
     """Test HTTP request with parameters."""
     httpx_mock.add_response(
         method="GET",

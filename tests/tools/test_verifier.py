@@ -25,7 +25,7 @@ class TestToolVerifier:
         file_path.write_text("test content")
         return file_path
 
-    def test_verify_checksum_sha256(self, verifier, test_file):
+    def test_verify_checksum_sha256(self, verifier, test_file) -> None:
         """Test SHA256 checksum verification."""
         # SHA256 of "test content"
         expected = "6ae8a75555209fd6c44157c0aed8016e763ff435a19cf186f76863140143ff72"
@@ -34,7 +34,7 @@ class TestToolVerifier:
         assert verifier.verify_checksum(test_file, expected, algo="sha256") is True
         assert verifier.verify_checksum(test_file, "wrong") is False
 
-    def test_verify_checksum_sha512(self, verifier, test_file):
+    def test_verify_checksum_sha512(self, verifier, test_file) -> None:
         """Test SHA512 checksum verification."""
         # SHA512 of "test content"
         expected = ("0cbf4caef38047bba9a24e621a961484e5d2a92176a859e7eb27df343dd34eb9"
@@ -43,7 +43,7 @@ class TestToolVerifier:
         assert verifier.verify_checksum(test_file, expected, algo="sha512") is True
         assert verifier.verify_checksum(test_file, "wrong", algo="sha512") is False
 
-    def test_verify_checksum_md5(self, verifier, test_file):
+    def test_verify_checksum_md5(self, verifier, test_file) -> None:
         """Test MD5 checksum verification."""
         # MD5 of "test content"
         expected = "9473fdd0d880a43c21b7778d34872157"
@@ -51,7 +51,7 @@ class TestToolVerifier:
         assert verifier.verify_checksum(test_file, expected, algo="md5") is True
         assert verifier.verify_checksum(test_file, "wrong", algo="md5") is False
 
-    def test_verify_checksum_blake2b(self, verifier, test_file):
+    def test_verify_checksum_blake2b(self, verifier, test_file) -> None:
         """Test BLAKE2b checksum verification."""
         # BLAKE2b of "test content"
         expected = ("3b077f22c156b622ae1f4343bb71227b6373c22fa8a0ae42ab80bc6e2fcb7c1d"
@@ -60,19 +60,19 @@ class TestToolVerifier:
         assert verifier.verify_checksum(test_file, expected, algo="blake2b") is True
         assert verifier.verify_checksum(test_file, "wrong", algo="blake2b") is False
 
-    def test_verify_checksum_invalid_algo(self, verifier, test_file):
+    def test_verify_checksum_invalid_algo(self, verifier, test_file) -> None:
         """Test checksum verification with invalid algorithm."""
         with pytest.raises(ValueError, match="Unsupported hash algorithm"):
             verifier.verify_checksum(test_file, "checksum", algo="invalid")
 
-    def test_verify_checksum_nonexistent_file(self, verifier, tmp_path):
+    def test_verify_checksum_nonexistent_file(self, verifier, tmp_path) -> None:
         """Test checksum verification with non-existent file."""
         nonexistent = tmp_path / "nonexistent.txt"
 
         with pytest.raises(FileNotFoundError):
             verifier.verify_checksum(nonexistent, "checksum")
 
-    def test_verify_checksum_large_file(self, verifier, tmp_path):
+    def test_verify_checksum_large_file(self, verifier, tmp_path) -> None:
         """Test checksum verification with large file (chunked reading)."""
         large_file = tmp_path / "large.bin"
         # Create a 10MB file
@@ -84,7 +84,7 @@ class TestToolVerifier:
 
         assert verifier.verify_checksum(large_file, expected) is True
 
-    def test_verify_shasums_file(self, verifier, tmp_path):
+    def test_verify_shasums_file(self, verifier, tmp_path) -> None:
         """Test verification using a shasums file."""
         # Create test files
         file1 = tmp_path / "file1.txt"
@@ -102,7 +102,7 @@ class TestToolVerifier:
         assert verifier.verify_shasums_file(shasums, file1) is True
         assert verifier.verify_shasums_file(shasums, file2) is True
 
-    def test_verify_shasums_file_not_found(self, verifier, tmp_path):
+    def test_verify_shasums_file_not_found(self, verifier, tmp_path) -> None:
         """Test shasums verification when file not in list."""
         file_path = tmp_path / "notlisted.txt"
         file_path.write_text("content")
@@ -112,7 +112,7 @@ class TestToolVerifier:
 
         assert verifier.verify_shasums_file(shasums, file_path) is False
 
-    def test_verify_shasums_file_mismatch(self, verifier, tmp_path):
+    def test_verify_shasums_file_mismatch(self, verifier, tmp_path) -> None:
         """Test shasums verification with wrong checksum."""
         file_path = tmp_path / "file.txt"
         file_path.write_text("actual content")
@@ -123,7 +123,7 @@ class TestToolVerifier:
         assert verifier.verify_shasums_file(shasums, file_path) is False
 
     @patch("provide.foundation.crypto.verify_signature")
-    def test_verify_signature_success(self, mock_verify_sig, verifier, test_file):
+    def test_verify_signature_success(self, mock_verify_sig, verifier, test_file) -> None:
         """Test signature verification success."""
         mock_verify_sig.return_value = True
 
@@ -141,7 +141,7 @@ class TestToolVerifier:
         )
 
     @patch("provide.foundation.crypto.verify_signature")
-    def test_verify_signature_failure(self, mock_verify_sig, verifier, test_file):
+    def test_verify_signature_failure(self, mock_verify_sig, verifier, test_file) -> None:
         """Test signature verification failure."""
         mock_verify_sig.return_value = False
 
@@ -154,7 +154,7 @@ class TestToolVerifier:
         assert result is False
 
     @patch("provide.foundation.crypto.verify_signature")
-    def test_verify_signature_no_public_key(self, mock_verify_sig, verifier, test_file):
+    def test_verify_signature_no_public_key(self, mock_verify_sig, verifier, test_file) -> None:
         """Test signature verification without public key."""
         mock_verify_sig.return_value = True
 
@@ -167,7 +167,7 @@ class TestToolVerifier:
             None,
         )
 
-    def test_extract_checksum_from_string(self, verifier):
+    def test_extract_checksum_from_string(self, verifier) -> None:
         """Test extracting checksum from various string formats."""
         # Just the checksum
         assert verifier.extract_checksum("abc123") == "abc123"

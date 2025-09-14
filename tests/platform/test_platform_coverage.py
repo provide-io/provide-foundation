@@ -12,7 +12,7 @@ import pytest
 class TestPlatformDetection:
     """Test platform detection functionality."""
 
-    def test_get_os_name_darwin(self):
+    def test_get_os_name_darwin(self) -> None:
         """Test OS name detection for Darwin."""
         from provide.foundation.platform.detection import get_os_name
 
@@ -24,7 +24,7 @@ class TestPlatformDetection:
             result = get_os_name()
             assert result == "darwin"
 
-    def test_get_os_name_linux(self):
+    def test_get_os_name_linux(self) -> None:
         """Test OS name detection for Linux."""
         from provide.foundation.platform.detection import get_os_name
 
@@ -32,7 +32,7 @@ class TestPlatformDetection:
             result = get_os_name()
             assert result == "linux"
 
-    def test_get_os_name_windows(self):
+    def test_get_os_name_windows(self) -> None:
         """Test OS name detection for Windows."""
         from provide.foundation.platform.detection import get_os_name
 
@@ -40,7 +40,7 @@ class TestPlatformDetection:
             result = get_os_name()
             assert result == "windows"
 
-    def test_get_os_name_exception_handling(self):
+    def test_get_os_name_exception_handling(self) -> None:
         """Test OS name detection with exception."""
         from provide.foundation.errors.platform import PlatformError
         from provide.foundation.platform.detection import get_os_name
@@ -52,7 +52,7 @@ class TestPlatformDetection:
             assert "Failed to detect operating system" in str(exc_info.value)
             assert exc_info.value.code == "PLATFORM_OS_DETECTION_FAILED"
 
-    def test_get_arch_name_amd64_variants(self):
+    def test_get_arch_name_amd64_variants(self) -> None:
         """Test architecture detection for amd64 variants."""
         from provide.foundation.platform.detection import get_arch_name
 
@@ -61,7 +61,7 @@ class TestPlatformDetection:
                 result = get_arch_name()
                 assert result == "amd64"
 
-    def test_get_arch_name_arm64_variants(self):
+    def test_get_arch_name_arm64_variants(self) -> None:
         """Test architecture detection for arm64 variants."""
         from provide.foundation.platform.detection import get_arch_name
 
@@ -70,7 +70,7 @@ class TestPlatformDetection:
                 result = get_arch_name()
                 assert result == "arm64"
 
-    def test_get_arch_name_x86_variants(self):
+    def test_get_arch_name_x86_variants(self) -> None:
         """Test architecture detection for x86 variants."""
         from provide.foundation.platform.detection import get_arch_name
 
@@ -79,7 +79,7 @@ class TestPlatformDetection:
                 result = get_arch_name()
                 assert result == "x86"
 
-    def test_get_arch_name_unknown_arch(self):
+    def test_get_arch_name_unknown_arch(self) -> None:
         """Test architecture detection for unknown arch."""
         from provide.foundation.platform.detection import get_arch_name
 
@@ -87,7 +87,7 @@ class TestPlatformDetection:
             result = get_arch_name()
             assert result == "unknown_arch"
 
-    def test_get_arch_name_exception_handling(self):
+    def test_get_arch_name_exception_handling(self) -> None:
         """Test architecture detection with exception."""
         from provide.foundation.errors.platform import PlatformError
         from provide.foundation.platform.detection import get_arch_name
@@ -99,7 +99,7 @@ class TestPlatformDetection:
             assert "Failed to detect architecture" in str(exc_info.value)
             assert exc_info.value.code == "PLATFORM_ARCH_DETECTION_FAILED"
 
-    def test_get_platform_string(self):
+    def test_get_platform_string(self) -> None:
         """Test platform string generation."""
         from provide.foundation.platform.detection import get_platform_string
 
@@ -111,7 +111,7 @@ class TestPlatformDetection:
         parts = result.split("_")
         assert len(parts) >= 2
 
-    def test_current_platform_detection(self):
+    def test_current_platform_detection(self) -> None:
         """Test current platform detection."""
         from provide.foundation.platform.detection import get_platform_string
 
@@ -120,7 +120,7 @@ class TestPlatformDetection:
         assert isinstance(current_platform, str)
         assert len(current_platform.split("_")) >= 2
 
-    def test_get_system_info(self):
+    def test_get_system_info(self) -> None:
         """Test comprehensive system information."""
         from provide.foundation.platform.info import get_system_info
 

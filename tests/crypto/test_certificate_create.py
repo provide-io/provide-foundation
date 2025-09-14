@@ -93,7 +93,7 @@ async def test_create_invalid_key_type() -> None:
         CertificateBase.create(config)
 
 
-def test_certificate_base_create_unsupported_key_type_str(mocker):
+def test_certificate_base_create_unsupported_key_type_str(mocker) -> None:
     """Test CertificateBase.create with an unsupported string for key_type in config."""
     now = datetime.now(UTC)
     # Prepare a config with an unsupported key_type string
@@ -124,7 +124,7 @@ def test_certificate_base_create_unsupported_key_type_str(mocker):
 
 
 @pytest.mark.asyncio  # Keep async if other tests are, though this one is sync
-async def test_certificate_init_invalid_ecdsa_curve(mocker):
+async def test_certificate_init_invalid_ecdsa_curve(mocker) -> None:
     """Test Certificate instantiation with an invalid ecdsa_curve string."""
     mock_logger_error = mocker.patch(
         "provide.foundation.crypto.certificates.generator.logger.error", new=MagicMock(),

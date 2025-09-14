@@ -21,7 +21,7 @@ class TestGzipCompressor:
         """Create a test file."""
         return temp_file("This is test content for compression.\n" * 100, ".txt")
 
-    def test_compress_file(self, gzip_compressor, test_file):
+    def test_compress_file(self, gzip_compressor, test_file) -> None:
         """Test compressing a file."""
         output = test_file.with_suffix(".txt.gz")
 
@@ -35,7 +35,7 @@ class TestGzipCompressor:
         finally:
             output.unlink(missing_ok=True)
 
-    def test_decompress_file(self, gzip_compressor, test_file):
+    def test_decompress_file(self, gzip_compressor, test_file) -> None:
         """Test decompressing a file."""
         compressed = test_file.with_suffix(".txt.gz")
         decompressed = test_file.with_suffix(".txt.decompressed")
@@ -55,7 +55,7 @@ class TestGzipCompressor:
             compressed.unlink(missing_ok=True)
             decompressed.unlink(missing_ok=True)
 
-    def test_compress_bytes(self, gzip_compressor):
+    def test_compress_bytes(self, gzip_compressor) -> None:
         """Test compressing bytes data."""
         data = b"Test data for compression" * 100
 
@@ -66,7 +66,7 @@ class TestGzipCompressor:
         # Check GZIP magic number
         assert compressed[:2] == b"\x1f\x8b"
 
-    def test_decompress_bytes(self, gzip_compressor):
+    def test_decompress_bytes(self, gzip_compressor) -> None:
         """Test decompressing bytes data."""
         original = b"Test data for compression" * 100
 
@@ -75,7 +75,7 @@ class TestGzipCompressor:
 
         assert decompressed == original
 
-    def test_compress_stream(self, gzip_compressor):
+    def test_compress_stream(self, gzip_compressor) -> None:
         """Test compressing from stream to stream."""
         input_data = b"Stream compression test data" * 100
         input_stream = BytesIO(input_data)
@@ -87,7 +87,7 @@ class TestGzipCompressor:
         assert len(compressed) < len(input_data)
         assert compressed[:2] == b"\x1f\x8b"
 
-    def test_decompress_stream(self, gzip_compressor):
+    def test_decompress_stream(self, gzip_compressor) -> None:
         """Test decompressing from stream to stream."""
         original = b"Stream decompression test data" * 100
 
@@ -103,7 +103,7 @@ class TestGzipCompressor:
         decompressed = output_stream.getvalue()
         assert decompressed == original
 
-    def test_compression_levels(self):
+    def test_compression_levels(self) -> None:
         """Test different compression levels."""
         data = b"Test data" * 1000
 
@@ -121,7 +121,7 @@ class TestGzipCompressor:
         # Note: For small data, this might not always be true
         # assert len(compressed_best) <= len(compressed_fast)
 
-    def test_invalid_compression_level(self):
+    def test_invalid_compression_level(self) -> None:
         """Test invalid compression levels."""
         with pytest.raises(ValueError):
             GzipCompressor(level=0)
@@ -129,7 +129,7 @@ class TestGzipCompressor:
         with pytest.raises(ValueError):
             GzipCompressor(level=10)
 
-    def test_error_handling(self, gzip_compressor, temp_directory):
+    def test_error_handling(self, gzip_compressor, temp_directory) -> None:
         """Test error handling in GZIP operations."""
         temp_path = temp_directory
 

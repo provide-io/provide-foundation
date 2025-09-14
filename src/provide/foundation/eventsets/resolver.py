@@ -104,7 +104,7 @@ class EventSetResolver:
         # First check for direct field name matches
         simple_key = field_key.split(".")[-1]  # Get last part of dotted key
 
-        for event_set_name, mappings in self._event_mappings_by_set.items():
+        for _event_set_name, mappings in self._event_mappings_by_set.items():
             for mapping in mappings:
                 # Direct name match
                 if mapping.name == simple_key or mapping.name == field_key:

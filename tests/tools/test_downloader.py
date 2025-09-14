@@ -26,7 +26,7 @@ class TestToolDownloader:
         """Create a ToolDownloader instance."""
         return ToolDownloader(mock_client)
 
-    def test_download_with_progress_success(self, downloader, mock_client, tmp_path):
+    def test_download_with_progress_success(self, downloader, mock_client, tmp_path) -> None:
         """Test successful download with progress reporting."""
         dest = tmp_path / "tool.tar.gz"
         url = "https://example.com/tool.tar.gz"
@@ -61,7 +61,7 @@ class TestToolDownloader:
 
         mock_client.stream.assert_called_once_with("GET", url)
 
-    def test_download_with_checksum_success(self, downloader, mock_client, tmp_path):
+    def test_download_with_checksum_success(self, downloader, mock_client, tmp_path) -> None:
         """Test download with checksum verification."""
         dest = tmp_path / "tool.tar.gz"
         url = "https://example.com/tool.tar.gz"
@@ -85,7 +85,7 @@ class TestToolDownloader:
             assert dest.exists()
             mock_verify.assert_called_once_with(dest, "sha256:abc123")
 
-    def test_download_with_checksum_failure(self, downloader, mock_client, tmp_path):
+    def test_download_with_checksum_failure(self, downloader, mock_client, tmp_path) -> None:
         """Test download fails when checksum doesn't match."""
         dest = tmp_path / "tool.tar.gz"
         url = "https://example.com/tool.tar.gz"
@@ -108,7 +108,7 @@ class TestToolDownloader:
             # File should be deleted
             assert not dest.exists()
 
-    def test_download_parallel(self, downloader, mock_client, tmp_path):
+    def test_download_parallel(self, downloader, mock_client, tmp_path) -> None:
         """Test parallel downloads of multiple files."""
         urls = [
             ("https://example.com/file1.tar.gz", tmp_path / "file1.tar.gz"),
@@ -130,7 +130,7 @@ class TestToolDownloader:
             assert results[1].read_text() == "Content of https://example.com/file2.tar.gz"
             assert results[2].read_text() == "Content of https://example.com/file3.tar.gz"
 
-    def test_download_with_mirrors_first_success(self, downloader, mock_client, tmp_path):
+    def test_download_with_mirrors_first_success(self, downloader, mock_client, tmp_path) -> None:
         """Test download with mirrors succeeds on first mirror."""
         dest = tmp_path / "tool.tar.gz"
         mirrors = [
@@ -148,7 +148,7 @@ class TestToolDownloader:
             assert result == dest
             mock_download.assert_called_once_with(mirrors[0], dest)
 
-    def test_download_with_mirrors_fallback(self, downloader, mock_client, tmp_path):
+    def test_download_with_mirrors_fallback(self, downloader, mock_client, tmp_path) -> None:
         """Test download falls back to next mirror on failure."""
         dest = tmp_path / "tool.tar.gz"
         mirrors = [
@@ -168,7 +168,7 @@ class TestToolDownloader:
 
             assert result == dest
 
-    def test_download_with_mirrors_all_fail(self, downloader, mock_client, tmp_path):
+    def test_download_with_mirrors_all_fail(self, downloader, mock_client, tmp_path) -> None:
         """Test download fails when all mirrors fail."""
         dest = tmp_path / "tool.tar.gz"
         mirrors = [
@@ -185,7 +185,7 @@ class TestToolDownloader:
 
             assert mock_download.call_count == 2
 
-    def test_add_progress_callback(self, downloader):
+    def test_add_progress_callback(self, downloader) -> None:
         """Test adding progress callbacks."""
         callback1 = Mock()
         callback2 = Mock()
@@ -199,7 +199,7 @@ class TestToolDownloader:
         callback1.assert_called_once_with(100, 1000)
         callback2.assert_called_once_with(100, 1000)
 
-    def test_verify_checksum_sha256(self, downloader, tmp_path):
+    def test_verify_checksum_sha256(self, downloader, tmp_path) -> None:
         """Test SHA256 checksum verification."""
         file_path = tmp_path / "test.txt"
         file_path.write_text("test content")
@@ -214,7 +214,7 @@ class TestToolDownloader:
         result = downloader.verify_checksum(file_path, "wrong_checksum")
         assert result is False
 
-    def test_download_no_content_length(self, downloader, mock_client, tmp_path):
+    def test_download_no_content_length(self, downloader, mock_client, tmp_path) -> None:
         """Test download when server doesn't provide content-length."""
         dest = tmp_path / "tool.tar.gz"
         url = "https://example.com/tool.tar.gz"
@@ -230,7 +230,7 @@ class TestToolDownloader:
         assert result == dest
         assert dest.read_bytes() == b"chunk1chunk2"
 
-    def test_download_empty_file(self, downloader, mock_client, tmp_path):
+    def test_download_empty_file(self, downloader, mock_client, tmp_path) -> None:
         """Test downloading an empty file."""
         dest = tmp_path / "empty.txt"
         url = "https://example.com/empty.txt"
@@ -247,7 +247,7 @@ class TestToolDownloader:
         assert dest.exists()
         assert dest.read_bytes() == b""
 
-    def test_download_network_error(self, downloader, mock_client, tmp_path):
+    def test_download_network_error(self, downloader, mock_client, tmp_path) -> None:
         """Test handling network errors during download."""
         dest = tmp_path / "tool.tar.gz"
         url = "https://example.com/tool.tar.gz"

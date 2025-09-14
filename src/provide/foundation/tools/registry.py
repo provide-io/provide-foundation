@@ -25,7 +25,7 @@ class ToolRegistry:
 
     DIMENSION = "tool_manager"
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the tool registry."""
         self.hub = get_hub()
         self._discover_tools()

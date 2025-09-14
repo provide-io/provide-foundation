@@ -11,7 +11,7 @@ except ImportError:
     _HAS_CLICK = False
 
 
-def _require_click():
+def _require_click() -> None:
     """Ensure click is available for CLI."""
     if not _HAS_CLICK:
         raise ImportError(

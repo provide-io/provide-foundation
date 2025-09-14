@@ -120,7 +120,7 @@ class TarArchive(BaseArchive):
         try:
             with tarfile.open(archive, "r") as tar:
                 # Try to read all members
-                for member in tar.getmembers():
+                for _member in tar.getmembers():
                     # Just checking we can read the metadata
                     pass
             return True

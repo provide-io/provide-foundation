@@ -40,7 +40,7 @@ from provide.foundation.logger.config import (  # noqa: E402
 class Task:
     """Represents a task to be processed."""
 
-    def __init__(self, task_type: str, data: dict[str, Any], priority: int = 1):
+    def __init__(self, task_type: str, data: dict[str, Any], priority: int = 1) -> None:
         self.id = str(uuid4())
         self.type = task_type
         self.data = data
@@ -56,7 +56,7 @@ class Task:
 class TaskQueue:
     """Simple async task queue implementation."""
 
-    def __init__(self, name: str = "default"):
+    def __init__(self, name: str = "default") -> None:
         self.name = name
         self.queue: asyncio.Queue[Task] = asyncio.Queue()
         self.logger = logger.get_logger(f"task_queue.{name}")
@@ -89,7 +89,7 @@ class TaskQueue:
 class TaskWorker:
     """Async worker to process tasks."""
 
-    def __init__(self, worker_id: str, task_queue: TaskQueue):
+    def __init__(self, worker_id: str, task_queue: TaskQueue) -> None:
         self.worker_id = worker_id
         self.task_queue = task_queue
         self.logger = logger.get_logger(f"task_worker.{worker_id}")

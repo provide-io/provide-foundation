@@ -5,6 +5,7 @@
 Handles file-based logging streams and file operations.
 """
 
+import contextlib
 import io
 from pathlib import Path
 import sys
@@ -44,10 +45,8 @@ def configure_file_logging(log_file_path: str | None) -> None:
             return
         # Close existing file handle if it exists
         if _LOG_FILE_HANDLE and _LOG_FILE_HANDLE is not _PROVIDE_LOG_STREAM:
-            try:
+            with contextlib.suppress(Exception):
                 _LOG_FILE_HANDLE.close()
-            except Exception:
-                pass
             _LOG_FILE_HANDLE = None
 
         # Check if we're in testing mode
@@ -90,10 +89,8 @@ def close_log_streams() -> None:
 
     with _STREAM_LOCK:
         if _LOG_FILE_HANDLE:
-            try:
+            with contextlib.suppress(Exception):
                 _LOG_FILE_HANDLE.close()
-            except Exception:
-                pass
             _LOG_FILE_HANDLE = None
 
         # Don't reset stream to stderr if we're in Click testing context

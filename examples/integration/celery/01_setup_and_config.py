@@ -37,7 +37,7 @@ from provide.foundation.logger.config import (  # noqa: E402
 )
 
 
-def setup_celery_logging():
+def setup_celery_logging() -> None:
     """Configure comprehensive logging for Celery workers."""
     config = TelemetryConfig(
         service_name="celery-foundation-example",
@@ -110,11 +110,11 @@ app.conf.update(
 class CeleryTaskLogger:
     """Enhanced task-specific logging with metrics."""
 
-    def __init__(self, task_name: str):
+    def __init__(self, task_name: str) -> None:
         self.logger = logger.get_logger(f"celery.task.{task_name}")
         self.task_name = task_name
 
-    def log_task_start(self, task_id: str, args: tuple, kwargs: dict):
+    def log_task_start(self, task_id: str, args: tuple, kwargs: dict) -> None:
         """Log task execution start with context."""
         self.logger.info("task_started",
             task_id=task_id,
@@ -127,7 +127,7 @@ class CeleryTaskLogger:
             worker_hostname=app.conf.get("worker_hostname", "unknown"),
         )
 
-    def log_task_progress(self, task_id: str, current: int, total: int, message: str = ""):
+    def log_task_progress(self, task_id: str, current: int, total: int, message: str = "") -> None:
         """Log task progress for long-running tasks."""
         progress_pct = round((current / total) * 100, 1) if total > 0 else 0
         self.logger.info("task_progress",
@@ -139,7 +139,7 @@ class CeleryTaskLogger:
             message=message,
         )
 
-    def log_task_success(self, task_id: str, result, duration: float, metrics_tracker):
+    def log_task_success(self, task_id: str, result, duration: float, metrics_tracker) -> None:
         """Log successful task completion with metrics."""
         metrics_tracker.record_execution(self.task_name, duration, True)
         self.logger.info("task_completed",
@@ -151,7 +151,7 @@ class CeleryTaskLogger:
             total_executions=metrics_tracker.task_counts[self.task_name],
         )
 
-    def log_task_failure(self, task_id: str, error: Exception, duration: float, metrics_tracker):
+    def log_task_failure(self, task_id: str, error: Exception, duration: float, metrics_tracker) -> None:
         """Log task failure with context."""
         metrics_tracker.record_execution(self.task_name, duration, False)
         self.logger.error("task_failed",
@@ -164,7 +164,7 @@ class CeleryTaskLogger:
             total_errors=metrics_tracker.error_counts[self.task_name],
         )
 
-    def log_task_retry(self, task_id: str, exc: Exception, countdown: int, retry_count: int, metrics_tracker):
+    def log_task_retry(self, task_id: str, exc: Exception, countdown: int, retry_count: int, metrics_tracker) -> None:
         """Log task retry attempt."""
         metrics_tracker.record_retry(self.task_name)
         self.logger.warning("task_retry",

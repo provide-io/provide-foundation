@@ -2,6 +2,7 @@
 
 import asyncio
 import time
+from typing import Never
 
 import pytest
 
@@ -11,7 +12,7 @@ from provide.foundation.utils.rate_limiting import TokenBucketRateLimiter
 class TestTokenBucketRateLimiter:
     """Test TokenBucketRateLimiter functionality."""
 
-    def test_init_validates_parameters(self):
+    def test_init_validates_parameters(self) -> None:
         """Test that initialization validates parameters."""
         # Valid parameters should work
         limiter = TokenBucketRateLimiter(capacity=10.0, refill_rate=5.0)
@@ -33,7 +34,7 @@ class TestTokenBucketRateLimiter:
             TokenBucketRateLimiter(capacity=10.0, refill_rate=-1)
 
     @pytest.mark.asyncio
-    async def test_initial_tokens_available(self):
+    async def test_initial_tokens_available(self) -> None:
         """Test that limiter starts with full capacity of tokens."""
         limiter = TokenBucketRateLimiter(capacity=5.0, refill_rate=1.0)
 
@@ -45,7 +46,7 @@ class TestTokenBucketRateLimiter:
         assert await limiter.is_allowed() is False
 
     @pytest.mark.asyncio
-    async def test_token_refill_over_time(self):
+    async def test_token_refill_over_time(self) -> None:
         """Test that tokens are refilled over time."""
         # Create limiter with 1 token capacity, refilling at 2 tokens/second
         limiter = TokenBucketRateLimiter(capacity=1.0, refill_rate=2.0)
@@ -62,7 +63,7 @@ class TestTokenBucketRateLimiter:
         assert await limiter.is_allowed() is False
 
     @pytest.mark.asyncio
-    async def test_burst_capacity_limit(self):
+    async def test_burst_capacity_limit(self) -> None:
         """Test that tokens don't accumulate beyond capacity."""
         limiter = TokenBucketRateLimiter(capacity=3.0, refill_rate=10.0)
 
@@ -80,7 +81,7 @@ class TestTokenBucketRateLimiter:
         assert await limiter.is_allowed() is False
 
     @pytest.mark.asyncio
-    async def test_get_current_tokens(self):
+    async def test_get_current_tokens(self) -> None:
         """Test getting current token count."""
         limiter = TokenBucketRateLimiter(capacity=5.0, refill_rate=1.0)
 
@@ -97,7 +98,7 @@ class TestTokenBucketRateLimiter:
         assert abs(tokens - 3.0) < 0.01
 
     @pytest.mark.asyncio
-    async def test_concurrent_access(self):
+    async def test_concurrent_access(self) -> None:
         """Test thread-safety with concurrent access."""
         limiter = TokenBucketRateLimiter(capacity=10.0, refill_rate=1.0)
 
@@ -113,7 +114,7 @@ class TestTokenBucketRateLimiter:
         assert successful_requests == 10
 
     @pytest.mark.asyncio
-    async def test_fractional_values(self):
+    async def test_fractional_values(self) -> None:
         """Test that fractional capacity and refill rates work."""
         limiter = TokenBucketRateLimiter(capacity=2.5, refill_rate=0.5)
 
@@ -126,17 +127,17 @@ class TestTokenBucketRateLimiter:
         await asyncio.sleep(2.1)
         assert await limiter.is_allowed() is True
 
-    def test_logger_initialization_success(self):
+    def test_logger_initialization_success(self) -> None:
         """Test successful logger initialization."""
         limiter = TokenBucketRateLimiter(capacity=1.0, refill_rate=1.0)
         # Logger should be available and cached
         assert limiter._logger is not None
 
-    def test_logger_initialization_fallback(self, monkeypatch):
+    def test_logger_initialization_fallback(self, monkeypatch) -> None:
         """Test logger initialization fallback when import fails."""
 
         # Mock the import to raise ImportError
-        def mock_import_error(*args, **kwargs):
+        def mock_import_error(*args, **kwargs) -> Never:
             raise ImportError("Mocked import failure")
 
         # Patch the import mechanism
@@ -147,7 +148,7 @@ class TestTokenBucketRateLimiter:
         assert limiter._logger is None
 
     @pytest.mark.asyncio
-    async def test_very_long_wait_periods(self):
+    async def test_very_long_wait_periods(self) -> None:
         """Test behavior after very long idle periods."""
         limiter = TokenBucketRateLimiter(capacity=3.0, refill_rate=1.0)
 
@@ -169,7 +170,7 @@ class TestTokenBucketRateLimiter:
         assert await limiter.is_allowed() is False
 
     @pytest.mark.asyncio
-    async def test_extreme_time_precision(self):
+    async def test_extreme_time_precision(self) -> None:
         """Test behavior with very small time intervals and high precision."""
         limiter = TokenBucketRateLimiter(
             capacity=1.0, refill_rate=1000.0,
@@ -184,7 +185,7 @@ class TestTokenBucketRateLimiter:
         assert await limiter.is_allowed() is True
 
     @pytest.mark.asyncio
-    async def test_high_concurrency_stress(self):
+    async def test_high_concurrency_stress(self) -> None:
         """Test thread-safety with high concurrency stress testing."""
         limiter = TokenBucketRateLimiter(capacity=50.0, refill_rate=1.0)
 
@@ -205,7 +206,7 @@ class TestTokenBucketRateLimiter:
         assert denied_requests == 150
 
     @pytest.mark.asyncio
-    async def test_extreme_concurrency_stress(self):
+    async def test_extreme_concurrency_stress(self) -> None:
         """Test thread-safety with extreme concurrency."""
         limiter = TokenBucketRateLimiter(capacity=100.0, refill_rate=1.0)
 
@@ -222,7 +223,7 @@ class TestTokenBucketRateLimiter:
         assert successful_requests == 100
 
     @pytest.mark.asyncio
-    async def test_concurrent_refill_and_consumption(self):
+    async def test_concurrent_refill_and_consumption(self) -> None:
         """Test concurrent token consumption while refilling occurs."""
         limiter = TokenBucketRateLimiter(capacity=5.0, refill_rate=10.0)  # Fast refill
 
@@ -254,7 +255,7 @@ class TestTokenBucketRateLimiter:
         )  # Reasonable range allowing for timing variations
 
     @pytest.mark.asyncio
-    async def test_logger_usage_during_operations(self, mocker):
+    async def test_logger_usage_during_operations(self, mocker) -> None:
         """Test that logger is used correctly during operations."""
         # Mock the get_logger function to return a mock logger
         mock_logger = mocker.MagicMock()

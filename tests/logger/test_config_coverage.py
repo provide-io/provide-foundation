@@ -13,7 +13,7 @@ import pytest
 class TestConfigBase:
     """Test logger config base functionality."""
 
-    def test_get_config_logger_basic(self):
+    def test_get_config_logger_basic(self) -> None:
         """Test basic config logger creation."""
         from provide.foundation.logger.config.base import get_config_logger
 
@@ -22,7 +22,7 @@ class TestConfigBase:
         assert hasattr(logger, "info")
 
     @patch.dict(os.environ, {"FOUNDATION_LOG_OUTPUT": "stderr"})
-    def test_get_config_logger_with_stderr(self):
+    def test_get_config_logger_with_stderr(self) -> None:
         """Test config logger with stderr output."""
         from provide.foundation.logger.config.base import get_config_logger
 
@@ -30,7 +30,7 @@ class TestConfigBase:
         assert logger is not None
 
     @patch.dict(os.environ, {"FOUNDATION_LOG_OUTPUT": "stdout"})
-    def test_get_config_logger_with_stdout(self):
+    def test_get_config_logger_with_stdout(self) -> None:
         """Test config logger with stdout output."""
         from provide.foundation.logger.config.base import get_config_logger
 
@@ -38,7 +38,7 @@ class TestConfigBase:
         assert logger is not None
 
     @patch("provide.foundation.utils.streams.get_foundation_log_stream")
-    def test_get_config_logger_with_stream_exception(self, mock_get_stream):
+    def test_get_config_logger_with_stream_exception(self, mock_get_stream) -> None:
         """Test config logger when stream resolution fails."""
         mock_get_stream.side_effect = Exception("Stream error")
 
@@ -49,7 +49,7 @@ class TestConfigBase:
         assert logger is not None
 
     @patch("structlog.get_config")
-    def test_get_config_logger_with_structlog_exception(self, mock_get_config):
+    def test_get_config_logger_with_structlog_exception(self, mock_get_config) -> None:
         """Test config logger when structlog config fails."""
         mock_get_config.side_effect = Exception("Structlog error")
 
@@ -63,7 +63,7 @@ class TestConfigBase:
 class TestLoggingConfigCoverage:
     """Test logging config functionality."""
 
-    def test_logging_config_from_env_invalid_level(self):
+    def test_logging_config_from_env_invalid_level(self) -> None:
         """Test logging config with invalid log level raises clear error."""
         from provide.foundation.logger.config.logging import LoggingConfig
 
@@ -73,7 +73,7 @@ class TestLoggingConfigCoverage:
             assert "Invalid log_level 'INVALID_LEVEL'" in str(exc_info.value)
             assert "TRACE, DEBUG, INFO, WARNING, ERROR, CRITICAL" in str(exc_info.value)
 
-    def test_logging_config_from_env_strict_mode(self):
+    def test_logging_config_from_env_strict_mode(self) -> None:
         """Test logging config with valid log level works correctly."""
         from provide.foundation.logger.config.logging import LoggingConfig
 
@@ -81,7 +81,7 @@ class TestLoggingConfigCoverage:
             config = LoggingConfig.from_env()
             assert config.default_level == "DEBUG"
 
-    def test_logging_config_json_formatter_enabled(self):
+    def test_logging_config_json_formatter_enabled(self) -> None:
         """Test logging config with JSON formatter enabled."""
         from provide.foundation.logger.config.logging import LoggingConfig
 
@@ -89,7 +89,7 @@ class TestLoggingConfigCoverage:
             config = LoggingConfig.from_env()
             assert config.console_formatter == "json"
 
-    def test_logging_config_emoji_disabled(self):
+    def test_logging_config_emoji_disabled(self) -> None:
         """Test logging config with emojis disabled."""
         from provide.foundation.logger.config.logging import LoggingConfig
 
@@ -97,7 +97,7 @@ class TestLoggingConfigCoverage:
             config = LoggingConfig.from_env()
             assert config.das_emoji_prefix_enabled is False
 
-    def test_logging_config_log_file_path(self):
+    def test_logging_config_log_file_path(self) -> None:
         """Test logging config with log file path."""
         from provide.foundation.logger.config.logging import LoggingConfig
 
@@ -106,7 +106,7 @@ class TestLoggingConfigCoverage:
             assert config.log_file is not None
             assert str(config.log_file) == "/tmp/test.log"
 
-    def test_logging_config_no_emoji_sets_fields(self):
+    def test_logging_config_no_emoji_sets_fields(self) -> None:
         """Test that deprecated emoji sets fields don't exist."""
         from provide.foundation.logger.config.logging import LoggingConfig
 
@@ -114,7 +114,7 @@ class TestLoggingConfigCoverage:
         # Emoji sets fields should not exist
         assert not hasattr(config, "enabled_emoji_sets")
 
-    def test_logging_config_log_level_name_mapping(self):
+    def test_logging_config_log_level_name_mapping(self) -> None:
         """Test logging config level name mappings."""
         from provide.foundation.logger.config.logging import LoggingConfig
 
@@ -134,7 +134,7 @@ class TestLoggingConfigCoverage:
                 config = LoggingConfig.from_env()
                 assert config.default_level == expected_level
 
-    def test_logging_config_boolean_env_parsing(self):
+    def test_logging_config_boolean_env_parsing(self) -> None:
         """Test boolean environment variable parsing."""
         from provide.foundation.logger.config.logging import LoggingConfig
 
@@ -151,7 +151,7 @@ class TestLoggingConfigCoverage:
             ("", False),
         ]
 
-        for env_value, expected in boolean_tests:
+        for _env_value, expected in boolean_tests:
             with patch.dict(
                 os.environ,
                 {"PROVIDE_LOG_CONSOLE_FORMATTER": "json" if expected else "key_value"},
@@ -164,7 +164,7 @@ class TestLoggingConfigCoverage:
 class TestTelemetryConfigCoverage:
     """Test telemetry config functionality."""
 
-    def test_telemetry_config_from_env_otel_service_name(self):
+    def test_telemetry_config_from_env_otel_service_name(self) -> None:
         """Test telemetry config using OTEL_SERVICE_NAME."""
         from provide.foundation.logger.config.telemetry import TelemetryConfig
 
@@ -172,7 +172,7 @@ class TestTelemetryConfigCoverage:
             config = TelemetryConfig.from_env()
             assert config.service_name == "test-service"
 
-    def test_telemetry_config_from_env_service_name_default_none(self):
+    def test_telemetry_config_from_env_service_name_default_none(self) -> None:
         """Test telemetry config service_name defaults to None when not set."""
         from provide.foundation.logger.config.telemetry import TelemetryConfig
 
@@ -186,7 +186,7 @@ class TestTelemetryConfigCoverage:
             config = TelemetryConfig.from_env()
             assert config.service_name is None
 
-    def test_telemetry_config_from_env_precedence(self):
+    def test_telemetry_config_from_env_precedence(self) -> None:
         """Test that OTEL_SERVICE_NAME takes precedence over PROVIDE_SERVICE_NAME."""
         from provide.foundation.logger.config.telemetry import TelemetryConfig
 
@@ -201,7 +201,7 @@ class TestTelemetryConfigCoverage:
             # OTEL takes precedence as the OpenTelemetry standard
             assert config.service_name == "otel-service"
 
-    def test_telemetry_config_globally_disabled(self):
+    def test_telemetry_config_globally_disabled(self) -> None:
         """Test telemetry config with global disable flag."""
         from provide.foundation.logger.config.telemetry import TelemetryConfig
 
@@ -209,7 +209,7 @@ class TestTelemetryConfigCoverage:
             config = TelemetryConfig.from_env()
             assert config.globally_disabled is True
 
-    def test_telemetry_config_includes_logging_config(self):
+    def test_telemetry_config_includes_logging_config(self) -> None:
         """Test that telemetry config includes logging config from env."""
         from provide.foundation.logger.config.telemetry import TelemetryConfig
 
@@ -217,7 +217,7 @@ class TestTelemetryConfigCoverage:
             config = TelemetryConfig.from_env()
             assert config.logging.default_level == "DEBUG"
 
-    def test_telemetry_config_from_env_strict_mode(self):
+    def test_telemetry_config_from_env_strict_mode(self) -> None:
         """Test telemetry config with invalid log level raises clear error."""
         from provide.foundation.logger.config.telemetry import TelemetryConfig
 

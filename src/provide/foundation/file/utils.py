@@ -107,10 +107,7 @@ def find_files(
         pattern = f"**/{pattern}"
 
     try:
-        if recursive:
-            matches = list(root.glob(pattern))
-        else:
-            matches = list(root.glob(pattern.lstrip("/")))
+        matches = list(root.glob(pattern)) if recursive else list(root.glob(pattern.lstrip("/")))
 
         # Filter to files only
         files = [p for p in matches if p.is_file()]
