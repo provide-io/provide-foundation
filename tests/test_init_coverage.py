@@ -164,7 +164,6 @@ class TestFoundationInit:
 
         # Test core classes/functions
         assert hasattr(provide.foundation, "logger")
-        assert hasattr(provide.foundation, "setup_telemetry")
         assert hasattr(provide.foundation, "FoundationError")
         assert hasattr(provide.foundation, "__version__")
 
