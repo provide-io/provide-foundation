@@ -33,7 +33,7 @@ class CommandInfo:
     hidden: bool = False
     category: str | None = None
     metadata: dict[str, Any] = field(factory=dict)
-    click_command: "click.Command | None" = None
+    click_command: click.Command | None = None
     parent: str | None = None  # Parent path extracted from dot notation
 
 
