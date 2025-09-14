@@ -511,6 +511,7 @@ class TestOTLPIntegration:
         """Test trace context extraction in OTLP logging."""
         from provide.foundation.integrations.openobserve.otlp import send_log_otlp
 
+        # Mock all the OTLP dependencies
         mock_config = Mock()
         mock_config.otlp_endpoint = "http://localhost:4318"
         mock_config.otlp_traces_endpoint = None
@@ -522,63 +523,94 @@ class TestOTLPIntegration:
         mock_otel_logger = Mock()
         mock_logger_provider = Mock()
         mock_logger_provider.get_logger.return_value = mock_otel_logger
+        mock_logger_provider.force_flush.return_value = None
 
-        # Test both with and without active span
-        test_cases = [
-            (True, True, {"expected_trace": "000000000000000000000000000003039", "expected_span": "000000000000010d"}),
-            (True, False, {}),  # Span exists but not recording
-            (False, True, {}),  # No current span
-        ]
+        # Test case 1: Active span that is recording (should extract trace context)
+        mock_span_context = Mock()
+        mock_span_context.trace_id = 12345
+        mock_span_context.span_id = 269
 
-        for span_exists, is_recording, expected_attrs in test_cases:
-            mock_span_context = Mock() if span_exists else None
-            if span_exists:
-                mock_span_context.trace_id = 12345
-                mock_span_context.span_id = 269
+        mock_current_span = Mock()
+        mock_current_span.is_recording.return_value = True
+        mock_current_span.get_span_context.return_value = mock_span_context
 
-            mock_current_span = Mock() if span_exists else None
-            if span_exists:
-                mock_current_span.is_recording.return_value = is_recording
-                mock_current_span.get_span_context.return_value = mock_span_context
+        with patch('provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS', True), \
+             patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class, \
+             patch('provide.foundation.integrations.openobserve.otlp.Resource'), \
+             patch('provide.foundation.integrations.openobserve.otlp.OTLPLogExporter'), \
+             patch('provide.foundation.integrations.openobserve.otlp.LoggerProvider') as mock_provider_class, \
+             patch('provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor'), \
+             patch('provide.foundation.integrations.openobserve.otlp.trace') as mock_trace:
 
-            with patch('provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS', True), \
-                 patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class, \
-                 patch('provide.foundation.integrations.openobserve.otlp.Resource'), \
-                 patch('provide.foundation.integrations.openobserve.otlp.OTLPLogExporter'), \
-                 patch('provide.foundation.integrations.openobserve.otlp.LoggerProvider') as mock_provider_class, \
-                 patch('provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor'), \
-                 patch('provide.foundation.integrations.openobserve.otlp.trace') as mock_trace:
+            mock_config_class.from_env.return_value = mock_config
+            mock_provider_class.return_value = mock_logger_provider
+            mock_trace.get_current_span.return_value = mock_current_span
 
-                mock_config_class.from_env.return_value = mock_config
-                mock_provider_class.return_value = mock_logger_provider
-                mock_trace.get_current_span.return_value = mock_current_span
+            result = send_log_otlp("Test with trace context")
 
-                result = send_log_otlp("Trace test message")
+            assert result is True
 
-                assert result is True
+            # Verify that emit was called with trace context
+            mock_otel_logger.emit.assert_called_once()
+            call_kwargs = mock_otel_logger.emit.call_args[1]
+            attributes = call_kwargs['attributes']
 
-                # Verify attributes contain trace info when expected
-                call_args = mock_otel_logger.emit.call_args[1]
-                for key, expected_value in expected_attrs.items():
-                    if key.startswith("expected_"):
-                        attr_key = key.replace("expected_", "")
-                        assert call_args['attributes'].get(attr_key) == expected_value
+            # Verify trace context was added
+            assert attributes['trace_id'] == "00000000000000000000000000003039"  # hex format of 12345
+            assert attributes['span_id'] == "000000000000010d"  # hex format of 269
 
-                mock_otel_logger.reset_mock()
+        # Test case 2: No active span (should not add trace context)
+        mock_otel_logger.reset_mock()
+
+        with patch('provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS', True), \
+             patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class, \
+             patch('provide.foundation.integrations.openobserve.otlp.Resource'), \
+             patch('provide.foundation.integrations.openobserve.otlp.OTLPLogExporter'), \
+             patch('provide.foundation.integrations.openobserve.otlp.LoggerProvider') as mock_provider_class, \
+             patch('provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor'), \
+             patch('provide.foundation.integrations.openobserve.otlp.trace') as mock_trace:
+
+            mock_config_class.from_env.return_value = mock_config
+            mock_provider_class.return_value = mock_logger_provider
+            mock_trace.get_current_span.return_value = None
+
+            result = send_log_otlp("Test without trace context")
+
+            assert result is True
+
+            # Verify that emit was called without trace context
+            mock_otel_logger.emit.assert_called_once()
+            call_kwargs = mock_otel_logger.emit.call_args[1]
+            attributes = call_kwargs['attributes']
+
+            # Verify trace context was not added
+            assert 'trace_id' not in attributes
+            assert 'span_id' not in attributes
 
     def test_bulk_api_log_structure(self):
         """Test the structure of logs sent via bulk API."""
         from provide.foundation.integrations.openobserve.otlp import send_log_bulk
 
         mock_client = Mock()
+        mock_client.url = "http://localhost:5080"
+        mock_client.organization = "test-org"
+        mock_client.session.headers = {"Authorization": "Bearer test-token"}
+        mock_client.timeout = 30
+
         mock_config = Mock()
         mock_config.service_name = "structure-test"
+        mock_config.openobserve_stream = "test-stream"
+
+        mock_response = Mock()
+        mock_response.status_code = 200
 
         with patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.datetime') as mock_datetime:
+             patch('provide.foundation.integrations.openobserve.otlp.datetime') as mock_datetime, \
+             patch('requests.post') as mock_post:
 
             mock_config_class.from_env.return_value = mock_config
             mock_datetime.now.return_value.timestamp.return_value = 1609459200.0  # 2021-01-01 00:00:00
+            mock_post.return_value = mock_response
 
             result = send_log_bulk(
                 message="Structure test",
@@ -590,16 +622,32 @@ class TestOTLPIntegration:
 
             assert result is True
 
-            # Verify exact structure of bulk API call
-            expected_call = mock_client._make_request.call_args
-            assert expected_call[1]['method'] == "POST"
-            assert expected_call[1]['endpoint'] == "_bulk"
+            # Verify the requests.post was called correctly
+            mock_post.assert_called_once()
+            call_args = mock_post.call_args
 
-            bulk_data = expected_call[1]['json_data']
-            assert bulk_data['index'] == "default"
-            assert len(bulk_data['records']) == 1
+            # Check URL construction
+            expected_url = "http://localhost:5080/api/test-org/_bulk"
+            assert call_args[0][0] == expected_url
 
-            log_record = bulk_data['records'][0]
+            # Check headers
+            assert call_args[1]['headers'] == {"Authorization": "Bearer test-token"}
+
+            # Check timeout
+            assert call_args[1]['timeout'] == 30
+
+            # Check bulk data structure
+            bulk_data = call_args[1]['data']
+            lines = bulk_data.strip().split('\n')
+            assert len(lines) == 2  # Index line + data line
+
+            # Parse index line
+            import json
+            index_line = json.loads(lines[0])
+            assert index_line == {"index": {"_index": "test-stream"}}
+
+            # Parse data line
+            log_record = json.loads(lines[1])
             assert log_record['_timestamp'] == 1609459200000000  # microseconds
             assert log_record['level'] == "WARN"
             assert log_record['message'] == "Structure test"
