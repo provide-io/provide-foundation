@@ -52,6 +52,44 @@ def format_size(size_bytes: float, precision: int = 1) -> str:
     return f"-{formatted}" if negative else formatted
 
 
+def _format_duration_components(days: int, hours: int, minutes: int, seconds: int) -> tuple[int, int, int, int]:
+    """Extract duration components from seconds."""
+    return (
+        days,
+        hours,
+        minutes,
+        seconds,
+    )
+
+
+def _format_duration_short(days: int, hours: int, minutes: int, seconds: int) -> str:
+    """Format duration in short format (1h30m)."""
+    parts = []
+    if days > 0:
+        parts.append(f"{days}d")
+    if hours > 0:
+        parts.append(f"{hours}h")
+    if minutes > 0:
+        parts.append(f"{minutes}m")
+    if seconds > 0 or not parts:
+        parts.append(f"{seconds}s")
+    return "".join(parts)
+
+
+def _format_duration_long(days: int, hours: int, minutes: int, seconds: int) -> str:
+    """Format duration in long format (1 hour 30 minutes)."""
+    parts = []
+    if days > 0:
+        parts.append(f"{days} day{'s' if days != 1 else ''}")
+    if hours > 0:
+        parts.append(f"{hours} hour{'s' if hours != 1 else ''}")
+    if minutes > 0:
+        parts.append(f"{minutes} minute{'s' if minutes != 1 else ''}")
+    if seconds > 0 or not parts:
+        parts.append(f"{seconds} second{'s' if seconds != 1 else ''}")
+    return " ".join(parts)
+
+
 def format_duration(seconds: float, short: bool = False) -> str:
     """Format seconds as human-readable duration.
 
@@ -85,27 +123,9 @@ def format_duration(seconds: float, short: bool = False) -> str:
     minutes = int((seconds % 3600) // 60)
     secs = int(seconds % 60)
 
-    parts = []
-
     if short:
-        if days > 0:
-            parts.append(f"{days}d")
-        if hours > 0:
-            parts.append(f"{hours}h")
-        if minutes > 0:
-            parts.append(f"{minutes}m")
-        if secs > 0 or not parts:
-            parts.append(f"{secs}s")
-        return "".join(parts)
-    if days > 0:
-        parts.append(f"{days} day{'s' if days != 1 else ''}")
-    if hours > 0:
-        parts.append(f"{hours} hour{'s' if hours != 1 else ''}")
-    if minutes > 0:
-        parts.append(f"{minutes} minute{'s' if minutes != 1 else ''}")
-    if secs > 0 or not parts:
-        parts.append(f"{secs} second{'s' if secs != 1 else ''}")
-    return " ".join(parts)
+        return _format_duration_short(days, hours, minutes, secs)
+    return _format_duration_long(days, hours, minutes, secs)
 
 
 def format_number(num: float, precision: int | None = None) -> str:
