@@ -121,24 +121,25 @@ class TestAsyncioDebugSuppression:
         # Create a string buffer to capture log output
         log_output = StringIO()
 
-        # Use default configuration (asyncio at INFO level)
-        config = TelemetryConfig.from_env()
-        configure_structlog_output(config, log_output)
+        # Use DEBUG overall level but asyncio at INFO level to test module-specific filtering
+        with patch.dict("os.environ", {"PROVIDE_LOG_LEVEL": "DEBUG"}):
+            config = TelemetryConfig.from_env()
+            configure_structlog_output(config, log_output)
 
-        # Simulate what would happen if asyncio itself logged through Foundation
-        # (This is more of a demonstration of the filtering mechanism)
-        asyncio_logger = structlog.get_logger("asyncio.selector_events")
+            # Simulate what would happen if asyncio itself logged through Foundation
+            # (This is more of a demonstration of the filtering mechanism)
+            asyncio_logger = structlog.get_logger("asyncio.selector_events")
 
-        # These debug messages should be suppressed
-        asyncio_logger.debug("Using selector: KqueueSelector", file="selector_events.py", line=54)
-        asyncio_logger.debug("Selector timeout: 1.0", file="selector_events.py", line=67)
+            # These debug messages should be suppressed
+            asyncio_logger.debug("Using selector: KqueueSelector", file="selector_events.py", line=54)
+            asyncio_logger.debug("Selector timeout: 1.0", file="selector_events.py", line=67)
 
-        # This info message should pass through
-        asyncio_logger.info("Event loop started", file="base_events.py", line=123)
+            # This info message should pass through
+            asyncio_logger.info("Event loop started", file="base_events.py", line=123)
 
-        captured_output = log_output.getvalue()
+            captured_output = log_output.getvalue()
 
-        # Verify debug messages are suppressed but info messages pass through
-        assert "KqueueSelector" not in captured_output
-        assert "Selector timeout" not in captured_output
-        assert "Event loop started" in captured_output
+            # Verify debug messages are suppressed but info messages pass through
+            assert "KqueueSelector" not in captured_output
+            assert "Selector timeout" not in captured_output
+            assert "Event loop started" in captured_output

@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(PYTHONPATH=src pytest tests/logger/test_asyncio_suppression.py -v)"
+      "Bash(PYTHONPATH=src pytest tests/logger/test_asyncio_suppression.py::TestAsyncioDebugSuppression::test_structlog_asyncio_debug_messages_suppressed -v -s)",
+      "Bash(PYTHONPATH=src pytest tests/logger/test_asyncio_suppression.py -v --tb=short)"
     ],
     "deny": [],
     "ask": [],
