@@ -98,7 +98,9 @@ def default_empty_dict() -> dict[str, str]:
 
 def default_module_levels() -> dict[str, str]:
     """Factory for module log levels dictionary."""
-    return {}
+    return {
+        "asyncio": "INFO",  # Suppress asyncio DEBUG messages (e.g., selector events)
+    }
 
 def default_rate_limits() -> dict[str, tuple[float, float]]:
     """Factory for per-logger rate limits dictionary."""
