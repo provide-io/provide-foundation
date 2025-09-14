@@ -65,9 +65,9 @@ def get_system_info() -> SystemInfo:
     # User info
     username = os.environ.get("USER") or os.environ.get("USERNAME")
     home_dir = os.path.expanduser("~")
-    # Use secure temp directory - prefer environment variables over hardcoded path
-    import tempfile
-    temp_dir = os.environ.get("TMPDIR") or os.environ.get("TEMP") or tempfile.gettempdir()
+    # Use secure temp directory - prefer environment variables over Foundation's temp dir
+    from provide.foundation.file.temp import system_temp_dir
+    temp_dir = os.environ.get("TMPDIR") or os.environ.get("TEMP") or str(system_temp_dir())
 
     # CPU info
     num_cpus = None

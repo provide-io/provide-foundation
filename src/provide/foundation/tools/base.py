@@ -242,8 +242,8 @@ class BaseToolManager(ABC):
             raise ToolInstallError(f"No download URL for {self.tool_name} {version}")
 
         # Download to secure temporary directory
-        import tempfile
-        download_path = Path(tempfile.gettempdir()) / f"{self.tool_name}-{version}"
+        from provide.foundation.file.temp import system_temp_dir
+        download_path = system_temp_dir() / f"{self.tool_name}-{version}"
         artifact_path = self.downloader.download_with_progress(
             metadata.download_url, download_path, metadata.checksum
         )
