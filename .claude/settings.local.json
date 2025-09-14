@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(PYTHONPATH=src pytest tests/logger/test_asyncio_suppression.py tests/config/test_defaults.py -v -q)"
+      "Bash(PYTHONPATH=src pytest tests/logger/test_asyncio_suppression.py tests/config/test_defaults.py -v -q)",
+      "Bash(PYTHONPATH=src pytest tests/conversion/test_inference_concurrency_safety.py::TestInferenceConcurrencySafety::test_concurrent_inference_is_isolated -xvs)"
     ],
     "deny": [],
     "ask": [],
