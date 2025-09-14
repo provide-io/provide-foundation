@@ -11,6 +11,7 @@ functionality that Foundation needs for proper test isolation.
 from provide.foundation.testmode.detection import (
     is_in_click_testing,
     is_in_test_mode,
+    should_use_shared_registries,
 )
 from provide.foundation.testmode.internal import (
     reset_hub_state,
@@ -23,6 +24,7 @@ __all__ = [
     # Test detection
     "is_in_click_testing",
     "is_in_test_mode",
+    "should_use_shared_registries",
     # Internal reset APIs (for testkit use)
     "reset_hub_state",
     "reset_logger_state",
