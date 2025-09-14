@@ -5,7 +5,8 @@
       "Bash(PYTHONPATH=src pytest tests/conversion/test_inference_concurrency_safety.py::TestInferenceConcurrencySafety::test_concurrent_inference_is_isolated -xvs)",
       "Bash(PYTHONPATH=src pytest tests/validation/test_enterprise_recursion.py::TestAdvancedRecursionDetection::test_handles_legitimate_deep_nesting -xvs)",
       "Bash(PYTHONPATH=src pytest -x --tb=short)",
-      "Bash(PYTHONPATH=src pytest tests/conversion/test_inference_cache_context.py::TestInferenceCacheContext::test_nested_context_reuses_existing_cache -xvs)"
+      "Bash(PYTHONPATH=src pytest tests/conversion/test_inference_cache_context.py::TestInferenceCacheContext::test_nested_context_reuses_existing_cache -xvs)",
+      "Bash(PYTHONPATH=src pytest tests/conversion/test_inference_concurrency_safety.py::TestInferenceConcurrencySafety::test_concurrent_inference_is_isolated tests/validation/test_enterprise_recursion.py::TestAdvancedRecursionDetection::test_handles_legitimate_deep_nesting -v)"
     ],
     "deny": [],
     "ask": [],
