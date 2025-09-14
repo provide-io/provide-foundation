@@ -97,6 +97,7 @@ def get_optional_dependencies() -> list[DependencyStatus]:
 
     Returns:
         List of dependency status objects
+
     """
     return [
         _check_click(),
@@ -114,6 +115,7 @@ def check_optional_deps(*, quiet: bool = False, return_status: bool = False) -> 
 
     Returns:
         Optional list of dependency statuses if return_status=True
+
     """
     deps = get_optional_dependencies()
 
@@ -156,6 +158,7 @@ def has_dependency(name: str) -> bool:
 
     Returns:
         True if dependency is available
+
     """
     deps = get_optional_dependencies()
     for dep in deps:
@@ -172,11 +175,12 @@ def require_dependency(name: str) -> None:
 
     Raises:
         ImportError: If dependency is not available
+
     """
     if not has_dependency(name):
         raise ImportError(
             f"Optional dependency '{name}' is required for this feature. "
-            f"Install with: pip install 'provide-foundation[{name}]'"
+            f"Install with: pip install 'provide-foundation[{name}]'",
         )
 
 
@@ -185,6 +189,7 @@ def get_available_features() -> dict[str, bool]:
 
     Returns:
         Dictionary mapping feature names to availability
+
     """
     deps = get_optional_dependencies()
     return {dep.name: dep.available for dep in deps}

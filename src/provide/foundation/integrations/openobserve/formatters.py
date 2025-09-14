@@ -1,5 +1,4 @@
-"""
-Output formatting utilities for OpenObserve results.
+"""Output formatting utilities for OpenObserve results.
 """
 
 import csv
@@ -20,6 +19,7 @@ def format_json(response: SearchResponse | dict[str, Any], pretty: bool = True) 
 
     Returns:
         JSON string
+
     """
     if isinstance(response, SearchResponse):
         data = {
@@ -33,8 +33,7 @@ def format_json(response: SearchResponse | dict[str, Any], pretty: bool = True) 
 
     if pretty:
         return json.dumps(data, indent=2, sort_keys=False)
-    else:
-        return json.dumps(data)
+    return json.dumps(data)
 
 
 def format_log_line(entry: dict[str, Any]) -> str:
@@ -45,6 +44,7 @@ def format_log_line(entry: dict[str, Any]) -> str:
 
     Returns:
         Formatted log line
+
     """
     # Extract common fields
     timestamp = entry.get("_timestamp", 0)
@@ -90,6 +90,7 @@ def format_table(response: SearchResponse, columns: list[str] | None = None) -> 
 
     Returns:
         Table string
+
     """
     if not response.hits:
         return "No results found"
@@ -169,6 +170,7 @@ def format_csv(response: SearchResponse, columns: list[str] | None = None) -> st
 
     Returns:
         CSV string
+
     """
     if not response.hits:
         return ""
@@ -206,6 +208,7 @@ def format_summary(response: SearchResponse) -> str:
 
     Returns:
         Summary string
+
     """
     lines = [
         f"Total hits: {response.total}",
@@ -253,6 +256,7 @@ def format_output(
 
     Returns:
         Formatted string
+
     """
     match format_type.lower():
         case "json":
@@ -260,39 +264,34 @@ def format_output(
         case "log":
             if isinstance(response, dict):
                 return format_log_line(response)
-            else:
-                return "\n".join(format_log_line(hit) for hit in response.hits)
+            return "\n".join(format_log_line(hit) for hit in response.hits)
         case "table":
             if isinstance(response, SearchResponse):
                 return format_table(response, **kwargs)
-            else:
-                # Single entry as table
-                single_response = SearchResponse(
-                    hits=[response],
-                    total=1,
-                    took=0,
-                    scan_size=0,
-                )
-                return format_table(single_response, **kwargs)
+            # Single entry as table
+            single_response = SearchResponse(
+                hits=[response],
+                total=1,
+                took=0,
+                scan_size=0,
+            )
+            return format_table(single_response, **kwargs)
         case "csv":
             if isinstance(response, SearchResponse):
                 return format_csv(response, **kwargs)
-            else:
-                single_response = SearchResponse(
-                    hits=[response],
-                    total=1,
-                    took=0,
-                    scan_size=0,
-                )
-                return format_csv(single_response, **kwargs)
+            single_response = SearchResponse(
+                hits=[response],
+                total=1,
+                took=0,
+                scan_size=0,
+            )
+            return format_csv(single_response, **kwargs)
         case "summary":
             if isinstance(response, SearchResponse):
                 return format_summary(response)
-            else:
-                return "Single log entry (use 'log' or 'json' format for details)"
+            return "Single log entry (use 'log' or 'json' format for details)"
         case _:
             # Default to log format
             if isinstance(response, dict):
                 return format_log_line(response)
-            else:
-                return "\n".join(format_log_line(hit) for hit in response.hits)
+            return "\n".join(format_log_line(hit) for hit in response.hits)

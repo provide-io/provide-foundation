@@ -1,8 +1,7 @@
 #
 # tests/test_custom_processors.py
 #
-"""
-Unit tests for src.provide.foundation.logger.custom_processors.py
+"""Unit tests for src.provide.foundation.logger.custom_processors.py
 """
 
 import pytest
@@ -33,8 +32,7 @@ class TestLevelFilterCustom:
     def test_filter_with_unrecognized_event_level_defaults_to_info_numeric(
         self,
     ) -> None:
-        """
-        Tests that if event_dict['level'] is an unrecognized string, it defaults
+        """Tests that if event_dict['level'] is an unrecognized string, it defaults
         to the numeric value of INFO for filtering purposes.
         This covers the .get() fallback in _LevelFilter.__call__ (around line 217-218).
         """
@@ -72,20 +70,19 @@ class TestLevelFilterCustom:
         # No DropEvent should be raised
         try:
             result_event = log_filter_debug_threshold(
-                None, "", event_dict_unrecognized_level_passes
+                None, "", event_dict_unrecognized_level_passes,
             )
             assert result_event == event_dict_unrecognized_level_passes
         except structlog.DropEvent:  # pragma: no cover
             pytest.fail(
-                "Event with unrecognized level (defaulting to INFO) was unexpectedly dropped for DEBUG threshold."
+                "Event with unrecognized level (defaulting to INFO) was unexpectedly dropped for DEBUG threshold.",
             )
 
 
 # Placeholder for next tests
 class TestAddLoggerNameEmojiPrefix:
     def test_add_logger_name_emoji_prefix_event_is_none_but_emoji_exists(self) -> None:
-        """
-        Tests the case where event_dict['event'] is None, but a logger name emoji
+        """Tests the case where event_dict['event'] is None, but a logger name emoji
         is found. The event should become just the emoji.
         This covers lines around 388-389.
         """
@@ -106,8 +103,7 @@ class TestAddLoggerNameEmojiPrefix:
         assert processed_event["event"] == expected_emoji
 
     def test_add_logger_name_emoji_prefix_event_is_none_and_no_emoji(self) -> None:
-        """
-        Tests the case where event_dict['event'] is None, and no specific emoji
+        """Tests the case where event_dict['event'] is None, and no specific emoji
         is found (falls back to default, or empty if default is misconfigured/not found).
         """
         # This logger name is not in _LOGGER_NAME_EMOJI_PREFIXES, so it will use default '🔹'
@@ -125,8 +121,7 @@ class TestAddLoggerNameEmojiPrefix:
         assert processed_event["event"] == expected_default_emoji
 
     def test_add_logger_name_emoji_prefix_event_exists_and_emoji_exists(self) -> None:
-        """
-        Standard case: event message exists, and emoji is found.
+        """Standard case: event message exists, and emoji is found.
         """
         logger_name_with_emoji = "provide.foundation.logger"  # Expected: 📝
         expected_emoji = "📝"

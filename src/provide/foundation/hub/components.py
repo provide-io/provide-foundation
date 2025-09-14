@@ -1,5 +1,4 @@
-"""
-Registry-based component management system for Foundation.
+"""Registry-based component management system for Foundation.
 
 This module implements Foundation's end-state architecture where all internal
 components are managed through the Hub registry system. Provides centralized
@@ -39,8 +38,8 @@ class ComponentInfo:
     version: str | None = field(default=None)
     description: str | None = field(default=None)
     author: str | None = field(default=None)
-    tags: list[str] = field(factory=lambda: [])
-    metadata: dict[str, Any] = field(factory=lambda: {})
+    tags: list[str] = field(factory=list)
+    metadata: dict[str, Any] = field(factory=dict)
 
 
 class ComponentCategory(Enum):

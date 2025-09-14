@@ -18,8 +18,7 @@ logger = get_logger(__name__)
 
 @define(slots=True)
 class OperationChain:
-    """
-    Chain multiple archive operations together.
+    """Chain multiple archive operations together.
 
     Enables complex operations like tar.gz, tar.bz2, etc.
     Operations are executed in order for creation, reversed for extraction.
@@ -28,8 +27,7 @@ class OperationChain:
     operations: list[str] = field(factory=list)
 
     def execute(self, source: Path, output: Path) -> Path:
-        """
-        Execute operation chain on source.
+        """Execute operation chain on source.
 
         Args:
             source: Source file or directory
@@ -40,6 +38,7 @@ class OperationChain:
 
         Raises:
             ArchiveError: If any operation fails
+
         """
         current = source
         temp_files = []
@@ -72,8 +71,7 @@ class OperationChain:
                 safe_delete(temp, missing_ok=True)
 
     def reverse(self, source: Path, output: Path) -> Path:
-        """
-        Reverse operation chain (extract/decompress).
+        """Reverse operation chain (extract/decompress).
 
         Args:
             source: Source archive
@@ -84,6 +82,7 @@ class OperationChain:
 
         Raises:
             ArchiveError: If any operation fails
+
         """
         # Reverse the operations and invert them
         reverse_map = {
@@ -147,16 +146,14 @@ class OperationChain:
 
 
 class ArchiveOperations:
-    """
-    Helper class for common archive operation patterns.
+    """Helper class for common archive operation patterns.
 
     Provides convenient methods for common archive formats.
     """
 
     @staticmethod
     def create_tar_gz(source: Path, output: Path, deterministic: bool = True) -> Path:
-        """
-        Create .tar.gz archive in one step.
+        """Create .tar.gz archive in one step.
 
         Args:
             source: Source file or directory
@@ -168,6 +165,7 @@ class ArchiveOperations:
 
         Raises:
             ArchiveError: If creation fails
+
         """
         ensure_parent_dir(output)
 
@@ -187,8 +185,7 @@ class ArchiveOperations:
 
     @staticmethod
     def extract_tar_gz(archive: Path, output: Path) -> Path:
-        """
-        Extract .tar.gz archive in one step.
+        """Extract .tar.gz archive in one step.
 
         Args:
             archive: Archive path
@@ -199,6 +196,7 @@ class ArchiveOperations:
 
         Raises:
             ArchiveError: If extraction fails
+
         """
         output.mkdir(parents=True, exist_ok=True)
 
@@ -218,8 +216,7 @@ class ArchiveOperations:
 
     @staticmethod
     def create_tar_bz2(source: Path, output: Path, deterministic: bool = True) -> Path:
-        """
-        Create .tar.bz2 archive in one step.
+        """Create .tar.bz2 archive in one step.
 
         Args:
             source: Source file or directory
@@ -231,6 +228,7 @@ class ArchiveOperations:
 
         Raises:
             ArchiveError: If creation fails
+
         """
         ensure_parent_dir(output)
 
@@ -250,8 +248,7 @@ class ArchiveOperations:
 
     @staticmethod
     def extract_tar_bz2(archive: Path, output: Path) -> Path:
-        """
-        Extract .tar.bz2 archive in one step.
+        """Extract .tar.bz2 archive in one step.
 
         Args:
             archive: Archive path
@@ -262,6 +259,7 @@ class ArchiveOperations:
 
         Raises:
             ArchiveError: If extraction fails
+
         """
         output.mkdir(parents=True, exist_ok=True)
 
@@ -286,15 +284,15 @@ class ArchiveOperations:
 
         if name.endswith(".tar.gz") or name.endswith(".tgz"):
             return ["gunzip", "untar"]
-        elif name.endswith(".tar.bz2") or name.endswith(".tbz2"):
+        if name.endswith(".tar.bz2") or name.endswith(".tbz2"):
             return ["bunzip2", "untar"]
-        elif name.endswith(".tar"):
+        if name.endswith(".tar"):
             return ["untar"]
-        elif name.endswith(".gz"):
+        if name.endswith(".gz"):
             return ["gunzip"]
-        elif name.endswith(".bz2"):
+        if name.endswith(".bz2"):
             return ["bunzip2"]
-        elif name.endswith(".zip"):
+        if name.endswith(".zip"):
             return ["unzip"]
 
         return None
@@ -308,11 +306,11 @@ class ArchiveOperations:
 
             if magic[:2] == b"\x1f\x8b":  # gzip
                 return ["gunzip"]
-            elif magic[:3] == b"BZh":  # bzip2
+            if magic[:3] == b"BZh":  # bzip2
                 return ["bunzip2"]
-            elif magic[:4] == b"PK\x03\x04":  # zip
+            if magic[:4] == b"PK\x03\x04":  # zip
                 return ["unzip"]
-            elif magic[:3] == b"ustar":  # tar (at offset 257)
+            if magic[:3] == b"ustar":  # tar (at offset 257)
                 return ["untar"]
         except Exception:
             pass
@@ -321,8 +319,7 @@ class ArchiveOperations:
 
     @staticmethod
     def detect_format(file: Path) -> list[str]:
-        """
-        Detect archive format and return operation chain.
+        """Detect archive format and return operation chain.
 
         Args:
             file: File path to analyze
@@ -332,6 +329,7 @@ class ArchiveOperations:
 
         Raises:
             ArchiveError: If format cannot be detected
+
         """
         # Try extension-based detection first
         operations = ArchiveOperations._detect_format_by_extension(file.name)

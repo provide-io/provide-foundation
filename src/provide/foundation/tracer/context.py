@@ -1,8 +1,7 @@
 #
 # context.py
 #
-"""
-Trace context management for Foundation tracer.
+"""Trace context management for Foundation tracer.
 Manages trace context and span hierarchy.
 """
 
@@ -16,7 +15,7 @@ _current_span: contextvars.ContextVar[Span | None] = contextvars.ContextVar("cur
 
 # Context variable to track the current trace ID
 _current_trace_id: contextvars.ContextVar[str | None] = contextvars.ContextVar(
-    "current_trace_id", default=None
+    "current_trace_id", default=None,
 )
 
 
@@ -38,8 +37,7 @@ def set_current_span(span: Span | None) -> None:
 
 
 def create_child_span(name: str, parent: Span | None = None) -> Span:
-    """
-    Create a child span.
+    """Create a child span.
 
     Args:
         name: Name of the span
@@ -47,19 +45,18 @@ def create_child_span(name: str, parent: Span | None = None) -> Span:
 
     Returns:
         New child span
+
     """
     if parent is None:
         parent = get_current_span()
 
     if parent:
         return Span(name=name, parent_id=parent.span_id, trace_id=parent.trace_id)
-    else:
-        return Span(name=name)
+    return Span(name=name)
 
 
 class SpanContext:
-    """
-    Context manager for managing span lifecycle.
+    """Context manager for managing span lifecycle.
 
     Automatically sets and clears the current span.
     """
@@ -83,25 +80,25 @@ class SpanContext:
 
 
 def with_span(name: str) -> SpanContext:
-    """
-    Create a new span context.
+    """Create a new span context.
 
     Args:
         name: Name of the span
 
     Returns:
         SpanContext that can be used as a context manager
+
     """
     span = create_child_span(name)
     return SpanContext(span)
 
 
 def get_trace_context() -> dict[str, Any]:
-    """
-    Get the current trace context information.
+    """Get the current trace context information.
 
     Returns:
         Dictionary with trace context information
+
     """
     current_span = get_current_span()
     trace_id = get_current_trace_id()

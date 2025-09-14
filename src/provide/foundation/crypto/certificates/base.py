@@ -43,7 +43,7 @@ def _require_crypto():
     if not _HAS_CRYPTO:
         raise ImportError(
             "Cryptography features require optional dependencies. Install with: "
-            "pip install 'provide-foundation[crypto]'"
+            "pip install 'provide-foundation[crypto]'",
         )
 
 
@@ -116,7 +116,7 @@ class CertificateBase:
                 not_valid_after = not_valid_after.replace(tzinfo=UTC)
 
             logger.debug(
-                f"📜⏳✅ CertificateBase.create: Using validity: {not_valid_before} to {not_valid_after}"
+                f"📜⏳✅ CertificateBase.create: Using validity: {not_valid_before} to {not_valid_after}",
             )
 
             private_key: KeyPair
@@ -164,5 +164,5 @@ class CertificateBase:
             [
                 x509.NameAttribute(NameOID.COMMON_NAME, common_name),
                 x509.NameAttribute(NameOID.ORGANIZATION_NAME, org),
-            ]
+            ],
         )

@@ -1,5 +1,4 @@
-"""
-Hub component lifecycle management utilities.
+"""Hub component lifecycle management utilities.
 
 Provides functions for initializing, managing, and cleaning up components
 registered in the Hub registry system.

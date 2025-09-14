@@ -7,7 +7,7 @@ and other common string operations.
 from typing import Any
 
 
-def format_size(size_bytes: int | float, precision: int = 1) -> str:
+def format_size(size_bytes: float, precision: int = 1) -> str:
     """Format bytes as human-readable size.
 
     Args:
@@ -26,6 +26,7 @@ def format_size(size_bytes: int | float, precision: int = 1) -> str:
         '1.0 GB'
         >>> format_size(0)
         '0 B'
+
     """
     if size_bytes == 0:
         return "0 B"
@@ -51,7 +52,7 @@ def format_size(size_bytes: int | float, precision: int = 1) -> str:
     return f"-{formatted}" if negative else formatted
 
 
-def format_duration(seconds: int | float, short: bool = False) -> str:
+def format_duration(seconds: float, short: bool = False) -> str:
     """Format seconds as human-readable duration.
 
     Args:
@@ -70,6 +71,7 @@ def format_duration(seconds: int | float, short: bool = False) -> str:
         '1 hour 1 minute 1 second'
         >>> format_duration(3661, short=True)
         '1h1m1s'
+
     """
     if seconds < 0:
         return f"-{format_duration(abs(seconds), short)}"
@@ -95,19 +97,18 @@ def format_duration(seconds: int | float, short: bool = False) -> str:
         if secs > 0 or not parts:
             parts.append(f"{secs}s")
         return "".join(parts)
-    else:
-        if days > 0:
-            parts.append(f"{days} day{'s' if days != 1 else ''}")
-        if hours > 0:
-            parts.append(f"{hours} hour{'s' if hours != 1 else ''}")
-        if minutes > 0:
-            parts.append(f"{minutes} minute{'s' if minutes != 1 else ''}")
-        if secs > 0 or not parts:
-            parts.append(f"{secs} second{'s' if secs != 1 else ''}")
-        return " ".join(parts)
+    if days > 0:
+        parts.append(f"{days} day{'s' if days != 1 else ''}")
+    if hours > 0:
+        parts.append(f"{hours} hour{'s' if hours != 1 else ''}")
+    if minutes > 0:
+        parts.append(f"{minutes} minute{'s' if minutes != 1 else ''}")
+    if secs > 0 or not parts:
+        parts.append(f"{secs} second{'s' if secs != 1 else ''}")
+    return " ".join(parts)
 
 
-def format_number(num: int | float, precision: int | None = None) -> str:
+def format_number(num: float, precision: int | None = None) -> str:
     """Format number with thousands separators.
 
     Args:
@@ -122,15 +123,14 @@ def format_number(num: int | float, precision: int | None = None) -> str:
         '1,234,567'
         >>> format_number(1234.5678, precision=2)
         '1,234.57'
+
     """
     if precision is None:
         if isinstance(num, int):
             return f"{num:,}"
-        else:
-            # Auto precision for floats
-            return f"{num:,.6f}".rstrip("0").rstrip(".")
-    else:
-        return f"{num:,.{precision}f}"
+        # Auto precision for floats
+        return f"{num:,.6f}".rstrip("0").rstrip(".")
+    return f"{num:,.{precision}f}"
 
 
 def format_percentage(value: float, precision: int = 1, include_sign: bool = False) -> str:
@@ -151,6 +151,7 @@ def format_percentage(value: float, precision: int = 1, include_sign: bool = Fal
         '12.34%'
         >>> format_percentage(0.05, include_sign=True)
         '+5.0%'
+
     """
     percentage = value * 100
     formatted = f"{percentage:.{precision}f}%"
@@ -178,6 +179,7 @@ def truncate(text: str, max_length: int, suffix: str = "...", whole_words: bool 
         'Hello...'
         >>> truncate("Hello world", 8, whole_words=False)
         'Hello...'
+
     """
     if len(text) <= max_length:
         return text
@@ -214,6 +216,7 @@ def pluralize(count: int, singular: str, plural: str | None = None) -> str:
         '5 files'
         >>> pluralize(2, "child", "children")
         '2 children'
+
     """
     if plural is None:
         plural = f"{singular}s"
@@ -236,6 +239,7 @@ def indent(text: str, spaces: int = 2, first_line: bool = True) -> str:
     Examples:
         >>> indent("line1\\nline2", 4)
         '    line1\\n    line2'
+
     """
     indent_str = " " * spaces
     lines = text.splitlines()
@@ -264,6 +268,7 @@ def wrap_text(text: str, width: int = 80, indent_first: int = 0, indent_rest: in
 
     Returns:
         Wrapped text
+
     """
     import textwrap
 
@@ -286,6 +291,7 @@ def strip_ansi(text: str) -> str:
 
     Returns:
         Text without ANSI codes
+
     """
     import re
 
@@ -307,6 +313,7 @@ def to_snake_case(text: str) -> str:
         'hello_world'
         >>> to_snake_case("some-kebab-case")
         'some_kebab_case'
+
     """
     import re
 
@@ -334,6 +341,7 @@ def to_kebab_case(text: str) -> str:
         'hello-world'
         >>> to_kebab_case("some_snake_case")
         'some-snake-case'
+
     """
     import re
 
@@ -362,6 +370,7 @@ def to_camel_case(text: str, upper_first: bool = False) -> str:
         'helloWorld'
         >>> to_camel_case("hello-world", upper_first=True)
         'HelloWorld'
+
     """
     import re
 
@@ -401,6 +410,7 @@ def format_table(headers: list[str], rows: list[list[Any]], alignment: list[str]
         ------|----
         Alice | 30
         Bob   | 25
+
     """
     if not headers and not rows:
         return ""

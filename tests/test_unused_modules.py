@@ -26,7 +26,7 @@ class TestUnusedModules:
         """Verify we don't have duplicate file utilities."""
         # This test documents that utils/file.py is unused
         # and file operations should use provide.foundation.file
-        import provide.foundation.utils as utils
+        from provide.foundation import utils
 
         # Check what's actually exported from utils
         exported = dir(utils)

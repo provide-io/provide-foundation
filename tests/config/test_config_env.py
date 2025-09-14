@@ -132,8 +132,8 @@ class TestRuntimeConfig(RuntimeConfig):
     app_name: str = env_field(default="test_app")
     port: int = env_field(default=8080, parser=int)
     debug: bool = env_field(default=False, parser=parse_bool)
-    hosts: list[str] = env_field(factory=lambda: [], parser=parse_list)
-    metadata: dict[str, str] = env_field(factory=lambda: {}, parser=parse_dict)
+    hosts: list[str] = env_field(factory=list, parser=parse_list)
+    metadata: dict[str, str] = env_field(factory=dict, parser=parse_dict)
     custom_var: str = env_field(env_var="CUSTOM_ENV_VAR", default="")
 
 

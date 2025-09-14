@@ -13,14 +13,12 @@ from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.file.formats import read_json, read_toml, read_yaml, write_json, write_toml, write_yaml
 from provide.foundation.logger import get_logger
 
-
 VALID_LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 
 
 @define(slots=True, repr=False)
 class CLIContext(RuntimeConfig):
-    """
-    Runtime context for CLI execution and state management.
+    """Runtime context for CLI execution and state management.
 
     Manages CLI-specific settings, output formatting, and runtime state
     during command execution. Supports loading from files, environment variables,
@@ -87,14 +85,14 @@ class CLIContext(RuntimeConfig):
 
     def __attrs_post_init__(self) -> None:
         """Post-initialization hook."""
-        pass  # Validation is handled by attrs validators
+        # Validation is handled by attrs validators
 
     def update_from_env(self, prefix: str = "PROVIDE") -> None:
-        """
-        Update context from environment variables.
+        """Update context from environment variables.
 
         Args:
             prefix: Environment variable prefix (default: PROVIDE)
+
         """
         if self._frozen:
             raise RuntimeError("Context is frozen and cannot be modified")
@@ -129,8 +127,7 @@ class CLIContext(RuntimeConfig):
 
     @classmethod
     def from_dict(cls, data: dict[str, Any], source: ConfigSource = ConfigSource.RUNTIME) -> "CLIContext":
-        """
-        Create context from dictionary.
+        """Create context from dictionary.
 
         Args:
             data: Dictionary with context values
@@ -138,6 +135,7 @@ class CLIContext(RuntimeConfig):
 
         Returns:
             New CLIContext instance
+
         """
         kwargs = {}
 
@@ -163,13 +161,13 @@ class CLIContext(RuntimeConfig):
         return cls(**kwargs)
 
     def load_config(self, path: str | Path) -> None:
-        """
-        Load configuration from file.
+        """Load configuration from file.
 
         Supports TOML, JSON, and YAML formats based on file extension.
 
         Args:
             path: Path to configuration file
+
         """
         # CLIContext is not frozen, so we can modify it
         path = Path(path)
@@ -205,13 +203,13 @@ class CLIContext(RuntimeConfig):
         self._validate()
 
     def save_config(self, path: str | Path) -> None:
-        """
-        Save configuration to file.
+        """Save configuration to file.
 
         Format is determined by file extension.
 
         Args:
             path: Path to save configuration
+
         """
         path = Path(path)
         data = self.to_dict()
@@ -225,15 +223,13 @@ class CLIContext(RuntimeConfig):
             write_json(path, data, indent=2)
         elif path.suffix in (".yaml", ".yml"):
             write_yaml(path, data, default_flow_style=False)
+        elif not path.suffix:
+            raise ValueError(f"Unsupported config format: no file extension for {path}")
         else:
-            if not path.suffix:
-                raise ValueError(f"Unsupported config format: no file extension for {path}")
-            else:
-                raise ValueError(f"Unsupported config format: {path.suffix}")
+            raise ValueError(f"Unsupported config format: {path.suffix}")
 
     def merge(self, other: "CLIContext", override_defaults: bool = False) -> "CLIContext":
-        """
-        Merge with another context, with other taking precedence.
+        """Merge with another context, with other taking precedence.
 
         Args:
             other: CLIContext to merge with
@@ -241,6 +237,7 @@ class CLIContext(RuntimeConfig):
 
         Returns:
             New merged CLIContext instance
+
         """
         merged_data = self.to_dict()
         other_data = other.to_dict()
@@ -295,4 +292,3 @@ class CLIContext(RuntimeConfig):
     def _validate(self) -> None:
         """Validate context values. For attrs compatibility."""
         # Validation is handled by attrs validators automatically
-        pass

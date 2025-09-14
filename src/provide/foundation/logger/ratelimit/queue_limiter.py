@@ -1,8 +1,7 @@
 #
 # queue_limiter.py
 #
-"""
-Queue-based rate limiter with overflow protection for Foundation's logging system.
+"""Queue-based rate limiter with overflow protection for Foundation's logging system.
 """
 
 from collections import deque
@@ -13,8 +12,7 @@ from typing import Any, Literal
 
 
 class QueuedRateLimiter:
-    """
-    Rate limiter with a queue for buffering logs.
+    """Rate limiter with a queue for buffering logs.
     Drops oldest messages when queue is full (FIFO overflow).
     """
 
@@ -26,8 +24,7 @@ class QueuedRateLimiter:
         max_memory_mb: float | None = None,
         overflow_policy: Literal["drop_oldest", "drop_newest", "block"] = "drop_oldest",
     ):
-        """
-        Initialize the queued rate limiter.
+        """Initialize the queued rate limiter.
 
         Args:
             capacity: Maximum tokens (burst capacity)
@@ -35,6 +32,7 @@ class QueuedRateLimiter:
             max_queue_size: Maximum number of items in queue
             max_memory_mb: Maximum memory usage in MB (estimated)
             overflow_policy: What to do when queue is full
+
         """
         if capacity <= 0:
             raise ValueError("Capacity must be positive")
@@ -84,11 +82,11 @@ class QueuedRateLimiter:
             self.last_refill = now
 
     def enqueue(self, item: Any) -> tuple[bool, str | None]:
-        """
-        Add item to queue for rate-limited processing.
+        """Add item to queue for rate-limited processing.
 
         Returns:
             Tuple of (accepted, reason) where reason is set if rejected
+
         """
         with self.queue_lock:
             # Check memory limit
@@ -106,7 +104,7 @@ class QueuedRateLimiter:
                 if self.overflow_policy == "drop_newest":
                     self.total_dropped += 1
                     return False, f"Queue full ({self.max_queue_size} items)"
-                elif self.overflow_policy == "drop_oldest":
+                if self.overflow_policy == "drop_oldest":
                     # deque with maxlen automatically drops oldest
                     if len(self.pending_queue) > 0:
                         old_item = (
@@ -154,7 +152,6 @@ class QueuedRateLimiter:
     def _process_item(self, item: Any):
         """Process a single item from the queue."""
         # This would be overridden to actually emit the log
-        pass
 
     def get_stats(self) -> dict[str, Any]:
         """Get queue statistics."""
@@ -181,8 +178,7 @@ class QueuedRateLimiter:
 
 
 class BufferedRateLimiter:
-    """
-    Simple synchronous rate limiter with overflow buffer.
+    """Simple synchronous rate limiter with overflow buffer.
     Does not use a worker thread - processes inline.
     """
 
@@ -193,14 +189,14 @@ class BufferedRateLimiter:
         buffer_size: int = 100,
         track_dropped: bool = True,
     ):
-        """
-        Initialize buffered rate limiter.
+        """Initialize buffered rate limiter.
 
         Args:
             capacity: Maximum tokens (burst capacity)
             refill_rate: Tokens per second
             buffer_size: Number of recently dropped items to track
             track_dropped: Whether to keep dropped items for debugging
+
         """
         if capacity <= 0:
             raise ValueError("Capacity must be positive")
@@ -224,14 +220,14 @@ class BufferedRateLimiter:
         self.total_bytes_dropped = 0
 
     def is_allowed(self, item: Any | None = None) -> tuple[bool, str | None]:
-        """
-        Check if item is allowed based on rate limit.
+        """Check if item is allowed based on rate limit.
 
         Args:
             item: Optional item to track if dropped
 
         Returns:
             Tuple of (allowed, reason)
+
         """
         with self.lock:
             now = time.monotonic()
@@ -248,21 +244,20 @@ class BufferedRateLimiter:
                 self.tokens -= 1.0
                 self.total_allowed += 1
                 return True, None
-            else:
-                self.total_denied += 1
+            self.total_denied += 1
 
-                # Track dropped item
-                if self.track_dropped and item is not None and self.dropped_buffer is not None:
-                    self.dropped_buffer.append(
-                        {
-                            "time": now,
-                            "item": item,
-                            "size": sys.getsizeof(item),
-                        }
-                    )
-                    self.total_bytes_dropped += sys.getsizeof(item)
+            # Track dropped item
+            if self.track_dropped and item is not None and self.dropped_buffer is not None:
+                self.dropped_buffer.append(
+                    {
+                        "time": now,
+                        "item": item,
+                        "size": sys.getsizeof(item),
+                    },
+                )
+                self.total_bytes_dropped += sys.getsizeof(item)
 
-                return False, f"Rate limit exceeded (tokens: {self.tokens:.1f})"
+            return False, f"Rate limit exceeded (tokens: {self.tokens:.1f})"
 
     def get_dropped_samples(self, count: int = 10) -> list[Any]:
         """Get recent dropped items for debugging."""

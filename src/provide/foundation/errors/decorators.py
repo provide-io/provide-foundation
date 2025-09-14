@@ -65,6 +65,7 @@ def with_error_handling(
         ... def run():
         ...     # errors will be logged but not re-raised
         ...     pass
+
     """
 
     def decorator(func: F) -> F:
@@ -116,62 +117,60 @@ def with_error_handling(
                     raise
 
             return async_wrapper  # type: ignore
-        else:
 
-            @functools.wraps(func)
-            def wrapper(*args, **kwargs):
-                try:
-                    return func(*args, **kwargs)
-                except Exception as e:
-                    # Build context from either context_provider or context parameter
-                    log_context = {}
-                    if context_provider:
-                        log_context.update(context_provider())
-                    if context:
-                        log_context.update(context)
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except Exception as e:
+                # Build context from either context_provider or context parameter
+                log_context = {}
+                if context_provider:
+                    log_context.update(context_provider())
+                if context:
+                    log_context.update(context)
 
-                    # Check if we should suppress this error
-                    if suppress and isinstance(e, suppress):
-                        if log_errors:
-                            _get_logger().info(
-                                f"Suppressed {type(e).__name__} in {func.__name__}",
-                                function=func.__name__,
-                                error=str(e),
-                                **log_context,
-                            )
-                        return fallback
-
-                    # Log the error if configured
+                # Check if we should suppress this error
+                if suppress and isinstance(e, suppress):
                     if log_errors:
-                        _get_logger().error(
-                            f"Error in {func.__name__}: {e}",
-                            exc_info=True,
+                        _get_logger().info(
+                            f"Suppressed {type(e).__name__} in {func.__name__}",
                             function=func.__name__,
+                            error=str(e),
                             **log_context,
                         )
+                    return fallback
 
-                    # If reraise=False, return fallback instead of raising
-                    if not reraise:
-                        return fallback
+                # Log the error if configured
+                if log_errors:
+                    _get_logger().error(
+                        f"Error in {func.__name__}: {e}",
+                        exc_info=True,
+                        function=func.__name__,
+                        **log_context,
+                    )
 
-                    # Map the error if mapper provided
-                    if error_mapper and not isinstance(e, FoundationError):
-                        mapped = error_mapper(e)
-                        if mapped is not e:
-                            raise mapped from e
+                # If reraise=False, return fallback instead of raising
+                if not reraise:
+                    return fallback
 
-                    # Re-raise the original error
-                    raise
+                # Map the error if mapper provided
+                if error_mapper and not isinstance(e, FoundationError):
+                    mapped = error_mapper(e)
+                    if mapped is not e:
+                        raise mapped from e
 
-            return wrapper  # type: ignore
+                # Re-raise the original error
+                raise
+
+        return wrapper  # type: ignore
 
     # Support both @with_error_handling and @with_error_handling(...) forms
     if func is None:
         # Called as @with_error_handling(...) with arguments
         return decorator
-    else:
-        # Called as @with_error_handling (no parentheses)
-        return decorator(func)
+    # Called as @with_error_handling (no parentheses)
+    return decorator(func)
 
 
 def suppress_and_log(
@@ -193,6 +192,7 @@ def suppress_and_log(
         >>> @suppress_and_log(KeyError, AttributeError, fallback={})
         ... def get_nested_value(data):
         ...     return data["key"].attribute
+
     """
 
     def decorator(func: F) -> F:
@@ -244,6 +244,7 @@ def fallback_on_error(
         >>> @fallback_on_error(use_cache, NetworkError)
         ... def fetch_from_api():
         ...     return api_call()
+
     """
     catch_types = exceptions if exceptions else (Exception,)
 

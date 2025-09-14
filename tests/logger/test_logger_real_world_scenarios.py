@@ -2,8 +2,7 @@
 # tests/test_lazy_initialization_integration.py
 #
 
-"""
-Integration tests for lazy initialization with real-world scenarios and migration patterns.
+"""Integration tests for lazy initialization with real-world scenarios and migration patterns.
 
 This module tests end-to-end scenarios that combine lazy initialization with
 real-world usage patterns, ensuring the feature works in practical applications.
@@ -444,7 +443,7 @@ class TestMigrationFromExplicitSetup:
             service_name="explicit-override",
             logging=LoggingConfig(
                 default_level="INFO",
-                console_formatter="json"
+                console_formatter="json",
             ),
         )
         setup_telemetry(explicit_config)

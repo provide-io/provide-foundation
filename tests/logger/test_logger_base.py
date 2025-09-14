@@ -1,8 +1,7 @@
 #
 # base.py
 #
-"""
-Foundation Telemetry Base Logger Implementation.
+"""Foundation Telemetry Base Logger Implementation.
 Defines FoundationLogger with lazy initialization, thread safety, and standard logging methods.
 """
 
@@ -37,7 +36,7 @@ class FoundationLogger:
 
     def __init__(self) -> None:
         self._internal_logger = structlog.get_logger().bind(
-            logger_name=f"{self.__class__.__module__}.{self.__class__.__name__}"
+            logger_name=f"{self.__class__.__module__}.{self.__class__.__name__}",
         )
         self._is_configured_by_setup: bool = False
         self._active_config: TelemetryConfig | None = None
@@ -47,7 +46,7 @@ class FoundationLogger:
         try:
             current_config = structlog.get_config()
             if current_config and isinstance(
-                current_config.get("logger_factory"), structlog.ReturnLoggerFactory
+                current_config.get("logger_factory"), structlog.ReturnLoggerFactory,
             ):
                 with _LAZY_SETUP_LOCK:
                     _LAZY_SETUP_STATE["done"] = True
@@ -57,8 +56,7 @@ class FoundationLogger:
         return False
 
     def _ensure_configured(self) -> None:
-        """
-        Ensures the logger is configured, performing lazy setup if necessary.
+        """Ensures the logger is configured, performing lazy setup if necessary.
         This method is thread-safe and handles setup failures gracefully.
         """
         # Fast path for already configured loggers.
@@ -101,8 +99,7 @@ class FoundationLogger:
                 _LAZY_SETUP_STATE["in_progress"] = False
 
     def _perform_lazy_setup(self) -> None:
-        """
-        Executes lazy setup by calling the main internal setup function.
+        """Executes lazy setup by calling the main internal setup function.
         """
         from provide.foundation.logger.setup.coordinator import internal_setup as _internal_setup
 
@@ -115,7 +112,7 @@ class FoundationLogger:
             structlog.configure(
                 processors=[structlog.dev.ConsoleRenderer(colors=False)],
                 logger_factory=structlog.PrintLoggerFactory(file=_get_safe_stderr()),
-                wrapper_class=cast(type[BindableLogger], structlog.BoundLogger),
+                wrapper_class=cast("type[BindableLogger]", structlog.BoundLogger),
                 cache_logger_on_first_use=True,
             )
         except Exception:
@@ -132,7 +129,7 @@ class FoundationLogger:
         return structlog.get_logger().bind(logger_name=effective_name)
 
     def _log_with_level(
-        self, level_method_name: str, event: str, **kwargs: Any
+        self, level_method_name: str, event: str, **kwargs: Any,
     ) -> None:
         # FIX: The _ensure_configured call is removed from here to prevent redundant checks.
         # get_logger() is now the single point of entry for configuration checks.
@@ -164,35 +161,35 @@ class FoundationLogger:
 
     def debug(self, event: str, *args: Any, **kwargs: Any) -> None:
         self._log_with_level(
-            "debug", self._format_message_with_args(event, args), **kwargs
+            "debug", self._format_message_with_args(event, args), **kwargs,
         )
 
     def info(self, event: str, *args: Any, **kwargs: Any) -> None:
         self._log_with_level(
-            "info", self._format_message_with_args(event, args), **kwargs
+            "info", self._format_message_with_args(event, args), **kwargs,
         )
 
     def warning(self, event: str, *args: Any, **kwargs: Any) -> None:
         self._log_with_level(
-            "warning", self._format_message_with_args(event, args), **kwargs
+            "warning", self._format_message_with_args(event, args), **kwargs,
         )
 
     warn = warning
 
     def error(self, event: str, *args: Any, **kwargs: Any) -> None:
         self._log_with_level(
-            "error", self._format_message_with_args(event, args), **kwargs
+            "error", self._format_message_with_args(event, args), **kwargs,
         )
 
     def exception(self, event: str, *args: Any, **kwargs: Any) -> None:
         kwargs.setdefault("exc_info", True)
         self._log_with_level(
-            "error", self._format_message_with_args(event, args), **kwargs
+            "error", self._format_message_with_args(event, args), **kwargs,
         )
 
     def critical(self, event: str, *args: Any, **kwargs: Any) -> None:
         self._log_with_level(
-            "critical", self._format_message_with_args(event, args), **kwargs
+            "critical", self._format_message_with_args(event, args), **kwargs,
         )
 
     def __setattr__(self, name: str, value: Any) -> None:

@@ -63,7 +63,7 @@ class TestQueuedRateLimiter:
     def test_queued_rate_limiter_enqueue_basic(self) -> None:
         """Test basic enqueueing functionality."""
         limiter = QueuedRateLimiter(
-            capacity=10.0, refill_rate=5.0, max_queue_size=10
+            capacity=10.0, refill_rate=5.0, max_queue_size=10,
         )
 
         try:
@@ -84,7 +84,7 @@ class TestQueuedRateLimiter:
         """Test memory limit enforcement."""
         # Very small memory limit
         limiter = QueuedRateLimiter(
-            capacity=10.0, refill_rate=5.0, max_queue_size=100, max_memory_mb=0.001
+            capacity=10.0, refill_rate=5.0, max_queue_size=100, max_memory_mb=0.001,
         )
 
         try:
@@ -104,7 +104,7 @@ class TestQueuedRateLimiter:
     def test_queued_rate_limiter_drop_oldest_policy(self) -> None:
         """Test drop_oldest overflow policy."""
         limiter = QueuedRateLimiter(
-            capacity=10.0, refill_rate=0.1, max_queue_size=3, overflow_policy="drop_oldest"
+            capacity=10.0, refill_rate=0.1, max_queue_size=3, overflow_policy="drop_oldest",
         )
 
         try:
@@ -127,7 +127,7 @@ class TestQueuedRateLimiter:
     def test_queued_rate_limiter_drop_newest_policy(self) -> None:
         """Test drop_newest overflow policy."""
         limiter = QueuedRateLimiter(
-            capacity=10.0, refill_rate=0.1, max_queue_size=2, overflow_policy="drop_newest"
+            capacity=10.0, refill_rate=0.1, max_queue_size=2, overflow_policy="drop_newest",
         )
 
         try:
@@ -151,7 +151,7 @@ class TestQueuedRateLimiter:
     def test_queued_rate_limiter_block_policy(self) -> None:
         """Test block overflow policy."""
         limiter = QueuedRateLimiter(
-            capacity=10.0, refill_rate=0.1, max_queue_size=1, overflow_policy="block"
+            capacity=10.0, refill_rate=0.1, max_queue_size=1, overflow_policy="block",
         )
 
         try:
@@ -176,7 +176,7 @@ class TestQueuedRateLimiter:
                 processed_items.append(item)
 
         limiter = TestQueuedRateLimiter(
-            capacity=2.0, refill_rate=10.0, max_queue_size=10
+            capacity=2.0, refill_rate=10.0, max_queue_size=10,
         )
 
         try:
@@ -218,7 +218,7 @@ class TestQueuedRateLimiter:
     def test_queued_rate_limiter_get_stats(self) -> None:
         """Test statistics collection."""
         limiter = QueuedRateLimiter(
-            capacity=5.0, refill_rate=2.0, max_queue_size=10, max_memory_mb=1.0
+            capacity=5.0, refill_rate=2.0, max_queue_size=10, max_memory_mb=1.0,
         )
 
         try:
@@ -228,7 +228,7 @@ class TestQueuedRateLimiter:
             expected_fields = {
                 "queue_size", "max_queue_size", "tokens_available", "capacity",
                 "refill_rate", "total_queued", "total_dropped", "total_processed",
-                "estimated_memory_mb", "max_memory_mb", "overflow_policy"
+                "estimated_memory_mb", "max_memory_mb", "overflow_policy",
             }
 
             for field in expected_fields:
@@ -264,7 +264,7 @@ class TestBufferedRateLimiter:
     def test_buffered_rate_limiter_init_valid(self) -> None:
         """Test BufferedRateLimiter initialization."""
         limiter = BufferedRateLimiter(
-            capacity=10.0, refill_rate=2.0, buffer_size=50, track_dropped=True
+            capacity=10.0, refill_rate=2.0, buffer_size=50, track_dropped=True,
         )
 
         assert limiter.capacity == 10.0
@@ -284,7 +284,7 @@ class TestBufferedRateLimiter:
     def test_buffered_rate_limiter_no_tracking(self) -> None:
         """Test BufferedRateLimiter without dropped item tracking."""
         limiter = BufferedRateLimiter(
-            capacity=10.0, refill_rate=2.0, track_dropped=False
+            capacity=10.0, refill_rate=2.0, track_dropped=False,
         )
 
         assert limiter.track_dropped is False
@@ -335,7 +335,7 @@ class TestBufferedRateLimiter:
     def test_buffered_rate_limiter_tracks_dropped_items(self) -> None:
         """Test tracking of dropped items."""
         limiter = BufferedRateLimiter(
-            capacity=1.0, refill_rate=1.0, track_dropped=True
+            capacity=1.0, refill_rate=1.0, track_dropped=True,
         )
 
         # Allow one
@@ -358,7 +358,7 @@ class TestBufferedRateLimiter:
     def test_buffered_rate_limiter_dropped_samples_limit(self) -> None:
         """Test dropped samples buffer limit."""
         limiter = BufferedRateLimiter(
-            capacity=0.01, refill_rate=1.0, buffer_size=3, track_dropped=True
+            capacity=0.01, refill_rate=1.0, buffer_size=3, track_dropped=True,
         )
 
         # Add many dropped items
@@ -372,7 +372,7 @@ class TestBufferedRateLimiter:
     def test_buffered_rate_limiter_get_dropped_samples_count(self) -> None:
         """Test getting limited number of dropped samples."""
         limiter = BufferedRateLimiter(
-            capacity=0.01, refill_rate=1.0, track_dropped=True
+            capacity=0.01, refill_rate=1.0, track_dropped=True,
         )
 
         # Add several dropped items
@@ -386,7 +386,7 @@ class TestBufferedRateLimiter:
     def test_buffered_rate_limiter_get_dropped_no_tracking(self) -> None:
         """Test getting dropped samples when tracking is disabled."""
         limiter = BufferedRateLimiter(
-            capacity=0.01, refill_rate=1.0, track_dropped=False
+            capacity=0.01, refill_rate=1.0, track_dropped=False,
         )
 
         # Try to drop some items
@@ -400,7 +400,7 @@ class TestBufferedRateLimiter:
     def test_buffered_rate_limiter_statistics(self) -> None:
         """Test statistics collection."""
         limiter = BufferedRateLimiter(
-            capacity=5.0, refill_rate=2.0, track_dropped=True
+            capacity=5.0, refill_rate=2.0, track_dropped=True,
         )
 
         # Allow some, deny some
@@ -420,7 +420,7 @@ class TestBufferedRateLimiter:
     def test_buffered_rate_limiter_statistics_with_dropped_buffer(self) -> None:
         """Test statistics when tracking dropped items."""
         limiter = BufferedRateLimiter(
-            capacity=1.0, refill_rate=1.0, track_dropped=True
+            capacity=1.0, refill_rate=1.0, track_dropped=True,
         )
 
         # Fill capacity then add more

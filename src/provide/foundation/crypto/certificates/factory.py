@@ -83,7 +83,7 @@ def create_signed_certificate(
 
     logger.info(
         f"📜🔑🏭 Creating new certificate signed by CA '{ca_certificate.subject}': "
-        f"CN={common_name}, Org={organization_name}, ClientCert={is_client_cert}"
+        f"CN={common_name}, Org={organization_name}, ClientCert={is_client_cert}",
     )
     if not ca_certificate._private_key:
         raise CertificateError(
@@ -93,7 +93,7 @@ def create_signed_certificate(
     if not ca_certificate.is_ca:
         logger.warning(
             f"📜🔑⚠️ Signing certificate (Subject: {ca_certificate.subject}) "
-            "is not marked as a CA. This might lead to validation issues."
+            "is not marked as a CA. This might lead to validation issues.",
         )
 
     new_cert_obj = Certificate(
@@ -122,7 +122,7 @@ def create_signed_certificate(
 
     logger.info(
         f"📜🔑✅ Successfully created and signed certificate for "
-        f"CN={common_name} by CA='{ca_certificate.subject}'"
+        f"CN={common_name} by CA='{ca_certificate.subject}'",
     )
     return new_cert_obj
 
@@ -141,7 +141,7 @@ def create_self_signed_server_cert(
     from provide.foundation.crypto.certificates.certificate import Certificate
 
     logger.info(
-        f"📜🔑🏭 Creating new self-signed SERVER certificate: CN={common_name}, Org={organization_name}"
+        f"📜🔑🏭 Creating new self-signed SERVER certificate: CN={common_name}, Org={organization_name}",
     )
 
     cert_obj = Certificate(
@@ -187,7 +187,7 @@ def create_self_signed_client_cert(
     from provide.foundation.crypto.certificates.certificate import Certificate
 
     logger.info(
-        f"📜🔑🏭 Creating new self-signed CLIENT certificate: CN={common_name}, Org={organization_name}"
+        f"📜🔑🏭 Creating new self-signed CLIENT certificate: CN={common_name}, Org={organization_name}",
     )
 
     cert_obj = Certificate(

@@ -1,5 +1,4 @@
-"""
-Caching system for installed tools.
+"""Caching system for installed tools.
 
 Provides TTL-based caching to avoid re-downloading tools
 that are already installed and valid.
@@ -18,23 +17,21 @@ log = get_logger(__name__)
 class CacheError(FoundationError):
     """Raised when cache operations fail."""
 
-    pass
 
 
 class ToolCache:
-    """
-    Cache for installed tools with TTL support.
+    """Cache for installed tools with TTL support.
 
     Tracks installed tool locations and expiration times to
     avoid unnecessary re-downloads and installations.
     """
 
     def __init__(self, cache_dir: Path | None = None) -> None:
-        """
-        Initialize the cache.
+        """Initialize the cache.
 
         Args:
             cache_dir: Cache directory (defaults to ~/.wrknv/cache).
+
         """
         self.cache_dir = cache_dir or (Path.home() / ".wrknv" / "cache")
         self.cache_dir.mkdir(parents=True, exist_ok=True)
@@ -43,11 +40,11 @@ class ToolCache:
         self.metadata = self._load_metadata()
 
     def _load_metadata(self) -> dict[str, dict]:
-        """
-        Load cache metadata from disk.
+        """Load cache metadata from disk.
 
         Returns:
             Cache metadata dictionary.
+
         """
         return read_json(self.metadata_file, default={})
 
@@ -60,8 +57,7 @@ class ToolCache:
             raise
 
     def get(self, tool: str, version: str) -> Path | None:
-        """
-        Get cached tool path if valid.
+        """Get cached tool path if valid.
 
         Args:
             tool: Tool name.
@@ -69,6 +65,7 @@ class ToolCache:
 
         Returns:
             Path to cached tool if valid, None otherwise.
+
         """
         key = f"{tool}:{version}"
 
@@ -94,14 +91,14 @@ class ToolCache:
         return None
 
     def store(self, tool: str, version: str, path: Path, ttl_days: int = 7) -> None:
-        """
-        Store tool in cache.
+        """Store tool in cache.
 
         Args:
             tool: Tool name.
             version: Tool version.
             path: Path to installed tool.
             ttl_days: Time-to-live in days.
+
         """
         key = f"{tool}:{version}"
 
@@ -117,12 +114,12 @@ class ToolCache:
         log.debug(f"Cached {key} at {path} (TTL: {ttl_days} days)")
 
     def invalidate(self, tool: str, version: str | None = None) -> None:
-        """
-        Invalidate cache entries.
+        """Invalidate cache entries.
 
         Args:
             tool: Tool name.
             version: Specific version, or None for all versions.
+
         """
         if version:
             # Invalidate specific version
@@ -140,14 +137,14 @@ class ToolCache:
         self._save_metadata()
 
     def _is_expired(self, entry: dict) -> bool:
-        """
-        Check if cache entry is expired.
+        """Check if cache entry is expired.
 
         Args:
             entry: Cache entry dictionary.
 
         Returns:
             True if expired, False otherwise.
+
         """
         try:
             cached_at = datetime.fromisoformat(entry["cached_at"])
@@ -170,11 +167,11 @@ class ToolCache:
         log.info("Cleared tool cache")
 
     def list_cached(self) -> list[dict]:
-        """
-        List all cached tools.
+        """List all cached tools.
 
         Returns:
             List of cache entries with metadata.
+
         """
         results = []
 
@@ -202,11 +199,11 @@ class ToolCache:
         return results
 
     def get_size(self) -> int:
-        """
-        Get total size of cached tools in bytes.
+        """Get total size of cached tools in bytes.
 
         Returns:
             Total size in bytes.
+
         """
         total = 0
 
@@ -230,11 +227,11 @@ class ToolCache:
         return total
 
     def prune_expired(self) -> int:
-        """
-        Remove expired entries from cache.
+        """Remove expired entries from cache.
 
         Returns:
             Number of entries removed.
+
         """
         expired_keys = [key for key, entry in self.metadata.items() if self._is_expired(entry)]
 

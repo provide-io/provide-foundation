@@ -165,7 +165,7 @@ class TestTempConfigFile:
                 # Verify content was written
                 content = config_path.read_text()
                 assert 'key1 = "value1"' in content
-                assert 'key2 = 42' in content
+                assert "key2 = 42" in content
 
     def test_temp_config_file_toml_dict_fallback(self):
         """Test temp_config_file with TOML dict content using fallback."""
@@ -173,7 +173,7 @@ class TestTempConfigFile:
 
         # Remove tomli_w from sys.modules to simulate it not being installed
         import sys
-        tomli_w_backup = sys.modules.pop('tomli_w', None)
+        tomli_w_backup = sys.modules.pop("tomli_w", None)
         try:
             with temp_config_file(config_data, "toml") as config_path:
                 assert config_path.exists()
@@ -188,7 +188,7 @@ class TestTempConfigFile:
                 assert "bool_key = true" in content  # TOML uses lowercase for booleans
         finally:
             if tomli_w_backup is not None:
-                sys.modules['tomli_w'] = tomli_w_backup
+                sys.modules["tomli_w"] = tomli_w_backup
 
     def test_temp_config_file_yaml_dict_with_yaml(self):
         """Test temp_config_file with YAML dict content using PyYAML."""
@@ -218,11 +218,11 @@ class TestTempConfigFile:
         original_import = builtins.__import__
 
         def mock_import(name, *args, **kwargs):
-            if name == 'yaml':
+            if name == "yaml":
                 raise ImportError("No module named 'yaml'")
             return original_import(name, *args, **kwargs)
 
-        with patch('builtins.__import__', side_effect=mock_import):
+        with patch("builtins.__import__", side_effect=mock_import):
             with pytest.raises(ImportError, match="PyYAML required for YAML testing"):
                 with temp_config_file(config_data, "yaml"):
                     pass
@@ -318,7 +318,6 @@ class TestMockLogger:
 
     def test_mock_logger_call_tracking(self, mock_logger):
         """Test mock_logger methods track calls."""
-
         mock_logger.debug("debug message")
         mock_logger.info("info message", extra="data")
 

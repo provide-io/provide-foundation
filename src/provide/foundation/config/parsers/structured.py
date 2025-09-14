@@ -1,5 +1,4 @@
-"""
-Complex data structure parsers for configuration values.
+"""Complex data structure parsers for configuration values.
 
 Handles parsing of structured data like dictionaries with specific formats
 (headers, module levels, rate limits) from string configuration values.
@@ -20,8 +19,7 @@ def parse_log_level(value: str) -> "LogLevelStr":
 
 
 def parse_module_levels(value: str | dict[str, str]) -> dict[str, "LogLevelStr"]:
-    """
-    Parse module-specific log levels from string format.
+    """Parse module-specific log levels from string format.
 
     **Format Requirements:**
     - String format: "module1:LEVEL,module2:LEVEL" (comma-separated pairs)
@@ -53,6 +51,7 @@ def parse_module_levels(value: str | dict[str, str]) -> dict[str, "LogLevelStr"]
     Note:
         This parser is lenient by design - invalid log levels are skipped rather than
         raising errors to allow partial configuration success in production environments.
+
     """
     # If already a dict, validate and return
     if isinstance(value, dict):
@@ -93,8 +92,7 @@ def parse_module_levels(value: str | dict[str, str]) -> dict[str, "LogLevelStr"]
 
 
 def parse_rate_limits(value: str) -> dict[str, tuple[float, float]]:
-    """
-    Parse per-logger rate limits from string format.
+    """Parse per-logger rate limits from string format.
 
     **Format Requirements:**
     - Comma-separated triplets: "logger1:rate:capacity,logger2:rate:capacity"
@@ -123,6 +121,7 @@ def parse_rate_limits(value: str) -> dict[str, tuple[float, float]]:
     Note:
         This parser is lenient by design - invalid entries are skipped rather than
         raising errors to allow partial configuration success in production environments.
+
     """
     if not value or not value.strip():
         return {}
@@ -156,8 +155,7 @@ def parse_rate_limits(value: str) -> dict[str, tuple[float, float]]:
 
 
 def parse_headers(value: str) -> dict[str, str]:
-    """
-    Parse HTTP headers from string format.
+    """Parse HTTP headers from string format.
 
     **Format Requirements:**
     - Comma-separated key=value pairs: "key1=value1,key2=value2"
@@ -189,6 +187,7 @@ def parse_headers(value: str) -> dict[str, str]:
     Note:
         This parser is lenient by design - invalid header pairs are skipped rather than
         raising errors to allow partial configuration success in production environments.
+
     """
     if not value or not value.strip():
         return {}

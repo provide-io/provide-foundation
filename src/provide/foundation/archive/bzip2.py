@@ -16,8 +16,7 @@ logger = get_logger(__name__)
 
 @define(slots=True)
 class Bzip2Compressor:
-    """
-    BZIP2 compression implementation.
+    """BZIP2 compression implementation.
 
     Provides BZIP2 compression and decompression for single files.
     Does not handle bundling - use with TarArchive for .tar.bz2 files.
@@ -31,8 +30,7 @@ class Bzip2Compressor:
             raise ValueError(f"Compression level must be 1-9, got {value}")
 
     def compress(self, input_stream: BinaryIO, output_stream: BinaryIO) -> None:
-        """
-        Compress data from input stream to output stream.
+        """Compress data from input stream to output stream.
 
         Args:
             input_stream: Input binary stream
@@ -40,6 +38,7 @@ class Bzip2Compressor:
 
         Raises:
             ArchiveError: If compression fails
+
         """
         try:
             with bz2.BZ2File(output_stream, "wb", compresslevel=self.level) as bz:
@@ -49,8 +48,7 @@ class Bzip2Compressor:
             raise ArchiveError(f"Failed to compress with BZIP2: {e}") from e
 
     def decompress(self, input_stream: BinaryIO, output_stream: BinaryIO) -> None:
-        """
-        Decompress data from input stream to output stream.
+        """Decompress data from input stream to output stream.
 
         Args:
             input_stream: Input binary stream (bzip2 compressed)
@@ -58,6 +56,7 @@ class Bzip2Compressor:
 
         Raises:
             ArchiveError: If decompression fails
+
         """
         try:
             with bz2.BZ2File(input_stream, "rb") as bz:
@@ -67,8 +66,7 @@ class Bzip2Compressor:
             raise ArchiveError(f"Failed to decompress BZIP2: {e}") from e
 
     def compress_file(self, input_path: Path, output_path: Path) -> Path:
-        """
-        Compress a file.
+        """Compress a file.
 
         Args:
             input_path: Input file path
@@ -79,6 +77,7 @@ class Bzip2Compressor:
 
         Raises:
             ArchiveError: If compression fails
+
         """
         try:
             ensure_parent_dir(output_path)
@@ -93,8 +92,7 @@ class Bzip2Compressor:
             raise ArchiveError(f"Failed to compress file: {e}") from e
 
     def decompress_file(self, input_path: Path, output_path: Path) -> Path:
-        """
-        Decompress a file.
+        """Decompress a file.
 
         Args:
             input_path: Input file path (bzip2 compressed)
@@ -105,6 +103,7 @@ class Bzip2Compressor:
 
         Raises:
             ArchiveError: If decompression fails
+
         """
         try:
             ensure_parent_dir(output_path)
@@ -119,8 +118,7 @@ class Bzip2Compressor:
             raise ArchiveError(f"Failed to decompress file: {e}") from e
 
     def compress_bytes(self, data: bytes) -> bytes:
-        """
-        Compress bytes data.
+        """Compress bytes data.
 
         Args:
             data: Input bytes
@@ -130,6 +128,7 @@ class Bzip2Compressor:
 
         Raises:
             ArchiveError: If compression fails
+
         """
         try:
             return bz2.compress(data, compresslevel=self.level)
@@ -137,8 +136,7 @@ class Bzip2Compressor:
             raise ArchiveError(f"Failed to compress bytes: {e}") from e
 
     def decompress_bytes(self, data: bytes) -> bytes:
-        """
-        Decompress bytes data.
+        """Decompress bytes data.
 
         Args:
             data: Compressed bytes
@@ -148,6 +146,7 @@ class Bzip2Compressor:
 
         Raises:
             ArchiveError: If decompression fails
+
         """
         try:
             return bz2.decompress(data)

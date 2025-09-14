@@ -1,8 +1,7 @@
 #
 # test_integration.py
 #
-"""
-Integration tests for Foundation Telemetry.
+"""Integration tests for Foundation Telemetry.
 
 This module contains tests that verify the complete system behavior,
 including real-world usage patterns, error conditions, and edge cases.
@@ -46,8 +45,7 @@ def test_full_lifecycle_integration(
     setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
     captured_stderr_for_foundation: io.StringIO,
 ) -> None:
-    """
-    Tests complete setup -> use -> shutdown lifecycle.
+    """Tests complete setup -> use -> shutdown lifecycle.
 
     This test verifies that the entire telemetry system lifecycle
     works correctly from initialization through normal usage to shutdown.
@@ -69,7 +67,7 @@ def test_full_lifecycle_integration(
     app_logger = logger.get_logger("app.main")
     app_logger.info("Application started", version="1.0.0")
     app_logger.debug(
-        "Debug info", component="auth", action="validate", status="success"
+        "Debug info", component="auth", action="validate", status="success",
     )
 
     # Test custom TRACE level
@@ -113,8 +111,7 @@ def test_full_lifecycle_integration(
 
 
 def test_environment_variable_integration() -> None:
-    """
-    Tests configuration loading from environment variables.
+    """Tests configuration loading from environment variables.
 
     This test verifies that the environment variable configuration
     system works correctly and handles various configuration options.
@@ -165,8 +162,7 @@ def test_high_volume_logging_performance(
     setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
     captured_stderr_for_foundation: io.StringIO,
 ) -> None:
-    """
-    Tests performance with high-volume logging.
+    """Tests performance with high-volume logging.
 
     This test ensures that the logging system can handle high throughput
     scenarios without significant performance degradation.
@@ -177,7 +173,7 @@ def test_high_volume_logging_performance(
             console_formatter="json",
             logger_name_emoji_prefix_enabled=True,
             das_emoji_prefix_enabled=False,
-        )
+        ),
     )
     setup_foundation_telemetry_for_test(config)
 
@@ -219,8 +215,7 @@ def test_thread_safety_concurrent_logging(
     setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
     captured_stderr_for_foundation: io.StringIO,
 ) -> None:
-    """
-    Tests thread safety with concurrent logging from multiple threads.
+    """Tests thread safety with concurrent logging from multiple threads.
 
     This test verifies that the logging system maintains correctness
     and performance under concurrent access patterns.
@@ -229,7 +224,7 @@ def test_thread_safety_concurrent_logging(
         logging=LoggingConfig(
             default_level="INFO",
             console_formatter="json",
-        )
+        ),
     )
     setup_foundation_telemetry_for_test(config)
 
@@ -238,7 +233,7 @@ def test_thread_safety_concurrent_logging(
         thread_logger = logger.get_logger(f"thread.{thread_id}")
         for i in range(message_count):
             thread_logger.info(
-                f"Thread {thread_id} message {i}", thread_id=thread_id, msg_id=i
+                f"Thread {thread_id} message {i}", thread_id=thread_id, msg_id=i,
             )
 
     # Launch multiple concurrent threads
@@ -296,8 +291,7 @@ def test_thread_safety_concurrent_logging(
 
 @pytest.mark.asyncio
 async def test_async_usage_patterns() -> None:
-    """
-    Tests usage patterns in async contexts.
+    """Tests usage patterns in async contexts.
 
     This test ensures that the logging system works correctly within
     async/await contexts and doesn't interfere with event loop performance.
@@ -306,7 +300,7 @@ async def test_async_usage_patterns() -> None:
         logging=LoggingConfig(
             default_level="DEBUG",
             console_formatter="key_value",
-        )
+        ),
     )
 
     # Setup in async context
@@ -331,8 +325,7 @@ def test_error_recovery_and_resilience(
     setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
     captured_stderr_for_foundation: io.StringIO,
 ) -> None:
-    """
-    Tests error recovery and system resilience.
+    """Tests error recovery and system resilience.
 
     This test verifies that the logging system handles various edge cases
     and problematic inputs gracefully without crashing.
@@ -342,7 +335,7 @@ def test_error_recovery_and_resilience(
         logging=LoggingConfig(
             default_level="INFO",
             module_levels={"app.test": "DEBUG"},  # Valid configuration
-        )
+        ),
     )
     setup_foundation_telemetry_for_test(config)
 
@@ -384,8 +377,7 @@ def test_error_recovery_and_resilience(
 
 
 def test_configuration_edge_cases() -> None:
-    """
-    Tests edge cases in configuration handling.
+    """Tests edge cases in configuration handling.
 
     This test verifies that configuration objects behave correctly
     in various edge cases and maintain their immutability guarantees.
@@ -428,10 +420,10 @@ def test_repeated_setup_calls_integration(  # Renamed to avoid conflict
 ) -> None:
     """Tests behavior with repeated setup calls."""
     config1 = TelemetryConfig(
-        service_name="service1", logging=LoggingConfig(default_level="DEBUG")
+        service_name="service1", logging=LoggingConfig(default_level="DEBUG"),
     )
     config2 = TelemetryConfig(
-        service_name="service2", logging=LoggingConfig(default_level="INFO")
+        service_name="service2", logging=LoggingConfig(default_level="INFO"),
     )
 
     # First setup
@@ -454,8 +446,7 @@ def test_emoji_matrix_comprehensive_coverage(
     setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
     captured_stderr_for_foundation: io.StringIO,
 ) -> None:
-    """
-    Tests comprehensive emoji matrix coverage.
+    """Tests comprehensive emoji matrix coverage.
 
     This test verifies that the Domain-Action-Status emoji system
     works correctly with various combinations of semantic fields.
@@ -466,7 +457,7 @@ def test_emoji_matrix_comprehensive_coverage(
             console_formatter="key_value",
             logger_name_emoji_prefix_enabled=True,
             das_emoji_prefix_enabled=True,
-        )
+        ),
     )
     setup_foundation_telemetry_for_test(config)
 
@@ -505,8 +496,7 @@ def test_module_level_filtering_comprehensive(
     setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
     captured_stderr_for_foundation: io.StringIO,
 ) -> None:
-    """
-    Tests comprehensive module-level filtering with hierarchical overrides.
+    """Tests comprehensive module-level filtering with hierarchical overrides.
 
     This test verifies that module-specific log levels work correctly
     with hierarchical module names and proper inheritance behavior.
@@ -522,7 +512,7 @@ def test_module_level_filtering_comprehensive(
             },
             logger_name_emoji_prefix_enabled=False,
             das_emoji_prefix_enabled=False,
-        )
+        ),
     )
     setup_foundation_telemetry_for_test(config)
 
@@ -555,7 +545,7 @@ def test_module_level_filtering_comprehensive(
             logger.trace(
                 message,
                 _foundation_logger_name=test_logger_instance._context.get(
-                    "logger_name"
+                    "logger_name",
                 ),
             )
         else:

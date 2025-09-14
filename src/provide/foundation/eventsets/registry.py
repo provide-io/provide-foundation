@@ -1,5 +1,4 @@
-"""
-Event set registry and discovery.
+"""Event set registry and discovery.
 """
 
 import importlib
@@ -18,22 +17,21 @@ logger = create_foundation_internal_logger()
 
 
 class EventSetRegistry(Registry):
-    """
-    Registry for event set definitions using foundation Registry.
+    """Registry for event set definitions using foundation Registry.
 
     Extends the foundation Registry to provide specialized
     methods for event set registration and discovery.
     """
 
     def register_event_set(self, event_set: EventSet) -> None:
-        """
-        Register an event set definition.
+        """Register an event set definition.
 
         Args:
             event_set: The EventSet to register
 
         Raises:
             AlreadyExistsError: If an event set with this name already exists
+
         """
         try:
             self.register(
@@ -54,8 +52,7 @@ class EventSetRegistry(Registry):
             raise
 
     def get_event_set(self, name: str) -> EventSet:
-        """
-        Retrieve an event set by name.
+        """Retrieve an event set by name.
 
         Args:
             name: The name of the event set
@@ -65,6 +62,7 @@ class EventSetRegistry(Registry):
 
         Raises:
             NotFoundError: If no event set with this name exists
+
         """
         event_set = self.get(name, "eventset")
         if event_set is None:
@@ -72,11 +70,11 @@ class EventSetRegistry(Registry):
         return event_set
 
     def list_event_sets(self) -> list[EventSet]:
-        """
-        List all registered event sets sorted by priority.
+        """List all registered event sets sorted by priority.
 
         Returns:
             List of EventSet objects sorted by descending priority
+
         """
         names = self.list_dimension("eventset")
         entries = [self.get_entry(name, "eventset") for name in names]
@@ -85,8 +83,7 @@ class EventSetRegistry(Registry):
         return [entry.value for entry in entries]
 
     def discover_sets(self) -> None:
-        """
-        Auto-discover and register event sets from the sets/ directory.
+        """Auto-discover and register event sets from the sets/ directory.
 
         Imports all modules in the sets/ subdirectory and registers
         any EVENT_SET constants found.
@@ -153,11 +150,11 @@ def get_registry() -> EventSetRegistry:
 
 
 def register_event_set(event_set: EventSet) -> None:
-    """
-    Register an event set in the global registry.
+    """Register an event set in the global registry.
 
     Args:
         event_set: The EventSet to register
+
     """
     _registry.register_event_set(event_set)
 

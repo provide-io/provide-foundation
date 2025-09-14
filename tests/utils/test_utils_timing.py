@@ -1,6 +1,5 @@
 # tests/test_utils.py
-"""
-Tests for utility functions in provide.foundation.utils.
+"""Tests for utility functions in provide.foundation.utils.
 """
 
 from collections.abc import Callable
@@ -75,7 +74,7 @@ def setup_telemetry_for_utils(
             default_level="INFO",
             console_formatter="key_value",
             logger_name_emoji_prefix_enabled=False,
-        )
+        ),
     )
     setup_foundation_telemetry_for_test(config)
 
@@ -83,7 +82,7 @@ def setup_telemetry_for_utils(
 @pytest.mark.usefixtures("setup_telemetry_for_utils")
 class TestTimedBlock:
     def test_successful_execution(
-        self, captured_stderr_for_foundation: io.StringIO
+        self, captured_stderr_for_foundation: io.StringIO,
     ) -> None:
         with timed_block(
             global_logger,
@@ -105,7 +104,7 @@ class TestTimedBlock:
         assert "duration_seconds" in log_data
 
     def test_execution_with_exception(
-        self, captured_stderr_for_foundation: io.StringIO
+        self, captured_stderr_for_foundation: io.StringIO,
     ) -> None:
         with pytest.raises(ValueError, match="Simulated error"):
             with timed_block(global_logger, "my_failing_op", user_id="user_abc"):
@@ -122,7 +121,7 @@ class TestTimedBlock:
         assert log_data.get("error.message") == "Simulated error"
 
     def test_log_level_for_outcome(
-        self, captured_stderr_for_foundation: io.StringIO
+        self, captured_stderr_for_foundation: io.StringIO,
     ) -> None:
         with timed_block(global_logger, "success_op_info_level"):
             pass
@@ -132,13 +131,12 @@ class TestTimedBlock:
         captured_stderr_for_foundation.seek(0)
         captured_stderr_for_foundation.truncate(0)
 
-        with pytest.raises(RuntimeError):
-            with timed_block(global_logger, "error_op_error_level"):
-                raise RuntimeError("err")
+        with pytest.raises(RuntimeError), timed_block(global_logger, "error_op_error_level"):
+            raise RuntimeError("err")
         assert "[error " in captured_stderr_for_foundation.getvalue().lower()
 
     def test_trace_id_from_contextvar(
-        self, captured_stderr_for_foundation: io.StringIO
+        self, captured_stderr_for_foundation: io.StringIO,
     ) -> None:
         token = _PROVIDE_CONTEXT_TRACE_ID.set("test-trace-12345")
         try:
@@ -154,7 +152,7 @@ class TestTimedBlock:
         assert parse_kv_log_line(log_lines[0]).get("trace_id") == "test-trace-12345"
 
     def test_trace_id_from_initial_kvs_overrides_contextvar(
-        self, captured_stderr_for_foundation: io.StringIO
+        self, captured_stderr_for_foundation: io.StringIO,
     ) -> None:
         token = _PROVIDE_CONTEXT_TRACE_ID.set("context-id")
         try:

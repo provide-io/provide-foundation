@@ -54,7 +54,7 @@ class MockToolManager(BaseToolManager):
             platform=platform,
             arch=arch,
             download_url=download_url,
-            executable_name=self.executable_name
+            executable_name=self.executable_name,
         )
 
     def get_available_versions(self) -> list[str]:
@@ -102,7 +102,7 @@ class TestDownloaderIntegration:
         except Exception as e:
             # Skip test if we can't connect to httpbin or have transport issues
             if any(keyword in str(e) for keyword in [
-                "async_generator", "context manager", "ConnectError", "DNS", "timeout"
+                "async_generator", "context manager", "ConnectError", "DNS", "timeout",
             ]):
                 pytest.skip(f"Network/transport issue - this is an integration test limitation: {e}")
             else:
@@ -132,7 +132,7 @@ class TestDownloaderIntegration:
             assert dest2.exists()
         except Exception as e:
             if any(keyword in str(e) for keyword in [
-                "async_generator", "context manager", "ConnectError", "DNS", "timeout", "event loop"
+                "async_generator", "context manager", "ConnectError", "DNS", "timeout", "event loop",
             ]):
                 pytest.skip(f"Network/transport issue - this is an integration test limitation: {e}")
             else:
@@ -167,7 +167,7 @@ class TestDownloaderIntegration:
         dest = temp_dir / "timeout_test.bin"
 
         # Patch the client to have a short timeout
-        with patch.object(downloader.client, 'stream') as mock_stream:
+        with patch.object(downloader.client, "stream") as mock_stream:
             import httpx
             mock_stream.side_effect = httpx.TimeoutException("Request timed out")
 
@@ -307,7 +307,7 @@ class TestBackoffRetryIntegration:
         dest = temp_dir / "retry_count_test.bin"
 
         # Patch the retry decorator to use fewer attempts for faster testing
-        with patch('provide.foundation.tools.downloader.retry') as mock_retry:
+        with patch("provide.foundation.tools.downloader.retry") as mock_retry:
             # Configure retry to try only 2 times
             def mock_retry_decorator(max_attempts=2, base_delay=0.1):
                 def decorator(func):
@@ -351,10 +351,10 @@ class TestBackoffRetryIntegration:
             if call_count <= 2:  # Fail first 2 attempts
                 import httpx
                 raise httpx.HTTPStatusError("Server error", request=Mock(), response=Mock(status_code=503))
-            else:  # Succeed on 3rd attempt
-                return original_stream("GET", "https://httpbin.org/bytes/100")
+            # Succeed on 3rd attempt
+            return original_stream("GET", "https://httpbin.org/bytes/100")
 
-        with patch.object(client, 'stream', side_effect=mock_stream):
+        with patch.object(client, "stream", side_effect=mock_stream):
             # Should eventually succeed
             result = downloader.download_with_progress("https://test.com/file", dest)
             assert result == dest
@@ -389,7 +389,7 @@ class TestFullWorkflowIntegration:
         versions = [
             "1.0.0", "1.0.1", "1.1.0", "1.1.1",
             "1.2.0-beta", "1.2.0-rc1", "1.2.0",
-            "2.0.0-alpha", "2.0.0-beta", "2.0.0"
+            "2.0.0-alpha", "2.0.0-beta", "2.0.0",
         ]
 
         # Test latest stable

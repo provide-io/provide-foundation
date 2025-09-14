@@ -1,5 +1,4 @@
-"""
-Transport middleware tests.
+"""Transport middleware tests.
 """
 
 
@@ -51,9 +50,9 @@ async def test_metrics_middleware():
     await middleware.process_response(response)
 
     # Verify middleware has foundation.metrics instances
-    assert hasattr(middleware, '_request_counter')
-    assert hasattr(middleware, '_request_duration')
-    assert hasattr(middleware, '_error_counter')
+    assert hasattr(middleware, "_request_counter")
+    assert hasattr(middleware, "_request_duration")
+    assert hasattr(middleware, "_error_counter")
 
     # Process error
     error = Exception("Test error")
@@ -116,8 +115,8 @@ async def test_middleware_pipeline():
     assert processed_response.status == 200
 
     # Check that metrics middleware was used
-    assert hasattr(metrics_mw, '_request_counter')
-    assert hasattr(metrics_mw, '_request_duration')
+    assert hasattr(metrics_mw, "_request_counter")
+    assert hasattr(metrics_mw, "_request_duration")
 
     # Test error processing
     error = Exception("Test error")
@@ -220,9 +219,8 @@ async def test_retry_middleware_execute():
         if call_count <= 2:
             # Fail first two attempts with retryable status
             return Response(status=500, request=req)
-        else:
-            # Succeed on third attempt
-            return Response(status=200, request=req)
+        # Succeed on third attempt
+        return Response(status=200, request=req)
 
     # Should retry and eventually succeed
     response = await middleware.execute_with_retry(failing_execute, request)

@@ -1,5 +1,4 @@
-"""
-Concurrency utilities for Foundation.
+"""Concurrency utilities for Foundation.
 
 Provides consistent async/await patterns, task management,
 and concurrency utilities for Foundation applications.

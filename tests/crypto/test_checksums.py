@@ -136,7 +136,7 @@ class TestChecksumFiles:
             "abc123def456  file1.txt\n"
             "789abcdef012  *file2.bin\n"
             "# Comment line\n"
-            "345678901234  subdir/file3.txt\n"
+            "345678901234  subdir/file3.txt\n",
         )
 
         result = parse_checksum_file(checksum_file)
@@ -187,7 +187,7 @@ class TestChecksumFiles:
             # Correct hash for "content1"
             "d0b425e00e15a0d36b9b361f02bab63563aed6cb4665083905386c55d5b679fa  file1.txt\n"
             # Wrong hash for file2
-            "0000000000000000000000000000000000000000000000000000000000000000  file2.txt\n"
+            "0000000000000000000000000000000000000000000000000000000000000000  file2.txt\n",
         )
 
         verified, failed = verify_checksum_file(checksum_file, base_dir=tmp_path)
@@ -209,11 +209,11 @@ class TestChecksumFiles:
         checksum_file = tmp_path / "checksums.sha256"
         checksum_file.write_text(
             "0000000000000000000000000000000000000000000000000000000000000000  file1.txt\n"
-            "0000000000000000000000000000000000000000000000000000000000000000  file2.txt\n"
+            "0000000000000000000000000000000000000000000000000000000000000000  file2.txt\n",
         )
 
         verified, failed = verify_checksum_file(
-            checksum_file, base_dir=tmp_path, stop_on_error=True
+            checksum_file, base_dir=tmp_path, stop_on_error=True,
         )
 
         assert len(verified) == 0

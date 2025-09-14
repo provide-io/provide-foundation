@@ -1,8 +1,7 @@
 #
 # processors.py
 #
-"""
-Structlog processors for Foundation Telemetry.
+"""Structlog processors for Foundation Telemetry.
 """
 
 import json
@@ -41,30 +40,30 @@ def _config_create_service_name_processor(
     service_name: str | None,
 ) -> StructlogProcessor:
     def processor(
-        _logger: Any, _method_name: str, event_dict: structlog.types.EventDict
+        _logger: Any, _method_name: str, event_dict: structlog.types.EventDict,
     ) -> structlog.types.EventDict:
         if service_name is not None:
             event_dict["service_name"] = service_name
         return event_dict
 
-    return cast(StructlogProcessor, processor)
+    return cast("StructlogProcessor", processor)
 
 
 def _config_create_timestamp_processors(
     omit_timestamp: bool,
 ) -> list[StructlogProcessor]:
     processors: list[StructlogProcessor] = [
-        structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S.%f", utc=False)
+        structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S.%f", utc=False),
     ]
     if omit_timestamp:
 
         def pop_timestamp_processor(
-            _logger: Any, _method_name: str, event_dict: structlog.types.EventDict
+            _logger: Any, _method_name: str, event_dict: structlog.types.EventDict,
         ) -> structlog.types.EventDict:
             event_dict.pop("timestamp", None)
             return event_dict
 
-        processors.append(cast(StructlogProcessor, pop_timestamp_processor))
+        processors.append(cast("StructlogProcessor", pop_timestamp_processor))
     return processors
 
 
@@ -73,11 +72,11 @@ def _config_create_event_enrichment_processors(
 ) -> list[StructlogProcessor]:
     processors: list[StructlogProcessor] = []
     if logging_config.logger_name_emoji_prefix_enabled:
-        processors.append(cast(StructlogProcessor, add_logger_name_emoji_prefix))
+        processors.append(cast("StructlogProcessor", add_logger_name_emoji_prefix))
     if logging_config.das_emoji_prefix_enabled:
 
         def add_event_enrichment_processor(
-            _logger: Any, _method_name: str, event_dict: structlog.types.EventDict
+            _logger: Any, _method_name: str, event_dict: structlog.types.EventDict,
         ) -> structlog.types.EventDict:
             # Lazy import to avoid circular dependency
             from provide.foundation.eventsets.registry import discover_event_sets
@@ -98,7 +97,7 @@ def _config_create_event_enrichment_processors(
             resolver = get_resolver()
             return resolver.enrich_event(event_dict)
 
-        processors.append(cast(StructlogProcessor, add_event_enrichment_processor))
+        processors.append(cast("StructlogProcessor", add_event_enrichment_processor))
     return processors
 
 
@@ -106,9 +105,9 @@ def _build_core_processors_list(config: TelemetryConfig) -> list[StructlogProces
     log_cfg = config.logging
     processors: list[StructlogProcessor] = [
         structlog.contextvars.merge_contextvars,
-        cast(StructlogProcessor, add_log_level_custom),
+        cast("StructlogProcessor", add_log_level_custom),
         cast(
-            StructlogProcessor,
+            "StructlogProcessor",
             filter_by_level_custom(
                 default_level_str=log_cfg.default_level,
                 module_levels=log_cfg.module_levels,
@@ -133,7 +132,7 @@ def _build_core_processors_list(config: TelemetryConfig) -> list[StructlogProces
             max_memory_mb=log_cfg.rate_limit_max_memory_mb,
             overflow_policy=log_cfg.rate_limit_overflow_policy,
         )
-        processors.append(cast(StructlogProcessor, rate_limiter_processor))
+        processors.append(cast("StructlogProcessor", rate_limiter_processor))
 
     processors.extend(_config_create_timestamp_processors(log_cfg.omit_timestamp))
     if config.service_name is not None:
@@ -141,7 +140,7 @@ def _build_core_processors_list(config: TelemetryConfig) -> list[StructlogProces
 
     # Add trace context injection if tracing is enabled
     if config.tracing_enabled and not config.globally_disabled:
-        processors.append(cast(StructlogProcessor, inject_trace_context))
+        processors.append(cast("StructlogProcessor", inject_trace_context))
 
     processors.extend(_config_create_event_enrichment_processors(log_cfg))
     return processors
@@ -158,20 +157,20 @@ def _config_create_keyvalue_formatter_processors(
     output_stream: TextIO,
 ) -> list[StructlogProcessor]:
     def pop_logger_name_processor(
-        _logger: object, _method_name: str, event_dict: structlog.types.EventDict
+        _logger: object, _method_name: str, event_dict: structlog.types.EventDict,
     ) -> structlog.types.EventDict:
         event_dict.pop("logger_name", None)
         return event_dict
 
     is_tty = hasattr(output_stream, "isatty") and output_stream.isatty()
     return [
-        cast(StructlogProcessor, pop_logger_name_processor),
+        cast("StructlogProcessor", pop_logger_name_processor),
         structlog.dev.ConsoleRenderer(colors=is_tty, exception_formatter=structlog.dev.plain_traceback),
     ]
 
 
 def _build_formatter_processors_list(
-    logging_config: LoggingConfig, output_stream: TextIO
+    logging_config: LoggingConfig, output_stream: TextIO,
 ) -> list[StructlogProcessor]:
     match logging_config.console_formatter:
         case "json":
@@ -188,6 +187,6 @@ def _build_formatter_processors_list(
             setup_logger = create_foundation_internal_logger()
             setup_logger.warning(
                 f"Unknown formatter '{logging_config.console_formatter}', using default 'key_value'. "
-                f"Valid formatters: ['json', 'key_value']"
+                f"Valid formatters: ['json', 'key_value']",
             )
             return _config_create_keyvalue_formatter_processors(output_stream)

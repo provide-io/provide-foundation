@@ -1,5 +1,4 @@
-"""
-Configuration parsers package.
+"""Configuration parsers package.
 
 Re-exports all parsing and validation functions from submodules
 while providing a clean modular structure.

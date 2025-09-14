@@ -48,7 +48,7 @@ class TestFileConfigLoader:
         """Test loading JSON configuration."""
         config_file = tmp_path / "config.json"
         config_file.write_text(
-            json.dumps({"name": "json_config", "port": 3000, "debug": True})
+            json.dumps({"name": "json_config", "port": 3000, "debug": True}),
         )
 
         loader = FileConfigLoader(config_file)

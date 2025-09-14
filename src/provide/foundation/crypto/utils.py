@@ -14,6 +14,7 @@ def quick_hash(data: bytes) -> int:
 
     Returns:
         32-bit hash value
+
     """
     # Use Python's built-in hash for speed, mask to 32 bits
     return hash(data) & 0xFFFFFFFF
@@ -29,6 +30,7 @@ def hash_name(name: str) -> int:
 
     Returns:
         64-bit integer hash
+
     """
     # Use first 8 bytes of SHA256 for good distribution
     hash_bytes = hashlib.sha256(name.encode("utf-8")).digest()[:8]
@@ -44,6 +46,7 @@ def compare_hash(hash1: str, hash2: str) -> bool:
 
     Returns:
         True if hashes match (case-insensitive)
+
     """
     return hash1.lower() == hash2.lower()
 
@@ -70,6 +73,7 @@ def format_hash(
         "abc1-23de-f456"
         >>> format_hash("abc123def456", group_size=4, groups=2)
         "abc1 23de"
+
     """
     if group_size <= 0:
         return hash_value
@@ -97,6 +101,7 @@ def truncate_hash(hash_value: str, length: int = 16, suffix: str = "...") -> str
     Examples:
         >>> truncate_hash("abc123def456789", length=8)
         "abc123de..."
+
     """
     if len(hash_value) <= length:
         return hash_value
@@ -111,6 +116,7 @@ def hash_to_int(hash_value: str) -> int:
 
     Returns:
         Integer representation of the hash
+
     """
     return int(hash_value, 16)
 
@@ -124,6 +130,7 @@ def int_to_hash(value: int, length: int | None = None) -> str:
 
     Returns:
         Hex string representation
+
     """
     hex_str = format(value, "x")
     if length and len(hex_str) < length:
@@ -140,6 +147,7 @@ def is_valid_hash(hash_value: str, algorithm: str | None = None) -> bool:
 
     Returns:
         True if string appears to be a valid hash
+
     """
     # Check if it's a valid hex string
     try:

@@ -47,11 +47,11 @@ class TestAsyncEnvFunctions:
 
             try:
                 with patch.dict(
-                    os.environ, {"ASYNC_SECRET": f"file://{temp_file.name}"}
+                    os.environ, {"ASYNC_SECRET": f"file://{temp_file.name}"},
                 ):
                     # Mock aiofiles if not available
                     with patch(
-                        "provide.foundation.config.env.aiofiles"
+                        "provide.foundation.config.env.aiofiles",
                     ) as mock_aiofiles:
                         mock_file = AsyncMock()
                         mock_file.read.return_value = "secret_content\n"
@@ -146,7 +146,7 @@ class TestAsyncRuntimeConfig:
                 ):
                     # Mock aiofiles for async file reading
                     with patch(
-                        "provide.foundation.config.env.aiofiles"
+                        "provide.foundation.config.env.aiofiles",
                     ) as mock_aiofiles:
                         mock_file = AsyncMock()
                         mock_file.read.return_value = "secret_api_key\n"
@@ -155,7 +155,7 @@ class TestAsyncRuntimeConfig:
                         )
 
                         config = await self.AsyncTestConfig.from_env_async(
-                            prefix="ASYNC"
+                            prefix="ASYNC",
                         )
 
                         assert config.app_name == "secret_app"
@@ -168,7 +168,7 @@ class TestAsyncRuntimeConfig:
         """Test async loading with use_async_secrets=False."""
         with patch.dict(os.environ, {"ASYNC_APP_NAME": "sync_app"}):
             config = await self.AsyncTestConfig.from_env_async(
-                prefix="ASYNC", use_async_secrets=False
+                prefix="ASYNC", use_async_secrets=False,
             )
 
             assert config.app_name == "sync_app"
@@ -275,7 +275,7 @@ class TestEnvFieldCreation:
     def test_env_field_with_all_options(self):
         """Test env_field with all options."""
         field_obj = env_field(
-            env_var="FULL_VAR", env_prefix="FULL", parser=str.upper, default="test"
+            env_var="FULL_VAR", env_prefix="FULL", parser=str.upper, default="test",
         )
 
         assert field_obj.metadata.get("env_var") == "FULL_VAR"
@@ -324,7 +324,7 @@ class TestRuntimeConfigAdvanced:
                 with patch.dict(
                     os.environ,
                     {
-                        "SPECIAL_VAR": f"file://{temp_file.name}"  # Use correct env var
+                        "SPECIAL_VAR": f"file://{temp_file.name}",  # Use correct env var
                     },
                 ):
                     config = self.AdvancedConfig.from_env()
@@ -420,7 +420,7 @@ class TestRuntimeConfigAdvanced:
             complex_val: complex = field(default=complex(1, 2))
 
         config = TypeTestConfig(
-            float_val=3.14159, none_val=None, complex_val=complex(2, 3)
+            float_val=3.14159, none_val=None, complex_val=complex(2, 3),
         )
 
         env_dict = config.to_env_dict()

@@ -42,10 +42,11 @@ def generate_rsa_keypair(key_size: int = DEFAULT_RSA_KEY_SIZE) -> RSAKeyPair:
 
     Raises:
         ValueError: If key size is not supported
+
     """
     if key_size not in SUPPORTED_RSA_SIZES:
         raise ValueError(
-            f"Unsupported RSA key size: {key_size}. Supported sizes: {sorted(SUPPORTED_RSA_SIZES)}"
+            f"Unsupported RSA key size: {key_size}. Supported sizes: {sorted(SUPPORTED_RSA_SIZES)}",
         )
 
     logger.debug(f"🔑 Generating RSA key pair (size: {key_size})")
@@ -72,6 +73,7 @@ def generate_ec_keypair(curve: str = DEFAULT_ECDSA_CURVE) -> ECKeyPair:
     Raises:
         ValueError: If curve is not supported
         AttributeError: If curve name is invalid
+
     """
     if curve not in SUPPORTED_EC_CURVES:
         raise ValueError(f"Unsupported EC curve: {curve}. Supported curves: {sorted(SUPPORTED_EC_CURVES)}")
@@ -105,6 +107,7 @@ def generate_keypair(
 
     Raises:
         ValueError: If key_type is not supported or required params missing
+
     """
     key_type_lower = key_type.lower()
 
@@ -143,6 +146,7 @@ def generate_signing_keypair() -> Ed25519KeyPair:
 
     Returns:
         tuple: (private_key_bytes, public_key_bytes)
+
     """
     return generate_ed25519_keypair()
 
@@ -159,13 +163,13 @@ def generate_tls_keypair(
 
     Returns:
         KeyPair: Generated key pair
+
     """
     if key_type == "ecdsa":
         return generate_ec_keypair(curve)
-    elif key_type == "rsa":
+    if key_type == "rsa":
         return generate_rsa_keypair(DEFAULT_RSA_KEY_SIZE)
-    else:
-        raise ValueError(f"TLS key type must be 'ecdsa' or 'rsa', got {key_type}")
+    raise ValueError(f"TLS key type must be 'ecdsa' or 'rsa', got {key_type}")
 
 
 # Legacy functions

@@ -1,5 +1,4 @@
-"""
-Hub configuration management utilities.
+"""Hub configuration management utilities.
 
 Provides functions for resolving configuration values from registered sources,
 loading configurations, and managing the configuration chain.
@@ -107,14 +106,14 @@ async def load_all_configs() -> dict[str, Any]:
 
 
 def load_config_from_registry(config_class: type[T]) -> T:
-    """
-    Load configuration from registry sources.
+    """Load configuration from registry sources.
 
     Args:
         config_class: Configuration class to instantiate
 
     Returns:
         Configuration instance loaded from registry sources
+
     """
     registry, registry_lock, ComponentCategory = _get_registry_and_lock()
 

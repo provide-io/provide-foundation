@@ -1,8 +1,7 @@
 #
 # limiters.py
 #
-"""
-Rate limiter implementations for Foundation's logging system.
+"""Rate limiter implementations for Foundation's logging system.
 """
 
 import asyncio
@@ -12,18 +11,17 @@ from typing import Any
 
 
 class SyncRateLimiter:
-    """
-    Synchronous token bucket rate limiter for controlling log output rates.
+    """Synchronous token bucket rate limiter for controlling log output rates.
     Thread-safe implementation suitable for synchronous logging operations.
     """
 
     def __init__(self, capacity: float, refill_rate: float) -> None:
-        """
-        Initialize the rate limiter.
+        """Initialize the rate limiter.
 
         Args:
             capacity: Maximum number of tokens (burst capacity)
             refill_rate: Tokens refilled per second
+
         """
         if capacity <= 0:
             raise ValueError("Capacity must be positive")
@@ -42,11 +40,11 @@ class SyncRateLimiter:
         self.last_denied_time: float | None = None
 
     def is_allowed(self) -> bool:
-        """
-        Check if a log message is allowed based on available tokens.
+        """Check if a log message is allowed based on available tokens.
 
         Returns:
             True if the log should be allowed, False if rate limited
+
         """
         with self.lock:
             now = time.monotonic()
@@ -63,10 +61,9 @@ class SyncRateLimiter:
                 self.tokens -= 1.0
                 self.total_allowed += 1
                 return True
-            else:
-                self.total_denied += 1
-                self.last_denied_time = now
-                return False
+            self.total_denied += 1
+            self.last_denied_time = now
+            return False
 
     def get_stats(self) -> dict[str, Any]:
         """Get rate limiter statistics."""
@@ -82,18 +79,17 @@ class SyncRateLimiter:
 
 
 class AsyncRateLimiter:
-    """
-    Asynchronous token bucket rate limiter.
+    """Asynchronous token bucket rate limiter.
     Uses asyncio.Lock for thread safety in async contexts.
     """
 
     def __init__(self, capacity: float, refill_rate: float) -> None:
-        """
-        Initialize the async rate limiter.
+        """Initialize the async rate limiter.
 
         Args:
             capacity: Maximum number of tokens (burst capacity)
             refill_rate: Tokens refilled per second
+
         """
         if capacity <= 0:
             raise ValueError("Capacity must be positive")
@@ -112,11 +108,11 @@ class AsyncRateLimiter:
         self.last_denied_time: float | None = None
 
     async def is_allowed(self) -> bool:
-        """
-        Check if a log message is allowed based on available tokens.
+        """Check if a log message is allowed based on available tokens.
 
         Returns:
             True if the log should be allowed, False if rate limited
+
         """
         async with self.lock:
             now = time.monotonic()
@@ -133,10 +129,9 @@ class AsyncRateLimiter:
                 self.tokens -= 1.0
                 self.total_allowed += 1
                 return True
-            else:
-                self.total_denied += 1
-                self.last_denied_time = now
-                return False
+            self.total_denied += 1
+            self.last_denied_time = now
+            return False
 
     async def get_stats(self) -> dict[str, Any]:
         """Get rate limiter statistics."""
@@ -152,8 +147,7 @@ class AsyncRateLimiter:
 
 
 class GlobalRateLimiter:
-    """
-    Global rate limiter singleton for Foundation's logging system.
+    """Global rate limiter singleton for Foundation's logging system.
     Manages per-logger and global rate limits.
     """
 
@@ -199,8 +193,7 @@ class GlobalRateLimiter:
         max_memory_mb: float | None = None,
         overflow_policy: str = "drop_oldest",
     ) -> None:
-        """
-        Configure the global rate limiter.
+        """Configure the global rate limiter.
 
         Args:
             global_rate: Global logs per second limit
@@ -210,6 +203,7 @@ class GlobalRateLimiter:
             max_queue_size: Maximum queue size for buffered limiter
             max_memory_mb: Maximum memory for buffered limiter
             overflow_policy: What to do when queue is full
+
         """
         with self.lock:
             self.use_buffered = use_buffered
@@ -242,8 +236,7 @@ class GlobalRateLimiter:
                     self.logger_limiters[logger_name] = SyncRateLimiter(capacity, rate)
 
     def is_allowed(self, logger_name: str, item: Any | None = None) -> tuple[bool, str | None]:
-        """
-        Check if a log from a specific logger is allowed.
+        """Check if a log from a specific logger is allowed.
 
         Args:
             logger_name: Name of the logger
@@ -251,6 +244,7 @@ class GlobalRateLimiter:
 
         Returns:
             Tuple of (allowed, reason) where reason is set if denied
+
         """
         with self.lock:
             # Check per-logger limit first
@@ -270,10 +264,9 @@ class GlobalRateLimiter:
                         allowed, reason = self.global_limiter.is_allowed(item)
                         if not allowed:
                             return False, reason or "Global rate limit exceeded"
-                else:
-                    # SyncRateLimiter returns bool
-                    if not self.global_limiter.is_allowed():
-                        return False, "Global rate limit exceeded"
+                # SyncRateLimiter returns bool
+                elif not self.global_limiter.is_allowed():
+                    return False, "Global rate limit exceeded"
 
             return True, None
 

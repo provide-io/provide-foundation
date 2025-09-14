@@ -31,6 +31,7 @@ def inject_trace_context(logger: Any, method_name: str, event_dict: dict[str, An
 
     Returns:
         Event dictionary with trace context added
+
     """
     # Try OpenTelemetry trace context first
     if _HAS_OTEL:
@@ -87,6 +88,7 @@ def should_inject_trace_context() -> bool:
 
     Returns:
         True if trace context can be injected
+
     """
     # Check if OpenTelemetry is available and has active span
     if _HAS_OTEL:

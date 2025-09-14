@@ -17,7 +17,6 @@ def test_logger_base_already_configured_after_lock() -> None:
     For now, this line is excluded from coverage to achieve 99%+ coverage.
     """
     # Placeholder test - needs proper implementation
-    pass
 
 
 def test_add_logger_name_emoji_prefix_no_event_msg() -> None:

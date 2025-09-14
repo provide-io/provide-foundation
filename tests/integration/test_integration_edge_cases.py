@@ -1,8 +1,7 @@
 #
 # test_edge_cases.py
 #
-"""
-Edge case and error condition tests for Foundation Telemetry.
+"""Edge case and error condition tests for Foundation Telemetry.
 
 This module tests boundary conditions, error handling, and edge cases
 that might not be covered in regular functional tests.
@@ -26,7 +25,7 @@ from provide.foundation import (
 
 
 def test_invalid_environment_variables_handling(
-    monkeypatch, capsys
+    monkeypatch, capsys,
 ) -> None:  # Added capsys
     """Tests handling of invalid environment variables with strict validation."""
     # Define cases that should raise ValueError with strict validation
@@ -148,8 +147,8 @@ def test_logger_with_extreme_names(
     config = TelemetryConfig(
         logging=LoggingConfig(
             default_level="INFO",
-            console_formatter="key_value"
-        )
+            console_formatter="key_value",
+        ),
     )
     setup_foundation_telemetry_for_test(config)
 
@@ -171,7 +170,7 @@ def test_logger_with_extreme_names(
         try:
             test_logger = logger.get_logger(name)
             test_logger.info(
-                f"Test message from logger: {name[:50]}"
+                f"Test message from logger: {name[:50]}",
             )  # Truncate for readability
         except Exception as e:  # pragma: no cover
             pytest.fail(f"Logger failed with name '{name}': {e}")
@@ -199,8 +198,8 @@ def test_log_message_edge_cases(
     config = TelemetryConfig(
         logging=LoggingConfig(
             default_level="INFO",
-            console_formatter="key_value"
-        )
+            console_formatter="key_value",
+        ),
     )
     setup_foundation_telemetry_for_test(config)
     test_logger = logger.get_logger("edge.test")
@@ -249,8 +248,8 @@ def test_logger_args_formatting_edge_cases(
     config = TelemetryConfig(
         logging=LoggingConfig(
             default_level="INFO",
-            console_formatter="key_value"
-        )
+            console_formatter="key_value",
+        ),
     )
     setup_foundation_telemetry_for_test(config)
     # Using the global logger instance which has the FoundationLogger methods
@@ -294,7 +293,7 @@ def test_logger_args_formatting_edge_cases(
         except Exception as e:  # pragma: no cover
             if should_not_raise:
                 pytest.fail(
-                    f"Unexpected exception for '{message}' with args {args}: {e}"
+                    f"Unexpected exception for '{message}' with args {args}: {e}",
                 )
 
     output = captured_stderr_for_foundation.getvalue()
@@ -319,10 +318,10 @@ def test_repeated_setup_calls(
 ) -> None:
     """Tests behavior with repeated setup calls."""
     config1 = TelemetryConfig(
-        service_name="service1", logging=LoggingConfig(default_level="DEBUG")
+        service_name="service1", logging=LoggingConfig(default_level="DEBUG"),
     )
     config2 = TelemetryConfig(
-        service_name="service2", logging=LoggingConfig(default_level="INFO")
+        service_name="service2", logging=LoggingConfig(default_level="INFO"),
     )
 
     # First setup
@@ -381,7 +380,7 @@ def test_memory_usage_with_large_configs() -> None:
         logging=LoggingConfig(
             default_level="INFO",
             module_levels=large_module_levels,  # type: ignore [arg-type]
-        )
+        ),
     )
 
     try:
@@ -404,7 +403,7 @@ def test_trace_level_edge_cases(
         logging=LoggingConfig(
             default_level="TRACE",
             module_levels={"trace.test": "TRACE"},
-        )
+        ),
     )
     setup_foundation_telemetry_for_test(config)
 
@@ -482,7 +481,7 @@ def test_performance_with_disabled_features(
             default_level="INFO",
             logger_name_emoji_prefix_enabled=False,
             das_emoji_prefix_enabled=False,
-        )
+        ),
     )
     setup_foundation_telemetry_for_test(config)
     test_logger = logger.get_logger("performance.test")

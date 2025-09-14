@@ -42,14 +42,14 @@ class TestSystemInfo:
         def env_side_effect(key, default=None):
             if key == "USER":
                 return "testuser"
-            elif key == "TMPDIR":
+            if key == "TMPDIR":
                 return "/tmp"
             return default
 
         mock_env_get.side_effect = env_side_effect
 
         mock_disk_usage.return_value = MagicMock(
-            total=1000000, used=500000, free=500000
+            total=1000000, used=500000, free=500000,
         )
 
         # Get system info
@@ -144,7 +144,7 @@ class TestSystemInfo:
     )
     @patch("provide.foundation.platform.info.get_os_version", return_value="10.0.19045")
     @patch(
-        "provide.foundation.platform.info.get_cpu_type", return_value="Intel Core i7"
+        "provide.foundation.platform.info.get_cpu_type", return_value="Intel Core i7",
     )
     @patch("platform.python_version", return_value="3.11.0")
     def test_get_system_info_with_psutil(

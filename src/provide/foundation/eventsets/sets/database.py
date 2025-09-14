@@ -1,5 +1,4 @@
-"""
-Database operations event set for Foundation.
+"""Database operations event set for Foundation.
 """
 
 from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping

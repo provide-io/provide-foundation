@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # cut_up_chuck.py
 #
-"""
-Continuously emits diverse log messages every second until Ctrl+C.
+"""Continuously emits diverse log messages every second until Ctrl+C.
 
 This script serves as a demonstration and a simple load test for the
 provide.foundation logging system. It showcases various logging features,
@@ -87,13 +86,13 @@ async def generate_log_entries_continuously() -> None:
             phrase: str = random.choice(phrases)
 
             chosen_logger: Any = random.choice(
-                [reception_log, kitchen_log, reality_studio_log]
+                [reception_log, kitchen_log, reality_studio_log],
             )
             log_level_method_name: str = random.choice(
-                ["debug", "info", "warning", "error", "critical"]
+                ["debug", "info", "warning", "error", "critical"],
             )
             log_level_method: Callable[..., None] = getattr(
-                chosen_logger, log_level_method_name
+                chosen_logger, log_level_method_name,
             )
 
             log_level_method(
@@ -136,7 +135,7 @@ async def generate_log_entries_continuously() -> None:
     except Exception as e:
         app_error_log = logger.get_logger("Interzone.MainControl.Error")
         app_error_log.exception(
-            f"💥 Unhandled exception in generate_log_entries_continuously: {e}"
+            f"💥 Unhandled exception in generate_log_entries_continuously: {e}",
         )
     finally:
         reception_log.info("🏁➡️🛑 Continuous Terminal Feed Offline.")

@@ -1,5 +1,4 @@
-"""
-Configuration field converters for parsing environment variables.
+"""Configuration field converters for parsing environment variables.
 
 This module provides a unified import interface for all converters and validators,
 while the actual implementations are organized in focused submodules.

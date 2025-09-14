@@ -1,5 +1,4 @@
-"""
-OTLP integration for sending logs to OpenObserve.
+"""OTLP integration for sending logs to OpenObserve.
 """
 
 from datetime import datetime
@@ -41,6 +40,7 @@ def send_log_otlp(
 
     Returns:
         True if sent successfully via OTLP, False otherwise
+
     """
     if not _HAS_OTEL_LOGS:
         return False
@@ -146,6 +146,7 @@ def send_log_bulk(
 
     Returns:
         True if sent successfully
+
     """
     try:
         if client is None:
@@ -218,9 +219,8 @@ def send_log_bulk(
         if response.status_code == 200:
             log.debug(f"Sent log via bulk API: {message[:50]}...")
             return True
-        else:
-            log.debug(f"Failed to send via bulk API: {response.status_code}")
-            return False
+        log.debug(f"Failed to send via bulk API: {response.status_code}")
+        return False
 
     except Exception as e:
         log.debug(f"Failed to send via bulk API: {e}")
@@ -247,6 +247,7 @@ def send_log(
 
     Returns:
         True if sent successfully
+
     """
     # Try OTLP first if preferred and available
     if prefer_otlp and _HAS_OTEL_LOGS:
@@ -262,6 +263,7 @@ def create_otlp_logger_provider() -> Any | None:
 
     Returns:
         LoggerProvider if OTLP is available and configured, None otherwise
+
     """
     if not _HAS_OTEL_LOGS:
         return None

@@ -161,7 +161,7 @@ class TestPlatformDetection:
     def test_get_cpu_type_amd_ryzen(self) -> None:
         """Test get_cpu_type for AMD Ryzen processors."""
         with patch(
-            "platform.processor", return_value="AMD Ryzen 7 3700X 8-Core Processor"
+            "platform.processor", return_value="AMD Ryzen 7 3700X 8-Core Processor",
         ):
             cpu_type = get_cpu_type()
             assert cpu_type == "AMD Ryzen 7"

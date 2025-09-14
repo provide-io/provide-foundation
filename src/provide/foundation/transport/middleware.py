@@ -1,5 +1,4 @@
-"""
-Transport middleware system with Hub registration.
+"""Transport middleware system with Hub registration.
 """
 
 from abc import ABC, abstractmethod
@@ -27,17 +26,14 @@ class Middleware(ABC):
     @abstractmethod
     async def process_request(self, request: Request) -> Request:
         """Process request before sending."""
-        pass
 
     @abstractmethod
     async def process_response(self, response: Response) -> Response:
         """Process response after receiving."""
-        pass
 
     @abstractmethod
     async def process_error(self, error: Exception, request: Request) -> Exception:
         """Process errors during request."""
-        pass
 
 
 @define
@@ -107,14 +103,13 @@ class LoggingMiddleware(Middleware):
         """Get emoji for status code."""
         if 200 <= status_code < 300:
             return "✅"
-        elif 300 <= status_code < 400:
+        if 300 <= status_code < 400:
             return "↩️"
-        elif 400 <= status_code < 500:
+        if 400 <= status_code < 500:
             return "⚠️"
-        elif 500 <= status_code < 600:
+        if 500 <= status_code < 600:
             return "❌"
-        else:
-            return "❓"
+        return "❓"
 
 
 @define
@@ -128,7 +123,7 @@ class RetryMiddleware(Middleware):
             backoff=BackoffStrategy.EXPONENTIAL,
             retryable_errors=(TransportError,),
             retryable_status_codes={500, 502, 503, 504},
-        )
+        ),
     )
 
     async def process_request(self, request: Request) -> Request:

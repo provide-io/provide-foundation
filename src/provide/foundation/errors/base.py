@@ -17,6 +17,7 @@ class FoundationError(Exception):
         >>> raise FoundationError("Operation failed")
         >>> raise FoundationError("Operation failed", code="OP_001")
         >>> raise FoundationError("Operation failed", user_id=123, retry_count=3)
+
     """
 
     def __init__(
@@ -50,6 +51,7 @@ class FoundationError(Exception):
 
         Returns:
             Self for method chaining.
+
         """
         self.context[key] = value
         return self
@@ -59,6 +61,7 @@ class FoundationError(Exception):
 
         Returns:
             Dictionary representation suitable for logging/serialization.
+
         """
         result = {
             "error.type": self.__class__.__name__,

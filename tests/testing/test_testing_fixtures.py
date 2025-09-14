@@ -80,7 +80,6 @@ class TestTestingFixtures:
 
     def test_fixture_type_annotations(self):
         """Test that fixture functions have correct type annotations."""
-
         # Check that the function exists and is callable
         assert callable(captured_stderr_for_foundation)
 
@@ -97,7 +96,7 @@ class TestTestingFixtures:
 
         # Test with parameters
         custom_config = TelemetryConfig(
-            service_name="test_service", globally_disabled=True
+            service_name="test_service", globally_disabled=True,
         )
         assert custom_config.service_name == "test_service"
         assert custom_config.globally_disabled is True

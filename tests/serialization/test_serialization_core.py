@@ -124,7 +124,7 @@ class TestProvideDumps:
 
         assert result == '{"test": "value"}'
         mock_json.dumps.assert_called_once_with(
-            data, ensure_ascii=False, indent=2, sort_keys=True
+            data, ensure_ascii=False, indent=2, sort_keys=True,
         )
 
     def test_provide_dumps_complex_numbers_raises_error(self):

@@ -27,7 +27,6 @@ class TestNestedCommandRegistration:
         @register_command("container", group=True)
         def container_group() -> None:
             """Container management commands."""
-            pass
 
         @register_command("container.status")
         def container_status() -> str:
@@ -50,7 +49,6 @@ class TestNestedCommandRegistration:
         @register_command("config.database", group=True)
         def config_database_group() -> None:
             """Database configuration commands."""
-            pass
 
         hub = get_hub()
 
@@ -66,12 +64,10 @@ class TestNestedCommandRegistration:
         @register_command("container", group=True)
         def container_group() -> None:
             """Container commands."""
-            pass
 
         @register_command("container.volumes", group=True)
         def container_volumes_group() -> None:
             """Volume management commands."""
-            pass
 
         @register_command("container.volumes.backup")
         def container_volumes_backup() -> str:
@@ -165,17 +161,14 @@ class TestNestedCommandRegistration:
         @register_command("cloud", group=True)
         def cloud_group() -> None:
             """Cloud commands."""
-            pass
 
         @register_command("cloud.aws", group=True)
         def cloud_aws_group() -> None:
             """AWS commands."""
-            pass
 
         @register_command("cloud.aws.s3", group=True)
         def cloud_aws_s3_group() -> None:
             """S3 commands."""
-            pass
 
         @register_command("cloud.aws.s3.list")
         def cloud_aws_s3_list() -> str:
@@ -199,7 +192,6 @@ class TestNestedCommandRegistration:
         @register_command("tools.terraform", group=True)
         def tools_terraform_group() -> None:
             """Terraform tools."""
-            pass
 
         # Using parent parameter
         @register_command("tools.terraform.install")
@@ -265,7 +257,6 @@ class TestNestedCommandRegistration:
         @register_command("admin", group=True, hidden=True)
         def admin_group() -> None:
             """Admin commands."""
-            pass
 
         @register_command("admin.reset")
         def admin_reset() -> str:
@@ -346,7 +337,6 @@ class TestNestedCommandRegistration:
         @register_command("git", group=True, description="Git operations")
         def git_group() -> None:
             """Git command group."""
-            pass
 
         @register_command("git.commit", description="Create a commit")
         def git_commit() -> str:
@@ -444,7 +434,6 @@ class TestNestedCommandIntegration:
         @register_command("server.logs", group=True)
         def server_logs_group() -> None:
             """Server log commands."""
-            pass
 
         @register_command("server.logs.show")
         def server_logs_show(lines: int = 100) -> None:

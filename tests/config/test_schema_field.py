@@ -184,7 +184,7 @@ class TestSchemaFieldComprehensive:
         def validator(value):
             if value < 0:
                 raise ConfigValidationError(
-                    "Must be positive", field="test_field", value=value
+                    "Must be positive", field="test_field", value=value,
                 )
             return True
 
@@ -203,7 +203,7 @@ class TestSchemaFieldComprehensive:
         field_obj = SchemaField(name="test_field", validator=validator)
 
         with pytest.raises(
-            ConfigValidationError, match="Validation error: Generic error"
+            ConfigValidationError, match="Validation error: Generic error",
         ):
             await field_obj.validate(5)
 
@@ -257,12 +257,12 @@ class TestSchemaFieldComprehensive:
 
         with pytest.raises(ConfigValidationError, match="Value does not match pattern"):
             await field_obj.validate(
-                "UPPER_CASE"
+                "UPPER_CASE",
             )  # In choices, but fails pattern (uppercase)
 
         with pytest.raises(ConfigValidationError, match="Custom validation failed"):
             await field_obj.validate(
-                "short"
+                "short",
             )  # In choices, matches pattern, but fails custom validator (len <= 5)
 
 

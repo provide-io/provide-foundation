@@ -133,7 +133,7 @@ class TestProvideNow:
 
         # They should be at roughly the same time but different timezones
         time_diff = abs(
-            (utc_now.replace(tzinfo=None) - ny_now.replace(tzinfo=None)).total_seconds()
+            (utc_now.replace(tzinfo=None) - ny_now.replace(tzinfo=None)).total_seconds(),
         )
         # Should be within a few hours (timezone offset)
         assert time_diff <= 24 * 3600  # Less than 24 hours difference

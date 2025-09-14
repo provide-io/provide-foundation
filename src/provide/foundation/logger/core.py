@@ -1,8 +1,7 @@
 #
 # core.py
 #
-"""
-Core FoundationLogger implementation.
+"""Core FoundationLogger implementation.
 Contains the main logging class with all logging methods.
 """
 
@@ -26,18 +25,18 @@ class FoundationLogger:
 
     def __init__(self, hub: Any = None) -> None:
         self._internal_logger = structlog.get_logger().bind(
-            logger_name=f"{self.__class__.__module__}.{self.__class__.__name__}"
+            logger_name=f"{self.__class__.__module__}.{self.__class__.__name__}",
         )
         self._is_configured_by_setup: bool = False
         self._active_config: TelemetryConfig | None = None
         self._hub = hub  # Hub dependency for DI pattern
 
     def setup(self, config: "TelemetryConfig") -> None:
-        """
-        Setup the logger with configuration from Hub.
+        """Setup the logger with configuration from Hub.
 
         Args:
             config: TelemetryConfig to use for setup
+
         """
         self._active_config = config
         self._is_configured_by_setup = True
@@ -55,7 +54,7 @@ class FoundationLogger:
         try:
             current_config = structlog.get_config()
             if current_config and isinstance(
-                current_config.get("logger_factory"), structlog.ReturnLoggerFactory
+                current_config.get("logger_factory"), structlog.ReturnLoggerFactory,
             ):
                 with _LAZY_SETUP_LOCK:
                     _LAZY_SETUP_STATE["done"] = True
@@ -65,8 +64,7 @@ class FoundationLogger:
         return False
 
     def _ensure_configured(self) -> None:
-        """
-        Ensures the logger is configured, performing lazy setup if necessary.
+        """Ensures the logger is configured, performing lazy setup if necessary.
         Uses Hub for configuration when available, falls back to legacy setup.
         This method is thread-safe and handles setup failures gracefully.
         """
@@ -213,46 +211,43 @@ class FoundationLogger:
         self._log_with_level("critical", formatted_event, **kwargs)
 
     def bind(self, **kwargs: Any) -> Any:
-        """
-        Create a new logger with additional context bound to it.
+        """Create a new logger with additional context bound to it.
 
         Args:
             **kwargs: Key-value pairs to bind to the logger
 
         Returns:
             A new logger instance with the bound context
+
         """
         self._ensure_configured()
         # Get the actual structlog logger and bind context to it
-        if hasattr(self, '_logger') and self._logger:
+        if hasattr(self, "_logger") and self._logger:
             return self._logger.bind(**kwargs)
-        else:
-            # Fallback: get fresh logger and bind
-            log = self.get_logger()
-            return log.bind(**kwargs)
+        # Fallback: get fresh logger and bind
+        log = self.get_logger()
+        return log.bind(**kwargs)
 
     def unbind(self, *keys: str) -> Any:
-        """
-        Create a new logger with specified keys removed from context.
+        """Create a new logger with specified keys removed from context.
 
         Args:
             *keys: Context keys to remove
 
         Returns:
             A new logger instance without the specified keys
+
         """
         self._ensure_configured()
         # Get the actual structlog logger and unbind context from it
-        if hasattr(self, '_logger') and self._logger:
+        if hasattr(self, "_logger") and self._logger:
             return self._logger.unbind(*keys)
-        else:
-            # Fallback: get fresh logger and unbind
-            log = self.get_logger()
-            return log.unbind(*keys)
+        # Fallback: get fresh logger and unbind
+        log = self.get_logger()
+        return log.unbind(*keys)
 
     def try_unbind(self, *keys: str) -> Any:
-        """
-        Create a new logger with specified keys removed from context.
+        """Create a new logger with specified keys removed from context.
         Does not raise an error if keys don't exist.
 
         Args:
@@ -260,15 +255,15 @@ class FoundationLogger:
 
         Returns:
             A new logger instance without the specified keys
+
         """
         self._ensure_configured()
         # Get the actual structlog logger and try_unbind context from it
-        if hasattr(self, '_logger') and self._logger:
+        if hasattr(self, "_logger") and self._logger:
             return self._logger.try_unbind(*keys)
-        else:
-            # Fallback: get fresh logger and try_unbind
-            log = self.get_logger()
-            return log.try_unbind(*keys)
+        # Fallback: get fresh logger and try_unbind
+        log = self.get_logger()
+        return log.try_unbind(*keys)
 
     def __setattr__(self, name: str, value: Any) -> None:
         """Override setattr to prevent accidental modification of logger state."""
@@ -280,14 +275,14 @@ class FoundationLogger:
 
 # Global logger function - gets logger through Hub
 def get_global_logger() -> FoundationLogger:
-    """
-    Get the global FoundationLogger instance through Hub.
+    """Get the global FoundationLogger instance through Hub.
 
     This replaces the old global logger instance with Hub-based access.
     Auto-initializes Foundation if not already done.
 
     Returns:
         FoundationLogger instance from Hub
+
     """
     from provide.foundation.hub.manager import get_hub
 
@@ -310,7 +305,7 @@ class GlobalLoggerProxy:
 
     def __setattr__(self, name: str, value: Any) -> None:
         """Allow tests to set internal state on the underlying logger."""
-        if name.startswith('_'):
+        if name.startswith("_"):
             # For internal attributes, set them on the actual logger instance
             logger = get_global_logger()
             setattr(logger, name, value)

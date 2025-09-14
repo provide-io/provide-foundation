@@ -42,12 +42,11 @@ async def test_load_key_value_error(valid_cert_pem) -> None:
     with mock.patch(
         "cryptography.hazmat.primitives.serialization.load_pem_private_key",
         side_effect=ValueError("Invalid key format"),
-    ):
-        with pytest.raises(CertificateError, match="Failed to initialize certificate"):
-            Certificate(
-                cert_pem_or_uri=valid_cert_pem,
-                key_pem_or_uri="-----BEGIN PRIVATE KEY-----\nINVALID\n-----END PRIVATE KEY-----",
-            )
+    ), pytest.raises(CertificateError, match="Failed to initialize certificate"):
+        Certificate(
+            cert_pem_or_uri=valid_cert_pem,
+            key_pem_or_uri="-----BEGIN PRIVATE KEY-----\nINVALID\n-----END PRIVATE KEY-----",
+        )
 
 
 @pytest.mark.asyncio
@@ -76,7 +75,7 @@ async def test_load_private_key_from_file(temporary_key_file, client_cert) -> No
     """Ensure a private key loads correctly from a file:// path."""
     # Create cert from the fixture's actual certificate
     cert = Certificate(
-        cert_pem_or_uri=client_cert.cert, key_pem_or_uri=temporary_key_file
+        cert_pem_or_uri=client_cert.cert, key_pem_or_uri=temporary_key_file,
     )
     assert cert.public_key, "Certificate should have a valid private key"
 
@@ -133,7 +132,7 @@ async def test_malformed_certificate_loading() -> None:
     """Ensure malformed certificates raise CertificateError."""
     with pytest.raises(CertificateError, match="Failed to initialize certificate"):
         Certificate(
-            cert_pem_or_uri="-----BEGIN CERTIFICATE-----\nINVALID\n-----END CERTIFICATE-----"
+            cert_pem_or_uri="-----BEGIN CERTIFICATE-----\nINVALID\n-----END CERTIFICATE-----",
         )
 
 

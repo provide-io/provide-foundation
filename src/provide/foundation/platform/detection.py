@@ -10,11 +10,11 @@ plog = get_logger(__name__)
 
 
 def get_os_name() -> str:
-    """
-    Get normalized OS name.
+    """Get normalized OS name.
 
     Returns:
         Normalized OS name (darwin, linux, windows)
+
     """
     try:
         os_name = platform.system().lower()
@@ -31,20 +31,20 @@ def get_os_name() -> str:
 
 
 def get_arch_name() -> str:
-    """
-    Get normalized architecture name.
+    """Get normalized architecture name.
 
     Returns:
         Normalized architecture (amd64, arm64, x86, i386)
+
     """
     try:
         arch = platform.machine().lower()
         # Normalize common architectures
         if arch in ["x86_64", "amd64"]:
             return "amd64"
-        elif arch in ["aarch64", "arm64"]:
+        if arch in ["aarch64", "arm64"]:
             return "arm64"
-        elif arch in ["i686", "i586", "i486"]:
+        if arch in ["i686", "i586", "i486"]:
             return "x86"
         return arch
     except Exception as e:
@@ -57,11 +57,11 @@ def get_arch_name() -> str:
 
 
 def get_platform_string() -> str:
-    """
-    Get normalized platform string in format 'os_arch'.
+    """Get normalized platform string in format 'os_arch'.
 
     Returns:
         Platform string like 'darwin_arm64' or 'linux_amd64'
+
     """
     os_name = get_os_name()
     arch = get_arch_name()
@@ -71,11 +71,11 @@ def get_platform_string() -> str:
 
 
 def get_os_version() -> str | None:
-    """
-    Get OS version information.
+    """Get OS version information.
 
     Returns:
         OS version string or None if unavailable
+
     """
     try:
         system = platform.system()
@@ -111,11 +111,11 @@ def get_os_version() -> str | None:
 
 
 def get_cpu_type() -> str | None:
-    """
-    Get CPU type/family information.
+    """Get CPU type/family information.
 
     Returns:
         CPU type string or None if unavailable
+
     """
     try:
         processor = platform.processor()
@@ -128,20 +128,20 @@ def get_cpu_type() -> str | None:
                     if match:
                         return f"Intel Core {match.group(1)}"
                 return "Intel"
-            elif "AMD" in processor:
+            if "AMD" in processor:
                 # Extract AMD CPU model
                 if "Ryzen" in processor:
                     match = re.search(r"Ryzen\s+(\d+)", processor)
                     if match:
                         return f"AMD Ryzen {match.group(1)}"
                 return "AMD"
-            elif "Apple" in processor or "M1" in processor or "M2" in processor or "M3" in processor:
+            if "Apple" in processor or "M1" in processor or "M2" in processor or "M3" in processor:
                 # Apple Silicon
                 match = re.search(r"(M\d+\w*)", processor)
                 if match:
                     return f"Apple {match.group(1)}"
                 return "Apple Silicon"
-            elif processor:
+            if processor:
                 # Return cleaned processor string
                 return processor.strip()
     except Exception as e:
@@ -151,8 +151,7 @@ def get_cpu_type() -> str | None:
 
 
 def normalize_platform_components(os_name: str, arch_name: str) -> tuple[str, str]:
-    """
-    Normalize OS and architecture names to standard format.
+    """Normalize OS and architecture names to standard format.
 
     Args:
         os_name: Operating system name
@@ -160,6 +159,7 @@ def normalize_platform_components(os_name: str, arch_name: str) -> tuple[str, st
 
     Returns:
         Tuple of (normalized_os, normalized_arch)
+
     """
     # Normalize OS names
     os_map = {

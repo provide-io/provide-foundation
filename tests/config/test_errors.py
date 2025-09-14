@@ -1,6 +1,5 @@
 """Tests for config.errors module."""
 
-import pytest
 
 from provide.foundation.config.errors import (
     ConfigError,
@@ -62,7 +61,7 @@ class TestParseError:
         error = ParseError(
             "Invalid field",
             value="bad_value",
-            field_name="test_field"
+            field_name="test_field",
         )
         assert error.message == "Invalid field"
 
@@ -71,7 +70,7 @@ class TestParseError:
         error = ParseError(
             "Type error",
             value="not_a_bool",
-            expected_type="boolean"
+            expected_type="boolean",
         )
         assert error.message == "Type error"
 
@@ -80,7 +79,7 @@ class TestParseError:
         error = ParseError(
             "Invalid option",
             value="INVALID",
-            valid_options=["DEBUG", "INFO", "ERROR"]
+            valid_options=["DEBUG", "INFO", "ERROR"],
         )
         assert error.message == "Invalid option"
 
@@ -92,7 +91,7 @@ class TestParseError:
             field_name="test_field",
             expected_type="string",
             valid_options=["option1", "option2"],
-            extra_context="additional info"
+            extra_context="additional info",
         )
         assert error.message == "Complete parse error"
 
@@ -121,7 +120,7 @@ class TestValidationError:
             "Constraint violation",
             value=0,
             field_name="port",
-            constraint="must be between 1 and 65535"
+            constraint="must be between 1 and 65535",
         )
         assert error.message == "Constraint violation"
 
@@ -132,7 +131,7 @@ class TestValidationError:
             value=-1,
             field_name="timeout",
             constraint="must be positive",
-            extra_info="negative values not allowed"
+            extra_info="negative values not allowed",
         )
         assert error.message == "Complete validation error"
 
@@ -149,7 +148,7 @@ class TestFormatInvalidValueError:
         """Test format with valid options list."""
         result = format_invalid_value_error(
             "log_level", "INVALID",
-            valid_options=["DEBUG", "INFO", "ERROR"]
+            valid_options=["DEBUG", "INFO", "ERROR"],
         )
         assert result == "Invalid log_level 'INVALID'. Valid options: DEBUG, INFO, ERROR"
 
@@ -157,7 +156,7 @@ class TestFormatInvalidValueError:
         """Test format with expected type."""
         result = format_invalid_value_error(
             "sample_rate", "abc",
-            expected_type="float"
+            expected_type="float",
         )
         assert result == "Invalid sample_rate 'abc'. Expected: float"
 
@@ -165,7 +164,7 @@ class TestFormatInvalidValueError:
         """Test format with additional info."""
         result = format_invalid_value_error(
             "config_file", "missing.yaml",
-            additional_info="File does not exist"
+            additional_info="File does not exist",
         )
         assert result == "Invalid config_file 'missing.yaml'. File does not exist"
 
@@ -174,7 +173,7 @@ class TestFormatInvalidValueError:
         result = format_invalid_value_error(
             "level", "INVALID",
             expected_type="string",
-            valid_options=["DEBUG", "INFO"]
+            valid_options=["DEBUG", "INFO"],
         )
         assert result == "Invalid level 'INVALID'. Valid options: DEBUG, INFO"
 
@@ -184,7 +183,7 @@ class TestFormatInvalidValueError:
             "port", "abc",
             expected_type="integer",  # Should be ignored
             valid_options=["80", "443", "8080"],
-            additional_info="For HTTP services"
+            additional_info="For HTTP services",
         )
         assert result == "Invalid port 'abc'. Valid options: 80, 443, 8080 For HTTP services"
 
@@ -212,7 +211,7 @@ class TestFormatValidationError:
         result = format_validation_error(
             "sample_rate", 1.5,
             "must be between 0.0 and 1.0",
-            additional_info="received from environment variable"
+            additional_info="received from environment variable",
         )
         assert result == "Value 1.5 for sample_rate must be between 0.0 and 1.0(received from environment variable)"
 
@@ -220,7 +219,7 @@ class TestFormatValidationError:
         """Test validation error with string value."""
         result = format_validation_error(
             "hostname", "",
-            "cannot be empty"
+            "cannot be empty",
         )
         assert result == "Value  for hostname cannot be empty"
 
@@ -228,7 +227,7 @@ class TestFormatValidationError:
         """Test validation error with complex constraint description."""
         result = format_validation_error(
             "timeout", -5,
-            "must be between 1 and 300 seconds"
+            "must be between 1 and 300 seconds",
         )
         assert result == "Value -5 for timeout must be between 1 and 300 seconds"
 
@@ -250,14 +249,14 @@ class TestErrorIntegration:
         """Test ParseError using formatted message."""
         formatted_msg = format_invalid_value_error(
             "log_level", "INVALID",
-            valid_options=["DEBUG", "INFO", "ERROR"]
+            valid_options=["DEBUG", "INFO", "ERROR"],
         )
 
         error = ParseError(
             formatted_msg,
             value="INVALID",
             field_name="log_level",
-            valid_options=["DEBUG", "INFO", "ERROR"]
+            valid_options=["DEBUG", "INFO", "ERROR"],
         )
 
         assert str(error) == "Invalid log_level 'INVALID'. Valid options: DEBUG, INFO, ERROR"
@@ -267,14 +266,14 @@ class TestErrorIntegration:
         """Test ValidationError using formatted message."""
         formatted_msg = format_validation_error(
             "port", 0,
-            "must be between 1 and 65535"
+            "must be between 1 and 65535",
         )
 
         error = ValidationError(
             formatted_msg,
             value=0,
             field_name="port",
-            constraint="must be between 1 and 65535"
+            constraint="must be between 1 and 65535",
         )
 
         assert str(error) == "Value 0 for port must be between 1 and 65535"
@@ -288,7 +287,7 @@ class TestErrorIntegration:
             "Failed to parse port number",
             value="abc",
             field_name="port",
-            expected_type="integer"
+            expected_type="integer",
         )
 
         # Test that we can chain errors

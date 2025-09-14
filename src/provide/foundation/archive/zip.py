@@ -14,8 +14,7 @@ logger = get_logger(__name__)
 
 @define(slots=True)
 class ZipArchive(BaseArchive):
-    """
-    ZIP archive implementation.
+    """ZIP archive implementation.
 
     Creates and extracts ZIP archives with optional compression and encryption.
     Supports adding files to existing archives.
@@ -31,8 +30,7 @@ class ZipArchive(BaseArchive):
             raise ValueError(f"Compression level must be 0-9, got {value}")
 
     def create(self, source: Path, output: Path) -> Path:
-        """
-        Create ZIP archive from source.
+        """Create ZIP archive from source.
 
         Args:
             source: Source file or directory to archive
@@ -43,6 +41,7 @@ class ZipArchive(BaseArchive):
 
         Raises:
             ArchiveError: If archive creation fails
+
         """
         try:
             ensure_parent_dir(output)
@@ -73,8 +72,7 @@ class ZipArchive(BaseArchive):
             raise ArchiveError(f"Failed to create ZIP archive: {e}") from e
 
     def extract(self, archive: Path, output: Path) -> Path:
-        """
-        Extract ZIP archive to output directory.
+        """Extract ZIP archive to output directory.
 
         Args:
             archive: ZIP archive file path
@@ -85,6 +83,7 @@ class ZipArchive(BaseArchive):
 
         Raises:
             ArchiveError: If extraction fails
+
         """
         try:
             output.mkdir(parents=True, exist_ok=True)
@@ -108,14 +107,14 @@ class ZipArchive(BaseArchive):
             raise ArchiveError(f"Failed to extract ZIP archive: {e}") from e
 
     def validate(self, archive: Path) -> bool:
-        """
-        Validate ZIP archive integrity.
+        """Validate ZIP archive integrity.
 
         Args:
             archive: ZIP archive file path
 
         Returns:
             True if archive is valid, False otherwise
+
         """
         try:
             with zipfile.ZipFile(archive, "r") as zf:
@@ -126,8 +125,7 @@ class ZipArchive(BaseArchive):
             return False
 
     def list_contents(self, archive: Path) -> list[str]:
-        """
-        List contents of ZIP archive.
+        """List contents of ZIP archive.
 
         Args:
             archive: ZIP archive file path
@@ -137,6 +135,7 @@ class ZipArchive(BaseArchive):
 
         Raises:
             ArchiveError: If listing fails
+
         """
         try:
             with zipfile.ZipFile(archive, "r") as zf:
@@ -145,8 +144,7 @@ class ZipArchive(BaseArchive):
             raise ArchiveError(f"Failed to list ZIP contents: {e}") from e
 
     def add_file(self, archive: Path, file: Path, arcname: str | None = None) -> None:
-        """
-        Add file to existing ZIP archive.
+        """Add file to existing ZIP archive.
 
         Args:
             archive: ZIP archive file path
@@ -155,6 +153,7 @@ class ZipArchive(BaseArchive):
 
         Raises:
             ArchiveError: If adding file fails
+
         """
         try:
             with zipfile.ZipFile(archive, "a", compression=self.compression_type) as zf:
@@ -169,8 +168,7 @@ class ZipArchive(BaseArchive):
             raise ArchiveError(f"Failed to add file to ZIP: {e}") from e
 
     def extract_file(self, archive: Path, member: str, output: Path) -> Path:
-        """
-        Extract single file from ZIP archive.
+        """Extract single file from ZIP archive.
 
         Args:
             archive: ZIP archive file path
@@ -182,6 +180,7 @@ class ZipArchive(BaseArchive):
 
         Raises:
             ArchiveError: If extraction fails
+
         """
         try:
             with zipfile.ZipFile(archive, "r") as zf:
@@ -195,11 +194,10 @@ class ZipArchive(BaseArchive):
                 if output.is_dir():
                     zf.extract(member, output)
                     return output / member
-                else:
-                    ensure_parent_dir(output)
-                    with zf.open(member) as source, output.open("wb") as target:
-                        target.write(source.read())
-                    return output
+                ensure_parent_dir(output)
+                with zf.open(member) as source, output.open("wb") as target:
+                    target.write(source.read())
+                return output
 
         except Exception as e:
             raise ArchiveError(f"Failed to extract file from ZIP: {e}") from e

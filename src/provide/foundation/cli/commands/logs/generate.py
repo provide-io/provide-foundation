@@ -1,8 +1,7 @@
 #
 # generate.py
 #
-"""
-Command to generate logs for testing OpenObserve integration with Foundation's rate limiting.
+"""Command to generate logs for testing OpenObserve integration with Foundation's rate limiting.
 """
 
 import random
@@ -108,8 +107,7 @@ def generate_span_id() -> str:
 
 
 def generate_log_entry(index: int, style: str = "normal", error_rate: float = 0.1) -> dict[str, Any]:
-    """
-    Generate a single log entry with optional error simulation.
+    """Generate a single log entry with optional error simulation.
 
     Args:
         index: Log entry index
@@ -118,6 +116,7 @@ def generate_log_entry(index: int, style: str = "normal", error_rate: float = 0.
 
     Returns:
         Dict containing log entry data
+
     """
     # Choose message based on style
     if style == "burroughs":
@@ -160,7 +159,7 @@ def generate_log_entry(index: int, style: str = "normal", error_rate: float = 0.
                 "TimeoutError",
                 "DatabaseError",
                 "RateLimitExceeded",
-            ]
+            ],
         )
     else:
         # Random log level for non-errors
@@ -280,7 +279,7 @@ def _generate_continuous_logs(rate: float, style: str, error_rate: float, enable
         # Print stats
         last_stats_time, last_stats_sent = _print_stats(
             current_time, last_stats_time, logs_sent, last_stats_sent,
-            logs_failed, enable_rate_limit, logs_rate_limited
+            logs_failed, enable_rate_limit, logs_rate_limited,
         )
 
 
@@ -338,11 +337,11 @@ def generate_logs_command(
     try:
         if count == 0:
             logs_sent, logs_failed, logs_rate_limited = _generate_continuous_logs(
-                rate, style, error_rate, enable_rate_limit, logs_rate_limited
+                rate, style, error_rate, enable_rate_limit, logs_rate_limited,
             )
         else:
             logs_sent, logs_failed, logs_rate_limited = _generate_fixed_count_logs(
-                count, rate, style, error_rate
+                count, rate, style, error_rate,
             )
     except KeyboardInterrupt:
         click.echo("\n\n⛔ Generation interrupted by user")

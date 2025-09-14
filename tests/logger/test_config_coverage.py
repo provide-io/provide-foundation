@@ -1,8 +1,7 @@
 #
 # test_config_coverage.py
 #
-"""
-Tests to improve coverage for logger configuration files.
+"""Tests to improve coverage for logger configuration files.
 """
 
 import os
@@ -113,7 +112,7 @@ class TestLoggingConfigCoverage:
 
         config = LoggingConfig.from_env()
         # Emoji sets fields should not exist
-        assert not hasattr(config, 'enabled_emoji_sets')
+        assert not hasattr(config, "enabled_emoji_sets")
 
     def test_logging_config_log_level_name_mapping(self):
         """Test logging config level name mappings."""

@@ -1,8 +1,7 @@
 #
 # tests/test_config.py
 #
-"""
-Unit tests for processor assembly helper functions in provide.foundation.config.
+"""Unit tests for processor assembly helper functions in provide.foundation.config.
 """
 
 import io
@@ -39,7 +38,7 @@ def get_proc_name(proc: Any) -> str:
 class TestBuildFormatterProcessorsList:
     def test_build_json_formatter(self) -> None:
         processors = _build_formatter_processors_list(
-            LoggingConfig(console_formatter="json"), io.StringIO()
+            LoggingConfig(console_formatter="json"), io.StringIO(),
         )
         assert [get_proc_name(p) for p in processors] == [
             "ExceptionRenderer",
@@ -48,7 +47,7 @@ class TestBuildFormatterProcessorsList:
 
     def test_build_keyvalue_formatter(self) -> None:
         processors = _build_formatter_processors_list(
-            LoggingConfig(console_formatter="key_value"), io.StringIO()
+            LoggingConfig(console_formatter="key_value"), io.StringIO(),
         )
         assert [get_proc_name(p) for p in processors] == [
             "pop_logger_name_processor",
@@ -72,12 +71,11 @@ class TestBuildCoreProcessorsList:
 class TestTelemetryConfigFromEnvEventSets:
     """Tests for deprecated emoji sets - now replaced by event sets."""
 
-
     def test_logging_config_no_emoji_sets(self) -> None:
         """Verify LoggingConfig doesn't have deprecated emoji_sets fields."""
         config = TelemetryConfig.from_env()
         # These fields should not exist anymore
-        assert not hasattr(config.logging, 'enabled_emoji_sets')
-        assert not hasattr(config.logging, 'custom_emoji_sets')
+        assert not hasattr(config.logging, "enabled_emoji_sets")
+        assert not hasattr(config.logging, "custom_emoji_sets")
 
 

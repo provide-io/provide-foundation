@@ -1,8 +1,7 @@
 #
 # __init__.py
 #
-"""
-Foundation Telemetry Logger Sub-package.
+"""Foundation Telemetry Logger Sub-package.
 Re-exports key components related to logging functionality.
 """
 

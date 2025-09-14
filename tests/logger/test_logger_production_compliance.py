@@ -2,8 +2,7 @@
 # tests/test_lazy_initialization_integration.py
 #
 
-"""
-Production readiness, compliance, and documentation tests for lazy initialization.
+"""Production readiness, compliance, and documentation tests for lazy initialization.
 
 This module tests production-ready scenarios, documented behavior compliance,
 and performance requirements for lazy initialization functionality.
@@ -207,13 +206,13 @@ class TestDocumentedBehaviorCompliance:
             # Test module-specific level
             test_logger = global_logger.get_logger("test.module")
             test_logger.warning(
-                "Module warning"
+                "Module warning",
             )  # Should be filtered (ERROR level only)
             test_logger.error("Module error")  # Should appear
 
             # Test DAS with disabled logger name emoji
             global_logger.info(
-                "DAS test", domain="auth", action="login", status="success"
+                "DAS test", domain="auth", action="login", status="success",
             )
 
         captured = capsys.readouterr()
@@ -504,7 +503,7 @@ class TestLazyInitializationDocumentation:
             service_name="migrated-service",
             logging=LoggingConfig(
                 default_level="INFO",
-                console_formatter="json"
+                console_formatter="json",
             ),
         )
         setup_telemetry(config)

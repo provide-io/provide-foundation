@@ -1,5 +1,4 @@
-"""
-Data models for OpenObserve API requests and responses.
+"""Data models for OpenObserve API requests and responses.
 """
 
 from dataclasses import dataclass, field
@@ -26,7 +25,7 @@ class SearchQuery:
                 "end_time": self.end_time,
                 "from": self.from_offset,
                 "size": self.size,
-            }
+            },
         }
 
 
@@ -93,6 +92,7 @@ def parse_relative_time(time_str: str, now: datetime | None = None) -> int:
 
     Returns:
         Microseconds since epoch
+
     """
     from datetime import timedelta
 

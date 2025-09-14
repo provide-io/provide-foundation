@@ -1,5 +1,4 @@
-"""
-Observability module for Foundation.
+"""Observability module for Foundation.
 
 Provides integration with observability platforms like OpenObserve.
 Only available when OpenTelemetry dependencies are installed.
@@ -49,5 +48,6 @@ def is_openobserve_available() -> bool:
 
     Returns:
         True if OpenTelemetry and OpenObserve are available
+
     """
     return _HAS_OTEL and "OpenObserveClient" in globals()

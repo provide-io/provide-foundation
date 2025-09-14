@@ -171,7 +171,7 @@ class TestWaitForProcessOutput:
 
         try:
             output = await wait_for_process_output(
-                process, expected_parts=["|"], timeout=5.0
+                process, expected_parts=["|"], timeout=5.0,
             )
             assert "hello|world|test" in output
         finally:
@@ -187,7 +187,7 @@ class TestWaitForProcessOutput:
 
         try:
             output = await wait_for_process_output(
-                process, expected_parts=["|", "protocol"], timeout=5.0
+                process, expected_parts=["|", "protocol"], timeout=5.0,
             )
             assert "1|2|protocol|4|5|6" in output
         finally:
@@ -204,7 +204,7 @@ class TestWaitForProcessOutput:
         try:
             with pytest.raises(TimeoutError, match="Expected pattern"):
                 await wait_for_process_output(
-                    process, expected_parts=["nonexistent_pattern"], timeout=0.5
+                    process, expected_parts=["nonexistent_pattern"], timeout=0.5,
                 )
         finally:
             process.terminate_gracefully()
@@ -222,7 +222,7 @@ class TestWaitForProcessOutput:
         try:
             with pytest.raises(ProcessError, match="Process exited"):
                 await wait_for_process_output(
-                    process, expected_parts=["nonexistent_pattern"], timeout=2.0
+                    process, expected_parts=["nonexistent_pattern"], timeout=2.0,
                 )
         finally:
             process.cleanup()

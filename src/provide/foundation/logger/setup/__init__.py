@@ -1,8 +1,7 @@
 #
 # __init__.py
 #
-"""
-Foundation Logger Setup Module.
+"""Foundation Logger Setup Module.
 
 Handles structured logging configuration, processor setup, and emoji resolution.
 Provides the core setup functionality for the Foundation logging system.

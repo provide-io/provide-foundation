@@ -103,7 +103,7 @@ class TestAsyncStreamCommand:
         lines = []
 
         async for line in async_stream_command(
-            [sys.executable, "-c", "for i in range(3): print(f'line {i}')"]
+            [sys.executable, "-c", "for i in range(3): print(f'line {i}')"],
         ):
             lines.append(line)
 

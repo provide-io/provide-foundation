@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # examples/telemetry/01_basic_logging.py
-"""
-Simple Start Example - Zero Setup Logging
+"""Simple Start Example - Zero Setup Logging
 
 This example demonstrates the simplest possible usage of provide.foundation.
 No setup required - just import and use the logger immediately.
@@ -33,8 +32,7 @@ from provide.foundation import logger, pout  # noqa: E402
 
 
 def simple_logging_example() -> None:
-    """
-    Demonstrates the simplest possible logging usage.
+    """Demonstrates the simplest possible logging usage.
 
     Key points:
     - No setup_telemetry() call needed
@@ -55,7 +53,7 @@ def simple_logging_example() -> None:
         "User session started",
         user_id="user_123",
         session_id="sess_456",
-        source="web_app"
+        source="web_app",
     )
 
     # Different log levels

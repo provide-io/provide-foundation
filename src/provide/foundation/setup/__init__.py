@@ -1,8 +1,7 @@
 #
 # __init__.py
 #
-"""
-Foundation Setup Module.
+"""Foundation Setup Module.
 
 This module provides the main setup API for Foundation,
 orchestrating logging, tracing, and other subsystems.
@@ -26,14 +25,14 @@ _EXPLICIT_SETUP_DONE = False
 
 
 def setup_foundation(config: TelemetryConfig | None = None) -> None:
-    """
-    Initialize the Foundation system with all its subsystems.
+    """Initialize the Foundation system with all its subsystems.
 
     DEPRECATED: Foundation now auto-initializes on first use through Hub.
     For explicit configuration, use Hub.initialize_foundation(config).
 
     Args:
         config: Optional configuration to use. If None, loads from environment.
+
     """
     import warnings
 
@@ -68,13 +67,13 @@ def setup_foundation(config: TelemetryConfig | None = None) -> None:
 
 
 def setup_telemetry(config: TelemetryConfig | None = None) -> None:
-    """
-    Legacy alias for setup_foundation.
+    """Legacy alias for setup_foundation.
 
     DEPRECATED: Use Hub.initialize_foundation(config) instead.
 
     Args:
         config: Optional configuration to use. If None, loads from environment.
+
     """
     import warnings
 
@@ -107,11 +106,11 @@ def setup_telemetry(config: TelemetryConfig | None = None) -> None:
 
 
 async def shutdown_foundation(timeout_millis: int = 5000) -> None:
-    """
-    Gracefully shutdown all Foundation subsystems.
+    """Gracefully shutdown all Foundation subsystems.
 
     Args:
         timeout_millis: Timeout for shutdown (currently unused)
+
     """
     with _PROVIDE_SETUP_LOCK:
         # Shutdown OpenTelemetry tracing and metrics
@@ -123,11 +122,11 @@ async def shutdown_foundation(timeout_millis: int = 5000) -> None:
 
 
 async def shutdown_foundation_telemetry(timeout_millis: int = 5000) -> None:
-    """
-    Legacy alias for shutdown_foundation.
+    """Legacy alias for shutdown_foundation.
 
     Args:
         timeout_millis: Timeout for shutdown (currently unused)
+
     """
     await shutdown_foundation(timeout_millis)
 

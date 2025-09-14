@@ -117,7 +117,7 @@ def create_x509_certificate(
 
         logger.debug(
             f"📜📝✅ Added BasicConstraints (is_ca={is_ca}), "
-            f"KeyUsage, ExtendedKeyUsage (is_client_cert={is_client_cert})"
+            f"KeyUsage, ExtendedKeyUsage (is_client_cert={is_client_cert})",
         )
 
         signed_cert = builder.sign(
@@ -145,7 +145,7 @@ def validate_signature(
         logger.debug(
             f"📜🔍❌ Signature validation failed: Issuer/Subject mismatch. "
             f"Signed Issuer='{signed_cert_obj.issuer}', "
-            f"Signing Subject='{signing_cert_obj.subject}'"
+            f"Signing Subject='{signing_cert_obj.subject}'",
         )
         return False
 
@@ -163,14 +163,14 @@ def validate_signature(
             return False
 
         if isinstance(signing_public_key, rsa.RSAPublicKey):
-            cast(rsa.RSAPublicKey, signing_public_key).verify(
+            cast("rsa.RSAPublicKey", signing_public_key).verify(
                 signature,
                 tbs_certificate_bytes,
                 padding.PKCS1v15(),
                 signature_hash_algorithm,
             )
         elif isinstance(signing_public_key, ec.EllipticCurvePublicKey):
-            cast(ec.EllipticCurvePublicKey, signing_public_key).verify(
+            cast("ec.EllipticCurvePublicKey", signing_public_key).verify(
                 signature,
                 tbs_certificate_bytes,
                 ec.ECDSA(signature_hash_algorithm),

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Basic Task Queue Example (No External Dependencies)
+"""Basic Task Queue Example (No External Dependencies)
 
 Demonstrates Foundation logging for task queue patterns using Python's
 built-in asyncio and queue modules. This shows the patterns without
@@ -163,7 +162,7 @@ class TaskWorker:
         task.result = {
             "status": "sent",
             "message_id": f"msg_{task.id[:8]}",
-            "recipient": recipient
+            "recipient": recipient,
         }
 
     async def _process_data_task(self, task: Task) -> None:
@@ -182,7 +181,7 @@ class TaskWorker:
         task.result = {
             "records_processed": records,
             "operation": operation,
-            "output_size": records * 1.2
+            "output_size": records * 1.2,
         }
 
     async def _process_image_task(self, task: Task) -> None:
@@ -205,7 +204,7 @@ class TaskWorker:
         task.result = {
             "original_url": image_url,
             "resized_url": f"resized_{target_size}_{image_url}",
-            "target_size": target_size
+            "target_size": target_size,
         }
 
     async def _process_report_task(self, task: Task) -> None:
@@ -225,7 +224,7 @@ class TaskWorker:
             "report_type": report_type,
             "date_range": date_range,
             "file_path": f"reports/{report_type}_{date_range}.pdf",
-            "size_bytes": 1024 * 250
+            "size_bytes": 1024 * 250,
         }
 
     async def run(self) -> None:
@@ -277,9 +276,9 @@ async def basic_task_queue_example() -> None:
             service_name="task-queue-demo",
             logging=LoggingConfig(
                 default_level="INFO",
-                console_formatter="json"
-            )
-        )
+                console_formatter="json",
+            ),
+        ),
     )
 
     # Create task queue and workers
@@ -287,7 +286,7 @@ async def basic_task_queue_example() -> None:
     workers = [
         TaskWorker("worker-1", task_queue),
         TaskWorker("worker-2", task_queue),
-        TaskWorker("worker-3", task_queue)
+        TaskWorker("worker-3", task_queue),
     ]
 
     logger.info("system_startup",

@@ -45,6 +45,7 @@ def validate_algorithm(algorithm: str) -> None:
 
     Raises:
         ValidationError: If algorithm is not supported
+
     """
     if algorithm.lower() not in SUPPORTED_ALGORITHMS:
         raise ValidationError(
@@ -66,6 +67,7 @@ def get_hasher(algorithm: str) -> Any:
 
     Raises:
         ValidationError: If algorithm is not supported
+
     """
     validate_algorithm(algorithm)
 
@@ -75,12 +77,11 @@ def get_hasher(algorithm: str) -> Any:
     if algorithm_lower.startswith("sha3_"):
         # sha3_256 -> sha3_256 (hashlib uses underscores)
         return hashlib.new(algorithm_lower)
-    elif algorithm_lower.startswith("blake2"):
+    if algorithm_lower.startswith("blake2"):
         # blake2b, blake2s
         return hashlib.new(algorithm_lower)
-    else:
-        # Standard algorithms (md5, sha1, sha256, etc.)
-        return hashlib.new(algorithm_lower)
+    # Standard algorithms (md5, sha1, sha256, etc.)
+    return hashlib.new(algorithm_lower)
 
 
 def is_secure_algorithm(algorithm: str) -> bool:
@@ -91,6 +92,7 @@ def is_secure_algorithm(algorithm: str) -> bool:
 
     Returns:
         True if algorithm is secure, False otherwise
+
     """
     return algorithm.lower() in SECURE_ALGORITHMS
 
@@ -106,6 +108,7 @@ def get_digest_size(algorithm: str) -> int:
 
     Raises:
         ValidationError: If algorithm is not supported
+
     """
     hasher = get_hasher(algorithm)
     return hasher.digest_size

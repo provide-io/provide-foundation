@@ -1,5 +1,4 @@
-"""
-Core console input functions for standardized CLI input.
+"""Core console input functions for standardized CLI input.
 
 Provides pin() and async variants for consistent input handling with support
 for JSON mode, streaming, and proper integration with the foundation's patterns.
@@ -54,8 +53,7 @@ def _should_use_color(ctx: CLIContext | None = None) -> bool:
 
 
 def pin(prompt: str = "", **kwargs: Any) -> str | Any:
-    """
-    Input from stdin with optional prompt.
+    """Input from stdin with optional prompt.
 
     Args:
         prompt: Prompt to display before input
@@ -81,6 +79,7 @@ def pin(prompt: str = "", **kwargs: Any) -> str | Any:
         password = pin("Password: ", password=True)
 
     In JSON mode, returns structured input data.
+
     """
     ctx = kwargs.get("ctx") or _get_context()
 
@@ -148,38 +147,36 @@ def pin(prompt: str = "", **kwargs: Any) -> str | Any:
                     styled_prompt = click.style(prompt, fg=color, bold=bold)
 
             return click.prompt(styled_prompt, **prompt_kwargs)
+        # Fallback to standard Python input
+        display_prompt = prompt
+        if kwargs.get("default") and kwargs.get("show_default", True):
+            display_prompt = f"{prompt} [{kwargs['default']}]: "
+        elif prompt and not prompt.endswith(": "):
+            display_prompt = f"{prompt}: "
+
+        if kwargs.get("password") or kwargs.get("hide_input"):
+            import getpass
+
+            user_input = getpass.getpass(display_prompt)
         else:
-            # Fallback to standard Python input
-            display_prompt = prompt
-            if kwargs.get("default") and kwargs.get("show_default", True):
-                display_prompt = f"{prompt} [{kwargs['default']}]: "
-            elif prompt and not prompt.endswith(": "):
-                display_prompt = f"{prompt}: "
+            user_input = input(display_prompt)
 
-            if kwargs.get("password") or kwargs.get("hide_input"):
-                import getpass
+        # Handle default value
+        if not user_input and "default" in kwargs:
+            user_input = str(kwargs["default"])
 
-                user_input = getpass.getpass(display_prompt)
-            else:
-                user_input = input(display_prompt)
+        # Type conversion
+        if type_func := kwargs.get("type"):
+            try:
+                return type_func(user_input)
+            except (TypeError, ValueError):
+                return user_input
 
-            # Handle default value
-            if not user_input and "default" in kwargs:
-                user_input = str(kwargs["default"])
-
-            # Type conversion
-            if type_func := kwargs.get("type"):
-                try:
-                    return type_func(user_input)
-                except (TypeError, ValueError):
-                    return user_input
-
-            return user_input
+        return user_input
 
 
 def pin_stream() -> Iterator[str]:
-    """
-    Stream input line by line from stdin.
+    """Stream input line by line from stdin.
 
     Yields:
         Lines from stdin (without trailing newline)
@@ -189,6 +186,7 @@ def pin_stream() -> Iterator[str]:
             process(line)
 
     Note: This blocks on each line. For non-blocking, use apin_stream().
+
     """
     ctx = _get_context()
 
@@ -223,8 +221,7 @@ def pin_stream() -> Iterator[str]:
 
 
 async def apin(prompt: str = "", **kwargs: Any) -> str | Any:
-    """
-    Async input from stdin with optional prompt.
+    """Async input from stdin with optional prompt.
 
     Args:
         prompt: Prompt to display before input
@@ -238,6 +235,7 @@ async def apin(prompt: str = "", **kwargs: Any) -> str | Any:
         age = await apin("Age: ", type=int)
 
     Note: This runs the blocking input in a thread pool to avoid blocking the event loop.
+
     """
     import functools
 
@@ -247,8 +245,7 @@ async def apin(prompt: str = "", **kwargs: Any) -> str | Any:
 
 
 async def apin_stream() -> AsyncIterator[str]:
-    """
-    Async stream input line by line from stdin.
+    """Async stream input line by line from stdin.
 
     Yields:
         Lines from stdin (without trailing newline)
@@ -258,6 +255,7 @@ async def apin_stream() -> AsyncIterator[str]:
             await process(line)
 
     This provides non-blocking line-by-line input streaming.
+
     """
     ctx = _get_context()
 
@@ -270,8 +268,7 @@ async def apin_stream() -> AsyncIterator[str]:
                 data = json.load(sys.stdin)
                 if isinstance(data, list):
                     return [json.dumps(item) if not isinstance(item, str) else item for item in data]
-                else:
-                    return [json.dumps(data)]
+                return [json.dumps(data)]
             except json.JSONDecodeError:
                 # Fall back to line-by-line reading
                 return [line.rstrip("\n\r") for line in sys.stdin]
@@ -314,8 +311,7 @@ async def apin_stream() -> AsyncIterator[str]:
 
 
 def pin_lines(count: int | None = None) -> list[str]:
-    """
-    Read multiple lines from stdin.
+    """Read multiple lines from stdin.
 
     Args:
         count: Number of lines to read (None for all until EOF)
@@ -326,6 +322,7 @@ def pin_lines(count: int | None = None) -> list[str]:
     Examples:
         lines = pin_lines(3)  # Read exactly 3 lines
         all_lines = pin_lines()  # Read until EOF
+
     """
     lines = []
     for i, line in enumerate(pin_stream()):
@@ -336,8 +333,7 @@ def pin_lines(count: int | None = None) -> list[str]:
 
 
 async def apin_lines(count: int | None = None) -> list[str]:
-    """
-    Async read multiple lines from stdin.
+    """Async read multiple lines from stdin.
 
     Args:
         count: Number of lines to read (None for all until EOF)
@@ -348,6 +344,7 @@ async def apin_lines(count: int | None = None) -> list[str]:
     Examples:
         lines = await apin_lines(3)  # Read exactly 3 lines
         all_lines = await apin_lines()  # Read until EOF
+
     """
     lines = []
     i = 0

@@ -47,7 +47,7 @@ class TestAdvancedCleanup:
         # Async cleanup should be called (via task creation or similar)
         # The exact behavior depends on the event loop state
         assert async_component.cleanup.called or hasattr(
-            async_component.cleanup, "call_count"
+            async_component.cleanup, "call_count",
         )
 
     def test_cleanup_all_components_no_dimension_filter(self):

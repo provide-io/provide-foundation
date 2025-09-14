@@ -69,20 +69,20 @@ class TestCryptoConstantsCoverage:
     def test_get_default_signature_algorithm_success(self):
         """Test get_default_signature_algorithm."""
         with patch(
-            "provide.foundation.crypto.constants._get_config_value"
+            "provide.foundation.crypto.constants._get_config_value",
         ) as mock_get_config:
             mock_get_config.return_value = "custom_signature"
 
             result = constants.get_default_signature_algorithm()
             assert result == "custom_signature"
             mock_get_config.assert_called_once_with(
-                "signature_algorithm", constants.DEFAULT_SIGNATURE_ALGORITHM
+                "signature_algorithm", constants.DEFAULT_SIGNATURE_ALGORITHM,
             )
 
     def test_get_default_signature_algorithm_with_fallback(self):
         """Test get_default_signature_algorithm with fallback to constant."""
         with patch(
-            "provide.foundation.crypto.constants._get_config_value"
+            "provide.foundation.crypto.constants._get_config_value",
         ) as mock_get_config:
             mock_get_config.return_value = constants.DEFAULT_SIGNATURE_ALGORITHM
 
@@ -120,7 +120,7 @@ class TestCryptoConstantsCoverage:
     def test_get_default_hash_algorithm_function_call(self):
         """Test get_default_hash_algorithm returns a string."""
         with patch(
-            "provide.foundation.crypto.constants._get_config_value"
+            "provide.foundation.crypto.constants._get_config_value",
         ) as mock_get_config:
             mock_get_config.return_value = "test_hash_algo"
 
@@ -131,12 +131,12 @@ class TestCryptoConstantsCoverage:
     def test_get_default_signature_algorithm_calls_get_config_value(self):
         """Test get_default_signature_algorithm calls _get_config_value correctly."""
         with patch(
-            "provide.foundation.crypto.constants._get_config_value"
+            "provide.foundation.crypto.constants._get_config_value",
         ) as mock_get_config:
             mock_get_config.return_value = "custom_sig_algo"
 
             result = constants.get_default_signature_algorithm()
             assert result == "custom_sig_algo"
             mock_get_config.assert_called_once_with(
-                "signature_algorithm", constants.DEFAULT_SIGNATURE_ALGORITHM
+                "signature_algorithm", constants.DEFAULT_SIGNATURE_ALGORITHM,
             )

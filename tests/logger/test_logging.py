@@ -1,8 +1,7 @@
 #
 # test_logging.py
 #
-"""
-Tests for the Foundation Telemetry logging system.
+"""Tests for the Foundation Telemetry logging system.
 """
 
 import io
@@ -48,11 +47,11 @@ def assert_log_output(
         if not actual_log_lines:
             return
         raise AssertionError(
-            f"Expected no application log output, but found lines:\n{actual_log_lines}"
+            f"Expected no application log output, but found lines:\n{actual_log_lines}",
         )
     if not actual_log_lines:
         raise AssertionError(
-            f"No application log lines found. Full Raw Output:\n{output}"
+            f"No application log lines found. Full Raw Output:\n{output}",
         )
 
     found_match = False
@@ -68,12 +67,12 @@ def assert_log_output(
             found_match = True
             break
     if expect_traceback_containing and not _check_traceback_presence(
-        output, expect_traceback_containing
+        output, expect_traceback_containing,
     ):
         found_match = False
     if not found_match:
         raise AssertionError(
-            f"Log line not found or format incorrect. Expected: level='{expected_level}', msg='{expected_message_core}', kvs={expected_kvs}. Full Output:\n{output}"
+            f"Log line not found or format incorrect. Expected: level='{expected_level}', msg='{expected_message_core}', kvs={expected_kvs}. Full Output:\n{output}",
         )
 
 
@@ -90,9 +89,8 @@ def _validate_json_log_line(
         if expect_timestamp:
             if "timestamp" not in log_json:
                 return False
-        else:
-            if "timestamp" in log_json:
-                return False
+        elif "timestamp" in log_json:
+            return False
         if log_json.get("level") != expected_level.lower():
             return False
         if log_json.get("event") != expected_message:
@@ -149,7 +147,7 @@ class TestConfigWarnings:
             (
                 "no_colon_module_level",
                 [
-                    "Invalid item 'no_colon_module_level' in PROVIDE_LOG_MODULE_LEVELS. Skipping."
+                    "Invalid item 'no_colon_module_level' in PROVIDE_LOG_MODULE_LEVELS. Skipping.",
                 ],
             ),
             (
@@ -159,7 +157,7 @@ class TestConfigWarnings:
             (
                 "valid_module:SUPER_LEVEL",
                 [
-                    "Invalid log level 'SUPER_LEVEL' for module 'valid_module'. Skipping."
+                    "Invalid log level 'SUPER_LEVEL' for module 'valid_module'. Skipping.",
                 ],
             ),
             (
@@ -213,7 +211,7 @@ class TestLoggingWithEmojiSets:
                 console_formatter="key_value",
                 das_emoji_prefix_enabled=True,
                 logger_name_emoji_prefix_enabled=False,
-            )
+            ),
         )
         setup_foundation_telemetry_for_test(config)
 
@@ -249,11 +247,11 @@ class TestLoggingWithEmojiSets:
                 console_formatter="key_value",
                 das_emoji_prefix_enabled=True,
                 logger_name_emoji_prefix_enabled=False,
-            )
+            ),
         )
         setup_foundation_telemetry_for_test(config)
         global_logger.info(
-            "Legacy system test", domain="auth", action="login", status="success"
+            "Legacy system test", domain="auth", action="login", status="success",
         )
         output = captured_stderr_for_foundation.getvalue()
         assert "[🔑][➡️][✅] Legacy system test" in output
@@ -278,7 +276,7 @@ class TestFactoriesModule:
             logging=LoggingConfig(
                 default_level="DEBUG",
                 console_formatter="key_value",
-            )
+            ),
         )
         setup_foundation_telemetry_for_test(config)
 

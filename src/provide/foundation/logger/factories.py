@@ -1,8 +1,7 @@
 #
 # factories.py
 #
-"""
-Logger factory functions and simple setup utilities.
+"""Logger factory functions and simple setup utilities.
 """
 
 import threading
@@ -17,8 +16,7 @@ def get_logger(
     emoji: str | None = None,
     emoji_hierarchy: dict[str, str] | None = None,
 ) -> Any:
-    """
-    Get a logger instance through Hub with circular import protection.
+    """Get a logger instance through Hub with circular import protection.
 
     This function uses Hub-based logger access with initialization detection
     to prevent circular imports during Foundation setup.
@@ -30,12 +28,13 @@ def get_logger(
 
     Returns:
         Configured structlog logger instance
+
     """
     # Emoji hierarchy removed - using event sets now
     # emoji and emoji_hierarchy parameters are deprecated
 
     # Check if we're already in the middle of initialization to prevent circular import
-    if getattr(_is_initializing, 'value', False):
+    if getattr(_is_initializing, "value", False):
         import structlog
         return structlog.get_logger(name)
 
@@ -61,8 +60,7 @@ def setup_logging(
     log_file: str | None = None,
     **kwargs: Any,
 ) -> None:
-    """
-    Simple logging setup for basic use cases.
+    """Simple logging setup for basic use cases.
 
     Now uses Hub-based initialization instead of legacy setup functions.
 
@@ -71,6 +69,7 @@ def setup_logging(
         json_logs: Whether to output logs as JSON
         log_file: Optional file path to write logs
         **kwargs: Additional configuration options
+
     """
     from pathlib import Path
     import warnings

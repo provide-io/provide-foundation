@@ -86,7 +86,7 @@ class TestSetupOpentelemetryTracing:
         """Test basic setup without OTLP endpoint."""
         config = self.create_mock_config(
             otlp_endpoint=None,
-            otlp_traces_endpoint=None
+            otlp_traces_endpoint=None,
         )
 
         mock_resource = Mock()
@@ -108,7 +108,7 @@ class TestSetupOpentelemetryTracing:
                                 # Verify resource creation
                                 mock_resource_class.create.assert_called_once_with({
                                     "service.name": "test-service",
-                                    "service.version": "1.0.0"
+                                    "service.version": "1.0.0",
                                 })
 
                                 # Verify sampler creation
@@ -117,7 +117,7 @@ class TestSetupOpentelemetryTracing:
                                 # Verify tracer provider creation
                                 mock_provider_class.assert_called_once_with(
                                     resource=mock_resource,
-                                    sampler=mock_sampler
+                                    sampler=mock_sampler,
                                 )
 
                                 # Verify tracer provider is set
@@ -130,7 +130,7 @@ class TestSetupOpentelemetryTracing:
         """Test setup with GRPC OTLP exporter."""
         config = self.create_mock_config(
             otlp_endpoint="http://localhost:4317",
-            otlp_protocol="grpc"
+            otlp_protocol="grpc",
         )
 
         mock_resource = Mock()
@@ -158,7 +158,7 @@ class TestSetupOpentelemetryTracing:
                                         # Verify GRPC exporter creation
                                         mock_exporter_class.assert_called_once_with(
                                             endpoint="http://localhost:4317",
-                                            headers={"x-api-key": "test-key"}
+                                            headers={"x-api-key": "test-key"},
                                         )
 
                                         # Verify processor creation
@@ -174,7 +174,7 @@ class TestSetupOpentelemetryTracing:
         """Test setup with HTTP OTLP exporter."""
         config = self.create_mock_config(
             otlp_traces_endpoint="http://localhost:4318/v1/traces",
-            otlp_protocol="http"
+            otlp_protocol="http",
         )
 
         mock_resource = Mock()
@@ -202,7 +202,7 @@ class TestSetupOpentelemetryTracing:
                                         # Verify HTTP exporter creation
                                         mock_exporter_class.assert_called_once_with(
                                             endpoint="http://localhost:4318/v1/traces",
-                                            headers={"x-api-key": "test-key"}
+                                            headers={"x-api-key": "test-key"},
                                         )
 
                                         # Verify debug logging for OTLP
@@ -213,7 +213,7 @@ class TestSetupOpentelemetryTracing:
         config = self.create_mock_config(
             otlp_endpoint="http://localhost:4317",
             otlp_traces_endpoint="http://localhost:4318/v1/traces",
-            otlp_protocol="http"
+            otlp_protocol="http",
         )
 
         mock_resource = Mock()
@@ -241,14 +241,14 @@ class TestSetupOpentelemetryTracing:
                                         # Verify that otlp_traces_endpoint was used
                                         mock_exporter_class.assert_called_once_with(
                                             endpoint="http://localhost:4318/v1/traces",
-                                            headers={"x-api-key": "test-key"}
+                                            headers={"x-api-key": "test-key"},
                                         )
 
     def test_setup_minimal_service_info(self) -> None:
         """Test setup with minimal service information."""
         config = self.create_mock_config(
             service_name=None,
-            service_version=None
+            service_version=None,
         )
 
         mock_resource = Mock()

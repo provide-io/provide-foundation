@@ -1,5 +1,4 @@
-"""
-Optional integrations for Foundation.
+"""Optional integrations for Foundation.
 
 This module contains integrations with external services and tools
 that are not part of the core foundation library.

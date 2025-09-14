@@ -42,6 +42,7 @@ def log_only_error_context(
         ... def detect_launcher_type(self, path):
         ...     # Original error messages preserved exactly
         ...     return self._internal_detect(path)
+
     """
 
     def decorator(func: F) -> F:
@@ -85,45 +86,44 @@ def log_only_error_context(
                     raise
 
             return async_wrapper  # type: ignore
-        else:
 
-            @functools.wraps(func)
-            def wrapper(*args, **kwargs):
-                context = context_provider() if context_provider else {}
-                logger = _get_logger()
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            context = context_provider() if context_provider else {}
+            logger = _get_logger()
 
-                # Log function entry if debug/trace level
-                if log_level in ("debug", "trace"):
-                    log_method = getattr(logger, log_level)
-                    log_method(f"Entering {func.__name__}", function=func.__name__, **context)
+            # Log function entry if debug/trace level
+            if log_level in ("debug", "trace"):
+                log_method = getattr(logger, log_level)
+                log_method(f"Entering {func.__name__}", function=func.__name__, **context)
 
-                try:
-                    result = func(*args, **kwargs)
+            try:
+                result = func(*args, **kwargs)
 
-                    # Log success if requested
-                    if log_success:
-                        log_method = getattr(logger, log_level, logger.debug)
-                        log_method(
-                            f"Successfully completed {func.__name__}",
-                            function=func.__name__,
-                            **context,
-                        )
-
-                    return result
-
-                except Exception as e:
-                    # Log error context without changing the error
-                    logger.error(
-                        f"Error in {func.__name__}",
-                        exc_info=True,
+                # Log success if requested
+                if log_success:
+                    log_method = getattr(logger, log_level, logger.debug)
+                    log_method(
+                        f"Successfully completed {func.__name__}",
                         function=func.__name__,
-                        error_type=type(e).__name__,
-                        error_message=str(e),
                         **context,
                     )
-                    # Re-raise the original error unchanged
-                    raise
 
-            return wrapper  # type: ignore
+                return result
+
+            except Exception as e:
+                # Log error context without changing the error
+                logger.error(
+                    f"Error in {func.__name__}",
+                    exc_info=True,
+                    function=func.__name__,
+                    error_type=type(e).__name__,
+                    error_message=str(e),
+                    **context,
+                )
+                # Re-raise the original error unchanged
+                raise
+
+        return wrapper  # type: ignore
 
     return decorator

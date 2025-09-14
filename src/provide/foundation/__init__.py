@@ -1,8 +1,7 @@
 #
 # __init__.py
 #
-"""
-Foundation Telemetry Library (structlog-based).
+"""Foundation Telemetry Library (structlog-based).
 Primary public interface for the library, re-exporting common components.
 """
 
@@ -83,18 +82,18 @@ def __getattr__(name: str) -> object:
     """Support lazy loading of optional modules."""
     if name == "cli":
         try:
-            import provide.foundation.cli as cli
+            from provide.foundation import cli
 
             return cli
         except ImportError as e:
             if "click" in str(e):
                 raise ImportError(
                     "CLI features require optional dependencies. Install with: "
-                    "pip install 'provide-foundation[cli]'"
+                    "pip install 'provide-foundation[cli]'",
                 ) from e
             raise
     elif name == "metrics":
-        import provide.foundation.metrics as metrics
+        from provide.foundation import metrics
 
         return metrics
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")

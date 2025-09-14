@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Celery Integration - Distributed Cut-Up Chuck Runner
+"""Celery Integration - Distributed Cut-Up Chuck Runner
 
 This module orchestrates the distributed cut-up chuck log generation system,
 demonstrating how the original continuous logging script can be transformed
@@ -87,7 +86,7 @@ class DistributedCutUpChuck:
             "batches_submitted": 0,
             "anomalies_detected": 0,
             "heartbeats_sent": 0,
-            "errors": 0
+            "errors": 0,
         }
 
     def start_worker(self):
@@ -98,7 +97,7 @@ class DistributedCutUpChuck:
 
         def run_worker():
             try:
-                worker = WorkController(app=app, loglevel='INFO')
+                worker = WorkController(app=app, loglevel="INFO")
                 worker.start()
             except Exception as e:
                 self.logger.error("worker_startup_failed", error=str(e))
@@ -113,7 +112,7 @@ class DistributedCutUpChuck:
         self.logger.info("distributed_worker_started",
             phrases_available=len(CUT_UP_PHRASES),
             contexts_available=len(LOGGER_CONTEXTS),
-            workflows_available=CELERY_WORKFLOWS_AVAILABLE
+            workflows_available=CELERY_WORKFLOWS_AVAILABLE,
         )
 
     def demonstrate_single_tasks(self):
@@ -132,7 +131,7 @@ class DistributedCutUpChuck:
             self.logger.info("single_entry_completed",
                 iteration=result["iteration"],
                 phrase_length=len(result["phrase"]),
-                context=result["context"]
+                context=result["context"],
             )
             pout(f"   Generated: {result['phrase'][:50]}...")
         except Exception as e:
@@ -150,7 +149,7 @@ class DistributedCutUpChuck:
             self.logger.info("batch_completed",
                 batch_id=result["batch_id"],
                 entries_generated=result["entries_generated"],
-                success_rate=result["success_rate"]
+                success_rate=result["success_rate"],
             )
             pout(f"   Batch completed: {result['entries_generated']} entries, "
                  f"{result['success_rate']:.1%} success rate")
@@ -168,7 +167,7 @@ class DistributedCutUpChuck:
             result = anomaly_task.get(timeout=10)
             self.logger.info("anomaly_completed",
                 anomaly_type=result["anomaly_type"],
-                confidence=result["confidence"]
+                confidence=result["confidence"],
             )
             pout(f"   Detected: Type-{result['anomaly_type']} "
                  f"({result['confidence']:.1f}% confidence)")
@@ -187,7 +186,7 @@ class DistributedCutUpChuck:
             self.logger.info("heartbeat_completed",
                 uptime=result["uptime_seconds"],
                 cpu_load=result["cpu_load"],
-                worker_id=result["worker_id"]
+                worker_id=result["worker_id"],
             )
             pout(f"   Heartbeat: {result['uptime_seconds']}s uptime, "
                  f"{result['cpu_load']:.1f}% CPU")
@@ -221,7 +220,7 @@ class DistributedCutUpChuck:
             self.logger.info("parallel_batches_completed",
                 batches_count=len(results),
                 total_entries=total_entries,
-                avg_success_rate=avg_success_rate
+                avg_success_rate=avg_success_rate,
             )
             pout(f"   Completed {len(results)} batches with {total_entries} total entries")
         except Exception as e:
@@ -233,7 +232,7 @@ class DistributedCutUpChuck:
         mixed_chain = chain(
             generate_log_entry.s(2001),
             detect_anomaly.s(),
-            system_heartbeat.s("chain_worker")
+            system_heartbeat.s("chain_worker"),
         )
         chain_result = mixed_chain.apply_async()
         self.stats["total_tasks"] += 3
@@ -241,7 +240,7 @@ class DistributedCutUpChuck:
         try:
             result = chain_result.get(timeout=30)
             self.logger.info("mixed_chain_completed", final_result=result)
-            pout(f"   Chain completed successfully")
+            pout("   Chain completed successfully")
         except Exception as e:
             self.logger.error("mixed_chain_failed", error=str(e))
             self.stats["errors"] += 1
@@ -252,7 +251,7 @@ class DistributedCutUpChuck:
 
         continuous_task = continuous_generator.delay(
             duration_minutes=duration_minutes,
-            entries_per_minute=20
+            entries_per_minute=20,
         )
         self.stats["total_tasks"] += 1
 
@@ -274,7 +273,7 @@ class DistributedCutUpChuck:
                 self.logger.info("continuous_generation_completed",
                     duration=result["duration_seconds"],
                     total_entries=result["total_entries"],
-                    actual_rate=result["actual_rate_per_minute"]
+                    actual_rate=result["actual_rate_per_minute"],
                 )
                 pout(f"   Generated {result['total_entries']} entries "
                      f"at {result['actual_rate_per_minute']:.1f} entries/min")
@@ -289,7 +288,7 @@ class DistributedCutUpChuck:
 
         duration = time.time() - self.stats["start_time"]
 
-        pout(f"\n📈 Execution Summary:")
+        pout("\n📈 Execution Summary:")
         pout(f"   Duration: {duration:.1f}s")
         pout(f"   Total Tasks: {self.stats['total_tasks']}")
         pout(f"   Batches: {self.stats['batches_submitted']}")
@@ -301,11 +300,11 @@ class DistributedCutUpChuck:
         # Display Celery metrics
         celery_stats = metrics.get_stats()
         if celery_stats:
-            pout(f"\n📊 Celery Task Metrics:")
+            pout("\n📊 Celery Task Metrics:")
             for task_name, stats in celery_stats.items():
                 if "cut_up" in task_name.lower() or task_name in [
                     "generate_log_entry", "generate_batch", "detect_anomaly",
-                    "system_heartbeat", "continuous_generator"
+                    "system_heartbeat", "continuous_generator",
                 ]:
                     pout(f"   {task_name}:")
                     pout(f"     Executions: {stats['count']}")
@@ -315,7 +314,7 @@ class DistributedCutUpChuck:
         self.logger.info("distributed_cutup_completed",
             total_duration=duration,
             final_metrics=self.stats,
-            celery_metrics=celery_stats
+            celery_metrics=celery_stats,
         )
 
     def setup_signal_handlers(self):
@@ -393,5 +392,5 @@ def main():
     chuck.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

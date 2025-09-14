@@ -23,8 +23,7 @@ from provide.foundation import (  # noqa: E402
 
 
 def example_7_module_level_filtering() -> None:
-    """
-    Example 7: Demonstrates module-specific log level configuration.
+    """Example 7: Demonstrates module-specific log level configuration.
 
     This allows different parts of an application to have varying log verbosity
     (e.g., more verbose for a problematic module, less for noisy ones).
@@ -42,7 +41,7 @@ def example_7_module_level_filtering() -> None:
                 "database": "ERROR",  # Only errors from 'database' module
                 "network.comms": "WARNING",  # Warnings and above for 'network.comms'
             },
-        )
+        ),
     )
     setup_telemetry(config)
 
@@ -53,7 +52,7 @@ def example_7_module_level_filtering() -> None:
     other_logger = logger.get_logger("other.component")  # Will use default INFO
 
     auth_logger.debug(
-        "Token validation details", token_id="tkn_short"
+        "Token validation details", token_id="tkn_short",
     )  # ✅ Shows (auth is DEBUG)
     auth_logger.info("User 'admin' logged in")  # ✅ Shows
 
@@ -62,12 +61,12 @@ def example_7_module_level_filtering() -> None:
     db_logger.error("Failed to connect to replica set 'rs0'")  # ✅ Shows
 
     net_comms_logger.info(
-        "Packet sent successfully"
+        "Packet sent successfully",
     )  # ❌ Filtered (network.comms is WARNING)
     net_comms_logger.warning("High latency on connection to peer X")  # ✅ Shows
 
     other_logger.debug(
-        "Debug details for other component"
+        "Debug details for other component",
     )  # ❌ Filtered (default is INFO)
     other_logger.info("Standard operation in other component")  # ✅ Shows
 

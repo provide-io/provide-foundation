@@ -1,5 +1,4 @@
-"""
-Serialization utilities for Foundation.
+"""Serialization utilities for Foundation.
 
 Provides consistent serialization handling with validation,
 testing support, and integration with Foundation's configuration system.

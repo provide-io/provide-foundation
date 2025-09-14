@@ -1,5 +1,4 @@
-"""
-Core console output functions for standardized CLI output.
+"""Core console output functions for standardized CLI output.
 
 Provides pout() and perr() for consistent output handling with support
 for JSON mode, colors, and proper stream separation.
@@ -97,8 +96,7 @@ def _output_json(data: Any, stream: Any = sys.stdout) -> None:
     context_provider=lambda: {"function": "pout"},
 )
 def pout(message: Any, **kwargs: Any) -> None:
-    """
-    Output message to stdout.
+    """Output message to stdout.
 
     Args:
         message: Content to output (any type - will be stringified or JSON-encoded)
@@ -116,6 +114,7 @@ def pout(message: Any, **kwargs: Any) -> None:
         pout({"data": "value"})  # Auto-JSON if dict/list
         pout("Success", color="green", bold=True)
         pout(results, json_key="results")
+
     """
     ctx = kwargs.get("ctx") or _get_context()
 
@@ -145,12 +144,11 @@ def pout(message: Any, **kwargs: Any) -> None:
                 click.secho(output, fg=color, bold=bold, dim=dim, nl=nl)
             else:
                 click.echo(output, nl=nl)
+        # Fallback to standard Python print
+        elif nl:
+            print(output, file=sys.stdout)
         else:
-            # Fallback to standard Python print
-            if nl:
-                print(output, file=sys.stdout)
-            else:
-                print(output, file=sys.stdout, end="")
+            print(output, file=sys.stdout, end="")
 
 
 @with_error_handling(
@@ -159,8 +157,7 @@ def pout(message: Any, **kwargs: Any) -> None:
     context_provider=lambda: {"function": "perr"},
 )
 def perr(message: Any, **kwargs: Any) -> None:
-    """
-    Output message to stderr.
+    """Output message to stderr.
 
     Args:
         message: Content to output (any type - will be stringified or JSON-encoded)
@@ -177,6 +174,7 @@ def perr(message: Any, **kwargs: Any) -> None:
         perr("Error occurred")
         perr("Warning", color="yellow")
         perr({"error": details}, json_key="error")
+
     """
     ctx = kwargs.get("ctx") or _get_context()
 
@@ -206,9 +204,8 @@ def perr(message: Any, **kwargs: Any) -> None:
                 click.secho(output, fg=color, bold=bold, dim=dim, err=True, nl=nl)
             else:
                 click.echo(output, err=True, nl=nl)
+        # Fallback to standard Python print
+        elif nl:
+            print(output, file=sys.stderr)
         else:
-            # Fallback to standard Python print
-            if nl:
-                print(output, file=sys.stderr)
-            else:
-                print(output, file=sys.stderr, end="")
+            print(output, file=sys.stderr, end="")

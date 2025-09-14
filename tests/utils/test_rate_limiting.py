@@ -172,7 +172,7 @@ class TestTokenBucketRateLimiter:
     async def test_extreme_time_precision(self):
         """Test behavior with very small time intervals and high precision."""
         limiter = TokenBucketRateLimiter(
-            capacity=1.0, refill_rate=1000.0
+            capacity=1.0, refill_rate=1000.0,
         )  # Very fast refill
 
         # Use the initial token

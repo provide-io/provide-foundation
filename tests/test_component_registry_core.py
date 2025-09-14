@@ -1,5 +1,4 @@
-"""
-TDD tests for core registry-based component management architecture.
+"""TDD tests for core registry-based component management architecture.
 
 This test suite defines Foundation's core registry architecture, metadata handling,
 and bootstrap integration. No backward compatibility is maintained.
@@ -134,7 +133,7 @@ class TestComponentMetadataAndVersioning:
         # Register dependency
         dependency = Mock()
         registry.register(
-            name="dependency_component", value=dependency, dimension="test"
+            name="dependency_component", value=dependency, dimension="test",
         )
 
         # Register component with dependency
@@ -266,12 +265,12 @@ class TestFoundationBootstrapIntegration:
 
         test_event_mapping = EventMapping(
             name="info",
-            visual_markers={"default": "🔍"}
+            visual_markers={"default": "🔍"},
         )
         test_event_set = EventSet(
             name="test",
             description="Test event set",
-            mappings=[test_event_mapping]
+            mappings=[test_event_mapping],
         )
         registry.register(
             name="test_domain_logger",  # Use unique name
@@ -287,7 +286,6 @@ class TestFoundationBootstrapIntegration:
     def test_configuration_loading_through_registry(self):
         """Configuration loading must use registered config sources."""
         # This test would verify config loading when config sources are implemented
-        pass
 
     async def test_async_component_coordination(self):
         """Registry must coordinate async component initialization."""

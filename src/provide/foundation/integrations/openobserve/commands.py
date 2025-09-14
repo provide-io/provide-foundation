@@ -1,5 +1,4 @@
-"""
-CLI commands for OpenObserve integration.
+"""CLI commands for OpenObserve integration.
 
 These commands are auto-registered by Foundation's command discovery system.
 """
@@ -207,7 +206,7 @@ if _HAS_CLICK:
     )
     @click.pass_obj
     def errors_command(
-        client: "OpenObserveClient | None", stream: str, start: str, size: int, format: str
+        client: "OpenObserveClient | None", stream: str, start: str, size: int, format: str,
     ) -> int | None:
         """Search for error logs."""
         if client is None:
@@ -251,7 +250,7 @@ if _HAS_CLICK:
     )
     @click.pass_obj
     def trace_command(
-        client: "OpenObserveClient | None", trace_id: str, stream: str, format: str
+        client: "OpenObserveClient | None", trace_id: str, stream: str, format: str,
     ) -> int | None:
         """Search for logs by trace ID."""
         if client is None:
@@ -369,7 +368,7 @@ else:
     def openobserve_group(*args: object, **kwargs: object) -> None:
         """OpenObserve command stub when click is not available."""
         raise ImportError(
-            "CLI commands require optional dependencies. Install with: pip install 'provide-foundation[cli]'"
+            "CLI commands require optional dependencies. Install with: pip install 'provide-foundation[cli]'",
         )
 
     __all__ = []

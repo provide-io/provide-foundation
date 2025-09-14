@@ -13,8 +13,7 @@ def provide_dumps(
     indent: int | None = None,
     sort_keys: bool = False,
 ) -> str:
-    """
-    Serialize object to JSON string with Foundation tracking.
+    """Serialize object to JSON string with Foundation tracking.
 
     Args:
         obj: Object to serialize
@@ -33,6 +32,7 @@ def provide_dumps(
         '{"key": "value"}'
         >>> provide_dumps({"b": 1, "a": 2}, sort_keys=True, indent=2)
         '{\\n  "a": 2,\\n  "b": 1\\n}'
+
     """
     try:
         return json.dumps(obj, ensure_ascii=ensure_ascii, indent=indent, sort_keys=sort_keys)
@@ -41,8 +41,7 @@ def provide_dumps(
 
 
 def provide_loads(s: str) -> Any:
-    """
-    Deserialize JSON string to Python object with Foundation tracking.
+    """Deserialize JSON string to Python object with Foundation tracking.
 
     Args:
         s: JSON string to deserialize
@@ -58,6 +57,7 @@ def provide_loads(s: str) -> Any:
         {'key': 'value'}
         >>> provide_loads('[1, 2, 3]')
         [1, 2, 3]
+
     """
     if not isinstance(s, str):
         raise ValidationError("Input must be a string")

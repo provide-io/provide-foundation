@@ -17,6 +17,7 @@ def exit_success(message: str | None = None) -> None:
 
     Args:
         message: Optional message to log before exiting
+
     """
     if message:
         logger = _get_logger()
@@ -30,6 +31,7 @@ def exit_error(message: str | None = None, code: int = EXIT_ERROR) -> None:
     Args:
         message: Optional error message to log before exiting
         code: Exit code to use (defaults to EXIT_ERROR)
+
     """
     if message:
         logger = _get_logger()
@@ -42,6 +44,7 @@ def exit_interrupted(message: str = "Process interrupted") -> None:
 
     Args:
         message: Message to log before exiting
+
     """
     logger = _get_logger()
     logger.warning(f"Exiting due to interrupt: {message}")

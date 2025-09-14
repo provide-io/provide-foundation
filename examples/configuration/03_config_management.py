@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # examples/configuration/03_config_management.py
-"""
-Configuration Management Example - Complete Configuration System
+"""Configuration Management Example - Complete Configuration System
 
 This comprehensive example demonstrates all aspects of provide.foundation's
 configuration system:
@@ -37,9 +36,10 @@ Usage:
 Expected output:
     Demonstration of various configuration loading, validation, and management patterns.
 
-See also:
+See Also:
     - examples/02_custom_configuration.py for custom telemetry configuration
     - examples/08_env_variables_config.py for environment-specific patterns
+
 """
 
 from __future__ import annotations
@@ -101,16 +101,16 @@ class DatabaseConfig(RuntimeConfig):
     """Database configuration that loads from environment."""
 
     host: str = env_field(
-        default="localhost", env_var="DB_HOST", description="Database host"
+        default="localhost", env_var="DB_HOST", description="Database host",
     )
     port: int = env_field(
-        default=5432, env_var="DB_PORT", parser=int, description="Database port"
+        default=5432, env_var="DB_PORT", parser=int, description="Database port",
     )
     database: str = env_field(
-        default="mydb", env_var="DB_NAME", description="Database name"
+        default="mydb", env_var="DB_NAME", description="Database name",
     )
     username: str = env_field(
-        default="user", env_var="DB_USER", description="Database username"
+        default="user", env_var="DB_USER", description="Database username",
     )
     password: str = env_field(
         default="",
@@ -136,7 +136,7 @@ class ServerConfig(BaseConfig):
     workers: int = field(default=4)
     timeout: int = field(default=30)
     cors_origins: list[str] = field(
-        factory=lambda: ["http://localhost:3000"], metadata={"parser": parse_list}
+        factory=lambda: ["http://localhost:3000"], metadata={"parser": parse_list},
     )
 
 
@@ -149,7 +149,7 @@ class FullConfig(RuntimeConfig):
     server: ServerConfig = field(factory=ServerConfig)
 
     features: dict[str, bool] = field(
-        factory=lambda: {"new_ui": False, "analytics": True}
+        factory=lambda: {"new_ui": False, "analytics": True},
     )
 
 
@@ -317,7 +317,7 @@ def example_schema_validation() -> None:
                 description="Port number",
             ),
             SchemaField(
-                name="debug", type=bool, default=False, description="Debug mode"
+                name="debug", type=bool, default=False, description="Debug mode",
             ),
             SchemaField(
                 name="version",
@@ -326,7 +326,7 @@ def example_schema_validation() -> None:
                 pattern=r"^\d+\.\d+\.\d+$",
                 description="Semantic version",
             ),
-        ]
+        ],
     )
 
     # Valid configuration

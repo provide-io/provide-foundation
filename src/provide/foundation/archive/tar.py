@@ -14,8 +14,7 @@ logger = get_logger(__name__)
 
 @define(slots=True)
 class TarArchive(BaseArchive):
-    """
-    TAR archive implementation.
+    """TAR archive implementation.
 
     Creates and extracts TAR archives with optional metadata preservation
     and deterministic output for reproducible builds.
@@ -26,8 +25,7 @@ class TarArchive(BaseArchive):
     preserve_permissions: bool = field(default=True)
 
     def create(self, source: Path, output: Path) -> Path:
-        """
-        Create TAR archive from source.
+        """Create TAR archive from source.
 
         Args:
             source: Source file or directory to archive
@@ -38,6 +36,7 @@ class TarArchive(BaseArchive):
 
         Raises:
             ArchiveError: If archive creation fails
+
         """
         try:
             ensure_parent_dir(output)
@@ -60,8 +59,7 @@ class TarArchive(BaseArchive):
             raise ArchiveError(f"Failed to create TAR archive: {e}") from e
 
     def extract(self, archive: Path, output: Path) -> Path:
-        """
-        Extract TAR archive to output directory.
+        """Extract TAR archive to output directory.
 
         Args:
             archive: TAR archive file path
@@ -72,6 +70,7 @@ class TarArchive(BaseArchive):
 
         Raises:
             ArchiveError: If extraction fails
+
         """
         try:
             output.mkdir(parents=True, exist_ok=True)
@@ -107,14 +106,14 @@ class TarArchive(BaseArchive):
             raise ArchiveError(f"Failed to extract TAR archive: {e}") from e
 
     def validate(self, archive: Path) -> bool:
-        """
-        Validate TAR archive integrity.
+        """Validate TAR archive integrity.
 
         Args:
             archive: TAR archive file path
 
         Returns:
             True if archive is valid, False otherwise
+
         """
         try:
             with tarfile.open(archive, "r") as tar:
@@ -127,8 +126,7 @@ class TarArchive(BaseArchive):
             return False
 
     def list_contents(self, archive: Path) -> list[str]:
-        """
-        List contents of TAR archive.
+        """List contents of TAR archive.
 
         Args:
             archive: TAR archive file path
@@ -138,6 +136,7 @@ class TarArchive(BaseArchive):
 
         Raises:
             ArchiveError: If listing fails
+
         """
         try:
             contents = []
@@ -150,13 +149,13 @@ class TarArchive(BaseArchive):
             raise ArchiveError(f"Failed to list TAR contents: {e}") from e
 
     def _add_file(self, tar: tarfile.TarFile, file_path: Path, arcname: str | Path) -> None:
-        """
-        Add single file to TAR archive.
+        """Add single file to TAR archive.
 
         Args:
             tar: Open TarFile object
             file_path: Path to file to add
             arcname: Name in archive
+
         """
         tarinfo = tar.gettarinfo(str(file_path), str(arcname))
 

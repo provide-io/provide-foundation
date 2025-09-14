@@ -64,7 +64,7 @@ class TestLoggerTestingUtilities:
         """Test that lazy setup state is reset."""
         # Modify lazy setup state
         _LAZY_SETUP_STATE.update(
-            {"done": True, "error": "test_error", "in_progress": True}
+            {"done": True, "error": "test_error", "in_progress": True},
         )
 
         reset_foundation_state()

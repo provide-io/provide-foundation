@@ -1,5 +1,4 @@
-"""
-Telemetry and logging-specific parsers for configuration values.
+"""Telemetry and logging-specific parsers for configuration values.
 
 Handles parsing of domain-specific telemetry configuration like log levels,
 console formatters, and foundation-specific output settings.
@@ -21,8 +20,7 @@ else:
 
 
 def parse_log_level(value: str) -> "LogLevelStr":
-    """
-    Parse and validate log level string.
+    """Parse and validate log level string.
 
     Args:
         value: Log level string (case-insensitive)
@@ -32,20 +30,20 @@ def parse_log_level(value: str) -> "LogLevelStr":
 
     Raises:
         ValueError: If the log level is invalid
+
     """
     level = value.upper()
     if level not in _VALID_LOG_LEVEL_TUPLE:
         raise ValueError(
             _format_invalid_value_error(
-                "log_level", value, valid_options=list(_VALID_LOG_LEVEL_TUPLE)
-            )
+                "log_level", value, valid_options=list(_VALID_LOG_LEVEL_TUPLE),
+            ),
         )
     return cast("LogLevelStr", level)
 
 
 def parse_console_formatter(value: str) -> "ConsoleFormatterStr":
-    """
-    Parse and validate console formatter string.
+    """Parse and validate console formatter string.
 
     Args:
         value: Formatter string (case-insensitive)
@@ -55,20 +53,20 @@ def parse_console_formatter(value: str) -> "ConsoleFormatterStr":
 
     Raises:
         ValueError: If the formatter is invalid
+
     """
     formatter = value.lower()
     if formatter not in _VALID_FORMATTER_TUPLE:
         raise ValueError(
             _format_invalid_value_error(
-                "console_formatter", value, valid_options=list(_VALID_FORMATTER_TUPLE)
-            )
+                "console_formatter", value, valid_options=list(_VALID_FORMATTER_TUPLE),
+            ),
         )
     return cast("ConsoleFormatterStr", formatter)
 
 
 def parse_foundation_log_output(value: str) -> str:
-    """
-    Parse and validate foundation log output destination.
+    """Parse and validate foundation log output destination.
 
     Args:
         value: Output destination string
@@ -78,6 +76,7 @@ def parse_foundation_log_output(value: str) -> str:
 
     Raises:
         ValueError: If the value is invalid
+
     """
     if not value:
         return "stderr"
@@ -87,12 +86,11 @@ def parse_foundation_log_output(value: str) -> str:
 
     if normalized in valid_options:
         return normalized
-    else:
-        raise ValueError(
-            _format_invalid_value_error(
-                "foundation_log_output", value, valid_options=list(valid_options)
-            )
-        )
+    raise ValueError(
+        _format_invalid_value_error(
+            "foundation_log_output", value, valid_options=list(valid_options),
+        ),
+    )
 
 
 __all__ = [

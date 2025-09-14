@@ -23,6 +23,7 @@ class SimpleCounter:
         Args:
             value: Amount to increment by (default: 1)
             **labels: Label key-value pairs
+
         """
         self._value += value
 
@@ -59,6 +60,7 @@ class SimpleGauge:
         Args:
             value: Value to set
             **labels: Label key-value pairs
+
         """
         self._value = value
 
@@ -87,6 +89,7 @@ class SimpleGauge:
         Args:
             value: Amount to increment by
             **labels: Label key-value pairs
+
         """
         self._value += value
 
@@ -106,6 +109,7 @@ class SimpleGauge:
         Args:
             value: Amount to decrement by
             **labels: Label key-value pairs
+
         """
         self.inc(-value, **labels)
 
@@ -130,6 +134,7 @@ class SimpleHistogram:
         Args:
             value: Value to observe
             **labels: Label key-value pairs
+
         """
         self._observations.append(value)
 

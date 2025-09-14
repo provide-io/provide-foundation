@@ -3,8 +3,6 @@
 from pathlib import Path
 from unittest.mock import patch
 
-import pytest
-
 from provide.foundation.config.defaults import (
     DEFAULT_ATOMIC_ENCODING,
     DEFAULT_ATOMIC_MODE,
@@ -352,7 +350,7 @@ class TestFactoryFunctions:
         assert isinstance(list(result1.keys())[0], str)
         assert isinstance(list(result1.values())[0], str)
 
-    @patch('provide.foundation.logger.config.logging.LoggingConfig.from_env')
+    @patch("provide.foundation.logger.config.logging.LoggingConfig.from_env")
     def test_default_logging_config(self, mock_from_env):
         """Test default_logging_config factory."""
         mock_config = "mock_logging_config"
@@ -363,7 +361,7 @@ class TestFactoryFunctions:
         assert result == mock_config
         mock_from_env.assert_called_once()
 
-    @patch('provide.foundation.logger.config.logging.LoggingConfig.from_env')
+    @patch("provide.foundation.logger.config.logging.LoggingConfig.from_env")
     def test_default_logging_config_import_location(self, mock_from_env):
         """Test that default_logging_config imports from correct location."""
         mock_config = "mock_logging_config"

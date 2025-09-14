@@ -17,6 +17,7 @@ class PlatformError(FoundationError):
     Examples:
         >>> raise PlatformError("Failed to detect OS")
         >>> raise PlatformError("Unsupported platform", platform="freebsd")
+
     """
 
     def __init__(

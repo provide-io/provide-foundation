@@ -42,10 +42,9 @@ class TestWithErrorHandling:
         def func(error_type) -> Never:
             if error_type == "key":
                 raise KeyError("key error")
-            elif error_type == "value":
+            if error_type == "value":
                 raise ValueError("value error")
-            else:
-                raise RuntimeError("runtime error")
+            raise RuntimeError("runtime error")
 
         # Should suppress KeyError and ValueError
         assert func("key") == "default"
@@ -102,8 +101,7 @@ class TestWithErrorHandling:
         def func(error_type: str) -> Never:
             if error_type == "value":
                 raise ValueError("value error")
-            else:
-                raise KeyError("key error")
+            raise KeyError("key error")
 
         # ValueError should be mapped to RuntimeError
         with pytest.raises(RuntimeError, match="Mapped: value error"):
@@ -157,10 +155,9 @@ class TestSuppressAndLog:
         def func(error_type: str) -> Never:
             if error_type == "key":
                 raise KeyError("key error")
-            elif error_type == "value":
+            if error_type == "value":
                 raise ValueError("value error")
-            else:
-                raise RuntimeError("runtime error")
+            raise RuntimeError("runtime error")
 
         # Should suppress KeyError and ValueError
         assert func("key") == "default"
@@ -273,10 +270,9 @@ class TestFallbackOnError:
         def func(error_type: str) -> Never:
             if error_type == "value":
                 raise ValueError("value error")
-            elif error_type == "key":
+            if error_type == "key":
                 raise KeyError("key error")
-            else:
-                raise RuntimeError("runtime error")
+            raise RuntimeError("runtime error")
 
         # Should use fallback for ValueError and KeyError
         assert func("value") == "fallback"

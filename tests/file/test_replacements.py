@@ -17,7 +17,7 @@ def test_flavorpack_atomic_replacements(tmp_path: Path) -> None:
 
         # Load the atomic module directly without importing the full package
         spec = importlib.util.spec_from_file_location(
-            "flavor.utils.atomic", str(flavorpack_path / "flavor/utils/atomic.py")
+            "flavor.utils.atomic", str(flavorpack_path / "flavor/utils/atomic.py"),
         )
         atomic_module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(atomic_module)
@@ -56,7 +56,7 @@ def test_flavorpack_disk_replacements(tmp_path: Path) -> None:
 
         # Load the disk module directly without importing the full package
         spec = importlib.util.spec_from_file_location(
-            "flavor.utils.disk", str(flavorpack_path / "flavor/utils/disk.py")
+            "flavor.utils.disk", str(flavorpack_path / "flavor/utils/disk.py"),
         )
         disk_module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(disk_module)

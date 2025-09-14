@@ -17,6 +17,7 @@ class AuthenticationError(FoundationError):
     Examples:
         >>> raise AuthenticationError("Invalid credentials")
         >>> raise AuthenticationError("Token expired", auth_method="jwt")
+
     """
 
     def __init__(
@@ -50,6 +51,7 @@ class AuthorizationError(FoundationError):
     Examples:
         >>> raise AuthorizationError("Access denied")
         >>> raise AuthorizationError("Insufficient permissions", required_permission="admin")
+
     """
 
     def __init__(

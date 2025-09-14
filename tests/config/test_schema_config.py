@@ -189,7 +189,7 @@ class TestConfigSchemaComprehensive:
         @define
         class TestConfig(BaseConfig):
             secret: str = field(
-                default="", metadata={"description": "Secret value", "sensitive": True}
+                default="", metadata={"description": "Secret value", "sensitive": True},
             )
 
         schema = ConfigSchema.from_config_class(TestConfig)
@@ -235,7 +235,7 @@ class TestConfigSchemaComprehensive:
         attr = Mock()
         attr.name = "factory_field"
         attr.default = None
-        attr.factory = lambda: []
+        attr.factory = list
         attr.type = list
         attr.metadata = {}
 

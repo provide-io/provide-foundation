@@ -72,8 +72,7 @@ def register_command(
     registry: Registry | None = None,
     **metadata: Any,
 ) -> Any:
-    """
-    Register a CLI command in the hub.
+    """Register a CLI command in the hub.
 
     Can be used as a decorator with or without arguments:
 
@@ -111,6 +110,7 @@ def register_command(
 
     Returns:
         Decorator function or decorated function
+
     """
     # Handle @register_command (without parens)
     if callable(name_or_func) and not isinstance(name_or_func, str):

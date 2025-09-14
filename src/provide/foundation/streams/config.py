@@ -1,5 +1,4 @@
-"""
-Stream configuration for console output settings.
+"""Stream configuration for console output settings.
 
 This module provides configuration for console stream behavior,
 including color support and testing mode detection.
@@ -38,11 +37,11 @@ class StreamConfig(RuntimeConfig):
     )
 
     def supports_color(self) -> bool:
-        """
-        Determine if the console supports color output.
+        """Determine if the console supports color output.
 
         Returns:
             True if color is supported, False otherwise
+
         """
         if self.no_color:
             return False
@@ -60,11 +59,11 @@ _stream_config: StreamConfig | None = None
 
 
 def get_stream_config() -> StreamConfig:
-    """
-    Get the global stream configuration instance.
+    """Get the global stream configuration instance.
 
     Returns:
         StreamConfig instance loaded from environment
+
     """
     global _stream_config
     if _stream_config is None:

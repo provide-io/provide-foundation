@@ -22,8 +22,7 @@ from provide.foundation.logger.config import (  # noqa: E402
 
 
 def example_3_named_loggers() -> None:
-    """
-    Example 3: Demonstrates usage of named loggers for different components.
+    """Example 3: Demonstrates usage of named loggers for different components.
 
     Named loggers help in identifying the source of log messages and allow for
     module-specific log level filtering (shown in a later example).
@@ -36,8 +35,8 @@ def example_3_named_loggers() -> None:
     # Re-initialize with INFO level for better visibility
     setup_telemetry(
         TelemetryConfig(
-            logging=LoggingConfig(default_level="INFO")
-        )
+            logging=LoggingConfig(default_level="INFO"),
+        ),
     )
 
     # Create component-specific loggers

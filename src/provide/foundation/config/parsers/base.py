@@ -1,5 +1,4 @@
-"""
-Base utilities and constants for configuration parsers.
+"""Base utilities and constants for configuration parsers.
 
 Provides shared error formatting functions and common constants
 used across all parser modules.
@@ -21,7 +20,7 @@ def _format_invalid_value_error(
     value: Any,
     valid_options: list[str] | None = None,
     expected_type: str | None = None,
-    additional_info: str | None = None
+    additional_info: str | None = None,
 ) -> str:
     """Create standardized invalid value error message."""
     parts = [f"Invalid {field_name} '{value}'."]

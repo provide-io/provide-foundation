@@ -1,5 +1,4 @@
-"""
-Logger type definitions and constants.
+"""Logger type definitions and constants.
 """
 
 from typing import Literal

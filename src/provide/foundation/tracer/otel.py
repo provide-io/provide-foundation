@@ -37,7 +37,7 @@ def _require_otel() -> None:
     if not _HAS_OTEL:
         raise ImportError(
             "OpenTelemetry features require optional dependencies. "
-            "Install with: pip install 'provide-foundation[opentelemetry]'"
+            "Install with: pip install 'provide-foundation[opentelemetry]'",
         )
 
 
@@ -46,6 +46,7 @@ def setup_opentelemetry_tracing(config: TelemetryConfig) -> None:
 
     Args:
         config: Telemetry configuration
+
     """
     # Check if tracing is disabled first, before checking dependencies
     if not config.tracing_enabled or config.globally_disabled:
@@ -103,9 +104,9 @@ def setup_opentelemetry_tracing(config: TelemetryConfig) -> None:
         # 2. It's a mock (for testing)
         # 3. It's our own TracerProvider type (allow re-configuration)
         should_setup = (
-            provider_type in ['NoOpTracerProvider', 'ProxyTracerProvider', 'Mock', 'MagicMock'] or
-            not hasattr(current_provider, 'add_span_processor') or
-            current_provider.__class__.__module__.startswith('unittest.mock')
+            provider_type in ["NoOpTracerProvider", "ProxyTracerProvider", "Mock", "MagicMock"] or
+            not hasattr(current_provider, "add_span_processor") or
+            current_provider.__class__.__module__.startswith("unittest.mock")
         )
 
         if should_setup:
@@ -127,6 +128,7 @@ def get_otel_tracer(name: str) -> "otel_trace.Tracer | None":
 
     Returns:
         OpenTelemetry tracer or None if not available
+
     """
     if not _HAS_OTEL:
         return None

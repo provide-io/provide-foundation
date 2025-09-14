@@ -1,8 +1,7 @@
 #
 # coordinator.py
 #
-"""
-Main setup coordination for Foundation Telemetry.
+"""Main setup coordination for Foundation Telemetry.
 Handles the core setup logic, state management, and setup logger creation.
 """
 
@@ -55,8 +54,7 @@ def get_foundation_log_level() -> int:
 
 
 def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
-    """
-    Create Foundation's internal setup logger (structlog).
+    """Create Foundation's internal setup logger (structlog).
 
     This is used internally by Foundation during its own initialization.
     Components should use get_vanilla_logger() instead.
@@ -78,29 +76,28 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
         )
         _CACHED_SETUP_LOGGER = structlog.get_logger(_CORE_SETUP_LOGGER_NAME)
         return _CACHED_SETUP_LOGGER
-    else:
-        # Get the foundation log output stream, respecting test stream redirection
-        try:
-            # Use get_log_stream() which respects test stream redirection
-            foundation_stream = get_log_stream()
-        except Exception:
-            # Fallback to stderr if stream access fails
-            foundation_stream = get_safe_stderr()
+    # Get the foundation log output stream, respecting test stream redirection
+    try:
+        # Use get_log_stream() which respects test stream redirection
+        foundation_stream = get_log_stream()
+    except Exception:
+        # Fallback to stderr if stream access fails
+        foundation_stream = get_safe_stderr()
 
-        # Configure structlog for core setup logger
-        structlog.configure(
-            processors=[
-                structlog.processors.add_log_level,
-                structlog.processors.TimeStamper(fmt="iso"),
-                structlog.dev.ConsoleRenderer(),
-            ],
-            logger_factory=structlog.PrintLoggerFactory(file=foundation_stream),
-            wrapper_class=structlog.BoundLogger,
-            cache_logger_on_first_use=True,
-        )
+    # Configure structlog for core setup logger
+    structlog.configure(
+        processors=[
+            structlog.processors.add_log_level,
+            structlog.processors.TimeStamper(fmt="iso"),
+            structlog.dev.ConsoleRenderer(),
+        ],
+        logger_factory=structlog.PrintLoggerFactory(file=foundation_stream),
+        wrapper_class=structlog.BoundLogger,
+        cache_logger_on_first_use=True,
+    )
 
-        _CACHED_SETUP_LOGGER = structlog.get_logger(_CORE_SETUP_LOGGER_NAME)
-        return _CACHED_SETUP_LOGGER
+    _CACHED_SETUP_LOGGER = structlog.get_logger(_CORE_SETUP_LOGGER_NAME)
+    return _CACHED_SETUP_LOGGER
 
 
 def reset_setup_logger_cache() -> None:
@@ -122,8 +119,7 @@ def reset_coordinator_state() -> None:
 
 
 def get_vanilla_logger(name: str) -> object:
-    """
-    Get a vanilla Python logger without Foundation enhancements.
+    """Get a vanilla Python logger without Foundation enhancements.
 
     This provides a plain Python logger that respects FOUNDATION_LOG_LEVEL
     but doesn't trigger Foundation's initialization. Use this for logging
@@ -139,6 +135,7 @@ def get_vanilla_logger(name: str) -> object:
     Note:
         "Vanilla" means plain/unmodified Python logging, without
         Foundation's features like emoji prefixes or structured logging.
+
     """
     import logging
     import os
@@ -168,8 +165,7 @@ def get_vanilla_logger(name: str) -> object:
 
 
 def internal_setup(config: TelemetryConfig | None = None, is_explicit_call: bool = False) -> None:
-    """
-    The single, internal setup function that both explicit and lazy setup call.
+    """The single, internal setup function that both explicit and lazy setup call.
     It is protected by the _PROVIDE_SETUP_LOCK in its callers.
     """
     # This function assumes the lock is already held.

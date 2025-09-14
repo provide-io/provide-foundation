@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Example: Transport Client Usage with Foundation Mocking
+"""Example: Transport Client Usage with Foundation Mocking
 
 Demonstrates using the Foundation transport system for HTTP requests with:
 - Basic HTTP methods (GET, POST, PUT, DELETE)
@@ -68,22 +67,21 @@ async def demonstrate_basic_requests():
     mock_post_httpx_response.elapsed.total_seconds.return_value = 0.245
 
     # Mock httpx.AsyncClient.request method
-    with patch('httpx.AsyncClient.request', new_callable=AsyncMock) as mock_httpx_request:
+    with patch("httpx.AsyncClient.request", new_callable=AsyncMock) as mock_httpx_request:
         # Configure mock to return appropriate responses based on method
         def mock_request_side_effect(method, **kwargs):
             if method == "GET":
                 return mock_get_httpx_response
-            elif method == "POST":
+            if method == "POST":
                 return mock_post_httpx_response
-            else:
-                raise ValueError(f"Unexpected method: {method}")
+            raise ValueError(f"Unexpected method: {method}")
 
         mock_httpx_request.side_effect = mock_request_side_effect
 
         logger.info("making_mocked_get_request", url="https://api.example.com/get")
         response = await get(
             "https://api.example.com/get",
-            params={"demo": "foundation", "example": "transport"}
+            params={"demo": "foundation", "example": "transport"},
         )
 
         if response.is_success():
@@ -99,9 +97,9 @@ async def demonstrate_basic_requests():
             body={
                 "name": "Foundation Demo",
                 "version": "1.0.0",
-                "features": ["transport", "middleware", "telemetry"]
+                "features": ["transport", "middleware", "telemetry"],
             },
-            headers={"Content-Type": "application/json"}
+            headers={"Content-Type": "application/json"},
         )
 
         if response.is_success():
@@ -122,9 +120,9 @@ async def demonstrate_client_session():
     client = UniversalClient(
         default_headers={
             "User-Agent": "Foundation-Demo/1.0",
-            "Accept": "application/json"
+            "Accept": "application/json",
         },
-        default_timeout=30.0
+        default_timeout=30.0,
     )
 
     # Mock httpx responses for different endpoints
@@ -153,22 +151,21 @@ async def demonstrate_client_session():
         logger.info("making_multiple_mocked_requests", count=3)
 
         # Mock httpx.AsyncClient.request for all client operations
-        with patch('httpx.AsyncClient.request', new_callable=AsyncMock) as mock_httpx_request:
+        with patch("httpx.AsyncClient.request", new_callable=AsyncMock) as mock_httpx_request:
             def mock_request_side_effect(method, url, **kwargs):
                 if "users" in url and method == "GET":
                     return mock_users_response
-                elif "users" in url and method == "POST":
+                if "users" in url and method == "POST":
                     return mock_create_response
-                elif "users/3" in url and method == "PUT":
+                if "users/3" in url and method == "PUT":
                     return mock_update_response
-                else:
-                    raise ValueError(f"Unexpected request: {method} {url}")
+                raise ValueError(f"Unexpected request: {method} {url}")
 
             mock_httpx_request.side_effect = mock_request_side_effect
 
             users_response = await client.get(
                 "https://api.example.com/users",
-                params={"endpoint": "users", "page": 1}
+                params={"endpoint": "users", "page": 1},
             )
 
             if users_response.is_success():
@@ -179,7 +176,7 @@ async def demonstrate_client_session():
 
             create_response = await client.post(
                 "https://api.example.com/users",
-                body={"name": "New User", "email": "user@example.com"}
+                body={"name": "New User", "email": "user@example.com"},
             )
 
             if create_response.is_success():
@@ -190,7 +187,7 @@ async def demonstrate_client_session():
 
             update_response = await client.put(
                 "https://api.example.com/users/3",
-                body={"name": "Updated User", "status": "active"}
+                body={"name": "Updated User", "status": "active"},
             )
 
             if update_response.is_success():
@@ -212,13 +209,13 @@ async def demonstrate_middleware():
         backoff=BackoffStrategy.EXPONENTIAL,
         base_delay=1.0,
         max_delay=10.0,
-        jitter=True
+        jitter=True,
     )
 
     pipeline = MiddlewarePipeline([
         LoggingMiddleware(log_requests=True, log_responses=True),
         MetricsMiddleware(),
-        RetryMiddleware(policy=retry_policy)
+        RetryMiddleware(policy=retry_policy),
     ])
 
     client = UniversalClient(middleware=pipeline)
@@ -235,13 +232,13 @@ async def demonstrate_middleware():
         logger.info("middleware_configured",
                    middlewares=["logging", "metrics", "retry"])
 
-        with patch('httpx.AsyncClient.request', new_callable=AsyncMock) as mock_httpx_request:
+        with patch("httpx.AsyncClient.request", new_callable=AsyncMock) as mock_httpx_request:
             mock_httpx_request.return_value = mock_success_httpx_response
 
             # Request will be processed through middleware
             response = await client.get(
                 "https://api.example.com/status",
-                timeout=5.0
+                timeout=5.0,
             )
 
             logger.info("middleware_request_completed",
@@ -275,7 +272,7 @@ async def demonstrate_error_handling():
         ("timeout", TransportTimeoutError("Request timed out", request=None)),
         ("not_found", mock_not_found_response),
         ("server_error", mock_server_error_response),
-        ("connection_failed", TransportConnectionError("Connection failed", request=None))
+        ("connection_failed", TransportConnectionError("Connection failed", request=None)),
     ]
 
     for scenario_name, error_or_response in error_scenarios:
@@ -284,12 +281,12 @@ async def demonstrate_error_handling():
 
             if isinstance(error_or_response, Exception):
                 # Mock an exception at httpx level
-                with patch('httpx.AsyncClient.request', new_callable=AsyncMock) as mock_httpx_request:
+                with patch("httpx.AsyncClient.request", new_callable=AsyncMock) as mock_httpx_request:
                     mock_httpx_request.side_effect = error_or_response
                     response = await get("https://api.example.com/test", timeout=2.0)
             else:
                 # Mock an error response at httpx level
-                with patch('httpx.AsyncClient.request', new_callable=AsyncMock) as mock_httpx_request:
+                with patch("httpx.AsyncClient.request", new_callable=AsyncMock) as mock_httpx_request:
                     mock_httpx_request.return_value = error_or_response
                     response = await get("https://api.example.com/test", timeout=2.0)
 
@@ -353,14 +350,14 @@ async def demonstrate_response_processing():
     headers_httpx_response.headers = {
         "content-type": "application/json",
         "x-custom-header": "demo-value",
-        "x-server": "foundation-transport"
+        "x-server": "foundation-transport",
     }
     headers_httpx_response.content = b'{"custom_header": "demo-value", "server": "foundation-transport"}'
     headers_httpx_response.elapsed = Mock()
     headers_httpx_response.elapsed.total_seconds.return_value = 0.0897
 
     # Test JSON response processing
-    with patch('httpx.AsyncClient.request', new_callable=AsyncMock) as mock_httpx_request:
+    with patch("httpx.AsyncClient.request", new_callable=AsyncMock) as mock_httpx_request:
         mock_httpx_request.return_value = json_httpx_response
         json_response = await get("https://api.example.com/json")
 
@@ -372,7 +369,7 @@ async def demonstrate_response_processing():
                        mocked=True)
 
     # Test text response processing
-    with patch('httpx.AsyncClient.request', new_callable=AsyncMock) as mock_httpx_request:
+    with patch("httpx.AsyncClient.request", new_callable=AsyncMock) as mock_httpx_request:
         mock_httpx_request.return_value = text_httpx_response
         text_response = await get("https://api.example.com/robots.txt")
 
@@ -385,7 +382,7 @@ async def demonstrate_response_processing():
                        mocked=True)
 
     # Test headers inspection
-    with patch('httpx.AsyncClient.request', new_callable=AsyncMock) as mock_httpx_request:
+    with patch("httpx.AsyncClient.request", new_callable=AsyncMock) as mock_httpx_request:
         mock_httpx_request.return_value = headers_httpx_response
         headers_response = await get("https://api.example.com/headers")
 
@@ -430,16 +427,15 @@ async def demonstrate_default_client():
     get_httpx_response.elapsed.total_seconds.return_value = 0.0927
 
     # Test direct function calls (which use the default client)
-    with patch('httpx.AsyncClient.request', new_callable=AsyncMock) as mock_httpx_request:
+    with patch("httpx.AsyncClient.request", new_callable=AsyncMock) as mock_httpx_request:
         def mock_request_side_effect(method, url, **kwargs):
             if "uuid" in url:
                 return uuid_httpx_response
-            elif method == "POST":
+            if method == "POST":
                 return post_httpx_response
-            elif "get" in url:
+            if "get" in url:
                 return get_httpx_response
-            else:
-                raise ValueError(f"Unexpected request: {method} {url}")
+            raise ValueError(f"Unexpected request: {method} {url}")
 
         mock_httpx_request.side_effect = mock_request_side_effect
 

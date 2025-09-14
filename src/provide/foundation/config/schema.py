@@ -1,5 +1,4 @@
-"""
-Configuration schema and validation.
+"""Configuration schema and validation.
 """
 
 from __future__ import annotations
@@ -32,14 +31,14 @@ class SchemaField:
     sensitive: bool = False
 
     async def validate(self, value: Any) -> None:
-        """
-        Validate a value against this schema field.
+        """Validate a value against this schema field.
 
         Args:
             value: Value to validate
 
         Raises:
             ConfigValidationError: If validation fails
+
         """
         # Check required
         if self.required and value is None:
@@ -98,11 +97,11 @@ class ConfigSchema:
     """Schema definition for configuration classes."""
 
     def __init__(self, fields: list[SchemaField] | None = None) -> None:
-        """
-        Initialize configuration schema.
+        """Initialize configuration schema.
 
         Args:
             fields: List of schema fields
+
         """
         self.fields = fields or []
         self._field_map = {field.name: field for field in self.fields}
@@ -113,14 +112,14 @@ class ConfigSchema:
         self._field_map[field.name] = field
 
     async def validate(self, data: ConfigDict) -> None:
-        """
-        Validate configuration data against schema.
+        """Validate configuration data against schema.
 
         Args:
             data: Configuration data to validate
 
         Raises:
             ConfigValidationError: If validation fails
+
         """
         # Check required fields
         for field in self.fields:
@@ -133,14 +132,14 @@ class ConfigSchema:
                 await self._field_map[key].validate(value)
 
     def apply_defaults(self, data: ConfigDict) -> ConfigDict:
-        """
-        Apply default values to configuration data.
+        """Apply default values to configuration data.
 
         Args:
             data: Configuration data
 
         Returns:
             Data with defaults applied
+
         """
         result = data.copy()
 
@@ -151,27 +150,27 @@ class ConfigSchema:
         return result
 
     def filter_extra_fields(self, data: ConfigDict) -> ConfigDict:
-        """
-        Remove fields not defined in schema.
+        """Remove fields not defined in schema.
 
         Args:
             data: Configuration data
 
         Returns:
             Filtered data
+
         """
         return {k: v for k, v in data.items() if k in self._field_map}
 
     @classmethod
     def from_config_class(cls, config_class: type[BaseConfig]) -> ConfigSchema:
-        """
-        Generate schema from configuration class.
+        """Generate schema from configuration class.
 
         Args:
             config_class: Configuration class
 
         Returns:
             Generated schema
+
         """
         schema_fields = []
 
@@ -206,8 +205,7 @@ class ConfigSchema:
 
 
 async def validate_schema(config: BaseConfig, schema: ConfigSchema) -> None:
-    """
-    Validate configuration instance against schema.
+    """Validate configuration instance against schema.
 
     Args:
         config: Configuration instance
@@ -215,6 +213,7 @@ async def validate_schema(config: BaseConfig, schema: ConfigSchema) -> None:
 
     Raises:
         ConfigValidationError: If validation fails
+
     """
     data = config.to_dict(include_sensitive=True)
     await schema.validate(data)
