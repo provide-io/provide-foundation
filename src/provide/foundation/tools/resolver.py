@@ -16,7 +16,6 @@ class ResolutionError(FoundationError):
     """Raised when version resolution fails."""
 
 
-
 class VersionResolver:
     """Resolve version specifications to concrete versions.
 

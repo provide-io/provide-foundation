@@ -21,7 +21,6 @@ class DownloadError(FoundationError):
     """Raised when download fails."""
 
 
-
 class ToolDownloader:
     """Advanced download capabilities for tools.
 

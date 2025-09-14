@@ -1,5 +1,4 @@
-"""HTTP/HTTPS transport implementation using httpx.
-"""
+"""HTTP/HTTPS transport implementation using httpx."""
 
 from collections.abc import AsyncIterator
 import time

@@ -224,11 +224,7 @@ def _prepare_stream_environment(env: Mapping[str, str] | None) -> dict[str, str]
 
 
 async def _create_stream_subprocess(
-    cmd: list[str],
-    cwd: str | None,
-    run_env: dict[str, str],
-    stream_stderr: bool,
-    kwargs: dict[str, Any]
+    cmd: list[str], cwd: str | None, run_env: dict[str, str], stream_stderr: bool, kwargs: dict[str, Any]
 ) -> Any:
     """Create subprocess for streaming."""
     stderr_handling = asyncio.subprocess.STDOUT if stream_stderr else asyncio.subprocess.PIPE
@@ -261,7 +257,8 @@ async def _read_lines_with_timeout(process: Any, timeout: float, cmd_str: str) -
 
             # Wait for a line with remaining timeout
             line = await asyncio.wait_for(
-                process.stdout.readline(), timeout=remaining_timeout,
+                process.stdout.readline(),
+                timeout=remaining_timeout,
             )
 
             if not line:
@@ -292,11 +289,7 @@ async def _cleanup_stream_process(process: Any) -> None:
         process.stdin.close()
     if process.stdout and not process.stdout.at_eof():
         process.stdout.feed_eof()
-    if (
-        process.stderr
-        and process.stderr != asyncio.subprocess.STDOUT
-        and not process.stderr.at_eof()
-    ):
+    if process.stderr and process.stderr != asyncio.subprocess.STDOUT and not process.stderr.at_eof():
         process.stderr.feed_eof()
 
     # Ensure process is terminated

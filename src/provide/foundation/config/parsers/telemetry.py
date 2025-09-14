@@ -36,7 +36,9 @@ def parse_log_level(value: str) -> "LogLevelStr":
     if level not in _VALID_LOG_LEVEL_TUPLE:
         raise ValueError(
             _format_invalid_value_error(
-                "log_level", value, valid_options=list(_VALID_LOG_LEVEL_TUPLE),
+                "log_level",
+                value,
+                valid_options=list(_VALID_LOG_LEVEL_TUPLE),
             ),
         )
     return cast("LogLevelStr", level)
@@ -59,7 +61,9 @@ def parse_console_formatter(value: str) -> "ConsoleFormatterStr":
     if formatter not in _VALID_FORMATTER_TUPLE:
         raise ValueError(
             _format_invalid_value_error(
-                "console_formatter", value, valid_options=list(_VALID_FORMATTER_TUPLE),
+                "console_formatter",
+                value,
+                valid_options=list(_VALID_FORMATTER_TUPLE),
             ),
         )
     return cast("ConsoleFormatterStr", formatter)
@@ -88,7 +92,9 @@ def parse_foundation_log_output(value: str) -> str:
         return normalized
     raise ValueError(
         _format_invalid_value_error(
-            "foundation_log_output", value, valid_options=list(valid_options),
+            "foundation_log_output",
+            value,
+            valid_options=list(valid_options),
         ),
     )
 

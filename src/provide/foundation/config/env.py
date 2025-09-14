@@ -1,5 +1,4 @@
-"""Environment variable configuration utilities.
-"""
+"""Environment variable configuration utilities."""
 
 import asyncio
 from collections.abc import Callable
@@ -94,6 +93,7 @@ def get_env(
     if secret_file and value.startswith("file://"):
         file_path = value[7:]  # Remove "file://" prefix
         from provide.foundation.file.safe import safe_read_text
+
         try:
             value = safe_read_text(file_path, default="").strip()
             if not value:
@@ -183,6 +183,7 @@ class RuntimeConfig(BaseConfig):
                     # Read synchronously
                     file_path = value[7:]
                     from provide.foundation.file.safe import safe_read_text
+
                     try:
                         value = safe_read_text(file_path, default="").strip()
                         if not value:
@@ -299,6 +300,7 @@ class RuntimeConfig(BaseConfig):
             else:
                 # Fallback to synchronous read
                 from provide.foundation.file.safe import safe_read_text
+
                 content = safe_read_text(file_path, default="")
                 if not content:
                     raise ValueError(f"Secret file is empty: {file_path}")

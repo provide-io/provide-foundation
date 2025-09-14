@@ -90,6 +90,7 @@ class FoundationManager:
 
             # Log initialization success (avoid test interference)
             import os
+
             if not os.environ.get("PYTEST_CURRENT_TEST"):
                 logger = self._get_logger()
                 if logger:
@@ -106,10 +107,9 @@ class FoundationManager:
         try:
             # Create logger instance with Hub-like interface
             # For now, we'll create a minimal wrapper to avoid circular dependencies
-            hub_wrapper = type('HubWrapper', (), {
-                '_component_registry': self._registry,
-                '_foundation_config': self._config
-            })()
+            hub_wrapper = type(
+                "HubWrapper", (), {"_component_registry": self._registry, "_foundation_config": self._config}
+            )()
 
             logger_instance = FoundationLogger(hub=hub_wrapper)
 
@@ -131,6 +131,7 @@ class FoundationManager:
             # If logger setup fails, continue with emergency fallback
             # This ensures Hub remains functional even if logging fails
             import sys
+
             print(f"Warning: Foundation logger setup failed: {e}", file=sys.stderr)
             print("Continuing with emergency fallback logger", file=sys.stderr)
 
@@ -159,6 +160,7 @@ class FoundationManager:
 
         # Emergency fallback if logger instance not available
         import structlog
+
         return structlog.get_logger(name or "fallback")
 
     def is_foundation_initialized(self) -> bool:
@@ -185,6 +187,7 @@ class FoundationManager:
 
         # Fallback during initialization
         import structlog
+
         return structlog.get_logger(__name__)
 
 
@@ -203,11 +206,12 @@ def get_foundation_logger(name: str | None = None) -> Any:
     from provide.foundation.hub.manager import get_hub
 
     hub = get_hub()
-    if hasattr(hub, '_foundation_manager') and hub._foundation_manager._logger_instance:
+    if hasattr(hub, "_foundation_manager") and hub._foundation_manager._logger_instance:
         return hub._foundation_manager._logger_instance.get_logger(name)
 
     # Fallback to direct logger import during bootstrap
     from provide.foundation.logger import logger
+
     if name:
         return logger.get_logger(name)
     return logger

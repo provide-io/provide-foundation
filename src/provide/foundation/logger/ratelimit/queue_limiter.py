@@ -1,8 +1,7 @@
 #
 # queue_limiter.py
 #
-"""Queue-based rate limiter with overflow protection for Foundation's logging system.
-"""
+"""Queue-based rate limiter with overflow protection for Foundation's logging system."""
 
 from collections import deque
 import sys
@@ -52,7 +51,9 @@ class QueuedRateLimiter:
         self.overflow_policy = overflow_policy
 
         # Use deque for efficient FIFO operations
-        self.pending_queue: deque[Any] = deque(maxlen=max_queue_size if overflow_policy == "drop_oldest" else None)
+        self.pending_queue: deque[Any] = deque(
+            maxlen=max_queue_size if overflow_policy == "drop_oldest" else None
+        )
         self.queue_lock = threading.Lock()
 
         # Track statistics

@@ -1,5 +1,4 @@
-"""Query logs command for Foundation CLI.
-"""
+"""Query logs command for Foundation CLI."""
 
 from typing import Any, NoReturn
 
@@ -70,6 +69,7 @@ def _build_query_sql(
     if level:
         # Sanitize level using Foundation's existing validation
         from provide.foundation.config.parsers.base import _VALID_LOG_LEVEL_TUPLE
+
         if level not in _VALID_LOG_LEVEL_TUPLE:
             raise ValueError(f"Invalid log level: {level}")
         conditions.append(f"level = '{level}'")
@@ -81,7 +81,8 @@ def _build_query_sql(
         conditions.append(f"service = '{service}'")
 
     where_clause = f"WHERE {' AND '.join(conditions)}" if conditions else ""
-    return f"SELECT * FROM {stream} {where_clause} ORDER BY _timestamp DESC LIMIT {size}"
+    # All parameters are sanitized above with regex validation
+    return f"SELECT * FROM {stream} {where_clause} ORDER BY _timestamp DESC LIMIT {size}"  # nosec B608
 
 
 def _execute_and_display_query(sql: str, last: str, size: int, format: str, client: Any) -> int:

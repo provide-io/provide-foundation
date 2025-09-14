@@ -1,5 +1,4 @@
-"""Streaming search operations for OpenObserve.
-"""
+"""Streaming search operations for OpenObserve."""
 
 from collections.abc import Generator
 import json

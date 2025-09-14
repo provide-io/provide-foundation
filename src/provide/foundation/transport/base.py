@@ -1,5 +1,4 @@
-"""Core transport abstractions.
-"""
+"""Core transport abstractions."""
 
 from abc import ABC, abstractmethod
 from collections.abc import AsyncIterator

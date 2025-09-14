@@ -1,5 +1,4 @@
-"""Tail logs command for Foundation CLI.
-"""
+"""Tail logs command for Foundation CLI."""
 
 try:
     import click
@@ -50,7 +49,12 @@ if _HAS_CLICK:
     )
     @click.pass_context
     def tail_command(
-        ctx: click.Context, stream: str, filter_sql: str | None, lines: int, follow: bool, format: str,
+        ctx: click.Context,
+        stream: str,
+        filter_sql: str | None,
+        lines: int,
+        follow: bool,
+        format: str,
     ) -> int | None:
         """Tail logs in real-time (like 'tail -f').
 

@@ -1,8 +1,7 @@
 #
 # generate.py
 #
-"""Command to generate logs for testing OpenObserve integration with Foundation's rate limiting.
-"""
+"""Command to generate logs for testing OpenObserve integration with Foundation's rate limiting."""
 
 import random
 import time
@@ -173,7 +172,15 @@ def generate_log_entry(index: int, style: str = "normal", error_rate: float = 0.
     return entry
 
 
-def _print_generation_config(count: int, rate: float, stream: str, style: str, error_rate: float, enable_rate_limit: bool, rate_limit: float) -> None:
+def _print_generation_config(
+    count: int,
+    rate: float,
+    stream: str,
+    style: str,
+    error_rate: float,
+    enable_rate_limit: bool,
+    rate_limit: float,
+) -> None:
     """Print the configuration for log generation."""
     click.echo("🚀 Starting log generation...")
     click.echo(f"   Style: {style}")
@@ -195,6 +202,7 @@ def _configure_rate_limiter(enable_rate_limit: bool, rate_limit: float) -> None:
     """Configure Foundation's rate limiting if enabled."""
     if enable_rate_limit:
         from provide.foundation.logger.ratelimit import GlobalRateLimiter
+
         limiter = GlobalRateLimiter()
         limiter.configure(
             global_rate=rate_limit,
@@ -202,7 +210,9 @@ def _configure_rate_limiter(enable_rate_limit: bool, rate_limit: float) -> None:
         )
 
 
-def _send_log_entry(entry: dict[str, Any], logs_sent: int, logs_failed: int, logs_rate_limited: int) -> tuple[int, int, int]:
+def _send_log_entry(
+    entry: dict[str, Any], logs_sent: int, logs_failed: int, logs_rate_limited: int
+) -> tuple[int, int, int]:
     """Send a log entry and update counters."""
     try:
         service_logger = get_logger(f"generated.{entry['service']}")
@@ -217,8 +227,15 @@ def _send_log_entry(entry: dict[str, Any], logs_sent: int, logs_failed: int, log
     return logs_sent, logs_failed, logs_rate_limited
 
 
-def _print_stats(current_time: float, last_stats_time: float, logs_sent: int, last_stats_sent: int,
-                logs_failed: int, enable_rate_limit: bool, logs_rate_limited: int) -> tuple[float, int]:
+def _print_stats(
+    current_time: float,
+    last_stats_time: float,
+    logs_sent: int,
+    last_stats_sent: int,
+    logs_failed: int,
+    enable_rate_limit: bool,
+    logs_rate_limited: int,
+) -> tuple[float, int]:
     """Print generation statistics and return updated tracking values."""
     if current_time - last_stats_time >= 1.0:
         current_rate = (logs_sent - last_stats_sent) / (current_time - last_stats_time)
@@ -234,8 +251,14 @@ def _print_stats(current_time: float, last_stats_time: float, logs_sent: int, la
     return last_stats_time, last_stats_sent
 
 
-def _print_final_stats(logs_sent: int, logs_failed: int, logs_rate_limited: int,
-                      total_time: float, rate: float, enable_rate_limit: bool) -> None:
+def _print_final_stats(
+    logs_sent: int,
+    logs_failed: int,
+    logs_rate_limited: int,
+    total_time: float,
+    rate: float,
+    enable_rate_limit: bool,
+) -> None:
     """Print final generation statistics."""
     actual_rate = logs_sent / total_time if total_time > 0 else 0
 
@@ -249,7 +272,9 @@ def _print_final_stats(logs_sent: int, logs_failed: int, logs_rate_limited: int,
     click.echo(f"   Actual rate: {actual_rate:.1f} logs/second")
 
 
-def _generate_continuous_logs(rate: float, style: str, error_rate: float, enable_rate_limit: bool, logs_rate_limited: int) -> tuple[int, int, int]:
+def _generate_continuous_logs(
+    rate: float, style: str, error_rate: float, enable_rate_limit: bool, logs_rate_limited: int
+) -> tuple[int, int, int]:
     """Generate logs in continuous mode."""
     logs_sent = 0
     logs_failed = 0
@@ -264,7 +289,9 @@ def _generate_continuous_logs(rate: float, style: str, error_rate: float, enable
         # Generate and send log entry
         entry = generate_log_entry(index, style, error_rate)
         index += 1
-        logs_sent, logs_failed, logs_rate_limited = _send_log_entry(entry, logs_sent, logs_failed, logs_rate_limited)
+        logs_sent, logs_failed, logs_rate_limited = _send_log_entry(
+            entry, logs_sent, logs_failed, logs_rate_limited
+        )
 
         # Control rate
         elapsed = current_time - start_time
@@ -278,8 +305,13 @@ def _generate_continuous_logs(rate: float, style: str, error_rate: float, enable
 
         # Print stats
         last_stats_time, last_stats_sent = _print_stats(
-            current_time, last_stats_time, logs_sent, last_stats_sent,
-            logs_failed, enable_rate_limit, logs_rate_limited,
+            current_time,
+            last_stats_time,
+            logs_sent,
+            last_stats_sent,
+            logs_failed,
+            enable_rate_limit,
+            logs_rate_limited,
         )
 
 
@@ -291,7 +323,9 @@ def _generate_fixed_count_logs(count: int, rate: float, style: str, error_rate: 
 
     for i in range(count):
         entry = generate_log_entry(i, style, error_rate)
-        logs_sent, logs_failed, logs_rate_limited = _send_log_entry(entry, logs_sent, logs_failed, logs_rate_limited)
+        logs_sent, logs_failed, logs_rate_limited = _send_log_entry(
+            entry, logs_sent, logs_failed, logs_rate_limited
+        )
 
         # Control rate
         if rate > 0:
@@ -337,11 +371,18 @@ def generate_logs_command(
     try:
         if count == 0:
             logs_sent, logs_failed, logs_rate_limited = _generate_continuous_logs(
-                rate, style, error_rate, enable_rate_limit, logs_rate_limited,
+                rate,
+                style,
+                error_rate,
+                enable_rate_limit,
+                logs_rate_limited,
             )
         else:
             logs_sent, logs_failed, logs_rate_limited = _generate_fixed_count_logs(
-                count, rate, style, error_rate,
+                count,
+                rate,
+                style,
+                error_rate,
             )
     except KeyboardInterrupt:
         click.echo("\n\n⛔ Generation interrupted by user")

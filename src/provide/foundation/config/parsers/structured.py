@@ -15,6 +15,7 @@ else:
 def parse_log_level(value: str) -> "LogLevelStr":
     """Import parse_log_level from telemetry module to avoid circular imports."""
     from provide.foundation.config.parsers.telemetry import parse_log_level as _parse_log_level
+
     return _parse_log_level(value)
 
 

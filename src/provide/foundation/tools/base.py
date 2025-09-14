@@ -22,20 +22,16 @@ class ToolError(FoundationError):
     """Base exception for tool-related errors."""
 
 
-
 class ToolNotFoundError(ToolError):
     """Raised when a tool or version cannot be found."""
-
 
 
 class ToolInstallError(ToolError):
     """Raised when tool installation fails."""
 
 
-
 class ToolVerificationError(ToolError):
     """Raised when tool verification fails."""
-
 
 
 @define
@@ -238,9 +234,12 @@ class BaseToolManager(ABC):
 
         # Download to secure temporary directory
         from provide.foundation.file.temp import system_temp_dir
+
         download_path = system_temp_dir() / f"{self.tool_name}-{version}"
         artifact_path = self.downloader.download_with_progress(
-            metadata.download_url, download_path, metadata.checksum,
+            metadata.download_url,
+            download_path,
+            metadata.checksum,
         )
 
         # Verify if checksum provided

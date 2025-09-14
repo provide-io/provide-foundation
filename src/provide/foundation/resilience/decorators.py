@@ -1,5 +1,4 @@
-"""Resilience decorators for retry, circuit breaker, and fallback patterns.
-"""
+"""Resilience decorators for retry, circuit breaker, and fallback patterns."""
 
 import asyncio
 from collections.abc import Callable

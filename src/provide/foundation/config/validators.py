@@ -24,7 +24,9 @@ def validate_log_level(instance: Any, attribute: Any, value: str) -> None:
     if value not in _VALID_LOG_LEVEL_TUPLE:
         raise ValidationError(
             _format_invalid_value_error(
-                attribute.name, value, valid_options=list(_VALID_LOG_LEVEL_TUPLE),
+                attribute.name,
+                value,
+                valid_options=list(_VALID_LOG_LEVEL_TUPLE),
             ),
         )
 
@@ -93,7 +95,9 @@ def validate_overflow_policy(instance: Any, attribute: Any, value: str) -> None:
     if value not in _VALID_OVERFLOW_POLICY_TUPLE:
         raise ValidationError(
             _format_invalid_value_error(
-                attribute.name, value, valid_options=list(_VALID_OVERFLOW_POLICY_TUPLE),
+                attribute.name,
+                value,
+                valid_options=list(_VALID_OVERFLOW_POLICY_TUPLE),
             ),
         )
 
@@ -108,14 +112,16 @@ def validate_choice(choices: list[Any]) -> Callable[[Any, Any, Any], None]:
         Validator function for use with attrs
 
     """
+
     def validator(instance: Any, attribute: Any, value: Any) -> None:
         if value not in choices:
             # Import ValidationError locally to avoid circular imports
             from provide.foundation.errors.config import ValidationError
+
             raise ValidationError(
-                f"Invalid value '{value}' for {attribute.name}. "
-                f"Must be one of: {choices!r}",
+                f"Invalid value '{value}' for {attribute.name}. Must be one of: {choices!r}",
             )
+
     return validator
 
 
@@ -130,6 +136,7 @@ def validate_range(min_val: float, max_val: float) -> Callable[[Any, Any, Any], 
         Validator function for use with attrs
 
     """
+
     def validator(instance: Any, attribute: Any, value: Any) -> None:
         # Import ValidationError locally to avoid circular imports
         from provide.foundation.errors.config import ValidationError
@@ -144,6 +151,7 @@ def validate_range(min_val: float, max_val: float) -> Callable[[Any, Any, Any], 
             raise ValidationError(
                 f"Value must be between {min_val} and {max_val}, got {value}",
             )
+
     return validator
 
 

@@ -1,5 +1,4 @@
-"""Universal transport client with middleware support.
-"""
+"""Universal transport client with middleware support."""
 
 from collections.abc import AsyncIterator
 from typing import Any
@@ -94,7 +93,10 @@ class UniversalClient:
             raise e
 
     async def stream(
-        self, uri: str, method: str | HTTPMethod = HTTPMethod.GET, **kwargs,
+        self,
+        uri: str,
+        method: str | HTTPMethod = HTTPMethod.GET,
+        **kwargs,
     ) -> AsyncIterator[bytes]:
         """Stream data from URI.
 

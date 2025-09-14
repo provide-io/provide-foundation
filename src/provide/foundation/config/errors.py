@@ -68,6 +68,7 @@ class ValidationError(ConfigError):
 
 # Standardized error message formatters
 
+
 def format_invalid_value_error(
     field_name: str,
     value: Any,

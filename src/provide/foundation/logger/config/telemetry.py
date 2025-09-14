@@ -1,8 +1,7 @@
 #
 # telemetry.py
 #
-"""TelemetryConfig class for Foundation telemetry configuration.
-"""
+"""TelemetryConfig class for Foundation telemetry configuration."""
 
 import os
 
@@ -47,7 +46,8 @@ class TelemetryConfig(RuntimeConfig):
         description="Service version for telemetry",
     )
     logging: LoggingConfig = field(
-        factory=default_logging_config, description="Logging configuration",
+        factory=default_logging_config,
+        description="Logging configuration",
     )
     globally_disabled: bool = field(
         default=DEFAULT_TELEMETRY_GLOBALLY_DISABLED,

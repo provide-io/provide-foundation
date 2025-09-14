@@ -1,5 +1,4 @@
-"""Search operations for OpenObserve.
-"""
+"""Search operations for OpenObserve."""
 
 import re
 
@@ -28,6 +27,7 @@ def _sanitize_trace_id(trace_id: str) -> str:
 def _sanitize_log_level(level: str) -> str:
     """Sanitize log level to prevent SQL injection."""
     from provide.foundation.config.parsers.base import _VALID_LOG_LEVEL_TUPLE
+
     if level not in _VALID_LOG_LEVEL_TUPLE:
         raise ValueError(f"Invalid log level: {level}")
     return level

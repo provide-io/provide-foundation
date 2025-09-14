@@ -89,7 +89,9 @@ async def load_all_configs() -> dict[str, Any]:
                 if source_config:
                     configs.update(source_config)
             except Exception as e:
-                get_foundation_logger().warning("Config source failed to load", source=entry.name, error=str(e))
+                get_foundation_logger().warning(
+                    "Config source failed to load", source=entry.name, error=str(e)
+                )
 
     return configs
 

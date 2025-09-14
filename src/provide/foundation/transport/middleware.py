@@ -1,5 +1,4 @@
-"""Transport middleware system with Hub registration.
-"""
+"""Transport middleware system with Hub registration."""
 
 from abc import ABC, abstractmethod
 import time

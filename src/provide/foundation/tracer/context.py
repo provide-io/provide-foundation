@@ -15,7 +15,8 @@ _current_span: contextvars.ContextVar[Span | None] = contextvars.ContextVar("cur
 
 # Context variable to track the current trace ID
 _current_trace_id: contextvars.ContextVar[str | None] = contextvars.ContextVar(
-    "current_trace_id", default=None,
+    "current_trace_id",
+    default=None,
 )
 
 

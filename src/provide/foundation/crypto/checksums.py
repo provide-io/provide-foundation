@@ -173,6 +173,7 @@ def parse_checksum_file(
 
     try:
         from provide.foundation.file.safe import safe_read_text
+
         content = safe_read_text(path, default="", encoding="utf-8")
 
         for line in content.splitlines():

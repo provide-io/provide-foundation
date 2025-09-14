@@ -7,8 +7,6 @@ import shutil
 _logger = None
 
 
-
-
 def safe_read(
     path: Path | str,
     default: bytes | None = None,
@@ -34,12 +32,14 @@ def safe_read(
         return data
     except FileNotFoundError:
         from provide.foundation.hub.foundation import get_foundation_logger
+
         get_foundation_logger().debug("File not found, returning default", path=str(path))
         if default is not None and encoding:
             return default.decode(encoding) if isinstance(default, bytes) else default
         return default
     except Exception as e:
         from provide.foundation.hub.foundation import get_foundation_logger
+
         get_foundation_logger().warning("Failed to read file", path=str(path), error=str(e))
         return default
 
@@ -86,16 +86,19 @@ def safe_delete(
     try:
         path.unlink()
         from provide.foundation.hub.foundation import get_foundation_logger
+
         get_foundation_logger().debug("Deleted file", path=str(path))
         return True
     except FileNotFoundError:
         if missing_ok:
             from provide.foundation.hub.foundation import get_foundation_logger
+
             get_foundation_logger().debug("File already absent", path=str(path))
             return False
         raise
     except Exception as e:
         from provide.foundation.hub.foundation import get_foundation_logger
+
         get_foundation_logger().error("Failed to delete file", path=str(path), error=str(e))
         raise
 
@@ -133,9 +136,11 @@ def safe_move(
     try:
         shutil.move(str(src), str(dst))
         from provide.foundation.hub.foundation import get_foundation_logger
+
         get_foundation_logger().debug("Moved file", src=str(src), dst=str(dst))
     except Exception as e:
         from provide.foundation.hub.foundation import get_foundation_logger
+
         get_foundation_logger().error("Failed to move file", src=str(src), dst=str(dst), error=str(e))
         raise
 
@@ -178,9 +183,11 @@ def safe_copy(
         else:
             shutil.copy(str(src), str(dst))
         from provide.foundation.hub.foundation import get_foundation_logger
+
         get_foundation_logger().debug("Copied file", src=str(src), dst=str(dst))
     except Exception as e:
         from provide.foundation.hub.foundation import get_foundation_logger
+
         get_foundation_logger().error("Failed to copy file", src=str(src), dst=str(dst), error=str(e))
         raise
 

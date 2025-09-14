@@ -1,5 +1,4 @@
-"""Configuration loaders for various sources.
-"""
+"""Configuration loaders for various sources."""
 
 from abc import ABC, abstractmethod
 import json
@@ -86,7 +85,9 @@ class FileConfigLoader(ConfigLoader):
     @with_error_handling(
         context_provider=lambda: {"loader": "FileLoader"},
         error_mapper=lambda e: ConfigurationError(
-            f"Failed to load configuration: {e}", code="CONFIG_LOAD_ERROR", cause=e,
+            f"Failed to load configuration: {e}",
+            code="CONFIG_LOAD_ERROR",
+            cause=e,
         )
         if not isinstance(e, ConfigurationError | NotFoundError)
         else e,

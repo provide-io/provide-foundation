@@ -50,7 +50,9 @@ def format_size(size_bytes: float, precision: int = 1) -> str:
     return f"-{formatted}" if negative else formatted
 
 
-def _format_duration_components(days: int, hours: int, minutes: int, seconds: int) -> tuple[int, int, int, int]:
+def _format_duration_components(
+    days: int, hours: int, minutes: int, seconds: int
+) -> tuple[int, int, int, int]:
     """Extract duration components from seconds."""
     return (
         days,

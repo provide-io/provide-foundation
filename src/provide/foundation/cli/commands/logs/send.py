@@ -1,5 +1,4 @@
-"""Send logs command for Foundation CLI.
-"""
+"""Send logs command for Foundation CLI."""
 
 import json
 import sys
@@ -68,8 +67,15 @@ def _build_attributes(json_attrs: str | None, attr: tuple[str, ...]) -> tuple[di
     return attributes, 0
 
 
-def _send_log_entry(message: str, level: str, service: str | None, attributes: dict[str, Any],
-                   trace_id: str | None, span_id: str | None, use_otlp: bool) -> int:
+def _send_log_entry(
+    message: str,
+    level: str,
+    service: str | None,
+    attributes: dict[str, Any],
+    trace_id: str | None,
+    span_id: str | None,
+    use_otlp: bool,
+) -> int:
     """Send the log entry using appropriate method."""
     from provide.foundation.integrations.openobserve.otlp import send_log
 

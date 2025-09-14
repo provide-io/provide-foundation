@@ -182,7 +182,9 @@ def get_tool_registry() -> ToolRegistry:
 
 
 def register_tool_manager(
-    name: str, manager_class: type[BaseToolManager], aliases: list[str] | None = None,
+    name: str,
+    manager_class: type[BaseToolManager],
+    aliases: list[str] | None = None,
 ) -> None:
     """Register a tool manager with the global registry.
 

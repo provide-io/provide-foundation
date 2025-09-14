@@ -1,5 +1,4 @@
-"""Event set resolution and enrichment logic.
-"""
+"""Event set resolution and enrichment logic."""
 
 from typing import Any
 
@@ -8,8 +7,7 @@ from provide.foundation.eventsets.types import EventMapping, FieldMapping
 
 
 class EventSetResolver:
-    """Resolves and applies event set enrichments to log events.
-    """
+    """Resolves and applies event set enrichments to log events."""
 
     def __init__(self) -> None:
         """Initialize the resolver with cached configurations."""

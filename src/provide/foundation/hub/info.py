@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from types import ModuleType
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    import click as click_module
+    pass
 
 from attrs import define, field
 

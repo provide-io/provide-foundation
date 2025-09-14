@@ -1,5 +1,4 @@
-"""Transport-specific error types.
-"""
+"""Transport-specific error types."""
 
 from typing import TYPE_CHECKING
 
@@ -21,10 +20,8 @@ class TransportConnectionError(TransportError):
     """Transport connection failed."""
 
 
-
 class TransportTimeoutError(TransportError):
     """Transport request timed out."""
-
 
 
 class HTTPResponseError(TransportError):
@@ -38,7 +35,6 @@ class HTTPResponseError(TransportError):
 
 class TransportConfigurationError(TransportError):
     """Transport configuration error."""
-
 
 
 class TransportNotFoundError(TransportError):

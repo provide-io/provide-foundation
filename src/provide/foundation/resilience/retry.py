@@ -202,6 +202,7 @@ class RetryExecutor:
                 # Don't retry on last attempt - log and raise
                 if attempt >= self.policy.max_attempts:
                     from provide.foundation.hub.foundation import get_foundation_logger
+
                     get_foundation_logger().error(
                         f"All {self.policy.max_attempts} retry attempts failed",
                         attempts=self.policy.max_attempts,
@@ -219,6 +220,7 @@ class RetryExecutor:
 
                 # Log retry attempt
                 from provide.foundation.hub.foundation import get_foundation_logger
+
                 get_foundation_logger().info(
                     f"Retry {attempt}/{self.policy.max_attempts} after {delay:.2f}s",
                     attempt=attempt,
@@ -234,6 +236,7 @@ class RetryExecutor:
                         self.on_retry(attempt, e)
                     except Exception as callback_error:
                         from provide.foundation.hub.foundation import get_foundation_logger
+
                         get_foundation_logger().warning("Retry callback failed", error=str(callback_error))
 
                 # Wait before retry
@@ -271,6 +274,7 @@ class RetryExecutor:
                 # Don't retry on last attempt - log and raise
                 if attempt >= self.policy.max_attempts:
                     from provide.foundation.hub.foundation import get_foundation_logger
+
                     get_foundation_logger().error(
                         f"All {self.policy.max_attempts} retry attempts failed",
                         attempts=self.policy.max_attempts,
@@ -288,6 +292,7 @@ class RetryExecutor:
 
                 # Log retry attempt
                 from provide.foundation.hub.foundation import get_foundation_logger
+
                 get_foundation_logger().info(
                     f"Retry {attempt}/{self.policy.max_attempts} after {delay:.2f}s",
                     attempt=attempt,
@@ -306,6 +311,7 @@ class RetryExecutor:
                             self.on_retry(attempt, e)
                     except Exception as callback_error:
                         from provide.foundation.hub.foundation import get_foundation_logger
+
                         get_foundation_logger().warning("Retry callback failed", error=str(callback_error))
 
                 # Wait before retry

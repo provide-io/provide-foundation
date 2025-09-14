@@ -14,8 +14,6 @@ _LOG_FILE_HANDLE: TextIO | None = None
 _STREAM_LOCK = threading.Lock()
 
 
-
-
 def get_log_stream() -> TextIO:
     """Get the current log stream."""
     return _PROVIDE_LOG_STREAM
@@ -40,11 +38,12 @@ def set_log_stream_for_testing(stream: TextIO | None) -> None:
         # Reconfigure structlog if it's already configured to use the new stream
         try:
             import structlog
+
             current_config = structlog.get_config()
-            if current_config and 'logger_factory' in current_config:
+            if current_config and "logger_factory" in current_config:
                 # Reconfigure with the new stream while preserving other config
                 new_config = {**current_config}
-                new_config['logger_factory'] = structlog.PrintLoggerFactory(file=_PROVIDE_LOG_STREAM)
+                new_config["logger_factory"] = structlog.PrintLoggerFactory(file=_PROVIDE_LOG_STREAM)
                 structlog.configure(**new_config)
         except Exception:
             # Structlog not configured yet or reconfiguration failed, that's fine

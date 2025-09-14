@@ -14,8 +14,6 @@ from provide.foundation.errors.base import FoundationError
 F = TypeVar("F", bound=Callable[..., Any])
 
 
-
-
 def with_error_handling(
     func: F | None = None,
     *,
@@ -80,6 +78,7 @@ def with_error_handling(
         """Log a suppressed error."""
         if log_errors:
             from provide.foundation.hub.foundation import get_foundation_logger
+
             get_foundation_logger().info(
                 f"Suppressed {type(exception).__name__} in {func_name}",
                 function=func_name,
@@ -91,6 +90,7 @@ def with_error_handling(
         """Log an error with full details."""
         if log_errors:
             from provide.foundation.hub.foundation import get_foundation_logger
+
             get_foundation_logger().error(
                 f"Error in {func_name}: {exception}",
                 exc_info=True,
@@ -189,6 +189,7 @@ def suppress_and_log(
             except exceptions as e:
                 # Get appropriate log method
                 from provide.foundation.hub.foundation import get_foundation_logger
+
                 if log_level in ("debug", "info", "warning", "error", "critical"):
                     log_method = getattr(get_foundation_logger(), log_level)
                 else:
@@ -243,6 +244,7 @@ def fallback_on_error(
             except catch_types as e:
                 if log_errors:
                     from provide.foundation.hub.foundation import get_foundation_logger
+
                     get_foundation_logger().warning(
                         f"Using fallback for {func.__name__} due to {type(e).__name__}",
                         function=func.__name__,
@@ -256,6 +258,7 @@ def fallback_on_error(
                     return fallback_func(*args, **kwargs)
                 except Exception as fallback_error:
                     from provide.foundation.hub.foundation import get_foundation_logger
+
                     get_foundation_logger().error(
                         f"Fallback function {fallback_func.__name__} also failed",
                         exc_info=True,

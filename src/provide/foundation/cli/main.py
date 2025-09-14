@@ -1,5 +1,4 @@
-"""Main CLI entry point for Foundation.
-"""
+"""Main CLI entry point for Foundation."""
 
 from __future__ import annotations
 

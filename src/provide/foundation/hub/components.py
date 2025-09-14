@@ -117,7 +117,9 @@ def bootstrap_foundation() -> None:
             return  # Already bootstrapped
 
         # Register core processors
-        def timestamp_processor(logger: object, method_name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
+        def timestamp_processor(
+            logger: object, method_name: str, event_dict: dict[str, Any]
+        ) -> dict[str, Any]:
             import time
 
             event_dict["timestamp"] = time.time()
@@ -132,6 +134,7 @@ def bootstrap_foundation() -> None:
         )
 
         from provide.foundation.hub.foundation import get_foundation_logger
+
         get_foundation_logger().debug("Foundation bootstrap completed with registry components")
 
 

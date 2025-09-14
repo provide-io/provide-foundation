@@ -1,5 +1,4 @@
-"""OpenObserve API client.
-"""
+"""OpenObserve API client."""
 
 from datetime import datetime
 import json

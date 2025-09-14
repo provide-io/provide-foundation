@@ -1,8 +1,7 @@
 #
 # processor.py
 #
-"""Structlog processor for rate limiting log messages.
-"""
+"""Structlog processor for rate limiting log messages."""
 
 import time
 from typing import Any
@@ -44,7 +43,10 @@ class RateLimiterProcessor:
         self.summary_interval = summary_interval_seconds  # Emit summary periodically
 
     def __call__(
-        self, logger: Any, method_name: str, event_dict: structlog.types.EventDict,
+        self,
+        logger: Any,
+        method_name: str,
+        event_dict: structlog.types.EventDict,
     ) -> structlog.types.EventDict:
         """Process a log event, applying rate limiting.
 
@@ -176,7 +178,8 @@ def create_rate_limiter_processor(
 
     """
     processor = RateLimiterProcessor(
-        emit_warning_on_limit=emit_warnings, summary_interval_seconds=summary_interval,
+        emit_warning_on_limit=emit_warnings,
+        summary_interval_seconds=summary_interval,
     )
 
     # Determine if we should use buffered rate limiting

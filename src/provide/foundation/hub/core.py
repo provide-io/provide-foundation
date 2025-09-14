@@ -58,7 +58,9 @@ class CoreHub:
     @with_error_handling(
         context_provider=lambda: {"hub": "add_component"},
         error_mapper=lambda e: ValidationError(
-            f"Failed to add component: {e}", code="HUB_COMPONENT_ADD_ERROR", cause=e,
+            f"Failed to add component: {e}",
+            code="HUB_COMPONENT_ADD_ERROR",
+            cause=e,
         )
         if not isinstance(e, AlreadyExistsError | ValidationError)
         else e,
@@ -124,6 +126,7 @@ class CoreHub:
         )
 
         from provide.foundation.hub.foundation import get_foundation_logger
+
         get_foundation_logger().info(
             "Added component to hub",
             name=component_name,
@@ -189,6 +192,7 @@ class CoreHub:
 
         """
         from provide.foundation.hub.components import discover_components as _discover_components
+
         return _discover_components(group, dimension, self._component_registry)
 
     # Command Management
@@ -247,6 +251,7 @@ class CoreHub:
             self._cli_group.add_command(click_command)
 
         from provide.foundation.hub.foundation import get_foundation_logger
+
         get_foundation_logger().info(
             "Added command to hub",
             name=command_name,
@@ -337,9 +342,11 @@ class CoreHub:
                 try:
                     component_class.initialize()
                     from provide.foundation.hub.foundation import get_foundation_logger
+
                     get_foundation_logger().debug(f"Initialized component: {entry.name}")
                 except Exception as e:
                     from provide.foundation.hub.foundation import get_foundation_logger
+
                     get_foundation_logger().error(f"Failed to initialize {entry.name}: {e}")
 
     def cleanup(self) -> None:
@@ -353,9 +360,11 @@ class CoreHub:
                 try:
                     component_class.cleanup()
                     from provide.foundation.hub.foundation import get_foundation_logger
+
                     get_foundation_logger().debug(f"Cleaned up component: {entry.name}")
                 except Exception as e:
                     from provide.foundation.hub.foundation import get_foundation_logger
+
                     get_foundation_logger().error(f"Failed to cleanup {entry.name}: {e}")
 
     def clear(self, dimension: str | None = None) -> None:

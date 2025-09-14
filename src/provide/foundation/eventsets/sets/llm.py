@@ -1,5 +1,4 @@
-"""Large Language Model (LLM) interaction event set for Foundation.
-"""
+"""Large Language Model (LLM) interaction event set for Foundation."""
 
 from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping
 

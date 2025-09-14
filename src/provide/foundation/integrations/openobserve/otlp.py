@@ -1,5 +1,4 @@
-"""OTLP integration for sending logs to OpenObserve.
-"""
+"""OTLP integration for sending logs to OpenObserve."""
 
 from datetime import datetime
 import json
