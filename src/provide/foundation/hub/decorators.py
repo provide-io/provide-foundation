@@ -21,20 +21,9 @@ def _get_ensure_parent_groups():
     return ensure_parent_groups
 
 
+from provide.foundation.hub.foundation import get_foundation_logger
 from provide.foundation.hub.info import CommandInfo
 from provide.foundation.hub.registry import Registry, get_command_registry
-
-# Use lazy logger initialization to avoid circular imports
-_logger = None
-
-
-def _get_logger():
-    """Get logger lazily to avoid circular import issues."""
-    global _logger
-    if _logger is None:
-        from provide.foundation.logger import get_logger
-        _logger = get_logger(__name__)
-    return _logger
 
 F = TypeVar("F", bound=Callable[..., Any])
 
@@ -238,7 +227,7 @@ def _register_command_func(
     func.__registry_dimension__ = "command"
     func.__registry_info__ = info
 
-    _get_logger().info(
+    get_foundation_logger().info(
         "Registered command",
         name=command_name,
         parent=parent,

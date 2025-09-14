@@ -8,21 +8,10 @@ import inspect
 from typing import Any, TypeVar
 
 from provide.foundation.errors.decorators import with_error_handling
+from provide.foundation.hub.foundation import get_foundation_logger
 from provide.foundation.hub.registry import RegistryEntry
 
 T = TypeVar("T")
-
-# Use lazy logger initialization to avoid circular imports
-_logger = None
-
-
-def _get_logger():
-    """Get logger lazily to avoid circular import issues."""
-    global _logger
-    if _logger is None:
-        from provide.foundation.logger import get_logger
-        _logger = get_logger(__name__)
-    return _logger
 
 
 def _get_registry_and_lock():
@@ -100,7 +89,7 @@ async def load_all_configs() -> dict[str, Any]:
                 if source_config:
                     configs.update(source_config)
             except Exception as e:
-                _get_logger().warning("Config source failed to load", source=entry.name, error=str(e))
+                get_foundation_logger().warning("Config source failed to load", source=entry.name, error=str(e))
 
     return configs
 
@@ -129,7 +118,7 @@ def load_config_from_registry(config_class: type[T]) -> T:
                 try:
                     # Skip async sources in sync context
                     if inspect.iscoroutinefunction(source.load_config):
-                        _get_logger().debug(
+                        get_foundation_logger().debug(
                             "Skipping async config source in sync context",
                             source=entry.name,
                         )
@@ -139,7 +128,7 @@ def load_config_from_registry(config_class: type[T]) -> T:
                     if source_data:
                         config_data.update(source_data)
                 except Exception as e:
-                    _get_logger().warning(
+                    get_foundation_logger().warning(
                         "Failed to load config from source",
                         source=entry.name,
                         error=str(e),

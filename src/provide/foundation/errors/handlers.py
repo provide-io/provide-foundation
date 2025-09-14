@@ -204,7 +204,7 @@ def handle_error(
     if log:
         log_context = context.to_dict() if context else {}
         from provide.foundation.hub.foundation import get_foundation_logger
-            get_foundation_logger().error(f"Handling error: {error}", exc_info=True, **log_context)
+        get_foundation_logger().error(f"Handling error: {error}", exc_info=True, **log_context)
 
     # Re-raise if requested
     if reraise:
@@ -354,6 +354,6 @@ def create_error_handler(**policies: Callable[[Exception], Any]) -> ErrorHandler
             error_policies[error_class] = handler_func
         else:
             from provide.foundation.hub.foundation import get_foundation_logger
-                    get_foundation_logger().warning(f"Unknown error type: {error_name}")
+            get_foundation_logger().warning(f"Unknown error type: {error_name}")
 
     return ErrorHandler(policies=error_policies, default_action=default)

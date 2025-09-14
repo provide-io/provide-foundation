@@ -5,21 +5,10 @@ from typing import Any
 
 import click
 
+from provide.foundation.hub.foundation import get_foundation_logger
 from provide.foundation.hub.info import CommandInfo
 from provide.foundation.hub.registry import Registry, get_command_registry
 from provide.foundation.hub.type_mapping import extract_click_type
-
-# Use lazy logger initialization to avoid circular imports
-_logger = None
-
-
-def _get_logger():
-    """Get logger lazily to avoid circular import issues."""
-    global _logger
-    if _logger is None:
-        from provide.foundation.logger import get_logger
-        _logger = get_logger(__name__)
-    return _logger
 
 
 def ensure_parent_groups(parent_path: str, registry: Registry) -> None:
@@ -64,7 +53,7 @@ def ensure_parent_groups(parent_path: str, registry: Registry) -> None:
                 },
             )
 
-            _get_logger().debug(f"Auto-created group: {group_path}")
+            get_foundation_logger().debug(f"Auto-created group: {group_path}")
 
 
 def build_click_command(
