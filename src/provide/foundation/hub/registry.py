@@ -13,18 +13,6 @@ from attrs import define, field
 
 from provide.foundation.errors.resources import AlreadyExistsError
 
-# Use lazy logger initialization to avoid circular imports
-_logger = None
-
-
-def _get_logger():
-    """Get logger lazily to avoid circular import issues."""
-    global _logger
-    if _logger is None:
-        # Use structlog directly to avoid circular imports during Hub initialization
-        import structlog
-        _logger = structlog.get_logger(__name__)
-    return _logger
 
 
 @define(frozen=True, slots=True)
@@ -107,7 +95,8 @@ class Registry:
                 for alias in aliases:
                     self._aliases[alias] = (dimension, name)
 
-            _get_logger().debug(
+            from provide.foundation.hub.foundation import get_foundation_logger
+            get_foundation_logger().debug(
                 "Registered item",
                 name=name,
                 dimension=dimension,
@@ -209,7 +198,8 @@ class Registry:
                     for alias in aliases_to_remove:
                         del self._aliases[alias]
 
-                    _get_logger().debug("Removed item", name=name, dimension=dimension)
+                    from provide.foundation.hub.foundation import get_foundation_logger
+                    get_foundation_logger().debug("Removed item", name=name, dimension=dimension)
                     return True
             else:
                 for dim_key, dim_registry in self._registry.items():
@@ -222,7 +212,8 @@ class Registry:
                         for alias in aliases_to_remove:
                             del self._aliases[alias]
 
-                        _get_logger().debug("Removed item", name=name, dimension=dim_key)
+                        from provide.foundation.hub.foundation import get_foundation_logger
+                        get_foundation_logger().debug("Removed item", name=name, dimension=dim_key)
                         return True
 
             return False

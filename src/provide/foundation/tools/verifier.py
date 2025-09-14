@@ -10,22 +10,6 @@ from typing import Literal
 
 from provide.foundation.errors import FoundationError
 
-# Use lazy logger initialization to avoid circular imports
-_logger = None
-
-
-def _get_logger():
-    """Get logger lazily to avoid circular import issues."""
-    global _logger
-    if _logger is None:
-        try:
-            from provide.foundation.logger import get_logger
-            _logger = get_logger(__name__)
-        except ImportError:
-            # Fallback to structlog during initialization
-            import structlog
-            _logger = structlog.get_logger(__name__)
-    return _logger
 
 
 class VerificationError(FoundationError):
@@ -68,7 +52,8 @@ class ToolVerifier:
         if not file_path.exists():
             raise FileNotFoundError(f"File not found: {file_path}")
 
-        _get_logger().debug(f"Verifying {algo} checksum for {file_path}")
+        from provide.foundation.hub.foundation import get_foundation_logger
+        get_foundation_logger().debug(f"Verifying {algo} checksum for {file_path}")
 
         # Create hasher
         hasher = hashlib.new(algo)
@@ -82,7 +67,8 @@ class ToolVerifier:
         matches = actual == expected
 
         if not matches:
-            _get_logger().warning(f"Checksum mismatch for {file_path.name}: expected {expected}, got {actual}")
+            from provide.foundation.hub.foundation import get_foundation_logger
+            get_foundation_logger().warning(f"Checksum mismatch for {file_path.name}: expected {expected}, got {actual}")
 
         return matches
 
@@ -97,7 +83,8 @@ class ToolVerifier:
             True if file is listed and checksum matches, False otherwise.
 
         """
-        _get_logger().debug(f"Verifying {target_file.name} using {shasums_file}")
+        from provide.foundation.hub.foundation import get_foundation_logger
+        get_foundation_logger().debug(f"Verifying {target_file.name} using {shasums_file}")
 
         with shasums_file.open() as f:
             for line in f:
@@ -119,7 +106,8 @@ class ToolVerifier:
                     return self.verify_checksum(target_file, checksum)
 
         # File not found in shasums
-        _get_logger().warning(f"{target_file.name} not found in {shasums_file}")
+        from provide.foundation.hub.foundation import get_foundation_logger
+        get_foundation_logger().warning(f"{target_file.name} not found in {shasums_file}")
         return False
 
     def verify_signature(self, file_path: Path, signature: str, public_key: str | None = None) -> bool:
@@ -134,7 +122,8 @@ class ToolVerifier:
             True if signature is valid, False otherwise.
 
         """
-        _get_logger().debug(f"Verifying signature for {file_path}")
+        from provide.foundation.hub.foundation import get_foundation_logger
+        get_foundation_logger().debug(f"Verifying signature for {file_path}")
 
         try:
             # Use foundation's crypto module
@@ -142,10 +131,12 @@ class ToolVerifier:
 
             return verify_signature(file_path, signature, public_key)
         except ImportError:
-            _get_logger().warning("Crypto module not available, skipping signature verification")
+            from provide.foundation.hub.foundation import get_foundation_logger
+            get_foundation_logger().warning("Crypto module not available, skipping signature verification")
             return True  # Skip if crypto not available
         except Exception as e:
-            _get_logger().error(f"Signature verification failed: {e}")
+            from provide.foundation.hub.foundation import get_foundation_logger
+            get_foundation_logger().error(f"Signature verification failed: {e}")
             return False
 
     def extract_checksum(self, checksum_string: str) -> str:
