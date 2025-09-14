@@ -124,21 +124,28 @@ def bootstrap_foundation() -> None:
     """Bootstrap Foundation with core registry components."""
     registry = get_component_registry()
 
-    # Register core processors
-    def timestamp_processor(logger: object, method_name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
-        import time
+    # Thread-safe check to prevent duplicate registration
+    with _registry_lock:
+        # Check if already bootstrapped
+        if registry.get_entry("timestamp", ComponentCategory.PROCESSOR.value):
+            return  # Already bootstrapped
 
-        event_dict["timestamp"] = time.time()
-        return event_dict
+        # Register core processors
+        def timestamp_processor(logger: object, method_name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
+            import time
 
-    registry.register(
-        name="timestamp",
-        value=timestamp_processor,
-        dimension=ComponentCategory.PROCESSOR.value,
-        metadata={"priority": 100, "stage": "pre_format"},
-    )
+            event_dict["timestamp"] = time.time()
+            return event_dict
 
-    _get_logger().debug("Foundation bootstrap completed with registry components")
+        registry.register(
+            name="timestamp",
+            value=timestamp_processor,
+            dimension=ComponentCategory.PROCESSOR.value,
+            metadata={"priority": 100, "stage": "pre_format"},
+            replace=True,  # Allow replacement for test scenarios
+        )
+
+        _get_logger().debug("Foundation bootstrap completed with registry components")
 
 
 def reset_registry_for_tests() -> None:

@@ -173,6 +173,52 @@ def create_self_signed_server_cert(
     return cert_obj
 
 
+def create_self_signed_client_cert(
+    common_name: str,
+    organization_name: str,
+    validity_days: int,
+    alt_names: list[str] | None = None,
+    key_type: str = DEFAULT_CERTIFICATE_KEY_TYPE,
+    key_size: int = DEFAULT_RSA_KEY_SIZE,
+    ecdsa_curve: str = DEFAULT_CERTIFICATE_CURVE,
+) -> "Certificate":
+    """Creates a new self-signed end-entity certificate suitable for a client."""
+    # Import here to avoid circular dependency
+    from provide.foundation.crypto.certificates.certificate import Certificate
+
+    logger.info(
+        f"📜🔑🏭 Creating new self-signed CLIENT certificate: CN={common_name}, Org={organization_name}"
+    )
+
+    cert_obj = Certificate(
+        generate_keypair=True,
+        common_name=common_name,
+        organization_name=organization_name,
+        validity_days=validity_days,
+        alt_names=alt_names or [common_name],
+        key_type=key_type,
+        key_size=key_size,
+        ecdsa_curve=ecdsa_curve,
+    )
+
+    if not cert_obj._private_key:
+        raise CertificateError("Private key not generated for self-signed client certificate")
+
+    actual_x509_cert = create_x509_certificate(
+        base=cert_obj._base,
+        private_key=cert_obj._private_key,
+        alt_names=cert_obj.alt_names,
+        is_ca=False,
+        is_client_cert=True,  # This is the key difference from server cert
+    )
+
+    cert_obj._cert = actual_x509_cert
+    cert_obj.cert = actual_x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
+
+    logger.info(f"📜🔑✅ Successfully created self-signed CLIENT certificate for CN={common_name}")
+    return cert_obj
+
+
 # Convenience functions for common use cases
 def create_self_signed(
     common_name: str = "localhost",

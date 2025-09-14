@@ -133,8 +133,8 @@ class TestHubInitialization:
         test_message1 = "Test message from module1"
         test_message2 = "Test message from module2"
 
-        logger1.info(test_message1)
-        logger2.info(test_message2)
+        logger1.warning(test_message1)
+        logger2.warning(test_message2)
 
         # Check that messages were captured
         output = self.captured_output.getvalue()

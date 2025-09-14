@@ -223,8 +223,13 @@ class FoundationLogger:
             A new logger instance with the bound context
         """
         self._ensure_configured()
-        log = self.get_logger("pyvider.context_bind")
-        return log.bind(**kwargs)
+        # Get the actual structlog logger and bind context to it
+        if hasattr(self, '_logger') and self._logger:
+            return self._logger.bind(**kwargs)
+        else:
+            # Fallback: get fresh logger and bind
+            log = self.get_logger()
+            return log.bind(**kwargs)
 
     def unbind(self, *keys: str) -> Any:
         """
@@ -237,8 +242,13 @@ class FoundationLogger:
             A new logger instance without the specified keys
         """
         self._ensure_configured()
-        log = self.get_logger("pyvider.context_unbind")
-        return log.unbind(*keys)
+        # Get the actual structlog logger and unbind context from it
+        if hasattr(self, '_logger') and self._logger:
+            return self._logger.unbind(*keys)
+        else:
+            # Fallback: get fresh logger and unbind
+            log = self.get_logger()
+            return log.unbind(*keys)
 
     def try_unbind(self, *keys: str) -> Any:
         """
@@ -252,8 +262,13 @@ class FoundationLogger:
             A new logger instance without the specified keys
         """
         self._ensure_configured()
-        log = self.get_logger("pyvider.context_try_unbind")
-        return log.try_unbind(*keys)
+        # Get the actual structlog logger and try_unbind context from it
+        if hasattr(self, '_logger') and self._logger:
+            return self._logger.try_unbind(*keys)
+        else:
+            # Fallback: get fresh logger and try_unbind
+            log = self.get_logger()
+            return log.try_unbind(*keys)
 
     def __setattr__(self, name: str, value: Any) -> None:
         """Override setattr to prevent accidental modification of logger state."""
@@ -292,6 +307,15 @@ class GlobalLoggerProxy:
 
     def __getattr__(self, name: str):
         return getattr(get_global_logger(), name)
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        """Allow tests to set internal state on the underlying logger."""
+        if name.startswith('_'):
+            # For internal attributes, set them on the actual logger instance
+            logger = get_global_logger()
+            setattr(logger, name, value)
+        else:
+            super().__setattr__(name, value)
 
     def __call__(self, *args, **kwargs):
         return get_global_logger()(*args, **kwargs)

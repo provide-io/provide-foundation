@@ -5,7 +5,11 @@
 Logger factory functions and simple setup utilities.
 """
 
+import threading
 from typing import Any
+
+# Thread-local storage to track initialization state
+_is_initializing = threading.local()
 
 
 def get_logger(
@@ -14,10 +18,10 @@ def get_logger(
     emoji_hierarchy: dict[str, str] | None = None,
 ) -> Any:
     """
-    Get a logger instance through Hub.
+    Get a logger instance through Hub with circular import protection.
 
-    This function now uses Hub-based logger access instead of a global singleton.
-    Auto-initializes Foundation if not already done.
+    This function uses Hub-based logger access with initialization detection
+    to prevent circular imports during Foundation setup.
 
     Args:
         name: Logger name (e.g., __name__ from a module)
@@ -30,14 +34,25 @@ def get_logger(
     # Emoji hierarchy removed - using event sets now
     # emoji and emoji_hierarchy parameters are deprecated
 
+    # Check if we're already in the middle of initialization to prevent circular import
+    if getattr(_is_initializing, 'value', False):
+        import structlog
+        return structlog.get_logger(name)
+
     try:
+        # Set initialization flag
+        _is_initializing.value = True
+
         from provide.foundation.hub.manager import get_hub
         hub = get_hub()
         return hub.get_foundation_logger(name)
-    except ImportError:
-        # Fallback to basic structlog if hub is not available due to circular import
+    except (ImportError, RecursionError):
+        # Fallback to basic structlog if hub is not available or circular import detected
         import structlog
         return structlog.get_logger(name)
+    finally:
+        # Always clear the initialization flag
+        _is_initializing.value = False
 
 
 def setup_logging(
