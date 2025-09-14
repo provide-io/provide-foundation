@@ -272,10 +272,29 @@ class TestFactoriesModule:
         """Test that setup_logging function works with basic parameters."""
         from provide.foundation.logger.factories import setup_logging
 
-        # Use the setup_logging convenience function
-        setup_logging(level="DEBUG", json_logs=False)
+        # First set up the foundation with test fixtures
+        from provide.foundation.logger.config import TelemetryConfig, LoggingConfig
 
-        # Test that the logger works after setup
+        config = TelemetryConfig(
+            logging=LoggingConfig(
+                default_level="DEBUG",
+                console_formatter="key_value",
+            )
+        )
+        setup_foundation_telemetry_for_test(config)
+
+        # Now test that setup_logging issues deprecation warning but still works
+        import warnings
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            setup_logging(level="DEBUG", json_logs=False)
+
+            # Verify deprecation warning was issued
+            assert len(w) == 1
+            assert issubclass(w[0].category, DeprecationWarning)
+            assert "setup_logging() is deprecated" in str(w[0].message)
+
+        # Test that the logger still works after setup_logging call
         global_logger.debug("Test debug message after setup_logging")
 
         output = captured_stderr_for_foundation.getvalue()

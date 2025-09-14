@@ -181,7 +181,12 @@ def test_logger_with_extreme_names(
     lines = [
         line
         for line in output.strip().splitlines()
-        if not line.startswith("[Foundation Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]")
+           and "⚙️➡️🚀 Starting Foundation" not in line
+           and "⚙️➡️✅ Foundation" not in line
+           and "Configuring structlog output processors" not in line
+           and not ("] [trace    ]" in line and ("Starting Foundation" in line or "Foundation" in line or "processors" in line or "enrichment processor" in line))
+           and line.strip()
     ]
     assert len(lines) == len(extreme_names)
 
@@ -226,7 +231,12 @@ def test_log_message_edge_cases(
     lines = [
         line
         for line in output.strip().splitlines()
-        if not line.startswith("[Foundation Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]")
+           and "⚙️➡️🚀 Starting Foundation" not in line
+           and "⚙️➡️✅ Foundation" not in line
+           and "Configuring structlog output processors" not in line
+           and not ("] [trace    ]" in line and ("Starting Foundation" in line or "Foundation" in line or "processors" in line or "enrichment processor" in line))
+           and line.strip()
     ]
     assert len(lines) >= len(edge_case_messages)
 
@@ -291,7 +301,12 @@ def test_logger_args_formatting_edge_cases(
     lines = [
         line
         for line in output.strip().splitlines()
-        if not line.startswith("[Foundation Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]")
+           and "⚙️➡️🚀 Starting Foundation" not in line
+           and "⚙️➡️✅ Foundation" not in line
+           and "Configuring structlog output processors" not in line
+           and not ("] [trace    ]" in line and ("Starting Foundation" in line or "Foundation" in line or "processors" in line or "enrichment processor" in line))
+           and line.strip()
     ]
     assert len(lines) == len(test_cases), (
         f"Expected {len(test_cases)} log lines, got {len(lines)}"
@@ -402,7 +417,12 @@ def test_trace_level_edge_cases(
     lines = [
         line
         for line in output.strip().splitlines()
-        if not line.startswith("[Foundation Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]")
+           and "⚙️➡️🚀 Starting Foundation" not in line
+           and "⚙️➡️✅ Foundation" not in line
+           and "Configuring structlog output processors" not in line
+           and not ("] [trace    ]" in line and ("Starting Foundation" in line or "Foundation" in line or "processors" in line or "enrichment processor" in line))
+           and line.strip()
     ]
     assert len(lines) >= 4, "Not all trace messages were logged"
     trace_count = sum(1 for line in lines if "trace" in line.lower())
@@ -476,7 +496,12 @@ def test_performance_with_disabled_features(
     lines = [
         line
         for line in output.strip().splitlines()
-        if not line.startswith("[Foundation Setup]") and line.strip()
+        if not line.startswith("[Foundation Setup]")
+           and "⚙️➡️🚀 Starting Foundation" not in line
+           and "⚙️➡️✅ Foundation" not in line
+           and "Configuring structlog output processors" not in line
+           and not ("] [trace    ]" in line and ("Starting Foundation" in line or "Foundation" in line or "processors" in line or "enrichment processor" in line))
+           and line.strip()
     ]
     assert len(lines) == message_count
     messages_per_second = message_count / duration
