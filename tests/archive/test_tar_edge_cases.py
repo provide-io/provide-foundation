@@ -265,11 +265,11 @@ class TestTarArchiveEdgeCases:
                     assert (member.mode & 0o777) == 0o644
 
     def test_extract_with_hardlinks(self, tar_archive, temp_directory):
-        """Test extraction with hardlinks (should be handled safely)."""
+        """Test extraction with unsafe hardlinks that escape extraction directory."""
         temp_path = temp_directory
         archive = temp_path / "hardlink.tar"
 
-        # Create archive with hardlink
+        # Create archive with hardlink that escapes extraction directory
         with tarfile.open(archive, "w") as tar:
             # Add regular file
             info1 = tarfile.TarInfo(name="file1.txt")
@@ -279,10 +279,10 @@ class TestTarArchiveEdgeCases:
                 spool.seek(0)
                 tar.addfile(info1, fileobj=spool)
 
-            # Add hardlink to the file
-            info2 = tarfile.TarInfo(name="hardlink.txt")
+            # Add hardlink that tries to escape extraction directory
+            info2 = tarfile.TarInfo(name="subdir/hardlink.txt")
             info2.type = tarfile.LNKTYPE
-            info2.linkname = "file1.txt"
+            info2.linkname = "../../outside_file.txt"  # This escapes the extraction directory
             tar.addfile(info2)
 
         output = temp_path / "extracted"
