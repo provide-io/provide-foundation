@@ -1,5 +1,7 @@
 """Common CLI utilities for output, logging, and testing."""
 
+from __future__ import annotations
+
 from typing import Any
 
 import click
@@ -164,7 +166,7 @@ class CliTestRunner:
             **kwargs,
         )
 
-    def isolated_filesystem(self):
+    def isolated_filesystem(self) -> object:
         """Context manager for isolated filesystem.
         """
         return self.runner.isolated_filesystem()
