@@ -10,7 +10,8 @@
       "Bash(PYTHONPATH=src pytest --tb=no -q)",
       "Bash(PYTHONPATH=src mypy src/ --show-error-codes --no-error-summary)",
       "Bash(PYTHONPATH=src mypy src/)",
-      "Bash(PYTHONPATH=src pytest --run-benchmarks -v)"
+      "Bash(PYTHONPATH=src pytest --run-benchmarks -v)",
+      "Bash(PYTHONPATH=src pytest tests/logger/test_asyncio_suppression.py -v -q)"
     ],
     "deny": [],
     "ask": [],

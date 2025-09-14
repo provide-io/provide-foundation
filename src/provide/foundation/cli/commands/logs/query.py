@@ -7,7 +7,7 @@ try:
 
     _HAS_CLICK = True
 except ImportError:
-    click = None
+    click = None  # type: ignore
     _HAS_CLICK = False
 
 from provide.foundation.logger import get_logger
