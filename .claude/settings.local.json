@@ -13,7 +13,9 @@
       "Bash(coverage run:*)",
       "Read(//Users/tim/code/gh/**)",
       "Read(//private/tmp/**)",
-      "Bash(sort:*)"
+      "Bash(sort:*)",
+      "Bash(while read f)",
+      "Bash(/dev/null done)"
     ],
     "deny": [],
     "ask": [],
