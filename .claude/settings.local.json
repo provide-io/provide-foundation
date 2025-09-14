@@ -1,21 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(PYTHONPATH=src pytest tests/cli/commands/test_deps_coverage.py::TestDepsCommandModuleImport::test_module_imports_successfully -v --tb=short)",
-      "Bash(PYTHONPATH=src pytest tests/cli/commands/test_deps_coverage.py::TestDepsCommandModuleImport::test_click_import_handling -v --tb=short)",
-      "Bash(awk:*)",
-      "Bash(timeout:*)",
-      "Bash(pip install:*)",
-      "Bash(echo $VIRTUAL_ENV)",
-      "Bash(. .venv/bin/activate)",
-      "Bash(coverage report:*)",
-      "Bash(coverage run -m pytest:*)",
-      "Bash(coverage run:*)",
-      "Read(//Users/tim/code/gh/**)",
-      "Read(//private/tmp/**)",
-      "Bash(sort:*)",
-      "Bash(while read f)",
-      "Bash(/dev/null done)"
+      "Bash(__NEW_LINE__ echo \"\")",
+      "Bash(__NEW_LINE__ echo \"=== Skipped Test Summary ===\")",
+      "Bash(__NEW_LINE__ grep -r \"@pytest.mark.skip\\|pytest.skip(\" tests --include=\"*.py\")"
     ],
     "deny": [],
     "ask": [],
