@@ -89,6 +89,10 @@ def __getattr__(name: str) -> object:
                     "pip install 'provide-foundation[cli]'",
                 ) from e
             raise
+    elif name == "crypto":
+        import provide.foundation.crypto as crypto
+
+        return crypto
     elif name == "metrics":
         import provide.foundation.metrics as metrics
 
