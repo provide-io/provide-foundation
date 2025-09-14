@@ -7,7 +7,7 @@ from typing import Any
 from provide.foundation.errors import ValidationError
 
 
-async def provide_sleep_async(delay: float) -> None:
+async def async_sleep(delay: float) -> None:
     """
     Async sleep with Foundation tracking and cancellation support.
 
@@ -20,7 +20,7 @@ async def provide_sleep_async(delay: float) -> None:
     Example:
         >>> import asyncio
         >>> async def main():
-        ...     await provide_sleep_async(0.1)
+        ...     await async_sleep(0.1)
         >>> asyncio.run(main())
     """
     if delay < 0:
@@ -28,7 +28,7 @@ async def provide_sleep_async(delay: float) -> None:
     await asyncio.sleep(delay)
 
 
-async def provide_gather(*awaitables: Awaitable[Any], return_exceptions: bool = False) -> list[Any]:
+async def async_gather(*awaitables: Awaitable[Any], return_exceptions: bool = False) -> list[Any]:
     """
     Run awaitables concurrently with Foundation tracking.
 
@@ -45,10 +45,10 @@ async def provide_gather(*awaitables: Awaitable[Any], return_exceptions: bool = 
     Example:
         >>> import asyncio
         >>> async def fetch_data(n):
-        ...     await provide_sleep_async(0.1)
+        ...     await async_sleep(0.1)
         ...     return n * 2
         >>> async def main():
-        ...     results = await provide_gather(
+        ...     results = await async_gather(
         ...         fetch_data(1), fetch_data(2), fetch_data(3)
         ...     )
         ...     return results
@@ -61,7 +61,7 @@ async def provide_gather(*awaitables: Awaitable[Any], return_exceptions: bool = 
     return await asyncio.gather(*awaitables, return_exceptions=return_exceptions)
 
 
-async def provide_wait_for(awaitable: Awaitable[Any], timeout: float | None) -> Any:
+async def async_wait_for(awaitable: Awaitable[Any], timeout: float | None) -> Any:
     """
     Wait for an awaitable with optional timeout.
 
@@ -79,11 +79,11 @@ async def provide_wait_for(awaitable: Awaitable[Any], timeout: float | None) -> 
     Example:
         >>> import asyncio
         >>> async def slow_task():
-        ...     await provide_sleep_async(0.2)
+        ...     await async_sleep(0.2)
         ...     return "done"
         >>> async def main():
         ...     try:
-        ...         result = await provide_wait_for(slow_task(), timeout=0.1)
+        ...         result = await async_wait_for(slow_task(), timeout=0.1)
         ...     except asyncio.TimeoutError:
         ...         result = "timed out"
         ...     return result
@@ -96,7 +96,7 @@ async def provide_wait_for(awaitable: Awaitable[Any], timeout: float | None) -> 
     return await asyncio.wait_for(awaitable, timeout=timeout)
 
 
-def provide_run(main: Callable[[], Awaitable[Any]], *, debug: bool = False) -> Any:
+def async_run(main: Callable[[], Awaitable[Any]], *, debug: bool = False) -> Any:
     """
     Run async function with Foundation tracking.
 
@@ -112,9 +112,9 @@ def provide_run(main: Callable[[], Awaitable[Any]], *, debug: bool = False) -> A
 
     Example:
         >>> async def main():
-        ...     await provide_sleep_async(0.1)
+        ...     await async_sleep(0.1)
         ...     return "hello"
-        >>> result = provide_run(main)
+        >>> result = async_run(main)
         >>> result
         'hello'
     """
