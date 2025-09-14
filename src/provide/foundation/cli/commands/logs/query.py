@@ -15,6 +15,83 @@ from provide.foundation.logger import get_logger
 log = get_logger(__name__)
 
 
+def _get_trace_id_if_needed(current_trace: bool, trace_id: str | None) -> str | None:
+    """Get trace ID from current trace context if needed."""
+    if not current_trace:
+        return trace_id
+
+    try:
+        # Try OpenTelemetry first
+        from opentelemetry import trace
+
+        current_span = trace.get_current_span()
+        if current_span and current_span.is_recording():
+            span_context = current_span.get_span_context()
+            return f"{span_context.trace_id:032x}"
+        else:
+            # Try Foundation tracer
+            from provide.foundation.tracer.context import get_current_trace_id
+
+            found_trace_id = get_current_trace_id()
+            if not found_trace_id:
+                click.echo("No active trace found.", err=True)
+                return None
+            return found_trace_id
+    except ImportError:
+        click.echo("Tracing not available.", err=True)
+        return None
+
+
+def _build_query_sql(
+    trace_id: str | None,
+    level: str | None,
+    service: str | None,
+    stream: str,
+    size: int
+) -> str:
+    """Build SQL query with WHERE conditions."""
+    conditions = []
+    if trace_id:
+        conditions.append(f"trace_id = '{trace_id}'")
+    if level:
+        conditions.append(f"level = '{level}'")
+    if service:
+        conditions.append(f"service = '{service}'")
+
+    where_clause = f"WHERE {' AND '.join(conditions)}" if conditions else ""
+    return f"SELECT * FROM {stream} {where_clause} ORDER BY _timestamp DESC LIMIT {size}"
+
+
+def _execute_and_display_query(sql: str, last: str, size: int, format: str, client: Any) -> int:
+    """Execute query and display results."""
+    from provide.foundation.integrations.openobserve import format_output, search_logs
+
+    try:
+        response = search_logs(
+            sql=sql,
+            start_time=f"-{last}" if last else "-1h",
+            end_time="now",
+            size=size,
+            client=client,
+        )
+
+        # Format and display results
+        if response.total == 0:
+            click.echo("No logs found matching the query.")
+        else:
+            output = format_output(response, format_type=format)
+            click.echo(output)
+
+            # Show summary for non-summary formats
+            if format != "summary":
+                click.echo(f"\n📊 Found {response.total} logs, showing {len(response.hits)}")
+
+        return 0
+    except Exception as e:
+        click.echo(f"Query failed: {e}", err=True)
+        return 1
+
+
 if _HAS_CLICK:
 
     @click.command("query")
@@ -110,41 +187,13 @@ if _HAS_CLICK:
 
         # Build SQL query if not provided
         if not sql:
-            # Handle current trace
-            if current_trace:
-                try:
-                    # Try OpenTelemetry first
-                    from opentelemetry import trace
+            trace_id_result = _get_trace_id_if_needed(current_trace, trace_id)
+            if trace_id_result is None:
+                return 1
+            if trace_id_result:
+                trace_id = trace_id_result
 
-                    current_span = trace.get_current_span()
-                    if current_span and current_span.is_recording():
-                        span_context = current_span.get_span_context()
-                        trace_id = f"{span_context.trace_id:032x}"
-                    else:
-                        # Try Foundation tracer
-                        from provide.foundation.tracer.context import (
-                            get_current_trace_id,
-                        )
-
-                        trace_id = get_current_trace_id()
-                        if not trace_id:
-                            click.echo("No active trace found.", err=True)
-                            return 1
-                except ImportError:
-                    click.echo("Tracing not available.", err=True)
-                    return 1
-
-            # Build WHERE clause
-            conditions = []
-            if trace_id:
-                conditions.append(f"trace_id = '{trace_id}'")
-            if level:
-                conditions.append(f"level = '{level}'")
-            if service:
-                conditions.append(f"service = '{service}'")
-
-            where_clause = f"WHERE {' AND '.join(conditions)}" if conditions else ""
-            sql = f"SELECT * FROM {stream} {where_clause} ORDER BY _timestamp DESC LIMIT {size}"
+            sql = _build_query_sql(trace_id, level, service, stream, size)
 
         # Execute query
         try:
