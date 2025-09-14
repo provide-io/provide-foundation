@@ -29,6 +29,8 @@ from provide.foundation.utils.formatting import (
     format_number,
     format_percentage,
     format_size,
+)
+from provide.foundation.utils.text_utils import (
     format_table,
     indent,
     pluralize,
