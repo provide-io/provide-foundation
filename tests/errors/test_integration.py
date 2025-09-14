@@ -344,7 +344,7 @@ class TestErrorSystemIntegration:
         assert data["details"]["auth_method"] == "jwt"
         assert data["metadata"]["retry_after"] == 30.0
 
-    @patch("provide.foundation.errors.handlers._get_logger")
+    @patch("provide.foundation.hub.foundation.get_foundation_logger")
     def test_logging_integration(self, mock_logger) -> Never:
         """Test integration with logging system."""
         # Create and handle error
