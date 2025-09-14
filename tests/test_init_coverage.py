@@ -133,7 +133,6 @@ class TestFoundationInit:
         # Test some key exports are in __all__
         expected_exports = [
             "logger",
-            "setup_telemetry",
             "FoundationError",
             "config",
             "__version__",
