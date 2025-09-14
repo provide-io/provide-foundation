@@ -11,7 +11,12 @@
       "Bash(PYTHONPATH=src mypy src/ --show-error-codes --no-error-summary)",
       "Bash(PYTHONPATH=src mypy src/)",
       "Bash(PYTHONPATH=src pytest --run-benchmarks -v)",
-      "Bash(PYTHONPATH=src pytest tests/logger/test_asyncio_suppression.py -v -q)"
+      "Bash(PYTHONPATH=src pytest tests/logger/test_asyncio_suppression.py -v -q)",
+      "Bash(PYTHONPATH=src pytest tests/utils/test_formatting.py -v)",
+      "Bash(PYTHONPATH=src pytest tests/utils/test_utils_coverage.py -v)",
+      "Bash(PYTHONPATH=src pytest tests/utils/test_formatting.py tests/utils/test_utils_coverage.py --tb=no -q)",
+      "Bash(PYTHONPATH=src python -c \"from provide.foundation.utils.text_utils import format_table; print(''Text utils import works'')\")",
+      "Bash(PYTHONPATH=src pytest tests/utils/test_formatting.py::TestSizeFormatting::test_format_size_bytes -v)"
     ],
     "deny": [],
     "ask": [],
