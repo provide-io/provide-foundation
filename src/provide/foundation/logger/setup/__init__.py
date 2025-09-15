@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 #
 # __init__.py
 #
@@ -8,6 +6,8 @@ from __future__ import annotations
 Handles structured logging configuration, processor setup, and emoji resolution.
 Provides the core setup functionality for the Foundation logging system.
 """
+
+from __future__ import annotations
 
 from provide.foundation.logger.setup.coordinator import (
     get_vanilla_logger,

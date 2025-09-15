@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 #
 # __init__.py
 #
@@ -7,6 +5,8 @@ from __future__ import annotations
 
 Re-exports all configuration classes for convenient importing.
 """
+
+from __future__ import annotations
 
 from provide.foundation.logger.config.logging import LoggingConfig
 from provide.foundation.logger.config.telemetry import TelemetryConfig
