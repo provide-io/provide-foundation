@@ -124,12 +124,13 @@ class TestFoundationLogOutputIntegration:
         # Reset and setup telemetry with file logging
         from provide.testkit import reset_foundation_setup_for_testing
 
-        from provide.foundation.setup import setup_telemetry
+        from provide.foundation import get_hub
 
         reset_foundation_setup_for_testing()
 
         config = TelemetryConfig.from_env()
-        setup_telemetry(config)
+        hub = get_hub()
+        hub.initialize_foundation(config, force=True)
 
         # Foundation messages should follow main log destination (file)
         # Test that config creation works properly with file-based routing
@@ -152,12 +153,13 @@ class TestFoundationLogOutputIntegration:
         # Reset and setup telemetry
         from provide.testkit import reset_foundation_setup_for_testing
 
-        from provide.foundation.setup import setup_telemetry
+        from provide.foundation import get_hub
 
         reset_foundation_setup_for_testing()
 
         config = TelemetryConfig.from_env()
-        setup_telemetry(config)
+        hub = get_hub()
+        hub.initialize_foundation(config, force=True)
 
         # Test that stderr routing works independently of file routing
         test_config = LoggingConfig.from_env()

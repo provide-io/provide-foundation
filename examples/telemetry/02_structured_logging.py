@@ -2,9 +2,9 @@
 # examples/telemetry/02_structured_logging.py
 """Quick Start Example - Structured Logging with Full Setup
 
-This example demonstrates how to use setup_telemetry() to configure logging,
-tracing, and metrics. It shows:
-- Using setup_telemetry() for full telemetry configuration
+This example demonstrates how to use Foundation's Hub-based initialization,
+which automatically configures logging, tracing, and metrics. It shows:
+- Using Hub.initialize_foundation() for full telemetry configuration
 - Different log levels (info, debug, warning, error)
 - Structured data in log messages
 - When tracing/metrics features are available
@@ -36,7 +36,7 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from provide.foundation import logger, pout, setup_telemetry  # noqa: E402
+from provide.foundation import get_hub, logger, pout  # noqa: E402
 from provide.foundation.logger.config import (  # noqa: E402
     LoggingConfig,
     TelemetryConfig,
@@ -47,7 +47,7 @@ def example_1_quick_start() -> None:
     """Demonstrates basic structured logging with provide.foundation.
 
     Key concepts:
-    - setup_telemetry() initializes the logging system
+    - Hub.initialize_foundation() initializes the logging system
     - logger methods accept a message and keyword arguments for structured data
     - Different log levels control what gets displayed
     - Structured data makes logs searchable and analyzable
@@ -60,10 +60,11 @@ def example_1_quick_start() -> None:
 
     # Initialize with INFO level for better visibility in examples
     # This sets up logging + optional tracing/metrics if dependencies available
-    setup_telemetry(
+    hub = get_hub()
+    hub.initialize_foundation(
         TelemetryConfig(
             logging=LoggingConfig(default_level="INFO"),
-        ),
+        )
     )
 
     # Start logging immediately

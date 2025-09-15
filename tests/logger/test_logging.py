@@ -262,15 +262,15 @@ class TestLoggingWithEmojiSets:
 
 
 class TestFactoriesModule:
-    def test_setup_logging_basic(
+    def test_get_logger_factory_basic(
         self,
         setup_foundation_telemetry_for_test: callable,
         captured_stderr_for_foundation: "io.StringIO",
     ) -> None:
-        """Test that setup_logging function works with basic parameters."""
+        """Test that get_logger factory function works with basic parameters."""
         # First set up the foundation with test fixtures
         from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
-        from provide.foundation.logger.factories import setup_logging
+        from provide.foundation.logger.factories import get_logger
 
         config = TelemetryConfig(
             logging=LoggingConfig(
@@ -280,19 +280,12 @@ class TestFactoriesModule:
         )
         setup_foundation_telemetry_for_test(config)
 
-        # Now test that setup_logging issues deprecation warning but still works
-        import warnings
-        with warnings.catch_warnings(record=True) as w:
-            warnings.simplefilter("always")
-            setup_logging(level="DEBUG", json_logs=False)
+        # Test that get_logger works correctly
+        logger = get_logger("test.module")
+        assert logger is not None
 
-            # Verify deprecation warning was issued
-            assert len(w) == 1
-            assert issubclass(w[0].category, DeprecationWarning)
-            assert "setup_logging() is deprecated" in str(w[0].message)
-
-        # Test that the logger still works after setup_logging call
-        global_logger.debug("Test debug message after setup_logging")
+        # Test that the logger works
+        logger.debug("Test debug message from factory")
 
         output = captured_stderr_for_foundation.getvalue()
-        assert "Test debug message after setup_logging" in output
+        assert "Test debug message from factory" in output

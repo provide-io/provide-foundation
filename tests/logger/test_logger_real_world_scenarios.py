@@ -24,7 +24,7 @@ from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
     logger as global_logger,
-    setup_telemetry,
+    get_hub,
 )
 
 
@@ -394,7 +394,8 @@ class TestMigrationFromExplicitSetup:
             service_name="migration-test",
             logging=LoggingConfig(default_level="DEBUG", console_formatter="json"),
         )
-        setup_telemetry(explicit_config)
+        hub = get_hub()
+        hub.initialize_foundation(explicit_config, force=True)
 
         # Old-style logging
         global_logger.info("Legacy logging with explicit setup")
@@ -446,7 +447,8 @@ class TestMigrationFromExplicitSetup:
                 console_formatter="json",
             ),
         )
-        setup_telemetry(explicit_config)
+        hub = get_hub()
+        hub.initialize_foundation(explicit_config, force=True)
 
         global_logger.info("Message after explicit setup")
 
@@ -495,7 +497,8 @@ class TestMigrationFromExplicitSetup:
                 service_name="explicit-service",
                 logging=LoggingConfig(console_formatter="json", default_level="DEBUG"),
             )
-            setup_telemetry(explicit_config)
+            hub = get_hub()
+        hub.initialize_foundation(explicit_config, force=True)
 
             # Test that explicit config takes precedence
             global_logger.debug("Explicit setup message")  # Should appear (DEBUG level)

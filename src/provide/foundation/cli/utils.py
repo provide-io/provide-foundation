@@ -12,7 +12,7 @@ from provide.foundation.logger import (
     TelemetryConfig,
     get_logger,
 )
-from provide.foundation.setup import setup_telemetry
+from provide.foundation import get_hub
 
 log = get_logger(__name__)
 
@@ -116,7 +116,8 @@ def setup_cli_logging(
         logging=logging_config,
     )
 
-    setup_telemetry(config=telemetry_config)
+    hub = get_hub()
+    hub.initialize_foundation(config=telemetry_config, force=True)
 
 
 def create_cli_context(**kwargs) -> CLIContext:

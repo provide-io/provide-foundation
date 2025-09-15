@@ -16,9 +16,9 @@ if src_path.exists() and str(src_path) not in sys.path:
 from provide.foundation import (  # noqa: E402
     LoggingConfig,
     TelemetryConfig,
+    get_hub,
     logger,
     pout,
-    setup_telemetry,
 )
 
 
@@ -37,13 +37,14 @@ def example_4_das_logging() -> None:
     pout("=" * 60)
 
     # Ensure DAS emojis are enabled with INFO level for better visibility
-    setup_telemetry(
+    hub = get_hub()
+    hub.initialize_foundation(
         TelemetryConfig(
             logging=LoggingConfig(
                 das_emoji_prefix_enabled=True,
                 default_level="INFO",
             ),
-        ),
+        )
     )
 
     # Authentication events

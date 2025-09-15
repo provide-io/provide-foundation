@@ -16,9 +16,9 @@ if src_path.exists() and str(src_path) not in sys.path:
 from provide.foundation import (  # noqa: E402
     LoggingConfig,
     TelemetryConfig,
+    get_hub,
     logger,
     pout,
-    setup_telemetry,
 )
 
 
@@ -40,7 +40,8 @@ def example_6_trace_logging() -> None:
             module_levels={"specific.module": "DEBUG"},  # Example of other module
         ),
     )
-    setup_telemetry(config)
+    hub = get_hub()
+    hub.initialize_foundation(config)
 
     logger.trace("Entering function 'process_data'", argument1="value1")
     logger.trace("Processing item", item_id=123, item_data={"key": "val"})

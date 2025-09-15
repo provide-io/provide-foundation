@@ -23,7 +23,7 @@ from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
     logger as global_logger,
-    setup_telemetry,
+    get_hub,
     shutdown_foundation_telemetry,
 )
 
@@ -506,7 +506,8 @@ class TestLazyInitializationDocumentation:
                 console_formatter="json",
             ),
         )
-        setup_telemetry(config)
+        hub = get_hub()
+        hub.initialize_foundation(config, force=True)
 
         # Both old and new code work together
         logger.info("After explicit setup")

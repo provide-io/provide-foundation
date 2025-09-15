@@ -24,85 +24,6 @@ from provide.foundation.tracer.otel import (
 _EXPLICIT_SETUP_DONE = False
 
 
-def setup_foundation(config: TelemetryConfig | None = None) -> None:
-    """Initialize the Foundation system with all its subsystems.
-
-    DEPRECATED: Foundation now auto-initializes on first use through Hub.
-    For explicit configuration, use Hub.initialize_foundation(config).
-
-    Args:
-        config: Optional configuration to use. If None, loads from environment.
-
-    """
-    import warnings
-
-    warnings.warn(
-        "setup_foundation() is deprecated. Foundation now auto-initializes on first use. "
-        "For explicit configuration, use: from provide.foundation import get_hub; "
-        "get_hub().initialize_foundation(config)",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-
-    # Route through Hub instead of legacy setup
-    from provide.foundation.hub.manager import get_hub
-
-    hub = get_hub()
-    if config:
-        hub.initialize_foundation(config, force=True)
-
-    # Handle legacy subsystems that aren't yet in Hub
-    current_config = config if config is not None else TelemetryConfig.from_env()
-
-    # Configure file logging if specified (legacy)
-    log_file_path = getattr(current_config.logging, "log_file", None)
-    configure_file_logging(log_file_path)
-
-    # Initialize OpenTelemetry tracing and metrics if available and enabled (legacy)
-    setup_opentelemetry_tracing(current_config)
-    setup_opentelemetry_metrics(current_config)
-
-    global _EXPLICIT_SETUP_DONE
-    _EXPLICIT_SETUP_DONE = True
-
-
-def setup_telemetry(config: TelemetryConfig | None = None) -> None:
-    """Legacy alias for setup_foundation.
-
-    DEPRECATED: Use Hub.initialize_foundation(config) instead.
-
-    Args:
-        config: Optional configuration to use. If None, loads from environment.
-
-    """
-    import warnings
-
-    warnings.warn(
-        "setup_telemetry() is deprecated. Use get_hub().initialize_foundation(config) instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-
-    # Route directly through Hub to avoid double warnings
-    from provide.foundation.hub.manager import get_hub
-
-    hub = get_hub()
-    if config:
-        hub.initialize_foundation(config, force=True)
-
-    # Handle legacy subsystems that aren't yet in Hub
-    current_config = config if config is not None else TelemetryConfig.from_env()
-
-    # Configure file logging if specified (legacy)
-    log_file_path = getattr(current_config.logging, "log_file", None)
-    configure_file_logging(log_file_path)
-
-    # Initialize OpenTelemetry tracing and metrics if available and enabled (legacy)
-    setup_opentelemetry_tracing(current_config)
-    setup_opentelemetry_metrics(current_config)
-
-    global _EXPLICIT_SETUP_DONE
-    _EXPLICIT_SETUP_DONE = True
 
 
 async def shutdown_foundation(timeout_millis: int = 5000) -> None:
@@ -134,8 +55,6 @@ async def shutdown_foundation_telemetry(timeout_millis: int = 5000) -> None:
 __all__ = [
     "internal_setup",
     "reset_foundation_setup_for_testing",
-    "setup_foundation",
-    "setup_telemetry",  # Legacy alias
     "shutdown_foundation",
     "shutdown_foundation_telemetry",  # Legacy alias
 ]

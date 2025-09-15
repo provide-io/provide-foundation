@@ -7,15 +7,10 @@ Re-exports the core logger components.
 """
 
 from provide.foundation.logger.core import FoundationLogger, logger
-from provide.foundation.logger.factories import get_logger, setup_logging
-
-# Alias for consistent naming convention
-setup_logger = setup_logging
+from provide.foundation.logger.factories import get_logger
 
 __all__ = [
     "FoundationLogger",
     "get_logger",
     "logger",
-    "setup_logger",  # New consistent naming
-    "setup_logging",  # Legacy function name
 ]
