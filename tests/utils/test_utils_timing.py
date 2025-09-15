@@ -168,3 +168,31 @@ class TestTimedBlock:
         ]
         assert len(log_lines) == 1
         assert parse_kv_log_line(log_lines[0]).get("trace_id") == "kvs-id"
+
+    def test_initial_kvs_parameter(
+        self, captured_stderr_for_foundation: io.StringIO,
+    ) -> None:
+        """Test timed_block with initial_kvs parameter."""
+        initial_kvs = {"user_id": "test_user", "request_id": "req_123"}
+
+        with timed_block(
+            global_logger,
+            "op_with_initial_kvs",
+            initial_kvs=initial_kvs,
+            extra_key="extra_value"
+        ):
+            pass
+
+        captured = captured_stderr_for_foundation.getvalue()
+        log_lines = [
+            line for line in captured.strip().splitlines()
+            if "op_with_initial_kvs" in line
+        ]
+        assert len(log_lines) == 1
+        log_data = parse_kv_log_line(log_lines[0])
+
+        # Check that initial_kvs were included
+        assert log_data.get("user_id") == "test_user"
+        assert log_data.get("request_id") == "req_123"
+        assert log_data.get("extra_key") == "extra_value"
+        assert log_data.get("outcome") == "success"
