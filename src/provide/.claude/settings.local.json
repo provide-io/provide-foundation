@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Read(//Users/tim/code/gh/provide-io/provide-foundation/**)"
-    ],
-    "deny": [],
-    "ask": []
-  }
-}
