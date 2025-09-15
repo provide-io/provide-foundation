@@ -14,11 +14,6 @@ from provide.foundation.errors.base import FoundationError
 F = TypeVar("F", bound=Callable[..., Any])
 
 
-def _get_logger():
-    """Get logger instance lazily to avoid circular imports."""
-    # Use structlog directly to avoid circular imports during initialization
-    import structlog
-    return structlog.get_logger(__name__)
 
 
 def with_error_handling(
@@ -86,7 +81,8 @@ def with_error_handling(
                     # Check if we should suppress this error
                     if suppress and isinstance(e, suppress):
                         if log_errors:
-                            _get_logger().info(
+                            from provide.foundation.hub.foundation import get_foundation_logger
+                            get_foundation_logger().info(
                                 f"Suppressed {type(e).__name__} in {func.__name__}",
                                 function=func.__name__,
                                 error=str(e),
@@ -96,7 +92,8 @@ def with_error_handling(
 
                     # Log the error if configured
                     if log_errors:
-                        _get_logger().error(
+                        from provide.foundation.hub.foundation import get_foundation_logger
+                        get_foundation_logger().error(
                             f"Error in {func.__name__}: {e}",
                             exc_info=True,
                             function=func.__name__,
@@ -133,7 +130,8 @@ def with_error_handling(
                 # Check if we should suppress this error
                 if suppress and isinstance(e, suppress):
                     if log_errors:
-                        _get_logger().info(
+                        from provide.foundation.hub.foundation import get_foundation_logger
+                        get_foundation_logger().info(
                             f"Suppressed {type(e).__name__} in {func.__name__}",
                             function=func.__name__,
                             error=str(e),
@@ -143,7 +141,8 @@ def with_error_handling(
 
                 # Log the error if configured
                 if log_errors:
-                    _get_logger().error(
+                    from provide.foundation.hub.foundation import get_foundation_logger
+                    get_foundation_logger().error(
                         f"Error in {func.__name__}: {e}",
                         exc_info=True,
                         function=func.__name__,
@@ -202,10 +201,11 @@ def suppress_and_log(
                 return func(*args, **kwargs)
             except exceptions as e:
                 # Get appropriate log method
+                from provide.foundation.hub.foundation import get_foundation_logger
                 if log_level in ("debug", "info", "warning", "error", "critical"):
-                    log_method = getattr(_get_logger(), log_level)
+                    log_method = getattr(get_foundation_logger(), log_level)
                 else:
-                    log_method = _get_logger().warning
+                    log_method = get_foundation_logger().warning
 
                 log_method(
                     f"Suppressed {type(e).__name__} in {func.__name__}: {e}",
@@ -255,7 +255,8 @@ def fallback_on_error(
                 return func(*args, **kwargs)
             except catch_types as e:
                 if log_errors:
-                    _get_logger().warning(
+                    from provide.foundation.hub.foundation import get_foundation_logger
+                    get_foundation_logger().warning(
                         f"Using fallback for {func.__name__} due to {type(e).__name__}",
                         function=func.__name__,
                         error_type=type(e).__name__,
@@ -267,7 +268,8 @@ def fallback_on_error(
                 try:
                     return fallback_func(*args, **kwargs)
                 except Exception as fallback_error:
-                    _get_logger().error(
+                    from provide.foundation.hub.foundation import get_foundation_logger
+                    get_foundation_logger().error(
                         f"Fallback function {fallback_func.__name__} also failed",
                         exc_info=True,
                         original_error=str(e),

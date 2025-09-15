@@ -186,3 +186,28 @@ class FoundationManager:
         # Fallback during initialization
         import structlog
         return structlog.get_logger(__name__)
+
+
+def get_foundation_logger(name: str | None = None) -> Any:
+    """Get a logger from the Foundation system.
+
+    This is the preferred way to get loggers instead of using _get_logger()
+    patterns that create circular import issues.
+
+    Args:
+        name: Logger name (defaults to calling module)
+
+    Returns:
+        Logger instance
+    """
+    from provide.foundation.hub.manager import get_hub
+
+    hub = get_hub()
+    if hasattr(hub, '_foundation_manager') and hub._foundation_manager._logger_instance:
+        return hub._foundation_manager._logger_instance.get_logger(name)
+
+    # Fallback to direct logger import during bootstrap
+    from provide.foundation.logger import logger
+    if name:
+        return logger.get_logger(name)
+    return logger

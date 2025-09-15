@@ -10,7 +10,6 @@ from provide.foundation.utils.deps import (
     _check_click,
     _check_cryptography,
     _check_opentelemetry,
-    _get_logger,
     check_optional_deps,
     get_available_features,
     get_optional_dependencies,
@@ -50,20 +49,6 @@ class TestDependencyStatus:
         assert status.version is None
         assert status.description == "Missing library"
 
-
-class TestGetLogger:
-    """Test _get_logger function."""
-
-    def test_get_logger_returns_logger(self) -> None:
-        """Test that _get_logger returns a logger."""
-        with patch("provide.foundation.logger.get_logger") as mock_get_logger:
-            mock_logger = Mock()
-            mock_get_logger.return_value = mock_logger
-
-            result = _get_logger()
-
-            mock_get_logger.assert_called_once_with("provide.foundation.utils.deps")
-            assert result == mock_logger
 
 
 class TestCheckClick:
@@ -234,7 +219,7 @@ class TestCheckOptionalDeps:
         ]
 
         with patch("provide.foundation.utils.deps.get_optional_dependencies", return_value=mock_deps):
-            with patch("provide.foundation.utils.deps._get_logger") as mock_get_logger:
+            with patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger:
                 mock_logger = Mock()
                 mock_get_logger.return_value = mock_logger
 
@@ -252,7 +237,7 @@ class TestCheckOptionalDeps:
         ]
 
         with patch("provide.foundation.utils.deps.get_optional_dependencies", return_value=mock_deps):
-            with patch("provide.foundation.utils.deps._get_logger") as mock_get_logger:
+            with patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger:
                 mock_logger = Mock()
                 mock_get_logger.return_value = mock_logger
 
@@ -271,7 +256,7 @@ class TestCheckOptionalDeps:
         ]
 
         with patch("provide.foundation.utils.deps.get_optional_dependencies", return_value=mock_deps):
-            with patch("provide.foundation.utils.deps._get_logger") as mock_get_logger:
+            with patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger:
                 mock_logger = Mock()
                 mock_get_logger.return_value = mock_logger
 

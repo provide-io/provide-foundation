@@ -6,19 +6,8 @@ Provides functions for discovering and executing error handlers from the registr
 from typing import Any
 
 from provide.foundation.errors.decorators import with_error_handling
+from provide.foundation.hub.foundation import get_foundation_logger
 from provide.foundation.hub.registry import RegistryEntry
-
-# Use lazy logger initialization to avoid circular imports
-_logger = None
-
-
-def _get_logger():
-    """Get logger lazily to avoid circular import issues."""
-    global _logger
-    if _logger is None:
-        from provide.foundation.logger import get_logger
-        _logger = get_logger(__name__)
-    return _logger
 
 
 def _get_registry_and_lock():
@@ -76,7 +65,7 @@ def execute_error_handlers(exception: Exception, context: dict[str, Any]) -> dic
             if result is not None:
                 return result
         except Exception as handler_error:
-            _get_logger().error("Error handler failed", handler=entry.name, error=str(handler_error))
+            get_foundation_logger().error("Error handler failed", handler=entry.name, error=str(handler_error))
 
     return None
 

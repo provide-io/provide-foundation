@@ -5,7 +5,6 @@ import asyncio
 import pytest
 
 from provide.foundation.errors.safe_decorators import (
-    _get_logger,
     log_only_error_context,
 )
 
@@ -13,9 +12,10 @@ from provide.foundation.errors.safe_decorators import (
 class TestSafeDecoratorsCoverage:
     """Test safe decorators for improved coverage."""
 
-    def test_get_logger_function(self):
-        """Test _get_logger function returns logger."""
-        logger = _get_logger()
+    def test_logger_access_available(self):
+        """Test that logger functionality is available through foundation."""
+        from provide.foundation.hub.foundation import get_foundation_logger
+        logger = get_foundation_logger()
         assert logger is not None
         assert hasattr(logger, "debug")
         assert hasattr(logger, "error")

@@ -5,14 +5,9 @@ import functools
 import inspect
 from typing import Any, TypeVar
 
+from provide.foundation.hub.foundation import get_foundation_logger
+
 F = TypeVar("F", bound=Callable[..., Any])
-
-
-def _get_logger():
-    """Get logger instance lazily to avoid circular imports."""
-    from provide.foundation.logger import logger
-
-    return logger
 
 
 def log_only_error_context(
@@ -51,7 +46,7 @@ def log_only_error_context(
             @functools.wraps(func)
             async def async_wrapper(*args, **kwargs):
                 context = context_provider() if context_provider else {}
-                logger = _get_logger()
+                logger = get_foundation_logger()
 
                 # Log function entry if debug/trace level
                 if log_level in ("debug", "trace"):
@@ -90,7 +85,7 @@ def log_only_error_context(
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
             context = context_provider() if context_provider else {}
-            logger = _get_logger()
+            logger = get_foundation_logger()
 
             # Log function entry if debug/trace level
             if log_level in ("debug", "trace"):
