@@ -17,7 +17,8 @@
       "Bash(PYTHONPATH=src pytest tests/utils/test_formatting.py tests/utils/test_utils_coverage.py --tb=no -q)",
       "Bash(PYTHONPATH=src python -c \"from provide.foundation.utils.text_utils import format_table; print(''Text utils import works'')\")",
       "Bash(PYTHONPATH=src pytest tests/utils/test_formatting.py::TestSizeFormatting::test_format_size_bytes -v)",
-      "Bash(PYTHONPATH=src pytest -xvs tests/conversion/test_inference_concurrency_safety.py::TestInferenceConcurrencySafety::test_concurrent_inference_is_isolated)"
+      "Bash(PYTHONPATH=src pytest -xvs tests/conversion/test_inference_concurrency_safety.py::TestInferenceConcurrencySafety::test_concurrent_inference_is_isolated)",
+      "Bash(PYTHONPATH=src python:*)"
     ],
     "deny": [],
     "ask": [],
