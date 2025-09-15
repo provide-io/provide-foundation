@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 """Provide Foundation Hub - Component and Command Coordination System
 ===================================================================
 
@@ -29,6 +27,8 @@ Example Usage:
     >>> resource_class = hub.get_component("my_resource")
     >>> command = hub.get_command("init")
 """
+
+from __future__ import annotations
 
 # Core hub components (always available)
 from provide.foundation.hub.components import (
