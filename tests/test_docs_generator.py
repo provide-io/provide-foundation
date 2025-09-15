@@ -86,6 +86,10 @@ class TestAPIDocGenerator:
             mock_stat = Mock()
             mock_stat.st_size = 50
             small_init.stat.return_value = mock_stat
+            # Mock relative_to to return a Path-like object with parts
+            mock_relative = Mock()
+            mock_relative.parts = ("__init__.py",)
+            small_init.relative_to.return_value = mock_relative
 
             # Mock a large __init__.py file
             large_init = Mock(spec=Path)
@@ -93,6 +97,10 @@ class TestAPIDocGenerator:
             mock_stat_large = Mock()
             mock_stat_large.st_size = 150
             large_init.stat.return_value = mock_stat_large
+            # Mock relative_to to return a Path-like object with parts
+            mock_relative_large = Mock()
+            mock_relative_large.parts = ("__init__.py",)
+            large_init.relative_to.return_value = mock_relative_large
 
             # Mock a regular file
             regular_file = Mock(spec=Path)
