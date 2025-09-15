@@ -19,7 +19,8 @@
       "Bash(PYTHONPATH=src pytest tests/utils/test_formatting.py::TestSizeFormatting::test_format_size_bytes -v)",
       "Bash(PYTHONPATH=src pytest -xvs tests/conversion/test_inference_concurrency_safety.py::TestInferenceConcurrencySafety::test_concurrent_inference_is_isolated)",
       "Bash(PYTHONPATH=src python:*)",
-      "Bash(PYTHONPATH=src pytest tests/logger/ -v -q --tb=short)"
+      "Bash(PYTHONPATH=src pytest tests/logger/ -v -q --tb=short)",
+      "Bash(PYTHONPATH=src pytest tests/logger/test_asyncio_suppression.py::TestAsyncioDebugSuppression::test_asyncio_module_hierarchy_filtering -v)"
     ],
     "deny": [],
     "ask": [],
