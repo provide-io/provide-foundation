@@ -5,15 +5,23 @@ from __future__ import annotations
 import json
 import sys
 import time
-from typing import Any, NoReturn
+from typing import TYPE_CHECKING, Any, NoReturn
 
-try:
+if TYPE_CHECKING:
     import click
+
+# Click feature detection
+_click_module: Any = None
+try:
+    import click as _click_module
 
     _HAS_CLICK = True
 except ImportError:
-    click = None  # type: ignore
+    _click_module = None
     _HAS_CLICK = False
+
+# Use consistent name throughout
+click = _click_module
 
 from provide.foundation.logger import get_logger
 

@@ -6,14 +6,23 @@ Provides integration with observability platforms like OpenObserve.
 Only available when OpenTelemetry dependencies are installed.
 """
 
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from opentelemetry import trace
+
 # OpenTelemetry feature detection
+_otel_trace_module: Any = None
 try:
-    from opentelemetry import trace as otel_trace
+    from opentelemetry import trace as _otel_trace_module
 
     _HAS_OTEL = True
 except ImportError:
-    otel_trace = None
+    _otel_trace_module = None
     _HAS_OTEL = False
+
+# Use consistent name throughout
+otel_trace = _otel_trace_module
 
 # Only import OpenObserve if OpenTelemetry is available
 if _HAS_OTEL:

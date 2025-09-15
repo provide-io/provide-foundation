@@ -9,6 +9,19 @@ Provides distributed tracing functionality with optional OpenTelemetry integrati
 Falls back to simple, lightweight tracing when OpenTelemetry is not available.
 """
 
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from opentelemetry import trace as otel_trace
+    from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (
+        OTLPSpanExporter as OTLPGrpcSpanExporter,
+    )
+    from opentelemetry.exporter.otlp.proto.http.trace_exporter import (
+        OTLPSpanExporter as OTLPHttpSpanExporter,
+    )
+    from opentelemetry.sdk.trace import TracerProvider
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor
+
 # OpenTelemetry feature detection
 try:
     from opentelemetry import trace as otel_trace
@@ -23,11 +36,11 @@ try:
 
     _HAS_OTEL = True
 except ImportError:
-    otel_trace = None
-    TracerProvider = None
-    BatchSpanProcessor = None
-    OTLPGrpcSpanExporter = None
-    OTLPHttpSpanExporter = None
+    otel_trace = None  # type: Any
+    TracerProvider = None  # type: Any
+    BatchSpanProcessor = None  # type: Any
+    OTLPGrpcSpanExporter = None  # type: Any
+    OTLPHttpSpanExporter = None  # type: Any
     _HAS_OTEL = False
 
 from provide.foundation.tracer.context import (

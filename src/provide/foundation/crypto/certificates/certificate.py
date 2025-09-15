@@ -4,9 +4,15 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 from functools import cached_property
-from typing import Self
+from typing import TYPE_CHECKING, Any, Self
 
 from attrs import Factory, define, field
+
+if TYPE_CHECKING:
+    from cryptography import x509
+    from cryptography.hazmat.primitives import serialization
+    from cryptography.hazmat.primitives.asymmetric import ec, rsa
+    from cryptography.x509 import Certificate as X509Certificate
 
 try:
     from cryptography import x509
@@ -16,11 +22,11 @@ try:
 
     _HAS_CRYPTO = True
 except ImportError:
-    x509 = None
-    serialization = None
-    ec = None
-    rsa = None
-    X509Certificate = None
+    x509 = None  # type: Any
+    serialization = None  # type: Any
+    ec = None  # type: Any
+    rsa = None  # type: Any
+    X509Certificate = None  # type: Any
     _HAS_CRYPTO = False
 
 from provide.foundation import logger

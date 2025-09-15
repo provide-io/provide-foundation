@@ -7,6 +7,7 @@ to provide a single source of truth and eliminate inline defaults.
 import logging as stdlib_logging
 
 from provide.foundation.logger.trace import TRACE_LEVEL_NUM
+from provide.foundation.logger.types import LogLevelStr
 
 # =================================
 # Log Level Numeric Constants
@@ -24,7 +25,7 @@ NOTSET_LEVEL = stdlib_logging.NOTSET      # 0
 # Level Name to Numeric Mapping
 # =================================
 
-LEVEL_TO_NUMERIC: dict[str, int] = {
+LEVEL_TO_NUMERIC: dict[LogLevelStr, int] = {
     "CRITICAL": CRITICAL_LEVEL,
     "ERROR": ERROR_LEVEL,
     "WARNING": WARNING_LEVEL,

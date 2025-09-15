@@ -20,7 +20,7 @@ class TestTraceProcessorWithOtel:
         mock_span.get_span_context.return_value = mock_span_context
 
         with patch("provide.foundation.logger.processors.trace._HAS_OTEL", True), patch(
-            "provide.foundation.logger.processors.trace.otel_trace",
+            "provide.foundation.logger.processors.trace.trace",
         ) as mock_otel:
             mock_otel.get_current_span.return_value = mock_span
 
@@ -42,7 +42,7 @@ class TestTraceProcessorWithOtel:
         mock_span.is_recording.return_value = False
 
         with patch("provide.foundation.logger.processors.trace._HAS_OTEL", True), patch(
-            "provide.foundation.logger.processors.trace.otel_trace",
+            "provide.foundation.logger.processors.trace.trace",
         ) as mock_otel:
             mock_otel.get_current_span.return_value = mock_span
 
@@ -69,7 +69,7 @@ class TestTraceProcessorWithOtel:
         from provide.foundation.logger.processors.trace import inject_trace_context
 
         with patch("provide.foundation.logger.processors.trace._HAS_OTEL", True), patch(
-            "provide.foundation.logger.processors.trace.otel_trace",
+            "provide.foundation.logger.processors.trace.trace",
         ) as mock_otel:
             mock_otel.get_current_span.side_effect = Exception("OTEL Error")
 
@@ -104,7 +104,7 @@ class TestTraceProcessorWithOtel:
         mock_span.get_span_context.return_value = mock_span_context
 
         with patch("provide.foundation.logger.processors.trace._HAS_OTEL", True), patch(
-            "provide.foundation.logger.processors.trace.otel_trace",
+            "provide.foundation.logger.processors.trace.trace",
         ) as mock_otel:
             mock_otel.get_current_span.return_value = mock_span
 
@@ -221,11 +221,11 @@ class TestTraceProcessorImports:
         assert isinstance(trace._HAS_OTEL, bool)
 
         # If OpenTelemetry is available, _HAS_OTEL should be True
-        # If not, it should be False and otel_trace should be None
+        # If not, it should be False and trace should be None
         if trace._HAS_OTEL:
-            assert trace.otel_trace is not None
+            assert trace.trace is not None
         else:
-            assert trace.otel_trace is None
+            assert trace.trace is None
 
 
 class TestShouldInjectTraceContext:
@@ -241,7 +241,7 @@ class TestShouldInjectTraceContext:
         mock_span.is_recording.return_value = True
 
         with patch("provide.foundation.logger.processors.trace._HAS_OTEL", True), patch(
-            "provide.foundation.logger.processors.trace.otel_trace",
+            "provide.foundation.logger.processors.trace.trace",
         ) as mock_otel:
             mock_otel.get_current_span.return_value = mock_span
 
@@ -257,7 +257,7 @@ class TestShouldInjectTraceContext:
         mock_span.is_recording.return_value = False
 
         with patch("provide.foundation.logger.processors.trace._HAS_OTEL", True), patch(
-            "provide.foundation.logger.processors.trace.otel_trace",
+            "provide.foundation.logger.processors.trace.trace",
         ) as mock_otel:
             mock_otel.get_current_span.return_value = mock_span
 
@@ -278,7 +278,7 @@ class TestShouldInjectTraceContext:
         )
 
         with patch("provide.foundation.logger.processors.trace._HAS_OTEL", True), patch(
-            "provide.foundation.logger.processors.trace.otel_trace",
+            "provide.foundation.logger.processors.trace.trace",
         ) as mock_otel:
             mock_otel.get_current_span.side_effect = Exception("OTEL Error")
 
@@ -358,7 +358,7 @@ class TestTraceProcessorLogging:
         mock_span.get_span_context.return_value = mock_span_context
 
         with patch("provide.foundation.logger.processors.trace._HAS_OTEL", True), patch(
-            "provide.foundation.logger.processors.trace.otel_trace",
+            "provide.foundation.logger.processors.trace.trace",
         ) as mock_otel:
             mock_otel.get_current_span.return_value = mock_span
 
@@ -376,7 +376,7 @@ class TestTraceProcessorLogging:
         from provide.foundation.logger.processors.trace import inject_trace_context
 
         with patch("provide.foundation.logger.processors.trace._HAS_OTEL", True), patch(
-            "provide.foundation.logger.processors.trace.otel_trace",
+            "provide.foundation.logger.processors.trace.trace",
         ) as mock_otel:
             mock_otel.get_current_span.side_effect = ValueError("Test error")
 

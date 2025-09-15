@@ -23,7 +23,17 @@
       "Bash(PYTHONPATH=src pytest tests/logger/test_asyncio_suppression.py::TestAsyncioDebugSuppression::test_asyncio_module_hierarchy_filtering -v)",
       "Bash(PYTHONPATH=src pytest tests/hub/test_hub_init_coverage.py::TestHubModuleBehavior::test_module_docstring_present -v -s)",
       "Bash(PYTHONPATH=src pytest tests/hub/test_hub_init_coverage.py::TestHubModuleBehavior::test_module_docstring_present -v)",
-      "Bash(PYTHONPATH=src pytest tests/hub/ tests/logger/ -q --tb=no)"
+      "Bash(PYTHONPATH=src pytest tests/hub/ tests/logger/ -q --tb=no)",
+      "Bash(PYTHONPATH=src mypy src/provide/foundation/logger/ --show-error-codes --no-error-summary)",
+      "Bash(PYTHONPATH=src grep -n \"otel_trace\" src/provide/foundation/logger/processors/trace.py)",
+      "Bash(PYTHONPATH=src mypy src/provide/foundation/hub/foundation.py src/provide/foundation/observability/__init__.py src/provide/foundation/cli/main.py --show-error-codes --no-error-summary)",
+      "Bash(PYTHONPATH=src mypy --version)",
+      "Bash(PYTHONPATH=src mypy src/provide/foundation/hub/foundation.py src/provide/foundation/observability/__init__.py src/provide/foundation/cli/ --show-error-codes --no-error-summary)",
+      "Bash(PYTHONPATH=src pytest --co -q)",
+      "Bash(PYTHONPATH=src pytest tests/logger/processors/test_trace_coverage.py::TestTraceProcessorWithOtel::test_inject_trace_context_with_otel_span -xvs)",
+      "Bash(PYTHONPATH=src pytest -x --tb=short -q)",
+      "Bash(PYTHONPATH=src pytest tests/logger/processors/test_trace_coverage.py::TestTraceProcessorImports::test_otel_import_handling -xvs)",
+      "Bash(PYTHONPATH=src pytest tests/test_docs_generator.py::TestAPIDocGenerator::test_should_skip_small_init_files -xvs)"
     ],
     "deny": [],
     "ask": [],

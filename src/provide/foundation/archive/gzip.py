@@ -7,13 +7,19 @@ from pathlib import Path
 import shutil
 from typing import BinaryIO
 
-from attrs import define, field
+from attrs import define, field, validators
 
 from provide.foundation.archive.base import ArchiveError
 from provide.foundation.file import ensure_parent_dir
 from provide.foundation.logger import get_logger
 
 logger = get_logger(__name__)
+
+
+def _validate_compression_level(instance, attribute, value: int) -> None:
+    """Validate compression level is between 1 and 9."""
+    if not 1 <= value <= 9:
+        raise ValueError(f"Compression level must be 1-9, got {value}")
 
 
 @define(slots=True)
@@ -24,12 +30,10 @@ class GzipCompressor:
     Does not handle bundling - use with TarArchive for .tar.gz files.
     """
 
-    level: int = field(default=6)  # Compression level 1-9 (1=fast, 9=best)
-
-    @level.validator
-    def _validate_level(self, attribute: object, value: int) -> None:
-        if not 1 <= value <= 9:
-            raise ValueError(f"Compression level must be 1-9, got {value}")
+    level: int = field(
+        default=6,
+        validator=[validators.instance_of(int), _validate_compression_level],
+    )  # Compression level 1-9 (1=fast, 9=best)
 
     def compress(self, input_stream: BinaryIO, output_stream: BinaryIO) -> None:
         """Compress data from input stream to output stream.

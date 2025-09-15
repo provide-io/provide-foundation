@@ -6,6 +6,13 @@ from datetime import UTC
 import os
 from pathlib import Path
 import traceback
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from cryptography import x509
+    from cryptography.hazmat.primitives import serialization
+    from cryptography.hazmat.primitives.asymmetric import ec, rsa
+    from cryptography.hazmat.primitives.serialization import load_pem_private_key
 
 try:
     from cryptography import x509
@@ -15,11 +22,11 @@ try:
 
     _HAS_CRYPTO = True
 except ImportError:
-    x509 = None
-    serialization = None
-    ec = None
-    rsa = None
-    load_pem_private_key = None
+    x509 = None  # type: Any
+    serialization = None  # type: Any
+    ec = None  # type: Any
+    rsa = None  # type: Any
+    load_pem_private_key = None  # type: Any
     _HAS_CRYPTO = False
 
 from provide.foundation import logger

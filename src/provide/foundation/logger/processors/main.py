@@ -71,6 +71,9 @@ def _config_create_event_enrichment_processors(
         processors.append(cast("StructlogProcessor", add_logger_name_emoji_prefix))
     if logging_config.das_emoji_prefix_enabled:
 
+        # Use a closure with mutable state to track initialization
+        state = {"initialized": False}
+
         def add_event_enrichment_processor(
             _logger: Any,
             _method_name: str,
@@ -81,7 +84,7 @@ def _config_create_event_enrichment_processors(
             from provide.foundation.eventsets.resolver import get_resolver
 
             # Initialize on first use
-            if not hasattr(add_event_enrichment_processor, "_initialized"):
+            if not state["initialized"]:
                 from provide.foundation.logger.setup.coordinator import (
                     create_foundation_internal_logger,
                 )
@@ -89,7 +92,7 @@ def _config_create_event_enrichment_processors(
                 setup_logger = create_foundation_internal_logger()
                 setup_logger.trace("Initializing event enrichment processor")
                 discover_event_sets()
-                add_event_enrichment_processor._initialized = True
+                state["initialized"] = True
                 setup_logger.trace("Event enrichment processor initialized")
 
             resolver = get_resolver()

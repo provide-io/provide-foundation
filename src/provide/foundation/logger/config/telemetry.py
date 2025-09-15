@@ -101,13 +101,18 @@ class TelemetryConfig(RuntimeConfig):
     )
 
     @classmethod
-    def from_env(cls, **kwargs) -> TelemetryConfig:
+    def from_env(
+        cls,
+        prefix: str = "",
+        delimiter: str = "_",
+        case_sensitive: bool = False,
+    ) -> TelemetryConfig:
         """Load configuration from environment variables.
 
         This method explicitly provides the from_env() interface
         to ensure it's available on TelemetryConfig directly.
         """
-        return super().from_env(**kwargs)
+        return super().from_env(prefix=prefix, delimiter=delimiter, case_sensitive=case_sensitive)
 
     def get_otlp_headers_dict(self) -> dict[str, str]:
         """Get OTLP headers dictionary.
