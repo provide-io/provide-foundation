@@ -59,7 +59,6 @@ class TestLoggerTestingUtilities:
         # The reset function may cause Foundation to re-initialize, which is expected behavior.
         # What we're testing is that the reset function properly cleans up state.
         # In real usage, Foundation will re-initialize as needed, which is the correct behavior.
-        from provide.foundation.logger.core import _LAZY_SETUP_STATE as current_state
 
         # After reset, if Foundation has re-initialized, that's acceptable behavior.
         # The key test is that reset_foundation_state() doesn't fail and the system

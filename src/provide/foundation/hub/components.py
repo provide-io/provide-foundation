@@ -15,7 +15,6 @@ from provide.foundation.errors.decorators import with_error_handling
 from provide.foundation.hub.registry import Registry
 
 
-
 @define(frozen=True, slots=True)
 class ComponentInfo:
     """Information about a registered component."""

@@ -52,6 +52,44 @@ def format_size(size_bytes: float, precision: int = 1) -> str:
     return f"-{formatted}" if negative else formatted
 
 
+def _format_duration_components(days: int, hours: int, minutes: int, seconds: int) -> tuple[int, int, int, int]:
+    """Extract duration components from seconds."""
+    return (
+        days,
+        hours,
+        minutes,
+        seconds,
+    )
+
+
+def _format_duration_short(days: int, hours: int, minutes: int, seconds: int) -> str:
+    """Format duration in short format (1h30m)."""
+    parts = []
+    if days > 0:
+        parts.append(f"{days}d")
+    if hours > 0:
+        parts.append(f"{hours}h")
+    if minutes > 0:
+        parts.append(f"{minutes}m")
+    if seconds > 0 or not parts:
+        parts.append(f"{seconds}s")
+    return "".join(parts)
+
+
+def _format_duration_long(days: int, hours: int, minutes: int, seconds: int) -> str:
+    """Format duration in long format (1 hour 30 minutes)."""
+    parts = []
+    if days > 0:
+        parts.append(f"{days} day{'s' if days != 1 else ''}")
+    if hours > 0:
+        parts.append(f"{hours} hour{'s' if hours != 1 else ''}")
+    if minutes > 0:
+        parts.append(f"{minutes} minute{'s' if minutes != 1 else ''}")
+    if seconds > 0 or not parts:
+        parts.append(f"{seconds} second{'s' if seconds != 1 else ''}")
+    return " ".join(parts)
+
+
 def format_duration(seconds: float, short: bool = False) -> str:
     """Format seconds as human-readable duration.
 
@@ -85,27 +123,9 @@ def format_duration(seconds: float, short: bool = False) -> str:
     minutes = int((seconds % 3600) // 60)
     secs = int(seconds % 60)
 
-    parts = []
-
     if short:
-        if days > 0:
-            parts.append(f"{days}d")
-        if hours > 0:
-            parts.append(f"{hours}h")
-        if minutes > 0:
-            parts.append(f"{minutes}m")
-        if secs > 0 or not parts:
-            parts.append(f"{secs}s")
-        return "".join(parts)
-    if days > 0:
-        parts.append(f"{days} day{'s' if days != 1 else ''}")
-    if hours > 0:
-        parts.append(f"{hours} hour{'s' if hours != 1 else ''}")
-    if minutes > 0:
-        parts.append(f"{minutes} minute{'s' if minutes != 1 else ''}")
-    if secs > 0 or not parts:
-        parts.append(f"{secs} second{'s' if secs != 1 else ''}")
-    return " ".join(parts)
+        return _format_duration_short(days, hours, minutes, secs)
+    return _format_duration_long(days, hours, minutes, secs)
 
 
 def format_number(num: float, precision: int | None = None) -> str:
@@ -391,6 +411,49 @@ def to_camel_case(text: str, upper_first: bool = False) -> str:
     return "".join(result)
 
 
+def _calculate_column_widths(headers: list[str], rows: list[list[str]]) -> list[int]:
+    """Calculate optimal column widths for table formatting."""
+    widths = [len(h) for h in headers]
+    for row in rows:
+        for i, cell in enumerate(row):
+            if i < len(widths):
+                widths[i] = max(widths[i], len(cell))
+    return widths
+
+
+def _align_cell(text: str, width: int, alignment: str) -> str:
+    """Align cell text within the specified width."""
+    if alignment == "r":
+        return text.rjust(width)
+    elif alignment == "c":
+        return text.center(width)
+    else:
+        return text.ljust(width)
+
+
+def _format_table_header(headers: list[str], widths: list[int], alignment: list[str]) -> tuple[str, str]:
+    """Format table header and separator lines."""
+    header_parts = []
+    separator_parts = []
+
+    for i, (header, width) in enumerate(zip(headers, widths, strict=False)):
+        align = alignment[i] if i < len(alignment) else "l"
+        header_parts.append(_align_cell(header, width, align))
+        separator_parts.append("-" * width)
+
+    return " | ".join(header_parts), "-|-".join(separator_parts)
+
+
+def _format_table_row(row: list[str], widths: list[int], alignment: list[str]) -> str:
+    """Format a single table row."""
+    row_parts = []
+    for i, cell in enumerate(row):
+        if i < len(widths):
+            align = alignment[i] if i < len(alignment) else "l"
+            row_parts.append(_align_cell(cell, widths[i], align))
+    return " | ".join(row_parts)
+
+
 def format_table(headers: list[str], rows: list[list[Any]], alignment: list[str] | None = None) -> str:
     """Format data as ASCII table.
 
@@ -420,50 +483,19 @@ def format_table(headers: list[str], rows: list[list[Any]], alignment: list[str]
     str_rows = [[str(cell) for cell in row] for row in rows]
 
     # Calculate column widths
-    widths = [len(h) for h in str_headers]
-    for row in str_rows:
-        for i, cell in enumerate(row):
-            if i < len(widths):
-                widths[i] = max(widths[i], len(cell))
+    widths = _calculate_column_widths(str_headers, str_rows)
 
     # Default alignment
     if alignment is None:
         alignment = ["l"] * len(headers)
 
-    # Format header
-    header_parts = []
-    separator_parts = []
+    # Format header and separator
+    header_line, separator_line = _format_table_header(str_headers, widths, alignment)
+    lines = [header_line, separator_line]
 
-    for i, (header, width) in enumerate(zip(str_headers, widths, strict=False)):
-        align = alignment[i] if i < len(alignment) else "l"
-
-        if align == "r":
-            header_parts.append(header.rjust(width))
-        elif align == "c":
-            header_parts.append(header.center(width))
-        else:
-            header_parts.append(header.ljust(width))
-
-        separator_parts.append("-" * width)
-
-    lines = [" | ".join(header_parts), "-|-".join(separator_parts)]
-
-    # Format rows
+    # Format data rows
     for row in str_rows:
-        row_parts = []
-        for i, cell in enumerate(row):
-            if i < len(widths):
-                width = widths[i]
-                align = alignment[i] if i < len(alignment) else "l"
-
-                if align == "r":
-                    row_parts.append(cell.rjust(width))
-                elif align == "c":
-                    row_parts.append(cell.center(width))
-                else:
-                    row_parts.append(cell.ljust(width))
-
-        lines.append(" | ".join(row_parts))
+        lines.append(_format_table_row(row, widths, alignment))
 
     return "\n".join(lines)
 

@@ -51,9 +51,9 @@ def get_foundation_log_stream(output_setting: str) -> TextIO:
         # Invalid value - warn and default to stderr
         # Import config logger here to avoid circular dependency
         try:
-            from provide.foundation.logger.config import _get_config_logger
+            from provide.foundation.logger.config.base import get_config_logger
 
-            _get_config_logger().warning(
+            get_config_logger().warning(
                 "[Foundation Config Warning] Invalid FOUNDATION_LOG_OUTPUT value, using stderr",
                 invalid_value=output_setting,
                 valid_options=["stderr", "stdout", "main"],

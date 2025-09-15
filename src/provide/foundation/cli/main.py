@@ -1,6 +1,8 @@
 """Main CLI entry point for Foundation.
 """
 
+from __future__ import annotations
+
 try:
     import click
 
@@ -22,7 +24,7 @@ if _HAS_CLICK:
 
     @click.group()
     @click.version_option()
-    def cli():
+    def cli() -> None:
         """Foundation CLI - Telemetry and observability tools."""
 
     # Register commands from commands module
@@ -53,7 +55,7 @@ if _HAS_CLICK:
 
 else:
 
-    def cli():
+    def cli() -> None:
         """CLI stub when click is not available."""
         _require_click()
 

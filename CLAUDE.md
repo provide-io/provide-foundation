@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Development Environment Setup
 
-**IMPORTANT**: Use `source env.sh` to set up the environment. This script provisions a virtual environment in `workenv/` (NOT `.venv`). The environment setup handles:
+**IMPORTANT**: Use `source workenv/env.sh` to set up the environment. This script provisions a virtual environment in `workenv/` (NOT `.venv`). The environment setup handles:
 - Python 3.11+ requirement
 - UV package manager for dependency management
 - Platform-specific virtual environments (e.g., `workenv/provide-foundation_darwin_arm64`)
@@ -17,7 +17,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 # Environment setup (always use this instead of manual venv creation)
-source env.sh
+source workenv/env.sh
 
 # Run tests
 pytest                           # Run all tests
@@ -76,16 +76,51 @@ uv publish                      # Publish to PyPI
 
 ## Testing Strategy
 
+### Core Testing Requirements
+
+**CRITICAL**: When testing provide-foundation or any application that uses it, `provide-testkit` MUST be available and used. This is non-negotiable.
+
+- **provide-testkit dependency**: Required in dev dependencies (already configured)
+- **Foundation reset**: ALWAYS use `reset_foundation_setup_for_testing()` in test fixtures
+- **Log stream control**: Use `set_log_stream_for_testing()` for capturing Foundation logs
+- **Context detection**: Testkit automatically detects testing environments
+
+### Standard Testing Pattern
+
+```python
+import pytest
+from provide.testkit import (
+    reset_foundation_setup_for_testing,
+    set_log_stream_for_testing,
+)
+
+@pytest.fixture(autouse=True)
+def reset_foundation():
+    """Reset Foundation state before each test."""
+    reset_foundation_setup_for_testing()
+```
+
+### Testing Infrastructure
+
 - Comprehensive test coverage including unit, integration, and property-based tests
 - Tests use `pytest` with async support via `pytest-asyncio`
 - Parallel test execution with `pytest-xdist`
 - Coverage tracking with `pytest-cov`
+- **Foundation-specific fixtures**: All provided by provide-testkit
+
+### Development Requirement
+
+If `provide-testkit` is not available in the environment, **PAUSE DEVELOPMENT** and install it:
+```bash
+uv add provide-testkit --group dev
+```
 
 ## Common Issues & Solutions
 
-1. **ModuleNotFoundError for dependencies**: Run `source env.sh` to ensure proper environment setup
+1. **ModuleNotFoundError for dependencies**: Run `source workenv/env.sh` to ensure proper environment setup
 2. **Test failures related to from_env**: The `TelemetryConfig.from_env()` method needs to be properly exposed as a class method
 3. **Import errors**: Ensure PYTHONPATH includes both `src/` and project root
+4. **Asyncio debug messages**: The logger automatically suppresses asyncio DEBUG messages (e.g., "Using selector: KqueueSelector") via module-level configuration. Override with `PROVIDE_LOG_MODULE_LEVELS="asyncio:DEBUG"` if needed.
 
 ## Development Guidelines
 
@@ -120,4 +155,28 @@ uv publish                      # Publish to PyPI
 
 - **Low-Level Infrastructure**: Only use `print()` to stderr where using Foundation logger would create circular dependencies
   - Example: In `streams/file.py` where the logger itself depends on these components
+
+## Third-Party Module Log Control
+
+The logging system provides fine-grained control over third-party module logging via module-level configuration:
+
+### Default Suppressions
+
+- **asyncio**: Set to INFO level to suppress debug messages like "Using selector: KqueueSelector"
+
+### Environment Variable Override
+
+Control module-specific log levels via `PROVIDE_LOG_MODULE_LEVELS`:
+
+```bash
+# Allow asyncio debug messages
+export PROVIDE_LOG_MODULE_LEVELS="asyncio:DEBUG"
+
+# Multiple modules (suppress urllib3 info, allow asyncio debug)
+export PROVIDE_LOG_MODULE_LEVELS="urllib3:WARNING,asyncio:DEBUG"
+
+# Suppress multiple third-party modules
+export PROVIDE_LOG_MODULE_LEVELS="asyncio:WARNING,urllib3:ERROR,requests:WARNING"
+```
+
 - it is okay to use future annotation for unquoted types.

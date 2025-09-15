@@ -46,7 +46,7 @@ from provide.foundation.hub.registry import (
 
 
 # CLI features (require click) - lazy loaded
-def get_click_commands():
+def get_click_commands() -> dict[str, object]:
     """Get CLI command building functions.
 
     Returns:

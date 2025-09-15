@@ -33,17 +33,18 @@ from typing import Any
 # Add src to path for development
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from provide.foundation import (
-    LoggingConfig,
-    TelemetryConfig,
-    logger,
-    setup_telemetry,
-)
 from provide.testkit.logger import (
     reset_foundation_setup_for_testing,
 )
 from provide.testkit.streams import (
     set_log_stream_for_testing,
+)
+
+from provide.foundation import (
+    LoggingConfig,
+    TelemetryConfig,
+    logger,
+    setup_telemetry,
 )
 
 

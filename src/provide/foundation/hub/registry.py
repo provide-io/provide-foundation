@@ -14,7 +14,6 @@ from attrs import define, field
 from provide.foundation.errors.resources import AlreadyExistsError
 
 
-
 @define(frozen=True, slots=True)
 class RegistryEntry:
     """A single entry in the registry."""

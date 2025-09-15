@@ -1,7 +1,6 @@
 """Comprehensive tests for OpenObserve OTLP integration module."""
 
-from unittest.mock import Mock, patch, MagicMock
-import pytest
+from unittest.mock import Mock, patch
 
 
 class TestOTLPConstants:

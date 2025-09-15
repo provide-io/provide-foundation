@@ -4,6 +4,8 @@ This module provides the foundation for tool managers, including
 the base manager class and metadata structures.
 """
 
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from pathlib import Path
 
@@ -113,7 +115,7 @@ class BaseToolManager(ABC):
         log.debug(f"Initialized {self.tool_name} manager")
 
     @property
-    def cache(self):
+    def cache(self) -> object:
         """Get or create cache instance."""
         if self._cache is None:
             from provide.foundation.tools.cache import ToolCache
@@ -122,7 +124,7 @@ class BaseToolManager(ABC):
         return self._cache
 
     @property
-    def downloader(self):
+    def downloader(self) -> object:
         """Get or create downloader instance."""
         if self._downloader is None:
             from provide.foundation.tools.downloader import ToolDownloader
@@ -132,7 +134,7 @@ class BaseToolManager(ABC):
         return self._downloader
 
     @property
-    def verifier(self):
+    def verifier(self) -> object:
         """Get or create verifier instance."""
         if self._verifier is None:
             from provide.foundation.tools.verifier import ToolVerifier
@@ -141,7 +143,7 @@ class BaseToolManager(ABC):
         return self._verifier
 
     @property
-    def installer(self):
+    def installer(self) -> object:
         """Get or create installer instance."""
         if self._installer is None:
             from provide.foundation.tools.installer import ToolInstaller
@@ -150,7 +152,7 @@ class BaseToolManager(ABC):
         return self._installer
 
     @property
-    def resolver(self):
+    def resolver(self) -> object:
         """Get or create version resolver instance."""
         if self._resolver is None:
             from provide.foundation.tools.resolver import VersionResolver

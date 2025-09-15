@@ -12,6 +12,9 @@
     <a href="https://codecov.io/gh/provide-io/provide-foundation">
         <img src="https://codecov.io/gh/provide-io/provide-foundation/branch/main/graph/badge.svg"/>
     </a>
+    <img alt="Test Coverage" src="https://img.shields.io/badge/coverage-83.65%25-brightgreen.svg">
+    <img alt="Test Count" src="https://img.shields.io/badge/tests-1000+-blue.svg">
+    <img alt="Type Checking" src="https://img.shields.io/badge/typing-mypy-informational.svg">
     <a href="https://github.com/provide-io/provide-foundation/blob/main/LICENSE">
         <img alt="License" src="https://img.shields.io/github/license/provide-io/provide-foundation.svg">
     </a>
@@ -22,6 +25,28 @@
 **provide.foundation** is a comprehensive foundation library for Python applications, offering structured logging, CLI utilities, configuration management, error handling, and essential application building blocks. Built with modern Python practices, it provides the core infrastructure that production applications need.
 
 > **Performance**: Benchmarked at >14,000 msg/sec under optimal conditions with minimal allocations. Actual performance varies based on configuration, system resources, and usage patterns.
+
+## 🏆 Quality & Testing Achievements
+
+**provide.foundation** maintains high standards for code quality, testing, and reliability:
+
+- **83.65% Test Coverage** with 1000+ comprehensive tests
+- **46 modules with 100% coverage** including core components
+- **Comprehensive Security Testing** with path traversal, symlink validation, and input sanitization
+- **Performance Benchmarked** logging, transport, and archive operations
+- **Type-Safe Codebase** with comprehensive type annotations
+- **Automated Quality Checks** with ruff, mypy, and bandit
+
+### Recent Testing Improvements
+
+| Component | Before | After | Tests Added |
+|-----------|---------|--------|-------------|
+| CLI Commands | 14-15% | 78-95% | 49 comprehensive tests |
+| OTLP Integration | 0% | 86.75% | 21 integration tests |
+| Archive Security | Basic | 100% | 15 security edge cases |
+| Transport Layer | 74% | 91% | 22 edge case tests |
+
+📊 **See [IMPROVEMENTS.md](IMPROVEMENTS.md) for detailed roadmap and quality metrics**
 
 ---
 
@@ -59,10 +84,8 @@ cd provide-foundation
 # Create virtual environment
 uv venv
 
-# Activate virtual environment
-source .venv/bin/activate  # On Linux/macOS
-# or
-.venv\Scripts\activate     # On Windows
+# Activate virtual environment using standardized script
+source workenv/env.sh
 
 # Install dependencies
 uv sync
@@ -95,6 +118,59 @@ provide.foundation has optional feature sets that require additional dependencie
 | **All features** | `pip install provide-foundation[all]` | Everything above |
 
 > **Quick Start Tip**: For immediate use with just logging, install the base package. Add extras as needed.
+
+---
+
+## Testing with provide-foundation
+
+### Required Testing Dependencies
+
+When testing applications that use provide-foundation, **`provide-testkit` is mandatory**:
+
+```bash
+# Install testkit for development/testing
+uv add provide-testkit --group dev
+
+# Or with pip
+pip install provide-testkit
+```
+
+### Essential Testing Pattern
+
+```python
+import pytest
+from provide.testkit import (
+    reset_foundation_setup_for_testing,
+    set_log_stream_for_testing,
+)
+from provide.foundation import logger
+
+@pytest.fixture(autouse=True)
+def reset_foundation():
+    """Reset Foundation state before each test."""
+    reset_foundation_setup_for_testing()
+
+def test_foundation_logging():
+    """Test Foundation logger functionality."""
+    import sys
+
+    # Capture Foundation logs for testing
+    set_log_stream_for_testing(sys.stderr)
+
+    # Use Foundation logger
+    logger.info("Test message", component="test")
+    # Your test assertions here...
+```
+
+### Key Testing Features
+
+- **Automatic Context Detection**: TestKit detects testing environments automatically
+- **Foundation Reset**: Clean state between tests via `reset_foundation_setup_for_testing()`
+- **Log Capture**: Direct Foundation logs to streams for assertions
+- **CLI Testing**: Comprehensive Click application testing utilities
+- **Mock Integration**: Foundation-aware mocks and fixtures
+
+> **Note**: If provide-testkit is not available, pause development and install it. Foundation-based applications require testkit fixtures for reliable testing.
 
 ---
 

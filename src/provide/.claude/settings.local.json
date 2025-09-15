@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//REDACTED_ABS_PATH**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

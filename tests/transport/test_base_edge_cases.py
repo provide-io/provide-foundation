@@ -1,12 +1,13 @@
 """Edge case tests for transport base classes and types."""
 
 import json
+from unittest.mock import AsyncMock
+
 import pytest
-from unittest.mock import AsyncMock, Mock
 
 from provide.foundation.transport.base import Request, Response, TransportBase
-from provide.foundation.transport.types import TransportType
 from provide.foundation.transport.errors import HTTPResponseError
+from provide.foundation.transport.types import TransportType
 
 
 class TestRequestEdgeCases:
@@ -77,7 +78,7 @@ class TestResponseEdgeCases:
 
     def test_text_with_bytes_body(self):
         """Test text extraction from bytes body."""
-        text_bytes = "Hello, 世界".encode("utf-8")
+        text_bytes = "Hello, 世界".encode()
         response = Response(status=200, body=text_bytes)
 
         assert response.text == "Hello, 世界"

@@ -77,23 +77,29 @@ from provide.foundation.utils import (
 # Lazy loading support for optional modules
 def __getattr__(name: str) -> object:
     """Support lazy loading of optional modules."""
-    if name == "cli":
-        try:
-            import provide.foundation.cli as cli
+    match name:
+        case "cli":
+            try:
+                import provide.foundation.cli as cli
 
-            return cli
-        except ImportError as e:
-            if "click" in str(e):
-                raise ImportError(
-                    "CLI features require optional dependencies. Install with: "
-                    "pip install 'provide-foundation[cli]'",
-                ) from e
-            raise
-    elif name == "metrics":
-        import provide.foundation.metrics as metrics
+                return cli
+            except ImportError as e:
+                if "click" in str(e):
+                    raise ImportError(
+                        "CLI features require optional dependencies. Install with: "
+                        "pip install 'provide-foundation[cli]'",
+                    ) from e
+                raise
+        case "crypto":
+            import provide.foundation.crypto as crypto
 
-        return metrics
-    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+            return crypto
+        case "metrics":
+            import provide.foundation.metrics as metrics
+
+            return metrics
+        case _:
+            raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
 
 
 __all__ = [
@@ -133,6 +139,8 @@ __all__ = [
     "clear_hub",
     # Config module
     "config",
+    # Crypto module (lazy loaded)
+    "crypto",
     "error_boundary",
     "errors",  # The errors module for detailed imports
     "fallback",
