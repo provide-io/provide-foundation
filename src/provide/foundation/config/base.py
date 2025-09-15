@@ -6,7 +6,7 @@ from collections.abc import Callable
 import copy
 from typing import Any, Self, TypeVar
 
-from attrs import NOTHING, Attribute, define, field as attrs_field, fields
+from provide.foundation.types.attrs import NOTHING, Attribute, define, field as attrs_field, fields
 
 from provide.foundation.config.types import ConfigDict, ConfigSource
 

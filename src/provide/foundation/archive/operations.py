@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from attrs import define, field
+from provide.foundation.types.attrs import define, field
 
 from provide.foundation.archive.base import ArchiveError
 from provide.foundation.archive.bzip2 import Bzip2Compressor
