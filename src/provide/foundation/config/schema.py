@@ -6,7 +6,7 @@ import asyncio
 from collections.abc import Awaitable, Callable
 from typing import Any
 
-from provide.foundation.types.attrs import Attribute, define, fields
+from attrs import Attribute, define, fields
 
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.types import ConfigDict

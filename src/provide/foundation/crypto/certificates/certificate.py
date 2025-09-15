@@ -6,7 +6,7 @@ from datetime import UTC, datetime
 from functools import cached_property
 from typing import TYPE_CHECKING, Any, Self
 
-from provide.foundation.types.attrs import Factory, define, field
+from attrs import Factory, define, field
 
 if TYPE_CHECKING:
     from cryptography import x509

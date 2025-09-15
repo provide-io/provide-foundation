@@ -1,1 +1,0 @@
-"""Type utilities and abstractions for provide.foundation."""
