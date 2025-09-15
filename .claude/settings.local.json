@@ -36,7 +36,9 @@
       "Bash(PYTHONPATH=src pytest tests/test_docs_generator.py::TestAPIDocGenerator::test_should_skip_small_init_files -xvs)",
       "Bash(PYTHONPATH=src pytest tests/test_docs_generator.py::TestAPIDocGenerator::test_should_skip_private_modules -xvs)",
       "Bash(PYTHONPATH=src pytest tests/test_docs_generator.py::TestAPIDocGenerator::test_should_skip_skip_patterns -xvs)",
-      "Bash(PYTHONPATH=src pytest tests/test_docs_generator.py --collect-only)"
+      "Bash(PYTHONPATH=src pytest tests/test_docs_generator.py --collect-only)",
+      "Bash(PYTHONPATH=src pytest tests/test_docs_generator.py -v)",
+      "Bash(PYTHONPATH=src pytest tests/test_docs_generator.py::TestAPIDocGenerator::test_generate_full_workflow -xvs)"
     ],
     "deny": [],
     "ask": [],
