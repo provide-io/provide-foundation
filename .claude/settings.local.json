@@ -34,7 +34,9 @@
       "Bash(PYTHONPATH=src pytest -x --tb=short -q)",
       "Bash(PYTHONPATH=src pytest tests/logger/processors/test_trace_coverage.py::TestTraceProcessorImports::test_otel_import_handling -xvs)",
       "Bash(PYTHONPATH=src pytest tests/test_docs_generator.py::TestAPIDocGenerator::test_should_skip_small_init_files -xvs)",
-      "Bash(PYTHONPATH=src pytest tests/test_docs_generator.py::TestAPIDocGenerator::test_should_skip_private_modules -xvs)"
+      "Bash(PYTHONPATH=src pytest tests/test_docs_generator.py::TestAPIDocGenerator::test_should_skip_private_modules -xvs)",
+      "Bash(PYTHONPATH=src pytest tests/test_docs_generator.py::TestAPIDocGenerator::test_should_skip_skip_patterns -xvs)",
+      "Bash(PYTHONPATH=src pytest tests/test_docs_generator.py --collect-only)"
     ],
     "deny": [],
     "ask": [],
