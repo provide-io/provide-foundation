@@ -1,5 +1,4 @@
-"""Type definitions for resilience patterns.
-"""
+"""Type definitions for resilience patterns."""
 
 from enum import Enum
 

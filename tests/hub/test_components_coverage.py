@@ -18,7 +18,7 @@ from provide.foundation.hub.components import (
 class TestComponentLifecycle:
     """Test component lifecycle management functionality."""
 
-    def test_cleanup_all_components_with_cleanup_support(self):
+    def test_cleanup_all_components_with_cleanup_support(self) -> None:
         """Test cleanup of components that support cleanup."""
         registry = get_component_registry()
 
@@ -54,7 +54,7 @@ class TestComponentLifecycle:
         # Cleanup
         registry.clear()
 
-    def test_cleanup_all_components_with_exception(self):
+    def test_cleanup_all_components_with_exception(self) -> None:
         """Test cleanup continues even if one component fails."""
         registry = get_component_registry()
 
@@ -93,7 +93,7 @@ class TestComponentLifecycle:
 class TestConfigSourceFunctionality:
     """Test configuration source functionality."""
 
-    def test_get_config_value_with_sources(self):
+    def test_get_config_value_with_sources(self) -> None:
         """Test getting config value from registered sources."""
         registry = get_component_registry()
 
@@ -128,7 +128,7 @@ class TestConfigSourceFunctionality:
         # Cleanup
         registry.clear()
 
-    def test_get_config_value_with_exception(self):
+    def test_get_config_value_with_exception(self) -> None:
         """Test config value retrieval with source exceptions."""
         registry = get_component_registry()
 
@@ -161,12 +161,12 @@ class TestConfigSourceFunctionality:
         # Cleanup
         registry.clear()
 
-    def test_resolve_config_value_no_sources(self):
+    def test_resolve_config_value_no_sources(self) -> None:
         """Test config value retrieval with no sources."""
         result = resolve_config_value("test_key")
         assert result is None
 
-    def test_get_config_value_no_matching_sources(self):
+    def test_get_config_value_no_matching_sources(self) -> None:
         """Test config value with sources that don't have get_value method."""
         registry = get_component_registry()
 
@@ -186,7 +186,7 @@ class TestConfigSourceFunctionality:
         # Cleanup
         registry.clear()
 
-    def test_get_config_chain(self):
+    def test_get_config_chain(self) -> None:
         """Test getting configuration sources chain."""
         registry = get_component_registry()
 

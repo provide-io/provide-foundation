@@ -12,7 +12,7 @@ from provide.foundation._version import __version__, _find_project_root, get_ver
 class TestVersionSimpleCoverage:
     """Simple tests for version module coverage."""
 
-    def test_find_project_root_actual(self):
+    def test_find_project_root_actual(self) -> None:
         """Test _find_project_root with actual filesystem."""
         # Test the actual function - it will find a project root or return None
         result = _find_project_root()
@@ -24,7 +24,7 @@ class TestVersionSimpleCoverage:
         if result is not None:
             assert result.exists()
 
-    def test_get_version_actual(self):
+    def test_get_version_actual(self) -> None:
         """Test get_version with actual implementation."""
         # Test the actual get_version function
         version = get_version()
@@ -49,7 +49,7 @@ class TestVersionSimpleCoverage:
             ],
         )
 
-    def test_version_attribute_set(self):
+    def test_version_attribute_set(self) -> None:
         """Test that __version__ is properly set."""
         # The __version__ should be set by get_version()
         assert isinstance(__version__, str)
@@ -58,7 +58,7 @@ class TestVersionSimpleCoverage:
         # Should match what get_version() returns
         assert __version__ == get_version()
 
-    def test_version_fallback_scenario(self):
+    def test_version_fallback_scenario(self) -> None:
         """Test version fallback by mocking the importlib import."""
         # Test the fallback path by mocking _find_project_root to return None
         with patch("provide.foundation._version._find_project_root", return_value=None):
@@ -67,7 +67,7 @@ class TestVersionSimpleCoverage:
             assert isinstance(version, str)
             assert len(version) > 0
 
-    def test_version_file_scenario(self):
+    def test_version_file_scenario(self) -> None:
         """Test VERSION file reading scenario."""
         # Create a temporary directory with VERSION file
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -82,7 +82,7 @@ class TestVersionSimpleCoverage:
                 version = get_version()
                 assert version == "9.9.9-test"
 
-    def test_version_file_missing_scenario(self):
+    def test_version_file_missing_scenario(self) -> None:
         """Test scenario where project root exists but no VERSION file."""
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)
@@ -97,7 +97,7 @@ class TestVersionSimpleCoverage:
                 assert isinstance(version, str)
                 assert len(version) > 0
 
-    def test_importlib_metadata_fallback(self):
+    def test_importlib_metadata_fallback(self) -> None:
         """Test importlib.metadata fallback path."""
         # Mock _find_project_root to return None (no VERSION file)
         with patch("provide.foundation._version._find_project_root", return_value=None):
@@ -109,7 +109,7 @@ class TestVersionSimpleCoverage:
                 assert version == "metadata-version"
                 mock_version.assert_called_once_with("provide-foundation")
 
-    def test_package_not_found_fallback(self):
+    def test_package_not_found_fallback(self) -> None:
         """Test PackageNotFoundError fallback to development version."""
         from importlib.metadata import PackageNotFoundError
 
@@ -123,7 +123,7 @@ class TestVersionSimpleCoverage:
                 assert version == "0.0.0-dev"
                 mock_version.assert_called_once_with("provide-foundation")
 
-    def test_version_with_whitespace(self):
+    def test_version_with_whitespace(self) -> None:
         """Test VERSION file with whitespace handling."""
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)
@@ -137,7 +137,7 @@ class TestVersionSimpleCoverage:
                 version = get_version()
                 assert version == "1.2.3-whitespace"  # Should be stripped
 
-    def test_filesystem_root_condition(self):
+    def test_filesystem_root_condition(self) -> None:
         """Test _find_project_root filesystem root condition."""
         # Create a mock that simulates the filesystem root condition
         with patch("provide.foundation._version.Path") as mock_path_class:
@@ -156,7 +156,7 @@ class TestVersionSimpleCoverage:
             # (This tests the line 23 return None)
             assert result is None
 
-    def test_version_file_exists_check(self):
+    def test_version_file_exists_check(self) -> None:
         """Test the VERSION file existence check in get_version."""
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)
@@ -182,7 +182,7 @@ class TestVersionSimpleCoverage:
 class TestVersionModuleBehavior:
     """Test version module behavior and imports."""
 
-    def test_module_level_version_setting(self):
+    def test_module_level_version_setting(self) -> None:
         """Test that module-level __version__ is properly set."""
         # Import the module's __version__
         from provide.foundation._version import __version__
@@ -196,7 +196,7 @@ class TestVersionModuleBehavior:
 
         assert __version__ == get_version()
 
-    def test_imports_work(self):
+    def test_imports_work(self) -> None:
         """Test that all module imports work."""
         from provide.foundation._version import (
             __version__,
@@ -209,7 +209,7 @@ class TestVersionModuleBehavior:
         assert callable(get_version)
         assert isinstance(__version__, str)
 
-    def test_path_operations(self):
+    def test_path_operations(self) -> None:
         """Test Path operations used in _find_project_root."""
         # Test that the function handles Path operations without errors
         result = _find_project_root()
@@ -221,7 +221,7 @@ class TestVersionModuleBehavior:
         if result:
             assert result.is_dir() or result.exists()
 
-    def test_version_string_format(self):
+    def test_version_string_format(self) -> None:
         """Test version string format expectations."""
         version = get_version()
 
@@ -235,7 +235,7 @@ class TestVersionModuleBehavior:
         )
         assert all(c in allowed_chars for c in version)
 
-    def test_error_handling_robustness(self):
+    def test_error_handling_robustness(self) -> None:
         """Test that version functions handle errors gracefully."""
         # Even with various mocked error conditions, should not crash
         test_cases = [
@@ -243,7 +243,7 @@ class TestVersionModuleBehavior:
             (Path("/nonexistent"), "fallback worked"),  # Invalid project root
         ]
 
-        for mock_root, description in test_cases:
+        for mock_root, _description in test_cases:
             with patch(
                 "provide.foundation._version._find_project_root", return_value=mock_root,
             ):
@@ -258,7 +258,7 @@ class TestVersionModuleBehavior:
 class TestVersionCoverageSpecific:
     """Tests specifically targeting missing coverage lines."""
 
-    def test_cover_line_23_none_return(self):
+    def test_cover_line_23_none_return(self) -> None:
         """Specifically test line 23 return None."""
         # This creates a scenario where the while loop exits due to reaching filesystem root
         with patch("provide.foundation._version.Path") as mock_path_class:
@@ -271,7 +271,7 @@ class TestVersionCoverageSpecific:
             result = _find_project_root()
             assert result is None
 
-    def test_cover_lines_43_51_importlib_fallback(self):
+    def test_cover_lines_43_51_importlib_fallback(self) -> None:
         """Specifically test lines 43-51 importlib.metadata fallback."""
         with patch("provide.foundation._version._find_project_root", return_value=None):
             # This will test the importlib.metadata import and usage

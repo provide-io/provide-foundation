@@ -1,6 +1,7 @@
 """Comprehensive coverage tests for SchemaField validation and edge cases."""
 
 import asyncio
+from typing import Never
 
 import pytest
 
@@ -14,7 +15,7 @@ class TestSchemaFieldComprehensive:
     """Comprehensive tests for SchemaField validation."""
 
     @pytest.mark.asyncio
-    async def test_validate_required_field_missing(self):
+    async def test_validate_required_field_missing(self) -> None:
         """Test validation fails for missing required field."""
         field_obj = SchemaField(name="test_field", required=True)
 
@@ -22,7 +23,7 @@ class TestSchemaFieldComprehensive:
             await field_obj.validate(None)
 
     @pytest.mark.asyncio
-    async def test_validate_required_field_present(self):
+    async def test_validate_required_field_present(self) -> None:
         """Test validation passes for present required field."""
         field_obj = SchemaField(name="test_field", required=True, field_type=str)
 
@@ -30,7 +31,7 @@ class TestSchemaFieldComprehensive:
         await field_obj.validate("test_value")
 
     @pytest.mark.asyncio
-    async def test_validate_optional_field_none(self):
+    async def test_validate_optional_field_none(self) -> None:
         """Test validation passes for None optional field."""
         field_obj = SchemaField(name="optional_field", required=False)
 
@@ -38,7 +39,7 @@ class TestSchemaFieldComprehensive:
         await field_obj.validate(None)
 
     @pytest.mark.asyncio
-    async def test_validate_type_mismatch(self):
+    async def test_validate_type_mismatch(self) -> None:
         """Test validation fails for type mismatch."""
         field_obj = SchemaField(name="test_field", field_type=int)
 
@@ -46,7 +47,7 @@ class TestSchemaFieldComprehensive:
             await field_obj.validate("not_an_int")
 
     @pytest.mark.asyncio
-    async def test_validate_type_correct(self):
+    async def test_validate_type_correct(self) -> None:
         """Test validation passes for correct type."""
         field_obj = SchemaField(name="test_field", field_type=int)
 
@@ -54,7 +55,7 @@ class TestSchemaFieldComprehensive:
         await field_obj.validate(42)
 
     @pytest.mark.asyncio
-    async def test_validate_choices_invalid(self):
+    async def test_validate_choices_invalid(self) -> None:
         """Test validation fails for invalid choice."""
         field_obj = SchemaField(name="test_field", choices=["option1", "option2"])
 
@@ -62,7 +63,7 @@ class TestSchemaFieldComprehensive:
             await field_obj.validate("invalid_option")
 
     @pytest.mark.asyncio
-    async def test_validate_choices_valid(self):
+    async def test_validate_choices_valid(self) -> None:
         """Test validation passes for valid choice."""
         field_obj = SchemaField(name="test_field", choices=["option1", "option2"])
 
@@ -70,7 +71,7 @@ class TestSchemaFieldComprehensive:
         await field_obj.validate("option1")
 
     @pytest.mark.asyncio
-    async def test_validate_min_value_fail(self):
+    async def test_validate_min_value_fail(self) -> None:
         """Test validation fails for value below minimum."""
         field_obj = SchemaField(name="test_field", min_value=10)
 
@@ -78,7 +79,7 @@ class TestSchemaFieldComprehensive:
             await field_obj.validate(5)
 
     @pytest.mark.asyncio
-    async def test_validate_min_value_pass(self):
+    async def test_validate_min_value_pass(self) -> None:
         """Test validation passes for value at or above minimum."""
         field_obj = SchemaField(name="test_field", min_value=10)
 
@@ -87,7 +88,7 @@ class TestSchemaFieldComprehensive:
         await field_obj.validate(15)
 
     @pytest.mark.asyncio
-    async def test_validate_max_value_fail(self):
+    async def test_validate_max_value_fail(self) -> None:
         """Test validation fails for value above maximum."""
         field_obj = SchemaField(name="test_field", max_value=100)
 
@@ -95,7 +96,7 @@ class TestSchemaFieldComprehensive:
             await field_obj.validate(150)
 
     @pytest.mark.asyncio
-    async def test_validate_max_value_pass(self):
+    async def test_validate_max_value_pass(self) -> None:
         """Test validation passes for value at or below maximum."""
         field_obj = SchemaField(name="test_field", max_value=100)
 
@@ -104,7 +105,7 @@ class TestSchemaFieldComprehensive:
         await field_obj.validate(50)
 
     @pytest.mark.asyncio
-    async def test_validate_pattern_fail(self):
+    async def test_validate_pattern_fail(self) -> None:
         """Test validation fails for pattern mismatch."""
         field_obj = SchemaField(name="test_field", pattern=r"^\d{3}-\d{4}$")
 
@@ -112,7 +113,7 @@ class TestSchemaFieldComprehensive:
             await field_obj.validate("invalid-format")
 
     @pytest.mark.asyncio
-    async def test_validate_pattern_pass(self):
+    async def test_validate_pattern_pass(self) -> None:
         """Test validation passes for pattern match."""
         field_obj = SchemaField(name="test_field", pattern=r"^\d{3}-\d{4}$")
 
@@ -120,7 +121,7 @@ class TestSchemaFieldComprehensive:
         await field_obj.validate("123-4567")
 
     @pytest.mark.asyncio
-    async def test_validate_pattern_non_string(self):
+    async def test_validate_pattern_non_string(self) -> None:
         """Test pattern validation skipped for non-string values."""
         field_obj = SchemaField(name="test_field", pattern=r"^\d+$")
 
@@ -128,7 +129,7 @@ class TestSchemaFieldComprehensive:
         await field_obj.validate(42)
 
     @pytest.mark.asyncio
-    async def test_validate_sync_validator_pass(self):
+    async def test_validate_sync_validator_pass(self) -> None:
         """Test validation with passing sync validator."""
 
         def validator(value):
@@ -140,7 +141,7 @@ class TestSchemaFieldComprehensive:
         await field_obj.validate(5)
 
     @pytest.mark.asyncio
-    async def test_validate_sync_validator_fail(self):
+    async def test_validate_sync_validator_fail(self) -> None:
         """Test validation with failing sync validator."""
 
         def validator(value):
@@ -152,7 +153,7 @@ class TestSchemaFieldComprehensive:
             await field_obj.validate(-5)
 
     @pytest.mark.asyncio
-    async def test_validate_async_validator_pass(self):
+    async def test_validate_async_validator_pass(self) -> None:
         """Test validation with passing async validator."""
 
         async def async_validator(value):
@@ -165,7 +166,7 @@ class TestSchemaFieldComprehensive:
         await field_obj.validate(5)
 
     @pytest.mark.asyncio
-    async def test_validate_async_validator_fail(self):
+    async def test_validate_async_validator_fail(self) -> None:
         """Test validation with failing async validator."""
 
         async def async_validator(value):
@@ -178,10 +179,10 @@ class TestSchemaFieldComprehensive:
             await field_obj.validate(-5)
 
     @pytest.mark.asyncio
-    async def test_validate_validator_raises_config_error(self):
+    async def test_validate_validator_raises_config_error(self) -> None:
         """Test validator that raises ConfigValidationError directly."""
 
-        def validator(value):
+        def validator(value) -> bool:
             if value < 0:
                 raise ConfigValidationError(
                     "Must be positive", field="test_field", value=value,
@@ -194,10 +195,10 @@ class TestSchemaFieldComprehensive:
             await field_obj.validate(-1)
 
     @pytest.mark.asyncio
-    async def test_validate_validator_raises_generic_error(self):
+    async def test_validate_validator_raises_generic_error(self) -> None:
         """Test validator that raises generic exception."""
 
-        def validator(value):
+        def validator(value) -> Never:
             raise ValueError("Generic error")
 
         field_obj = SchemaField(name="test_field", validator=validator)
@@ -208,7 +209,7 @@ class TestSchemaFieldComprehensive:
             await field_obj.validate(5)
 
     @pytest.mark.asyncio
-    async def test_validate_future_validator(self):
+    async def test_validate_future_validator(self) -> None:
         """Test validation with future-based validator."""
 
         async def create_future():
@@ -222,7 +223,7 @@ class TestSchemaFieldComprehensive:
         await field_obj.validate(5)
 
     @pytest.mark.asyncio
-    async def test_validate_all_constraints_combined(self):
+    async def test_validate_all_constraints_combined(self) -> None:
         """Test validation with all constraints combined."""
 
         def custom_validator(value):
@@ -270,7 +271,7 @@ class TestSchemaFieldEdgeCases:
     """Test edge cases and corner cases for SchemaField."""
 
     @pytest.mark.asyncio
-    async def test_validate_none_with_type_check(self):
+    async def test_validate_none_with_type_check(self) -> None:
         """Test that None values skip type checking."""
         field_obj = SchemaField(name="test", field_type=int, required=False)
 
@@ -278,7 +279,7 @@ class TestSchemaFieldEdgeCases:
         await field_obj.validate(None)
 
     @pytest.mark.asyncio
-    async def test_validate_comparison_operators_edge_cases(self):
+    async def test_validate_comparison_operators_edge_cases(self) -> None:
         """Test min/max validation with various types."""
         # String comparison
         field_obj = SchemaField(name="test", field_type=str, min_value="b", max_value="y")
@@ -292,10 +293,10 @@ class TestSchemaFieldEdgeCases:
             await field_obj.validate("z")  # Above max
 
     @pytest.mark.asyncio
-    async def test_validate_async_validator_coroutine_detection(self):
+    async def test_validate_async_validator_coroutine_detection(self) -> None:
         """Test proper detection of coroutines vs futures."""
 
-        async def async_validator(value):
+        async def async_validator(value) -> bool:
             return True
 
         field_obj = SchemaField(name="test", validator=async_validator)
@@ -304,7 +305,7 @@ class TestSchemaFieldEdgeCases:
         await field_obj.validate(42)
 
     @pytest.mark.asyncio
-    async def test_validate_complex_nested_validation(self):
+    async def test_validate_complex_nested_validation(self) -> None:
         """Test validation with complex nested constraints."""
 
         def complex_validator(value):

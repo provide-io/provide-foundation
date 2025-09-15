@@ -2,6 +2,7 @@
 """
 
 import asyncio
+from typing import Never
 from unittest.mock import ANY, AsyncMock, MagicMock, patch
 
 import pytest
@@ -13,22 +14,22 @@ from provide.foundation.resilience.retry import BackoffStrategy, RetryPolicy
 class TestRetryDecoratorSync:
     """Test @retry decorator with synchronous functions."""
 
-    def test_successful_function(self):
+    def test_successful_function(self) -> None:
         """Test decorated function that succeeds."""
 
         @retry(max_attempts=3)
-        def successful_func():
+        def successful_func() -> str:
             return "success"
 
         result = successful_func()
         assert result == "success"
 
-    def test_retry_on_failure(self):
+    def test_retry_on_failure(self) -> None:
         """Test that decorated function retries on failure."""
         attempt_count = 0
 
         @retry(max_attempts=3, base_delay=0.01)
-        def failing_func():
+        def failing_func() -> str:
             nonlocal attempt_count
             attempt_count += 1
             if attempt_count < 3:
@@ -40,12 +41,12 @@ class TestRetryDecoratorSync:
         assert result == "success"
         assert attempt_count == 3
 
-    def test_max_attempts_exceeded(self):
+    def test_max_attempts_exceeded(self) -> None:
         """Test that error is raised after max attempts."""
         attempt_count = 0
 
         @retry(max_attempts=2, base_delay=0.01)
-        def always_fails():
+        def always_fails() -> Never:
             nonlocal attempt_count
             attempt_count += 1
             raise ValueError(f"attempt {attempt_count}")
@@ -56,11 +57,11 @@ class TestRetryDecoratorSync:
         assert "attempt 2" in str(exc_info.value)
         assert attempt_count == 2
 
-    def test_specific_exception_types(self):
+    def test_specific_exception_types(self) -> None:
         """Test retrying only specific exception types."""
 
         @retry(ValueError, TypeError, max_attempts=3, base_delay=0.01)
-        def selective_retry(error_type):
+        def selective_retry(error_type) -> Never:
             if error_type == "value":
                 raise ValueError("value error")
             if error_type == "type":
@@ -79,7 +80,7 @@ class TestRetryDecoratorSync:
         with pytest.raises(RuntimeError):
             selective_retry("runtime")
 
-    def test_with_retry_policy(self):
+    def test_with_retry_policy(self) -> None:
         """Test decorator with RetryPolicy object."""
         policy = RetryPolicy(
             max_attempts=2,
@@ -90,7 +91,7 @@ class TestRetryDecoratorSync:
         attempt_count = 0
 
         @retry(policy=policy)
-        def func_with_policy():
+        def func_with_policy() -> str:
             nonlocal attempt_count
             attempt_count += 1
             if attempt_count == 1:
@@ -102,11 +103,11 @@ class TestRetryDecoratorSync:
         assert result == "success"
         assert attempt_count == 2
 
-    def test_function_with_arguments(self):
+    def test_function_with_arguments(self) -> None:
         """Test decorated function with arguments."""
 
         @retry(max_attempts=2, base_delay=0.01)
-        def func_with_args(a, b, c=None):
+        def func_with_args(a, b, c=None) -> str:
             if not hasattr(func_with_args, "called"):
                 func_with_args.called = True
                 raise ValueError("first")
@@ -115,12 +116,12 @@ class TestRetryDecoratorSync:
         result = func_with_args("x", "y", c="z")
         assert result == "x-y-z"
 
-    def test_on_retry_callback(self):
+    def test_on_retry_callback(self) -> None:
         """Test on_retry callback with decorator."""
         callback = MagicMock()
 
         @retry(max_attempts=2, base_delay=0.01, on_retry=callback)
-        def func_with_callback():
+        def func_with_callback() -> str:
             if not hasattr(func_with_callback, "called"):
                 func_with_callback.called = True
                 raise ValueError("fail")
@@ -131,11 +132,11 @@ class TestRetryDecoratorSync:
         assert result == "success"
         callback.assert_called_once_with(1, ANY)
 
-    def test_preserve_function_metadata(self):
+    def test_preserve_function_metadata(self) -> None:
         """Test that decorator preserves function metadata."""
 
         @retry(max_attempts=3)
-        def documented_func():
+        def documented_func() -> str:
             """This is a documented function."""
             return "result"
 
@@ -143,11 +144,11 @@ class TestRetryDecoratorSync:
         assert documented_func.__doc__ == "This is a documented function."
 
     @patch("time.sleep")
-    def test_delay_between_retries(self, mock_sleep):
+    def test_delay_between_retries(self, mock_sleep) -> None:
         """Test delay between retry attempts."""
 
         @retry(max_attempts=3, base_delay=1.0, jitter=False)
-        def failing_func():
+        def failing_func() -> Never:
             raise ValueError("fail")
 
         with pytest.raises(ValueError):
@@ -156,12 +157,12 @@ class TestRetryDecoratorSync:
         assert mock_sleep.call_count == 2
         mock_sleep.assert_any_call(1.0)
 
-    def test_mixed_decorator_parameters(self):
+    def test_mixed_decorator_parameters(self) -> None:
         """Test decorator with mixed positional and keyword arguments."""
 
         # Exceptions as positional, rest as kwargs
         @retry(ValueError, TypeError, max_attempts=2, base_delay=0.01)
-        def func1():
+        def func1() -> Never:
             raise ValueError("test")
 
         with pytest.raises(ValueError):
@@ -169,7 +170,7 @@ class TestRetryDecoratorSync:
 
         # Policy as keyword
         @retry(policy=RetryPolicy(max_attempts=1))
-        def func2():
+        def func2() -> Never:
             raise ValueError("test")
 
         with pytest.raises(ValueError):
@@ -177,7 +178,7 @@ class TestRetryDecoratorSync:
 
         # Just kwargs
         @retry(max_attempts=1, base_delay=0.01)
-        def func3():
+        def func3() -> Never:
             raise ValueError("test")
 
         with pytest.raises(ValueError):
@@ -188,23 +189,23 @@ class TestRetryDecoratorAsync:
     """Test @retry decorator with asynchronous functions."""
 
     @pytest.mark.asyncio
-    async def test_successful_async_function(self):
+    async def test_successful_async_function(self) -> None:
         """Test decorated async function that succeeds."""
 
         @retry(max_attempts=3)
-        async def successful_async():
+        async def successful_async() -> str:
             return "success"
 
         result = await successful_async()
         assert result == "success"
 
     @pytest.mark.asyncio
-    async def test_retry_on_async_failure(self):
+    async def test_retry_on_async_failure(self) -> None:
         """Test that decorated async function retries on failure."""
         attempt_count = 0
 
         @retry(max_attempts=3, base_delay=0.01)
-        async def failing_async():
+        async def failing_async() -> str:
             nonlocal attempt_count
             attempt_count += 1
             if attempt_count < 3:
@@ -217,12 +218,12 @@ class TestRetryDecoratorAsync:
         assert attempt_count == 3
 
     @pytest.mark.asyncio
-    async def test_async_max_attempts_exceeded(self):
+    async def test_async_max_attempts_exceeded(self) -> None:
         """Test that error is raised after max attempts in async."""
         attempt_count = 0
 
         @retry(max_attempts=2, base_delay=0.01)
-        async def always_fails_async():
+        async def always_fails_async() -> Never:
             nonlocal attempt_count
             attempt_count += 1
             raise ValueError(f"attempt {attempt_count}")
@@ -234,11 +235,11 @@ class TestRetryDecoratorAsync:
         assert attempt_count == 2
 
     @pytest.mark.asyncio
-    async def test_async_with_arguments(self):
+    async def test_async_with_arguments(self) -> None:
         """Test decorated async function with arguments."""
 
         @retry(max_attempts=2, base_delay=0.01)
-        async def async_with_args(a, b, *, c=None):
+        async def async_with_args(a, b, *, c=None) -> str:
             await asyncio.sleep(0)  # Ensure it's async
             if not hasattr(async_with_args, "called"):
                 async_with_args.called = True
@@ -249,12 +250,12 @@ class TestRetryDecoratorAsync:
         assert result == "x-y-z"
 
     @pytest.mark.asyncio
-    async def test_async_on_retry_callback(self):
+    async def test_async_on_retry_callback(self) -> None:
         """Test async on_retry callback."""
         callback = AsyncMock()
 
         @retry(max_attempts=2, base_delay=0.01, on_retry=callback)
-        async def async_with_callback():
+        async def async_with_callback() -> str:
             if not hasattr(async_with_callback, "called"):
                 async_with_callback.called = True
                 raise ValueError("fail")
@@ -266,12 +267,12 @@ class TestRetryDecoratorAsync:
         callback.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_sync_callback_with_async_function(self):
+    async def test_sync_callback_with_async_function(self) -> None:
         """Test sync callback with async decorated function."""
         callback = MagicMock()  # Sync callback
 
         @retry(max_attempts=2, base_delay=0.01, on_retry=callback)
-        async def async_func():
+        async def async_func() -> str:
             if not hasattr(async_func, "called"):
                 async_func.called = True
                 raise ValueError("fail")
@@ -284,12 +285,12 @@ class TestRetryDecoratorAsync:
 
     @pytest.mark.asyncio
     @patch("asyncio.sleep")
-    async def test_async_delay_between_retries(self, mock_sleep):
+    async def test_async_delay_between_retries(self, mock_sleep) -> None:
         """Test delay between async retry attempts."""
         mock_sleep.return_value = None
 
         @retry(max_attempts=3, base_delay=1.0, jitter=False)
-        async def failing_async():
+        async def failing_async() -> Never:
             raise ValueError("fail")
 
         with pytest.raises(ValueError):
@@ -299,11 +300,11 @@ class TestRetryDecoratorAsync:
         mock_sleep.assert_any_call(1.0)
 
     @pytest.mark.asyncio
-    async def test_preserve_async_function_metadata(self):
+    async def test_preserve_async_function_metadata(self) -> None:
         """Test that decorator preserves async function metadata."""
 
         @retry(max_attempts=3)
-        async def documented_async():
+        async def documented_async() -> str:
             """This is a documented async function."""
             return "result"
 
@@ -315,41 +316,41 @@ class TestRetryDecoratorAsync:
 class TestRetryDecoratorParameterValidation:
     """Test parameter validation for @retry decorator."""
 
-    def test_conflicting_parameters(self):
+    def test_conflicting_parameters(self) -> None:
         """Test that conflicting parameters raise errors."""
         # Can't specify both policy and individual params
         with pytest.raises(ValueError) as exc_info:
             @retry(policy=RetryPolicy(), max_attempts=5)
-            def func():
+            def func() -> None:
                 pass
 
         assert "both policy and" in str(exc_info.value).lower()
 
-    def test_invalid_max_attempts(self):
+    def test_invalid_max_attempts(self) -> None:
         """Test invalid max_attempts parameter."""
         with pytest.raises(ValueError):
             @retry(max_attempts=0)
-            def func():
+            def func() -> None:
                 pass
 
         with pytest.raises(ValueError):
             @retry(max_attempts=-1)
-            def func():
+            def func() -> None:
                 pass
 
-    def test_invalid_delay(self):
+    def test_invalid_delay(self) -> None:
         """Test invalid delay parameters."""
         with pytest.raises(ValueError):
             @retry(base_delay=-1.0)
-            def func():
+            def func() -> None:
                 pass
 
-    def test_no_parentheses_decorator(self):
+    def test_no_parentheses_decorator(self) -> None:
         """Test decorator used without parentheses."""
 
         # This should work
         @retry
-        def func():
+        def func() -> str:
             if not hasattr(func, "called"):
                 func.called = True
                 raise ValueError("first")
@@ -358,11 +359,11 @@ class TestRetryDecoratorParameterValidation:
         result = func()
         assert result == "success"
 
-    def test_positional_exceptions_only(self):
+    def test_positional_exceptions_only(self) -> None:
         """Test decorator with only exception types as positional args."""
 
         @retry(ValueError, TypeError)
-        def func(error_type):
+        def func(error_type) -> Never:
             if error_type == "value":
                 raise ValueError("test")
             if error_type == "type":
@@ -385,12 +386,12 @@ class TestRetryDecoratorLogging:
     """Test logging behavior of @retry decorator."""
 
     @patch("provide.foundation.hub.foundation.get_foundation_logger")
-    def test_retry_logging(self, mock_get_logger):
+    def test_retry_logging(self, mock_get_logger) -> None:
         """Test that retries are logged."""
         mock_logger = mock_get_logger.return_value
 
         @retry(max_attempts=2, base_delay=0.01)
-        def func():
+        def func() -> str:
             if not hasattr(func, "called"):
                 func.called = True
                 raise ValueError("test")
@@ -403,12 +404,12 @@ class TestRetryDecoratorLogging:
         mock_logger.info.assert_called()
 
     @patch("provide.foundation.hub.foundation.get_foundation_logger")
-    def test_failure_logging(self, mock_get_logger):
+    def test_failure_logging(self, mock_get_logger) -> None:
         """Test that final failure is logged."""
         mock_logger = mock_get_logger.return_value
 
         @retry(max_attempts=2, base_delay=0.01)
-        def always_fails():
+        def always_fails() -> Never:
             raise ValueError("test")
 
         with pytest.raises(ValueError):

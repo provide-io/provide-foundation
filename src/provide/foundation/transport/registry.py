@@ -1,5 +1,4 @@
-"""Transport registration and discovery using Foundation Hub.
-"""
+"""Transport registration and discovery using Foundation Hub."""
 
 from typing import Any
 

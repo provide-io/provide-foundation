@@ -67,8 +67,7 @@ def configure_structlog_output(
 
 
 def handle_globally_disabled_setup() -> None:
-    """Configure structlog for globally disabled telemetry (no-op mode).
-    """
+    """Configure structlog for globally disabled telemetry (no-op mode)."""
     structlog.configure(
         processors=[],
         logger_factory=structlog.ReturnLoggerFactory(),

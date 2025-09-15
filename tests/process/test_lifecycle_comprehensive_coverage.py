@@ -12,6 +12,8 @@ import pytest
 # Mark all tests in this file to run serially to avoid event loop issues
 pytestmark = pytest.mark.serial
 
+from typing import Never
+
 from provide.foundation.process.lifecycle import ManagedProcess, wait_for_process_output
 from provide.foundation.process.runner import ProcessError
 
@@ -19,7 +21,7 @@ from provide.foundation.process.runner import ProcessError
 class TestManagedProcessInitialization:
     """Test ManagedProcess initialization and properties."""
 
-    def test_basic_initialization(self):
+    def test_basic_initialization(self) -> None:
         """Test basic ManagedProcess initialization."""
         command = ["echo", "test"]
         proc = ManagedProcess(command)
@@ -33,7 +35,7 @@ class TestManagedProcessInitialization:
         assert proc._process is None
         assert proc._started is False
 
-    def test_initialization_with_cwd_string(self):
+    def test_initialization_with_cwd_string(self) -> None:
         """Test initialization with cwd as string."""
         command = ["pwd"]
         cwd = "/tmp"
@@ -41,7 +43,7 @@ class TestManagedProcessInitialization:
 
         assert proc.cwd == cwd
 
-    def test_initialization_with_cwd_path(self):
+    def test_initialization_with_cwd_path(self) -> None:
         """Test initialization with cwd as Path object."""
         command = ["pwd"]
         cwd = Path("/tmp")
@@ -49,7 +51,7 @@ class TestManagedProcessInitialization:
 
         assert proc.cwd == "/tmp"
 
-    def test_initialization_with_env(self):
+    def test_initialization_with_env(self) -> None:
         """Test initialization with custom environment."""
         command = ["env"]
         custom_env = {"TEST_VAR": "test_value"}
@@ -60,7 +62,7 @@ class TestManagedProcessInitialization:
         # Should include existing environment
         assert "PATH" in proc._env
 
-    def test_initialization_with_all_params(self):
+    def test_initialization_with_all_params(self) -> None:
         """Test initialization with all parameters."""
         command = ["sleep", "1"]
         proc = ManagedProcess(
@@ -82,7 +84,7 @@ class TestManagedProcessInitialization:
         assert proc.stderr_relay is False
         assert "shell" in proc.kwargs
 
-    def test_properties_before_launch(self):
+    def test_properties_before_launch(self) -> None:
         """Test properties when process not yet launched."""
         proc = ManagedProcess(["echo", "test"])
 
@@ -95,7 +97,7 @@ class TestManagedProcessInitialization:
 class TestManagedProcessLaunch:
     """Test ManagedProcess launch functionality."""
 
-    def test_successful_launch(self):
+    def test_successful_launch(self) -> None:
         """Test successful process launch."""
         proc = ManagedProcess(["echo", "test"])
         proc.launch()
@@ -109,7 +111,7 @@ class TestManagedProcessLaunch:
         proc._process.wait()
         proc.cleanup()
 
-    def test_launch_already_started_error(self):
+    def test_launch_already_started_error(self) -> None:
         """Test error when trying to launch already started process."""
         proc = ManagedProcess(["echo", "test"])
         proc.launch()
@@ -120,14 +122,14 @@ class TestManagedProcessLaunch:
         proc._process.wait()
         proc.cleanup()
 
-    def test_launch_with_invalid_command(self):
+    def test_launch_with_invalid_command(self) -> None:
         """Test launch with invalid command."""
         proc = ManagedProcess(["/nonexistent/command"])
 
         with pytest.raises(ProcessError, match="Failed to launch process"):
             proc.launch()
 
-    def test_launch_with_working_directory(self):
+    def test_launch_with_working_directory(self) -> None:
         """Test launch with specific working directory."""
         with tempfile.TemporaryDirectory() as tmpdir:
             proc = ManagedProcess(
@@ -141,7 +143,7 @@ class TestManagedProcessLaunch:
 
             proc.cleanup()
 
-    def test_properties_after_launch(self):
+    def test_properties_after_launch(self) -> None:
         """Test properties after successful launch."""
         proc = ManagedProcess(["sleep", "0.1"])
         proc.launch()
@@ -162,7 +164,7 @@ class TestManagedProcessOutput:
     """Test ManagedProcess output handling."""
 
     @pytest.mark.asyncio
-    async def test_read_line_async_success(self):
+    async def test_read_line_async_success(self) -> None:
         """Test successful async line reading."""
         proc = ManagedProcess(
             ["echo", "test line"], capture_output=True, text_mode=True,
@@ -176,7 +178,7 @@ class TestManagedProcessOutput:
         proc.cleanup()
 
     @pytest.mark.asyncio
-    async def test_read_line_async_no_process(self):
+    async def test_read_line_async_no_process(self) -> None:
         """Test read_line_async when process not running."""
         proc = ManagedProcess(["echo", "test"])
 
@@ -186,7 +188,7 @@ class TestManagedProcessOutput:
             await proc.read_line_async()
 
     @pytest.mark.asyncio
-    async def test_read_line_async_no_stdout(self):
+    async def test_read_line_async_no_stdout(self) -> None:
         """Test read_line_async when stdout not captured."""
         proc = ManagedProcess(["echo", "test"], capture_output=False)
         proc.launch()
@@ -200,7 +202,7 @@ class TestManagedProcessOutput:
         proc.cleanup()
 
     @pytest.mark.asyncio
-    async def test_read_char_async_success(self):
+    async def test_read_char_async_success(self) -> None:
         """Test successful async character reading."""
         proc = ManagedProcess(["echo", "x"], capture_output=True, text_mode=True)
         proc.launch()
@@ -212,7 +214,7 @@ class TestManagedProcessOutput:
         proc.cleanup()
 
     @pytest.mark.asyncio
-    async def test_read_char_async_no_process(self):
+    async def test_read_char_async_no_process(self) -> None:
         """Test read_char_async when process not running."""
         proc = ManagedProcess(["echo", "test"])
 
@@ -227,7 +229,7 @@ class TestManagedProcessStderrRelay:
 
     @patch("sys.stderr.write")
     @patch("sys.stderr.flush")
-    def test_stderr_relay_enabled(self, mock_flush, mock_write):
+    def test_stderr_relay_enabled(self, mock_flush, mock_write) -> None:
         """Test stderr relay when enabled."""
         # Create a process that outputs to stderr
         proc = ManagedProcess(
@@ -244,7 +246,7 @@ class TestManagedProcessStderrRelay:
         # Check if stderr was relayed (may not be called if process completes too quickly)
         proc.cleanup()
 
-    def test_stderr_relay_disabled(self):
+    def test_stderr_relay_disabled(self) -> None:
         """Test that stderr relay is not started when disabled."""
         proc = ManagedProcess(["echo", "test"], stderr_relay=False, capture_output=True)
         proc.launch()
@@ -254,7 +256,7 @@ class TestManagedProcessStderrRelay:
         proc._process.wait()
         proc.cleanup()
 
-    def test_stderr_relay_thread_creation(self):
+    def test_stderr_relay_thread_creation(self) -> None:
         """Test stderr relay thread is created when enabled."""
         proc = ManagedProcess(["sleep", "0.1"], stderr_relay=True, capture_output=True)
         proc.launch()
@@ -271,14 +273,14 @@ class TestManagedProcessStderrRelay:
 class TestManagedProcessTermination:
     """Test ManagedProcess termination functionality."""
 
-    def test_terminate_gracefully_not_started(self):
+    def test_terminate_gracefully_not_started(self) -> None:
         """Test graceful termination when process not started."""
         proc = ManagedProcess(["sleep", "1"])
         result = proc.terminate_gracefully()
 
         assert result is True  # No process to terminate
 
-    def test_terminate_gracefully_already_finished(self):
+    def test_terminate_gracefully_already_finished(self) -> None:
         """Test graceful termination when process already finished."""
         proc = ManagedProcess(["echo", "test"])
         proc.launch()
@@ -289,7 +291,7 @@ class TestManagedProcessTermination:
 
         proc.cleanup()
 
-    def test_terminate_gracefully_success(self):
+    def test_terminate_gracefully_success(self) -> None:
         """Test successful graceful termination."""
         proc = ManagedProcess(["sleep", "10"])
         proc.launch()
@@ -303,7 +305,7 @@ class TestManagedProcessTermination:
 
         proc.cleanup()
 
-    def test_terminate_gracefully_timeout(self):
+    def test_terminate_gracefully_timeout(self) -> None:
         """Test graceful termination with timeout (kill)."""
         # Create a process that ignores SIGTERM
         proc = ManagedProcess(
@@ -322,7 +324,7 @@ class TestManagedProcessTermination:
 
         proc.cleanup()
 
-    def test_cleanup(self):
+    def test_cleanup(self) -> None:
         """Test cleanup functionality."""
         proc = ManagedProcess(["echo", "test"])
         proc.launch()
@@ -341,7 +343,7 @@ class TestManagedProcessTermination:
 class TestManagedProcessContextManager:
     """Test ManagedProcess as context manager."""
 
-    def test_context_manager_success(self):
+    def test_context_manager_success(self) -> None:
         """Test successful context manager usage."""
         with ManagedProcess(["echo", "test"]) as proc:
             # No need to call launch() - context manager already does this
@@ -350,7 +352,7 @@ class TestManagedProcessContextManager:
         # Process should be cleaned up after context exit
         assert not proc.is_running()
 
-    def test_context_manager_exception(self):
+    def test_context_manager_exception(self) -> None:
         """Test context manager cleanup on exception."""
         try:
             with ManagedProcess(["sleep", "10"]) as proc:
@@ -366,12 +368,12 @@ class TestManagedProcessContextManager:
 class TestManagedProcessEdgeCases:
     """Test ManagedProcess edge cases and error conditions."""
 
-    def test_is_running_no_process(self):
+    def test_is_running_no_process(self) -> None:
         """Test is_running when no process exists."""
         proc = ManagedProcess(["echo", "test"])
         assert proc.is_running() is False
 
-    def test_launch_with_shell_kwarg(self):
+    def test_launch_with_shell_kwarg(self) -> None:
         """Test launch with shell=True kwarg."""
         if sys.platform != "win32":
             proc = ManagedProcess(["echo test"], shell=True)
@@ -383,7 +385,7 @@ class TestManagedProcessEdgeCases:
             proc.cleanup()
 
     @patch("subprocess.Popen")
-    def test_launch_subprocess_exception(self, mock_popen):
+    def test_launch_subprocess_exception(self, mock_popen) -> None:
         """Test launch when subprocess.Popen raises exception."""
         mock_popen.side_effect = OSError("Permission denied")
 
@@ -391,7 +393,7 @@ class TestManagedProcessEdgeCases:
         with pytest.raises(ProcessError, match="Failed to launch process"):
             proc.launch()
 
-    def test_stderr_relay_no_stderr(self):
+    def test_stderr_relay_no_stderr(self) -> None:
         """Test stderr relay when no stderr pipe."""
         proc = ManagedProcess(["echo", "test"], capture_output=False)
         proc.launch()
@@ -402,7 +404,7 @@ class TestManagedProcessEdgeCases:
         proc._process.wait()
         proc.cleanup()
 
-    def test_start_stderr_relay_no_process(self):
+    def test_start_stderr_relay_no_process(self) -> None:
         """Test _start_stderr_relay when no process."""
         proc = ManagedProcess(["echo", "test"])
         proc._start_stderr_relay()  # Should not crash
@@ -414,7 +416,7 @@ class TestWaitForProcessOutput:
     """Test wait_for_process_output function."""
 
     @pytest.mark.asyncio
-    async def test_wait_for_output_success(self):
+    async def test_wait_for_output_success(self) -> None:
         """Test successful output waiting."""
         proc = ManagedProcess(
             [
@@ -439,7 +441,7 @@ class TestWaitForProcessOutput:
         proc.cleanup()
 
     @pytest.mark.asyncio
-    async def test_wait_for_output_timeout(self):
+    async def test_wait_for_output_timeout(self) -> None:
         """Test timeout when expected output never comes."""
         proc = ManagedProcess(
             [sys.executable, "-c", "import time; time.sleep(2)"],
@@ -457,7 +459,7 @@ class TestWaitForProcessOutput:
         proc.cleanup()
 
     @pytest.mark.asyncio
-    async def test_wait_for_output_process_exits(self):
+    async def test_wait_for_output_process_exits(self) -> None:
         """Test when process exits before expected output."""
         proc = ManagedProcess(
             [sys.executable, "-c", "import sys; sys.exit(1)"],
@@ -473,7 +475,7 @@ class TestWaitForProcessOutput:
 
         proc.cleanup()
 
-    async def test_wait_for_output_char_fallback(self):
+    async def test_wait_for_output_char_fallback(self) -> None:
         """Test character-by-character fallback when line reading times out."""
         # Mock the read_line_async to raise TimeoutError
         proc = ManagedProcess(
@@ -491,7 +493,7 @@ class TestWaitForProcessOutput:
         original_read_line = proc.read_line_async
         original_read_char = proc.read_char_async
 
-        async def mock_read_line(*args, **kwargs):
+        async def mock_read_line(*args, **kwargs) -> Never:
             raise TimeoutError
 
         proc.read_line_async = mock_read_line
@@ -507,7 +509,7 @@ class TestWaitForProcessOutput:
         proc._process.wait()
         proc.cleanup()
 
-    async def test_wait_for_output_both_timeouts(self):
+    async def test_wait_for_output_both_timeouts(self) -> None:
         """Test when both line and char reading timeout."""
         proc = ManagedProcess(
             [sys.executable, "-c", "import time; time.sleep(10)"],
@@ -517,7 +519,7 @@ class TestWaitForProcessOutput:
         proc.launch()
 
         # Mock both reading methods to timeout
-        async def mock_timeout(*args, **kwargs):
+        async def mock_timeout(*args, **kwargs) -> Never:
             raise TimeoutError
 
         proc.read_line_async = mock_timeout
@@ -536,7 +538,7 @@ class TestWaitForProcessOutput:
 class TestProcessLifecycleIntegration:
     """Integration tests for process lifecycle functionality."""
 
-    def test_full_lifecycle_simple_command(self):
+    def test_full_lifecycle_simple_command(self) -> None:
         """Test full lifecycle with simple command."""
         with ManagedProcess(["echo", "hello world"]) as proc:
             # No need to call launch() - context manager already does this
@@ -546,7 +548,7 @@ class TestProcessLifecycleIntegration:
         assert not proc.is_running()
 
     @pytest.mark.asyncio
-    async def test_full_lifecycle_with_output_waiting(self):
+    async def test_full_lifecycle_with_output_waiting(self) -> None:
         """Test full lifecycle with output waiting."""
         with ManagedProcess(
             [
@@ -566,7 +568,7 @@ class TestProcessLifecycleIntegration:
             # Terminate the process (since it's waiting for input)
             proc.terminate_gracefully()
 
-    def test_environment_inheritance(self):
+    def test_environment_inheritance(self) -> None:
         """Test that custom environment is properly inherited."""
         custom_env = {"TEST_PROCESS_VAR": "test_value_12345"}
 

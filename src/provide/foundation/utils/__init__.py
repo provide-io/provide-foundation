@@ -29,6 +29,16 @@ from provide.foundation.utils.formatting import (
     format_number,
     format_percentage,
     format_size,
+)
+from provide.foundation.utils.parsing import (
+    auto_parse,
+    parse_bool,
+    parse_dict,
+    parse_list,
+    parse_typed_value,
+)
+from provide.foundation.utils.rate_limiting import TokenBucketRateLimiter
+from provide.foundation.utils.text_utils import (
     format_table,
     indent,
     pluralize,
@@ -39,14 +49,6 @@ from provide.foundation.utils.formatting import (
     truncate,
     wrap_text,
 )
-from provide.foundation.utils.parsing import (
-    auto_parse,
-    parse_bool,
-    parse_dict,
-    parse_list,
-    parse_typed_value,
-)
-from provide.foundation.utils.rate_limiting import TokenBucketRateLimiter
 from provide.foundation.utils.timing import timed_block
 
 __all__ = [

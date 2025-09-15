@@ -1,5 +1,4 @@
-"""Base configuration classes and utilities.
-"""
+"""Base configuration classes and utilities."""
 
 from __future__ import annotations
 

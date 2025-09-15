@@ -40,13 +40,13 @@ class AnotherSampleConfig(BaseConfig):
 class TestConfigManagerComprehensive:
     """Comprehensive tests for ConfigManager functionality."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test environment."""
         self.manager = ConfigManager()
         self.test_config = SampleConfigClass(name="test", count=5, enabled=True)
 
     @pytest.mark.asyncio
-    async def test_register_with_all_components(self):
+    async def test_register_with_all_components(self) -> None:
         """Test register with all components: config, schema, loader, defaults."""
         # Create schema
         schema = ConfigSchema(
@@ -81,7 +81,7 @@ class TestConfigManagerComprehensive:
         assert self.manager._defaults["full_test"] == defaults
 
     @pytest.mark.asyncio
-    async def test_register_partial_components(self):
+    async def test_register_partial_components(self) -> None:
         """Test register with only some components."""
         schema = ConfigSchema([SchemaField("name", str)])
 
@@ -92,7 +92,7 @@ class TestConfigManagerComprehensive:
         assert "partial" not in self.manager._loaders
         assert "partial" not in self.manager._defaults
 
-    def test_unregister_config(self):
+    def test_unregister_config(self) -> None:
         """Test unregistering configuration and all associated components."""
         # Set up all components
         self.manager._configs["test"] = self.test_config
@@ -107,7 +107,7 @@ class TestConfigManagerComprehensive:
         assert "test" not in self.manager._loaders
         assert "test" not in self.manager._defaults
 
-    def test_remove_alias(self):
+    def test_remove_alias(self) -> None:
         """Test remove method as alias for unregister."""
         self.manager._configs["test"] = self.test_config
 
@@ -116,7 +116,7 @@ class TestConfigManagerComprehensive:
         assert "test" not in self.manager._configs
 
     @pytest.mark.asyncio
-    async def test_get_existing_config(self):
+    async def test_get_existing_config(self) -> None:
         """Test getting existing configuration."""
         self.manager._configs["test"] = self.test_config
 
@@ -125,14 +125,14 @@ class TestConfigManagerComprehensive:
         assert result is self.test_config
 
     @pytest.mark.asyncio
-    async def test_get_nonexistent_config(self):
+    async def test_get_nonexistent_config(self) -> None:
         """Test getting non-existent configuration."""
         result = await self.manager.get("nonexistent")
 
         assert result is None
 
     @pytest.mark.asyncio
-    async def test_set_config(self):
+    async def test_set_config(self) -> None:
         """Test setting a configuration."""
         await self.manager.set("new_config", self.test_config)
 
@@ -140,7 +140,7 @@ class TestConfigManagerComprehensive:
         assert self.manager._configs["new_config"] is self.test_config
 
     @pytest.mark.asyncio
-    async def test_load_with_registered_loader(self):
+    async def test_load_with_registered_loader(self) -> None:
         """Test loading configuration with registered loader."""
         # Set up loader
         loader = Mock(spec=ConfigLoader)
@@ -154,7 +154,7 @@ class TestConfigManagerComprehensive:
         assert self.manager._configs["test"] is self.test_config
 
     @pytest.mark.asyncio
-    async def test_load_with_provided_loader(self):
+    async def test_load_with_provided_loader(self) -> None:
         """Test loading configuration with provided loader."""
         loader = Mock(spec=ConfigLoader)
         loader.load = AsyncMock(return_value=self.test_config)
@@ -165,13 +165,13 @@ class TestConfigManagerComprehensive:
         loader.load.assert_called_once_with(SampleConfigClass)
 
     @pytest.mark.asyncio
-    async def test_load_with_no_loader(self):
+    async def test_load_with_no_loader(self) -> None:
         """Test loading configuration with no loader available."""
         with pytest.raises(ValueError, match="No loader registered for configuration"):
             await self.manager.load("test", SampleConfigClass)
 
     @pytest.mark.asyncio
-    async def test_load_with_defaults(self):
+    async def test_load_with_defaults(self) -> None:
         """Test loading configuration and applying defaults."""
         # Create config with None values for some fields
         config_with_nones = SampleConfigClass(name="loaded", count=None, enabled=None)
@@ -189,7 +189,7 @@ class TestConfigManagerComprehensive:
         assert result.enabled is True  # Default applied
 
     @pytest.mark.asyncio
-    async def test_load_with_schema_validation(self):
+    async def test_load_with_schema_validation(self) -> None:
         """Test loading configuration with schema validation."""
         # Use Mock config instead of attrs class for method mocking
         mock_config = Mock(spec=BaseConfig)
@@ -210,7 +210,7 @@ class TestConfigManagerComprehensive:
         assert result is mock_config
 
     @pytest.mark.asyncio
-    async def test_reload_config(self):
+    async def test_reload_config(self) -> None:
         """Test reloading an existing configuration."""
         # Set up existing config and loader
         old_config = SampleConfigClass(name="old", count=1)
@@ -229,13 +229,13 @@ class TestConfigManagerComprehensive:
         loader.load.assert_called_once_with(SampleConfigClass)
 
     @pytest.mark.asyncio
-    async def test_reload_nonexistent_config(self):
+    async def test_reload_nonexistent_config(self) -> None:
         """Test reloading a non-existent configuration."""
         with pytest.raises(ValueError, match="Configuration not found"):
             await self.manager.reload("nonexistent")
 
     @pytest.mark.asyncio
-    async def test_reload_no_loader(self):
+    async def test_reload_no_loader(self) -> None:
         """Test reloading with no loader registered."""
         self.manager._configs["test"] = self.test_config
 
@@ -243,7 +243,7 @@ class TestConfigManagerComprehensive:
             await self.manager.reload("test")
 
     @pytest.mark.asyncio
-    async def test_reload_with_defaults(self):
+    async def test_reload_with_defaults(self) -> None:
         """Test reloading with defaults application."""
         old_config = SampleConfigClass(name="old")
         new_config = SampleConfigClass(name="new", count=None)
@@ -261,7 +261,7 @@ class TestConfigManagerComprehensive:
         assert result.count == 50  # Default applied
 
     @pytest.mark.asyncio
-    async def test_reload_with_schema_validation(self):
+    async def test_reload_with_schema_validation(self) -> None:
         """Test reloading with schema validation."""
         old_config = SampleConfigClass(name="old")
 
@@ -286,7 +286,7 @@ class TestConfigManagerComprehensive:
         assert result is new_config
 
     @pytest.mark.asyncio
-    async def test_update_config(self):
+    async def test_update_config(self) -> None:
         """Test updating a configuration."""
         mock_config = Mock(spec=BaseConfig)
         mock_config.update = Mock()
@@ -300,13 +300,13 @@ class TestConfigManagerComprehensive:
         mock_config.update.assert_called_once_with(updates, ConfigSource.RUNTIME)
 
     @pytest.mark.asyncio
-    async def test_update_nonexistent_config(self):
+    async def test_update_nonexistent_config(self) -> None:
         """Test updating non-existent configuration."""
         with pytest.raises(ValueError, match="Configuration not found"):
             await self.manager.update("nonexistent", {})
 
     @pytest.mark.asyncio
-    async def test_update_with_schema_validation(self):
+    async def test_update_with_schema_validation(self) -> None:
         """Test updating configuration with schema validation."""
         # Create schema with field validation
         field_mock = Mock()
@@ -329,7 +329,7 @@ class TestConfigManagerComprehensive:
         mock_config.update.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_reset_config(self):
+    async def test_reset_config(self) -> None:
         """Test resetting configuration to defaults."""
         mock_config = Mock(spec=BaseConfig)
         mock_config.reset_to_defaults = Mock()
@@ -346,12 +346,12 @@ class TestConfigManagerComprehensive:
         mock_config.update.assert_called_once_with(defaults, ConfigSource.DEFAULT)
 
     @pytest.mark.asyncio
-    async def test_reset_nonexistent_config(self):
+    async def test_reset_nonexistent_config(self) -> None:
         """Test resetting non-existent configuration."""
         with pytest.raises(ValueError, match="Configuration not found"):
             await self.manager.reset("nonexistent")
 
-    def test_list_configs(self):
+    def test_list_configs(self) -> None:
         """Test listing all configurations."""
         self.manager._configs["config1"] = Mock()
         self.manager._configs["config2"] = Mock()
@@ -360,7 +360,7 @@ class TestConfigManagerComprehensive:
 
         assert set(result) == {"config1", "config2"}
 
-    def test_get_all_configs(self):
+    def test_get_all_configs(self) -> None:
         """Test getting all configurations."""
         config1 = Mock()
         config2 = Mock()
@@ -374,7 +374,7 @@ class TestConfigManagerComprehensive:
         # Should be a copy, not the same dict
         assert result is not self.manager._configs
 
-    def test_clear_all(self):
+    def test_clear_all(self) -> None:
         """Test clearing all configurations and associated data."""
         self.manager._configs["test"] = Mock()
         self.manager._schemas["test"] = Mock()
@@ -389,7 +389,7 @@ class TestConfigManagerComprehensive:
         assert len(self.manager._defaults) == 0
 
     @pytest.mark.asyncio
-    async def test_export_config(self):
+    async def test_export_config(self) -> None:
         """Test exporting configuration as dictionary."""
         mock_config = Mock(spec=BaseConfig)
         mock_config.to_dict = Mock(return_value={"name": "test", "count": 5})
@@ -401,13 +401,13 @@ class TestConfigManagerComprehensive:
         assert result == {"name": "test", "count": 5}
 
     @pytest.mark.asyncio
-    async def test_export_nonexistent_config(self):
+    async def test_export_nonexistent_config(self) -> None:
         """Test exporting non-existent configuration."""
         with pytest.raises(ValueError, match="Configuration not found"):
             await self.manager.export("nonexistent")
 
     @pytest.mark.asyncio
-    async def test_export_all_configs(self):
+    async def test_export_all_configs(self) -> None:
         """Test exporting all configurations."""
         config1 = Mock()
         config1.to_dict = Mock(return_value={"key1": "value1"})
@@ -424,7 +424,7 @@ class TestConfigManagerComprehensive:
         assert result == {"config1": {"key1": "value1"}, "config2": {"key2": "value2"}}
 
     @pytest.mark.asyncio
-    async def test_export_to_dict_alias(self):
+    async def test_export_to_dict_alias(self) -> None:
         """Test export_to_dict as alias for export_all."""
         config1 = Mock()
         config1.to_dict = Mock(return_value={"key1": "value1"})
@@ -437,7 +437,7 @@ class TestConfigManagerComprehensive:
         assert result == {"config1": {"key1": "value1"}}
 
     @pytest.mark.asyncio
-    async def test_load_from_dict(self):
+    async def test_load_from_dict(self) -> None:
         """Test loading configuration from dictionary."""
         data = {"name": "from_dict", "count": 42}
 
@@ -448,7 +448,7 @@ class TestConfigManagerComprehensive:
         assert result.count == 42
         assert self.manager._configs["test"] is result
 
-    def test_add_loader(self):
+    def test_add_loader(self) -> None:
         """Test adding a loader for configuration."""
         loader = Mock(spec=ConfigLoader)
 
@@ -457,7 +457,7 @@ class TestConfigManagerComprehensive:
         assert self.manager._loaders["test"] is loader
 
     @pytest.mark.asyncio
-    async def test_validate_all_configs(self):
+    async def test_validate_all_configs(self) -> None:
         """Test validating all configurations."""
         # Config with validate method
         config1 = Mock()
@@ -487,7 +487,7 @@ class TestConfigManagerComprehensive:
         # config2 and schema2 validate methods should not be called
 
     @pytest.mark.asyncio
-    async def test_get_or_create_existing(self):
+    async def test_get_or_create_existing(self) -> None:
         """Test get_or_create with existing configuration."""
         existing_config = SampleConfigClass(name="existing")
         self.manager._configs["test"] = existing_config
@@ -500,7 +500,7 @@ class TestConfigManagerComprehensive:
         assert result.name == "existing"  # Should not be overwritten
 
     @pytest.mark.asyncio
-    async def test_get_or_create_new(self):
+    async def test_get_or_create_new(self) -> None:
         """Test get_or_create creating new configuration."""
         defaults = {"name": "created", "count": 100}
 
@@ -512,7 +512,7 @@ class TestConfigManagerComprehensive:
         assert self.manager._configs["new_test"] is result
 
     @pytest.mark.asyncio
-    async def test_get_or_create_no_defaults(self):
+    async def test_get_or_create_no_defaults(self) -> None:
         """Test get_or_create with no defaults provided."""
         result = await self.manager.get_or_create("empty_test", SampleConfigClass)
 
@@ -524,14 +524,14 @@ class TestConfigManagerComprehensive:
 class TestGlobalFunctions:
     """Test global configuration manager functions."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test environment."""
         # Reset global manager
         _manager.clear()
         self.test_config = SampleConfigClass(name="global_test")
 
     @pytest.mark.asyncio
-    async def test_get_config_global(self):
+    async def test_get_config_global(self) -> None:
         """Test global get_config function."""
         _manager._configs["test"] = self.test_config
 
@@ -540,14 +540,14 @@ class TestGlobalFunctions:
         assert result is self.test_config
 
     @pytest.mark.asyncio
-    async def test_set_config_global(self):
+    async def test_set_config_global(self) -> None:
         """Test global set_config function."""
         await set_config("test", self.test_config)
 
         assert _manager._configs["test"] is self.test_config
 
     @pytest.mark.asyncio
-    async def test_register_config_global(self):
+    async def test_register_config_global(self) -> None:
         """Test global register_config function."""
         schema = Mock(spec=ConfigSchema)
         loader = Mock(spec=ConfigLoader)
@@ -561,7 +561,7 @@ class TestGlobalFunctions:
         assert _manager._defaults["test"] == defaults
 
     @pytest.mark.asyncio
-    async def test_load_config_global(self):
+    async def test_load_config_global(self) -> None:
         """Test global load_config function."""
         loader = Mock(spec=ConfigLoader)
         loader.load = AsyncMock(return_value=self.test_config)

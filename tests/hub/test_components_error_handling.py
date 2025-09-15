@@ -15,15 +15,15 @@ from provide.foundation.hub.components import (
 class TestErrorHandlers:
     """Test error handler functionality."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test environment."""
         reset_registry_for_tests()
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up after tests."""
         reset_registry_for_tests()
 
-    def test_get_handlers_for_exception(self):
+    def test_get_handlers_for_exception(self) -> None:
         """Test get_handlers_for_exception finds matching handlers."""
         registry = get_component_registry()
 
@@ -65,7 +65,7 @@ class TestErrorHandlers:
         runtime_handler_names = [entry.name for entry in runtime_handlers]
         assert "runtime_handler" in runtime_handler_names
 
-    def test_execute_error_handlers(self):
+    def test_execute_error_handlers(self) -> None:
         """Test execute_error_handlers runs handlers until success."""
         registry = get_component_registry()
 
@@ -98,7 +98,7 @@ class TestErrorHandlers:
         failing_handler.assert_called_once_with(exception, context)
         working_handler.assert_called_once_with(exception, context)
 
-    def test_execute_error_handlers_with_handler_exception(self):
+    def test_execute_error_handlers_with_handler_exception(self) -> None:
         """Test execute_error_handlers handles handler exceptions."""
         registry = get_component_registry()
 
@@ -131,15 +131,15 @@ class TestErrorHandlers:
 class TestComponentDependencies:
     """Test component dependency resolution."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test environment."""
         reset_registry_for_tests()
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up after tests."""
         reset_registry_for_tests()
 
-    def test_resolve_component_dependencies_same_dimension(self):
+    def test_resolve_component_dependencies_same_dimension(self) -> None:
         """Test resolve_component_dependencies finds deps in same dimension."""
         registry = get_component_registry()
 
@@ -165,7 +165,7 @@ class TestComponentDependencies:
         assert "dependency" in deps
         assert deps["dependency"] is dep_component
 
-    def test_resolve_component_dependencies_cross_dimension(self):
+    def test_resolve_component_dependencies_cross_dimension(self) -> None:
         """Test resolve_component_dependencies searches across dimensions."""
         registry = get_component_registry()
 
@@ -191,7 +191,7 @@ class TestComponentDependencies:
         assert "cross_dependency" in deps
         assert deps["cross_dependency"] is dep_component
 
-    def test_resolve_component_dependencies_not_found(self):
+    def test_resolve_component_dependencies_not_found(self) -> None:
         """Test resolve_component_dependencies handles missing components."""
         registry = get_component_registry()
 
@@ -209,7 +209,7 @@ class TestComponentDependencies:
         # Should not include missing dependency
         assert "missing_dependency" not in deps
 
-    def test_resolve_component_dependencies_no_entry(self):
+    def test_resolve_component_dependencies_no_entry(self) -> None:
         """Test resolve_component_dependencies handles non-existent component."""
         deps = resolve_component_dependencies("nonexistent", "test_dimension")
         assert deps == {}

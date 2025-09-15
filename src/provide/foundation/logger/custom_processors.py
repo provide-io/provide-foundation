@@ -26,12 +26,17 @@ _NUMERIC_TO_LEVEL_NAME_CUSTOM: dict[int, str] = {
 
 class StructlogProcessor(Protocol):
     def __call__(
-        self, logger: Any, method_name: str, event_dict: structlog.types.EventDict,
+        self,
+        logger: Any,
+        method_name: str,
+        event_dict: structlog.types.EventDict,
     ) -> structlog.types.EventDict: ...  # pragma: no cover
 
 
 def add_log_level_custom(
-    _logger: Any, method_name: str, event_dict: structlog.types.EventDict,
+    _logger: Any,
+    method_name: str,
+    event_dict: structlog.types.EventDict,
 ) -> structlog.types.EventDict:
     level_hint: str | None = event_dict.pop("_foundation_level_hint", None)
     if level_hint is not None:
@@ -64,13 +69,17 @@ class _LevelFilter:
         self.sorted_module_paths: list[str] = sorted(self.module_numeric_levels.keys(), key=len, reverse=True)
 
     def __call__(
-        self, _logger: Any, _method_name: str, event_dict: structlog.types.EventDict,
+        self,
+        _logger: Any,
+        _method_name: str,
+        event_dict: structlog.types.EventDict,
     ) -> structlog.types.EventDict:
         logger_name: str = event_dict.get("logger_name", "unnamed_filter_target")
         event_level_str_from_dict = str(event_dict.get("level", "info")).upper()
         event_level_text: LogLevelStr = cast("LogLevelStr", event_level_str_from_dict)
         event_num_level: int = self.level_to_numeric_map.get(
-            event_level_text, self.level_to_numeric_map["INFO"],
+            event_level_text,
+            self.level_to_numeric_map["INFO"],
         )
         threshold_num_level: int = self.default_numeric_level
         for path_prefix in self.sorted_module_paths:
@@ -117,7 +126,9 @@ _LOGGER_NAME_EMOJI_PREFIXES: dict[str, str] = {
     "emoji.test": "🎭",
 }
 _SORTED_LOGGER_NAME_EMOJI_KEYWORDS: list[str] = sorted(
-    _LOGGER_NAME_EMOJI_PREFIXES.keys(), key=len, reverse=True,
+    _LOGGER_NAME_EMOJI_PREFIXES.keys(),
+    key=len,
+    reverse=True,
 )
 _EMOJI_LOOKUP_CACHE: dict[str, str] = {}
 _EMOJI_CACHE_SIZE_LIMIT: int = 1000
@@ -134,7 +145,9 @@ def _compute_emoji_for_logger_name(logger_name: str) -> str:
 
 
 def add_logger_name_emoji_prefix(
-    _logger: Any, _method_name: str, event_dict: structlog.types.EventDict,
+    _logger: Any,
+    _method_name: str,
+    event_dict: structlog.types.EventDict,
 ) -> structlog.types.EventDict:
     logger_name = event_dict.get("logger_name", "default")
     if logger_name in _EMOJI_LOOKUP_CACHE:

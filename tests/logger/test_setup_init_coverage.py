@@ -6,7 +6,7 @@ import sys
 class TestLoggerSetupInitCoverage:
     """Test logger setup __init__ module functionality."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Clear module state before each test to ensure isolation."""
         # Clear logger setup modules from cache
         modules_to_clear = [
@@ -21,21 +21,21 @@ class TestLoggerSetupInitCoverage:
                 self.saved_modules[mod] = sys.modules[mod]
                 del sys.modules[mod]
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Restore module state after test if needed."""
         # Only restore if we have saved modules and they're still not in cache
         for mod_name, module in self.saved_modules.items():
             if mod_name not in sys.modules:
                 sys.modules[mod_name] = module
 
-    def test_internal_setup_import(self):
+    def test_internal_setup_import(self) -> None:
         """Test internal_setup can be imported."""
         from provide.foundation.logger.setup import internal_setup
 
         assert internal_setup is not None
         assert callable(internal_setup)
 
-    def test_conditional_import_success(self):
+    def test_conditional_import_success(self) -> None:
         """Test that setup module works without testing functionality."""
         from provide.foundation.logger import setup
 
@@ -47,7 +47,7 @@ class TestLoggerSetupInitCoverage:
         assert not hasattr(setup, '_has_testing')
         assert not hasattr(setup, 'reset_for_testing')
 
-    def test_coordinator_import_available(self):
+    def test_coordinator_import_available(self) -> None:
         """Test that internal_setup comes from coordinator module."""
         from provide.foundation.logger.setup import internal_setup
         from provide.foundation.logger.setup.coordinator import (
@@ -57,7 +57,7 @@ class TestLoggerSetupInitCoverage:
         # Should be the same function
         assert internal_setup == coord_setup
 
-    def test_all_exports_basic(self):
+    def test_all_exports_basic(self) -> None:
         """Test __all__ contains expected basic exports."""
         from provide.foundation.logger.setup import __all__
 
@@ -66,7 +66,7 @@ class TestLoggerSetupInitCoverage:
         # reset_foundation_setup_for_testing is now in provide.testkit.logger
         assert "reset_for_testing" not in __all__
 
-    def test_no_testing_flag(self):
+    def test_no_testing_flag(self) -> None:
         """Test that _has_testing flag no longer exists since testing was moved to testkit."""
         from provide.foundation.logger import setup
 

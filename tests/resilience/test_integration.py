@@ -20,7 +20,7 @@ class TestRetryMiddlewareIntegration:
     """Test RetryMiddleware using unified retry logic."""
 
     @pytest.mark.asyncio
-    async def test_middleware_with_retry_policy(self):
+    async def test_middleware_with_retry_policy(self) -> None:
         """Test middleware configured with RetryPolicy."""
         policy = RetryPolicy(
             max_attempts=3,
@@ -50,7 +50,7 @@ class TestRetryMiddlewareIntegration:
         assert call_count == 3
 
     @pytest.mark.asyncio
-    async def test_middleware_with_transport_errors(self):
+    async def test_middleware_with_transport_errors(self) -> None:
         """Test middleware retrying transport errors."""
         policy = RetryPolicy(
             max_attempts=3,
@@ -77,7 +77,7 @@ class TestRetryMiddlewareIntegration:
         assert call_count == 3
 
     @pytest.mark.asyncio
-    async def test_middleware_non_retryable_status(self):
+    async def test_middleware_non_retryable_status(self) -> None:
         """Test middleware doesn't retry non-retryable status codes."""
         policy = RetryPolicy(
             max_attempts=3,
@@ -101,7 +101,7 @@ class TestRetryMiddlewareIntegration:
         assert call_count == 1  # No retries
 
     @pytest.mark.asyncio
-    async def test_middleware_mixed_errors_and_status(self):
+    async def test_middleware_mixed_errors_and_status(self) -> None:
         """Test middleware handling both errors and status codes."""
         policy = RetryPolicy(
             max_attempts=5,
@@ -137,7 +137,7 @@ class TestDecoratorWithMiddleware:
     """Test @retry decorator working with middleware."""
 
     @pytest.mark.asyncio
-    async def test_decorated_function_calling_middleware(self):
+    async def test_decorated_function_calling_middleware(self) -> None:
         """Test retry decorator on function that uses middleware."""
         policy = RetryPolicy(
             max_attempts=2,
@@ -173,13 +173,13 @@ class TestDecoratorWithMiddleware:
         result = await api_call()
         assert result.status == 200
 
-    def test_nested_retry_decorators(self):
+    def test_nested_retry_decorators(self) -> None:
         """Test nested functions with retry decorators."""
         inner_calls = 0
         outer_calls = 0
 
         @retry(max_attempts=2, base_delay=0.01)
-        def inner_func():
+        def inner_func() -> str:
             nonlocal inner_calls
             inner_calls += 1
             if inner_calls < 2:
@@ -214,11 +214,11 @@ class TestRetryExecutorWithRealWorld:
     """Test RetryExecutor with real-world scenarios."""
 
     @pytest.mark.asyncio
-    async def test_database_connection_retry(self):
+    async def test_database_connection_retry(self) -> None:
         """Simulate database connection retry scenario."""
 
         class DatabaseConnection:
-            def __init__(self):
+            def __init__(self) -> None:
                 self.connection_attempts = 0
                 self.connected = False
 
@@ -245,14 +245,14 @@ class TestRetryExecutorWithRealWorld:
         assert connection.connected
         assert db.connection_attempts == 3
 
-    def test_api_rate_limit_retry(self):
+    def test_api_rate_limit_retry(self) -> None:
         """Simulate API rate limit retry scenario."""
 
         class RateLimitError(Exception):
             pass
 
         class APIClient:
-            def __init__(self):
+            def __init__(self) -> None:
                 self.request_count = 0
 
             def make_request(self, endpoint):
@@ -278,11 +278,11 @@ class TestRetryExecutorWithRealWorld:
         assert client.request_count == 3
 
     @pytest.mark.asyncio
-    async def test_circuit_breaker_with_retry(self):
+    async def test_circuit_breaker_with_retry(self) -> None:
         """Test circuit breaker pattern combined with retry."""
 
         class CircuitBreaker:
-            def __init__(self, failure_threshold=3):
+            def __init__(self, failure_threshold=3) -> None:
                 self.failure_count = 0
                 self.failure_threshold = failure_threshold
                 self.is_open = False
@@ -328,7 +328,7 @@ class TestRetryExecutorWithRealWorld:
 
         call_count = 0
 
-        async def flaky_service():
+        async def flaky_service() -> str:
             nonlocal call_count
             call_count += 1
             if call_count < 4:

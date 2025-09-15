@@ -1,5 +1,4 @@
-"""Configuration schema and validation.
-"""
+"""Configuration schema and validation."""
 
 from __future__ import annotations
 

@@ -21,7 +21,7 @@ class TestBzip2Compressor:
         """Create a test file."""
         return temp_file("This is test content for BZIP2 compression.\n" * 100, ".txt")
 
-    def test_compress_file(self, bzip2_compressor, test_file):
+    def test_compress_file(self, bzip2_compressor, test_file) -> None:
         """Test compressing a file."""
         output = test_file.with_suffix(".txt.bz2")
 
@@ -35,7 +35,7 @@ class TestBzip2Compressor:
         finally:
             output.unlink(missing_ok=True)
 
-    def test_decompress_file(self, bzip2_compressor, test_file):
+    def test_decompress_file(self, bzip2_compressor, test_file) -> None:
         """Test decompressing a file."""
         compressed = test_file.with_suffix(".txt.bz2")
         decompressed = test_file.with_suffix(".txt.decompressed")
@@ -55,7 +55,7 @@ class TestBzip2Compressor:
             compressed.unlink(missing_ok=True)
             decompressed.unlink(missing_ok=True)
 
-    def test_compress_bytes(self, bzip2_compressor):
+    def test_compress_bytes(self, bzip2_compressor) -> None:
         """Test compressing bytes data."""
         data = b"Test data for BZIP2 compression" * 100
 
@@ -66,7 +66,7 @@ class TestBzip2Compressor:
         # Check BZIP2 magic number
         assert compressed[:3] == b"BZh"
 
-    def test_decompress_bytes(self, bzip2_compressor):
+    def test_decompress_bytes(self, bzip2_compressor) -> None:
         """Test decompressing bytes data."""
         original = b"Test data for BZIP2 compression" * 100
 
@@ -75,7 +75,7 @@ class TestBzip2Compressor:
 
         assert decompressed == original
 
-    def test_compress_stream(self, bzip2_compressor):
+    def test_compress_stream(self, bzip2_compressor) -> None:
         """Test compressing from stream to stream."""
         input_data = b"Stream BZIP2 compression test data" * 100
         input_stream = BytesIO(input_data)
@@ -87,7 +87,7 @@ class TestBzip2Compressor:
         assert len(compressed) < len(input_data)
         assert compressed[:3] == b"BZh"
 
-    def test_decompress_stream(self, bzip2_compressor):
+    def test_decompress_stream(self, bzip2_compressor) -> None:
         """Test decompressing from stream to stream."""
         original = b"Stream BZIP2 decompression test data" * 100
 
@@ -103,7 +103,7 @@ class TestBzip2Compressor:
         decompressed = output_stream.getvalue()
         assert decompressed == original
 
-    def test_compression_levels(self):
+    def test_compression_levels(self) -> None:
         """Test different compression levels."""
         data = b"Test data" * 1000
 
@@ -120,7 +120,7 @@ class TestBzip2Compressor:
         assert len(compressed_best) < len(data)
         # Best compression might be smaller (not guaranteed for small data)
 
-    def test_invalid_compression_level(self):
+    def test_invalid_compression_level(self) -> None:
         """Test invalid compression levels."""
         with pytest.raises(ValueError):
             Bzip2Compressor(level=0)
@@ -128,7 +128,7 @@ class TestBzip2Compressor:
         with pytest.raises(ValueError):
             Bzip2Compressor(level=10)
 
-    def test_error_handling(self, bzip2_compressor, temp_directory):
+    def test_error_handling(self, bzip2_compressor, temp_directory) -> None:
         """Test error handling in BZIP2 operations."""
         temp_path = temp_directory
 

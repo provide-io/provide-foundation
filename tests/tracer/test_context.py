@@ -4,6 +4,7 @@
 """Tests for Foundation tracer context management."""
 
 import contextvars
+from typing import Never
 
 import pytest
 
@@ -24,17 +25,17 @@ from provide.foundation.tracer.spans import Span
 class TestTraceContext:
     """Test trace context management."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Reset context before each test."""
         _current_span.set(None)
         _current_trace_id.set(None)
 
-    def test_initial_context_is_empty(self):
+    def test_initial_context_is_empty(self) -> None:
         """Test that initial context has no active span or trace."""
         assert get_current_span() is None
         assert get_current_trace_id() is None
 
-    def test_set_and_get_current_span(self):
+    def test_set_and_get_current_span(self) -> None:
         """Test setting and getting current span."""
         span = Span("test_op")
 
@@ -43,7 +44,7 @@ class TestTraceContext:
         assert get_current_span() == span
         assert get_current_trace_id() == span.trace_id
 
-    def test_set_current_span_to_none(self):
+    def test_set_current_span_to_none(self) -> None:
         """Test setting current span to None."""
         span = Span("test_op")
         set_current_span(span)
@@ -53,7 +54,7 @@ class TestTraceContext:
         assert get_current_span() is None
         # Note: trace_id might still be set in this implementation
 
-    def test_create_child_span_with_parent(self):
+    def test_create_child_span_with_parent(self) -> None:
         """Test creating child span with explicit parent."""
         parent_span = Span("parent_op")
 
@@ -64,7 +65,7 @@ class TestTraceContext:
         assert child_span.trace_id == parent_span.trace_id
         assert child_span.span_id != parent_span.span_id
 
-    def test_create_child_span_with_current_parent(self):
+    def test_create_child_span_with_current_parent(self) -> None:
         """Test creating child span using current span as parent."""
         parent_span = Span("parent_op")
         set_current_span(parent_span)
@@ -75,7 +76,7 @@ class TestTraceContext:
         assert child_span.parent_id == parent_span.span_id
         assert child_span.trace_id == parent_span.trace_id
 
-    def test_create_child_span_no_parent(self):
+    def test_create_child_span_no_parent(self) -> None:
         """Test creating child span when no parent exists."""
         child_span = create_child_span("root_op")
 
@@ -84,7 +85,7 @@ class TestTraceContext:
         # Should have its own trace_id
         assert child_span.trace_id is not None
 
-    def test_get_trace_context_with_span(self):
+    def test_get_trace_context_with_span(self) -> None:
         """Test getting trace context when span is active."""
         span = Span("test_op")
         set_current_span(span)
@@ -95,7 +96,7 @@ class TestTraceContext:
         assert context["span_id"] == span.span_id
         assert context["span_name"] == span.name
 
-    def test_get_trace_context_no_span(self):
+    def test_get_trace_context_no_span(self) -> None:
         """Test getting trace context when no span is active."""
         context = get_trace_context()
 
@@ -107,12 +108,12 @@ class TestTraceContext:
 class TestSpanContext:
     """Test SpanContext context manager."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Reset context before each test."""
         _current_span.set(None)
         _current_trace_id.set(None)
 
-    def test_span_context_lifecycle(self):
+    def test_span_context_lifecycle(self) -> None:
         """Test SpanContext lifecycle management."""
         span = Span("test_op")
 
@@ -125,7 +126,7 @@ class TestSpanContext:
         assert span._active is False
         assert get_current_span() is None
 
-    def test_span_context_with_exception(self):
+    def test_span_context_with_exception(self) -> Never:
         """Test SpanContext handling exceptions."""
         span = Span("test_op")
 
@@ -136,7 +137,7 @@ class TestSpanContext:
         assert span.status == "error"
         assert span.error == "ValueError: Test error"
 
-    def test_span_context_restores_previous_span(self):
+    def test_span_context_restores_previous_span(self) -> None:
         """Test that SpanContext restores previous span."""
         outer_span = Span("outer_op")
         set_current_span(outer_span)
@@ -149,7 +150,7 @@ class TestSpanContext:
         # Should restore outer span
         assert get_current_span() == outer_span
 
-    def test_span_context_no_previous_span(self):
+    def test_span_context_no_previous_span(self) -> None:
         """Test SpanContext when no previous span exists."""
         span = Span("test_op")
 
@@ -162,12 +163,12 @@ class TestSpanContext:
 class TestWithSpanHelper:
     """Test with_span helper function."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Reset context before each test."""
         _current_span.set(None)
         _current_trace_id.set(None)
 
-    def test_with_span_creates_root_span(self):
+    def test_with_span_creates_root_span(self) -> None:
         """Test with_span creates root span when no parent exists."""
         with with_span("test_op") as span:
             assert span.name == "test_op"
@@ -176,7 +177,7 @@ class TestWithSpanHelper:
 
         assert get_current_span() is None
 
-    def test_with_span_creates_child_span(self):
+    def test_with_span_creates_child_span(self) -> None:
         """Test with_span creates child span when parent exists."""
         parent_span = Span("parent_op")
         set_current_span(parent_span)
@@ -190,7 +191,7 @@ class TestWithSpanHelper:
         # Should restore parent span
         assert get_current_span() == parent_span
 
-    def test_with_span_handles_exception(self):
+    def test_with_span_handles_exception(self) -> Never:
         """Test with_span handling exceptions."""
         with pytest.raises(RuntimeError), with_span("failing_op") as span:
             raise RuntimeError("Operation failed")
@@ -199,7 +200,7 @@ class TestWithSpanHelper:
         assert span.error == "RuntimeError: Operation failed"
         assert get_current_span() is None
 
-    def test_nested_with_span_calls(self):
+    def test_nested_with_span_calls(self) -> None:
         """Test nested with_span calls create proper hierarchy."""
         with with_span("level1") as span1:
             span1.set_tag("level", "1")
@@ -231,7 +232,7 @@ class TestWithSpanHelper:
 class TestContextVarIsolation:
     """Test that context variables are properly isolated across contexts."""
 
-    def test_context_isolation(self):
+    def test_context_isolation(self) -> None:
         """Test that spans are isolated in different contexts."""
         span1 = Span("span1")
         span2 = Span("span2")
@@ -243,7 +244,7 @@ class TestContextVarIsolation:
         set_current_span(span1)
         assert get_current_span() == span1
 
-        def set_span2():
+        def set_span2() -> None:
             """Function to run in different context."""
             set_current_span(span2)
             assert get_current_span() == span2
@@ -254,11 +255,11 @@ class TestContextVarIsolation:
         # Original context should still have span1
         assert get_current_span() == span1
 
-    def test_with_span_context_isolation(self):
+    def test_with_span_context_isolation(self) -> None:
         """Test with_span in different contexts."""
         results = []
 
-        def worker(name: str):
+        def worker(name: str) -> None:
             """Worker function for different context."""
             with with_span(f"worker_{name}") as span:
                 span.set_tag("worker", name)
@@ -282,12 +283,12 @@ class TestContextVarIsolation:
 class TestTraceContextIntegration:
     """Test integration scenarios with trace context."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Reset context before each test."""
         _current_span.set(None)
         _current_trace_id.set(None)
 
-    def test_complex_operation_tracing(self):
+    def test_complex_operation_tracing(self) -> None:
         """Test tracing a complex operation with multiple spans."""
         with with_span("http_request") as request_span:
             request_span.set_tag("method", "POST")
@@ -314,7 +315,7 @@ class TestTraceContextIntegration:
         assert not db_span._active
         assert not api_span._active
 
-    def test_error_propagation_in_trace(self):
+    def test_error_propagation_in_trace(self) -> Never:
         """Test error handling in nested trace context."""
         with pytest.raises(ValueError), with_span("outer_operation") as outer_span:
             outer_span.set_tag("component", "business_logic")

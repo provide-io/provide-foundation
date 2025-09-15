@@ -6,13 +6,13 @@ from unittest.mock import Mock, patch
 class TestOTLPConstants:
     """Test OTLP module constants and feature detection."""
 
-    def test_has_otel_logs_flag_exists(self):
+    def test_has_otel_logs_flag_exists(self) -> None:
         """Test that _HAS_OTEL_LOGS flag exists."""
         from provide.foundation.integrations.openobserve.otlp import _HAS_OTEL_LOGS
 
         assert isinstance(_HAS_OTEL_LOGS, bool)
 
-    def test_module_imports_correctly(self):
+    def test_module_imports_correctly(self) -> None:
         """Test that module can be imported without errors."""
         import provide.foundation.integrations.openobserve.otlp as otlp_module
 
@@ -25,7 +25,7 @@ class TestOTLPConstants:
 class TestSendLogOTLP:
     """Test send_log_otlp function."""
 
-    def test_send_log_otlp_without_otel_returns_false(self):
+    def test_send_log_otlp_without_otel_returns_false(self) -> None:
         """Test that function returns False when OpenTelemetry is not available."""
         from provide.foundation.integrations.openobserve.otlp import send_log_otlp
 
@@ -33,7 +33,7 @@ class TestSendLogOTLP:
             result = send_log_otlp("Test message")
             assert result is False
 
-    def test_send_log_otlp_without_endpoint_returns_false(self):
+    def test_send_log_otlp_without_endpoint_returns_false(self) -> None:
         """Test that function returns False when no OTLP endpoint is configured."""
         from provide.foundation.integrations.openobserve.otlp import send_log_otlp
 
@@ -48,7 +48,7 @@ class TestSendLogOTLP:
             result = send_log_otlp("Test message")
             assert result is False
 
-    def test_send_log_otlp_success_basic(self):
+    def test_send_log_otlp_success_basic(self) -> None:
         """Test successful OTLP log sending with basic configuration."""
         from provide.foundation.integrations.openobserve.otlp import send_log_otlp
 
@@ -79,7 +79,7 @@ class TestSendLogOTLP:
              patch('provide.foundation.integrations.openobserve.otlp.Resource') as mock_resource_class, \
              patch('provide.foundation.integrations.openobserve.otlp.OTLPLogExporter') as mock_exporter_class, \
              patch('provide.foundation.integrations.openobserve.otlp.LoggerProvider') as mock_provider_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor') as mock_processor, \
+             patch('provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor'), \
              patch('provide.foundation.integrations.openobserve.otlp.trace') as mock_trace:
 
             mock_config_class.from_env.return_value = mock_config
@@ -123,7 +123,7 @@ class TestSendLogOTLP:
             # Verify flush
             mock_logger_provider.force_flush.assert_called_once()
 
-    def test_send_log_otlp_with_traces_endpoint(self):
+    def test_send_log_otlp_with_traces_endpoint(self) -> None:
         """Test OTLP log sending when traces endpoint is configured."""
         from provide.foundation.integrations.openobserve.otlp import send_log_otlp
 
@@ -163,7 +163,7 @@ class TestSendLogOTLP:
                 headers={}
             )
 
-    def test_send_log_otlp_level_mapping(self):
+    def test_send_log_otlp_level_mapping(self) -> None:
         """Test severity level mapping for different log levels."""
         from provide.foundation.integrations.openobserve.otlp import send_log_otlp
 
@@ -215,7 +215,7 @@ class TestSendLogOTLP:
 
                 mock_otel_logger.reset_mock()
 
-    def test_send_log_otlp_exception_handling(self):
+    def test_send_log_otlp_exception_handling(self) -> None:
         """Test exception handling in OTLP log sending."""
         from provide.foundation.integrations.openobserve.otlp import send_log_otlp
 
@@ -233,7 +233,7 @@ class TestSendLogOTLP:
 class TestSendLogBulk:
     """Test send_log_bulk function."""
 
-    def test_send_log_bulk_success(self):
+    def test_send_log_bulk_success(self) -> None:
         """Test successful bulk API log sending."""
         from provide.foundation.integrations.openobserve.otlp import send_log_bulk
 
@@ -286,7 +286,7 @@ class TestSendLogBulk:
             assert "ERROR" in bulk_data
             assert "custom-service" in bulk_data
 
-    def test_send_log_bulk_creates_client_when_none_provided(self):
+    def test_send_log_bulk_creates_client_when_none_provided(self) -> None:
         """Test that bulk function creates client when none provided."""
         from provide.foundation.integrations.openobserve.otlp import send_log_bulk
 
@@ -321,7 +321,7 @@ class TestSendLogBulk:
             assert result is True
             mock_client_class.from_config.assert_called_once()
 
-    def test_send_log_bulk_exception_handling(self):
+    def test_send_log_bulk_exception_handling(self) -> None:
         """Test exception handling in bulk log sending."""
         from provide.foundation.integrations.openobserve.otlp import send_log_bulk
 
@@ -353,7 +353,7 @@ class TestSendLogBulk:
 class TestSendLog:
     """Test send_log function (main entry point)."""
 
-    def test_send_log_prefer_otlp_success(self):
+    def test_send_log_prefer_otlp_success(self) -> None:
         """Test send_log with OTLP preference when OTLP succeeds."""
         from provide.foundation.integrations.openobserve.otlp import send_log
 
@@ -369,7 +369,7 @@ class TestSendLog:
             mock_otlp.assert_called_once_with("Test message", "INFO", None, None)
             mock_bulk.assert_not_called()
 
-    def test_send_log_otlp_fails_fallback_to_bulk(self):
+    def test_send_log_otlp_fails_fallback_to_bulk(self) -> None:
         """Test send_log falls back to bulk API when OTLP fails."""
         from provide.foundation.integrations.openobserve.otlp import send_log
 
@@ -386,7 +386,7 @@ class TestSendLog:
             mock_otlp.assert_called_once()
             mock_bulk.assert_called_once_with("Test message", "INFO", None, None, None)
 
-    def test_send_log_prefer_bulk_skips_otlp(self):
+    def test_send_log_prefer_bulk_skips_otlp(self) -> None:
         """Test send_log skips OTLP when prefer_otlp=False."""
         from provide.foundation.integrations.openobserve.otlp import send_log
 
@@ -401,7 +401,7 @@ class TestSendLog:
             mock_otlp.assert_not_called()
             mock_bulk.assert_called_once()
 
-    def test_send_log_no_otel_fallback_to_bulk(self):
+    def test_send_log_no_otel_fallback_to_bulk(self) -> None:
         """Test send_log uses bulk API when OpenTelemetry not available."""
         from provide.foundation.integrations.openobserve.otlp import send_log
 
@@ -421,7 +421,7 @@ class TestSendLog:
 class TestCreateOTLPLoggerProvider:
     """Test create_otlp_logger_provider function."""
 
-    def test_create_otlp_logger_provider_without_otel_returns_none(self):
+    def test_create_otlp_logger_provider_without_otel_returns_none(self) -> None:
         """Test that function returns None when OpenTelemetry is not available."""
         from provide.foundation.integrations.openobserve.otlp import create_otlp_logger_provider
 
@@ -429,7 +429,7 @@ class TestCreateOTLPLoggerProvider:
             result = create_otlp_logger_provider()
             assert result is None
 
-    def test_create_otlp_logger_provider_without_endpoint_returns_none(self):
+    def test_create_otlp_logger_provider_without_endpoint_returns_none(self) -> None:
         """Test that function returns None when no OTLP endpoint is configured."""
         from provide.foundation.integrations.openobserve.otlp import create_otlp_logger_provider
 
@@ -444,7 +444,7 @@ class TestCreateOTLPLoggerProvider:
             result = create_otlp_logger_provider()
             assert result is None
 
-    def test_create_otlp_logger_provider_success(self):
+    def test_create_otlp_logger_provider_success(self) -> None:
         """Test successful OTLP logger provider creation."""
         from provide.foundation.integrations.openobserve.otlp import create_otlp_logger_provider
 
@@ -466,7 +466,7 @@ class TestCreateOTLPLoggerProvider:
              patch('provide.foundation.integrations.openobserve.otlp.Resource') as mock_resource_class, \
              patch('provide.foundation.integrations.openobserve.otlp.OTLPLogExporter') as mock_exporter_class, \
              patch('provide.foundation.integrations.openobserve.otlp.LoggerProvider') as mock_provider_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor') as mock_processor:
+             patch('provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor'):
 
             mock_config_class.from_env.return_value = mock_config
             mock_resource_class.create.return_value = mock_resource
@@ -489,7 +489,7 @@ class TestCreateOTLPLoggerProvider:
             )
             mock_logger_provider.add_log_record_processor.assert_called_once()
 
-    def test_create_otlp_logger_provider_exception_handling(self):
+    def test_create_otlp_logger_provider_exception_handling(self) -> None:
         """Test exception handling in logger provider creation."""
         from provide.foundation.integrations.openobserve.otlp import create_otlp_logger_provider
 
@@ -506,7 +506,7 @@ class TestCreateOTLPLoggerProvider:
 class TestOTLPIntegration:
     """Test OTLP integration scenarios and edge cases."""
 
-    def test_trace_context_extraction(self):
+    def test_trace_context_extraction(self) -> None:
         """Test trace context extraction in OTLP logging."""
         from provide.foundation.integrations.openobserve.otlp import send_log_otlp
 
@@ -586,7 +586,7 @@ class TestOTLPIntegration:
             assert 'trace_id' not in attributes
             assert 'span_id' not in attributes
 
-    def test_bulk_api_log_structure(self):
+    def test_bulk_api_log_structure(self) -> None:
         """Test the structure of logs sent via bulk API."""
         from provide.foundation.integrations.openobserve.otlp import send_log_bulk
 

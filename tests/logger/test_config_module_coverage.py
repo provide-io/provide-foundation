@@ -5,7 +5,7 @@
 class TestLoggerConfigModule:
     """Test the logger config module re-exports."""
 
-    def test_module_imports(self):
+    def test_module_imports(self) -> None:
         """Test that the module can be imported."""
         # Direct import of the config module
         from provide.foundation.logger import config
@@ -14,7 +14,7 @@ class TestLoggerConfigModule:
         assert hasattr(config, "LoggingConfig")
         assert hasattr(config, "TelemetryConfig")
 
-    def test_logging_config_export(self):
+    def test_logging_config_export(self) -> None:
         """Test LoggingConfig is properly exported."""
         from provide.foundation.logger.config import LoggingConfig
 
@@ -25,7 +25,7 @@ class TestLoggerConfigModule:
         assert hasattr(config, "default_level")
         assert hasattr(config, "console_formatter")
 
-    def test_telemetry_config_export(self):
+    def test_telemetry_config_export(self) -> None:
         """Test TelemetryConfig is properly exported."""
         from provide.foundation.logger.config import TelemetryConfig
 
@@ -36,7 +36,7 @@ class TestLoggerConfigModule:
         assert hasattr(config, "logging")
         assert hasattr(config, "service_name")
 
-    def test_all_exports(self):
+    def test_all_exports(self) -> None:
         """Test __all__ exports are correct."""
         from provide.foundation.logger import config as config_module
 
@@ -45,7 +45,7 @@ class TestLoggerConfigModule:
         assert "TelemetryConfig" in config_module.__all__
         assert len(config_module.__all__) == 2
 
-    def test_re_export_consistency(self):
+    def test_re_export_consistency(self) -> None:
         """Test that re-exported classes match original imports."""
         from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
         from provide.foundation.logger.config.logging import (
@@ -59,7 +59,7 @@ class TestLoggerConfigModule:
         assert LoggingConfig is OrigLoggingConfig
         assert TelemetryConfig is OrigTelemetryConfig
 
-    def test_import_all_star(self):
+    def test_import_all_star(self) -> None:
         """Test star import works correctly."""
         # This tests that __all__ is properly configured
         exec_globals = {}

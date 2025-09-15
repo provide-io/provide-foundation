@@ -132,7 +132,7 @@ def example_error_handling() -> None:
 
         error_code = "USER_SERVICE_ERROR"
 
-        def __init__(self, message: str, user_id: str | None = None):
+        def __init__(self, message: str, user_id: str | None = None) -> None:
             super().__init__(message)
             self.user_id = user_id
 

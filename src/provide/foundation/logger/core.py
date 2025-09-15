@@ -44,6 +44,7 @@ class FoundationLogger:
         # Run the internal setup process
         try:
             from provide.foundation.logger.setup.coordinator import internal_setup
+
             internal_setup(config, is_explicit_call=True)
         except Exception as e:
             # Fallback to emergency setup if regular setup fails
@@ -54,7 +55,8 @@ class FoundationLogger:
         try:
             current_config = structlog.get_config()
             if current_config and isinstance(
-                current_config.get("logger_factory"), structlog.ReturnLoggerFactory,
+                current_config.get("logger_factory"),
+                structlog.ReturnLoggerFactory,
             ):
                 with _LAZY_SETUP_LOCK:
                     _LAZY_SETUP_STATE["done"] = True

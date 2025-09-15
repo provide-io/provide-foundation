@@ -55,9 +55,7 @@ class Hub(CoreHub):
 
         """
         # Determine if we should use shared registries
-        use_shared = should_use_shared_registries(
-            use_shared_registries, component_registry, command_registry
-        )
+        use_shared = should_use_shared_registries(use_shared_registries, component_registry, command_registry)
 
         # Setup registries
         if component_registry:
@@ -167,6 +165,7 @@ def get_hub() -> Hub:
             # Bootstrap foundation components now that hub is ready
             try:
                 from provide.foundation.hub.components import bootstrap_foundation
+
                 bootstrap_foundation()
             except ImportError:
                 # Bootstrap function might not exist yet, that's okay

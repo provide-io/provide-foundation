@@ -12,7 +12,7 @@ import asyncio
 class TestProcessorRegistration:
     """Test processor registration and pipeline management."""
 
-    def test_processors_register_in_processor_category(self):
+    def test_processors_register_in_processor_category(self) -> None:
         """Log processors must register in PROCESSOR category."""
         from provide.foundation.hub.components import (
             ComponentCategory,
@@ -44,7 +44,7 @@ class TestProcessorRegistration:
         )
         assert retrieved_processor is test_processor
 
-    def test_processor_pipeline_ordering(self):
+    def test_processor_pipeline_ordering(self) -> None:
         """Processors must be executed in priority order."""
         from provide.foundation.hub.components import (
             bootstrap_foundation,
@@ -66,7 +66,7 @@ class TestProcessorRegistration:
             next_priority = pipeline[i + 1].metadata.get("priority", 0)
             assert current_priority >= next_priority
 
-    def test_async_processor_support(self):
+    def test_async_processor_support(self) -> None:
         """Registry must support async processors."""
         from provide.foundation.hub.components import (
             ComponentCategory,
@@ -92,7 +92,7 @@ class TestProcessorRegistration:
         retrieved = registry.get("async_processor", ComponentCategory.PROCESSOR.value)
         assert retrieved is async_processor
 
-    def test_processor_stage_filtering(self):
+    def test_processor_stage_filtering(self) -> None:
         """Processors must be filterable by processing stage."""
         from provide.foundation.hub.components import get_processors_for_stage
 
@@ -106,7 +106,7 @@ class TestProcessorRegistration:
         for processor in pre_format_processors:
             assert processor.metadata.get("stage") == "pre_format"
 
-    def test_conditional_processor_execution(self):
+    def test_conditional_processor_execution(self) -> None:
         """Processors must support conditional execution based on metadata."""
         from provide.foundation.hub.components import (
             ComponentCategory,

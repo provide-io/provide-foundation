@@ -30,7 +30,7 @@ from provide.foundation.errors.config import ValidationError
 class TestLogLevelParsing:
     """Test log level parsing and validation."""
 
-    def test_parse_log_level_valid(self):
+    def test_parse_log_level_valid(self) -> None:
         """Test parsing valid log levels."""
         assert parse_log_level("debug") == "DEBUG"
         assert parse_log_level("INFO") == "INFO"
@@ -39,7 +39,7 @@ class TestLogLevelParsing:
         assert parse_log_level("critical") == "CRITICAL"
         assert parse_log_level("TRACE") == "TRACE"
 
-    def test_parse_log_level_invalid(self):
+    def test_parse_log_level_invalid(self) -> None:
         """Test parsing invalid log levels raises error."""
         with pytest.raises(ValueError, match="Invalid log_level"):
             parse_log_level("INVALID")
@@ -51,13 +51,13 @@ class TestLogLevelParsing:
 class TestConsoleFormatterParsing:
     """Test console formatter parsing."""
 
-    def test_parse_console_formatter_valid(self):
+    def test_parse_console_formatter_valid(self) -> None:
         """Test parsing valid formatters."""
         assert parse_console_formatter("KEY_VALUE") == "key_value"
         assert parse_console_formatter("json") == "json"
         assert parse_console_formatter("JSON") == "json"
 
-    def test_parse_console_formatter_invalid(self):
+    def test_parse_console_formatter_invalid(self) -> None:
         """Test parsing invalid formatters raises error."""
         with pytest.raises(ValueError, match="Invalid console_formatter"):
             parse_console_formatter("xml")
@@ -69,7 +69,7 @@ class TestConsoleFormatterParsing:
 class TestModuleLevelsParsing:
     """Test module-specific log levels parsing."""
 
-    def test_parse_module_levels_valid(self):
+    def test_parse_module_levels_valid(self) -> None:
         """Test parsing valid module:level pairs."""
         result = parse_module_levels("auth:DEBUG,database:ERROR")
         assert result == {"auth": "DEBUG", "database": "ERROR"}
@@ -77,12 +77,12 @@ class TestModuleLevelsParsing:
         result = parse_module_levels("auth.service:TRACE, db.queries:WARNING")
         assert result == {"auth.service": "TRACE", "db.queries": "WARNING"}
 
-    def test_parse_module_levels_empty(self):
+    def test_parse_module_levels_empty(self) -> None:
         """Test parsing empty string returns empty dict."""
         assert parse_module_levels("") == {}
         assert parse_module_levels("   ") == {}
 
-    def test_parse_module_levels_invalid_format(self):
+    def test_parse_module_levels_invalid_format(self) -> None:
         """Test invalid formats are skipped silently."""
         result = parse_module_levels("auth:DEBUG,invalid_no_colon,db:INFO")
         assert result == {"auth": "DEBUG", "db": "INFO"}
@@ -90,7 +90,7 @@ class TestModuleLevelsParsing:
         result = parse_module_levels("auth:INVALID_LEVEL,db:ERROR")
         assert result == {"db": "ERROR"}  # Invalid level skipped
 
-    def test_parse_module_levels_whitespace(self):
+    def test_parse_module_levels_whitespace(self) -> None:
         """Test whitespace handling."""
         result = parse_module_levels(" auth : DEBUG , database : ERROR ")
         assert result == {"auth": "DEBUG", "database": "ERROR"}
@@ -99,7 +99,7 @@ class TestModuleLevelsParsing:
 class TestRateLimitsParsing:
     """Test rate limits parsing."""
 
-    def test_parse_rate_limits_valid(self):
+    def test_parse_rate_limits_valid(self) -> None:
         """Test parsing valid logger:rate:capacity triplets."""
         result = parse_rate_limits("api:10.0:100.0,worker:5:50")
         assert result == {
@@ -107,12 +107,12 @@ class TestRateLimitsParsing:
             "worker": (5.0, 50.0),
         }
 
-    def test_parse_rate_limits_empty(self):
+    def test_parse_rate_limits_empty(self) -> None:
         """Test parsing empty string returns empty dict."""
         assert parse_rate_limits("") == {}
         assert parse_rate_limits("   ") == {}
 
-    def test_parse_rate_limits_invalid_format(self):
+    def test_parse_rate_limits_invalid_format(self) -> None:
         """Test invalid formats are skipped silently."""
         result = parse_rate_limits("api:10:100,invalid:format,worker:5:50")
         assert result == {
@@ -145,7 +145,7 @@ class TestBoolExtendedParsing:
         ("", False),
         ("anything_else", False),
     ])
-    def test_parse_bool_extended(self, value, expected):
+    def test_parse_bool_extended(self, value, expected) -> None:
         """Test parsing various boolean representations."""
         assert parse_bool_extended(value) == expected
 
@@ -153,13 +153,13 @@ class TestBoolExtendedParsing:
 class TestFloatValidationParsing:
     """Test float parsing with validation."""
 
-    def test_parse_float_with_validation_valid(self):
+    def test_parse_float_with_validation_valid(self) -> None:
         """Test parsing valid floats."""
         assert parse_float_with_validation("3.14") == 3.14
         assert parse_float_with_validation("10") == 10.0
         assert parse_float_with_validation("-5.5") == -5.5
 
-    def test_parse_float_with_validation_range(self):
+    def test_parse_float_with_validation_range(self) -> None:
         """Test parsing with range validation."""
         assert parse_float_with_validation("5.0", min_val=0.0, max_val=10.0) == 5.0
 
@@ -169,7 +169,7 @@ class TestFloatValidationParsing:
         with pytest.raises(ValueError, match="must be <= 10.0"):
             parse_float_with_validation("11.0", max_val=10.0)
 
-    def test_parse_float_with_validation_invalid(self):
+    def test_parse_float_with_validation_invalid(self) -> None:
         """Test parsing invalid floats raises error."""
         with pytest.raises(ValueError, match="Invalid float"):
             parse_float_with_validation("not_a_number")
@@ -178,13 +178,13 @@ class TestFloatValidationParsing:
 class TestSampleRateParsing:
     """Test sample rate parsing."""
 
-    def test_parse_sample_rate_valid(self):
+    def test_parse_sample_rate_valid(self) -> None:
         """Test parsing valid sample rates."""
         assert parse_sample_rate("0.0") == 0.0
         assert parse_sample_rate("0.5") == 0.5
         assert parse_sample_rate("1.0") == 1.0
 
-    def test_parse_sample_rate_invalid_range(self):
+    def test_parse_sample_rate_invalid_range(self) -> None:
         """Test parsing sample rates outside 0-1 range."""
         with pytest.raises(ValueError, match="must be >= 0.0"):
             parse_sample_rate("-0.1")
@@ -196,7 +196,7 @@ class TestSampleRateParsing:
 class TestHeadersParsing:
     """Test HTTP headers parsing."""
 
-    def test_parse_headers_valid(self):
+    def test_parse_headers_valid(self) -> None:
         """Test parsing valid header pairs."""
         result = parse_headers("Authorization=Bearer token,Content-Type=application/json")
         assert result == {
@@ -204,12 +204,12 @@ class TestHeadersParsing:
             "Content-Type": "application/json",
         }
 
-    def test_parse_headers_empty(self):
+    def test_parse_headers_empty(self) -> None:
         """Test parsing empty string returns empty dict."""
         assert parse_headers("") == {}
         assert parse_headers("   ") == {}
 
-    def test_parse_headers_invalid_format(self):
+    def test_parse_headers_invalid_format(self) -> None:
         """Test invalid formats are skipped."""
         result = parse_headers("Valid=value,InvalidNoEquals,Another=one")
         assert result == {
@@ -217,7 +217,7 @@ class TestHeadersParsing:
             "Another": "one",
         }
 
-    def test_parse_headers_whitespace(self):
+    def test_parse_headers_whitespace(self) -> None:
         """Test whitespace handling."""
         result = parse_headers(" Key1 = Value1 , Key2 = Value2 ")
         assert result == {
@@ -229,17 +229,17 @@ class TestHeadersParsing:
 class TestCommaListParsing:
     """Test comma-separated list parsing."""
 
-    def test_parse_comma_list_valid(self):
+    def test_parse_comma_list_valid(self) -> None:
         """Test parsing comma-separated strings."""
         assert parse_comma_list("a,b,c") == ["a", "b", "c"]
         assert parse_comma_list(" a , b , c ") == ["a", "b", "c"]
 
-    def test_parse_comma_list_empty(self):
+    def test_parse_comma_list_empty(self) -> None:
         """Test parsing empty string returns empty list."""
         assert parse_comma_list("") == []
         assert parse_comma_list("   ") == []
 
-    def test_parse_comma_list_single(self):
+    def test_parse_comma_list_single(self) -> None:
         """Test parsing single item."""
         assert parse_comma_list("single") == ["single"]
 
@@ -247,17 +247,17 @@ class TestCommaListParsing:
 class TestJsonParsing:
     """Test JSON parsing functions."""
 
-    def test_parse_json_dict_valid(self):
+    def test_parse_json_dict_valid(self) -> None:
         """Test parsing valid JSON objects."""
         result = parse_json_dict('{"key": "value", "number": 42}')
         assert result == {"key": "value", "number": 42}
 
-    def test_parse_json_dict_empty(self):
+    def test_parse_json_dict_empty(self) -> None:
         """Test parsing empty string returns empty dict."""
         assert parse_json_dict("") == {}
         assert parse_json_dict("   ") == {}
 
-    def test_parse_json_dict_invalid(self):
+    def test_parse_json_dict_invalid(self) -> None:
         """Test parsing invalid JSON raises error."""
         with pytest.raises(ValueError, match="Invalid json_dict"):
             parse_json_dict("not json")
@@ -265,17 +265,17 @@ class TestJsonParsing:
         with pytest.raises(ValueError, match="Invalid json_dict"):
             parse_json_dict('["list", "not", "dict"]')
 
-    def test_parse_json_list_valid(self):
+    def test_parse_json_list_valid(self) -> None:
         """Test parsing valid JSON arrays."""
         result = parse_json_list('["a", "b", "c"]')
         assert result == ["a", "b", "c"]
 
-    def test_parse_json_list_empty(self):
+    def test_parse_json_list_empty(self) -> None:
         """Test parsing empty string returns empty list."""
         assert parse_json_list("") == []
         assert parse_json_list("   ") == []
 
-    def test_parse_json_list_invalid(self):
+    def test_parse_json_list_invalid(self) -> None:
         """Test parsing invalid JSON raises error."""
         with pytest.raises(ValueError, match="Invalid json_list"):
             parse_json_list("not json")
@@ -287,7 +287,7 @@ class TestJsonParsing:
 class TestValidators:
     """Test validator functions."""
 
-    def test_validate_log_level(self):
+    def test_validate_log_level(self) -> None:
         """Test log level validator."""
         # Valid levels should not raise
         validate_log_level(None, type("attr", (), {"name": "test"})(), "DEBUG")
@@ -297,7 +297,7 @@ class TestValidators:
         with pytest.raises(ValidationError, match="Invalid test"):
             validate_log_level(None, type("attr", (), {"name": "test"})(), "INVALID")
 
-    def test_validate_sample_rate(self):
+    def test_validate_sample_rate(self) -> None:
         """Test sample rate validator."""
         # Valid rates should not raise
         validate_sample_rate(None, type("attr", (), {"name": "test"})(), 0.0)
@@ -311,7 +311,7 @@ class TestValidators:
         with pytest.raises(ValidationError, match="must be between"):
             validate_sample_rate(None, type("attr", (), {"name": "test"})(), 1.1)
 
-    def test_validate_port(self):
+    def test_validate_port(self) -> None:
         """Test port number validator."""
         # Valid ports should not raise
         validate_port(None, type("attr", (), {"name": "test"})(), 1)
@@ -325,7 +325,7 @@ class TestValidators:
         with pytest.raises(ValidationError, match="must be between"):
             validate_port(None, type("attr", (), {"name": "test"})(), 65536)
 
-    def test_validate_positive(self):
+    def test_validate_positive(self) -> None:
         """Test positive value validator."""
         # Valid values should not raise
         validate_positive(None, type("attr", (), {"name": "test"})(), 1)
@@ -339,7 +339,7 @@ class TestValidators:
         with pytest.raises(ValidationError, match="must be positive"):
             validate_positive(None, type("attr", (), {"name": "test"})(), -1)
 
-    def test_validate_non_negative(self):
+    def test_validate_non_negative(self) -> None:
         """Test non-negative value validator."""
         # Valid values should not raise
         validate_non_negative(None, type("attr", (), {"name": "test"})(), 0)
@@ -353,7 +353,7 @@ class TestValidators:
         with pytest.raises(ValidationError, match="must be non-negative"):
             validate_non_negative(None, type("attr", (), {"name": "test"})(), -0.1)
 
-    def test_validate_overflow_policy(self):
+    def test_validate_overflow_policy(self) -> None:
         """Test overflow policy validator."""
         # Valid policies should not raise
         validate_overflow_policy(None, type("attr", (), {"name": "test"})(), "drop_oldest")
@@ -371,7 +371,7 @@ class TestValidators:
 class TestFoundationLogOutputParsing:
     """Test foundation log output destination parsing."""
 
-    def test_parse_foundation_log_output_valid(self):
+    def test_parse_foundation_log_output_valid(self) -> None:
         """Test parsing valid output destinations."""
         assert parse_foundation_log_output("stderr") == "stderr"
         assert parse_foundation_log_output("stdout") == "stdout"
@@ -382,17 +382,17 @@ class TestFoundationLogOutputParsing:
         assert parse_foundation_log_output("StdOut") == "stdout"
         assert parse_foundation_log_output("MAIN") == "main"
 
-    def test_parse_foundation_log_output_empty(self):
+    def test_parse_foundation_log_output_empty(self) -> None:
         """Test parsing empty string defaults to stderr."""
         assert parse_foundation_log_output("") == "stderr"
         assert parse_foundation_log_output(None) == "stderr"
 
-    def test_parse_foundation_log_output_whitespace(self):
+    def test_parse_foundation_log_output_whitespace(self) -> None:
         """Test whitespace handling."""
         assert parse_foundation_log_output("  stderr  ") == "stderr"
         assert parse_foundation_log_output("  STDOUT  ") == "stdout"
 
-    def test_parse_foundation_log_output_invalid(self):
+    def test_parse_foundation_log_output_invalid(self) -> None:
         """Test parsing invalid destinations raises error."""
         with pytest.raises(ValueError, match="Invalid foundation_log_output"):
             parse_foundation_log_output("invalid")
@@ -420,16 +420,16 @@ class TestBoolStrictParsing:
         ("off", False),
         ("OFF", False),
     ])
-    def test_parse_bool_strict_valid(self, value, expected):
+    def test_parse_bool_strict_valid(self, value, expected) -> None:
         """Test parsing valid boolean representations."""
         assert parse_bool_strict(value) == expected
 
-    def test_parse_bool_strict_bool_input(self):
+    def test_parse_bool_strict_bool_input(self) -> None:
         """Test parsing actual bool values."""
         assert parse_bool_strict(True) is True
         assert parse_bool_strict(False) is False
 
-    def test_parse_bool_strict_invalid_value(self):
+    def test_parse_bool_strict_invalid_value(self) -> None:
         """Test strict parsing rejects invalid string values."""
         with pytest.raises(ValueError, match="Invalid boolean"):
             parse_bool_strict("invalid")
@@ -440,7 +440,7 @@ class TestBoolStrictParsing:
         with pytest.raises(ValueError, match="Invalid boolean"):
             parse_bool_strict("maybe")
 
-    def test_parse_bool_strict_invalid_type(self):
+    def test_parse_bool_strict_invalid_type(self) -> None:
         """Test strict parsing rejects non-string, non-bool types."""
         with pytest.raises(TypeError, match="Boolean field requires str or bool"):
             parse_bool_strict(42)
@@ -451,7 +451,7 @@ class TestBoolStrictParsing:
         with pytest.raises(TypeError, match="Boolean field requires str or bool"):
             parse_bool_strict(None)
 
-    def test_parse_bool_strict_whitespace(self):
+    def test_parse_bool_strict_whitespace(self) -> None:
         """Test whitespace handling in strict mode."""
         assert parse_bool_strict("  true  ") is True
         assert parse_bool_strict("  false  ") is False
@@ -460,18 +460,18 @@ class TestBoolStrictParsing:
 class TestModuleLevelsDictInput:
     """Test module levels parsing with dict input."""
 
-    def test_parse_module_levels_dict_valid(self):
+    def test_parse_module_levels_dict_valid(self) -> None:
         """Test parsing dict input with valid levels."""
         input_dict = {"auth": "debug", "database": "ERROR", "api": "Info"}
         result = parse_module_levels(input_dict)
         assert result == {"auth": "DEBUG", "database": "ERROR", "api": "INFO"}
 
-    def test_parse_module_levels_dict_invalid(self):
+    def test_parse_module_levels_dict_invalid(self) -> None:
         """Test dict input with some invalid levels."""
         input_dict = {"auth": "DEBUG", "bad": "INVALID_LEVEL", "api": "INFO"}
         result = parse_module_levels(input_dict)
         assert result == {"auth": "DEBUG", "api": "INFO"}  # Invalid level skipped
 
-    def test_parse_module_levels_dict_empty(self):
+    def test_parse_module_levels_dict_empty(self) -> None:
         """Test parsing empty dict."""
         assert parse_module_levels({}) == {}

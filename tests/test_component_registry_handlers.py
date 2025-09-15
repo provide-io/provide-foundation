@@ -12,7 +12,7 @@ from unittest.mock import Mock
 class TestErrorHandlerComponents:
     """Test error handler component registration and management."""
 
-    def test_error_handlers_register_in_error_handler_category(self):
+    def test_error_handlers_register_in_error_handler_category(self) -> None:
         """Error handlers must register in ERROR_HANDLER category."""
         from provide.foundation.hub.components import (
             ComponentCategory,
@@ -41,7 +41,7 @@ class TestErrorHandlerComponents:
         )
         assert retrieved is test_error_handler
 
-    def test_error_handler_exception_type_matching(self):
+    def test_error_handler_exception_type_matching(self) -> None:
         """Error handlers must be matched by exception type."""
         from provide.foundation.hub.components import get_handlers_for_exception
 
@@ -53,7 +53,7 @@ class TestErrorHandlerComponents:
             exception_types = handler.metadata.get("exception_types", [])
             assert any("ValueError" in exc_type for exc_type in exception_types)
 
-    def test_error_handler_priority_chain(self):
+    def test_error_handler_priority_chain(self) -> None:
         """Error handlers must execute in priority order until handled."""
         from provide.foundation.hub.components import (
             ComponentCategory,
@@ -63,7 +63,7 @@ class TestErrorHandlerComponents:
         registry = get_component_registry()
 
         # High priority handler that doesn't handle
-        def high_priority_handler(exception, context):
+        def high_priority_handler(exception, context) -> None:
             return None  # Don't handle
 
         registry.register(
@@ -98,7 +98,7 @@ class TestErrorHandlerComponents:
         )
         assert high_entry.metadata["priority"] > low_entry.metadata["priority"]
 
-    async def test_async_error_handler_support(self):
+    async def test_async_error_handler_support(self) -> None:
         """Error handlers must support async execution."""
         from provide.foundation.hub.components import (
             ComponentCategory,
@@ -127,7 +127,7 @@ class TestErrorHandlerComponents:
 class TestThreadSafeComponentAccess:
     """Test thread-safe component access and initialization."""
 
-    def test_concurrent_component_registration(self):
+    def test_concurrent_component_registration(self) -> None:
         """Component registration must be thread-safe."""
         from provide.foundation.hub.components import get_component_registry
 
@@ -135,7 +135,7 @@ class TestThreadSafeComponentAccess:
         results = []
         errors = []
 
-        def register_component(i):
+        def register_component(i) -> None:
             try:
                 component = Mock()
                 component.id = i
@@ -165,7 +165,7 @@ class TestThreadSafeComponentAccess:
             component = registry.get(f"concurrent_component_{i}", "test")
             assert component.id == i
 
-    def test_concurrent_component_access(self):
+    def test_concurrent_component_access(self) -> None:
         """Component access must be thread-safe."""
         from provide.foundation.hub.components import get_component_registry
 
@@ -184,14 +184,14 @@ class TestThreadSafeComponentAccess:
 
         results = []
 
-        def access_component():
+        def access_component() -> None:
             component = registry.get("shared_component", "test")
             component.increment()
             results.append(component.access_count)
 
         # Access component concurrently
         threads = []
-        for i in range(50):
+        for _i in range(50):
             thread = threading.Thread(target=access_component)
             threads.append(thread)
             thread.start()
@@ -203,7 +203,7 @@ class TestThreadSafeComponentAccess:
         assert len(results) == 50
         assert test_component.access_count == 50
 
-    def test_lazy_component_initialization(self):
+    def test_lazy_component_initialization(self) -> None:
         """Components must support lazy initialization."""
         from provide.foundation.hub.components import (
             get_component_registry,
@@ -245,7 +245,7 @@ class TestThreadSafeComponentAccess:
         assert initialization_count == 1
         assert component2 is component1
 
-    async def test_async_component_initialization(self):
+    async def test_async_component_initialization(self) -> None:
         """Components must support async initialization."""
         from provide.foundation.hub.components import (
             get_component_registry,
@@ -274,7 +274,7 @@ class TestThreadSafeComponentAccess:
         component = await initialize_async_component("async_component", "test")
         assert component.async_initialized is True
 
-    def test_component_cleanup_on_shutdown(self):
+    def test_component_cleanup_on_shutdown(self) -> None:
         """Components must support cleanup on shutdown."""
         from provide.foundation.hub.components import (
             cleanup_all_components,

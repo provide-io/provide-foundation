@@ -21,7 +21,7 @@ from provide.foundation.eventsets.types import (
 class TestEventSetRegistry:
     """Test event set registration and discovery."""
 
-    def test_discover_event_sets(self):
+    def test_discover_event_sets(self) -> None:
         """Test that event sets can be discovered."""
         discover_event_sets()
         registry = get_registry()
@@ -33,7 +33,7 @@ class TestEventSetRegistry:
         assert "http" in names
         assert "llm" in names
 
-    def test_event_sets_have_priority(self):
+    def test_event_sets_have_priority(self) -> None:
         """Test that event sets are sorted by priority."""
         discover_event_sets()
         registry = get_registry()
@@ -47,7 +47,7 @@ class TestEventSetRegistry:
 class TestEventSetResolver:
     """Test event set resolution and enrichment."""
 
-    def test_resolver_enriches_das_events(self):
+    def test_resolver_enriches_das_events(self) -> None:
         """Test DAS event enrichment."""
         discover_event_sets()
         resolver = get_resolver()
@@ -66,7 +66,7 @@ class TestEventSetResolver:
         assert "[🚀]" in enriched["event"]  # start action
         assert "[✅]" in enriched["event"]  # success status
 
-    def test_resolver_enriches_http_events(self):
+    def test_resolver_enriches_http_events(self) -> None:
         """Test HTTP event enrichment."""
         discover_event_sets()
         resolver = get_resolver()
@@ -86,7 +86,7 @@ class TestEventSetResolver:
         # Should have metadata
         assert enriched.get("http.success") is True
 
-    def test_resolver_enriches_llm_events(self):
+    def test_resolver_enriches_llm_events(self) -> None:
         """Test LLM event enrichment."""
         discover_event_sets()
         resolver = get_resolver()
@@ -114,7 +114,7 @@ class TestEventSetResolver:
 class TestEventSetTypes:
     """Test event set type definitions."""
 
-    def test_event_mapping_creation(self):
+    def test_event_mapping_creation(self) -> None:
         """Test EventMapping can be created."""
         mapping = EventMapping(
             name="test",
@@ -125,7 +125,7 @@ class TestEventSetTypes:
         assert mapping.visual_markers["test"] == "🧪"
         assert mapping.default_key == "default"
 
-    def test_event_set_creation(self):
+    def test_event_set_creation(self) -> None:
         """Test EventSet can be created."""
         mapping = EventMapping(name="test", visual_markers={"test": "🧪"})
         field_mapping = FieldMapping(log_key="test.field", event_set_name="test")
@@ -147,7 +147,7 @@ class TestEventSetTypes:
 class TestLoggingIntegration:
     """Test integration with logging system."""
 
-    def test_logging_uses_event_enrichment(self):
+    def test_logging_uses_event_enrichment(self) -> None:
         """Test that logging system uses event enrichment."""
         from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
         from provide.foundation.logger.setup import internal_setup
@@ -176,4 +176,4 @@ class TestLoggingIntegration:
             # If we get here, the enrichment processor is working
             assert True
         except Exception as e:
-            assert False, f"Event enrichment failed: {e}"
+            raise AssertionError(f"Event enrichment failed: {e}")

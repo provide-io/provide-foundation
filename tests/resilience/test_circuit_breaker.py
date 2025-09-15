@@ -2,6 +2,7 @@
 """
 
 import time
+from typing import Never
 
 import pytest
 
@@ -11,18 +12,18 @@ from provide.foundation.resilience.circuit import CircuitBreaker, CircuitState
 class TestCircuitBreaker:
     """Test CircuitBreaker class."""
 
-    def test_initial_state(self):
+    def test_initial_state(self) -> None:
         """Test initial circuit breaker state."""
         breaker = CircuitBreaker()
 
         assert breaker.state == CircuitState.CLOSED
         assert breaker.failure_count == 0
 
-    def test_successful_calls_keep_circuit_closed(self):
+    def test_successful_calls_keep_circuit_closed(self) -> None:
         """Test successful calls don't affect circuit state."""
         breaker = CircuitBreaker(failure_threshold=2)
 
-        def success_func():
+        def success_func() -> str:
             return "success"
 
         # Multiple successful calls
@@ -32,11 +33,11 @@ class TestCircuitBreaker:
             assert breaker.state == CircuitState.CLOSED
             assert breaker.failure_count == 0
 
-    def test_failures_increment_count(self):
+    def test_failures_increment_count(self) -> None:
         """Test failures increment failure count."""
         breaker = CircuitBreaker(failure_threshold=3)
 
-        def failing_func():
+        def failing_func() -> Never:
             raise ValueError("test error")
 
         # First failure
@@ -53,11 +54,11 @@ class TestCircuitBreaker:
         assert breaker.state == CircuitState.CLOSED
         assert breaker.failure_count == 2
 
-    def test_circuit_opens_after_threshold(self):
+    def test_circuit_opens_after_threshold(self) -> None:
         """Test circuit opens when failure threshold is reached."""
         breaker = CircuitBreaker(failure_threshold=2)
 
-        def failing_func():
+        def failing_func() -> Never:
             raise ValueError("test error")
 
         # Hit threshold
@@ -72,14 +73,14 @@ class TestCircuitBreaker:
         with pytest.raises(RuntimeError, match="Circuit breaker is open"):
             breaker.call(failing_func)
 
-    def test_circuit_recovery_after_timeout(self):
+    def test_circuit_recovery_after_timeout(self) -> None:
         """Test circuit attempts recovery after timeout."""
         breaker = CircuitBreaker(failure_threshold=1, recovery_timeout=0.1)
 
-        def failing_func():
+        def failing_func() -> Never:
             raise ValueError("test error")
 
-        def success_func():
+        def success_func() -> str:
             return "recovered"
 
         # Open circuit
@@ -98,11 +99,11 @@ class TestCircuitBreaker:
         assert breaker.state == CircuitState.CLOSED
         assert breaker.failure_count == 0
 
-    def test_half_open_failure_reopens_circuit(self):
+    def test_half_open_failure_reopens_circuit(self) -> None:
         """Test failure in half-open state reopens circuit."""
         breaker = CircuitBreaker(failure_threshold=1, recovery_timeout=0.1)
 
-        def failing_func():
+        def failing_func() -> Never:
             raise ValueError("test error")
 
         # Open circuit
@@ -122,17 +123,17 @@ class TestCircuitBreaker:
         with pytest.raises(RuntimeError, match="Circuit breaker is open"):
             breaker.call(failing_func)
 
-    def test_expected_exception_filtering(self):
+    def test_expected_exception_filtering(self) -> None:
         """Test circuit breaker only triggers on expected exceptions."""
         breaker = CircuitBreaker(
             failure_threshold=1,
             expected_exception=(ValueError,),
         )
 
-        def runtime_error_func():
+        def runtime_error_func() -> Never:
             raise RuntimeError("unexpected")
 
-        def value_error_func():
+        def value_error_func() -> Never:
             raise ValueError("expected")
 
         # RuntimeError should not trigger circuit breaker
@@ -149,11 +150,11 @@ class TestCircuitBreaker:
         assert breaker.state == CircuitState.OPEN
         assert breaker.failure_count == 1
 
-    def test_manual_reset(self):
+    def test_manual_reset(self) -> None:
         """Test manual circuit breaker reset."""
         breaker = CircuitBreaker(failure_threshold=1)
 
-        def failing_func():
+        def failing_func() -> Never:
             raise ValueError("test error")
 
         # Open circuit
@@ -169,14 +170,14 @@ class TestCircuitBreaker:
         assert breaker.failure_count == 0
 
     @pytest.mark.asyncio
-    async def test_async_circuit_breaker(self):
+    async def test_async_circuit_breaker(self) -> None:
         """Test circuit breaker with async functions."""
         breaker = CircuitBreaker(failure_threshold=2)
 
-        async def async_failing_func():
+        async def async_failing_func() -> Never:
             raise ValueError("async error")
 
-        async def async_success_func():
+        async def async_success_func() -> str:
             return "async success"
 
         # Test failures
@@ -195,11 +196,11 @@ class TestCircuitBreaker:
         result = await breaker.call_async(async_success_func)
         assert result == "async success"
 
-    def test_custom_recovery_timeout(self):
+    def test_custom_recovery_timeout(self) -> None:
         """Test custom recovery timeout setting."""
         breaker = CircuitBreaker(failure_threshold=1, recovery_timeout=1.0)
 
-        def failing_func():
+        def failing_func() -> Never:
             raise ValueError("test")
 
         # Open circuit

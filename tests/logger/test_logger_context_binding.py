@@ -10,7 +10,7 @@ from provide.foundation import logger as global_logger
 from provide.foundation.logger import LoggingConfig, TelemetryConfig, get_logger
 
 
-def setup_json_logging(setup_func):
+def setup_json_logging(setup_func) -> None:
     """Helper to setup JSON logging for tests."""
     config = TelemetryConfig(
         logging=LoggingConfig(console_formatter="json", default_level="DEBUG"),
@@ -49,7 +49,7 @@ class TestLoggerBind:
 
     def test_bind_adds_context(
         self, captured_stderr_for_foundation, setup_foundation_telemetry_for_test,
-    ):
+    ) -> None:
         """Test that bind() adds context to log messages."""
         setup_json_logging(setup_foundation_telemetry_for_test)
 
@@ -72,7 +72,7 @@ class TestLoggerBind:
 
     def test_bind_returns_new_logger(
         self, captured_stderr_for_foundation, setup_foundation_telemetry_for_test,
-    ):
+    ) -> None:
         """Test that bind() returns a new logger instance."""
         setup_json_logging(setup_foundation_telemetry_for_test)
 
@@ -100,7 +100,7 @@ class TestLoggerBind:
 
     def test_bind_preserves_original_logger(
         self, captured_stderr_for_foundation, setup_foundation_telemetry_for_test,
-    ):
+    ) -> None:
         """Test that bind() doesn't modify the original logger."""
         setup_json_logging(setup_foundation_telemetry_for_test)
         # Create a bound logger
@@ -123,7 +123,7 @@ class TestLoggerBind:
 
     def test_bind_chaining(
         self, captured_stderr_for_foundation, setup_foundation_telemetry_for_test,
-    ):
+    ) -> None:
         """Test that bind() can be chained for nested context."""
         setup_json_logging(setup_foundation_telemetry_for_test)
         bound1 = global_logger.bind(level1="a")
@@ -142,7 +142,7 @@ class TestLoggerBind:
 
     def test_bind_with_empty_context(
         self, captured_stderr_for_foundation, setup_foundation_telemetry_for_test,
-    ):
+    ) -> None:
         """Test that bind() with no arguments still works."""
         setup_json_logging(setup_foundation_telemetry_for_test)
         bound_logger = global_logger.bind()
@@ -158,7 +158,7 @@ class TestLoggerUnbind:
 
     def test_unbind_removes_context(
         self, captured_stderr_for_foundation, setup_foundation_telemetry_for_test,
-    ):
+    ) -> None:
         """Test that unbind() removes specified context keys."""
         setup_json_logging(setup_foundation_telemetry_for_test)
         # Create logger with context
@@ -178,7 +178,7 @@ class TestLoggerUnbind:
 
     def test_unbind_multiple_keys(
         self, captured_stderr_for_foundation, setup_foundation_telemetry_for_test,
-    ):
+    ) -> None:
         """Test unbinding multiple keys at once."""
         setup_json_logging(setup_foundation_telemetry_for_test)
         bound_logger = global_logger.bind(a="1", b="2", c="3", d="4")
@@ -197,7 +197,7 @@ class TestLoggerUnbind:
 
     def test_unbind_nonexistent_key_raises(
         self, captured_stderr_for_foundation, setup_foundation_telemetry_for_test,
-    ):
+    ) -> None:
         """Test that unbind() raises error for non-existent keys."""
         setup_json_logging(setup_foundation_telemetry_for_test)
         bound_logger = global_logger.bind(existing="value")
@@ -208,7 +208,7 @@ class TestLoggerUnbind:
 
     def test_unbind_returns_new_logger(
         self, captured_stderr_for_foundation, setup_foundation_telemetry_for_test,
-    ):
+    ) -> None:
         """Test that unbind() returns a new logger instance."""
         setup_json_logging(setup_foundation_telemetry_for_test)
         bound_logger = global_logger.bind(key="value")
@@ -223,7 +223,7 @@ class TestLoggerTryUnbind:
 
     def test_try_unbind_removes_existing_keys(
         self, captured_stderr_for_foundation, setup_foundation_telemetry_for_test,
-    ):
+    ) -> None:
         """Test that try_unbind() removes keys that exist."""
         setup_json_logging(setup_foundation_telemetry_for_test)
         bound_logger = global_logger.bind(key1="value1", key2="value2")
@@ -240,7 +240,7 @@ class TestLoggerTryUnbind:
 
     def test_try_unbind_ignores_nonexistent_keys(
         self, captured_stderr_for_foundation, setup_foundation_telemetry_for_test,
-    ):
+    ) -> None:
         """Test that try_unbind() doesn't fail for non-existent keys."""
         setup_json_logging(setup_foundation_telemetry_for_test)
         bound_logger = global_logger.bind(existing="value")
@@ -256,7 +256,7 @@ class TestLoggerTryUnbind:
 
     def test_try_unbind_mixed_keys(
         self, captured_stderr_for_foundation, setup_foundation_telemetry_for_test,
-    ):
+    ) -> None:
         """Test try_unbind() with mix of existing and non-existing keys."""
         setup_json_logging(setup_foundation_telemetry_for_test)
         bound_logger = global_logger.bind(a="1", b="2", c="3")
@@ -276,7 +276,7 @@ class TestLoggerTryUnbind:
 
     def test_try_unbind_returns_new_logger(
         self, captured_stderr_for_foundation, setup_foundation_telemetry_for_test,
-    ):
+    ) -> None:
         """Test that try_unbind() returns a new logger instance."""
         setup_json_logging(setup_foundation_telemetry_for_test)
         bound_logger = global_logger.bind(key="value")
@@ -289,24 +289,24 @@ class TestLoggerTryUnbind:
 class TestLoggerContextIntegration:
     """Test integration scenarios with context binding."""
 
-    def test_global_logger_bind_method_exists(self):
+    def test_global_logger_bind_method_exists(self) -> None:
         """Test that global logger has bind method."""
         assert hasattr(global_logger, "bind")
         assert callable(global_logger.bind)
 
-    def test_global_logger_unbind_method_exists(self):
+    def test_global_logger_unbind_method_exists(self) -> None:
         """Test that global logger has unbind method."""
         assert hasattr(global_logger, "unbind")
         assert callable(global_logger.unbind)
 
-    def test_global_logger_try_unbind_method_exists(self):
+    def test_global_logger_try_unbind_method_exists(self) -> None:
         """Test that global logger has try_unbind method."""
         assert hasattr(global_logger, "try_unbind")
         assert callable(global_logger.try_unbind)
 
     def test_named_logger_also_supports_binding(
         self, captured_stderr_for_foundation, setup_foundation_telemetry_for_test,
-    ):
+    ) -> None:
         """Test that named loggers created with get_logger also support binding."""
         setup_json_logging(setup_foundation_telemetry_for_test)
         named_logger = get_logger("test.module")
@@ -326,7 +326,7 @@ class TestLoggerContextIntegration:
 
     def test_complex_workflow(
         self, captured_stderr_for_foundation, setup_foundation_telemetry_for_test,
-    ):
+    ) -> None:
         """Test a complex logging workflow with binding and unbinding."""
         setup_json_logging(setup_foundation_telemetry_for_test)
         # Start with global logger
@@ -369,7 +369,7 @@ class TestLoggerBindingEdgeCases:
 
     def test_bind_with_reserved_keys(
         self, captured_stderr_for_foundation, setup_foundation_telemetry_for_test,
-    ):
+    ) -> None:
         """Test binding with potentially reserved keys."""
         setup_json_logging(setup_foundation_telemetry_for_test)
         # These shouldn't cause issues
@@ -386,7 +386,7 @@ class TestLoggerBindingEdgeCases:
 
     def test_bind_with_none_values(
         self, captured_stderr_for_foundation, setup_foundation_telemetry_for_test,
-    ):
+    ) -> None:
         """Test binding with None values."""
         setup_json_logging(setup_foundation_telemetry_for_test)
         bound = global_logger.bind(key1=None, key2="value", key3=None)
@@ -402,7 +402,7 @@ class TestLoggerBindingEdgeCases:
 
     def test_bind_with_complex_values(
         self, captured_stderr_for_foundation, setup_foundation_telemetry_for_test,
-    ):
+    ) -> None:
         """Test binding with complex data types."""
         setup_json_logging(setup_foundation_telemetry_for_test)
         bound = global_logger.bind(

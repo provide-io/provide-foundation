@@ -11,7 +11,7 @@ from provide.foundation.hub.components import (
 class TestComponentInfo:
     """Test ComponentInfo dataclass."""
 
-    def test_component_info_creation(self):
+    def test_component_info_creation(self) -> None:
         """Test ComponentInfo creation with all fields."""
         info = ComponentInfo(
             name="test_component",
@@ -33,7 +33,7 @@ class TestComponentInfo:
         assert info.tags == ["test", "mock"]
         assert info.metadata == {"key": "value"}
 
-    def test_component_info_defaults(self):
+    def test_component_info_defaults(self) -> None:
         """Test ComponentInfo creation with defaults."""
         info = ComponentInfo(name="minimal", component_class=Mock)
 
@@ -50,7 +50,7 @@ class TestComponentInfo:
 class TestComponentCategory:
     """Test ComponentCategory enum."""
 
-    def test_component_category_values(self):
+    def test_component_category_values(self) -> None:
         """Test ComponentCategory enum values."""
         assert ComponentCategory.CONFIG_SOURCE.value == "config_source"
         assert ComponentCategory.PROCESSOR.value == "processor"

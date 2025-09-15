@@ -1,5 +1,4 @@
-"""Configuration manager for centralized configuration management.
-"""
+"""Configuration manager for centralized configuration management."""
 
 from typing import TypeVar
 

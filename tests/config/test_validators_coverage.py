@@ -16,7 +16,7 @@ from provide.foundation.errors.config import ValidationError
 class TestValidatorsCoverage:
     """Test config validators for improved coverage."""
 
-    def test_validate_choice_valid_value(self):
+    def test_validate_choice_valid_value(self) -> None:
         """Test validate_choice with valid value."""
         choices = ["a", "b", "c"]
         validator = validate_choice(choices)
@@ -31,7 +31,7 @@ class TestValidatorsCoverage:
         validator(instance, attribute, "b")
         validator(instance, attribute, "c")
 
-    def test_validate_choice_invalid_value(self):
+    def test_validate_choice_invalid_value(self) -> None:
         """Test validate_choice with invalid value raises ValidationError."""
         choices = ["a", "b", "c"]
         validator = validate_choice(choices)
@@ -46,7 +46,7 @@ class TestValidatorsCoverage:
         assert "Invalid value 'invalid' for test_field" in str(exc_info.value)
         assert "Must be one of: ['a', 'b', 'c']" in str(exc_info.value)
 
-    def test_validate_choice_with_mixed_types(self):
+    def test_validate_choice_with_mixed_types(self) -> None:
         """Test validate_choice with mixed data types."""
         choices = [1, "string", True, None]
         validator = validate_choice(choices)
@@ -65,7 +65,7 @@ class TestValidatorsCoverage:
         with pytest.raises(ValidationError):
             validator(instance, attribute, "not_in_choices")
 
-    def test_validate_range_valid_values(self):
+    def test_validate_range_valid_values(self) -> None:
         """Test validate_range with valid values."""
         validator = validate_range(0.0, 10.0)
 
@@ -80,7 +80,7 @@ class TestValidatorsCoverage:
         validator(instance, attribute, 0)  # integer min
         validator(instance, attribute, 10)  # integer max
 
-    def test_validate_range_invalid_type(self):
+    def test_validate_range_invalid_type(self) -> None:
         """Test validate_range with non-numeric type."""
         validator = validate_range(0.0, 10.0)
 
@@ -93,7 +93,7 @@ class TestValidatorsCoverage:
 
         assert "Value must be a number, got str" in str(exc_info.value)
 
-    def test_validate_range_out_of_bounds(self):
+    def test_validate_range_out_of_bounds(self) -> None:
         """Test validate_range with out-of-bounds values."""
         validator = validate_range(1.0, 5.0)
 
@@ -111,7 +111,7 @@ class TestValidatorsCoverage:
             validator(instance, attribute, 5.5)
         assert "Value must be between 1.0 and 5.0, got 5.5" in str(exc_info.value)
 
-    def test_validate_range_negative_range(self):
+    def test_validate_range_negative_range(self) -> None:
         """Test validate_range with negative values."""
         validator = validate_range(-10.0, -1.0)
 
@@ -128,7 +128,7 @@ class TestValidatorsCoverage:
         with pytest.raises(ValidationError):
             validator(instance, attribute, 0)
 
-    def test_validate_positive_valid_values(self):
+    def test_validate_positive_valid_values(self) -> None:
         """Test validate_positive with valid positive values."""
         instance = Mock()
         attribute = Mock()
@@ -140,7 +140,7 @@ class TestValidatorsCoverage:
         validate_positive(instance, attribute, 0.001)
         validate_positive(instance, attribute, 1000)
 
-    def test_validate_positive_invalid_type(self):
+    def test_validate_positive_invalid_type(self) -> None:
         """Test validate_positive with non-numeric type."""
         instance = Mock()
         attribute = Mock()
@@ -151,7 +151,7 @@ class TestValidatorsCoverage:
 
         assert "Value must be a number, got str" in str(exc_info.value)
 
-    def test_validate_positive_zero_and_negative(self):
+    def test_validate_positive_zero_and_negative(self) -> None:
         """Test validate_positive with zero and negative values."""
         instance = Mock()
         attribute = Mock()
@@ -167,7 +167,7 @@ class TestValidatorsCoverage:
             validate_positive(instance, attribute, -1)
         assert "Value -1 for positive_field must be positive" in str(exc_info.value)
 
-    def test_validate_non_negative_valid_values(self):
+    def test_validate_non_negative_valid_values(self) -> None:
         """Test validate_non_negative with valid non-negative values."""
         instance = Mock()
         attribute = Mock()
@@ -180,7 +180,7 @@ class TestValidatorsCoverage:
         validate_non_negative(instance, attribute, 1.5)
         validate_non_negative(instance, attribute, 1000)
 
-    def test_validate_non_negative_invalid_type(self):
+    def test_validate_non_negative_invalid_type(self) -> None:
         """Test validate_non_negative with non-numeric type."""
         instance = Mock()
         attribute = Mock()
@@ -191,7 +191,7 @@ class TestValidatorsCoverage:
 
         assert "Value must be a number, got str" in str(exc_info.value)
 
-    def test_validate_non_negative_negative_values(self):
+    def test_validate_non_negative_negative_values(self) -> None:
         """Test validate_non_negative with negative values."""
         instance = Mock()
         attribute = Mock()
@@ -206,7 +206,7 @@ class TestValidatorsCoverage:
             validate_non_negative(instance, attribute, -0.5)
         assert "Value -0.5 for non_negative_field must be non-negative" in str(exc_info.value)
 
-    def test_validators_with_different_numeric_types(self):
+    def test_validators_with_different_numeric_types(self) -> None:
         """Test validators work with different numeric types."""
         instance = Mock()
         attribute = Mock()

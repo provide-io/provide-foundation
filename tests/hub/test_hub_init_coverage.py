@@ -8,7 +8,7 @@ import pytest
 class TestHubInitImports:
     """Test hub module imports and exports."""
 
-    def test_core_imports_available(self):
+    def test_core_imports_available(self) -> None:
         """Test that core hub imports are available."""
         from provide.foundation.hub import (
             ComponentCategory,
@@ -29,7 +29,7 @@ class TestHubInitImports:
         assert callable(get_hub)
         assert callable(get_click_commands)
 
-    def test_all_exports_defined(self):
+    def test_all_exports_defined(self) -> None:
         """Test that __all__ exports are properly defined."""
         import provide.foundation.hub as hub_module
 
@@ -52,7 +52,7 @@ class TestHubInitImports:
 class TestGetClickCommands:
     """Test get_click_commands function."""
 
-    def test_get_click_commands_success(self):
+    def test_get_click_commands_success(self) -> None:
         """Test successful get_click_commands when click is available."""
         from provide.foundation.hub import get_click_commands
 
@@ -63,7 +63,7 @@ class TestGetClickCommands:
         assert "build_click_command" in result
         assert callable(result["build_click_command"])
 
-    def test_get_click_commands_error_handling_paths(self):
+    def test_get_click_commands_error_handling_paths(self) -> None:
         """Test the error handling paths in get_click_commands."""
         from provide.foundation.hub import get_click_commands
 
@@ -88,7 +88,7 @@ class TestGetClickCommands:
 class TestHubGetattrLazyLoading:
     """Test __getattr__ lazy loading functionality."""
 
-    def test_getattr_build_click_command_success(self):
+    def test_getattr_build_click_command_success(self) -> None:
         """Test __getattr__ successfully loads build_click_command."""
         import provide.foundation.hub as hub_module
 
@@ -98,7 +98,7 @@ class TestHubGetattrLazyLoading:
         # Should be a callable function
         assert callable(build_click_command)
 
-    def test_getattr_build_click_command_import_error(self):
+    def test_getattr_build_click_command_import_error(self) -> None:
         """Test __getattr__ when build_click_command import fails."""
         import provide.foundation.hub as hub_module
 
@@ -110,7 +110,7 @@ class TestHubGetattrLazyLoading:
         ), pytest.raises(ImportError, match="click not available"):
             _ = hub_module.build_click_command
 
-    def test_getattr_nonexistent_attribute(self):
+    def test_getattr_nonexistent_attribute(self) -> None:
         """Test __getattr__ with non-existent attribute."""
         import provide.foundation.hub as hub_module
 
@@ -120,7 +120,7 @@ class TestHubGetattrLazyLoading:
         ):
             _ = hub_module.nonexistent_attr
 
-    def test_getattr_other_valid_attributes_bypass(self):
+    def test_getattr_other_valid_attributes_bypass(self) -> None:
         """Test that __getattr__ doesn't interfere with normal attributes."""
         import provide.foundation.hub as hub_module
 
@@ -133,7 +133,7 @@ class TestHubGetattrLazyLoading:
 class TestHubModuleBehavior:
     """Test overall hub module behavior and integration."""
 
-    def test_module_docstring_present(self):
+    def test_module_docstring_present(self) -> None:
         """Test that module has comprehensive docstring."""
         import provide.foundation.hub as hub_module
 
@@ -142,7 +142,7 @@ class TestHubModuleBehavior:
         assert "Hub" in hub_module.__doc__
         assert "Component" in hub_module.__doc__
 
-    def test_lazy_loading_integration(self):
+    def test_lazy_loading_integration(self) -> None:
         """Test integration between lazy loading and normal imports."""
         import provide.foundation.hub as hub_module
 
@@ -158,7 +158,7 @@ class TestHubModuleBehavior:
             # It's OK if click isn't available, that's what the lazy loading handles
             pass
 
-    def test_all_documented_features_accessible(self):
+    def test_all_documented_features_accessible(self) -> None:
         """Test that features mentioned in docstring are accessible."""
         import provide.foundation.hub as hub_module
 
@@ -178,7 +178,7 @@ class TestHubModuleBehavior:
 class TestClickDependencyHandling:
     """Test handling of optional click dependency."""
 
-    def test_module_works_without_click_features(self):
+    def test_module_works_without_click_features(self) -> None:
         """Test that core hub functionality works even if click features fail."""
         import provide.foundation.hub as hub_module
 
@@ -193,7 +193,7 @@ class TestClickDependencyHandling:
         assert callable(hub_module.get_hub)
         assert callable(hub_module.clear_hub)
 
-    def test_click_features_lazy_loading_error_handling(self):
+    def test_click_features_lazy_loading_error_handling(self) -> None:
         """Test error handling in click features lazy loading."""
         import provide.foundation.hub as hub_module
 
@@ -205,7 +205,7 @@ class TestClickDependencyHandling:
             with pytest.raises(ImportError, match="Mocked click unavailable"):
                 _ = hub_module.build_click_command
 
-    def test_import_error_detection_logic_exists(self):
+    def test_import_error_detection_logic_exists(self) -> None:
         """Test that ImportError detection logic exists in the code."""
         import inspect
 
@@ -223,7 +223,7 @@ class TestClickDependencyHandling:
 class TestHubLazyLoadingEdgeCases:
     """Test edge cases in lazy loading functionality."""
 
-    def test_multiple_getattr_calls_consistency(self):
+    def test_multiple_getattr_calls_consistency(self) -> None:
         """Test that multiple calls to __getattr__ are consistent."""
         import provide.foundation.hub as hub_module
 
@@ -238,7 +238,7 @@ class TestHubLazyLoadingEdgeCases:
             # Expected if click is not available
             pass
 
-    def test_getattr_with_various_attribute_names(self):
+    def test_getattr_with_various_attribute_names(self) -> None:
         """Test __getattr__ behavior with various attribute names."""
         import provide.foundation.hub as hub_module
 

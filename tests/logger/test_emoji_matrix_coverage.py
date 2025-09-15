@@ -9,7 +9,7 @@ from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapp
 class TestEventSetIntegration:
     """Test EventSet integration with logging system."""
 
-    def test_event_mapping_creation(self):
+    def test_event_mapping_creation(self) -> None:
         """Test EventMapping creation with visual markers."""
         mapping = EventMapping(
             name="test_mapping",
@@ -23,7 +23,7 @@ class TestEventSetIntegration:
         assert mapping.visual_markers["info"] == "ℹ️"
         assert mapping.default_key == "default"
 
-    def test_event_set_creation(self):
+    def test_event_set_creation(self) -> None:
         """Test EventSet creation with mappings and field mappings."""
         mapping = EventMapping(
             name="status",
@@ -49,7 +49,7 @@ class TestEventSetIntegration:
         assert len(event_set.field_mappings) == 1
         assert event_set.priority == 50
 
-    def test_field_mapping_creation(self):
+    def test_field_mapping_creation(self) -> None:
         """Test FieldMapping creation with various fields."""
         field_mapping = FieldMapping(
             log_key="test.field",
@@ -65,7 +65,7 @@ class TestEventSetIntegration:
         assert field_mapping.value_type == "string"
         assert field_mapping.default_value == "default"
 
-    def test_event_set_discovery(self):
+    def test_event_set_discovery(self) -> None:
         """Test event set discovery functionality."""
         discover_event_sets()
         registry = get_registry()
@@ -77,7 +77,7 @@ class TestEventSetIntegration:
         assert "http" in names
         assert "llm" in names
 
-    def test_event_enrichment_resolver(self):
+    def test_event_enrichment_resolver(self) -> None:
         """Test event enrichment through resolver."""
         discover_event_sets()
         resolver = get_resolver()
@@ -95,7 +95,7 @@ class TestEventSetIntegration:
         # Should have visual markers added
         assert "⚙️" in enriched["event"] or "🚀" in enriched["event"] or "✅" in enriched["event"]
 
-    def test_registry_event_set_priority_ordering(self):
+    def test_registry_event_set_priority_ordering(self) -> None:
         """Test that event sets are ordered by priority."""
         discover_event_sets()
         registry = get_registry()
@@ -105,7 +105,7 @@ class TestEventSetIntegration:
         priorities = [es.priority for es in event_sets]
         assert priorities == sorted(priorities, reverse=True)
 
-    def test_event_mapping_with_metadata_and_transformations(self):
+    def test_event_mapping_with_metadata_and_transformations(self) -> None:
         """Test EventMapping with metadata fields and transformations."""
         def uppercase_transform(value):
             return str(value).upper() if value else value
@@ -128,7 +128,7 @@ class TestEventSetIntegration:
         result = mapping.transformations["uppercase"]("hello")
         assert result == "HELLO"
 
-    def test_event_set_with_complex_configuration(self):
+    def test_event_set_with_complex_configuration(self) -> None:
         """Test EventSet with complex mappings and configurations."""
         domain_mapping = EventMapping(
             name="domain",

@@ -6,7 +6,7 @@ from pathlib import Path
 class TestHubFixturesCoverage:
     """Test hub testing fixtures for improved coverage."""
 
-    def test_default_container_directory_fixture(self, default_container_directory):
+    def test_default_container_directory_fixture(self, default_container_directory) -> None:
         """Test default_container_directory fixture provides valid path."""
         # Test that we get a Path object
         assert isinstance(default_container_directory, Path)
@@ -25,7 +25,7 @@ class TestHubFixturesCoverage:
 
     def test_default_container_directory_is_temporary(
         self, default_container_directory,
-    ):
+    ) -> None:
         """Test that the directory is temporary and isolated per test session."""
         # Since it's session-scoped, we get the same directory within the session
         # but it's still a temporary directory that will be cleaned up
@@ -44,7 +44,7 @@ class TestHubFixturesCoverage:
         assert subdir.exists()
         assert subdir.is_dir()
 
-    def test_container_directory_path_operations(self, default_container_directory):
+    def test_container_directory_path_operations(self, default_container_directory) -> None:
         """Test various path operations on the container directory."""
         # Test path joining
         nested_path = default_container_directory / "nested" / "deep" / "path"

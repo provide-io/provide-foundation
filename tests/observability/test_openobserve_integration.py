@@ -24,7 +24,7 @@ class TestOpenObserveIntegration:
     """Integration tests for OpenObserve."""
 
     @classmethod
-    def setup_class(cls):
+    def setup_class(cls) -> None:
         """Set up test environment."""
         cls.base_url = os.getenv("OPENOBSERVE_URL", "http://localhost:5080")
         cls.org = os.getenv("OPENOBSERVE_ORG", "default")
@@ -141,7 +141,7 @@ class TestOpenObserveIntegration:
 
         return "\n".join(logs) + "\n"
 
-    def test_bulk_ingestion_and_query(self):
+    def test_bulk_ingestion_and_query(self) -> None:
         """Test ingesting 1000 logs and querying them."""
         # Generate logs
         print("\n📝 Generating 1000 log entries...")
@@ -256,7 +256,7 @@ class TestOpenObserveIntegration:
 
         print("\n✅ All integration tests passed!")
 
-    def test_rapid_ingestion(self):
+    def test_rapid_ingestion(self) -> None:
         """Test rapid ingestion of logs in batches."""
         print("\n🚀 Testing rapid batch ingestion...")
 

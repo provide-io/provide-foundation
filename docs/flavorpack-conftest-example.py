@@ -39,34 +39,34 @@ import pytest
 
 # Re-export for pytest discovery
 __all__ = [
-    # File fixtures
-    "temp_directory",
-    "test_files_structure",
-    "temp_file",
-    "binary_file",
-    "nested_directory_structure",
-    "empty_directory",
-    "readonly_file",
-    # Async fixtures
-    "clean_event_loop",
-    "async_timeout",
-    "mock_async_process",
     "async_stream_reader",
-    # Mock fixtures
-    "mock_http_config",
-    "mock_telemetry_config",
-    "mock_logger",
-    "mock_transport",
-    "mock_cache",
-    "mock_subprocess",
-    "mock_file_system",
-    # Network fixtures
-    "free_port",
-    "mock_server",
-    "httpx_mock_responses",
+    "async_timeout",
+    "binary_file",
     # Foundation fixtures
     "captured_stderr_for_foundation",
+    # Async fixtures
+    "clean_event_loop",
+    "empty_directory",
+    # Network fixtures
+    "free_port",
+    "httpx_mock_responses",
+    "mock_async_process",
+    "mock_cache",
+    "mock_file_system",
+    # Mock fixtures
+    "mock_http_config",
+    "mock_logger",
+    "mock_server",
+    "mock_subprocess",
+    "mock_telemetry_config",
+    "mock_transport",
+    "nested_directory_structure",
+    "readonly_file",
     "setup_foundation_telemetry_for_test",
+    # File fixtures
+    "temp_directory",
+    "temp_file",
+    "test_files_structure",
 ]
 
 
@@ -157,7 +157,7 @@ def mock_platform_info():
 # ============================================================================
 
 # Mark all async tests to use the clean_event_loop fixture automatically
-def pytest_configure(config):
+def pytest_configure(config) -> None:
     """Configure pytest with flavorpack-specific settings."""
     config.addinivalue_line(
         "markers",

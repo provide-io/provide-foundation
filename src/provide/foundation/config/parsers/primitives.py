@@ -85,8 +85,7 @@ def parse_bool_strict(value: str | bool) -> bool:
     # Check type first for clear error messages
     if not isinstance(value, (str, bool)):
         raise TypeError(
-            f"Boolean field requires str or bool, got {type(value).__name__}. "
-            f"Received value: {value!r}",
+            f"Boolean field requires str or bool, got {type(value).__name__}. Received value: {value!r}",
         )
 
     # If already a bool, return as-is
@@ -102,7 +101,8 @@ def parse_bool_strict(value: str | bool) -> bool:
         return False
     raise ValueError(
         _format_invalid_value_error(
-            "boolean", value,
+            "boolean",
+            value,
             valid_options=["true", "false", "yes", "no", "1", "0", "on", "off"],
             additional_info="Use parse_bool_extended() for lenient parsing that defaults to False",
         ),
@@ -110,7 +110,9 @@ def parse_bool_strict(value: str | bool) -> bool:
 
 
 def parse_float_with_validation(
-    value: str, min_val: float | None = None, max_val: float | None = None,
+    value: str,
+    min_val: float | None = None,
+    max_val: float | None = None,
 ) -> float:
     """Parse float with optional range validation.
 
@@ -199,7 +201,9 @@ def parse_json_dict(value: str) -> dict[str, Any]:
         if not isinstance(result, dict):
             raise ValueError(
                 _format_invalid_value_error(
-                    "json_dict", type(result).__name__, expected_type="JSON object",
+                    "json_dict",
+                    type(result).__name__,
+                    expected_type="JSON object",
                 ),
             )
         return result
@@ -230,7 +234,9 @@ def parse_json_list(value: str) -> list[Any]:
         if not isinstance(result, list):
             raise ValueError(
                 _format_invalid_value_error(
-                    "json_list", type(result).__name__, expected_type="JSON array",
+                    "json_list",
+                    type(result).__name__,
+                    expected_type="JSON array",
                 ),
             )
         return result

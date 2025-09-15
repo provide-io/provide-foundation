@@ -19,7 +19,7 @@ from provide.foundation.config.schema import (
 class TestSchemaFieldSimple:
     """Test SchemaField basic functionality."""
 
-    def test_schema_field_initialization(self):
+    def test_schema_field_initialization(self) -> None:
         """Test SchemaField initialization."""
         field = SchemaField(
             name="test_field",
@@ -45,7 +45,7 @@ class TestSchemaFieldSimple:
         assert field.pattern == r"\d+"
         assert field.sensitive is True
 
-    def test_schema_field_defaults(self):
+    def test_schema_field_defaults(self) -> None:
         """Test SchemaField with default values."""
         field = SchemaField(name="test_field")
 
@@ -64,13 +64,13 @@ class TestSchemaFieldSimple:
 class TestConfigSchemaSimple:
     """Test ConfigSchema basic functionality."""
 
-    def test_config_schema_initialization_empty(self):
+    def test_config_schema_initialization_empty(self) -> None:
         """Test ConfigSchema initialization with no fields."""
         schema = ConfigSchema()
         assert schema.fields == []
         assert schema._field_map == {}
 
-    def test_config_schema_initialization_with_fields(self):
+    def test_config_schema_initialization_with_fields(self) -> None:
         """Test ConfigSchema initialization with fields."""
         fields = [
             SchemaField(name="field1", field_type=str),
@@ -82,7 +82,7 @@ class TestConfigSchemaSimple:
         assert "field1" in schema._field_map
         assert "field2" in schema._field_map
 
-    def test_config_schema_add_field(self):
+    def test_config_schema_add_field(self) -> None:
         """Test ConfigSchema add_field method."""
         schema = ConfigSchema()
         field = SchemaField(name="new_field", field_type=str)
@@ -92,7 +92,7 @@ class TestConfigSchemaSimple:
         assert field in schema.fields
         assert schema._field_map["new_field"] == field
 
-    def test_config_schema_apply_defaults_empty_data(self):
+    def test_config_schema_apply_defaults_empty_data(self) -> None:
         """Test ConfigSchema apply_defaults with empty data."""
         schema = ConfigSchema(
             [
@@ -105,7 +105,7 @@ class TestConfigSchemaSimple:
 
         assert result == {"field1": "default_value", "field2": 42}
 
-    def test_config_schema_apply_defaults_partial_data(self):
+    def test_config_schema_apply_defaults_partial_data(self) -> None:
         """Test ConfigSchema apply_defaults with partial data."""
         schema = ConfigSchema(
             [
@@ -119,7 +119,7 @@ class TestConfigSchemaSimple:
 
         assert result == {"field1": "custom_value", "field2": 42}
 
-    def test_config_schema_apply_defaults_no_defaults(self):
+    def test_config_schema_apply_defaults_no_defaults(self) -> None:
         """Test ConfigSchema apply_defaults with fields having no defaults."""
         schema = ConfigSchema(
             [
@@ -133,7 +133,7 @@ class TestConfigSchemaSimple:
 
         assert result == {"field1": "value"}
 
-    def test_config_schema_apply_defaults_none_default(self):
+    def test_config_schema_apply_defaults_none_default(self) -> None:
         """Test ConfigSchema apply_defaults with None defaults."""
         schema = ConfigSchema(
             [
@@ -147,7 +147,7 @@ class TestConfigSchemaSimple:
         # None defaults are not applied
         assert result == {"field2": "real_default"}
 
-    def test_config_schema_filter_extra_fields(self):
+    def test_config_schema_filter_extra_fields(self) -> None:
         """Test ConfigSchema filter_extra_fields."""
         schema = ConfigSchema(
             [
@@ -161,7 +161,7 @@ class TestConfigSchemaSimple:
 
         assert result == {"field1": "value1", "field2": "value2"}
 
-    def test_config_schema_filter_extra_fields_empty_schema(self):
+    def test_config_schema_filter_extra_fields_empty_schema(self) -> None:
         """Test ConfigSchema filter_extra_fields with empty schema."""
         schema = ConfigSchema([])
 
@@ -170,7 +170,7 @@ class TestConfigSchemaSimple:
 
         assert result == {}
 
-    def test_config_schema_attr_to_schema_field_required(self):
+    def test_config_schema_attr_to_schema_field_required(self) -> None:
         """Test ConfigSchema _attr_to_schema_field with required field."""
         # Mock attrs attribute
         mock_attr = Mock()
@@ -187,7 +187,7 @@ class TestConfigSchemaSimple:
         assert schema_field.required is True
         assert schema_field.description == "Test field"
 
-    def test_config_schema_attr_to_schema_field_with_default(self):
+    def test_config_schema_attr_to_schema_field_with_default(self) -> None:
         """Test ConfigSchema _attr_to_schema_field with default value."""
         mock_attr = Mock()
         mock_attr.name = "test_field"
@@ -203,7 +203,7 @@ class TestConfigSchemaSimple:
         assert schema_field.default == "default_value"
         assert schema_field.sensitive is True
 
-    def test_config_schema_attr_to_schema_field_with_factory(self):
+    def test_config_schema_attr_to_schema_field_with_factory(self) -> None:
         """Test ConfigSchema _attr_to_schema_field with factory."""
         mock_attr = Mock()
         mock_attr.name = "test_field"
@@ -221,7 +221,7 @@ class TestConfigSchemaSimple:
 class TestValidators:
     """Test built-in validator functions."""
 
-    def test_validate_port_valid_ports(self):
+    def test_validate_port_valid_ports(self) -> None:
         """Test validate_port with valid port numbers."""
         assert validate_port(80) is True
         assert validate_port(443) is True
@@ -229,41 +229,41 @@ class TestValidators:
         assert validate_port(1) is True
         assert validate_port(65535) is True
 
-    def test_validate_port_invalid_ports(self):
+    def test_validate_port_invalid_ports(self) -> None:
         """Test validate_port with invalid port numbers."""
         assert validate_port(0) is False
         assert validate_port(-1) is False
         assert validate_port(65536) is False
         assert validate_port(100000) is False
 
-    def test_validate_url_valid_urls(self):
+    def test_validate_url_valid_urls(self) -> None:
         """Test validate_url with valid URLs."""
         assert validate_url("http://example.com") is True
         assert validate_url("https://www.example.com") is True
         assert validate_url("ftp://ftp.example.com") is True
         assert validate_url("https://example.com/path?query=value") is True
 
-    def test_validate_url_invalid_urls(self):
+    def test_validate_url_invalid_urls(self) -> None:
         """Test validate_url with invalid URLs."""
         assert validate_url("not-a-url") is False
         assert validate_url("http://") is False
         assert validate_url("://example.com") is False
         assert validate_url("") is False
 
-    def test_validate_url_malformed_url_exception(self):
+    def test_validate_url_malformed_url_exception(self) -> None:
         """Test validate_url handles malformed URLs that raise exceptions."""
         # Test with a mock that raises exception
         with patch("urllib.parse.urlparse", side_effect=Exception):
             assert validate_url("any-url") is False
 
-    def test_validate_email_valid_emails(self):
+    def test_validate_email_valid_emails(self) -> None:
         """Test validate_email with valid email addresses."""
         assert validate_email("test@example.com") is True
         assert validate_email("user.name@domain.co.uk") is True
         assert validate_email("test+tag@example.org") is True
         assert validate_email("123@domain.net") is True
 
-    def test_validate_email_invalid_emails(self):
+    def test_validate_email_invalid_emails(self) -> None:
         """Test validate_email with invalid email addresses."""
         assert validate_email("not-an-email") is False
         assert validate_email("@example.com") is False
@@ -271,23 +271,23 @@ class TestValidators:
         assert validate_email("test.example.com") is False
         assert validate_email("") is False
 
-    def test_validate_path_valid_paths(self):
+    def test_validate_path_valid_paths(self) -> None:
         """Test validate_path with valid paths."""
         assert validate_path("/usr/local/bin") is True
         assert validate_path("./relative/path") is True
         assert validate_path("C:\\Windows\\System32") is True
         assert validate_path("~/.config") is True
 
-    def test_validate_path_empty_path(self):
+    def test_validate_path_empty_path(self) -> None:
         """Test validate_path with empty path."""
         assert validate_path("") is True  # Empty path is valid for Path()
 
-    def test_validate_path_invalid_path_exception(self):
+    def test_validate_path_invalid_path_exception(self) -> None:
         """Test validate_path handles paths that raise exceptions."""
         with patch("pathlib.Path", side_effect=Exception):
             assert validate_path("any-path") is False
 
-    def test_validate_version_valid_versions(self):
+    def test_validate_version_valid_versions(self) -> None:
         """Test validate_version with valid semantic versions."""
         assert validate_version("1.0.0") is True
         assert validate_version("10.20.30") is True
@@ -296,7 +296,7 @@ class TestValidators:
         assert validate_version("1.0.0+build.123") is True
         assert validate_version("1.0.0-alpha+build") is True
 
-    def test_validate_version_invalid_versions(self):
+    def test_validate_version_invalid_versions(self) -> None:
         """Test validate_version with invalid versions."""
         assert validate_version("1.0") is False
         assert validate_version("v1.0.0") is False
@@ -305,7 +305,7 @@ class TestValidators:
         assert validate_version("not-a-version") is False
 
     @pytest.mark.asyncio
-    async def test_validate_url_accessible(self):
+    async def test_validate_url_accessible(self) -> None:
         """Test validate_url_accessible function."""
         # Since this is just an example that delegates to validate_url
         assert await validate_url_accessible("http://example.com") is True

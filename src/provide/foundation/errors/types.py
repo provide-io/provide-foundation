@@ -51,7 +51,7 @@ class ErrorCode(str, Enum):
 
     # Authentication/Authorization errors (AUTH)
     AUTH_INVALID_CREDENTIALS = "AUTH_001"
-    AUTH_TOKEN_EXPIRED = "AUTH_002"
+    AUTH_TOKEN_EXPIRED = "AUTH_002"  # nosec B105 - This is an error code, not a password
     AUTH_INSUFFICIENT_PERMISSION = "AUTH_003"
     AUTH_SESSION_INVALID = "AUTH_004"
     AUTH_MFA_REQUIRED = "AUTH_005"

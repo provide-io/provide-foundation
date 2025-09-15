@@ -92,12 +92,14 @@ class TarArchive(BaseArchive):
                         try:
                             target.resolve().relative_to(Path(output).resolve())
                         except ValueError:
-                            raise ArchiveError(f"Unsafe symlink in archive: {member.name} -> {member.linkname}")
+                            raise ArchiveError(
+                                f"Unsafe symlink in archive: {member.name} -> {member.linkname}"
+                            )
 
                     safe_members.append(member)
 
-                # Extract only validated members
-                tar.extractall(output, members=safe_members)
+                # Extract only validated members (all members have been security-checked above)
+                tar.extractall(output, members=safe_members)  # nosec B202
 
             logger.debug(f"Extracted TAR archive to: {output}")
             return output
@@ -118,7 +120,7 @@ class TarArchive(BaseArchive):
         try:
             with tarfile.open(archive, "r") as tar:
                 # Try to read all members
-                for member in tar.getmembers():
+                for _member in tar.getmembers():
                     # Just checking we can read the metadata
                     pass
             return True

@@ -8,35 +8,35 @@ import pytest
 class TestBuildQuerySql:
     """Test _build_query_sql function - this is the most important uncovered code."""
 
-    def test_basic_query_no_conditions(self):
+    def test_basic_query_no_conditions(self) -> None:
         """Test basic query with no WHERE conditions."""
         from provide.foundation.cli.commands.logs.query import _build_query_sql
 
         result = _build_query_sql(None, None, None, "default", 100)
         assert result == "SELECT * FROM default  ORDER BY _timestamp DESC LIMIT 100"
 
-    def test_query_with_trace_id(self):
+    def test_query_with_trace_id(self) -> None:
         """Test query with trace_id condition."""
         from provide.foundation.cli.commands.logs.query import _build_query_sql
 
         result = _build_query_sql("abc123def456", None, None, "logs", 50)
         assert result == "SELECT * FROM logs WHERE trace_id = 'abc123def456' ORDER BY _timestamp DESC LIMIT 50"
 
-    def test_query_with_level(self):
+    def test_query_with_level(self) -> None:
         """Test query with level condition."""
         from provide.foundation.cli.commands.logs.query import _build_query_sql
 
         result = _build_query_sql(None, "ERROR", None, "default", 25)
         assert result == "SELECT * FROM default WHERE level = 'ERROR' ORDER BY _timestamp DESC LIMIT 25"
 
-    def test_query_with_service(self):
+    def test_query_with_service(self) -> None:
         """Test query with service condition."""
         from provide.foundation.cli.commands.logs.query import _build_query_sql
 
         result = _build_query_sql(None, None, "auth-service", "default", 100)
         assert result == "SELECT * FROM default WHERE service = 'auth-service' ORDER BY _timestamp DESC LIMIT 100"
 
-    def test_query_with_all_conditions(self):
+    def test_query_with_all_conditions(self) -> None:
         """Test query with all conditions."""
         from provide.foundation.cli.commands.logs.query import _build_query_sql
 
@@ -44,7 +44,7 @@ class TestBuildQuerySql:
         expected = "SELECT * FROM logs WHERE trace_id = 'abc123' AND level = 'INFO' AND service = 'api-gateway' ORDER BY _timestamp DESC LIMIT 200"
         assert result == expected
 
-    def test_invalid_stream_name(self):
+    def test_invalid_stream_name(self) -> None:
         """Test validation of stream name."""
         from provide.foundation.cli.commands.logs.query import _build_query_sql
 
@@ -54,7 +54,7 @@ class TestBuildQuerySql:
         with pytest.raises(ValueError, match="Invalid stream name"):
             _build_query_sql(None, None, None, "stream with spaces", 100)
 
-    def test_invalid_size(self):
+    def test_invalid_size(self) -> None:
         """Test validation of size parameter."""
         from provide.foundation.cli.commands.logs.query import _build_query_sql
 
@@ -67,7 +67,7 @@ class TestBuildQuerySql:
         with pytest.raises(ValueError, match="Invalid size parameter"):
             _build_query_sql(None, None, None, "default", 15000)
 
-    def test_invalid_trace_id_format(self):
+    def test_invalid_trace_id_format(self) -> None:
         """Test validation of trace_id format."""
         from provide.foundation.cli.commands.logs.query import _build_query_sql
 
@@ -77,7 +77,7 @@ class TestBuildQuerySql:
         with pytest.raises(ValueError, match="Invalid trace_id format"):
             _build_query_sql("trace@#$", None, None, "default", 100)
 
-    def test_invalid_log_level(self):
+    def test_invalid_log_level(self) -> None:
         """Test validation of log level."""
         from provide.foundation.cli.commands.logs.query import _build_query_sql
 
@@ -87,7 +87,7 @@ class TestBuildQuerySql:
         with pytest.raises(ValueError, match="Invalid log level"):
             _build_query_sql(None, "info", None, "default", 100)  # wrong case
 
-    def test_invalid_service_name(self):
+    def test_invalid_service_name(self) -> None:
         """Test validation of service name."""
         from provide.foundation.cli.commands.logs.query import _build_query_sql
 
@@ -101,7 +101,7 @@ class TestBuildQuerySql:
 class TestGetTraceIdIfNeeded:
     """Test _get_trace_id_if_needed function."""
 
-    def test_no_current_trace_returns_provided_trace_id(self):
+    def test_no_current_trace_returns_provided_trace_id(self) -> None:
         """Test that when current_trace=False, returns provided trace_id."""
         from provide.foundation.cli.commands.logs.query import _get_trace_id_if_needed
 
@@ -111,7 +111,7 @@ class TestGetTraceIdIfNeeded:
         result = _get_trace_id_if_needed(current_trace=False, trace_id=None)
         assert result is None
 
-    def test_current_trace_import_error_handling(self):
+    def test_current_trace_import_error_handling(self) -> None:
         """Test import error handling."""
         from provide.foundation.cli.commands.logs.query import _get_trace_id_if_needed
 
@@ -127,7 +127,7 @@ class TestGetTraceIdIfNeeded:
 class TestExecuteAndDisplayQuery:
     """Test _execute_and_display_query function."""
 
-    def test_successful_query_with_results(self):
+    def test_successful_query_with_results(self) -> None:
         """Test successful query execution with results."""
         from provide.foundation.cli.commands.logs.query import _execute_and_display_query
 
@@ -138,7 +138,7 @@ class TestExecuteAndDisplayQuery:
 
         with patch('provide.foundation.integrations.openobserve.search_logs', return_value=mock_response) as mock_search, \
              patch('provide.foundation.integrations.openobserve.format_output', return_value="formatted_logs") as mock_format, \
-             patch('click.echo') as mock_echo:
+             patch('click.echo'):
 
             mock_client = Mock()
             result = _execute_and_display_query("SELECT * FROM logs", "1h", 100, "json", mock_client)
@@ -153,7 +153,7 @@ class TestExecuteAndDisplayQuery:
             )
             mock_format.assert_called_once_with(mock_response, format_type="json")
 
-    def test_successful_query_no_results(self):
+    def test_successful_query_no_results(self) -> None:
         """Test successful query with no results."""
         from provide.foundation.cli.commands.logs.query import _execute_and_display_query
 
@@ -169,7 +169,7 @@ class TestExecuteAndDisplayQuery:
             assert result == 0
             mock_echo.assert_called_once_with("No logs found matching the query.")
 
-    def test_query_exception_handling(self):
+    def test_query_exception_handling(self) -> None:
         """Test exception handling in query execution."""
         from provide.foundation.cli.commands.logs.query import _execute_and_display_query
 
@@ -186,7 +186,7 @@ class TestExecuteAndDisplayQuery:
 class TestValidationEdgeCases:
     """Test edge cases in validation logic."""
 
-    def test_trace_id_uuid_format_valid(self):
+    def test_trace_id_uuid_format_valid(self) -> None:
         """Test that UUID format trace IDs are valid."""
         from provide.foundation.cli.commands.logs.query import _build_query_sql
 
@@ -195,7 +195,7 @@ class TestValidationEdgeCases:
         result = _build_query_sql(uuid_trace, None, None, "default", 100)
         assert f"trace_id = '{uuid_trace}'" in result
 
-    def test_trace_id_hex_format_valid(self):
+    def test_trace_id_hex_format_valid(self) -> None:
         """Test that hex format trace IDs are valid."""
         from provide.foundation.cli.commands.logs.query import _build_query_sql
 
@@ -204,7 +204,7 @@ class TestValidationEdgeCases:
         result = _build_query_sql(hex_trace, None, None, "default", 100)
         assert f"trace_id = '{hex_trace}'" in result
 
-    def test_boundary_size_values(self):
+    def test_boundary_size_values(self) -> None:
         """Test boundary values for size parameter."""
         from provide.foundation.cli.commands.logs.query import _build_query_sql
 
@@ -224,7 +224,7 @@ class TestValidationEdgeCases:
 class TestQueryCommandWithoutClick:
     """Test query command behavior when click is not available."""
 
-    def test_command_import_availability(self):
+    def test_command_import_availability(self) -> None:
         """Test that the module can be imported and function exists."""
         from provide.foundation.cli.commands.logs.query import _HAS_CLICK, query_command
 
@@ -240,7 +240,7 @@ class TestQueryCommandWithoutClick:
 class TestModuleImports:
     """Test basic module imports and structure."""
 
-    def test_module_has_required_functions(self):
+    def test_module_has_required_functions(self) -> None:
         """Test that module has all required functions."""
         from provide.foundation.cli.commands.logs import query
 
@@ -250,7 +250,7 @@ class TestModuleImports:
         assert hasattr(query, 'query_command')
         assert hasattr(query, '_HAS_CLICK')
 
-    def test_module_logger_instance(self):
+    def test_module_logger_instance(self) -> None:
         """Test that module has logger instance."""
         from provide.foundation.cli.commands.logs.query import log
 

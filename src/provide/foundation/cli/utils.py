@@ -167,14 +167,12 @@ class CliTestRunner:
         )
 
     def isolated_filesystem(self) -> object:
-        """Context manager for isolated filesystem.
-        """
+        """Context manager for isolated filesystem."""
         return self.runner.isolated_filesystem()
 
 
 def assert_cli_success(result: Result, expected_output: str | None = None) -> None:
-    """Assert that a CLI command succeeded.
-    """
+    """Assert that a CLI command succeeded."""
     if result.exit_code != 0:
         raise AssertionError(
             f"Command failed with exit code {result.exit_code}\n"
@@ -193,8 +191,7 @@ def assert_cli_error(
     expected_error: str | None = None,
     exit_code: int | None = None,
 ) -> None:
-    """Assert that a CLI command failed.
-    """
+    """Assert that a CLI command failed."""
     if result.exit_code == 0:
         raise AssertionError(f"Command succeeded unexpectedly\nOutput: {result.output}")
 

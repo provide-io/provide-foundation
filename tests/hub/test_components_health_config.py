@@ -18,20 +18,20 @@ from provide.foundation.hub.components import (
 class TestComponentHealth:
     """Test component health checking."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test environment."""
         reset_registry_for_tests()
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up after tests."""
         reset_registry_for_tests()
 
-    def test_check_component_health_not_found(self):
+    def test_check_component_health_not_found(self) -> None:
         """Test check_component_health with non-existent component."""
         result = check_component_health("nonexistent", "test_dimension")
         assert result == {"status": "not_found"}
 
-    def test_check_component_health_no_support(self):
+    def test_check_component_health_no_support(self) -> None:
         """Test check_component_health with component that doesn't support health checks."""
         registry = get_component_registry()
 
@@ -47,7 +47,7 @@ class TestComponentHealth:
         result = check_component_health("no_health", "test_dimension")
         assert result == {"status": "no_health_check"}
 
-    def test_check_component_health_with_method(self):
+    def test_check_component_health_with_method(self) -> None:
         """Test check_component_health with component that has health_check method."""
         registry = get_component_registry()
 
@@ -65,7 +65,7 @@ class TestComponentHealth:
         assert result == {"status": "healthy"}
         component.health_check.assert_called_once()
 
-    def test_check_component_health_method_exception(self):
+    def test_check_component_health_method_exception(self) -> None:
         """Test check_component_health handles health check exceptions."""
         registry = get_component_registry()
 
@@ -83,7 +83,7 @@ class TestComponentHealth:
         assert result["status"] == "error"
         assert "Health check failed" in result["error"]
 
-    def test_check_component_health_no_method(self):
+    def test_check_component_health_no_method(self) -> None:
         """Test check_component_health with component without health_check method."""
         registry = get_component_registry()
 
@@ -103,15 +103,15 @@ class TestComponentHealth:
 class TestComponentConfigSchema:
     """Test component configuration schema functionality."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test environment."""
         reset_registry_for_tests()
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up after tests."""
         reset_registry_for_tests()
 
-    def test_get_component_config_schema(self):
+    def test_get_component_config_schema(self) -> None:
         """Test get_component_config_schema returns schema from metadata."""
         registry = get_component_registry()
 
@@ -128,12 +128,12 @@ class TestComponentConfigSchema:
         result = get_component_config_schema("component_with_schema", "test_dimension")
         assert result == schema
 
-    def test_get_component_config_schema_not_found(self):
+    def test_get_component_config_schema_not_found(self) -> None:
         """Test get_component_config_schema with non-existent component."""
         result = get_component_config_schema("nonexistent", "test_dimension")
         assert result is None
 
-    def test_get_component_config_schema_no_schema(self):
+    def test_get_component_config_schema_no_schema(self) -> None:
         """Test get_component_config_schema with component that has no schema."""
         registry = get_component_registry()
 
@@ -150,15 +150,15 @@ class TestComponentConfigSchema:
 class TestComponentInitialization:
     """Test component initialization functionality."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test environment."""
         reset_registry_for_tests()
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up after tests."""
         reset_registry_for_tests()
 
-    def test_get_or_initialize_component_already_initialized(self):
+    def test_get_or_initialize_component_already_initialized(self) -> None:
         """Test get_or_initialize_component returns cached component."""
         registry = get_component_registry()
 
@@ -177,7 +177,7 @@ class TestComponentInitialization:
         assert result2 is component
         assert result1 is result2
 
-    def test_get_or_initialize_component_lazy_initialization(self):
+    def test_get_or_initialize_component_lazy_initialization(self) -> None:
         """Test get_or_initialize_component with lazy initialization."""
         registry = get_component_registry()
 
@@ -198,7 +198,7 @@ class TestComponentInitialization:
         assert result is not None
         assert result == factory.return_value
 
-    def test_get_or_initialize_component_lazy_initialization_failure(self):
+    def test_get_or_initialize_component_lazy_initialization_failure(self) -> None:
         """Test get_or_initialize_component handles lazy initialization failures."""
         registry = get_component_registry()
 
@@ -218,13 +218,13 @@ class TestComponentInitialization:
         assert result is None
         factory.assert_called_once()
 
-    def test_get_or_initialize_component_not_found(self):
+    def test_get_or_initialize_component_not_found(self) -> None:
         """Test get_or_initialize_component with non-existent component."""
         result = get_or_initialize_component("nonexistent", "test_dimension")
         assert result is None
 
     @pytest.mark.asyncio
-    async def test_initialize_async_component_already_cached(self):
+    async def test_initialize_async_component_already_cached(self) -> None:
         """Test initialize_async_component returns cached component."""
         registry = get_component_registry()
 
@@ -241,7 +241,7 @@ class TestComponentInitialization:
         assert result is component
 
     @pytest.mark.asyncio
-    async def test_initialize_async_component_with_async_factory(self):
+    async def test_initialize_async_component_with_async_factory(self) -> None:
         """Test initialize_async_component with async factory."""
         registry = get_component_registry()
 
@@ -264,7 +264,7 @@ class TestComponentInitialization:
         assert result == async_factory.return_value
 
     @pytest.mark.asyncio
-    async def test_initialize_async_component_with_sync_factory(self):
+    async def test_initialize_async_component_with_sync_factory(self) -> None:
         """Test initialize_async_component with sync factory."""
         registry = get_component_registry()
 
@@ -286,7 +286,7 @@ class TestComponentInitialization:
         assert result == sync_factory.return_value
 
     @pytest.mark.asyncio
-    async def test_initialize_async_component_initialization_failure(self):
+    async def test_initialize_async_component_initialization_failure(self) -> None:
         """Test initialize_async_component handles initialization failures."""
         registry = get_component_registry()
 
@@ -303,13 +303,13 @@ class TestComponentInitialization:
         assert result is None
 
     @pytest.mark.asyncio
-    async def test_initialize_async_component_not_found(self):
+    async def test_initialize_async_component_not_found(self) -> None:
         """Test initialize_async_component with non-existent component."""
         result = await initialize_async_component("nonexistent", "test_dimension")
         assert result is None
 
     @pytest.mark.asyncio
-    async def test_initialize_all_async_components(self):
+    async def test_initialize_all_async_components(self) -> None:
         """Test initialize_all_async_components processes all async components."""
         registry = get_component_registry()
 
@@ -338,7 +338,7 @@ class TestComponentInitialization:
         factory2.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_initialize_all_async_components_with_failure(self):
+    async def test_initialize_all_async_components_with_failure(self) -> None:
         """Test initialize_all_async_components continues despite failures."""
         registry = get_component_registry()
 

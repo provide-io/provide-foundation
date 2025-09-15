@@ -1,5 +1,4 @@
-"""Domain-Action-Status (DAS) event set.
-"""
+"""Domain-Action-Status (DAS) event set."""
 
 from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping
 

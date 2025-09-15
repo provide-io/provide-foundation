@@ -55,9 +55,6 @@ def provide_now(tz: str | ZoneInfo | None = None) -> datetime:
     """
     if tz is None:
         return datetime.now()
-    if isinstance(tz, str):
-        zone = ZoneInfo(tz)
-    else:
-        zone = tz
+    zone = ZoneInfo(tz) if isinstance(tz, str) else tz
 
     return datetime.now(zone)

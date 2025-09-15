@@ -1,5 +1,4 @@
-"""HTTP/HTTPS transport implementation using httpx.
-"""
+"""HTTP/HTTPS transport implementation using httpx."""
 
 from collections.abc import AsyncIterator
 import time
@@ -192,7 +191,7 @@ class HTTPTransport(TransportBase):
 
 
 # Auto-register HTTP transport
-def _register_http_transport():
+def _register_http_transport() -> None:
     """Register HTTP transport with the Hub."""
     try:
         from provide.foundation.transport.registry import register_transport

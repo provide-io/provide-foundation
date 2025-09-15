@@ -30,7 +30,7 @@ class MockTransport(TransportBase):
         )
 
 
-def test_request_creation():
+def test_request_creation() -> None:
     """Test Request object creation and properties."""
     request = Request(
         uri="https://api.example.com/users",
@@ -49,7 +49,7 @@ def test_request_creation():
     assert request.base_url == "https://api.example.com"
 
 
-def test_response_creation():
+def test_response_creation() -> None:
     """Test Response object creation and methods."""
     request = Request(uri="https://api.example.com/test")
 
@@ -68,7 +68,7 @@ def test_response_creation():
     assert response.elapsed_ms == 150.0
 
 
-def test_response_error_status():
+def test_response_error_status() -> None:
     """Test Response error checking."""
     response_404 = Response(status=404)
     response_500 = Response(status=500)
@@ -88,7 +88,7 @@ def test_response_error_status():
     response_200.raise_for_status()
 
 
-def test_transport_registration():
+def test_transport_registration() -> None:
     """Test transport registration and discovery."""
     # For testing, we'll use HTTP transport that's already registered
     from provide.foundation.transport.http import HTTPTransport
@@ -103,7 +103,7 @@ def test_transport_registration():
 
 
 @pytest.mark.asyncio
-async def test_mock_transport():
+async def test_mock_transport() -> None:
     """Test mock transport execution."""
     transport = MockTransport()
 
@@ -121,7 +121,7 @@ async def test_mock_transport():
     assert response.elapsed_ms == 100.0
 
 
-def test_http_method_enum():
+def test_http_method_enum() -> None:
     """Test HTTPMethod enum values."""
     assert HTTPMethod.GET == "GET"
     assert HTTPMethod.POST == "POST"
@@ -132,7 +132,7 @@ def test_http_method_enum():
     assert HTTPMethod.OPTIONS == "OPTIONS"
 
 
-def test_transport_type_enum():
+def test_transport_type_enum() -> None:
     """Test TransportType enum values."""
     assert TransportType.HTTP == "http"
     assert TransportType.HTTPS == "https"

@@ -38,10 +38,7 @@ def is_in_test_mode() -> bool:
                 return True
 
     # Check for unittest runner in active execution
-    if "unittest" in sys.modules and any("unittest" in arg for arg in sys.argv):
-        return True
-
-    return False
+    return bool("unittest" in sys.modules and any("unittest" in arg for arg in sys.argv))
 
 
 def is_in_click_testing() -> bool:

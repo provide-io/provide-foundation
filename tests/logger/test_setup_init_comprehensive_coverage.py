@@ -6,14 +6,14 @@ import importlib
 class TestLoggerSetupInit:
     """Test logger/setup/__init__.py module functionality."""
 
-    def test_internal_setup_import(self):
+    def test_internal_setup_import(self) -> None:
         """Test that internal_setup can be imported."""
         from provide.foundation.logger.setup import internal_setup
 
         assert internal_setup is not None
         assert callable(internal_setup)
 
-    def test_internal_setup_is_coordinator_function(self):
+    def test_internal_setup_is_coordinator_function(self) -> None:
         """Test that internal_setup is the same as coordinator.internal_setup."""
         from provide.foundation.logger.setup import internal_setup
         from provide.foundation.logger.setup.coordinator import (
@@ -22,7 +22,7 @@ class TestLoggerSetupInit:
 
         assert internal_setup is coordinator_setup
 
-    def test_reset_for_testing_moved_to_testkit(self):
+    def test_reset_for_testing_moved_to_testkit(self) -> None:
         """Test that reset functionality has been moved to testkit."""
         from provide.foundation.logger import setup
 
@@ -30,21 +30,21 @@ class TestLoggerSetupInit:
         assert not hasattr(setup, 'reset_for_testing')
         assert not hasattr(setup, '_has_testing')
 
-    def test_reset_for_testing_available_in_testkit(self):
+    def test_reset_for_testing_available_in_testkit(self) -> None:
         """Test that reset functionality is available in testkit."""
         from provide.testkit.logger import reset_foundation_setup_for_testing
 
         assert reset_foundation_setup_for_testing is not None
         assert callable(reset_foundation_setup_for_testing)
 
-    def test_all_exports_after_refactor(self):
+    def test_all_exports_after_refactor(self) -> None:
         """Test __all__ exports after testmode refactor."""
         from provide.foundation.logger.setup import __all__
 
         # Only core setup functionality should be exported
         expected_exports = ["get_vanilla_logger", "internal_setup"]
         assert set(__all__) == set(expected_exports)
-    def test_all_exports_accessible(self):
+    def test_all_exports_accessible(self) -> None:
         """Test that all items in __all__ are accessible."""
         setup_module = importlib.import_module("provide.foundation.logger.setup")
 
@@ -53,7 +53,7 @@ class TestLoggerSetupInit:
             export_item = getattr(setup_module, export_name)
             assert export_item is not None
 
-    def test_module_docstring(self):
+    def test_module_docstring(self) -> None:
         """Test that module has proper docstring."""
         setup_module = importlib.import_module("provide.foundation.logger.setup")
 
@@ -62,7 +62,7 @@ class TestLoggerSetupInit:
         assert "structured logging" in setup_module.__doc__
         assert "processor setup" in setup_module.__doc__
 
-    def test_no_testing_flag(self):
+    def test_no_testing_flag(self) -> None:
         """Test that _has_testing flag no longer exists."""
         from provide.foundation.logger import setup
 
@@ -73,7 +73,7 @@ class TestLoggerSetupInit:
 class TestTestingRefactorIntegration:
     """Test integration after testing utilities moved to testkit."""
 
-    def test_testing_utilities_not_in_foundation(self):
+    def test_testing_utilities_not_in_foundation(self) -> None:
         """Test that testing utilities are no longer in foundation setup."""
         from provide.foundation.logger import setup
 
@@ -81,14 +81,14 @@ class TestTestingRefactorIntegration:
         assert not hasattr(setup, 'reset_for_testing')
         assert not hasattr(setup, '_has_testing')
 
-    def test_testing_utilities_available_in_testkit(self):
+    def test_testing_utilities_available_in_testkit(self) -> None:
         """Test that testing utilities are available in testkit."""
         from provide.testkit.logger import reset_foundation_setup_for_testing
 
         assert reset_foundation_setup_for_testing is not None
         assert callable(reset_foundation_setup_for_testing)
 
-    def test_all_list_consistency_after_refactor(self):
+    def test_all_list_consistency_after_refactor(self) -> None:
         """Test that __all__ list is consistent after testmode refactor."""
         setup_module = importlib.import_module("provide.foundation.logger.setup")
 
@@ -107,7 +107,7 @@ class TestTestingRefactorIntegration:
 class TestSetupModuleIntegration:
     """Test integration aspects of the setup module."""
 
-    def test_internal_setup_functionality(self):
+    def test_internal_setup_functionality(self) -> None:
         """Test that internal_setup function works."""
         from provide.foundation.logger.setup import internal_setup
 
@@ -120,7 +120,7 @@ class TestSetupModuleIntegration:
         sig = inspect.signature(internal_setup)
         assert len(sig.parameters) > 0
 
-    def test_reset_functionality_in_testkit(self):
+    def test_reset_functionality_in_testkit(self) -> None:
         """Test that reset functionality works in testkit."""
         from provide.testkit.logger import reset_foundation_setup_for_testing
 
@@ -138,7 +138,7 @@ class TestSetupModuleIntegration:
         ]
         assert len(required_params) == 0
 
-    def test_module_structure(self):
+    def test_module_structure(self) -> None:
         """Test overall module structure and attributes."""
         setup_module = importlib.import_module("provide.foundation.logger.setup")
 
@@ -150,7 +150,7 @@ class TestSetupModuleIntegration:
         assert not hasattr(setup_module, "_has_testing")
         assert not hasattr(setup_module, "reset_for_testing")
 
-    def test_import_paths_consistency(self):
+    def test_import_paths_consistency(self) -> None:
         """Test that import paths are consistent."""
         # Test different ways of importing
         from provide.foundation.logger.setup import internal_setup as setup1
@@ -171,7 +171,7 @@ class TestSetupModuleIntegration:
             # If testkit isn't available in some test environments, that's expected
             pass
 
-    def test_no_unexpected_exports(self):
+    def test_no_unexpected_exports(self) -> None:
         """Test that module doesn't export unexpected items."""
         setup_module = importlib.import_module("provide.foundation.logger.setup")
 
@@ -192,7 +192,7 @@ class TestSetupModuleIntegration:
 class TestModuleDocumentation:
     """Test module documentation and metadata."""
 
-    def test_module_file_header(self):
+    def test_module_file_header(self) -> None:
         """Test that module has proper file header."""
         setup_module = importlib.import_module("provide.foundation.logger.setup")
 
@@ -200,7 +200,7 @@ class TestModuleDocumentation:
         assert setup_module.__doc__ is not None
         assert len(setup_module.__doc__) > 20
 
-    def test_docstring_content(self):
+    def test_docstring_content(self) -> None:
         """Test docstring contains expected content."""
         setup_module = importlib.import_module("provide.foundation.logger.setup")
 
@@ -215,7 +215,7 @@ class TestModuleDocumentation:
         for term in expected_terms:
             assert term in docstring
 
-    def test_module_attributes_documented(self):
+    def test_module_attributes_documented(self) -> None:
         """Test that key module attributes are appropriately documented."""
         setup_module = importlib.import_module("provide.foundation.logger.setup")
 

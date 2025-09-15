@@ -1,5 +1,6 @@
 """Tests for Foundation rate limiting processor."""
 
+import contextlib
 import time
 from unittest.mock import MagicMock, patch
 
@@ -302,10 +303,8 @@ class TestRateLimiterProcessor:
             pass  # Expected
 
         # Generate another event to trigger the interval check
-        try:
+        with contextlib.suppress(structlog.DropEvent):
             processor(None, "info", event_dict.copy())
-        except structlog.DropEvent:
-            pass
 
         # Directly call emit_summary to ensure it works
         processor._emit_summary()
@@ -541,7 +540,7 @@ class TestRateLimiterProcessorIntegration:
         start_time = time.time()
 
         # Process many events
-        for i in range(1000):
+        for _i in range(1000):
             try:
                 processor(None, "info", event_dict.copy())
             except structlog.DropEvent:
