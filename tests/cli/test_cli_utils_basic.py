@@ -137,42 +137,46 @@ class TestCliAssertions:
 class TestCliLogging:
     """Test CLI logging setup."""
 
-    @patch("provide.foundation.cli.utils.setup_telemetry")
-    def test_setup_cli_logging_default(self, mock_setup_telemetry: MagicMock) -> None:
+    @patch("provide.foundation.cli.utils.get_hub")
+    def test_setup_cli_logging_default(self, mock_get_hub: MagicMock) -> None:
         """Test default CLI logging setup."""
         ctx = create_cli_context()
         setup_cli_logging(ctx)
-        mock_setup_telemetry.assert_called_once()
-        config_arg = mock_setup_telemetry.call_args.kwargs["config"]
+        mock_hub = mock_get_hub.return_value
+        mock_hub.initialize_foundation.assert_called_once()
+        config_arg = mock_hub.initialize_foundation.call_args.kwargs["config"]
         assert isinstance(config_arg, TelemetryConfig)
         # Default context log level is INFO, unless overridden by environment
         expected_level = os.environ.get("PROVIDE_LOG_LEVEL", "INFO")
         assert config_arg.logging.default_level == expected_level
         assert config_arg.logging.console_formatter == "key_value"
 
-    @patch("provide.foundation.cli.utils.setup_telemetry")
-    def test_setup_cli_logging_verbose(self, mock_setup_telemetry: MagicMock) -> None:
+    @patch("provide.foundation.cli.utils.get_hub")
+    def test_setup_cli_logging_verbose(self, mock_get_hub: MagicMock) -> None:
         """Test verbose CLI logging setup."""
         ctx = create_cli_context(log_level="DEBUG")
         setup_cli_logging(ctx)
-        mock_setup_telemetry.assert_called_once()
-        config_arg = mock_setup_telemetry.call_args.kwargs["config"]
+        mock_hub = mock_get_hub.return_value
+        mock_hub.initialize_foundation.assert_called_once()
+        config_arg = mock_hub.initialize_foundation.call_args.kwargs["config"]
         assert config_arg.logging.default_level == "DEBUG"
 
-    @patch("provide.foundation.cli.utils.setup_telemetry")
-    def test_setup_cli_logging_quiet(self, mock_setup_telemetry: MagicMock) -> None:
+    @patch("provide.foundation.cli.utils.get_hub")
+    def test_setup_cli_logging_quiet(self, mock_get_hub: MagicMock) -> None:
         """Test quiet CLI logging setup."""
         ctx = create_cli_context(log_level="ERROR")
         setup_cli_logging(ctx)
-        mock_setup_telemetry.assert_called_once()
-        config_arg = mock_setup_telemetry.call_args.kwargs["config"]
+        mock_hub = mock_get_hub.return_value
+        mock_hub.initialize_foundation.assert_called_once()
+        config_arg = mock_hub.initialize_foundation.call_args.kwargs["config"]
         assert config_arg.logging.default_level == "ERROR"
 
-    @patch("provide.foundation.cli.utils.setup_telemetry")
-    def test_setup_cli_logging_json(self, mock_setup_telemetry: MagicMock) -> None:
+    @patch("provide.foundation.cli.utils.get_hub")
+    def test_setup_cli_logging_json(self, mock_get_hub: MagicMock) -> None:
         """Test JSON CLI logging setup."""
         ctx = create_cli_context(json_output=True)
         setup_cli_logging(ctx)
-        mock_setup_telemetry.assert_called_once()
-        config_arg = mock_setup_telemetry.call_args.kwargs["config"]
+        mock_hub = mock_get_hub.return_value
+        mock_hub.initialize_foundation.assert_called_once()
+        config_arg = mock_hub.initialize_foundation.call_args.kwargs["config"]
         assert config_arg.logging.console_formatter == "json"

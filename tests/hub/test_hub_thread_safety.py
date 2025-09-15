@@ -9,7 +9,6 @@ import pytest
 from provide.foundation.hub import (
     clear_hub,
     get_hub,
-    register_command,
 )
 from provide.foundation.hub.registry import Registry
 
@@ -240,10 +239,15 @@ class TestHubThreadSafety:
             """Register commands from a thread."""
             try:
                 for i in range(10):
-
-                    @register_command(f"cmd_{thread_id}_{i}")
                     def cmd() -> str:
                         return f"result_{thread_id}_{i}"
+
+                    # Register directly with hub instead of using decorator
+                    hub.add_command(
+                        func=cmd,
+                        name=f"cmd_{thread_id}_{i}",
+                        description=f"Command from thread {thread_id}, iteration {i}",
+                    )
             except Exception as e:
                 errors.append(f"Thread {thread_id}: {e}")
 

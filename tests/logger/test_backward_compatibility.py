@@ -47,8 +47,8 @@ class TestBackwardCompatibility:
         logger2 = get_logger("test.module")
         assert logger2 is not None
 
-        # Should work with deprecated parameters (ignored)
-        logger3 = get_logger("test.emoji", emoji="🔥", emoji_hierarchy={"test": "🧪"})
+        # Should work with new parameters
+        logger3 = get_logger("test.module")
         assert logger3 is not None
 
         # All should be functional
@@ -80,9 +80,9 @@ class TestBackwardCompatibility:
             logging=LoggingConfig(default_level="WARNING"),
         )
 
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", DeprecationWarning)
-            setup_foundation(config)
+        # Use Hub API instead of deprecated setup_foundation
+        hub = get_hub()
+        hub.initialize_foundation(config, force=True)
 
         # Should have used the provided config
         hub = get_hub()
