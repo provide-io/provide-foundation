@@ -9,15 +9,16 @@ and X.509 certificate management.
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
+    # Import certificate types only for type checking
     from provide.foundation.crypto.certificates import (
-        Certificate,
-        CertificateBase,
-        CertificateConfig,
-        CertificateError,
-        CurveType,
-        KeyType,
-        create_ca,
-        create_self_signed,
+        Certificate as CertificateType,
+        CertificateBase as CertificateBaseType,
+        CertificateConfig as CertificateConfigType,
+        CertificateError as CertificateErrorType,
+        CurveType as CurveTypeType,
+        KeyType as KeyTypeType,
+        create_ca as create_ca_type,
+        create_self_signed as create_self_signed_type,
     )
 
 # Standard crypto imports (always available - use hashlib)
@@ -51,14 +52,14 @@ try:
 
     _HAS_CRYPTO = True
 except ImportError:
-    Certificate = None  # type: Any
-    CertificateBase = None  # type: Any
-    CertificateConfig = None  # type: Any
-    CertificateError = None  # type: Any
-    CurveType = None  # type: Any
-    KeyType = None  # type: Any
-    create_ca = None  # type: Any
-    create_self_signed = None  # type: Any
+    Certificate: Any = None
+    CertificateBase: Any = None
+    CertificateConfig: Any = None
+    CertificateError: Any = None
+    CurveType: Any = None
+    KeyType: Any = None
+    create_ca: Any = None
+    create_self_signed: Any = None
     _HAS_CRYPTO = False
 
 # Standard imports (always available)
@@ -110,30 +111,30 @@ try:
         _HAS_CRYPTO = True
 except ImportError:
     # Constants stubs
-    DEFAULT_CERTIFICATE_KEY_TYPE = None
-    DEFAULT_CERTIFICATE_VALIDITY_DAYS = None
-    DEFAULT_ECDSA_CURVE = None
-    DEFAULT_RSA_KEY_SIZE = None
-    DEFAULT_SIGNATURE_ALGORITHM = None
-    ED25519_PRIVATE_KEY_SIZE = None
-    ED25519_PUBLIC_KEY_SIZE = None
-    ED25519_SIGNATURE_SIZE = None
-    SUPPORTED_EC_CURVES = None
-    SUPPORTED_KEY_TYPES = None
-    SUPPORTED_RSA_SIZES = None
-    get_default_hash_algorithm = None
-    get_default_signature_algorithm = None
+    DEFAULT_CERTIFICATE_KEY_TYPE: Any = None
+    DEFAULT_CERTIFICATE_VALIDITY_DAYS: Any = None
+    DEFAULT_ECDSA_CURVE: Any = None
+    DEFAULT_RSA_KEY_SIZE: Any = None
+    DEFAULT_SIGNATURE_ALGORITHM: Any = None
+    ED25519_PRIVATE_KEY_SIZE: Any = None
+    ED25519_PUBLIC_KEY_SIZE: Any = None
+    ED25519_SIGNATURE_SIZE: Any = None
+    SUPPORTED_EC_CURVES: Any = None
+    SUPPORTED_KEY_TYPES: Any = None
+    SUPPORTED_RSA_SIZES: Any = None
+    get_default_hash_algorithm: Any = None
+    get_default_signature_algorithm: Any = None
     # Key generation stubs
-    generate_ec_keypair = None
-    generate_key_pair = None
-    generate_keypair = None
-    generate_rsa_keypair = None
-    generate_tls_keypair = None
+    generate_ec_keypair: Any = None
+    generate_key_pair: Any = None
+    generate_keypair: Any = None
+    generate_rsa_keypair: Any = None
+    generate_tls_keypair: Any = None
     # Signature stubs
-    generate_ed25519_keypair = None
-    generate_signing_keypair = None
-    sign_data = None
-    verify_signature = None
+    generate_ed25519_keypair: Any = None
+    generate_signing_keypair: Any = None
+    sign_data: Any = None
+    verify_signature: Any = None
 
 # Public API organized by use case frequency
 __all__ = [

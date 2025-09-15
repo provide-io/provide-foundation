@@ -5,12 +5,14 @@ from __future__ import annotations
 These commands are auto-registered by Foundation's command discovery system.
 """
 
+from typing import Any
+
 try:
     import click
 
     _HAS_CLICK = True
 except ImportError:
-    click = None
+    click: Any = None
     _HAS_CLICK = False
 
 from provide.foundation.logger import get_logger
