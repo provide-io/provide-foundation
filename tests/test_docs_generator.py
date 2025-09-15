@@ -121,17 +121,26 @@ class TestAPIDocGenerator:
             # Mock paths with private modules
             private_path = Mock(spec=Path)
             private_path.name = "module.py"
-            private_path.relative_to.return_value.parts = ("package", "_private", "module.py")
+            mock_private_relative = Mock()
+            mock_private_relative.parts = ("package", "_private", "module.py")
+            private_path.relative_to.return_value = mock_private_relative
 
             # Mock paths with __init__.py (should not skip)
             init_path = Mock(spec=Path)
             init_path.name = "__init__.py"
-            init_path.relative_to.return_value.parts = ("package", "__init__.py")
+            mock_init_stat = Mock()
+            mock_init_stat.st_size = 150  # Large enough to not be skipped
+            init_path.stat.return_value = mock_init_stat
+            mock_init_relative = Mock()
+            mock_init_relative.parts = ("package", "__init__.py")
+            init_path.relative_to.return_value = mock_init_relative
 
             # Mock regular path
             regular_path = Mock(spec=Path)
             regular_path.name = "module.py"
-            regular_path.relative_to.return_value.parts = ("package", "module.py")
+            mock_regular_relative = Mock()
+            mock_regular_relative.parts = ("package", "module.py")
+            regular_path.relative_to.return_value = mock_regular_relative
 
             assert generator.should_skip(private_path) is True
             assert generator.should_skip(init_path) is False
