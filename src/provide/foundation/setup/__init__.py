@@ -10,7 +10,8 @@ orchestrating logging, tracing, and other subsystems.
 from provide.foundation.logger.config import TelemetryConfig
 from provide.foundation.logger.setup import internal_setup
 from provide.foundation.logger.setup.coordinator import _PROVIDE_SETUP_LOCK
-from provide.foundation.logger.setup.testing import reset_foundation_setup_for_testing
+# Import reset function from testkit (will be called by testkit internally)
+# from provide.testkit.logger import reset_foundation_setup_for_testing
 from provide.foundation.metrics.otel import (
     setup_opentelemetry_metrics,
     shutdown_opentelemetry_metrics,
@@ -54,7 +55,6 @@ async def shutdown_foundation_telemetry(timeout_millis: int = 5000) -> None:
 
 __all__ = [
     "internal_setup",
-    "reset_foundation_setup_for_testing",
     "shutdown_foundation",
     "shutdown_foundation_telemetry",  # Legacy alias
 ]

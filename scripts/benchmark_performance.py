@@ -39,9 +39,11 @@ from provide.foundation import (
     logger,
     setup_telemetry,
 )
-from provide.foundation.logger.setup.testing import (
-    _set_log_stream_for_testing,
+from provide.testkit.logger import (
     reset_foundation_setup_for_testing,
+)
+from provide.testkit.streams import (
+    set_log_stream_for_testing,
 )
 
 
@@ -58,11 +60,11 @@ def capture_logs() -> Generator[io.StringIO]:
 
     """
     captured = io.StringIO()
-    _set_log_stream_for_testing(captured)
+    set_log_stream_for_testing(captured)
     try:
         yield captured
     finally:
-        _set_log_stream_for_testing(None)
+        set_log_stream_for_testing(None)
 
 
 @contextmanager

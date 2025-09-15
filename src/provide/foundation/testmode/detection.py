@@ -1,7 +1,10 @@
-"""Test mode detection and Hub compatibility utilities.
+#
+# detection.py
+#
+"""Test Mode Detection for Foundation.
 
-This module provides utilities for detecting test environments and
-adjusting Hub behavior for test compatibility.
+This module provides utilities for detecting various test environments
+and adjusting Foundation behavior accordingly.
 """
 
 import inspect
@@ -13,11 +16,10 @@ def is_in_test_mode() -> bool:
     """Detect if we're running in a test environment.
 
     This method checks for common test environment indicators to determine
-    if Hub instances should use shared registries for test compatibility.
+    if Foundation components should adjust their behavior for test compatibility.
 
     Returns:
         True if running in test mode, False otherwise
-
     """
     # Primary indicator: pytest current test environment variable
     if "PYTEST_CURRENT_TEST" in os.environ:
@@ -42,12 +44,50 @@ def is_in_test_mode() -> bool:
     return False
 
 
+def is_in_click_testing() -> bool:
+    """Check if we're running inside Click's testing framework.
+
+    This detects Click's CliRunner testing context to prevent stream
+    manipulation that could interfere with Click's output capture.
+
+    Returns:
+        True if running in Click testing context, False otherwise
+    """
+    from provide.foundation.streams.config import get_stream_config
+
+    config = get_stream_config()
+
+    # Check environment variables for Click testing
+    if config.click_testing:
+        return True
+
+    # Check the call stack for Click's testing module or CLI integration tests
+    for frame_info in inspect.stack():
+        module = frame_info.frame.f_globals.get("__name__", "")
+        filename = frame_info.filename or ""
+
+        if "click.testing" in module or "test_cli_integration" in filename:
+            return True
+
+        # Also check for common Click testing patterns
+        locals_self = frame_info.frame.f_locals.get("self")
+        if hasattr(locals_self, "runner"):
+            runner = locals_self.runner
+            if hasattr(runner, "invoke") and "CliRunner" in str(type(runner)):
+                return True
+
+    return False
+
+
 def should_use_shared_registries(
     use_shared_registries: bool,
     component_registry: object | None,
     command_registry: object | None,
 ) -> bool:
     """Determine if Hub should use shared registries based on context.
+
+    This function auto-detects test mode and applies Hub-specific logic
+    for registry sharing to ensure proper test isolation and compatibility.
 
     Args:
         use_shared_registries: Explicit user preference

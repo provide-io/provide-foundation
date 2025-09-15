@@ -13,7 +13,7 @@ from provide.foundation.hub.components import get_component_registry
 from provide.foundation.hub.core import CoreHub
 from provide.foundation.hub.foundation import FoundationManager
 from provide.foundation.hub.registry import Registry
-from provide.foundation.hub.testing import should_use_shared_registries
+from provide.foundation.testmode.detection import should_use_shared_registries
 
 
 class Hub(CoreHub):

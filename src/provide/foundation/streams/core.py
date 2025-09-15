@@ -16,32 +16,6 @@ _LOG_FILE_HANDLE: TextIO | None = None
 _STREAM_LOCK = threading.Lock()
 
 
-def _is_in_click_testing() -> bool:
-    """Check if we're running inside Click's testing framework."""
-    import inspect
-
-    config = get_stream_config()
-
-    # Check environment variables for Click testing
-    if config.click_testing:
-        return True
-
-    # Check the call stack for Click's testing module or CLI integration tests
-    for frame_info in inspect.stack():
-        module = frame_info.frame.f_globals.get("__name__", "")
-        filename = frame_info.filename or ""
-
-        if "click.testing" in module or "test_cli_integration" in filename:
-            return True
-
-        # Also check for common Click testing patterns
-        locals_self = frame_info.frame.f_locals.get("self")
-        if hasattr(locals_self, "runner"):
-            runner = locals_self.runner
-            if hasattr(runner, "invoke") and "CliRunner" in str(type(runner)):
-                return True
-
-    return False
 
 
 def get_log_stream() -> TextIO:
@@ -50,13 +24,33 @@ def get_log_stream() -> TextIO:
 
 
 def set_log_stream_for_testing(stream: TextIO | None) -> None:
-    """Set the log stream for testing purposes."""
+    """Set the log stream for testing purposes.
+
+    This function not only sets the stream but also reconfigures structlog
+    if it's already configured to ensure logs actually go to the test stream.
+    """
+    from provide.foundation.testmode.detection import is_in_click_testing
+
     global _PROVIDE_LOG_STREAM
     with _STREAM_LOCK:
         # Don't modify streams if we're in Click testing context
-        if _is_in_click_testing():
+        if is_in_click_testing():
             return
+
         _PROVIDE_LOG_STREAM = stream if stream is not None else sys.stderr
+
+        # Reconfigure structlog if it's already configured to use the new stream
+        try:
+            import structlog
+            current_config = structlog.get_config()
+            if current_config and 'logger_factory' in current_config:
+                # Reconfigure with the new stream while preserving other config
+                new_config = {**current_config}
+                new_config['logger_factory'] = structlog.PrintLoggerFactory(file=_PROVIDE_LOG_STREAM)
+                structlog.configure(**new_config)
+        except Exception:
+            # Structlog not configured yet or reconfiguration failed, that's fine
+            pass
 
 
 def ensure_stderr_default() -> None:
