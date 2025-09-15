@@ -1,30 +1,102 @@
 {
   "tool": "complexity",
-  "passed": true,
+  "passed": false,
   "score": 100.0,
   "details": {
-    "total_files": 0,
-    "total_functions": 0,
-    "average_complexity": 0,
-    "max_complexity": 0,
+    "total_files": 1,
+    "total_functions": 26,
+    "average_complexity": 2.46,
+    "max_complexity": 16,
     "overall_grade": "A",
     "grade_breakdown": {
-      "A": 0,
+      "A": 25,
       "B": 0,
-      "C": 0,
+      "C": 1,
       "D": 0,
       "E": 0,
       "F": 0
     },
-    "lines_of_code": 0,
-    "logical_lines": 0,
-    "comment_lines": 0,
+    "lines_of_code": 324,
+    "logical_lines": 186,
+    "comment_lines": 30,
     "grade": "A",
     "thresholds": {
       "min_grade": "C",
       "max_complexity": 15,
       "min_score": 70.0
-    }
+    },
+    "most_complex_functions": [
+      {
+        "file": "src/provide/foundation/logger/core.py",
+        "name": "_ensure_configured",
+        "complexity": 16,
+        "rank": "C",
+        "lineno": 70
+      },
+      {
+        "file": "src/provide/foundation/logger/core.py",
+        "name": "_check_structlog_already_disabled",
+        "complexity": 4,
+        "rank": "A",
+        "lineno": 56
+      },
+      {
+        "file": "src/provide/foundation/logger/core.py",
+        "name": "FoundationLogger",
+        "complexity": 3,
+        "rank": "A",
+        "lineno": 25
+      },
+      {
+        "file": "src/provide/foundation/logger/core.py",
+        "name": "_format_message_with_args",
+        "complexity": 3,
+        "rank": "A",
+        "lineno": 162
+      },
+      {
+        "file": "src/provide/foundation/logger/core.py",
+        "name": "bind",
+        "complexity": 3,
+        "rank": "A",
+        "lineno": 217
+      },
+      {
+        "file": "src/provide/foundation/logger/core.py",
+        "name": "unbind",
+        "complexity": 3,
+        "rank": "A",
+        "lineno": 235
+      },
+      {
+        "file": "src/provide/foundation/logger/core.py",
+        "name": "try_unbind",
+        "complexity": 3,
+        "rank": "A",
+        "lineno": 253
+      },
+      {
+        "file": "src/provide/foundation/logger/core.py",
+        "name": "__setattr__",
+        "complexity": 3,
+        "rank": "A",
+        "lineno": 272
+      },
+      {
+        "file": "src/provide/foundation/logger/core.py",
+        "name": "get_global_logger",
+        "complexity": 2,
+        "rank": "A",
+        "lineno": 281
+      },
+      {
+        "file": "src/provide/foundation/logger/core.py",
+        "name": "setup",
+        "complexity": 2,
+        "rank": "A",
+        "lineno": 36
+      }
+    ]
   },
-  "execution_time": 0.0026760101318359375
+  "execution_time": 0.01110386848449707
 }

@@ -1,17 +1,19 @@
 Complexity Analysis Report - complexity
 ==================================================
-Status: ✅ PASSED
+Status: ❌ FAILED
 Overall Grade: A
 Score: 100.0%
-Files Analyzed: 0
-Total Functions: 0
-Average Complexity: 0
-Max Complexity: 0
+Files Analyzed: 1
+Total Functions: 26
+Average Complexity: 2.46
+Max Complexity: 16
 
 Grade Breakdown:
+  A: 25 functions
+  C: 1 functions
 
-Lines of Code: 0
-Logical Lines: 0
-Comment Lines: 0
+Lines of Code: 324
+Logical Lines: 186
+Comment Lines: 30
 
-Execution Time: 0.00s
+Execution Time: 0.01s
