@@ -24,9 +24,9 @@ from provide.foundation.crypto.certificates.operations import validate_signature
 
 
 def verify_trust(
-    cert: "Certificate",
-    other_cert: "Certificate",
-    trust_chain: list["Certificate"],
+    cert: Certificate,
+    other_cert: Certificate,
+    trust_chain: list[Certificate],
 ) -> bool:
     """Verifies if the other_cert is trusted based on this certificate's trust chain.
 
@@ -76,7 +76,7 @@ def verify_trust(
     return False
 
 
-def validate_signature_wrapper(signed_cert: "Certificate", signing_cert: "Certificate") -> bool:
+def validate_signature_wrapper(signed_cert: Certificate, signing_cert: Certificate) -> bool:
     """Internal helper: Validates signature and issuer/subject match.
 
     Args:

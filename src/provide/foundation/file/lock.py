@@ -161,7 +161,7 @@ class FileLock:
 
         return False
 
-    def __enter__(self) -> "FileLock":
+    def __enter__(self) -> FileLock:
         """Context manager entry."""
         self.acquire()
         return self

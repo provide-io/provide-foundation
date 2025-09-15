@@ -33,7 +33,7 @@ class FoundationLogger:
         self._active_config: TelemetryConfig | None = None
         self._hub = hub  # Hub dependency for DI pattern
 
-    def setup(self, config: "TelemetryConfig") -> None:
+    def setup(self, config: TelemetryConfig) -> None:
         """Setup the logger with configuration from Hub.
 
         Args:

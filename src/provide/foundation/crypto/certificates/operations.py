@@ -36,7 +36,7 @@ from provide.foundation.crypto.certificates.base import (
 
 def create_x509_certificate(
     base: CertificateBase,
-    private_key: "KeyPair",
+    private_key: KeyPair,
     alt_names: list[str] | None = None,
     issuer_name_override: "x509.Name | None" = None,
     signing_key_override: "KeyPair | None" = None,
@@ -140,7 +140,7 @@ def create_x509_certificate(
 def validate_signature(
     signed_cert_obj: "X509Certificate",
     signing_cert_obj: "X509Certificate",
-    signing_public_key: "PublicKey",
+    signing_public_key: PublicKey,
 ) -> bool:
     """Internal helper: Validates signature and issuer/subject match."""
     if signed_cert_obj.issuer != signing_cert_obj.subject:

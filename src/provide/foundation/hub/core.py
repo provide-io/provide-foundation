@@ -383,7 +383,7 @@ class CoreHub:
         if dimension != "command" or dimension is None:
             self._component_registry.clear(dimension=dimension)
 
-    def __enter__(self) -> "CoreHub":
+    def __enter__(self) -> CoreHub:
         """Context manager entry."""
         self.initialize()
         return self

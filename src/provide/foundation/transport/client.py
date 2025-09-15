@@ -164,7 +164,7 @@ class UniversalClient:
 
         return self._transports[scheme]
 
-    async def __aenter__(self) -> "UniversalClient":
+    async def __aenter__(self) -> UniversalClient:
         """Context manager entry."""
         return self
 

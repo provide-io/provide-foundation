@@ -21,7 +21,7 @@ _PROVIDE_CONTEXT_TRACE_ID = contextvars.ContextVar("foundation_context_trace_id"
 
 @contextmanager
 def timed_block(
-    logger_instance: "FoundationLogger",
+    logger_instance: FoundationLogger,
     event_name: str,
     layer_keys: dict[str, Any] | None = None,
     initial_kvs: dict[str, Any] | None = None,

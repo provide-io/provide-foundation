@@ -320,7 +320,7 @@ class ManagedProcess:
 
         plog.debug("🧹 Managed process cleanup completed")
 
-    def __enter__(self) -> "ManagedProcess":
+    def __enter__(self) -> ManagedProcess:
         """Context manager entry."""
         self.launch()
         return self

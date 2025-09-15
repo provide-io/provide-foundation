@@ -247,7 +247,7 @@ class ErrorHandler:
     capture_context: bool = True
     reraise_unhandled: bool = False
 
-    def add_policy(self, error_type: type[Exception], handler: Callable[[Exception], Any]) -> "ErrorHandler":
+    def add_policy(self, error_type: type[Exception], handler: Callable[[Exception], Any]) -> ErrorHandler:
         """Add or update a handler policy for an error type.
 
         Args:

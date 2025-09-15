@@ -61,7 +61,7 @@ class ErrorContext:
     trace_id: str | None = None
     span_id: str | None = None
 
-    def add_namespace(self, namespace: str, data: dict[str, Any]) -> "ErrorContext":
+    def add_namespace(self, namespace: str, data: dict[str, Any]) -> ErrorContext:
         """Add namespaced metadata.
 
         Args:
@@ -73,13 +73,13 @@ class ErrorContext:
 
         Examples:
             >>> ctx.add_namespace("terraform", {"provider": "aws", "version": "5.0"})
-            >>> ctx.add_namespace("http", {"method": "POST", "status": 500})
+            >>> ctx.add_namespace("http", {"method": POST, "status": 500})
 
         """
         self.metadata[namespace] = data
         return self
 
-    def update_namespace(self, namespace: str, data: dict[str, Any]) -> "ErrorContext":
+    def update_namespace(self, namespace: str, data: dict[str, Any]) -> ErrorContext:
         """Update existing namespace metadata.
 
         Args:
@@ -107,7 +107,7 @@ class ErrorContext:
         """
         return self.metadata.get(namespace)
 
-    def add_tag(self, tag: str) -> "ErrorContext":
+    def add_tag(self, tag: str) -> ErrorContext:
         """Add a tag for categorization.
 
         Args:
@@ -120,7 +120,7 @@ class ErrorContext:
         self.tags.add(tag)
         return self
 
-    def add_tags(self, *tags: str) -> "ErrorContext":
+    def add_tags(self, *tags: str) -> ErrorContext:
         """Add multiple tags.
 
         Args:

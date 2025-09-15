@@ -156,7 +156,7 @@ class GlobalRateLimiter:
     _lock = threading.Lock()
     _initialized: bool
 
-    def __new__(cls) -> "GlobalRateLimiter":
+    def __new__(cls) -> GlobalRateLimiter:
         if cls._instance is None:
             with cls._lock:
                 if cls._instance is None:

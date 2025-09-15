@@ -81,7 +81,7 @@ class _LevelFilter:
         event_level_text: LogLevelStr = cast("LogLevelStr", event_level_str_from_dict)
         event_num_level: int = self.level_to_numeric_map.get(
             event_level_text,
-            self.level_to_numeric_map["INFO"],
+            self.level_to_numeric_map[INFO],
         )
         threshold_num_level: int = self.default_numeric_level
         for path_prefix in self.sorted_module_paths:

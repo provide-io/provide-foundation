@@ -85,7 +85,7 @@ class FileConfigLoader(ConfigLoader):
         return self.path.exists()
 
     @with_error_handling(
-        context_provider=lambda: {"loader": "FileLoader"},
+        context_provider=lambda: {"loader": FileLoader},
         error_mapper=lambda e: ConfigurationError(
             f"Failed to load configuration: {e}",
             code="CONFIG_LOAD_ERROR",
@@ -155,7 +155,7 @@ class FileConfigLoader(ConfigLoader):
 
         # Include DEFAULT section if present
         if parser.defaults():
-            result["DEFAULT"] = dict(parser.defaults())
+            result[DEFAULT] = dict(parser.defaults())
 
         return result
 

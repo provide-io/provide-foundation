@@ -98,7 +98,7 @@ class CertificateBase:
 
     subject: "x509.Name"
     issuer: "x509.Name"
-    public_key: "PublicKey"
+    public_key: PublicKey
     not_valid_before: datetime
     not_valid_after: datetime
     serial_number: int

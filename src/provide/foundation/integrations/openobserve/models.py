@@ -45,7 +45,7 @@ class SearchResponse:
     function_error: list[str] = field(default_factory=list)
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "SearchResponse":
+    def from_dict(cls, data: dict[str, Any]) -> SearchResponse:
         """Create from API response."""
         return cls(
             hits=data.get("hits", []),
@@ -72,7 +72,7 @@ class StreamInfo:
     original_size: int = 0
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "StreamInfo":
+    def from_dict(cls, data: dict[str, Any]) -> StreamInfo:
         """Create from API response."""
         return cls(
             name=data.get("name", ""),

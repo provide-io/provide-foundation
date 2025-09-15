@@ -45,7 +45,7 @@ __all__ = [
 _meter = None
 
 
-def counter(name: str, description: str = "", unit: str = "") -> "SimpleCounter":
+def counter(name: str, description: str = "", unit: str = "") -> SimpleCounter:
     """Create a counter metric.
 
     Args:
@@ -67,7 +67,7 @@ def counter(name: str, description: str = "", unit: str = "") -> "SimpleCounter"
     return SimpleCounter(name)
 
 
-def gauge(name: str, description: str = "", unit: str = "") -> "SimpleGauge":
+def gauge(name: str, description: str = "", unit: str = "") -> SimpleGauge:
     """Create a gauge metric.
 
     Args:
@@ -89,7 +89,7 @@ def gauge(name: str, description: str = "", unit: str = "") -> "SimpleGauge":
     return SimpleGauge(name)
 
 
-def histogram(name: str, description: str = "", unit: str = "") -> "SimpleHistogram":
+def histogram(name: str, description: str = "", unit: str = "") -> SimpleHistogram:
     """Create a histogram metric.
 
     Args:

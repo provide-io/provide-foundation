@@ -61,7 +61,7 @@ class Certificate:
     _base: CertificateBase = field(init=False, repr=False)
     _private_key: "KeyPair | None" = field(init=False, default=None, repr=False)
     _cert: "X509Certificate" = field(init=False, repr=False)
-    _trust_chain: list["Certificate"] = field(init=False, factory=list, repr=False)
+    _trust_chain: list[Certificate] = field(init=False, factory=list, repr=False)
 
     cert: str = field(init=False, default="", repr=True)
     key: str | None = field(init=False, default=None, repr=False)
@@ -103,12 +103,12 @@ class Certificate:
 
     # Properties
     @property
-    def trust_chain(self) -> list["Certificate"]:
+    def trust_chain(self) -> list[Certificate]:
         """Returns the list of trusted certificates associated with this one."""
         return self._trust_chain
 
     @trust_chain.setter
-    def trust_chain(self, value: list["Certificate"]) -> None:
+    def trust_chain(self, value: list[Certificate]) -> None:
         """Sets the list of trusted certificates."""
         self._trust_chain = value
 
@@ -173,7 +173,7 @@ class Certificate:
         key_type: str = DEFAULT_CERTIFICATE_KEY_TYPE,
         key_size: int = DEFAULT_RSA_KEY_SIZE,
         ecdsa_curve: str = DEFAULT_CERTIFICATE_CURVE,
-    ) -> "Certificate":
+    ) -> Certificate:
         """Creates a new self-signed CA certificate."""
         from provide.foundation.crypto.certificates.factory import create_ca_certificate
 
@@ -189,7 +189,7 @@ class Certificate:
     @classmethod
     def create_signed_certificate(
         cls,
-        ca_certificate: "Certificate",
+        ca_certificate: Certificate,
         common_name: str,
         organization_name: str,
         validity_days: int,
@@ -198,7 +198,7 @@ class Certificate:
         key_size: int = DEFAULT_RSA_KEY_SIZE,
         ecdsa_curve: str = DEFAULT_CERTIFICATE_CURVE,
         is_client_cert: bool = False,
-    ) -> "Certificate":
+    ) -> Certificate:
         """Creates a new certificate signed by the provided CA certificate."""
         from provide.foundation.crypto.certificates.factory import (
             create_signed_certificate,
@@ -226,7 +226,7 @@ class Certificate:
         key_type: str = DEFAULT_CERTIFICATE_KEY_TYPE,
         key_size: int = DEFAULT_RSA_KEY_SIZE,
         ecdsa_curve: str = DEFAULT_CERTIFICATE_CURVE,
-    ) -> "Certificate":
+    ) -> Certificate:
         """Creates a new self-signed end-entity certificate suitable for a server."""
         from provide.foundation.crypto.certificates.factory import (
             create_self_signed_server_cert,
@@ -252,7 +252,7 @@ class Certificate:
         key_type: str = DEFAULT_CERTIFICATE_KEY_TYPE,
         key_size: int = DEFAULT_RSA_KEY_SIZE,
         ecdsa_curve: str = DEFAULT_CERTIFICATE_CURVE,
-    ) -> "Certificate":
+    ) -> Certificate:
         """Creates a new self-signed end-entity certificate suitable for a client."""
         from provide.foundation.crypto.certificates.factory import (
             create_self_signed_client_cert,
@@ -290,7 +290,7 @@ class Certificate:
             is_client_cert=is_client_cert,
         )
 
-    def _validate_signature(self, signed_cert: "Certificate", signing_cert: "Certificate") -> bool:
+    def _validate_signature(self, signed_cert: Certificate, signing_cert: Certificate) -> bool:
         """Internal helper: Validates signature and issuer/subject match."""
         from provide.foundation.crypto.certificates.trust import (
             validate_signature_wrapper,

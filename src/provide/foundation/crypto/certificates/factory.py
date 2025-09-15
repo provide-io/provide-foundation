@@ -38,7 +38,7 @@ def create_ca_certificate(
     key_type: str = DEFAULT_CERTIFICATE_KEY_TYPE,
     key_size: int = DEFAULT_RSA_KEY_SIZE,
     ecdsa_curve: str = DEFAULT_CERTIFICATE_CURVE,
-) -> "Certificate":
+) -> Certificate:
     """Creates a new self-signed CA certificate."""
     # Import here to avoid circular dependency
     from provide.foundation.crypto.certificates.certificate import Certificate
@@ -69,7 +69,7 @@ def create_ca_certificate(
 
 
 def create_signed_certificate(
-    ca_certificate: "Certificate",
+    ca_certificate: Certificate,
     common_name: str,
     organization_name: str,
     validity_days: int,
@@ -78,7 +78,7 @@ def create_signed_certificate(
     key_size: int = DEFAULT_RSA_KEY_SIZE,
     ecdsa_curve: str = DEFAULT_CERTIFICATE_CURVE,
     is_client_cert: bool = False,
-) -> "Certificate":
+) -> Certificate:
     """Creates a new certificate signed by the provided CA certificate."""
     # Import here to avoid circular dependency
     from provide.foundation.crypto.certificates.certificate import Certificate
@@ -137,7 +137,7 @@ def create_self_signed_server_cert(
     key_type: str = DEFAULT_CERTIFICATE_KEY_TYPE,
     key_size: int = DEFAULT_RSA_KEY_SIZE,
     ecdsa_curve: str = DEFAULT_CERTIFICATE_CURVE,
-) -> "Certificate":
+) -> Certificate:
     """Creates a new self-signed end-entity certificate suitable for a server."""
     # Import here to avoid circular dependency
     from provide.foundation.crypto.certificates.certificate import Certificate
@@ -183,7 +183,7 @@ def create_self_signed_client_cert(
     key_type: str = DEFAULT_CERTIFICATE_KEY_TYPE,
     key_size: int = DEFAULT_RSA_KEY_SIZE,
     ecdsa_curve: str = DEFAULT_CERTIFICATE_CURVE,
-) -> "Certificate":
+) -> Certificate:
     """Creates a new self-signed end-entity certificate suitable for a client."""
     # Import here to avoid circular dependency
     from provide.foundation.crypto.certificates.certificate import Certificate
@@ -228,7 +228,7 @@ def create_self_signed(
     organization: str = "Default Organization",
     validity_days: int = DEFAULT_CERTIFICATE_VALIDITY_DAYS,
     key_type: str = DEFAULT_CERTIFICATE_KEY_TYPE,
-) -> "Certificate":
+) -> Certificate:
     """Create a self-signed certificate (convenience function)."""
     _require_crypto()
     return create_self_signed_server_cert(
@@ -245,7 +245,7 @@ def create_ca(
     organization: str = "Default CA Organization",
     validity_days: int = DEFAULT_CERTIFICATE_VALIDITY_DAYS * 2,  # CAs live longer
     key_type: str = DEFAULT_CERTIFICATE_KEY_TYPE,
-) -> "Certificate":
+) -> Certificate:
     """Create a CA certificate (convenience function)."""
     _require_crypto()
     return create_ca_certificate(

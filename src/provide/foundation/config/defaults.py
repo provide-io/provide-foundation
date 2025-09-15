@@ -103,7 +103,7 @@ def default_empty_dict() -> dict[str, str]:
 def default_module_levels() -> dict[str, str]:
     """Factory for module log levels dictionary."""
     return {
-        "asyncio": "INFO",  # Suppress asyncio DEBUG messages (e.g., selector events)
+        "asyncio": INFO,  # Suppress asyncio DEBUG messages (e.g., selector events)
     }
 
 
