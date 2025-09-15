@@ -14,6 +14,8 @@ from typing import Any, Protocol, cast
 
 import structlog
 
+from provide.foundation.logger.constants import DEFAULT_FALLBACK_NUMERIC
+from provide.foundation.logger.levels import get_numeric_level, normalize_level
 from provide.foundation.logger.types import TRACE_LEVEL_NAME, TRACE_LEVEL_NUM, LogLevelStr
 
 _NUMERIC_TO_LEVEL_NAME_CUSTOM: dict[int, str] = {
@@ -77,11 +79,13 @@ class _LevelFilter:
         event_dict: structlog.types.EventDict,
     ) -> structlog.types.EventDict:
         logger_name: str = event_dict.get("logger_name", "unnamed_filter_target")
-        event_level_str_from_dict = str(event_dict.get("level", "info")).upper()
-        event_level_text: LogLevelStr = cast("LogLevelStr", event_level_str_from_dict)
-        event_num_level: int = self.level_to_numeric_map.get(
-            event_level_text,
-            self.level_to_numeric_map["info"],
+        event_level_str_from_dict = str(event_dict.get("level", "info"))
+
+        # Normalize the level and get numeric value safely
+        normalized_level = normalize_level(event_level_str_from_dict)
+        event_num_level: int = get_numeric_level(
+            normalized_level,
+            fallback=DEFAULT_FALLBACK_NUMERIC,
         )
         threshold_num_level: int = self.default_numeric_level
         for path_prefix in self.sorted_module_paths:

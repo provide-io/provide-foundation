@@ -22,6 +22,10 @@ DEFAULT_RATE_LIMIT_GLOBAL = 5.0
 DEFAULT_RATE_LIMIT_GLOBAL_CAPACITY = 1000
 DEFAULT_RATE_LIMIT_OVERFLOW_POLICY = "drop_oldest"
 
+# Logger system specific defaults
+DEFAULT_FALLBACK_LOG_LEVEL = "INFO"
+DEFAULT_FALLBACK_LOG_LEVEL_NUMERIC = 20
+
 # =================================
 # Telemetry defaults
 # =================================
