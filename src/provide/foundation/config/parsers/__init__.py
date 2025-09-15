@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Configuration parsers package.
 
 Re-exports all parsing and validation functions from submodules

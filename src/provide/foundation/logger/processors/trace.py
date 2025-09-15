@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Trace context processor for injecting trace/span IDs into logs."""
 
 from typing import Any

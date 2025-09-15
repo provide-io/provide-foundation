@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """OpenTelemetry integration for Foundation tracer."""
 
 from provide.foundation.logger.config.telemetry import TelemetryConfig

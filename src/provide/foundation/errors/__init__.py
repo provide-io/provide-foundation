@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Foundation error handling system.
 
 Provides a comprehensive exception hierarchy, error context management,

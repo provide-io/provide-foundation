@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Foundation Configuration System.
 
 A comprehensive, extensible configuration framework for the provide.io ecosystem.

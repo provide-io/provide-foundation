@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Circuit breaker implementation for preventing cascading failures."""
 
 from collections.abc import Callable

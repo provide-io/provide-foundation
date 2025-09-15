@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Core serialization utilities for Foundation."""
 
 import json

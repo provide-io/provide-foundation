@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Hub error handler management utilities.
 
 Provides functions for discovering and executing error handlers from the registry.

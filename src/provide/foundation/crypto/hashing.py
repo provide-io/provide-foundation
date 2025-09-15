@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Core hashing operations."""
 
 from collections.abc import Iterator

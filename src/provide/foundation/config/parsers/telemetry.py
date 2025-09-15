@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Telemetry and logging-specific parsers for configuration values.
 
 Handles parsing of domain-specific telemetry configuration like log levels,

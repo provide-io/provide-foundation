@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Tool installation manager for various archive formats.
 
 Handles extraction and installation of tools from different

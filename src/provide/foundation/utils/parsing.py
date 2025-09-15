@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Type parsing and conversion utilities.
 
 Provides utilities for converting string values (from environment variables,

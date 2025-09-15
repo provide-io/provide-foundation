@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Certificate generation utilities."""
 
 from datetime import UTC, datetime, timedelta

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Universal transport client with middleware support."""
 
 from collections.abc import AsyncIterator

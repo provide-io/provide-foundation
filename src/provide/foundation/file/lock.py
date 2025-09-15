@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """File-based locking for concurrent access control."""
 
 import os

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """HTTP/HTTPS transport implementation using httpx."""
 
 from collections.abc import AsyncIterator

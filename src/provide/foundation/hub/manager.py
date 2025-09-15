@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Hub manager - the main coordinator for components and commands.
 
 This module provides the Hub class that coordinates component and command

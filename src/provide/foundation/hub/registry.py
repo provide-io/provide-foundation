@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Registry management for the foundation.
 
 Provides both generic multi-dimensional registry functionality and

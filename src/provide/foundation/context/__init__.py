@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Core context management for provide-foundation.
 
 Provides CLI runtime context for managing command execution state,

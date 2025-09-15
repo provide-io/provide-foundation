@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Foundation Metrics Module.
 
 Provides metrics collection with optional OpenTelemetry integration.

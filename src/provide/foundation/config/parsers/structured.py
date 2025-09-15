@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Complex data structure parsers for configuration values.
 
 Handles parsing of structured data like dictionaries with specific formats

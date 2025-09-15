@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Event set display utilities for Foundation."""
 
 from provide.foundation.eventsets.registry import discover_event_sets, get_registry

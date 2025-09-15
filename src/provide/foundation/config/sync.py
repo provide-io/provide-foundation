@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Synchronous wrappers for the async configuration system.
 
 These wrappers allow using the async config system in synchronous contexts

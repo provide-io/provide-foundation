@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Event set registry and discovery."""
 
 import importlib

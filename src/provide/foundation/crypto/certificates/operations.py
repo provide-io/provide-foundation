@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Certificate operations: CA creation, signing, and trust verification."""
 
 import traceback

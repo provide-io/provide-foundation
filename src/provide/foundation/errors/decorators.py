@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Decorators for error handling and resilience patterns.
 
 Provides decorators for common error handling patterns like retry,

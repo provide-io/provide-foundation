@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Error context management for rich diagnostic information.
 
 Provides structured context for errors that can be used for logging,

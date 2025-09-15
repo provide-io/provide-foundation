@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Certificate factory methods."""
 
 from typing import TYPE_CHECKING

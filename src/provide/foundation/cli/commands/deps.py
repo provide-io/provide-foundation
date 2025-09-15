@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """CLI command for checking optional dependencies."""
 
 try:

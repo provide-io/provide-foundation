@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Certificate trust chain and verification utilities."""
 
 from typing import TYPE_CHECKING

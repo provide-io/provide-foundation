@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Production time utilities for Foundation.
 
 Provides consistent time handling with Foundation integration,

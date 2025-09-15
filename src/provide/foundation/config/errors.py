@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Configuration-specific error types and utilities.
 
 Provides standardized error handling for configuration parsing and validation

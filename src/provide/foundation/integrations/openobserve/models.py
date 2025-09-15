@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Data models for OpenObserve API requests and responses."""
 
 from dataclasses import dataclass, field

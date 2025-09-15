@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Transport-specific error types."""
 
 from typing import TYPE_CHECKING

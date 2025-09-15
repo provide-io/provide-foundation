@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Click command and group building functions."""
 
 import inspect

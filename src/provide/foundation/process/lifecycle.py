@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Process lifecycle management utilities.
 
 This module provides utilities for managing long-running subprocesses with

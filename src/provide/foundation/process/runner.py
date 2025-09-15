@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Core subprocess execution utilities."""
 
 from collections.abc import Iterator, Mapping

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Archive operation chains and helpers."""
 
 from pathlib import Path

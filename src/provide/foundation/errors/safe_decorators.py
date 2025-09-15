@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Safe error decorators that preserve original behavior."""
 
 from collections.abc import Callable

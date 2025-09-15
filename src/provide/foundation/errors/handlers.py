@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Error handling utilities and context managers.
 
 Provides tools for handling errors in a consistent and structured way.

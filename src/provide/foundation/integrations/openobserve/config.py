@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """OpenObserve integration configuration."""
 
 from attrs import define

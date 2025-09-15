@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """CLI commands for OpenObserve integration.
 
 These commands are auto-registered by Foundation's command discovery system.

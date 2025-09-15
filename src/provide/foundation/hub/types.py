@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Type definitions for the hub module."""
 
 from typing import Any, Protocol

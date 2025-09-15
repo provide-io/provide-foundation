@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Main Certificate class."""
 
 from datetime import UTC, datetime

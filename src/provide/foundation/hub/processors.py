@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Hub processor pipeline management utilities.
 
 Provides functions for managing log processors and processing stages

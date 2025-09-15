@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Core Hub class for component and command management.
 
 This module provides the core Hub functionality for registering and

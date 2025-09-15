@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Unified retry execution engine and policy configuration.
 
 This module provides the core retry functionality used throughout foundation,

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Certificate base classes, types, and utilities."""
 
 from datetime import UTC, datetime

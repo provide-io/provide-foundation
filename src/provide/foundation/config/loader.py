@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Configuration loaders for various sources."""
 
 from abc import ABC, abstractmethod

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Unified key generation for all cryptographic algorithms."""
 
 from typing import Any, Protocol

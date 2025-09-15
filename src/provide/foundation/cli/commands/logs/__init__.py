@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Logs command group for Foundation CLI.
 
 Provides commands for sending and querying logs with OpenTelemetry integration.

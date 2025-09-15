@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Core transport abstractions."""
 
 from abc import ABC, abstractmethod

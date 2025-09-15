@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Version resolution for tool management.
 
 Provides sophisticated version resolution including latest,

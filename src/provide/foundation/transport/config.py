@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Transport configuration with Foundation config integration."""
 
 from attrs import define

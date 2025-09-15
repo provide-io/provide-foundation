@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Certificate loading utilities."""
 
 from datetime import UTC

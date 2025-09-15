@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Timing and performance utilities.
 
 Provides context managers and utilities for timing operations and logging performance.

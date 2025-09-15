@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """X.509 certificate generation and management."""
 
 # Import from submodules using absolute imports

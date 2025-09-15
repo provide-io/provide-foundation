@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Unified context for configuration and CLI state management."""
 
 import copy

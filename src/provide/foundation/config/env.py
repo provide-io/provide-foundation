@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Environment variable configuration utilities."""
 
 import asyncio
