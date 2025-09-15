@@ -4,6 +4,7 @@ This test file follows TDD principles - tests are written before implementation.
 """
 
 import asyncio
+from typing import Never
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -18,7 +19,7 @@ from provide.foundation.resilience.retry import (
 class TestRetryExecutorSync:
     """Test synchronous retry execution."""
 
-    def test_successful_first_attempt(self):
+    def test_successful_first_attempt(self) -> None:
         """Test function that succeeds on first try."""
         policy = RetryPolicy(max_attempts=3)
         executor = RetryExecutor(policy)
@@ -30,7 +31,7 @@ class TestRetryExecutorSync:
         assert result == "success"
         mock_func.assert_called_once_with("arg1", key="value")
 
-    def test_retry_on_failure_then_success(self):
+    def test_retry_on_failure_then_success(self) -> None:
         """Test function that fails then succeeds."""
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
         executor = RetryExecutor(policy)
@@ -46,7 +47,7 @@ class TestRetryExecutorSync:
         assert result == "success"
         assert mock_func.call_count == 3
 
-    def test_max_attempts_exceeded(self):
+    def test_max_attempts_exceeded(self) -> None:
         """Test that error is raised after max attempts."""
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
         executor = RetryExecutor(policy)
@@ -59,7 +60,7 @@ class TestRetryExecutorSync:
         assert "always fails" in str(exc_info.value)
         assert mock_func.call_count == 3
 
-    def test_specific_exception_filtering(self):
+    def test_specific_exception_filtering(self) -> None:
         """Test retrying only specific exception types."""
         policy = RetryPolicy(
             max_attempts=3,
@@ -76,7 +77,7 @@ class TestRetryExecutorSync:
 
         assert mock_func.call_count == 1  # No retries
 
-    def test_no_retry_when_max_attempts_is_1(self):
+    def test_no_retry_when_max_attempts_is_1(self) -> None:
         """Test that no retry occurs when max_attempts=1."""
         policy = RetryPolicy(max_attempts=1)
         executor = RetryExecutor(policy)
@@ -89,7 +90,7 @@ class TestRetryExecutorSync:
         assert mock_func.call_count == 1
 
     @patch("time.sleep")
-    def test_delay_between_retries(self, mock_sleep):
+    def test_delay_between_retries(self, mock_sleep) -> None:
         """Test that delay is applied between retries."""
         policy = RetryPolicy(
             max_attempts=3,
@@ -108,7 +109,7 @@ class TestRetryExecutorSync:
         assert mock_sleep.call_count == 2
         mock_sleep.assert_called_with(1.0)
 
-    def test_exponential_backoff(self):
+    def test_exponential_backoff(self) -> None:
         """Test exponential backoff strategy."""
         policy = RetryPolicy(
             max_attempts=4,
@@ -120,7 +121,7 @@ class TestRetryExecutorSync:
 
         delays = []
 
-        def capture_delay(delay):
+        def capture_delay(delay) -> None:
             delays.append(delay)
 
         with patch("time.sleep", side_effect=capture_delay):
@@ -132,7 +133,7 @@ class TestRetryExecutorSync:
         # Exponential: 1, 2, 4
         assert delays == [1.0, 2.0, 4.0]
 
-    def test_linear_backoff(self):
+    def test_linear_backoff(self) -> None:
         """Test linear backoff strategy."""
         policy = RetryPolicy(
             max_attempts=4,
@@ -144,7 +145,7 @@ class TestRetryExecutorSync:
 
         delays = []
 
-        def capture_delay(delay):
+        def capture_delay(delay) -> None:
             delays.append(delay)
 
         with patch("time.sleep", side_effect=capture_delay):
@@ -156,7 +157,7 @@ class TestRetryExecutorSync:
         # Linear: 1, 2, 3
         assert delays == [1.0, 2.0, 3.0]
 
-    def test_fibonacci_backoff(self):
+    def test_fibonacci_backoff(self) -> None:
         """Test Fibonacci backoff strategy."""
         policy = RetryPolicy(
             max_attempts=5,
@@ -168,7 +169,7 @@ class TestRetryExecutorSync:
 
         delays = []
 
-        def capture_delay(delay):
+        def capture_delay(delay) -> None:
             delays.append(delay)
 
         with patch("time.sleep", side_effect=capture_delay):
@@ -180,7 +181,7 @@ class TestRetryExecutorSync:
         # Fibonacci: 1, 1, 2, 3
         assert delays == [1.0, 1.0, 2.0, 3.0]
 
-    def test_max_delay_cap(self):
+    def test_max_delay_cap(self) -> None:
         """Test that delays are capped at max_delay."""
         policy = RetryPolicy(
             max_attempts=5,
@@ -193,7 +194,7 @@ class TestRetryExecutorSync:
 
         delays = []
 
-        def capture_delay(delay):
+        def capture_delay(delay) -> None:
             delays.append(delay)
 
         with patch("time.sleep", side_effect=capture_delay):
@@ -205,7 +206,7 @@ class TestRetryExecutorSync:
         # Should be capped at 20.0
         assert all(d <= 20.0 for d in delays)
 
-    def test_on_retry_callback(self):
+    def test_on_retry_callback(self) -> None:
         """Test that on_retry callback is invoked."""
         callback = MagicMock()
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
@@ -228,9 +229,9 @@ class TestRetryExecutorSync:
         assert isinstance(calls[0][0][1], ValueError)
         assert calls[1][0][0] == 2  # Second retry (attempt 3)
 
-    def test_on_retry_callback_exception_ignored(self):
+    def test_on_retry_callback_exception_ignored(self) -> None:
         """Test that exceptions in on_retry don't break retry."""
-        def bad_callback(attempt, error):
+        def bad_callback(attempt, error) -> Never:
             raise RuntimeError("callback failed")
 
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
@@ -249,7 +250,7 @@ class TestRetryExecutorSync:
         # Should log callback failure
         mock_logger.warning.assert_called()
 
-    def test_with_jitter(self):
+    def test_with_jitter(self) -> None:
         """Test that jitter adds randomness to delays."""
         policy = RetryPolicy(
             max_attempts=3,
@@ -261,7 +262,7 @@ class TestRetryExecutorSync:
 
         delays = []
 
-        def capture_delay(delay):
+        def capture_delay(delay) -> None:
             delays.append(delay)
 
         with patch("time.sleep", side_effect=capture_delay):
@@ -280,7 +281,7 @@ class TestRetryExecutorAsync:
     """Test asynchronous retry execution."""
 
     @pytest.mark.asyncio
-    async def test_successful_first_attempt(self):
+    async def test_successful_first_attempt(self) -> None:
         """Test async function that succeeds on first try."""
         policy = RetryPolicy(max_attempts=3)
         executor = RetryExecutor(policy)
@@ -293,7 +294,7 @@ class TestRetryExecutorAsync:
         mock_func.assert_called_once_with("arg1", key="value")
 
     @pytest.mark.asyncio
-    async def test_retry_on_failure_then_success(self):
+    async def test_retry_on_failure_then_success(self) -> None:
         """Test async function that fails then succeeds."""
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
         executor = RetryExecutor(policy)
@@ -310,7 +311,7 @@ class TestRetryExecutorAsync:
         assert mock_func.call_count == 3
 
     @pytest.mark.asyncio
-    async def test_max_attempts_exceeded(self):
+    async def test_max_attempts_exceeded(self) -> None:
         """Test that error is raised after max attempts."""
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
         executor = RetryExecutor(policy)
@@ -324,7 +325,7 @@ class TestRetryExecutorAsync:
         assert mock_func.call_count == 3
 
     @pytest.mark.asyncio
-    async def test_specific_exception_filtering(self):
+    async def test_specific_exception_filtering(self) -> None:
         """Test retrying only specific exception types."""
         policy = RetryPolicy(
             max_attempts=3,
@@ -343,7 +344,7 @@ class TestRetryExecutorAsync:
 
     @pytest.mark.asyncio
     @patch("asyncio.sleep")
-    async def test_delay_between_retries(self, mock_sleep):
+    async def test_delay_between_retries(self, mock_sleep) -> None:
         """Test that delay is applied between async retries."""
         mock_sleep.return_value = None  # Make it synchronous for testing
 
@@ -365,7 +366,7 @@ class TestRetryExecutorAsync:
         mock_sleep.assert_called_with(1.0)
 
     @pytest.mark.asyncio
-    async def test_on_retry_callback_async(self):
+    async def test_on_retry_callback_async(self) -> None:
         """Test that async on_retry callback is invoked."""
         callback = AsyncMock()
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
@@ -383,7 +384,7 @@ class TestRetryExecutorAsync:
         assert callback.call_count == 2  # Called for retry attempts 2 and 3
 
     @pytest.mark.asyncio
-    async def test_mixed_sync_async_callback(self):
+    async def test_mixed_sync_async_callback(self) -> None:
         """Test sync callback with async execution."""
         callback = MagicMock()  # Sync callback
         policy = RetryPolicy(max_attempts=2, base_delay=0.01)
@@ -400,12 +401,12 @@ class TestRetryExecutorAsync:
         assert callback.call_count == 1
 
     @pytest.mark.asyncio
-    async def test_concurrent_executions(self):
+    async def test_concurrent_executions(self) -> None:
         """Test multiple concurrent retry executions."""
         policy = RetryPolicy(max_attempts=2, base_delay=0.01)
         executor = RetryExecutor(policy)
 
-        async def failing_then_success(id):
+        async def failing_then_success(id) -> str:
             if not hasattr(failing_then_success, f"called_{id}"):
                 setattr(failing_then_success, f"called_{id}", True)
                 raise ValueError(f"First call {id}")
@@ -424,7 +425,7 @@ class TestRetryExecutorAsync:
 class TestRetryExecutorLogging:
     """Test logging behavior of RetryExecutor."""
 
-    def test_retry_attempt_logged(self):
+    def test_retry_attempt_logged(self) -> None:
         """Test that retry attempts are logged."""
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
         executor = RetryExecutor(policy)
@@ -446,7 +447,7 @@ class TestRetryExecutorLogging:
         assert "Retry" in log_message
         assert "1/3" in log_message or "attempt 2" in log_message
 
-    def test_max_attempts_failure_logged(self):
+    def test_max_attempts_failure_logged(self) -> None:
         """Test that max attempts failure is logged."""
         policy = RetryPolicy(max_attempts=2, base_delay=0.01)
         executor = RetryExecutor(policy)
@@ -463,7 +464,7 @@ class TestRetryExecutorLogging:
         log_message = mock_logger.error.call_args[0][0]
         assert "attempts failed" in log_message.lower()
 
-    def test_non_retryable_error_not_logged_as_retry(self):
+    def test_non_retryable_error_not_logged_as_retry(self) -> None:
         """Test that non-retryable errors don't generate retry logs."""
         policy = RetryPolicy(
             max_attempts=3,
@@ -486,7 +487,7 @@ class TestRetryExecutorLogging:
 class TestRetryExecutorEdgeCases:
     """Test edge cases and error conditions."""
 
-    def test_zero_max_attempts_raises(self):
+    def test_zero_max_attempts_raises(self) -> None:
         """Test that max_attempts=0 raises an error."""
         with pytest.raises(ValueError) as exc_info:
             policy = RetryPolicy(max_attempts=0)
@@ -494,14 +495,14 @@ class TestRetryExecutorEdgeCases:
 
         assert "at least 1" in str(exc_info.value).lower()
 
-    def test_negative_delay_raises(self):
+    def test_negative_delay_raises(self) -> None:
         """Test that negative delay raises an error."""
         with pytest.raises(ValueError) as exc_info:
             RetryPolicy(base_delay=-1.0)
 
         assert "positive" in str(exc_info.value).lower() or "negative" in str(exc_info.value).lower()
 
-    def test_none_function_raises(self):
+    def test_none_function_raises(self) -> None:
         """Test that None function raises appropriate error."""
         policy = RetryPolicy()
         executor = RetryExecutor(policy)
@@ -509,14 +510,14 @@ class TestRetryExecutorEdgeCases:
         with pytest.raises(TypeError):
             executor.execute_sync(None)
 
-    def test_function_with_no_args(self):
+    def test_function_with_no_args(self) -> None:
         """Test retry with function that takes no arguments."""
         policy = RetryPolicy(max_attempts=2, base_delay=0.01)
         executor = RetryExecutor(policy)
 
         call_count = 0
 
-        def no_args_func():
+        def no_args_func() -> str:
             nonlocal call_count
             call_count += 1
             if call_count == 1:
@@ -528,7 +529,7 @@ class TestRetryExecutorEdgeCases:
         assert result == "success"
         assert call_count == 2
 
-    def test_generator_function_retry(self):
+    def test_generator_function_retry(self) -> None:
         """Test handling of generator functions with retry executor."""
         policy = RetryPolicy(max_attempts=2, base_delay=0.01)
         executor = RetryExecutor(policy)

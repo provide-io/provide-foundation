@@ -21,7 +21,6 @@ class DownloadError(FoundationError):
     """Raised when download fails."""
 
 
-
 class ToolDownloader:
     """Advanced download capabilities for tools.
 
@@ -37,7 +36,7 @@ class ToolDownloader:
 
     """
 
-    def __init__(self, client: UniversalClient):
+    def __init__(self, client: UniversalClient) -> None:
         """Initialize the downloader.
 
         Args:
@@ -105,10 +104,9 @@ class ToolDownloader:
                     self._report_progress(downloaded, total_size)
 
         # Verify checksum if provided
-        if checksum:
-            if not self.verify_checksum(dest, checksum):
-                dest.unlink()
-                raise DownloadError(f"Checksum mismatch for {url}")
+        if checksum and not self.verify_checksum(dest, checksum):
+            dest.unlink()
+            raise DownloadError(f"Checksum mismatch for {url}")
 
         log.info(f"Downloaded {url} successfully")
         return dest
@@ -156,7 +154,7 @@ class ToolDownloader:
             # Collect results in order
             results = []
             for i, future in enumerate(futures):
-                url, dest = urls[i]
+                url, _dest = urls[i]
                 try:
                     result = future.result()
                     results.append(result)

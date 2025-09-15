@@ -1,5 +1,4 @@
-"""Event set registry and discovery.
-"""
+"""Event set registry and discovery."""
 
 import importlib
 from pathlib import Path

@@ -12,7 +12,7 @@ from provide.foundation.process.runner import ProcessError
 class TestManagedProcess:
     """Test ManagedProcess functionality."""
 
-    def test_init(self):
+    def test_init(self) -> None:
         """Test ManagedProcess initialization."""
         process = ManagedProcess(["echo", "hello"])
         assert process.command == ["echo", "hello"]
@@ -22,7 +22,7 @@ class TestManagedProcess:
         assert process.pid is None
         assert not process.is_running()
 
-    def test_init_with_options(self, tmp_path: Path):
+    def test_init_with_options(self, tmp_path: Path) -> None:
         """Test ManagedProcess initialization with options."""
         process = ManagedProcess(
             ["pwd"],
@@ -36,7 +36,7 @@ class TestManagedProcess:
         assert process.capture_output is True
         assert process.stderr_relay is False
 
-    def test_launch_and_cleanup(self):
+    def test_launch_and_cleanup(self) -> None:
         """Test basic process launch and cleanup."""
         process = ManagedProcess(["echo", "hello"])
 
@@ -56,7 +56,7 @@ class TestManagedProcess:
             process.process.wait()
         process.cleanup()
 
-    def test_launch_twice_raises_error(self):
+    def test_launch_twice_raises_error(self) -> None:
         """Test that launching twice raises an error."""
         process = ManagedProcess(["echo", "hello"])
         process.launch()
@@ -66,14 +66,14 @@ class TestManagedProcess:
 
         process.cleanup()
 
-    def test_launch_invalid_command_raises_error(self):
+    def test_launch_invalid_command_raises_error(self) -> None:
         """Test that invalid command raises ProcessError."""
         process = ManagedProcess(["nonexistent_command_12345"])
 
         with pytest.raises(ProcessError, match="Failed to launch process"):
             process.launch()
 
-    def test_terminate_gracefully(self):
+    def test_terminate_gracefully(self) -> None:
         """Test graceful process termination."""
         # Use a longer-running command for better testing
         process = ManagedProcess(["sleep", "10"])
@@ -89,7 +89,7 @@ class TestManagedProcess:
 
         process.cleanup()
 
-    def test_terminate_not_running_process(self):
+    def test_terminate_not_running_process(self) -> None:
         """Test terminating a process that's not running."""
         process = ManagedProcess(["echo", "hello"])
 
@@ -97,7 +97,7 @@ class TestManagedProcess:
         result = process.terminate_gracefully()
         assert result is True
 
-    def test_context_manager(self):
+    def test_context_manager(self) -> None:
         """Test using ManagedProcess as a context manager."""
         with ManagedProcess(["echo", "hello"]) as process:
             assert process.process is not None
@@ -107,7 +107,7 @@ class TestManagedProcess:
         assert not process.is_running()
 
     @pytest.mark.asyncio
-    async def test_read_line_async(self):
+    async def test_read_line_async(self) -> None:
         """Test async line reading."""
         process = ManagedProcess(["echo", "hello world"])
         process.launch()
@@ -120,7 +120,7 @@ class TestManagedProcess:
             process.cleanup()
 
     @pytest.mark.asyncio
-    async def test_read_line_async_no_stdout(self):
+    async def test_read_line_async_no_stdout(self) -> None:
         """Test reading from process without stdout."""
         process = ManagedProcess(["echo", "hello"], capture_output=False)
         process.launch()
@@ -133,7 +133,7 @@ class TestManagedProcess:
             process.cleanup()
 
     @pytest.mark.asyncio
-    async def test_read_line_async_timeout(self):
+    async def test_read_line_async_timeout(self) -> None:
         """Test read timeout."""
         process = ManagedProcess(["sleep", "10"])
         process.launch()
@@ -146,7 +146,7 @@ class TestManagedProcess:
             process.cleanup()
 
     @pytest.mark.asyncio
-    async def test_read_char_async(self):
+    async def test_read_char_async(self) -> None:
         """Test async character reading."""
         # Use printf to output without newline
         process = ManagedProcess(["printf", "a"])
@@ -164,7 +164,7 @@ class TestWaitForProcessOutput:
     """Test wait_for_process_output function."""
 
     @pytest.mark.asyncio
-    async def test_wait_for_simple_output(self):
+    async def test_wait_for_simple_output(self) -> None:
         """Test waiting for simple output pattern."""
         process = ManagedProcess(["echo", "hello|world|test"])
         process.launch()
@@ -179,7 +179,7 @@ class TestWaitForProcessOutput:
             process.cleanup()
 
     @pytest.mark.asyncio
-    async def test_wait_for_complex_pattern(self):
+    async def test_wait_for_complex_pattern(self) -> None:
         """Test waiting for complex output pattern."""
         # Simulate a handshake-like output with multiple separators
         process = ManagedProcess(["echo", "1|2|protocol|4|5|6"])
@@ -195,7 +195,7 @@ class TestWaitForProcessOutput:
             process.cleanup()
 
     @pytest.mark.asyncio
-    async def test_wait_for_output_timeout(self):
+    async def test_wait_for_output_timeout(self) -> None:
         """Test timeout when expected output doesn't appear."""
         # Use a longer-running process to test actual timeout
         process = ManagedProcess(["sleep", "5"])
@@ -211,7 +211,7 @@ class TestWaitForProcessOutput:
             process.cleanup()
 
     @pytest.mark.asyncio
-    async def test_wait_for_output_process_exit(self):
+    async def test_wait_for_output_process_exit(self) -> None:
         """Test behavior when process exits before pattern found."""
         process = ManagedProcess(["echo", "hello"])
         process.launch()
@@ -228,7 +228,7 @@ class TestWaitForProcessOutput:
             process.cleanup()
 
     @pytest.mark.asyncio
-    async def test_wait_for_output_empty_pattern(self):
+    async def test_wait_for_output_empty_pattern(self) -> None:
         """Test with empty expected parts."""
         process = ManagedProcess(["echo", "hello"])
         process.launch()

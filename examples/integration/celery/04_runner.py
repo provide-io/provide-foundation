@@ -72,14 +72,14 @@ except ImportError:
 setup_signal_handlers(app)
 
 
-def run_worker():
+def run_worker() -> None:
     """Run a worker in the same process for demonstration."""
     pout("\n🚀 Starting in-process worker...")
 
     # Start worker in a thread
     from celery.worker import WorkController
 
-    def start_worker():
+    def start_worker() -> None:
         worker = WorkController(app=app, loglevel="INFO")
         worker.start()
 
@@ -91,7 +91,7 @@ def run_worker():
     pout("✅ Worker started!\n")
 
 
-def demonstrate_task_workflows():
+def demonstrate_task_workflows() -> None:
     """Demonstrate various task workflow patterns."""
     example_logger = logger.get_logger("celery.example")
 
@@ -231,7 +231,7 @@ def demonstrate_task_workflows():
     display_final_metrics(example_logger)
 
 
-def display_final_metrics(example_logger):
+def display_final_metrics(example_logger) -> None:
     """Display final execution metrics."""
     pout("\n📊 Task Execution Metrics")
     pout("=" * 40)
@@ -247,7 +247,7 @@ def display_final_metrics(example_logger):
     example_logger.info("example_completed", final_metrics=stats)
 
 
-def main():
+def main() -> None:
     """Main example runner."""
     pout("""
 ╔══════════════════════════════════════════════════════════════════╗

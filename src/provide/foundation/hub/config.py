@@ -89,7 +89,9 @@ async def load_all_configs() -> dict[str, Any]:
                 if source_config:
                     configs.update(source_config)
             except Exception as e:
-                get_foundation_logger().warning("Config source failed to load", source=entry.name, error=str(e))
+                get_foundation_logger().warning(
+                    "Config source failed to load", source=entry.name, error=str(e)
+                )
 
     return configs
 
@@ -104,7 +106,7 @@ def load_config_from_registry(config_class: type[T]) -> T:
         Configuration instance loaded from registry sources
 
     """
-    registry, registry_lock, ComponentCategory = _get_registry_and_lock()
+    _registry, registry_lock, _ComponentCategory = _get_registry_and_lock()
 
     with registry_lock:
         # Get configuration data from registry

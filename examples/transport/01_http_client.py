@@ -47,7 +47,7 @@ from provide.foundation.transport.middleware import (
 )
 
 
-async def demonstrate_basic_requests():
+async def demonstrate_basic_requests() -> None:
     """Show basic HTTP request methods using Foundation mocking."""
     logger.info("basic_requests_started", demo="transport_client_mocked")
 
@@ -112,7 +112,7 @@ async def demonstrate_basic_requests():
     logger.info("basic_requests_completed")
 
 
-async def demonstrate_client_session():
+async def demonstrate_client_session() -> None:
     """Show UniversalClient for session management with mocked responses."""
     logger.info("client_session_started", demo="transport_client_mocked")
 
@@ -199,7 +199,7 @@ async def demonstrate_client_session():
     logger.info("client_session_completed")
 
 
-async def demonstrate_middleware():
+async def demonstrate_middleware() -> None:
     """Show middleware configuration and usage with mocked responses."""
     logger.info("middleware_demo_started", demo="transport_client_mocked")
 
@@ -249,7 +249,7 @@ async def demonstrate_middleware():
     logger.info("middleware_demo_completed")
 
 
-async def demonstrate_error_handling():
+async def demonstrate_error_handling() -> None:
     """Show comprehensive error handling with mocked error scenarios."""
     logger.info("error_handling_demo_started", demo="transport_client_mocked")
 
@@ -326,7 +326,7 @@ async def demonstrate_error_handling():
     logger.info("error_handling_demo_completed")
 
 
-async def demonstrate_response_processing():
+async def demonstrate_response_processing() -> None:
     """Show different response processing techniques with mocked data."""
     logger.info("response_processing_started", demo="transport_client_mocked")
 
@@ -396,7 +396,7 @@ async def demonstrate_response_processing():
     logger.info("response_processing_completed")
 
 
-async def demonstrate_default_client():
+async def demonstrate_default_client() -> None:
     """Show usage of the global default client with mocked responses."""
     logger.info("default_client_demo_started", demo="transport_client_mocked")
 
@@ -459,7 +459,7 @@ async def demonstrate_default_client():
     logger.info("default_client_demo_completed")
 
 
-async def main():
+async def main() -> None:
     """Run all transport client demonstrations using Foundation mocking."""
     logger.info("transport_client_example_started",
                version="1.0.0",

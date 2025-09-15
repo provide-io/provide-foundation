@@ -121,6 +121,53 @@ def parse_dict(
     return result
 
 
+def _parse_basic_type(value: str, target_type: type) -> Any:
+    """Parse basic types (bool, int, float, str)."""
+    if target_type is bool:
+        return parse_bool(value)
+    if target_type is int:
+        return int(value)
+    if target_type is float:
+        return float(value)
+    if target_type is str:
+        return value
+    return None  # Not a basic type
+
+
+def _parse_list_type(value: str, target_type: type) -> list[Any]:
+    """Parse list types, including parameterized lists like list[int]."""
+    args = get_args(target_type)
+    if args and len(args) > 0:
+        item_type = args[0]
+        str_list = parse_list(value)
+        try:
+            # Convert each item to the target type
+            return [parse_typed_value(item, item_type) for item in str_list]
+        except (ValueError, TypeError) as e:
+            raise ValueError(f"Cannot convert list items to {item_type.__name__}: {e}")
+    else:
+        # list without type parameter, return as list[str]
+        return parse_list(value)
+
+
+def _parse_generic_type(value: str, target_type: type) -> Any:
+    """Parse generic types (list, dict, etc.)."""
+    origin = get_origin(target_type)
+
+    if origin is list:
+        return _parse_list_type(value, target_type)
+    elif origin is dict:
+        return parse_dict(value)
+    elif origin is None:
+        # Not a generic type, try direct conversion
+        if target_type is list:
+            return parse_list(value)
+        if target_type is dict:
+            return parse_dict(value)
+
+    return None  # Not a recognized generic type
+
+
 def parse_typed_value(value: str, target_type: type) -> Any:
     """Parse a string value to a specific type.
 
@@ -146,44 +193,66 @@ def parse_typed_value(value: str, target_type: type) -> Any:
     if value is None:
         return None
 
-    # Handle basic types
-    if target_type is bool:
-        return parse_bool(value)
-    if target_type is int:
-        return int(value)
-    if target_type is float:
-        return float(value)
-    if target_type is str:
-        return value
+    # Try basic types first
+    result = _parse_basic_type(value, target_type)
+    if result is not None or target_type in (bool, int, float, str):
+        return result
 
-    # Handle generic types using typing module
-    origin = get_origin(target_type)
-
-    if origin is list:
-        # Handle list[T] - convert each item to the specified type
-        args = get_args(target_type)
-        if args and len(args) > 0:
-            item_type = args[0]
-            str_list = parse_list(value)
-            try:
-                # Convert each item to the target type
-                return [parse_typed_value(item, item_type) for item in str_list]
-            except (ValueError, TypeError) as e:
-                raise ValueError(f"Cannot convert list items to {item_type.__name__}: {e}")
-        else:
-            # list without type parameter, return as list[str]
-            return parse_list(value)
-    elif origin is dict:
-        return parse_dict(value)
-    elif origin is None:
-        # Not a generic type, try direct conversion
-        if target_type is list:
-            return parse_list(value)
-        if target_type is dict:
-            return parse_dict(value)
+    # Try generic types
+    result = _parse_generic_type(value, target_type)
+    if result is not None:
+        return result
 
     # Default to string
     return value
+
+
+def _try_converter(converter: Any, value: str) -> tuple[bool, Any]:
+    """Try to apply a converter, handling mocks and exceptions."""
+    if not converter or not callable(converter):
+        return False, None
+
+    try:
+        result = converter(value)
+        # Special case: if the converter returns something that looks like a test mock,
+        # fall back to type-based parsing. This handles test scenarios where converters
+        # are mocked but we still want to test the type-based parsing logic.
+        if hasattr(result, "_mock_name") or "mock" in str(type(result)).lower():
+            return False, None
+        return True, result
+    except Exception:
+        # If converter fails, fall back to type-based parsing
+        return False, None
+
+
+def _resolve_string_type(field_type: str) -> type | str:
+    """Resolve string type annotations to actual types."""
+    type_map = {
+        "int": int,
+        "float": float,
+        "str": str,
+        "bool": bool,
+        "list": list,
+        "dict": dict,
+    }
+    return type_map.get(field_type, field_type)
+
+
+def _extract_field_type(attr: Any) -> type | None:
+    """Extract the type from an attrs field."""
+    if not (hasattr(attr, "type") and attr.type is not None):
+        return None
+
+    field_type = attr.type
+
+    # Handle string type annotations
+    if isinstance(field_type, str):
+        field_type = _resolve_string_type(field_type)
+        # If still a string, we can't parse it
+        if isinstance(field_type, str):
+            return None
+
+    return field_type
 
 
 def auto_parse(attr: Any, value: str) -> Any:
@@ -216,56 +285,21 @@ def auto_parse(attr: Any, value: str) -> Any:
 
     """
     # Check for attrs field converter first
-    if hasattr(attr, "converter") and attr.converter is not None:
-        try:
-            result = attr.converter(value)
-            # Special case: if the converter returns something that looks like a test mock,
-            # fall back to type-based parsing. This handles test scenarios where converters
-            # are mocked but we still want to test the type-based parsing logic.
-            if not (hasattr(result, "_mock_name") or "mock" in str(type(result)).lower()):
-                return result
-        except Exception:
-            # If converter fails, fall back to type-based parsing
-            pass
+    if hasattr(attr, "converter"):
+        success, result = _try_converter(attr.converter, value)
+        if success:
+            return result
 
     # Check for converter in metadata as fallback
     if hasattr(attr, "metadata") and attr.metadata:
         converter = attr.metadata.get("converter")
-        if converter and callable(converter):
-            try:
-                result = converter(value)
-                # Special case: if the converter returns something that looks like a test mock,
-                # fall back to type-based parsing. This handles test scenarios where converters
-                # are mocked but we still want to test the type-based parsing logic.
-                if not (hasattr(result, "_mock_name") or "mock" in str(type(result)).lower()):
-                    return result
-            except Exception:
-                # If converter fails, fall back to type-based parsing
-                pass
+        success, result = _try_converter(converter, value)
+        if success:
+            return result
 
-    # Get type hint from attrs field
-    if hasattr(attr, "type") and attr.type is not None:
-        field_type = attr.type
-
-        # Handle string type annotations (e.g., 'int', 'str', 'bool')
-        # This happens when attrs processes classes defined inside functions
-        if isinstance(field_type, str):
-            # Map common string type names to actual types
-            type_map = {
-                "int": int,
-                "float": float,
-                "str": str,
-                "bool": bool,
-                "list": list,
-                "dict": dict,
-            }
-            # Try to get the actual type from the map
-            field_type = type_map.get(field_type, field_type)
-
-        # If we still have a string, we can't parse it
-        if isinstance(field_type, str):
-            return value
-
+    # Get type hint from attrs field and try type-based parsing
+    field_type = _extract_field_type(attr)
+    if field_type is not None:
         return parse_typed_value(value, field_type)
 
     # No type info, return as string

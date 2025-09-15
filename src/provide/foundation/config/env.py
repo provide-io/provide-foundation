@@ -1,5 +1,4 @@
-"""Environment variable configuration utilities.
-"""
+"""Environment variable configuration utilities."""
 
 import asyncio
 from collections.abc import Callable
@@ -94,6 +93,7 @@ def get_env(
     if secret_file and value.startswith("file://"):
         file_path = value[7:]  # Remove "file://" prefix
         from provide.foundation.file.safe import safe_read_text
+
         try:
             value = safe_read_text(file_path, default="").strip()
             if not value:
@@ -168,10 +168,7 @@ class RuntimeConfig(BaseConfig):
                 field_prefix = attr.metadata.get("env_prefix", prefix)
                 field_name = attr.name.upper() if not case_sensitive else attr.name
 
-                if field_prefix:
-                    env_var = f"{field_prefix}{delimiter}{field_name}"
-                else:
-                    env_var = field_name
+                env_var = f"{field_prefix}{delimiter}{field_name}" if field_prefix else field_name
 
             # Get value from environment
             raw_value = os.environ.get(env_var)
@@ -183,6 +180,7 @@ class RuntimeConfig(BaseConfig):
                     # Read synchronously
                     file_path = value[7:]
                     from provide.foundation.file.safe import safe_read_text
+
                     try:
                         value = safe_read_text(file_path, default="").strip()
                         if not value:
@@ -243,10 +241,7 @@ class RuntimeConfig(BaseConfig):
                 field_prefix = attr.metadata.get("env_prefix", prefix)
                 field_name = attr.name.upper() if not case_sensitive else attr.name
 
-                if field_prefix:
-                    env_var = f"{field_prefix}{delimiter}{field_name}"
-                else:
-                    env_var = field_name
+                env_var = f"{field_prefix}{delimiter}{field_name}" if field_prefix else field_name
 
             # Get value from environment
             raw_value = os.environ.get(env_var)
@@ -299,6 +294,7 @@ class RuntimeConfig(BaseConfig):
             else:
                 # Fallback to synchronous read
                 from provide.foundation.file.safe import safe_read_text
+
                 content = safe_read_text(file_path, default="")
                 if not content:
                     raise ValueError(f"Secret file is empty: {file_path}")
@@ -333,10 +329,7 @@ class RuntimeConfig(BaseConfig):
                 field_prefix = attr.metadata.get("env_prefix", prefix)
                 field_name = attr.name.upper()
 
-                if field_prefix:
-                    env_var = f"{field_prefix}{delimiter}{field_name}"
-                else:
-                    env_var = field_name
+                env_var = f"{field_prefix}{delimiter}{field_name}" if field_prefix else field_name
 
             # Convert value to string
             if isinstance(value, bool):

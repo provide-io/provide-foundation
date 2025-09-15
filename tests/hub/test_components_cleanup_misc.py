@@ -19,15 +19,15 @@ from provide.foundation.hub.components import (
 class TestAdvancedCleanup:
     """Test advanced cleanup scenarios."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test environment."""
         reset_registry_for_tests()
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up after tests."""
         reset_registry_for_tests()
 
-    def test_cleanup_all_components_with_async_cleanup(self):
+    def test_cleanup_all_components_with_async_cleanup(self) -> None:
         """Test cleanup_all_components handles async cleanup methods."""
         registry = get_component_registry()
 
@@ -50,7 +50,7 @@ class TestAdvancedCleanup:
             async_component.cleanup, "call_count",
         )
 
-    def test_cleanup_all_components_no_dimension_filter(self):
+    def test_cleanup_all_components_no_dimension_filter(self) -> None:
         """Test cleanup_all_components without dimension filter."""
         registry = get_component_registry()
 
@@ -85,15 +85,15 @@ class TestAdvancedCleanup:
 class TestConfigFromRegistry:
     """Test configuration loading from registry."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test environment."""
         reset_registry_for_tests()
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up after tests."""
         reset_registry_for_tests()
 
-    def test_load_config_from_registry_sync_sources(self):
+    def test_load_config_from_registry_sync_sources(self) -> None:
         """Test load_config_from_registry with sync sources."""
         registry = get_component_registry()
 
@@ -118,7 +118,7 @@ class TestConfigFromRegistry:
         source.load_config.assert_called_once()
         config_class.from_dict.assert_called_once_with({"key": "value"})
 
-    def test_load_config_from_registry_with_async_source_skipped(self):
+    def test_load_config_from_registry_with_async_source_skipped(self) -> None:
         """Test load_config_from_registry skips async sources."""
         registry = get_component_registry()
 
@@ -148,20 +148,20 @@ class TestConfigFromRegistry:
 class TestMiscellaneousFunctionality:
     """Test miscellaneous functionality and edge cases."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Set up test environment."""
         reset_registry_for_tests()
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up after tests."""
         reset_registry_for_tests()
 
-    def test_discover_components_stub(self):
+    def test_discover_components_stub(self) -> None:
         """Test discover_components stub functionality."""
         result = discover_components("test_group", "test_dimension", None)
         assert result == {}
 
-    def test_bootstrap_foundation_creates_default_components(self):
+    def test_bootstrap_foundation_creates_default_components(self) -> None:
         """Test bootstrap_foundation creates expected components."""
         from provide.foundation.eventsets.registry import (
             discover_event_sets,
@@ -201,7 +201,7 @@ class TestMiscellaneousFunctionality:
         default_event_set = event_registry.get_event_set("default")
         assert default_event_set is not None
 
-    def test_reset_registry_for_tests(self):
+    def test_reset_registry_for_tests(self) -> None:
         """Test reset_registry_for_tests clears state."""
         registry = get_component_registry()
 
@@ -219,7 +219,7 @@ class TestMiscellaneousFunctionality:
         assert len(list(registry)) == 0
         assert len(_initialized_components) == 0
 
-    def test_global_registry_access(self):
+    def test_global_registry_access(self) -> None:
         """Test get_component_registry returns global registry."""
         registry1 = get_component_registry()
         registry2 = get_component_registry()
@@ -228,7 +228,7 @@ class TestMiscellaneousFunctionality:
         assert registry1 is registry2
         assert registry1 is _component_registry
 
-    def test_thread_safety_basics(self):
+    def test_thread_safety_basics(self) -> None:
         """Test basic thread safety with registry lock."""
         # Test that the registry lock exists and is accessible
         assert _registry_lock is not None

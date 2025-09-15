@@ -1,5 +1,4 @@
-"""Event set type definitions for the Foundation event enrichment system.
-"""
+"""Event set type definitions for the Foundation event enrichment system."""
 
 from collections.abc import Callable
 from typing import Any

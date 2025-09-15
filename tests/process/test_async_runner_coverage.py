@@ -23,7 +23,7 @@ class TestAsyncInputHandling:
     """Test async input handling and conversion for different text modes."""
 
     @pytest.mark.asyncio
-    async def test_none_input(self):
+    async def test_none_input(self) -> None:
         """Test that None input is handled correctly."""
         result = await async_run_command(["echo", "test"], input=None)
         assert result.returncode == 0
@@ -33,7 +33,7 @@ class TestAsyncErrorHandling:
     """Test async error handling paths."""
 
     @pytest.mark.asyncio
-    async def test_async_subprocess_timeout_error(self):
+    async def test_async_subprocess_timeout_error(self) -> None:
         """Test handling of async subprocess TimeoutError."""
         with pytest.raises(TimeoutError) as exc_info:
             await async_run_command(["sleep", "10"], timeout=0.01, check=True)
@@ -42,7 +42,7 @@ class TestAsyncErrorHandling:
 
     @patch("asyncio.create_subprocess_exec")
     @pytest.mark.asyncio
-    async def test_async_generic_subprocess_exception(self, mock_create):
+    async def test_async_generic_subprocess_exception(self, mock_create) -> None:
         """Test handling of generic async subprocess exceptions."""
         # Mock create_subprocess_exec to raise a generic exception
         mock_create.side_effect = OSError("Command not found")
@@ -55,7 +55,7 @@ class TestAsyncErrorHandling:
 
     @patch("asyncio.create_subprocess_exec")
     @pytest.mark.asyncio
-    async def test_async_reraise_process_error(self, mock_create):
+    async def test_async_reraise_process_error(self, mock_create) -> None:
         """Test that ProcessError and TimeoutError are re-raised directly."""
         # Mock create_subprocess_exec to raise a ProcessError
         original_error = ProcessError("Original error", command="test_command")
@@ -68,14 +68,14 @@ class TestAsyncErrorHandling:
         assert exc_info.value is original_error
 
     @pytest.mark.asyncio
-    async def test_async_command_failure_with_check_false(self):
+    async def test_async_command_failure_with_check_false(self) -> None:
         """Test that failed async commands don't raise when check=False."""
         result = await async_run_command(["false"], check=False)
         assert result.returncode != 0
         # Should not raise an exception
 
     @pytest.mark.asyncio
-    async def test_async_command_failure_with_check_true(self):
+    async def test_async_command_failure_with_check_true(self) -> None:
         """Test that failed async commands raise ProcessError when check=True."""
         with pytest.raises(ProcessError) as exc_info:
             await async_run_command(["false"], check=True)
@@ -88,7 +88,7 @@ class TestAsyncShellExecution:
     """Test async shell execution paths."""
 
     @pytest.mark.asyncio
-    async def test_async_shell_with_complex_command(self):
+    async def test_async_shell_with_complex_command(self) -> None:
         """Test async shell execution with complex commands."""
         result = await async_run_shell("echo 'hello world' | grep hello")
 
@@ -96,7 +96,7 @@ class TestAsyncShellExecution:
         assert "hello" in result.stdout
 
     @pytest.mark.asyncio
-    async def test_async_shell_with_environment_variables(self):
+    async def test_async_shell_with_environment_variables(self) -> None:
         """Test async shell execution with custom environment."""
         result = await async_run_shell("echo $TEST_VAR", env={"TEST_VAR": "test_value"})
 
@@ -104,7 +104,7 @@ class TestAsyncShellExecution:
         assert "test_value" in result.stdout
 
     @pytest.mark.asyncio
-    async def test_async_shell_failure(self):
+    async def test_async_shell_failure(self) -> None:
         """Test async shell command failure."""
         with pytest.raises(ProcessError):
             await async_run_shell("exit 1", check=True)
@@ -114,7 +114,7 @@ class TestAsyncWorkingDirectory:
     """Test async working directory handling."""
 
     @pytest.mark.asyncio
-    async def test_async_cwd_as_string(self, tmp_path):
+    async def test_async_cwd_as_string(self, tmp_path) -> None:
         """Test async working directory as string path."""
         test_file = tmp_path / "test.txt"
         test_file.write_text("test content")
@@ -125,7 +125,7 @@ class TestAsyncWorkingDirectory:
         assert "test content" in result.stdout
 
     @pytest.mark.asyncio
-    async def test_async_cwd_as_path_object(self, tmp_path):
+    async def test_async_cwd_as_path_object(self, tmp_path) -> None:
         """Test async working directory as Path object."""
         test_file = tmp_path / "test.txt"
         test_file.write_text("test content")
@@ -140,7 +140,7 @@ class TestAsyncEnvironmentHandling:
     """Test async environment variable handling."""
 
     @pytest.mark.asyncio
-    async def test_async_env_dict_conversion(self):
+    async def test_async_env_dict_conversion(self) -> None:
         """Test that async env dict is properly converted."""
         result = await async_run_command(
             ["env"], env={"TEST_VAR": "test_value"}, capture_output=True,
@@ -150,7 +150,7 @@ class TestAsyncEnvironmentHandling:
         assert "TEST_VAR=test_value" in result.stdout
 
     @pytest.mark.asyncio
-    async def test_async_env_none(self):
+    async def test_async_env_none(self) -> None:
         """Test that None env is handled correctly in async."""
         result = await async_run_command(["echo", "test"], env=None)
         assert result.returncode == 0
@@ -161,7 +161,7 @@ class TestAsyncStreamCommandCoverage:
     """Test additional async stream command functionality."""
 
     @pytest.mark.asyncio
-    async def test_async_stream_command_with_stderr(self):
+    async def test_async_stream_command_with_stderr(self) -> None:
         """Test async streaming command with stderr capture."""
         lines = []
         async for line in async_stream_command(
@@ -180,7 +180,7 @@ class TestAsyncStreamCommandCoverage:
         assert "stdout" in output or "stderr" in output
 
     @pytest.mark.asyncio
-    async def test_async_stream_command_timeout(self):
+    async def test_async_stream_command_timeout(self) -> None:
         """Test async stream command timeout handling."""
         with pytest.raises(TimeoutError):
             # Try to stream from a long-running command with short timeout
@@ -190,7 +190,7 @@ class TestAsyncStreamCommandCoverage:
 
     @patch("asyncio.create_subprocess_exec")
     @pytest.mark.asyncio
-    async def test_async_stream_generic_exception(self, mock_create):
+    async def test_async_stream_generic_exception(self, mock_create) -> None:
         """Test async stream command with generic exception."""
         mock_create.side_effect = OSError("Command not found")
 
@@ -206,7 +206,7 @@ class TestAsyncCompletedProcessConstruction:
     """Test async CompletedProcess object construction."""
 
     @pytest.mark.asyncio
-    async def test_async_completed_process_with_list_cmd(self):
+    async def test_async_completed_process_with_list_cmd(self) -> None:
         """Test async CompletedProcess construction with list command."""
         result = await async_run_command(["echo", "hello"], capture_output=True)
 
@@ -214,7 +214,7 @@ class TestAsyncCompletedProcessConstruction:
         assert result.args == ["echo", "hello"]
 
     @pytest.mark.asyncio
-    async def test_async_completed_process_with_string_cmd(self):
+    async def test_async_completed_process_with_string_cmd(self) -> None:
         """Test async CompletedProcess construction with string command."""
         result = await async_run_shell("echo hello", capture_output=True)
 
@@ -222,7 +222,7 @@ class TestAsyncCompletedProcessConstruction:
         assert "echo hello" in str(result.args)
 
     @pytest.mark.asyncio
-    async def test_async_completed_process_without_capture(self):
+    async def test_async_completed_process_without_capture(self) -> None:
         """Test async CompletedProcess when capture_output=False."""
         result = await async_run_command(["echo", "hello"], capture_output=False)
 
@@ -231,7 +231,7 @@ class TestAsyncCompletedProcessConstruction:
         assert result.stderr == ""
 
     @pytest.mark.asyncio
-    async def test_async_completed_process_env_handling(self):
+    async def test_async_completed_process_env_handling(self) -> None:
         """Test async CompletedProcess environment handling."""
         # Test with custom env
         result = await async_run_command(
@@ -251,7 +251,7 @@ class TestAsyncContextualBehavior:
     """Test async-specific contextual behaviors."""
 
     @pytest.mark.asyncio
-    async def test_async_cancel_during_execution(self):
+    async def test_async_cancel_during_execution(self) -> None:
         """Test that async operations can be cancelled."""
         # This tests the asyncio integration
         task = asyncio.create_task(async_run_command(["sleep", "5"]))
@@ -266,7 +266,7 @@ class TestAsyncContextualBehavior:
             await task
 
     @pytest.mark.asyncio
-    async def test_async_concurrent_commands(self):
+    async def test_async_concurrent_commands(self) -> None:
         """Test running multiple async commands concurrently."""
         # Run multiple commands concurrently
         tasks = [async_run_command(["echo", f"hello{i}"]) for i in range(3)]

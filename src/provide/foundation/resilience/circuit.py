@@ -1,9 +1,8 @@
-"""Circuit breaker implementation for preventing cascading failures.
-"""
+"""Circuit breaker implementation for preventing cascading failures."""
 
 from collections.abc import Callable
 import time
-from typing import TypeVar
+from typing import Awaitable, TypeVar
 
 from attrs import define, field
 
@@ -52,6 +51,7 @@ class CircuitBreaker:
         """Record successful execution."""
         if self._state == CircuitState.HALF_OPEN:
             from provide.foundation.hub.foundation import get_foundation_logger
+
             get_foundation_logger().info(
                 "Circuit breaker recovered - closing circuit",
                 state="half_open->closed",
@@ -72,6 +72,7 @@ class CircuitBreaker:
             self._state = CircuitState.OPEN
             self._next_attempt_time = self._last_failure_time + self.recovery_timeout
             from provide.foundation.hub.foundation import get_foundation_logger
+
             get_foundation_logger().warning(
                 "Circuit breaker recovery failed - opening circuit",
                 state="half_open->open",
@@ -83,6 +84,7 @@ class CircuitBreaker:
             self._state = CircuitState.OPEN
             self._next_attempt_time = self._last_failure_time + self.recovery_timeout
             from provide.foundation.hub.foundation import get_foundation_logger
+
             get_foundation_logger().error(
                 "Circuit breaker opened due to failures",
                 state="closed->open",
@@ -98,6 +100,7 @@ class CircuitBreaker:
             if self._should_attempt_reset():
                 self._state = CircuitState.HALF_OPEN
                 from provide.foundation.hub.foundation import get_foundation_logger
+
                 get_foundation_logger().info(
                     "Circuit breaker attempting recovery",
                     state="open->half_open",
@@ -118,13 +121,14 @@ class CircuitBreaker:
                 self._record_failure(e)
             raise
 
-    async def call_async(self, func: Callable[..., T], *args, **kwargs) -> T:
+    async def call_async(self, func: Callable[..., Awaitable[T]], *args, **kwargs) -> T:
         """Execute async function with circuit breaker protection."""
         # Check if circuit is open
         if self._state == CircuitState.OPEN:
             if self._should_attempt_reset():
                 self._state = CircuitState.HALF_OPEN
                 from provide.foundation.hub.foundation import get_foundation_logger
+
                 get_foundation_logger().info(
                     "Circuit breaker attempting recovery",
                     state="open->half_open",
@@ -148,6 +152,7 @@ class CircuitBreaker:
     def reset(self) -> None:
         """Manually reset the circuit breaker."""
         from provide.foundation.hub.foundation import get_foundation_logger
+
         get_foundation_logger().info(
             "Circuit breaker manually reset",
             previous_state=self._state.value,

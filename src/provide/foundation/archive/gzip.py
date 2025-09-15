@@ -82,7 +82,10 @@ class GzipCompressor:
         try:
             ensure_parent_dir(output_path)
 
-            with input_path.open("rb") as f_in, gzip.open(output_path, "wb", compresslevel=self.level) as f_out:
+            with (
+                input_path.open("rb") as f_in,
+                gzip.open(output_path, "wb", compresslevel=self.level) as f_out,
+            ):
                 shutil.copyfileobj(f_in, f_out)
 
             logger.debug(f"Compressed {input_path} to {output_path}")

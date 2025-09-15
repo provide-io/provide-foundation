@@ -76,7 +76,7 @@ setup_signal_handlers(app)
 class DistributedCutUpChuck:
     """Orchestrates distributed cut-up chuck log generation."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.logger = logger.get_logger("distributed.cutup")
         self.running = False
         self.shutdown_event = threading.Event()
@@ -89,13 +89,13 @@ class DistributedCutUpChuck:
             "errors": 0,
         }
 
-    def start_worker(self):
+    def start_worker(self) -> None:
         """Start the in-process Celery worker."""
         pout("\n🚀 Starting distributed cut-up chuck worker...")
 
         from celery.worker import WorkController
 
-        def run_worker():
+        def run_worker() -> None:
             try:
                 worker = WorkController(app=app, loglevel="INFO")
                 worker.start()
@@ -115,7 +115,7 @@ class DistributedCutUpChuck:
             workflows_available=CELERY_WORKFLOWS_AVAILABLE,
         )
 
-    def demonstrate_single_tasks(self):
+    def demonstrate_single_tasks(self) -> None:
         """Demonstrate individual task execution patterns."""
         pout("\n" + "=" * 60)
         pout("🎯 Demonstrating Individual Cut-Up Tasks")
@@ -194,7 +194,7 @@ class DistributedCutUpChuck:
             self.logger.error("heartbeat_failed", error=str(e))
             self.stats["errors"] += 1
 
-    def demonstrate_parallel_workflows(self):
+    def demonstrate_parallel_workflows(self) -> None:
         """Demonstrate parallel task workflows."""
         if not CELERY_WORKFLOWS_AVAILABLE:
             pout("\n5️⃣ Parallel Workflows: Skipped (Celery workflows not available)")
@@ -245,7 +245,7 @@ class DistributedCutUpChuck:
             self.logger.error("mixed_chain_failed", error=str(e))
             self.stats["errors"] += 1
 
-    def demonstrate_continuous_generation(self, duration_minutes: float = 1.0):
+    def demonstrate_continuous_generation(self, duration_minutes: float = 1.0) -> None:
         """Demonstrate continuous log generation."""
         pout(f"\n6️⃣ Continuous Generation ({duration_minutes} minutes)")
 
@@ -281,7 +281,7 @@ class DistributedCutUpChuck:
             self.logger.error("continuous_generation_failed", error=str(e))
             self.stats["errors"] += 1
 
-    def display_final_metrics(self):
+    def display_final_metrics(self) -> None:
         """Display final execution metrics."""
         pout("\n📊 Distributed Cut-Up Chuck Metrics")
         pout("=" * 50)
@@ -317,9 +317,9 @@ class DistributedCutUpChuck:
             celery_metrics=celery_stats,
         )
 
-    def setup_signal_handlers(self):
+    def setup_signal_handlers(self) -> None:
         """Setup graceful shutdown signal handlers."""
-        def signal_handler(signum, frame):
+        def signal_handler(signum, frame) -> None:
             pout(f"\n🛑 Received signal {signum}, initiating graceful shutdown...")
             self.shutdown_event.set()
             self.running = False
@@ -327,7 +327,7 @@ class DistributedCutUpChuck:
         signal.signal(signal.SIGINT, signal_handler)
         signal.signal(signal.SIGTERM, signal_handler)
 
-    def run(self):
+    def run(self) -> None:
         """Run the complete distributed cut-up chuck demonstration."""
         self.setup_signal_handlers()
         self.running = True
@@ -386,7 +386,7 @@ Transforms the original cut_up_chuck.py into a distributed task system:
             pout("   • Graceful shutdown handling")
 
 
-def main():
+def main() -> None:
     """Main entry point."""
     chuck = DistributedCutUpChuck()
     chuck.run()

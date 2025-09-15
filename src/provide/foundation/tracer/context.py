@@ -15,7 +15,8 @@ _current_span: contextvars.ContextVar[Span | None] = contextvars.ContextVar("cur
 
 # Context variable to track the current trace ID
 _current_trace_id: contextvars.ContextVar[str | None] = contextvars.ContextVar(
-    "current_trace_id", default=None,
+    "current_trace_id",
+    default=None,
 )
 
 
@@ -61,7 +62,7 @@ class SpanContext:
     Automatically sets and clears the current span.
     """
 
-    def __init__(self, span: Span):
+    def __init__(self, span: Span) -> None:
         self.span = span
         self.previous_span: Span | None = None
 

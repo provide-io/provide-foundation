@@ -18,6 +18,8 @@ except ImportError:
     click = None
     _HAS_CLICK = False
 
+import contextlib
+
 from provide.foundation.context import CLIContext
 from provide.foundation.logger import get_logger
 
@@ -105,10 +107,8 @@ def pin(prompt: str = "", **kwargs: Any) -> str | Any:
 
             # Apply type conversion if specified
             if type_func := kwargs.get("type"):
-                try:
+                with contextlib.suppress(TypeError, ValueError):
                     data = type_func(data)
-                except (TypeError, ValueError):
-                    pass
 
             if json_key := kwargs.get("json_key"):
                 return {json_key: data}

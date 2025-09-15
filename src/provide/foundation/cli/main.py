@@ -1,5 +1,4 @@
-"""Main CLI entry point for Foundation.
-"""
+"""Main CLI entry point for Foundation."""
 
 from __future__ import annotations
 
@@ -8,11 +7,11 @@ try:
 
     _HAS_CLICK = True
 except ImportError:
-    click = None
+    click = None  # type: ignore
     _HAS_CLICK = False
 
 
-def _require_click():
+def _require_click() -> None:
     """Ensure click is available for CLI."""
     if not _HAS_CLICK:
         raise ImportError(

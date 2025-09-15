@@ -1,5 +1,4 @@
-"""Core transport abstractions.
-"""
+"""Core transport abstractions."""
 
 from abc import ABC, abstractmethod
 from collections.abc import AsyncIterator
@@ -127,7 +126,7 @@ class Transport(Protocol):
 class TransportBase(ABC):
     """Base class for transport implementations."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._logger = get_logger(self.__class__.__name__)
 
     @abstractmethod

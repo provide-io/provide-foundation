@@ -1,8 +1,7 @@
 #
 # limiters.py
 #
-"""Rate limiter implementations for Foundation's logging system.
-"""
+"""Rate limiter implementations for Foundation's logging system."""
 
 import asyncio
 import threading

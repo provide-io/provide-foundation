@@ -14,7 +14,7 @@ from provide.foundation.transport.middleware import (
 
 
 @pytest.mark.asyncio
-async def test_logging_middleware():
+async def test_logging_middleware() -> None:
     """Test logging middleware functionality."""
     middleware = LoggingMiddleware(log_requests=True, log_responses=True)
 
@@ -35,7 +35,7 @@ async def test_logging_middleware():
 
 
 @pytest.mark.asyncio
-async def test_metrics_middleware():
+async def test_metrics_middleware() -> None:
     """Test metrics collection middleware."""
     middleware = MetricsMiddleware()
 
@@ -62,7 +62,7 @@ async def test_metrics_middleware():
 
 
 @pytest.mark.asyncio
-async def test_retry_middleware():
+async def test_retry_middleware() -> None:
     """Test retry middleware configuration."""
     from provide.foundation.resilience.retry import BackoffStrategy, RetryPolicy
 
@@ -88,7 +88,7 @@ async def test_retry_middleware():
 
 
 @pytest.mark.asyncio
-async def test_middleware_pipeline():
+async def test_middleware_pipeline() -> None:
     """Test middleware pipeline execution."""
     pipeline = MiddlewarePipeline()
 
@@ -125,7 +125,7 @@ async def test_middleware_pipeline():
 
 
 @pytest.mark.asyncio
-async def test_middleware_pipeline_removal():
+async def test_middleware_pipeline_removal() -> None:
     """Test middleware removal from pipeline."""
     pipeline = MiddlewarePipeline()
 
@@ -151,7 +151,7 @@ async def test_middleware_pipeline_removal():
 class TestMiddleware:
     """Test middleware that tracks calls."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.calls = []
 
     async def process_request(self, request):
@@ -168,7 +168,7 @@ class TestMiddleware:
 
 
 @pytest.mark.asyncio
-async def test_middleware_order():
+async def test_middleware_order() -> None:
     """Test that middleware executes in correct order."""
     pipeline = MiddlewarePipeline()
 
@@ -197,7 +197,7 @@ async def test_middleware_order():
 
 
 @pytest.mark.asyncio
-async def test_retry_middleware_execute():
+async def test_retry_middleware_execute() -> None:
     """Test retry middleware execute_with_retry method."""
     from provide.foundation.resilience.retry import BackoffStrategy, RetryPolicy
 

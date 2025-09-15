@@ -1,5 +1,4 @@
-"""Event set display utilities for Foundation.
-"""
+"""Event set display utilities for Foundation."""
 
 from provide.foundation.eventsets.registry import discover_event_sets, get_registry
 from provide.foundation.eventsets.resolver import get_resolver

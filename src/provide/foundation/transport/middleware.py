@@ -1,5 +1,4 @@
-"""Transport middleware system with Hub registration.
-"""
+"""Transport middleware system with Hub registration."""
 
 from abc import ABC, abstractmethod
 import time
@@ -313,7 +312,7 @@ def create_default_pipeline() -> MiddlewarePipeline:
 
 
 # Auto-register built-in middleware
-def _register_builtin_middleware():
+def _register_builtin_middleware() -> None:
     """Register built-in middleware with the Hub."""
     try:
         register_middleware(

@@ -1,5 +1,4 @@
-"""Output formatting utilities for OpenObserve results.
-"""
+"""Output formatting utilities for OpenObserve results."""
 
 import csv
 from datetime import datetime

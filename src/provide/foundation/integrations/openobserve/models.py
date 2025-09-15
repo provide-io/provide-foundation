@@ -1,5 +1,4 @@
-"""Data models for OpenObserve API requests and responses.
-"""
+"""Data models for OpenObserve API requests and responses."""
 
 from dataclasses import dataclass, field
 from datetime import datetime

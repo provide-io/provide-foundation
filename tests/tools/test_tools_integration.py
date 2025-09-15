@@ -77,13 +77,13 @@ class TestDownloaderIntegration:
         with tempfile.TemporaryDirectory() as tmp_dir:
             yield Path(tmp_dir)
 
-    def test_download_small_file_success(self, downloader, temp_dir):
+    def test_download_small_file_success(self, downloader, temp_dir) -> None:
         """Test downloading a small file from httpbin."""
         url = "https://httpbin.org/bytes/1024"  # 1KB file
         dest = temp_dir / "test_file.bin"
 
         progress_calls = []
-        def progress_callback(downloaded, total):
+        def progress_callback(downloaded, total) -> None:
             progress_calls.append((downloaded, total))
 
         downloader.add_progress_callback(progress_callback)
@@ -97,7 +97,7 @@ class TestDownloaderIntegration:
 
             # Should have received progress callbacks
             assert len(progress_calls) > 0
-            final_downloaded, final_total = progress_calls[-1]
+            final_downloaded, _final_total = progress_calls[-1]
             assert final_downloaded == 1024
         except Exception as e:
             # Skip test if we can't connect to httpbin or have transport issues
@@ -108,7 +108,7 @@ class TestDownloaderIntegration:
             else:
                 raise
 
-    def test_download_with_checksum_success(self, downloader, temp_dir):
+    def test_download_with_checksum_success(self, downloader, temp_dir) -> None:
         """Test download with checksum verification."""
         try:
             # Download a known file and verify its checksum
@@ -138,7 +138,7 @@ class TestDownloaderIntegration:
             else:
                 raise
 
-    def test_download_with_wrong_checksum_fails(self, downloader, temp_dir):
+    def test_download_with_wrong_checksum_fails(self, downloader, temp_dir) -> None:
         """Test download with wrong checksum fails."""
         url = "https://httpbin.org/bytes/100"
         dest = temp_dir / "wrong_checksum.bin"
@@ -150,7 +150,7 @@ class TestDownloaderIntegration:
         # File should be cleaned up on checksum failure
         assert not dest.exists()
 
-    def test_download_retry_on_server_error(self, downloader, temp_dir):
+    def test_download_retry_on_server_error(self, downloader, temp_dir) -> None:
         """Test retry behavior on server errors."""
         # Use httpbin status endpoint that returns 500
         url = "https://httpbin.org/status/500"
@@ -160,7 +160,7 @@ class TestDownloaderIntegration:
         with pytest.raises(Exception):  # Could be DownloadError or HTTP error
             downloader.download_with_progress(url, dest)
 
-    def test_download_timeout_handling(self, downloader, temp_dir):
+    def test_download_timeout_handling(self, downloader, temp_dir) -> None:
         """Test timeout handling."""
         # Use httpbin delay endpoint
         url = "https://httpbin.org/delay/10"  # 10 second delay
@@ -174,7 +174,7 @@ class TestDownloaderIntegration:
             with pytest.raises(Exception):  # Timeout should cause failure
                 downloader.download_with_progress(url, dest)
 
-    def test_parallel_downloads(self, downloader, temp_dir):
+    def test_parallel_downloads(self, downloader, temp_dir) -> None:
         """Test parallel downloads of multiple files."""
         urls_and_dests = [
             ("https://httpbin.org/bytes/500", temp_dir / "file1.bin"),
@@ -185,11 +185,11 @@ class TestDownloaderIntegration:
         results = downloader.download_parallel(urls_and_dests)
 
         assert len(results) == 3
-        for i, (url, expected_dest) in enumerate(urls_and_dests):
+        for i, (_url, expected_dest) in enumerate(urls_and_dests):
             assert results[i] == expected_dest
             assert expected_dest.exists()
 
-    def test_parallel_downloads_with_failure(self, downloader, temp_dir):
+    def test_parallel_downloads_with_failure(self, downloader, temp_dir) -> None:
         """Test parallel downloads when some fail."""
         urls_and_dests = [
             ("https://httpbin.org/bytes/500", temp_dir / "file1.bin"),
@@ -200,7 +200,7 @@ class TestDownloaderIntegration:
         with pytest.raises(DownloadError, match="Some downloads failed"):
             downloader.download_parallel(urls_and_dests)
 
-    def test_mirror_fallback_success(self, downloader, temp_dir):
+    def test_mirror_fallback_success(self, downloader, temp_dir) -> None:
         """Test mirror fallback when primary fails."""
         # First URL fails, second succeeds
         mirrors = [
@@ -215,7 +215,7 @@ class TestDownloaderIntegration:
         assert dest.exists()
         assert dest.stat().st_size == 512
 
-    def test_mirror_fallback_all_fail(self, downloader, temp_dir):
+    def test_mirror_fallback_all_fail(self, downloader, temp_dir) -> None:
         """Test mirror fallback when all mirrors fail."""
         mirrors = [
             "https://httpbin.org/status/503",
@@ -227,7 +227,7 @@ class TestDownloaderIntegration:
         with pytest.raises(DownloadError, match="All mirrors failed"):
             downloader.download_with_mirrors(mirrors, dest)
 
-    def test_download_real_jq_binary(self, downloader, temp_dir):
+    def test_download_real_jq_binary(self, downloader, temp_dir) -> None:
         """Test downloading a real jq binary (small tool)."""
         # Use a specific jq version that should be stable
         platform_info = {
@@ -284,7 +284,7 @@ class TestBackoffRetryIntegration:
         with tempfile.TemporaryDirectory() as tmp_dir:
             yield Path(tmp_dir)
 
-    def test_exponential_backoff_timing(self, downloader, temp_dir):
+    def test_exponential_backoff_timing(self, downloader, temp_dir) -> None:
         """Test that retries actually use exponential backoff."""
         url = "https://httpbin.org/status/503"  # Always returns 503
         dest = temp_dir / "backoff_test.bin"
@@ -301,7 +301,7 @@ class TestBackoffRetryIntegration:
         # Being lenient since network timing can vary
         assert total_time >= 3.0  # At least some delay happened
 
-    def test_retry_count_respected(self, downloader, temp_dir):
+    def test_retry_count_respected(self, downloader, temp_dir) -> None:
         """Test that max retry attempts are respected."""
         url = "https://httpbin.org/status/500"
         dest = temp_dir / "retry_count_test.bin"
@@ -333,7 +333,7 @@ class TestBackoffRetryIntegration:
             with pytest.raises(Exception):
                 test_downloader.download_with_progress(url, dest)
 
-    def test_eventual_success_after_retries(self, temp_dir):
+    def test_eventual_success_after_retries(self, temp_dir) -> None:
         """Test eventual success after some failures."""
         client = UniversalClient()
         downloader = ToolDownloader(client)
@@ -381,7 +381,7 @@ class TestFullWorkflowIntegration:
 
         return manager
 
-    def test_resolve_version_integration(self):
+    def test_resolve_version_integration(self) -> None:
         """Test version resolution with realistic version lists."""
         resolver = VersionResolver()
 
@@ -409,7 +409,7 @@ class TestFullWorkflowIntegration:
         assert wildcard_result == "1.1.1"
 
     @pytest.mark.slow
-    def test_complete_tool_installation_workflow(self, mock_tool_manager, temp_dir):
+    def test_complete_tool_installation_workflow(self, mock_tool_manager, temp_dir) -> None:
         """Test complete workflow: resolve -> download -> verify -> install -> cache."""
         # This test downloads a real binary, so make it optional
         import platform
@@ -440,7 +440,7 @@ class TestFullWorkflowIntegration:
         except ToolNotFoundError:
             pytest.skip("Platform not supported for jq download")
 
-    def test_cache_integration_workflow(self, temp_dir):
+    def test_cache_integration_workflow(self, temp_dir) -> None:
         """Test cache operations with real workflows."""
         cache = ToolCache(temp_dir / "test_cache")
 
@@ -485,7 +485,7 @@ class TestNetworkErrorHandling:
         with tempfile.TemporaryDirectory() as tmp_dir:
             yield Path(tmp_dir)
 
-    def test_dns_resolution_failure(self, downloader, temp_dir):
+    def test_dns_resolution_failure(self, downloader, temp_dir) -> None:
         """Test handling of DNS resolution failures."""
         url = "https://this-domain-definitely-does-not-exist-12345.com/file"
         dest = temp_dir / "dns_fail_test.bin"
@@ -493,7 +493,7 @@ class TestNetworkErrorHandling:
         with pytest.raises(Exception):  # Could be DNS error or connection error
             downloader.download_with_progress(url, dest)
 
-    def test_connection_refused(self, downloader, temp_dir):
+    def test_connection_refused(self, downloader, temp_dir) -> None:
         """Test handling of connection refused errors."""
         # Use localhost on a port that should be closed
         url = "http://localhost:99999/file"
@@ -502,7 +502,7 @@ class TestNetworkErrorHandling:
         with pytest.raises(Exception):  # Connection error
             downloader.download_with_progress(url, dest)
 
-    def test_http_404_error(self, downloader, temp_dir):
+    def test_http_404_error(self, downloader, temp_dir) -> None:
         """Test handling of HTTP 404 errors."""
         url = "https://httpbin.org/status/404"
         dest = temp_dir / "404_test.bin"
@@ -510,7 +510,7 @@ class TestNetworkErrorHandling:
         with pytest.raises(Exception):  # HTTP error
             downloader.download_with_progress(url, dest)
 
-    def test_http_403_error(self, downloader, temp_dir):
+    def test_http_403_error(self, downloader, temp_dir) -> None:
         """Test handling of HTTP 403 errors."""
         url = "https://httpbin.org/status/403"
         dest = temp_dir / "403_test.bin"
@@ -518,7 +518,7 @@ class TestNetworkErrorHandling:
         with pytest.raises(Exception):  # HTTP error
             downloader.download_with_progress(url, dest)
 
-    def test_redirect_handling(self, downloader, temp_dir):
+    def test_redirect_handling(self, downloader, temp_dir) -> None:
         """Test handling of HTTP redirects."""
         # httpbin redirect endpoint
         url = "https://httpbin.org/redirect-to?url=https://httpbin.org/bytes/200"

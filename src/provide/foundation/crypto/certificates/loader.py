@@ -56,7 +56,8 @@ def load_from_uri_or_pem(data: str) -> str:
 
 
 def load_certificate_from_pem(
-    cert_pem_or_uri: str, key_pem_or_uri: str | None = None,
+    cert_pem_or_uri: str,
+    key_pem_or_uri: str | None = None,
 ) -> tuple[
     CertificateBase,
     "x509.Certificate",

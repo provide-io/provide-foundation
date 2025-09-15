@@ -15,7 +15,7 @@ from provide.foundation.streams.file import (
 
 
 class TestFileStreams:
-    def test_configure_file_logging_success(self):
+    def test_configure_file_logging_success(self) -> None:
         """Test successful file logging configuration."""
         with tempfile.TemporaryDirectory() as temp_dir:
             log_file = Path(temp_dir) / "test.log"
@@ -24,14 +24,14 @@ class TestFileStreams:
             # Clean up
             close_log_streams()
 
-    def test_configure_file_logging_none(self):
+    def test_configure_file_logging_none(self) -> None:
         """Test file logging configuration with None path."""
         configure_file_logging(None)
 
         # Clean up
         close_log_streams()
 
-    def test_flush_log_streams(self):
+    def test_flush_log_streams(self) -> None:
         """Test flushing log streams."""
         with tempfile.TemporaryDirectory() as temp_dir:
             log_file = Path(temp_dir) / "test.log"
@@ -41,7 +41,7 @@ class TestFileStreams:
             # Clean up
             close_log_streams()
 
-    def test_configure_file_logging_invalid_path(self):
+    def test_configure_file_logging_invalid_path(self) -> None:
         """Test file logging with invalid path."""
         # Try to write to a directory that doesn't exist and can't be created
         invalid_path = "/invalid/nonexistent/path/test.log"

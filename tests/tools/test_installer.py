@@ -5,6 +5,7 @@ from pathlib import Path
 import platform
 import tarfile
 import tempfile
+from typing import Never
 import zipfile
 
 import pytest
@@ -16,13 +17,13 @@ from provide.foundation.tools.installer import InstallError, ToolInstaller
 class TestInstallError:
     """Test InstallError exception."""
 
-    def test_inherits_from_foundation_error(self):
+    def test_inherits_from_foundation_error(self) -> None:
         """Test that InstallError inherits from FoundationError."""
         from provide.foundation.errors import FoundationError
 
         assert issubclass(InstallError, FoundationError)
 
-    def test_can_be_raised_and_caught(self):
+    def test_can_be_raised_and_caught(self) -> Never:
         """Test that InstallError can be raised and caught."""
         with pytest.raises(InstallError) as exc_info:
             raise InstallError("Test error")
@@ -104,14 +105,14 @@ class TestToolInstaller:
         binary_path.write_bytes(binary_content)
         return binary_path
 
-    def test_install_nonexistent_artifact(self, installer, sample_metadata):
+    def test_install_nonexistent_artifact(self, installer, sample_metadata) -> None:
         """Test installing nonexistent artifact raises error."""
         nonexistent = Path("/nonexistent/file.zip")
 
         with pytest.raises(InstallError, match="Artifact not found"):
             installer.install(nonexistent, sample_metadata)
 
-    def test_get_install_dir_with_metadata_path(self, installer):
+    def test_get_install_dir_with_metadata_path(self, installer) -> None:
         """Test get_install_dir uses metadata install_path if provided."""
         custom_path = Path("/custom/install/path")
         metadata = ToolMetadata(
@@ -125,13 +126,13 @@ class TestToolInstaller:
         result = installer.get_install_dir(metadata)
         assert result == custom_path
 
-    def test_get_install_dir_default(self, installer, sample_metadata):
+    def test_get_install_dir_default(self, installer, sample_metadata) -> None:
         """Test get_install_dir uses default path."""
         result = installer.get_install_dir(sample_metadata)
         expected = Path.home() / ".wrknv" / "tools" / "testtool" / "1.0.0"
         assert result == expected
 
-    def test_extract_zip_success(self, installer, sample_zip, temp_dir):
+    def test_extract_zip_success(self, installer, sample_zip, temp_dir) -> None:
         """Test successful ZIP extraction."""
         dest_dir = temp_dir / "extracted"
 
@@ -142,7 +143,7 @@ class TestToolInstaller:
         assert (dest_dir / "README.txt").exists()
         assert (dest_dir / "docs" / "help.txt").exists()
 
-    def test_extract_zip_unsafe_paths(self, installer, temp_dir):
+    def test_extract_zip_unsafe_paths(self, installer, temp_dir) -> None:
         """Test ZIP extraction with unsafe paths raises error."""
         zip_path = temp_dir / "unsafe.zip"
 
@@ -156,7 +157,7 @@ class TestToolInstaller:
         with pytest.raises(InstallError, match="Unsafe path in archive"):
             installer.extract_zip(zip_path, dest_dir)
 
-    def test_extract_tar_gz_success(self, installer, sample_tar_gz, temp_dir):
+    def test_extract_tar_gz_success(self, installer, sample_tar_gz, temp_dir) -> None:
         """Test successful TAR.GZ extraction."""
         dest_dir = temp_dir / "extracted"
 
@@ -166,7 +167,7 @@ class TestToolInstaller:
         assert (dest_dir / "bin" / "testtool").exists()
         assert (dest_dir / "README.txt").exists()
 
-    def test_extract_tar_unsafe_paths(self, installer, temp_dir):
+    def test_extract_tar_unsafe_paths(self, installer, temp_dir) -> None:
         """Test TAR extraction with unsafe paths raises error."""
         tar_path = temp_dir / "unsafe.tar.gz"
 
@@ -182,7 +183,7 @@ class TestToolInstaller:
         with pytest.raises(InstallError, match="Unsafe path in archive"):
             installer.extract_tar(tar_path, dest_dir)
 
-    def test_extract_tar_different_compressions(self, installer, temp_dir):
+    def test_extract_tar_different_compressions(self, installer, temp_dir) -> None:
         """Test TAR extraction with different compression types."""
         content = "test content"
 
@@ -206,7 +207,7 @@ class TestToolInstaller:
             installer.extract_tar(tar_path, dest_dir)
             assert (dest_dir / "test.txt").exists()
 
-    def test_is_binary_elf(self, installer):
+    def test_is_binary_elf(self, installer) -> None:
         """Test binary detection for ELF files."""
         with tempfile.NamedTemporaryFile() as tmp:
             # Write ELF header
@@ -216,7 +217,7 @@ class TestToolInstaller:
             result = installer.is_binary(Path(tmp.name))
             assert result is True
 
-    def test_is_binary_windows_pe(self, installer):
+    def test_is_binary_windows_pe(self, installer) -> None:
         """Test binary detection for Windows PE files."""
         with tempfile.NamedTemporaryFile() as tmp:
             # Write PE header
@@ -226,7 +227,7 @@ class TestToolInstaller:
             result = installer.is_binary(Path(tmp.name))
             assert result is True
 
-    def test_is_binary_macos_mach_o(self, installer):
+    def test_is_binary_macos_mach_o(self, installer) -> None:
         """Test binary detection for macOS Mach-O files."""
         with tempfile.NamedTemporaryFile() as tmp:
             # Write Mach-O header
@@ -236,7 +237,7 @@ class TestToolInstaller:
             result = installer.is_binary(Path(tmp.name))
             assert result is True
 
-    def test_is_binary_macos_universal(self, installer):
+    def test_is_binary_macos_universal(self, installer) -> None:
         """Test binary detection for macOS universal binaries."""
         with tempfile.NamedTemporaryFile() as tmp:
             # Write universal binary header
@@ -246,7 +247,7 @@ class TestToolInstaller:
             result = installer.is_binary(Path(tmp.name))
             assert result is True
 
-    def test_is_binary_text_file(self, installer):
+    def test_is_binary_text_file(self, installer) -> None:
         """Test binary detection returns False for text files."""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".txt") as tmp:
             tmp.write("This is a text file")
@@ -255,7 +256,7 @@ class TestToolInstaller:
             result = installer.is_binary(Path(tmp.name))
             assert result is False
 
-    def test_is_binary_no_extension(self, installer):
+    def test_is_binary_no_extension(self, installer) -> None:
         """Test binary detection for files without extension."""
         with tempfile.NamedTemporaryFile() as tmp:
             tmp.write(b"#!/bin/bash\necho 'Hello'\n")
@@ -268,7 +269,7 @@ class TestToolInstaller:
             result = installer.is_binary(no_ext_path)
             assert result is False  # Not a binary signature
 
-    def test_install_binary_success(self, installer, sample_binary, temp_dir, sample_metadata):
+    def test_install_binary_success(self, installer, sample_binary, temp_dir, sample_metadata) -> None:
         """Test successful binary installation."""
         dest_dir = temp_dir / "install"
 
@@ -283,7 +284,7 @@ class TestToolInstaller:
             installed_binary = dest_dir / "bin" / "testtool"
             assert os.access(installed_binary, os.X_OK)
 
-    def test_install_binary_custom_name(self, installer, sample_binary, temp_dir):
+    def test_install_binary_custom_name(self, installer, sample_binary, temp_dir) -> None:
         """Test binary installation with custom executable name."""
         metadata = ToolMetadata(
             name="testtool",
@@ -300,7 +301,7 @@ class TestToolInstaller:
         assert (dest_dir / "bin" / "custom-tool").exists()
 
     @pytest.mark.skipif(platform.system() == "Windows", reason="Unix permissions test")
-    def test_set_permissions_unix(self, installer, temp_dir, sample_metadata):
+    def test_set_permissions_unix(self, installer, temp_dir, sample_metadata) -> None:
         """Test permission setting on Unix systems."""
         install_dir = temp_dir / "install"
         bin_dir = install_dir / "bin"
@@ -318,7 +319,7 @@ class TestToolInstaller:
         assert oct(test_exe.stat().st_mode)[-3:] == "755"
 
     @pytest.mark.skipif(platform.system() == "Windows", reason="Unix permissions test")
-    def test_set_permissions_root_executable(self, installer, temp_dir):
+    def test_set_permissions_root_executable(self, installer, temp_dir) -> None:
         """Test permission setting for executable in root directory."""
         install_dir = temp_dir / "install"
         install_dir.mkdir()
@@ -341,7 +342,7 @@ class TestToolInstaller:
         assert os.access(test_exe, os.X_OK)
 
     @pytest.mark.skipif(platform.system() == "Windows", reason="Symlink test")
-    def test_create_symlinks_success(self, installer, temp_dir, sample_metadata):
+    def test_create_symlinks_success(self, installer, temp_dir, sample_metadata) -> None:
         """Test symlink creation."""
         install_dir = temp_dir / "tools" / "testtool" / "1.0.0"
         install_dir.mkdir(parents=True)
@@ -354,7 +355,7 @@ class TestToolInstaller:
         assert latest_link.resolve().samefile(install_dir)
 
     @pytest.mark.skipif(platform.system() == "Windows", reason="Symlink test")
-    def test_create_symlinks_replaces_existing(self, installer, temp_dir, sample_metadata):
+    def test_create_symlinks_replaces_existing(self, installer, temp_dir, sample_metadata) -> None:
         """Test symlink creation replaces existing symlink."""
         tools_dir = temp_dir / "tools" / "testtool"
         tools_dir.mkdir(parents=True)
@@ -376,7 +377,7 @@ class TestToolInstaller:
         # Should point to new version
         assert latest_link.resolve().samefile(new_dir)
 
-    def test_install_zip_full_workflow(self, installer, sample_zip, temp_dir, sample_metadata):
+    def test_install_zip_full_workflow(self, installer, sample_zip, temp_dir, sample_metadata) -> None:
         """Test complete installation workflow for ZIP file."""
         # Set install path in metadata
         install_dir = temp_dir / "install"
@@ -389,7 +390,7 @@ class TestToolInstaller:
         assert (install_dir / "bin" / "testtool").exists()
         assert (install_dir / "README.txt").exists()
 
-    def test_install_tar_full_workflow(self, installer, sample_tar_gz, temp_dir, sample_metadata):
+    def test_install_tar_full_workflow(self, installer, sample_tar_gz, temp_dir, sample_metadata) -> None:
         """Test complete installation workflow for TAR file."""
         install_dir = temp_dir / "install"
         sample_metadata.install_path = install_dir
@@ -400,7 +401,7 @@ class TestToolInstaller:
         assert install_dir.exists()
         assert (install_dir / "bin" / "testtool").exists()
 
-    def test_install_binary_full_workflow(self, installer, sample_binary, temp_dir, sample_metadata):
+    def test_install_binary_full_workflow(self, installer, sample_binary, temp_dir, sample_metadata) -> None:
         """Test complete installation workflow for binary file."""
         install_dir = temp_dir / "install"
         sample_metadata.install_path = install_dir
@@ -410,7 +411,7 @@ class TestToolInstaller:
         assert result == install_dir
         assert (install_dir / "bin" / "testtool").exists()
 
-    def test_install_unknown_format(self, installer, temp_dir, sample_metadata):
+    def test_install_unknown_format(self, installer, temp_dir, sample_metadata) -> None:
         """Test installation of unknown file format raises error."""
         unknown_file = temp_dir / "unknown.xyz"
         unknown_file.write_text("unknown format")
@@ -418,7 +419,7 @@ class TestToolInstaller:
         with pytest.raises(InstallError, match="Unknown artifact type"):
             installer.install(unknown_file, sample_metadata)
 
-    def test_install_reads_file_content_for_binary_detection(self, installer, temp_dir, sample_metadata):
+    def test_install_reads_file_content_for_binary_detection(self, installer, temp_dir, sample_metadata) -> None:
         """Test that installer reads file content for binary detection."""
         # Create file without extension but with binary content
         binary_file = temp_dir / "mytool"

@@ -9,7 +9,7 @@
 class TestFileStreams:
     """Test file stream functionality."""
 
-    def test_configure_file_logging_with_path(self, tmp_path):
+    def test_configure_file_logging_with_path(self, tmp_path) -> None:
         """Test file logging configuration with valid path."""
         from provide.foundation.streams.file import configure_file_logging
 
@@ -19,14 +19,14 @@ class TestFileStreams:
         # Should create the file or directory structure
         assert log_file.parent.exists()
 
-    def test_configure_file_logging_none(self):
+    def test_configure_file_logging_none(self) -> None:
         """Test file logging configuration with None."""
         from provide.foundation.streams.file import configure_file_logging
 
         # Should not raise an exception
         configure_file_logging(None)
 
-    def test_configure_file_logging_invalid_path(self):
+    def test_configure_file_logging_invalid_path(self) -> None:
         """Test file logging with invalid path."""
         from provide.foundation.streams.file import configure_file_logging
 
@@ -39,14 +39,14 @@ class TestFileStreams:
         except PermissionError:
             pass  # Expected for protected directories
 
-    def test_flush_log_streams(self):
+    def test_flush_log_streams(self) -> None:
         """Test log stream flushing."""
         from provide.foundation.streams.file import flush_log_streams
 
         # Should not raise an exception
         flush_log_streams()
 
-    def test_close_log_streams(self):
+    def test_close_log_streams(self) -> None:
         """Test log stream closing."""
         from provide.foundation.streams.file import close_log_streams
 

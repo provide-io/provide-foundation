@@ -8,7 +8,7 @@ import asyncio
 from collections.abc import Callable
 import random
 import time
-from typing import Any, TypeVar
+from typing import Any, Awaitable, TypeVar
 
 from attrs import define, field, validators
 
@@ -165,7 +165,7 @@ class RetryExecutor:
         self,
         policy: RetryPolicy,
         on_retry: Callable[[int, Exception], None] | None = None,
-    ):
+    ) -> None:
         """Initialize retry executor.
 
         Args:
@@ -202,6 +202,7 @@ class RetryExecutor:
                 # Don't retry on last attempt - log and raise
                 if attempt >= self.policy.max_attempts:
                     from provide.foundation.hub.foundation import get_foundation_logger
+
                     get_foundation_logger().error(
                         f"All {self.policy.max_attempts} retry attempts failed",
                         attempts=self.policy.max_attempts,
@@ -219,6 +220,7 @@ class RetryExecutor:
 
                 # Log retry attempt
                 from provide.foundation.hub.foundation import get_foundation_logger
+
                 get_foundation_logger().info(
                     f"Retry {attempt}/{self.policy.max_attempts} after {delay:.2f}s",
                     attempt=attempt,
@@ -234,6 +236,7 @@ class RetryExecutor:
                         self.on_retry(attempt, e)
                     except Exception as callback_error:
                         from provide.foundation.hub.foundation import get_foundation_logger
+
                         get_foundation_logger().warning("Retry callback failed", error=str(callback_error))
 
                 # Wait before retry
@@ -245,7 +248,7 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during retry attempts")
 
-    async def execute_async(self, func: Callable[..., T], *args, **kwargs) -> T:
+    async def execute_async(self, func: Callable[..., Awaitable[T]], *args, **kwargs) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:
@@ -271,6 +274,7 @@ class RetryExecutor:
                 # Don't retry on last attempt - log and raise
                 if attempt >= self.policy.max_attempts:
                     from provide.foundation.hub.foundation import get_foundation_logger
+
                     get_foundation_logger().error(
                         f"All {self.policy.max_attempts} retry attempts failed",
                         attempts=self.policy.max_attempts,
@@ -288,6 +292,7 @@ class RetryExecutor:
 
                 # Log retry attempt
                 from provide.foundation.hub.foundation import get_foundation_logger
+
                 get_foundation_logger().info(
                     f"Retry {attempt}/{self.policy.max_attempts} after {delay:.2f}s",
                     attempt=attempt,
@@ -306,10 +311,14 @@ class RetryExecutor:
                             self.on_retry(attempt, e)
                     except Exception as callback_error:
                         from provide.foundation.hub.foundation import get_foundation_logger
+
                         get_foundation_logger().warning("Retry callback failed", error=str(callback_error))
 
                 # Wait before retry
                 await asyncio.sleep(delay)
 
         # Should never reach here, but for safety
-        raise last_exception
+        if last_exception is not None:
+            raise last_exception
+        else:
+            raise RuntimeError("No exception captured during async retry attempts")

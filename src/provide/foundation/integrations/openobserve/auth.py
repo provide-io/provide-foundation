@@ -1,5 +1,4 @@
-"""Authentication handling for OpenObserve.
-"""
+"""Authentication handling for OpenObserve."""
 
 import base64
 

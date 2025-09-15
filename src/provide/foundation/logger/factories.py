@@ -1,8 +1,7 @@
 #
 # factories.py
 #
-"""Logger factory functions and simple setup utilities.
-"""
+"""Logger factory functions and simple setup utilities."""
 
 import threading
 from typing import Any
@@ -28,6 +27,7 @@ def get_logger(name: str | None = None) -> Any:
     # Check if we're already in the middle of initialization to prevent circular import
     if getattr(_is_initializing, "value", False):
         import structlog
+
         return structlog.get_logger(name)
 
     try:
@@ -35,14 +35,14 @@ def get_logger(name: str | None = None) -> Any:
         _is_initializing.value = True
 
         from provide.foundation.hub.manager import get_hub
+
         hub = get_hub()
         return hub.get_foundation_logger(name)
     except (ImportError, RecursionError):
         # Fallback to basic structlog if hub is not available or circular import detected
         import structlog
+
         return structlog.get_logger(name)
     finally:
         # Always clear the initialization flag
         _is_initializing.value = False
-
-

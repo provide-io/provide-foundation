@@ -2,6 +2,7 @@
 
 import asyncio
 from io import StringIO
+from typing import Never
 from unittest.mock import patch
 
 import pytest
@@ -20,26 +21,26 @@ from provide.foundation.context import CLIContext
 class TestPin:
     """Test basic pin() function."""
 
-    def test_pin_basic_input(self):
+    def test_pin_basic_input(self) -> None:
         """Test basic input with pin()."""
         with patch("click.prompt", return_value="test input"):
             result = pin("Enter text: ")
             assert result == "test input"
 
-    def test_pin_with_type_conversion(self):
+    def test_pin_with_type_conversion(self) -> None:
         """Test pin() with type conversion."""
         with patch("click.prompt", return_value=42):
             result = pin("Enter number: ", type=int)
             assert result == 42
             assert isinstance(result, int)
 
-    def test_pin_with_default(self):
+    def test_pin_with_default(self) -> None:
         """Test pin() with default value."""
         with patch("click.prompt", return_value="default"):
             result = pin("Enter text: ", default="default")
             assert result == "default"
 
-    def test_pin_password_mode(self):
+    def test_pin_password_mode(self) -> None:
         """Test pin() in password mode."""
         with patch("click.prompt", return_value="secret") as mock_prompt:
             result = pin("Password: ", password=True)
@@ -47,7 +48,7 @@ class TestPin:
             # Check that hide_input was passed to click.prompt
             assert mock_prompt.call_args[1]["hide_input"] is True
 
-    def test_pin_with_color(self):
+    def test_pin_with_color(self) -> None:
         """Test pin() with colored prompt."""
         with patch("click.prompt", return_value="test") as mock_prompt:
             with patch("sys.stdin.isatty", return_value=True):
@@ -57,7 +58,7 @@ class TestPin:
                 prompt_arg = mock_prompt.call_args[0][0]
                 assert isinstance(prompt_arg, str)  # Should be styled string
 
-    def test_pin_json_mode(self):
+    def test_pin_json_mode(self) -> None:
         """Test pin() in JSON mode."""
         ctx = CLIContext()
         ctx.json_output = True
@@ -69,7 +70,7 @@ class TestPin:
             result = pin("Enter JSON: ")
             assert result == {"key": "value"}
 
-    def test_pin_json_mode_with_plain_text(self):
+    def test_pin_json_mode_with_plain_text(self) -> None:
         """Test pin() in JSON mode with plain text input."""
         ctx = CLIContext()
         ctx.json_output = True
@@ -81,7 +82,7 @@ class TestPin:
             result = pin("Enter: ")
             assert result == "plain text"
 
-    def test_pin_json_mode_with_json_key(self):
+    def test_pin_json_mode_with_json_key(self) -> None:
         """Test pin() in JSON mode with json_key."""
         ctx = CLIContext()
         ctx.json_output = True
@@ -97,14 +98,14 @@ class TestPin:
 class TestPinStream:
     """Test pin_stream() function."""
 
-    def test_pin_stream_basic(self):
+    def test_pin_stream_basic(self) -> None:
         """Test basic line streaming."""
         test_input = "line1\nline2\nline3\n"
         with patch("sys.stdin", StringIO(test_input)):
             lines = list(pin_stream())
             assert lines == ["line1", "line2", "line3"]
 
-    def test_pin_stream_strips_newlines(self):
+    def test_pin_stream_strips_newlines(self) -> None:
         """Test that pin_stream() strips newlines."""
         test_input = "line1\r\nline2\n\rline3\n"
         with patch("sys.stdin", StringIO(test_input)):
@@ -115,14 +116,14 @@ class TestPinStream:
                 "\rline3",
             ]  # \r at start is part of content
 
-    def test_pin_stream_empty_lines(self):
+    def test_pin_stream_empty_lines(self) -> None:
         """Test pin_stream() with empty lines."""
         test_input = "line1\n\nline2\n"
         with patch("sys.stdin", StringIO(test_input)):
             lines = list(pin_stream())
             assert lines == ["line1", "", "line2"]
 
-    def test_pin_stream_json_mode_array(self):
+    def test_pin_stream_json_mode_array(self) -> None:
         """Test pin_stream() in JSON mode with array."""
         ctx = CLIContext()
         ctx.json_output = True
@@ -134,7 +135,7 @@ class TestPinStream:
             lines = list(pin_stream())
             assert lines == ["item1", "item2", "item3"]
 
-    def test_pin_stream_json_mode_object(self):
+    def test_pin_stream_json_mode_object(self) -> None:
         """Test pin_stream() in JSON mode with object."""
         ctx = CLIContext()
         ctx.json_output = True
@@ -146,7 +147,7 @@ class TestPinStream:
             lines = list(pin_stream())
             assert lines == ['{"key": "value"}']
 
-    def test_pin_stream_json_mode_fallback(self):
+    def test_pin_stream_json_mode_fallback(self) -> None:
         """Test pin_stream() JSON mode fallback for invalid JSON."""
         ctx = CLIContext()
         ctx.json_output = True
@@ -162,21 +163,21 @@ class TestPinStream:
 class TestPinLines:
     """Test pin_lines() function."""
 
-    def test_pin_lines_with_count(self):
+    def test_pin_lines_with_count(self) -> None:
         """Test pin_lines() with specific count."""
         test_input = "line1\nline2\nline3\nline4\n"
         with patch("sys.stdin", StringIO(test_input)):
             lines = pin_lines(2)
             assert lines == ["line1", "line2"]
 
-    def test_pin_lines_all(self):
+    def test_pin_lines_all(self) -> None:
         """Test pin_lines() reading all lines."""
         test_input = "line1\nline2\nline3\n"
         with patch("sys.stdin", StringIO(test_input)):
             lines = pin_lines()
             assert lines == ["line1", "line2", "line3"]
 
-    def test_pin_lines_empty(self):
+    def test_pin_lines_empty(self) -> None:
         """Test pin_lines() with empty input."""
         with patch("sys.stdin", StringIO("")):
             lines = pin_lines()
@@ -187,14 +188,14 @@ class TestAsyncPin:
     """Test async pin functions."""
 
     @pytest.mark.asyncio
-    async def test_apin_basic(self):
+    async def test_apin_basic(self) -> None:
         """Test basic async input."""
         with patch("provide.foundation.console.input.pin", return_value="async test"):
             result = await apin("Enter: ")
             assert result == "async test"
 
     @pytest.mark.asyncio
-    async def test_apin_with_kwargs(self):
+    async def test_apin_with_kwargs(self) -> None:
         """Test apin() passes kwargs correctly."""
         with patch("provide.foundation.console.input.pin", return_value=42) as mock_pin:
             result = await apin("Number: ", type=int, default=0)
@@ -206,7 +207,7 @@ class TestAsyncPin:
     @pytest.mark.skip(
         reason="Requires real stdin which is not available in test environment",
     )
-    async def test_apin_stream_basic(self):
+    async def test_apin_stream_basic(self) -> None:
         """Test basic async streaming."""
         test_lines = ["line1", "line2", "line3"]
 
@@ -224,7 +225,7 @@ class TestAsyncPin:
             assert lines == test_lines
 
     @pytest.mark.asyncio
-    async def test_apin_lines_with_count(self):
+    async def test_apin_lines_with_count(self) -> None:
         """Test apin_lines() with specific count."""
         test_lines = ["line1", "line2", "line3", "line4"]
 
@@ -239,7 +240,7 @@ class TestAsyncPin:
             assert lines == ["line1", "line2"]
 
     @pytest.mark.asyncio
-    async def test_apin_lines_all(self):
+    async def test_apin_lines_all(self) -> None:
         """Test apin_lines() reading all lines."""
         test_lines = ["line1", "line2", "line3"]
 
@@ -258,7 +259,7 @@ class TestAsyncStreamIntegration:
     """Test async streaming with real async I/O."""
 
     @pytest.mark.asyncio
-    async def test_apin_stream_real_async(self):
+    async def test_apin_stream_real_async(self) -> None:
         """Test apin_stream() with simulated async stdin."""
         # This tests the actual async implementation
         test_data = b"async line 1\nasync line 2\n"
@@ -284,7 +285,7 @@ class TestAsyncStreamIntegration:
                 assert lines == ["async line 1", "async line 2"]
 
     @pytest.mark.asyncio
-    async def test_apin_stream_json_mode_async(self):
+    async def test_apin_stream_json_mode_async(self) -> None:
         """Test async streaming in JSON mode."""
         ctx = CLIContext()
         ctx.json_output = True
@@ -310,7 +311,7 @@ class TestAsyncStreamIntegration:
 class TestEdgeCases:
     """Test edge cases and error handling."""
 
-    def test_pin_json_error_handling(self):
+    def test_pin_json_error_handling(self) -> None:
         """Test pin() handles JSON errors gracefully."""
         ctx = CLIContext()
         ctx.json_output = True
@@ -322,7 +323,7 @@ class TestEdgeCases:
             result = pin("Enter: ", json_key="input")
             assert result == {"input": None, "error": "Read error"}
 
-    def test_pin_stream_logging(self):
+    def test_pin_stream_logging(self) -> None:
         """Test that pin_stream() logs appropriately."""
         test_input = "line1\nline2\n"
 
@@ -336,11 +337,11 @@ class TestEdgeCases:
                 assert mock_log.debug.call_count >= 2
 
     @pytest.mark.asyncio
-    async def test_apin_stream_cancellation(self):
+    async def test_apin_stream_cancellation(self) -> None:
         """Test apin_stream() handles cancellation."""
         reader = asyncio.StreamReader()
 
-        async def cancel_after_delay():
+        async def cancel_after_delay() -> Never:
             await asyncio.sleep(0.01)
             raise asyncio.CancelledError()
 
@@ -365,11 +366,11 @@ class TestEdgeCases:
                     )
 
     @pytest.mark.asyncio
-    async def test_apin_stream_error_handling(self):
+    async def test_apin_stream_error_handling(self) -> None:
         """Test apin_stream() handles errors gracefully."""
         reader = asyncio.StreamReader()
 
-        async def raise_error():
+        async def raise_error() -> Never:
             raise ValueError("Test error")
 
         async def mock_connect(*args):

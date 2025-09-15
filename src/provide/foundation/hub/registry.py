@@ -95,6 +95,7 @@ class Registry:
                     self._aliases[alias] = (dimension, name)
 
             from provide.foundation.hub.foundation import get_foundation_logger
+
             get_foundation_logger().debug(
                 "Registered item",
                 name=name,
@@ -198,6 +199,7 @@ class Registry:
                         del self._aliases[alias]
 
                     from provide.foundation.hub.foundation import get_foundation_logger
+
                     get_foundation_logger().debug("Removed item", name=name, dimension=dimension)
                     return True
             else:
@@ -212,6 +214,7 @@ class Registry:
                             del self._aliases[alias]
 
                         from provide.foundation.hub.foundation import get_foundation_logger
+
                         get_foundation_logger().debug("Removed item", name=name, dimension=dim_key)
                         return True
 

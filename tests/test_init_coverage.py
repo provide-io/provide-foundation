@@ -9,12 +9,12 @@ import pytest
 class TestFoundationInit:
     """Test foundation __init__.py module coverage."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Reset module state before each test."""
         # Clear CLI module from cache to ensure fresh imports
         cli_modules = [
             name
-            for name in sys.modules.keys()
+            for name in sys.modules
             if name.startswith("provide.foundation.cli")
         ]
         self.saved_cli_modules = {}
@@ -25,7 +25,7 @@ class TestFoundationInit:
         # Also clear the main foundation module to reset any cached __getattr__ state
         foundation_modules = [
             name
-            for name in sys.modules.keys()
+            for name in sys.modules
             if name == "provide.foundation"
         ]
         self.saved_foundation_modules = {}
@@ -33,7 +33,7 @@ class TestFoundationInit:
             self.saved_foundation_modules[module_name] = sys.modules[module_name]
             del sys.modules[module_name]
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Restore module state after each test."""
         # Restore CLI modules
         for module_name, module in self.saved_cli_modules.items():
@@ -43,7 +43,7 @@ class TestFoundationInit:
         for module_name, module in self.saved_foundation_modules.items():
             sys.modules[module_name] = module
 
-    def test_console_imports_available(self):
+    def test_console_imports_available(self) -> None:
         """Test console imports when available."""
         import provide.foundation
 
@@ -53,7 +53,7 @@ class TestFoundationInit:
             assert provide.foundation.pin is not None
             assert provide.foundation.pout is not None
 
-    def test_console_imports_always_available(self):
+    def test_console_imports_always_available(self) -> None:
         """Test console imports are always available."""
         # Console functions should always exist (they handle click availability internally)
         import provide.foundation
@@ -66,7 +66,7 @@ class TestFoundationInit:
         assert callable(provide.foundation.pin)
         assert callable(provide.foundation.pout)
 
-    def test_aaa_getattr_cli_click_missing(self):
+    def test_aaa_getattr_cli_click_missing(self) -> None:
         """Test __getattr__ CLI import with missing click dependency."""
         import provide.foundation
 
@@ -85,7 +85,7 @@ class TestFoundationInit:
         ):
             _ = provide.foundation.cli
 
-    def test_aaa_getattr_cli_other_import_error(self):
+    def test_aaa_getattr_cli_other_import_error(self) -> None:
         """Test __getattr__ CLI import with other ImportError."""
         import provide.foundation
 
@@ -103,7 +103,7 @@ class TestFoundationInit:
             with pytest.raises(ImportError, match="Some other error"):
                 _ = provide.foundation.cli
 
-    def test_getattr_cli_success(self):
+    def test_getattr_cli_success(self) -> None:
         """Test __getattr__ for successful CLI import."""
         import provide.foundation
 
@@ -115,14 +115,14 @@ class TestFoundationInit:
             # Expected if click is not available
             pass
 
-    def test_getattr_invalid_attribute(self):
+    def test_getattr_invalid_attribute(self) -> None:
         """Test __getattr__ with invalid attribute name."""
         import provide.foundation
 
         with pytest.raises(AttributeError, match="has no attribute 'nonexistent'"):
             _ = provide.foundation.nonexistent
 
-    def test_all_exports_list(self):
+    def test_all_exports_list(self) -> None:
         """Test __all__ exports list."""
         import provide.foundation
 
@@ -141,7 +141,7 @@ class TestFoundationInit:
         for export in expected_exports:
             assert export in provide.foundation.__all__
 
-    def test_conditional_console_exports(self):
+    def test_conditional_console_exports(self) -> None:
         """Test conditional console exports in __all__."""
         import provide.foundation
 
@@ -152,7 +152,7 @@ class TestFoundationInit:
         for export in console_exports:
             assert export in provide.foundation.__all__
 
-    def test_core_imports_available(self):
+    def test_core_imports_available(self) -> None:
         """Test that core imports are available."""
         import provide.foundation
 
@@ -167,7 +167,7 @@ class TestFoundationInit:
         assert hasattr(provide.foundation, "FoundationError")
         assert hasattr(provide.foundation, "__version__")
 
-    def test_eventset_exports(self):
+    def test_eventset_exports(self) -> None:
         """Test event set-related exports."""
         import provide.foundation
 
@@ -181,7 +181,7 @@ class TestFoundationInit:
         for export in eventset_exports:
             assert hasattr(provide.foundation, export), f"Missing export: {export}"
 
-    def test_hub_exports(self):
+    def test_hub_exports(self) -> None:
         """Test hub and registry exports."""
         import provide.foundation
 
@@ -198,7 +198,7 @@ class TestFoundationInit:
         for export in hub_exports:
             assert hasattr(provide.foundation, export), f"Missing hub export: {export}"
 
-    def test_error_handling_exports(self):
+    def test_error_handling_exports(self) -> None:
         """Test error handling exports."""
         import provide.foundation
 
@@ -214,7 +214,7 @@ class TestFoundationInit:
                 f"Missing error export: {export}"
             )
 
-    def test_utility_exports(self):
+    def test_utility_exports(self) -> None:
         """Test utility exports."""
         import provide.foundation
 
@@ -232,7 +232,7 @@ class TestFoundationInit:
 class TestModuleAttributes:
     """Test module attributes and special cases."""
 
-    def test_version_import(self):
+    def test_version_import(self) -> None:
         """Test version import."""
         import provide.foundation
 
@@ -240,7 +240,7 @@ class TestModuleAttributes:
         assert isinstance(provide.foundation.__version__, str)
         assert len(provide.foundation.__version__) > 0
 
-    def test_console_functions_available(self):
+    def test_console_functions_available(self) -> None:
         """Test console functions are available."""
         import provide.foundation
 
@@ -249,7 +249,7 @@ class TestModuleAttributes:
         assert hasattr(provide.foundation, "pin")
         assert hasattr(provide.foundation, "pout")
 
-    def test_type_exports(self):
+    def test_type_exports(self) -> None:
         """Test type exports."""
         import provide.foundation
 
@@ -261,7 +261,7 @@ class TestModuleAttributes:
         for export in type_exports:
             assert hasattr(provide.foundation, export), f"Missing type export: {export}"
 
-    def test_config_exports(self):
+    def test_config_exports(self) -> None:
         """Test configuration exports."""
         import provide.foundation
 

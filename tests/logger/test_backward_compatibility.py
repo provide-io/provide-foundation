@@ -13,15 +13,15 @@ from provide.foundation.hub.manager import clear_hub, get_hub
 class TestBackwardCompatibility:
     """Test backward compatibility with legacy API."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Reset state before each test."""
         clear_hub()
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Clean up after each test."""
         clear_hub()
 
-    def test_global_logger_proxy_works(self):
+    def test_global_logger_proxy_works(self) -> None:
         """Test that global logger proxy still works."""
         from provide.foundation.logger import logger
 
@@ -35,7 +35,7 @@ class TestBackwardCompatibility:
         assert named_logger is not None
         named_logger.info("Named logger message")
 
-    def test_get_logger_factory_works(self):
+    def test_get_logger_factory_works(self) -> None:
         """Test that get_logger factory function still works."""
         from provide.foundation.logger import get_logger
 
@@ -56,7 +56,7 @@ class TestBackwardCompatibility:
         logger2.info("Factory test 2")
         logger3.info("Factory test 3")
 
-    def test_hub_api_works(self):
+    def test_hub_api_works(self) -> None:
         """Test that new Hub API works as replacement for setup functions."""
         from provide.foundation import get_hub
         from provide.foundation.logger.config import TelemetryConfig
@@ -71,7 +71,7 @@ class TestBackwardCompatibility:
         assert logger is not None
         logger.info("Hub test message")
 
-    def test_setup_functions_with_config(self):
+    def test_setup_functions_with_config(self) -> None:
         """Test that setup functions work with explicit config."""
         from provide.foundation import get_hub
         from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
@@ -89,7 +89,7 @@ class TestBackwardCompatibility:
         stored_config = hub.get_foundation_config()
         assert stored_config.logging.default_level == "WARNING"
 
-    def test_mixed_old_and_new_api(self):
+    def test_mixed_old_and_new_api(self) -> None:
         """Test that old and new APIs can be mixed."""
         from provide.foundation import get_hub
         from provide.foundation.logger import get_logger
@@ -111,7 +111,7 @@ class TestBackwardCompatibility:
         old_logger.info("Old API message")
         new_logger.info("New API message")
 
-    def test_logger_import_still_works(self):
+    def test_logger_import_still_works(self) -> None:
         """Test that direct logger import still works."""
         # Should be able to import logger directly
         from provide.foundation.logger import logger
@@ -123,7 +123,7 @@ class TestBackwardCompatibility:
         hub = get_hub()
         assert hub.is_foundation_initialized()
 
-    def test_ecosystem_compatibility(self):
+    def test_ecosystem_compatibility(self) -> None:
         """Test patterns used by ecosystem projects."""
         # Pattern 1: Import and immediate use (supsrc pattern)
         from provide.foundation.logger import logger
@@ -143,7 +143,7 @@ class TestBackwardCompatibility:
         # All should work without issues
         assert True  # If we get here, all patterns worked
 
-    def test_no_breaking_changes(self):
+    def test_no_breaking_changes(self) -> None:
         """Test that no existing functionality is broken."""
         from provide.foundation.logger import get_logger, logger
 
@@ -166,7 +166,7 @@ class TestBackwardCompatibility:
         # All should complete without exceptions
         assert True
 
-    def test_thread_safety_maintained(self):
+    def test_thread_safety_maintained(self) -> None:
         """Test that thread safety is maintained during transition."""
         import threading
 
@@ -175,7 +175,7 @@ class TestBackwardCompatibility:
         results = []
         errors = []
 
-        def worker_thread(thread_id: int):
+        def worker_thread(thread_id: int) -> None:
             try:
                 logger = get_logger(f"thread.{thread_id}")
                 logger.info(f"Message from thread {thread_id}")
@@ -202,7 +202,7 @@ class TestBackwardCompatibility:
         assert len(results) == 20
         assert sorted(results) == list(range(20))
 
-    def test_configuration_compatibility(self):
+    def test_configuration_compatibility(self) -> None:
         """Test that configuration objects remain compatible."""
         from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
 

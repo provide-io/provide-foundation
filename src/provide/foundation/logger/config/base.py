@@ -1,14 +1,13 @@
 #
 # base.py
 #
-"""Base configuration utilities for Foundation logger.
-"""
+"""Base configuration utilities for Foundation logger."""
 
 import os
 import sys
 
 
-def get_config_logger() -> object:
+def get_config_logger():
     """Get logger for config warnings that respects FOUNDATION_LOG_OUTPUT."""
     import structlog
 

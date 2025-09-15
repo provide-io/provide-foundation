@@ -107,9 +107,9 @@ def setup_opentelemetry_metrics(config: TelemetryConfig) -> None:
         # 2. It's a mock (for testing)
         # 3. It's our own MeterProvider type (allow re-configuration)
         should_setup = (
-            provider_type in ["NoOpMeterProvider", "ProxyMeterProvider", "Mock", "MagicMock"] or
-            not hasattr(current_provider, "get_meter") or
-            current_provider.__class__.__module__.startswith("unittest.mock")
+            provider_type in ["NoOpMeterProvider", "ProxyMeterProvider", "Mock", "MagicMock"]
+            or not hasattr(current_provider, "get_meter")
+            or current_provider.__class__.__module__.startswith("unittest.mock")
         )
 
         if should_setup:

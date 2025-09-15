@@ -15,7 +15,6 @@ class VerificationError(FoundationError):
     """Raised when verification fails."""
 
 
-
 HashAlgo = Literal["sha256", "sha512", "md5", "blake2b"]
 
 
@@ -52,6 +51,7 @@ class ToolVerifier:
             raise FileNotFoundError(f"File not found: {file_path}")
 
         from provide.foundation.hub.foundation import get_foundation_logger
+
         get_foundation_logger().debug(f"Verifying {algo} checksum for {file_path}")
 
         # Create hasher
@@ -67,7 +67,10 @@ class ToolVerifier:
 
         if not matches:
             from provide.foundation.hub.foundation import get_foundation_logger
-            get_foundation_logger().warning(f"Checksum mismatch for {file_path.name}: expected {expected}, got {actual}")
+
+            get_foundation_logger().warning(
+                f"Checksum mismatch for {file_path.name}: expected {expected}, got {actual}"
+            )
 
         return matches
 
@@ -83,6 +86,7 @@ class ToolVerifier:
 
         """
         from provide.foundation.hub.foundation import get_foundation_logger
+
         get_foundation_logger().debug(f"Verifying {target_file.name} using {shasums_file}")
 
         with shasums_file.open() as f:
@@ -106,6 +110,7 @@ class ToolVerifier:
 
         # File not found in shasums
         from provide.foundation.hub.foundation import get_foundation_logger
+
         get_foundation_logger().warning(f"{target_file.name} not found in {shasums_file}")
         return False
 
@@ -122,6 +127,7 @@ class ToolVerifier:
 
         """
         from provide.foundation.hub.foundation import get_foundation_logger
+
         get_foundation_logger().debug(f"Verifying signature for {file_path}")
 
         try:
@@ -131,10 +137,12 @@ class ToolVerifier:
             return verify_signature(file_path, signature, public_key)
         except ImportError:
             from provide.foundation.hub.foundation import get_foundation_logger
+
             get_foundation_logger().warning("Crypto module not available, skipping signature verification")
             return True  # Skip if crypto not available
         except Exception as e:
             from provide.foundation.hub.foundation import get_foundation_logger
+
             get_foundation_logger().error(f"Signature verification failed: {e}")
             return False
 

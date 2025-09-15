@@ -18,7 +18,6 @@ class CacheError(FoundationError):
     """Raised when cache operations fail."""
 
 
-
 class ToolCache:
     """Cache for installed tools with TTL support.
 

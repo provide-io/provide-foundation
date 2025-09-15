@@ -70,28 +70,7 @@ foundation = "provide.foundation.cli.main:cli [cli]"
 
 [dependency-groups]
 dev = [
-    "bandit>=1.8.3",
-    "cryptography>=45.0.7",
-    "h2>=4.3.0",
-    "hypothesis>=6.131.28",
-    "mypy>=1.8.0",
-    "provide-testkit",
-    "psutil>=7.0.0",
-    "pyrefly>=0.16.2",
-    "pytest>=7.4.0",
-    "pytest-asyncio>=0.21.0",
-    "pytest-benchmark>=4.0.0",
-    "pytest-cov>=4.1.0",
-    "pytest-httpx>=0.35.0",
-    "pytest-mock>=3.15.0",
-    "pytest-xdist>=3.3.0",
-    "pyyaml>=6.0.2",
-    "reuse>=1.1.0",
-    "ruff>=0.1.0",
-    "twine>=6.1.0",
-    "ty>=0.0.1a6",
-    "types-cryptography>=3.3.23.2",
-    "types-toml>=0.10.8.20240310",
+    "provide-testkit[standard,advanced-testing,typecheck,utils,build]",
 ]
 docs = [
     "mkdocs>=1.5.0",

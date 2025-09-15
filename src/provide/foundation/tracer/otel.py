@@ -104,9 +104,9 @@ def setup_opentelemetry_tracing(config: TelemetryConfig) -> None:
         # 2. It's a mock (for testing)
         # 3. It's our own TracerProvider type (allow re-configuration)
         should_setup = (
-            provider_type in ["NoOpTracerProvider", "ProxyTracerProvider", "Mock", "MagicMock"] or
-            not hasattr(current_provider, "add_span_processor") or
-            current_provider.__class__.__module__.startswith("unittest.mock")
+            provider_type in ["NoOpTracerProvider", "ProxyTracerProvider", "Mock", "MagicMock"]
+            or not hasattr(current_provider, "add_span_processor")
+            or current_provider.__class__.__module__.startswith("unittest.mock")
         )
 
         if should_setup:

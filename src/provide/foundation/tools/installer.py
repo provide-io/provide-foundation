@@ -20,7 +20,6 @@ class InstallError(FoundationError):
     """Raised when installation fails."""
 
 
-
 class ToolInstaller:
     """Handle tool installation from various artifact formats.
 
@@ -118,8 +117,8 @@ class ToolInstaller:
 
                 safe_members.append(member_name)
 
-            # Extract only validated members
-            zf.extractall(dest, members=safe_members)
+            # Extract only validated members (all members have been security-checked above)
+            zf.extractall(dest, members=safe_members)  # nosec B202
 
     def extract_tar(self, archive: Path, dest: Path) -> None:
         """Extract tar archive (with optional compression).
@@ -170,8 +169,8 @@ class ToolInstaller:
 
                 safe_members.append(member)
 
-            # Extract only validated members
-            tf.extractall(dest, members=safe_members)
+            # Extract only validated members (all members have been security-checked above)
+            tf.extractall(dest, members=safe_members)  # nosec B202
 
     def is_binary(self, file_path: Path) -> bool:
         """Check if file is a binary executable.

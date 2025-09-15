@@ -103,12 +103,14 @@ def discover_components(
             except Exception as e:
                 # Log error but continue discovering other components
                 import sys
+
                 print(f"Failed to load entry point {entry_point.name}: {e}", file=sys.stderr)
                 continue
 
     except Exception as e:
         # If entry points can't be read, return empty dict
         import sys
+
         print(f"Failed to discover entry points for group {group}: {e}", file=sys.stderr)
 
     return discovered

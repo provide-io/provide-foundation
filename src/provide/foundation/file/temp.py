@@ -106,7 +106,11 @@ def temp_file(
 
         # Create temp file and immediately close it
         with tempfile.NamedTemporaryFile(
-            suffix=suffix, prefix=prefix, dir=dir, delete=False, mode="w" if text else "wb",
+            suffix=suffix,
+            prefix=prefix,
+            dir=dir,
+            delete=False,
+            mode="w" if text else "wb",
         ) as f:
             temp_path = Path(f.name)
 
@@ -118,8 +122,6 @@ def temp_file(
             with error_boundary(Exception, reraise=False):
                 safe_delete(temp_path, missing_ok=True)
                 log.debug("Cleaned up temp file", path=str(temp_path))
-
-
 
 
 @contextmanager

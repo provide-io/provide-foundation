@@ -9,13 +9,13 @@ import pytest
 class TestDepsCommandWithClick:
     """Test deps command when click is available."""
 
-    def test_deps_command_exists(self):
+    def test_deps_command_exists(self) -> None:
         """Test that deps_command is exported."""
         from provide.foundation.cli.commands.deps import deps_command
 
         assert deps_command is not None
 
-    def test_deps_command_with_click(self):
+    def test_deps_command_with_click(self) -> None:
         """Test deps command when click is available."""
         with patch("provide.foundation.cli.commands.deps._HAS_CLICK", True):
             with patch("provide.foundation.cli.commands.deps.click") as mock_click:
@@ -32,7 +32,7 @@ class TestDepsCommandWithClick:
 
                 assert deps_module.deps_command is not None
 
-    def test_deps_command_check_specific_available(self):
+    def test_deps_command_check_specific_available(self) -> None:
         """Test checking specific available dependency."""
         with patch("provide.foundation.cli.commands.deps._HAS_CLICK", True):
             from provide.foundation.cli.commands.deps import deps_command
@@ -47,7 +47,7 @@ class TestDepsCommandWithClick:
                 assert exc_info.value.code == 0
                 mock_echo.assert_called_once_with("✅ crypto: Available", nl=True)
 
-    def test_deps_command_check_specific_missing(self):
+    def test_deps_command_check_specific_missing(self) -> None:
         """Test checking specific missing dependency."""
         with patch("provide.foundation.cli.commands.deps._HAS_CLICK", True):
             from provide.foundation.cli.commands.deps import deps_command
@@ -65,7 +65,7 @@ class TestDepsCommandWithClick:
                     "Install with: pip install 'provide-foundation[crypto]'", nl=True,
                 )
 
-    def test_deps_command_check_specific_quiet(self):
+    def test_deps_command_check_specific_quiet(self) -> None:
         """Test checking specific dependency in quiet mode."""
         with patch("provide.foundation.cli.commands.deps._HAS_CLICK", True):
             from provide.foundation.cli.commands.deps import deps_command
@@ -79,7 +79,7 @@ class TestDepsCommandWithClick:
                 assert exc_info.value.code == 0
                 mock_print.assert_not_called()
 
-    def test_deps_command_check_all_available(self):
+    def test_deps_command_check_all_available(self) -> None:
         """Test checking all dependencies when all available."""
         with patch("provide.foundation.cli.commands.deps._HAS_CLICK", True):
             from provide.foundation.cli.commands.deps import deps_command
@@ -94,7 +94,7 @@ class TestDepsCommandWithClick:
 
                 assert exc_info.value.code == 0
 
-    def test_deps_command_check_all_some_missing(self):
+    def test_deps_command_check_all_some_missing(self) -> None:
         """Test checking all dependencies when some missing."""
         # Import first to get the actual function
         from provide.foundation.cli.commands import deps as deps_module
@@ -115,7 +115,7 @@ class TestDepsCommandWithClick:
             # Since we have 1 available and 1 missing, it should exit 1
             assert exc_info.value.code == 1
 
-    def test_deps_command_check_all_quiet(self):
+    def test_deps_command_check_all_quiet(self) -> None:
         """Test checking all dependencies in quiet mode."""
         from provide.foundation.cli.commands import deps as deps_module
 
@@ -134,7 +134,7 @@ class TestDepsCommandWithClick:
 class TestDepsCommandWithoutClick:
     """Test deps command when click is not available."""
 
-    def test_deps_command_without_click(self):
+    def test_deps_command_without_click(self) -> None:
         """Test deps_command raises error when click not available."""
         # This test simulates when click is not installed
         import importlib
@@ -162,7 +162,7 @@ class TestDepsCommandWithoutClick:
 
             importlib.reload(deps_module)
 
-    def test_require_click_raises_error(self):
+    def test_require_click_raises_error(self) -> None:
         """Test _require_click raises appropriate error."""
         with patch("provide.foundation.cli.commands.deps._HAS_CLICK", False):
             from provide.foundation.cli.commands.deps import _require_click
@@ -173,7 +173,7 @@ class TestDepsCommandWithoutClick:
             assert "CLI commands require optional dependencies" in str(exc_info.value)
             assert "pip install 'provide-foundation[cli]'" in str(exc_info.value)
 
-    def test_deps_command_stub_with_args(self):
+    def test_deps_command_stub_with_args(self) -> None:
         """Test deps_command stub ignores args and raises error."""
         # Test the stub function behavior
         import importlib
@@ -205,7 +205,7 @@ class TestDepsCommandWithoutClick:
 class TestDepsCommandDecorators:
     """Test click decorators on deps_command."""
 
-    def test_click_decorators_applied(self):
+    def test_click_decorators_applied(self) -> None:
         """Test that click decorators are properly applied."""
         # Test that the decorated function exists and has expected attributes
         from provide.foundation.cli.commands.deps import deps_command
@@ -218,20 +218,20 @@ class TestDepsCommandDecorators:
 class TestDepsCommandModuleImport:
     """Test module-level import behavior."""
 
-    def test_module_imports_successfully(self):
+    def test_module_imports_successfully(self) -> None:
         """Test module imports without errors."""
         import provide.foundation.cli.commands.deps
 
         assert provide.foundation.cli.commands.deps.__all__ == ["deps_command"]
 
-    def test_has_click_flag_exists(self):
+    def test_has_click_flag_exists(self) -> None:
         """Test _HAS_CLICK flag exists."""
         from provide.foundation.cli.commands import deps
 
         assert hasattr(deps, "_HAS_CLICK")
         assert isinstance(deps._HAS_CLICK, bool)
 
-    def test_click_import_handling(self):
+    def test_click_import_handling(self) -> None:
         """Test click import is handled properly."""
         # Test that the module handles click import correctly
         import provide.foundation.cli.commands.deps as deps_module
@@ -246,7 +246,7 @@ class TestDepsCommandModuleImport:
 class TestDepsCommandEdgeCases:
     """Test edge cases and error conditions."""
 
-    def test_empty_deps_list(self):
+    def test_empty_deps_list(self) -> None:
         """Test handling empty dependency list."""
         from provide.foundation.cli.commands import deps as deps_module
 
@@ -256,7 +256,7 @@ class TestDepsCommandEdgeCases:
 
             assert exc_info.value.code == 0  # No deps means all available
 
-    def test_check_nonexistent_dependency(self):
+    def test_check_nonexistent_dependency(self) -> None:
         """Test checking non-existent dependency."""
         from provide.foundation.cli.commands import deps as deps_module
 

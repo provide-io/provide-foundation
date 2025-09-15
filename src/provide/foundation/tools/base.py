@@ -22,20 +22,16 @@ class ToolError(FoundationError):
     """Base exception for tool-related errors."""
 
 
-
 class ToolNotFoundError(ToolError):
     """Raised when a tool or version cannot be found."""
-
 
 
 class ToolInstallError(ToolError):
     """Raised when tool installation fails."""
 
 
-
 class ToolVerificationError(ToolError):
     """Raised when tool verification fails."""
-
 
 
 @define
@@ -91,7 +87,7 @@ class BaseToolManager(ABC):
     executable_name: str = ""
     supported_platforms: list[str] = ["linux", "darwin", "windows"]
 
-    def __init__(self, config: BaseConfig):
+    def __init__(self, config: BaseConfig) -> None:
         """Initialize the tool manager.
 
         Args:
@@ -224,10 +220,9 @@ class BaseToolManager(ABC):
             version = self.resolve_version(version)
 
         # Check cache unless forced
-        if not force:
-            if cached_path := self.cache.get(self.tool_name, version):
-                log.info(f"Using cached {self.tool_name} {version}")
-                return cached_path
+        if not force and (cached_path := self.cache.get(self.tool_name, version)):
+            log.info(f"Using cached {self.tool_name} {version}")
+            return cached_path
 
         log.info(f"Installing {self.tool_name} {version}")
 
@@ -238,16 +233,18 @@ class BaseToolManager(ABC):
 
         # Download to secure temporary directory
         from provide.foundation.file.temp import system_temp_dir
+
         download_path = system_temp_dir() / f"{self.tool_name}-{version}"
         artifact_path = self.downloader.download_with_progress(
-            metadata.download_url, download_path, metadata.checksum,
+            metadata.download_url,
+            download_path,
+            metadata.checksum,
         )
 
         # Verify if checksum provided
-        if metadata.checksum:
-            if not self.verifier.verify_checksum(artifact_path, metadata.checksum):
-                artifact_path.unlink()
-                raise ToolVerificationError(f"Checksum verification failed for {self.tool_name} {version}")
+        if metadata.checksum and not self.verifier.verify_checksum(artifact_path, metadata.checksum):
+            artifact_path.unlink()
+            raise ToolVerificationError(f"Checksum verification failed for {self.tool_name} {version}")
 
         # Install
         install_path = self.installer.install(artifact_path, metadata)

@@ -313,7 +313,9 @@ class ArchiveOperations:
             if magic[:3] == b"ustar":  # tar (at offset 257)
                 return ["untar"]
         except Exception:
-            pass
+            # Intentionally ignore all errors (file not found, IO errors, etc.)
+            # and return None to indicate format detection failed
+            pass  # nosec B110
 
         return None
 

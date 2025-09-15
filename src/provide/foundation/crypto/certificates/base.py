@@ -38,7 +38,7 @@ from provide.foundation.crypto.constants import (
 from provide.foundation.errors.config import ValidationError
 
 
-def _require_crypto():
+def _require_crypto() -> None:
     """Ensure cryptography is available for crypto operations."""
     if not _HAS_CRYPTO:
         raise ImportError(

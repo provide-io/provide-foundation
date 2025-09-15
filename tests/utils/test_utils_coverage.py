@@ -8,7 +8,7 @@ from attrs import define, field, fields
 
 from provide.foundation import LoggingConfig, TelemetryConfig, get_hub, logger
 from provide.foundation.utils import timed_block
-from provide.foundation.utils.formatting import format_table, to_camel_case
+from provide.foundation.utils.text_utils import format_table, to_camel_case
 from provide.foundation.utils.parsing import auto_parse, parse_typed_value
 
 
@@ -166,7 +166,7 @@ class TestTimingCoverage:
 class TestEnvUtilsCoverage:
     """Coverage for environment utilities."""
 
-    def test_get_bool_edge_cases(self):
+    def test_get_bool_edge_cases(self) -> None:
         """Test edge cases for get_bool function."""
         import os
         from unittest.mock import patch
@@ -186,11 +186,11 @@ class TestEnvUtilsCoverage:
         with patch.dict(os.environ, {"TEST_BOOL": "invalid"}):
             try:
                 get_bool("TEST_BOOL")
-                assert False, "Should have raised ValidationError"
+                raise AssertionError("Should have raised ValidationError")
             except ValidationError as e:
                 assert "Invalid boolean value" in str(e)
 
-    def test_get_int_edge_cases(self):
+    def test_get_int_edge_cases(self) -> None:
         """Test edge cases for get_int function."""
         import os
         from unittest.mock import patch
@@ -210,11 +210,11 @@ class TestEnvUtilsCoverage:
         with patch.dict(os.environ, {"TEST_INT": "not_a_number"}):
             try:
                 get_int("TEST_INT")
-                assert False, "Should have raised ValidationError"
+                raise AssertionError("Should have raised ValidationError")
             except ValidationError as e:
                 assert "Invalid integer value" in str(e)
 
-    def test_get_float_edge_cases(self):
+    def test_get_float_edge_cases(self) -> None:
         """Test edge cases for get_float function."""
         import os
         from unittest.mock import patch
@@ -234,11 +234,11 @@ class TestEnvUtilsCoverage:
         with patch.dict(os.environ, {"TEST_FLOAT": "not_a_float"}):
             try:
                 get_float("TEST_FLOAT")
-                assert False, "Should have raised ValidationError"
+                raise AssertionError("Should have raised ValidationError")
             except ValidationError as e:
                 assert "Invalid float value" in str(e)
 
-    def test_get_str_with_default(self):
+    def test_get_str_with_default(self) -> None:
         """Test get_str with default value."""
         import os
         from unittest.mock import patch

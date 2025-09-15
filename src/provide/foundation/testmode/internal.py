@@ -28,6 +28,7 @@ def reset_logger_state() -> None:
     """
     try:
         from provide.foundation.logger.core import _LAZY_SETUP_STATE
+
         _LAZY_SETUP_STATE.update({"done": False, "error": None, "in_progress": False})
     except ImportError:
         # Logger state not available, skip
@@ -35,6 +36,7 @@ def reset_logger_state() -> None:
 
     try:
         from provide.foundation.logger.core import logger as foundation_logger
+
         # Reset foundation logger state
         foundation_logger._is_configured_by_setup = False
         foundation_logger._active_config = None
@@ -52,6 +54,7 @@ def reset_hub_state() -> None:
     """
     try:
         from provide.foundation.hub.manager import clear_hub
+
         clear_hub()
     except ImportError:
         # Hub module not available, skip
@@ -66,6 +69,7 @@ def reset_streams_state() -> None:
     """
     try:
         from provide.foundation.streams.file import reset_streams
+
         reset_streams()
     except ImportError:
         # Streams module not available, skip
@@ -80,6 +84,7 @@ def reset_eventsets_state() -> None:
     """
     try:
         from provide.foundation.eventsets.registry import clear_registry
+
         clear_registry()
     except ImportError:
         # Event sets may not be available in all test environments
@@ -94,6 +99,7 @@ def reset_coordinator_state() -> None:
     """
     try:
         from provide.foundation.logger.setup.coordinator import reset_coordinator_state
+
         reset_coordinator_state()
     except ImportError:
         # Coordinator module not available, skip
@@ -101,6 +107,7 @@ def reset_coordinator_state() -> None:
 
     try:
         from provide.foundation.logger.setup.coordinator import reset_setup_logger_cache
+
         reset_setup_logger_cache()
     except ImportError:
         # Setup logger cache not available, skip

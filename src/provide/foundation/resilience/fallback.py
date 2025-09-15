@@ -1,5 +1,4 @@
-"""Fallback implementation for graceful degradation.
-"""
+"""Fallback implementation for graceful degradation."""
 
 import asyncio
 from collections.abc import Callable

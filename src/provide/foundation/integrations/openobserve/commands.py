@@ -206,7 +206,11 @@ if _HAS_CLICK:
     )
     @click.pass_obj
     def errors_command(
-        client: "OpenObserveClient | None", stream: str, start: str, size: int, format: str,
+        client: "OpenObserveClient | None",
+        stream: str,
+        start: str,
+        size: int,
+        format: str,
     ) -> int | None:
         """Search for error logs."""
         if client is None:
@@ -250,7 +254,10 @@ if _HAS_CLICK:
     )
     @click.pass_obj
     def trace_command(
-        client: "OpenObserveClient | None", trace_id: str, stream: str, format: str,
+        client: "OpenObserveClient | None",
+        trace_id: str,
+        stream: str,
+        format: str,
     ) -> int | None:
         """Search for logs by trace ID."""
         if client is None:

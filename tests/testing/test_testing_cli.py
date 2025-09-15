@@ -20,7 +20,7 @@ import pytest
 class TestMockContext:
     """Test the MockContext class."""
 
-    def test_mock_context_tracks_calls(self):
+    def test_mock_context_tracks_calls(self) -> None:
         """Test that MockContext tracks method calls."""
         ctx = MockContext()
 
@@ -28,7 +28,7 @@ class TestMockContext:
         assert ctx.saved_configs == []
         assert ctx.loaded_configs == []
 
-    def test_mock_context_tracks_save_config(self):
+    def test_mock_context_tracks_save_config(self) -> None:
         """Test that save_config calls are tracked."""
         ctx = MockContext()
 
@@ -38,7 +38,7 @@ class TestMockContext:
 
         assert str(tmp_path) in [str(p) for p in ctx.saved_configs]
 
-    def test_mock_context_tracks_load_config(self):
+    def test_mock_context_tracks_load_config(self) -> None:
         """Test that load_config calls are tracked."""
         ctx = MockContext()
 
@@ -55,12 +55,12 @@ class TestMockContext:
 class TestIsolatedCliRunner:
     """Test the isolated CLI runner context manager."""
 
-    def test_isolated_runner_basic(self):
+    def test_isolated_runner_basic(self) -> None:
         """Test basic isolated runner functionality."""
         with isolated_cli_runner() as runner:
             assert isinstance(runner, CliRunner)
 
-    def test_isolated_runner_with_env(self):
+    def test_isolated_runner_with_env(self) -> None:
         """Test isolated runner with environment variables."""
         test_env = {"TEST_VAR": "test_value"}
 
@@ -70,7 +70,7 @@ class TestIsolatedCliRunner:
         # Should be cleaned up
         assert os.environ.get("TEST_VAR") is None
 
-    def test_isolated_runner_restores_env(self):
+    def test_isolated_runner_restores_env(self) -> None:
         """Test that environment is properly restored."""
         original_value = os.environ.get("TEST_VAR", "not_set")
 
@@ -81,7 +81,7 @@ class TestIsolatedCliRunner:
         current_value = os.environ.get("TEST_VAR", "not_set")
         assert current_value == original_value
 
-    def test_isolated_runner_output_separation(self):
+    def test_isolated_runner_output_separation(self) -> None:
         """Test isolated runner handles stdout/stderr separately."""
         with isolated_cli_runner() as runner:
             assert isinstance(runner, CliRunner)
@@ -90,7 +90,7 @@ class TestIsolatedCliRunner:
 class TestTempConfigFile:
     """Test temporary config file creation."""
 
-    def test_temp_config_json(self):
+    def test_temp_config_json(self) -> None:
         """Test creating temporary JSON config."""
         config = {"key": "value", "number": 42}
 
@@ -106,7 +106,7 @@ class TestTempConfigFile:
         # Should be cleaned up
         assert not config_path.exists()
 
-    def test_temp_config_yaml(self):
+    def test_temp_config_yaml(self) -> None:
         """Test creating temporary YAML config."""
         pytest.importorskip("yaml")
 
@@ -123,7 +123,7 @@ class TestTempConfigFile:
 
             assert loaded == config
 
-    def test_temp_config_toml_fallback(self):
+    def test_temp_config_toml_fallback(self) -> None:
         """Test TOML config with fallback formatting."""
         config = {"key": "value", "number": 42}
 
@@ -135,7 +135,7 @@ class TestTempConfigFile:
             assert 'key = "value"' in content
             assert "number = 42" in content
 
-    def test_temp_config_string_content(self):
+    def test_temp_config_string_content(self) -> None:
         """Test creating config file with string content."""
         content = "key = value\nsection = test"
 
@@ -146,18 +146,18 @@ class TestTempConfigFile:
 class TestCreateTestCli:
     """Test test CLI creation."""
 
-    def test_create_basic_cli(self):
+    def test_create_basic_cli(self) -> None:
         """Test creating basic test CLI."""
         cli = create_test_cli()
 
         assert isinstance(cli, click.Group)
         assert cli.name == "test-cli"
 
-    def test_create_cli_with_commands(self):
+    def test_create_cli_with_commands(self) -> None:
         """Test creating CLI with additional commands."""
 
         @click.command()
-        def test_cmd():
+        def test_cmd() -> None:
             """Test command."""
             click.echo("test")
 
@@ -166,7 +166,7 @@ class TestCreateTestCli:
         # Click normalizes function names by removing underscores
         assert "test" in cli.commands
 
-    def test_create_cli_custom_name_version(self):
+    def test_create_cli_custom_name_version(self) -> None:
         """Test creating CLI with custom name and version."""
         cli = create_test_cli(name="custom-cli", version="2.0.0")
 
@@ -176,7 +176,7 @@ class TestCreateTestCli:
 class TestMockLogger:
     """Test mock logger creation."""
 
-    def test_mock_logger_has_methods(self, mock_logger):
+    def test_mock_logger_has_methods(self, mock_logger) -> None:
         """Test that mock logger has all expected methods."""
         methods = ["debug", "info", "warning", "error", "critical"]
         for method in methods:
@@ -185,7 +185,7 @@ class TestMockLogger:
             from unittest.mock import Mock
             assert isinstance(getattr(mock_logger, method), Mock)
 
-    def test_mock_logger_methods_callable(self, mock_logger):
+    def test_mock_logger_methods_callable(self, mock_logger) -> None:
         """Test that mock logger methods are callable."""
         # Should not raise any exceptions
         mock_logger.debug("test")
@@ -198,7 +198,7 @@ class TestMockLogger:
 class TestCliTestCase:
     """Test the CliTestCase base class."""
 
-    def test_cli_test_case_setup(self):
+    def test_cli_test_case_setup(self) -> None:
         """Test CliTestCase setup method."""
         test_case = CliTestCase()
         test_case.setup_method()
@@ -206,7 +206,7 @@ class TestCliTestCase:
         assert isinstance(test_case.runner, CliRunner)
         assert test_case.temp_files == []
 
-    def test_cli_test_case_temp_file_creation(self):
+    def test_cli_test_case_temp_file_creation(self) -> None:
         """Test temporary file creation and tracking."""
         test_case = CliTestCase()
         test_case.setup_method()
@@ -217,7 +217,7 @@ class TestCliTestCase:
         assert temp_file.read_text() == "test content"
         assert temp_file in test_case.temp_files
 
-    def test_cli_test_case_cleanup(self):
+    def test_cli_test_case_cleanup(self) -> None:
         """Test that cleanup removes temporary files."""
         test_case = CliTestCase()
         test_case.setup_method()
@@ -228,19 +228,19 @@ class TestCliTestCase:
         test_case.teardown_method()
         assert not temp_file.exists()
 
-    def test_cli_test_case_invoke_method(self):
+    def test_cli_test_case_invoke_method(self) -> None:
         """Test the invoke method works."""
         test_case = CliTestCase()
         test_case.setup_method()
 
         @click.command()
-        def simple_cmd():
+        def simple_cmd() -> None:
             click.echo("hello")
 
         result = test_case.invoke(simple_cmd)
         assert result.output.strip() == "hello"
 
-    def test_cli_test_case_assert_json_output(self):
+    def test_cli_test_case_assert_json_output(self) -> None:
         """Test JSON output assertion method."""
         test_case = CliTestCase()
         test_case.setup_method()
@@ -258,7 +258,7 @@ class TestCliTestCase:
         with pytest.raises(AssertionError):
             test_case.assert_json_output(result, {"status": "error"})
 
-    def test_cli_test_case_assert_json_invalid_json(self):
+    def test_cli_test_case_assert_json_invalid_json(self) -> None:
         """Test JSON assertion with invalid JSON."""
         test_case = CliTestCase()
         test_case.setup_method()

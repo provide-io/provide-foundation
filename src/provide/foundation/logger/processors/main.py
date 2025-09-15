@@ -1,8 +1,7 @@
 #
 # processors.py
 #
-"""Structlog processors for Foundation Telemetry.
-"""
+"""Structlog processors for Foundation Telemetry."""
 
 import json
 import logging as stdlib_logging
@@ -40,7 +39,9 @@ def _config_create_service_name_processor(
     service_name: str | None,
 ) -> StructlogProcessor:
     def processor(
-        _logger: Any, _method_name: str, event_dict: structlog.types.EventDict,
+        _logger: Any,
+        _method_name: str,
+        event_dict: structlog.types.EventDict,
     ) -> structlog.types.EventDict:
         if service_name is not None:
             event_dict["service_name"] = service_name
@@ -58,7 +59,9 @@ def _config_create_timestamp_processors(
     if omit_timestamp:
 
         def pop_timestamp_processor(
-            _logger: Any, _method_name: str, event_dict: structlog.types.EventDict,
+            _logger: Any,
+            _method_name: str,
+            event_dict: structlog.types.EventDict,
         ) -> structlog.types.EventDict:
             event_dict.pop("timestamp", None)
             return event_dict
@@ -76,7 +79,9 @@ def _config_create_event_enrichment_processors(
     if logging_config.das_emoji_prefix_enabled:
 
         def add_event_enrichment_processor(
-            _logger: Any, _method_name: str, event_dict: structlog.types.EventDict,
+            _logger: Any,
+            _method_name: str,
+            event_dict: structlog.types.EventDict,
         ) -> structlog.types.EventDict:
             # Lazy import to avoid circular dependency
             from provide.foundation.eventsets.registry import discover_event_sets
@@ -157,7 +162,9 @@ def _config_create_keyvalue_formatter_processors(
     output_stream: TextIO,
 ) -> list[StructlogProcessor]:
     def pop_logger_name_processor(
-        _logger: object, _method_name: str, event_dict: structlog.types.EventDict,
+        _logger: object,
+        _method_name: str,
+        event_dict: structlog.types.EventDict,
     ) -> structlog.types.EventDict:
         event_dict.pop("logger_name", None)
         return event_dict
@@ -170,7 +177,8 @@ def _config_create_keyvalue_formatter_processors(
 
 
 def _build_formatter_processors_list(
-    logging_config: LoggingConfig, output_stream: TextIO,
+    logging_config: LoggingConfig,
+    output_stream: TextIO,
 ) -> list[StructlogProcessor]:
     match logging_config.console_formatter:
         case "json":

@@ -70,6 +70,7 @@ def error_boundary(
 
             # Log the error
             from provide.foundation.hub.foundation import get_foundation_logger
+
             get_foundation_logger().error(f"Error caught in boundary: {e}", exc_info=True, **error_context)
 
         # Call error handler if provided
@@ -79,6 +80,7 @@ def error_boundary(
             except Exception as handler_error:
                 if log_errors:
                     from provide.foundation.hub.foundation import get_foundation_logger
+
                     get_foundation_logger().error(
                         f"Error handler failed: {handler_error}",
                         exc_info=True,
@@ -131,6 +133,7 @@ def transactional(
     except Exception as e:
         if log_errors:
             from provide.foundation.hub.foundation import get_foundation_logger
+
             get_foundation_logger().error("Transaction failed, rolling back", exc_info=True, error=str(e))
 
         # Call error handler if provided
@@ -140,6 +143,7 @@ def transactional(
             except Exception as handler_error:
                 if log_errors:
                     from provide.foundation.hub.foundation import get_foundation_logger
+
                     get_foundation_logger().error(
                         f"Transaction error handler failed: {handler_error}",
                         original_error=str(e),
@@ -154,6 +158,7 @@ def transactional(
         except Exception as rollback_error:
             if log_errors:
                 from provide.foundation.hub.foundation import get_foundation_logger
+
                 get_foundation_logger().critical(f"Rollback failed: {rollback_error}", original_error=str(e))
             # Re-raise the rollback error as it's more critical
             raise rollback_error from e
@@ -201,6 +206,7 @@ def handle_error(
     if log:
         log_context = context.to_dict() if context else {}
         from provide.foundation.hub.foundation import get_foundation_logger
+
         get_foundation_logger().error(f"Handling error: {error}", exc_info=True, **log_context)
 
     # Re-raise if requested
@@ -284,6 +290,7 @@ class ErrorHandler:
             if self.reraise_unhandled and handler is self.default_action:
                 if self.log_all:
                     from provide.foundation.hub.foundation import get_foundation_logger
+
                     get_foundation_logger().warning(
                         f"No handler for {type(error).__name__}, re-raising",
                         error=str(error),
@@ -299,6 +306,7 @@ class ErrorHandler:
         if self.log_all:
             log_context = context.to_dict() if context else {}
             from provide.foundation.hub.foundation import get_foundation_logger
+
             get_foundation_logger().info(
                 f"Handling {type(error).__name__} with {handler.__name__}",
                 **log_context,
@@ -310,6 +318,7 @@ class ErrorHandler:
         except Exception as handler_error:
             if self.log_all:
                 from provide.foundation.hub.foundation import get_foundation_logger
+
                 get_foundation_logger().error(
                     f"Error handler failed: {handler_error}",
                     exc_info=True,
@@ -351,6 +360,7 @@ def create_error_handler(**policies: Callable[[Exception], Any]) -> ErrorHandler
             error_policies[error_class] = handler_func
         else:
             from provide.foundation.hub.foundation import get_foundation_logger
+
             get_foundation_logger().warning(f"Unknown error type: {error_name}")
 
     return ErrorHandler(policies=error_policies, default_action=default)

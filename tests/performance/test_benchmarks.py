@@ -34,11 +34,11 @@ def capture_logs():
 class TestBasicLoggingPerformance:
     """Basic logging performance benchmarks."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Reset Foundation state before each test."""
         reset_foundation_setup_for_testing()
 
-    def test_basic_logging_throughput(self, benchmark):
+    def test_basic_logging_throughput(self, benchmark) -> None:
         """Benchmark basic logging operations with emoji processing.
 
         Target: >14,000 messages per second
@@ -57,7 +57,7 @@ class TestBasicLoggingPerformance:
             hub.initialize_foundation(config, force=True)
             test_logger = logger.get_logger("benchmark.basic")
 
-            def log_messages():
+            def log_messages() -> None:
                 """Function to benchmark - logs 1000 messages."""
                 for i in range(1000):
                     test_logger.info(f"Benchmark message {i}", iteration=i)
@@ -68,7 +68,7 @@ class TestBasicLoggingPerformance:
             # Performance targets are validated by pytest-benchmark's built-in features
             # The benchmark results show we're achieving >100k msg/sec, well above 1000 target
 
-    def test_json_formatting_performance(self, benchmark):
+    def test_json_formatting_performance(self, benchmark) -> None:
         """Benchmark JSON output formatting with emoji processing.
 
         Target: >500 messages per second for JSON formatting
@@ -87,7 +87,7 @@ class TestBasicLoggingPerformance:
             hub.initialize_foundation(config, force=True)
             test_logger = logger.get_logger("benchmark.json")
 
-            def log_json_messages():
+            def log_json_messages() -> None:
                 """Function to benchmark - logs 500 structured messages."""
                 for i in range(500):
                     test_logger.info(
@@ -104,7 +104,7 @@ class TestBasicLoggingPerformance:
 
             # Performance validated by benchmark output - achieving >200k ops/sec
 
-    def test_emoji_processing_performance(self, benchmark):
+    def test_emoji_processing_performance(self, benchmark) -> None:
         """Benchmark emoji processing overhead."""
         config = TelemetryConfig(
             logging=LoggingConfig(
@@ -120,7 +120,7 @@ class TestBasicLoggingPerformance:
             hub.initialize_foundation(config, force=True)
             test_logger = logger.get_logger("benchmark.emoji")
 
-            def log_with_emoji():
+            def log_with_emoji() -> None:
                 """Function to benchmark - logs with emoji processing."""
                 for i in range(500):
                     test_logger.info(
@@ -139,11 +139,11 @@ class TestBasicLoggingPerformance:
 class TestConcurrentPerformance:
     """Concurrent and async performance benchmarks."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Reset Foundation state before each test."""
         reset_foundation_setup_for_testing()
 
-    def test_multithreaded_logging_performance(self, benchmark):
+    def test_multithreaded_logging_performance(self, benchmark) -> None:
         """Benchmark thread safety and concurrent performance."""
         config = TelemetryConfig(
             logging=LoggingConfig(
@@ -156,7 +156,7 @@ class TestConcurrentPerformance:
             hub = get_hub()
             hub.initialize_foundation(config, force=True)
 
-            def worker_thread(thread_id: int, message_count: int):
+            def worker_thread(thread_id: int, message_count: int) -> None:
                 """Worker function for multithreaded logging."""
                 thread_logger = logger.get_logger(f"benchmark.thread.{thread_id}")
                 for i in range(message_count):
@@ -164,7 +164,7 @@ class TestConcurrentPerformance:
                         f"Thread {thread_id} message {i}", thread_id=thread_id, msg_id=i,
                     )
 
-            def multithreaded_logging():
+            def multithreaded_logging() -> None:
                 """Function to benchmark - concurrent logging."""
                 thread_count = 5
                 messages_per_thread = 100
@@ -182,7 +182,7 @@ class TestConcurrentPerformance:
 
             # Performance validated by benchmark output - achieving >250k ops/sec
 
-    def test_level_filtering_performance(self, benchmark):
+    def test_level_filtering_performance(self, benchmark) -> None:
         """Benchmark log level filtering efficiency."""
         config = TelemetryConfig(
             logging=LoggingConfig(
@@ -199,7 +199,7 @@ class TestConcurrentPerformance:
             filtered_logger = logger.get_logger("benchmark.filtered")
             blocked_logger = logger.get_logger("benchmark.blocked")
 
-            def level_filtering_test():
+            def level_filtering_test() -> None:
                 """Function to benchmark - level filtering."""
                 for i in range(500):
                     filtered_logger.debug(f"Allowed message {i}")  # Should pass
@@ -214,14 +214,14 @@ class TestConcurrentPerformance:
 class TestDogfoodingPerformance:
     """Specific benchmarks for dogfooding improvements."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Reset Foundation state before each test."""
         reset_foundation_setup_for_testing()
 
-    def test_config_warning_performance(self, benchmark):
+    def test_config_warning_performance(self, benchmark) -> None:
         """Benchmark config system warning generation with structured logging."""
 
-        def generate_config_warnings():
+        def generate_config_warnings() -> None:
             """Test config warnings (which now use structured logging)."""
             # This will trigger our improved warning system
             LoggingConfig(
@@ -236,10 +236,10 @@ class TestDogfoodingPerformance:
 
         # Performance validated by benchmark output - config operations are very fast
 
-    def test_foundation_setup_performance(self, benchmark):
+    def test_foundation_setup_performance(self, benchmark) -> None:
         """Benchmark Foundation setup with structured logging improvements."""
 
-        def foundation_setup():
+        def foundation_setup() -> None:
             """Test the improved Foundation setup process."""
             reset_foundation_setup_for_testing()
             config = TelemetryConfig(
@@ -257,10 +257,10 @@ class TestDogfoodingPerformance:
 
         # Performance validated by benchmark output - setup completes quickly
 
-    def test_core_setup_logger_performance(self, benchmark):
+    def test_core_setup_logger_performance(self, benchmark) -> None:
         """Benchmark the Foundation setup process with structured logging."""
 
-        def foundation_setup_cycle():
+        def foundation_setup_cycle() -> None:
             """Test the Foundation setup/reset cycle performance."""
             reset_foundation_setup_for_testing()
             config = TelemetryConfig(
@@ -281,11 +281,11 @@ class TestDogfoodingPerformance:
 class TestLargePayloadPerformance:
     """Performance benchmarks for large payloads."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Reset Foundation state before each test."""
         reset_foundation_setup_for_testing()
 
-    def test_large_payload_performance(self, benchmark):
+    def test_large_payload_performance(self, benchmark) -> None:
         """Benchmark performance with large structured data."""
         config = TelemetryConfig(
             logging=LoggingConfig(
@@ -306,7 +306,7 @@ class TestLargePayloadPerformance:
                 "nested_data": {"level1": {"level2": {"data": ["item"] * 50}}},
             }
 
-            def log_large_payloads():
+            def log_large_payloads() -> None:
                 """Function to benchmark - large payload logging."""
                 for i in range(100):
                     test_logger.info(

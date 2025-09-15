@@ -18,7 +18,7 @@ from provide.foundation.streams.console import (
 class TestGetConsoleStream:
     """Test get_console_stream function."""
 
-    def test_returns_log_stream(self):
+    def test_returns_log_stream(self) -> None:
         """Test that get_console_stream returns the current log stream."""
         from provide.foundation.streams.core import get_log_stream
 
@@ -32,7 +32,7 @@ class TestGetConsoleStream:
 class TestIsTTY:
     """Test is_tty function."""
 
-    def test_is_tty_with_tty_stream(self):
+    def test_is_tty_with_tty_stream(self) -> None:
         """Test is_tty with a TTY stream."""
         from provide.foundation.streams.core import set_log_stream_for_testing
 
@@ -48,7 +48,7 @@ class TestIsTTY:
         finally:
             set_log_stream_for_testing(None)
 
-    def test_is_tty_with_non_tty_stream(self):
+    def test_is_tty_with_non_tty_stream(self) -> None:
         """Test is_tty with a non-TTY stream."""
         from provide.foundation.streams.core import set_log_stream_for_testing
 
@@ -64,7 +64,7 @@ class TestIsTTY:
         finally:
             set_log_stream_for_testing(None)
 
-    def test_is_tty_with_stream_without_isatty(self):
+    def test_is_tty_with_stream_without_isatty(self) -> None:
         """Test is_tty with a stream that doesn't have isatty method."""
         from provide.foundation.streams.core import set_log_stream_for_testing
 
@@ -83,7 +83,7 @@ class TestIsTTY:
 class TestSupportsColor:
     """Test supports_color function."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Clean up environment variables before each test."""
         from provide.foundation.streams.config import reset_stream_config
 
@@ -98,7 +98,7 @@ class TestSupportsColor:
         # Reset cached stream config
         reset_stream_config()
 
-    def teardown_method(self):
+    def teardown_method(self) -> None:
         """Restore environment variables after each test."""
         from provide.foundation.streams.config import reset_stream_config
 
@@ -116,7 +116,7 @@ class TestSupportsColor:
         # Reset stream config to pick up restored environment
         reset_stream_config()
 
-    def test_no_color_environment_disables_color(self):
+    def test_no_color_environment_disables_color(self) -> None:
         """Test that NO_COLOR environment variable disables color."""
         from provide.foundation.streams.config import reset_stream_config
 
@@ -125,7 +125,7 @@ class TestSupportsColor:
 
         assert supports_color() is False
 
-    def test_force_color_environment_enables_color(self):
+    def test_force_color_environment_enables_color(self) -> None:
         """Test that FORCE_COLOR environment variable enables color."""
         from provide.foundation.streams.config import reset_stream_config
 
@@ -134,7 +134,7 @@ class TestSupportsColor:
 
         assert supports_color() is True
 
-    def test_force_color_overrides_tty_check(self):
+    def test_force_color_overrides_tty_check(self) -> None:
         """Test that FORCE_COLOR works even with non-TTY."""
         from provide.foundation.streams.config import reset_stream_config
         from provide.foundation.streams.core import set_log_stream_for_testing
@@ -153,14 +153,14 @@ class TestSupportsColor:
         finally:
             set_log_stream_for_testing(None)
 
-    def test_no_color_overrides_force_color(self):
+    def test_no_color_overrides_force_color(self) -> None:
         """Test that NO_COLOR takes precedence over FORCE_COLOR."""
         os.environ["NO_COLOR"] = "1"
         os.environ["FORCE_COLOR"] = "1"
 
         assert supports_color() is False
 
-    def test_supports_color_falls_back_to_tty_check(self):
+    def test_supports_color_falls_back_to_tty_check(self) -> None:
         """Test that supports_color falls back to TTY check when no env vars set."""
         from provide.foundation.streams.core import set_log_stream_for_testing
 
@@ -190,7 +190,7 @@ class TestSupportsColor:
 class TestWriteToConsole:
     """Test write_to_console function."""
 
-    def test_write_to_default_console_stream(self):
+    def test_write_to_default_console_stream(self) -> None:
         """Test writing to default console stream."""
         from provide.foundation.streams.core import set_log_stream_for_testing
 
@@ -205,7 +205,7 @@ class TestWriteToConsole:
         finally:
             set_log_stream_for_testing(None)
 
-    def test_write_to_specific_stream(self):
+    def test_write_to_specific_stream(self) -> None:
         """Test writing to a specific stream."""
         mock_stream = Mock()
 
@@ -214,7 +214,7 @@ class TestWriteToConsole:
         mock_stream.write.assert_called_once_with("test message")
         mock_stream.flush.assert_called_once()
 
-    def test_write_to_console_with_exception_fallback(self):
+    def test_write_to_console_with_exception_fallback(self) -> None:
         """Test write_to_console with exception falling back to stderr."""
         from provide.foundation.streams.core import set_log_stream_for_testing
 
@@ -240,7 +240,7 @@ class TestWriteToConsole:
             finally:
                 set_log_stream_for_testing(None)
 
-    def test_write_to_console_with_flush_exception_fallback(self):
+    def test_write_to_console_with_flush_exception_fallback(self) -> None:
         """Test write_to_console with flush exception falling back to stderr."""
         from provide.foundation.streams.core import set_log_stream_for_testing
 
@@ -267,7 +267,7 @@ class TestWriteToConsole:
             finally:
                 set_log_stream_for_testing(None)
 
-    def test_write_to_specific_stream_with_exception_fallback(self):
+    def test_write_to_specific_stream_with_exception_fallback(self) -> None:
         """Test write_to_console with specific stream that fails."""
         mock_failing_stream = Mock()
         mock_failing_stream.write.side_effect = Exception("Write failed")
@@ -289,7 +289,7 @@ class TestWriteToConsole:
 class TestConsoleIntegration:
     """Test integration scenarios for console functions."""
 
-    def test_write_to_console_respects_log_stream_changes(self):
+    def test_write_to_console_respects_log_stream_changes(self) -> None:
         """Test that write_to_console respects log stream changes."""
         from provide.foundation.streams.core import set_log_stream_for_testing
 
@@ -312,7 +312,7 @@ class TestConsoleIntegration:
         finally:
             set_log_stream_for_testing(None)
 
-    def test_color_support_and_tty_integration(self):
+    def test_color_support_and_tty_integration(self) -> None:
         """Test integration between color support and TTY detection."""
         from provide.foundation.streams.core import set_log_stream_for_testing
 

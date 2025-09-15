@@ -117,6 +117,7 @@ def check_optional_deps(*, quiet: bool = False, return_status: bool = False) -> 
 
     if not quiet:
         from provide.foundation.hub.foundation import get_foundation_logger
+
         log = get_foundation_logger()
         log.info("📦 provide-foundation Optional Dependencies Status")
         log.info("=" * 50)

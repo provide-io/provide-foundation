@@ -10,7 +10,7 @@ from provide.foundation.errors.process import (
 class TestProcessError:
     """Test ProcessError class comprehensively."""
 
-    def test_basic_process_error(self):
+    def test_basic_process_error(self) -> None:
         """Test basic ProcessError initialization."""
         error = ProcessError("Process failed")
 
@@ -22,7 +22,7 @@ class TestProcessError:
         assert error.timeout is False
         assert error._default_code() == "PROCESS_ERROR"
 
-    def test_process_error_with_command_string(self):
+    def test_process_error_with_command_string(self) -> None:
         """Test ProcessError with string command."""
         error = ProcessError("Command failed", command="ls -la", return_code=1)
 
@@ -31,7 +31,7 @@ class TestProcessError:
         assert error.command == "ls -la"
         assert error.return_code == 1
 
-    def test_process_error_with_command_list(self):
+    def test_process_error_with_command_list(self) -> None:
         """Test ProcessError with list command."""
         error = ProcessError(
             "Command failed", command=["ls", "-la", "/nonexistent"], return_code=2,
@@ -44,7 +44,7 @@ class TestProcessError:
         assert error.command == ["ls", "-la", "/nonexistent"]
         assert error.return_code == 2
 
-    def test_process_error_with_timeout(self):
+    def test_process_error_with_timeout(self) -> None:
         """Test ProcessError with timeout flag."""
         error = ProcessError("Process timed out", command="sleep 10", timeout=True)
 
@@ -52,7 +52,7 @@ class TestProcessError:
         assert str(error) == expected_message
         assert error.timeout is True
 
-    def test_process_error_with_stdout_string(self):
+    def test_process_error_with_stdout_string(self) -> None:
         """Test ProcessError with string stdout."""
         error = ProcessError(
             "Command output", command="echo hello", stdout="hello world\n",
@@ -64,7 +64,7 @@ class TestProcessError:
         assert str(error) == expected_message
         assert error.stdout == "hello world"
 
-    def test_process_error_with_stdout_bytes(self):
+    def test_process_error_with_stdout_bytes(self) -> None:
         """Test ProcessError with bytes stdout."""
         error = ProcessError(
             "Command output", command="cat file.txt", stdout=b"binary content\n",
@@ -76,7 +76,7 @@ class TestProcessError:
         assert str(error) == expected_message
         assert error.stdout == "binary content"
 
-    def test_process_error_with_stderr_string(self):
+    def test_process_error_with_stderr_string(self) -> None:
         """Test ProcessError with string stderr."""
         error = ProcessError(
             "Command failed",
@@ -88,7 +88,7 @@ class TestProcessError:
         assert str(error) == expected_message
         assert error.stderr == "cat: /nonexistent: No such file or directory"
 
-    def test_process_error_with_stderr_bytes(self):
+    def test_process_error_with_stderr_bytes(self) -> None:
         """Test ProcessError with bytes stderr."""
         error = ProcessError(
             "Command failed", command="invalid_command", stderr=b"command not found\n",
@@ -98,7 +98,7 @@ class TestProcessError:
         assert str(error) == expected_message
         assert error.stderr == "command not found"
 
-    def test_process_error_with_both_outputs(self):
+    def test_process_error_with_both_outputs(self) -> None:
         """Test ProcessError with both stdout and stderr."""
         error = ProcessError(
             "Mixed output",
@@ -116,7 +116,7 @@ class TestProcessError:
         assert error.stdout == "successful part"
         assert error.stderr == "warning message"
 
-    def test_process_error_with_empty_stdout(self):
+    def test_process_error_with_empty_stdout(self) -> None:
         """Test ProcessError with empty stdout (should be ignored)."""
         error = ProcessError("No output", command="silent_cmd", stdout="")
 
@@ -124,7 +124,7 @@ class TestProcessError:
         assert str(error) == expected_message
         assert error.stdout is None
 
-    def test_process_error_with_empty_stderr(self):
+    def test_process_error_with_empty_stderr(self) -> None:
         """Test ProcessError with empty stderr (should be ignored)."""
         error = ProcessError("No errors", command="clean_cmd", stderr="")
 
@@ -132,7 +132,7 @@ class TestProcessError:
         assert str(error) == expected_message
         assert error.stderr is None
 
-    def test_process_error_with_whitespace_only_stdout(self):
+    def test_process_error_with_whitespace_only_stdout(self) -> None:
         """Test ProcessError with whitespace-only stdout (should be stripped to empty)."""
         error = ProcessError(
             "Whitespace output", command="space_cmd", stdout="   \n\t  \n   ",
@@ -142,7 +142,7 @@ class TestProcessError:
         assert str(error) == expected_message
         assert error.stdout == ""
 
-    def test_process_error_with_whitespace_only_stderr(self):
+    def test_process_error_with_whitespace_only_stderr(self) -> None:
         """Test ProcessError with whitespace-only stderr (should be stripped to empty)."""
         error = ProcessError(
             "Whitespace errors", command="space_cmd", stderr="   \n\t  \n   ",
@@ -152,7 +152,7 @@ class TestProcessError:
         assert str(error) == expected_message
         assert error.stderr == ""
 
-    def test_process_error_with_extra_context(self):
+    def test_process_error_with_extra_context(self) -> None:
         """Test ProcessError with extra context information."""
         error = ProcessError(
             "Context test",
@@ -169,7 +169,7 @@ class TestProcessError:
         assert error.context["process.return_code"] == 42
         assert error.context["process.timeout"] is False
 
-    def test_process_error_comprehensive_scenario(self):
+    def test_process_error_comprehensive_scenario(self) -> None:
         """Test ProcessError with all parameters."""
         error = ProcessError(
             "Full test",
@@ -201,7 +201,7 @@ class TestProcessError:
 class TestCommandNotFoundError:
     """Test CommandNotFoundError class."""
 
-    def test_command_not_found_basic(self):
+    def test_command_not_found_basic(self) -> None:
         """Test basic CommandNotFoundError."""
         error = CommandNotFoundError("Command not found")
 
@@ -209,7 +209,7 @@ class TestCommandNotFoundError:
         assert error._default_code() == "COMMAND_NOT_FOUND"
         assert isinstance(error, ProcessError)
 
-    def test_command_not_found_with_command(self):
+    def test_command_not_found_with_command(self) -> None:
         """Test CommandNotFoundError with command details."""
         error = CommandNotFoundError(
             "Command not found", command="nonexistent_command", return_code=127,
@@ -223,7 +223,7 @@ class TestCommandNotFoundError:
         assert error.return_code == 127
         assert error._default_code() == "COMMAND_NOT_FOUND"
 
-    def test_command_not_found_with_stderr(self):
+    def test_command_not_found_with_stderr(self) -> None:
         """Test CommandNotFoundError with stderr output."""
         error = CommandNotFoundError(
             "Command not available",
@@ -242,7 +242,7 @@ class TestCommandNotFoundError:
 class TestProcessTimeoutError:
     """Test ProcessTimeoutError class."""
 
-    def test_process_timeout_basic(self):
+    def test_process_timeout_basic(self) -> None:
         """Test basic ProcessTimeoutError."""
         error = ProcessTimeoutError("Process timed out")
 
@@ -251,7 +251,7 @@ class TestProcessTimeoutError:
         assert error.timeout is True
         assert isinstance(error, ProcessError)
 
-    def test_process_timeout_with_command(self):
+    def test_process_timeout_with_command(self) -> None:
         """Test ProcessTimeoutError with command."""
         error = ProcessTimeoutError(
             "Timeout occurred", command="long_running_cmd", timeout_seconds=30.0,
@@ -265,7 +265,7 @@ class TestProcessTimeoutError:
         assert error.timeout is True
         assert error.context["process.timeout_seconds"] == 30.0
 
-    def test_process_timeout_with_outputs(self):
+    def test_process_timeout_with_outputs(self) -> None:
         """Test ProcessTimeoutError with partial outputs."""
         error = ProcessTimeoutError(
             "Timeout with output",
@@ -286,7 +286,7 @@ class TestProcessTimeoutError:
         assert error.context["process.timeout_seconds"] == 60.0
         assert error.timeout is True
 
-    def test_process_timeout_with_bytes_outputs(self):
+    def test_process_timeout_with_bytes_outputs(self) -> None:
         """Test ProcessTimeoutError with bytes outputs."""
         error = ProcessTimeoutError(
             "Timeout with bytes",
@@ -305,7 +305,7 @@ class TestProcessTimeoutError:
         assert error.stdout == "binary stdout"
         assert error.stderr == "binary stderr"
 
-    def test_process_timeout_with_extra_context(self):
+    def test_process_timeout_with_extra_context(self) -> None:
         """Test ProcessTimeoutError with additional context."""
         error = ProcessTimeoutError(
             "Context timeout",
@@ -324,7 +324,7 @@ class TestProcessTimeoutError:
 class TestProcessErrorInheritance:
     """Test inheritance and polymorphism of process errors."""
 
-    def test_all_are_process_errors(self):
+    def test_all_are_process_errors(self) -> None:
         """Test that all error types inherit from ProcessError."""
         process_error = ProcessError("base error")
         command_error = CommandNotFoundError("command error")
@@ -337,7 +337,7 @@ class TestProcessErrorInheritance:
             for error in [process_error, command_error, timeout_error]
         )
 
-    def test_unique_error_codes(self):
+    def test_unique_error_codes(self) -> None:
         """Test that each error type has unique error code."""
         process_error = ProcessError("base")
         command_error = CommandNotFoundError("command")
@@ -354,7 +354,7 @@ class TestProcessErrorInheritance:
         assert "COMMAND_NOT_FOUND" in codes
         assert "PROCESS_TIMEOUT" in codes
 
-    def test_polymorphic_behavior(self):
+    def test_polymorphic_behavior(self) -> None:
         """Test polymorphic behavior of process error types."""
         errors = [
             ProcessError("base error", return_code=1),

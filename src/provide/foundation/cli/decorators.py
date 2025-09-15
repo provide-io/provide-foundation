@@ -249,7 +249,9 @@ def version_option(version: str | None = None, prog_name: str | None = None) -> 
 
     def decorator(f: F) -> F:
         return click.version_option(
-            version=version, prog_name=prog_name, message="%(prog)s version %(version)s",
+            version=version,
+            prog_name=prog_name,
+            message="%(prog)s version %(version)s",
         )(f)
 
     return decorator

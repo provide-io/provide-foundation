@@ -1,5 +1,4 @@
-"""OTLP integration for sending logs to OpenObserve.
-"""
+"""OTLP integration for sending logs to OpenObserve."""
 
 from datetime import datetime
 import json
@@ -250,9 +249,8 @@ def send_log(
 
     """
     # Try OTLP first if preferred and available
-    if prefer_otlp and _HAS_OTEL_LOGS:
-        if send_log_otlp(message, level, service, attributes):
-            return True
+    if prefer_otlp and _HAS_OTEL_LOGS and send_log_otlp(message, level, service, attributes):
+        return True
 
     # Fall back to bulk API
     return send_log_bulk(message, level, service, attributes, client)

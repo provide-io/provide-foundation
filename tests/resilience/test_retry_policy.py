@@ -9,7 +9,7 @@ from provide.foundation.resilience.retry import BackoffStrategy, RetryPolicy
 class TestRetryPolicyConfiguration:
     """Test RetryPolicy configuration and validation."""
 
-    def test_default_configuration(self):
+    def test_default_configuration(self) -> None:
         """Test default policy configuration."""
         policy = RetryPolicy()
 
@@ -21,7 +21,7 @@ class TestRetryPolicyConfiguration:
         assert policy.retryable_errors is None
         assert policy.retryable_status_codes is None
 
-    def test_custom_configuration(self):
+    def test_custom_configuration(self) -> None:
         """Test custom policy configuration."""
         policy = RetryPolicy(
             max_attempts=5,
@@ -41,7 +41,7 @@ class TestRetryPolicyConfiguration:
         assert policy.retryable_errors == (ValueError, TypeError)
         assert policy.retryable_status_codes == {500, 503}
 
-    def test_invalid_max_attempts(self):
+    def test_invalid_max_attempts(self) -> None:
         """Test that invalid max_attempts raises error."""
         with pytest.raises(ValueError) as exc_info:
             RetryPolicy(max_attempts=0)
@@ -51,7 +51,7 @@ class TestRetryPolicyConfiguration:
         with pytest.raises(ValueError):
             RetryPolicy(max_attempts=-1)
 
-    def test_invalid_delays(self):
+    def test_invalid_delays(self) -> None:
         """Test that invalid delays raise errors."""
         with pytest.raises(ValueError) as exc_info:
             RetryPolicy(base_delay=-1.0)
@@ -68,7 +68,7 @@ class TestRetryPolicyConfiguration:
 class TestRetryPolicyDelayCalculation:
     """Test delay calculation for different backoff strategies."""
 
-    def test_fixed_backoff(self):
+    def test_fixed_backoff(self) -> None:
         """Test fixed backoff strategy."""
         policy = RetryPolicy(
             backoff=BackoffStrategy.FIXED,
@@ -81,7 +81,7 @@ class TestRetryPolicyDelayCalculation:
         assert policy.calculate_delay(3) == 2.0
         assert policy.calculate_delay(10) == 2.0
 
-    def test_linear_backoff(self):
+    def test_linear_backoff(self) -> None:
         """Test linear backoff strategy."""
         policy = RetryPolicy(
             backoff=BackoffStrategy.LINEAR,
@@ -94,7 +94,7 @@ class TestRetryPolicyDelayCalculation:
         assert policy.calculate_delay(3) == 6.0
         assert policy.calculate_delay(4) == 8.0
 
-    def test_exponential_backoff(self):
+    def test_exponential_backoff(self) -> None:
         """Test exponential backoff strategy."""
         policy = RetryPolicy(
             backoff=BackoffStrategy.EXPONENTIAL,
@@ -107,7 +107,7 @@ class TestRetryPolicyDelayCalculation:
         assert policy.calculate_delay(3) == 8.0   # 2 * 2^2
         assert policy.calculate_delay(4) == 16.0  # 2 * 2^3
 
-    def test_fibonacci_backoff(self):
+    def test_fibonacci_backoff(self) -> None:
         """Test Fibonacci backoff strategy."""
         policy = RetryPolicy(
             backoff=BackoffStrategy.FIBONACCI,
@@ -122,7 +122,7 @@ class TestRetryPolicyDelayCalculation:
         assert policy.calculate_delay(5) == 5.0  # fib(5) = 5
         assert policy.calculate_delay(6) == 8.0  # fib(6) = 8
 
-    def test_max_delay_cap(self):
+    def test_max_delay_cap(self) -> None:
         """Test that delays are capped at max_delay."""
         policy = RetryPolicy(
             backoff=BackoffStrategy.EXPONENTIAL,
@@ -137,14 +137,14 @@ class TestRetryPolicyDelayCalculation:
         assert policy.calculate_delay(4) == 50.0  # Capped
         assert policy.calculate_delay(10) == 50.0  # Still capped
 
-    def test_zero_attempt_returns_zero(self):
+    def test_zero_attempt_returns_zero(self) -> None:
         """Test that attempt 0 returns 0 delay."""
         policy = RetryPolicy(base_delay=5.0, jitter=False)
 
         assert policy.calculate_delay(0) == 0
         assert policy.calculate_delay(-1) == 0
 
-    def test_jitter_adds_randomness(self):
+    def test_jitter_adds_randomness(self) -> None:
         """Test that jitter adds randomness to delays."""
         policy = RetryPolicy(
             backoff=BackoffStrategy.FIXED,
@@ -169,7 +169,7 @@ class TestRetryPolicyDelayCalculation:
 class TestRetryPolicyShouldRetry:
     """Test should_retry decision logic."""
 
-    def test_should_retry_within_attempts(self):
+    def test_should_retry_within_attempts(self) -> None:
         """Test should_retry returns True within max attempts."""
         policy = RetryPolicy(max_attempts=3)
 
@@ -179,7 +179,7 @@ class TestRetryPolicyShouldRetry:
         assert policy.should_retry(error, 3) is False  # Exceeds max
         assert policy.should_retry(error, 4) is False
 
-    def test_should_retry_with_retryable_errors(self):
+    def test_should_retry_with_retryable_errors(self) -> None:
         """Test should_retry with specific error types."""
         policy = RetryPolicy(
             max_attempts=5,
@@ -197,7 +197,7 @@ class TestRetryPolicyShouldRetry:
         # Even retryable errors stop at max attempts
         assert policy.should_retry(ValueError("test"), 5) is False
 
-    def test_should_retry_none_errors_means_retry_all(self):
+    def test_should_retry_none_errors_means_retry_all(self) -> None:
         """Test that None retryable_errors means retry all errors."""
         policy = RetryPolicy(
             max_attempts=3,
@@ -209,7 +209,7 @@ class TestRetryPolicyShouldRetry:
         assert policy.should_retry(Exception("test"), 1) is True
         assert policy.should_retry(KeyError("test"), 1) is True
 
-    def test_should_retry_response_with_status_codes(self):
+    def test_should_retry_response_with_status_codes(self) -> None:
         """Test should_retry_response for HTTP responses."""
         policy = RetryPolicy(
             max_attempts=3,
@@ -218,7 +218,7 @@ class TestRetryPolicyShouldRetry:
 
         # Mock response objects
         class MockResponse:
-            def __init__(self, status):
+            def __init__(self, status) -> None:
                 self.status = status
 
         # Retryable status codes
@@ -234,7 +234,7 @@ class TestRetryPolicyShouldRetry:
         # Respects max attempts
         assert policy.should_retry_response(MockResponse(500), 3) is False
 
-    def test_should_retry_response_none_codes_means_no_retry(self):
+    def test_should_retry_response_none_codes_means_no_retry(self) -> None:
         """Test that None retryable_status_codes means don't retry responses."""
         policy = RetryPolicy(
             max_attempts=3,
@@ -242,7 +242,7 @@ class TestRetryPolicyShouldRetry:
         )
 
         class MockResponse:
-            def __init__(self, status):
+            def __init__(self, status) -> None:
                 self.status = status
 
         assert policy.should_retry_response(MockResponse(500), 1) is False
@@ -252,7 +252,7 @@ class TestRetryPolicyShouldRetry:
 class TestRetryPolicyComparison:
     """Test RetryPolicy comparison and hashing."""
 
-    def test_equality(self):
+    def test_equality(self) -> None:
         """Test policy equality comparison."""
         policy1 = RetryPolicy(
             max_attempts=3,
@@ -276,7 +276,7 @@ class TestRetryPolicyComparison:
         assert policy1 != policy3
         assert policy2 != policy3
 
-    def test_hashable(self):
+    def test_hashable(self) -> None:
         """Test that policies are hashable."""
         policy1 = RetryPolicy(max_attempts=3)
         policy2 = RetryPolicy(max_attempts=3)
@@ -288,7 +288,7 @@ class TestRetryPolicyComparison:
         # policy1 and policy2 are equal, so set should have 2 items
         assert len(policy_set) == 2
 
-    def test_immutable(self):
+    def test_immutable(self) -> None:
         """Test that policy is immutable (frozen)."""
         policy = RetryPolicy(max_attempts=3)
 
@@ -302,7 +302,7 @@ class TestRetryPolicyComparison:
 class TestRetryPolicyStringRepresentation:
     """Test string representation of RetryPolicy."""
 
-    def test_repr(self):
+    def test_repr(self) -> None:
         """Test __repr__ output."""
         policy = RetryPolicy(
             max_attempts=5,
@@ -316,7 +316,7 @@ class TestRetryPolicyStringRepresentation:
         assert "LINEAR" in repr_str
         assert "base_delay=2.0" in repr_str
 
-    def test_str(self):
+    def test_str(self) -> None:
         """Test __str__ output."""
         policy = RetryPolicy(
             max_attempts=3,

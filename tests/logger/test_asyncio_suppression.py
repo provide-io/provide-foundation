@@ -1,11 +1,8 @@
 """Test asyncio debug message suppression via module-level log configuration."""
 
-import asyncio
-import os
 from io import StringIO
 from unittest.mock import patch
 
-import pytest
 import structlog
 
 from provide.foundation.logger.config import TelemetryConfig
@@ -15,13 +12,13 @@ from provide.foundation.logger.setup.processors import configure_structlog_outpu
 class TestAsyncioDebugSuppression:
     """Test that asyncio debug messages are properly suppressed."""
 
-    def test_default_module_levels_includes_asyncio(self):
+    def test_default_module_levels_includes_asyncio(self) -> None:
         """Test that default configuration includes asyncio at INFO level."""
         config = TelemetryConfig.from_env()
         assert "asyncio" in config.logging.module_levels
         assert config.logging.module_levels["asyncio"] == "INFO"
 
-    def test_structlog_asyncio_debug_messages_suppressed(self):
+    def test_structlog_asyncio_debug_messages_suppressed(self) -> None:
         """Test that structlog asyncio debug messages are suppressed."""
         # Create a string buffer to capture log output
         log_output = StringIO()
@@ -43,7 +40,7 @@ class TestAsyncioDebugSuppression:
             assert "Using selector: KqueueSelector" not in captured_output
             assert "KqueueSelector" not in captured_output
 
-    def test_structlog_asyncio_info_messages_still_logged(self):
+    def test_structlog_asyncio_info_messages_still_logged(self) -> None:
         """Test that structlog asyncio INFO and higher messages are still logged."""
         # Create a string buffer to capture log output
         log_output = StringIO()
@@ -63,7 +60,7 @@ class TestAsyncioDebugSuppression:
             captured_output = log_output.getvalue()
             assert "Important asyncio information" in captured_output
 
-    def test_other_modules_debug_messages_not_affected(self):
+    def test_other_modules_debug_messages_not_affected(self) -> None:
         """Test that debug messages from other modules are not suppressed."""
         # Create a string buffer to capture log output
         log_output = StringIO()
@@ -81,7 +78,7 @@ class TestAsyncioDebugSuppression:
             captured_output = log_output.getvalue()
             assert "Debug message from other module" in captured_output
 
-    def test_env_var_override_allows_asyncio_debug(self):
+    def test_env_var_override_allows_asyncio_debug(self) -> None:
         """Test that environment variable can override asyncio suppression."""
         # Create a string buffer to capture log output
         log_output = StringIO()
@@ -105,7 +102,7 @@ class TestAsyncioDebugSuppression:
             captured_output = log_output.getvalue()
             assert "Debug selector information" in captured_output
 
-    def test_module_levels_parsing_with_multiple_modules(self):
+    def test_module_levels_parsing_with_multiple_modules(self) -> None:
         """Test that multiple module levels can be configured via environment."""
         with patch.dict("os.environ", {
             "PROVIDE_LOG_MODULE_LEVELS": "asyncio:WARNING,urllib3:ERROR,requests:INFO"
@@ -116,7 +113,7 @@ class TestAsyncioDebugSuppression:
             assert config.logging.module_levels["urllib3"] == "ERROR"
             assert config.logging.module_levels["requests"] == "INFO"
 
-    def test_asyncio_module_hierarchy_filtering(self):
+    def test_asyncio_module_hierarchy_filtering(self) -> None:
         """Test that asyncio.* submodules are properly filtered."""
         # Test configuration includes asyncio at INFO level
         config = TelemetryConfig.from_env()
@@ -128,8 +125,8 @@ class TestAsyncioDebugSuppression:
         assert module_name.startswith("asyncio"), "Module hierarchy test should match asyncio prefix"
 
         # Test that the filtering logic handles hierarchical names correctly
-        from provide.foundation.logger.processors.main import _LEVEL_TO_NUMERIC
         from provide.foundation.logger.custom_processors import filter_by_level_custom
+        from provide.foundation.logger.processors.main import _LEVEL_TO_NUMERIC
 
         filter_func = filter_by_level_custom(
             config.logging.default_level,

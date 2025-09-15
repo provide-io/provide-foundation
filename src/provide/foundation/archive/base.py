@@ -10,7 +10,6 @@ class ArchiveError(FoundationError):
     """Base exception for archive-related errors."""
 
 
-
 class BaseArchive(ABC):
     """Abstract base class for all archive implementations.
 

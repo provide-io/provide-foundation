@@ -7,7 +7,7 @@ from unittest.mock import Mock, patch
 class TestGetMessageFromInput:
     """Test _get_message_from_input function."""
 
-    def test_message_provided_returns_message(self):
+    def test_message_provided_returns_message(self) -> None:
         """Test that when message is provided, returns it directly."""
         from provide.foundation.cli.commands.logs.send import _get_message_from_input
 
@@ -15,7 +15,7 @@ class TestGetMessageFromInput:
         assert result_msg == "Test message"
         assert result_code == 0
 
-    def test_no_message_tty_returns_error(self):
+    def test_no_message_tty_returns_error(self) -> None:
         """Test that when no message and stdin is tty, returns error."""
         from provide.foundation.cli.commands.logs.send import _get_message_from_input
 
@@ -28,7 +28,7 @@ class TestGetMessageFromInput:
             assert result_code == 1
             mock_echo.assert_called_once_with("Error: No message provided. Use -m or pipe input.", err=True)
 
-    def test_stdin_message_success(self):
+    def test_stdin_message_success(self) -> None:
         """Test reading message from stdin successfully."""
         from provide.foundation.cli.commands.logs.send import _get_message_from_input
 
@@ -43,7 +43,7 @@ class TestGetMessageFromInput:
             assert result_msg == "Message from stdin"
             assert result_code == 0
 
-    def test_empty_stdin_returns_error(self):
+    def test_empty_stdin_returns_error(self) -> None:
         """Test that empty stdin returns error."""
         from provide.foundation.cli.commands.logs.send import _get_message_from_input
 
@@ -63,7 +63,7 @@ class TestGetMessageFromInput:
 class TestBuildAttributes:
     """Test _build_attributes function."""
 
-    def test_no_attributes_returns_empty_dict(self):
+    def test_no_attributes_returns_empty_dict(self) -> None:
         """Test that no attributes returns empty dict."""
         from provide.foundation.cli.commands.logs.send import _build_attributes
 
@@ -71,7 +71,7 @@ class TestBuildAttributes:
         assert result_attrs == {}
         assert result_code == 0
 
-    def test_valid_json_attributes(self):
+    def test_valid_json_attributes(self) -> None:
         """Test parsing valid JSON attributes."""
         from provide.foundation.cli.commands.logs.send import _build_attributes
 
@@ -81,7 +81,7 @@ class TestBuildAttributes:
         assert result_attrs == {"key1": "value1", "key2": 123, "key3": True}
         assert result_code == 0
 
-    def test_invalid_json_attributes(self):
+    def test_invalid_json_attributes(self) -> None:
         """Test handling invalid JSON attributes."""
         from provide.foundation.cli.commands.logs.send import _build_attributes
 
@@ -93,7 +93,7 @@ class TestBuildAttributes:
             assert result_code == 1
             assert "Error: Invalid JSON attributes:" in mock_echo.call_args[0][0]
 
-    def test_key_value_attributes_strings(self):
+    def test_key_value_attributes_strings(self) -> None:
         """Test parsing key=value attributes as strings."""
         from provide.foundation.cli.commands.logs.send import _build_attributes
 
@@ -103,7 +103,7 @@ class TestBuildAttributes:
         assert result_attrs == {"key1": "value1", "key2": "value2"}
         assert result_code == 0
 
-    def test_key_value_attributes_boolean_true(self):
+    def test_key_value_attributes_boolean_true(self) -> None:
         """Test parsing boolean true values."""
         from provide.foundation.cli.commands.logs.send import _build_attributes
 
@@ -113,7 +113,7 @@ class TestBuildAttributes:
         assert result_attrs == {"bool1": True, "bool2": True}
         assert result_code == 0
 
-    def test_key_value_attributes_boolean_false(self):
+    def test_key_value_attributes_boolean_false(self) -> None:
         """Test parsing boolean false values."""
         from provide.foundation.cli.commands.logs.send import _build_attributes
 
@@ -123,7 +123,7 @@ class TestBuildAttributes:
         assert result_attrs == {"bool1": False, "bool2": False}
         assert result_code == 0
 
-    def test_key_value_attributes_integers(self):
+    def test_key_value_attributes_integers(self) -> None:
         """Test parsing integer values."""
         from provide.foundation.cli.commands.logs.send import _build_attributes
 
@@ -133,7 +133,7 @@ class TestBuildAttributes:
         assert result_attrs == {"count": 123, "age": 0, "negative": "-456"}  # negative handled as string
         assert result_code == 0
 
-    def test_key_value_attributes_floats(self):
+    def test_key_value_attributes_floats(self) -> None:
         """Test parsing float values."""
         from provide.foundation.cli.commands.logs.send import _build_attributes
 
@@ -143,7 +143,7 @@ class TestBuildAttributes:
         assert result_attrs == {"price": 99.99, "rate": 0.05}
         assert result_code == 0
 
-    def test_key_value_attributes_mixed_types(self):
+    def test_key_value_attributes_mixed_types(self) -> None:
         """Test parsing mixed attribute types."""
         from provide.foundation.cli.commands.logs.send import _build_attributes
 
@@ -154,7 +154,7 @@ class TestBuildAttributes:
         assert result_attrs == expected
         assert result_code == 0
 
-    def test_invalid_key_value_format(self):
+    def test_invalid_key_value_format(self) -> None:
         """Test handling invalid key=value format."""
         from provide.foundation.cli.commands.logs.send import _build_attributes
 
@@ -168,7 +168,7 @@ class TestBuildAttributes:
                 "Error: Invalid attribute format 'invalid_no_equals'. Use key=value.", err=True
             )
 
-    def test_json_and_key_value_combined(self):
+    def test_json_and_key_value_combined(self) -> None:
         """Test combining JSON and key=value attributes."""
         from provide.foundation.cli.commands.logs.send import _build_attributes
 
@@ -181,7 +181,7 @@ class TestBuildAttributes:
         assert result_attrs == expected
         assert result_code == 0
 
-    def test_key_value_overrides_json(self):
+    def test_key_value_overrides_json(self) -> None:
         """Test that key=value pairs override JSON attributes."""
         from provide.foundation.cli.commands.logs.send import _build_attributes
 
@@ -199,7 +199,7 @@ class TestBuildAttributes:
 class TestSendLogEntry:
     """Test _send_log_entry function."""
 
-    def test_send_via_otlp_success(self):
+    def test_send_via_otlp_success(self) -> None:
         """Test successful OTLP log sending."""
         from provide.foundation.cli.commands.logs.send import _send_log_entry
 
@@ -227,7 +227,7 @@ class TestSendLogEntry:
             )
             mock_echo.assert_called_once_with("✓ Log sent via OTLP")
 
-    def test_send_via_http_api_success(self):
+    def test_send_via_http_api_success(self) -> None:
         """Test successful HTTP API log sending."""
         from provide.foundation.cli.commands.logs.send import _send_log_entry
 
@@ -262,14 +262,14 @@ class TestSendLogEntry:
             mock_ingest.assert_called_once_with([expected_log_record])
             mock_echo.assert_called_once_with("✓ Log sent via HTTP API")
 
-    def test_send_via_http_api_minimal_data(self):
+    def test_send_via_http_api_minimal_data(self) -> None:
         """Test HTTP API sending with minimal data."""
         from provide.foundation.cli.commands.logs.send import _send_log_entry
 
         # Mock the ingest_logs import since it doesn't exist yet
         mock_ingest = Mock()
         with patch.dict('sys.modules', {'provide.foundation.integrations.openobserve': Mock(ingest_logs=mock_ingest)}), \
-             patch('click.echo') as mock_echo, \
+             patch('click.echo'), \
              patch('time.time', return_value=1234567890.0):
 
             result_code = _send_log_entry(
@@ -292,7 +292,7 @@ class TestSendLogEntry:
             }
             mock_ingest.assert_called_once_with([expected_log_record])
 
-    def test_send_otlp_exception_handling(self):
+    def test_send_otlp_exception_handling(self) -> None:
         """Test exception handling for OTLP sending."""
         from provide.foundation.cli.commands.logs.send import _send_log_entry
 
@@ -313,7 +313,7 @@ class TestSendLogEntry:
             assert result_code == 1
             mock_echo.assert_called_once_with("✗ Failed to send log: OTLP connection failed", err=True)
 
-    def test_send_http_api_exception_handling(self):
+    def test_send_http_api_exception_handling(self) -> None:
         """Test exception handling for HTTP API sending."""
         from provide.foundation.cli.commands.logs.send import _send_log_entry
 
@@ -339,7 +339,7 @@ class TestSendLogEntry:
 class TestSendCommandWithoutClick:
     """Test send command behavior when click is not available."""
 
-    def test_command_import_availability(self):
+    def test_command_import_availability(self) -> None:
         """Test that the command function can be imported and _HAS_CLICK exists."""
         from provide.foundation.cli.commands.logs.send import _HAS_CLICK, send_command
 
@@ -356,7 +356,7 @@ class TestSendCommandWithoutClick:
 class TestModuleStructure:
     """Test basic module structure and imports."""
 
-    def test_module_has_required_functions(self):
+    def test_module_has_required_functions(self) -> None:
         """Test that module has all required functions."""
         from provide.foundation.cli.commands.logs import send
 
@@ -366,7 +366,7 @@ class TestModuleStructure:
         assert hasattr(send, 'send_command')
         assert hasattr(send, '_HAS_CLICK')
 
-    def test_module_logger_instance(self):
+    def test_module_logger_instance(self) -> None:
         """Test that module has logger instance."""
         from provide.foundation.cli.commands.logs.send import log
 
@@ -379,7 +379,7 @@ class TestModuleStructure:
 class TestEdgeCases:
     """Test various edge cases."""
 
-    def test_build_attributes_with_equals_in_value(self):
+    def test_build_attributes_with_equals_in_value(self) -> None:
         """Test key=value parsing when value contains equals sign."""
         from provide.foundation.cli.commands.logs.send import _build_attributes
 
@@ -389,7 +389,7 @@ class TestEdgeCases:
         assert result_attrs == {"url": "https://example.com?a=1&b=2"}
         assert result_code == 0
 
-    def test_build_attributes_float_edge_cases(self):
+    def test_build_attributes_float_edge_cases(self) -> None:
         """Test float parsing edge cases."""
         from provide.foundation.cli.commands.logs.send import _build_attributes
 
@@ -402,7 +402,7 @@ class TestEdgeCases:
         assert result_attrs == expected
         assert result_code == 0
 
-    def test_stdin_with_newlines(self):
+    def test_stdin_with_newlines(self) -> None:
         """Test stdin input with newlines gets stripped."""
         from provide.foundation.cli.commands.logs.send import _get_message_from_input
 
@@ -417,7 +417,7 @@ class TestEdgeCases:
             assert result_msg == "Message with newlines"
             assert result_code == 0
 
-    def test_negative_float_parsing(self):
+    def test_negative_float_parsing(self) -> None:
         """Test parsing negative numbers."""
         from provide.foundation.cli.commands.logs.send import _build_attributes
 

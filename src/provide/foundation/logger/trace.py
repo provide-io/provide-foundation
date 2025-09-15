@@ -22,7 +22,10 @@ if not hasattr(stdlib_logging, TRACE_LEVEL_NAME):  # pragma: no cover
     stdlib_logging.addLevelName(TRACE_LEVEL_NUM, TRACE_LEVEL_NAME)
 
     def trace(
-        self: stdlib_logging.Logger, message: str, *args: object, **kwargs: object,
+        self: stdlib_logging.Logger,
+        message: str,
+        *args: object,
+        **kwargs: object,
     ) -> None:  # pragma: no cover
         if self.isEnabledFor(TRACE_LEVEL_NUM):
             self._log(TRACE_LEVEL_NUM, message, args, **kwargs)  # type: ignore[arg-type]
@@ -39,7 +42,10 @@ try:
     if not hasattr(PrintLogger, "trace"):  # pragma: no cover
 
         def trace_for_print_logger(
-            self: PrintLogger, msg: object, *args: object, **kwargs: object,
+            self: PrintLogger,
+            msg: object,
+            *args: object,
+            **kwargs: object,
         ) -> None:  # pragma: no cover
             # PrintLogger doesn't have level checking, so just format and print like other methods
             if args:

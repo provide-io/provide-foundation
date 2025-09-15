@@ -161,7 +161,9 @@ def validate_config(config: BaseConfig) -> None:
 
 
 def update_config(
-    config: BaseConfig, updates: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME,
+    config: BaseConfig,
+    updates: ConfigDict,
+    source: ConfigSource = ConfigSource.RUNTIME,
 ) -> None:
     """Update configuration with new values (sync wrapper).
 
