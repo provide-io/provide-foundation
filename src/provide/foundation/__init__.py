@@ -82,7 +82,7 @@ def __getattr__(name: str) -> object:
     """Support lazy loading of optional modules."""
     if name == "cli":
         try:
-            from provide.foundation import cli
+            import provide.foundation.cli as cli
 
             return cli
         except ImportError as e:
@@ -93,7 +93,7 @@ def __getattr__(name: str) -> object:
                 ) from e
             raise
     elif name == "metrics":
-        from provide.foundation import metrics
+        import provide.foundation.metrics as metrics
 
         return metrics
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
