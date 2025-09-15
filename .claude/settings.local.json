@@ -40,7 +40,8 @@
       "Bash(PYTHONPATH=src pytest tests/test_docs_generator.py -v)",
       "Bash(PYTHONPATH=src pytest tests/test_docs_generator.py::TestAPIDocGenerator::test_generate_full_workflow -xvs)",
       "Bash(PYTHONPATH=src pytest tests/test_docs_generator.py::TestAPIDocGeneratorIntegration::test_real_file_processing -xvs)",
-      "Bash(PYTHONPATH=src ty)"
+      "Bash(PYTHONPATH=src ty)",
+      "Bash(PYTHONPATH=src pytest tests/test_docs_generator.py -v -q)"
     ],
     "deny": [],
     "ask": [],
