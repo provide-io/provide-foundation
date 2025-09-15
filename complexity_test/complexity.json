@@ -1,0 +1,30 @@
+{
+  "tool": "complexity",
+  "passed": true,
+  "score": 100.0,
+  "details": {
+    "total_files": 0,
+    "total_functions": 0,
+    "average_complexity": 0,
+    "max_complexity": 0,
+    "overall_grade": "A",
+    "grade_breakdown": {
+      "A": 0,
+      "B": 0,
+      "C": 0,
+      "D": 0,
+      "E": 0,
+      "F": 0
+    },
+    "lines_of_code": 0,
+    "logical_lines": 0,
+    "comment_lines": 0,
+    "grade": "A",
+    "thresholds": {
+      "min_grade": "C",
+      "max_complexity": 15,
+      "min_score": 70.0
+    }
+  },
+  "execution_time": 0.0026760101318359375
+}
