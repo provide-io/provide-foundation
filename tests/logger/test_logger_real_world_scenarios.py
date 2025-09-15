@@ -498,7 +498,7 @@ class TestMigrationFromExplicitSetup:
                 logging=LoggingConfig(console_formatter="json", default_level="DEBUG"),
             )
             hub = get_hub()
-        hub.initialize_foundation(explicit_config, force=True)
+            hub.initialize_foundation(explicit_config, force=True)
 
             # Test that explicit config takes precedence
             global_logger.debug("Explicit setup message")  # Should appear (DEBUG level)

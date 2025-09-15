@@ -63,7 +63,7 @@ class TestHubManagerCoverage:
         }
 
         with patch(
-            "provide.foundation.hub.manager._discover_components",
+            "provide.foundation.hub.components.discover_components",
             return_value=mock_components,
         ):
             result = hub.discover_components("test_group")
