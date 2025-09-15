@@ -6,6 +6,8 @@ Provides metrics collection with optional OpenTelemetry integration.
 Falls back to simple metrics when OpenTelemetry is not available.
 """
 
+from typing import Any
+
 # OpenTelemetry feature detection
 try:
     from opentelemetry import metrics as otel_metrics
@@ -20,11 +22,11 @@ try:
 
     _HAS_OTEL_METRICS = True
 except ImportError:
-    otel_metrics = None
-    MeterProvider = None
-    PeriodicExportingMetricReader = None
-    OTLPGrpcMetricExporter = None
-    OTLPHttpMetricExporter = None
+    otel_metrics: Any = None
+    MeterProvider: Any = None
+    PeriodicExportingMetricReader: Any = None
+    OTLPGrpcMetricExporter: Any = None
+    OTLPHttpMetricExporter: Any = None
     _HAS_OTEL_METRICS = False
 
 from provide.foundation.metrics.simple import (

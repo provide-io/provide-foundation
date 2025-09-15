@@ -27,9 +27,9 @@ try:
 
     _HAS_OTEL = True
 except ImportError:
-    otel_trace = None  # type: Any
-    Status = None  # type: Any
-    StatusCode = None  # type: Any
+    otel_trace: Any = None
+    Status: Any = None
+    StatusCode: Any = None
     _HAS_OTEL = False
 
 
