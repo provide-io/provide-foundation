@@ -22,7 +22,8 @@
       "Bash(PYTHONPATH=src pytest tests/logger/ -v -q --tb=short)",
       "Bash(PYTHONPATH=src pytest tests/logger/test_asyncio_suppression.py::TestAsyncioDebugSuppression::test_asyncio_module_hierarchy_filtering -v)",
       "Bash(PYTHONPATH=src pytest tests/hub/test_hub_init_coverage.py::TestHubModuleBehavior::test_module_docstring_present -v -s)",
-      "Bash(PYTHONPATH=src pytest tests/hub/test_hub_init_coverage.py::TestHubModuleBehavior::test_module_docstring_present -v)"
+      "Bash(PYTHONPATH=src pytest tests/hub/test_hub_init_coverage.py::TestHubModuleBehavior::test_module_docstring_present -v)",
+      "Bash(PYTHONPATH=src pytest tests/hub/ tests/logger/ -q --tb=no)"
     ],
     "deny": [],
     "ask": [],
