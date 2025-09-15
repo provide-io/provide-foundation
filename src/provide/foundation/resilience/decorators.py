@@ -7,6 +7,7 @@ import functools
 from typing import Any, TypeVar
 
 from provide.foundation.config.defaults import DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT
+from provide.foundation.hub.foundation import get_foundation_logger
 from provide.foundation.resilience.retry import (
     BackoffStrategy,
     RetryExecutor,
@@ -14,13 +15,6 @@ from provide.foundation.resilience.retry import (
 )
 
 F = TypeVar("F", bound=Callable[..., Any])
-
-
-def _get_logger():
-    """Get logger instance lazily to avoid circular imports."""
-    from provide.foundation.logger import logger
-
-    return logger
 
 
 def retry(

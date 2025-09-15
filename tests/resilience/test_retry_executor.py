@@ -241,7 +241,8 @@ class TestRetryExecutorSync:
             "success",
         ])
 
-        with patch("provide.foundation.resilience.retry.logger") as mock_logger:
+        with patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger:
+            mock_logger = mock_get_logger.return_value
             result = executor.execute_sync(mock_func)
 
         assert result == "success"
@@ -433,7 +434,8 @@ class TestRetryExecutorLogging:
             "success",
         ])
 
-        with patch("provide.foundation.resilience.retry.logger") as mock_logger:
+        with patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger:
+            mock_logger = mock_get_logger.return_value
             result = executor.execute_sync(mock_func)
 
         assert result == "success"
@@ -451,7 +453,8 @@ class TestRetryExecutorLogging:
 
         mock_func = MagicMock(side_effect=ValueError("always fails"))
 
-        with patch("provide.foundation.resilience.retry.logger") as mock_logger:
+        with patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger:
+            mock_logger = mock_get_logger.return_value
             with pytest.raises(ValueError):
                 executor.execute_sync(mock_func)
 
@@ -470,7 +473,8 @@ class TestRetryExecutorLogging:
 
         mock_func = MagicMock(side_effect=RuntimeError("not retryable"))
 
-        with patch("provide.foundation.resilience.retry.logger") as mock_logger:
+        with patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger:
+            mock_logger = mock_get_logger.return_value
             with pytest.raises(RuntimeError):
                 executor.execute_sync(mock_func)
 

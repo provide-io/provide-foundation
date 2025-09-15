@@ -24,11 +24,6 @@ from provide.foundation.hub.components import ComponentInfo
 from provide.foundation.hub.registry import Registry, get_command_registry
 
 
-def _get_logger():
-    """Get logger lazily to avoid circular import issues."""
-    # Use structlog directly to avoid circular imports during Hub initialization
-    import structlog
-    return structlog.get_logger(__name__)
 
 
 class CoreHub:
@@ -130,7 +125,8 @@ class CoreHub:
             replace=False,  # Don't allow replacement by default
         )
 
-        _get_logger().info(
+        from provide.foundation.hub.foundation import get_foundation_logger
+        get_foundation_logger().info(
             "Added component to hub",
             name=component_name,
             dimension=dimension,
@@ -252,7 +248,8 @@ class CoreHub:
         if self._cli_group and click_command:
             self._cli_group.add_command(click_command)
 
-        _get_logger().info(
+        from provide.foundation.hub.foundation import get_foundation_logger
+        get_foundation_logger().info(
             "Added command to hub",
             name=command_name,
             aliases=info.aliases,
@@ -341,9 +338,11 @@ class CoreHub:
             if hasattr(component_class, "initialize"):
                 try:
                     component_class.initialize()
-                    _get_logger().debug(f"Initialized component: {entry.name}")
+                    from provide.foundation.hub.foundation import get_foundation_logger
+                    get_foundation_logger().debug(f"Initialized component: {entry.name}")
                 except Exception as e:
-                    _get_logger().error(f"Failed to initialize {entry.name}: {e}")
+                    from provide.foundation.hub.foundation import get_foundation_logger
+                    get_foundation_logger().error(f"Failed to initialize {entry.name}: {e}")
 
     def cleanup(self) -> None:
         """Cleanup all components that support cleanup."""
@@ -355,9 +354,11 @@ class CoreHub:
             if hasattr(component_class, "cleanup"):
                 try:
                     component_class.cleanup()
-                    _get_logger().debug(f"Cleaned up component: {entry.name}")
+                    from provide.foundation.hub.foundation import get_foundation_logger
+                    get_foundation_logger().debug(f"Cleaned up component: {entry.name}")
                 except Exception as e:
-                    _get_logger().error(f"Failed to cleanup {entry.name}: {e}")
+                    from provide.foundation.hub.foundation import get_foundation_logger
+                    get_foundation_logger().error(f"Failed to cleanup {entry.name}: {e}")
 
     def clear(self, dimension: str | None = None) -> None:
         """Clear registrations.

@@ -384,9 +384,10 @@ class TestRetryDecoratorParameterValidation:
 class TestRetryDecoratorLogging:
     """Test logging behavior of @retry decorator."""
 
-    @patch("provide.foundation.resilience.retry.logger")
-    def test_retry_logging(self, mock_logger):
+    @patch("provide.foundation.hub.foundation.get_foundation_logger")
+    def test_retry_logging(self, mock_get_logger):
         """Test that retries are logged."""
+        mock_logger = mock_get_logger.return_value
 
         @retry(max_attempts=2, base_delay=0.01)
         def func():
@@ -401,9 +402,10 @@ class TestRetryDecoratorLogging:
         # Should log the retry
         mock_logger.info.assert_called()
 
-    @patch("provide.foundation.resilience.retry.logger")
-    def test_failure_logging(self, mock_logger):
+    @patch("provide.foundation.hub.foundation.get_foundation_logger")
+    def test_failure_logging(self, mock_get_logger):
         """Test that final failure is logged."""
+        mock_logger = mock_get_logger.return_value
 
         @retry(max_attempts=2, base_delay=0.01)
         def always_fails():

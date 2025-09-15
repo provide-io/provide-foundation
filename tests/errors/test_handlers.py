@@ -60,7 +60,7 @@ class TestErrorBoundary:
         # The context manager itself doesn't return the fallback
         # It's used internally
 
-    @patch("provide.foundation.errors.handlers._get_logger")
+    @patch("provide.foundation.hub.foundation.get_foundation_logger")
     def test_logging_enabled(self, mock_logger) -> Never:
         """Test that errors are logged when log_errors=True."""
         with error_boundary(ValueError, log_errors=True, reraise=False):
@@ -72,7 +72,7 @@ class TestErrorBoundary:
         assert call_args[1]["error.type"] == "ValueError"
         assert call_args[1]["error.message"] == "test error"
 
-    @patch("provide.foundation.errors.handlers._get_logger")
+    @patch("provide.foundation.hub.foundation.get_foundation_logger")
     def test_logging_disabled(self, mock_logger) -> Never:
         """Test that errors are not logged when log_errors=False."""
         with error_boundary(ValueError, log_errors=False, reraise=False):
@@ -82,7 +82,7 @@ class TestErrorBoundary:
 
     def test_context_added_to_logs(self) -> Never:
         """Test that provided context is added to logs."""
-        with patch("provide.foundation.errors.handlers._get_logger") as mock_logger:
+        with patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_logger:
             context = {"request_id": "123", "user": "test"}
 
             with error_boundary(
@@ -96,7 +96,7 @@ class TestErrorBoundary:
 
     def test_foundation_error_context_merged(self) -> Never:
         """Test that FoundationError context is merged."""
-        with patch("provide.foundation.errors.handlers._get_logger") as mock_logger:
+        with patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_logger:
             error = FoundationError("test", user_id=456)
 
             with error_boundary(FoundationError, log_errors=True, reraise=False):
@@ -121,7 +121,7 @@ class TestErrorBoundary:
         def bad_callback(e) -> Never:
             raise RuntimeError("callback failed")
 
-        with patch("provide.foundation.errors.handlers._get_logger") as mock_logger:
+        with patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_logger:
             with error_boundary(
                 ValueError, on_error=bad_callback, log_errors=True, reraise=False,
             ):
@@ -176,7 +176,7 @@ class TestTransactional:
 
         rollback.assert_not_called()
 
-    @patch("provide.foundation.errors.handlers._get_logger")
+    @patch("provide.foundation.hub.foundation.get_foundation_logger")
     def test_error_logged(self, mock_logger) -> Never:
         """Test that errors are logged."""
         rollback = MagicMock()
@@ -187,7 +187,7 @@ class TestTransactional:
         mock_logger.return_value.error.assert_called()
         assert "Transaction failed" in mock_logger.return_value.error.call_args[0][0]
 
-    @patch("provide.foundation.errors.handlers._get_logger")
+    @patch("provide.foundation.hub.foundation.get_foundation_logger")
     def test_successful_rollback_logged(self, mock_logger) -> Never:
         """Test that successful rollback is logged."""
         rollback = MagicMock()
@@ -211,7 +211,7 @@ class TestTransactional:
         assert str(exc_info.value) == "rollback failed"
         assert exc_info.value.__cause__.args[0] == "original error"
 
-    @patch("provide.foundation.errors.handlers._get_logger")
+    @patch("provide.foundation.hub.foundation.get_foundation_logger")
     def test_rollback_failure_logged_as_critical(self, mock_logger) -> Never:
         """Test that rollback failure is logged as critical."""
 
@@ -266,7 +266,7 @@ class TestHandleError:
         with pytest.raises(ValueError):
             handle_error(error, reraise=True)
 
-    @patch("provide.foundation.errors.handlers._get_logger")
+    @patch("provide.foundation.hub.foundation.get_foundation_logger")
     def test_logging_enabled(self, mock_logger) -> None:
         """Test that error is logged when log=True."""
         error = ValueError("test error")
@@ -276,7 +276,7 @@ class TestHandleError:
         mock_logger.return_value.error.assert_called_once()
         assert "Handling error" in mock_logger.return_value.error.call_args[0][0]
 
-    @patch("provide.foundation.errors.handlers._get_logger")
+    @patch("provide.foundation.hub.foundation.get_foundation_logger")
     def test_logging_disabled(self, mock_logger) -> None:
         """Test that error is not logged when log=False."""
         error = ValueError("test")
@@ -307,7 +307,7 @@ class TestHandleError:
 
         mock_capture.assert_not_called()
 
-    @patch("provide.foundation.errors.handlers._get_logger")
+    @patch("provide.foundation.hub.foundation.get_foundation_logger")
     @patch("provide.foundation.errors.handlers.capture_error_context")
     def test_context_added_to_logs(self, mock_capture, mock_logger) -> None:
         """Test that captured context is added to logs."""
@@ -415,7 +415,7 @@ class TestErrorHandler:
         with pytest.raises(ValueError):
             handler.handle(ValueError("test"))
 
-    @patch("provide.foundation.errors.handlers._get_logger")
+    @patch("provide.foundation.hub.foundation.get_foundation_logger")
     def test_reraise_unhandled_logs_warning(self, mock_logger) -> None:
         """Test that reraising unhandled errors logs a warning."""
         handler = ErrorHandler(reraise_unhandled=True)
@@ -429,7 +429,7 @@ class TestErrorHandler:
             in mock_logger.return_value.warning.call_args[0][0]
         )
 
-    @patch("provide.foundation.errors.handlers._get_logger")
+    @patch("provide.foundation.hub.foundation.get_foundation_logger")
     def test_logging_enabled(self, mock_logger) -> None:
         """Test that handling is logged when log_all=True."""
         handler = ErrorHandler(policies={ValueError: lambda e: "handled"}, log_all=True)
@@ -439,7 +439,7 @@ class TestErrorHandler:
         mock_logger.return_value.info.assert_called()
         assert "Handling ValueError" in mock_logger.return_value.info.call_args[0][0]
 
-    @patch("provide.foundation.errors.handlers._get_logger")
+    @patch("provide.foundation.hub.foundation.get_foundation_logger")
     def test_logging_disabled(self, mock_logger) -> None:
         """Test that handling is not logged when log_all=False."""
         handler = ErrorHandler(
@@ -477,7 +477,7 @@ class TestErrorHandler:
         assert str(exc_info.value) == "handler failed"
         assert exc_info.value.__cause__.args[0] == "original"
 
-    @patch("provide.foundation.errors.handlers._get_logger")
+    @patch("provide.foundation.hub.foundation.get_foundation_logger")
     def test_handler_exception_logged(self, mock_logger) -> None:
         """Test that handler exceptions are logged."""
 
@@ -516,7 +516,7 @@ class TestCreateErrorHandler:
 
     def test_unknown_error_type_logged(self) -> None:
         """Test that unknown error types are logged."""
-        with patch("provide.foundation.errors.handlers._get_logger") as mock_logger:
+        with patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_logger:
             create_error_handler(NonExistentError=lambda e: "test")
 
             mock_logger.return_value.warning.assert_called()
@@ -527,7 +527,7 @@ class TestCreateErrorHandler:
 
     def test_mixed_valid_and_invalid(self) -> None:
         """Test mixing valid and invalid error types."""
-        with patch("provide.foundation.errors.handlers._get_logger"):
+        with patch("provide.foundation.hub.foundation.get_foundation_logger"):
             handler = create_error_handler(
                 ValidationError=lambda e: "valid",
                 InvalidError=lambda e: "invalid",

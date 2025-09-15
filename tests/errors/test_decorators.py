@@ -54,7 +54,7 @@ class TestWithErrorHandling:
         with pytest.raises(RuntimeError):
             func("runtime")
 
-    @patch("provide.foundation.errors.decorators._get_logger")
+    @patch("provide.foundation.hub.foundation.get_foundation_logger")
     def test_error_logging(self, mock_logger) -> None:
         """Test that errors are logged."""
 
@@ -80,7 +80,7 @@ class TestWithErrorHandling:
         def failing_func() -> Never:
             raise ValueError("test error")
 
-        with patch("provide.foundation.errors.decorators._get_logger") as mock_logger:
+        with patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_logger:
             with pytest.raises(ValueError):
                 failing_func()
 
@@ -167,7 +167,7 @@ class TestSuppressAndLog:
         with pytest.raises(RuntimeError):
             func("runtime")
 
-    @patch("provide.foundation.errors.decorators._get_logger")
+    @patch("provide.foundation.hub.foundation.get_foundation_logger")
     def test_logging_levels(self, mock_logger) -> None:
         """Test different logging levels."""
 
@@ -199,7 +199,7 @@ class TestSuppressAndLog:
         assert int_fallback() == 42
         assert dict_fallback() == {"key": "value"}
 
-    @patch("provide.foundation.errors.decorators._get_logger")
+    @patch("provide.foundation.hub.foundation.get_foundation_logger")
     def test_log_message_format(self, mock_logger) -> None:
         """Test log message formatting."""
 
@@ -282,7 +282,7 @@ class TestFallbackOnError:
         with pytest.raises(RuntimeError):
             func("runtime")
 
-    @patch("provide.foundation.errors.decorators._get_logger")
+    @patch("provide.foundation.hub.foundation.get_foundation_logger")
     def test_error_logging(self, mock_logger) -> None:
         """Test that errors are logged before fallback."""
 
@@ -317,7 +317,7 @@ class TestFallbackOnError:
             failing_func()
         assert exc_info.value.__cause__.__class__ == ValueError
 
-    @patch("provide.foundation.errors.decorators._get_logger")
+    @patch("provide.foundation.hub.foundation.get_foundation_logger")
     def test_fallback_error_logging(self, mock_logger) -> None:
         """Test logging when fallback also fails."""
 
