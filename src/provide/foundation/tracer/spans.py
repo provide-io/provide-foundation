@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 #
 # spans.py
 #
@@ -45,7 +47,7 @@ class Span:
     error: str | None = None
 
     # Internal OpenTelemetry span (when available)
-    _otel_span: "otel_trace.Span | None" = field(default=None, init=False, repr=False)
+    _otel_span: otel_trace.Span | None = field(default=None, init=False, repr=False)
     _active: bool = field(default=True, init=False, repr=False)
 
     def __post_init__(self) -> None:
@@ -99,7 +101,7 @@ class Span:
                 except Exception as e:
                     log.debug(f"🔍⚠️ Failed to finish OpenTelemetry span: {e}")
 
-    def __enter__(self) -> "Span":
+    def __enter__(self) -> Span:
         """Context manager entry."""
         # Set this span as current in OpenTelemetry context if available
         if self._otel_span and _HAS_OTEL:
