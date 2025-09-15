@@ -31,11 +31,9 @@ from provide.foundation import (
 class TestProductionReadinessScenarios:
     """Tests that verify production readiness of lazy initialization."""
 
-    def test_high_throughput_scenario(self, capsys: CaptureFixture) -> None:
+    def test_high_throughput_scenario(self, captured_stderr_for_foundation) -> None:
         """Test lazy initialization under high throughput."""
-        import sys
-
-        from provide.testkit import set_log_stream_for_testing
+        import io
 
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         reset_foundation_setup_for_testing()
@@ -50,20 +48,16 @@ class TestProductionReadinessScenarios:
         end_time = time.time()
         duration = end_time - start_time
 
-        captured = capsys.readouterr()
-
-        # Debug: print what was captured
-        print(f"DEBUG: captured.out: {repr(captured.out[:200])}")
-        print(f"DEBUG: captured.err: {repr(captured.err[:200])}")
-        print(f"DEBUG: captured.err line count: {len(captured.err.splitlines())}")
+        # Get captured output from our fixture
+        captured_stderr_for_foundation.seek(0)
+        captured_content = captured_stderr_for_foundation.getvalue()
 
         # Verify all messages were logged
         log_lines = [
             line
-            for line in captured.err.splitlines()
+            for line in captured_content.splitlines()
             if "High throughput message" in line
         ]
-        print(f"DEBUG: log_lines count: {len(log_lines)}")
         assert len(log_lines) == message_count
 
         # Verify reasonable performance
