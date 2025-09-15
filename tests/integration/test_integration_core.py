@@ -35,7 +35,7 @@ from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
     logger,
-    setup_telemetry,
+    get_hub,
     shutdown_foundation_telemetry,
 )
 from provide.foundation.config.types import ConfigSource
@@ -304,7 +304,8 @@ async def test_async_usage_patterns() -> None:
     )
 
     # Setup in async context
-    setup_telemetry(config)
+    hub = get_hub()
+    hub.initialize_foundation(config, force=True)
 
     # Use logger in async context
     async_logger = logger.get_logger("async.test")
@@ -400,7 +401,8 @@ def test_configuration_edge_cases() -> None:
 
     # Test with disabled telemetry
     disabled_config = TelemetryConfig(globally_disabled=True)
-    setup_telemetry(disabled_config)
+    hub = get_hub()
+    hub.initialize_foundation(disabled_config, force=True)
 
     # Should not raise errors even when disabled
     logger.info("This should be suppressed")

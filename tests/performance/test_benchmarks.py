@@ -17,7 +17,7 @@ from provide.testkit import (
     set_log_stream_for_testing,
 )
 
-from provide.foundation import LoggingConfig, TelemetryConfig, logger, setup_telemetry
+from provide.foundation import LoggingConfig, TelemetryConfig, logger, get_hub
 
 
 @contextmanager
@@ -53,7 +53,8 @@ class TestBasicLoggingPerformance:
         )
 
         with capture_logs():
-            setup_telemetry(config)
+            hub = get_hub()
+            hub.initialize_foundation(config, force=True)
             test_logger = logger.get_logger("benchmark.basic")
 
             def log_messages():
@@ -82,7 +83,8 @@ class TestBasicLoggingPerformance:
         )
 
         with capture_logs():
-            setup_telemetry(config)
+            hub = get_hub()
+            hub.initialize_foundation(config, force=True)
             test_logger = logger.get_logger("benchmark.json")
 
             def log_json_messages():
@@ -114,7 +116,8 @@ class TestBasicLoggingPerformance:
         )
 
         with capture_logs():
-            setup_telemetry(config)
+            hub = get_hub()
+            hub.initialize_foundation(config, force=True)
             test_logger = logger.get_logger("benchmark.emoji")
 
             def log_with_emoji():
@@ -150,7 +153,8 @@ class TestConcurrentPerformance:
         )
 
         with capture_logs():
-            setup_telemetry(config)
+            hub = get_hub()
+            hub.initialize_foundation(config, force=True)
 
             def worker_thread(thread_id: int, message_count: int):
                 """Worker function for multithreaded logging."""
@@ -190,7 +194,8 @@ class TestConcurrentPerformance:
         )
 
         with capture_logs():
-            setup_telemetry(config)
+            hub = get_hub()
+            hub.initialize_foundation(config, force=True)
             filtered_logger = logger.get_logger("benchmark.filtered")
             blocked_logger = logger.get_logger("benchmark.blocked")
 
@@ -244,7 +249,8 @@ class TestDogfoodingPerformance:
                 ),
             )
             with capture_logs():
-                setup_telemetry(config)
+                hub = get_hub()
+            hub.initialize_foundation(config, force=True)
 
         # Foundation setup should be fast even with structured logging
         benchmark(foundation_setup)
@@ -263,7 +269,8 @@ class TestDogfoodingPerformance:
                 ),
             )
             with capture_logs():
-                setup_telemetry(config)
+                hub = get_hub()
+            hub.initialize_foundation(config, force=True)
 
         # The benchmark fixture handles timing and statistical analysis
         benchmark(foundation_setup_cycle)
@@ -288,7 +295,8 @@ class TestLargePayloadPerformance:
         )
 
         with capture_logs():
-            setup_telemetry(config)
+            hub = get_hub()
+            hub.initialize_foundation(config, force=True)
             test_logger = logger.get_logger("benchmark.large")
 
             # Create large payload similar to existing benchmark
