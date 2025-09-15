@@ -2,9 +2,9 @@ from __future__ import annotations
 
 """Circuit breaker implementation for preventing cascading failures."""
 
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 import time
-from typing import Awaitable, TypeVar
+from typing import TypeVar
 
 from attrs import define, field
 

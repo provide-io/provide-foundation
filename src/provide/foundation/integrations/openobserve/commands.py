@@ -77,7 +77,7 @@ if _HAS_CLICK:
     )
     @click.pass_obj
     def query_command(
-        client: "OpenObserveClient | None",
+        client: OpenObserveClient | None,
         sql: str,
         start: str,
         end: str,
@@ -144,7 +144,7 @@ if _HAS_CLICK:
     )
     @click.pass_obj
     def tail_command(
-        client: "OpenObserveClient | None",
+        client: OpenObserveClient | None,
         stream: str,
         filter_sql: str | None,
         lines: int,
@@ -208,7 +208,7 @@ if _HAS_CLICK:
     )
     @click.pass_obj
     def errors_command(
-        client: "OpenObserveClient | None",
+        client: OpenObserveClient | None,
         stream: str,
         start: str,
         size: int,
@@ -256,7 +256,7 @@ if _HAS_CLICK:
     )
     @click.pass_obj
     def trace_command(
-        client: "OpenObserveClient | None",
+        client: OpenObserveClient | None,
         trace_id: str,
         stream: str,
         format: str,
@@ -287,7 +287,7 @@ if _HAS_CLICK:
 
     @openobserve_group.command("streams")
     @click.pass_obj
-    def streams_command(client: "OpenObserveClient | None") -> int | None:
+    def streams_command(client: OpenObserveClient | None) -> int | None:
         """List available streams."""
         if client is None:
             click.echo("OpenObserve not configured.", err=True)
@@ -324,7 +324,7 @@ if _HAS_CLICK:
         help="Filter by stream name",
     )
     @click.pass_obj
-    def history_command(client: "OpenObserveClient | None", size: int, stream: str | None) -> int | None:
+    def history_command(client: OpenObserveClient | None, size: int, stream: str | None) -> int | None:
         """View search history."""
         if client is None:
             click.echo("OpenObserve not configured.", err=True)
@@ -353,7 +353,7 @@ if _HAS_CLICK:
 
     @openobserve_group.command("test")
     @click.pass_obj
-    def test_command(client: "OpenObserveClient | None") -> int | None:
+    def test_command(client: OpenObserveClient | None) -> int | None:
         """Test connection to OpenObserve."""
         if client is None:
             click.echo("OpenObserve not configured.", err=True)

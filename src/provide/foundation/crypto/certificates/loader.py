@@ -62,8 +62,8 @@ def load_certificate_from_pem(
     key_pem_or_uri: str | None = None,
 ) -> tuple[
     CertificateBase,
-    "x509.Certificate",
-    "rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey | None",
+    x509.Certificate,
+    rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey | None,
     str,
     str | None,
 ]:

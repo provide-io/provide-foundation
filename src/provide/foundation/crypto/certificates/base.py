@@ -96,15 +96,15 @@ else:
 class CertificateBase:
     """Immutable base certificate data."""
 
-    subject: "x509.Name"
-    issuer: "x509.Name"
+    subject: x509.Name
+    issuer: x509.Name
     public_key: PublicKey
     not_valid_before: datetime
     not_valid_after: datetime
     serial_number: int
 
     @classmethod
-    def create(cls, config: CertificateConfig) -> tuple[Self, "KeyPair"]:
+    def create(cls, config: CertificateConfig) -> tuple[Self, KeyPair]:
         """Create a new certificate base and private key."""
         _require_crypto()
         try:
@@ -160,7 +160,7 @@ class CertificateBase:
             raise CertificateError(f"Failed to generate certificate base: {e}") from e
 
     @staticmethod
-    def _create_name(common_name: str, org: str) -> "x509.Name":
+    def _create_name(common_name: str, org: str) -> x509.Name:
         """Helper method to construct an X.509 name."""
         return x509.Name(
             [

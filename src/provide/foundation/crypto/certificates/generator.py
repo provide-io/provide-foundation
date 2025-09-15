@@ -46,8 +46,8 @@ def generate_certificate(
     is_client_cert: bool = False,
 ) -> tuple[
     CertificateBase,
-    "x509.Certificate",
-    "rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey",
+    x509.Certificate,
+    rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey,
     str,
     str,
 ]:

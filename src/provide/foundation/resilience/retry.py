@@ -7,10 +7,10 @@ eliminating duplication between decorators and middleware.
 """
 
 import asyncio
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 import random
 import time
-from typing import Any, Awaitable, TypeVar
+from typing import Any, TypeVar
 
 from attrs import define, field, validators
 

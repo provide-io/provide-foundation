@@ -21,7 +21,7 @@ def parse_log_level(value: str) -> LogLevelStr:
     return _parse_log_level(value)
 
 
-def parse_module_levels(value: str | dict[str, str]) -> dict[str, "LogLevelStr"]:
+def parse_module_levels(value: str | dict[str, str]) -> dict[str, LogLevelStr]:
     """Parse module-specific log levels from string format.
 
     **Format Requirements:**

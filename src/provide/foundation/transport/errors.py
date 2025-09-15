@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class TransportError(FoundationError):
     """Base transport error."""
 
-    def __init__(self, message: str, *, request: "Request | None" = None, **kwargs) -> None:
+    def __init__(self, message: str, *, request: Request | None = None, **kwargs) -> None:
         super().__init__(message, **kwargs)
         self.request = request
 
