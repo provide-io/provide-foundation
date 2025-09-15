@@ -29,7 +29,6 @@ class MockTransport(Transport):
 
     async def close(self) -> None:
         """Mock close implementation."""
-        pass
 
 
 class TestRegisterTransport:
@@ -43,7 +42,7 @@ class TestRegisterTransport:
             register_transport(
                 transport_type=TransportType.HTTP,
                 transport_class=MockTransport,
-                schemes=["http", "https"]
+                schemes=["http", "https"],
             )
 
             mock_registry.register.assert_called_once_with(
@@ -65,7 +64,7 @@ class TestRegisterTransport:
         with patch("provide.foundation.transport.registry.get_component_registry", return_value=mock_registry):
             register_transport(
                 transport_type=TransportType.HTTP,
-                transport_class=MockTransport
+                transport_class=MockTransport,
             )
 
             # Verify it uses transport type value as default scheme
@@ -82,7 +81,7 @@ class TestRegisterTransport:
                 transport_class=MockTransport,
                 schemes=["http"],
                 custom_key="custom_value",
-                version="1.0.0"
+                version="1.0.0",
             )
 
             call_args = mock_registry.register.call_args
@@ -102,11 +101,11 @@ class TestRegisterTransport:
                 register_transport(
                     transport_type=TransportType.HTTP,
                     transport_class=MockTransport,
-                    schemes=["http", "https"]
+                    schemes=["http", "https"],
                 )
 
                 mock_log.debug.assert_called_once_with(
-                    "Registered transport MockTransport for schemes: ['http', 'https']"
+                    "Registered transport MockTransport for schemes: ['http', 'https']",
                 )
 
 
@@ -128,7 +127,7 @@ class TestGetTransportForScheme:
 
                 assert result == MockTransport
                 mock_log.trace.assert_called_once_with(
-                    "Found transport MockTransport for scheme 'http'"
+                    "Found transport MockTransport for scheme 'http'",
                 )
 
     def test_get_transport_for_scheme_case_insensitive(self) -> None:
@@ -257,7 +256,7 @@ class TestListRegisteredTransports:
         mock_entry.metadata = {
             "schemes": ["http", "https"],
             "transport_type": TransportType.HTTP,
-            "custom": "value"
+            "custom": "value",
         }
 
         mock_registry = [mock_entry]
@@ -273,9 +272,9 @@ class TestListRegisteredTransports:
                     "metadata": {
                         "schemes": ["http", "https"],
                         "transport_type": TransportType.HTTP,
-                        "custom": "value"
-                    }
-                }
+                        "custom": "value",
+                    },
+                },
             }
             assert result == expected
 
@@ -328,8 +327,8 @@ class TestListRegisteredTransports:
                     "class": MockTransport,
                     "schemes": [],  # Default when missing
                     "transport_type": None,  # Default when missing
-                    "metadata": {}
-                }
+                    "metadata": {},
+                },
             }
             assert result == expected
 
@@ -346,7 +345,7 @@ class TestGetTransportInfo:
         mock_entry.metadata = {
             "schemes": ["http", "https"],
             "transport_type": TransportType.HTTP,
-            "version": "1.0"
+            "version": "1.0",
         }
 
         mock_registry = [mock_entry]
@@ -362,8 +361,8 @@ class TestGetTransportInfo:
                 "metadata": {
                     "schemes": ["http", "https"],
                     "transport_type": TransportType.HTTP,
-                    "version": "1.0"
-                }
+                    "version": "1.0",
+                },
             }
             assert result == expected
 
@@ -375,7 +374,7 @@ class TestGetTransportInfo:
         mock_entry.value = MockTransport
         mock_entry.metadata = {
             "schemes": ["http", "https"],
-            "transport_type": TransportType.HTTP
+            "transport_type": TransportType.HTTP,
         }
 
         mock_registry = [mock_entry]
@@ -390,8 +389,8 @@ class TestGetTransportInfo:
                 "transport_type": TransportType.HTTP,
                 "metadata": {
                     "schemes": ["http", "https"],
-                    "transport_type": TransportType.HTTP
-                }
+                    "transport_type": TransportType.HTTP,
+                },
             }
             assert result == expected
 
@@ -498,7 +497,7 @@ class TestIntegration:
                 transport_type=TransportType.HTTP,
                 transport_class=MockTransport,
                 schemes=["http", "https"],
-                version="1.0"
+                version="1.0",
             )
 
             # Verify it appears in the list
@@ -552,13 +551,13 @@ class TestIntegration:
             register_transport(
                 transport_type=TransportType.HTTP,
                 transport_class=MockTransport,
-                schemes=["http", "https"]
+                schemes=["http", "https"],
             )
 
             register_transport(
                 transport_type=TransportType.WS,
                 transport_class=MockTransport,
-                schemes=["ws", "wss"]
+                schemes=["ws", "wss"],
             )
 
             # Verify all transports are listed

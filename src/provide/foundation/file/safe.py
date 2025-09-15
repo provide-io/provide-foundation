@@ -30,6 +30,7 @@ def safe_read(
 
     Returns:
         File contents or default value
+
     """
     path = Path(path)
 
@@ -62,6 +63,7 @@ def safe_read_text(
 
     Returns:
         File contents or default text
+
     """
     result = safe_read(path, default=default.encode(encoding), encoding=encoding)
     return result if isinstance(result, str) else default
@@ -82,6 +84,7 @@ def safe_delete(
 
     Raises:
         OSError: If deletion fails and file exists
+
     """
     path = Path(path)
 
@@ -115,6 +118,7 @@ def safe_move(
         FileNotFoundError: If source doesn't exist
         FileExistsError: If destination exists and overwrite=False
         OSError: If move operation fails
+
     """
     src = Path(src)
     dst = Path(dst)
@@ -154,6 +158,7 @@ def safe_copy(
         FileNotFoundError: If source doesn't exist
         FileExistsError: If destination exists and overwrite=False
         OSError: If copy operation fails
+
     """
     src = Path(src)
     dst = Path(dst)

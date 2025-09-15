@@ -1,5 +1,4 @@
-"""
-Streaming search operations for OpenObserve.
+"""Streaming search operations for OpenObserve.
 """
 
 from collections.abc import Generator
@@ -38,6 +37,7 @@ def stream_logs(
 
     Yields:
         Log entries as they arrive
+
     """
     if client is None:
         client = OpenObserveClient.from_config()
@@ -113,6 +113,7 @@ def stream_search_http2(
 
     Yields:
         Log entries as they stream
+
     """
     if client is None:
         client = OpenObserveClient.from_config()
@@ -195,11 +196,12 @@ def tail_logs(
     Security Note:
         filter_sql parameter must be from trusted sources as it's inserted
         directly into SQL query. For user inputs, use parameterized search functions.
+
     """
     import re
 
     # Sanitize stream name to prevent SQL injection
-    if not re.match(r'^[a-zA-Z0-9_]+$', stream):
+    if not re.match(r"^[a-zA-Z0-9_]+$", stream):
         raise ValueError(f"Invalid stream name: {stream}")
 
     # Validate lines parameter

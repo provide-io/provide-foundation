@@ -38,6 +38,7 @@ def get_bool(name: str, default: bool | None = None) -> bool | None:
         True
         >>> get_bool('MISSING', False)
         False
+
     """
     value = os.environ.get(name)
     if value is None:
@@ -66,6 +67,7 @@ def get_int(name: str, default: int | None = None) -> int | None:
 
     Raises:
         ValidationError: If value cannot be parsed as integer
+
     """
     value = os.environ.get(name)
     if value is None:
@@ -94,6 +96,7 @@ def get_float(name: str, default: float | None = None) -> float | None:
 
     Raises:
         ValidationError: If value cannot be parsed as float
+
     """
     value = os.environ.get(name)
     if value is None:
@@ -119,6 +122,7 @@ def get_str(name: str, default: str | None = None) -> str | None:
 
     Returns:
         String value or default
+
     """
     return os.environ.get(name, default)
 
@@ -132,6 +136,7 @@ def get_path(name: str, default: Path | str | None = None) -> Path | None:
 
     Returns:
         Path object or None
+
     """
     value = os.environ.get(name)
     if value is None:
@@ -159,6 +164,7 @@ def get_list(name: str, default: list[str] | None = None, separator: str = ",") 
         >>> os.environ['ITEMS'] = 'a,b,c'
         >>> get_list('ITEMS')
         ['a', 'b', 'c']
+
     """
     value = os.environ.get(name)
     if value is None:
@@ -191,6 +197,7 @@ def get_dict(
         >>> os.environ['CONFIG'] = 'key1=val1,key2=val2'
         >>> get_dict('CONFIG')
         {'key1': 'val1', 'key2': 'val2'}
+
     """
     value = os.environ.get(name)
     if value is None:
@@ -237,6 +244,7 @@ def require(name: str, type_hint: type[T] | None = None) -> Any:
 
     Raises:
         ValidationError: If variable is not set
+
     """
     if name not in os.environ:
         raise ValidationError(
@@ -254,13 +262,13 @@ def require(name: str, type_hint: type[T] | None = None) -> Any:
         # Simple type
         if type_hint is bool:
             return get_bool(name)
-        elif type_hint is int:
+        if type_hint is int:
             return get_int(name)
-        elif type_hint is float:
+        if type_hint is float:
             return get_float(name)
-        elif type_hint is str:
+        if type_hint is str:
             return get_str(name)
-        elif type_hint is Path:
+        if type_hint is Path:
             return get_path(name)
     elif origin is list:
         return get_list(name)
@@ -281,6 +289,7 @@ class EnvPrefix:
         >>> app_env = EnvPrefix('MYAPP')
         >>> app_env.get_bool('DEBUG')  # Reads MYAPP_DEBUG
         >>> app_env['database_url']  # Reads MYAPP_DATABASE_URL
+
     """
 
     def __init__(self, prefix: str, separator: str = "_") -> None:
@@ -289,6 +298,7 @@ class EnvPrefix:
         Args:
             prefix: Prefix for all environment variables
             separator: Separator between prefix and variable name
+
         """
         self.prefix = prefix.upper()
         self.separator = separator
@@ -350,6 +360,7 @@ class EnvPrefix:
 
         Returns:
             Dictionary of variable names (without prefix) to values
+
         """
         result = {}
         prefix_with_sep = f"{self.prefix}{self.separator}"
@@ -381,6 +392,7 @@ def parse_duration(value: str) -> int:
         5400
         >>> parse_duration('2d')
         172800
+
     """
     import re
 
@@ -430,6 +442,7 @@ def parse_size(value: str) -> int:
         10485760
         >>> parse_size('1.5GB')
         1610612736
+
     """
     import re
 

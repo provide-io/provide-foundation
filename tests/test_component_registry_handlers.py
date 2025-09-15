@@ -1,5 +1,4 @@
-"""
-TDD tests for error handler components and thread-safe registry access.
+"""TDD tests for error handler components and thread-safe registry access.
 
 This test suite covers error handler registration, exception type matching,
 priority chains, and thread-safe component access patterns.
@@ -38,7 +37,7 @@ class TestErrorHandlerComponents:
         )
 
         retrieved = registry.get(
-            "test_error_handler", ComponentCategory.ERROR_HANDLER.value
+            "test_error_handler", ComponentCategory.ERROR_HANDLER.value,
         )
         assert retrieved is test_error_handler
 
@@ -92,10 +91,10 @@ class TestErrorHandlerComponents:
 
         # Test priority ordering (get metadata from registry entries)
         high_entry = registry.get_entry(
-            "high_priority", ComponentCategory.ERROR_HANDLER.value
+            "high_priority", ComponentCategory.ERROR_HANDLER.value,
         )
         low_entry = registry.get_entry(
-            "low_priority", ComponentCategory.ERROR_HANDLER.value
+            "low_priority", ComponentCategory.ERROR_HANDLER.value,
         )
         assert high_entry.metadata["priority"] > low_entry.metadata["priority"]
 
@@ -120,7 +119,7 @@ class TestErrorHandlerComponents:
         )
 
         retrieved = registry.get(
-            "async_error_handler", ComponentCategory.ERROR_HANDLER.value
+            "async_error_handler", ComponentCategory.ERROR_HANDLER.value,
         )
         assert retrieved is async_error_handler
 
@@ -141,7 +140,7 @@ class TestThreadSafeComponentAccess:
                 component = Mock()
                 component.id = i
                 registry.register(
-                    name=f"concurrent_component_{i}", value=component, dimension="test"
+                    name=f"concurrent_component_{i}", value=component, dimension="test",
                 )
                 results.append(i)
             except Exception as e:
@@ -176,11 +175,11 @@ class TestThreadSafeComponentAccess:
         test_component = Mock()
         test_component.access_count = 0
         test_component.increment = lambda: setattr(
-            test_component, "access_count", test_component.access_count + 1
+            test_component, "access_count", test_component.access_count + 1,
         )
 
         registry.register(
-            name="shared_component", value=test_component, dimension="test"
+            name="shared_component", value=test_component, dimension="test",
         )
 
         results = []

@@ -1,8 +1,7 @@
 #
 # version.py
 #
-"""
-Version handling for provide-foundation.
+"""Version handling for provide-foundation.
 Integrates VERSION logic from flavorpack with robust fallback mechanisms.
 """
 
@@ -31,6 +30,7 @@ def get_version() -> str:
 
     Returns:
         str: The current version string
+
     """
     # Try VERSION file first (single source of truth)
     project_root = _find_project_root()

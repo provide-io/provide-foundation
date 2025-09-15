@@ -37,7 +37,7 @@ class TestTestingWarnings:
         from provide.testkit import _is_testing_context
 
         with patch.dict(
-            os.environ, {"PYTEST_CURRENT_TEST": "test_example.py::test_func"}
+            os.environ, {"PYTEST_CURRENT_TEST": "test_example.py::test_func"},
         ):
             assert _is_testing_context() is True
 

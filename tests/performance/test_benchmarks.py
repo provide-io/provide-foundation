@@ -1,5 +1,4 @@
-"""
-Performance benchmarks using pytest-benchmark.
+"""Performance benchmarks using pytest-benchmark.
 
 This module provides pytest-benchmark integration for Foundation's performance
 testing, complementing the existing benchmark infrastructure with statistical
@@ -50,7 +49,7 @@ class TestBasicLoggingPerformance:
                 console_formatter="key_value",
                 logger_name_emoji_prefix_enabled=True,
                 das_emoji_prefix_enabled=False,
-            )
+            ),
         )
 
         with capture_logs():
@@ -79,7 +78,7 @@ class TestBasicLoggingPerformance:
                 console_formatter="json",
                 logger_name_emoji_prefix_enabled=True,
                 das_emoji_prefix_enabled=True,
-            )
+            ),
         )
 
         with capture_logs():
@@ -111,7 +110,7 @@ class TestBasicLoggingPerformance:
                 console_formatter="key_value",
                 logger_name_emoji_prefix_enabled=True,
                 das_emoji_prefix_enabled=True,
-            )
+            ),
         )
 
         with capture_logs():
@@ -147,7 +146,7 @@ class TestConcurrentPerformance:
             logging=LoggingConfig(
                 default_level="INFO",
                 console_formatter="json",
-            )
+            ),
         )
 
         with capture_logs():
@@ -158,7 +157,7 @@ class TestConcurrentPerformance:
                 thread_logger = logger.get_logger(f"benchmark.thread.{thread_id}")
                 for i in range(message_count):
                     thread_logger.info(
-                        f"Thread {thread_id} message {i}", thread_id=thread_id, msg_id=i
+                        f"Thread {thread_id} message {i}", thread_id=thread_id, msg_id=i,
                     )
 
             def multithreaded_logging():
@@ -187,7 +186,7 @@ class TestConcurrentPerformance:
                 module_levels={
                     "benchmark.filtered": "DEBUG",  # Allow all for this module
                 },
-            )
+            ),
         )
 
         with capture_logs():
@@ -242,7 +241,7 @@ class TestDogfoodingPerformance:
                 logging=LoggingConfig(
                     default_level="DEBUG",  # Enable our structured setup logging
                     foundation_setup_log_level="DEBUG",
-                )
+                ),
             )
             with capture_logs():
                 setup_telemetry(config)
@@ -261,7 +260,7 @@ class TestDogfoodingPerformance:
             config = TelemetryConfig(
                 logging=LoggingConfig(
                     foundation_setup_log_level="DEBUG",
-                )
+                ),
             )
             with capture_logs():
                 setup_telemetry(config)
@@ -285,7 +284,7 @@ class TestLargePayloadPerformance:
             logging=LoggingConfig(
                 default_level="INFO",
                 console_formatter="json",
-            )
+            ),
         )
 
         with capture_logs():
@@ -303,7 +302,7 @@ class TestLargePayloadPerformance:
                 """Function to benchmark - large payload logging."""
                 for i in range(100):
                     test_logger.info(
-                        f"Large payload message {i}", **large_data, iteration=i
+                        f"Large payload message {i}", **large_data, iteration=i,
                     )
 
             # The benchmark fixture handles timing and statistical analysis

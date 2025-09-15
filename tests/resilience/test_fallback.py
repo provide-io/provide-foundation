@@ -1,5 +1,4 @@
-"""
-Tests for fallback functionality.
+"""Tests for fallback functionality.
 """
 
 from unittest.mock import MagicMock

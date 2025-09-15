@@ -24,8 +24,7 @@ from provide.foundation.logger.config import (  # noqa: E402
 
 
 def example_5_exception_handling() -> None:
-    """
-    Example 5: Demonstrates logging exceptions with tracebacks.
+    """Example 5: Demonstrates logging exceptions with tracebacks.
 
     The `logger.exception()` method automatically captures and logs the current
     exception's traceback information along with the error message.
@@ -37,15 +36,15 @@ def example_5_exception_handling() -> None:
 
     setup_telemetry(
         TelemetryConfig(
-            logging=LoggingConfig(default_level="INFO")
-        )
+            logging=LoggingConfig(default_level="INFO"),
+        ),
     )
 
     def risky_operation() -> Never:
         """A function that is expected to raise an exception."""
         sub_operation_data = {"sub_key": "sub_value"}
         raise ValueError(
-            f"Something went wrong in the operation with data: {sub_operation_data}"
+            f"Something went wrong in the operation with data: {sub_operation_data}",
         )
 
     def another_risky_operation() -> Never:

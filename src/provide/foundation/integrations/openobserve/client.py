@@ -1,5 +1,4 @@
-"""
-OpenObserve API client.
+"""OpenObserve API client.
 """
 
 from datetime import datetime
@@ -52,6 +51,7 @@ class OpenObserveClient:
             organization: Organization name (default: "default")
             timeout: Request timeout in seconds
             max_retries: Maximum number of retry attempts
+
         """
         self.url = url.rstrip("/")
         self.username, self.password = validate_credentials(username, password)
@@ -81,6 +81,7 @@ class OpenObserveClient:
 
         Raises:
             OpenObserveConfigError: If configuration is missing
+
         """
         from provide.foundation.integrations.openobserve.config import OpenObserveConfig
 
@@ -88,13 +89,13 @@ class OpenObserveClient:
 
         if not config.url:
             raise OpenObserveConfigError(
-                "OpenObserve URL not configured. Set OPENOBSERVE_URL environment variable."
+                "OpenObserve URL not configured. Set OPENOBSERVE_URL environment variable.",
             )
 
         if not config.user or not config.password:
             raise OpenObserveConfigError(
                 "OpenObserve credentials not configured. "
-                "Set OPENOBSERVE_USER and OPENOBSERVE_PASSWORD environment variables."
+                "Set OPENOBSERVE_USER and OPENOBSERVE_PASSWORD environment variables.",
             )
 
         return cls(
@@ -125,6 +126,7 @@ class OpenObserveClient:
         Raises:
             OpenObserveConnectionError: On connection errors
             OpenObserveQueryError: On API errors
+
         """
         url = urljoin(self.url, f"/api/{self.organization}/{endpoint}")
 
@@ -184,6 +186,7 @@ class OpenObserveClient:
 
         Returns:
             SearchResponse with results
+
         """
         # Parse time parameters
         now = datetime.now()
@@ -235,6 +238,7 @@ class OpenObserveClient:
 
         Returns:
             List of StreamInfo objects
+
         """
         response = self._make_request(
             method="GET",
@@ -266,6 +270,7 @@ class OpenObserveClient:
 
         Returns:
             SearchResponse with history entries
+
         """
         request_data = {
             "size": size,
@@ -287,6 +292,7 @@ class OpenObserveClient:
 
         Returns:
             True if connection successful
+
         """
         try:
             # Try to list streams as a simple test

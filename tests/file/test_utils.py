@@ -111,7 +111,6 @@ def test_touch_updates_existing_file(temp_directory) -> None:
 
 def test_touch_with_mode(temp_directory) -> None:
     """Test touch creates file with specific mode."""
-
     path = temp_directory / "test.txt"
     mode = 0o600
 

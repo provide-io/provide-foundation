@@ -48,7 +48,7 @@ def mock_ssl_server_credentials(
     """Mock implementation of grpc.ssl_server_credentials."""
     if require_client_auth and root_certificates is None:
         raise ValueError(
-            "root_certificates is required when require_client_auth is True"
+            "root_certificates is required when require_client_auth is True",
         )
 
     if not private_key_certificate_chain_pairs:
@@ -57,7 +57,7 @@ def mock_ssl_server_credentials(
     # Validate all pairs have correct format
     for private_key, certificate_chain in private_key_certificate_chain_pairs:
         if not isinstance(private_key, bytes) or not isinstance(
-            certificate_chain, bytes
+            certificate_chain, bytes,
         ):
             raise TypeError("private_key and certificate_chain must be bytes")
 
@@ -117,14 +117,14 @@ def test_mock_server_credentials_multiple_certs(server_cert, client_cert) -> Non
 
 
 def test_mock_server_credentials_validation_with_certs(
-    server_cert, client_cert
+    server_cert, client_cert,
 ) -> None:
     """Test validation rules with real certificates."""
     # Test requiring client auth without root certs
     with pytest.raises(ValueError):
         mock_ssl_server_credentials(
             private_key_certificate_chain_pairs=[
-                (server_cert.key.encode(), server_cert.cert.encode())
+                (server_cert.key.encode(), server_cert.cert.encode()),
             ],
             require_client_auth=True,  # Should fail without root_certificates
         )
@@ -133,15 +133,15 @@ def test_mock_server_credentials_validation_with_certs(
     with pytest.raises(TypeError):
         mock_ssl_server_credentials(
             private_key_certificate_chain_pairs=[
-                (server_cert.key, server_cert.cert)  # Not encoded to bytes
-            ]
+                (server_cert.key, server_cert.cert),  # Not encoded to bytes
+            ],
         )
 
 
 def test_mock_channel_credentials_none_values(client_cert) -> None:
     """Test channel credentials with optional parameters as None."""
     creds = mock_ssl_channel_credentials(
-        root_certificates=client_cert.cert.encode()
+        root_certificates=client_cert.cert.encode(),
         # Omitting private_key and certificate_chain
     )
     assert isinstance(creds.root_certificates, bytes)

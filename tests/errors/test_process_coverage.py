@@ -34,7 +34,7 @@ class TestProcessError:
     def test_process_error_with_command_list(self):
         """Test ProcessError with list command."""
         error = ProcessError(
-            "Command failed", command=["ls", "-la", "/nonexistent"], return_code=2
+            "Command failed", command=["ls", "-la", "/nonexistent"], return_code=2,
         )
 
         expected_message = (
@@ -55,7 +55,7 @@ class TestProcessError:
     def test_process_error_with_stdout_string(self):
         """Test ProcessError with string stdout."""
         error = ProcessError(
-            "Command output", command="echo hello", stdout="hello world\n"
+            "Command output", command="echo hello", stdout="hello world\n",
         )
 
         expected_message = (
@@ -67,7 +67,7 @@ class TestProcessError:
     def test_process_error_with_stdout_bytes(self):
         """Test ProcessError with bytes stdout."""
         error = ProcessError(
-            "Command output", command="cat file.txt", stdout=b"binary content\n"
+            "Command output", command="cat file.txt", stdout=b"binary content\n",
         )
 
         expected_message = (
@@ -91,7 +91,7 @@ class TestProcessError:
     def test_process_error_with_stderr_bytes(self):
         """Test ProcessError with bytes stderr."""
         error = ProcessError(
-            "Command failed", command="invalid_command", stderr=b"command not found\n"
+            "Command failed", command="invalid_command", stderr=b"command not found\n",
         )
 
         expected_message = "Command failed\nCommand: invalid_command\n--- STDERR ---\ncommand not found"
@@ -135,7 +135,7 @@ class TestProcessError:
     def test_process_error_with_whitespace_only_stdout(self):
         """Test ProcessError with whitespace-only stdout (should be stripped to empty)."""
         error = ProcessError(
-            "Whitespace output", command="space_cmd", stdout="   \n\t  \n   "
+            "Whitespace output", command="space_cmd", stdout="   \n\t  \n   ",
         )
 
         expected_message = "Whitespace output\nCommand: space_cmd"
@@ -145,7 +145,7 @@ class TestProcessError:
     def test_process_error_with_whitespace_only_stderr(self):
         """Test ProcessError with whitespace-only stderr (should be stripped to empty)."""
         error = ProcessError(
-            "Whitespace errors", command="space_cmd", stderr="   \n\t  \n   "
+            "Whitespace errors", command="space_cmd", stderr="   \n\t  \n   ",
         )
 
         expected_message = "Whitespace errors\nCommand: space_cmd"
@@ -212,7 +212,7 @@ class TestCommandNotFoundError:
     def test_command_not_found_with_command(self):
         """Test CommandNotFoundError with command details."""
         error = CommandNotFoundError(
-            "Command not found", command="nonexistent_command", return_code=127
+            "Command not found", command="nonexistent_command", return_code=127,
         )
 
         expected_message = (
@@ -254,7 +254,7 @@ class TestProcessTimeoutError:
     def test_process_timeout_with_command(self):
         """Test ProcessTimeoutError with command."""
         error = ProcessTimeoutError(
-            "Timeout occurred", command="long_running_cmd", timeout_seconds=30.0
+            "Timeout occurred", command="long_running_cmd", timeout_seconds=30.0,
         )
 
         expected_message = (

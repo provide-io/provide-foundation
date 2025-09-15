@@ -30,6 +30,7 @@ class ProcessError(FoundationError):
             stderr: Standard error from the process
             timeout: Whether the process timed out
             **extra_context: Additional context information
+
         """
         # Build comprehensive error message
         full_message = message
@@ -61,7 +62,7 @@ class ProcessError(FoundationError):
                 "process.command": command,
                 "process.return_code": return_code,
                 "process.timeout": timeout,
-            }
+            },
         )
 
         # Store clean stdout/stderr for programmatic access

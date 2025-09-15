@@ -1,5 +1,4 @@
-"""
-Core context management for provide-foundation.
+"""Core context management for provide-foundation.
 
 Provides CLI runtime context for managing command execution state,
 output formatting, and CLI-specific settings.

@@ -29,6 +29,7 @@ def verify_file(
     Raises:
         ResourceError: If file cannot be read
         ValidationError: If algorithm is not supported
+
     """
     if isinstance(path, str):
         path = Path(path)
@@ -79,6 +80,7 @@ def verify_data(
 
     Raises:
         ValidationError: If algorithm is not supported
+
     """
     actual_hash = hash_data(data, algorithm)
     matches = compare_hash(actual_hash, expected_hash)
@@ -116,6 +118,7 @@ def calculate_checksums(
     Raises:
         ResourceError: If file cannot be read
         ValidationError: If any algorithm is not supported
+
     """
     if algorithms is None:
         algorithms = ["sha256", "md5"]
@@ -154,6 +157,7 @@ def parse_checksum_file(
 
     Raises:
         ResourceError: If file cannot be read
+
     """
     if isinstance(path, str):
         path = Path(path)
@@ -181,8 +185,7 @@ def parse_checksum_file(
             if len(parts) == 2:
                 hash_value, filename = parts
                 # Remove any leading asterisk (binary mode indicator)
-                if filename.startswith("*"):
-                    filename = filename[1:]
+                filename = filename.removeprefix("*")
                 checksums[filename] = hash_value.lower()
 
         plog.debug(
@@ -218,6 +221,7 @@ def write_checksum_file(
 
     Raises:
         ResourceError: If file cannot be written
+
     """
     if isinstance(path, str):
         path = Path(path)
@@ -276,6 +280,7 @@ def verify_checksum_file(
 
     Raises:
         ResourceError: If checksum file cannot be read
+
     """
     if isinstance(checksum_file, str):
         checksum_file = Path(checksum_file)

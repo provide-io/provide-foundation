@@ -17,6 +17,7 @@ class ConfigurationError(FoundationError):
     Examples:
         >>> raise ConfigurationError("Missing required config")
         >>> raise ConfigurationError("Invalid timeout", config_key="timeout")
+
     """
 
     def __init__(
@@ -50,6 +51,7 @@ class ValidationError(FoundationError):
     Examples:
         >>> raise ValidationError("Invalid email format")
         >>> raise ValidationError("Value out of range", field="age", value=-1)
+
     """
 
     def __init__(
@@ -86,6 +88,7 @@ class ConfigValidationError(ValidationError):
     Examples:
         >>> raise ConfigValidationError("Invalid database configuration")
         >>> raise ConfigValidationError("Port must be positive", field="port", value=-1)
+
     """
 
     def __init__(

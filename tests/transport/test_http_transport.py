@@ -1,5 +1,4 @@
-"""
-HTTP transport tests with httpx.
+"""HTTP transport tests with httpx.
 """
 
 
@@ -161,9 +160,9 @@ async def test_http_transport_streaming(http_transport, httpx_mock: HTTPXMock):
     content = b"chunk1\nchunk2\nchunk3\n"
 
     def stream_content():
-        for line in content.split(b'\n'):
+        for line in content.split(b"\n"):
             if line:
-                yield line + b'\n'
+                yield line + b"\n"
 
     httpx_mock.add_response(
         method="GET",

@@ -1,5 +1,4 @@
-"""
-Integration tests for resilience module with transport middleware and other components.
+"""Integration tests for resilience module with transport middleware and other components.
 """
 
 from unittest.mock import patch
@@ -27,7 +26,7 @@ class TestRetryMiddlewareIntegration:
             max_attempts=3,
             base_delay=0.01,
             backoff=BackoffStrategy.EXPONENTIAL,
-            retryable_status_codes={500, 502, 503}
+            retryable_status_codes={500, 502, 503},
         )
 
         middleware = RetryMiddleware(policy=policy)
@@ -42,9 +41,8 @@ class TestRetryMiddlewareIntegration:
             if call_count <= 2:
                 # Fail first two attempts
                 return Response(status=500, request=req)
-            else:
-                # Succeed on third attempt
-                return Response(status=200, request=req)
+            # Succeed on third attempt
+            return Response(status=200, request=req)
 
         response = await middleware.execute_with_retry(failing_execute, request)
 
@@ -57,7 +55,7 @@ class TestRetryMiddlewareIntegration:
         policy = RetryPolicy(
             max_attempts=3,
             base_delay=0.01,
-            retryable_errors=(TransportError,)
+            retryable_errors=(TransportError,),
         )
 
         middleware = RetryMiddleware(policy=policy)
@@ -84,7 +82,7 @@ class TestRetryMiddlewareIntegration:
         policy = RetryPolicy(
             max_attempts=3,
             base_delay=0.01,
-            retryable_status_codes={500, 503}
+            retryable_status_codes={500, 503},
         )
 
         middleware = RetryMiddleware(policy=policy)
@@ -109,7 +107,7 @@ class TestRetryMiddlewareIntegration:
             max_attempts=5,
             base_delay=0.01,
             retryable_errors=(TransportError,),
-            retryable_status_codes={503}
+            retryable_status_codes={503},
         )
 
         middleware = RetryMiddleware(policy=policy)
@@ -123,12 +121,11 @@ class TestRetryMiddlewareIntegration:
 
             if call_count == 1:
                 raise TransportError("Connection error")
-            elif call_count == 2:
+            if call_count == 2:
                 return Response(status=503, request=req)
-            elif call_count == 3:
+            if call_count == 3:
                 raise TransportError("Timeout")
-            else:
-                return Response(status=200, request=req)
+            return Response(status=200, request=req)
 
         response = await middleware.execute_with_retry(mixed_failures, request)
 
@@ -145,7 +142,7 @@ class TestDecoratorWithMiddleware:
         policy = RetryPolicy(
             max_attempts=2,
             base_delay=0.01,
-            retryable_status_codes={500}
+            retryable_status_codes={500},
         )
 
         middleware = RetryMiddleware(policy=policy)
@@ -156,7 +153,7 @@ class TestDecoratorWithMiddleware:
 
             async def execute(req):
                 # Simulate flaky endpoint
-                if not hasattr(api_call, 'attempts'):
+                if not hasattr(api_call, "attempts"):
                     api_call.attempts = 0
                 api_call.attempts += 1
 
@@ -236,13 +233,13 @@ class TestRetryExecutorWithRealWorld:
             max_attempts=5,
             base_delay=0.1,
             backoff=BackoffStrategy.EXPONENTIAL,
-            retryable_errors=(ConnectionError,)
+            retryable_errors=(ConnectionError,),
         )
 
         executor = RetryExecutor(policy)
         db = DatabaseConnection()
 
-        with patch('asyncio.sleep'):  # Speed up test
+        with patch("asyncio.sleep"):  # Speed up test
             connection = await executor.execute_async(db.connect)
 
         assert connection.connected
@@ -268,13 +265,13 @@ class TestRetryExecutorWithRealWorld:
             max_attempts=5,
             base_delay=1.0,
             backoff=BackoffStrategy.EXPONENTIAL,
-            retryable_errors=(RateLimitError,)
+            retryable_errors=(RateLimitError,),
         )
 
         executor = RetryExecutor(policy)
         client = APIClient()
 
-        with patch('time.sleep'):  # Speed up test
+        with patch("time.sleep"):  # Speed up test
             result = executor.execute_sync(client.make_request, "/users")
 
         assert result == {"status": "success", "data": "/users"}
@@ -325,7 +322,7 @@ class TestRetryExecutorWithRealWorld:
         policy = RetryPolicy(
             max_attempts=3,
             base_delay=0.01,
-            retryable_errors=(ValueError, RuntimeError)
+            retryable_errors=(ValueError, RuntimeError),
         )
         executor = RetryExecutor(policy)
 

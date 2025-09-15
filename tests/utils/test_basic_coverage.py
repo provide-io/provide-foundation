@@ -122,5 +122,5 @@ class TestUtilsBasicCoverage:
         from provide.foundation.utils.streams import get_safe_stderr
 
         stderr = get_safe_stderr()
-        assert hasattr(stderr, 'write')
+        assert hasattr(stderr, "write")
         assert callable(stderr.write)

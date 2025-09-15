@@ -163,7 +163,7 @@ class TestExtractClickTypeUnionTypeDetection:
         assert origin is typing.Union
 
     @pytest.mark.skipif(
-        not hasattr(types, "UnionType"), reason="UnionType not available"
+        not hasattr(types, "UnionType"), reason="UnionType not available",
     )
     def test_types_union_detection(self):
         """Test detection of types.UnionType (Python 3.10+)."""
@@ -201,7 +201,7 @@ class TestExtractClickTypeEdgeCases:
 
         # Mock get_origin and get_args to simulate edge case
         with patch(
-            "provide.foundation.hub.type_mapping.get_origin", return_value=typing.Union
+            "provide.foundation.hub.type_mapping.get_origin", return_value=typing.Union,
         ), patch("provide.foundation.hub.type_mapping.get_args", return_value=()):
             result = extract_click_type(MockUnion)
             # Should return str as safe default when union has no args
@@ -215,7 +215,7 @@ class TestExtractClickTypeEdgeCases:
 
         # Mock to simulate Python 3.10+ union
         with patch(
-            "provide.foundation.hub.type_mapping.get_origin", return_value=typing.Union
+            "provide.foundation.hub.type_mapping.get_origin", return_value=typing.Union,
         ), patch("provide.foundation.hub.type_mapping.get_args", return_value=()):
             # Should use __args__ when available
             mock_union = MockUnionWithArgs()
@@ -226,7 +226,7 @@ class TestExtractClickTypeEdgeCases:
         """Test union containing only None-equivalent types."""
         # Create a mock annotation with only None types
         with patch(
-            "provide.foundation.hub.type_mapping.get_origin", return_value=typing.Union
+            "provide.foundation.hub.type_mapping.get_origin", return_value=typing.Union,
         ), patch(
             "provide.foundation.hub.type_mapping.get_args",
             return_value=(type(None), type(None)),
@@ -237,7 +237,7 @@ class TestExtractClickTypeEdgeCases:
     def test_extract_empty_union_args(self):
         """Test union with empty args list."""
         with patch(
-            "provide.foundation.hub.type_mapping.get_origin", return_value=typing.Union
+            "provide.foundation.hub.type_mapping.get_origin", return_value=typing.Union,
         ), patch("provide.foundation.hub.type_mapping.get_args", return_value=()):
             result = extract_click_type("mock_annotation")
             # Should return str as safe default when union has no args
@@ -251,7 +251,6 @@ class TestExtractClickTypeEdgeCases:
 
     def test_extract_complex_generic_type(self):
         """Test extraction of complex generic types that aren't unions."""
-
         # These should be returned as-is since they're not unions
         result_list = extract_click_type(list[str])
         result_dict = extract_click_type(dict[str, int])
@@ -264,7 +263,7 @@ class TestExtractClickTypeUnionTypeComparisons:
     """Test UnionType detection and comparison logic."""
 
     @pytest.mark.skipif(
-        not hasattr(types, "UnionType"), reason="UnionType not available"
+        not hasattr(types, "UnionType"), reason="UnionType not available",
     )
     def test_union_type_isinstance_check(self):
         """Test isinstance check for UnionType."""

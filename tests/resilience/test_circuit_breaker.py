@@ -1,5 +1,4 @@
-"""
-Tests for circuit breaker functionality.
+"""Tests for circuit breaker functionality.
 """
 
 import time
@@ -127,7 +126,7 @@ class TestCircuitBreaker:
         """Test circuit breaker only triggers on expected exceptions."""
         breaker = CircuitBreaker(
             failure_threshold=1,
-            expected_exception=(ValueError,)
+            expected_exception=(ValueError,),
         )
 
         def runtime_error_func():

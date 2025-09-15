@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # extreme_performance_test.py
 #
-"""
-Extreme Performance Testing for Foundation Telemetry.
+"""Extreme Performance Testing for Foundation Telemetry.
 
 This script pushes the logging system to its absolute limits to test:
 - Maximum sustainable throughput
@@ -91,8 +90,7 @@ class PerformanceMonitor:
         with self._lock:
             self.message_count += 1
             current_memory = get_memory_usage()
-            if current_memory > self.max_memory:
-                self.max_memory = current_memory
+            self.max_memory = max(self.max_memory, current_memory)
 
     def get_stats(self) -> dict[str, Any]:
         """Get current performance statistics."""
@@ -132,7 +130,7 @@ def extreme_throughput_test() -> dict[str, Any]:
             console_formatter="key_value",
             logger_name_emoji_prefix_enabled=False,  # Maximize speed
             das_emoji_prefix_enabled=False,
-        )
+        ),
     )
 
     monitor = PerformanceMonitor()
@@ -170,11 +168,11 @@ def extreme_concurrency_test() -> dict[str, Any]:
         logging=LoggingConfig(
             default_level="INFO",
             console_formatter="json",
-        )
+        ),
     )
 
     def worker_thread(
-        thread_id: int, messages: int, monitor: PerformanceMonitor
+        thread_id: int, messages: int, monitor: PerformanceMonitor,
     ) -> None:
         """High-intensity worker thread."""
         thread_logger = logger.get_logger(f"extreme.thread.{thread_id}")
@@ -224,7 +222,7 @@ def memory_stress_test() -> dict[str, Any]:
             console_formatter="json",
             logger_name_emoji_prefix_enabled=True,
             das_emoji_prefix_enabled=True,
-        )
+        ),
     )
 
     monitor = PerformanceMonitor()
@@ -281,7 +279,7 @@ async def async_extreme_test() -> dict[str, Any]:
         logging=LoggingConfig(
             default_level="INFO",
             console_formatter="json",
-        )
+        ),
     )
 
     async def async_worker(worker_id: int, message_count: int) -> None:
@@ -339,7 +337,7 @@ def filtering_efficiency_test() -> dict[str, Any]:
         logging=LoggingConfig(
             default_level="CRITICAL",  # Filter almost everything
             module_levels={"extreme.allowed": "DEBUG"},  # Only one module allowed
-        )
+        ),
     )
 
     with capture_logs() as captured:
@@ -366,7 +364,7 @@ def filtering_efficiency_test() -> dict[str, Any]:
                 line
                 for line in captured.getvalue().split("\n")
                 if line.strip() and not line.startswith("[Foundation Setup]")
-            ]
+            ],
         )
 
         duration = end_time - start_time

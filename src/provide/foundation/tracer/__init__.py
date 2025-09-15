@@ -1,8 +1,7 @@
 #
 # __init__.py
 #
-"""
-Foundation Tracer Module.
+"""Foundation Tracer Module.
 
 Provides distributed tracing functionality with optional OpenTelemetry integration.
 Falls back to simple, lightweight tracing when OpenTelemetry is not available.

@@ -22,8 +22,7 @@ from provide.foundation.console.output import pout  # noqa: E402
 
 
 def example_8_environment_configuration() -> None:
-    """
-    Example 8: Demonstrates configuration via environment variables.
+    """Example 8: Demonstrates configuration via environment variables.
 
     Foundation Telemetry can be configured using `PROVIDE_*` environment variables,
     allowing settings to be changed without code modification.
@@ -44,7 +43,7 @@ def example_8_environment_configuration() -> None:
             "PROVIDE_LOG_MODULE_LEVELS": "auth.service:TRACE,database:ERROR",
             "PROVIDE_LOG_DAS_EMOJI_ENABLED": "true",
             "PROVIDE_LOG_OMIT_TIMESTAMP": "false",  # Explicitly include timestamps for this demo
-        }
+        },
     )
 
     try:
@@ -60,10 +59,10 @@ def example_8_environment_configuration() -> None:
         )
 
         auth_service_logger = logger.get_logger(
-            "auth.service.tokens"
+            "auth.service.tokens",
         )  # This is a structlog.BoundLogger
         db_logger = logger.get_logger(
-            "database.queries"
+            "database.queries",
         )  # This is a structlog.BoundLogger
 
         # Use the global `logger` (FoundationLogger instance) for .trace()
@@ -72,11 +71,11 @@ def example_8_environment_configuration() -> None:
             _foundation_logger_name="auth.service.tokens",
         )  # ✅ Shows (auth.service is TRACE)
         auth_service_logger.debug(
-            "User 'test' authentication check"
+            "User 'test' authentication check",
         )  # ✅ Shows (.debug is fine on BoundLogger)
 
         db_logger.warning(
-            "DB query warning (should be filtered)"
+            "DB query warning (should be filtered)",
         )  # ❌ Filtered (database is ERROR)
         db_logger.error("DB connection error (should show)")  # ✅ Shows
     finally:

@@ -1,5 +1,4 @@
-"""
-Main CLI entry point for Foundation.
+"""Main CLI entry point for Foundation.
 """
 
 try:
@@ -15,7 +14,7 @@ def _require_click():
     """Ensure click is available for CLI."""
     if not _HAS_CLICK:
         raise ImportError(
-            "CLI requires optional dependencies. Install with: pip install 'provide-foundation[cli]'"
+            "CLI requires optional dependencies. Install with: pip install 'provide-foundation[cli]'",
         )
 
 
@@ -25,7 +24,6 @@ if _HAS_CLICK:
     @click.version_option()
     def cli():
         """Foundation CLI - Telemetry and observability tools."""
-        pass
 
     # Register commands from commands module
     try:

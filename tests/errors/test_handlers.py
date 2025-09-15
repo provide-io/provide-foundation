@@ -48,9 +48,8 @@ class TestErrorBoundary:
 
     def test_reraise_true_reraises(self) -> Never:
         """Test that reraise=True reraises the error."""
-        with pytest.raises(ValueError):
-            with error_boundary(ValueError, reraise=True):
-                raise ValueError("test")
+        with pytest.raises(ValueError), error_boundary(ValueError, reraise=True):
+            raise ValueError("test")
 
     def test_fallback_value_when_not_reraising(self) -> Never:
         """Test fallback value is available when not reraising."""
@@ -87,7 +86,7 @@ class TestErrorBoundary:
             context = {"request_id": "123", "user": "test"}
 
             with error_boundary(
-                ValueError, log_errors=True, reraise=False, context=context
+                ValueError, log_errors=True, reraise=False, context=context,
             ):
                 raise ValueError("test")
 
@@ -124,14 +123,14 @@ class TestErrorBoundary:
 
         with patch("provide.foundation.errors.handlers._get_logger") as mock_logger:
             with error_boundary(
-                ValueError, on_error=bad_callback, log_errors=True, reraise=False
+                ValueError, on_error=bad_callback, log_errors=True, reraise=False,
             ):
                 raise ValueError("test")
 
             # Should log both the original error and callback error
             assert mock_logger.return_value.error.call_count == 2
             assert "callback failed" in str(
-                mock_logger.return_value.error.call_args_list[1]
+                mock_logger.return_value.error.call_args_list[1],
             )
 
     def test_default_catches_all_exceptions(self) -> Never:
@@ -182,9 +181,8 @@ class TestTransactional:
         """Test that errors are logged."""
         rollback = MagicMock()
 
-        with pytest.raises(ValueError):
-            with transactional(rollback, log_errors=True):
-                raise ValueError("test error")
+        with pytest.raises(ValueError), transactional(rollback, log_errors=True):
+            raise ValueError("test error")
 
         mock_logger.return_value.error.assert_called()
         assert "Transaction failed" in mock_logger.return_value.error.call_args[0][0]
@@ -194,12 +192,11 @@ class TestTransactional:
         """Test that successful rollback is logged."""
         rollback = MagicMock()
 
-        with pytest.raises(ValueError):
-            with transactional(rollback, log_errors=True):
-                raise ValueError("test")
+        with pytest.raises(ValueError), transactional(rollback, log_errors=True):
+            raise ValueError("test")
 
         mock_logger.return_value.info.assert_called_with(
-            "Transaction rolled back successfully"
+            "Transaction rolled back successfully",
         )
 
     def test_rollback_failure_raises_rollback_error(self) -> Never:
@@ -208,9 +205,8 @@ class TestTransactional:
         def failing_rollback() -> Never:
             raise RuntimeError("rollback failed")
 
-        with pytest.raises(RuntimeError) as exc_info:
-            with transactional(failing_rollback):
-                raise ValueError("original error")
+        with pytest.raises(RuntimeError) as exc_info, transactional(failing_rollback):
+            raise ValueError("original error")
 
         assert str(exc_info.value) == "rollback failed"
         assert exc_info.value.__cause__.args[0] == "original error"
@@ -222,9 +218,8 @@ class TestTransactional:
         def failing_rollback() -> Never:
             raise RuntimeError("rollback failed")
 
-        with pytest.raises(RuntimeError):
-            with transactional(failing_rollback, log_errors=True):
-                raise ValueError("original")
+        with pytest.raises(RuntimeError), transactional(failing_rollback, log_errors=True):
+            raise ValueError("original")
 
         mock_logger.return_value.critical.assert_called()
         assert "Rollback failed" in mock_logger.return_value.critical.call_args[0][0]
@@ -234,9 +229,8 @@ class TestTransactional:
         rollback = MagicMock()
         on_error = MagicMock()
 
-        with pytest.raises(ValueError):
-            with transactional(rollback, on_error=on_error):
-                raise ValueError("test")
+        with pytest.raises(ValueError), transactional(rollback, on_error=on_error):
+            raise ValueError("test")
 
         on_error.assert_called_once()
         assert isinstance(on_error.call_args[0][0], ValueError)
@@ -248,9 +242,8 @@ class TestTransactional:
         def bad_handler(e) -> Never:
             raise RuntimeError("handler failed")
 
-        with pytest.raises(ValueError):
-            with transactional(rollback, on_error=bad_handler):
-                raise ValueError("original")
+        with pytest.raises(ValueError), transactional(rollback, on_error=bad_handler):
+            raise ValueError("original")
 
         # Rollback should still be called
         rollback.assert_called_once()
@@ -370,7 +363,7 @@ class TestErrorHandler:
         handler = ErrorHandler()
 
         handler.add_policy(ValueError, lambda e: "val").add_policy(
-            KeyError, lambda e: "key"
+            KeyError, lambda e: "key",
         )
 
         assert len(handler.policies) == 2
@@ -450,7 +443,7 @@ class TestErrorHandler:
     def test_logging_disabled(self, mock_logger) -> None:
         """Test that handling is not logged when log_all=False."""
         handler = ErrorHandler(
-            policies={ValueError: lambda e: "handled"}, log_all=False
+            policies={ValueError: lambda e: "handled"}, log_all=False,
         )
 
         handler.handle(ValueError("test"))
@@ -508,7 +501,7 @@ class TestCreateErrorHandler:
     def test_create_with_policies(self) -> None:
         """Test creating handler with policies."""
         handler = create_error_handler(
-            ValidationError=lambda e: "validation", NetworkError=lambda e: "network"
+            ValidationError=lambda e: "validation", NetworkError=lambda e: "network",
         )
 
         assert ValidationError in handler.policies

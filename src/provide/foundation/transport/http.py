@@ -1,5 +1,4 @@
-"""
-HTTP/HTTPS transport implementation using httpx.
+"""HTTP/HTTPS transport implementation using httpx.
 """
 
 from collections.abc import AsyncIterator
@@ -183,14 +182,13 @@ class HTTPTransport(TransportBase):
         """Get emoji for HTTP status code."""
         if 200 <= status_code < 300:
             return "✅"  # Success
-        elif 300 <= status_code < 400:
+        if 300 <= status_code < 400:
             return "↩️"  # Redirect
-        elif 400 <= status_code < 500:
+        if 400 <= status_code < 500:
             return "⚠️"  # Client error
-        elif 500 <= status_code < 600:
+        if 500 <= status_code < 600:
             return "❌"  # Server error
-        else:
-            return "❓"  # Unknown
+        return "❓"  # Unknown
 
 
 # Auto-register HTTP transport

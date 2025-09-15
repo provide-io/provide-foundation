@@ -1,5 +1,4 @@
-"""
-Tests for RetryExecutor - the unified retry execution engine.
+"""Tests for RetryExecutor - the unified retry execution engine.
 
 This test file follows TDD principles - tests are written before implementation.
 """
@@ -39,7 +38,7 @@ class TestRetryExecutorSync:
         mock_func = MagicMock(side_effect=[
             ValueError("attempt 1"),
             ValueError("attempt 2"),
-            "success"
+            "success",
         ])
 
         result = executor.execute_sync(mock_func)
@@ -65,7 +64,7 @@ class TestRetryExecutorSync:
         policy = RetryPolicy(
             max_attempts=3,
             base_delay=0.01,
-            retryable_errors=(ValueError, TypeError)
+            retryable_errors=(ValueError, TypeError),
         )
         executor = RetryExecutor(policy)
 
@@ -89,14 +88,14 @@ class TestRetryExecutorSync:
 
         assert mock_func.call_count == 1
 
-    @patch('time.sleep')
+    @patch("time.sleep")
     def test_delay_between_retries(self, mock_sleep):
         """Test that delay is applied between retries."""
         policy = RetryPolicy(
             max_attempts=3,
             base_delay=1.0,
             backoff=BackoffStrategy.FIXED,
-            jitter=False
+            jitter=False,
         )
         executor = RetryExecutor(policy)
 
@@ -115,7 +114,7 @@ class TestRetryExecutorSync:
             max_attempts=4,
             base_delay=1.0,
             backoff=BackoffStrategy.EXPONENTIAL,
-            jitter=False
+            jitter=False,
         )
         executor = RetryExecutor(policy)
 
@@ -124,7 +123,7 @@ class TestRetryExecutorSync:
         def capture_delay(delay):
             delays.append(delay)
 
-        with patch('time.sleep', side_effect=capture_delay):
+        with patch("time.sleep", side_effect=capture_delay):
             mock_func = MagicMock(side_effect=ValueError("fail"))
 
             with pytest.raises(ValueError):
@@ -139,7 +138,7 @@ class TestRetryExecutorSync:
             max_attempts=4,
             base_delay=1.0,
             backoff=BackoffStrategy.LINEAR,
-            jitter=False
+            jitter=False,
         )
         executor = RetryExecutor(policy)
 
@@ -148,7 +147,7 @@ class TestRetryExecutorSync:
         def capture_delay(delay):
             delays.append(delay)
 
-        with patch('time.sleep', side_effect=capture_delay):
+        with patch("time.sleep", side_effect=capture_delay):
             mock_func = MagicMock(side_effect=ValueError("fail"))
 
             with pytest.raises(ValueError):
@@ -163,7 +162,7 @@ class TestRetryExecutorSync:
             max_attempts=5,
             base_delay=1.0,
             backoff=BackoffStrategy.FIBONACCI,
-            jitter=False
+            jitter=False,
         )
         executor = RetryExecutor(policy)
 
@@ -172,7 +171,7 @@ class TestRetryExecutorSync:
         def capture_delay(delay):
             delays.append(delay)
 
-        with patch('time.sleep', side_effect=capture_delay):
+        with patch("time.sleep", side_effect=capture_delay):
             mock_func = MagicMock(side_effect=ValueError("fail"))
 
             with pytest.raises(ValueError):
@@ -188,7 +187,7 @@ class TestRetryExecutorSync:
             base_delay=10.0,
             backoff=BackoffStrategy.EXPONENTIAL,
             max_delay=20.0,
-            jitter=False
+            jitter=False,
         )
         executor = RetryExecutor(policy)
 
@@ -197,7 +196,7 @@ class TestRetryExecutorSync:
         def capture_delay(delay):
             delays.append(delay)
 
-        with patch('time.sleep', side_effect=capture_delay):
+        with patch("time.sleep", side_effect=capture_delay):
             mock_func = MagicMock(side_effect=ValueError("fail"))
 
             with pytest.raises(ValueError):
@@ -215,7 +214,7 @@ class TestRetryExecutorSync:
         mock_func = MagicMock(side_effect=[
             ValueError("attempt 1"),
             ValueError("attempt 2"),
-            "success"
+            "success",
         ])
 
         result = executor.execute_sync(mock_func)
@@ -239,10 +238,10 @@ class TestRetryExecutorSync:
 
         mock_func = MagicMock(side_effect=[
             ValueError("attempt 1"),
-            "success"
+            "success",
         ])
 
-        with patch('provide.foundation.resilience.retry.logger') as mock_logger:
+        with patch("provide.foundation.resilience.retry.logger") as mock_logger:
             result = executor.execute_sync(mock_func)
 
         assert result == "success"
@@ -255,7 +254,7 @@ class TestRetryExecutorSync:
             max_attempts=3,
             base_delay=1.0,
             backoff=BackoffStrategy.FIXED,
-            jitter=True
+            jitter=True,
         )
         executor = RetryExecutor(policy)
 
@@ -264,7 +263,7 @@ class TestRetryExecutorSync:
         def capture_delay(delay):
             delays.append(delay)
 
-        with patch('time.sleep', side_effect=capture_delay):
+        with patch("time.sleep", side_effect=capture_delay):
             mock_func = MagicMock(side_effect=ValueError("fail"))
 
             with pytest.raises(ValueError):
@@ -301,7 +300,7 @@ class TestRetryExecutorAsync:
         mock_func = AsyncMock(side_effect=[
             ValueError("attempt 1"),
             ValueError("attempt 2"),
-            "success"
+            "success",
         ])
 
         result = await executor.execute_async(mock_func)
@@ -329,7 +328,7 @@ class TestRetryExecutorAsync:
         policy = RetryPolicy(
             max_attempts=3,
             base_delay=0.01,
-            retryable_errors=(ValueError, TypeError)
+            retryable_errors=(ValueError, TypeError),
         )
         executor = RetryExecutor(policy)
 
@@ -342,7 +341,7 @@ class TestRetryExecutorAsync:
         assert mock_func.call_count == 1  # No retries
 
     @pytest.mark.asyncio
-    @patch('asyncio.sleep')
+    @patch("asyncio.sleep")
     async def test_delay_between_retries(self, mock_sleep):
         """Test that delay is applied between async retries."""
         mock_sleep.return_value = None  # Make it synchronous for testing
@@ -351,7 +350,7 @@ class TestRetryExecutorAsync:
             max_attempts=3,
             base_delay=1.0,
             backoff=BackoffStrategy.FIXED,
-            jitter=False
+            jitter=False,
         )
         executor = RetryExecutor(policy)
 
@@ -374,7 +373,7 @@ class TestRetryExecutorAsync:
         mock_func = AsyncMock(side_effect=[
             ValueError("attempt 1"),
             ValueError("attempt 2"),
-            "success"
+            "success",
         ])
 
         result = await executor.execute_async(mock_func)
@@ -391,7 +390,7 @@ class TestRetryExecutorAsync:
 
         mock_func = AsyncMock(side_effect=[
             ValueError("attempt 1"),
-            "success"
+            "success",
         ])
 
         result = await executor.execute_async(mock_func)
@@ -406,8 +405,8 @@ class TestRetryExecutorAsync:
         executor = RetryExecutor(policy)
 
         async def failing_then_success(id):
-            if not hasattr(failing_then_success, f'called_{id}'):
-                setattr(failing_then_success, f'called_{id}', True)
+            if not hasattr(failing_then_success, f"called_{id}"):
+                setattr(failing_then_success, f"called_{id}", True)
                 raise ValueError(f"First call {id}")
             return f"success {id}"
 
@@ -415,7 +414,7 @@ class TestRetryExecutorAsync:
         results = await asyncio.gather(
             executor.execute_async(failing_then_success, 1),
             executor.execute_async(failing_then_success, 2),
-            executor.execute_async(failing_then_success, 3)
+            executor.execute_async(failing_then_success, 3),
         )
 
         assert results == ["success 1", "success 2", "success 3"]
@@ -431,10 +430,10 @@ class TestRetryExecutorLogging:
 
         mock_func = MagicMock(side_effect=[
             ValueError("fail"),
-            "success"
+            "success",
         ])
 
-        with patch('provide.foundation.resilience.retry.logger') as mock_logger:
+        with patch("provide.foundation.resilience.retry.logger") as mock_logger:
             result = executor.execute_sync(mock_func)
 
         assert result == "success"
@@ -452,7 +451,7 @@ class TestRetryExecutorLogging:
 
         mock_func = MagicMock(side_effect=ValueError("always fails"))
 
-        with patch('provide.foundation.resilience.retry.logger') as mock_logger:
+        with patch("provide.foundation.resilience.retry.logger") as mock_logger:
             with pytest.raises(ValueError):
                 executor.execute_sync(mock_func)
 
@@ -465,13 +464,13 @@ class TestRetryExecutorLogging:
         """Test that non-retryable errors don't generate retry logs."""
         policy = RetryPolicy(
             max_attempts=3,
-            retryable_errors=(ValueError,)
+            retryable_errors=(ValueError,),
         )
         executor = RetryExecutor(policy)
 
         mock_func = MagicMock(side_effect=RuntimeError("not retryable"))
 
-        with patch('provide.foundation.resilience.retry.logger') as mock_logger:
+        with patch("provide.foundation.resilience.retry.logger") as mock_logger:
             with pytest.raises(RuntimeError):
                 executor.execute_sync(mock_func)
 

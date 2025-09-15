@@ -1,5 +1,4 @@
-"""
-Core transport abstractions.
+"""Core transport abstractions.
 """
 
 from abc import ABC, abstractmethod
@@ -66,20 +65,18 @@ class Response:
 
         if isinstance(self.body, bytes):
             return json.loads(self.body.decode("utf-8"))
-        elif isinstance(self.body, str):
+        if isinstance(self.body, str):
             return json.loads(self.body)
-        else:
-            raise ValueError("Response body is not JSON-parseable")
+        raise ValueError("Response body is not JSON-parseable")
 
     @property
     def text(self) -> str:
         """Get response body as text."""
         if isinstance(self.body, bytes):
             return self.body.decode("utf-8")
-        elif isinstance(self.body, str):
+        if isinstance(self.body, str):
             return self.body
-        else:
-            return str(self.body or "")
+        return str(self.body or "")
 
     def raise_for_status(self) -> None:
         """Raise error if response status indicates failure."""
@@ -136,12 +133,10 @@ class TransportBase(ABC):
     @abstractmethod
     async def execute(self, request: Request) -> Response:
         """Execute a request and return response."""
-        pass
 
     @abstractmethod
     def supports(self, transport_type: TransportType) -> bool:
         """Check if this transport handles the given type."""
-        pass
 
     async def connect(self) -> None:
         """Default connect implementation."""

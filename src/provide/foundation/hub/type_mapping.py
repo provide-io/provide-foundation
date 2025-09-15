@@ -6,8 +6,7 @@ from typing import Any, get_args, get_origin
 
 
 def extract_click_type(annotation: Any) -> type:
-    """
-    Extract a Click-compatible type from a Python type annotation.
+    """Extract a Click-compatible type from a Python type annotation.
 
     Handles:
     - Union types (str | None, Union[str, None])
@@ -19,6 +18,7 @@ def extract_click_type(annotation: Any) -> type:
 
     Returns:
         A type that Click can understand
+
     """
     # Handle None type
     if annotation is type(None):
@@ -41,9 +41,8 @@ def extract_click_type(annotation: Any) -> type:
             # Return the first non-None type
             # Could be enhanced to handle Union[str, int] etc.
             return non_none_types[0]
-        else:
-            # If only None, default to str
-            return str
+        # If only None, default to str
+        return str
 
     # For non-generic types, return as-is
     return annotation

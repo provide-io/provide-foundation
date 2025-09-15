@@ -8,8 +8,7 @@ from provide.foundation.errors import ValidationError
 
 
 async def async_sleep(delay: float) -> None:
-    """
-    Async sleep with Foundation tracking and cancellation support.
+    """Async sleep with Foundation tracking and cancellation support.
 
     Args:
         delay: Number of seconds to sleep
@@ -22,6 +21,7 @@ async def async_sleep(delay: float) -> None:
         >>> async def main():
         ...     await async_sleep(0.1)
         >>> asyncio.run(main())
+
     """
     if delay < 0:
         raise ValidationError("Sleep delay must be non-negative")
@@ -29,8 +29,7 @@ async def async_sleep(delay: float) -> None:
 
 
 async def async_gather(*awaitables: Awaitable[Any], return_exceptions: bool = False) -> list[Any]:
-    """
-    Run awaitables concurrently with Foundation tracking.
+    """Run awaitables concurrently with Foundation tracking.
 
     Args:
         *awaitables: Awaitable objects to run concurrently
@@ -54,6 +53,7 @@ async def async_gather(*awaitables: Awaitable[Any], return_exceptions: bool = Fa
         ...     return results
         >>> asyncio.run(main())
         [2, 4, 6]
+
     """
     if not awaitables:
         raise ValidationError("At least one awaitable must be provided")
@@ -62,8 +62,7 @@ async def async_gather(*awaitables: Awaitable[Any], return_exceptions: bool = Fa
 
 
 async def async_wait_for(awaitable: Awaitable[Any], timeout: float | None) -> Any:
-    """
-    Wait for an awaitable with optional timeout.
+    """Wait for an awaitable with optional timeout.
 
     Args:
         awaitable: The awaitable to wait for
@@ -89,6 +88,7 @@ async def async_wait_for(awaitable: Awaitable[Any], timeout: float | None) -> An
         ...     return result
         >>> asyncio.run(main())
         'timed out'
+
     """
     if timeout is not None and timeout < 0:
         raise ValidationError("Timeout must be non-negative")
@@ -97,8 +97,7 @@ async def async_wait_for(awaitable: Awaitable[Any], timeout: float | None) -> An
 
 
 def async_run(main: Callable[[], Awaitable[Any]], *, debug: bool = False) -> Any:
-    """
-    Run async function with Foundation tracking.
+    """Run async function with Foundation tracking.
 
     Args:
         main: Async function to run
@@ -117,6 +116,7 @@ def async_run(main: Callable[[], Awaitable[Any]], *, debug: bool = False) -> Any
         >>> result = async_run(main)
         >>> result
         'hello'
+
     """
     if not callable(main):
         raise ValidationError("Main must be callable")

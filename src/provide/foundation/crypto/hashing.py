@@ -36,6 +36,7 @@ def hash_file(
     Raises:
         ResourceError: If file cannot be read
         ValidationError: If algorithm is not supported
+
     """
     if isinstance(path, str):
         path = Path(path)
@@ -94,6 +95,7 @@ def hash_data(
 
     Raises:
         ValidationError: If algorithm is not supported
+
     """
     validate_algorithm(algorithm)
     hasher = get_hasher(algorithm)
@@ -126,6 +128,7 @@ def hash_string(
 
     Raises:
         ValidationError: If algorithm is not supported
+
     """
     return hash_data(text.encode(encoding), algorithm)
 
@@ -147,6 +150,7 @@ def hash_stream(
 
     Raises:
         ValidationError: If algorithm is not supported
+
     """
     validate_algorithm(algorithm)
     hasher = get_hasher(algorithm)
@@ -186,6 +190,7 @@ def hash_file_multiple(
     Raises:
         ResourceError: If file cannot be read
         ValidationError: If any algorithm is not supported
+
     """
     if isinstance(path, str):
         path = Path(path)
@@ -246,6 +251,7 @@ def hash_chunks(
 
     Raises:
         ValidationError: If algorithm is not supported
+
     """
     validate_algorithm(algorithm)
     hasher = get_hasher(algorithm)

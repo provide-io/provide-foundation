@@ -1,5 +1,4 @@
-"""
-Tool verification system for checksums and signatures.
+"""Tool verification system for checksums and signatures.
 
 Provides capabilities for verifying downloaded tools using various
 checksum algorithms and GPG/PGP signatures.
@@ -32,15 +31,13 @@ def _get_logger():
 class VerificationError(FoundationError):
     """Raised when verification fails."""
 
-    pass
 
 
 HashAlgo = Literal["sha256", "sha512", "md5", "blake2b"]
 
 
 class ToolVerifier:
-    """
-    Verify tool artifacts using checksums and signatures.
+    """Verify tool artifacts using checksums and signatures.
 
     Supports multiple checksum algorithms and GPG/PGP signatures
     for ensuring artifact integrity and authenticity.
@@ -50,8 +47,7 @@ class ToolVerifier:
     CHUNK_SIZE = 8192  # Read files in 8KB chunks
 
     def verify_checksum(self, file_path: Path, expected: str, algo: HashAlgo = "sha256") -> bool:
-        """
-        Verify file checksum.
+        """Verify file checksum.
 
         Args:
             file_path: Path to file to verify.
@@ -64,6 +60,7 @@ class ToolVerifier:
         Raises:
             ValueError: If algorithm is not supported.
             FileNotFoundError: If file doesn't exist.
+
         """
         if algo not in self.SUPPORTED_ALGORITHMS:
             raise ValueError(f"Unsupported hash algorithm: {algo}")
@@ -90,8 +87,7 @@ class ToolVerifier:
         return matches
 
     def verify_shasums_file(self, shasums_file: Path, target_file: Path) -> bool:
-        """
-        Verify using a shasums file (common for Go/Terraform).
+        """Verify using a shasums file (common for Go/Terraform).
 
         Args:
             shasums_file: Path to shasums file.
@@ -99,6 +95,7 @@ class ToolVerifier:
 
         Returns:
             True if file is listed and checksum matches, False otherwise.
+
         """
         _get_logger().debug(f"Verifying {target_file.name} using {shasums_file}")
 
@@ -126,8 +123,7 @@ class ToolVerifier:
         return False
 
     def verify_signature(self, file_path: Path, signature: str, public_key: str | None = None) -> bool:
-        """
-        Verify GPG/PGP signature.
+        """Verify GPG/PGP signature.
 
         Args:
             file_path: Path to file to verify.
@@ -136,6 +132,7 @@ class ToolVerifier:
 
         Returns:
             True if signature is valid, False otherwise.
+
         """
         _get_logger().debug(f"Verifying signature for {file_path}")
 
@@ -152,8 +149,7 @@ class ToolVerifier:
             return False
 
     def extract_checksum(self, checksum_string: str) -> str:
-        """
-        Extract checksum from various string formats.
+        """Extract checksum from various string formats.
 
         Handles formats like:
         - "abc123"
@@ -166,6 +162,7 @@ class ToolVerifier:
 
         Returns:
             Extracted checksum hex string.
+
         """
         checksum_string = checksum_string.strip()
 

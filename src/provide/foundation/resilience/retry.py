@@ -1,5 +1,4 @@
-"""
-Unified retry execution engine and policy configuration.
+"""Unified retry execution engine and policy configuration.
 
 This module provides the core retry functionality used throughout foundation,
 eliminating duplication between decorators and middleware.
@@ -42,8 +41,7 @@ T = TypeVar("T")
 
 @define(frozen=True, kw_only=True)
 class RetryPolicy:
-    """
-    Configuration for retry behavior.
+    """Configuration for retry behavior.
 
     This policy can be used with both the @retry decorator and transport middleware,
     providing a unified configuration model for all retry scenarios.
@@ -56,6 +54,7 @@ class RetryPolicy:
         jitter: Whether to add random jitter to delays (±25%)
         retryable_errors: Tuple of exception types to retry (None = all)
         retryable_status_codes: Set of HTTP status codes to retry (for middleware)
+
     """
 
     max_attempts: int = field(default=3, validator=validators.instance_of(int))
@@ -87,14 +86,14 @@ class RetryPolicy:
             raise ValueError("max_delay must be >= base_delay")
 
     def calculate_delay(self, attempt: int) -> float:
-        """
-        Calculate delay for a given attempt number.
+        """Calculate delay for a given attempt number.
 
         Args:
             attempt: Attempt number (1-based)
 
         Returns:
             Delay in seconds
+
         """
         if attempt <= 0:
             return 0
@@ -125,8 +124,7 @@ class RetryPolicy:
         return delay
 
     def should_retry(self, error: Exception, attempt: int) -> bool:
-        """
-        Determine if an error should be retried.
+        """Determine if an error should be retried.
 
         Args:
             error: The exception that occurred
@@ -134,6 +132,7 @@ class RetryPolicy:
 
         Returns:
             True if should retry, False otherwise
+
         """
         # Check attempt limit
         if attempt >= self.max_attempts:
@@ -147,8 +146,7 @@ class RetryPolicy:
         return True
 
     def should_retry_response(self, response: Any, attempt: int) -> bool:
-        """
-        Check if HTTP response should be retried.
+        """Check if HTTP response should be retried.
 
         Args:
             response: Response object with status attribute
@@ -156,6 +154,7 @@ class RetryPolicy:
 
         Returns:
             True if should retry, False otherwise
+
         """
         # Check attempt limit
         if attempt >= self.max_attempts:
@@ -177,8 +176,7 @@ class RetryPolicy:
 
 
 class RetryExecutor:
-    """
-    Unified retry execution engine.
+    """Unified retry execution engine.
 
     This executor handles the actual retry loop logic for both sync and async
     functions, using a RetryPolicy for configuration. It's used internally by
@@ -190,19 +188,18 @@ class RetryExecutor:
         policy: RetryPolicy,
         on_retry: Callable[[int, Exception], None] | None = None,
     ):
-        """
-        Initialize retry executor.
+        """Initialize retry executor.
 
         Args:
             policy: Retry policy configuration
             on_retry: Optional callback for retry events (attempt, error)
+
         """
         self.policy = policy
         self.on_retry = on_retry
 
     def execute_sync(self, func: Callable[..., T], *args, **kwargs) -> T:
-        """
-        Execute synchronous function with retry logic.
+        """Execute synchronous function with retry logic.
 
         Args:
             func: Function to execute
@@ -214,6 +211,7 @@ class RetryExecutor:
 
         Raises:
             Last exception if all retries are exhausted
+
         """
         last_exception = None
 
@@ -264,8 +262,7 @@ class RetryExecutor:
         raise last_exception
 
     async def execute_async(self, func: Callable[..., T], *args, **kwargs) -> T:
-        """
-        Execute asynchronous function with retry logic.
+        """Execute asynchronous function with retry logic.
 
         Args:
             func: Async function to execute
@@ -277,6 +274,7 @@ class RetryExecutor:
 
         Raises:
             Last exception if all retries are exhausted
+
         """
         last_exception = None
 

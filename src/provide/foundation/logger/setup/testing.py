@@ -1,8 +1,7 @@
 #
 # testing.py
 #
-"""
-Testing utilities for Foundation Telemetry setup.
+"""Testing utilities for Foundation Telemetry setup.
 Provides functions to reset state and configure test environments.
 """
 
@@ -16,8 +15,7 @@ from provide.foundation.streams.file import reset_streams
 
 
 def reset_foundation_state() -> None:
-    """
-    Internal function to reset structlog and Foundation Telemetry's state.
+    """Internal function to reset structlog and Foundation Telemetry's state.
     """
     # Reset structlog configuration
     structlog.reset_defaults()
@@ -59,7 +57,6 @@ def reset_foundation_state() -> None:
 
 
 def reset_foundation_setup_for_testing() -> None:
-    """
-    Public test utility to reset Foundation Telemetry's internal state.
+    """Public test utility to reset Foundation Telemetry's internal state.
     """
     reset_foundation_state()

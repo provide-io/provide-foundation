@@ -1,11 +1,10 @@
-"""
-Environment variable configuration utilities.
+"""Environment variable configuration utilities.
 """
 
 import asyncio
 from collections.abc import Callable
 import os
-from typing import Any, TypeVar
+from typing import Any, Self, TypeVar
 
 try:
     import aiofiles  # type: ignore[import-untyped]
@@ -25,8 +24,7 @@ async def get_env_async(
     required: bool = False,
     secret_file: bool = True,
 ) -> str | None:
-    """
-    Get environment variable value with optional file-based secret support (async).
+    """Get environment variable value with optional file-based secret support (async).
 
     Args:
         var_name: Environment variable name
@@ -39,6 +37,7 @@ async def get_env_async(
 
     Raises:
         ValueError: If required and not found
+
     """
     value = os.environ.get(var_name)
 
@@ -66,8 +65,7 @@ def get_env(
     required: bool = False,
     secret_file: bool = True,
 ) -> str | None:
-    """
-    Get environment variable value with optional file-based secret support (sync).
+    """Get environment variable value with optional file-based secret support (sync).
 
     This is a compatibility function that uses sync I/O.
     Prefer get_env_async for new code.
@@ -83,6 +81,7 @@ def get_env(
 
     Raises:
         ValueError: If required and not found
+
     """
     value = os.environ.get(var_name)
 
@@ -111,8 +110,7 @@ def env_field(
     parser: Callable[[str], Any] | None = None,
     **kwargs,
 ) -> Any:
-    """
-    Create a field that can be loaded from environment variables.
+    """Create a field that can be loaded from environment variables.
 
     Args:
         env_var: Explicit environment variable name
@@ -122,6 +120,7 @@ def env_field(
 
     Returns:
         Field descriptor
+
     """
     metadata = kwargs.pop("metadata", {})
 
@@ -136,20 +135,18 @@ def env_field(
 
 
 class RuntimeConfig(BaseConfig):
-    """
-    Configuration that can be loaded from environment variables.
+    """Configuration that can be loaded from environment variables.
     All methods are async to support async secret fetching and validation.
     """
 
     @classmethod
     def from_env(
-        cls: type[T],
+        cls,
         prefix: str = "",
         delimiter: str = "_",
         case_sensitive: bool = False,
-    ) -> T:
-        """
-        Load configuration from environment variables synchronously.
+    ) -> Self:
+        """Load configuration from environment variables synchronously.
 
         Args:
             prefix: Prefix for all environment variables
@@ -158,6 +155,7 @@ class RuntimeConfig(BaseConfig):
 
         Returns:
             Configuration instance
+
         """
         data = {}
 
@@ -212,14 +210,13 @@ class RuntimeConfig(BaseConfig):
 
     @classmethod
     async def from_env_async(
-        cls: type[T],
+        cls,
         prefix: str = "",
         delimiter: str = "_",
         case_sensitive: bool = False,
         use_async_secrets: bool = True,
-    ) -> T:
-        """
-        Load configuration from environment variables asynchronously.
+    ) -> Self:
+        """Load configuration from environment variables asynchronously.
 
         Args:
             prefix: Prefix for all environment variables
@@ -229,6 +226,7 @@ class RuntimeConfig(BaseConfig):
 
         Returns:
             Configuration instance
+
         """
         data = {}
 
@@ -309,8 +307,7 @@ class RuntimeConfig(BaseConfig):
             raise ValueError(f"Failed to read secret from file '{file_path}': {e}") from e
 
     def to_env_dict(self, prefix: str = "", delimiter: str = "_") -> dict[str, str]:
-        """
-        Convert configuration to environment variable dictionary.
+        """Convert configuration to environment variable dictionary.
 
         Args:
             prefix: Prefix for all environment variables
@@ -318,6 +315,7 @@ class RuntimeConfig(BaseConfig):
 
         Returns:
             Dictionary of environment variables
+
         """
         env_dict = {}
 

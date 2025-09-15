@@ -357,7 +357,7 @@ class TestGlobalRateLimiter:
         limiter.configure(
             global_rate=10.0,
             global_capacity=10.0,
-            per_logger_rates={"test.logger": (1.0, 1.0)}
+            per_logger_rates={"test.logger": (1.0, 1.0)},
         )
 
         # First request to test.logger should be allowed
@@ -380,7 +380,7 @@ class TestGlobalRateLimiter:
         limiter.configure(
             global_rate=5.0,
             global_capacity=10.0,
-            per_logger_rates={"test.logger": (2.0, 3.0)}
+            per_logger_rates={"test.logger": (2.0, 3.0)},
         )
 
         # Use some capacity

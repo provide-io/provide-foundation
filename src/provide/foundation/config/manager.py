@@ -1,5 +1,4 @@
-"""
-Configuration manager for centralized configuration management.
+"""Configuration manager for centralized configuration management.
 """
 
 from typing import TypeVar
@@ -13,8 +12,7 @@ T = TypeVar("T", bound=BaseConfig)
 
 
 class ConfigManager:
-    """
-    Centralized configuration manager.
+    """Centralized configuration manager.
 
     Manages multiple configuration objects and provides a unified interface.
     """
@@ -34,8 +32,7 @@ class ConfigManager:
         loader: ConfigLoader | None = None,
         defaults: ConfigDict | None = None,
     ) -> None:
-        """
-        Register a configuration.
+        """Register a configuration.
 
         Args:
             name: Configuration name
@@ -43,6 +40,7 @@ class ConfigManager:
             schema: Configuration schema
             loader: Configuration loader
             defaults: Default configuration values
+
         """
         if config is not None:
             self._configs[name] = config
@@ -57,11 +55,11 @@ class ConfigManager:
             self._defaults[name] = defaults
 
     def unregister(self, name: str) -> None:
-        """
-        Unregister a configuration.
+        """Unregister a configuration.
 
         Args:
             name: Configuration name
+
         """
         self._configs.pop(name, None)
         self._schemas.pop(name, None)
@@ -74,30 +72,29 @@ class ConfigManager:
         self.unregister(name)
 
     async def get(self, name: str) -> BaseConfig | None:
-        """
-        Get a configuration by name.
+        """Get a configuration by name.
 
         Args:
             name: Configuration name
 
         Returns:
             Configuration instance or None
+
         """
         return self._configs.get(name)
 
     async def set(self, name: str, config: BaseConfig) -> None:
-        """
-        Set a configuration.
+        """Set a configuration.
 
         Args:
             name: Configuration name
             config: Configuration instance
+
         """
         self._configs[name] = config
 
     async def load(self, name: str, config_class: type[T], loader: ConfigLoader | None = None) -> T:
-        """
-        Load a configuration.
+        """Load a configuration.
 
         Args:
             name: Configuration name
@@ -106,6 +103,7 @@ class ConfigManager:
 
         Returns:
             Configuration instance
+
         """
         # Use provided loader or registered one
         if loader is None:
@@ -135,14 +133,14 @@ class ConfigManager:
         return config
 
     async def reload(self, name: str) -> BaseConfig:
-        """
-        Reload a configuration.
+        """Reload a configuration.
 
         Args:
             name: Configuration name
 
         Returns:
             Reloaded configuration instance
+
         """
         if name not in self._configs:
             raise ValueError(f"Configuration not found: {name}")
@@ -180,13 +178,13 @@ class ConfigManager:
         updates: ConfigDict,
         source: ConfigSource = ConfigSource.RUNTIME,
     ) -> None:
-        """
-        Update a configuration.
+        """Update a configuration.
 
         Args:
             name: Configuration name
             updates: Configuration updates
             source: Source of updates
+
         """
         if name not in self._configs:
             raise ValueError(f"Configuration not found: {name}")
@@ -205,11 +203,11 @@ class ConfigManager:
         config.update(updates, source)
 
     async def reset(self, name: str) -> None:
-        """
-        Reset a configuration to defaults.
+        """Reset a configuration to defaults.
 
         Args:
             name: Configuration name
+
         """
         if name not in self._configs:
             raise ValueError(f"Configuration not found: {name}")
@@ -222,11 +220,11 @@ class ConfigManager:
             config.update(self._defaults[name], ConfigSource.DEFAULT)
 
     def list_configs(self) -> list[str]:
-        """
-        List all registered configurations.
+        """List all registered configurations.
 
         Returns:
             List of configuration names
+
         """
         return list(self._configs.keys())
 
@@ -242,8 +240,7 @@ class ConfigManager:
         self._defaults.clear()
 
     async def export(self, name: str, include_sensitive: bool = False) -> ConfigDict:
-        """
-        Export a configuration as dictionary.
+        """Export a configuration as dictionary.
 
         Args:
             name: Configuration name
@@ -251,6 +248,7 @@ class ConfigManager:
 
         Returns:
             Configuration dictionary
+
         """
         if name not in self._configs:
             raise ValueError(f"Configuration not found: {name}")
@@ -258,14 +256,14 @@ class ConfigManager:
         return self._configs[name].to_dict(include_sensitive)
 
     async def export_all(self, include_sensitive: bool = False) -> dict[str, ConfigDict]:
-        """
-        Export all configurations.
+        """Export all configurations.
 
         Args:
             include_sensitive: Whether to include sensitive fields
 
         Returns:
             Dictionary of all configurations
+
         """
         result = {}
         for name, config in self._configs.items():
@@ -315,25 +313,25 @@ _manager = ConfigManager()
 
 
 async def get_config(name: str) -> BaseConfig | None:
-    """
-    Get a configuration from the global manager.
+    """Get a configuration from the global manager.
 
     Args:
         name: Configuration name
 
     Returns:
         Configuration instance or None
+
     """
     return await _manager.get(name)
 
 
 async def set_config(name: str, config: BaseConfig) -> None:
-    """
-    Set a configuration in the global manager.
+    """Set a configuration in the global manager.
 
     Args:
         name: Configuration name
         config: Configuration instance
+
     """
     await _manager.set(name, config)
 
@@ -345,8 +343,7 @@ async def register_config(
     loader: ConfigLoader | None = None,
     defaults: ConfigDict | None = None,
 ) -> None:
-    """
-    Register a configuration with the global manager.
+    """Register a configuration with the global manager.
 
     Args:
         name: Configuration name
@@ -354,13 +351,13 @@ async def register_config(
         schema: Configuration schema
         loader: Configuration loader
         defaults: Default configuration values
+
     """
     await _manager.register(name, config, schema, loader, defaults)
 
 
 async def load_config(name: str, config_class: type[T], loader: ConfigLoader | None = None) -> T:
-    """
-    Load a configuration using the global manager.
+    """Load a configuration using the global manager.
 
     Args:
         name: Configuration name
@@ -369,5 +366,6 @@ async def load_config(name: str, config_class: type[T], loader: ConfigLoader | N
 
     Returns:
         Configuration instance
+
     """
     return await _manager.load(name, config_class, loader)

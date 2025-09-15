@@ -1,5 +1,4 @@
-"""
-Configuration loaders for various sources.
+"""Configuration loaders for various sources.
 """
 
 from abc import ABC, abstractmethod
@@ -29,26 +28,24 @@ class ConfigLoader(ABC):
 
     @abstractmethod
     async def load(self, config_class: type[T]) -> T:
-        """
-        Load configuration.
+        """Load configuration.
 
         Args:
             config_class: Configuration class to instantiate
 
         Returns:
             Configuration instance
+
         """
-        pass
 
     @abstractmethod
     def exists(self) -> bool:
-        """
-        Check if the configuration source exists.
+        """Check if the configuration source exists.
 
         Returns:
             True if source exists
+
         """
-        pass
 
 
 class FileConfigLoader(ConfigLoader):
@@ -60,13 +57,13 @@ class FileConfigLoader(ConfigLoader):
         format: ConfigFormat | None = None,
         encoding: str = "utf-8",
     ) -> None:
-        """
-        Initialize file configuration loader.
+        """Initialize file configuration loader.
 
         Args:
             path: Path to configuration file
             format: File format (auto-detected if None)
             encoding: File encoding
+
         """
         self.path = Path(path)
         self.encoding = encoding
@@ -89,7 +86,7 @@ class FileConfigLoader(ConfigLoader):
     @with_error_handling(
         context_provider=lambda: {"loader": "FileLoader"},
         error_mapper=lambda e: ConfigurationError(
-            f"Failed to load configuration: {e}", code="CONFIG_LOAD_ERROR", cause=e
+            f"Failed to load configuration: {e}", code="CONFIG_LOAD_ERROR", cause=e,
         )
         if not isinstance(e, ConfigurationError | NotFoundError)
         else e,
@@ -123,30 +120,29 @@ class FileConfigLoader(ConfigLoader):
 
         if self.format == ConfigFormat.JSON:
             return json.loads(content)
-        elif self.format == ConfigFormat.YAML:
+        if self.format == ConfigFormat.YAML:
             import yaml
 
             return yaml.safe_load(content)
-        elif self.format == ConfigFormat.TOML:
+        if self.format == ConfigFormat.TOML:
             try:
                 import tomllib
             except ImportError:
                 import tomli as tomllib
             return tomllib.loads(content)
-        elif self.format == ConfigFormat.INI:
+        if self.format == ConfigFormat.INI:
             import configparser
 
             parser = configparser.ConfigParser()
             parser.read_string(content)
             return self._ini_to_dict(parser)
-        elif self.format == ConfigFormat.ENV:
+        if self.format == ConfigFormat.ENV:
             return self._parse_env_file(content)
-        else:
-            raise ConfigurationError(
-                f"Unsupported format: {self.format}",
-                code="CONFIG_FORMAT_UNSUPPORTED",
-                format=str(self.format),
-            )
+        raise ConfigurationError(
+            f"Unsupported format: {self.format}",
+            code="CONFIG_FORMAT_UNSUPPORTED",
+            format=str(self.format),
+        )
 
     def _ini_to_dict(self, parser: object) -> ConfigDict:
         """Convert INI parser to dictionary."""
@@ -192,13 +188,13 @@ class RuntimeConfigLoader(ConfigLoader):
     """Load configuration from environment variables."""
 
     def __init__(self, prefix: str = "", delimiter: str = "_", case_sensitive: bool = False) -> None:
-        """
-        Initialize environment configuration loader.
+        """Initialize environment configuration loader.
 
         Args:
             prefix: Prefix for environment variables
             delimiter: Delimiter between prefix and field name
             case_sensitive: Whether variable names are case-sensitive
+
         """
         self.prefix = prefix
         self.delimiter = delimiter
@@ -227,12 +223,12 @@ class DictConfigLoader(ConfigLoader):
     """Load configuration from a dictionary."""
 
     def __init__(self, data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME) -> None:
-        """
-        Initialize dictionary configuration loader.
+        """Initialize dictionary configuration loader.
 
         Args:
             data: Configuration data
             source: Source of the configuration
+
         """
         self.data = data
         self.source = source
@@ -250,11 +246,11 @@ class MultiSourceLoader(ConfigLoader):
     """Load configuration from multiple sources with precedence."""
 
     def __init__(self, *loaders: ConfigLoader) -> None:
-        """
-        Initialize multi-source configuration loader.
+        """Initialize multi-source configuration loader.
 
         Args:
             *loaders: Configuration loaders in order of precedence (later overrides earlier)
+
         """
         self.loaders = loaders
 
@@ -290,11 +286,11 @@ class ChainedLoader(ConfigLoader):
     """Try multiple loaders until one succeeds."""
 
     def __init__(self, *loaders: ConfigLoader) -> None:
-        """
-        Initialize chained configuration loader.
+        """Initialize chained configuration loader.
 
         Args:
             *loaders: Configuration loaders to try in order
+
         """
         self.loaders = loaders
 

@@ -17,6 +17,7 @@ class RuntimeError(FoundationError):
     Examples:
         >>> raise RuntimeError("Process failed")
         >>> raise RuntimeError("Lock timeout", operation="acquire_lock", retry_possible=True)
+
     """
 
     def __init__(
@@ -50,6 +51,7 @@ class ProcessError(RuntimeError):
     Examples:
         >>> raise ProcessError("Command failed")
         >>> raise ProcessError("Build failed", command="make", returncode=2)
+
     """
 
     def __init__(
@@ -97,6 +99,7 @@ class StateError(FoundationError):
     Examples:
         >>> raise StateError("Invalid state transition")
         >>> raise StateError("Not ready", current_state="initializing", expected_state="ready")
+
     """
 
     def __init__(
@@ -133,6 +136,7 @@ class ConcurrencyError(FoundationError):
     Examples:
         >>> raise ConcurrencyError("Optimistic lock failure")
         >>> raise ConcurrencyError("Version mismatch", version_expected=1, version_actual=2)
+
     """
 
     def __init__(

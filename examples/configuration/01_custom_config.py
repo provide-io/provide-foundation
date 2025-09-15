@@ -22,8 +22,7 @@ from provide.foundation import (  # noqa: E402
 
 
 def example_2_configuration() -> None:
-    """
-    Example 2: Demonstrates custom telemetry configuration.
+    """Example 2: Demonstrates custom telemetry configuration.
 
     This example shows how to use `TelemetryConfig` and `LoggingConfig` to
     programmatically define settings like service name, default log level,

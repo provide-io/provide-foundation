@@ -1,5 +1,4 @@
-"""
-Fallback implementation for graceful degradation.
+"""Fallback implementation for graceful degradation.
 """
 
 import asyncio
@@ -178,6 +177,7 @@ def fallback(*fallback_funcs: Callable[..., T]) -> Callable:
 
     Returns:
         Decorated function that uses fallback chain
+
     """
 
     def decorator(primary_func: Callable[..., T]) -> Callable[..., T]:
@@ -192,12 +192,11 @@ def fallback(*fallback_funcs: Callable[..., T]) -> Callable:
                 return await chain.execute_async(primary_func, *args, **kwargs)
 
             return async_wrapper
-        else:
 
-            @functools.wraps(primary_func)
-            def sync_wrapper(*args, **kwargs):
-                return chain.execute(primary_func, *args, **kwargs)
+        @functools.wraps(primary_func)
+        def sync_wrapper(*args, **kwargs):
+            return chain.execute(primary_func, *args, **kwargs)
 
-            return sync_wrapper
+        return sync_wrapper
 
     return decorator

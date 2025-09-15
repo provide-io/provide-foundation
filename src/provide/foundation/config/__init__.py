@@ -1,5 +1,4 @@
-"""
-Foundation Configuration System.
+"""Foundation Configuration System.
 
 A comprehensive, extensible configuration framework for the provide.io ecosystem.
 Supports multiple configuration sources with precedence, validation, and type safety.

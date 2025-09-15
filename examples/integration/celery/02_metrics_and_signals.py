@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Celery Integration - Metrics Tracking and Signal Handlers
+"""Celery Integration - Metrics Tracking and Signal Handlers
 
 This module contains the metrics tracking system and Celery signal handlers
 for comprehensive monitoring and logging of Celery operations.
@@ -52,6 +51,7 @@ except ImportError:
 
 class TaskMetrics:
     """Track task execution metrics."""
+
     def __init__(self):
         self.task_counts = defaultdict(int)
         self.task_durations = defaultdict(list)
@@ -80,7 +80,7 @@ class TaskMetrics:
                     "errors": self.error_counts[task_name],
                     "retries": self.retry_counts[task_name],
                     "avg_duration_ms": round(sum(durations) / len(durations) * 1000, 2) if durations else 0,
-                    "success_rate": round((1 - self.error_counts[task_name] / self.task_counts[task_name]) * 100, 1)
+                    "success_rate": round((1 - self.error_counts[task_name] / self.task_counts[task_name]) * 100, 1),
                 }
             return stats
 
@@ -98,7 +98,6 @@ task_contexts = {}  # Store additional context per task
 
 def setup_signal_handlers(app):
     """Set up all Celery signal handlers."""
-
     # Import task logger after app setup
     import importlib.util
     from pathlib import Path
@@ -122,7 +121,7 @@ def setup_signal_handlers(app):
             python_version=platform.python_version(),
             cpu_count=os.cpu_count(),
             transport="filesystem",
-            backend="file"
+            backend="file",
         )
 
     @worker_process_init.connect
@@ -130,7 +129,7 @@ def setup_signal_handlers(app):
         """Log worker process initialization."""
         worker_logger.info("worker_process_init",
             worker_pid=os.getpid(),
-            parent_pid=os.getppid()
+            parent_pid=os.getppid(),
         )
 
     @worker_shutdown.connect
@@ -140,7 +139,7 @@ def setup_signal_handlers(app):
         worker_logger.info("worker_shutdown",
             worker_pid=sender.pid,
             hostname=sender.hostname,
-            final_metrics=stats
+            final_metrics=stats,
         )
 
     @celeryd_after_setup.connect
@@ -153,9 +152,9 @@ def setup_signal_handlers(app):
                 if stats:
                     worker_logger.info("worker_health",
                         task_metrics=stats,
-                        total_tasks=sum(s['count'] for s in stats.values()),
-                        total_errors=sum(s['errors'] for s in stats.values()),
-                        total_retries=sum(s['retries'] for s in stats.values())
+                        total_tasks=sum(s["count"] for s in stats.values()),
+                        total_errors=sum(s["errors"] for s in stats.values()),
+                        total_retries=sum(s["retries"] for s in stats.values()),
                     )
 
         # Start monitoring in background thread
@@ -167,8 +166,8 @@ def setup_signal_handlers(app):
         """Log before task execution with enhanced context."""
         task_start_times[task_id] = time.time()
         task_contexts[task_id] = {
-            'start_time': time.time(),
-            'retries': kwargs.get('__retry_count', 0)
+            "start_time": time.time(),
+            "retries": kwargs.get("__retry_count", 0),
         }
         task_logger = CeleryTaskLogger(task.name)
         task_logger.log_task_start(task_id, args, kwargs)
@@ -180,7 +179,7 @@ def setup_signal_handlers(app):
         context = task_contexts.pop(task_id, {})
         task_logger = CeleryTaskLogger(task.name)
 
-        if state == 'SUCCESS':
+        if state == "SUCCESS":
             task_logger.log_task_success(task_id, retval, duration, metrics)
         else:
             # For non-success states, we might not have exception info here
@@ -189,7 +188,7 @@ def setup_signal_handlers(app):
                 task_name=task.name,
                 state=state,
                 duration_ms=round(duration * 1000, 2),
-                retry_count=context.get('retries', 0)
+                retry_count=context.get("retries", 0),
             )
 
     @task_failure.connect
@@ -207,13 +206,13 @@ def setup_signal_handlers(app):
         task_logger.log_task_retry(
             request.id,
             reason,
-            request.kwargs.get('countdown', 0),
+            request.kwargs.get("countdown", 0),
             request.retries,
-            metrics
+            metrics,
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from provide.foundation import pout
 
     pout("📊 Task Metrics System")

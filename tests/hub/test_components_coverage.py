@@ -1,8 +1,7 @@
 #
 # test_components_coverage.py
 #
-"""
-Tests to cover missing lines in hub/components.py for 100% coverage.
+"""Tests to cover missing lines in hub/components.py for 100% coverage.
 """
 
 from unittest.mock import Mock

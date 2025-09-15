@@ -1,5 +1,4 @@
-"""
-Foundation Metrics Module.
+"""Foundation Metrics Module.
 
 Provides metrics collection with optional OpenTelemetry integration.
 Falls back to simple metrics when OpenTelemetry is not available.
@@ -54,6 +53,7 @@ def counter(name: str, description: str = "", unit: str = "") -> "SimpleCounter"
 
     Returns:
         Counter instance
+
     """
     if _HAS_OTEL_METRICS and _meter:
         try:
@@ -75,6 +75,7 @@ def gauge(name: str, description: str = "", unit: str = "") -> "SimpleGauge":
 
     Returns:
         Gauge instance
+
     """
     if _HAS_OTEL_METRICS and _meter:
         try:
@@ -96,6 +97,7 @@ def histogram(name: str, description: str = "", unit: str = "") -> "SimpleHistog
 
     Returns:
         Histogram instance
+
     """
     if _HAS_OTEL_METRICS and _meter:
         try:

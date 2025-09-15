@@ -1,8 +1,7 @@
 #
 # spans.py
 #
-"""
-Enhanced span implementation for Foundation tracer.
+"""Enhanced span implementation for Foundation tracer.
 Provides OpenTelemetry integration when available, falls back to simple tracing.
 """
 
@@ -30,8 +29,7 @@ except ImportError:
 
 @dataclass
 class Span:
-    """
-    Enhanced span implementation with optional OpenTelemetry integration.
+    """Enhanced span implementation with optional OpenTelemetry integration.
 
     Maintains simple API while providing distributed tracing when OpenTelemetry is available.
     """

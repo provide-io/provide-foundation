@@ -21,6 +21,7 @@ class FileLock:
         with FileLock("/tmp/myapp.lock"):
             # Exclusive access to resource
             do_something()
+
     """
 
     def __init__(
@@ -35,6 +36,7 @@ class FileLock:
             path: Lock file path
             timeout: Max seconds to wait for lock
             check_interval: Seconds between lock checks
+
         """
         self.path = Path(path)
         self.timeout = timeout
@@ -53,6 +55,7 @@ class FileLock:
 
         Raises:
             LockError: If timeout exceeded (blocking mode)
+
         """
         start_time = time.time()
 
@@ -134,6 +137,7 @@ class FileLock:
 
         Returns:
             True if stale lock was removed, False otherwise
+
         """
         try:
             content = self.path.read_text().strip()

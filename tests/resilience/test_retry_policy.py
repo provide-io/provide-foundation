@@ -1,5 +1,4 @@
-"""
-Tests for RetryPolicy configuration and behavior.
+"""Tests for RetryPolicy configuration and behavior.
 """
 
 import pytest
@@ -31,7 +30,7 @@ class TestRetryPolicyConfiguration:
             max_delay=30.0,
             jitter=False,
             retryable_errors=(ValueError, TypeError),
-            retryable_status_codes={500, 503}
+            retryable_status_codes={500, 503},
         )
 
         assert policy.max_attempts == 5
@@ -74,7 +73,7 @@ class TestRetryPolicyDelayCalculation:
         policy = RetryPolicy(
             backoff=BackoffStrategy.FIXED,
             base_delay=2.0,
-            jitter=False
+            jitter=False,
         )
 
         assert policy.calculate_delay(1) == 2.0
@@ -87,7 +86,7 @@ class TestRetryPolicyDelayCalculation:
         policy = RetryPolicy(
             backoff=BackoffStrategy.LINEAR,
             base_delay=2.0,
-            jitter=False
+            jitter=False,
         )
 
         assert policy.calculate_delay(1) == 2.0
@@ -100,7 +99,7 @@ class TestRetryPolicyDelayCalculation:
         policy = RetryPolicy(
             backoff=BackoffStrategy.EXPONENTIAL,
             base_delay=2.0,
-            jitter=False
+            jitter=False,
         )
 
         assert policy.calculate_delay(1) == 2.0   # 2 * 2^0
@@ -113,7 +112,7 @@ class TestRetryPolicyDelayCalculation:
         policy = RetryPolicy(
             backoff=BackoffStrategy.FIBONACCI,
             base_delay=1.0,
-            jitter=False
+            jitter=False,
         )
 
         assert policy.calculate_delay(1) == 1.0  # fib(1) = 1
@@ -129,7 +128,7 @@ class TestRetryPolicyDelayCalculation:
             backoff=BackoffStrategy.EXPONENTIAL,
             base_delay=10.0,
             max_delay=50.0,
-            jitter=False
+            jitter=False,
         )
 
         assert policy.calculate_delay(1) == 10.0
@@ -150,7 +149,7 @@ class TestRetryPolicyDelayCalculation:
         policy = RetryPolicy(
             backoff=BackoffStrategy.FIXED,
             base_delay=10.0,
-            jitter=True
+            jitter=True,
         )
 
         # Collect multiple delay calculations
@@ -184,7 +183,7 @@ class TestRetryPolicyShouldRetry:
         """Test should_retry with specific error types."""
         policy = RetryPolicy(
             max_attempts=5,
-            retryable_errors=(ValueError, TypeError)
+            retryable_errors=(ValueError, TypeError),
         )
 
         # Retryable errors
@@ -202,7 +201,7 @@ class TestRetryPolicyShouldRetry:
         """Test that None retryable_errors means retry all errors."""
         policy = RetryPolicy(
             max_attempts=3,
-            retryable_errors=None
+            retryable_errors=None,
         )
 
         assert policy.should_retry(ValueError("test"), 1) is True
@@ -214,7 +213,7 @@ class TestRetryPolicyShouldRetry:
         """Test should_retry_response for HTTP responses."""
         policy = RetryPolicy(
             max_attempts=3,
-            retryable_status_codes={500, 502, 503}
+            retryable_status_codes={500, 502, 503},
         )
 
         # Mock response objects
@@ -239,7 +238,7 @@ class TestRetryPolicyShouldRetry:
         """Test that None retryable_status_codes means don't retry responses."""
         policy = RetryPolicy(
             max_attempts=3,
-            retryable_status_codes=None
+            retryable_status_codes=None,
         )
 
         class MockResponse:
@@ -258,19 +257,19 @@ class TestRetryPolicyComparison:
         policy1 = RetryPolicy(
             max_attempts=3,
             backoff=BackoffStrategy.EXPONENTIAL,
-            base_delay=1.0
+            base_delay=1.0,
         )
 
         policy2 = RetryPolicy(
             max_attempts=3,
             backoff=BackoffStrategy.EXPONENTIAL,
-            base_delay=1.0
+            base_delay=1.0,
         )
 
         policy3 = RetryPolicy(
             max_attempts=5,  # Different
             backoff=BackoffStrategy.EXPONENTIAL,
-            base_delay=1.0
+            base_delay=1.0,
         )
 
         assert policy1 == policy2
@@ -308,7 +307,7 @@ class TestRetryPolicyStringRepresentation:
         policy = RetryPolicy(
             max_attempts=5,
             backoff=BackoffStrategy.LINEAR,
-            base_delay=2.0
+            base_delay=2.0,
         )
 
         repr_str = repr(policy)
@@ -321,7 +320,7 @@ class TestRetryPolicyStringRepresentation:
         """Test __str__ output."""
         policy = RetryPolicy(
             max_attempts=3,
-            backoff=BackoffStrategy.EXPONENTIAL
+            backoff=BackoffStrategy.EXPONENTIAL,
         )
 
         str_repr = str(policy)

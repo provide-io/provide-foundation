@@ -1,5 +1,4 @@
-"""
-Tests for the tool registry system.
+"""Tests for the tool registry system.
 
 Tests registration, discovery, and retrieval of tool managers
 through the hub-based registry infrastructure.
@@ -173,7 +172,7 @@ class TestToolRegistry:
 
         assert result == MockToolManager
         registry.hub.registry.get.assert_called_once_with(
-            "mocktool", dimension=ToolRegistry.DIMENSION
+            "mocktool", dimension=ToolRegistry.DIMENSION,
         )
 
     def test_get_tool_manager_class_not_found(self, registry):
@@ -184,7 +183,7 @@ class TestToolRegistry:
 
         assert result is None
         registry.hub.registry.get.assert_called_once_with(
-            "nonexistent", dimension=ToolRegistry.DIMENSION
+            "nonexistent", dimension=ToolRegistry.DIMENSION,
         )
 
     def test_create_tool_manager(self, registry, config):
@@ -254,7 +253,7 @@ class TestToolRegistry:
             "platforms": ["darwin", "linux"],
         }
         registry.hub.registry.get_entry.assert_called_once_with(
-            "mocktool", dimension=ToolRegistry.DIMENSION
+            "mocktool", dimension=ToolRegistry.DIMENSION,
         )
 
     def test_get_tool_info_not_found(self, registry):
@@ -355,14 +354,13 @@ class TestDiscoverTools:
 
     def test_discover_tools_no_entry_points(self, mock_hub):
         """Test when entry points are not available."""
-        with patch("provide.foundation.tools.registry.get_hub", return_value=mock_hub):
-            with patch(
-                "importlib.metadata.entry_points",
-                side_effect=AttributeError("No entry_points"),
-            ):
-                # Should not crash, just log debug message
-                registry = ToolRegistry()
-                assert registry is not None  # Successful construction despite error
+        with patch("provide.foundation.tools.registry.get_hub", return_value=mock_hub), patch(
+            "importlib.metadata.entry_points",
+            side_effect=AttributeError("No entry_points"),
+        ):
+            # Should not crash, just log debug message
+            registry = ToolRegistry()
+            assert registry is not None  # Successful construction despite error
 
 
 class TestGlobalFunctions:
@@ -387,7 +385,7 @@ class TestGlobalFunctions:
 
             patch_get_registry.assert_called_once()
             mock_registry.register_tool_manager.assert_called_once_with(
-                "tool", MockToolManager, ["alias1", "alias2"]
+                "tool", MockToolManager, ["alias1", "alias2"],
             )
 
     def test_get_tool_manager_global(self, config):

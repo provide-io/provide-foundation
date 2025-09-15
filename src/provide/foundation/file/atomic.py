@@ -31,6 +31,7 @@ def atomic_write(
 
     Raises:
         OSError: If file operation fails
+
     """
     path = Path(path)
 
@@ -112,6 +113,7 @@ def atomic_write_text(
     Raises:
         OSError: If file operation fails
         UnicodeEncodeError: If text cannot be encoded
+
     """
     data = text.encode(encoding)
     atomic_write(path, data, mode=mode, backup=backup, preserve_mode=preserve_mode)
@@ -132,6 +134,7 @@ def atomic_replace(
     Raises:
         FileNotFoundError: If file doesn't exist
         OSError: If file operation fails
+
     """
     path = Path(path)
 

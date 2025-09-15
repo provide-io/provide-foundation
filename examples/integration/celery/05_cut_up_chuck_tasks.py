@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Celery Integration - Distributed Cut-Up Chuck Tasks
+"""Celery Integration - Distributed Cut-Up Chuck Tasks
 
 This module transforms the original cut_up_chuck.py script into distributed
 Celery tasks, demonstrating how provide.foundation structured logging works
@@ -78,14 +77,13 @@ LOGGER_CONTEXTS: list[str] = [
 ]
 
 LOG_LEVELS: list[str] = [
-    "debug", "info", "warning", "error", "critical"
+    "debug", "info", "warning", "error", "critical",
 ]
 
 
 @app.task(bind=True)
 def generate_log_entry(self, iteration: int, context_override: str | None = None) -> dict[str, Any]:
-    """
-    Generate a single cut-up phrase log entry with structured data.
+    """Generate a single cut-up phrase log entry with structured data.
 
     Args:
         iteration: Iteration number for tracking
@@ -93,6 +91,7 @@ def generate_log_entry(self, iteration: int, context_override: str | None = None
 
     Returns:
         Dict containing the log entry details and metadata
+
     """
     task_logger = CeleryTaskLogger("generate_log_entry")
 
@@ -115,7 +114,7 @@ def generate_log_entry(self, iteration: int, context_override: str | None = None
         status="nominal" if log_level not in ["error", "critical"] else "degraded",
         iteration=iteration,
         context=context,
-        task_id=self.request.id
+        task_id=self.request.id,
     )
 
     task_logger.logger.info("cut_up_log_generated",
@@ -123,7 +122,7 @@ def generate_log_entry(self, iteration: int, context_override: str | None = None
         phrase_index=CUT_UP_PHRASES.index(phrase),
         context=context,
         log_level=log_level,
-        phrase_length=len(phrase)
+        phrase_length=len(phrase),
     )
 
     return {
@@ -132,14 +131,13 @@ def generate_log_entry(self, iteration: int, context_override: str | None = None
         "context": context,
         "log_level": log_level,
         "timestamp": time.time(),
-        "task_id": self.request.id
+        "task_id": self.request.id,
     }
 
 
 @app.task(bind=True)
 def generate_batch(self, batch_id: str, batch_size: int, context_filter: str | None = None) -> dict[str, Any]:
-    """
-    Generate a batch of cut-up phrase log entries in parallel.
+    """Generate a batch of cut-up phrase log entries in parallel.
 
     Args:
         batch_id: Unique identifier for this batch
@@ -148,13 +146,14 @@ def generate_batch(self, batch_id: str, batch_size: int, context_filter: str | N
 
     Returns:
         Dict containing batch results and statistics
+
     """
     task_logger = CeleryTaskLogger("generate_batch")
 
     task_logger.logger.info("batch_generation_started",
         batch_id=batch_id,
         batch_size=batch_size,
-        context_filter=context_filter
+        context_filter=context_filter,
     )
 
     start_time = time.time()
@@ -168,7 +167,7 @@ def generate_batch(self, batch_id: str, batch_size: int, context_filter: str | N
             # Use subtask for each entry (could be parallelized)
             result = generate_log_entry.apply_async(
                 args=[iteration, context_filter],
-                countdown=random.uniform(0.1, 1.0)  # Stagger execution
+                countdown=random.uniform(0.1, 1.0),  # Stagger execution
             ).get(timeout=10)
 
             entries_generated.append(result)
@@ -177,7 +176,7 @@ def generate_batch(self, batch_id: str, batch_size: int, context_filter: str | N
             task_logger.logger.warning("batch_entry_failed",
                 batch_id=batch_id,
                 iteration=i,
-                error=str(e)
+                error=str(e),
             )
 
     duration = time.time() - start_time
@@ -186,7 +185,7 @@ def generate_batch(self, batch_id: str, batch_size: int, context_filter: str | N
         batch_id=batch_id,
         entries_generated=len(entries_generated),
         duration_seconds=duration,
-        entries_per_second=len(entries_generated) / duration if duration > 0 else 0
+        entries_per_second=len(entries_generated) / duration if duration > 0 else 0,
     )
 
     return {
@@ -194,20 +193,20 @@ def generate_batch(self, batch_id: str, batch_size: int, context_filter: str | N
         "entries_generated": len(entries_generated),
         "entries": entries_generated,
         "duration_seconds": duration,
-        "success_rate": len(entries_generated) / batch_size if batch_size > 0 else 0
+        "success_rate": len(entries_generated) / batch_size if batch_size > 0 else 0,
     }
 
 
 @app.task(bind=True)
 def detect_anomaly(self, anomaly_type: str | None = None) -> dict[str, Any]:
-    """
-    Generate anomaly detection log entries (equivalent to trace events in original).
+    """Generate anomaly detection log entries (equivalent to trace events in original).
 
     Args:
         anomaly_type: Optional specific anomaly type, otherwise random
 
     Returns:
         Dict containing anomaly detection results
+
     """
     task_logger = CeleryTaskLogger("detect_anomaly")
 
@@ -225,33 +224,33 @@ def detect_anomaly(self, anomaly_type: str | None = None) -> dict[str, Any]:
         action="detect",
         status="trace_event",
         task_id=self.request.id,
-        detection_method="distributed_scanner"
+        detection_method="distributed_scanner",
     )
 
     task_logger.logger.info("anomaly_detected",
         anomaly_type=selected_type,
         confidence_pct=confidence,
-        detection_timestamp=time.time()
+        detection_timestamp=time.time(),
     )
 
     return {
         "anomaly_type": selected_type,
         "confidence": confidence,
         "timestamp": time.time(),
-        "task_id": self.request.id
+        "task_id": self.request.id,
     }
 
 
 @app.task(bind=True)
 def system_heartbeat(self, worker_id: str | None = None) -> dict[str, Any]:
-    """
-    Generate system heartbeat log entries with health metrics.
+    """Generate system heartbeat log entries with health metrics.
 
     Args:
         worker_id: Optional worker identifier
 
     Returns:
         Dict containing system health data
+
     """
     task_logger = CeleryTaskLogger("system_heartbeat")
 
@@ -269,14 +268,14 @@ def system_heartbeat(self, worker_id: str | None = None) -> dict[str, Any]:
         action="heartbeat",
         status="internal_trace",
         worker_id=worker_id or f"worker_{random.randint(1, 5)}",
-        task_id=self.request.id
+        task_id=self.request.id,
     )
 
     task_logger.logger.info("heartbeat_generated",
         uptime_seconds=uptime,
         cpu_load_pct=cpu_load,
         memory_usage_pct=memory_usage,
-        worker_id=worker_id
+        worker_id=worker_id,
     )
 
     return {
@@ -285,14 +284,13 @@ def system_heartbeat(self, worker_id: str | None = None) -> dict[str, Any]:
         "memory_usage": memory_usage,
         "worker_id": worker_id,
         "timestamp": time.time(),
-        "task_id": self.request.id
+        "task_id": self.request.id,
     }
 
 
 @app.task(bind=True)
 def continuous_generator(self, duration_minutes: int = 2, entries_per_minute: int = 30) -> dict[str, Any]:
-    """
-    Orchestrate continuous log generation for a specified duration.
+    """Orchestrate continuous log generation for a specified duration.
 
     Args:
         duration_minutes: How long to run the generator
@@ -300,12 +298,13 @@ def continuous_generator(self, duration_minutes: int = 2, entries_per_minute: in
 
     Returns:
         Dict containing generation statistics
+
     """
     task_logger = CeleryTaskLogger("continuous_generator")
 
     task_logger.logger.info("continuous_generation_started",
         duration_minutes=duration_minutes,
-        target_rate=entries_per_minute
+        target_rate=entries_per_minute,
     )
 
     start_time = time.time()
@@ -325,7 +324,7 @@ def continuous_generator(self, duration_minutes: int = 2, entries_per_minute: in
             # Generate batch every 5 iterations
             generate_batch.delay(
                 f"continuous_{int(time.time())}_{total_batches}",
-                random.randint(3, 8)
+                random.randint(3, 8),
             )
             total_batches += 1
         else:
@@ -356,7 +355,7 @@ def continuous_generator(self, duration_minutes: int = 2, entries_per_minute: in
         total_batches=total_batches,
         total_anomalies=total_anomalies,
         total_heartbeats=total_heartbeats,
-        actual_rate=total_entries / (actual_duration / 60) if actual_duration > 0 else 0
+        actual_rate=total_entries / (actual_duration / 60) if actual_duration > 0 else 0,
     )
 
     return {
@@ -365,11 +364,11 @@ def continuous_generator(self, duration_minutes: int = 2, entries_per_minute: in
         "total_batches": total_batches,
         "total_anomalies": total_anomalies,
         "total_heartbeats": total_heartbeats,
-        "actual_rate_per_minute": total_entries / (actual_duration / 60) if actual_duration > 0 else 0
+        "actual_rate_per_minute": total_entries / (actual_duration / 60) if actual_duration > 0 else 0,
     }
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from provide.foundation import pout
 
     pout("🎯 Distributed Cut-Up Chuck Tasks Available:")

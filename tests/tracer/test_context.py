@@ -263,7 +263,7 @@ class TestContextVarIsolation:
             with with_span(f"worker_{name}") as span:
                 span.set_tag("worker", name)
                 results.append(
-                    {"name": span.name, "span_id": span.span_id, "worker": name}
+                    {"name": span.name, "span_id": span.span_id, "worker": name},
                 )
 
         # Run workers in different contexts
@@ -316,13 +316,12 @@ class TestTraceContextIntegration:
 
     def test_error_propagation_in_trace(self):
         """Test error handling in nested trace context."""
-        with pytest.raises(ValueError):
-            with with_span("outer_operation") as outer_span:
-                outer_span.set_tag("component", "business_logic")
+        with pytest.raises(ValueError), with_span("outer_operation") as outer_span:
+            outer_span.set_tag("component", "business_logic")
 
-                with with_span("inner_operation") as inner_span:
-                    inner_span.set_tag("step", "validation")
-                    raise ValueError("Validation failed")
+            with with_span("inner_operation") as inner_span:
+                inner_span.set_tag("step", "validation")
+                raise ValueError("Validation failed")
 
         # Outer span should be marked as error
         assert outer_span.status == "error"

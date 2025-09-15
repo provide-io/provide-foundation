@@ -1,5 +1,4 @@
-"""
-Test Hub initialization and Foundation lifecycle management.
+"""Test Hub initialization and Foundation lifecycle management.
 
 Tests for the unified initialization through Hub, replacing legacy setup functions.
 """
@@ -70,7 +69,7 @@ class TestHubInitialization:
         """Test that explicit config takes precedence over environment."""
         # Create custom config
         custom_config = TelemetryConfig(
-            logging=LoggingConfig(default_level="DEBUG")
+            logging=LoggingConfig(default_level="DEBUG"),
         )
 
         hub = Hub()
@@ -178,7 +177,7 @@ class TestHubInitialization:
     def test_hub_deterministic_state(self):
         """Test that same config produces same state."""
         config = TelemetryConfig(
-            logging=LoggingConfig(default_level="INFO")
+            logging=LoggingConfig(default_level="INFO"),
         )
 
         # Initialize two hubs with same config

@@ -1,5 +1,4 @@
-"""
-Test-driven development tests for ToolVerifier.
+"""Test-driven development tests for ToolVerifier.
 
 Tests for verifying checksums and signatures of downloaded tools.
 """
@@ -97,7 +96,7 @@ class TestToolVerifier:
         shasums = tmp_path / "SHA256SUMS"
         shasums.write_text(
             "d0b425e00e15a0d36b9b361f02bab63563aed6cb4665083905386c55d5b679fa  file1.txt\n"
-            "dab741b6289e7dccc1ed42330cae1accc2b755ce8079c2cd5d4b5366c9f769a6  file2.txt\n"
+            "dab741b6289e7dccc1ed42330cae1accc2b755ce8079c2cd5d4b5366c9f769a6  file2.txt\n",
         )
 
         assert verifier.verify_shasums_file(shasums, file1) is True
@@ -131,14 +130,14 @@ class TestToolVerifier:
         result = verifier.verify_signature(
             test_file,
             "signature_data",
-            "public_key"
+            "public_key",
         )
 
         assert result is True
         mock_verify_sig.assert_called_once_with(
             test_file,
             "signature_data",
-            "public_key"
+            "public_key",
         )
 
     @patch("provide.foundation.crypto.verify_signature")
@@ -149,7 +148,7 @@ class TestToolVerifier:
         result = verifier.verify_signature(
             test_file,
             "bad_signature",
-            "public_key"
+            "public_key",
         )
 
         assert result is False
@@ -165,7 +164,7 @@ class TestToolVerifier:
         mock_verify_sig.assert_called_once_with(
             test_file,
             "signature",
-            None
+            None,
         )
 
     def test_extract_checksum_from_string(self, verifier):

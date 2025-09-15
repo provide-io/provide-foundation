@@ -1,5 +1,4 @@
-"""
-Example conftest.py for flavorpack project.
+"""Example conftest.py for flavorpack project.
 
 This file should be placed at flavorpack/tests/conftest.py to provide
 foundation testing fixtures to all flavorpack tests.
@@ -117,8 +116,7 @@ def sample_wheel_metadata():
 
 @pytest.fixture
 def sample_package_structure(test_files_structure):
-    """
-    Create a sample Python package structure for testing.
+    """Create a sample Python package structure for testing.
 
     Extends the foundation test_files_structure fixture.
     """
@@ -131,7 +129,7 @@ def sample_package_structure(test_files_structure):
     # Create package files
     (package_dir / "__init__.py").write_text('__version__ = "1.0.0"')
     (package_dir / "main.py").write_text('def main(): print("Hello")')
-    (source / "setup.py").write_text('from setuptools import setup; setup()')
+    (source / "setup.py").write_text("from setuptools import setup; setup()")
     (source / "pyproject.toml").write_text('[build-system]\nrequires = ["setuptools"]')
 
     return temp_path, source, package_dir
@@ -163,13 +161,13 @@ def pytest_configure(config):
     """Configure pytest with flavorpack-specific settings."""
     config.addinivalue_line(
         "markers",
-        "packaging: mark test as packaging-related"
+        "packaging: mark test as packaging-related",
     )
     config.addinivalue_line(
         "markers",
-        "format_2025: mark test as PSPF/2025 format-related"
+        "format_2025: mark test as PSPF/2025 format-related",
     )
     config.addinivalue_line(
         "markers",
-        "requires_uv: mark test as requiring UV package manager"
+        "requires_uv: mark test as requiring UV package manager",
     )

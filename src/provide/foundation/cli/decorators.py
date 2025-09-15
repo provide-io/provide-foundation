@@ -20,8 +20,7 @@ LOG_LEVELS = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 
 def logging_options(f: F) -> F:
-    """
-    Add standard logging options to a Click command.
+    """Add standard logging options to a Click command.
 
     Adds:
     - --log-level/-l: Set logging verbosity (DEBUG, INFO, WARNING, ERROR, CRITICAL)
@@ -54,8 +53,7 @@ def logging_options(f: F) -> F:
 
 
 def config_options(f: F) -> F:
-    """
-    Add configuration file options to a Click command.
+    """Add configuration file options to a Click command.
 
     Adds:
     - --config/-c: Path to configuration file
@@ -80,8 +78,7 @@ def config_options(f: F) -> F:
 
 
 def output_options(f: F) -> F:
-    """
-    Add output formatting options to a Click command.
+    """Add output formatting options to a Click command.
 
     Adds:
     - --json: Output in JSON format
@@ -114,8 +111,7 @@ def output_options(f: F) -> F:
 
 
 def flexible_options(f: F) -> F:
-    """
-    Apply flexible CLI options that can be used at any command level.
+    """Apply flexible CLI options that can be used at any command level.
 
     Combines logging_options and config_options for consistent
     control at both group and command levels.
@@ -126,8 +122,7 @@ def flexible_options(f: F) -> F:
 
 
 def standard_options(f: F) -> F:
-    """
-    Apply all standard CLI options.
+    """Apply all standard CLI options.
 
     Combines logging_options, config_options, and output_options.
 
@@ -141,8 +136,7 @@ def standard_options(f: F) -> F:
 
 
 def error_handler(f: F) -> F:
-    """
-    Decorator to handle errors consistently in CLI commands.
+    """Decorator to handle errors consistently in CLI commands.
 
     Catches exceptions and formats them appropriately based on
     debug mode and output format.
@@ -185,8 +179,7 @@ def error_handler(f: F) -> F:
 
 
 def pass_context(f: F) -> F:
-    """
-    Decorator to pass the foundation CLIContext to a command.
+    """Decorator to pass the foundation CLIContext to a command.
 
     Creates or retrieves a CLIContext from Click's context object
     and passes it as the first argument to the decorated function.
@@ -246,17 +239,17 @@ def pass_context(f: F) -> F:
 
 
 def version_option(version: str | None = None, prog_name: str | None = None) -> Callable[[F], F]:
-    """
-    Add a --version option to display version information.
+    """Add a --version option to display version information.
 
     Args:
         version: Version string to display
         prog_name: Program name to display
+
     """
 
     def decorator(f: F) -> F:
         return click.version_option(
-            version=version, prog_name=prog_name, message="%(prog)s version %(version)s"
+            version=version, prog_name=prog_name, message="%(prog)s version %(version)s",
         )(f)
 
     return decorator

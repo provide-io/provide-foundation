@@ -1,5 +1,4 @@
-"""
-Transport registration and discovery using Foundation Hub.
+"""Transport registration and discovery using Foundation Hub.
 """
 
 from typing import Any
@@ -20,14 +19,14 @@ def register_transport(
     schemes: list[str] | None = None,
     **metadata,
 ) -> None:
-    """
-    Register a transport implementation in the Hub.
+    """Register a transport implementation in the Hub.
 
     Args:
         transport_type: The primary transport type
         transport_class: Transport implementation class
         schemes: List of URI schemes this transport handles
         **metadata: Additional metadata for the transport
+
     """
     registry = get_component_registry()
 
@@ -52,8 +51,7 @@ def register_transport(
 
 
 def get_transport_for_scheme(scheme: str) -> type[Transport]:
-    """
-    Get transport class for a URI scheme.
+    """Get transport class for a URI scheme.
 
     Args:
         scheme: URI scheme (e.g., 'http', 'https', 'ws')
@@ -63,6 +61,7 @@ def get_transport_for_scheme(scheme: str) -> type[Transport]:
 
     Raises:
         TransportNotFoundError: If no transport is registered for the scheme
+
     """
     registry = get_component_registry()
 
@@ -81,8 +80,7 @@ def get_transport_for_scheme(scheme: str) -> type[Transport]:
 
 
 def get_transport(uri: str) -> Transport:
-    """
-    Get transport instance for a URI.
+    """Get transport instance for a URI.
 
     Args:
         uri: Full URI to get transport for
@@ -92,6 +90,7 @@ def get_transport(uri: str) -> Transport:
 
     Raises:
         TransportNotFoundError: If no transport supports the URI scheme
+
     """
     scheme = uri.split("://")[0].lower()
     transport_class = get_transport_for_scheme(scheme)
@@ -99,11 +98,11 @@ def get_transport(uri: str) -> Transport:
 
 
 def list_registered_transports() -> dict[str, dict[str, Any]]:
-    """
-    List all registered transports.
+    """List all registered transports.
 
     Returns:
         Dictionary mapping transport names to their info
+
     """
     registry = get_component_registry()
     transports = {}
@@ -121,14 +120,14 @@ def list_registered_transports() -> dict[str, dict[str, Any]]:
 
 
 def get_transport_info(scheme_or_name: str) -> dict[str, Any] | None:
-    """
-    Get detailed information about a transport.
+    """Get detailed information about a transport.
 
     Args:
         scheme_or_name: URI scheme or transport name
 
     Returns:
         Transport information or None if not found
+
     """
     registry = get_component_registry()
 

@@ -39,8 +39,7 @@ def run_command(
     shell: bool = False,
     **kwargs: Any,
 ) -> CompletedProcess:
-    """
-    Run a subprocess command with consistent error handling and logging.
+    """Run a subprocess command with consistent error handling and logging.
 
     Args:
         cmd: Command and arguments as a list
@@ -60,6 +59,7 @@ def run_command(
     Raises:
         ProcessError: If command fails and check=True
         TimeoutError: If timeout is exceeded
+
     """
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
     plog.info("🚀 Running command", command=cmd_str, cwd=str(cwd) if cwd else None)
@@ -176,8 +176,7 @@ def run_command_simple(
     cwd: str | Path | None = None,
     **kwargs: Any,
 ) -> str:
-    """
-    Simple wrapper for run_command that returns stdout as a string.
+    """Simple wrapper for run_command that returns stdout as a string.
 
     Args:
         cmd: Command and arguments as a list
@@ -189,6 +188,7 @@ def run_command_simple(
 
     Raises:
         ProcessError: If command fails
+
     """
     result = run_command(cmd, cwd=cwd, capture_output=True, check=True, **kwargs)
     return result.stdout.strip()
@@ -202,8 +202,7 @@ def stream_command(
     stream_stderr: bool = False,
     **kwargs: Any,
 ) -> Iterator[str]:
-    """
-    Stream command output line by line.
+    """Stream command output line by line.
 
     Args:
         cmd: Command and arguments as a list
@@ -219,6 +218,7 @@ def stream_command(
     Raises:
         ProcessError: If command fails
         TimeoutError: If timeout is exceeded
+
     """
     import fcntl
     import os
@@ -386,6 +386,7 @@ def run_shell(
         This function enables shell interpretation of the command string,
         which allows shell features but also creates injection risks.
         Use run_command with a list for safer execution.
+
     """
     if not isinstance(cmd, str):
         raise TypeError("Shell command must be a string")

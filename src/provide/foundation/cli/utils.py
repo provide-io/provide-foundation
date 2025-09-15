@@ -18,12 +18,12 @@ log = get_logger(__name__)
 
 
 def echo_json(data: Any, err: bool = False) -> None:
-    """
-    Output data as JSON.
+    """Output data as JSON.
 
     Args:
         data: Data to output as JSON
         err: Whether to output to stderr
+
     """
     if err:
         perr(data)
@@ -32,12 +32,12 @@ def echo_json(data: Any, err: bool = False) -> None:
 
 
 def echo_error(message: str, json_output: bool = False) -> None:
-    """
-    Output an error message.
+    """Output an error message.
 
     Args:
         message: Error message to output
         json_output: Whether to output as JSON
+
     """
     if json_output:
         perr(message, json_key="error")
@@ -46,12 +46,12 @@ def echo_error(message: str, json_output: bool = False) -> None:
 
 
 def echo_success(message: str, json_output: bool = False) -> None:
-    """
-    Output a success message.
+    """Output a success message.
 
     Args:
         message: Success message to output
         json_output: Whether to output as JSON
+
     """
     if json_output:
         pout(message, json_key="success")
@@ -60,12 +60,12 @@ def echo_success(message: str, json_output: bool = False) -> None:
 
 
 def echo_warning(message: str, json_output: bool = False) -> None:
-    """
-    Output a warning message.
+    """Output a warning message.
 
     Args:
         message: Warning message to output
         json_output: Whether to output as JSON
+
     """
     if json_output:
         perr(message, json_key="warning")
@@ -74,12 +74,12 @@ def echo_warning(message: str, json_output: bool = False) -> None:
 
 
 def echo_info(message: str, json_output: bool = False) -> None:
-    """
-    Output an informational message.
+    """Output an informational message.
 
     Args:
         message: Info message to output
         json_output: Whether to output as JSON
+
     """
     if json_output:
         pout(message, json_key="info")
@@ -90,8 +90,7 @@ def echo_info(message: str, json_output: bool = False) -> None:
 def setup_cli_logging(
     ctx: CLIContext,
 ) -> None:
-    """
-    Setup logging for CLI applications using a CLIContext object.
+    """Setup logging for CLI applications using a CLIContext object.
 
     This function is the designated way to configure logging within a CLI
     application built with foundation. It uses the provided context object
@@ -99,6 +98,7 @@ def setup_cli_logging(
 
     Args:
         ctx: The foundation CLIContext, populated by CLI decorators.
+
     """
     console_formatter = "json" if ctx.json_output else ctx.log_format
 
@@ -120,8 +120,7 @@ def setup_cli_logging(
 
 
 def create_cli_context(**kwargs) -> CLIContext:
-    """
-    Create a CLIContext for CLI usage.
+    """Create a CLIContext for CLI usage.
 
     Loads from environment, then overlays any provided kwargs.
 
@@ -130,6 +129,7 @@ def create_cli_context(**kwargs) -> CLIContext:
 
     Returns:
         Configured CLIContext instance
+
     """
     ctx = CLIContext.from_env()
     for key, value in kwargs.items():
@@ -164,26 +164,24 @@ class CliTestRunner:
         )
 
     def isolated_filesystem(self):
-        """
-        Context manager for isolated filesystem.
+        """Context manager for isolated filesystem.
         """
         return self.runner.isolated_filesystem()
 
 
 def assert_cli_success(result: Result, expected_output: str | None = None) -> None:
-    """
-    Assert that a CLI command succeeded.
+    """Assert that a CLI command succeeded.
     """
     if result.exit_code != 0:
         raise AssertionError(
             f"Command failed with exit code {result.exit_code}\n"
             f"Output: {result.output}\n"
-            f"Exception: {result.exception}"
+            f"Exception: {result.exception}",
         )
 
     if expected_output and expected_output not in result.output:
         raise AssertionError(
-            f"Expected output not found.\nExpected: {expected_output}\nActual: {result.output}"
+            f"Expected output not found.\nExpected: {expected_output}\nActual: {result.output}",
         )
 
 
@@ -192,8 +190,7 @@ def assert_cli_error(
     expected_error: str | None = None,
     exit_code: int | None = None,
 ) -> None:
-    """
-    Assert that a CLI command failed.
+    """Assert that a CLI command failed.
     """
     if result.exit_code == 0:
         raise AssertionError(f"Command succeeded unexpectedly\nOutput: {result.output}")

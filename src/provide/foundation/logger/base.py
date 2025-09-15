@@ -1,8 +1,7 @@
 #
 # base.py
 #
-"""
-Foundation Logger - Main Interface.
+"""Foundation Logger - Main Interface.
 
 Re-exports the core logger components.
 """

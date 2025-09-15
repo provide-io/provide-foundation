@@ -1,5 +1,4 @@
-"""
-Query logs command for Foundation CLI.
+"""Query logs command for Foundation CLI.
 """
 
 from typing import Any, NoReturn
@@ -30,15 +29,14 @@ def _get_trace_id_if_needed(current_trace: bool, trace_id: str | None) -> str | 
         if current_span and current_span.is_recording():
             span_context = current_span.get_span_context()
             return f"{span_context.trace_id:032x}"
-        else:
-            # Try Foundation tracer
-            from provide.foundation.tracer.context import get_current_trace_id
+        # Try Foundation tracer
+        from provide.foundation.tracer.context import get_current_trace_id
 
-            found_trace_id = get_current_trace_id()
-            if not found_trace_id:
-                click.echo("No active trace found.", err=True)
-                return None
-            return found_trace_id
+        found_trace_id = get_current_trace_id()
+        if not found_trace_id:
+            click.echo("No active trace found.", err=True)
+            return None
+        return found_trace_id
     except ImportError:
         click.echo("Tracing not available.", err=True)
         return None
@@ -49,13 +47,13 @@ def _build_query_sql(
     level: str | None,
     service: str | None,
     stream: str,
-    size: int
+    size: int,
 ) -> str:
     """Build SQL query with WHERE conditions."""
     import re
 
     # Sanitize stream name - only allow alphanumeric and underscores
-    if not re.match(r'^[a-zA-Z0-9_]+$', stream):
+    if not re.match(r"^[a-zA-Z0-9_]+$", stream):
         raise ValueError(f"Invalid stream name: {stream}")
 
     # Sanitize size parameter
@@ -65,7 +63,7 @@ def _build_query_sql(
     conditions = []
     if trace_id:
         # Sanitize trace_id - should be hex string or UUID format
-        if not re.match(r'^[a-fA-F0-9\-]+$', trace_id):
+        if not re.match(r"^[a-fA-F0-9\-]+$", trace_id):
             raise ValueError(f"Invalid trace_id format: {trace_id}")
         conditions.append(f"trace_id = '{trace_id}'")
 
@@ -78,7 +76,7 @@ def _build_query_sql(
 
     if service:
         # Sanitize service name - allow alphanumeric, hyphens, underscores, dots
-        if not re.match(r'^[a-zA-Z0-9_\-\.]+$', service):
+        if not re.match(r"^[a-zA-Z0-9_\-\.]+$", service):
             raise ValueError(f"Invalid service name: {service}")
         conditions.append(f"service = '{service}'")
 
@@ -198,12 +196,8 @@ if _HAS_CLICK:
 
             # Custom SQL query
             foundation logs query --sql "SELECT * FROM default WHERE duration_ms > 1000"
-        """
-        from provide.foundation.integrations.openobserve import (
-            format_output,
-            search_logs,
-        )
 
+        """
         client = ctx.obj.get("client")
         if not client:
             click.echo("Error: OpenObserve not configured.", err=True)
@@ -227,5 +221,5 @@ else:
     def query_command(*args: object, **kwargs: object) -> NoReturn:
         """Query command stub when click is not available."""
         raise ImportError(
-            "CLI commands require optional dependencies. Install with: pip install 'provide-foundation[cli]'"
+            "CLI commands require optional dependencies. Install with: pip install 'provide-foundation[cli]'",
         )

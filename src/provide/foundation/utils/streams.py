@@ -13,6 +13,7 @@ def get_safe_stderr() -> TextIO:
 
     Returns:
         A writable text stream, either sys.stderr or io.StringIO()
+
     """
     return sys.stderr if hasattr(sys, "stderr") and sys.stderr is not None else io.StringIO()
 
@@ -31,10 +32,11 @@ def get_foundation_log_stream(output_setting: str) -> TextIO:
         - "stdout": Returns sys.stdout
         - "main": Returns the main logger stream from _PROVIDE_LOG_STREAM
         - Invalid values default to sys.stderr with warning
+
     """
     if output_setting == "stdout":
         return sys.stdout
-    elif output_setting == "main":
+    if output_setting == "main":
         # Import here to avoid circular dependency
         try:
             from provide.foundation.streams import get_log_stream

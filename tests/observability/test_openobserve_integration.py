@@ -1,5 +1,4 @@
-"""
-Integration test for OpenObserve that generates and queries logs.
+"""Integration test for OpenObserve that generates and queries logs.
 """
 
 from datetime import datetime, timedelta
@@ -43,6 +42,7 @@ class TestOpenObserveIntegration:
 
         Returns:
             NDJSON formatted bulk data
+
         """
         logs = []
         base_time = datetime.now()
@@ -237,7 +237,7 @@ class TestOpenObserveIntegration:
                     client=client,
                 )
                 print(
-                    f"✅ Found {len(trace_response.hits)} logs for trace {sample_trace}"
+                    f"✅ Found {len(trace_response.hits)} logs for trace {sample_trace}",
                 )
 
         # Test 5: Performance metrics
@@ -281,7 +281,7 @@ class TestOpenObserveIntegration:
             total_logs += len(result.get("items", []))
 
             print(
-                f"   Batch {batch + 1}/10: {len(result.get('items', []))} logs in {result.get('took', 0)}ms"
+                f"   Batch {batch + 1}/10: {len(result.get('items', []))} logs in {result.get('took', 0)}ms",
             )
 
         elapsed = time.time() - start_time

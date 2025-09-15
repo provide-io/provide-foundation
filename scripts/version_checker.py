@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # scripts/check_version_consistency.py
 #
-"""
-Version consistency checker for Foundation Telemetry.
+"""Version consistency checker for Foundation Telemetry.
 
 This script ensures that version numbers are consistent across the project
 and that the dynamic versioning system works correctly.
@@ -24,8 +23,7 @@ import tomllib
 
 
 def load_pyproject_version() -> str:
-    """
-    Load version from pyproject.toml or VERSION file for dynamic versioning.
+    """Load version from pyproject.toml or VERSION file for dynamic versioning.
 
     This function reads the project configuration file and extracts
     the version string for validation against other version sources.
@@ -37,6 +35,7 @@ def load_pyproject_version() -> str:
     Raises:
         FileNotFoundError: If pyproject.toml is not found.
         ValueError: If no version is found in the configuration.
+
     """
     pyproject_path = Path("pyproject.toml")
     if not pyproject_path.exists():
@@ -71,8 +70,7 @@ def load_pyproject_version() -> str:
 
 
 def check_dynamic_versioning() -> str:
-    """
-    Test the dynamic versioning system.
+    """Test the dynamic versioning system.
 
     This function validates that the package's dynamic versioning
     mechanism works correctly by importing the package and checking
@@ -84,6 +82,7 @@ def check_dynamic_versioning() -> str:
     Raises:
         ImportError: If the package cannot be imported.
         RuntimeError: If dynamic versioning fails.
+
     """
     # Add src to path for importing during development
     src_path = Path("src")
@@ -97,7 +96,7 @@ def check_dynamic_versioning() -> str:
         match __version__:
             case "0.0.0-dev":
                 print(
-                    "ℹ️  Using development fallback version (expected in dev environment)"
+                    "ℹ️  Using development fallback version (expected in dev environment)",
                 )
                 return __version__
             case version_str if version_str:
@@ -113,8 +112,7 @@ def check_dynamic_versioning() -> str:
 
 
 def validate_version_format(version: str) -> bool:
-    """
-    Validate that version follows semantic versioning.
+    """Validate that version follows semantic versioning.
 
     This function checks that the version string conforms to semantic
     versioning standards, ensuring consistency and compatibility with
@@ -133,6 +131,7 @@ def validate_version_format(version: str) -> bool:
         True
         >>> validate_version_format("invalid")
         False
+
     """
     import re
 
@@ -154,8 +153,7 @@ def validate_version_format(version: str) -> bool:
 
 
 def check_changelog_mentions_version(version: str) -> bool:
-    """
-    Check if the current version is mentioned in CHANGELOG.md.
+    """Check if the current version is mentioned in CHANGELOG.md.
 
     This function searches for version entries in the changelog to ensure
     that releases are properly documented.
@@ -165,6 +163,7 @@ def check_changelog_mentions_version(version: str) -> bool:
 
     Returns:
         True if the version is found in the changelog, False otherwise.
+
     """
     changelog_path = Path("CHANGELOG.md")
     if not changelog_path.exists():
@@ -187,8 +186,7 @@ def check_changelog_mentions_version(version: str) -> bool:
 
 
 def check_git_tag_consistency(version: str) -> bool:
-    """
-    Check if current version matches latest git tag (if in git repo).
+    """Check if current version matches latest git tag (if in git repo).
 
     This function validates that git tags are consistent with the
     project version, which is important for release automation.
@@ -198,6 +196,7 @@ def check_git_tag_consistency(version: str) -> bool:
 
     Returns:
         True if git tag is consistent or if git is unavailable.
+
     """
     try:
         import subprocess
@@ -218,9 +217,8 @@ def check_git_tag_consistency(version: str) -> bool:
                 if latest_tag == expected_tag:
                     print(f"✅ Git tag matches version: {latest_tag}")
                     return True
-                else:
-                    print(f"⚠️  Git tag mismatch: tag={latest_tag}, version=v{version}")
-                    return False
+                print(f"⚠️  Git tag mismatch: tag={latest_tag}, version=v{version}")
+                return False
             case _:
                 print("ℹ️  No exact git tag for current commit (normal for development)")
                 return True
@@ -234,8 +232,7 @@ def check_git_tag_consistency(version: str) -> bool:
 
 
 def main() -> None:
-    """
-    Run all version consistency checks.
+    """Run all version consistency checks.
 
     This function orchestrates all version validation checks and reports
     the results. It's designed to be used in CI/CD pipelines and returns
@@ -272,7 +269,7 @@ def main() -> None:
                     print(f"   pyproject.toml: {pyproject_version}")
                     print(f"   dynamic import: {version}")
                     print(
-                        "   This suggests the package isn't installed in development mode"
+                        "   This suggests the package isn't installed in development mode",
                     )
                     success = False
                 case _:

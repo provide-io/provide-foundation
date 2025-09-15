@@ -193,7 +193,7 @@ class TestSpanIntegration:
         """Test setting up parent-child span relationship."""
         parent_span = Span("parent_op")
         child_span = Span(
-            "child_op", parent_id=parent_span.span_id, trace_id=parent_span.trace_id
+            "child_op", parent_id=parent_span.span_id, trace_id=parent_span.trace_id,
         )
 
         assert child_span.parent_id == parent_span.span_id
@@ -206,7 +206,7 @@ class TestSpanIntegration:
             outer_span.set_tag("level", "outer")
 
             with Span(
-                "inner_op", parent_id=outer_span.span_id, trace_id=outer_span.trace_id
+                "inner_op", parent_id=outer_span.span_id, trace_id=outer_span.trace_id,
             ) as inner_span:
                 inner_span.set_tag("level", "inner")
 
@@ -470,7 +470,7 @@ class TestSpanEdgeCases:
     def test_span_context_manager_with_none_exception_value(self):
         """Test context manager when exception has no value."""
         with pytest.raises(ValueError), Span("test_op") as span:
-            raise ValueError()
+            raise ValueError
 
         assert span.status == "error"
         assert span.error == ""
@@ -501,7 +501,7 @@ class TestSpanEdgeCases:
             trace_id="custom-trace-id",
             start_time=1000.0,
             tags={"user": "test"},
-            status="pending"
+            status="pending",
         )
         span.end_time = 1002.0
         span.error = "Test error"
@@ -511,7 +511,7 @@ class TestSpanEdgeCases:
         expected_keys = {
             "name", "span_id", "parent_id", "trace_id",
             "start_time", "end_time", "duration_ms",
-            "tags", "status", "error"
+            "tags", "status", "error",
         }
         assert set(result.keys()) == expected_keys
         assert result["name"] == "complex_op"

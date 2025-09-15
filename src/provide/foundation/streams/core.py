@@ -1,8 +1,7 @@
 #
 # core.py
 #
-"""
-Core stream management for Foundation.
+"""Core stream management for Foundation.
 Handles log streams, file handles, and output configuration.
 """
 

@@ -1,8 +1,7 @@
 #
 # __init__.py
 #
-"""
-Foundation Logger Configuration Module.
+"""Foundation Logger Configuration Module.
 
 Re-exports all configuration classes for convenient importing.
 """

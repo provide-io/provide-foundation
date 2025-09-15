@@ -1,5 +1,4 @@
-"""
-Foundation error handling system.
+"""Foundation error handling system.
 
 Provides a comprehensive exception hierarchy, error context management,
 and utilities for robust error handling throughout the application.

@@ -46,7 +46,7 @@ class TestToolInstaller:
             version="1.0.0",
             platform="linux",
             arch="amd64",
-            executable_name="testtool"
+            executable_name="testtool",
         )
 
     @pytest.fixture
@@ -60,7 +60,7 @@ class TestToolInstaller:
         """Create sample ZIP file for testing."""
         zip_path = temp_dir / "test.zip"
 
-        with zipfile.ZipFile(zip_path, 'w') as zf:
+        with zipfile.ZipFile(zip_path, "w") as zf:
             # Add a binary file
             zf.writestr("bin/testtool", b"#!/bin/bash\necho 'Hello from testtool'\n")
             # Add a text file
@@ -75,7 +75,7 @@ class TestToolInstaller:
         """Create sample TAR.GZ file for testing."""
         tar_path = temp_dir / "test.tar.gz"
 
-        with tarfile.open(tar_path, 'w:gz') as tf:
+        with tarfile.open(tar_path, "w:gz") as tf:
             # Create temporary files to add
             readme_path = temp_dir / "README.txt"
             readme_path.write_text("This is a test tool")
@@ -119,7 +119,7 @@ class TestToolInstaller:
             version="1.0.0",
             platform="linux",
             arch="amd64",
-            install_path=custom_path
+            install_path=custom_path,
         )
 
         result = installer.get_install_dir(metadata)
@@ -146,7 +146,7 @@ class TestToolInstaller:
         """Test ZIP extraction with unsafe paths raises error."""
         zip_path = temp_dir / "unsafe.zip"
 
-        with zipfile.ZipFile(zip_path, 'w') as zf:
+        with zipfile.ZipFile(zip_path, "w") as zf:
             # Add unsafe paths
             zf.writestr("../../../etc/passwd", "unsafe content")
             zf.writestr("/absolute/path", "unsafe content")
@@ -170,7 +170,7 @@ class TestToolInstaller:
         """Test TAR extraction with unsafe paths raises error."""
         tar_path = temp_dir / "unsafe.tar.gz"
 
-        with tarfile.open(tar_path, 'w:gz') as tf:
+        with tarfile.open(tar_path, "w:gz") as tf:
             # Create file with unsafe path
             info = tarfile.TarInfo("../../../etc/passwd")
             info.size = 13
@@ -190,7 +190,7 @@ class TestToolInstaller:
         compressions = [
             ("test.tar", "w"),
             ("test.tar.bz2", "w:bz2"),
-            ("test.tar.xz", "w:xz")
+            ("test.tar.xz", "w:xz"),
         ]
 
         for filename, mode in compressions:
@@ -248,7 +248,7 @@ class TestToolInstaller:
 
     def test_is_binary_text_file(self, installer):
         """Test binary detection returns False for text files."""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt') as tmp:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".txt") as tmp:
             tmp.write("This is a text file")
             tmp.flush()
 
@@ -262,7 +262,7 @@ class TestToolInstaller:
             tmp.flush()
 
             # Remove extension from path
-            no_ext_path = Path(tmp.name).with_suffix('')
+            no_ext_path = Path(tmp.name).with_suffix("")
             no_ext_path.write_bytes(b"#!/bin/bash\necho 'Hello'\n")
 
             result = installer.is_binary(no_ext_path)
@@ -290,7 +290,7 @@ class TestToolInstaller:
             version="1.0.0",
             platform="linux",
             arch="amd64",
-            executable_name="custom-tool"
+            executable_name="custom-tool",
         )
 
         dest_dir = temp_dir / "install"
@@ -328,7 +328,7 @@ class TestToolInstaller:
             version="1.0.0",
             platform="linux",
             arch="amd64",
-            executable_name="testtool"
+            executable_name="testtool",
         )
 
         # Create executable in root

@@ -1,5 +1,4 @@
-"""
-Transport configuration with Foundation config integration.
+"""Transport configuration with Foundation config integration.
 """
 
 from attrs import define

@@ -1,5 +1,4 @@
-"""
-Event set display utilities for Foundation.
+"""Event set display utilities for Foundation.
 """
 
 from provide.foundation.eventsets.registry import discover_event_sets, get_registry
@@ -10,8 +9,7 @@ logger = get_logger(__name__)
 
 
 def show_event_matrix() -> None:
-    """
-    Display the active event set configuration to the console.
+    """Display the active event set configuration to the console.
     Shows all registered event sets and their field mappings.
     """
     # Ensure event sets are discovered
@@ -54,7 +52,7 @@ def show_event_matrix() -> None:
                         f"      - {event_set.name}: "
                         f"{marker_count} markers, "
                         f"{metadata_count} metadata, "
-                        f"{transform_count} transforms"
+                        f"{transform_count} transforms",
                     )
     else:
         lines.append("\n  (No event sets registered)")

@@ -1,8 +1,7 @@
 #
 # __init__.py
 #
-"""
-Foundation Streams Module.
+"""Foundation Streams Module.
 
 Provides stream management functionality including console, file,
 and core stream operations.

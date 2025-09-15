@@ -1,5 +1,4 @@
-"""
-Hub processor pipeline management utilities.
+"""Hub processor pipeline management utilities.
 
 Provides functions for managing log processors and processing stages
 in the Hub registry system.

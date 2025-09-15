@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Celery Integration - Task Workflow Runner
+"""Celery Integration - Task Workflow Runner
 
 This module demonstrates comprehensive Celery task patterns with provide.foundation
 logging integration using filesystem backend (no Redis required).
@@ -81,7 +80,7 @@ def run_worker():
     from celery.worker import WorkController
 
     def start_worker():
-        worker = WorkController(app=app, loglevel='INFO')
+        worker = WorkController(app=app, loglevel="INFO")
         worker.start()
 
     worker_thread = threading.Thread(target=start_worker, daemon=True)
@@ -110,20 +109,20 @@ def demonstrate_task_workflows():
     report_task = generate_report.delay(
         "analytics",
         {"start": "2024-01-01", "end": "2024-01-31"},
-        "user_456"
+        "user_456",
     )
     example_logger.info("submitted_report_task", task_id=report_task.id)
 
     # Monitor progress
     for _ in range(3):
         time.sleep(1)
-        if report_task.state == 'PROGRESS':
+        if report_task.state == "PROGRESS":
             meta = report_task.info
             example_logger.info("report_progress_update",
                 task_id=report_task.id,
-                current=meta.get('current', 0),
-                total=meta.get('total', 0),
-                status=meta.get('status', '')
+                current=meta.get("current", 0),
+                total=meta.get("total", 0),
+                status=meta.get("status", ""),
             )
 
     # 3. Multi-channel notification
@@ -131,7 +130,7 @@ def demonstrate_task_workflows():
     notification_task = send_notification.delay(
         "user_789",
         "order_confirmation",
-        {"order_id": "order_123", "amount": 99.99}
+        {"order_id": "order_123", "amount": 99.99},
     )
     example_logger.info("submitted_notification_task", task_id=notification_task.id)
 
@@ -144,7 +143,7 @@ def demonstrate_task_workflows():
     batch_task = process_batch_data.delay("batch_001", batch_items)
     example_logger.info("submitted_batch_task",
         task_id=batch_task.id,
-        item_count=len(batch_items)
+        item_count=len(batch_items),
     )
 
     if CELERY_WORKFLOWS_AVAILABLE:
@@ -153,7 +152,7 @@ def demonstrate_task_workflows():
         workflow = chain(
             process_payment.s("order_789", 149.99, "paypal"),
             send_notification.s("payment_success", {"amount": 149.99}),
-            cleanup_old_data.s(days_to_keep=7)
+            cleanup_old_data.s(days_to_keep=7),
         )
         workflow_result = workflow.apply_async()
         example_logger.info("submitted_workflow", workflow_id=workflow_result.id)
@@ -167,7 +166,7 @@ def demonstrate_task_workflows():
         group_result = payment_group.apply_async()
         example_logger.info("submitted_parallel_group",
             group_id=group_result.id,
-            task_count=5
+            task_count=5,
         )
     else:
         pout("\n5️⃣ Task Chains: Skipped (Celery workflows not available)")
@@ -182,50 +181,50 @@ def demonstrate_task_workflows():
         payment_result = payment_task.get(timeout=5)
         example_logger.info("payment_task_completed",
             task_id=payment_task.id,
-            result=payment_result
+            result=payment_result,
         )
     except Exception as e:
         example_logger.error("payment_task_error",
             task_id=payment_task.id,
-            error=str(e)
+            error=str(e),
         )
 
     try:
         report_result = report_task.get(timeout=5)
         example_logger.info("report_task_completed",
             task_id=report_task.id,
-            pages=report_result.get('pages', 0)
+            pages=report_result.get("pages", 0),
         )
     except Exception as e:
         example_logger.error("report_task_error",
             task_id=report_task.id,
-            error=str(e)
+            error=str(e),
         )
 
     try:
         notification_result = notification_task.get(timeout=5)
         example_logger.info("notification_task_completed",
             task_id=notification_task.id,
-            success_count=notification_result.get('success_count', 0)
+            success_count=notification_result.get("success_count", 0),
         )
     except Exception as e:
         example_logger.error("notification_task_error",
             task_id=notification_task.id,
-            error=str(e)
+            error=str(e),
         )
 
     try:
         batch_result = batch_task.get(timeout=5)
         example_logger.info("batch_task_completed",
             task_id=batch_task.id,
-            processed=batch_result.get('processed', 0),
-            failed=batch_result.get('failed', 0),
-            success_rate=batch_result.get('success_rate', 0)
+            processed=batch_result.get("processed", 0),
+            failed=batch_result.get("failed", 0),
+            success_rate=batch_result.get("success_rate", 0),
         )
     except Exception as e:
         example_logger.error("batch_task_error",
             task_id=batch_task.id,
-            error=str(e)
+            error=str(e),
         )
 
     # Display final metrics
@@ -291,5 +290,5 @@ transport (no Redis required). Real-world patterns include:
     pout("\n📊 Check the JSON logs above for detailed task telemetry!")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

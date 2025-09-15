@@ -1,8 +1,7 @@
 #
 # test_fixes.py
 #
-"""
-Test script to verify all lazy initialization fixes work correctly.
+"""Test script to verify all lazy initialization fixes work correctly.
 """
 
 import json
@@ -88,7 +87,7 @@ def test_service_name_no_emoji() -> None:
         json_lines = [
             line.strip()
             for line in output.strip().splitlines()
-            if line.strip().startswith('{')
+            if line.strip().startswith("{")
         ]
 
         if json_lines:
@@ -165,7 +164,7 @@ def test_das_emoji_register_action() -> None:
         else:
             print("❌ DAS emoji register action failed")
             print(
-                "Expected [👤][⚙️][✅] in output"
+                "Expected [👤][⚙️][✅] in output",
             )  # Note: This relies on SECONDARY_EMOJI default being ⚙️. If it's ❓, this test needs to change.
             # Based on previous changes, SECONDARY_EMOJI default is now '❓'.
             # So, if "register" is not in the map, it should be [👤][❓][✅].

@@ -26,8 +26,7 @@ def verify_trust(
     other_cert: "Certificate",
     trust_chain: list["Certificate"],
 ) -> bool:
-    """
-    Verifies if the other_cert is trusted based on this certificate's trust chain.
+    """Verifies if the other_cert is trusted based on this certificate's trust chain.
 
     Args:
         cert: The certificate doing the verification
@@ -36,13 +35,14 @@ def verify_trust(
 
     Returns:
         True if the certificate is trusted, False otherwise
+
     """
     if other_cert is None:
         raise CertificateError("Cannot verify trust: other_cert is None")
 
     logger.debug(
         f"📜🔍🚀 Verifying trust for cert S/N {other_cert.serial_number} "
-        f"against chain of S/N {cert.serial_number}"
+        f"against chain of S/N {cert.serial_number}",
     )
 
     if not other_cert.is_valid:
@@ -63,20 +63,19 @@ def verify_trust(
         logger.debug(f"📜🔍🔁 Checking signature against trusted cert S/N {trusted_cert.serial_number}")
         if validate_signature_wrapper(signed_cert=other_cert, signing_cert=trusted_cert):
             logger.debug(
-                f"📜🔍✅ Trust verified: Other cert signed by trusted cert S/N {trusted_cert.serial_number}"
+                f"📜🔍✅ Trust verified: Other cert signed by trusted cert S/N {trusted_cert.serial_number}",
             )
             return True
 
     logger.debug(
         "📜🔍❌ Trust verification failed: Other certificate not identical, "
-        "not in chain, and not signed by any cert in chain"
+        "not in chain, and not signed by any cert in chain",
     )
     return False
 
 
 def validate_signature_wrapper(signed_cert: "Certificate", signing_cert: "Certificate") -> bool:
-    """
-    Internal helper: Validates signature and issuer/subject match.
+    """Internal helper: Validates signature and issuer/subject match.
 
     Args:
         signed_cert: The certificate that was signed
@@ -84,6 +83,7 @@ def validate_signature_wrapper(signed_cert: "Certificate", signing_cert: "Certif
 
     Returns:
         True if signature is valid, False otherwise
+
     """
     if not hasattr(signed_cert, "_cert") or not hasattr(signing_cert, "_cert"):
         logger.error("📜🔍❌ Cannot validate signature: Certificate object(s) not initialized")

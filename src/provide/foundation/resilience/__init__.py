@@ -1,5 +1,4 @@
-"""
-Resilience patterns for handling failures and improving reliability.
+"""Resilience patterns for handling failures and improving reliability.
 
 This module provides unified implementations of common resilience patterns:
 - Retry with configurable backoff strategies

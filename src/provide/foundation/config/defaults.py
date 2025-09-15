@@ -1,5 +1,4 @@
-"""
-Centralized default values for Foundation configuration.
+"""Centralized default values for Foundation configuration.
 All defaults are defined here instead of inline in field definitions.
 """
 

@@ -1,5 +1,4 @@
-"""
-Configuration-specific error types and utilities.
+"""Configuration-specific error types and utilities.
 
 Provides standardized error handling for configuration parsing and validation
 with consistent messages and diagnostic context.
@@ -28,7 +27,7 @@ class ParseError(ConfigError):
         field_name: str | None = None,
         expected_type: str | None = None,
         valid_options: list[str] | None = None,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(
             message,
@@ -36,7 +35,7 @@ class ParseError(ConfigError):
             field_name=field_name,
             expected_type=expected_type,
             valid_options=valid_options,
-            **kwargs
+            **kwargs,
         )
 
     def _default_code(self) -> str:
@@ -53,14 +52,14 @@ class ValidationError(ConfigError):
         value: Any,
         field_name: str,
         constraint: str | None = None,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(
             message,
             value=value,
             field_name=field_name,
             constraint=constraint,
-            **kwargs
+            **kwargs,
         )
 
     def _default_code(self) -> str:
@@ -74,10 +73,9 @@ def format_invalid_value_error(
     value: Any,
     expected_type: str | None = None,
     valid_options: list[str] | None = None,
-    additional_info: str | None = None
+    additional_info: str | None = None,
 ) -> str:
-    """
-    Create a standardized invalid value error message.
+    """Create a standardized invalid value error message.
 
     Args:
         field_name: Name of the field being parsed
@@ -95,6 +93,7 @@ def format_invalid_value_error(
 
         >>> format_invalid_value_error("sample_rate", "abc", expected_type="float")
         "Invalid sample_rate 'abc'. Expected: float"
+
     """
     parts = [f"Invalid {field_name} '{value}'."]
 
@@ -113,10 +112,9 @@ def format_validation_error(
     field_name: str,
     value: Any,
     constraint: str,
-    additional_info: str | None = None
+    additional_info: str | None = None,
 ) -> str:
-    """
-    Create a standardized validation error message.
+    """Create a standardized validation error message.
 
     Args:
         field_name: Name of the field being validated
@@ -133,6 +131,7 @@ def format_validation_error(
 
         >>> format_validation_error("sample_rate", 1.5, "must be between 0.0 and 1.0")
         "Value 1.5 for sample_rate must be between 0.0 and 1.0"
+
     """
     parts = [f"Value {value} for {field_name} {constraint}"]
 

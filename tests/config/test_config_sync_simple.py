@@ -89,7 +89,7 @@ class TestSyncModuleCoverage:
             # Set up mock to properly handle the coroutine
             def mock_run(coro):
                 # Close the coroutine to avoid warnings
-                if hasattr(coro, 'close'):
+                if hasattr(coro, "close"):
                     coro.close()
                 return SimpleTestConfig(name="mocked")
 
@@ -124,7 +124,7 @@ class TestSyncModuleCoverage:
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
-            if hasattr(coro, 'close'):
+            if hasattr(coro, "close"):
                 coro.close()
             return SimpleTestConfig()
 
@@ -142,7 +142,7 @@ class TestSyncModuleCoverage:
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
-            if hasattr(coro, 'close'):
+            if hasattr(coro, "close"):
                 coro.close()
             return SimpleTestConfig()
 
@@ -150,7 +150,7 @@ class TestSyncModuleCoverage:
 
         with tempfile.NamedTemporaryFile() as tmp_file:
             load_config_from_file(
-                tmp_file.name, SimpleTestConfig, format="json", encoding="utf-8"
+                tmp_file.name, SimpleTestConfig, format="json", encoding="utf-8",
             )
 
         mock_run_async.assert_called_once()
@@ -165,7 +165,7 @@ class TestSyncModuleCoverage:
                 # Set up mock to properly handle the coroutine
                 def mock_run(coro):
                     # Close the coroutine to avoid warnings
-                    if hasattr(coro, 'close'):
+                    if hasattr(coro, "close"):
                         coro.close()
                     return SimpleTestConfig()
 
@@ -183,7 +183,7 @@ class TestSyncModuleCoverage:
             # Set up mock to properly handle the coroutine
             def mock_run(coro):
                 # Close the coroutine to avoid warnings
-                if hasattr(coro, 'close'):
+                if hasattr(coro, "close"):
                     coro.close()
                 return SimpleRuntimeConfig()
 
@@ -200,7 +200,7 @@ class TestSyncModuleCoverage:
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
-            if hasattr(coro, 'close'):
+            if hasattr(coro, "close"):
                 coro.close()
             return SimpleTestConfig()
 
@@ -221,9 +221,8 @@ class TestSyncModuleCoverage:
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
-            if hasattr(coro, 'close'):
+            if hasattr(coro, "close"):
                 coro.close()
-            return None
 
         mock_run_async.side_effect = mock_run
         config = SimpleTestConfig()
@@ -238,9 +237,8 @@ class TestSyncModuleCoverage:
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
-            if hasattr(coro, 'close'):
+            if hasattr(coro, "close"):
                 coro.close()
-            return None
 
         mock_run_async.side_effect = mock_run
         config = SimpleTestConfig()
@@ -258,7 +256,7 @@ class TestSyncModuleCoverage:
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
-            if hasattr(coro, 'close'):
+            if hasattr(coro, "close"):
                 coro.close()
             return {"name": "test"}
 
@@ -279,7 +277,7 @@ class TestSyncModuleCoverage:
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
-            if hasattr(coro, 'close'):
+            if hasattr(coro, "close"):
                 coro.close()
             return SimpleTestConfig(name="cloned")
 
@@ -296,7 +294,7 @@ class TestSyncModuleCoverage:
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
-            if hasattr(coro, 'close'):
+            if hasattr(coro, "close"):
                 coro.close()
             return {"name": ("old", "new")}
 
@@ -324,9 +322,8 @@ class TestSyncConfigManager:
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
-            if hasattr(coro, 'close'):
+            if hasattr(coro, "close"):
                 coro.close()
-            return None
 
         mock_run_async.side_effect = mock_run
         manager = SyncConfigManager()
@@ -345,7 +342,7 @@ class TestSyncConfigManager:
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
-            if hasattr(coro, 'close'):
+            if hasattr(coro, "close"):
                 coro.close()
             return SimpleTestConfig()
 
@@ -362,7 +359,7 @@ class TestSyncConfigManager:
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
-            if hasattr(coro, 'close'):
+            if hasattr(coro, "close"):
                 coro.close()
             return SimpleTestConfig()
 
@@ -384,9 +381,8 @@ class TestSyncConfigManager:
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
-            if hasattr(coro, 'close'):
+            if hasattr(coro, "close"):
                 coro.close()
-            return None
 
         mock_run_async.side_effect = mock_run
         manager = SyncConfigManager()
@@ -404,7 +400,7 @@ class TestSyncConfigManager:
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
-            if hasattr(coro, 'close'):
+            if hasattr(coro, "close"):
                 coro.close()
             return {"name": "exported"}
 
@@ -425,7 +421,7 @@ class TestSyncConfigManager:
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
-            if hasattr(coro, 'close'):
+            if hasattr(coro, "close"):
                 coro.close()
             return {"test": {"name": "exported"}}
 

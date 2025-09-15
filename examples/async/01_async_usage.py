@@ -27,8 +27,7 @@ from provide.foundation.logger.config import (  # noqa: E402
 
 
 async def example_9_async_usage() -> None:
-    """
-    Example 9: Demonstrates usage in asynchronous (`asyncio`) contexts.
+    """Example 9: Demonstrates usage in asynchronous (`asyncio`) contexts.
 
     Covers logging from async functions and using the `shutdown_foundation_telemetry`
     async function.
@@ -40,8 +39,8 @@ async def example_9_async_usage() -> None:
 
     setup_telemetry(
         TelemetryConfig(
-            logging=LoggingConfig(default_level="INFO")
-        )
+            logging=LoggingConfig(default_level="INFO"),
+        ),
     )
 
     async def async_task(task_id: int, task_type: str) -> dict[str, int]:
@@ -85,7 +84,7 @@ async def example_9_async_usage() -> None:
     logger.info("Initiating telemetry shutdown...")
     await shutdown_foundation_telemetry(timeout_millis=100)
     logger.info(
-        "Message after shutdown call (may use fallback if shutdown was destructive)"
+        "Message after shutdown call (may use fallback if shutdown was destructive)",
     )
 
 

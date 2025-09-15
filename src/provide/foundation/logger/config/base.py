@@ -1,8 +1,7 @@
 #
 # base.py
 #
-"""
-Base configuration utilities for Foundation logger.
+"""Base configuration utilities for Foundation logger.
 """
 
 import os

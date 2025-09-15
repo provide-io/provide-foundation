@@ -1,8 +1,7 @@
 #
 # console.py
 #
-"""
-Console stream utilities for Foundation.
+"""Console stream utilities for Foundation.
 Handles console-specific stream operations and formatting.
 """
 
@@ -39,12 +38,12 @@ def supports_color() -> bool:
 
 
 def write_to_console(message: str, stream: TextIO | None = None) -> None:
-    """
-    Write a message to the console stream.
+    """Write a message to the console stream.
 
     Args:
         message: Message to write
         stream: Optional specific stream to write to, defaults to current console stream
+
     """
     target_stream = stream or get_console_stream()
     try:

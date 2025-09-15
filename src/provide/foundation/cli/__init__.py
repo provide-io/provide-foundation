@@ -1,5 +1,4 @@
-"""
-Foundation CLI utilities for consistent command-line interfaces.
+"""Foundation CLI utilities for consistent command-line interfaces.
 
 Provides standard decorators, utilities, and patterns for building
 CLI tools in the provide-io ecosystem.

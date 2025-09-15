@@ -99,16 +99,16 @@ async def test_certificate_trust_chain_validation() -> (
     # from unittest import mock
 
     relying_party_cert = Certificate(
-        generate_keypair=True, common_name="RelyingPartyCert", key_type="ecdsa"
+        generate_keypair=True, common_name="RelyingPartyCert", key_type="ecdsa",
     )
     ca_cert = Certificate(
-        generate_keypair=True, common_name="TestCACert", key_type="ecdsa"
+        generate_keypair=True, common_name="TestCACert", key_type="ecdsa",
     )
 
     relying_party_cert.trust_chain = [ca_cert]  # relying_party_cert trusts ca_cert
 
     end_entity_cert = Certificate(
-        generate_keypair=True, common_name="EndEntityToVerify", key_type="ecdsa"
+        generate_keypair=True, common_name="EndEntityToVerify", key_type="ecdsa",
     )
 
     # Mock end_entity_cert's issuer to be ca_cert's subject so that the

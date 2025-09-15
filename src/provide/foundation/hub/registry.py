@@ -34,7 +34,7 @@ class RegistryEntry:
     name: str
     dimension: str
     value: Any
-    metadata: dict[str, Any] = field(factory=lambda: {})
+    metadata: dict[str, Any] = field(factory=dict)
 
     @property
     def key(self) -> tuple[str, str]:
@@ -43,8 +43,7 @@ class RegistryEntry:
 
 
 class Registry:
-    """
-    Multi-dimensional registry for storing and retrieving objects.
+    """Multi-dimensional registry for storing and retrieving objects.
 
     Supports hierarchical organization by dimension (component, command, etc.)
     and name within each dimension. This is a generic registry that can be
@@ -68,8 +67,7 @@ class Registry:
         aliases: list[str] | None = None,
         replace: bool = False,
     ) -> RegistryEntry:
-        """
-        Register an item in the registry.
+        """Register an item in the registry.
 
         Args:
             name: Unique name within the dimension
@@ -84,6 +82,7 @@ class Registry:
 
         Raises:
             ValueError: If name already exists and replace=False
+
         """
         with self._lock:
             if not replace and name in self._registry[dimension]:
@@ -123,8 +122,7 @@ class Registry:
         name: str,
         dimension: str | None = None,
     ) -> Any | None:
-        """
-        Get an item from the registry.
+        """Get an item from the registry.
 
         Args:
             name: Name or alias of the item
@@ -132,6 +130,7 @@ class Registry:
 
         Returns:
             The registered value or None if not found
+
         """
         with self._lock:
             if dimension is not None:
@@ -193,11 +192,11 @@ class Registry:
         name: str,
         dimension: str | None = None,
     ) -> bool:
-        """
-        Remove an item from the registry.
+        """Remove an item from the registry.
 
         Returns:
             True if item was removed, False if not found
+
         """
         with self._lock:
             if dimension is not None:
@@ -247,8 +246,7 @@ class Registry:
             if isinstance(key, tuple):
                 dimension, name = key
                 return name in self._registry[dimension]
-            else:
-                return any(key in dim_reg for dim_reg in self._registry.values())
+            return any(key in dim_reg for dim_reg in self._registry.values())
 
     def __iter__(self) -> Iterator[RegistryEntry]:
         """Iterate over all registry entries."""

@@ -11,7 +11,6 @@ class TestFoundationInit:
 
     def setup_method(self):
         """Reset module state before each test."""
-
         # Clear CLI module from cache to ensure fresh imports
         cli_modules = [
             name
@@ -36,7 +35,6 @@ class TestFoundationInit:
 
     def teardown_method(self):
         """Restore module state after each test."""
-
         # Restore CLI modules
         for module_name, module in self.saved_cli_modules.items():
             sys.modules[module_name] = module
@@ -82,11 +80,10 @@ class TestFoundationInit:
                 raise ImportError("No module named 'click'")
             return __import__(name, *args, **kwargs)
 
-        with patch("builtins.__import__", side_effect=mock_import_func):
-            with pytest.raises(
-                ImportError, match="CLI features require optional dependencies"
-            ):
-                _ = provide.foundation.cli
+        with patch("builtins.__import__", side_effect=mock_import_func), pytest.raises(
+            ImportError, match="CLI features require optional dependencies",
+        ):
+            _ = provide.foundation.cli
 
     def test_aaa_getattr_cli_other_import_error(self):
         """Test __getattr__ CLI import with other ImportError."""

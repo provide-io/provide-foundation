@@ -1,5 +1,4 @@
-"""
-Hub manager - the main coordinator for components and commands.
+"""Hub manager - the main coordinator for components and commands.
 
 This module provides the Hub class that coordinates component and command
 registration, discovery, and access.
@@ -49,8 +48,7 @@ def _get_logger():
 
 
 class Hub:
-    """
-    Central hub for managing components and commands.
+    """Central hub for managing components and commands.
 
     The Hub provides a unified interface for:
     - Registering components and commands
@@ -66,6 +64,7 @@ class Hub:
         >>> # Create CLI with all commands
         >>> cli = hub.create_cli()
         >>> cli()
+
     """
 
     def __init__(
@@ -75,14 +74,14 @@ class Hub:
         command_registry: Registry | None = None,
         use_shared_registries: bool = False,
     ) -> None:
-        """
-        Initialize the hub.
+        """Initialize the hub.
 
         Args:
             context: Foundation CLIContext for configuration
             component_registry: Custom component registry
             command_registry: Custom command registry
             use_shared_registries: If True, use global shared registries (for compatibility)
+
         """
         self.context = context or CLIContext()
 
@@ -97,7 +96,7 @@ class Hub:
                     # This test explicitly requires independent Hubs
                     use_shared_registries = False
                     break
-                elif "test_hub_logger_access_with_output" in frame_code.co_name:
+                if "test_hub_logger_access_with_output" in frame_code.co_name:
                     # This test requires shared registries for output capture
                     use_shared_registries = True
                     break
@@ -133,14 +132,14 @@ class Hub:
         self._foundation_init_lock = threading.Lock()
 
     def _is_in_test_mode(self) -> bool:
-        """
-        Detect if we're running in a test environment.
+        """Detect if we're running in a test environment.
 
         This method checks for common test environment indicators to determine
         if Hub instances should use shared registries for test compatibility.
 
         Returns:
             True if running in test mode, False otherwise
+
         """
         import os
         import sys
@@ -173,7 +172,7 @@ class Hub:
     @with_error_handling(
         context_provider=lambda: {"hub": "add_component"},
         error_mapper=lambda e: ValidationError(
-            f"Failed to add component: {e}", code="HUB_COMPONENT_ADD_ERROR", cause=e
+            f"Failed to add component: {e}", code="HUB_COMPONENT_ADD_ERROR", cause=e,
         )
         if not isinstance(e, AlreadyExistsError | ValidationError)
         else e,
@@ -185,8 +184,7 @@ class Hub:
         dimension: str = "component",
         **metadata: Any,
     ) -> ComponentInfo:
-        """
-        Add a component to the hub.
+        """Add a component to the hub.
 
         Args:
             component_class: Component class to register
@@ -200,6 +198,7 @@ class Hub:
         Raises:
             AlreadyExistsError: If component is already registered
             ValidationError: If component class is invalid
+
         """
         if not isinstance(component_class, type):
             raise ValidationError(
@@ -251,8 +250,7 @@ class Hub:
         name: str,
         dimension: str | None = None,
     ) -> type[Any] | None:
-        """
-        Get a component by name.
+        """Get a component by name.
 
         Args:
             name: Component name
@@ -260,6 +258,7 @@ class Hub:
 
         Returns:
             Component class or None
+
         """
         return self._component_registry.get(name, dimension)
 
@@ -267,14 +266,14 @@ class Hub:
         self,
         dimension: str | None = None,
     ) -> list[str]:
-        """
-        List component names.
+        """List component names.
 
         Args:
             dimension: Optional dimension filter
 
         Returns:
             List of component names
+
         """
         if dimension:
             return self._component_registry.list_dimension(dimension)
@@ -292,8 +291,7 @@ class Hub:
         group: str,
         dimension: str = "component",
     ) -> dict[str, type[Any]]:
-        """
-        Discover and register components from entry points.
+        """Discover and register components from entry points.
 
         Args:
             group: Entry point group name
@@ -301,6 +299,7 @@ class Hub:
 
         Returns:
             Dictionary of discovered components
+
         """
         return _discover_components(group, dimension, self._component_registry)
 
@@ -312,8 +311,7 @@ class Hub:
         name: str | None = None,
         **kwargs: Any,
     ) -> CommandInfo:
-        """
-        Add a CLI command to the hub.
+        """Add a CLI command to the hub.
 
         Args:
             func: Command function or Click command
@@ -322,6 +320,7 @@ class Hub:
 
         Returns:
             CommandInfo for the registered command
+
         """
         if _HAS_CLICK and isinstance(func, click.Command):
             command_name = name or func.name
@@ -368,23 +367,23 @@ class Hub:
         return info
 
     def get_command(self, name: str) -> Callable[..., Any] | None:
-        """
-        Get a command by name.
+        """Get a command by name.
 
         Args:
             name: Command name or alias
 
         Returns:
             Command function or None
+
         """
         return self._command_registry.get(name, dimension="command")
 
     def list_commands(self) -> list[str]:
-        """
-        List all command names.
+        """List all command names.
 
         Returns:
             List of command names
+
         """
         return self._command_registry.list_dimension("command")
 
@@ -396,8 +395,7 @@ class Hub:
         version: str | None = None,
         **kwargs: Any,
     ) -> click.Group:
-        """
-        Create a Click CLI with all registered commands.
+        """Create a Click CLI with all registered commands.
 
         Requires click to be installed.
 
@@ -415,6 +413,7 @@ class Hub:
             >>>
             >>> if __name__ == "__main__":
             >>>     cli()
+
         """
         if not _HAS_CLICK:
             raise ImportError("CLI creation requires: pip install 'provide-foundation[cli]'")
@@ -432,13 +431,13 @@ class Hub:
         return cli
 
     def add_cli_group(self, group: click.Group) -> None:
-        """
-        Add an existing Click group to the hub.
+        """Add an existing Click group to the hub.
 
         This registers all commands from the group.
 
         Args:
             group: Click Group to add
+
         """
         for name, cmd in group.commands.items():
             self.add_command(cmd, name)
@@ -474,11 +473,11 @@ class Hub:
                     _get_logger().error(f"Failed to cleanup {entry.name}: {e}")
 
     def clear(self, dimension: str | None = None) -> None:
-        """
-        Clear registrations.
+        """Clear registrations.
 
         Args:
             dimension: Optional dimension to clear (None = all)
+
         """
         if dimension == "command" or dimension is None:
             self._command_registry.clear(dimension="command" if dimension else None)
@@ -496,8 +495,7 @@ class Hub:
     # Foundation Lifecycle Management
 
     def initialize_foundation(self, config: Any = None, force: bool = False) -> None:
-        """
-        Initialize Foundation system through Hub.
+        """Initialize Foundation system through Hub.
 
         Single initialization method replacing all setup_* functions.
         Thread-safe and idempotent, unless force=True.
@@ -505,6 +503,7 @@ class Hub:
         Args:
             config: Optional TelemetryConfig (defaults to from_env)
             force: If True, force re-initialization even if already initialized
+
         """
         # Fast path if already initialized and not forcing
         if self._foundation_initialized and not force:
@@ -548,7 +547,7 @@ class Hub:
                 metadata={
                     "initialized": True,
                     "explicit_config": is_explicit_config,
-                    "locked": is_explicit_config  # Lock explicit configs from being replaced
+                    "locked": is_explicit_config,  # Lock explicit configs from being replaced
                 },
                 replace=True,
             )
@@ -561,7 +560,7 @@ class Hub:
             # Use Hub's own logger (will be available after init)
             # Only log initialization in non-test environments to avoid interfering with test expectations
             import os
-            if not os.environ.get('PYTEST_CURRENT_TEST') and hasattr(self, '_get_hub_logger'):
+            if not os.environ.get("PYTEST_CURRENT_TEST") and hasattr(self, "_get_hub_logger"):
                 logger = self._get_hub_logger()
                 logger.info(
                     "Foundation initialized through Hub",
@@ -599,8 +598,7 @@ class Hub:
             print("Continuing with emergency fallback logger", file=sys.stderr)
 
     def get_foundation_logger(self, name: str | None = None) -> Any:
-        """
-        Get Foundation logger instance through Hub.
+        """Get Foundation logger instance through Hub.
 
         Auto-initializes Foundation if not already done.
         Thread-safe with fallback behavior.
@@ -610,6 +608,7 @@ class Hub:
 
         Returns:
             Configured logger instance
+
         """
         # Ensure Foundation is initialized
         if not self._foundation_initialized:
@@ -629,7 +628,7 @@ class Hub:
         """Check if Foundation system is initialized."""
         return self._foundation_initialized
 
-    def get_foundation_config(self) -> "TelemetryConfig | None":
+    def get_foundation_config(self) -> TelemetryConfig | None:
         """Get the current Foundation configuration."""
         if not self._foundation_initialized:
             self.initialize_foundation()
@@ -650,7 +649,7 @@ class Hub:
         self.initialize()
         return self
 
-    def __exit__(self, *args: Any) -> None:
+    def __exit__(self, *args: object) -> None:
         """Context manager exit."""
         self.cleanup()
 
@@ -661,14 +660,14 @@ _hub_lock = threading.Lock()
 
 
 def get_hub() -> Hub:
-    """
-    Get the global hub instance.
+    """Get the global hub instance.
 
     Thread-safe: Uses double-checked locking pattern for efficient lazy initialization.
     Auto-initializes Foundation on first access.
 
     Returns:
         Global Hub instance (created and initialized if needed)
+
     """
     global _global_hub
 

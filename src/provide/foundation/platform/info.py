@@ -41,11 +41,11 @@ class SystemInfo:
 
 
 def get_system_info() -> SystemInfo:
-    """
-    Gather comprehensive system information.
+    """Gather comprehensive system information.
 
     Returns:
         SystemInfo object with all available system details
+
     """
     # Basic platform info
     os_name = get_os_name()

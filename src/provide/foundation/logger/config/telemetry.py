@@ -1,8 +1,7 @@
 #
 # telemetry.py
 #
-"""
-TelemetryConfig class for Foundation telemetry configuration.
+"""TelemetryConfig class for Foundation telemetry configuration.
 """
 
 import os
@@ -48,7 +47,7 @@ class TelemetryConfig(RuntimeConfig):
         description="Service version for telemetry",
     )
     logging: LoggingConfig = field(
-        factory=default_logging_config, description="Logging configuration"
+        factory=default_logging_config, description="Logging configuration",
     )
     globally_disabled: bool = field(
         default=DEFAULT_TELEMETRY_GLOBALLY_DISABLED,
@@ -101,8 +100,7 @@ class TelemetryConfig(RuntimeConfig):
 
     @classmethod
     def from_env(cls, **kwargs) -> "TelemetryConfig":
-        """
-        Load configuration from environment variables.
+        """Load configuration from environment variables.
 
         This method explicitly provides the from_env() interface
         to ensure it's available on TelemetryConfig directly.
@@ -114,5 +112,6 @@ class TelemetryConfig(RuntimeConfig):
 
         Returns:
             Dictionary of header key-value pairs
+
         """
         return self.otlp_headers

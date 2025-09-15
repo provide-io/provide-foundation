@@ -1,12 +1,11 @@
-"""
-Base configuration classes and utilities.
+"""Base configuration classes and utilities.
 """
 
 from __future__ import annotations
 
 from collections.abc import Callable
 import copy
-from typing import Any, TypeVar
+from typing import Any, Self, TypeVar
 
 from attrs import NOTHING, Attribute, define, field as attrs_field, fields
 
@@ -28,8 +27,7 @@ def field(
     sensitive: bool = False,
     **kwargs: Any,
 ) -> Any:
-    """
-    Enhanced attrs field with configuration-specific metadata.
+    """Enhanced attrs field with configuration-specific metadata.
 
     Args:
         default: Default value for the field
@@ -42,6 +40,7 @@ def field(
         env_prefix: Prefix for environment variable
         sensitive: Whether this field contains sensitive data
         **kwargs: Additional attrs field arguments
+
     """
     config_metadata = metadata or {}
 
@@ -64,54 +63,49 @@ def field(
             metadata=config_metadata,
             **kwargs,
         )
-    else:
-        return attrs_field(
-            default=default,
-            validator=validator,
-            converter=converter,
-            metadata=config_metadata,
-            **kwargs,
-        )
+    return attrs_field(
+        default=default,
+        validator=validator,
+        converter=converter,
+        metadata=config_metadata,
+        **kwargs,
+    )
 
 
 @define(slots=True, repr=False)
 class BaseConfig:
-    """
-    Base configuration class with common functionality.
+    """Base configuration class with common functionality.
 
     All configuration classes should inherit from this.
     All methods are async to support async validation and I/O operations.
     """
 
     # These are instance attributes that need to be defined outside of slots
-    _source_map: dict[str, ConfigSource] = attrs_field(init=False, factory=lambda: {})
-    _original_values: dict[str, Any] = attrs_field(init=False, factory=lambda: {})
+    _source_map: dict[str, ConfigSource] = attrs_field(init=False, factory=dict)
+    _original_values: dict[str, Any] = attrs_field(init=False, factory=dict)
 
     def __attrs_post_init__(self) -> None:
         """Post-initialization hook for subclasses."""
         # The _source_map and _original_values are now handled by attrs with factory
         # Note: validate() is now async, so we can't call it here
         # Users must explicitly call await config.validate() after creation
-        pass
 
     async def validate(self) -> None:
-        """
-        Validate the configuration.
+        """Validate the configuration.
 
         Override this method to add custom validation logic.
         Can perform async operations like checking database connections.
         """
-        pass
 
     def to_dict(self, include_sensitive: bool = False) -> ConfigDict:
-        """
-        Convert configuration to dictionary.
+        """Convert configuration to dictionary.
 
         Args:
             include_sensitive: Whether to include sensitive fields
 
         Returns:
             Dictionary representation of the configuration
+
         """
         result = {}
 
@@ -161,9 +155,8 @@ class BaseConfig:
         return result
 
     @classmethod
-    def from_dict(cls: type[T], data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME) -> T:
-        """
-        Create configuration from dictionary.
+    def from_dict(cls, data: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME) -> Self:
+        """Create configuration from dictionary.
 
         Args:
             data: Configuration data
@@ -171,6 +164,7 @@ class BaseConfig:
 
         Returns:
             Configuration instance
+
         """
         # Filter data to only include fields defined in the class, excluding private fields
         field_names = {f.name for f in fields(cls) if not f.name.startswith("_")}
@@ -187,12 +181,12 @@ class BaseConfig:
         return instance
 
     def update(self, updates: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME) -> None:
-        """
-        Update configuration with new values.
+        """Update configuration with new values.
 
         Args:
             updates: Dictionary of updates
             source: Source of the updates
+
         """
         for key, value in updates.items():
             if hasattr(self, key):
@@ -206,14 +200,14 @@ class BaseConfig:
         # Note: validate() is async, must be called separately if needed
 
     def get_source(self, field_name: str) -> ConfigSource | None:
-        """
-        Get the source of a configuration field.
+        """Get the source of a configuration field.
 
         Args:
             field_name: Name of the field
 
         Returns:
             Source of the field value or None
+
         """
         return self._source_map.get(field_name)
 
@@ -235,21 +229,21 @@ class BaseConfig:
 
         # Note: validate() is async, must be called separately if needed
 
-    def clone(self: T) -> T:
+    def clone(self) -> Self:
         """Create a deep copy of the configuration."""
         cloned = copy.deepcopy(self)
         # Note: validate() is async, must be called separately if needed
         return cloned
 
     def diff(self, other: BaseConfig) -> dict[str, tuple[Any, Any]]:
-        """
-        Compare with another configuration.
+        """Compare with another configuration.
 
         Args:
             other: Configuration to compare with
 
         Returns:
             Dictionary of differences (field_name: (self_value, other_value))
+
         """
         if not isinstance(other, self.__class__):
             raise TypeError(f"Cannot compare {self.__class__.__name__} with {other.__class__.__name__}")

@@ -1,5 +1,4 @@
-"""
-Production time utilities for Foundation.
+"""Production time utilities for Foundation.
 
 Provides consistent time handling with Foundation integration,
 better testability, and timezone awareness.

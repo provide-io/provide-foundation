@@ -1,5 +1,4 @@
-"""
-Base classes for tool management.
+"""Base classes for tool management.
 
 This module provides the foundation for tool managers, including
 the base manager class and metadata structures.
@@ -20,31 +19,26 @@ log = get_logger(__name__)
 class ToolError(FoundationError):
     """Base exception for tool-related errors."""
 
-    pass
 
 
 class ToolNotFoundError(ToolError):
     """Raised when a tool or version cannot be found."""
 
-    pass
 
 
 class ToolInstallError(ToolError):
     """Raised when tool installation fails."""
 
-    pass
 
 
 class ToolVerificationError(ToolError):
     """Raised when tool verification fails."""
 
-    pass
 
 
 @define
 class ToolMetadata:
-    """
-    Metadata about a tool version.
+    """Metadata about a tool version.
 
     Attributes:
         name: Tool name (e.g., "terraform").
@@ -59,6 +53,7 @@ class ToolMetadata:
         env_vars: Environment variables to set.
         dependencies: Other tools this depends on.
         executable_name: Name of the executable file.
+
     """
 
     name: str
@@ -76,8 +71,7 @@ class ToolMetadata:
 
 
 class BaseToolManager(ABC):
-    """
-    Abstract base class for tool managers.
+    """Abstract base class for tool managers.
 
     Provides common functionality for downloading, verifying, and installing
     development tools. Subclasses must implement platform-specific logic.
@@ -87,6 +81,7 @@ class BaseToolManager(ABC):
         tool_name: Name of the tool being managed.
         executable_name: Name of the executable file.
         supported_platforms: List of supported platforms.
+
     """
 
     # Class attributes to be overridden by subclasses
@@ -95,11 +90,11 @@ class BaseToolManager(ABC):
     supported_platforms: list[str] = ["linux", "darwin", "windows"]
 
     def __init__(self, config: BaseConfig):
-        """
-        Initialize the tool manager.
+        """Initialize the tool manager.
 
         Args:
             config: Configuration object containing settings.
+
         """
         if not self.tool_name:
             raise ToolError("Subclass must define tool_name")
@@ -165,30 +160,27 @@ class BaseToolManager(ABC):
 
     @abstractmethod
     def get_metadata(self, version: str) -> ToolMetadata:
-        """
-        Get metadata for a specific version.
+        """Get metadata for a specific version.
 
         Args:
             version: Version string to get metadata for.
 
         Returns:
             ToolMetadata object with download URLs and checksums.
+
         """
-        pass
 
     @abstractmethod
     def get_available_versions(self) -> list[str]:
-        """
-        Get list of available versions from upstream.
+        """Get list of available versions from upstream.
 
         Returns:
             List of version strings available for download.
+
         """
-        pass
 
     def resolve_version(self, spec: str) -> str:
-        """
-        Resolve a version specification to a concrete version.
+        """Resolve a version specification to a concrete version.
 
         Args:
             spec: Version specification (e.g., "latest", "~1.5.0").
@@ -198,6 +190,7 @@ class BaseToolManager(ABC):
 
         Raises:
             ToolNotFoundError: If version cannot be resolved.
+
         """
         available = self.get_available_versions()
         if not available:
@@ -211,8 +204,7 @@ class BaseToolManager(ABC):
         return resolved
 
     def install(self, version: str = "latest", force: bool = False) -> Path:
-        """
-        Install a specific version of the tool.
+        """Install a specific version of the tool.
 
         Args:
             version: Version to install (default: "latest").
@@ -223,6 +215,7 @@ class BaseToolManager(ABC):
 
         Raises:
             ToolInstallError: If installation fails.
+
         """
         # Resolve version
         if version in ["latest", "stable", "dev"] or version.startswith(("~", "^")):
@@ -245,7 +238,7 @@ class BaseToolManager(ABC):
         from provide.foundation.file.temp import system_temp_dir
         download_path = system_temp_dir() / f"{self.tool_name}-{version}"
         artifact_path = self.downloader.download_with_progress(
-            metadata.download_url, download_path, metadata.checksum
+            metadata.download_url, download_path, metadata.checksum,
         )
 
         # Verify if checksum provided
@@ -268,14 +261,14 @@ class BaseToolManager(ABC):
         return install_path
 
     def uninstall(self, version: str) -> bool:
-        """
-        Uninstall a specific version.
+        """Uninstall a specific version.
 
         Args:
             version: Version to uninstall.
 
         Returns:
             True if uninstalled, False if not found.
+
         """
         # Invalidate cache
         self.cache.invalidate(self.tool_name, version)
@@ -292,38 +285,38 @@ class BaseToolManager(ABC):
         return False
 
     def get_install_path(self, version: str) -> Path:
-        """
-        Get the installation path for a version.
+        """Get the installation path for a version.
 
         Args:
             version: Version string.
 
         Returns:
             Path where the version is/will be installed.
+
         """
         base_path = Path.home() / ".wrknv" / "tools" / self.tool_name / version
         return base_path
 
     def is_installed(self, version: str) -> bool:
-        """
-        Check if a version is installed.
+        """Check if a version is installed.
 
         Args:
             version: Version to check.
 
         Returns:
             True if installed, False otherwise.
+
         """
         install_path = self.get_install_path(version)
         executable = install_path / "bin" / self.executable_name
         return executable.exists()
 
     def get_platform_info(self) -> dict[str, str]:
-        """
-        Get current platform information.
+        """Get current platform information.
 
         Returns:
             Dictionary with platform and arch keys.
+
         """
         import platform
 

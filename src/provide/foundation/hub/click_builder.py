@@ -36,7 +36,6 @@ def ensure_parent_groups(parent_path: str, registry: Registry) -> None:
             # Create a placeholder group
             def group_func() -> None:
                 """Auto-generated command group."""
-                pass
 
             # Set the function name for better debugging
             group_func.__name__ = f"{parts[i]}_group"
@@ -72,8 +71,7 @@ def build_click_command(
     name: str,
     registry: Registry | None = None,
 ) -> click.Command | None:
-    """
-    Build a Click command from a registered function.
+    """Build a Click command from a registered function.
 
     This function takes a registered command and converts it to a
     Click command with proper options and arguments based on the
@@ -93,6 +91,7 @@ def build_click_command(
         >>>
         >>> click_cmd = build_click_command("greet")
         >>> # Now click_cmd can be added to a Click group
+
     """
     reg = registry or get_command_registry()
     entry = reg.get_entry(name, dimension="command")
@@ -201,8 +200,7 @@ def create_command_group(
     registry: Registry | None = None,
     **kwargs: Any,
 ) -> click.Group:
-    """
-    Create a Click group with registered commands.
+    """Create a Click group with registered commands.
 
     Args:
         name: Name for the CLI group
@@ -225,6 +223,7 @@ def create_command_group(
         >>> # Run the CLI
         >>> if __name__ == "__main__":
         >>>     cli()
+
     """
     reg = registry or get_command_registry()
     group = click.Group(name=name, **kwargs)

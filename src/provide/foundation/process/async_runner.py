@@ -57,8 +57,7 @@ async def async_run_command(
     shell: bool = False,
     **kwargs: Any,
 ) -> CompletedProcess:
-    """
-    Run a subprocess command asynchronously.
+    """Run a subprocess command asynchronously.
 
     Args:
         cmd: Command and arguments as a list
@@ -76,6 +75,7 @@ async def async_run_command(
     Raises:
         ProcessError: If command fails and check=True
         TimeoutError: If timeout is exceeded
+
     """
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
     plog.info("🚀 Running async command", command=cmd_str, cwd=str(cwd) if cwd else None)
@@ -222,8 +222,7 @@ async def async_stream_command(
     stream_stderr: bool = False,
     **kwargs: Any,
 ) -> AsyncIterator[str]:
-    """
-    Stream command output line by line asynchronously.
+    """Stream command output line by line asynchronously.
 
     Args:
         cmd: Command and arguments as a list
@@ -238,6 +237,7 @@ async def async_stream_command(
     Raises:
         ProcessError: If command fails
         TimeoutError: If timeout is exceeded
+
     """
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
     plog.info("🌊 Streaming async command", command=cmd_str, cwd=str(cwd) if cwd else None)
@@ -288,7 +288,7 @@ async def async_stream_command(
 
                                 # Wait for a line with remaining timeout
                                 line = await asyncio.wait_for(
-                                    process.stdout.readline(), timeout=remaining_timeout
+                                    process.stdout.readline(), timeout=remaining_timeout,
                                 )
 
                                 if not line:
@@ -408,6 +408,7 @@ async def async_run_shell(
         This function enables shell interpretation of the command string,
         which allows shell features but also creates injection risks.
         Use async_run_command with a list for safer execution.
+
     """
     return await async_run_command(
         cmd,

@@ -1,8 +1,7 @@
 #
 # file.py
 #
-"""
-File stream management for Foundation.
+"""File stream management for Foundation.
 Handles file-based logging streams and file operations.
 """
 
@@ -19,8 +18,7 @@ from provide.foundation.utils.streams import get_safe_stderr
 
 
 def _safe_error_output(message: str) -> None:
-    """
-    Output error message to stderr using basic print to avoid circular dependencies.
+    """Output error message to stderr using basic print to avoid circular dependencies.
 
     This function intentionally uses print() instead of Foundation's perr() to prevent
     circular import issues during stream initialization and teardown phases.
@@ -29,11 +27,11 @@ def _safe_error_output(message: str) -> None:
 
 
 def configure_file_logging(log_file_path: str | None) -> None:
-    """
-    Configure file logging if a path is provided.
+    """Configure file logging if a path is provided.
 
     Args:
         log_file_path: Path to log file, or None to disable file logging
+
     """
     global _PROVIDE_LOG_STREAM, _LOG_FILE_HANDLE
 
@@ -54,7 +52,7 @@ def configure_file_logging(log_file_path: str | None) -> None:
 
         # Check if we're in testing mode
         is_test_stream = _PROVIDE_LOG_STREAM is not sys.stderr and not isinstance(
-            _PROVIDE_LOG_STREAM, io.TextIOWrapper
+            _PROVIDE_LOG_STREAM, io.TextIOWrapper,
         )
 
         if log_file_path:

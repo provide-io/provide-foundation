@@ -1,8 +1,7 @@
 #
 # tests/conftest.py
 #
-"""
-Pytest configuration and global fixtures for provide-foundation tests.
+"""Pytest configuration and global fixtures for provide-foundation tests.
 
 This file contains only the essential global fixtures and configuration
 that must be at the root level for pytest.
@@ -41,10 +40,10 @@ def _get_conftest_diag_logger() -> stdlib_logging.Logger:
     logger = stdlib_logging.getLogger(_conftest_diag_logger_name)
     if not logger.handlers:
         handler = stdlib_logging.StreamHandler(
-            sys.stderr
+            sys.stderr,
         )  # Actual stderr for diagnostics
         formatter = stdlib_logging.Formatter(
-            "[Conftest DIAG] %(levelname)s (%(name)s): %(message)s"
+            "[Conftest DIAG] %(levelname)s (%(name)s): %(message)s",
         )
         handler.setFormatter(formatter)
         level_str = os.getenv("PYTEST_CONTEST_DIAG_LOG_LEVEL", "DEBUG").upper()
@@ -62,20 +61,19 @@ if not os.getenv("PYTEST_WORKER_ID"):  # Avoid multiple messages with xdist
 
 @pytest.fixture(autouse=True)
 def manage_telemetry_reset_for_each_test() -> Generator[None]:
-    """
-    Autouse fixture to reset Foundation Telemetry before and after each test.
+    """Autouse fixture to reset Foundation Telemetry before and after each test.
     Ensures test isolation by calling `reset_foundation_setup_for_testing()`.
     """
     if not os.getenv("PYTEST_WORKER_ID") or os.getenv("PYTEST_WORKER_ID") == "gw0":
         conftest_diag_logger.debug(
-            "🔄 (Pre-test) Calling reset_foundation_setup_for_testing()"
+            "🔄 (Pre-test) Calling reset_foundation_setup_for_testing()",
         )
     reset_foundation_setup_for_testing()
     # ensure_config_warnings_logger_configured call removed
     yield
     if not os.getenv("PYTEST_WORKER_ID") or os.getenv("PYTEST_WORKER_ID") == "gw0":
         conftest_diag_logger.debug(
-            "🔄 (Post-test) Calling reset_foundation_setup_for_testing()"
+            "🔄 (Post-test) Calling reset_foundation_setup_for_testing()",
         )
     reset_foundation_setup_for_testing()
     # ensure_config_warnings_logger_configured call removed

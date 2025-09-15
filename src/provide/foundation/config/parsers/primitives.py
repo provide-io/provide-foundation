@@ -1,5 +1,4 @@
-"""
-Basic type parsing functions for configuration values.
+"""Basic type parsing functions for configuration values.
 
 Handles parsing of primitive types (bool, float, int) and simple
 data structures (lists) from string configuration values.
@@ -12,8 +11,7 @@ from provide.foundation.config.parsers.base import _format_invalid_value_error, 
 
 
 def parse_bool_extended(value: str | bool) -> bool:
-    """
-    Parse boolean from string with lenient/forgiving interpretation.
+    """Parse boolean from string with lenient/forgiving interpretation.
 
     This is the **lenient** boolean parser - designed for user-facing configuration
     where we want to be forgiving of various inputs. Any unrecognized string
@@ -39,6 +37,7 @@ def parse_bool_extended(value: str | bool) -> bool:
         >>> parse_bool_extended("FALSE")  # False
         >>> parse_bool_extended("invalid")  # False (no error)
         >>> parse_bool_extended(True)  # True
+
     """
     # If already a bool, return as-is
     if isinstance(value, bool):
@@ -51,8 +50,7 @@ def parse_bool_extended(value: str | bool) -> bool:
 
 
 def parse_bool_strict(value: str | bool) -> bool:
-    """
-    Parse boolean from string with strict validation and clear error messages.
+    """Parse boolean from string with strict validation and clear error messages.
 
     This is the **strict** boolean parser - designed for internal APIs and critical
     configuration where invalid values should cause immediate failure with helpful
@@ -82,12 +80,13 @@ def parse_bool_strict(value: str | bool) -> bool:
         >>> parse_bool_strict("FALSE")  # False
         >>> parse_bool_strict("invalid")  # ValueError with helpful message
         >>> parse_bool_strict(42)  # TypeError
+
     """
     # Check type first for clear error messages
     if not isinstance(value, (str, bool)):
         raise TypeError(
             f"Boolean field requires str or bool, got {type(value).__name__}. "
-            f"Received value: {value!r}"
+            f"Received value: {value!r}",
         )
 
     # If already a bool, return as-is
@@ -99,23 +98,21 @@ def parse_bool_strict(value: str | bool) -> bool:
 
     if value_lower in ("true", "yes", "1", "on"):
         return True
-    elif value_lower in ("false", "no", "0", "off"):
+    if value_lower in ("false", "no", "0", "off"):
         return False
-    else:
-        raise ValueError(
-            _format_invalid_value_error(
-                "boolean", value,
-                valid_options=["true", "false", "yes", "no", "1", "0", "on", "off"],
-                additional_info="Use parse_bool_extended() for lenient parsing that defaults to False"
-            )
-        )
+    raise ValueError(
+        _format_invalid_value_error(
+            "boolean", value,
+            valid_options=["true", "false", "yes", "no", "1", "0", "on", "off"],
+            additional_info="Use parse_bool_extended() for lenient parsing that defaults to False",
+        ),
+    )
 
 
 def parse_float_with_validation(
-    value: str, min_val: float | None = None, max_val: float | None = None
+    value: str, min_val: float | None = None, max_val: float | None = None,
 ) -> float:
-    """
-    Parse float with optional range validation.
+    """Parse float with optional range validation.
 
     Args:
         value: String representation of float
@@ -127,30 +124,30 @@ def parse_float_with_validation(
 
     Raises:
         ValueError: If value is not a valid float or out of range
+
     """
     try:
         result = float(value)
     except (ValueError, TypeError) as e:
         raise ValueError(
-            _format_invalid_value_error("float", value, expected_type="float")
+            _format_invalid_value_error("float", value, expected_type="float"),
         ) from e
 
     if min_val is not None and result < min_val:
         raise ValueError(
-            _format_validation_error("float", result, f"must be >= {min_val}")
+            _format_validation_error("float", result, f"must be >= {min_val}"),
         )
 
     if max_val is not None and result > max_val:
         raise ValueError(
-            _format_validation_error("float", result, f"must be <= {max_val}")
+            _format_validation_error("float", result, f"must be <= {max_val}"),
         )
 
     return result
 
 
 def parse_sample_rate(value: str) -> float:
-    """
-    Parse sampling rate (0.0 to 1.0).
+    """Parse sampling rate (0.0 to 1.0).
 
     Args:
         value: String representation of sampling rate
@@ -160,19 +157,20 @@ def parse_sample_rate(value: str) -> float:
 
     Raises:
         ValueError: If value is not valid or out of range
+
     """
     return parse_float_with_validation(value, min_val=0.0, max_val=1.0)
 
 
 def parse_comma_list(value: str) -> list[str]:
-    """
-    Parse comma-separated list of strings.
+    """Parse comma-separated list of strings.
 
     Args:
         value: Comma-separated string
 
     Returns:
         List of trimmed non-empty strings
+
     """
     if not value or not value.strip():
         return []
@@ -181,8 +179,7 @@ def parse_comma_list(value: str) -> list[str]:
 
 
 def parse_json_dict(value: str) -> dict[str, Any]:
-    """
-    Parse JSON string into dictionary.
+    """Parse JSON string into dictionary.
 
     Args:
         value: JSON string
@@ -192,6 +189,7 @@ def parse_json_dict(value: str) -> dict[str, Any]:
 
     Raises:
         ValueError: If JSON is invalid
+
     """
     if not value or not value.strip():
         return {}
@@ -201,19 +199,18 @@ def parse_json_dict(value: str) -> dict[str, Any]:
         if not isinstance(result, dict):
             raise ValueError(
                 _format_invalid_value_error(
-                    "json_dict", type(result).__name__, expected_type="JSON object"
-                )
+                    "json_dict", type(result).__name__, expected_type="JSON object",
+                ),
             )
         return result
     except json.JSONDecodeError as e:
         raise ValueError(
-            _format_invalid_value_error("json_dict", value, expected_type="valid JSON")
+            _format_invalid_value_error("json_dict", value, expected_type="valid JSON"),
         ) from e
 
 
 def parse_json_list(value: str) -> list[Any]:
-    """
-    Parse JSON string into list.
+    """Parse JSON string into list.
 
     Args:
         value: JSON string
@@ -223,6 +220,7 @@ def parse_json_list(value: str) -> list[Any]:
 
     Raises:
         ValueError: If JSON is invalid
+
     """
     if not value or not value.strip():
         return []
@@ -232,13 +230,13 @@ def parse_json_list(value: str) -> list[Any]:
         if not isinstance(result, list):
             raise ValueError(
                 _format_invalid_value_error(
-                    "json_list", type(result).__name__, expected_type="JSON array"
-                )
+                    "json_list", type(result).__name__, expected_type="JSON array",
+                ),
             )
         return result
     except json.JSONDecodeError as e:
         raise ValueError(
-            _format_invalid_value_error("json_list", value, expected_type="valid JSON")
+            _format_invalid_value_error("json_list", value, expected_type="valid JSON"),
         ) from e
 
 

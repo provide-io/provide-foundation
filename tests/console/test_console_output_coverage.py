@@ -122,33 +122,30 @@ class TestShouldUseColor:
 
     def test_should_use_color_no_stream_stdout_tty(self):
         """Test _should_use_color with no stream, stdout is TTY."""
-        with patch("sys.stdout") as mock_stdout:
-            with patch("sys.stderr") as mock_stderr:
-                mock_stdout.isatty.return_value = True
-                mock_stderr.isatty.return_value = False
+        with patch("sys.stdout") as mock_stdout, patch("sys.stderr") as mock_stderr:
+            mock_stdout.isatty.return_value = True
+            mock_stderr.isatty.return_value = False
 
-                result = _should_use_color()
-                assert result is True
+            result = _should_use_color()
+            assert result is True
 
     def test_should_use_color_no_stream_stderr_tty(self):
         """Test _should_use_color with no stream, stderr is TTY."""
-        with patch("sys.stdout") as mock_stdout:
-            with patch("sys.stderr") as mock_stderr:
-                mock_stdout.isatty.return_value = False
-                mock_stderr.isatty.return_value = True
+        with patch("sys.stdout") as mock_stdout, patch("sys.stderr") as mock_stderr:
+            mock_stdout.isatty.return_value = False
+            mock_stderr.isatty.return_value = True
 
-                result = _should_use_color()
-                assert result is True
+            result = _should_use_color()
+            assert result is True
 
     def test_should_use_color_no_stream_neither_tty(self):
         """Test _should_use_color with no stream, neither stdout nor stderr are TTY."""
-        with patch("sys.stdout") as mock_stdout:
-            with patch("sys.stderr") as mock_stderr:
-                mock_stdout.isatty.return_value = False
-                mock_stderr.isatty.return_value = False
+        with patch("sys.stdout") as mock_stdout, patch("sys.stderr") as mock_stderr:
+            mock_stdout.isatty.return_value = False
+            mock_stderr.isatty.return_value = False
 
-                result = _should_use_color()
-                assert result is False
+            result = _should_use_color()
+            assert result is False
 
 
 class TestOutputJson:
@@ -211,7 +208,7 @@ class TestPoutFunction:
         with patch("provide.foundation.console.output._HAS_CLICK", True):
             with patch("provide.foundation.console.output.click") as mock_click:
                 with patch(
-                    "provide.foundation.console.output._get_context", return_value=None
+                    "provide.foundation.console.output._get_context", return_value=None,
                 ):
                     pout("Hello world")
 
@@ -223,12 +220,12 @@ class TestPoutFunction:
         mock_ctx.json_output = True
 
         with patch(
-            "provide.foundation.console.output._output_json"
+            "provide.foundation.console.output._output_json",
         ) as mock_output_json:
             pout("test message", ctx=mock_ctx, json_key="message")
 
             mock_output_json.assert_called_once_with(
-                {"message": "test message"}, sys.stdout
+                {"message": "test message"}, sys.stdout,
             )
 
     def test_pout_json_mode_no_key(self):
@@ -237,7 +234,7 @@ class TestPoutFunction:
         mock_ctx.json_output = True
 
         with patch(
-            "provide.foundation.console.output._output_json"
+            "provide.foundation.console.output._output_json",
         ) as mock_output_json:
             pout({"data": "value"}, ctx=mock_ctx)
 
@@ -248,7 +245,7 @@ class TestPoutFunction:
         with patch("provide.foundation.console.output._HAS_CLICK", True):
             with patch("provide.foundation.console.output.click") as mock_click:
                 with patch(
-                    "provide.foundation.console.output._get_context", return_value=None
+                    "provide.foundation.console.output._get_context", return_value=None,
                 ):
                     pout("message", prefix="INFO:")
 
@@ -274,7 +271,7 @@ class TestPoutFunction:
                     )
 
                     mock_click.secho.assert_called_once_with(
-                        "colored message", fg="red", bold=True, dim=False, nl=True
+                        "colored message", fg="red", bold=True, dim=False, nl=True,
                     )
 
     def test_pout_no_color_support(self):
@@ -307,7 +304,7 @@ class TestPoutFunction:
                 pout("no newline", nl=False)
 
                 mock_print.assert_called_once_with(
-                    "no newline", file=sys.stdout, end=""
+                    "no newline", file=sys.stdout, end="",
                 )
 
     def test_pout_newline_aliases(self):
@@ -315,7 +312,7 @@ class TestPoutFunction:
         with patch("provide.foundation.console.output._HAS_CLICK", True):
             with patch("provide.foundation.console.output.click") as mock_click:
                 with patch(
-                    "provide.foundation.console.output._get_context", return_value=None
+                    "provide.foundation.console.output._get_context", return_value=None,
                 ):
                     # Test with newline=False
                     pout("test", newline=False)
@@ -335,12 +332,12 @@ class TestPerrFunction:
         with patch("provide.foundation.console.output._HAS_CLICK", True):
             with patch("provide.foundation.console.output.click") as mock_click:
                 with patch(
-                    "provide.foundation.console.output._get_context", return_value=None
+                    "provide.foundation.console.output._get_context", return_value=None,
                 ):
                     perr("Error message")
 
                     mock_click.echo.assert_called_once_with(
-                        "Error message", err=True, nl=True
+                        "Error message", err=True, nl=True,
                     )
 
     def test_perr_json_mode_with_key(self):
@@ -349,12 +346,12 @@ class TestPerrFunction:
         mock_ctx.json_output = True
 
         with patch(
-            "provide.foundation.console.output._output_json"
+            "provide.foundation.console.output._output_json",
         ) as mock_output_json:
             perr("error occurred", ctx=mock_ctx, json_key="error")
 
             mock_output_json.assert_called_once_with(
-                {"error": "error occurred"}, sys.stderr
+                {"error": "error occurred"}, sys.stderr,
             )
 
     def test_perr_json_mode_no_key(self):
@@ -363,7 +360,7 @@ class TestPerrFunction:
         mock_ctx.json_output = True
 
         with patch(
-            "provide.foundation.console.output._output_json"
+            "provide.foundation.console.output._output_json",
         ) as mock_output_json:
             perr({"error": "details"}, ctx=mock_ctx)
 
@@ -406,7 +403,7 @@ class TestPerrFunction:
                 perr("no newline error", nl=False)
 
                 mock_print.assert_called_once_with(
-                    "no newline error", file=sys.stderr, end=""
+                    "no newline error", file=sys.stderr, end="",
                 )
 
 
@@ -451,7 +448,7 @@ class TestEdgeCases:
         mock_ctx.json_output = False
 
         with patch(
-            "provide.foundation.console.output._get_context", return_value=mock_ctx
+            "provide.foundation.console.output._get_context", return_value=mock_ctx,
         ) as mock_get_ctx, patch("provide.foundation.console.output._HAS_CLICK", True):
             with patch("provide.foundation.console.output.click") as mock_click:
                 # Don't pass ctx explicitly

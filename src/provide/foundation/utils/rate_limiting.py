@@ -1,5 +1,4 @@
-"""
-Rate limiting utilities for Foundation.
+"""Rate limiting utilities for Foundation.
 
 This module provides rate limiting implementations suitable for
 asynchronous applications, helping to manage request load and prevent abuse.
@@ -12,21 +11,20 @@ from typing import final
 
 @final
 class TokenBucketRateLimiter:
-    """
-    A Token Bucket rate limiter for asyncio applications.
+    """A Token Bucket rate limiter for asyncio applications.
 
     This limiter allows for bursts up to a specified capacity and refills tokens
     at a constant rate. It is designed to be thread-safe using an asyncio.Lock.
     """
 
     def __init__(self, capacity: float, refill_rate: float) -> None:
-        """
-        Initialize the TokenBucketRateLimiter.
+        """Initialize the TokenBucketRateLimiter.
 
         Args:
             capacity: The maximum number of tokens the bucket can hold
                       (burst capacity).
             refill_rate: The rate at which tokens are refilled per second.
+
         """
         if capacity <= 0:
             raise ValueError("Capacity must be positive.")
@@ -46,15 +44,14 @@ class TokenBucketRateLimiter:
 
             self._logger = get_logger(__name__)
             self._logger.debug(
-                f"🔩🗑️ TokenBucketRateLimiter initialized: capacity={capacity}, refill_rate={refill_rate}"
+                f"🔩🗑️ TokenBucketRateLimiter initialized: capacity={capacity}, refill_rate={refill_rate}",
             )
         except ImportError:
             # Fallback if logger not available
             pass
 
     async def _refill_tokens(self) -> None:
-        """
-        Refills tokens based on the elapsed time since the last refill.
+        """Refills tokens based on the elapsed time since the last refill.
         This method is not locked internally; caller must hold the lock.
         """
         now = time.monotonic()
@@ -74,14 +71,14 @@ class TokenBucketRateLimiter:
             # )
 
     async def is_allowed(self) -> bool:
-        """
-        Check if a request is allowed based on available tokens.
+        """Check if a request is allowed based on available tokens.
 
         This method is asynchronous and thread-safe. It refills tokens
         based on elapsed time and then attempts to consume a token.
 
         Returns:
             True if the request is allowed, False otherwise.
+
         """
         async with self._lock:
             await self._refill_tokens()  # Refill before checking
@@ -90,16 +87,15 @@ class TokenBucketRateLimiter:
                 self._tokens -= 1.0
                 if self._logger:
                     self._logger.debug(
-                        f"🔩🗑️✅ Request allowed. Tokens remaining: {self._tokens:.2f}/{self._capacity:.2f}"
+                        f"🔩🗑️✅ Request allowed. Tokens remaining: {self._tokens:.2f}/{self._capacity:.2f}",
                     )
                 return True
-            else:
-                if self._logger:
-                    self._logger.warning(
-                        "🔩🗑️❌ Request denied. No tokens available. Tokens: "
-                        f"{self._tokens:.2f}/{self._capacity:.2f}"
-                    )
-                return False
+            if self._logger:
+                self._logger.warning(
+                    "🔩🗑️❌ Request denied. No tokens available. Tokens: "
+                    f"{self._tokens:.2f}/{self._capacity:.2f}",
+                )
+            return False
 
     async def get_current_tokens(self) -> float:
         """Returns the current number of tokens, for testing/monitoring."""

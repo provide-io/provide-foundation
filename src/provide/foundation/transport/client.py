@@ -1,5 +1,4 @@
-"""
-Universal transport client with middleware support.
+"""Universal transport client with middleware support.
 """
 
 from collections.abc import AsyncIterator
@@ -39,8 +38,7 @@ class UniversalClient:
         timeout: float | None = None,
         **kwargs,
     ) -> Response:
-        """
-        Make a request using appropriate transport.
+        """Make a request using appropriate transport.
 
         Args:
             uri: Full URI to make request to
@@ -53,6 +51,7 @@ class UniversalClient:
 
         Returns:
             Response from the transport
+
         """
         # Normalize method
         if isinstance(method, HTTPMethod):
@@ -95,10 +94,9 @@ class UniversalClient:
             raise e
 
     async def stream(
-        self, uri: str, method: str | HTTPMethod = HTTPMethod.GET, **kwargs
+        self, uri: str, method: str | HTTPMethod = HTTPMethod.GET, **kwargs,
     ) -> AsyncIterator[bytes]:
-        """
-        Stream data from URI.
+        """Stream data from URI.
 
         Args:
             uri: URI to stream from
@@ -107,6 +105,7 @@ class UniversalClient:
 
         Yields:
             Chunks of response data
+
         """
         # Normalize method
         if isinstance(method, HTTPMethod):

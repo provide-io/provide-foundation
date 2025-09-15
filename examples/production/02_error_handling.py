@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Foundation Error Handling Patterns Example
+"""Foundation Error Handling Patterns Example
 
 This example demonstrates Foundation's comprehensive error handling utilities,
 including context managers, decorators, custom exceptions, and resilience patterns.
@@ -59,8 +58,7 @@ from provide.foundation.resilience.decorators import (  # noqa: E402
 
 
 def example_error_handling() -> None:
-    """
-    Demonstrates Foundation's comprehensive error handling patterns.
+    """Demonstrates Foundation's comprehensive error handling patterns.
 
     This example shows how to use Foundation's error handling utilities
     to build robust applications with proper error management, logging,
@@ -102,7 +100,7 @@ def example_error_handling() -> None:
     @with_error_handling(
         fallback={"error": "Service unavailable"},
         suppress=(NetworkError, ValidationError),
-        log_errors=True
+        log_errors=True,
     )
     def fetch_user_profile(user_id: str) -> dict[str, str]:
         """Fetch user profile with automatic error handling."""
@@ -131,6 +129,7 @@ def example_error_handling() -> None:
 
     class UserServiceError(FoundationError):
         """Custom exception for user service operations."""
+
         error_code = "USER_SERVICE_ERROR"
 
         def __init__(self, message: str, user_id: str | None = None):
@@ -142,7 +141,7 @@ def example_error_handling() -> None:
         if action == "delete_admin":
             raise UserServiceError(
                 f"Cannot delete admin user: {user_id}",
-                user_id=user_id
+                user_id=user_id,
             )
         return {"user_id": user_id, "action": action, "status": "completed"}
 
@@ -158,7 +157,7 @@ def example_error_handling() -> None:
             error_context=error_context,
             domain="user_service",
             action="delete_user",
-            status="error"
+            status="error",
         )
 
     # Example 4: Retry Patterns with Foundation
@@ -171,7 +170,7 @@ def example_error_handling() -> None:
         NetworkError,
         max_attempts=3,
         base_delay=0.1,
-        backoff=BackoffStrategy.EXPONENTIAL
+        backoff=BackoffStrategy.EXPONENTIAL,
     )
     def unreliable_api_call() -> dict[str, str]:
         """Simulate an unreliable API call."""
@@ -221,7 +220,7 @@ def example_error_handling() -> None:
 
     @fallback(
         lambda: {"source": "cache", "data": "cached_response"},
-        lambda: {"source": "default", "data": "default_response"}
+        lambda: {"source": "default", "data": "default_response"},
     )
     def get_data_with_fallback() -> dict[str, str]:
         """Get data with multiple fallback strategies."""
@@ -241,7 +240,7 @@ def example_error_handling() -> None:
             "operation_id": "op_12345",
             "user_id": "user_789",
             "request_id": "req_abcdef",
-            "timestamp": "2024-01-15T10:30:00Z"
+            "timestamp": "2024-01-15T10:30:00Z",
         }
 
         try:
@@ -258,7 +257,7 @@ def example_error_handling() -> None:
                 **operation_context,
                 domain="data_access",
                 action="fetch_resource",
-                status="error"
+                status="error",
             )
 
     logger.info("Testing error context enrichment")
@@ -269,7 +268,7 @@ def example_error_handling() -> None:
         "Error handling demonstration completed",
         domain="examples",
         action="demonstrate_error_handling",
-        status="complete"
+        status="complete",
     )
 
 

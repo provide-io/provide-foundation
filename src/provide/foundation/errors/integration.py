@@ -18,6 +18,7 @@ class IntegrationError(FoundationError):
     Examples:
         >>> raise IntegrationError("API call failed")
         >>> raise IntegrationError("Auth failed", service="github", status_code=401)
+
     """
 
     def __init__(
@@ -53,6 +54,7 @@ class NetworkError(IntegrationError):
     Examples:
         >>> raise NetworkError("Connection refused")
         >>> raise NetworkError("DNS resolution failed", host="api.example.com")
+
     """
 
     def __init__(
@@ -85,6 +87,7 @@ class TimeoutError(IntegrationError):
     Examples:
         >>> raise TimeoutError("Request timed out")
         >>> raise TimeoutError("Operation exceeded limit", timeout_seconds=30, elapsed_seconds=31.5)
+
     """
 
     def __init__(

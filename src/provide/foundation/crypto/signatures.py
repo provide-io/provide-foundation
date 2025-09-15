@@ -23,7 +23,7 @@ def _require_crypto() -> None:
     if not _HAS_CRYPTO:
         raise ImportError(
             "Cryptography features require optional dependencies. "
-            "Install with: pip install 'provide-foundation[crypto]'"
+            "Install with: pip install 'provide-foundation[crypto]'",
         )
 
 
@@ -34,6 +34,7 @@ def generate_ed25519_keypair() -> tuple[bytes, bytes]:
         tuple: (private_key_bytes, public_key_bytes)
             - private_key_bytes: 32-byte Ed25519 private key seed
             - public_key_bytes: 32-byte Ed25519 public key
+
     """
     _require_crypto()
     logger.debug("🔐 Generating Ed25519 key pair")
@@ -65,6 +66,7 @@ def sign_data(data: bytes, private_key: bytes) -> bytes:
 
     Raises:
         ValueError: If private key is wrong size
+
     """
     _require_crypto()
     if len(private_key) != ED25519_PRIVATE_KEY_SIZE:
@@ -95,6 +97,7 @@ def verify_signature(data: bytes, signature: bytes, public_key: bytes) -> bool:
 
     Returns:
         bool: True if signature is valid, False otherwise
+
     """
     _require_crypto()
     if len(signature) != ED25519_SIGNATURE_SIZE:
@@ -103,7 +106,7 @@ def verify_signature(data: bytes, signature: bytes, public_key: bytes) -> bool:
 
     if len(public_key) != ED25519_PUBLIC_KEY_SIZE:
         logger.warning(
-            f"❌ Invalid public key size: expected {ED25519_PUBLIC_KEY_SIZE}, got {len(public_key)}"
+            f"❌ Invalid public key size: expected {ED25519_PUBLIC_KEY_SIZE}, got {len(public_key)}",
         )
         return False
 
@@ -130,6 +133,7 @@ def generate_signing_keypair() -> tuple[bytes, bytes]:
 
     Returns:
         tuple: (private_key_bytes, public_key_bytes)
+
     """
     _require_crypto()
     return generate_ed25519_keypair()

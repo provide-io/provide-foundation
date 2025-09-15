@@ -47,7 +47,6 @@ class TestCompleteCliIntegration:
         def database(ctx: CLIContext) -> None:
             """Database management commands."""
             # No need to re-configure logging, it's inherited via context.
-            pass
 
         @database.command()
         @pass_context
@@ -69,11 +68,10 @@ class TestCompleteCliIntegration:
             logger.debug("Checking status")
             if ctx.json_output:
                 click.echo(json.dumps({"status": "healthy", "uptime": 3600}))
+            elif not ctx.no_emoji:
+                click.echo("🟢 Application is healthy")
             else:
-                if not ctx.no_emoji:
-                    click.echo("🟢 Application is healthy")
-                else:
-                    click.echo("Application is healthy")
+                click.echo("Application is healthy")
 
         return cli
 
@@ -237,7 +235,7 @@ class TestLoggingIntegration:
 
             runner = CliTestRunner()
             result = runner.invoke(
-                cmd, ["--log-file", str(log_file), "--log-level", "INFO"]
+                cmd, ["--log-file", str(log_file), "--log-level", "INFO"],
             )
             assert result.exit_code == 0
             assert "Log file test successful" in result.output
