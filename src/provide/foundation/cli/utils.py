@@ -1,10 +1,13 @@
 """Common CLI utilities for output, logging, and testing."""
 
+from __future__ import annotations
+
 from typing import Any
 
 import click
 from click.testing import CliRunner, Result
 
+from provide.foundation import get_hub
 from provide.foundation.console.output import perr, pout
 from provide.foundation.context import CLIContext
 from provide.foundation.logger import (
@@ -12,7 +15,6 @@ from provide.foundation.logger import (
     TelemetryConfig,
     get_logger,
 )
-from provide.foundation import get_hub
 
 log = get_logger(__name__)
 
@@ -164,7 +166,7 @@ class CliTestRunner:
             **kwargs,
         )
 
-    def isolated_filesystem(self):
+    def isolated_filesystem(self) -> object:
         """Context manager for isolated filesystem.
         """
         return self.runner.isolated_filesystem()

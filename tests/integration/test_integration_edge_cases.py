@@ -19,8 +19,8 @@ import pytest
 from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
-    logger,  # This is the global FoundationLogger instance
     get_hub,
+    logger,  # This is the global FoundationLogger instance
 )
 
 

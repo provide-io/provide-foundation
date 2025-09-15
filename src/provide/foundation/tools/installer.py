@@ -153,7 +153,7 @@ class ToolInstaller:
                 if member.islnk() or member.issym():
                     # Check that symlinks don't escape extraction directory
                     link_path = Path(dest) / member.name
-                    target = Path(member.linkname) if member.islnk() else Path(member.linkname)
+                    target = Path(member.linkname)
                     if not target.is_absolute():
                         target = link_path.parent / target
                     try:

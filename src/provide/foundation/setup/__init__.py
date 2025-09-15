@@ -10,6 +10,7 @@ orchestrating logging, tracing, and other subsystems.
 from provide.foundation.logger.config import TelemetryConfig
 from provide.foundation.logger.setup import internal_setup
 from provide.foundation.logger.setup.coordinator import _PROVIDE_SETUP_LOCK
+
 # Import reset function from testkit (will be called by testkit internally)
 # from provide.testkit.logger import reset_foundation_setup_for_testing
 from provide.foundation.metrics.otel import (

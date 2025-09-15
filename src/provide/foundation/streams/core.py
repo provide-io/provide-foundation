@@ -9,8 +9,6 @@ import sys
 import threading
 from typing import TextIO
 
-from provide.foundation.streams.config import get_stream_config
-
 _PROVIDE_LOG_STREAM: TextIO = sys.stderr
 _LOG_FILE_HANDLE: TextIO | None = None
 _STREAM_LOCK = threading.Lock()

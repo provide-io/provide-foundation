@@ -300,8 +300,10 @@ class TestFactoryFunctions:
         """Test default_module_levels factory."""
         result = default_module_levels()
         assert isinstance(result, dict)
-        assert len(result) == 0
-        assert result == {}
+
+        # Should include asyncio suppression by default
+        assert "asyncio" in result
+        assert result["asyncio"] == "INFO"
 
         # Each call should return a new instance
         result1 = default_module_levels()

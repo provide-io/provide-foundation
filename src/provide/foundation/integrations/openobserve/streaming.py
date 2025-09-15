@@ -161,8 +161,7 @@ def stream_search_http2(
                         if isinstance(data, dict):
                             if "hits" in data:
                                 # Batch of results
-                                for hit in data["hits"]:
-                                    yield hit
+                                yield from data["hits"]
                             else:
                                 # Single result
                                 yield data
@@ -220,8 +219,7 @@ def tail_logs(
     response = client.search(sql=sql, start_time="-1h")
 
     # Yield initial logs in reverse order (oldest first)
-    for hit in reversed(response.hits):
-        yield hit
+    yield from reversed(response.hits)
 
     # If follow mode, continue streaming
     if follow:
@@ -235,9 +233,8 @@ def tail_logs(
         stream_sql = f"SELECT * FROM {stream} {where_clause} ORDER BY _timestamp ASC"
 
         # Stream new logs
-        for log_entry in stream_logs(
+        yield from stream_logs(
             sql=stream_sql,
             start_time=last_timestamp + 1,
             client=client,
-        ):
-            yield log_entry
+        )

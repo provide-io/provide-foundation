@@ -24,8 +24,6 @@ from provide.foundation.hub.components import ComponentInfo
 from provide.foundation.hub.registry import Registry, get_command_registry
 
 
-
-
 class CoreHub:
     """Core hub for managing components and commands.
 

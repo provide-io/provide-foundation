@@ -88,15 +88,15 @@ class TestStreamsCoverage:
         mock_logger = Mock()
 
         # Mock the logger module import
-        with patch.dict("sys.modules", {"provide.foundation.logger.config": Mock()}):
-            mock_config_module = sys.modules["provide.foundation.logger.config"]
-            mock_config_module._get_config_logger = Mock(return_value=mock_logger)
+        with patch.dict("sys.modules", {"provide.foundation.logger.config.base": Mock()}):
+            mock_config_module = sys.modules["provide.foundation.logger.config.base"]
+            mock_config_module.get_config_logger = Mock(return_value=mock_logger)
 
             stream = get_foundation_log_stream("invalid_setting")
 
             # Should log warning and return stderr
             assert stream is sys.stderr
-            mock_config_module._get_config_logger.assert_called_once()
+            mock_config_module.get_config_logger.assert_called_once()
             mock_logger.warning.assert_called_once()
 
             # Check warning message content

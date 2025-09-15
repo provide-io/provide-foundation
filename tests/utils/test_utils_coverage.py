@@ -6,7 +6,7 @@ from typing import Any
 
 from attrs import define, field, fields
 
-from provide.foundation import LoggingConfig, TelemetryConfig, logger, get_hub
+from provide.foundation import LoggingConfig, TelemetryConfig, get_hub, logger
 from provide.foundation.utils import timed_block
 from provide.foundation.utils.formatting import format_table, to_camel_case
 from provide.foundation.utils.parsing import auto_parse, parse_typed_value

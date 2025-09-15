@@ -17,7 +17,7 @@ from provide.testkit import (
     set_log_stream_for_testing,
 )
 
-from provide.foundation import LoggingConfig, TelemetryConfig, logger, get_hub
+from provide.foundation import LoggingConfig, TelemetryConfig, get_hub, logger
 
 
 @contextmanager

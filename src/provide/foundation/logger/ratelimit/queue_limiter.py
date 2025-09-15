@@ -170,7 +170,7 @@ class QueuedRateLimiter:
                 "overflow_policy": self.overflow_policy,
             }
 
-    def shutdown(self):
+    def shutdown(self) -> None:
         """Shutdown the worker thread."""
         self.running = False
         if self.worker_thread.is_alive():
