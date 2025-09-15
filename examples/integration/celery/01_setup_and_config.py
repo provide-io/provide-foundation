@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Celery Integration - Setup and Configuration
+"""Celery Integration - Setup and Configuration
 
 This module contains the core Celery app setup, configuration, and
 telemetry initialization for the provide.foundation Celery integration example.
@@ -51,9 +50,9 @@ def setup_celery_logging():
                 "celery.beat": "INFO",
                 "celery.app.trace": "INFO",
                 "billiard": "WARNING",
-                "kombu": "WARNING"
-            }
-        )
+                "kombu": "WARNING",
+            },
+        ),
     )
     setup_telemetry(config)
 
@@ -68,31 +67,31 @@ if not CELERY_AVAILABLE:
 setup_celery_logging()
 
 # Create Celery app with filesystem backend
-app = Celery('celery_foundation_example')
+app = Celery("celery_foundation_example")
 
 # Setup filesystem directories
 temp_dir = Path("/tmp/celery_foundation")
 temp_dir.mkdir(exist_ok=True)
 
 # Create required directories for filesystem transport
-(temp_dir / 'out').mkdir(exist_ok=True)
-(temp_dir / 'processed').mkdir(exist_ok=True)
-(temp_dir / 'results').mkdir(exist_ok=True)
+(temp_dir / "out").mkdir(exist_ok=True)
+(temp_dir / "processed").mkdir(exist_ok=True)
+(temp_dir / "results").mkdir(exist_ok=True)
 
 app.conf.update(
-    broker_url='filesystem://',
+    broker_url="filesystem://",
     broker_transport_options={
-        'data_folder_in': str(temp_dir / 'out'),
-        'data_folder_out': str(temp_dir / 'out'),
-        'data_folder_processed': str(temp_dir / 'processed'),
+        "data_folder_in": str(temp_dir / "out"),
+        "data_folder_out": str(temp_dir / "out"),
+        "data_folder_processed": str(temp_dir / "processed"),
     },
-    result_backend=f'file://{temp_dir}/results',
+    result_backend=f"file://{temp_dir}/results",
     task_always_eager=False,  # Use actual worker pool
     task_eager_propagates=True,
-    task_serializer='json',
-    accept_content=['json'],
-    result_serializer='json',
-    timezone='UTC',
+    task_serializer="json",
+    accept_content=["json"],
+    result_serializer="json",
+    timezone="UTC",
     enable_utc=True,
     # Task execution limits
     task_soft_time_limit=60,
@@ -125,7 +124,7 @@ class CeleryTaskLogger:
             args_preview=str(args)[:200] if args else None,
             kwargs_preview=str(kwargs)[:200] if kwargs else None,
             queue="default",
-            worker_hostname=app.conf.get('worker_hostname', 'unknown')
+            worker_hostname=app.conf.get("worker_hostname", "unknown"),
         )
 
     def log_task_progress(self, task_id: str, current: int, total: int, message: str = ""):
@@ -137,7 +136,7 @@ class CeleryTaskLogger:
             current=current,
             total=total,
             progress_pct=progress_pct,
-            message=message
+            message=message,
         )
 
     def log_task_success(self, task_id: str, result, duration: float, metrics_tracker):
@@ -149,7 +148,7 @@ class CeleryTaskLogger:
             duration_ms=round(duration * 1000, 2),
             result_type=type(result).__name__,
             success=True,
-            total_executions=metrics_tracker.task_counts[self.task_name]
+            total_executions=metrics_tracker.task_counts[self.task_name],
         )
 
     def log_task_failure(self, task_id: str, error: Exception, duration: float, metrics_tracker):
@@ -162,7 +161,7 @@ class CeleryTaskLogger:
             error_type=type(error).__name__,
             error_message=str(error),
             success=False,
-            total_errors=metrics_tracker.error_counts[self.task_name]
+            total_errors=metrics_tracker.error_counts[self.task_name],
         )
 
     def log_task_retry(self, task_id: str, exc: Exception, countdown: int, retry_count: int, metrics_tracker):
@@ -175,11 +174,11 @@ class CeleryTaskLogger:
             countdown_seconds=countdown,
             error_type=type(exc).__name__,
             error_message=str(exc),
-            total_retries=metrics_tracker.retry_counts[self.task_name]
+            total_retries=metrics_tracker.retry_counts[self.task_name],
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pout(f"🔧 Celery app configured: {app.main}")
     pout(f"📊 Broker: {app.conf.broker_url}")
     pout(f"💾 Result backend: {app.conf.result_backend}")

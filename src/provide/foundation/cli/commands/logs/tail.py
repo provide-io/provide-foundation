@@ -1,5 +1,4 @@
-"""
-Tail logs command for Foundation CLI.
+"""Tail logs command for Foundation CLI.
 """
 
 try:
@@ -51,7 +50,7 @@ if _HAS_CLICK:
     )
     @click.pass_context
     def tail_command(
-        ctx: click.Context, stream: str, filter_sql: str | None, lines: int, follow: bool, format: str
+        ctx: click.Context, stream: str, filter_sql: str | None, lines: int, follow: bool, format: str,
     ) -> int | None:
         """Tail logs in real-time (like 'tail -f').
 
@@ -70,6 +69,7 @@ if _HAS_CLICK:
 
             # Tail with JSON output
             foundation logs tail --format json
+
         """
         from provide.foundation.integrations.openobserve import (
             format_output,
@@ -109,5 +109,5 @@ else:
     def tail_command(*args: object, **kwargs: object) -> None:
         """Tail command stub when click is not available."""
         raise ImportError(
-            "CLI commands require optional dependencies. Install with: pip install 'provide-foundation[cli]'"
+            "CLI commands require optional dependencies. Install with: pip install 'provide-foundation[cli]'",
         )

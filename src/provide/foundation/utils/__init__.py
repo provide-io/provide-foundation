@@ -1,5 +1,4 @@
-"""
-Utility modules for provide.foundation.
+"""Utility modules for provide.foundation.
 
 Common utilities that can be used across the foundation and by other packages.
 """

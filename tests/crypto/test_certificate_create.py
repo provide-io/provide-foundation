@@ -106,20 +106,20 @@ def test_certificate_base_create_unsupported_key_type_str(mocker):
         "not_valid_after": now + timedelta(days=30),
     }
     mock_logger_error = mocker.patch(
-        "provide.foundation.crypto.certificates.base.logger.error", new=MagicMock()
+        "provide.foundation.crypto.certificates.base.logger.error", new=MagicMock(),
     )
 
     with pytest.raises(CertificateError) as excinfo:
         CertificateBase.create(config)  # type: ignore # Deliberately passing invalid type for key_type
 
     assert "Internal Error: Unsupported key type: unsupported_key_type" in str(
-        excinfo.value
+        excinfo.value,
     )
     mock_logger_error.assert_called_once()
     args, kwargs = mock_logger_error.call_args
     assert "CertificateBase.create: Failed" in args[0]
     assert "Unsupported key type: unsupported_key_type" in kwargs.get("extra", {}).get(
-        "error", ""
+        "error", "",
     )
 
 
@@ -127,12 +127,12 @@ def test_certificate_base_create_unsupported_key_type_str(mocker):
 async def test_certificate_init_invalid_ecdsa_curve(mocker):
     """Test Certificate instantiation with an invalid ecdsa_curve string."""
     mock_logger_error = mocker.patch(
-        "provide.foundation.crypto.certificates.generator.logger.error", new=MagicMock()
+        "provide.foundation.crypto.certificates.generator.logger.error", new=MagicMock(),
     )
 
     with pytest.raises(CertificateError) as excinfo:
         Certificate(
-            generate_keypair=True, key_type="ecdsa", ecdsa_curve="invalid_curve_name"
+            generate_keypair=True, key_type="ecdsa", ecdsa_curve="invalid_curve_name",
         )
 
     # The ValueError from bad curve is wrapped in CertificateError
@@ -142,7 +142,7 @@ async def test_certificate_init_invalid_ecdsa_curve(mocker):
     args, kwargs = mock_logger_error.call_args
     assert "Failed to generate certificate" in args[0]
     assert "Unsupported ECDSA curve: invalid_curve_name" in kwargs.get("extra", {}).get(
-        "error", ""
+        "error", "",
     )
 
 

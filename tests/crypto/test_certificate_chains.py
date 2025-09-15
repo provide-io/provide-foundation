@@ -72,7 +72,7 @@ def test_certificate_extensions(client_cert) -> None:
 
     # Test basic constraints
     bc = x509_cert.extensions.get_extension_for_oid(
-        x509.oid.ExtensionOID.BASIC_CONSTRAINTS
+        x509.oid.ExtensionOID.BASIC_CONSTRAINTS,
     )
     assert bc.value.ca in [True, False]
 
@@ -86,7 +86,7 @@ def test_certificate_extensions(client_cert) -> None:
     # Test subject alternative names if present
     try:
         san = x509_cert.extensions.get_extension_for_oid(
-            x509.oid.ExtensionOID.SUBJECT_ALTERNATIVE_NAME
+            x509.oid.ExtensionOID.SUBJECT_ALTERNATIVE_NAME,
         )
         assert all(
             isinstance(name, (x509.DNSName, x509.IPAddress)) for name in san.value
@@ -145,14 +145,14 @@ async def test_certificate_invalid_trust_chain_signature() -> None:
 
     # Create a self-trusted CA. Ensure key_type is ecdsa for the mock to apply.
     ca_cert = Certificate(
-        generate_keypair=True, common_name="Test Root CA", key_type="ecdsa"
+        generate_keypair=True, common_name="Test Root CA", key_type="ecdsa",
     )
     ca_cert.trust_chain = [ca_cert]  # CA trusts itself
 
     # Create an end-entity certificate that will be checked against the CA.
     # Ensure key_type is ecdsa.
     cert_to_check = Certificate(
-        generate_keypair=True, common_name="End Entity Cert", key_type="ecdsa"
+        generate_keypair=True, common_name="End Entity Cert", key_type="ecdsa",
     )
 
     # To ensure _validate_signature is reached and its issuer check passes:

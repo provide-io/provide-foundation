@@ -61,7 +61,7 @@ async def test_certificate_public_key(client_cert) -> None:
     """Ensure the public key is correctly loaded."""
     assert client_cert.public_key, "Certificate public key should not be empty"
     assert isinstance(
-        client_cert.public_key, (rsa.RSAPublicKey, ec.EllipticCurvePublicKey)
+        client_cert.public_key, (rsa.RSAPublicKey, ec.EllipticCurvePublicKey),
     ), "Public key should be RSA or EC"
 
 
@@ -109,7 +109,7 @@ async def test_certificate_basic_constraints(client_cert) -> None:
 
     try:
         ext = client_cert._cert.extensions.get_extension_for_oid(
-            ExtensionOID.BASIC_CONSTRAINTS
+            ExtensionOID.BASIC_CONSTRAINTS,
         )
         assert ext.value.ca in [True, False], (
             "Basic Constraints CA flag should be boolean"
@@ -139,7 +139,7 @@ async def test_certificate_extended_key_usage(client_cert) -> None:
 
     try:
         ext = client_cert._cert.extensions.get_extension_for_oid(
-            ExtensionOID.EXTENDED_KEY_USAGE
+            ExtensionOID.EXTENDED_KEY_USAGE,
         )
         assert len(ext.value) >= 1, "Extended Key Usage should have at least one value"
     except Exception:
@@ -183,7 +183,7 @@ async def test_is_ca_extension_not_found() -> None:
     # Create a mock certificate that raises ExtensionNotFound
     mock_cert = mock.MagicMock()
     mock_cert.extensions.get_extension_for_oid.side_effect = x509.ExtensionNotFound(
-        "Basic Constraints", x509.oid.ExtensionOID.BASIC_CONSTRAINTS
+        "Basic Constraints", x509.oid.ExtensionOID.BASIC_CONSTRAINTS,
     )
 
     # Replace the _cert attribute with our mock
@@ -202,18 +202,18 @@ async def test_is_ca_extension_not_found_logs_debug(mocker):
     # Mock the internal _cert object's extensions attribute
     mock_extensions = mocker.MagicMock()
     mock_extensions.get_extension_for_oid.side_effect = x509.ExtensionNotFound(
-        "Basic Constraints not found", x509.oid.ExtensionOID.BASIC_CONSTRAINTS
+        "Basic Constraints not found", x509.oid.ExtensionOID.BASIC_CONSTRAINTS,
     )
 
     # Patch the logger from the certificate module
     mock_logger_debug = mocker.patch(
-        "provide.foundation.crypto.certificates.certificate.logger.debug"
+        "provide.foundation.crypto.certificates.certificate.logger.debug",
     )
 
     # Temporarily replace the _cert.extensions on the instance
     # This is a bit invasive, but necessary to simulate the condition for the property
     cert_instance._cert = mocker.MagicMock(
-        spec=x509.Certificate
+        spec=x509.Certificate,
     )  # Replace _cert with a mock
     cert_instance._cert.extensions = (
         mock_extensions  # Assign mocked extensions to the mocked _cert
@@ -222,7 +222,7 @@ async def test_is_ca_extension_not_found_logs_debug(mocker):
     assert cert_instance.is_ca is False  # is_ca should return False
 
     mock_logger_debug.assert_called_once_with(
-        "📜🔍⚠️ is_ca: Basic Constraints extension not found"
+        "📜🔍⚠️ is_ca: Basic Constraints extension not found",
     )
 
     # Restore original extensions if necessary, though for this test it's fine as instance is local

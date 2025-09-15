@@ -23,8 +23,7 @@ from provide.foundation import (  # noqa: E402
 
 
 def example_4_das_logging() -> None:
-    """
-    Example 4: Demonstrates Domain-Action-Status (DAS) structured logging.
+    """Example 4: Demonstrates Domain-Action-Status (DAS) structured logging.
 
     DAS logging provides semantic meaning to log events by categorizing them
     with `domain`, `action`, and `status` keys, which are then visually
@@ -33,7 +32,7 @@ def example_4_das_logging() -> None:
     pout("\n" + "=" * 60)
     pout("🏗️ Example 4: Domain-Action-Status (DAS) Logging")
     pout(
-        " Demonstrates: Using domain, action, status for semantic, emoji-enhanced logs."
+        " Demonstrates: Using domain, action, status for semantic, emoji-enhanced logs.",
     )
     pout("=" * 60)
 
@@ -42,9 +41,9 @@ def example_4_das_logging() -> None:
         TelemetryConfig(
             logging=LoggingConfig(
                 das_emoji_prefix_enabled=True,
-                default_level="INFO"
-            )
-        )
+                default_level="INFO",
+            ),
+        ),
     )
 
     # Authentication events

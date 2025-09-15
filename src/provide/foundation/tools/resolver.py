@@ -1,5 +1,4 @@
-"""
-Version resolution for tool management.
+"""Version resolution for tool management.
 
 Provides sophisticated version resolution including latest,
 semver ranges, wildcards, and pre-release handling.
@@ -16,12 +15,10 @@ log = get_logger(__name__)
 class ResolutionError(FoundationError):
     """Raised when version resolution fails."""
 
-    pass
 
 
 class VersionResolver:
-    """
-    Resolve version specifications to concrete versions.
+    """Resolve version specifications to concrete versions.
 
     Supports:
     - "latest": Most recent stable version
@@ -33,8 +30,7 @@ class VersionResolver:
     """
 
     def resolve(self, spec: str, available: list[str]) -> str | None:
-        """
-        Resolve a version specification to a concrete version.
+        """Resolve a version specification to a concrete version.
 
         Args:
             spec: Version specification.
@@ -42,6 +38,7 @@ class VersionResolver:
 
         Returns:
             Resolved version string, or None if not found.
+
         """
         if not available:
             return None
@@ -51,36 +48,36 @@ class VersionResolver:
         # Handle special keywords
         if spec == "latest":
             return self.get_latest_stable(available)
-        elif spec == "latest-beta" or spec == "latest-prerelease":
+        if spec == "latest-beta" or spec == "latest-prerelease":
             return self.get_latest_prerelease(available)
-        elif spec == "latest-any":
+        if spec == "latest-any":
             return self.get_latest_any(available)
 
         # Handle ranges
-        elif spec.startswith("~"):
+        if spec.startswith("~"):
             return self.resolve_tilde(spec[1:], available)
-        elif spec.startswith("^"):
+        if spec.startswith("^"):
             return self.resolve_caret(spec[1:], available)
 
         # Handle wildcards
-        elif "*" in spec:
+        if "*" in spec:
             return self.resolve_wildcard(spec, available)
 
         # Exact match
-        elif spec in available:
+        if spec in available:
             return spec
 
         return None
 
     def get_latest_stable(self, versions: list[str]) -> str | None:
-        """
-        Get latest stable version (no pre-release).
+        """Get latest stable version (no pre-release).
 
         Args:
             versions: List of available versions.
 
         Returns:
             Latest stable version, or None if no stable versions.
+
         """
         stable = [v for v in versions if not self.is_prerelease(v)]
         if not stable:
@@ -89,14 +86,14 @@ class VersionResolver:
         return self.sort_versions(stable)[-1]
 
     def get_latest_prerelease(self, versions: list[str]) -> str | None:
-        """
-        Get latest pre-release version.
+        """Get latest pre-release version.
 
         Args:
             versions: List of available versions.
 
         Returns:
             Latest pre-release version, or None if no pre-releases.
+
         """
         prerelease = [v for v in versions if self.is_prerelease(v)]
         if not prerelease:
@@ -105,14 +102,14 @@ class VersionResolver:
         return self.sort_versions(prerelease)[-1]
 
     def get_latest_any(self, versions: list[str]) -> str | None:
-        """
-        Get latest version (including pre-releases).
+        """Get latest version (including pre-releases).
 
         Args:
             versions: List of available versions.
 
         Returns:
             Latest version, or None if list is empty.
+
         """
         if not versions:
             return None
@@ -120,14 +117,14 @@ class VersionResolver:
         return self.sort_versions(versions)[-1]
 
     def is_prerelease(self, version: str) -> bool:
-        """
-        Check if version is a pre-release.
+        """Check if version is a pre-release.
 
         Args:
             version: Version string.
 
         Returns:
             True if version appears to be pre-release.
+
         """
         # Common pre-release indicators
         prerelease_patterns = [
@@ -152,8 +149,7 @@ class VersionResolver:
         return False
 
     def resolve_tilde(self, base: str, available: list[str]) -> str | None:
-        """
-        Resolve tilde range (~1.2.3 means >=1.2.3 <1.3.0).
+        """Resolve tilde range (~1.2.3 means >=1.2.3 <1.3.0).
 
         Args:
             base: Base version without tilde.
@@ -161,6 +157,7 @@ class VersionResolver:
 
         Returns:
             Best matching version, or None if no match.
+
         """
         try:
             parts = self.parse_version(base)
@@ -190,8 +187,7 @@ class VersionResolver:
         return None
 
     def resolve_caret(self, base: str, available: list[str]) -> str | None:
-        """
-        Resolve caret range (^1.2.3 means >=1.2.3 <2.0.0).
+        """Resolve caret range (^1.2.3 means >=1.2.3 <2.0.0).
 
         Args:
             base: Base version without caret.
@@ -199,6 +195,7 @@ class VersionResolver:
 
         Returns:
             Best matching version, or None if no match.
+
         """
         try:
             parts = self.parse_version(base)
@@ -224,8 +221,7 @@ class VersionResolver:
         return None
 
     def resolve_wildcard(self, pattern: str, available: list[str]) -> str | None:
-        """
-        Resolve wildcard pattern (1.2.* matches any 1.2.x).
+        """Resolve wildcard pattern (1.2.* matches any 1.2.x).
 
         Args:
             pattern: Version pattern with wildcards.
@@ -233,6 +229,7 @@ class VersionResolver:
 
         Returns:
             Best matching version, or None if no match.
+
         """
         # Convert wildcard to regex
         regex_pattern = pattern.replace(".", r"\.")
@@ -252,14 +249,14 @@ class VersionResolver:
         return None
 
     def parse_version(self, version: str) -> list[int]:
-        """
-        Parse version string into numeric components.
+        """Parse version string into numeric components.
 
         Args:
             version: Version string.
 
         Returns:
             List of numeric version components.
+
         """
         # Extract just the numeric version part
         match = re.match(r"^v?(\d+(?:\.\d+)*)", version)
@@ -278,8 +275,7 @@ class VersionResolver:
         return parts
 
     def compare_versions(self, v1: str, v2: str) -> int:
-        """
-        Compare two versions.
+        """Compare two versions.
 
         Args:
             v1: First version.
@@ -287,6 +283,7 @@ class VersionResolver:
 
         Returns:
             -1 if v1 < v2, 0 if equal, 1 if v1 > v2.
+
         """
         parts1 = self.parse_version(v1)
         parts2 = self.parse_version(v2)
@@ -299,20 +296,20 @@ class VersionResolver:
         for p1, p2 in zip(parts1, parts2, strict=False):
             if p1 < p2:
                 return -1
-            elif p1 > p2:
+            if p1 > p2:
                 return 1
 
         return 0
 
     def sort_versions(self, versions: list[str]) -> list[str]:
-        """
-        Sort versions in ascending order.
+        """Sort versions in ascending order.
 
         Args:
             versions: List of version strings.
 
         Returns:
             Sorted list of versions.
+
         """
         return sorted(
             versions,

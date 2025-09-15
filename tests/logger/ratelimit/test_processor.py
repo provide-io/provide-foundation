@@ -45,7 +45,7 @@ class TestRateLimiterProcessor:
 
     @patch("provide.foundation.logger.get_logger")
     def test_rate_limiter_processor_allows_when_no_limits(
-        self, mock_get_logger
+        self, mock_get_logger,
     ) -> None:
         """Test processor allows events when no rate limits are configured."""
         # Mock logger to prevent actual logging during summary
@@ -53,7 +53,7 @@ class TestRateLimiterProcessor:
         mock_get_logger.return_value = mock_logger
 
         processor = RateLimiterProcessor(
-            summary_interval_seconds=100.0
+            summary_interval_seconds=100.0,
         )  # Long interval to avoid summary
 
         event_dict = {
@@ -79,7 +79,7 @@ class TestRateLimiterProcessor:
 
         # Configure rate limiter with very restrictive limits
         processor.rate_limiter.configure(
-            per_logger_rates={"test.logger": (0.1, 1.0)}  # Very low rate, capacity=1.0
+            per_logger_rates={"test.logger": (0.1, 1.0)},  # Very low rate, capacity=1.0
         )
 
         event_dict = {
@@ -98,7 +98,7 @@ class TestRateLimiterProcessor:
 
     @patch("provide.foundation.logger.get_logger")
     def test_rate_limiter_processor_emits_warning_on_limit(
-        self, mock_get_logger
+        self, mock_get_logger,
     ) -> None:
         """Test processor emits warning when rate limited."""
         mock_logger = MagicMock()
@@ -173,20 +173,20 @@ class TestRateLimiterProcessor:
 
     @patch("provide.foundation.logger.get_logger")
     def test_rate_limiter_processor_tracks_suppressed_counts(
-        self, mock_get_logger
+        self, mock_get_logger,
     ) -> None:
         """Test processor tracks suppressed message counts."""
         mock_logger = MagicMock()
         mock_get_logger.return_value = mock_logger
 
         processor = RateLimiterProcessor(
-            emit_warning_on_limit=False, summary_interval_seconds=100.0
+            emit_warning_on_limit=False, summary_interval_seconds=100.0,
         )
 
         processor.rate_limiter.configure(
             per_logger_rates={
-                "test.logger": (0.01, 1.0)
-            }  # Very slow refill: 0.01/sec, capacity 1
+                "test.logger": (0.01, 1.0),
+            },  # Very slow refill: 0.01/sec, capacity 1
         )
 
         event_dict = {
@@ -221,7 +221,7 @@ class TestRateLimiterProcessor:
             per_logger_rates={
                 "logger1": (0.01, 1.0),
                 "logger2": (10.0, 20.0),
-            }  # logger1 very slow refill
+            },  # logger1 very slow refill
         )
 
         event1 = {"event": "msg1", "level": "info", "logger_name": "logger1"}
@@ -273,8 +273,8 @@ class TestRateLimiterProcessor:
 
         processor.rate_limiter.configure(
             per_logger_rates={
-                "test.logger": (0.01, 1.0)
-            }  # Very slow refill: 0.01/sec, capacity 1
+                "test.logger": (0.01, 1.0),
+            },  # Very slow refill: 0.01/sec, capacity 1
         )
 
         event_dict = {
@@ -296,7 +296,7 @@ class TestRateLimiterProcessor:
         # Next call should trigger summary emission
         try:
             processor(
-                None, "info", event_dict.copy()
+                None, "info", event_dict.copy(),
             )  # This will be denied and should trigger summary
         except structlog.DropEvent:
             pass  # Expected
@@ -347,7 +347,7 @@ class TestRateLimiterProcessor:
 
     @patch("provide.foundation.logger.get_logger")
     def test_rate_limiter_processor_summary_exception_handling(
-        self, mock_get_logger
+        self, mock_get_logger,
     ) -> None:
         """Test processor handles exceptions during summary emission."""
         mock_get_logger.side_effect = Exception("Logger unavailable")
@@ -614,7 +614,7 @@ class TestRateLimiterProcessorIntegration:
     def test_processor_statistics_integration(self) -> None:
         """Test processor statistics are properly integrated."""
         processor = create_rate_limiter_processor(
-            per_logger_rates={"test.logger": (1.0, 2.0)}
+            per_logger_rates={"test.logger": (1.0, 2.0)},
         )
 
         event_dict = {

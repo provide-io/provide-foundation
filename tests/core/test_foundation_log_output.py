@@ -1,8 +1,7 @@
 #
 # tests/core/test_foundation_log_output.py
 #
-"""
-Tests for FOUNDATION_LOG_OUTPUT environment variable functionality.
+"""Tests for FOUNDATION_LOG_OUTPUT environment variable functionality.
 """
 
 import io
@@ -51,7 +50,7 @@ class TestFoundationLogOutputEnvironmentVariable:
             assert config.foundation_log_output == expected_value
 
     def test_foundation_log_output_invalid_value_raises_error(
-        self, monkeypatch
+        self, monkeypatch,
     ) -> None:
         """Test that invalid values raise ValueError (strict validation)."""
         monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "invalid_value")
@@ -78,7 +77,7 @@ class TestFoundationLogStreamUtility:
     def test_main_setting_with_provide_stream(self) -> None:
         """Test that main setting returns _PROVIDE_LOG_STREAM."""
         with patch(
-            "provide.foundation.streams.core._PROVIDE_LOG_STREAM"
+            "provide.foundation.streams.core._PROVIDE_LOG_STREAM",
         ) as mock_stream:
             mock_stream.__class__ = io.TextIOWrapper
             stream = get_foundation_log_stream("main")
@@ -96,7 +95,7 @@ class TestFoundationLogOutputIntegration:
     """Integration tests for FOUNDATION_LOG_OUTPUT affecting both core setup and config warnings."""
 
     def test_foundation_log_output_affects_both_loggers(
-        self, monkeypatch, capsys: CaptureFixture
+        self, monkeypatch, capsys: CaptureFixture,
     ) -> None:
         """Test that FOUNDATION_LOG_OUTPUT routing works for configuration."""
         monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "stdout")
@@ -113,7 +112,7 @@ class TestFoundationLogOutputIntegration:
         assert hasattr(config, "logging")
 
     def test_foundation_log_output_main_with_log_file(
-        self, monkeypatch, tmp_path, capsys: CaptureFixture
+        self, monkeypatch, tmp_path, capsys: CaptureFixture,
     ) -> None:
         """Test FOUNDATION_LOG_OUTPUT=main follows main log file destination."""
         log_file = tmp_path / "test.log"
@@ -141,7 +140,7 @@ class TestFoundationLogOutputIntegration:
         assert test_config.foundation_log_output == "main"
 
     def test_foundation_log_output_stderr_with_main_to_file(
-        self, monkeypatch, tmp_path, capsys: CaptureFixture
+        self, monkeypatch, tmp_path, capsys: CaptureFixture,
     ) -> None:
         """Test FOUNDATION_LOG_OUTPUT=stderr keeps foundation logs separate from main log file."""
         log_file = tmp_path / "test.log"

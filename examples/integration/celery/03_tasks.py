@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Celery Integration - Task Definitions
+"""Celery Integration - Task Definitions
 
 This module contains example Celery tasks that demonstrate real-world patterns
 with provide.foundation structured logging integration.
@@ -45,7 +44,7 @@ def process_payment(self, order_id: str, amount: float, payment_method: str) -> 
         order_id=order_id,
         amount=amount,
         payment_method=payment_method,
-        retry_count=self.request.retries
+        retry_count=self.request.retries,
     )
 
     try:
@@ -61,21 +60,21 @@ def process_payment(self, order_id: str, amount: float, payment_method: str) -> 
         task_logger.logger.info("payment_successful",
             order_id=order_id,
             transaction_id=transaction_id,
-            amount=amount
+            amount=amount,
         )
 
         return {
             "status": "success",
             "transaction_id": transaction_id,
             "amount": amount,
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.utcnow().isoformat(),
         }
 
     except ConnectionError as exc:
         task_logger.logger.warning("payment_gateway_error",
             order_id=order_id,
             error=str(exc),
-            will_retry=self.request.retries < self.max_retries
+            will_retry=self.request.retries < self.max_retries,
         )
         # Exponential backoff: 5, 10, 20 seconds
         countdown = 5 * (2 ** self.request.retries)
@@ -90,7 +89,7 @@ def generate_report(self, report_type: str, date_range: dict[str, str], user_id:
     task_logger.logger.info("report_generation_started",
         report_type=report_type,
         date_range=date_range,
-        user_id=user_id
+        user_id=user_id,
     )
 
     # Simulate report generation with progress updates
@@ -100,7 +99,7 @@ def generate_report(self, report_type: str, date_range: dict[str, str], user_id:
         "Processing records",
         "Calculating metrics",
         "Generating visualizations",
-        "Creating PDF"
+        "Creating PDF",
     ]
 
     for i, step in enumerate(steps, 1):
@@ -108,8 +107,8 @@ def generate_report(self, report_type: str, date_range: dict[str, str], user_id:
 
         # Update task state for real-time monitoring
         self.update_state(
-            state='PROGRESS',
-            meta={'current': i, 'total': total_steps, 'status': step}
+            state="PROGRESS",
+            meta={"current": i, "total": total_steps, "status": step},
         )
 
         # Simulate work
@@ -120,14 +119,14 @@ def generate_report(self, report_type: str, date_range: dict[str, str], user_id:
     task_logger.logger.info("report_generation_complete",
         report_type=report_type,
         report_url=report_url,
-        user_id=user_id
+        user_id=user_id,
     )
 
     return {
         "status": "complete",
         "report_url": report_url,
         "generated_at": datetime.utcnow().isoformat(),
-        "pages": random.randint(5, 20)
+        "pages": random.randint(5, 20),
     }
 
 
@@ -139,7 +138,7 @@ def send_notification(user_id: str, notification_type: str, payload: dict[str, A
     task_logger.logger.info("sending_notification",
         user_id=user_id,
         notification_type=notification_type,
-        channels=["email", "push", "sms"]
+        channels=["email", "push", "sms"],
     )
 
     results = {}
@@ -152,14 +151,14 @@ def send_notification(user_id: str, notification_type: str, payload: dict[str, A
             task_logger.logger.info(f"{channel}_notification_sent",
                 user_id=user_id,
                 channel=channel,
-                notification_type=notification_type
+                notification_type=notification_type,
             )
             results[channel] = {"status": "delivered", "timestamp": datetime.utcnow().isoformat()}
         else:
             task_logger.logger.warning(f"{channel}_notification_failed",
                 user_id=user_id,
                 channel=channel,
-                notification_type=notification_type
+                notification_type=notification_type,
             )
             results[channel] = {"status": "failed", "error": "Delivery failed"}
 
@@ -167,7 +166,7 @@ def send_notification(user_id: str, notification_type: str, payload: dict[str, A
         "user_id": user_id,
         "notification_type": notification_type,
         "delivery_results": results,
-        "success_count": sum(1 for r in results.values() if r["status"] == "delivered")
+        "success_count": sum(1 for r in results.values() if r["status"] == "delivered"),
     }
 
 
@@ -178,7 +177,7 @@ def process_batch_data(batch_id: str, items: list[dict[str, Any]]) -> dict[str, 
 
     task_logger.logger.info("batch_processing_started",
         batch_id=batch_id,
-        item_count=len(items)
+        item_count=len(items),
     )
 
     processed = []
@@ -194,7 +193,7 @@ def process_batch_data(batch_id: str, items: list[dict[str, Any]]) -> dict[str, 
             processed_item = {
                 **item,
                 "processed_at": datetime.utcnow().isoformat(),
-                "batch_id": batch_id
+                "batch_id": batch_id,
             }
             processed.append(processed_item)
 
@@ -202,7 +201,7 @@ def process_batch_data(batch_id: str, items: list[dict[str, Any]]) -> dict[str, 
             task_logger.logger.warning("batch_item_failed",
                 batch_id=batch_id,
                 item_index=i,
-                error=str(e)
+                error=str(e),
             )
             failed.append({"index": i, "error": str(e)})
 
@@ -211,7 +210,7 @@ def process_batch_data(batch_id: str, items: list[dict[str, Any]]) -> dict[str, 
         total_items=len(items),
         processed_count=len(processed),
         failed_count=len(failed),
-        success_rate=round(len(processed) / len(items) * 100, 1)
+        success_rate=round(len(processed) / len(items) * 100, 1),
     )
 
     return {
@@ -219,7 +218,7 @@ def process_batch_data(batch_id: str, items: list[dict[str, Any]]) -> dict[str, 
         "processed": len(processed),
         "failed": len(failed),
         "failed_items": failed,
-        "success_rate": round(len(processed) / len(items) * 100, 1)
+        "success_rate": round(len(processed) / len(items) * 100, 1),
     }
 
 
@@ -230,7 +229,7 @@ def cleanup_old_data(days_to_keep: int = 30) -> dict[str, Any]:
 
     task_logger.logger.info("cleanup_started",
         days_to_keep=days_to_keep,
-        cutoff_date=(datetime.utcnow() - timedelta(days=days_to_keep)).isoformat()
+        cutoff_date=(datetime.utcnow() - timedelta(days=days_to_keep)).isoformat(),
     )
 
     # Simulate cleanup of different data types
@@ -245,12 +244,12 @@ def cleanup_old_data(days_to_keep: int = 30) -> dict[str, Any]:
         task_logger.logger.info(f"cleaned_{data_type}",
             data_type=data_type,
             items_removed=cleaned,
-            space_freed_mb=round(size_mb, 2)
+            space_freed_mb=round(size_mb, 2),
         )
 
         cleanup_results[data_type] = {
             "items_removed": cleaned,
-            "space_freed_mb": round(size_mb, 2)
+            "space_freed_mb": round(size_mb, 2),
         }
 
     total_items = sum(r["items_removed"] for r in cleanup_results.values())
@@ -259,18 +258,18 @@ def cleanup_old_data(days_to_keep: int = 30) -> dict[str, Any]:
     task_logger.logger.info("cleanup_complete",
         total_items_removed=total_items,
         total_space_freed_mb=round(total_space, 2),
-        data_types_cleaned=len(data_types)
+        data_types_cleaned=len(data_types),
     )
 
     return {
         "status": "complete",
         "results": cleanup_results,
         "total_items_removed": total_items,
-        "total_space_freed_mb": round(total_space, 2)
+        "total_space_freed_mb": round(total_space, 2),
     }
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from provide.foundation import pout
 
     pout("🎯 Celery Tasks Available:")

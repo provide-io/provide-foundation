@@ -1,5 +1,4 @@
-"""
-Send logs command for Foundation CLI.
+"""Send logs command for Foundation CLI.
 """
 
 import json
@@ -186,6 +185,7 @@ if _HAS_CLICK:
 
             # Send with JSON attributes
             foundation logs send -m "Error occurred" -j '{"error_code": 500, "path": "/api/users"}'
+
         """
         # Get message from input
         final_message, error_code = _get_message_from_input(message)
@@ -205,5 +205,5 @@ else:
     def send_command(*args: object, **kwargs: object) -> NoReturn:
         """Send command stub when click is not available."""
         raise ImportError(
-            "CLI commands require optional dependencies. Install with: pip install 'provide-foundation[cli]'"
+            "CLI commands require optional dependencies. Install with: pip install 'provide-foundation[cli]'",
         )

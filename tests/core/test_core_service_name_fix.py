@@ -1,8 +1,7 @@
 #
 # test_service_name_fix.py
 #
-"""
-Test to verify the service name injection fix works correctly.
+"""Test to verify the service name injection fix works correctly.
 """
 
 import json
@@ -66,7 +65,7 @@ def test_service_name_injection_fix() -> None:
         json_lines = [
             line.strip()
             for line in output.strip().splitlines()
-            if line.strip().startswith('{')
+            if line.strip().startswith("{")
         ]
 
         if json_lines:

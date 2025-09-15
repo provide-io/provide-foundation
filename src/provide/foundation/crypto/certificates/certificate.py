@@ -90,7 +90,7 @@ class Certificate:
                 raise CertificateError("cert_pem_or_uri required when not generating")
 
             base, x509_cert, private_key, cert_pem, key_pem = load_certificate_from_pem(
-                self.cert_pem_or_uri, self.key_pem_or_uri
+                self.cert_pem_or_uri, self.key_pem_or_uri,
             )
             self._base = base
             self._cert = x509_cert

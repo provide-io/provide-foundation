@@ -1,5 +1,4 @@
-"""
-Tests for @retry decorator.
+"""Tests for @retry decorator.
 """
 
 import asyncio
@@ -64,10 +63,9 @@ class TestRetryDecoratorSync:
         def selective_retry(error_type):
             if error_type == "value":
                 raise ValueError("value error")
-            elif error_type == "type":
+            if error_type == "type":
                 raise TypeError("type error")
-            else:
-                raise RuntimeError("runtime error")
+            raise RuntimeError("runtime error")
 
         # Should retry ValueError
         with pytest.raises(ValueError):
@@ -86,7 +84,7 @@ class TestRetryDecoratorSync:
         policy = RetryPolicy(
             max_attempts=2,
             base_delay=0.01,
-            backoff=BackoffStrategy.FIXED
+            backoff=BackoffStrategy.FIXED,
         )
 
         attempt_count = 0
@@ -109,7 +107,7 @@ class TestRetryDecoratorSync:
 
         @retry(max_attempts=2, base_delay=0.01)
         def func_with_args(a, b, c=None):
-            if not hasattr(func_with_args, 'called'):
+            if not hasattr(func_with_args, "called"):
                 func_with_args.called = True
                 raise ValueError("first")
             return f"{a}-{b}-{c}"
@@ -123,7 +121,7 @@ class TestRetryDecoratorSync:
 
         @retry(max_attempts=2, base_delay=0.01, on_retry=callback)
         def func_with_callback():
-            if not hasattr(func_with_callback, 'called'):
+            if not hasattr(func_with_callback, "called"):
                 func_with_callback.called = True
                 raise ValueError("fail")
             return "success"
@@ -144,7 +142,7 @@ class TestRetryDecoratorSync:
         assert documented_func.__name__ == "documented_func"
         assert documented_func.__doc__ == "This is a documented function."
 
-    @patch('time.sleep')
+    @patch("time.sleep")
     def test_delay_between_retries(self, mock_sleep):
         """Test delay between retry attempts."""
 
@@ -242,7 +240,7 @@ class TestRetryDecoratorAsync:
         @retry(max_attempts=2, base_delay=0.01)
         async def async_with_args(a, b, *, c=None):
             await asyncio.sleep(0)  # Ensure it's async
-            if not hasattr(async_with_args, 'called'):
+            if not hasattr(async_with_args, "called"):
                 async_with_args.called = True
                 raise ValueError("first")
             return f"{a}-{b}-{c}"
@@ -257,7 +255,7 @@ class TestRetryDecoratorAsync:
 
         @retry(max_attempts=2, base_delay=0.01, on_retry=callback)
         async def async_with_callback():
-            if not hasattr(async_with_callback, 'called'):
+            if not hasattr(async_with_callback, "called"):
                 async_with_callback.called = True
                 raise ValueError("fail")
             return "success"
@@ -274,7 +272,7 @@ class TestRetryDecoratorAsync:
 
         @retry(max_attempts=2, base_delay=0.01, on_retry=callback)
         async def async_func():
-            if not hasattr(async_func, 'called'):
+            if not hasattr(async_func, "called"):
                 async_func.called = True
                 raise ValueError("fail")
             return "success"
@@ -285,7 +283,7 @@ class TestRetryDecoratorAsync:
         callback.assert_called_once()
 
     @pytest.mark.asyncio
-    @patch('asyncio.sleep')
+    @patch("asyncio.sleep")
     async def test_async_delay_between_retries(self, mock_sleep):
         """Test delay between async retry attempts."""
         mock_sleep.return_value = None
@@ -319,7 +317,6 @@ class TestRetryDecoratorParameterValidation:
 
     def test_conflicting_parameters(self):
         """Test that conflicting parameters raise errors."""
-
         # Can't specify both policy and individual params
         with pytest.raises(ValueError) as exc_info:
             @retry(policy=RetryPolicy(), max_attempts=5)
@@ -330,7 +327,6 @@ class TestRetryDecoratorParameterValidation:
 
     def test_invalid_max_attempts(self):
         """Test invalid max_attempts parameter."""
-
         with pytest.raises(ValueError):
             @retry(max_attempts=0)
             def func():
@@ -343,7 +339,6 @@ class TestRetryDecoratorParameterValidation:
 
     def test_invalid_delay(self):
         """Test invalid delay parameters."""
-
         with pytest.raises(ValueError):
             @retry(base_delay=-1.0)
             def func():
@@ -355,7 +350,7 @@ class TestRetryDecoratorParameterValidation:
         # This should work
         @retry
         def func():
-            if not hasattr(func, 'called'):
+            if not hasattr(func, "called"):
                 func.called = True
                 raise ValueError("first")
             return "success"
@@ -370,10 +365,9 @@ class TestRetryDecoratorParameterValidation:
         def func(error_type):
             if error_type == "value":
                 raise ValueError("test")
-            elif error_type == "type":
+            if error_type == "type":
                 raise TypeError("test")
-            else:
-                raise RuntimeError("test")
+            raise RuntimeError("test")
 
         # Should retry these
         with pytest.raises(ValueError):
@@ -390,13 +384,13 @@ class TestRetryDecoratorParameterValidation:
 class TestRetryDecoratorLogging:
     """Test logging behavior of @retry decorator."""
 
-    @patch('provide.foundation.resilience.retry.logger')
+    @patch("provide.foundation.resilience.retry.logger")
     def test_retry_logging(self, mock_logger):
         """Test that retries are logged."""
 
         @retry(max_attempts=2, base_delay=0.01)
         def func():
-            if not hasattr(func, 'called'):
+            if not hasattr(func, "called"):
                 func.called = True
                 raise ValueError("test")
             return "success"
@@ -407,7 +401,7 @@ class TestRetryDecoratorLogging:
         # Should log the retry
         mock_logger.info.assert_called()
 
-    @patch('provide.foundation.resilience.retry.logger')
+    @patch("provide.foundation.resilience.retry.logger")
     def test_failure_logging(self, mock_logger):
         """Test that final failure is logged."""
 

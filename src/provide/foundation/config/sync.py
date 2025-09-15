@@ -1,5 +1,4 @@
-"""
-Synchronous wrappers for the async configuration system.
+"""Synchronous wrappers for the async configuration system.
 
 These wrappers allow using the async config system in synchronous contexts
 like CLI tools, scripts, and frameworks that don't support async.
@@ -24,8 +23,7 @@ T = TypeVar("T", bound=BaseConfig)
 
 
 def run_async(coro: Any) -> Any:
-    """
-    Run an async coroutine in a sync context.
+    """Run an async coroutine in a sync context.
 
     Creates a new event loop if needed or uses the existing one.
     """
@@ -49,8 +47,7 @@ def load_config(
     data: ConfigDict | None = None,
     source: ConfigSource = ConfigSource.RUNTIME,
 ) -> T:
-    """
-    Load configuration from dictionary (sync wrapper).
+    """Load configuration from dictionary (sync wrapper).
 
     Args:
         config_class: Configuration class
@@ -59,6 +56,7 @@ def load_config(
 
     Returns:
         Configuration instance
+
     """
     if data is None:
         data = {}
@@ -71,8 +69,7 @@ def load_config_from_env(
     delimiter: str = "_",
     case_sensitive: bool = False,
 ) -> T:
-    """
-    Load configuration from environment variables (sync wrapper).
+    """Load configuration from environment variables (sync wrapper).
 
     Args:
         config_class: Configuration class (must inherit from RuntimeConfig)
@@ -82,6 +79,7 @@ def load_config_from_env(
 
     Returns:
         Configuration instance
+
     """
     if not issubclass(config_class, RuntimeConfig):
         raise TypeError(f"{config_class.__name__} must inherit from RuntimeConfig")
@@ -92,7 +90,7 @@ def load_config_from_env(
             delimiter=delimiter,
             case_sensitive=case_sensitive,
             use_async_secrets=False,  # Use sync I/O in sync context
-        )
+        ),
     )
 
 
@@ -102,8 +100,7 @@ def load_config_from_file(
     format: str | None = None,
     encoding: str = "utf-8",
 ) -> T:
-    """
-    Load configuration from file (sync wrapper).
+    """Load configuration from file (sync wrapper).
 
     Args:
         path: Path to configuration file
@@ -113,6 +110,7 @@ def load_config_from_file(
 
     Returns:
         Configuration instance
+
     """
     loader = FileConfigLoader(path, format=format, encoding=encoding)
     return run_async(loader.load(config_class))
@@ -122,8 +120,7 @@ def load_config_from_multiple(
     config_class: type[T],
     *sources: tuple[str, Any],
 ) -> T:
-    """
-    Load configuration from multiple sources (sync wrapper).
+    """Load configuration from multiple sources (sync wrapper).
 
     Args:
         config_class: Configuration class
@@ -133,6 +130,7 @@ def load_config_from_multiple(
 
     Returns:
         Configuration instance merged from all sources
+
     """
     loaders = []
 
@@ -153,32 +151,31 @@ def load_config_from_multiple(
 
 
 def validate_config(config: BaseConfig) -> None:
-    """
-    Validate a configuration instance (sync wrapper).
+    """Validate a configuration instance (sync wrapper).
 
     Args:
         config: Configuration instance to validate
+
     """
     run_async(config.validate())
 
 
 def update_config(
-    config: BaseConfig, updates: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME
+    config: BaseConfig, updates: ConfigDict, source: ConfigSource = ConfigSource.RUNTIME,
 ) -> None:
-    """
-    Update configuration with new values (sync wrapper).
+    """Update configuration with new values (sync wrapper).
 
     Args:
         config: Configuration instance
         updates: Dictionary of updates
         source: Source of the updates
+
     """
     run_async(config.update(updates, source))
 
 
 def config_to_dict(config: BaseConfig, include_sensitive: bool = False) -> ConfigDict:
-    """
-    Convert configuration to dictionary (sync wrapper).
+    """Convert configuration to dictionary (sync wrapper).
 
     Args:
         config: Configuration instance
@@ -186,26 +183,26 @@ def config_to_dict(config: BaseConfig, include_sensitive: bool = False) -> Confi
 
     Returns:
         Dictionary representation
+
     """
     return run_async(config.to_dict(include_sensitive))
 
 
 def clone_config(config: T) -> T:
-    """
-    Create a deep copy of configuration (sync wrapper).
+    """Create a deep copy of configuration (sync wrapper).
 
     Args:
         config: Configuration instance
 
     Returns:
         Cloned configuration
+
     """
     return run_async(config.clone())
 
 
 def diff_configs(config1: BaseConfig, config2: BaseConfig) -> dict[str, tuple[Any, Any]]:
-    """
-    Compare two configurations (sync wrapper).
+    """Compare two configurations (sync wrapper).
 
     Args:
         config1: First configuration
@@ -213,13 +210,13 @@ def diff_configs(config1: BaseConfig, config2: BaseConfig) -> dict[str, tuple[An
 
     Returns:
         Dictionary of differences
+
     """
     return run_async(config1.diff(config2))
 
 
 class SyncConfigManager:
-    """
-    Synchronous wrapper for ConfigManager.
+    """Synchronous wrapper for ConfigManager.
 
     Provides a sync interface to the async ConfigManager.
     """
@@ -229,6 +226,7 @@ class SyncConfigManager:
 
         Args:
             loader: Optional config loader for loading configurations.
+
         """
         self._async_manager = ConfigManager()
         self._loader = loader
@@ -251,6 +249,7 @@ class SyncConfigManager:
 
         Returns:
             Configuration instance
+
         """
         return run_async(self._async_manager.load(name, config_class, loader))
 

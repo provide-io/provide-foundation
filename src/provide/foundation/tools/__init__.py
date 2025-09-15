@@ -1,5 +1,4 @@
-"""
-Provide Foundation Tools Module
+"""Provide Foundation Tools Module
 ================================
 
 Unified tool management system for downloading, verifying, installing, and
@@ -22,6 +21,7 @@ Example:
     >>> tf_manager = get_tool_manager("terraform", config)
     >>> tf_manager.install("1.5.0")
     PosixPath('/home/user/.wrknv/tools/terraform/1.5.0')
+
 """
 
 from provide.foundation.tools.base import (

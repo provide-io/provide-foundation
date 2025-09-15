@@ -24,8 +24,7 @@ from provide.foundation.setup import reset_foundation_setup_for_testing  # noqa:
 
 
 def example_10_production_patterns() -> None:
-    """
-    Example 10: Illustrates logging patterns suitable for production environments.
+    """Example 10: Illustrates logging patterns suitable for production environments.
 
     This includes using structured JSON logging, appropriate log levels (e.g., INFO
     as default, DEBUG for specific problematic modules), and logging key business

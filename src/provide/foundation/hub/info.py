@@ -22,10 +22,10 @@ class CommandInfo:
     name: str
     func: Callable[..., Any]
     description: str | None = None
-    aliases: list[str] = field(factory=lambda: [])
+    aliases: list[str] = field(factory=list)
     hidden: bool = False
     category: str | None = None
-    metadata: dict[str, Any] = field(factory=lambda: {})
+    metadata: dict[str, Any] = field(factory=dict)
     click_command: "click.Command | None" = None
     parent: str | None = None  # Parent path extracted from dot notation
 

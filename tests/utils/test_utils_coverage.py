@@ -1,5 +1,4 @@
-"""
-Additional tests for provide.foundation.utils to increase code coverage.
+"""Additional tests for provide.foundation.utils to increase code coverage.
 """
 
 import io
@@ -99,8 +98,8 @@ class TestParsingCoverage:
 
         @define
         class ConfigWithConverter:
-            uppercase_val: str = field(metadata={'converter': lambda x: x.upper()})
-            int_val: int = field(metadata={'converter': lambda x: int(x) * 2})
+            uppercase_val: str = field(metadata={"converter": lambda x: x.upper()})
+            int_val: int = field(metadata={"converter": lambda x: int(x) * 2})
             no_converter: str = field()
 
         attrs_fields = {f.name: f for f in fields(ConfigWithConverter)}
@@ -118,7 +117,7 @@ class TestParsingCoverage:
         @define
         class ConfigWithFailingConverter:
             # Converter that always fails
-            val: int = field(metadata={'converter': lambda x: int(x[100])})
+            val: int = field(metadata={"converter": lambda x: int(x[100])})
 
         failing_field = fields(ConfigWithFailingConverter).val
 
@@ -130,7 +129,7 @@ class TestTimingCoverage:
     """Coverage for timing utility functions."""
 
     def test_timed_block_context_modification(
-        self, captured_stderr_for_foundation: io.StringIO
+        self, captured_stderr_for_foundation: io.StringIO,
     ) -> None:
         """Test that modifying the context dict within a timed_block works."""
         from provide.foundation.logger.config.logging import LoggingConfig
@@ -148,7 +147,7 @@ class TestTimingCoverage:
         assert "outcome=success" in output
 
     def test_timed_block_debug_message(
-        self, captured_stderr_for_foundation: io.StringIO
+        self, captured_stderr_for_foundation: io.StringIO,
     ) -> None:
         """Test that the initial debug message is logged when level is DEBUG."""
         setup_telemetry(TelemetryConfig(logging=LoggingConfig(default_level="DEBUG")))

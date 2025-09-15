@@ -17,6 +17,7 @@ class ResourceError(FoundationError):
     Examples:
         >>> raise ResourceError("File not found")
         >>> raise ResourceError("Permission denied", resource_type="file", resource_path="/etc/config")
+
     """
 
     def __init__(
@@ -49,6 +50,7 @@ class NotFoundError(FoundationError):
     Examples:
         >>> raise NotFoundError("User not found")
         >>> raise NotFoundError("Entity missing", resource_type="user", resource_id="123")
+
     """
 
     def __init__(
@@ -81,6 +83,7 @@ class AlreadyExistsError(FoundationError):
     Examples:
         >>> raise AlreadyExistsError("User already registered")
         >>> raise AlreadyExistsError("Duplicate key", resource_type="user", resource_id="john@example.com")
+
     """
 
     def __init__(
@@ -113,6 +116,7 @@ class LockError(FoundationError):
     Examples:
         >>> raise LockError("Failed to acquire lock")
         >>> raise LockError("Lock timeout", lock_path="/tmp/app.lock", timeout=30)
+
     """
 
     def __init__(

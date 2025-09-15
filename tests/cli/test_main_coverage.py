@@ -54,7 +54,7 @@ class TestCLIMainCoverage:
             from provide.foundation.cli.main import cli
 
             # Check if it's a click group
-            assert hasattr(cli, 'commands') or callable(cli)
+            assert hasattr(cli, "commands") or callable(cli)
         except ImportError:
             pytest.skip("Click not available")
 
@@ -63,5 +63,5 @@ class TestCLIMainCoverage:
         from provide.foundation.cli import main
 
         # Should have these key attributes
-        assert hasattr(main, '_HAS_CLICK')
-        assert hasattr(main, '_require_click')
+        assert hasattr(main, "_HAS_CLICK")
+        assert hasattr(main, "_require_click")

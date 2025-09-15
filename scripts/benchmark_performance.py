@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # benchmark_performance.py
 #
-"""
-Performance benchmarking script for Foundation Telemetry.
+"""Performance benchmarking script for Foundation Telemetry.
 
 This script measures the performance characteristics of the logging system
 under various conditions and outputs detailed benchmark results.
@@ -48,8 +47,7 @@ from provide.foundation.logger.setup.testing import (
 
 @contextmanager
 def capture_logs() -> Generator[io.StringIO]:
-    """
-    Context manager to capture log output during benchmarks.
+    """Context manager to capture log output during benchmarks.
 
     This ensures that benchmark logging output doesn't interfere with
     benchmark timing measurements while still allowing us to verify
@@ -57,6 +55,7 @@ def capture_logs() -> Generator[io.StringIO]:
 
     Yields:
         StringIO buffer containing captured log output.
+
     """
     captured = io.StringIO()
     _set_log_stream_for_testing(captured)
@@ -68,8 +67,7 @@ def capture_logs() -> Generator[io.StringIO]:
 
 @contextmanager
 def benchmark_timer(test_name: str) -> Generator[dict[str, Any]]:
-    """
-    Context manager to time benchmark operations and track memory usage.
+    """Context manager to time benchmark operations and track memory usage.
 
     This provides consistent timing and memory measurement across all
     benchmark functions, ensuring accurate and comparable results.
@@ -79,6 +77,7 @@ def benchmark_timer(test_name: str) -> Generator[dict[str, Any]]:
 
     Yields:
         Dictionary that will be populated with timing and memory results.
+
     """
     result = {"test_name": test_name}
     start_time = time.perf_counter()
@@ -96,19 +95,19 @@ def benchmark_timer(test_name: str) -> Generator[dict[str, Any]]:
                 "start_memory_mb": start_memory,
                 "end_memory_mb": end_memory,
                 "memory_delta_mb": end_memory - start_memory,
-            }
+            },
         )
 
 
 def _get_memory_usage() -> float:
-    """
-    Get current memory usage in MB.
+    """Get current memory usage in MB.
 
     Uses psutil if available for accurate memory measurement,
     otherwise returns 0.0 as a safe fallback.
 
     Returns:
         Current process memory usage in megabytes, or 0.0 if unavailable.
+
     """
     try:
         import psutil
@@ -120,8 +119,7 @@ def _get_memory_usage() -> float:
 
 
 def benchmark_basic_logging() -> dict[str, Any]:
-    """
-    Benchmark basic logging operations with emoji processing enabled.
+    """Benchmark basic logging operations with emoji processing enabled.
 
     This test measures the core performance of the logging system with
     typical configuration settings. It establishes a baseline for
@@ -129,6 +127,7 @@ def benchmark_basic_logging() -> dict[str, Any]:
 
     Returns:
         Dictionary containing benchmark results including throughput metrics.
+
     """
     reset_foundation_setup_for_testing()
 
@@ -138,7 +137,7 @@ def benchmark_basic_logging() -> dict[str, Any]:
             console_formatter="key_value",
             logger_name_emoji_prefix_enabled=True,
             das_emoji_prefix_enabled=False,
-        )
+        ),
     )
 
     with capture_logs() as captured:
@@ -164,8 +163,7 @@ def benchmark_basic_logging() -> dict[str, Any]:
 
 
 def benchmark_json_formatting() -> dict[str, Any]:
-    """
-    Benchmark JSON output formatting with full emoji processing.
+    """Benchmark JSON output formatting with full emoji processing.
 
     This test measures the performance impact of JSON serialization
     and emoji processing combined, which is common in production
@@ -173,6 +171,7 @@ def benchmark_json_formatting() -> dict[str, Any]:
 
     Returns:
         Dictionary containing JSON formatting performance metrics.
+
     """
     reset_foundation_setup_for_testing()
 
@@ -182,7 +181,7 @@ def benchmark_json_formatting() -> dict[str, Any]:
             console_formatter="json",
             logger_name_emoji_prefix_enabled=True,
             das_emoji_prefix_enabled=True,
-        )
+        ),
     )
 
     with capture_logs() as captured:
@@ -213,14 +212,14 @@ def benchmark_json_formatting() -> dict[str, Any]:
 
 
 def benchmark_emoji_processing() -> dict[str, Any]:
-    """
-    Benchmark emoji processing overhead by comparing enabled vs disabled.
+    """Benchmark emoji processing overhead by comparing enabled vs disabled.
 
     This test measures the performance impact of emoji processing features
     by running identical workloads with and without emoji processing enabled.
 
     Returns:
         Dictionary containing emoji processing overhead analysis.
+
     """
     reset_foundation_setup_for_testing()
 
@@ -231,7 +230,7 @@ def benchmark_emoji_processing() -> dict[str, Any]:
             console_formatter="key_value",
             logger_name_emoji_prefix_enabled=True,
             das_emoji_prefix_enabled=True,
-        )
+        ),
     )
 
     with capture_logs():
@@ -263,7 +262,7 @@ def benchmark_emoji_processing() -> dict[str, Any]:
             console_formatter="key_value",
             logger_name_emoji_prefix_enabled=False,
             das_emoji_prefix_enabled=False,
-        )
+        ),
     )
 
     with capture_logs():
@@ -298,8 +297,7 @@ def benchmark_emoji_processing() -> dict[str, Any]:
 
 
 def benchmark_multithreaded_logging() -> dict[str, Any]:
-    """
-    Benchmark thread safety and performance under concurrent load.
+    """Benchmark thread safety and performance under concurrent load.
 
     This test verifies that the logging system maintains performance
     and correctness under concurrent access from multiple threads,
@@ -307,6 +305,7 @@ def benchmark_multithreaded_logging() -> dict[str, Any]:
 
     Returns:
         Dictionary containing concurrent logging performance metrics.
+
     """
     reset_foundation_setup_for_testing()
 
@@ -314,7 +313,7 @@ def benchmark_multithreaded_logging() -> dict[str, Any]:
         logging=LoggingConfig(
             default_level="INFO",
             console_formatter="json",
-        )
+        ),
     )
 
     with capture_logs() as captured:
@@ -325,7 +324,7 @@ def benchmark_multithreaded_logging() -> dict[str, Any]:
             thread_logger = logger.get_logger(f"benchmark.thread.{thread_id}")
             for i in range(message_count):
                 thread_logger.info(
-                    f"Thread {thread_id} message {i}", thread_id=thread_id, msg_id=i
+                    f"Thread {thread_id} message {i}", thread_id=thread_id, msg_id=i,
                 )
 
         with benchmark_timer("multithreaded_logging") as result:
@@ -355,14 +354,14 @@ def benchmark_multithreaded_logging() -> dict[str, Any]:
 
 
 def benchmark_level_filtering() -> dict[str, Any]:
-    """
-    Benchmark log level filtering performance and efficiency.
+    """Benchmark log level filtering performance and efficiency.
 
     This test measures how efficiently the logging system filters out
     messages that are below the configured log level threshold.
 
     Returns:
         Dictionary containing level filtering performance metrics.
+
     """
     reset_foundation_setup_for_testing()
 
@@ -372,7 +371,7 @@ def benchmark_level_filtering() -> dict[str, Any]:
             module_levels={
                 "benchmark.filtered": "DEBUG",  # Allow all for this module
             },
-        )
+        ),
     )
 
     with capture_logs() as captured:
@@ -389,7 +388,7 @@ def benchmark_level_filtering() -> dict[str, Any]:
                 blocked_logger.debug(f"Blocked message {i}")  # Should be filtered
 
             output_lines = len(
-                [line for line in captured.getvalue().split("\n") if line.strip()]
+                [line for line in captured.getvalue().split("\n") if line.strip()],
             )
 
             result["total_attempted_messages"] = message_count
@@ -406,8 +405,7 @@ def benchmark_level_filtering() -> dict[str, Any]:
 
 
 async def benchmark_async_usage() -> dict[str, Any]:
-    """
-    Benchmark usage patterns in async contexts.
+    """Benchmark usage patterns in async contexts.
 
     This test measures the performance of logging within async/await
     contexts, ensuring that the logging system doesn't interfere with
@@ -415,6 +413,7 @@ async def benchmark_async_usage() -> dict[str, Any]:
 
     Returns:
         Dictionary containing async logging performance metrics.
+
     """
     reset_foundation_setup_for_testing()
 
@@ -422,7 +421,7 @@ async def benchmark_async_usage() -> dict[str, Any]:
         logging=LoggingConfig(
             default_level="INFO",
             console_formatter="json",
-        )
+        ),
     )
 
     with capture_logs():
@@ -464,8 +463,7 @@ async def benchmark_async_usage() -> dict[str, Any]:
 
 
 def benchmark_large_payloads() -> dict[str, Any]:
-    """
-    Benchmark performance with large log payloads.
+    """Benchmark performance with large log payloads.
 
     This test measures how the logging system handles large structured
     data payloads, which is important for applications that log detailed
@@ -473,6 +471,7 @@ def benchmark_large_payloads() -> dict[str, Any]:
 
     Returns:
         Dictionary containing large payload performance metrics.
+
     """
     reset_foundation_setup_for_testing()
 
@@ -480,7 +479,7 @@ def benchmark_large_payloads() -> dict[str, Any]:
         logging=LoggingConfig(
             default_level="INFO",
             console_formatter="json",
-        )
+        ),
     )
 
     with capture_logs() as captured:
@@ -499,7 +498,7 @@ def benchmark_large_payloads() -> dict[str, Any]:
 
             for i in range(message_count):
                 test_logger.info(
-                    f"Large payload message {i}", **large_data, iteration=i
+                    f"Large payload message {i}", **large_data, iteration=i,
                 )
 
             result["message_count"] = message_count
@@ -516,8 +515,7 @@ def benchmark_large_payloads() -> dict[str, Any]:
 
 
 def main() -> None:
-    """
-    Run all benchmarks and output results.
+    """Run all benchmarks and output results.
 
     This function coordinates the execution of all benchmark tests,
     collects results, and saves them to a JSON file for analysis.
@@ -607,7 +605,7 @@ def main() -> None:
     print(
         "  • Basic logging: >1000 msg/sec ✅"
         if basic_logging_ok
-        else "  • Basic logging: >1000 msg/sec ❌"
+        else "  • Basic logging: >1000 msg/sec ❌",
     )
 
     json_formatting_ok = any(
@@ -618,7 +616,7 @@ def main() -> None:
     print(
         "  • JSON formatting: >500 msg/sec ✅"
         if json_formatting_ok
-        else "  • JSON formatting: >500 msg/sec ❌"
+        else "  • JSON formatting: >500 msg/sec ❌",
     )
 
 

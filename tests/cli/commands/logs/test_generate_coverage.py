@@ -2,8 +2,7 @@
 
 import random
 import threading
-import time
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 
@@ -11,8 +10,6 @@ from provide.foundation.cli.commands.logs.generate import (
     BURROUGHS_PHRASES,
     OPERATIONS,
     SERVICE_NAMES,
-    _span_counter,
-    _trace_counter,
     generate_log_entry,
     generate_span_id,
     generate_trace_id,
@@ -185,7 +182,7 @@ class TestGenerateLogEntry:
         assert entry["error_code"] in [400, 404, 500, 503]
         assert entry["error_type"] in [
             "ValidationError", "ServiceUnavailable", "TimeoutError",
-            "DatabaseError", "RateLimitExceeded"
+            "DatabaseError", "RateLimitExceeded",
         ]
         assert entry["status"] == "error"
 
@@ -232,20 +229,20 @@ class TestGenerateLogEntry:
 class TestHelperFunctions:
     """Test helper functions from the generate module."""
 
-    @patch('provide.foundation.cli.commands.logs.generate.click')
+    @patch("provide.foundation.cli.commands.logs.generate.click")
     def test_print_generation_config(self, mock_click):
         """Test _print_generation_config function."""
         from provide.foundation.cli.commands.logs.generate import _print_generation_config
 
         _print_generation_config(
             count=100, rate=10.0, stream="test", style="normal",
-            error_rate=0.1, enable_rate_limit=False, rate_limit=50.0
+            error_rate=0.1, enable_rate_limit=False, rate_limit=50.0,
         )
 
         # Should have called click.echo multiple times
         assert mock_click.echo.call_count >= 4
 
-    @patch('provide.foundation.logger.ratelimit.GlobalRateLimiter')
+    @patch("provide.foundation.logger.ratelimit.GlobalRateLimiter")
     def test_configure_rate_limiter_enabled(self, mock_limiter_class):
         """Test _configure_rate_limiter with rate limiting enabled."""
         from provide.foundation.cli.commands.logs.generate import _configure_rate_limiter
@@ -258,7 +255,7 @@ class TestHelperFunctions:
         mock_limiter_class.assert_called_once()
         mock_limiter.configure.assert_called_once_with(
             global_rate=100.0,
-            global_capacity=200.0
+            global_capacity=200.0,
         )
 
     def test_configure_rate_limiter_disabled(self):
@@ -268,7 +265,7 @@ class TestHelperFunctions:
         # Should not raise any errors
         _configure_rate_limiter(enable_rate_limit=False, rate_limit=100.0)
 
-    @patch('provide.foundation.cli.commands.logs.generate.get_logger')
+    @patch("provide.foundation.cli.commands.logs.generate.get_logger")
     def test_send_log_entry_success(self, mock_get_logger):
         """Test _send_log_entry success case."""
         from provide.foundation.cli.commands.logs.generate import _send_log_entry
@@ -281,11 +278,11 @@ class TestHelperFunctions:
             "service": "test-service",
             "level": "info",
             "message": "test message",
-            "extra_field": "value"
+            "extra_field": "value",
         }
 
         logs_sent, logs_failed, logs_rate_limited = _send_log_entry(
-            entry, 0, 0, 0
+            entry, 0, 0, 0,
         )
 
         assert logs_sent == 1
@@ -295,7 +292,7 @@ class TestHelperFunctions:
         mock_get_logger.assert_called_once_with("generated.test-service")
         mock_logger.info.assert_called_once_with("test message", service="test-service", extra_field="value")
 
-    @patch('provide.foundation.cli.commands.logs.generate.get_logger')
+    @patch("provide.foundation.cli.commands.logs.generate.get_logger")
     def test_send_log_entry_failure(self, mock_get_logger):
         """Test _send_log_entry failure case."""
         from provide.foundation.cli.commands.logs.generate import _send_log_entry
@@ -308,18 +305,18 @@ class TestHelperFunctions:
         entry = {
             "service": "test-service",
             "level": "info",
-            "message": "test message"
+            "message": "test message",
         }
 
         logs_sent, logs_failed, logs_rate_limited = _send_log_entry(
-            entry, 0, 0, 0
+            entry, 0, 0, 0,
         )
 
         assert logs_sent == 0
         assert logs_failed == 1
         assert logs_rate_limited == 0
 
-    @patch('provide.foundation.cli.commands.logs.generate.get_logger')
+    @patch("provide.foundation.cli.commands.logs.generate.get_logger")
     def test_send_log_entry_rate_limited(self, mock_get_logger):
         """Test _send_log_entry rate limit case."""
         from provide.foundation.cli.commands.logs.generate import _send_log_entry
@@ -332,19 +329,19 @@ class TestHelperFunctions:
         entry = {
             "service": "test-service",
             "level": "info",
-            "message": "test message"
+            "message": "test message",
         }
 
         logs_sent, logs_failed, logs_rate_limited = _send_log_entry(
-            entry, 0, 0, 0
+            entry, 0, 0, 0,
         )
 
         assert logs_sent == 0
         assert logs_failed == 1
         assert logs_rate_limited == 1  # Should detect rate limit in error message
 
-    @patch('provide.foundation.cli.commands.logs.generate.click')
-    @patch('provide.foundation.cli.commands.logs.generate.time')
+    @patch("provide.foundation.cli.commands.logs.generate.click")
+    @patch("provide.foundation.cli.commands.logs.generate.time")
     def test_print_stats(self, mock_time, mock_click):
         """Test _print_stats function."""
         from provide.foundation.cli.commands.logs.generate import _print_stats
@@ -354,21 +351,21 @@ class TestHelperFunctions:
         last_stats_time, last_stats_sent = _print_stats(
             current_time=10.0, last_stats_time=9.0, logs_sent=100,
             last_stats_sent=90, logs_failed=5, enable_rate_limit=True,
-            logs_rate_limited=2
+            logs_rate_limited=2,
         )
 
         assert last_stats_time == 10.0
         assert last_stats_sent == 100
         mock_click.echo.assert_called_once()
 
-    @patch('provide.foundation.cli.commands.logs.generate.click')
+    @patch("provide.foundation.cli.commands.logs.generate.click")
     def test_print_final_stats(self, mock_click):
         """Test _print_final_stats function."""
         from provide.foundation.cli.commands.logs.generate import _print_final_stats
 
         _print_final_stats(
             logs_sent=1000, logs_failed=50, logs_rate_limited=10,
-            total_time=100.0, rate=10.0, enable_rate_limit=True
+            total_time=100.0, rate=10.0, enable_rate_limit=True,
         )
 
         # Should call click.echo multiple times for the final report
@@ -397,7 +394,7 @@ class TestClickIntegration:
         except ImportError:
             expected = False
 
-        assert _HAS_CLICK == expected
+        assert expected == _HAS_CLICK
 
     def test_command_stub_when_click_missing(self):
         """Test command stub behavior when click is missing."""
@@ -449,7 +446,7 @@ class TestLogEntryDataIntegrity:
                 assert entry["error_code"] in [400, 404, 500, 503]
                 assert entry["error_type"] in [
                     "ValidationError", "ServiceUnavailable", "TimeoutError",
-                    "DatabaseError", "RateLimitExceeded"
+                    "DatabaseError", "RateLimitExceeded",
                 ]
                 break
         else:

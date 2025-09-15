@@ -1,8 +1,7 @@
 #
 # test_platform_coverage.py
 #
-"""
-Tests to achieve full coverage for platform detection and info modules.
+"""Tests to achieve full coverage for platform detection and info modules.
 """
 
 from unittest.mock import patch

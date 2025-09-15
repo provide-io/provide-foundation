@@ -56,7 +56,7 @@ def load_from_uri_or_pem(data: str) -> str:
 
 
 def load_certificate_from_pem(
-    cert_pem_or_uri: str, key_pem_or_uri: str | None = None
+    cert_pem_or_uri: str, key_pem_or_uri: str | None = None,
 ) -> tuple[
     CertificateBase,
     "x509.Certificate",
@@ -64,11 +64,11 @@ def load_certificate_from_pem(
     str,
     str | None,
 ]:
-    """
-    Load a certificate and optionally its private key from PEM data or file URIs.
+    """Load a certificate and optionally its private key from PEM data or file URIs.
 
     Returns:
         Tuple of (CertificateBase, X509Certificate, private_key, cert_pem, key_pem)
+
     """
     try:
         logger.debug("📜🔑🚀 Loading certificate from provided data")
@@ -92,7 +92,7 @@ def load_certificate_from_pem(
             ):
                 raise CertificateError(
                     f"Loaded private key is of unsupported type: {type(loaded_priv_key)}. "
-                    "Expected RSA or ECDSA private key."
+                    "Expected RSA or ECDSA private key.",
                 )
             private_key = loaded_priv_key
             logger.debug("📜🔑✅ Private key object loaded and type validated")
@@ -109,7 +109,7 @@ def load_certificate_from_pem(
         if not isinstance(cert_public_key, rsa.RSAPublicKey | ec.EllipticCurvePublicKey):
             raise CertificateError(
                 f"Certificate's public key is of unsupported type: {type(cert_public_key)}. "
-                "Expected RSA or ECDSA public key."
+                "Expected RSA or ECDSA public key.",
             )
 
         base = CertificateBase(

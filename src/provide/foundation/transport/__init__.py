@@ -1,5 +1,4 @@
-"""
-Provide Foundation Transport System
+"""Provide Foundation Transport System
 ==================================
 
 Protocol-agnostic transport layer with HTTP/HTTPS support using Foundation Hub registry.

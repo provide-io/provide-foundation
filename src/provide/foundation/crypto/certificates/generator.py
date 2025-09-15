@@ -49,11 +49,11 @@ def generate_certificate(
     str,
     str,
 ]:
-    """
-    Generate a new certificate with a keypair.
+    """Generate a new certificate with a keypair.
 
     Returns:
         Tuple of (CertificateBase, X509Certificate, private_key, cert_pem, key_pem)
+
     """
     try:
         logger.debug("📜🔑🚀 Generating new keypair")

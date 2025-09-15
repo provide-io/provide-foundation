@@ -1,5 +1,4 @@
-"""
-Provide Foundation Hub - Component and Command Coordination System
+"""Provide Foundation Hub - Component and Command Coordination System
 ===================================================================
 
 The hub module provides a unified system for registering, discovering, and
@@ -48,14 +47,14 @@ from provide.foundation.hub.registry import (
 
 # CLI features (require click) - lazy loaded
 def get_click_commands():
-    """
-    Get CLI command building functions.
+    """Get CLI command building functions.
 
     Returns:
         Module with click command building functionality.
 
     Raises:
         ImportError: If click is not available.
+
     """
     try:
         from provide.foundation.hub.commands import build_click_command
@@ -65,7 +64,7 @@ def get_click_commands():
         if "click" in str(e):
             raise ImportError(
                 "CLI command building requires optional dependencies. Install with: "
-                "pip install 'provide-foundation[cli]'"
+                "pip install 'provide-foundation[cli]'",
             ) from e
         raise
 

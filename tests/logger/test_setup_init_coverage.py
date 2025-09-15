@@ -10,9 +10,9 @@ class TestLoggerSetupInitCoverage:
         """Clear module state before each test to ensure isolation."""
         # Clear logger setup modules from cache
         modules_to_clear = [
-            'provide.foundation.logger.setup',
-            'provide.foundation.logger.setup.testing',
-            'provide.foundation.logger.setup.coordinator',
+            "provide.foundation.logger.setup",
+            "provide.foundation.logger.setup.testing",
+            "provide.foundation.logger.setup.coordinator",
         ]
 
         # Save modules that we might restore

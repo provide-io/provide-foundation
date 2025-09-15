@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # examples/cli/01_cli_application.py
-"""
-CLI Application Example - Complete Hub and Command System
+"""CLI Application Example - Complete Hub and Command System
 
 This comprehensive example demonstrates building a full CLI application
 with provide.foundation's hub system:
@@ -48,9 +47,10 @@ Expected output:
     Interactive CLI with multiple commands demonstrating component lifecycle,
     registry management, and command execution.
 
-See also:
+See Also:
     - examples/03_named_loggers.py for logger component patterns
     - examples/10_production_patterns.py for production CLI patterns
+
 """
 
 from provide.foundation.cli import echo_info, echo_success, echo_warning
@@ -235,7 +235,7 @@ def create_demo_cli():
 
     # Create CLI
     cli = hub.create_cli(
-        name="hub-demo", version="1.0.0", help="Foundation Hub Demo Application"
+        name="hub-demo", version="1.0.0", help="Foundation Hub Demo Application",
     )
 
     return cli

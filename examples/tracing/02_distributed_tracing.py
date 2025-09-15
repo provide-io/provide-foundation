@@ -2,8 +2,7 @@
 #
 # examples/tracing/02_distributed_tracing.py
 #
-"""
-Example demonstrating Foundation's built-in distributed tracing capabilities.
+"""Example demonstrating Foundation's built-in distributed tracing capabilities.
 
 Shows how to use the tracer module for operation timing, context tracking,
 and building trace hierarchies without external dependencies.
@@ -60,7 +59,7 @@ def simulate_database_query(query: str, params: dict[str, Any] = None) -> dict[s
 
         return {
             "rows": len(query) % 100 + 1,  # Deterministic row count for demo
-            "execution_time_ms": execution_time_ms
+            "execution_time_ms": execution_time_ms,
         }
 
 
@@ -103,7 +102,7 @@ def call_external_service(service_name: str, endpoint: str) -> dict[str, Any]:
         return {
             "status_code": status_code,
             "response_time_ms": response_time * 1000,
-            "data": {"result": "success"}
+            "data": {"result": "success"},
         }
 
 
@@ -139,7 +138,7 @@ def process_user_registration(user_data: dict[str, Any]) -> dict[str, Any]:
             # Step 2: Check if user already exists
             existing_user = simulate_database_query(
                 "SELECT id FROM users WHERE email = ?",
-                {"email": user_data["email"]}
+                {"email": user_data["email"]},
             )
 
             if existing_user["rows"] > 0:
@@ -153,8 +152,8 @@ def process_user_registration(user_data: dict[str, Any]) -> dict[str, Any]:
                 {
                     "email": user_data["email"],
                     "name": user_data["name"],
-                    "password_hash": "hashed_password"
-                }
+                    "password_hash": "hashed_password",
+                },
             )
 
             user_id = 1000 + (hash(user_data["email"]) * 123) % 9000  # Deterministic user IDs for demo
@@ -192,7 +191,7 @@ def process_user_registration(user_data: dict[str, Any]) -> dict[str, Any]:
                 "user_id": user_id,
                 "status": "success",
                 "trace_id": trace_ctx["trace_id"],
-                "duration_ms": span.duration_ms()
+                "duration_ms": span.duration_ms(),
             }
 
         except Exception as e:
@@ -230,7 +229,7 @@ async def async_user_operations():
 
                 # Simulate database update
                 result = simulate_database_query(
-                    f"UPDATE users SET last_active = NOW() WHERE id = {user_id}"
+                    f"UPDATE users SET last_active = NOW() WHERE id = {user_id}",
                 )
 
                 user_span.set_tag("rows_updated", result["rows"])
@@ -265,7 +264,7 @@ def trace_analysis_example():
             "email": f"user{i}@example.com",
             "name": f"User {i}",
             "password": "secure_password",
-            "type": "premium" if i % 2 == 0 else "standard"  # Deterministic type
+            "type": "premium" if i % 2 == 0 else "standard",  # Deterministic type
         }
 
         try:
@@ -309,7 +308,7 @@ def main():
         "email": "john.doe@example.com",
         "name": "John Doe",
         "password": "secure_password123",
-        "type": "premium"
+        "type": "premium",
     }
 
     try:

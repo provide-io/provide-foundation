@@ -1,5 +1,4 @@
-"""
-Event set resolution and enrichment logic.
+"""Event set resolution and enrichment logic.
 """
 
 from typing import Any
@@ -9,8 +8,7 @@ from provide.foundation.eventsets.types import EventMapping, FieldMapping
 
 
 class EventSetResolver:
-    """
-    Resolves and applies event set enrichments to log events.
+    """Resolves and applies event set enrichments to log events.
     """
 
     def __init__(self) -> None:
@@ -20,8 +18,7 @@ class EventSetResolver:
         self._resolved = False
 
     def resolve(self) -> None:
-        """
-        Resolve all registered event sets into a unified configuration.
+        """Resolve all registered event sets into a unified configuration.
 
         This merges all registered event sets by priority, building
         the field mapping and event mapping lookup tables.
@@ -44,14 +41,14 @@ class EventSetResolver:
         self._resolved = True
 
     def enrich_event(self, event_dict: dict[str, Any]) -> dict[str, Any]:
-        """
-        Enrich a log event with event set data.
+        """Enrich a log event with event set data.
 
         Args:
             event_dict: The event dictionary to enrich
 
         Returns:
             The enriched event dictionary
+
         """
         if not self._resolved:
             self.resolve()
@@ -99,8 +96,7 @@ class EventSetResolver:
         return event_dict
 
     def _find_event_mapping_for_field(self, field_key: str, field_value: Any) -> EventMapping | None:
-        """
-        Find the appropriate EventMapping for a given field.
+        """Find the appropriate EventMapping for a given field.
 
         This method uses a heuristic approach to match field keys to EventMappings:
         1. Direct field name mapping (e.g., "domain" -> "domain" mapping)
@@ -136,14 +132,14 @@ class EventSetResolver:
         return None
 
     def get_visual_markers(self, event_dict: dict[str, Any]) -> list[str]:
-        """
-        Extract visual markers for an event without modifying it.
+        """Extract visual markers for an event without modifying it.
 
         Args:
             event_dict: The event dictionary to analyze
 
         Returns:
             List of visual markers that would be applied
+
         """
         if not self._resolved:
             self.resolve()
@@ -180,13 +176,13 @@ def get_resolver() -> EventSetResolver:
 
 
 def enrich_event(event_dict: dict[str, Any]) -> dict[str, Any]:
-    """
-    Enrich a log event with event set data.
+    """Enrich a log event with event set data.
 
     Args:
         event_dict: The event dictionary to enrich
 
     Returns:
         The enriched event dictionary
+
     """
     return _resolver.enrich_event(event_dict)

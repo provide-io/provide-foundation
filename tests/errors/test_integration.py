@@ -115,13 +115,13 @@ class TestErrorSystemIntegration:
 
         # Wrap in integration error
         integration = IntegrationError(
-            "Database unavailable", service="user-service", cause=original
+            "Database unavailable", service="user-service", cause=original,
         )
         integration.context.update(original.context)
 
         # Wrap in configuration error
         config = ConfigurationError(
-            "Service misconfigured", config_key="database.url", cause=integration
+            "Service misconfigured", config_key="database.url", cause=integration,
         )
 
         # Verify chain
@@ -183,7 +183,7 @@ class TestErrorSystemIntegration:
             policies={
                 ValidationError: lambda e: results.append("validation") or "v",
                 NetworkError: lambda e: results.append("network") or "n",
-            }
+            },
         )
 
         handler2 = ErrorHandler(
@@ -242,14 +242,14 @@ class TestErrorSystemIntegration:
         """Test Terraform diagnostic generation."""
         # Create error with Terraform context
         error = IntegrationError(
-            "Provider initialization failed", service="terraform", status_code=403
+            "Provider initialization failed", service="terraform", status_code=403,
         )
 
         # Add Terraform-specific context
         error.add_context("terraform.provider", "registry.terraform.io/hashicorp/aws")
         error.add_context("terraform.resource_type", "aws_instance")
         error.add_context(
-            "terraform.resource_address", "module.compute.aws_instance.web[0]"
+            "terraform.resource_address", "module.compute.aws_instance.web[0]",
         )
         error.add_context("aws.region", "us-east-1")
         error.add_context("aws.error_code", "UnauthorizedOperation")
@@ -413,13 +413,13 @@ class TestErrorSystemIntegration:
         # Create many errors
         for i in range(100):
             error = FoundationError(
-                f"Error {i}", code=f"ERR_{i:03d}", index=i, timestamp=time.time()
+                f"Error {i}", code=f"ERR_{i:03d}", index=i, timestamp=time.time(),
             )
             errors.append(error)
 
         # Handle all errors
         handler = ErrorHandler(
-            default_action=lambda e: f"handled_{e.context.get('index')}"
+            default_action=lambda e: f"handled_{e.context.get('index')}",
         )
 
         start = time.perf_counter()
@@ -498,10 +498,9 @@ class TestRealWorldScenarios:
         # Failed transaction
         db_operations.clear()
 
-        with pytest.raises(AlreadyExistsError):
-            with transactional(db_rollback, db_commit):
-                db_insert("users", {"email": "duplicate@example.com"})
-                db_insert("profiles", {"user_email": "duplicate@example.com"})
+        with pytest.raises(AlreadyExistsError), transactional(db_rollback, db_commit):
+            db_insert("users", {"email": "duplicate@example.com"})
+            db_insert("profiles", {"user_email": "duplicate@example.com"})
 
         assert ("rollback", None, None) in db_operations
         assert ("commit", None, None) not in db_operations

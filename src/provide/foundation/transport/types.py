@@ -1,5 +1,4 @@
-"""
-Transport type definitions and enums.
+"""Transport type definitions and enums.
 """
 
 from enum import Enum

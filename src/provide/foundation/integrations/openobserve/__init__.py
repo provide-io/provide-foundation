@@ -1,5 +1,4 @@
-"""
-OpenObserve integration for Foundation.
+"""OpenObserve integration for Foundation.
 
 Provides log querying and streaming capabilities as an optional integration.
 """

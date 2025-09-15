@@ -23,6 +23,7 @@ def ensure_dir(
 
     Returns:
         Path object for the directory
+
     """
     path = Path(path)
 
@@ -47,6 +48,7 @@ def ensure_parent_dir(
 
     Returns:
         Path object for the parent directory
+
     """
     file_path = Path(file_path)
     parent = file_path.parent
@@ -73,6 +75,7 @@ def safe_rmtree(
 
     Raises:
         OSError: If removal fails and directory exists
+
     """
     path = Path(path)
 
@@ -80,11 +83,10 @@ def safe_rmtree(
         shutil.rmtree(path)
         log.debug("Removed directory tree", path=str(path))
         return True
-    elif missing_ok:
+    if missing_ok:
         log.debug("Directory already absent", path=str(path))
         return False
-    else:
-        raise FileNotFoundError(f"Directory does not exist: {path}")
+    raise FileNotFoundError(f"Directory does not exist: {path}")
 
 
 __all__ = [

@@ -1,8 +1,7 @@
 #
 # processor.py
 #
-"""
-Structlog processor for rate limiting log messages.
+"""Structlog processor for rate limiting log messages.
 """
 
 import time
@@ -14,8 +13,7 @@ from provide.foundation.logger.ratelimit.limiters import GlobalRateLimiter
 
 
 class RateLimiterProcessor:
-    """
-    Structlog processor that applies rate limiting to log messages.
+    """Structlog processor that applies rate limiting to log messages.
     Can be configured with global and per-logger rate limits.
     """
 
@@ -25,13 +23,13 @@ class RateLimiterProcessor:
         warning_interval_seconds: float = 60.0,
         summary_interval_seconds: float = 5.0,
     ):
-        """
-        Initialize the rate limiter processor.
+        """Initialize the rate limiter processor.
 
         Args:
             emit_warning_on_limit: Whether to emit a warning when rate limited
             warning_interval_seconds: Minimum seconds between rate limit warnings
             summary_interval_seconds: Interval for rate limit summary reports
+
         """
         self.rate_limiter = GlobalRateLimiter()
         self.emit_warning_on_limit = emit_warning_on_limit
@@ -46,10 +44,9 @@ class RateLimiterProcessor:
         self.summary_interval = summary_interval_seconds  # Emit summary periodically
 
     def __call__(
-        self, logger: Any, method_name: str, event_dict: structlog.types.EventDict
+        self, logger: Any, method_name: str, event_dict: structlog.types.EventDict,
     ) -> structlog.types.EventDict:
-        """
-        Process a log event, applying rate limiting.
+        """Process a log event, applying rate limiting.
 
         Args:
             logger: The logger instance
@@ -58,6 +55,7 @@ class RateLimiterProcessor:
 
         Returns:
             The event dictionary if allowed, or raises DropEvent if rate limited
+
         """
         logger_name = event_dict.get("logger_name", "unknown")
 
@@ -161,8 +159,7 @@ def create_rate_limiter_processor(
     max_memory_mb: float | None = None,
     overflow_policy: str = "drop_oldest",
 ) -> RateLimiterProcessor:
-    """
-    Factory function to create and configure a rate limiter processor.
+    """Factory function to create and configure a rate limiter processor.
 
     Args:
         global_rate: Global logs per second limit
@@ -176,9 +173,10 @@ def create_rate_limiter_processor(
 
     Returns:
         Configured RateLimiterProcessor instance
+
     """
     processor = RateLimiterProcessor(
-        emit_warning_on_limit=emit_warnings, summary_interval_seconds=summary_interval
+        emit_warning_on_limit=emit_warnings, summary_interval_seconds=summary_interval,
     )
 
     # Determine if we should use buffered rate limiting

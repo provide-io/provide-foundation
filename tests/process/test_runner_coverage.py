@@ -1,8 +1,7 @@
 #
 # test_runner_coverage.py
 #
-"""
-Additional tests to achieve full coverage for process/runner.py.
+"""Additional tests to achieve full coverage for process/runner.py.
 """
 
 import sys
@@ -26,7 +25,7 @@ class TestInputHandling:
         """Test bytes input gets converted to string in text mode."""
         # Use echo command that reads from stdin
         result = run_command(
-            ["cat"], input=b"hello world", text=True, capture_output=True
+            ["cat"], input=b"hello world", text=True, capture_output=True,
         )
 
         assert result.returncode == 0
@@ -35,7 +34,7 @@ class TestInputHandling:
     def test_string_input_with_binary_mode(self):
         """Test string input gets converted to bytes in binary mode."""
         result = run_command(
-            ["cat"], input="hello world", text=False, capture_output=True
+            ["cat"], input="hello world", text=False, capture_output=True,
         )
 
         assert result.returncode == 0
@@ -45,7 +44,7 @@ class TestInputHandling:
         """Test that matching input types are passed through unchanged."""
         # String input with text mode - should pass through
         result = run_command(
-            ["cat"], input="hello world", text=True, capture_output=True
+            ["cat"], input="hello world", text=True, capture_output=True,
         )
 
         assert result.returncode == 0
@@ -53,7 +52,7 @@ class TestInputHandling:
 
         # Bytes input with binary mode - should pass through
         result = run_command(
-            ["cat"], input=b"hello world", text=False, capture_output=True
+            ["cat"], input=b"hello world", text=False, capture_output=True,
         )
 
         assert result.returncode == 0
@@ -168,7 +167,7 @@ class TestEnvironmentHandling:
     def test_env_dict_conversion(self):
         """Test that env dict is properly converted."""
         result = run_command(
-            ["env"], env={"TEST_VAR": "test_value"}, capture_output=True
+            ["env"], env={"TEST_VAR": "test_value"}, capture_output=True,
         )
 
         assert result.returncode == 0
@@ -194,7 +193,7 @@ class TestStreamCommandCoverage:
                     "import sys; print('stdout'); sys.stderr.write('stderr\\n')",
                 ],
                 stream_stderr=True,
-            )
+            ),
         )
 
         # Should capture both stdout and stderr
@@ -249,7 +248,7 @@ class TestCompletedProcessConstruction:
         """Test CompletedProcess environment handling."""
         # Test with custom env
         result = run_command(
-            ["echo", "test"], env={"TEST_VAR": "value"}, capture_output=True
+            ["echo", "test"], env={"TEST_VAR": "value"}, capture_output=True,
         )
         assert result.env is not None
         assert "TEST_VAR" in result.env

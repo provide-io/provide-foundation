@@ -1,5 +1,4 @@
-"""
-Basic transport system tests.
+"""Basic transport system tests.
 """
 
 import pytest

@@ -98,7 +98,7 @@ class TestConfigSchemaSimple:
             [
                 SchemaField(name="field1", default="default_value"),
                 SchemaField(name="field2", default=42),
-            ]
+            ],
         )
 
         result = schema.apply_defaults({})
@@ -111,7 +111,7 @@ class TestConfigSchemaSimple:
             [
                 SchemaField(name="field1", default="default_value"),
                 SchemaField(name="field2", default=42),
-            ]
+            ],
         )
 
         data = {"field1": "custom_value"}
@@ -125,7 +125,7 @@ class TestConfigSchemaSimple:
             [
                 SchemaField(name="field1"),
                 SchemaField(name="field2"),
-            ]
+            ],
         )
 
         data = {"field1": "value"}
@@ -139,7 +139,7 @@ class TestConfigSchemaSimple:
             [
                 SchemaField(name="field1", default=None),
                 SchemaField(name="field2", default="real_default"),
-            ]
+            ],
         )
 
         result = schema.apply_defaults({})
@@ -153,7 +153,7 @@ class TestConfigSchemaSimple:
             [
                 SchemaField(name="field1"),
                 SchemaField(name="field2"),
-            ]
+            ],
         )
 
         data = {"field1": "value1", "field2": "value2", "extra_field": "extra"}
@@ -208,7 +208,7 @@ class TestConfigSchemaSimple:
         mock_attr = Mock()
         mock_attr.name = "test_field"
         mock_attr.default = None
-        mock_attr.factory = lambda: []
+        mock_attr.factory = list
         mock_attr.type = list
         mock_attr.metadata = {}
 

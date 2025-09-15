@@ -2,8 +2,7 @@
 #
 # examples/tracing/01_simple_tracing.py
 #
-"""
-Simple example showing basic tracing with Foundation.
+"""Simple example showing basic tracing with Foundation.
 
 Demonstrates how to add operation timing and context tracking
 to your applications without external dependencies.
@@ -42,7 +41,7 @@ def fetch_user_data(user_id: int) -> dict:
         return {
             "id": user_id,
             "name": f"User {user_id}",
-            "email": f"user{user_id}@example.com"
+            "email": f"user{user_id}@example.com",
         }
 
 
@@ -103,7 +102,7 @@ def process_order(order_data: dict) -> dict:
             "order_id": order_data["id"],
             "status": "completed",
             "total": total,
-            "trace_id": trace_ctx["trace_id"]
+            "trace_id": trace_ctx["trace_id"],
         }
 
 
@@ -155,9 +154,9 @@ def main():
         "id": "ORD-001",
         "items": [
             {"name": "Widget", "price": 29.99, "quantity": 2},
-            {"name": "Gadget", "price": 15.50, "quantity": 1}
+            {"name": "Gadget", "price": 15.50, "quantity": 1},
         ],
-        "payment_method": "credit_card"
+        "payment_method": "credit_card",
     }
 
     try:
@@ -177,7 +176,7 @@ def main():
     bad_order = {
         "id": "ORD-002",
         "items": [],  # Empty items will cause validation error
-        "payment_method": "credit_card"
+        "payment_method": "credit_card",
     }
 
     try:

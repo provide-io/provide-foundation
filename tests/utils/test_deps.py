@@ -28,7 +28,7 @@ class TestDependencyStatus:
             name="test_lib",
             available=True,
             version="1.0.0",
-            description="Test library"
+            description="Test library",
         )
 
         assert status.name == "test_lib"
@@ -42,7 +42,7 @@ class TestDependencyStatus:
             name="missing_lib",
             available=False,
             version=None,
-            description="Missing library"
+            description="Missing library",
         )
 
         assert status.name == "missing_lib"

@@ -1,5 +1,4 @@
-"""
-Test backward compatibility during Hub transition.
+"""Test backward compatibility during Hub transition.
 
 Ensures that existing code continues to work while using the new Hub-based system.
 """
@@ -92,7 +91,7 @@ class TestBackwardCompatibility:
         from provide.foundation.setup import setup_foundation
 
         config = TelemetryConfig(
-            logging=LoggingConfig(default_level="WARNING")
+            logging=LoggingConfig(default_level="WARNING"),
         )
 
         with warnings.catch_warnings():
@@ -225,11 +224,11 @@ class TestBackwardCompatibility:
         # Should be able to create configs as before
         logging_config = LoggingConfig(
             default_level="DEBUG",
-            console_formatter="json"
+            console_formatter="json",
         )
 
         telemetry_config = TelemetryConfig(
-            logging=logging_config
+            logging=logging_config,
         )
 
         # Should be able to use with new Hub API

@@ -131,7 +131,7 @@ class TestManagedProcessLaunch:
         """Test launch with specific working directory."""
         with tempfile.TemporaryDirectory() as tmpdir:
             proc = ManagedProcess(
-                ["pwd"], cwd=tmpdir, capture_output=True, text_mode=True
+                ["pwd"], cwd=tmpdir, capture_output=True, text_mode=True,
             )
             proc.launch()
 
@@ -165,7 +165,7 @@ class TestManagedProcessOutput:
     async def test_read_line_async_success(self):
         """Test successful async line reading."""
         proc = ManagedProcess(
-            ["echo", "test line"], capture_output=True, text_mode=True
+            ["echo", "test line"], capture_output=True, text_mode=True,
         )
         proc.launch()
 
@@ -181,7 +181,7 @@ class TestManagedProcessOutput:
         proc = ManagedProcess(["echo", "test"])
 
         with pytest.raises(
-            ProcessError, match="Process not running or stdout not available"
+            ProcessError, match="Process not running or stdout not available",
         ):
             await proc.read_line_async()
 
@@ -192,7 +192,7 @@ class TestManagedProcessOutput:
         proc.launch()
 
         with pytest.raises(
-            ProcessError, match="Process not running or stdout not available"
+            ProcessError, match="Process not running or stdout not available",
         ):
             await proc.read_line_async()
 
@@ -217,7 +217,7 @@ class TestManagedProcessOutput:
         proc = ManagedProcess(["echo", "test"])
 
         with pytest.raises(
-            ProcessError, match="Process not running or stdout not available"
+            ProcessError, match="Process not running or stdout not available",
         ):
             await proc.read_char_async()
 
@@ -311,7 +311,7 @@ class TestManagedProcessTermination:
                 sys.executable,
                 "-c",
                 "import signal, time; signal.signal(signal.SIGTERM, signal.SIG_IGN); time.sleep(10)",
-            ]
+            ],
         )
         proc.launch()
 
@@ -428,7 +428,7 @@ class TestWaitForProcessOutput:
         proc.launch()
 
         result = await wait_for_process_output(
-            proc, expected_parts=["start", "middle", "end"], timeout=5.0
+            proc, expected_parts=["start", "middle", "end"], timeout=5.0,
         )
 
         assert "start" in result
@@ -450,7 +450,7 @@ class TestWaitForProcessOutput:
 
         with pytest.raises(TimeoutError, match="Expected pattern .* not found within"):
             await wait_for_process_output(
-                proc, expected_parts=["never_appears"], timeout=1.0
+                proc, expected_parts=["never_appears"], timeout=1.0,
             )
 
         proc.terminate_gracefully()
@@ -468,7 +468,7 @@ class TestWaitForProcessOutput:
 
         with pytest.raises(ProcessError, match="Process exited with code 1"):
             await wait_for_process_output(
-                proc, expected_parts=["never_appears"], timeout=5.0
+                proc, expected_parts=["never_appears"], timeout=5.0,
             )
 
         proc.cleanup()
@@ -492,7 +492,7 @@ class TestWaitForProcessOutput:
         original_read_char = proc.read_char_async
 
         async def mock_read_line(*args, **kwargs):
-            raise TimeoutError()
+            raise TimeoutError
 
         proc.read_line_async = mock_read_line
 
@@ -518,14 +518,14 @@ class TestWaitForProcessOutput:
 
         # Mock both reading methods to timeout
         async def mock_timeout(*args, **kwargs):
-            raise TimeoutError()
+            raise TimeoutError
 
         proc.read_line_async = mock_timeout
         proc.read_char_async = mock_timeout
 
         with pytest.raises(TimeoutError, match="Expected pattern .* not found within"):
             await wait_for_process_output(
-                proc, expected_parts=["never_appears"], timeout=1.0
+                proc, expected_parts=["never_appears"], timeout=1.0,
             )
 
         proc.terminate_gracefully()

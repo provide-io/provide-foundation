@@ -1,5 +1,4 @@
-"""
-Tool registry management using the foundation hub.
+"""Tool registry management using the foundation hub.
 
 Provides registration and discovery of tool managers using
 the main hub registry with proper dimension separation.
@@ -17,8 +16,7 @@ log = get_logger(__name__)
 
 
 class ToolRegistry:
-    """
-    Wrapper around the hub registry for tool management.
+    """Wrapper around the hub registry for tool management.
 
     Uses the main hub registry with dimension="tool_manager"
     to avoid namespace pollution while leveraging existing
@@ -33,8 +31,7 @@ class ToolRegistry:
         self._discover_tools()
 
     def _discover_tools(self) -> None:
-        """
-        Auto-discover tool managers via entry points.
+        """Auto-discover tool managers via entry points.
 
         Looks for entry points in the "wrknv.tools" group
         and automatically registers them.
@@ -71,13 +68,13 @@ class ToolRegistry:
         manager_class: type[BaseToolManager],
         aliases: list[str] | None = None,
     ) -> None:
-        """
-        Register a tool manager with the hub.
+        """Register a tool manager with the hub.
 
         Args:
             name: Tool name (e.g., "terraform").
             manager_class: Tool manager class.
             aliases: Optional aliases for the tool.
+
         """
         # Prepare metadata
         metadata = {
@@ -99,20 +96,19 @@ class ToolRegistry:
         log.info(f"Registered tool manager: {name}")
 
     def get_tool_manager_class(self, name: str) -> type[BaseToolManager] | None:
-        """
-        Get a tool manager class by name.
+        """Get a tool manager class by name.
 
         Args:
             name: Tool name or alias.
 
         Returns:
             Tool manager class, or None if not found.
+
         """
         return self.hub.registry.get(name, dimension=self.DIMENSION)
 
     def create_tool_manager(self, name: str, config: BaseConfig) -> BaseToolManager | None:
-        """
-        Create a tool manager instance.
+        """Create a tool manager instance.
 
         Args:
             name: Tool name or alias.
@@ -120,6 +116,7 @@ class ToolRegistry:
 
         Returns:
             Tool manager instance, or None if not found.
+
         """
         manager_class = self.get_tool_manager_class(name)
         if manager_class:
@@ -127,11 +124,11 @@ class ToolRegistry:
         return None
 
     def list_tools(self) -> list[tuple[str, dict[str, Any]]]:
-        """
-        List all registered tools.
+        """List all registered tools.
 
         Returns:
             List of (name, metadata) tuples.
+
         """
         tools = []
         for name, entry in self.hub.registry.list_dimension(self.DIMENSION):
@@ -140,14 +137,14 @@ class ToolRegistry:
         return tools
 
     def get_tool_info(self, name: str) -> dict[str, Any] | None:
-        """
-        Get information about a specific tool.
+        """Get information about a specific tool.
 
         Args:
             name: Tool name or alias.
 
         Returns:
             Tool metadata dictionary, or None if not found.
+
         """
         entry = self.hub.registry.get_entry(name, dimension=self.DIMENSION)
         if entry and hasattr(entry, "metadata"):
@@ -155,14 +152,14 @@ class ToolRegistry:
         return None
 
     def is_tool_registered(self, name: str) -> bool:
-        """
-        Check if a tool is registered.
+        """Check if a tool is registered.
 
         Args:
             name: Tool name or alias.
 
         Returns:
             True if registered, False otherwise.
+
         """
         return self.get_tool_manager_class(name) is not None
 
@@ -172,11 +169,11 @@ _tool_registry: ToolRegistry | None = None
 
 
 def get_tool_registry() -> ToolRegistry:
-    """
-    Get the global tool registry instance.
+    """Get the global tool registry instance.
 
     Returns:
         Tool registry instance.
+
     """
     global _tool_registry
     if _tool_registry is None:
@@ -185,23 +182,22 @@ def get_tool_registry() -> ToolRegistry:
 
 
 def register_tool_manager(
-    name: str, manager_class: type[BaseToolManager], aliases: list[str] | None = None
+    name: str, manager_class: type[BaseToolManager], aliases: list[str] | None = None,
 ) -> None:
-    """
-    Register a tool manager with the global registry.
+    """Register a tool manager with the global registry.
 
     Args:
         name: Tool name.
         manager_class: Tool manager class.
         aliases: Optional aliases.
+
     """
     registry = get_tool_registry()
     registry.register_tool_manager(name, manager_class, aliases)
 
 
 def get_tool_manager(name: str, config: BaseConfig) -> BaseToolManager | None:
-    """
-    Get a tool manager instance from the global registry.
+    """Get a tool manager instance from the global registry.
 
     Args:
         name: Tool name or alias.
@@ -209,6 +205,7 @@ def get_tool_manager(name: str, config: BaseConfig) -> BaseToolManager | None:
 
     Returns:
         Tool manager instance, or None if not found.
+
     """
     registry = get_tool_registry()
     return registry.create_tool_manager(name, config)

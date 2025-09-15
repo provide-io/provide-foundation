@@ -84,6 +84,7 @@ class ErrorMetadata:
         ...     user_id="user_456",
         ...     retry_count=2
         ... )
+
     """
 
     request_id: str | None = None
@@ -100,6 +101,7 @@ class ErrorMetadata:
 
         Returns:
             Dictionary with non-None metadata fields.
+
         """
         result = {}
         for key in [
@@ -135,6 +137,7 @@ class ErrorResponse:
         ...     message="Invalid email format",
         ...     details={"field": "email", "value": "not-an-email"}
         ... )
+
     """
 
     error_code: str
@@ -148,6 +151,7 @@ class ErrorResponse:
 
         Returns:
             Dictionary representation of error response.
+
         """
         result: dict[str, Any] = {
             "error_code": self.error_code,
@@ -168,6 +172,7 @@ class ErrorResponse:
 
         Returns:
             JSON representation of error response.
+
         """
         import json
 

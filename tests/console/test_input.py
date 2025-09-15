@@ -64,7 +64,7 @@ class TestPin:
 
         test_input = '{"key": "value"}'
         with patch("sys.stdin", StringIO(test_input)), patch(
-            "provide.foundation.console.input._get_context", return_value=ctx
+            "provide.foundation.console.input._get_context", return_value=ctx,
         ):
             result = pin("Enter JSON: ")
             assert result == {"key": "value"}
@@ -76,7 +76,7 @@ class TestPin:
 
         test_input = "plain text\n"
         with patch("sys.stdin", StringIO(test_input)), patch(
-            "provide.foundation.console.input._get_context", return_value=ctx
+            "provide.foundation.console.input._get_context", return_value=ctx,
         ):
             result = pin("Enter: ")
             assert result == "plain text"
@@ -88,7 +88,7 @@ class TestPin:
 
         test_input = "test value\n"
         with patch("sys.stdin", StringIO(test_input)), patch(
-            "provide.foundation.console.input._get_context", return_value=ctx
+            "provide.foundation.console.input._get_context", return_value=ctx,
         ):
             result = pin("Enter: ", json_key="input")
             assert result == {"input": "test value"}
@@ -129,7 +129,7 @@ class TestPinStream:
 
         test_input = '["item1", "item2", "item3"]'
         with patch("sys.stdin", StringIO(test_input)), patch(
-            "provide.foundation.console.input._get_context", return_value=ctx
+            "provide.foundation.console.input._get_context", return_value=ctx,
         ):
             lines = list(pin_stream())
             assert lines == ["item1", "item2", "item3"]
@@ -141,7 +141,7 @@ class TestPinStream:
 
         test_input = '{"key": "value"}'
         with patch("sys.stdin", StringIO(test_input)), patch(
-            "provide.foundation.console.input._get_context", return_value=ctx
+            "provide.foundation.console.input._get_context", return_value=ctx,
         ):
             lines = list(pin_stream())
             assert lines == ['{"key": "value"}']
@@ -153,7 +153,7 @@ class TestPinStream:
 
         test_input = "plain\ntext\nlines\n"
         with patch("sys.stdin", StringIO(test_input)), patch(
-            "provide.foundation.console.input._get_context", return_value=ctx
+            "provide.foundation.console.input._get_context", return_value=ctx,
         ):
             lines = list(pin_stream())
             assert lines == ["plain", "text", "lines"]
@@ -204,7 +204,7 @@ class TestAsyncPin:
 
     @pytest.mark.asyncio
     @pytest.mark.skip(
-        reason="Requires real stdin which is not available in test environment"
+        reason="Requires real stdin which is not available in test environment",
     )
     async def test_apin_stream_basic(self):
         """Test basic async streaming."""
@@ -216,7 +216,7 @@ class TestAsyncPin:
 
         # Mock the async generator
         with patch(
-            "provide.foundation.console.input.apin_stream", return_value=mock_stream()
+            "provide.foundation.console.input.apin_stream", return_value=mock_stream(),
         ):
             lines = []
             async for line in apin_stream():
@@ -233,7 +233,7 @@ class TestAsyncPin:
                 yield line
 
         with patch(
-            "provide.foundation.console.input.apin_stream", return_value=mock_stream()
+            "provide.foundation.console.input.apin_stream", return_value=mock_stream(),
         ):
             lines = await apin_lines(2)
             assert lines == ["line1", "line2"]
@@ -248,7 +248,7 @@ class TestAsyncPin:
                 yield line
 
         with patch(
-            "provide.foundation.console.input.apin_stream", return_value=mock_stream()
+            "provide.foundation.console.input.apin_stream", return_value=mock_stream(),
         ):
             lines = await apin_lines()
             assert lines == test_lines
@@ -298,7 +298,7 @@ class TestAsyncStreamIntegration:
             mock_loop.return_value.run_in_executor.return_value = future
 
             with patch(
-                "provide.foundation.console.input._get_context", return_value=ctx
+                "provide.foundation.console.input._get_context", return_value=ctx,
             ):
                 lines = []
                 async for line in apin_stream():
@@ -316,12 +316,11 @@ class TestEdgeCases:
         ctx.json_output = True
 
         # Simulate an error reading stdin
-        with patch("sys.stdin.readline", side_effect=OSError("Read error")):
-            with patch(
-                "provide.foundation.console.input._get_context", return_value=ctx
-            ):
-                result = pin("Enter: ", json_key="input")
-                assert result == {"input": None, "error": "Read error"}
+        with patch("sys.stdin.readline", side_effect=OSError("Read error")), patch(
+            "provide.foundation.console.input._get_context", return_value=ctx,
+        ):
+            result = pin("Enter: ", json_key="input")
+            assert result == {"input": None, "error": "Read error"}
 
     def test_pin_stream_logging(self):
         """Test that pin_stream() logs appropriately."""

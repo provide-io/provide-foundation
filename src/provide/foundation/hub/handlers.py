@@ -1,5 +1,4 @@
-"""
-Hub error handler management utilities.
+"""Hub error handler management utilities.
 
 Provides functions for discovering and executing error handlers from the registry.
 """

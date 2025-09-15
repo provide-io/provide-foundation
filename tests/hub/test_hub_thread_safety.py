@@ -74,7 +74,7 @@ class TestRegistryThreadSafety:
                 value = registry.get(f"item_{i}", dimension="test")
                 if value != f"value_{i}":
                     results.append(
-                        f"Thread {thread_id}: Expected value_{i}, got {value}"
+                        f"Thread {thread_id}: Expected value_{i}, got {value}",
                     )
 
         # Create multiple threads that read from registry
@@ -176,7 +176,7 @@ class TestRegistryThreadSafety:
                 items = registry.list_dimension(dim)
                 if len(items) != 0:
                     errors.append(
-                        f"Thread {thread_id}: Dimension not empty after clear"
+                        f"Thread {thread_id}: Dimension not empty after clear",
                     )
             except Exception as e:
                 errors.append(f"Thread {thread_id}: {e}")

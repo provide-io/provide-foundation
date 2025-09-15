@@ -23,7 +23,7 @@ class TestBzip2Compressor:
 
     def test_compress_file(self, bzip2_compressor, test_file):
         """Test compressing a file."""
-        output = test_file.with_suffix('.txt.bz2')
+        output = test_file.with_suffix(".txt.bz2")
 
         try:
             result = bzip2_compressor.compress_file(test_file, output)
@@ -37,8 +37,8 @@ class TestBzip2Compressor:
 
     def test_decompress_file(self, bzip2_compressor, test_file):
         """Test decompressing a file."""
-        compressed = test_file.with_suffix('.txt.bz2')
-        decompressed = test_file.with_suffix('.txt.decompressed')
+        compressed = test_file.with_suffix(".txt.bz2")
+        decompressed = test_file.with_suffix(".txt.decompressed")
 
         try:
             # Compress first
@@ -64,7 +64,7 @@ class TestBzip2Compressor:
         assert isinstance(compressed, bytes)
         assert len(compressed) < len(data)
         # Check BZIP2 magic number
-        assert compressed[:3] == b'BZh'
+        assert compressed[:3] == b"BZh"
 
     def test_decompress_bytes(self, bzip2_compressor):
         """Test decompressing bytes data."""
@@ -85,7 +85,7 @@ class TestBzip2Compressor:
 
         compressed = output_stream.getvalue()
         assert len(compressed) < len(input_data)
-        assert compressed[:3] == b'BZh'
+        assert compressed[:3] == b"BZh"
 
     def test_decompress_stream(self, bzip2_compressor):
         """Test decompressing from stream to stream."""
@@ -136,7 +136,7 @@ class TestBzip2Compressor:
         with pytest.raises(ArchiveError):
             bzip2_compressor.compress_file(
                 temp_path / "nonexistent.txt",
-                temp_path / "output.bz2"
+                temp_path / "output.bz2",
             )
 
         # Test decompressing invalid data
@@ -146,7 +146,7 @@ class TestBzip2Compressor:
         with pytest.raises(ArchiveError):
             bzip2_compressor.decompress_file(
                 invalid_file,
-                temp_path / "output.txt"
+                temp_path / "output.txt",
             )
 
         # Test decompressing invalid bytes

@@ -1,5 +1,4 @@
-"""
-Universal client tests.
+"""Universal client tests.
 """
 
 import pytest
@@ -99,13 +98,13 @@ async def test_universal_client_with_headers(httpx_mock: HTTPXMock):
     )
 
     client = UniversalClient(
-        default_headers={"Authorization": "Bearer default-token"}
+        default_headers={"Authorization": "Bearer default-token"},
     )
 
     async with client:
         response = await client.get(
             "https://api.example.com/protected",
-            headers={"X-Custom": "value"}
+            headers={"X-Custom": "value"},
         )
 
     assert response.status == 200
@@ -124,7 +123,7 @@ async def test_universal_client_middleware():
     # Mock response
     from unittest.mock import AsyncMock, patch
 
-    with patch('provide.foundation.transport.http.httpx.AsyncClient') as mock_client_class:
+    with patch("provide.foundation.transport.http.httpx.AsyncClient") as mock_client_class:
         mock_client = AsyncMock()
         mock_client_class.return_value = mock_client
 
@@ -147,8 +146,8 @@ async def test_universal_client_middleware():
         assert response.status == 200
 
         # Check metrics middleware was used
-        assert hasattr(metrics_mw, '_request_counter')
-        assert hasattr(metrics_mw, '_request_duration')
+        assert hasattr(metrics_mw, "_request_counter")
+        assert hasattr(metrics_mw, "_request_duration")
 
 
 @pytest.mark.asyncio
@@ -176,7 +175,7 @@ async def test_convenience_functions(httpx_mock: HTTPXMock):
     # Test POST
     response = await post(
         "https://api.example.com/create",
-        body={"data": "test"}
+        body={"data": "test"},
     )
     assert response.status == 201
     assert response.json()["id"] == 456

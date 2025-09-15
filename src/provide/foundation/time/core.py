@@ -6,8 +6,7 @@ from zoneinfo import ZoneInfo
 
 
 def provide_time() -> float:
-    """
-    Get current time with Foundation tracking.
+    """Get current time with Foundation tracking.
 
     Returns:
         Current time as seconds since epoch
@@ -16,19 +15,20 @@ def provide_time() -> float:
         >>> current_time = provide_time()
         >>> isinstance(current_time, float)
         True
+
     """
     return time.time()
 
 
 def provide_sleep(seconds: float) -> None:
-    """
-    Sleep with Foundation tracking and interruption support.
+    """Sleep with Foundation tracking and interruption support.
 
     Args:
         seconds: Number of seconds to sleep
 
     Example:
         >>> provide_sleep(0.1)  # Sleep for 100ms
+
     """
     if seconds < 0:
         raise ValueError("Sleep duration must be non-negative")
@@ -36,8 +36,7 @@ def provide_sleep(seconds: float) -> None:
 
 
 def provide_now(tz: str | ZoneInfo | None = None) -> datetime:
-    """
-    Get current datetime with timezone awareness.
+    """Get current datetime with timezone awareness.
 
     Args:
         tz: Timezone (string name, ZoneInfo object, or None for local)
@@ -52,10 +51,11 @@ def provide_now(tz: str | ZoneInfo | None = None) -> datetime:
         >>> utc_now = provide_now("UTC")
         >>> utc_now.tzinfo.key
         'UTC'
+
     """
     if tz is None:
         return datetime.now()
-    elif isinstance(tz, str):
+    if isinstance(tz, str):
         zone = ZoneInfo(tz)
     else:
         zone = tz

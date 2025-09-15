@@ -28,6 +28,7 @@ def system_temp_dir() -> Path:
     Example:
         >>> temp_path = system_temp_dir()
         >>> print(temp_path)  # e.g., /tmp or C:\\Users\\...\\Temp
+
     """
     return Path(tempfile.gettempdir())
 
@@ -63,6 +64,7 @@ def secure_temp_file(
         ...         os.fsync(f.fileno())
         ... finally:
         ...     path.unlink(missing_ok=True)
+
     """
     if dir and isinstance(dir, Path):
         dir = str(dir)
@@ -95,6 +97,7 @@ def temp_file(
         >>> with temp_file(suffix='.json') as tmp:
         ...     tmp.write_text('{"key": "value"}')
         ...     process_file(tmp)
+
     """
     temp_path = None
     try:
@@ -103,7 +106,7 @@ def temp_file(
 
         # Create temp file and immediately close it
         with tempfile.NamedTemporaryFile(
-            suffix=suffix, prefix=prefix, dir=dir, delete=False, mode="w" if text else "wb"
+            suffix=suffix, prefix=prefix, dir=dir, delete=False, mode="w" if text else "wb",
         ) as f:
             temp_path = Path(f.name)
 
@@ -137,6 +140,7 @@ def temp_dir(
         >>> with temp_dir() as tmpdir:
         ...     (tmpdir / 'data.txt').write_text('content')
         ...     process_directory(tmpdir)
+
     """
     temp_path = None
     try:

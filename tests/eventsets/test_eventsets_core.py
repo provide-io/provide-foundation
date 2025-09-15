@@ -1,6 +1,5 @@
 # tests/test_eventsets.py
-"""
-Tests for Event Set configuration, resolution, and processing.
+"""Tests for Event Set configuration, resolution, and processing.
 """
 
 
@@ -57,7 +56,7 @@ class TestEventSetResolver:
             "event": "Test message",
             "domain": "system",
             "action": "start",
-            "status": "success"
+            "status": "success",
         }
 
         enriched = resolver.enrich_event(event.copy())
@@ -75,7 +74,7 @@ class TestEventSetResolver:
         event = {
             "event": "HTTP request",
             "http.method": "get",
-            "http.status_class": "2xx"
+            "http.status_class": "2xx",
         }
 
         enriched = resolver.enrich_event(event.copy())
@@ -96,7 +95,7 @@ class TestEventSetResolver:
             "event": "LLM call",
             "llm.provider": "anthropic",
             "llm.task": "chat",
-            "llm.outcome": "success"
+            "llm.outcome": "success",
         }
 
         enriched = resolver.enrich_event(event.copy())
@@ -120,7 +119,7 @@ class TestEventSetTypes:
         mapping = EventMapping(
             name="test",
             visual_markers={"test": "🧪"},
-            default_key="default"
+            default_key="default",
         )
         assert mapping.name == "test"
         assert mapping.visual_markers["test"] == "🧪"
@@ -136,7 +135,7 @@ class TestEventSetTypes:
             description="Test event set",
             mappings=[mapping],
             field_mappings=[field_mapping],
-            priority=50
+            priority=50,
         )
 
         assert event_set.name == "test_set"
@@ -160,8 +159,8 @@ class TestLoggingIntegration:
             logging=LoggingConfig(
                 default_level="INFO",
                 das_emoji_prefix_enabled=True,
-                console_formatter="key_value"
-            )
+                console_formatter="key_value",
+            ),
         )
 
         # Setup telemetry

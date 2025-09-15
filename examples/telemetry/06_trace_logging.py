@@ -23,8 +23,7 @@ from provide.foundation import (  # noqa: E402
 
 
 def example_6_trace_logging() -> None:
-    """
-    Example 6: Demonstrates the custom TRACE log level.
+    """Example 6: Demonstrates the custom TRACE log level.
 
     TRACE is a highly verbose level, numerically lower than DEBUG. This example
     shows how to enable and use it for detailed diagnostic logging.
@@ -39,7 +38,7 @@ def example_6_trace_logging() -> None:
         logging=LoggingConfig(
             default_level="TRACE",  # Set TRACE as the default for all loggers
             module_levels={"specific.module": "DEBUG"},  # Example of other module
-        )
+        ),
     )
     setup_telemetry(config)
 
@@ -56,10 +55,10 @@ def example_6_trace_logging() -> None:
     )
 
     logger.get_logger("specific.module").trace(
-        "This trace from specific.module will NOT show (its level is DEBUG)"
+        "This trace from specific.module will NOT show (its level is DEBUG)",
     )
     logger.get_logger("specific.module").debug(
-        "This debug from specific.module WILL show"
+        "This debug from specific.module WILL show",
     )
 
 

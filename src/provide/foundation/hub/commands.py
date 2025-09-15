@@ -1,5 +1,4 @@
-"""
-Command registration and management for the hub.
+"""Command registration and management for the hub.
 
 This module now re-exports from the split modules for backward compatibility.
 """
@@ -22,12 +21,12 @@ def __getattr__(name: str):
 
             if name == "build_click_command":
                 return build_click_command
-            elif name == "create_command_group":
+            if name == "create_command_group":
                 return create_command_group
         except ImportError as e:
             if "click" in str(e):
                 raise ImportError(
-                    f"CLI feature '{name}' requires: pip install 'provide-foundation[cli]'"
+                    f"CLI feature '{name}' requires: pip install 'provide-foundation[cli]'",
                 ) from e
             raise
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")

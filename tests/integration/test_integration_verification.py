@@ -1,8 +1,7 @@
 #
 # test_verification.py
 #
-"""
-Quick verification script to test the lazy initialization fixes.
+"""Quick verification script to test the lazy initialization fixes.
 """
 
 import os

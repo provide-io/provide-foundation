@@ -65,7 +65,7 @@ class TestPlatformBasicCoverage:
             # Test basic functionality
             result = get_system_info()
             assert result is not None
-            assert hasattr(result, 'os_name')
+            assert hasattr(result, "os_name")
         except ImportError:
             pytest.skip("get_system_info not available")
 
@@ -113,7 +113,7 @@ class TestTracerBasicCoverage:
 
         # Should return None when no span is active
         result = get_current_span()
-        assert result is None or hasattr(result, 'span_id')
+        assert result is None or hasattr(result, "span_id")
 
     def test_spans_module_imports(self):
         """Test spans module can be imported."""
@@ -135,5 +135,5 @@ class TestTracerBasicCoverage:
         span = Span(name="test_span")
         assert span is not None
         assert span.name == "test_span"
-        assert hasattr(span, 'span_id')
-        assert hasattr(span, 'trace_id')
+        assert hasattr(span, "span_id")
+        assert hasattr(span, "trace_id")

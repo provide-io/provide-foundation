@@ -1,5 +1,4 @@
-"""
-Search operations for OpenObserve.
+"""Search operations for OpenObserve.
 """
 
 import re
@@ -13,7 +12,7 @@ log = get_logger(__name__)
 
 def _sanitize_stream_name(stream: str) -> str:
     """Sanitize stream name to prevent SQL injection."""
-    if not re.match(r'^[a-zA-Z0-9_]+$', stream):
+    if not re.match(r"^[a-zA-Z0-9_]+$", stream):
         raise ValueError(f"Invalid stream name: {stream}")
     return stream
 
@@ -21,7 +20,7 @@ def _sanitize_stream_name(stream: str) -> str:
 def _sanitize_trace_id(trace_id: str) -> str:
     """Sanitize trace ID to prevent SQL injection."""
     # Allow hex strings and UUID format (with hyphens)
-    if not re.match(r'^[a-fA-F0-9\-]+$', trace_id):
+    if not re.match(r"^[a-fA-F0-9\-]+$", trace_id):
         raise ValueError(f"Invalid trace_id format: {trace_id}")
     return trace_id
 
@@ -36,7 +35,7 @@ def _sanitize_log_level(level: str) -> str:
 
 def _sanitize_service_name(service: str) -> str:
     """Sanitize service name to prevent SQL injection."""
-    if not re.match(r'^[a-zA-Z0-9_\-\.]+$', service):
+    if not re.match(r"^[a-zA-Z0-9_\-\.]+$", service):
         raise ValueError(f"Invalid service name: {service}")
     return service
 
@@ -59,6 +58,7 @@ def search_logs(
 
     Returns:
         SearchResponse with results
+
     """
     if client is None:
         client = OpenObserveClient.from_config()
@@ -85,6 +85,7 @@ def search_by_trace_id(
 
     Returns:
         SearchResponse with matching logs
+
     """
     # Sanitize inputs to prevent SQL injection
     safe_stream = _sanitize_stream_name(stream)
@@ -113,6 +114,7 @@ def search_by_level(
 
     Returns:
         SearchResponse with matching logs
+
     """
     # Sanitize inputs to prevent SQL injection
     safe_stream = _sanitize_stream_name(stream)
@@ -143,6 +145,7 @@ def search_errors(
 
     Returns:
         SearchResponse with error logs
+
     """
     return search_by_level(
         level="ERROR",
@@ -173,6 +176,7 @@ def search_by_service(
 
     Returns:
         SearchResponse with matching logs
+
     """
     # Sanitize inputs to prevent SQL injection
     safe_stream = _sanitize_stream_name(stream)
@@ -203,6 +207,7 @@ def aggregate_by_level(
 
     Returns:
         Dictionary mapping level to count
+
     """
     # Sanitize stream name to prevent SQL injection
     safe_stream = _sanitize_stream_name(stream)
@@ -236,6 +241,7 @@ def get_current_trace_logs(
 
     Returns:
         SearchResponse with logs for current trace, or None if no active trace
+
     """
     # Try to get current trace ID from OpenTelemetry
     try:

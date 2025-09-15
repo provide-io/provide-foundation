@@ -1,5 +1,4 @@
-"""
-Hub component discovery and dependency resolution utilities.
+"""Hub component discovery and dependency resolution utilities.
 
 Provides functions for discovering components and resolving their dependencies
 in the Hub registry system.
@@ -49,8 +48,7 @@ def discover_components(
     dimension: str = "component",
     registry: Registry | None = None,
 ) -> dict[str, type[Any]]:
-    """
-    Discover and register components from entry points.
+    """Discover and register components from entry points.
 
     Args:
         group: Entry point group name (e.g., 'provide.components')
@@ -59,9 +57,10 @@ def discover_components(
 
     Returns:
         Dictionary mapping component names to their classes
+
     """
     try:
-        import importlib.metadata as metadata
+        from importlib import metadata
     except ImportError:
         # Python < 3.8 fallback
         import importlib_metadata as metadata  # type: ignore
@@ -75,7 +74,7 @@ def discover_components(
     # Discover all entry points in the specified group
     try:
         entry_points = metadata.entry_points()
-        if hasattr(entry_points, 'select'):
+        if hasattr(entry_points, "select"):
             # Python 3.10+ API
             group_entries = entry_points.select(group=group)
         else:
@@ -93,10 +92,10 @@ def discover_components(
                     value=component_class,
                     dimension=dimension,
                     metadata={
-                        'entry_point': entry_point.name,
-                        'module': entry_point.module,
-                        'discovered': True,
-                    }
+                        "entry_point": entry_point.name,
+                        "module": entry_point.module,
+                        "discovered": True,
+                    },
                 )
 
                 discovered[entry_point.name] = component_class

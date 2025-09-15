@@ -1,5 +1,4 @@
-"""
-Type parsing and conversion utilities.
+"""Type parsing and conversion utilities.
 
 Provides utilities for converting string values (from environment variables,
 config files, CLI args, etc.) to proper Python types based on type hints.
@@ -11,8 +10,7 @@ T = TypeVar("T")
 
 
 def parse_bool(value: Any, strict: bool = False) -> bool:
-    """
-    Parse a boolean value from string or other types.
+    """Parse a boolean value from string or other types.
 
     Accepts: true/false, yes/no, 1/0, on/off, enabled/disabled (case-insensitive)
 
@@ -26,6 +24,7 @@ def parse_bool(value: Any, strict: bool = False) -> bool:
     Raises:
         TypeError: If strict=True and value is not bool or string
         ValueError: If value cannot be parsed as boolean
+
     """
     if isinstance(value, bool):
         return value
@@ -37,10 +36,9 @@ def parse_bool(value: Any, strict: bool = False) -> bool:
 
     if str_value in ("true", "yes", "1", "on", "enabled"):
         return True
-    elif str_value in ("false", "no", "0", "off", "disabled", ""):
+    if str_value in ("false", "no", "0", "off", "disabled", ""):
         return False
-    else:
-        raise ValueError(f"Cannot parse '{value}' as boolean")
+    raise ValueError(f"Cannot parse '{value}' as boolean")
 
 
 def parse_list(
@@ -48,8 +46,7 @@ def parse_list(
     separator: str = ",",
     strip: bool = True,
 ) -> list[str]:
-    """
-    Parse a list from a string.
+    """Parse a list from a string.
 
     Args:
         value: String or list to parse
@@ -58,6 +55,7 @@ def parse_list(
 
     Returns:
         List of strings
+
     """
     if isinstance(value, list):
         return value
@@ -79,8 +77,7 @@ def parse_dict(
     key_separator: str = "=",
     strip: bool = True,
 ) -> dict[str, str]:
-    """
-    Parse a dictionary from a string.
+    """Parse a dictionary from a string.
 
     Format: "key1=value1,key2=value2"
 
@@ -95,6 +92,7 @@ def parse_dict(
 
     Raises:
         ValueError: If format is invalid
+
     """
     if isinstance(value, dict):
         return value
@@ -124,8 +122,7 @@ def parse_dict(
 
 
 def parse_typed_value(value: str, target_type: type) -> Any:
-    """
-    Parse a string value to a specific type.
+    """Parse a string value to a specific type.
 
     Handles basic types (int, float, bool, str) and generic types (list, dict).
     For attrs fields, pass field.type as target_type.
@@ -144,6 +141,7 @@ def parse_typed_value(value: str, target_type: type) -> Any:
         True
         >>> parse_typed_value("a,b,c", list)
         ['a', 'b', 'c']
+
     """
     if value is None:
         return None
@@ -151,11 +149,11 @@ def parse_typed_value(value: str, target_type: type) -> Any:
     # Handle basic types
     if target_type is bool:
         return parse_bool(value)
-    elif target_type is int:
+    if target_type is int:
         return int(value)
-    elif target_type is float:
+    if target_type is float:
         return float(value)
-    elif target_type is str:
+    if target_type is str:
         return value
 
     # Handle generic types using typing module
@@ -181,7 +179,7 @@ def parse_typed_value(value: str, target_type: type) -> Any:
         # Not a generic type, try direct conversion
         if target_type is list:
             return parse_list(value)
-        elif target_type is dict:
+        if target_type is dict:
             return parse_dict(value)
 
     # Default to string
@@ -189,8 +187,7 @@ def parse_typed_value(value: str, target_type: type) -> Any:
 
 
 def auto_parse(attr: Any, value: str) -> Any:
-    """
-    Automatically parse value based on an attrs field's type and metadata.
+    """Automatically parse value based on an attrs field's type and metadata.
 
     This function first checks for a converter in the field's metadata,
     then falls back to type-based parsing.
@@ -216,6 +213,7 @@ def auto_parse(attr: Any, value: str) -> Any:
         True
         >>> auto_parse(fields(Config).custom, "hello")
         'HELLO'
+
     """
     # Check for attrs field converter first
     if hasattr(attr, "converter") and attr.converter is not None:

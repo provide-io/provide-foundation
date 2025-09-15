@@ -24,7 +24,7 @@ class TestHubFixturesCoverage:
         assert test_file.read_text() == "test content"
 
     def test_default_container_directory_is_temporary(
-        self, default_container_directory
+        self, default_container_directory,
     ):
         """Test that the directory is temporary and isolated per test session."""
         # Since it's session-scoped, we get the same directory within the session

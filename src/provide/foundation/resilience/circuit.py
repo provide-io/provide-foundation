@@ -1,5 +1,4 @@
-"""
-Circuit breaker implementation for preventing cascading failures.
+"""Circuit breaker implementation for preventing cascading failures.
 """
 
 from collections.abc import Callable
@@ -115,7 +114,7 @@ class CircuitBreaker:
             else:
                 raise RuntimeError(
                     f"Circuit breaker is open. Next attempt in "
-                    f"{self._next_attempt_time - time.time():.1f} seconds"
+                    f"{self._next_attempt_time - time.time():.1f} seconds",
                 )
 
         try:
@@ -141,7 +140,7 @@ class CircuitBreaker:
             else:
                 raise RuntimeError(
                     f"Circuit breaker is open. Next attempt in "
-                    f"{self._next_attempt_time - time.time():.1f} seconds"
+                    f"{self._next_attempt_time - time.time():.1f} seconds",
                 )
 
         try:

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # examples/telemetry/02_structured_logging.py
-"""
-Quick Start Example - Structured Logging with Full Setup
+"""Quick Start Example - Structured Logging with Full Setup
 
 This example demonstrates how to use setup_telemetry() to configure logging,
 tracing, and metrics. It shows:
@@ -45,8 +44,7 @@ from provide.foundation.logger.config import (  # noqa: E402
 
 
 def example_1_quick_start() -> None:
-    """
-    Demonstrates basic structured logging with provide.foundation.
+    """Demonstrates basic structured logging with provide.foundation.
 
     Key concepts:
     - setup_telemetry() initializes the logging system
@@ -64,8 +62,8 @@ def example_1_quick_start() -> None:
     # This sets up logging + optional tracing/metrics if dependencies available
     setup_telemetry(
         TelemetryConfig(
-            logging=LoggingConfig(default_level="INFO")
-        )
+            logging=LoggingConfig(default_level="INFO"),
+        ),
     )
 
     # Start logging immediately

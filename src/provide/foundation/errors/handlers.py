@@ -52,6 +52,7 @@ def error_boundary(
         >>> # Suppress and log specific errors
         >>> with error_boundary(KeyError, reraise=False, fallback=None):
         ...     value = data["missing_key"]
+
     """
     # Default to catching all exceptions if none specified
     catch_types = catch if catch else (Exception,)
@@ -68,7 +69,7 @@ def error_boundary(
                 {
                     "error.type": type(e).__name__,
                     "error.message": str(e),
-                }
+                },
             )
 
             # If it's a FoundationError, merge its context
@@ -126,6 +127,7 @@ def transactional(
         >>> with transactional(rollback_changes, commit_changes):
         ...     db.execute("INSERT INTO users ...")
         ...     db.execute("UPDATE accounts ...")
+
     """
     try:
         yield
@@ -190,6 +192,7 @@ def handle_error(
         ...     risky_operation()
         ... except ValueError as e:
         ...     result = handle_error(e, fallback="default")
+
     """
     # Capture context if requested
     context = None
@@ -228,9 +231,10 @@ class ErrorHandler:
         ...     default_action=lambda e: None
         ... )
         >>> result = handler.handle(some_error)
+
     """
 
-    policies: dict[type[Exception], Callable[[Exception], Any]] = field(factory=lambda: {})
+    policies: dict[type[Exception], Callable[[Exception], Any]] = field(factory=dict)
     default_action: Callable[[Exception], Any] = field(default=lambda e: None)
     log_all: bool = True
     capture_context: bool = True
@@ -245,6 +249,7 @@ class ErrorHandler:
 
         Returns:
             Self for method chaining.
+
         """
         self.policies[error_type] = handler
         return self
@@ -263,6 +268,7 @@ class ErrorHandler:
 
         Examples:
             >>> result = handler.handle(ValidationError("Invalid"))
+
         """
         # Find matching handler
         handler = None
@@ -326,6 +332,7 @@ def create_error_handler(**policies: Callable[[Exception], Any]) -> ErrorHandler
         ...     NetworkError=lambda e: retry_operation(),
         ...     default=lambda e: None
         ... )
+
     """
     # Extract default if provided
     default = policies.pop("default", lambda e: None)

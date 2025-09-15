@@ -1,8 +1,7 @@
 #
 # logging.py
 #
-"""
-LoggingConfig class for Foundation logger configuration.
+"""LoggingConfig class for Foundation logger configuration.
 """
 
 from pathlib import Path

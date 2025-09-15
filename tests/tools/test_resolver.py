@@ -386,7 +386,7 @@ class TestVersionResolverIntegration:
             "1.0.0", "1.0.1", "1.0.2",
             "1.1.0", "1.1.1", "1.2.0",
             "2.0.0", "2.0.1", "2.1.0",
-            "3.0.0-alpha", "3.0.0-beta", "3.0.0"
+            "3.0.0-alpha", "3.0.0-beta", "3.0.0",
         ]
 
         # Tilde should get latest patch
@@ -408,7 +408,7 @@ class TestVersionResolverIntegration:
         resolver = VersionResolver()
         available = [
             "v0.1.0", "v0.2.0", "v1.0.0",
-            "v1.1.0", "v2.0.0", "v2.0.0-beta"
+            "v1.1.0", "v2.0.0", "v2.0.0-beta",
         ]
 
         # Should handle v prefixes
@@ -422,7 +422,7 @@ class TestVersionResolverIntegration:
         available = [
             "1.0.0", "1.0.1", "1.1.0",
             "2.0.0a1", "2.0.0b1", "2.0.0rc1",
-            "2.0.0", "2.0.0.dev1"
+            "2.0.0", "2.0.0.dev1",
         ]
 
         # Should identify Python pre-releases
@@ -441,8 +441,8 @@ class TestVersionResolverIntegration:
         # Generate lots of versions
         available = []
         for major in range(1, 6):
-            for minor in range(0, 10):
-                for patch in range(0, 10):
+            for minor in range(10):
+                for patch in range(10):
                     available.append(f"{major}.{minor}.{patch}")
 
         # Should still be fast
@@ -458,7 +458,7 @@ class TestVersionResolverIntegration:
         available = [
             "20.10.0", "20.10.1", "20.10.17",
             "24.0.0", "24.0.1", "24.0.2",
-            "24.0.3-beta", "24.0.4-rc1"
+            "24.0.3-beta", "24.0.4-rc1",
         ]
 
         assert resolver.resolve("latest", available) == "24.0.2"
@@ -472,7 +472,7 @@ class TestVersionResolverIntegration:
         available = [
             "16.14.0", "16.15.0", "16.16.0",
             "18.0.0", "18.1.0", "18.2.0",
-            "19.0.0-pre", "19.0.0"
+            "19.0.0-pre", "19.0.0",
         ]
 
         assert resolver.resolve("latest", available) == "19.0.0"

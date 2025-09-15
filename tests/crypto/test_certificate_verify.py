@@ -22,7 +22,7 @@ from provide.foundation.crypto import (
 
 @pytest.mark.asyncio
 async def test_verify_single_certificate_in_trust_chain(
-    client_cert, server_cert
+    client_cert, server_cert,
 ) -> None:
     """Test basic trust chain verification with a single certificate."""
     # Add server cert to client's trust chain
@@ -121,7 +121,7 @@ async def test_verify_trust_chain_after_modification(client_cert, server_cert) -
 
 @pytest.mark.asyncio
 async def test_verify_multiple_certificates_in_trust_chain(
-    client_cert, server_cert
+    client_cert, server_cert,
 ) -> None:
     """Test verification with multiple certificates in trust chain."""
     # Create a trust chain with both certs
@@ -218,7 +218,7 @@ async def test_corrupt_certificate() -> None:
     """Ensure corrupted certificates raise errors."""
     with pytest.raises(CertificateError):
         Certificate(
-            cert_pem_or_uri="-----BEGIN CERTIFICATE-----\nINVALID DATA\n-----END CERTIFICATE-----"
+            cert_pem_or_uri="-----BEGIN CERTIFICATE-----\nINVALID DATA\n-----END CERTIFICATE-----",
         )
 
 
@@ -264,7 +264,7 @@ async def test_certificate_mismatched_issuer() -> None:
 async def test_certificate_self_signature_validation() -> None:
     """Ensure a generated self-signed certificate's signature is valid."""
     cert = Certificate(
-        generate_keypair=True, key_type="ecdsa", ecdsa_curve="secp384r1"
+        generate_keypair=True, key_type="ecdsa", ecdsa_curve="secp384r1",
     )  # Using a common type
 
     # A freshly generated self-signed certificate should have a valid signature

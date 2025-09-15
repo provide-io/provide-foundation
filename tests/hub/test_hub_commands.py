@@ -43,7 +43,6 @@ class TestCommandRegistration:
         @register_command()
         def my_special_command() -> None:
             """Auto-named command."""
-            pass
 
         hub = get_hub()
         # The function name is used as the command name
@@ -57,7 +56,6 @@ class TestCommandRegistration:
         @register_command("initialize", aliases=["init", "setup"])
         def init_command() -> None:
             """Initialize the system."""
-            pass
 
         hub = get_hub()
 
@@ -77,7 +75,6 @@ class TestCommandRegistration:
         )
         def deploy_command() -> None:
             """Deploy the application."""
-            pass
 
         hub = get_hub()
         entry = hub._command_registry.get_entry("deploy", dimension="command")
@@ -93,7 +90,6 @@ class TestCommandRegistration:
         @register_command("secret", hidden=True)
         def secret_command() -> None:
             """Hidden command."""
-            pass
 
         hub = get_hub()
         entry = hub._command_registry.get_entry("secret", dimension="command")
@@ -110,7 +106,6 @@ class TestCommandRegistration:
         @register_command("info-cmd", description="Custom description")
         def info_command() -> None:
             """Docstring description."""
-            pass
 
         hub = get_hub()
         entry = hub._command_registry.get_entry("info-cmd", dimension="command")
@@ -214,12 +209,10 @@ class TestCommandRegistration:
         @register_command("parent.child1")
         def child1() -> None:
             """Child command 1."""
-            pass
 
         @register_command("parent.child2")
         def child2() -> None:
             """Child command 2."""
-            pass
 
         hub = get_hub()
 

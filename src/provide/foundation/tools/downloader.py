@@ -1,5 +1,4 @@
-"""
-Tool download orchestration with progress reporting.
+"""Tool download orchestration with progress reporting.
 
 Provides capabilities for downloading tools with progress tracking,
 parallel downloads, and mirror support.
@@ -21,12 +20,10 @@ log = get_logger(__name__)
 class DownloadError(FoundationError):
     """Raised when download fails."""
 
-    pass
 
 
 class ToolDownloader:
-    """
-    Advanced download capabilities for tools.
+    """Advanced download capabilities for tools.
 
     Features:
     - Progress reporting with callbacks
@@ -37,34 +34,35 @@ class ToolDownloader:
     Attributes:
         client: Transport client for HTTP requests.
         progress_callbacks: List of progress callback functions.
+
     """
 
     def __init__(self, client: UniversalClient):
-        """
-        Initialize the downloader.
+        """Initialize the downloader.
 
         Args:
             client: Universal client for making HTTP requests.
+
         """
         self.client = client
         self.progress_callbacks: list[Callable[[int, int], None]] = []
 
     def add_progress_callback(self, callback: Callable[[int, int], None]) -> None:
-        """
-        Add a progress callback.
+        """Add a progress callback.
 
         Args:
             callback: Function that receives (downloaded_bytes, total_bytes).
+
         """
         self.progress_callbacks.append(callback)
 
     def _report_progress(self, downloaded: int, total: int) -> None:
-        """
-        Report progress to all callbacks.
+        """Report progress to all callbacks.
 
         Args:
             downloaded: Bytes downloaded so far.
             total: Total bytes to download (0 if unknown).
+
         """
         for callback in self.progress_callbacks:
             try:
@@ -74,8 +72,7 @@ class ToolDownloader:
 
     @retry(max_attempts=3, base_delay=1.0)
     def download_with_progress(self, url: str, dest: Path, checksum: str | None = None) -> Path:
-        """
-        Download a file with progress reporting.
+        """Download a file with progress reporting.
 
         Args:
             url: URL to download from.
@@ -87,6 +84,7 @@ class ToolDownloader:
 
         Raises:
             DownloadError: If download or verification fails.
+
         """
         log.debug(f"Downloading {url} to {dest}")
 
@@ -116,8 +114,7 @@ class ToolDownloader:
         return dest
 
     def verify_checksum(self, file_path: Path, expected: str) -> bool:
-        """
-        Verify file checksum.
+        """Verify file checksum.
 
         Args:
             file_path: Path to file to verify.
@@ -125,6 +122,7 @@ class ToolDownloader:
 
         Returns:
             True if checksum matches, False otherwise.
+
         """
         # Default to SHA256
         hasher = hashlib.sha256()
@@ -137,8 +135,7 @@ class ToolDownloader:
         return actual == expected
 
     def download_parallel(self, urls: list[tuple[str, Path]]) -> list[Path]:
-        """
-        Download multiple files in parallel.
+        """Download multiple files in parallel.
 
         Args:
             urls: List of (url, destination) tuples.
@@ -148,6 +145,7 @@ class ToolDownloader:
 
         Raises:
             DownloadError: If any download fails.
+
         """
         errors = []
 
@@ -172,8 +170,7 @@ class ToolDownloader:
         return results
 
     def download_with_mirrors(self, mirrors: list[str], dest: Path) -> Path:
-        """
-        Try multiple mirrors until one succeeds using fallback pattern.
+        """Try multiple mirrors until one succeeds using fallback pattern.
 
         Args:
             mirrors: List of mirror URLs to try.
@@ -184,6 +181,7 @@ class ToolDownloader:
 
         Raises:
             DownloadError: If all mirrors fail.
+
         """
         from provide.foundation.resilience.fallback import FallbackChain
 

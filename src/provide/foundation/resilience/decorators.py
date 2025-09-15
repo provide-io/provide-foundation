@@ -1,5 +1,4 @@
-"""
-Resilience decorators for retry, circuit breaker, and fallback patterns.
+"""Resilience decorators for retry, circuit breaker, and fallback patterns.
 """
 
 import asyncio
@@ -34,8 +33,7 @@ def retry(
     jitter: bool | None = None,
     on_retry: Callable[[int, Exception], None] | None = None,
 ) -> Callable[[F], F]:
-    """
-    Decorator for retrying operations on errors.
+    """Decorator for retrying operations on errors.
 
     Can be used in multiple ways:
 
@@ -75,6 +73,7 @@ def retry(
         ... async def connect_to_service():
         ...     # Async function with specific error handling
         ...     pass
+
     """
     # Handle decorator without parentheses
     if len(exceptions) == 1 and callable(exceptions[0]) and not isinstance(exceptions[0], type):
@@ -89,13 +88,12 @@ def retry(
                 return await executor.execute_async(func, *args, **kwargs)
 
             return async_wrapper
-        else:
 
-            @functools.wraps(func)
-            def sync_wrapper(*args, **kwargs):
-                return executor.execute_sync(func, *args, **kwargs)
+        @functools.wraps(func)
+        def sync_wrapper(*args, **kwargs):
+            return executor.execute_sync(func, *args, **kwargs)
 
-            return sync_wrapper
+        return sync_wrapper
 
     # Build policy if not provided
     if policy is not None and any(
@@ -132,13 +130,12 @@ def retry(
                 return await executor.execute_async(func, *args, **kwargs)
 
             return async_wrapper
-        else:
 
-            @functools.wraps(func)
-            def sync_wrapper(*args, **kwargs):
-                return executor.execute_sync(func, *args, **kwargs)
+        @functools.wraps(func)
+        def sync_wrapper(*args, **kwargs):
+            return executor.execute_sync(func, *args, **kwargs)
 
-            return sync_wrapper
+        return sync_wrapper
 
     return decorator
 
@@ -166,6 +163,7 @@ def circuit_breaker(
         >>> @circuit_breaker(failure_threshold=3, recovery_timeout=30)
         ... def unreliable_service():
         ...     return external_api_call()
+
     """
     breaker = CircuitBreaker(
         failure_threshold=failure_threshold,
@@ -184,15 +182,13 @@ def circuit_breaker(
 
         if asyncio.iscoroutinefunction(func):
             return async_wrapper  # type: ignore
-        else:
-            return sync_wrapper  # type: ignore
+        return sync_wrapper  # type: ignore
 
     return decorator
 
 
 def fallback(*fallback_funcs: Callable[..., Any]) -> Callable[[F], F]:
-    """
-    Fallback decorator using FallbackChain.
+    """Fallback decorator using FallbackChain.
 
     Args:
         *fallback_funcs: Functions to use as fallbacks, in order of preference
@@ -207,6 +203,7 @@ def fallback(*fallback_funcs: Callable[..., Any]) -> Callable[[F], F]:
         >>> @fallback(backup_api)
         ... def primary_api():
         ...     return external_api_call()
+
     """
     from provide.foundation.resilience.fallback import FallbackChain
 
@@ -222,12 +219,11 @@ def fallback(*fallback_funcs: Callable[..., Any]) -> Callable[[F], F]:
                 return await chain.execute_async(func, *args, **kwargs)
 
             return async_wrapper  # type: ignore
-        else:
 
-            @functools.wraps(func)
-            def sync_wrapper(*args, **kwargs):
-                return chain.execute(func, *args, **kwargs)
+        @functools.wraps(func)
+        def sync_wrapper(*args, **kwargs):
+            return chain.execute(func, *args, **kwargs)
 
-            return sync_wrapper  # type: ignore
+        return sync_wrapper  # type: ignore
 
     return decorator

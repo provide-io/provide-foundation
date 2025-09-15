@@ -48,12 +48,13 @@ class ErrorContext:
         >>> ctx = ErrorContext(severity=ErrorSeverity.HIGH)
         >>> ctx.add_namespace("aws", {"region": "us-east-1", "account": "123456"})
         >>> ctx.add_tag("production")
+
     """
 
     timestamp: datetime = field(factory=datetime.now)
     severity: ErrorSeverity = ErrorSeverity.MEDIUM
     category: ErrorCategory = ErrorCategory.SYSTEM
-    metadata: dict[str, dict[str, Any]] = field(factory=lambda: {})
+    metadata: dict[str, dict[str, Any]] = field(factory=dict)
     tags: set[str] = field(factory=set)
     trace_id: str | None = None
     span_id: str | None = None
@@ -71,6 +72,7 @@ class ErrorContext:
         Examples:
             >>> ctx.add_namespace("terraform", {"provider": "aws", "version": "5.0"})
             >>> ctx.add_namespace("http", {"method": "POST", "status": 500})
+
         """
         self.metadata[namespace] = data
         return self
@@ -84,6 +86,7 @@ class ErrorContext:
 
         Returns:
             Self for method chaining.
+
         """
         if namespace not in self.metadata:
             self.metadata[namespace] = {}
@@ -98,6 +101,7 @@ class ErrorContext:
 
         Returns:
             Namespace metadata or None if not found.
+
         """
         return self.metadata.get(namespace)
 
@@ -109,6 +113,7 @@ class ErrorContext:
 
         Returns:
             Self for method chaining.
+
         """
         self.tags.add(tag)
         return self
@@ -121,6 +126,7 @@ class ErrorContext:
 
         Returns:
             Self for method chaining.
+
         """
         self.tags.update(tags)
         return self
@@ -134,6 +140,7 @@ class ErrorContext:
         Examples:
             >>> ctx.to_dict()
             {'timestamp': '2024-01-01T12:00:00', 'severity': 'high', ...}
+
         """
         result: dict[str, Any] = {
             "timestamp": self.timestamp.isoformat(),
@@ -163,6 +170,7 @@ class ErrorContext:
 
         Returns:
             Dictionary formatted for logger context.
+
         """
         return self.to_dict()
 
@@ -175,6 +183,7 @@ class ErrorContext:
         Examples:
             >>> ctx.to_terraform_diagnostic()
             {'severity': 'error', 'summary': '...', 'detail': {...}}
+
         """
         # Map our severity to Terraform severity
         severity_map = {
@@ -229,6 +238,7 @@ def capture_error_context(
         ...         aws={"region": "us-east-1"},
         ...         http={"status": 500}
         ...     )
+
     """
     # Determine severity based on error type if not provided
     if severity is None:

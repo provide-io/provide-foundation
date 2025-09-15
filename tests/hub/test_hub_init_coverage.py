@@ -261,11 +261,10 @@ class TestHubLazyLoadingEdgeCases:
                 except ImportError:
                     # Expected if dependencies aren't available
                     pass
+            elif attr_name == "get_click_commands":
+                # This should work as normal attribute
+                assert callable(getattr(hub_module, attr_name))
             else:
-                if attr_name == "get_click_commands":
-                    # This should work as normal attribute
-                    assert callable(getattr(hub_module, attr_name))
-                else:
-                    # These should raise AttributeError
-                    with pytest.raises(AttributeError):
-                        _ = getattr(hub_module, attr_name)
+                # These should raise AttributeError
+                with pytest.raises(AttributeError):
+                    _ = getattr(hub_module, attr_name)

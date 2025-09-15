@@ -1,5 +1,4 @@
-"""
-Timing and performance utilities.
+"""Timing and performance utilities.
 
 Provides context managers and utilities for timing operations and logging performance.
 """
@@ -26,8 +25,7 @@ def timed_block(
     initial_kvs: dict[str, Any] | None = None,
     **extra_kvs: Any,
 ) -> Generator[dict[str, Any], None, None]:
-    """
-    Context manager that logs the duration of a code block.
+    """Context manager that logs the duration of a code block.
 
     Logs at DEBUG when entering, INFO on success, ERROR on exception.
 
@@ -46,6 +44,7 @@ def timed_block(
         >>>     ctx["query"] = "SELECT * FROM users"
         >>>     result = db.query("SELECT * FROM users")
         >>>     ctx["rows"] = len(result)
+
     """
     # Combine all key-value pairs
     all_kvs = {}

@@ -1,5 +1,4 @@
-"""
-Test-driven development tests for ToolDownloader.
+"""Test-driven development tests for ToolDownloader.
 
 Tests for downloading tools with progress, mirrors, and parallel downloads.
 """
@@ -38,14 +37,14 @@ class TestToolDownloader:
         mock_response.iter_bytes.return_value = [
             b"chunk1",
             b"chunk2",
-            b"chunk3"
+            b"chunk3",
         ]
         mock_client.stream.return_value.__enter__.return_value = mock_response
 
         # Add progress callback
         progress_calls = []
         downloader.add_progress_callback(
-            lambda d, t: progress_calls.append((d, t))
+            lambda d, t: progress_calls.append((d, t)),
         )
 
         result = downloader.download_with_progress(url, dest)
@@ -75,11 +74,11 @@ class TestToolDownloader:
         mock_client.stream.return_value.__enter__.return_value = mock_response
 
         # Mock checksum verification
-        with patch.object(downloader, 'verify_checksum') as mock_verify:
+        with patch.object(downloader, "verify_checksum") as mock_verify:
             mock_verify.return_value = True
 
             result = downloader.download_with_progress(
-                url, dest, checksum="sha256:abc123"
+                url, dest, checksum="sha256:abc123",
             )
 
             assert result == dest
@@ -98,12 +97,12 @@ class TestToolDownloader:
         mock_client.stream.return_value.__enter__.return_value = mock_response
 
         # Mock checksum verification to fail
-        with patch.object(downloader, 'verify_checksum') as mock_verify:
+        with patch.object(downloader, "verify_checksum") as mock_verify:
             mock_verify.return_value = False
 
             with pytest.raises(DownloadError, match="Checksum mismatch"):
                 downloader.download_with_progress(
-                    url, dest, checksum="sha256:wrong"
+                    url, dest, checksum="sha256:wrong",
                 )
 
             # File should be deleted
@@ -122,7 +121,7 @@ class TestToolDownloader:
             dest.write_text(f"Content of {url}")
             return dest
 
-        with patch.object(downloader, 'download_with_progress', side_effect=mock_download):
+        with patch.object(downloader, "download_with_progress", side_effect=mock_download):
             results = downloader.download_parallel(urls)
 
             assert len(results) == 3
@@ -141,7 +140,7 @@ class TestToolDownloader:
         ]
 
         # First mirror succeeds
-        with patch.object(downloader, 'download_with_progress') as mock_download:
+        with patch.object(downloader, "download_with_progress") as mock_download:
             mock_download.return_value = dest
 
             result = downloader.download_with_mirrors(mirrors, dest)
@@ -164,7 +163,7 @@ class TestToolDownloader:
                 return dest_path
             raise DownloadError(f"Failed to download from {url}")
 
-        with patch.object(downloader, 'download_with_progress', side_effect=mock_download):
+        with patch.object(downloader, "download_with_progress", side_effect=mock_download):
             result = downloader.download_with_mirrors(mirrors, dest)
 
             assert result == dest
@@ -178,7 +177,7 @@ class TestToolDownloader:
         ]
 
         # All mirrors fail
-        with patch.object(downloader, 'download_with_progress') as mock_download:
+        with patch.object(downloader, "download_with_progress") as mock_download:
             mock_download.side_effect = DownloadError("Connection failed")
 
             with pytest.raises(DownloadError, match="All mirrors failed"):

@@ -23,7 +23,7 @@ async def test_generate_keypair_returns_keypair() -> None:
     """Ensure generate_keypair() returns correct type"""
     rsa_key_pair = generate_keypair(KEY_TYPE_RSA, key_size=2048)  # Added key_size
     ec_key_pair = generate_keypair(
-        KEY_TYPE_ECDSA, curve="secp256r1"
+        KEY_TYPE_ECDSA, curve="secp256r1",
     )  # Added curve for consistency
 
     # Check tuple and key types for RSA
@@ -76,7 +76,7 @@ async def test_generate_invalid_rsa_key_size() -> None:
 async def test_generate_ec_keypair() -> None:
     """Test ECDSA keypair generation with a valid curve."""
     public_key, private_key = generate_keypair(
-        key_type=KEY_TYPE_ECDSA, curve="secp256r1"
+        key_type=KEY_TYPE_ECDSA, curve="secp256r1",
     )
     assert isinstance(public_key, ec.EllipticCurvePublicKey)
     assert isinstance(private_key, ec.EllipticCurvePrivateKey)
@@ -87,7 +87,7 @@ async def test_generate_ec_keypair() -> None:
 async def test_generate_ec_keypair_invalid_curve() -> None:
     """Cover error path in generate_ec_keypair"""
     with pytest.raises(
-        ValueError, match="Unsupported EC curve"
+        ValueError, match="Unsupported EC curve",
     ):  # Changed expected exception and added match
         generate_ec_keypair("invalid_curve")
 

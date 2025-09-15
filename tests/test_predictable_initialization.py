@@ -1,5 +1,4 @@
-"""
-Test predictable initialization behavior.
+"""Test predictable initialization behavior.
 
 Tests that Foundation initialization is deterministic and predictable
 across different usage patterns and scenarios.
@@ -60,7 +59,7 @@ class TestPredictableInitialization:
         """Test that config precedence is predictable and documented."""
         # 1. Explicit config should always win
         explicit_config = TelemetryConfig(
-            logging=LoggingConfig(default_level="CRITICAL")
+            logging=LoggingConfig(default_level="CRITICAL"),
         )
 
         with patch.dict(os.environ, {"PROVIDE_LOG_LEVEL": "DEBUG"}):
@@ -113,8 +112,8 @@ class TestPredictableInitialization:
         config = TelemetryConfig(
             logging=LoggingConfig(
                 default_level="DEBUG",
-                console_formatter="json"
-            )
+                console_formatter="json",
+            ),
         )
 
         # First initialization
@@ -214,8 +213,8 @@ class TestPredictableInitialization:
             config = TelemetryConfig(
                 logging=LoggingConfig(
                     default_level="INFO",
-                    log_file=log_file
-                )
+                    log_file=log_file,
+                ),
             )
 
             hub = Hub()
@@ -237,10 +236,10 @@ class TestPredictableInitialization:
 
         # Initialize with different configs
         config1 = TelemetryConfig(
-            logging=LoggingConfig(default_level="DEBUG")
+            logging=LoggingConfig(default_level="DEBUG"),
         )
         config2 = TelemetryConfig(
-            logging=LoggingConfig(default_level="ERROR")
+            logging=LoggingConfig(default_level="ERROR"),
         )
 
         hub1.initialize_foundation(config1)

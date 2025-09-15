@@ -140,7 +140,7 @@ class TestComponentConfigSchema:
         component = Mock()
 
         registry.register(
-            name="no_schema", value=component, dimension="test_dimension", metadata={}
+            name="no_schema", value=component, dimension="test_dimension", metadata={},
         )
 
         result = get_component_config_schema("no_schema", "test_dimension")
@@ -165,7 +165,7 @@ class TestComponentInitialization:
         component = Mock()
 
         registry.register(
-            name="initialized", value=component, dimension="test_dimension", metadata={}
+            name="initialized", value=component, dimension="test_dimension", metadata={},
         )
 
         # First call
@@ -256,7 +256,7 @@ class TestComponentInitialization:
         )
 
         result = await initialize_async_component(
-            "async_factory_component", "test_dimension"
+            "async_factory_component", "test_dimension",
         )
 
         async_factory.assert_called_once()
@@ -278,7 +278,7 @@ class TestComponentInitialization:
         )
 
         result = await initialize_async_component(
-            "sync_factory_component", "test_dimension"
+            "sync_factory_component", "test_dimension",
         )
 
         sync_factory.assert_called_once()

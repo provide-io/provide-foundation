@@ -94,7 +94,7 @@ class TestProcessRunnerCoverage:
                     "import os; print(os.environ.get('TEST_STREAM_VAR', 'not_found'))",
                 ],
                 env=env,
-            )
+            ),
         )
         assert "stream_value" in lines[0]
 
@@ -111,7 +111,7 @@ class TestProcessRunnerCoverage:
             stream_command(
                 ["python", "-c", "import sys; sys.stderr.write('error\\n')"],
                 stream_stderr=True,
-            )
+            ),
         )
         # When stream_stderr=True, stderr goes to stdout so we can capture it
         assert len(lines) >= 0  # May or may not capture the stderr

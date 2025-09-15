@@ -1,5 +1,4 @@
-"""
-Task queue and async job processing event set for Foundation.
+"""Task queue and async job processing event set for Foundation.
 """
 
 from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping

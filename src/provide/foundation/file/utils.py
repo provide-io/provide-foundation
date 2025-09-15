@@ -17,6 +17,7 @@ def get_size(path: Path | str) -> int:
 
     Returns:
         Size in bytes, or 0 if file doesn't exist
+
     """
     path = Path(path)
 
@@ -37,6 +38,7 @@ def get_mtime(path: Path | str) -> float | None:
 
     Returns:
         Modification time as timestamp, or None if doesn't exist
+
     """
     path = Path(path)
 
@@ -63,6 +65,7 @@ def touch(
 
     Raises:
         FileExistsError: If exist_ok=False and file exists
+
     """
     path = Path(path)
 
@@ -91,6 +94,7 @@ def find_files(
 
     Returns:
         List of matching file paths
+
     """
     root = Path(root)
 
@@ -132,6 +136,7 @@ def backup_file(
 
     Returns:
         Path to backup file, or None if source doesn't exist
+
     """
     path = Path(path)
 

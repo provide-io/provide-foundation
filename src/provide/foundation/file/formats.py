@@ -25,6 +25,7 @@ def read_json(
 
     Returns:
         Parsed JSON data or default value
+
     """
     content = safe_read_text(path, default="", encoding=encoding)
 
@@ -56,6 +57,7 @@ def write_json(
         sort_keys: Whether to sort dictionary keys
         atomic: Use atomic write
         encoding: Text encoding
+
     """
     path = Path(path)
 
@@ -88,6 +90,7 @@ def read_yaml(
 
     Returns:
         Parsed YAML data or default value
+
     """
     try:
         import yaml
@@ -123,6 +126,7 @@ def write_yaml(
         atomic: Use atomic write
         encoding: Text encoding
         default_flow_style: Use flow style (JSON-like) instead of block style
+
     """
     try:
         import yaml
@@ -165,6 +169,7 @@ def read_toml(
 
     Returns:
         Parsed TOML data or default value
+
     """
     try:
         import tomllib
@@ -201,6 +206,7 @@ def write_toml(
         data: Data to serialize (must be a dictionary)
         atomic: Use atomic write
         encoding: Text encoding
+
     """
     try:
         import tomli_w
