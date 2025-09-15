@@ -338,7 +338,11 @@ class TestAPIDocGenerator:
                 Mock(spec=Path),  # Should be skipped
             ]
 
-            # Configure the mocks
+            # Configure the mocks to be sortable
+            mock_files[0].__lt__ = lambda self, other: str(self) < str(other)
+            mock_files[1].__lt__ = lambda self, other: str(self) < str(other)
+            mock_files[2].__lt__ = lambda self, other: str(self) < str(other)
+
             mock_files[0].relative_to.return_value = Path("package/module1.py")
             mock_files[1].relative_to.return_value = Path("package/module2.py")
             mock_files[2].relative_to.return_value = Path("test/test_module.py")
