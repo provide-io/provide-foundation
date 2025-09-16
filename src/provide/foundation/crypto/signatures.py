@@ -7,12 +7,14 @@ from typing import Any
 try:
     from cryptography.exceptions import InvalidSignature
     from cryptography.hazmat.primitives.asymmetric import ed25519
+    from cryptography.hazmat.primitives import serialization
 
     _HAS_CRYPTO = True
 except ImportError:
-    InvalidSignature: Any = None
-    ed25519: Any = None
     _HAS_CRYPTO = False
+    InvalidSignature = None
+    ed25519 = None
+    serialization = None
 
 from provide.foundation import logger
 from provide.foundation.crypto.constants import (
@@ -47,8 +49,15 @@ def generate_ed25519_keypair() -> tuple[bytes, bytes]:
     private_key = ed25519.Ed25519PrivateKey.generate()
 
     # Get the raw bytes for compatibility with other implementations
-    private_key_bytes = private_key.private_bytes_raw()
-    public_key_bytes = private_key.public_key().public_bytes_raw()
+    private_key_bytes = private_key.private_bytes(
+        encoding=serialization.Encoding.Raw,
+        format=serialization.PrivateFormat.Raw,
+        encryption_algorithm=serialization.NoEncryption()
+    )
+    public_key_bytes = private_key.public_key().public_bytes(
+        encoding=serialization.Encoding.Raw,
+        format=serialization.PublicFormat.Raw
+    )
 
     # Validate key sizes
     assert len(private_key_bytes) == ED25519_PRIVATE_KEY_SIZE
