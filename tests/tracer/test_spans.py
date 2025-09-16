@@ -246,8 +246,10 @@ class TestSpanOpenTelemetryIntegration:
 
     def test_span_creation_with_otel_available(self) -> None:
         """Test span creation when OpenTelemetry is available."""
-        with patch("provide.foundation.tracer.spans._HAS_OTEL", True):
-            with patch("provide.foundation.tracer.spans.otel_trace") as mock_otel:
+        with (
+            patch("provide.foundation.tracer.spans._HAS_OTEL", True),
+            patch("provide.foundation.tracer.spans.otel_trace") as mock_otel,
+        ):
                 mock_tracer = mock_otel.get_tracer.return_value
                 mock_span = mock_tracer.start_span.return_value
 
@@ -259,8 +261,10 @@ class TestSpanOpenTelemetryIntegration:
 
     def test_span_creation_with_otel_error(self) -> None:
         """Test span creation when OpenTelemetry initialization fails."""
-        with patch("provide.foundation.tracer.spans._HAS_OTEL", True):
-            with patch("provide.foundation.tracer.spans.otel_trace") as mock_otel:
+        with (
+            patch("provide.foundation.tracer.spans._HAS_OTEL", True),
+            patch("provide.foundation.tracer.spans.otel_trace") as mock_otel,
+        ):
                 mock_otel.get_tracer.side_effect = Exception("OTEL setup failed")
 
                 span = Span("test_op")
@@ -269,8 +273,10 @@ class TestSpanOpenTelemetryIntegration:
 
     def test_set_tag_with_otel_span(self) -> None:
         """Test setting tag when OpenTelemetry span is available."""
-        with patch("provide.foundation.tracer.spans._HAS_OTEL", True):
-            with patch("provide.foundation.tracer.spans.otel_trace") as mock_otel:
+        with (
+            patch("provide.foundation.tracer.spans._HAS_OTEL", True),
+            patch("provide.foundation.tracer.spans.otel_trace") as mock_otel,
+        ):
                 mock_otel_span = mock_otel.get_tracer.return_value.start_span.return_value
 
                 span = Span("test_op")

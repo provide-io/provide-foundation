@@ -38,8 +38,10 @@ class TestGetContext:
 
     def test_get_context_click_with_context_obj(self) -> None:
         """Test _get_context when click has context with proper obj."""
-        with patch("provide.foundation.console.output._HAS_CLICK", True):
-            with patch("provide.foundation.console.output.click") as mock_click:
+        with (
+            patch("provide.foundation.console.output._HAS_CLICK", True),
+            patch("provide.foundation.console.output.click") as mock_click,
+        ):
                 mock_ctx = Mock()
                 mock_context_obj = CLIContext()
                 mock_ctx.obj = mock_context_obj
@@ -50,8 +52,10 @@ class TestGetContext:
 
     def test_get_context_click_with_invalid_obj(self) -> None:
         """Test _get_context when click context has invalid obj."""
-        with patch("provide.foundation.console.output._HAS_CLICK", True):
-            with patch("provide.foundation.console.output.click") as mock_click:
+        with (
+            patch("provide.foundation.console.output._HAS_CLICK", True),
+            patch("provide.foundation.console.output.click") as mock_click,
+        ):
                 mock_ctx = Mock()
                 mock_ctx.obj = "not a Context object"
                 mock_click.get_current_context.return_value = mock_ctx
@@ -207,12 +211,14 @@ class TestPoutFunction:
 
     def test_pout_simple_message(self) -> None:
         """Test pout with simple string message."""
-        with patch("provide.foundation.console.output._HAS_CLICK", True):
-            with patch("provide.foundation.console.output.click") as mock_click:
-                with patch(
-                    "provide.foundation.console.output._get_context",
-                    return_value=None,
-                ):
+        with (
+            patch("provide.foundation.console.output._HAS_CLICK", True),
+            patch("provide.foundation.console.output.click") as mock_click,
+            patch(
+                "provide.foundation.console.output._get_context",
+                return_value=None,
+            ),
+        ):
                     pout("Hello world")
 
                     mock_click.echo.assert_called_once_with("Hello world", nl=True)
@@ -246,12 +252,14 @@ class TestPoutFunction:
 
     def test_pout_with_prefix(self) -> None:
         """Test pout with prefix option."""
-        with patch("provide.foundation.console.output._HAS_CLICK", True):
-            with patch("provide.foundation.console.output.click") as mock_click:
-                with patch(
-                    "provide.foundation.console.output._get_context",
-                    return_value=None,
-                ):
+        with (
+            patch("provide.foundation.console.output._HAS_CLICK", True),
+            patch("provide.foundation.console.output.click") as mock_click,
+            patch(
+                "provide.foundation.console.output._get_context",
+                return_value=None,
+            ),
+        ):
                     pout("message", prefix="INFO:")
 
                     mock_click.echo.assert_called_once_with("INFO: message", nl=True)
@@ -261,12 +269,14 @@ class TestPoutFunction:
         mock_ctx = Mock()
         mock_ctx.json_output = False
 
-        with patch("provide.foundation.console.output._HAS_CLICK", True):
-            with patch("provide.foundation.console.output.click") as mock_click:
-                with patch(
-                    "provide.foundation.console.output._should_use_color",
-                    return_value=True,
-                ):
+        with (
+            patch("provide.foundation.console.output._HAS_CLICK", True),
+            patch("provide.foundation.console.output.click") as mock_click,
+            patch(
+                "provide.foundation.console.output._should_use_color",
+                return_value=True,
+            ),
+        ):
                     pout(
                         "colored message",
                         ctx=mock_ctx,
@@ -288,28 +298,34 @@ class TestPoutFunction:
         mock_ctx = Mock()
         mock_ctx.json_output = False
 
-        with patch("provide.foundation.console.output._HAS_CLICK", True):
-            with patch("provide.foundation.console.output.click") as mock_click:
-                with patch(
-                    "provide.foundation.console.output._should_use_color",
-                    return_value=False,
-                ):
+        with (
+            patch("provide.foundation.console.output._HAS_CLICK", True),
+            patch("provide.foundation.console.output.click") as mock_click,
+            patch(
+                "provide.foundation.console.output._should_use_color",
+                return_value=False,
+            ),
+        ):
                     pout("message", ctx=mock_ctx, color="red", bold=True)
 
                     mock_click.echo.assert_called_once_with("message", nl=True)
 
     def test_pout_no_click_fallback(self) -> None:
         """Test pout fallback when click is not available."""
-        with patch("provide.foundation.console.output._HAS_CLICK", False):
-            with patch("builtins.print") as mock_print:
+        with (
+            patch("provide.foundation.console.output._HAS_CLICK", False),
+            patch("builtins.print") as mock_print,
+        ):
                 pout("fallback message")
 
                 mock_print.assert_called_once_with("fallback message", file=sys.stdout)
 
     def test_pout_no_click_fallback_no_newline(self) -> None:
         """Test pout fallback without newline when click is not available."""
-        with patch("provide.foundation.console.output._HAS_CLICK", False):
-            with patch("builtins.print") as mock_print:
+        with (
+            patch("provide.foundation.console.output._HAS_CLICK", False),
+            patch("builtins.print") as mock_print,
+        ):
                 pout("no newline", nl=False)
 
                 mock_print.assert_called_once_with(
@@ -320,12 +336,14 @@ class TestPoutFunction:
 
     def test_pout_newline_aliases(self) -> None:
         """Test pout handles both nl and newline parameters."""
-        with patch("provide.foundation.console.output._HAS_CLICK", True):
-            with patch("provide.foundation.console.output.click") as mock_click:
-                with patch(
-                    "provide.foundation.console.output._get_context",
-                    return_value=None,
-                ):
+        with (
+            patch("provide.foundation.console.output._HAS_CLICK", True),
+            patch("provide.foundation.console.output.click") as mock_click,
+            patch(
+                "provide.foundation.console.output._get_context",
+                return_value=None,
+            ),
+        ):
                     # Test with newline=False
                     pout("test", newline=False)
                     mock_click.echo.assert_called_with("test", nl=False)
@@ -341,12 +359,14 @@ class TestPerrFunction:
 
     def test_perr_simple_message(self) -> None:
         """Test perr with simple string message."""
-        with patch("provide.foundation.console.output._HAS_CLICK", True):
-            with patch("provide.foundation.console.output.click") as mock_click:
-                with patch(
-                    "provide.foundation.console.output._get_context",
-                    return_value=None,
-                ):
+        with (
+            patch("provide.foundation.console.output._HAS_CLICK", True),
+            patch("provide.foundation.console.output.click") as mock_click,
+            patch(
+                "provide.foundation.console.output._get_context",
+                return_value=None,
+            ),
+        ):
                     perr("Error message")
 
                     mock_click.echo.assert_called_once_with(
@@ -387,12 +407,14 @@ class TestPerrFunction:
         mock_ctx = Mock()
         mock_ctx.json_output = False
 
-        with patch("provide.foundation.console.output._HAS_CLICK", True):
-            with patch("provide.foundation.console.output.click") as mock_click:
-                with patch(
-                    "provide.foundation.console.output._should_use_color",
-                    return_value=True,
-                ):
+        with (
+            patch("provide.foundation.console.output._HAS_CLICK", True),
+            patch("provide.foundation.console.output.click") as mock_click,
+            patch(
+                "provide.foundation.console.output._should_use_color",
+                return_value=True,
+            ),
+        ):
                     perr("error message", ctx=mock_ctx, color="red", bold=True)
 
                     mock_click.secho.assert_called_once_with(
@@ -406,16 +428,20 @@ class TestPerrFunction:
 
     def test_perr_no_click_fallback(self) -> None:
         """Test perr fallback when click is not available."""
-        with patch("provide.foundation.console.output._HAS_CLICK", False):
-            with patch("builtins.print") as mock_print:
+        with (
+            patch("provide.foundation.console.output._HAS_CLICK", False),
+            patch("builtins.print") as mock_print,
+        ):
                 perr("error fallback")
 
                 mock_print.assert_called_once_with("error fallback", file=sys.stderr)
 
     def test_perr_no_click_fallback_no_newline(self) -> None:
         """Test perr fallback without newline when click is not available."""
-        with patch("provide.foundation.console.output._HAS_CLICK", False):
-            with patch("builtins.print") as mock_print:
+        with (
+            patch("provide.foundation.console.output._HAS_CLICK", False),
+            patch("builtins.print") as mock_print,
+        ):
                 perr("no newline error", nl=False)
 
                 mock_print.assert_called_once_with(
@@ -431,8 +457,10 @@ class TestEdgeCases:
     def test_click_import_error_handling(self) -> None:
         """Test that the module handles click import errors gracefully."""
         # This tests the import error handling at lines 15-17
-        with patch("provide.foundation.console.output._HAS_CLICK", False):
-            with patch("provide.foundation.console.output.click", None):
+        with (
+            patch("provide.foundation.console.output._HAS_CLICK", False),
+            patch("provide.foundation.console.output.click", None),
+        ):
                 # Should not raise errors
                 result = _get_context()
                 assert result is None
@@ -471,8 +499,8 @@ class TestEdgeCases:
                 return_value=mock_ctx,
             ) as mock_get_ctx,
             patch("provide.foundation.console.output._HAS_CLICK", True),
+            patch("provide.foundation.console.output.click") as mock_click,
         ):
-            with patch("provide.foundation.console.output.click") as mock_click:
                 # Don't pass ctx explicitly
                 pout("test")
 
@@ -485,12 +513,14 @@ class TestEdgeCases:
         mock_ctx = Mock()
         mock_ctx.json_output = False
 
-        with patch("provide.foundation.console.output._HAS_CLICK", True):
-            with patch("provide.foundation.console.output.click") as mock_click:
-                with patch(
-                    "provide.foundation.console.output._should_use_color",
-                    return_value=True,
-                ):
+        with (
+            patch("provide.foundation.console.output._HAS_CLICK", True),
+            patch("provide.foundation.console.output.click") as mock_click,
+            patch(
+                "provide.foundation.console.output._should_use_color",
+                return_value=True,
+            ),
+        ):
                     pout(
                         "complex message",
                         ctx=mock_ctx,
