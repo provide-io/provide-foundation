@@ -55,7 +55,9 @@
       "Bash(echo \"Exit code: $?\")",
       "Bash(PYTHONPATH=src pytest tests/handshake/test_handshake_process_io.py::test_read_handshake_response_timeout -xvs)",
       "Bash(PYTHONPATH=src pytest tests/handshake/test_handshake_process_io.py::test_read_handshake_response_timeout tests/handshake/test_handshake_process_io.py::test_read_handshake_response_timeout_stderr_read_error -xvs)",
-      "Bash(PYTHONPATH=src pytest tests/handshake/test_handshake_process_io.py -x)"
+      "Bash(PYTHONPATH=src pytest tests/handshake/test_handshake_process_io.py -x)",
+      "Bash(PYTHONPATH=src pytest tests/handshake/test_handshake_process_io.py::test_read_handshake_response_timeout tests/handshake/test_handshake_process_io.py::test_read_handshake_response_timeout_stderr_read_error -v)",
+      "Bash(PYTHONPATH=src pytest tests/ -x --tb=short -q)"
     ],
     "deny": [],
     "ask": [],
