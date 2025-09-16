@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Stream configuration for console output settings.
 
 This module provides configuration for console stream behavior,

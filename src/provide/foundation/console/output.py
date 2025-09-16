@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Core console output functions for standardized CLI output.
 
 Provides pout() and perr() for consistent output handling with support

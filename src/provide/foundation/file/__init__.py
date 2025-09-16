@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """File operations with safety, atomicity, and format support.
 
 This module provides comprehensive file operations including:

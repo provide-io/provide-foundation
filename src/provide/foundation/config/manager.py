@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Configuration manager for centralized configuration management."""
 
 from typing import TypeVar

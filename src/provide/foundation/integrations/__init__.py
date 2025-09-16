@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Optional integrations for Foundation.
 
 This module contains integrations with external services and tools

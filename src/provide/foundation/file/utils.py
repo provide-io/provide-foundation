@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """File utility functions."""
 
 from datetime import datetime

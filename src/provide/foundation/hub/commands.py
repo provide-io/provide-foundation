@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Command registration and management for the hub.
 
 This module now re-exports from the split modules for backward compatibility.

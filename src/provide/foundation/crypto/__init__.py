@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Cryptographic utilities for Foundation.
 
 Provides hashing, checksum verification, digital signatures, key generation,

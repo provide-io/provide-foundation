@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Core console input functions for standardized CLI input.
 
 Provides pin() and async variants for consistent input handling with support

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """OpenObserve integration for Foundation.
 
 Provides log querying and streaming capabilities as an optional integration.

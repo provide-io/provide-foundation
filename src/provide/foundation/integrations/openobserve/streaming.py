@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Streaming search operations for OpenObserve."""
 
 from collections.abc import Generator

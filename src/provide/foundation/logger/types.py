@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Logger type definitions and constants."""
 
 from typing import Literal

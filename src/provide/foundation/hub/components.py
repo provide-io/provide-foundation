@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Registry-based component management system for Foundation.
 
 This module implements Foundation's end-state architecture where all internal

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Concurrency utilities for Foundation.
 
 Provides consistent async/await patterns, task management,

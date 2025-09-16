@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Tool registry management using the foundation hub.
 
 Provides registration and discovery of tool managers using

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """File-based locking for concurrent access control."""
 
 import os
@@ -159,7 +161,7 @@ class FileLock:
 
         return False
 
-    def __enter__(self) -> "FileLock":
+    def __enter__(self) -> FileLock:
         """Context manager entry."""
         self.acquire()
         return self

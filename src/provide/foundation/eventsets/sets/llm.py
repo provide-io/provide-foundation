@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Large Language Model (LLM) interaction event set for Foundation."""
 
 from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping

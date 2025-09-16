@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Utility functions for hashing and cryptographic operations."""
 
 import hashlib

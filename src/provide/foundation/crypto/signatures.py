@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Digital signature operations using Ed25519."""
 
 try:

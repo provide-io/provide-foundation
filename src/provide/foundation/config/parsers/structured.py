@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Complex data structure parsers for configuration values.
 
 Handles parsing of structured data like dictionaries with specific formats
@@ -12,14 +14,14 @@ else:
     LogLevelStr = str
 
 
-def parse_log_level(value: str) -> "LogLevelStr":
+def parse_log_level(value: str) -> LogLevelStr:
     """Import parse_log_level from telemetry module to avoid circular imports."""
     from provide.foundation.config.parsers.telemetry import parse_log_level as _parse_log_level
 
     return _parse_log_level(value)
 
 
-def parse_module_levels(value: str | dict[str, str]) -> dict[str, "LogLevelStr"]:
+def parse_module_levels(value: str | dict[str, str]) -> dict[str, LogLevelStr]:
     """Parse module-specific log levels from string format.
 
     **Format Requirements:**

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Tail logs command for Foundation CLI."""
 
 try:

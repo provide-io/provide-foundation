@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Base utilities and constants for configuration parsers.
 
 Provides shared error formatting functions and common constants

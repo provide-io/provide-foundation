@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Resource and filesystem-related exceptions."""
 
 from typing import Any

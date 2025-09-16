@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Core platform detection functions."""
 
 import platform

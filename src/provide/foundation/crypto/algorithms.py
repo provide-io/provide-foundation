@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Hash algorithm management and validation."""
 
 import hashlib

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """OTLP integration for sending logs to OpenObserve."""
 
 from datetime import datetime

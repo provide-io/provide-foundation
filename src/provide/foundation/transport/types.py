@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Transport type definitions and enums."""
 
 from enum import Enum

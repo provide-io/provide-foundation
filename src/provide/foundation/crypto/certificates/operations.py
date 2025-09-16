@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Certificate operations: CA creation, signing, and trust verification."""
 
 import traceback
@@ -34,13 +36,13 @@ from provide.foundation.crypto.certificates.base import (
 
 def create_x509_certificate(
     base: CertificateBase,
-    private_key: "KeyPair",
+    private_key: KeyPair,
     alt_names: list[str] | None = None,
-    issuer_name_override: "x509.Name | None" = None,
-    signing_key_override: "KeyPair | None" = None,
+    issuer_name_override: x509.Name | None = None,
+    signing_key_override: KeyPair | None = None,
     is_ca: bool = False,
     is_client_cert: bool = False,
-) -> "X509Certificate":
+) -> X509Certificate:
     """Internal helper to build and sign the X.509 certificate object."""
     try:
         logger.debug("📜📝🚀 create_x509_certificate: Building certificate")
@@ -136,9 +138,9 @@ def create_x509_certificate(
 
 
 def validate_signature(
-    signed_cert_obj: "X509Certificate",
-    signing_cert_obj: "X509Certificate",
-    signing_public_key: "PublicKey",
+    signed_cert_obj: X509Certificate,
+    signing_cert_obj: X509Certificate,
+    signing_public_key: PublicKey,
 ) -> bool:
     """Internal helper: Validates signature and issuer/subject match."""
     if signed_cert_obj.issuer != signing_cert_obj.subject:

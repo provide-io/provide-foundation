@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Rate limiting utilities for Foundation.
 
 This module provides rate limiting implementations suitable for

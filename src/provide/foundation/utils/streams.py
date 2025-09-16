@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Stream utilities for foundation library."""
 
 import io

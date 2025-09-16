@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Type system and Click type mapping utilities."""
 
 import types

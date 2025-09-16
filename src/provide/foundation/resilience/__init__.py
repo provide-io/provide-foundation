@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Resilience patterns for handling failures and improving reliability.
 
 This module provides unified implementations of common resilience patterns:

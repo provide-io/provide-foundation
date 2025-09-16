@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Configuration loaders for various sources."""
 
 from abc import ABC, abstractmethod
@@ -83,7 +85,7 @@ class FileConfigLoader(ConfigLoader):
         return self.path.exists()
 
     @with_error_handling(
-        context_provider=lambda: {"loader": "FileLoader"},
+        context_provider=lambda: {"loader": FileConfigLoader},
         error_mapper=lambda e: ConfigurationError(
             f"Failed to load configuration: {e}",
             code="CONFIG_LOAD_ERROR",

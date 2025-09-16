@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """System information gathering utilities."""
 
 import contextlib

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Event set type definitions for the Foundation event enrichment system."""
 
 from collections.abc import Callable

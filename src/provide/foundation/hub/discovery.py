@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Hub component discovery and dependency resolution utilities.
 
 Provides functions for discovering components and resolving their dependencies

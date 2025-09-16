@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """BZIP2 compression implementation."""
 
 import bz2

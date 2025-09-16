@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Archive operations for provide-foundation.
 
 This module provides clean, composable archive operations without complex abstractions.

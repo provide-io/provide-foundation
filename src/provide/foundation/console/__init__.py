@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Console I/O utilities for standardized CLI input/output.
 
 Provides pout(), perr(), and pin() functions for consistent I/O handling.

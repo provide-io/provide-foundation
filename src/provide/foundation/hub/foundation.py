@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Foundation system initialization and lifecycle management.
 
 This module provides Foundation-specific functionality for the Hub,

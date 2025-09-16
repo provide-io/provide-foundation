@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Provide Foundation Transport System
 ==================================
 
@@ -21,7 +23,7 @@ Example Usage:
     >>> # POST with JSON body
     >>> response = await post(
     ...     "https://api.example.com/users",
-    ...     body={"name": "John", "email": "john@example.com"}
+    ...     body={"name": John, "email": "john@example.com"}
     ... )
     >>>
     >>> # Using client for multiple requests

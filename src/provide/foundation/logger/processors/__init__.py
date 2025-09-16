@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Processors package for Foundation logging."""
 
 from provide.foundation.logger.processors.main import (

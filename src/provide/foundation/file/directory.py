@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Directory operations and utilities."""
 
 from pathlib import Path

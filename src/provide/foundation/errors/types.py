@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Type definitions and constants for error handling.
 
 Provides error codes, metadata structures, and retry policies.
