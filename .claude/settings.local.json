@@ -62,7 +62,10 @@
       "Bash(PYTHONPATH=src pytest tests/ --tb=short -q)",
       "Bash(PYTHONPATH=src pytest tests/handshake/test_handshake_process_io.py::test_read_handshake_response_timeout tests/handshake/test_handshake_process_io.py::test_read_handshake_stdout_becomes_none -v)",
       "Bash(PYTHONPATH=src pytest tests/handshake/test_handshake_process_io.py --tb=short -q)",
-      "Bash(PYTHONPATH=src pytest tests/ --tb=short -q --maxfail=3)"
+      "Bash(PYTHONPATH=src pytest tests/ --tb=short -q --maxfail=3)",
+      "Bash(PYTHONPATH=src pytest tests/client/test_client_retry_logic.py::test_connect_handshake_total_timeout_exceeded -xvs)",
+      "Bash(PYTHONPATH=src pytest tests/client/test_client_integration.py::test_client_integration -xvs)",
+      "Bash(PYTHONPATH=src pytest tests/client/test_client_integration.py -k test_client_integration -xvs)"
     ],
     "deny": [],
     "ask": [],
