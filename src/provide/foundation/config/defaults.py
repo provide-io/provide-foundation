@@ -130,6 +130,40 @@ def default_logging_config():
 
 
 # =================================
+# Crypto module defaults
+# =================================
+DEFAULT_CERTIFICATE_KEY_TYPE = None
+DEFAULT_CERTIFICATE_VALIDITY_DAYS = 365
+DEFAULT_ECDSA_CURVE = None
+DEFAULT_RSA_KEY_SIZE = 2048
+DEFAULT_SIGNATURE_ALGORITHM = None
+DEFAULT_ED25519_PRIVATE_KEY_SIZE = 32
+DEFAULT_ED25519_PUBLIC_KEY_SIZE = 32
+DEFAULT_ED25519_SIGNATURE_SIZE = 64
+
+def default_supported_ec_curves() -> list[str]:
+    """Factory for supported EC curves list."""
+    return []
+
+def default_supported_key_types() -> list[str]:
+    """Factory for supported key types list."""
+    return []
+
+def default_supported_rsa_sizes() -> list[int]:
+    """Factory for supported RSA sizes list."""
+    return []
+
+# =================================
+# Dependency feature mappings
+# =================================
+DEPENDENCY_FEATURE_MAP = {
+    "crypto": "cryptography",  # Feature name "crypto" maps to package "cryptography"
+    "cryptography": "cryptography",  # Also allow direct package name
+    "click": "click",
+    "opentelemetry": "opentelemetry",
+}
+
+# =================================
 # Converter functions (to replace lambdas)
 # =================================
 
