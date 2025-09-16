@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Configuration loaders for various sources."""
-
 from abc import ABC, abstractmethod
 from configparser import ConfigParser
 import json
@@ -21,6 +19,8 @@ from provide.foundation.errors.config import ConfigurationError
 from provide.foundation.errors.decorators import with_error_handling
 from provide.foundation.errors.resources import NotFoundError
 from provide.foundation.file.safe import safe_read_text
+
+"""Configuration loaders for various sources."""
 
 T = TypeVar("T", bound=BaseConfig)
 

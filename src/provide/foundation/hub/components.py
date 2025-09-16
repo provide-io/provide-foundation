@@ -1,12 +1,5 @@
 from __future__ import annotations
 
-"""Registry-based component management system for Foundation.
-
-This module implements Foundation's end-state architecture where all internal
-components are managed through the Hub registry system. Provides centralized
-component discovery, lifecycle management, and dependency resolution.
-"""
-
 from enum import Enum
 import threading
 from typing import Any, Protocol
@@ -15,6 +8,39 @@ from attrs import define, field
 
 from provide.foundation.errors.decorators import with_error_handling
 from provide.foundation.hub.registry import Registry
+
+# Import functions from specialized modules for re-export
+from provide.foundation.hub.config import (
+    get_config_chain,
+    load_all_configs,
+    load_config_from_registry,
+    resolve_config_value,
+)
+from provide.foundation.hub.discovery import (
+    discover_components,
+    resolve_component_dependencies,
+)
+from provide.foundation.hub.handlers import (
+    execute_error_handlers,
+    get_handlers_for_exception,
+)
+from provide.foundation.hub.lifecycle import (
+    cleanup_all_components,
+    get_or_initialize_component,
+    initialize_all_async_components,
+    initialize_async_component,
+)
+from provide.foundation.hub.processors import (
+    get_processor_pipeline,
+    get_processors_for_stage,
+)
+
+"""Registry-based component management system for Foundation.
+
+This module implements Foundation's end-state architecture where all internal
+components are managed through the Hub registry system. Provides centralized
+component discovery, lifecycle management, and dependency resolution.
+"""
 
 
 @define(frozen=True, slots=True)
@@ -147,32 +173,6 @@ def reset_registry_for_tests() -> None:
         _component_registry.clear()
         _initialized_components.clear()
 
-
-# Import and re-export functions from specialized modules
-from provide.foundation.hub.config import (
-    get_config_chain,
-    load_all_configs,
-    load_config_from_registry,
-    resolve_config_value,
-)
-from provide.foundation.hub.discovery import (
-    discover_components,
-    resolve_component_dependencies,
-)
-from provide.foundation.hub.handlers import (
-    execute_error_handlers,
-    get_handlers_for_exception,
-)
-from provide.foundation.hub.lifecycle import (
-    cleanup_all_components,
-    get_or_initialize_component,
-    initialize_all_async_components,
-    initialize_async_component,
-)
-from provide.foundation.hub.processors import (
-    get_processor_pipeline,
-    get_processors_for_stage,
-)
 
 # Bootstrap will happen lazily on first hub access to avoid circular imports
 # bootstrap_foundation()
