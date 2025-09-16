@@ -70,7 +70,9 @@
       "Bash(PYTHONPATH=src pytest tests/ --tb=short -q --maxfail=10)",
       "Bash(PYTHONPATH=src pytest tests/core/test_types.py::test_is_valid_handler_true -xvs)",
       "Bash(PYTHONPATH=src pytest tests/core/test_types.py -v)",
-      "Bash(PYTHONPATH=src pytest tests/transport/unix/test_transport_unix.py::test_check_socket_in_use_stat_oserror -xvs)"
+      "Bash(PYTHONPATH=src pytest tests/transport/unix/test_transport_unix.py::test_check_socket_in_use_stat_oserror -xvs)",
+      "Bash(PYTHONPATH=src pytest tests/transport/unix/test_transport_unix_connect.py::test_unix_connect_stat_fails -xvs)",
+      "Bash(PYTHONPATH=src pytest tests/transport/unix/ --tb=short -q)"
     ],
     "deny": [],
     "ask": [],
