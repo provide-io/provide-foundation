@@ -108,7 +108,8 @@
       "Bash(PYTHONPATH=src ruff check tests/crypto/test_dependency_stubs.py)",
       "Bash(PYTHONPATH=src ruff check --fix --unsafe-fixes tests/crypto/test_dependency_stubs.py)",
       "Bash(PYTHONPATH=src pytest tests/crypto/test_dependency_stubs.py -v)",
-      "Bash(PYTHONPATH=src pytest tests/crypto/test_dependency_stubs.py -v -s)"
+      "Bash(PYTHONPATH=src pytest tests/crypto/test_dependency_stubs.py -v -s)",
+      "Bash(PYTHONPATH=src pytest tests/crypto/test_dependency_stubs.py -v -s --tb=no)"
     ],
     "deny": [],
     "ask": [],

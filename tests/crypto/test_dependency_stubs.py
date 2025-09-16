@@ -15,21 +15,21 @@ SKIP_REASON = (
 )
 
 
-@pytest.fixture(scope="module", autouse=True)
-def crypto_dependency_test_header() -> None:
-    """Display clear messaging about crypto dependency tests."""
-    print("\n" + "=" * 60)
-    print("🔒 CRYPTOGRAPHY DEPENDENCY TESTS")
-    print("=" * 60)
-    if _HAS_CRYPTO:
-        print("⚠️  These tests verify behavior when cryptography is NOT installed")
-        print("✅ Cryptography IS currently installed - tests will be SKIPPED")
-        print("💡 This is expected and correct behavior")
-        print("📦 Install: 'uv pip uninstall cryptography' to run these tests")
-    else:
-        print("⚠️  Cryptography is NOT installed - running dependency stub tests")
-        print("📦 Install: 'uv pip install cryptography' to skip these tests")
-    print("=" * 60)
+# Display the header immediately when module is imported
+import sys
+
+print("\n" + "=" * 60, file=sys.stderr)
+print("🔒 CRYPTOGRAPHY DEPENDENCY TESTS", file=sys.stderr)
+print("=" * 60, file=sys.stderr)
+if _HAS_CRYPTO:
+    print("⚠️  These tests verify behavior when cryptography is NOT installed", file=sys.stderr)
+    print("✅ Cryptography IS currently installed - tests will be SKIPPED", file=sys.stderr)
+    print("💡 This is expected and correct behavior", file=sys.stderr)
+    print("📦 To run these tests: 'uv pip uninstall cryptography'", file=sys.stderr)
+else:
+    print("⚠️  Cryptography is NOT installed - running dependency stub tests", file=sys.stderr)
+    print("📦 To skip these tests: 'uv pip install cryptography'", file=sys.stderr)
+print("=" * 60, file=sys.stderr)
 
 
 @pytest.mark.skipif(_HAS_CRYPTO, reason=SKIP_REASON)
