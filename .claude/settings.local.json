@@ -51,7 +51,8 @@
       "Bash(PYTHONPATH=src rg \"self: ClientProtocol\" src/pyvider/rpcplugin/client/handshake.py)",
       "Bash(PYTHONPATH=src rg \"self: ClientProtocol\" src/pyvider/rpcplugin/client/process.py)",
       "Bash(PYTHONPATH=src rg \"def.*address.*:.*str[^|]\" src/pyvider/rpcplugin/client/)",
-      "Bash(PYTHONPATH=src mypy src/pyvider/rpcplugin/client/handshake.py --show-error-codes --no-error-summary)"
+      "Bash(PYTHONPATH=src mypy src/pyvider/rpcplugin/client/handshake.py --show-error-codes --no-error-summary)",
+      "Bash(echo \"Exit code: $?\")"
     ],
     "deny": [],
     "ask": [],
