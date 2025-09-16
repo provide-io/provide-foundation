@@ -118,12 +118,14 @@ class TestGetTraceIdIfNeeded:
         from provide.foundation.cli.commands.logs.query import _get_trace_id_if_needed
 
         # Mock the actual import failure scenario by patching at the module level
-        with patch.dict("sys.modules", {"opentelemetry": None}):
-            with patch("builtins.__import__", side_effect=ImportError("No module named 'opentelemetry'")):
-                with patch("click.echo") as mock_echo:
-                    result = _get_trace_id_if_needed(current_trace=True, trace_id=None)
-                    assert result is None
-                    mock_echo.assert_called_with("Tracing not available.", err=True)
+        with (
+            patch.dict("sys.modules", {"opentelemetry": None}),
+            patch("builtins.__import__", side_effect=ImportError("No module named 'opentelemetry'")),
+            patch("click.echo") as mock_echo,
+        ):
+            result = _get_trace_id_if_needed(current_trace=True, trace_id=None)
+            assert result is None
+            mock_echo.assert_called_with("Tracing not available.", err=True)
 
 
 class TestExecuteAndDisplayQuery:
