@@ -71,7 +71,7 @@ class SpanContext:
         set_current_span(self.span)
         return self.span
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: Any) -> None:
         """Exit the span context."""
         if exc_type is not None:
             self.span.set_error(f"{exc_type.__name__}: {exc_val}")

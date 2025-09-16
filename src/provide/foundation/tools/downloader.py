@@ -193,7 +193,7 @@ class ToolDownloader:
         fallback_funcs = []
         for mirror_url in mirrors:
 
-            def create_mirror_func(url) -> Any:
+            def create_mirror_func(url: str) -> Any:
                 def mirror_download() -> Any:
                     log.debug(f"Trying mirror: {url}")
                     return self.download_with_progress(url, dest)

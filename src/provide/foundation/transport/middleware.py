@@ -140,7 +140,7 @@ class RetryMiddleware(Middleware):
         """Handle error, potentially with retries (this is called by client)."""
         return error
 
-    async def execute_with_retry(self, execute_func, request: Request) -> Response:
+    async def execute_with_retry(self, execute_func: Any, request: Request) -> Response:
         """Execute request with retry logic using unified RetryExecutor."""
         executor = RetryExecutor(self.policy)
 
