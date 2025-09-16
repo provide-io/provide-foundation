@@ -116,7 +116,8 @@
       "Bash(PYTHONPATH=src ruff check . --select E402 --output-format=json)",
       "Bash(PYTHONPATH=src ruff check . --select E402)",
       "Bash(PYTHONPATH=src ruff check --select SIM117 .)",
-      "Bash(cut:*)"
+      "Bash(cut:*)",
+      "Bash(PYTHONPATH=src ruff check --select PTH108 .)"
     ],
     "deny": [],
     "ask": [],

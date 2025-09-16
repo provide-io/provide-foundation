@@ -187,7 +187,7 @@ class TestConfigOptions:
         # Path may be resolved to include /private prefix on macOS
         assert config_file in result.output or f"/private{config_file}" in result.output
 
-        os.unlink(config_file)
+        Path(config_file).unlink()
 
     def test_adds_profile_option(self) -> None:
         """Test that --profile option is added."""

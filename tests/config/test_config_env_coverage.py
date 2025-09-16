@@ -1,6 +1,7 @@
 """Comprehensive coverage tests for config/env.py module."""
 
 import os
+from pathlib import Path
 import tempfile
 from unittest.mock import AsyncMock, Mock, patch
 
@@ -62,7 +63,7 @@ class TestAsyncEnvFunctions:
                     result = await get_env_async("ASYNC_SECRET")
                     assert result == "secret_content"
             finally:
-                os.unlink(temp_file.name)
+                Path(temp_file.name).unlink()
 
     @pytest.mark.asyncio
     async def test_get_env_async_file_secret_error(self) -> None:
@@ -162,7 +163,7 @@ class TestAsyncRuntimeConfig:
                     assert config.app_name == "secret_app"
                     assert config.api_key == "secret_api_key"
             finally:
-                os.unlink(temp_file.name)
+                Path(temp_file.name).unlink()
 
     @pytest.mark.asyncio
     async def test_from_env_async_no_async_secrets(self) -> None:
@@ -222,7 +223,7 @@ class TestAsyncRuntimeConfig:
         finally:
             for file_path in secret_files:
                 if os.path.exists(file_path):
-                    os.unlink(file_path)
+                    Path(file_path).unlink()
 
     @pytest.mark.asyncio
     async def test_from_env_async_parser_error(self) -> None:
@@ -246,7 +247,7 @@ class TestAsyncRuntimeConfig:
                     result = await RuntimeConfig._read_secret_async(temp_file.name)
                     assert result == "fallback_secret"
             finally:
-                os.unlink(temp_file.name)
+                Path(temp_file.name).unlink()
 
     @pytest.mark.asyncio
     async def test_read_secret_async_file_error(self) -> None:
@@ -337,7 +338,7 @@ class TestRuntimeConfigAdvanced:
                     config = self.AdvancedConfig.from_env()
                     assert config.custom == "sync_secret_value"
             finally:
-                os.unlink(temp_file.name)
+                Path(temp_file.name).unlink()
 
     def test_from_env_file_secret_error_sync(self) -> None:
         """Test from_env with file reading error (sync version)."""
