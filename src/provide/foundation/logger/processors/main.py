@@ -12,6 +12,7 @@ from typing import Any, TextIO, cast
 import structlog
 
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
+from provide.foundation.logger.constants import LEVEL_TO_NUMERIC
 from provide.foundation.logger.custom_processors import (
     StructlogProcessor,
     add_log_level_custom,
@@ -25,16 +26,6 @@ from provide.foundation.logger.types import (
     TRACE_LEVEL_NUM,
     LogLevelStr,
 )
-
-_LEVEL_TO_NUMERIC: dict[LogLevelStr, int] = {
-    "CRITICAL": stdlib_logging.CRITICAL,
-    "ERROR": stdlib_logging.ERROR,
-    "WARNING": stdlib_logging.WARNING,
-    "INFO": stdlib_logging.INFO,
-    "DEBUG": stdlib_logging.DEBUG,
-    "TRACE": TRACE_LEVEL_NUM,
-    "NOTSET": stdlib_logging.NOTSET,
-}
 
 
 def _config_create_service_name_processor(
@@ -118,7 +109,7 @@ def _build_core_processors_list(config: TelemetryConfig) -> list[StructlogProces
             filter_by_level_custom(
                 default_level_str=log_cfg.default_level,
                 module_levels=log_cfg.module_levels,
-                level_to_numeric_map=_LEVEL_TO_NUMERIC,
+                level_to_numeric_map=LEVEL_TO_NUMERIC,
             ),
         ),
         structlog.processors.StackInfoRenderer(),

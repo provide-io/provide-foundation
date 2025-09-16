@@ -126,12 +126,12 @@ class TestAsyncioDebugSuppression:
 
         # Test that the filtering logic handles hierarchical names correctly
         from provide.foundation.logger.custom_processors import filter_by_level_custom
-        from provide.foundation.logger.processors.main import _LEVEL_TO_NUMERIC
+        from provide.foundation.logger.constants import LEVEL_TO_NUMERIC
 
         filter_func = filter_by_level_custom(
             config.logging.default_level,
             config.logging.module_levels,
-            _LEVEL_TO_NUMERIC
+            LEVEL_TO_NUMERIC
         )
 
         # asyncio.selector_events should get the asyncio threshold
