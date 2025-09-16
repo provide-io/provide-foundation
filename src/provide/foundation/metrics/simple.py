@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Simple metrics implementations that work with or without OpenTelemetry."""
 
 from collections import defaultdict
