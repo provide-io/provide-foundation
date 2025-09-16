@@ -29,17 +29,6 @@ try:
 
     _HAS_CRYPTO = True
 except ImportError:
-    # Stub out cryptography types for type hints
-    x509: Any = None
-    default_backend: Any = None
-    hashes: Any = None
-    serialization: Any = None
-    ec: Any = None
-    rsa: Any = None
-    load_pem_private_key: Any = None
-    X509Certificate: Any = None
-    ExtendedKeyUsageOID: Any = None
-    NameOID: Any = None
     _HAS_CRYPTO = False
 
 from provide.foundation import logger

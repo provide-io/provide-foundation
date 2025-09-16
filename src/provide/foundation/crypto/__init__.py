@@ -52,14 +52,6 @@ try:
 
     _HAS_CRYPTO = True
 except ImportError:
-    Certificate: Any = None
-    CertificateBase: Any = None
-    CertificateConfig: Any = None
-    CertificateError: Any = None
-    CurveType: Any = None
-    KeyType: Any = None
-    create_ca: Any = None
-    create_self_signed: Any = None
     _HAS_CRYPTO = False
 
 # Standard imports (always available)
@@ -110,31 +102,7 @@ try:
     if not _HAS_CRYPTO:
         _HAS_CRYPTO = True
 except ImportError:
-    # Constants stubs
-    DEFAULT_CERTIFICATE_KEY_TYPE: Any = None
-    DEFAULT_CERTIFICATE_VALIDITY_DAYS: Any = None
-    DEFAULT_ECDSA_CURVE: Any = None
-    DEFAULT_RSA_KEY_SIZE: Any = None
-    DEFAULT_SIGNATURE_ALGORITHM: Any = None
-    ED25519_PRIVATE_KEY_SIZE: Any = None
-    ED25519_PUBLIC_KEY_SIZE: Any = None
-    ED25519_SIGNATURE_SIZE: Any = None
-    SUPPORTED_EC_CURVES: Any = None
-    SUPPORTED_KEY_TYPES: Any = None
-    SUPPORTED_RSA_SIZES: Any = None
-    get_default_hash_algorithm: Any = None
-    get_default_signature_algorithm: Any = None
-    # Key generation stubs
-    generate_ec_keypair: Any = None
-    generate_key_pair: Any = None
-    generate_keypair: Any = None
-    generate_rsa_keypair: Any = None
-    generate_tls_keypair: Any = None
-    # Signature stubs
-    generate_ed25519_keypair: Any = None
-    generate_signing_keypair: Any = None
-    sign_data: Any = None
-    verify_signature: Any = None
+    pass
 
 # Public API organized by use case frequency
 __all__ = [
