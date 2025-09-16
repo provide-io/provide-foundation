@@ -102,7 +102,8 @@
       "Bash(timeout 45 pytest --tb=no -q)",
       "Bash(xargs ruff check:*)",
       "Bash(timeout 30 pytest tests/cli/test_decorators.py::TestLoggingOptions::test_adds_log_file_option -v)",
-      "Bash(awk:*)"
+      "Bash(awk:*)",
+      "Bash(PYTHONPATH=src pytest tests/crypto/test_dependency_stubs.py -xvs)"
     ],
     "deny": [],
     "ask": [],
