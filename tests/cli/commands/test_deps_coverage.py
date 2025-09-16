@@ -17,20 +17,22 @@ class TestDepsCommandWithClick:
 
     def test_deps_command_with_click(self) -> None:
         """Test deps command when click is available."""
-        with patch("provide.foundation.cli.commands.deps._HAS_CLICK", True):
-            with patch("provide.foundation.cli.commands.deps.click") as mock_click:
-                Mock()
-                mock_click.command.return_value = lambda f: f
-                mock_click.option.return_value = lambda f: f
+        with (
+            patch("provide.foundation.cli.commands.deps._HAS_CLICK", True),
+            patch("provide.foundation.cli.commands.deps.click") as mock_click,
+        ):
+            Mock()
+            mock_click.command.return_value = lambda f: f
+            mock_click.option.return_value = lambda f: f
 
-                # Re-import to get the decorated version
-                import importlib
+            # Re-import to get the decorated version
+            import importlib
 
-                import provide.foundation.cli.commands.deps as deps_module
+            import provide.foundation.cli.commands.deps as deps_module
 
-                importlib.reload(deps_module)
+            importlib.reload(deps_module)
 
-                assert deps_module.deps_command is not None
+            assert deps_module.deps_command is not None
 
     def test_deps_command_check_specific_available(self) -> None:
         """Test checking specific available dependency."""
