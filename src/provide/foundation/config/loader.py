@@ -3,6 +3,7 @@ from __future__ import annotations
 """Configuration loaders for various sources."""
 
 from abc import ABC, abstractmethod
+from configparser import ConfigParser
 import json
 import os
 from pathlib import Path
@@ -147,7 +148,7 @@ class FileConfigLoader(ConfigLoader):
             format=str(self.format),
         )
 
-    def _ini_to_dict(self, parser: object) -> ConfigDict:
+    def _ini_to_dict(self, parser: ConfigParser) -> ConfigDict:
         """Convert INI parser to dictionary."""
         result = {}
         for section in parser.sections():
