@@ -7,7 +7,7 @@ from pathlib import Path
 import shutil
 from typing import BinaryIO
 
-from attrs import define, field, validators
+from provide.foundation.types.attrs import define, field, validators
 
 from provide.foundation.archive.base import ArchiveError
 from provide.foundation.file import ensure_parent_dir

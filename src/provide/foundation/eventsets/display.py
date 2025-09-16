@@ -42,15 +42,15 @@ def show_event_matrix() -> None:
                 if len(config.field_mappings) > 5:
                     lines.append(f"      ... and {len(config.field_mappings) - 5} more")
 
-            # Show event sets
-            if config.event_sets:
-                lines.append(f"    Event Sets ({len(config.event_sets)}):")
-                for event_set in config.event_sets:
-                    marker_count = len(event_set.visual_markers)
-                    metadata_count = len(event_set.metadata_fields)
-                    transform_count = len(event_set.transformations)
+            # Show mappings
+            if config.mappings:
+                lines.append(f"    Mappings ({len(config.mappings)}):")
+                for mapping in config.mappings:
+                    marker_count = len(mapping.visual_markers)
+                    metadata_count = len(mapping.metadata_fields)
+                    transform_count = len(mapping.transformations)
                     lines.append(
-                        f"      - {event_set.name}: "
+                        f"      - {mapping.name}: "
                         f"{marker_count} markers, "
                         f"{metadata_count} metadata, "
                         f"{transform_count} transforms",
@@ -64,17 +64,19 @@ def show_event_matrix() -> None:
     if resolver._resolved:
         lines.append("\nResolver State:")
         lines.append(f"  Total Field Mappings: {len(resolver._field_mappings)}")
-        lines.append(f"  Total Event Sets: {len(resolver._event_sets)}")
+        lines.append(f"  Total Event Sets: {len(resolver._event_mappings_by_set)}")
 
         # Show sample visual markers
-        if resolver._event_sets:
+        if resolver._event_mappings_by_set:
             lines.append("\n  Sample Visual Markers:")
-            for name, event_set in list(resolver._event_sets.items())[:3]:
-                if event_set.visual_markers:
-                    sample_markers = list(event_set.visual_markers.items())[:3]
-                    lines.append(f"    {name}:")
-                    for key, marker in sample_markers:
-                        lines.append(f"      {marker} -> {key}")
+            for name, mappings in list(resolver._event_mappings_by_set.items())[:3]:
+                for mapping in mappings[:1]:  # Just show first mapping from each set
+                    if mapping.visual_markers:
+                        sample_markers = list(mapping.visual_markers.items())[:3]
+                        lines.append(f"    {name}:")
+                        for key, marker in sample_markers:
+                            lines.append(f"      {marker} -> {key}")
+                        break  # Only show first mapping with visual markers
     else:
         lines.append("\n  (Resolver not yet initialized)")
 

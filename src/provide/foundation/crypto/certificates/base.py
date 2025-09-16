@@ -97,8 +97,8 @@ if _HAS_CRYPTO:
     KeyPair: TypeAlias = rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey
     PublicKey: TypeAlias = rsa.RSAPublicKey | ec.EllipticCurvePublicKey
 else:
-    KeyPair: TypeAlias = None
-    PublicKey: TypeAlias = None
+    KeyPair: TypeAlias = Any
+    PublicKey: TypeAlias = Any
 
 
 @define(slots=True, frozen=True)

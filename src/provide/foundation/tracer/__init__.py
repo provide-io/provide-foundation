@@ -36,11 +36,11 @@ try:
 
     _HAS_OTEL = True
 except ImportError:
-    otel_trace = None  # type: Any
-    TracerProvider = None  # type: Any
-    BatchSpanProcessor = None  # type: Any
-    OTLPGrpcSpanExporter = None  # type: Any
-    OTLPHttpSpanExporter = None  # type: Any
+    otel_trace: Any = None
+    TracerProvider: Any = None
+    BatchSpanProcessor: Any = None
+    OTLPGrpcSpanExporter: Any = None
+    OTLPHttpSpanExporter: Any = None
     _HAS_OTEL = False
 
 from provide.foundation.tracer.context import (

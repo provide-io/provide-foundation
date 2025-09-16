@@ -2,14 +2,16 @@ from __future__ import annotations
 
 """Digital signature operations using Ed25519."""
 
+from typing import Any
+
 try:
     from cryptography.exceptions import InvalidSignature
     from cryptography.hazmat.primitives.asymmetric import ed25519
 
     _HAS_CRYPTO = True
 except ImportError:
-    InvalidSignature = None
-    ed25519 = None
+    InvalidSignature: Any = None
+    ed25519: Any = None
     _HAS_CRYPTO = False
 
 from provide.foundation import logger

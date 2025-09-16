@@ -1,0 +1,42 @@
+Most Complex Functions
+==================================================
+
+1. _ensure_configured (Grade C)
+   File: src/provide/foundation/logger/core.py:70
+   Complexity: 16
+
+2. _check_structlog_already_disabled (Grade A)
+   File: src/provide/foundation/logger/core.py:56
+   Complexity: 4
+
+3. FoundationLogger (Grade A)
+   File: src/provide/foundation/logger/core.py:25
+   Complexity: 3
+
+4. _format_message_with_args (Grade A)
+   File: src/provide/foundation/logger/core.py:162
+   Complexity: 3
+
+5. bind (Grade A)
+   File: src/provide/foundation/logger/core.py:217
+   Complexity: 3
+
+6. unbind (Grade A)
+   File: src/provide/foundation/logger/core.py:235
+   Complexity: 3
+
+7. try_unbind (Grade A)
+   File: src/provide/foundation/logger/core.py:253
+   Complexity: 3
+
+8. __setattr__ (Grade A)
+   File: src/provide/foundation/logger/core.py:272
+   Complexity: 3
+
+9. get_global_logger (Grade A)
+   File: src/provide/foundation/logger/core.py:281
+   Complexity: 2
+
+10. setup (Grade A)
+   File: src/provide/foundation/logger/core.py:36
+   Complexity: 2
