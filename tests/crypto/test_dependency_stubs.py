@@ -18,20 +18,18 @@ SKIP_REASON = (
 @pytest.fixture(scope="module", autouse=True)
 def crypto_dependency_test_header() -> None:
     """Display clear messaging about crypto dependency tests."""
+    print("\n" + "=" * 60)
+    print("🔒 CRYPTOGRAPHY DEPENDENCY TESTS")
+    print("=" * 60)
     if _HAS_CRYPTO:
-        print("\n" + "=" * 60)
-        print("🔒 CRYPTOGRAPHY DEPENDENCY TESTS")
-        print("=" * 60)
         print("⚠️  These tests verify behavior when cryptography is NOT installed")
         print("✅ Cryptography IS currently installed - tests will be SKIPPED")
         print("💡 This is expected and correct behavior")
-        print("=" * 60)
+        print("📦 Install: 'uv pip uninstall cryptography' to run these tests")
     else:
-        print("\n" + "=" * 60)
-        print("🔒 CRYPTOGRAPHY DEPENDENCY TESTS")
-        print("=" * 60)
         print("⚠️  Cryptography is NOT installed - running dependency stub tests")
-        print("=" * 60)
+        print("📦 Install: 'uv pip install cryptography' to skip these tests")
+    print("=" * 60)
 
 
 @pytest.mark.skipif(_HAS_CRYPTO, reason=SKIP_REASON)
