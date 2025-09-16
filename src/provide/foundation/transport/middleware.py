@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 import time
+from typing import Any
 
 from attrs import define, field
 
@@ -143,7 +144,7 @@ class RetryMiddleware(Middleware):
         """Execute request with retry logic using unified RetryExecutor."""
         executor = RetryExecutor(self.policy)
 
-        async def wrapped():
+        async def wrapped() -> Any:
             response = await execute_func(request)
 
             # Check if status code is retryable

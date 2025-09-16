@@ -30,6 +30,8 @@ Example Usage:
 
 from __future__ import annotations
 
+from typing import Any
+
 # Core hub components (always available)
 from provide.foundation.hub.components import (
     ComponentCategory,
@@ -71,7 +73,7 @@ def get_click_commands() -> dict[str, object]:
         raise
 
 
-def __getattr__(name: str):
+def __getattr__(name: str) -> Any:
     """Support lazy loading of CLI-dependent features."""
     if name == "build_click_command":
         return get_click_commands()["build_click_command"]

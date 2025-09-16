@@ -5,7 +5,7 @@ from __future__ import annotations
 import asyncio
 from collections.abc import Callable
 import functools
-from typing import TypeVar
+from typing import Any, TypeVar
 
 from attrs import define, field
 
@@ -33,7 +33,7 @@ class FallbackChain:
             fallback_name=getattr(fallback_func, "__name__", "anonymous"),
         )
 
-    def execute(self, primary_func: Callable[..., T], *args, **kwargs) -> T:
+    def execute(self, primary_func: Callable[..., T], *args: Any, **kwargs: Any) -> T:
         """Execute primary function with fallback chain (sync)."""
         # Try primary function first
         primary_exception = None
@@ -98,7 +98,7 @@ class FallbackChain:
         # This should never happen but provide fallback
         raise RuntimeError("Fallback chain execution failed with no recorded exceptions")
 
-    async def execute_async(self, primary_func: Callable[..., T], *args, **kwargs) -> T:
+    async def execute_async(self, primary_func: Callable[..., T], *args: Any, **kwargs: Any) -> T:
         """Execute primary function with fallback chain (async)."""
         # Try primary function first
         primary_exception = None
@@ -189,13 +189,13 @@ def fallback(*fallback_funcs: Callable[..., T]) -> Callable:
         if asyncio.iscoroutinefunction(primary_func):
 
             @functools.wraps(primary_func)
-            async def async_wrapper(*args, **kwargs):
+            async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
                 return await chain.execute_async(primary_func, *args, **kwargs)
 
             return async_wrapper
 
         @functools.wraps(primary_func)
-        def sync_wrapper(*args, **kwargs):
+        def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
             return chain.execute(primary_func, *args, **kwargs)
 
         return sync_wrapper

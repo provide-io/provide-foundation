@@ -265,7 +265,7 @@ async def apin_stream() -> AsyncIterator[str]:
         # In JSON mode, read all input and yield parsed lines
         loop = asyncio.get_event_loop()
 
-        def read_json():
+        def read_json() -> list[str]:
             try:
                 data = json.load(sys.stdin)
                 if isinstance(data, list):

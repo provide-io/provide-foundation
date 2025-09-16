@@ -15,7 +15,7 @@ except ImportError:
 
 
 # Defer click_builder import to avoid circular dependency
-def _get_ensure_parent_groups():
+def _get_ensure_parent_groups() -> Any:
     if not _HAS_CLICK:
         return None
     from provide.foundation.hub.click_builder import ensure_parent_groups

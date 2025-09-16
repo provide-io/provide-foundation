@@ -92,7 +92,13 @@
       "Bash(PYTHONPATH=src ruff check src/ tests/ --statistics)",
       "Bash(PYTHONPATH=src ruff check --fix src/ tests/ --select F401,SIM117,PTH101,PTH108,PTH123 --unsafe-fixes)",
       "Bash(PYTHONPATH=src ruff check src/ --select ANN001)",
-      "Bash(PYTHONPATH=src pytest tests/client/test_client_retry_logic.py::test_connect_handshake_total_timeout_immediately -xvs)"
+      "Bash(PYTHONPATH=src pytest tests/client/test_client_retry_logic.py::test_connect_handshake_total_timeout_immediately -xvs)",
+      "Bash(PYTHONPATH=src pytest tests/client/test_client_retry_logic.py::test_connect_handshake_total_timeout_immediately -x)",
+      "Bash(PYTHONPATH=src pytest tests/client/test_client_retry_logic.py::test_connect_handshake_total_timeout_exceeded -x)",
+      "Bash(PYTHONPATH=src pytest tests/client/test_client_grpc.py::test_create_grpc_channel_with_mtls tests/client/test_client_init.py::test_setup_client_certificates_mtls_missing_key tests/client/test_client_retry_logic.py::test_connect_handshake_total_timeout_immediately -v)",
+      "Bash(PYTHONPATH=src pytest tests/client/ --tb=short -q)",
+      "Bash(PYTHONPATH=src pytest tests/core/ --tb=short -q)",
+      "Bash(PYTHONPATH=src pytest tests/ --tb=short -q --maxfail=5)"
     ],
     "deny": [],
     "ask": [],
