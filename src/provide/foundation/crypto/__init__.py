@@ -6,7 +6,7 @@ Provides hashing, checksum verification, digital signatures, key generation,
 and X.509 certificate management.
 """
 
-from typing import TYPE_CHECKING, Never
+from typing import TYPE_CHECKING, Any, Never
 
 if TYPE_CHECKING:
     # Import certificate types only for type checking
@@ -112,30 +112,30 @@ if not _HAS_CRYPTO:
     class Certificate:
         """Stub for Certificate when cryptography is not installed."""
 
-        def __init__(self, *args, **kwargs) -> None:
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
             raise DependencyError("cryptography", feature="crypto")
 
-        def __new__(cls, *args, **kwargs):
-            raise DependencyError("cryptography", feature="crypto")
-
-        @classmethod
-        def create_self_signed_client_cert(cls, *args, **kwargs) -> Never:
+        def __new__(cls, *args: Any, **kwargs: Any) -> Never:
             raise DependencyError("cryptography", feature="crypto")
 
         @classmethod
-        def create_self_signed_server_cert(cls, *args, **kwargs) -> Never:
+        def create_self_signed_client_cert(cls, *args: Any, **kwargs: Any) -> Never:
+            raise DependencyError("cryptography", feature="crypto")
+
+        @classmethod
+        def create_self_signed_server_cert(cls, *args: Any, **kwargs: Any) -> Never:
             raise DependencyError("cryptography", feature="crypto")
 
     class CertificateBase:
         """Stub for CertificateBase when cryptography is not installed."""
 
-        def __init__(self, *args, **kwargs) -> None:
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
             raise DependencyError("cryptography", feature="crypto")
 
     class CertificateConfig:
         """Stub for CertificateConfig when cryptography is not installed."""
 
-        def __init__(self, *args, **kwargs) -> None:
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
             raise DependencyError("cryptography", feature="crypto")
 
     class CertificateError(Exception):
@@ -147,59 +147,59 @@ if not _HAS_CRYPTO:
     class CurveType:
         """Stub for CurveType when cryptography is not installed."""
 
-        def __init__(self, *args, **kwargs) -> None:
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
             raise DependencyError("cryptography", feature="crypto")
 
     class KeyType:
         """Stub for KeyType when cryptography is not installed."""
 
-        def __init__(self, *args, **kwargs) -> None:
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
             raise DependencyError("cryptography", feature="crypto")
 
     # Certificate function stubs
-    def create_ca(*args, **kwargs) -> Never:
+    def create_ca(*args: Any, **kwargs: Any) -> Never:
         """Stub for create_ca when cryptography is not installed."""
         raise DependencyError("cryptography", feature="crypto")
 
-    def create_self_signed(*args, **kwargs) -> Never:
+    def create_self_signed(*args: Any, **kwargs: Any) -> Never:
         """Stub for create_self_signed when cryptography is not installed."""
         raise DependencyError("cryptography", feature="crypto")
 
     # Key generation function stubs
-    def generate_ec_keypair(*args, **kwargs) -> Never:
+    def generate_ec_keypair(*args: Any, **kwargs: Any) -> Never:
         """Stub for generate_ec_keypair when cryptography is not installed."""
         raise DependencyError("cryptography", feature="crypto")
 
-    def generate_ed25519_keypair(*args, **kwargs) -> Never:
+    def generate_ed25519_keypair(*args: Any, **kwargs: Any) -> Never:
         """Stub for generate_ed25519_keypair when cryptography is not installed."""
         raise DependencyError("cryptography", feature="crypto")
 
-    def generate_key_pair(*args, **kwargs) -> Never:
+    def generate_key_pair(*args: Any, **kwargs: Any) -> Never:
         """Stub for generate_key_pair when cryptography is not installed."""
         raise DependencyError("cryptography", feature="crypto")
 
-    def generate_keypair(*args, **kwargs) -> Never:
+    def generate_keypair(*args: Any, **kwargs: Any) -> Never:
         """Stub for generate_keypair when cryptography is not installed."""
         raise DependencyError("cryptography", feature="crypto")
 
-    def generate_rsa_keypair(*args, **kwargs) -> Never:
+    def generate_rsa_keypair(*args: Any, **kwargs: Any) -> Never:
         """Stub for generate_rsa_keypair when cryptography is not installed."""
         raise DependencyError("cryptography", feature="crypto")
 
-    def generate_signing_keypair(*args, **kwargs) -> Never:
+    def generate_signing_keypair(*args: Any, **kwargs: Any) -> Never:
         """Stub for generate_signing_keypair when cryptography is not installed."""
         raise DependencyError("cryptography", feature="crypto")
 
-    def generate_tls_keypair(*args, **kwargs) -> Never:
+    def generate_tls_keypair(*args: Any, **kwargs: Any) -> Never:
         """Stub for generate_tls_keypair when cryptography is not installed."""
         raise DependencyError("cryptography", feature="crypto")
 
     # Signature function stubs
-    def sign_data(*args, **kwargs) -> Never:
+    def sign_data(*args: Any, **kwargs: Any) -> Never:
         """Stub for sign_data when cryptography is not installed."""
         raise DependencyError("cryptography", feature="crypto")
 
-    def verify_signature(*args, **kwargs) -> Never:
+    def verify_signature(*args: Any, **kwargs: Any) -> Never:
         """Stub for verify_signature when cryptography is not installed."""
         raise DependencyError("cryptography", feature="crypto")
 

@@ -37,7 +37,7 @@ class UniversalClient:
         params: Params | None = None,
         body: Data = None,
         timeout: float | None = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> Response:
         """Make a request using appropriate transport.
 
@@ -98,7 +98,7 @@ class UniversalClient:
         self,
         uri: str,
         method: str | HTTPMethod = HTTPMethod.GET,
-        **kwargs,
+        **kwargs: Any,
     ) -> AsyncIterator[bytes]:
         """Stream data from URI.
 
@@ -126,31 +126,31 @@ class UniversalClient:
         async for chunk in transport.stream(request):
             yield chunk
 
-    async def get(self, uri: str, **kwargs) -> Response:
+    async def get(self, uri: str, **kwargs: Any) -> Response:
         """GET request."""
         return await self.request(uri, HTTPMethod.GET, **kwargs)
 
-    async def post(self, uri: str, **kwargs) -> Response:
+    async def post(self, uri: str, **kwargs: Any) -> Response:
         """POST request."""
         return await self.request(uri, HTTPMethod.POST, **kwargs)
 
-    async def put(self, uri: str, **kwargs) -> Response:
+    async def put(self, uri: str, **kwargs: Any) -> Response:
         """PUT request."""
         return await self.request(uri, HTTPMethod.PUT, **kwargs)
 
-    async def patch(self, uri: str, **kwargs) -> Response:
+    async def patch(self, uri: str, **kwargs: Any) -> Response:
         """PATCH request."""
         return await self.request(uri, HTTPMethod.PATCH, **kwargs)
 
-    async def delete(self, uri: str, **kwargs) -> Response:
+    async def delete(self, uri: str, **kwargs: Any) -> Response:
         """DELETE request."""
         return await self.request(uri, HTTPMethod.DELETE, **kwargs)
 
-    async def head(self, uri: str, **kwargs) -> Response:
+    async def head(self, uri: str, **kwargs: Any) -> Response:
         """HEAD request."""
         return await self.request(uri, HTTPMethod.HEAD, **kwargs)
 
-    async def options(self, uri: str, **kwargs) -> Response:
+    async def options(self, uri: str, **kwargs: Any) -> Response:
         """OPTIONS request."""
         return await self.request(uri, HTTPMethod.OPTIONS, **kwargs)
 
@@ -190,55 +190,55 @@ def get_default_client() -> UniversalClient:
     return _default_client
 
 
-async def request(uri: str, method: str | HTTPMethod = HTTPMethod.GET, **kwargs) -> Response:
+async def request(uri: str, method: str | HTTPMethod = HTTPMethod.GET, **kwargs: Any) -> Response:
     """Make a request using the default client."""
     client = get_default_client()
     return await client.request(uri, method, **kwargs)
 
 
-async def get(uri: str, **kwargs) -> Response:
+async def get(uri: str, **kwargs: Any) -> Response:
     """GET request using default client."""
     client = get_default_client()
     return await client.get(uri, **kwargs)
 
 
-async def post(uri: str, **kwargs) -> Response:
+async def post(uri: str, **kwargs: Any) -> Response:
     """POST request using default client."""
     client = get_default_client()
     return await client.post(uri, **kwargs)
 
 
-async def put(uri: str, **kwargs) -> Response:
+async def put(uri: str, **kwargs: Any) -> Response:
     """PUT request using default client."""
     client = get_default_client()
     return await client.put(uri, **kwargs)
 
 
-async def patch(uri: str, **kwargs) -> Response:
+async def patch(uri: str, **kwargs: Any) -> Response:
     """PATCH request using default client."""
     client = get_default_client()
     return await client.patch(uri, **kwargs)
 
 
-async def delete(uri: str, **kwargs) -> Response:
+async def delete(uri: str, **kwargs: Any) -> Response:
     """DELETE request using default client."""
     client = get_default_client()
     return await client.delete(uri, **kwargs)
 
 
-async def head(uri: str, **kwargs) -> Response:
+async def head(uri: str, **kwargs: Any) -> Response:
     """HEAD request using default client."""
     client = get_default_client()
     return await client.head(uri, **kwargs)
 
 
-async def options(uri: str, **kwargs) -> Response:
+async def options(uri: str, **kwargs: Any) -> Response:
     """OPTIONS request using default client."""
     client = get_default_client()
     return await client.options(uri, **kwargs)
 
 
-async def stream(uri: str, **kwargs) -> AsyncIterator[bytes]:
+async def stream(uri: str, **kwargs: Any) -> AsyncIterator[bytes]:
     """Stream data using default client."""
     client = get_default_client()
     async for chunk in client.stream(uri, **kwargs):
