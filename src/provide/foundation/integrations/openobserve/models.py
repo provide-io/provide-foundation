@@ -2,12 +2,12 @@ from __future__ import annotations
 
 """Data models for OpenObserve API requests and responses."""
 
-from dataclasses import dataclass, field
+from attrs import define, field
 from datetime import datetime
 from typing import Any
 
 
-@dataclass
+@define
 class SearchQuery:
     """Search query parameters for OpenObserve."""
 
@@ -30,7 +30,7 @@ class SearchQuery:
         }
 
 
-@dataclass
+@define
 class SearchResponse:
     """Response from OpenObserve search API."""
 
@@ -60,7 +60,7 @@ class SearchResponse:
         )
 
 
-@dataclass
+@define
 class StreamInfo:
     """Information about an OpenObserve stream."""
 

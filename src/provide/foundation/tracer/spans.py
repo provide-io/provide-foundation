@@ -7,7 +7,7 @@ from __future__ import annotations
 Provides OpenTelemetry integration when available, falls back to simple tracing.
 """
 
-from dataclasses import dataclass, field
+from attrs import define, field
 import time
 from typing import TYPE_CHECKING, Any
 import uuid
@@ -33,7 +33,7 @@ except ImportError:
     _HAS_OTEL = False
 
 
-@dataclass
+@define
 class Span:
     """Enhanced span implementation with optional OpenTelemetry integration.
 
