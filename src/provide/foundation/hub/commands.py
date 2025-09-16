@@ -1,9 +1,9 @@
-from __future__ import annotations
-
 """Command registration and management for the hub.
 
 This module now re-exports from the split modules for backward compatibility.
 """
+
+from __future__ import annotations
 
 # Core hub features (always available)
 from provide.foundation.hub.decorators import register_command
