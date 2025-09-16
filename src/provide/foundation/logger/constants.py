@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Centralized constants for Foundation logger system.
 
 All logger-related constants and numeric mappings are defined here

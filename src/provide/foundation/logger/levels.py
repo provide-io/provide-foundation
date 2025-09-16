@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Log level normalization and safe lookup utilities.
 
 Provides functions for normalizing log levels and performing safe lookups
