@@ -40,13 +40,13 @@ try:
 except ImportError:
     _HAS_OTEL = False
     # Stub everything for type hints
-    otel_trace = None  # type: Any
-    TracerProvider = None  # type: Any
-    BatchSpanProcessor = None  # type: Any
-    Resource = None  # type: Any
-    OTLPGrpcSpanExporter = None  # type: Any
-    OTLPHttpSpanExporter = None  # type: Any
-    TraceIdRatioBased = None  # type: Any
+    otel_trace: Any = None
+    TracerProvider: Any = None
+    BatchSpanProcessor: Any = None
+    Resource: Any = None
+    OTLPGrpcSpanExporter: Any = None
+    OTLPHttpSpanExporter: Any = None
+    TraceIdRatioBased: Any = None
 
 
 def _require_otel() -> None:

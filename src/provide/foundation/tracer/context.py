@@ -13,23 +13,20 @@ from typing import Any
 from provide.foundation.tracer.spans import Span
 
 # Context variable to track the current span
-_current_span: contextvars.ContextVar[Span | None] = contextvars.ContextVar("current_span", default=None)
+_current_span: contextvars.ContextVar[Span | None] = contextvars.ContextVar("current_span")
 
 # Context variable to track the current trace ID
-_current_trace_id: contextvars.ContextVar[str | None] = contextvars.ContextVar(
-    "current_trace_id",
-    default=None,
-)
+_current_trace_id: contextvars.ContextVar[str | None] = contextvars.ContextVar("current_trace_id")
 
 
 def get_current_span() -> Span | None:
     """Get the currently active span."""
-    return _current_span.get()
+    return _current_span.get(None)
 
 
 def get_current_trace_id() -> str | None:
     """Get the current trace ID."""
-    return _current_trace_id.get()
+    return _current_trace_id.get(None)
 
 
 def set_current_span(span: Span | None) -> None:

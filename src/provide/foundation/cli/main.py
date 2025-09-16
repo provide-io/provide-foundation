@@ -36,7 +36,8 @@ if _HAS_CLICK:
     try:
         from provide.foundation.cli.commands.deps import deps_command
 
-        cli.add_command(deps_command)
+        if hasattr(deps_command, 'callback'):
+            cli.add_command(deps_command)
     except ImportError:
         pass
 
@@ -44,7 +45,8 @@ if _HAS_CLICK:
     try:
         from provide.foundation.cli.commands.logs import logs_group
 
-        cli.add_command(logs_group)
+        if hasattr(logs_group, 'callback'):
+            cli.add_command(logs_group)
     except ImportError:
         pass
 
@@ -54,7 +56,8 @@ if _HAS_CLICK:
             openobserve_group,
         )
 
-        cli.add_command(openobserve_group)
+        if hasattr(openobserve_group, 'callback'):
+            cli.add_command(openobserve_group)
     except ImportError:
         pass
 
