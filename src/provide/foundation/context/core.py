@@ -256,7 +256,7 @@ class CLIContext(RuntimeConfig):
             defaults = {}
             for f in fields(CLIContext):
                 if not f.name.startswith("_"):  # Skip private fields
-                    if isinstance(f.default, Factory):
+                    if isinstance(f.default, Factory) and f.default is not None:
                         defaults[f.name] = f.default.factory()
                     elif f.default is not None:
                         defaults[f.name] = f.default

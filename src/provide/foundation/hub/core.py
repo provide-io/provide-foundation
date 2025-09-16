@@ -221,7 +221,11 @@ class CoreHub:
             command_func = func.callback
             click_command = func
         else:
-            command_name = name or func.__name__.replace("_", "-")
+            # func should be a callable with __name__
+            if hasattr(func, "__name__"):
+                command_name = name or func.__name__.replace("_", "-")
+            else:
+                command_name = name or "unknown_command"
             command_func = func
             click_command = None
 
