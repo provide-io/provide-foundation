@@ -50,13 +50,15 @@ class TestPin:
 
     def test_pin_with_color(self) -> None:
         """Test pin() with colored prompt."""
-        with patch("click.prompt", return_value="test") as mock_prompt:
-            with patch("sys.stdin.isatty", return_value=True):
-                result = pin("Enter: ", color="green", bold=True)
-                assert result == "test"
-                # The prompt should be styled
-                prompt_arg = mock_prompt.call_args[0][0]
-                assert isinstance(prompt_arg, str)  # Should be styled string
+        with (
+            patch("click.prompt", return_value="test") as mock_prompt,
+            patch("sys.stdin.isatty", return_value=True),
+        ):
+            result = pin("Enter: ", color="green", bold=True)
+            assert result == "test"
+            # The prompt should be styled
+            prompt_arg = mock_prompt.call_args[0][0]
+            assert isinstance(prompt_arg, str)  # Should be styled string
 
     def test_pin_json_mode(self) -> None:
         """Test pin() in JSON mode."""
@@ -299,17 +301,19 @@ class TestAsyncStreamIntegration:
         async def mock_connect(*args):
             return (None, None)
 
-        with patch("asyncio.StreamReader", return_value=reader):
-            with patch("asyncio.get_event_loop") as mock_loop:
-                mock_loop.return_value.connect_read_pipe = mock_connect
+        with (
+            patch("asyncio.StreamReader", return_value=reader),
+            patch("asyncio.get_event_loop") as mock_loop,
+        ):
+            mock_loop.return_value.connect_read_pipe = mock_connect
 
-                lines = []
-                async for line in apin_stream():
-                    lines.append(line)
-                    if len(lines) >= 2:  # Stop after expected lines
-                        break
+            lines = []
+            async for line in apin_stream():
+                lines.append(line)
+                if len(lines) >= 2:  # Stop after expected lines
+                    break
 
-                assert lines == ["async line 1", "async line 2"]
+            assert lines == ["async line 1", "async line 2"]
 
     @pytest.mark.asyncio
     async def test_apin_stream_json_mode_async(self) -> None:
@@ -359,14 +363,16 @@ class TestEdgeCases:
         """Test that pin_stream() logs appropriately."""
         test_input = "line1\nline2\n"
 
-        with patch("sys.stdin", StringIO(test_input)):
-            with patch("provide.foundation.console.input.plog") as mock_log:
-                list(pin_stream())
+        with (
+            patch("sys.stdin", StringIO(test_input)),
+            patch("provide.foundation.console.input.plog") as mock_log,
+        ):
+            list(pin_stream())
 
-                # Check debug logging
-                mock_log.debug.assert_called()
-                # Should log start and end
-                assert mock_log.debug.call_count >= 2
+            # Check debug logging
+            mock_log.debug.assert_called()
+            # Should log start and end
+            assert mock_log.debug.call_count >= 2
 
     @pytest.mark.asyncio
     async def test_apin_stream_cancellation(self) -> None:
@@ -380,19 +386,21 @@ class TestEdgeCases:
         async def mock_connect(*args):
             return (None, None)
 
-        with patch("asyncio.StreamReader", return_value=reader):
-            with patch("asyncio.get_event_loop") as mock_loop:
-                mock_loop.return_value.connect_read_pipe = mock_connect
-                reader.readline = cancel_after_delay
+        with (
+            patch("asyncio.StreamReader", return_value=reader),
+            patch("asyncio.get_event_loop") as mock_loop,
+            patch("provide.foundation.console.input.plog") as mock_log,
+        ):
+            mock_loop.return_value.connect_read_pipe = mock_connect
+            reader.readline = cancel_after_delay
 
-                with patch("provide.foundation.console.input.plog") as mock_log:
-                    lines = []
-                    async for line in apin_stream():
-                        lines.append(line)
+            lines = []
+            async for line in apin_stream():
+                lines.append(line)
 
-                    # Should have logged cancellation
-                    mock_log.debug.assert_called()
-                    assert any("cancelled" in str(call) for call in mock_log.debug.call_args_list)
+            # Should have logged cancellation
+            mock_log.debug.assert_called()
+            assert any("cancelled" in str(call) for call in mock_log.debug.call_args_list)
 
     @pytest.mark.asyncio
     async def test_apin_stream_error_handling(self) -> None:
@@ -405,16 +413,18 @@ class TestEdgeCases:
         async def mock_connect(*args):
             return (None, None)
 
-        with patch("asyncio.StreamReader", return_value=reader):
-            with patch("asyncio.get_event_loop") as mock_loop:
-                mock_loop.return_value.connect_read_pipe = mock_connect
-                reader.readline = raise_error
+        with (
+            patch("asyncio.StreamReader", return_value=reader),
+            patch("asyncio.get_event_loop") as mock_loop,
+            patch("provide.foundation.console.input.plog") as mock_log,
+        ):
+            mock_loop.return_value.connect_read_pipe = mock_connect
+            reader.readline = raise_error
 
-                with patch("provide.foundation.console.input.plog") as mock_log:
-                    lines = []
-                    async for line in apin_stream():
-                        lines.append(line)
+            lines = []
+            async for line in apin_stream():
+                lines.append(line)
 
-                    # Should have logged error
-                    mock_log.error.assert_called()
-                    assert "Test error" in str(mock_log.error.call_args)
+            # Should have logged error
+            mock_log.error.assert_called()
+            assert "Test error" in str(mock_log.error.call_args)
