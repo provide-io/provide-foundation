@@ -46,14 +46,15 @@ class TestAsyncEnvFunctions:
             temp_file.flush()
 
             try:
-                with patch.dict(
-                    os.environ,
-                    {"ASYNC_SECRET": f"file://{temp_file.name}"},
-                ):
-                    # Mock aiofiles if not available
-                    with patch(
+                with (
+                    patch.dict(
+                        os.environ,
+                        {"ASYNC_SECRET": f"file://{temp_file.name}"},
+                    ),
+                    patch(
                         "provide.foundation.config.env.aiofiles",
-                    ) as mock_aiofiles:
+                    ) as mock_aiofiles,
+                ):
                         mock_file = AsyncMock()
                         mock_file.read.return_value = "secret_content\n"
                         mock_aiofiles.open.return_value.__aenter__.return_value = mock_file
@@ -66,8 +67,10 @@ class TestAsyncEnvFunctions:
     @pytest.mark.asyncio
     async def test_get_env_async_file_secret_error(self) -> None:
         """Test get_env_async with file reading error."""
-        with patch.dict(os.environ, {"ASYNC_SECRET": "file:///nonexistent/file"}):
-            with patch("provide.foundation.config.env.aiofiles") as mock_aiofiles:
+        with (
+            patch.dict(os.environ, {"ASYNC_SECRET": "file:///nonexistent/file"}),
+            patch("provide.foundation.config.env.aiofiles") as mock_aiofiles,
+        ):
                 mock_aiofiles.open.side_effect = FileNotFoundError("File not found")
 
                 with pytest.raises(ValueError, match="Failed to read secret from file"):
@@ -136,17 +139,18 @@ class TestAsyncRuntimeConfig:
             temp_file.flush()
 
             try:
-                with patch.dict(
-                    os.environ,
-                    {
-                        "API_SECRET": f"file://{temp_file.name}",
-                        "ASYNC_APP_NAME": "secret_app",
-                    },
-                ):
-                    # Mock aiofiles for async file reading
-                    with patch(
+                with (
+                    patch.dict(
+                        os.environ,
+                        {
+                            "API_SECRET": f"file://{temp_file.name}",
+                            "ASYNC_APP_NAME": "secret_app",
+                        },
+                    ),
+                    patch(
                         "provide.foundation.config.env.aiofiles",
-                    ) as mock_aiofiles:
+                    ) as mock_aiofiles,
+                ):
                         mock_file = AsyncMock()
                         mock_file.read.return_value = "secret_api_key\n"
                         mock_aiofiles.open.return_value.__aenter__.return_value = mock_file
@@ -223,8 +227,10 @@ class TestAsyncRuntimeConfig:
     @pytest.mark.asyncio
     async def test_from_env_async_parser_error(self) -> None:
         """Test async loading with parser error."""
-        with patch.dict(os.environ, {"ASYNC_PORT": "invalid_port"}):
-            with pytest.raises(ValueError, match="Failed to parse"):
+        with (
+            patch.dict(os.environ, {"ASYNC_PORT": "invalid_port"}),
+            pytest.raises(ValueError, match="Failed to parse"),
+        ):
                 await self.AsyncTestConfig.from_env_async(prefix="ASYNC")
 
     @pytest.mark.asyncio
