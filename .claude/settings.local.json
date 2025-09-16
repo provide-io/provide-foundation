@@ -46,7 +46,8 @@
       "Bash(while read dir)",
       "WebSearch",
       "Bash(xargs dirname:*)",
-      "Bash(PYTHONPATH=src mypy src/pyvider/rpcplugin/client/ --show-error-codes --no-error-summary)"
+      "Bash(PYTHONPATH=src mypy src/pyvider/rpcplugin/client/ --show-error-codes --no-error-summary)",
+      "Bash(PYTHONPATH=src mypy src/pyvider/rpcplugin/client/core.py --show-error-codes --no-error-summary)"
     ],
     "deny": [],
     "ask": [],
