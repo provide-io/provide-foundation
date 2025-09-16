@@ -13,6 +13,10 @@ from provide.foundation.errors.config import (
     ConfigValidationError,
     ValidationError,
 )
+from provide.foundation.errors.dependencies import (
+    DependencyError,
+    DependencyMismatchError,
+)
 from provide.foundation.errors.context import (
     ErrorCategory,
     ErrorContext,
@@ -63,6 +67,8 @@ __all__ = [
     "ConcurrencyError",
     "ConfigValidationError",
     "ConfigurationError",
+    "DependencyError",
+    "DependencyMismatchError",
     "ErrorCategory",
     # Types
     "ErrorCode",
