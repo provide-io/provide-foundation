@@ -1,8 +1,8 @@
-# Context API
+# Platform API
 
-Auto-generated API documentation for `provide.foundation.context`.
+Auto-generated API documentation for `provide.foundation.platform`.
 
-::: provide.foundation.context
+::: provide.foundation.platform
     options:
       show_root_heading: false
       members_order: source

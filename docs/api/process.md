@@ -1,8 +1,8 @@
-# Context API
+# Process API
 
-Auto-generated API documentation for `provide.foundation.context`.
+Auto-generated API documentation for `provide.foundation.process`.
 
-::: provide.foundation.context
+::: provide.foundation.process
     options:
       show_root_heading: false
       members_order: source

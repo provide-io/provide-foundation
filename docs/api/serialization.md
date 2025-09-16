@@ -1,8 +1,8 @@
-# Context API
+# Serialization API
 
-Auto-generated API documentation for `provide.foundation.context`.
+Auto-generated API documentation for `provide.foundation.serialization`.
 
-::: provide.foundation.context
+::: provide.foundation.serialization
     options:
       show_root_heading: false
       members_order: source

@@ -1,9 +1,15 @@
-# Configuration Parsers
+# Parsers API
 
-Configuration parsers for different file formats and sources.
+Auto-generated API documentation for `provide.foundation.config.parsers`.
 
 ::: provide.foundation.config.parsers
     options:
       show_root_heading: false
       members_order: source
       show_signature_annotations: true
+      show_category_heading: true
+      show_bases: true
+      merge_init_into_class: true
+      separate_signature: true
+      show_if_no_docstring: false
+      heading_level: 2

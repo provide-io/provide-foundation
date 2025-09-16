@@ -1,8 +1,8 @@
-# Context API
+# File API
 
-Auto-generated API documentation for `provide.foundation.context`.
+Auto-generated API documentation for `provide.foundation.file`.
 
-::: provide.foundation.context
+::: provide.foundation.file
     options:
       show_root_heading: false
       members_order: source

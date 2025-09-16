@@ -1,8 +1,8 @@
-# Context API
+# Archive API
 
-Auto-generated API documentation for `provide.foundation.context`.
+Auto-generated API documentation for `provide.foundation.archive`.
 
-::: provide.foundation.context
+::: provide.foundation.archive
     options:
       show_root_heading: false
       members_order: source

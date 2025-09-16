@@ -1,6 +1,6 @@
 # Logger API
 
-Main logging and telemetry APIs for structured logging.
+Auto-generated API documentation for `provide.foundation.logger`.
 
 ::: provide.foundation.logger
     options:
@@ -12,9 +12,4 @@ Main logging and telemetry APIs for structured logging.
       merge_init_into_class: true
       separate_signature: true
       show_if_no_docstring: false
-
-## Submodules
-
-- [Configuration](config.md) - Logger configuration classes
-- [Setup](setup.md) - Logger initialization utilities
-- [Processors](processors.md) - Log processors and filters
+      heading_level: 2

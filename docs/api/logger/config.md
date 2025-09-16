@@ -1,6 +1,6 @@
-# Logger Configuration
+# Config API
 
-Logger configuration classes and utilities.
+Auto-generated API documentation for `provide.foundation.logger.config`.
 
 ::: provide.foundation.logger.config
     options:
@@ -12,3 +12,4 @@ Logger configuration classes and utilities.
       merge_init_into_class: true
       separate_signature: true
       show_if_no_docstring: false
+      heading_level: 2
