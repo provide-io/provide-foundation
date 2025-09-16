@@ -304,8 +304,27 @@ def get_global_logger() -> FoundationLogger:
 class GlobalLoggerProxy:
     """Proxy object that forwards all attribute access to Hub-based logger."""
 
-    def __getattr__(self, name: str):
+    def __getattr__(self, name: str) -> Any:
         return getattr(get_global_logger(), name)
+
+    # Forward common logger methods to help mypy
+    def debug(self, event: str, *args: Any, **kwargs: Any) -> None:
+        return get_global_logger().debug(event, *args, **kwargs)
+
+    def info(self, event: str, *args: Any, **kwargs: Any) -> None:
+        return get_global_logger().info(event, *args, **kwargs)
+
+    def warning(self, event: str, *args: Any, **kwargs: Any) -> None:
+        return get_global_logger().warning(event, *args, **kwargs)
+
+    def error(self, event: str, *args: Any, **kwargs: Any) -> None:
+        return get_global_logger().error(event, *args, **kwargs)
+
+    def critical(self, event: str, *args: Any, **kwargs: Any) -> None:
+        return get_global_logger().critical(event, *args, **kwargs)
+
+    def exception(self, event: str, *args: Any, **kwargs: Any) -> None:
+        return get_global_logger().exception(event, *args, **kwargs)
 
     def __setattr__(self, name: str, value: Any) -> None:
         """Allow tests to set internal state on the underlying logger."""
