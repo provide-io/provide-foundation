@@ -13,10 +13,6 @@ from provide.foundation.errors.config import (
     ConfigValidationError,
     ValidationError,
 )
-from provide.foundation.errors.dependencies import (
-    DependencyError,
-    DependencyMismatchError,
-)
 from provide.foundation.errors.context import (
     ErrorCategory,
     ErrorContext,
@@ -27,6 +23,10 @@ from provide.foundation.errors.decorators import (
     fallback_on_error,
     suppress_and_log,
     with_error_handling,
+)
+from provide.foundation.errors.dependencies import (
+    DependencyError,
+    DependencyMismatchError,
 )
 from provide.foundation.errors.handlers import (
     ErrorHandler,

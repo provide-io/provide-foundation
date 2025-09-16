@@ -141,27 +141,21 @@ DEFAULT_ED25519_PRIVATE_KEY_SIZE = 32
 DEFAULT_ED25519_PUBLIC_KEY_SIZE = 32
 DEFAULT_ED25519_SIGNATURE_SIZE = 64
 
-def default_supported_ec_curves() -> list[str]:
-    """Factory for supported EC curves list."""
-    return []
 
-def default_supported_key_types() -> list[str]:
-    """Factory for supported key types list."""
-    return []
+def default_supported_ec_curves() -> set[str]:
+    """Factory for supported EC curves set."""
+    return set()
 
-def default_supported_rsa_sizes() -> list[int]:
-    """Factory for supported RSA sizes list."""
-    return []
 
-# =================================
-# Dependency feature mappings
-# =================================
-DEPENDENCY_FEATURE_MAP = {
-    "crypto": "cryptography",  # Feature name "crypto" maps to package "cryptography"
-    "cryptography": "cryptography",  # Also allow direct package name
-    "click": "click",
-    "opentelemetry": "opentelemetry",
-}
+def default_supported_key_types() -> set[str]:
+    """Factory for supported key types set."""
+    return set()
+
+
+def default_supported_rsa_sizes() -> set[int]:
+    """Factory for supported RSA sizes set."""
+    return set()
+
 
 # =================================
 # Converter functions (to replace lambdas)

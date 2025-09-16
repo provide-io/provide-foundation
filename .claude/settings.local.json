@@ -89,7 +89,9 @@
       "Bash(timeout 10 pytest tests/logger/test_config_coverage.py -v -k \"TelemetryConfig\" --tb=short)",
       "Bash(timeout 45 pytest --tb=short -q)",
       "Bash(timeout 45 pytest tests/logger/test_config_coverage.py::TestTelemetryConfigCoverage::test_telemetry_config_from_env_otel_service_name -v)",
-      "Bash(PYTHONPATH=src ruff check src/ tests/ --statistics)"
+      "Bash(PYTHONPATH=src ruff check src/ tests/ --statistics)",
+      "Bash(PYTHONPATH=src ruff check --fix src/ tests/ --select F401,SIM117,PTH101,PTH108,PTH123 --unsafe-fixes)",
+      "Bash(PYTHONPATH=src ruff check src/ --select ANN001)"
     ],
     "deny": [],
     "ask": [],

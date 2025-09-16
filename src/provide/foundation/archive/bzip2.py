@@ -7,7 +7,7 @@ from pathlib import Path
 import shutil
 from typing import BinaryIO
 
-from attrs import define, field, validators
+from attrs import Attribute, define, field, validators
 
 from provide.foundation.archive.base import ArchiveError
 from provide.foundation.file import ensure_parent_dir
@@ -16,7 +16,7 @@ from provide.foundation.logger import get_logger
 logger = get_logger(__name__)
 
 
-def _validate_compression_level(instance, attribute, value: int) -> None:
+def _validate_compression_level(instance: Bzip2Compressor, attribute: Attribute[int], value: int) -> None:
     """Validate compression level is between 1 and 9."""
     if not 1 <= value <= 9:
         raise ValueError(f"Compression level must be 1-9, got {value}")
