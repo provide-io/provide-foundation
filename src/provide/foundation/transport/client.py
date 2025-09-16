@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Universal transport client with middleware support."""
-
 from collections.abc import AsyncIterator
 from typing import Any
 
@@ -15,6 +13,8 @@ from provide.foundation.transport.middleware import (
 )
 from provide.foundation.transport.registry import get_transport
 from provide.foundation.transport.types import Data, Headers, HTTPMethod, Params
+
+"""Universal transport client with middleware support."""
 
 log = get_logger(__name__)
 

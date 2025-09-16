@@ -1,5 +1,65 @@
 from __future__ import annotations
 
+# Core transport abstractions
+from provide.foundation.transport.base import Request, Response
+
+# Transport types and configuration
+from provide.foundation.transport.config import HTTPConfig, TransportConfig
+
+# High-level client API
+from provide.foundation.transport.client import (
+    UniversalClient,
+    delete,
+    get,
+    get_default_client,
+    head,
+    options,
+    patch,
+    post,
+    put,
+    request,
+    stream,
+)
+
+# Error types
+from provide.foundation.transport.errors import (
+    HTTPResponseError,
+    TransportConnectionError,
+    TransportError,
+    TransportNotFoundError,
+    TransportTimeoutError,
+)
+
+# Transport implementations
+from provide.foundation.transport.http import HTTPTransport
+
+# Middleware system
+from provide.foundation.transport.middleware import (
+    LoggingMiddleware,
+    MetricsMiddleware,
+    Middleware,
+    MiddlewarePipeline,
+    RetryMiddleware,
+    create_default_pipeline,
+)
+
+# Registry and discovery
+from provide.foundation.transport.registry import (
+    get_transport,
+    get_transport_info,
+    list_registered_transports,
+    register_transport,
+)
+
+# Type definitions for client code
+from provide.foundation.transport.types import (
+    Data,
+    Headers,
+    HTTPMethod,
+    Params,
+    TransportType,
+)
+
 """Provide Foundation Transport System
 ==================================
 

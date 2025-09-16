@@ -1,11 +1,5 @@
 from __future__ import annotations
 
-"""Tool download orchestration with progress reporting.
-
-Provides capabilities for downloading tools with progress tracking,
-parallel downloads, and mirror support.
-"""
-
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
@@ -16,6 +10,12 @@ from provide.foundation.errors import FoundationError
 from provide.foundation.logger import get_logger
 from provide.foundation.resilience import retry
 from provide.foundation.transport import UniversalClient
+
+"""Tool download orchestration with progress reporting.
+
+Provides capabilities for downloading tools with progress tracking,
+parallel downloads, and mirror support.
+"""
 
 log = get_logger(__name__)
 
