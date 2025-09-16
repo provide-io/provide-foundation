@@ -125,7 +125,9 @@ class Span:
 
         return self
 
-    def __exit__(self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: Any) -> None:
+    def __exit__(
+        self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: Any
+    ) -> None:
         """Context manager exit."""
         # Handle exceptions
         if exc_type is not None:

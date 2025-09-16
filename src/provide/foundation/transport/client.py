@@ -168,7 +168,9 @@ class UniversalClient:
         """Context manager entry."""
         return self
 
-    async def __aexit__(self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: Any) -> None:
+    async def __aexit__(
+        self, exc_type: type[BaseException] | None, exc_val: BaseException | None, exc_tb: Any
+    ) -> None:
         """Context manager exit - cleanup all transports."""
         for transport in self._transports.values():
             try:
