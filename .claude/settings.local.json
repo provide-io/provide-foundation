@@ -80,7 +80,8 @@
       "Bash(export PYTHONPATH=src)",
       "Bash(PYTHONPATH=src ruff format src/ tests/)",
       "Bash(PYTHONPATH=src ruff check --fix --unsafe-fixes src/ tests/)",
-      "Bash(timeout 60 pytest --tb=no -q)"
+      "Bash(timeout 60 pytest --tb=no -q)",
+      "Bash(PYTHONPATH=src bandit -r src/ -f json)"
     ],
     "deny": [],
     "ask": [],
