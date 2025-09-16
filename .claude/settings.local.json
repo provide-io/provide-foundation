@@ -100,7 +100,8 @@
       "Bash(PYTHONPATH=src pytest tests/core/ --tb=short -q)",
       "Bash(PYTHONPATH=src pytest tests/ --tb=short -q --maxfail=5)",
       "Bash(timeout 45 pytest --tb=no -q)",
-      "Bash(xargs ruff check:*)"
+      "Bash(xargs ruff check:*)",
+      "Bash(timeout 30 pytest tests/cli/test_decorators.py::TestLoggingOptions::test_adds_log_file_option -v)"
     ],
     "deny": [],
     "ask": [],
