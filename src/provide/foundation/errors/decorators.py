@@ -9,9 +9,15 @@ fallback, and error suppression.
 from collections.abc import Callable
 import functools
 import inspect
-from typing import Any, TypeVar
+from typing import Any, Protocol, TypeVar
 
 from provide.foundation.errors.base import FoundationError
+
+
+class HasName(Protocol):
+    """Protocol for objects that have a __name__ attribute."""
+    __name__: str
+
 
 F = TypeVar("F", bound=Callable[..., Any])
 
@@ -140,7 +146,7 @@ def with_error_handling(
                 try:
                     return await func(*args, **kwargs)
                 except Exception as e:
-                    return _process_error(e, func.__name__)
+                    return _process_error(e, getattr(func, '__name__', '<anonymous>'))
 
             return async_wrapper  # type: ignore
 
@@ -149,7 +155,7 @@ def with_error_handling(
             try:
                 return func(*args, **kwargs)
             except Exception as e:
-                return _process_error(e, func.__name__)
+                return _process_error(e, getattr(func, '__name__', '<anonymous>'))
 
         return wrapper  # type: ignore
 
@@ -198,8 +204,8 @@ def suppress_and_log(
                     log_method = get_foundation_logger().warning
 
                 log_method(
-                    f"Suppressed {type(e).__name__} in {func.__name__}: {e}",
-                    function=func.__name__,
+                    f"Suppressed {type(e).__name__} in {getattr(func, '__name__', '<anonymous>')}: {e}",
+                    function=getattr(func, '__name__', '<anonymous>'),
                     error_type=type(e).__name__,
                     error=str(e),
                     fallback=fallback,
@@ -248,11 +254,11 @@ def fallback_on_error(
                     from provide.foundation.hub.foundation import get_foundation_logger
 
                     get_foundation_logger().warning(
-                        f"Using fallback for {func.__name__} due to {type(e).__name__}",
-                        function=func.__name__,
+                        f"Using fallback for {getattr(func, '__name__', '<anonymous>')} due to {type(e).__name__}",
+                        function=getattr(func, '__name__', '<anonymous>'),
                         error_type=type(e).__name__,
                         error=str(e),
-                        fallback=fallback_func.__name__,
+                        fallback=getattr(fallback_func, '__name__', '<anonymous>'),
                     )
 
                 # Call fallback with same arguments
@@ -262,7 +268,7 @@ def fallback_on_error(
                     from provide.foundation.hub.foundation import get_foundation_logger
 
                     get_foundation_logger().error(
-                        f"Fallback function {fallback_func.__name__} also failed",
+                        f"Fallback function {getattr(fallback_func, '__name__', '<anonymous>')} also failed",
                         exc_info=True,
                         original_error=str(e),
                         fallback_error=str(fallback_error),

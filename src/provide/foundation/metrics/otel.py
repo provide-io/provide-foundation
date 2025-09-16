@@ -2,6 +2,8 @@ from __future__ import annotations
 
 """OpenTelemetry metrics integration."""
 
+from typing import Any
+
 from provide.foundation.logger.config.telemetry import TelemetryConfig
 from provide.foundation.logger.setup import get_vanilla_logger
 
@@ -24,12 +26,12 @@ try:
 except ImportError:
     _HAS_OTEL_METRICS = False
     # Stub everything
-    otel_metrics = None
-    MeterProvider = None
-    PeriodicExportingMetricReader = None
-    Resource = None
-    OTLPGrpcMetricExporter = None
-    OTLPHttpMetricExporter = None
+    otel_metrics: Any = None
+    MeterProvider: Any = None
+    PeriodicExportingMetricReader: Any = None
+    Resource: Any = None
+    OTLPGrpcMetricExporter: Any = None
+    OTLPHttpMetricExporter: Any = None
 
 
 def _require_otel_metrics() -> None:

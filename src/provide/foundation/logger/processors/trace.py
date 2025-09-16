@@ -27,7 +27,7 @@ except ImportError:
     _HAS_OTEL = False
 
 # Use consistent name throughout
-trace = _otel_trace_module
+trace: Any = _otel_trace_module
 
 
 def inject_trace_context(logger: Any, method_name: str, event_dict: dict[str, Any]) -> dict[str, Any]:

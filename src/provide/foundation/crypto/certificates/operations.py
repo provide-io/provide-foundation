@@ -22,14 +22,14 @@ try:
     _HAS_CRYPTO = True
 except ImportError:
     # Stub out cryptography types for type hints
-    x509 = None  # type: Any
-    hashes = None  # type: Any
-    serialization = None  # type: Any
-    ec = None  # type: Any
-    padding = None  # type: Any
-    rsa = None  # type: Any
-    X509Certificate = None  # type: Any
-    ExtendedKeyUsageOID = None  # type: Any
+    x509: Any = None
+    hashes: Any = None
+    serialization: Any = None
+    ec: Any = None
+    padding: Any = None
+    rsa: Any = None
+    X509Certificate: Any = None
+    ExtendedKeyUsageOID: Any = None
     _HAS_CRYPTO = False
 
 from provide.foundation import logger

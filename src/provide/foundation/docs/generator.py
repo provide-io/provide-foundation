@@ -11,7 +11,7 @@ logger = get_logger(__name__)
 try:
     import mkdocs_gen_files
 except ImportError:
-    mkdocs_gen_files = None
+    mkdocs_gen_files: Any = None
     logger.warning("mkdocs_gen_files not available - doc generation disabled")
 
 
