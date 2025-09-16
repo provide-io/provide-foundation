@@ -172,7 +172,7 @@ def _register_command_func(
     else:
         # Use function name as command name
         parent = None
-        command_name = getattr(func, '__name__', '<anonymous>')
+        command_name = getattr(func, "__name__", "<anonymous>")
 
     # Check if it's already a Click command
     click_cmd = None
@@ -225,9 +225,9 @@ def _register_command_func(
     )
 
     # Add metadata to the function
-    setattr(func, '__registry_name__', command_name)
-    setattr(func, '__registry_dimension__', "command")
-    setattr(func, '__registry_info__', info)
+    setattr(func, "__registry_name__", command_name)
+    setattr(func, "__registry_dimension__", "command")
+    setattr(func, "__registry_info__", info)
 
     get_foundation_logger().info(
         "Registered command",

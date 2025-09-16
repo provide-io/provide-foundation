@@ -42,7 +42,7 @@ def _get_config_value(key: str, default: str | int) -> str | int:
         from provide.foundation.config.sync import get_config
 
         config = get_config(f"crypto.{key}")
-        if config is not None and hasattr(config, 'value'):
+        if config is not None and hasattr(config, "value"):
             return config.value
         return default
     except ImportError:

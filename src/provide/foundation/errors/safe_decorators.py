@@ -53,7 +53,11 @@ def log_only_error_context(
                 # Log function entry if debug/trace level
                 if log_level in ("debug", "trace"):
                     log_method = getattr(logger, log_level)
-                    log_method(f"Entering {getattr(func, '__name__', '<anonymous>')}", function=getattr(func, '__name__', '<anonymous>'), **context)
+                    log_method(
+                        f"Entering {getattr(func, '__name__', '<anonymous>')}",
+                        function=getattr(func, "__name__", "<anonymous>"),
+                        **context,
+                    )
 
                 try:
                     result = await func(*args, **kwargs)
@@ -63,7 +67,7 @@ def log_only_error_context(
                         log_method = getattr(logger, log_level, logger.debug)
                         log_method(
                             f"Successfully completed {getattr(func, '__name__', '<anonymous>')}",
-                            function=getattr(func, '__name__', '<anonymous>'),
+                            function=getattr(func, "__name__", "<anonymous>"),
                             **context,
                         )
 
@@ -74,7 +78,7 @@ def log_only_error_context(
                     logger.error(
                         f"Error in {getattr(func, '__name__', '<anonymous>')}",
                         exc_info=True,
-                        function=getattr(func, '__name__', '<anonymous>'),
+                        function=getattr(func, "__name__", "<anonymous>"),
                         error_type=type(e).__name__,
                         error_message=str(e),
                         **context,
@@ -92,7 +96,11 @@ def log_only_error_context(
             # Log function entry if debug/trace level
             if log_level in ("debug", "trace"):
                 log_method = getattr(logger, log_level)
-                log_method(f"Entering {getattr(func, '__name__', '<anonymous>')}", function=getattr(func, '__name__', '<anonymous>'), **context)
+                log_method(
+                    f"Entering {getattr(func, '__name__', '<anonymous>')}",
+                    function=getattr(func, "__name__", "<anonymous>"),
+                    **context,
+                )
 
             try:
                 result = func(*args, **kwargs)
@@ -102,7 +110,7 @@ def log_only_error_context(
                     log_method = getattr(logger, log_level, logger.debug)
                     log_method(
                         f"Successfully completed {getattr(func, '__name__', '<anonymous>')}",
-                        function=getattr(func, '__name__', '<anonymous>'),
+                        function=getattr(func, "__name__", "<anonymous>"),
                         **context,
                     )
 
@@ -113,7 +121,7 @@ def log_only_error_context(
                 logger.error(
                     f"Error in {getattr(func, '__name__', '<anonymous>')}",
                     exc_info=True,
-                    function=getattr(func, '__name__', '<anonymous>'),
+                    function=getattr(func, "__name__", "<anonymous>"),
                     error_type=type(e).__name__,
                     error_message=str(e),
                     **context,

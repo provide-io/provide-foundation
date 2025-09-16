@@ -252,7 +252,7 @@ def generate_api_docs(
     api_dir: str = "api/reference",
     skip_patterns: Optional[Set[str]] = None,
     package_prefix: Optional[str] = None,
-    **kwargs
+    **kwargs,
 ) -> Dict[str, Any]:
     """Convenience function to generate API docs.
 
@@ -271,6 +271,6 @@ def generate_api_docs(
         api_dir=api_dir,
         skip_patterns=skip_patterns,
         package_prefix=package_prefix,
-        **kwargs
+        **kwargs,
     )
     return generator.generate()
