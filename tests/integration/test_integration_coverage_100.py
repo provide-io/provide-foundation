@@ -17,6 +17,7 @@ def test_ensure_stderr_default() -> None:
 
     # Reset stream state first
     from provide.foundation.streams.file import reset_streams
+
     reset_streams()
 
     # Set stream to stdout first
@@ -38,11 +39,7 @@ def test_ensure_stderr_default() -> None:
             assert stream.fileno() == 2 or stream is sys.stderr
         except (OSError, ValueError):
             # In some testing contexts, fileno() might not work, so fallback to other checks
-            assert (
-                stream is sys.stderr
-                or "stderr" in str(stream)
-                or "2" in getattr(stream, "name", "")
-            )
+            assert stream is sys.stderr or "stderr" in str(stream) or "2" in getattr(stream, "name", "")
     else:
         # If no fileno method, check if it's sys.stderr or has stderr-like characteristics
         assert stream is sys.stderr or "stderr" in str(stream)

@@ -1,6 +1,4 @@
-"""HTTP transport tests with httpx.
-"""
-
+"""HTTP transport tests with httpx."""
 
 import httpx
 import pytest

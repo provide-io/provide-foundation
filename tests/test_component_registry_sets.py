@@ -40,7 +40,8 @@ class TestProcessorRegistration:
 
         # Verify registration
         retrieved_processor = registry.get(
-            "test_processor", ComponentCategory.PROCESSOR.value,
+            "test_processor",
+            ComponentCategory.PROCESSOR.value,
         )
         assert retrieved_processor is test_processor
 
@@ -133,7 +134,8 @@ class TestProcessorRegistration:
         )
 
         entry = registry.get_entry(
-            "conditional_processor", ComponentCategory.PROCESSOR.value,
+            "conditional_processor",
+            ComponentCategory.PROCESSOR.value,
         )
         assert "conditions" in entry.metadata
         assert entry.metadata["conditions"]["min_level"] == "INFO"

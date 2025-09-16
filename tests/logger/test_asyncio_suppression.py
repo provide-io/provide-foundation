@@ -84,10 +84,9 @@ class TestAsyncioDebugSuppression:
         log_output = StringIO()
 
         # Override via environment to allow asyncio DEBUG messages
-        with patch.dict("os.environ", {
-            "PROVIDE_LOG_LEVEL": "DEBUG",
-            "PROVIDE_LOG_MODULE_LEVELS": "asyncio:DEBUG"
-        }):
+        with patch.dict(
+            "os.environ", {"PROVIDE_LOG_LEVEL": "DEBUG", "PROVIDE_LOG_MODULE_LEVELS": "asyncio:DEBUG"}
+        ):
             config = TelemetryConfig.from_env()
             configure_structlog_output(config, log_output)
 
@@ -104,9 +103,9 @@ class TestAsyncioDebugSuppression:
 
     def test_module_levels_parsing_with_multiple_modules(self) -> None:
         """Test that multiple module levels can be configured via environment."""
-        with patch.dict("os.environ", {
-            "PROVIDE_LOG_MODULE_LEVELS": "asyncio:WARNING,urllib3:ERROR,requests:INFO"
-        }):
+        with patch.dict(
+            "os.environ", {"PROVIDE_LOG_MODULE_LEVELS": "asyncio:WARNING,urllib3:ERROR,requests:INFO"}
+        ):
             config = TelemetryConfig.from_env()
 
             assert config.logging.module_levels["asyncio"] == "WARNING"
@@ -125,18 +124,18 @@ class TestAsyncioDebugSuppression:
         assert module_name.startswith("asyncio"), "Module hierarchy test should match asyncio prefix"
 
         # Test that the filtering logic handles hierarchical names correctly
-        from provide.foundation.logger.custom_processors import filter_by_level_custom
         from provide.foundation.logger.constants import LEVEL_TO_NUMERIC
+        from provide.foundation.logger.custom_processors import filter_by_level_custom
 
         filter_func = filter_by_level_custom(
-            config.logging.default_level,
-            config.logging.module_levels,
-            LEVEL_TO_NUMERIC
+            config.logging.default_level, config.logging.module_levels, LEVEL_TO_NUMERIC
         )
 
         # asyncio.selector_events should get the asyncio threshold
         for prefix in filter_func.sorted_module_paths:
             if module_name.startswith(prefix):
                 expected_threshold = filter_func.module_numeric_levels[prefix]
-                assert expected_threshold == 20, f"asyncio modules should have INFO level (20), got {expected_threshold}"
+                assert expected_threshold == 20, (
+                    f"asyncio modules should have INFO level (20), got {expected_threshold}"
+                )
                 break

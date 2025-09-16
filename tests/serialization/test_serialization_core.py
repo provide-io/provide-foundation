@@ -124,7 +124,10 @@ class TestProvideDumps:
 
         assert result == '{"test": "value"}'
         mock_json.dumps.assert_called_once_with(
-            data, ensure_ascii=False, indent=2, sort_keys=True,
+            data,
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
         )
 
     def test_provide_dumps_complex_numbers_raises_error(self) -> None:
@@ -258,9 +261,7 @@ class TestProvideLoads:
 
     def test_provide_loads_large_numbers(self) -> None:
         """Test provide_loads with large numbers."""
-        json_str = (
-            '{"small": 1, "large": 9007199254740991, "float": 1.7976931348623157e+308}'
-        )
+        json_str = '{"small": 1, "large": 9007199254740991, "float": 1.7976931348623157e+308}'
         result = provide_loads(json_str)
         assert result["small"] == 1
         assert result["large"] == 9007199254740991

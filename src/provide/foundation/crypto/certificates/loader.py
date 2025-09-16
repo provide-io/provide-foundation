@@ -6,7 +6,7 @@ from datetime import UTC
 import os
 from pathlib import Path
 import traceback
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from cryptography import x509

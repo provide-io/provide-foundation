@@ -25,13 +25,18 @@ from provide.foundation import (
 
 
 def test_invalid_environment_variables_handling(
-    monkeypatch, capsys,
+    monkeypatch,
+    capsys,
 ) -> None:  # Added capsys
     """Tests handling of invalid environment variables with strict validation."""
     # Define cases that should raise ValueError with strict validation
     strict_validation_cases = [
         ("PROVIDE_LOG_LEVEL", "INVALID_LEVEL", "Invalid log_level 'INVALID_LEVEL'"),
-        ("PROVIDE_LOG_CONSOLE_FORMATTER", "invalid_formatter", "Invalid console_formatter 'invalid_formatter'"),
+        (
+            "PROVIDE_LOG_CONSOLE_FORMATTER",
+            "invalid_formatter",
+            "Invalid console_formatter 'invalid_formatter'",
+        ),
     ]
 
     # Test cases that should raise exceptions
@@ -134,9 +139,7 @@ def test_module_levels_parsing_edge_cases() -> None:
     for levels_str, expected in edge_cases:
         with patch.dict(os.environ, {"PROVIDE_LOG_MODULE_LEVELS": levels_str}):
             config = TelemetryConfig.from_env()
-            assert config.logging.module_levels == expected, (
-                f"Failed for: '{levels_str}'"
-            )
+            assert config.logging.module_levels == expected, f"Failed for: '{levels_str}'"
 
 
 def test_logger_with_extreme_names(
@@ -181,13 +184,13 @@ def test_logger_with_extreme_names(
         line
         for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]")
-           and "⚙️➡️🚀 Starting Foundation" not in line
-           and "⚙️➡️✅ Foundation" not in line
-           and "⚙️ Foundation initialized through Hub" not in line
-           and "Configuring structlog output processors" not in line
-           and "🗣️ Registered item" not in line
-           and not ("[trace    ]" in line or "trace    " in line)
-           and line.strip()
+        and "⚙️➡️🚀 Starting Foundation" not in line
+        and "⚙️➡️✅ Foundation" not in line
+        and "⚙️ Foundation initialized through Hub" not in line
+        and "Configuring structlog output processors" not in line
+        and "🗣️ Registered item" not in line
+        and not ("[trace    ]" in line or "trace    " in line)
+        and line.strip()
     ]
     assert len(lines) == len(extreme_names)
 
@@ -233,13 +236,13 @@ def test_log_message_edge_cases(
         line
         for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]")
-           and "⚙️➡️🚀 Starting Foundation" not in line
-           and "⚙️➡️✅ Foundation" not in line
-           and "⚙️ Foundation initialized through Hub" not in line
-           and "Configuring structlog output processors" not in line
-           and "🗣️ Registered item" not in line
-           and not ("[trace    ]" in line or "trace    " in line)
-           and line.strip()
+        and "⚙️➡️🚀 Starting Foundation" not in line
+        and "⚙️➡️✅ Foundation" not in line
+        and "⚙️ Foundation initialized through Hub" not in line
+        and "Configuring structlog output processors" not in line
+        and "🗣️ Registered item" not in line
+        and not ("[trace    ]" in line or "trace    " in line)
+        and line.strip()
     ]
     assert len(lines) >= len(edge_case_messages)
 
@@ -305,17 +308,15 @@ def test_logger_args_formatting_edge_cases(
         line
         for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]")
-           and "⚙️➡️🚀 Starting Foundation" not in line
-           and "⚙️➡️✅ Foundation" not in line
-           and "⚙️ Foundation initialized through Hub" not in line
-           and "Configuring structlog output processors" not in line
-           and "🗣️ Registered item" not in line
-           and not ("[trace    ]" in line or "trace    " in line)
-           and line.strip()
+        and "⚙️➡️🚀 Starting Foundation" not in line
+        and "⚙️➡️✅ Foundation" not in line
+        and "⚙️ Foundation initialized through Hub" not in line
+        and "Configuring structlog output processors" not in line
+        and "🗣️ Registered item" not in line
+        and not ("[trace    ]" in line or "trace    " in line)
+        and line.strip()
     ]
-    assert len(lines) == len(test_cases), (
-        f"Expected {len(test_cases)} log lines, got {len(lines)}"
-    )
+    assert len(lines) == len(test_cases), f"Expected {len(test_cases)} log lines, got {len(lines)}"
 
 
 def test_repeated_setup_calls(
@@ -324,10 +325,12 @@ def test_repeated_setup_calls(
 ) -> None:
     """Tests behavior with repeated setup calls."""
     config1 = TelemetryConfig(
-        service_name="service1", logging=LoggingConfig(default_level="DEBUG"),
+        service_name="service1",
+        logging=LoggingConfig(default_level="DEBUG"),
     )
     config2 = TelemetryConfig(
-        service_name="service2", logging=LoggingConfig(default_level="INFO"),
+        service_name="service2",
+        logging=LoggingConfig(default_level="INFO"),
     )
 
     # First setup
@@ -379,9 +382,7 @@ def test_concurrent_setup_calls() -> None:
 
 def test_memory_usage_with_large_configs() -> None:
     """Tests memory behavior with large configurations."""
-    large_module_levels = {
-        f"module.{i}.submodule.{j}": "DEBUG" for i in range(100) for j in range(10)
-    }
+    large_module_levels = {f"module.{i}.submodule.{j}": "DEBUG" for i in range(100) for j in range(10)}
 
     config = TelemetryConfig(
         logging=LoggingConfig(
@@ -425,11 +426,20 @@ def test_trace_level_edge_cases(
         line
         for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]")
-           and "⚙️➡️🚀 Starting Foundation" not in line
-           and "⚙️➡️✅ Foundation" not in line
-           and "Configuring structlog output processors" not in line
-           and not (("[trace    ]" in line or "trace    " in line) and ("enrichment processor" in line or "Event set discovery" in line or "Event enrichment" in line or "already completed" in line or "Foundation" in line))
-           and line.strip()
+        and "⚙️➡️🚀 Starting Foundation" not in line
+        and "⚙️➡️✅ Foundation" not in line
+        and "Configuring structlog output processors" not in line
+        and not (
+            ("[trace    ]" in line or "trace    " in line)
+            and (
+                "enrichment processor" in line
+                or "Event set discovery" in line
+                or "Event enrichment" in line
+                or "already completed" in line
+                or "Foundation" in line
+            )
+        )
+        and line.strip()
     ]
     assert len(lines) >= 4, "Not all trace messages were logged"
     trace_count = sum(1 for line in lines if "trace" in line.lower())
@@ -458,9 +468,7 @@ def test_configuration_validation_edge_cases() -> None:
     for env_value, expected in bool_test_cases:
         with patch.dict(os.environ, {"PROVIDE_LOG_OMIT_TIMESTAMP": env_value}):
             config = TelemetryConfig.from_env()
-            assert config.logging.omit_timestamp == expected, (
-                f"Failed for '{env_value}'"
-            )
+            assert config.logging.omit_timestamp == expected, f"Failed for '{env_value}'"
 
 
 def test_configuration_immutability() -> None:
@@ -504,19 +512,17 @@ def test_performance_with_disabled_features(
         line
         for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]")
-           and "⚙️➡️🚀 Starting Foundation" not in line
-           and "⚙️➡️✅ Foundation" not in line
-           and "⚙️ Foundation initialized through Hub" not in line
-           and "Configuring structlog output processors" not in line
-           and "🗣️ Registered item" not in line
-           and not ("[trace    ]" in line or "trace    " in line)
-           and line.strip()
+        and "⚙️➡️🚀 Starting Foundation" not in line
+        and "⚙️➡️✅ Foundation" not in line
+        and "⚙️ Foundation initialized through Hub" not in line
+        and "Configuring structlog output processors" not in line
+        and "🗣️ Registered item" not in line
+        and not ("[trace    ]" in line or "trace    " in line)
+        and line.strip()
     ]
     assert len(lines) == message_count
     messages_per_second = message_count / duration
-    assert messages_per_second > 500, (
-        f"Performance too slow: {messages_per_second:.1f} msg/sec"
-    )
+    assert messages_per_second > 500, f"Performance too slow: {messages_per_second:.1f} msg/sec"
 
 
 # 🧪⚠️

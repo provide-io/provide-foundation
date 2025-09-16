@@ -91,7 +91,8 @@ class TestErrorContext:
         ctx = ErrorContext()
 
         ctx.add_namespace("terraform", {"provider": "aws"}).add_namespace(
-            "http", {"status": 500, "method": "POST"},
+            "http",
+            {"status": 500, "method": "POST"},
         )
 
         assert ctx.metadata["terraform"] == {"provider": "aws"}
@@ -155,7 +156,9 @@ class TestErrorContext:
         """Test converting to dictionary."""
         now = datetime(2024, 1, 1, 12, 0, 0)
         ctx = ErrorContext(
-            timestamp=now, severity=ErrorSeverity.HIGH, category=ErrorCategory.EXTERNAL,
+            timestamp=now,
+            severity=ErrorSeverity.HIGH,
+            category=ErrorCategory.EXTERNAL,
         )
 
         result = ctx.to_dict()
@@ -294,7 +297,9 @@ class TestCaptureErrorContext:
         error = Exception("Test")
 
         ctx = capture_error_context(
-            error, aws={"region": "us-east-1"}, http={"status": 500},
+            error,
+            aws={"region": "us-east-1"},
+            http={"status": 500},
         )
 
         assert ctx.get_namespace("aws") == {"region": "us-east-1"}
@@ -402,7 +407,8 @@ class TestErrorContextIntegration:
         # Add various metadata
         ctx.add_namespace("terraform", {"provider": "aws", "version": "5.0.0"})
         ctx.add_namespace(
-            "aws", {"region": "us-east-1", "error_code": "ThrottlingException"},
+            "aws",
+            {"region": "us-east-1", "error_code": "ThrottlingException"},
         )
         ctx.add_tags("production", "critical", "retry")
 
@@ -423,7 +429,9 @@ class TestErrorContextIntegration:
 
         # Create wrapper error
         wrapper = IntegrationError(
-            "Service unavailable", service="user-api", cause=original,
+            "Service unavailable",
+            service="user-api",
+            cause=original,
         )
 
         # Capture context

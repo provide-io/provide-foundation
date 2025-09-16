@@ -179,9 +179,7 @@ def test_permission_preservation_with_umask(temp_directory) -> None:
         atomic_write(path3, b"Content", preserve_mode=False)
         mode3 = path3.stat().st_mode & 0o777
         # With preserve_mode=False and umask 0o022, should be 0o644
-        assert mode3 == 0o644, (
-            f"Expected 0o644 with preserve_mode=False and umask 0o022, got {oct(mode3)}"
-        )
+        assert mode3 == 0o644, f"Expected 0o644 with preserve_mode=False and umask 0o022, got {oct(mode3)}"
 
         # Now test with different umask
         os.umask(0o077)  # Restrictive umask

@@ -208,7 +208,8 @@ class TestPoutFunction:
         with patch("provide.foundation.console.output._HAS_CLICK", True):
             with patch("provide.foundation.console.output.click") as mock_click:
                 with patch(
-                    "provide.foundation.console.output._get_context", return_value=None,
+                    "provide.foundation.console.output._get_context",
+                    return_value=None,
                 ):
                     pout("Hello world")
 
@@ -225,7 +226,8 @@ class TestPoutFunction:
             pout("test message", ctx=mock_ctx, json_key="message")
 
             mock_output_json.assert_called_once_with(
-                {"message": "test message"}, sys.stdout,
+                {"message": "test message"},
+                sys.stdout,
             )
 
     def test_pout_json_mode_no_key(self) -> None:
@@ -245,7 +247,8 @@ class TestPoutFunction:
         with patch("provide.foundation.console.output._HAS_CLICK", True):
             with patch("provide.foundation.console.output.click") as mock_click:
                 with patch(
-                    "provide.foundation.console.output._get_context", return_value=None,
+                    "provide.foundation.console.output._get_context",
+                    return_value=None,
                 ):
                     pout("message", prefix="INFO:")
 
@@ -271,7 +274,11 @@ class TestPoutFunction:
                     )
 
                     mock_click.secho.assert_called_once_with(
-                        "colored message", fg="red", bold=True, dim=False, nl=True,
+                        "colored message",
+                        fg="red",
+                        bold=True,
+                        dim=False,
+                        nl=True,
                     )
 
     def test_pout_no_color_support(self) -> None:
@@ -304,7 +311,9 @@ class TestPoutFunction:
                 pout("no newline", nl=False)
 
                 mock_print.assert_called_once_with(
-                    "no newline", file=sys.stdout, end="",
+                    "no newline",
+                    file=sys.stdout,
+                    end="",
                 )
 
     def test_pout_newline_aliases(self) -> None:
@@ -312,7 +321,8 @@ class TestPoutFunction:
         with patch("provide.foundation.console.output._HAS_CLICK", True):
             with patch("provide.foundation.console.output.click") as mock_click:
                 with patch(
-                    "provide.foundation.console.output._get_context", return_value=None,
+                    "provide.foundation.console.output._get_context",
+                    return_value=None,
                 ):
                     # Test with newline=False
                     pout("test", newline=False)
@@ -332,12 +342,15 @@ class TestPerrFunction:
         with patch("provide.foundation.console.output._HAS_CLICK", True):
             with patch("provide.foundation.console.output.click") as mock_click:
                 with patch(
-                    "provide.foundation.console.output._get_context", return_value=None,
+                    "provide.foundation.console.output._get_context",
+                    return_value=None,
                 ):
                     perr("Error message")
 
                     mock_click.echo.assert_called_once_with(
-                        "Error message", err=True, nl=True,
+                        "Error message",
+                        err=True,
+                        nl=True,
                     )
 
     def test_perr_json_mode_with_key(self) -> None:
@@ -351,7 +364,8 @@ class TestPerrFunction:
             perr("error occurred", ctx=mock_ctx, json_key="error")
 
             mock_output_json.assert_called_once_with(
-                {"error": "error occurred"}, sys.stderr,
+                {"error": "error occurred"},
+                sys.stderr,
             )
 
     def test_perr_json_mode_no_key(self) -> None:
@@ -403,7 +417,9 @@ class TestPerrFunction:
                 perr("no newline error", nl=False)
 
                 mock_print.assert_called_once_with(
-                    "no newline error", file=sys.stderr, end="",
+                    "no newline error",
+                    file=sys.stderr,
+                    end="",
                 )
 
 
@@ -447,9 +463,13 @@ class TestEdgeCases:
         mock_ctx = Mock()
         mock_ctx.json_output = False
 
-        with patch(
-            "provide.foundation.console.output._get_context", return_value=mock_ctx,
-        ) as mock_get_ctx, patch("provide.foundation.console.output._HAS_CLICK", True):
+        with (
+            patch(
+                "provide.foundation.console.output._get_context",
+                return_value=mock_ctx,
+            ) as mock_get_ctx,
+            patch("provide.foundation.console.output._HAS_CLICK", True),
+        ):
             with patch("provide.foundation.console.output.click") as mock_click:
                 # Don't pass ctx explicitly
                 pout("test")

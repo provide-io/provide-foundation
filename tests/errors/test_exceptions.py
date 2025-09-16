@@ -49,7 +49,10 @@ class TestFoundationError:
     def test_with_extra_context(self) -> None:
         """Test error with extra context via kwargs."""
         error = FoundationError(
-            "Test error", user_id=123, request_id="req_456", retry_count=3,
+            "Test error",
+            user_id=123,
+            request_id="req_456",
+            retry_count=3,
         )
         assert error.context == {
             "user_id": 123,
@@ -60,7 +63,10 @@ class TestFoundationError:
     def test_context_merge(self) -> None:
         """Test that extra context merges with provided context."""
         error = FoundationError(
-            "Test error", context={"existing": "value"}, new_key="new_value", number=42,
+            "Test error",
+            context={"existing": "value"},
+            new_key="new_value",
+            number=42,
         )
         assert error.context == {
             "existing": "value",

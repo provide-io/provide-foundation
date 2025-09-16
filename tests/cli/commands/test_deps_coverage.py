@@ -37,9 +37,13 @@ class TestDepsCommandWithClick:
         with patch("provide.foundation.cli.commands.deps._HAS_CLICK", True):
             from provide.foundation.cli.commands.deps import deps_command
 
-            with patch(
-                "provide.foundation.cli.commands.deps.has_dependency", return_value=True,
-            ), patch("provide.foundation.console.output.click.echo") as mock_echo:
+            with (
+                patch(
+                    "provide.foundation.cli.commands.deps.has_dependency",
+                    return_value=True,
+                ),
+                patch("provide.foundation.console.output.click.echo") as mock_echo,
+            ):
                 with pytest.raises(SystemExit) as exc_info:
                     # Simulate click calling the function
                     deps_command.callback(quiet=False, check="crypto")
@@ -52,9 +56,13 @@ class TestDepsCommandWithClick:
         with patch("provide.foundation.cli.commands.deps._HAS_CLICK", True):
             from provide.foundation.cli.commands.deps import deps_command
 
-            with patch(
-                "provide.foundation.cli.commands.deps.has_dependency", return_value=False,
-            ), patch("provide.foundation.console.output.click.echo") as mock_echo:
+            with (
+                patch(
+                    "provide.foundation.cli.commands.deps.has_dependency",
+                    return_value=False,
+                ),
+                patch("provide.foundation.console.output.click.echo") as mock_echo,
+            ):
                 with pytest.raises(SystemExit) as exc_info:
                     deps_command.callback(quiet=False, check="crypto")
 
@@ -62,7 +70,8 @@ class TestDepsCommandWithClick:
                 assert mock_echo.call_count == 2
                 mock_echo.assert_any_call("❌ crypto: Missing", nl=True)
                 mock_echo.assert_any_call(
-                    "Install with: pip install 'provide-foundation[crypto]'", nl=True,
+                    "Install with: pip install 'provide-foundation[crypto]'",
+                    nl=True,
                 )
 
     def test_deps_command_check_specific_quiet(self) -> None:
@@ -70,9 +79,13 @@ class TestDepsCommandWithClick:
         with patch("provide.foundation.cli.commands.deps._HAS_CLICK", True):
             from provide.foundation.cli.commands.deps import deps_command
 
-            with patch(
-                "provide.foundation.cli.commands.deps.has_dependency", return_value=True,
-            ), patch("builtins.print") as mock_print:
+            with (
+                patch(
+                    "provide.foundation.cli.commands.deps.has_dependency",
+                    return_value=True,
+                ),
+                patch("builtins.print") as mock_print,
+            ):
                 with pytest.raises(SystemExit) as exc_info:
                     deps_command.callback(quiet=True, check="cli")
 
@@ -121,7 +134,9 @@ class TestDepsCommandWithClick:
 
         mock_dep = Mock(available=True)
         with patch.object(
-            deps_module, "check_optional_deps", return_value=[mock_dep],
+            deps_module,
+            "check_optional_deps",
+            return_value=[mock_dep],
         ) as mock_check:
             with pytest.raises(SystemExit) as exc_info:
                 deps_module.deps_command.callback(quiet=True, check=None)
@@ -147,7 +162,8 @@ class TestDepsCommandWithoutClick:
             importlib.reload(deps_module)
 
             with pytest.raises(
-                ImportError, match="CLI commands require optional dependencies",
+                ImportError,
+                match="CLI commands require optional dependencies",
             ):
                 deps_module.deps_command()
         finally:
@@ -186,7 +202,8 @@ class TestDepsCommandWithoutClick:
             importlib.reload(deps_module)
 
             with pytest.raises(
-                ImportError, match="CLI commands require optional dependencies",
+                ImportError,
+                match="CLI commands require optional dependencies",
             ):
                 deps_module.deps_command("arg1", "arg2")
         finally:

@@ -19,9 +19,12 @@ class TestTraceProcessorWithOtel:
         mock_span_context.trace_flags = 1
         mock_span.get_span_context.return_value = mock_span_context
 
-        with patch("provide.foundation.logger.processors.trace._HAS_OTEL", True), patch(
-            "provide.foundation.logger.processors.trace.trace",
-        ) as mock_otel:
+        with (
+            patch("provide.foundation.logger.processors.trace._HAS_OTEL", True),
+            patch(
+                "provide.foundation.logger.processors.trace.trace",
+            ) as mock_otel,
+        ):
             mock_otel.get_current_span.return_value = mock_span
 
             event_dict = {"event": "test"}
@@ -41,9 +44,12 @@ class TestTraceProcessorWithOtel:
         mock_span = Mock()
         mock_span.is_recording.return_value = False
 
-        with patch("provide.foundation.logger.processors.trace._HAS_OTEL", True), patch(
-            "provide.foundation.logger.processors.trace.trace",
-        ) as mock_otel:
+        with (
+            patch("provide.foundation.logger.processors.trace._HAS_OTEL", True),
+            patch(
+                "provide.foundation.logger.processors.trace.trace",
+            ) as mock_otel,
+        ):
             mock_otel.get_current_span.return_value = mock_span
 
             # Should fall through to Foundation tracer
@@ -51,12 +57,15 @@ class TestTraceProcessorWithOtel:
             mock_foundation_span.trace_id = "foundation-trace-123"
             mock_foundation_span.span_id = "foundation-span-456"
 
-            with patch(
-                "provide.foundation.tracer.context.get_current_trace_id",
-                return_value="foundation-trace-123",
-            ), patch(
-                "provide.foundation.tracer.context.get_current_span",
-                return_value=mock_foundation_span,
+            with (
+                patch(
+                    "provide.foundation.tracer.context.get_current_trace_id",
+                    return_value="foundation-trace-123",
+                ),
+                patch(
+                    "provide.foundation.tracer.context.get_current_span",
+                    return_value=mock_foundation_span,
+                ),
             ):
                 event_dict = {"event": "test"}
                 result = inject_trace_context(None, "info", event_dict)
@@ -68,9 +77,12 @@ class TestTraceProcessorWithOtel:
         """Test handling exception in OpenTelemetry code."""
         from provide.foundation.logger.processors.trace import inject_trace_context
 
-        with patch("provide.foundation.logger.processors.trace._HAS_OTEL", True), patch(
-            "provide.foundation.logger.processors.trace.trace",
-        ) as mock_otel:
+        with (
+            patch("provide.foundation.logger.processors.trace._HAS_OTEL", True),
+            patch(
+                "provide.foundation.logger.processors.trace.trace",
+            ) as mock_otel,
+        ):
             mock_otel.get_current_span.side_effect = Exception("OTEL Error")
 
             # Should catch exception and fall through to Foundation tracer
@@ -78,12 +90,15 @@ class TestTraceProcessorWithOtel:
             mock_fallback_span.trace_id = "fallback-trace"
             mock_fallback_span.span_id = "fallback-span"
 
-            with patch(
-                "provide.foundation.tracer.context.get_current_trace_id",
-                return_value="fallback-trace",
-            ), patch(
-                "provide.foundation.tracer.context.get_current_span",
-                return_value=mock_fallback_span,
+            with (
+                patch(
+                    "provide.foundation.tracer.context.get_current_trace_id",
+                    return_value="fallback-trace",
+                ),
+                patch(
+                    "provide.foundation.tracer.context.get_current_span",
+                    return_value=mock_fallback_span,
+                ),
             ):
                 event_dict = {"event": "test"}
                 result = inject_trace_context(None, "info", event_dict)
@@ -103,9 +118,12 @@ class TestTraceProcessorWithOtel:
         mock_span_context.trace_flags = 0  # No flags
         mock_span.get_span_context.return_value = mock_span_context
 
-        with patch("provide.foundation.logger.processors.trace._HAS_OTEL", True), patch(
-            "provide.foundation.logger.processors.trace.trace",
-        ) as mock_otel:
+        with (
+            patch("provide.foundation.logger.processors.trace._HAS_OTEL", True),
+            patch(
+                "provide.foundation.logger.processors.trace.trace",
+            ) as mock_otel,
+        ):
             mock_otel.get_current_span.return_value = mock_span
 
             event_dict = {"event": "test"}
@@ -129,12 +147,15 @@ class TestTraceProcessorWithoutOtel:
             mock_span.trace_id = "foundation-trace-xyz"
             mock_span.span_id = "foundation-span-abc"
 
-            with patch(
-                "provide.foundation.tracer.context.get_current_trace_id",
-                return_value="foundation-trace-xyz",
-            ), patch(
-                "provide.foundation.tracer.context.get_current_span",
-                return_value=mock_span,
+            with (
+                patch(
+                    "provide.foundation.tracer.context.get_current_trace_id",
+                    return_value="foundation-trace-xyz",
+                ),
+                patch(
+                    "provide.foundation.tracer.context.get_current_span",
+                    return_value=mock_span,
+                ),
             ):
                 event_dict = {"event": "test"}
                 result = inject_trace_context(None, "info", event_dict)
@@ -146,12 +167,16 @@ class TestTraceProcessorWithoutOtel:
         """Test when there's no current span."""
         from provide.foundation.logger.processors.trace import inject_trace_context
 
-        with patch("provide.foundation.logger.processors.trace._HAS_OTEL", False), patch(
-            "provide.foundation.tracer.context.get_current_trace_id",
-            return_value="trace-only",
-        ), patch(
-            "provide.foundation.tracer.context.get_current_span",
-            return_value=None,
+        with (
+            patch("provide.foundation.logger.processors.trace._HAS_OTEL", False),
+            patch(
+                "provide.foundation.tracer.context.get_current_trace_id",
+                return_value="trace-only",
+            ),
+            patch(
+                "provide.foundation.tracer.context.get_current_span",
+                return_value=None,
+            ),
         ):
             event_dict = {"event": "test"}
             result = inject_trace_context(None, "info", event_dict)
@@ -163,12 +188,16 @@ class TestTraceProcessorWithoutOtel:
         """Test when there's no trace ID or span."""
         from provide.foundation.logger.processors.trace import inject_trace_context
 
-        with patch("provide.foundation.logger.processors.trace._HAS_OTEL", False), patch(
-            "provide.foundation.tracer.context.get_current_trace_id",
-            return_value=None,
-        ), patch(
-            "provide.foundation.tracer.context.get_current_span",
-            return_value=None,
+        with (
+            patch("provide.foundation.logger.processors.trace._HAS_OTEL", False),
+            patch(
+                "provide.foundation.tracer.context.get_current_trace_id",
+                return_value=None,
+            ),
+            patch(
+                "provide.foundation.tracer.context.get_current_span",
+                return_value=None,
+            ),
         ):
             event_dict = {"event": "test"}
             result = inject_trace_context(None, "info", event_dict)
@@ -182,9 +211,12 @@ class TestTraceProcessorWithoutOtel:
         """Test handling exception in Foundation tracer code."""
         from provide.foundation.logger.processors.trace import inject_trace_context
 
-        with patch("provide.foundation.logger.processors.trace._HAS_OTEL", False), patch(
-            "provide.foundation.tracer.context.get_current_trace_id",
-            side_effect=Exception("Foundation Error"),
+        with (
+            patch("provide.foundation.logger.processors.trace._HAS_OTEL", False),
+            patch(
+                "provide.foundation.tracer.context.get_current_trace_id",
+                side_effect=Exception("Foundation Error"),
+            ),
         ):
             event_dict = {"event": "test"}
             result = inject_trace_context(None, "info", event_dict)
@@ -240,9 +272,12 @@ class TestShouldInjectTraceContext:
         mock_span = Mock()
         mock_span.is_recording.return_value = True
 
-        with patch("provide.foundation.logger.processors.trace._HAS_OTEL", True), patch(
-            "provide.foundation.logger.processors.trace.trace",
-        ) as mock_otel:
+        with (
+            patch("provide.foundation.logger.processors.trace._HAS_OTEL", True),
+            patch(
+                "provide.foundation.logger.processors.trace.trace",
+            ) as mock_otel,
+        ):
             mock_otel.get_current_span.return_value = mock_span
 
             assert should_inject_trace_context() is True
@@ -256,18 +291,24 @@ class TestShouldInjectTraceContext:
         mock_span = Mock()
         mock_span.is_recording.return_value = False
 
-        with patch("provide.foundation.logger.processors.trace._HAS_OTEL", True), patch(
-            "provide.foundation.logger.processors.trace.trace",
-        ) as mock_otel:
+        with (
+            patch("provide.foundation.logger.processors.trace._HAS_OTEL", True),
+            patch(
+                "provide.foundation.logger.processors.trace.trace",
+            ) as mock_otel,
+        ):
             mock_otel.get_current_span.return_value = mock_span
 
             # Falls through to check Foundation tracer
-            with patch(
-                "provide.foundation.tracer.context.get_current_span",
-                return_value=None,
-            ), patch(
-                "provide.foundation.tracer.context.get_current_trace_id",
-                return_value=None,
+            with (
+                patch(
+                    "provide.foundation.tracer.context.get_current_span",
+                    return_value=None,
+                ),
+                patch(
+                    "provide.foundation.tracer.context.get_current_trace_id",
+                    return_value=None,
+                ),
             ):
                 assert should_inject_trace_context() is False
 
@@ -277,9 +318,12 @@ class TestShouldInjectTraceContext:
             should_inject_trace_context,
         )
 
-        with patch("provide.foundation.logger.processors.trace._HAS_OTEL", True), patch(
-            "provide.foundation.logger.processors.trace.trace",
-        ) as mock_otel:
+        with (
+            patch("provide.foundation.logger.processors.trace._HAS_OTEL", True),
+            patch(
+                "provide.foundation.logger.processors.trace.trace",
+            ) as mock_otel,
+        ):
             mock_otel.get_current_span.side_effect = Exception("OTEL Error")
 
             # Should fall through to Foundation check
@@ -295,9 +339,12 @@ class TestShouldInjectTraceContext:
             should_inject_trace_context,
         )
 
-        with patch("provide.foundation.logger.processors.trace._HAS_OTEL", False), patch(
-            "provide.foundation.tracer.context.get_current_span",
-            return_value=Mock(),
+        with (
+            patch("provide.foundation.logger.processors.trace._HAS_OTEL", False),
+            patch(
+                "provide.foundation.tracer.context.get_current_span",
+                return_value=Mock(),
+            ),
         ):
             assert should_inject_trace_context() is True
 
@@ -307,11 +354,16 @@ class TestShouldInjectTraceContext:
             should_inject_trace_context,
         )
 
-        with patch("provide.foundation.logger.processors.trace._HAS_OTEL", False), patch(
-            "provide.foundation.tracer.context.get_current_span", return_value=None,
-        ), patch(
-            "provide.foundation.tracer.context.get_current_trace_id",
-            return_value="trace-123",
+        with (
+            patch("provide.foundation.logger.processors.trace._HAS_OTEL", False),
+            patch(
+                "provide.foundation.tracer.context.get_current_span",
+                return_value=None,
+            ),
+            patch(
+                "provide.foundation.tracer.context.get_current_trace_id",
+                return_value="trace-123",
+            ),
         ):
             assert should_inject_trace_context() is True
 
@@ -321,11 +373,16 @@ class TestShouldInjectTraceContext:
             should_inject_trace_context,
         )
 
-        with patch("provide.foundation.logger.processors.trace._HAS_OTEL", False), patch(
-            "provide.foundation.tracer.context.get_current_span", return_value=None,
-        ), patch(
-            "provide.foundation.tracer.context.get_current_trace_id",
-            return_value=None,
+        with (
+            patch("provide.foundation.logger.processors.trace._HAS_OTEL", False),
+            patch(
+                "provide.foundation.tracer.context.get_current_span",
+                return_value=None,
+            ),
+            patch(
+                "provide.foundation.tracer.context.get_current_trace_id",
+                return_value=None,
+            ),
         ):
             assert should_inject_trace_context() is False
 
@@ -335,9 +392,12 @@ class TestShouldInjectTraceContext:
             should_inject_trace_context,
         )
 
-        with patch("provide.foundation.logger.processors.trace._HAS_OTEL", False), patch(
-            "provide.foundation.tracer.context.get_current_span",
-            side_effect=Exception("Foundation Error"),
+        with (
+            patch("provide.foundation.logger.processors.trace._HAS_OTEL", False),
+            patch(
+                "provide.foundation.tracer.context.get_current_span",
+                side_effect=Exception("Foundation Error"),
+            ),
         ):
             assert should_inject_trace_context() is False
 
@@ -357,9 +417,12 @@ class TestTraceProcessorLogging:
         mock_span_context.trace_flags = 1
         mock_span.get_span_context.return_value = mock_span_context
 
-        with patch("provide.foundation.logger.processors.trace._HAS_OTEL", True), patch(
-            "provide.foundation.logger.processors.trace.trace",
-        ) as mock_otel:
+        with (
+            patch("provide.foundation.logger.processors.trace._HAS_OTEL", True),
+            patch(
+                "provide.foundation.logger.processors.trace.trace",
+            ) as mock_otel,
+        ):
             mock_otel.get_current_span.return_value = mock_span
 
             event_dict = {"event": "test"}
@@ -375,9 +438,12 @@ class TestTraceProcessorLogging:
         """Test OpenTelemetry failure handling (fallback to Foundation tracer)."""
         from provide.foundation.logger.processors.trace import inject_trace_context
 
-        with patch("provide.foundation.logger.processors.trace._HAS_OTEL", True), patch(
-            "provide.foundation.logger.processors.trace.trace",
-        ) as mock_otel:
+        with (
+            patch("provide.foundation.logger.processors.trace._HAS_OTEL", True),
+            patch(
+                "provide.foundation.logger.processors.trace.trace",
+            ) as mock_otel,
+        ):
             mock_otel.get_current_span.side_effect = ValueError("Test error")
 
             with patch(
@@ -400,12 +466,15 @@ class TestTraceProcessorLogging:
             mock_span.trace_id = "trace-123"
             mock_span.span_id = "span-456"
 
-            with patch(
-                "provide.foundation.tracer.context.get_current_trace_id",
-                return_value="trace-123",
-            ), patch(
-                "provide.foundation.tracer.context.get_current_span",
-                return_value=mock_span,
+            with (
+                patch(
+                    "provide.foundation.tracer.context.get_current_trace_id",
+                    return_value="trace-123",
+                ),
+                patch(
+                    "provide.foundation.tracer.context.get_current_span",
+                    return_value=mock_span,
+                ),
             ):
                 event_dict = {"event": "test"}
                 result = inject_trace_context(None, "info", event_dict)
@@ -420,9 +489,12 @@ class TestTraceProcessorLogging:
         """Test Foundation tracer failure handling (no internal logging)."""
         from provide.foundation.logger.processors.trace import inject_trace_context
 
-        with patch("provide.foundation.logger.processors.trace._HAS_OTEL", False), patch(
-            "provide.foundation.tracer.context.get_current_trace_id",
-            side_effect=RuntimeError("Foundation error"),
+        with (
+            patch("provide.foundation.logger.processors.trace._HAS_OTEL", False),
+            patch(
+                "provide.foundation.tracer.context.get_current_trace_id",
+                side_effect=RuntimeError("Foundation error"),
+            ),
         ):
             event_dict = {"event": "test"}
             result = inject_trace_context(None, "info", event_dict)

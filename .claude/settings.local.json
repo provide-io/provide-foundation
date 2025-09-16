@@ -77,7 +77,10 @@
       "Bash(PYTHONPATH=src ruff check src/)",
       "Bash(/bin/ls:*)",
       "Bash(PYTHONPATH=src mypy src/provide/foundation/config/loader.py --show-error-codes --no-error-summary)",
-      "Bash(export PYTHONPATH=src)"
+      "Bash(export PYTHONPATH=src)",
+      "Bash(PYTHONPATH=src ruff format src/ tests/)",
+      "Bash(PYTHONPATH=src ruff check --fix --unsafe-fixes src/ tests/)",
+      "Bash(timeout 60 pytest --tb=no -q)"
     ],
     "deny": [],
     "ask": [],

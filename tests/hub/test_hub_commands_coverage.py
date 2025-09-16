@@ -306,10 +306,7 @@ class TestErrorMessages:
             _ = commands_module.invalid_feature
 
         error_msg = str(exc_info.value)
-        assert (
-            "module 'provide.foundation.hub.commands' has no attribute 'invalid_feature'"
-            in error_msg
-        )
+        assert "module 'provide.foundation.hub.commands' has no attribute 'invalid_feature'" in error_msg
 
     def test_click_error_detection_logic(self) -> None:
         """Test the logic that detects click-related errors."""

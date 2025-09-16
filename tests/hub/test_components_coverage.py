@@ -1,8 +1,7 @@
 #
 # test_components_coverage.py
 #
-"""Tests to cover missing lines in hub/components.py for 100% coverage.
-"""
+"""Tests to cover missing lines in hub/components.py for 100% coverage."""
 
 from unittest.mock import Mock
 
@@ -47,8 +46,7 @@ class TestComponentLifecycle:
 
         component_with_cleanup.cleanup.assert_called_once()
         assert (
-            not hasattr(component_without_cleanup, "cleanup")
-            or not component_without_cleanup.cleanup.called
+            not hasattr(component_without_cleanup, "cleanup") or not component_without_cleanup.cleanup.called
         )
 
         # Cleanup
@@ -216,5 +214,3 @@ class TestConfigSourceFunctionality:
 
         # Cleanup
         registry.clear()
-
-

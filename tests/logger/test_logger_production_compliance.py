@@ -52,11 +52,7 @@ class TestProductionReadinessScenarios:
         captured_content = captured_stderr_for_foundation.getvalue()
 
         # Verify all messages were logged
-        log_lines = [
-            line
-            for line in captured_content.splitlines()
-            if "High throughput message" in line
-        ]
+        log_lines = [line for line in captured_content.splitlines() if "High throughput message" in line]
         assert len(log_lines) == message_count
 
         # Verify reasonable performance
@@ -210,7 +206,10 @@ class TestDocumentedBehaviorCompliance:
 
             # Test DAS with disabled logger name emoji
             global_logger.info(
-                "DAS test", domain="auth", action="login", status="success",
+                "DAS test",
+                domain="auth",
+                action="login",
+                status="success",
             )
 
         captured = capsys.readouterr()
@@ -231,9 +230,7 @@ class TestDocumentedBehaviorCompliance:
         assert all(log["service_name"] == "documented-service" for log in service_logs)
 
         # Verify timestamp omission
-        assert all("timestamp" not in log for log in json_lines), (
-            "Timestamps should be omitted"
-        )
+        assert all("timestamp" not in log for log in json_lines), "Timestamps should be omitted"
 
         # Verify module filtering
         assert not any("Module warning" in log.get("event", "") for log in json_lines)
@@ -274,8 +271,9 @@ class TestDocumentedBehaviorCompliance:
         assert "Component service warning" in captured.err
         assert "Exception handling" in captured.err
         # Check for exception details (more flexible pattern matching)
-        assert ("RuntimeError: Test exception" in captured.err or
-                "Test exception" in captured.err), f"Exception details not found in: {captured.err}"
+        assert "RuntimeError: Test exception" in captured.err or "Test exception" in captured.err, (
+            f"Exception details not found in: {captured.err}"
+        )
 
     def test_thread_safety_guarantees(self, capsys: CaptureFixture) -> None:
         """Test documented thread safety guarantees."""
@@ -368,9 +366,7 @@ class TestDocumentedBehaviorCompliance:
         assert init_time < 0.1, f"Initialization too slow: {init_time:.3f}s"
 
         messages_per_second = 100 / subsequent_time
-        assert messages_per_second > 1000, (
-            f"Subsequent logging too slow: {messages_per_second:.1f} msg/sec"
-        )
+        assert messages_per_second > 1000, f"Subsequent logging too slow: {messages_per_second:.1f} msg/sec"
 
         captured = capsys.readouterr()
         assert "First message triggers initialization" in captured.err
@@ -518,9 +514,7 @@ class TestLazyInitializationDocumentation:
         json_lines = [
             line
             for line in captured.err.splitlines()
-            if line.strip()
-            and not line.startswith("[")
-            and "After explicit setup" in line
+            if line.strip() and not line.startswith("[") and "After explicit setup" in line
         ]
         assert len(json_lines) > 0
 

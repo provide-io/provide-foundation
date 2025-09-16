@@ -1,8 +1,7 @@
 #
 # test_file.py
 #
-"""Tests for file stream functionality.
-"""
+"""Tests for file stream functionality."""
 
 from pathlib import Path
 import tempfile

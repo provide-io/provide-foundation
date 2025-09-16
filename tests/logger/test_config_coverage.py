@@ -1,8 +1,7 @@
 #
 # test_config_coverage.py
 #
-"""Tests to improve coverage for logger configuration files.
-"""
+"""Tests to improve coverage for logger configuration files."""
 
 import os
 from unittest.mock import patch

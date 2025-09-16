@@ -83,6 +83,7 @@ class TestDownloaderIntegration:
         dest = temp_dir / "test_file.bin"
 
         progress_calls = []
+
         def progress_callback(downloaded, total) -> None:
             progress_calls.append((downloaded, total))
 
@@ -101,9 +102,16 @@ class TestDownloaderIntegration:
             assert final_downloaded == 1024
         except Exception as e:
             # Skip test if we can't connect to httpbin or have transport issues
-            if any(keyword in str(e) for keyword in [
-                "async_generator", "context manager", "ConnectError", "DNS", "timeout",
-            ]):
+            if any(
+                keyword in str(e)
+                for keyword in [
+                    "async_generator",
+                    "context manager",
+                    "ConnectError",
+                    "DNS",
+                    "timeout",
+                ]
+            ):
                 pytest.skip(f"Network/transport issue - this is an integration test limitation: {e}")
             else:
                 raise
@@ -131,9 +139,17 @@ class TestDownloaderIntegration:
             assert result2 == dest2
             assert dest2.exists()
         except Exception as e:
-            if any(keyword in str(e) for keyword in [
-                "async_generator", "context manager", "ConnectError", "DNS", "timeout", "event loop",
-            ]):
+            if any(
+                keyword in str(e)
+                for keyword in [
+                    "async_generator",
+                    "context manager",
+                    "ConnectError",
+                    "DNS",
+                    "timeout",
+                    "event loop",
+                ]
+            ):
                 pytest.skip(f"Network/transport issue - this is an integration test limitation: {e}")
             else:
                 raise
@@ -169,6 +185,7 @@ class TestDownloaderIntegration:
         # Patch the client to have a short timeout
         with patch.object(downloader.client, "stream") as mock_stream:
             import httpx
+
             mock_stream.side_effect = httpx.TimeoutException("Request timed out")
 
             with pytest.raises(Exception):  # Timeout should cause failure
@@ -205,7 +222,7 @@ class TestDownloaderIntegration:
         # First URL fails, second succeeds
         mirrors = [
             "https://httpbin.org/status/503",  # Will fail
-            "https://httpbin.org/bytes/512",   # Will succeed
+            "https://httpbin.org/bytes/512",  # Will succeed
         ]
         dest = temp_dir / "mirror_test.bin"
 
@@ -236,6 +253,7 @@ class TestDownloaderIntegration:
         }
 
         import platform
+
         system = platform.system().lower()
         if system not in platform_info:
             pytest.skip(f"No jq binary available for {system}")
@@ -319,9 +337,11 @@ class TestBackoffRetryIntegration:
                             except Exception as e:
                                 last_exception = e
                                 if attempt < max_attempts - 1:
-                                    time.sleep(base_delay * (2 ** attempt))
+                                    time.sleep(base_delay * (2**attempt))
                         raise last_exception
+
                     return wrapper
+
                 return decorator
 
             mock_retry.side_effect = mock_retry_decorator
@@ -350,6 +370,7 @@ class TestBackoffRetryIntegration:
 
             if call_count <= 2:  # Fail first 2 attempts
                 import httpx
+
                 raise httpx.HTTPStatusError("Server error", request=Mock(), response=Mock(status_code=503))
             # Succeed on 3rd attempt
             return original_stream("GET", "https://httpbin.org/bytes/100")
@@ -387,9 +408,16 @@ class TestFullWorkflowIntegration:
 
         # Test with realistic version list
         versions = [
-            "1.0.0", "1.0.1", "1.1.0", "1.1.1",
-            "1.2.0-beta", "1.2.0-rc1", "1.2.0",
-            "2.0.0-alpha", "2.0.0-beta", "2.0.0",
+            "1.0.0",
+            "1.0.1",
+            "1.1.0",
+            "1.1.1",
+            "1.2.0-beta",
+            "1.2.0-rc1",
+            "1.2.0",
+            "2.0.0-alpha",
+            "2.0.0-beta",
+            "2.0.0",
         ]
 
         # Test latest stable
@@ -413,6 +441,7 @@ class TestFullWorkflowIntegration:
         """Test complete workflow: resolve -> download -> verify -> install -> cache."""
         # This test downloads a real binary, so make it optional
         import platform
+
         system = platform.system().lower()
 
         if system not in ["linux", "darwin"]:

@@ -57,7 +57,8 @@ def mock_ssl_server_credentials(
     # Validate all pairs have correct format
     for private_key, certificate_chain in private_key_certificate_chain_pairs:
         if not isinstance(private_key, bytes) or not isinstance(
-            certificate_chain, bytes,
+            certificate_chain,
+            bytes,
         ):
             raise TypeError("private_key and certificate_chain must be bytes")
 
@@ -117,7 +118,8 @@ def test_mock_server_credentials_multiple_certs(server_cert, client_cert) -> Non
 
 
 def test_mock_server_credentials_validation_with_certs(
-    server_cert, client_cert,
+    server_cert,
+    client_cert,
 ) -> None:
     """Test validation rules with real certificates."""
     # Test requiring client auth without root certs

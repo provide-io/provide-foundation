@@ -19,9 +19,7 @@ class TestGetMessageFromInput:
         """Test that when no message and stdin is tty, returns error."""
         from provide.foundation.cli.commands.logs.send import _get_message_from_input
 
-        with patch('sys.stdin.isatty', return_value=True), \
-             patch('click.echo') as mock_echo:
-
+        with patch("sys.stdin.isatty", return_value=True), patch("click.echo") as mock_echo:
             result_msg, result_code = _get_message_from_input(None)
 
             assert result_msg is None
@@ -35,9 +33,7 @@ class TestGetMessageFromInput:
         stdin_content = "Message from stdin"
         mock_stdin = StringIO(stdin_content)
 
-        with patch('sys.stdin', mock_stdin), \
-             patch('sys.stdin.isatty', return_value=False):
-
+        with patch("sys.stdin", mock_stdin), patch("sys.stdin.isatty", return_value=False):
             result_msg, result_code = _get_message_from_input(None)
 
             assert result_msg == "Message from stdin"
@@ -49,10 +45,11 @@ class TestGetMessageFromInput:
 
         mock_stdin = StringIO("   \n  ")  # Only whitespace
 
-        with patch('sys.stdin', mock_stdin), \
-             patch('sys.stdin.isatty', return_value=False), \
-             patch('click.echo') as mock_echo:
-
+        with (
+            patch("sys.stdin", mock_stdin),
+            patch("sys.stdin.isatty", return_value=False),
+            patch("click.echo") as mock_echo,
+        ):
             result_msg, result_code = _get_message_from_input(None)
 
             assert result_msg is None
@@ -86,7 +83,7 @@ class TestBuildAttributes:
         from provide.foundation.cli.commands.logs.send import _build_attributes
 
         json_attrs = '{"key1": invalid_json}'
-        with patch('click.echo') as mock_echo:
+        with patch("click.echo") as mock_echo:
             result_attrs, result_code = _build_attributes(json_attrs, ())
 
             assert result_attrs == {}
@@ -159,7 +156,7 @@ class TestBuildAttributes:
         from provide.foundation.cli.commands.logs.send import _build_attributes
 
         attr_pairs = ("valid=value", "invalid_no_equals")
-        with patch('click.echo') as mock_echo:
+        with patch("click.echo") as mock_echo:
             result_attrs, result_code = _build_attributes(None, attr_pairs)
 
             assert result_attrs == {}
@@ -203,9 +200,10 @@ class TestSendLogEntry:
         """Test successful OTLP log sending."""
         from provide.foundation.cli.commands.logs.send import _send_log_entry
 
-        with patch('provide.foundation.integrations.openobserve.otlp.send_log') as mock_send, \
-             patch('click.echo') as mock_echo:
-
+        with (
+            patch("provide.foundation.integrations.openobserve.otlp.send_log") as mock_send,
+            patch("click.echo") as mock_echo,
+        ):
             result_code = _send_log_entry(
                 message="Test message",
                 level="INFO",
@@ -213,7 +211,7 @@ class TestSendLogEntry:
                 attributes={"key": "value"},
                 trace_id="trace123",
                 span_id="span456",
-                use_otlp=True
+                use_otlp=True,
             )
 
             assert result_code == 0
@@ -223,7 +221,7 @@ class TestSendLogEntry:
                 service_name="test-service",
                 attributes={"key": "value"},
                 trace_id="trace123",
-                span_id="span456"
+                span_id="span456",
             )
             mock_echo.assert_called_once_with("✓ Log sent via OTLP")
 
@@ -233,10 +231,13 @@ class TestSendLogEntry:
 
         # Mock the ingest_logs import since it doesn't exist yet
         mock_ingest = Mock()
-        with patch.dict('sys.modules', {'provide.foundation.integrations.openobserve': Mock(ingest_logs=mock_ingest)}), \
-             patch('click.echo') as mock_echo, \
-             patch('time.time', return_value=1234567890.123456):
-
+        with (
+            patch.dict(
+                "sys.modules", {"provide.foundation.integrations.openobserve": Mock(ingest_logs=mock_ingest)}
+            ),
+            patch("click.echo") as mock_echo,
+            patch("time.time", return_value=1234567890.123456),
+        ):
             result_code = _send_log_entry(
                 message="HTTP test message",
                 level="ERROR",
@@ -244,7 +245,7 @@ class TestSendLogEntry:
                 attributes={"error_code": 500},
                 trace_id="http_trace",
                 span_id="http_span",
-                use_otlp=False
+                use_otlp=False,
             )
 
             assert result_code == 0
@@ -257,7 +258,7 @@ class TestSendLogEntry:
                 "error_code": 500,
                 "service": "http-service",
                 "trace_id": "http_trace",
-                "span_id": "http_span"
+                "span_id": "http_span",
             }
             mock_ingest.assert_called_once_with([expected_log_record])
             mock_echo.assert_called_once_with("✓ Log sent via HTTP API")
@@ -268,10 +269,13 @@ class TestSendLogEntry:
 
         # Mock the ingest_logs import since it doesn't exist yet
         mock_ingest = Mock()
-        with patch.dict('sys.modules', {'provide.foundation.integrations.openobserve': Mock(ingest_logs=mock_ingest)}), \
-             patch('click.echo'), \
-             patch('time.time', return_value=1234567890.0):
-
+        with (
+            patch.dict(
+                "sys.modules", {"provide.foundation.integrations.openobserve": Mock(ingest_logs=mock_ingest)}
+            ),
+            patch("click.echo"),
+            patch("time.time", return_value=1234567890.0),
+        ):
             result_code = _send_log_entry(
                 message="Minimal message",
                 level="DEBUG",
@@ -279,7 +283,7 @@ class TestSendLogEntry:
                 attributes={},
                 trace_id=None,
                 span_id=None,
-                use_otlp=False
+                use_otlp=False,
             )
 
             assert result_code == 0
@@ -288,7 +292,7 @@ class TestSendLogEntry:
             expected_log_record = {
                 "timestamp": 1234567890000000,
                 "message": "Minimal message",
-                "level": "DEBUG"
+                "level": "DEBUG",
             }
             mock_ingest.assert_called_once_with([expected_log_record])
 
@@ -296,10 +300,13 @@ class TestSendLogEntry:
         """Test exception handling for OTLP sending."""
         from provide.foundation.cli.commands.logs.send import _send_log_entry
 
-        with patch('provide.foundation.integrations.openobserve.otlp.send_log',
-                   side_effect=Exception("OTLP connection failed")), \
-             patch('click.echo') as mock_echo:
-
+        with (
+            patch(
+                "provide.foundation.integrations.openobserve.otlp.send_log",
+                side_effect=Exception("OTLP connection failed"),
+            ),
+            patch("click.echo") as mock_echo,
+        ):
             result_code = _send_log_entry(
                 message="Test message",
                 level="INFO",
@@ -307,7 +314,7 @@ class TestSendLogEntry:
                 attributes={},
                 trace_id=None,
                 span_id=None,
-                use_otlp=True
+                use_otlp=True,
             )
 
             assert result_code == 1
@@ -319,9 +326,12 @@ class TestSendLogEntry:
 
         # Mock the ingest_logs import to raise an exception
         mock_ingest = Mock(side_effect=Exception("HTTP API failed"))
-        with patch.dict('sys.modules', {'provide.foundation.integrations.openobserve': Mock(ingest_logs=mock_ingest)}), \
-             patch('click.echo') as mock_echo:
-
+        with (
+            patch.dict(
+                "sys.modules", {"provide.foundation.integrations.openobserve": Mock(ingest_logs=mock_ingest)}
+            ),
+            patch("click.echo") as mock_echo,
+        ):
             result_code = _send_log_entry(
                 message="Test message",
                 level="INFO",
@@ -329,7 +339,7 @@ class TestSendLogEntry:
                 attributes={},
                 trace_id=None,
                 span_id=None,
-                use_otlp=False
+                use_otlp=False,
             )
 
             assert result_code == 1
@@ -350,7 +360,7 @@ class TestSendCommandWithoutClick:
         # If click is available (which it should be in test environment)
         if _HAS_CLICK:
             # The command should be the click-decorated function
-            assert hasattr(send_command, '__click_params__') or callable(send_command)
+            assert hasattr(send_command, "__click_params__") or callable(send_command)
 
 
 class TestModuleStructure:
@@ -360,20 +370,20 @@ class TestModuleStructure:
         """Test that module has all required functions."""
         from provide.foundation.cli.commands.logs import send
 
-        assert hasattr(send, '_get_message_from_input')
-        assert hasattr(send, '_build_attributes')
-        assert hasattr(send, '_send_log_entry')
-        assert hasattr(send, 'send_command')
-        assert hasattr(send, '_HAS_CLICK')
+        assert hasattr(send, "_get_message_from_input")
+        assert hasattr(send, "_build_attributes")
+        assert hasattr(send, "_send_log_entry")
+        assert hasattr(send, "send_command")
+        assert hasattr(send, "_HAS_CLICK")
 
     def test_module_logger_instance(self) -> None:
         """Test that module has logger instance."""
         from provide.foundation.cli.commands.logs.send import log
 
         assert log is not None
-        assert hasattr(log, 'info')
-        assert hasattr(log, 'debug')
-        assert hasattr(log, 'error')
+        assert hasattr(log, "info")
+        assert hasattr(log, "debug")
+        assert hasattr(log, "error")
 
 
 class TestEdgeCases:
@@ -409,9 +419,7 @@ class TestEdgeCases:
         stdin_content = "\n  Message with newlines  \n\n"
         mock_stdin = StringIO(stdin_content)
 
-        with patch('sys.stdin', mock_stdin), \
-             patch('sys.stdin.isatty', return_value=False):
-
+        with patch("sys.stdin", mock_stdin), patch("sys.stdin.isatty", return_value=False):
             result_msg, result_code = _get_message_from_input(None)
 
             assert result_msg == "Message with newlines"

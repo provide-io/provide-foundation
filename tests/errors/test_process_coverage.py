@@ -34,12 +34,12 @@ class TestProcessError:
     def test_process_error_with_command_list(self) -> None:
         """Test ProcessError with list command."""
         error = ProcessError(
-            "Command failed", command=["ls", "-la", "/nonexistent"], return_code=2,
+            "Command failed",
+            command=["ls", "-la", "/nonexistent"],
+            return_code=2,
         )
 
-        expected_message = (
-            "Command failed\nCommand: ls -la /nonexistent\nReturn code: 2"
-        )
+        expected_message = "Command failed\nCommand: ls -la /nonexistent\nReturn code: 2"
         assert str(error) == expected_message
         assert error.command == ["ls", "-la", "/nonexistent"]
         assert error.return_code == 2
@@ -55,24 +55,24 @@ class TestProcessError:
     def test_process_error_with_stdout_string(self) -> None:
         """Test ProcessError with string stdout."""
         error = ProcessError(
-            "Command output", command="echo hello", stdout="hello world\n",
+            "Command output",
+            command="echo hello",
+            stdout="hello world\n",
         )
 
-        expected_message = (
-            "Command output\nCommand: echo hello\n--- STDOUT ---\nhello world"
-        )
+        expected_message = "Command output\nCommand: echo hello\n--- STDOUT ---\nhello world"
         assert str(error) == expected_message
         assert error.stdout == "hello world"
 
     def test_process_error_with_stdout_bytes(self) -> None:
         """Test ProcessError with bytes stdout."""
         error = ProcessError(
-            "Command output", command="cat file.txt", stdout=b"binary content\n",
+            "Command output",
+            command="cat file.txt",
+            stdout=b"binary content\n",
         )
 
-        expected_message = (
-            "Command output\nCommand: cat file.txt\n--- STDOUT ---\nbinary content"
-        )
+        expected_message = "Command output\nCommand: cat file.txt\n--- STDOUT ---\nbinary content"
         assert str(error) == expected_message
         assert error.stdout == "binary content"
 
@@ -91,7 +91,9 @@ class TestProcessError:
     def test_process_error_with_stderr_bytes(self) -> None:
         """Test ProcessError with bytes stderr."""
         error = ProcessError(
-            "Command failed", command="invalid_command", stderr=b"command not found\n",
+            "Command failed",
+            command="invalid_command",
+            stderr=b"command not found\n",
         )
 
         expected_message = "Command failed\nCommand: invalid_command\n--- STDERR ---\ncommand not found"
@@ -108,9 +110,7 @@ class TestProcessError:
         )
 
         expected_message = (
-            "Mixed output\nCommand: test_cmd\n"
-            "--- STDOUT ---\nsuccessful part\n"
-            "--- STDERR ---\nwarning message"
+            "Mixed output\nCommand: test_cmd\n--- STDOUT ---\nsuccessful part\n--- STDERR ---\nwarning message"
         )
         assert str(error) == expected_message
         assert error.stdout == "successful part"
@@ -135,7 +135,9 @@ class TestProcessError:
     def test_process_error_with_whitespace_only_stdout(self) -> None:
         """Test ProcessError with whitespace-only stdout (should be stripped to empty)."""
         error = ProcessError(
-            "Whitespace output", command="space_cmd", stdout="   \n\t  \n   ",
+            "Whitespace output",
+            command="space_cmd",
+            stdout="   \n\t  \n   ",
         )
 
         expected_message = "Whitespace output\nCommand: space_cmd"
@@ -145,7 +147,9 @@ class TestProcessError:
     def test_process_error_with_whitespace_only_stderr(self) -> None:
         """Test ProcessError with whitespace-only stderr (should be stripped to empty)."""
         error = ProcessError(
-            "Whitespace errors", command="space_cmd", stderr="   \n\t  \n   ",
+            "Whitespace errors",
+            command="space_cmd",
+            stderr="   \n\t  \n   ",
         )
 
         expected_message = "Whitespace errors\nCommand: space_cmd"
@@ -212,12 +216,12 @@ class TestCommandNotFoundError:
     def test_command_not_found_with_command(self) -> None:
         """Test CommandNotFoundError with command details."""
         error = CommandNotFoundError(
-            "Command not found", command="nonexistent_command", return_code=127,
+            "Command not found",
+            command="nonexistent_command",
+            return_code=127,
         )
 
-        expected_message = (
-            "Command not found\nCommand: nonexistent_command\nReturn code: 127"
-        )
+        expected_message = "Command not found\nCommand: nonexistent_command\nReturn code: 127"
         assert str(error) == expected_message
         assert error.command == "nonexistent_command"
         assert error.return_code == 127
@@ -254,12 +258,12 @@ class TestProcessTimeoutError:
     def test_process_timeout_with_command(self) -> None:
         """Test ProcessTimeoutError with command."""
         error = ProcessTimeoutError(
-            "Timeout occurred", command="long_running_cmd", timeout_seconds=30.0,
+            "Timeout occurred",
+            command="long_running_cmd",
+            timeout_seconds=30.0,
         )
 
-        expected_message = (
-            "Timeout occurred\nCommand: long_running_cmd\nProcess timed out"
-        )
+        expected_message = "Timeout occurred\nCommand: long_running_cmd\nProcess timed out"
         assert str(error) == expected_message
         assert error.command == "long_running_cmd"
         assert error.timeout is True
@@ -332,10 +336,7 @@ class TestProcessErrorInheritance:
 
         assert isinstance(command_error, ProcessError)
         assert isinstance(timeout_error, ProcessError)
-        assert all(
-            hasattr(error, "_default_code")
-            for error in [process_error, command_error, timeout_error]
-        )
+        assert all(hasattr(error, "_default_code") for error in [process_error, command_error, timeout_error])
 
     def test_unique_error_codes(self) -> None:
         """Test that each error type has unique error code."""

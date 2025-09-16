@@ -1,5 +1,4 @@
-"""Universal client tests.
-"""
+"""Universal client tests."""
 
 import pytest
 from pytest_httpx import HTTPXMock

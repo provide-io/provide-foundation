@@ -67,7 +67,10 @@ def test_full_lifecycle_integration(
     app_logger = logger.get_logger("app.main")
     app_logger.info("Application started", version="1.0.0")
     app_logger.debug(
-        "Debug info", component="auth", action="validate", status="success",
+        "Debug info",
+        component="auth",
+        action="validate",
+        status="success",
     )
 
     # Test custom TRACE level
@@ -85,13 +88,13 @@ def test_full_lifecycle_integration(
         line
         for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]")
-           and "⚙️➡️🚀 Starting Foundation" not in line
-           and "⚙️➡️✅ Foundation" not in line
-           and "⚙️ Foundation initialized through Hub" not in line
-           and "Configuring structlog output processors" not in line
-           and "🗣️ Registered item" not in line
-           and not ("[trace    ]" in line or "trace    " in line)
-           and line.strip()
+        and "⚙️➡️🚀 Starting Foundation" not in line
+        and "⚙️➡️✅ Foundation" not in line
+        and "⚙️ Foundation initialized through Hub" not in line
+        and "Configuring structlog output processors" not in line
+        and "🗣️ Registered item" not in line
+        and not ("[trace    ]" in line or "trace    " in line)
+        and line.strip()
     ]
 
     assert len(lines) >= 4, f"Expected at least 4 log lines, got {len(lines)}"
@@ -197,18 +200,16 @@ def test_high_volume_logging_performance(
         line
         for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]")
-           and "⚙️➡️🚀 Starting Foundation" not in line
-           and "⚙️➡️✅ Foundation" not in line
-           and "⚙️ Foundation initialized through Hub" not in line
-           and "Configuring structlog output processors" not in line
-           and "🗣️ Registered item" not in line
-           and not ("[trace    ]" in line or "trace    " in line)
-           and line.strip()
+        and "⚙️➡️🚀 Starting Foundation" not in line
+        and "⚙️➡️✅ Foundation" not in line
+        and "⚙️ Foundation initialized through Hub" not in line
+        and "Configuring structlog output processors" not in line
+        and "🗣️ Registered item" not in line
+        and not ("[trace    ]" in line or "trace    " in line)
+        and line.strip()
     ]
 
-    assert len(lines) == message_count, (
-        f"Expected {message_count} lines, got {len(lines)}"
-    )
+    assert len(lines) == message_count, f"Expected {message_count} lines, got {len(lines)}"
 
     # Performance assertion - should achieve reasonable throughput
     messages_per_second = message_count / duration
@@ -237,7 +238,9 @@ def test_thread_safety_concurrent_logging(
         thread_logger = logger.get_logger(f"thread.{thread_id}")
         for i in range(message_count):
             thread_logger.info(
-                f"Thread {thread_id} message {i}", thread_id=thread_id, msg_id=i,
+                f"Thread {thread_id} message {i}",
+                thread_id=thread_id,
+                msg_id=i,
             )
 
     # Launch multiple concurrent threads
@@ -246,8 +249,7 @@ def test_thread_safety_concurrent_logging(
 
     with ThreadPoolExecutor(max_workers=thread_count) as executor:
         futures = [
-            executor.submit(worker_thread, thread_id, messages_per_thread)
-            for thread_id in range(thread_count)
+            executor.submit(worker_thread, thread_id, messages_per_thread) for thread_id in range(thread_count)
         ]
 
         # Wait for all threads to complete
@@ -260,19 +262,17 @@ def test_thread_safety_concurrent_logging(
         line
         for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]")
-           and "⚙️➡️🚀 Starting Foundation" not in line
-           and "⚙️➡️✅ Foundation" not in line
-           and "⚙️ Foundation initialized through Hub" not in line
-           and "Configuring structlog output processors" not in line
-           and "🗣️ Registered item" not in line
-           and not ("[trace    ]" in line or "trace    " in line)
-           and line.strip()
+        and "⚙️➡️🚀 Starting Foundation" not in line
+        and "⚙️➡️✅ Foundation" not in line
+        and "⚙️ Foundation initialized through Hub" not in line
+        and "Configuring structlog output processors" not in line
+        and "🗣️ Registered item" not in line
+        and not ("[trace    ]" in line or "trace    " in line)
+        and line.strip()
     ]
 
     expected_messages = thread_count * messages_per_thread
-    assert len(lines) == expected_messages, (
-        f"Expected {expected_messages} lines, got {len(lines)}"
-    )
+    assert len(lines) == expected_messages, f"Expected {expected_messages} lines, got {len(lines)}"
 
     # Verify all messages are valid JSON and count per thread
     thread_message_counts: dict[int, int] = {}
@@ -281,9 +281,7 @@ def test_thread_safety_concurrent_logging(
             log_data = json.loads(line)
             thread_id = log_data.get("thread_id")
             if thread_id is not None:
-                thread_message_counts[thread_id] = (
-                    thread_message_counts.get(thread_id, 0) + 1
-                )
+                thread_message_counts[thread_id] = thread_message_counts.get(thread_id, 0) + 1
         except json.JSONDecodeError as e:  # pragma: no cover
             pytest.fail(f"Invalid JSON in concurrent log line: {line}. Error: {e}")
 
@@ -373,13 +371,13 @@ def test_error_recovery_and_resilience(
         line
         for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]")
-           and "⚙️➡️🚀 Starting Foundation" not in line
-           and "⚙️➡️✅ Foundation" not in line
-           and "⚙️ Foundation initialized through Hub" not in line
-           and "Configuring structlog output processors" not in line
-           and "🗣️ Registered item" not in line
-           and not ("[trace    ]" in line or "trace    " in line)
-           and line.strip()
+        and "⚙️➡️🚀 Starting Foundation" not in line
+        and "⚙️➡️✅ Foundation" not in line
+        and "⚙️ Foundation initialized through Hub" not in line
+        and "Configuring structlog output processors" not in line
+        and "🗣️ Registered item" not in line
+        and not ("[trace    ]" in line or "trace    " in line)
+        and line.strip()
     ]
 
     assert len(lines) >= len(test_cases), "Not all test messages were logged"
@@ -430,10 +428,12 @@ def test_repeated_setup_calls_integration(  # Renamed to avoid conflict
 ) -> None:
     """Tests behavior with repeated setup calls."""
     config1 = TelemetryConfig(
-        service_name="service1", logging=LoggingConfig(default_level="DEBUG"),
+        service_name="service1",
+        logging=LoggingConfig(default_level="DEBUG"),
     )
     config2 = TelemetryConfig(
-        service_name="service2", logging=LoggingConfig(default_level="INFO"),
+        service_name="service2",
+        logging=LoggingConfig(default_level="INFO"),
     )
 
     # First setup
@@ -566,18 +566,24 @@ def test_module_level_filtering_comprehensive(
         line
         for line in output.strip().splitlines()
         if not line.startswith("[Foundation Setup]")
-           and "⚙️➡️🚀 Starting Foundation" not in line
-           and "⚙️➡️✅ Foundation" not in line
-           and "⚙️ Foundation initialized through Hub" not in line
-           and "Configuring structlog output processors" not in line
-           and "🗣️ Registered item" not in line
-           and not ("] [trace    ]" in line and ("Starting Foundation" in line or "Foundation" in line or "processors" in line or "enrichment processor" in line))
-           and line.strip()
+        and "⚙️➡️🚀 Starting Foundation" not in line
+        and "⚙️➡️✅ Foundation" not in line
+        and "⚙️ Foundation initialized through Hub" not in line
+        and "Configuring structlog output processors" not in line
+        and "🗣️ Registered item" not in line
+        and not (
+            "] [trace    ]" in line
+            and (
+                "Starting Foundation" in line
+                or "Foundation" in line
+                or "processors" in line
+                or "enrichment processor" in line
+            )
+        )
+        and line.strip()
     ]
 
-    expected_messages_count = sum(
-        1 for _, _, _, tc_should_appear in test_cases if tc_should_appear
-    )
+    expected_messages_count = sum(1 for _, _, _, tc_should_appear in test_cases if tc_should_appear)
     actual_messages_count = len(filtered_lines)
 
     assert actual_messages_count == expected_messages_count, (
@@ -587,13 +593,9 @@ def test_module_level_filtering_comprehensive(
     for _, _, message_text, tc_should_appear_for_assertion in test_cases:
         message_found = any(message_text in line for line in filtered_lines)
         if tc_should_appear_for_assertion:
-            assert message_found, (
-                f"Expected message '{message_text}' not found in output. Output:\n{output}"
-            )
+            assert message_found, f"Expected message '{message_text}' not found in output. Output:\n{output}"
         else:
-            assert not message_found, (
-                f"Unexpected message '{message_text}' found in output. Output:\n{output}"
-            )
+            assert not message_found, f"Unexpected message '{message_text}' found in output. Output:\n{output}"
 
 
 # 🧪🔄

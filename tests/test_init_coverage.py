@@ -12,22 +12,14 @@ class TestFoundationInit:
     def setup_method(self) -> None:
         """Reset module state before each test."""
         # Clear CLI module from cache to ensure fresh imports
-        cli_modules = [
-            name
-            for name in sys.modules
-            if name.startswith("provide.foundation.cli")
-        ]
+        cli_modules = [name for name in sys.modules if name.startswith("provide.foundation.cli")]
         self.saved_cli_modules = {}
         for module_name in cli_modules:
             self.saved_cli_modules[module_name] = sys.modules[module_name]
             del sys.modules[module_name]
 
         # Also clear the main foundation module to reset any cached __getattr__ state
-        foundation_modules = [
-            name
-            for name in sys.modules
-            if name == "provide.foundation"
-        ]
+        foundation_modules = [name for name in sys.modules if name == "provide.foundation"]
         self.saved_foundation_modules = {}
         for module_name in foundation_modules:
             self.saved_foundation_modules[module_name] = sys.modules[module_name]
@@ -80,8 +72,12 @@ class TestFoundationInit:
                 raise ImportError("No module named 'click'")
             return __import__(name, *args, **kwargs)
 
-        with patch("builtins.__import__", side_effect=mock_import_func), pytest.raises(
-            ImportError, match="CLI features require optional dependencies",
+        with (
+            patch("builtins.__import__", side_effect=mock_import_func),
+            pytest.raises(
+                ImportError,
+                match="CLI features require optional dependencies",
+            ),
         ):
             _ = provide.foundation.cli
 
@@ -210,9 +206,7 @@ class TestFoundationInit:
         ]
 
         for export in error_exports:
-            assert hasattr(provide.foundation, export), (
-                f"Missing error export: {export}"
-            )
+            assert hasattr(provide.foundation, export), f"Missing error export: {export}"
 
     def test_utility_exports(self) -> None:
         """Test utility exports."""
@@ -224,9 +218,7 @@ class TestFoundationInit:
         ]
 
         for export in utility_exports:
-            assert hasattr(provide.foundation, export), (
-                f"Missing utility export: {export}"
-            )
+            assert hasattr(provide.foundation, export), f"Missing utility export: {export}"
 
 
 class TestModuleAttributes:
@@ -271,6 +263,4 @@ class TestModuleAttributes:
         ]
 
         for export in config_exports:
-            assert hasattr(provide.foundation, export), (
-                f"Missing config export: {export}"
-            )
+            assert hasattr(provide.foundation, export), f"Missing config export: {export}"

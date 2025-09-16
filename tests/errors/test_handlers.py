@@ -86,7 +86,10 @@ class TestErrorBoundary:
             context = {"request_id": "123", "user": "test"}
 
             with error_boundary(
-                ValueError, log_errors=True, reraise=False, context=context,
+                ValueError,
+                log_errors=True,
+                reraise=False,
+                context=context,
             ):
                 raise ValueError("test")
 
@@ -123,7 +126,10 @@ class TestErrorBoundary:
 
         with patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_logger:
             with error_boundary(
-                ValueError, on_error=bad_callback, log_errors=True, reraise=False,
+                ValueError,
+                on_error=bad_callback,
+                log_errors=True,
+                reraise=False,
             ):
                 raise ValueError("test")
 
@@ -363,7 +369,8 @@ class TestErrorHandler:
         handler = ErrorHandler()
 
         handler.add_policy(ValueError, lambda e: "val").add_policy(
-            KeyError, lambda e: "key",
+            KeyError,
+            lambda e: "key",
         )
 
         assert len(handler.policies) == 2
@@ -424,10 +431,7 @@ class TestErrorHandler:
             handler.handle(ValueError("test"))
 
         mock_logger.return_value.warning.assert_called()
-        assert (
-            "No handler for ValueError"
-            in mock_logger.return_value.warning.call_args[0][0]
-        )
+        assert "No handler for ValueError" in mock_logger.return_value.warning.call_args[0][0]
 
     @patch("provide.foundation.hub.foundation.get_foundation_logger")
     def test_logging_enabled(self, mock_logger) -> None:
@@ -443,7 +447,8 @@ class TestErrorHandler:
     def test_logging_disabled(self, mock_logger) -> None:
         """Test that handling is not logged when log_all=False."""
         handler = ErrorHandler(
-            policies={ValueError: lambda e: "handled"}, log_all=False,
+            policies={ValueError: lambda e: "handled"},
+            log_all=False,
         )
 
         handler.handle(ValueError("test"))
@@ -501,7 +506,8 @@ class TestCreateErrorHandler:
     def test_create_with_policies(self) -> None:
         """Test creating handler with policies."""
         handler = create_error_handler(
-            ValidationError=lambda e: "validation", NetworkError=lambda e: "network",
+            ValidationError=lambda e: "validation",
+            NetworkError=lambda e: "network",
         )
 
         assert ValidationError in handler.policies
@@ -520,10 +526,7 @@ class TestCreateErrorHandler:
             create_error_handler(NonExistentError=lambda e: "test")
 
             mock_logger.return_value.warning.assert_called()
-            assert (
-                "Unknown error type: NonExistentError"
-                in mock_logger.return_value.warning.call_args[0][0]
-            )
+            assert "Unknown error type: NonExistentError" in mock_logger.return_value.warning.call_args[0][0]
 
     def test_mixed_valid_and_invalid(self) -> None:
         """Test mixing valid and invalid error types."""

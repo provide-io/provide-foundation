@@ -77,6 +77,7 @@ class TestCompleteCliIntegration:
 
     def test_options_at_group_level(self, click_testing_mode) -> None:
         """Test that options work at the group level."""
+
         # Use simple command structure for reliable testing
         @click.command()
         @flexible_options
@@ -100,6 +101,7 @@ class TestCompleteCliIntegration:
 
     def test_options_are_available_to_subcommand(self, click_testing_mode) -> None:
         """Test that options passed to the group are available to the subcommand."""
+
         # Use simple command to test option availability
         @click.command()
         @flexible_options
@@ -122,6 +124,7 @@ class TestCompleteCliIntegration:
 
     def test_nested_groups_inherit_options(self, click_testing_mode) -> None:
         """Test that nested groups inherit options."""
+
         # Test with simple command that simulates nested behavior
         @click.command()
         @flexible_options
@@ -144,6 +147,7 @@ class TestCompleteCliIntegration:
 
     def test_command_options_override_group_options(self, click_testing_mode) -> None:
         """Test that later options on the same command override earlier ones."""
+
         # Test option override behavior with simple command
         @click.command()
         @flexible_options
@@ -235,7 +239,8 @@ class TestLoggingIntegration:
 
             runner = CliTestRunner()
             result = runner.invoke(
-                cmd, ["--log-file", str(log_file), "--log-level", "INFO"],
+                cmd,
+                ["--log-file", str(log_file), "--log-level", "INFO"],
             )
             assert result.exit_code == 0
             assert "Log file test successful" in result.output

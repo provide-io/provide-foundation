@@ -190,9 +190,7 @@ class TestTextOperations:
 
     def test_wrap_text(self) -> None:
         """Test text wrapping."""
-        long_text = (
-            "This is a very long line that should be wrapped at the specified width"
-        )
+        long_text = "This is a very long line that should be wrapped at the specified width"
         wrapped = wrap_text(long_text, width=20)
         lines = wrapped.split("\n")
         assert all(len(line) <= 20 for line in lines)

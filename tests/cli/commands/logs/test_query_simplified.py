@@ -34,7 +34,9 @@ class TestBuildQuerySql:
         from provide.foundation.cli.commands.logs.query import _build_query_sql
 
         result = _build_query_sql(None, None, "auth-service", "default", 100)
-        assert result == "SELECT * FROM default WHERE service = 'auth-service' ORDER BY _timestamp DESC LIMIT 100"
+        assert (
+            result == "SELECT * FROM default WHERE service = 'auth-service' ORDER BY _timestamp DESC LIMIT 100"
+        )
 
     def test_query_with_all_conditions(self) -> None:
         """Test query with all conditions."""
@@ -116,9 +118,9 @@ class TestGetTraceIdIfNeeded:
         from provide.foundation.cli.commands.logs.query import _get_trace_id_if_needed
 
         # Mock the actual import failure scenario by patching at the module level
-        with patch.dict('sys.modules', {'opentelemetry': None}):
-            with patch('builtins.__import__', side_effect=ImportError("No module named 'opentelemetry'")):
-                with patch('click.echo') as mock_echo:
+        with patch.dict("sys.modules", {"opentelemetry": None}):
+            with patch("builtins.__import__", side_effect=ImportError("No module named 'opentelemetry'")):
+                with patch("click.echo") as mock_echo:
                     result = _get_trace_id_if_needed(current_trace=True, trace_id=None)
                     assert result is None
                     mock_echo.assert_called_with("Tracing not available.", err=True)
@@ -136,20 +138,21 @@ class TestExecuteAndDisplayQuery:
         mock_response.total = 5
         mock_response.hits = ["log1", "log2", "log3"]
 
-        with patch('provide.foundation.integrations.openobserve.search_logs', return_value=mock_response) as mock_search, \
-             patch('provide.foundation.integrations.openobserve.format_output', return_value="formatted_logs") as mock_format, \
-             patch('click.echo'):
-
+        with (
+            patch(
+                "provide.foundation.integrations.openobserve.search_logs", return_value=mock_response
+            ) as mock_search,
+            patch(
+                "provide.foundation.integrations.openobserve.format_output", return_value="formatted_logs"
+            ) as mock_format,
+            patch("click.echo"),
+        ):
             mock_client = Mock()
             result = _execute_and_display_query("SELECT * FROM logs", "1h", 100, "json", mock_client)
 
             assert result == 0
             mock_search.assert_called_once_with(
-                sql="SELECT * FROM logs",
-                start_time="-1h",
-                end_time="now",
-                size=100,
-                client=mock_client
+                sql="SELECT * FROM logs", start_time="-1h", end_time="now", size=100, client=mock_client
             )
             mock_format.assert_called_once_with(mock_response, format_type="json")
 
@@ -160,9 +163,10 @@ class TestExecuteAndDisplayQuery:
         mock_response = Mock()
         mock_response.total = 0
 
-        with patch('provide.foundation.integrations.openobserve.search_logs', return_value=mock_response), \
-             patch('click.echo') as mock_echo:
-
+        with (
+            patch("provide.foundation.integrations.openobserve.search_logs", return_value=mock_response),
+            patch("click.echo") as mock_echo,
+        ):
             mock_client = Mock()
             result = _execute_and_display_query("SELECT * FROM logs", "30m", 50, "log", mock_client)
 
@@ -173,9 +177,13 @@ class TestExecuteAndDisplayQuery:
         """Test exception handling in query execution."""
         from provide.foundation.cli.commands.logs.query import _execute_and_display_query
 
-        with patch('provide.foundation.integrations.openobserve.search_logs', side_effect=Exception("Connection failed")), \
-             patch('click.echo') as mock_echo:
-
+        with (
+            patch(
+                "provide.foundation.integrations.openobserve.search_logs",
+                side_effect=Exception("Connection failed"),
+            ),
+            patch("click.echo") as mock_echo,
+        ):
             mock_client = Mock()
             result = _execute_and_display_query("SELECT * FROM logs", "1h", 100, "json", mock_client)
 
@@ -244,17 +252,17 @@ class TestModuleImports:
         """Test that module has all required functions."""
         from provide.foundation.cli.commands.logs import query
 
-        assert hasattr(query, '_get_trace_id_if_needed')
-        assert hasattr(query, '_build_query_sql')
-        assert hasattr(query, '_execute_and_display_query')
-        assert hasattr(query, 'query_command')
-        assert hasattr(query, '_HAS_CLICK')
+        assert hasattr(query, "_get_trace_id_if_needed")
+        assert hasattr(query, "_build_query_sql")
+        assert hasattr(query, "_execute_and_display_query")
+        assert hasattr(query, "query_command")
+        assert hasattr(query, "_HAS_CLICK")
 
     def test_module_logger_instance(self) -> None:
         """Test that module has logger instance."""
         from provide.foundation.cli.commands.logs.query import log
 
         assert log is not None
-        assert hasattr(log, 'info')
-        assert hasattr(log, 'debug')
-        assert hasattr(log, 'error')
+        assert hasattr(log, "info")
+        assert hasattr(log, "debug")
+        assert hasattr(log, "error")

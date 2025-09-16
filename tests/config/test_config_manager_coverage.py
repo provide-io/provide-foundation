@@ -493,7 +493,9 @@ class TestConfigManagerComprehensive:
         self.manager._configs["test"] = existing_config
 
         result = await self.manager.get_or_create(
-            "test", SampleConfigClass, {"name": "new"},
+            "test",
+            SampleConfigClass,
+            {"name": "new"},
         )
 
         assert result is existing_config

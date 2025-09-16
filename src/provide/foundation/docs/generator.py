@@ -1,8 +1,7 @@
 """API documentation generator for MkDocs with mkdocstrings."""
 
 from pathlib import Path
-from typing import Optional, Set, Dict, Any
-import logging
+from typing import Any
 
 from provide.foundation.logger import get_logger
 
@@ -22,13 +21,13 @@ class APIDocGenerator:
         self,
         src_root: str = "src",
         api_dir: str = "api/reference",
-        skip_patterns: Optional[Set[str]] = None,
-        package_prefix: Optional[str] = None,
+        skip_patterns: set[str] | None = None,
+        package_prefix: str | None = None,
         min_init_size: int = 100,
         show_source: bool = True,
         show_inheritance: bool = True,
-        custom_index_content: Optional[str] = None,
-    ):
+        custom_index_content: str | None = None,
+    ) -> None:
         """Initialize the API documentation generator.
 
         Args:
@@ -57,7 +56,7 @@ class APIDocGenerator:
             )
 
         self.nav = mkdocs_gen_files.Nav()
-        self._processed_files: Set[Path] = set()
+        self._processed_files: set[Path] = set()
 
     def should_skip(self, path: Path) -> bool:
         """Check if a path should be skipped.
@@ -178,10 +177,7 @@ class APIDocGenerator:
         """Generate the API index page."""
         index_path = f"{self.api_dir}/index.md"
 
-        if self.custom_index_content:
-            content = self.custom_index_content
-        else:
-            content = self._generate_default_index_content()
+        content = self.custom_index_content or self._generate_default_index_content()
 
         with mkdocs_gen_files.open(index_path, "w") as f:
             f.write(content)
@@ -209,7 +205,7 @@ All modules are documented with their public APIs, including:
 
 """
 
-    def generate(self) -> Dict[str, Any]:
+    def generate(self) -> dict[str, Any]:
         """Generate API documentation files.
 
         Returns:
@@ -250,10 +246,10 @@ All modules are documented with their public APIs, including:
 def generate_api_docs(
     src_root: str = "src",
     api_dir: str = "api/reference",
-    skip_patterns: Optional[Set[str]] = None,
-    package_prefix: Optional[str] = None,
+    skip_patterns: set[str] | None = None,
+    package_prefix: str | None = None,
     **kwargs,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Convenience function to generate API docs.
 
     Args:

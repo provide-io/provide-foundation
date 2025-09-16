@@ -37,8 +37,10 @@ class TestToolVerifier:
     def test_verify_checksum_sha512(self, verifier, test_file) -> None:
         """Test SHA512 checksum verification."""
         # SHA512 of "test content"
-        expected = ("0cbf4caef38047bba9a24e621a961484e5d2a92176a859e7eb27df343dd34eb9"
-                   "8d538a6c5f4da1ce302ec250b821cc001e46cc97a704988297185a4df7e99602")
+        expected = (
+            "0cbf4caef38047bba9a24e621a961484e5d2a92176a859e7eb27df343dd34eb9"
+            "8d538a6c5f4da1ce302ec250b821cc001e46cc97a704988297185a4df7e99602"
+        )
 
         assert verifier.verify_checksum(test_file, expected, algo="sha512") is True
         assert verifier.verify_checksum(test_file, "wrong", algo="sha512") is False
@@ -54,8 +56,10 @@ class TestToolVerifier:
     def test_verify_checksum_blake2b(self, verifier, test_file) -> None:
         """Test BLAKE2b checksum verification."""
         # BLAKE2b of "test content"
-        expected = ("3b077f22c156b622ae1f4343bb71227b6373c22fa8a0ae42ab80bc6e2fcb7c1d"
-                   "409c1c647ba39164b699ebf84e519492cab2fd52cb798462f3b9e3d64884dd30")
+        expected = (
+            "3b077f22c156b622ae1f4343bb71227b6373c22fa8a0ae42ab80bc6e2fcb7c1d"
+            "409c1c647ba39164b699ebf84e519492cab2fd52cb798462f3b9e3d64884dd30"
+        )
 
         assert verifier.verify_checksum(test_file, expected, algo="blake2b") is True
         assert verifier.verify_checksum(test_file, "wrong", algo="blake2b") is False

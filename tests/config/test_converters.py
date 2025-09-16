@@ -1,5 +1,4 @@
-"""Tests for configuration field converters.
-"""
+"""Tests for configuration field converters."""
 
 import pytest
 
@@ -127,24 +126,27 @@ class TestRateLimitsParsing:
 class TestBoolExtendedParsing:
     """Test extended boolean parsing."""
 
-    @pytest.mark.parametrize("value,expected", [
-        ("true", True),
-        ("True", True),
-        ("TRUE", True),
-        ("yes", True),
-        ("Yes", True),
-        ("1", True),
-        ("on", True),
-        ("ON", True),
-        ("false", False),
-        ("False", False),
-        ("no", False),
-        ("0", False),
-        ("off", False),
-        ("OFF", False),
-        ("", False),
-        ("anything_else", False),
-    ])
+    @pytest.mark.parametrize(
+        "value,expected",
+        [
+            ("true", True),
+            ("True", True),
+            ("TRUE", True),
+            ("yes", True),
+            ("Yes", True),
+            ("1", True),
+            ("on", True),
+            ("ON", True),
+            ("false", False),
+            ("False", False),
+            ("no", False),
+            ("0", False),
+            ("off", False),
+            ("OFF", False),
+            ("", False),
+            ("anything_else", False),
+        ],
+    )
     def test_parse_bool_extended(self, value, expected) -> None:
         """Test parsing various boolean representations."""
         assert parse_bool_extended(value) == expected
@@ -404,22 +406,25 @@ class TestFoundationLogOutputParsing:
 class TestBoolStrictParsing:
     """Test strict boolean parsing."""
 
-    @pytest.mark.parametrize("value,expected", [
-        ("true", True),
-        ("True", True),
-        ("TRUE", True),
-        ("yes", True),
-        ("Yes", True),
-        ("1", True),
-        ("on", True),
-        ("ON", True),
-        ("false", False),
-        ("False", False),
-        ("no", False),
-        ("0", False),
-        ("off", False),
-        ("OFF", False),
-    ])
+    @pytest.mark.parametrize(
+        "value,expected",
+        [
+            ("true", True),
+            ("True", True),
+            ("TRUE", True),
+            ("yes", True),
+            ("Yes", True),
+            ("1", True),
+            ("on", True),
+            ("ON", True),
+            ("false", False),
+            ("False", False),
+            ("no", False),
+            ("0", False),
+            ("off", False),
+            ("OFF", False),
+        ],
+    )
     def test_parse_bool_strict_valid(self, value, expected) -> None:
         """Test parsing valid boolean representations."""
         assert parse_bool_strict(value) == expected

@@ -64,18 +64,10 @@ class TestErrorCode:
     def test_error_code_grouping(self) -> None:
         """Test that error codes are properly grouped by prefix."""
         # Config codes start with CFG
-        assert all(
-            code.value.startswith("CFG")
-            for code in ErrorCode
-            if "CONFIG" in code.name
-        )
+        assert all(code.value.startswith("CFG") for code in ErrorCode if "CONFIG" in code.name)
 
         # Validation codes start with VAL
-        assert all(
-            code.value.startswith("VAL")
-            for code in ErrorCode
-            if "VALIDATION" in code.name
-        )
+        assert all(code.value.startswith("VAL") for code in ErrorCode if "VALIDATION" in code.name)
 
 
 class TestErrorMetadata:
@@ -129,7 +121,9 @@ class TestErrorMetadata:
     def test_to_dict_includes_non_none(self) -> None:
         """Test that to_dict includes all non-None values."""
         meta = ErrorMetadata(
-            request_id="req_123", retry_count=0, retry_after=0.0,  # 0 is not None
+            request_id="req_123",
+            retry_count=0,
+            retry_after=0.0,  # 0 is not None
         )
 
         result = meta.to_dict()
@@ -158,7 +152,9 @@ class TestErrorResponse:
         """Test ErrorResponse with details."""
         details = {"field": "email", "reason": "invalid format"}
         response = ErrorResponse(
-            error_code="VAL_003", message="Email invalid", details=details,
+            error_code="VAL_003",
+            message="Email invalid",
+            details=details,
         )
 
         assert response.details == details
@@ -187,7 +183,9 @@ class TestErrorResponse:
     def test_to_dict_basic(self) -> None:
         """Test conversion to dictionary."""
         response = ErrorResponse(
-            error_code="TEST_001", message="Test error", timestamp="2024-01-01T12:00:00",
+            error_code="TEST_001",
+            message="Test error",
+            timestamp="2024-01-01T12:00:00",
         )
 
         result = response.to_dict()
@@ -245,7 +243,9 @@ class TestErrorResponse:
     def test_to_json_formatting(self) -> None:
         """Test that JSON is properly formatted."""
         response = ErrorResponse(
-            error_code="TEST", message="Error", timestamp="2024-01-01T12:00:00",
+            error_code="TEST",
+            message="Error",
+            timestamp="2024-01-01T12:00:00",
         )
 
         json_str = response.to_json()

@@ -86,7 +86,8 @@ class TestDotNotationCommands:
 
         # Test with options
         result = runner.invoke(
-            cli, ["db", "migrate", "--direction", "down", "--steps", "3"],
+            cli,
+            ["db", "migrate", "--direction", "down", "--steps", "3"],
         )
         assert result.exit_code == 0
         assert "Migrating down 3 steps" in result.output
@@ -195,7 +196,9 @@ class TestDotNotationCommands:
 
         @register_command("deploy.app")
         def deploy_app(
-            env: str = "staging", force: bool = False, verbose: bool = False,
+            env: str = "staging",
+            force: bool = False,
+            verbose: bool = False,
         ):
             """Deploy application."""
             if verbose:
@@ -209,7 +212,8 @@ class TestDotNotationCommands:
 
         # Test with flags
         result = runner.invoke(
-            cli, ["deploy", "app", "--env", "prod", "--force", "--verbose"],
+            cli,
+            ["deploy", "app", "--env", "prod", "--force", "--verbose"],
         )
         assert result.exit_code == 0
         assert "Deploying to prod" in result.output
@@ -310,13 +314,15 @@ class TestDotNotationCommands:
         assert network.metadata.get("description") == "Network commands"
 
         firewall = hub._command_registry.get_entry(
-            "network.firewall", dimension="command",
+            "network.firewall",
+            dimension="command",
         )
         assert firewall is not None
         assert firewall.metadata.get("description") == "Firewall commands"
 
         rules = hub._command_registry.get_entry(
-            "network.firewall.rules", dimension="command",
+            "network.firewall.rules",
+            dimension="command",
         )
         assert rules is not None
         assert rules.metadata.get("description") == "Rules commands"
@@ -400,12 +406,8 @@ class TestDotNotationIntegration:
 
         for args, expected in tests:
             result = runner.invoke(cli, args)
-            assert result.exit_code == 0, (
-                f"Command failed: {' '.join(args)}\n{result.output}"
-            )
-            assert expected in result.output, (
-                f"Expected '{expected}' in output for {args}"
-            )
+            assert result.exit_code == 0, f"Command failed: {' '.join(args)}\n{result.output}"
+            assert expected in result.output, f"Expected '{expected}' in output for {args}"
 
     def test_mixed_explicit_and_auto_groups(self) -> None:
         """Test mixing explicit group declarations with auto-created ones."""
@@ -450,7 +452,8 @@ class TestDotNotationIntegration:
 
         # Test commands work
         result = runner.invoke(
-            cli, ["api", "users", "create", "john", "john@example.com"],
+            cli,
+            ["api", "users", "create", "john", "john@example.com"],
         )
         assert result.exit_code == 0
         assert "Creating user: john (john@example.com)" in result.output

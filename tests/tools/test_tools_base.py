@@ -143,8 +143,7 @@ class TestBaseToolManager:
 
     def test_get_platform_info(self, concrete_manager) -> None:
         """Test getting platform information."""
-        with patch("platform.system") as mock_system, \
-             patch("platform.machine") as mock_machine:
+        with patch("platform.system") as mock_system, patch("platform.machine") as mock_machine:
             mock_system.return_value = "Linux"
             mock_machine.return_value = "x86_64"
 
@@ -154,8 +153,7 @@ class TestBaseToolManager:
 
     def test_get_platform_info_darwin_arm(self, concrete_manager) -> None:
         """Test platform info for Mac ARM."""
-        with patch("platform.system") as mock_system, \
-             patch("platform.machine") as mock_machine:
+        with patch("platform.system") as mock_system, patch("platform.machine") as mock_machine:
             mock_system.return_value = "Darwin"
             mock_machine.return_value = "arm64"
 
@@ -206,12 +204,13 @@ class TestBaseToolManager:
         artifact_path = tmp_path / "artifact.tar.gz"
         install_path = tmp_path / "install"
 
-        with patch.object(concrete_manager.cache, "get") as mock_cache_get, \
-             patch.object(concrete_manager.downloader, "download_with_progress") as mock_download, \
-             patch.object(concrete_manager.verifier, "verify_checksum") as mock_verify, \
-             patch.object(concrete_manager.installer, "install") as mock_install, \
-             patch.object(concrete_manager.cache, "store") as mock_cache_store:
-
+        with (
+            patch.object(concrete_manager.cache, "get") as mock_cache_get,
+            patch.object(concrete_manager.downloader, "download_with_progress") as mock_download,
+            patch.object(concrete_manager.verifier, "verify_checksum") as mock_verify,
+            patch.object(concrete_manager.installer, "install") as mock_install,
+            patch.object(concrete_manager.cache, "store") as mock_cache_store,
+        ):
             mock_cache_get.return_value = None
             mock_download.return_value = artifact_path
             mock_verify.return_value = True
@@ -232,10 +231,11 @@ class TestBaseToolManager:
         """Test installation fails when verification fails."""
         artifact_path = tmp_path / "artifact.tar.gz"
 
-        with patch.object(concrete_manager.cache, "get") as mock_cache_get, \
-             patch.object(concrete_manager.downloader, "download_with_progress") as mock_download, \
-             patch.object(concrete_manager.verifier, "verify_checksum") as mock_verify:
-
+        with (
+            patch.object(concrete_manager.cache, "get") as mock_cache_get,
+            patch.object(concrete_manager.downloader, "download_with_progress") as mock_download,
+            patch.object(concrete_manager.verifier, "verify_checksum") as mock_verify,
+        ):
             mock_cache_get.return_value = None
             mock_download.return_value = artifact_path
             mock_verify.return_value = False
@@ -260,9 +260,10 @@ class TestBaseToolManager:
                 arch="amd64",
             )
 
-        with patch.object(concrete_manager.cache, "get") as mock_cache_get, \
-             patch.object(concrete_manager, "get_metadata", get_metadata_no_url):
-
+        with (
+            patch.object(concrete_manager.cache, "get") as mock_cache_get,
+            patch.object(concrete_manager, "get_metadata", get_metadata_no_url),
+        ):
             mock_cache_get.return_value = None
 
             with pytest.raises(ToolInstallError, match="No download URL"):
@@ -275,9 +276,10 @@ class TestBaseToolManager:
         (install_path / "bin").mkdir()
         (install_path / "bin" / "testtool").touch()
 
-        with patch.object(concrete_manager, "get_install_path") as mock_path, \
-             patch.object(concrete_manager.cache, "invalidate") as mock_invalidate:
-
+        with (
+            patch.object(concrete_manager, "get_install_path") as mock_path,
+            patch.object(concrete_manager.cache, "invalidate") as mock_invalidate,
+        ):
             mock_path.return_value = install_path
 
             result = concrete_manager.uninstall("1.0.0")
@@ -288,9 +290,10 @@ class TestBaseToolManager:
 
     def test_uninstall_not_found(self, concrete_manager, tmp_path) -> None:
         """Test uninstalling non-existent version."""
-        with patch.object(concrete_manager, "get_install_path") as mock_path, \
-             patch.object(concrete_manager.cache, "invalidate") as mock_invalidate:
-
+        with (
+            patch.object(concrete_manager, "get_install_path") as mock_path,
+            patch.object(concrete_manager.cache, "invalidate") as mock_invalidate,
+        ):
             mock_path.return_value = tmp_path / "notexist"
 
             result = concrete_manager.uninstall("1.0.0")

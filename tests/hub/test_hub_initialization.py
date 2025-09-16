@@ -59,10 +59,7 @@ class TestHubInitialization:
         assert hub.is_foundation_initialized()
 
         # Should only have one logger instance
-        entries = [
-            e for e in hub._component_registry
-            if e.name == "foundation.logger.instance"
-        ]
+        entries = [e for e in hub._component_registry if e.name == "foundation.logger.instance"]
         assert len(entries) == 1
 
     def test_hub_config_precedence(self) -> None:
@@ -143,6 +140,7 @@ class TestHubInitialization:
         """Test that initialization order doesn't matter."""
         # Get logger before explicit hub access
         from provide.foundation.logger.factories import get_logger
+
         logger1 = get_logger("test1")
 
         # Get hub
@@ -213,10 +211,7 @@ class TestHubInitialization:
 
         # Create loggers concurrently
         with ThreadPoolExecutor(max_workers=10) as executor:
-            futures = [
-                executor.submit(create_logger, i)
-                for i in range(50)
-            ]
+            futures = [executor.submit(create_logger, i) for i in range(50)]
 
             for future in as_completed(futures):
                 future.result()  # Wait for completion

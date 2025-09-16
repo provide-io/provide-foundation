@@ -317,7 +317,8 @@ class TestPassContext:
 
         runner = CliRunner()
         result = runner.invoke(
-            cmd, ["--log-level", "WARNING", "--log-format", "json", "--json"],
+            cmd,
+            ["--log-level", "WARNING", "--log-format", "json", "--json"],
         )
         assert result.exit_code == 0
         assert "log_level=WARNING" in result.output
@@ -372,7 +373,10 @@ class TestErrorHandler:
         # When debug=True, the exception should propagate
         with pytest.raises(ValueError):
             runner.invoke(
-                cmd, ["--debug"], standalone_mode=False, catch_exceptions=False,
+                cmd,
+                ["--debug"],
+                standalone_mode=False,
+                catch_exceptions=False,
             )
 
     def test_handles_keyboard_interrupt(self) -> None:
@@ -453,7 +457,8 @@ class TestOptionInheritance:
         runner = CliRunner()
         # Parent sets INFO, subcommand overrides with DEBUG
         result = runner.invoke(
-            cli, ["--log-level", "INFO", "subcommand", "--log-level", "DEBUG"],
+            cli,
+            ["--log-level", "INFO", "subcommand", "--log-level", "DEBUG"],
         )
         assert result.exit_code == 0
         assert "effective_log_level=DEBUG" in result.output

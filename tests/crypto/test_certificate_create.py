@@ -33,10 +33,13 @@ async def test_create_x509_cert_serial_error() -> None:
 @pytest.mark.asyncio
 async def test_create_x509_cert_validity_error() -> None:
     """Test error in validity period calculation."""
-    with mock.patch(
-        "provide.foundation.crypto.certificates.generator.datetime",
-        side_effect=Exception("Time error"),
-    ), pytest.raises(CertificateError, match="Failed to initialize certificate"):
+    with (
+        mock.patch(
+            "provide.foundation.crypto.certificates.generator.datetime",
+            side_effect=Exception("Time error"),
+        ),
+        pytest.raises(CertificateError, match="Failed to initialize certificate"),
+    ):
         Certificate(generate_keypair=True)
 
 
@@ -45,20 +48,26 @@ async def test_certificate_extension_failure() -> None:
     """Ensure extension addition failures raise CertificateError."""
     cert = Certificate(generate_keypair=True)
 
-    with mock.patch(
-        "cryptography.x509.CertificateBuilder.add_extension",
-        side_effect=Exception("Mock failure"),
-    ), pytest.raises(CertificateError, match="Failed to create"):
+    with (
+        mock.patch(
+            "cryptography.x509.CertificateBuilder.add_extension",
+            side_effect=Exception("Mock failure"),
+        ),
+        pytest.raises(CertificateError, match="Failed to create"),
+    ):
         cert._create_x509_certificate()
 
 
 @pytest.mark.asyncio
 async def test_create_x509_cert_builder_error() -> None:
     """Test error in certificate builder."""
-    with mock.patch(
-        "cryptography.x509.CertificateBuilder.subject_name",
-        side_effect=Exception("Builder error"),
-    ), pytest.raises(CertificateError, match="Failed to initialize certificate"):
+    with (
+        mock.patch(
+            "cryptography.x509.CertificateBuilder.subject_name",
+            side_effect=Exception("Builder error"),
+        ),
+        pytest.raises(CertificateError, match="Failed to initialize certificate"),
+    ):
         Certificate(generate_keypair=True)
 
 
@@ -67,10 +76,13 @@ async def test_create_x509_cert_extension_error() -> None:
     """Test error in adding certificate extensions."""
     cert = Certificate(generate_keypair=True)
 
-    with mock.patch(
-        "cryptography.x509.CertificateBuilder.add_extension",
-        side_effect=Exception("Mock failure"),
-    ), pytest.raises(CertificateError, match="Failed to create"):
+    with (
+        mock.patch(
+            "cryptography.x509.CertificateBuilder.add_extension",
+            side_effect=Exception("Mock failure"),
+        ),
+        pytest.raises(CertificateError, match="Failed to create"),
+    ):
         cert._create_x509_certificate()
 
 
@@ -106,7 +118,8 @@ def test_certificate_base_create_unsupported_key_type_str(mocker) -> None:
         "not_valid_after": now + timedelta(days=30),
     }
     mock_logger_error = mocker.patch(
-        "provide.foundation.crypto.certificates.base.logger.error", new=MagicMock(),
+        "provide.foundation.crypto.certificates.base.logger.error",
+        new=MagicMock(),
     )
 
     with pytest.raises(CertificateError) as excinfo:
@@ -119,7 +132,8 @@ def test_certificate_base_create_unsupported_key_type_str(mocker) -> None:
     args, kwargs = mock_logger_error.call_args
     assert "CertificateBase.create: Failed" in args[0]
     assert "Unsupported key type: unsupported_key_type" in kwargs.get("extra", {}).get(
-        "error", "",
+        "error",
+        "",
     )
 
 
@@ -127,12 +141,15 @@ def test_certificate_base_create_unsupported_key_type_str(mocker) -> None:
 async def test_certificate_init_invalid_ecdsa_curve(mocker) -> None:
     """Test Certificate instantiation with an invalid ecdsa_curve string."""
     mock_logger_error = mocker.patch(
-        "provide.foundation.crypto.certificates.generator.logger.error", new=MagicMock(),
+        "provide.foundation.crypto.certificates.generator.logger.error",
+        new=MagicMock(),
     )
 
     with pytest.raises(CertificateError) as excinfo:
         Certificate(
-            generate_keypair=True, key_type="ecdsa", ecdsa_curve="invalid_curve_name",
+            generate_keypair=True,
+            key_type="ecdsa",
+            ecdsa_curve="invalid_curve_name",
         )
 
     # The ValueError from bad curve is wrapped in CertificateError
@@ -142,7 +159,8 @@ async def test_certificate_init_invalid_ecdsa_curve(mocker) -> None:
     args, kwargs = mock_logger_error.call_args
     assert "Failed to generate certificate" in args[0]
     assert "Unsupported ECDSA curve: invalid_curve_name" in kwargs.get("extra", {}).get(
-        "error", "",
+        "error",
+        "",
     )
 
 

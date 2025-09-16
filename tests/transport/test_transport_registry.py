@@ -460,7 +460,10 @@ class TestGetTransportInfo:
         mock_entry.name = "http"  # Name matches
         mock_entry.dimension = ComponentCategory.TRANSPORT.value
         mock_entry.value = MockTransport
-        mock_entry.metadata = {"schemes": ["https"], "transport_type": TransportType.HTTP}  # Scheme doesn't match
+        mock_entry.metadata = {
+            "schemes": ["https"],
+            "transport_type": TransportType.HTTP,
+        }  # Scheme doesn't match
 
         mock_registry = [mock_entry]
 

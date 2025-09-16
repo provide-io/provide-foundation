@@ -194,7 +194,9 @@ class TestSpanIntegration:
         """Test setting up parent-child span relationship."""
         parent_span = Span("parent_op")
         child_span = Span(
-            "child_op", parent_id=parent_span.span_id, trace_id=parent_span.trace_id,
+            "child_op",
+            parent_id=parent_span.span_id,
+            trace_id=parent_span.trace_id,
         )
 
         assert child_span.parent_id == parent_span.span_id
@@ -207,7 +209,9 @@ class TestSpanIntegration:
             outer_span.set_tag("level", "outer")
 
             with Span(
-                "inner_op", parent_id=outer_span.span_id, trace_id=outer_span.trace_id,
+                "inner_op",
+                parent_id=outer_span.span_id,
+                trace_id=outer_span.trace_id,
             ) as inner_span:
                 inner_span.set_tag("level", "inner")
 
@@ -392,6 +396,7 @@ class TestSpanContextManagement:
         """Test context manager when Foundation tracer context module can't be imported."""
         # Simplified test - just mock the import directly within the context manager methods
         import builtins
+
         original_import = builtins.__import__
 
         def failing_import(name, *args, **kwargs):
@@ -457,6 +462,7 @@ class TestSpanEdgeCases:
     def test_span_set_error_without_status_classes(self) -> None:
         """Test setting error when Status/StatusCode are None."""
         from unittest.mock import MagicMock
+
         with patch("provide.foundation.tracer.spans._HAS_OTEL", True):
             with patch("provide.foundation.tracer.spans.Status", None):
                 with patch("provide.foundation.tracer.spans.StatusCode", None):
@@ -510,9 +516,16 @@ class TestSpanEdgeCases:
         result = span.to_dict()
 
         expected_keys = {
-            "name", "span_id", "parent_id", "trace_id",
-            "start_time", "end_time", "duration_ms",
-            "tags", "status", "error",
+            "name",
+            "span_id",
+            "parent_id",
+            "trace_id",
+            "start_time",
+            "end_time",
+            "duration_ms",
+            "tags",
+            "status",
+            "error",
         }
         assert set(result.keys()) == expected_keys
         assert result["name"] == "complex_op"

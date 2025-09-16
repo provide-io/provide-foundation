@@ -16,10 +16,10 @@ class TestOTLPConstants:
         """Test that module can be imported without errors."""
         import provide.foundation.integrations.openobserve.otlp as otlp_module
 
-        assert hasattr(otlp_module, 'send_log_otlp')
-        assert hasattr(otlp_module, 'send_log_bulk')
-        assert hasattr(otlp_module, 'send_log')
-        assert hasattr(otlp_module, 'create_otlp_logger_provider')
+        assert hasattr(otlp_module, "send_log_otlp")
+        assert hasattr(otlp_module, "send_log_bulk")
+        assert hasattr(otlp_module, "send_log")
+        assert hasattr(otlp_module, "create_otlp_logger_provider")
 
 
 class TestSendLogOTLP:
@@ -29,7 +29,7 @@ class TestSendLogOTLP:
         """Test that function returns False when OpenTelemetry is not available."""
         from provide.foundation.integrations.openobserve.otlp import send_log_otlp
 
-        with patch('provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS', False):
+        with patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", False):
             result = send_log_otlp("Test message")
             assert result is False
 
@@ -40,9 +40,10 @@ class TestSendLogOTLP:
         mock_config = Mock()
         mock_config.otlp_endpoint = None
 
-        with patch('provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS', True), \
-             patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class:
-
+        with (
+            patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
+            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+        ):
             mock_config_class.from_env.return_value = mock_config
 
             result = send_log_otlp("Test message")
@@ -74,14 +75,15 @@ class TestSendLogOTLP:
         mock_current_span.is_recording.return_value = True
         mock_current_span.get_span_context.return_value = mock_span_context
 
-        with patch('provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS', True), \
-             patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.Resource') as mock_resource_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.OTLPLogExporter') as mock_exporter_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.LoggerProvider') as mock_provider_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor'), \
-             patch('provide.foundation.integrations.openobserve.otlp.trace') as mock_trace:
-
+        with (
+            patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
+            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+            patch("provide.foundation.integrations.openobserve.otlp.Resource") as mock_resource_class,
+            patch("provide.foundation.integrations.openobserve.otlp.OTLPLogExporter") as mock_exporter_class,
+            patch("provide.foundation.integrations.openobserve.otlp.LoggerProvider") as mock_provider_class,
+            patch("provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor"),
+            patch("provide.foundation.integrations.openobserve.otlp.trace") as mock_trace,
+        ):
             mock_config_class.from_env.return_value = mock_config
             mock_resource_class.create.return_value = mock_resource
             mock_exporter_class.return_value = mock_exporter
@@ -93,7 +95,7 @@ class TestSendLogOTLP:
                 message="Test OTLP message",
                 level="INFO",
                 service="custom-service",
-                attributes={"key": "value"}
+                attributes={"key": "value"},
             )
 
             assert result is True
@@ -104,21 +106,17 @@ class TestSendLogOTLP:
             # Verify exporter creation
             mock_exporter_class.assert_called_once_with(
                 endpoint="http://localhost:4318/v1/logs",
-                headers={
-                    "Authorization": "Bearer token",
-                    "organization": "default",
-                    "stream-name": "default"
-                }
+                headers={"Authorization": "Bearer token", "organization": "default", "stream-name": "default"},
             )
 
             # Verify log emission
             mock_otel_logger.emit.assert_called_once()
             call_args = mock_otel_logger.emit.call_args[1]
-            assert call_args['severity_number'] == 9  # INFO
-            assert call_args['severity_text'] == "INFO"
-            assert call_args['body'] == "Test OTLP message"
-            assert "key" in call_args['attributes']
-            assert "trace_id" in call_args['attributes']
+            assert call_args["severity_number"] == 9  # INFO
+            assert call_args["severity_text"] == "INFO"
+            assert call_args["body"] == "Test OTLP message"
+            assert "key" in call_args["attributes"]
+            assert "trace_id" in call_args["attributes"]
 
             # Verify flush
             mock_logger_provider.force_flush.assert_called_once()
@@ -139,14 +137,15 @@ class TestSendLogOTLP:
         mock_logger_provider = Mock()
         mock_otel_logger = Mock()
 
-        with patch('provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS', True), \
-             patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.Resource'), \
-             patch('provide.foundation.integrations.openobserve.otlp.OTLPLogExporter') as mock_exporter_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.LoggerProvider') as mock_provider_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor'), \
-             patch('provide.foundation.integrations.openobserve.otlp.trace') as mock_trace:
-
+        with (
+            patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
+            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+            patch("provide.foundation.integrations.openobserve.otlp.Resource"),
+            patch("provide.foundation.integrations.openobserve.otlp.OTLPLogExporter") as mock_exporter_class,
+            patch("provide.foundation.integrations.openobserve.otlp.LoggerProvider") as mock_provider_class,
+            patch("provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor"),
+            patch("provide.foundation.integrations.openobserve.otlp.trace") as mock_trace,
+        ):
             mock_config_class.from_env.return_value = mock_config
             mock_exporter_class.return_value = mock_exporter
             mock_provider_class.return_value = mock_logger_provider
@@ -158,10 +157,7 @@ class TestSendLogOTLP:
             assert result is True
 
             # Verify logs endpoint derived from traces endpoint
-            mock_exporter_class.assert_called_once_with(
-                endpoint="http://localhost:4318/v1/logs",
-                headers={}
-            )
+            mock_exporter_class.assert_called_once_with(endpoint="http://localhost:4318/v1/logs", headers={})
 
     def test_send_log_otlp_level_mapping(self) -> None:
         """Test severity level mapping for different log levels."""
@@ -188,18 +184,21 @@ class TestSendLogOTLP:
             ("ERROR", 17),
             ("FATAL", 21),
             ("CRITICAL", 21),
-            ("UNKNOWN", 9)  # Default fallback
+            ("UNKNOWN", 9),  # Default fallback
         ]
 
         for level, expected_severity in test_levels:
-            with patch('provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS', True), \
-                 patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class, \
-                 patch('provide.foundation.integrations.openobserve.otlp.Resource'), \
-                 patch('provide.foundation.integrations.openobserve.otlp.OTLPLogExporter'), \
-                 patch('provide.foundation.integrations.openobserve.otlp.LoggerProvider') as mock_provider_class, \
-                 patch('provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor'), \
-                 patch('provide.foundation.integrations.openobserve.otlp.trace') as mock_trace:
-
+            with (
+                patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
+                patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+                patch("provide.foundation.integrations.openobserve.otlp.Resource"),
+                patch("provide.foundation.integrations.openobserve.otlp.OTLPLogExporter"),
+                patch(
+                    "provide.foundation.integrations.openobserve.otlp.LoggerProvider"
+                ) as mock_provider_class,
+                patch("provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor"),
+                patch("provide.foundation.integrations.openobserve.otlp.trace") as mock_trace,
+            ):
                 mock_config_class.from_env.return_value = mock_config
                 mock_provider_class.return_value = mock_logger_provider
                 mock_trace.get_current_span.return_value = Mock(is_recording=Mock(return_value=False))
@@ -210,8 +209,8 @@ class TestSendLogOTLP:
 
                 # Verify severity mapping
                 call_args = mock_otel_logger.emit.call_args[1]
-                assert call_args['severity_number'] == expected_severity
-                assert call_args['severity_text'] == level.upper()
+                assert call_args["severity_number"] == expected_severity
+                assert call_args["severity_text"] == level.upper()
 
                 mock_otel_logger.reset_mock()
 
@@ -219,9 +218,10 @@ class TestSendLogOTLP:
         """Test exception handling in OTLP log sending."""
         from provide.foundation.integrations.openobserve.otlp import send_log_otlp
 
-        with patch('provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS', True), \
-             patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class:
-
+        with (
+            patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
+            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+        ):
             # Mock config to raise exception
             mock_config_class.from_env.side_effect = Exception("Config error")
 
@@ -251,10 +251,11 @@ class TestSendLogBulk:
         mock_response = Mock()
         mock_response.status_code = 200
 
-        with patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.datetime') as mock_datetime, \
-             patch('requests.post') as mock_post:
-
+        with (
+            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+            patch("provide.foundation.integrations.openobserve.otlp.datetime") as mock_datetime,
+            patch("requests.post") as mock_post,
+        ):
             mock_config_class.from_env.return_value = mock_config
             mock_datetime.now.return_value.timestamp.return_value = 1234567890.123456
             mock_post.return_value = mock_response
@@ -264,7 +265,7 @@ class TestSendLogBulk:
                 level="ERROR",
                 service="custom-service",
                 attributes={"error_code": 500},
-                client=mock_client
+                client=mock_client,
             )
 
             assert result is True
@@ -277,11 +278,11 @@ class TestSendLogBulk:
             assert call_args[0][0] == "http://localhost:5080/api/default/_bulk"
 
             # Keyword arguments
-            assert call_args[1]['headers'] == {"Authorization": "Basic token"}
-            assert call_args[1]['timeout'] == 30
+            assert call_args[1]["headers"] == {"Authorization": "Basic token"}
+            assert call_args[1]["timeout"] == 30
 
             # Verify bulk data format contains expected log entry
-            bulk_data = call_args[1]['data']
+            bulk_data = call_args[1]["data"]
             assert "Bulk test message" in bulk_data
             assert "ERROR" in bulk_data
             assert "custom-service" in bulk_data
@@ -306,11 +307,12 @@ class TestSendLogBulk:
         mock_response = Mock()
         mock_response.status_code = 200
 
-        with patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.OpenObserveClient') as mock_client_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.datetime') as mock_datetime, \
-             patch('requests.post') as mock_post:
-
+        with (
+            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+            patch("provide.foundation.integrations.openobserve.otlp.OpenObserveClient") as mock_client_class,
+            patch("provide.foundation.integrations.openobserve.otlp.datetime") as mock_datetime,
+            patch("requests.post") as mock_post,
+        ):
             mock_config_class.from_env.return_value = mock_config
             mock_client_class.from_config.return_value = mock_client
             mock_datetime.now.return_value.timestamp.return_value = 1234567890.0
@@ -337,10 +339,11 @@ class TestSendLogBulk:
         mock_config.service_name = "error-service"
         mock_config.openobserve_stream = "error-stream"
 
-        with patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.datetime') as mock_datetime, \
-             patch('requests.post') as mock_post:
-
+        with (
+            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+            patch("provide.foundation.integrations.openobserve.otlp.datetime") as mock_datetime,
+            patch("requests.post") as mock_post,
+        ):
             mock_config_class.from_env.return_value = mock_config
             mock_datetime.now.return_value.timestamp.return_value = 1234567890.0
             mock_post.side_effect = Exception("Bulk API error")
@@ -357,10 +360,11 @@ class TestSendLog:
         """Test send_log with OTLP preference when OTLP succeeds."""
         from provide.foundation.integrations.openobserve.otlp import send_log
 
-        with patch('provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS', True), \
-             patch('provide.foundation.integrations.openobserve.otlp.send_log_otlp') as mock_otlp, \
-             patch('provide.foundation.integrations.openobserve.otlp.send_log_bulk') as mock_bulk:
-
+        with (
+            patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
+            patch("provide.foundation.integrations.openobserve.otlp.send_log_otlp") as mock_otlp,
+            patch("provide.foundation.integrations.openobserve.otlp.send_log_bulk") as mock_bulk,
+        ):
             mock_otlp.return_value = True
 
             result = send_log("Test message", prefer_otlp=True)
@@ -373,10 +377,11 @@ class TestSendLog:
         """Test send_log falls back to bulk API when OTLP fails."""
         from provide.foundation.integrations.openobserve.otlp import send_log
 
-        with patch('provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS', True), \
-             patch('provide.foundation.integrations.openobserve.otlp.send_log_otlp') as mock_otlp, \
-             patch('provide.foundation.integrations.openobserve.otlp.send_log_bulk') as mock_bulk:
-
+        with (
+            patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
+            patch("provide.foundation.integrations.openobserve.otlp.send_log_otlp") as mock_otlp,
+            patch("provide.foundation.integrations.openobserve.otlp.send_log_bulk") as mock_bulk,
+        ):
             mock_otlp.return_value = False
             mock_bulk.return_value = True
 
@@ -390,9 +395,10 @@ class TestSendLog:
         """Test send_log skips OTLP when prefer_otlp=False."""
         from provide.foundation.integrations.openobserve.otlp import send_log
 
-        with patch('provide.foundation.integrations.openobserve.otlp.send_log_otlp') as mock_otlp, \
-             patch('provide.foundation.integrations.openobserve.otlp.send_log_bulk') as mock_bulk:
-
+        with (
+            patch("provide.foundation.integrations.openobserve.otlp.send_log_otlp") as mock_otlp,
+            patch("provide.foundation.integrations.openobserve.otlp.send_log_bulk") as mock_bulk,
+        ):
             mock_bulk.return_value = True
 
             result = send_log("Test message", prefer_otlp=False)
@@ -405,10 +411,11 @@ class TestSendLog:
         """Test send_log uses bulk API when OpenTelemetry not available."""
         from provide.foundation.integrations.openobserve.otlp import send_log
 
-        with patch('provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS', False), \
-             patch('provide.foundation.integrations.openobserve.otlp.send_log_otlp') as mock_otlp, \
-             patch('provide.foundation.integrations.openobserve.otlp.send_log_bulk') as mock_bulk:
-
+        with (
+            patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", False),
+            patch("provide.foundation.integrations.openobserve.otlp.send_log_otlp") as mock_otlp,
+            patch("provide.foundation.integrations.openobserve.otlp.send_log_bulk") as mock_bulk,
+        ):
             mock_bulk.return_value = True
 
             result = send_log("Test message", prefer_otlp=True)
@@ -425,7 +432,7 @@ class TestCreateOTLPLoggerProvider:
         """Test that function returns None when OpenTelemetry is not available."""
         from provide.foundation.integrations.openobserve.otlp import create_otlp_logger_provider
 
-        with patch('provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS', False):
+        with patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", False):
             result = create_otlp_logger_provider()
             assert result is None
 
@@ -436,9 +443,10 @@ class TestCreateOTLPLoggerProvider:
         mock_config = Mock()
         mock_config.otlp_endpoint = None
 
-        with patch('provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS', True), \
-             patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class:
-
+        with (
+            patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
+            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+        ):
             mock_config_class.from_env.return_value = mock_config
 
             result = create_otlp_logger_provider()
@@ -461,13 +469,14 @@ class TestCreateOTLPLoggerProvider:
         mock_resource = Mock()
         mock_exporter = Mock()
 
-        with patch('provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS', True), \
-             patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.Resource') as mock_resource_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.OTLPLogExporter') as mock_exporter_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.LoggerProvider') as mock_provider_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor'):
-
+        with (
+            patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
+            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+            patch("provide.foundation.integrations.openobserve.otlp.Resource") as mock_resource_class,
+            patch("provide.foundation.integrations.openobserve.otlp.OTLPLogExporter") as mock_exporter_class,
+            patch("provide.foundation.integrations.openobserve.otlp.LoggerProvider") as mock_provider_class,
+            patch("provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor"),
+        ):
             mock_config_class.from_env.return_value = mock_config
             mock_resource_class.create.return_value = mock_resource
             mock_exporter_class.return_value = mock_exporter
@@ -481,11 +490,7 @@ class TestCreateOTLPLoggerProvider:
             mock_resource_class.create.assert_called_once()
             mock_exporter_class.assert_called_once_with(
                 endpoint="http://localhost:4318/v1/logs",
-                headers={
-                    "auth": "token",
-                    "organization": "test-org",
-                    "stream-name": "test-stream"
-                }
+                headers={"auth": "token", "organization": "test-org", "stream-name": "test-stream"},
             )
             mock_logger_provider.add_log_record_processor.assert_called_once()
 
@@ -493,9 +498,10 @@ class TestCreateOTLPLoggerProvider:
         """Test exception handling in logger provider creation."""
         from provide.foundation.integrations.openobserve.otlp import create_otlp_logger_provider
 
-        with patch('provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS', True), \
-             patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class:
-
+        with (
+            patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
+            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+        ):
             mock_config_class.from_env.side_effect = Exception("Provider creation error")
 
             result = create_otlp_logger_provider()
@@ -533,14 +539,15 @@ class TestOTLPIntegration:
         mock_current_span.is_recording.return_value = True
         mock_current_span.get_span_context.return_value = mock_span_context
 
-        with patch('provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS', True), \
-             patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.Resource'), \
-             patch('provide.foundation.integrations.openobserve.otlp.OTLPLogExporter'), \
-             patch('provide.foundation.integrations.openobserve.otlp.LoggerProvider') as mock_provider_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor'), \
-             patch('provide.foundation.integrations.openobserve.otlp.trace') as mock_trace:
-
+        with (
+            patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
+            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+            patch("provide.foundation.integrations.openobserve.otlp.Resource"),
+            patch("provide.foundation.integrations.openobserve.otlp.OTLPLogExporter"),
+            patch("provide.foundation.integrations.openobserve.otlp.LoggerProvider") as mock_provider_class,
+            patch("provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor"),
+            patch("provide.foundation.integrations.openobserve.otlp.trace") as mock_trace,
+        ):
             mock_config_class.from_env.return_value = mock_config
             mock_provider_class.return_value = mock_logger_provider
             mock_trace.get_current_span.return_value = mock_current_span
@@ -552,23 +559,24 @@ class TestOTLPIntegration:
             # Verify that emit was called with trace context
             mock_otel_logger.emit.assert_called_once()
             call_kwargs = mock_otel_logger.emit.call_args[1]
-            attributes = call_kwargs['attributes']
+            attributes = call_kwargs["attributes"]
 
             # Verify trace context was added
-            assert attributes['trace_id'] == "00000000000000000000000000003039"  # hex format of 12345
-            assert attributes['span_id'] == "000000000000010d"  # hex format of 269
+            assert attributes["trace_id"] == "00000000000000000000000000003039"  # hex format of 12345
+            assert attributes["span_id"] == "000000000000010d"  # hex format of 269
 
         # Test case 2: No active span (should not add trace context)
         mock_otel_logger.reset_mock()
 
-        with patch('provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS', True), \
-             patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.Resource'), \
-             patch('provide.foundation.integrations.openobserve.otlp.OTLPLogExporter'), \
-             patch('provide.foundation.integrations.openobserve.otlp.LoggerProvider') as mock_provider_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor'), \
-             patch('provide.foundation.integrations.openobserve.otlp.trace') as mock_trace:
-
+        with (
+            patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
+            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+            patch("provide.foundation.integrations.openobserve.otlp.Resource"),
+            patch("provide.foundation.integrations.openobserve.otlp.OTLPLogExporter"),
+            patch("provide.foundation.integrations.openobserve.otlp.LoggerProvider") as mock_provider_class,
+            patch("provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor"),
+            patch("provide.foundation.integrations.openobserve.otlp.trace") as mock_trace,
+        ):
             mock_config_class.from_env.return_value = mock_config
             mock_provider_class.return_value = mock_logger_provider
             mock_trace.get_current_span.return_value = None
@@ -580,11 +588,11 @@ class TestOTLPIntegration:
             # Verify that emit was called without trace context
             mock_otel_logger.emit.assert_called_once()
             call_kwargs = mock_otel_logger.emit.call_args[1]
-            attributes = call_kwargs['attributes']
+            attributes = call_kwargs["attributes"]
 
             # Verify trace context was not added
-            assert 'trace_id' not in attributes
-            assert 'span_id' not in attributes
+            assert "trace_id" not in attributes
+            assert "span_id" not in attributes
 
     def test_bulk_api_log_structure(self) -> None:
         """Test the structure of logs sent via bulk API."""
@@ -603,10 +611,11 @@ class TestOTLPIntegration:
         mock_response = Mock()
         mock_response.status_code = 200
 
-        with patch('provide.foundation.logger.config.TelemetryConfig') as mock_config_class, \
-             patch('provide.foundation.integrations.openobserve.otlp.datetime') as mock_datetime, \
-             patch('requests.post') as mock_post:
-
+        with (
+            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+            patch("provide.foundation.integrations.openobserve.otlp.datetime") as mock_datetime,
+            patch("requests.post") as mock_post,
+        ):
             mock_config_class.from_env.return_value = mock_config
             mock_datetime.now.return_value.timestamp.return_value = 1609459200.0  # 2021-01-01 00:00:00
             mock_post.return_value = mock_response
@@ -616,7 +625,7 @@ class TestOTLPIntegration:
                 level="WARN",
                 service=None,  # Should use config service name
                 attributes={"custom": "attribute", "numeric": 42},
-                client=mock_client
+                client=mock_client,
             )
 
             assert result is True
@@ -630,26 +639,27 @@ class TestOTLPIntegration:
             assert call_args[0][0] == expected_url
 
             # Check headers
-            assert call_args[1]['headers'] == {"Authorization": "Bearer test-token"}
+            assert call_args[1]["headers"] == {"Authorization": "Bearer test-token"}
 
             # Check timeout
-            assert call_args[1]['timeout'] == 30
+            assert call_args[1]["timeout"] == 30
 
             # Check bulk data structure
-            bulk_data = call_args[1]['data']
-            lines = bulk_data.strip().split('\n')
+            bulk_data = call_args[1]["data"]
+            lines = bulk_data.strip().split("\n")
             assert len(lines) == 2  # Index line + data line
 
             # Parse index line
             import json
+
             index_line = json.loads(lines[0])
             assert index_line == {"index": {"_index": "test-stream"}}
 
             # Parse data line
             log_record = json.loads(lines[1])
-            assert log_record['_timestamp'] == 1609459200000000  # microseconds
-            assert log_record['level'] == "WARN"
-            assert log_record['message'] == "Structure test"
-            assert log_record['service'] == "structure-test"  # From config
-            assert log_record['custom'] == "attribute"
-            assert log_record['numeric'] == 42
+            assert log_record["_timestamp"] == 1609459200000000  # microseconds
+            assert log_record["level"] == "WARN"
+            assert log_record["message"] == "Structure test"
+            assert log_record["service"] == "structure-test"  # From config
+            assert log_record["custom"] == "attribute"
+            assert log_record["numeric"] == 42

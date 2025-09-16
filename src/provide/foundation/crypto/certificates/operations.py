@@ -3,7 +3,7 @@ from __future__ import annotations
 """Certificate operations: CA creation, signing, and trust verification."""
 
 import traceback
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
     from cryptography import x509

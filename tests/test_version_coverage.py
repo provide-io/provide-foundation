@@ -74,7 +74,8 @@ class TestFindProjectRoot:
 
             # Mock __file__ to be in the nested directory
             with patch(
-                "provide.foundation._version.__file__", str(nested_dir / "_version.py"),
+                "provide.foundation._version.__file__",
+                str(nested_dir / "_version.py"),
             ):
                 result = _find_project_root()
                 # Should return None since there's no VERSION file anywhere in the hierarchy
@@ -184,10 +185,15 @@ class TestGetVersion:
             temp_path = Path(temp_dir)
             # Don't create VERSION file
 
-            with patch(
-                "provide.foundation._version._find_project_root", return_value=temp_path,
-            ), patch(
-                "importlib.metadata.version", return_value="metadata-version",
+            with (
+                patch(
+                    "provide.foundation._version._find_project_root",
+                    return_value=temp_path,
+                ),
+                patch(
+                    "importlib.metadata.version",
+                    return_value="metadata-version",
+                ),
             ):
                 result = get_version()
                 assert result == "metadata-version"
@@ -282,13 +288,15 @@ class TestVersionEdgeCases:
             ):
                 if isinstance(metadata_result, Exception):
                     with patch(
-                        "importlib.metadata.version", side_effect=metadata_result,
+                        "importlib.metadata.version",
+                        side_effect=metadata_result,
                     ):
                         result = get_version()
                         assert result == expected
                 else:
                     with patch(
-                        "importlib.metadata.version", return_value=metadata_result,
+                        "importlib.metadata.version",
+                        return_value=metadata_result,
                     ):
                         result = get_version()
                         assert result == expected

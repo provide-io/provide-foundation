@@ -101,9 +101,9 @@ def get_fallback_numeric() -> int:
 
 
 __all__ = [
-    "normalize_level",
-    "get_numeric_level",
-    "is_valid_level",
     "get_fallback_level",
     "get_fallback_numeric",
+    "get_numeric_level",
+    "is_valid_level",
+    "normalize_level",
 ]

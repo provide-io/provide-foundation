@@ -377,9 +377,7 @@ class TestLoggerThreadSafety:
 
         # Get multiple named loggers concurrently
         with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-            futures = [
-                executor.submit(get_named_logger, f"logger_{i}") for i in range(20)
-            ]
+            futures = [executor.submit(get_named_logger, f"logger_{i}") for i in range(20)]
             concurrent.futures.wait(futures)
 
         assert len(errors) == 0, f"Errors occurred: {errors}"

@@ -1,6 +1,5 @@
 # tests/test_utils.py
-"""Tests for utility functions in provide.foundation.utils.
-"""
+"""Tests for utility functions in provide.foundation.utils."""
 
 from collections.abc import Callable
 import io
@@ -35,19 +34,13 @@ def parse_kv_log_line(line: str) -> dict:
     # Find the start of the key-value section to isolate the event message
     first_kv_match = re.search(r'[\w.]+=(".*?"|\'.*?\'|\S+)', content_after_level)
 
-    event_part = (
-        content_after_level[: first_kv_match.start()]
-        if first_kv_match
-        else content_after_level
-    )
+    event_part = content_after_level[: first_kv_match.start()] if first_kv_match else content_after_level
 
     data["event"] = event_part.strip()
 
     for key, value in kv_pairs:
         # Strip matching quotes if they exist
-        if (value.startswith('"') and value.endswith('"')) or (
-            value.startswith("'") and value.endswith("'")
-        ):
+        if (value.startswith('"') and value.endswith('"')) or (value.startswith("'") and value.endswith("'")):
             value = value[1:-1]
 
         if value.isdigit():
@@ -82,7 +75,8 @@ def setup_telemetry_for_utils(
 @pytest.mark.usefixtures("setup_telemetry_for_utils")
 class TestTimedBlock:
     def test_successful_execution(
-        self, captured_stderr_for_foundation: io.StringIO,
+        self,
+        captured_stderr_for_foundation: io.StringIO,
     ) -> None:
         with timed_block(
             global_logger,
@@ -92,9 +86,7 @@ class TestTimedBlock:
         ):
             pass
         captured = captured_stderr_for_foundation.getvalue()
-        log_lines = [
-            line for line in captured.strip().splitlines() if "my_successful_op" in line
-        ]
+        log_lines = [line for line in captured.strip().splitlines() if "my_successful_op" in line]
         assert len(log_lines) == 1
         log_data = parse_kv_log_line(log_lines[0])
         assert log_data.get("event", "").strip() == "my_successful_op completed"
@@ -104,15 +96,14 @@ class TestTimedBlock:
         assert "duration_seconds" in log_data
 
     def test_execution_with_exception(
-        self, captured_stderr_for_foundation: io.StringIO,
+        self,
+        captured_stderr_for_foundation: io.StringIO,
     ) -> None:
         with pytest.raises(ValueError, match="Simulated error"):
             with timed_block(global_logger, "my_failing_op", user_id="user_abc"):
                 raise ValueError("Simulated error")
         captured = captured_stderr_for_foundation.getvalue()
-        log_lines = [
-            line for line in captured.strip().splitlines() if "my_failing_op" in line
-        ]
+        log_lines = [line for line in captured.strip().splitlines() if "my_failing_op" in line]
         assert len(log_lines) == 1
         log_data = parse_kv_log_line(log_lines[0])
         assert log_data.get("event", "").strip() == "my_failing_op failed"
@@ -121,7 +112,8 @@ class TestTimedBlock:
         assert log_data.get("error.message") == "Simulated error"
 
     def test_log_level_for_outcome(
-        self, captured_stderr_for_foundation: io.StringIO,
+        self,
+        captured_stderr_for_foundation: io.StringIO,
     ) -> None:
         with timed_block(global_logger, "success_op_info_level"):
             pass
@@ -136,7 +128,8 @@ class TestTimedBlock:
         assert "[error " in captured_stderr_for_foundation.getvalue().lower()
 
     def test_trace_id_from_contextvar(
-        self, captured_stderr_for_foundation: io.StringIO,
+        self,
+        captured_stderr_for_foundation: io.StringIO,
     ) -> None:
         token = _PROVIDE_CONTEXT_TRACE_ID.set("test-trace-12345")
         try:
@@ -145,14 +138,13 @@ class TestTimedBlock:
         finally:
             _PROVIDE_CONTEXT_TRACE_ID.reset(token)
         captured = captured_stderr_for_foundation.getvalue()
-        log_lines = [
-            line for line in captured.strip().splitlines() if "op_with_trace_id" in line
-        ]
+        log_lines = [line for line in captured.strip().splitlines() if "op_with_trace_id" in line]
         assert len(log_lines) == 1
         assert parse_kv_log_line(log_lines[0]).get("trace_id") == "test-trace-12345"
 
     def test_trace_id_from_initial_kvs_overrides_contextvar(
-        self, captured_stderr_for_foundation: io.StringIO,
+        self,
+        captured_stderr_for_foundation: io.StringIO,
     ) -> None:
         token = _PROVIDE_CONTEXT_TRACE_ID.set("context-id")
         try:
@@ -161,33 +153,24 @@ class TestTimedBlock:
         finally:
             _PROVIDE_CONTEXT_TRACE_ID.reset(token)
         captured = captured_stderr_for_foundation.getvalue()
-        log_lines = [
-            line
-            for line in captured.strip().splitlines()
-            if "op_override_trace_id" in line
-        ]
+        log_lines = [line for line in captured.strip().splitlines() if "op_override_trace_id" in line]
         assert len(log_lines) == 1
         assert parse_kv_log_line(log_lines[0]).get("trace_id") == "kvs-id"
 
     def test_initial_kvs_parameter(
-        self, captured_stderr_for_foundation: io.StringIO,
+        self,
+        captured_stderr_for_foundation: io.StringIO,
     ) -> None:
         """Test timed_block with initial_kvs parameter."""
         initial_kvs = {"user_id": "test_user", "request_id": "req_123"}
 
         with timed_block(
-            global_logger,
-            "op_with_initial_kvs",
-            initial_kvs=initial_kvs,
-            extra_key="extra_value"
+            global_logger, "op_with_initial_kvs", initial_kvs=initial_kvs, extra_key="extra_value"
         ):
             pass
 
         captured = captured_stderr_for_foundation.getvalue()
-        log_lines = [
-            line for line in captured.strip().splitlines()
-            if "op_with_initial_kvs" in line
-        ]
+        log_lines = [line for line in captured.strip().splitlines() if "op_with_initial_kvs" in line]
         assert len(log_lines) == 1
         log_data = parse_kv_log_line(log_lines[0])
 
