@@ -32,7 +32,7 @@ def test_atomic_write_default_preserves_existing(temp_directory) -> None:
     """Test atomic_write preserves existing permissions by default."""
     path = temp_directory / "test.txt"
     path.write_bytes(b"Original")
-    os.chmod(path, 0o600)
+    path.chmod(0o600)
 
     # Default behavior should preserve
     atomic_write(path, b"New content")
@@ -45,7 +45,7 @@ def test_atomic_write_explicit_preserve_true(temp_directory) -> None:
     """Test atomic_write with preserve_mode=True."""
     path = temp_directory / "test.txt"
     path.write_bytes(b"Original")
-    os.chmod(path, 0o600)
+    path.chmod(0o600)
 
     atomic_write(path, b"New content", preserve_mode=True)
 
@@ -57,7 +57,7 @@ def test_atomic_write_preserve_false_on_existing(temp_directory) -> None:
     """Test atomic_write with preserve_mode=False on existing file."""
     path = temp_directory / "test.txt"
     path.write_bytes(b"Original")
-    os.chmod(path, 0o600)
+    path.chmod(0o600)
 
     # With preserve_mode=False, should NOT preserve 0o600
     atomic_write(path, b"New content", preserve_mode=False)
@@ -104,7 +104,7 @@ def test_atomic_replace_default_preserves(temp_directory) -> None:
     """Test atomic_replace preserves by default."""
     path = temp_directory / "test.txt"
     path.write_bytes(b"Original")
-    os.chmod(path, 0o600)
+    path.chmod(0o600)
 
     atomic_replace(path, b"Replaced")
 
@@ -116,7 +116,7 @@ def test_atomic_replace_explicit_preserve_true(temp_directory) -> None:
     """Test atomic_replace with preserve_mode=True."""
     path = temp_directory / "test.txt"
     path.write_bytes(b"Original")
-    os.chmod(path, 0o600)
+    path.chmod(0o600)
 
     atomic_replace(path, b"Replaced", preserve_mode=True)
 
@@ -128,7 +128,7 @@ def test_atomic_replace_preserve_false(temp_directory) -> None:
     """Test atomic_replace with preserve_mode=False."""
     path = temp_directory / "test.txt"
     path.write_bytes(b"Original")
-    os.chmod(path, 0o600)
+    path.chmod(0o600)
 
     atomic_replace(path, b"Replaced", preserve_mode=False)
 
@@ -143,7 +143,7 @@ def test_atomic_write_text_preserve_modes(temp_directory) -> None:
     """Test atomic_write_text permission handling."""
     path = temp_directory / "test.txt"
     path.write_text("Original")
-    os.chmod(path, 0o600)
+    path.chmod(0o600)
 
     # Default preserves
     atomic_write_text(path, "New text")

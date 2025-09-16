@@ -98,7 +98,8 @@
       "Bash(PYTHONPATH=src pytest tests/client/test_client_grpc.py::test_create_grpc_channel_with_mtls tests/client/test_client_init.py::test_setup_client_certificates_mtls_missing_key tests/client/test_client_retry_logic.py::test_connect_handshake_total_timeout_immediately -v)",
       "Bash(PYTHONPATH=src pytest tests/client/ --tb=short -q)",
       "Bash(PYTHONPATH=src pytest tests/core/ --tb=short -q)",
-      "Bash(PYTHONPATH=src pytest tests/ --tb=short -q --maxfail=5)"
+      "Bash(PYTHONPATH=src pytest tests/ --tb=short -q --maxfail=5)",
+      "Bash(timeout 45 pytest --tb=no -q)"
     ],
     "deny": [],
     "ask": [],
