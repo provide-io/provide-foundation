@@ -222,7 +222,7 @@ class TestAsyncRuntimeConfig:
                     assert config.secret2 == "secret_1"
         finally:
             for file_path in secret_files:
-                if os.path.exists(file_path):
+                if Path(file_path).exists():
                     Path(file_path).unlink()
 
     @pytest.mark.asyncio

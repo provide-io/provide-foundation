@@ -1,6 +1,5 @@
 """Tests for CLI decorators."""
 
-import os
 from pathlib import Path
 import tempfile
 from typing import Never
