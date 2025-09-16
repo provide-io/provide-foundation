@@ -120,7 +120,8 @@
       "Bash(PYTHONPATH=src ruff check --select PTH108 .)",
       "Bash(PYTHONPATH=src ruff check --select PTH108 . --statistics)",
       "Bash(PYTHONPATH=src ruff check tests/cli/test_decorators.py tests/config/test_config_env_coverage.py tests/context/test_context_core.py tests/hub/test_hub_context.py)",
-      "Bash(PYTHONPATH=src ruff check --select PTH110 tests/config/test_config_env_coverage.py)"
+      "Bash(PYTHONPATH=src ruff check --select PTH110 tests/config/test_config_env_coverage.py)",
+      "Bash(PYTHONPATH=src ruff check --select RUF009)"
     ],
     "deny": [],
     "ask": [],
