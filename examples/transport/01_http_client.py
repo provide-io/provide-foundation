@@ -23,7 +23,7 @@ project_root = example_file.parent.parent.parent
 sys.path.insert(0, str(project_root / "src"))
 
 
-from provide.foundation.testing.mocking import AsyncMock, Mock, patch
+from provide.testkit import AsyncMock, Mock, patch
 
 from provide.foundation import logger, setup_telemetry
 from provide.foundation.resilience.retry import BackoffStrategy, RetryPolicy
