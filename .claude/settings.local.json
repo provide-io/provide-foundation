@@ -99,7 +99,8 @@
       "Bash(PYTHONPATH=src pytest tests/client/ --tb=short -q)",
       "Bash(PYTHONPATH=src pytest tests/core/ --tb=short -q)",
       "Bash(PYTHONPATH=src pytest tests/ --tb=short -q --maxfail=5)",
-      "Bash(timeout 45 pytest --tb=no -q)"
+      "Bash(timeout 45 pytest --tb=no -q)",
+      "Bash(xargs ruff check:*)"
     ],
     "deny": [],
     "ask": [],
