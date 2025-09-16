@@ -45,7 +45,8 @@
       "Bash(PYTHONPATH=src pytest tests/test_docs_generator.py::TestAPIDocGenerator::test_init_default_values -v -q)",
       "Bash(while read dir)",
       "WebSearch",
-      "Bash(xargs dirname:*)"
+      "Bash(xargs dirname:*)",
+      "Bash(PYTHONPATH=src mypy src/pyvider/rpcplugin/client/ --show-error-codes --no-error-summary)"
     ],
     "deny": [],
     "ask": [],
