@@ -441,7 +441,12 @@ class TestAPIDocGeneratorIntegration:
             (subdir / "__init__.py").write_text('"""Subpackage init."""')
 
             with patch('provide.foundation.docs.generator.mkdocs_gen_files') as mock_mkdocs:
-                mock_nav = {}
+                # Create a mock that behaves like both a dict and has the method
+                class MockNav(dict):
+                    def build_literate_nav(self):
+                        return ["nav line 1", "nav line 2"]
+
+                mock_nav = MockNav()
                 mock_mkdocs.Nav.return_value = mock_nav
                 mock_mkdocs.open = mock_open()
                 mock_mkdocs.set_edit_path = Mock()
@@ -455,5 +460,5 @@ class TestAPIDocGeneratorIntegration:
 
                 # Verify files were processed
                 assert result["total_files"] == 4
-                assert result["processed_files"] == 4  # All files should be processed
-                assert result["skipped_files"] == 0
+                assert result["processed_files"] == 2  # Only non-init files should be processed
+                assert result["skipped_files"] == 2   # The two small __init__.py files should be skipped

@@ -10,7 +10,7 @@ from typing import Any, Self, TypeVar
 try:
     import aiofiles  # type: ignore[import-untyped]
 except ImportError:
-    aiofiles = None
+    aiofiles: Any = None
 from attrs import fields
 
 from provide.foundation.config.base import BaseConfig, field

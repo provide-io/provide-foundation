@@ -7,12 +7,13 @@ from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     import click
 
+# Optional click import
 try:
     import click
 
     _HAS_CLICK = True
 except ImportError:
-    click = None  # type: Any
+    click: Any = None
     _HAS_CLICK = False
 
 from provide.foundation.console.output import pout
@@ -44,6 +45,10 @@ def _deps_command_impl(quiet: bool, check: str | None) -> None:
     else:
         # Check all dependencies
         deps = check_optional_deps(quiet=quiet, return_status=True)
+        if deps is None:
+            exit_error("Failed to check dependencies")
+            return  # This line helps type checker understand deps is not None after this point
+
         available_count = sum(1 for dep in deps if dep.available)
         total_count = len(deps)
         if available_count == total_count:

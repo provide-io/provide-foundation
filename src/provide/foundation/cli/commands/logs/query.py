@@ -9,7 +9,7 @@ try:
 
     _HAS_CLICK = True
 except ImportError:
-    click = None  # type: ignore
+    click: Any = None
     _HAS_CLICK = False
 
 from provide.foundation.logger import get_logger

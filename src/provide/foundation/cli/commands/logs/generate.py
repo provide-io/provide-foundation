@@ -17,7 +17,7 @@ try:
 
     _HAS_CLICK = True
 except ImportError:
-    click = None  # type: Any
+    click: Any = None
     _HAS_CLICK = False
 
 import threading
