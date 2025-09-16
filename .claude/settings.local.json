@@ -72,7 +72,8 @@
       "Bash(PYTHONPATH=src pytest tests/core/test_types.py -v)",
       "Bash(PYTHONPATH=src pytest tests/transport/unix/test_transport_unix.py::test_check_socket_in_use_stat_oserror -xvs)",
       "Bash(PYTHONPATH=src pytest tests/transport/unix/test_transport_unix_connect.py::test_unix_connect_stat_fails -xvs)",
-      "Bash(PYTHONPATH=src pytest tests/transport/unix/ --tb=short -q)"
+      "Bash(PYTHONPATH=src pytest tests/transport/unix/ --tb=short -q)",
+      "Bash(PYTHONPATH=src ty check src/)"
     ],
     "deny": [],
     "ask": [],
