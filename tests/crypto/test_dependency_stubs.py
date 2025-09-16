@@ -16,7 +16,6 @@ SKIP_REASON = (
 
 
 # Display the header immediately when module is imported
-import sys
 
 print("\n" + "=" * 60, file=sys.stderr)
 print("🔒 CRYPTOGRAPHY DEPENDENCY TESTS", file=sys.stderr)

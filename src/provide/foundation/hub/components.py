@@ -7,7 +7,6 @@ from typing import Any, Protocol
 from attrs import define, field
 
 from provide.foundation.errors.decorators import with_error_handling
-from provide.foundation.hub.registry import Registry
 
 # Import functions from specialized modules for re-export
 from provide.foundation.hub.config import (
@@ -34,6 +33,7 @@ from provide.foundation.hub.processors import (
     get_processor_pipeline,
     get_processors_for_stage,
 )
+from provide.foundation.hub.registry import Registry
 
 """Registry-based component management system for Foundation.
 
