@@ -103,7 +103,7 @@ class TestTimedBlock:
             pytest.raises(ValueError, match="Simulated error"),
             timed_block(global_logger, "my_failing_op", user_id="user_abc"),
         ):
-                raise ValueError("Simulated error")
+            raise ValueError("Simulated error")
         captured = captured_stderr_for_foundation.getvalue()
         log_lines = [line for line in captured.strip().splitlines() if "my_failing_op" in line]
         assert len(log_lines) == 1

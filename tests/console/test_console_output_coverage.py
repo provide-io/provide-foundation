@@ -26,13 +26,15 @@ class TestGetContext:
 
     def test_get_context_click_no_context(self) -> None:
         """Test _get_context when click has no current context."""
-        with patch("provide.foundation.console.output._HAS_CLICK", True):
-            with patch("provide.foundation.console.output.click") as mock_click:
-                mock_click.get_current_context.return_value = None
+        with (
+            patch("provide.foundation.console.output._HAS_CLICK", True),
+            patch("provide.foundation.console.output.click") as mock_click,
+        ):
+            mock_click.get_current_context.return_value = None
 
-                result = _get_context()
-                assert result is None
-                mock_click.get_current_context.assert_called_once_with(silent=True)
+            result = _get_context()
+            assert result is None
+            mock_click.get_current_context.assert_called_once_with(silent=True)
 
     def test_get_context_click_with_context_obj(self) -> None:
         """Test _get_context when click has context with proper obj."""

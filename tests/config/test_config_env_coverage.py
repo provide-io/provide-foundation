@@ -55,12 +55,12 @@ class TestAsyncEnvFunctions:
                         "provide.foundation.config.env.aiofiles",
                     ) as mock_aiofiles,
                 ):
-                        mock_file = AsyncMock()
-                        mock_file.read.return_value = "secret_content\n"
-                        mock_aiofiles.open.return_value.__aenter__.return_value = mock_file
+                    mock_file = AsyncMock()
+                    mock_file.read.return_value = "secret_content\n"
+                    mock_aiofiles.open.return_value.__aenter__.return_value = mock_file
 
-                        result = await get_env_async("ASYNC_SECRET")
-                        assert result == "secret_content"
+                    result = await get_env_async("ASYNC_SECRET")
+                    assert result == "secret_content"
             finally:
                 os.unlink(temp_file.name)
 
@@ -71,10 +71,10 @@ class TestAsyncEnvFunctions:
             patch.dict(os.environ, {"ASYNC_SECRET": "file:///nonexistent/file"}),
             patch("provide.foundation.config.env.aiofiles") as mock_aiofiles,
         ):
-                mock_aiofiles.open.side_effect = FileNotFoundError("File not found")
+            mock_aiofiles.open.side_effect = FileNotFoundError("File not found")
 
-                with pytest.raises(ValueError, match="Failed to read secret from file"):
-                    await get_env_async("ASYNC_SECRET")
+            with pytest.raises(ValueError, match="Failed to read secret from file"):
+                await get_env_async("ASYNC_SECRET")
 
     @pytest.mark.asyncio
     async def test_get_env_async_no_secret_file_support(self) -> None:
@@ -151,16 +151,16 @@ class TestAsyncRuntimeConfig:
                         "provide.foundation.config.env.aiofiles",
                     ) as mock_aiofiles,
                 ):
-                        mock_file = AsyncMock()
-                        mock_file.read.return_value = "secret_api_key\n"
-                        mock_aiofiles.open.return_value.__aenter__.return_value = mock_file
+                    mock_file = AsyncMock()
+                    mock_file.read.return_value = "secret_api_key\n"
+                    mock_aiofiles.open.return_value.__aenter__.return_value = mock_file
 
-                        config = await self.AsyncTestConfig.from_env_async(
-                            prefix="ASYNC",
-                        )
+                    config = await self.AsyncTestConfig.from_env_async(
+                        prefix="ASYNC",
+                    )
 
-                        assert config.app_name == "secret_app"
-                        assert config.api_key == "secret_api_key"
+                    assert config.app_name == "secret_app"
+                    assert config.api_key == "secret_api_key"
             finally:
                 os.unlink(temp_file.name)
 
@@ -231,7 +231,7 @@ class TestAsyncRuntimeConfig:
             patch.dict(os.environ, {"ASYNC_PORT": "invalid_port"}),
             pytest.raises(ValueError, match="Failed to parse"),
         ):
-                await self.AsyncTestConfig.from_env_async(prefix="ASYNC")
+            await self.AsyncTestConfig.from_env_async(prefix="ASYNC")
 
     @pytest.mark.asyncio
     async def test_read_secret_async_without_aiofiles(self) -> None:
@@ -345,7 +345,7 @@ class TestRuntimeConfigAdvanced:
             patch.dict(os.environ, {"SPECIAL_VAR": "file:///nonexistent/file"}),
             pytest.raises(ValueError, match="Failed to read secret from file"),
         ):
-                self.AdvancedConfig.from_env()
+            self.AdvancedConfig.from_env()
 
     def test_from_env_parser_error_sync(self) -> None:
         """Test from_env with parser error (sync version)."""
@@ -354,7 +354,7 @@ class TestRuntimeConfigAdvanced:
             pytest.raises(ValueError),
         ):
             # The auto parser should handle int conversion
-                self.AdvancedConfig.from_env()
+            self.AdvancedConfig.from_env()
 
     def test_from_env_env_prefix_field(self) -> None:
         """Test from_env with field-specific env_prefix."""
