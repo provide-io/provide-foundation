@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 import tarfile
 
-from provide.foundation.types.attrs import define, field
+from attrs import define, field
 
 from provide.foundation.archive.base import ArchiveError, BaseArchive
 from provide.foundation.file import ensure_parent_dir
