@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 try:
     import click
 except ImportError:
-    click = None  # type: Any
+    click: Any = None
 
 from provide.foundation.context import CLIContext
 from provide.foundation.process import exit_error, exit_interrupted

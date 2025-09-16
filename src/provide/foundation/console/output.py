@@ -16,7 +16,7 @@ try:
 
     _HAS_CLICK = True
 except ImportError:
-    click = None
+    click: Any = None
     _HAS_CLICK = False
 
 from provide.foundation.context import CLIContext

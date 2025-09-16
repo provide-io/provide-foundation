@@ -6,12 +6,12 @@ from abc import ABC, abstractmethod
 import json
 import os
 from pathlib import Path
-from typing import TypeVar
+from typing import Any, TypeVar
 
 try:
     import aiofiles
 except ImportError:
-    aiofiles = None
+    aiofiles: Any = None
 
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.env import RuntimeConfig

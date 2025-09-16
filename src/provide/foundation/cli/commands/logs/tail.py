@@ -8,17 +8,13 @@ if TYPE_CHECKING:
     import click
 
 # Click feature detection
-_click_module: Any = None
 try:
-    import click as _click_module
+    import click
 
     _HAS_CLICK = True
 except ImportError:
-    _click_module = None
+    click: Any = None
     _HAS_CLICK = False
-
-# Use consistent name throughout
-click = _click_module
 
 from provide.foundation.logger import get_logger
 
