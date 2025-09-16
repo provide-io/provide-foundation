@@ -225,7 +225,7 @@ class CoreHub:
             if hasattr(func, "__name__"):
                 command_name = name or func.__name__.replace("_", "-")
             else:
-                command_name = name or "unknown_command"
+                command_name = name if name is not None else "unknown_command"
             command_func = func
             click_command = None
 
