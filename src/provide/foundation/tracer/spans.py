@@ -9,10 +9,14 @@ Provides OpenTelemetry integration when available, falls back to simple tracing.
 
 from dataclasses import dataclass, field
 import time
-from typing import Any
+from typing import TYPE_CHECKING, Any
 import uuid
 
 from provide.foundation.logger import get_logger
+
+if TYPE_CHECKING:
+    from opentelemetry import trace as otel_trace
+    from opentelemetry.trace import Status, StatusCode
 
 log = get_logger(__name__)
 
@@ -23,9 +27,9 @@ try:
 
     _HAS_OTEL = True
 except ImportError:
-    otel_trace = None
-    Status = None
-    StatusCode = None
+    otel_trace = None  # type: Any
+    Status = None  # type: Any
+    StatusCode = None  # type: Any
     _HAS_OTEL = False
 
 

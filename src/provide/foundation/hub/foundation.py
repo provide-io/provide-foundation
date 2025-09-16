@@ -7,7 +7,11 @@ including telemetry configuration and logger initialization.
 """
 
 import threading
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from provide.foundation.logger.base import FoundationLogger
+    from provide.foundation.logger.config import TelemetryConfig
 
 from provide.foundation.hub.registry import Registry
 
@@ -23,8 +27,8 @@ class FoundationManager:
         """
         self._registry = registry
         self._initialized = False
-        self._config = None
-        self._logger_instance = None
+        self._config: TelemetryConfig | None = None
+        self._logger_instance: FoundationLogger | None = None
         self._init_lock = threading.Lock()
 
     def initialize_foundation(self, config: Any = None, force: bool = False) -> None:
@@ -115,7 +119,9 @@ class FoundationManager:
 
             logger_instance = FoundationLogger(hub=hub_wrapper)
 
-            # Setup logger with configuration
+            # Setup logger with configuration (self._config is guaranteed to be set by this point)
+            if self._config is None:
+                raise RuntimeError("Configuration not initialized")
             logger_instance.setup(self._config)
 
             # Register logger instance as singleton

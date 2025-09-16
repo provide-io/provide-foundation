@@ -2,8 +2,23 @@ from __future__ import annotations
 
 """OpenTelemetry integration for Foundation tracer."""
 
+from typing import TYPE_CHECKING, Any
+
 from provide.foundation.logger.config.telemetry import TelemetryConfig
 from provide.foundation.logger.setup import get_vanilla_logger
+
+if TYPE_CHECKING:
+    from opentelemetry import trace as otel_trace
+    from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import (
+        OTLPSpanExporter as OTLPGrpcSpanExporter,
+    )
+    from opentelemetry.exporter.otlp.proto.http.trace_exporter import (
+        OTLPSpanExporter as OTLPHttpSpanExporter,
+    )
+    from opentelemetry.sdk.resources import Resource
+    from opentelemetry.sdk.trace import TracerProvider
+    from opentelemetry.sdk.trace.export import BatchSpanProcessor
+    from opentelemetry.sdk.trace.sampling import TraceIdRatioBased
 
 slog = get_vanilla_logger(__name__)
 
@@ -25,13 +40,13 @@ try:
 except ImportError:
     _HAS_OTEL = False
     # Stub everything for type hints
-    otel_trace = None
-    TracerProvider = None
-    BatchSpanProcessor = None
-    Resource = None
-    OTLPGrpcSpanExporter = None
-    OTLPHttpSpanExporter = None
-    TraceIdRatioBased = None
+    otel_trace = None  # type: Any
+    TracerProvider = None  # type: Any
+    BatchSpanProcessor = None  # type: Any
+    Resource = None  # type: Any
+    OTLPGrpcSpanExporter = None  # type: Any
+    OTLPHttpSpanExporter = None  # type: Any
+    TraceIdRatioBased = None  # type: Any
 
 
 def _require_otel() -> None:

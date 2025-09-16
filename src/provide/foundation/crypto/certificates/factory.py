@@ -2,9 +2,11 @@ from __future__ import annotations
 
 """Certificate factory methods."""
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
+    from cryptography import x509
+    from cryptography.hazmat.primitives import serialization
     from provide.foundation.crypto.certificates.certificate import Certificate
 
 try:
@@ -13,8 +15,8 @@ try:
 
     _HAS_CRYPTO = True
 except ImportError:
-    x509 = None
-    serialization = None
+    x509 = None  # type: Any
+    serialization = None  # type: Any
     _HAS_CRYPTO = False
 
 from provide.foundation import logger

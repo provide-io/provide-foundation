@@ -5,13 +5,19 @@ from __future__ import annotations
 from pathlib import Path
 import zipfile
 
-from attrs import define, field
+from attrs import define, field, validators
 
 from provide.foundation.archive.base import ArchiveError, BaseArchive
 from provide.foundation.file import ensure_parent_dir
 from provide.foundation.logger import get_logger
 
 logger = get_logger(__name__)
+
+
+def _validate_compression_level(instance, attribute, value: int) -> None:
+    """Validate compression level is between 0 and 9."""
+    if not 0 <= value <= 9:
+        raise ValueError(f"Compression level must be 0-9, got {value}")
 
 
 @define(slots=True)
@@ -22,14 +28,12 @@ class ZipArchive(BaseArchive):
     Supports adding files to existing archives.
     """
 
-    compression_level: int = field(default=6)  # Compression level 0-9 (0=store, 9=best)
+    compression_level: int = field(
+        default=6,
+        validator=[validators.instance_of(int), _validate_compression_level],
+    )  # Compression level 0-9 (0=store, 9=best)
     compression_type: int = field(default=zipfile.ZIP_DEFLATED)
     password: bytes | None = field(default=None)
-
-    @compression_level.validator
-    def _validate_level(self, attribute: object, value: int) -> None:
-        if not 0 <= value <= 9:
-            raise ValueError(f"Compression level must be 0-9, got {value}")
 
     def create(self, source: Path, output: Path) -> Path:
         """Create ZIP archive from source.

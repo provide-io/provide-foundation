@@ -2,12 +2,17 @@ from __future__ import annotations
 
 """CLI command for checking optional dependencies."""
 
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    import click
+
 try:
     import click
 
     _HAS_CLICK = True
 except ImportError:
-    click = None
+    click = None  # type: Any
     _HAS_CLICK = False
 
 from provide.foundation.console.output import pout

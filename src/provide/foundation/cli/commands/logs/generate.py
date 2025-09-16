@@ -7,14 +7,17 @@ from __future__ import annotations
 
 import random
 import time
-from typing import Any, NoReturn
+from typing import TYPE_CHECKING, Any, NoReturn
+
+if TYPE_CHECKING:
+    import click
 
 try:
     import click
 
     _HAS_CLICK = True
 except ImportError:
-    click = None
+    click = None  # type: Any
     _HAS_CLICK = False
 
 import threading

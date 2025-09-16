@@ -2,7 +2,10 @@ from __future__ import annotations
 
 """Trace context processor for injecting trace/span IDs into logs."""
 
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from opentelemetry import trace
 
 # Note: Cannot import get_logger here due to circular dependency during setup
 # Use structlog directly for foundation-internal logging
@@ -14,13 +17,17 @@ log = structlog.get_logger(__name__)
 # and level registration issues during logger setup
 
 # OpenTelemetry feature detection
+_otel_trace_module: Any = None
 try:
-    from opentelemetry import trace as otel_trace
+    from opentelemetry import trace as _otel_trace_module
 
     _HAS_OTEL = True
 except ImportError:
-    otel_trace = None
+    _otel_trace_module = None
     _HAS_OTEL = False
+
+# Use consistent name throughout
+trace = _otel_trace_module
 
 
 def inject_trace_context(logger: Any, method_name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
@@ -36,9 +43,9 @@ def inject_trace_context(logger: Any, method_name: str, event_dict: dict[str, An
 
     """
     # Try OpenTelemetry trace context first
-    if _HAS_OTEL:
+    if _HAS_OTEL and trace:
         try:
-            current_span = otel_trace.get_current_span()
+            current_span = trace.get_current_span()
             if current_span and current_span.is_recording():
                 span_context = current_span.get_span_context()
 
@@ -65,14 +72,14 @@ def inject_trace_context(logger: Any, method_name: str, event_dict: dict[str, An
             get_current_trace_id,
         )
 
-        current_span = get_current_span()
+        foundation_span = get_current_span()
         current_trace_id = get_current_trace_id()
 
-        if current_span:
+        if foundation_span:
             if "trace_id" not in event_dict:
-                event_dict["trace_id"] = current_span.trace_id
+                event_dict["trace_id"] = foundation_span.trace_id
             if "span_id" not in event_dict:
-                event_dict["span_id"] = current_span.span_id
+                event_dict["span_id"] = foundation_span.span_id
             # Foundation trace context injected successfully
         elif current_trace_id and "trace_id" not in event_dict:
             event_dict["trace_id"] = current_trace_id
@@ -93,9 +100,9 @@ def should_inject_trace_context() -> bool:
 
     """
     # Check if OpenTelemetry is available and has active span
-    if _HAS_OTEL:
+    if _HAS_OTEL and trace:
         try:
-            current_span = otel_trace.get_current_span()
+            current_span = trace.get_current_span()
             if current_span and current_span.is_recording():
                 return True
         except Exception:

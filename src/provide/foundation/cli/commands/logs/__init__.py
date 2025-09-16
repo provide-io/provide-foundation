@@ -5,13 +5,23 @@ from __future__ import annotations
 Provides commands for sending and querying logs with OpenTelemetry integration.
 """
 
-try:
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
     import click
+
+# Click feature detection
+_click_module: Any = None
+try:
+    import click as _click_module
 
     _HAS_CLICK = True
 except ImportError:
-    click = None  # type: ignore
+    _click_module = None
     _HAS_CLICK = False
+
+# Use consistent name throughout
+click = _click_module
 
 from provide.foundation.logger import get_logger
 
