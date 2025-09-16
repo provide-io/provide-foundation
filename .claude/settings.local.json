@@ -44,7 +44,8 @@
       "Bash(PYTHONPATH=src pytest tests/test_docs_generator.py -v -q)",
       "Bash(PYTHONPATH=src pytest tests/test_docs_generator.py::TestAPIDocGenerator::test_init_default_values -v -q)",
       "Bash(while read dir)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(xargs dirname:*)"
     ],
     "deny": [],
     "ask": [],
