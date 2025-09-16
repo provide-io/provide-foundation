@@ -86,7 +86,8 @@
       "Bash(PYTHONPATH=src ruff check src/provide/foundation/__init__.py)",
       "Bash(PYTHONPATH=src ruff check src/provide/foundation/__init__.py --no-cache)",
       "Bash(timeout 30 pytest tests/logger/test_config.py -v)",
-      "Bash(timeout 10 pytest tests/logger/test_config_coverage.py -v -k \"TelemetryConfig\" --tb=short)"
+      "Bash(timeout 10 pytest tests/logger/test_config_coverage.py -v -k \"TelemetryConfig\" --tb=short)",
+      "Bash(timeout 45 pytest --tb=short -q)"
     ],
     "deny": [],
     "ask": [],
