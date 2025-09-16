@@ -43,7 +43,8 @@
       "Bash(PYTHONPATH=src ty)",
       "Bash(PYTHONPATH=src pytest tests/test_docs_generator.py -v -q)",
       "Bash(PYTHONPATH=src pytest tests/test_docs_generator.py::TestAPIDocGenerator::test_init_default_values -v -q)",
-      "Bash(while read dir)"
+      "Bash(while read dir)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": [],
