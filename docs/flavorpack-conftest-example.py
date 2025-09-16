@@ -4,8 +4,11 @@ This file should be placed at flavorpack/tests/conftest.py to provide
 foundation testing fixtures to all flavorpack tests.
 """
 
-# Import foundation testing utilities from testkit
-from provide.testkit import (
+from typing import TYPE_CHECKING
+
+# Import foundation testing utilities from testkit (when available)
+if TYPE_CHECKING:
+    from provide.testkit import (
     async_stream_reader,
     async_timeout,
     binary_file,
