@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Process execution utilities.
 
 Provides sync and async subprocess execution with consistent error handling,

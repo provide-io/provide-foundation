@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Event set resolution and enrichment logic."""
 
 from typing import Any

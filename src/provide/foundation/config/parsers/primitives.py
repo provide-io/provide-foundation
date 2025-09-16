@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Basic type parsing functions for configuration values.
 
 Handles parsing of primitive types (bool, float, int) and simple

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Custom exceptions for OpenObserve integration."""
 
 from provide.foundation.errors import FoundationError

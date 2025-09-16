@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Async subprocess execution utilities."""
 
 import asyncio

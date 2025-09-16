@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Process exit utilities for standardized exit handling."""
 
 import sys

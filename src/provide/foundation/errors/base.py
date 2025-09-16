@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Base exception class for Foundation."""
 
 from typing import Any
@@ -42,7 +44,7 @@ class FoundationError(Exception):
         """Return default error code for this exception type."""
         return "PROVIDE_ERROR"
 
-    def add_context(self, key: str, value: Any) -> "FoundationError":
+    def add_context(self, key: str, value: Any) -> FoundationError:
         """Add context data to the error.
 
         Args:

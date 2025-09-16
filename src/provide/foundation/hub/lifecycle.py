@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Hub component lifecycle management utilities.
 
 Provides functions for initializing, managing, and cleaning up components

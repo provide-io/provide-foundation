@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Output formatting utilities for OpenObserve results."""
 
 import csv

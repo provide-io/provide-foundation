@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Tool verification system for checksums and signatures.
 
 Provides capabilities for verifying downloaded tools using various

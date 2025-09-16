@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Integration and network-related exceptions."""
 
 from typing import Any

@@ -1,2 +1,0 @@
-- remember that it has this feature.
-- remember that it has progressive disclosure, facades, decorators, etc.

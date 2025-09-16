@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Process lifecycle management utilities.
 
 This module provides utilities for managing long-running subprocesses with
@@ -318,7 +320,7 @@ class ManagedProcess:
 
         plog.debug("🧹 Managed process cleanup completed")
 
-    def __enter__(self) -> "ManagedProcess":
+    def __enter__(self) -> ManagedProcess:
         """Context manager entry."""
         self.launch()
         return self

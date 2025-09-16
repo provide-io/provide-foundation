@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Format-specific file operations for JSON, YAML, TOML."""
 
 import json

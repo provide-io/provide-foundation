@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Provide Foundation Hub - Component and Command Coordination System
 ===================================================================
 

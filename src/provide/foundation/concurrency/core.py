@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Core async utilities for Foundation."""
 
 import asyncio

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Authentication and authorization exceptions."""
 
 from typing import Any

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Transport registration and discovery using Foundation Hub."""
 
 from typing import Any

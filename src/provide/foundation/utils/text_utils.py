@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Text manipulation and formatting utilities.
 
 Provides utilities for text truncation, case conversion, table formatting,

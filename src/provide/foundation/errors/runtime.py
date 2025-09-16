@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Runtime and process execution exceptions."""
 
 from typing import Any

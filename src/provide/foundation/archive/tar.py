@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """TAR archive implementation."""
 
 from pathlib import Path

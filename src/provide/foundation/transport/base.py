@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Core transport abstractions."""
 
 from abc import ABC, abstractmethod
@@ -113,7 +115,7 @@ class Transport(Protocol):
         """Check if this transport handles the given type."""
         ...
 
-    async def __aenter__(self) -> "Transport":
+    async def __aenter__(self) -> Transport:
         """Context manager entry."""
         await self.connect()
         return self
@@ -149,7 +151,7 @@ class TransportBase(ABC):
         """Default streaming implementation (not supported)."""
         raise NotImplementedError(f"{self.__class__.__name__} does not support streaming")
 
-    async def __aenter__(self) -> "TransportBase":
+    async def __aenter__(self) -> TransportBase:
         await self.connect()
         return self
 

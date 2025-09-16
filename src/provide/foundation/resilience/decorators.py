@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Resilience decorators for retry, circuit breaker, and fallback patterns."""
 
 import asyncio

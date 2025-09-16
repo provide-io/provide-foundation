@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Hub configuration management utilities.
 
 Provides functions for resolving configuration values from registered sources,

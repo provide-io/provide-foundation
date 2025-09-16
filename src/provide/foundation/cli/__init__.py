@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Foundation CLI utilities for consistent command-line interfaces.
 
 Provides standard decorators, utilities, and patterns for building

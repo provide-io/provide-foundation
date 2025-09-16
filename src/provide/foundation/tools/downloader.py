@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Tool download orchestration with progress reporting.
 
 Provides capabilities for downloading tools with progress tracking,

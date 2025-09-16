@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Caching system for installed tools.
 
 Provides TTL-based caching to avoid re-downloading tools

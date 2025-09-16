@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Temporary file and directory utilities."""
 
 from collections.abc import Generator

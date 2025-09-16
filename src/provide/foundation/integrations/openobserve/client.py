@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """OpenObserve API client."""
 
 from datetime import datetime
@@ -72,7 +74,7 @@ class OpenObserveClient:
         self.session.headers.update(get_auth_headers(self.username, self.password))
 
     @classmethod
-    def from_config(cls) -> "OpenObserveClient":
+    def from_config(cls) -> OpenObserveClient:
         """Create client from OpenObserveConfig.
 
         Returns:

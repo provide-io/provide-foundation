@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Atomic file operations using temp file + rename pattern."""
 
 import contextlib

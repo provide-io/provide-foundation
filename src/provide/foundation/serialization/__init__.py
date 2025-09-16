@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Serialization utilities for Foundation.
 
 Provides consistent serialization handling with validation,

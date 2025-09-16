@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Core Hub class for component and command management.
 
 This module provides the core Hub functionality for registering and
@@ -381,7 +383,7 @@ class CoreHub:
         if dimension != "command" or dimension is None:
             self._component_registry.clear(dimension=dimension)
 
-    def __enter__(self) -> "CoreHub":
+    def __enter__(self) -> CoreHub:
         """Context manager entry."""
         self.initialize()
         return self

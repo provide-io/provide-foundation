@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Unified context for configuration and CLI state management."""
 
 import copy
@@ -126,7 +128,7 @@ class CLIContext(RuntimeConfig):
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any], source: ConfigSource = ConfigSource.RUNTIME) -> "CLIContext":
+    def from_dict(cls, data: dict[str, Any], source: ConfigSource = ConfigSource.RUNTIME) -> CLIContext:
         """Create context from dictionary.
 
         Args:
@@ -228,7 +230,7 @@ class CLIContext(RuntimeConfig):
         else:
             raise ValueError(f"Unsupported config format: {path.suffix}")
 
-    def merge(self, other: "CLIContext", override_defaults: bool = False) -> "CLIContext":
+    def merge(self, other: CLIContext, override_defaults: bool = False) -> CLIContext:
         """Merge with another context, with other taking precedence.
 
         Args:
@@ -275,7 +277,7 @@ class CLIContext(RuntimeConfig):
         # This is kept for API compatibility but does nothing
         self._frozen = True
 
-    def copy(self) -> "CLIContext":
+    def copy(self) -> CLIContext:
         """Create a deep copy of the context."""
         return copy.deepcopy(self)
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 #
 # telemetry.py
 #
@@ -99,7 +101,7 @@ class TelemetryConfig(RuntimeConfig):
     )
 
     @classmethod
-    def from_env(cls, **kwargs) -> "TelemetryConfig":
+    def from_env(cls, **kwargs) -> TelemetryConfig:
         """Load configuration from environment variables.
 
         This method explicitly provides the from_env() interface

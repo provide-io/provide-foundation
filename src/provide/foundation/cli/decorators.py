@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Standard CLI decorators for consistent option handling."""
 
 from collections.abc import Callable

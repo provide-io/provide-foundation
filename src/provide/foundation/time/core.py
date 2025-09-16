@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Core time utilities for Foundation."""
 
 from datetime import datetime

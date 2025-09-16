@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Cryptographic constants and configuration."""
 
 from typing import Final

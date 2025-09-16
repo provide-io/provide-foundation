@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Send logs command for Foundation CLI."""
 
 import json

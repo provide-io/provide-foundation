@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Validation functions for configuration field values.
 
 These validators are used with the attrs `validator` parameter to validate

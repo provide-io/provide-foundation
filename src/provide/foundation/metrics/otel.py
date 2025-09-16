@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """OpenTelemetry metrics integration."""
 
 from provide.foundation.logger.config.telemetry import TelemetryConfig

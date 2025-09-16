@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Utility modules for provide.foundation.
 
 Common utilities that can be used across the foundation and by other packages.

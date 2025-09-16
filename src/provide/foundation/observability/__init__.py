@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Observability module for Foundation.
 
 Provides integration with observability platforms like OpenObserve.

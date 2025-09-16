@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Checksum verification and management."""
 
 from pathlib import Path

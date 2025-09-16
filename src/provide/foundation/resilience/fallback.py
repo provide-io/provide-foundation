@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Fallback implementation for graceful degradation."""
 
 import asyncio

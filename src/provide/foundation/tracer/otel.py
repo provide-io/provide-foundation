@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """OpenTelemetry integration for Foundation tracer."""
 
 from provide.foundation.logger.config.telemetry import TelemetryConfig
@@ -120,7 +122,7 @@ def setup_opentelemetry_tracing(config: TelemetryConfig) -> None:
         slog.info("🔍✅ OpenTelemetry tracing setup complete")
 
 
-def get_otel_tracer(name: str) -> "otel_trace.Tracer | None":
+def get_otel_tracer(name: str) -> otel_trace.Tracer | None:
     """Get OpenTelemetry tracer if available.
 
     Args:

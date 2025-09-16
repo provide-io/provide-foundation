@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Base classes and interfaces for archive operations."""
 
 from abc import ABC, abstractmethod

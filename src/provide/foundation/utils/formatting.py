@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Size, duration, and number formatting utilities.
 
 Provides utilities for human-readable formatting of sizes, durations,

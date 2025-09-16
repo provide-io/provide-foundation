@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Platform detection and system-related exceptions."""
 
 from typing import Any

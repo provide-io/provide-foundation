@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Transport middleware system with Hub registration."""
 
 from abc import ABC, abstractmethod

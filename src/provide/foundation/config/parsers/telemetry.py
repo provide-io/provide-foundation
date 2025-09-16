@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Telemetry and logging-specific parsers for configuration values.
 
 Handles parsing of domain-specific telemetry configuration like log levels,
@@ -19,7 +21,7 @@ else:
     ConsoleFormatterStr = str
 
 
-def parse_log_level(value: str) -> "LogLevelStr":
+def parse_log_level(value: str) -> LogLevelStr:
     """Parse and validate log level string.
 
     Args:
@@ -44,7 +46,7 @@ def parse_log_level(value: str) -> "LogLevelStr":
     return cast("LogLevelStr", level)
 
 
-def parse_console_formatter(value: str) -> "ConsoleFormatterStr":
+def parse_console_formatter(value: str) -> ConsoleFormatterStr:
     """Parse and validate console formatter string.
 
     Args:

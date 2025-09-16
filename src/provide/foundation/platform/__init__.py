@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Platform detection and information utilities.
 
 Provides cross-platform detection and system information gathering.
