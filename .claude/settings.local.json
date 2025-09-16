@@ -75,7 +75,9 @@
       "Bash(PYTHONPATH=src pytest tests/transport/unix/ --tb=short -q)",
       "Bash(PYTHONPATH=src ty check src/)",
       "Bash(PYTHONPATH=src ruff check src/)",
-      "Bash(/bin/ls:*)"
+      "Bash(/bin/ls:*)",
+      "Bash(PYTHONPATH=src mypy src/provide/foundation/config/loader.py --show-error-codes --no-error-summary)",
+      "Bash(export PYTHONPATH=src)"
     ],
     "deny": [],
     "ask": [],
