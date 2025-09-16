@@ -7,10 +7,11 @@ from __future__ import annotations
 Provides OpenTelemetry integration when available, falls back to simple tracing.
 """
 
-from attrs import define, field
 import time
 from typing import TYPE_CHECKING, Any
 import uuid
+
+from attrs import define, field
 
 from provide.foundation.logger import get_logger
 
@@ -41,12 +42,12 @@ class Span:
     """
 
     name: str
-    span_id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    span_id: str = field(factory=lambda: str(uuid.uuid4()))
     parent_id: str | None = None
-    trace_id: str = field(default_factory=lambda: str(uuid.uuid4()))
-    start_time: float = field(default_factory=time.time)
+    trace_id: str = field(factory=lambda: str(uuid.uuid4()))
+    start_time: float = field(factory=time.time)
     end_time: float | None = None
-    tags: dict[str, Any] = field(default_factory=dict)
+    tags: dict[str, Any] = field(factory=dict)
     status: str = "ok"
     error: str | None = None
 

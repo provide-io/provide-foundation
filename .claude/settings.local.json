@@ -121,7 +121,9 @@
       "Bash(PYTHONPATH=src ruff check --select PTH108 . --statistics)",
       "Bash(PYTHONPATH=src ruff check tests/cli/test_decorators.py tests/config/test_config_env_coverage.py tests/context/test_context_core.py tests/hub/test_hub_context.py)",
       "Bash(PYTHONPATH=src ruff check --select PTH110 tests/config/test_config_env_coverage.py)",
-      "Bash(PYTHONPATH=src ruff check --select RUF009)"
+      "Bash(PYTHONPATH=src ruff check --select RUF009)",
+      "Bash(PYTHONPATH=src ruff format src/provide/foundation/tracer/spans.py src/provide/foundation/integrations/openobserve/models.py tests/crypto/test_certificate_credentials.py tests/hub/test_hub_async_support.py examples/configuration/03_config_management.py)",
+      "Bash(PYTHONPATH=src ruff check --fix src/provide/foundation/tracer/spans.py src/provide/foundation/integrations/openobserve/models.py tests/crypto/test_certificate_credentials.py tests/hub/test_hub_async_support.py examples/configuration/03_config_management.py)"
     ],
     "deny": [],
     "ask": [],

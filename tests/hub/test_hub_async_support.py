@@ -1,10 +1,10 @@
 """Async support tests for provide-foundation."""
 
 import asyncio
-from attrs import define
 import time
 from typing import Any
 
+from attrs import define
 import pytest
 
 from provide.foundation.hub import (

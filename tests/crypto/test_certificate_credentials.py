@@ -1,7 +1,6 @@
 # pyvider/rpcplugin/tests/test_certificate_credentials.py
 
 from attrs import define
-
 import pytest
 
 # Fixtures will be available via tests.fixtures through conftest.py

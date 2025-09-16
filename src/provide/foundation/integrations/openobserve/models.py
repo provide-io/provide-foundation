@@ -2,9 +2,10 @@ from __future__ import annotations
 
 """Data models for OpenObserve API requests and responses."""
 
-from attrs import define, field
 from datetime import datetime
 from typing import Any
+
+from attrs import define, field
 
 
 @define
@@ -42,7 +43,7 @@ class SearchResponse:
     from_offset: int = 0
     size: int = 0
     is_partial: bool = False
-    function_error: list[str] = field(default_factory=list)
+    function_error: list[str] = field(factory=list)
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> SearchResponse:
