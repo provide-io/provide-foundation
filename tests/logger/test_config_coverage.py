@@ -7,6 +7,7 @@ import os
 from unittest.mock import patch
 
 import pytest
+from provide.testkit.quality.decorators import coverage_gate, quality_gate
 
 
 class TestConfigBase:
@@ -163,6 +164,7 @@ class TestLoggingConfigCoverage:
 class TestTelemetryConfigCoverage:
     """Test telemetry config functionality."""
 
+    @quality_gate(min_coverage=85.0, max_complexity=5)
     def test_telemetry_config_from_env_otel_service_name(self) -> None:
         """Test telemetry config using OTEL_SERVICE_NAME."""
         from provide.foundation.logger.config.telemetry import TelemetryConfig
@@ -171,6 +173,7 @@ class TestTelemetryConfigCoverage:
             config = TelemetryConfig.from_env()
             assert config.service_name == "test-service"
 
+    @coverage_gate(min_coverage=80.0)
     def test_telemetry_config_from_env_service_name_default_none(self) -> None:
         """Test telemetry config service_name defaults to None when not set."""
         from provide.foundation.logger.config.telemetry import TelemetryConfig
