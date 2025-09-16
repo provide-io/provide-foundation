@@ -48,27 +48,35 @@ def example_3_named_loggers() -> None:
     # and module-level filtering.
 
     # Authentication service logs
-    auth_logger.info("User login successful",
-                    user_id="user123", session_id="sess_456",
-                    ip_address="192.168.1.100", duration_ms=245)
-    auth_logger.info("JWT token issued",
-                    user_id="user123", expires_in=3600, scopes=["read", "write"])
+    auth_logger.info(
+        "User login successful",
+        user_id="user123",
+        session_id="sess_456",
+        ip_address="192.168.1.100",
+        duration_ms=245,
+    )
+    auth_logger.info("JWT token issued", user_id="user123", expires_in=3600, scopes=["read", "write"])
 
     # Database connection logs
-    db_logger.info("Connection pool initialized",
-                  pool_size=20, initial_connections=5, timeout_ms=5000)
-    db_logger.warning("Database connection pool nearing capacity",
-                     pool_size=20, current=18, available=2)
-    db_logger.info("Query executed successfully",
-                  table="users", query_time_ms=12, rows_affected=1)
+    db_logger.info("Connection pool initialized", pool_size=20, initial_connections=5, timeout_ms=5000)
+    db_logger.warning("Database connection pool nearing capacity", pool_size=20, current=18, available=2)
+    db_logger.info("Query executed successfully", table="users", query_time_ms=12, rows_affected=1)
 
     # API handler logs
-    api_logger.info("HTTP request started",
-                   method="GET", path="/api/users", request_id="req-abc123",
-                   user_agent="Mozilla/5.0")
-    api_logger.info("Request processed successfully",
-                   request_id="req-abc123", status_code=200,
-                   response_time_ms=156, response_size_bytes=1024)
+    api_logger.info(
+        "HTTP request started",
+        method="GET",
+        path="/api/users",
+        request_id="req-abc123",
+        user_agent="Mozilla/5.0",
+    )
+    api_logger.info(
+        "Request processed successfully",
+        request_id="req-abc123",
+        status_code=200,
+        response_time_ms=156,
+        response_size_bytes=1024,
+    )
 
     # Show that different components can log independently
     logger.info("Main application event", component="core", event_type="health_check")

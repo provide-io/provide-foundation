@@ -56,7 +56,8 @@ def verify_benchmark_segment(self, test_name: str, iterations: int = 1000) -> di
     """
     task_logger = CeleryTaskLogger("verify_benchmark_segment")
 
-    task_logger.logger.info("benchmark_segment_started",
+    task_logger.logger.info(
+        "benchmark_segment_started",
         test_name=test_name,
         iterations=iterations,
         worker_id=self.request.hostname,
@@ -70,18 +71,23 @@ def verify_benchmark_segment(self, test_name: str, iterations: int = 1000) -> di
 
         if test_name == "basic_logging":
             from benchmark_performance import benchmark_basic_logging
+
             result = benchmark_basic_logging()
         elif test_name == "json_formatting":
             from benchmark_performance import benchmark_json_formatting
+
             result = benchmark_json_formatting()
         elif test_name == "emoji_processing":
             from benchmark_performance import benchmark_emoji_processing
+
             result = benchmark_emoji_processing()
         elif test_name == "level_filtering":
             from benchmark_performance import benchmark_level_filtering
+
             result = benchmark_level_filtering()
         elif test_name == "large_payloads":
             from benchmark_performance import benchmark_large_payloads
+
             result = benchmark_large_payloads()
         else:
             # Custom benchmark - simulate intensive logging
@@ -97,7 +103,8 @@ def verify_benchmark_segment(self, test_name: str, iterations: int = 1000) -> di
             test_logger = logger.get_logger(f"verification.{test_name}")
 
             for i in range(iterations):
-                test_logger.info(f"verification_log_{i}",
+                test_logger.info(
+                    f"verification_log_{i}",
                     iteration=i,
                     test_name=test_name,
                     worker_id=self.request.hostname,
@@ -111,14 +118,17 @@ def verify_benchmark_segment(self, test_name: str, iterations: int = 1000) -> di
             }
 
         duration = time.perf_counter() - start_time
-        result.update({
-            "duration_seconds": duration,
-            "worker_id": self.request.hostname,
-            "task_id": self.request.id,
-            "throughput_per_second": iterations / duration if duration > 0 else 0,
-        })
+        result.update(
+            {
+                "duration_seconds": duration,
+                "worker_id": self.request.hostname,
+                "task_id": self.request.id,
+                "throughput_per_second": iterations / duration if duration > 0 else 0,
+            }
+        )
 
-        task_logger.logger.info("benchmark_segment_completed",
+        task_logger.logger.info(
+            "benchmark_segment_completed",
             test_name=test_name,
             duration_seconds=duration,
             throughput=result["throughput_per_second"],
@@ -127,7 +137,8 @@ def verify_benchmark_segment(self, test_name: str, iterations: int = 1000) -> di
         return result
 
     except Exception as e:
-        task_logger.logger.error("benchmark_segment_failed",
+        task_logger.logger.error(
+            "benchmark_segment_failed",
             test_name=test_name,
             error=str(e),
             duration=time.perf_counter() - start_time,
@@ -149,7 +160,8 @@ def verify_extreme_test_segment(self, test_type: str, duration_seconds: int = 10
     """
     task_logger = CeleryTaskLogger("verify_extreme_test_segment")
 
-    task_logger.logger.info("extreme_test_started",
+    task_logger.logger.info(
+        "extreme_test_started",
         test_type=test_type,
         duration_seconds=duration_seconds,
     )
@@ -175,7 +187,8 @@ def verify_extreme_test_segment(self, test_type: str, duration_seconds: int = 10
         # Run extreme logging
         while time.time() < end_time:
             try:
-                extreme_logger.info(f"extreme_test_message_{message_count}",
+                extreme_logger.info(
+                    f"extreme_test_message_{message_count}",
                     test_type=test_type,
                     message_id=message_count,
                     timestamp=time.time(),
@@ -212,7 +225,8 @@ def verify_extreme_test_segment(self, test_type: str, duration_seconds: int = 10
             "task_id": self.request.id,
         }
 
-        task_logger.logger.info("extreme_test_completed",
+        task_logger.logger.info(
+            "extreme_test_completed",
             test_type=test_type,
             messages_generated=message_count,
             rate=result["messages_per_second"],
@@ -222,7 +236,8 @@ def verify_extreme_test_segment(self, test_type: str, duration_seconds: int = 10
         return result
 
     except Exception as e:
-        task_logger.logger.error("extreme_test_failed",
+        task_logger.logger.error(
+            "extreme_test_failed",
             test_type=test_type,
             error=str(e),
             messages_generated=message_count,
@@ -243,7 +258,8 @@ def verify_cut_up_chuck_segment(self, duration_seconds: int = 30) -> dict[str, A
     """
     task_logger = CeleryTaskLogger("verify_cut_up_chuck_segment")
 
-    task_logger.logger.info("cutup_verification_started",
+    task_logger.logger.info(
+        "cutup_verification_started",
         duration_seconds=duration_seconds,
     )
 
@@ -288,12 +304,15 @@ def verify_cut_up_chuck_segment(self, duration_seconds: int = 30) -> dict[str, A
             "batches_generated": batches_generated,
             "anomalies_detected": anomalies_detected,
             "total_tasks": entries_generated + batches_generated + anomalies_detected,
-            "task_rate": (entries_generated + batches_generated + anomalies_detected) / actual_duration if actual_duration > 0 else 0,
+            "task_rate": (entries_generated + batches_generated + anomalies_detected) / actual_duration
+            if actual_duration > 0
+            else 0,
             "worker_id": self.request.hostname,
             "task_id": self.request.id,
         }
 
-        task_logger.logger.info("cutup_verification_completed",
+        task_logger.logger.info(
+            "cutup_verification_completed",
             duration=actual_duration,
             total_tasks=result["total_tasks"],
             task_rate=result["task_rate"],
@@ -302,7 +321,8 @@ def verify_cut_up_chuck_segment(self, duration_seconds: int = 30) -> dict[str, A
         return result
 
     except Exception as e:
-        task_logger.logger.error("cutup_verification_failed",
+        task_logger.logger.error(
+            "cutup_verification_failed",
             error=str(e),
             duration=time.time() - start_time,
         )
@@ -322,7 +342,8 @@ def collect_verification_results(self, results: list[dict[str, Any]]) -> dict[st
     """
     task_logger = CeleryTaskLogger("collect_verification_results")
 
-    task_logger.logger.info("results_collection_started",
+    task_logger.logger.info(
+        "results_collection_started",
         results_count=len(results),
     )
 
@@ -342,14 +363,18 @@ def collect_verification_results(self, results: list[dict[str, Any]]) -> dict[st
 
         # Calculate aggregated metrics
         total_duration = sum(r.get("duration_seconds", 0) for r in results)
-        total_throughput = sum(r.get("throughput_per_second", 0) or r.get("messages_per_second", 0) or r.get("task_rate", 0) for r in results)
+        total_throughput = sum(
+            r.get("throughput_per_second", 0) or r.get("messages_per_second", 0) or r.get("task_rate", 0)
+            for r in results
+        )
 
         # Benchmark analysis
         benchmark_analysis = {}
         if benchmark_results:
             benchmark_analysis = {
                 "total_benchmarks": len(benchmark_results),
-                "avg_throughput": sum(r.get("throughput_per_second", 0) for r in benchmark_results) / len(benchmark_results),
+                "avg_throughput": sum(r.get("throughput_per_second", 0) for r in benchmark_results)
+                / len(benchmark_results),
                 "tests_executed": [r.get("test_name") for r in benchmark_results],
             }
 
@@ -360,7 +385,8 @@ def collect_verification_results(self, results: list[dict[str, Any]]) -> dict[st
             extreme_analysis = {
                 "total_tests": len(extreme_results),
                 "total_messages": total_messages,
-                "avg_message_rate": sum(r.get("messages_per_second", 0) for r in extreme_results) / len(extreme_results),
+                "avg_message_rate": sum(r.get("messages_per_second", 0) for r in extreme_results)
+                / len(extreme_results),
                 "peak_message_rate": max(r.get("messages_per_second", 0) for r in extreme_results),
             }
 
@@ -387,7 +413,8 @@ def collect_verification_results(self, results: list[dict[str, Any]]) -> dict[st
             "raw_results": results,
         }
 
-        task_logger.logger.info("results_collection_completed",
+        task_logger.logger.info(
+            "results_collection_completed",
             total_results=len(results),
             workers_involved=len(aggregated_results["worker_distribution"]),
             total_throughput=total_throughput,
@@ -396,7 +423,8 @@ def collect_verification_results(self, results: list[dict[str, Any]]) -> dict[st
         return aggregated_results
 
     except Exception as e:
-        task_logger.logger.error("results_collection_failed",
+        task_logger.logger.error(
+            "results_collection_failed",
             error=str(e),
             results_count=len(results),
         )
@@ -501,7 +529,7 @@ class CeleryVerificationRunner:
         for i in range(3):  # 3 parallel segments
             task = verify_cut_up_chuck_segment.delay(random.randint(20, 40))
             cutup_tasks.append(task)
-            pout(f"   Submitted: cut-up segment {i+1}")
+            pout(f"   Submitted: cut-up segment {i + 1}")
 
         # Collect results
         pout("\n   ⏳ Collecting cut-up verification results...")
@@ -509,10 +537,10 @@ class CeleryVerificationRunner:
             try:
                 result = task.get(timeout=90)
                 self.results.append(result)
-                pout(f"   ✅ Segment {i+1}: {result['task_rate']:.1f} tasks/sec")
+                pout(f"   ✅ Segment {i + 1}: {result['task_rate']:.1f} tasks/sec")
             except Exception as e:
-                self.logger.error("cutup_verification_failed", segment=i+1, error=str(e))
-                pout(f"   ❌ Segment {i+1}: Failed")
+                self.logger.error("cutup_verification_failed", segment=i + 1, error=str(e))
+                pout(f"   ❌ Segment {i + 1}: Failed")
 
     def generate_final_report(self) -> None:
         """Generate and display final verification report."""

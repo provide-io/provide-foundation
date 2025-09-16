@@ -9,35 +9,35 @@ from typing import TYPE_CHECKING
 # Import foundation testing utilities from testkit (when available)
 if TYPE_CHECKING:
     from provide.testkit import (
-    async_stream_reader,
-    async_timeout,
-    binary_file,
-    # Foundation-specific
-    captured_stderr_for_foundation,
-    # Async testing helpers
-    clean_event_loop,
-    empty_directory,
-    # Network testing
-    free_port,
-    httpx_mock_responses,
-    mock_async_process,
-    mock_cache,
-    mock_file_system,
-    # Mock objects
-    mock_http_config,
-    mock_logger,
-    mock_server,
-    mock_subprocess,
-    mock_telemetry_config,
-    mock_transport,
-    nested_directory_structure,
-    readonly_file,
-    setup_foundation_telemetry_for_test,
-    # File/directory fixtures
-    temp_directory,
-    temp_file,
-    test_files_structure,
-)
+        async_stream_reader,
+        async_timeout,
+        binary_file,
+        # Foundation-specific
+        captured_stderr_for_foundation,
+        # Async testing helpers
+        clean_event_loop,
+        empty_directory,
+        # Network testing
+        free_port,
+        httpx_mock_responses,
+        mock_async_process,
+        mock_cache,
+        mock_file_system,
+        # Mock objects
+        mock_http_config,
+        mock_logger,
+        mock_server,
+        mock_subprocess,
+        mock_telemetry_config,
+        mock_transport,
+        nested_directory_structure,
+        readonly_file,
+        setup_foundation_telemetry_for_test,
+        # File/directory fixtures
+        temp_directory,
+        temp_file,
+        test_files_structure,
+    )
 import pytest
 
 # Re-export for pytest discovery
@@ -76,6 +76,7 @@ __all__ = [
 # ============================================================================
 # Flavorpack-specific fixtures
 # ============================================================================
+
 
 @pytest.fixture
 def pspf_2025_config():
@@ -158,6 +159,7 @@ def mock_platform_info():
 # ============================================================================
 # Test markers and configuration
 # ============================================================================
+
 
 # Mark all async tests to use the clean_event_loop fixture automatically
 def pytest_configure(config) -> None:

@@ -33,10 +33,12 @@ def simulate_database_query(query: str, params: dict[str, Any] | None = None) ->
 
         # Log with trace context
         trace_ctx = get_trace_context()
-        logger.info("Executing database query",
-                   query=query,
-                   trace_id=trace_ctx["trace_id"],
-                   span_id=trace_ctx["span_id"])
+        logger.info(
+            "Executing database query",
+            query=query,
+            trace_id=trace_ctx["trace_id"],
+            span_id=trace_ctx["span_id"],
+        )
 
         # In real applications, this would be an actual database query
         # No artificial delays needed for demonstration
@@ -45,17 +47,15 @@ def simulate_database_query(query: str, params: dict[str, Any] | None = None) ->
         if len(query) % 10 == 0:  # Every 10th query fails for demo
             error_msg = f"Database timeout for query: {query[:50]}..."
             span.set_error(error_msg)
-            logger.error("Database query failed",
-                        error=error_msg,
-                        trace_id=trace_ctx["trace_id"])
+            logger.error("Database query failed", error=error_msg, trace_id=trace_ctx["trace_id"])
             raise RuntimeError(error_msg)
 
         # Deterministic execution time based on query length
         execution_time_ms = (len(query) % 50 + 10) * 5  # 50-295ms range
 
-        logger.info("Database query completed",
-                   execution_time_ms=execution_time_ms,
-                   trace_id=trace_ctx["trace_id"])
+        logger.info(
+            "Database query completed", execution_time_ms=execution_time_ms, trace_id=trace_ctx["trace_id"]
+        )
 
         return {
             "rows": len(query) % 100 + 1,  # Deterministic row count for demo
@@ -71,10 +71,9 @@ def call_external_service(service_name: str, endpoint: str) -> dict[str, Any]:
         span.set_tag("timeout_ms", 5000)
 
         trace_ctx = get_trace_context()
-        logger.info("Calling external service",
-                   service=service_name,
-                   endpoint=endpoint,
-                   trace_id=trace_ctx["trace_id"])
+        logger.info(
+            "Calling external service", service=service_name, endpoint=endpoint, trace_id=trace_ctx["trace_id"]
+        )
 
         # Simulate network call (deterministic for demo)
         response_time = (len(service_name) % 10 + 1) * 0.03  # Deterministic timing
@@ -87,17 +86,21 @@ def call_external_service(service_name: str, endpoint: str) -> dict[str, Any]:
         if status_code >= 400:
             error_msg = f"HTTP {status_code} from {service_name}{endpoint}"
             span.set_error(error_msg)
-            logger.error("External service call failed",
-                        service=service_name,
-                        status_code=status_code,
-                        trace_id=trace_ctx["trace_id"])
+            logger.error(
+                "External service call failed",
+                service=service_name,
+                status_code=status_code,
+                trace_id=trace_ctx["trace_id"],
+            )
             raise RuntimeError(error_msg)
 
-        logger.info("External service call completed",
-                   service=service_name,
-                   status_code=status_code,
-                   response_time_ms=response_time * 1000,
-                   trace_id=trace_ctx["trace_id"])
+        logger.info(
+            "External service call completed",
+            service=service_name,
+            status_code=status_code,
+            response_time_ms=response_time * 1000,
+            trace_id=trace_ctx["trace_id"],
+        )
 
         return {
             "status_code": status_code,
@@ -113,9 +116,7 @@ def process_user_registration(user_data: dict[str, Any]) -> dict[str, Any]:
         span.set_tag("registration_type", user_data.get("type", "standard"))
 
         trace_ctx = get_trace_context()
-        logger.info("Starting user registration",
-                   email=user_data.get("email"),
-                   trace_id=trace_ctx["trace_id"])
+        logger.info("Starting user registration", email=user_data.get("email"), trace_id=trace_ctx["trace_id"])
 
         try:
             # Step 1: Validate user data
@@ -165,9 +166,11 @@ def process_user_registration(user_data: dict[str, Any]) -> dict[str, Any]:
                 span.set_tag("welcome_email_sent", True)
             except RuntimeError as e:
                 # Don't fail registration if email fails
-                logger.warning("Welcome email failed, continuing registration",
-                             error=str(e),
-                             trace_id=trace_ctx["trace_id"])
+                logger.warning(
+                    "Welcome email failed, continuing registration",
+                    error=str(e),
+                    trace_id=trace_ctx["trace_id"],
+                )
                 span.set_tag("welcome_email_sent", False)
 
             # Step 5: Log to analytics service
@@ -176,16 +179,16 @@ def process_user_registration(user_data: dict[str, Any]) -> dict[str, Any]:
                 span.set_tag("analytics_tracked", True)
             except RuntimeError as e:
                 # Don't fail registration if analytics fails
-                logger.warning("Analytics tracking failed",
-                             error=str(e),
-                             trace_id=trace_ctx["trace_id"])
+                logger.warning("Analytics tracking failed", error=str(e), trace_id=trace_ctx["trace_id"])
                 span.set_tag("analytics_tracked", False)
 
             span.set_tag("registration_status", "completed")
-            logger.info("User registration completed successfully",
-                       user_id=user_id,
-                       email=user_data["email"],
-                       trace_id=trace_ctx["trace_id"])
+            logger.info(
+                "User registration completed successfully",
+                user_id=user_id,
+                email=user_data["email"],
+                trace_id=trace_ctx["trace_id"],
+            )
 
             return {
                 "user_id": user_id,
@@ -196,10 +199,12 @@ def process_user_registration(user_data: dict[str, Any]) -> dict[str, Any]:
 
         except Exception as e:
             span.set_error(str(e))
-            logger.error("User registration failed",
-                        error=str(e),
-                        email=user_data.get("email"),
-                        trace_id=trace_ctx["trace_id"])
+            logger.error(
+                "User registration failed",
+                error=str(e),
+                email=user_data.get("email"),
+                trace_id=trace_ctx["trace_id"],
+            )
             raise
 
 
@@ -211,8 +216,7 @@ async def async_user_operations() -> None:
         batch_span.set_tag("operation_type", "bulk_user_update")
 
         trace_ctx = get_trace_context()
-        logger.info("Processing user batch",
-                   trace_id=trace_ctx["trace_id"])
+        logger.info("Processing user batch", trace_id=trace_ctx["trace_id"])
 
         # Simulate processing multiple users concurrently
         user_ids = [1001, 1002, 1003, 1004, 1005]
@@ -236,9 +240,7 @@ async def async_user_operations() -> None:
                 return {"user_id": user_id, "updated": True}
 
         # Process users concurrently
-        results = await asyncio.gather(*[
-            process_single_user(uid) for uid in user_ids
-        ], return_exceptions=True)
+        results = await asyncio.gather(*[process_single_user(uid) for uid in user_ids], return_exceptions=True)
 
         successful = sum(1 for r in results if not isinstance(r, Exception))
         failed = len(results) - successful
@@ -246,10 +248,12 @@ async def async_user_operations() -> None:
         batch_span.set_tag("successful_updates", successful)
         batch_span.set_tag("failed_updates", failed)
 
-        logger.info("Async batch processing completed",
-                   successful=successful,
-                   failed=failed,
-                   trace_id=trace_ctx["trace_id"])
+        logger.info(
+            "Async batch processing completed",
+            successful=successful,
+            failed=failed,
+            trace_id=trace_ctx["trace_id"],
+        )
 
 
 def trace_analysis_example() -> None:
@@ -280,11 +284,13 @@ def trace_analysis_example() -> None:
         max_duration = max(durations)
         min_duration = min(durations)
 
-        logger.info("Trace Analysis Results",
-                   total_traces=len(traces),
-                   avg_duration_ms=round(avg_duration, 2),
-                   max_duration_ms=round(max_duration, 2),
-                   min_duration_ms=round(min_duration, 2))
+        logger.info(
+            "Trace Analysis Results",
+            total_traces=len(traces),
+            avg_duration_ms=round(avg_duration, 2),
+            max_duration_ms=round(max_duration, 2),
+            min_duration_ms=round(min_duration, 2),
+        )
 
 
 def main() -> None:
@@ -299,8 +305,7 @@ def main() -> None:
         logger.info("Performing simple operation")
 
         span.set_tag("operation_result", "success")
-        logger.info("Simple operation completed",
-                   duration_ms=span.duration_ms())
+        logger.info("Simple operation completed", duration_ms=span.duration_ms())
 
     # Example 2: Complex nested tracing
     logger.info("\n=== Example 2: Complex User Registration ===")

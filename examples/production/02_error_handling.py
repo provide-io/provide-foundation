@@ -211,9 +211,9 @@ def example_error_handling() -> None:
     for i in range(4):
         try:
             result = external_service_call(should_fail=i < 3)
-            logger.info(f"Service call {i+1} succeeded", result=result)
+            logger.info(f"Service call {i + 1} succeeded", result=result)
         except Exception as e:
-            logger.warning(f"Service call {i+1} failed", error=str(e))
+            logger.warning(f"Service call {i + 1} failed", error=str(e))
 
     # Example 6: Fallback Chains
     pout("\n🎯 Example 6: Fallback Strategies")

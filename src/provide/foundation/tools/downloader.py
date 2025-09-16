@@ -7,10 +7,10 @@ parallel downloads, and mirror support.
 """
 
 from collections.abc import Callable
-from typing import Any
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
 from pathlib import Path
+from typing import Any
 
 from provide.foundation.errors import FoundationError
 from provide.foundation.logger import get_logger

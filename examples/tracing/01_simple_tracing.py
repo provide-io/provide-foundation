@@ -8,7 +8,6 @@ Demonstrates how to add operation timing and context tracking
 to your applications without external dependencies.
 """
 
-
 from provide.foundation import logger, setup_telemetry
 from provide.foundation.tracer import get_trace_context, with_span
 
@@ -25,18 +24,18 @@ def fetch_user_data(user_id: int) -> dict:
 
         # Get trace context for logging
         trace_ctx = get_trace_context()
-        logger.info("Fetching user data",
-                   user_id=user_id,
-                   trace_id=trace_ctx["trace_id"])
+        logger.info("Fetching user data", user_id=user_id, trace_id=trace_ctx["trace_id"])
 
         # Simulate database query with real work
         # In real applications, this would be an actual database call
 
         # Log completion with timing
-        logger.info("User data fetched",
-                   user_id=user_id,
-                   duration_ms=span.duration_ms(),
-                   trace_id=trace_ctx["trace_id"])
+        logger.info(
+            "User data fetched",
+            user_id=user_id,
+            duration_ms=span.duration_ms(),
+            trace_id=trace_ctx["trace_id"],
+        )
 
         return {
             "id": user_id,
@@ -52,9 +51,7 @@ def process_order(order_data: dict) -> dict:
         span.set_tag("item_count", len(order_data["items"]))
 
         trace_ctx = get_trace_context()
-        logger.info("Processing order",
-                   order_id=order_data["id"],
-                   trace_id=trace_ctx["trace_id"])
+        logger.info("Processing order", order_id=order_data["id"], trace_id=trace_ctx["trace_id"])
 
         # Step 1: Validate order
         with with_span("validate_order") as validation_span:
@@ -82,9 +79,7 @@ def process_order(order_data: dict) -> dict:
             payment_span.set_tag("payment_method", order_data.get("payment_method", "credit_card"))
             payment_span.set_tag("amount", total)
 
-            logger.info("Processing payment",
-                       amount=total,
-                       trace_id=trace_ctx["trace_id"])
+            logger.info("Processing payment", amount=total, trace_id=trace_ctx["trace_id"])
 
             # Simulate payment processing
             payment_span.set_tag("payment_status", "completed")
@@ -92,11 +87,13 @@ def process_order(order_data: dict) -> dict:
         span.set_tag("order_status", "completed")
         span.set_tag("total_amount", total)
 
-        logger.info("Order processed successfully",
-                   order_id=order_data["id"],
-                   total=total,
-                   duration_ms=span.duration_ms(),
-                   trace_id=trace_ctx["trace_id"])
+        logger.info(
+            "Order processed successfully",
+            order_id=order_data["id"],
+            total=total,
+            duration_ms=span.duration_ms(),
+            trace_id=trace_ctx["trace_id"],
+        )
 
         return {
             "order_id": order_data["id"],
@@ -112,9 +109,7 @@ def batch_process_users(user_ids: list[int]) -> list[dict]:
         span.set_tag("batch_size", len(user_ids))
 
         trace_ctx = get_trace_context()
-        logger.info("Starting batch user processing",
-                   user_count=len(user_ids),
-                   trace_id=trace_ctx["trace_id"])
+        logger.info("Starting batch user processing", user_count=len(user_ids), trace_id=trace_ctx["trace_id"])
 
         results = []
         for user_id in user_ids:
@@ -123,18 +118,19 @@ def batch_process_users(user_ids: list[int]) -> list[dict]:
                 user_data = fetch_user_data(user_id)
                 results.append(user_data)
             except Exception as e:
-                logger.error("Failed to process user",
-                           user_id=user_id,
-                           error=str(e),
-                           trace_id=trace_ctx["trace_id"])
+                logger.error(
+                    "Failed to process user", user_id=user_id, error=str(e), trace_id=trace_ctx["trace_id"]
+                )
 
         span.set_tag("successful_count", len(results))
         span.set_tag("failed_count", len(user_ids) - len(results))
 
-        logger.info("Batch processing completed",
-                   processed=len(results),
-                   failed=len(user_ids) - len(results),
-                   trace_id=trace_ctx["trace_id"])
+        logger.info(
+            "Batch processing completed",
+            processed=len(results),
+            failed=len(user_ids) - len(results),
+            trace_id=trace_ctx["trace_id"],
+        )
 
         return results
 

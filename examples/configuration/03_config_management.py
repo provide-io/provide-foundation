@@ -101,16 +101,25 @@ class DatabaseConfig(RuntimeConfig):
     """Database configuration that loads from environment."""
 
     host: str = env_field(
-        default="localhost", env_var="DB_HOST", description="Database host",
+        default="localhost",
+        env_var="DB_HOST",
+        description="Database host",
     )
     port: int = env_field(
-        default=5432, env_var="DB_PORT", parser=int, description="Database port",
+        default=5432,
+        env_var="DB_PORT",
+        parser=int,
+        description="Database port",
     )
     database: str = env_field(
-        default="mydb", env_var="DB_NAME", description="Database name",
+        default="mydb",
+        env_var="DB_NAME",
+        description="Database name",
     )
     username: str = env_field(
-        default="user", env_var="DB_USER", description="Database username",
+        default="user",
+        env_var="DB_USER",
+        description="Database username",
     )
     password: str = env_field(
         default="",
@@ -136,7 +145,8 @@ class ServerConfig(BaseConfig):
     workers: int = field(default=4)
     timeout: int = field(default=30)
     cors_origins: list[str] = field(
-        factory=lambda: ["http://localhost:3000"], metadata={"parser": parse_list},
+        factory=lambda: ["http://localhost:3000"],
+        metadata={"parser": parse_list},
     )
 
 
@@ -216,7 +226,6 @@ def example_file_loading() -> None:
 
     # Create temporary config files using Foundation utilities
     with temp_dir() as tmppath:
-
         # JSON config
         json_file = tmppath / "config.json"
         json_file.write_text("""{
@@ -317,7 +326,10 @@ def example_schema_validation() -> None:
                 description="Port number",
             ),
             SchemaField(
-                name="debug", type=bool, default=False, description="Debug mode",
+                name="debug",
+                type=bool,
+                default=False,
+                description="Debug mode",
             ),
             SchemaField(
                 name="version",

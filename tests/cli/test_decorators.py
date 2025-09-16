@@ -1,8 +1,8 @@
 """Tests for CLI decorators."""
 
 import os
-import tempfile
 from pathlib import Path
+import tempfile
 from typing import Never
 
 import click

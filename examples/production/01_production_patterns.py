@@ -13,6 +13,8 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
+from provide.testkit import reset_foundation_setup_for_testing  # noqa: E402
+
 from provide.foundation import (  # noqa: E402
     LoggingConfig,
     TelemetryConfig,
@@ -20,7 +22,6 @@ from provide.foundation import (  # noqa: E402
     setup_telemetry,
 )
 from provide.foundation.console.output import pout  # noqa: E402
-from provide.testkit import reset_foundation_setup_for_testing  # noqa: E402
 
 
 def example_10_production_patterns() -> None:

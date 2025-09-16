@@ -55,14 +55,18 @@ async def demonstrate_basic_requests() -> None:
     mock_get_httpx_response = Mock()
     mock_get_httpx_response.status_code = 200
     mock_get_httpx_response.headers = {"content-type": "application/json"}
-    mock_get_httpx_response.content = b'{"args": {"demo": "foundation", "example": "transport"}, "url": "https://api.example.com/get"}'
+    mock_get_httpx_response.content = (
+        b'{"args": {"demo": "foundation", "example": "transport"}, "url": "https://api.example.com/get"}'
+    )
     mock_get_httpx_response.elapsed = Mock()
     mock_get_httpx_response.elapsed.total_seconds.return_value = 0.1425
 
     mock_post_httpx_response = Mock()
     mock_post_httpx_response.status_code = 201
     mock_post_httpx_response.headers = {"content-type": "application/json"}
-    mock_post_httpx_response.content = b'{"json": {"name": "Foundation Demo", "version": "1.0.0"}, "url": "https://api.example.com/post"}'
+    mock_post_httpx_response.content = (
+        b'{"json": {"name": "Foundation Demo", "version": "1.0.0"}, "url": "https://api.example.com/post"}'
+    )
     mock_post_httpx_response.elapsed = Mock()
     mock_post_httpx_response.elapsed.total_seconds.return_value = 0.245
 
@@ -86,10 +90,7 @@ async def demonstrate_basic_requests() -> None:
 
         if response.is_success():
             data = response.json()
-            logger.info("get_request_success",
-                       status=response.status,
-                       args=data.get("args", {}),
-                       mocked=True)
+            logger.info("get_request_success", status=response.status, args=data.get("args", {}), mocked=True)
 
         logger.info("making_mocked_post_request", url="https://api.example.com/post")
         response = await post(
@@ -104,10 +105,9 @@ async def demonstrate_basic_requests() -> None:
 
         if response.is_success():
             data = response.json()
-            logger.info("post_request_success",
-                       status=response.status,
-                       json_echo=data.get("json", {}),
-                       mocked=True)
+            logger.info(
+                "post_request_success", status=response.status, json_echo=data.get("json", {}), mocked=True
+            )
 
     logger.info("basic_requests_completed")
 
@@ -136,7 +136,9 @@ async def demonstrate_client_session() -> None:
     mock_create_response = Mock()
     mock_create_response.status_code = 201
     mock_create_response.headers = {"content-type": "application/json"}
-    mock_create_response.content = b'{"id": 3, "name": "New User", "email": "user@example.com", "created": true}'
+    mock_create_response.content = (
+        b'{"id": 3, "name": "New User", "email": "user@example.com", "created": true}'
+    )
     mock_create_response.elapsed = Mock()
     mock_create_response.elapsed.total_seconds.return_value = 0.2341
 
@@ -152,6 +154,7 @@ async def demonstrate_client_session() -> None:
 
         # Mock httpx.AsyncClient.request for all client operations
         with patch("httpx.AsyncClient.request", new_callable=AsyncMock) as mock_httpx_request:
+
             def mock_request_side_effect(method, url, **kwargs):
                 if "users" in url and method == "GET":
                     return mock_users_response
@@ -169,10 +172,12 @@ async def demonstrate_client_session() -> None:
             )
 
             if users_response.is_success():
-                logger.info("users_request_success",
-                           status=users_response.status,
-                           duration_ms=users_response.elapsed_ms,
-                           mocked=True)
+                logger.info(
+                    "users_request_success",
+                    status=users_response.status,
+                    duration_ms=users_response.elapsed_ms,
+                    mocked=True,
+                )
 
             create_response = await client.post(
                 "https://api.example.com/users",
@@ -180,10 +185,12 @@ async def demonstrate_client_session() -> None:
             )
 
             if create_response.is_success():
-                logger.info("create_request_success",
-                           status=create_response.status,
-                           duration_ms=create_response.elapsed_ms,
-                           mocked=True)
+                logger.info(
+                    "create_request_success",
+                    status=create_response.status,
+                    duration_ms=create_response.elapsed_ms,
+                    mocked=True,
+                )
 
             update_response = await client.put(
                 "https://api.example.com/users/3",
@@ -191,10 +198,12 @@ async def demonstrate_client_session() -> None:
             )
 
             if update_response.is_success():
-                logger.info("update_request_success",
-                           status=update_response.status,
-                           duration_ms=update_response.elapsed_ms,
-                           mocked=True)
+                logger.info(
+                    "update_request_success",
+                    status=update_response.status,
+                    duration_ms=update_response.elapsed_ms,
+                    mocked=True,
+                )
 
     logger.info("client_session_completed")
 
@@ -212,11 +221,13 @@ async def demonstrate_middleware() -> None:
         jitter=True,
     )
 
-    pipeline = MiddlewarePipeline([
-        LoggingMiddleware(log_requests=True, log_responses=True),
-        MetricsMiddleware(),
-        RetryMiddleware(policy=retry_policy),
-    ])
+    pipeline = MiddlewarePipeline(
+        [
+            LoggingMiddleware(log_requests=True, log_responses=True),
+            MetricsMiddleware(),
+            RetryMiddleware(policy=retry_policy),
+        ]
+    )
 
     client = UniversalClient(middleware=pipeline)
 
@@ -229,8 +240,7 @@ async def demonstrate_middleware() -> None:
     mock_success_httpx_response.elapsed.total_seconds.return_value = 0.0984
 
     async with client:
-        logger.info("middleware_configured",
-                   middlewares=["logging", "metrics", "retry"])
+        logger.info("middleware_configured", middlewares=["logging", "metrics", "retry"])
 
         with patch("httpx.AsyncClient.request", new_callable=AsyncMock) as mock_httpx_request:
             mock_httpx_request.return_value = mock_success_httpx_response
@@ -241,10 +251,9 @@ async def demonstrate_middleware() -> None:
                 timeout=5.0,
             )
 
-            logger.info("middleware_request_completed",
-                       status=response.status,
-                       middlewares_applied=True,
-                       mocked=True)
+            logger.info(
+                "middleware_request_completed", status=response.status, middlewares_applied=True, mocked=True
+            )
 
     logger.info("middleware_demo_completed")
 
@@ -291,37 +300,31 @@ async def demonstrate_error_handling() -> None:
                     response = await get("https://api.example.com/test", timeout=2.0)
 
                 if not response.is_success():
-                    logger.warning("http_error_response",
-                                  scenario=scenario_name,
-                                  status=response.status,
-                                  mocked=True)
+                    logger.warning(
+                        "http_error_response", scenario=scenario_name, status=response.status, mocked=True
+                    )
                 else:
-                    logger.info("unexpected_success",
-                               scenario=scenario_name,
-                               status=response.status,
-                               mocked=True)
+                    logger.info(
+                        "unexpected_success", scenario=scenario_name, status=response.status, mocked=True
+                    )
 
         except TransportTimeoutError:
             logger.error("timeout_error", scenario=scenario_name, mocked=True)
 
         except TransportConnectionError as e:
-            logger.error("connection_error",
-                        scenario=scenario_name,
-                        error=str(e),
-                        mocked=True)
+            logger.error("connection_error", scenario=scenario_name, error=str(e), mocked=True)
 
         except HTTPResponseError as e:
-            logger.error("http_response_error",
-                        scenario=scenario_name,
-                        status=e.status_code,
-                        mocked=True)
+            logger.error("http_response_error", scenario=scenario_name, status=e.status_code, mocked=True)
 
         except TransportError as e:
-            logger.error("transport_error",
-                        scenario=scenario_name,
-                        error=str(e),
-                        error_type=type(e).__name__,
-                        mocked=True)
+            logger.error(
+                "transport_error",
+                scenario=scenario_name,
+                error=str(e),
+                error_type=type(e).__name__,
+                mocked=True,
+            )
 
     logger.info("error_handling_demo_completed")
 
@@ -363,10 +366,12 @@ async def demonstrate_response_processing() -> None:
 
         if json_response.is_success():
             data = json_response.json()
-            logger.info("json_response_processed",
-                       type="json",
-                       keys=list(data.keys()) if isinstance(data, dict) else None,
-                       mocked=True)
+            logger.info(
+                "json_response_processed",
+                type="json",
+                keys=list(data.keys()) if isinstance(data, dict) else None,
+                mocked=True,
+            )
 
     # Test text response processing
     with patch("httpx.AsyncClient.request", new_callable=AsyncMock) as mock_httpx_request:
@@ -375,11 +380,13 @@ async def demonstrate_response_processing() -> None:
 
         if text_response.is_success():
             text_content = text_response.text
-            logger.info("text_response_processed",
-                       type="text",
-                       length=len(text_content),
-                       preview=text_content[:50] + "..." if len(text_content) > 50 else text_content,
-                       mocked=True)
+            logger.info(
+                "text_response_processed",
+                type="text",
+                length=len(text_content),
+                preview=text_content[:50] + "..." if len(text_content) > 50 else text_content,
+                mocked=True,
+            )
 
     # Test headers inspection
     with patch("httpx.AsyncClient.request", new_callable=AsyncMock) as mock_httpx_request:
@@ -387,11 +394,13 @@ async def demonstrate_response_processing() -> None:
         headers_response = await get("https://api.example.com/headers")
 
         if headers_response.is_success():
-            logger.info("headers_response_processed",
-                       type="headers",
-                       response_headers=dict(headers_response.headers),
-                       content_type=headers_response.headers.get("content-type"),
-                       mocked=True)
+            logger.info(
+                "headers_response_processed",
+                type="headers",
+                response_headers=dict(headers_response.headers),
+                content_type=headers_response.headers.get("content-type"),
+                mocked=True,
+            )
 
     logger.info("response_processing_completed")
 
@@ -428,6 +437,7 @@ async def demonstrate_default_client() -> None:
 
     # Test direct function calls (which use the default client)
     with patch("httpx.AsyncClient.request", new_callable=AsyncMock) as mock_httpx_request:
+
         def mock_request_side_effect(method, url, **kwargs):
             if "uuid" in url:
                 return uuid_httpx_response
@@ -443,28 +453,30 @@ async def demonstrate_default_client() -> None:
         response2 = await post("https://api.example.com/post", body={"test": "data"})
 
         if response1.is_success() and response2.is_success():
-            logger.info("default_client_requests_success",
-                       get_status=response1.status,
-                       post_status=response2.status,
-                       mocked=True)
+            logger.info(
+                "default_client_requests_success",
+                get_status=response1.status,
+                post_status=response2.status,
+                mocked=True,
+            )
 
         # Test manual client usage (same instance)
         response3 = await client.get("https://api.example.com/get")
 
         if response3.is_success():
-            logger.info("manual_default_client_success",
-                       status=response3.status,
-                       mocked=True)
+            logger.info("manual_default_client_success", status=response3.status, mocked=True)
 
     logger.info("default_client_demo_completed")
 
 
 async def main() -> None:
     """Run all transport client demonstrations using Foundation mocking."""
-    logger.info("transport_client_example_started",
-               version="1.0.0",
-               examples=["basic", "session", "middleware", "errors", "processing", "default_client"],
-               mocking="foundation_testing_utilities")
+    logger.info(
+        "transport_client_example_started",
+        version="1.0.0",
+        examples=["basic", "session", "middleware", "errors", "processing", "default_client"],
+        mocking="foundation_testing_utilities",
+    )
 
     # Run each demonstration
     await demonstrate_basic_requests()
@@ -474,10 +486,12 @@ async def main() -> None:
     await demonstrate_response_processing()
     await demonstrate_default_client()
 
-    logger.info("transport_client_example_completed",
-               demos_completed=6,
-               status="success",
-               dogfooding="100_percent_foundation")
+    logger.info(
+        "transport_client_example_completed",
+        demos_completed=6,
+        status="success",
+        dogfooding="100_percent_foundation",
+    )
 
 
 if __name__ == "__main__":

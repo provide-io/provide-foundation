@@ -175,7 +175,9 @@ def extreme_concurrency_test() -> dict[str, Any]:
     )
 
     def worker_thread(
-        thread_id: int, messages: int, monitor: PerformanceMonitor,
+        thread_id: int,
+        messages: int,
+        monitor: PerformanceMonitor,
     ) -> None:
         """High-intensity worker thread."""
         thread_logger = logger.get_logger(f"extreme.thread.{thread_id}")
@@ -262,9 +264,7 @@ def memory_stress_test() -> dict[str, Any]:
         monitor.message_count = 10000
         stats = monitor.get_stats()
         stats["memory_samples"] = memory_samples
-        stats["memory_growth_trend"] = (
-            memory_samples[-1] - memory_samples[0] if len(memory_samples) > 1 else 0
-        )
+        stats["memory_growth_trend"] = memory_samples[-1] - memory_samples[0] if len(memory_samples) > 1 else 0
 
     print(f"  🚀 Throughput: {stats['messages_per_second']:.0f} msg/sec")
     print(f"  🧠 Memory Growth: {stats['memory_growth_trend']:.2f} MB")
@@ -303,10 +303,7 @@ async def async_extreme_test() -> dict[str, Any]:
         worker_count = 20
         messages_per_worker = 5000
 
-        tasks = [
-            async_worker(worker_id, messages_per_worker)
-            for worker_id in range(worker_count)
-        ]
+        tasks = [async_worker(worker_id, messages_per_worker) for worker_id in range(worker_count)]
 
         await asyncio.gather(*tasks)
 
@@ -375,10 +372,7 @@ def filtering_efficiency_test() -> dict[str, Any]:
             "duration_seconds": duration,
             "total_attempts": total_attempts,
             "actual_output_lines": output_lines,
-            "filtering_efficiency_percent": (
-                (total_attempts - output_lines) / total_attempts
-            )
-            * 100,
+            "filtering_efficiency_percent": ((total_attempts - output_lines) / total_attempts) * 100,
             "messages_per_second": total_attempts / duration,
         }
 
