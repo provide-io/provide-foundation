@@ -287,8 +287,10 @@ class TestSpanOpenTelemetryIntegration:
 
     def test_set_tag_with_otel_error(self) -> None:
         """Test setting tag when OpenTelemetry set_attribute fails."""
-        with patch("provide.foundation.tracer.spans._HAS_OTEL", True):
-            with patch("provide.foundation.tracer.spans.otel_trace") as mock_otel:
+        with (
+            patch("provide.foundation.tracer.spans._HAS_OTEL", True),
+            patch("provide.foundation.tracer.spans.otel_trace") as mock_otel,
+        ):
                 mock_otel_span = mock_otel.get_tracer.return_value.start_span.return_value
                 mock_otel_span.set_attribute.side_effect = Exception("Set attribute failed")
 
@@ -300,10 +302,12 @@ class TestSpanOpenTelemetryIntegration:
 
     def test_set_error_with_otel_span(self) -> None:
         """Test setting error when OpenTelemetry span is available."""
-        with patch("provide.foundation.tracer.spans._HAS_OTEL", True):
-            with patch("provide.foundation.tracer.spans.otel_trace") as mock_otel:
-                with patch("provide.foundation.tracer.spans.Status"):
-                    with patch("provide.foundation.tracer.spans.StatusCode"):
+        with (
+            patch("provide.foundation.tracer.spans._HAS_OTEL", True),
+            patch("provide.foundation.tracer.spans.otel_trace") as mock_otel,
+            patch("provide.foundation.tracer.spans.Status"),
+            patch("provide.foundation.tracer.spans.StatusCode"),
+        ):
                         mock_otel_span = mock_otel.get_tracer.return_value.start_span.return_value
 
                         span = Span("test_op")
@@ -317,10 +321,12 @@ class TestSpanOpenTelemetryIntegration:
 
     def test_set_error_with_exception_and_otel(self) -> None:
         """Test setting error with Exception object when OpenTelemetry is available."""
-        with patch("provide.foundation.tracer.spans._HAS_OTEL", True):
-            with patch("provide.foundation.tracer.spans.otel_trace") as mock_otel:
-                with patch("provide.foundation.tracer.spans.Status"):
-                    with patch("provide.foundation.tracer.spans.StatusCode"):
+        with (
+            patch("provide.foundation.tracer.spans._HAS_OTEL", True),
+            patch("provide.foundation.tracer.spans.otel_trace") as mock_otel,
+            patch("provide.foundation.tracer.spans.Status"),
+            patch("provide.foundation.tracer.spans.StatusCode"),
+        ):
                         mock_otel_span = mock_otel.get_tracer.return_value.start_span.return_value
 
                         span = Span("test_op")
@@ -333,10 +339,12 @@ class TestSpanOpenTelemetryIntegration:
 
     def test_set_error_with_otel_failure(self) -> None:
         """Test setting error when OpenTelemetry operations fail."""
-        with patch("provide.foundation.tracer.spans._HAS_OTEL", True):
-            with patch("provide.foundation.tracer.spans.otel_trace") as mock_otel:
-                with patch("provide.foundation.tracer.spans.Status"):
-                    with patch("provide.foundation.tracer.spans.StatusCode"):
+        with (
+            patch("provide.foundation.tracer.spans._HAS_OTEL", True),
+            patch("provide.foundation.tracer.spans.otel_trace") as mock_otel,
+            patch("provide.foundation.tracer.spans.Status"),
+            patch("provide.foundation.tracer.spans.StatusCode"),
+        ):
                         mock_otel_span = mock_otel.get_tracer.return_value.start_span.return_value
                         mock_otel_span.set_status.side_effect = Exception("OTEL error")
 
@@ -349,8 +357,10 @@ class TestSpanOpenTelemetryIntegration:
 
     def test_finish_with_otel_span(self) -> None:
         """Test finishing span when OpenTelemetry span is available."""
-        with patch("provide.foundation.tracer.spans._HAS_OTEL", True):
-            with patch("provide.foundation.tracer.spans.otel_trace") as mock_otel:
+        with (
+            patch("provide.foundation.tracer.spans._HAS_OTEL", True),
+            patch("provide.foundation.tracer.spans.otel_trace") as mock_otel,
+        ):
                 mock_otel_span = mock_otel.get_tracer.return_value.start_span.return_value
 
                 span = Span("test_op")
@@ -362,8 +372,10 @@ class TestSpanOpenTelemetryIntegration:
 
     def test_finish_with_otel_error(self) -> None:
         """Test finishing span when OpenTelemetry end() fails."""
-        with patch("provide.foundation.tracer.spans._HAS_OTEL", True):
-            with patch("provide.foundation.tracer.spans.otel_trace") as mock_otel:
+        with (
+            patch("provide.foundation.tracer.spans._HAS_OTEL", True),
+            patch("provide.foundation.tracer.spans.otel_trace") as mock_otel,
+        ):
                 mock_otel_span = mock_otel.get_tracer.return_value.start_span.return_value
                 mock_otel_span.end.side_effect = Exception("End failed")
 
@@ -380,8 +392,10 @@ class TestSpanContextManagement:
 
     def test_context_manager_with_foundation_context_success(self) -> None:
         """Test context manager with successful Foundation tracer context setup."""
-        with patch("provide.foundation.tracer.context.set_current_span") as mock_set_span:
-            with Span("test_op") as span:
+        with (
+            patch("provide.foundation.tracer.context.set_current_span") as mock_set_span,
+            Span("test_op") as span,
+        ):
                 assert span._active is True
                 # Should be called twice: enter (with span) and exit (with None)
                 assert mock_set_span.call_count >= 1
@@ -469,9 +483,11 @@ class TestSpanEdgeCases:
         """Test setting error when Status/StatusCode are None."""
         from unittest.mock import MagicMock
 
-        with patch("provide.foundation.tracer.spans._HAS_OTEL", True):
-            with patch("provide.foundation.tracer.spans.Status", None):
-                with patch("provide.foundation.tracer.spans.StatusCode", None):
+        with (
+            patch("provide.foundation.tracer.spans._HAS_OTEL", True),
+            patch("provide.foundation.tracer.spans.Status", None),
+            patch("provide.foundation.tracer.spans.StatusCode", None),
+        ):
                     span = Span("test_op")
                     span._otel_span = MagicMock()
 
