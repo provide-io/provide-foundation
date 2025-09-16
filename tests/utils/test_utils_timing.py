@@ -99,8 +99,10 @@ class TestTimedBlock:
         self,
         captured_stderr_for_foundation: io.StringIO,
     ) -> None:
-        with pytest.raises(ValueError, match="Simulated error"):
-            with timed_block(global_logger, "my_failing_op", user_id="user_abc"):
+        with (
+            pytest.raises(ValueError, match="Simulated error"),
+            timed_block(global_logger, "my_failing_op", user_id="user_abc"),
+        ):
                 raise ValueError("Simulated error")
         captured = captured_stderr_for_foundation.getvalue()
         log_lines = [line for line in captured.strip().splitlines() if "my_failing_op" in line]

@@ -341,15 +341,19 @@ class TestRuntimeConfigAdvanced:
 
     def test_from_env_file_secret_error_sync(self) -> None:
         """Test from_env with file reading error (sync version)."""
-        with patch.dict(os.environ, {"SPECIAL_VAR": "file:///nonexistent/file"}):
-            with pytest.raises(ValueError, match="Failed to read secret from file"):
+        with (
+            patch.dict(os.environ, {"SPECIAL_VAR": "file:///nonexistent/file"}),
+            pytest.raises(ValueError, match="Failed to read secret from file"),
+        ):
                 self.AdvancedConfig.from_env()
 
     def test_from_env_parser_error_sync(self) -> None:
         """Test from_env with parser error (sync version)."""
-        with patch.dict(os.environ, {"COUNT": "not_a_number"}):
+        with (
+            patch.dict(os.environ, {"COUNT": "not_a_number"}),
+            pytest.raises(ValueError),
+        ):
             # The auto parser should handle int conversion
-            with pytest.raises(ValueError):
                 self.AdvancedConfig.from_env()
 
     def test_from_env_env_prefix_field(self) -> None:

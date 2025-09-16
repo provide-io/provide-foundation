@@ -164,9 +164,11 @@ class TestGetOptionalDependencies:
 
     def test_get_optional_dependencies_returns_list(self) -> None:
         """Test that get_optional_dependencies returns expected dependencies."""
-        with patch("provide.foundation.utils.deps._check_click") as mock_click:
-            with patch("provide.foundation.utils.deps._check_cryptography") as mock_crypto:
-                with patch("provide.foundation.utils.deps._check_opentelemetry") as mock_otel:
+        with (
+            patch("provide.foundation.utils.deps._check_click") as mock_click,
+            patch("provide.foundation.utils.deps._check_cryptography") as mock_crypto,
+            patch("provide.foundation.utils.deps._check_opentelemetry") as mock_otel,
+        ):
                     mock_click.return_value = DependencyStatus("click", True, "8.1.0", "CLI")
                     mock_crypto.return_value = DependencyStatus("cryptography", False, None, "Crypto")
                     mock_otel.return_value = DependencyStatus("opentelemetry", True, "1.15.0", "Telemetry")
@@ -217,8 +219,10 @@ class TestCheckOptionalDeps:
             DependencyStatus("cryptography", True, "3.4.8", "Crypto features"),
         ]
 
-        with patch("provide.foundation.utils.deps.get_optional_dependencies", return_value=mock_deps):
-            with patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger:
+        with (
+            patch("provide.foundation.utils.deps.get_optional_dependencies", return_value=mock_deps),
+            patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger,
+        ):
                 mock_logger = Mock()
                 mock_get_logger.return_value = mock_logger
 
@@ -235,8 +239,10 @@ class TestCheckOptionalDeps:
             DependencyStatus("cryptography", False, None, "Crypto features"),
         ]
 
-        with patch("provide.foundation.utils.deps.get_optional_dependencies", return_value=mock_deps):
-            with patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger:
+        with (
+            patch("provide.foundation.utils.deps.get_optional_dependencies", return_value=mock_deps),
+            patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger,
+        ):
                 mock_logger = Mock()
                 mock_get_logger.return_value = mock_logger
 
@@ -254,8 +260,10 @@ class TestCheckOptionalDeps:
             DependencyStatus("cryptography", False, None, "Crypto features"),
         ]
 
-        with patch("provide.foundation.utils.deps.get_optional_dependencies", return_value=mock_deps):
-            with patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger:
+        with (
+            patch("provide.foundation.utils.deps.get_optional_dependencies", return_value=mock_deps),
+            patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger,
+        ):
                 mock_logger = Mock()
                 mock_get_logger.return_value = mock_logger
 
@@ -356,9 +364,11 @@ class TestIntegration:
     def test_full_workflow_all_available(self) -> None:
         """Test full workflow when all dependencies are available."""
         # Mock all dependencies as available
-        with patch("provide.foundation.utils.deps._check_click") as mock_click:
-            with patch("provide.foundation.utils.deps._check_cryptography") as mock_crypto:
-                with patch("provide.foundation.utils.deps._check_opentelemetry") as mock_otel:
+        with (
+            patch("provide.foundation.utils.deps._check_click") as mock_click,
+            patch("provide.foundation.utils.deps._check_cryptography") as mock_crypto,
+            patch("provide.foundation.utils.deps._check_opentelemetry") as mock_otel,
+        ):
                     mock_click.return_value = DependencyStatus("click", True, "8.1.0", "CLI")
                     mock_crypto.return_value = DependencyStatus("cryptography", True, "3.4.8", "Crypto")
                     mock_otel.return_value = DependencyStatus("opentelemetry", True, "1.15.0", "Telemetry")
@@ -386,9 +396,11 @@ class TestIntegration:
 
     def test_full_workflow_mixed_availability(self) -> None:
         """Test full workflow with mixed dependency availability."""
-        with patch("provide.foundation.utils.deps._check_click") as mock_click:
-            with patch("provide.foundation.utils.deps._check_cryptography") as mock_crypto:
-                with patch("provide.foundation.utils.deps._check_opentelemetry") as mock_otel:
+        with (
+            patch("provide.foundation.utils.deps._check_click") as mock_click,
+            patch("provide.foundation.utils.deps._check_cryptography") as mock_crypto,
+            patch("provide.foundation.utils.deps._check_opentelemetry") as mock_otel,
+        ):
                     mock_click.return_value = DependencyStatus("click", True, "8.1.0", "CLI")
                     mock_crypto.return_value = DependencyStatus("cryptography", False, None, "Crypto")
                     mock_otel.return_value = DependencyStatus("opentelemetry", False, None, "Telemetry")
