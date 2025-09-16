@@ -1,13 +1,5 @@
 from __future__ import annotations
 
-#
-# __init__.py
-#
-"""Foundation Telemetry Library (structlog-based).
-Primary public interface for the library, re-exporting common components.
-"""
-
-# All module-level imports at top
 from provide.foundation import config, errors, hub, platform, process, resilience, tracer
 from provide.foundation._version import __version__
 from provide.foundation.console import perr, pin, pout
@@ -56,6 +48,10 @@ from provide.foundation.utils import (
     check_optional_deps,
     timed_block,
 )
+
+"""Foundation Telemetry Library (structlog-based).
+Primary public interface for the library, re-exporting common components.
+"""
 
 
 # Lazy loading support for optional modules

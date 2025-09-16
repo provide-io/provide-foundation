@@ -7,6 +7,9 @@ repo_name: provide-io/provide-foundation
 edit_uri: edit/main/docs/
 copyright: Copyright &copy; 2024-2025 provide.io
 
+# Development server configuration
+dev_addr: '127.0.0.1:8001'
+
 # Standalone mode settings
 docs_dir: docs
 

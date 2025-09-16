@@ -83,7 +83,8 @@
       "Bash(timeout 60 pytest --tb=no -q)",
       "Bash(PYTHONPATH=src bandit -r src/ -f json)",
       "Bash(PYTHONPATH=src ruff format src/provide/foundation/__init__.py)",
-      "Bash(PYTHONPATH=src ruff check src/provide/foundation/__init__.py)"
+      "Bash(PYTHONPATH=src ruff check src/provide/foundation/__init__.py)",
+      "Bash(PYTHONPATH=src ruff check src/provide/foundation/__init__.py --no-cache)"
     ],
     "deny": [],
     "ask": [],
