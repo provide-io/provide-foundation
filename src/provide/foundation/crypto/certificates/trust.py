@@ -2,9 +2,11 @@ from __future__ import annotations
 
 """Certificate trust chain and verification utilities."""
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
+    from cryptography import x509
+    from cryptography.hazmat.primitives.asymmetric import ec, rsa
     from provide.foundation.crypto.certificates.certificate import Certificate
 
 try:
@@ -13,9 +15,9 @@ try:
 
     _HAS_CRYPTO = True
 except ImportError:
-    x509 = None
-    ec = None
-    rsa = None
+    x509 = None  # type: Any
+    ec = None  # type: Any
+    rsa = None  # type: Any
     _HAS_CRYPTO = False
 
 from provide.foundation import logger

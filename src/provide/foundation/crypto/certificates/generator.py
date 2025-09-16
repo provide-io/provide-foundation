@@ -4,6 +4,12 @@ from __future__ import annotations
 
 from datetime import UTC, datetime, timedelta
 import traceback
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from cryptography import x509
+    from cryptography.hazmat.primitives import serialization
+    from cryptography.hazmat.primitives.asymmetric import ec, rsa
 
 try:
     from cryptography import x509
@@ -12,10 +18,10 @@ try:
 
     _HAS_CRYPTO = True
 except ImportError:
-    x509 = None
-    serialization = None
-    ec = None
-    rsa = None
+    x509 = None  # type: Any
+    serialization = None  # type: Any
+    ec = None  # type: Any
+    rsa = None  # type: Any
     _HAS_CRYPTO = False
 
 from provide.foundation import logger

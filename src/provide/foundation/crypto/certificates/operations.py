@@ -3,7 +3,14 @@ from __future__ import annotations
 """Certificate operations: CA creation, signing, and trust verification."""
 
 import traceback
-from typing import cast
+from typing import TYPE_CHECKING, Any, cast
+
+if TYPE_CHECKING:
+    from cryptography import x509
+    from cryptography.hazmat.primitives import hashes, serialization
+    from cryptography.hazmat.primitives.asymmetric import ec, padding, rsa
+    from cryptography.x509 import Certificate as X509Certificate
+    from cryptography.x509.oid import ExtendedKeyUsageOID
 
 try:
     from cryptography import x509
@@ -15,14 +22,14 @@ try:
     _HAS_CRYPTO = True
 except ImportError:
     # Stub out cryptography types for type hints
-    x509 = None
-    hashes = None
-    serialization = None
-    ec = None
-    padding = None
-    rsa = None
-    X509Certificate = None
-    ExtendedKeyUsageOID = None
+    x509 = None  # type: Any
+    hashes = None  # type: Any
+    serialization = None  # type: Any
+    ec = None  # type: Any
+    padding = None  # type: Any
+    rsa = None  # type: Any
+    X509Certificate = None  # type: Any
+    ExtendedKeyUsageOID = None  # type: Any
     _HAS_CRYPTO = False
 
 from provide.foundation import logger

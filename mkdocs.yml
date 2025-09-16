@@ -1,11 +1,13 @@
 site_name: Provide Foundation Documentation
 site_description: Beautiful, Performant, Structured Logging for Python - Enterprise-grade telemetry built on structlog
 site_author: provide.io
-site_url: https://foundation.provide.io
+site_url: https://foundry.provide.io/foundation/
 repo_url: https://github.com/provide-io/provide-foundation
 repo_name: provide-io/provide-foundation
 edit_uri: edit/main/docs/
 copyright: Copyright &copy; 2024-2025 provide.io
+
+# Standalone mode settings
 docs_dir: docs
 
 theme:

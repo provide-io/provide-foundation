@@ -4,12 +4,15 @@ Provides functions for normalizing log levels and performing safe lookups
 to prevent KeyError crashes in the logging system.
 """
 
+from typing import cast
+
 from provide.foundation.logger.constants import (
     DEFAULT_FALLBACK_LEVEL,
     DEFAULT_FALLBACK_NUMERIC,
     LEVEL_TO_NUMERIC,
     VALID_LEVEL_NAMES,
 )
+from provide.foundation.logger.types import LogLevelStr
 
 
 def normalize_level(level: str) -> str:
@@ -54,7 +57,8 @@ def get_numeric_level(level: str, fallback: int | None = None) -> int:
         fallback = DEFAULT_FALLBACK_NUMERIC
 
     normalized = normalize_level(level)
-    return LEVEL_TO_NUMERIC.get(normalized, fallback)
+    # Cast to LogLevelStr for type safety - normalize_level validates valid levels
+    return LEVEL_TO_NUMERIC.get(cast(LogLevelStr, normalized), fallback)
 
 
 def is_valid_level(level: str) -> bool:

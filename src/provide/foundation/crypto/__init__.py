@@ -6,6 +6,20 @@ Provides hashing, checksum verification, digital signatures, key generation,
 and X.509 certificate management.
 """
 
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from provide.foundation.crypto.certificates import (
+        Certificate,
+        CertificateBase,
+        CertificateConfig,
+        CertificateError,
+        CurveType,
+        KeyType,
+        create_ca,
+        create_self_signed,
+    )
+
 # Standard crypto imports (always available - use hashlib)
 from provide.foundation.crypto.algorithms import (
     DEFAULT_ALGORITHM,
@@ -37,14 +51,14 @@ try:
 
     _HAS_CRYPTO = True
 except ImportError:
-    Certificate = None
-    CertificateBase = None
-    CertificateConfig = None
-    CertificateError = None
-    CurveType = None
-    KeyType = None
-    create_ca = None
-    create_self_signed = None
+    Certificate = None  # type: Any
+    CertificateBase = None  # type: Any
+    CertificateConfig = None  # type: Any
+    CertificateError = None  # type: Any
+    CurveType = None  # type: Any
+    KeyType = None  # type: Any
+    create_ca = None  # type: Any
+    create_self_signed = None  # type: Any
     _HAS_CRYPTO = False
 
 # Standard imports (always available)

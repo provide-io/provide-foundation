@@ -5,12 +5,15 @@ from __future__ import annotations
 from collections.abc import Callable
 import functools
 from pathlib import Path
-from typing import Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
+
+if TYPE_CHECKING:
+    import click
 
 try:
     import click
 except ImportError:
-    click = None
+    click = None  # type: Any
 
 from provide.foundation.context import CLIContext
 from provide.foundation.process import exit_error, exit_interrupted

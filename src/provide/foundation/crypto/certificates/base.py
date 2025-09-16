@@ -5,9 +5,18 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from enum import StrEnum, auto
 import traceback
-from typing import NotRequired, Self, TypeAlias, TypedDict
+from typing import TYPE_CHECKING, Any, NotRequired, Self, TypeAlias, TypedDict
 
 from attrs import define
+
+if TYPE_CHECKING:
+    from cryptography import x509
+    from cryptography.hazmat.backends import default_backend
+    from cryptography.hazmat.primitives import hashes, serialization
+    from cryptography.hazmat.primitives.asymmetric import ec, rsa
+    from cryptography.hazmat.primitives.serialization import load_pem_private_key
+    from cryptography.x509 import Certificate as X509Certificate
+    from cryptography.x509.oid import ExtendedKeyUsageOID, NameOID
 
 try:
     from cryptography import x509
@@ -21,16 +30,16 @@ try:
     _HAS_CRYPTO = True
 except ImportError:
     # Stub out cryptography types for type hints
-    x509 = None
-    default_backend = None
-    hashes = None
-    serialization = None
-    ec = None
-    rsa = None
-    load_pem_private_key = None
-    X509Certificate = None
-    ExtendedKeyUsageOID = None
-    NameOID = None
+    x509 = None  # type: Any
+    default_backend = None  # type: Any
+    hashes = None  # type: Any
+    serialization = None  # type: Any
+    ec = None  # type: Any
+    rsa = None  # type: Any
+    load_pem_private_key = None  # type: Any
+    X509Certificate = None  # type: Any
+    ExtendedKeyUsageOID = None  # type: Any
+    NameOID = None  # type: Any
     _HAS_CRYPTO = False
 
 from provide.foundation import logger
