@@ -112,7 +112,8 @@
       "Bash(PYTHONPATH=src pytest tests/crypto/test_dependency_stubs.py -v -s --tb=no)",
       "Bash(PYTHONPATH=src ruff format src/provide/foundation/errors/dependencies.py)",
       "Bash(PYTHONPATH=src ruff check src/provide/foundation/errors/dependencies.py)",
-      "Bash(PYTHONPATH=src ruff check --select ANN001 --output-format=json)"
+      "Bash(PYTHONPATH=src ruff check --select ANN001 --output-format=json)",
+      "Bash(PYTHONPATH=src ruff check . --select E402 --output-format=json)"
     ],
     "deny": [],
     "ask": [],
