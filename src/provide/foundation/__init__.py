@@ -7,52 +7,36 @@ from __future__ import annotations
 Primary public interface for the library, re-exporting common components.
 """
 
-# Export config module for easy access
-# New foundation components
-# Make the errors module available for detailed imports
+# All module-level imports at top
 from provide.foundation import config, errors, hub, platform, process, resilience, tracer
 from provide.foundation._version import __version__
-
-# Console I/O functions (always available - handles click dependency internally)
 from provide.foundation.console import perr, pin, pout
 from provide.foundation.context import CLIContext, Context
-
-# Error handling exports - only the essentials
 from provide.foundation.errors import (
-    # Base exception only
     FoundationError,
-    # Most commonly used handlers
     error_boundary,
     retry_on_error,
-    # Most commonly used decorators
     with_error_handling,
 )
-
-# Event set exports
 from provide.foundation.eventsets.display import show_event_matrix
 from provide.foundation.eventsets.types import (
     EventMapping,
     EventSet,
     FieldMapping,
 )
-
-# Hub and Registry exports (public API)
 from provide.foundation.hub.components import ComponentCategory, get_component_registry
 from provide.foundation.hub.manager import Hub, clear_hub, get_hub
 from provide.foundation.hub.registry import Registry, RegistryEntry
 from provide.foundation.logger import (
     LoggingConfig,
     TelemetryConfig,
-    get_logger,  # Factory function for creating loggers
+    get_logger,
+    logger,
 )
-
-# Logger type exports
 from provide.foundation.logger.types import (
     ConsoleFormatterStr,
     LogLevelStr,
 )
-
-# Resilience exports
 from provide.foundation.resilience import (
     BackoffStrategy,
     CircuitBreaker,
@@ -67,8 +51,6 @@ from provide.foundation.resilience import (
 from provide.foundation.setup import (
     shutdown_foundation_telemetry,
 )
-
-# New utility exports
 from provide.foundation.utils import (
     TokenBucketRateLimiter,
     check_optional_deps,
@@ -172,7 +154,6 @@ __all__ = [
     "with_error_handling",
 ]
 
-# Import the logger instance after all other imports to avoid module shadowing
-from provide.foundation.logger import logger
+# Logger instance is imported above with other logger imports
 
 # 🐍📝
