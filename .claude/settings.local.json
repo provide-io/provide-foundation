@@ -126,7 +126,11 @@
       "Bash(PYTHONPATH=src ruff check --fix src/provide/foundation/tracer/spans.py src/provide/foundation/integrations/openobserve/models.py tests/crypto/test_certificate_credentials.py tests/hub/test_hub_async_support.py examples/configuration/03_config_management.py)",
       "Bash(PYTHONPATH=src ruff format src/provide/foundation/tracer/spans.py src/provide/foundation/integrations/openobserve/models.py)",
       "Bash(PYTHONPATH=src ruff check --select RUF009 . --statistics)",
-      "Bash(PYTHONPATH=src ruff check --select RUF009 .)"
+      "Bash(PYTHONPATH=src ruff check --select RUF009 .)",
+      "Bash(export PYTHONPATH=../../src)",
+      "Bash(timeout 45 pytest tests/crypto/test_certificate_credentials.py -q)",
+      "Bash(timeout 30 pytest tests/crypto/test_certificate_credentials.py -q)",
+      "Bash(timeout 30 pytest tests/hub/test_hub_async_support.py -q)"
     ],
     "deny": [],
     "ask": [],
