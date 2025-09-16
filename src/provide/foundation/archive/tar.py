@@ -93,10 +93,10 @@ class TarArchive(BaseArchive):
                             target = link_path.parent / target
                         try:
                             target.resolve().relative_to(Path(output).resolve())
-                        except ValueError:
+                        except ValueError as e:
                             raise ArchiveError(
                                 f"Unsafe symlink in archive: {member.name} -> {member.linkname}"
-                            )
+                            ) from e
 
                     safe_members.append(member)
 
