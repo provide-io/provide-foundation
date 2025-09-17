@@ -17,17 +17,21 @@ from provide.foundation.crypto import (
 @pytest.mark.asyncio
 async def test_create_x509_cert_subject_error() -> None:
     """Test error in subject/issuer name creation."""
-    with mock.patch("cryptography.x509.Name", side_effect=Exception("Name error")):
-        with pytest.raises(CertificateError, match="Failed to initialize certificate"):
-            Certificate(generate_keypair=True)
+    with (
+        mock.patch("cryptography.x509.Name", side_effect=Exception("Name error")),
+        pytest.raises(CertificateError, match="Failed to initialize certificate"),
+    ):
+        Certificate(generate_keypair=True)
 
 
 @pytest.mark.asyncio
 async def test_create_x509_cert_serial_error() -> None:
     """Test error in serial number generation."""
-    with mock.patch("os.urandom", side_effect=Exception("urandom failed")):
-        with pytest.raises(CertificateError, match="Failed to initialize certificate"):
-            Certificate(generate_keypair=True)
+    with (
+        mock.patch("os.urandom", side_effect=Exception("urandom failed")),
+        pytest.raises(CertificateError, match="Failed to initialize certificate"),
+    ):
+        Certificate(generate_keypair=True)
 
 
 @pytest.mark.asyncio

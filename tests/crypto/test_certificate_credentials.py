@@ -1,14 +1,13 @@
 # pyvider/rpcplugin/tests/test_certificate_credentials.py
 
-from dataclasses import dataclass
-
+from attrs import define
 import pytest
 
 # Fixtures will be available via tests.fixtures through conftest.py
 # from tests.fixtures.crypto import client_cert, server_cert
 
 
-@dataclass
+@define
 class MockChannelCredentials:
     """Mock implementation of SSL channel credentials."""
 
@@ -17,7 +16,7 @@ class MockChannelCredentials:
     certificate_chain: bytes | None
 
 
-@dataclass
+@define
 class MockServerCredentials:
     """Mock implementation of SSL server credentials."""
 

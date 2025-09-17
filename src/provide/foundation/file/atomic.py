@@ -90,7 +90,7 @@ def atomic_write(
     except Exception:
         # Clean up temp file on error
         with contextlib.suppress(OSError):
-            os.unlink(temp_path)
+            Path(temp_path).unlink()
         raise
 
 

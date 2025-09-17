@@ -58,7 +58,7 @@ if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
 # Import Foundation's config system and attrs (Foundation's dependency)
-from attrs import define
+from attrs import Factory, define
 
 # Import using the new simplified imports
 from provide.foundation import logger, pout
@@ -145,7 +145,7 @@ class ServerConfig(BaseConfig):
     workers: int = field(default=4)
     timeout: int = field(default=30)
     cors_origins: list[str] = field(
-        factory=lambda: ["http://localhost:3000"],
+        default=Factory(lambda: ["http://localhost:3000"]),
         metadata={"parser": parse_list},
     )
 
@@ -154,12 +154,12 @@ class ServerConfig(BaseConfig):
 class FullConfig(RuntimeConfig):
     """Complete application configuration."""
 
-    app: AppConfig = field(factory=AppConfig)
-    database: DatabaseConfig = field(factory=DatabaseConfig)
-    server: ServerConfig = field(factory=ServerConfig)
+    app: AppConfig = field(default=Factory(AppConfig))
+    database: DatabaseConfig = field(default=Factory(DatabaseConfig))
+    server: ServerConfig = field(default=Factory(ServerConfig))
 
     features: dict[str, bool] = field(
-        factory=lambda: {"new_ui": False, "analytics": True},
+        default=Factory(lambda: {"new_ui": False, "analytics": True}),
     )
 
 

@@ -127,7 +127,7 @@ json_output = true
             assert ctx.debug is False
             assert ctx.json_output is True
         finally:
-            os.unlink(config_path)
+            Path(config_path).unlink()
 
     def test_context_load_config_json(self) -> None:
         """Test loading configuration from JSON file."""
@@ -151,7 +151,7 @@ json_output = true
             assert ctx.debug is True
             assert ctx.json_output is False
         finally:
-            os.unlink(config_path)
+            Path(config_path).unlink()
 
     def test_context_load_config_yaml(self) -> None:
         """Test loading configuration from YAML file."""
@@ -175,7 +175,7 @@ json_output: true
             assert ctx.debug is True
             assert ctx.json_output is True
         finally:
-            os.unlink(config_path)
+            Path(config_path).unlink()
 
     def test_context_save_config(self) -> None:
         """Test saving configuration to file."""
@@ -201,7 +201,7 @@ json_output: true
             assert new_ctx.debug == ctx.debug
             assert new_ctx.json_output == ctx.json_output
         finally:
-            os.unlink(config_path)
+            Path(config_path).unlink()
 
     def test_context_merge(self) -> None:
         """Test merging contexts with precedence."""
@@ -274,7 +274,7 @@ profile = "config_profile"
             assert ctx.profile == "config_profile"  # From config
         finally:
             os.environ.pop("PROVIDE_LOG_LEVEL", None)
-            os.unlink(config_path)
+            Path(config_path).unlink()
 
     def test_context_immutable_after_freeze(self) -> None:
         """Test that context can be frozen to prevent changes."""
