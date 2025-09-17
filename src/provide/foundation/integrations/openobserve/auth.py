@@ -2,11 +2,10 @@ from __future__ import annotations
 
 import base64
 from provide.foundation.integrations.openobserve.exceptions import (
-
-"""Authentication handling for OpenObserve."""
-
     OpenObserveAuthenticationError,
 )
+
+"""Authentication handling for OpenObserve."""
 
 
 def encode_basic_auth(username: str, password: str) -> str:

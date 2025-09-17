@@ -10,14 +10,13 @@ import structlog
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
 from provide.foundation.logger.constants import LEVEL_TO_NUMERIC
 from provide.foundation.logger.custom_processors import (
-
-"""Structlog processors for Foundation Telemetry."""
-
     StructlogProcessor,
     add_log_level_custom,
     add_logger_name_emoji_prefix,
     filter_by_level_custom,
 )
+
+"""Structlog processors for Foundation Telemetry."""
 
 # Import trace context processor
 from provide.foundation.logger.processors.trace import inject_trace_context

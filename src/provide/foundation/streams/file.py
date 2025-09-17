@@ -9,15 +9,14 @@ import io
 from pathlib import Path
 import sys
 from provide.foundation.streams.core import (
-
-"""File stream management for Foundation.
-Handles file-based logging streams and file operations.
-"""
-
     _LOG_FILE_HANDLE,
     _PROVIDE_LOG_STREAM,
     _STREAM_LOCK,
 )
+
+"""File stream management for Foundation.
+Handles file-based logging streams and file operations.
+"""
 from provide.foundation.utils.streams import get_safe_stderr
 
 

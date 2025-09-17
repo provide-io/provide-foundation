@@ -1,6 +1,10 @@
 from __future__ import annotations
 
 from provide.foundation.file.atomic import (
+    atomic_replace,
+    atomic_write,
+    atomic_write_text,
+)
 
 """File operations with safety, atomicity, and format support.
 
@@ -12,11 +16,6 @@ This module provides comprehensive file operations including:
 - File locking for concurrent access
 - Various utility functions
 """
-
-    atomic_replace,
-    atomic_write,
-    atomic_write_text,
-)
 from provide.foundation.file.directory import (
     ensure_dir,
     ensure_parent_dir,

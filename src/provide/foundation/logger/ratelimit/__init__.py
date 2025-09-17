@@ -5,15 +5,14 @@ from __future__ import annotations
 #
 
 from provide.foundation.logger.ratelimit.limiters import (
-
-"""Rate limiting subcomponent for Foundation's logging system.
-Provides rate limiters and processors for controlling log output rates.
-"""
-
     AsyncRateLimiter,
     GlobalRateLimiter,
     SyncRateLimiter,
 )
+
+"""Rate limiting subcomponent for Foundation's logging system.
+Provides rate limiters and processors for controlling log output rates.
+"""
 from provide.foundation.logger.ratelimit.processor import (
     RateLimiterProcessor,
     create_rate_limiter_processor,

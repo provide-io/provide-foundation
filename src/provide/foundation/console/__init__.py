@@ -1,12 +1,6 @@
 from __future__ import annotations
 
 from provide.foundation.console.input import (
-
-"""Console I/O utilities for standardized CLI input/output.
-
-Provides pout(), perr(), and pin() functions for consistent I/O handling.
-"""
-
     apin,
     apin_lines,
     apin_stream,
@@ -14,6 +8,11 @@ Provides pout(), perr(), and pin() functions for consistent I/O handling.
     pin_lines,
     pin_stream,
 )
+
+"""Console I/O utilities for standardized CLI input/output.
+
+Provides pout(), perr(), and pin() functions for consistent I/O handling.
+"""
 from provide.foundation.console.output import perr, pout
 
 __all__ = [

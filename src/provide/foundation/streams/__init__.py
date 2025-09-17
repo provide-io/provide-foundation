@@ -5,18 +5,17 @@ from __future__ import annotations
 #
 
 from provide.foundation.streams.console import (
+    get_console_stream,
+    is_tty,
+    supports_color,
+    write_to_console,
+)
 
 """Foundation Streams Module.
 
 Provides stream management functionality including console, file,
 and core stream operations.
 """
-
-    get_console_stream,
-    is_tty,
-    supports_color,
-    write_to_console,
-)
 from provide.foundation.streams.core import (
     ensure_stderr_default,
     get_log_stream,

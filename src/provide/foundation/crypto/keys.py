@@ -4,15 +4,14 @@ from typing import Any, Protocol
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
 from provide.foundation import logger
 from provide.foundation.crypto.constants import (
-
-"""Unified key generation for all cryptographic algorithms."""
-
     DEFAULT_ECDSA_CURVE,
     DEFAULT_RSA_KEY_SIZE,
     SUPPORTED_EC_CURVES,
     SUPPORTED_KEY_TYPES,
     SUPPORTED_RSA_SIZES,
 )
+
+"""Unified key generation for all cryptographic algorithms."""
 from provide.foundation.crypto.signatures import generate_ed25519_keypair
 
 

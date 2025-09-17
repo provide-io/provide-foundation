@@ -7,11 +7,10 @@ from provide.foundation.errors.resources import AlreadyExistsError, NotFoundErro
 from provide.foundation.eventsets.types import EventSet
 from provide.foundation.hub.registry import Registry
 from provide.foundation.logger.setup.coordinator import (
-
-"""Event set registry and discovery."""
-
     create_foundation_internal_logger,
 )
+
+"""Event set registry and discovery."""
 
 # Bootstrap logger that doesn't trigger full logger setup
 logger = create_foundation_internal_logger()

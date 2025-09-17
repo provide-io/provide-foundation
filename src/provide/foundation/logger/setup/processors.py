@@ -8,14 +8,13 @@ from typing import Any, TextIO, cast
 import structlog
 from provide.foundation.logger.config import TelemetryConfig
 from provide.foundation.logger.processors import (
+    _build_core_processors_list,
+    _build_formatter_processors_list,
+)
 
 """Processor chain building for Foundation Telemetry.
 Handles the assembly of structlog processor chains including emoji processing.
 """
-
-    _build_core_processors_list,
-    _build_formatter_processors_list,
-)
 
 
 def build_complete_processor_chain(
