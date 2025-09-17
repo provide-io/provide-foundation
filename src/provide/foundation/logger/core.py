@@ -335,7 +335,7 @@ class GlobalLoggerProxy:
         else:
             super().__setattr__(name, value)
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
         return get_global_logger()(*args, **kwargs)
 
 

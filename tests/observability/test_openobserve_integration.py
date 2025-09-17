@@ -1,5 +1,4 @@
-"""Integration test for OpenObserve that generates and queries logs.
-"""
+"""Integration test for OpenObserve that generates and queries logs."""
 
 from datetime import datetime, timedelta
 import json
@@ -62,9 +61,7 @@ class TestOpenObserveIntegration:
             "send_email",
             "validate_token",
         ]
-        levels = (
-            ["ERROR"] * 10 + ["WARN"] * 20 + ["INFO"] * 40 + ["DEBUG"] * 30
-        )  # Weighted distribution
+        levels = ["ERROR"] * 10 + ["WARN"] * 20 + ["INFO"] * 40 + ["DEBUG"] * 30  # Weighted distribution
         status_codes = [200, 201, 204, 400, 401, 403, 404, 500, 502, 503]
         errors = [
             "Connection timeout",
@@ -88,11 +85,7 @@ class TestOpenObserveIntegration:
             level = random.choice(levels)
             service = random.choice(services)
             operation = random.choice(operations)
-            duration_ms = (
-                random.randint(5, 5000)
-                if level != "ERROR"
-                else random.randint(1000, 30000)
-            )
+            duration_ms = random.randint(5, 5000) if level != "ERROR" else random.randint(1000, 30000)
             user = random.choice(users)
             host = random.choice(hosts)
 
@@ -117,22 +110,16 @@ class TestOpenObserveIntegration:
             # Add error details for ERROR level
             if level == "ERROR":
                 log_entry["error"] = random.choice(errors)
-                log_entry["stack_trace"] = (
-                    f"Error at {service}.{operation}:line:{random.randint(1, 500)}"
-                )
+                log_entry["stack_trace"] = f"Error at {service}.{operation}:line:{random.randint(1, 500)}"
                 log_entry["message"] = f"{operation} failed: {log_entry['error']}"
 
             # Add additional context randomly
             if random.random() > 0.7:
                 log_entry["method"] = random.choice(["GET", "POST", "PUT", "DELETE"])
-                log_entry["path"] = (
-                    f"/api/v1/{service.replace('-service', '')}/{operation}"
-                )
+                log_entry["path"] = f"/api/v1/{service.replace('-service', '')}/{operation}"
 
             if random.random() > 0.8:
-                log_entry["client_ip"] = (
-                    f"192.168.{random.randint(1, 255)}.{random.randint(1, 255)}"
-                )
+                log_entry["client_ip"] = f"192.168.{random.randint(1, 255)}.{random.randint(1, 255)}"
                 log_entry["user_agent"] = "Mozilla/5.0 (test)"
 
             # Format as bulk request

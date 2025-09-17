@@ -133,7 +133,9 @@ class TestComponentMetadataAndVersioning:
         # Register dependency
         dependency = Mock()
         registry.register(
-            name="dependency_component", value=dependency, dimension="test",
+            name="dependency_component",
+            value=dependency,
+            dimension="test",
         )
 
         # Register component with dependency
@@ -234,6 +236,7 @@ class TestFoundationBootstrapIntegration:
             discover_event_sets,
             get_registry as get_eventset_registry,
         )
+
         discover_event_sets()
 
         # Fetch after bootstrap

@@ -133,8 +133,8 @@ class TestResponseEdgeCases:
         """Test is_success with boundary status codes."""
         # Edge cases around success range
         assert not Response(status=199).is_success()  # Just below success
-        assert Response(status=200).is_success()      # Start of success
-        assert Response(status=299).is_success()      # End of success
+        assert Response(status=200).is_success()  # Start of success
+        assert Response(status=299).is_success()  # End of success
         assert not Response(status=300).is_success()  # Just above success
 
 
@@ -155,7 +155,7 @@ class TestTransportBaseEdgeCases:
         transport = self.MockTransport()
         assert transport._logger is not None
         # Logger name should contain the class name somehow
-        assert hasattr(transport._logger, 'name')
+        assert hasattr(transport._logger, "name")
 
     async def test_transport_base_connect_default(self) -> None:
         """Test default connect implementation."""
@@ -168,7 +168,6 @@ class TestTransportBaseEdgeCases:
         transport = self.MockTransport()
         # Should complete without error
         await transport.disconnect()
-
 
     async def test_transport_base_context_manager(self) -> None:
         """Test TransportBase context manager functionality."""

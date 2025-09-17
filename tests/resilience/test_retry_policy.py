@@ -1,5 +1,4 @@
-"""Tests for RetryPolicy configuration and behavior.
-"""
+"""Tests for RetryPolicy configuration and behavior."""
 
 import pytest
 
@@ -102,9 +101,9 @@ class TestRetryPolicyDelayCalculation:
             jitter=False,
         )
 
-        assert policy.calculate_delay(1) == 2.0   # 2 * 2^0
-        assert policy.calculate_delay(2) == 4.0   # 2 * 2^1
-        assert policy.calculate_delay(3) == 8.0   # 2 * 2^2
+        assert policy.calculate_delay(1) == 2.0  # 2 * 2^0
+        assert policy.calculate_delay(2) == 4.0  # 2 * 2^1
+        assert policy.calculate_delay(3) == 8.0  # 2 * 2^2
         assert policy.calculate_delay(4) == 16.0  # 2 * 2^3
 
     def test_fibonacci_backoff(self) -> None:

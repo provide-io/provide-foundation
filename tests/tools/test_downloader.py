@@ -78,7 +78,9 @@ class TestToolDownloader:
             mock_verify.return_value = True
 
             result = downloader.download_with_progress(
-                url, dest, checksum="sha256:abc123",
+                url,
+                dest,
+                checksum="sha256:abc123",
             )
 
             assert result == dest
@@ -102,7 +104,9 @@ class TestToolDownloader:
 
             with pytest.raises(DownloadError, match="Checksum mismatch"):
                 downloader.download_with_progress(
-                    url, dest, checksum="sha256:wrong",
+                    url,
+                    dest,
+                    checksum="sha256:wrong",
                 )
 
             # File should be deleted

@@ -1,5 +1,4 @@
-"""Additional tests for provide.foundation.utils to increase code coverage.
-"""
+"""Additional tests for provide.foundation.utils to increase code coverage."""
 
 import io
 from typing import Any
@@ -8,8 +7,8 @@ from attrs import define, field, fields
 
 from provide.foundation import LoggingConfig, TelemetryConfig, get_hub, logger
 from provide.foundation.utils import timed_block
-from provide.foundation.utils.text_utils import format_table, to_camel_case
 from provide.foundation.utils.parsing import auto_parse, parse_typed_value
+from provide.foundation.utils.text_utils import format_table, to_camel_case
 
 
 class TestCaseConversionCoverage:
@@ -129,10 +128,12 @@ class TestTimingCoverage:
     """Coverage for timing utility functions."""
 
     def test_timed_block_context_modification(
-        self, captured_stderr_for_foundation: io.StringIO,
+        self,
+        captured_stderr_for_foundation: io.StringIO,
     ) -> None:
         """Test that modifying the context dict within a timed_block works."""
         from provide.foundation.logger.config.logging import LoggingConfig
+
         config = TelemetryConfig(logging=LoggingConfig(default_level="INFO"))
         hub = get_hub()
         hub.initialize_foundation(config, force=True)
@@ -148,7 +149,8 @@ class TestTimingCoverage:
         assert "outcome=success" in output
 
     def test_timed_block_debug_message(
-        self, captured_stderr_for_foundation: io.StringIO,
+        self,
+        captured_stderr_for_foundation: io.StringIO,
     ) -> None:
         """Test that the initial debug message is logged when level is DEBUG."""
         hub = get_hub()

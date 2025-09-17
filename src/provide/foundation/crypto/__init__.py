@@ -6,7 +6,7 @@ Provides hashing, checksum verification, digital signatures, key generation,
 and X.509 certificate management.
 """
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Never
 
 if TYPE_CHECKING:
     # Import certificate types only for type checking
@@ -103,6 +103,134 @@ try:
         _HAS_CRYPTO = True
 except ImportError:
     pass
+
+# Provide stub implementations when cryptography is not available
+if not _HAS_CRYPTO:
+    from provide.foundation.errors import DependencyError
+
+    # Certificate-related stubs
+    class Certificate:
+        """Stub for Certificate when cryptography is not installed."""
+
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            raise DependencyError("cryptography", feature="crypto")
+
+        def __new__(cls, *args: Any, **kwargs: Any) -> Never:
+            raise DependencyError("cryptography", feature="crypto")
+
+        @classmethod
+        def create_self_signed_client_cert(cls, *args: Any, **kwargs: Any) -> Never:
+            raise DependencyError("cryptography", feature="crypto")
+
+        @classmethod
+        def create_self_signed_server_cert(cls, *args: Any, **kwargs: Any) -> Never:
+            raise DependencyError("cryptography", feature="crypto")
+
+    class CertificateBase:
+        """Stub for CertificateBase when cryptography is not installed."""
+
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            raise DependencyError("cryptography", feature="crypto")
+
+    class CertificateConfig:
+        """Stub for CertificateConfig when cryptography is not installed."""
+
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            raise DependencyError("cryptography", feature="crypto")
+
+    class CertificateError(Exception):
+        """Stub for CertificateError when cryptography is not installed."""
+
+        pass  # Keep as regular exception for compatibility
+
+    # Enum stubs
+    class CurveType:
+        """Stub for CurveType when cryptography is not installed."""
+
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            raise DependencyError("cryptography", feature="crypto")
+
+    class KeyType:
+        """Stub for KeyType when cryptography is not installed."""
+
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            raise DependencyError("cryptography", feature="crypto")
+
+    # Certificate function stubs
+    def create_ca(*args: Any, **kwargs: Any) -> Never:
+        """Stub for create_ca when cryptography is not installed."""
+        raise DependencyError("cryptography", feature="crypto")
+
+    def create_self_signed(*args: Any, **kwargs: Any) -> Never:
+        """Stub for create_self_signed when cryptography is not installed."""
+        raise DependencyError("cryptography", feature="crypto")
+
+    # Key generation function stubs
+    def generate_ec_keypair(*args: Any, **kwargs: Any) -> Never:
+        """Stub for generate_ec_keypair when cryptography is not installed."""
+        raise DependencyError("cryptography", feature="crypto")
+
+    def generate_ed25519_keypair(*args: Any, **kwargs: Any) -> Never:
+        """Stub for generate_ed25519_keypair when cryptography is not installed."""
+        raise DependencyError("cryptography", feature="crypto")
+
+    def generate_key_pair(*args: Any, **kwargs: Any) -> Never:
+        """Stub for generate_key_pair when cryptography is not installed."""
+        raise DependencyError("cryptography", feature="crypto")
+
+    def generate_keypair(*args: Any, **kwargs: Any) -> Never:
+        """Stub for generate_keypair when cryptography is not installed."""
+        raise DependencyError("cryptography", feature="crypto")
+
+    def generate_rsa_keypair(*args: Any, **kwargs: Any) -> Never:
+        """Stub for generate_rsa_keypair when cryptography is not installed."""
+        raise DependencyError("cryptography", feature="crypto")
+
+    def generate_signing_keypair(*args: Any, **kwargs: Any) -> Never:
+        """Stub for generate_signing_keypair when cryptography is not installed."""
+        raise DependencyError("cryptography", feature="crypto")
+
+    def generate_tls_keypair(*args: Any, **kwargs: Any) -> Never:
+        """Stub for generate_tls_keypair when cryptography is not installed."""
+        raise DependencyError("cryptography", feature="crypto")
+
+    # Signature function stubs
+    def sign_data(*args: Any, **kwargs: Any) -> Never:
+        """Stub for sign_data when cryptography is not installed."""
+        raise DependencyError("cryptography", feature="crypto")
+
+    def verify_signature(*args: Any, **kwargs: Any) -> Never:
+        """Stub for verify_signature when cryptography is not installed."""
+        raise DependencyError("cryptography", feature="crypto")
+
+    # Import constants from centralized defaults
+    from provide.foundation.config.defaults import (
+        DEFAULT_CERTIFICATE_KEY_TYPE,
+        DEFAULT_CERTIFICATE_VALIDITY_DAYS,
+        DEFAULT_ECDSA_CURVE,
+        DEFAULT_ED25519_PRIVATE_KEY_SIZE as ED25519_PRIVATE_KEY_SIZE,
+        DEFAULT_ED25519_PUBLIC_KEY_SIZE as ED25519_PUBLIC_KEY_SIZE,
+        DEFAULT_ED25519_SIGNATURE_SIZE as ED25519_SIGNATURE_SIZE,
+        DEFAULT_RSA_KEY_SIZE,
+        DEFAULT_SIGNATURE_ALGORITHM,
+        default_supported_ec_curves,
+        default_supported_key_types,
+        default_supported_rsa_sizes,
+    )
+
+    # Call factory functions to get mutable defaults
+    SUPPORTED_EC_CURVES = default_supported_ec_curves()
+    SUPPORTED_KEY_TYPES = default_supported_key_types()
+    SUPPORTED_RSA_SIZES = default_supported_rsa_sizes()
+
+    def get_default_hash_algorithm() -> Never:
+        """Stub for get_default_hash_algorithm when cryptography is not installed."""
+        raise DependencyError("cryptography", feature="crypto")
+
+    def get_default_signature_algorithm() -> Never:
+        """Stub for get_default_signature_algorithm when cryptography is not installed."""
+        raise DependencyError("cryptography", feature="crypto")
+
 
 # Public API organized by use case frequency
 __all__ = [

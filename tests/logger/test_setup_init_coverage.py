@@ -40,12 +40,12 @@ class TestLoggerSetupInitCoverage:
         from provide.foundation.logger import setup
 
         # The setup module should work normally without testing components
-        assert hasattr(setup, 'internal_setup')
+        assert hasattr(setup, "internal_setup")
         assert callable(setup.internal_setup)
 
         # These testing-related items should not exist in the main setup module
-        assert not hasattr(setup, '_has_testing')
-        assert not hasattr(setup, 'reset_for_testing')
+        assert not hasattr(setup, "_has_testing")
+        assert not hasattr(setup, "reset_for_testing")
 
     def test_coordinator_import_available(self) -> None:
         """Test that internal_setup comes from coordinator module."""
@@ -71,4 +71,4 @@ class TestLoggerSetupInitCoverage:
         from provide.foundation.logger import setup
 
         # _has_testing should not exist anymore
-        assert not hasattr(setup, '_has_testing')
+        assert not hasattr(setup, "_has_testing")

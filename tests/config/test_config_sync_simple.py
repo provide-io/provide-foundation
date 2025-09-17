@@ -121,6 +121,7 @@ class TestSyncModuleCoverage:
     @patch("provide.foundation.config.sync.run_async")
     def test_load_config_from_file_creates_loader(self, mock_run_async) -> None:
         """Test load_config_from_file creates FileConfigLoader."""
+
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
@@ -139,6 +140,7 @@ class TestSyncModuleCoverage:
     @patch("provide.foundation.config.sync.run_async")
     def test_load_config_from_file_with_options(self, mock_run_async) -> None:
         """Test load_config_from_file with format and encoding."""
+
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
@@ -150,7 +152,10 @@ class TestSyncModuleCoverage:
 
         with tempfile.NamedTemporaryFile() as tmp_file:
             load_config_from_file(
-                tmp_file.name, SimpleTestConfig, format="json", encoding="utf-8",
+                tmp_file.name,
+                SimpleTestConfig,
+                format="json",
+                encoding="utf-8",
             )
 
         mock_run_async.assert_called_once()
@@ -197,6 +202,7 @@ class TestSyncModuleCoverage:
     @patch("provide.foundation.config.sync.run_async")
     def test_load_config_from_multiple_dict_source(self, mock_run_async) -> None:
         """Test load_config_from_multiple with dict source."""
+
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
@@ -218,6 +224,7 @@ class TestSyncModuleCoverage:
     @patch("provide.foundation.config.sync.run_async")
     def test_validate_config_calls_run_async(self, mock_run_async) -> None:
         """Test validate_config calls run_async."""
+
         # Set up mock to properly handle the coroutine
         def mock_run(coro) -> None:
             # Close the coroutine to avoid warnings
@@ -234,6 +241,7 @@ class TestSyncModuleCoverage:
     @patch("provide.foundation.config.sync.run_async")
     def test_update_config_calls_run_async(self, mock_run_async) -> None:
         """Test update_config calls run_async."""
+
         # Set up mock to properly handle the coroutine
         def mock_run(coro) -> None:
             # Close the coroutine to avoid warnings
@@ -253,6 +261,7 @@ class TestSyncModuleCoverage:
     @patch("provide.foundation.config.sync.run_async")
     def test_config_to_dict_calls_run_async(self, mock_run_async) -> None:
         """Test config_to_dict calls run_async."""
+
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
@@ -274,6 +283,7 @@ class TestSyncModuleCoverage:
     @patch("provide.foundation.config.sync.run_async")
     def test_clone_config_calls_run_async(self, mock_run_async) -> None:
         """Test clone_config calls run_async."""
+
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
@@ -291,6 +301,7 @@ class TestSyncModuleCoverage:
     @patch("provide.foundation.config.sync.run_async")
     def test_diff_configs_calls_run_async(self, mock_run_async) -> None:
         """Test diff_configs calls run_async."""
+
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
@@ -319,6 +330,7 @@ class TestSyncConfigManager:
     @patch("provide.foundation.config.sync.run_async")
     def test_register(self, mock_run_async) -> None:
         """Test register method."""
+
         # Set up mock to properly handle the coroutine
         def mock_run(coro) -> None:
             # Close the coroutine to avoid warnings
@@ -339,6 +351,7 @@ class TestSyncConfigManager:
     @patch("provide.foundation.config.sync.run_async")
     def test_get(self, mock_run_async) -> None:
         """Test get method."""
+
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
@@ -356,6 +369,7 @@ class TestSyncConfigManager:
     @patch("provide.foundation.config.sync.run_async")
     def test_load(self, mock_run_async) -> None:
         """Test load method."""
+
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
@@ -378,6 +392,7 @@ class TestSyncConfigManager:
     @patch("provide.foundation.config.sync.run_async")
     def test_update(self, mock_run_async) -> None:
         """Test update method."""
+
         # Set up mock to properly handle the coroutine
         def mock_run(coro) -> None:
             # Close the coroutine to avoid warnings
@@ -397,6 +412,7 @@ class TestSyncConfigManager:
     @patch("provide.foundation.config.sync.run_async")
     def test_export(self, mock_run_async) -> None:
         """Test export method."""
+
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings
@@ -418,6 +434,7 @@ class TestSyncConfigManager:
     @patch("provide.foundation.config.sync.run_async")
     def test_export_all(self, mock_run_async) -> None:
         """Test export_all method."""
+
         # Set up mock to properly handle the coroutine
         def mock_run(coro):
             # Close the coroutine to avoid warnings

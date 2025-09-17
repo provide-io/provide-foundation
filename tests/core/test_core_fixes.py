@@ -1,8 +1,7 @@
 #
 # test_fixes.py
 #
-"""Test script to verify all lazy initialization fixes work correctly.
-"""
+"""Test script to verify all lazy initialization fixes work correctly."""
 
 import json
 import os
@@ -39,9 +38,7 @@ def test_lazy_setup_flags() -> None:
 
     assert _LAZY_SETUP_STATE["done"] is True, "Flag 'done' should be True"
     assert _LAZY_SETUP_STATE["error"] is None, "Flag 'error' should be None"
-    assert _LAZY_SETUP_STATE["in_progress"] is False, (
-        "Flag 'in_progress' should be False"
-    )
+    assert _LAZY_SETUP_STATE["in_progress"] is False, "Flag 'in_progress' should be False"
     print("✅ Lazy setup flags work correctly")
 
 
@@ -84,11 +81,7 @@ def test_service_name_no_emoji() -> None:
 
         output = captured_output.getvalue()
         # Filter to get only JSON lines (they start with '{')
-        json_lines = [
-            line.strip()
-            for line in output.strip().splitlines()
-            if line.strip().startswith("{")
-        ]
+        json_lines = [line.strip() for line in output.strip().splitlines() if line.strip().startswith("{")]
 
         if json_lines:
             log_data = json.loads(json_lines[0])
@@ -98,10 +91,7 @@ def test_service_name_no_emoji() -> None:
             print(f"Expected: {expected_event}")
             print(f"Actual: {actual_event}")
 
-            if (
-                actual_event == expected_event
-                and log_data.get("service_name") == "test-service"
-            ):
+            if actual_event == expected_event and log_data.get("service_name") == "test-service":
                 print("✅ Service name injection without emoji works")
                 assert True
             else:
@@ -216,12 +206,8 @@ def test_thread_safety() -> None:
     for thread in threads:
         thread.join(timeout=5.0)
 
-    assert len(exceptions) == 0, (
-        f"Thread safety test encountered exceptions: {exceptions}"
-    )
-    assert len(results) == thread_count, (
-        "Not all threads completed in thread safety test"
-    )
+    assert len(exceptions) == 0, f"Thread safety test encountered exceptions: {exceptions}"
+    assert len(results) == thread_count, "Not all threads completed in thread safety test"
     assert all(results), "Some threads failed in thread safety test"
     print("✅ Thread safety test passed")
 

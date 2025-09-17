@@ -1,9 +1,7 @@
 #
 # test_console_coverage.py
 #
-"""Tests to achieve coverage for console and streams functionality.
-"""
-
+"""Tests to achieve coverage for console and streams functionality."""
 
 
 class TestFileStreams:

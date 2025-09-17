@@ -1,5 +1,4 @@
-"""Tests for @retry decorator.
-"""
+"""Tests for @retry decorator."""
 
 import asyncio
 from typing import Never
@@ -320,6 +319,7 @@ class TestRetryDecoratorParameterValidation:
         """Test that conflicting parameters raise errors."""
         # Can't specify both policy and individual params
         with pytest.raises(ValueError) as exc_info:
+
             @retry(policy=RetryPolicy(), max_attempts=5)
             def func() -> None:
                 pass
@@ -329,11 +329,13 @@ class TestRetryDecoratorParameterValidation:
     def test_invalid_max_attempts(self) -> None:
         """Test invalid max_attempts parameter."""
         with pytest.raises(ValueError):
+
             @retry(max_attempts=0)
             def func() -> None:
                 pass
 
         with pytest.raises(ValueError):
+
             @retry(max_attempts=-1)
             def func() -> None:
                 pass
@@ -341,6 +343,7 @@ class TestRetryDecoratorParameterValidation:
     def test_invalid_delay(self) -> None:
         """Test invalid delay parameters."""
         with pytest.raises(ValueError):
+
             @retry(base_delay=-1.0)
             def func() -> None:
                 pass

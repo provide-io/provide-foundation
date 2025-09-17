@@ -46,7 +46,7 @@ def log_only_error_context(
         if inspect.iscoroutinefunction(func):
 
             @functools.wraps(func)
-            async def async_wrapper(*args, **kwargs):
+            async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
                 context = context_provider() if context_provider else {}
                 logger = get_foundation_logger()
 
@@ -89,7 +89,7 @@ def log_only_error_context(
             return async_wrapper  # type: ignore
 
         @functools.wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
             context = context_provider() if context_provider else {}
             logger = get_foundation_logger()
 

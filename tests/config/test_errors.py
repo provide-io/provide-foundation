@@ -1,6 +1,5 @@
 """Tests for config.errors module."""
 
-
 from provide.foundation.config.errors import (
     ConfigError,
     ParseError,
@@ -147,7 +146,8 @@ class TestFormatInvalidValueError:
     def test_format_with_valid_options(self) -> None:
         """Test format with valid options list."""
         result = format_invalid_value_error(
-            "log_level", "INVALID",
+            "log_level",
+            "INVALID",
             valid_options=["DEBUG", "INFO", "ERROR"],
         )
         assert result == "Invalid log_level 'INVALID'. Valid options: DEBUG, INFO, ERROR"
@@ -155,7 +155,8 @@ class TestFormatInvalidValueError:
     def test_format_with_expected_type(self) -> None:
         """Test format with expected type."""
         result = format_invalid_value_error(
-            "sample_rate", "abc",
+            "sample_rate",
+            "abc",
             expected_type="float",
         )
         assert result == "Invalid sample_rate 'abc'. Expected: float"
@@ -163,7 +164,8 @@ class TestFormatInvalidValueError:
     def test_format_with_additional_info(self) -> None:
         """Test format with additional info."""
         result = format_invalid_value_error(
-            "config_file", "missing.yaml",
+            "config_file",
+            "missing.yaml",
             additional_info="File does not exist",
         )
         assert result == "Invalid config_file 'missing.yaml'. File does not exist"
@@ -171,7 +173,8 @@ class TestFormatInvalidValueError:
     def test_format_prefers_valid_options_over_expected_type(self) -> None:
         """Test that valid_options takes precedence over expected_type."""
         result = format_invalid_value_error(
-            "level", "INVALID",
+            "level",
+            "INVALID",
             expected_type="string",
             valid_options=["DEBUG", "INFO"],
         )
@@ -180,7 +183,8 @@ class TestFormatInvalidValueError:
     def test_format_with_all_parameters(self) -> None:
         """Test format with all parameters."""
         result = format_invalid_value_error(
-            "port", "abc",
+            "port",
+            "abc",
             expected_type="integer",  # Should be ignored
             valid_options=["80", "443", "8080"],
             additional_info="For HTTP services",
@@ -209,16 +213,21 @@ class TestFormatValidationError:
     def test_format_with_additional_info(self) -> None:
         """Test validation error with additional info."""
         result = format_validation_error(
-            "sample_rate", 1.5,
+            "sample_rate",
+            1.5,
             "must be between 0.0 and 1.0",
             additional_info="received from environment variable",
         )
-        assert result == "Value 1.5 for sample_rate must be between 0.0 and 1.0(received from environment variable)"
+        assert (
+            result
+            == "Value 1.5 for sample_rate must be between 0.0 and 1.0(received from environment variable)"
+        )
 
     def test_format_with_string_value(self) -> None:
         """Test validation error with string value."""
         result = format_validation_error(
-            "hostname", "",
+            "hostname",
+            "",
             "cannot be empty",
         )
         assert result == "Value  for hostname cannot be empty"
@@ -226,7 +235,8 @@ class TestFormatValidationError:
     def test_format_with_complex_constraint(self) -> None:
         """Test validation error with complex constraint description."""
         result = format_validation_error(
-            "timeout", -5,
+            "timeout",
+            -5,
             "must be between 1 and 300 seconds",
         )
         assert result == "Value -5 for timeout must be between 1 and 300 seconds"
@@ -248,7 +258,8 @@ class TestErrorIntegration:
     def test_parse_error_with_formatted_message(self) -> None:
         """Test ParseError using formatted message."""
         formatted_msg = format_invalid_value_error(
-            "log_level", "INVALID",
+            "log_level",
+            "INVALID",
             valid_options=["DEBUG", "INFO", "ERROR"],
         )
 
@@ -265,7 +276,8 @@ class TestErrorIntegration:
     def test_validation_error_with_formatted_message(self) -> None:
         """Test ValidationError using formatted message."""
         formatted_msg = format_validation_error(
-            "port", 0,
+            "port",
+            0,
             "must be between 1 and 65535",
         )
 

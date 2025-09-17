@@ -7,9 +7,10 @@ from __future__ import annotations
 
 import os
 import sys
+from typing import Any
 
 
-def get_config_logger():
+def get_config_logger() -> Any:
     """Get logger for config warnings that respects FOUNDATION_LOG_OUTPUT."""
     import structlog
 

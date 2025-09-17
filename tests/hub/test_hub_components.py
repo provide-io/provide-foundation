@@ -1,6 +1,5 @@
 """Tests for component registration functionality."""
 
-
 from provide.foundation.hub.components import (
     discover_components,
 )

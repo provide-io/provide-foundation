@@ -86,7 +86,10 @@ class TestErrorHandlingIntegration:
 
         # Register with metadata
         registry.register(
-            "test_item", "value", dimension="test", metadata={"version": "1.0.0"},
+            "test_item",
+            "value",
+            dimension="test",
+            metadata={"version": "1.0.0"},
         )
 
         # Try duplicate registration

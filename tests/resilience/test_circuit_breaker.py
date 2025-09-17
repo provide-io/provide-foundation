@@ -1,5 +1,4 @@
-"""Tests for circuit breaker functionality.
-"""
+"""Tests for circuit breaker functionality."""
 
 import time
 from typing import Never

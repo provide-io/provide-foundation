@@ -13,7 +13,7 @@ from typing import Any
 from provide.foundation.hub.foundation import get_foundation_logger
 
 
-def _get_registry_and_globals():
+def _get_registry_and_globals() -> Any:
     """Get registry, lock, and initialized components from components module."""
     from provide.foundation.hub.components import (
         _initialized_components,

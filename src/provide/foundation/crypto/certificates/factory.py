@@ -2,11 +2,12 @@ from __future__ import annotations
 
 """Certificate factory methods."""
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from cryptography import x509
     from cryptography.hazmat.primitives import serialization
+
     from provide.foundation.crypto.certificates.certificate import Certificate
 
 try:

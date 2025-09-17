@@ -6,10 +6,12 @@ Provides functions for managing log processors and processing stages
 in the Hub registry system.
 """
 
+from typing import Any
+
 from provide.foundation.hub.registry import RegistryEntry
 
 
-def _get_registry_and_lock():
+def _get_registry_and_lock() -> Any:
     """Get registry and lock from components module."""
     from provide.foundation.hub.components import (
         ComponentCategory,

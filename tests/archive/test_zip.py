@@ -1,6 +1,5 @@
 """Tests for ZIP archive implementation."""
 
-
 import pytest
 
 from provide.foundation.archive.base import ArchiveError

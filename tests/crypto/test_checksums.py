@@ -21,9 +21,7 @@ class TestVerifyFile:
         test_file.write_text("Hello, World!")
 
         # Pre-calculated SHA256 hash of "Hello, World!"
-        expected_hash = (
-            "dffd6021bb2bd5b0af676290809ec3a53191dd81c7f70a4b28688a362182986f"
-        )
+        expected_hash = "dffd6021bb2bd5b0af676290809ec3a53191dd81c7f70a4b28688a362182986f"
 
         result = verify_file(test_file, expected_hash)
 
@@ -69,9 +67,7 @@ class TestVerifyData:
         """Test successful data verification."""
         data = b"Test data"
         # Pre-calculated SHA256 hash
-        expected_hash = (
-            "e27c8214be8b7cf5bccc7c08247e3cb0c1514a48ee1f63197fe4ef3ef51d7e6f"
-        )
+        expected_hash = "e27c8214be8b7cf5bccc7c08247e3cb0c1514a48ee1f63197fe4ef3ef51d7e6f"
 
         result = verify_data(data, expected_hash)
 
@@ -213,7 +209,9 @@ class TestChecksumFiles:
         )
 
         verified, failed = verify_checksum_file(
-            checksum_file, base_dir=tmp_path, stop_on_error=True,
+            checksum_file,
+            base_dir=tmp_path,
+            stop_on_error=True,
         )
 
         assert len(verified) == 0

@@ -24,11 +24,7 @@ _LAZY_SETUP_STATE: dict[str, Any] = {"done": False, "error": None, "in_progress"
 
 
 def _get_safe_stderr() -> TextIO:
-    return (
-        sys.stderr
-        if hasattr(sys, "stderr") and sys.stderr is not None
-        else io.StringIO()
-    )
+    return sys.stderr if hasattr(sys, "stderr") and sys.stderr is not None else io.StringIO()
 
 
 class FoundationLogger:
@@ -46,7 +42,8 @@ class FoundationLogger:
         try:
             current_config = structlog.get_config()
             if current_config and isinstance(
-                current_config.get("logger_factory"), structlog.ReturnLoggerFactory,
+                current_config.get("logger_factory"),
+                structlog.ReturnLoggerFactory,
             ):
                 with _LAZY_SETUP_LOCK:
                     _LAZY_SETUP_STATE["done"] = True
@@ -60,9 +57,7 @@ class FoundationLogger:
         This method is thread-safe and handles setup failures gracefully.
         """
         # Fast path for already configured loggers.
-        if self._is_configured_by_setup or (
-            _LAZY_SETUP_STATE["done"] and not _LAZY_SETUP_STATE["error"]
-        ):
+        if self._is_configured_by_setup or (_LAZY_SETUP_STATE["done"] and not _LAZY_SETUP_STATE["error"]):
             return
 
         # If setup is in progress by another thread, or failed previously, use fallback.
@@ -77,9 +72,7 @@ class FoundationLogger:
         # Acquire lock to perform setup.
         with _LAZY_SETUP_LOCK:
             # Double-check state after acquiring lock, as another thread might have finished.
-            if self._is_configured_by_setup or (
-                _LAZY_SETUP_STATE["done"] and not _LAZY_SETUP_STATE["error"]
-            ):
+            if self._is_configured_by_setup or (_LAZY_SETUP_STATE["done"] and not _LAZY_SETUP_STATE["error"]):
                 return
 
             # If setup failed while waiting for the lock, use fallback.
@@ -99,8 +92,7 @@ class FoundationLogger:
                 _LAZY_SETUP_STATE["in_progress"] = False
 
     def _perform_lazy_setup(self) -> None:
-        """Executes lazy setup by calling the main internal setup function.
-        """
+        """Executes lazy setup by calling the main internal setup function."""
         from provide.foundation.logger.setup.coordinator import internal_setup as _internal_setup
 
         # Calling _internal_setup with no config will make it use from_env()
@@ -129,7 +121,10 @@ class FoundationLogger:
         return structlog.get_logger().bind(logger_name=effective_name)
 
     def _log_with_level(
-        self, level_method_name: str, event: str, **kwargs: Any,
+        self,
+        level_method_name: str,
+        event: str,
+        **kwargs: Any,
     ) -> None:
         # FIX: The _ensure_configured call is removed from here to prevent redundant checks.
         # get_logger() is now the single point of entry for configuration checks.
@@ -161,35 +156,47 @@ class FoundationLogger:
 
     def debug(self, event: str, *args: Any, **kwargs: Any) -> None:
         self._log_with_level(
-            "debug", self._format_message_with_args(event, args), **kwargs,
+            "debug",
+            self._format_message_with_args(event, args),
+            **kwargs,
         )
 
     def info(self, event: str, *args: Any, **kwargs: Any) -> None:
         self._log_with_level(
-            "info", self._format_message_with_args(event, args), **kwargs,
+            "info",
+            self._format_message_with_args(event, args),
+            **kwargs,
         )
 
     def warning(self, event: str, *args: Any, **kwargs: Any) -> None:
         self._log_with_level(
-            "warning", self._format_message_with_args(event, args), **kwargs,
+            "warning",
+            self._format_message_with_args(event, args),
+            **kwargs,
         )
 
     warn = warning
 
     def error(self, event: str, *args: Any, **kwargs: Any) -> None:
         self._log_with_level(
-            "error", self._format_message_with_args(event, args), **kwargs,
+            "error",
+            self._format_message_with_args(event, args),
+            **kwargs,
         )
 
     def exception(self, event: str, *args: Any, **kwargs: Any) -> None:
         kwargs.setdefault("exc_info", True)
         self._log_with_level(
-            "error", self._format_message_with_args(event, args), **kwargs,
+            "error",
+            self._format_message_with_args(event, args),
+            **kwargs,
         )
 
     def critical(self, event: str, *args: Any, **kwargs: Any) -> None:
         self._log_with_level(
-            "critical", self._format_message_with_args(event, args), **kwargs,
+            "critical",
+            self._format_message_with_args(event, args),
+            **kwargs,
         )
 
     def __setattr__(self, name: str, value: Any) -> None:

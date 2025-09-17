@@ -1,5 +1,4 @@
-"""Integration tests for resilience module with transport middleware and other components.
-"""
+"""Integration tests for resilience module with transport middleware and other components."""
 
 from unittest.mock import patch
 

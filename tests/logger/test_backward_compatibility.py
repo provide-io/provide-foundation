@@ -127,10 +127,12 @@ class TestBackwardCompatibility:
         """Test patterns used by ecosystem projects."""
         # Pattern 1: Import and immediate use (supsrc pattern)
         from provide.foundation.logger import logger
+
         logger.info("Immediate use after import")
 
         # Pattern 2: Factory function (flavorpack pattern)
         from provide.foundation.logger import get_logger
+
         module_logger = get_logger(__name__)
         module_logger.info("Module logger test")
 
@@ -184,10 +186,7 @@ class TestBackwardCompatibility:
                 errors.append(e)
 
         # Start multiple threads
-        threads = [
-            threading.Thread(target=worker_thread, args=(i,))
-            for i in range(20)
-        ]
+        threads = [threading.Thread(target=worker_thread, args=(i,)) for i in range(20)]
 
         for thread in threads:
             thread.start()

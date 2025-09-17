@@ -183,6 +183,7 @@ class TestMockLogger:
             assert hasattr(mock_logger, method)
             # mock_logger creates Mock objects, not MagicMock
             from unittest.mock import Mock
+
             assert isinstance(getattr(mock_logger, method), Mock)
 
     def test_mock_logger_methods_callable(self, mock_logger) -> None:

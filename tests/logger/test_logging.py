@@ -1,8 +1,7 @@
 #
 # test_logging.py
 #
-"""Tests for the Foundation Telemetry logging system.
-"""
+"""Tests for the Foundation Telemetry logging system."""
 
 import io
 import json
@@ -67,7 +66,8 @@ def assert_log_output(
             found_match = True
             break
     if expect_traceback_containing and not _check_traceback_presence(
-        output, expect_traceback_containing,
+        output,
+        expect_traceback_containing,
     ):
         found_match = False
     if not found_match:
@@ -123,11 +123,7 @@ def _validate_keyvalue_log_line(
         return False
     if expected_kvs:
         for k, v_expected in expected_kvs.items():
-            val_str = (
-                str(v_expected)
-                if not isinstance(v_expected, bool)
-                else str(v_expected).lower()
-            )
+            val_str = str(v_expected) if not isinstance(v_expected, bool) else str(v_expected).lower()
             # Use regex to ensure it's a key=value pair and not just a substring
             if not re.search(rf"\b{re.escape(k)}={re.escape(val_str)}\b", line):
                 return False
@@ -135,9 +131,7 @@ def _validate_keyvalue_log_line(
 
 
 def _check_traceback_presence(output: str, expected_traceback: str) -> bool:
-    return (
-        "Traceback (most recent call last):" in output and expected_traceback in output
-    )
+    return "Traceback (most recent call last):" in output and expected_traceback in output
 
 
 class TestConfigWarnings:
@@ -190,9 +184,7 @@ class TestConfigWarnings:
         # Check that only valid entries are kept
         valid_log_levels = {"TRACE", "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
         for module, level in config.logging.module_levels.items():
-            assert level in valid_log_levels, (
-                f"Invalid level {level} for module {module}"
-            )
+            assert level in valid_log_levels, f"Invalid level {level} for module {module}"
             # Empty module names should not be kept
             assert module.strip() != "", "Empty module name should not be kept"
 
@@ -251,7 +243,10 @@ class TestLoggingWithEmojiSets:
         )
         setup_foundation_telemetry_for_test(config)
         global_logger.info(
-            "Legacy system test", domain="auth", action="login", status="success",
+            "Legacy system test",
+            domain="auth",
+            action="login",
+            status="success",
         )
         output = captured_stderr_for_foundation.getvalue()
         assert "[🔑][➡️][✅] Legacy system test" in output

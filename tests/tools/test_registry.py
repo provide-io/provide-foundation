@@ -172,7 +172,8 @@ class TestToolRegistry:
 
         assert result == MockToolManager
         registry.hub.registry.get.assert_called_once_with(
-            "mocktool", dimension=ToolRegistry.DIMENSION,
+            "mocktool",
+            dimension=ToolRegistry.DIMENSION,
         )
 
     def test_get_tool_manager_class_not_found(self, registry) -> None:
@@ -183,7 +184,8 @@ class TestToolRegistry:
 
         assert result is None
         registry.hub.registry.get.assert_called_once_with(
-            "nonexistent", dimension=ToolRegistry.DIMENSION,
+            "nonexistent",
+            dimension=ToolRegistry.DIMENSION,
         )
 
     def test_create_tool_manager(self, registry, config) -> None:
@@ -253,7 +255,8 @@ class TestToolRegistry:
             "platforms": ["darwin", "linux"],
         }
         registry.hub.registry.get_entry.assert_called_once_with(
-            "mocktool", dimension=ToolRegistry.DIMENSION,
+            "mocktool",
+            dimension=ToolRegistry.DIMENSION,
         )
 
     def test_get_tool_info_not_found(self, registry) -> None:
@@ -354,9 +357,12 @@ class TestDiscoverTools:
 
     def test_discover_tools_no_entry_points(self, mock_hub) -> None:
         """Test when entry points are not available."""
-        with patch("provide.foundation.tools.registry.get_hub", return_value=mock_hub), patch(
-            "importlib.metadata.entry_points",
-            side_effect=AttributeError("No entry_points"),
+        with (
+            patch("provide.foundation.tools.registry.get_hub", return_value=mock_hub),
+            patch(
+                "importlib.metadata.entry_points",
+                side_effect=AttributeError("No entry_points"),
+            ),
         ):
             # Should not crash, just log debug message
             registry = ToolRegistry()
@@ -385,7 +391,9 @@ class TestGlobalFunctions:
 
             patch_get_registry.assert_called_once()
             mock_registry.register_tool_manager.assert_called_once_with(
-                "tool", MockToolManager, ["alias1", "alias2"],
+                "tool",
+                MockToolManager,
+                ["alias1", "alias2"],
             )
 
     def test_get_tool_manager_global(self, config) -> None:
@@ -455,11 +463,11 @@ class TestRegistryDimension:
         registry.get_tool_info("test")
 
         # Verify all calls used the correct dimension
-        dimension_calls = [
-            call for call in registry.hub.registry.register.call_args_list
-        ] + [call for call in registry.hub.registry.get.call_args_list] + [
-            call for call in registry.hub.registry.get_entry.call_args_list
-        ]
+        dimension_calls = (
+            [call for call in registry.hub.registry.register.call_args_list]
+            + [call for call in registry.hub.registry.get.call_args_list]
+            + [call for call in registry.hub.registry.get_entry.call_args_list]
+        )
 
         for call in dimension_calls:
             if "dimension" in call[1]:

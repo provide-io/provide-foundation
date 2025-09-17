@@ -1,8 +1,5 @@
 # tests/test_eventsets.py
-"""Tests for Event Set configuration, resolution, and processing.
-"""
-
-
+"""Tests for Event Set configuration, resolution, and processing."""
 
 from provide.testkit.logger import reset_foundation_setup_for_testing
 

@@ -47,7 +47,8 @@ class TestAsyncEnvFunctions:
 
             try:
                 with patch.dict(
-                    os.environ, {"ASYNC_SECRET": f"file://{temp_file.name}"},
+                    os.environ,
+                    {"ASYNC_SECRET": f"file://{temp_file.name}"},
                 ):
                     # Mock aiofiles if not available
                     with patch(
@@ -55,9 +56,7 @@ class TestAsyncEnvFunctions:
                     ) as mock_aiofiles:
                         mock_file = AsyncMock()
                         mock_file.read.return_value = "secret_content\n"
-                        mock_aiofiles.open.return_value.__aenter__.return_value = (
-                            mock_file
-                        )
+                        mock_aiofiles.open.return_value.__aenter__.return_value = mock_file
 
                         result = await get_env_async("ASYNC_SECRET")
                         assert result == "secret_content"
@@ -150,9 +149,7 @@ class TestAsyncRuntimeConfig:
                     ) as mock_aiofiles:
                         mock_file = AsyncMock()
                         mock_file.read.return_value = "secret_api_key\n"
-                        mock_aiofiles.open.return_value.__aenter__.return_value = (
-                            mock_file
-                        )
+                        mock_aiofiles.open.return_value.__aenter__.return_value = mock_file
 
                         config = await self.AsyncTestConfig.from_env_async(
                             prefix="ASYNC",
@@ -168,7 +165,8 @@ class TestAsyncRuntimeConfig:
         """Test async loading with use_async_secrets=False."""
         with patch.dict(os.environ, {"ASYNC_APP_NAME": "sync_app"}):
             config = await self.AsyncTestConfig.from_env_async(
-                prefix="ASYNC", use_async_secrets=False,
+                prefix="ASYNC",
+                use_async_secrets=False,
             )
 
             assert config.app_name == "sync_app"
@@ -275,7 +273,10 @@ class TestEnvFieldCreation:
     def test_env_field_with_all_options(self) -> None:
         """Test env_field with all options."""
         field_obj = env_field(
-            env_var="FULL_VAR", env_prefix="FULL", parser=str.upper, default="test",
+            env_var="FULL_VAR",
+            env_prefix="FULL",
+            parser=str.upper,
+            default="test",
         )
 
         assert field_obj.metadata.get("env_var") == "FULL_VAR"
@@ -354,6 +355,7 @@ class TestRuntimeConfigAdvanced:
     def test_auto_parse_method(self) -> None:
         """Test auto_parse function."""
         from provide.foundation.utils.parsing import auto_parse
+
         # Create a mock attribute
         mock_attr = Mock()
         mock_attr.type = int
@@ -420,7 +422,9 @@ class TestRuntimeConfigAdvanced:
             complex_val: complex = field(default=complex(1, 2))
 
         config = TypeTestConfig(
-            float_val=3.14159, none_val=None, complex_val=complex(2, 3),
+            float_val=3.14159,
+            none_val=None,
+            complex_val=complex(2, 3),
         )
 
         env_dict = config.to_env_dict()

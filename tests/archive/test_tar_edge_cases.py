@@ -318,6 +318,11 @@ class TestTarArchiveEdgeCases:
         contents = tar_archive.list_contents(archive)
 
         # Should only include files, not directories
-        assert all("deep_file.txt" in path or not any(d in path for d in ["deeply", "nested", "dir"]) or "file" in path for path in contents)
+        assert all(
+            "deep_file.txt" in path
+            or not any(d in path for d in ["deeply", "nested", "dir"])
+            or "file" in path
+            for path in contents
+        )
         # Verify the deep file is included
         assert any("deep_file.txt" in path for path in contents)

@@ -1,5 +1,4 @@
-"""Tests for fallback functionality.
-"""
+"""Tests for fallback functionality."""
 
 from typing import Never
 from unittest.mock import MagicMock

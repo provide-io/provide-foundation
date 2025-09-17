@@ -36,11 +36,13 @@ class TestRetryExecutorSync:
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
         executor = RetryExecutor(policy)
 
-        mock_func = MagicMock(side_effect=[
-            ValueError("attempt 1"),
-            ValueError("attempt 2"),
-            "success",
-        ])
+        mock_func = MagicMock(
+            side_effect=[
+                ValueError("attempt 1"),
+                ValueError("attempt 2"),
+                "success",
+            ]
+        )
 
         result = executor.execute_sync(mock_func)
 
@@ -212,11 +214,13 @@ class TestRetryExecutorSync:
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
         executor = RetryExecutor(policy, on_retry=callback)
 
-        mock_func = MagicMock(side_effect=[
-            ValueError("attempt 1"),
-            ValueError("attempt 2"),
-            "success",
-        ])
+        mock_func = MagicMock(
+            side_effect=[
+                ValueError("attempt 1"),
+                ValueError("attempt 2"),
+                "success",
+            ]
+        )
 
         result = executor.execute_sync(mock_func)
 
@@ -231,16 +235,19 @@ class TestRetryExecutorSync:
 
     def test_on_retry_callback_exception_ignored(self) -> None:
         """Test that exceptions in on_retry don't break retry."""
+
         def bad_callback(attempt, error) -> Never:
             raise RuntimeError("callback failed")
 
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
         executor = RetryExecutor(policy, on_retry=bad_callback)
 
-        mock_func = MagicMock(side_effect=[
-            ValueError("attempt 1"),
-            "success",
-        ])
+        mock_func = MagicMock(
+            side_effect=[
+                ValueError("attempt 1"),
+                "success",
+            ]
+        )
 
         with patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger:
             mock_logger = mock_get_logger.return_value
@@ -299,11 +306,13 @@ class TestRetryExecutorAsync:
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
         executor = RetryExecutor(policy)
 
-        mock_func = AsyncMock(side_effect=[
-            ValueError("attempt 1"),
-            ValueError("attempt 2"),
-            "success",
-        ])
+        mock_func = AsyncMock(
+            side_effect=[
+                ValueError("attempt 1"),
+                ValueError("attempt 2"),
+                "success",
+            ]
+        )
 
         result = await executor.execute_async(mock_func)
 
@@ -372,11 +381,13 @@ class TestRetryExecutorAsync:
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
         executor = RetryExecutor(policy, on_retry=callback)
 
-        mock_func = AsyncMock(side_effect=[
-            ValueError("attempt 1"),
-            ValueError("attempt 2"),
-            "success",
-        ])
+        mock_func = AsyncMock(
+            side_effect=[
+                ValueError("attempt 1"),
+                ValueError("attempt 2"),
+                "success",
+            ]
+        )
 
         result = await executor.execute_async(mock_func)
 
@@ -390,10 +401,12 @@ class TestRetryExecutorAsync:
         policy = RetryPolicy(max_attempts=2, base_delay=0.01)
         executor = RetryExecutor(policy, on_retry=callback)
 
-        mock_func = AsyncMock(side_effect=[
-            ValueError("attempt 1"),
-            "success",
-        ])
+        mock_func = AsyncMock(
+            side_effect=[
+                ValueError("attempt 1"),
+                "success",
+            ]
+        )
 
         result = await executor.execute_async(mock_func)
 
@@ -430,10 +443,12 @@ class TestRetryExecutorLogging:
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
         executor = RetryExecutor(policy)
 
-        mock_func = MagicMock(side_effect=[
-            ValueError("fail"),
-            "success",
-        ])
+        mock_func = MagicMock(
+            side_effect=[
+                ValueError("fail"),
+                "success",
+            ]
+        )
 
         with patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger:
             mock_logger = mock_get_logger.return_value

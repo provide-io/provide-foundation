@@ -130,6 +130,34 @@ def default_logging_config():
 
 
 # =================================
+# Crypto module defaults
+# =================================
+DEFAULT_CERTIFICATE_KEY_TYPE = None
+DEFAULT_CERTIFICATE_VALIDITY_DAYS = 365
+DEFAULT_ECDSA_CURVE = None
+DEFAULT_RSA_KEY_SIZE = 2048
+DEFAULT_SIGNATURE_ALGORITHM = None
+DEFAULT_ED25519_PRIVATE_KEY_SIZE = 32
+DEFAULT_ED25519_PUBLIC_KEY_SIZE = 32
+DEFAULT_ED25519_SIGNATURE_SIZE = 64
+
+
+def default_supported_ec_curves() -> set[str]:
+    """Factory for supported EC curves set."""
+    return set()
+
+
+def default_supported_key_types() -> set[str]:
+    """Factory for supported key types set."""
+    return set()
+
+
+def default_supported_rsa_sizes() -> set[int]:
+    """Factory for supported RSA sizes set."""
+    return set()
+
+
+# =================================
 # Converter functions (to replace lambdas)
 # =================================
 

@@ -411,6 +411,7 @@ class TestConverterFunctions:
         """Test path_converter handles type annotations correctly."""
         # This test ensures the function signature is correct
         from typing import get_type_hints
+
         hints = get_type_hints(path_converter)
 
         assert hints["x"] == str | None

@@ -12,7 +12,7 @@ from provide.foundation.hub.foundation import get_foundation_logger
 from provide.foundation.hub.registry import RegistryEntry
 
 
-def _get_registry_and_lock():
+def _get_registry_and_lock() -> tuple[Any, Any]:
     """Get registry and lock from components module."""
     from provide.foundation.hub.components import (
         ComponentCategory,

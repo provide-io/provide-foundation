@@ -79,9 +79,7 @@ class TestLoggerConfigReExports:
         config_module = importlib.import_module("provide.foundation.logger.config")
 
         # Get all items that would be imported with star import
-        star_imports = {
-            name: getattr(config_module, name) for name in config_module.__all__
-        }
+        star_imports = {name: getattr(config_module, name) for name in config_module.__all__}
 
         assert "LoggingConfig" in star_imports
         assert "TelemetryConfig" in star_imports
@@ -93,9 +91,7 @@ class TestLoggerConfigReExports:
 
         # Check module attributes
         assert LoggingConfig.__module__ == "provide.foundation.logger.config.logging"
-        assert (
-            TelemetryConfig.__module__ == "provide.foundation.logger.config.telemetry"
-        )
+        assert TelemetryConfig.__module__ == "provide.foundation.logger.config.telemetry"
 
     def test_no_additional_exports(self) -> None:
         """Test that __all__ items are properly exported."""
@@ -106,9 +102,7 @@ class TestLoggerConfigReExports:
 
         # All items in __all__ should be present as public attributes
         for expected_export in config_module.__all__:
-            assert expected_export in public_attrs, (
-                f"Missing expected export: {expected_export}"
-            )
+            assert expected_export in public_attrs, f"Missing expected export: {expected_export}"
 
         # Check that the main exports are classes (not modules)
         assert hasattr(config_module, "LoggingConfig")

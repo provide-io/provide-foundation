@@ -178,7 +178,7 @@ class RetryExecutor:
         self.policy = policy
         self.on_retry = on_retry
 
-    def execute_sync(self, func: Callable[..., T], *args, **kwargs) -> T:
+    def execute_sync(self, func: Callable[..., T], *args: Any, **kwargs: Any) -> T:
         """Execute synchronous function with retry logic.
 
         Args:
@@ -250,7 +250,7 @@ class RetryExecutor:
         else:
             raise RuntimeError("No exception captured during retry attempts")
 
-    async def execute_async(self, func: Callable[..., Awaitable[T]], *args, **kwargs) -> T:
+    async def execute_async(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
         """Execute asynchronous function with retry logic.
 
         Args:

@@ -10,7 +10,7 @@ is now created as a closure in config.py.
 """
 
 import logging as stdlib_logging
-from typing import Any, Protocol, cast
+from typing import Any, Protocol
 
 import structlog
 

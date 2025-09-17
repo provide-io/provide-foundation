@@ -185,7 +185,9 @@ class TestSchemaFieldComprehensive:
         def validator(value) -> bool:
             if value < 0:
                 raise ConfigValidationError(
-                    "Must be positive", field="test_field", value=value,
+                    "Must be positive",
+                    field="test_field",
+                    value=value,
                 )
             return True
 
@@ -204,7 +206,8 @@ class TestSchemaFieldComprehensive:
         field_obj = SchemaField(name="test_field", validator=validator)
 
         with pytest.raises(
-            ConfigValidationError, match="Validation error: Generic error",
+            ConfigValidationError,
+            match="Validation error: Generic error",
         ):
             await field_obj.validate(5)
 

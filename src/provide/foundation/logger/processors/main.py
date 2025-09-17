@@ -6,7 +6,6 @@ from __future__ import annotations
 """Structlog processors for Foundation Telemetry."""
 
 import json
-import logging as stdlib_logging
 from typing import Any, TextIO, cast
 
 import structlog
@@ -22,10 +21,6 @@ from provide.foundation.logger.custom_processors import (
 
 # Import trace context processor
 from provide.foundation.logger.processors.trace import inject_trace_context
-from provide.foundation.logger.types import (
-    TRACE_LEVEL_NUM,
-    LogLevelStr,
-)
 
 
 def _config_create_service_name_processor(

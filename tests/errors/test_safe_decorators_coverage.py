@@ -16,6 +16,7 @@ class TestSafeDecoratorsCoverage:
     def test_logger_access_available(self) -> None:
         """Test that logger functionality is available through foundation."""
         from provide.foundation.hub.foundation import get_foundation_logger
+
         logger = get_foundation_logger()
         assert logger is not None
         assert hasattr(logger, "debug")
@@ -38,7 +39,9 @@ class TestSafeDecoratorsCoverage:
             return {"operation": "test_operation", "user": "test_user"}
 
         @log_only_error_context(
-            context_provider=context_func, log_level="debug", log_success=True,
+            context_provider=context_func,
+            log_level="debug",
+            log_success=True,
         )
         def test_func(value):
             return value * 2
@@ -108,7 +111,9 @@ class TestSafeDecoratorsCoverage:
             return {"async_operation": "multiplication", "version": "1.0"}
 
         @log_only_error_context(
-            context_provider=context_func, log_level="trace", log_success=True,
+            context_provider=context_func,
+            log_level="trace",
+            log_success=True,
         )
         async def async_test_func(value):
             await asyncio.sleep(0.001)

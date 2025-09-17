@@ -27,8 +27,8 @@ class TestLoggerSetupInit:
         from provide.foundation.logger import setup
 
         # reset_for_testing should not exist in foundation anymore
-        assert not hasattr(setup, 'reset_for_testing')
-        assert not hasattr(setup, '_has_testing')
+        assert not hasattr(setup, "reset_for_testing")
+        assert not hasattr(setup, "_has_testing")
 
     def test_reset_for_testing_available_in_testkit(self) -> None:
         """Test that reset functionality is available in testkit."""
@@ -44,6 +44,7 @@ class TestLoggerSetupInit:
         # Only core setup functionality should be exported
         expected_exports = ["get_vanilla_logger", "internal_setup"]
         assert set(__all__) == set(expected_exports)
+
     def test_all_exports_accessible(self) -> None:
         """Test that all items in __all__ are accessible."""
         setup_module = importlib.import_module("provide.foundation.logger.setup")
@@ -67,7 +68,7 @@ class TestLoggerSetupInit:
         from provide.foundation.logger import setup
 
         # _has_testing should not exist anymore
-        assert not hasattr(setup, '_has_testing')
+        assert not hasattr(setup, "_has_testing")
 
 
 class TestTestingRefactorIntegration:
@@ -78,8 +79,8 @@ class TestTestingRefactorIntegration:
         from provide.foundation.logger import setup
 
         # reset_for_testing should not exist in foundation anymore
-        assert not hasattr(setup, 'reset_for_testing')
-        assert not hasattr(setup, '_has_testing')
+        assert not hasattr(setup, "reset_for_testing")
+        assert not hasattr(setup, "_has_testing")
 
     def test_testing_utilities_available_in_testkit(self) -> None:
         """Test that testing utilities are available in testkit."""
@@ -131,11 +132,7 @@ class TestSetupModuleIntegration:
 
         sig = inspect.signature(reset_foundation_setup_for_testing)
         # Should have no required parameters
-        required_params = [
-            p
-            for p in sig.parameters.values()
-            if p.default == inspect.Parameter.empty
-        ]
+        required_params = [p for p in sig.parameters.values() if p.default == inspect.Parameter.empty]
         assert len(required_params) == 0
 
     def test_module_structure(self) -> None:
@@ -176,11 +173,7 @@ class TestSetupModuleIntegration:
         setup_module = importlib.import_module("provide.foundation.logger.setup")
 
         # Get all public attributes (not starting with _)
-        public_attrs = [
-            attr
-            for attr in dir(setup_module)
-            if not attr.startswith("_")
-        ]
+        public_attrs = [attr for attr in dir(setup_module) if not attr.startswith("_")]
 
         # Should only contain items from __all__
         core_exports = setup_module.__all__

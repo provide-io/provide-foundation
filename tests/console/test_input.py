@@ -64,8 +64,12 @@ class TestPin:
         ctx.json_output = True
 
         test_input = '{"key": "value"}'
-        with patch("sys.stdin", StringIO(test_input)), patch(
-            "provide.foundation.console.input._get_context", return_value=ctx,
+        with (
+            patch("sys.stdin", StringIO(test_input)),
+            patch(
+                "provide.foundation.console.input._get_context",
+                return_value=ctx,
+            ),
         ):
             result = pin("Enter JSON: ")
             assert result == {"key": "value"}
@@ -76,8 +80,12 @@ class TestPin:
         ctx.json_output = True
 
         test_input = "plain text\n"
-        with patch("sys.stdin", StringIO(test_input)), patch(
-            "provide.foundation.console.input._get_context", return_value=ctx,
+        with (
+            patch("sys.stdin", StringIO(test_input)),
+            patch(
+                "provide.foundation.console.input._get_context",
+                return_value=ctx,
+            ),
         ):
             result = pin("Enter: ")
             assert result == "plain text"
@@ -88,8 +96,12 @@ class TestPin:
         ctx.json_output = True
 
         test_input = "test value\n"
-        with patch("sys.stdin", StringIO(test_input)), patch(
-            "provide.foundation.console.input._get_context", return_value=ctx,
+        with (
+            patch("sys.stdin", StringIO(test_input)),
+            patch(
+                "provide.foundation.console.input._get_context",
+                return_value=ctx,
+            ),
         ):
             result = pin("Enter: ", json_key="input")
             assert result == {"input": "test value"}
@@ -129,8 +141,12 @@ class TestPinStream:
         ctx.json_output = True
 
         test_input = '["item1", "item2", "item3"]'
-        with patch("sys.stdin", StringIO(test_input)), patch(
-            "provide.foundation.console.input._get_context", return_value=ctx,
+        with (
+            patch("sys.stdin", StringIO(test_input)),
+            patch(
+                "provide.foundation.console.input._get_context",
+                return_value=ctx,
+            ),
         ):
             lines = list(pin_stream())
             assert lines == ["item1", "item2", "item3"]
@@ -141,8 +157,12 @@ class TestPinStream:
         ctx.json_output = True
 
         test_input = '{"key": "value"}'
-        with patch("sys.stdin", StringIO(test_input)), patch(
-            "provide.foundation.console.input._get_context", return_value=ctx,
+        with (
+            patch("sys.stdin", StringIO(test_input)),
+            patch(
+                "provide.foundation.console.input._get_context",
+                return_value=ctx,
+            ),
         ):
             lines = list(pin_stream())
             assert lines == ['{"key": "value"}']
@@ -153,8 +173,12 @@ class TestPinStream:
         ctx.json_output = True
 
         test_input = "plain\ntext\nlines\n"
-        with patch("sys.stdin", StringIO(test_input)), patch(
-            "provide.foundation.console.input._get_context", return_value=ctx,
+        with (
+            patch("sys.stdin", StringIO(test_input)),
+            patch(
+                "provide.foundation.console.input._get_context",
+                return_value=ctx,
+            ),
         ):
             lines = list(pin_stream())
             assert lines == ["plain", "text", "lines"]
@@ -217,7 +241,8 @@ class TestAsyncPin:
 
         # Mock the async generator
         with patch(
-            "provide.foundation.console.input.apin_stream", return_value=mock_stream(),
+            "provide.foundation.console.input.apin_stream",
+            return_value=mock_stream(),
         ):
             lines = []
             async for line in apin_stream():
@@ -234,7 +259,8 @@ class TestAsyncPin:
                 yield line
 
         with patch(
-            "provide.foundation.console.input.apin_stream", return_value=mock_stream(),
+            "provide.foundation.console.input.apin_stream",
+            return_value=mock_stream(),
         ):
             lines = await apin_lines(2)
             assert lines == ["line1", "line2"]
@@ -249,7 +275,8 @@ class TestAsyncPin:
                 yield line
 
         with patch(
-            "provide.foundation.console.input.apin_stream", return_value=mock_stream(),
+            "provide.foundation.console.input.apin_stream",
+            return_value=mock_stream(),
         ):
             lines = await apin_lines()
             assert lines == test_lines
@@ -299,7 +326,8 @@ class TestAsyncStreamIntegration:
             mock_loop.return_value.run_in_executor.return_value = future
 
             with patch(
-                "provide.foundation.console.input._get_context", return_value=ctx,
+                "provide.foundation.console.input._get_context",
+                return_value=ctx,
             ):
                 lines = []
                 async for line in apin_stream():
@@ -317,8 +345,12 @@ class TestEdgeCases:
         ctx.json_output = True
 
         # Simulate an error reading stdin
-        with patch("sys.stdin.readline", side_effect=OSError("Read error")), patch(
-            "provide.foundation.console.input._get_context", return_value=ctx,
+        with (
+            patch("sys.stdin.readline", side_effect=OSError("Read error")),
+            patch(
+                "provide.foundation.console.input._get_context",
+                return_value=ctx,
+            ),
         ):
             result = pin("Enter: ", json_key="input")
             assert result == {"input": None, "error": "Read error"}
@@ -360,10 +392,7 @@ class TestEdgeCases:
 
                     # Should have logged cancellation
                     mock_log.debug.assert_called()
-                    assert any(
-                        "cancelled" in str(call)
-                        for call in mock_log.debug.call_args_list
-                    )
+                    assert any("cancelled" in str(call) for call in mock_log.debug.call_args_list)
 
     @pytest.mark.asyncio
     async def test_apin_stream_error_handling(self) -> None:

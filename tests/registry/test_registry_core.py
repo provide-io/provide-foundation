@@ -72,7 +72,10 @@ class TestRegistry:
         reg = Registry()
 
         reg.register(
-            "primary", "value", dimension="component", aliases=["alt1", "alt2"],
+            "primary",
+            "value",
+            dimension="component",
+            aliases=["alt1", "alt2"],
         )
 
         assert reg.get("primary") == "value"

@@ -1,6 +1,4 @@
-"""Transport middleware tests.
-"""
-
+"""Transport middleware tests."""
 
 import pytest
 

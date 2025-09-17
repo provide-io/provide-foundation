@@ -47,8 +47,7 @@ class TestToolCache:
 
     def test_init_default_cache_dir(self) -> None:
         """Test initialization with default cache directory."""
-        with patch("pathlib.Path.home") as mock_home, \
-             patch("pathlib.Path.mkdir") as mock_mkdir:
+        with patch("pathlib.Path.home") as mock_home, patch("pathlib.Path.mkdir") as mock_mkdir:
             mock_home.return_value = Path("/mock/home")
 
             cache = ToolCache()
@@ -145,7 +144,9 @@ class TestToolCache:
         assert result is None
 
     def test_get_cache_miss_path_not_exists(
-        self, cache: ToolCache, temp_cache_dir: Path,
+        self,
+        cache: ToolCache,
+        temp_cache_dir: Path,
     ) -> None:
         """Test get with cache miss - path doesn't exist."""
         # Store entry with non-existent path
@@ -158,7 +159,9 @@ class TestToolCache:
         assert "tool1:1.0.0" not in cache.metadata
 
     def test_get_cache_miss_expired(
-        self, cache: ToolCache, temp_cache_dir: Path,
+        self,
+        cache: ToolCache,
+        temp_cache_dir: Path,
     ) -> None:
         """Test get with cache miss - entry expired."""
         tool_path = temp_cache_dir / "tool1"
@@ -215,7 +218,9 @@ class TestToolCache:
         assert entry["ttl_days"] == 14
 
     def test_store_overwrites_existing(
-        self, cache: ToolCache, temp_cache_dir: Path,
+        self,
+        cache: ToolCache,
+        temp_cache_dir: Path,
     ) -> None:
         """Test that store overwrites existing entries."""
         tool_path1 = temp_cache_dir / "tool1_old"
@@ -234,7 +239,9 @@ class TestToolCache:
         assert entry["ttl_days"] == 14
 
     def test_invalidate_specific_version(
-        self, cache: ToolCache, temp_cache_dir: Path,
+        self,
+        cache: ToolCache,
+        temp_cache_dir: Path,
     ) -> None:
         """Test invalidating specific version."""
         tool_path = temp_cache_dir / "tool1"
@@ -251,7 +258,9 @@ class TestToolCache:
         assert "tool1:2.0.0" in cache.metadata
 
     def test_invalidate_all_versions(
-        self, cache: ToolCache, temp_cache_dir: Path,
+        self,
+        cache: ToolCache,
+        temp_cache_dir: Path,
     ) -> None:
         """Test invalidating all versions of a tool."""
         tool_path = temp_cache_dir / "tool1"
@@ -338,7 +347,9 @@ class TestToolCache:
         assert result == []
 
     def test_list_cached_with_entries(
-        self, cache: ToolCache, temp_cache_dir: Path,
+        self,
+        cache: ToolCache,
+        temp_cache_dir: Path,
     ) -> None:
         """Test list_cached with cache entries."""
         tool_path = temp_cache_dir / "tool1"
@@ -360,7 +371,9 @@ class TestToolCache:
             assert "version" in entry
 
     def test_list_cached_expiry_calculation(
-        self, cache: ToolCache, temp_cache_dir: Path,
+        self,
+        cache: ToolCache,
+        temp_cache_dir: Path,
     ) -> None:
         """Test list_cached expiry calculations."""
         tool_path = temp_cache_dir / "tool1"
@@ -376,7 +389,9 @@ class TestToolCache:
         assert 6 <= entry["days_until_expiry"] <= 7  # Should be close to 7
 
     def test_list_cached_never_expires(
-        self, cache: ToolCache, temp_cache_dir: Path,
+        self,
+        cache: ToolCache,
+        temp_cache_dir: Path,
     ) -> None:
         """Test list_cached with never-expiring entries."""
         tool_path = temp_cache_dir / "tool1"
@@ -391,7 +406,9 @@ class TestToolCache:
         assert entry["days_until_expiry"] == -1
 
     def test_list_cached_expired_entry(
-        self, cache: ToolCache, temp_cache_dir: Path,
+        self,
+        cache: ToolCache,
+        temp_cache_dir: Path,
     ) -> None:
         """Test list_cached with expired entry."""
         tool_path = temp_cache_dir / "tool1"
@@ -411,7 +428,9 @@ class TestToolCache:
         assert entry["days_until_expiry"] == 0
 
     def test_list_cached_invalid_date(
-        self, cache: ToolCache, temp_cache_dir: Path,
+        self,
+        cache: ToolCache,
+        temp_cache_dir: Path,
     ) -> None:
         """Test list_cached with invalid date in entry."""
         tool_path = temp_cache_dir / "tool1"
@@ -444,7 +463,9 @@ class TestToolCache:
         assert size == len("test content")
 
     def test_get_size_with_directories(
-        self, cache: ToolCache, temp_cache_dir: Path,
+        self,
+        cache: ToolCache,
+        temp_cache_dir: Path,
     ) -> None:
         """Test get_size with cached directories."""
         # Create test directory with files
@@ -464,7 +485,9 @@ class TestToolCache:
         assert size == expected_size
 
     def test_get_size_nonexistent_path(
-        self, cache: ToolCache, temp_cache_dir: Path,
+        self,
+        cache: ToolCache,
+        temp_cache_dir: Path,
     ) -> None:
         """Test get_size with non-existent cached path."""
         fake_path = temp_cache_dir / "nonexistent"
@@ -475,7 +498,9 @@ class TestToolCache:
         assert size == 0
 
     def test_get_size_error_handling(
-        self, cache: ToolCache, temp_cache_dir: Path,
+        self,
+        cache: ToolCache,
+        temp_cache_dir: Path,
     ) -> None:
         """Test get_size error handling."""
         tool_file = temp_cache_dir / "tool1"
@@ -489,7 +514,9 @@ class TestToolCache:
             assert size == 0  # Should handle error gracefully
 
     def test_prune_expired_no_expired(
-        self, cache: ToolCache, temp_cache_dir: Path,
+        self,
+        cache: ToolCache,
+        temp_cache_dir: Path,
     ) -> None:
         """Test prune_expired with no expired entries."""
         tool_path = temp_cache_dir / "tool1"
@@ -502,7 +529,9 @@ class TestToolCache:
         assert "tool1:1.0.0" in cache.metadata
 
     def test_prune_expired_with_expired(
-        self, cache: ToolCache, temp_cache_dir: Path,
+        self,
+        cache: ToolCache,
+        temp_cache_dir: Path,
     ) -> None:
         """Test prune_expired with expired entries."""
         tool_path = temp_cache_dir / "tool1"
@@ -526,7 +555,9 @@ class TestToolCache:
         assert "tool2:2.0.0" in cache.metadata
 
     def test_prune_expired_all_expired(
-        self, cache: ToolCache, temp_cache_dir: Path,
+        self,
+        cache: ToolCache,
+        temp_cache_dir: Path,
     ) -> None:
         """Test prune_expired with all entries expired."""
         tool_path = temp_cache_dir / "tool1"
@@ -567,7 +598,9 @@ class TestToolCache:
             mock_log.debug.assert_called_with("Cache hit: tool1:1.0.0")
 
     def test_integration_full_workflow(
-        self, cache: ToolCache, temp_cache_dir: Path,
+        self,
+        cache: ToolCache,
+        temp_cache_dir: Path,
     ) -> None:
         """Test full cache workflow integration."""
         # Create tool directory

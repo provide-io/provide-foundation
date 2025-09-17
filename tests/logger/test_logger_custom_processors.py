@@ -1,8 +1,7 @@
 #
 # tests/test_custom_processors.py
 #
-"""Unit tests for src.provide.foundation.logger.custom_processors.py
-"""
+"""Unit tests for src.provide.foundation.logger.custom_processors.py"""
 
 import pytest
 import structlog  # For DropEvent
@@ -70,7 +69,9 @@ class TestLevelFilterCustom:
         # No DropEvent should be raised
         try:
             result_event = log_filter_debug_threshold(
-                None, "", event_dict_unrecognized_level_passes,
+                None,
+                "",
+                event_dict_unrecognized_level_passes,
             )
             assert result_event == event_dict_unrecognized_level_passes
         except structlog.DropEvent:  # pragma: no cover
@@ -121,8 +122,7 @@ class TestAddLoggerNameEmojiPrefix:
         assert processed_event["event"] == expected_default_emoji
 
     def test_add_logger_name_emoji_prefix_event_exists_and_emoji_exists(self) -> None:
-        """Standard case: event message exists, and emoji is found.
-        """
+        """Standard case: event message exists, and emoji is found."""
         logger_name_with_emoji = "provide.foundation.logger"  # Expected: 📝
         expected_emoji = "📝"
         original_message = "This is a test message."

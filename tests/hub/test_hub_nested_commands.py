@@ -481,12 +481,8 @@ class TestNestedCommandIntegration:
 
         for args, expected_output in tests:
             result = runner.invoke(cli, args)
-            assert result.exit_code == 0, (
-                f"Command failed: {' '.join(args)}\n{result.output}"
-            )
-            assert expected_output in result.output, (
-                f"Expected '{expected_output}' in output for {args}"
-            )
+            assert result.exit_code == 0, f"Command failed: {' '.join(args)}\n{result.output}"
+            assert expected_output in result.output, f"Expected '{expected_output}' in output for {args}"
 
     def test_help_navigation(self) -> None:
         """Test help text navigation through nested structure."""

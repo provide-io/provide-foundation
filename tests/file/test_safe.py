@@ -1,6 +1,5 @@
 """Tests for safe file operations."""
 
-
 import pytest
 
 from provide.foundation.file.safe import (
