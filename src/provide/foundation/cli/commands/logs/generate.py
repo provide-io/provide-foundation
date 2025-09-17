@@ -13,10 +13,10 @@ if TYPE_CHECKING:
 try:
     import click
 
-    HAS_CLICK = True
+    _HAS_CLICK = True
 except ImportError:
     click = None  # type: ignore[assignment]
-    HAS_CLICK = False
+    _HAS_CLICK = False
 
 """Command to generate logs for testing OpenObserve integration with Foundation's rate limiting."""
 
@@ -392,7 +392,7 @@ def generate_logs_command(
         _print_final_stats(logs_sent, logs_failed, logs_rate_limited, total_time, rate, enable_rate_limit)
 
 
-if not HAS_CLICK:  # type: ignore[misc]
+if not _HAS_CLICK:  # type: ignore[misc]
 
     def generate_logs_command(*args: object, **kwargs: object) -> NoReturn:
         raise ImportError("Click is required for CLI commands. Install with: pip install click")

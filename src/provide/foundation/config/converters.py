@@ -2,13 +2,6 @@ from __future__ import annotations
 
 from provide.foundation.config.parsers import *
 from provide.foundation.config.parsers import (
-
-"""Configuration field converters for parsing environment variables.
-
-This module provides a unified import interface for all converters and validators,
-while the actual implementations are organized in focused submodules.
-"""
-
     parse_bool_extended,
     parse_bool_strict,
     parse_comma_list,
@@ -33,6 +26,12 @@ while the actual implementations are organized in focused submodules.
     validate_range,
     validate_sample_rate,
 )
+
+"""Configuration field converters for parsing environment variables.
+
+This module provides a unified import interface for all converters and validators,
+while the actual implementations are organized in focused submodules.
+"""
 
 __all__ = [
     "parse_bool_extended",

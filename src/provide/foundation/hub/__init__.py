@@ -89,6 +89,7 @@ __all__ = [
     "RegistryEntry",
     "clear_hub",
     # CLI features (lazy loaded)
+    "build_click_command",
     "get_click_commands",
     # Components
     "get_component_registry",
