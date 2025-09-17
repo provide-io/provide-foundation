@@ -9,8 +9,11 @@ from typing import Any, Self, TypeVar
 
 try:
     import aiofiles  # type: ignore[import-untyped]
+
+    _HAS_AIOFILES = True
 except ImportError:
     aiofiles: Any = None
+    _HAS_AIOFILES = False
 from attrs import fields
 
 from provide.foundation.config.base import BaseConfig, field

@@ -17,7 +17,7 @@ def field(
     *,
     default: Any = NOTHING,
     factory: Callable[[], Any] | None = None,
-    validator: Callable[[Any, Attribute, Any], None] | None = None,
+    validator: Callable[[Any, Attribute[Any], Any], None] | None = None,
     converter: Callable[[Any], Any] | None = None,
     metadata: dict[str, Any] | None = None,
     description: str | None = None,
@@ -127,7 +127,7 @@ class BaseConfig:
 
         return result
 
-    def _convert_dict_values(self, d: dict, include_sensitive: bool) -> dict:
+    def _convert_dict_values(self, d: dict[str, Any], include_sensitive: bool) -> dict[str, Any]:
         """Convert dictionary values recursively."""
         result = {}
         for key, value in d.items():
@@ -140,7 +140,7 @@ class BaseConfig:
             result[key] = value
         return result
 
-    def _convert_list_values(self, lst: list, include_sensitive: bool) -> list:
+    def _convert_list_values(self, lst: list[Any], include_sensitive: bool) -> list[Any]:
         """Convert list values recursively."""
         result = []
         for value in lst:

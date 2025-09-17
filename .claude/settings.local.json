@@ -191,7 +191,11 @@
       "Bash(.venv/bin/ruff check src/ --select SIM102 --output-format=concise)",
       "Bash(.venv/bin/ruff check src/ --select SIM102)",
       "Bash(.venv/bin/ruff check src/ --select ANN001)",
-      "Bash(.venv/bin/ruff check --fix src/)"
+      "Bash(.venv/bin/ruff check --fix src/)",
+      "Bash(timeout 120 pytest tests/ --tb=short -x)",
+      "Bash(/Users/tim/code/gh/provide-io/.venv/bin/mypy /Users/tim/code/gh/provide-io/provide-foundation/src/provide/foundation)",
+      "Bash(MYPYPATH=src mypy --config-file pyproject.toml src/provide/foundation/__init__.py)",
+      "Bash(export MYPYPATH=src)"
     ],
     "deny": [],
     "ask": [],

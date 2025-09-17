@@ -44,7 +44,7 @@ def parse_bool(value: Any, strict: bool = False) -> bool:
 
 
 def parse_list(
-    value: str | list,
+    value: str | list[str],
     separator: str = ",",
     strip: bool = True,
 ) -> list[str]:
@@ -74,7 +74,7 @@ def parse_list(
 
 
 def parse_dict(
-    value: str | dict,
+    value: str | dict[str, str],
     item_separator: str = ",",
     key_separator: str = "=",
     strip: bool = True,

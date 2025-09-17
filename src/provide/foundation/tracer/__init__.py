@@ -5,6 +5,15 @@ from __future__ import annotations
 #
 from typing import TYPE_CHECKING, Any
 
+from provide.foundation.tracer.context import (
+    get_current_span,
+    get_current_trace_id,
+    get_trace_context,
+    set_current_span,
+    with_span,
+)
+from provide.foundation.tracer.spans import Span
+
 """Foundation Tracer Module.
 
 Provides distributed tracing functionality with optional OpenTelemetry integration.
@@ -42,15 +51,6 @@ except ImportError:
     OTLPGrpcSpanExporter: Any = None
     OTLPHttpSpanExporter: Any = None
     _HAS_OTEL = False
-
-from provide.foundation.tracer.context import (
-    get_current_span,
-    get_current_trace_id,
-    get_trace_context,
-    set_current_span,
-    with_span,
-)
-from provide.foundation.tracer.spans import Span
 
 __all__ = [
     "_HAS_OTEL",  # For internal use
