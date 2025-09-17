@@ -51,13 +51,13 @@ class CLIContext(RuntimeConfig):
         converter=parse_bool_strict,
         description="Output in JSON format",
     )
-    config_file: Path | None = config_field(
+    config_file: Path | None = config_field(  # noqa: RUF009
         default=None,
         env_var="PROVIDE_CONFIG_FILE",
         converter=path_converter,
         description="Path to configuration file",
     )
-    log_file: Path | None = config_field(
+    log_file: Path | None = config_field(  # noqa: RUF009
         default=None,
         env_var="PROVIDE_LOG_FILE",
         converter=path_converter,
