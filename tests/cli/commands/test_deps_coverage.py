@@ -279,9 +279,11 @@ class TestDepsCommandEdgeCases:
         """Test checking non-existent dependency."""
         from provide.foundation.cli.commands import deps as deps_module
 
-        with patch("provide.foundation.utils.deps.has_dependency", return_value=False):
-            with patch("builtins.print"):
-                with pytest.raises(SystemExit) as exc_info:
-                    deps_module.deps_command.callback(quiet=False, check="nonexistent")
+        with (
+            patch("provide.foundation.utils.deps.has_dependency", return_value=False),
+            patch("builtins.print"),
+        ):
+            with pytest.raises(SystemExit) as exc_info:
+                deps_module.deps_command.callback(quiet=False, check="nonexistent")
 
-                assert exc_info.value.code == 1
+            assert exc_info.value.code == 1

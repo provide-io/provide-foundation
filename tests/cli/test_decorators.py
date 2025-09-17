@@ -1,6 +1,7 @@
 """Tests for CLI decorators."""
 
 import os
+from pathlib import Path
 import tempfile
 from typing import Never
 
@@ -53,7 +54,7 @@ class TestLoggingOptions:
         # Path may be resolved to include /private prefix on macOS
         assert log_file in result.output or f"/private{log_file}" in result.output
 
-        os.unlink(log_file)
+        Path(log_file).unlink()
 
     def test_adds_log_format_option(self) -> None:
         """Test that log-format option is added."""

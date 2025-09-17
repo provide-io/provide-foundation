@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Main Certificate class."""
-
 from datetime import UTC, datetime
 from functools import cached_property
 from typing import TYPE_CHECKING, Self
@@ -42,6 +40,8 @@ from provide.foundation.crypto.constants import (
     DEFAULT_CERTIFICATE_VALIDITY_DAYS,
     DEFAULT_RSA_KEY_SIZE,
 )
+
+"""Main Certificate class."""
 
 
 @define(slots=True, eq=False, hash=False, repr=False)

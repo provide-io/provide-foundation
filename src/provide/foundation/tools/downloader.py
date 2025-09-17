@@ -1,21 +1,21 @@
 from __future__ import annotations
 
-"""Tool download orchestration with progress reporting.
-
-Provides capabilities for downloading tools with progress tracking,
-parallel downloads, and mirror support.
-"""
-
 from collections.abc import Callable
-from typing import Any
 from concurrent.futures import ThreadPoolExecutor
 import hashlib
 from pathlib import Path
+from typing import Any
 
 from provide.foundation.errors import FoundationError
 from provide.foundation.logger import get_logger
 from provide.foundation.resilience import retry
 from provide.foundation.transport import UniversalClient
+
+"""Tool download orchestration with progress reporting.
+
+Provides capabilities for downloading tools with progress tracking,
+parallel downloads, and mirror support.
+"""
 
 log = get_logger(__name__)
 
@@ -193,7 +193,7 @@ class ToolDownloader:
         fallback_funcs = []
         for mirror_url in mirrors:
 
-            def create_mirror_func(url) -> Any:
+            def create_mirror_func(url: str) -> Any:
                 def mirror_download() -> Any:
                     log.debug(f"Trying mirror: {url}")
                     return self.download_with_progress(url, dest)

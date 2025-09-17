@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Core subprocess execution utilities."""
-
 from collections.abc import Iterator, Mapping
 import os
 from pathlib import Path
@@ -13,6 +11,8 @@ from attrs import define
 from provide.foundation.errors.integration import TimeoutError
 from provide.foundation.errors.runtime import ProcessError
 from provide.foundation.logger import get_logger
+
+"""Core subprocess execution utilities."""
 
 plog = get_logger(__name__)
 

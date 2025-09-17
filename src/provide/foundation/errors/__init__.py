@@ -1,11 +1,5 @@
 from __future__ import annotations
 
-"""Foundation error handling system.
-
-Provides a comprehensive exception hierarchy, error context management,
-and utilities for robust error handling throughout the application.
-"""
-
 from provide.foundation.errors.auth import AuthenticationError, AuthorizationError
 from provide.foundation.errors.base import FoundationError
 from provide.foundation.errors.config import (
@@ -58,6 +52,12 @@ from provide.foundation.errors.types import (
 
 # Re-export from resilience module for compatibility
 from provide.foundation.resilience.decorators import retry as retry_on_error
+
+"""Foundation error handling system.
+
+Provides a comprehensive exception hierarchy, error context management,
+and utilities for robust error handling throughout the application.
+"""
 
 __all__ = [
     "AlreadyExistsError",

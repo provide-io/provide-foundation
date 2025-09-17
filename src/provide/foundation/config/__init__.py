@@ -1,11 +1,5 @@
 from __future__ import annotations
 
-"""Foundation Configuration System.
-
-A comprehensive, extensible configuration framework for the provide.io ecosystem.
-Supports multiple configuration sources with precedence, validation, and type safety.
-"""
-
 from provide.foundation.config.base import (
     BaseConfig,
     field,
@@ -78,6 +72,12 @@ from provide.foundation.utils.parsing import (
     parse_dict,
     parse_list,
 )
+
+"""Foundation Configuration System.
+
+A comprehensive, extensible configuration framework for the provide.io ecosystem.
+Supports multiple configuration sources with precedence, validation, and type safety.
+"""
 
 __all__ = [
     # Base

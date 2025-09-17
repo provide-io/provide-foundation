@@ -44,6 +44,7 @@ def load_module_from_file(name, filepath):
     spec.loader.exec_module(module)
     return module
 
+
 current_dir = Path(__file__).parent
 setup_config = load_module_from_file("setup_and_config", current_dir / "01_setup_and_config.py")
 app = setup_config.app
@@ -77,7 +78,11 @@ LOGGER_CONTEXTS: list[str] = [
 ]
 
 LOG_LEVELS: list[str] = [
-    "debug", "info", "warning", "error", "critical",
+    "debug",
+    "info",
+    "warning",
+    "error",
+    "critical",
 ]
 
 
@@ -117,7 +122,8 @@ def generate_log_entry(self, iteration: int, context_override: str | None = None
         task_id=self.request.id,
     )
 
-    task_logger.logger.info("cut_up_log_generated",
+    task_logger.logger.info(
+        "cut_up_log_generated",
         iteration=iteration,
         phrase_index=CUT_UP_PHRASES.index(phrase),
         context=context,
@@ -150,7 +156,8 @@ def generate_batch(self, batch_id: str, batch_size: int, context_filter: str | N
     """
     task_logger = CeleryTaskLogger("generate_batch")
 
-    task_logger.logger.info("batch_generation_started",
+    task_logger.logger.info(
+        "batch_generation_started",
         batch_id=batch_id,
         batch_size=batch_size,
         context_filter=context_filter,
@@ -173,7 +180,8 @@ def generate_batch(self, batch_id: str, batch_size: int, context_filter: str | N
             entries_generated.append(result)
 
         except Exception as e:
-            task_logger.logger.warning("batch_entry_failed",
+            task_logger.logger.warning(
+                "batch_entry_failed",
                 batch_id=batch_id,
                 iteration=i,
                 error=str(e),
@@ -181,7 +189,8 @@ def generate_batch(self, batch_id: str, batch_size: int, context_filter: str | N
 
     duration = time.time() - start_time
 
-    task_logger.logger.info("batch_generation_completed",
+    task_logger.logger.info(
+        "batch_generation_completed",
         batch_id=batch_id,
         entries_generated=len(entries_generated),
         duration_seconds=duration,
@@ -227,7 +236,8 @@ def detect_anomaly(self, anomaly_type: str | None = None) -> dict[str, Any]:
         detection_method="distributed_scanner",
     )
 
-    task_logger.logger.info("anomaly_detected",
+    task_logger.logger.info(
+        "anomaly_detected",
         anomaly_type=selected_type,
         confidence_pct=confidence,
         detection_timestamp=time.time(),
@@ -271,7 +281,8 @@ def system_heartbeat(self, worker_id: str | None = None) -> dict[str, Any]:
         task_id=self.request.id,
     )
 
-    task_logger.logger.info("heartbeat_generated",
+    task_logger.logger.info(
+        "heartbeat_generated",
         uptime_seconds=uptime,
         cpu_load_pct=cpu_load,
         memory_usage_pct=memory_usage,
@@ -302,7 +313,8 @@ def continuous_generator(self, duration_minutes: int = 2, entries_per_minute: in
     """
     task_logger = CeleryTaskLogger("continuous_generator")
 
-    task_logger.logger.info("continuous_generation_started",
+    task_logger.logger.info(
+        "continuous_generation_started",
         duration_minutes=duration_minutes,
         target_rate=entries_per_minute,
     )
@@ -349,7 +361,8 @@ def continuous_generator(self, duration_minutes: int = 2, entries_per_minute: in
 
     actual_duration = time.time() - start_time
 
-    task_logger.logger.info("continuous_generation_completed",
+    task_logger.logger.info(
+        "continuous_generation_completed",
         actual_duration_seconds=actual_duration,
         total_entries=total_entries,
         total_batches=total_batches,

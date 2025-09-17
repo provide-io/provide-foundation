@@ -26,6 +26,7 @@ if src_path.exists() and str(src_path) not in sys.path:
 # Handle optional Celery dependency
 try:
     from celery import Celery
+
     CELERY_AVAILABLE = True
 except ImportError:
     CELERY_AVAILABLE = False
@@ -116,7 +117,8 @@ class CeleryTaskLogger:
 
     def log_task_start(self, task_id: str, args: tuple, kwargs: dict) -> None:
         """Log task execution start with context."""
-        self.logger.info("task_started",
+        self.logger.info(
+            "task_started",
             task_id=task_id,
             task_name=self.task_name,
             args_count=len(args),
@@ -130,7 +132,8 @@ class CeleryTaskLogger:
     def log_task_progress(self, task_id: str, current: int, total: int, message: str = "") -> None:
         """Log task progress for long-running tasks."""
         progress_pct = round((current / total) * 100, 1) if total > 0 else 0
-        self.logger.info("task_progress",
+        self.logger.info(
+            "task_progress",
             task_id=task_id,
             task_name=self.task_name,
             current=current,
@@ -142,7 +145,8 @@ class CeleryTaskLogger:
     def log_task_success(self, task_id: str, result, duration: float, metrics_tracker) -> None:
         """Log successful task completion with metrics."""
         metrics_tracker.record_execution(self.task_name, duration, True)
-        self.logger.info("task_completed",
+        self.logger.info(
+            "task_completed",
             task_id=task_id,
             task_name=self.task_name,
             duration_ms=round(duration * 1000, 2),
@@ -154,7 +158,8 @@ class CeleryTaskLogger:
     def log_task_failure(self, task_id: str, error: Exception, duration: float, metrics_tracker) -> None:
         """Log task failure with context."""
         metrics_tracker.record_execution(self.task_name, duration, False)
-        self.logger.error("task_failed",
+        self.logger.error(
+            "task_failed",
             task_id=task_id,
             task_name=self.task_name,
             duration_ms=round(duration * 1000, 2),
@@ -164,10 +169,13 @@ class CeleryTaskLogger:
             total_errors=metrics_tracker.error_counts[self.task_name],
         )
 
-    def log_task_retry(self, task_id: str, exc: Exception, countdown: int, retry_count: int, metrics_tracker) -> None:
+    def log_task_retry(
+        self, task_id: str, exc: Exception, countdown: int, retry_count: int, metrics_tracker
+    ) -> None:
         """Log task retry attempt."""
         metrics_tracker.record_retry(self.task_name)
-        self.logger.warning("task_retry",
+        self.logger.warning(
+            "task_retry",
             task_id=task_id,
             task_name=self.task_name,
             retry_count=retry_count,

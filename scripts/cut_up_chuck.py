@@ -92,7 +92,8 @@ async def generate_log_entries_continuously() -> None:
                 ["debug", "info", "warning", "error", "critical"],
             )
             log_level_method: Callable[..., None] = getattr(
-                chosen_logger, log_level_method_name,
+                chosen_logger,
+                log_level_method_name,
             )
 
             log_level_method(
@@ -101,9 +102,7 @@ async def generate_log_entries_continuously() -> None:
                 random_val=random.randint(1, 1000),
                 domain="transmission",
                 action="broadcast",
-                status="nominal"
-                if log_level_method_name not in ["error", "critical"]
-                else "degraded",
+                status="nominal" if log_level_method_name not in ["error", "critical"] else "degraded",
             )
 
             if iteration_count % 5 == 0:

@@ -45,6 +45,7 @@ def load_module_from_file(name, filepath):
     spec.loader.exec_module(module)
     return module
 
+
 # Load local modules
 current_dir = Path(__file__).parent
 setup_config = load_module_from_file("setup_and_config", current_dir / "01_setup_and_config.py")
@@ -64,6 +65,7 @@ cleanup_old_data = tasks_module.cleanup_old_data
 # Try to import Celery workflow tools
 try:
     from celery import chain, group
+
     CELERY_WORKFLOWS_AVAILABLE = True
 except ImportError:
     CELERY_WORKFLOWS_AVAILABLE = False
@@ -118,7 +120,8 @@ def demonstrate_task_workflows() -> None:
         time.sleep(1)
         if report_task.state == "PROGRESS":
             meta = report_task.info
-            example_logger.info("report_progress_update",
+            example_logger.info(
+                "report_progress_update",
                 task_id=report_task.id,
                 current=meta.get("current", 0),
                 total=meta.get("total", 0),
@@ -136,12 +139,10 @@ def demonstrate_task_workflows() -> None:
 
     # 4. Batch processing with error handling
     pout("\n4️⃣ Batch Data Processing with Item-Level Error Handling")
-    batch_items = [
-        {"id": f"item_{i}", "value": random.randint(1, 100)}
-        for i in range(50)
-    ]
+    batch_items = [{"id": f"item_{i}", "value": random.randint(1, 100)} for i in range(50)]
     batch_task = process_batch_data.delay("batch_001", batch_items)
-    example_logger.info("submitted_batch_task",
+    example_logger.info(
+        "submitted_batch_task",
         task_id=batch_task.id,
         item_count=len(batch_items),
     )
@@ -160,11 +161,11 @@ def demonstrate_task_workflows() -> None:
         # 6. Parallel task group
         pout("\n6️⃣ Parallel Task Group: Multiple Payments")
         payment_group = group(
-            process_payment.s(f"order_{i}", random.uniform(10, 200), "credit_card")
-            for i in range(5)
+            process_payment.s(f"order_{i}", random.uniform(10, 200), "credit_card") for i in range(5)
         )
         group_result = payment_group.apply_async()
-        example_logger.info("submitted_parallel_group",
+        example_logger.info(
+            "submitted_parallel_group",
             group_id=group_result.id,
             task_count=5,
         )
@@ -179,50 +180,58 @@ def demonstrate_task_workflows() -> None:
     # Collect results
     try:
         payment_result = payment_task.get(timeout=5)
-        example_logger.info("payment_task_completed",
+        example_logger.info(
+            "payment_task_completed",
             task_id=payment_task.id,
             result=payment_result,
         )
     except Exception as e:
-        example_logger.error("payment_task_error",
+        example_logger.error(
+            "payment_task_error",
             task_id=payment_task.id,
             error=str(e),
         )
 
     try:
         report_result = report_task.get(timeout=5)
-        example_logger.info("report_task_completed",
+        example_logger.info(
+            "report_task_completed",
             task_id=report_task.id,
             pages=report_result.get("pages", 0),
         )
     except Exception as e:
-        example_logger.error("report_task_error",
+        example_logger.error(
+            "report_task_error",
             task_id=report_task.id,
             error=str(e),
         )
 
     try:
         notification_result = notification_task.get(timeout=5)
-        example_logger.info("notification_task_completed",
+        example_logger.info(
+            "notification_task_completed",
             task_id=notification_task.id,
             success_count=notification_result.get("success_count", 0),
         )
     except Exception as e:
-        example_logger.error("notification_task_error",
+        example_logger.error(
+            "notification_task_error",
             task_id=notification_task.id,
             error=str(e),
         )
 
     try:
         batch_result = batch_task.get(timeout=5)
-        example_logger.info("batch_task_completed",
+        example_logger.info(
+            "batch_task_completed",
             task_id=batch_task.id,
             processed=batch_result.get("processed", 0),
             failed=batch_result.get("failed", 0),
             success_rate=batch_result.get("success_rate", 0),
         )
     except Exception as e:
-        example_logger.error("batch_task_error",
+        example_logger.error(
+            "batch_task_error",
             task_id=batch_task.id,
             error=str(e),
         )

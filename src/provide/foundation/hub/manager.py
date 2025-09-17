@@ -1,11 +1,5 @@
 from __future__ import annotations
 
-"""Hub manager - the main coordinator for components and commands.
-
-This module provides the Hub class that coordinates component and command
-registration, discovery, and access, with Foundation system integration.
-"""
-
 import threading
 from typing import Any
 
@@ -16,6 +10,12 @@ from provide.foundation.hub.core import CoreHub
 from provide.foundation.hub.foundation import FoundationManager
 from provide.foundation.hub.registry import Registry
 from provide.foundation.testmode.detection import should_use_shared_registries
+
+"""Hub manager - the main coordinator for components and commands.
+
+This module provides the Hub class that coordinates component and command
+registration, discovery, and access, with Foundation system integration.
+"""
 
 
 class Hub(CoreHub):

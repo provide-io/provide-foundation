@@ -158,9 +158,7 @@ def benchmark_basic_logging() -> dict[str, Any]:
             result["output_size_bytes"] = len(captured.getvalue())
 
         # Calculate throughput after timing is complete
-        result["messages_per_second"] = (
-            result["message_count"] / result["duration_seconds"]
-        )
+        result["messages_per_second"] = result["message_count"] / result["duration_seconds"]
 
     return result
 
@@ -207,9 +205,7 @@ def benchmark_json_formatting() -> dict[str, Any]:
             result["message_count"] = message_count
             result["output_size_bytes"] = len(captured.getvalue())
 
-        result["messages_per_second"] = (
-            result["message_count"] / result["duration_seconds"]
-        )
+        result["messages_per_second"] = result["message_count"] / result["duration_seconds"]
 
     return result
 
@@ -253,9 +249,7 @@ def benchmark_emoji_processing() -> dict[str, Any]:
 
             emoji_result["message_count"] = message_count
 
-        emoji_result["messages_per_second"] = (
-            emoji_result["message_count"] / emoji_result["duration_seconds"]
-        )
+        emoji_result["messages_per_second"] = emoji_result["message_count"] / emoji_result["duration_seconds"]
 
     # Test with emojis disabled
     reset_foundation_setup_for_testing()
@@ -327,7 +321,9 @@ def benchmark_multithreaded_logging() -> dict[str, Any]:
             thread_logger = logger.get_logger(f"benchmark.thread.{thread_id}")
             for i in range(message_count):
                 thread_logger.info(
-                    f"Thread {thread_id} message {i}", thread_id=thread_id, msg_id=i,
+                    f"Thread {thread_id} message {i}",
+                    thread_id=thread_id,
+                    msg_id=i,
                 )
 
         with benchmark_timer("multithreaded_logging") as result:
@@ -349,9 +345,7 @@ def benchmark_multithreaded_logging() -> dict[str, Any]:
             result["total_messages"] = total_messages
             result["output_size_bytes"] = len(captured.getvalue())
 
-        result["messages_per_second"] = (
-            result["total_messages"] / result["duration_seconds"]
-        )
+        result["messages_per_second"] = result["total_messages"] / result["duration_seconds"]
 
     return result
 
@@ -396,13 +390,9 @@ def benchmark_level_filtering() -> dict[str, Any]:
 
             result["total_attempted_messages"] = message_count
             result["output_lines"] = output_lines
-            result["filtering_efficiency"] = (
-                (message_count - output_lines) / message_count * 100
-            )
+            result["filtering_efficiency"] = (message_count - output_lines) / message_count * 100
 
-        result["messages_per_second"] = (
-            result["total_attempted_messages"] / result["duration_seconds"]
-        )
+        result["messages_per_second"] = result["total_attempted_messages"] / result["duration_seconds"]
 
     return result
 
@@ -447,10 +437,7 @@ async def benchmark_async_usage() -> dict[str, Any]:
             messages_per_worker = 1000
             total_messages = worker_count * messages_per_worker
 
-            tasks = [
-                async_worker(worker_id, messages_per_worker)
-                for worker_id in range(worker_count)
-            ]
+            tasks = [async_worker(worker_id, messages_per_worker) for worker_id in range(worker_count)]
 
             await asyncio.gather(*tasks)
 
@@ -458,9 +445,7 @@ async def benchmark_async_usage() -> dict[str, Any]:
             result["messages_per_worker"] = messages_per_worker
             result["total_messages"] = total_messages
 
-        result["messages_per_second"] = (
-            result["total_messages"] / result["duration_seconds"]
-        )
+        result["messages_per_second"] = result["total_messages"] / result["duration_seconds"]
 
     return result
 
@@ -501,18 +486,16 @@ def benchmark_large_payloads() -> dict[str, Any]:
 
             for i in range(message_count):
                 test_logger.info(
-                    f"Large payload message {i}", **large_data, iteration=i,
+                    f"Large payload message {i}",
+                    **large_data,
+                    iteration=i,
                 )
 
             result["message_count"] = message_count
             result["output_size_bytes"] = len(captured.getvalue())
 
-        result["messages_per_second"] = (
-            result["message_count"] / result["duration_seconds"]
-        )
-        result["avg_message_size_bytes"] = (
-            result["output_size_bytes"] / result["message_count"]
-        )
+        result["messages_per_second"] = result["message_count"] / result["duration_seconds"]
+        result["avg_message_size_bytes"] = result["output_size_bytes"] / result["message_count"]
 
     return result
 
@@ -588,32 +571,25 @@ def main() -> None:
 
     # Print summary statistics
     successful_benchmarks = [
-        r
-        for r in results["benchmarks"].values()
-        if "error" not in r and "messages_per_second" in r
+        r for r in results["benchmarks"].values() if "error" not in r and "messages_per_second" in r
     ]
 
     if successful_benchmarks:
-        avg_throughput = sum(
-            r["messages_per_second"] for r in successful_benchmarks
-        ) / len(successful_benchmarks)
+        avg_throughput = sum(r["messages_per_second"] for r in successful_benchmarks) / len(
+            successful_benchmarks
+        )
         max_throughput = max(r["messages_per_second"] for r in successful_benchmarks)
         print(f"📊 Average throughput: {avg_throughput:.1f} messages/second")
         print(f"🚀 Peak throughput: {max_throughput:.1f} messages/second")
 
     print("\n🎯 Performance Goals:")
-    basic_logging_ok = any(
-        r.get("messages_per_second", 0) > 1000 for r in successful_benchmarks
-    )
+    basic_logging_ok = any(r.get("messages_per_second", 0) > 1000 for r in successful_benchmarks)
     print(
-        "  • Basic logging: >1000 msg/sec ✅"
-        if basic_logging_ok
-        else "  • Basic logging: >1000 msg/sec ❌",
+        "  • Basic logging: >1000 msg/sec ✅" if basic_logging_ok else "  • Basic logging: >1000 msg/sec ❌",
     )
 
     json_formatting_ok = any(
-        r.get("test_name") == "json_formatting"
-        and r.get("messages_per_second", 0) > 500
+        r.get("test_name") == "json_formatting" and r.get("messages_per_second", 0) > 500
         for r in successful_benchmarks
     )
     print(

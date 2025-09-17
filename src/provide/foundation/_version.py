@@ -1,13 +1,13 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 #
 # version.py
 #
 """Version handling for provide-foundation.
 Integrates VERSION logic from flavorpack with robust fallback mechanisms.
 """
-
-from pathlib import Path
 
 
 def _find_project_root() -> Path | None:

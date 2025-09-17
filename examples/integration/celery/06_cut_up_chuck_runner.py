@@ -46,6 +46,7 @@ def load_module_from_file(name, filepath):
     spec.loader.exec_module(module)
     return module
 
+
 current_dir = Path(__file__).parent
 setup_config = load_module_from_file("setup_and_config", current_dir / "01_setup_and_config.py")
 metrics_signals = load_module_from_file("metrics_and_signals", current_dir / "02_metrics_and_signals.py")
@@ -66,12 +67,14 @@ LOGGER_CONTEXTS = cut_up_tasks.LOGGER_CONTEXTS
 # Try to import Celery workflow tools
 try:
     from celery import chain, group
+
     CELERY_WORKFLOWS_AVAILABLE = True
 except ImportError:
     CELERY_WORKFLOWS_AVAILABLE = False
 
 # Setup signal handlers
 setup_signal_handlers(app)
+
 
 class DistributedCutUpChuck:
     """Orchestrates distributed cut-up chuck log generation."""
@@ -109,7 +112,8 @@ class DistributedCutUpChuck:
         time.sleep(2)
         pout("✅ Distributed worker started!\n")
 
-        self.logger.info("distributed_worker_started",
+        self.logger.info(
+            "distributed_worker_started",
             phrases_available=len(CUT_UP_PHRASES),
             contexts_available=len(LOGGER_CONTEXTS),
             workflows_available=CELERY_WORKFLOWS_AVAILABLE,
@@ -128,7 +132,8 @@ class DistributedCutUpChuck:
 
         try:
             result = entry_task.get(timeout=10)
-            self.logger.info("single_entry_completed",
+            self.logger.info(
+                "single_entry_completed",
                 iteration=result["iteration"],
                 phrase_length=len(result["phrase"]),
                 context=result["context"],
@@ -146,13 +151,16 @@ class DistributedCutUpChuck:
 
         try:
             result = batch_task.get(timeout=30)
-            self.logger.info("batch_completed",
+            self.logger.info(
+                "batch_completed",
                 batch_id=result["batch_id"],
                 entries_generated=result["entries_generated"],
                 success_rate=result["success_rate"],
             )
-            pout(f"   Batch completed: {result['entries_generated']} entries, "
-                 f"{result['success_rate']:.1%} success rate")
+            pout(
+                f"   Batch completed: {result['entries_generated']} entries, "
+                f"{result['success_rate']:.1%} success rate"
+            )
         except Exception as e:
             self.logger.error("batch_failed", error=str(e))
             self.stats["errors"] += 1
@@ -165,12 +173,12 @@ class DistributedCutUpChuck:
 
         try:
             result = anomaly_task.get(timeout=10)
-            self.logger.info("anomaly_completed",
+            self.logger.info(
+                "anomaly_completed",
                 anomaly_type=result["anomaly_type"],
                 confidence=result["confidence"],
             )
-            pout(f"   Detected: Type-{result['anomaly_type']} "
-                 f"({result['confidence']:.1f}% confidence)")
+            pout(f"   Detected: Type-{result['anomaly_type']} ({result['confidence']:.1f}% confidence)")
         except Exception as e:
             self.logger.error("anomaly_failed", error=str(e))
             self.stats["errors"] += 1
@@ -183,13 +191,13 @@ class DistributedCutUpChuck:
 
         try:
             result = heartbeat_task.get(timeout=10)
-            self.logger.info("heartbeat_completed",
+            self.logger.info(
+                "heartbeat_completed",
                 uptime=result["uptime_seconds"],
                 cpu_load=result["cpu_load"],
                 worker_id=result["worker_id"],
             )
-            pout(f"   Heartbeat: {result['uptime_seconds']}s uptime, "
-                 f"{result['cpu_load']:.1f}% CPU")
+            pout(f"   Heartbeat: {result['uptime_seconds']}s uptime, {result['cpu_load']:.1f}% CPU")
         except Exception as e:
             self.logger.error("heartbeat_failed", error=str(e))
             self.stats["errors"] += 1
@@ -204,10 +212,7 @@ class DistributedCutUpChuck:
 
         # Parallel batch generation
         pout("   📊 Parallel Batch Generation")
-        batch_group = group(
-            generate_batch.s(f"parallel_batch_{i}", random.randint(3, 6))
-            for i in range(4)
-        )
+        batch_group = group(generate_batch.s(f"parallel_batch_{i}", random.randint(3, 6)) for i in range(4))
         batch_results = batch_group.apply_async()
         self.stats["total_tasks"] += 4
         self.stats["batches_submitted"] += 4
@@ -217,7 +222,8 @@ class DistributedCutUpChuck:
             total_entries = sum(r["entries_generated"] for r in results)
             avg_success_rate = sum(r["success_rate"] for r in results) / len(results)
 
-            self.logger.info("parallel_batches_completed",
+            self.logger.info(
+                "parallel_batches_completed",
                 batches_count=len(results),
                 total_entries=total_entries,
                 avg_success_rate=avg_success_rate,
@@ -270,13 +276,16 @@ class DistributedCutUpChuck:
         try:
             if continuous_task.ready():
                 result = continuous_task.get()
-                self.logger.info("continuous_generation_completed",
+                self.logger.info(
+                    "continuous_generation_completed",
                     duration=result["duration_seconds"],
                     total_entries=result["total_entries"],
                     actual_rate=result["actual_rate_per_minute"],
                 )
-                pout(f"   Generated {result['total_entries']} entries "
-                     f"at {result['actual_rate_per_minute']:.1f} entries/min")
+                pout(
+                    f"   Generated {result['total_entries']} entries "
+                    f"at {result['actual_rate_per_minute']:.1f} entries/min"
+                )
         except Exception as e:
             self.logger.error("continuous_generation_failed", error=str(e))
             self.stats["errors"] += 1
@@ -303,15 +312,19 @@ class DistributedCutUpChuck:
             pout("\n📊 Celery Task Metrics:")
             for task_name, stats in celery_stats.items():
                 if "cut_up" in task_name.lower() or task_name in [
-                    "generate_log_entry", "generate_batch", "detect_anomaly",
-                    "system_heartbeat", "continuous_generator",
+                    "generate_log_entry",
+                    "generate_batch",
+                    "detect_anomaly",
+                    "system_heartbeat",
+                    "continuous_generator",
                 ]:
                     pout(f"   {task_name}:")
                     pout(f"     Executions: {stats['count']}")
                     pout(f"     Success Rate: {stats['success_rate']}%")
                     pout(f"     Avg Duration: {stats['avg_duration_ms']}ms")
 
-        self.logger.info("distributed_cutup_completed",
+        self.logger.info(
+            "distributed_cutup_completed",
             total_duration=duration,
             final_metrics=self.stats,
             celery_metrics=celery_stats,
@@ -319,6 +332,7 @@ class DistributedCutUpChuck:
 
     def setup_signal_handlers(self) -> None:
         """Setup graceful shutdown signal handlers."""
+
         def signal_handler(signum, frame) -> None:
             pout(f"\n🛑 Received signal {signum}, initiating graceful shutdown...")
             self.shutdown_event.set()

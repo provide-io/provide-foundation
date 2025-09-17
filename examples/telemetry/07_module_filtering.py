@@ -52,7 +52,8 @@ def example_7_module_level_filtering() -> None:
     other_logger = logger.get_logger("other.component")  # Will use default INFO
 
     auth_logger.debug(
-        "Token validation details", token_id="tkn_short",
+        "Token validation details",
+        token_id="tkn_short",
     )  # ✅ Shows (auth is DEBUG)
     auth_logger.info("User 'admin' logged in")  # ✅ Shows
 

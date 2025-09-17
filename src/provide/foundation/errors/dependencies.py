@@ -29,10 +29,11 @@ class DependencyError(FoundationError):
         **kwargs: Any,
     ) -> None:
         # Determine the installation command
-        if install_command:
-            cmd = install_command
-        elif feature:
+        # Feature takes priority over custom install_command
+        if feature:
             cmd = f"pip install 'provide-foundation[{feature}]'"
+        elif install_command:
+            cmd = install_command
         else:
             cmd = f"pip install {package}"
 

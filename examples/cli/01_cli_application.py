@@ -235,7 +235,9 @@ def create_demo_cli():
 
     # Create CLI
     cli = hub.create_cli(
-        name="hub-demo", version="1.0.0", help="Foundation Hub Demo Application",
+        name="hub-demo",
+        version="1.0.0",
+        help="Foundation Hub Demo Application",
     )
 
     return cli

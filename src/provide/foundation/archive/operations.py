@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Archive operation chains and helpers."""
-
 from pathlib import Path
 
 from attrs import define, field
@@ -14,6 +12,8 @@ from provide.foundation.archive.zip import ZipArchive
 from provide.foundation.file import ensure_parent_dir, temp_file
 from provide.foundation.file.safe import safe_delete
 from provide.foundation.logger import get_logger
+
+"""Archive operation chains and helpers."""
 
 logger = get_logger(__name__)
 
