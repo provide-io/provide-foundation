@@ -185,7 +185,9 @@ def build_click_command(
     return cmd
 
 
-def _create_subgroup(cmd_name: str, entry: Any, groups: dict[str, click.Group], root_group: click.Group) -> None:
+def _create_subgroup(
+    cmd_name: str, entry: Any, groups: dict[str, click.Group], root_group: click.Group
+) -> None:
     """Create a Click subgroup and add it to the appropriate parent."""
     info = entry.metadata.get("info")
     parent = entry.metadata.get("parent")
@@ -208,7 +210,9 @@ def _create_subgroup(cmd_name: str, entry: Any, groups: dict[str, click.Group], 
         root_group.add_command(subgroup)
 
 
-def _add_command_to_group(cmd_name: str, entry: Any, groups: dict[str, click.Group], root_group: click.Group, registry: Registry) -> None:
+def _add_command_to_group(
+    cmd_name: str, entry: Any, groups: dict[str, click.Group], root_group: click.Group, registry: Registry
+) -> None:
     """Build and add a Click command to the appropriate group."""
     click_cmd = build_click_command(cmd_name, registry=registry)
     if not click_cmd:

@@ -155,7 +155,9 @@
       "Bash(xargs:*)",
       "Bash(~/code/gh/provide-io/messometer/.venv/bin/messometer extract --help)",
       "Bash(~/code/gh/provide-io/messometer/.venv/bin/messometer extract --since=\"2025-06-01\" --cadence=weekly --output=pyvider_weekly_commits.json)",
-      "Bash(~/code/gh/provide-io/messometer/.venv/bin/messometer prepare pyvider_weekly_commits_cadence_plan.json)"
+      "Bash(~/code/gh/provide-io/messometer/.venv/bin/messometer prepare pyvider_weekly_commits_cadence_plan.json)",
+      "Bash(PYTHONPATH=src ruff format src/provide/foundation/hub/click_builder.py)",
+      "Bash(PYTHONPATH=src ruff check src/provide/foundation/hub/click_builder.py --no-cache)"
     ],
     "deny": [],
     "ask": [],
