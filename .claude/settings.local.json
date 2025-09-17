@@ -168,7 +168,8 @@
       "Bash(PYTHONPATH=src ruff format src/provide/foundation/cli/decorators.py)",
       "Bash(PYTHONPATH=src ruff check src/provide/foundation/cli/decorators.py --select C901)",
       "Bash(command -v:*)",
-      "Read(///**)"
+      "Read(///**)",
+      "Bash(PYTHONPATH=src ruff check --fix --unsafe-fixes src/provide/foundation/env/__init__.py)"
     ],
     "deny": [],
     "ask": [],
