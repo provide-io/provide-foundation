@@ -337,7 +337,4 @@ class Certificate:
 
 
 # Type alias for backwards compatibility
-if _HAS_CRYPTO:
-    KeyPair = rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey | None
-else:
-    KeyPair = None
+KeyPair = rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey | None if _HAS_CRYPTO else None

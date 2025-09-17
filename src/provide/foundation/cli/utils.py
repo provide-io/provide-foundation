@@ -122,7 +122,7 @@ def setup_cli_logging(
     hub.initialize_foundation(config=telemetry_config, force=True)
 
 
-def create_cli_context(**kwargs) -> CLIContext:
+def create_cli_context(**kwargs: Any) -> CLIContext:
     """Create a CLIContext for CLI usage.
 
     Loads from environment, then overlays any provided kwargs.
@@ -154,7 +154,7 @@ class CliTestRunner:
         input: str | None = None,
         env: dict[str, str] | None = None,
         catch_exceptions: bool = True,
-        **kwargs,
+        **kwargs: Any,
     ) -> Result:
         """Invoke a CLI command for testing."""
         return self.runner.invoke(

@@ -60,7 +60,7 @@ def configure_file_logging(log_file_path: str | None) -> None:
         if log_file_path:
             try:
                 Path(log_file_path).parent.mkdir(parents=True, exist_ok=True)
-                _LOG_FILE_HANDLE = open(log_file_path, "a", encoding="utf-8", buffering=1)  # noqa: SIM115
+                _LOG_FILE_HANDLE = Path(log_file_path).open("a", encoding="utf-8", buffering=1)  # noqa: SIM115
                 _PROVIDE_LOG_STREAM = _LOG_FILE_HANDLE
             except Exception as e:
                 # Log error to stderr and fall back
