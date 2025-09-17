@@ -7,8 +7,8 @@ from provide.foundation.eventsets.resolver import get_resolver
 from provide.foundation.logger import get_logger
 
 if TYPE_CHECKING:
-    from provide.foundation.eventsets.types import EventSet
     from provide.foundation.eventsets.resolver import EventResolver
+    from provide.foundation.eventsets.types import EventSet
 
 """Event set display utilities for Foundation."""
 

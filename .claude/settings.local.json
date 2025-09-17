@@ -190,7 +190,8 @@
       "Bash(.venv/bin/ruff check src/ --select RUF001)",
       "Bash(.venv/bin/ruff check src/ --select SIM102 --output-format=concise)",
       "Bash(.venv/bin/ruff check src/ --select SIM102)",
-      "Bash(.venv/bin/ruff check src/ --select ANN001)"
+      "Bash(.venv/bin/ruff check src/ --select ANN001)",
+      "Bash(.venv/bin/ruff check --fix src/)"
     ],
     "deny": [],
     "ask": [],
