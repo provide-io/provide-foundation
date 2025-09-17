@@ -86,7 +86,7 @@ def echo_info(message: str, json_output: bool = False) -> None:
     if json_output:
         pout(message, json_key="info")
     else:
-        pout(f"ℹ {message}")
+        pout(f"i {message}")
 
 
 def setup_cli_logging(

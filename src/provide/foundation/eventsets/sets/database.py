@@ -34,7 +34,7 @@ EVENT_SET = EventSet(
             visual_markers={
                 "query": "🔍",
                 "select": "🔍",
-                "insert": "➕",
+                "insert": "+",
                 "update": "🔄",
                 "delete": "🗑️",
                 "connect": "🔗",

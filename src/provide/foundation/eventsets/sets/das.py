@@ -83,7 +83,7 @@ EVENT_SET = EventSet(
                 "failure": "❌",
                 "error": "🔥",
                 "warning": "⚠️",
-                "info": "ℹ️",
+                "info": "i",
                 "debug": "🐞",
                 "trace": "👣",
                 "attempt": "⏳",

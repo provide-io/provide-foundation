@@ -1,15 +1,21 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from provide.foundation.eventsets.registry import discover_event_sets, get_registry
 from provide.foundation.eventsets.resolver import get_resolver
 from provide.foundation.logger import get_logger
+
+if TYPE_CHECKING:
+    from provide.foundation.eventsets.types import EventSet
+    from provide.foundation.eventsets.resolver import EventResolver
 
 """Event set display utilities for Foundation."""
 
 logger = get_logger(__name__)
 
 
-def _format_event_set_config(config, lines: list[str]) -> None:
+def _format_event_set_config(config: EventSet, lines: list[str]) -> None:
     """Format a single event set configuration."""
     lines.append(f"\n  {config.name} (priority: {config.priority})")
     if config.description:
@@ -38,7 +44,7 @@ def _format_event_set_config(config, lines: list[str]) -> None:
             )
 
 
-def _format_registered_event_sets(event_sets, lines: list[str]) -> None:
+def _format_registered_event_sets(event_sets: list[EventSet], lines: list[str]) -> None:
     """Format the registered event sets section."""
     if event_sets:
         lines.append(f"\nRegistered Event Sets ({len(event_sets)}):")
@@ -48,7 +54,7 @@ def _format_registered_event_sets(event_sets, lines: list[str]) -> None:
         lines.append("\n  (No event sets registered)")
 
 
-def _format_resolver_state(resolver, lines: list[str]) -> None:
+def _format_resolver_state(resolver: EventResolver, lines: list[str]) -> None:
     """Format the resolver state section."""
     if resolver._resolved:
         lines.append("\nResolver State:")

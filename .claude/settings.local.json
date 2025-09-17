@@ -184,7 +184,12 @@
       "Bash(.venv/bin/ruff check src/ --select ANN001 --output-format=concise)",
       "Bash(.venv/bin/mypy src/ --show-error-codes --no-error-summary)",
       "Bash(.venv/bin/pytest --tb=short -q --maxfail=5)",
-      "Bash(.venv/bin/ruff check src/ --select RUF012 --output-format=concise)"
+      "Bash(.venv/bin/ruff check src/ --select RUF012 --output-format=concise)",
+      "Bash(.venv/bin/ruff check src/ --select RUF012)",
+      "Bash(.venv/bin/ruff check src/ --select RUF001 --output-format=concise)",
+      "Bash(.venv/bin/ruff check src/ --select RUF001)",
+      "Bash(.venv/bin/ruff check src/ --select SIM102 --output-format=concise)",
+      "Bash(.venv/bin/ruff check src/ --select SIM102)"
     ],
     "deny": [],
     "ask": [],

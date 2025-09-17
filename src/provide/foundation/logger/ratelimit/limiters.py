@@ -249,9 +249,8 @@ class GlobalRateLimiter:
         """
         with self.lock:
             # Check per-logger limit first
-            if logger_name in self.logger_limiters:
-                if not self.logger_limiters[logger_name].is_allowed():
-                    return False, f"Logger '{logger_name}' rate limit exceeded"
+            if logger_name in self.logger_limiters and not self.logger_limiters[logger_name].is_allowed():
+                return False, f"Logger '{logger_name}' rate limit exceeded"
 
             # Check global limit
             if self.global_limiter:

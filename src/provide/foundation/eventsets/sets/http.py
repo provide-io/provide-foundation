@@ -25,7 +25,7 @@ EVENT_SET = EventSet(
         EventMapping(
             name="http_status_class",
             visual_markers={
-                "1xx": "ℹ️",
+                "1xx": "i",
                 "2xx": "✅",
                 "3xx": "↪️",
                 "4xx": "⚠️CLIENT",
