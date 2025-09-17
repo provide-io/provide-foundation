@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-#
-# coordinator.py
-#
 """Main setup coordination for Foundation Telemetry.
 Handles the core setup logic, state management, and setup logger creation.
 """
