@@ -183,7 +183,7 @@ class ConfigSchema:
     def _attr_to_schema_field(attr: Attribute) -> SchemaField:
         """Convert attrs attribute to schema field."""
         # Determine if required
-        required = attr.default is None and getattr(attr, 'factory', None) is None
+        required = attr.default is None and getattr(attr, "factory", None) is None
 
         # Get type from attribute
         field_type = getattr(attr, "type", None)

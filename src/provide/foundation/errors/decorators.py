@@ -16,6 +16,7 @@ from provide.foundation.errors.base import FoundationError
 
 class HasName(Protocol):
     """Protocol for objects that have a __name__ attribute."""
+
     __name__: str
 
 
@@ -146,7 +147,7 @@ def with_error_handling(
                 try:
                     return await func(*args, **kwargs)
                 except Exception as e:
-                    return _process_error(e, getattr(func, '__name__', '<anonymous>'))
+                    return _process_error(e, getattr(func, "__name__", "<anonymous>"))
 
             return async_wrapper  # type: ignore
 
@@ -155,7 +156,7 @@ def with_error_handling(
             try:
                 return func(*args, **kwargs)
             except Exception as e:
-                return _process_error(e, getattr(func, '__name__', '<anonymous>'))
+                return _process_error(e, getattr(func, "__name__", "<anonymous>"))
 
         return wrapper  # type: ignore
 
@@ -205,7 +206,7 @@ def suppress_and_log(
 
                 log_method(
                     f"Suppressed {type(e).__name__} in {getattr(func, '__name__', '<anonymous>')}: {e}",
-                    function=getattr(func, '__name__', '<anonymous>'),
+                    function=getattr(func, "__name__", "<anonymous>"),
                     error_type=type(e).__name__,
                     error=str(e),
                     fallback=fallback,
@@ -255,10 +256,10 @@ def fallback_on_error(
 
                     get_foundation_logger().warning(
                         f"Using fallback for {getattr(func, '__name__', '<anonymous>')} due to {type(e).__name__}",
-                        function=getattr(func, '__name__', '<anonymous>'),
+                        function=getattr(func, "__name__", "<anonymous>"),
                         error_type=type(e).__name__,
                         error=str(e),
-                        fallback=getattr(fallback_func, '__name__', '<anonymous>'),
+                        fallback=getattr(fallback_func, "__name__", "<anonymous>"),
                     )
 
                 # Call fallback with same arguments

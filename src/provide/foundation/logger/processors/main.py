@@ -70,7 +70,6 @@ def _config_create_event_enrichment_processors(
     if logging_config.logger_name_emoji_prefix_enabled:
         processors.append(cast("StructlogProcessor", add_logger_name_emoji_prefix))
     if logging_config.das_emoji_prefix_enabled:
-
         # Use a closure with mutable state to track initialization
         state = {"initialized": False}
 

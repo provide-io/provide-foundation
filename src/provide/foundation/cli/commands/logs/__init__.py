@@ -51,13 +51,13 @@ if _HAS_CLICK:
     from provide.foundation.cli.commands.logs.tail import tail_command
 
     # Register subcommands (only when Click is available and commands are proper Click commands)
-    if hasattr(send_command, 'callback'):
+    if hasattr(send_command, "callback"):
         logs_group.add_command(send_command)
-    if hasattr(query_command, 'callback'):
+    if hasattr(query_command, "callback"):
         logs_group.add_command(query_command)
-    if hasattr(tail_command, 'callback'):
+    if hasattr(tail_command, "callback"):
         logs_group.add_command(tail_command)
-    if hasattr(generate_command, 'callback'):
+    if hasattr(generate_command, "callback"):
         logs_group.add_command(generate_command)
 
     __all__ = ["logs_group"]

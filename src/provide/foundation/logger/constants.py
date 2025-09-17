@@ -14,12 +14,12 @@ from provide.foundation.logger.types import LogLevelStr
 # =================================
 
 CRITICAL_LEVEL = stdlib_logging.CRITICAL  # 50
-ERROR_LEVEL = stdlib_logging.ERROR        # 40
-WARNING_LEVEL = stdlib_logging.WARNING    # 30
-INFO_LEVEL = stdlib_logging.INFO          # 20
-DEBUG_LEVEL = stdlib_logging.DEBUG        # 10
-TRACE_LEVEL = TRACE_LEVEL_NUM             # 5
-NOTSET_LEVEL = stdlib_logging.NOTSET      # 0
+ERROR_LEVEL = stdlib_logging.ERROR  # 40
+WARNING_LEVEL = stdlib_logging.WARNING  # 30
+INFO_LEVEL = stdlib_logging.INFO  # 20
+DEBUG_LEVEL = stdlib_logging.DEBUG  # 10
+TRACE_LEVEL = TRACE_LEVEL_NUM  # 5
+NOTSET_LEVEL = stdlib_logging.NOTSET  # 0
 
 # =================================
 # Level Name to Numeric Mapping
