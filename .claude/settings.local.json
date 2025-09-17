@@ -164,7 +164,8 @@
       "Bash(PYTHONPATH=src ruff format src/provide/foundation/integrations/openobserve/formatters.py)",
       "Bash(PYTHONPATH=src ruff check src/provide/foundation/integrations/openobserve/formatters.py --select C901)",
       "Bash(PYTHONPATH=src ruff format src/provide/foundation/process/async_runner.py)",
-      "Bash(PYTHONPATH=src ruff check src/provide/foundation/process/async_runner.py --select C901)"
+      "Bash(PYTHONPATH=src ruff check src/provide/foundation/process/async_runner.py --select C901)",
+      "Bash(PYTHONPATH=src ruff format src/provide/foundation/cli/decorators.py)"
     ],
     "deny": [],
     "ask": [],

@@ -183,6 +183,58 @@ def error_handler(f: F) -> F:
     return wrapper
 
 
+def _ensure_cli_context(ctx: click.Context) -> None:
+    """Ensure the Click context has a CLIContext object."""
+    if not hasattr(ctx, "obj") or ctx.obj is None:
+        ctx.obj = CLIContext()
+    elif not isinstance(ctx.obj, CLIContext):
+        # If obj exists but isn't a Context, wrap it
+        if isinstance(ctx.obj, dict):
+            ctx.obj = CLIContext.from_dict(ctx.obj)
+        else:
+            # Store existing obj and create new CLIContext
+            old_obj = ctx.obj
+            ctx.obj = CLIContext()
+            ctx.obj._cli_data = old_obj
+
+
+def _update_context_from_kwargs(cli_context: CLIContext, kwargs: dict[str, Any]) -> None:
+    """Update CLIContext from command kwargs."""
+    if kwargs.get("log_level"):
+        cli_context.log_level = kwargs["log_level"]
+    if kwargs.get("log_file"):
+        # Ensure log_file is a Path object, as expected by Context
+        cli_context.log_file = Path(kwargs["log_file"])
+    if "log_format" in kwargs and kwargs["log_format"] is not None:
+        cli_context.log_format = kwargs["log_format"]
+    if "json_output" in kwargs and kwargs["json_output"] is not None:
+        cli_context.json_output = kwargs["json_output"]
+    if "no_color" in kwargs and kwargs["no_color"] is not None:
+        cli_context.no_color = kwargs["no_color"]
+    if "no_emoji" in kwargs and kwargs["no_emoji"] is not None:
+        cli_context.no_emoji = kwargs["no_emoji"]
+    if kwargs.get("profile"):
+        cli_context.profile = kwargs["profile"]
+    if kwargs.get("config"):
+        cli_context.load_config(kwargs["config"])
+
+
+def _remove_cli_options_from_kwargs(kwargs: dict[str, Any]) -> None:
+    """Remove CLI options from kwargs to avoid duplicate arguments."""
+    cli_option_keys = [
+        "log_level",
+        "log_file",
+        "log_format",
+        "json_output",
+        "no_color",
+        "no_emoji",
+        "profile",
+        "config",
+    ]
+    for key in cli_option_keys:
+        kwargs.pop(key, None)
+
+
 def pass_context(f: F) -> F:
     """Decorator to pass the foundation CLIContext to a command.
 
@@ -194,49 +246,13 @@ def pass_context(f: F) -> F:
     @click.pass_context
     def wrapper(ctx: click.Context, *args: Any, **kwargs: Any) -> Any:
         # Get or create foundation context
-        if not hasattr(ctx, "obj") or ctx.obj is None:
-            ctx.obj = CLIContext()
-        elif not isinstance(ctx.obj, CLIContext):
-            # If obj exists but isn't a Context, wrap it
-            if isinstance(ctx.obj, dict):
-                ctx.obj = CLIContext.from_dict(ctx.obj)
-            else:
-                # Store existing obj and create new CLIContext
-                old_obj = ctx.obj
-                ctx.obj = CLIContext()
-                ctx.obj._cli_data = old_obj
+        _ensure_cli_context(ctx)
 
         # Update context from command options
-        if kwargs.get("log_level"):
-            ctx.obj.log_level = kwargs["log_level"]
-        if kwargs.get("log_file"):
-            # Ensure log_file is a Path object, as expected by Context
-            ctx.obj.log_file = Path(kwargs["log_file"])
-        if "log_format" in kwargs and kwargs["log_format"] is not None:
-            ctx.obj.log_format = kwargs["log_format"]
-        if "json_output" in kwargs and kwargs["json_output"] is not None:
-            ctx.obj.json_output = kwargs["json_output"]
-        if "no_color" in kwargs and kwargs["no_color"] is not None:
-            ctx.obj.no_color = kwargs["no_color"]
-        if "no_emoji" in kwargs and kwargs["no_emoji"] is not None:
-            ctx.obj.no_emoji = kwargs["no_emoji"]
-        if kwargs.get("profile"):
-            ctx.obj.profile = kwargs["profile"]
-        if kwargs.get("config"):
-            ctx.obj.load_config(kwargs["config"])
+        _update_context_from_kwargs(ctx.obj, kwargs)
 
-        # Remove these from kwargs to avoid duplicate arguments
-        for key in [
-            "log_level",
-            "log_file",
-            "log_format",
-            "json_output",
-            "no_color",
-            "no_emoji",
-            "profile",
-            "config",
-        ]:
-            kwargs.pop(key, None)
+        # Remove CLI options from kwargs to avoid duplicate arguments
+        _remove_cli_options_from_kwargs(kwargs)
 
         return f(ctx.obj, *args, **kwargs)
 
