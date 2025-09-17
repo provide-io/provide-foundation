@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-"""Base exception class for Foundation."""
-
 from typing import Any
+
+"""Base exception class for Foundation."""
 
 
 class FoundationError(Exception):

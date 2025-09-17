@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from provide.foundation.logger.processors.main import (
+
 """Processors package for Foundation logging."""
 
-from provide.foundation.logger.processors.main import (
     _build_core_processors_list,
     _build_formatter_processors_list,
 )

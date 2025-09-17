@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from provide.foundation.file.atomic import (
+
 """File operations with safety, atomicity, and format support.
 
 This module provides comprehensive file operations including:
@@ -11,7 +13,6 @@ This module provides comprehensive file operations including:
 - Various utility functions
 """
 
-from provide.foundation.file.atomic import (
     atomic_replace,
     atomic_write,
     atomic_write_text,

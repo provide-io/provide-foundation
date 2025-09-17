@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-"""Hash algorithm management and validation."""
-
 import hashlib
 from typing import Any
-
 from provide.foundation.errors.config import ValidationError
 
-# Supported hash algorithms
+"""Hash algorithm management and validation."""
+
 SUPPORTED_ALGORITHMS = {
     "md5",
     "sha1",

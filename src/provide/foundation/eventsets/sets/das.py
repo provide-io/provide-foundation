@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-"""Domain-Action-Status (DAS) event set."""
-
 from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping
+
+"""Domain-Action-Status (DAS) event set."""
 
 EVENT_SET = EventSet(
     name="default",

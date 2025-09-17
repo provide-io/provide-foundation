@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-"""Integration and network-related exceptions."""
-
 from typing import Any
-
 from provide.foundation.errors.base import FoundationError
+
+"""Integration and network-related exceptions."""
 
 
 class IntegrationError(FoundationError):

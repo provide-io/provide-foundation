@@ -3,14 +3,13 @@ from __future__ import annotations
 #
 # processor.py
 #
-"""Structlog processor for rate limiting log messages."""
 
 import time
 from typing import Any
-
 import structlog
-
 from provide.foundation.logger.ratelimit.limiters import GlobalRateLimiter
+
+"""Structlog processor for rate limiting log messages."""
 
 
 class RateLimiterProcessor:

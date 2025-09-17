@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-"""Tail logs command for Foundation CLI."""
-
 from typing import TYPE_CHECKING, Any
+
+"""Tail logs command for Foundation CLI."""
 
 if TYPE_CHECKING:
     import click

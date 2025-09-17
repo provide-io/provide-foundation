@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+from provide.foundation.platform.detection import (
+
 """Platform detection and information utilities.
 
 Provides cross-platform detection and system information gathering.
 """
 
-from provide.foundation.platform.detection import (
     PlatformError,
     get_arch_name,
     get_cpu_type,

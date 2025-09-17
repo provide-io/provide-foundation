@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-"""Event set type definitions for the Foundation event enrichment system."""
-
 from collections.abc import Callable
 from typing import Any
-
 from attrs import define, field
+
+"""Event set type definitions for the Foundation event enrichment system."""
 
 
 @define(frozen=True, slots=True)

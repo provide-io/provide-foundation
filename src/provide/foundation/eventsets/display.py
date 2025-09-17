@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-"""Event set display utilities for Foundation."""
-
 from provide.foundation.eventsets.registry import discover_event_sets, get_registry
 from provide.foundation.eventsets.resolver import get_resolver
 from provide.foundation.logger import get_logger
+
+"""Event set display utilities for Foundation."""
 
 logger = get_logger(__name__)
 

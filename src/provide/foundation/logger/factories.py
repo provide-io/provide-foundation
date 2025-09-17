@@ -3,12 +3,12 @@ from __future__ import annotations
 #
 # factories.py
 #
-"""Logger factory functions and simple setup utilities."""
 
 import threading
 from typing import Any
 
-# Thread-local storage to track initialization state
+"""Logger factory functions and simple setup utilities."""
+
 _is_initializing = threading.local()
 
 

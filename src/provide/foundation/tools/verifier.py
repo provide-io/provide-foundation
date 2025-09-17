@@ -1,16 +1,15 @@
 from __future__ import annotations
 
+import hashlib
+from pathlib import Path
+from typing import Literal
+from provide.foundation.errors import FoundationError
+
 """Tool verification system for checksums and signatures.
 
 Provides capabilities for verifying downloaded tools using various
 checksum algorithms and GPG/PGP signatures.
 """
-
-import hashlib
-from pathlib import Path
-from typing import Literal
-
-from provide.foundation.errors import FoundationError
 
 
 class VerificationError(FoundationError):

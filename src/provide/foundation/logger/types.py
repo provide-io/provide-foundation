@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-"""Logger type definitions and constants."""
-
 from typing import Literal
-
 from provide.foundation.logger.trace import TRACE_LEVEL_NAME, TRACE_LEVEL_NUM
+
+"""Logger type definitions and constants."""
 
 LogLevelStr = Literal["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG", "TRACE", "NOTSET"]
 

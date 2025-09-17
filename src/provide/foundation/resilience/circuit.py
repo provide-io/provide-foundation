@@ -1,14 +1,12 @@
 from __future__ import annotations
 
-"""Circuit breaker implementation for preventing cascading failures."""
-
 from collections.abc import Awaitable, Callable
 import time
 from typing import Any, TypeVar
-
 from attrs import define, field
-
 from provide.foundation.resilience.types import CircuitState
+
+"""Circuit breaker implementation for preventing cascading failures."""
 
 T = TypeVar("T")
 

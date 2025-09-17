@@ -1,19 +1,14 @@
 from __future__ import annotations
 
+import logging as stdlib_logging
+from provide.foundation.logger.trace import TRACE_LEVEL_NUM
+from provide.foundation.logger.types import LogLevelStr
+
 """Centralized constants for Foundation logger system.
 
 All logger-related constants and numeric mappings are defined here
 to provide a single source of truth and eliminate inline defaults.
 """
-
-import logging as stdlib_logging
-
-from provide.foundation.logger.trace import TRACE_LEVEL_NUM
-from provide.foundation.logger.types import LogLevelStr
-
-# =================================
-# Log Level Numeric Constants
-# =================================
 
 CRITICAL_LEVEL = stdlib_logging.CRITICAL  # 50
 ERROR_LEVEL = stdlib_logging.ERROR  # 40

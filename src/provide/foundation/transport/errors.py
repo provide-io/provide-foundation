@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-"""Transport-specific error types."""
-
 from typing import TYPE_CHECKING, Any
-
 from provide.foundation.errors.base import FoundationError
+
+"""Transport-specific error types."""
 
 if TYPE_CHECKING:
     from provide.foundation.transport.base import Request, Response

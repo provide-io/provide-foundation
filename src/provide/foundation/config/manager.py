@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-"""Configuration manager for centralized configuration management."""
-
 from typing import TypeVar
-
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.loader import ConfigLoader
 from provide.foundation.config.schema import ConfigSchema
 from provide.foundation.config.types import ConfigDict, ConfigSource
+
+"""Configuration manager for centralized configuration management."""
 
 T = TypeVar("T", bound=BaseConfig)
 

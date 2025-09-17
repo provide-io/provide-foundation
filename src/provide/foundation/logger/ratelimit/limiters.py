@@ -3,12 +3,13 @@ from __future__ import annotations
 #
 # limiters.py
 #
-"""Rate limiter implementations for Foundation's logging system."""
 
 import asyncio
 import threading
 import time
 from typing import Any
+
+"""Rate limiter implementations for Foundation's logging system."""
 
 
 class SyncRateLimiter:

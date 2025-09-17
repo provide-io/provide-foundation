@@ -1,14 +1,13 @@
 from __future__ import annotations
 
-"""File-based locking for concurrent access control."""
-
 import os
 from pathlib import Path
 import time
-
 from provide.foundation.config.defaults import DEFAULT_FILE_LOCK_TIMEOUT
 from provide.foundation.errors.resources import LockError
 from provide.foundation.logger import get_logger
+
+"""File-based locking for concurrent access control."""
 
 log = get_logger(__name__)
 

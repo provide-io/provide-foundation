@@ -1,15 +1,14 @@
 from __future__ import annotations
 
+import re
+from provide.foundation.errors import FoundationError
+from provide.foundation.logger import get_logger
+
 """Version resolution for tool management.
 
 Provides sophisticated version resolution including latest,
 semver ranges, wildcards, and pre-release handling.
 """
-
-import re
-
-from provide.foundation.errors import FoundationError
-from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
 

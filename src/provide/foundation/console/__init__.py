@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+from provide.foundation.console.input import (
+
 """Console I/O utilities for standardized CLI input/output.
 
 Provides pout(), perr(), and pin() functions for consistent I/O handling.
 """
 
-from provide.foundation.console.input import (
     apin,
     apin_lines,
     apin_stream,

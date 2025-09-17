@@ -3,13 +3,15 @@ from __future__ import annotations
 #
 # __init__.py
 #
+
+from provide.foundation.streams.console import (
+
 """Foundation Streams Module.
 
 Provides stream management functionality including console, file,
 and core stream operations.
 """
 
-from provide.foundation.streams.console import (
     get_console_stream,
     is_tty,
     supports_color,

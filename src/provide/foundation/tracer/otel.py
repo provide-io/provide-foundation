@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-"""OpenTelemetry integration for Foundation tracer."""
-
 from typing import TYPE_CHECKING, Any
-
 from provide.foundation.logger.config.telemetry import TelemetryConfig
 from provide.foundation.logger.setup import get_vanilla_logger
+
+"""OpenTelemetry integration for Foundation tracer."""
 
 if TYPE_CHECKING:
     from opentelemetry import trace as otel_trace

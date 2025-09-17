@@ -1,14 +1,13 @@
 from __future__ import annotations
 
+from typing import Any
+from provide.foundation.errors.base import FoundationError
+
 """Configuration-specific error types and utilities.
 
 Provides standardized error handling for configuration parsing and validation
 with consistent messages and diagnostic context.
 """
-
-from typing import Any
-
-from provide.foundation.errors.base import FoundationError
 
 
 class ConfigError(FoundationError):

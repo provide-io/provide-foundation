@@ -1,14 +1,13 @@
 from __future__ import annotations
 
+from typing import Any
+
 """Foundation Metrics Module.
 
 Provides metrics collection with optional OpenTelemetry integration.
 Falls back to simple metrics when OpenTelemetry is not available.
 """
 
-from typing import Any
-
-# OpenTelemetry feature detection
 try:
     from opentelemetry import metrics as otel_metrics
     from opentelemetry.exporter.otlp.proto.grpc.metric_exporter import (

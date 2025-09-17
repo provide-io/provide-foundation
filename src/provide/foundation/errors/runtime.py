@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-"""Runtime and process execution exceptions."""
-
 from typing import Any
-
 from provide.foundation.errors.base import FoundationError
+
+"""Runtime and process execution exceptions."""
 
 
 class RuntimeError(FoundationError):

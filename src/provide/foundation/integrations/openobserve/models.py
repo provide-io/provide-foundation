@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-"""Data models for OpenObserve API requests and responses."""
-
 from datetime import datetime
 from typing import Any
-
 from attrs import define, field
+
+"""Data models for OpenObserve API requests and responses."""
 
 
 @define

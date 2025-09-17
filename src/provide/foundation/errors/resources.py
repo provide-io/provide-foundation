@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-"""Resource and filesystem-related exceptions."""
-
 from typing import Any
-
 from provide.foundation.errors.base import FoundationError
+
+"""Resource and filesystem-related exceptions."""
 
 
 class ResourceError(FoundationError):

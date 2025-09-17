@@ -1,15 +1,14 @@
 from __future__ import annotations
 
+from typing import Any
+from provide.foundation.errors.decorators import with_error_handling
+from provide.foundation.hub.foundation import get_foundation_logger
+from provide.foundation.hub.registry import RegistryEntry
+
 """Hub error handler management utilities.
 
 Provides functions for discovering and executing error handlers from the registry.
 """
-
-from typing import Any
-
-from provide.foundation.errors.decorators import with_error_handling
-from provide.foundation.hub.foundation import get_foundation_logger
-from provide.foundation.hub.registry import RegistryEntry
 
 
 def _get_registry_and_lock() -> tuple[Any, Any]:

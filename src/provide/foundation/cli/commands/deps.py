@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-"""CLI command for checking optional dependencies."""
-
 from typing import TYPE_CHECKING, Any
+
+"""CLI command for checking optional dependencies."""
 
 if TYPE_CHECKING:
     import click

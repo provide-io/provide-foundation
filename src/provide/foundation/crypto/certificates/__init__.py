@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+from provide.foundation.crypto.certificates.base import (
+
 """X.509 certificate generation and management."""
 
-# Import from submodules using absolute imports
-from provide.foundation.crypto.certificates.base import (
     _HAS_CRYPTO,
     CertificateBase,
     CertificateConfig,

@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-"""Configuration-related exceptions."""
-
 from typing import Any
-
 from provide.foundation.errors.base import FoundationError
+
+"""Configuration-related exceptions."""
 
 
 class ConfigurationError(FoundationError):

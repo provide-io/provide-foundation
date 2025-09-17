@@ -3,15 +3,16 @@ from __future__ import annotations
 #
 # detection.py
 #
+
+import inspect
+import os
+import sys
+
 """Test Mode Detection for Foundation.
 
 This module provides utilities for detecting various test environments
 and adjusting Foundation behavior accordingly.
 """
-
-import inspect
-import os
-import sys
 
 
 def is_in_test_mode() -> bool:

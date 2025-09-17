@@ -1,11 +1,11 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING, Any
+
 """Logs command group for Foundation CLI.
 
 Provides commands for sending and querying logs with OpenTelemetry integration.
 """
-
-from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     import click

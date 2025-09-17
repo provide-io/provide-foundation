@@ -1,14 +1,13 @@
 from __future__ import annotations
 
+from typing import Any
+from provide.foundation.hub.registry import Registry
+
 """Hub component discovery and dependency resolution utilities.
 
 Provides functions for discovering components and resolving their dependencies
 in the Hub registry system.
 """
-
-from typing import Any
-
-from provide.foundation.hub.registry import Registry
 
 
 def _get_registry_and_lock() -> tuple[Any, Any]:

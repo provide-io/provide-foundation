@@ -1,16 +1,15 @@
 from __future__ import annotations
 
+import asyncio
+import inspect
+from typing import Any
+from provide.foundation.hub.foundation import get_foundation_logger
+
 """Hub component lifecycle management utilities.
 
 Provides functions for initializing, managing, and cleaning up components
 registered in the Hub registry system.
 """
-
-import asyncio
-import inspect
-from typing import Any
-
-from provide.foundation.hub.foundation import get_foundation_logger
 
 
 def _get_registry_and_globals() -> Any:

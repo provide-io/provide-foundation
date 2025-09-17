@@ -3,11 +3,13 @@ from __future__ import annotations
 #
 # __init__.py
 #
+
+from provide.foundation.logger.ratelimit.limiters import (
+
 """Rate limiting subcomponent for Foundation's logging system.
 Provides rate limiters and processors for controlling log output rates.
 """
 
-from provide.foundation.logger.ratelimit.limiters import (
     AsyncRateLimiter,
     GlobalRateLimiter,
     SyncRateLimiter,

@@ -1,14 +1,13 @@
 from __future__ import annotations
 
+from enum import Enum
+from typing import Any
+from attrs import define, field
+
 """Type definitions and constants for error handling.
 
 Provides error codes, metadata structures, and retry policies.
 """
-
-from enum import Enum
-from typing import Any
-
-from attrs import define, field
 
 
 class ErrorCode(str, Enum):

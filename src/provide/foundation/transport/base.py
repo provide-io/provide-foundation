@@ -1,15 +1,13 @@
 from __future__ import annotations
 
-"""Core transport abstractions."""
-
 from abc import ABC, abstractmethod
 from collections.abc import AsyncIterator
 from typing import Any, Protocol, runtime_checkable
-
 from attrs import define, field
-
 from provide.foundation.logger import get_logger
 from provide.foundation.transport.types import Data, Headers, Params, TransportType
+
+"""Core transport abstractions."""
 
 log = get_logger(__name__)
 

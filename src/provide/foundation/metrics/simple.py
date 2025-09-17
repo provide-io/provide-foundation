@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-"""Simple metrics implementations that work with or without OpenTelemetry."""
-
 from collections import defaultdict
 from typing import Any
-
 from provide.foundation.logger import get_logger
+
+"""Simple metrics implementations that work with or without OpenTelemetry."""
 
 log = get_logger(__name__)
 

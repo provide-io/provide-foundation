@@ -3,16 +3,16 @@ from __future__ import annotations
 #
 # processors.py
 #
+
+from typing import Any, TextIO, cast
+import structlog
+from provide.foundation.logger.config import TelemetryConfig
+from provide.foundation.logger.processors import (
+
 """Processor chain building for Foundation Telemetry.
 Handles the assembly of structlog processor chains including emoji processing.
 """
 
-from typing import Any, TextIO, cast
-
-import structlog
-
-from provide.foundation.logger.config import TelemetryConfig
-from provide.foundation.logger.processors import (
     _build_core_processors_list,
     _build_formatter_processors_list,
 )

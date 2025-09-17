@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-"""Directory operations and utilities."""
-
 from pathlib import Path
 import shutil
-
 from provide.foundation.errors.decorators import with_error_handling
 from provide.foundation.logger import get_logger
+
+"""Directory operations and utilities."""
 
 log = get_logger(__name__)
 

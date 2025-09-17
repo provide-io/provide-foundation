@@ -1,16 +1,15 @@
 from __future__ import annotations
 
+from attrs import define
+from provide.foundation.config.base import field
+from provide.foundation.config.converters import parse_bool_extended
+from provide.foundation.config.env import RuntimeConfig
+
 """Stream configuration for console output settings.
 
 This module provides configuration for console stream behavior,
 including color support and testing mode detection.
 """
-
-from attrs import define
-
-from provide.foundation.config.base import field
-from provide.foundation.config.converters import parse_bool_extended
-from provide.foundation.config.env import RuntimeConfig
 
 
 @define(slots=True, repr=False)

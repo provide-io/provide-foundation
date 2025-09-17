@@ -3,11 +3,11 @@ from __future__ import annotations
 #
 # provide/foundation/errors/process.py
 #
-"""Process execution related errors."""
 
 from typing import Any
-
 from provide.foundation.errors.base import FoundationError
+
+"""Process execution related errors."""
 
 
 class ProcessError(FoundationError):

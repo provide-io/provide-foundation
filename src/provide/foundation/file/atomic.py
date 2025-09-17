@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-"""Atomic file operations using temp file + rename pattern."""
-
 import contextlib
 import os
 from pathlib import Path
-
 from provide.foundation.file.temp import secure_temp_file
 from provide.foundation.logger import get_logger
+
+"""Atomic file operations using temp file + rename pattern."""
 
 log = get_logger(__name__)
 

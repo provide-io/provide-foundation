@@ -3,16 +3,16 @@ from __future__ import annotations
 #
 # processors.py
 #
-"""Structlog processors for Foundation Telemetry."""
 
 import json
 from typing import Any, TextIO, cast
-
 import structlog
-
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
 from provide.foundation.logger.constants import LEVEL_TO_NUMERIC
 from provide.foundation.logger.custom_processors import (
+
+"""Structlog processors for Foundation Telemetry."""
+
     StructlogProcessor,
     add_log_level_custom,
     add_logger_name_emoji_prefix,

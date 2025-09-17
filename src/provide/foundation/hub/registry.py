@@ -1,19 +1,17 @@
 from __future__ import annotations
 
+from collections import defaultdict
+from collections.abc import Iterator
+import threading
+from typing import Any
+from attrs import define, field
+from provide.foundation.errors.resources import AlreadyExistsError
+
 """Registry management for the foundation.
 
 Provides both generic multi-dimensional registry functionality and
 specialized command registry management.
 """
-
-from collections import defaultdict
-from collections.abc import Iterator
-import threading
-from typing import Any
-
-from attrs import define, field
-
-from provide.foundation.errors.resources import AlreadyExistsError
 
 
 @define(frozen=True, slots=True)

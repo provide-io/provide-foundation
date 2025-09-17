@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-"""Core platform detection functions."""
-
 import platform
 import re
-
 from provide.foundation.errors.platform import PlatformError
 from provide.foundation.logger import get_logger
+
+"""Core platform detection functions."""
 
 plog = get_logger(__name__)
 

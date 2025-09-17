@@ -3,16 +3,16 @@ from __future__ import annotations
 #
 # trace.py
 #
+
+import logging as stdlib_logging
+from typing import Any, cast
+
 """TRACE log level setup and patching.
 
 This module handles the custom TRACE log level implementation,
 including patching the standard library logging module.
 """
 
-import logging as stdlib_logging
-from typing import Any, cast
-
-# --- TRACE Level Constants ---
 TRACE_LEVEL_NUM: int = 5  # Typically, DEBUG is 10, so TRACE is lower
 """Numeric value for the custom TRACE log level."""
 

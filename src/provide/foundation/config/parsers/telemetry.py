@@ -1,14 +1,14 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING, cast
+from provide.foundation.config.parsers.base import (
+
 """Telemetry and logging-specific parsers for configuration values.
 
 Handles parsing of domain-specific telemetry configuration like log levels,
 console formatters, and foundation-specific output settings.
 """
 
-from typing import TYPE_CHECKING, cast
-
-from provide.foundation.config.parsers.base import (
     _VALID_FORMATTER_TUPLE,
     _VALID_LOG_LEVEL_TUPLE,
     _format_invalid_value_error,

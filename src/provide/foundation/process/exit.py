@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-"""Process exit utilities for standardized exit handling."""
-
 import sys
-
 from provide.foundation.config.defaults import EXIT_ERROR, EXIT_SIGINT, EXIT_SUCCESS
 from provide.foundation.hub.foundation import get_foundation_logger
+
+"""Process exit utilities for standardized exit handling."""
 
 
 def exit_success(message: str | None = None) -> None:

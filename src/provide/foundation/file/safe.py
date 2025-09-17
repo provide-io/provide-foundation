@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-"""Safe file operations with error handling and defaults."""
-
 from pathlib import Path
 import shutil
 
-# Use lazy logger initialization to avoid circular imports
+"""Safe file operations with error handling and defaults."""
+
 _logger = None
 
 

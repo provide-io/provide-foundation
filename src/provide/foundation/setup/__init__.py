@@ -3,20 +3,18 @@ from __future__ import annotations
 #
 # __init__.py
 #
+
+from provide.foundation.logger.setup import internal_setup
+from provide.foundation.logger.setup.coordinator import _PROVIDE_SETUP_LOCK
+from provide.foundation.metrics.otel import shutdown_opentelemetry_metrics
+from provide.foundation.streams.file import flush_log_streams
+from provide.foundation.tracer.otel import shutdown_opentelemetry
+
 """Foundation Setup Module.
 
 This module provides the main setup API for Foundation,
 orchestrating logging, tracing, and other subsystems.
 """
-
-from provide.foundation.logger.setup import internal_setup
-from provide.foundation.logger.setup.coordinator import _PROVIDE_SETUP_LOCK
-
-# Import reset function from testkit (will be called by testkit internally)
-# from provide.testkit.logger import reset_foundation_setup_for_testing
-from provide.foundation.metrics.otel import shutdown_opentelemetry_metrics
-from provide.foundation.streams.file import flush_log_streams
-from provide.foundation.tracer.otel import shutdown_opentelemetry
 
 _EXPLICIT_SETUP_DONE = False
 

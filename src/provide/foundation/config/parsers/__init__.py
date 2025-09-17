@@ -1,13 +1,13 @@
 from __future__ import annotations
 
+from provide.foundation.config.parsers.primitives import (
+
 """Configuration parsers package.
 
 Re-exports all parsing and validation functions from submodules
 while providing a clean modular structure.
 """
 
-# Re-export all parsing functions from submodules
-from provide.foundation.config.parsers.primitives import (
     parse_bool_extended,
     parse_bool_strict,
     parse_comma_list,

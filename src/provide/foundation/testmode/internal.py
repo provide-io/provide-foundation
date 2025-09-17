@@ -3,14 +3,15 @@ from __future__ import annotations
 #
 # internal.py
 #
+
+import structlog
+
 """Internal Reset APIs for Foundation Testing.
 
 This module provides low-level reset functions that testing frameworks
 can use to reset Foundation's internal state. These are internal APIs
 designed to be called by testkit for proper test isolation.
 """
-
-import structlog
 
 
 def reset_structlog_state() -> None:

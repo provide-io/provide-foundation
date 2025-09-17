@@ -3,13 +3,14 @@ from __future__ import annotations
 #
 # core.py
 #
-"""Core stream management for Foundation.
-Handles log streams, file handles, and output configuration.
-"""
 
 import sys
 import threading
 from typing import TextIO
+
+"""Core stream management for Foundation.
+Handles log streams, file handles, and output configuration.
+"""
 
 _PROVIDE_LOG_STREAM: TextIO = sys.stderr
 _LOG_FILE_HANDLE: TextIO | None = None

@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-"""Safe error decorators that preserve original behavior."""
-
 from collections.abc import Callable
 import functools
 import inspect
 from typing import Any, TypeVar
-
 from provide.foundation.hub.foundation import get_foundation_logger
+
+"""Safe error decorators that preserve original behavior."""
 
 F = TypeVar("F", bound=Callable[..., Any])
 

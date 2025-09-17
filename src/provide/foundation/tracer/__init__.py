@@ -3,13 +3,14 @@ from __future__ import annotations
 #
 # __init__.py
 #
+
+from typing import TYPE_CHECKING, Any
+
 """Foundation Tracer Module.
 
 Provides distributed tracing functionality with optional OpenTelemetry integration.
 Falls back to simple, lightweight tracing when OpenTelemetry is not available.
 """
-
-from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from opentelemetry import trace as otel_trace

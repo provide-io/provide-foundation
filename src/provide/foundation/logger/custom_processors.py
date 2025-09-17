@@ -3,20 +3,19 @@ from __future__ import annotations
 #
 # custom_processors.py
 #
+
+import logging as stdlib_logging
+from typing import Any, Protocol
+import structlog
+from provide.foundation.logger.constants import DEFAULT_FALLBACK_NUMERIC
+from provide.foundation.logger.levels import get_numeric_level, normalize_level
+from provide.foundation.logger.types import TRACE_LEVEL_NAME, TRACE_LEVEL_NUM, LogLevelStr
+
 """Foundation Telemetry Custom Structlog Processors.
 Includes processors for log level normalization, level-based filtering,
 and logger name emoji prefixes. The semantic field emoji prefix processor
 is now created as a closure in config.py.
 """
-
-import logging as stdlib_logging
-from typing import Any, Protocol
-
-import structlog
-
-from provide.foundation.logger.constants import DEFAULT_FALLBACK_NUMERIC
-from provide.foundation.logger.levels import get_numeric_level, normalize_level
-from provide.foundation.logger.types import TRACE_LEVEL_NAME, TRACE_LEVEL_NUM, LogLevelStr
 
 _NUMERIC_TO_LEVEL_NAME_CUSTOM: dict[int, str] = {
     stdlib_logging.CRITICAL: "critical",

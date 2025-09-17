@@ -3,15 +3,15 @@ from __future__ import annotations
 #
 # console.py
 #
-"""Console stream utilities for Foundation.
-Handles console-specific stream operations and formatting.
-"""
 
 import sys
 from typing import TextIO
-
 from provide.foundation.streams.config import get_stream_config
 from provide.foundation.streams.core import get_log_stream
+
+"""Console stream utilities for Foundation.
+Handles console-specific stream operations and formatting.
+"""
 
 
 def get_console_stream() -> TextIO:

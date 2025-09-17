@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-"""Transport configuration with Foundation config integration."""
-
 from attrs import define
-
 from provide.foundation.config.base import field
 from provide.foundation.config.converters import (
+
+"""Transport configuration with Foundation config integration."""
+
     parse_bool_extended,
     parse_float_with_validation,
     validate_non_negative,

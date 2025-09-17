@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-"""Core hashing operations."""
-
 from collections.abc import Iterator
 from pathlib import Path
 from typing import BinaryIO
-
 from provide.foundation.crypto.algorithms import (
+
+"""Core hashing operations."""
+
     DEFAULT_ALGORITHM,
     get_hasher,
     validate_algorithm,

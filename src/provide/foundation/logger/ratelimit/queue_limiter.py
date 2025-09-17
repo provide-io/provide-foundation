@@ -3,13 +3,14 @@ from __future__ import annotations
 #
 # queue_limiter.py
 #
-"""Queue-based rate limiter with overflow protection for Foundation's logging system."""
 
 from collections import deque
 import sys
 import threading
 import time
 from typing import Any, Literal
+
+"""Queue-based rate limiter with overflow protection for Foundation's logging system."""
 
 
 class QueuedRateLimiter:

@@ -3,16 +3,15 @@ from __future__ import annotations
 #
 # context.py
 #
+
+import contextvars
+from typing import Any
+from provide.foundation.tracer.spans import Span
+
 """Trace context management for Foundation tracer.
 Manages trace context and span hierarchy.
 """
 
-import contextvars
-from typing import Any
-
-from provide.foundation.tracer.spans import Span
-
-# Context variable to track the current span
 _current_span: contextvars.ContextVar[Span | None] = contextvars.ContextVar("current_span")
 
 # Context variable to track the current trace ID

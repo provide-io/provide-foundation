@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-"""Certificate generation utilities."""
-
 from datetime import UTC, datetime, timedelta
 import traceback
 from typing import TYPE_CHECKING
+
+"""Certificate generation utilities."""
 
 if TYPE_CHECKING:
     from cryptography import x509

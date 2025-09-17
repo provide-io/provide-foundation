@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-"""Standard CLI decorators for consistent option handling."""
-
 from collections.abc import Callable
 import functools
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, TypeVar
+
+"""Standard CLI decorators for consistent option handling."""
 
 if TYPE_CHECKING:
     import click

@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-"""Platform detection and system-related exceptions."""
-
 from typing import Any
-
 from provide.foundation.errors.base import FoundationError
+
+"""Platform detection and system-related exceptions."""
 
 
 class PlatformError(FoundationError):

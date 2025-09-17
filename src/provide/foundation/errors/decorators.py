@@ -1,17 +1,16 @@
 from __future__ import annotations
 
+from collections.abc import Callable
+import functools
+import inspect
+from typing import Any, Protocol, TypeVar, overload
+from provide.foundation.errors.base import FoundationError
+
 """Decorators for error handling and resilience patterns.
 
 Provides decorators for common error handling patterns like retry,
 fallback, and error suppression.
 """
-
-from collections.abc import Callable
-import functools
-import inspect
-from typing import Any, Protocol, TypeVar, overload
-
-from provide.foundation.errors.base import FoundationError
 
 
 class HasName(Protocol):

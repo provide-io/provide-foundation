@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-"""Search operations for OpenObserve."""
-
 import re
-
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.integrations.openobserve.models import SearchResponse
 from provide.foundation.logger import get_logger
+
+"""Search operations for OpenObserve."""
 
 log = get_logger(__name__)
 

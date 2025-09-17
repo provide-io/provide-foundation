@@ -1,20 +1,18 @@
 from __future__ import annotations
 
-"""Unified retry execution engine and policy configuration.
-
-This module provides the core retry functionality used throughout foundation,
-eliminating duplication between decorators and middleware.
-"""
-
 import asyncio
 from collections.abc import Awaitable, Callable
 import random
 import time
 from typing import Any, TypeVar
-
 from attrs import define, field, validators
-
 from provide.foundation.resilience.types import BackoffStrategy
+
+"""Unified retry execution engine and policy configuration.
+
+This module provides the core retry functionality used throughout foundation,
+eliminating duplication between decorators and middleware.
+"""
 
 T = TypeVar("T")
 

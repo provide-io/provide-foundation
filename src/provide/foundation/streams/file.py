@@ -3,16 +3,17 @@ from __future__ import annotations
 #
 # file.py
 #
-"""File stream management for Foundation.
-Handles file-based logging streams and file operations.
-"""
 
 import contextlib
 import io
 from pathlib import Path
 import sys
-
 from provide.foundation.streams.core import (
+
+"""File stream management for Foundation.
+Handles file-based logging streams and file operations.
+"""
+
     _LOG_FILE_HANDLE,
     _PROVIDE_LOG_STREAM,
     _STREAM_LOCK,

@@ -1,18 +1,17 @@
 from __future__ import annotations
 
+import inspect
+from typing import Any, TypeVar
+from provide.foundation.config.base import BaseConfig
+from provide.foundation.errors.decorators import with_error_handling
+from provide.foundation.hub.foundation import get_foundation_logger
+from provide.foundation.hub.registry import RegistryEntry
+
 """Hub configuration management utilities.
 
 Provides functions for resolving configuration values from registered sources,
 loading configurations, and managing the configuration chain.
 """
-
-import inspect
-from typing import Any, TypeVar
-
-from provide.foundation.config.base import BaseConfig
-from provide.foundation.errors.decorators import with_error_handling
-from provide.foundation.hub.foundation import get_foundation_logger
-from provide.foundation.hub.registry import RegistryEntry
 
 T = TypeVar("T", bound=BaseConfig)
 

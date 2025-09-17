@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-"""OpenTelemetry metrics integration."""
-
 from typing import Any
-
 from provide.foundation.logger.config.telemetry import TelemetryConfig
 from provide.foundation.logger.setup import get_vanilla_logger
+
+"""OpenTelemetry metrics integration."""
 
 slog = get_vanilla_logger(__name__)
 

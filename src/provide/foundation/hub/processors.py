@@ -1,14 +1,13 @@
 from __future__ import annotations
 
+from typing import Any
+from provide.foundation.hub.registry import RegistryEntry
+
 """Hub processor pipeline management utilities.
 
 Provides functions for managing log processors and processing stages
 in the Hub registry system.
 """
-
-from typing import Any
-
-from provide.foundation.hub.registry import RegistryEntry
 
 
 def _get_registry_and_lock() -> Any:

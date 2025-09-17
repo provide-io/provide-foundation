@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-"""Environment variable configuration utilities."""
-
 import asyncio
 from collections.abc import Callable
 import os
 from typing import Any, Self, TypeVar
+
+"""Environment variable configuration utilities."""
 
 try:
     import aiofiles  # type: ignore[import-untyped]

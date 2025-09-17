@@ -1,14 +1,14 @@
 from __future__ import annotations
 
+from typing import cast
+from provide.foundation.logger.constants import (
+
 """Log level normalization and safe lookup utilities.
 
 Provides functions for normalizing log levels and performing safe lookups
 to prevent KeyError crashes in the logging system.
 """
 
-from typing import cast
-
-from provide.foundation.logger.constants import (
     DEFAULT_FALLBACK_LEVEL,
     DEFAULT_FALLBACK_NUMERIC,
     LEVEL_TO_NUMERIC,

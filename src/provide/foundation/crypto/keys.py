@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-"""Unified key generation for all cryptographic algorithms."""
-
 from typing import Any, Protocol
-
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
-
 from provide.foundation import logger
 from provide.foundation.crypto.constants import (
+
+"""Unified key generation for all cryptographic algorithms."""
+
     DEFAULT_ECDSA_CURVE,
     DEFAULT_RSA_KEY_SIZE,
     SUPPORTED_EC_CURVES,

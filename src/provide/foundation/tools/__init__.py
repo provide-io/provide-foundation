@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from provide.foundation.tools.base import (
+
 """Provide Foundation Tools Module
 ================================
 
@@ -26,7 +28,6 @@ Example:
 
 """
 
-from provide.foundation.tools.base import (
     BaseToolManager,
     ToolError,
     ToolMetadata,

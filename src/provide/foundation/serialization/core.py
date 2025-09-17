@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-"""Core serialization utilities for Foundation."""
-
 import json
 from typing import Any
-
 from provide.foundation.errors import ValidationError
+
+"""Core serialization utilities for Foundation."""
 
 
 def provide_dumps(

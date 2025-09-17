@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-"""Event set resolution and enrichment logic."""
-
 from typing import Any
-
 from provide.foundation.eventsets.registry import get_registry
 from provide.foundation.eventsets.types import EventMapping, FieldMapping
+
+"""Event set resolution and enrichment logic."""
 
 
 class EventSetResolver:

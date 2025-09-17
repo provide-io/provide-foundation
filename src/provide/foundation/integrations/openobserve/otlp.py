@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-"""OTLP integration for sending logs to OpenObserve."""
-
 from datetime import datetime
 import json
 from typing import Any
-
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.logger import get_logger
+
+"""OTLP integration for sending logs to OpenObserve."""
 
 log = get_logger(__name__)
 
