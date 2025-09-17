@@ -159,7 +159,8 @@
       "Bash(PYTHONPATH=src ruff format src/provide/foundation/hub/click_builder.py)",
       "Bash(PYTHONPATH=src ruff check src/provide/foundation/hub/click_builder.py --no-cache)",
       "Bash(PYTHONPATH=src ruff check src/ --select C901 --output-format=json)",
-      "Bash(PYTHONPATH=src ruff check src/ --select C901)"
+      "Bash(PYTHONPATH=src ruff check src/ --select C901)",
+      "Bash(PYTHONPATH=src ruff check src/provide/foundation/hub/click_builder.py --select C901)"
     ],
     "deny": [],
     "ask": [],
