@@ -1,28 +1,24 @@
 from __future__ import annotations
 
-#
-# generate.py
-#
-"""Command to generate logs for testing OpenObserve integration with Foundation's rate limiting."""
-
 import random
+import threading
 import time
 from typing import TYPE_CHECKING, Any, NoReturn
 
-if TYPE_CHECKING:
-    import click
+from provide.foundation.logger import get_logger
 
 try:
     import click
 
     _HAS_CLICK = True
 except ImportError:
-    click: Any = None
+    if TYPE_CHECKING:
+        import click
+    else:
+        click: Any = None
     _HAS_CLICK = False
 
-import threading
-
-from provide.foundation.logger import get_logger
+"""Command to generate logs for testing OpenObserve integration with Foundation's rate limiting."""
 
 log = get_logger(__name__)
 
