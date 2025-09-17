@@ -9,7 +9,7 @@ fallback, and error suppression.
 from collections.abc import Callable
 import functools
 import inspect
-from typing import Any, Protocol, TypeVar
+from typing import Any, Protocol, TypeVar, overload
 
 from provide.foundation.errors.base import FoundationError
 
@@ -21,6 +21,26 @@ class HasName(Protocol):
 
 
 F = TypeVar("F", bound=Callable[..., Any])
+
+
+@overload
+def with_error_handling(
+    func: F,
+) -> F: ...
+
+
+@overload
+def with_error_handling(
+    func: None = None,
+    *,
+    fallback: Any = None,
+    log_errors: bool = True,
+    context_provider: Callable[[], dict[str, Any]] | None = None,
+    context: dict[str, Any] | None = None,
+    error_mapper: Callable[[Exception], Exception] | None = None,
+    suppress: tuple[type[Exception], ...] | None = None,
+    reraise: bool = True,
+) -> Callable[[F], F]: ...
 
 
 def with_error_handling(

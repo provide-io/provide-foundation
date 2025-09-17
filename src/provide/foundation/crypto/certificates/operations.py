@@ -21,15 +21,6 @@ try:
 
     _HAS_CRYPTO = True
 except ImportError:
-    # Stub out cryptography types for type hints
-    x509: Any = None
-    hashes: Any = None
-    serialization: Any = None
-    ec: Any = None
-    padding: Any = None
-    rsa: Any = None
-    X509Certificate: Any = None
-    ExtendedKeyUsageOID: Any = None
     _HAS_CRYPTO = False
 
 from provide.foundation import logger
@@ -72,7 +63,8 @@ def create_x509_certificate(
 
         san_list = [x509.DNSName(name) for name in (alt_names or []) if name]
         if san_list:
-            builder = builder.add_extension(x509.SubjectAlternativeName(san_list), critical=False)
+            # DNSName is a subtype of GeneralName, but mypy needs help understanding this
+            builder = builder.add_extension(x509.SubjectAlternativeName(cast(list, san_list)), critical=False)
             logger.debug(f"📜📝✅ Added SANs: {alt_names or []}")
 
         builder = builder.add_extension(

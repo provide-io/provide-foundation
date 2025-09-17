@@ -15,9 +15,6 @@ try:
 
     _HAS_CRYPTO = True
 except ImportError:
-    x509: Any = None
-    ec: Any = None
-    rsa: Any = None
     _HAS_CRYPTO = False
 
 from provide.foundation import logger

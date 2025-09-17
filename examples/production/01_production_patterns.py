@@ -20,7 +20,7 @@ from provide.foundation import (  # noqa: E402
     setup_telemetry,
 )
 from provide.foundation.console.output import pout  # noqa: E402
-from provide.foundation.setup import reset_foundation_setup_for_testing  # noqa: E402
+from provide.testkit import reset_foundation_setup_for_testing  # noqa: E402
 
 
 def example_10_production_patterns() -> None:

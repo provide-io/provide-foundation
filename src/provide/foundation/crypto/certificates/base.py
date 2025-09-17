@@ -29,17 +29,6 @@ try:
 
     _HAS_CRYPTO = True
 except ImportError:
-    # Stub out cryptography types for type hints
-    x509: Any = None
-    default_backend: Any = None
-    hashes: Any = None
-    serialization: Any = None
-    ec: Any = None
-    rsa: Any = None
-    load_pem_private_key: Any = None
-    X509Certificate: Any = None
-    ExtendedKeyUsageOID: Any = None
-    NameOID: Any = None
     _HAS_CRYPTO = False
 
 from provide.foundation import logger
@@ -93,12 +82,14 @@ class CertificateConfig(TypedDict):
     curve: NotRequired[CurveType]
 
 
+# Type aliases must be defined outside conditional for mypy
+KeyPair: TypeAlias = Any
+PublicKey: TypeAlias = Any
+
 if _HAS_CRYPTO:
-    KeyPair: TypeAlias = rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey
-    PublicKey: TypeAlias = rsa.RSAPublicKey | ec.EllipticCurvePublicKey
-else:
-    KeyPair: TypeAlias = Any
-    PublicKey: TypeAlias = Any
+    # Override with specific types when crypto is available
+    KeyPair = rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey  # type: ignore[misc]
+    PublicKey = rsa.RSAPublicKey | ec.EllipticCurvePublicKey  # type: ignore[misc]
 
 
 @define(slots=True, frozen=True)
