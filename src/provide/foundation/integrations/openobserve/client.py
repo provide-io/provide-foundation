@@ -1,9 +1,7 @@
 from __future__ import annotations
 
-"""OpenObserve API client."""
-
-from datetime import datetime
 import json
+from datetime import datetime
 from typing import Any
 from urllib.parse import urljoin
 
@@ -27,6 +25,8 @@ from provide.foundation.integrations.openobserve.models import (
     parse_relative_time,
 )
 from provide.foundation.logger import get_logger
+
+"""OpenObserve API client."""
 
 log = get_logger(__name__)
 
