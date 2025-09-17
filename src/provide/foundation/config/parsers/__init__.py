@@ -1,13 +1,6 @@
 from __future__ import annotations
 
 from provide.foundation.config.parsers.primitives import (
-
-"""Configuration parsers package.
-
-Re-exports all parsing and validation functions from submodules
-while providing a clean modular structure.
-"""
-
     parse_bool_extended,
     parse_bool_strict,
     parse_comma_list,
@@ -36,6 +29,12 @@ from provide.foundation.config.validators import (
     validate_range,
     validate_sample_rate,
 )
+
+"""Configuration parsers package.
+
+Re-exports all parsing and validation functions from submodules
+while providing a clean modular structure.
+"""
 
 __all__ = [
     "parse_bool_extended",
