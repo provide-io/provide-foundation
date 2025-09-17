@@ -3,9 +3,9 @@ from __future__ import annotations
 #
 # context.py
 #
-
 import contextvars
 from typing import Any
+
 from provide.foundation.tracer.spans import Span
 
 """Trace context management for Foundation tracer.

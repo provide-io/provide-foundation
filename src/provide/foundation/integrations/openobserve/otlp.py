@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 import json
 from typing import Any
+
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.logger import get_logger
 

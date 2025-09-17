@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from typing import Any
+
 from provide.foundation.config.parsers.base import _format_invalid_value_error, _format_validation_error
 
 """Basic type parsing functions for configuration values.

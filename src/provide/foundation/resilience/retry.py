@@ -5,7 +5,9 @@ from collections.abc import Awaitable, Callable
 import random
 import time
 from typing import Any, TypeVar
+
 from attrs import define, field, validators
+
 from provide.foundation.resilience.types import BackoffStrategy
 
 """Unified retry execution engine and policy configuration.

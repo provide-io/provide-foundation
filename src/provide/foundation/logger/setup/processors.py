@@ -3,9 +3,10 @@ from __future__ import annotations
 #
 # processors.py
 #
-
 from typing import Any, TextIO, cast
+
 import structlog
+
 from provide.foundation.logger.config import TelemetryConfig
 from provide.foundation.logger.processors import (
     _build_core_processors_list,

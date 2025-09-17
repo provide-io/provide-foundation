@@ -5,6 +5,7 @@ from datetime import datetime
 import io
 import json
 from typing import Any
+
 from provide.foundation.integrations.openobserve.models import SearchResponse
 
 """Output formatting utilities for OpenObserve results."""

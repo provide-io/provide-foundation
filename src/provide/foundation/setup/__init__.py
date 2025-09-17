@@ -3,7 +3,6 @@ from __future__ import annotations
 #
 # __init__.py
 #
-
 from provide.foundation.logger.setup import internal_setup
 from provide.foundation.logger.setup.coordinator import _PROVIDE_SETUP_LOCK
 from provide.foundation.metrics.otel import shutdown_opentelemetry_metrics

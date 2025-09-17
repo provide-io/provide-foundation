@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 import time
+
 from provide.foundation.config.defaults import DEFAULT_FILE_LOCK_TIMEOUT
 from provide.foundation.errors.resources import LockError
 from provide.foundation.logger import get_logger

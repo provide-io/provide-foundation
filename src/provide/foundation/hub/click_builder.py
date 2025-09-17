@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import inspect
 from typing import Any
+
 import click
+
 from provide.foundation.hub.foundation import get_foundation_logger
 from provide.foundation.hub.info import CommandInfo
 from provide.foundation.hub.registry import Registry, get_command_registry

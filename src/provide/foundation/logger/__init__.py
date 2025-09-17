@@ -3,7 +3,6 @@ from __future__ import annotations
 #
 # __init__.py
 #
-
 from provide.foundation.logger import trace  # noqa: F401
 from provide.foundation.logger.base import (
     FoundationLogger,  # Class definition

@@ -3,7 +3,6 @@ from __future__ import annotations
 #
 # internal.py
 #
-
 import structlog
 
 """Internal Reset APIs for Foundation Testing.

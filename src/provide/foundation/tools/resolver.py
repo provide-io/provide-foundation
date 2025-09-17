@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+
 from provide.foundation.errors import FoundationError
 from provide.foundation.logger import get_logger
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from enum import Enum
 from typing import Any
+
 from attrs import define, field
 
 """Error context management for rich diagnostic information.

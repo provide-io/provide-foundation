@@ -3,6 +3,7 @@ from __future__ import annotations
 from collections.abc import Iterator
 from pathlib import Path
 from typing import BinaryIO
+
 from provide.foundation.crypto.algorithms import (
     DEFAULT_ALGORITHM,
     get_hasher,

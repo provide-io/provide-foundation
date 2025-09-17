@@ -3,7 +3,6 @@ from __future__ import annotations
 #
 # __init__.py
 #
-
 from typing import TYPE_CHECKING, Any
 
 """Foundation Tracer Module.

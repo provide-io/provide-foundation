@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Any
+
 from provide.foundation.logger.config.telemetry import TelemetryConfig
 from provide.foundation.logger.setup import get_vanilla_logger
 

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from typing import Any
+
 from provide.foundation.errors import ValidationError
 
 """Core serialization utilities for Foundation."""

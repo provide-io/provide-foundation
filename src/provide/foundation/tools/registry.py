@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.metadata
 from typing import Any
+
 from provide.foundation.config import BaseConfig
 from provide.foundation.hub import get_hub
 from provide.foundation.logger import get_logger

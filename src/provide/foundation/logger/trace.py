@@ -3,7 +3,6 @@ from __future__ import annotations
 #
 # trace.py
 #
-
 import logging as stdlib_logging
 from typing import Any, cast
 

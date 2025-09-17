@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from attrs import define
+
 from provide.foundation.config.base import field
 from provide.foundation.config.converters import parse_bool_extended
 from provide.foundation.config.env import RuntimeConfig

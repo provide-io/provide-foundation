@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import TypeVar
+
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.loader import ConfigLoader
 from provide.foundation.config.schema import ConfigSchema

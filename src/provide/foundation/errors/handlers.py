@@ -3,7 +3,9 @@ from __future__ import annotations
 from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from typing import Any, TypeVar
+
 from attrs import define, field
+
 from provide.foundation.errors.base import FoundationError
 from provide.foundation.errors.context import capture_error_context
 

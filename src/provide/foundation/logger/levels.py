@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import cast
+
 from provide.foundation.logger.constants import (
     DEFAULT_FALLBACK_LEVEL,
     DEFAULT_FALLBACK_NUMERIC,

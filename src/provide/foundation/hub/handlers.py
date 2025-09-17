@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Any
+
 from provide.foundation.errors.decorators import with_error_handling
 from provide.foundation.hub.foundation import get_foundation_logger
 from provide.foundation.hub.registry import RegistryEntry

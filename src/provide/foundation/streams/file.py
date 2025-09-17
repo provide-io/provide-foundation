@@ -3,11 +3,11 @@ from __future__ import annotations
 #
 # file.py
 #
-
 import contextlib
 import io
 from pathlib import Path
 import sys
+
 from provide.foundation.streams.core import (
     _LOG_FILE_HANDLE,
     _PROVIDE_LOG_STREAM,

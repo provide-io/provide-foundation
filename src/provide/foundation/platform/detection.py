@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import platform
 import re
+
 from provide.foundation.errors.platform import PlatformError
 from provide.foundation.logger import get_logger
 

@@ -4,6 +4,7 @@ from collections.abc import Callable
 import functools
 import inspect
 from typing import Any, Protocol, TypeVar, overload
+
 from provide.foundation.errors.base import FoundationError
 
 """Decorators for error handling and resilience patterns.

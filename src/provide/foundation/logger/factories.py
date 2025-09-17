@@ -3,7 +3,6 @@ from __future__ import annotations
 #
 # factories.py
 #
-
 import threading
 from typing import Any
 

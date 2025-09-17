@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import Any
+
 from provide.foundation.file.atomic import atomic_write_text
 from provide.foundation.file.safe import safe_read_text
 from provide.foundation.logger import get_logger

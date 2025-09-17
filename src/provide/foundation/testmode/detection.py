@@ -3,7 +3,6 @@ from __future__ import annotations
 #
 # detection.py
 #
-
 import inspect
 import os
 import sys

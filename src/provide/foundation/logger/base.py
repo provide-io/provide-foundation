@@ -3,7 +3,6 @@ from __future__ import annotations
 #
 # base.py
 #
-
 from provide.foundation.logger.core import FoundationLogger, logger
 from provide.foundation.logger.factories import get_logger
 

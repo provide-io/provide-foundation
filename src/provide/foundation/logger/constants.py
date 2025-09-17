@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging as stdlib_logging
+
 from provide.foundation.logger.trace import TRACE_LEVEL_NUM
 from provide.foundation.logger.types import LogLevelStr
 

@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from typing import Any, Protocol
+
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
+
 from provide.foundation import logger
 from provide.foundation.crypto.constants import (
     DEFAULT_ECDSA_CURVE,

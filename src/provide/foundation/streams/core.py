@@ -3,7 +3,6 @@ from __future__ import annotations
 #
 # core.py
 #
-
 import sys
 import threading
 from typing import TextIO

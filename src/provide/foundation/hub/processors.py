@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Any
+
 from provide.foundation.hub.registry import RegistryEntry
 
 """Hub processor pipeline management utilities.

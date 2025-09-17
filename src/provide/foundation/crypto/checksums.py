@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+
 from provide.foundation.crypto.algorithms import DEFAULT_ALGORITHM
 from provide.foundation.crypto.hashing import hash_data, hash_file
 from provide.foundation.crypto.utils import compare_hash

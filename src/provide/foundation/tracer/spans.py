@@ -3,11 +3,12 @@ from __future__ import annotations
 #
 # spans.py
 #
-
 import time
 from typing import TYPE_CHECKING, Any
 import uuid
+
 from attrs import define, field
+
 from provide.foundation.logger import get_logger
 
 """Enhanced span implementation for Foundation tracer.

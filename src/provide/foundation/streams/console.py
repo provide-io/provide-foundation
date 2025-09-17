@@ -3,9 +3,9 @@ from __future__ import annotations
 #
 # console.py
 #
-
 import sys
 from typing import TextIO
+
 from provide.foundation.streams.config import get_stream_config
 from provide.foundation.streams.core import get_log_stream
 

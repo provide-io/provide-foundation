@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.integrations.openobserve.models import SearchResponse
 from provide.foundation.logger import get_logger

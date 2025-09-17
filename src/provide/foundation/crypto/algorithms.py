@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 from typing import Any
+
 from provide.foundation.errors.config import ValidationError
 
 """Hash algorithm management and validation."""

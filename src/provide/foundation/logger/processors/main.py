@@ -3,10 +3,11 @@ from __future__ import annotations
 #
 # processors.py
 #
-
 import json
 from typing import Any, TextIO, cast
+
 import structlog
+
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
 from provide.foundation.logger.constants import LEVEL_TO_NUMERIC
 from provide.foundation.logger.custom_processors import (

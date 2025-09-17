@@ -3,10 +3,11 @@ from __future__ import annotations
 #
 # custom_processors.py
 #
-
 import logging as stdlib_logging
 from typing import Any, Protocol
+
 import structlog
+
 from provide.foundation.logger.constants import DEFAULT_FALLBACK_NUMERIC
 from provide.foundation.logger.levels import get_numeric_level, normalize_level
 from provide.foundation.logger.types import TRACE_LEVEL_NAME, TRACE_LEVEL_NUM, LogLevelStr

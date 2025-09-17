@@ -3,7 +3,6 @@ from __future__ import annotations
 #
 # __init__.py
 #
-
 from provide.foundation.streams.console import (
     get_console_stream,
     is_tty,

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+
 from provide.foundation.integrations.openobserve.exceptions import (
     OpenObserveAuthenticationError,
 )
