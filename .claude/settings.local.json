@@ -197,7 +197,8 @@
       "Bash(MYPYPATH=src mypy --config-file pyproject.toml src/provide/foundation/__init__.py)",
       "Bash(export MYPYPATH=src)",
       "Bash(.venv/bin/ruff check src/ --select F822,F403 --output-format=concise)",
-      "Bash(.venv/bin/ruff check src/provide/foundation/hub/commands.py --select F822 --output-format=concise)"
+      "Bash(.venv/bin/ruff check src/provide/foundation/hub/commands.py --select F822 --output-format=concise)",
+      "Bash(.venv/bin/ruff check --fix --unsafe-fixes src/ --select E402)"
     ],
     "deny": [],
     "ask": [],

@@ -5,6 +5,9 @@ import functools
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, TypeVar
 
+from provide.foundation.context import CLIContext
+from provide.foundation.process import exit_error, exit_interrupted
+
 """Standard CLI decorators for consistent option handling."""
 
 if TYPE_CHECKING:
@@ -14,9 +17,6 @@ try:
     import click
 except ImportError:
     click: Any = None
-
-from provide.foundation.context import CLIContext
-from provide.foundation.process import exit_error, exit_interrupted
 
 F = TypeVar("F", bound=Callable[..., Any])
 
