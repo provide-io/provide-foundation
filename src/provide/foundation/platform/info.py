@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-"""System information gathering utilities."""
-
 import contextlib
 import os
+from pathlib import Path
 import platform
 import shutil
 import sys
@@ -18,6 +17,8 @@ from provide.foundation.platform.detection import (
     get_os_version,
     get_platform_string,
 )
+
+"""System information gathering utilities."""
 
 plog = get_logger(__name__)
 
@@ -66,7 +67,7 @@ def get_system_info() -> SystemInfo:
 
     # User info
     username = os.environ.get("USER") or os.environ.get("USERNAME")
-    home_dir = os.path.expanduser("~")
+    home_dir = str(Path("~").expanduser())
     # Use secure temp directory - prefer environment variables over Foundation's temp dir
     from provide.foundation.file.temp import system_temp_dir
 
@@ -96,7 +97,7 @@ def get_system_info() -> SystemInfo:
     try:
         disk_usage = {}
         for path in ["/", home_dir, temp_dir]:
-            if os.path.exists(path):
+            if Path(path).exists():
                 usage = shutil.disk_usage(path)
                 disk_usage[path] = {
                     "total": usage.total,
