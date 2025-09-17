@@ -173,4 +173,4 @@ class TestLoggingIntegration:
             # If we get here, the enrichment processor is working
             assert True
         except Exception as e:
-            raise AssertionError(f"Event enrichment failed: {e}")
+            raise AssertionError(f"Event enrichment failed: {e}") from e

@@ -48,7 +48,7 @@ import os
 from pathlib import Path
 import sys
 
-# Using Foundation file utilities instead of tempfile
+from attrs import Factory, define
 
 # Add src to path for examples
 example_dir = Path(__file__).resolve().parent
@@ -57,12 +57,9 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-# Import Foundation's config system and attrs (Foundation's dependency)
-from attrs import Factory, define
-
 # Import using the new simplified imports
-from provide.foundation import logger, pout
-from provide.foundation.config import (
+from provide.foundation import logger, pout  # noqa: E402
+from provide.foundation.config import (  # noqa: E402
     BaseConfig,
     ConfigManager,
     ConfigSchema,
@@ -76,7 +73,7 @@ from provide.foundation.config import (
     parse_bool,
     parse_list,
 )
-from provide.foundation.file import temp_dir
+from provide.foundation.file import temp_dir  # noqa: E402
 
 
 # Example 1: Simple configuration class

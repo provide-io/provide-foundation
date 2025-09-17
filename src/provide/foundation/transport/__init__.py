@@ -113,17 +113,21 @@ Environment Configuration:
 """
 
 __all__ = [
+    # Types
+    "Data",
     "HTTPConfig",
     "HTTPMethod",
     "HTTPResponseError",
     # Transport implementations
     "HTTPTransport",
+    "Headers",
     "LoggingMiddleware",
     "MetricsMiddleware",
     # Middleware
     "Middleware",
     "MiddlewarePipeline",
     # Core abstractions
+    "Params",
     "Request",
     "Response",
     "RetryMiddleware",

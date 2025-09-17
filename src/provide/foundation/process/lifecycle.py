@@ -331,6 +331,114 @@ class ManagedProcess:
         self.cleanup()
 
 
+def _drain_remaining_output(process: ManagedProcess, buffer: str) -> str:
+    """Drain any remaining output from process pipes."""
+    if process._process and process._process.stdout:
+        try:
+            # Non-blocking read of any remaining data
+            remaining = process._process.stdout.read()
+            if remaining:
+                if isinstance(remaining, bytes):
+                    buffer += remaining.decode("utf-8", errors="replace")
+                else:
+                    buffer += str(remaining)
+                plog.debug(
+                    "Read remaining output from exited process",
+                    size=len(remaining),
+                )
+        except Exception:
+            pass
+    return buffer
+
+
+def _check_pattern_found(buffer: str, expected_parts: list[str]) -> bool:
+    """Check if all expected parts are found in buffer."""
+    return all(part in buffer for part in expected_parts)
+
+
+def _handle_process_error_exit(exit_code: int, buffer: str) -> None:
+    """Handle process exit with error code."""
+    plog.error(
+        "Process exited with error",
+        returncode=exit_code,
+        buffer=buffer[:200],
+    )
+    raise ProcessError(f"Process exited with code {exit_code}")
+
+
+def _handle_process_clean_exit_without_pattern(exit_code: int | None, buffer: str) -> None:
+    """Handle process clean exit but expected pattern not found."""
+    plog.error(
+        "Process exited without expected output",
+        returncode=0,
+        buffer=buffer[:200],
+    )
+    raise ProcessError(
+        f"Process exited with code {exit_code} before expected output found",
+    )
+
+
+async def _handle_exited_process(
+    process: ManagedProcess,
+    buffer: str,
+    expected_parts: list[str],
+    last_exit_code: int | None,
+) -> str:
+    """Handle a process that has exited - drain output and check for pattern."""
+    # Try to drain any remaining output from the pipes
+    buffer = _drain_remaining_output(process, buffer)
+
+    # Check buffer after draining
+    if _check_pattern_found(buffer, expected_parts):
+        plog.debug("Found expected pattern after process exit")
+        return buffer
+
+    # If process exited and we don't have the pattern, handle error cases
+    if last_exit_code is not None:
+        if last_exit_code != 0:
+            _handle_process_error_exit(last_exit_code, buffer)
+
+        # For exit code 0, give it a small window to collect buffered output
+        await asyncio.sleep(0.1)
+        # Try one more time to drain output
+        buffer = _drain_remaining_output(process, buffer)
+
+        # Final check
+        if _check_pattern_found(buffer, expected_parts):
+            plog.debug("Found expected pattern after final drain")
+            return buffer
+
+        # Process exited cleanly but pattern not found
+        _handle_process_clean_exit_without_pattern(last_exit_code, buffer)
+
+    return buffer  # Should never reach here due to exceptions above
+
+
+async def _try_read_process_line(
+    process: ManagedProcess, buffer: str, expected_parts: list[str]
+) -> tuple[str, bool]:
+    """Try to read a line from process. Returns (new_buffer, pattern_found)."""
+    try:
+        # Try to read a line with short timeout
+        line = await process.read_line_async(timeout=0.1)
+        if line:
+            buffer += line + "\n"  # Add newline back since readline strips it
+            plog.debug("Read line from process", line=line[:100])
+
+            # Check if we have all expected parts
+            if _check_pattern_found(buffer, expected_parts):
+                plog.debug("Found expected pattern in buffer")
+                return buffer, True
+
+    except TimeoutError:
+        pass
+    except Exception:
+        # Process might have exited, continue
+        pass
+
+    return buffer, False
+
+
 async def wait_for_process_output(
     process: ManagedProcess,
     expected_parts: list[str],
@@ -372,88 +480,18 @@ async def wait_for_process_output(
         if not process.is_running():
             last_exit_code = process.returncode
             plog.debug("Process exited", returncode=last_exit_code)
+            return await _handle_exited_process(process, buffer, expected_parts, last_exit_code)
 
-            # Try to drain any remaining output from the pipes
-            if process._process and process._process.stdout:
-                try:
-                    # Non-blocking read of any remaining data
-                    remaining = process._process.stdout.read()
-                    if remaining:
-                        if isinstance(remaining, bytes):
-                            buffer += remaining.decode("utf-8", errors="replace")
-                        else:
-                            buffer += str(remaining)
-                        plog.debug(
-                            "Read remaining output from exited process",
-                            size=len(remaining),
-                        )
-                except Exception:
-                    pass
-
-            # Check buffer after draining
-            if all(part in buffer for part in expected_parts):
-                plog.debug("Found expected pattern after process exit")
-                return buffer
-
-            # If process exited and we don't have the pattern, fail
-            if last_exit_code is not None:
-                if last_exit_code != 0:
-                    plog.error(
-                        "Process exited with error",
-                        returncode=last_exit_code,
-                        buffer=buffer[:200],
-                    )
-                    raise ProcessError(f"Process exited with code {last_exit_code}")
-                # For exit code 0, give it a small window to collect buffered output
-                await asyncio.sleep(0.1)
-                # Try one more time to drain output
-                if process._process and process._process.stdout:
-                    try:
-                        remaining = process._process.stdout.read()
-                        if remaining:
-                            if isinstance(remaining, bytes):
-                                buffer += remaining.decode("utf-8", errors="replace")
-                            else:
-                                buffer += str(remaining)
-                    except Exception:
-                        pass
-                # Final check
-                if all(part in buffer for part in expected_parts):
-                    plog.debug("Found expected pattern after final drain")
-                    return buffer
-                # Process exited cleanly but pattern not found
-                plog.error(
-                    "Process exited without expected output",
-                    returncode=0,
-                    buffer=buffer[:200],
-                )
-                raise ProcessError(
-                    f"Process exited with code {last_exit_code} before expected output found",
-                )
-
-        try:
-            # Try to read a line with short timeout
-            line = await process.read_line_async(timeout=0.1)
-            if line:
-                buffer += line + "\n"  # Add newline back since readline strips it
-                plog.debug("Read line from process", line=line[:100])
-
-                # Check if we have all expected parts
-                if all(part in buffer for part in expected_parts):
-                    plog.debug("Found expected pattern in buffer")
-                    return buffer
-
-        except TimeoutError:
-            pass
-        except Exception:
-            # Process might have exited, continue
-            pass
+        # Try to read line from running process
+        buffer, pattern_found = await _try_read_process_line(process, buffer, expected_parts)
+        if pattern_found:
+            return buffer
 
         # Short sleep to avoid busy loop
         await asyncio.sleep(0.01)
 
     # Final check of buffer before timeout error
-    if all(part in buffer for part in expected_parts):
+    if _check_pattern_found(buffer, expected_parts):
         return buffer
 
     # If process exited with 0 but we didn't get output, that's still a timeout

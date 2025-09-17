@@ -92,7 +92,7 @@ def stream_logs(
             break
         except Exception as e:
             log.error(f"Error during streaming: {e}")
-            raise OpenObserveStreamingError(f"Streaming failed: {e}")
+            raise OpenObserveStreamingError(f"Streaming failed: {e}") from e
 
 
 def stream_search_http2(
@@ -171,7 +171,7 @@ def stream_search_http2(
                         continue
 
     except requests.exceptions.RequestException as e:
-        raise OpenObserveStreamingError(f"HTTP/2 streaming failed: {e}")
+        raise OpenObserveStreamingError(f"HTTP/2 streaming failed: {e}") from e
 
 
 def tail_logs(

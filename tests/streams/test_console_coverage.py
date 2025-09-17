@@ -3,6 +3,8 @@
 #
 """Tests to achieve coverage for console and streams functionality."""
 
+from contextlib import suppress
+
 
 class TestFileStreams:
     """Test file stream functionality."""
@@ -32,10 +34,8 @@ class TestFileStreams:
         invalid_path = "/root/nonexistent/test.log"
 
         # Should handle gracefully without crashing
-        try:
+        with suppress(PermissionError):
             configure_file_logging(invalid_path)
-        except PermissionError:
-            pass  # Expected for protected directories
 
     def test_flush_log_streams(self) -> None:
         """Test log stream flushing."""

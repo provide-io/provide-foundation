@@ -4,6 +4,7 @@ This test suite defines Foundation's core registry architecture, metadata handli
 and bootstrap integration. No backward compatibility is maintained.
 """
 
+from contextlib import suppress
 from unittest.mock import AsyncMock, Mock
 
 from provide.foundation.hub.registry import Registry
@@ -225,11 +226,8 @@ class TestFoundationBootstrapIntegration:
         registry = get_component_registry()
 
         # Bootstrap and discover
-        try:
+        with suppress(Exception):
             bootstrap_foundation()
-        except Exception:
-            # Bootstrap might fail if already bootstrapped
-            pass
 
         # Trigger event set discovery
         from provide.foundation.eventsets.registry import (

@@ -6,10 +6,11 @@ Provides integration with observability platforms like OpenObserve.
 Only available when OpenTelemetry dependencies are installed.
 """
 
+from contextlib import suppress
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
-    from opentelemetry import trace
+    pass  # OpenTelemetry imports are handled at runtime
 
 # OpenTelemetry feature detection
 _otel_trace_module: Any = None
@@ -34,13 +35,10 @@ if _HAS_OTEL:
         )
 
         # Commands will auto-register if click is available
-        try:
+        with suppress(ImportError):
             from provide.foundation.integrations.openobserve.commands import (  # noqa: F401
                 openobserve_group,
             )
-        except ImportError:
-            # Click not available, skip command registration
-            pass
 
         __all__ = [
             "OpenObserveClient",

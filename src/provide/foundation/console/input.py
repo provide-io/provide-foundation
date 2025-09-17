@@ -56,6 +56,130 @@ def _should_use_color(ctx: CLIContext | None = None) -> bool:
     return sys.stdin.isatty()
 
 
+def _handle_json_input(prompt: str, kwargs: dict[str, Any]) -> str | dict[str, Any] | None:
+    """Handle input in JSON mode."""
+    try:
+        if sys.stdin.isatty() and prompt:
+            # Interactive mode, still show prompt to stderr
+            if _HAS_CLICK:
+                click.echo(prompt, err=True, nl=False)
+            else:
+                print(prompt, file=sys.stderr, end="")
+
+        line = sys.stdin.readline().strip()
+
+        # Try to parse as JSON first
+        try:
+            data = json.loads(line)
+        except json.JSONDecodeError:
+            # Treat as plain string
+            data = line
+
+        # Apply type conversion if specified
+        if type_func := kwargs.get("type"):
+            with contextlib.suppress(TypeError, ValueError):
+                data = type_func(data)
+
+        if json_key := kwargs.get("json_key"):
+            return {json_key: data}
+        return data
+
+    except Exception as e:
+        plog.error("Failed to read JSON input", error=str(e))
+        if json_key := kwargs.get("json_key"):
+            return {json_key: None, "error": str(e)}
+        return None
+
+
+def _build_click_prompt_kwargs(kwargs: dict[str, Any]) -> dict[str, Any]:
+    """Build kwargs for click.prompt from our kwargs."""
+    prompt_kwargs = {}
+
+    # Map our kwargs to click.prompt kwargs
+    if "type" in kwargs:
+        prompt_kwargs["type"] = kwargs["type"]
+    if "default" in kwargs:
+        prompt_kwargs["default"] = kwargs["default"]
+    if kwargs.get("password") or kwargs.get("hide_input"):
+        prompt_kwargs["hide_input"] = True
+    if "confirmation_prompt" in kwargs:
+        prompt_kwargs["confirmation_prompt"] = kwargs["confirmation_prompt"]
+    if "show_default" in kwargs:
+        prompt_kwargs["show_default"] = kwargs["show_default"]
+    if "value_proc" in kwargs:
+        prompt_kwargs["value_proc"] = kwargs["value_proc"]
+
+    return prompt_kwargs
+
+
+def _apply_prompt_styling(prompt: str, kwargs: dict[str, Any], ctx: CLIContext | None) -> str:
+    """Apply color/formatting to prompt if requested and supported."""
+    if not _HAS_CLICK or not _should_use_color(ctx):
+        return prompt
+
+    color = kwargs.get("color")
+    bold = kwargs.get("bold", False)
+    if color or bold:
+        return click.style(prompt, fg=color, bold=bold)
+    return prompt
+
+
+def _handle_click_input(prompt: str, kwargs: dict[str, Any], ctx: CLIContext | None) -> Any:
+    """Handle input using click.prompt."""
+    prompt_kwargs = _build_click_prompt_kwargs(kwargs)
+    styled_prompt = _apply_prompt_styling(prompt, kwargs, ctx)
+    return click.prompt(styled_prompt, **prompt_kwargs)
+
+
+def _build_fallback_prompt(prompt: str, kwargs: dict[str, Any]) -> str:
+    """Build prompt for fallback input when click is not available."""
+    if kwargs.get("default") and kwargs.get("show_default", True):
+        return f"{prompt} [{kwargs['default']}]: "
+    elif prompt and not prompt.endswith(": "):
+        return f"{prompt}: "
+    return prompt
+
+
+def _get_fallback_input(display_prompt: str, kwargs: dict[str, Any]) -> str:
+    """Get input using fallback methods when click is not available."""
+    if kwargs.get("password") or kwargs.get("hide_input"):
+        import getpass
+
+        return getpass.getpass(display_prompt)
+    else:
+        return input(display_prompt)
+
+
+def _apply_type_conversion(user_input: str, kwargs: dict[str, Any]) -> Any:
+    """Apply type conversion to user input."""
+    if type_func := kwargs.get("type"):
+        try:
+            return type_func(user_input)
+        except (TypeError, ValueError):
+            return user_input
+    return user_input
+
+
+def _handle_fallback_input(prompt: str, kwargs: dict[str, Any]) -> Any:
+    """Handle input using fallback methods."""
+    display_prompt = _build_fallback_prompt(prompt, kwargs)
+    user_input = _get_fallback_input(display_prompt, kwargs)
+
+    # Handle default value
+    if not user_input and "default" in kwargs:
+        user_input = str(kwargs["default"])
+
+    return _apply_type_conversion(user_input, kwargs)
+
+
+def _handle_interactive_input(prompt: str, kwargs: dict[str, Any], ctx: CLIContext | None) -> Any:
+    """Handle input in interactive mode."""
+    if _HAS_CLICK:
+        return _handle_click_input(prompt, kwargs, ctx)
+    else:
+        return _handle_fallback_input(prompt, kwargs)
+
+
 def pin(prompt: str = "", **kwargs: Any) -> str | Any:
     """Input from stdin with optional prompt.
 
@@ -88,93 +212,9 @@ def pin(prompt: str = "", **kwargs: Any) -> str | Any:
     ctx = kwargs.get("ctx") or _get_context()
 
     if _should_use_json(ctx):
-        # JSON mode - read from stdin and parse
-        try:
-            if sys.stdin.isatty():
-                # Interactive mode, still show prompt to stderr
-                if prompt:
-                    if _HAS_CLICK:
-                        click.echo(prompt, err=True, nl=False)
-                    else:
-                        print(prompt, file=sys.stderr, end="")
-
-            line = sys.stdin.readline().strip()
-
-            # Try to parse as JSON first
-            try:
-                data = json.loads(line)
-            except json.JSONDecodeError:
-                # Treat as plain string
-                data = line
-
-            # Apply type conversion if specified
-            if type_func := kwargs.get("type"):
-                with contextlib.suppress(TypeError, ValueError):
-                    data = type_func(data)
-
-            if json_key := kwargs.get("json_key"):
-                return {json_key: data}
-            return data
-
-        except Exception as e:
-            plog.error("Failed to read JSON input", error=str(e))
-            if json_key := kwargs.get("json_key"):
-                return {json_key: None, "error": str(e)}
-            return None
+        return _handle_json_input(prompt, kwargs)
     else:
-        # Regular interactive mode - use click.prompt
-        prompt_kwargs = {}
-
-        # Map our kwargs to click.prompt kwargs
-        if "type" in kwargs:
-            prompt_kwargs["type"] = kwargs["type"]
-        if "default" in kwargs:
-            prompt_kwargs["default"] = kwargs["default"]
-        if kwargs.get("password") or kwargs.get("hide_input"):
-            prompt_kwargs["hide_input"] = True
-        if "confirmation_prompt" in kwargs:
-            prompt_kwargs["confirmation_prompt"] = kwargs["confirmation_prompt"]
-        if "show_default" in kwargs:
-            prompt_kwargs["show_default"] = kwargs["show_default"]
-        if "value_proc" in kwargs:
-            prompt_kwargs["value_proc"] = kwargs["value_proc"]
-
-        if _HAS_CLICK:
-            # Apply color/formatting to prompt if requested and supported
-            styled_prompt = prompt
-            if _should_use_color(ctx):
-                color = kwargs.get("color")
-                bold = kwargs.get("bold", False)
-                if color or bold:
-                    styled_prompt = click.style(prompt, fg=color, bold=bold)
-
-            return click.prompt(styled_prompt, **prompt_kwargs)
-        # Fallback to standard Python input
-        display_prompt = prompt
-        if kwargs.get("default") and kwargs.get("show_default", True):
-            display_prompt = f"{prompt} [{kwargs['default']}]: "
-        elif prompt and not prompt.endswith(": "):
-            display_prompt = f"{prompt}: "
-
-        if kwargs.get("password") or kwargs.get("hide_input"):
-            import getpass
-
-            user_input = getpass.getpass(display_prompt)
-        else:
-            user_input = input(display_prompt)
-
-        # Handle default value
-        if not user_input and "default" in kwargs:
-            user_input = str(kwargs["default"])
-
-        # Type conversion
-        if type_func := kwargs.get("type"):
-            try:
-                return type_func(user_input)
-            except (TypeError, ValueError):
-                return user_input
-
-        return user_input
+        return _handle_interactive_input(prompt, kwargs, ctx)
 
 
 def pin_stream() -> Iterator[str]:

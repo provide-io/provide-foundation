@@ -5,13 +5,11 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from cryptography import x509
     from cryptography.hazmat.primitives import serialization
 
     from provide.foundation.crypto.certificates.certificate import Certificate
 
 try:
-    from cryptography import x509
     from cryptography.hazmat.primitives import serialization
 
     _HAS_CRYPTO = True

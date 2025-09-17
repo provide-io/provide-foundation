@@ -1,5 +1,6 @@
 """Simple coverage tests for config/sync.py module focusing on covering code lines."""
 
+from contextlib import suppress
 import tempfile
 from unittest.mock import Mock, patch
 
@@ -112,11 +113,8 @@ class TestSyncModuleCoverage:
     def test_load_config_from_env_parameters(self) -> None:
         """Test load_config_from_env parameter handling."""
         # Test that the function exists and handles parameters
-        try:
+        with suppress(TypeError, AttributeError):
             load_config_from_env(SimpleRuntimeConfig, prefix="TEST")
-        except (TypeError, AttributeError):
-            # Expected - the sync wrapper has API issues, but we tested the code path
-            pass
 
     @patch("provide.foundation.config.sync.run_async")
     def test_load_config_from_file_creates_loader(self, mock_run_async) -> None:
@@ -175,11 +173,8 @@ class TestSyncModuleCoverage:
                     return SimpleTestConfig()
 
                 mock_run_async.side_effect = mock_run
-                try:
+                with suppress(Exception):
                     load_config_from_multiple(SimpleTestConfig, ("file", tmp_file.name))
-                except Exception:
-                    # Expected - API may have issues but we tested the path
-                    pass
 
     def test_load_config_from_multiple_env_source(self) -> None:
         """Test load_config_from_multiple with env source."""
@@ -193,11 +188,8 @@ class TestSyncModuleCoverage:
                 return SimpleRuntimeConfig()
 
             mock_run_async.side_effect = mock_run
-            try:
+            with suppress(AttributeError, ImportError, ValueError):
                 load_config_from_multiple(SimpleRuntimeConfig, ("env", "TEST_PREFIX"))
-            except (AttributeError, ImportError, ValueError):
-                # Expected - RuntimeConfigLoader import may fail or no configuration sources available
-                pass
 
     @patch("provide.foundation.config.sync.run_async")
     def test_load_config_from_multiple_dict_source(self, mock_run_async) -> None:

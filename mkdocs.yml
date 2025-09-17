@@ -235,7 +235,7 @@ nav:
     - Error API:
       - api/errors/api-index.md
       - Decorators: api/errors/api-decorators.md
-      - Exceptions: api/errors/api-exceptions.md
+      - Types: api/errors/api-types.md
       - Handlers: api/errors/api-handlers.md
     - Event Sets API:
       - api/eventsets/api-index.md
@@ -252,7 +252,6 @@ nav:
     - Archive API: api/archive/api-index.md
     - Concurrency API: api/concurrency/api-index.md
     - Context API: api/context/api-index.md
-    - Core API: api/core/api-index.md
     - Environment API: api/env/api-index.md
     - File API: api/file/api-index.md
     - Crypto API: api/crypto/api-index.md
@@ -263,13 +262,6 @@ nav:
     - Serialization API: api/serialization/api-index.md
     - Streams API: api/streams/api-index.md
     - Tools API: api/tools/api-index.md
-    - Testing API:
-      - api/testing/api-index.md
-      - Stream Testing: api/testing/api-streams.md
-      - Logger Management: api/testing/api-logger.md
-      - CLI Testing: api/testing/api-cli.md
-      - Crypto Fixtures: api/testing/api-crypto.md
-      - Context Detection: api/testing/api-context.md
     - Tracer API: api/tracer/api-index.md
     - Setup API: 
       - api/setup/api-index.md
@@ -277,10 +269,8 @@ nav:
     - Console API: api/console/api-index.md
     - Utils API:
       - api/utils/api-index.md
-      - Console: api/utils/api-console.md
       - Environment: api/utils/api-environment.md
       - Formatting: api/utils/api-formatting.md
-      - Platform: api/utils/api-platform.md
       - Timing: api/utils/api-timing.md
 
   - Architecture:
