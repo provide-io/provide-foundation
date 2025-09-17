@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Async subprocess execution utilities."""
-
 import asyncio
 import builtins
 from collections.abc import AsyncIterator, Mapping
@@ -15,6 +13,8 @@ from provide.foundation.process.runner import (
     ProcessError,
     TimeoutError,
 )
+
+"""Async subprocess execution utilities."""
 
 plog = get_logger(__name__)
 
