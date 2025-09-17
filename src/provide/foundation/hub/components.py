@@ -85,7 +85,7 @@ def check_component_health(name: str, dimension: str) -> dict[str, Any]:
             return {"status": "not_found"}
 
         entry = _component_registry.get_entry(name, dimension)
-        if not entry.metadata.get("supports_health_check", False):
+        if not entry or not entry.metadata.get("supports_health_check", False):
             return {"status": "no_health_check"}
 
         if hasattr(component, "health_check"):
