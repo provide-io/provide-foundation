@@ -1,9 +1,5 @@
 from __future__ import annotations
 
-"""Main setup coordination for Foundation Telemetry.
-Handles the core setup logic, state management, and setup logger creation.
-"""
-
 import logging as stdlib_logging
 import threading
 from typing import Any
@@ -21,6 +17,10 @@ from provide.foundation.logger.setup.processors import (
 )
 from provide.foundation.streams import get_log_stream
 from provide.foundation.utils.streams import get_safe_stderr
+
+"""Main setup coordination for Foundation Telemetry.
+Handles the core setup logic, state management, and setup logger creation.
+"""
 
 _PROVIDE_SETUP_LOCK = threading.Lock()
 _CORE_SETUP_LOGGER_NAME = "provide.foundation.core_setup"
