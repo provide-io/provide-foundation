@@ -148,7 +148,7 @@ def error_handler(f: F) -> F:
     """
 
     @functools.wraps(f)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         click.get_current_context()
         debug = kwargs.get("debug", False)
         json_output = kwargs.get("json_output", False)
@@ -192,7 +192,7 @@ def pass_context(f: F) -> F:
 
     @functools.wraps(f)
     @click.pass_context
-    def wrapper(ctx: click.Context, *args, **kwargs):
+    def wrapper(ctx: click.Context, *args: Any, **kwargs: Any) -> Any:
         # Get or create foundation context
         if not hasattr(ctx, "obj") or ctx.obj is None:
             ctx.obj = CLIContext()

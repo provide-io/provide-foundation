@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 import tarfile
 
-from provide.foundation.types.attrs import define, field
+from attrs import define, field
 
 from provide.foundation.archive.base import ArchiveError, BaseArchive
 from provide.foundation.file import ensure_parent_dir
@@ -93,10 +93,10 @@ class TarArchive(BaseArchive):
                             target = link_path.parent / target
                         try:
                             target.resolve().relative_to(Path(output).resolve())
-                        except ValueError:
+                        except ValueError as e:
                             raise ArchiveError(
                                 f"Unsafe symlink in archive: {member.name} -> {member.linkname}"
-                            )
+                            ) from e
 
                     safe_members.append(member)
 

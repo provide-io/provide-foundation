@@ -78,13 +78,13 @@ def retry(
         if asyncio.iscoroutinefunction(func):
 
             @functools.wraps(func)
-            async def async_wrapper(*args, **kwargs):
+            async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
                 return await executor.execute_async(func, *args, **kwargs)
 
             return async_wrapper
 
         @functools.wraps(func)
-        def sync_wrapper(*args, **kwargs):
+        def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
             return executor.execute_sync(func, *args, **kwargs)
 
         return sync_wrapper
@@ -120,13 +120,13 @@ def retry(
         if asyncio.iscoroutinefunction(func):
 
             @functools.wraps(func)
-            async def async_wrapper(*args, **kwargs):
+            async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
                 return await executor.execute_async(func, *args, **kwargs)
 
             return async_wrapper
 
         @functools.wraps(func)
-        def sync_wrapper(*args, **kwargs):
+        def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
             return executor.execute_sync(func, *args, **kwargs)
 
         return sync_wrapper
@@ -167,11 +167,11 @@ def circuit_breaker(
 
     def decorator(func: F) -> F:
         @functools.wraps(func)
-        def sync_wrapper(*args, **kwargs):
+        def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
             return breaker.call(func, *args, **kwargs)
 
         @functools.wraps(func)
-        async def async_wrapper(*args, **kwargs):
+        async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
             return await breaker.call_async(func, *args, **kwargs)
 
         if asyncio.iscoroutinefunction(func):
@@ -209,13 +209,13 @@ def fallback(*fallback_funcs: Callable[..., Any]) -> Callable[[F], F]:
         if asyncio.iscoroutinefunction(func):
 
             @functools.wraps(func)
-            async def async_wrapper(*args, **kwargs):
+            async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
                 return await chain.execute_async(func, *args, **kwargs)
 
             return async_wrapper  # type: ignore
 
         @functools.wraps(func)
-        def sync_wrapper(*args, **kwargs):
+        def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
             return chain.execute(func, *args, **kwargs)
 
         return sync_wrapper  # type: ignore

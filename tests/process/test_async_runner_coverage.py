@@ -1,8 +1,7 @@
 #
 # test_async_runner_coverage.py
 #
-"""Additional tests to achieve full coverage for process/async_runner.py.
-"""
+"""Additional tests to achieve full coverage for process/async_runner.py."""
 
 import asyncio
 import sys
@@ -143,7 +142,9 @@ class TestAsyncEnvironmentHandling:
     async def test_async_env_dict_conversion(self) -> None:
         """Test that async env dict is properly converted."""
         result = await async_run_command(
-            ["env"], env={"TEST_VAR": "test_value"}, capture_output=True,
+            ["env"],
+            env={"TEST_VAR": "test_value"},
+            capture_output=True,
         )
 
         assert result.returncode == 0
@@ -235,14 +236,18 @@ class TestAsyncCompletedProcessConstruction:
         """Test async CompletedProcess environment handling."""
         # Test with custom env
         result = await async_run_command(
-            ["echo", "test"], env={"TEST_VAR": "value"}, capture_output=True,
+            ["echo", "test"],
+            env={"TEST_VAR": "value"},
+            capture_output=True,
         )
         assert result.env is not None
         assert "TEST_VAR" in result.env
 
         # Test with no env
         result = await async_run_command(
-            ["echo", "test"], env=None, capture_output=True,
+            ["echo", "test"],
+            env=None,
+            capture_output=True,
         )
         assert result.env is None
 

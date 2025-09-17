@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Centralized constants for Foundation logger system.
 
 All logger-related constants and numeric mappings are defined here
@@ -50,14 +52,14 @@ VALID_LEVEL_NAMES = frozenset(LEVEL_TO_NUMERIC.keys())
 
 __all__ = [
     "CRITICAL_LEVEL",
-    "ERROR_LEVEL",
-    "WARNING_LEVEL",
-    "INFO_LEVEL",
     "DEBUG_LEVEL",
-    "TRACE_LEVEL",
-    "NOTSET_LEVEL",
-    "LEVEL_TO_NUMERIC",
     "DEFAULT_FALLBACK_LEVEL",
     "DEFAULT_FALLBACK_NUMERIC",
+    "ERROR_LEVEL",
+    "INFO_LEVEL",
+    "LEVEL_TO_NUMERIC",
+    "NOTSET_LEVEL",
+    "TRACE_LEVEL",
     "VALID_LEVEL_NAMES",
+    "WARNING_LEVEL",
 ]

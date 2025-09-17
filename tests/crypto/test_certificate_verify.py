@@ -22,7 +22,8 @@ from provide.foundation.crypto import (
 
 @pytest.mark.asyncio
 async def test_verify_single_certificate_in_trust_chain(
-    client_cert, server_cert,
+    client_cert,
+    server_cert,
 ) -> None:
     """Test basic trust chain verification with a single certificate."""
     # Add server cert to client's trust chain
@@ -121,7 +122,8 @@ async def test_verify_trust_chain_after_modification(client_cert, server_cert) -
 
 @pytest.mark.asyncio
 async def test_verify_multiple_certificates_in_trust_chain(
-    client_cert, server_cert,
+    client_cert,
+    server_cert,
 ) -> None:
     """Test verification with multiple certificates in trust chain."""
     # Create a trust chain with both certs
@@ -162,9 +164,7 @@ async def test_verify_public_key_types(client_cert, server_cert) -> None:
     print(f"Server key type: {server_key_type}")
 
     # Key type shouldn't prevent verification if in trust chain
-    assert result, (
-        "Verification should succeed regardless of key type if in trust chain"
-    )
+    assert result, "Verification should succeed regardless of key type if in trust chain"
 
 
 @pytest.mark.asyncio
@@ -208,9 +208,7 @@ async def test_self_signed_certificate_verification() -> None:
     assert cert.subject == cert.issuer, "Certificate should be self-signed"
 
     cert.trust_chain.append(cert)  # Explicitly add to trust chain
-    assert cert.verify_trust(cert), (
-        "Self-signed cert should verify itself when in its own trust chain"
-    )
+    assert cert.verify_trust(cert), "Self-signed cert should verify itself when in its own trust chain"
 
 
 @pytest.mark.asyncio
@@ -252,9 +250,7 @@ async def test_certificate_mismatched_issuer() -> None:
     cert1 = Certificate(generate_keypair=True, key_type="rsa", common_name="Cert1")
     cert2 = Certificate(generate_keypair=True, key_type="rsa", common_name="Cert2")
     cert1.trust_chain = []
-    assert not cert1.verify_trust(cert2), (
-        "Expected verification to fail due to mismatched issuer"
-    )
+    assert not cert1.verify_trust(cert2), "Expected verification to fail due to mismatched issuer"
 
 
 # @pytest.mark.xfail( # Intentionally keeping this xfail for now to see current behavior
@@ -264,7 +260,9 @@ async def test_certificate_mismatched_issuer() -> None:
 async def test_certificate_self_signature_validation() -> None:
     """Ensure a generated self-signed certificate's signature is valid."""
     cert = Certificate(
-        generate_keypair=True, key_type="ecdsa", ecdsa_curve="secp384r1",
+        generate_keypair=True,
+        key_type="ecdsa",
+        ecdsa_curve="secp384r1",
     )  # Using a common type
 
     # A freshly generated self-signed certificate should have a valid signature
@@ -274,8 +272,7 @@ async def test_certificate_self_signature_validation() -> None:
     # If this assertion fails, it means _validate_signature is incorrectly
     # reporting a valid self-signed signature as invalid.
     assert is_actually_valid, (
-        "Self-signed certificate signature should be valid, but "
-        "_validate_signature returned False."
+        "Self-signed certificate signature should be valid, but _validate_signature returned False."
     )
 
 
@@ -284,10 +281,13 @@ async def test_certificate_key_usage_extension_failure() -> None:
     """Ensure Key Usage extension failure raises CertificateError."""
     cert = Certificate(generate_keypair=True)
 
-    with mock.patch(
-        "cryptography.x509.CertificateBuilder.add_extension",
-        side_effect=Exception("Mock failure"),
-    ), pytest.raises(CertificateError, match="Failed to create"):
+    with (
+        mock.patch(
+            "cryptography.x509.CertificateBuilder.add_extension",
+            side_effect=Exception("Mock failure"),
+        ),
+        pytest.raises(CertificateError, match="Failed to create"),
+    ):
         cert._create_x509_certificate()
 
 
@@ -301,9 +301,7 @@ async def test_certificate_equality() -> None:
 
     # Force serial number and subject to be identical
     cert2._base = cert1._base
-    assert cert1 == cert2, (
-        "Certificates with identical serial and subject should be equal"
-    )
+    assert cert1 == cert2, "Certificates with identical serial and subject should be equal"
 
 
 ### 🐍🏗🧪️

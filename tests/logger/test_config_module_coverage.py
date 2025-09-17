@@ -1,7 +1,6 @@
 """Comprehensive tests for logger/config.py module."""
 
 
-
 class TestLoggerConfigModule:
     """Test the logger config module re-exports."""
 

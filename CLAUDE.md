@@ -181,3 +181,4 @@ export PROVIDE_LOG_MODULE_LEVELS="asyncio:WARNING,urllib3:ERROR,requests:WARNING
 
 - it is okay to use future annotation for unquoted types.
 - it is okay to use __future__ annotatrion for unquoted types
+- It is okay to use `from __future__ import annotations`. Especially to support unquoted types.

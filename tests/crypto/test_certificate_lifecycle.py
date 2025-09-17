@@ -63,18 +63,19 @@ async def test_verify_expired_certificate() -> None:
         validity_days=-1,  # Set to make it expired
     )
     assert not expired_cert.is_valid, "Expired certificate should be invalid"
-    assert not expired_cert.verify_trust(expired_cert), (
-        "Expired certificates should not verify"
-    )
+    assert not expired_cert.verify_trust(expired_cert), "Expired certificates should not verify"
 
 
 @pytest.mark.asyncio
 async def test_certificate_validity_period_error() -> None:
     """Ensure validity period calculation failures raise CertificateError."""
-    with mock.patch(
-        "provide.foundation.crypto.certificates.generator.datetime",
-        side_effect=Exception("Time error"),
-    ), pytest.raises(CertificateError, match="Failed to initialize certificate"):
+    with (
+        mock.patch(
+            "provide.foundation.crypto.certificates.generator.datetime",
+            side_effect=Exception("Time error"),
+        ),
+        pytest.raises(CertificateError, match="Failed to initialize certificate"),
+    ):
         Certificate(generate_keypair=True)
 
 
@@ -83,32 +84,39 @@ async def test_certificate_extension_addition_failure() -> None:
     """Ensure failures in adding extensions raise CertificateError."""
     cert = Certificate(generate_keypair=True)
 
-    with mock.patch(
-        "cryptography.x509.CertificateBuilder.add_extension",
-        side_effect=Exception("Mock failure"),
-    ), pytest.raises(CertificateError, match="Failed to create"):
+    with (
+        mock.patch(
+            "cryptography.x509.CertificateBuilder.add_extension",
+            side_effect=Exception("Mock failure"),
+        ),
+        pytest.raises(CertificateError, match="Failed to create"),
+    ):
         cert._create_x509_certificate()
 
 
 @pytest.mark.asyncio
-async def test_certificate_trust_chain_validation() -> (
-    None
-):  # Name can remain, or be more specific
+async def test_certificate_trust_chain_validation() -> None:  # Name can remain, or be more specific
     """Ensure trust chain verification correctly fails on a mocked signature mismatch."""
     # Ensure 'mock' is imported from unittest (already imported at file level)
     # from unittest import mock
 
     relying_party_cert = Certificate(
-        generate_keypair=True, common_name="RelyingPartyCert", key_type="ecdsa",
+        generate_keypair=True,
+        common_name="RelyingPartyCert",
+        key_type="ecdsa",
     )
     ca_cert = Certificate(
-        generate_keypair=True, common_name="TestCACert", key_type="ecdsa",
+        generate_keypair=True,
+        common_name="TestCACert",
+        key_type="ecdsa",
     )
 
     relying_party_cert.trust_chain = [ca_cert]  # relying_party_cert trusts ca_cert
 
     end_entity_cert = Certificate(
-        generate_keypair=True, common_name="EndEntityToVerify", key_type="ecdsa",
+        generate_keypair=True,
+        common_name="EndEntityToVerify",
+        key_type="ecdsa",
     )
 
     # Mock end_entity_cert's issuer to be ca_cert's subject so that the

@@ -1,7 +1,6 @@
 """Test coverage for logger config module imports."""
 
 
-
 class TestLoggerConfigImports:
     """Test logger config module import functionality."""
 

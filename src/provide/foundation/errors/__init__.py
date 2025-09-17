@@ -24,6 +24,10 @@ from provide.foundation.errors.decorators import (
     suppress_and_log,
     with_error_handling,
 )
+from provide.foundation.errors.dependencies import (
+    DependencyError,
+    DependencyMismatchError,
+)
 from provide.foundation.errors.handlers import (
     ErrorHandler,
     error_boundary,
@@ -63,6 +67,8 @@ __all__ = [
     "ConcurrencyError",
     "ConfigValidationError",
     "ConfigurationError",
+    "DependencyError",
+    "DependencyMismatchError",
     "ErrorCategory",
     # Types
     "ErrorCode",

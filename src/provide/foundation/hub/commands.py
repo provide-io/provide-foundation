@@ -5,6 +5,8 @@ This module now re-exports from the split modules for backward compatibility.
 
 from __future__ import annotations
 
+from typing import Any
+
 # Core hub features (always available)
 from provide.foundation.hub.decorators import register_command
 from provide.foundation.hub.info import CommandInfo
@@ -12,7 +14,7 @@ from provide.foundation.hub.registry import get_command_registry
 
 
 # CLI features (require click) - lazy loaded
-def __getattr__(name: str):
+def __getattr__(name: str) -> Any:
     """Support lazy loading of CLI-dependent features."""
     if name in ("build_click_command", "create_command_group"):
         try:

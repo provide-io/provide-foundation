@@ -1,6 +1,5 @@
 """Tests for Foundation tool version resolver."""
 
-
 from provide.foundation.tools.resolver import VersionResolver
 
 
@@ -383,10 +382,18 @@ class TestVersionResolverIntegration:
         """Test resolution similar to npm semantic versioning."""
         resolver = VersionResolver()
         available = [
-            "1.0.0", "1.0.1", "1.0.2",
-            "1.1.0", "1.1.1", "1.2.0",
-            "2.0.0", "2.0.1", "2.1.0",
-            "3.0.0-alpha", "3.0.0-beta", "3.0.0",
+            "1.0.0",
+            "1.0.1",
+            "1.0.2",
+            "1.1.0",
+            "1.1.1",
+            "1.2.0",
+            "2.0.0",
+            "2.0.1",
+            "2.1.0",
+            "3.0.0-alpha",
+            "3.0.0-beta",
+            "3.0.0",
         ]
 
         # Tilde should get latest patch
@@ -407,8 +414,12 @@ class TestVersionResolverIntegration:
         """Test resolution with go module style versions."""
         resolver = VersionResolver()
         available = [
-            "v0.1.0", "v0.2.0", "v1.0.0",
-            "v1.1.0", "v2.0.0", "v2.0.0-beta",
+            "v0.1.0",
+            "v0.2.0",
+            "v1.0.0",
+            "v1.1.0",
+            "v2.0.0",
+            "v2.0.0-beta",
         ]
 
         # Should handle v prefixes
@@ -420,9 +431,14 @@ class TestVersionResolverIntegration:
         """Test resolution with Python package style versions."""
         resolver = VersionResolver()
         available = [
-            "1.0.0", "1.0.1", "1.1.0",
-            "2.0.0a1", "2.0.0b1", "2.0.0rc1",
-            "2.0.0", "2.0.0.dev1",
+            "1.0.0",
+            "1.0.1",
+            "1.1.0",
+            "2.0.0a1",
+            "2.0.0b1",
+            "2.0.0rc1",
+            "2.0.0",
+            "2.0.0.dev1",
         ]
 
         # Should identify Python pre-releases
@@ -456,9 +472,14 @@ class TestVersionResolverIntegration:
         """Test with real-world Docker version patterns."""
         resolver = VersionResolver()
         available = [
-            "20.10.0", "20.10.1", "20.10.17",
-            "24.0.0", "24.0.1", "24.0.2",
-            "24.0.3-beta", "24.0.4-rc1",
+            "20.10.0",
+            "20.10.1",
+            "20.10.17",
+            "24.0.0",
+            "24.0.1",
+            "24.0.2",
+            "24.0.3-beta",
+            "24.0.4-rc1",
         ]
 
         assert resolver.resolve("latest", available) == "24.0.2"
@@ -470,9 +491,14 @@ class TestVersionResolverIntegration:
         """Test with real-world Node.js version patterns."""
         resolver = VersionResolver()
         available = [
-            "16.14.0", "16.15.0", "16.16.0",
-            "18.0.0", "18.1.0", "18.2.0",
-            "19.0.0-pre", "19.0.0",
+            "16.14.0",
+            "16.15.0",
+            "16.16.0",
+            "18.0.0",
+            "18.1.0",
+            "18.2.0",
+            "19.0.0-pre",
+            "19.0.0",
         ]
 
         assert resolver.resolve("latest", available) == "19.0.0"

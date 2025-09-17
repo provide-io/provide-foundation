@@ -15,7 +15,7 @@ except ImportError:
 
 
 # Defer click_builder import to avoid circular dependency
-def _get_ensure_parent_groups():
+def _get_ensure_parent_groups() -> Any:
     if not _HAS_CLICK:
         return None
     from provide.foundation.hub.click_builder import ensure_parent_groups
@@ -225,9 +225,9 @@ def _register_command_func(
     )
 
     # Add metadata to the function
-    setattr(func, "__registry_name__", command_name)
-    setattr(func, "__registry_dimension__", "command")
-    setattr(func, "__registry_info__", info)
+    func.__registry_name__ = command_name
+    func.__registry_dimension__ = "command"
+    func.__registry_info__ = info
 
     get_foundation_logger().info(
         "Registered command",

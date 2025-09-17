@@ -39,10 +39,13 @@ async def test_load_certificate_from_file(temporary_cert_file) -> None:
 @pytest.mark.asyncio
 async def test_load_key_value_error(valid_cert_pem) -> None:
     """Test ValueError in private key loading."""
-    with mock.patch(
-        "cryptography.hazmat.primitives.serialization.load_pem_private_key",
-        side_effect=ValueError("Invalid key format"),
-    ), pytest.raises(CertificateError, match="Failed to initialize certificate"):
+    with (
+        mock.patch(
+            "cryptography.hazmat.primitives.serialization.load_pem_private_key",
+            side_effect=ValueError("Invalid key format"),
+        ),
+        pytest.raises(CertificateError, match="Failed to initialize certificate"),
+    ):
         Certificate(
             cert_pem_or_uri=valid_cert_pem,
             key_pem_or_uri="-----BEGIN PRIVATE KEY-----\nINVALID\n-----END PRIVATE KEY-----",
@@ -54,10 +57,13 @@ async def test_load_key_type_error(
     valid_cert_pem,
 ) -> None:  # Added valid_cert_pem fixture
     """Test TypeError in private key loading."""
-    with mock.patch(
-        "cryptography.hazmat.primitives.serialization.load_pem_private_key",
-        side_effect=TypeError("Password required"),
-    ), pytest.raises(CertificateError, match="Failed to initialize certificate"):
+    with (
+        mock.patch(
+            "cryptography.hazmat.primitives.serialization.load_pem_private_key",
+            side_effect=TypeError("Password required"),
+        ),
+        pytest.raises(CertificateError, match="Failed to initialize certificate"),
+    ):
         Certificate(cert_pem_or_uri=valid_cert_pem, key_pem_or_uri="SOME_KEY")
 
 
@@ -75,7 +81,8 @@ async def test_load_private_key_from_file(temporary_key_file, client_cert) -> No
     """Ensure a private key loads correctly from a file:// path."""
     # Create cert from the fixture's actual certificate
     cert = Certificate(
-        cert_pem_or_uri=client_cert.cert, key_pem_or_uri=temporary_key_file,
+        cert_pem_or_uri=client_cert.cert,
+        key_pem_or_uri=temporary_key_file,
     )
     assert cert.public_key, "Certificate should have a valid private key"
 
@@ -120,9 +127,7 @@ async def test_load_cert_with_utf8_bom(
     client_cert,
 ) -> None:  # Added client_cert fixture
     """Ensure certificate loading works with UTF-8 BOM characters."""
-    cert_with_bom = (
-        "\ufeff" + client_cert.cert
-    )  # Correctly use the cert string from the fixture
+    cert_with_bom = "\ufeff" + client_cert.cert  # Correctly use the cert string from the fixture
     cert = Certificate(cert_pem_or_uri=cert_with_bom)  # Use the modified string
     assert cert.subject, "UTF-8 BOM should not break certificate parsing"
 

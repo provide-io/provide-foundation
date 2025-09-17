@@ -173,6 +173,7 @@ class TestTempConfigFile:
 
         # Remove tomli_w from sys.modules to simulate it not being installed
         import sys
+
         tomli_w_backup = sys.modules.pop("tomli_w", None)
         try:
             with temp_config_file(config_data, "toml") as config_path:
@@ -195,9 +196,11 @@ class TestTempConfigFile:
         config_data = {"key1": "value1", "key2": [1, 2, 3]}
 
         mock_yaml = Mock()
+
         # Mock safe_dump to write something
         def mock_safe_dump(data, file) -> None:
             file.write("key1: value1\nkey2:\n- 1\n- 2\n- 3\n")
+
         mock_yaml.safe_dump = mock_safe_dump
 
         with patch.dict("sys.modules", {"yaml": mock_yaml}):
@@ -215,6 +218,7 @@ class TestTempConfigFile:
 
         # Mock the import to raise ImportError
         import builtins
+
         original_import = builtins.__import__
 
         def mock_import(name, *args, **kwargs):

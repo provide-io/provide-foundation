@@ -176,6 +176,7 @@ class TestToolInstaller:
             info = tarfile.TarInfo("../../../etc/passwd")
             info.size = 13
             from io import BytesIO
+
             tf.addfile(info, fileobj=BytesIO(b"unsafe content"))
 
         dest_dir = temp_dir / "extracted"
@@ -202,6 +203,7 @@ class TestToolInstaller:
                 info = tarfile.TarInfo("test.txt")
                 info.size = len(content)
                 from io import BytesIO
+
                 tf.addfile(info, fileobj=BytesIO(content.encode()))
 
             installer.extract_tar(tar_path, dest_dir)
@@ -419,7 +421,9 @@ class TestToolInstaller:
         with pytest.raises(InstallError, match="Unknown artifact type"):
             installer.install(unknown_file, sample_metadata)
 
-    def test_install_reads_file_content_for_binary_detection(self, installer, temp_dir, sample_metadata) -> None:
+    def test_install_reads_file_content_for_binary_detection(
+        self, installer, temp_dir, sample_metadata
+    ) -> None:
         """Test that installer reads file content for binary detection."""
         # Create file without extension but with binary content
         binary_file = temp_dir / "mytool"

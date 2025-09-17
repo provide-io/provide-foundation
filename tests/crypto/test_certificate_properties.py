@@ -61,7 +61,8 @@ async def test_certificate_public_key(client_cert) -> None:
     """Ensure the public key is correctly loaded."""
     assert client_cert.public_key, "Certificate public key should not be empty"
     assert isinstance(
-        client_cert.public_key, (rsa.RSAPublicKey, ec.EllipticCurvePublicKey),
+        client_cert.public_key,
+        (rsa.RSAPublicKey, ec.EllipticCurvePublicKey),
     ), "Public key should be RSA or EC"
 
 
@@ -77,9 +78,7 @@ async def test_server_certificate_public_key(server_cert) -> None:
 @pytest.mark.asyncio
 async def test_certificate_serial_number(client_cert) -> None:
     """Ensure the certificate serial number is valid."""
-    assert isinstance(client_cert._cert.serial_number, int), (
-        "Serial number should be an integer"
-    )
+    assert isinstance(client_cert._cert.serial_number, int), "Serial number should be an integer"
     assert client_cert._cert.serial_number > 0, "Serial number should be positive"
 
 
@@ -97,9 +96,7 @@ async def test_certificate_fingerprint(client_cert) -> None:
 @pytest.mark.asyncio
 async def test_certificate_has_extensions(client_cert) -> None:
     """Ensure certificate has extensions (basic constraints, key usage, etc.)."""
-    assert len(client_cert._cert.extensions) >= 1, (
-        "Certificate should have at least one extension"
-    )
+    assert len(client_cert._cert.extensions) >= 1, "Certificate should have at least one extension"
 
 
 @pytest.mark.asyncio
@@ -111,9 +108,7 @@ async def test_certificate_basic_constraints(client_cert) -> None:
         ext = client_cert._cert.extensions.get_extension_for_oid(
             ExtensionOID.BASIC_CONSTRAINTS,
         )
-        assert ext.value.ca in [True, False], (
-            "Basic Constraints CA flag should be boolean"
-        )
+        assert ext.value.ca in [True, False], "Basic Constraints CA flag should be boolean"
     except Exception:
         pytest.skip("Skipping test: Basic Constraints extension not found")
 
@@ -125,9 +120,7 @@ async def test_certificate_key_usage(client_cert) -> None:
 
     try:
         ext = client_cert._cert.extensions.get_extension_for_oid(ExtensionOID.KEY_USAGE)
-        assert isinstance(ext.value.digital_signature, bool), (
-            "Key usage should be boolean"
-        )
+        assert isinstance(ext.value.digital_signature, bool), "Key usage should be boolean"
     except Exception:
         pytest.skip("Skipping test: Key Usage extension not found")
 
@@ -183,7 +176,8 @@ async def test_is_ca_extension_not_found() -> None:
     # Create a mock certificate that raises ExtensionNotFound
     mock_cert = mock.MagicMock()
     mock_cert.extensions.get_extension_for_oid.side_effect = x509.ExtensionNotFound(
-        "Basic Constraints", x509.oid.ExtensionOID.BASIC_CONSTRAINTS,
+        "Basic Constraints",
+        x509.oid.ExtensionOID.BASIC_CONSTRAINTS,
     )
 
     # Replace the _cert attribute with our mock
@@ -202,7 +196,8 @@ async def test_is_ca_extension_not_found_logs_debug(mocker) -> None:
     # Mock the internal _cert object's extensions attribute
     mock_extensions = mocker.MagicMock()
     mock_extensions.get_extension_for_oid.side_effect = x509.ExtensionNotFound(
-        "Basic Constraints not found", x509.oid.ExtensionOID.BASIC_CONSTRAINTS,
+        "Basic Constraints not found",
+        x509.oid.ExtensionOID.BASIC_CONSTRAINTS,
     )
 
     # Patch the logger from the certificate module
@@ -215,9 +210,7 @@ async def test_is_ca_extension_not_found_logs_debug(mocker) -> None:
     cert_instance._cert = mocker.MagicMock(
         spec=x509.Certificate,
     )  # Replace _cert with a mock
-    cert_instance._cert.extensions = (
-        mock_extensions  # Assign mocked extensions to the mocked _cert
-    )
+    cert_instance._cert.extensions = mock_extensions  # Assign mocked extensions to the mocked _cert
 
     assert cert_instance.is_ca is False  # is_ca should return False
 
@@ -241,9 +234,7 @@ async def test_unique_serial_numbers(client_cert, server_cert) -> None:
 @pytest.mark.asyncio
 async def test_certificate_hash_uniqueness(client_cert, server_cert) -> None:
     """Ensure different certificates have unique hashes."""
-    assert hash(client_cert) != hash(server_cert), (
-        "Different certs should not hash the same"
-    )
+    assert hash(client_cert) != hash(server_cert), "Different certs should not hash the same"
 
 
 @pytest.mark.asyncio

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Log level normalization and safe lookup utilities.
 
 Provides functions for normalizing log levels and performing safe lookups
@@ -101,9 +103,9 @@ def get_fallback_numeric() -> int:
 
 
 __all__ = [
-    "normalize_level",
-    "get_numeric_level",
-    "is_valid_level",
     "get_fallback_level",
     "get_fallback_numeric",
+    "get_numeric_level",
+    "is_valid_level",
+    "normalize_level",
 ]

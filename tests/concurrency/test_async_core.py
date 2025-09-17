@@ -130,7 +130,8 @@ class TestAsyncGather:
     async def test_async_gather_no_tasks_raises_error(self) -> None:
         """Test async_gather raises error when no awaitables provided."""
         with pytest.raises(
-            ValidationError, match="At least one awaitable must be provided",
+            ValidationError,
+            match="At least one awaitable must be provided",
         ):
             await async_gather()
 
@@ -158,7 +159,9 @@ class TestAsyncGather:
             raise RuntimeError("Test error")
 
         results = await async_gather(
-            success_task(), failing_task(), return_exceptions=True,
+            success_task(),
+            failing_task(),
+            return_exceptions=True,
         )
 
         assert len(results) == 2
@@ -183,7 +186,10 @@ class TestAsyncGather:
             return {"key": "value"}
 
         results = await async_gather(
-            return_int(), return_str(), return_list(), return_dict(),
+            return_int(),
+            return_str(),
+            return_list(),
+            return_dict(),
         )
 
         assert results == [42, "hello", [1, 2, 3], {"key": "value"}]
@@ -331,7 +337,8 @@ class TestAsyncRun:
                 "numbers": [1, 2, 3],
                 "nested": {"key": "value"},
                 "result": await async_gather(
-                    async_sleep(0.01), async_sleep(0.01),
+                    async_sleep(0.01),
+                    async_sleep(0.01),
                 ),
             }
 

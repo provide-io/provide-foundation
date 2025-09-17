@@ -32,6 +32,7 @@ class TestPredictableInitialization:
         """Test that components work regardless of initialization order."""
         # Scenario 1: Get logger before hub
         from provide.foundation.logger.factories import get_logger
+
         logger1 = get_logger("test.order1")
 
         # Get hub
@@ -162,10 +163,7 @@ class TestPredictableInitialization:
 
         # Start many workers simultaneously
         with ThreadPoolExecutor(max_workers=20) as executor:
-            futures = [
-                executor.submit(init_worker, i)
-                for i in range(100)
-            ]
+            futures = [executor.submit(init_worker, i) for i in range(100)]
 
             for future in futures:
                 future.result()
@@ -185,10 +183,7 @@ class TestPredictableInitialization:
         hub = get_hub()
 
         # Create some loggers
-        loggers = [
-            hub.get_foundation_logger(f"test.cleanup.{i}")
-            for i in range(10)
-        ]
+        loggers = [hub.get_foundation_logger(f"test.cleanup.{i}") for i in range(10)]
 
         # All should work before cleanup
         for i, logger in enumerate(loggers):
@@ -293,10 +288,7 @@ class TestPredictableInitialization:
         # Create and clear hubs multiple times
         for _i in range(10):
             hub = get_hub()
-            loggers = [
-                hub.get_foundation_logger(f"memory.test.{j}")
-                for j in range(100)
-            ]
+            loggers = [hub.get_foundation_logger(f"memory.test.{j}") for j in range(100)]
 
             # Use loggers
             for logger in loggers:
@@ -312,8 +304,7 @@ class TestPredictableInitialization:
         # Memory growth should be reasonable (< 50MB for this test)
         max_growth = 50 * 1024 * 1024  # 50MB in bytes
         assert memory_growth < max_growth, (
-            f"Memory growth too large: {memory_growth / 1024 / 1024:.1f}MB > "
-            f"{max_growth / 1024 / 1024:.1f}MB"
+            f"Memory growth too large: {memory_growth / 1024 / 1024:.1f}MB > {max_growth / 1024 / 1024:.1f}MB"
         )
 
     def test_logger_naming_consistent(self) -> None:

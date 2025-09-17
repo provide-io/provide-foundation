@@ -126,23 +126,12 @@ class TestRealWorldScenarios:
         assert all(log["service_name"] == "user-service" for log in service_logs)
 
         # Verify module-level filtering
-        assert any(
-            "Loading JWT configuration" in log.get("event", "") for log in json_lines
-        )
-        assert not any(
-            "Connecting to external API" in log.get("event", "") for log in json_lines
-        )
-        assert any(
-            "External API rate limit reached" in log.get("event", "")
-            for log in json_lines
-        )
+        assert any("Loading JWT configuration" in log.get("event", "") for log in json_lines)
+        assert not any("Connecting to external API" in log.get("event", "") for log in json_lines)
+        assert any("External API rate limit reached" in log.get("event", "") for log in json_lines)
 
         # Verify DAS emoji processing
-        user_reg_logs = [
-            log
-            for log in json_lines
-            if "User registration processed" in log.get("event", "")
-        ]
+        user_reg_logs = [log for log in json_lines if "User registration processed" in log.get("event", "")]
         assert len(user_reg_logs) == 1
         assert "[👤][⚙️][✅]" in user_reg_logs[0]["event"]
 
@@ -154,6 +143,7 @@ class TestRealWorldScenarios:
 
         reset_foundation_setup_for_testing()
         import os
+
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -203,6 +193,7 @@ class TestRealWorldScenarios:
 
         reset_foundation_setup_for_testing()
         import os
+
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -228,9 +219,7 @@ class TestRealWorldScenarios:
 
         # Run concurrent workers
         with ThreadPoolExecutor(max_workers=4) as executor:
-            futures = [
-                executor.submit(worker_task, worker_id, 5) for worker_id in range(4)
-            ]
+            futures = [executor.submit(worker_task, worker_id, 5) for worker_id in range(4)]
 
             all_messages = []
             for future in as_completed(futures):
@@ -255,6 +244,7 @@ class TestRealWorldScenarios:
 
         reset_foundation_setup_for_testing()
         import os
+
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -322,6 +312,7 @@ class TestRealWorldScenarios:
 
         reset_foundation_setup_for_testing()
         import os
+
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -336,10 +327,7 @@ class TestRealWorldScenarios:
 
                 try:
                     # Simulate processing
-                    result = {
-                        k: v.upper() if isinstance(v, str) else v
-                        for k, v in data.items()
-                    }
+                    result = {k: v.upper() if isinstance(v, str) else v for k, v in data.items()}
 
                     self.logger.info(
                         "Data processing completed",
@@ -386,6 +374,7 @@ class TestMigrationFromExplicitSetup:
 
         reset_foundation_setup_for_testing()
         import os
+
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -411,11 +400,7 @@ class TestMigrationFromExplicitSetup:
         assert "New component using existing setup" in captured.err
 
         # Should be JSON format from explicit setup
-        json_lines = [
-            line
-            for line in captured.err.splitlines()
-            if line.strip() and line.startswith("{")
-        ]
+        json_lines = [line for line in captured.err.splitlines() if line.strip() and line.startswith("{")]
         assert len(json_lines) >= 2
 
         for line in json_lines:
@@ -430,6 +415,7 @@ class TestMigrationFromExplicitSetup:
 
         reset_foundation_setup_for_testing()
         import os
+
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -457,9 +443,7 @@ class TestMigrationFromExplicitSetup:
 
         # Should be JSON format with service name
         json_lines = [
-            line
-            for line in captured_explicit.err.splitlines()
-            if line.strip() and line.startswith("{")
+            line for line in captured_explicit.err.splitlines() if line.strip() and line.startswith("{")
         ]
         log_data = json.loads(json_lines[0])
         assert log_data["service_name"] == "explicit-override"
@@ -472,6 +456,7 @@ class TestMigrationFromExplicitSetup:
 
         reset_foundation_setup_for_testing()
         import os
+
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -508,9 +493,7 @@ class TestMigrationFromExplicitSetup:
 
             # Should be JSON format with explicit service name
             json_lines = [
-                line
-                for line in captured_explicit.err.splitlines()
-                if line.strip() and line.startswith("{")
+                line for line in captured_explicit.err.splitlines() if line.strip() and line.startswith("{")
             ]
             log_data = json.loads(json_lines[0])
             assert log_data["service_name"] == "explicit-service"

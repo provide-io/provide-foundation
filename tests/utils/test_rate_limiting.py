@@ -173,7 +173,8 @@ class TestTokenBucketRateLimiter:
     async def test_extreme_time_precision(self) -> None:
         """Test behavior with very small time intervals and high precision."""
         limiter = TokenBucketRateLimiter(
-            capacity=1.0, refill_rate=1000.0,
+            capacity=1.0,
+            refill_rate=1000.0,
         )  # Very fast refill
 
         # Use the initial token
@@ -250,9 +251,7 @@ class TestTokenBucketRateLimiter:
         # With 10 tokens/sec refill rate and ~0.6s total time,
         # expect some additional tokens, but exact timing varies in CI/test environments
         # Be more lenient with timing-dependent behavior
-        assert (
-            0 <= total_successes <= 20
-        )  # Reasonable range allowing for timing variations
+        assert 0 <= total_successes <= 20  # Reasonable range allowing for timing variations
 
     @pytest.mark.asyncio
     async def test_logger_usage_during_operations(self, mocker) -> None:

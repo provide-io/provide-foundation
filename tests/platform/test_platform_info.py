@@ -49,7 +49,9 @@ class TestSystemInfo:
         mock_env_get.side_effect = env_side_effect
 
         mock_disk_usage.return_value = MagicMock(
-            total=1000000, used=500000, free=500000,
+            total=1000000,
+            used=500000,
+            free=500000,
         )
 
         # Get system info
@@ -126,6 +128,7 @@ class TestSystemInfo:
         assert info.home_dir == "/home/user"
         # temp_dir should be the actual system temp directory when no env vars set
         from provide.foundation.file.temp import system_temp_dir
+
         expected_temp_dir = str(system_temp_dir())
         assert info.temp_dir == expected_temp_dir
         assert info.num_cpus is None
@@ -144,7 +147,8 @@ class TestSystemInfo:
     )
     @patch("provide.foundation.platform.info.get_os_version", return_value="10.0.19045")
     @patch(
-        "provide.foundation.platform.info.get_cpu_type", return_value="Intel Core i7",
+        "provide.foundation.platform.info.get_cpu_type",
+        return_value="Intel Core i7",
     )
     @patch("platform.python_version", return_value="3.11.0")
     def test_get_system_info_with_psutil(

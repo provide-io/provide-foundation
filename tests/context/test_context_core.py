@@ -211,15 +211,15 @@ json_output: true
         merged = base_ctx.merge(override_ctx)
 
         assert merged.log_level == "DEBUG"  # Overridden
-        assert (
-            merged.profile == "base"
-        )  # Not overridden since override has default value
+        assert merged.profile == "base"  # Not overridden since override has default value
         assert merged.debug is True  # Overridden
 
         # Test with explicit None handling
         base_ctx2 = Context(log_level="INFO", profile="production")
         override_ctx2 = Context(
-            log_level="WARNING", profile="staging", config_file=Path("/etc/app.conf"),
+            log_level="WARNING",
+            profile="staging",
+            config_file=Path("/etc/app.conf"),
         )
 
         merged2 = base_ctx2.merge(override_ctx2)

@@ -189,7 +189,8 @@ class TestConfigSchemaComprehensive:
         @define
         class TestConfig(BaseConfig):
             secret: str = field(
-                default="", metadata={"description": "Secret value", "sensitive": True},
+                default="",
+                metadata={"description": "Secret value", "sensitive": True},
             )
 
         schema = ConfigSchema.from_config_class(TestConfig)

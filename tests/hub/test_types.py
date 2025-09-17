@@ -18,7 +18,9 @@ class TestRegistryEntry:
     def test_create_registry_entry(self) -> None:
         """Test creating a registry entry."""
         entry = RegistryEntry(
-            name="test_item", dimension="test_dim", value="test_value",
+            name="test_item",
+            dimension="test_dim",
+            value="test_value",
         )
 
         assert entry.name == "test_item"
@@ -30,7 +32,10 @@ class TestRegistryEntry:
         """Test registry entry with metadata."""
         meta = {"version": "1.0", "author": "test"}
         entry = RegistryEntry(
-            name="test_item", dimension="test_dim", value="test_value", metadata=meta,
+            name="test_item",
+            dimension="test_dim",
+            value="test_value",
+            metadata=meta,
         )
 
         assert entry.metadata == meta
@@ -38,7 +43,9 @@ class TestRegistryEntry:
     def test_registry_entry_key_property(self) -> None:
         """Test the key property."""
         entry = RegistryEntry(
-            name="test_item", dimension="test_dim", value="test_value",
+            name="test_item",
+            dimension="test_dim",
+            value="test_value",
         )
 
         assert entry.key == ("test_dim", "test_item")
@@ -46,7 +53,9 @@ class TestRegistryEntry:
     def test_registry_entry_immutable(self) -> None:
         """Test that registry entry is immutable."""
         entry = RegistryEntry(
-            name="test_item", dimension="test_dim", value="test_value",
+            name="test_item",
+            dimension="test_dim",
+            value="test_value",
         )
 
         with pytest.raises(AttributeError):
@@ -55,10 +64,14 @@ class TestRegistryEntry:
     def test_registry_entry_equality(self) -> None:
         """Test registry entry equality."""
         entry1 = RegistryEntry(
-            name="test_item", dimension="test_dim", value="test_value",
+            name="test_item",
+            dimension="test_dim",
+            value="test_value",
         )
         entry2 = RegistryEntry(
-            name="test_item", dimension="test_dim", value="test_value",
+            name="test_item",
+            dimension="test_dim",
+            value="test_value",
         )
 
         assert entry1 == entry2
@@ -202,10 +215,14 @@ class TestComponentInfo:
             pass
 
         comp_info1 = ComponentInfo(
-            name="test_component", component_class=TestComponent, version="1.0.0",
+            name="test_component",
+            component_class=TestComponent,
+            version="1.0.0",
         )
         comp_info2 = ComponentInfo(
-            name="test_component", component_class=TestComponent, version="1.0.0",
+            name="test_component",
+            component_class=TestComponent,
+            version="1.0.0",
         )
 
         assert comp_info1 == comp_info2

@@ -76,7 +76,8 @@ class TestCryptoConstantsCoverage:
             result = constants.get_default_signature_algorithm()
             assert result == "custom_signature"
             mock_get_config.assert_called_once_with(
-                "signature_algorithm", constants.DEFAULT_SIGNATURE_ALGORITHM,
+                "signature_algorithm",
+                constants.DEFAULT_SIGNATURE_ALGORITHM,
             )
 
     def test_get_default_signature_algorithm_with_fallback(self) -> None:
@@ -138,5 +139,6 @@ class TestCryptoConstantsCoverage:
             result = constants.get_default_signature_algorithm()
             assert result == "custom_sig_algo"
             mock_get_config.assert_called_once_with(
-                "signature_algorithm", constants.DEFAULT_SIGNATURE_ALGORITHM,
+                "signature_algorithm",
+                constants.DEFAULT_SIGNATURE_ALGORITHM,
             )

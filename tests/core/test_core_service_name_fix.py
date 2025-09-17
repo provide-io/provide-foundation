@@ -1,8 +1,7 @@
 #
 # test_service_name_fix.py
 #
-"""Test to verify the service name injection fix works correctly.
-"""
+"""Test to verify the service name injection fix works correctly."""
 
 import json
 import os
@@ -62,11 +61,7 @@ def test_service_name_injection_fix() -> None:
 
         # Parse JSON
         # Filter to get only JSON lines (they start with '{')
-        json_lines = [
-            line.strip()
-            for line in output.strip().splitlines()
-            if line.strip().startswith("{")
-        ]
+        json_lines = [line.strip() for line in output.strip().splitlines() if line.strip().startswith("{")]
 
         if json_lines:
             log_data = json.loads(json_lines[0])
@@ -82,9 +77,7 @@ def test_service_name_injection_fix() -> None:
             assert actual_event == expected_event, (
                 f"Event message mismatch. Expected: '{expected_event}', Got: '{actual_event}'"
             )
-            assert log_data.get("service_name") == "lazy-service-test", (
-                "Service name mismatch or missing"
-            )
+            assert log_data.get("service_name") == "lazy-service-test", "Service name mismatch or missing"
             print("✅ Service name injection test PASSED!")
 
         else:

@@ -1,6 +1,5 @@
 """Test coverage for EventSet integration with logging."""
 
-
 from provide.foundation.eventsets.registry import discover_event_sets, get_registry
 from provide.foundation.eventsets.resolver import get_resolver
 from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping
@@ -107,6 +106,7 @@ class TestEventSetIntegration:
 
     def test_event_mapping_with_metadata_and_transformations(self) -> None:
         """Test EventMapping with metadata fields and transformations."""
+
         def uppercase_transform(value):
             return str(value).upper() if value else value
 

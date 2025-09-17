@@ -50,7 +50,6 @@ class TestDependencyStatus:
         assert status.description == "Missing library"
 
 
-
 class TestCheckClick:
     """Test _check_click function."""
 

@@ -103,11 +103,14 @@ class TestHubGetattrLazyLoading:
         import provide.foundation.hub as hub_module
 
         # Mock get_click_commands to raise ImportError
-        with patch.object(
-            hub_module,
-            "get_click_commands",
-            side_effect=ImportError("click not available"),
-        ), pytest.raises(ImportError, match="click not available"):
+        with (
+            patch.object(
+                hub_module,
+                "get_click_commands",
+                side_effect=ImportError("click not available"),
+            ),
+            pytest.raises(ImportError, match="click not available"),
+        ):
             _ = hub_module.build_click_command
 
     def test_getattr_nonexistent_attribute(self) -> None:

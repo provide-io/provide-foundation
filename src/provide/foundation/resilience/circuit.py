@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Awaitable, Callable
 import time
-from typing import TypeVar
+from typing import Any, TypeVar
 
 from attrs import define, field
 
@@ -95,7 +95,7 @@ class CircuitBreaker:
                 next_attempt_in=self.recovery_timeout,
             )
 
-    def call(self, func: Callable[..., T], *args, **kwargs) -> T:
+    def call(self, func: Callable[..., T], *args: Any, **kwargs: Any) -> T:
         """Execute function with circuit breaker protection (sync)."""
         # Check if circuit is open
         if self._state == CircuitState.OPEN:
@@ -123,7 +123,7 @@ class CircuitBreaker:
                 self._record_failure(e)
             raise
 
-    async def call_async(self, func: Callable[..., Awaitable[T]], *args, **kwargs) -> T:
+    async def call_async(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
         """Execute async function with circuit breaker protection."""
         # Check if circuit is open
         if self._state == CircuitState.OPEN:

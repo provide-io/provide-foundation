@@ -96,7 +96,8 @@ class TestTestingFixtures:
 
         # Test with parameters
         custom_config = TelemetryConfig(
-            service_name="test_service", globally_disabled=True,
+            service_name="test_service",
+            globally_disabled=True,
         )
         assert custom_config.service_name == "test_service"
         assert custom_config.globally_disabled is True

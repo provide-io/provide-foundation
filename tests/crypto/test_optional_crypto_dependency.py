@@ -25,7 +25,8 @@ class TestOptionalCryptoDependency:
             from provide.foundation.crypto.certificates import _require_crypto
 
             with pytest.raises(
-                ImportError, match="Cryptography features require optional dependencies",
+                ImportError,
+                match="Cryptography features require optional dependencies",
             ):
                 _require_crypto()
 
@@ -40,10 +41,12 @@ class TestOptionalCryptoDependency:
             # Any attempt to create/use Certificate with generate_keypair should fail with helpful error
             # The Certificate wraps ImportError in CertificateError but the original cause should mention crypto
             with pytest.raises(
-                CertificateError, match="Failed to initialize certificate",
+                CertificateError,
+                match="Failed to initialize certificate",
             ):
                 Certificate(
-                    generate_keypair=True, key_type="rsa",
+                    generate_keypair=True,
+                    key_type="rsa",
                 )  # This should trigger _require_crypto
 
     def test_certificate_base_creation_without_crypto(self) -> None:
@@ -62,7 +65,8 @@ class TestOptionalCryptoDependency:
             }
 
             with pytest.raises(
-                ImportError, match="pip install 'provide-foundation\\[crypto\\]'",
+                ImportError,
+                match="pip install 'provide-foundation\\[crypto\\]'",
             ):
                 CertificateBase.create(config)
 
@@ -75,12 +79,14 @@ class TestOptionalCryptoDependency:
             )
 
             with pytest.raises(
-                ImportError, match="pip install 'provide-foundation\\[crypto\\]'",
+                ImportError,
+                match="pip install 'provide-foundation\\[crypto\\]'",
             ):
                 create_self_signed("test.com")
 
             with pytest.raises(
-                ImportError, match="pip install 'provide-foundation\\[crypto\\]'",
+                ImportError,
+                match="pip install 'provide-foundation\\[crypto\\]'",
             ):
                 create_ca("Test CA")
 
@@ -96,17 +102,20 @@ class TestOptionalCryptoDependency:
             test_data = b"test data"
 
             with pytest.raises(
-                ImportError, match="pip install 'provide-foundation\\[crypto\\]'",
+                ImportError,
+                match="pip install 'provide-foundation\\[crypto\\]'",
             ):
                 sign_data(test_data, b"fake_key")
 
             with pytest.raises(
-                ImportError, match="pip install 'provide-foundation\\[crypto\\]'",
+                ImportError,
+                match="pip install 'provide-foundation\\[crypto\\]'",
             ):
                 verify_signature(test_data, b"signature", b"fake_key")
 
             with pytest.raises(
-                ImportError, match="pip install 'provide-foundation\\[crypto\\]'",
+                ImportError,
+                match="pip install 'provide-foundation\\[crypto\\]'",
             ):
                 generate_ed25519_keypair()
 
@@ -141,9 +150,7 @@ class TestCryptoTypeAliases:
 
             # The type aliases should exist (may be None based on _HAS_CRYPTO)
             # This verifies the conditional logic works
-            assert (
-                KeyPair is not None or PublicKey is not None or (not _HAS_CRYPTO)
-            )
+            assert KeyPair is not None or PublicKey is not None or (not _HAS_CRYPTO)
 
 
 class TestCryptoModuleImport:
@@ -174,9 +181,7 @@ class TestCryptoModuleImport:
                 raise AssertionError("Should have raised ImportError")
             except ImportError as e:
                 error_msg = str(e)
-                assert (
-                    "Cryptography features require optional dependencies" in error_msg
-                )
+                assert "Cryptography features require optional dependencies" in error_msg
                 assert "pip install 'provide-foundation[crypto]'" in error_msg
 
     def test_signatures_error_message_format(self) -> None:
@@ -189,9 +194,7 @@ class TestCryptoModuleImport:
                 raise AssertionError("Should have raised ImportError")
             except ImportError as e:
                 error_msg = str(e)
-                assert (
-                    "Cryptography features require optional dependencies" in error_msg
-                )
+                assert "Cryptography features require optional dependencies" in error_msg
                 assert "pip install 'provide-foundation[crypto]'" in error_msg
 
 

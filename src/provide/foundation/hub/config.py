@@ -17,7 +17,7 @@ from provide.foundation.hub.registry import RegistryEntry
 T = TypeVar("T", bound=BaseConfig)
 
 
-def _get_registry_and_lock():
+def _get_registry_and_lock() -> tuple[Any, Any, Any]:
     """Get registry and lock from components module."""
     from provide.foundation.hub.components import (
         ComponentCategory,

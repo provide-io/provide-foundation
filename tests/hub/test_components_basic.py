@@ -57,5 +57,3 @@ class TestComponentCategory:
         assert ComponentCategory.ERROR_HANDLER.value == "error_handler"
         assert ComponentCategory.FORMATTER.value == "formatter"
         assert ComponentCategory.FILTER.value == "filter"
-
-

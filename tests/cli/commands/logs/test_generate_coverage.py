@@ -50,6 +50,7 @@ class TestTraceSpanGeneration:
     def setup_method(self) -> None:
         """Reset counters before each test."""
         import provide.foundation.cli.commands.logs.generate as generate_module
+
         generate_module._trace_counter = 0
         generate_module._span_counter = 0
 
@@ -116,6 +117,7 @@ class TestGenerateLogEntry:
     def setup_method(self) -> None:
         """Reset counters and random seed before each test."""
         import provide.foundation.cli.commands.logs.generate as generate_module
+
         generate_module._trace_counter = 0
         generate_module._span_counter = 0
         random.seed(42)  # For deterministic tests
@@ -181,8 +183,11 @@ class TestGenerateLogEntry:
         assert "error_type" in entry
         assert entry["error_code"] in [400, 404, 500, 503]
         assert entry["error_type"] in [
-            "ValidationError", "ServiceUnavailable", "TimeoutError",
-            "DatabaseError", "RateLimitExceeded",
+            "ValidationError",
+            "ServiceUnavailable",
+            "TimeoutError",
+            "DatabaseError",
+            "RateLimitExceeded",
         ]
         assert entry["status"] == "error"
 
@@ -235,8 +240,13 @@ class TestHelperFunctions:
         from provide.foundation.cli.commands.logs.generate import _print_generation_config
 
         _print_generation_config(
-            count=100, rate=10.0, stream="test", style="normal",
-            error_rate=0.1, enable_rate_limit=False, rate_limit=50.0,
+            count=100,
+            rate=10.0,
+            stream="test",
+            style="normal",
+            error_rate=0.1,
+            enable_rate_limit=False,
+            rate_limit=50.0,
         )
 
         # Should have called click.echo multiple times
@@ -282,7 +292,10 @@ class TestHelperFunctions:
         }
 
         logs_sent, logs_failed, logs_rate_limited = _send_log_entry(
-            entry, 0, 0, 0,
+            entry,
+            0,
+            0,
+            0,
         )
 
         assert logs_sent == 1
@@ -309,7 +322,10 @@ class TestHelperFunctions:
         }
 
         logs_sent, logs_failed, logs_rate_limited = _send_log_entry(
-            entry, 0, 0, 0,
+            entry,
+            0,
+            0,
+            0,
         )
 
         assert logs_sent == 0
@@ -333,7 +349,10 @@ class TestHelperFunctions:
         }
 
         logs_sent, logs_failed, logs_rate_limited = _send_log_entry(
-            entry, 0, 0, 0,
+            entry,
+            0,
+            0,
+            0,
         )
 
         assert logs_sent == 0
@@ -349,8 +368,12 @@ class TestHelperFunctions:
         mock_time.time.return_value = 10.0
 
         last_stats_time, last_stats_sent = _print_stats(
-            current_time=10.0, last_stats_time=9.0, logs_sent=100,
-            last_stats_sent=90, logs_failed=5, enable_rate_limit=True,
+            current_time=10.0,
+            last_stats_time=9.0,
+            logs_sent=100,
+            last_stats_sent=90,
+            logs_failed=5,
+            enable_rate_limit=True,
             logs_rate_limited=2,
         )
 
@@ -364,8 +387,12 @@ class TestHelperFunctions:
         from provide.foundation.cli.commands.logs.generate import _print_final_stats
 
         _print_final_stats(
-            logs_sent=1000, logs_failed=50, logs_rate_limited=10,
-            total_time=100.0, rate=10.0, enable_rate_limit=True,
+            logs_sent=1000,
+            logs_failed=50,
+            logs_rate_limited=10,
+            total_time=100.0,
+            rate=10.0,
+            enable_rate_limit=True,
         )
 
         # Should call click.echo multiple times for the final report
@@ -379,6 +406,7 @@ class TestClickIntegration:
         """Test that generate_logs_command exists."""
         try:
             from provide.foundation.cli.commands.logs.generate import generate_logs_command
+
             assert generate_logs_command is not None
             assert callable(generate_logs_command)
         except ImportError:
@@ -390,6 +418,7 @@ class TestClickIntegration:
 
         try:
             import click  # noqa: F401
+
             expected = True
         except ImportError:
             expected = False
@@ -445,8 +474,11 @@ class TestLogEntryDataIntegrity:
                 assert entry["status"] == "error"
                 assert entry["error_code"] in [400, 404, 500, 503]
                 assert entry["error_type"] in [
-                    "ValidationError", "ServiceUnavailable", "TimeoutError",
-                    "DatabaseError", "RateLimitExceeded",
+                    "ValidationError",
+                    "ServiceUnavailable",
+                    "TimeoutError",
+                    "DatabaseError",
+                    "RateLimitExceeded",
                 ]
                 break
         else:

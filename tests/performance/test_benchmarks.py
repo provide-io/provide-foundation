@@ -161,7 +161,9 @@ class TestConcurrentPerformance:
                 thread_logger = logger.get_logger(f"benchmark.thread.{thread_id}")
                 for i in range(message_count):
                     thread_logger.info(
-                        f"Thread {thread_id} message {i}", thread_id=thread_id, msg_id=i,
+                        f"Thread {thread_id} message {i}",
+                        thread_id=thread_id,
+                        msg_id=i,
                     )
 
             def multithreaded_logging() -> None:
@@ -310,7 +312,9 @@ class TestLargePayloadPerformance:
                 """Function to benchmark - large payload logging."""
                 for i in range(100):
                     test_logger.info(
-                        f"Large payload message {i}", **large_data, iteration=i,
+                        f"Large payload message {i}",
+                        **large_data,
+                        iteration=i,
                     )
 
             # The benchmark fixture handles timing and statistical analysis
