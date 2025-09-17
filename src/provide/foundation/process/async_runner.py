@@ -80,9 +80,7 @@ async def _create_subprocess(
     if shell:
         return await asyncio.create_subprocess_shell(cmd_str, **common_args)
     else:
-        return await asyncio.create_subprocess_exec(
-            *(cmd if isinstance(cmd, list) else [cmd]), **common_args
-        )
+        return await asyncio.create_subprocess_exec(*(cmd if isinstance(cmd, list) else [cmd]), **common_args)
 
 
 async def _communicate_with_timeout(
@@ -171,11 +169,7 @@ async def _cleanup_process(process: asyncio.subprocess.Process | None) -> None:
         process.stdin.close()
     if process.stdout and not process.stdout.at_eof():
         process.stdout.feed_eof()
-    if (
-        process.stderr
-        and process.stderr != asyncio.subprocess.PIPE
-        and not process.stderr.at_eof()
-    ):
+    if process.stderr and process.stderr != asyncio.subprocess.PIPE and not process.stderr.at_eof():
         process.stderr.feed_eof()
 
     # Ensure process is terminated
@@ -241,9 +235,7 @@ async def async_run_command(
             completed = _create_completed_process(cmd, process, stdout, stderr, cwd_str, env, run_env)
 
             # Check for success
-            _check_process_success(
-                process, cmd_str, capture_output, completed.stdout, completed.stderr, check
-            )
+            _check_process_success(process, cmd_str, capture_output, completed.stdout, completed.stderr, check)
 
             plog.debug(
                 "✅ Async command completed",
