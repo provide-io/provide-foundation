@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Temporary file and directory utilities."""
-
 from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path
@@ -17,6 +15,8 @@ from provide.foundation.config.defaults import (
 from provide.foundation.errors.handlers import error_boundary
 from provide.foundation.file.safe import safe_delete
 from provide.foundation.logger import get_logger
+
+"""Temporary file and directory utilities."""
 
 log = get_logger(__name__)
 

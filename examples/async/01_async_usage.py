@@ -75,10 +75,12 @@ async def example_9_async_usage() -> None:
 
     # Process results
     total_duration = sum(r["duration_ms"] for r in results)
-    logger.info("All async tasks completed",
-               tasks_completed=len(results),
-               total_duration_ms=total_duration,
-               avg_duration_ms=total_duration // len(results))
+    logger.info(
+        "All async tasks completed",
+        tasks_completed=len(results),
+        total_duration_ms=total_duration,
+        avg_duration_ms=total_duration // len(results),
+    )
 
     # Demonstrate async shutdown (currently logs a message)
     logger.info("Initiating telemetry shutdown...")

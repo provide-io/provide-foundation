@@ -164,23 +164,25 @@ class TestGetOptionalDependencies:
 
     def test_get_optional_dependencies_returns_list(self) -> None:
         """Test that get_optional_dependencies returns expected dependencies."""
-        with patch("provide.foundation.utils.deps._check_click") as mock_click:
-            with patch("provide.foundation.utils.deps._check_cryptography") as mock_crypto:
-                with patch("provide.foundation.utils.deps._check_opentelemetry") as mock_otel:
-                    mock_click.return_value = DependencyStatus("click", True, "8.1.0", "CLI")
-                    mock_crypto.return_value = DependencyStatus("cryptography", False, None, "Crypto")
-                    mock_otel.return_value = DependencyStatus("opentelemetry", True, "1.15.0", "Telemetry")
+        with (
+            patch("provide.foundation.utils.deps._check_click") as mock_click,
+            patch("provide.foundation.utils.deps._check_cryptography") as mock_crypto,
+            patch("provide.foundation.utils.deps._check_opentelemetry") as mock_otel,
+        ):
+            mock_click.return_value = DependencyStatus("click", True, "8.1.0", "CLI")
+            mock_crypto.return_value = DependencyStatus("cryptography", False, None, "Crypto")
+            mock_otel.return_value = DependencyStatus("opentelemetry", True, "1.15.0", "Telemetry")
 
-                    result = get_optional_dependencies()
+            result = get_optional_dependencies()
 
-                    assert len(result) == 3
-                    assert result[0].name == "click"
-                    assert result[1].name == "cryptography"
-                    assert result[2].name == "opentelemetry"
+            assert len(result) == 3
+            assert result[0].name == "click"
+            assert result[1].name == "cryptography"
+            assert result[2].name == "opentelemetry"
 
-                    mock_click.assert_called_once()
-                    mock_crypto.assert_called_once()
-                    mock_otel.assert_called_once()
+            mock_click.assert_called_once()
+            mock_crypto.assert_called_once()
+            mock_otel.assert_called_once()
 
 
 class TestCheckOptionalDeps:
@@ -217,16 +219,18 @@ class TestCheckOptionalDeps:
             DependencyStatus("cryptography", True, "3.4.8", "Crypto features"),
         ]
 
-        with patch("provide.foundation.utils.deps.get_optional_dependencies", return_value=mock_deps):
-            with patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger:
-                mock_logger = Mock()
-                mock_get_logger.return_value = mock_logger
+        with (
+            patch("provide.foundation.utils.deps.get_optional_dependencies", return_value=mock_deps),
+            patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger,
+        ):
+            mock_logger = Mock()
+            mock_get_logger.return_value = mock_logger
 
-                result = check_optional_deps(quiet=False, return_status=True)
+            result = check_optional_deps(quiet=False, return_status=True)
 
-                assert result == mock_deps
-                # Verify logging calls
-                assert mock_logger.info.call_count >= 5  # Header, separator, deps, summary, celebration
+            assert result == mock_deps
+            # Verify logging calls
+            assert mock_logger.info.call_count >= 5  # Header, separator, deps, summary, celebration
 
     def test_check_optional_deps_verbose_some_missing(self) -> None:
         """Test check_optional_deps verbose mode with some dependencies missing."""
@@ -235,17 +239,19 @@ class TestCheckOptionalDeps:
             DependencyStatus("cryptography", False, None, "Crypto features"),
         ]
 
-        with patch("provide.foundation.utils.deps.get_optional_dependencies", return_value=mock_deps):
-            with patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger:
-                mock_logger = Mock()
-                mock_get_logger.return_value = mock_logger
+        with (
+            patch("provide.foundation.utils.deps.get_optional_dependencies", return_value=mock_deps),
+            patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger,
+        ):
+            mock_logger = Mock()
+            mock_get_logger.return_value = mock_logger
 
-                result = check_optional_deps(quiet=False, return_status=True)
+            result = check_optional_deps(quiet=False, return_status=True)
 
-                assert result == mock_deps
-                # Verify logging mentions missing features
-                log_calls = [call.args[0] for call in mock_logger.info.call_args_list]
-                assert any("Missing features" in call for call in log_calls)
+            assert result == mock_deps
+            # Verify logging mentions missing features
+            log_calls = [call.args[0] for call in mock_logger.info.call_args_list]
+            assert any("Missing features" in call for call in log_calls)
 
     def test_check_optional_deps_verbose_none_available(self) -> None:
         """Test check_optional_deps verbose mode with no dependencies available."""
@@ -254,17 +260,19 @@ class TestCheckOptionalDeps:
             DependencyStatus("cryptography", False, None, "Crypto features"),
         ]
 
-        with patch("provide.foundation.utils.deps.get_optional_dependencies", return_value=mock_deps):
-            with patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger:
-                mock_logger = Mock()
-                mock_get_logger.return_value = mock_logger
+        with (
+            patch("provide.foundation.utils.deps.get_optional_dependencies", return_value=mock_deps),
+            patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger,
+        ):
+            mock_logger = Mock()
+            mock_get_logger.return_value = mock_logger
 
-                result = check_optional_deps(quiet=False, return_status=True)
+            result = check_optional_deps(quiet=False, return_status=True)
 
-                assert result == mock_deps
-                # Verify logging suggests installing all features
-                log_calls = [call.args[0] for call in mock_logger.info.call_args_list]
-                assert any("provide-foundation[all]" in call for call in log_calls)
+            assert result == mock_deps
+            # Verify logging suggests installing all features
+            log_calls = [call.args[0] for call in mock_logger.info.call_args_list]
+            assert any("provide-foundation[all]" in call for call in log_calls)
 
 
 class TestHasDependency:
@@ -356,59 +364,63 @@ class TestIntegration:
     def test_full_workflow_all_available(self) -> None:
         """Test full workflow when all dependencies are available."""
         # Mock all dependencies as available
-        with patch("provide.foundation.utils.deps._check_click") as mock_click:
-            with patch("provide.foundation.utils.deps._check_cryptography") as mock_crypto:
-                with patch("provide.foundation.utils.deps._check_opentelemetry") as mock_otel:
-                    mock_click.return_value = DependencyStatus("click", True, "8.1.0", "CLI")
-                    mock_crypto.return_value = DependencyStatus("cryptography", True, "3.4.8", "Crypto")
-                    mock_otel.return_value = DependencyStatus("opentelemetry", True, "1.15.0", "Telemetry")
+        with (
+            patch("provide.foundation.utils.deps._check_click") as mock_click,
+            patch("provide.foundation.utils.deps._check_cryptography") as mock_crypto,
+            patch("provide.foundation.utils.deps._check_opentelemetry") as mock_otel,
+        ):
+            mock_click.return_value = DependencyStatus("click", True, "8.1.0", "CLI")
+            mock_crypto.return_value = DependencyStatus("cryptography", True, "3.4.8", "Crypto")
+            mock_otel.return_value = DependencyStatus("opentelemetry", True, "1.15.0", "Telemetry")
 
-                    # Test the workflow
-                    deps = get_optional_dependencies()
-                    assert len(deps) == 3
-                    assert all(dep.available for dep in deps)
+            # Test the workflow
+            deps = get_optional_dependencies()
+            assert len(deps) == 3
+            assert all(dep.available for dep in deps)
 
-                    # Test has_dependency
-                    assert has_dependency("click") is True
-                    assert has_dependency("cryptography") is True
-                    assert has_dependency("opentelemetry") is True
-                    assert has_dependency("nonexistent") is False
+            # Test has_dependency
+            assert has_dependency("click") is True
+            assert has_dependency("cryptography") is True
+            assert has_dependency("opentelemetry") is True
+            assert has_dependency("nonexistent") is False
 
-                    # Test require_dependency (should not raise)
-                    require_dependency("click")
-                    require_dependency("cryptography")
+            # Test require_dependency (should not raise)
+            require_dependency("click")
+            require_dependency("cryptography")
 
-                    # Test get_available_features
-                    features = get_available_features()
-                    assert features["click"] is True
-                    assert features["cryptography"] is True
-                    assert features["opentelemetry"] is True
+            # Test get_available_features
+            features = get_available_features()
+            assert features["click"] is True
+            assert features["cryptography"] is True
+            assert features["opentelemetry"] is True
 
     def test_full_workflow_mixed_availability(self) -> None:
         """Test full workflow with mixed dependency availability."""
-        with patch("provide.foundation.utils.deps._check_click") as mock_click:
-            with patch("provide.foundation.utils.deps._check_cryptography") as mock_crypto:
-                with patch("provide.foundation.utils.deps._check_opentelemetry") as mock_otel:
-                    mock_click.return_value = DependencyStatus("click", True, "8.1.0", "CLI")
-                    mock_crypto.return_value = DependencyStatus("cryptography", False, None, "Crypto")
-                    mock_otel.return_value = DependencyStatus("opentelemetry", False, None, "Telemetry")
+        with (
+            patch("provide.foundation.utils.deps._check_click") as mock_click,
+            patch("provide.foundation.utils.deps._check_cryptography") as mock_crypto,
+            patch("provide.foundation.utils.deps._check_opentelemetry") as mock_otel,
+        ):
+            mock_click.return_value = DependencyStatus("click", True, "8.1.0", "CLI")
+            mock_crypto.return_value = DependencyStatus("cryptography", False, None, "Crypto")
+            mock_otel.return_value = DependencyStatus("opentelemetry", False, None, "Telemetry")
 
-                    # Test mixed availability
-                    assert has_dependency("click") is True
-                    assert has_dependency("cryptography") is False
-                    assert has_dependency("opentelemetry") is False
+            # Test mixed availability
+            assert has_dependency("click") is True
+            assert has_dependency("cryptography") is False
+            assert has_dependency("opentelemetry") is False
 
-                    # Test require_dependency
-                    require_dependency("click")  # Should not raise
+            # Test require_dependency
+            require_dependency("click")  # Should not raise
 
-                    with pytest.raises(ImportError):
-                        require_dependency("cryptography")
+            with pytest.raises(ImportError):
+                require_dependency("cryptography")
 
-                    with pytest.raises(ImportError):
-                        require_dependency("opentelemetry")
+            with pytest.raises(ImportError):
+                require_dependency("opentelemetry")
 
-                    # Test get_available_features
-                    features = get_available_features()
-                    assert features["click"] is True
-                    assert features["cryptography"] is False
-                    assert features["opentelemetry"] is False
+            # Test get_available_features
+            features = get_available_features()
+            assert features["click"] is True
+            assert features["cryptography"] is False
+            assert features["opentelemetry"] is False

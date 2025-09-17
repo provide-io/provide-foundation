@@ -1,11 +1,5 @@
 from __future__ import annotations
 
-"""Core Hub class for component and command management.
-
-This module provides the core Hub functionality for registering and
-managing components and commands, without Foundation-specific features.
-"""
-
 from collections.abc import Callable
 from typing import Any
 
@@ -24,6 +18,12 @@ from provide.foundation.errors.resources import AlreadyExistsError
 from provide.foundation.hub.commands import CommandInfo
 from provide.foundation.hub.components import ComponentInfo
 from provide.foundation.hub.registry import Registry, get_command_registry
+
+"""Core Hub class for component and command management.
+
+This module provides the core Hub functionality for registering and
+managing components and commands, without Foundation-specific features.
+"""
 
 
 class CoreHub:

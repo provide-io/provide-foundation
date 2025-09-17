@@ -157,15 +157,17 @@ class TestTempConfigFile:
         mock_tomli_w = Mock()
         mock_tomli_w.dumps.return_value = 'key1 = "value1"\nkey2 = 42\n'
 
-        with patch.dict("sys.modules", {"tomli_w": mock_tomli_w}):
-            with temp_config_file(config_data, "toml") as config_path:
-                assert config_path.exists()
-                assert config_path.suffix == ".toml"
+        with (
+            patch.dict("sys.modules", {"tomli_w": mock_tomli_w}),
+            temp_config_file(config_data, "toml") as config_path,
+        ):
+            assert config_path.exists()
+            assert config_path.suffix == ".toml"
 
-                # Verify content was written
-                content = config_path.read_text()
-                assert 'key1 = "value1"' in content
-                assert "key2 = 42" in content
+            # Verify content was written
+            content = config_path.read_text()
+            assert 'key1 = "value1"' in content
+            assert "key2 = 42" in content
 
     def test_temp_config_file_toml_dict_fallback(self) -> None:
         """Test temp_config_file with TOML dict content using fallback."""
@@ -203,14 +205,16 @@ class TestTempConfigFile:
 
         mock_yaml.safe_dump = mock_safe_dump
 
-        with patch.dict("sys.modules", {"yaml": mock_yaml}):
-            with temp_config_file(config_data, "yaml") as config_path:
-                assert config_path.exists()
-                assert config_path.suffix == ".yaml"
+        with (
+            patch.dict("sys.modules", {"yaml": mock_yaml}),
+            temp_config_file(config_data, "yaml") as config_path,
+        ):
+            assert config_path.exists()
+            assert config_path.suffix == ".yaml"
 
-                # Verify some content was written
-                content = config_path.read_text()
-                assert len(content) > 0
+            # Verify some content was written
+            content = config_path.read_text()
+            assert len(content) > 0
 
     def test_temp_config_file_yaml_dict_no_yaml_import_error(self) -> None:
         """Test temp_config_file with YAML dict content raises ImportError without PyYAML."""
@@ -226,10 +230,12 @@ class TestTempConfigFile:
                 raise ImportError("No module named 'yaml'")
             return original_import(name, *args, **kwargs)
 
-        with patch("builtins.__import__", side_effect=mock_import):
-            with pytest.raises(ImportError, match="PyYAML required for YAML testing"):
-                with temp_config_file(config_data, "yaml"):
-                    pass
+        with (
+            patch("builtins.__import__", side_effect=mock_import),
+            pytest.raises(ImportError, match="PyYAML required for YAML testing"),
+            temp_config_file(config_data, "yaml"),
+        ):
+            pass
 
     def test_temp_config_file_cleanup_on_exception(self) -> None:
         """Test temp_config_file cleans up file even on exception."""

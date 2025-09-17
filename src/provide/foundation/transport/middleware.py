@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Transport middleware system with Hub registration."""
-
 from abc import ABC, abstractmethod
 import time
 from typing import Any
@@ -18,6 +16,8 @@ from provide.foundation.resilience.retry import (
 )
 from provide.foundation.transport.base import Request, Response
 from provide.foundation.transport.errors import TransportError
+
+"""Transport middleware system with Hub registration."""
 
 log = get_logger(__name__)
 
@@ -140,7 +140,7 @@ class RetryMiddleware(Middleware):
         """Handle error, potentially with retries (this is called by client)."""
         return error
 
-    async def execute_with_retry(self, execute_func, request: Request) -> Response:
+    async def execute_with_retry(self, execute_func: Any, request: Request) -> Response:
         """Execute request with retry logic using unified RetryExecutor."""
         executor = RetryExecutor(self.policy)
 

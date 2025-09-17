@@ -1,11 +1,5 @@
 from __future__ import annotations
 
-"""Process lifecycle management utilities.
-
-This module provides utilities for managing long-running subprocesses with
-proper lifecycle management, monitoring, and graceful shutdown capabilities.
-"""
-
 import asyncio
 from collections.abc import Mapping
 import functools
@@ -26,6 +20,12 @@ from provide.foundation.config.defaults import (
 from provide.foundation.errors.decorators import with_error_handling
 from provide.foundation.logger import get_logger
 from provide.foundation.process.runner import ProcessError
+
+"""Process lifecycle management utilities.
+
+This module provides utilities for managing long-running subprocesses with
+proper lifecycle management, monitoring, and graceful shutdown capabilities.
+"""
 
 plog = get_logger(__name__)
 

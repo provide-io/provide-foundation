@@ -64,21 +64,25 @@ class TaskQueue:
     async def enqueue(self, task: Task) -> None:
         """Add a task to the queue."""
         await self.queue.put(task)
-        self.logger.info("task_enqueued",
-                        task_id=task.id,
-                        task_type=task.type,
-                        queue_name=self.name,
-                        priority=task.priority,
-                        queue_size=self.queue.qsize())
+        self.logger.info(
+            "task_enqueued",
+            task_id=task.id,
+            task_type=task.type,
+            queue_name=self.name,
+            priority=task.priority,
+            queue_size=self.queue.qsize(),
+        )
 
     async def dequeue(self) -> Task:
         """Get next task from queue."""
         task = await self.queue.get()
-        self.logger.info("task_dequeued",
-                        task_id=task.id,
-                        task_type=task.type,
-                        queue_name=self.name,
-                        wait_time_ms=round((asyncio.get_event_loop().time() - task.created_at) * 1000, 2))
+        self.logger.info(
+            "task_dequeued",
+            task_id=task.id,
+            task_type=task.type,
+            queue_name=self.name,
+            wait_time_ms=round((asyncio.get_event_loop().time() - task.created_at) * 1000, 2),
+        )
         return task
 
     def qsize(self) -> int:
@@ -101,10 +105,7 @@ class TaskWorker:
         task.started_at = asyncio.get_event_loop().time()
         task.status = "processing"
 
-        self.logger.info("task_started",
-                        task_id=task.id,
-                        task_type=task.type,
-                        worker_id=self.worker_id)
+        self.logger.info("task_started", task_id=task.id, task_type=task.type, worker_id=self.worker_id)
 
         with error_boundary(Exception, reraise=False, log_errors=True):
             # Simulate different types of tasks
@@ -125,12 +126,14 @@ class TaskWorker:
             duration_ms = round((task.completed_at - task.started_at) * 1000, 2)
 
             self.processed_count += 1
-            self.logger.info("task_completed",
-                            task_id=task.id,
-                            task_type=task.type,
-                            worker_id=self.worker_id,
-                            duration_ms=duration_ms,
-                            processed_count=self.processed_count)
+            self.logger.info(
+                "task_completed",
+                task_id=task.id,
+                task_type=task.type,
+                worker_id=self.worker_id,
+                duration_ms=duration_ms,
+                processed_count=self.processed_count,
+            )
             return
 
         # If we get here, there was an error
@@ -139,22 +142,21 @@ class TaskWorker:
         duration_ms = round((task.completed_at - task.started_at) * 1000, 2)
         self.failed_count += 1
 
-        self.logger.error("task_failed",
-                         task_id=task.id,
-                         task_type=task.type,
-                         worker_id=self.worker_id,
-                         duration_ms=duration_ms,
-                         failed_count=self.failed_count)
+        self.logger.error(
+            "task_failed",
+            task_id=task.id,
+            task_type=task.type,
+            worker_id=self.worker_id,
+            duration_ms=duration_ms,
+            failed_count=self.failed_count,
+        )
 
     async def _process_email_task(self, task: Task) -> None:
         """Simulate processing an email task."""
         recipient = task.data.get("recipient", "unknown")
         template = task.data.get("template", "default")
 
-        self.logger.info("sending_email",
-                        task_id=task.id,
-                        recipient=recipient,
-                        template=template)
+        self.logger.info("sending_email", task_id=task.id, recipient=recipient, template=template)
 
         # Simulate email processing time
         await asyncio.sleep(0.1)
@@ -170,10 +172,7 @@ class TaskWorker:
         records = task.data.get("records", 100)
         operation = task.data.get("operation", "transform")
 
-        self.logger.info("processing_data",
-                        task_id=task.id,
-                        records=records,
-                        operation=operation)
+        self.logger.info("processing_data", task_id=task.id, records=records, operation=operation)
 
         # Simulate data processing time based on record count
         await asyncio.sleep(records * 0.001)
@@ -189,10 +188,7 @@ class TaskWorker:
         image_url = task.data.get("image_url", "image.jpg")
         target_size = task.data.get("target_size", "thumbnail")
 
-        self.logger.info("resizing_image",
-                        task_id=task.id,
-                        image_url=image_url,
-                        target_size=target_size)
+        self.logger.info("resizing_image", task_id=task.id, image_url=image_url, target_size=target_size)
 
         # Simulate image processing time
         await asyncio.sleep(0.15)
@@ -212,10 +208,7 @@ class TaskWorker:
         report_type = task.data.get("report_type", "summary")
         date_range = task.data.get("date_range", "last_30_days")
 
-        self.logger.info("generating_report",
-                        task_id=task.id,
-                        report_type=report_type,
-                        date_range=date_range)
+        self.logger.info("generating_report", task_id=task.id, report_type=report_type, date_range=date_range)
 
         # Simulate report generation time
         await asyncio.sleep(0.2)
@@ -237,10 +230,12 @@ class TaskWorker:
                 await self.process_task(task)
 
         except asyncio.CancelledError:
-            self.logger.info("worker_shutdown",
-                           worker_id=self.worker_id,
-                           processed_count=self.processed_count,
-                           failed_count=self.failed_count)
+            self.logger.info(
+                "worker_shutdown",
+                worker_id=self.worker_id,
+                processed_count=self.processed_count,
+                failed_count=self.failed_count,
+            )
             raise
 
 
@@ -255,12 +250,14 @@ async def monitor_system(task_queue: TaskQueue, workers: list[TaskWorker]) -> No
         total_failed = sum(w.failed_count for w in workers)
         queue_size = task_queue.qsize()
 
-        monitor_logger.info("system_status",
-                          queue_size=queue_size,
-                          active_workers=len(workers),
-                          total_processed=total_processed,
-                          total_failed=total_failed,
-                          success_rate=round((total_processed / max(total_processed + total_failed, 1)) * 100, 1))
+        monitor_logger.info(
+            "system_status",
+            queue_size=queue_size,
+            active_workers=len(workers),
+            total_processed=total_processed,
+            total_failed=total_failed,
+            success_rate=round((total_processed / max(total_processed + total_failed, 1)) * 100, 1),
+        )
 
 
 async def basic_task_queue_example() -> None:
@@ -289,9 +286,7 @@ async def basic_task_queue_example() -> None:
         TaskWorker("worker-3", task_queue),
     ]
 
-    logger.info("system_startup",
-               queue_name=task_queue.name,
-               worker_count=len(workers))
+    logger.info("system_startup", queue_name=task_queue.name, worker_count=len(workers))
 
     # Create various tasks
     tasks = [
@@ -301,7 +296,9 @@ async def basic_task_queue_example() -> None:
         Task("report_generation", {"report_type": "analytics", "date_range": "last_7_days"}, priority=3),
         Task("email_send", {"recipient": "admin@example.com", "template": "notification"}, priority=1),
         Task("data_processing", {"records": 1000, "operation": "aggregate"}, priority=2),
-        Task("image_resize", {"image_url": "fail_image.jpg", "target_size": "large"}, priority=1),  # This will fail
+        Task(
+            "image_resize", {"image_url": "fail_image.jpg", "target_size": "large"}, priority=1
+        ),  # This will fail
         Task("report_generation", {"report_type": "performance", "date_range": "last_30_days"}, priority=3),
     ]
 
@@ -335,11 +332,13 @@ async def basic_task_queue_example() -> None:
     total_processed = sum(w.processed_count for w in workers)
     total_failed = sum(w.failed_count for w in workers)
 
-    logger.info("system_shutdown_complete",
-               tasks_submitted=len(tasks),
-               tasks_processed=total_processed,
-               tasks_failed=total_failed,
-               final_queue_size=task_queue.qsize())
+    logger.info(
+        "system_shutdown_complete",
+        tasks_submitted=len(tasks),
+        tasks_processed=total_processed,
+        tasks_failed=total_failed,
+        final_queue_size=task_queue.qsize(),
+    )
 
 
 if __name__ == "__main__":

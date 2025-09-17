@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""HTTP/HTTPS transport implementation using httpx."""
-
 from collections.abc import AsyncIterator
 import time
 
@@ -16,6 +14,8 @@ from provide.foundation.transport.errors import (
     TransportTimeoutError,
 )
 from provide.foundation.transport.types import TransportType
+
+"""HTTP/HTTPS transport implementation using httpx."""
 
 log = get_logger(__name__)
 

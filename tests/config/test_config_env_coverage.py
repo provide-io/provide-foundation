@@ -46,32 +46,35 @@ class TestAsyncEnvFunctions:
             temp_file.flush()
 
             try:
-                with patch.dict(
-                    os.environ,
-                    {"ASYNC_SECRET": f"file://{temp_file.name}"},
-                ):
-                    # Mock aiofiles if not available
-                    with patch(
+                with (
+                    patch.dict(
+                        os.environ,
+                        {"ASYNC_SECRET": f"file://{temp_file.name}"},
+                    ),
+                    patch(
                         "provide.foundation.config.env.aiofiles",
-                    ) as mock_aiofiles:
-                        mock_file = AsyncMock()
-                        mock_file.read.return_value = "secret_content\n"
-                        mock_aiofiles.open.return_value.__aenter__.return_value = mock_file
+                    ) as mock_aiofiles,
+                ):
+                    mock_file = AsyncMock()
+                    mock_file.read.return_value = "secret_content\n"
+                    mock_aiofiles.open.return_value.__aenter__.return_value = mock_file
 
-                        result = await get_env_async("ASYNC_SECRET")
-                        assert result == "secret_content"
+                    result = await get_env_async("ASYNC_SECRET")
+                    assert result == "secret_content"
             finally:
                 os.unlink(temp_file.name)
 
     @pytest.mark.asyncio
     async def test_get_env_async_file_secret_error(self) -> None:
         """Test get_env_async with file reading error."""
-        with patch.dict(os.environ, {"ASYNC_SECRET": "file:///nonexistent/file"}):
-            with patch("provide.foundation.config.env.aiofiles") as mock_aiofiles:
-                mock_aiofiles.open.side_effect = FileNotFoundError("File not found")
+        with (
+            patch.dict(os.environ, {"ASYNC_SECRET": "file:///nonexistent/file"}),
+            patch("provide.foundation.config.env.aiofiles") as mock_aiofiles,
+        ):
+            mock_aiofiles.open.side_effect = FileNotFoundError("File not found")
 
-                with pytest.raises(ValueError, match="Failed to read secret from file"):
-                    await get_env_async("ASYNC_SECRET")
+            with pytest.raises(ValueError, match="Failed to read secret from file"):
+                await get_env_async("ASYNC_SECRET")
 
     @pytest.mark.asyncio
     async def test_get_env_async_no_secret_file_support(self) -> None:
@@ -136,27 +139,28 @@ class TestAsyncRuntimeConfig:
             temp_file.flush()
 
             try:
-                with patch.dict(
-                    os.environ,
-                    {
-                        "API_SECRET": f"file://{temp_file.name}",
-                        "ASYNC_APP_NAME": "secret_app",
-                    },
-                ):
-                    # Mock aiofiles for async file reading
-                    with patch(
+                with (
+                    patch.dict(
+                        os.environ,
+                        {
+                            "API_SECRET": f"file://{temp_file.name}",
+                            "ASYNC_APP_NAME": "secret_app",
+                        },
+                    ),
+                    patch(
                         "provide.foundation.config.env.aiofiles",
-                    ) as mock_aiofiles:
-                        mock_file = AsyncMock()
-                        mock_file.read.return_value = "secret_api_key\n"
-                        mock_aiofiles.open.return_value.__aenter__.return_value = mock_file
+                    ) as mock_aiofiles,
+                ):
+                    mock_file = AsyncMock()
+                    mock_file.read.return_value = "secret_api_key\n"
+                    mock_aiofiles.open.return_value.__aenter__.return_value = mock_file
 
-                        config = await self.AsyncTestConfig.from_env_async(
-                            prefix="ASYNC",
-                        )
+                    config = await self.AsyncTestConfig.from_env_async(
+                        prefix="ASYNC",
+                    )
 
-                        assert config.app_name == "secret_app"
-                        assert config.api_key == "secret_api_key"
+                    assert config.app_name == "secret_app"
+                    assert config.api_key == "secret_api_key"
             finally:
                 os.unlink(temp_file.name)
 
@@ -223,9 +227,11 @@ class TestAsyncRuntimeConfig:
     @pytest.mark.asyncio
     async def test_from_env_async_parser_error(self) -> None:
         """Test async loading with parser error."""
-        with patch.dict(os.environ, {"ASYNC_PORT": "invalid_port"}):
-            with pytest.raises(ValueError, match="Failed to parse"):
-                await self.AsyncTestConfig.from_env_async(prefix="ASYNC")
+        with (
+            patch.dict(os.environ, {"ASYNC_PORT": "invalid_port"}),
+            pytest.raises(ValueError, match="Failed to parse"),
+        ):
+            await self.AsyncTestConfig.from_env_async(prefix="ASYNC")
 
     @pytest.mark.asyncio
     async def test_read_secret_async_without_aiofiles(self) -> None:
@@ -335,16 +341,20 @@ class TestRuntimeConfigAdvanced:
 
     def test_from_env_file_secret_error_sync(self) -> None:
         """Test from_env with file reading error (sync version)."""
-        with patch.dict(os.environ, {"SPECIAL_VAR": "file:///nonexistent/file"}):
-            with pytest.raises(ValueError, match="Failed to read secret from file"):
-                self.AdvancedConfig.from_env()
+        with (
+            patch.dict(os.environ, {"SPECIAL_VAR": "file:///nonexistent/file"}),
+            pytest.raises(ValueError, match="Failed to read secret from file"),
+        ):
+            self.AdvancedConfig.from_env()
 
     def test_from_env_parser_error_sync(self) -> None:
         """Test from_env with parser error (sync version)."""
-        with patch.dict(os.environ, {"COUNT": "not_a_number"}):
+        with (
+            patch.dict(os.environ, {"COUNT": "not_a_number"}),
+            pytest.raises(ValueError),
+        ):
             # The auto parser should handle int conversion
-            with pytest.raises(ValueError):
-                self.AdvancedConfig.from_env()
+            self.AdvancedConfig.from_env()
 
     def test_from_env_env_prefix_field(self) -> None:
         """Test from_env with field-specific env_prefix."""

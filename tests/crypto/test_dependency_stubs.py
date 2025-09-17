@@ -2,15 +2,40 @@
 
 import sys
 from unittest.mock import patch
+
 import pytest
 
+from provide.foundation.crypto import _HAS_CRYPTO
 from provide.foundation.errors import DependencyError
 
+# Skip message for when cryptography is available
+SKIP_REASON = (
+    "Tests verify behavior without cryptography dependency - "
+    "skipping because cryptography is currently installed"
+)
 
+
+# Display the header immediately when module is imported
+
+print("\n" + "=" * 60, file=sys.stderr)
+print("🔒 CRYPTOGRAPHY DEPENDENCY TESTS", file=sys.stderr)
+print("=" * 60, file=sys.stderr)
+if _HAS_CRYPTO:
+    print("⚠️  These tests verify behavior when cryptography is NOT installed", file=sys.stderr)
+    print("✅ Cryptography IS currently installed - tests will be SKIPPED", file=sys.stderr)
+    print("💡 This is expected and correct behavior", file=sys.stderr)
+    print("📦 To run these tests: 'uv pip uninstall cryptography'", file=sys.stderr)
+else:
+    print("⚠️  Cryptography is NOT installed - running dependency stub tests", file=sys.stderr)
+    print("📦 To skip these tests: 'uv pip install cryptography'", file=sys.stderr)
+print("=" * 60, file=sys.stderr)
+
+
+@pytest.mark.skipif(_HAS_CRYPTO, reason=SKIP_REASON)
 class TestCryptoDependencyStubs:
     """Test cases for crypto module stub implementations when cryptography is not available."""
 
-    def setup_method(self):
+    def setup_method(self) -> None:
         """Reset module state before each test."""
         # Remove crypto modules from cache to force re-import
         modules_to_remove = [
@@ -24,11 +49,13 @@ class TestCryptoDependencyStubs:
             if module in sys.modules:
                 del sys.modules[module]
 
-    def test_certificate_stub_init_raises_dependency_error(self):
+    def test_certificate_stub_init_raises_dependency_error(self) -> None:
         """Test that Certificate.__init__ raises DependencyError when cryptography not available."""
-        with patch.dict(sys.modules, {"cryptography": None}):
+        with (
+            patch.dict(sys.modules, {"cryptography": None}),
             # Mock the import to fail
-            with patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")):
+            patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")),
+        ):
                 from provide.foundation.crypto import Certificate
 
                 with pytest.raises(DependencyError) as exc_info:
@@ -40,10 +67,12 @@ class TestCryptoDependencyStubs:
                 assert "crypto" in str(error)
                 assert "provide-foundation[crypto]" in str(error)
 
-    def test_certificate_stub_new_raises_dependency_error(self):
+    def test_certificate_stub_new_raises_dependency_error(self) -> None:
         """Test that Certificate.__new__ raises DependencyError when cryptography not available."""
-        with patch.dict(sys.modules, {"cryptography": None}):
-            with patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")):
+        with (
+            patch.dict(sys.modules, {"cryptography": None}),
+            patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")),
+        ):
                 from provide.foundation.crypto import Certificate
 
                 with pytest.raises(DependencyError) as exc_info:
@@ -52,10 +81,12 @@ class TestCryptoDependencyStubs:
                 error = exc_info.value
                 assert error.code == "DEPENDENCY_MISSING"
 
-    def test_certificate_class_methods_raise_dependency_error(self):
+    def test_certificate_class_methods_raise_dependency_error(self) -> None:
         """Test that Certificate class methods raise DependencyError when cryptography not available."""
-        with patch.dict(sys.modules, {"cryptography": None}):
-            with patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")):
+        with (
+            patch.dict(sys.modules, {"cryptography": None}),
+            patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")),
+        ):
                 from provide.foundation.crypto import Certificate
 
                 # Test create_self_signed_client_cert
@@ -73,10 +104,12 @@ class TestCryptoDependencyStubs:
                 error = exc_info.value
                 assert error.code == "DEPENDENCY_MISSING"
 
-    def test_certificate_base_stub_raises_dependency_error(self):
+    def test_certificate_base_stub_raises_dependency_error(self) -> None:
         """Test that CertificateBase raises DependencyError when cryptography not available."""
-        with patch.dict(sys.modules, {"cryptography": None}):
-            with patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")):
+        with (
+            patch.dict(sys.modules, {"cryptography": None}),
+            patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")),
+        ):
                 from provide.foundation.crypto import CertificateBase
 
                 with pytest.raises(DependencyError) as exc_info:
@@ -85,10 +118,12 @@ class TestCryptoDependencyStubs:
                 error = exc_info.value
                 assert error.code == "DEPENDENCY_MISSING"
 
-    def test_certificate_config_stub_raises_dependency_error(self):
+    def test_certificate_config_stub_raises_dependency_error(self) -> None:
         """Test that CertificateConfig raises DependencyError when cryptography not available."""
-        with patch.dict(sys.modules, {"cryptography": None}):
-            with patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")):
+        with (
+            patch.dict(sys.modules, {"cryptography": None}),
+            patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")),
+        ):
                 from provide.foundation.crypto import CertificateConfig
 
                 with pytest.raises(DependencyError) as exc_info:
@@ -97,10 +132,12 @@ class TestCryptoDependencyStubs:
                 error = exc_info.value
                 assert error.code == "DEPENDENCY_MISSING"
 
-    def test_certificate_error_stub_is_regular_exception(self):
+    def test_certificate_error_stub_is_regular_exception(self) -> None:
         """Test that CertificateError is a regular exception for compatibility."""
-        with patch.dict(sys.modules, {"cryptography": None}):
-            with patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")):
+        with (
+            patch.dict(sys.modules, {"cryptography": None}),
+            patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")),
+        ):
                 from provide.foundation.crypto import CertificateError
 
                 # Should be able to create and raise CertificateError normally
@@ -108,10 +145,12 @@ class TestCryptoDependencyStubs:
                 assert str(error) == "test error"
                 assert isinstance(error, Exception)
 
-    def test_curve_type_stub_raises_dependency_error(self):
+    def test_curve_type_stub_raises_dependency_error(self) -> None:
         """Test that CurveType raises DependencyError when cryptography not available."""
-        with patch.dict(sys.modules, {"cryptography": None}):
-            with patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")):
+        with (
+            patch.dict(sys.modules, {"cryptography": None}),
+            patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")),
+        ):
                 from provide.foundation.crypto import CurveType
 
                 with pytest.raises(DependencyError) as exc_info:
@@ -120,10 +159,12 @@ class TestCryptoDependencyStubs:
                 error = exc_info.value
                 assert error.code == "DEPENDENCY_MISSING"
 
-    def test_key_type_stub_raises_dependency_error(self):
+    def test_key_type_stub_raises_dependency_error(self) -> None:
         """Test that KeyType raises DependencyError when cryptography not available."""
-        with patch.dict(sys.modules, {"cryptography": None}):
-            with patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")):
+        with (
+            patch.dict(sys.modules, {"cryptography": None}),
+            patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")),
+        ):
                 from provide.foundation.crypto import KeyType
 
                 with pytest.raises(DependencyError) as exc_info:
@@ -132,10 +173,12 @@ class TestCryptoDependencyStubs:
                 error = exc_info.value
                 assert error.code == "DEPENDENCY_MISSING"
 
-    def test_certificate_functions_raise_dependency_error(self):
+    def test_certificate_functions_raise_dependency_error(self) -> None:
         """Test that certificate functions raise DependencyError when cryptography not available."""
-        with patch.dict(sys.modules, {"cryptography": None}):
-            with patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")):
+        with (
+            patch.dict(sys.modules, {"cryptography": None}),
+            patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")),
+        ):
                 from provide.foundation.crypto import create_ca, create_self_signed
 
                 # Test create_ca
@@ -152,10 +195,12 @@ class TestCryptoDependencyStubs:
                 error = exc_info.value
                 assert error.code == "DEPENDENCY_MISSING"
 
-    def test_key_generation_functions_raise_dependency_error(self):
+    def test_key_generation_functions_raise_dependency_error(self) -> None:
         """Test that key generation functions raise DependencyError when cryptography not available."""
-        with patch.dict(sys.modules, {"cryptography": None}):
-            with patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")):
+        with (
+            patch.dict(sys.modules, {"cryptography": None}),
+            patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")),
+        ):
                 from provide.foundation.crypto import (
                     generate_ec_keypair,
                     generate_ed25519_keypair,
@@ -184,10 +229,12 @@ class TestCryptoDependencyStubs:
                     assert error.code == "DEPENDENCY_MISSING"
                     assert "cryptography" in str(error)
 
-    def test_signature_functions_raise_dependency_error(self):
+    def test_signature_functions_raise_dependency_error(self) -> None:
         """Test that signature functions raise DependencyError when cryptography not available."""
-        with patch.dict(sys.modules, {"cryptography": None}):
-            with patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")):
+        with (
+            patch.dict(sys.modules, {"cryptography": None}),
+            patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")),
+        ):
                 from provide.foundation.crypto import sign_data, verify_signature
 
                 # Test sign_data
@@ -204,10 +251,12 @@ class TestCryptoDependencyStubs:
                 error = exc_info.value
                 assert error.code == "DEPENDENCY_MISSING"
 
-    def test_hash_algorithm_functions_raise_dependency_error(self):
+    def test_hash_algorithm_functions_raise_dependency_error(self) -> None:
         """Test that hash algorithm functions raise DependencyError when cryptography not available."""
-        with patch.dict(sys.modules, {"cryptography": None}):
-            with patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")):
+        with (
+            patch.dict(sys.modules, {"cryptography": None}),
+            patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")),
+        ):
                 from provide.foundation.crypto import (
                     get_default_hash_algorithm,
                     get_default_signature_algorithm,
@@ -227,10 +276,12 @@ class TestCryptoDependencyStubs:
                 error = exc_info.value
                 assert error.code == "DEPENDENCY_MISSING"
 
-    def test_constants_have_sensible_defaults(self):
+    def test_constants_have_sensible_defaults(self) -> None:
         """Test that constants have sensible default values when cryptography not available."""
-        with patch.dict(sys.modules, {"cryptography": None}):
-            with patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")):
+        with (
+            patch.dict(sys.modules, {"cryptography": None}),
+            patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")),
+        ):
                 from provide.foundation.crypto import (
                     DEFAULT_CERTIFICATE_KEY_TYPE,
                     DEFAULT_CERTIFICATE_VALIDITY_DAYS,
@@ -258,18 +309,22 @@ class TestCryptoDependencyStubs:
                 assert SUPPORTED_KEY_TYPES == []
                 assert SUPPORTED_RSA_SIZES == []
 
-    def test_has_crypto_flag_is_false_without_cryptography(self):
+    def test_has_crypto_flag_is_false_without_cryptography(self) -> None:
         """Test that _HAS_CRYPTO flag is False when cryptography not available."""
-        with patch.dict(sys.modules, {"cryptography": None}):
-            with patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")):
+        with (
+            patch.dict(sys.modules, {"cryptography": None}),
+            patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")),
+        ):
                 from provide.foundation.crypto import _HAS_CRYPTO
 
                 assert _HAS_CRYPTO is False
 
-    def test_imports_work_without_cryptography(self):
+    def test_imports_work_without_cryptography(self) -> None:
         """Test that all crypto module imports work even without cryptography."""
-        with patch.dict(sys.modules, {"cryptography": None}):
-            with patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")):
+        with (
+            patch.dict(sys.modules, {"cryptography": None}),
+            patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")),
+        ):
                 # Should be able to import all symbols without ImportError
                 from provide.foundation.crypto import (
                     Certificate,
@@ -288,10 +343,12 @@ class TestCryptoDependencyStubs:
                 assert CurveType is not None
                 assert KeyType is not None
 
-    def test_dependency_error_contains_proper_context(self):
+    def test_dependency_error_contains_proper_context(self) -> None:
         """Test that DependencyError contains proper context information."""
-        with patch.dict(sys.modules, {"cryptography": None}):
-            with patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")):
+        with (
+            patch.dict(sys.modules, {"cryptography": None}),
+            patch("builtins.__import__", side_effect=ImportError("No module named 'cryptography'")),
+        ):
                 from provide.foundation.crypto import Certificate
 
                 with pytest.raises(DependencyError) as exc_info:

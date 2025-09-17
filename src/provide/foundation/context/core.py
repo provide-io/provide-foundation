@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Unified context for configuration and CLI state management."""
-
 import copy
 from pathlib import Path
 from typing import Any
@@ -14,6 +12,8 @@ from provide.foundation.config.defaults import path_converter
 from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.file.formats import read_json, read_toml, read_yaml, write_json, write_toml, write_yaml
 from provide.foundation.logger import get_logger
+
+"""Unified context for configuration and CLI state management."""
 
 VALID_LOG_LEVELS = {"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"}
 

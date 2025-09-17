@@ -44,6 +44,7 @@ try:
         worker_ready,
         worker_shutdown,
     )
+
     CELERY_AVAILABLE = True
 except ImportError:
     CELERY_AVAILABLE = False
@@ -80,7 +81,9 @@ class TaskMetrics:
                     "errors": self.error_counts[task_name],
                     "retries": self.retry_counts[task_name],
                     "avg_duration_ms": round(sum(durations) / len(durations) * 1000, 2) if durations else 0,
-                    "success_rate": round((1 - self.error_counts[task_name] / self.task_counts[task_name]) * 100, 1),
+                    "success_rate": round(
+                        (1 - self.error_counts[task_name] / self.task_counts[task_name]) * 100, 1
+                    ),
                 }
             return stats
 
@@ -115,7 +118,8 @@ def setup_signal_handlers(app) -> None:
     @worker_ready.connect
     def worker_ready_handler(sender, **kwargs) -> None:
         """Log when worker is ready with system info."""
-        worker_logger.info("worker_ready",
+        worker_logger.info(
+            "worker_ready",
             worker_pid=sender.pid,
             hostname=sender.hostname,
             python_version=platform.python_version(),
@@ -127,7 +131,8 @@ def setup_signal_handlers(app) -> None:
     @worker_process_init.connect
     def worker_process_init_handler(sender, **kwargs) -> None:
         """Log worker process initialization."""
-        worker_logger.info("worker_process_init",
+        worker_logger.info(
+            "worker_process_init",
             worker_pid=os.getpid(),
             parent_pid=os.getppid(),
         )
@@ -136,7 +141,8 @@ def setup_signal_handlers(app) -> None:
     def worker_shutdown_handler(sender, **kwargs) -> None:
         """Log when worker shuts down with final metrics."""
         stats = metrics.get_stats()
-        worker_logger.info("worker_shutdown",
+        worker_logger.info(
+            "worker_shutdown",
             worker_pid=sender.pid,
             hostname=sender.hostname,
             final_metrics=stats,
@@ -145,12 +151,14 @@ def setup_signal_handlers(app) -> None:
     @celeryd_after_setup.connect
     def setup_periodic_monitoring(sender, instance, **kwargs) -> None:
         """Setup periodic health monitoring."""
+
         def monitor_health() -> None:
             while True:
                 time.sleep(10)  # Check every 10 seconds
                 stats = metrics.get_stats()
                 if stats:
-                    worker_logger.info("worker_health",
+                    worker_logger.info(
+                        "worker_health",
                         task_metrics=stats,
                         total_tasks=sum(s["count"] for s in stats.values()),
                         total_errors=sum(s["errors"] for s in stats.values()),
@@ -183,7 +191,8 @@ def setup_signal_handlers(app) -> None:
             task_logger.log_task_success(task_id, retval, duration, metrics)
         else:
             # For non-success states, we might not have exception info here
-            worker_logger.warning("task_completed_with_state",
+            worker_logger.warning(
+                "task_completed_with_state",
                 task_id=task_id,
                 task_name=task.name,
                 state=state,
