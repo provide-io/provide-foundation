@@ -175,7 +175,8 @@
       "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/provide-foundation/src mypy /Users/tim/code/gh/provide-io/provide-foundation/src/provide/foundation/cli/commands/logs/generate.py --show-error-codes --no-error-summary)",
       "Bash(PYTHONPATH:*)",
       "Bash(timeout 120 pytest --tb=short -x)",
-      "Bash(timeout 120 pytest -x --tb=short -q)"
+      "Bash(timeout 120 pytest -x --tb=short -q)",
+      "Bash(/Users/tim/code/gh/provide-io/.venv/bin/python -m pytest tests/test_init_coverage.py -v)"
     ],
     "deny": [],
     "ask": [],
