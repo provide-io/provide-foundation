@@ -173,7 +173,9 @@
       "Bash(PYTHONPATH=src mypy src/provide/foundation/env/__init__.py --show-error-codes --no-error-summary)",
       "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/provide-foundation/src mypy /Users/tim/code/gh/provide-io/provide-foundation/src/provide/foundation/env/__init__.py --show-error-codes --no-error-summary)",
       "Bash(PYTHONPATH=/Users/tim/code/gh/provide-io/provide-foundation/src mypy /Users/tim/code/gh/provide-io/provide-foundation/src/provide/foundation/cli/commands/logs/generate.py --show-error-codes --no-error-summary)",
-      "Bash(PYTHONPATH:*)"
+      "Bash(PYTHONPATH:*)",
+      "Bash(timeout 120 pytest --tb=short -x)",
+      "Bash(timeout 120 pytest -x --tb=short -q)"
     ],
     "deny": [],
     "ask": [],
