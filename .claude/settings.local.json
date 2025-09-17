@@ -177,7 +177,10 @@
       "Bash(timeout 120 pytest --tb=short -x)",
       "Bash(timeout 120 pytest -x --tb=short -q)",
       "Bash(/Users/tim/code/gh/provide-io/.venv/bin/python -m pytest tests/test_init_coverage.py -v)",
-      "Bash(.venv/bin/ruff check src/ --statistics)"
+      "Bash(.venv/bin/ruff check src/ --statistics)",
+      "Bash(.venv/bin/ruff check src/ --select E402 --output-format=concise)",
+      "Bash(.venv/bin/ruff check src/ --select C901 --output-format=concise)",
+      "Bash(.venv/bin/ruff check src/ --select RUF,ANN,PTH,SIM,F --output-format=concise)"
     ],
     "deny": [],
     "ask": [],
