@@ -1,10 +1,10 @@
 """Async support tests for provide-foundation."""
 
 import asyncio
-from dataclasses import dataclass
 import time
 from typing import Any
 
+from attrs import define
 import pytest
 
 from provide.foundation.hub import (
@@ -214,7 +214,7 @@ class TestAsyncContextManagers:
     async def test_async_component_lifecycle(self) -> None:
         """Test component lifecycle in async context."""
 
-        @dataclass
+        @define
         class AsyncResource:
             name: str
             initialized: bool = False
