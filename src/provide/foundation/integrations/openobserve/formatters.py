@@ -246,7 +246,7 @@ def format_summary(response: SearchResponse) -> str:
 def format_output(
     response: SearchResponse | dict[str, Any],
     format_type: str = "log",
-    **kwargs,
+    **kwargs: Any,
 ) -> str:
     """Format output based on specified type.
 

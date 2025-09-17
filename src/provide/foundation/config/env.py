@@ -110,7 +110,7 @@ def env_field(
     env_var: str | None = None,
     env_prefix: str | None = None,
     parser: Callable[[str], Any] | None = None,
-    **kwargs,
+    **kwargs: Any,
 ) -> Any:
     """Create a field that can be loaded from environment variables.
 

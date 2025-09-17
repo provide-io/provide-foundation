@@ -5,6 +5,8 @@ from __future__ import annotations
 #
 """Process execution related errors."""
 
+from typing import Any
+
 from provide.foundation.errors.base import FoundationError
 
 
@@ -20,7 +22,7 @@ class ProcessError(FoundationError):
         stdout: str | bytes | None = None,
         stderr: str | bytes | None = None,
         timeout: bool = False,
-        **extra_context,
+        **extra_context: Any,
     ) -> None:
         """Initialize ProcessError with command execution details.
 
@@ -113,7 +115,7 @@ class ProcessTimeoutError(ProcessError):
         timeout_seconds: float | None = None,
         stdout: str | bytes | None = None,
         stderr: str | bytes | None = None,
-        **extra_context,
+        **extra_context: Any,
     ) -> None:
         context = extra_context.copy()
         if timeout_seconds is not None:
