@@ -180,7 +180,9 @@
       "Bash(.venv/bin/ruff check src/ --statistics)",
       "Bash(.venv/bin/ruff check src/ --select E402 --output-format=concise)",
       "Bash(.venv/bin/ruff check src/ --select C901 --output-format=concise)",
-      "Bash(.venv/bin/ruff check src/ --select RUF,ANN,PTH,SIM,F --output-format=concise)"
+      "Bash(.venv/bin/ruff check src/ --select RUF,ANN,PTH,SIM,F --output-format=concise)",
+      "Bash(.venv/bin/ruff check src/ --select ANN001 --output-format=concise)",
+      "Bash(.venv/bin/mypy src/ --show-error-codes --no-error-summary)"
     ],
     "deny": [],
     "ask": [],
