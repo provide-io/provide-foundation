@@ -200,7 +200,9 @@
       "Bash(.venv/bin/ruff check src/provide/foundation/hub/commands.py --select F822 --output-format=concise)",
       "Bash(.venv/bin/ruff check --fix --unsafe-fixes src/ --select E402)",
       "Bash(.venv/bin/ruff check src/ --select E402 --statistics)",
-      "Bash(.venv/bin/ruff check src/ --select RUF009 --output-format=concise)"
+      "Bash(.venv/bin/ruff check src/ --select RUF009 --output-format=concise)",
+      "Bash(.venv/bin/ruff check src/ --select PTH101,PTH105 --output-format=concise)",
+      "Bash(.venv/bin/ruff check src/ --select RUF006 --output-format=concise)"
     ],
     "deny": [],
     "ask": [],

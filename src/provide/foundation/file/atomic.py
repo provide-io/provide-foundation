@@ -61,12 +61,12 @@ def atomic_write(
 
         # Set permissions if specified
         if mode is not None:
-            os.chmod(temp_path, mode)
+            Path(temp_path).chmod(mode)
         elif preserve_mode and path.exists():
             # Preserve existing permissions if requested
             try:
                 existing_mode = path.stat().st_mode
-                os.chmod(temp_path, existing_mode)
+                Path(temp_path).chmod(existing_mode)
             except OSError:
                 pass
         elif not preserve_mode:
@@ -76,10 +76,10 @@ def atomic_write(
             default_mode = 0o666
             current_umask = os.umask(0)  # Get current umask
             os.umask(current_umask)  # Restore it
-            os.chmod(temp_path, default_mode & ~current_umask)
+            Path(temp_path).chmod(default_mode & ~current_umask)
 
         # Atomic rename
-        os.replace(temp_path, path)
+        Path(temp_path).replace(path)
 
         log.debug(
             "Atomically wrote file",
