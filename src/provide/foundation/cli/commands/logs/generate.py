@@ -3,20 +3,20 @@ from __future__ import annotations
 import random
 import threading
 import time
-from typing import TYPE_CHECKING, Any, NoReturn
+from typing import TYPE_CHECKING, Any, NoReturn, overload
 
 from provide.foundation.logger import get_logger
+
+if TYPE_CHECKING:
+    import click
 
 try:
     import click
 
-    _HAS_CLICK = True
+    HAS_CLICK = True
 except ImportError:
-    if TYPE_CHECKING:
-        import click
-    else:
-        click: Any = None
-    _HAS_CLICK = False
+    click = None  # type: ignore[assignment]
+    HAS_CLICK = False
 
 """Command to generate logs for testing OpenObserve integration with Foundation's rate limiting."""
 
@@ -392,7 +392,7 @@ def generate_logs_command(
         _print_final_stats(logs_sent, logs_failed, logs_rate_limited, total_time, rate, enable_rate_limit)
 
 
-if not _HAS_CLICK:
+if not HAS_CLICK:  # type: ignore[misc]
 
     def generate_logs_command(*args: object, **kwargs: object) -> NoReturn:
         raise ImportError("Click is required for CLI commands. Install with: pip install click")
