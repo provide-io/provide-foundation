@@ -118,7 +118,7 @@ def _format_cell_value(col: str, value: Any, max_length: int = 50) -> str:
 
     value_str = str(value)
     if len(value_str) > max_length:
-        return value_str[:max_length-3] + "..."
+        return value_str[: max_length - 3] + "..."
     return value_str
 
 
