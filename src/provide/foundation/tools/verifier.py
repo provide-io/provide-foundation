@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import hashlib
 from pathlib import Path
-from typing import Literal
+from typing import ClassVar, Literal
 
 from provide.foundation.errors import FoundationError
 
@@ -27,7 +27,7 @@ class ToolVerifier:
     for ensuring artifact integrity and authenticity.
     """
 
-    SUPPORTED_ALGORITHMS = ["sha256", "sha512", "md5", "blake2b"]
+    SUPPORTED_ALGORITHMS: ClassVar[list[str]] = ["sha256", "sha512", "md5", "blake2b"]
     CHUNK_SIZE = 8192  # Read files in 8KB chunks
 
     def verify_checksum(self, file_path: Path, expected: str, algo: HashAlgo = "sha256") -> bool:
