@@ -185,6 +185,69 @@ def build_click_command(
     return cmd
 
 
+def _create_subgroup(cmd_name: str, entry: Any, groups: dict[str, click.Group], root_group: click.Group) -> None:
+    """Create a Click subgroup and add it to the appropriate parent."""
+    info = entry.metadata.get("info")
+    parent = entry.metadata.get("parent")
+
+    # Extract the actual group name (without parent prefix)
+    actual_name = cmd_name.split(".")[-1] if parent else cmd_name
+
+    subgroup = click.Group(
+        name=actual_name,
+        help=info.description,
+        hidden=info.hidden,
+    )
+    groups[cmd_name] = subgroup
+
+    # Add to parent or root
+    if parent and parent in groups:
+        groups[parent].add_command(subgroup)
+    else:
+        # Parent not found or no parent, add to root
+        root_group.add_command(subgroup)
+
+
+def _add_command_to_group(cmd_name: str, entry: Any, groups: dict[str, click.Group], root_group: click.Group, registry: Registry) -> None:
+    """Build and add a Click command to the appropriate group."""
+    click_cmd = build_click_command(cmd_name, registry=registry)
+    if not click_cmd:
+        return
+
+    parent = entry.metadata.get("parent")
+
+    # Update command name if it has a parent
+    if parent:
+        # Extract the actual command name (without parent prefix)
+        parts = cmd_name.split(".")
+        parent_parts = parent.split(".")
+        # Remove parent parts from command name
+        cmd_parts = parts[len(parent_parts) :]
+        click_cmd.name = cmd_parts[0] if cmd_parts else parts[-1]
+
+    # Add to parent group or root
+    if parent and parent in groups:
+        groups[parent].add_command(click_cmd)
+    else:
+        # Parent not found or no parent, add to root
+        root_group.add_command(click_cmd)
+
+
+def _should_skip_entry(entry: Any) -> bool:
+    """Check if an entry should be skipped during processing."""
+    if not entry:
+        return True
+
+    info = entry.metadata.get("info")
+    return not info
+
+
+def _should_skip_command(entry: Any) -> bool:
+    """Check if a command entry should be skipped (hidden or is a group)."""
+    info = entry.metadata.get("info")
+    return not info or info.hidden or entry.metadata.get("is_group")
+
+
 def create_command_group(
     name: str = "cli",
     commands: list[str] | None = None,
@@ -218,8 +281,6 @@ def create_command_group(
     """
     reg = registry or get_command_registry()
     group = click.Group(name=name, **kwargs)
-
-    # Build nested command structure
     groups: dict[str, click.Group] = {}
 
     # Get commands to include
@@ -232,72 +293,20 @@ def create_command_group(
     # First pass: create all groups
     for cmd_name in sorted_commands:
         entry = reg.get_entry(cmd_name, dimension="command")
-        if not entry:
-            continue
-
-        info = entry.metadata.get("info")
-        if not info:
+        if _should_skip_entry(entry):
             continue
 
         # Check if this is a group
         if entry.metadata.get("is_group"):
-            parent = entry.metadata.get("parent")
-            # Extract the actual group name (without parent prefix)
-            actual_name = cmd_name.split(".")[-1] if parent else cmd_name
-
-            subgroup = click.Group(
-                name=actual_name,
-                help=info.description,
-                hidden=info.hidden,
-            )
-            groups[cmd_name] = subgroup
-
-            # Add to parent or root
-            if parent:
-                # Handle multi-level parents with dot notation
-                parent_key = parent
-                if parent_key in groups:
-                    groups[parent_key].add_command(subgroup)
-                else:
-                    # Parent should have been created, add to root as fallback
-                    group.add_command(subgroup)
-            else:
-                group.add_command(subgroup)
+            _create_subgroup(cmd_name, entry, groups, group)
 
     # Second pass: add commands to groups
     for cmd_name in sorted_commands:
         entry = reg.get_entry(cmd_name, dimension="command")
-        if not entry:
+        if _should_skip_entry(entry) or _should_skip_command(entry):
             continue
 
-        info = entry.metadata.get("info")
-        if not info or info.hidden or entry.metadata.get("is_group"):
-            continue
-
-        # Build Click command
-        click_cmd = build_click_command(cmd_name, registry=reg)
-        if click_cmd:
-            parent = entry.metadata.get("parent")
-
-            # Update command name if it has a parent
-            if parent:
-                # Extract the actual command name (without parent prefix)
-                parts = cmd_name.split(".")
-                parent_parts = parent.split(".")
-                # Remove parent parts from command name
-                cmd_parts = parts[len(parent_parts) :]
-                click_cmd.name = cmd_parts[0] if cmd_parts else parts[-1]
-
-            # Add to parent group or root
-            if parent:
-                parent_key = parent
-                if parent_key in groups:
-                    groups[parent_key].add_command(click_cmd)
-                else:
-                    # Parent not found, add to root
-                    group.add_command(click_cmd)
-            else:
-                group.add_command(click_cmd)
+        _add_command_to_group(cmd_name, entry, groups, group, reg)
 
     return group
 
