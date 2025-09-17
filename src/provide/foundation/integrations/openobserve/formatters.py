@@ -82,6 +82,82 @@ def format_log_line(entry: dict[str, Any]) -> str:
     return " ".join(parts)
 
 
+def _determine_columns(hits: list[dict[str, Any]]) -> list[str]:
+    """Determine columns to display from hits."""
+    # Get all unique keys from hits
+    all_keys: set[str] = set()
+    for hit in hits:
+        all_keys.update(hit.keys())
+
+    # Sort columns, putting common ones first
+    priority_cols = ["_timestamp", "level", "service", "message"]
+    columns = []
+    for col in priority_cols:
+        if col in all_keys:
+            columns.append(col)
+            all_keys.remove(col)
+    columns.extend(sorted(all_keys))
+    return columns
+
+
+def _filter_internal_columns(columns: list[str]) -> list[str]:
+    """Filter out internal columns if not explicitly requested."""
+    if "_p" in columns:
+        return [c for c in columns if not c.startswith("_") or c == "_timestamp"]
+    return columns
+
+
+def _format_cell_value(col: str, value: Any, max_length: int = 50) -> str:
+    """Format a cell value for display."""
+    if col == "_timestamp" and value:
+        dt = datetime.fromtimestamp(value / 1_000_000)
+        if max_length > 20:  # Full format for wide tables
+            return dt.strftime("%Y-%m-%d %H:%M:%S")
+        else:  # Short format for narrow tables
+            return dt.strftime("%H:%M:%S")
+
+    value_str = str(value)
+    if len(value_str) > max_length:
+        return value_str[:max_length-3] + "..."
+    return value_str
+
+
+def _format_with_tabulate(hits: list[dict[str, Any]], columns: list[str]) -> str:
+    """Format using tabulate library."""
+    from tabulate import tabulate  # type: ignore[import-untyped]
+
+    rows = []
+    for hit in hits:
+        row = []
+        for col in columns:
+            value = hit.get(col, "")
+            formatted_value = _format_cell_value(col, value, max_length=50)
+            row.append(formatted_value)
+        rows.append(row)
+
+    return tabulate(rows, headers=columns, tablefmt="grid")
+
+
+def _format_simple_table(hits: list[dict[str, Any]], columns: list[str]) -> str:
+    """Format using simple text formatting."""
+    lines = []
+
+    # Header
+    lines.append(" | ".join(columns))
+    lines.append("-" * (len(columns) * 15))
+
+    # Rows
+    for hit in hits:
+        row_values = []
+        for col in columns:
+            value = hit.get(col, "")
+            formatted_value = _format_cell_value(col, value, max_length=12)
+            row_values.append(formatted_value)
+        lines.append(" | ".join(row_values))
+
+    return "\n".join(lines)
+
+
 def format_table(response: SearchResponse, columns: list[str] | None = None) -> str:
     """Format response as a table.
 
@@ -96,70 +172,16 @@ def format_table(response: SearchResponse, columns: list[str] | None = None) -> 
     if not response.hits:
         return "No results found"
 
-    # Determine columns
+    # Determine columns if not provided
     if columns is None:
-        # Get all unique keys from hits
-        all_keys: set[str] = set()
-        for hit in response.hits:
-            all_keys.update(hit.keys())
-        # Sort columns, putting common ones first
-        priority_cols = ["_timestamp", "level", "service", "message"]
-        columns = []
-        for col in priority_cols:
-            if col in all_keys:
-                columns.append(col)
-                all_keys.remove(col)
-        columns.extend(sorted(all_keys))
-
-    # Filter out internal columns if not explicitly requested
-    if "_p" in columns and "_p" not in (columns or []):
-        columns = [c for c in columns if not c.startswith("_") or c == "_timestamp"]
+        columns = _determine_columns(response.hits)
+        columns = _filter_internal_columns(columns)
 
     # Try to use tabulate if available
     try:
-        from tabulate import tabulate  # type: ignore[import-untyped]
-
-        # Prepare data
-        headers = columns
-        rows = []
-        for hit in response.hits:
-            row = []
-            for col in columns:
-                value = hit.get(col, "")
-                # Format timestamp
-                if col == "_timestamp" and value:
-                    dt = datetime.fromtimestamp(value / 1_000_000)
-                    value = dt.strftime("%Y-%m-%d %H:%M:%S")
-                # Truncate long values
-                value_str = str(value)
-                if len(value_str) > 50:
-                    value_str = value_str[:47] + "..."
-                row.append(value_str)
-            rows.append(row)
-
-        return tabulate(rows, headers=headers, tablefmt="grid")
-
+        return _format_with_tabulate(response.hits, columns)
     except ImportError:
-        # Fallback to simple formatting
-        lines = []
-
-        # Header
-        lines.append(" | ".join(columns))
-        lines.append("-" * (len(columns) * 15))
-
-        # Rows
-        for hit in response.hits:
-            row_values = []
-            for col in columns:
-                value = hit.get(col, "")
-                if col == "_timestamp" and value:
-                    dt = datetime.fromtimestamp(value / 1_000_000)
-                    value = dt.strftime("%H:%M:%S")
-                value_str = str(value)[:12]
-                row_values.append(value_str)
-            lines.append(" | ".join(row_values))
-
-        return "\n".join(lines)
+        return _format_simple_table(response.hits, columns)
 
 
 def format_csv(response: SearchResponse, columns: list[str] | None = None) -> str:
