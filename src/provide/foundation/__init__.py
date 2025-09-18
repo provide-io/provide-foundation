@@ -43,22 +43,6 @@ from provide.foundation.resilience import (
 from provide.foundation.setup import (
     shutdown_foundation_telemetry,
 )
-from provide.foundation.formatting import (
-    format_duration,
-    format_grouped,
-    format_number,
-    format_percentage,
-    format_size,
-    format_table,
-    indent,
-    pluralize,
-    strip_ansi,
-    to_camel_case,
-    to_kebab_case,
-    to_snake_case,
-    truncate,
-    wrap_text,
-)
 from provide.foundation.utils import (
     TokenBucketRateLimiter,
     check_optional_deps,
@@ -90,6 +74,10 @@ def __getattr__(name: str) -> object:
             import provide.foundation.crypto as crypto
 
             return crypto
+        case "formatting":
+            import provide.foundation.formatting as formatting
+
+            return formatting
         case "metrics":
             import provide.foundation.metrics as metrics
 
@@ -140,13 +128,8 @@ __all__ = [
     "error_boundary",
     "errors",  # The errors module for detailed imports
     "fallback",
-    # Formatting utilities
-    "format_duration",
-    "format_grouped",
-    "format_number",
-    "format_percentage",
-    "format_size",
-    "format_table",
+    # Formatting module (lazy loaded)
+    "formatting",
     "get_component_registry",
     "get_hub",
     "get_logger",
