@@ -134,15 +134,12 @@ __all__ = [
     "get_hub",
     "get_logger",
     "hub",
-    # Text formatting utilities
-    "indent",
     # Core setup and logger
     "logger",
     # Console functions (work with or without click)
     "perr",
     "pin",
     "platform",
-    "pluralize",
     "pout",
     "process",
     "resilience",  # The resilience module for detailed imports
@@ -155,15 +152,8 @@ __all__ = [
     "show_event_matrix",
     # Utilities
     "shutdown_foundation_telemetry",
-    "strip_ansi",
     "timed_block",
-    # Case conversion utilities
-    "to_camel_case",
-    "to_kebab_case",
-    "to_snake_case",
     "tracer",  # The tracer module for distributed tracing
-    "truncate",
-    "wrap_text",
 ]
 
 # Logger instance is imported above with other logger imports
