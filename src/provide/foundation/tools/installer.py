@@ -1,11 +1,5 @@
 from __future__ import annotations
 
-"""Tool installation manager for various archive formats.
-
-Handles extraction and installation of tools from different
-archive formats (zip, tar, gz, etc.) and binary files.
-"""
-
 from pathlib import Path
 import shutil
 import tarfile
@@ -14,6 +8,12 @@ import zipfile
 from provide.foundation.errors import FoundationError
 from provide.foundation.logger import get_logger
 from provide.foundation.tools.base import ToolMetadata
+
+"""Tool installation manager for various archive formats.
+
+Handles extraction and installation of tools from different
+archive formats (zip, tar, gz, etc.) and binary files.
+"""
 
 log = get_logger(__name__)
 

@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-"""Stream utilities for foundation library."""
-
 import io
 import sys
 from typing import TextIO
+
+"""Stream utilities for foundation library."""
 
 
 def get_safe_stderr() -> TextIO:

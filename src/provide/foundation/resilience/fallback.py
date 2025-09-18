@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Fallback implementation for graceful degradation."""
-
 import asyncio
 from collections.abc import Callable
 import functools
@@ -10,6 +8,8 @@ from typing import Any, TypeVar
 from attrs import define, field
 
 from provide.foundation.logger import logger
+
+"""Fallback implementation for graceful degradation."""
 
 T = TypeVar("T")
 

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-"""Database operations event set for Foundation."""
-
 from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping
+
+"""Database operations event set for Foundation."""
 
 EVENT_SET = EventSet(
     name="database",
@@ -34,7 +34,7 @@ EVENT_SET = EventSet(
             visual_markers={
                 "query": "🔍",
                 "select": "🔍",
-                "insert": "➕",
+                "insert": "+",
                 "update": "🔄",
                 "delete": "🗑️",
                 "connect": "🔗",

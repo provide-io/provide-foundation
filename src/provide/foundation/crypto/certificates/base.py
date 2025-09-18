@@ -1,13 +1,19 @@
 from __future__ import annotations
 
-"""Certificate base classes, types, and utilities."""
-
 from datetime import UTC, datetime
 from enum import StrEnum, auto
 import traceback
 from typing import TYPE_CHECKING, Any, NotRequired, Self, TypeAlias, TypedDict
 
 from attrs import define
+
+from provide.foundation import logger
+from provide.foundation.crypto.constants import (
+    DEFAULT_RSA_KEY_SIZE,
+)
+from provide.foundation.errors.config import ValidationError
+
+"""Certificate base classes, types, and utilities."""
 
 if TYPE_CHECKING:
     from cryptography import x509
@@ -22,12 +28,6 @@ try:
     _HAS_CRYPTO = True
 except ImportError:
     _HAS_CRYPTO = False
-
-from provide.foundation import logger
-from provide.foundation.crypto.constants import (
-    DEFAULT_RSA_KEY_SIZE,
-)
-from provide.foundation.errors.config import ValidationError
 
 
 def _require_crypto() -> None:

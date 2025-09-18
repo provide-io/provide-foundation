@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-"""Utility functions for hashing and cryptographic operations."""
-
 import hashlib
+
+"""Utility functions for hashing and cryptographic operations."""
 
 
 def quick_hash(data: bytes) -> int:

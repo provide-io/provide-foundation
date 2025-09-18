@@ -1,10 +1,5 @@
 from __future__ import annotations
 
-"""Error handling utilities and context managers.
-
-Provides tools for handling errors in a consistent and structured way.
-"""
-
 from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from typing import Any, TypeVar
@@ -13,6 +8,11 @@ from attrs import define, field
 
 from provide.foundation.errors.base import FoundationError
 from provide.foundation.errors.context import capture_error_context
+
+"""Error handling utilities and context managers.
+
+Provides tools for handling errors in a consistent and structured way.
+"""
 
 T = TypeVar("T")
 

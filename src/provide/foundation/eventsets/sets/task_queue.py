@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-"""Task queue and async job processing event set for Foundation."""
-
 from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping
+
+"""Task queue and async job processing event set for Foundation."""
 
 EVENT_SET = EventSet(
     name="task_queue",

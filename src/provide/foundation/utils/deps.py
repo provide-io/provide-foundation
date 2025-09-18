@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-"""Optional dependency checking utilities."""
-
 from typing import NamedTuple
+
+"""Optional dependency checking utilities."""
 
 
 class DependencyStatus(NamedTuple):

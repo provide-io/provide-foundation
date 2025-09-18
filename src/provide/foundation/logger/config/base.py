@@ -3,11 +3,11 @@ from __future__ import annotations
 #
 # base.py
 #
-"""Base configuration utilities for Foundation logger."""
-
 import os
 import sys
 from typing import Any
+
+"""Base configuration utilities for Foundation logger."""
 
 
 def get_config_logger() -> Any:

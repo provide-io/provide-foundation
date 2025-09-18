@@ -1,12 +1,12 @@
 from __future__ import annotations
 
+from typing import Any
+
 """Text manipulation and formatting utilities.
 
 Provides utilities for text truncation, case conversion, table formatting,
 and other common text operations.
 """
-
-from typing import Any
 
 
 def truncate(text: str, max_length: int, suffix: str = "...", whole_words: bool = True) -> str:

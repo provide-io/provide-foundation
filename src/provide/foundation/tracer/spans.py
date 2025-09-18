@@ -3,10 +3,6 @@ from __future__ import annotations
 #
 # spans.py
 #
-"""Enhanced span implementation for Foundation tracer.
-Provides OpenTelemetry integration when available, falls back to simple tracing.
-"""
-
 import time
 from typing import TYPE_CHECKING, Any
 import uuid
@@ -14,6 +10,10 @@ import uuid
 from attrs import define, field
 
 from provide.foundation.logger import get_logger
+
+"""Enhanced span implementation for Foundation tracer.
+Provides OpenTelemetry integration when available, falls back to simple tracing.
+"""
 
 if TYPE_CHECKING:
     from opentelemetry import trace as otel_trace

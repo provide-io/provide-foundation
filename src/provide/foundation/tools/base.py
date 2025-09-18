@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from pathlib import Path
+from typing import ClassVar
 
 from attrs import define, field
 
@@ -85,7 +86,7 @@ class BaseToolManager(ABC):
     # Class attributes to be overridden by subclasses
     tool_name: str = ""
     executable_name: str = ""
-    supported_platforms: list[str] = ["linux", "darwin", "windows"]
+    supported_platforms: ClassVar[list[str]] = ["linux", "darwin", "windows"]
 
     def __init__(self, config: BaseConfig) -> None:
         """Initialize the tool manager.

@@ -3,10 +3,6 @@ from __future__ import annotations
 #
 # core.py
 #
-"""Core FoundationLogger implementation.
-Contains the main logging class with all logging methods.
-"""
-
 import contextlib
 import threading
 from typing import TYPE_CHECKING, Any
@@ -14,6 +10,10 @@ from typing import TYPE_CHECKING, Any
 import structlog
 
 from provide.foundation.logger.types import TRACE_LEVEL_NAME
+
+"""Core FoundationLogger implementation.
+Contains the main logging class with all logging methods.
+"""
 
 if TYPE_CHECKING:
     from provide.foundation.logger.config import TelemetryConfig

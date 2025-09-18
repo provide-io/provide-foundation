@@ -3,8 +3,6 @@ from __future__ import annotations
 #
 # processors.py
 #
-"""Structlog processors for Foundation Telemetry."""
-
 import json
 from typing import Any, TextIO, cast
 
@@ -18,6 +16,8 @@ from provide.foundation.logger.custom_processors import (
     add_logger_name_emoji_prefix,
     filter_by_level_custom,
 )
+
+"""Structlog processors for Foundation Telemetry."""
 
 # Import trace context processor
 from provide.foundation.logger.processors.trace import inject_trace_context

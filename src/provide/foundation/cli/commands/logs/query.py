@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-"""Query logs command for Foundation CLI."""
-
 from typing import Any, NoReturn
+
+"""Query logs command for Foundation CLI."""
 
 try:
     import click

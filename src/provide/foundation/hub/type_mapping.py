@@ -33,10 +33,7 @@ def extract_click_type(annotation: Any) -> type:
             # Split on " | " and get the first non-None type
             parts = [part.strip() for part in annotation.split(" | ")]
             non_none_parts = [part for part in parts if part != "None"]
-            if non_none_parts:
-                annotation = non_none_parts[0]
-            else:
-                annotation = "str"
+            annotation = non_none_parts[0] if non_none_parts else "str"
 
         # Map string type names to actual types
         type_mapping = {

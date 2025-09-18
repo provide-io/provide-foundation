@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Output formatting utilities for OpenObserve results."""
-
 import csv
 from datetime import datetime
 import io
@@ -9,6 +7,8 @@ import json
 from typing import Any
 
 from provide.foundation.integrations.openobserve.models import SearchResponse
+
+"""Output formatting utilities for OpenObserve results."""
 
 
 def format_json(response: SearchResponse | dict[str, Any], pretty: bool = True) -> str:

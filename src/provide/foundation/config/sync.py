@@ -1,11 +1,5 @@
 from __future__ import annotations
 
-"""Synchronous wrappers for the async configuration system.
-
-These wrappers allow using the async config system in synchronous contexts
-like CLI tools, scripts, and frameworks that don't support async.
-"""
-
 import asyncio
 from pathlib import Path
 from typing import Any, TypeVar
@@ -20,6 +14,12 @@ from provide.foundation.config.loader import (
 )
 from provide.foundation.config.manager import ConfigManager
 from provide.foundation.config.types import ConfigDict, ConfigSource
+
+"""Synchronous wrappers for the async configuration system.
+
+These wrappers allow using the async config system in synchronous contexts
+like CLI tools, scripts, and frameworks that don't support async.
+"""
 
 T = TypeVar("T", bound=BaseConfig)
 

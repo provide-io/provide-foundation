@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-"""Digital signature operations using Ed25519."""
-
 from typing import TYPE_CHECKING
+
+"""Digital signature operations using Ed25519."""
 
 if TYPE_CHECKING:
     from cryptography.exceptions import InvalidSignature

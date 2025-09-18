@@ -1,10 +1,6 @@
 from __future__ import annotations
 
-#
-# telemetry.py
-#
-"""TelemetryConfig class for Foundation telemetry configuration."""
-
+# ruff: noqa: RUF009
 import os
 
 from attrs import define
@@ -27,6 +23,8 @@ from provide.foundation.config.defaults import (
 )
 from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.logger.config.logging import LoggingConfig
+
+"""TelemetryConfig class for Foundation telemetry configuration."""
 
 
 def _get_service_name() -> str | None:

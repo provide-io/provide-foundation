@@ -1,12 +1,12 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING, Any, Never
+
 """Cryptographic utilities for Foundation.
 
 Provides hashing, checksum verification, digital signatures, key generation,
 and X.509 certificate management.
 """
-
-from typing import TYPE_CHECKING, Any, Never
 
 if TYPE_CHECKING:
     pass  # All certificate types are available at runtime

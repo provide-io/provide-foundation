@@ -1,12 +1,12 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING, Any
+
 """Base utilities and constants for configuration parsers.
 
 Provides shared error formatting functions and common constants
 used across all parser modules.
 """
-
-from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from provide.foundation.logger.types import ConsoleFormatterStr, LogLevelStr

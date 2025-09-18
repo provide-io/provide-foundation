@@ -1,5 +1,11 @@
 from __future__ import annotations
 
+from provide.foundation.tools.base import (
+    BaseToolManager,
+    ToolError,
+    ToolMetadata,
+)
+
 """Provide Foundation Tools Module
 ================================
 
@@ -25,12 +31,6 @@ Example:
     PosixPath('/home/user/.wrknv/tools/terraform/1.5.0')
 
 """
-
-from provide.foundation.tools.base import (
-    BaseToolManager,
-    ToolError,
-    ToolMetadata,
-)
 from provide.foundation.tools.cache import ToolCache
 from provide.foundation.tools.downloader import ToolDownloader
 from provide.foundation.tools.installer import ToolInstaller

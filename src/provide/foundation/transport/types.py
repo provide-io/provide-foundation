@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-"""Transport type definitions and enums."""
-
 from enum import Enum
 from typing import Any, TypeAlias
 
-# Type aliases
+"""Transport type definitions and enums."""
+
 Headers: TypeAlias = dict[str, str]
 Params: TypeAlias = dict[str, Any]
 Data: TypeAlias = dict[str, Any] | bytes | str | None

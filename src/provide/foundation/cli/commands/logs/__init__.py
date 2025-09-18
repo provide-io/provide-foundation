@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING, Any
+
+from provide.foundation.logger import get_logger
+
 """Logs command group for Foundation CLI.
 
 Provides commands for sending and querying logs with OpenTelemetry integration.
 """
-
-from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     import click
@@ -18,8 +20,6 @@ try:
 except ImportError:
     click: Any = None
     _HAS_CLICK = False
-
-from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
 

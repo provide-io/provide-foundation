@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-"""OpenObserve integration configuration."""
-
 from attrs import define
 
 from provide.foundation.config.base import field
 from provide.foundation.config.env import RuntimeConfig
+
+"""OpenObserve integration configuration."""
 
 
 @define(slots=True, repr=False)

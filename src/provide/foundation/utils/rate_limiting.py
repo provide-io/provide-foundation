@@ -1,14 +1,14 @@
 from __future__ import annotations
 
+import asyncio
+import time
+from typing import final
+
 """Rate limiting utilities for Foundation.
 
 This module provides rate limiting implementations suitable for
 asynchronous applications, helping to manage request load and prevent abuse.
 """
-
-import asyncio
-import time
-from typing import final
 
 
 @final

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from collections.abc import AsyncIterator
 import time
+from typing import ClassVar
 
 from attrs import define, field
 import httpx
@@ -24,7 +25,7 @@ log = get_logger(__name__)
 class HTTPTransport(TransportBase):
     """HTTP/HTTPS transport using httpx backend."""
 
-    SCHEMES = ["http", "https"]
+    SCHEMES: ClassVar[list[str]] = ["http", "https"]
 
     config: HTTPConfig = field(factory=HTTPConfig.from_env)
     _client: httpx.AsyncClient | None = field(default=None, init=False)

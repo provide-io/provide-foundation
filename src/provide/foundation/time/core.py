@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-"""Core time utilities for Foundation."""
-
 from datetime import datetime
 import time
 from zoneinfo import ZoneInfo
+
+"""Core time utilities for Foundation."""
 
 
 def provide_time() -> float:

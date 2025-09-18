@@ -1,17 +1,17 @@
 from __future__ import annotations
 
-"""Caching system for installed tools.
-
-Provides TTL-based caching to avoid re-downloading tools
-that are already installed and valid.
-"""
-
 from datetime import datetime, timedelta
 from pathlib import Path
 
 from provide.foundation.errors import FoundationError
 from provide.foundation.file.formats import read_json, write_json
 from provide.foundation.logger import get_logger
+
+"""Caching system for installed tools.
+
+Provides TTL-based caching to avoid re-downloading tools
+that are already installed and valid.
+"""
 
 log = get_logger(__name__)
 

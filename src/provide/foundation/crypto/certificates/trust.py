@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-"""Certificate trust chain and verification utilities."""
-
 from typing import TYPE_CHECKING
+
+"""Certificate trust chain and verification utilities."""
 
 if TYPE_CHECKING:
     from provide.foundation.crypto.certificates.certificate import Certificate

@@ -1,10 +1,5 @@
 from __future__ import annotations
 
-"""OpenObserve integration for Foundation.
-
-Provides log querying and streaming capabilities as an optional integration.
-"""
-
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.integrations.openobserve.config import OpenObserveConfig
 from provide.foundation.integrations.openobserve.exceptions import (
@@ -15,6 +10,11 @@ from provide.foundation.integrations.openobserve.exceptions import (
     OpenObserveQueryError,
     OpenObserveStreamingError,
 )
+
+"""OpenObserve integration for Foundation.
+
+Provides log querying and streaming capabilities as an optional integration.
+"""
 from provide.foundation.integrations.openobserve.formatters import (
     format_csv,
     format_json,

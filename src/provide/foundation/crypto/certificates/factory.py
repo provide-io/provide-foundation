@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-"""Certificate factory methods."""
-
 from typing import TYPE_CHECKING
+
+"""Certificate factory methods."""
 
 if TYPE_CHECKING:
     from cryptography.hazmat.primitives import serialization

@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Unified key generation for all cryptographic algorithms."""
-
 from typing import Any, Protocol
 
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
@@ -14,6 +12,8 @@ from provide.foundation.crypto.constants import (
     SUPPORTED_KEY_TYPES,
     SUPPORTED_RSA_SIZES,
 )
+
+"""Unified key generation for all cryptographic algorithms."""
 from provide.foundation.crypto.signatures import generate_ed25519_keypair
 
 

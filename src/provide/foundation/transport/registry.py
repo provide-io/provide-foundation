@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Transport registration and discovery using Foundation Hub."""
-
 from typing import Any
 
 from provide.foundation.hub import get_component_registry
@@ -10,6 +8,8 @@ from provide.foundation.logger import get_logger
 from provide.foundation.transport.base import Transport
 from provide.foundation.transport.errors import TransportNotFoundError
 from provide.foundation.transport.types import TransportType
+
+"""Transport registration and discovery using Foundation Hub."""
 
 log = get_logger(__name__)
 

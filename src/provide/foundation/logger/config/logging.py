@@ -1,10 +1,6 @@
 from __future__ import annotations
 
-#
-# logging.py
-#
-"""LoggingConfig class for Foundation logger configuration."""
-
+# ruff: noqa: RUF009
 from pathlib import Path
 
 from attrs import define
@@ -44,6 +40,8 @@ from provide.foundation.logger.types import (
     ConsoleFormatterStr,
     LogLevelStr,
 )
+
+"""LoggingConfig class for Foundation logger configuration."""
 
 
 @define(slots=True, repr=False)

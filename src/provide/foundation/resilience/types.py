@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-"""Type definitions for resilience patterns."""
-
 from enum import Enum
+
+"""Type definitions for resilience patterns."""
 
 
 class CircuitState(Enum):

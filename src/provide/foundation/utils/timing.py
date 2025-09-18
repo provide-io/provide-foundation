@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-"""Timing and performance utilities.
-
-Provides context managers and utilities for timing operations and logging performance.
-"""
-
 from collections.abc import Generator
 from contextlib import contextmanager
 import contextvars
 import time
 from typing import TYPE_CHECKING, Any
+
+"""Timing and performance utilities.
+
+Provides context managers and utilities for timing operations and logging performance.
+"""
 
 if TYPE_CHECKING:
     from provide.foundation.logger.base import FoundationLogger
