@@ -226,7 +226,8 @@
       "Bash(timeout 30 pytest tests/tracer/test_otel.py -v)",
       "Bash(timeout 30 pytest tests/test_init_coverage.py -v)",
       "Bash(timeout 30 pytest tests/cli/commands/logs/test_query_simplified.py tests/cli/commands/logs/test_send_comprehensive.py tests/cli/test_cli_testing_coverage.py -v)",
-      "Bash(timeout 120 pytest -n auto --tb=short -q)"
+      "Bash(timeout 120 pytest -n auto --tb=short -q)",
+      "Bash(gh repo view:*)"
     ],
     "deny": [],
     "ask": [],
