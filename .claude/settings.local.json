@@ -208,7 +208,8 @@
       "Bash(.venv/bin/ruff check --fix --unsafe-fixes src/)",
       "Bash(.venv/bin/ruff format src/provide/foundation/errors/decorators.py)",
       "Bash(.venv/bin/ruff check src/provide/foundation/errors/decorators.py --select C901)",
-      "Bash(timeout 30 pytest tests/errors/ -q)"
+      "Bash(timeout 30 pytest tests/errors/ -q)",
+      "Bash(timeout 30 pytest tests/hub/test_hub_commands_coverage.py::TestHubCommandsImports::test_all_exports_defined -xvs)"
     ],
     "deny": [],
     "ask": [],
