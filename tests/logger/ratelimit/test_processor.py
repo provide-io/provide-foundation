@@ -1,6 +1,6 @@
 """Tests for Foundation rate limiting processor."""
 
-import contextlib
+from contextlib import suppress
 import time
 from unittest.mock import MagicMock, patch
 
@@ -299,17 +299,15 @@ class TestRateLimiterProcessor:
         time.sleep(0.15)
 
         # Next call should trigger summary emission
-        try:
+        with suppress(structlog.DropEvent):
             processor(
                 None,
                 "info",
                 event_dict.copy(),
             )  # This will be denied and should trigger summary
-        except structlog.DropEvent:
-            pass  # Expected
 
         # Generate another event to trigger the interval check
-        with contextlib.suppress(structlog.DropEvent):
+        with suppress(structlog.DropEvent):
             processor(None, "info", event_dict.copy())
 
         # Directly call emit_summary to ensure it works
@@ -527,10 +525,8 @@ class TestRateLimiterProcessorIntegration:
         time.sleep(0.01)
 
         # Second message should be rate limited and not appear
-        try:
+        with suppress(Exception):
             logger.info("Second message")
-        except Exception:
-            pass  # Rate limited messages may cause exceptions in the pipeline
 
         # Test passed if no unhandled exceptions occurred
 
@@ -548,10 +544,8 @@ class TestRateLimiterProcessorIntegration:
 
         # Process many events
         for _i in range(1000):
-            try:
+            with suppress(structlog.DropEvent):
                 processor(None, "info", event_dict.copy())
-            except structlog.DropEvent:
-                pass  # Expected when rate limited
 
         end_time = time.time()
         elapsed = end_time - start_time
@@ -633,10 +627,8 @@ class TestRateLimiterProcessorIntegration:
         processor(None, "info", event_dict.copy())  # Allowed
         processor(None, "info", event_dict.copy())  # Allowed
 
-        try:
+        with suppress(structlog.DropEvent):
             processor(None, "info", event_dict.copy())  # Should be denied
-        except structlog.DropEvent:
-            pass
 
         # Check statistics
         stats = processor.rate_limiter.get_stats()

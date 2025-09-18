@@ -11,21 +11,13 @@ from attrs import define
 
 if TYPE_CHECKING:
     from cryptography import x509
-    from cryptography.hazmat.backends import default_backend
-    from cryptography.hazmat.primitives import hashes, serialization
     from cryptography.hazmat.primitives.asymmetric import ec, rsa
-    from cryptography.hazmat.primitives.serialization import load_pem_private_key
-    from cryptography.x509 import Certificate as X509Certificate
-    from cryptography.x509.oid import ExtendedKeyUsageOID, NameOID
+    from cryptography.x509.oid import NameOID
 
 try:
     from cryptography import x509
-    from cryptography.hazmat.backends import default_backend
-    from cryptography.hazmat.primitives import hashes, serialization
     from cryptography.hazmat.primitives.asymmetric import ec, rsa
-    from cryptography.hazmat.primitives.serialization import load_pem_private_key
-    from cryptography.x509 import Certificate as X509Certificate
-    from cryptography.x509.oid import ExtendedKeyUsageOID, NameOID
+    from cryptography.x509.oid import NameOID
 
     _HAS_CRYPTO = True
 except ImportError:

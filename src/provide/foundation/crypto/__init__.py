@@ -9,17 +9,7 @@ and X.509 certificate management.
 from typing import TYPE_CHECKING, Any, Never
 
 if TYPE_CHECKING:
-    # Import certificate types only for type checking
-    from provide.foundation.crypto.certificates import (
-        Certificate as CertificateType,
-        CertificateBase as CertificateBaseType,
-        CertificateConfig as CertificateConfigType,
-        CertificateError as CertificateErrorType,
-        CurveType as CurveTypeType,
-        KeyType as KeyTypeType,
-        create_ca as create_ca_type,
-        create_self_signed as create_self_signed_type,
-    )
+    pass  # All certificate types are available at runtime
 
 # Standard crypto imports (always available - use hashlib)
 from provide.foundation.crypto.algorithms import (

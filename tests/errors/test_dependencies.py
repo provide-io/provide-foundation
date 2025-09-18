@@ -1,5 +1,7 @@
 """Tests for dependency-related exceptions."""
 
+from typing import Never
+
 import pytest
 
 from provide.foundation.errors.base import FoundationError
@@ -9,11 +11,11 @@ from provide.foundation.errors.dependencies import DependencyError, DependencyMi
 class TestDependencyError:
     """Test cases for DependencyError."""
 
-    def test_dependency_error_inheritance(self):
+    def test_dependency_error_inheritance(self) -> None:
         """Test that DependencyError inherits from FoundationError."""
         assert issubclass(DependencyError, FoundationError)
 
-    def test_dependency_error_basic_creation(self):
+    def test_dependency_error_basic_creation(self) -> None:
         """Test basic DependencyError creation."""
         error = DependencyError("cryptography")
 
@@ -23,7 +25,7 @@ class TestDependencyError:
         assert error.context["dependency.package"] == "cryptography"
         assert error.context["dependency.install_command"] == "pip install cryptography"
 
-    def test_dependency_error_with_feature(self):
+    def test_dependency_error_with_feature(self) -> None:
         """Test DependencyError with feature parameter."""
         error = DependencyError("cryptography", feature="crypto")
 
@@ -34,7 +36,7 @@ class TestDependencyError:
         assert error.context["dependency.feature"] == "crypto"
         assert error.context["dependency.install_command"] == "pip install 'provide-foundation[crypto]'"
 
-    def test_dependency_error_with_custom_install_command(self):
+    def test_dependency_error_with_custom_install_command(self) -> None:
         """Test DependencyError with custom install command."""
         custom_cmd = "conda install cryptography"
         error = DependencyError("cryptography", install_command=custom_cmd)
@@ -45,7 +47,7 @@ class TestDependencyError:
         assert error.context["dependency.package"] == "cryptography"
         assert error.context["dependency.install_command"] == custom_cmd
 
-    def test_dependency_error_with_additional_context(self):
+    def test_dependency_error_with_additional_context(self) -> None:
         """Test DependencyError with additional context."""
         error = DependencyError("cryptography", feature="crypto", custom_field="test_value", another_field=42)
 
@@ -54,7 +56,7 @@ class TestDependencyError:
         assert error.context["custom_field"] == "test_value"
         assert error.context["another_field"] == 42
 
-    def test_dependency_error_to_dict(self):
+    def test_dependency_error_to_dict(self) -> None:
         """Test DependencyError serialization to dict."""
         error = DependencyError("cryptography", feature="crypto")
         error_dict = error.to_dict()
@@ -65,7 +67,7 @@ class TestDependencyError:
         assert error_dict["dependency.package"] == "cryptography"
         assert error_dict["dependency.feature"] == "crypto"
 
-    def test_dependency_error_feature_priority_over_custom_command(self):
+    def test_dependency_error_feature_priority_over_custom_command(self) -> None:
         """Test that feature parameter takes priority over custom install command."""
         error = DependencyError("cryptography", feature="crypto", install_command="pip install cryptography")
 
@@ -73,7 +75,7 @@ class TestDependencyError:
         assert "pip install 'provide-foundation[crypto]'" in str(error)
         assert error.context["dependency.install_command"] == "pip install 'provide-foundation[crypto]'"
 
-    def test_dependency_error_with_cause(self):
+    def test_dependency_error_with_cause(self) -> None:
         """Test DependencyError with an underlying cause."""
         cause = ImportError("No module named 'cryptography'")
         error = DependencyError("cryptography", cause=cause)
@@ -89,11 +91,11 @@ class TestDependencyError:
 class TestDependencyMismatchError:
     """Test cases for DependencyMismatchError."""
 
-    def test_dependency_mismatch_error_inheritance(self):
+    def test_dependency_mismatch_error_inheritance(self) -> None:
         """Test that DependencyMismatchError inherits from FoundationError."""
         assert issubclass(DependencyMismatchError, FoundationError)
 
-    def test_dependency_mismatch_error_basic_creation(self):
+    def test_dependency_mismatch_error_basic_creation(self) -> None:
         """Test basic DependencyMismatchError creation."""
         error = DependencyMismatchError("cryptography", required_version=">=3.0.0", current_version="2.9.2")
 
@@ -107,7 +109,7 @@ class TestDependencyMismatchError:
         assert error.context["dependency.required_version"] == ">=3.0.0"
         assert error.context["dependency.current_version"] == "2.9.2"
 
-    def test_dependency_mismatch_error_with_additional_context(self):
+    def test_dependency_mismatch_error_with_additional_context(self) -> None:
         """Test DependencyMismatchError with additional context."""
         error = DependencyMismatchError(
             "cryptography",
@@ -123,7 +125,7 @@ class TestDependencyMismatchError:
         assert error.context["system_info"] == "Ubuntu 20.04"
         assert error.context["check_source"] == "requirements.txt"
 
-    def test_dependency_mismatch_error_to_dict(self):
+    def test_dependency_mismatch_error_to_dict(self) -> None:
         """Test DependencyMismatchError serialization to dict."""
         error = DependencyMismatchError("cryptography", required_version=">=3.0.0", current_version="2.9.2")
         error_dict = error.to_dict()
@@ -135,7 +137,7 @@ class TestDependencyMismatchError:
         assert error_dict["dependency.required_version"] == ">=3.0.0"
         assert error_dict["dependency.current_version"] == "2.9.2"
 
-    def test_dependency_mismatch_error_with_cause(self):
+    def test_dependency_mismatch_error_with_cause(self) -> None:
         """Test DependencyMismatchError with an underlying cause."""
         cause = ImportError("cryptography 2.9.2 is too old")
         error = DependencyMismatchError(
@@ -153,7 +155,7 @@ class TestDependencyMismatchError:
 class TestDependencyErrorIntegration:
     """Integration tests for dependency errors."""
 
-    def test_errors_can_be_raised_and_caught(self):
+    def test_errors_can_be_raised_and_caught(self) -> Never:
         """Test that dependency errors can be raised and caught properly."""
         # Test DependencyError
         with pytest.raises(DependencyError) as exc_info:
@@ -171,7 +173,7 @@ class TestDependencyErrorIntegration:
         assert error.code == "DEPENDENCY_VERSION_MISMATCH"
         assert "test-package" in str(error)
 
-    def test_errors_can_be_caught_as_foundation_error(self):
+    def test_errors_can_be_caught_as_foundation_error(self) -> Never:
         """Test that dependency errors can be caught as FoundationError."""
         with pytest.raises(FoundationError):
             raise DependencyError("test-package")
@@ -179,7 +181,7 @@ class TestDependencyErrorIntegration:
         with pytest.raises(FoundationError):
             raise DependencyMismatchError("test-package", required_version=">=2.0.0", current_version="1.5.0")
 
-    def test_error_context_is_preserved_in_exception_chain(self):
+    def test_error_context_is_preserved_in_exception_chain(self) -> None:
         """Test that error context is preserved when chaining exceptions."""
         original_error = ImportError("No module named 'test_package'")
 

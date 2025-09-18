@@ -115,7 +115,7 @@ class ToolInstaller:
                 try:
                     member_path.resolve().relative_to(dest.resolve())
                 except ValueError:
-                    raise InstallError(f"Path traversal detected in archive: {member_name}")
+                    raise InstallError(f"Path traversal detected in archive: {member_name}") from None
 
                 safe_members.append(member_name)
 
@@ -160,14 +160,16 @@ class ToolInstaller:
                     try:
                         target.resolve().relative_to(Path(dest).resolve())
                     except ValueError:
-                        raise InstallError(f"Unsafe symlink in archive: {member.name} -> {member.linkname}")
+                        raise InstallError(
+                            f"Unsafe symlink in archive: {member.name} -> {member.linkname}"
+                        ) from None
 
                 # Path traversal check
                 member_path = Path(dest) / member.name
                 try:
                     member_path.resolve().relative_to(dest.resolve())
                 except ValueError:
-                    raise InstallError(f"Path traversal detected in archive: {member.name}")
+                    raise InstallError(f"Path traversal detected in archive: {member.name}") from None
 
                 safe_members.append(member)
 

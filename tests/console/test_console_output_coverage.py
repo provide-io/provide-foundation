@@ -42,13 +42,13 @@ class TestGetContext:
             patch("provide.foundation.console.output._HAS_CLICK", True),
             patch("provide.foundation.console.output.click") as mock_click,
         ):
-                mock_ctx = Mock()
-                mock_context_obj = CLIContext()
-                mock_ctx.obj = mock_context_obj
-                mock_click.get_current_context.return_value = mock_ctx
+            mock_ctx = Mock()
+            mock_context_obj = CLIContext()
+            mock_ctx.obj = mock_context_obj
+            mock_click.get_current_context.return_value = mock_ctx
 
-                result = _get_context()
-                assert result is mock_context_obj
+            result = _get_context()
+            assert result is mock_context_obj
 
     def test_get_context_click_with_invalid_obj(self) -> None:
         """Test _get_context when click context has invalid obj."""
@@ -56,12 +56,12 @@ class TestGetContext:
             patch("provide.foundation.console.output._HAS_CLICK", True),
             patch("provide.foundation.console.output.click") as mock_click,
         ):
-                mock_ctx = Mock()
-                mock_ctx.obj = "not a Context object"
-                mock_click.get_current_context.return_value = mock_ctx
+            mock_ctx = Mock()
+            mock_ctx.obj = "not a Context object"
+            mock_click.get_current_context.return_value = mock_ctx
 
-                result = _get_context()
-                assert result is None
+            result = _get_context()
+            assert result is None
 
 
 class TestShouldUseJson:
@@ -219,9 +219,9 @@ class TestPoutFunction:
                 return_value=None,
             ),
         ):
-                    pout("Hello world")
+            pout("Hello world")
 
-                    mock_click.echo.assert_called_once_with("Hello world", nl=True)
+            mock_click.echo.assert_called_once_with("Hello world", nl=True)
 
     def test_pout_json_mode_with_key(self) -> None:
         """Test pout in JSON mode with json_key."""
@@ -260,9 +260,9 @@ class TestPoutFunction:
                 return_value=None,
             ),
         ):
-                    pout("message", prefix="INFO:")
+            pout("message", prefix="INFO:")
 
-                    mock_click.echo.assert_called_once_with("INFO: message", nl=True)
+            mock_click.echo.assert_called_once_with("INFO: message", nl=True)
 
     def test_pout_with_colors_and_formatting(self) -> None:
         """Test pout with color and formatting options."""
@@ -277,21 +277,21 @@ class TestPoutFunction:
                 return_value=True,
             ),
         ):
-                    pout(
-                        "colored message",
-                        ctx=mock_ctx,
-                        color="red",
-                        bold=True,
-                        dim=False,
-                    )
+            pout(
+                "colored message",
+                ctx=mock_ctx,
+                color="red",
+                bold=True,
+                dim=False,
+            )
 
-                    mock_click.secho.assert_called_once_with(
-                        "colored message",
-                        fg="red",
-                        bold=True,
-                        dim=False,
-                        nl=True,
-                    )
+            mock_click.secho.assert_called_once_with(
+                "colored message",
+                fg="red",
+                bold=True,
+                dim=False,
+                nl=True,
+            )
 
     def test_pout_no_color_support(self) -> None:
         """Test pout when colors are not supported."""
@@ -306,9 +306,9 @@ class TestPoutFunction:
                 return_value=False,
             ),
         ):
-                    pout("message", ctx=mock_ctx, color="red", bold=True)
+            pout("message", ctx=mock_ctx, color="red", bold=True)
 
-                    mock_click.echo.assert_called_once_with("message", nl=True)
+            mock_click.echo.assert_called_once_with("message", nl=True)
 
     def test_pout_no_click_fallback(self) -> None:
         """Test pout fallback when click is not available."""
@@ -316,9 +316,9 @@ class TestPoutFunction:
             patch("provide.foundation.console.output._HAS_CLICK", False),
             patch("builtins.print") as mock_print,
         ):
-                pout("fallback message")
+            pout("fallback message")
 
-                mock_print.assert_called_once_with("fallback message", file=sys.stdout)
+            mock_print.assert_called_once_with("fallback message", file=sys.stdout)
 
     def test_pout_no_click_fallback_no_newline(self) -> None:
         """Test pout fallback without newline when click is not available."""
@@ -326,13 +326,13 @@ class TestPoutFunction:
             patch("provide.foundation.console.output._HAS_CLICK", False),
             patch("builtins.print") as mock_print,
         ):
-                pout("no newline", nl=False)
+            pout("no newline", nl=False)
 
-                mock_print.assert_called_once_with(
-                    "no newline",
-                    file=sys.stdout,
-                    end="",
-                )
+            mock_print.assert_called_once_with(
+                "no newline",
+                file=sys.stdout,
+                end="",
+            )
 
     def test_pout_newline_aliases(self) -> None:
         """Test pout handles both nl and newline parameters."""
@@ -344,14 +344,14 @@ class TestPoutFunction:
                 return_value=None,
             ),
         ):
-                    # Test with newline=False
-                    pout("test", newline=False)
-                    mock_click.echo.assert_called_with("test", nl=False)
+            # Test with newline=False
+            pout("test", newline=False)
+            mock_click.echo.assert_called_with("test", nl=False)
 
-                    # Test with nl=False (should override newline default)
-                    mock_click.reset_mock()
-                    pout("test2", nl=False, newline=True)
-                    mock_click.echo.assert_called_with("test2", nl=False)
+            # Test with nl=False (should override newline default)
+            mock_click.reset_mock()
+            pout("test2", nl=False, newline=True)
+            mock_click.echo.assert_called_with("test2", nl=False)
 
 
 class TestPerrFunction:
@@ -367,13 +367,13 @@ class TestPerrFunction:
                 return_value=None,
             ),
         ):
-                    perr("Error message")
+            perr("Error message")
 
-                    mock_click.echo.assert_called_once_with(
-                        "Error message",
-                        err=True,
-                        nl=True,
-                    )
+            mock_click.echo.assert_called_once_with(
+                "Error message",
+                err=True,
+                nl=True,
+            )
 
     def test_perr_json_mode_with_key(self) -> None:
         """Test perr in JSON mode with json_key."""
@@ -415,16 +415,16 @@ class TestPerrFunction:
                 return_value=True,
             ),
         ):
-                    perr("error message", ctx=mock_ctx, color="red", bold=True)
+            perr("error message", ctx=mock_ctx, color="red", bold=True)
 
-                    mock_click.secho.assert_called_once_with(
-                        "error message",
-                        fg="red",
-                        bold=True,
-                        dim=False,
-                        err=True,
-                        nl=True,
-                    )
+            mock_click.secho.assert_called_once_with(
+                "error message",
+                fg="red",
+                bold=True,
+                dim=False,
+                err=True,
+                nl=True,
+            )
 
     def test_perr_no_click_fallback(self) -> None:
         """Test perr fallback when click is not available."""
@@ -432,9 +432,9 @@ class TestPerrFunction:
             patch("provide.foundation.console.output._HAS_CLICK", False),
             patch("builtins.print") as mock_print,
         ):
-                perr("error fallback")
+            perr("error fallback")
 
-                mock_print.assert_called_once_with("error fallback", file=sys.stderr)
+            mock_print.assert_called_once_with("error fallback", file=sys.stderr)
 
     def test_perr_no_click_fallback_no_newline(self) -> None:
         """Test perr fallback without newline when click is not available."""
@@ -442,13 +442,13 @@ class TestPerrFunction:
             patch("provide.foundation.console.output._HAS_CLICK", False),
             patch("builtins.print") as mock_print,
         ):
-                perr("no newline error", nl=False)
+            perr("no newline error", nl=False)
 
-                mock_print.assert_called_once_with(
-                    "no newline error",
-                    file=sys.stderr,
-                    end="",
-                )
+            mock_print.assert_called_once_with(
+                "no newline error",
+                file=sys.stderr,
+                end="",
+            )
 
 
 class TestEdgeCases:
@@ -461,14 +461,14 @@ class TestEdgeCases:
             patch("provide.foundation.console.output._HAS_CLICK", False),
             patch("provide.foundation.console.output.click", None),
         ):
-                # Should not raise errors
-                result = _get_context()
-                assert result is None
+            # Should not raise errors
+            result = _get_context()
+            assert result is None
 
-                # Functions should still work
-                with patch("builtins.print") as mock_print:
-                    pout("test message")
-                    mock_print.assert_called_once()
+            # Functions should still work
+            with patch("builtins.print") as mock_print:
+                pout("test message")
+                mock_print.assert_called_once()
 
     def test_json_encoding_successful_path(self) -> None:
         """Test successful JSON encoding and verify error handling exists."""
@@ -501,12 +501,12 @@ class TestEdgeCases:
             patch("provide.foundation.console.output._HAS_CLICK", True),
             patch("provide.foundation.console.output.click") as mock_click,
         ):
-                # Don't pass ctx explicitly
-                pout("test")
+            # Don't pass ctx explicitly
+            pout("test")
 
-                # Should call _get_context
-                mock_get_ctx.assert_called()
-                mock_click.echo.assert_called_once()
+            # Should call _get_context
+            mock_get_ctx.assert_called()
+            mock_click.echo.assert_called_once()
 
     def test_multiple_formatting_options(self) -> None:
         """Test multiple formatting options together."""
@@ -521,20 +521,20 @@ class TestEdgeCases:
                 return_value=True,
             ),
         ):
-                    pout(
-                        "complex message",
-                        ctx=mock_ctx,
-                        color="blue",
-                        bold=True,
-                        dim=True,
-                        prefix="[INFO]",
-                        nl=False,
-                    )
+            pout(
+                "complex message",
+                ctx=mock_ctx,
+                color="blue",
+                bold=True,
+                dim=True,
+                prefix="[INFO]",
+                nl=False,
+            )
 
-                    mock_click.secho.assert_called_once_with(
-                        "[INFO] complex message",
-                        fg="blue",
-                        bold=True,
-                        dim=True,
-                        nl=False,
-                    )
+            mock_click.secho.assert_called_once_with(
+                "[INFO] complex message",
+                fg="blue",
+                bold=True,
+                dim=True,
+                nl=False,
+            )

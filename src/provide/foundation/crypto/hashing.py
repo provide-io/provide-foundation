@@ -61,7 +61,7 @@ def hash_file(
     hasher = get_hasher(algorithm)
 
     try:
-        with open(path, "rb") as f:
+        with path.open("rb") as f:
             while chunk := f.read(chunk_size):
                 hasher.update(chunk)
 
@@ -212,7 +212,7 @@ def hash_file_multiple(
 
     # Read file once and update all hashers
     try:
-        with open(path, "rb") as f:
+        with path.open("rb") as f:
             while chunk := f.read(chunk_size):
                 for hasher in hashers.values():
                     hasher.update(chunk)

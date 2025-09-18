@@ -90,7 +90,7 @@ class FileLock:
                         f"Failed to acquire lock within {self.timeout}s",
                         code="LOCK_TIMEOUT",
                         path=str(self.path),
-                    )
+                    ) from None
 
                 # Wait before retry
                 time.sleep(self.check_interval)

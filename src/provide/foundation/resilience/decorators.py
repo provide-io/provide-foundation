@@ -17,6 +17,90 @@ from provide.foundation.resilience.retry import (
 F = TypeVar("F", bound=Callable[..., Any])
 
 
+def _handle_no_parentheses_retry(func: F) -> F:
+    """Handle @retry decorator used without parentheses."""
+    executor = RetryExecutor(RetryPolicy())
+
+    if asyncio.iscoroutinefunction(func):
+
+        @functools.wraps(func)
+        async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
+            return await executor.execute_async(func, *args, **kwargs)
+
+        return async_wrapper
+
+    @functools.wraps(func)
+    def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
+        return executor.execute_sync(func, *args, **kwargs)
+
+    return sync_wrapper
+
+
+def _validate_retry_parameters(
+    policy: RetryPolicy | None,
+    max_attempts: int | None,
+    base_delay: float | None,
+    backoff: BackoffStrategy | None,
+    max_delay: float | None,
+    jitter: bool | None,
+) -> None:
+    """Validate that policy and individual parameters are not both specified."""
+    if policy is not None and any(
+        p is not None for p in [max_attempts, base_delay, backoff, max_delay, jitter]
+    ):
+        raise ValueError("Cannot specify both policy and individual retry parameters")
+
+
+def _build_retry_policy(
+    exceptions: tuple[type[Exception], ...],
+    max_attempts: int | None,
+    base_delay: float | None,
+    backoff: BackoffStrategy | None,
+    max_delay: float | None,
+    jitter: bool | None,
+) -> RetryPolicy:
+    """Build a retry policy from individual parameters."""
+    policy_kwargs: dict[str, Any] = {}
+
+    if max_attempts is not None:
+        policy_kwargs["max_attempts"] = max_attempts
+    if base_delay is not None:
+        policy_kwargs["base_delay"] = base_delay
+    if backoff is not None:
+        policy_kwargs["backoff"] = backoff
+    if max_delay is not None:
+        policy_kwargs["max_delay"] = max_delay
+    if jitter is not None:
+        policy_kwargs["jitter"] = jitter
+    if exceptions:
+        policy_kwargs["retryable_errors"] = exceptions
+
+    return RetryPolicy(**policy_kwargs)
+
+
+def _create_retry_wrapper(
+    func: F,
+    policy: RetryPolicy,
+    on_retry: Callable[[int, Exception], None] | None,
+) -> F:
+    """Create the retry wrapper for a function."""
+    executor = RetryExecutor(policy, on_retry=on_retry)
+
+    if asyncio.iscoroutinefunction(func):
+
+        @functools.wraps(func)
+        async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
+            return await executor.execute_async(func, *args, **kwargs)
+
+        return async_wrapper
+
+    @functools.wraps(func)
+    def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
+        return executor.execute_sync(func, *args, **kwargs)
+
+    return sync_wrapper
+
+
 def retry(
     *exceptions: type[Exception],
     policy: RetryPolicy | None = None,
@@ -73,63 +157,17 @@ def retry(
     if len(exceptions) == 1 and callable(exceptions[0]) and not isinstance(exceptions[0], type):
         # Called as @retry without parentheses
         func = exceptions[0]
-        executor = RetryExecutor(RetryPolicy())
+        return _handle_no_parentheses_retry(func)
 
-        if asyncio.iscoroutinefunction(func):
-
-            @functools.wraps(func)
-            async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
-                return await executor.execute_async(func, *args, **kwargs)
-
-            return async_wrapper
-
-        @functools.wraps(func)
-        def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
-            return executor.execute_sync(func, *args, **kwargs)
-
-        return sync_wrapper
+    # Validate parameters
+    _validate_retry_parameters(policy, max_attempts, base_delay, backoff, max_delay, jitter)
 
     # Build policy if not provided
-    if policy is not None and any(
-        p is not None for p in [max_attempts, base_delay, backoff, max_delay, jitter]
-    ):
-        raise ValueError("Cannot specify both policy and individual retry parameters")
-
     if policy is None:
-        # Build policy from parameters
-        policy_kwargs: dict[str, Any] = {}
-
-        if max_attempts is not None:
-            policy_kwargs["max_attempts"] = max_attempts
-        if base_delay is not None:
-            policy_kwargs["base_delay"] = base_delay
-        if backoff is not None:
-            policy_kwargs["backoff"] = backoff
-        if max_delay is not None:
-            policy_kwargs["max_delay"] = max_delay
-        if jitter is not None:
-            policy_kwargs["jitter"] = jitter
-        if exceptions:
-            policy_kwargs["retryable_errors"] = exceptions
-
-        policy = RetryPolicy(**policy_kwargs)
+        policy = _build_retry_policy(exceptions, max_attempts, base_delay, backoff, max_delay, jitter)
 
     def decorator(func: F) -> F:
-        executor = RetryExecutor(policy, on_retry=on_retry)
-
-        if asyncio.iscoroutinefunction(func):
-
-            @functools.wraps(func)
-            async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
-                return await executor.execute_async(func, *args, **kwargs)
-
-            return async_wrapper
-
-        @functools.wraps(func)
-        def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
-            return executor.execute_sync(func, *args, **kwargs)
-
-        return sync_wrapper
+        return _create_retry_wrapper(func, policy, on_retry)
 
     return decorator
 

@@ -32,7 +32,7 @@ src_path = project_root / "src"
 if src_path.exists() and str(src_path) not in sys.path:
     sys.path.insert(0, str(src_path))
 
-from examples.integration.celery.setup_and_config import CeleryTaskLogger, app
+from examples.integration.celery.setup_and_config import CeleryTaskLogger, app  # noqa: E402
 
 
 @app.task(bind=True, max_retries=3)
@@ -81,7 +81,7 @@ def process_payment(self, order_id: str, amount: float, payment_method: str) -> 
         )
         # Exponential backoff: 5, 10, 20 seconds
         countdown = 5 * (2**self.request.retries)
-        raise self.retry(exc=exc, countdown=countdown)
+        raise self.retry(exc=exc, countdown=countdown) from exc
 
 
 @app.task(bind=True)

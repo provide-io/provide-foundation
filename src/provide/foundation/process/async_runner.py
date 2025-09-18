@@ -126,7 +126,7 @@ async def async_run_command(
                         process.communicate(input=input),
                         timeout=timeout,
                     )
-                except builtins.TimeoutError:
+                except builtins.TimeoutError as e:
                     process.kill()
                     await process.wait()
                     plog.error("⏱️ Async command timed out", command=cmd_str, timeout=timeout)
@@ -135,7 +135,7 @@ async def async_run_command(
                         code="PROCESS_ASYNC_TIMEOUT",
                         command=cmd_str,
                         timeout=timeout,
-                    )
+                    ) from e
             else:
                 stdout, stderr = await process.communicate(input=input)
 
@@ -267,7 +267,7 @@ async def _read_lines_with_timeout(process: Any, timeout: float, cmd_str: str) -
                 break  # EOF
 
             lines.append(line.decode(errors="replace").rstrip())
-    except builtins.TimeoutError:
+    except builtins.TimeoutError as e:
         process.kill()
         await process.wait()
         plog.error("⏱️ Async stream timed out", command=cmd_str, timeout=timeout)
@@ -276,7 +276,7 @@ async def _read_lines_with_timeout(process: Any, timeout: float, cmd_str: str) -
             code="PROCESS_ASYNC_STREAM_TIMEOUT",
             command=cmd_str,
             timeout=timeout,
-        )
+        ) from e
 
     return lines
 
