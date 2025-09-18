@@ -13,7 +13,7 @@ except ImportError:
 
 from provide.foundation.context import CLIContext
 from provide.foundation.errors.config import ValidationError
-from provide.foundation.errors.decorators import with_error_handling
+from provide.foundation.errors.decorators import resilient
 from provide.foundation.errors.resources import AlreadyExistsError
 from provide.foundation.hub.commands import CommandInfo
 from provide.foundation.hub.components import ComponentInfo
@@ -57,7 +57,7 @@ class CoreHub:
 
     # Component Management
 
-    @with_error_handling(
+    @resilient(
         context_provider=lambda: {"hub": "add_component"},
         error_mapper=lambda e: ValidationError(
             f"Failed to add component: {e}",

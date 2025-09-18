@@ -8,7 +8,7 @@ from provide.foundation.errors import (
     FoundationError,
     error_boundary,
     retry_on_error,
-    with_error_handling,
+    resilient,
 )
 from provide.foundation.eventsets.display import show_event_matrix
 from provide.foundation.eventsets.types import (
@@ -147,7 +147,7 @@ __all__ = [
     "shutdown_foundation_telemetry",
     "timed_block",
     "tracer",  # The tracer module for distributed tracing
-    "with_error_handling",
+    "resilient",
 ]
 
 # Logger instance is imported above with other logger imports

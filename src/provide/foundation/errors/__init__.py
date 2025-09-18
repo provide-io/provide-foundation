@@ -16,7 +16,7 @@ from provide.foundation.errors.context import (
 from provide.foundation.errors.decorators import (
     fallback_on_error,
     suppress_and_log,
-    with_error_handling,
+    resilient,
 )
 from provide.foundation.errors.dependencies import (
     DependencyError,
@@ -99,5 +99,5 @@ __all__ = [
     "suppress_and_log",
     "transactional",
     # Decorators
-    "with_error_handling",
+    "resilient",
 ]

@@ -6,7 +6,7 @@ from typing import Any, Protocol
 
 from attrs import define, field
 
-from provide.foundation.errors.decorators import with_error_handling
+from provide.foundation.errors.decorators import resilient
 
 # Import functions from specialized modules for re-export
 from provide.foundation.hub.config import (
@@ -95,7 +95,7 @@ def get_component_registry() -> Registry:
     return _component_registry
 
 
-@with_error_handling(
+@resilient(
     fallback={"status": "error"},
     context_provider=lambda: {
         "function": "check_component_health",

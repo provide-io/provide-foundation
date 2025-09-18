@@ -24,13 +24,13 @@ F = TypeVar("F", bound=Callable[..., Any])
 
 
 @overload
-def with_error_handling(
+def resilient(
     func: F,
 ) -> F: ...
 
 
 @overload
-def with_error_handling(
+def resilient(
     func: None = None,
     *,
     fallback: Any = None,
@@ -43,7 +43,7 @@ def with_error_handling(
 ) -> Callable[[F], F]: ...
 
 
-def with_error_handling(
+def resilient(
     func: F | None = None,
     *,
     fallback: Any = None,
@@ -69,18 +69,18 @@ def with_error_handling(
         Decorated function.
 
     Examples:
-        >>> @with_error_handling(fallback=None, suppress=(KeyError,))
+        >>> @resilient(fallback=None, suppress=(KeyError,))
         ... def get_value(data, key):
         ...     return data[key]
 
-        >>> @with_error_handling(
+        >>> @resilient(
         ...     context_provider=lambda: {"request_id": get_request_id()}
         ... )
         ... def process_request():
         ...     # errors will be logged with request_id
         ...     pass
 
-        >>> @with_error_handling(
+        >>> @resilient(
         ...     reraise=False,
         ...     context={"component": "orchestrator", "method": "run"}
         ... )
@@ -180,11 +180,11 @@ def with_error_handling(
 
         return wrapper  # type: ignore
 
-    # Support both @with_error_handling and @with_error_handling(...) forms
+    # Support both @resilient and @resilient(...) forms
     if func is None:
-        # Called as @with_error_handling(...) with arguments
+        # Called as @resilient(...) with arguments
         return decorator
-    # Called as @with_error_handling (no parentheses)
+    # Called as @resilient (no parentheses)
     return decorator(func)
 
 

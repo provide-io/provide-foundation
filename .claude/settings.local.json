@@ -202,7 +202,9 @@
       "Bash(.venv/bin/ruff check src/ --select E402 --statistics)",
       "Bash(.venv/bin/ruff check src/ --select RUF009 --output-format=concise)",
       "Bash(.venv/bin/ruff check src/ --select PTH101,PTH105 --output-format=concise)",
-      "Bash(.venv/bin/ruff check src/ --select RUF006 --output-format=concise)"
+      "Bash(.venv/bin/ruff check src/ --select RUF006 --output-format=concise)",
+      "Bash(timeout 30 pytest tests/errors/test_decorators.py -v)",
+      "Bash(timeout 60 pytest tests/errors/ -q)"
     ],
     "deny": [],
     "ask": [],
