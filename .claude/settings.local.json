@@ -205,7 +205,9 @@
       "Bash(.venv/bin/ruff check src/ --select RUF006 --output-format=concise)",
       "Bash(timeout 30 pytest tests/errors/test_decorators.py -v)",
       "Bash(timeout 60 pytest tests/errors/ -q)",
-      "Bash(.venv/bin/ruff check --fix --unsafe-fixes src/)"
+      "Bash(.venv/bin/ruff check --fix --unsafe-fixes src/)",
+      "Bash(.venv/bin/ruff format src/provide/foundation/errors/decorators.py)",
+      "Bash(.venv/bin/ruff check src/provide/foundation/errors/decorators.py --select C901)"
     ],
     "deny": [],
     "ask": [],
