@@ -218,7 +218,8 @@
       "Bash(.venv/bin/ruff check:*)",
       "Bash(timeout 30 pytest tests/logger/ratelimit/test_queue_limiter.py::TestQueuedRateLimiter::test_queued_rate_limiter_memory_limit -v)",
       "Bash(timeout 30 pytest tests/logger/ratelimit/test_queue_limiter.py -v)",
-      "Bash(timeout 30 pytest tests/logger/ratelimit/ -v)"
+      "Bash(timeout 30 pytest tests/logger/ratelimit/ -v)",
+      "Bash(timeout 30 pytest tests/logger/ --tb=short -q --maxfail=3)"
     ],
     "deny": [],
     "ask": [],
