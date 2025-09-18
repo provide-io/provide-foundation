@@ -43,6 +43,22 @@ from provide.foundation.resilience import (
 from provide.foundation.setup import (
     shutdown_foundation_telemetry,
 )
+from provide.foundation.formatting import (
+    format_duration,
+    format_grouped,
+    format_number,
+    format_percentage,
+    format_size,
+    format_table,
+    indent,
+    pluralize,
+    strip_ansi,
+    to_camel_case,
+    to_kebab_case,
+    to_snake_case,
+    truncate,
+    wrap_text,
+)
 from provide.foundation.utils import (
     TokenBucketRateLimiter,
     check_optional_deps,
@@ -124,16 +140,26 @@ __all__ = [
     "error_boundary",
     "errors",  # The errors module for detailed imports
     "fallback",
+    # Formatting utilities
+    "format_duration",
+    "format_grouped",
+    "format_number",
+    "format_percentage",
+    "format_size",
+    "format_table",
     "get_component_registry",
     "get_hub",
     "get_logger",
     "hub",
+    # Text formatting utilities
+    "indent",
     # Core setup and logger
     "logger",
     # Console functions (work with or without click)
     "perr",
     "pin",
     "platform",
+    "pluralize",
     "pout",
     "process",
     "resilience",  # The resilience module for detailed imports
@@ -146,8 +172,15 @@ __all__ = [
     "show_event_matrix",
     # Utilities
     "shutdown_foundation_telemetry",
+    "strip_ansi",
     "timed_block",
+    # Case conversion utilities
+    "to_camel_case",
+    "to_kebab_case",
+    "to_snake_case",
     "tracer",  # The tracer module for distributed tracing
+    "truncate",
+    "wrap_text",
 ]
 
 # Logger instance is imported above with other logger imports
