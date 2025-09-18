@@ -223,7 +223,8 @@
       "Bash(timeout 30 pytest tests/crypto/test_optional_crypto_dependency.py::TestCryptoFallbackBehavior::test_crypto_module_resilience -xvs)",
       "Bash(timeout 30 pytest tests/config/test_config_logger.py::TestBuildCoreProcessorsList::test_default_config -xvs)",
       "Bash(timeout 30 pytest tests/cli/commands/test_deps_coverage.py::TestDepsCommandModuleImport::test_module_imports_successfully -xvs)",
-      "Bash(timeout 30 pytest tests/tracer/test_otel.py -v)"
+      "Bash(timeout 30 pytest tests/tracer/test_otel.py -v)",
+      "Bash(timeout 30 pytest tests/test_init_coverage.py -v)"
     ],
     "deny": [],
     "ask": [],
