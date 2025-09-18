@@ -7,8 +7,8 @@ from provide.foundation.context import CLIContext, Context
 from provide.foundation.errors import (
     FoundationError,
     error_boundary,
-    retry_on_error,
     resilient,
+    retry_on_error,
 )
 from provide.foundation.eventsets.display import show_event_matrix
 from provide.foundation.eventsets.types import (
@@ -137,6 +137,7 @@ __all__ = [
     "pout",
     "process",
     "resilience",  # The resilience module for detailed imports
+    "resilient",
     # Resilience patterns
     "retry",
     # Legacy patterns
@@ -147,7 +148,6 @@ __all__ = [
     "shutdown_foundation_telemetry",
     "timed_block",
     "tracer",  # The tracer module for distributed tracing
-    "resilient",
 ]
 
 # Logger instance is imported above with other logger imports
