@@ -214,7 +214,8 @@
       "Bash(exit 1)",
       "Bash(PYVIDER_CTY_ENABLE_TYPE_INFERENCE_CACHE=false PYTHONPATH=src pytest tests/conversion/test_inference_concurrency_safety.py::TestInferenceConcurrencySafety::test_concurrent_inference_is_isolated -xvs)",
       "Bash(.venv/bin/ruff format:*)",
-      "Bash(/Users/tim/code/gh/provide-io/provide-foundation/.venv/bin/ruff format src/provide/foundation/__init__.py)"
+      "Bash(/Users/tim/code/gh/provide-io/provide-foundation/.venv/bin/ruff format src/provide/foundation/__init__.py)",
+      "Bash(.venv/bin/ruff check:*)"
     ],
     "deny": [],
     "ask": [],

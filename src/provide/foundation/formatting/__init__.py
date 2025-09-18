@@ -30,21 +30,21 @@ output across applications.
 __all__ = [
     # Numeric formatting
     "format_duration",
+    # String grouping
+    "format_grouped",
     "format_number",
     "format_percentage",
     "format_size",
+    # Table formatting
+    "format_table",
     # Text manipulation
     "indent",
     "pluralize",
     "strip_ansi",
-    "truncate",
-    "wrap_text",
     # Case conversion
     "to_camel_case",
     "to_kebab_case",
     "to_snake_case",
-    # Table formatting
-    "format_table",
-    # String grouping
-    "format_grouped",
+    "truncate",
+    "wrap_text",
 ]
