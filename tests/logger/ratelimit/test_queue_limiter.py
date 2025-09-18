@@ -25,7 +25,7 @@ def ensure_limiter_cleanup():
 
     # Cleanup: shutdown any remaining limiters
     for limiter in created_limiters:
-        if hasattr(limiter, 'running') and limiter.running:
+        if hasattr(limiter, "running") and limiter.running:
             try:
                 limiter.shutdown()
             except Exception:
@@ -37,13 +37,15 @@ class TestQueuedRateLimiter:
 
     def test_queued_rate_limiter_init_valid(self, ensure_limiter_cleanup) -> None:
         """Test QueuedRateLimiter initialization with valid parameters."""
-        limiter = ensure_limiter_cleanup(QueuedRateLimiter(
-            capacity=10.0,
-            refill_rate=2.0,
-            max_queue_size=100,
-            max_memory_mb=1.0,
-            overflow_policy="drop_oldest",
-        ))
+        limiter = ensure_limiter_cleanup(
+            QueuedRateLimiter(
+                capacity=10.0,
+                refill_rate=2.0,
+                max_queue_size=100,
+                max_memory_mb=1.0,
+                overflow_policy="drop_oldest",
+            )
+        )
 
         assert limiter.capacity == 10.0
         assert limiter.refill_rate == 2.0
@@ -82,11 +84,13 @@ class TestQueuedRateLimiter:
 
     def test_queued_rate_limiter_enqueue_basic(self, ensure_limiter_cleanup) -> None:
         """Test basic enqueueing functionality."""
-        limiter = ensure_limiter_cleanup(QueuedRateLimiter(
-            capacity=10.0,
-            refill_rate=5.0,
-            max_queue_size=10,
-        ))
+        limiter = ensure_limiter_cleanup(
+            QueuedRateLimiter(
+                capacity=10.0,
+                refill_rate=5.0,
+                max_queue_size=10,
+            )
+        )
 
         # Enqueue some items
         for i in range(5):
@@ -103,12 +107,14 @@ class TestQueuedRateLimiter:
     def test_queued_rate_limiter_memory_limit(self, ensure_limiter_cleanup) -> None:
         """Test memory limit enforcement."""
         # Very small memory limit
-        limiter = ensure_limiter_cleanup(QueuedRateLimiter(
-            capacity=10.0,
-            refill_rate=5.0,
-            max_queue_size=100,
-            max_memory_mb=0.001,
-        ))
+        limiter = ensure_limiter_cleanup(
+            QueuedRateLimiter(
+                capacity=10.0,
+                refill_rate=5.0,
+                max_queue_size=100,
+                max_memory_mb=0.001,
+            )
+        )
 
         # Try to add items that exceed memory limit
         large_item = "x" * 1000  # ~1KB item
@@ -124,12 +130,14 @@ class TestQueuedRateLimiter:
 
     def test_queued_rate_limiter_drop_oldest_policy(self, ensure_limiter_cleanup) -> None:
         """Test drop_oldest overflow policy."""
-        limiter = ensure_limiter_cleanup(QueuedRateLimiter(
-            capacity=10.0,
-            refill_rate=0.1,
-            max_queue_size=3,
-            overflow_policy="drop_oldest",
-        ))
+        limiter = ensure_limiter_cleanup(
+            QueuedRateLimiter(
+                capacity=10.0,
+                refill_rate=0.1,
+                max_queue_size=3,
+                overflow_policy="drop_oldest",
+            )
+        )
 
         # Fill queue to capacity
         for i in range(3):
@@ -148,12 +156,14 @@ class TestQueuedRateLimiter:
 
     def test_queued_rate_limiter_drop_newest_policy(self, ensure_limiter_cleanup) -> None:
         """Test drop_newest overflow policy."""
-        limiter = ensure_limiter_cleanup(QueuedRateLimiter(
-            capacity=10.0,
-            refill_rate=0.1,
-            max_queue_size=2,
-            overflow_policy="drop_newest",
-        ))
+        limiter = ensure_limiter_cleanup(
+            QueuedRateLimiter(
+                capacity=10.0,
+                refill_rate=0.1,
+                max_queue_size=2,
+                overflow_policy="drop_newest",
+            )
+        )
 
         # Fill queue to capacity
         for i in range(2):
@@ -173,12 +183,14 @@ class TestQueuedRateLimiter:
 
     def test_queued_rate_limiter_block_policy(self, ensure_limiter_cleanup) -> None:
         """Test block overflow policy."""
-        limiter = ensure_limiter_cleanup(QueuedRateLimiter(
-            capacity=10.0,
-            refill_rate=0.1,
-            max_queue_size=1,
-            overflow_policy="block",
-        ))
+        limiter = ensure_limiter_cleanup(
+            QueuedRateLimiter(
+                capacity=10.0,
+                refill_rate=0.1,
+                max_queue_size=1,
+                overflow_policy="block",
+            )
+        )
 
         # Fill queue
         accepted, reason = limiter.enqueue("item_1")
@@ -199,11 +211,13 @@ class TestQueuedRateLimiter:
             def _process_item(self, item) -> None:
                 processed_items.append(item)
 
-        limiter = ensure_limiter_cleanup(TestQueuedRateLimiter(
-            capacity=2.0,
-            refill_rate=10.0,
-            max_queue_size=10,
-        ))
+        limiter = ensure_limiter_cleanup(
+            TestQueuedRateLimiter(
+                capacity=2.0,
+                refill_rate=10.0,
+                max_queue_size=10,
+            )
+        )
 
         # Enqueue items
         for i in range(5):
@@ -239,12 +253,14 @@ class TestQueuedRateLimiter:
 
     def test_queued_rate_limiter_get_stats(self, ensure_limiter_cleanup) -> None:
         """Test statistics collection."""
-        limiter = ensure_limiter_cleanup(QueuedRateLimiter(
-            capacity=5.0,
-            refill_rate=2.0,
-            max_queue_size=10,
-            max_memory_mb=1.0,
-        ))
+        limiter = ensure_limiter_cleanup(
+            QueuedRateLimiter(
+                capacity=5.0,
+                refill_rate=2.0,
+                max_queue_size=10,
+                max_memory_mb=1.0,
+            )
+        )
 
         stats = limiter.get_stats()
 
