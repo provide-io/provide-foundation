@@ -265,7 +265,7 @@ def register_middleware(
     name: str,
     middleware_class: type[Middleware],
     category: str = "transport.middleware",
-    **metadata,
+    **metadata: Any,
 ) -> None:
     """Register middleware in the Hub."""
     registry = get_component_registry()

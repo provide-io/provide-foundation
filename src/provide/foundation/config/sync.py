@@ -235,7 +235,7 @@ class SyncConfigManager:
         self._async_manager = ConfigManager()
         self._loader = loader
 
-    def register(self, name: str, config: BaseConfig | None = None, **kwargs) -> None:
+    def register(self, name: str, config: BaseConfig | None = None, **kwargs: Any) -> None:
         """Register a configuration (sync)."""
         run_async(self._async_manager.register(name, config, **kwargs))
 
@@ -290,6 +290,6 @@ def set_config(name: str, config: BaseConfig) -> None:
     sync_manager.register(name, config=config)
 
 
-def register_config(name: str, **kwargs) -> None:
+def register_config(name: str, **kwargs: Any) -> None:
     """Register a configuration with the global sync manager."""
     sync_manager.register(name, **kwargs)

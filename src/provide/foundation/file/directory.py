@@ -95,5 +95,4 @@ __all__ = [
     "ensure_dir",
     "ensure_parent_dir",
     "safe_rmtree",
-    "temp_dir",
 ]

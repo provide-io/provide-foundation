@@ -82,12 +82,7 @@ def run_command(
 
     try:
         # Prepare command for subprocess
-        if shell:
-            # For shell commands, ensure it's a string
-            subprocess_cmd = cmd_str
-        else:
-            # For non-shell, use the original cmd (list or string)
-            subprocess_cmd = cmd
+        subprocess_cmd = cmd_str if shell else cmd
 
         # Handle input based on text mode
         if input is not None and text and isinstance(input, bytes):

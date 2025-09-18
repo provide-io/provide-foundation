@@ -18,7 +18,7 @@ def register_transport(
     transport_type: TransportType,
     transport_class: type[Transport],
     schemes: list[str] | None = None,
-    **metadata,
+    **metadata: Any,
 ) -> None:
     """Register a transport implementation in the Hub.
 

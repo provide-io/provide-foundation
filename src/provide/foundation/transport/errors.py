@@ -2,7 +2,7 @@ from __future__ import annotations
 
 """Transport-specific error types."""
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from provide.foundation.errors.base import FoundationError
 
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class TransportError(FoundationError):
     """Base transport error."""
 
-    def __init__(self, message: str, *, request: Request | None = None, **kwargs) -> None:
+    def __init__(self, message: str, *, request: Request | None = None, **kwargs: Any) -> None:
         super().__init__(message, **kwargs)
         self.request = request
 
@@ -29,7 +29,7 @@ class TransportTimeoutError(TransportError):
 class HTTPResponseError(TransportError):
     """HTTP response error (4xx/5xx status codes)."""
 
-    def __init__(self, message: str, *, status_code: int, response: Response, **kwargs) -> None:
+    def __init__(self, message: str, *, status_code: int, response: Response, **kwargs: Any) -> None:
         super().__init__(message, **kwargs)
         self.status_code = status_code
         self.response = response
@@ -42,7 +42,7 @@ class TransportConfigurationError(TransportError):
 class TransportNotFoundError(TransportError):
     """No transport found for the given URI scheme."""
 
-    def __init__(self, message: str, *, scheme: str, **kwargs) -> None:
+    def __init__(self, message: str, *, scheme: str, **kwargs: Any) -> None:
         super().__init__(message, **kwargs)
         self.scheme = scheme
 

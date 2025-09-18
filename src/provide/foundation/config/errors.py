@@ -29,7 +29,7 @@ class ParseError(ConfigError):
         field_name: str | None = None,
         expected_type: str | None = None,
         valid_options: list[str] | None = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> None:
         super().__init__(
             message,
@@ -54,7 +54,7 @@ class ValidationError(ConfigError):
         value: Any,
         field_name: str,
         constraint: str | None = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> None:
         super().__init__(
             message,
