@@ -113,21 +113,17 @@ class EventSetResolver:
                     return mapping
 
                 # Pattern matching for common cases
-                if field_key.startswith("http.") and mapping.name.startswith("http_"):
-                    if field_key.replace(".", "_") == mapping.name:
-                        return mapping
+                if field_key.startswith("http.") and mapping.name.startswith("http_") and field_key.replace(".", "_") == mapping.name:
+                    return mapping
 
-                if field_key.startswith("llm.") and mapping.name.startswith("llm_"):
-                    if field_key.replace(".", "_") == mapping.name:
-                        return mapping
+                if field_key.startswith("llm.") and mapping.name.startswith("llm_") and field_key.replace(".", "_") == mapping.name:
+                    return mapping
 
-                if field_key.startswith("db.") and mapping.name.startswith("db_"):
-                    if field_key.replace(".", "_") == mapping.name:
-                        return mapping
+                if field_key.startswith("db.") and mapping.name.startswith("db_") and field_key.replace(".", "_") == mapping.name:
+                    return mapping
 
-                if field_key.startswith("task.") and mapping.name.startswith("task_"):
-                    if field_key.replace(".", "_") == mapping.name:
-                        return mapping
+                if field_key.startswith("task.") and mapping.name.startswith("task_") and field_key.replace(".", "_") == mapping.name:
+                    return mapping
 
         return None
 

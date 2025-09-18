@@ -19,7 +19,7 @@ class SimpleCounter:
         self._value = 0
         self._labels_values: dict[str, float] = defaultdict(float)
 
-    def inc(self, value: float = 1, **labels) -> None:
+    def inc(self, value: float = 1, **labels: Any) -> None:
         """Increment the counter.
 
         Args:
@@ -56,7 +56,7 @@ class SimpleGauge:
         self._value = 0
         self._labels_values: dict[str, float] = defaultdict(float)
 
-    def set(self, value: float, **labels) -> None:
+    def set(self, value: float, **labels: Any) -> None:
         """Set the gauge value.
 
         Args:
@@ -85,7 +85,7 @@ class SimpleGauge:
             except Exception as e:
                 log.debug(f"📊⚠️ Failed to record OpenTelemetry gauge: {e}")
 
-    def inc(self, value: float = 1, **labels) -> None:
+    def inc(self, value: float = 1, **labels: Any) -> None:
         """Increment the gauge value.
 
         Args:
@@ -105,7 +105,7 @@ class SimpleGauge:
             except Exception as e:
                 log.debug(f"📊⚠️ Failed to increment OpenTelemetry gauge: {e}")
 
-    def dec(self, value: float = 1, **labels) -> None:
+    def dec(self, value: float = 1, **labels: Any) -> None:
         """Decrement the gauge value.
 
         Args:
@@ -130,7 +130,7 @@ class SimpleHistogram:
         self._observations: list[float] = []
         self._labels_observations: dict[str, list[float]] = defaultdict(list)
 
-    def observe(self, value: float, **labels) -> None:
+    def observe(self, value: float, **labels: Any) -> None:
         """Record an observation.
 
         Args:

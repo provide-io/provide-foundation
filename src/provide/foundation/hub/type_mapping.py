@@ -14,6 +14,7 @@ def extract_click_type(annotation: Any) -> type:
     - Union types (str | None, Union[str, None])
     - Optional types (str | None)
     - Regular types (str, int, bool)
+    - String annotations (from __future__ import annotations)
 
     Args:
         annotation: Type annotation from function signature
@@ -22,6 +23,33 @@ def extract_click_type(annotation: Any) -> type:
         A type that Click can understand
 
     """
+    # Handle string annotations (from __future__ import annotations)
+    if isinstance(annotation, str):
+        # Parse common string type patterns
+        annotation = annotation.strip()
+
+        # Handle Union types as strings
+        if " | " in annotation:
+            # Split on " | " and get the first non-None type
+            parts = [part.strip() for part in annotation.split(" | ")]
+            non_none_parts = [part for part in parts if part != "None"]
+            if non_none_parts:
+                annotation = non_none_parts[0]
+            else:
+                annotation = "str"
+
+        # Map string type names to actual types
+        type_mapping = {
+            "str": str,
+            "int": int,
+            "bool": bool,
+            "float": float,
+            "Path": str,  # Path objects are handled as strings by Click
+            "pathlib.Path": str,
+        }
+
+        return type_mapping.get(annotation, str)
+
     # Handle None type
     if annotation is type(None):
         return str
