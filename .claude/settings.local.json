@@ -216,7 +216,8 @@
       "Bash(.venv/bin/ruff format:*)",
       "Bash(/Users/tim/code/gh/provide-io/provide-foundation/.venv/bin/ruff format src/provide/foundation/__init__.py)",
       "Bash(.venv/bin/ruff check:*)",
-      "Bash(timeout 30 pytest tests/logger/ratelimit/test_queue_limiter.py::TestQueuedRateLimiter::test_queued_rate_limiter_memory_limit -v)"
+      "Bash(timeout 30 pytest tests/logger/ratelimit/test_queue_limiter.py::TestQueuedRateLimiter::test_queued_rate_limiter_memory_limit -v)",
+      "Bash(timeout 30 pytest tests/logger/ratelimit/test_queue_limiter.py -v)"
     ],
     "deny": [],
     "ask": [],
