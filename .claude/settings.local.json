@@ -229,7 +229,8 @@
       "Bash(timeout 120 pytest -n auto --tb=short -q)",
       "Bash(gh repo view:*)",
       "Bash(gh run list:*)",
-      "Bash(gh run view:*)"
+      "Bash(gh run view:*)",
+      "Bash(gh workflow list:*)"
     ],
     "deny": [],
     "ask": [],
