@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from provide.foundation.logger import get_logger
+
 """CLI commands for OpenObserve integration.
 
 These commands are auto-registered by Foundation's command discovery system.
@@ -14,8 +16,6 @@ try:
 except ImportError:
     click: Any = None
     _HAS_CLICK = False
-
-from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
 

@@ -9,11 +9,6 @@ from provide.foundation.platform.detection import (
     get_platform_string,
     normalize_platform_components,
 )
-
-"""Platform detection and information utilities.
-
-Provides cross-platform detection and system information gathering.
-"""
 from provide.foundation.platform.info import (
     SystemInfo,
     get_system_info,
@@ -23,6 +18,11 @@ from provide.foundation.platform.info import (
     is_macos,
     is_windows,
 )
+
+"""Platform detection and information utilities.
+
+Provides cross-platform detection and system information gathering.
+"""
 
 __all__ = [
     # Classes
