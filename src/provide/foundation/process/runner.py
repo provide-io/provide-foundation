@@ -449,7 +449,7 @@ def run_shell(
         capture_output=capture_output,
         check=check,
         timeout=timeout,
-        shell=True,  # nosec B602 - Intentional shell usage with validation
+        shell=True,  # nosec B604 - Intentional shell usage with validation
         **kwargs,
     )
 

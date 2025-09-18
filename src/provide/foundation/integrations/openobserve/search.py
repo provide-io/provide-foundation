@@ -92,7 +92,7 @@ def search_by_trace_id(
     # Sanitize inputs to prevent SQL injection
     safe_stream = _sanitize_stream_name(stream)
     safe_trace_id = _sanitize_trace_id(trace_id)
-    sql = f"SELECT * FROM {safe_stream} WHERE trace_id = '{safe_trace_id}' ORDER BY _timestamp ASC"
+    sql = f"SELECT * FROM {safe_stream} WHERE trace_id = '{safe_trace_id}' ORDER BY _timestamp ASC"  # nosec B608 - Inputs sanitized via _sanitize_* functions
     return search_logs(sql=sql, start_time="-24h", client=client)
 
 
@@ -121,7 +121,7 @@ def search_by_level(
     # Sanitize inputs to prevent SQL injection
     safe_stream = _sanitize_stream_name(stream)
     safe_level = _sanitize_log_level(level)
-    sql = f"SELECT * FROM {safe_stream} WHERE level = '{safe_level}' ORDER BY _timestamp DESC"
+    sql = f"SELECT * FROM {safe_stream} WHERE level = '{safe_level}' ORDER BY _timestamp DESC"  # nosec B608 - Inputs sanitized via _sanitize_* functions
     return search_logs(
         sql=sql,
         start_time=start_time,
@@ -183,7 +183,7 @@ def search_by_service(
     # Sanitize inputs to prevent SQL injection
     safe_stream = _sanitize_stream_name(stream)
     safe_service = _sanitize_service_name(service)
-    sql = f"SELECT * FROM {safe_stream} WHERE service = '{safe_service}' ORDER BY _timestamp DESC"
+    sql = f"SELECT * FROM {safe_stream} WHERE service = '{safe_service}' ORDER BY _timestamp DESC"  # nosec B608 - Inputs sanitized via _sanitize_* functions
     return search_logs(
         sql=sql,
         start_time=start_time,
@@ -213,7 +213,7 @@ def aggregate_by_level(
     """
     # Sanitize stream name to prevent SQL injection
     safe_stream = _sanitize_stream_name(stream)
-    sql = f"SELECT level, COUNT(*) as count FROM {safe_stream} GROUP BY level"
+    sql = f"SELECT level, COUNT(*) as count FROM {safe_stream} GROUP BY level"  # nosec B608 - Inputs sanitized via _sanitize_* functions
     response = search_logs(
         sql=sql,
         start_time=start_time,

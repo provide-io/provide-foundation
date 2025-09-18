@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from provide.foundation.config.parsers import *
 from provide.foundation.config.parsers import (
     parse_bool_extended,
     parse_bool_strict,

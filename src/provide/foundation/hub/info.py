@@ -17,7 +17,6 @@ try:
     _HAS_CLICK = True
     _click_module: ModuleType | None = click
 except ImportError:
-    click: Any = None
     _HAS_CLICK = False
     _click_module = None
 

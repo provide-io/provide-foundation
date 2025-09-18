@@ -8,10 +8,6 @@ from provide.foundation.logger.ratelimit.limiters import (
     GlobalRateLimiter,
     SyncRateLimiter,
 )
-
-"""Rate limiting subcomponent for Foundation's logging system.
-Provides rate limiters and processors for controlling log output rates.
-"""
 from provide.foundation.logger.ratelimit.processor import (
     RateLimiterProcessor,
     create_rate_limiter_processor,
@@ -20,6 +16,10 @@ from provide.foundation.logger.ratelimit.queue_limiter import (
     BufferedRateLimiter,
     QueuedRateLimiter,
 )
+
+"""Rate limiting subcomponent for Foundation's logging system.
+Provides rate limiters and processors for controlling log output rates.
+"""
 
 __all__ = [
     "AsyncRateLimiter",

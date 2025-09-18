@@ -2,15 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Never
 
-"""Cryptographic utilities for Foundation.
-
-Provides hashing, checksum verification, digital signatures, key generation,
-and X.509 certificate management.
-"""
-
-if TYPE_CHECKING:
-    pass  # All certificate types are available at runtime
-
 # Standard crypto imports (always available - use hashlib)
 from provide.foundation.crypto.algorithms import (
     DEFAULT_ALGORITHM,
@@ -26,6 +17,27 @@ from provide.foundation.crypto.checksums import (
     verify_file,
     write_checksum_file,
 )
+from provide.foundation.crypto.hashing import (
+    hash_data,
+    hash_file,
+    hash_stream,
+    hash_string,
+)
+from provide.foundation.crypto.utils import (
+    compare_hash,
+    format_hash,
+    hash_name,
+    quick_hash,
+)
+
+"""Cryptographic utilities for Foundation.
+
+Provides hashing, checksum verification, digital signatures, key generation,
+and X.509 certificate management.
+"""
+
+if TYPE_CHECKING:
+    pass  # All certificate types are available at runtime
 
 # Cryptography-dependent imports (require optional dependency)
 try:
@@ -44,19 +56,7 @@ try:
 except ImportError:
     _HAS_CRYPTO = False
 
-# Standard imports (always available)
-from provide.foundation.crypto.hashing import (
-    hash_data,
-    hash_file,
-    hash_stream,
-    hash_string,
-)
-from provide.foundation.crypto.utils import (
-    compare_hash,
-    format_hash,
-    hash_name,
-    quick_hash,
-)
+# Standard imports (always available) - already imported above
 
 # More cryptography-dependent imports
 try:

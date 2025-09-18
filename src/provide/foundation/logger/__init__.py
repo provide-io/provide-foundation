@@ -9,14 +9,14 @@ from provide.foundation.logger.base import (
     get_logger,  # Factory function
     logger,  # Global instance
 )
-
-"""Foundation Telemetry Logger Sub-package.
-Re-exports key components related to logging functionality.
-"""
 from provide.foundation.logger.config import (
     LoggingConfig,
     TelemetryConfig,
 )
+
+"""Foundation Telemetry Logger Sub-package.
+Re-exports key components related to logging functionality.
+"""
 
 __all__ = [
     "FoundationLogger",

@@ -13,11 +13,11 @@ from provide.foundation.streams.core import (
     _PROVIDE_LOG_STREAM,
     _STREAM_LOCK,
 )
+from provide.foundation.utils.streams import get_safe_stderr
 
 """File stream management for Foundation.
 Handles file-based logging streams and file operations.
 """
-from provide.foundation.utils.streams import get_safe_stderr
 
 
 def _safe_error_output(message: str) -> None:

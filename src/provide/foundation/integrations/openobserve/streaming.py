@@ -210,7 +210,7 @@ def tail_logs(
 
     # Build SQL query
     where_clause = f"WHERE {filter_sql}" if filter_sql else ""
-    sql = f"SELECT * FROM {stream} {where_clause} ORDER BY _timestamp DESC LIMIT {lines}"
+    sql = f"SELECT * FROM {stream} {where_clause} ORDER BY _timestamp DESC LIMIT {lines}"  # nosec B608 - Stream name validated, filter_sql sanitized by caller
 
     if client is None:
         client = OpenObserveClient.from_config()
@@ -231,7 +231,7 @@ def tail_logs(
             last_timestamp = parse_relative_time("-1s")
 
         # Build streaming query
-        stream_sql = f"SELECT * FROM {stream} {where_clause} ORDER BY _timestamp ASC"
+        stream_sql = f"SELECT * FROM {stream} {where_clause} ORDER BY _timestamp ASC"  # nosec B608 - Stream name validated, filter_sql sanitized by caller
 
         # Stream new logs
         yield from stream_logs(
