@@ -5,6 +5,9 @@ import os
 import sys
 from typing import Any
 
+from provide.foundation.context import CLIContext
+from provide.foundation.errors.decorators import resilient
+
 """Core console output functions for standardized CLI output.
 
 Provides pout() and perr() for consistent output handling with support
@@ -18,9 +21,6 @@ try:
 except ImportError:
     click: Any = None
     _HAS_CLICK = False
-
-from provide.foundation.context import CLIContext
-from provide.foundation.errors.decorators import resilient
 
 # Note: This module doesn't need logging - it's a pure output utility
 

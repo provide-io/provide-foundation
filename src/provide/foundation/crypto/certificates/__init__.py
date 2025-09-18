@@ -11,14 +11,14 @@ from provide.foundation.crypto.certificates.base import (
     PublicKey,
     _require_crypto,
 )
-
-"""X.509 certificate generation and management."""
 from provide.foundation.crypto.certificates.certificate import Certificate
 from provide.foundation.crypto.certificates.factory import create_ca, create_self_signed
 from provide.foundation.crypto.certificates.operations import (
     create_x509_certificate,
     validate_signature,
 )
+
+"""X.509 certificate generation and management."""
 
 # Re-export public types - maintaining exact same API
 __all__ = [

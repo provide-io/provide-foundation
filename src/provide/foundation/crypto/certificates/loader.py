@@ -1,10 +1,16 @@
 from __future__ import annotations
 
-from datetime import UTC
 import os
-from pathlib import Path
 import traceback
+from datetime import UTC
+from pathlib import Path
 from typing import TYPE_CHECKING
+
+from provide.foundation import logger
+from provide.foundation.crypto.certificates.base import (
+    CertificateBase,
+    CertificateError,
+)
 
 """Certificate loading utilities."""
 
@@ -21,12 +27,6 @@ try:
     _HAS_CRYPTO = True
 except ImportError:
     _HAS_CRYPTO = False
-
-from provide.foundation import logger
-from provide.foundation.crypto.certificates.base import (
-    CertificateBase,
-    CertificateError,
-)
 
 
 def load_from_uri_or_pem(data: str) -> str:

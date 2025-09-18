@@ -9,10 +9,10 @@ from provide.foundation.crypto.algorithms import (
     get_hasher,
     validate_algorithm,
 )
-
-"""Core hashing operations."""
 from provide.foundation.errors.resources import ResourceError
 from provide.foundation.logger import get_logger
+
+"""Core hashing operations."""
 
 plog = get_logger(__name__)
 
