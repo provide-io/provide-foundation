@@ -228,7 +228,8 @@
       "Bash(timeout 30 pytest tests/cli/commands/logs/test_query_simplified.py tests/cli/commands/logs/test_send_comprehensive.py tests/cli/test_cli_testing_coverage.py -v)",
       "Bash(timeout 120 pytest -n auto --tb=short -q)",
       "Bash(gh repo view:*)",
-      "Bash(gh run list:*)"
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)"
     ],
     "deny": [],
     "ask": [],
