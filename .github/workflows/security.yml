@@ -35,7 +35,7 @@ jobs:
           uv venv
           source .venv/bin/activate
           uv pip install -e .
-          uv sync --all-groups --dev --prerelease=allow
+          uv pip install bandit
 
       - name: 🔒 Run Bandit Security Scan
         run: |
