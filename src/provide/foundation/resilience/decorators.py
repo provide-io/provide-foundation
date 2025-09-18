@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Resilience decorators for retry, circuit breaker, and fallback patterns."""
-
 import asyncio
 from collections.abc import Callable
 import functools
@@ -13,6 +11,8 @@ from provide.foundation.resilience.retry import (
     RetryExecutor,
     RetryPolicy,
 )
+
+"""Resilience decorators for retry, circuit breaker, and fallback patterns."""
 
 F = TypeVar("F", bound=Callable[..., Any])
 

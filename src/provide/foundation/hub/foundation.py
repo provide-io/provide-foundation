@@ -1,13 +1,13 @@
 from __future__ import annotations
 
+import threading
+from typing import TYPE_CHECKING, Any
+
 """Foundation system initialization and lifecycle management.
 
 This module provides Foundation-specific functionality for the Hub,
 including telemetry configuration and logger initialization.
 """
-
-import threading
-from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from provide.foundation.logger.base import FoundationLogger

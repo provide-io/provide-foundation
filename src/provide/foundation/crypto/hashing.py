@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Core hashing operations."""
-
 from collections.abc import Iterator
 from pathlib import Path
 from typing import BinaryIO
@@ -11,6 +9,8 @@ from provide.foundation.crypto.algorithms import (
     get_hasher,
     validate_algorithm,
 )
+
+"""Core hashing operations."""
 from provide.foundation.errors.resources import ResourceError
 from provide.foundation.logger import get_logger
 

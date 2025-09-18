@@ -1,11 +1,5 @@
 from __future__ import annotations
 
-"""Foundation CLI utilities for consistent command-line interfaces.
-
-Provides standard decorators, utilities, and patterns for building
-CLI tools in the provide-io ecosystem.
-"""
-
 from provide.foundation.cli.decorators import (
     config_options,
     error_handler,
@@ -28,6 +22,12 @@ from provide.foundation.cli.utils import (
     echo_warning,
     setup_cli_logging,
 )
+
+"""Foundation CLI utilities for consistent command-line interfaces.
+
+Provides standard decorators, utilities, and patterns for building
+CLI tools in the provide-io ecosystem.
+"""
 
 __all__ = [
     # Utilities

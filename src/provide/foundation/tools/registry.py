@@ -1,11 +1,5 @@
 from __future__ import annotations
 
-"""Tool registry management using the foundation hub.
-
-Provides registration and discovery of tool managers using
-the main hub registry with proper dimension separation.
-"""
-
 import importlib.metadata
 from typing import Any
 
@@ -13,6 +7,12 @@ from provide.foundation.config import BaseConfig
 from provide.foundation.hub import get_hub
 from provide.foundation.logger import get_logger
 from provide.foundation.tools.base import BaseToolManager
+
+"""Tool registry management using the foundation hub.
+
+Provides registration and discovery of tool managers using
+the main hub registry with proper dimension separation.
+"""
 
 log = get_logger(__name__)
 

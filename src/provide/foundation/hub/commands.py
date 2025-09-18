@@ -38,6 +38,8 @@ def __getattr__(name: str) -> Any:
 
 __all__ = [
     "CommandInfo",
+    "build_click_command",
+    "create_command_group",
     "get_command_registry",
     "register_command",
 ]

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-"""HTTP request/response event set for Foundation."""
-
 from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping
+
+"""HTTP request/response event set for Foundation."""
 
 EVENT_SET = EventSet(
     name="http",
@@ -25,7 +25,7 @@ EVENT_SET = EventSet(
         EventMapping(
             name="http_status_class",
             visual_markers={
-                "1xx": "ℹ️",
+                "1xx": "i",
                 "2xx": "✅",
                 "3xx": "↪️",
                 "4xx": "⚠️CLIENT",

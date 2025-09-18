@@ -1,29 +1,31 @@
 from __future__ import annotations
 
-"""Core console input functions for standardized CLI input.
-
-Provides pin() and async variants for consistent input handling with support
-for JSON mode, streaming, and proper integration with the foundation's patterns.
-"""
-
 import asyncio
 from collections.abc import AsyncIterator, Iterator
+import contextlib
 import json
 import sys
-from typing import Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
+
+from provide.foundation.context import CLIContext
+from provide.foundation.logger import get_logger
 
 try:
     import click
 
     _HAS_CLICK = True
 except ImportError:
-    click: Any = None
+    if TYPE_CHECKING:
+        import click
+    else:
+        click: Any = None
     _HAS_CLICK = False
 
-import contextlib
+"""Core console input functions for standardized CLI input.
 
-from provide.foundation.context import CLIContext
-from provide.foundation.logger import get_logger
+Provides pin() and async variants for consistent input handling with support
+for JSON mode, streaming, and proper integration with the foundation's patterns.
+"""
 
 plog = get_logger(__name__)
 
@@ -70,7 +72,7 @@ def _handle_json_input(prompt: str, kwargs: dict[str, Any]) -> str | dict[str, A
 
         # Try to parse as JSON first
         try:
-            data = json.loads(line)
+            data: Any = json.loads(line)
         except json.JSONDecodeError:
             # Treat as plain string
             data = line
@@ -82,7 +84,7 @@ def _handle_json_input(prompt: str, kwargs: dict[str, Any]) -> str | dict[str, A
 
         if json_key := kwargs.get("json_key"):
             return {json_key: data}
-        return data
+        return data  # type: ignore[no-any-return]
 
     except Exception as e:
         plog.error("Failed to read JSON input", error=str(e))

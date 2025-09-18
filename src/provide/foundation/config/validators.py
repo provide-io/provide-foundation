@@ -1,12 +1,5 @@
 from __future__ import annotations
 
-"""Validation functions for configuration field values.
-
-These validators are used with the attrs `validator` parameter to validate
-field values after conversion. They provide consistent error messages and
-follow attrs validator conventions.
-"""
-
 from collections.abc import Callable
 from typing import Any
 
@@ -16,6 +9,13 @@ from provide.foundation.config.parsers.base import (
     _format_invalid_value_error,
     _format_validation_error,
 )
+
+"""Validation functions for configuration field values.
+
+These validators are used with the attrs `validator` parameter to validate
+field values after conversion. They provide consistent error messages and
+follow attrs validator conventions.
+"""
 
 
 def validate_log_level(instance: Any, attribute: Any, value: str) -> None:

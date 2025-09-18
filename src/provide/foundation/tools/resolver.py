@@ -1,15 +1,15 @@
 from __future__ import annotations
 
+import re
+
+from provide.foundation.errors import FoundationError
+from provide.foundation.logger import get_logger
+
 """Version resolution for tool management.
 
 Provides sophisticated version resolution including latest,
 semver ranges, wildcards, and pre-release handling.
 """
-
-import re
-
-from provide.foundation.errors import FoundationError
-from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
 
@@ -204,10 +204,9 @@ class VersionResolver:
             matches = []
             for v in available:
                 v_parts = self.parse_version(v)
-                if v_parts and v_parts[0] == major:
+                if v_parts and v_parts[0] == major and self.compare_versions(v, base) >= 0:
                     # Must be >= base version
-                    if self.compare_versions(v, base) >= 0:
-                        matches.append(v)
+                    matches.append(v)
 
             if matches:
                 return self.sort_versions(matches)[-1]

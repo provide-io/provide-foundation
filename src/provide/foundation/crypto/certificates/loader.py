@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-"""Certificate loading utilities."""
-
 from datetime import UTC
 import os
 from pathlib import Path
 import traceback
 from typing import TYPE_CHECKING
+
+"""Certificate loading utilities."""
 
 if TYPE_CHECKING:
     from cryptography import x509

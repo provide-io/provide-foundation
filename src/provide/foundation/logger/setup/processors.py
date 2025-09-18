@@ -3,10 +3,6 @@ from __future__ import annotations
 #
 # processors.py
 #
-"""Processor chain building for Foundation Telemetry.
-Handles the assembly of structlog processor chains including emoji processing.
-"""
-
 from typing import Any, TextIO, cast
 
 import structlog
@@ -16,6 +12,10 @@ from provide.foundation.logger.processors import (
     _build_core_processors_list,
     _build_formatter_processors_list,
 )
+
+"""Processor chain building for Foundation Telemetry.
+Handles the assembly of structlog processor chains including emoji processing.
+"""
 
 
 def build_complete_processor_chain(

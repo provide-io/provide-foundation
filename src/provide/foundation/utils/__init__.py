@@ -1,10 +1,5 @@
 from __future__ import annotations
 
-"""Utility modules for provide.foundation.
-
-Common utilities that can be used across the foundation and by other packages.
-"""
-
 from provide.foundation.utils.deps import (
     DependencyStatus,
     check_optional_deps,
@@ -52,6 +47,11 @@ from provide.foundation.utils.text_utils import (
     wrap_text,
 )
 from provide.foundation.utils.timing import timed_block
+
+"""Utility modules for provide.foundation.
+
+Common utilities that can be used across the foundation and by other packages.
+"""
 
 __all__ = [
     "DependencyStatus",

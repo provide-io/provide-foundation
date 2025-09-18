@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-"""Command registration decorators."""
-
 from collections.abc import Callable
 from typing import Any, TypeVar, overload
+
+"""Command registration decorators."""
 
 try:
     import click

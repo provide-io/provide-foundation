@@ -1,17 +1,17 @@
 from __future__ import annotations
 
-"""Process execution utilities.
-
-Provides sync and async subprocess execution with consistent error handling,
-and advanced process lifecycle management.
-"""
-
 from provide.foundation.errors.runtime import ProcessError
 from provide.foundation.process.async_runner import (
     async_run_command,
     async_run_shell,
     async_stream_command,
 )
+
+"""Process execution utilities.
+
+Provides sync and async subprocess execution with consistent error handling,
+and advanced process lifecycle management.
+"""
 from provide.foundation.process.exit import (
     exit_error,
     exit_interrupted,

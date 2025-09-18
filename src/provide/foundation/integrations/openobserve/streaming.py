@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Streaming search operations for OpenObserve."""
-
 from collections.abc import Generator
 import json
 import time
@@ -16,6 +14,8 @@ from provide.foundation.integrations.openobserve.exceptions import (
 )
 from provide.foundation.integrations.openobserve.models import parse_relative_time
 from provide.foundation.logger import get_logger
+
+"""Streaming search operations for OpenObserve."""
 
 log = get_logger(__name__)
 

@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-"""Certificate operations: CA creation, signing, and trust verification."""
-
 import traceback
 from typing import TYPE_CHECKING, cast
+
+"""Certificate operations: CA creation, signing, and trust verification."""
 
 if TYPE_CHECKING:
     from cryptography import x509

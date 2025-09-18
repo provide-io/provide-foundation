@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-"""Type definitions for the hub module."""
-
 from typing import Any, Protocol
 
-# Import RegistryEntry from its canonical location
+"""Type definitions for the hub module."""
 
 
 class Registrable(Protocol):

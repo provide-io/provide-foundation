@@ -1,15 +1,15 @@
 from __future__ import annotations
 
+import json
+import os
+import sys
+from typing import Any
+
 """Core console output functions for standardized CLI output.
 
 Provides pout() and perr() for consistent output handling with support
 for JSON mode, colors, and proper stream separation.
 """
-
-import json
-import os
-import sys
-from typing import Any
 
 try:
     import click

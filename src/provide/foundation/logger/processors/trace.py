@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-"""Trace context processor for injecting trace/span IDs into logs."""
-
 from typing import TYPE_CHECKING, Any
+
+"""Trace context processor for injecting trace/span IDs into logs."""
 
 if TYPE_CHECKING:
     from opentelemetry import trace

@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-"""Send logs command for Foundation CLI."""
-
 import json
 import sys
 import time
 from typing import TYPE_CHECKING, Any, NoReturn
+
+"""Send logs command for Foundation CLI."""
 
 if TYPE_CHECKING:
     import click

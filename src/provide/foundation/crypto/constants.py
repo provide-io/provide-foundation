@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-"""Cryptographic constants and configuration."""
-
 from typing import Final
 
-# Ed25519 constants
+"""Cryptographic constants and configuration."""
+
 ED25519_PRIVATE_KEY_SIZE: Final[int] = 32
 ED25519_PUBLIC_KEY_SIZE: Final[int] = 32
 ED25519_SIGNATURE_SIZE: Final[int] = 64

@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""GZIP compression implementation."""
-
 import gzip
 from pathlib import Path
 import shutil
@@ -12,6 +10,8 @@ from attrs import define, field, validators
 from provide.foundation.archive.base import ArchiveError
 from provide.foundation.file import ensure_parent_dir
 from provide.foundation.logger import get_logger
+
+"""GZIP compression implementation."""
 
 logger = get_logger(__name__)
 

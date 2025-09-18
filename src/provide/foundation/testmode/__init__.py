@@ -3,18 +3,18 @@ from __future__ import annotations
 #
 # __init__.py
 #
+from provide.foundation.testmode.detection import (
+    is_in_click_testing,
+    is_in_test_mode,
+    should_use_shared_registries,
+)
+
 """Foundation Test Mode Support.
 
 This module provides utilities for test mode detection and internal
 reset APIs used by testing frameworks. It centralizes all test-related
 functionality that Foundation needs for proper test isolation.
 """
-
-from provide.foundation.testmode.detection import (
-    is_in_click_testing,
-    is_in_test_mode,
-    should_use_shared_registries,
-)
 from provide.foundation.testmode.internal import (
     reset_hub_state,
     reset_logger_state,

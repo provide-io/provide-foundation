@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""Event set registry and discovery."""
-
 import importlib
 from pathlib import Path
 import pkgutil
@@ -12,6 +10,8 @@ from provide.foundation.hub.registry import Registry
 from provide.foundation.logger.setup.coordinator import (
     create_foundation_internal_logger,
 )
+
+"""Event set registry and discovery."""
 
 # Bootstrap logger that doesn't trigger full logger setup
 logger = create_foundation_internal_logger()

@@ -1,13 +1,13 @@
 from __future__ import annotations
 
+from contextlib import suppress
+from typing import TYPE_CHECKING, Any
+
 """Observability module for Foundation.
 
 Provides integration with observability platforms like OpenObserve.
 Only available when OpenTelemetry dependencies are installed.
 """
-
-from contextlib import suppress
-from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     pass  # OpenTelemetry imports are handled at runtime

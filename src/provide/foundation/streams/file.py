@@ -3,10 +3,6 @@ from __future__ import annotations
 #
 # file.py
 #
-"""File stream management for Foundation.
-Handles file-based logging streams and file operations.
-"""
-
 import contextlib
 import io
 from pathlib import Path
@@ -17,6 +13,10 @@ from provide.foundation.streams.core import (
     _PROVIDE_LOG_STREAM,
     _STREAM_LOCK,
 )
+
+"""File stream management for Foundation.
+Handles file-based logging streams and file operations.
+"""
 from provide.foundation.utils.streams import get_safe_stderr
 
 

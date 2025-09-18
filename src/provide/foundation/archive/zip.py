@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-"""ZIP archive implementation."""
-
 from pathlib import Path
 import zipfile
 
@@ -10,6 +8,8 @@ from attrs import define, field, validators
 from provide.foundation.archive.base import ArchiveError, BaseArchive
 from provide.foundation.file import ensure_parent_dir
 from provide.foundation.logger import get_logger
+
+"""ZIP archive implementation."""
 
 logger = get_logger(__name__)
 

@@ -1,12 +1,12 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 """Complex data structure parsers for configuration values.
 
 Handles parsing of structured data like dictionaries with specific formats
 (headers, module levels, rate limits) from string configuration values.
 """
-
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from provide.foundation.logger.types import LogLevelStr
