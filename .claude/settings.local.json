@@ -219,7 +219,8 @@
       "Bash(timeout 30 pytest tests/logger/ratelimit/test_queue_limiter.py::TestQueuedRateLimiter::test_queued_rate_limiter_memory_limit -v)",
       "Bash(timeout 30 pytest tests/logger/ratelimit/test_queue_limiter.py -v)",
       "Bash(timeout 30 pytest tests/logger/ratelimit/ -v)",
-      "Bash(timeout 30 pytest tests/logger/ --tb=short -q --maxfail=3)"
+      "Bash(timeout 30 pytest tests/logger/ --tb=short -q --maxfail=3)",
+      "Bash(timeout 30 pytest tests/crypto/test_optional_crypto_dependency.py::TestCryptoFallbackBehavior::test_crypto_module_resilience -xvs)"
     ],
     "deny": [],
     "ask": [],
