@@ -21,7 +21,7 @@ from provide.foundation.logger.processors import (
     _build_core_processors_list,
     _build_formatter_processors_list,
 )
-from provide.foundation.testmode.internal import reset_eventsets_state
+from provide.testkit import reset_foundation_setup_for_testing
 
 
 def get_proc_name(proc: Any) -> str:
@@ -60,9 +60,9 @@ class TestBuildFormatterProcessorsList:
 
 class TestBuildCoreProcessorsList:
     @pytest.fixture(autouse=True)
-    def reset_eventsets_for_processor_tests(self) -> None:
-        """Reset event set state before each test to ensure consistent processor counts."""
-        reset_eventsets_state()
+    def reset_foundation_for_processor_tests(self) -> None:
+        """Reset Foundation state before each test to ensure consistent processor counts."""
+        reset_foundation_setup_for_testing()
 
     def test_default_config(self) -> None:
         config = TelemetryConfig()
