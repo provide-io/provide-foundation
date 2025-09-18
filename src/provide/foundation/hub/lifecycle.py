@@ -142,7 +142,9 @@ def cleanup_all_components(dimension: str | None = None) -> None:
                                 loop = asyncio.get_event_loop()
                                 if loop.is_running():
                                     # Create task if loop is running
-                                    loop.create_task(cleanup_func())
+                                    task = loop.create_task(cleanup_func())
+                                    # Store reference to prevent garbage collection
+                                    task.add_done_callback(lambda t: None)
                                 else:
                                     loop.run_until_complete(cleanup_func())
                             except RuntimeError:

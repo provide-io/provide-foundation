@@ -2,14 +2,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+import structlog
+
 """Trace context processor for injecting trace/span IDs into logs."""
 
 if TYPE_CHECKING:
-    from opentelemetry import trace
+    pass
 
 # Note: Cannot import get_logger here due to circular dependency during setup
 # Use structlog directly for foundation-internal logging
-import structlog
 
 log = structlog.get_logger(__name__)
 
@@ -27,7 +28,7 @@ except ImportError:
     _HAS_OTEL = False
 
 # Use consistent name throughout
-trace: Any = _otel_trace_module
+otel_trace_runtime: Any = _otel_trace_module
 
 
 def inject_trace_context(logger: Any, method_name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
@@ -43,9 +44,9 @@ def inject_trace_context(logger: Any, method_name: str, event_dict: dict[str, An
 
     """
     # Try OpenTelemetry trace context first
-    if _HAS_OTEL and trace:
+    if _HAS_OTEL and otel_trace_runtime:
         try:
-            current_span = trace.get_current_span()
+            current_span = otel_trace_runtime.get_current_span()
             if current_span and current_span.is_recording():
                 span_context = current_span.get_span_context()
 
@@ -100,9 +101,9 @@ def should_inject_trace_context() -> bool:
 
     """
     # Check if OpenTelemetry is available and has active span
-    if _HAS_OTEL and trace:
+    if _HAS_OTEL and otel_trace_runtime:
         try:
-            current_span = trace.get_current_span()
+            current_span = otel_trace_runtime.get_current_span()
             if current_span and current_span.is_recording():
                 return True
         except Exception:

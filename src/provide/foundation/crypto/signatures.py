@@ -2,6 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from provide.foundation import logger
+from provide.foundation.crypto.constants import (
+    ED25519_PRIVATE_KEY_SIZE,
+    ED25519_PUBLIC_KEY_SIZE,
+    ED25519_SIGNATURE_SIZE,
+)
+
 """Digital signature operations using Ed25519."""
 
 if TYPE_CHECKING:
@@ -17,13 +24,6 @@ try:
     _HAS_CRYPTO = True
 except ImportError:
     _HAS_CRYPTO = False
-
-from provide.foundation import logger
-from provide.foundation.crypto.constants import (
-    ED25519_PRIVATE_KEY_SIZE,
-    ED25519_PUBLIC_KEY_SIZE,
-    ED25519_SIGNATURE_SIZE,
-)
 
 
 def _require_crypto() -> None:
@@ -61,8 +61,14 @@ def generate_ed25519_keypair() -> tuple[bytes, bytes]:
     )
 
     # Validate key sizes
-    assert len(private_key_bytes) == ED25519_PRIVATE_KEY_SIZE
-    assert len(public_key_bytes) == ED25519_PUBLIC_KEY_SIZE
+    if len(private_key_bytes) != ED25519_PRIVATE_KEY_SIZE:
+        raise ValueError(
+            f"Invalid private key size: expected {ED25519_PRIVATE_KEY_SIZE} bytes, got {len(private_key_bytes)}"
+        )
+    if len(public_key_bytes) != ED25519_PUBLIC_KEY_SIZE:
+        raise ValueError(
+            f"Invalid public key size: expected {ED25519_PUBLIC_KEY_SIZE} bytes, got {len(public_key_bytes)}"
+        )
 
     logger.debug(f"✅ Generated Ed25519 key pair (public: {len(public_key_bytes)} bytes)")
     return private_key_bytes, public_key_bytes
@@ -95,7 +101,10 @@ def sign_data(data: bytes, private_key: bytes) -> bytes:
     signature = private_key_obj.sign(data)
 
     # Validate signature size
-    assert len(signature) == ED25519_SIGNATURE_SIZE
+    if len(signature) != ED25519_SIGNATURE_SIZE:
+        raise ValueError(
+            f"Invalid signature size: expected {ED25519_SIGNATURE_SIZE} bytes, got {len(signature)}"
+        )
 
     logger.debug(f"✅ Created Ed25519 signature ({len(signature)} bytes)")
     return signature

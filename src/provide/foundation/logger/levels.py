@@ -8,13 +8,13 @@ from provide.foundation.logger.constants import (
     LEVEL_TO_NUMERIC,
     VALID_LEVEL_NAMES,
 )
+from provide.foundation.logger.types import LogLevelStr
 
 """Log level normalization and safe lookup utilities.
 
 Provides functions for normalizing log levels and performing safe lookups
 to prevent KeyError crashes in the logging system.
 """
-from provide.foundation.logger.types import LogLevelStr
 
 
 def normalize_level(level: str) -> str:

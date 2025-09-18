@@ -2,6 +2,12 @@ from __future__ import annotations
 
 from typing import Any
 
+from provide.foundation.metrics.simple import (
+    SimpleCounter,
+    SimpleGauge,
+    SimpleHistogram,
+)
+
 """Foundation Metrics Module.
 
 Provides metrics collection with optional OpenTelemetry integration.
@@ -27,12 +33,6 @@ except ImportError:
     OTLPGrpcMetricExporter: Any = None
     OTLPHttpMetricExporter: Any = None
     _HAS_OTEL_METRICS = False
-
-from provide.foundation.metrics.simple import (
-    SimpleCounter,
-    SimpleGauge,
-    SimpleHistogram,
-)
 
 # Export the main API
 __all__ = [
