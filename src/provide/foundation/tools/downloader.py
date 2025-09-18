@@ -208,4 +208,4 @@ class ToolDownloader:
         try:
             return chain.execute(fallback_funcs[0])  # First is primary
         except Exception as e:
-            raise DownloadError(f"All mirrors failed: {e}")
+            raise DownloadError(f"All mirrors failed: {e}") from e

@@ -55,7 +55,7 @@ class Span:
     _otel_span: otel_trace.Span | None = field(default=None, init=False, repr=False)
     _active: bool = field(default=True, init=False, repr=False)
 
-    def __post_init__(self) -> None:
+    def __attrs_post_init__(self) -> None:
         """Initialize span after creation."""
         # Try to create OpenTelemetry span if available
         if _HAS_OTEL:

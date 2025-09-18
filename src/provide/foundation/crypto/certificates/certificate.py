@@ -8,13 +8,11 @@ from attrs import Factory, define, field
 
 if TYPE_CHECKING:
     from cryptography import x509
-    from cryptography.hazmat.primitives import serialization
     from cryptography.hazmat.primitives.asymmetric import ec, rsa
     from cryptography.x509 import Certificate as X509Certificate
 
 try:
     from cryptography import x509
-    from cryptography.hazmat.primitives import serialization
     from cryptography.hazmat.primitives.asymmetric import ec, rsa
     from cryptography.x509 import Certificate as X509Certificate
 
@@ -339,4 +337,7 @@ class Certificate:
 
 
 # Type alias for backwards compatibility
-KeyPair = rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey | None
+if _HAS_CRYPTO:
+    KeyPair = rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey | None
+else:
+    KeyPair = None

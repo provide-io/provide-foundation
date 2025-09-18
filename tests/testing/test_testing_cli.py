@@ -1,5 +1,6 @@
 """Tests for CLI testing utilities."""
 
+from contextlib import suppress
 import json
 import os
 from pathlib import Path
@@ -44,10 +45,8 @@ class TestMockContext:
 
         with tempfile.NamedTemporaryFile() as tmp:
             tmp_path = Path(tmp.name)
-            try:
+            with suppress(Exception):
                 ctx.load_config(tmp_path)
-            except Exception:
-                pass  # Expected to fail with empty file
 
         assert str(tmp_path) in [str(p) for p in ctx.loaded_configs]
 

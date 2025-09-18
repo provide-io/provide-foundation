@@ -10,13 +10,11 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from cryptography import x509
-    from cryptography.hazmat.primitives import serialization
     from cryptography.hazmat.primitives.asymmetric import ec, rsa
     from cryptography.hazmat.primitives.serialization import load_pem_private_key
 
 try:
     from cryptography import x509
-    from cryptography.hazmat.primitives import serialization
     from cryptography.hazmat.primitives.asymmetric import ec, rsa
     from cryptography.hazmat.primitives.serialization import load_pem_private_key
 

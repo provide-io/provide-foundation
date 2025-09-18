@@ -101,36 +101,34 @@ class TestSetupOpentelemetryTracing:
             patch("provide.foundation.tracer.otel.otel_trace") as mock_trace,
             patch("provide.foundation.tracer.otel.slog") as mock_log,
         ):
-                                mock_resource_class.create.return_value = mock_resource
-                                mock_sampler_class.return_value = mock_sampler
-                                mock_provider_class.return_value = mock_tracer_provider
+            mock_resource_class.create.return_value = mock_resource
+            mock_sampler_class.return_value = mock_sampler
+            mock_provider_class.return_value = mock_tracer_provider
 
-                                setup_opentelemetry_tracing(config)
+            setup_opentelemetry_tracing(config)
 
-                                # Verify resource creation
-                                mock_resource_class.create.assert_called_once_with(
-                                    {
-                                        "service.name": "test-service",
-                                        "service.version": "1.0.0",
-                                    }
-                                )
+            # Verify resource creation
+            mock_resource_class.create.assert_called_once_with(
+                {
+                    "service.name": "test-service",
+                    "service.version": "1.0.0",
+                }
+            )
 
-                                # Verify sampler creation
-                                mock_sampler_class.assert_called_once_with(1.0)
+            # Verify sampler creation
+            mock_sampler_class.assert_called_once_with(1.0)
 
-                                # Verify tracer provider creation
-                                mock_provider_class.assert_called_once_with(
-                                    resource=mock_resource,
-                                    sampler=mock_sampler,
-                                )
+            # Verify tracer provider creation
+            mock_provider_class.assert_called_once_with(
+                resource=mock_resource,
+                sampler=mock_sampler,
+            )
 
-                                # Verify tracer provider is set
-                                mock_trace.set_tracer_provider.assert_called_once_with(mock_tracer_provider)
+            # Verify tracer provider is set
+            mock_trace.set_tracer_provider.assert_called_once_with(mock_tracer_provider)
 
-                                # Verify logging
-                                mock_log.info.assert_called_once_with(
-                                    "🔍✅ OpenTelemetry tracing setup complete"
-                                )
+            # Verify logging
+            mock_log.info.assert_called_once_with("🔍✅ OpenTelemetry tracing setup complete")
 
     def test_setup_with_grpc_otlp(self) -> None:
         """Test setup with GRPC OTLP exporter."""
@@ -150,41 +148,33 @@ class TestSetupOpentelemetryTracing:
             patch("provide.foundation.tracer.otel.Resource") as mock_resource_class,
             patch("provide.foundation.tracer.otel.TraceIdRatioBased") as mock_sampler_class,
             patch("provide.foundation.tracer.otel.TracerProvider") as mock_provider_class,
-            patch(
-                "provide.foundation.tracer.otel.OTLPGrpcSpanExporter"
-            ) as mock_exporter_class,
-            patch(
-                "provide.foundation.tracer.otel.BatchSpanProcessor"
-            ) as mock_processor_class,
+            patch("provide.foundation.tracer.otel.OTLPGrpcSpanExporter") as mock_exporter_class,
+            patch("provide.foundation.tracer.otel.BatchSpanProcessor") as mock_processor_class,
             patch("provide.foundation.tracer.otel.otel_trace"),
             patch("provide.foundation.tracer.otel.slog") as mock_log,
         ):
-                                        mock_resource_class.create.return_value = mock_resource
-                                        mock_sampler_class.return_value = mock_sampler
-                                        mock_provider_class.return_value = mock_tracer_provider
-                                        mock_exporter_class.return_value = mock_exporter
-                                        mock_processor_class.return_value = mock_processor
+            mock_resource_class.create.return_value = mock_resource
+            mock_sampler_class.return_value = mock_sampler
+            mock_provider_class.return_value = mock_tracer_provider
+            mock_exporter_class.return_value = mock_exporter
+            mock_processor_class.return_value = mock_processor
 
-                                        setup_opentelemetry_tracing(config)
+            setup_opentelemetry_tracing(config)
 
-                                        # Verify GRPC exporter creation
-                                        mock_exporter_class.assert_called_once_with(
-                                            endpoint="http://localhost:4317",
-                                            headers={"x-api-key": "test-key"},
-                                        )
+            # Verify GRPC exporter creation
+            mock_exporter_class.assert_called_once_with(
+                endpoint="http://localhost:4317",
+                headers={"x-api-key": "test-key"},
+            )
 
-                                        # Verify processor creation
-                                        mock_processor_class.assert_called_once_with(mock_exporter)
+            # Verify processor creation
+            mock_processor_class.assert_called_once_with(mock_exporter)
 
-                                        # Verify processor is added to tracer provider
-                                        mock_tracer_provider.add_span_processor.assert_called_once_with(
-                                            mock_processor
-                                        )
+            # Verify processor is added to tracer provider
+            mock_tracer_provider.add_span_processor.assert_called_once_with(mock_processor)
 
-                                        # Verify debug logging for OTLP
-                                        mock_log.debug.assert_called_once_with(
-                                            "✅ OTLP span exporter configured: grpc"
-                                        )
+            # Verify debug logging for OTLP
+            mock_log.debug.assert_called_once_with("✅ OTLP span exporter configured: grpc")
 
     def test_setup_with_http_otlp(self) -> None:
         """Test setup with HTTP OTLP exporter."""

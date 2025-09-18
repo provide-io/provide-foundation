@@ -192,10 +192,10 @@ class TestDecoratorWithMiddleware:
 
             try:
                 result = inner_func()
-            except ValueError:
+            except ValueError as e:
                 # Inner func exhausted retries
                 if outer_calls < 2:
-                    raise ValueError("outer fail")
+                    raise ValueError("outer fail") from e
                 return "outer recovered"
 
             return result

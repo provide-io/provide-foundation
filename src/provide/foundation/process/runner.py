@@ -196,6 +196,137 @@ def run_command_simple(
     return result.stdout.strip()
 
 
+def _setup_stream_environment(env: Mapping[str, str] | None) -> dict[str, str]:
+    """Setup environment for streaming commands."""
+    run_env = os.environ.copy()
+    if env is not None:
+        run_env.update(env)
+    run_env.setdefault("PROVIDE_TELEMETRY_DISABLED", "true")
+    return run_env
+
+
+def _make_stdout_nonblocking(stdout: Any) -> None:
+    """Make stdout non-blocking for timeout handling."""
+    import fcntl
+    import os
+
+    fd = stdout.fileno()
+    fl = fcntl.fcntl(fd, fcntl.F_GETFL)
+    fcntl.fcntl(fd, fcntl.F_SETFL, fl | os.O_NONBLOCK)
+
+
+def _check_timeout_expired(start_time: float, timeout: float, cmd_str: str, process: Any) -> None:
+    """Check if timeout has expired and handle it."""
+    import time
+
+    elapsed = time.time() - start_time
+    if elapsed >= timeout:
+        process.kill()
+        process.wait()
+        plog.error("⏱️ Stream timed out", command=cmd_str, timeout=timeout)
+        raise TimeoutError(
+            f"Command timed out after {timeout}s: {cmd_str}",
+            code="PROCESS_STREAM_TIMEOUT",
+            command=cmd_str,
+            timeout=timeout,
+        )
+
+
+def _read_chunk_from_stdout(stdout: Any, buffer: str) -> tuple[str, bool]:
+    """Read a chunk from stdout and update buffer. Returns (new_buffer, eof_reached)."""
+    try:
+        chunk = stdout.read(1024)
+        if not chunk:
+            return buffer, True  # EOF
+        return buffer + chunk, False
+    except OSError:
+        # No data available yet
+        return buffer, False
+
+
+def _yield_complete_lines(buffer: str) -> Iterator[tuple[str, str]]:
+    """Yield complete lines from buffer. Returns (line, remaining_buffer) tuples."""
+    while "\n" in buffer:
+        line, buffer = buffer.split("\n", 1)
+        yield line.rstrip(), buffer
+
+
+def _yield_remaining_lines(buffer: str) -> Iterator[str]:
+    """Yield any remaining lines from buffer."""
+    for line in buffer.split("\n"):
+        if line:
+            yield line.rstrip()
+
+
+def _finalize_remaining_data(stdout: Any, buffer: str) -> Iterator[str]:
+    """Read any remaining data and yield final lines."""
+    remaining_data = stdout.read()
+    if remaining_data:
+        buffer += remaining_data
+
+    yield from _yield_remaining_lines(buffer)
+
+
+def _stream_with_timeout(process: Any, timeout: float, cmd_str: str) -> Iterator[str]:
+    """Stream output with timeout handling."""
+    import select
+    import time
+
+    if not process.stdout:
+        return
+
+    start_time = time.time()
+    _make_stdout_nonblocking(process.stdout)
+
+    buffer = ""
+    while True:
+        _check_timeout_expired(start_time, timeout, cmd_str, process)
+
+        # Use select with timeout
+        elapsed = time.time() - start_time
+        remaining = timeout - elapsed
+        ready, _, _ = select.select([process.stdout], [], [], min(0.1, remaining))
+
+        if ready:
+            buffer, eof = _read_chunk_from_stdout(process.stdout, buffer)
+            if eof:
+                break
+
+            # Yield complete lines
+            for line, new_buffer in _yield_complete_lines(buffer):
+                buffer = new_buffer
+                yield line
+
+        # Check if process ended
+        if process.poll() is not None:
+            yield from _finalize_remaining_data(process.stdout, buffer)
+            break
+
+
+def _stream_without_timeout(process: Any) -> Iterator[str]:
+    """Stream output without timeout (blocking I/O)."""
+    if process.stdout:
+        for line in process.stdout:
+            yield line.rstrip()
+
+
+def _cleanup_process(process: Any) -> None:
+    """Ensure subprocess pipes are properly closed and process is terminated."""
+    if process.stdout:
+        process.stdout.close()
+    if process.stderr:
+        process.stderr.close()
+
+    # Make sure process is terminated
+    if process.poll() is None:
+        process.terminate()
+        try:
+            process.wait(timeout=1.0)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait()
+
+
 def stream_command(
     cmd: list[str],
     cwd: str | Path | None = None,
@@ -222,19 +353,10 @@ def stream_command(
         TimeoutError: If timeout is exceeded
 
     """
-    import fcntl
-    import os
-    import select
-    import time
-
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
     plog.info("🌊 Streaming command", command=cmd_str, cwd=str(cwd) if cwd else None)
 
-    # Prepare environment, disabling foundation telemetry by default
-    run_env = os.environ.copy()
-    if env is not None:
-        run_env.update(env)
-    run_env.setdefault("PROVIDE_TELEMETRY_DISABLED", "true")
+    run_env = _setup_stream_environment(env)
 
     # Convert Path to string
     if isinstance(cwd, Path):
@@ -255,72 +377,10 @@ def stream_command(
 
         try:
             if timeout is not None:
-                start_time = time.time()
-
-                if process.stdout:
-                    # Use non-blocking I/O with timeout
-                    # Make stdout non-blocking
-                    fd = process.stdout.fileno()
-                    fl = fcntl.fcntl(fd, fcntl.F_GETFL)
-                    fcntl.fcntl(fd, fcntl.F_SETFL, fl | os.O_NONBLOCK)
-
-                    buffer = ""
-                    while True:
-                        elapsed = time.time() - start_time
-                        if elapsed >= timeout:
-                            process.kill()
-                            process.wait()
-                            plog.error("⏱️ Stream timed out", command=cmd_str, timeout=timeout)
-                            raise TimeoutError(
-                                f"Command timed out after {timeout}s: {cmd_str}",
-                                code="PROCESS_STREAM_TIMEOUT",
-                                command=cmd_str,
-                                timeout=timeout,
-                            )
-
-                        # Use select with timeout
-                        remaining = timeout - elapsed
-                        ready, _, _ = select.select([process.stdout], [], [], min(0.1, remaining))
-
-                        if ready:
-                            try:
-                                chunk = process.stdout.read(1024)
-                                if not chunk:
-                                    break  # EOF
-                                buffer += chunk
-
-                                # Yield complete lines
-                                while "\n" in buffer:
-                                    line, buffer = buffer.split("\n", 1)
-                                    yield line.rstrip()
-                            except OSError:
-                                # No data available yet
-                                pass
-
-                        # Check if process ended
-                        if process.poll() is not None:
-                            # Read any remaining data
-                            remaining_data = process.stdout.read()
-                            if remaining_data:
-                                buffer += remaining_data
-
-                            # Yield any remaining lines
-                            for line in buffer.split("\n"):
-                                if line:
-                                    yield line.rstrip()
-                            break
-
-                    # Wait for process to complete
-                    returncode = process.poll()
-                    if returncode is None:
-                        returncode = process.wait()
+                yield from _stream_with_timeout(process, timeout, cmd_str)
+                returncode = process.poll() or process.wait()
             else:
-                # No timeout - use blocking I/O
-                if process.stdout:
-                    for line in process.stdout:
-                        yield line.rstrip()
-
-                # Wait for process to complete
+                yield from _stream_without_timeout(process)
                 returncode = process.wait()
 
             if returncode != 0:
@@ -333,19 +393,8 @@ def stream_command(
 
             plog.debug("✅ Stream completed", command=cmd_str)
         finally:
-            # Ensure subprocess pipes are properly closed
-            if process.stdout:
-                process.stdout.close()
-            if process.stderr:
-                process.stderr.close()
-            # Make sure process is terminated
-            if process.poll() is None:
-                process.terminate()
-                try:
-                    process.wait(timeout=1.0)
-                except subprocess.TimeoutExpired:
-                    process.kill()
-                    process.wait()
+            _cleanup_process(process)
+
     except Exception as e:
         if isinstance(e, ProcessError | TimeoutError):
             raise

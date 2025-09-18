@@ -1,10 +1,14 @@
 from __future__ import annotations
 
+from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from provide.foundation.logger.config.logging import LoggingConfig
+
 """Centralized default values for Foundation configuration.
 All defaults are defined here instead of inline in field definitions.
 """
-
-from pathlib import Path
 
 # =================================
 # Logging defaults
@@ -121,7 +125,7 @@ def default_otlp_headers() -> dict[str, str]:
     return {}
 
 
-def default_logging_config():
+def default_logging_config() -> LoggingConfig:
     """Factory for LoggingConfig instance."""
     # Import here to avoid circular imports
     from provide.foundation.logger.config.logging import LoggingConfig

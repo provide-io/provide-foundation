@@ -7,14 +7,14 @@ from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
     from cryptography import x509
-    from cryptography.hazmat.primitives import hashes, serialization
+    from cryptography.hazmat.primitives import hashes
     from cryptography.hazmat.primitives.asymmetric import ec, padding, rsa
     from cryptography.x509 import Certificate as X509Certificate
     from cryptography.x509.oid import ExtendedKeyUsageOID
 
 try:
     from cryptography import x509
-    from cryptography.hazmat.primitives import hashes, serialization
+    from cryptography.hazmat.primitives import hashes
     from cryptography.hazmat.primitives.asymmetric import ec, padding, rsa
     from cryptography.x509 import Certificate as X509Certificate
     from cryptography.x509.oid import ExtendedKeyUsageOID
