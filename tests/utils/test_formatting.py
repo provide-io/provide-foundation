@@ -1,12 +1,10 @@
 """Tests for formatting utilities."""
 
-from provide.foundation.utils.formatting import (
+from provide.foundation.formatting import (
     format_duration,
     format_number,
     format_percentage,
     format_size,
-)
-from provide.foundation.utils.text_utils import (
     format_table,
     indent,
     pluralize,
