@@ -212,6 +212,9 @@ celerybeat.pid
 .venv
 env/
 venv/
+# But include Python source packages that happen to be named 'env'
+!**/src/**/env/
+!src/provide/foundation/utils/env/
 ENV/
 env.bak/
 venv.bak/
