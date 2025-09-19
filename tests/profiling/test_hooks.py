@@ -10,7 +10,12 @@ import pytest
 
 from provide.foundation.context import CLIContext
 from provide.foundation.hub.manager import clear_hub, get_hub
-from provide.foundation.testmode.detection import reset_foundation_setup_for_testing
+from provide.foundation.testmode import (
+    reset_hub_state,
+    reset_logger_state,
+    reset_streams_state,
+    reset_structlog_state,
+)
 
 
 class TestProfileMetrics:
@@ -177,7 +182,11 @@ class TestProfilingComponent:
 
     def setup_method(self) -> None:
         """Reset Foundation state before each test."""
-        reset_foundation_setup_for_testing()
+        # Reset Foundation components in proper order
+        reset_structlog_state()
+        reset_streams_state()
+        reset_logger_state()
+        reset_hub_state()
         clear_hub()
 
     def test_component_initialization(self) -> None:
@@ -222,13 +231,16 @@ class TestProfilingComponent:
 
     def test_component_hub_integration(self) -> None:
         """Test component registration with Hub."""
-        hub = get_hub()
+        from provide.foundation.hub.components import get_component_registry
+
         component = ProfilingComponent()
 
-        # Register component
-        hub.add_component(component, "profiler")
+        # Register component directly with registry
+        registry = get_component_registry()
+        registry.register(name="profiler", value=component, dimension="component")
 
-        # Retrieve component
+        # Retrieve component via Hub
+        hub = get_hub()
         retrieved = hub.get_component("profiler")
         assert retrieved is component
 
@@ -250,7 +262,11 @@ class TestProfilingCLI:
 
     def setup_method(self) -> None:
         """Reset Foundation state before each test."""
-        reset_foundation_setup_for_testing()
+        # Reset Foundation components in proper order
+        reset_structlog_state()
+        reset_streams_state()
+        reset_logger_state()
+        reset_hub_state()
         clear_hub()
 
     def test_profile_command_no_profiler(self) -> None:
@@ -320,7 +336,11 @@ class TestProfilingIntegration:
 
     def setup_method(self) -> None:
         """Reset Foundation state before each test."""
-        reset_foundation_setup_for_testing()
+        # Reset Foundation components in proper order
+        reset_structlog_state()
+        reset_streams_state()
+        reset_logger_state()
+        reset_hub_state()
         clear_hub()
 
     def test_end_to_end_profiling(self) -> None:
