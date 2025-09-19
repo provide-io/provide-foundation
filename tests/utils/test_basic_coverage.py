@@ -56,7 +56,7 @@ class TestUtilsBasicCoverage:
     def test_format_size_function_exists(self) -> None:
         """Test format_size function exists."""
         try:
-            from provide.foundation.utils.formatting import format_size
+            from provide.foundation.formatting import format_size
 
             assert format_size is not None
             assert callable(format_size)
