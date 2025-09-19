@@ -231,7 +231,8 @@
       "Bash(gh run list:*)",
       "Bash(gh run view:*)",
       "Bash(gh workflow list:*)",
-      "Bash(pip index versions:*)"
+      "Bash(pip index versions:*)",
+      "Bash(gh api:*)"
     ],
     "deny": [],
     "ask": [],
