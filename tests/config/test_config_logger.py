@@ -6,6 +6,7 @@
 import io
 from typing import Any
 
+import pytest
 from structlog.dev import ConsoleRenderer
 from structlog.processors import JSONRenderer, TimeStamper
 
@@ -20,6 +21,7 @@ from provide.foundation.logger.processors import (
     _build_core_processors_list,
     _build_formatter_processors_list,
 )
+from provide.testkit import reset_foundation_setup_for_testing
 
 
 def get_proc_name(proc: Any) -> str:
@@ -57,6 +59,11 @@ class TestBuildFormatterProcessorsList:
 
 
 class TestBuildCoreProcessorsList:
+    @pytest.fixture(autouse=True)
+    def reset_foundation_for_processor_tests(self) -> None:
+        """Reset Foundation state before each test to ensure consistent processor counts."""
+        reset_foundation_setup_for_testing()
+
     def test_default_config(self) -> None:
         config = TelemetryConfig()
         # Event sets auto-discovered now

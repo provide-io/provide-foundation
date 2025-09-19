@@ -1,9 +1,22 @@
 """Comprehensive tests for cli/commands/deps.py module."""
 
+from collections.abc import Generator
 import sys
+import threading
+from typing import Any
 from unittest.mock import Mock, patch
 
 import pytest
+
+# Global lock to prevent parallel tests from interfering with module reloading
+_MODULE_RELOAD_LOCK = threading.Lock()
+
+
+@pytest.fixture(scope="function")
+def module_reload_isolation() -> Generator[None, None, None]:
+    """Ensure only one test at a time can manipulate sys.modules and reload modules."""
+    with _MODULE_RELOAD_LOCK:
+        yield
 
 
 class TestDepsCommandWithClick:
@@ -15,7 +28,7 @@ class TestDepsCommandWithClick:
 
         assert deps_command is not None
 
-    def test_deps_command_with_click(self) -> None:
+    def test_deps_command_with_click(self, module_reload_isolation: Any) -> None:
         """Test deps command when click is available."""
         with (
             patch("provide.foundation.cli.commands.deps._HAS_CLICK", True),
@@ -151,7 +164,7 @@ class TestDepsCommandWithClick:
 class TestDepsCommandWithoutClick:
     """Test deps command when click is not available."""
 
-    def test_deps_command_without_click(self) -> None:
+    def test_deps_command_without_click(self, module_reload_isolation: Any) -> None:
         """Test deps_command raises error when click not available."""
         # This test simulates when click is not installed
         import importlib
@@ -191,7 +204,7 @@ class TestDepsCommandWithoutClick:
             assert "CLI commands require optional dependencies" in str(exc_info.value)
             assert "pip install 'provide-foundation[cli]'" in str(exc_info.value)
 
-    def test_deps_command_stub_with_args(self) -> None:
+    def test_deps_command_stub_with_args(self, module_reload_isolation: Any) -> None:
         """Test deps_command stub ignores args and raises error."""
         # Test the stub function behavior
         import importlib
