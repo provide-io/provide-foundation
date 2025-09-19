@@ -2,6 +2,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from provide.foundation import logger
+from provide.foundation.crypto.certificates.base import CertificateError
+from provide.foundation.crypto.certificates.operations import validate_signature
+
 """Certificate trust chain and verification utilities."""
 
 if TYPE_CHECKING:
@@ -13,10 +17,6 @@ try:
     _HAS_CRYPTO = True
 except ImportError:
     _HAS_CRYPTO = False
-
-from provide.foundation import logger
-from provide.foundation.crypto.certificates.base import CertificateError
-from provide.foundation.crypto.certificates.operations import validate_signature
 
 
 def verify_trust(

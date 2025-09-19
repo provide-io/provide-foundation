@@ -191,7 +191,7 @@ class TestOutputJson:
             import inspect
 
             source = inspect.getsource(_output_json)
-            assert "@with_error_handling" in source
+            assert "@resilient" in source
             assert "suppress=(TypeError, ValueError, AttributeError)" in source
 
     def test_output_json_default_stream(self) -> None:
@@ -485,7 +485,7 @@ class TestEdgeCases:
             import inspect
 
             source = inspect.getsource(_output_json)
-            assert "@with_error_handling" in source
+            assert "@resilient" in source
             assert "suppress=(TypeError, ValueError, AttributeError)" in source
 
     def test_context_auto_retrieval_in_functions(self) -> None:

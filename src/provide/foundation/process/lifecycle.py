@@ -17,7 +17,7 @@ from provide.foundation.config.defaults import (
     DEFAULT_PROCESS_TERMINATE_TIMEOUT,
     DEFAULT_PROCESS_WAIT_TIMEOUT,
 )
-from provide.foundation.errors.decorators import with_error_handling
+from provide.foundation.errors.decorators import resilient
 from provide.foundation.logger import get_logger
 from provide.foundation.process.runner import ProcessError
 
@@ -119,7 +119,7 @@ class ManagedProcess:
             return False
         return self._process.poll() is None
 
-    @with_error_handling(
+    @resilient(
         error_mapper=lambda e: ProcessError(f"Failed to launch process: {e}")
         if not isinstance(e, (ProcessError, RuntimeError))
         else e,

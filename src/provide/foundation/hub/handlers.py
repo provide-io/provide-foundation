@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from provide.foundation.errors.decorators import with_error_handling
+from provide.foundation.errors.decorators import resilient
 from provide.foundation.hub.foundation import get_foundation_logger
 from provide.foundation.hub.registry import RegistryEntry
 
@@ -49,7 +49,7 @@ def get_handlers_for_exception(exception: Exception) -> list[RegistryEntry]:
         return matching_handlers
 
 
-@with_error_handling(
+@resilient(
     fallback=None,
     context_provider=lambda: {
         "function": "execute_error_handlers",

@@ -6,7 +6,7 @@ including context managers, decorators, custom exceptions, and resilience patter
 
 Key Features Demonstrated:
 - error_boundary context manager for structured error handling
-- with_error_handling decorator for automatic error handling
+- resilient decorator for automatic error handling
 - Foundation's custom exception hierarchy
 - Error context capturing and enrichment
 - Retry patterns with exponential backoff
@@ -45,7 +45,7 @@ from provide.foundation.errors import (  # noqa: E402
     ValidationError,
     capture_error_context,
     error_boundary,
-    with_error_handling,
+    resilient,
 )
 from provide.foundation.resilience import (  # noqa: E402
     BackoffStrategy,
@@ -94,10 +94,10 @@ def example_error_handling() -> None:
 
     logger.info("Operation completed", result=result)
 
-    # Example 2: with_error_handling Decorator
-    pout("\n🎯 Example 2: with_error_handling Decorator")
+    # Example 2: resilient Decorator
+    pout("\n🎯 Example 2: resilient Decorator")
 
-    @with_error_handling(
+    @resilient(
         fallback={"error": "Service unavailable"},
         suppress=(NetworkError, ValidationError),
         log_errors=True,

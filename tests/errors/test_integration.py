@@ -12,7 +12,7 @@ import pytest
 from provide.foundation import (
     FoundationError,
     error_boundary,
-    with_error_handling,
+    resilient,
 )
 from provide.foundation.errors import (
     AlreadyExistsError,
@@ -89,7 +89,7 @@ class TestErrorSystemIntegration:
             call_stack.append("inner")
             raise ValidationError("Inner error", field="email")
 
-        @with_error_handling(suppress=(ValidationError,), fallback="handled")
+        @resilient(suppress=(ValidationError,), fallback="handled")
         def middle_function() -> None:
             call_stack.append("middle")
             with error_boundary(NetworkError, reraise=True):
@@ -235,7 +235,7 @@ class TestErrorSystemIntegration:
             await asyncio.sleep(0.01)
             raise NetworkError("Async failure", host="async.example.com")
 
-        @with_error_handling(fallback="async_default", suppress=(NetworkError,))
+        @resilient(fallback="async_default", suppress=(NetworkError,))
         async def async_with_handling():
             return await async_operation()
 
@@ -406,7 +406,7 @@ class TestErrorSystemIntegration:
         assert error.context["processor"] == "stripe"
 
         # Test with error handling
-        @with_error_handling(suppress=(PaymentError,), fallback={"status": "failed"})
+        @resilient(suppress=(PaymentError,), fallback={"status": "failed"})
         def process_payment() -> Never:
             raise error
 

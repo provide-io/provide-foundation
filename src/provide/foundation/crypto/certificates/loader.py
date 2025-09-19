@@ -6,6 +6,12 @@ from pathlib import Path
 import traceback
 from typing import TYPE_CHECKING
 
+from provide.foundation import logger
+from provide.foundation.crypto.certificates.base import (
+    CertificateBase,
+    CertificateError,
+)
+
 """Certificate loading utilities."""
 
 if TYPE_CHECKING:
@@ -21,12 +27,6 @@ try:
     _HAS_CRYPTO = True
 except ImportError:
     _HAS_CRYPTO = False
-
-from provide.foundation import logger
-from provide.foundation.crypto.certificates.base import (
-    CertificateBase,
-    CertificateError,
-)
 
 
 def load_from_uri_or_pem(data: str) -> str:

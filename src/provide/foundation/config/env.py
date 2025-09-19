@@ -5,6 +5,11 @@ from collections.abc import Callable
 import os
 from typing import Any, Self, TypeVar
 
+from attrs import fields
+
+from provide.foundation.config.base import BaseConfig, field
+from provide.foundation.config.types import ConfigSource
+
 """Environment variable configuration utilities."""
 
 try:
@@ -14,10 +19,6 @@ try:
 except ImportError:
     aiofiles: Any = None
     _HAS_AIOFILES = False
-from attrs import fields
-
-from provide.foundation.config.base import BaseConfig, field
-from provide.foundation.config.types import ConfigSource
 
 T = TypeVar("T")
 
