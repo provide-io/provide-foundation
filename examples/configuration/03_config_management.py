@@ -142,22 +142,34 @@ class ServerConfig(BaseConfig):
     workers: int = field(default=4)
     timeout: int = field(default=30)
     cors_origins: list[str] = field(
-        default=Factory(lambda: ["http://localhost:3000"]),
+        default=None,
         metadata={"parser": parse_list},
     )
+
+    def __attrs_post_init__(self) -> None:
+        if self.cors_origins is None:
+            object.__setattr__(self, 'cors_origins', ["http://localhost:3000"])
 
 
 @define
 class FullConfig(RuntimeConfig):
     """Complete application configuration."""
 
-    app: AppConfig = field(default=Factory(AppConfig))
-    database: DatabaseConfig = field(default=Factory(DatabaseConfig))
-    server: ServerConfig = field(default=Factory(ServerConfig))
+    app: AppConfig = field(default=None)
+    database: DatabaseConfig = field(default=None)
+    server: ServerConfig = field(default=None)
 
-    features: dict[str, bool] = field(
-        default=Factory(lambda: {"new_ui": False, "analytics": True}),
-    )
+    features: dict[str, bool] = field(default=None)
+
+    def __attrs_post_init__(self) -> None:
+        if self.app is None:
+            object.__setattr__(self, 'app', AppConfig())
+        if self.database is None:
+            object.__setattr__(self, 'database', DatabaseConfig())
+        if self.server is None:
+            object.__setattr__(self, 'server', ServerConfig())
+        if self.features is None:
+            object.__setattr__(self, 'features', {"new_ui": False, "analytics": True})
 
 
 def example_basic_usage() -> None:
