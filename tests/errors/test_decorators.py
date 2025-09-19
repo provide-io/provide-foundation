@@ -9,17 +9,17 @@ from provide.foundation.errors.base import FoundationError
 from provide.foundation.errors.decorators import (
     fallback_on_error,
     suppress_and_log,
-    with_error_handling,
+    resilient,
 )
 
 
 class TestWithErrorHandling:
-    """Test with_error_handling decorator."""
+    """Test resilient decorator."""
 
     def test_successful_function(self) -> None:
         """Test that successful functions work normally."""
 
-        @with_error_handling(fallback="default")
+        @resilient(fallback="default")
         def successful_func() -> str:
             return "success"
 
@@ -28,7 +28,7 @@ class TestWithErrorHandling:
     def test_fallback_on_error(self) -> None:
         """Test that fallback is returned on error."""
 
-        @with_error_handling(fallback="default")
+        @resilient(fallback="default")
         def failing_func() -> Never:
             raise ValueError("test error")
 
@@ -38,7 +38,7 @@ class TestWithErrorHandling:
     def test_suppress_specific_errors(self) -> None:
         """Test suppressing specific error types."""
 
-        @with_error_handling(fallback="default", suppress=(KeyError, ValueError))
+        @resilient(fallback="default", suppress=(KeyError, ValueError))
         def func(error_type) -> Never:
             if error_type == "key":
                 raise KeyError("key error")
@@ -58,7 +58,7 @@ class TestWithErrorHandling:
     def test_error_logging(self, mock_logger) -> None:
         """Test that errors are logged."""
 
-        @with_error_handling(log_errors=True)
+        @resilient(log_errors=True)
         def failing_func() -> Never:
             raise ValueError("test error")
 
@@ -76,7 +76,7 @@ class TestWithErrorHandling:
         def get_context() -> dict[str, str]:
             return {"request_id": "123", "user_id": "456"}
 
-        @with_error_handling(context_provider=get_context, log_errors=True)
+        @resilient(context_provider=get_context, log_errors=True)
         def failing_func() -> Never:
             raise ValueError("test error")
 
@@ -97,7 +97,7 @@ class TestWithErrorHandling:
                 return RuntimeError(f"Mapped: {e}")
             return e
 
-        @with_error_handling(error_mapper=map_error)
+        @resilient(error_mapper=map_error)
         def func(error_type: str) -> Never:
             if error_type == "value":
                 raise ValueError("value error")
@@ -115,7 +115,7 @@ class TestWithErrorHandling:
     async def test_async_function(self) -> None:
         """Test with async functions."""
 
-        @with_error_handling(fallback="default", suppress=(ValueError,))
+        @resilient(fallback="default", suppress=(ValueError,))
         async def async_func(should_fail: bool) -> str:
             if should_fail:
                 raise ValueError("async error")
@@ -135,7 +135,7 @@ class TestWithErrorHandling:
         def map_error(e: Exception) -> Exception:
             return RuntimeError(f"Mapped: {e}")
 
-        @with_error_handling(error_mapper=map_error)
+        @resilient(error_mapper=map_error)
         def func() -> Never:
             raise FoundationError("foundation error")
 

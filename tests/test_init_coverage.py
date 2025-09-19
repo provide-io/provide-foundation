@@ -202,7 +202,7 @@ class TestFoundationInit:
             "FoundationError",
             "error_boundary",
             "retry_on_error",
-            "with_error_handling",
+            "resilient",
         ]
 
         for export in error_exports:

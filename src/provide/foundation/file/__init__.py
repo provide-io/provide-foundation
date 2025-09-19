@@ -5,17 +5,6 @@ from provide.foundation.file.atomic import (
     atomic_write,
     atomic_write_text,
 )
-
-"""File operations with safety, atomicity, and format support.
-
-This module provides comprehensive file operations including:
-- Atomic writes to prevent corruption
-- Safe operations with error handling
-- Directory management utilities
-- Format-specific helpers for JSON, YAML, TOML
-- File locking for concurrent access
-- Various utility functions
-"""
 from provide.foundation.file.directory import (
     ensure_dir,
     ensure_parent_dir,
@@ -45,6 +34,17 @@ from provide.foundation.file.utils import (
     get_size,
     touch,
 )
+
+"""File operations with safety, atomicity, and format support.
+
+This module provides comprehensive file operations including:
+- Atomic writes to prevent corruption
+- Safe operations with error handling
+- Directory management utilities
+- Format-specific helpers for JSON, YAML, TOML
+- File locking for concurrent access
+- Various utility functions
+"""
 
 __all__ = [
     # From lock

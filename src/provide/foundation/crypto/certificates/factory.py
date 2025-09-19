@@ -2,6 +2,19 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from provide.foundation import logger
+from provide.foundation.crypto.certificates.base import (
+    CertificateError,
+    _require_crypto,
+)
+from provide.foundation.crypto.certificates.operations import create_x509_certificate
+from provide.foundation.crypto.constants import (
+    DEFAULT_CERTIFICATE_CURVE,
+    DEFAULT_CERTIFICATE_KEY_TYPE,
+    DEFAULT_CERTIFICATE_VALIDITY_DAYS,
+    DEFAULT_RSA_KEY_SIZE,
+)
+
 """Certificate factory methods."""
 
 if TYPE_CHECKING:
@@ -15,19 +28,6 @@ try:
     _HAS_CRYPTO = True
 except ImportError:
     _HAS_CRYPTO = False
-
-from provide.foundation import logger
-from provide.foundation.crypto.certificates.base import (
-    CertificateError,
-    _require_crypto,
-)
-from provide.foundation.crypto.certificates.operations import create_x509_certificate
-from provide.foundation.crypto.constants import (
-    DEFAULT_CERTIFICATE_CURVE,
-    DEFAULT_CERTIFICATE_KEY_TYPE,
-    DEFAULT_CERTIFICATE_VALIDITY_DAYS,
-    DEFAULT_RSA_KEY_SIZE,
-)
 
 
 def create_ca_certificate(

@@ -125,9 +125,9 @@ class TestErrorHandlingIntegration:
 
     async def test_async_error_handling(self) -> None:
         """Test error handling with async functions."""
-        from provide.foundation.errors.decorators import with_error_handling
+        from provide.foundation.errors.decorators import resilient
 
-        @with_error_handling(fallback="default", suppress=(ValueError,))
+        @resilient(fallback="default", suppress=(ValueError,))
         async def async_func(should_fail: bool = False) -> str:
             if should_fail:
                 raise ValueError("Test error")
@@ -144,13 +144,13 @@ class TestErrorHandlingIntegration:
     def test_error_logging_integration(self, captured_stderr_for_foundation) -> None:
         """Test that errors are properly logged."""
         from provide.foundation import TelemetryConfig, get_hub
-        from provide.foundation.errors.decorators import with_error_handling
+        from provide.foundation.errors.decorators import resilient
 
         # Setup telemetry
         hub = get_hub()
         hub.initialize_foundation(TelemetryConfig(), force=True)
 
-        @with_error_handling(log_errors=True)
+        @resilient(log_errors=True)
         def failing_func() -> Never:
             raise ValueError("Test error for logging")
 

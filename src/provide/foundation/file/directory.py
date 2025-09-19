@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 import shutil
 
-from provide.foundation.errors.decorators import with_error_handling
+from provide.foundation.errors.decorators import resilient
 from provide.foundation.logger import get_logger
 
 """Directory operations and utilities."""
@@ -61,7 +61,7 @@ def ensure_parent_dir(
     return parent
 
 
-@with_error_handling(fallback=False, suppress=(FileNotFoundError,) if False else ())
+@resilient(fallback=False, suppress=(FileNotFoundError,) if False else ())
 def safe_rmtree(
     path: Path | str,
     missing_ok: bool = True,

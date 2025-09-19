@@ -23,14 +23,133 @@ class HasName(Protocol):
 F = TypeVar("F", bound=Callable[..., Any])
 
 
+class ResilientErrorHandler:
+    """Encapsulates error handling logic for the resilient decorator."""
+
+    def __init__(
+        self,
+        fallback: Any = None,
+        log_errors: bool = True,
+        context_provider: Callable[[], dict[str, Any]] | None = None,
+        context: dict[str, Any] | None = None,
+        error_mapper: Callable[[Exception], Exception] | None = None,
+        suppress: tuple[type[Exception], ...] | None = None,
+        reraise: bool = True,
+    ) -> None:
+        self.fallback = fallback
+        self.log_errors = log_errors
+        self.context_provider = context_provider
+        self.context = context
+        self.error_mapper = error_mapper
+        self.suppress = suppress
+        self.reraise = reraise
+
+    def build_context(self) -> dict[str, Any]:
+        """Build logging context from provider and static context."""
+        log_context = {}
+        if self.context_provider:
+            log_context.update(self.context_provider())
+        if self.context:
+            log_context.update(self.context)
+        return log_context
+
+    def should_suppress(self, exception: Exception) -> bool:
+        """Check if the error should be suppressed."""
+        return self.suppress is not None and isinstance(exception, self.suppress)
+
+    def log_suppressed(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+        """Log a suppressed error."""
+        if not self.log_errors:
+            return
+        from provide.foundation.hub.foundation import get_foundation_logger
+
+        get_foundation_logger().info(
+            f"Suppressed {type(exception).__name__} in {func_name}",
+            function=func_name,
+            error=str(exception),
+            **log_context,
+        )
+
+    def log_error(self, exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
+        """Log an error with full details."""
+        if not self.log_errors:
+            return
+        from provide.foundation.hub.foundation import get_foundation_logger
+
+        get_foundation_logger().error(
+            f"Error in {func_name}: {exception}",
+            exc_info=True,
+            function=func_name,
+            **log_context,
+        )
+
+    def map_error(self, exception: Exception) -> Exception:
+        """Apply error mapping if configured."""
+        if self.error_mapper and not isinstance(exception, FoundationError):
+            mapped = self.error_mapper(exception)
+            if mapped is not exception:
+                return mapped
+        return exception
+
+    def process_error(self, exception: Exception, func_name: str) -> Any:
+        """Process an error according to configuration."""
+        log_context = self.build_context()
+
+        # Check if we should suppress this error
+        if self.should_suppress(exception):
+            self.log_suppressed(exception, func_name, log_context)
+            return self.fallback
+
+        # Log the error if configured
+        self.log_error(exception, func_name, log_context)
+
+        # If reraise=False, return fallback instead of raising
+        if not self.reraise:
+            return self.fallback
+
+        # Map the error if mapper provided and raise
+        mapped_error = self.map_error(exception)
+        if mapped_error is not exception:
+            raise mapped_error from exception
+
+        # Re-raise the original error
+        raise exception
+
+
+def _create_async_wrapper(func: F, handler: ResilientErrorHandler) -> F:
+    """Create an async wrapper for error handling."""
+
+    @functools.wraps(func)
+    async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
+        try:
+            return await func(*args, **kwargs)
+        except Exception as e:
+            return handler.process_error(e, getattr(func, "__name__", "<anonymous>"))
+
+    return async_wrapper  # type: ignore
+
+
+def _create_sync_wrapper(func: F, handler: ResilientErrorHandler) -> F:
+    """Create a sync wrapper for error handling."""
+
+    @functools.wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            return handler.process_error(e, getattr(func, "__name__", "<anonymous>"))
+
+    return wrapper  # type: ignore
+
+
 @overload
-def with_error_handling(
+def resilient(
     func: F,
 ) -> F: ...
 
 
 @overload
-def with_error_handling(
+def resilient(
     func: None = None,
     *,
     fallback: Any = None,
@@ -43,7 +162,7 @@ def with_error_handling(
 ) -> Callable[[F], F]: ...
 
 
-def with_error_handling(
+def resilient(
     func: F | None = None,
     *,
     fallback: Any = None,
@@ -69,18 +188,18 @@ def with_error_handling(
         Decorated function.
 
     Examples:
-        >>> @with_error_handling(fallback=None, suppress=(KeyError,))
+        >>> @resilient(fallback=None, suppress=(KeyError,))
         ... def get_value(data, key):
         ...     return data[key]
 
-        >>> @with_error_handling(
+        >>> @resilient(
         ...     context_provider=lambda: {"request_id": get_request_id()}
         ... )
         ... def process_request():
         ...     # errors will be logged with request_id
         ...     pass
 
-        >>> @with_error_handling(
+        >>> @resilient(
         ...     reraise=False,
         ...     context={"component": "orchestrator", "method": "run"}
         ... )
@@ -90,101 +209,26 @@ def with_error_handling(
 
     """
 
-    def _build_error_context() -> dict[str, Any]:
-        """Build logging context from provider and static context."""
-        log_context = {}
-        if context_provider:
-            log_context.update(context_provider())
-        if context:
-            log_context.update(context)
-        return log_context
-
-    def _should_suppress_error(exception: Exception) -> bool:
-        """Check if the error should be suppressed."""
-        return suppress is not None and isinstance(exception, suppress)
-
-    def _log_suppressed_error(exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
-        """Log a suppressed error."""
-        if log_errors:
-            from provide.foundation.hub.foundation import get_foundation_logger
-
-            get_foundation_logger().info(
-                f"Suppressed {type(exception).__name__} in {func_name}",
-                function=func_name,
-                error=str(exception),
-                **log_context,
-            )
-
-    def _log_error(exception: Exception, func_name: str, log_context: dict[str, Any]) -> None:
-        """Log an error with full details."""
-        if log_errors:
-            from provide.foundation.hub.foundation import get_foundation_logger
-
-            get_foundation_logger().error(
-                f"Error in {func_name}: {exception}",
-                exc_info=True,
-                function=func_name,
-                **log_context,
-            )
-
-    def _handle_error_mapping(exception: Exception) -> Exception:
-        """Apply error mapping if configured."""
-        if error_mapper and not isinstance(exception, FoundationError):
-            mapped = error_mapper(exception)
-            if mapped is not exception:
-                return mapped
-        return exception
-
-    def _process_error(exception: Exception, func_name: str) -> Any:
-        """Process an error according to configuration."""
-        log_context = _build_error_context()
-
-        # Check if we should suppress this error
-        if _should_suppress_error(exception):
-            _log_suppressed_error(exception, func_name, log_context)
-            return fallback
-
-        # Log the error if configured
-        _log_error(exception, func_name, log_context)
-
-        # If reraise=False, return fallback instead of raising
-        if not reraise:
-            return fallback
-
-        # Map the error if mapper provided and raise
-        mapped_error = _handle_error_mapping(exception)
-        if mapped_error is not exception:
-            raise mapped_error from exception
-
-        # Re-raise the original error
-        raise exception
-
     def decorator(func: F) -> F:
+        # Create error handler with all configuration
+        handler = ResilientErrorHandler(
+            fallback=fallback,
+            log_errors=log_errors,
+            context_provider=context_provider,
+            context=context,
+            error_mapper=error_mapper,
+            suppress=suppress,
+            reraise=reraise,
+        )
+
+        # Return appropriate wrapper based on function type
         if inspect.iscoroutinefunction(func):
+            return _create_async_wrapper(func, handler)
+        return _create_sync_wrapper(func, handler)
 
-            @functools.wraps(func)
-            async def async_wrapper(*args: Any, **kwargs: Any) -> Any:
-                try:
-                    return await func(*args, **kwargs)
-                except Exception as e:
-                    return _process_error(e, getattr(func, "__name__", "<anonymous>"))
-
-            return async_wrapper  # type: ignore
-
-        @functools.wraps(func)
-        def wrapper(*args: Any, **kwargs: Any) -> Any:
-            try:
-                return func(*args, **kwargs)
-            except Exception as e:
-                return _process_error(e, getattr(func, "__name__", "<anonymous>"))
-
-        return wrapper  # type: ignore
-
-    # Support both @with_error_handling and @with_error_handling(...) forms
+    # Support both @resilient and @resilient(...) forms
     if func is None:
-        # Called as @with_error_handling(...) with arguments
         return decorator
-    # Called as @with_error_handling (no parentheses)
     return decorator(func)
 
 

@@ -5,6 +5,9 @@ import os
 import sys
 from typing import Any
 
+from provide.foundation.context import CLIContext
+from provide.foundation.errors.decorators import resilient
+
 """Core console output functions for standardized CLI output.
 
 Provides pout() and perr() for consistent output handling with support
@@ -18,9 +21,6 @@ try:
 except ImportError:
     click: Any = None
     _HAS_CLICK = False
-
-from provide.foundation.context import CLIContext
-from provide.foundation.errors.decorators import with_error_handling
 
 # Note: This module doesn't need logging - it's a pure output utility
 
@@ -67,7 +67,7 @@ def _should_use_color(ctx: CLIContext | None = None, stream: Any = None) -> bool
     return sys.stdout.isatty() or sys.stderr.isatty()
 
 
-@with_error_handling(fallback=None, suppress=(TypeError, ValueError, AttributeError))
+@resilient(fallback=None, suppress=(TypeError, ValueError, AttributeError))
 def _output_json(data: Any, stream: Any = sys.stdout) -> None:
     """Output data as JSON."""
     json_str = json.dumps(data, indent=2, default=str)
@@ -77,7 +77,7 @@ def _output_json(data: Any, stream: Any = sys.stdout) -> None:
         print(json_str, file=stream)
 
 
-@with_error_handling(
+@resilient(
     fallback=None,
     suppress=(OSError, IOError, UnicodeEncodeError),
     context_provider=lambda: {"function": "pout"},
@@ -138,7 +138,7 @@ def pout(message: Any, **kwargs: Any) -> None:
             print(output, file=sys.stdout, end="")
 
 
-@with_error_handling(
+@resilient(
     fallback=None,
     suppress=(OSError, IOError, UnicodeEncodeError),
     context_provider=lambda: {"function": "perr"},

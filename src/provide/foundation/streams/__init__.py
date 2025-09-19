@@ -9,12 +9,6 @@ from provide.foundation.streams.console import (
     supports_color,
     write_to_console,
 )
-
-"""Foundation Streams Module.
-
-Provides stream management functionality including console, file,
-and core stream operations.
-"""
 from provide.foundation.streams.core import (
     ensure_stderr_default,
     get_log_stream,
@@ -26,6 +20,12 @@ from provide.foundation.streams.file import (
     flush_log_streams,
     reset_streams,
 )
+
+"""Foundation Streams Module.
+
+Provides stream management functionality including console, file,
+and core stream operations.
+"""
 
 __all__ = [
     "close_log_streams",

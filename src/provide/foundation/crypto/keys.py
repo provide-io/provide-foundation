@@ -12,9 +12,9 @@ from provide.foundation.crypto.constants import (
     SUPPORTED_KEY_TYPES,
     SUPPORTED_RSA_SIZES,
 )
+from provide.foundation.crypto.signatures import generate_ed25519_keypair
 
 """Unified key generation for all cryptographic algorithms."""
-from provide.foundation.crypto.signatures import generate_ed25519_keypair
 
 
 class KeyPair(Protocol):

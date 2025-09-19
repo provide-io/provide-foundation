@@ -16,7 +16,7 @@ from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.config.types import ConfigDict, ConfigFormat, ConfigSource
 from provide.foundation.errors.config import ConfigurationError
-from provide.foundation.errors.decorators import with_error_handling
+from provide.foundation.errors.decorators import resilient
 from provide.foundation.errors.resources import NotFoundError
 from provide.foundation.file.safe import safe_read_text
 
@@ -85,7 +85,7 @@ class FileConfigLoader(ConfigLoader):
         """Check if configuration file exists."""
         return self.path.exists()
 
-    @with_error_handling(
+    @resilient(
         context_provider=lambda: {"loader": FileConfigLoader},
         error_mapper=lambda e: ConfigurationError(
             f"Failed to load configuration: {e}",

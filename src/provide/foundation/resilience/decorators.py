@@ -6,6 +6,7 @@ import functools
 from typing import Any, TypeVar
 
 from provide.foundation.config.defaults import DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT
+from provide.foundation.resilience.circuit import CircuitBreaker
 from provide.foundation.resilience.retry import (
     BackoffStrategy,
     RetryExecutor,
@@ -173,7 +174,6 @@ def retry(
 
 
 # Import CircuitBreaker from circuit module
-from provide.foundation.resilience.circuit import CircuitBreaker
 
 
 def circuit_breaker(

@@ -9,12 +9,12 @@ from provide.foundation.config.converters import (
     validate_non_negative,
     validate_positive,
 )
-
-"""Transport configuration with Foundation config integration."""
 from provide.foundation.config.env import RuntimeConfig
 from provide.foundation.config.loader import RuntimeConfigLoader
 from provide.foundation.config.manager import register_config
 from provide.foundation.logger import get_logger
+
+"""Transport configuration with Foundation config integration."""
 
 log = get_logger(__name__)
 

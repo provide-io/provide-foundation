@@ -3,6 +3,8 @@ from __future__ import annotations
 import threading
 from typing import TYPE_CHECKING, Any
 
+from provide.foundation.hub.registry import Registry
+
 """Foundation system initialization and lifecycle management.
 
 This module provides Foundation-specific functionality for the Hub,
@@ -12,8 +14,6 @@ including telemetry configuration and logger initialization.
 if TYPE_CHECKING:
     from provide.foundation.logger.base import FoundationLogger
     from provide.foundation.logger.config import TelemetryConfig
-
-from provide.foundation.hub.registry import Registry
 
 
 class FoundationManager:

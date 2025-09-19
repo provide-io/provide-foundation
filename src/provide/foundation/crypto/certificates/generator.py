@@ -4,6 +4,21 @@ from datetime import UTC, datetime, timedelta
 import traceback
 from typing import TYPE_CHECKING
 
+from provide.foundation import logger
+from provide.foundation.crypto.certificates.base import (
+    CertificateBase,
+    CertificateConfig,
+    CertificateError,
+    CurveType,
+    KeyType,
+)
+from provide.foundation.crypto.certificates.operations import create_x509_certificate
+from provide.foundation.crypto.constants import (
+    DEFAULT_CERTIFICATE_CURVE,
+    DEFAULT_CERTIFICATE_KEY_TYPE,
+    DEFAULT_RSA_KEY_SIZE,
+)
+
 """Certificate generation utilities."""
 
 if TYPE_CHECKING:
@@ -19,21 +34,6 @@ try:
     _HAS_CRYPTO = True
 except ImportError:
     _HAS_CRYPTO = False
-
-from provide.foundation import logger
-from provide.foundation.crypto.certificates.base import (
-    CertificateBase,
-    CertificateConfig,
-    CertificateError,
-    CurveType,
-    KeyType,
-)
-from provide.foundation.crypto.certificates.operations import create_x509_certificate
-from provide.foundation.crypto.constants import (
-    DEFAULT_CERTIFICATE_CURVE,
-    DEFAULT_CERTIFICATE_KEY_TYPE,
-    DEFAULT_RSA_KEY_SIZE,
-)
 
 
 def generate_certificate(

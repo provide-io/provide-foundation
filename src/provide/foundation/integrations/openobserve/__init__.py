@@ -10,11 +10,6 @@ from provide.foundation.integrations.openobserve.exceptions import (
     OpenObserveQueryError,
     OpenObserveStreamingError,
 )
-
-"""OpenObserve integration for Foundation.
-
-Provides log querying and streaming capabilities as an optional integration.
-"""
 from provide.foundation.integrations.openobserve.formatters import (
     format_csv,
     format_json,
@@ -43,6 +38,11 @@ from provide.foundation.integrations.openobserve.streaming import (
     stream_search_http2,
     tail_logs,
 )
+
+"""OpenObserve integration for Foundation.
+
+Provides log querying and streaming capabilities as an optional integration.
+"""
 
 __all__ = [
     "OpenObserveAuthenticationError",

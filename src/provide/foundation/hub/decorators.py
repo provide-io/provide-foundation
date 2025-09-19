@@ -3,6 +3,10 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any, TypeVar, overload
 
+from provide.foundation.hub.foundation import get_foundation_logger
+from provide.foundation.hub.info import CommandInfo
+from provide.foundation.hub.registry import Registry, get_command_registry
+
 """Command registration decorators."""
 
 try:
@@ -21,11 +25,6 @@ def _get_ensure_parent_groups() -> Any:
     from provide.foundation.hub.click_builder import ensure_parent_groups
 
     return ensure_parent_groups
-
-
-from provide.foundation.hub.foundation import get_foundation_logger
-from provide.foundation.hub.info import CommandInfo
-from provide.foundation.hub.registry import Registry, get_command_registry
 
 F = TypeVar("F", bound=Callable[..., Any])
 

@@ -4,7 +4,7 @@ import inspect
 from typing import Any, TypeVar
 
 from provide.foundation.config.base import BaseConfig
-from provide.foundation.errors.decorators import with_error_handling
+from provide.foundation.errors.decorators import resilient
 from provide.foundation.hub.foundation import get_foundation_logger
 from provide.foundation.hub.registry import RegistryEntry
 
@@ -28,7 +28,7 @@ def _get_registry_and_lock() -> tuple[Any, Any, Any]:
     return get_component_registry(), _registry_lock, ComponentCategory
 
 
-@with_error_handling(fallback=None, suppress=(Exception,))
+@resilient(fallback=None, suppress=(Exception,))
 def resolve_config_value(key: str) -> Any:
     """Resolve configuration value using priority-ordered sources."""
     registry, registry_lock, ComponentCategory = _get_registry_and_lock()
@@ -74,7 +74,7 @@ def get_config_chain() -> list[RegistryEntry]:
         return config_sources
 
 
-@with_error_handling(fallback={}, context_provider=lambda: {"function": "load_all_configs"})
+@resilient(fallback={}, context_provider=lambda: {"function": "load_all_configs"})
 async def load_all_configs() -> dict[str, Any]:
     """Load configurations from all registered sources."""
     configs = {}
