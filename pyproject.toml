@@ -68,7 +68,7 @@ foundation = "provide.foundation.cli.main:cli [cli]"
 
 [dependency-groups]
 dev = [
-    "provide-testkit[standard,advanced-testing,typecheck,utils,build]>=0.0.0-dev.6,<0.0.0-dev.7",
+    "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main",
 ]
 docs = [
     "provide-testkit[docs]",
