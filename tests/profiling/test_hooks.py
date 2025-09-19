@@ -66,7 +66,7 @@ class TestProfileMetrics:
         metrics.record_message(duration_ns=2000000, has_emoji=True, field_count=5)
 
         assert metrics.messages_per_second == pytest.approx(2.0, rel=0.1)
-        assert metrics.avg_latency_ms == pytest.approx(0.0015, rel=0.1)  # (1+2)/2 ms
+        assert metrics.avg_latency_ms == pytest.approx(1.5, rel=0.1)  # (1+2)/2 million ns = 1.5ms
         assert metrics.emoji_overhead_percent == 50.0  # 1 of 2 messages
 
     def test_metrics_reset(self) -> None:
