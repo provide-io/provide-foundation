@@ -23,6 +23,13 @@ try:
     _HAS_OTEL_LOGS = True
 except ImportError:
     _HAS_OTEL_LOGS = False
+    # Create mock classes for testing compatibility
+    Resource = None
+    ResourceAttributes = None
+    OTLPLogExporter = None
+    LoggerProvider = None
+    BatchLogRecordProcessor = None
+    trace = None
 
 
 def send_log_otlp(
