@@ -48,7 +48,7 @@ import os
 from pathlib import Path
 import sys
 
-from attrs import Factory, define
+from attrs import define
 
 # Add src to path for examples
 example_dir = Path(__file__).resolve().parent
@@ -71,7 +71,6 @@ from provide.foundation.config import (  # noqa: E402
     env_field,
     field,
     parse_bool,
-    parse_list,
 )
 from provide.foundation.file import temp_dir  # noqa: E402
 
@@ -141,10 +140,7 @@ class ServerConfig(BaseConfig):
     port: int = field(default=8000)
     workers: int = field(default=4)
     timeout: int = field(default=30)
-    cors_origins: list[str] = field(
-        default=None,
-        metadata={"parser": parse_list},
-    )
+    cors_origins: list[str] | None = None
 
     def __attrs_post_init__(self) -> None:
         if self.cors_origins is None:
@@ -155,11 +151,11 @@ class ServerConfig(BaseConfig):
 class FullConfig(RuntimeConfig):
     """Complete application configuration."""
 
-    app: AppConfig = field(default=None)
-    database: DatabaseConfig = field(default=None)
-    server: ServerConfig = field(default=None)
+    app: AppConfig | None = None
+    database: DatabaseConfig | None = None
+    server: ServerConfig | None = None
 
-    features: dict[str, bool] = field(default=None)
+    features: dict[str, bool] | None = None
 
     def __attrs_post_init__(self) -> None:
         if self.app is None:
