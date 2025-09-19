@@ -57,7 +57,7 @@ jobs:
           uv venv
           source .venv/bin/activate
           uv pip install -e .
-          uv sync --all-groups --dev
+          uv sync --all-groups --dev --prerelease=allow
 
       - name: 🧪 Run Critical Tests
         run: |
@@ -109,7 +109,7 @@ jobs:
           uv venv
           source .venv/bin/activate
           uv pip install -e .
-          uv sync --all-groups --dev
+          uv sync --all-groups --dev --prerelease=allow
 
       - name: 🏗️ Build Release Package
         run: |
