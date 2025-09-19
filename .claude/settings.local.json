@@ -235,7 +235,8 @@
       "Bash(gh api:*)",
       "Bash(gh workflow run:*)",
       "Bash(gh run watch:*)",
-      "Bash(gh run logs:*)"
+      "Bash(gh run logs:*)",
+      "Bash(gh run download:*)"
     ],
     "deny": [],
     "ask": [],
