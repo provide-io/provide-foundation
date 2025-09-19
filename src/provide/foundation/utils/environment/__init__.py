@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from provide.foundation.utils.env.getters import (
+from provide.foundation.utils.environment.getters import (
     get_bool,
     get_dict,
     get_float,
@@ -10,8 +10,8 @@ from provide.foundation.utils.env.getters import (
     get_str,
     require,
 )
-from provide.foundation.utils.env.parsers import parse_duration, parse_size
-from provide.foundation.utils.env.prefix import EnvPrefix
+from provide.foundation.utils.environment.parsers import parse_duration, parse_size
+from provide.foundation.utils.environment.prefix import EnvPrefix
 
 """Environment variable utilities with type coercion and prefix support.
 
