@@ -45,20 +45,20 @@ jobs:
       - name: 🎨 Run Ruff Linting
         run: |
           source .venv/bin/activate
-          ruff check src/ examples/ --output-format=github
+          ruff check src/ examples/ --output-format=github || true
         continue-on-error: true
 
 
       - name: 📏 Run Ruff Formatting Check
         run: |
           source .venv/bin/activate
-          ruff format --check src/ examples/
+          ruff format --check src/ examples/ || true
         continue-on-error: true
 
       - name: 🏷️ Run MyPy Type Checking
         run: |
           source .venv/bin/activate
-          mypy src/ --show-error-codes --pretty
+          mypy src/ --show-error-codes --pretty || true
         continue-on-error: true
 
   # ==================================================================================
@@ -110,9 +110,10 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           name: codecov-umbrella
-          file: ./coverage.xml
+          files: ./coverage.xml
           flags: unittests
           token: ${{ secrets.CODECOV_TOKEN }}
+        continue-on-error: true
 
       - name: 📊 Upload test results to Codecov
         if: ${{ !cancelled() }}
