@@ -45,6 +45,8 @@ __all__ = [
     "auto_parse",
     # Dependency checking utilities
     "check_optional_deps",
+    # Module exports
+    "environment",
     "get_available_features",
     # Environment utilities
     "get_bool",
@@ -67,3 +69,11 @@ __all__ = [
     # Timing utilities
     "timed_block",
 ]
+
+
+def __getattr__(name: str):
+    """Lazy import for modules."""
+    if name == "environment":
+        from provide.foundation.utils import environment as env_module
+        return env_module
+    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")

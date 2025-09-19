@@ -27,11 +27,11 @@ class TestUtilsBasicCoverage:
         result = has_dependency("sys")
         assert isinstance(result, bool)
 
-    def test_environment_module_imports(self) -> None:
-        """Test environment module can be imported."""
-        from provide.foundation.utils import environment
+    def test_env_module_imports(self) -> None:
+        """Test env module can be imported."""
+        from provide.foundation.utils import environment as env
 
-        assert environment is not None
+        assert env is not None
 
     def test_get_bool_function_exists(self) -> None:
         """Test get_bool function exists."""
