@@ -38,6 +38,8 @@ def __getattr__(name: str) -> Any:
 
 __all__ = [
     "CommandInfo",
+    "build_click_command",  # noqa: F822
+    "create_command_group",  # noqa: F822
     "get_command_registry",
     "register_command",
 ]
