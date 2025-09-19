@@ -40,6 +40,7 @@ jobs:
           uv venv
           source .venv/bin/activate
           uv pip install -e .
+          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
           uv sync --all-groups --dev --prerelease=allow
 
       - name: 🎨 Run Ruff Linting
@@ -92,6 +93,7 @@ jobs:
           uv venv
           source .venv/bin/activate
           uv pip install -e .
+          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
           uv sync --all-groups --dev --prerelease=allow
 
       - name: 🧪 Run Tests with Coverage
@@ -164,6 +166,7 @@ jobs:
           uv venv
           source .venv/bin/activate
           uv pip install -e .
+          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
           uv sync --all-groups --dev --prerelease=allow
 
       - name: 🔍 Version Consistency Check
@@ -235,6 +238,7 @@ jobs:
           uv venv
           source .venv/bin/activate
           uv pip install -e .
+          uv pip install "provide-testkit[standard,advanced-testing,typecheck,utils,build] @ git+https://github.com/livingstaccato/provide-testkit.git@main"
           uv sync --all-groups --dev --prerelease=allow
 
       - name: 🧪 Run Integration Tests
