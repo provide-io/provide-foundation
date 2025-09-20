@@ -8,7 +8,7 @@ from provide.foundation.utils.deps import (
     has_dependency,
     require_dependency,
 )
-from provide.foundation.utils.env import (
+from provide.foundation.utils.environment import (
     EnvPrefix,
     get_bool,
     get_dict,

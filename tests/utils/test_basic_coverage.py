@@ -36,7 +36,7 @@ class TestUtilsBasicCoverage:
     def test_get_bool_function_exists(self) -> None:
         """Test get_bool function exists."""
         try:
-            from provide.foundation.utils.env import get_bool
+            from provide.foundation.utils.environment import get_bool
 
             assert get_bool is not None
             assert callable(get_bool)

@@ -48,7 +48,7 @@ import os
 from pathlib import Path
 import sys
 
-from attrs import Factory, define
+from attrs import define
 
 # Add src to path for examples
 example_dir = Path(__file__).resolve().parent
@@ -71,7 +71,6 @@ from provide.foundation.config import (  # noqa: E402
     env_field,
     field,
     parse_bool,
-    parse_list,
 )
 from provide.foundation.file import temp_dir  # noqa: E402
 
@@ -141,23 +140,32 @@ class ServerConfig(BaseConfig):
     port: int = field(default=8000)
     workers: int = field(default=4)
     timeout: int = field(default=30)
-    cors_origins: list[str] = field(
-        default=Factory(lambda: ["http://localhost:3000"]),
-        metadata={"parser": parse_list},
-    )
+    cors_origins: list[str] | None = None
+
+    def __attrs_post_init__(self) -> None:
+        if self.cors_origins is None:
+            object.__setattr__(self, 'cors_origins', ["http://localhost:3000"])
 
 
 @define
 class FullConfig(RuntimeConfig):
     """Complete application configuration."""
 
-    app: AppConfig = field(default=Factory(AppConfig))
-    database: DatabaseConfig = field(default=Factory(DatabaseConfig))
-    server: ServerConfig = field(default=Factory(ServerConfig))
+    app: AppConfig | None = None
+    database: DatabaseConfig | None = None
+    server: ServerConfig | None = None
 
-    features: dict[str, bool] = field(
-        default=Factory(lambda: {"new_ui": False, "analytics": True}),
-    )
+    features: dict[str, bool] | None = None
+
+    def __attrs_post_init__(self) -> None:
+        if self.app is None:
+            object.__setattr__(self, 'app', AppConfig())
+        if self.database is None:
+            object.__setattr__(self, 'database', DatabaseConfig())
+        if self.server is None:
+            object.__setattr__(self, 'server', ServerConfig())
+        if self.features is None:
+            object.__setattr__(self, 'features', {"new_ui": False, "analytics": True})
 
 
 def example_basic_usage() -> None:
