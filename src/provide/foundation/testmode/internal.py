@@ -114,3 +114,21 @@ def reset_coordinator_state() -> None:
     except ImportError:
         # Setup logger cache not available, skip
         pass
+
+
+def reset_profiling_state() -> None:
+    """Reset profiling state to defaults.
+
+    This clears profiling metrics and resets profiling components
+    to ensure clean state between tests.
+    """
+    try:
+        from provide.foundation.hub.manager import get_hub
+
+        hub = get_hub()
+        profiler = hub.get_component("profiler")
+        if profiler:
+            profiler.reset()
+    except ImportError:
+        # Profiling module or Hub not available, skip
+        pass

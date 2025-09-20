@@ -40,6 +40,12 @@ DEFAULT_OTLP_PROTOCOL = "http/protobuf"
 DEFAULT_TRACE_SAMPLE_RATE = 1.0
 
 # =================================
+# Profiling defaults
+# =================================
+DEFAULT_PROFILING_SAMPLE_RATE = 0.01  # 1% sampling
+DEFAULT_PROFILING_ENABLED = False
+
+# =================================
 # Process defaults
 # =================================
 DEFAULT_PROCESS_READLINE_TIMEOUT = 2.0
