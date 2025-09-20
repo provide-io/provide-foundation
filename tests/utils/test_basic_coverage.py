@@ -29,7 +29,7 @@ class TestUtilsBasicCoverage:
 
     def test_env_module_imports(self) -> None:
         """Test env module can be imported."""
-        from provide.foundation.utils import env
+        from provide.foundation.utils import environment as env
 
         assert env is not None
 
