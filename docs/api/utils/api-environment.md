@@ -1,6 +1,6 @@
 # Environment Utils
 
-::: provide.foundation.utils.env
+::: provide.foundation.utils.environment
     options:
       show_source: true
       show_root_heading: true

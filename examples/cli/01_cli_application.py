@@ -1,5 +1,12 @@
 #!/usr/bin/env python
 # examples/cli/01_cli_application.py
+
+from __future__ import annotations
+
+from provide.foundation.cli import echo_info, echo_success, echo_warning
+from provide.foundation.context import CLIContext
+from provide.foundation.hub import Hub, register_command
+
 """CLI Application Example - Complete Hub and Command System
 
 This comprehensive example demonstrates building a full CLI application
@@ -53,10 +60,6 @@ See Also:
 
 """
 
-from provide.foundation.cli import echo_info, echo_success, echo_warning
-from provide.foundation.context import CLIContext
-from provide.foundation.hub import Hub, register_command
-
 # ==============================================================================
 # COMPONENTS
 # ==============================================================================
@@ -69,13 +72,13 @@ class DatabaseResource:
         self.name = name
         self.connected = False
 
-    def __enter__(self):
+    def __enter__(self) -> DatabaseResource:
         """Context manager entry."""
         echo_info(f"Connecting to database: {self.name}")
         self.connected = True
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self, *args: object) -> None:
         """Context manager exit."""
         if self.connected:
             echo_info(f"Disconnecting from database: {self.name}")
@@ -95,17 +98,17 @@ class CacheResource:
         self.name = name
         self.cache = {}
 
-    def __enter__(self):
+    def __enter__(self) -> CacheResource:
         """Context manager entry."""
         echo_info(f"Initializing cache: {self.name}")
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self, *args: object) -> None:
         """Context manager exit."""
         echo_info(f"Clearing cache: {self.name}")
         self.cache.clear()
 
-    def get(self, key: str):
+    def get(self, key: str) -> str | None:
         """Get value from cache."""
         return self.cache.get(key)
 
@@ -221,7 +224,7 @@ def list_command(dimension: str | None = None) -> None:
 # ==============================================================================
 
 
-def create_demo_cli():
+def create_demo_cli() -> object:
     """Create the demo CLI application."""
     # Create hub with context
     context = CLIContext(log_level="INFO", profile="demo", debug=False)

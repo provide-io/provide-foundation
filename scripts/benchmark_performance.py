@@ -44,7 +44,6 @@ from provide.foundation import (
     LoggingConfig,
     TelemetryConfig,
     logger,
-    setup_telemetry,
 )
 
 
@@ -144,7 +143,7 @@ def benchmark_basic_logging() -> dict[str, Any]:
     )
 
     with capture_logs() as captured:
-        setup_telemetry(config)
+        logger.setup(config)
 
         with benchmark_timer("basic_logging") as result:
             message_count = 10000
@@ -186,7 +185,7 @@ def benchmark_json_formatting() -> dict[str, Any]:
     )
 
     with capture_logs() as captured:
-        setup_telemetry(config)
+        logger.setup(config)
 
         with benchmark_timer("json_formatting") as result:
             message_count = 5000
@@ -233,7 +232,7 @@ def benchmark_emoji_processing() -> dict[str, Any]:
     )
 
     with capture_logs():
-        setup_telemetry(config_with_emojis)
+        logger.setup(config_with_emojis)
 
         with benchmark_timer("emoji_enabled") as emoji_result:
             message_count = 5000
@@ -263,7 +262,7 @@ def benchmark_emoji_processing() -> dict[str, Any]:
     )
 
     with capture_logs():
-        setup_telemetry(config_no_emojis)
+        logger.setup(config_no_emojis)
 
         with benchmark_timer("emoji_disabled") as no_emoji_result:
             message_count = 5000
@@ -314,7 +313,7 @@ def benchmark_multithreaded_logging() -> dict[str, Any]:
     )
 
     with capture_logs() as captured:
-        setup_telemetry(config)
+        logger.setup(config)
 
         def worker_thread(thread_id: int, message_count: int) -> None:
             """Worker function that generates log messages from a specific thread."""
@@ -372,7 +371,7 @@ def benchmark_level_filtering() -> dict[str, Any]:
     )
 
     with capture_logs() as captured:
-        setup_telemetry(config)
+        logger.setup(config)
 
         with benchmark_timer("level_filtering") as result:
             message_count = 10000
@@ -418,7 +417,7 @@ async def benchmark_async_usage() -> dict[str, Any]:
     )
 
     with capture_logs():
-        setup_telemetry(config)
+        logger.setup(config)
 
         async def async_worker(worker_id: int, message_count: int) -> None:
             """Async worker that generates log messages with periodic yielding."""
@@ -471,7 +470,7 @@ def benchmark_large_payloads() -> dict[str, Any]:
     )
 
     with capture_logs() as captured:
-        setup_telemetry(config)
+        logger.setup(config)
 
         with benchmark_timer("large_payloads") as result:
             message_count = 1000

@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 from provide.foundation.errors import ValidationError
-from provide.foundation.utils.env import (
+from provide.foundation.utils.environment import (
     EnvPrefix,
     get_bool,
     get_dict,

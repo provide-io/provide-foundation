@@ -174,7 +174,7 @@ class TestEnvUtilsCoverage:
         from unittest.mock import patch
 
         from provide.foundation.errors.config import ValidationError
-        from provide.foundation.utils.env import get_bool
+        from provide.foundation.utils.environment import get_bool
 
         # Test with empty string (should be False)
         with patch.dict(os.environ, {"TEST_BOOL": ""}):
@@ -198,7 +198,7 @@ class TestEnvUtilsCoverage:
         from unittest.mock import patch
 
         from provide.foundation.errors.config import ValidationError
-        from provide.foundation.utils.env import get_int
+        from provide.foundation.utils.environment import get_int
 
         # Test negative numbers
         with patch.dict(os.environ, {"TEST_INT": "-42"}):
@@ -222,7 +222,7 @@ class TestEnvUtilsCoverage:
         from unittest.mock import patch
 
         from provide.foundation.errors.config import ValidationError
-        from provide.foundation.utils.env import get_float
+        from provide.foundation.utils.environment import get_float
 
         # Test scientific notation
         with patch.dict(os.environ, {"TEST_FLOAT": "1e-3"}):
@@ -245,7 +245,7 @@ class TestEnvUtilsCoverage:
         import os
         from unittest.mock import patch
 
-        from provide.foundation.utils.env import get_str
+        from provide.foundation.utils.environment import get_str
 
         # Test with missing env var (should use default)
         result = get_str("NON_EXISTENT_STR", default="default_value")
