@@ -249,7 +249,9 @@
       "Bash(.venv/bin/pytest tests/test_file_operations_performance.py::TestFileOperationsPerformance::test_large_event_set_performance -xvs)",
       "Bash(.venv/bin/pytest tests/test_file_operations_patterns.py::TestEditorSpecificPatterns::test_mixed_editor_patterns tests/testkit/test_file_operations_fixtures.py::TestFileOperationSimulator::test_simulator_initialization tests/integrations/openobserve/test_otlp.py::TestSendLogOTLP::test_send_log_otlp_success_basic -v)",
       "Bash(.venv/bin/pytest tests/testkit/test_file_operations_fixtures.py::TestFileOperationSimulator::test_simulator_initialization -xvs)",
-      "Bash(.venv/bin/pytest tests/integrations/openobserve/test_otlp.py::TestSendLogOTLP::test_send_log_otlp_success_basic -xvs)"
+      "Bash(.venv/bin/pytest tests/integrations/openobserve/test_otlp.py::TestSendLogOTLP::test_send_log_otlp_success_basic -xvs)",
+      "Bash(.venv/bin/pytest tests/integrations/openobserve/test_otlp.py::TestSendLogOTLP::test_send_log_otlp_success_basic -xvs --log-cli-level=DEBUG)",
+      "Bash(.venv/bin/pytest tests/test_file_operations_patterns.py::TestEditorSpecificPatterns::test_mixed_editor_patterns -xvs)"
     ],
     "deny": [],
     "ask": [],

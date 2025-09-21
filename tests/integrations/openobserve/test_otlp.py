@@ -82,6 +82,9 @@ class TestSendLogOTLP:
             patch("provide.foundation.integrations.openobserve.otlp.OTLPLogExporter") as mock_exporter_class,
             patch("provide.foundation.integrations.openobserve.otlp.LoggerProvider") as mock_provider_class,
             patch("provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor"),
+            patch(
+                "provide.foundation.integrations.openobserve.otlp.ResourceAttributes"
+            ) as mock_resource_attrs,
             patch("provide.foundation.integrations.openobserve.otlp.trace") as mock_trace,
         ):
             mock_from_env.return_value = mock_config
@@ -89,6 +92,8 @@ class TestSendLogOTLP:
             mock_exporter_class.return_value = mock_exporter
             mock_provider_class.return_value = mock_logger_provider
             mock_logger_provider.get_logger.return_value = mock_otel_logger
+            mock_resource_attrs.SERVICE_NAME = "service.name"
+            mock_resource_attrs.SERVICE_VERSION = "service.version"
             mock_trace.get_current_span.return_value = mock_current_span
 
             result = send_log_otlp(
