@@ -258,7 +258,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/integrations/openobserve/test_otlp.py::TestSendLogOTLP::test_send_log_otlp_with_traces_endpoint -xvs)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/integrations/openobserve/test_otlp.py::TestSendLogOTLP::test_send_log_otlp_level_mapping -xvs)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/integrations/openobserve/test_otlp.py::TestCreateOTLPLoggerProvider::test_create_otlp_logger_provider_success -xvs)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/integrations/openobserve/test_otlp.py::TestOTLPIntegration::test_trace_context_extraction -xvs)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/integrations/openobserve/test_otlp.py::TestOTLPIntegration::test_trace_context_extraction -xvs)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_file_operations_integration.py::TestFileOperationsStressTesting::test_mixed_operation_patterns_stress -xvs)"
     ],
     "deny": [],
     "ask": [],
