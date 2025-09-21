@@ -6,16 +6,17 @@ accuracy, and performance of file operation detection algorithms.
 
 from __future__ import annotations
 
-import time
 from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
 from pathlib import Path
+import time
 from typing import Any
 
 try:
-    from .operations import FileEvent, FileOperation, OperationDetector, OperationType
+    from .operations import FileEvent, OperationDetector
+
     HAS_OPERATIONS_MODULE = True
 except ImportError:
     HAS_OPERATIONS_MODULE = False
@@ -94,9 +95,17 @@ class QualityAnalyzer:
         if metrics is None:
             metrics = list(AnalysisMetric)
 
-        results = {}
+        # Collect detection results and timing data
+        detection_results, timing_results = self._collect_detection_data()
 
-        # Collect detection results
+        # Calculate all requested metrics
+        results = self._calculate_metrics(metrics, detection_results, timing_results)
+
+        self.results.extend(results.values())
+        return results
+
+    def _collect_detection_data(self) -> tuple[list[dict[str, Any]], list[float]]:
+        """Collect detection results and timing data from test cases."""
         detection_results = []
         timing_results = []
 
@@ -108,13 +117,25 @@ class QualityAnalyzer:
             detection_time = (end_time - start_time) * 1000  # milliseconds
             timing_results.append(detection_time)
 
-            detection_results.append({
-                "test_case": test_case,
-                "detected": detected_operations,
-                "detection_time": detection_time,
-            })
+            detection_results.append(
+                {
+                    "test_case": test_case,
+                    "detected": detected_operations,
+                    "detection_time": detection_time,
+                }
+            )
 
-        # Calculate metrics
+        return detection_results, timing_results
+
+    def _calculate_metrics(
+        self,
+        metrics: list[AnalysisMetric],
+        detection_results: list[dict[str, Any]],
+        timing_results: list[float],
+    ) -> dict[AnalysisMetric, QualityResult]:
+        """Calculate all requested metrics."""
+        results = {}
+
         for metric in metrics:
             if metric == AnalysisMetric.ACCURACY:
                 results[metric] = self._calculate_accuracy(detection_results)
@@ -135,7 +156,6 @@ class QualityAnalyzer:
             elif metric == AnalysisMetric.FALSE_NEGATIVE_RATE:
                 results[metric] = self._calculate_false_negative_rate(detection_results)
 
-        self.results.extend(results.values())
         return results
 
     def _calculate_accuracy(self, detection_results: list[dict[str, Any]]) -> QualityResult:
@@ -172,7 +192,7 @@ class QualityAnalyzer:
                 "correct_detections": correct_detections,
                 "total_detections": total_detections,
                 "percentage": accuracy * 100,
-            }
+            },
         )
 
     def _calculate_precision(self, detection_results: list[dict[str, Any]]) -> QualityResult:
@@ -197,7 +217,11 @@ class QualityAnalyzer:
                 else:
                     false_positives += 1
 
-        precision = true_positives / (true_positives + false_positives) if (true_positives + false_positives) > 0 else 0.0
+        precision = (
+            true_positives / (true_positives + false_positives)
+            if (true_positives + false_positives) > 0
+            else 0.0
+        )
 
         return QualityResult(
             metric=AnalysisMetric.PRECISION,
@@ -206,7 +230,7 @@ class QualityAnalyzer:
                 "true_positives": true_positives,
                 "false_positives": false_positives,
                 "percentage": precision * 100,
-            }
+            },
         )
 
     def _calculate_recall(self, detection_results: list[dict[str, Any]]) -> QualityResult:
@@ -231,7 +255,11 @@ class QualityAnalyzer:
                 else:
                     false_negatives += 1
 
-        recall = true_positives / (true_positives + false_negatives) if (true_positives + false_negatives) > 0 else 0.0
+        recall = (
+            true_positives / (true_positives + false_negatives)
+            if (true_positives + false_negatives) > 0
+            else 0.0
+        )
 
         return QualityResult(
             metric=AnalysisMetric.RECALL,
@@ -240,7 +268,7 @@ class QualityAnalyzer:
                 "true_positives": true_positives,
                 "false_negatives": false_negatives,
                 "percentage": recall * 100,
-            }
+            },
         )
 
     def _calculate_f1_score(self, precision: float, recall: float) -> QualityResult:
@@ -254,7 +282,7 @@ class QualityAnalyzer:
                 "precision": precision,
                 "recall": recall,
                 "percentage": f1 * 100,
-            }
+            },
         )
 
     def _analyze_confidence_distribution(self, detection_results: list[dict[str, Any]]) -> QualityResult:
@@ -274,7 +302,7 @@ class QualityAnalyzer:
             return QualityResult(
                 metric=AnalysisMetric.CONFIDENCE_DISTRIBUTION,
                 value=0.0,
-                details={"error": "No confidence scores available"}
+                details={"error": "No confidence scores available"},
             )
 
         avg_confidence = sum(confidences) / len(confidences)
@@ -300,16 +328,14 @@ class QualityAnalyzer:
                 "min": min_confidence,
                 "max": max_confidence,
                 "by_type": type_stats,
-            }
+            },
         )
 
     def _analyze_detection_time(self, timing_results: list[float]) -> QualityResult:
         """Analyze detection time performance."""
         if not timing_results:
             return QualityResult(
-                metric=AnalysisMetric.DETECTION_TIME,
-                value=0.0,
-                details={"error": "No timing data available"}
+                metric=AnalysisMetric.DETECTION_TIME, value=0.0, details={"error": "No timing data available"}
             )
 
         avg_time = sum(timing_results) / len(timing_results)
@@ -334,7 +360,7 @@ class QualityAnalyzer:
                 "p50_ms": p50,
                 "p95_ms": p95,
                 "p99_ms": p99,
-            }
+            },
         )
 
     def _calculate_false_positive_rate(self, detection_results: list[dict[str, Any]]) -> QualityResult:
@@ -363,7 +389,7 @@ class QualityAnalyzer:
                 "false_positives": false_positives,
                 "total_negative_cases": total_negative_cases,
                 "percentage": fpr * 100,
-            }
+            },
         )
 
     def _calculate_false_negative_rate(self, detection_results: list[dict[str, Any]]) -> QualityResult:
@@ -398,7 +424,7 @@ class QualityAnalyzer:
                 "false_negatives": false_negatives,
                 "total_positive_cases": total_positive_cases,
                 "percentage": fnr * 100,
-            }
+            },
         )
 
     def generate_report(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
@@ -437,7 +463,9 @@ class QualityAnalyzer:
             if metric == AnalysisMetric.ACCURACY and "percentage" in result.details:
                 report_lines.append(f"    ({result.details['percentage']:.1f}%)")
             elif metric == AnalysisMetric.DETECTION_TIME and "average_ms" in result.details:
-                report_lines.append(f"    (avg: {result.details['average_ms']:.2f}ms, p95: {result.details.get('p95_ms', 0):.2f}ms)")
+                report_lines.append(
+                    f"    (avg: {result.details['average_ms']:.2f}ms, p95: {result.details.get('p95_ms', 0):.2f}ms)"
+                )
             elif metric == AnalysisMetric.CONFIDENCE_DISTRIBUTION and "by_type" in result.details:
                 report_lines.append("    By operation type:")
                 for op_type, stats in result.details["by_type"].items():
@@ -475,13 +503,15 @@ def create_test_cases_from_patterns() -> list[OperationTestCase]:
         ),
     ]
 
-    test_cases.append(OperationTestCase(
-        name="vscode_atomic_save",
-        events=vscode_events,
-        expected_operations=[{"type": "atomic_save", "confidence_min": 0.9}],
-        description="VSCode atomic save pattern",
-        tags=["atomic", "editor", "vscode"],
-    ))
+    test_cases.append(
+        OperationTestCase(
+            name="vscode_atomic_save",
+            events=vscode_events,
+            expected_operations=[{"type": "atomic_save", "confidence_min": 0.9}],
+            description="VSCode atomic save pattern",
+            tags=["atomic", "editor", "vscode"],
+        )
+    )
 
     # Safe write test case
     safe_write_events = [
@@ -502,13 +532,15 @@ def create_test_cases_from_patterns() -> list[OperationTestCase]:
         ),
     ]
 
-    test_cases.append(OperationTestCase(
-        name="safe_write_with_backup",
-        events=safe_write_events,
-        expected_operations=[{"type": "safe_write", "confidence_min": 0.8}],
-        description="Safe write with backup creation",
-        tags=["safe", "backup"],
-    ))
+    test_cases.append(
+        OperationTestCase(
+            name="safe_write_with_backup",
+            events=safe_write_events,
+            expected_operations=[{"type": "safe_write", "confidence_min": 0.8}],
+            description="Safe write with backup creation",
+            tags=["safe", "backup"],
+        )
+    )
 
     # Batch update test case
     batch_events = []
@@ -526,12 +558,14 @@ def create_test_cases_from_patterns() -> list[OperationTestCase]:
             )
         )
 
-    test_cases.append(OperationTestCase(
-        name="batch_format_operation",
-        events=batch_events,
-        expected_operations=[{"type": "batch_update", "confidence_min": 0.7}],
-        description="Batch formatting operation",
-        tags=["batch", "formatting"],
-    ))
+    test_cases.append(
+        OperationTestCase(
+            name="batch_format_operation",
+            events=batch_events,
+            expected_operations=[{"type": "batch_update", "confidence_min": 0.7}],
+            description="Batch formatting operation",
+            tags=["batch", "formatting"],
+        )
+    )
 
     return test_cases
