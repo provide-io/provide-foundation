@@ -1,59 +1,21 @@
-"""Quality analysis tools for file operation detection.
-
-This module provides utilities to analyze and measure the quality,
-accuracy, and performance of file operation detection algorithms.
-"""
+"""Quality analyzer for file operation detection."""
 
 from __future__ import annotations
 
 from collections import Counter, defaultdict
-from dataclasses import dataclass, field
-from datetime import datetime, timedelta
-from enum import Enum
-from pathlib import Path
+from datetime import datetime
 import time
 from typing import Any
 
 try:
-    from .operations import FileEvent, OperationDetector
+    from provide.foundation.file.operations import OperationDetector
 
     HAS_OPERATIONS_MODULE = True
 except ImportError:
     HAS_OPERATIONS_MODULE = False
 
-
-class AnalysisMetric(Enum):
-    """Metrics for quality analysis."""
-
-    ACCURACY = "accuracy"
-    PRECISION = "precision"
-    RECALL = "recall"
-    F1_SCORE = "f1_score"
-    CONFIDENCE_DISTRIBUTION = "confidence_distribution"
-    DETECTION_TIME = "detection_time"
-    FALSE_POSITIVE_RATE = "false_positive_rate"
-    FALSE_NEGATIVE_RATE = "false_negative_rate"
-
-
-@dataclass
-class QualityResult:
-    """Result of quality analysis."""
-
-    metric: AnalysisMetric
-    value: float
-    details: dict[str, Any] = field(default_factory=dict)
-    timestamp: datetime = field(default_factory=datetime.now)
-
-
-@dataclass
-class OperationTestCase:
-    """Test case for operation detection validation."""
-
-    name: str
-    events: list[FileEvent]
-    expected_operations: list[dict[str, Any]]  # Expected operation specs
-    description: str = ""
-    tags: list[str] = field(default_factory=list)
+from provide.foundation.file.quality.metrics import AnalysisMetric, QualityResult
+from provide.foundation.file.quality.test_cases import OperationTestCase
 
 
 class QualityAnalyzer:
@@ -472,100 +434,3 @@ class QualityAnalyzer:
                     report_lines.append(f"      {op_type}: {stats['average']:.3f} (count: {stats['count']})")
 
         return "\n".join(report_lines)
-
-
-def create_test_cases_from_patterns() -> list[OperationTestCase]:
-    """Create standard test cases for common operation patterns.
-
-    Returns:
-        List of test cases covering common patterns
-    """
-    if not HAS_OPERATIONS_MODULE:
-        return []
-
-    from .operations import FileEvent, FileEventMetadata
-
-    test_cases = []
-    base_time = datetime.now()
-
-    # VSCode atomic save test case
-    vscode_events = [
-        FileEvent(
-            path=Path("test.txt.tmp.12345"),
-            event_type="created",
-            metadata=FileEventMetadata(timestamp=base_time, sequence_number=1, size_after=1024),
-        ),
-        FileEvent(
-            path=Path("test.txt.tmp.12345"),
-            event_type="moved",
-            metadata=FileEventMetadata(timestamp=base_time + timedelta(milliseconds=50), sequence_number=2),
-            dest_path=Path("test.txt"),
-        ),
-    ]
-
-    test_cases.append(
-        OperationTestCase(
-            name="vscode_atomic_save",
-            events=vscode_events,
-            expected_operations=[{"type": "atomic_save", "confidence_min": 0.9}],
-            description="VSCode atomic save pattern",
-            tags=["atomic", "editor", "vscode"],
-        )
-    )
-
-    # Safe write test case
-    safe_write_events = [
-        FileEvent(
-            path=Path("document.bak"),
-            event_type="created",
-            metadata=FileEventMetadata(timestamp=base_time, sequence_number=1, size_after=1000),
-        ),
-        FileEvent(
-            path=Path("document"),
-            event_type="modified",
-            metadata=FileEventMetadata(
-                timestamp=base_time + timedelta(milliseconds=100),
-                sequence_number=2,
-                size_before=1000,
-                size_after=1024,
-            ),
-        ),
-    ]
-
-    test_cases.append(
-        OperationTestCase(
-            name="safe_write_with_backup",
-            events=safe_write_events,
-            expected_operations=[{"type": "safe_write", "confidence_min": 0.8}],
-            description="Safe write with backup creation",
-            tags=["safe", "backup"],
-        )
-    )
-
-    # Batch update test case
-    batch_events = []
-    for i in range(5):
-        batch_events.append(
-            FileEvent(
-                path=Path(f"src/file{i}.py"),
-                event_type="modified",
-                metadata=FileEventMetadata(
-                    timestamp=base_time + timedelta(milliseconds=i * 10),
-                    sequence_number=i + 1,
-                    size_before=500,
-                    size_after=520,
-                ),
-            )
-        )
-
-    test_cases.append(
-        OperationTestCase(
-            name="batch_format_operation",
-            events=batch_events,
-            expected_operations=[{"type": "batch_update", "confidence_min": 0.7}],
-            description="Batch formatting operation",
-            tags=["batch", "formatting"],
-        )
-    )
-
-    return test_cases
