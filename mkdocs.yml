@@ -181,6 +181,17 @@ nav:
       - Nested Commands: guide/cli/nested.md
       - Arguments: guide/cli/arguments.md
       - Output: guide/cli/output.md
+    - Profiling:
+      - guide/profiling/index.md
+      - Enterprise Features:
+        - Decorator-Based Tracking: guide/profiling/enterprise/decorator-tracking.md
+        - Adaptive Sampling: guide/profiling/enterprise/adaptive-sampling.md
+        - Exporter Abstraction: guide/profiling/enterprise/exporters.md
+      - Implementation:
+        - Getting Started: guide/profiling/implementation/getting-started.md
+        - Configuration: guide/profiling/implementation/configuration.md
+        - Best Practices: guide/profiling/implementation/best-practices.md
+        - Performance: guide/profiling/implementation/performance.md
     - Distributed Tracing:
       - guide/tracing/index.md
     - Utilities:
@@ -242,6 +253,11 @@ nav:
       - Types: api/eventsets/api-types.md
       - Registry: api/eventsets/api-registry.md
       - Display: api/eventsets/api-display.md
+    - Profiling API:
+      - api/profiling/api-index.md
+      - Metrics: api/profiling/api-metrics.md
+      - Processor: api/profiling/api-processor.md
+      - Component: api/profiling/api-component.md
     - Resilience API: api/resilience/api-index.md
     - Transport API:
       - api/transport/api-index.md
