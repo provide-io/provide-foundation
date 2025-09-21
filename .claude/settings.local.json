@@ -261,7 +261,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/integrations/openobserve/test_otlp.py::TestOTLPIntegration::test_trace_context_extraction -xvs)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_file_operations_integration.py::TestFileOperationsStressTesting::test_mixed_operation_patterns_stress -xvs)",
       "Bash(PYTHONPATH=src .venv/bin/pytest --collect-only)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest --cov=src/provide/foundation/file --cov-report=term-missing tests/test_file_operations*.py tests/testkit/test_file_operations*.py -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest --cov=src/provide/foundation/file --cov-report=term-missing tests/test_file_operations*.py tests/testkit/test_file_operations*.py -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/testkit/test_file_operations_fixtures.py::test_file_operation_decorator -v)"
     ],
     "deny": [],
     "ask": [],
