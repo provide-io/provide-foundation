@@ -1,7 +1,10 @@
 # Decorator-Based Tracking
 
-!!! success "Enterprise Feature"
+!!! info "Planned Enterprise Feature"
     Automatic function and method profiling with zero code changes and intelligent context preservation.
+
+!!! warning "Implementation Status"
+    This feature is planned for Foundation v1.1+. This documentation serves as a specification and design guide for the upcoming implementation.
 
 ## Overview
 

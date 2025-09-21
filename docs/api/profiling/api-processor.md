@@ -2,6 +2,9 @@
 
 Detailed API documentation for the ProfilingProcessor class, which integrates with structlog to collect performance metrics.
 
+!!! info "Implementation Status"
+    ProfilingProcessor is currently implemented and available in Foundation's profiling system.
+
 ## Class Overview
 
 ::: provide.foundation.profiling.processor.ProfilingProcessor

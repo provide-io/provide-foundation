@@ -3,6 +3,9 @@
 !!! info "Enterprise-Grade Performance Monitoring"
     Foundation's profiling system provides lightweight, production-ready performance monitoring with zero-config defaults and enterprise-grade extensibility.
 
+!!! note "Current Implementation Status"
+    Foundation v1.0 includes core profiling infrastructure (ProfileMetrics, ProfilingProcessor, ProfilingComponent). Enterprise features like adaptive sampling, exporters, and decorators are planned for v1.1+.
+
 ## Overview
 
 Foundation's profiling system enables real-time performance monitoring of your application's logging and telemetry operations. Built on top of the existing structured logging infrastructure, it provides:
@@ -43,10 +46,10 @@ print(f"Emoji overhead: {metrics.emoji_overhead_percent:.1f}%")
 
 ### CLI Integration
 
-Foundation automatically registers profiling CLI commands when profiling is enabled:
+Foundation can register profiling CLI commands when profiling is enabled (CLI integration may require additional setup):
 
 ```bash
-# Show current performance metrics
+# Show current performance metrics (when CLI is available)
 provide profile
 
 # Show metrics in JSON format
@@ -54,6 +57,16 @@ provide profile --json
 
 # Reset metrics counters
 provide profile --reset
+```
+
+If CLI commands are not available, you can access metrics programmatically:
+
+```python
+# Direct metrics access
+profiler = hub.get_component("profiler")
+if profiler:
+    metrics = profiler.get_metrics()
+    print(f"Throughput: {metrics.messages_per_second:.0f} msg/sec")
 ```
 
 ## Core Concepts
@@ -193,11 +206,16 @@ Profiling overhead varies by sampling rate:
 
 ## Enterprise Features
 
-Foundation's profiling system includes enterprise-grade capabilities:
+Foundation's profiling system will include enterprise-grade capabilities:
+
+!!! warning "Planned Features"
+    The following enterprise features are documented but planned for implementation in v1.1+:
 
 - **[Decorator-Based Tracking](enterprise/decorator-tracking.md)** - Automatic function profiling
 - **[Adaptive Sampling](enterprise/adaptive-sampling.md)** - Dynamic sampling based on load
 - **[Exporter Abstraction](enterprise/exporters.md)** - Integration with monitoring systems
+
+For current implementation capabilities, see the [API Reference](../../api/profiling/api-index.md).
 
 ## Implementation Guides
 

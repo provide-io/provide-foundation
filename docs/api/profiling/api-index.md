@@ -1,12 +1,11 @@
 # Profiling API Reference
 
-Complete API documentation for Foundation's profiling system.
+API documentation for Foundation's profiling system.
 
-## Overview
+!!! info "Current Implementation Status"
+    Foundation's profiling system is currently in development. This page documents the implemented core components and provides specifications for planned enterprise features.
 
-The profiling API provides programmatic access to performance monitoring capabilities, including metrics collection, sampling configuration, and export management.
-
-## Core Classes
+## Implemented Components
 
 ### ProfileMetrics
 ::: provide.foundation.profiling.metrics.ProfileMetrics
@@ -29,128 +28,6 @@ The profiling API provides programmatic access to performance monitoring capabil
       show_root_heading: true
       show_symbol_type_heading: true
 
-## Configuration Classes
-
-### ProfilingConfig
-::: provide.foundation.profiling.config.ProfilingConfig
-    options:
-      show_source: true
-      show_root_heading: true
-      show_symbol_type_heading: true
-
-### ProcessorConfig
-::: provide.foundation.profiling.config.ProcessorConfig
-    options:
-      show_source: true
-      show_root_heading: true
-      show_symbol_type_heading: true
-
-### ExporterConfig
-::: provide.foundation.profiling.config.ExporterConfig
-    options:
-      show_source: true
-      show_root_heading: true
-      show_symbol_type_heading: true
-
-## Sampling Classes
-
-### LoadBasedSampler
-::: provide.foundation.profiling.sampling.LoadBasedSampler
-    options:
-      show_source: true
-      show_root_heading: true
-      show_symbol_type_heading: true
-
-### PatternBasedSampler
-::: provide.foundation.profiling.sampling.PatternBasedSampler
-    options:
-      show_source: true
-      show_root_heading: true
-      show_symbol_type_heading: true
-
-### AdaptiveSampler
-::: provide.foundation.profiling.sampling.AdaptiveSampler
-    options:
-      show_source: true
-      show_root_heading: true
-      show_symbol_type_heading: true
-
-## Exporter Classes
-
-### PrometheusExporter
-::: provide.foundation.profiling.exporters.PrometheusExporter
-    options:
-      show_source: true
-      show_root_heading: true
-      show_symbol_type_heading: true
-
-### DatadogExporter
-::: provide.foundation.profiling.exporters.DatadogExporter
-    options:
-      show_source: true
-      show_root_heading: true
-      show_symbol_type_heading: true
-
-### OpenTelemetryExporter
-::: provide.foundation.profiling.exporters.OpenTelemetryExporter
-    options:
-      show_source: true
-      show_root_heading: true
-      show_symbol_type_heading: true
-
-### FileExporter
-::: provide.foundation.profiling.exporters.FileExporter
-    options:
-      show_source: true
-      show_root_heading: true
-      show_symbol_type_heading: true
-
-## Decorator Functions
-
-### @profile_function
-::: provide.foundation.profiling.decorators.profile_function
-    options:
-      show_source: true
-      show_root_heading: true
-      show_symbol_type_heading: true
-
-### @profile_async
-::: provide.foundation.profiling.decorators.profile_async
-    options:
-      show_source: true
-      show_root_heading: true
-      show_symbol_type_heading: true
-
-### @profile_method
-::: provide.foundation.profiling.decorators.profile_method
-    options:
-      show_source: true
-      show_root_heading: true
-      show_symbol_type_heading: true
-
-### @profile_class
-::: provide.foundation.profiling.decorators.profile_class
-    options:
-      show_source: true
-      show_root_heading: true
-      show_symbol_type_heading: true
-
-## CLI Functions
-
-### show_profile_metrics
-::: provide.foundation.profiling.cli.show_profile_metrics
-    options:
-      show_source: true
-      show_root_heading: true
-      show_symbol_type_heading: true
-
-### register_profile_command
-::: provide.foundation.profiling.cli.register_profile_command
-    options:
-      show_source: true
-      show_root_heading: true
-      show_symbol_type_heading: true
-
 ## Utility Functions
 
 ### register_profiling
@@ -166,6 +43,42 @@ The profiling API provides programmatic access to performance monitoring capabil
       show_source: true
       show_root_heading: true
       show_symbol_type_heading: true
+
+## Planned Enterprise Features
+
+The following components are documented in the implementation guides but are planned for future releases:
+
+### Configuration System
+- `ProfilingConfig` - Main configuration class
+- `ProcessorConfig` - Processor-specific configuration
+- `ExporterConfig` - Export configuration
+- `AdaptiveSamplingConfig` - Adaptive sampling configuration
+
+### Advanced Sampling
+- `LoadBasedSampler` - System load-based sampling
+- `PatternBasedSampler` - Pattern-triggered sampling
+- `AdaptiveSampler` - Machine learning-based sampling
+- `StatisticalSampler` - Statistically representative sampling
+
+### Export System
+- `PrometheusExporter` - Prometheus metrics export
+- `DatadogExporter` - Datadog APM integration
+- `OpenTelemetryExporter` - OpenTelemetry integration
+- `FileExporter` - File-based export
+- `MultiExporter` - Multiple destination export
+
+### Decorator System
+- `@profile_function` - Function profiling decorator
+- `@profile_async` - Async function profiling
+- `@profile_method` - Method profiling decorator
+- `@profile_class` - Class-level profiling
+
+### CLI Integration
+- `show_profile_metrics` - CLI metrics display
+- `register_profile_command` - CLI command registration
+
+!!! note "Implementation Timeline"
+    Enterprise features are planned for implementation in Foundation v1.1+. The current v1.0 release includes the core profiling infrastructure documented above.
 
 ## Type Definitions
 

@@ -2,6 +2,9 @@
 
 Detailed API documentation for the ProfilingComponent class, which integrates profiling with Foundation's Hub architecture.
 
+!!! info "Implementation Status"
+    ProfilingComponent is currently implemented and available in Foundation's profiling system.
+
 ## Class Overview
 
 ::: provide.foundation.profiling.component.ProfilingComponent

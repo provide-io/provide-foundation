@@ -1,7 +1,10 @@
 # Exporter Abstraction
 
-!!! success "Enterprise Feature"
+!!! info "Planned Enterprise Feature"
     Universal exporter interface enabling seamless integration with any monitoring, metrics, or observability backend system.
+
+!!! warning "Implementation Status"
+    This feature is planned for Foundation v1.1+. This documentation serves as a specification and design guide for the upcoming implementation.
 
 ## Overview
 
