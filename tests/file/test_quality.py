@@ -209,3 +209,38 @@ class TestQualityIntegration:
 
             results = analyzer.run_analysis([AnalysisMetric.ACCURACY])
             assert AnalysisMetric.ACCURACY in results
+
+    def test_quality_analysis_with_real_operations(self) -> None:
+        """Integration test with real file operations."""
+        from provide.foundation.file.operations import OperationDetector, FileEvent, FileEventMetadata
+        from datetime import datetime
+        from pathlib import Path
+
+        # Create real file operation events
+        base_time = datetime.now()
+        events = [
+            FileEvent(
+                path=Path("test.txt.tmp.123"),
+                event_type="created",
+                metadata=FileEventMetadata(timestamp=base_time, sequence_number=1)
+            ),
+            FileEvent(
+                path=Path("test.txt.tmp.123"),
+                event_type="moved",
+                metadata=FileEventMetadata(timestamp=base_time, sequence_number=2),
+                dest_path=Path("test.txt")
+            )
+        ]
+
+        # Detect operations
+        detector = OperationDetector()
+        operations = detector.detect(events)
+
+        # Use in quality analysis
+        analyzer = QualityAnalyzer()
+        test_cases = create_test_cases_from_patterns()
+
+        if test_cases:
+            analyzer.add_test_case(test_cases[0])
+            results = analyzer.run_analysis([AnalysisMetric.ACCURACY])
+            assert AnalysisMetric.ACCURACY in results

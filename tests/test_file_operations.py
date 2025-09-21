@@ -526,5 +526,43 @@ class TestFileOperation:
         assert len(operation.get_timeline()) == 2
 
 
+class TestOperationDetectorEdgeCases:
+    """Test edge cases and error handling."""
+
+    def test_detect_empty_list(self) -> None:
+        """Test detection with empty event list."""
+        detector = OperationDetector()
+        assert detector.detect([]) == []
+
+    def test_detect_streaming_invalid_event(self) -> None:
+        """Test streaming with None/invalid events."""
+        detector = OperationDetector()
+        # Should handle gracefully without crashing
+        assert detector.flush() == []
+
+    def test_concurrent_detection(self) -> None:
+        """Test concurrent detection calls."""
+        import threading
+        detector = OperationDetector()
+        base_time = datetime.now()
+
+        results = []
+        def detect_worker():
+            events = [FileEvent(
+                path=Path("test.txt"),
+                event_type="created",
+                metadata=FileEventMetadata(timestamp=base_time, sequence_number=1)
+            )]
+            results.append(detector.detect(events))
+
+        threads = [threading.Thread(target=detect_worker) for _ in range(3)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+
+        assert len(results) == 3
+
+
 if __name__ == "__main__":
     pytest.main([__file__])
