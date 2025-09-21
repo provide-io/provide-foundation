@@ -293,45 +293,67 @@ class OperationDetector:
         confidence = 0.0
         primary_file = None
         atomic_events = []
+        final_file = None
 
         # Look for temp file creation followed by rename to final name
         temp_creates = [e for e in events if e.event_type == "created" and self._is_temp_file(e.path)]
         moves = [e for e in events if e.event_type in ("moved", "renamed")]
 
+        # Pattern 1: Direct temp file rename to final location
         for temp_event in temp_creates:
             for move_event in moves:
                 if move_event.path == temp_event.path and move_event.dest_path:
-                    # Temp file was renamed to final location
+                    # Temp file was renamed to final location - this is the end state
                     primary_file = move_event.dest_path
+                    final_file = move_event.dest_path
                     atomic_events = [temp_event, move_event]
                     confidence = 0.95
                     break
 
-        # Alternative pattern: delete original, rename temp
+        # Pattern 2: Delete original, rename temp (common in atomic saves)
         if not primary_file:
             deletes = [e for e in events if e.event_type == "deleted"]
             for delete_event in deletes:
                 for temp_event in temp_creates:
                     if self._files_related(delete_event.path, temp_event.path):
+                        # The deleted file is what gets replaced - this becomes the end state
                         primary_file = delete_event.path
+                        final_file = delete_event.path
                         atomic_events = [e for e in events if e.path in (delete_event.path, temp_event.path)]
                         confidence = 0.85
                         break
 
-        if primary_file and confidence >= self.config.min_confidence:
+        # Pattern 3: Temp file created, then final file modified (overwrite pattern)
+        if not primary_file:
+            modifies = [e for e in events if e.event_type == "modified" and not self._is_temp_file(e.path)]
+            for temp_event in temp_creates:
+                for modify_event in modifies:
+                    if self._files_related(temp_event.path, modify_event.path):
+                        # The modified file is the end state
+                        primary_file = modify_event.path
+                        final_file = modify_event.path
+                        atomic_events = [temp_event, modify_event]
+                        confidence = 0.80
+                        break
+
+        if primary_file and final_file and confidence >= self.config.min_confidence:
             start_time = min(e.timestamp for e in atomic_events)
             end_time = max(e.timestamp for e in atomic_events)
 
+            # Collect all file paths affected, but primary_path is the end-state file
+            files_affected = list({e.path for e in events} | {e.dest_path for e in events if e.dest_path})
+
             return FileOperation(
                 operation_type=OperationType.ATOMIC_SAVE,
-                primary_path=primary_file,
-                events=atomic_events,
+                primary_path=final_file,  # This is the end-state file that git sees
+                events=events,  # Include all events for operation history
                 confidence=confidence,
-                description=f"Atomic save of {primary_file.name}",
+                description=f"Atomic save of {final_file.name}",
                 start_time=start_time,
                 end_time=end_time,
                 is_atomic=True,
                 is_safe=True,
+                files_affected=files_affected,
             )
 
         return None
