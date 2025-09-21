@@ -4,13 +4,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-
 from tests.file_operations_fixtures import (
     FileOperationSimulator,
     FileOperationValidator,
     file_operation_test,
-    requires_file_operations,
+    requires_file_operations,  # Import the fixture
 )
 
 
@@ -198,7 +196,7 @@ class TestFileOperationValidator:
         assert summary["total"] == 3
         assert summary["valid"] == 2
         assert summary["invalid"] == 1
-        assert summary["success_rate"] == 2/3
+        assert summary["success_rate"] == 2 / 3
         assert summary["average_confidence"] == (0.95 + 0.60 + 0.85) / 3
 
 
@@ -272,9 +270,7 @@ class TestIntegrationScenarios:
         # Generate many batch operations
         all_events = []
         for i in range(10):  # 10 batches of 5 files each
-            batch_events = file_operation_simulator.simulate_batch_operation(
-                5, f"batch_{i}_file", ".py"
-            )
+            batch_events = file_operation_simulator.simulate_batch_operation(5, f"batch_{i}_file", ".py")
             all_events.extend(batch_events)
 
         # Should handle 50 events efficiently
@@ -301,4 +297,6 @@ class TestIntegrationScenarios:
             # Each operation should have reasonable confidence
             for operation in operations:
                 assert operation.confidence >= 0.5, f"Low confidence in {pattern_name}: {operation.confidence}"
-                assert operation.confidence <= 1.0, f"Invalid confidence in {pattern_name}: {operation.confidence}"
+                assert operation.confidence <= 1.0, (
+                    f"Invalid confidence in {pattern_name}: {operation.confidence}"
+                )
