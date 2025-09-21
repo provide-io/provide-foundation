@@ -18,18 +18,18 @@ class TestQualityAnalyzer:
         """Test analyzer initialization."""
         analyzer = QualityAnalyzer()
         assert analyzer is not None
-        assert len(analyzer._test_cases) == 0
+        assert len(analyzer.test_cases) == 0
 
     def test_add_test_case(self) -> None:
         """Test adding test cases to analyzer."""
         analyzer = QualityAnalyzer()
         test_cases = create_test_cases_from_patterns()
 
-        initial_count = len(analyzer._test_cases)
+        initial_count = len(analyzer.test_cases)
         for test_case in test_cases[:3]:  # Add first 3 test cases
             analyzer.add_test_case(test_case)
 
-        assert len(analyzer._test_cases) == initial_count + 3
+        assert len(analyzer.test_cases) == initial_count + 3
 
     def test_run_analysis_accuracy(self) -> None:
         """Test running accuracy analysis."""
@@ -192,12 +192,9 @@ class TestQualityIntegration:
         """Test analyzer behavior with no test cases."""
         analyzer = QualityAnalyzer()
 
-        results = analyzer.run_analysis([AnalysisMetric.ACCURACY])
-
-        # Should handle empty case gracefully
-        assert AnalysisMetric.ACCURACY in results
-        accuracy_result = results[AnalysisMetric.ACCURACY]
-        assert accuracy_result.value == 0.0  # No tests = 0% accuracy
+        # Should raise error when no test cases available
+        with pytest.raises(ValueError, match="No test cases available"):
+            analyzer.run_analysis([AnalysisMetric.ACCURACY])
 
     def test_analyzer_with_single_test_case(self) -> None:
         """Test analyzer with single test case."""
