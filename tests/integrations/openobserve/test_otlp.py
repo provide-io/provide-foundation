@@ -557,12 +557,15 @@ class TestOTLPIntegration:
             patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
             patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_from_env,
             patch("provide.foundation.integrations.openobserve.otlp.Resource"),
+            patch("provide.foundation.integrations.openobserve.otlp.ResourceAttributes") as mock_resource_attrs,
             patch("provide.foundation.integrations.openobserve.otlp.OTLPLogExporter"),
             patch("provide.foundation.integrations.openobserve.otlp.LoggerProvider") as mock_provider_class,
             patch("provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor"),
             patch("provide.foundation.integrations.openobserve.otlp.trace") as mock_trace,
         ):
             mock_from_env.return_value = mock_config
+            mock_resource_attrs.SERVICE_NAME = "service.name"
+            mock_resource_attrs.SERVICE_VERSION = "service.version"
             mock_provider_class.return_value = mock_logger_provider
             mock_trace.get_current_span.return_value = mock_current_span
 
@@ -586,12 +589,15 @@ class TestOTLPIntegration:
             patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
             patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_from_env,
             patch("provide.foundation.integrations.openobserve.otlp.Resource"),
+            patch("provide.foundation.integrations.openobserve.otlp.ResourceAttributes") as mock_resource_attrs,
             patch("provide.foundation.integrations.openobserve.otlp.OTLPLogExporter"),
             patch("provide.foundation.integrations.openobserve.otlp.LoggerProvider") as mock_provider_class,
             patch("provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor"),
             patch("provide.foundation.integrations.openobserve.otlp.trace") as mock_trace,
         ):
             mock_from_env.return_value = mock_config
+            mock_resource_attrs.SERVICE_NAME = "service.name"
+            mock_resource_attrs.SERVICE_VERSION = "service.version"
             mock_provider_class.return_value = mock_logger_provider
             mock_trace.get_current_span.return_value = None
 
