@@ -87,8 +87,8 @@ class ToolInstaller:
         if metadata.install_path:
             return metadata.install_path
 
-        # Default to ~/.wrknv/tools/<name>/<version>
-        base = Path.home() / ".wrknv" / "tools"
+        # Default to ~/.provide-foundation/tools/<name>/<version>
+        base = Path.home() / ".provide-foundation" / "tools"
         return base / metadata.name / metadata.version
 
     def extract_zip(self, archive: Path, dest: Path) -> None:

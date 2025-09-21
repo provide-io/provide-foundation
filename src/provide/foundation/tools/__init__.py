@@ -38,7 +38,7 @@ Example:
     >>> config = BaseConfig()
     >>> tf_manager = get_tool_manager("terraform", config)
     >>> tf_manager.install("1.5.0")
-    PosixPath('/home/user/.wrknv/tools/terraform/1.5.0')
+    PosixPath('/home/user/.provide-foundation/tools/terraform/1.5.0')
 
 """
 
