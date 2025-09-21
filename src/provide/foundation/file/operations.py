@@ -340,7 +340,11 @@ class OperationDetector:
         """Detect safe write pattern (backup -> write)."""
         # Look for backup creation followed by modification
         backup_events = [e for e in events if e.path.suffix in (".bak", ".backup", ".orig")]
-        modify_events = [e for e in events if e.event_type in ("modified", "created") and e.path.suffix not in (".bak", ".backup", ".orig")]
+        modify_events = [
+            e
+            for e in events
+            if e.event_type in ("modified", "created") and e.path.suffix not in (".bak", ".backup", ".orig")
+        ]
 
         if backup_events and modify_events:
             primary_file = None
@@ -349,7 +353,9 @@ class OperationDetector:
                 if not base_name:
                     continue
                 for modify_event in modify_events:
-                    if modify_event.path.name == base_name:
+                    # Compare the base name of the modify event with the extracted base name
+                    modify_base_name = self._extract_base_name(modify_event.path)
+                    if modify_base_name == base_name:
                         primary_file = modify_event.path
                         break
 

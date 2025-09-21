@@ -239,7 +239,9 @@
       "Bash(gh run download:*)",
       "Bash(.venv/bin/python:*)",
       "Bash(.venv/bin/pytest tests/profiling/test_hooks.py::TestProfilingComponent::test_component_auto_register -xvs)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(timeout 30 .venv/bin/pytest tests/integrations/openobserve/test_otlp.py::TestSendLogOTLP::test_send_log_otlp_success_basic -xvs)",
+      "Bash(timeout 30 .venv/bin/pytest tests/test_file_operations_patterns.py::TestEditorSpecificPatterns::test_mixed_editor_patterns -xvs)"
     ],
     "deny": [],
     "ask": [],
