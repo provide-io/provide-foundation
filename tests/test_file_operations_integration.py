@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Generator
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 import tempfile
 from threading import Event as ThreadEvent
@@ -421,53 +421,57 @@ class TestFileOperationsStressTesting:
             temp_file = temp_dir / f"file{i}.txt.tmp.{i}"
             final_file = temp_dir / f"file{i}.txt"
 
-            events.extend([
-                FileEvent(
-                    path=temp_file,
-                    event_type="created",
-                    metadata=FileEventMetadata(
-                        timestamp=base_time + timedelta(milliseconds=time_offset),
-                        sequence_number=len(events) + 1,
-                        size_after=1024,
+            events.extend(
+                [
+                    FileEvent(
+                        path=temp_file,
+                        event_type="created",
+                        metadata=FileEventMetadata(
+                            timestamp=base_time + timedelta(milliseconds=time_offset),
+                            sequence_number=len(events) + 1,
+                            size_after=1024,
+                        ),
                     ),
-                ),
-                FileEvent(
-                    path=temp_file,
-                    event_type="moved",
-                    metadata=FileEventMetadata(
-                        timestamp=base_time + timedelta(milliseconds=time_offset + 5),
-                        sequence_number=len(events) + 2,
+                    FileEvent(
+                        path=temp_file,
+                        event_type="moved",
+                        metadata=FileEventMetadata(
+                            timestamp=base_time + timedelta(milliseconds=time_offset + 5),
+                            sequence_number=len(events) + 2,
+                        ),
+                        dest_path=final_file,
                     ),
-                    dest_path=final_file,
-                ),
-            ])
+                ]
+            )
 
             # Safe write every 5th iteration
             if i % 5 == 0:
                 backup_file = temp_dir / f"backup{i}.bak"
                 main_file = temp_dir / f"backup{i}"
 
-                events.extend([
-                    FileEvent(
-                        path=backup_file,
-                        event_type="created",
-                        metadata=FileEventMetadata(
-                            timestamp=base_time + timedelta(milliseconds=time_offset + 20),
-                            sequence_number=len(events) + 1,
-                            size_after=1000,
+                events.extend(
+                    [
+                        FileEvent(
+                            path=backup_file,
+                            event_type="created",
+                            metadata=FileEventMetadata(
+                                timestamp=base_time + timedelta(milliseconds=time_offset + 20),
+                                sequence_number=len(events) + 1,
+                                size_after=1000,
+                            ),
                         ),
-                    ),
-                    FileEvent(
-                        path=main_file,
-                        event_type="modified",
-                        metadata=FileEventMetadata(
-                            timestamp=base_time + timedelta(milliseconds=time_offset + 25),
-                            sequence_number=len(events) + 2,
-                            size_before=1000,
-                            size_after=1024,
+                        FileEvent(
+                            path=main_file,
+                            event_type="modified",
+                            metadata=FileEventMetadata(
+                                timestamp=base_time + timedelta(milliseconds=time_offset + 25),
+                                sequence_number=len(events) + 2,
+                                size_before=1000,
+                                size_after=1024,
+                            ),
                         ),
-                    ),
-                ])
+                    ]
+                )
 
         # Test detection under stress
         start_time = time.perf_counter()
@@ -520,8 +524,8 @@ class TestFileOperationsStressTesting:
 
     def test_concurrent_streaming_simulation(self, temp_dir: Path) -> None:
         """Test concurrent streaming detection simulation."""
-        import threading
         import queue
+        import threading
 
         results_queue = queue.Queue()
         num_threads = 3
@@ -570,10 +574,12 @@ class TestFileOperationsStressTesting:
             # Flush remaining
             detected_operations.extend(detector.flush())
 
-            results_queue.put({
-                "worker_id": worker_id,
-                "operations": detected_operations,
-            })
+            results_queue.put(
+                {
+                    "worker_id": worker_id,
+                    "operations": detected_operations,
+                }
+            )
 
         # Start workers
         workers = []
