@@ -76,6 +76,10 @@ def test_flavorpack_disk_replacements(tmp_path: Path) -> None:
         assert test_dir.exists()
 
 
+@pytest.mark.skipif(
+    not Path("/Users/tim/code/gh/provide-io/wrknv").exists(),
+    reason="wrknv repository not available",
+)
 def test_wrknv_install_replacements(tmp_path: Path) -> None:
     """Test wrknv install operations are properly replaced."""
     wrknv_path = Path("/Users/tim/code/gh/provide-io/wrknv/src")
@@ -127,6 +131,10 @@ def test_wrknv_install_replacements(tmp_path: Path) -> None:
         assert not (test_dir / "file2.txt").exists()
 
 
+@pytest.mark.skipif(
+    not Path("/Users/tim/code/gh/provide-io/wrknv").exists(),
+    reason="wrknv repository not available",
+)
 def test_wrknv_extract_operations(tmp_path: Path) -> None:
     """Test wrknv extract operations still work."""
     wrknv_path = Path("/Users/tim/code/gh/provide-io/wrknv/src")
