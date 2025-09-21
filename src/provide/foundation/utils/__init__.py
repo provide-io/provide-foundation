@@ -75,5 +75,6 @@ def __getattr__(name: str):
     """Lazy import for modules."""
     if name == "environment":
         from provide.foundation.utils import environment as env_module
+
         return env_module
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")

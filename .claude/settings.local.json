@@ -238,7 +238,8 @@
       "Bash(gh run logs:*)",
       "Bash(gh run download:*)",
       "Bash(.venv/bin/python:*)",
-      "Bash(.venv/bin/pytest tests/profiling/test_hooks.py::TestProfilingComponent::test_component_auto_register -xvs)"
+      "Bash(.venv/bin/pytest tests/profiling/test_hooks.py::TestProfilingComponent::test_component_auto_register -xvs)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": [],
     "ask": [],

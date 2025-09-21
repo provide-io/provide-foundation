@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+- Removed workenv/wrknv dependency - project now uses standard Python virtual environment setup
+- Removed all references to `.wrknv` directories - now uses `.provide-foundation` for tool installations
+
+### Changed
+- Tools module now uses `.provide-foundation` directory instead of `.wrknv` for tool cache and installations
+- Registry now uses `provide.foundation.tools` entry point group instead of `wrknv.tools`
+- Simplified development setup to use standard `uv venv` and `.venv` directory
+
 ## [0.1.0-beta.2] - 2025-01-14
 
 ### Removed (Breaking Changes)
