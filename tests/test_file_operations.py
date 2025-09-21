@@ -474,27 +474,16 @@ class TestFileOperation:
         now = datetime.now()
 
         events = [
-            FileEvent(
-                path=Path("test.txt"),
-                event_type="created",
-                metadata=FileEventMetadata(timestamp=now, sequence_number=1),
-            ),
-            FileEvent(
-                path=Path("test.txt"),
-                event_type="modified",
-                metadata=FileEventMetadata(timestamp=now + timedelta(milliseconds=100), sequence_number=2),
-            ),
+            FileEvent(path=Path("test.txt"), event_type="created",
+                     metadata=FileEventMetadata(timestamp=now, sequence_number=1)),
+            FileEvent(path=Path("test.txt"), event_type="modified",
+                     metadata=FileEventMetadata(timestamp=now + timedelta(milliseconds=100), sequence_number=2)),
         ]
 
         operation = FileOperation(
-            operation_type=OperationType.ATOMIC_SAVE,
-            primary_path=Path("test.txt"),
-            events=events,
-            confidence=0.9,
-            description="Test operation",
-            start_time=now,
-            end_time=now + timedelta(milliseconds=100),
-        )
+            operation_type=OperationType.ATOMIC_SAVE, primary_path=Path("test.txt"),
+            events=events, confidence=0.9, description="Test operation",
+            start_time=now, end_time=now + timedelta(milliseconds=100))
 
         timeline = operation.get_timeline()
         assert len(timeline) == 2
@@ -507,27 +496,16 @@ class TestFileOperation:
         end_time = now + timedelta(milliseconds=250)
 
         events = [
-            FileEvent(
-                path=Path("test1.txt"),
-                event_type="created",
-                metadata=FileEventMetadata(timestamp=now, sequence_number=1),
-            ),
-            FileEvent(
-                path=Path("test2.txt"),
-                event_type="created",
-                metadata=FileEventMetadata(timestamp=now + timedelta(milliseconds=100), sequence_number=2),
-            ),
+            FileEvent(path=Path("test1.txt"), event_type="created",
+                     metadata=FileEventMetadata(timestamp=now, sequence_number=1)),
+            FileEvent(path=Path("test2.txt"), event_type="created",
+                     metadata=FileEventMetadata(timestamp=now + timedelta(milliseconds=100), sequence_number=2)),
         ]
 
         operation = FileOperation(
-            operation_type=OperationType.BATCH_UPDATE,
-            primary_path=Path("test_dir"),
-            events=events,
-            confidence=0.8,
-            description="Test batch",
-            start_time=now,
-            end_time=end_time,
-        )
+            operation_type=OperationType.BATCH_UPDATE, primary_path=Path("test_dir"),
+            events=events, confidence=0.8, description="Test batch",
+            start_time=now, end_time=end_time)
 
         assert operation.duration_ms == 250.0
         assert operation.event_count == 2
