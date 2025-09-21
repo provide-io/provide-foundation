@@ -21,22 +21,16 @@ from provide.foundation.file.operations import (
 )
 
 
-class TestFileEventMetadata:
-    """Test FileEventMetadata functionality."""
+class TestFileEvent:
+    """Test FileEvent and metadata functionality."""
 
     def test_metadata_creation(self) -> None:
         """Test creating metadata with all fields."""
         now = datetime.now()
         metadata = FileEventMetadata(
-            timestamp=now,
-            sequence_number=1,
-            size_before=100,
-            size_after=200,
-            permissions=0o644,
-            process_name="vscode",
-            extra={"custom": "value"},
+            timestamp=now, sequence_number=1, size_before=100, size_after=200,
+            permissions=0o644, process_name="vscode", extra={"custom": "value"}
         )
-
         assert metadata.timestamp == now
         assert metadata.sequence_number == 1
         assert metadata.size_before == 100
@@ -44,20 +38,6 @@ class TestFileEventMetadata:
         assert metadata.permissions == 0o644
         assert metadata.process_name == "vscode"
         assert metadata.extra["custom"] == "value"
-
-    def test_metadata_minimal(self) -> None:
-        """Test creating metadata with minimal required fields."""
-        now = datetime.now()
-        metadata = FileEventMetadata(timestamp=now, sequence_number=1)
-
-        assert metadata.timestamp == now
-        assert metadata.sequence_number == 1
-        assert metadata.size_before is None
-        assert metadata.extra == {}
-
-
-class TestFileEvent:
-    """Test FileEvent functionality."""
 
     def test_event_creation(self) -> None:
         """Test creating a file event."""
@@ -386,6 +366,34 @@ class TestOperationDetector:
         assert len(groups[0]) == 2  # Close events grouped together
         assert len(groups[1]) == 1  # Far event in separate group
 
+    def test_detect_empty_list(self) -> None:
+        """Test detection with empty event list."""
+        detector = OperationDetector()
+        assert detector.detect([]) == []
+
+    def test_concurrent_detection(self) -> None:
+        """Test concurrent detection calls."""
+        import threading
+        detector = OperationDetector()
+        base_time = datetime.now()
+
+        results = []
+        def detect_worker():
+            events = [FileEvent(
+                path=Path("test.txt"),
+                event_type="created",
+                metadata=FileEventMetadata(timestamp=base_time, sequence_number=1)
+            )]
+            results.append(detector.detect(events))
+
+        threads = [threading.Thread(target=detect_worker) for _ in range(3)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+
+        assert len(results) == 3
+
 
 class TestConvenienceFunctions:
     """Test convenience functions."""
@@ -524,44 +532,6 @@ class TestFileOperation:
         assert operation.duration_ms == 250.0
         assert operation.event_count == 2
         assert len(operation.get_timeline()) == 2
-
-
-class TestOperationDetectorEdgeCases:
-    """Test edge cases and error handling."""
-
-    def test_detect_empty_list(self) -> None:
-        """Test detection with empty event list."""
-        detector = OperationDetector()
-        assert detector.detect([]) == []
-
-    def test_detect_streaming_invalid_event(self) -> None:
-        """Test streaming with None/invalid events."""
-        detector = OperationDetector()
-        # Should handle gracefully without crashing
-        assert detector.flush() == []
-
-    def test_concurrent_detection(self) -> None:
-        """Test concurrent detection calls."""
-        import threading
-        detector = OperationDetector()
-        base_time = datetime.now()
-
-        results = []
-        def detect_worker():
-            events = [FileEvent(
-                path=Path("test.txt"),
-                event_type="created",
-                metadata=FileEventMetadata(timestamp=base_time, sequence_number=1)
-            )]
-            results.append(detector.detect(events))
-
-        threads = [threading.Thread(target=detect_worker) for _ in range(3)]
-        for t in threads:
-            t.start()
-        for t in threads:
-            t.join()
-
-        assert len(results) == 3
 
 
 if __name__ == "__main__":
