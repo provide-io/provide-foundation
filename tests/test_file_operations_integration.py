@@ -415,7 +415,7 @@ class TestFileOperationsStressTesting:
 
         # Generate complex mixed patterns
         for i in range(50):
-            time_offset = i * 10  # 10ms apart
+            time_offset = i * 600  # 600ms apart (beyond 500ms time window)
 
             # VSCode atomic save
             temp_file = temp_dir / f"file{i}.txt.tmp.{i}"
