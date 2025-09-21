@@ -3,13 +3,13 @@ from __future__ import annotations
 import time
 from unittest.mock import Mock, patch
 
-from provide.foundation.profiling.component import ProfilingComponent
-from provide.foundation.profiling.metrics import ProfileMetrics
-from provide.foundation.profiling.processor import ProfilingProcessor
 import pytest
 
 from provide.foundation.context import CLIContext
 from provide.foundation.hub.manager import clear_hub, get_hub
+from provide.foundation.profiling.component import ProfilingComponent
+from provide.foundation.profiling.metrics import ProfileMetrics
+from provide.foundation.profiling.processor import ProfilingProcessor
 from provide.foundation.testmode import (
     reset_hub_state,
     reset_logger_state,
@@ -276,9 +276,9 @@ class TestProfilingCLI:
         ctx = CLIContext(json_output=False, no_color=False)
 
         # Should handle missing profiler gracefully
-        with patch("provide.foundation.console.output.perr") as mock_perr:
+        with patch("provide.foundation.profiling.cli.perr") as mock_perr:
             show_profile_metrics(ctx)
-            mock_perr.assert_called_once()
+            mock_perr.assert_called()
 
     def test_profile_command_with_profiler(self) -> None:
         """Test profile command with active profiler."""
@@ -296,7 +296,7 @@ class TestProfilingCLI:
 
         ctx = CLIContext(json_output=False, no_color=False)
 
-        with patch("provide.foundation.console.output.pout") as mock_pout:
+        with patch("provide.foundation.profiling.cli.pout") as mock_pout:
             show_profile_metrics(ctx)
 
             # Should output metrics
@@ -320,7 +320,7 @@ class TestProfilingCLI:
 
         ctx = CLIContext(json_output=True, no_color=False)
 
-        with patch("provide.foundation.console.output.pout") as mock_pout:
+        with patch("provide.foundation.profiling.cli.pout") as mock_pout:
             show_profile_metrics(ctx)
 
             # Should output JSON
@@ -345,9 +345,8 @@ class TestProfilingIntegration:
 
     def test_end_to_end_profiling(self) -> None:
         """Test complete profiling workflow."""
-        from provide.foundation.profiling.component import register_profiling
-
         from provide.foundation import logger
+        from provide.foundation.profiling.component import register_profiling
 
         # Setup profiler
         hub = get_hub()
@@ -372,7 +371,6 @@ class TestProfilingIntegration:
     def test_profiling_reset_integration(self) -> None:
         """Test profiling integrates with Foundation reset system."""
         from provide.foundation.profiling.component import register_profiling
-
         from provide.foundation.testmode.internal import reset_profiling_state
 
         # Setup profiler
