@@ -1,0 +1,537 @@
+"""Quality analysis tools for file operation detection.
+
+This module provides utilities to analyze and measure the quality,
+accuracy, and performance of file operation detection algorithms.
+"""
+
+from __future__ import annotations
+
+import time
+from collections import Counter, defaultdict
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from enum import Enum
+from pathlib import Path
+from typing import Any
+
+try:
+    from .operations import FileEvent, FileOperation, OperationDetector, OperationType
+    HAS_OPERATIONS_MODULE = True
+except ImportError:
+    HAS_OPERATIONS_MODULE = False
+
+
+class AnalysisMetric(Enum):
+    """Metrics for quality analysis."""
+
+    ACCURACY = "accuracy"
+    PRECISION = "precision"
+    RECALL = "recall"
+    F1_SCORE = "f1_score"
+    CONFIDENCE_DISTRIBUTION = "confidence_distribution"
+    DETECTION_TIME = "detection_time"
+    FALSE_POSITIVE_RATE = "false_positive_rate"
+    FALSE_NEGATIVE_RATE = "false_negative_rate"
+
+
+@dataclass
+class QualityResult:
+    """Result of quality analysis."""
+
+    metric: AnalysisMetric
+    value: float
+    details: dict[str, Any] = field(default_factory=dict)
+    timestamp: datetime = field(default_factory=datetime.now)
+
+
+@dataclass
+class OperationTestCase:
+    """Test case for operation detection validation."""
+
+    name: str
+    events: list[FileEvent]
+    expected_operations: list[dict[str, Any]]  # Expected operation specs
+    description: str = ""
+    tags: list[str] = field(default_factory=list)
+
+
+class QualityAnalyzer:
+    """Analyzer for measuring file operation detection quality."""
+
+    def __init__(self, detector: OperationDetector | None = None) -> None:
+        """Initialize the quality analyzer.
+
+        Args:
+            detector: Operation detector to analyze. If None, creates default.
+        """
+        if not HAS_OPERATIONS_MODULE:
+            raise ImportError("File operations module not available")
+
+        self.detector = detector or OperationDetector()
+        self.test_cases: list[OperationTestCase] = []
+        self.results: list[QualityResult] = []
+
+    def add_test_case(self, test_case: OperationTestCase) -> None:
+        """Add a test case for analysis.
+
+        Args:
+            test_case: Test case to add
+        """
+        self.test_cases.append(test_case)
+
+    def run_analysis(self, metrics: list[AnalysisMetric] | None = None) -> dict[AnalysisMetric, QualityResult]:
+        """Run quality analysis on all test cases.
+
+        Args:
+            metrics: Metrics to analyze. If None, runs all metrics.
+
+        Returns:
+            Dictionary mapping metrics to their results
+        """
+        if not self.test_cases:
+            raise ValueError("No test cases available for analysis")
+
+        if metrics is None:
+            metrics = list(AnalysisMetric)
+
+        results = {}
+
+        # Collect detection results
+        detection_results = []
+        timing_results = []
+
+        for test_case in self.test_cases:
+            start_time = time.perf_counter()
+            detected_operations = self.detector.detect(test_case.events)
+            end_time = time.perf_counter()
+
+            detection_time = (end_time - start_time) * 1000  # milliseconds
+            timing_results.append(detection_time)
+
+            detection_results.append({
+                "test_case": test_case,
+                "detected": detected_operations,
+                "detection_time": detection_time,
+            })
+
+        # Calculate metrics
+        for metric in metrics:
+            if metric == AnalysisMetric.ACCURACY:
+                results[metric] = self._calculate_accuracy(detection_results)
+            elif metric == AnalysisMetric.PRECISION:
+                results[metric] = self._calculate_precision(detection_results)
+            elif metric == AnalysisMetric.RECALL:
+                results[metric] = self._calculate_recall(detection_results)
+            elif metric == AnalysisMetric.F1_SCORE:
+                precision = self._calculate_precision(detection_results)
+                recall = self._calculate_recall(detection_results)
+                results[metric] = self._calculate_f1_score(precision.value, recall.value)
+            elif metric == AnalysisMetric.CONFIDENCE_DISTRIBUTION:
+                results[metric] = self._analyze_confidence_distribution(detection_results)
+            elif metric == AnalysisMetric.DETECTION_TIME:
+                results[metric] = self._analyze_detection_time(timing_results)
+            elif metric == AnalysisMetric.FALSE_POSITIVE_RATE:
+                results[metric] = self._calculate_false_positive_rate(detection_results)
+            elif metric == AnalysisMetric.FALSE_NEGATIVE_RATE:
+                results[metric] = self._calculate_false_negative_rate(detection_results)
+
+        self.results.extend(results.values())
+        return results
+
+    def _calculate_accuracy(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+        """Calculate overall accuracy."""
+        correct_detections = 0
+        total_detections = 0
+
+        for result in detection_results:
+            test_case = result["test_case"]
+            detected = result["detected"]
+            expected = test_case.expected_operations
+
+            # Simple accuracy: correct type detection
+            detected_types = [op.operation_type.value for op in detected]
+            expected_types = [exp["type"] for exp in expected]
+
+            # Count matches
+            detected_counter = Counter(detected_types)
+            expected_counter = Counter(expected_types)
+
+            # Calculate overlap
+            for op_type, expected_count in expected_counter.items():
+                detected_count = detected_counter.get(op_type, 0)
+                correct_detections += min(expected_count, detected_count)
+
+            total_detections += max(len(detected_types), len(expected_types))
+
+        accuracy = correct_detections / total_detections if total_detections > 0 else 0.0
+
+        return QualityResult(
+            metric=AnalysisMetric.ACCURACY,
+            value=accuracy,
+            details={
+                "correct_detections": correct_detections,
+                "total_detections": total_detections,
+                "percentage": accuracy * 100,
+            }
+        )
+
+    def _calculate_precision(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+        """Calculate precision (true positives / (true positives + false positives))."""
+        true_positives = 0
+        false_positives = 0
+
+        for result in detection_results:
+            test_case = result["test_case"]
+            detected = result["detected"]
+            expected = test_case.expected_operations
+
+            detected_types = [op.operation_type.value for op in detected]
+            expected_types = [exp["type"] for exp in expected]
+
+            expected_counter = Counter(expected_types)
+
+            for detected_type in detected_types:
+                if expected_counter.get(detected_type, 0) > 0:
+                    true_positives += 1
+                    expected_counter[detected_type] -= 1
+                else:
+                    false_positives += 1
+
+        precision = true_positives / (true_positives + false_positives) if (true_positives + false_positives) > 0 else 0.0
+
+        return QualityResult(
+            metric=AnalysisMetric.PRECISION,
+            value=precision,
+            details={
+                "true_positives": true_positives,
+                "false_positives": false_positives,
+                "percentage": precision * 100,
+            }
+        )
+
+    def _calculate_recall(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+        """Calculate recall (true positives / (true positives + false negatives))."""
+        true_positives = 0
+        false_negatives = 0
+
+        for result in detection_results:
+            test_case = result["test_case"]
+            detected = result["detected"]
+            expected = test_case.expected_operations
+
+            detected_types = [op.operation_type.value for op in detected]
+            expected_types = [exp["type"] for exp in expected]
+
+            detected_counter = Counter(detected_types)
+
+            for expected_type in expected_types:
+                if detected_counter.get(expected_type, 0) > 0:
+                    true_positives += 1
+                    detected_counter[expected_type] -= 1
+                else:
+                    false_negatives += 1
+
+        recall = true_positives / (true_positives + false_negatives) if (true_positives + false_negatives) > 0 else 0.0
+
+        return QualityResult(
+            metric=AnalysisMetric.RECALL,
+            value=recall,
+            details={
+                "true_positives": true_positives,
+                "false_negatives": false_negatives,
+                "percentage": recall * 100,
+            }
+        )
+
+    def _calculate_f1_score(self, precision: float, recall: float) -> QualityResult:
+        """Calculate F1 score (harmonic mean of precision and recall)."""
+        f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
+
+        return QualityResult(
+            metric=AnalysisMetric.F1_SCORE,
+            value=f1,
+            details={
+                "precision": precision,
+                "recall": recall,
+                "percentage": f1 * 100,
+            }
+        )
+
+    def _analyze_confidence_distribution(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+        """Analyze confidence score distribution."""
+        confidences = []
+        confidence_by_type = defaultdict(list)
+
+        for result in detection_results:
+            detected = result["detected"]
+
+            for operation in detected:
+                confidence = operation.confidence
+                confidences.append(confidence)
+                confidence_by_type[operation.operation_type.value].append(confidence)
+
+        if not confidences:
+            return QualityResult(
+                metric=AnalysisMetric.CONFIDENCE_DISTRIBUTION,
+                value=0.0,
+                details={"error": "No confidence scores available"}
+            )
+
+        avg_confidence = sum(confidences) / len(confidences)
+        min_confidence = min(confidences)
+        max_confidence = max(confidences)
+
+        # Calculate distribution stats by type
+        type_stats = {}
+        for op_type, type_confidences in confidence_by_type.items():
+            type_stats[op_type] = {
+                "count": len(type_confidences),
+                "average": sum(type_confidences) / len(type_confidences),
+                "min": min(type_confidences),
+                "max": max(type_confidences),
+            }
+
+        return QualityResult(
+            metric=AnalysisMetric.CONFIDENCE_DISTRIBUTION,
+            value=avg_confidence,
+            details={
+                "total_operations": len(confidences),
+                "average": avg_confidence,
+                "min": min_confidence,
+                "max": max_confidence,
+                "by_type": type_stats,
+            }
+        )
+
+    def _analyze_detection_time(self, timing_results: list[float]) -> QualityResult:
+        """Analyze detection time performance."""
+        if not timing_results:
+            return QualityResult(
+                metric=AnalysisMetric.DETECTION_TIME,
+                value=0.0,
+                details={"error": "No timing data available"}
+            )
+
+        avg_time = sum(timing_results) / len(timing_results)
+        min_time = min(timing_results)
+        max_time = max(timing_results)
+
+        # Calculate percentiles
+        sorted_times = sorted(timing_results)
+        n = len(sorted_times)
+        p50 = sorted_times[n // 2]
+        p95 = sorted_times[int(n * 0.95)]
+        p99 = sorted_times[int(n * 0.99)]
+
+        return QualityResult(
+            metric=AnalysisMetric.DETECTION_TIME,
+            value=avg_time,
+            details={
+                "total_tests": len(timing_results),
+                "average_ms": avg_time,
+                "min_ms": min_time,
+                "max_ms": max_time,
+                "p50_ms": p50,
+                "p95_ms": p95,
+                "p99_ms": p99,
+            }
+        )
+
+    def _calculate_false_positive_rate(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+        """Calculate false positive rate."""
+        false_positives = 0
+        total_negative_cases = 0
+
+        for result in detection_results:
+            test_case = result["test_case"]
+            detected = result["detected"]
+            expected = test_case.expected_operations
+
+            # If no operations were expected but some were detected
+            if not expected and detected:
+                false_positives += len(detected)
+                total_negative_cases += 1
+            elif not expected:
+                total_negative_cases += 1
+
+        fpr = false_positives / total_negative_cases if total_negative_cases > 0 else 0.0
+
+        return QualityResult(
+            metric=AnalysisMetric.FALSE_POSITIVE_RATE,
+            value=fpr,
+            details={
+                "false_positives": false_positives,
+                "total_negative_cases": total_negative_cases,
+                "percentage": fpr * 100,
+            }
+        )
+
+    def _calculate_false_negative_rate(self, detection_results: list[dict[str, Any]]) -> QualityResult:
+        """Calculate false negative rate."""
+        false_negatives = 0
+        total_positive_cases = 0
+
+        for result in detection_results:
+            test_case = result["test_case"]
+            detected = result["detected"]
+            expected = test_case.expected_operations
+
+            if expected:
+                total_positive_cases += len(expected)
+                detected_types = [op.operation_type.value for op in detected]
+                expected_types = [exp["type"] for exp in expected]
+
+                detected_counter = Counter(detected_types)
+
+                for expected_type in expected_types:
+                    if detected_counter.get(expected_type, 0) > 0:
+                        detected_counter[expected_type] -= 1
+                    else:
+                        false_negatives += 1
+
+        fnr = false_negatives / total_positive_cases if total_positive_cases > 0 else 0.0
+
+        return QualityResult(
+            metric=AnalysisMetric.FALSE_NEGATIVE_RATE,
+            value=fnr,
+            details={
+                "false_negatives": false_negatives,
+                "total_positive_cases": total_positive_cases,
+                "percentage": fnr * 100,
+            }
+        )
+
+    def generate_report(self, results: dict[AnalysisMetric, QualityResult] | None = None) -> str:
+        """Generate a quality analysis report.
+
+        Args:
+            results: Results to include in report. If None, uses latest results.
+
+        Returns:
+            Formatted report string
+        """
+        if results is None:
+            # Group latest results by metric
+            latest_results = {}
+            for result in reversed(self.results):
+                if result.metric not in latest_results:
+                    latest_results[result.metric] = result
+            results = latest_results
+
+        if not results:
+            return "No analysis results available."
+
+        report_lines = [
+            "File Operation Detection Quality Report",
+            "=" * 45,
+            f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+            f"Test Cases: {len(self.test_cases)}",
+            "",
+            "Metrics:",
+        ]
+
+        for metric, result in results.items():
+            report_lines.append(f"  {metric.value.replace('_', ' ').title()}: {result.value:.3f}")
+
+            # Add details for key metrics
+            if metric == AnalysisMetric.ACCURACY and "percentage" in result.details:
+                report_lines.append(f"    ({result.details['percentage']:.1f}%)")
+            elif metric == AnalysisMetric.DETECTION_TIME and "average_ms" in result.details:
+                report_lines.append(f"    (avg: {result.details['average_ms']:.2f}ms, p95: {result.details.get('p95_ms', 0):.2f}ms)")
+            elif metric == AnalysisMetric.CONFIDENCE_DISTRIBUTION and "by_type" in result.details:
+                report_lines.append("    By operation type:")
+                for op_type, stats in result.details["by_type"].items():
+                    report_lines.append(f"      {op_type}: {stats['average']:.3f} (count: {stats['count']})")
+
+        return "\n".join(report_lines)
+
+
+def create_test_cases_from_patterns() -> list[OperationTestCase]:
+    """Create standard test cases for common operation patterns.
+
+    Returns:
+        List of test cases covering common patterns
+    """
+    if not HAS_OPERATIONS_MODULE:
+        return []
+
+    from .operations import FileEvent, FileEventMetadata
+
+    test_cases = []
+    base_time = datetime.now()
+
+    # VSCode atomic save test case
+    vscode_events = [
+        FileEvent(
+            path=Path("test.txt.tmp.12345"),
+            event_type="created",
+            metadata=FileEventMetadata(timestamp=base_time, sequence_number=1, size_after=1024),
+        ),
+        FileEvent(
+            path=Path("test.txt.tmp.12345"),
+            event_type="moved",
+            metadata=FileEventMetadata(timestamp=base_time + timedelta(milliseconds=50), sequence_number=2),
+            dest_path=Path("test.txt"),
+        ),
+    ]
+
+    test_cases.append(OperationTestCase(
+        name="vscode_atomic_save",
+        events=vscode_events,
+        expected_operations=[{"type": "atomic_save", "confidence_min": 0.9}],
+        description="VSCode atomic save pattern",
+        tags=["atomic", "editor", "vscode"],
+    ))
+
+    # Safe write test case
+    safe_write_events = [
+        FileEvent(
+            path=Path("document.bak"),
+            event_type="created",
+            metadata=FileEventMetadata(timestamp=base_time, sequence_number=1, size_after=1000),
+        ),
+        FileEvent(
+            path=Path("document"),
+            event_type="modified",
+            metadata=FileEventMetadata(
+                timestamp=base_time + timedelta(milliseconds=100),
+                sequence_number=2,
+                size_before=1000,
+                size_after=1024,
+            ),
+        ),
+    ]
+
+    test_cases.append(OperationTestCase(
+        name="safe_write_with_backup",
+        events=safe_write_events,
+        expected_operations=[{"type": "safe_write", "confidence_min": 0.8}],
+        description="Safe write with backup creation",
+        tags=["safe", "backup"],
+    ))
+
+    # Batch update test case
+    batch_events = []
+    for i in range(5):
+        batch_events.append(
+            FileEvent(
+                path=Path(f"src/file{i}.py"),
+                event_type="modified",
+                metadata=FileEventMetadata(
+                    timestamp=base_time + timedelta(milliseconds=i * 10),
+                    sequence_number=i + 1,
+                    size_before=500,
+                    size_after=520,
+                ),
+            )
+        )
+
+    test_cases.append(OperationTestCase(
+        name="batch_format_operation",
+        events=batch_events,
+        expected_operations=[{"type": "batch_update", "confidence_min": 0.7}],
+        description="Batch formatting operation",
+        tags=["batch", "formatting"],
+    ))
+
+    return test_cases
