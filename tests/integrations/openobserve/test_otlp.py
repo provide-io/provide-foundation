@@ -223,7 +223,7 @@ class TestSendLogOTLP:
             patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_from_env,
         ):
             # Mock config to raise exception
-            mock_config_class.from_env.side_effect = Exception("Config error")
+            mock_from_env.side_effect = Exception("Config error")
 
             result = send_log_otlp("Test message")
 
@@ -502,7 +502,7 @@ class TestCreateOTLPLoggerProvider:
             patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
             patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_from_env,
         ):
-            mock_config_class.from_env.side_effect = Exception("Provider creation error")
+            mock_from_env.side_effect = Exception("Provider creation error")
 
             result = create_otlp_logger_provider()
 
