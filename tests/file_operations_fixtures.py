@@ -407,7 +407,7 @@ def requires_file_operations(func):
 
 
 # Pattern-specific test decorators
-def file_operation_test(*patterns: str):
+def file_operation_pattern(*patterns: str):
     """Decorator for file operation pattern tests.
 
     Args:

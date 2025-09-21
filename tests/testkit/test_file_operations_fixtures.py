@@ -7,7 +7,7 @@ from pathlib import Path
 from tests.file_operations_fixtures import (
     FileOperationSimulator,
     FileOperationValidator,
-    file_operation_test,
+    file_operation_pattern,
     requires_file_operations,  # Import the fixture
     )
 
@@ -200,9 +200,9 @@ class TestFileOperationValidator:
         assert summary["average_confidence"] == (0.95 + 0.60 + 0.85) / 3
 
 
-@file_operation_test("vscode", "vim")
+@file_operation_pattern("vscode", "vim")
 def test_file_operation_decorator(file_operation_simulator: FileOperationSimulator) -> None:
-    """Test the file operation test decorator."""
+    """Test the file operation pattern decorator."""
     # Test that the decorator is applied
     assert hasattr(test_file_operation_decorator, "_file_operation_patterns")
     assert test_file_operation_decorator._file_operation_patterns == ("vscode", "vim")
