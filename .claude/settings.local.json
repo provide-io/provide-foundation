@@ -244,7 +244,9 @@
       "Bash(timeout 30 .venv/bin/pytest tests/test_file_operations_patterns.py::TestEditorSpecificPatterns::test_mixed_editor_patterns -xvs)",
       "Bash(timeout 30 .venv/bin/pytest tests/test_file_operations_performance.py::TestFileOperationsPerformance::test_large_event_set_performance -xvs)",
       "Bash(timeout 30 .venv/bin/pytest tests/test_file_operations_performance.py::TestFileOperationsPerformance::test_large_event_set_performance -x)",
-      "Bash(timeout 30 .venv/bin/pytest tests/testkit/test_file_operations_fixtures.py::TestFileOperationSimulator::test_simulator_initialization -xvs)"
+      "Bash(timeout 30 .venv/bin/pytest tests/testkit/test_file_operations_fixtures.py::TestFileOperationSimulator::test_simulator_initialization -xvs)",
+      "Bash(.venv/bin/pytest tests/logger/ratelimit/test_queue_limiter.py::TestQueuedRateLimiter::test_queued_rate_limiter_memory_limit -xvs)",
+      "Bash(.venv/bin/pytest tests/test_file_operations_performance.py::TestFileOperationsPerformance::test_large_event_set_performance -xvs)"
     ],
     "deny": [],
     "ask": [],
