@@ -54,7 +54,7 @@ def send_log_otlp(
         return False
 
     try:
-        from provide.foundation.logger.config import TelemetryConfig
+        from provide.foundation.logger.config.telemetry import TelemetryConfig
 
         config = TelemetryConfig.from_env()
 
@@ -160,7 +160,7 @@ def send_log_bulk(
         if client is None:
             client = OpenObserveClient.from_config()
 
-        from provide.foundation.logger.config import TelemetryConfig
+        from provide.foundation.logger.config.telemetry import TelemetryConfig
 
         config = TelemetryConfig.from_env()
 
@@ -276,7 +276,7 @@ def create_otlp_logger_provider() -> Any | None:
         return None
 
     try:
-        from provide.foundation.logger.config import TelemetryConfig
+        from provide.foundation.logger.config.telemetry import TelemetryConfig
 
         config = TelemetryConfig.from_env()
 

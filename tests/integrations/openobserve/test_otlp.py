@@ -42,7 +42,7 @@ class TestSendLogOTLP:
 
         with (
             patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
-            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+            patch("provide.foundation.logger.config.telemetry.TelemetryConfig") as mock_config_class,
         ):
             mock_config_class.from_env.return_value = mock_config
 
@@ -77,7 +77,7 @@ class TestSendLogOTLP:
 
         with (
             patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
-            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+            patch("provide.foundation.logger.config.telemetry.TelemetryConfig") as mock_config_class,
             patch("provide.foundation.integrations.openobserve.otlp.Resource") as mock_resource_class,
             patch("provide.foundation.integrations.openobserve.otlp.OTLPLogExporter") as mock_exporter_class,
             patch("provide.foundation.integrations.openobserve.otlp.LoggerProvider") as mock_provider_class,
@@ -139,7 +139,7 @@ class TestSendLogOTLP:
 
         with (
             patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
-            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+            patch("provide.foundation.logger.config.telemetry.TelemetryConfig") as mock_config_class,
             patch("provide.foundation.integrations.openobserve.otlp.Resource"),
             patch("provide.foundation.integrations.openobserve.otlp.OTLPLogExporter") as mock_exporter_class,
             patch("provide.foundation.integrations.openobserve.otlp.LoggerProvider") as mock_provider_class,
@@ -190,7 +190,7 @@ class TestSendLogOTLP:
         for level, expected_severity in test_levels:
             with (
                 patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
-                patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+                patch("provide.foundation.logger.config.telemetry.TelemetryConfig") as mock_config_class,
                 patch("provide.foundation.integrations.openobserve.otlp.Resource"),
                 patch("provide.foundation.integrations.openobserve.otlp.OTLPLogExporter"),
                 patch(
@@ -220,7 +220,7 @@ class TestSendLogOTLP:
 
         with (
             patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
-            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+            patch("provide.foundation.logger.config.telemetry.TelemetryConfig") as mock_config_class,
         ):
             # Mock config to raise exception
             mock_config_class.from_env.side_effect = Exception("Config error")
@@ -252,7 +252,7 @@ class TestSendLogBulk:
         mock_response.status_code = 200
 
         with (
-            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+            patch("provide.foundation.logger.config.telemetry.TelemetryConfig") as mock_config_class,
             patch("provide.foundation.integrations.openobserve.otlp.datetime") as mock_datetime,
             patch("requests.post") as mock_post,
         ):
@@ -308,7 +308,7 @@ class TestSendLogBulk:
         mock_response.status_code = 200
 
         with (
-            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+            patch("provide.foundation.logger.config.telemetry.TelemetryConfig") as mock_config_class,
             patch("provide.foundation.integrations.openobserve.otlp.OpenObserveClient") as mock_client_class,
             patch("provide.foundation.integrations.openobserve.otlp.datetime") as mock_datetime,
             patch("requests.post") as mock_post,
@@ -340,7 +340,7 @@ class TestSendLogBulk:
         mock_config.openobserve_stream = "error-stream"
 
         with (
-            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+            patch("provide.foundation.logger.config.telemetry.TelemetryConfig") as mock_config_class,
             patch("provide.foundation.integrations.openobserve.otlp.datetime") as mock_datetime,
             patch("requests.post") as mock_post,
         ):
@@ -445,7 +445,7 @@ class TestCreateOTLPLoggerProvider:
 
         with (
             patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
-            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+            patch("provide.foundation.logger.config.telemetry.TelemetryConfig") as mock_config_class,
         ):
             mock_config_class.from_env.return_value = mock_config
 
@@ -471,7 +471,7 @@ class TestCreateOTLPLoggerProvider:
 
         with (
             patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
-            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+            patch("provide.foundation.logger.config.telemetry.TelemetryConfig") as mock_config_class,
             patch("provide.foundation.integrations.openobserve.otlp.Resource") as mock_resource_class,
             patch("provide.foundation.integrations.openobserve.otlp.OTLPLogExporter") as mock_exporter_class,
             patch("provide.foundation.integrations.openobserve.otlp.LoggerProvider") as mock_provider_class,
@@ -500,7 +500,7 @@ class TestCreateOTLPLoggerProvider:
 
         with (
             patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
-            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+            patch("provide.foundation.logger.config.telemetry.TelemetryConfig") as mock_config_class,
         ):
             mock_config_class.from_env.side_effect = Exception("Provider creation error")
 
@@ -541,7 +541,7 @@ class TestOTLPIntegration:
 
         with (
             patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
-            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+            patch("provide.foundation.logger.config.telemetry.TelemetryConfig") as mock_config_class,
             patch("provide.foundation.integrations.openobserve.otlp.Resource"),
             patch("provide.foundation.integrations.openobserve.otlp.OTLPLogExporter"),
             patch("provide.foundation.integrations.openobserve.otlp.LoggerProvider") as mock_provider_class,
@@ -570,7 +570,7 @@ class TestOTLPIntegration:
 
         with (
             patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
-            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+            patch("provide.foundation.logger.config.telemetry.TelemetryConfig") as mock_config_class,
             patch("provide.foundation.integrations.openobserve.otlp.Resource"),
             patch("provide.foundation.integrations.openobserve.otlp.OTLPLogExporter"),
             patch("provide.foundation.integrations.openobserve.otlp.LoggerProvider") as mock_provider_class,
@@ -612,7 +612,7 @@ class TestOTLPIntegration:
         mock_response.status_code = 200
 
         with (
-            patch("provide.foundation.logger.config.TelemetryConfig") as mock_config_class,
+            patch("provide.foundation.logger.config.telemetry.TelemetryConfig") as mock_config_class,
             patch("provide.foundation.integrations.openobserve.otlp.datetime") as mock_datetime,
             patch("requests.post") as mock_post,
         ):
