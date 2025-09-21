@@ -236,7 +236,8 @@
       "Bash(gh workflow run:*)",
       "Bash(gh run watch:*)",
       "Bash(gh run logs:*)",
-      "Bash(gh run download:*)"
+      "Bash(gh run download:*)",
+      "Bash(.venv/bin/python:*)"
     ],
     "deny": [],
     "ask": [],
