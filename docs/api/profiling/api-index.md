@@ -145,28 +145,28 @@ class SamplingContext(Protocol):
 ## Exception Types
 
 ### ProfilingError
-::: provide.foundation.profiling.errors.ProfilingError
+::: provide.foundation.errors.profiling.ProfilingError
     options:
       show_source: true
       show_root_heading: true
       show_symbol_type_heading: true
 
 ### SamplingError
-::: provide.foundation.profiling.errors.SamplingError
+::: provide.foundation.errors.profiling.SamplingError
     options:
       show_source: true
       show_root_heading: true
       show_symbol_type_heading: true
 
 ### ExporterError
-::: provide.foundation.profiling.errors.ExporterError
+::: provide.foundation.errors.profiling.ExporterError
     options:
       show_source: true
       show_root_heading: true
       show_symbol_type_heading: true
 
-### ConfigurationError
-::: provide.foundation.profiling.errors.ConfigurationError
+### MetricsError
+::: provide.foundation.errors.profiling.MetricsError
     options:
       show_source: true
       show_root_heading: true
@@ -177,23 +177,21 @@ class SamplingContext(Protocol):
 ### Default Values
 
 ```python
-# Sampling defaults
-DEFAULT_PROFILING_SAMPLE_RATE = 0.01  # 1%
-DEFAULT_BUFFER_SIZE = 1000
-DEFAULT_FLUSH_INTERVAL_SECONDS = 30
-
-# Memory defaults
-DEFAULT_MAX_MEMORY_MB = 100
-DEFAULT_TRACK_MEMORY = False
-
-# Export defaults
-DEFAULT_BATCH_SIZE = 100
-DEFAULT_EXPORT_TIMEOUT_SECONDS = 30
-DEFAULT_MAX_RETRIES = 3
-
-# Performance defaults
-DEFAULT_ENABLE_FAST_PATH = True
-DEFAULT_BACKGROUND_PROCESSING = True
+# Available from provide.foundation.config.defaults
+from provide.foundation.config.defaults import (
+    DEFAULT_PROFILING_SAMPLE_RATE,  # 0.01 (1%)
+    DEFAULT_PROFILING_ENABLED,      # False
+    DEFAULT_PROFILING_TRACK_MEMORY, # False
+    DEFAULT_PROFILING_BUFFER_SIZE,  # 1000
+    DEFAULT_PROFILING_FLUSH_INTERVAL_SECONDS,  # 30
+    DEFAULT_PROFILING_MAX_MEMORY_MB,           # 100
+    DEFAULT_PROFILING_ENABLE_FAST_PATH,       # True
+    DEFAULT_PROFILING_BACKGROUND_PROCESSING,  # True
+    DEFAULT_PROFILING_CLI_ENABLED,            # True
+    DEFAULT_PROFILING_BATCH_SIZE,             # 100
+    DEFAULT_PROFILING_EXPORT_TIMEOUT_SECONDS, # 30
+    DEFAULT_PROFILING_MAX_RETRIES,            # 3
+)
 ```
 
 ### Environment Variables
@@ -264,7 +262,7 @@ config = ProfilingConfig(
 ### Error Handling
 
 ```python
-from provide.foundation.profiling.errors import ProfilingError
+from provide.foundation.errors.profiling import ProfilingError
 
 try:
     register_profiling(hub, sample_rate=0.02)

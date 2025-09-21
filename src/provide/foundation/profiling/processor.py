@@ -7,6 +7,7 @@ from typing import Any
 import structlog
 
 from provide.foundation.config.defaults import DEFAULT_PROFILING_SAMPLE_RATE
+from provide.foundation.errors.profiling import SamplingError
 from provide.foundation.profiling.metrics import ProfileMetrics
 
 """Structlog processor for collecting performance metrics.
@@ -43,7 +44,10 @@ class ProfilingProcessor:
 
         """
         if not 0.0 <= sample_rate <= 1.0:
-            raise ValueError("Sample rate must be between 0.0 and 1.0")
+            raise SamplingError(
+                "Sample rate must be between 0.0 and 1.0",
+                sample_rate=sample_rate
+            )
 
         self.sample_rate = sample_rate
         self.metrics = ProfileMetrics()

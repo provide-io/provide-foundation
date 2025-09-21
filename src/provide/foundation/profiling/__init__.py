@@ -1,5 +1,11 @@
 from __future__ import annotations
 
+from provide.foundation.errors.profiling import (
+    ExporterError,
+    MetricsError,
+    ProfilingError,
+    SamplingError,
+)
 from provide.foundation.profiling.component import ProfilingComponent, register_profiling
 from provide.foundation.profiling.metrics import ProfileMetrics
 from provide.foundation.profiling.processor import ProfilingProcessor
@@ -25,8 +31,14 @@ Example:
 """
 
 __all__ = [
+    # Core components
     "ProfileMetrics",
     "ProfilingComponent",
     "ProfilingProcessor",
     "register_profiling",
+    # Error classes
+    "ProfilingError",
+    "SamplingError",
+    "ExporterError",
+    "MetricsError",
 ]

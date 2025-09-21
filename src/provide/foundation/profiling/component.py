@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from provide.foundation.config.defaults import DEFAULT_PROFILING_SAMPLE_RATE
 from provide.foundation.errors.decorators import resilient
+from provide.foundation.errors.profiling import ProfilingError
 from provide.foundation.profiling.metrics import ProfileMetrics
 from provide.foundation.profiling.processor import ProfilingProcessor
 
