@@ -105,13 +105,20 @@ class ProfileMetrics:
 
         """
         with self._lock:
+            # Calculate metrics directly to avoid deadlock from property calls
+            elapsed = time.time() - self.start_time
+            messages_per_second = self.message_count / elapsed if elapsed > 0 else 0.0
+            avg_latency_ms = (self.total_duration_ns / self.message_count) / 1_000_000 if self.message_count > 0 else 0.0
+            emoji_overhead_percent = (self.emoji_message_count / self.message_count) * 100 if self.message_count > 0 else 0.0
+            avg_fields_per_message = self._total_field_count / self.message_count if self.message_count > 0 else 0.0
+
             return {
-                "messages_per_second": round(self.messages_per_second, 2),
-                "avg_latency_ms": round(self.avg_latency_ms, 4),
-                "emoji_overhead_percent": round(self.emoji_overhead_percent, 1),
+                "messages_per_second": round(messages_per_second, 2),
+                "avg_latency_ms": round(avg_latency_ms, 4),
+                "emoji_overhead_percent": round(emoji_overhead_percent, 1),
                 "total_messages": self.message_count,
                 "emoji_messages": self.emoji_message_count,
                 "dropped_messages": self.dropped_count,
-                "avg_fields_per_message": round(self.avg_fields_per_message, 1),
-                "uptime_seconds": round(time.time() - self.start_time, 1),
+                "avg_fields_per_message": round(avg_fields_per_message, 1),
+                "uptime_seconds": round(elapsed, 1),
             }
