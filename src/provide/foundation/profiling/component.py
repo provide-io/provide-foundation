@@ -158,11 +158,8 @@ def register_profiling(hub: Hub, sample_rate: float = DEFAULT_PROFILING_SAMPLE_R
     # Create and register the profiling component instance
     profiler = ProfilingComponent(sample_rate=sample_rate)
 
-    # Register directly with component registry to store instance
-    from provide.foundation.hub.components import get_component_registry
-
-    registry = get_component_registry()
-    registry.register(
+    # Register directly with the hub's component registry
+    hub._component_registry.register(
         name="profiler",
         value=profiler,
         dimension="component",
