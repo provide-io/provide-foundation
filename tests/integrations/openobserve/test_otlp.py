@@ -484,11 +484,14 @@ class TestCreateOTLPLoggerProvider:
             patch("provide.foundation.integrations.openobserve.otlp._HAS_OTEL_LOGS", True),
             patch("provide.foundation.logger.config.telemetry.TelemetryConfig.from_env") as mock_from_env,
             patch("provide.foundation.integrations.openobserve.otlp.Resource") as mock_resource_class,
+            patch("provide.foundation.integrations.openobserve.otlp.ResourceAttributes") as mock_resource_attrs,
             patch("provide.foundation.integrations.openobserve.otlp.OTLPLogExporter") as mock_exporter_class,
             patch("provide.foundation.integrations.openobserve.otlp.LoggerProvider") as mock_provider_class,
             patch("provide.foundation.integrations.openobserve.otlp.BatchLogRecordProcessor"),
         ):
             mock_from_env.return_value = mock_config
+            mock_resource_attrs.SERVICE_NAME = "service.name"
+            mock_resource_attrs.SERVICE_VERSION = "service.version"
             mock_resource_class.create.return_value = mock_resource
             mock_exporter_class.return_value = mock_exporter
             mock_provider_class.return_value = mock_logger_provider
