@@ -357,6 +357,39 @@ class TestRuntimeConfigAdvanced:
             # The auto parser should handle int conversion
             self.AdvancedConfig.from_env()
 
+    def test_from_env_custom_parser_error(self) -> None:
+        """Test from_env with custom parser error to cover lines 203-204."""
+
+        def failing_parser(value: str) -> int:
+            """Parser that always raises an exception."""
+            raise RuntimeError("Custom parser failed")
+
+        @define
+        class ParserErrorConfig(RuntimeConfig):
+            value: int = env_field(parser=failing_parser, default=0)
+
+        with (
+            patch.dict(os.environ, {"VALUE": "some_value"}),
+            pytest.raises(ValueError, match="Failed to parse VALUE: Custom parser failed"),
+        ):
+            ParserErrorConfig.from_env()
+
+    def test_read_secret_sync_empty_file_error(self) -> None:
+        """Test reading empty secret file to cover line 306."""
+        with tempfile.NamedTemporaryFile(mode="w", delete=False) as temp_file:
+            # Write empty content
+            temp_file.write("")
+            temp_file.flush()
+
+            try:
+                with (
+                    patch.dict(os.environ, {"SPECIAL_VAR": f"file://{temp_file.name}"}),
+                    pytest.raises(ValueError, match="Secret file is empty"),
+                ):
+                    self.AdvancedConfig.from_env()
+            finally:
+                Path(temp_file.name).unlink()
+
     def test_from_env_env_prefix_field(self) -> None:
         """Test from_env with field-specific env_prefix."""
         with patch.dict(os.environ, {"CUSTOM_PREFIXED": "prefixed_value"}):
