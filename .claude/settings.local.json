@@ -298,7 +298,9 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format /Users/tim/code/gh/provide-io/provide-foundation/src/provide/foundation/file/operations/detector.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check /Users/tim/code/gh/provide-io/provide-foundation/src/provide/foundation/file/operations/detector.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes /Users/tim/code/gh/provide-io/provide-foundation/src/provide/foundation/file/operations/detector.py)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_file_operations.py::TestConvenienceFunctions::test_extract_original_path -xvs)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_file_operations.py::TestConvenienceFunctions::test_extract_original_path -xvs)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_file_operations*.py --tb=short -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_file_operations_integration.py::TestFileOperationIntegration::test_timing_edge_cases -xvs)"
     ],
     "deny": [],
     "ask": [],

@@ -127,6 +127,7 @@ class OperationDetector:
             self._detect_rename_sequence,
             self._detect_batch_update,
             self._detect_backup_create,
+            self._detect_simple_operation,  # Fallback for basic operations
         ]
 
         best_operation = None
@@ -342,6 +343,61 @@ class OperationDetector:
             )
 
         return None
+
+    def _detect_simple_operation(self, events: list[FileEvent]) -> FileOperation | None:
+        """Detect simple file operations (create, modify, delete)."""
+        if not events:
+            return None
+
+        # Filter out directory events
+        file_events = [e for e in events if not e.path.name.endswith("/")]
+        if not file_events:
+            return None
+
+        # Get the primary file (most frequently mentioned or first non-temp file)
+        file_paths = [e.path for e in file_events]
+        primary_file = None
+
+        # Prefer non-temp files
+        non_temp_files = [p for p in file_paths if not self._is_temp_file(p)]
+        if non_temp_files:
+            primary_file = non_temp_files[0]
+        else:
+            primary_file = file_paths[0]
+
+        # Determine operation type based on event types
+        event_types = {e.event_type for e in file_events}
+
+        if "created" in event_types and "modified" in event_types:
+            operation_type = OperationType.ATOMIC_SAVE  # File created and modified
+            confidence = 0.60
+        elif "created" in event_types:
+            operation_type = OperationType.BACKUP_CREATE  # New file created
+            confidence = 0.50
+        elif "modified" in event_types:
+            operation_type = OperationType.ATOMIC_SAVE  # File modified
+            confidence = 0.55
+        elif "deleted" in event_types:
+            operation_type = OperationType.BACKUP_CREATE  # File deleted (use as fallback)
+            confidence = 0.45
+        else:
+            return None
+
+        start_time = min(e.timestamp for e in file_events)
+        end_time = max(e.timestamp for e in file_events)
+
+        return FileOperation(
+            operation_type=operation_type,
+            primary_path=primary_file,
+            events=file_events,
+            confidence=confidence,
+            description=f"Simple file operation on {primary_file.name}",
+            start_time=start_time,
+            end_time=end_time,
+            is_atomic=len(file_events) == 1,
+            is_safe=True,
+            files_affected=[primary_file],
+        )
 
     def _is_temp_file(self, path: Path) -> bool:
         """Check if path matches any temp file pattern."""
