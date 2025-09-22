@@ -42,59 +42,19 @@ class FoundationManager:
             force: If True, force re-initialization even if already initialized
 
         """
-        # Fast path if already initialized and not forcing
-        if self._initialized and not force:
-            return
+        # Use the new simplified coordinator
+        from provide.foundation.hub.initialization import get_initialization_coordinator
 
-        with self._init_lock:
-            # Double-check after acquiring lock (unless forcing)
-            if self._initialized and not force:
-                return
+        coordinator = get_initialization_coordinator()
 
-            # Check if config is already locked by explicit config from another Hub
-            existing_entry = self._registry.get_entry("foundation.config", "singleton")
-            if existing_entry and existing_entry.metadata.get("locked", False) and not force:
-                # Use existing locked config instead of reinitializing
-                self._config = existing_entry.value
-                self._initialized = True
-                return
-
-            # Lazy import to avoid circular imports during module loading
-            from provide.foundation.logger.config import TelemetryConfig
-
-            # Handle config loading with graceful fallback
-            try:
-                if config:
-                    # Use explicit config as-is to maintain precedence
-                    self._config = config
-                else:
-                    # Load from environment when no explicit config
-                    self._config = TelemetryConfig.from_env()
-            except Exception:
-                # Fallback to minimal default config if loading fails
-                self._config = TelemetryConfig()
-
-            # Register Foundation config as singleton
-            # Mark explicit configs to prevent environment overrides
-            is_explicit_config = config is not None
-            self._registry.register(
-                name="foundation.config",
-                value=self._config,
-                dimension="singleton",
-                metadata={
-                    "initialized": True,
-                    "explicit_config": is_explicit_config,
-                    "locked": is_explicit_config,  # Lock explicit configs from being replaced
-                },
-                replace=True,
+        try:
+            actual_config, logger_instance = coordinator.initialize_foundation(
+                registry=self._registry, config=config, force=force
             )
 
-            # Initialize and register logger instance
-            self._initialize_logger()
-
-            # Set up event handlers after logger is ready
-            self._setup_event_handlers()
-
+            # Update our local state
+            self._config = actual_config
+            self._logger_instance = logger_instance
             self._initialized = True
 
             # Log initialization success (avoid test interference)
@@ -108,57 +68,12 @@ class FoundationManager:
                         config_source="explicit" if config else "environment",
                     )
 
-    def _initialize_logger(self) -> None:
-        """Initialize the Foundation logger system through Hub."""
-        # Lazy import to avoid circular imports during module loading
-        from provide.foundation.logger.core import FoundationLogger
-
-        try:
-            # Create logger instance with Hub-like interface
-            # For now, we'll create a minimal wrapper to avoid circular dependencies
-            hub_wrapper = type(
-                "HubWrapper", (), {"_component_registry": self._registry, "_foundation_config": self._config}
-            )()
-
-            logger_instance = FoundationLogger(hub=hub_wrapper)
-
-            # Setup logger with configuration (self._config is guaranteed to be set by this point)
-            if self._config is None:
-                raise RuntimeError("Configuration not initialized")
-            logger_instance.setup(self._config)
-
-            # Register logger instance as singleton
-            self._registry.register(
-                name="foundation.logger.instance",
-                value=logger_instance,
-                dimension="singleton",
-                metadata={"initialized": True},
-                replace=True,
-            )
-
-            self._logger_instance = logger_instance
-
         except Exception as e:
-            # If logger setup fails, continue with emergency fallback
-            # This ensures Hub remains functional even if logging fails
+            # If coordinator fails, fall back to emergency setup
             import sys
 
-            print(f"Warning: Foundation logger setup failed: {e}", file=sys.stderr)
-            print("Continuing with emergency fallback logger", file=sys.stderr)
-
-    def _setup_event_handlers(self) -> None:
-        """Set up event handlers to connect events back to logging.
-
-        This is called after logger initialization to avoid circular dependencies.
-        """
-        try:
-            from provide.foundation.hub.event_handlers import setup_event_logging
-
-            setup_event_logging()
-        except Exception:
-            # If event handler setup fails, continue without it
-            # This ensures the system remains functional
-            pass
+            print(f"Warning: Foundation initialization failed: {e}", file=sys.stderr)
+            print("Continuing with emergency fallback", file=sys.stderr)
 
     def get_foundation_logger(self, name: str | None = None) -> Any:
         """Get Foundation logger instance through Hub.
