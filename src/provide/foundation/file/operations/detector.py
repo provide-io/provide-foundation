@@ -370,16 +370,16 @@ class OperationDetector:
 
         if "created" in event_types and "modified" in event_types:
             operation_type = OperationType.ATOMIC_SAVE  # File created and modified
-            confidence = 0.60
+            confidence = 0.75
         elif "created" in event_types:
             operation_type = OperationType.BACKUP_CREATE  # New file created
-            confidence = 0.50
+            confidence = 0.70
         elif "modified" in event_types:
             operation_type = OperationType.ATOMIC_SAVE  # File modified
-            confidence = 0.55
+            confidence = 0.72
         elif "deleted" in event_types:
             operation_type = OperationType.BACKUP_CREATE  # File deleted (use as fallback)
-            confidence = 0.45
+            confidence = 0.70
         else:
             return None
 
