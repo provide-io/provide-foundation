@@ -204,7 +204,7 @@ class TestAsyncRuntimeConfig:
                 # Mock aiofiles with proper async context
                 with patch("provide.foundation.config.env.aiofiles") as mock_aiofiles:
 
-                    def mock_open(path):
+                    def mock_open(path: str) -> AsyncMock:
                         mock_file = AsyncMock()
                         # Simulate file content based on path
                         if secret_files[0] in path:
@@ -275,7 +275,7 @@ class TestEnvFieldCreation:
         """Test env_field with custom parser."""
         field_obj = env_field(parser=int, default=0)
 
-        assert field_obj.metadata.get("env_parser") == int
+        assert field_obj.metadata.get("env_parser") is int
 
     def test_env_field_with_all_options(self) -> None:
         """Test env_field with all options."""
