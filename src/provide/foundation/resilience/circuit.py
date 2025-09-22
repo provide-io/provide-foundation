@@ -55,14 +55,16 @@ class CircuitBreaker:
             # Emit event instead of direct logging to break circular dependency
             from provide.foundation.hub.events import get_event_bus, Event
 
-            get_event_bus().emit(Event(
-                name="circuit_breaker.recovered",
-                data={
-                    "state": "half_open->closed",
-                    "failure_count": self._failure_count,
-                },
-                source="circuit_breaker"
-            ))
+            get_event_bus().emit(
+                Event(
+                    name="circuit_breaker.recovered",
+                    data={
+                        "state": "half_open->closed",
+                        "failure_count": self._failure_count,
+                    },
+                    source="circuit_breaker",
+                )
+            )
 
         self._failure_count = 0
         self._last_failure_time = None
@@ -80,15 +82,17 @@ class CircuitBreaker:
             # Emit event instead of direct logging to break circular dependency
             from provide.foundation.hub.events import get_event_bus, Event
 
-            get_event_bus().emit(Event(
-                name="circuit_breaker.recovery_failed",
-                data={
-                    "state": "half_open->open",
-                    "failure_count": self._failure_count,
-                    "next_attempt_in": self.recovery_timeout,
-                },
-                source="circuit_breaker"
-            ))
+            get_event_bus().emit(
+                Event(
+                    name="circuit_breaker.recovery_failed",
+                    data={
+                        "state": "half_open->open",
+                        "failure_count": self._failure_count,
+                        "next_attempt_in": self.recovery_timeout,
+                    },
+                    source="circuit_breaker",
+                )
+            )
         elif self._failure_count >= self.failure_threshold:
             # Threshold exceeded, open circuit
             self._state = CircuitState.OPEN
@@ -96,16 +100,18 @@ class CircuitBreaker:
             # Emit event instead of direct logging to break circular dependency
             from provide.foundation.hub.events import get_event_bus, Event
 
-            get_event_bus().emit(Event(
-                name="circuit_breaker.opened",
-                data={
-                    "state": "closed->open",
-                    "failure_count": self._failure_count,
-                    "failure_threshold": self.failure_threshold,
-                    "next_attempt_in": self.recovery_timeout,
-                },
-                source="circuit_breaker"
-            ))
+            get_event_bus().emit(
+                Event(
+                    name="circuit_breaker.opened",
+                    data={
+                        "state": "closed->open",
+                        "failure_count": self._failure_count,
+                        "failure_threshold": self.failure_threshold,
+                        "next_attempt_in": self.recovery_timeout,
+                    },
+                    source="circuit_breaker",
+                )
+            )
 
     def call(self, func: Callable[..., T], *args: Any, **kwargs: Any) -> T:
         """Execute function with circuit breaker protection (sync)."""
@@ -113,12 +119,18 @@ class CircuitBreaker:
         if self._state == CircuitState.OPEN:
             if self._should_attempt_reset():
                 self._state = CircuitState.HALF_OPEN
-                from provide.foundation.hub.foundation import get_foundation_logger
+                # Emit event instead of direct logging to break circular dependency
+                from provide.foundation.hub.events import get_event_bus, Event
 
-                get_foundation_logger().info(
-                    "Circuit breaker attempting recovery",
-                    state="open->half_open",
-                    failure_count=self._failure_count,
+                get_event_bus().emit(
+                    Event(
+                        name="circuit_breaker.attempting_recovery",
+                        data={
+                            "state": "open->half_open",
+                            "failure_count": self._failure_count,
+                        },
+                        source="circuit_breaker",
+                    )
                 )
             else:
                 raise RuntimeError(
@@ -141,12 +153,18 @@ class CircuitBreaker:
         if self._state == CircuitState.OPEN:
             if self._should_attempt_reset():
                 self._state = CircuitState.HALF_OPEN
-                from provide.foundation.hub.foundation import get_foundation_logger
+                # Emit event instead of direct logging to break circular dependency
+                from provide.foundation.hub.events import get_event_bus, Event
 
-                get_foundation_logger().info(
-                    "Circuit breaker attempting recovery",
-                    state="open->half_open",
-                    failure_count=self._failure_count,
+                get_event_bus().emit(
+                    Event(
+                        name="circuit_breaker.attempting_recovery",
+                        data={
+                            "state": "open->half_open",
+                            "failure_count": self._failure_count,
+                        },
+                        source="circuit_breaker",
+                    )
                 )
             else:
                 raise RuntimeError(
@@ -165,12 +183,18 @@ class CircuitBreaker:
 
     def reset(self) -> None:
         """Manually reset the circuit breaker."""
-        from provide.foundation.hub.foundation import get_foundation_logger
+        # Emit event instead of direct logging to break circular dependency
+        from provide.foundation.hub.events import get_event_bus, Event
 
-        get_foundation_logger().info(
-            "Circuit breaker manually reset",
-            previous_state=self._state.value,
-            failure_count=self._failure_count,
+        get_event_bus().emit(
+            Event(
+                name="circuit_breaker.manual_reset",
+                data={
+                    "previous_state": self._state.value,
+                    "failure_count": self._failure_count,
+                },
+                source="circuit_breaker",
+            )
         )
         self._state = CircuitState.CLOSED
         self._failure_count = 0
