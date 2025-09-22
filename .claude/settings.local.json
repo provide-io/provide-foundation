@@ -43,7 +43,9 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check src/provide/foundation/integrations/openobserve/otlp.py --select C901)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check src/ --select E402)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check src/ --select ANN202)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff check src/ --select RUF022,PTH111,SIM108)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff check src/ --select RUF022,PTH111,SIM108)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check src/ --statistics)",
+      "Bash(.venv/bin/pytest --tb=short -q --maxfail=3)"
     ],
     "deny": [],
     "ask": [],
