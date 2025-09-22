@@ -52,13 +52,17 @@ class CircuitBreaker:
     def _record_success(self) -> None:
         """Record successful execution."""
         if self._state == CircuitState.HALF_OPEN:
-            from provide.foundation.hub.foundation import get_foundation_logger
+            # Emit event instead of direct logging to break circular dependency
+            from provide.foundation.hub.events import get_event_bus, Event
 
-            get_foundation_logger().info(
-                "Circuit breaker recovered - closing circuit",
-                state="half_open->closed",
-                failure_count=self._failure_count,
-            )
+            get_event_bus().emit(Event(
+                name="circuit_breaker.recovered",
+                data={
+                    "state": "half_open->closed",
+                    "failure_count": self._failure_count,
+                },
+                source="circuit_breaker"
+            ))
 
         self._failure_count = 0
         self._last_failure_time = None
@@ -73,27 +77,35 @@ class CircuitBreaker:
             # Failed during recovery attempt
             self._state = CircuitState.OPEN
             self._next_attempt_time = self._last_failure_time + self.recovery_timeout
-            from provide.foundation.hub.foundation import get_foundation_logger
+            # Emit event instead of direct logging to break circular dependency
+            from provide.foundation.hub.events import get_event_bus, Event
 
-            get_foundation_logger().warning(
-                "Circuit breaker recovery failed - opening circuit",
-                state="half_open->open",
-                failure_count=self._failure_count,
-                next_attempt_in=self.recovery_timeout,
-            )
+            get_event_bus().emit(Event(
+                name="circuit_breaker.recovery_failed",
+                data={
+                    "state": "half_open->open",
+                    "failure_count": self._failure_count,
+                    "next_attempt_in": self.recovery_timeout,
+                },
+                source="circuit_breaker"
+            ))
         elif self._failure_count >= self.failure_threshold:
             # Threshold exceeded, open circuit
             self._state = CircuitState.OPEN
             self._next_attempt_time = self._last_failure_time + self.recovery_timeout
-            from provide.foundation.hub.foundation import get_foundation_logger
+            # Emit event instead of direct logging to break circular dependency
+            from provide.foundation.hub.events import get_event_bus, Event
 
-            get_foundation_logger().error(
-                "Circuit breaker opened due to failures",
-                state="closed->open",
-                failure_count=self._failure_count,
-                failure_threshold=self.failure_threshold,
-                next_attempt_in=self.recovery_timeout,
-            )
+            get_event_bus().emit(Event(
+                name="circuit_breaker.opened",
+                data={
+                    "state": "closed->open",
+                    "failure_count": self._failure_count,
+                    "failure_threshold": self.failure_threshold,
+                    "next_attempt_in": self.recovery_timeout,
+                },
+                source="circuit_breaker"
+            ))
 
     def call(self, func: Callable[..., T], *args: Any, **kwargs: Any) -> T:
         """Execute function with circuit breaker protection (sync)."""

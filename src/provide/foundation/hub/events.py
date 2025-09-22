@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+import contextlib
 from typing import Any
 import weakref
 
@@ -23,16 +24,20 @@ class Event:
 
 
 @define(frozen=True, slots=True)
-class RegistryEvent(Event):
+class RegistryEvent:
     """Events emitted by the registry system."""
 
-    operation: str = field()
-    item_name: str = field()
-    dimension: str = field()
+    name: str
+    operation: str
+    item_name: str
+    dimension: str
+    data: dict[str, Any] = field(factory=dict)
+    source: str | None = None
 
     def __attrs_post_init__(self) -> None:
         """Set event name from operation."""
-        object.__setattr__(self, 'name', f'registry.{self.operation}')
+        if not self.name:
+            object.__setattr__(self, "name", f"registry.{self.operation}")
 
 
 class EventBus:
@@ -59,7 +64,7 @@ class EventBus:
         weak_handler = weakref.ref(handler)
         self._handlers[event_name].append(weak_handler)
 
-    def emit(self, event: Event) -> None:
+    def emit(self, event: Event | RegistryEvent) -> None:
         """Emit an event to all subscribers.
 
         Args:
@@ -74,11 +79,9 @@ class EventBus:
             handler = weak_handler()
             if handler is not None:
                 live_handlers.append(weak_handler)
-                try:
-                    handler(event)
-                except Exception:
+                with contextlib.suppress(Exception):
                     # Silently ignore handler errors to prevent cascading failures
-                    pass
+                    handler(event)
 
         # Update handler list with only live references
         self._handlers[event.name] = live_handlers
@@ -95,8 +98,7 @@ class EventBus:
 
         # Remove handler by comparing actual functions
         self._handlers[event_name] = [
-            weak_ref for weak_ref in self._handlers[event_name]
-            if weak_ref() is not handler
+            weak_ref for weak_ref in self._handlers[event_name] if weak_ref() is not handler
         ]
 
 
@@ -109,12 +111,7 @@ def get_event_bus() -> EventBus:
     return _event_bus
 
 
-def emit_registry_event(
-    operation: str,
-    item_name: str,
-    dimension: str,
-    **kwargs: Any
-) -> None:
+def emit_registry_event(operation: str, item_name: str, dimension: str, **kwargs: Any) -> None:
     """Emit a registry operation event.
 
     Args:
@@ -124,6 +121,7 @@ def emit_registry_event(
         **kwargs: Additional event data
     """
     event = RegistryEvent(
+        name="",  # Will be set by __attrs_post_init__
         operation=operation,
         item_name=item_name,
         dimension=dimension,
@@ -133,4 +131,4 @@ def emit_registry_event(
     _event_bus.emit(event)
 
 
-__all__ = ["Event", "RegistryEvent", "EventBus", "get_event_bus", "emit_registry_event"]
+__all__ = ["Event", "EventBus", "RegistryEvent", "emit_registry_event", "get_event_bus"]
