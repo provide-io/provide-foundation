@@ -117,10 +117,15 @@ class FoundationManager:
         self._config = None
         self._logger_instance = None
 
-        # Also reset the global coordinator state
-        from provide.foundation.hub.initialization import reset_global_coordinator
+        # Reset global coordinator state only in test mode
+        import os
 
-        reset_global_coordinator()
+        if os.environ.get("PYTEST_CURRENT_TEST") or any(
+            "pytest" in arg or "test" in arg for arg in __import__("sys").argv
+        ):
+            from provide.foundation.hub.initialization import reset_global_coordinator
+
+            reset_global_coordinator()
 
     def _get_logger(self) -> Any | None:
         """Get logger for internal use."""
