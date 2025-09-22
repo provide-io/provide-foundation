@@ -10,7 +10,7 @@ import pytest
 from tests.file_operations_fixtures import (
     FileOperationSimulator,
     FileOperationValidator,
-    file_operation_test,
+    file_operation_pattern,
     requires_file_operations,
 )
 
@@ -38,7 +38,7 @@ def validator():
 class TestEditorSpecificPatterns:
     """Test editor-specific file operation patterns."""
 
-    @file_operation_test("vscode")
+    @file_operation_pattern("vscode")
     def test_vscode_atomic_save_pattern(self, simulator, validator):
         """Test VSCode atomic save pattern detection."""
         events = simulator.simulate_vscode_save("document.txt", 2048)
@@ -63,7 +63,7 @@ class TestEditorSpecificPatterns:
         assert result["confidence"] >= 0.9
         assert result["is_atomic"] is True
 
-    @file_operation_test("vim")
+    @file_operation_pattern("vim")
     def test_vim_atomic_save_pattern(self, simulator, validator):
         """Test Vim atomic save pattern with backup."""
         events = simulator.simulate_vim_save("config.py", 1536)
@@ -85,7 +85,7 @@ class TestEditorSpecificPatterns:
 
         assert result["valid"] is True
 
-    @file_operation_test("safe_write")
+    @file_operation_pattern("safe_write")
     def test_safe_write_with_backup_pattern(self, simulator, validator):
         """Test safe write pattern with backup creation."""
         events = simulator.simulate_safe_write("important.data", 4096)
@@ -109,7 +109,7 @@ class TestEditorSpecificPatterns:
         assert result["valid"] is True
         assert result["has_backup"] is True
 
-    @file_operation_test("batch")
+    @file_operation_pattern("batch")
     def test_batch_formatting_pattern(self, simulator, validator):
         """Test batch file formatting operation."""
         events = simulator.simulate_batch_operation(10, "module", ".py", 800)
