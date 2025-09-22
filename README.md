@@ -188,9 +188,10 @@ from provide.foundation import logger
 logger.info("Application started", version="1.0.0")
 logger.error("Database connection failed", host="db.example.com", retry_count=3)
 
-# Full setup with tracing/metrics (requires [opentelemetry] extra)
-from provide.foundation import setup_telemetry
-setup_telemetry()  # Configures logging + optional tracing/metrics
+# Full setup with Hub initialization
+from provide.foundation import get_hub
+hub = get_hub()
+hub.initialize_foundation()  # Configures logging + optional tracing/metrics
 ```
 
 #### **CLI Framework**
@@ -233,9 +234,9 @@ Comprehensive error handling with retry logic and error boundaries.
 
 ```python
 # From examples/telemetry/05_exception_handling.py
-from provide.foundation import logger, with_error_handling
+from provide.foundation import logger, resilient
 
-@with_error_handling
+@resilient
 def risky_operation():
     """Operation that might fail."""
     result = perform_calculation()

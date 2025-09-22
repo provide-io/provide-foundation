@@ -67,7 +67,7 @@ uv publish                      # Publish to PyPI
 
 ### Important Implementation Notes
 
-1. **TelemetryConfig.from_env()** issue: The codebase expects this as a class method but it's currently a standalone function in `logger/env.py`. This causes test failures.
+1. **Unified Initialization**: The Hub provides `initialize_foundation()` as the single entry point for library setup, replacing all deprecated `setup_*` functions.
 
 2. **Global Logger Instance**: The `logger` object in `logger/base.py` is the primary interface for logging throughout applications.
 
@@ -119,7 +119,7 @@ uv add provide-testkit --group dev
 ## Common Issues & Solutions
 
 1. **ModuleNotFoundError for dependencies**: Ensure virtual environment is activated with `source .venv/bin/activate` and dependencies are installed with `uv sync`
-2. **Test failures related to from_env**: The `TelemetryConfig.from_env()` method needs to be properly exposed as a class method
+2. **Hub Initialization**: Use `get_hub().initialize_foundation()` for proper library setup instead of deprecated setup functions
 3. **Import errors**: Ensure PYTHONPATH includes both `src/` and project root
 4. **Asyncio debug messages**: The logger automatically suppresses asyncio DEBUG messages (e.g., "Using selector: KqueueSelector") via module-level configuration. Override with `PROVIDE_LOG_MODULE_LEVELS="asyncio:DEBUG"` if needed.
 
