@@ -4,6 +4,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+from typing import Any
 from unittest.mock import patch
 
 import pytest
@@ -166,7 +167,7 @@ class TestProcessRunnerCoverage:
         assert "timed out" in str(exc_info.value)
 
     @patch("subprocess.run")
-    def test_run_command_handles_subprocess_error(self, mock_run) -> None:
+    def test_run_command_handles_subprocess_error(self, mock_run: Any) -> None:
         """Test run_command handles subprocess.SubprocessError."""
         mock_run.side_effect = subprocess.SubprocessError("Generic error")
 
