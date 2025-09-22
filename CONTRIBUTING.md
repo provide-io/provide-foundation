@@ -168,7 +168,7 @@ provide-foundation/
 ├── tests/                      # Test suite
 ├── examples/                   # Usage examples
 ├── docs/                       # Documentation
-└── workenv/                    # Development environment (auto-created)
+└── .venv/                      # Virtual environment (created with uv venv)
 ```
 
 ## Getting Help

@@ -84,8 +84,8 @@ cd provide-foundation
 # Create virtual environment
 uv venv
 
-# Activate virtual environment using standardized script
-source workenv/env.sh
+# Activate virtual environment
+source .venv/bin/activate
 
 # Install dependencies
 uv sync
