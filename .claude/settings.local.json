@@ -19,7 +19,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check src/provide/foundation/file/operations/detector.py --select C901)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check src/provide/foundation/process/async_runner.py --select C901 --output-format=concise)",
       "Bash(PYTHONPATH=src .venv/bin/rg \"^class \" src/provide/foundation/process/async_runner.py)",
-      "Bash(PYTHONPATH=src rg \"^class \" src/provide/foundation/process/async_runner.py)"
+      "Bash(PYTHONPATH=src rg \"^class \" src/provide/foundation/process/async_runner.py)",
+      "Bash(PYTHONPATH=src grep -n \"return\" src/provide/foundation/logger/core.py)"
     ],
     "deny": [],
     "ask": [],
