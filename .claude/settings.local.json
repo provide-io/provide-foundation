@@ -277,7 +277,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_file_operations.py::TestOperationDetector::test_basic_detection -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_file_operations.py -k \"test_operation_timeline\" --tb=no -q)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format /Users/tim/code/gh/provide-io/provide-foundation/src/provide/foundation/process/lifecycle.py)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff check /Users/tim/code/gh/provide-io/provide-foundation/src/provide/foundation/process/lifecycle.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff check /Users/tim/code/gh/provide-io/provide-foundation/src/provide/foundation/process/lifecycle.py)",
+      "Bash(PYTHONPATH=src .venv/bin/python -c \"from provide.foundation.process.lifecycle import ManagedProcess; print(''✅ Import successful'')\")"
     ],
     "deny": [],
     "ask": [],
