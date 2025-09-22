@@ -9,7 +9,9 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/utils/test_parsing_coverage.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_defaults.py::TestCryptoFactoryFunctions -v)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/config/test_defaults.py)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff check tests/config/test_defaults.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff check tests/config/test_defaults.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest --co -q)",
+      "Bash(.venv/bin/pytest --co -q)"
     ],
     "deny": [],
     "ask": [],
