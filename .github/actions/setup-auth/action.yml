@@ -1,0 +1,18 @@
+name: 'Setup GitHub Organization Auth'
+description: 'Configure git authentication for private repositories using organization helper tokens'
+
+inputs:
+  helpers-json:
+    description: 'JSON string containing organization-to-token mapping'
+    required: false
+    default: ''
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup GitHub Authentication
+      shell: bash
+      env:
+        GH_ORG_HELPERS: ${{ inputs.helpers-json }}
+      run: |
+        python3 ${{ github.action_path }}/../../../scripts/setup_github_auth.py

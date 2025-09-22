@@ -8,8 +8,8 @@ import pytest
 from provide.foundation.errors.base import FoundationError
 from provide.foundation.errors.decorators import (
     fallback_on_error,
-    suppress_and_log,
     resilient,
+    suppress_and_log,
 )
 
 

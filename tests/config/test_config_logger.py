@@ -6,6 +6,7 @@
 import io
 from typing import Any
 
+from provide.testkit import reset_foundation_setup_for_testing
 import pytest
 from structlog.dev import ConsoleRenderer
 from structlog.processors import JSONRenderer, TimeStamper
@@ -21,7 +22,6 @@ from provide.foundation.logger.processors import (
     _build_core_processors_list,
     _build_formatter_processors_list,
 )
-from provide.testkit import reset_foundation_setup_for_testing
 
 
 def get_proc_name(proc: Any) -> str:

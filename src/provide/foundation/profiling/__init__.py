@@ -31,14 +31,14 @@ Example:
 """
 
 __all__ = [
+    "ExporterError",
+    "MetricsError",
     # Core components
     "ProfileMetrics",
     "ProfilingComponent",
-    "ProfilingProcessor",
-    "register_profiling",
     # Error classes
     "ProfilingError",
+    "ProfilingProcessor",
     "SamplingError",
-    "ExporterError",
-    "MetricsError",
+    "register_profiling",
 ]
