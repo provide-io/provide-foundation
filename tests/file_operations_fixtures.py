@@ -6,11 +6,11 @@ simulating various editor save patterns, and validating operation detection accu
 
 from __future__ import annotations
 
-import tempfile
-import time
 from collections.abc import Generator
 from datetime import datetime, timedelta
 from pathlib import Path
+import tempfile
+import time
 from typing import Any
 
 import pytest
@@ -43,6 +43,14 @@ class FileOperationSimulator:
         self.detector = OperationDetector(detector_config or DetectorConfig())
         self.sequence_counter = 0
         self.operations_detected: list[Any] = []
+        self._base_time = datetime.now()
+        self._operation_counter = 0
+
+    def _get_next_operation_time(self) -> datetime:
+        """Get timestamp for the next operation, with proper spacing."""
+        # Space operations 1 second apart to avoid grouping
+        self._operation_counter += 1
+        return self._base_time + timedelta(seconds=self._operation_counter)
 
     def _create_event(
         self,
@@ -52,6 +60,7 @@ class FileOperationSimulator:
         size_after: int | None = None,
         process_name: str | None = None,
         dest_path: Path | None = None,
+        timestamp: datetime | None = None,
     ) -> Any:
         """Create a file event with metadata."""
         if not HAS_OPERATIONS_MODULE:
@@ -59,7 +68,7 @@ class FileOperationSimulator:
 
         self.sequence_counter += 1
         metadata = FileEventMetadata(
-            timestamp=datetime.now(),
+            timestamp=timestamp or datetime.now(),
             sequence_number=self.sequence_counter,
             size_before=size_before,
             size_after=size_after,
@@ -88,6 +97,7 @@ class FileOperationSimulator:
 
         final_file = self.base_path / filename
         temp_file = self.base_path / f"{filename}.tmp.vscode{int(time.time())}"
+        base_time = self._get_next_operation_time()
 
         events = [
             # Create temp file
@@ -96,12 +106,14 @@ class FileOperationSimulator:
                 "created",
                 size_after=content_size,
                 process_name="Code",
+                timestamp=base_time,
             ),
             # Rename temp to final
             self._create_event(
                 temp_file,
                 "moved",
                 dest_path=final_file,
+                timestamp=base_time + timedelta(milliseconds=50),
             ),
         ]
 
@@ -122,6 +134,7 @@ class FileOperationSimulator:
 
         main_file = self.base_path / filename
         backup_file = self.base_path / f"{filename}~"
+        base_time = self._get_next_operation_time()
 
         events = [
             # Delete original
@@ -130,6 +143,7 @@ class FileOperationSimulator:
                 "deleted",
                 size_before=content_size,
                 process_name="vim",
+                timestamp=base_time,
             ),
             # Create backup
             self._create_event(
@@ -137,6 +151,7 @@ class FileOperationSimulator:
                 "created",
                 size_after=content_size,
                 process_name="vim",
+                timestamp=base_time + timedelta(milliseconds=25),
             ),
             # Create new version
             self._create_event(
@@ -144,6 +159,7 @@ class FileOperationSimulator:
                 "created",
                 size_after=content_size + 50,  # Slightly larger after edit
                 process_name="vim",
+                timestamp=base_time + timedelta(milliseconds=50),
             ),
         ]
 
@@ -164,6 +180,7 @@ class FileOperationSimulator:
 
         main_file = self.base_path / filename
         backup_file = self.base_path / f"{filename}.bak"
+        base_time = self._get_next_operation_time()
 
         events = [
             # Create backup first
@@ -171,6 +188,7 @@ class FileOperationSimulator:
                 backup_file,
                 "created",
                 size_after=content_size,
+                timestamp=base_time,
             ),
             # Modify original
             self._create_event(
@@ -178,6 +196,7 @@ class FileOperationSimulator:
                 "modified",
                 size_before=content_size,
                 size_after=content_size + 100,
+                timestamp=base_time + timedelta(milliseconds=50),
             ),
         ]
 
@@ -205,7 +224,7 @@ class FileOperationSimulator:
             return []
 
         events = []
-        base_time = datetime.now()
+        base_time = self._get_next_operation_time()
 
         for i in range(file_count):
             file_path = self.base_path / f"{base_name}_{i}{extension}"
@@ -305,9 +324,7 @@ class FileOperationValidator:
 
         # Validate operation type
         if operation.operation_type.value != expected_type:
-            result["errors"].append(
-                f"Expected type {expected_type}, got {operation.operation_type.value}"
-            )
+            result["errors"].append(f"Expected type {expected_type}, got {operation.operation_type.value}")
             result["valid"] = False
 
         # Validate confidence
@@ -319,21 +336,15 @@ class FileOperationValidator:
 
         # Validate flags if specified
         if expected_atomic is not None and operation.is_atomic != expected_atomic:
-            result["errors"].append(
-                f"Expected atomic={expected_atomic}, got {operation.is_atomic}"
-            )
+            result["errors"].append(f"Expected atomic={expected_atomic}, got {operation.is_atomic}")
             result["valid"] = False
 
         if expected_safe is not None and operation.is_safe != expected_safe:
-            result["errors"].append(
-                f"Expected safe={expected_safe}, got {operation.is_safe}"
-            )
+            result["errors"].append(f"Expected safe={expected_safe}, got {operation.is_safe}")
             result["valid"] = False
 
         if expected_backup is not None and operation.has_backup != expected_backup:
-            result["errors"].append(
-                f"Expected backup={expected_backup}, got {operation.has_backup}"
-            )
+            result["errors"].append(f"Expected backup={expected_backup}, got {operation.has_backup}")
             result["valid"] = False
 
         self.validation_results.append(result)
@@ -356,9 +367,9 @@ class FileOperationValidator:
             "valid": valid,
             "invalid": total - valid,
             "success_rate": valid / total if total > 0 else 0.0,
-            "average_confidence": sum(
-                r.get("confidence", 0) for r in self.validation_results
-            ) / total if total > 0 else 0.0,
+            "average_confidence": sum(r.get("confidence", 0) for r in self.validation_results) / total
+            if total > 0
+            else 0.0,
         }
 
 
@@ -392,10 +403,7 @@ def operation_detector() -> OperationDetector | None:
 # Decorator for tests that require file operations module
 def requires_file_operations(func):
     """Decorator to skip tests when file operations module is not available."""
-    return pytest.mark.skipif(
-        not HAS_OPERATIONS_MODULE,
-        reason="File operations module not available"
-    )(func)
+    return pytest.mark.skipif(not HAS_OPERATIONS_MODULE, reason="File operations module not available")(func)
 
 
 # Pattern-specific test decorators
@@ -405,7 +413,9 @@ def file_operation_test(*patterns: str):
     Args:
         *patterns: Patterns to test (vscode, vim, emacs, sublime, batch, etc.)
     """
+
     def decorator(func):
         func._file_operation_patterns = patterns
         return requires_file_operations(func)
+
     return decorator
