@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-import contextlib
 from collections.abc import Generator
+import contextlib
 import threading
 import time
 from typing import Any
-import weakref
 
 from attrs import define, field
 
@@ -99,6 +98,69 @@ class LockManager:
                 raise KeyError(f"Lock '{name}' not registered")
             return self._locks[name].lock
 
+    def _prepare_lock_acquisition(self, lock_names: tuple[str, ...]) -> list[LockInfo]:
+        """Prepare locks for acquisition by sorting and validating order."""
+        if not hasattr(self._thread_local, "lock_stack"):
+            self._thread_local.lock_stack = []
+
+        # Get lock infos and sort by order
+        with self._manager_lock:
+            lock_infos = []
+            for name in lock_names:
+                if name not in self._locks:
+                    raise KeyError(f"Lock '{name}' not registered")
+                lock_infos.append(self._locks[name])
+
+        lock_infos.sort(key=lambda x: x.order)
+
+        # Check for ordering violations
+        current_max_order = -1
+        if self._thread_local.lock_stack:
+            current_max_order = max(info.order for info in self._thread_local.lock_stack)
+
+        for lock_info in lock_infos:
+            if lock_info.order <= current_max_order:
+                raise FoundationRuntimeError(
+                    f"Lock ordering violation: trying to acquire {lock_info.name} "
+                    f"(order {lock_info.order}) after higher-order locks. "
+                    f"Current max order: {current_max_order}"
+                )
+
+        return lock_infos
+
+    def _acquire_lock_with_timeout(
+        self, lock_info: LockInfo, remaining_timeout: float, blocking: bool
+    ) -> None:
+        """Acquire a single lock with timeout handling."""
+        if remaining_timeout <= 0:
+            raise TimeoutError(f"Timeout acquiring lock '{lock_info.name}'")
+
+        acquired = lock_info.lock.acquire(
+            blocking=blocking, timeout=remaining_timeout if blocking else 0
+        )
+        if not acquired:
+            if blocking:
+                raise TimeoutError(f"Timeout acquiring lock '{lock_info.name}'")
+            else:
+                raise FoundationRuntimeError(f"Could not acquire lock '{lock_info.name}' immediately")
+
+        # Track acquisition
+        lock_info.owner = threading.current_thread().name
+        lock_info.acquired_at = time.time()
+
+    def _release_acquired_locks(self, acquired_locks: list[LockInfo]) -> None:
+        """Release all acquired locks in reverse order."""
+        for lock_info in reversed(acquired_locks):
+            try:
+                lock_info.lock.release()
+                lock_info.owner = None
+                lock_info.acquired_at = None
+                if lock_info in self._thread_local.lock_stack:
+                    self._thread_local.lock_stack.remove(lock_info)
+            except Exception:
+                # Continue releasing other locks even if one fails
+                pass
+
     @contextlib.contextmanager
     def acquire(
         self, *lock_names: str, timeout: float = 10.0, blocking: bool = True
@@ -121,73 +183,22 @@ class LockManager:
             yield
             return
 
-        # Get current thread's lock stack
-        if not hasattr(self._thread_local, "lock_stack"):
-            self._thread_local.lock_stack = []
-
-        # Sort locks by order to prevent deadlocks
-        with self._manager_lock:
-            lock_infos = []
-            for name in lock_names:
-                if name not in self._locks:
-                    raise KeyError(f"Lock '{name}' not registered")
-                lock_infos.append(self._locks[name])
-
-        # Sort by order for consistent acquisition
-        lock_infos.sort(key=lambda x: x.order)
-
-        # Check for ordering violations with current thread's locks
-        current_max_order = -1
-        if self._thread_local.lock_stack:
-            current_max_order = max(info.order for info in self._thread_local.lock_stack)
-
-        for lock_info in lock_infos:
-            if lock_info.order <= current_max_order:
-                raise FoundationRuntimeError(
-                    f"Lock ordering violation: trying to acquire {lock_info.name} "
-                    f"(order {lock_info.order}) after higher-order locks. "
-                    f"Current max order: {current_max_order}"
-                )
-
-        # Acquire locks in order
+        lock_infos = self._prepare_lock_acquisition(lock_names)
         acquired_locks: list[LockInfo] = []
         start_time = time.time()
 
         try:
             for lock_info in lock_infos:
                 remaining_timeout = timeout - (time.time() - start_time)
-                if remaining_timeout <= 0:
-                    raise TimeoutError(f"Timeout acquiring locks: {[info.name for info in lock_infos]}")
+                self._acquire_lock_with_timeout(lock_info, remaining_timeout, blocking)
 
-                acquired = lock_info.lock.acquire(
-                    blocking=blocking, timeout=remaining_timeout if blocking else 0
-                )
-                if not acquired:
-                    if blocking:
-                        raise TimeoutError(f"Timeout acquiring lock '{lock_info.name}'")
-                    else:
-                        raise FoundationRuntimeError(f"Could not acquire lock '{lock_info.name}' immediately")
-
-                # Track acquisition
-                lock_info.owner = threading.current_thread().name
-                lock_info.acquired_at = time.time()
                 acquired_locks.append(lock_info)
                 self._thread_local.lock_stack.append(lock_info)
 
             yield
 
         finally:
-            # Release locks in reverse order
-            for lock_info in reversed(acquired_locks):
-                try:
-                    lock_info.lock.release()
-                    lock_info.owner = None
-                    lock_info.acquired_at = None
-                    if lock_info in self._thread_local.lock_stack:
-                        self._thread_local.lock_stack.remove(lock_info)
-                except Exception:
-                    # Continue releasing other locks even if one fails
-                    pass
+            self._release_acquired_locks(acquired_locks)
 
     def get_lock_status(self) -> dict[str, dict[str, Any]]:
         """Get current status of all locks.
