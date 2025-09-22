@@ -11,7 +11,10 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/config/test_defaults.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check tests/config/test_defaults.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest --co -q)",
-      "Bash(.venv/bin/pytest --co -q)"
+      "Bash(.venv/bin/pytest --co -q)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check src/provide/foundation/context/core.py --select C901)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/context/core.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check src/ --select C901)"
     ],
     "deny": [],
     "ask": [],

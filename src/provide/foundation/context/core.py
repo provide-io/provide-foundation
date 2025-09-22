@@ -162,6 +162,40 @@ class CLIContext(RuntimeConfig):
 
         return cls(**kwargs)
 
+    def _load_config_data(self, path: Path) -> dict[str, Any]:
+        """Load configuration data from file based on extension."""
+        if path.suffix in (".toml", ".tml"):
+            return read_toml(path)
+        elif path.suffix == ".json":
+            return read_json(path)
+        elif path.suffix in (".yaml", ".yml"):
+            return read_yaml(path)
+        else:
+            raise ValueError(f"Unsupported config format: {path.suffix}")
+
+    def _update_from_config_data(self, data: dict[str, Any]) -> None:
+        """Update context fields from configuration data."""
+        # Simple field mappings
+        field_mappings = {
+            "log_level": "log_level",
+            "profile": "profile",
+            "debug": "debug",
+            "json_output": "json_output",
+            "log_format": "log_format",
+            "no_color": "no_color",
+            "no_emoji": "no_emoji",
+        }
+
+        for data_key, attr_name in field_mappings.items():
+            if data_key in data:
+                setattr(self, attr_name, data[data_key])
+
+        # Path fields that need conversion
+        if data.get("config_file"):
+            self.config_file = Path(data["config_file"])
+        if data.get("log_file"):
+            self.log_file = Path(data["log_file"])
+
     def load_config(self, path: str | Path) -> None:
         """Load configuration from file.
 
@@ -173,35 +207,8 @@ class CLIContext(RuntimeConfig):
         """
         # CLIContext is not frozen, so we can modify it
         path = Path(path)
-        if path.suffix in (".toml", ".tml"):
-            data = read_toml(path)
-        elif path.suffix == ".json":
-            data = read_json(path)
-        elif path.suffix in (".yaml", ".yml"):
-            data = read_yaml(path)
-        else:
-            raise ValueError(f"Unsupported config format: {path.suffix}")
-
-        # Update context from loaded data
-        if "log_level" in data:
-            self.log_level = data["log_level"]
-        if "profile" in data:
-            self.profile = data["profile"]
-        if "debug" in data:
-            self.debug = data["debug"]
-        if "json_output" in data:
-            self.json_output = data["json_output"]
-        if data.get("config_file"):
-            self.config_file = Path(data["config_file"])
-        if data.get("log_file"):
-            self.log_file = Path(data["log_file"])
-        if "log_format" in data:
-            self.log_format = data["log_format"]
-        if "no_color" in data:
-            self.no_color = data["no_color"]
-        if "no_emoji" in data:
-            self.no_emoji = data["no_emoji"]
-
+        data = self._load_config_data(path)
+        self._update_from_config_data(data)
         self._validate()
 
     def save_config(self, path: str | Path) -> None:
@@ -230,6 +237,37 @@ class CLIContext(RuntimeConfig):
         else:
             raise ValueError(f"Unsupported config format: {path.suffix}")
 
+    def _merge_with_override(self, merged_data: dict[str, Any], other_data: dict[str, Any]) -> None:
+        """Merge data with override_defaults=True strategy."""
+        for key, value in other_data.items():
+            if value is not None:
+                merged_data[key] = value
+
+    def _get_field_defaults(self) -> dict[str, Any]:
+        """Get default values for all fields."""
+        from attrs import Factory
+
+        defaults = {}
+        for f in fields(CLIContext):
+            if not f.name.startswith("_"):  # Skip private fields
+                if isinstance(f.default, Factory) and f.default is not None:
+                    defaults[f.name] = f.default.factory()
+                elif f.default is not None:
+                    defaults[f.name] = f.default
+        return defaults
+
+    def _merge_without_override(self, merged_data: dict[str, Any], other_data: dict[str, Any]) -> None:
+        """Merge data with override_defaults=False strategy."""
+        defaults = self._get_field_defaults()
+
+        for key, value in other_data.items():
+            if value is not None:
+                # Check if this is different from the default
+                if key in defaults and value == defaults[key]:
+                    # Skip default values
+                    continue
+                merged_data[key] = value
+
     def merge(self, other: CLIContext, override_defaults: bool = False) -> CLIContext:
         """Merge with another context, with other taking precedence.
 
@@ -245,29 +283,9 @@ class CLIContext(RuntimeConfig):
         other_data = other.to_dict()
 
         if override_defaults:
-            # Update with non-None values from other
-            for key, value in other_data.items():
-                if value is not None:
-                    merged_data[key] = value
+            self._merge_with_override(merged_data, other_data)
         else:
-            # Only override if the value differs from the default
-            from attrs import Factory
-
-            defaults = {}
-            for f in fields(CLIContext):
-                if not f.name.startswith("_"):  # Skip private fields
-                    if isinstance(f.default, Factory) and f.default is not None:
-                        defaults[f.name] = f.default.factory()
-                    elif f.default is not None:
-                        defaults[f.name] = f.default
-
-            for key, value in other_data.items():
-                if value is not None:
-                    # Check if this is different from the default
-                    if key in defaults and value == defaults[key]:
-                        # Skip default values
-                        continue
-                    merged_data[key] = value
+            self._merge_without_override(merged_data, other_data)
 
         return CLIContext.from_dict(merged_data)
 
