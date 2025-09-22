@@ -132,7 +132,7 @@ class TestToolInstaller:
     def test_get_install_dir_default(self, installer: ToolInstaller, sample_metadata: ToolMetadata) -> None:
         """Test get_install_dir uses default path."""
         result = installer.get_install_dir(sample_metadata)
-        expected = Path.home() / ".wrknv" / "tools" / "testtool" / "1.0.0"
+        expected = Path.home() / ".provide-foundation" / "tools" / "testtool" / "1.0.0"
         assert result == expected
 
     def test_extract_zip_success(self, installer: ToolInstaller, sample_zip: Path, temp_dir: Path) -> None:

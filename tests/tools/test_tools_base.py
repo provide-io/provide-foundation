@@ -165,7 +165,7 @@ class TestBaseToolManager:
         """Test getting installation path for a version."""
         path = concrete_manager.get_install_path("1.5.0")
 
-        assert path == Path.home() / ".wrknv" / "tools" / "testtool" / "1.5.0"
+        assert path == Path.home() / ".provide-foundation" / "tools" / "testtool" / "1.5.0"
 
     def test_is_installed_true(self, concrete_manager, tmp_path) -> None:
         """Test checking if version is installed."""

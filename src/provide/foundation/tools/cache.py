@@ -31,10 +31,10 @@ class ToolCache:
         """Initialize the cache.
 
         Args:
-            cache_dir: Cache directory (defaults to ~/.wrknv/cache).
+            cache_dir: Cache directory (defaults to ~/.provide-foundation/cache).
 
         """
-        self.cache_dir = cache_dir or (Path.home() / ".wrknv" / "cache")
+        self.cache_dir = cache_dir or (Path.home() / ".provide-foundation" / "cache")
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
         self.metadata_file = self.cache_dir / "metadata.json"
