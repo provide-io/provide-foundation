@@ -513,6 +513,40 @@ class TestToolCache:
             size = cache.get_size()
             assert size == 0  # Should handle error gracefully
 
+    def test_get_size_directory_file_stat_error(
+        self,
+        cache: ToolCache,
+        temp_cache_dir: Path,
+    ) -> None:
+        """Test get_size with directory containing file that raises stat error."""
+        # Create directory with files
+        tool_dir = temp_cache_dir / "tool1"
+        tool_dir.mkdir()
+
+        file1 = tool_dir / "file1.txt"
+        file1.write_text("content1")
+
+        file2 = tool_dir / "file2.txt"
+        file2.write_text("content2")
+
+        cache.store("tool1", "1.0.0", tool_dir)
+
+        # Mock stat to raise error only for one specific file
+        original_stat = Path.stat
+
+        def mock_stat(self):
+            if self.name == "file2.txt":
+                raise PermissionError("Permission denied")
+            return original_stat(self)
+
+        with patch("pathlib.Path.stat", mock_stat):
+            with patch("provide.foundation.tools.cache.log") as mock_log:
+                size = cache.get_size()
+                # Should get size of file1 but skip file2 due to error
+                assert size == len("content1")
+                mock_log.debug.assert_called_once()
+                assert "Failed to get size of file" in str(mock_log.debug.call_args)
+
     def test_prune_expired_no_expired(
         self,
         cache: ToolCache,

@@ -285,7 +285,9 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/config/test_config_env_coverage.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check tests/config/test_config_env_coverage.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/config/test_config_env_coverage.py)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_config_env_coverage.py::TestRuntimeConfigAdvanced::test_from_env_custom_parser_error tests/config/test_config_env_coverage.py::TestRuntimeConfigAdvanced::test_read_secret_sync_empty_file_error -v)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_config_env_coverage.py::TestRuntimeConfigAdvanced::test_from_env_custom_parser_error tests/config/test_config_env_coverage.py::TestRuntimeConfigAdvanced::test_read_secret_sync_empty_file_error -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_cache.py::TestToolCache::test_get_size_error_handling -v)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/tools/test_cache.py)"
     ],
     "deny": [],
     "ask": [],
