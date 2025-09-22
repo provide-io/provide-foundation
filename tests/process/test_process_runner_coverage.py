@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 from unittest.mock import patch
 
@@ -31,7 +32,7 @@ class TestProcessRunnerCoverage:
         env = {"TEST_VAR": "test_value"}
         result = run_command(
             [
-                "python",
+                sys.executable,
                 "-c",
                 "import os; print(os.environ.get('TEST_VAR', 'not_found'))",
             ],
@@ -45,7 +46,7 @@ class TestProcessRunnerCoverage:
         """Test that run_command disables foundation telemetry by default."""
         result = run_command(
             [
-                "python",
+                sys.executable,
                 "-c",
                 "import os; print(os.environ.get('PROVIDE_TELEMETRY_DISABLED', 'not_set'))",
             ],
@@ -59,7 +60,7 @@ class TestProcessRunnerCoverage:
         env = {"PROVIDE_TELEMETRY_DISABLED": "false"}
         result = run_command(
             [
-                "python",
+                sys.executable,
                 "-c",
                 "import os; print(os.environ.get('PROVIDE_TELEMETRY_DISABLED'))",
             ],

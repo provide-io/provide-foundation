@@ -45,7 +45,9 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check src/ --select ANN202)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check src/ --select RUF022,PTH111,SIM108)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check src/ --statistics)",
-      "Bash(.venv/bin/pytest --tb=short -q --maxfail=3)"
+      "Bash(.venv/bin/pytest --tb=short -q --maxfail=3)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_process_runner_coverage.py::TestProcessRunnerCoverage::test_run_command_env_variable_update -xvs)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_process_runner_coverage.py::TestProcessRunnerCoverage::test_run_command_disables_foundation_telemetry_by_default tests/process/test_process_runner_coverage.py::TestProcessRunnerCoverage::test_run_command_preserves_existing_telemetry_setting -v)"
     ],
     "deny": [],
     "ask": [],
