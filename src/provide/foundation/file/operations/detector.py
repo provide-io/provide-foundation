@@ -361,6 +361,7 @@ class OperationDetector:
         # Try each pattern to extract base name
         patterns = [
             (r"^\.(.*)\.tmp\.\w+$", 1),  # .file.tmp.xxxxx -> file
+            (r"^(.*)\.tmp\.\d+$", 1),  # file.tmp.12345 -> file
             (r"^(.*)~$", 1),  # file~ -> file
             (r"^\.(.*)\.sw[po]$", 1),  # .file.swp -> file
             (r"^#(.*)#$", 1),  # #file# -> file
