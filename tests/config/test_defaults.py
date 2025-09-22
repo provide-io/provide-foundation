@@ -49,6 +49,9 @@ from provide.foundation.config.defaults import (
     default_module_levels,
     default_otlp_headers,
     default_rate_limits,
+    default_supported_ec_curves,
+    default_supported_key_types,
+    default_supported_rsa_sizes,
     path_converter,
 )
 
@@ -480,3 +483,43 @@ class TestDefaultConsistency:
         for string_default in required_strings:
             assert isinstance(string_default, str)
             assert len(string_default) > 0
+
+
+class TestCryptoFactoryFunctions:
+    """Test crypto-related factory functions."""
+
+    def test_default_supported_ec_curves(self) -> None:
+        """Test default_supported_ec_curves factory."""
+        result = default_supported_ec_curves()
+        assert isinstance(result, set)
+        assert len(result) == 0
+        assert result == set()
+
+        # Each call should return a new instance
+        result1 = default_supported_ec_curves()
+        result2 = default_supported_ec_curves()
+        assert result1 is not result2
+
+    def test_default_supported_key_types(self) -> None:
+        """Test default_supported_key_types factory."""
+        result = default_supported_key_types()
+        assert isinstance(result, set)
+        assert len(result) == 0
+        assert result == set()
+
+        # Each call should return a new instance
+        result1 = default_supported_key_types()
+        result2 = default_supported_key_types()
+        assert result1 is not result2
+
+    def test_default_supported_rsa_sizes(self) -> None:
+        """Test default_supported_rsa_sizes factory."""
+        result = default_supported_rsa_sizes()
+        assert isinstance(result, set)
+        assert len(result) == 0
+        assert result == set()
+
+        # Each call should return a new instance
+        result1 = default_supported_rsa_sizes()
+        result2 = default_supported_rsa_sizes()
+        assert result1 is not result2
