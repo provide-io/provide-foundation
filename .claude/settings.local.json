@@ -293,7 +293,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_cache.py::TestToolCache::test_get_size_error_handling --cov=src/provide/foundation/tools/cache --cov-report=term-missing -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_file_operations.py::TestOperationDetector::test_atomic_save_detection_vim_pattern -xvs)",
       "Bash(PYTHONPATH=src .venv/bin/python3:*)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_file_operations.py::TestOperationDetector::test_safe_write_detection -xvs)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_file_operations.py::TestOperationDetector::test_safe_write_detection -xvs)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_file_operations.py::TestConvenienceFunctions::test_extract_original_path -xvs --tb=short)"
     ],
     "deny": [],
     "ask": [],

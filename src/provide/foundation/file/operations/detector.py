@@ -227,9 +227,8 @@ class OperationDetector:
                 if not base_name:
                     continue
                 for modify_event in modify_events:
-                    # Compare the base name of the modify event with the extracted base name
-                    modify_base_name = self._extract_base_name(modify_event.path)
-                    if modify_base_name == base_name:
+                    # Compare the backup's base name with the modify event's filename
+                    if base_name == modify_event.path.name:
                         primary_file = modify_event.path
                         break
 
