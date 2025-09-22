@@ -30,7 +30,10 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/platform/detection.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check src/provide/foundation/platform/detection.py --select C901)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/logger/core.py)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff check src/provide/foundation/logger/core.py --select C901)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff check src/provide/foundation/logger/core.py --select C901)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/errors/safe_decorators.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check src/provide/foundation/errors/safe_decorators.py --select C901)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/eventsets/resolver.py)"
     ],
     "deny": [],
     "ask": [],
