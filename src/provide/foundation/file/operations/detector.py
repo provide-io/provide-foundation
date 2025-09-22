@@ -366,10 +366,7 @@ class OperationDetector:
 
         # Prefer non-temp files
         non_temp_files = [p for p in file_paths if not self._is_temp_file(p)]
-        if non_temp_files:
-            primary_file = non_temp_files[0]
-        else:
-            primary_file = file_paths[0]
+        primary_file = non_temp_files[0] if non_temp_files else file_paths[0]
 
         # Determine operation type based on event types
         event_types = {e.event_type for e in file_events}

@@ -1,10 +1,5 @@
 from __future__ import annotations
 
-"""Basic environment variable getters with type coercion.
-
-Provides safe functions for reading and parsing environment variables
-with automatic type detection and validation.
-"""
 import os
 from pathlib import Path
 from typing import Any, TypeVar, get_origin
@@ -13,10 +8,16 @@ from provide.foundation.errors.config import ValidationError
 from provide.foundation.logger import get_logger
 from provide.foundation.utils.parsing import parse_bool, parse_dict, parse_list
 
+"""Basic environment variable getters with type coercion.
+
+Provides safe functions for reading and parsing environment variables
+with automatic type detection and validation.
+"""
+
 T = TypeVar("T")
 
 
-def _get_logger():
+def _get_logger() -> Any:
     """Get logger instance lazily to avoid circular imports."""
 
     return get_logger(__name__)
@@ -145,8 +146,8 @@ def get_path(name: str, default: Path | str | None = None) -> Path | None:
         return Path(default) if not isinstance(default, Path) else default
 
     # Expand user and environment variables
-    expanded = os.path.expanduser(os.path.expandvars(value))
-    return Path(expanded)
+    expanded = os.path.expandvars(value)
+    return Path(expanded).expanduser()
 
 
 def get_list(name: str, default: list[str] | None = None, separator: str = ",") -> list[str]:

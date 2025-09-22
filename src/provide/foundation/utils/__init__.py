@@ -71,7 +71,7 @@ __all__ = [
 ]
 
 
-def __getattr__(name: str):
+def __getattr__(name: str) -> Any:
     """Lazy import for modules."""
     if name == "environment":
         from provide.foundation.utils import environment as env_module
