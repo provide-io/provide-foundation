@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 import threading
 from typing import Any
 
@@ -57,13 +58,11 @@ class InitializationCoordinator:
         self._lock_manager = get_lock_manager()
 
         # Register initialization locks if not already registered
-        try:
+        with contextlib.suppress(ValueError):
+            # Already registered if ValueError raised
             self._lock_manager.register_lock(
                 "foundation.init.coordinator", order=1, description="Master initialization lock"
             )
-        except ValueError:
-            # Already registered
-            pass
 
     def initialize_foundation(self, registry: Any, config: Any = None, force: bool = False) -> tuple[Any, Any]:
         """Simplified, single-path initialization.
@@ -186,4 +185,4 @@ def get_initialization_coordinator() -> InitializationCoordinator:
     return _coordinator
 
 
-__all__ = ["InitializationState", "InitializationCoordinator", "get_initialization_coordinator"]
+__all__ = ["InitializationCoordinator", "InitializationState", "get_initialization_coordinator"]
