@@ -43,7 +43,7 @@ class TestQualityAnalyzer:
 
         assert AnalysisMetric.ACCURACY in results
         accuracy_result = results[AnalysisMetric.ACCURACY]
-        assert hasattr(accuracy_result, 'value')
+        assert hasattr(accuracy_result, "value")
         assert 0.0 <= accuracy_result.value <= 1.0
 
     def test_run_analysis_detection_time(self) -> None:
@@ -58,7 +58,7 @@ class TestQualityAnalyzer:
 
         assert AnalysisMetric.DETECTION_TIME in results
         time_result = results[AnalysisMetric.DETECTION_TIME]
-        assert hasattr(time_result, 'value')
+        assert hasattr(time_result, "value")
         assert time_result.value >= 0
 
     def test_run_analysis_confidence_distribution(self) -> None:
@@ -73,7 +73,7 @@ class TestQualityAnalyzer:
 
         assert AnalysisMetric.CONFIDENCE_DISTRIBUTION in results
         conf_result = results[AnalysisMetric.CONFIDENCE_DISTRIBUTION]
-        assert hasattr(conf_result, 'value')
+        assert hasattr(conf_result, "value")
 
     def test_run_multiple_metrics(self) -> None:
         """Test running multiple metrics together."""
@@ -103,17 +103,17 @@ class TestCreateTestCasesFromPatterns:
         test_cases = create_test_cases_from_patterns()
 
         assert len(test_cases) > 0
-        assert all(hasattr(case, 'events') for case in test_cases)
-        assert all(hasattr(case, 'expected_operations') for case in test_cases)
+        assert all(hasattr(case, "events") for case in test_cases)
+        assert all(hasattr(case, "expected_operations") for case in test_cases)
 
     def test_test_cases_have_required_attributes(self) -> None:
         """Test that test cases have all required attributes."""
         test_cases = create_test_cases_from_patterns()
 
         for test_case in test_cases:
-            assert hasattr(test_case, 'events')
-            assert hasattr(test_case, 'expected_operations')
-            assert hasattr(test_case, 'description')
+            assert hasattr(test_case, "events")
+            assert hasattr(test_case, "expected_operations")
+            assert hasattr(test_case, "description")
             assert len(test_case.events) > 0
 
     def test_vscode_pattern_test_case(self) -> None:
@@ -121,8 +121,9 @@ class TestCreateTestCasesFromPatterns:
         test_cases = create_test_cases_from_patterns()
 
         vscode_cases = [
-            case for case in test_cases
-            if 'vscode' in case.description.lower() or 'atomic' in case.description.lower()
+            case
+            for case in test_cases
+            if "vscode" in case.description.lower() or "atomic" in case.description.lower()
         ]
         assert len(vscode_cases) > 0
 
@@ -134,8 +135,9 @@ class TestCreateTestCasesFromPatterns:
         test_cases = create_test_cases_from_patterns()
 
         vim_cases = [
-            case for case in test_cases
-            if 'vim' in case.description.lower() or 'backup' in case.description.lower()
+            case
+            for case in test_cases
+            if "vim" in case.description.lower() or "backup" in case.description.lower()
         ]
         assert len(vim_cases) > 0
 
@@ -145,16 +147,16 @@ class TestAnalysisMetrics:
 
     def test_all_metrics_defined(self) -> None:
         """Test that all expected metrics are defined."""
-        expected_metrics = ['ACCURACY', 'DETECTION_TIME', 'CONFIDENCE_DISTRIBUTION']
+        expected_metrics = ["ACCURACY", "DETECTION_TIME", "CONFIDENCE_DISTRIBUTION"]
 
         for metric_name in expected_metrics:
             assert hasattr(AnalysisMetric, metric_name)
 
     def test_metric_values(self) -> None:
         """Test metric enum values."""
-        assert AnalysisMetric.ACCURACY.value == 'accuracy'
-        assert AnalysisMetric.DETECTION_TIME.value == 'detection_time'
-        assert AnalysisMetric.CONFIDENCE_DISTRIBUTION.value == 'confidence_distribution'
+        assert AnalysisMetric.ACCURACY.value == "accuracy"
+        assert AnalysisMetric.DETECTION_TIME.value == "detection_time"
+        assert AnalysisMetric.CONFIDENCE_DISTRIBUTION.value == "confidence_distribution"
 
 
 class TestQualityIntegration:
@@ -219,14 +221,14 @@ class TestQualityIntegration:
             FileEvent(
                 path=Path("test.txt.tmp.123"),
                 event_type="created",
-                metadata=FileEventMetadata(timestamp=base_time, sequence_number=1)
+                metadata=FileEventMetadata(timestamp=base_time, sequence_number=1),
             ),
             FileEvent(
                 path=Path("test.txt.tmp.123"),
                 event_type="moved",
                 metadata=FileEventMetadata(timestamp=base_time, sequence_number=2),
-                dest_path=Path("test.txt")
-            )
+                dest_path=Path("test.txt"),
+            ),
         ]
 
         # Detect operations

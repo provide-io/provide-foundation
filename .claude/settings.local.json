@@ -266,7 +266,9 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_quality.py -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_quality.py::TestQualityAnalyzer::test_analyzer_initialization tests/file/test_quality.py::TestQualityAnalyzer::test_add_test_case tests/file/test_quality.py::TestQualityIntegration::test_empty_analyzer_behavior -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/testkit/test_file_operations_fixtures.py::test_file_operation_decorator tests/test_file_operations_patterns.py::TestEditorSpecificPatterns::test_vscode_atomic_save_pattern -v)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/testkit/test_file_operations_fixtures.py tests/test_file_operations_patterns.py -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/testkit/test_file_operations_fixtures.py tests/test_file_operations_patterns.py -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_quality.py -q)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/file/test_quality.py)"
     ],
     "deny": [],
     "ask": [],
