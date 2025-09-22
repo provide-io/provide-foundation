@@ -1,4 +1,4 @@
-"""File operations testing fixtures for the provide-testkit.
+"""File operations testing fixtures for the provide-foundation.
 
 This module provides pytest fixtures and utilities for testing file operation detection,
 simulating various editor save patterns, and validating operation detection accuracy.
