@@ -112,6 +112,11 @@ class FoundationManager:
         if not self._initialized:
             self.initialize_foundation()
 
+        # Return the local config if available
+        if self._config:
+            return self._config
+
+        # Otherwise get from registry
         return self._registry.get("foundation.config", "singleton")
 
     def clear_foundation_state(self) -> None:
