@@ -141,7 +141,9 @@ class OperationDetector:
 
         return best_operation if best_confidence >= self.config.min_confidence else None
 
-    def _detect_temp_rename_pattern(self, events: list[FileEvent]) -> tuple[Path | None, Path | None, list[FileEvent], float]:
+    def _detect_temp_rename_pattern(
+        self, events: list[FileEvent]
+    ) -> tuple[Path | None, Path | None, list[FileEvent], float]:
         """Detect Pattern 1: Direct temp file rename to final location."""
         temp_creates = [e for e in events if e.event_type == "created" and self._is_temp_file(e.path)]
         moves = [e for e in events if e.event_type in ("moved", "renamed")]
@@ -153,7 +155,9 @@ class OperationDetector:
                     return move_event.dest_path, move_event.dest_path, [temp_event, move_event], 0.95
         return None, None, [], 0.0
 
-    def _detect_delete_temp_pattern(self, events: list[FileEvent]) -> tuple[Path | None, Path | None, list[FileEvent], float]:
+    def _detect_delete_temp_pattern(
+        self, events: list[FileEvent]
+    ) -> tuple[Path | None, Path | None, list[FileEvent], float]:
         """Detect Pattern 2: Delete original, rename temp (common in atomic saves)."""
         temp_creates = [e for e in events if e.event_type == "created" and self._is_temp_file(e.path)]
         deletes = [e for e in events if e.event_type == "deleted"]
@@ -166,7 +170,9 @@ class OperationDetector:
                     return delete_event.path, delete_event.path, atomic_events, 0.85
         return None, None, [], 0.0
 
-    def _detect_temp_modify_pattern(self, events: list[FileEvent]) -> tuple[Path | None, Path | None, list[FileEvent], float]:
+    def _detect_temp_modify_pattern(
+        self, events: list[FileEvent]
+    ) -> tuple[Path | None, Path | None, list[FileEvent], float]:
         """Detect Pattern 3: Temp file created, then final file modified (overwrite pattern)."""
         temp_creates = [e for e in events if e.event_type == "created" and self._is_temp_file(e.path)]
         modifies = [e for e in events if e.event_type == "modified" and not self._is_temp_file(e.path)]
