@@ -1,7 +1,10 @@
 # Adaptive Sampling
 
-!!! success "Enterprise Feature"
+!!! info "Planned Enterprise Feature"
     Intelligent sampling that automatically adjusts collection rates based on system load, performance patterns, and resource utilization.
+
+!!! warning "Implementation Status"
+    This feature is planned for Foundation v1.1+. This documentation serves as a specification and design guide for the upcoming implementation.
 
 ## Overview
 

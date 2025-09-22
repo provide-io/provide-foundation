@@ -2,6 +2,9 @@
 
 Detailed API documentation for the ProfileMetrics class, which stores and calculates profiling statistics.
 
+!!! info "Implementation Status"
+    ProfileMetrics is currently implemented and available in Foundation's profiling system.
+
 ## Class Overview
 
 ::: provide.foundation.profiling.metrics.ProfileMetrics
