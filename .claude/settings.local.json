@@ -269,7 +269,10 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/testkit/test_file_operations_fixtures.py tests/test_file_operations_patterns.py -q)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_quality.py -q)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/file/test_quality.py)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff check tests/file/test_quality.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff check tests/file/test_quality.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/file/test_quality.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/testkit/test_file_operations_fixtures.py tests/test_file_operations_patterns.py tests/file/test_quality.py -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/testkit/test_file_operations_fixtures.py tests/test_file_operations_patterns.py tests/file/test_quality.py --tb=no -q)"
     ],
     "deny": [],
     "ask": [],
