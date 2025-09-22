@@ -92,6 +92,9 @@ class FoundationManager:
             # Initialize and register logger instance
             self._initialize_logger()
 
+            # Set up event handlers after logger is ready
+            self._setup_event_handlers()
+
             self._initialized = True
 
             # Log initialization success (avoid test interference)
@@ -142,6 +145,20 @@ class FoundationManager:
 
             print(f"Warning: Foundation logger setup failed: {e}", file=sys.stderr)
             print("Continuing with emergency fallback logger", file=sys.stderr)
+
+    def _setup_event_handlers(self) -> None:
+        """Set up event handlers to connect events back to logging.
+
+        This is called after logger initialization to avoid circular dependencies.
+        """
+        try:
+            from provide.foundation.hub.event_handlers import setup_event_logging
+
+            setup_event_logging()
+        except Exception:
+            # If event handler setup fails, continue without it
+            # This ensures the system remains functional
+            pass
 
     def get_foundation_logger(self, name: str | None = None) -> Any:
         """Get Foundation logger instance through Hub.

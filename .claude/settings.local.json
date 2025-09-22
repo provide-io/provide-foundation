@@ -64,7 +64,11 @@
       "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/hub/registry.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/resilience/circuit.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/resilience/circuit.py)",
-      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/resilience/circuit.py)"
+      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/resilience/circuit.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/hub/event_handlers.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/hub/event_handlers.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/hub/event_handlers.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/hub/foundation.py)"
     ],
     "deny": [],
     "ask": [],

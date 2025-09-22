@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from provide.foundation.hub.events import Event, RegistryEvent, get_event_bus
 
 """Event handlers to connect events back to logging.
@@ -9,7 +11,7 @@ breaking the circular dependency while maintaining logging functionality.
 """
 
 
-def _get_logger_safely():
+def _get_logger_safely() -> Any:
     """Get logger without creating circular dependency.
 
     Returns None if logger is not yet available to avoid initialization issues.
@@ -17,6 +19,7 @@ def _get_logger_safely():
     try:
         # Only import after we know the system is initialized
         from provide.foundation.hub.foundation import get_foundation_logger
+
         return get_foundation_logger()
     except Exception:
         # If logger isn't ready yet, gracefully ignore
@@ -35,19 +38,9 @@ def handle_registry_event(event: Event | RegistryEvent) -> None:
 
     if isinstance(event, RegistryEvent):
         if event.operation == "register":
-            logger.debug(
-                "Registered item",
-                name=event.item_name,
-                dimension=event.dimension,
-                **event.data
-            )
+            logger.debug("Registered item", name=event.item_name, dimension=event.dimension, **event.data)
         elif event.operation == "remove":
-            logger.debug(
-                "Removed item",
-                name=event.item_name,
-                dimension=event.dimension,
-                **event.data
-            )
+            logger.debug("Removed item", name=event.item_name, dimension=event.dimension, **event.data)
     elif event.name.startswith("registry."):
         logger.debug(f"Registry event: {event.name}", **event.data)
 
@@ -94,8 +87,4 @@ def setup_event_logging() -> None:
     event_bus.subscribe("circuit_breaker.manual_reset", handle_circuit_breaker_event)
 
 
-__all__ = [
-    "handle_registry_event",
-    "handle_circuit_breaker_event",
-    "setup_event_logging"
-]
+__all__ = ["handle_circuit_breaker_event", "handle_registry_event", "setup_event_logging"]
