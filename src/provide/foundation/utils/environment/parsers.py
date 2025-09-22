@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 """Duration and size parsing utilities for environment variables.
 
 Provides specialized parsers for common environment variable formats

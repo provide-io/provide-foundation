@@ -44,10 +44,7 @@ class ProfilingProcessor:
 
         """
         if not 0.0 <= sample_rate <= 1.0:
-            raise SamplingError(
-                "Sample rate must be between 0.0 and 1.0",
-                sample_rate=sample_rate
-            )
+            raise SamplingError("Sample rate must be between 0.0 and 1.0", sample_rate=sample_rate)
 
         self.sample_rate = sample_rate
         self.metrics = ProfileMetrics()

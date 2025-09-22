@@ -19,6 +19,18 @@ from provide.foundation.file.formats import (
     write_yaml,
 )
 from provide.foundation.file.lock import FileLock, LockError
+from provide.foundation.file.operations import (
+    DetectorConfig,
+    FileEvent,
+    FileEventMetadata,
+    FileOperation,
+    OperationDetector,
+    OperationType,
+    detect_atomic_save,
+    extract_original_path,
+    group_related_events,
+    is_temp_file,
+)
 from provide.foundation.file.safe import (
     safe_copy,
     safe_delete,
@@ -47,21 +59,32 @@ This module provides comprehensive file operations including:
 """
 
 __all__ = [
+    # From operations
+    "DetectorConfig",
+    "FileEvent",
+    "FileEventMetadata",
     # From lock
     "FileLock",
+    "FileOperation",
     "LockError",
+    "OperationDetector",
+    "OperationType",
     "atomic_replace",
     # From atomic
     "atomic_write",
     "atomic_write_text",
     "backup_file",
+    "detect_atomic_save",
     # From directory
     "ensure_dir",
     "ensure_parent_dir",
+    "extract_original_path",
     "find_files",
     "get_mtime",
     # From utils
     "get_size",
+    "group_related_events",
+    "is_temp_file",
     # From formats
     "read_json",
     "read_toml",

@@ -26,6 +26,7 @@ def _get_ensure_parent_groups() -> Any:
 
     return ensure_parent_groups
 
+
 F = TypeVar("F", bound=Callable[..., Any])
 
 

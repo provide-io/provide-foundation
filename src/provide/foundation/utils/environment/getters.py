@@ -1,19 +1,17 @@
 from __future__ import annotations
 
-
 """Basic environment variable getters with type coercion.
 
 Provides safe functions for reading and parsing environment variables
 with automatic type detection and validation.
 """
+import os
 from pathlib import Path
 from typing import Any, TypeVar, get_origin
-import os
 
 from provide.foundation.errors.config import ValidationError
 from provide.foundation.logger import get_logger
 from provide.foundation.utils.parsing import parse_bool, parse_dict, parse_list
-
 
 T = TypeVar("T")
 

@@ -1,7 +1,8 @@
 from __future__ import annotations
+
+import os
 from pathlib import Path
 from typing import Any, TypeVar
-import os
 
 from provide.foundation.utils.environment.getters import (
     get_bool,
