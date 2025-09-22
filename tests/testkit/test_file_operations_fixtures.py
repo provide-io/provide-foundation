@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from provide.testkit.file.operations_fixtures import (
+from tests.file_operations_fixtures import (
     FileOperationSimulator,
     FileOperationValidator,
     file_operation_test,
