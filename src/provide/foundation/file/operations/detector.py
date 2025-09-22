@@ -363,21 +363,24 @@ class OperationDetector:
             (r"^\.(.*)\.tmp\.\w+$", 1),  # .file.tmp.xxxxx -> file
             (r"^(.*)\.tmp\.\d+$", 1),  # file.tmp.12345 -> file
             (r"^(.*)~$", 1),  # file~ -> file
-            (r"^\.(.*)\.sw[po]$", 1),  # .file.swp -> file
+            (r"^\.(.*)\.sw[po]$", lambda m: f".{m.group(1)}"),  # .file.swp -> .file
             (r"^#(.*)#$", 1),  # #file# -> file
             (r"^(.*)\.bak$", 1),  # file.bak -> file
             (r"^(.*)\.orig$", 1),  # file.orig -> file
             (r"^(.*)\.tmp$", 1),  # file.tmp -> file
         ]
 
-        for pattern_str, group_idx in patterns:
+        for pattern_str, extractor in patterns:
             if pattern_str not in self._pattern_cache:
                 self._pattern_cache[pattern_str] = re.compile(pattern_str)
 
             pattern = self._pattern_cache[pattern_str]
             match = pattern.match(filename)
             if match:
-                return match.group(group_idx)
+                if callable(extractor):
+                    return extractor(match)
+                else:
+                    return match.group(extractor)
 
         return None
 
