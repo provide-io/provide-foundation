@@ -197,4 +197,9 @@ def reset_global_coordinator() -> None:
     _coordinator.reset_state()
 
 
-__all__ = ["InitializationCoordinator", "InitializationState", "get_initialization_coordinator", "reset_global_coordinator"]
+__all__ = [
+    "InitializationCoordinator",
+    "InitializationState",
+    "get_initialization_coordinator",
+    "reset_global_coordinator",
+]

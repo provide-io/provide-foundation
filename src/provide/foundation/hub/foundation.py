@@ -119,6 +119,7 @@ class FoundationManager:
 
         # Also reset the global coordinator state
         from provide.foundation.hub.initialization import reset_global_coordinator
+
         reset_global_coordinator()
 
     def _get_logger(self) -> Any | None:
