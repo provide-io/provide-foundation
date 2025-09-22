@@ -54,7 +54,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/process/test_process_runner_coverage.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check tests/process/test_process_runner_coverage.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_process_runner_coverage.py::TestProcessRunnerCoverage::test_run_command_handles_subprocess_error -v)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest --tb=short -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest --tb=short -q)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check src/ --select C901 --output-format=concise)"
     ],
     "deny": [],
     "ask": [],
