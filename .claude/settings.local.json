@@ -49,7 +49,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_process_runner_coverage.py::TestProcessRunnerCoverage::test_run_command_env_variable_update -xvs)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_process_runner_coverage.py::TestProcessRunnerCoverage::test_run_command_disables_foundation_telemetry_by_default tests/process/test_process_runner_coverage.py::TestProcessRunnerCoverage::test_run_command_preserves_existing_telemetry_setting -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_process_runner_coverage.py::TestProcessRunnerCoverage::test_run_command_env_variable_update tests/process/test_process_runner_coverage.py::TestProcessRunnerCoverage::test_run_command_disables_foundation_telemetry_by_default tests/process/test_process_runner_coverage.py::TestProcessRunnerCoverage::test_run_command_preserves_existing_telemetry_setting -v)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest --tb=short -q --maxfail=3)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest --tb=short -q --maxfail=3)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_process_runner_coverage.py::TestProcessRunnerCoverage::test_stream_command_with_environment_variables tests/process/test_process_runner_coverage.py::TestProcessRunnerCoverage::test_stream_command_stream_stderr_enabled tests/process/test_process_runner_coverage.py::TestProcessRunnerCoverage::test_run_shell_env_inheritance_and_override -v)"
     ],
     "deny": [],
     "ask": [],

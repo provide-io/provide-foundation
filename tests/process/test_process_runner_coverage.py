@@ -90,7 +90,7 @@ class TestProcessRunnerCoverage:
         lines = list(
             stream_command(
                 [
-                    "python",
+                    sys.executable,
                     "-c",
                     "import os; print(os.environ.get('TEST_STREAM_VAR', 'not_found'))",
                 ],
@@ -110,7 +110,7 @@ class TestProcessRunnerCoverage:
         # This will output to stderr, but with stream_stderr=True it goes to stdout
         lines = list(
             stream_command(
-                ["python", "-c", "import sys; sys.stderr.write('error\\n')"],
+                [sys.executable, "-c", "import sys; sys.stderr.write('error\\n')"],
                 stream_stderr=True,
             ),
         )
@@ -150,7 +150,7 @@ class TestProcessRunnerCoverage:
         """Test run_shell inherits and overrides environment variables."""
         env = {"SHELL_TEST_VAR": "shell_value"}
         result = run_shell(
-            "python -c \"import os; print(os.environ.get('SHELL_TEST_VAR', 'not_found'))\"",
+            f"{sys.executable} -c \"import os; print(os.environ.get('SHELL_TEST_VAR', 'not_found'))\"",
             env=env,
         )
         assert "shell_value" in result.stdout
