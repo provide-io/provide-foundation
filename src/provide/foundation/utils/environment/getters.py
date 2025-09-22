@@ -232,6 +232,32 @@ def get_dict(
         return result
 
 
+def _parse_simple_type(name: str, type_hint: type) -> Any:
+    """Parse environment variable for simple types."""
+    if type_hint is bool:
+        return get_bool(name)
+    if type_hint is int:
+        return get_int(name)
+    if type_hint is float:
+        return get_float(name)
+    if type_hint is str:
+        return get_str(name)
+    if type_hint is Path:
+        return get_path(name)
+    # Fallback to string for unknown simple types
+    return os.environ[name]
+
+
+def _parse_complex_type(name: str, origin: type) -> Any:
+    """Parse environment variable for complex types."""
+    if origin is list:
+        return get_list(name)
+    if origin is dict:
+        return get_dict(name)
+    # Fallback to string for unknown complex types
+    return os.environ[name]
+
+
 def require(name: str, type_hint: type[T] | None = None) -> Any:
     """Require an environment variable to be set.
 
@@ -259,21 +285,6 @@ def require(name: str, type_hint: type[T] | None = None) -> Any:
     # Parse based on type hint
     origin = get_origin(type_hint)
     if origin is None:
-        # Simple type
-        if type_hint is bool:
-            return get_bool(name)
-        if type_hint is int:
-            return get_int(name)
-        if type_hint is float:
-            return get_float(name)
-        if type_hint is str:
-            return get_str(name)
-        if type_hint is Path:
-            return get_path(name)
-    elif origin is list:
-        return get_list(name)
-    elif origin is dict:
-        return get_dict(name)
-
-    # Fallback to string
-    return os.environ[name]
+        return _parse_simple_type(name, type_hint)
+    else:
+        return _parse_complex_type(name, origin)
