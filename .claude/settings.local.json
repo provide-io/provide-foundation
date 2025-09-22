@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_file_operations*.py --tb=no -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_file_operations*.py --tb=no -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_parsing_coverage.py::TestParsingCoverage::test_parse_typed_value_list_without_args -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_parsing_coverage.py::TestParsingCoverage::test_parse_list_type_empty_args -v)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/utils/test_parsing_coverage.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check tests/utils/test_parsing_coverage.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/utils/test_parsing_coverage.py)"
     ],
     "deny": [],
     "ask": [],

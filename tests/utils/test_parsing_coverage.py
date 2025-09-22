@@ -199,6 +199,21 @@ class TestParsingCoverage:
         result = parse_typed_value("a,b,c", list)
         assert result == ["a", "b", "c"]
 
+    def test_parse_list_type_empty_args(self) -> None:
+        """Test _parse_list_type with a type that has empty args."""
+        from provide.foundation.utils.parsing import _parse_list_type
+
+        # Mock a type that appears to be generic but has no args
+        class MockListType:
+            pass
+
+        # Patch get_args to return empty args for this specific case
+        from unittest.mock import patch
+
+        with patch("provide.foundation.utils.parsing.get_args", return_value=()):
+            result = _parse_list_type("a,b,c", MockListType)
+            assert result == ["a", "b", "c"]
+
     def test_auto_parse_all_string_type_mappings(self) -> None:
         """Test auto_parse with all supported string type mappings."""
         mappings = [
