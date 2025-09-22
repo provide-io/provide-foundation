@@ -1,14 +1,8 @@
-"""File operation detection and analysis.
-
-This module provides intelligent detection and grouping of file system events
-into logical operations (e.g., atomic saves, batch updates, rename sequences).
-
-For backward compatibility, all components are re-exported from the operations package.
-"""
+"""File operation detection and analysis package."""
 
 from __future__ import annotations
 
-# Re-export all components for backward compatibility
+# Import all components for backward compatibility
 from provide.foundation.file.operations.detector import OperationDetector
 from provide.foundation.file.operations.types import (
     DetectorConfig,

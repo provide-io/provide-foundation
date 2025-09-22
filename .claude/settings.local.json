@@ -272,7 +272,10 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check tests/file/test_quality.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/file/test_quality.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/testkit/test_file_operations_fixtures.py tests/test_file_operations_patterns.py tests/file/test_quality.py -v)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/testkit/test_file_operations_fixtures.py tests/test_file_operations_patterns.py tests/file/test_quality.py --tb=no -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/testkit/test_file_operations_fixtures.py tests/test_file_operations_patterns.py tests/file/test_quality.py --tb=no -q)",
+      "Bash(PYTHONPATH=src .venv/bin/python -c \"from provide.foundation.file.operations import OperationDetector, FileEvent, FileEventMetadata; print(''✅ Import successful'')\")",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_file_operations.py::TestOperationDetector::test_basic_detection -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_file_operations.py -k \"test_operation_timeline\" --tb=no -q)"
     ],
     "deny": [],
     "ask": [],
