@@ -53,7 +53,7 @@ class CircuitBreaker:
         """Record successful execution."""
         if self._state == CircuitState.HALF_OPEN:
             # Emit event instead of direct logging to break circular dependency
-            from provide.foundation.hub.events import get_event_bus, Event
+            from provide.foundation.hub.events import Event, get_event_bus
 
             get_event_bus().emit(
                 Event(
@@ -80,7 +80,7 @@ class CircuitBreaker:
             self._state = CircuitState.OPEN
             self._next_attempt_time = self._last_failure_time + self.recovery_timeout
             # Emit event instead of direct logging to break circular dependency
-            from provide.foundation.hub.events import get_event_bus, Event
+            from provide.foundation.hub.events import Event, get_event_bus
 
             get_event_bus().emit(
                 Event(
@@ -98,7 +98,7 @@ class CircuitBreaker:
             self._state = CircuitState.OPEN
             self._next_attempt_time = self._last_failure_time + self.recovery_timeout
             # Emit event instead of direct logging to break circular dependency
-            from provide.foundation.hub.events import get_event_bus, Event
+            from provide.foundation.hub.events import Event, get_event_bus
 
             get_event_bus().emit(
                 Event(
@@ -120,7 +120,7 @@ class CircuitBreaker:
             if self._should_attempt_reset():
                 self._state = CircuitState.HALF_OPEN
                 # Emit event instead of direct logging to break circular dependency
-                from provide.foundation.hub.events import get_event_bus, Event
+                from provide.foundation.hub.events import Event, get_event_bus
 
                 get_event_bus().emit(
                     Event(
@@ -154,7 +154,7 @@ class CircuitBreaker:
             if self._should_attempt_reset():
                 self._state = CircuitState.HALF_OPEN
                 # Emit event instead of direct logging to break circular dependency
-                from provide.foundation.hub.events import get_event_bus, Event
+                from provide.foundation.hub.events import Event, get_event_bus
 
                 get_event_bus().emit(
                     Event(
@@ -184,7 +184,7 @@ class CircuitBreaker:
     def reset(self) -> None:
         """Manually reset the circuit breaker."""
         # Emit event instead of direct logging to break circular dependency
-        from provide.foundation.hub.events import get_event_bus, Event
+        from provide.foundation.hub.events import Event, get_event_bus
 
         get_event_bus().emit(
             Event(
