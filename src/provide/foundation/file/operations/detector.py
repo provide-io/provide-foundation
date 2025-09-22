@@ -318,7 +318,8 @@ class OperationDetector:
     def _detect_backup_create(self, events: list[FileEvent]) -> FileOperation | None:
         """Detect backup file creation."""
         backup_events = [
-            e for e in events
+            e
+            for e in events
             if e.event_type == "created" and e.path.suffix in (".bak", ".backup", ".orig", "~")
         ]
 
