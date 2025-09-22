@@ -77,12 +77,7 @@ class LockManager:
                     )
 
             actual_lock = lock or threading.RLock()
-            lock_info = LockInfo(
-                name=name,
-                lock=actual_lock,
-                order=order,
-                description=description
-            )
+            lock_info = LockInfo(name=name, lock=actual_lock, order=order, description=description)
 
             self._locks[name] = lock_info
             return actual_lock
@@ -106,10 +101,7 @@ class LockManager:
 
     @contextlib.contextmanager
     def acquire(
-        self,
-        *lock_names: str,
-        timeout: float = 10.0,
-        blocking: bool = True
+        self, *lock_names: str, timeout: float = 10.0, blocking: bool = True
     ) -> Generator[None, None, None]:
         """Acquire multiple locks in order to prevent deadlocks.
 
@@ -130,7 +122,7 @@ class LockManager:
             return
 
         # Get current thread's lock stack
-        if not hasattr(self._thread_local, 'lock_stack'):
+        if not hasattr(self._thread_local, "lock_stack"):
             self._thread_local.lock_stack = []
 
         # Sort locks by order to prevent deadlocks
@@ -167,7 +159,9 @@ class LockManager:
                 if remaining_timeout <= 0:
                     raise TimeoutError(f"Timeout acquiring locks: {[info.name for info in lock_infos]}")
 
-                acquired = lock_info.lock.acquire(blocking=blocking, timeout=remaining_timeout if blocking else 0)
+                acquired = lock_info.lock.acquire(
+                    blocking=blocking, timeout=remaining_timeout if blocking else 0
+                )
                 if not acquired:
                     if blocking:
                         raise TimeoutError(f"Timeout acquiring lock '{lock_info.name}'")
@@ -209,7 +203,7 @@ class LockManager:
                     "description": lock_info.description,
                     "owner": lock_info.owner,
                     "acquired_at": lock_info.acquired_at,
-                    "is_locked": lock_info.lock._is_owned() if hasattr(lock_info.lock, '_is_owned') else None,
+                    "is_locked": lock_info.lock._is_owned() if hasattr(lock_info.lock, "_is_owned") else None,
                 }
             return status
 
@@ -253,43 +247,19 @@ def register_foundation_locks() -> None:
     # Lower numbers are acquired first to prevent deadlocks
 
     # Core system locks (order 1-99)
-    manager.register_lock(
-        "foundation.config",
-        order=10,
-        description="Configuration system lock"
-    )
+    manager.register_lock("foundation.config", order=10, description="Configuration system lock")
 
-    manager.register_lock(
-        "foundation.registry",
-        order=20,
-        description="Component registry lock"
-    )
+    manager.register_lock("foundation.registry", order=20, description="Component registry lock")
 
     # Logger system locks (order 100-199)
-    manager.register_lock(
-        "foundation.logger.setup",
-        order=100,
-        description="Logger setup coordination"
-    )
+    manager.register_lock("foundation.logger.setup", order=100, description="Logger setup coordination")
 
-    manager.register_lock(
-        "foundation.logger.lazy",
-        order=110,
-        description="Lazy logger initialization"
-    )
+    manager.register_lock("foundation.logger.lazy", order=110, description="Lazy logger initialization")
 
     # Hub system locks (order 200-299)
-    manager.register_lock(
-        "foundation.hub.init",
-        order=200,
-        description="Hub initialization"
-    )
+    manager.register_lock("foundation.hub.init", order=200, description="Hub initialization")
 
-    manager.register_lock(
-        "foundation.hub.components",
-        order=210,
-        description="Hub component management"
-    )
+    manager.register_lock("foundation.hub.components", order=210, description="Hub component management")
 
 
 __all__ = ["LockInfo", "LockManager", "get_lock_manager", "register_foundation_locks"]
