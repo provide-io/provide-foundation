@@ -178,6 +178,10 @@ class InitializationCoordinator:
         """Check if foundation is initialized."""
         return self._state.is_initialized
 
+    def reset_state(self) -> None:
+        """Reset coordinator state for testing."""
+        self._state.reset()
+
 
 # Global coordinator instance
 _coordinator = InitializationCoordinator()
@@ -188,4 +192,9 @@ def get_initialization_coordinator() -> InitializationCoordinator:
     return _coordinator
 
 
-__all__ = ["InitializationCoordinator", "InitializationState", "get_initialization_coordinator"]
+def reset_global_coordinator() -> None:
+    """Reset the global coordinator state for testing."""
+    _coordinator.reset_state()
+
+
+__all__ = ["InitializationCoordinator", "InitializationState", "get_initialization_coordinator", "reset_global_coordinator"]

@@ -4,7 +4,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/hub/test_hub_initialization.py::TestHubInitialization::test_hub_lazy_initialization -xvs)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/hub/foundation.py src/provide/foundation/hub/initialization.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/hub/foundation.py src/provide/foundation/hub/initialization.py)",
-      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/hub/foundation.py src/provide/foundation/hub/initialization.py)"
+      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/hub/foundation.py src/provide/foundation/hub/initialization.py)",
+      "Bash(PYTHONPATH=src .venv/bin/python -c \"\nfrom provide.foundation.hub.manager import get_hub\nhub = get_hub()\nprint(f''Hub initialized: {hub.is_foundation_initialized()}'')\nprint(f''Registry type: {type(hub._component_registry)}'')\nprint(f''Registry id: {id(hub._component_registry)}'')\nprint(f''Registry items: {list(hub._component_registry.list_all().keys())}'')\nlogger_instance = hub._component_registry.get(''foundation.logger.instance'', ''singleton'')\nconfig = hub._component_registry.get(''foundation.config'', ''singleton'') \nprint(f''Logger found: {logger_instance is not None}'')\nprint(f''Config found: {config is not None}'')\n\")"
     ],
     "deny": [],
     "ask": [],
