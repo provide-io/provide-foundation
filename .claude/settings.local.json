@@ -23,7 +23,8 @@
       "Bash(PYTHONPATH=src grep -n \"return\" src/provide/foundation/logger/core.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/integration/test_integration_final_coverage.py::test_logger_base_already_configured_after_lock -xvs --cov=src/provide/foundation/logger/core --cov-report=term-missing)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/integration/test_integration_final_coverage.py::test_logger_base_already_configured_after_lock -xvs)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff check src/ --select ALL --statistics)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff check src/ --select ALL --statistics)",
+      "Bash(.venv/bin/mypy src/ --no-error-summary)"
     ],
     "deny": [],
     "ask": [],
