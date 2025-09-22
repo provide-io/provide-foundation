@@ -22,7 +22,8 @@
       "Bash(PYTHONPATH=src rg \"^class \" src/provide/foundation/process/async_runner.py)",
       "Bash(PYTHONPATH=src grep -n \"return\" src/provide/foundation/logger/core.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/integration/test_integration_final_coverage.py::test_logger_base_already_configured_after_lock -xvs --cov=src/provide/foundation/logger/core --cov-report=term-missing)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/integration/test_integration_final_coverage.py::test_logger_base_already_configured_after_lock -xvs)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/integration/test_integration_final_coverage.py::test_logger_base_already_configured_after_lock -xvs)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check src/ --select ALL --statistics)"
     ],
     "deny": [],
     "ask": [],
