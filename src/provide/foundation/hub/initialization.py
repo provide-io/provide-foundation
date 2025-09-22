@@ -121,8 +121,11 @@ class InitializationCoordinator:
 
         try:
             return TelemetryConfig.from_env()
-        except Exception:
-            # Fallback to minimal config
+        except Exception as e:
+            # Only fallback for config parsing errors, not import errors
+            if "import" in str(e).lower():
+                raise
+            # Fallback to minimal config for environment parsing issues
             return TelemetryConfig()
 
     def _initialize_logger(self, config: Any, registry: Any) -> Any:

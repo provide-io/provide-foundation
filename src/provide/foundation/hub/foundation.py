@@ -47,33 +47,25 @@ class FoundationManager:
 
         coordinator = get_initialization_coordinator()
 
-        try:
-            actual_config, logger_instance = coordinator.initialize_foundation(
-                registry=self._registry, config=config, force=force
-            )
+        actual_config, logger_instance = coordinator.initialize_foundation(
+            registry=self._registry, config=config, force=force
+        )
 
-            # Update our local state
-            self._config = actual_config
-            self._logger_instance = logger_instance
-            self._initialized = True
+        # Update our local state
+        self._config = actual_config
+        self._logger_instance = logger_instance
+        self._initialized = True
 
-            # Log initialization success (avoid test interference)
-            import os
+        # Log initialization success (avoid test interference)
+        import os
 
-            if not os.environ.get("PYTEST_CURRENT_TEST"):
-                logger = self._get_logger()
-                if logger:
-                    logger.info(
-                        "Foundation initialized through Hub",
-                        config_source="explicit" if config else "environment",
-                    )
-
-        except Exception as e:
-            # If coordinator fails, fall back to emergency setup
-            import sys
-
-            print(f"Warning: Foundation initialization failed: {e}", file=sys.stderr)
-            print("Continuing with emergency fallback", file=sys.stderr)
+        if not os.environ.get("PYTEST_CURRENT_TEST"):
+            logger = self._get_logger()
+            if logger:
+                logger.info(
+                    "Foundation initialized through Hub",
+                    config_source="explicit" if config else "environment",
+                )
 
     def get_foundation_logger(self, name: str | None = None) -> Any:
         """Get Foundation logger instance through Hub.
