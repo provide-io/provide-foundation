@@ -35,7 +35,7 @@ class ToolRegistry:
     def _discover_tools(self) -> None:
         """Auto-discover tool managers via entry points.
 
-        Looks for entry points in the "wrknv.tools" group
+        Looks for entry points in the "provide.foundation.tools" group
         and automatically registers them.
         """
         try:
@@ -45,14 +45,14 @@ class ToolRegistry:
                 eps = importlib.metadata.entry_points()
                 if hasattr(eps, "select"):
                     # Python 3.10+ with select method
-                    group_eps = eps.select(group="wrknv.tools")
+                    group_eps = eps.select(group="provide.foundation.tools")
                 else:
                     # Fallback for older API
-                    group_eps = eps.get("wrknv.tools", [])
+                    group_eps = eps.get("provide.foundation.tools", [])
             else:
                 # Python 3.8-3.9
                 eps = importlib.metadata.entry_points()
-                group_eps = eps.get("wrknv.tools", [])
+                group_eps = eps.get("provide.foundation.tools", [])
 
             for ep in group_eps:
                 try:

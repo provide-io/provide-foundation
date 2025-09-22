@@ -305,7 +305,7 @@ class TestDiscoverTools:
 
                 # Verify discovery
                 patch_entry_points.assert_called_once()
-                mock_eps.select.assert_called_once_with(group="wrknv.tools")
+                mock_eps.select.assert_called_once_with(group="provide.foundation.tools")
                 mock_ep.load.assert_called_once()
 
                 # Verify registration
@@ -329,7 +329,7 @@ class TestDiscoverTools:
         mock_ep.name = "discovered_tool"
         mock_ep.load.return_value = MockToolManager
 
-        mock_eps = {"wrknv.tools": [mock_ep]}
+        mock_eps = {"provide.foundation.tools": [mock_ep]}
 
         with patch("provide.foundation.tools.registry.get_hub", return_value=mock_hub):
             with patch("importlib.metadata.entry_points", return_value=mock_eps) as patch_entry_points:

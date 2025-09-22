@@ -294,7 +294,7 @@ class BaseToolManager(ABC):
             Path where the version is/will be installed.
 
         """
-        base_path = Path.home() / ".wrknv" / "tools" / self.tool_name / version
+        base_path = Path.home() / ".provide-foundation" / "tools" / self.tool_name / version
         return base_path
 
     def is_installed(self, version: str) -> bool:

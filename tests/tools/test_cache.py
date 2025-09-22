@@ -51,7 +51,7 @@ class TestToolCache:
             mock_home.return_value = Path("/mock/home")
 
             cache = ToolCache()
-            expected_dir = Path("/mock/home") / ".wrknv" / "cache"
+            expected_dir = Path("/mock/home") / ".provide-foundation" / "cache"
             assert cache.cache_dir == expected_dir
             mock_mkdir.assert_called_once_with(parents=True, exist_ok=True)
 
