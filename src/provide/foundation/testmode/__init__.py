@@ -9,6 +9,7 @@ from provide.foundation.testmode.detection import (
     should_use_shared_registries,
 )
 from provide.foundation.testmode.internal import (
+    reset_global_coordinator,
     reset_hub_state,
     reset_logger_state,
     reset_streams_state,
@@ -27,6 +28,7 @@ __all__ = [
     "is_in_click_testing",
     "is_in_test_mode",
     # Internal reset APIs (for testkit use)
+    "reset_global_coordinator",
     "reset_hub_state",
     "reset_logger_state",
     "reset_streams_state",

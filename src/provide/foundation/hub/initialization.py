@@ -192,18 +192,8 @@ def get_initialization_coordinator() -> InitializationCoordinator:
     return _coordinator
 
 
-def reset_global_coordinator() -> None:
-    """Reset the global coordinator state for testing.
-
-    WARNING: This should only be called from test code or test fixtures.
-    Production code should not reset the global coordinator state.
-    """
-    _coordinator.reset_state()
-
-
 __all__ = [
     "InitializationCoordinator",
     "InitializationState",
     "get_initialization_coordinator",
-    "reset_global_coordinator",
 ]

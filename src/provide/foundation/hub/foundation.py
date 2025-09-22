@@ -118,12 +118,10 @@ class FoundationManager:
         self._logger_instance = None
 
         # Reset global coordinator state only in test mode
-        import os
+        from provide.foundation.testmode.detection import is_in_test_mode
 
-        if os.environ.get("PYTEST_CURRENT_TEST") or any(
-            "pytest" in arg or "test" in arg for arg in __import__("sys").argv
-        ):
-            from provide.foundation.hub.initialization import reset_global_coordinator
+        if is_in_test_mode():
+            from provide.foundation.testmode.internal import reset_global_coordinator
 
             reset_global_coordinator()
 
