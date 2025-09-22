@@ -37,7 +37,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check src/provide/foundation/eventsets/resolver.py --select C901)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/utils/environment/getters.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check src/provide/foundation/utils/environment/getters.py --select C901)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/integrations/openobserve/formatters.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/integrations/openobserve/formatters.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check src/provide/foundation/integrations/openobserve/formatters.py --select C901)"
     ],
     "deny": [],
     "ask": [],
