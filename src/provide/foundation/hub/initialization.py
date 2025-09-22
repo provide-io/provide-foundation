@@ -59,20 +59,13 @@ class InitializationCoordinator:
         # Register initialization locks if not already registered
         try:
             self._lock_manager.register_lock(
-                "foundation.init.coordinator",
-                order=1,
-                description="Master initialization lock"
+                "foundation.init.coordinator", order=1, description="Master initialization lock"
             )
         except ValueError:
             # Already registered
             pass
 
-    def initialize_foundation(
-        self,
-        registry: Any,
-        config: Any = None,
-        force: bool = False
-    ) -> tuple[Any, Any]:
+    def initialize_foundation(self, registry: Any, config: Any = None, force: bool = False) -> tuple[Any, Any]:
         """Simplified, single-path initialization.
 
         Args:
@@ -126,6 +119,7 @@ class InitializationCoordinator:
 
         # Load from environment
         from provide.foundation.logger.config import TelemetryConfig
+
         try:
             return TelemetryConfig.from_env()
         except Exception:
@@ -137,26 +131,14 @@ class InitializationCoordinator:
         from provide.foundation.logger.core import FoundationLogger
 
         # Create hub wrapper for logger
-        hub_wrapper = type(
-            "HubWrapper",
-            (),
-            {
-                "_component_registry": registry,
-                "_foundation_config": config
-            }
-        )()
+        hub_wrapper = type("HubWrapper", (), {"_component_registry": registry, "_foundation_config": config})()
 
         logger_instance = FoundationLogger(hub=hub_wrapper)
         logger_instance.setup(config)
 
         return logger_instance
 
-    def _register_components(
-        self,
-        registry: Any,
-        config: Any,
-        logger_instance: Any
-    ) -> None:
+    def _register_components(self, registry: Any, config: Any, logger_instance: Any) -> None:
         """Register components in registry."""
         # Register config
         registry.register(
@@ -180,6 +162,7 @@ class InitializationCoordinator:
         """Set up event handlers."""
         try:
             from provide.foundation.hub.event_handlers import setup_event_logging
+
             setup_event_logging()
         except Exception:
             # If event handler setup fails, continue without it
