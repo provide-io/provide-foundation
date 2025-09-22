@@ -389,11 +389,11 @@ class OperationDetector:
         if base1 and base2:
             return base1 == base2
 
-        # Fallback: check if one path's stem matches the other's base name
+        # Fallback: check if one path's base name matches the other's full name
         if base1:
-            return base1 == path2.stem
+            return base1 == path2.name
         if base2:
-            return base2 == path1.stem
+            return base2 == path1.name
 
         # Final fallback: check if stems are the same
         return path1.stem == path2.stem
