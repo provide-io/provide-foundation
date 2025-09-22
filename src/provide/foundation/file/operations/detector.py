@@ -7,13 +7,13 @@ from datetime import datetime
 from pathlib import Path
 import re
 
-from provide.foundation.logger import get_logger
 from provide.foundation.file.operations.types import (
     DetectorConfig,
     FileEvent,
     FileOperation,
     OperationType,
 )
+from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
 
