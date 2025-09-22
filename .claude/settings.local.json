@@ -26,7 +26,11 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check src/ --select ALL --statistics)",
       "Bash(.venv/bin/mypy src/ --no-error-summary)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/logger/processors/trace.py)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff check src/provide/foundation/logger/processors/trace.py --select C901)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff check src/provide/foundation/logger/processors/trace.py --select C901)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/platform/detection.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check src/provide/foundation/platform/detection.py --select C901)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/logger/core.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check src/provide/foundation/logger/core.py --select C901)"
     ],
     "deny": [],
     "ask": [],
