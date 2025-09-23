@@ -159,29 +159,15 @@ class CircuitBreakerStateMachine(StateMachine[str, CircuitBreakerEvent]):
 
     def _setup_transitions(self) -> None:
         """Set up all possible state transitions."""
-        # closed -> open (on threshold failures)
+        # closed state transitions
         self.add_transition(
             StateTransition(
                 from_state="closed",
                 event=CircuitBreakerEvent.FAILURE,
-                to_state="open",
-                guard=self._should_open_on_failure,
-                action=self._record_failure,
+                to_state="closed",  # Will be updated by action if threshold reached
+                action=self._handle_closed_failure,
             )
         )
-
-        # closed -> closed (on failure below threshold)
-        self.add_transition(
-            StateTransition(
-                from_state="closed",
-                event=CircuitBreakerEvent.FAILURE,
-                to_state="closed",
-                guard=self._should_stay_closed_on_failure,
-                action=self._record_failure,
-            )
-        )
-
-        # closed -> closed (on success)
         self.add_transition(
             StateTransition(
                 from_state="closed",
@@ -191,7 +177,7 @@ class CircuitBreakerStateMachine(StateMachine[str, CircuitBreakerEvent]):
             )
         )
 
-        # open -> half_open (on timeout)
+        # open state transitions
         self.add_transition(
             StateTransition(
                 from_state="open",
@@ -202,7 +188,7 @@ class CircuitBreakerStateMachine(StateMachine[str, CircuitBreakerEvent]):
             )
         )
 
-        # half_open -> closed (on success)
+        # half_open state transitions
         self.add_transition(
             StateTransition(
                 from_state="half_open",
@@ -211,8 +197,6 @@ class CircuitBreakerStateMachine(StateMachine[str, CircuitBreakerEvent]):
                 action=self._record_success,
             )
         )
-
-        # half_open -> open (on failure)
         self.add_transition(
             StateTransition(
                 from_state="half_open",
@@ -222,7 +206,7 @@ class CircuitBreakerStateMachine(StateMachine[str, CircuitBreakerEvent]):
             )
         )
 
-        # Any state -> closed (on reset)
+        # reset transitions
         for state in ["closed", "open", "half_open"]:
             self.add_transition(
                 StateTransition(
@@ -238,17 +222,18 @@ class CircuitBreakerStateMachine(StateMachine[str, CircuitBreakerEvent]):
         """Get the current circuit breaker state."""
         return self._circuit_state
 
-    def _should_open_on_failure(self) -> bool:
-        """Guard: should circuit open on this failure?"""
-        return self._circuit_state.failure_count + 1 >= self._circuit_state.failure_threshold
-
-    def _should_stay_closed_on_failure(self) -> bool:
-        """Guard: should circuit stay closed on this failure?"""
-        return self._circuit_state.failure_count + 1 < self._circuit_state.failure_threshold
-
     def _should_attempt_reset(self) -> bool:
         """Guard: should circuit attempt reset?"""
         return self._circuit_state.should_attempt_reset()
+
+    def _handle_closed_failure(self) -> None:
+        """Action: handle failure in closed state - may open circuit."""
+        old_state = self._circuit_state
+        self._circuit_state = old_state.record_failure()
+
+        # If circuit opened, update the state machine's current state manually
+        if self._circuit_state.is_open():
+            self._current_state = "open"
 
     def _record_failure(self) -> None:
         """Action: record a failure."""
