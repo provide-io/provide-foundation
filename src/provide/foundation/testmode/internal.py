@@ -172,3 +172,62 @@ def reset_circuit_breaker_state() -> None:
     except ImportError:
         # Resilience module not available, skip
         pass
+
+
+def reset_state_managers() -> None:
+    """Reset all state managers to default state.
+
+    This resets stream managers, logger state managers, and other
+    state management components to ensure clean test isolation.
+    """
+    try:
+        from provide.foundation.hub.manager import get_hub
+
+        hub = get_hub()
+
+        # Reset stream manager if available
+        try:
+            stream_manager = hub.get_component("stream_manager")
+            if stream_manager and hasattr(stream_manager, "reset_to_default"):
+                stream_manager.reset_to_default()
+        except Exception:
+            # Stream manager not available or reset failed, skip
+            pass
+
+        # Reset logger state manager if available
+        try:
+            logger_state_manager = hub.get_component("logger_state_manager")
+            if logger_state_manager and hasattr(logger_state_manager, "reset_to_default"):
+                logger_state_manager.reset_to_default()
+        except Exception:
+            # Logger state manager not available or reset failed, skip
+            pass
+
+    except ImportError:
+        # Hub not available, skip
+        pass
+
+
+def reset_configuration_state() -> None:
+    """Reset configuration state to defaults.
+
+    This resets all versioned configurations and their managers
+    to ensure clean state between tests.
+    """
+    try:
+        from provide.foundation.hub.manager import get_hub
+
+        hub = get_hub()
+
+        # Reset config manager if available
+        try:
+            config_manager = hub.get_component("config_manager")
+            if config_manager and hasattr(config_manager, "clear_all"):
+                config_manager.clear_all()
+        except Exception:
+            # Config manager not available or reset failed, skip
+            pass
+
+    except ImportError:
+        # Hub not available, skip
+        pass

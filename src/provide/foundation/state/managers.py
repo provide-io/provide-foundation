@@ -29,7 +29,7 @@ class StreamManager:
     across modules as global variables.
     """
 
-    _state_manager: StateManager = field()
+    _state_manager: StateManager = field(alias="state_manager")
     _lock: threading.Lock = field(factory=threading.Lock, init=False)
 
     @classmethod
@@ -37,7 +37,7 @@ class StreamManager:
         """Create a StreamManager with default state."""
         initial_state = StreamState()
         state_manager = StateManager(state=initial_state)
-        return cls(_state_manager=state_manager)
+        return cls(state_manager=state_manager)
 
     @property
     def current_log_stream(self) -> TextIO:
@@ -148,7 +148,7 @@ class LoggerStateManager:
     across modules as global variables.
     """
 
-    _state_manager: StateManager = field()
+    _state_manager: StateManager = field(alias="state_manager")
     _lock: threading.Lock = field(factory=threading.Lock, init=False)
 
     @classmethod
@@ -156,7 +156,7 @@ class LoggerStateManager:
         """Create a LoggerStateManager with default state."""
         initial_state = LoggerState()
         state_manager = StateManager(state=initial_state)
-        return cls(_state_manager=state_manager)
+        return cls(state_manager=state_manager)
 
     @property
     def is_setup_done(self) -> bool:
