@@ -4,6 +4,7 @@ import asyncio
 from collections.abc import Callable
 import functools
 import inspect
+import os
 from typing import Any, TypeVar
 
 from provide.foundation.config.defaults import DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT
@@ -23,9 +24,15 @@ _circuit_breaker_instances: list[CircuitBreaker] = []
 def _should_register_for_global_reset() -> bool:
     """Determine if a circuit breaker should be registered for global reset.
 
-    We only register circuit breakers created outside of test files for global reset.
-    Circuit breakers created in test files manage their own lifecycle.
+    For parallel test execution safety, we use environment variable detection
+    rather than stack inspection which can be unreliable in worker processes.
     """
+    # Check if we're in a pytest worker process
+    if os.getenv("PYTEST_WORKER_ID") is not None:
+        # In pytest worker, don't register any circuit breakers for global reset
+        # This prevents race conditions in parallel test execution
+        return False
+
     try:
         frame = inspect.currentframe()
         if frame is None:
