@@ -151,3 +151,19 @@ def reset_global_coordinator() -> None:
     except ImportError:
         # Initialization module not available, skip
         pass
+
+
+def reset_circuit_breaker_state() -> None:
+    """Reset all circuit breaker instances to ensure test isolation.
+
+    This function resets all circuit breaker instances that were created
+    by the @circuit_breaker decorator to ensure their state doesn't leak
+    between tests.
+    """
+    try:
+        from provide.foundation.resilience.decorators import reset_circuit_breakers_for_testing
+
+        reset_circuit_breakers_for_testing()
+    except ImportError:
+        # Resilience module not available, skip
+        pass
