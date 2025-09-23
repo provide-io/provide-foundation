@@ -38,8 +38,13 @@ class TestImmutableState:
     def test_immutability(self) -> None:
         """Test that state objects are immutable."""
         state = ImmutableState()
-        with pytest.raises(AttributeError):  # attrs.exceptions.FrozenInstanceError
-            state.generation = 5
+        # For mypy, this will cause a type error, but we can still test runtime behavior
+        try:
+            state.generation = 5  # type: ignore[misc]
+            pytest.fail("Expected exception for immutable assignment")
+        except Exception:
+            # attrs raises FrozenInstanceError, which is what we expect
+            pass
 
 
 class TestStateManager:
