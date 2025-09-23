@@ -76,7 +76,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/logger/test_logger_production_compliance.py::TestDocumentedBehaviorCompliance::test_documented_environment_variables -xvs --tb=long)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/logger/test_logger_production_compliance.py::TestLazyInitializationDocumentation::test_environment_config_example -xvs)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/logger/test_logger_real_world_scenarios.py::TestRealWorldScenarios::test_microservice_with_environment_config -xvs)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/core/test_core_service_name_fix.py::test_key_value_still_has_emojis -xvs)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/core/test_core_service_name_fix.py::test_key_value_still_has_emojis -xvs)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_predictable_initialization.py::TestPredictableInitialization::test_configuration_precedence_predictable -xvs)"
     ],
     "deny": [],
     "ask": [],
