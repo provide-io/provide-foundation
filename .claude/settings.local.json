@@ -60,7 +60,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/hub/processors.py src/provide/foundation/hub/handlers.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/hub/processors.py src/provide/foundation/hub/handlers.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/hub/processors.py src/provide/foundation/hub/handlers.py)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/hub/test_components_config_pipeline.py::TestProcessorPipeline::test_get_processor_pipeline tests/hub/test_components_config_pipeline.py::TestProcessorPipeline::test_get_processors_for_stage -v)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/hub/test_components_config_pipeline.py::TestProcessorPipeline::test_get_processor_pipeline tests/hub/test_components_config_pipeline.py::TestProcessorPipeline::test_get_processors_for_stage -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/hub/test_hub_initialization.py::TestHubInitialization::test_hub_config_precedence -v)"
     ],
     "deny": [],
     "ask": [],

@@ -68,7 +68,7 @@ class InitializationCoordinator:
         with contextlib.suppress(ValueError):
             # Already registered if ValueError raised
             self._lock_manager.register_lock(
-                "foundation.init.coordinator", order=5, description="Master initialization lock"
+                "foundation.init.coordinator", order=200, description="Master initialization lock"
             )
 
     def initialize_foundation(self, registry: Any, config: Any = None, force: bool = False) -> tuple[Any, Any]:
