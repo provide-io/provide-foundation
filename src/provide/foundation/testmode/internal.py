@@ -161,9 +161,14 @@ def reset_circuit_breaker_state() -> None:
     between tests.
     """
     try:
-        from provide.foundation.resilience.decorators import reset_circuit_breakers_for_testing
+        from provide.foundation.resilience.decorators import (
+            reset_circuit_breakers_for_testing,
+            reset_test_circuit_breakers,
+        )
 
+        # Reset both production and test circuit breakers
         reset_circuit_breakers_for_testing()
+        reset_test_circuit_breakers()
     except ImportError:
         # Resilience module not available, skip
         pass

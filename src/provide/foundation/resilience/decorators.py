@@ -20,6 +20,9 @@ from provide.foundation.testmode.detection import is_in_test_mode
 # Global registry of circuit breaker instances for testing
 _circuit_breaker_instances: list[CircuitBreaker] = []
 
+# Separate registry for circuit breakers created in test files
+_test_circuit_breaker_instances: list[CircuitBreaker] = []
+
 
 def _should_register_for_global_reset() -> bool:
     """Determine if a circuit breaker should be registered for global reset.
@@ -239,10 +242,13 @@ def circuit_breaker(
         expected_exception=expected_exception,
     )
 
-    # Register for test cleanup only if not created in test files
-    # Circuit breakers in test files manage their own lifecycle
+    # Register for appropriate cleanup based on context
     if _should_register_for_global_reset():
+        # Production circuit breakers
         _circuit_breaker_instances.append(breaker)
+    else:
+        # Test circuit breakers go to separate registry for isolated reset
+        _test_circuit_breaker_instances.append(breaker)
 
     def decorator(func: F) -> F:
         @functools.wraps(func)
@@ -267,6 +273,16 @@ def reset_circuit_breakers_for_testing() -> None:
     circuit breaker state doesn't leak between tests.
     """
     for breaker in _circuit_breaker_instances:
+        breaker.reset()
+
+
+def reset_test_circuit_breakers() -> None:
+    """Reset circuit breaker instances created in test files.
+
+    This function resets circuit breakers that were created within test files
+    to ensure proper test isolation without affecting production circuit breakers.
+    """
+    for breaker in _test_circuit_breaker_instances:
         breaker.reset()
 
 
