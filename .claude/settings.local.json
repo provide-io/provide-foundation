@@ -69,7 +69,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/hub/test_hub_initialization.py::TestHubInitialization::test_hub_config_precedence tests/hub/test_hub_initialization.py::TestHubInitialization::test_hub_idempotent_initialization -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/hub/test_hub_initialization.py -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/hub/test_components_cleanup_misc.py::TestMiscellaneousFunctionality::test_bootstrap_foundation_creates_default_components -v -s)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/integration/test_integration_coverage_100.py::test_logger_base_error_while_waiting_for_lock -v)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/integration/test_integration_coverage_100.py::test_logger_base_error_while_waiting_for_lock -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/core/test_core_fixes.py::test_lazy_setup_flags -xvs)"
     ],
     "deny": [],
     "ask": [],
