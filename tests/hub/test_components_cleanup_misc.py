@@ -6,7 +6,6 @@ from provide.foundation.hub.components import (
     ComponentCategory,
     _component_registry,
     _initialized_components,
-    _registry_lock,
     bootstrap_foundation,
     cleanup_all_components,
     discover_components,
@@ -232,11 +231,12 @@ class TestMiscellaneousFunctionality:
 
     def test_thread_safety_basics(self) -> None:
         """Test basic thread safety with registry lock."""
-        # Test that the registry lock exists and is accessible
-        assert _registry_lock is not None
-        assert hasattr(_registry_lock, "acquire") and hasattr(_registry_lock, "release")
+        from provide.foundation.concurrency.locks import get_lock_manager
+
+        # Test that the lock manager can acquire registry lock
+        lock_manager = get_lock_manager()
 
         # Test that we can acquire and release the lock
-        with _registry_lock:
+        with lock_manager.acquire("foundation.registry"):
             registry = get_component_registry()
             assert registry is not None
