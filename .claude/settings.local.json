@@ -115,7 +115,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/ tests/resilience/ --tb=short -q --maxfail=3)",
       "Bash(.venv/bin/python:*)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/resilience/decorators.py src/provide/foundation/testmode/internal.py)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/resilience/decorators.py src/provide/foundation/testmode/internal.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/resilience/decorators.py src/provide/foundation/testmode/internal.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/resilience/decorators.py src/provide/foundation/testmode/internal.py)"
     ],
     "deny": [],
     "ask": [],
