@@ -41,8 +41,10 @@ def _is_in_test_function() -> bool:
             function_name = frame.f_code.co_name
             filename = frame.f_code.co_filename
 
-            # Check if it's a test function or test file
+            # Debug output when we detect a test context
             if function_name.startswith("test_") or "test_" in filename or "/tests/" in filename:
+                # Print debug info to understand when this is being called
+                print(f"DEBUG: Circuit breaker in test context - function: {function_name}, file: {filename}")
                 return True
 
         return False
