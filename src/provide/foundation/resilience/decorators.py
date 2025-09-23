@@ -13,7 +13,6 @@ from provide.foundation.resilience.retry import (
     RetryExecutor,
     RetryPolicy,
 )
-from provide.foundation.testmode.detection import is_in_test_mode
 
 """Resilience decorators for retry, circuit breaker, and fallback patterns."""
 
