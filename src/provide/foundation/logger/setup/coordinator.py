@@ -83,14 +83,14 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
         # Fallback to stderr if stream access fails
         foundation_stream = get_safe_stderr()
 
-    # Configure structlog for core setup logger
+    # Configure structlog for core setup logger with safe factory
     structlog.configure(
         processors=[
             structlog.processors.add_log_level,
             structlog.processors.TimeStamper(fmt="iso"),
             structlog.dev.ConsoleRenderer(),
         ],
-        logger_factory=structlog.PrintLoggerFactory(file=foundation_stream),
+        logger_factory=_SafePrintLoggerFactory(file=foundation_stream),
         wrapper_class=structlog.BoundLogger,
         cache_logger_on_first_use=True,
     )
