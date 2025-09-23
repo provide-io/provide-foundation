@@ -91,7 +91,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/testmode/internal.py src/provide/foundation/testmode/__init__.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/testmode/internal.py src/provide/foundation/testmode/__init__.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/resilience/decorators.py src/provide/foundation/testmode/internal.py src/provide/foundation/testmode/__init__.py)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/resilience/decorators.py src/provide/foundation/testmode/internal.py src/provide/foundation/testmode/__init__.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/resilience/decorators.py src/provide/foundation/testmode/internal.py src/provide/foundation/testmode/__init__.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit -v)"
     ],
     "deny": [],
     "ask": [],
