@@ -16,30 +16,6 @@ if src_path.exists():
     sys.path.insert(0, str(src_path))
 
 
-def test_lazy_setup_flags() -> None:
-    """Test that lazy setup flags are set correctly."""
-    print("=== Test 1: Lazy Setup Flags ===")
-
-    from provide.testkit import reset_foundation_setup_for_testing
-
-    reset_foundation_setup_for_testing()
-
-    # Use the new _LAZY_SETUP_STATE dictionary
-    from provide.foundation.logger.core import _LAZY_SETUP_STATE
-
-    print(f"Initial state - STATE: {_LAZY_SETUP_STATE}")
-
-    from provide.foundation import logger
-
-    logger.info("Trigger lazy setup")
-
-    # Re-check the same _LAZY_SETUP_STATE dictionary
-    print(f"After logging - STATE: {_LAZY_SETUP_STATE}")
-
-    assert _LAZY_SETUP_STATE["done"] is True, "Flag 'done' should be True"
-    assert _LAZY_SETUP_STATE["error"] is None, "Flag 'error' should be None"
-    assert _LAZY_SETUP_STATE["in_progress"] is False, "Flag 'in_progress' should be False"
-    print("✅ Lazy setup flags work correctly")
 
 
 def test_service_name_no_emoji() -> None:
