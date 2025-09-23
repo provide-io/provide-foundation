@@ -267,11 +267,11 @@ class Registry:
         for entry in self._registry[dimension].values():
             value = entry.value
             if isinstance(value, Disposable):
-                try:
-                    value.dispose()
-                except Exception:
+                import contextlib
+
+                with contextlib.suppress(Exception):
                     # Continue disposing other resources even if one fails
-                    pass
+                    value.dispose()
             elif isinstance(value, AsyncDisposable):
                 # For async disposables in sync context, we can't await
                 # They should be disposed in async context managers

@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from collections.abc import AsyncContextManager
-from typing import Any, Protocol, runtime_checkable
+from typing import Any, AsyncContextManager, Protocol, runtime_checkable
 
 """Resource management protocols for proper component lifecycle."""
 
