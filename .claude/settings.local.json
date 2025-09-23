@@ -153,7 +153,9 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py -k \"not StreamManager\" -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py -v)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker -v)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tracer/test_otel.py::TestSetupOpentelemetryTracing::test_setup_otel_not_available -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/ tests/errors/ --tb=short -q --maxfail=3)"
     ],
     "deny": [],
     "ask": [],
