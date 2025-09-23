@@ -116,7 +116,12 @@
       "Bash(.venv/bin/python:*)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/resilience/decorators.py src/provide/foundation/testmode/internal.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/resilience/decorators.py src/provide/foundation/testmode/internal.py)",
-      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/resilience/decorators.py src/provide/foundation/testmode/internal.py)"
+      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/resilience/decorators.py src/provide/foundation/testmode/internal.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format /Users/tim/code/gh/provide-io/provide-testkit/src/provide/testkit/logger/reset.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes /Users/tim/code/gh/provide-io/provide-testkit/src/provide/testkit/logger/reset.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/logger/test_logger_production_compliance.py::TestLazyInitializationDocumentation::test_basic_usage_example tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit tests/logger/test_logger_production_compliance.py::TestLazyInitializationDocumentation::test_basic_usage_example -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/ tests/resilience/ tests/logger/test_logger_production_compliance.py --tb=short -q --maxfail=3)"
     ],
     "deny": [],
     "ask": [],
