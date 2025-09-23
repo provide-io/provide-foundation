@@ -72,7 +72,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/integration/test_integration_coverage_100.py::test_logger_base_error_while_waiting_for_lock -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/core/test_core_fixes.py::test_lazy_setup_flags -xvs)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/integration/test_integration_verification.py::test_lazy_setup_flags -xvs)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/logger/test_logger_production_compliance.py::TestDocumentedBehaviorCompliance::test_documented_environment_variables -xvs)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/logger/test_logger_production_compliance.py::TestDocumentedBehaviorCompliance::test_documented_environment_variables -xvs)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/logger/test_logger_production_compliance.py::TestDocumentedBehaviorCompliance::test_documented_environment_variables -xvs --tb=long)"
     ],
     "deny": [],
     "ask": [],
