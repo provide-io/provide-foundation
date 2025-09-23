@@ -141,7 +141,8 @@
       "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/state/managers.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/state/test_state_management.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/state/test_state_management.py)",
-      "Bash(PYTHONPATH=src .venv/bin/mypy tests/state/test_state_management.py)"
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/state/test_state_management.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py -v)"
     ],
     "deny": [],
     "ask": [],

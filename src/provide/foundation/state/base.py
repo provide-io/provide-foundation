@@ -39,7 +39,9 @@ class ImmutableState:
         if "generation" not in changes:
             changes["generation"] = self.generation + 1
 
-        return self.__class__(**{**self.__dict__, **changes})
+        # For attrs classes with slots, use attrs.evolve instead of __dict__
+        import attrs
+        return attrs.evolve(self, **changes)
 
 
 @define(kw_only=True, slots=True)

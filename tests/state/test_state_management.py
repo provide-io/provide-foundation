@@ -255,7 +255,7 @@ class TestCircuitBreakerStateMachine:
 
     def test_recovery_transitions(self) -> None:
         """Test recovery state transitions."""
-        machine = CircuitBreakerStateMachine(recovery_timeout=0.001)
+        machine = CircuitBreakerStateMachine(failure_threshold=2, recovery_timeout=0.001)
 
         # Force to open state
         machine.transition(CircuitBreakerEvent.FAILURE)
@@ -274,10 +274,9 @@ class TestCircuitBreakerStateMachine:
 
     def test_reset_functionality(self) -> None:
         """Test manual reset."""
-        machine = CircuitBreakerStateMachine()
+        machine = CircuitBreakerStateMachine(failure_threshold=2)
 
         # Force to open state
-        machine.transition(CircuitBreakerEvent.FAILURE)
         machine.transition(CircuitBreakerEvent.FAILURE)
         machine.transition(CircuitBreakerEvent.FAILURE)
         assert machine.current_state == "open"
