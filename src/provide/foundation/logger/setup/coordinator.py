@@ -29,62 +29,6 @@ _FOUNDATION_LOG_LEVEL: int | None = None
 _CACHED_SETUP_LOGGER: Any | None = None
 
 
-class _SafePrintLoggerFactory:
-    """A safe logger factory that handles closed streams gracefully."""
-
-    def __init__(self, file: Any) -> None:
-        """Initialize with a target file stream."""
-        self._file = file
-
-    def __call__(self, *args: Any) -> Any:
-        """Create a logger that writes to the stream safely."""
-        return _SafePrintLogger(self._file)
-
-
-class _SafePrintLogger:
-    """A safe print logger that handles closed streams."""
-
-    def __init__(self, file: Any) -> None:
-        """Initialize with target file stream."""
-        self._file = file
-
-    def debug(self, message: str, **kwargs: Any) -> None:
-        """Log debug message safely."""
-        self._safe_print(message)
-
-    def info(self, message: str, **kwargs: Any) -> None:
-        """Log info message safely."""
-        self._safe_print(message)
-
-    def warning(self, message: str, **kwargs: Any) -> None:
-        """Log warning message safely."""
-        self._safe_print(message)
-
-    def error(self, message: str, **kwargs: Any) -> None:
-        """Log error message safely."""
-        self._safe_print(message)
-
-    def trace(self, message: str, **kwargs: Any) -> None:
-        """Log trace message safely."""
-        self._safe_print(message)
-
-    def _safe_print(self, message: str) -> None:
-        """Print message safely, handling closed streams."""
-        try:
-            if hasattr(self._file, 'closed') and self._file.closed:
-                # Stream is closed, try to get a safe stderr
-                safe_stream = get_safe_stderr()
-                print(message, file=safe_stream, flush=True)
-            else:
-                print(message, file=self._file, flush=True)
-        except (ValueError, OSError):
-            # Stream is not writable or other I/O error
-            try:
-                safe_stream = get_safe_stderr()
-                print(message, file=safe_stream, flush=True)
-            except Exception:
-                # Last resort: just ignore the message
-                pass
 
 
 def get_foundation_log_level() -> int:
@@ -141,14 +85,14 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
         # Fallback to stderr if stream access fails
         foundation_stream = get_safe_stderr()
 
-    # Configure structlog for core setup logger with safe factory
+    # Configure structlog for core setup logger
     structlog.configure(
         processors=[
             structlog.processors.add_log_level,
             structlog.processors.TimeStamper(fmt="iso"),
             structlog.dev.ConsoleRenderer(),
         ],
-        logger_factory=_SafePrintLoggerFactory(file=foundation_stream),
+        logger_factory=structlog.PrintLoggerFactory(file=foundation_stream),
         wrapper_class=structlog.BoundLogger,
         cache_logger_on_first_use=True,
     )
