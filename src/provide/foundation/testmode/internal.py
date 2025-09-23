@@ -177,22 +177,13 @@ def reset_circuit_breaker_state() -> None:
 def reset_state_managers() -> None:
     """Reset all state managers to default state.
 
-    This resets stream managers, logger state managers, and other
-    state management components to ensure clean test isolation.
+    This resets logger state managers and other state management
+    components to ensure clean test isolation.
     """
     try:
         from provide.foundation.hub.manager import get_hub
 
         hub = get_hub()
-
-        # Reset stream manager if available
-        try:
-            stream_manager = hub.get_component("stream_manager")
-            if stream_manager and hasattr(stream_manager, "reset_to_default"):
-                stream_manager.reset_to_default()
-        except Exception:
-            # Stream manager not available or reset failed, skip
-            pass
 
         # Reset logger state manager if available
         try:

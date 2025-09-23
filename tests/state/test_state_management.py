@@ -16,7 +16,6 @@ from provide.foundation.state import (
     StateManager,
     VersionedConfig,
 )
-from provide.foundation.state.stream_manager import StreamManager
 
 
 class TestImmutableState:
@@ -286,35 +285,6 @@ class TestCircuitBreakerStateMachine:
         assert machine.current_state == "closed"
         assert machine.circuit_state.failure_count == 0
 
-
-class TestStreamManager:
-    """Test stream manager."""
-
-    def test_stream_manager_creation(self) -> None:
-        """Test creating stream manager."""
-        manager = StreamManager.create_default()
-        assert manager.current_log_stream is not None
-        assert not manager.is_file_open
-        assert manager.current_file_path is None
-
-    def test_set_log_stream(self) -> None:
-        """Test setting log stream."""
-        manager = StreamManager.create_default()
-        mock_stream = Mock()
-
-        manager.set_log_stream(mock_stream)
-        assert manager.current_log_stream is mock_stream
-
-    def test_reset_to_default(self) -> None:
-        """Test resetting to default state."""
-        manager = StreamManager.create_default()
-        mock_stream = Mock()
-
-        manager.set_log_stream(mock_stream)
-        manager.reset_to_default()
-
-        assert manager.current_log_stream is not mock_stream
-        assert not manager.is_file_open
 
 
 class TestLoggerStateManager:
