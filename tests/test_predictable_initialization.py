@@ -78,6 +78,7 @@ class TestPredictableInitialization:
         # Also reset Foundation state to ensure clean environment
         from provide.testkit import reset_foundation_setup_for_testing
         from provide.foundation.testmode.internal import reset_global_coordinator
+
         reset_foundation_setup_for_testing()
         reset_global_coordinator()
 
