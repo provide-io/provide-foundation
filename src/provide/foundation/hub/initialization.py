@@ -57,19 +57,12 @@ class InitializationCoordinator:
         self._state = InitializationState()
         self._lock_manager = get_lock_manager()
 
-        # Register all foundation locks
+        # Register all foundation locks (includes coordinator lock)
         from provide.foundation.concurrency.locks import register_foundation_locks
 
         with contextlib.suppress(ValueError):
             # Already registered if ValueError raised
             register_foundation_locks()
-
-        # Register initialization locks if not already registered
-        with contextlib.suppress(ValueError):
-            # Already registered if ValueError raised
-            self._lock_manager.register_lock(
-                "foundation.init.coordinator", order=200, description="Master initialization lock"
-            )
 
     def initialize_foundation(self, registry: Any, config: Any = None, force: bool = False) -> tuple[Any, Any]:
         """Simplified, single-path initialization.

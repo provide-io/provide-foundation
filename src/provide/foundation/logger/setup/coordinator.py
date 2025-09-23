@@ -167,8 +167,9 @@ def internal_setup(config: TelemetryConfig | None = None, is_explicit_call: bool
     """
     # This function assumes the lock is already held.
     structlog.reset_defaults()
-    foundation_logger._is_configured_by_setup = False
-    foundation_logger._active_config = None
+    # Use __dict__ access to avoid triggering proxy initialization
+    foundation_logger.__dict__["_is_configured_by_setup"] = False
+    foundation_logger.__dict__["_active_config"] = None
     _LAZY_SETUP_STATE.update({"done": False, "error": None, "in_progress": False})
 
     current_config = config if config is not None else TelemetryConfig.from_env()
@@ -189,8 +190,9 @@ def internal_setup(config: TelemetryConfig | None = None, is_explicit_call: bool
         core_setup_logger.trace("Configuring structlog output processors")
         configure_structlog_output(current_config, get_log_stream())
 
-    foundation_logger._is_configured_by_setup = is_explicit_call
-    foundation_logger._active_config = current_config
+    # Use __dict__ access to avoid triggering proxy initialization
+    foundation_logger.__dict__["_is_configured_by_setup"] = is_explicit_call
+    foundation_logger.__dict__["_active_config"] = current_config
     _LAZY_SETUP_STATE["done"] = True
 
     if not current_config.globally_disabled:
