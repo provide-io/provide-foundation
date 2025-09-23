@@ -100,7 +100,9 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/ tests/resilience/ --tb=short -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit tests/cli/commands/test_deps_coverage.py::TestDepsCommandWithClick::test_deps_command_with_click -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit -n auto -v)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit -n auto --tb=short -q --maxfail=1)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit -n auto --tb=short -q --maxfail=1)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker -xvs --tb=long)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit tests/core/test_core_service_name_fix.py::test_key_value_still_has_emojis -v --tb=short -q)"
     ],
     "deny": [],
     "ask": [],
