@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import time
 from enum import Enum, auto
+import time
 
 from attrs import define, field, frozen
 
