@@ -14,9 +14,9 @@ from provide.foundation.state import (
     ImmutableState,
     LoggerStateManager,
     StateManager,
-    StreamManager,
     VersionedConfig,
 )
+from provide.foundation.state.stream_manager import StreamManager
 
 
 class TestImmutableState:

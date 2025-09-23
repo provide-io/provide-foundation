@@ -20,9 +20,7 @@ from provide.foundation.state.transitions import (
     CircuitBreakerState,
     CircuitBreakerStateMachine,
 )
-from provide.foundation.state.managers import (
-    StreamState,
-    StreamManager,
+from provide.foundation.state.logger_manager import (
     LoggerState,
     LoggerStateManager,
 )
@@ -36,8 +34,6 @@ __all__ = [
     "CircuitBreakerEvent",
     "CircuitBreakerState",
     "CircuitBreakerStateMachine",
-    "StreamState",
-    "StreamManager",
     "LoggerState",
     "LoggerStateManager",
 ]
