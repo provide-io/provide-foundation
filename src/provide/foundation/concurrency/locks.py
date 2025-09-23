@@ -268,20 +268,19 @@ def register_foundation_locks() -> None:
     # Register locks in order of dependency (lowest to highest)
     # Lower numbers are acquired first to prevent deadlocks
 
-    # Core system locks (order 1-99)
+    # Hub system locks (order 0-99) - most fundamental
+    manager.register_lock("foundation.hub.init", order=0, description="Hub initialization")
+
     manager.register_lock("foundation.config", order=10, description="Configuration system lock")
 
     manager.register_lock("foundation.registry", order=20, description="Component registry lock")
+
+    manager.register_lock("foundation.hub.components", order=30, description="Hub component management")
 
     # Logger system locks (order 100-199)
     manager.register_lock("foundation.logger.setup", order=100, description="Logger setup coordination")
 
     manager.register_lock("foundation.logger.lazy", order=110, description="Lazy logger initialization")
-
-    # Hub system locks (order 200-299)
-    manager.register_lock("foundation.hub.init", order=200, description="Hub initialization")
-
-    manager.register_lock("foundation.hub.components", order=210, description="Hub component management")
 
 
 __all__ = ["LockInfo", "LockManager", "get_lock_manager", "register_foundation_locks"]
