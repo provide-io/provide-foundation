@@ -15,6 +15,11 @@ from provide.foundation.state.config import (
     VersionedConfig,
     ConfigManager,
 )
+from provide.foundation.state.transitions import (
+    CircuitBreakerEvent,
+    CircuitBreakerState,
+    CircuitBreakerStateMachine,
+)
 
 __all__ = [
     "ImmutableState",
@@ -22,4 +27,7 @@ __all__ = [
     "StateMachine",
     "VersionedConfig",
     "ConfigManager",
+    "CircuitBreakerEvent",
+    "CircuitBreakerState",
+    "CircuitBreakerStateMachine",
 ]

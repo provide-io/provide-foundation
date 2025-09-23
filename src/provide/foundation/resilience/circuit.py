@@ -1,15 +1,18 @@
 from __future__ import annotations
 
 from collections.abc import Awaitable, Callable
-import threading
 import time
 from typing import Any, TypeVar
 
 from attrs import define, field
 
 from provide.foundation.resilience.types import CircuitState
+from provide.foundation.state import (
+    CircuitBreakerEvent,
+    CircuitBreakerStateMachine,
+)
 
-"""Circuit breaker implementation for preventing cascading failures."""
+"""Circuit breaker implementation using immutable state management."""
 
 T = TypeVar("T")
 
@@ -18,6 +21,7 @@ T = TypeVar("T")
 class CircuitBreaker:
     """Circuit breaker pattern for preventing cascading failures.
 
+    Uses immutable state management for thread-safe, predictable behavior.
     Tracks failures and opens the circuit when threshold is exceeded.
     Periodically allows test requests to check if service has recovered.
     """
@@ -26,125 +30,79 @@ class CircuitBreaker:
     recovery_timeout: float = field(default=60.0)  # seconds
     expected_exception: tuple[type[Exception], ...] = field(factory=lambda: (Exception,))
 
-    # Internal state
-    _state: CircuitState = field(default=CircuitState.CLOSED, init=False)
-    _failure_count: int = field(default=0, init=False)
-    _last_failure_time: float | None = field(default=None, init=False)
-    _next_attempt_time: float = field(default=0.0, init=False)
-    _lock: threading.RLock = field(factory=threading.RLock, init=False)
+    # State machine for immutable state management
+    _state_machine: CircuitBreakerStateMachine = field(init=False)
+
+    def __attrs_post_init__(self) -> None:
+        """Initialize state machine after attrs initialization."""
+        object.__setattr__(
+            self,
+            "_state_machine",
+            CircuitBreakerStateMachine(
+                failure_threshold=self.failure_threshold,
+                recovery_timeout=self.recovery_timeout,
+            ),
+        )
 
     @property
     def state(self) -> CircuitState:
         """Current circuit breaker state."""
-        with self._lock:
-            return self._state
+        circuit_state = self._state_machine.circuit_state
+        if circuit_state.is_closed():
+            return CircuitState.CLOSED
+        elif circuit_state.is_open():
+            return CircuitState.OPEN
+        else:
+            return CircuitState.HALF_OPEN
 
     @property
     def failure_count(self) -> int:
         """Current failure count."""
-        with self._lock:
-            return self._failure_count
+        return self._state_machine.circuit_state.failure_count
 
-    def _should_attempt_reset(self) -> bool:
-        """Check if we should attempt to reset the circuit."""
-        with self._lock:
-            if self._state != CircuitState.OPEN:
-                return False
+    def _emit_event(self, name: str, data: dict[str, Any]) -> None:
+        """Emit circuit breaker event."""
+        try:
+            from provide.foundation.hub.events import Event, get_event_bus
 
-            current_time = time.time()
-            return current_time >= self._next_attempt_time
-
-    def _record_success(self) -> None:
-        """Record successful execution."""
-        with self._lock:
-            if self._state == CircuitState.HALF_OPEN:
-                # Emit event instead of direct logging to break circular dependency
-                from provide.foundation.hub.events import Event, get_event_bus
-
-                get_event_bus().emit(
-                    Event(
-                        name="circuit_breaker.recovered",
-                        data={
-                            "state": "half_open->closed",
-                            "failure_count": self._failure_count,
-                        },
-                        source="circuit_breaker",
-                    )
+            get_event_bus().emit(
+                Event(
+                    name=name,
+                    data=data,
+                    source="circuit_breaker",
                 )
+            )
+        except ImportError:
+            # Event system not available, skip
+            pass
 
-            self._failure_count = 0
-            self._last_failure_time = None
-            self._state = CircuitState.CLOSED
+    def _check_and_transition_state(self) -> None:
+        """Check if state should transition and handle it."""
+        circuit_state = self._state_machine.circuit_state
 
-    def _record_failure(self, exception: Exception) -> None:
-        """Record failed execution."""
-        with self._lock:
-            self._failure_count += 1
-            self._last_failure_time = time.time()
-
-            if self._state == CircuitState.HALF_OPEN:
-                # Failed during recovery attempt
-                self._state = CircuitState.OPEN
-                self._next_attempt_time = self._last_failure_time + self.recovery_timeout
-                # Emit event instead of direct logging to break circular dependency
-                from provide.foundation.hub.events import Event, get_event_bus
-
-                get_event_bus().emit(
-                    Event(
-                        name="circuit_breaker.recovery_failed",
-                        data={
-                            "state": "half_open->open",
-                            "failure_count": self._failure_count,
-                            "next_attempt_in": self.recovery_timeout,
-                        },
-                        source="circuit_breaker",
-                    )
-                )
-            elif self._failure_count >= self.failure_threshold:
-                # Threshold exceeded, open circuit
-                self._state = CircuitState.OPEN
-                self._next_attempt_time = self._last_failure_time + self.recovery_timeout
-                # Emit event instead of direct logging to break circular dependency
-                from provide.foundation.hub.events import Event, get_event_bus
-
-                get_event_bus().emit(
-                    Event(
-                        name="circuit_breaker.opened",
-                        data={
-                            "state": "closed->open",
-                            "failure_count": self._failure_count,
-                            "failure_threshold": self.failure_threshold,
-                            "next_attempt_in": self.recovery_timeout,
-                        },
-                        source="circuit_breaker",
-                    )
+        if (
+            circuit_state.is_open()
+            and circuit_state.should_attempt_reset()
+            and self._state_machine.transition(CircuitBreakerEvent.TIMEOUT)
+        ):
+                self._emit_event(
+                    "circuit_breaker.attempting_recovery",
+                    {
+                        "state": "open->half_open",
+                        "failure_count": circuit_state.failure_count,
+                    },
                 )
 
     def call(self, func: Callable[..., T], *args: Any, **kwargs: Any) -> T:
         """Execute function with circuit breaker protection (sync)."""
-        # Check if circuit is open and handle state transitions
-        with self._lock:
-            if self._state == CircuitState.OPEN:
-                if self._should_attempt_reset():
-                    self._state = CircuitState.HALF_OPEN
-                    # Emit event instead of direct logging to break circular dependency
-                    from provide.foundation.hub.events import Event, get_event_bus
+        self._check_and_transition_state()
 
-                    get_event_bus().emit(
-                        Event(
-                            name="circuit_breaker.attempting_recovery",
-                            data={
-                                "state": "open->half_open",
-                                "failure_count": self._failure_count,
-                            },
-                            source="circuit_breaker",
-                        )
-                    )
-                else:
-                    raise RuntimeError(
-                        f"Circuit breaker is open. Next attempt in "
-                        f"{self._next_attempt_time - time.time():.1f} seconds",
-                    )
+        circuit_state = self._state_machine.circuit_state
+        if circuit_state.is_open():
+            raise RuntimeError(
+                f"Circuit breaker is open. Next attempt in "
+                f"{circuit_state.next_attempt_time - time.time():.1f} seconds"
+            )
 
         try:
             result = func(*args, **kwargs)
@@ -152,34 +110,19 @@ class CircuitBreaker:
             return result
         except Exception as e:
             if isinstance(e, self.expected_exception):
-                self._record_failure(e)
+                self._record_failure()
             raise
 
     async def call_async(self, func: Callable[..., Awaitable[T]], *args: Any, **kwargs: Any) -> T:
         """Execute async function with circuit breaker protection."""
-        # Check if circuit is open and handle state transitions
-        with self._lock:
-            if self._state == CircuitState.OPEN:
-                if self._should_attempt_reset():
-                    self._state = CircuitState.HALF_OPEN
-                    # Emit event instead of direct logging to break circular dependency
-                    from provide.foundation.hub.events import Event, get_event_bus
+        self._check_and_transition_state()
 
-                    get_event_bus().emit(
-                        Event(
-                            name="circuit_breaker.attempting_recovery",
-                            data={
-                                "state": "open->half_open",
-                                "failure_count": self._failure_count,
-                            },
-                            source="circuit_breaker",
-                        )
-                    )
-                else:
-                    raise RuntimeError(
-                        f"Circuit breaker is open. Next attempt in "
-                        f"{self._next_attempt_time - time.time():.1f} seconds",
-                    )
+        circuit_state = self._state_machine.circuit_state
+        if circuit_state.is_open():
+            raise RuntimeError(
+                f"Circuit breaker is open. Next attempt in "
+                f"{circuit_state.next_attempt_time - time.time():.1f} seconds"
+            )
 
         try:
             result = await func(*args, **kwargs)
@@ -187,26 +130,58 @@ class CircuitBreaker:
             return result
         except Exception as e:
             if isinstance(e, self.expected_exception):
-                self._record_failure(e)
+                self._record_failure()
             raise
+
+    def _record_success(self) -> None:
+        """Record successful execution."""
+        old_state = self._state_machine.circuit_state
+        if self._state_machine.transition(CircuitBreakerEvent.SUCCESS):
+            new_state = self._state_machine.circuit_state
+
+            if old_state.is_half_open() and new_state.is_closed():
+                self._emit_event(
+                    "circuit_breaker.recovered",
+                    {
+                        "state": "half_open->closed",
+                        "failure_count": old_state.failure_count,
+                    },
+                )
+
+    def _record_failure(self) -> None:
+        """Record failed execution."""
+        old_state = self._state_machine.circuit_state
+        if self._state_machine.transition(CircuitBreakerEvent.FAILURE):
+            new_state = self._state_machine.circuit_state
+
+            if old_state.is_half_open() and new_state.is_open():
+                self._emit_event(
+                    "circuit_breaker.recovery_failed",
+                    {
+                        "state": "half_open->open",
+                        "failure_count": new_state.failure_count,
+                        "next_attempt_in": self.recovery_timeout,
+                    },
+                )
+            elif old_state.is_closed() and new_state.is_open():
+                self._emit_event(
+                    "circuit_breaker.opened",
+                    {
+                        "state": "closed->open",
+                        "failure_count": new_state.failure_count,
+                        "failure_threshold": self.failure_threshold,
+                        "next_attempt_in": self.recovery_timeout,
+                    },
+                )
 
     def reset(self) -> None:
         """Manually reset the circuit breaker."""
-        with self._lock:
-            # Emit event instead of direct logging to break circular dependency
-            from provide.foundation.hub.events import Event, get_event_bus
-
-            get_event_bus().emit(
-                Event(
-                    name="circuit_breaker.manual_reset",
-                    data={
-                        "previous_state": self._state.value,
-                        "failure_count": self._failure_count,
-                    },
-                    source="circuit_breaker",
-                )
+        old_state = self._state_machine.circuit_state
+        if self._state_machine.transition(CircuitBreakerEvent.RESET):
+            self._emit_event(
+                "circuit_breaker.reset",
+                {
+                    "state": f"{old_state.state}->closed",
+                    "previous_failure_count": old_state.failure_count,
+                },
             )
-            self._state = CircuitState.CLOSED
-            self._failure_count = 0
-            self._last_failure_time = None
-            self._next_attempt_time = 0.0

@@ -134,7 +134,8 @@
       "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/state/config.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/state/base.py src/provide/foundation/state/config.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/state/transitions.py)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/state/transitions.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/state/transitions.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/state/transitions.py)"
     ],
     "deny": [],
     "ask": [],
