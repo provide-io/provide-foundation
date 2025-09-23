@@ -111,7 +111,8 @@
       "Bash(.venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit -n auto -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker -xvs --capture=no -s --tb=short)",
       "Bash(.venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker -xvs --capture=no -s --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_custom_recovery_timeout -xvs)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_custom_recovery_timeout -xvs)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/ tests/resilience/ --tb=short -q --maxfail=3)"
     ],
     "deny": [],
     "ask": [],
