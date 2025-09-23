@@ -15,6 +15,9 @@ from provide.foundation.resilience.retry import (
 
 """Resilience decorators for retry, circuit breaker, and fallback patterns."""
 
+# Global registry of circuit breaker instances for testing
+_circuit_breaker_instances: list[CircuitBreaker] = []
+
 F = TypeVar("F", bound=Callable[..., Any])
 
 
@@ -203,6 +206,9 @@ def circuit_breaker(
         expected_exception=expected_exception,
     )
 
+    # Register for test cleanup
+    _circuit_breaker_instances.append(breaker)
+
     def decorator(func: F) -> F:
         @functools.wraps(func)
         def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
@@ -217,6 +223,16 @@ def circuit_breaker(
         return sync_wrapper  # type: ignore
 
     return decorator
+
+
+def reset_circuit_breakers_for_testing() -> None:
+    """Reset all circuit breaker instances for test isolation.
+
+    This function is called by the test framework to ensure
+    circuit breaker state doesn't leak between tests.
+    """
+    for breaker in _circuit_breaker_instances:
+        breaker.reset()
 
 
 def fallback(*fallback_funcs: Callable[..., Any]) -> Callable[[F], F]:
