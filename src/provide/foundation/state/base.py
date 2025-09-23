@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-import threading
-import time
 from abc import ABC, abstractmethod
 from collections.abc import Callable
+import contextlib
+import threading
+import time
 from typing import Any, Generic, TypeVar
 
 from attrs import define, field, frozen
@@ -144,9 +145,7 @@ class StateManager:
 
     _state: ImmutableState = field()
     _lock: threading.RLock = field(factory=threading.RLock, init=False)
-    _observers: list[Callable[[ImmutableState, ImmutableState], None]] = field(
-        factory=list, init=False
-    )
+    _observers: list[Callable[[ImmutableState, ImmutableState], None]] = field(factory=list, init=False)
 
     @property
     def current_state(self) -> ImmutableState:
@@ -176,11 +175,8 @@ class StateManager:
 
             # Notify observers
             for observer in self._observers:
-                try:
+                with contextlib.suppress(Exception):
                     observer(old_state, new_state)
-                except Exception:
-                    # Don't let observer errors affect state updates
-                    pass
 
             return new_state
 
@@ -196,10 +192,8 @@ class StateManager:
 
             # Notify observers
             for observer in self._observers:
-                try:
+                with contextlib.suppress(Exception):
                     observer(old_state, new_state)
-                except Exception:
-                    pass
 
     def add_observer(self, observer: Callable[[ImmutableState, ImmutableState], None]) -> None:
         """Add a state change observer.
@@ -216,8 +210,5 @@ class StateManager:
         Args:
             observer: Observer function to remove
         """
-        with self._lock:
-            try:
-                self._observers.remove(observer)
-            except ValueError:
-                pass
+        with self._lock, contextlib.suppress(ValueError):
+            self._observers.remove(observer)
