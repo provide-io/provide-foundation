@@ -13,7 +13,11 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/hub/protocols.py src/provide/foundation/hub/registry.py src/provide/foundation/hub/manager.py src/provide/foundation/hub/__init__.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/hub/protocols.py src/provide/foundation/hub/registry.py src/provide/foundation/hub/manager.py src/provide/foundation/hub/__init__.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/hub/protocols.py src/provide/foundation/hub/registry.py src/provide/foundation/hub/manager.py)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/resilience/bulkhead.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/resilience/bulkhead.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/resilience/bulkhead.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/resilience/bulkhead.py)",
+      "Bash(PYTHONPATH=src .venv/bin/python:*)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/hub/ -x --tb=short -q --maxfail=3)"
     ],
     "deny": [],
     "ask": [],

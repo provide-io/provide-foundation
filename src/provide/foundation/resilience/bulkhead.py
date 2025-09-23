@@ -120,7 +120,7 @@ class ResourcePool:
                 with self._lock:
                     self._active_count += 1
             return True
-        except asyncio.TimeoutError:
+        except TimeoutError:
             return False
         finally:
             with self._lock:
