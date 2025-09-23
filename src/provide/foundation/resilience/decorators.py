@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 from collections.abc import Callable
 import functools
+import inspect
 from typing import Any, TypeVar
 
 from provide.foundation.config.defaults import DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT
@@ -17,6 +18,38 @@ from provide.foundation.resilience.retry import (
 
 # Global registry of circuit breaker instances for testing
 _circuit_breaker_instances: list[CircuitBreaker] = []
+
+
+def _is_in_test_function() -> bool:
+    """Check if the decorator is being applied within a test function.
+
+    Returns True if we're inside a function that appears to be a test function
+    (starts with 'test_' or is in a test file).
+    """
+    try:
+        frame = inspect.currentframe()
+        if frame is None:
+            return False
+
+        # Walk up the call stack to find the function being decorated
+        while frame:
+            frame = frame.f_back
+            if frame is None:
+                break
+
+            # Check if we're in a function definition context
+            function_name = frame.f_code.co_name
+            filename = frame.f_code.co_filename
+
+            # Check if it's a test function or test file
+            if function_name.startswith("test_") or "test_" in filename or "/tests/" in filename:
+                return True
+
+        return False
+    except Exception:
+        # If inspection fails, assume we're not in a test
+        return False
+
 
 F = TypeVar("F", bound=Callable[..., Any])
 
@@ -206,8 +239,10 @@ def circuit_breaker(
         expected_exception=expected_exception,
     )
 
-    # Register for test cleanup
-    _circuit_breaker_instances.append(breaker)
+    # Register for test cleanup only if not in a test function
+    # Test functions should manage their own circuit breaker state
+    if not _is_in_test_function():
+        _circuit_breaker_instances.append(breaker)
 
     def decorator(func: F) -> F:
         @functools.wraps(func)
