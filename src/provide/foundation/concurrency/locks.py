@@ -264,28 +264,28 @@ def get_lock_manager() -> LockManager:
 def register_foundation_locks() -> None:
     """Register all foundation locks with proper ordering.
 
-    Lock ordering hierarchy:
-    - 0-99: Core Hub infrastructure (hub, config, registry)
-    - 100-199: Logger subsystem
-    - 200-299: Initialization and coordination
+    Lock ordering hierarchy (LOWER numbers = MORE fundamental):
+    - 0-99: Orchestration (coordinator, hub initialization)
+    - 100-199: Early subsystems (logger - needed for debugging)
+    - 200-299: Core infrastructure (config, registry, components)
     - 300+: Reserved for future subsystems
     """
     manager = _lock_manager
 
-    # Core Hub infrastructure (order 0-99) - most fundamental
+    # Orchestration (order 0-99) - most fundamental, acquired first
     manager.register_lock("foundation.hub.init", order=0, description="Hub initialization")
-    manager.register_lock("foundation.config", order=10, description="Configuration system lock")
-    manager.register_lock("foundation.registry", order=20, description="Component registry lock")
-    manager.register_lock("foundation.hub.components", order=30, description="Hub component management")
-
-    # Logger subsystem (order 100-199)
-    manager.register_lock("foundation.logger.setup", order=100, description="Logger setup coordination")
-    manager.register_lock("foundation.logger.lazy", order=110, description="Lazy logger initialization")
-
-    # Initialization and coordination (order 200-299)
     manager.register_lock(
-        "foundation.init.coordinator", order=250, description="Master initialization coordinator"
+        "foundation.init.coordinator", order=10, description="Master initialization coordinator"
     )
+
+    # Early subsystems (order 100-199) - needed early for debugging
+    manager.register_lock("foundation.logger.lazy", order=100, description="Lazy logger initialization")
+    manager.register_lock("foundation.logger.setup", order=110, description="Logger setup coordination")
+
+    # Core infrastructure (order 200-299)
+    manager.register_lock("foundation.config", order=200, description="Configuration system lock")
+    manager.register_lock("foundation.registry", order=210, description="Component registry lock")
+    manager.register_lock("foundation.hub.components", order=220, description="Hub component management")
 
 
 __all__ = ["LockInfo", "LockManager", "get_lock_manager", "register_foundation_locks"]

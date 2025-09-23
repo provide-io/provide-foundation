@@ -65,7 +65,9 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/logger/setup/coordinator.py src/provide/foundation/concurrency/locks.py src/provide/foundation/hub/initialization.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/logger/setup/coordinator.py src/provide/foundation/concurrency/locks.py src/provide/foundation/hub/initialization.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/logger/setup/coordinator.py src/provide/foundation/concurrency/locks.py src/provide/foundation/hub/initialization.py)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/hub/test_hub_initialization.py::TestHubInitialization::test_hub_idempotent_initialization -v)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/hub/test_hub_initialization.py::TestHubInitialization::test_hub_idempotent_initialization -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/hub/test_hub_initialization.py::TestHubInitialization::test_hub_config_precedence tests/hub/test_hub_initialization.py::TestHubInitialization::test_hub_idempotent_initialization -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/hub/test_hub_initialization.py -v)"
     ],
     "deny": [],
     "ask": [],
