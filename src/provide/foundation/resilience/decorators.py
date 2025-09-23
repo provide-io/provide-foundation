@@ -20,37 +20,33 @@ from provide.foundation.resilience.retry import (
 _circuit_breaker_instances: list[CircuitBreaker] = []
 
 
-def _is_in_test_function() -> bool:
-    """Check if the decorator is being applied within a test function.
+def _should_register_for_global_reset() -> bool:
+    """Determine if a circuit breaker should be registered for global reset.
 
-    Returns True if we're inside a function that appears to be a test function
-    (starts with 'test_' or is in a test file).
+    We only register circuit breakers created outside of test files for global reset.
+    Circuit breakers created in test files manage their own lifecycle.
     """
     try:
         frame = inspect.currentframe()
         if frame is None:
-            return False
+            return True
 
-        # Walk up the call stack to find the function being decorated
+        # Walk up the call stack to find where the decorator is being applied
         while frame:
             frame = frame.f_back
             if frame is None:
                 break
 
-            # Check if we're in a function definition context
-            function_name = frame.f_code.co_name
             filename = frame.f_code.co_filename
 
-            # Debug output when we detect a test context
-            if function_name.startswith("test_") or "test_" in filename or "/tests/" in filename:
-                # Print debug info to understand when this is being called
-                print(f"DEBUG: Circuit breaker in test context - function: {function_name}, file: {filename}")
-                return True
+            # If we're in a test file, don't register for global reset
+            if "/tests/" in filename or "test_" in filename:
+                return False
 
-        return False
+        return True
     except Exception:
-        # If inspection fails, assume we're not in a test
-        return False
+        # If inspection fails, assume we should register (safer default)
+        return True
 
 
 F = TypeVar("F", bound=Callable[..., Any])
@@ -241,9 +237,9 @@ def circuit_breaker(
         expected_exception=expected_exception,
     )
 
-    # Register for test cleanup only if not in a test function
-    # Test functions should manage their own circuit breaker state
-    if not _is_in_test_function():
+    # Register for test cleanup only if not created in test files
+    # Circuit breakers in test files manage their own lifecycle
+    if _should_register_for_global_reset():
         _circuit_breaker_instances.append(breaker)
 
     def decorator(func: F) -> F:
