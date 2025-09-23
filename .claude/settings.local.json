@@ -166,7 +166,9 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_file_operations_integration.py::TestFileOperationIntegration::test_size_delta_calculation -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_file_operations_integration.py --tb=short -q --maxfail=3)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/state/test_state_management.py src/provide/foundation/testmode/internal.py)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/state/test_state_management.py src/provide/foundation/testmode/internal.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/state/test_state_management.py src/provide/foundation/testmode/internal.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest --tb=no -q --maxfail=5)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tracer/test_otel.py::TestSetupOpentelemetryTracing::test_setup_otel_not_available -xvs)"
     ],
     "deny": [],
     "ask": [],
