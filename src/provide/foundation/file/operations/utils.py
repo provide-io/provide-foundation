@@ -30,7 +30,11 @@ def extract_original_path(temp_path: Path) -> Path | None:
 
     detector = OperationDetector()
     base_name = detector._extract_base_name(temp_path)
-    return temp_path.parent / base_name if base_name else None
+    if base_name:
+        return temp_path.parent / base_name
+    else:
+        # If no temp pattern matches, return the original path
+        return temp_path
 
 
 def group_related_events(events: list[FileEvent], time_window_ms: int = 500) -> list[list[FileEvent]]:
