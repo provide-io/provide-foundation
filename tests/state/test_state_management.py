@@ -1,59 +1,58 @@
 from __future__ import annotations
 
-import pytest
 import threading
 import time
 from unittest.mock import Mock
 
+import pytest
+
 from provide.foundation.state import (
-    ImmutableState,
-    StateManager,
-    VersionedConfig,
-    ConfigManager,
     CircuitBreakerEvent,
     CircuitBreakerState,
     CircuitBreakerStateMachine,
-    StreamState,
-    StreamManager,
-    LoggerState,
+    ConfigManager,
+    ImmutableState,
     LoggerStateManager,
+    StateManager,
+    StreamManager,
+    VersionedConfig,
 )
 
 
 class TestImmutableState:
     """Test immutable state base class."""
 
-    def test_immutable_state_creation(self):
+    def test_immutable_state_creation(self) -> None:
         """Test creating immutable state."""
         state = ImmutableState()
         assert state.generation == 0
         assert isinstance(state.created_at, float)
 
-    def test_with_changes_increments_generation(self):
+    def test_with_changes_increments_generation(self) -> None:
         """Test that with_changes increments generation."""
         state = ImmutableState()
         new_state = state.with_changes()
         assert new_state.generation == 1
         assert new_state.created_at == state.created_at
 
-    def test_immutability(self):
+    def test_immutability(self) -> None:
         """Test that state objects are immutable."""
         state = ImmutableState()
-        with pytest.raises(Exception):  # attrs.exceptions.FrozenInstanceError
+        with pytest.raises(AttributeError):  # attrs.exceptions.FrozenInstanceError
             state.generation = 5
 
 
 class TestStateManager:
     """Test state manager functionality."""
 
-    def test_state_manager_creation(self):
+    def test_state_manager_creation(self) -> None:
         """Test creating a state manager."""
         initial_state = ImmutableState()
         manager = StateManager(state=initial_state)
         assert manager.current_state is initial_state
         assert manager.generation == 0
 
-    def test_atomic_updates(self):
+    def test_atomic_updates(self) -> None:
         """Test atomic state updates."""
         initial_state = ImmutableState()
         manager = StateManager(state=initial_state)
@@ -62,13 +61,13 @@ class TestStateManager:
         assert new_state.generation == 1
         assert manager.current_state is new_state
 
-    def test_thread_safety(self):
+    def test_thread_safety(self) -> None:
         """Test thread-safe access to state."""
         initial_state = ImmutableState()
         manager = StateManager(state=initial_state)
         results = []
 
-        def worker():
+        def worker() -> None:
             state = manager.current_state
             results.append(state.generation)
 
@@ -81,14 +80,14 @@ class TestStateManager:
         # All threads should see the same generation
         assert all(gen == 0 for gen in results)
 
-    def test_observers(self):
+    def test_observers(self) -> None:
         """Test state change observers."""
         initial_state = ImmutableState()
         manager = StateManager(state=initial_state)
 
         observer_calls = []
 
-        def observer(old_state, new_state):
+        def observer(old_state: ImmutableState, new_state: ImmutableState) -> None:
             observer_calls.append((old_state.generation, new_state.generation))
 
         manager.add_observer(observer)
@@ -101,14 +100,14 @@ class TestStateManager:
 class TestVersionedConfig:
     """Test versioned configuration."""
 
-    def test_config_creation(self):
+    def test_config_creation(self) -> None:
         """Test creating versioned config."""
         config = VersionedConfig(config_name="test")
         assert config.config_name == "test"
         assert config.data == {}
         assert config.generation == 0
 
-    def test_config_get_set(self):
+    def test_config_get_set(self) -> None:
         """Test getting and setting config values."""
         config = VersionedConfig(config_name="test")
         assert config.get("key", "default") == "default"
@@ -117,7 +116,7 @@ class TestVersionedConfig:
         assert new_config.get("key") == "value"
         assert new_config.generation == 1
 
-    def test_config_update(self):
+    def test_config_update(self) -> None:
         """Test updating multiple config values."""
         config = VersionedConfig(config_name="test")
         new_config = config.update({"key1": "value1", "key2": "value2"})
@@ -126,7 +125,7 @@ class TestVersionedConfig:
         assert new_config.get("key2") == "value2"
         assert new_config.generation == 1
 
-    def test_config_immutability(self):
+    def test_config_immutability(self) -> None:
         """Test config immutability."""
         config = VersionedConfig(config_name="test", data={"key": "value"})
         new_config = config.set("key", "new_value")
@@ -139,7 +138,7 @@ class TestVersionedConfig:
 class TestConfigManager:
     """Test configuration manager."""
 
-    def test_config_registration(self):
+    def test_config_registration(self) -> None:
         """Test registering configurations."""
         manager = ConfigManager()
         config = VersionedConfig(config_name="test")
@@ -149,7 +148,7 @@ class TestConfigManager:
         assert retrieved is not None
         assert retrieved.config_name == "test"
 
-    def test_config_updates(self):
+    def test_config_updates(self) -> None:
         """Test updating configurations."""
         manager = ConfigManager()
         config = VersionedConfig(config_name="test")
@@ -159,7 +158,7 @@ class TestConfigManager:
         assert updated.get("key") == "value"
         assert updated.generation == 1
 
-    def test_change_listeners(self):
+    def test_change_listeners(self) -> None:
         """Test configuration change listeners."""
         manager = ConfigManager()
         config = VersionedConfig(config_name="test")
@@ -167,7 +166,7 @@ class TestConfigManager:
 
         listener_calls = []
 
-        def listener(old_state, new_state):
+        def listener(old_state: ImmutableState, new_state: ImmutableState) -> None:
             listener_calls.append((old_state.generation, new_state.generation))
 
         manager.add_change_listener("test", listener)
@@ -180,7 +179,7 @@ class TestConfigManager:
 class TestCircuitBreakerState:
     """Test circuit breaker state."""
 
-    def test_initial_state(self):
+    def test_initial_state(self) -> None:
         """Test initial circuit breaker state."""
         state = CircuitBreakerState()
         assert state.is_closed()
@@ -188,7 +187,7 @@ class TestCircuitBreakerState:
         assert not state.is_half_open()
         assert state.failure_count == 0
 
-    def test_record_failure(self):
+    def test_record_failure(self) -> None:
         """Test recording failures."""
         state = CircuitBreakerState(failure_threshold=2)
 
@@ -202,7 +201,7 @@ class TestCircuitBreakerState:
         assert new_state.is_open()
         assert new_state.failure_count == 2
 
-    def test_record_success(self):
+    def test_record_success(self) -> None:
         """Test recording success."""
         # Test success in half-open state
         state = CircuitBreakerState(state="half_open", failure_count=3)
@@ -211,7 +210,7 @@ class TestCircuitBreakerState:
         assert new_state.is_closed()
         assert new_state.failure_count == 0
 
-    def test_should_attempt_reset(self):
+    def test_should_attempt_reset(self) -> None:
         """Test reset timing logic."""
         current_time = time.time()
         state = CircuitBreakerState(
@@ -229,13 +228,13 @@ class TestCircuitBreakerState:
 class TestCircuitBreakerStateMachine:
     """Test circuit breaker state machine."""
 
-    def test_state_machine_creation(self):
+    def test_state_machine_creation(self) -> None:
         """Test creating state machine."""
         machine = CircuitBreakerStateMachine()
         assert machine.current_state == "closed"
         assert machine.circuit_state.is_closed()
 
-    def test_failure_transitions(self):
+    def test_failure_transitions(self) -> None:
         """Test failure state transitions."""
         machine = CircuitBreakerStateMachine(failure_threshold=2)
 
@@ -249,7 +248,7 @@ class TestCircuitBreakerStateMachine:
         assert machine.current_state == "open"
         assert machine.circuit_state.failure_count == 2
 
-    def test_recovery_transitions(self):
+    def test_recovery_transitions(self) -> None:
         """Test recovery state transitions."""
         machine = CircuitBreakerStateMachine(recovery_timeout=0.001)
 
@@ -268,7 +267,7 @@ class TestCircuitBreakerStateMachine:
         assert machine.current_state == "closed"
         assert machine.circuit_state.failure_count == 0
 
-    def test_reset_functionality(self):
+    def test_reset_functionality(self) -> None:
         """Test manual reset."""
         machine = CircuitBreakerStateMachine()
 
@@ -287,14 +286,14 @@ class TestCircuitBreakerStateMachine:
 class TestStreamManager:
     """Test stream manager."""
 
-    def test_stream_manager_creation(self):
+    def test_stream_manager_creation(self) -> None:
         """Test creating stream manager."""
         manager = StreamManager.create_default()
         assert manager.current_log_stream is not None
         assert not manager.is_file_open
         assert manager.current_file_path is None
 
-    def test_set_log_stream(self):
+    def test_set_log_stream(self) -> None:
         """Test setting log stream."""
         manager = StreamManager.create_default()
         mock_stream = Mock()
@@ -302,7 +301,7 @@ class TestStreamManager:
         manager.set_log_stream(mock_stream)
         assert manager.current_log_stream is mock_stream
 
-    def test_reset_to_default(self):
+    def test_reset_to_default(self) -> None:
         """Test resetting to default state."""
         manager = StreamManager.create_default()
         mock_stream = Mock()
@@ -317,14 +316,14 @@ class TestStreamManager:
 class TestLoggerStateManager:
     """Test logger state manager."""
 
-    def test_logger_state_creation(self):
+    def test_logger_state_creation(self) -> None:
         """Test creating logger state manager."""
         manager = LoggerStateManager.create_default()
         assert not manager.is_setup_done
         assert not manager.is_setup_in_progress
         assert manager.setup_error is None
 
-    def test_setup_lifecycle(self):
+    def test_setup_lifecycle(self) -> None:
         """Test setup lifecycle management."""
         manager = LoggerStateManager.create_default()
 
@@ -339,7 +338,7 @@ class TestLoggerStateManager:
         assert manager.is_setup_done
         assert manager.is_configured_by_setup
 
-    def test_setup_failure(self):
+    def test_setup_failure(self) -> None:
         """Test setup failure handling."""
         manager = LoggerStateManager.create_default()
         error = Exception("Setup failed")
