@@ -57,11 +57,18 @@ class InitializationCoordinator:
         self._state = InitializationState()
         self._lock_manager = get_lock_manager()
 
+        # Register all foundation locks
+        from provide.foundation.concurrency.locks import register_foundation_locks
+
+        with contextlib.suppress(ValueError):
+            # Already registered if ValueError raised
+            register_foundation_locks()
+
         # Register initialization locks if not already registered
         with contextlib.suppress(ValueError):
             # Already registered if ValueError raised
             self._lock_manager.register_lock(
-                "foundation.init.coordinator", order=1, description="Master initialization lock"
+                "foundation.init.coordinator", order=5, description="Master initialization lock"
             )
 
     def initialize_foundation(self, registry: Any, config: Any = None, force: bool = False) -> tuple[Any, Any]:
@@ -178,6 +185,10 @@ class InitializationCoordinator:
         """Check if foundation is initialized."""
         return self._state.is_initialized
 
+    def reset_state(self) -> None:
+        """Reset coordinator state for testing."""
+        self._state.reset()
+
 
 # Global coordinator instance
 _coordinator = InitializationCoordinator()
@@ -188,4 +199,8 @@ def get_initialization_coordinator() -> InitializationCoordinator:
     return _coordinator
 
 
-__all__ = ["InitializationCoordinator", "InitializationState", "get_initialization_coordinator"]
+__all__ = [
+    "InitializationCoordinator",
+    "InitializationState",
+    "get_initialization_coordinator",
+]

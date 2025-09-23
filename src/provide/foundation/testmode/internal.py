@@ -132,3 +132,21 @@ def reset_profiling_state() -> None:
     except ImportError:
         # Profiling module or Hub not available, skip
         pass
+
+
+def reset_global_coordinator() -> None:
+    """Reset the global initialization coordinator state for testing.
+
+    This function resets the singleton InitializationCoordinator state
+    to ensure proper test isolation between test runs.
+
+    WARNING: This should only be called from test code or test fixtures.
+    Production code should not reset the global coordinator state.
+    """
+    try:
+        from provide.foundation.hub.initialization import _coordinator
+
+        _coordinator.reset_state()
+    except ImportError:
+        # Initialization module not available, skip
+        pass

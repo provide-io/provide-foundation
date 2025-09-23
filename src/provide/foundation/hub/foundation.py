@@ -117,6 +117,14 @@ class FoundationManager:
         self._config = None
         self._logger_instance = None
 
+        # Reset global coordinator state only in test mode
+        from provide.foundation.testmode.detection import is_in_test_mode
+
+        if is_in_test_mode():
+            from provide.foundation.testmode.internal import reset_global_coordinator
+
+            reset_global_coordinator()
+
     def _get_logger(self) -> Any | None:
         """Get logger for internal use."""
         if self._logger_instance:
