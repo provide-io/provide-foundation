@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import contextlib
 import threading
 import time
+from collections.abc import Callable
 from typing import Any
 
 from attrs import define, field, frozen
@@ -22,6 +24,21 @@ class VersionedConfig(ImmutableState):
     config_name: str = field()
     data: dict[str, Any] = field(factory=dict)
     parent_generation: int | None = field(default=None)
+
+    def with_changes(self, **changes: Any) -> VersionedConfig:
+        """Create a new state instance with the specified changes.
+
+        Args:
+            **changes: Field updates to apply
+
+        Returns:
+            New state instance with updated generation
+        """
+        # Increment generation for change tracking
+        if "generation" not in changes:
+            changes["generation"] = self.generation + 1
+
+        return self.__class__(**{**self.__dict__, **changes})
 
     def get(self, key: str, default: Any = None) -> Any:
         """Get a configuration value.
@@ -106,7 +123,7 @@ class ConfigManager:
 
     _configs: dict[str, StateManager] = field(factory=dict)
     _lock: threading.RLock = field(factory=threading.RLock, init=False)
-    _change_listeners: dict[str, list[callable]] = field(factory=dict, init=False)
+    _change_listeners: dict[str, list[Callable[[ImmutableState, ImmutableState], None]]] = field(factory=dict, init=False)
 
     def register_config(self, config: VersionedConfig) -> None:
         """Register a new configuration.
@@ -118,7 +135,7 @@ class ConfigManager:
             if config.config_name in self._configs:
                 raise ValueError(f"Configuration '{config.config_name}' already registered")
 
-            manager = StateManager(_state=config)
+            manager = StateManager(state=config)
             self._configs[config.config_name] = manager
             self._change_listeners[config.config_name] = []
 
@@ -136,7 +153,10 @@ class ConfigManager:
         """
         with self._lock:
             manager = self._configs.get(name)
-            return manager.current_state if manager else None
+            if manager:
+                state = manager.current_state
+                return state if isinstance(state, VersionedConfig) else None
+            return None
 
     def update_config(self, name: str, **updates: Any) -> VersionedConfig:
         """Update a configuration with new values.
@@ -157,6 +177,8 @@ class ConfigManager:
                 raise KeyError(f"Configuration '{name}' not found")
 
             current_config = manager.current_state
+            if not isinstance(current_config, VersionedConfig):
+                raise TypeError(f"Expected VersionedConfig, got {type(current_config)}")
             new_config = current_config.update(updates)
             manager.replace_state(new_config)
             return new_config
@@ -181,6 +203,8 @@ class ConfigManager:
                 raise KeyError(f"Configuration '{name}' not found")
 
             current_config = manager.current_state
+            if not isinstance(current_config, VersionedConfig):
+                raise TypeError(f"Expected VersionedConfig, got {type(current_config)}")
             new_config = current_config.set(key, value)
             manager.replace_state(new_config)
             return new_config
@@ -204,7 +228,7 @@ class ConfigManager:
             raise KeyError(f"Configuration '{name}' not found")
         return config.get(key, default)
 
-    def add_change_listener(self, name: str, listener: callable) -> None:
+    def add_change_listener(self, name: str, listener: Callable[[ImmutableState, ImmutableState], None]) -> None:
         """Add a change listener for a configuration.
 
         Args:
@@ -216,7 +240,7 @@ class ConfigManager:
                 self._change_listeners[name] = []
             self._change_listeners[name].append(listener)
 
-    def remove_change_listener(self, name: str, listener: callable) -> None:
+    def remove_change_listener(self, name: str, listener: Callable[[ImmutableState, ImmutableState], None]) -> None:
         """Remove a change listener for a configuration.
 
         Args:
@@ -225,10 +249,8 @@ class ConfigManager:
         """
         with self._lock:
             listeners = self._change_listeners.get(name, [])
-            try:
+            with contextlib.suppress(ValueError):
                 listeners.remove(listener)
-            except ValueError:
-                pass
 
     def list_configs(self) -> list[str]:
         """List all registered configuration names.
@@ -262,7 +284,7 @@ class ConfigManager:
             if manager:
                 # Find the root configuration (generation 0)
                 current = manager.current_state
-                if hasattr(current, 'config_name'):
+                if hasattr(current, "config_name"):
                     initial_config = VersionedConfig(
                         config_name=current.config_name,
                         data={},
@@ -286,8 +308,5 @@ class ConfigManager:
         listeners = self._change_listeners.get(config_name, [])
 
         for listener in listeners:
-            try:
+            with contextlib.suppress(Exception):
                 listener(old_state, new_state)
-            except Exception:
-                # Don't let listener errors affect config updates
-                pass

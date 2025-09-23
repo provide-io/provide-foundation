@@ -143,7 +143,7 @@ class StateManager:
     Provides atomic updates and version tracking for state objects.
     """
 
-    _state: ImmutableState = field()
+    _state: ImmutableState = field(alias="state")
     _lock: threading.RLock = field(factory=threading.RLock, init=False)
     _observers: list[Callable[[ImmutableState, ImmutableState], None]] = field(factory=list, init=False)
 
