@@ -149,7 +149,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py --tb=short -q)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py::TestStreamManager::test_reset_to_default -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py::TestStreamManager::test_stream_manager_creation -v)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py::TestCircuitBreakerStateMachine -v)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py::TestCircuitBreakerStateMachine -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py -k \"not StreamManager\" -v)"
     ],
     "deny": [],
     "ask": [],
