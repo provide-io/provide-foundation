@@ -1,10 +1,5 @@
 from __future__ import annotations
 
-"""Basic environment variable getters with type coercion.
-
-Provides safe functions for reading and parsing environment variables
-with automatic type detection and validation.
-"""
 import os
 from pathlib import Path
 from typing import Any, TypeVar, get_origin
@@ -13,10 +8,16 @@ from provide.foundation.errors.config import ValidationError
 from provide.foundation.logger import get_logger
 from provide.foundation.utils.parsing import parse_bool, parse_dict, parse_list
 
+"""Basic environment variable getters with type coercion.
+
+Provides safe functions for reading and parsing environment variables
+with automatic type detection and validation.
+"""
+
 T = TypeVar("T")
 
 
-def _get_logger():
+def _get_logger() -> Any:
     """Get logger instance lazily to avoid circular imports."""
 
     return get_logger(__name__)
@@ -145,8 +146,8 @@ def get_path(name: str, default: Path | str | None = None) -> Path | None:
         return Path(default) if not isinstance(default, Path) else default
 
     # Expand user and environment variables
-    expanded = os.path.expanduser(os.path.expandvars(value))
-    return Path(expanded)
+    expanded = os.path.expandvars(value)
+    return Path(expanded).expanduser()
 
 
 def get_list(name: str, default: list[str] | None = None, separator: str = ",") -> list[str]:
@@ -232,6 +233,32 @@ def get_dict(
         return result
 
 
+def _parse_simple_type(name: str, type_hint: type) -> Any:
+    """Parse environment variable for simple types."""
+    if type_hint is bool:
+        return get_bool(name)
+    if type_hint is int:
+        return get_int(name)
+    if type_hint is float:
+        return get_float(name)
+    if type_hint is str:
+        return get_str(name)
+    if type_hint is Path:
+        return get_path(name)
+    # Fallback to string for unknown simple types
+    return os.environ[name]
+
+
+def _parse_complex_type(name: str, origin: type) -> Any:
+    """Parse environment variable for complex types."""
+    if origin is list:
+        return get_list(name)
+    if origin is dict:
+        return get_dict(name)
+    # Fallback to string for unknown complex types
+    return os.environ[name]
+
+
 def require(name: str, type_hint: type[T] | None = None) -> Any:
     """Require an environment variable to be set.
 
@@ -259,21 +286,6 @@ def require(name: str, type_hint: type[T] | None = None) -> Any:
     # Parse based on type hint
     origin = get_origin(type_hint)
     if origin is None:
-        # Simple type
-        if type_hint is bool:
-            return get_bool(name)
-        if type_hint is int:
-            return get_int(name)
-        if type_hint is float:
-            return get_float(name)
-        if type_hint is str:
-            return get_str(name)
-        if type_hint is Path:
-            return get_path(name)
-    elif origin is list:
-        return get_list(name)
-    elif origin is dict:
-        return get_dict(name)
-
-    # Fallback to string
-    return os.environ[name]
+        return _parse_simple_type(name, type_hint)
+    else:
+        return _parse_complex_type(name, origin)

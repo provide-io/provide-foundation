@@ -29,25 +29,13 @@ class SchemaField:
     pattern: str | None = None
     sensitive: bool = False
 
-    async def validate(self, value: Any) -> None:
-        """Validate a value against this schema field.
-
-        Args:
-            value: Value to validate
-
-        Raises:
-            ConfigValidationError: If validation fails
-
-        """
-        # Check required
+    def _validate_required(self, value: Any) -> None:
+        """Check required field validation."""
         if self.required and value is None:
             raise ConfigValidationError("Field is required", field=self.name, value=value)
 
-        # Skip further validation for None values
-        if value is None:
-            return
-
-        # Check type
+    def _validate_type(self, value: Any) -> None:
+        """Check type validation."""
         if self.field_type is not None and not isinstance(value, self.field_type):
             raise ConfigValidationError(
                 f"Expected type {self.field_type.__name__}, got {type(value).__name__}",
@@ -55,18 +43,20 @@ class SchemaField:
                 value=value,
             )
 
-        # Check choices
+    def _validate_choices(self, value: Any) -> None:
+        """Check choices validation."""
         if self.choices is not None and value not in self.choices:
             raise ConfigValidationError(f"Value must be one of {self.choices}", field=self.name, value=value)
 
-        # Check min/max
+    def _validate_range(self, value: Any) -> None:
+        """Check min/max value validation."""
         if self.min_value is not None and value < self.min_value:
             raise ConfigValidationError(f"Value must be >= {self.min_value}", field=self.name, value=value)
-
         if self.max_value is not None and value > self.max_value:
             raise ConfigValidationError(f"Value must be <= {self.max_value}", field=self.name, value=value)
 
-        # Check pattern
+    def _validate_pattern(self, value: Any) -> None:
+        """Check pattern validation."""
         if self.pattern is not None and isinstance(value, str):
             import re
 
@@ -77,7 +67,8 @@ class SchemaField:
                     value=value,
                 )
 
-        # Custom validator
+    async def _validate_custom(self, value: Any) -> None:
+        """Check custom validator."""
         if self.validator is not None:
             try:
                 result = self.validator(value)
@@ -90,6 +81,30 @@ class SchemaField:
                 raise
             except Exception as e:
                 raise ConfigValidationError(f"Validation error: {e}", field=self.name, value=value) from e
+
+    async def validate(self, value: Any) -> None:
+        """Validate a value against this schema field.
+
+        Args:
+            value: Value to validate
+
+        Raises:
+            ConfigValidationError: If validation fails
+
+        """
+        # Check required
+        self._validate_required(value)
+
+        # Skip further validation for None values
+        if value is None:
+            return
+
+        # Run all validations
+        self._validate_type(value)
+        self._validate_choices(value)
+        self._validate_range(value)
+        self._validate_pattern(value)
+        await self._validate_custom(value)
 
 
 class ConfigSchema:

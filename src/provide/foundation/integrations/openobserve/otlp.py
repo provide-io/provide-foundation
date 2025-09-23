@@ -136,6 +136,68 @@ def send_log_otlp(
         return False
 
 
+def _add_trace_context_to_log_entry(log_entry: dict[str, Any]) -> None:
+    """Add trace context to log entry if available."""
+    # Try OpenTelemetry trace context first
+    try:
+        from opentelemetry import trace
+
+        current_span = trace.get_current_span()
+        if current_span and current_span.is_recording():
+            span_context = current_span.get_span_context()
+            log_entry["trace_id"] = f"{span_context.trace_id:032x}"
+            log_entry["span_id"] = f"{span_context.span_id:016x}"
+            return
+    except ImportError:
+        pass
+
+    # Try Foundation's tracer context
+    try:
+        from provide.foundation.tracer.context import (
+            get_current_span,
+            get_current_trace_id,
+        )
+
+        span = get_current_span()
+        if span:
+            log_entry["trace_id"] = span.trace_id
+            log_entry["span_id"] = span.span_id
+        elif trace_id := get_current_trace_id():
+            log_entry["trace_id"] = trace_id
+    except ImportError:
+        pass
+
+
+def _build_log_entry(
+    message: str,
+    level: str,
+    service: str | None,
+    attributes: dict[str, Any] | None,
+    config: Any,
+) -> dict[str, Any]:
+    """Build the log entry dictionary."""
+    log_entry = {
+        "_timestamp": int(datetime.now().timestamp() * 1_000_000),
+        "level": level.upper(),
+        "message": message,
+        "service": service or config.service_name or "foundation",
+    }
+
+    if attributes:
+        log_entry.update(attributes)
+
+    _add_trace_context_to_log_entry(log_entry)
+    return log_entry
+
+
+def _build_bulk_url(client: Any) -> str:
+    """Build the bulk API URL for the client."""
+    if f"/api/{client.organization}" in client.url:
+        return f"{client.url}/_bulk"
+    else:
+        return f"{client.url}/api/{client.organization}/_bulk"
+
+
 def send_log_bulk(
     message: str,
     level: str = "INFO",
@@ -165,44 +227,7 @@ def send_log_bulk(
         config = TelemetryConfig.from_env()
 
         # Build log entry
-        log_entry = {
-            "_timestamp": int(datetime.now().timestamp() * 1_000_000),
-            "level": level.upper(),
-            "message": message,
-            "service": service or config.service_name or "foundation",
-        }
-
-        # Add attributes
-        if attributes:
-            log_entry.update(attributes)
-
-        # Add trace context if available
-        try:
-            from opentelemetry import trace
-
-            current_span = trace.get_current_span()
-            if current_span and current_span.is_recording():
-                span_context = current_span.get_span_context()
-                log_entry["trace_id"] = f"{span_context.trace_id:032x}"
-                log_entry["span_id"] = f"{span_context.span_id:016x}"
-        except ImportError:
-            pass
-
-        # Try Foundation's tracer context
-        try:
-            from provide.foundation.tracer.context import (
-                get_current_span,
-                get_current_trace_id,
-            )
-
-            span = get_current_span()
-            if span:
-                log_entry["trace_id"] = span.trace_id
-                log_entry["span_id"] = span.span_id
-            elif trace_id := get_current_trace_id():
-                log_entry["trace_id"] = trace_id
-        except ImportError:
-            pass
+        log_entry = _build_log_entry(message, level, service, attributes, config)
 
         # Format as bulk request
         stream = config.openobserve_stream
@@ -211,12 +236,7 @@ def send_log_bulk(
         # Send via bulk API
         import requests
 
-        # Build URL - check if client.url already includes /api/{org}
-        if f"/api/{client.organization}" in client.url:
-            url = f"{client.url}/_bulk"
-        else:
-            url = f"{client.url}/api/{client.organization}/_bulk"
-
+        url = _build_bulk_url(client)
         response = requests.post(
             url,
             headers=client.session.headers,

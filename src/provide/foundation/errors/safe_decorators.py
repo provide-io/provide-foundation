@@ -12,6 +12,47 @@ from provide.foundation.hub.foundation import get_foundation_logger
 F = TypeVar("F", bound=Callable[..., Any])
 
 
+def _get_func_name(func: Callable) -> str:
+    """Get function name with fallback."""
+    return getattr(func, "__name__", "<anonymous>")
+
+
+def _log_function_entry(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+    """Log function entry if appropriate level."""
+    if log_level in ("debug", "trace"):
+        log_method = getattr(logger, log_level)
+        func_name = _get_func_name(func)
+        log_method(
+            f"Entering {func_name}",
+            function=func_name,
+            **context,
+        )
+
+
+def _log_function_success(logger: Any, func: Callable, log_level: str, context: dict[str, Any]) -> None:
+    """Log successful function completion."""
+    log_method = getattr(logger, log_level, logger.debug)
+    func_name = _get_func_name(func)
+    log_method(
+        f"Successfully completed {func_name}",
+        function=func_name,
+        **context,
+    )
+
+
+def _log_function_error(logger: Any, func: Callable, error: Exception, context: dict[str, Any]) -> None:
+    """Log function error with context."""
+    func_name = _get_func_name(func)
+    logger.error(
+        f"Error in {func_name}",
+        exc_info=True,
+        function=func_name,
+        error_type=type(error).__name__,
+        error_message=str(error),
+        **context,
+    )
+
+
 def log_only_error_context(
     *,
     context_provider: Callable[[], dict[str, Any]] | None = None,
@@ -50,40 +91,18 @@ def log_only_error_context(
                 context = context_provider() if context_provider else {}
                 logger = get_foundation_logger()
 
-                # Log function entry if debug/trace level
-                if log_level in ("debug", "trace"):
-                    log_method = getattr(logger, log_level)
-                    log_method(
-                        f"Entering {getattr(func, '__name__', '<anonymous>')}",
-                        function=getattr(func, "__name__", "<anonymous>"),
-                        **context,
-                    )
+                _log_function_entry(logger, func, log_level, context)
 
                 try:
                     result = await func(*args, **kwargs)
 
-                    # Log success if requested
                     if log_success:
-                        log_method = getattr(logger, log_level, logger.debug)
-                        log_method(
-                            f"Successfully completed {getattr(func, '__name__', '<anonymous>')}",
-                            function=getattr(func, "__name__", "<anonymous>"),
-                            **context,
-                        )
+                        _log_function_success(logger, func, log_level, context)
 
                     return result
 
                 except Exception as e:
-                    # Log error context without changing the error
-                    logger.error(
-                        f"Error in {getattr(func, '__name__', '<anonymous>')}",
-                        exc_info=True,
-                        function=getattr(func, "__name__", "<anonymous>"),
-                        error_type=type(e).__name__,
-                        error_message=str(e),
-                        **context,
-                    )
-                    # Re-raise the original error unchanged
+                    _log_function_error(logger, func, e, context)
                     raise
 
             return async_wrapper  # type: ignore
@@ -93,40 +112,18 @@ def log_only_error_context(
             context = context_provider() if context_provider else {}
             logger = get_foundation_logger()
 
-            # Log function entry if debug/trace level
-            if log_level in ("debug", "trace"):
-                log_method = getattr(logger, log_level)
-                log_method(
-                    f"Entering {getattr(func, '__name__', '<anonymous>')}",
-                    function=getattr(func, "__name__", "<anonymous>"),
-                    **context,
-                )
+            _log_function_entry(logger, func, log_level, context)
 
             try:
                 result = func(*args, **kwargs)
 
-                # Log success if requested
                 if log_success:
-                    log_method = getattr(logger, log_level, logger.debug)
-                    log_method(
-                        f"Successfully completed {getattr(func, '__name__', '<anonymous>')}",
-                        function=getattr(func, "__name__", "<anonymous>"),
-                        **context,
-                    )
+                    _log_function_success(logger, func, log_level, context)
 
                 return result
 
             except Exception as e:
-                # Log error context without changing the error
-                logger.error(
-                    f"Error in {getattr(func, '__name__', '<anonymous>')}",
-                    exc_info=True,
-                    function=getattr(func, "__name__", "<anonymous>"),
-                    error_type=type(e).__name__,
-                    error_message=str(e),
-                    **context,
-                )
-                # Re-raise the original error unchanged
+                _log_function_error(logger, func, e, context)
                 raise
 
         return wrapper  # type: ignore

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from provide.foundation.utils.deps import (
     DependencyStatus,
     check_optional_deps,
@@ -71,7 +73,7 @@ __all__ = [
 ]
 
 
-def __getattr__(name: str):
+def __getattr__(name: str) -> Any:
     """Lazy import for modules."""
     if name == "environment":
         from provide.foundation.utils import environment as env_module

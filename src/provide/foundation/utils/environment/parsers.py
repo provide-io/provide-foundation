@@ -1,13 +1,14 @@
 from __future__ import annotations
 
+import re
+
+from provide.foundation.errors.config import ValidationError
+
 """Duration and size parsing utilities for environment variables.
 
 Provides specialized parsers for common environment variable formats
 like durations (30s, 1h30m) and sizes (10MB, 1.5GB).
 """
-import re
-
-from provide.foundation.errors.config import ValidationError
 
 
 def parse_duration(value: str) -> int:

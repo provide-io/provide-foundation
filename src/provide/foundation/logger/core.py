@@ -67,6 +67,47 @@ class FoundationLogger:
             pass
         return False
 
+    def _try_hub_configuration(self) -> bool:
+        """Try to configure using Hub if available.
+
+        Returns:
+            True if Hub configuration was successful
+        """
+        if self._hub is None:
+            return False
+
+        try:
+            config = self._hub.get_foundation_config()
+            if config and not self._is_configured_by_setup:
+                self.setup(config)
+            return True
+        except Exception:
+            # If Hub setup fails, fall through to legacy setup
+            return False
+
+    def _should_use_emergency_fallback(self) -> bool:
+        """Check if emergency fallback should be used.
+
+        Returns:
+            True if emergency fallback should be used
+        """
+        return _LAZY_SETUP_STATE["in_progress"] or _LAZY_SETUP_STATE["error"]
+
+    def _perform_locked_setup(self) -> None:
+        """Perform setup within the lock."""
+        # Double-check state after acquiring lock, as another thread might have finished.
+        if self._is_configured_by_setup or (_LAZY_SETUP_STATE["done"] and not _LAZY_SETUP_STATE["error"]):
+            return
+
+        # If error was set while waiting for lock, use fallback.
+        if _LAZY_SETUP_STATE["error"]:
+            self._setup_emergency_fallback()
+            return
+
+        # If still needs setup, perform lazy setup.
+        if not _LAZY_SETUP_STATE["done"]:
+            self._perform_lazy_setup()
+
     def _ensure_configured(self) -> None:
         """Ensures the logger is configured, performing lazy setup if necessary.
         Uses Hub for configuration when available, falls back to legacy setup.
@@ -77,22 +118,15 @@ class FoundationLogger:
             return
 
         # If we have a Hub, try to get configuration from it
-        if self._hub is not None:
-            try:
-                config = self._hub.get_foundation_config()
-                if config and not self._is_configured_by_setup:
-                    self.setup(config)
-                return
-            except Exception:
-                # If Hub setup fails, fall through to legacy setup
-                pass
+        if self._try_hub_configuration():
+            return
 
         # Legacy setup path for backward compatibility
         if _LAZY_SETUP_STATE["done"] and not _LAZY_SETUP_STATE["error"]:
             return
 
         # If setup is in progress by another thread, or failed previously, use fallback.
-        if _LAZY_SETUP_STATE["in_progress"] or _LAZY_SETUP_STATE["error"]:
+        if self._should_use_emergency_fallback():
             self._setup_emergency_fallback()
             return
 
@@ -102,18 +136,7 @@ class FoundationLogger:
 
         # Acquire lock to perform setup.
         with _LAZY_SETUP_LOCK:
-            # Double-check state after acquiring lock, as another thread might have finished.
-            if self._is_configured_by_setup or (_LAZY_SETUP_STATE["done"] and not _LAZY_SETUP_STATE["error"]):
-                return
-
-            # If error was set while waiting for lock, use fallback.
-            if _LAZY_SETUP_STATE["error"]:
-                self._setup_emergency_fallback()
-                return
-
-            # If still needs setup, perform lazy setup.
-            if not _LAZY_SETUP_STATE["done"]:
-                self._perform_lazy_setup()
+            self._perform_locked_setup()
 
     def _perform_lazy_setup(self) -> None:
         """Perform the actual lazy setup of the logging system."""

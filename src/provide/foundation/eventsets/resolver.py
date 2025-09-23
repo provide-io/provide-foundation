@@ -40,6 +40,48 @@ class EventSetResolver:
 
         self._resolved = True
 
+    def _process_field_enrichment(
+        self, field_key: str, field_value: Any, event_dict: dict[str, Any]
+    ) -> str | None:
+        """Process a single field for enrichment.
+
+        Returns:
+            Visual marker if found, None otherwise
+        """
+        event_mapping = self._find_event_mapping_for_field(field_key, field_value)
+        if not event_mapping:
+            return None
+
+        value_str = str(field_value).lower()
+
+        # Apply transformations
+        if value_str in event_mapping.transformations:
+            field_value = event_mapping.transformations[value_str](field_value)
+            value_str = str(field_value).lower()
+
+        # Get visual marker
+        visual_marker = event_mapping.visual_markers.get(
+            value_str,
+            event_mapping.visual_markers.get(event_mapping.default_key, ""),
+        )
+
+        # Apply metadata fields
+        if value_str in event_mapping.metadata_fields:
+            for meta_key, meta_value in event_mapping.metadata_fields[value_str].items():
+                if meta_key not in event_dict:
+                    event_dict[meta_key] = meta_value
+
+        return visual_marker if visual_marker else None
+
+    def _apply_visual_enrichments(self, enrichments: list[str], event_dict: dict[str, Any]) -> None:
+        """Apply visual enrichments to the event message."""
+        if not enrichments:
+            return
+
+        prefix = "".join(f"[{e}]" for e in enrichments)
+        event_msg = event_dict.get("event", "")
+        event_dict["event"] = f"{prefix} {event_msg}" if event_msg else prefix
+
     def enrich_event(self, event_dict: dict[str, Any]) -> dict[str, Any]:
         """Enrich a log event with event set data.
 
@@ -60,38 +102,12 @@ class EventSetResolver:
             if field_key == "event" or field_value is None:
                 continue
 
-            # Find appropriate event mapping for this field
-            event_mapping = self._find_event_mapping_for_field(field_key, field_value)
-            if not event_mapping:
-                continue
-
-            value_str = str(field_value).lower()
-
-            # Apply transformations
-            if value_str in event_mapping.transformations:
-                field_value = event_mapping.transformations[value_str](field_value)
-                value_str = str(field_value).lower()
-
-            # Get visual marker
-            visual_marker = event_mapping.visual_markers.get(
-                value_str,
-                event_mapping.visual_markers.get(event_mapping.default_key, ""),
-            )
-
+            visual_marker = self._process_field_enrichment(field_key, field_value, event_dict)
             if visual_marker:
                 enrichments.append(visual_marker)
 
-            # Apply metadata fields
-            if value_str in event_mapping.metadata_fields:
-                for meta_key, meta_value in event_mapping.metadata_fields[value_str].items():
-                    if meta_key not in event_dict:
-                        event_dict[meta_key] = meta_value
-
         # Add visual enrichments to event message
-        if enrichments:
-            prefix = "".join(f"[{e}]" for e in enrichments)
-            event_msg = event_dict.get("event", "")
-            event_dict["event"] = f"{prefix} {event_msg}" if event_msg else prefix
+        self._apply_visual_enrichments(enrichments, event_dict)
 
         return event_dict
 

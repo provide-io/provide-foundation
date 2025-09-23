@@ -265,6 +265,47 @@ def format_summary(response: SearchResponse) -> str:
     return "\n".join(lines)
 
 
+def _format_as_log(response: SearchResponse | dict[str, Any]) -> str:
+    """Format response as log lines."""
+    if isinstance(response, dict):
+        return format_log_line(response)
+    return "\n".join(format_log_line(hit) for hit in response.hits)
+
+
+def _format_as_table(response: SearchResponse | dict[str, Any], **kwargs: Any) -> str:
+    """Format response as table."""
+    if isinstance(response, SearchResponse):
+        return format_table(response, **kwargs)
+    # Single entry as table
+    single_response = SearchResponse(
+        hits=[response],
+        total=1,
+        took=0,
+        scan_size=0,
+    )
+    return format_table(single_response, **kwargs)
+
+
+def _format_as_csv(response: SearchResponse | dict[str, Any], **kwargs: Any) -> str:
+    """Format response as CSV."""
+    if isinstance(response, SearchResponse):
+        return format_csv(response, **kwargs)
+    single_response = SearchResponse(
+        hits=[response],
+        total=1,
+        took=0,
+        scan_size=0,
+    )
+    return format_csv(single_response, **kwargs)
+
+
+def _format_as_summary(response: SearchResponse | dict[str, Any]) -> str:
+    """Format response as summary."""
+    if isinstance(response, SearchResponse):
+        return format_summary(response)
+    return "Single log entry (use 'log' or 'json' format for details)"
+
+
 def format_output(
     response: SearchResponse | dict[str, Any],
     format_type: str = "log",
@@ -285,36 +326,13 @@ def format_output(
         case "json":
             return format_json(response, **kwargs)
         case "log":
-            if isinstance(response, dict):
-                return format_log_line(response)
-            return "\n".join(format_log_line(hit) for hit in response.hits)
+            return _format_as_log(response)
         case "table":
-            if isinstance(response, SearchResponse):
-                return format_table(response, **kwargs)
-            # Single entry as table
-            single_response = SearchResponse(
-                hits=[response],
-                total=1,
-                took=0,
-                scan_size=0,
-            )
-            return format_table(single_response, **kwargs)
+            return _format_as_table(response, **kwargs)
         case "csv":
-            if isinstance(response, SearchResponse):
-                return format_csv(response, **kwargs)
-            single_response = SearchResponse(
-                hits=[response],
-                total=1,
-                took=0,
-                scan_size=0,
-            )
-            return format_csv(single_response, **kwargs)
+            return _format_as_csv(response, **kwargs)
         case "summary":
-            if isinstance(response, SearchResponse):
-                return format_summary(response)
-            return "Single log entry (use 'log' or 'json' format for details)"
+            return _format_as_summary(response)
         case _:
             # Default to log format
-            if isinstance(response, dict):
-                return format_log_line(response)
-            return "\n".join(format_log_line(hit) for hit in response.hits)
+            return _format_as_log(response)
