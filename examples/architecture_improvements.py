@@ -23,7 +23,7 @@ from provide.foundation.hub import (
     get_hub,
 )
 from provide.foundation.hub.events import get_event_bus
-from provide.foundation.resilience import CircuitBreaker, get_bulkhead_manager
+from provide.foundation.resilience import CircuitBreaker
 
 
 class ExampleResource(Disposable):

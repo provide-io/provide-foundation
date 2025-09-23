@@ -17,7 +17,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/resilience/bulkhead.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/resilience/bulkhead.py)",
       "Bash(PYTHONPATH=src .venv/bin/python:*)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/hub/ -x --tb=short -q --maxfail=3)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/hub/ -x --tb=short -q --maxfail=3)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest --tb=short -q --maxfail=5)"
     ],
     "deny": [],
     "ask": [],
