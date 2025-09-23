@@ -29,8 +29,6 @@ _FOUNDATION_LOG_LEVEL: int | None = None
 _CACHED_SETUP_LOGGER: Any | None = None
 
 
-
-
 def get_foundation_log_level() -> int:
     """Get Foundation log level for setup phase, safely."""
     global _FOUNDATION_LOG_LEVEL
