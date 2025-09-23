@@ -107,7 +107,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/ tests/resilience/ --tb=short -q --maxfail=1)",
       "Bash(PYTHONPATH=src .venv/bin/pytest -vvv --cov=provide.foundation --cov-branch --cov-report=term-missing -n auto)",
       "Bash(export PYTHONPATH=src)",
-      "Bash(.venv/bin/pytest -vvv --cov=provide.foundation --cov-branch --cov-report=term-missing -n auto)"
+      "Bash(.venv/bin/pytest -vvv --cov=provide.foundation --cov-branch --cov-report=term-missing -n auto)",
+      "Bash(.venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit -n auto -v)"
     ],
     "deny": [],
     "ask": [],
