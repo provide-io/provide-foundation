@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging as stdlib_logging
-import threading
 from typing import Any
 
 import structlog
@@ -22,7 +21,6 @@ from provide.foundation.utils.streams import get_safe_stderr
 Handles the core setup logic, state management, and setup logger creation.
 """
 
-_PROVIDE_SETUP_LOCK = threading.Lock()
 _CORE_SETUP_LOGGER_NAME = "provide.foundation.core_setup"
 _EXPLICIT_SETUP_DONE = False
 _FOUNDATION_LOG_LEVEL: int | None = None

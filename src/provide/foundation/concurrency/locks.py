@@ -249,16 +249,21 @@ class LockManager:
 
 # Global lock manager instance
 _lock_manager = LockManager()
+_locks_registered = False
 
 
 def get_lock_manager() -> LockManager:
     """Get the global lock manager instance."""
+    global _locks_registered
+    if not _locks_registered:
+        register_foundation_locks()
+        _locks_registered = True
     return _lock_manager
 
 
 def register_foundation_locks() -> None:
     """Register all foundation locks with proper ordering."""
-    manager = get_lock_manager()
+    manager = _lock_manager
 
     # Register locks in order of dependency (lowest to highest)
     # Lower numbers are acquired first to prevent deadlocks
