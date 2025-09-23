@@ -211,9 +211,10 @@ class TestQualityIntegration:
 
     def test_quality_analysis_with_real_operations(self) -> None:
         """Integration test with real file operations."""
-        from provide.foundation.file.operations import OperationDetector, FileEvent, FileEventMetadata
         from datetime import datetime
         from pathlib import Path
+
+        from provide.foundation.file.operations import FileEvent, FileEventMetadata, OperationDetector
 
         # Create real file operation events
         base_time = datetime.now()
@@ -233,7 +234,7 @@ class TestQualityIntegration:
 
         # Detect operations
         detector = OperationDetector()
-        operations = detector.detect(events)
+        detector.detect(events)
 
         # Use in quality analysis
         analyzer = QualityAnalyzer()

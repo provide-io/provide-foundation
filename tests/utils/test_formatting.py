@@ -110,6 +110,18 @@ class TestDurationFormatting:
         assert format_duration(-60) == "-1 minute"
         assert format_duration(-90, short=True) == "-1m30s"
 
+    def test_format_duration_components(self) -> None:
+        """Test duration components helper function."""
+        from provide.foundation.formatting.numbers import _format_duration_components
+
+        # Test the tuple return from the helper function
+        result = _format_duration_components(1, 2, 3, 4)
+        assert result == (1, 2, 3, 4)
+
+        # Test with zeros
+        result = _format_duration_components(0, 0, 0, 30)
+        assert result == (0, 0, 0, 30)
+
 
 class TestNumberFormatting:
     """Test number formatting."""

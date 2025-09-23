@@ -53,19 +53,7 @@ class ManagedProcess:
         stderr_relay: bool = True,
         **kwargs: Any,
     ) -> None:
-        """Initialize a ManagedProcess.
-
-        Args:
-            command: Command and arguments to execute
-            cwd: Working directory for the process
-            env: Environment variables (merged with current environment)
-            capture_output: Whether to capture stdout/stderr
-            text_mode: Whether to use text mode for streams
-            bufsize: Buffer size for streams
-            stderr_relay: Whether to relay stderr to current process stderr
-            **kwargs: Additional arguments passed to subprocess.Popen
-
-        """
+        """Initialize a ManagedProcess."""
         self.command = command
         self.cwd = str(cwd) if cwd else None
         self.capture_output = capture_output
@@ -175,11 +163,9 @@ class ManagedProcess:
                     line = process.stderr.readline()
                     if not line:
                         break
-                    # Handle both bytes and string returns from subprocess
-                    if isinstance(line, bytes):
-                        sys.stderr.write(line.decode("utf-8", errors="replace"))
-                    else:
-                        sys.stderr.write(str(line))
+                    sys.stderr.write(
+                        line.decode("utf-8", errors="replace") if isinstance(line, bytes) else str(line)
+                    )
                     sys.stderr.flush()
             except Exception as e:
                 plog.debug("Error in stderr relay", error=str(e))
@@ -189,19 +175,7 @@ class ManagedProcess:
         plog.debug("🚀 Started stderr relay thread")
 
     async def read_line_async(self, timeout: float = DEFAULT_PROCESS_READLINE_TIMEOUT) -> str:
-        """Read a line from stdout asynchronously with timeout.
-
-        Args:
-            timeout: Timeout for reading operation
-
-        Returns:
-            Decoded line from stdout
-
-        Raises:
-            ProcessError: If process is not running or stdout not available
-            TimeoutError: If read operation times out
-
-        """
+        """Read a line from stdout asynchronously with timeout."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
 
@@ -212,28 +186,15 @@ class ManagedProcess:
 
         try:
             line_data = await asyncio.wait_for(loop.run_in_executor(None, read_func), timeout=timeout)
-            # Handle both bytes and string returns from subprocess
-            if isinstance(line_data, bytes):
-                return line_data.decode("utf-8", errors="replace").strip()
-            return str(line_data).strip()
+            return (
+                line_data.decode("utf-8", errors="replace") if isinstance(line_data, bytes) else str(line_data)
+            ).strip()
         except TimeoutError as e:
             plog.debug("Read timeout on managed process stdout")
             raise TimeoutError(f"Read timeout after {timeout}s") from e
 
     async def read_char_async(self, timeout: float = DEFAULT_PROCESS_READCHAR_TIMEOUT) -> str:
-        """Read a single character from stdout asynchronously.
-
-        Args:
-            timeout: Timeout for reading operation
-
-        Returns:
-            Single decoded character
-
-        Raises:
-            ProcessError: If process is not running or stdout not available
-            TimeoutError: If read operation times out
-
-        """
+        """Read a single character from stdout asynchronously."""
         if not self._process or not self._process.stdout:
             raise ProcessError("Process not running or stdout not available")
 
@@ -246,10 +207,9 @@ class ManagedProcess:
             char_data = await asyncio.wait_for(loop.run_in_executor(None, read_func), timeout=timeout)
             if not char_data:
                 return ""
-            # Handle both bytes and string returns from subprocess
-            if isinstance(char_data, bytes):
-                return char_data.decode("utf-8", errors="replace")
-            return str(char_data)
+            return (
+                char_data.decode("utf-8", errors="replace") if isinstance(char_data, bytes) else str(char_data)
+            )
         except TimeoutError as e:
             plog.debug("Character read timeout on managed process stdout")
             raise TimeoutError(f"Character read timeout after {timeout}s") from e
@@ -335,17 +295,14 @@ def _drain_remaining_output(process: ManagedProcess, buffer: str) -> str:
     """Drain any remaining output from process pipes."""
     if process._process and process._process.stdout:
         try:
-            # Non-blocking read of any remaining data
             remaining = process._process.stdout.read()
             if remaining:
-                if isinstance(remaining, bytes):
-                    buffer += remaining.decode("utf-8", errors="replace")
-                else:
-                    buffer += str(remaining)
-                plog.debug(
-                    "Read remaining output from exited process",
-                    size=len(remaining),
+                buffer += (
+                    remaining.decode("utf-8", errors="replace")
+                    if isinstance(remaining, bytes)
+                    else str(remaining)
                 )
+                plog.debug("Read remaining output from exited process", size=len(remaining))
         except Exception:
             pass
     return buffer
@@ -358,24 +315,14 @@ def _check_pattern_found(buffer: str, expected_parts: list[str]) -> bool:
 
 def _handle_process_error_exit(exit_code: int, buffer: str) -> None:
     """Handle process exit with error code."""
-    plog.error(
-        "Process exited with error",
-        returncode=exit_code,
-        buffer=buffer[:200],
-    )
+    plog.error("Process exited with error", returncode=exit_code, buffer=buffer[:200])
     raise ProcessError(f"Process exited with code {exit_code}")
 
 
 def _handle_process_clean_exit_without_pattern(exit_code: int | None, buffer: str) -> None:
     """Handle process clean exit but expected pattern not found."""
-    plog.error(
-        "Process exited without expected output",
-        returncode=0,
-        buffer=buffer[:200],
-    )
-    raise ProcessError(
-        f"Process exited with code {exit_code} before expected output found",
-    )
+    plog.error("Process exited without expected output", returncode=0, buffer=buffer[:200])
+    raise ProcessError(f"Process exited with code {exit_code} before expected output found")
 
 
 async def _handle_exited_process(
