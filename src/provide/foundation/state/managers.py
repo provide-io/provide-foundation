@@ -15,7 +15,7 @@ from provide.foundation.state.base import ImmutableState, StateManager
 class StreamState(ImmutableState):
     """Immutable stream state."""
 
-    log_stream: TextIO = field(default=sys.stderr)
+    log_stream: TextIO = field(factory=lambda: sys.stderr)
     file_handle: TextIO | None = field(default=None)
     is_file_open: bool = field(default=False)
     file_path: str | None = field(default=None)
