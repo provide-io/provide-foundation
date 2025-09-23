@@ -145,7 +145,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py::TestImmutableState::test_with_changes_increments_generation -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py::TestCircuitBreakerStateMachine::test_failure_transitions -v)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py::TestCircuitBreakerStateMachine::test_failure_transitions -v -s)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py::TestCircuitBreakerStateMachine::test_failure_transitions -v -s)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py --tb=short -q)"
     ],
     "deny": [],
     "ask": [],
