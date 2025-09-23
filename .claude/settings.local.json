@@ -169,7 +169,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/state/test_state_management.py src/provide/foundation/testmode/internal.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest --tb=no -q --maxfail=5)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tracer/test_otel.py::TestSetupOpentelemetryTracing::test_setup_otel_not_available -xvs)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest -n auto --tb=line -q --maxfail=10)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest -n auto --tb=line -q --maxfail=10)",
+      "Bash(.venv/bin/pytest -n auto --tb=line -q --maxfail=10)"
     ],
     "deny": [],
     "ask": [],
