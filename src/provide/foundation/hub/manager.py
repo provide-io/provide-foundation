@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import threading
 from typing import Any
 
+from provide.foundation.concurrency.locks import get_lock_manager
 from provide.foundation.context import CLIContext
 from provide.foundation.hub.commands import get_command_registry
 from provide.foundation.hub.components import get_component_registry
@@ -139,9 +139,8 @@ class Hub(CoreHub):
             self._command_registry.dispose_all()
 
 
-# Global hub instance and lock for thread-safe initialization
+# Global hub instance for thread-safe initialization
 _global_hub: Hub | None = None
-_hub_lock = threading.Lock()
 
 
 def get_hub() -> Hub:
@@ -161,7 +160,7 @@ def get_hub() -> Hub:
         return _global_hub
 
     # Slow path: need to initialize hub
-    with _hub_lock:
+    with get_lock_manager().acquire("foundation.hub.init"):
         # Double-check after acquiring lock
         if _global_hub is None:
             # Global hub should use shared registries for backward compatibility
@@ -185,7 +184,7 @@ def get_hub() -> Hub:
 def clear_hub() -> None:
     """Clear the global hub instance."""
     global _global_hub
-    with _hub_lock:
+    with get_lock_manager().acquire("foundation.hub.init"):
         if _global_hub:
             _global_hub.clear()
         _global_hub = None

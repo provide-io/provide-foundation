@@ -29,7 +29,13 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/testmode/internal.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/testmode/internal.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/testmode/internal.py)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/logger/test_logger_production_compliance.py::TestProductionReadinessScenarios::test_graceful_shutdown_scenario -xvs)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/logger/test_logger_production_compliance.py::TestProductionReadinessScenarios::test_graceful_shutdown_scenario -xvs)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/hub/manager.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/hub/manager.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/hub/manager.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/hub/components.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/hub/components.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/hub/components.py)"
     ],
     "deny": [],
     "ask": [],
