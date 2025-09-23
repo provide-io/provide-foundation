@@ -159,7 +159,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/ tests/resilience/test_circuit_breaker.py tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker --tb=short -q)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/state/ src/provide/foundation/resilience/circuit.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/state/ src/provide/foundation/resilience/circuit.py)",
-      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/state/ src/provide/foundation/resilience/circuit.py)"
+      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/state/ src/provide/foundation/resilience/circuit.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit -v --count=5)"
     ],
     "deny": [],
     "ask": [],
