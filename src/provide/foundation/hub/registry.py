@@ -96,11 +96,12 @@ class Registry:
                 for alias in aliases:
                     self._aliases[alias] = (dimension, name)
 
-            from provide.foundation.hub.foundation import get_foundation_logger
+            # Emit event instead of direct logging to break circular dependency
+            from provide.foundation.hub.events import emit_registry_event
 
-            get_foundation_logger().debug(
-                "Registered item",
-                name=name,
+            emit_registry_event(
+                operation="register",
+                item_name=name,
                 dimension=dimension,
                 has_metadata=bool(metadata),
                 aliases=aliases,
@@ -200,9 +201,14 @@ class Registry:
                     for alias in aliases_to_remove:
                         del self._aliases[alias]
 
-                    from provide.foundation.hub.foundation import get_foundation_logger
+                    # Emit event instead of direct logging to break circular dependency
+                    from provide.foundation.hub.events import emit_registry_event
 
-                    get_foundation_logger().debug("Removed item", name=name, dimension=dimension)
+                    emit_registry_event(
+                        operation="remove",
+                        item_name=name,
+                        dimension=dimension,
+                    )
                     return True
             else:
                 for dim_key, dim_registry in self._registry.items():
@@ -215,9 +221,14 @@ class Registry:
                         for alias in aliases_to_remove:
                             del self._aliases[alias]
 
-                        from provide.foundation.hub.foundation import get_foundation_logger
+                        # Emit event instead of direct logging to break circular dependency
+                        from provide.foundation.hub.events import emit_registry_event
 
-                        get_foundation_logger().debug("Removed item", name=name, dimension=dim_key)
+                        emit_registry_event(
+                            operation="remove",
+                            item_name=name,
+                            dimension=dim_key,
+                        )
                         return True
 
             return False
