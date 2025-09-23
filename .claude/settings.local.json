@@ -35,7 +35,9 @@
       "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/hub/manager.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/hub/components.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/hub/components.py)",
-      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/hub/components.py)"
+      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/hub/components.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/logger/core.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/logger/core.py)"
     ],
     "deny": [],
     "ask": [],
