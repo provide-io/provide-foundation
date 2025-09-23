@@ -41,7 +41,8 @@ def _should_register_for_global_reset() -> bool:
             filename = frame.f_code.co_filename
 
             # If we're in a test file, don't register for global reset
-            if "/tests/" in filename or "test_" in filename:
+            # This catches both runtime and import-time circuit breaker creation
+            if "/tests/" in filename or "test_" in filename or "conftest" in filename:
                 return False
 
         return True
@@ -239,9 +240,8 @@ def circuit_breaker(
     )
 
     # Register for test cleanup only if not created in test files
-    # AND not created during test execution
-    # Circuit breakers in test files and test runs manage their own lifecycle
-    if _should_register_for_global_reset() and not is_in_test_mode():
+    # Circuit breakers in test files manage their own lifecycle
+    if _should_register_for_global_reset():
         _circuit_breaker_instances.append(breaker)
 
     def decorator(func: F) -> F:
