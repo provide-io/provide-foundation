@@ -450,6 +450,10 @@ class TestLazyInitializationDocumentation:
                 "PROVIDE_LOG_MODULE_LEVELS": "auth:DEBUG,db:ERROR",
             },
         ):
+            # Force re-initialization with new environment variables
+            reset_foundation_setup_for_testing()
+            set_log_stream_for_testing(sys.stderr)
+
             from provide.foundation import logger
 
             logger.info("Service started")
