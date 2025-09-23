@@ -7,13 +7,13 @@ from datetime import datetime
 from pathlib import Path
 import re
 
-from provide.foundation.logger import get_logger
 from provide.foundation.file.operations.types import (
     DetectorConfig,
     FileEvent,
     FileOperation,
     OperationType,
 )
+from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
 
@@ -127,6 +127,7 @@ class OperationDetector:
             self._detect_rename_sequence,
             self._detect_batch_update,
             self._detect_backup_create,
+            self._detect_simple_operation,  # Fallback for basic operations
         ]
 
         best_operation = None
@@ -140,53 +141,59 @@ class OperationDetector:
 
         return best_operation if best_confidence >= self.config.min_confidence else None
 
-    def _detect_atomic_save(self, events: list[FileEvent]) -> FileOperation | None:
-        """Detect atomic save pattern (temp file creation -> rename)."""
-        confidence = 0.0
-        primary_file = None
-        atomic_events = []
-        final_file = None
-
-        # Look for temp file creation followed by rename to final name
+    def _detect_temp_rename_pattern(
+        self, events: list[FileEvent]
+    ) -> tuple[Path | None, Path | None, list[FileEvent], float]:
+        """Detect Pattern 1: Direct temp file rename to final location."""
         temp_creates = [e for e in events if e.event_type == "created" and self._is_temp_file(e.path)]
         moves = [e for e in events if e.event_type in ("moved", "renamed")]
 
-        # Pattern 1: Direct temp file rename to final location
         for temp_event in temp_creates:
             for move_event in moves:
                 if move_event.path == temp_event.path and move_event.dest_path:
                     # Temp file was renamed to final location - this is the end state
-                    primary_file = move_event.dest_path
-                    final_file = move_event.dest_path
-                    atomic_events = [temp_event, move_event]
-                    confidence = 0.95
-                    break
+                    return move_event.dest_path, move_event.dest_path, [temp_event, move_event], 0.95
+        return None, None, [], 0.0
 
-        # Pattern 2: Delete original, rename temp (common in atomic saves)
-        if not primary_file:
-            deletes = [e for e in events if e.event_type == "deleted"]
-            for delete_event in deletes:
-                for temp_event in temp_creates:
-                    if self._files_related(delete_event.path, temp_event.path):
-                        # The deleted file is what gets replaced - this becomes the end state
-                        primary_file = delete_event.path
-                        final_file = delete_event.path
-                        atomic_events = [e for e in events if e.path in (delete_event.path, temp_event.path)]
-                        confidence = 0.85
-                        break
+    def _detect_delete_temp_pattern(
+        self, events: list[FileEvent]
+    ) -> tuple[Path | None, Path | None, list[FileEvent], float]:
+        """Detect Pattern 2: Delete original, rename temp (common in atomic saves)."""
+        temp_creates = [e for e in events if e.event_type == "created" and self._is_temp_file(e.path)]
+        deletes = [e for e in events if e.event_type == "deleted"]
 
-        # Pattern 3: Temp file created, then final file modified (overwrite pattern)
-        if not primary_file:
-            modifies = [e for e in events if e.event_type == "modified" and not self._is_temp_file(e.path)]
+        for delete_event in deletes:
             for temp_event in temp_creates:
-                for modify_event in modifies:
-                    if self._files_related(temp_event.path, modify_event.path):
-                        # The modified file is the end state
-                        primary_file = modify_event.path
-                        final_file = modify_event.path
-                        atomic_events = [temp_event, modify_event]
-                        confidence = 0.80
-                        break
+                if self._files_related(delete_event.path, temp_event.path):
+                    # The deleted file is what gets replaced - this becomes the end state
+                    atomic_events = [e for e in events if e.path in (delete_event.path, temp_event.path)]
+                    return delete_event.path, delete_event.path, atomic_events, 0.85
+        return None, None, [], 0.0
+
+    def _detect_temp_modify_pattern(
+        self, events: list[FileEvent]
+    ) -> tuple[Path | None, Path | None, list[FileEvent], float]:
+        """Detect Pattern 3: Temp file created, then final file modified (overwrite pattern)."""
+        temp_creates = [e for e in events if e.event_type == "created" and self._is_temp_file(e.path)]
+        modifies = [e for e in events if e.event_type == "modified" and not self._is_temp_file(e.path)]
+
+        for temp_event in temp_creates:
+            for modify_event in modifies:
+                if self._files_related(temp_event.path, modify_event.path):
+                    # The modified file is the end state
+                    return modify_event.path, modify_event.path, [temp_event, modify_event], 0.80
+        return None, None, [], 0.0
+
+    def _detect_atomic_save(self, events: list[FileEvent]) -> FileOperation | None:
+        """Detect atomic save pattern (temp file creation -> rename)."""
+        # Try each pattern in order of confidence
+        primary_file, final_file, atomic_events, confidence = self._detect_temp_rename_pattern(events)
+
+        if not primary_file:
+            primary_file, final_file, atomic_events, confidence = self._detect_delete_temp_pattern(events)
+
+        if not primary_file:
+            primary_file, final_file, atomic_events, confidence = self._detect_temp_modify_pattern(events)
 
         if primary_file and final_file and confidence >= self.config.min_confidence:
             start_time = min(e.timestamp for e in atomic_events)
@@ -318,7 +325,8 @@ class OperationDetector:
     def _detect_backup_create(self, events: list[FileEvent]) -> FileOperation | None:
         """Detect backup file creation."""
         backup_events = [
-            e for e in events
+            e
+            for e in events
             if e.event_type == "created" and e.path.suffix in (".bak", ".backup", ".orig", "~")
         ]
 
@@ -341,6 +349,58 @@ class OperationDetector:
             )
 
         return None
+
+    def _detect_simple_operation(self, events: list[FileEvent]) -> FileOperation | None:
+        """Detect simple file operations (create, modify, delete)."""
+        if not events:
+            return None
+
+        # Filter out directory events
+        file_events = [e for e in events if not e.path.name.endswith("/")]
+        if not file_events:
+            return None
+
+        # Get the primary file (most frequently mentioned or first non-temp file)
+        file_paths = [e.path for e in file_events]
+        primary_file = None
+
+        # Prefer non-temp files
+        non_temp_files = [p for p in file_paths if not self._is_temp_file(p)]
+        primary_file = non_temp_files[0] if non_temp_files else file_paths[0]
+
+        # Determine operation type based on event types
+        event_types = {e.event_type for e in file_events}
+
+        if "created" in event_types and "modified" in event_types:
+            operation_type = OperationType.ATOMIC_SAVE  # File created and modified
+            confidence = 0.75
+        elif "created" in event_types:
+            operation_type = OperationType.BACKUP_CREATE  # New file created
+            confidence = 0.70
+        elif "modified" in event_types:
+            operation_type = OperationType.ATOMIC_SAVE  # File modified
+            confidence = 0.72
+        elif "deleted" in event_types:
+            operation_type = OperationType.BACKUP_CREATE  # File deleted (use as fallback)
+            confidence = 0.70
+        else:
+            return None
+
+        start_time = min(e.timestamp for e in file_events)
+        end_time = max(e.timestamp for e in file_events)
+
+        return FileOperation(
+            operation_type=operation_type,
+            primary_path=primary_file,
+            events=file_events,
+            confidence=confidence,
+            description=f"Simple file operation on {primary_file.name}",
+            start_time=start_time,
+            end_time=end_time,
+            is_atomic=len(file_events) == 1,
+            is_safe=True,
+            files_affected=[primary_file],
+        )
 
     def _is_temp_file(self, path: Path) -> bool:
         """Check if path matches any temp file pattern."""

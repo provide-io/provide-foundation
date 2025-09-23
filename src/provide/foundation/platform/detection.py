@@ -112,6 +112,41 @@ def get_os_version() -> str | None:
     return None
 
 
+def _detect_intel_cpu(processor: str) -> str | None:
+    """Detect Intel CPU type from processor string."""
+    if "Intel" not in processor:
+        return None
+
+    if "Core" in processor:
+        match = re.search(r"Core\(TM\)\s+(\w+)", processor)
+        if match:
+            return f"Intel Core {match.group(1)}"
+    return "Intel"
+
+
+def _detect_amd_cpu(processor: str) -> str | None:
+    """Detect AMD CPU type from processor string."""
+    if "AMD" not in processor:
+        return None
+
+    if "Ryzen" in processor:
+        match = re.search(r"Ryzen\s+(\d+)", processor)
+        if match:
+            return f"AMD Ryzen {match.group(1)}"
+    return "AMD"
+
+
+def _detect_apple_cpu(processor: str) -> str | None:
+    """Detect Apple CPU type from processor string."""
+    if not any(keyword in processor for keyword in ["Apple", "M1", "M2", "M3"]):
+        return None
+
+    match = re.search(r"(M\d+\w*)", processor)
+    if match:
+        return f"Apple {match.group(1)}"
+    return "Apple Silicon"
+
+
 def get_cpu_type() -> str | None:
     """Get CPU type/family information.
 
@@ -121,31 +156,18 @@ def get_cpu_type() -> str | None:
     """
     try:
         processor = platform.processor()
-        if processor:
-            # Clean up common processor strings
-            if "Intel" in processor:
-                # Extract Intel CPU model
-                if "Core" in processor:
-                    match = re.search(r"Core\(TM\)\s+(\w+)", processor)
-                    if match:
-                        return f"Intel Core {match.group(1)}"
-                return "Intel"
-            if "AMD" in processor:
-                # Extract AMD CPU model
-                if "Ryzen" in processor:
-                    match = re.search(r"Ryzen\s+(\d+)", processor)
-                    if match:
-                        return f"AMD Ryzen {match.group(1)}"
-                return "AMD"
-            if "Apple" in processor or "M1" in processor or "M2" in processor or "M3" in processor:
-                # Apple Silicon
-                match = re.search(r"(M\d+\w*)", processor)
-                if match:
-                    return f"Apple {match.group(1)}"
-                return "Apple Silicon"
-            if processor:
-                # Return cleaned processor string
-                return processor.strip()
+        if not processor:
+            return None
+
+        # Try different CPU detection strategies
+        for detector in [_detect_intel_cpu, _detect_amd_cpu, _detect_apple_cpu]:
+            result = detector(processor)
+            if result:
+                return result
+
+        # Return cleaned processor string as fallback
+        return processor.strip()
+
     except Exception as e:
         plog.warning("Failed to detect CPU type", error=str(e))
 

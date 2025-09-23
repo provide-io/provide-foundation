@@ -19,17 +19,17 @@ from provide.foundation.file.operations.utils import (
 )
 
 __all__ = [
+    "DetectorConfig",
+    "FileEvent",
     # Types
     "FileEventMetadata",
-    "FileEvent",
-    "OperationType",
     "FileOperation",
-    "DetectorConfig",
     # Detector
     "OperationDetector",
+    "OperationType",
     # Utilities
     "detect_atomic_save",
-    "is_temp_file",
     "extract_original_path",
     "group_related_events",
+    "is_temp_file",
 ]

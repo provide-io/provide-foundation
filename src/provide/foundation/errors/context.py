@@ -213,6 +213,53 @@ class ErrorContext:
         return diagnostic
 
 
+def _determine_error_severity(error: Exception) -> ErrorSeverity:
+    """Determine error severity based on exception type."""
+    if isinstance(error, AssertionError | ValueError | TypeError):
+        return ErrorSeverity.MEDIUM
+    elif isinstance(error, KeyError | IndexError | AttributeError):
+        return ErrorSeverity.LOW
+    else:
+        return ErrorSeverity.HIGH
+
+
+def _determine_error_category(error: Exception) -> ErrorCategory:
+    """Determine error category based on exception type."""
+    # Import here to avoid circular dependency
+    from provide.foundation.errors.auth import (
+        AuthenticationError,
+        AuthorizationError,
+    )
+    from provide.foundation.errors.config import ValidationError
+    from provide.foundation.errors.integration import IntegrationError, NetworkError
+
+    if isinstance(error, ValidationError | AuthenticationError | AuthorizationError):
+        return ErrorCategory.USER
+    elif isinstance(error, IntegrationError | NetworkError):
+        return ErrorCategory.EXTERNAL
+    else:
+        return ErrorCategory.SYSTEM
+
+
+def _group_foundation_error_context(error_context: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    """Group FoundationError context items by namespace."""
+    grouped: dict[str, dict[str, Any]] = {}
+
+    for key, value in error_context.items():
+        if "." in key:
+            namespace, subkey = key.split(".", 1)
+            if namespace not in grouped:
+                grouped[namespace] = {}
+            grouped[namespace][subkey] = value
+        else:
+            # Put non-namespaced items in 'context' namespace
+            if "context" not in grouped:
+                grouped["context"] = {}
+            grouped["context"][key] = value
+
+    return grouped
+
+
 def capture_error_context(
     error: Exception,
     severity: ErrorSeverity | None = None,
@@ -242,31 +289,11 @@ def capture_error_context(
         ...     )
 
     """
-    # Determine severity based on error type if not provided
+    # Determine severity and category if not provided
     if severity is None:
-        if isinstance(error, AssertionError | ValueError | TypeError):
-            severity = ErrorSeverity.MEDIUM
-        elif isinstance(error, KeyError | IndexError | AttributeError):
-            severity = ErrorSeverity.LOW
-        else:
-            severity = ErrorSeverity.HIGH
-
-    # Determine category based on error type if not provided
+        severity = _determine_error_severity(error)
     if category is None:
-        # Import here to avoid circular dependency
-        from provide.foundation.errors.auth import (
-            AuthenticationError,
-            AuthorizationError,
-        )
-        from provide.foundation.errors.config import ValidationError
-        from provide.foundation.errors.integration import IntegrationError, NetworkError
-
-        if isinstance(error, ValidationError | AuthenticationError | AuthorizationError):
-            category = ErrorCategory.USER
-        elif isinstance(error, IntegrationError | NetworkError):
-            category = ErrorCategory.EXTERNAL
-        else:
-            category = ErrorCategory.SYSTEM
+        category = _determine_error_category(error)
 
     # Create context
     ctx = ErrorContext(severity=severity, category=category)
@@ -288,21 +315,7 @@ def capture_error_context(
     from provide.foundation.errors.base import FoundationError
 
     if isinstance(error, FoundationError) and error.context:
-        # Group context items by namespace
-        grouped: dict[str, dict[str, Any]] = {}
-        for key, value in error.context.items():
-            if "." in key:
-                namespace, subkey = key.split(".", 1)
-                if namespace not in grouped:
-                    grouped[namespace] = {}
-                grouped[namespace][subkey] = value
-            else:
-                # Put non-namespaced items in 'context' namespace
-                if "context" not in grouped:
-                    grouped["context"] = {}
-                grouped["context"][key] = value
-
-        # Add grouped context to error context
+        grouped = _group_foundation_error_context(error.context)
         for namespace, data in grouped.items():
             ctx.update_namespace(namespace, data)
 
