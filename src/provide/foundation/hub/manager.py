@@ -119,18 +119,24 @@ class Hub(CoreHub):
         return self._foundation.get_foundation_config()
 
     def clear(self, dimension: str | None = None) -> None:
-        """Clear registrations.
+        """Clear registrations and dispose of resources properly.
 
         Args:
             dimension: Optional dimension to clear (None = all)
 
         """
-        # Clear core hub registrations
+        # Clear core hub registrations (this will now dispose resources)
         super().clear(dimension)
 
         # Reset Foundation state when clearing all or foundation-specific dimensions
         if dimension is None or dimension in ("singleton", "foundation"):
             self._foundation.clear_foundation_state()
+
+    def dispose_all(self) -> None:
+        """Dispose of all managed resources without clearing registrations."""
+        self._component_registry.dispose_all()
+        if hasattr(self._command_registry, "dispose_all"):
+            self._command_registry.dispose_all()
 
 
 # Global hub instance and lock for thread-safe initialization

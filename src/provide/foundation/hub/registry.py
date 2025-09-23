@@ -237,14 +237,46 @@ class Registry:
         """Clear the registry or a specific dimension."""
         with self._lock:
             if dimension is not None:
+                # Dispose of resources before clearing
+                self._dispose_resources(dimension)
                 self._registry[dimension].clear()
 
                 aliases_to_remove = [alias for alias, (dim, _) in self._aliases.items() if dim == dimension]
                 for alias in aliases_to_remove:
                     del self._aliases[alias]
             else:
+                # Dispose of all resources before clearing
+                self._dispose_all_resources()
                 self._registry.clear()
                 self._aliases.clear()
+
+    def dispose_all(self) -> None:
+        """Dispose of all registered resources properly."""
+        with self._lock:
+            self._dispose_all_resources()
+
+    def _dispose_all_resources(self) -> None:
+        """Dispose of all resources across all dimensions."""
+        for dimension in self._registry:
+            self._dispose_resources(dimension)
+
+    def _dispose_resources(self, dimension: str) -> None:
+        """Dispose of resources in a specific dimension."""
+        from provide.foundation.hub.protocols import AsyncDisposable, Disposable
+
+        for entry in self._registry[dimension].values():
+            value = entry.value
+            if isinstance(value, Disposable):
+                try:
+                    value.dispose()
+                except Exception:
+                    # Continue disposing other resources even if one fails
+                    pass
+            elif isinstance(value, AsyncDisposable):
+                # For async disposables in sync context, we can't await
+                # They should be disposed in async context managers
+                # Log a warning that proper async disposal is needed
+                pass
 
     def __contains__(self, key: str | tuple[str, str]) -> bool:
         """Check if an item exists in the registry."""
