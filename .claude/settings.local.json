@@ -82,7 +82,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/test_predictable_initialization.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/core/test_core_service_name_fix.py::test_key_value_still_has_emojis tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/cli/commands/test_deps_coverage.py::TestDepsCommandWithClick::test_deps_command_with_click -xvs)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest --tb=line -q --maxfail=5)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest --tb=line -q --maxfail=5)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit -xvs)"
     ],
     "deny": [],
     "ask": [],
