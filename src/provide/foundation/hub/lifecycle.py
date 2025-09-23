@@ -14,21 +14,22 @@ registered in the Hub registry system.
 
 
 def _get_registry_and_globals() -> Any:
-    """Get registry, lock, and initialized components from components module."""
+    """Get registry and initialized components from components module."""
     from provide.foundation.hub.components import (
         _initialized_components,
-        _registry_lock,
         get_component_registry,
     )
 
-    return get_component_registry(), _registry_lock, _initialized_components
+    return get_component_registry(), _initialized_components
 
 
 def get_or_initialize_component(name: str, dimension: str) -> Any:
     """Get component, initializing lazily if needed."""
-    registry, registry_lock, initialized_components = _get_registry_and_globals()
+    from provide.foundation.concurrency.locks import get_lock_manager
 
-    with registry_lock:
+    registry, initialized_components = _get_registry_and_globals()
+
+    with get_lock_manager().acquire("foundation.registry"):
         key = (name, dimension)
 
         # Return already initialized component
@@ -74,9 +75,11 @@ def get_or_initialize_component(name: str, dimension: str) -> Any:
 
 async def initialize_async_component(name: str, dimension: str) -> Any:
     """Initialize component asynchronously."""
-    registry, registry_lock, initialized_components = _get_registry_and_globals()
+    from provide.foundation.concurrency.locks import get_lock_manager
 
-    with registry_lock:
+    registry, initialized_components = _get_registry_and_globals()
+
+    with get_lock_manager().acquire("foundation.registry"):
         key = (name, dimension)
 
         # Return already initialized component
@@ -121,9 +124,11 @@ async def initialize_async_component(name: str, dimension: str) -> Any:
 
 def cleanup_all_components(dimension: str | None = None) -> None:
     """Clean up all components in dimension."""
-    registry, registry_lock, _ = _get_registry_and_globals()
+    from provide.foundation.concurrency.locks import get_lock_manager
 
-    with registry_lock:
+    registry, _ = _get_registry_and_globals()
+
+    with get_lock_manager().acquire("foundation.registry"):
         if dimension:
             entries = [entry for entry in registry if entry.dimension == dimension]
         else:
@@ -165,7 +170,7 @@ def cleanup_all_components(dimension: str | None = None) -> None:
 
 async def initialize_all_async_components() -> None:
     """Initialize all async components in dependency order."""
-    registry, _, _ = _get_registry_and_globals()
+    registry, _ = _get_registry_and_globals()
 
     # Get all async components
     async_components = [entry for entry in registry if entry.metadata.get("async", False)]
