@@ -4,7 +4,7 @@ from enum import Enum, auto
 import time
 from typing import Any
 
-from attrs import define, field, frozen
+from attrs import field, frozen
 
 from provide.foundation.state.base import ImmutableState, StateMachine, StateTransition
 
@@ -46,6 +46,7 @@ class CircuitBreakerState(ImmutableState):
 
         # For attrs classes with slots, use attrs.evolve instead of __dict__
         import attrs
+
         return attrs.evolve(self, **changes)
 
     def is_closed(self) -> bool:

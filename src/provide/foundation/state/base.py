@@ -41,6 +41,7 @@ class ImmutableState:
 
         # For attrs classes with slots, use attrs.evolve instead of __dict__
         import attrs
+
         return attrs.evolve(self, **changes)
 
 

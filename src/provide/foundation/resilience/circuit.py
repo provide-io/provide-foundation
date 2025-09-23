@@ -85,13 +85,13 @@ class CircuitBreaker:
             and circuit_state.should_attempt_reset()
             and self._state_machine.transition(CircuitBreakerEvent.TIMEOUT)
         ):
-                self._emit_event(
-                    "circuit_breaker.attempting_recovery",
-                    {
-                        "state": "open->half_open",
-                        "failure_count": circuit_state.failure_count,
-                    },
-                )
+            self._emit_event(
+                "circuit_breaker.attempting_recovery",
+                {
+                    "state": "open->half_open",
+                    "failure_count": circuit_state.failure_count,
+                },
+            )
 
     def call(self, func: Callable[..., T], *args: Any, **kwargs: Any) -> T:
         """Execute function with circuit breaker protection (sync)."""

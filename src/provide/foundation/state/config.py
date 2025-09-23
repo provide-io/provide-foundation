@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 import contextlib
 import threading
 import time
-from collections.abc import Callable
 from typing import Any
 
 from attrs import define, field, frozen
@@ -40,6 +40,7 @@ class VersionedConfig(ImmutableState):
 
         # For attrs classes with slots, use attrs.evolve instead of __dict__
         import attrs
+
         return attrs.evolve(self, **changes)
 
     def get(self, key: str, default: Any = None) -> Any:
@@ -125,7 +126,9 @@ class ConfigManager:
 
     _configs: dict[str, StateManager] = field(factory=dict)
     _lock: threading.RLock = field(factory=threading.RLock, init=False)
-    _change_listeners: dict[str, list[Callable[[ImmutableState, ImmutableState], None]]] = field(factory=dict, init=False)
+    _change_listeners: dict[str, list[Callable[[ImmutableState, ImmutableState], None]]] = field(
+        factory=dict, init=False
+    )
 
     def register_config(self, config: VersionedConfig) -> None:
         """Register a new configuration.
@@ -230,7 +233,9 @@ class ConfigManager:
             raise KeyError(f"Configuration '{name}' not found")
         return config.get(key, default)
 
-    def add_change_listener(self, name: str, listener: Callable[[ImmutableState, ImmutableState], None]) -> None:
+    def add_change_listener(
+        self, name: str, listener: Callable[[ImmutableState, ImmutableState], None]
+    ) -> None:
         """Add a change listener for a configuration.
 
         Args:
@@ -242,7 +247,9 @@ class ConfigManager:
                 self._change_listeners[name] = []
             self._change_listeners[name].append(listener)
 
-    def remove_change_listener(self, name: str, listener: Callable[[ImmutableState, ImmutableState], None]) -> None:
+    def remove_change_listener(
+        self, name: str, listener: Callable[[ImmutableState, ImmutableState], None]
+    ) -> None:
         """Remove a change listener for a configuration.
 
         Args:
