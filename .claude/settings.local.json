@@ -96,7 +96,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/cli/commands/test_deps_coverage.py::TestDepsCommandWithClick::test_deps_command_with_click -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/ tests/resilience/ tests/cli/commands/test_deps_coverage.py --tb=short -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit -xvs)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker -xvs --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker -xvs --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/ tests/resilience/ --tb=short -v)"
     ],
     "deny": [],
     "ask": [],
