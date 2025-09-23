@@ -19,7 +19,8 @@
       "Bash(PYTHONPATH=src .venv/bin/python:*)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/hub/ -x --tb=short -q --maxfail=3)",
       "Bash(PYTHONPATH=src .venv/bin/pytest --tb=short -q --maxfail=5)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/integration/ -x --tb=short -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/integration/ -x --tb=short -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/logger/ -x --tb=short -q --maxfail=3)"
     ],
     "deny": [],
     "ask": [],
