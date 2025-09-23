@@ -21,9 +21,9 @@ class VersionedConfig(ImmutableState):
     immutability and proper change tracking.
     """
 
-    config_name: str = field()
     data: dict[str, Any] = field(factory=dict)
     parent_generation: int | None = field(default=None)
+    config_name: str = field(default="")
 
     def with_changes(self, **changes: Any) -> VersionedConfig:
         """Create a new state instance with the specified changes.
