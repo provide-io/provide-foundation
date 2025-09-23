@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import threading
 import time
-from unittest.mock import Mock
 
 import pytest
 
@@ -284,7 +283,6 @@ class TestCircuitBreakerStateMachine:
         machine.reset()
         assert machine.current_state == "closed"
         assert machine.circuit_state.failure_count == 0
-
 
 
 class TestLoggerStateManager:
