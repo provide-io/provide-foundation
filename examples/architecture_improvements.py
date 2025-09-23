@@ -17,7 +17,6 @@ from typing import Any
 
 from provide.foundation.hub import (
     AsyncDisposable,
-    Bulkhead,
     Disposable,
     get_bulkhead_manager,
     get_hub,
@@ -89,9 +88,7 @@ def example_event_system() -> None:
     # Emit some events
     from provide.foundation.hub.events import Event
 
-    event_bus.emit(
-        Event(name="test.event", data={"message": "Hello from event system!"}, source="example")
-    )
+    event_bus.emit(Event(name="test.event", data={"message": "Hello from event system!"}, source="example"))
 
     # Get memory statistics
     stats = event_bus.get_memory_stats()
@@ -154,9 +151,9 @@ def example_circuit_breaker() -> None:
     for i in range(7):
         try:
             result = circuit_breaker.call(unreliable_service)
-            print(f"✅ Call {i+1}: {result}")
+            print(f"✅ Call {i + 1}: {result}")
         except Exception as e:
-            print(f"❌ Call {i+1}: {e}")
+            print(f"❌ Call {i + 1}: {e}")
 
         print(f"   Circuit state: {circuit_breaker.state.value}, failures: {circuit_breaker.failure_count}")
 
@@ -229,6 +226,7 @@ async def example_async_bulkhead() -> None:
     # Execute async operations through bulkhead
     tasks = []
     for i in range(4):
+
         async def wrapped_call(req_id: int = i + 1) -> None:
             try:
                 result = await async_bulkhead.execute_async(async_service_call, req_id)
