@@ -89,7 +89,9 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/resilience/decorators.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/resilience/decorators.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/testmode/internal.py src/provide/foundation/testmode/__init__.py)",
-      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/testmode/internal.py src/provide/foundation/testmode/__init__.py)"
+      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/testmode/internal.py src/provide/foundation/testmode/__init__.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/resilience/decorators.py src/provide/foundation/testmode/internal.py src/provide/foundation/testmode/__init__.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/resilience/decorators.py src/provide/foundation/testmode/internal.py src/provide/foundation/testmode/__init__.py)"
     ],
     "deny": [],
     "ask": [],
