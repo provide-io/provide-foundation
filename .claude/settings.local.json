@@ -40,7 +40,8 @@
       "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/logger/core.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/logger/setup/coordinator.py src/provide/foundation/setup/__init__.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/logger/setup/coordinator.py src/provide/foundation/setup/__init__.py)",
-      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/logger/setup/coordinator.py src/provide/foundation/setup/__init__.py)"
+      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/logger/setup/coordinator.py src/provide/foundation/setup/__init__.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/ -x --tb=short -q --maxfail=5)"
     ],
     "deny": [],
     "ask": [],
