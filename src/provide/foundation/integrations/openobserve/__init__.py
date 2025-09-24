@@ -39,6 +39,13 @@ from provide.foundation.integrations.openobserve.streaming import (
     tail_logs,
 )
 
+# Import OTLP functionality
+try:
+    from provide.foundation.integrations.openobserve.otlp import send_log
+except ImportError:
+    # OTLP functionality not available
+    send_log = None
+
 """OpenObserve integration for Foundation.
 
 Provides log querying and streaming capabilities as an optional integration.
@@ -93,6 +100,8 @@ __all__ = [
     "search_errors",
     # Search functions
     "search_logs",
+    # OTLP
+    "send_log",
     # Streaming functions
     "stream_logs",
     "stream_search_http2",

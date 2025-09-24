@@ -173,18 +173,9 @@ def _reset_direct_circuit_breaker_instances() -> None:
                 try:
                     # Only reset instances that are still alive (not being garbage collected)
                     if obj is not None:
-                        # Check the state before reset for debugging
-                        old_failure_count = obj.failure_count
-                        old_state = obj.state
-
                         # Reset each circuit breaker instance to clean state
                         obj.reset()
                         instances_found += 1
-
-                        # Debug log when we reset a non-clean circuit breaker
-                        if old_failure_count > 0 or str(old_state) != "CircuitState.CLOSED":
-                            print(f"[DEBUG] Reset CircuitBreaker: failures={old_failure_count}, state={old_state}")
-
                 except Exception:
                     # Skip instances that can't be reset (might be in an inconsistent state)
                     pass
@@ -192,7 +183,6 @@ def _reset_direct_circuit_breaker_instances() -> None:
         # Force garbage collection to clean up any dead references
         if instances_found > 0:
             gc.collect()
-            print(f"[DEBUG] Reset {instances_found} CircuitBreaker instances via garbage collection")
 
     except ImportError:
         # Circuit breaker module not available, skip
