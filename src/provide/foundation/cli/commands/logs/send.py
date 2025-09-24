@@ -83,7 +83,11 @@ def _send_log_entry(
     use_otlp: bool,
 ) -> int:
     """Send the log entry using appropriate method."""
-    from provide.foundation.integrations.openobserve.otlp import send_log
+    try:
+        from provide.foundation.integrations.openobserve.otlp import send_log
+    except ImportError:
+        # Fall back to package-level import for testing compatibility
+        from provide.foundation.integrations.openobserve import send_log
 
     try:
         if use_otlp:
