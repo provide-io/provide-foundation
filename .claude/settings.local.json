@@ -186,7 +186,14 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_predictable_initialization.py::TestPredictableInitialization::test_error_recovery_predictable -xvs)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/cli/commands/logs/test_send_comprehensive.py::TestSendLogEntry::test_send_http_api_exception_handling -v)",
       "Bash(PYTHONPATH=src python -c \"from provide.foundation.integrations.openobserve.otlp import send_log; print(''Import successful'')\")",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/cli/commands/logs/test_send_comprehensive.py::TestSendLogEntry::test_send_http_api_exception_handling -v -s)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/cli/commands/logs/test_send_comprehensive.py::TestSendLogEntry::test_send_http_api_exception_handling -v -s)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/integrations/openobserve/__init__.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/integrations/openobserve/__init__.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/integrations/openobserve/__init__.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/cli/commands/logs/test_send_comprehensive.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check tests/cli/commands/logs/test_send_comprehensive.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/cli/commands/logs/test_send_comprehensive.py -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/ -k \"openobserve\" --tb=short -q)"
     ],
     "deny": [],
     "ask": [],
