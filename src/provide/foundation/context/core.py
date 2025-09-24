@@ -6,6 +6,7 @@ from typing import Any
 
 from attrs import define, field, fields, validators
 
+from provide.foundation.config import defaults
 from provide.foundation.config.base import ConfigSource, field as config_field
 from provide.foundation.config.converters import parse_bool_strict
 from provide.foundation.config.defaults import path_converter
@@ -28,54 +29,54 @@ class CLIContext(RuntimeConfig):
     """
 
     log_level: str = config_field(
-        default="INFO",
+        default=defaults.DEFAULT_CONTEXT_LOG_LEVEL,
         env_var="PROVIDE_LOG_LEVEL",
         converter=str.upper,
         validator=validators.in_(VALID_LOG_LEVELS),
         description="Logging level for CLI output",
     )
     profile: str = config_field(
-        default="default",
+        default=defaults.DEFAULT_CONTEXT_PROFILE,
         env_var="PROVIDE_PROFILE",
         description="Configuration profile to use",
     )
     debug: bool = config_field(
-        default=False,
+        default=defaults.DEFAULT_CONTEXT_DEBUG,
         env_var="PROVIDE_DEBUG",
         converter=parse_bool_strict,
         description="Enable debug mode",
     )
     json_output: bool = config_field(
-        default=False,
+        default=defaults.DEFAULT_CONTEXT_JSON_OUTPUT,
         env_var="PROVIDE_JSON_OUTPUT",
         converter=parse_bool_strict,
         description="Output in JSON format",
     )
     config_file: Path | None = config_field(  # noqa: RUF009
-        default=None,
+        default=defaults.DEFAULT_CONTEXT_CONFIG_FILE,
         env_var="PROVIDE_CONFIG_FILE",
         converter=path_converter,
         description="Path to configuration file",
     )
     log_file: Path | None = config_field(  # noqa: RUF009
-        default=None,
+        default=defaults.DEFAULT_CONTEXT_LOG_FILE,
         env_var="PROVIDE_LOG_FILE",
         converter=path_converter,
         description="Path to log file",
     )
     log_format: str = config_field(
-        default="key_value",
+        default=defaults.DEFAULT_CONTEXT_LOG_FORMAT,
         env_var="PROVIDE_LOG_FORMAT",
         description="Log output format (key_value or json)",
     )
     no_color: bool = config_field(
-        default=False,
+        default=defaults.DEFAULT_CONTEXT_NO_COLOR,
         env_var="NO_COLOR",
         converter=parse_bool_strict,
         description="Disable colored output",
     )
     no_emoji: bool = config_field(
-        default=False,
+        default=defaults.DEFAULT_CONTEXT_NO_EMOJI,
         env_var="PROVIDE_NO_EMOJI",
         converter=parse_bool_strict,
         description="Disable emoji in output",
