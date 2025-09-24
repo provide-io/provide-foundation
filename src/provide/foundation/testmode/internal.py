@@ -160,18 +160,29 @@ def _reset_direct_circuit_breaker_instances() -> None:
     that exist in memory and reset them. This is necessary for test isolation
     when CircuitBreaker instances are created directly rather than via decorator.
     """
-    import contextlib
     import gc
 
     try:
         from provide.foundation.resilience.circuit import CircuitBreaker
 
-        # Find all CircuitBreaker instances in memory
+        # Find all CircuitBreaker instances in memory using garbage collector
+        # This catches all instances including those not registered in decorators
+        instances_found = 0
         for obj in gc.get_objects():
             if isinstance(obj, CircuitBreaker):
-                with contextlib.suppress(Exception):
-                    # Reset each circuit breaker instance
-                    obj.reset()
+                try:
+                    # Only reset instances that are still alive (not being garbage collected)
+                    if obj is not None:
+                        # Reset each circuit breaker instance to clean state
+                        obj.reset()
+                        instances_found += 1
+                except Exception:
+                    # Skip instances that can't be reset (might be in an inconsistent state)
+                    pass
+
+        # Force garbage collection to clean up any dead references
+        if instances_found > 0:
+            gc.collect()
 
     except ImportError:
         # Circuit breaker module not available, skip
@@ -185,6 +196,10 @@ def reset_circuit_breaker_state() -> None:
     by the @circuit_breaker decorator and direct instantiation to ensure
     their state doesn't leak between tests.
     """
+    # Reset all CircuitBreaker instances created directly (not via decorator)
+    # Do this FIRST to catch all instances before decorator reset
+    _reset_direct_circuit_breaker_instances()
+
     try:
         from provide.foundation.resilience.decorators import (
             reset_circuit_breakers_for_testing,
@@ -197,9 +212,6 @@ def reset_circuit_breaker_state() -> None:
     except ImportError:
         # Resilience decorators module not available, skip
         pass
-
-    # Reset all CircuitBreaker instances created directly (not via decorator)
-    _reset_direct_circuit_breaker_instances()
 
 
 def reset_state_managers() -> None:
