@@ -44,6 +44,20 @@ from provide.foundation.integrations.openobserve.streaming import (
 Provides log querying and streaming capabilities as an optional integration.
 """
 
+
+def ingest_logs(log_records: list[dict]) -> None:
+    """Ingest log records to OpenObserve via HTTP API.
+
+    Args:
+        log_records: List of log record dictionaries to ingest
+
+    Raises:
+        NotImplementedError: This is a stub implementation
+    """
+    # This is a stub implementation for the CLI command
+    # In a full implementation, this would send logs to OpenObserve
+    raise NotImplementedError("HTTP API ingestion not yet implemented")
+
 __all__ = [
     "OpenObserveAuthenticationError",
     # Client
@@ -56,10 +70,6 @@ __all__ = [
     "OpenObserveError",
     "OpenObserveQueryError",
     "OpenObserveStreamingError",
-    # Models
-    "SearchQuery",
-    "SearchResponse",
-    "StreamInfo",
     "aggregate_by_level",
     "format_csv",
     # Formatters
@@ -69,6 +79,12 @@ __all__ = [
     "format_summary",
     "format_table",
     "get_current_trace_logs",
+    # HTTP API
+    "ingest_logs",
+    # Models
+    "SearchQuery",
+    "SearchResponse",
+    "StreamInfo",
     "parse_relative_time",
     "search_by_level",
     "search_by_service",
