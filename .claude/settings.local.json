@@ -205,7 +205,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/testmode/orchestration.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/testmode/orchestration.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/testmode/orchestration.py)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff format /Users/tim/code/gh/provide-io/provide-testkit/src/provide/testkit/logger/mocks.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff format /Users/tim/code/gh/provide-io/provide-testkit/src/provide/testkit/logger/mocks.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes /Users/tim/code/gh/provide-io/provide-testkit/src/provide/testkit/logger/mocks.py)"
     ],
     "deny": [],
     "ask": [],
