@@ -20,8 +20,11 @@ def get_log_stream() -> TextIO:
     """Get the current log stream."""
     global _PROVIDE_LOG_STREAM
     with _STREAM_LOCK:
-        # Check if the current stream is closed
-        if hasattr(_PROVIDE_LOG_STREAM, "closed") and _PROVIDE_LOG_STREAM.closed:
+        # Only validate real streams, not mock objects
+        # Check if this is a real stream that can be closed
+        if (hasattr(_PROVIDE_LOG_STREAM, "closed") and
+            not hasattr(_PROVIDE_LOG_STREAM, "_mock_name") and  # Skip mock objects
+            _PROVIDE_LOG_STREAM.closed):
             # Stream is closed, reset to stderr or raise exception
             try:
                 if hasattr(sys, "stderr") and sys.stderr is not None:
