@@ -183,7 +183,10 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/streams/core.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/streams/test_console.py::TestIsTTY::test_is_tty_with_non_tty_stream -xvs)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/streams/test_console.py --tb=short -q)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_predictable_initialization.py::TestPredictableInitialization::test_error_recovery_predictable -xvs)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_predictable_initialization.py::TestPredictableInitialization::test_error_recovery_predictable -xvs)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/cli/commands/logs/test_send_comprehensive.py::TestSendLogEntry::test_send_http_api_exception_handling -v)",
+      "Bash(PYTHONPATH=src python -c \"from provide.foundation.integrations.openobserve.otlp import send_log; print(''Import successful'')\")",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/cli/commands/logs/test_send_comprehensive.py::TestSendLogEntry::test_send_http_api_exception_handling -v -s)"
     ],
     "deny": [],
     "ask": [],
