@@ -16,9 +16,6 @@ from provide.foundation.state import (
 
 T = TypeVar("T")
 
-# Global registry for all CircuitBreaker instances (for test reset)
-_all_circuit_breakers: list["CircuitBreaker"] = []
-
 
 @define(kw_only=True, slots=True)
 class CircuitBreaker:
@@ -46,9 +43,6 @@ class CircuitBreaker:
                 recovery_timeout=self.recovery_timeout,
             ),
         )
-
-        # Register this instance for global reset during testing
-        _all_circuit_breakers.append(self)
 
     @property
     def state(self) -> CircuitState:
@@ -191,23 +185,3 @@ class CircuitBreaker:
                     "previous_failure_count": old_state.failure_count,
                 },
             )
-
-
-def reset_all_circuit_breakers_for_testing() -> None:
-    """Reset all CircuitBreaker instances to default state for testing.
-
-    This function resets all CircuitBreaker instances that have been created,
-    whether through decorators or direct instantiation, ensuring proper
-    test isolation.
-    """
-    for breaker in _all_circuit_breakers:
-        breaker.reset()
-
-
-def clear_circuit_breaker_registry_for_testing() -> None:
-    """Clear the global circuit breaker registry for testing.
-
-    This should only be called during test cleanup to prevent
-    memory leaks in long-running test suites.
-    """
-    _all_circuit_breakers.clear()
