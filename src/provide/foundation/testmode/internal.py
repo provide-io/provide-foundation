@@ -39,10 +39,11 @@ def reset_logger_state() -> None:
     try:
         from provide.foundation.logger.core import logger as foundation_logger
 
-        # Reset foundation logger state
-        foundation_logger._is_configured_by_setup = False
-        foundation_logger._active_config = None
-        foundation_logger._active_resolved_emoji_config = None
+        # Reset foundation logger state by bypassing the proxy to avoid circular initialization
+        # Access the proxy's __dict__ directly to avoid triggering __setattr__
+        foundation_logger.__dict__["_is_configured_by_setup"] = False
+        foundation_logger.__dict__["_active_config"] = None
+        foundation_logger.__dict__["_active_resolved_emoji_config"] = None
     except (ImportError, AttributeError, TypeError):
         # Skip if foundation_logger is a proxy without direct attribute access
         pass

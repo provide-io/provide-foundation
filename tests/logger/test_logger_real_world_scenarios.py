@@ -89,6 +89,10 @@ class TestRealWorldScenarios:
                 "PROVIDE_LOG_DAS_EMOJI_ENABLED": "true",
             },
         ):
+            # Force re-initialization with new environment variables
+            reset_foundation_setup_for_testing()
+            set_log_stream_for_testing(sys.stderr)
+
             # Service startup logging
             global_logger.info("User service starting up")
 

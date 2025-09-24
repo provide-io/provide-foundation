@@ -4,11 +4,11 @@ from __future__ import annotations
 # core.py
 #
 import contextlib
-import threading
 from typing import TYPE_CHECKING, Any
 
 import structlog
 
+from provide.foundation.concurrency.locks import get_lock_manager
 from provide.foundation.logger.types import TRACE_LEVEL_NAME
 
 """Core FoundationLogger implementation.
@@ -18,7 +18,6 @@ Contains the main logging class with all logging methods.
 if TYPE_CHECKING:
     from provide.foundation.logger.config import TelemetryConfig
 
-_LAZY_SETUP_LOCK = threading.Lock()
 _LAZY_SETUP_STATE: dict[str, Any] = {"done": False, "error": None, "in_progress": False}
 
 
@@ -60,7 +59,7 @@ class FoundationLogger:
                 current_config.get("logger_factory"),
                 structlog.ReturnLoggerFactory,
             ):
-                with _LAZY_SETUP_LOCK:
+                with get_lock_manager().acquire("foundation.logger.lazy"):
                     _LAZY_SETUP_STATE["done"] = True
                 return True
         except Exception:
@@ -135,7 +134,7 @@ class FoundationLogger:
             return
 
         # Acquire lock to perform setup.
-        with _LAZY_SETUP_LOCK:
+        with get_lock_manager().acquire("foundation.logger.lazy"):
             self._perform_locked_setup()
 
     def _perform_lazy_setup(self) -> None:

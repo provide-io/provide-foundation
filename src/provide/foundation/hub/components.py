@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from enum import Enum
-import threading
 from typing import Any, Protocol
 
 from attrs import define, field
 
+from provide.foundation.concurrency.locks import get_lock_manager
 from provide.foundation.errors.decorators import resilient
 
 # Import functions from specialized modules for re-export
@@ -86,7 +86,6 @@ class ComponentLifecycle(Protocol):
 
 # Global component registry
 _component_registry = Registry()
-_registry_lock = threading.RLock()
 _initialized_components: dict[tuple[str, str], Any] = {}
 
 
@@ -104,7 +103,7 @@ def get_component_registry() -> Registry:
 )
 def check_component_health(name: str, dimension: str) -> dict[str, Any]:
     """Check component health status."""
-    with _registry_lock:
+    with get_lock_manager().acquire("foundation.registry"):
         component = _component_registry.get(name, dimension)
 
         if not component:
@@ -125,7 +124,7 @@ def check_component_health(name: str, dimension: str) -> dict[str, Any]:
 
 def get_component_config_schema(name: str, dimension: str) -> dict[str, Any] | None:
     """Get component configuration schema."""
-    with _registry_lock:
+    with get_lock_manager().acquire("foundation.registry"):
         entry = _component_registry.get_entry(name, dimension)
 
         if not entry:
@@ -139,7 +138,7 @@ def bootstrap_foundation() -> None:
     registry = get_component_registry()
 
     # Thread-safe check to prevent duplicate registration
-    with _registry_lock:
+    with get_lock_manager().acquire("foundation.registry"):
         # Check if already bootstrapped
         if registry.get_entry("timestamp", ComponentCategory.PROCESSOR.value):
             return  # Already bootstrapped
@@ -169,7 +168,7 @@ def bootstrap_foundation() -> None:
 def reset_registry_for_tests() -> None:
     """Reset registry state for testing."""
     global _initialized_components
-    with _registry_lock:
+    with get_lock_manager().acquire("foundation.registry"):
         _component_registry.clear()
         _initialized_components.clear()
 

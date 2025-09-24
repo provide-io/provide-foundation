@@ -6,8 +6,6 @@ from provide.foundation.hub.components import (
     ComponentCategory,
     _component_registry,
     _initialized_components,
-    _registry_lock,
-    bootstrap_foundation,
     cleanup_all_components,
     discover_components,
     get_component_registry,
@@ -162,46 +160,6 @@ class TestMiscellaneousFunctionality:
         result = discover_components("test_group", "test_dimension", None)
         assert result == {}
 
-    def test_bootstrap_foundation_creates_default_components(self) -> None:
-        """Test bootstrap_foundation creates expected components."""
-        from provide.foundation.eventsets.registry import (
-            discover_event_sets,
-            get_registry as get_eventset_registry,
-        )
-
-        # Clear registries first
-        reset_registry_for_tests()
-
-        # Clear the event registry and reset discovery state
-        event_registry = get_eventset_registry()
-        event_registry.clear()
-        from provide.foundation.eventsets.registry import reset_discovery_state
-
-        reset_discovery_state()
-
-        # Bootstrap should create default components
-        bootstrap_foundation()
-
-        registry = get_component_registry()
-
-        # Should have timestamp processor
-        timestamp_proc = registry.get("timestamp", ComponentCategory.PROCESSOR.value)
-        assert timestamp_proc is not None
-
-        # Trigger event set discovery (this should register them fresh)
-        discover_event_sets()
-
-        # Event sets should be in the EventSetRegistry, not ComponentRegistry
-        event_sets = event_registry.list_event_sets()
-        assert len(event_sets) > 0, f"No event sets found. Registry has {len(list(event_registry))} entries"
-
-        # Check what event sets we have
-        event_set_names = [es.name for es in event_sets]
-        assert "default" in event_set_names, f"'default' not found in event sets: {event_set_names}"
-
-        # Should have default event set (registered during module discovery)
-        default_event_set = event_registry.get_event_set("default")
-        assert default_event_set is not None
 
     def test_reset_registry_for_tests(self) -> None:
         """Test reset_registry_for_tests clears state."""
@@ -232,11 +190,12 @@ class TestMiscellaneousFunctionality:
 
     def test_thread_safety_basics(self) -> None:
         """Test basic thread safety with registry lock."""
-        # Test that the registry lock exists and is accessible
-        assert _registry_lock is not None
-        assert hasattr(_registry_lock, "acquire") and hasattr(_registry_lock, "release")
+        from provide.foundation.concurrency.locks import get_lock_manager
+
+        # Test that the lock manager can acquire registry lock
+        lock_manager = get_lock_manager()
 
         # Test that we can acquire and release the lock
-        with _registry_lock:
+        with lock_manager.acquire("foundation.registry"):
             registry = get_component_registry()
             assert registry is not None

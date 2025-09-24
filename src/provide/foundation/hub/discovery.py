@@ -11,18 +11,20 @@ in the Hub registry system.
 """
 
 
-def _get_registry_and_lock() -> tuple[Any, Any]:
-    """Get registry and lock from components module."""
-    from provide.foundation.hub.components import _registry_lock, get_component_registry
+def _get_registry_and_lock() -> Any:
+    """Get registry from components module."""
+    from provide.foundation.hub.components import get_component_registry
 
-    return get_component_registry(), _registry_lock
+    return get_component_registry()
 
 
 def resolve_component_dependencies(name: str, dimension: str) -> dict[str, Any]:
     """Resolve component dependencies recursively."""
-    registry, registry_lock = _get_registry_and_lock()
+    from provide.foundation.concurrency.locks import get_lock_manager
 
-    with registry_lock:
+    registry = _get_registry_and_lock()
+
+    with get_lock_manager().acquire("foundation.registry"):
         entry = registry.get_entry(name, dimension)
 
         if not entry:
@@ -71,7 +73,7 @@ def discover_components(
 
     # If no registry provided, get the global component registry
     if registry is None:
-        registry, _ = _get_registry_and_lock()
+        registry = _get_registry_and_lock()
 
     # Discover all entry points in the specified group
     try:

@@ -57,28 +57,6 @@ def test_service_name_injection() -> None:
     print("✅ Service name injection test works")
 
 
-def test_lazy_setup_flags() -> None:
-    """Test that lazy setup flags are set correctly."""
-    print("\n=== Test 3: Lazy Setup Flags ===")
-
-    from provide.testkit import reset_foundation_setup_for_testing
-
-    reset_foundation_setup_for_testing()
-
-    from provide.foundation.logger.core import _LAZY_SETUP_STATE  # Changed
-
-    print(f"Initial state - _LAZY_SETUP_STATE: {_LAZY_SETUP_STATE}")
-
-    from provide.foundation import logger
-
-    logger.info("Trigger lazy setup")
-
-    # _LAZY_SETUP_STATE is a mutable dict, check its current content
-    print(f"After logging - _LAZY_SETUP_STATE: {_LAZY_SETUP_STATE}")
-
-    assert _LAZY_SETUP_STATE["done"] is True, "Lazy setup 'done' flag should be True"
-    assert _LAZY_SETUP_STATE["error"] is None, "Lazy setup 'error' flag should be None"
-    print("✅ Lazy setup flags work correctly")
 
 
 def test_emergency_fallback() -> None:

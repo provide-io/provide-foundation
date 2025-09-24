@@ -13,21 +13,22 @@ Provides functions for discovering and executing error handlers from the registr
 
 
 def _get_registry_and_lock() -> tuple[Any, Any]:
-    """Get registry and lock from components module."""
+    """Get registry and ComponentCategory from components module."""
     from provide.foundation.hub.components import (
         ComponentCategory,
-        _registry_lock,
         get_component_registry,
     )
 
-    return get_component_registry(), _registry_lock, ComponentCategory
+    return get_component_registry(), ComponentCategory
 
 
 def get_handlers_for_exception(exception: Exception) -> list[RegistryEntry]:
     """Get error handlers that can handle the given exception type."""
-    registry, registry_lock, ComponentCategory = _get_registry_and_lock()
+    from provide.foundation.concurrency.locks import get_lock_manager
 
-    with registry_lock:
+    registry, ComponentCategory = _get_registry_and_lock()
+
+    with get_lock_manager().acquire("foundation.registry"):
         # Get all error handlers
         all_entries = list(registry)
         handlers = [entry for entry in all_entries if entry.dimension == ComponentCategory.ERROR_HANDLER.value]

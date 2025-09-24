@@ -17,23 +17,24 @@ loading configurations, and managing the configuration chain.
 T = TypeVar("T", bound=BaseConfig)
 
 
-def _get_registry_and_lock() -> tuple[Any, Any, Any]:
-    """Get registry and lock from components module."""
+def _get_registry_and_lock() -> tuple[Any, Any]:
+    """Get registry and ComponentCategory from components module."""
     from provide.foundation.hub.components import (
         ComponentCategory,
-        _registry_lock,
         get_component_registry,
     )
 
-    return get_component_registry(), _registry_lock, ComponentCategory
+    return get_component_registry(), ComponentCategory
 
 
 @resilient(fallback=None, suppress=(Exception,))
 def resolve_config_value(key: str) -> Any:
     """Resolve configuration value using priority-ordered sources."""
-    registry, registry_lock, ComponentCategory = _get_registry_and_lock()
+    from provide.foundation.concurrency.locks import get_lock_manager
 
-    with registry_lock:
+    registry, ComponentCategory = _get_registry_and_lock()
+
+    with get_lock_manager().acquire("foundation.registry"):
         # Get all config sources
         all_entries = list(registry)
         config_sources = [
@@ -60,9 +61,11 @@ def resolve_config_value(key: str) -> Any:
 
 def get_config_chain() -> list[RegistryEntry]:
     """Get configuration sources ordered by priority."""
-    registry, registry_lock, ComponentCategory = _get_registry_and_lock()
+    from provide.foundation.concurrency.locks import get_lock_manager
 
-    with registry_lock:
+    registry, ComponentCategory = _get_registry_and_lock()
+
+    with get_lock_manager().acquire("foundation.registry"):
         # Get all config sources
         all_entries = list(registry)
         config_sources = [
@@ -109,9 +112,11 @@ def load_config_from_registry(config_class: type[T]) -> T:
         Configuration instance loaded from registry sources
 
     """
-    _registry, registry_lock, _ComponentCategory = _get_registry_and_lock()
+    from provide.foundation.concurrency.locks import get_lock_manager
 
-    with registry_lock:
+    _registry, _ComponentCategory = _get_registry_and_lock()
+
+    with get_lock_manager().acquire("foundation.registry"):
         # Get configuration data from registry
         config_data = {}
 
