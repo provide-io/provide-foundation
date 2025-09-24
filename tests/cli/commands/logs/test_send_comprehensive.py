@@ -324,11 +324,11 @@ class TestSendLogEntry:
         """Test exception handling for HTTP API sending."""
         from provide.foundation.cli.commands.logs.send import _send_log_entry
 
-        # Mock the ingest_logs import to raise an exception
-        mock_ingest = Mock(side_effect=Exception("HTTP API failed"))
+        # Mock the ingest_logs function to raise an exception
         with (
-            patch.dict(
-                "sys.modules", {"provide.foundation.integrations.openobserve": Mock(ingest_logs=mock_ingest)}
+            patch(
+                "provide.foundation.integrations.openobserve.ingest_logs",
+                side_effect=Exception("HTTP API failed"),
             ),
             patch("click.echo") as mock_echo,
         ):
