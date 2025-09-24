@@ -119,6 +119,14 @@ def test_key_value_still_has_emojis() -> None:
     set_log_stream_for_testing(captured_output)
 
     try:
+        # Force re-initialization with new environment variables
+        from provide.foundation.hub.manager import get_hub
+        from provide.foundation.logger.config import TelemetryConfig
+
+        hub = get_hub()
+        config = TelemetryConfig.from_env()
+        hub.initialize_foundation(config, force=True)
+
         from provide.foundation import logger
 
         logger.info("Test message for key-value format")
