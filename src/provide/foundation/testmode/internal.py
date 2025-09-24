@@ -153,6 +153,31 @@ def reset_global_coordinator() -> None:
         pass
 
 
+def _reset_direct_circuit_breaker_instances() -> None:
+    """Reset all CircuitBreaker instances created directly in tests.
+
+    This function uses introspection to find all CircuitBreaker instances
+    that exist in memory and reset them. This is necessary for test isolation
+    when CircuitBreaker instances are created directly rather than via decorator.
+    """
+    import contextlib
+    import gc
+
+    try:
+        from provide.foundation.resilience.circuit import CircuitBreaker
+
+        # Find all CircuitBreaker instances in memory
+        for obj in gc.get_objects():
+            if isinstance(obj, CircuitBreaker):
+                with contextlib.suppress(Exception):
+                    # Reset each circuit breaker instance
+                    obj.reset()
+
+    except ImportError:
+        # Circuit breaker module not available, skip
+        pass
+
+
 def reset_circuit_breaker_state() -> None:
     """Reset all circuit breaker instances to ensure test isolation.
 
@@ -173,14 +198,8 @@ def reset_circuit_breaker_state() -> None:
         # Resilience decorators module not available, skip
         pass
 
-    try:
-        from provide.foundation.resilience.circuit import reset_all_circuit_breakers_for_testing
-
-        # Reset all CircuitBreaker instances (including direct instantiation)
-        reset_all_circuit_breakers_for_testing()
-    except ImportError:
-        # Circuit module not available, skip
-        pass
+    # Reset all CircuitBreaker instances created directly (not via decorator)
+    _reset_direct_circuit_breaker_instances()
 
 
 def reset_state_managers() -> None:
