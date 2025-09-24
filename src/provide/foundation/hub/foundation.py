@@ -88,9 +88,13 @@ class FoundationManager:
         logger_instance = self._registry.get("foundation.logger.instance", "singleton")
 
         if logger_instance:
-            return logger_instance.get_logger(name)
+            try:
+                return logger_instance.get_logger(name)
+            except Exception:
+                # Fall back to emergency logger if lock ordering issues occur
+                pass
 
-        # Emergency fallback if logger instance not available
+        # Emergency fallback if logger instance not available or configuration failed
         import structlog
 
         return structlog.get_logger(name or "fallback")
@@ -152,11 +156,21 @@ def get_foundation_logger(name: str | None = None) -> Any:
 
     hub = get_hub()
     if hasattr(hub, "_foundation_manager") and hub._foundation_manager._logger_instance:
-        return hub._foundation_manager._logger_instance.get_logger(name)
+        try:
+            return hub._foundation_manager._logger_instance.get_logger(name)
+        except Exception:
+            # Fall back to direct logger if lock ordering issues occur
+            pass
 
     # Fallback to direct logger import during bootstrap
     from provide.foundation.logger import logger
 
-    if name:
-        return logger.get_logger(name)
-    return logger
+    try:
+        if name:
+            return logger.get_logger(name)
+        return logger
+    except Exception:
+        # Ultimate fallback to basic structlog
+        import structlog
+
+        return structlog.get_logger(name or "emergency")
