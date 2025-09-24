@@ -43,6 +43,16 @@ from provide.foundation.hub.manager import (
     clear_hub,
     get_hub,
 )
+from provide.foundation.hub.protocols import (
+    AsyncContextResource,
+    AsyncDisposable,
+    AsyncInitializable,
+    AsyncResourceManager,
+    Disposable,
+    HealthCheckable,
+    Initializable,
+    ResourceManager,
+)
 from provide.foundation.hub.registry import (
     Registry,
     RegistryEntry,
@@ -81,12 +91,21 @@ def __getattr__(name: str) -> Any:
 
 
 __all__ = [
+    # Resource Management Protocols
+    "AsyncContextResource",
+    "AsyncDisposable",
+    "AsyncInitializable",
+    "AsyncResourceManager",
     "ComponentCategory",
+    "Disposable",
+    "HealthCheckable",
     # Hub
     "Hub",
+    "Initializable",
     # Registry
     "Registry",
     "RegistryEntry",
+    "ResourceManager",
     # CLI features (lazy loaded)
     "build_click_command",
     "clear_hub",
