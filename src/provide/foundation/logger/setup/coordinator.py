@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import logging as stdlib_logging
-import threading
 from typing import Any
 
 import structlog
@@ -22,69 +21,10 @@ from provide.foundation.utils.streams import get_safe_stderr
 Handles the core setup logic, state management, and setup logger creation.
 """
 
-_PROVIDE_SETUP_LOCK = threading.Lock()
 _CORE_SETUP_LOGGER_NAME = "provide.foundation.core_setup"
 _EXPLICIT_SETUP_DONE = False
 _FOUNDATION_LOG_LEVEL: int | None = None
 _CACHED_SETUP_LOGGER: Any | None = None
-
-
-class _SafePrintLoggerFactory:
-    """A safe logger factory that handles closed streams gracefully."""
-
-    def __init__(self, file: Any) -> None:
-        """Initialize with a target file stream."""
-        self._file = file
-
-    def __call__(self, *args: Any) -> Any:
-        """Create a logger that writes to the stream safely."""
-        return _SafePrintLogger(self._file)
-
-
-class _SafePrintLogger:
-    """A safe print logger that handles closed streams."""
-
-    def __init__(self, file: Any) -> None:
-        """Initialize with target file stream."""
-        self._file = file
-
-    def debug(self, message: str, **kwargs: Any) -> None:
-        """Log debug message safely."""
-        self._safe_print(message)
-
-    def info(self, message: str, **kwargs: Any) -> None:
-        """Log info message safely."""
-        self._safe_print(message)
-
-    def warning(self, message: str, **kwargs: Any) -> None:
-        """Log warning message safely."""
-        self._safe_print(message)
-
-    def error(self, message: str, **kwargs: Any) -> None:
-        """Log error message safely."""
-        self._safe_print(message)
-
-    def trace(self, message: str, **kwargs: Any) -> None:
-        """Log trace message safely."""
-        self._safe_print(message)
-
-    def _safe_print(self, message: str) -> None:
-        """Print message safely, handling closed streams."""
-        try:
-            if hasattr(self._file, 'closed') and self._file.closed:
-                # Stream is closed, try to get a safe stderr
-                safe_stream = get_safe_stderr()
-                print(message, file=safe_stream, flush=True)
-            else:
-                print(message, file=self._file, flush=True)
-        except (ValueError, OSError):
-            # Stream is not writable or other I/O error
-            try:
-                safe_stream = get_safe_stderr()
-                print(message, file=safe_stream, flush=True)
-            except Exception:
-                # Last resort: just ignore the message
-                pass
 
 
 def get_foundation_log_level() -> int:
@@ -141,14 +81,14 @@ def create_foundation_internal_logger(globally_disabled: bool = False) -> Any:
         # Fallback to stderr if stream access fails
         foundation_stream = get_safe_stderr()
 
-    # Configure structlog for core setup logger with safe factory
+    # Configure structlog for core setup logger
     structlog.configure(
         processors=[
             structlog.processors.add_log_level,
             structlog.processors.TimeStamper(fmt="iso"),
             structlog.dev.ConsoleRenderer(),
         ],
-        logger_factory=_SafePrintLoggerFactory(file=foundation_stream),
+        logger_factory=structlog.PrintLoggerFactory(file=foundation_stream),
         wrapper_class=structlog.BoundLogger,
         cache_logger_on_first_use=True,
     )
@@ -227,8 +167,9 @@ def internal_setup(config: TelemetryConfig | None = None, is_explicit_call: bool
     """
     # This function assumes the lock is already held.
     structlog.reset_defaults()
-    foundation_logger._is_configured_by_setup = False
-    foundation_logger._active_config = None
+    # Use __dict__ access to avoid triggering proxy initialization
+    foundation_logger.__dict__["_is_configured_by_setup"] = False
+    foundation_logger.__dict__["_active_config"] = None
     _LAZY_SETUP_STATE.update({"done": False, "error": None, "in_progress": False})
 
     current_config = config if config is not None else TelemetryConfig.from_env()
@@ -249,8 +190,9 @@ def internal_setup(config: TelemetryConfig | None = None, is_explicit_call: bool
         core_setup_logger.trace("Configuring structlog output processors")
         configure_structlog_output(current_config, get_log_stream())
 
-    foundation_logger._is_configured_by_setup = is_explicit_call
-    foundation_logger._active_config = current_config
+    # Use __dict__ access to avoid triggering proxy initialization
+    foundation_logger.__dict__["_is_configured_by_setup"] = is_explicit_call
+    foundation_logger.__dict__["_active_config"] = current_config
     _LAZY_SETUP_STATE["done"] = True
 
     if not current_config.globally_disabled:

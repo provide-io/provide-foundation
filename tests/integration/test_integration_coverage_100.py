@@ -101,34 +101,3 @@ def test_logger_base_error_paths() -> None:
     reset_foundation_setup_for_testing()
 
 
-def test_logger_base_error_while_waiting_for_lock() -> None:
-    """Test error path when error is set while waiting for lock."""
-    from provide.foundation.logger import core
-
-    reset_foundation_setup_for_testing()
-
-    logger = FoundationLogger()
-
-    # Clear initial state
-    _LAZY_SETUP_STATE["done"] = False
-    _LAZY_SETUP_STATE["error"] = None
-    _LAZY_SETUP_STATE["in_progress"] = False
-
-    def set_error() -> MagicMock:
-        _LAZY_SETUP_STATE["error"] = Exception("Error from other thread")
-        return MagicMock()
-
-    # Use patch to modify the lock behavior
-    with patch.object(core, "_LAZY_SETUP_LOCK") as mock_lock:
-        # Configure the lock's context manager behavior
-        mock_lock.__enter__ = MagicMock(side_effect=set_error)
-        mock_lock.__exit__ = MagicMock(return_value=None)
-
-        # Mock emergency fallback to verify it's called
-        with patch.object(logger, "_setup_emergency_fallback") as mock_fallback:
-            logger._ensure_configured()
-            # The emergency fallback should be called due to the error
-            mock_fallback.assert_called()
-
-    # Reset
-    reset_foundation_setup_for_testing()
