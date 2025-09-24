@@ -182,7 +182,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/streams/core.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/streams/core.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/streams/test_console.py::TestIsTTY::test_is_tty_with_non_tty_stream -xvs)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/streams/test_console.py --tb=short -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/streams/test_console.py --tb=short -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_predictable_initialization.py::TestPredictableInitialization::test_error_recovery_predictable -xvs)"
     ],
     "deny": [],
     "ask": [],
