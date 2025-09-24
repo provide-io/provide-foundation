@@ -154,24 +154,32 @@ def reset_global_coordinator() -> None:
 
 
 def _reset_direct_circuit_breaker_instances() -> None:
-    """Reset all CircuitBreaker instances created directly in tests.
+    """Reset ONLY CircuitBreaker instances created directly (not via decorator) in tests.
 
-    This function uses introspection to find all CircuitBreaker instances
-    that exist in memory and reset them. This is necessary for test isolation
-    when CircuitBreaker instances are created directly rather than via decorator.
+    This function uses introspection to find CircuitBreaker instances
+    that exist in memory but are NOT tracked by the decorator registries.
+    This ensures we only reset orphaned instances created directly, while
+    preserving the state of decorator-created instances within a test.
     """
     import gc
 
     try:
         from provide.foundation.resilience.circuit import CircuitBreaker
+        from provide.foundation.resilience.decorators import (
+            _circuit_breaker_instances,
+            _test_circuit_breaker_instances,
+        )
+
+        # Combine both registries to get all decorator-tracked instances
+        decorator_tracked_instances = _circuit_breaker_instances + _test_circuit_breaker_instances
 
         # Find all CircuitBreaker instances in memory using garbage collector
-        # This catches all instances including those not registered in decorators
+        # Only reset those NOT tracked by decorators (i.e., created directly)
         instances_found = 0
         for obj in gc.get_objects():
-            if isinstance(obj, CircuitBreaker):
+            if isinstance(obj, CircuitBreaker) and obj not in decorator_tracked_instances:
                 try:
-                    # Only reset instances that are still alive (not being garbage collected)
+                    # Only reset instances that are still alive and not tracked by decorators
                     if obj is not None:
                         # Reset each circuit breaker instance to clean state
                         obj.reset()
