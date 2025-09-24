@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 from collections.abc import Callable
 import functools
+import inspect
 from typing import Any, TypeVar
 
 from provide.foundation.config.defaults import DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT
@@ -14,6 +15,43 @@ from provide.foundation.resilience.retry import (
 )
 
 """Resilience decorators for retry, circuit breaker, and fallback patterns."""
+
+# Global registry of circuit breaker instances for testing
+_circuit_breaker_instances: list[CircuitBreaker] = []
+
+# Separate registry for circuit breakers created in test files
+_test_circuit_breaker_instances: list[CircuitBreaker] = []
+
+
+def _should_register_for_global_reset() -> bool:
+    """Determine if a circuit breaker should be registered for global reset.
+
+    Circuit breakers created in test files should not be registered for global
+    reset to ensure proper test isolation in parallel execution.
+    """
+    try:
+        frame = inspect.currentframe()
+        if frame is None:
+            return True
+
+        # Walk up the call stack to find where the decorator is being applied
+        while frame:
+            frame = frame.f_back
+            if frame is None:
+                break
+
+            filename = frame.f_code.co_filename
+
+            # If we're in a test file, don't register for global reset
+            # This catches both runtime and import-time circuit breaker creation
+            if "/tests/" in filename or "test_" in filename or "conftest" in filename:
+                return False
+
+        return True
+    except Exception:
+        # If inspection fails, assume we should register (safer default)
+        return True
+
 
 F = TypeVar("F", bound=Callable[..., Any])
 
@@ -203,6 +241,14 @@ def circuit_breaker(
         expected_exception=expected_exception,
     )
 
+    # Register for appropriate cleanup based on context
+    if _should_register_for_global_reset():
+        # Production circuit breakers
+        _circuit_breaker_instances.append(breaker)
+    else:
+        # Test circuit breakers go to separate registry for isolated reset
+        _test_circuit_breaker_instances.append(breaker)
+
     def decorator(func: F) -> F:
         @functools.wraps(func)
         def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
@@ -217,6 +263,26 @@ def circuit_breaker(
         return sync_wrapper  # type: ignore
 
     return decorator
+
+
+def reset_circuit_breakers_for_testing() -> None:
+    """Reset all circuit breaker instances for test isolation.
+
+    This function is called by the test framework to ensure
+    circuit breaker state doesn't leak between tests.
+    """
+    for breaker in _circuit_breaker_instances:
+        breaker.reset()
+
+
+def reset_test_circuit_breakers() -> None:
+    """Reset circuit breaker instances created in test files.
+
+    This function resets circuit breakers that were created within test files
+    to ensure proper test isolation without affecting production circuit breakers.
+    """
+    for breaker in _test_circuit_breaker_instances:
+        breaker.reset()
 
 
 def fallback(*fallback_funcs: Callable[..., Any]) -> Callable[[F], F]:
