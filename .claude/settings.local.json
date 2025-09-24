@@ -218,7 +218,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker --tb=short -q)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker --tb=short -q)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/ tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker --tb=short -q --maxfail=1)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_predictable_initialization.py tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker tests/cli/commands/test_deps_coverage.py::TestDepsCommandWithClick::test_deps_command_with_click --tb=short -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_predictable_initialization.py tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker tests/cli/commands/test_deps_coverage.py::TestDepsCommandWithClick::test_deps_command_with_click --tb=short -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker tests/logger/test_logger_production_compliance.py::TestLazyInitializationDocumentation::test_basic_usage_example -q)"
     ],
     "deny": [],
     "ask": [],
