@@ -134,8 +134,12 @@ class FoundationLogger:
             return
 
         # Acquire lock to perform setup.
-        with get_lock_manager().acquire("foundation.logger.lazy"):
-            self._perform_locked_setup()
+        try:
+            with get_lock_manager().acquire("foundation.logger.lazy"):
+                self._perform_locked_setup()
+        except Exception:
+            # If lock acquisition fails (e.g., due to ordering violations), use emergency fallback
+            self._setup_emergency_fallback()
 
     def _perform_lazy_setup(self) -> None:
         """Perform the actual lazy setup of the logging system."""
