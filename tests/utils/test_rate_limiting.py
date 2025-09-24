@@ -182,7 +182,8 @@ class TestTokenBucketRateLimiter:
         assert await limiter.is_allowed() is False
 
         # Wait just slightly longer than needed for 1 token (1/1000 = 0.001s)
-        await asyncio.sleep(0.002)
+        # Use a slightly more generous sleep to account for event loop scheduling jitter.
+        await asyncio.sleep(0.005)
         assert await limiter.is_allowed() is True
 
     @pytest.mark.asyncio

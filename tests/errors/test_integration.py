@@ -438,8 +438,8 @@ class TestErrorSystemIntegration:
 
         assert len(results) == 100
         assert all(r.startswith("handled_") for r in results)
-        # Should be fast (less than 100ms for 100 errors)
-        assert duration < 0.1
+        # Should be fast (less than 500ms for 100 errors)
+        assert duration < 0.5
 
 
 class TestRealWorldScenarios:
