@@ -34,13 +34,13 @@ __all__ = [
     "is_in_test_mode",
     # Internal reset APIs (for testkit use)
     "reset_circuit_breaker_state",
+    # Orchestrated reset functions
+    "reset_foundation_for_testing",
+    "reset_foundation_state",
     "reset_global_coordinator",
     "reset_hub_state",
     "reset_logger_state",
     "reset_streams_state",
     "reset_structlog_state",
-    # Orchestrated reset functions
-    "reset_foundation_for_testing",
-    "reset_foundation_state",
     "should_use_shared_registries",
 ]
