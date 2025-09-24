@@ -228,7 +228,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/cli/commands/logs/test_send_comprehensive.py::TestSendLogEntry::test_send_via_http_api_minimal_data -xvs)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/cli/commands/logs/test_send_comprehensive.py::TestSendLogEntry::test_send_via_http_api_minimal_data tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker -v)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/cli/commands/logs/send.py)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/cli/commands/logs/send.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/cli/commands/logs/send.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker -xvs --tb=short)"
     ],
     "deny": [],
     "ask": [],
