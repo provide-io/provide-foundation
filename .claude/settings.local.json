@@ -200,7 +200,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/logger/core.py src/provide/foundation/hub/foundation.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/logger/core.py src/provide/foundation/hub/foundation.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_predictable_initialization.py::TestPredictableInitialization::test_deterministic_state_across_restarts -xvs)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/hub/test_hub_initialization.py::TestHubInitialization::test_hub_error_recovery tests/hub/test_hub_initialization.py::TestHubInitialization::test_hub_deterministic_state -v)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/hub/test_hub_initialization.py::TestHubInitialization::test_hub_error_recovery tests/hub/test_hub_initialization.py::TestHubInitialization::test_hub_deterministic_state -v)",
+      "Bash(.venv/bin/pip:*)"
     ],
     "deny": [],
     "ask": [],
