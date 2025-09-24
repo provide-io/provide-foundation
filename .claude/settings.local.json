@@ -211,7 +211,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/testmode/__init__.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/ --tb=short -q --maxfail=5)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit tests/cli/commands/logs/test_send_comprehensive.py::TestSendLogEntry::test_send_http_api_exception_handling tests/streams/test_console.py -v)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker -xvs)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker -xvs)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker -v)"
     ],
     "deny": [],
     "ask": [],
