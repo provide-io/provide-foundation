@@ -157,8 +157,8 @@ def reset_circuit_breaker_state() -> None:
     """Reset all circuit breaker instances to ensure test isolation.
 
     This function resets all circuit breaker instances that were created
-    by the @circuit_breaker decorator to ensure their state doesn't leak
-    between tests.
+    by the @circuit_breaker decorator and direct instantiation to ensure
+    their state doesn't leak between tests.
     """
     try:
         from provide.foundation.resilience.decorators import (
@@ -170,7 +170,16 @@ def reset_circuit_breaker_state() -> None:
         reset_circuit_breakers_for_testing()
         reset_test_circuit_breakers()
     except ImportError:
-        # Resilience module not available, skip
+        # Resilience decorators module not available, skip
+        pass
+
+    try:
+        from provide.foundation.resilience.circuit import reset_all_circuit_breakers_for_testing
+
+        # Reset all CircuitBreaker instances (including direct instantiation)
+        reset_all_circuit_breakers_for_testing()
+    except ImportError:
+        # Circuit module not available, skip
         pass
 
 
