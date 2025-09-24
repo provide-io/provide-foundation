@@ -113,12 +113,16 @@ class LockManager:
 
         lock_infos.sort(key=lambda x: x.order)
 
-        # Check for ordering violations
+        # Check for ordering violations, but allow re-entrant locks
         current_max_order = -1
         if self._thread_local.lock_stack:
             current_max_order = max(info.order for info in self._thread_local.lock_stack)
 
         for lock_info in lock_infos:
+            # Allow re-acquiring the same lock (re-entrant behavior)
+            if lock_info in self._thread_local.lock_stack:
+                continue
+
             if lock_info.order <= current_max_order:
                 raise FoundationRuntimeError(
                     f"Lock ordering violation: trying to acquire {lock_info.name} "
@@ -135,9 +139,7 @@ class LockManager:
         if remaining_timeout <= 0:
             raise TimeoutError(f"Timeout acquiring lock '{lock_info.name}'")
 
-        acquired = lock_info.lock.acquire(
-            blocking=blocking, timeout=remaining_timeout if blocking else 0
-        )
+        acquired = lock_info.lock.acquire(blocking=blocking, timeout=remaining_timeout if blocking else 0)
         if not acquired:
             if blocking:
                 raise TimeoutError(f"Timeout acquiring lock '{lock_info.name}'")
@@ -189,6 +191,10 @@ class LockManager:
 
         try:
             for lock_info in lock_infos:
+                # Skip locks already in stack (re-entrant behavior)
+                if lock_info in self._thread_local.lock_stack:
+                    continue
+
                 remaining_timeout = timeout - (time.time() - start_time)
                 self._acquire_lock_with_timeout(lock_info, remaining_timeout, blocking)
 

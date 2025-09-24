@@ -49,6 +49,8 @@ class EventBus:
     def __init__(self) -> None:
         """Initialize empty event bus."""
         self._handlers: dict[str, list[weakref.ReferenceType]] = {}
+        self._cleanup_threshold = 10  # Clean up after this many operations
+        self._operation_count = 0
 
     def subscribe(self, event_name: str, handler: Callable[[Event], None]) -> None:
         """Subscribe to events by name.
@@ -86,6 +88,12 @@ class EventBus:
         # Update handler list with only live references
         self._handlers[event.name] = live_handlers
 
+        # Periodic cleanup of all dead references
+        self._operation_count += 1
+        if self._operation_count >= self._cleanup_threshold:
+            self._cleanup_dead_references()
+            self._operation_count = 0
+
     def unsubscribe(self, event_name: str, handler: Callable[[Event], None]) -> None:
         """Unsubscribe from events.
 
@@ -100,6 +108,44 @@ class EventBus:
         self._handlers[event_name] = [
             weak_ref for weak_ref in self._handlers[event_name] if weak_ref() is not handler
         ]
+
+    def _cleanup_dead_references(self) -> None:
+        """Clean up all dead weak references across all event types."""
+        for event_name in list(self._handlers.keys()):
+            live_handlers = []
+            for weak_handler in self._handlers[event_name]:
+                if weak_handler() is not None:
+                    live_handlers.append(weak_handler)
+
+            if live_handlers:
+                self._handlers[event_name] = live_handlers
+            else:
+                # Remove empty event lists
+                del self._handlers[event_name]
+
+    def get_memory_stats(self) -> dict[str, Any]:
+        """Get memory usage statistics for the event bus."""
+        total_handlers = 0
+        dead_handlers = 0
+
+        for handlers in self._handlers.values():
+            for weak_handler in handlers:
+                total_handlers += 1
+                if weak_handler() is None:
+                    dead_handlers += 1
+
+        return {
+            "event_types": len(self._handlers),
+            "total_handlers": total_handlers,
+            "live_handlers": total_handlers - dead_handlers,
+            "dead_handlers": dead_handlers,
+            "operation_count": self._operation_count,
+        }
+
+    def force_cleanup(self) -> None:
+        """Force immediate cleanup of all dead references."""
+        self._cleanup_dead_references()
+        self._operation_count = 0
 
 
 # Global event bus instance
@@ -126,7 +172,7 @@ def emit_registry_event(operation: str, item_name: str, dimension: str, **kwargs
         item_name=item_name,
         dimension=dimension,
         data=kwargs,
-        source="registry"
+        source="registry",
     )
     _event_bus.emit(event)
 
