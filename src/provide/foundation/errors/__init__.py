@@ -50,9 +50,6 @@ from provide.foundation.errors.types import (
     ErrorMetadata,
 )
 
-# Re-export from resilience module for compatibility
-from provide.foundation.resilience.decorators import retry as retry_on_error
-
 """Foundation error handling system.
 
 Provides a comprehensive exception hierarchy, error context management,
@@ -60,44 +57,42 @@ and utilities for robust error handling throughout the application.
 """
 
 __all__ = [
-    "AlreadyExistsError",
+    # Base Exception
+    "FoundationError",
+    # Categories
     "AuthenticationError",
     "AuthorizationError",
-    "CommandNotFoundError",
-    "ConcurrencyError",
-    "ConfigValidationError",
     "ConfigurationError",
+    "ValidationError",
+    "ConfigValidationError",
     "DependencyError",
     "DependencyMismatchError",
-    "ErrorCategory",
-    # Types
-    "ErrorCode",
-    # Context
-    "ErrorContext",
-    "ErrorHandler",
-    "ErrorMetadata",
-    "ErrorSeverity",
-    # Base exceptions
-    "FoundationError",
     "IntegrationError",
     "NetworkError",
-    "NotFoundError",
+    "TimeoutError",
     "ProcessError",
+    "CommandNotFoundError",
     "ProcessTimeoutError",
     "ResourceError",
+    "NotFoundError",
+    "AlreadyExistsError",
     "RuntimeError",
     "StateError",
-    "TimeoutError",
-    "ValidationError",
+    "ConcurrencyError",
+    # Context & Types
+    "ErrorCategory",
+    "ErrorContext",
+    "ErrorSeverity",
     "capture_error_context",
-    # Handlers
+    "ErrorCode",
+    "ErrorMetadata",
+    # Handlers & Decorators
+    "ErrorHandler",
     "error_boundary",
     "fallback_on_error",
     "handle_error",
     "log_only_error_context",
-    # Decorators
     "resilient",
-    "retry_on_error",
     "suppress_and_log",
     "transactional",
 ]
