@@ -18,7 +18,25 @@ _STREAM_LOCK = threading.Lock()
 
 def get_log_stream() -> TextIO:
     """Get the current log stream."""
-    return _PROVIDE_LOG_STREAM
+    global _PROVIDE_LOG_STREAM
+    with _STREAM_LOCK:
+        # Check if the current stream is closed
+        if hasattr(_PROVIDE_LOG_STREAM, "closed") and _PROVIDE_LOG_STREAM.closed:
+            # Stream is closed, reset to stderr or raise exception
+            try:
+                if hasattr(sys, "stderr") and sys.stderr is not None:
+                    if not (hasattr(sys.stderr, "closed") and sys.stderr.closed):
+                        _PROVIDE_LOG_STREAM = sys.stderr
+                    else:
+                        # Even sys.stderr is closed, raise exception to trigger fallback
+                        raise ValueError("All available streams are closed")
+                else:
+                    raise ValueError("No stderr available")
+            except Exception:
+                # This will trigger the fallback in coordinator.py
+                raise ValueError("Stream validation failed - no valid streams available")
+
+        return _PROVIDE_LOG_STREAM
 
 
 def set_log_stream_for_testing(stream: TextIO | None) -> None:

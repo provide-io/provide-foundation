@@ -171,7 +171,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tracer/test_otel.py::TestSetupOpentelemetryTracing::test_setup_otel_not_available -xvs)",
       "Bash(PYTHONPATH=src .venv/bin/pytest -n auto --tb=line -q --maxfail=10)",
       "Bash(.venv/bin/pytest -n auto --tb=line -q --maxfail=10)",
-      "Bash(.venv/bin/pytest tests/logger/test_logger_production_compliance.py::TestProductionReadinessScenarios::test_memory_stability_scenario -xvs)"
+      "Bash(.venv/bin/pytest tests/logger/test_logger_production_compliance.py::TestProductionReadinessScenarios::test_memory_stability_scenario -xvs)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/streams/core.py src/provide/foundation/utils/streams.py)"
     ],
     "deny": [],
     "ask": [],
