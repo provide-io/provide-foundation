@@ -208,7 +208,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format /Users/tim/code/gh/provide-io/provide-testkit/src/provide/testkit/logger/mocks.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes /Users/tim/code/gh/provide-io/provide-testkit/src/provide/testkit/logger/mocks.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/testmode/__init__.py)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/testmode/__init__.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/testmode/__init__.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/ --tb=short -q --maxfail=5)"
     ],
     "deny": [],
     "ask": [],
