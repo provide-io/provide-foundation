@@ -419,8 +419,10 @@ class TestLoggerBindingEdgeCases:
         bound.info("test")
 
         entries = get_log_entries(captured_stderr_for_foundation)
+        # Filter out Hub initialization logs, only look for our test message
+        test_entries = [e for e in entries if e.get("event") == "🔹 test"]
         # Should still work, though values might be overridden
-        assert len(entries) == 1
+        assert len(test_entries) == 1
 
     def test_bind_with_none_values(
         self,
@@ -433,7 +435,9 @@ class TestLoggerBindingEdgeCases:
         bound.info("test")
 
         entries = get_log_entries(captured_stderr_for_foundation)
-        entry = entries[0]
+        # Filter out Hub initialization logs, only look for our test message
+        test_entries = [e for e in entries if e.get("event") == "🔹 test"]
+        entry = test_entries[0]
 
         # None values should still be included
         assert entry["key1"] is None
