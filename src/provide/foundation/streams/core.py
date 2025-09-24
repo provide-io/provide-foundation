@@ -34,7 +34,7 @@ def get_log_stream() -> TextIO:
                     raise ValueError("No stderr available")
             except Exception:
                 # This will trigger the fallback in coordinator.py
-                raise ValueError("Stream validation failed - no valid streams available")
+                raise ValueError("Stream validation failed - no valid streams available") from None
 
         return _PROVIDE_LOG_STREAM
 
