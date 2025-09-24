@@ -168,14 +168,14 @@ class FoundationLogger:
 
     def get_logger(self, name: str | None = None) -> Any:
         self._ensure_configured()
-        effective_name = name if name is not None else "pyvider.default"
+        effective_name = name if name is not None else "foundation.default"
         return structlog.get_logger().bind(logger_name=effective_name)
 
     def _log_with_level(self, level_method_name: str, event: str, **kwargs: Any) -> None:
         self._ensure_configured()
 
         # Use the logger name from kwargs if provided, otherwise default
-        logger_name = kwargs.pop("_foundation_logger_name", "pyvider.dynamic_call")
+        logger_name = kwargs.pop("_foundation_logger_name", "foundation")
         log = self.get_logger(logger_name)
 
         # Handle trace level specially since PrintLogger doesn't have trace method
