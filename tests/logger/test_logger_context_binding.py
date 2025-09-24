@@ -461,7 +461,10 @@ class TestLoggerBindingEdgeCases:
         bound.info("complex_test")
 
         entries = get_log_entries(captured_stderr_for_foundation)
-        entry = entries[0]
+        # Filter out Hub initialization logs, only look for our test message
+        test_entries = [e for e in entries if "complex_test" in e.get("event", "")]
+        assert len(test_entries) == 1
+        entry = test_entries[0]
 
         assert entry["list_val"] == [1, 2, 3]
         assert entry["dict_val"] == {"nested": "object"}

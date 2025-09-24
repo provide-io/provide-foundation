@@ -230,7 +230,13 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/cli/commands/logs/send.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/cli/commands/logs/send.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker -xvs --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker --tb=no -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker --tb=no -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/logger/test_logger_context_binding.py::TestLoggerBindingEdgeCases::test_bind_with_complex_values -xvs)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/logger/test_logger_context_binding.py::TestLoggerBindingEdgeCases::test_bind_with_complex_values -xvs --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/logger/test_logger_context_binding.py tests/core/test_core_service_name_fix.py::test_key_value_still_has_emojis tests/test_performance_comparison.py tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker --tb=short -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/time/test_time_core.py::TestTimeCore::test_performance_comparison tests/concurrency/test_async_core.py::TestAsyncConcurrency::test_performance_comparison -xvs --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/logger/test_logger_context_binding.py tests/core/test_core_service_name_fix.py::test_key_value_still_has_emojis tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker --tb=short -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/core/test_core_service_name_fix.py::test_key_value_still_has_emojis -xvs --tb=short)"
     ],
     "deny": [],
     "ask": [],
