@@ -194,7 +194,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check tests/cli/commands/logs/test_send_comprehensive.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/cli/commands/logs/test_send_comprehensive.py -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/ -k \"openobserve\" --tb=short -q)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker -v)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit tests/errors/test_integration.py::TestErrorSystemIntegration::test_retry_with_circuit_breaker -v)",
+      "Bash(PYTHONPATH=src python -c \"import provide.testkit; help(provide.testkit)\")"
     ],
     "deny": [],
     "ask": [],
