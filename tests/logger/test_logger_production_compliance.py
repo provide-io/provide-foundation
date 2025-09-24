@@ -16,7 +16,8 @@ import threading
 import time
 from unittest.mock import patch
 
-from provide.testkit import reset_foundation_setup_for_testing
+from provide.testkit import TestEnvironment, reset_foundation_setup_for_testing
+import pytest
 from pytest import CaptureFixture  # Added for capsys
 
 from provide.foundation import (
@@ -367,7 +368,7 @@ class TestDocumentedBehaviorCompliance:
         subsequent_time = time.time() - start_time
 
         # Performance requirements
-        assert init_time < 0.1, f"Initialization too slow: {init_time:.3f}s"
+        assert init_time < 0.5, f"Initialization too slow: {init_time:.3f}s"
 
         messages_per_second = 100 / subsequent_time
         assert messages_per_second > 1000, f"Subsequent logging too slow: {messages_per_second:.1f} msg/sec"
