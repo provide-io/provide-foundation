@@ -3,6 +3,8 @@ from __future__ import annotations
 #
 # orchestration.py
 #
+from typing import Any
+
 """Foundation Test Reset Orchestration.
 
 This module provides the complete reset orchestration for Foundation's
@@ -14,62 +16,60 @@ not by external testing frameworks.
 """
 
 
+def _reset_otel_once_flag(once_obj: Any) -> None:
+    """Reset OpenTelemetry Once flag to allow re-initialization."""
+    if hasattr(once_obj, "_done"):
+        once_obj._done = False
+    if hasattr(once_obj, "_lock"):
+        with once_obj._lock:
+            once_obj._done = False
+
+
+def _reset_tracer_provider() -> None:
+    """Reset OpenTelemetry tracer provider."""
+    try:
+        import opentelemetry.trace as otel_trace
+
+        # Reset the Once flag to allow re-initialization
+        if hasattr(otel_trace, "_TRACER_PROVIDER_SET_ONCE"):
+            _reset_otel_once_flag(otel_trace._TRACER_PROVIDER_SET_ONCE)
+
+        # Reset to NoOpTracerProvider
+        from opentelemetry.trace import NoOpTracerProvider
+
+        otel_trace.set_tracer_provider(NoOpTracerProvider())
+    except (ImportError, Exception):
+        # Ignore errors during reset - better to continue than fail
+        pass
+
+
+def _reset_meter_provider() -> None:
+    """Reset OpenTelemetry meter provider."""
+    try:
+        import opentelemetry.metrics as otel_metrics
+        import opentelemetry.metrics._internal as otel_metrics_internal
+
+        # Reset the Once flag to allow re-initialization
+        if hasattr(otel_metrics_internal, "_METER_PROVIDER_SET_ONCE"):
+            _reset_otel_once_flag(otel_metrics_internal._METER_PROVIDER_SET_ONCE)
+
+        # Reset to NoOpMeterProvider
+        from opentelemetry.metrics import NoOpMeterProvider
+
+        otel_metrics.set_meter_provider(NoOpMeterProvider())
+    except (ImportError, Exception):
+        # Ignore errors during reset - better to continue than fail
+        pass
+
+
 def _reset_opentelemetry_providers() -> None:
     """Reset OpenTelemetry providers to uninitialized state.
 
     This prevents "Overriding of current TracerProvider/MeterProvider" warnings
     and stream closure issues by properly resetting the global providers.
     """
-    try:
-        # Reset tracing provider more thoroughly
-        import opentelemetry.trace as otel_trace
-
-        # Reset the Once flag to allow re-initialization
-        if hasattr(otel_trace, "_TRACER_PROVIDER_SET_ONCE"):
-            once_obj = otel_trace._TRACER_PROVIDER_SET_ONCE
-            if hasattr(once_obj, "_done"):
-                once_obj._done = False
-            if hasattr(once_obj, "_lock"):
-                with once_obj._lock:
-                    once_obj._done = False
-
-        # Reset to NoOpTracerProvider
-        from opentelemetry.trace import NoOpTracerProvider
-
-        otel_trace.set_tracer_provider(NoOpTracerProvider())
-
-    except ImportError:
-        # OpenTelemetry tracing not available
-        pass
-    except Exception:
-        # Ignore errors during reset - better to continue than fail
-        pass
-
-    try:
-        # Reset metrics provider more thoroughly
-        import opentelemetry.metrics as otel_metrics
-        import opentelemetry.metrics._internal as otel_metrics_internal
-
-        # Reset the Once flag to allow re-initialization
-        if hasattr(otel_metrics_internal, "_METER_PROVIDER_SET_ONCE"):
-            once_obj = otel_metrics_internal._METER_PROVIDER_SET_ONCE
-            if hasattr(once_obj, "_done"):
-                once_obj._done = False
-            if hasattr(once_obj, "_lock"):
-                with once_obj._lock:
-                    once_obj._done = False
-
-        # Reset to NoOpMeterProvider
-        from opentelemetry.metrics import NoOpMeterProvider
-
-        otel_metrics.set_meter_provider(NoOpMeterProvider())
-
-    except ImportError:
-        # OpenTelemetry metrics not available
-        pass
-    except Exception:
-        # Ignore errors during reset - better to continue than fail
-        pass
+    _reset_tracer_provider()
+    _reset_meter_provider()
 
 
 def _reset_foundation_environment_variables() -> None:
