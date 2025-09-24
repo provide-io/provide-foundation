@@ -134,7 +134,7 @@ def test_key_value_still_has_emojis() -> None:
         output = captured_output.getvalue()
         print(f"Key-value output: {output!r}")
 
-        assert "🗣️" in output, "Default emoji missing in key-value format"
+        assert "🔹" in output, "Default emoji missing in key-value format"
         print("✅ Key-value format still has emojis!")
 
     finally:

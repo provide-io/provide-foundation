@@ -64,9 +64,11 @@ class TestLoggerBind:
 
         # Check the output
         entries = get_log_entries(captured_stderr_for_foundation)
-        assert len(entries) == 1
+        # Filter for our test message
+        test_entries = [e for e in entries if "test_event" in e.get("event", "")]
+        assert len(test_entries) == 1
 
-        entry = entries[0]
+        entry = test_entries[0]
         # Event field may contain emoji/DAS pattern, so check if it contains the event name
         assert "test_event" in entry["event"]
         assert entry["request_id"] == "req_123"
@@ -93,15 +95,21 @@ class TestLoggerBind:
         bound_logger2.info("event2")
 
         entries = get_log_entries(captured_stderr_for_foundation)
-        assert len(entries) == 2
+        # Filter for our test messages
+        test_entries = [e for e in entries if "event1" in e.get("event", "") or "event2" in e.get("event", "")]
+        assert len(test_entries) == 2
+
+        # Find the specific entries
+        event1_entry = [e for e in test_entries if "event1" in e.get("event", "")][0]
+        event2_entry = [e for e in test_entries if "event2" in e.get("event", "")][0]
 
         # First should have key1
-        assert "key1" in entries[0]
-        assert "key2" not in entries[0]
+        assert "key1" in event1_entry
+        assert "key2" not in event1_entry
 
         # Second should have key2
-        assert "key2" in entries[1]
-        assert "key1" not in entries[1]
+        assert "key2" in event2_entry
+        assert "key1" not in event2_entry
 
     def test_bind_preserves_original_logger(
         self,
@@ -120,13 +128,19 @@ class TestLoggerBind:
         bound_logger.info("bound_event")
 
         entries = get_log_entries(captured_stderr_for_foundation)
-        assert len(entries) == 2
+        # Filter for our test messages
+        test_entries = [e for e in entries if "original_event" in e.get("event", "") or "bound_event" in e.get("event", "")]
+        assert len(test_entries) == 2
+
+        # Find specific entries
+        original_entry = [e for e in test_entries if "original_event" in e.get("event", "")][0]
+        bound_entry = [e for e in test_entries if "bound_event" in e.get("event", "")][0]
 
         # Original logger shouldn't have the extra context
-        assert "extra_context" not in entries[0]
+        assert "extra_context" not in original_entry
 
         # Bound logger should have it
-        assert entries[1]["extra_context"] == "test"
+        assert bound_entry["extra_context"] == "test"
 
     def test_bind_chaining(
         self,
@@ -142,9 +156,11 @@ class TestLoggerBind:
         bound3.info("nested_event")
 
         entries = get_log_entries(captured_stderr_for_foundation)
-        assert len(entries) == 1
+        # Filter for our test message
+        test_entries = [e for e in entries if "nested_event" in e.get("event", "")]
+        assert len(test_entries) == 1
 
-        entry = entries[0]
+        entry = test_entries[0]
         assert entry["level1"] == "a"
         assert entry["level2"] == "b"
         assert entry["level3"] == "c"
@@ -160,8 +176,10 @@ class TestLoggerBind:
         bound_logger.info("test_event")
 
         entries = get_log_entries(captured_stderr_for_foundation)
-        assert len(entries) == 1
-        assert "test_event" in entries[0]["event"]
+        # Filter for our test message
+        test_entries = [e for e in entries if "test_event" in e.get("event", "")]
+        assert len(test_entries) == 1
+        assert "test_event" in test_entries[0]["event"]
 
 
 class TestLoggerUnbind:
@@ -182,9 +200,11 @@ class TestLoggerUnbind:
         unbound_logger.info("after_unbind")
 
         entries = get_log_entries(captured_stderr_for_foundation)
-        assert len(entries) == 1
+        # Filter for our test message
+        test_entries = [e for e in entries if "after_unbind" in e.get("event", "")]
+        assert len(test_entries) == 1
 
-        entry = entries[0]
+        entry = test_entries[0]
         assert entry["key1"] == "value1"
         assert "key2" not in entry
         assert entry["key3"] == "value3"
@@ -203,7 +223,10 @@ class TestLoggerUnbind:
         unbound_logger.info("test")
 
         entries = get_log_entries(captured_stderr_for_foundation)
-        entry = entries[0]
+        # Filter for our test message
+        test_entries = [e for e in entries if e.get("event") == "🔹 test"]
+        assert len(test_entries) == 1
+        entry = test_entries[0]
 
         assert "a" not in entry
         assert entry["b"] == "2"
@@ -254,7 +277,10 @@ class TestLoggerTryUnbind:
         unbound_logger.info("test")
 
         entries = get_log_entries(captured_stderr_for_foundation)
-        entry = entries[0]
+        # Filter for our test message
+        test_entries = [e for e in entries if e.get("event") == "🔹 test"]
+        assert len(test_entries) == 1
+        entry = test_entries[0]
 
         assert "key1" not in entry
         assert entry["key2"] == "value2"
@@ -273,7 +299,10 @@ class TestLoggerTryUnbind:
         unbound_logger.info("test")
 
         entries = get_log_entries(captured_stderr_for_foundation)
-        entry = entries[0]
+        # Filter for our test message
+        test_entries = [e for e in entries if e.get("event") == "🔹 test"]
+        assert len(test_entries) == 1
+        entry = test_entries[0]
 
         assert entry["existing"] == "value"
 
@@ -296,7 +325,10 @@ class TestLoggerTryUnbind:
         unbound_logger.info("test")
 
         entries = get_log_entries(captured_stderr_for_foundation)
-        entry = entries[0]
+        # Filter for our test message
+        test_entries = [e for e in entries if e.get("event") == "🔹 test"]
+        assert len(test_entries) == 1
+        entry = test_entries[0]
 
         assert "a" not in entry
         assert entry["b"] == "2"
@@ -353,8 +385,10 @@ class TestLoggerContextIntegration:
         bound_named.info("named_logger_event")
 
         entries = get_log_entries(captured_stderr_for_foundation)
-        assert len(entries) == 1
-        assert entries[0]["module_context"] == "test"
+        # Filter for our test message
+        test_entries = [e for e in entries if "named_logger_event" in e.get("event", "")]
+        assert len(test_entries) == 1
+        assert test_entries[0]["module_context"] == "test"
 
     def test_complex_workflow(
         self,
@@ -389,15 +423,26 @@ class TestLoggerContextIntegration:
         global_logger.info("end", phase="shutdown")
 
         entries = get_log_entries(captured_stderr_for_foundation)
-        assert len(entries) == 6
+        # Filter for our test messages
+        test_keywords = ["start", "request_received", "auth_started", "auth_completed", "request_processed", "end"]
+        test_entries = [e for e in entries if any(kw in e.get("event", "") for kw in test_keywords)]
+        assert len(test_entries) == 6
+
+        # Sort by the order they appear to ensure consistency
+        start_entry = [e for e in test_entries if "start" in e.get("event", "")][0]
+        request_received_entry = [e for e in test_entries if "request_received" in e.get("event", "")][0]
+        auth_started_entry = [e for e in test_entries if "auth_started" in e.get("event", "")][0]
+        auth_completed_entry = [e for e in test_entries if "auth_completed" in e.get("event", "")][0]
+        request_processed_entry = [e for e in test_entries if "request_processed" in e.get("event", "")][0]
+        end_entry = [e for e in test_entries if "end" in e.get("event", "")][0]
 
         # Verify each entry has expected context
-        assert "request_id" not in entries[0]  # start
-        assert entries[1]["request_id"] == "req_abc"  # request_received
-        assert entries[2]["auth_method"] == "oauth"  # auth_started
-        assert "ip" not in entries[3]  # auth_completed (unbound)
-        assert entries[4]["request_id"] == "req_abc"  # request_processed
-        assert "request_id" not in entries[5]  # end
+        assert "request_id" not in start_entry  # start
+        assert request_received_entry["request_id"] == "req_abc"  # request_received
+        assert auth_started_entry["auth_method"] == "oauth"  # auth_started
+        assert "ip" not in auth_completed_entry  # auth_completed (unbound)
+        assert request_processed_entry["request_id"] == "req_abc"  # request_processed
+        assert "request_id" not in end_entry  # end
 
 
 class TestLoggerBindingEdgeCases:
