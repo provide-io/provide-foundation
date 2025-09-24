@@ -177,7 +177,8 @@
       "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/streams/core.py src/provide/foundation/utils/streams.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_file_operations_integration.py -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_file_operations_integration.py::TestFileOperationIntegration::test_size_delta_calculation -n 2 -v)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_file_operations_integration.py -n 4 --tb=short -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/test_file_operations_integration.py -n 4 --tb=short -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/ tests/resilience/ -n auto --tb=short -q --maxfail=3)"
     ],
     "deny": [],
     "ask": [],
