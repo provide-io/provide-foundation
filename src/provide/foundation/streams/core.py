@@ -44,6 +44,26 @@ def get_log_stream() -> TextIO:
         return _PROVIDE_LOG_STREAM
 
 
+def _reconfigure_structlog_stream() -> None:
+    """Reconfigure structlog to use the current log stream.
+
+    This helper function updates structlog's logger factory to use the current
+    _PROVIDE_LOG_STREAM value, preserving all other configuration.
+    """
+    try:
+        import structlog
+
+        current_config = structlog.get_config()
+        if current_config and "logger_factory" in current_config:
+            # Reconfigure with the new stream while preserving other config
+            new_config = {**current_config}
+            new_config["logger_factory"] = structlog.PrintLoggerFactory(file=_PROVIDE_LOG_STREAM)
+            structlog.configure(**new_config)
+    except Exception:
+        # Structlog not configured yet or reconfiguration failed, that's fine
+        pass
+
+
 def set_log_stream_for_testing(stream: TextIO | None) -> None:
     """Set the log stream for testing purposes.
 
@@ -60,19 +80,8 @@ def set_log_stream_for_testing(stream: TextIO | None) -> None:
 
         _PROVIDE_LOG_STREAM = stream if stream is not None else sys.stderr
 
-        # Reconfigure structlog if it's already configured to use the new stream
-        try:
-            import structlog
-
-            current_config = structlog.get_config()
-            if current_config and "logger_factory" in current_config:
-                # Reconfigure with the new stream while preserving other config
-                new_config = {**current_config}
-                new_config["logger_factory"] = structlog.PrintLoggerFactory(file=_PROVIDE_LOG_STREAM)
-                structlog.configure(**new_config)
-        except Exception:
-            # Structlog not configured yet or reconfiguration failed, that's fine
-            pass
+        # Reconfigure structlog to use the new stream
+        _reconfigure_structlog_stream()
 
 
 def ensure_stderr_default() -> None:

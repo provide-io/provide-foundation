@@ -187,6 +187,11 @@ def internal_setup(config: TelemetryConfig | None = None, is_explicit_call: bool
         core_setup_logger.trace("Setting up globally disabled telemetry")
         handle_globally_disabled_setup()
     else:
+        # Configure log file if specified
+        if current_config.logging.log_file is not None:
+            from provide.foundation.streams.file import configure_file_logging
+            configure_file_logging(log_file_path=str(current_config.logging.log_file))
+
         core_setup_logger.trace("Configuring structlog output processors")
         configure_structlog_output(current_config, get_log_stream())
 
