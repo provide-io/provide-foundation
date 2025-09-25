@@ -3,9 +3,10 @@ from __future__ import annotations
 from pathlib import Path
 import tarfile
 
-from attrs import define, field
+from attrs import define
 
 from provide.foundation.archive.base import ArchiveError, BaseArchive
+from provide.foundation.config.base import field
 from provide.foundation.file import ensure_parent_dir
 from provide.foundation.logger import get_logger
 
