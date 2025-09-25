@@ -1,33 +1,7 @@
-#
-# test_integration.py
-#
-"""Integration tests for Foundation Telemetry.
+"""Core integration tests for the Foundation library."""
 
-This module contains tests that verify the complete system behavior,
-including real-world usage patterns, error conditions, and edge cases.
-
-The integration tests focus on:
-- End-to-end functionality verification
-- Environment variable configuration
-- High-volume performance characteristics
-- Thread safety under concurrent load
-- Async usage patterns
-- Error recovery and resilience
-- Configuration edge cases
-- Comprehensive emoji matrix coverage
-
-These tests simulate realistic usage scenarios to ensure the telemetry
-system behaves correctly in production environments.
-"""
-
-import asyncio
-from collections.abc import Callable
-from concurrent.futures import ThreadPoolExecutor
-import io
-import json
 import os
-import time
-from typing import Any  # Added for type hints
+from unittest.mock import patch
 
 import pytest
 
@@ -36,566 +10,176 @@ from provide.foundation import (
     TelemetryConfig,
     get_hub,
     logger,
-    shutdown_foundation_telemetry,
 )
-from provide.foundation.config.types import ConfigSource
+from provide.foundation.cli import get_cli
+from provide.foundation.errors import FoundationError
+from provide.foundation.hub.registry import Registry
+from provide.testkit import (
+    FoundationTestbed,
+    TestEnvironment,
+    Testkit,
+    reset_foundation_setup_for_testing,
+)
+
+# Mark all tests in this file to run serially to avoid global state pollution
+pytestmark = pytest.mark.serial
 
 
-def test_full_lifecycle_integration(
-    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
-    captured_stderr_for_foundation: io.StringIO,
-) -> None:
-    """Tests complete setup -> use -> shutdown lifecycle.
-
-    This test verifies that the entire telemetry system lifecycle
-    works correctly from initialization through normal usage to shutdown.
-    """
-    config = TelemetryConfig(
-        service_name="integration-test-service",
-        logging=LoggingConfig(
-            default_level="TRACE",  # Allow TRACE level to pass through
-            console_formatter="json",
-            logger_name_emoji_prefix_enabled=True,
-            das_emoji_prefix_enabled=True,
-        ),
-    )
-
-    # Setup phase
-    setup_foundation_telemetry_for_test(config)
-
-    # Usage phase - exercise various logging features
-    app_logger = logger.get_logger("app.main")
-    app_logger.info("Application started", version="1.0.0")
-    app_logger.debug(
-        "Debug info",
-        component="auth",
-        action="validate",
-        status="success",
-    )
-
-    # Test custom TRACE level
-    logger.trace("Trace event", _foundation_logger_name="app.trace", detail="low-level")
-
-    # Test exception logging with traceback
-    try:
-        raise ValueError("Test exception")
-    except ValueError:
-        app_logger.exception("Handled error", context="integration_test")
-
-    # Verify output structure and content
-    output = captured_stderr_for_foundation.getvalue()
-    lines = [
-        line
-        for line in output.strip().splitlines()
-        if not line.startswith("[Foundation Setup]")
-        and "⚙️➡️🚀 Starting Foundation" not in line
-        and "⚙️➡️✅ Foundation" not in line
-        and "⚙️ Foundation initialized through Hub" not in line
-        and "Configuring structlog output processors" not in line
-        and "🗣️ Registered item" not in line
-        and not ("[trace    ]" in line or "trace    " in line)
-        and line.strip()
-    ]
-
-    assert len(lines) >= 4, f"Expected at least 4 log lines, got {len(lines)}"
-
-    # Parse and validate JSON output
-    for line in lines:
-        try:
-            log_data = json.loads(line)
-
-            # Verify required fields are present
-            assert "timestamp" in log_data, "Missing timestamp field"
-            assert "level" in log_data, "Missing level field"
-            assert "event" in log_data, "Missing event field"
-            assert "service_name" in log_data, "Missing service_name field"
-            assert log_data["service_name"] == "integration-test-service"
-
-        except json.JSONDecodeError as e:  # pragma: no cover
-            pytest.fail(f"Invalid JSON in log line: {line}. Error: {e}")
+@pytest.fixture(autouse=True)
+def manage_environment() -> None:
+    """Ensure Foundation state is reset for each test."""
+    reset_foundation_setup_for_testing()
 
 
-def test_environment_variable_integration() -> None:
-    """Tests configuration loading from environment variables.
-
-    This test verifies that the environment variable configuration
-    system works correctly and handles various configuration options.
-    """
-    # Define test environment variables
-    env_vars = {
-        "PROVIDE_SERVICE_NAME": "env-test-service",
-        "PROVIDE_LOG_LEVEL": "WARNING",
-        "PROVIDE_LOG_CONSOLE_FORMATTER": "key_value",
-        "PROVIDE_LOG_LOGGER_NAME_EMOJI_ENABLED": "false",
-        "PROVIDE_LOG_DAS_EMOJI_ENABLED": "true",
-        "PROVIDE_LOG_OMIT_TIMESTAMP": "true",
-        "PROVIDE_LOG_MODULE_LEVELS": "app.security:ERROR,app.auth:DEBUG",
-    }
-
-    # Save original environment values for restoration
-    original_values: dict[str, str | None] = {}
-    for key in env_vars:
-        original_values[key] = os.environ.get(key)
-        os.environ[key] = env_vars[key]
-
-    try:
-        # Load configuration from environment
-        config = TelemetryConfig.from_env()
-
-        # Verify all configuration values were loaded correctly
-        assert config.service_name == "env-test-service"
-        assert config.logging.default_level == "WARNING"
-        assert config.logging.console_formatter == "key_value"
-        assert config.logging.logger_name_emoji_prefix_enabled is False
-        assert config.logging.das_emoji_prefix_enabled is True
-        assert config.logging.omit_timestamp is True
-        assert config.logging.module_levels == {
-            "app.security": "ERROR",
-            "app.auth": "DEBUG",
-        }
-
-    finally:
-        # Restore original environment state
-        for key, original_value in original_values.items():
-            if original_value is None:
-                os.environ.pop(key, None)
-            else:
-                os.environ[key] = original_value
+def test_basic_initialization_and_logging(testkit: Testkit) -> None:
+    """Test basic initialization and logging."""
+    logger.info("Test message", key="value")
+    log_output = testkit.caplog.text
+    assert "Test message" in log_output
+    assert "key=value" in log_output
 
 
-def test_high_volume_logging_performance(
-    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
-    captured_stderr_for_foundation: io.StringIO,
-) -> None:
-    """Tests performance with high-volume logging.
-
-    This test ensures that the logging system can handle high throughput
-    scenarios without significant performance degradation.
-    """
-    config = TelemetryConfig(
-        logging=LoggingConfig(
-            default_level="INFO",
-            console_formatter="json",
-            logger_name_emoji_prefix_enabled=True,
-            das_emoji_prefix_enabled=False,
-        ),
-    )
-    setup_foundation_telemetry_for_test(config)
-
-    test_logger = logger.get_logger("perf.test")
-
-    # Perform high-volume logging with timing
-    start_time = time.time()
-    message_count = 1000
-
-    for i in range(message_count):
-        test_logger.info(f"Performance test message {i}", iteration=i)
-
-    end_time = time.time()
-    duration = end_time - start_time
-
-    # Verify all messages were logged
-    output = captured_stderr_for_foundation.getvalue()
-    lines = [
-        line
-        for line in output.strip().splitlines()
-        if not line.startswith("[Foundation Setup]")
-        and "⚙️➡️🚀 Starting Foundation" not in line
-        and "⚙️➡️✅ Foundation" not in line
-        and "⚙️ Foundation initialized through Hub" not in line
-        and "Configuring structlog output processors" not in line
-        and "🗣️ Registered item" not in line
-        and not ("[trace    ]" in line or "trace    " in line)
-        and line.strip()
-    ]
-
-    assert len(lines) == message_count, f"Expected {message_count} lines, got {len(lines)}"
-
-    # Performance assertion - should achieve reasonable throughput
-    messages_per_second = message_count / duration
-    assert messages_per_second > 500, f"Too slow: {messages_per_second:.1f} msg/sec"
-
-
-def test_thread_safety_concurrent_logging(
-    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
-    captured_stderr_for_foundation: io.StringIO,
-) -> None:
-    """Tests thread safety with concurrent logging from multiple threads.
-
-    This test verifies that the logging system maintains correctness
-    and performance under concurrent access patterns.
-    """
-    config = TelemetryConfig(
-        logging=LoggingConfig(
-            default_level="INFO",
-            console_formatter="json",
-        ),
-    )
-    setup_foundation_telemetry_for_test(config)
-
-    def worker_thread(thread_id: int, message_count: int) -> None:
-        """Worker function for concurrent logging test."""
-        thread_logger = logger.get_logger(f"thread.{thread_id}")
-        for i in range(message_count):
-            thread_logger.info(
-                f"Thread {thread_id} message {i}",
-                thread_id=thread_id,
-                msg_id=i,
-            )
-
-    # Launch multiple concurrent threads
-    thread_count = 5
-    messages_per_thread = 100
-
-    with ThreadPoolExecutor(max_workers=thread_count) as executor:
-        futures = [
-            executor.submit(worker_thread, thread_id, messages_per_thread) for thread_id in range(thread_count)
-        ]
-
-        # Wait for all threads to complete
-        for future in futures:
-            future.result()
-
-    # Verify output correctness
-    output = captured_stderr_for_foundation.getvalue()
-    lines = [
-        line
-        for line in output.strip().splitlines()
-        if not line.startswith("[Foundation Setup]")
-        and "⚙️➡️🚀 Starting Foundation" not in line
-        and "⚙️➡️✅ Foundation" not in line
-        and "⚙️ Foundation initialized through Hub" not in line
-        and "Configuring structlog output processors" not in line
-        and "🗣️ Registered item" not in line
-        and not ("[trace    ]" in line or "trace    " in line)
-        and line.strip()
-    ]
-
-    expected_messages = thread_count * messages_per_thread
-    assert len(lines) == expected_messages, f"Expected {expected_messages} lines, got {len(lines)}"
-
-    # Verify all messages are valid JSON and count per thread
-    thread_message_counts: dict[int, int] = {}
-    for line in lines:
-        try:
-            log_data = json.loads(line)
-            thread_id = log_data.get("thread_id")
-            if thread_id is not None:
-                thread_message_counts[thread_id] = thread_message_counts.get(thread_id, 0) + 1
-        except json.JSONDecodeError as e:  # pragma: no cover
-            pytest.fail(f"Invalid JSON in concurrent log line: {line}. Error: {e}")
-
-    # Verify each thread logged the expected number of messages
-    for thread_id_val in range(thread_count):
-        actual_count = thread_message_counts.get(thread_id_val, 0)
-        assert actual_count == messages_per_thread, (
-            f"Thread {thread_id_val} logged {actual_count} messages, expected {messages_per_thread}"
-        )
-
-
-@pytest.mark.asyncio
-async def test_async_usage_patterns() -> None:
-    """Tests usage patterns in async contexts.
-
-    This test ensures that the logging system works correctly within
-    async/await contexts and doesn't interfere with event loop performance.
-    """
-    config = TelemetryConfig(
-        logging=LoggingConfig(
-            default_level="DEBUG",
-            console_formatter="key_value",
-        ),
-    )
-
-    # Setup in async context
+def test_hub_and_registry_integration(testkit: Testkit) -> None:
+    """Test Hub and Registry integration."""
     hub = get_hub()
-    hub.initialize_foundation(config, force=True)
+    assert hub is not None
+    assert isinstance(hub._command_registry, Registry)
 
-    # Use logger in async context
-    async_logger = logger.get_logger("async.test")
-    async_logger.info("Async function started")
-
-    # Simulate async work with logging
-    await asyncio.sleep(0.01)
-    async_logger.debug("Async work in progress")
-
-    # Test async shutdown functionality
-    await shutdown_foundation_telemetry()
-
-    # Logging should still work after shutdown call
-    async_logger.info("After shutdown call")
+    hub._command_registry.register("test_cmd", lambda: "success")
+    cmd = hub._command_registry.get("test_cmd")
+    assert cmd() == "success"
 
 
-def test_error_recovery_and_resilience(
-    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
-    captured_stderr_for_foundation: io.StringIO,
-) -> None:
-    """Tests error recovery and system resilience.
+def test_cli_integration(testkit: Testkit) -> None:
+    """Test CLI integration."""
+    hub = get_hub()
 
-    This test verifies that the logging system handles various edge cases
-    and problematic inputs gracefully without crashing.
-    """
-    # Configure with valid settings
-    config = TelemetryConfig(
-        logging=LoggingConfig(
-            default_level="INFO",
-            module_levels={"app.test": "DEBUG"},  # Valid configuration
-        ),
-    )
-    setup_foundation_telemetry_for_test(config)
+    @hub.command("test-cli")
+    def test_cli_cmd() -> None:
+        """A test CLI command."""
+        print("CLI command executed")
 
-    test_logger = logger.get_logger("app.test")
-
-    # Test logging with various problematic inputs
-    test_cases: list[tuple[str, dict[str, Any]]] = [
-        ("Normal message", {}),
-        ("Message with None value", {"value": None}),
-        ("Message with large data", {"data": "x" * 10000}),
-        ("Message with special characters", {"text": "Hello\n\t\r\x00World"}),
-        ("Message with unicode", {"unicode": "🚀🌟💫"}),
-        (
-            "Message with complex nested data",
-            {"nested": {"level1": {"level2": {"data": ["item1", "item2"]}}}},
-        ),
-    ]
-
-    for message, kwargs in test_cases:
-        try:
-            test_logger.info(message, **kwargs)
-        except Exception as e:  # pragma: no cover
-            pytest.fail(f"Logger failed with message '{message}': {e}")
-
-    # Verify output exists and is valid
-    output = captured_stderr_for_foundation.getvalue()
-    lines = [
-        line
-        for line in output.strip().splitlines()
-        if not line.startswith("[Foundation Setup]")
-        and "⚙️➡️🚀 Starting Foundation" not in line
-        and "⚙️➡️✅ Foundation" not in line
-        and "⚙️ Foundation initialized through Hub" not in line
-        and "Configuring structlog output processors" not in line
-        and "🗣️ Registered item" not in line
-        and not ("[trace    ]" in line or "trace    " in line)
-        and line.strip()
-    ]
-
-    assert len(lines) >= len(test_cases), "Not all test messages were logged"
+    cli = get_cli()
+    result = testkit.invoke_cli(cli, ["test-cli"])
+    assert result.exit_code == 0
+    assert "CLI command executed" in result.output
 
 
-def test_configuration_edge_cases() -> None:
-    """Tests edge cases in configuration handling.
+def test_configuration_from_environment(testkit: Testkit) -> None:
+    """Test configuration loading from environment variables."""
+    with TestEnvironment(
+        PROVIDE_SERVICE_NAME="test-service",
+        PROVIDE_LOG_LEVEL="DEBUG",
+    ):
+        reset_foundation_setup_for_testing()  # Re-init with new env vars
+        hub = get_hub()
+        assert hub.get_service_name() == "test-service"
 
-    This test verifies that configuration objects behave correctly
-    in various edge cases and maintain their immutability guarantees.
-    """
-    # Save and temporarily clear PROVIDE_LOG_LEVEL to test true defaults
-    original_log_level = os.environ.get("PROVIDE_LOG_LEVEL")
-    if "PROVIDE_LOG_LEVEL" in os.environ:
-        del os.environ["PROVIDE_LOG_LEVEL"]
+        logger.debug("Debug message should be visible")
+        log_output = testkit.caplog.text
+        assert "Debug message should be visible" in log_output
+
+
+def test_explicit_configuration_override(testkit: Testkit) -> None:
+    """Test explicit configuration overrides environment variables."""
+    with TestEnvironment(PROVIDE_SERVICE_NAME="env-service"):
+        config = TelemetryConfig(
+            service_name="explicit-service",
+            logging=LoggingConfig(default_level="WARNING"),
+        )
+        hub = get_hub()
+        hub.initialize_foundation(config, force=True)
+
+        assert hub.get_service_name() == "explicit-service"
+
+        logger.info("Info message should be hidden")
+        logger.warning("Warning message should be visible")
+        log_output = testkit.caplog.text
+
+        assert "Info message should be hidden" not in log_output
+        assert "Warning message should be visible" in log_output
+
+
+def test_error_handling_integration(testkit: Testkit) -> None:
+    """Test error handling integration."""
+    with pytest.raises(FoundationError, match="Test error"):
+        raise FoundationError("Test error", code="TEST_001")
 
     try:
-        # Test with minimal configuration (true defaults)
-        minimal_config = TelemetryConfig()
-        assert minimal_config.service_name is None
-        assert minimal_config.logging.default_level == "WARNING"  # Production default
-        assert minimal_config.globally_disabled is False
-    finally:
-        # Restore original environment
-        if original_log_level is not None:
-            os.environ["PROVIDE_LOG_LEVEL"] = original_log_level
+        raise FoundationError("Another test error")
+    except FoundationError:
+        logger.exception("Caught expected error")
 
-    # Test with disabled telemetry
-    disabled_config = TelemetryConfig(globally_disabled=True)
+    log_output = testkit.caplog.text
+    assert "Caught expected error" in log_output
+    assert "FoundationError: Another test error" in log_output
+
+
+def test_component_loading_and_usage(testkit: Testkit) -> None:
+    """Test component loading and usage."""
     hub = get_hub()
-    hub.initialize_foundation(disabled_config, force=True)
 
-    # Should not raise errors even when disabled
-    logger.info("This should be suppressed")
-    logger.error("This should also be suppressed")
+    class TestComponent:
+        def __init__(self) -> None:
+            self.value = "test"
 
-    # Test configuration mutability with BaseConfig
-    config_mut = TelemetryConfig(service_name="test")
-    # Direct mutation works now but update() is preferred
-    config_mut.update({"service_name": "modified"}, ConfigSource.RUNTIME)
-    assert config_mut.service_name == "modified"
-    assert config_mut.get_source("service_name") == ConfigSource.RUNTIME
+    hub.register_component("test_component", TestComponent)
+    component = hub.get_component("test_component")
+    assert isinstance(component, TestComponent)
+    assert component.value == "test"
 
 
-def test_repeated_setup_calls_integration(  # Renamed to avoid conflict
-    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
-    captured_stderr_for_foundation: io.StringIO,
-) -> None:
-    """Tests behavior with repeated setup calls."""
-    config1 = TelemetryConfig(
-        service_name="service1",
-        logging=LoggingConfig(default_level="DEBUG"),
-    )
-    config2 = TelemetryConfig(
-        service_name="service2",
-        logging=LoggingConfig(default_level="INFO"),
-    )
-
-    # First setup
-    setup_foundation_telemetry_for_test(config1)
-    logger.info("Message after first setup")
-
-    # Second setup (should reconfigure)
-    setup_foundation_telemetry_for_test(config2)
-    logger.info("Message after second setup")
-    logger.debug("Debug message (should be filtered in INFO level)")
-
-    output = captured_stderr_for_foundation.getvalue()
-
-    assert "service1" in output
-    assert "service2" in output
-    assert "Debug message" not in output
-
-
-def test_emoji_matrix_comprehensive_coverage(
-    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
-    captured_stderr_for_foundation: io.StringIO,
-) -> None:
-    """Tests comprehensive emoji matrix coverage.
-
-    This test verifies that the Domain-Action-Status emoji system
-    works correctly with various combinations of semantic fields.
-    """
-    config = TelemetryConfig(
-        logging=LoggingConfig(
-            default_level="INFO",
-            console_formatter="key_value",
-            logger_name_emoji_prefix_enabled=True,
-            das_emoji_prefix_enabled=True,
-        ),
-    )
-    setup_foundation_telemetry_for_test(config)
-
-    # Test various domain/action/status combinations
-    test_combinations = [
-        ("auth", "login", "success"),
-        ("database", "query", "error"),
-        ("network", "connect", "timeout"),
-        ("system", "init", "complete"),
-        ("unknown_domain", "unknown_action", "unknown_status"),  # Should use defaults
-    ]
-
-    test_logger = logger.get_logger("emoji.test")
-
-    for domain, action, status in test_combinations:
-        test_logger.info(
-            f"Test message for {domain}-{action}-{status}",
-            domain=domain,
-            action=action,
-            status=status,
+def test_foundation_testbed_integration(testkit: Testkit) -> None:
+    """Test integration with FoundationTestbed."""
+    with FoundationTestbed() as testbed:
+        testbed.set_env("PROVIDE_SERVICE_NAME", "testbed-service")
+        testbed.set_config(
+            TelemetryConfig(logging=LoggingConfig(default_level="DEBUG")),
         )
 
-    # Verify output contains expected emoji prefixes
-    output = captured_stderr_for_foundation.getvalue()
+        hub = get_hub()
+        assert hub.get_service_name() == "testbed-service"
 
-    # Check for specific emoji combinations
-    assert "[🔑][➡️][✅]" in output  # auth-login-success
-    assert "[🗄️][🔍][🔥]" in output  # database-query-error
-    assert "[🌐][🔗][⏱️]" in output  # network-connect-timeout
-    assert "[⚙️][🌱][🏁]" in output  # system-init-complete
-    # Expectation for unknown defaults, now action should be ❓ (default) consistent with other tests.
-    assert "[❓][❓][➡️]" in output  # unknown defaults: domain=❓, action=❓, status=➡️
+        logger.debug("Testbed debug message")
+        assert "Testbed debug message" in testbed.caplog.text
 
 
-def test_module_level_filtering_comprehensive(
-    setup_foundation_telemetry_for_test: Callable[[TelemetryConfig | None], None],
-    captured_stderr_for_foundation: io.StringIO,
-) -> None:
-    """Tests comprehensive module-level filtering with hierarchical overrides.
+def test_context_propagation_in_logs(testkit: Testkit) -> None:
+    """Test context propagation in logs."""
+    with logger.context_provider({"request_id": "req-123"}):
+        logger.info("Processing request")
 
-    This test verifies that module-specific log levels work correctly
-    with hierarchical module names and proper inheritance behavior.
-    """
-    config = TelemetryConfig(
-        logging=LoggingConfig(
-            default_level="WARNING",  # High threshold by default
-            module_levels={
-                "app": "INFO",
-                "app.auth": "DEBUG",
-                "app.auth.oauth": "TRACE",
-                "external": "ERROR",
-            },
-            logger_name_emoji_prefix_enabled=False,
-            das_emoji_prefix_enabled=False,
-        ),
-    )
-    setup_foundation_telemetry_for_test(config)
-
-    loggers_map = {
-        "root": logger.get_logger("root.component"),
-        "app": logger.get_logger("app.component"),
-        "app_auth": logger.get_logger("app.auth.service"),
-        "app_auth_oauth": logger.get_logger("app.auth.oauth.handler"),
-        "external": logger.get_logger("external.service"),
-    }
-
-    test_cases = [
-        ("root", "debug", "Root debug message", False),
-        ("root", "warning", "Root warning message", True),
-        ("app", "debug", "App debug message", False),
-        ("app", "info", "App info message", True),
-        ("app_auth", "debug", "Auth debug message", True),
-        ("app_auth_oauth", "trace", "OAuth trace message", True),
-        ("external", "warning", "External warning", False),
-        ("external", "error", "External error", True),
-    ]
-
-    for logger_key, level, message, _should_appear_in_loop_unpacking in test_cases:
-        test_logger_instance = loggers_map[logger_key]
-        log_method = getattr(test_logger_instance, level)
-
-        if level == "trace":
-            # Special handling for custom TRACE level
-            # Ensure the logger_name from the bound logger is used
-            logger.trace(
-                message,
-                _foundation_logger_name=test_logger_instance._context.get(
-                    "logger_name",
-                ),
-            )
-        else:
-            log_method(message)
-
-    output = captured_stderr_for_foundation.getvalue()
-    filtered_lines = [
-        line
-        for line in output.strip().splitlines()
-        if not line.startswith("[Foundation Setup]")
-        and "⚙️➡️🚀 Starting Foundation" not in line
-        and "⚙️➡️✅ Foundation" not in line
-        and "⚙️ Foundation initialized through Hub" not in line
-        and "Configuring structlog output processors" not in line
-        and "🗣️ Registered item" not in line
-        and not (
-            "] [trace    ]" in line
-            and (
-                "Starting Foundation" in line
-                or "Foundation" in line
-                or "processors" in line
-                or "enrichment processor" in line
-            )
-        )
-        and line.strip()
-    ]
-
-    expected_messages_count = sum(1 for _, _, _, tc_should_appear in test_cases if tc_should_appear)
-    actual_messages_count = len(filtered_lines)
-
-    assert actual_messages_count == expected_messages_count, (
-        f"Expected {expected_messages_count} messages, got {actual_messages_count}. Output:\n{output}"
-    )
-
-    for _, _, message_text, tc_should_appear_for_assertion in test_cases:
-        message_found = any(message_text in line for line in filtered_lines)
-        if tc_should_appear_for_assertion:
-            assert message_found, f"Expected message '{message_text}' not found in output. Output:\n{output}"
-        else:
-            assert not message_found, f"Unexpected message '{message_text}' found in output. Output:\n{output}"
+    log_output = testkit.caplog.text
+    assert "request_id=req-123" in log_output
 
 
-# 🧪🔄
+def test_configuration_edge_cases(testkit: Testkit) -> None:
+    """Test configuration edge cases."""
+    # Test that re-initialization without force does nothing
+    with TestEnvironment(PROVIDE_SERVICE_NAME="first-service"):
+        reset_foundation_setup_for_testing()
+        hub = get_hub()
+        assert hub.get_service_name() == "first-service"
+
+        # Try to re-init without force
+        config = TelemetryConfig(service_name="second-service")
+        hub.initialize_foundation(config, force=False)
+        assert hub.get_service_name() == "first-service"
+
+    # Test re-initialization with force
+    reset_foundation_setup_for_testing()
+    with TestEnvironment(PROVIDE_SERVICE_NAME="first-service"):
+        hub = get_hub()
+        hub.initialize_foundation(force=True)  # Re-init with env var
+        assert hub.get_service_name() == "first-service"
+
+        # Force re-init with new config
+        config = TelemetryConfig(service_name="second-service")
+        hub.initialize_foundation(config, force=True)
+        assert hub.get_service_name() == "second-service"
+
+    # Test empty environment
+    with patch.dict(os.environ, {}, clear=True):
+        reset_foundation_setup_for_testing()
+        hub = get_hub()
+        assert hub.get_service_name() is None
