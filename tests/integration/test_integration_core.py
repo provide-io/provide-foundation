@@ -33,10 +33,30 @@ def manage_environment() -> None:
 
 def test_basic_initialization_and_logging(captured_stderr_for_foundation: io.StringIO) -> None:
     """Test basic initialization and logging."""
+    import json
+
     logger.info("Test message", key="value")
     log_output = captured_stderr_for_foundation.getvalue()
+
+    # The output should contain our test message
     assert "Test message" in log_output
-    assert "key=value" in log_output
+
+    # Parse JSON output to verify key-value pairs
+    # Find the JSON line containing our test message
+    json_line = None
+    for line in log_output.strip().split("\n"):
+        if line.strip() and "Test message" in line and line.startswith("{"):
+            json_line = line.strip()
+            break
+
+    if json_line:
+        # JSON format - parse and verify fields
+        log_record = json.loads(json_line)
+        assert "Test message" in log_record["event"]
+        assert log_record["key"] == "value"
+    else:
+        # Fallback to key=value format check for backwards compatibility
+        assert "key=value" in log_output
 
 
 def test_hub_and_registry_integration() -> None:
