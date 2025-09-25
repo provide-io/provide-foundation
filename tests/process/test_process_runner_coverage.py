@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 import pytest
 
-from provide.foundation.errors.runtime import ProcessError
+from provide.foundation.errors import ProcessError
 from provide.foundation.process.runner import (
     run_command,
     run_command_simple,

@@ -9,7 +9,7 @@ from typing import Any
 from attrs import define
 
 from provide.foundation.errors.integration import TimeoutError
-from provide.foundation.errors.runtime import ProcessError
+from provide.foundation.errors.process import ProcessError
 from provide.foundation.logger import get_logger
 
 """Core subprocess execution utilities."""
@@ -127,7 +127,7 @@ def run_command(
                 f"Command failed with exit code {result.returncode}: {cmd_str}",
                 code="PROCESS_COMMAND_FAILED",
                 command=cmd_str,
-                returncode=result.returncode,
+                return_code=result.returncode,
                 stdout=result.stdout if capture_output else None,
                 stderr=result.stderr if capture_output else None,
             )
@@ -150,7 +150,7 @@ def run_command(
             f"Command timed out after {timeout}s: {cmd_str}",
             code="PROCESS_TIMEOUT",
             command=cmd_str,
-            timeout=timeout,
+            timeout_seconds=timeout,
         ) from e
     except Exception as e:
         if isinstance(e, ProcessError | TimeoutError):
@@ -164,7 +164,6 @@ def run_command(
             f"Failed to execute command: {cmd_str}",
             code="PROCESS_EXECUTION_FAILED",
             command=cmd_str,
-            error=str(e),
         ) from e
 
 
@@ -223,7 +222,7 @@ def _check_timeout_expired(start_time: float, timeout: float, cmd_str: str, proc
             f"Command timed out after {timeout}s: {cmd_str}",
             code="PROCESS_STREAM_TIMEOUT",
             command=cmd_str,
-            timeout=timeout,
+            timeout_seconds=timeout,
         )
 
 
@@ -383,7 +382,7 @@ def stream_command(
                     f"Command failed with exit code {returncode}: {cmd_str}",
                     code="PROCESS_STREAM_FAILED",
                     command=cmd_str,
-                    returncode=returncode,
+                    return_code=returncode,
                 )
 
             plog.debug("✅ Stream completed", command=cmd_str)
@@ -398,7 +397,6 @@ def stream_command(
             f"Failed to stream command: {cmd_str}",
             code="PROCESS_STREAM_ERROR",
             command=cmd_str,
-            error=str(e),
         ) from e
 
 

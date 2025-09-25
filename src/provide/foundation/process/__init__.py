@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from provide.foundation.errors.runtime import ProcessError
+from provide.foundation.errors.process import ProcessError
 from provide.foundation.process.async_runner import (
     async_run_command,
     async_run_shell,

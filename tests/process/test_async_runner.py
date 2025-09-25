@@ -7,9 +7,8 @@ import sys
 
 import pytest
 
+from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.process.async_runner import (
-    ProcessError,
-    TimeoutError,
     async_run_command,
     async_run_shell,
     async_stream_command,
@@ -42,7 +41,7 @@ class TestAsyncRunCommand:
         with pytest.raises(ProcessError) as exc_info:
             await async_run_command(["false"], check=True)
 
-        assert exc_info.value.returncode != 0
+        assert exc_info.value.return_code != 0
 
     @pytest.mark.asyncio
     async def test_command_failure_no_check(self) -> None:
@@ -82,7 +81,7 @@ class TestAsyncRunCommand:
     @pytest.mark.asyncio
     async def test_command_timeout(self) -> None:
         """Test command timeout."""
-        with pytest.raises(TimeoutError):
+        with pytest.raises(ProcessTimeoutError):
             await async_run_command(["sleep", "10"], timeout=0.1)
 
     @pytest.mark.asyncio
@@ -128,7 +127,7 @@ class TestAsyncStreamCommand:
     @pytest.mark.asyncio
     async def test_stream_with_timeout(self) -> None:
         """Test streaming with timeout."""
-        with pytest.raises(TimeoutError):
+        with pytest.raises(ProcessTimeoutError):
             async for _ in async_stream_command(["sleep", "10"], timeout=0.1):
                 pass
 

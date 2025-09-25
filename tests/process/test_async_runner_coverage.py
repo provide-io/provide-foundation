@@ -9,9 +9,8 @@ from unittest.mock import patch
 
 import pytest
 
+from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.process.async_runner import (
-    ProcessError,
-    TimeoutError,
     async_run_command,
     async_run_shell,
     async_stream_command,
@@ -34,7 +33,7 @@ class TestAsyncErrorHandling:
     @pytest.mark.asyncio
     async def test_async_subprocess_timeout_error(self) -> None:
         """Test handling of async subprocess TimeoutError."""
-        with pytest.raises(TimeoutError) as exc_info:
+        with pytest.raises(ProcessTimeoutError) as exc_info:
             await async_run_command(["sleep", "10"], timeout=0.01, check=True)
 
         assert "timed out" in str(exc_info.value).lower()
@@ -55,7 +54,7 @@ class TestAsyncErrorHandling:
     @patch("asyncio.create_subprocess_exec")
     @pytest.mark.asyncio
     async def test_async_reraise_process_error(self, mock_create) -> None:
-        """Test that ProcessError and TimeoutError are re-raised directly."""
+        """Test that ProcessError and ProcessTimeoutError are re-raised directly."""
         # Mock create_subprocess_exec to raise a ProcessError
         original_error = ProcessError("Original error", command="test_command")
         mock_create.side_effect = original_error
@@ -79,7 +78,7 @@ class TestAsyncErrorHandling:
         with pytest.raises(ProcessError) as exc_info:
             await async_run_command(["false"], check=True)
 
-        assert exc_info.value.returncode != 0
+        assert exc_info.value.return_code != 0
         assert exc_info.value.code == "PROCESS_ASYNC_FAILED"
 
 
@@ -183,7 +182,7 @@ class TestAsyncStreamCommandCoverage:
     @pytest.mark.asyncio
     async def test_async_stream_command_timeout(self) -> None:
         """Test async stream command timeout handling."""
-        with pytest.raises(TimeoutError):
+        with pytest.raises(ProcessTimeoutError):
             # Try to stream from a long-running command with short timeout
             lines = []
             async for line in async_stream_command(["sleep", "5"], timeout=0.1):

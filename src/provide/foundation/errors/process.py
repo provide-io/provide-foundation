@@ -22,6 +22,7 @@ class ProcessError(FoundationError):
         stdout: str | bytes | None = None,
         stderr: str | bytes | None = None,
         timeout: bool = False,
+        code: str | None = None,
         **extra_context: Any,
     ) -> None:
         """Initialize ProcessError with command execution details.
@@ -33,6 +34,7 @@ class ProcessError(FoundationError):
             stdout: Standard output from the process
             stderr: Standard error from the process
             timeout: Whether the process timed out
+            code: Optional error code
             **extra_context: Additional context information
 
         """
@@ -90,7 +92,7 @@ class ProcessError(FoundationError):
         self.return_code = return_code
         self.timeout = timeout
 
-        super().__init__(full_message, context=context)
+        super().__init__(full_message, code=code, context=context)
 
     def _default_code(self) -> str:
         """Return default error code for process errors."""
@@ -115,6 +117,7 @@ class ProcessTimeoutError(ProcessError):
         timeout_seconds: float | None = None,
         stdout: str | bytes | None = None,
         stderr: str | bytes | None = None,
+        code: str | None = None,
         **extra_context: Any,
     ) -> None:
         context = extra_context.copy()
@@ -127,6 +130,7 @@ class ProcessTimeoutError(ProcessError):
             stdout=stdout,
             stderr=stderr,
             timeout=True,
+            code=code,
             **context,
         )
 
