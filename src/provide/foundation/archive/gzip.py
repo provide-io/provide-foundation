@@ -8,6 +8,7 @@ from typing import BinaryIO
 from attrs import define, validators
 
 from provide.foundation.archive.base import ArchiveError
+from provide.foundation.config import defaults
 from provide.foundation.config.base import field
 from provide.foundation.file import ensure_parent_dir
 from provide.foundation.logger import get_logger
@@ -32,7 +33,7 @@ class GzipCompressor:
     """
 
     level: int = field(
-        default=6,
+        default=defaults.DEFAULT_GZIP_COMPRESSION_LEVEL,
         validator=[validators.instance_of(int), _validate_compression_level],
     )  # Compression level 1-9 (1=fast, 9=best)
 

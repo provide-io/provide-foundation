@@ -6,6 +6,7 @@ import zipfile
 from attrs import define, validators
 
 from provide.foundation.archive.base import ArchiveError, BaseArchive
+from provide.foundation.config import defaults
 from provide.foundation.config.base import field
 from provide.foundation.file import ensure_parent_dir
 from provide.foundation.logger import get_logger
@@ -30,11 +31,11 @@ class ZipArchive(BaseArchive):
     """
 
     compression_level: int = field(
-        default=6,
+        default=defaults.DEFAULT_ZIP_COMPRESSION_LEVEL,
         validator=[validators.instance_of(int), _validate_compression_level],
     )  # Compression level 0-9 (0=store, 9=best)
-    compression_type: int = field(default=zipfile.ZIP_DEFLATED)
-    password: bytes | None = field(default=None)
+    compression_type: int = field(default=defaults.DEFAULT_ZIP_COMPRESSION_TYPE)
+    password: bytes | None = field(default=defaults.DEFAULT_ZIP_PASSWORD)
 
     def create(self, source: Path, output: Path) -> Path:
         """Create ZIP archive from source.

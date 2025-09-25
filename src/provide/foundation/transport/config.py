@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from attrs import define
 
+from provide.foundation.config import defaults
 from provide.foundation.config.base import field
 from provide.foundation.config.converters import (
     parse_bool_extended,
@@ -24,28 +25,30 @@ class TransportConfig(RuntimeConfig):
     """Base configuration for all transports."""
 
     timeout: float = field(
-        default=30.0,
+        default=defaults.DEFAULT_TRANSPORT_TIMEOUT,
         env_var="PROVIDE_TRANSPORT_TIMEOUT",
-        converter=lambda x: parse_float_with_validation(x, min_val=0.0) if x else 30.0,
+        converter=lambda x: parse_float_with_validation(x, min_val=0.0) if x else defaults.DEFAULT_TRANSPORT_TIMEOUT,
         validator=validate_positive,
         description="Request timeout in seconds",
     )
     max_retries: int = field(
-        default=3,
+        default=defaults.DEFAULT_TRANSPORT_MAX_RETRIES,
         env_var="PROVIDE_TRANSPORT_MAX_RETRIES",
         converter=int,
         validator=validate_non_negative,
         description="Maximum number of retry attempts",
     )
     retry_backoff_factor: float = field(
-        default=0.5,
+        default=defaults.DEFAULT_TRANSPORT_RETRY_BACKOFF_FACTOR,
         env_var="PROVIDE_TRANSPORT_RETRY_BACKOFF_FACTOR",
-        converter=lambda x: parse_float_with_validation(x, min_val=0.0) if x else 0.5,
+        converter=lambda x: parse_float_with_validation(x, min_val=0.0)
+        if x
+        else defaults.DEFAULT_TRANSPORT_RETRY_BACKOFF_FACTOR,
         validator=validate_non_negative,
         description="Backoff multiplier for retries",
     )
     verify_ssl: bool = field(
-        default=True,
+        default=defaults.DEFAULT_TRANSPORT_VERIFY_SSL,
         env_var="PROVIDE_TRANSPORT_VERIFY_SSL",
         converter=parse_bool_extended,
         description="Whether to verify SSL certificates",
@@ -57,33 +60,33 @@ class HTTPConfig(TransportConfig):
     """HTTP-specific configuration."""
 
     pool_connections: int = field(
-        default=10,
+        default=defaults.DEFAULT_HTTP_POOL_CONNECTIONS,
         env_var="PROVIDE_HTTP_POOL_CONNECTIONS",
         converter=int,
         validator=validate_positive,
         description="Number of connection pools to cache",
     )
     pool_maxsize: int = field(
-        default=100,
+        default=defaults.DEFAULT_HTTP_POOL_MAXSIZE,
         env_var="PROVIDE_HTTP_POOL_MAXSIZE",
         converter=int,
         validator=validate_positive,
         description="Maximum number of connections per pool",
     )
     follow_redirects: bool = field(
-        default=True,
+        default=defaults.DEFAULT_HTTP_FOLLOW_REDIRECTS,
         env_var="PROVIDE_HTTP_FOLLOW_REDIRECTS",
         converter=parse_bool_extended,
         description="Whether to automatically follow redirects",
     )
     http2: bool = field(
-        default=False,
+        default=defaults.DEFAULT_HTTP_USE_HTTP2,
         env_var="PROVIDE_HTTP_USE_HTTP2",
         converter=parse_bool_extended,
         description="Enable HTTP/2 support",
     )
     max_redirects: int = field(
-        default=5,
+        default=defaults.DEFAULT_HTTP_MAX_REDIRECTS,
         env_var="PROVIDE_HTTP_MAX_REDIRECTS",
         converter=int,
         validator=validate_non_negative,

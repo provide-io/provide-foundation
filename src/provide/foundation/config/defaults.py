@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import TYPE_CHECKING
+import zipfile
 
 if TYPE_CHECKING:
     from provide.foundation.logger.config.logging import LoggingConfig
@@ -9,6 +10,47 @@ if TYPE_CHECKING:
 """Centralized default values for Foundation configuration.
 All defaults are defined here instead of inline in field definitions.
 """
+
+# =================================
+# Context Defaults
+# =================================
+DEFAULT_CONTEXT_LOG_LEVEL = "INFO"
+DEFAULT_CONTEXT_PROFILE = "default"
+DEFAULT_CONTEXT_DEBUG = False
+DEFAULT_CONTEXT_JSON_OUTPUT = False
+DEFAULT_CONTEXT_CONFIG_FILE = None
+DEFAULT_CONTEXT_LOG_FILE = None
+DEFAULT_CONTEXT_LOG_FORMAT = "key_value"
+DEFAULT_CONTEXT_NO_COLOR = False
+DEFAULT_CONTEXT_NO_EMOJI = False
+
+
+# =================================
+# Archive Defaults
+# =================================
+DEFAULT_ARCHIVE_DETERMINISTIC = True
+DEFAULT_ARCHIVE_PRESERVE_METADATA = True
+DEFAULT_ARCHIVE_PRESERVE_PERMISSIONS = True
+DEFAULT_BZIP2_COMPRESSION_LEVEL = 9
+DEFAULT_GZIP_COMPRESSION_LEVEL = 6
+DEFAULT_ZIP_COMPRESSION_LEVEL = 6
+DEFAULT_ZIP_COMPRESSION_TYPE = zipfile.ZIP_DEFLATED
+DEFAULT_ZIP_PASSWORD = None
+
+
+# =================================
+# Transport Defaults
+# =================================
+DEFAULT_TRANSPORT_TIMEOUT = 30.0
+DEFAULT_TRANSPORT_MAX_RETRIES = 3
+DEFAULT_TRANSPORT_RETRY_BACKOFF_FACTOR = 0.5
+DEFAULT_TRANSPORT_VERIFY_SSL = True
+DEFAULT_HTTP_POOL_CONNECTIONS = 10
+DEFAULT_HTTP_POOL_MAXSIZE = 100
+DEFAULT_HTTP_FOLLOW_REDIRECTS = True
+DEFAULT_HTTP_USE_HTTP2 = False
+DEFAULT_HTTP_MAX_REDIRECTS = 5
+
 
 # =================================
 # Logging defaults
