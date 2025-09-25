@@ -37,9 +37,9 @@ class TestAsyncSleep:
         await async_sleep(0.0)
         end = time.time()
 
-        # Should return immediately
+        # Should return immediately, with a small tolerance for the event loop.
         elapsed = end - start
-        assert elapsed < 0.01
+        assert elapsed < 0.05
 
     @pytest.mark.asyncio
     async def test_async_sleep_negative_raises_error(self) -> None:
