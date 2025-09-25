@@ -41,7 +41,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/integration/test_integration_core.py::test_foundation_testbed_integration -xvs)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/logger/test_logger_production_compliance.py::TestProductionReadinessScenarios::test_high_throughput_scenario tests/integration/test_integration_core.py::test_configuration_from_environment tests/integration/test_integration_core.py::test_explicit_configuration_override tests/integration/test_integration_core.py::test_foundation_testbed_integration tests/integration/test_integration_coverage_100.py::test_log_level_case_insensitivity tests/integration/test_integration_coverage_100.py::test_shutdown_and_reinit tests/integration/test_integration_coverage_100.py::test_json_formatter_from_env tests/integration/test_integration_coverage_100.py::test_no_color_env_var --tb=short -q)",
       "Read(//private/tmp/**)",
-      "Bash(env)"
+      "Bash(env)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/integration/test_integration_core.py::test_basic_initialization_and_logging -xvs)"
     ],
     "deny": [],
     "ask": [],
