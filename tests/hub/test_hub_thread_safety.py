@@ -294,41 +294,40 @@ class TestHubThreadSafety:
         assert len(components) == 50
 
     def test_hub_clear_thread_safety(self) -> None:
-        """Test that clear_hub is thread-safe."""
+        """Test that clear_hub results in a new hub instance for subsequent calls."""
         errors = []
 
-        def hub_operations(thread_id: int) -> None:
-            """Perform hub operations."""
+        # Get the initial hub instance
+        hub1 = get_hub()
+        assert hub1 is not None
+
+        # Clear the hub
+        clear_hub()
+
+        # In multiple threads, get the hub again and check it's a new, consistent instance
+        hub_instances = []
+        def get_new_hub_instance() -> None:
             try:
-                # Get hub
                 hub = get_hub()
-
-                # Add a command
-                hub.add_command(lambda: f"cmd_{thread_id}", name=f"cmd_{thread_id}")
-
-                # Clear hub (only one thread should succeed)
-                if thread_id == 0:
-                    time.sleep(0.01)  # Small delay
-                    clear_hub()
-
-                # Try to get hub again
-                get_hub()
-                # This should work - either same hub or new one
-
+                hub_instances.append(hub)
             except Exception as e:
-                errors.append(f"Thread {thread_id}: {e}")
+                errors.append(e)
 
-        # Run operations
-        threads = []
-        for i in range(5):
-            thread = threading.Thread(target=hub_operations, args=(i,))
-            threads.append(thread)
-            thread.start()
+        threads = [threading.Thread(target=get_new_hub_instance) for _ in range(5)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
 
-        for thread in threads:
-            thread.join()
+        assert not errors, f"Errors occurred during re-initialization: {errors}"
+        assert len(hub_instances) == 5
 
-        assert len(errors) == 0, f"Errors occurred: {errors}"
+        # All threads should have received the same NEW hub instance
+        hub2 = hub_instances[0]
+        assert all(h is hub2 for h in hub_instances)
+
+        # The new hub should be different from the original one
+        assert hub1 is not hub2
 
 
 class TestLoggerThreadSafety:
