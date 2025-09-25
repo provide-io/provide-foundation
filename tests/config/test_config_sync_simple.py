@@ -70,12 +70,12 @@ class TestSyncModuleCoverage:
         with pytest.raises(TypeError, match="must inherit from RuntimeConfig"):
             load_config_from_env(SimpleTestConfig)
 
-    @patch("provide.foundation.config.env.RuntimeConfig.from_env")
-    def test_load_config_from_env_parameters(self, mock_from_env) -> None:
+    @patch("provide.foundation.config.env.RuntimeConfig.from_env_async")
+    def test_load_config_from_env_parameters(self, mock_from_env_async) -> None:
         """Test load_config_from_env parameter handling."""
-        mock_from_env.return_value = SimpleRuntimeConfig(app_name="mocked")
+        mock_from_env_async.return_value = SimpleRuntimeConfig(app_name="mocked")
         load_config_from_env(SimpleRuntimeConfig, prefix="TEST", delimiter="-", case_sensitive=True)
-        mock_from_env.assert_called_once_with(prefix="TEST", delimiter="-", case_sensitive=True)
+        mock_from_env_async.assert_called_once_with(prefix="TEST", delimiter="-", case_sensitive=True)
 
     @patch("provide.foundation.config.loader.FileConfigLoader.load")
     def test_load_config_from_file_creates_loader(self, mock_load) -> None:
