@@ -16,6 +16,10 @@ from provide.foundation.testmode.internal import (
     reset_streams_state,
     reset_structlog_state,
 )
+from provide.foundation.testmode.orchestration import (
+    reset_foundation_for_testing,
+    reset_foundation_state,
+)
 
 """Foundation Test Mode Support.
 
@@ -30,6 +34,9 @@ __all__ = [
     "is_in_test_mode",
     # Internal reset APIs (for testkit use)
     "reset_circuit_breaker_state",
+    # Orchestrated reset functions
+    "reset_foundation_for_testing",
+    "reset_foundation_state",
     "reset_global_coordinator",
     "reset_hub_state",
     "reset_logger_state",
