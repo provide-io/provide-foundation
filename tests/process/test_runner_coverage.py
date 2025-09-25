@@ -8,9 +8,9 @@ from unittest.mock import patch
 
 import pytest
 
+from provide.foundation.errors.integration import TimeoutError
+from provide.foundation.errors.process import ProcessError
 from provide.foundation.process.runner import (
-    ProcessError,
-    TimeoutError,
     run_command,
     run_shell,
     stream_command,
@@ -121,7 +121,7 @@ class TestErrorHandling:
         with pytest.raises(ProcessError) as exc_info:
             run_command(["false"], check=True)
 
-        assert exc_info.value.returncode != 0
+        assert exc_info.value.return_code != 0
         assert exc_info.value.code == "PROCESS_COMMAND_FAILED"
 
 

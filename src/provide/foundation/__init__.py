@@ -8,7 +8,6 @@ from provide.foundation.errors import (
     FoundationError,
     error_boundary,
     resilient,
-    retry_on_error,
 )
 from provide.foundation.eventsets.display import show_event_matrix
 from provide.foundation.eventsets.types import (
@@ -146,8 +145,6 @@ __all__ = [
     "resilient",
     # Resilience patterns
     "retry",
-    # Legacy patterns
-    "retry_on_error",
     # Event enrichment utilities
     "show_event_matrix",
     # Utilities

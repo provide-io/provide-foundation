@@ -39,55 +39,6 @@ class RuntimeError(FoundationError):
         return "RUNTIME_ERROR"
 
 
-class ProcessError(RuntimeError):
-    """Raised when process execution fails.
-
-    Args:
-        message: Error message describing the process failure.
-        command: Optional command that was executed.
-        returncode: Optional process return code.
-        stdout: Optional captured stdout.
-        stderr: Optional captured stderr.
-        **kwargs: Additional context passed to RuntimeError.
-
-    Examples:
-        >>> raise ProcessError("Command failed")
-        >>> raise ProcessError("Build failed", command="make", returncode=2)
-
-    """
-
-    def __init__(
-        self,
-        message: str,
-        *,
-        command: str | list[str] | None = None,
-        returncode: int | None = None,
-        stdout: str | None = None,
-        stderr: str | None = None,
-        **kwargs: Any,
-    ) -> None:
-        # Store as attributes for compatibility
-        self.command = command
-        self.returncode = returncode
-        self.stdout = stdout
-        self.stderr = stderr
-
-        # Also store in context for structured logging
-        if command:
-            cmd_str = " ".join(command) if isinstance(command, list) else command
-            kwargs.setdefault("context", {})["process.command"] = cmd_str
-        if returncode is not None:
-            kwargs.setdefault("context", {})["process.returncode"] = returncode
-        if stdout:
-            kwargs.setdefault("context", {})["process.stdout"] = stdout
-        if stderr:
-            kwargs.setdefault("context", {})["process.stderr"] = stderr
-        super().__init__(message, **kwargs)
-
-    def _default_code(self) -> str:
-        return "PROCESS_ERROR"
-
-
 class StateError(FoundationError):
     """Raised when an operation is invalid for the current state.
 

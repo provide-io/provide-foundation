@@ -7,12 +7,10 @@ import os
 from pathlib import Path
 from typing import Any
 
+from provide.foundation.errors.integration import TimeoutError
+from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.logger import get_logger
-from provide.foundation.process.runner import (
-    CompletedProcess,
-    ProcessError,
-    TimeoutError,
-)
+from provide.foundation.process.runner import CompletedProcess
 
 """Async subprocess execution utilities."""
 
@@ -100,11 +98,11 @@ async def _communicate_with_timeout(
             process.kill()
             await process.wait()
             plog.error("⏱️ Async command timed out", command=cmd_str, timeout=timeout)
-            raise TimeoutError(
+            raise ProcessTimeoutError(
                 f"Command timed out after {timeout}s: {cmd_str}",
                 code="PROCESS_ASYNC_TIMEOUT",
                 command=cmd_str,
-                timeout=timeout,
+                timeout_seconds=timeout,
             ) from e
     else:
         return await process.communicate(input=input)
@@ -153,7 +151,7 @@ def _check_process_success(
             f"Command failed with exit code {process.returncode}: {cmd_str}",
             code="PROCESS_ASYNC_FAILED",
             command=cmd_str,
-            returncode=process.returncode,
+            return_code=process.returncode,
             stdout=stdout_str if capture_output else None,
             stderr=stderr_str if capture_output else None,
         )
@@ -210,7 +208,7 @@ async def async_run_command(
 
     Raises:
         ProcessError: If command fails and check=True
-        TimeoutError: If timeout is exceeded
+        ProcessTimeoutError: If timeout is exceeded
 
     """
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
@@ -248,7 +246,7 @@ async def async_run_command(
             await _cleanup_process(process)
 
     except Exception as e:
-        if isinstance(e, ProcessError | TimeoutError):
+        if isinstance(e, ProcessError | ProcessTimeoutError):
             raise
 
         plog.error(
@@ -260,7 +258,6 @@ async def async_run_command(
             f"Failed to execute async command: {cmd_str}",
             code="PROCESS_ASYNC_EXECUTION_FAILED",
             command=cmd_str,
-            error=str(e),
         ) from e
 
 
@@ -319,11 +316,11 @@ async def _read_lines_with_timeout(process: Any, timeout: float, cmd_str: str) -
         process.kill()
         await process.wait()
         plog.error("⏱️ Async stream timed out", command=cmd_str, timeout=timeout)
-        raise TimeoutError(
+        raise ProcessTimeoutError(
             f"Command timed out after {timeout}s: {cmd_str}",
             code="PROCESS_ASYNC_STREAM_TIMEOUT",
             command=cmd_str,
-            timeout=timeout,
+            timeout_seconds=timeout,
         ) from e
 
     return lines
@@ -359,7 +356,7 @@ def _check_process_exit_code(process: Any, cmd_str: str) -> None:
             f"Command failed with exit code {process.returncode}: {cmd_str}",
             code="PROCESS_ASYNC_STREAM_FAILED",
             command=cmd_str,
-            returncode=process.returncode,
+            return_code=process.returncode,
         )
 
 
@@ -385,7 +382,7 @@ async def async_stream_command(
 
     Raises:
         ProcessError: If command fails
-        TimeoutError: If timeout is exceeded
+        ProcessTimeoutError: If timeout is exceeded
 
     """
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
@@ -425,7 +422,7 @@ async def async_stream_command(
             await _cleanup_stream_process(process)
 
     except Exception as e:
-        if isinstance(e, ProcessError | TimeoutError):
+        if isinstance(e, ProcessError | ProcessTimeoutError):
             raise
 
         plog.error("💥 Async stream failed", command=cmd_str, error=str(e))
@@ -433,7 +430,6 @@ async def async_stream_command(
             f"Failed to stream async command: {cmd_str}",
             code="PROCESS_ASYNC_STREAM_ERROR",
             command=cmd_str,
-            error=str(e),
         ) from e
 
 

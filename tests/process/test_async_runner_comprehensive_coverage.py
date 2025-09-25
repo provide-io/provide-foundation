@@ -12,16 +12,14 @@ pytestmark = pytest.mark.serial
 
 import builtins
 
+from provide.foundation.errors.integration import TimeoutError
+from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.process.async_runner import (
     async_run_command,
     async_run_shell,
     async_stream_command,
 )
-from provide.foundation.process.runner import (
-    CompletedProcess,
-    ProcessError,
-    TimeoutError,
-)
+from provide.foundation.process.runner import CompletedProcess
 
 
 @pytest.mark.asyncio
@@ -132,7 +130,7 @@ class TestAsyncRunCommand:
 
     async def test_command_with_timeout_exceeded(self) -> None:
         """Test command execution that exceeds timeout."""
-        with pytest.raises(TimeoutError, match="Command timed out after"):
+        with pytest.raises(ProcessTimeoutError, match="Command timed out after"):
             await async_run_command(
                 [sys.executable, "-c", "import time; time.sleep(2)"],
                 timeout=0.5,
@@ -201,29 +199,31 @@ class TestAsyncRunCommand:
         with pytest.raises(ProcessError, match="Failed to execute async command"):
             await async_run_command(["/nonexistent/command"])
 
-    async def test_process_error_reraise(self) -> None:
-        """Test that ProcessError is re-raised correctly."""
-        # Mock to raise ProcessError in the try block
+    async def test_process_error_is_wrapped(self) -> None:
+        """Test that a non-ProcessError is wrapped in ProcessError."""
         with (
             patch(
-                "asyncio.create_subprocess_exec",
-                side_effect=ProcessError("test error"),
+                "provide.foundation.process.async_runner._create_subprocess",
+                side_effect=OSError("test os error"),
             ),
-            pytest.raises(ProcessError, match="test error"),
+            pytest.raises(ProcessError) as exc_info,
         ):
             await async_run_command(["echo", "test"])
 
-    async def test_timeout_error_reraise(self) -> None:
-        """Test that TimeoutError is re-raised correctly."""
-        # Mock to raise TimeoutError in the try block
+        assert isinstance(exc_info.value.__cause__, OSError)
+
+    async def test_timeout_error_is_wrapped(self) -> None:
+        """Test that a non-ProcessError TimeoutError is wrapped in ProcessError."""
         with (
             patch(
-                "asyncio.create_subprocess_exec",
-                side_effect=TimeoutError("timeout error"),
+                "provide.foundation.process.async_runner._create_subprocess",
+                side_effect=TimeoutError("test timeout"),
             ),
-            pytest.raises(TimeoutError, match="timeout error"),
+            pytest.raises(ProcessError) as exc_info,
         ):
             await async_run_command(["echo", "test"])
+
+        assert isinstance(exc_info.value.__cause__, TimeoutError)
 
 
 @pytest.mark.asyncio
@@ -302,7 +302,7 @@ class TestAsyncStreamCommand:
 
     async def test_stream_with_timeout_exceeded(self) -> None:
         """Test stream execution that exceeds timeout."""
-        with pytest.raises(TimeoutError, match="Command timed out after"):
+        with pytest.raises(ProcessTimeoutError, match="Command timed out after"):
             lines = []
             async for line in async_stream_command(
                 [sys.executable, "-c", "import time; time.sleep(2); print('slow')"],
@@ -401,31 +401,35 @@ class TestAsyncStreamCommand:
             async for line in async_stream_command(["/nonexistent/command"]):
                 lines.append(line)
 
-    async def test_stream_process_error_reraise(self) -> None:
-        """Test that ProcessError is re-raised in stream."""
+    async def test_stream_process_error_is_wrapped(self) -> None:
+        """Test that a non-ProcessError is wrapped in ProcessError during stream."""
         with (
             patch(
-                "asyncio.create_subprocess_exec",
-                side_effect=ProcessError("stream error"),
+                "provide.foundation.process.async_runner._create_stream_subprocess",
+                side_effect=OSError("stream error"),
             ),
-            pytest.raises(ProcessError, match="stream error"),
+            pytest.raises(ProcessError) as exc_info,
         ):
             lines = []
             async for line in async_stream_command(["echo", "test"]):
                 lines.append(line)
 
-    async def test_stream_timeout_error_reraise(self) -> None:
-        """Test that TimeoutError is re-raised in stream."""
+        assert isinstance(exc_info.value.__cause__, OSError)
+
+    async def test_stream_timeout_error_is_wrapped(self) -> None:
+        """Test that a non-ProcessError TimeoutError is wrapped during stream."""
         with (
             patch(
-                "asyncio.create_subprocess_exec",
+                "provide.foundation.process.async_runner._create_stream_subprocess",
                 side_effect=TimeoutError("stream timeout"),
             ),
-            pytest.raises(TimeoutError, match="stream timeout"),
+            pytest.raises(ProcessError) as exc_info,
         ):
             lines = []
             async for line in async_stream_command(["echo", "test"]):
                 lines.append(line)
+
+        assert isinstance(exc_info.value.__cause__, TimeoutError)
 
     async def test_stream_string_command(self) -> None:
         """Test stream execution with string command."""
@@ -491,7 +495,7 @@ class TestAsyncRunShell:
 
     async def test_shell_timeout_exceeded(self) -> None:
         """Test shell command that exceeds timeout."""
-        with pytest.raises(TimeoutError, match="Command timed out after"):
+        with pytest.raises(ProcessTimeoutError, match="Command timed out after"):
             await async_run_shell("sleep 2", timeout=0.5)
 
     async def test_shell_with_kwargs(self) -> None:
@@ -507,7 +511,7 @@ class TestAsyncRunShell:
             "provide.foundation.process.async_runner.async_run_command",
         ) as mock_run:
             mock_run.return_value = CompletedProcess(
-                args="test command",
+                args=["test command"],
                 returncode=0,
                 stdout="test output",
                 stderr="",
@@ -571,7 +575,7 @@ class TestAsyncRunnerEdgeCases:
 
         with patch("asyncio.create_subprocess_exec", return_value=mock_process):
             with patch("asyncio.wait_for", side_effect=builtins.TimeoutError()):
-                with pytest.raises(TimeoutError, match="Command timed out after"):
+                with pytest.raises(ProcessTimeoutError, match="Command timed out after"):
                     await async_run_command(["echo", "test"], timeout=1.0)
 
                 mock_process.kill.assert_called_once()
@@ -606,7 +610,7 @@ class TestAsyncRunnerEdgeCases:
 
         with patch("asyncio.create_subprocess_exec", return_value=mock_process):
             with patch("asyncio.wait_for", side_effect=builtins.TimeoutError()):
-                with pytest.raises(TimeoutError, match="Command timed out after"):
+                with pytest.raises(ProcessTimeoutError, match="Command timed out after"):
                     lines = []
                     async for line in async_stream_command(
                         ["echo", "test"],
