@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import asyncio
+from collections.abc import Awaitable
+from concurrent.futures import Future
 from pathlib import Path
+import threading
 from typing import Any, TypeVar
 
 from provide.foundation.config.base import BaseConfig
@@ -24,24 +27,52 @@ like CLI tools, scripts, and frameworks that don't support async.
 T = TypeVar("T", bound=BaseConfig)
 
 
+def _run_coro_from_sync(coro: Awaitable[Any]) -> Any:
+    """Run an async coroutine from a synchronous context safely.
+
+    This function intelligently detects the environment:
+    1. If no event loop is running, it creates one with `asyncio.run()`.
+    2. If an event loop is running on another thread, it uses
+       `asyncio.run_coroutine_threadsafe()` to schedule the coroutine.
+    3. If an event loop is running on the *current* thread, it raises a
+       RuntimeError to prevent misuse and guide the user to the async API.
+    """
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        # Case 1: No running event loop. Safe to use asyncio.run().
+        return asyncio.run(coro)
+
+    # Case 2 & 3: An event loop is running.
+    if loop.is_running():
+        current_thread = threading.current_thread()
+        loop_thread = getattr(loop, "_thread_id", None)  # Not public, but a common attribute
+
+        # Check if we are in the loop's thread.
+        # This is not perfectly reliable but works for common asyncio implementations.
+        is_loop_thread = loop_thread is not None and current_thread.ident == loop_thread
+
+        if is_loop_thread:
+            # Case 3: Running on the same thread as the loop. This is an anti-pattern.
+            raise RuntimeError(
+                "Cannot call synchronous wrapper from a running event loop. "
+                "Use the 'async' version of the function instead."
+            )
+        else:
+            # Case 2: Running in a different thread. Use run_coroutine_threadsafe.
+            future: Future = asyncio.run_coroutine_threadsafe(coro, loop)
+            return future.result()  # Blocks until the coroutine is done.
+
+    # Fallback for loops that are not running, though this case is rare.
+    return asyncio.run(coro)
+
+
 def run_async(coro: Any) -> Any:
     """Run an async coroutine in a sync context.
 
-    Creates a new event loop if needed or uses the existing one.
+    Creates a new event loop if needed or uses the existing one safely.
     """
-    try:
-        # Try to get the current event loop
-        asyncio.get_running_loop()
-        # If we're here, we're already in an async context
-        # This shouldn't happen in sync code, but handle it gracefully
-        import concurrent.futures
-
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            future = executor.submit(asyncio.run, coro)
-            return future.result()
-    except RuntimeError:
-        # No event loop, create one
-        return asyncio.run(coro)
+    return _run_coro_from_sync(coro)
 
 
 def load_config(
@@ -62,7 +93,8 @@ def load_config(
     """
     if data is None:
         data = {}
-    return run_async(config_class.from_dict(data, source))
+    # BaseConfig.from_dict is not async, so no wrapper needed here.
+    return config_class.from_dict(data, source)
 
 
 def load_config_from_env(
@@ -86,12 +118,12 @@ def load_config_from_env(
     if not issubclass(config_class, RuntimeConfig):
         raise TypeError(f"{config_class.__name__} must inherit from RuntimeConfig")
 
+    # The async version handles async secret fetching, so we wrap it.
     return run_async(
-        config_class.from_env(
+        config_class.from_env_async(
             prefix=prefix,
             delimiter=delimiter,
             case_sensitive=case_sensitive,
-            use_async_secrets=False,  # Use sync I/O in sync context
         ),
     )
 
@@ -175,7 +207,8 @@ def update_config(
         source: Source of the updates
 
     """
-    run_async(config.update(updates, source))
+    # BaseConfig.update is not async
+    config.update(updates, source)
 
 
 def config_to_dict(config: BaseConfig, include_sensitive: bool = False) -> ConfigDict:
@@ -189,7 +222,8 @@ def config_to_dict(config: BaseConfig, include_sensitive: bool = False) -> Confi
         Dictionary representation
 
     """
-    return run_async(config.to_dict(include_sensitive))
+    # BaseConfig.to_dict is not async
+    return config.to_dict(include_sensitive)
 
 
 def clone_config(config: T) -> T:
@@ -202,7 +236,8 @@ def clone_config(config: T) -> T:
         Cloned configuration
 
     """
-    return run_async(config.clone())
+    # BaseConfig.clone is not async
+    return config.clone()
 
 
 def diff_configs(config1: BaseConfig, config2: BaseConfig) -> dict[str, tuple[Any, Any]]:
@@ -216,7 +251,8 @@ def diff_configs(config1: BaseConfig, config2: BaseConfig) -> dict[str, tuple[An
         Dictionary of differences
 
     """
-    return run_async(config1.diff(config2))
+    # BaseConfig.diff is not async
+    return config1.diff(config2)
 
 
 class SyncConfigManager:
