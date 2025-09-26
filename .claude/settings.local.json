@@ -83,7 +83,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/ -q --tb=short --maxfail=5)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/crypto/certificates/generator.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/crypto/certificates/generator.py)",
-      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/crypto/certificates/generator.py)"
+      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/crypto/certificates/generator.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/logger/types.py src/provide/foundation/config/types.py)"
     ],
     "deny": [],
     "ask": [],

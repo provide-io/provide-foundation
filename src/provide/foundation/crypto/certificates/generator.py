@@ -10,6 +10,7 @@ from provide.foundation.crypto.certificates.base import (
     CertificateConfig,
     CertificateError,
     CurveType,
+    KeyPair,
     KeyType,
 )
 from provide.foundation.crypto.certificates.operations import create_x509_certificate
@@ -94,7 +95,7 @@ def _build_certificate_config(
 
 def _serialize_to_pem(
     x509_cert: x509.Certificate,
-    private_key: rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey,
+    private_key: KeyPair,
 ) -> tuple[str, str]:
     """Serialize certificate and private key to PEM format.
 
@@ -142,7 +143,7 @@ def generate_certificate(
 ) -> tuple[
     CertificateBase,
     x509.Certificate,
-    rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey,
+    KeyPair,
     str,
     str,
 ]:
