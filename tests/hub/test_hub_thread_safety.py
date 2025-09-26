@@ -314,6 +314,7 @@ class TestHubThreadSafety:
 
         # In multiple threads, get the hub again and check it's a new, consistent instance
         hub_instances = []
+
         def get_new_hub_instance() -> None:
             try:
                 hub = get_hub()
