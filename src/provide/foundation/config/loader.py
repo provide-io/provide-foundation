@@ -5,8 +5,7 @@ from configparser import ConfigParser
 import json
 import os
 from pathlib import Path
-from typing import Any, TypeVar
-
+from typing import TypeVar
 
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.env import RuntimeConfig
@@ -141,19 +140,21 @@ class FileConfigLoader(ConfigLoader):
 
     def _ini_to_dict(self, parser: ConfigParser) -> ConfigDict:
         """Convert INI parser to dictionary."""
-        result = {}
+        result: ConfigDict = {}
         for section in parser.sections():
-            result[section] = dict(parser.items(section))
+            section_dict = dict(parser.items(section))
+            result[section] = section_dict
 
         # Include DEFAULT section if present
         if parser.defaults():
-            result["DEFAULT"] = dict(parser.defaults())
+            default_dict = dict(parser.defaults())
+            result["DEFAULT"] = default_dict
 
         return result
 
     def _parse_env_file(self, content: str) -> ConfigDict:
         """Parse .env file format."""
-        result = {}
+        result: ConfigDict = {}
 
         for line in content.splitlines():
             line = line.strip()

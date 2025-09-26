@@ -46,7 +46,6 @@ from provide.foundation.config.schema import (
     SchemaField,
     validate_schema,
 )
-
 from provide.foundation.config.types import (
     ConfigDict,
     ConfigSource,
@@ -99,7 +98,6 @@ __all__ = [
     "get_env",
     # Config loading
     "load_config",
-    "register_config",
     "parse_bool",
     # Converters
     "parse_bool_extended",
@@ -115,6 +113,7 @@ __all__ = [
     "parse_module_levels",
     "parse_rate_limits",
     "parse_sample_rate",
+    "register_config",
     "set_config",
     # Validators
     "validate_choice",
