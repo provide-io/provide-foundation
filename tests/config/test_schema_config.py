@@ -267,7 +267,7 @@ class TestValidateSchema:
         schema = ConfigSchema([SchemaField(name="name", field_type=str)])
 
         # Should not raise
-        await validate_schema(config, schema)
+        validate_schema(config, schema)
 
     def test_validate_schema_fails(self) -> None:
         """Test validate_schema with invalid config."""
@@ -278,4 +278,4 @@ class TestValidateSchema:
         schema = ConfigSchema([SchemaField(name="name", field_type=str)])
 
         with pytest.raises(ConfigValidationError, match="Expected type str"):
-            await validate_schema(mock_config, schema)
+            validate_schema(mock_config, schema)
