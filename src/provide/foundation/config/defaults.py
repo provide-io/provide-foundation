@@ -51,6 +51,11 @@ DEFAULT_HTTP_FOLLOW_REDIRECTS = True
 DEFAULT_HTTP_USE_HTTP2 = False
 DEFAULT_HTTP_MAX_REDIRECTS = 5
 
+# Transport middleware defaults
+DEFAULT_TRANSPORT_LOG_REQUESTS = True
+DEFAULT_TRANSPORT_LOG_RESPONSES = True
+DEFAULT_TRANSPORT_LOG_BODIES = False
+
 
 # =================================
 # Logging defaults
@@ -116,6 +121,24 @@ DEFAULT_FILE_LOCK_TIMEOUT = 10.0
 # Resilience defaults
 # =================================
 DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT = 60.0
+DEFAULT_CIRCUIT_BREAKER_STATE = "closed"
+DEFAULT_CIRCUIT_BREAKER_FAILURE_COUNT = 0
+DEFAULT_CIRCUIT_BREAKER_LAST_FAILURE_TIME = None
+DEFAULT_CIRCUIT_BREAKER_NEXT_ATTEMPT_TIME = 0.0
+DEFAULT_CIRCUIT_BREAKER_FAILURE_THRESHOLD = 5
+
+# Retry policy defaults
+DEFAULT_RETRY_MAX_ATTEMPTS = 3
+DEFAULT_RETRY_BASE_DELAY = 1.0
+DEFAULT_RETRY_MAX_DELAY = 60.0
+DEFAULT_RETRY_JITTER = True
+DEFAULT_RETRY_RETRYABLE_ERRORS = None
+DEFAULT_RETRY_RETRYABLE_STATUS_CODES = None
+
+def default_retry_backoff_strategy():
+    """Factory for default retry backoff strategy."""
+    from provide.foundation.resilience.types import BackoffStrategy
+    return BackoffStrategy.EXPONENTIAL
 
 # =================================
 # Integration defaults (OpenObserve)
@@ -198,6 +221,20 @@ def default_logging_config() -> LoggingConfig:
 # =================================
 DEFAULT_CERTIFICATE_KEY_TYPE = None
 DEFAULT_CERTIFICATE_VALIDITY_DAYS = 365
+DEFAULT_CERTIFICATE_COMMON_NAME = "localhost"
+DEFAULT_CERTIFICATE_GENERATE_KEYPAIR = False
+DEFAULT_CERTIFICATE_ORGANIZATION_NAME = "Default Organization"
+
+# Factory functions for certificate defaults
+def default_certificate_alt_names() -> list[str]:
+    """Factory for default certificate alternative names."""
+    return ["localhost"]
+
+# =================================
+# Tracer defaults
+# =================================
+DEFAULT_TRACER_OTEL_SPAN = None
+DEFAULT_TRACER_ACTIVE = True
 DEFAULT_ECDSA_CURVE = None
 DEFAULT_RSA_KEY_SIZE = 2048
 DEFAULT_SIGNATURE_ALGORITHM = None

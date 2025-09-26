@@ -32,6 +32,12 @@ from provide.foundation.crypto.certificates.operations import create_x509_certif
 from provide.foundation.crypto.certificates.trust import (
     verify_trust as verify_trust_impl,
 )
+from provide.foundation.config.defaults import (
+    DEFAULT_CERTIFICATE_COMMON_NAME,
+    DEFAULT_CERTIFICATE_GENERATE_KEYPAIR,
+    DEFAULT_CERTIFICATE_ORGANIZATION_NAME,
+    default_certificate_alt_names,
+)
 from provide.foundation.crypto.constants import (
     DEFAULT_CERTIFICATE_CURVE,
     DEFAULT_CERTIFICATE_KEY_TYPE,
@@ -48,13 +54,13 @@ class Certificate:
 
     cert_pem_or_uri: str | None = field(default=None, kw_only=True)
     key_pem_or_uri: str | None = field(default=None, kw_only=True)
-    generate_keypair: bool = field(default=False, kw_only=True)
+    generate_keypair: bool = field(default=DEFAULT_CERTIFICATE_GENERATE_KEYPAIR, kw_only=True)
     key_type: str = field(default=DEFAULT_CERTIFICATE_KEY_TYPE, kw_only=True)
     key_size: int = field(default=DEFAULT_RSA_KEY_SIZE, kw_only=True)
     ecdsa_curve: str = field(default=DEFAULT_CERTIFICATE_CURVE, kw_only=True)
-    common_name: str = field(default="localhost", kw_only=True)
-    alt_names: list[str] | None = field(default=Factory(lambda: ["localhost"]), kw_only=True)
-    organization_name: str = field(default="Default Organization", kw_only=True)
+    common_name: str = field(default=DEFAULT_CERTIFICATE_COMMON_NAME, kw_only=True)
+    alt_names: list[str] | None = field(factory=default_certificate_alt_names, kw_only=True)
+    organization_name: str = field(default=DEFAULT_CERTIFICATE_ORGANIZATION_NAME, kw_only=True)
     validity_days: int = field(default=DEFAULT_CERTIFICATE_VALIDITY_DAYS, kw_only=True)
 
     _base: CertificateBase = field(init=False, repr=False)
