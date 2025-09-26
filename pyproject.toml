@@ -103,6 +103,10 @@ markers = [
     "integration.openobserve: OpenObserve integration tests",
     "slow: tests taking >1s",
     "fast: tests taking <100ms",
+    # Time-sensitive markers
+    "benchmark: performance/timing sensitive tests",
+    "time_sensitive: tests with strict timing requirements",
+    "flaky: tests known to be intermittently failing",
     # Module markers
     "archive: archive module tests",
     "process: process/subprocess tests",
