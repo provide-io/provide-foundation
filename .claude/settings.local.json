@@ -73,7 +73,11 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/resilience/retry.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/crypto/certificates/certificate.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/tracer/spans.py)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/tracer/spans.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/tracer/spans.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/transport/middleware.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/transport/middleware.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/state/_internal/transitions.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/state/_internal/transitions.py)"
     ],
     "deny": [],
     "ask": [],
