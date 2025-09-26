@@ -59,7 +59,9 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/config/ tests/config/)",
       "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/config/ --ignore-missing-imports)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/config/)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/config/)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/config/)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_schema_field.py::TestSchemaFieldEdgeCases::test_validate_complex_nested_validation -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_schema_simple_coverage.py::TestValidators::test_validate_url_accessible tests/config/test_schema_validators.py::TestBuiltinValidators::test_validate_url_accessible tests/config/test_schema_config.py::TestConfigSchemaComprehensive::test_validate_all_required_fields_present -v)"
     ],
     "deny": [],
     "ask": [],
