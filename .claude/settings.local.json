@@ -49,7 +49,9 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_config_env.py -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_config_loader.py -v)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check tests/config/test_config_loader.py)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/ --tb=short -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/ --tb=short -q)",
+      "Bash(PYTHONPATH=src .venv/bin/python:*)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_config_manager_coverage.py -v --tb=short)"
     ],
     "deny": [],
     "ask": [],
