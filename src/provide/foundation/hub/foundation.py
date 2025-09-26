@@ -118,14 +118,11 @@ class FoundationManager:
         self._logger_instance = None
 
         # Clear registry entries for Foundation config and logger
-        try:
+        import contextlib
+        with contextlib.suppress(KeyError, AttributeError):
             self._registry.unregister("foundation.config", "singleton")
-        except (KeyError, AttributeError):
-            pass  # Config may not be registered yet
-        try:
+        with contextlib.suppress(KeyError, AttributeError):
             self._registry.unregister("foundation.logger.instance", "singleton")
-        except (KeyError, AttributeError):
-            pass  # Logger may not be registered yet
 
         # Reset global coordinator state only in test mode
         from provide.foundation.testmode.detection import is_in_test_mode
