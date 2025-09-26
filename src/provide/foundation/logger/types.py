@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, TypeAlias, Literal
+from typing import Any, Literal, TypeAlias
 
 from provide.foundation.logger.trace import TRACE_LEVEL_NAME, TRACE_LEVEL_NUM
 
@@ -31,8 +31,8 @@ __all__ = [
     "TRACE_LEVEL_NAME",
     "TRACE_LEVEL_NUM",
     "ConsoleFormatterStr",
-    "LogLevelStr",
     "ContextDict",
-    "LoggerMetadata",
+    "LogLevelStr",
     "LogRecord",
+    "LoggerMetadata",
 ]
