@@ -43,8 +43,7 @@ class TestRuntimeConfig(RuntimeConfig):
 class TestFileConfigLoader:
     """Test FileConfigLoader."""
 
-    @pytest.mark.asyncio
-    async def test_load_json(self, tmp_path) -> None:
+    def test_load_json(self, tmp_path) -> None:
         """Test loading JSON configuration."""
         config_file = tmp_path / "config.json"
         config_file.write_text(
@@ -54,14 +53,13 @@ class TestFileConfigLoader:
         loader = FileConfigLoader(config_file)
         assert loader.exists()
 
-        config = await loader.load(TestConfig)
+        config = loader.load(TestConfig)
         assert config.name == "json_config"
         assert config.port == 3000
         assert config.debug is True
         assert config.get_source("name") == ConfigSource.FILE
 
-    @pytest.mark.asyncio
-    async def test_load_yaml(self, tmp_path) -> None:
+        deftest_load_yaml(self, tmp_path) -> None:
         """Test loading YAML configuration."""
         pytest.importorskip("yaml")
 
@@ -73,14 +71,13 @@ debug: true
 """)
 
         loader = FileConfigLoader(config_file)
-        config = await loader.load(TestConfig)
+        config = loader.load(TestConfig)
 
         assert config.name == "yaml_config"
         assert config.port == 4000
         assert config.debug is True
 
-    @pytest.mark.asyncio
-    async def test_load_toml(self, tmp_path) -> None:
+        deftest_load_toml(self, tmp_path) -> None:
         """Test loading TOML configuration."""
         config_file = tmp_path / "config.toml"
         config_file.write_text("""
@@ -90,14 +87,13 @@ debug = false
 """)
 
         loader = FileConfigLoader(config_file)
-        config = await loader.load(TestConfig)
+        config = loader.load(TestConfig)
 
         assert config.name == "toml_config"
         assert config.port == 5000
         assert config.debug is False
 
-    @pytest.mark.asyncio
-    async def test_load_env_file(self, tmp_path) -> None:
+        deftest_load_env_file(self, tmp_path) -> None:
         """Test loading .env file configuration."""
         config_file = tmp_path / ".env"
         config_file.write_text("""
@@ -111,7 +107,7 @@ EXTRA_VAR="quoted value"
 """)
 
         loader = FileConfigLoader(config_file)
-        config = await loader.load(TestConfig)
+        config = loader.load(TestConfig)
 
         # Note: .env files return string values, need proper parsing
         assert config.name == "env_config"
@@ -132,21 +128,19 @@ EXTRA_VAR="quoted value"
         with pytest.raises(ConfigurationError, match="Cannot determine format"):
             FileConfigLoader(config_file)
 
-    @pytest.mark.asyncio
-    async def test_file_not_found(self, tmp_path) -> None:
+        deftest_file_not_found(self, tmp_path) -> None:
         """Test error when file doesn't exist."""
         loader = FileConfigLoader(tmp_path / "nonexistent.json")
         assert not loader.exists()
 
         with pytest.raises(NotFoundError):
-            await loader.load(TestConfig)
+            loader.load(TestConfig)
 
 
 class TestRuntimeConfigLoader:
     """Test RuntimeConfigLoader."""
 
-    @pytest.mark.asyncio
-    async def test_load_with_prefix(self, monkeypatch) -> None:
+        deftest_load_with_prefix(self, monkeypatch) -> None:
         """Test loading with prefix."""
         monkeypatch.setenv("APP_NAME", "env_app")
         monkeypatch.setenv("APP_PORT", "7000")
@@ -155,62 +149,57 @@ class TestRuntimeConfigLoader:
         loader = RuntimeConfigLoader(prefix="APP")
         assert loader.exists()
 
-        config = await loader.load(TestRuntimeConfig)
+        config = loader.load(TestRuntimeConfig)
         assert config.name == "env_app"
         assert config.port == 7000
         assert config.debug is True
 
-    @pytest.mark.asyncio
-    async def test_load_without_prefix(self, monkeypatch) -> None:
+        deftest_load_without_prefix(self, monkeypatch) -> None:
         """Test loading without prefix."""
         monkeypatch.setenv("NAME", "no_prefix")
         monkeypatch.setenv("PORT", "8000")
 
         loader = RuntimeConfigLoader()
-        config = await loader.load(TestRuntimeConfig)
+        config = loader.load(TestRuntimeConfig)
 
         assert config.name == "no_prefix"
         assert config.port == 8000
 
-    @pytest.mark.asyncio
-    async def test_non_env_config(self) -> None:
+        deftest_non_env_config(self) -> None:
         """Test error with non-RuntimeConfig class."""
         loader = RuntimeConfigLoader()
 
         with pytest.raises(TypeError, match="must inherit from RuntimeConfig"):
-            await loader.load(TestConfig)
+            loader.load(TestConfig)
 
 
 class TestDictConfigLoader:
     """Test DictConfigLoader."""
 
-    @pytest.mark.asyncio
-    async def test_load_from_dict(self) -> None:
+        deftest_load_from_dict(self) -> None:
         """Test loading from dictionary."""
         data = {"name": "dict_config", "port": 9000, "debug": True}
 
         loader = DictConfigLoader(data)
         assert loader.exists()
 
-        config = await loader.load(TestConfig)
+        config = loader.load(TestConfig)
         assert config.name == "dict_config"
         assert config.port == 9000
         assert config.debug is True
         assert config.get_source("name") == ConfigSource.RUNTIME
 
-    @pytest.mark.asyncio
-    async def test_custom_source(self) -> None:
+        deftest_custom_source(self) -> None:
         """Test with custom source."""
         loader = DictConfigLoader({}, source=ConfigSource.DEFAULT)
-        config = await loader.load(TestConfig)
+        config = loader.load(TestConfig)
         assert config.get_source("name") is None  # Uses default values
 
 
 class TestMultiSourceLoader:
     """Test MultiSourceLoader."""
 
-    @pytest.mark.asyncio
-    async def test_merge_multiple_sources(self, tmp_path, monkeypatch) -> None:
+        deftest_merge_multiple_sources(self, tmp_path, monkeypatch) -> None:
         """Test merging from multiple sources."""
         # File source
         config_file = tmp_path / "config.json"
@@ -229,28 +218,26 @@ class TestMultiSourceLoader:
         loader = MultiSourceLoader(file_loader, env_loader, dict_loader)
         assert loader.exists()
 
-        config = await loader.load(TestRuntimeConfig)
+        config = loader.load(TestRuntimeConfig)
 
         # Should have merged values with proper precedence
         assert config.name == "runtime_name"  # From dict (last)
         assert config.port == 4000  # From env
         assert config.debug is True  # From env
 
-    @pytest.mark.asyncio
-    async def test_no_sources_available(self) -> None:
+        deftest_no_sources_available(self) -> None:
         """Test error when no sources exist."""
         loader = MultiSourceLoader()
         assert not loader.exists()
 
         with pytest.raises(ValueError, match="No configuration sources"):
-            await loader.load(TestConfig)
+            loader.load(TestConfig)
 
 
 class TestChainedLoader:
     """Test ChainedLoader."""
 
-    @pytest.mark.asyncio
-    async def test_first_available_source(self, tmp_path) -> None:
+        deftest_first_available_source(self, tmp_path) -> None:
         """Test loading from first available source."""
         # Create two config files
         primary = tmp_path / "primary.json"
@@ -262,11 +249,10 @@ class TestChainedLoader:
         # Chain loaders
         loader = ChainedLoader(FileConfigLoader(primary), FileConfigLoader(fallback))
 
-        config = await loader.load(TestConfig)
+        config = loader.load(TestConfig)
         assert config.name == "primary"  # From first available
 
-    @pytest.mark.asyncio
-    async def test_fallback_source(self, tmp_path) -> None:
+        deftest_fallback_source(self, tmp_path) -> None:
         """Test falling back when primary doesn't exist."""
         primary = tmp_path / "nonexistent.json"
         fallback = tmp_path / "fallback.json"
@@ -274,11 +260,10 @@ class TestChainedLoader:
 
         loader = ChainedLoader(FileConfigLoader(primary), FileConfigLoader(fallback))
 
-        config = await loader.load(TestConfig)
+        config = loader.load(TestConfig)
         assert config.name == "fallback"
 
-    @pytest.mark.asyncio
-    async def test_no_source_available(self, tmp_path) -> None:
+        deftest_no_source_available(self, tmp_path) -> None:
         """Test error when no source is available."""
         loader = ChainedLoader(
             FileConfigLoader(tmp_path / "missing1.json"),
@@ -288,4 +273,4 @@ class TestChainedLoader:
         assert not loader.exists()
 
         with pytest.raises(ValueError, match="No configuration source"):
-            await loader.load(TestConfig)
+            loader.load(TestConfig)
