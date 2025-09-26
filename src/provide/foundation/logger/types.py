@@ -32,4 +32,7 @@ __all__ = [
     "TRACE_LEVEL_NUM",
     "ConsoleFormatterStr",
     "LogLevelStr",
+    "ContextDict",
+    "LoggerMetadata",
+    "LogRecord",
 ]
