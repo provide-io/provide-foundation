@@ -304,9 +304,8 @@ class TestValidators:
         assert validate_version("") is False
         assert validate_version("not-a-version") is False
 
-    @pytest.mark.asyncio
-    async def test_validate_url_accessible(self) -> None:
+    def test_validate_url_accessible(self) -> None:
         """Test validate_url_accessible function."""
         # Since this is just an example that delegates to validate_url
-        assert await validate_url_accessible("http://example.com") is True
-        assert await validate_url_accessible("not-a-url") is False
+        assert validate_url_accessible("http://example.com") is True
+        assert validate_url_accessible("not-a-url") is False

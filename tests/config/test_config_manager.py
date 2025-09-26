@@ -23,7 +23,6 @@ class SampleConfig(BaseConfig):
 class SampleConfigManager:
     """Test ConfigManager class."""
 
-    @pytest.mark.asyncio
     async def test_init_manager(self) -> None:
         """Test initializing config manager."""
         manager = ConfigManager()
@@ -32,7 +31,6 @@ class SampleConfigManager:
         assert manager._schemas == {}
         assert manager._defaults == {}
 
-    @pytest.mark.asyncio
     async def test_register_config(self) -> None:
         """Test registering a configuration."""
         manager = ConfigManager()
@@ -43,7 +41,6 @@ class SampleConfigManager:
         assert "test" in manager._configs
         assert manager._configs["test"] is config
 
-    @pytest.mark.asyncio
     async def test_get_config(self) -> None:
         """Test getting a configuration."""
         manager = ConfigManager()
@@ -54,7 +51,6 @@ class SampleConfigManager:
 
         assert retrieved is config
 
-    @pytest.mark.asyncio
     async def test_get_config_not_found(self) -> None:
         """Test getting non-existent configuration."""
         manager = ConfigManager()
@@ -62,7 +58,6 @@ class SampleConfigManager:
         result = await manager.get("nonexistent")
         assert result is None
 
-    @pytest.mark.asyncio
     async def test_get_config_with_type(self) -> None:
         """Test getting configuration with type checking."""
         manager = ConfigManager()
@@ -74,7 +69,6 @@ class SampleConfigManager:
         assert retrieved is config
         assert isinstance(retrieved, SampleConfig)
 
-    @pytest.mark.asyncio
     async def test_get_all_configs(self) -> None:
         """Test getting all configurations."""
         manager = ConfigManager()
@@ -89,7 +83,6 @@ class SampleConfigManager:
         assert all_configs["test1"] is config1
         assert all_configs["test2"] is config2
 
-    @pytest.mark.asyncio
     async def test_remove_config(self) -> None:
         """Test removing a configuration."""
         manager = ConfigManager()
@@ -100,7 +93,6 @@ class SampleConfigManager:
 
         assert "test" not in manager._configs
 
-    @pytest.mark.asyncio
     async def test_clear_configs(self) -> None:
         """Test clearing all configurations."""
         manager = ConfigManager()
@@ -111,7 +103,6 @@ class SampleConfigManager:
 
         assert len(manager._configs) == 0
 
-    @pytest.mark.asyncio
     async def test_load_from_dict(self) -> None:
         """Test loading configuration from dictionary."""
         manager = ConfigManager()
@@ -123,7 +114,6 @@ class SampleConfigManager:
         assert config.name == "updated"
         assert config.value == 100
 
-    @pytest.mark.asyncio
     async def test_export_to_dict(self) -> None:
         """Test exporting configuration to dictionary."""
         manager = ConfigManager()
@@ -136,7 +126,6 @@ class SampleConfigManager:
         assert exported["test"]["name"] == "export_test"
         assert exported["test"]["value"] == 99
 
-    @pytest.mark.asyncio
     async def test_reload_configs(self) -> None:
         """Test reloading configurations."""
         manager = ConfigManager()
@@ -156,8 +145,7 @@ class SampleConfigManager:
         reloaded = await manager.get("test")
         assert reloaded.name == "reloaded"
 
-    @pytest.mark.asyncio
-    async def test_validate_all(self) -> None:
+    def test_validate_all(self) -> None:
         """Test validating all configurations."""
         manager = ConfigManager()
 
@@ -167,12 +155,11 @@ class SampleConfigManager:
         await manager.register("test1", config1)
         await manager.register("test2", config2)
 
-        await manager.validate_all()
+        manager.validate_all()
 
         config1.validate.assert_called_once()
         config2.validate.assert_called_once()
 
-    @pytest.mark.asyncio
     async def test_get_or_create(self) -> None:
         """Test get_or_create method."""
         manager = ConfigManager()
@@ -186,7 +173,6 @@ class SampleConfigManager:
         config2 = await manager.get_or_create("test", SampleConfig)
         assert config2 is config1
 
-    @pytest.mark.asyncio
     async def test_update_config(self) -> None:
         """Test updating a configuration."""
         manager = ConfigManager()

@@ -48,8 +48,7 @@ class TestConfigSchemaComprehensive:
         assert "new_field" in schema._field_map
         assert schema._field_map["new_field"] is field_obj
 
-    @pytest.mark.asyncio
-    async def test_validate_missing_required_field(self) -> None:
+    def test_validate_missing_required_field(self) -> None:
         """Test validation fails for missing required field."""
         required_field = SchemaField(name="required_field", required=True)
         schema = ConfigSchema([required_field])
@@ -57,10 +56,9 @@ class TestConfigSchemaComprehensive:
         data = {}  # Missing required field
 
         with pytest.raises(ConfigValidationError, match="Required field missing"):
-            await schema.validate(data)
+            schema.validate(data)
 
-    @pytest.mark.asyncio
-    async def test_validate_all_required_fields_present(self) -> None:
+    def test_validate_all_required_fields_present(self) -> None:
         """Test validation passes when all required fields present."""
         required_field = SchemaField(name="required_field", required=True, field_type=str)
         optional_field = SchemaField(name="optional_field", required=False, field_type=int)
@@ -69,10 +67,9 @@ class TestConfigSchemaComprehensive:
         data = {"required_field": "value"}  # Optional field missing but that's OK
 
         # Should not raise
-        await schema.validate(data)
+        schema.validate(data)
 
-    @pytest.mark.asyncio
-    async def test_validate_field_validation_error(self) -> None:
+    def test_validate_field_validation_error(self) -> None:
         """Test validation propagates field validation errors."""
         field_obj = SchemaField(name="test_field", field_type=int)
         schema = ConfigSchema([field_obj])
@@ -80,10 +77,9 @@ class TestConfigSchemaComprehensive:
         data = {"test_field": "not_an_int"}
 
         with pytest.raises(ConfigValidationError, match="Expected type int"):
-            await schema.validate(data)
+            schema.validate(data)
 
-    @pytest.mark.asyncio
-    async def test_validate_unknown_fields_ignored(self) -> None:
+    def test_validate_unknown_fields_ignored(self) -> None:
         """Test validation ignores unknown fields."""
         field_obj = SchemaField(name="known_field", field_type=str)
         schema = ConfigSchema([field_obj])
@@ -91,7 +87,7 @@ class TestConfigSchemaComprehensive:
         data = {"known_field": "value", "unknown_field": "ignored"}
 
         # Should not raise
-        await schema.validate(data)
+        schema.validate(data)
 
     def test_apply_defaults_no_defaults(self) -> None:
         """Test apply_defaults with no default values."""
@@ -260,8 +256,7 @@ class TestConfigSchemaComprehensive:
 class TestValidateSchema:
     """Test the validate_schema function."""
 
-    @pytest.mark.asyncio
-    async def test_validate_schema_passes(self) -> None:
+    def test_validate_schema_passes(self) -> None:
         """Test validate_schema with valid config."""
 
         @define
@@ -274,8 +269,7 @@ class TestValidateSchema:
         # Should not raise
         await validate_schema(config, schema)
 
-    @pytest.mark.asyncio
-    async def test_validate_schema_fails(self) -> None:
+    def test_validate_schema_fails(self) -> None:
         """Test validate_schema with invalid config."""
         # Mock config that returns invalid data
         mock_config = Mock(spec=BaseConfig)
