@@ -1,6 +1,5 @@
 """Simple coverage tests for config/sync.py module focusing on covering code lines."""
 
-from contextlib import suppress
 import tempfile
 from unittest.mock import Mock, patch
 
@@ -73,12 +72,30 @@ class TestSyncModuleCoverage:
         with pytest.raises(TypeError, match="must inherit from RuntimeConfig"):
             load_config_from_env(SimpleTestConfig)
 
-    @patch("provide.foundation.config.env.RuntimeConfig.from_env_async")
-    def test_load_config_from_env_parameters(self, mock_from_env_async) -> None:
-        """Test load_config_from_env parameter handling."""
-        mock_from_env_async.return_value = SimpleRuntimeConfig(app_name="mocked")
-        load_config_from_env(SimpleRuntimeConfig, prefix="TEST", delimiter="-", case_sensitive=True)
-        mock_from_env_async.assert_called_once_with(prefix="TEST", delimiter="-", case_sensitive=True)
+    def test_load_config_from_env_parameters(self) -> None:
+        """Test load_config_from_env parameter handling by verifying behavior."""
+        env_vars = {
+            "TEST_APP_NAME": "from_env_cs",  # case_sensitive=True should preserve field case, but standard env vars are uppercase
+            "test_app_name": "from_env_ci",  # case_sensitive=False should uppercase field name
+        }
+        with patch.dict("os.environ", env_vars):
+            # Test case insensitive (default): Should uppercase field name to match TEST_APP_NAME
+            config_ci = load_config_from_env(
+                SimpleRuntimeConfig,
+                prefix="TEST",
+                delimiter="_",
+                case_sensitive=False,
+            )
+            assert config_ci.app_name == "from_env_cs"
+
+            # Test case sensitive: Should preserve field case to match test_app_name
+            config_cs = load_config_from_env(
+                SimpleRuntimeConfig,
+                prefix="test",
+                delimiter="_",
+                case_sensitive=True,
+            )
+            assert config_cs.app_name == "from_env_ci"
 
     @patch("provide.foundation.config.loader.FileConfigLoader.load")
     def test_load_config_from_file_creates_loader(self, mock_load) -> None:
@@ -99,8 +116,8 @@ class TestSyncModuleCoverage:
     def test_load_config_from_multiple_env_source(self) -> None:
         """Test load_config_from_multiple with env source."""
         with patch.dict("os.environ", {"TEST_PREFIX_APP_NAME": "from_env"}):
-             config = load_config_from_multiple(SimpleRuntimeConfig, ("env", "TEST_PREFIX"))
-             assert config.app_name == "from_env"
+            config = load_config_from_multiple(SimpleRuntimeConfig, ("env", "TEST_PREFIX"))
+            assert config.app_name == "from_env"
 
     def test_load_config_from_multiple_dict_source(self) -> None:
         """Test load_config_from_multiple with dict source."""

@@ -178,8 +178,23 @@ def reset_foundation_for_testing() -> None:
 
     This is the full reset function that testing frameworks should call.
     It performs the complete state reset and handles test-specific concerns
-    like transport re-registration.
+    like transport re-registration and test stream preservation.
     """
+    # Save current stream if it's a test stream (not stderr/stdout)
+    import sys
+
+    preserve_stream = None
+    try:
+        from provide.foundation.streams.core import get_log_stream
+
+        current_stream = get_log_stream()
+        # Only preserve if it's not stderr/stdout (i.e., it's a test stream)
+        if current_stream not in (sys.stderr, sys.stdout):
+            preserve_stream = current_stream
+    except Exception:
+        # Error getting current stream, skip preservation
+        pass
+
     # Full reset with Hub-based state management
     reset_foundation_state()
 
@@ -200,3 +215,13 @@ def reset_foundation_for_testing() -> None:
     except ImportError:
         # Legacy state not available, skip
         pass
+
+    # Restore test stream if there was one
+    if preserve_stream:
+        try:
+            from provide.foundation.streams.core import set_log_stream_for_testing
+
+            set_log_stream_for_testing(preserve_stream)
+        except Exception:
+            # Error restoring stream, continue without it
+            pass
