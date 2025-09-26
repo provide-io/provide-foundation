@@ -6,6 +6,7 @@ import zipfile
 
 if TYPE_CHECKING:
     from provide.foundation.logger.config.logging import LoggingConfig
+    from provide.foundation.resilience.types import BackoffStrategy
 
 """Centralized default values for Foundation configuration.
 All defaults are defined here instead of inline in field definitions.
@@ -135,10 +136,13 @@ DEFAULT_RETRY_JITTER = True
 DEFAULT_RETRY_RETRYABLE_ERRORS = None
 DEFAULT_RETRY_RETRYABLE_STATUS_CODES = None
 
-def default_retry_backoff_strategy():
+
+def default_retry_backoff_strategy() -> BackoffStrategy:
     """Factory for default retry backoff strategy."""
     from provide.foundation.resilience.types import BackoffStrategy
+
     return BackoffStrategy.EXPONENTIAL
+
 
 # =================================
 # Integration defaults (OpenObserve)
@@ -225,10 +229,12 @@ DEFAULT_CERTIFICATE_COMMON_NAME = "localhost"
 DEFAULT_CERTIFICATE_GENERATE_KEYPAIR = False
 DEFAULT_CERTIFICATE_ORGANIZATION_NAME = "Default Organization"
 
+
 # Factory functions for certificate defaults
 def default_certificate_alt_names() -> list[str]:
     """Factory for default certificate alternative names."""
     return ["localhost"]
+
 
 # =================================
 # Tracer defaults
