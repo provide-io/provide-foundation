@@ -66,7 +66,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_schema_field.py::TestSchemaFieldComprehensive::test_validate_sync_validator_fail_2 -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_schema_field.py -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_config_env.py tests/config/test_config_manager_coverage.py -q --tb=line)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_schema*.py -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_schema*.py -q)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/config/test_schema_field.py)"
     ],
     "deny": [],
     "ask": [],
