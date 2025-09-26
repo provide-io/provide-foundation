@@ -44,6 +44,7 @@ class TestConfigManagerComprehensive:
         """Set up test environment."""
         self.manager = ConfigManager()
         self.test_config = SampleConfigClass(name="test", count=5, enabled=True)
+
     def test_register_with_all_components(self) -> None:
         """Test register with all components: config, schema, loader, defaults."""
         # Create schema
@@ -77,6 +78,7 @@ class TestConfigManagerComprehensive:
         assert self.manager._schemas["full_test"] is schema
         assert self.manager._loaders["full_test"] is loader
         assert self.manager._defaults["full_test"] == defaults
+
     def test_register_partial_components(self) -> None:
         """Test register with only some components."""
         schema = ConfigSchema([SchemaField("name", str)])
@@ -110,6 +112,7 @@ class TestConfigManagerComprehensive:
         self.manager.remove("test")
 
         assert "test" not in self.manager._configs
+
     def test_get_existing_config(self) -> None:
         """Test getting existing configuration."""
         self.manager._configs["test"] = self.test_config
@@ -117,17 +120,20 @@ class TestConfigManagerComprehensive:
         result = self.manager.get("test")
 
         assert result is self.test_config
+
     def test_get_nonexistent_config(self) -> None:
         """Test getting non-existent configuration."""
         result = self.manager.get("nonexistent")
 
         assert result is None
+
     def test_set_config(self) -> None:
         """Test setting a configuration."""
         self.manager.set("new_config", self.test_config)
 
         assert "new_config" in self.manager._configs
         assert self.manager._configs["new_config"] is self.test_config
+
     def test_load_with_registered_loader(self) -> None:
         """Test loading configuration with registered loader."""
         # Set up loader
@@ -140,6 +146,7 @@ class TestConfigManagerComprehensive:
         assert result is self.test_config
         loader.load.assert_called_once_with(SampleConfigClass)
         assert self.manager._configs["test"] is self.test_config
+
     def test_load_with_provided_loader(self) -> None:
         """Test loading configuration with provided loader."""
         loader = Mock(spec=ConfigLoader)
@@ -149,10 +156,12 @@ class TestConfigManagerComprehensive:
 
         assert result is self.test_config
         loader.load.assert_called_once_with(SampleConfigClass)
+
     def test_load_with_no_loader(self) -> None:
         """Test loading configuration with no loader available."""
         with pytest.raises(ValueError, match="No loader registered for configuration"):
             self.manager.load("test", SampleConfigClass)
+
     def test_load_with_defaults(self) -> None:
         """Test loading configuration and applying defaults."""
         # Create config with None values for some fields
@@ -169,6 +178,7 @@ class TestConfigManagerComprehensive:
         assert result.name == "loaded"  # Original value preserved
         assert result.count == 99  # Default applied
         assert result.enabled is True  # Default applied
+
     def test_load_with_schema_validation(self) -> None:
         """Test loading configuration with schema validation."""
         # Use Mock config instead of attrs class for method mocking
@@ -188,6 +198,7 @@ class TestConfigManagerComprehensive:
         schema.validate.assert_called_once()
         mock_config.to_dict.assert_called_once_with(include_sensitive=True)
         assert result is mock_config
+
     def test_reload_config(self) -> None:
         """Test reloading an existing configuration."""
         # Set up existing config and loader
@@ -205,16 +216,19 @@ class TestConfigManagerComprehensive:
         assert result is new_config
         assert self.manager._configs["test"] is new_config
         loader.load.assert_called_once_with(SampleConfigClass)
+
     def test_reload_nonexistent_config(self) -> None:
         """Test reloading a non-existent configuration."""
         with pytest.raises(ValueError, match="Configuration not found"):
             self.manager.reload("nonexistent")
+
     def test_reload_no_loader(self) -> None:
         """Test reloading with no loader registered."""
         self.manager._configs["test"] = self.test_config
 
         with pytest.raises(ValueError, match="No loader registered for configuration"):
             self.manager.reload("test")
+
     def test_reload_with_defaults(self) -> None:
         """Test reloading with defaults application."""
         old_config = SampleConfigClass(name="old")
@@ -231,6 +245,7 @@ class TestConfigManagerComprehensive:
         result = self.manager.reload("test")
 
         assert result.count == 50  # Default applied
+
     def test_reload_with_schema_validation(self) -> None:
         """Test reloading with schema validation."""
         old_config = SampleConfigClass(name="old")
@@ -254,6 +269,7 @@ class TestConfigManagerComprehensive:
         schema.validate.assert_called_once()
         new_config.to_dict.assert_called_once_with(include_sensitive=True)
         assert result is new_config
+
     def test_update_config(self) -> None:
         """Test updating a configuration."""
         mock_config = Mock(spec=BaseConfig)
@@ -266,10 +282,12 @@ class TestConfigManagerComprehensive:
         self.manager.update("test", updates, ConfigSource.RUNTIME)
 
         mock_config.update.assert_called_once_with(updates, ConfigSource.RUNTIME)
+
     def test_update_nonexistent_config(self) -> None:
         """Test updating non-existent configuration."""
         with pytest.raises(ValueError, match="Configuration not found"):
             self.manager.update("nonexistent", {})
+
     def test_update_with_schema_validation(self) -> None:
         """Test updating configuration with schema validation."""
         # Create schema with field validation
@@ -291,6 +309,7 @@ class TestConfigManagerComprehensive:
 
         field_mock.validate.assert_called_once_with("validated")
         mock_config.update.assert_called_once()
+
     def test_reset_config(self) -> None:
         """Test resetting configuration to defaults."""
         mock_config = Mock(spec=BaseConfig)
@@ -306,6 +325,7 @@ class TestConfigManagerComprehensive:
 
         mock_config.reset_to_defaults.assert_called_once()
         mock_config.update.assert_called_once_with(defaults, ConfigSource.DEFAULT)
+
     def test_reset_nonexistent_config(self) -> None:
         """Test resetting non-existent configuration."""
         with pytest.raises(ValueError, match="Configuration not found"):
@@ -347,6 +367,7 @@ class TestConfigManagerComprehensive:
         assert len(self.manager._schemas) == 0
         assert len(self.manager._loaders) == 0
         assert len(self.manager._defaults) == 0
+
     def test_export_config(self) -> None:
         """Test exporting configuration as dictionary."""
         mock_config = Mock(spec=BaseConfig)
@@ -357,10 +378,12 @@ class TestConfigManagerComprehensive:
 
         mock_config.to_dict.assert_called_once_with(True)
         assert result == {"name": "test", "count": 5}
+
     def test_export_nonexistent_config(self) -> None:
         """Test exporting non-existent configuration."""
         with pytest.raises(ValueError, match="Configuration not found"):
             self.manager.export("nonexistent")
+
     def test_export_all_configs(self) -> None:
         """Test exporting all configurations."""
         config1 = Mock()
@@ -376,6 +399,7 @@ class TestConfigManagerComprehensive:
         config1.to_dict.assert_called_once_with(False)
         config2.to_dict.assert_called_once_with(False)
         assert result == {"config1": {"key1": "value1"}, "config2": {"key2": "value2"}}
+
     def test_export_to_dict_alias(self) -> None:
         """Test export_to_dict as alias for export_all."""
         config1 = Mock()
@@ -387,6 +411,7 @@ class TestConfigManagerComprehensive:
 
         config1.to_dict.assert_called_once_with(True)
         assert result == {"config1": {"key1": "value1"}}
+
     def test_load_from_dict(self) -> None:
         """Test loading configuration from dictionary."""
         data = {"name": "from_dict", "count": 42}
@@ -405,6 +430,7 @@ class TestConfigManagerComprehensive:
         self.manager.add_loader("test", loader)
 
         assert self.manager._loaders["test"] is loader
+
     def test_validate_all_configs(self) -> None:
         """Test validating all configurations."""
         # Config with validate method
@@ -433,6 +459,7 @@ class TestConfigManagerComprehensive:
         config1.validate.assert_called_once()
         schema1.validate.assert_called_once_with({"key": "value"})
         # config2 and schema2 validate methods should not be called
+
     def test_get_or_create_existing(self) -> None:
         """Test get_or_create with existing configuration."""
         existing_config = SampleConfigClass(name="existing")
@@ -446,6 +473,7 @@ class TestConfigManagerComprehensive:
 
         assert result is existing_config
         assert result.name == "existing"  # Should not be overwritten
+
     def test_get_or_create_new(self) -> None:
         """Test get_or_create creating new configuration."""
         defaults = {"name": "created", "count": 100}
@@ -456,6 +484,7 @@ class TestConfigManagerComprehensive:
         assert result.name == "created"
         assert result.count == 100
         assert self.manager._configs["new_test"] is result
+
     def test_get_or_create_no_defaults(self) -> None:
         """Test get_or_create with no defaults provided."""
         result = self.manager.get_or_create("empty_test", SampleConfigClass)
@@ -473,6 +502,7 @@ class TestGlobalFunctions:
         # Reset global manager
         _manager.clear()
         self.test_config = SampleConfigClass(name="global_test")
+
     def test_get_config_global(self) -> None:
         """Test global get_config function."""
         _manager._configs["test"] = self.test_config
@@ -480,11 +510,13 @@ class TestGlobalFunctions:
         result = get_config("test")
 
         assert result is self.test_config
+
     def test_set_config_global(self) -> None:
         """Test global set_config function."""
         set_config("test", self.test_config)
 
         assert _manager._configs["test"] is self.test_config
+
     def test_register_config_global(self) -> None:
         """Test global register_config function."""
         schema = Mock(spec=ConfigSchema)
@@ -497,6 +529,7 @@ class TestGlobalFunctions:
         assert _manager._schemas["test"] is schema
         assert _manager._loaders["test"] is loader
         assert _manager._defaults["test"] == defaults
+
     def test_load_config_global(self) -> None:
         """Test global load_config function."""
         loader = Mock(spec=ConfigLoader)

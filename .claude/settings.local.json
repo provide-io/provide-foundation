@@ -53,7 +53,8 @@
       "Bash(PYTHONPATH=src .venv/bin/python:*)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_config_manager_coverage.py -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_config_manager_coverage.py -v)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/ -v --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/ -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/config/ tests/config/)"
     ],
     "deny": [],
     "ask": [],

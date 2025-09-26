@@ -15,8 +15,6 @@ from provide.foundation.config.types import ConfigSource
 T = TypeVar("T")
 
 
-
-
 def get_env(
     var_name: str,
     default: str | None = None,
@@ -91,8 +89,7 @@ def env_field(
 
 
 class RuntimeConfig(BaseConfig):
-    """Configuration that can be loaded from environment variables.
-    """
+    """Configuration that can be loaded from environment variables."""
 
     @classmethod
     def from_env(
@@ -160,8 +157,6 @@ class RuntimeConfig(BaseConfig):
                 data[attr.name] = value
 
         return cls.from_dict(data, source=ConfigSource.ENV)
-
-
 
     def to_env_dict(self, prefix: str = "", delimiter: str = "_") -> dict[str, str]:
         """Convert configuration to environment variable dictionary.
