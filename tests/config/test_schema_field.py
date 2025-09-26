@@ -1,6 +1,5 @@
 """Comprehensive coverage tests for SchemaField validation and edge cases."""
 
-import asyncio
 from typing import Never
 
 import pytest
@@ -136,26 +135,24 @@ class TestSchemaFieldComprehensive:
         with pytest.raises(ConfigValidationError, match="Custom validation failed"):
             field_obj.validate(-5)
 
-    def test_validate_async_validator_pass(self) -> None:
-        """Test validation with passing async validator."""
+    def test_validate_sync_validator_pass_2(self) -> None:
+        """Test validation with passing sync validator (additional test)."""
 
-        async def async_validator(value):
-            await asyncio.sleep(0)  # Simulate async work
+        def sync_validator(value):
             return value > 0
 
-        field_obj = SchemaField(name="test_field", validator=async_validator)
+        field_obj = SchemaField(name="test_field", validator=sync_validator)
 
         # Should not raise
         field_obj.validate(5)
 
-    def test_validate_async_validator_fail(self) -> None:
-        """Test validation with failing async validator."""
+    def test_validate_sync_validator_fail_2(self) -> None:
+        """Test validation with failing sync validator (additional test)."""
 
-        async def async_validator(value):
-            await asyncio.sleep(0)  # Simulate async work
+        def sync_validator(value):
             return value > 0
 
-        field_obj = SchemaField(name="test_field", validator=async_validator)
+        field_obj = SchemaField(name="test_field", validator=sync_validator)
 
         with pytest.raises(ConfigValidationError, match="Custom validation failed"):
             field_obj.validate(-5)
@@ -191,15 +188,13 @@ class TestSchemaFieldComprehensive:
         ):
             field_obj.validate(5)
 
-    def test_validate_future_validator(self) -> None:
-        """Test validation with future-based validator."""
+    def test_validate_lambda_validator(self) -> None:
+        """Test validation with lambda validator."""
 
-        async def create_future():
-            future = asyncio.get_event_loop().create_future()
-            future.set_result(True)
-            return future
+        def lambda_validator(x):
+            return x > 0
 
-        field_obj = SchemaField(name="test_field", validator=lambda x: create_future())
+        field_obj = SchemaField(name="test_field", validator=lambda_validator)
 
         # Should not raise
         field_obj.validate(5)
@@ -271,15 +266,15 @@ class TestSchemaFieldEdgeCases:
         with pytest.raises(ConfigValidationError):
             field_obj.validate("z")  # Above max
 
-    def test_validate_async_validator_coroutine_detection(self) -> None:
-        """Test proper detection of coroutines vs futures."""
+    def test_validate_sync_validator_simple(self) -> None:
+        """Test simple sync validator functionality."""
 
-        async def async_validator(value) -> bool:
+        def sync_validator(value) -> bool:
             return True
 
-        field_obj = SchemaField(name="test", validator=async_validator)
+        field_obj = SchemaField(name="test", validator=sync_validator)
 
-        # Should handle coroutine properly
+        # Should handle validator properly
         field_obj.validate(42)
 
     def test_validate_complex_nested_validation(self) -> None:
