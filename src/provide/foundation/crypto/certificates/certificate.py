@@ -4,7 +4,7 @@ from datetime import UTC, datetime
 from functools import cached_property
 from typing import TYPE_CHECKING, Self
 
-from attrs import Factory, define, field
+from attrs import define, field
 
 if TYPE_CHECKING:
     from cryptography import x509
@@ -21,6 +21,12 @@ except ImportError:
     _HAS_CRYPTO = False
 
 from provide.foundation import logger
+from provide.foundation.config.defaults import (
+    DEFAULT_CERTIFICATE_COMMON_NAME,
+    DEFAULT_CERTIFICATE_GENERATE_KEYPAIR,
+    DEFAULT_CERTIFICATE_ORGANIZATION_NAME,
+    default_certificate_alt_names,
+)
 from provide.foundation.crypto.certificates.base import (
     CertificateBase,
     CertificateError,
@@ -31,12 +37,6 @@ from provide.foundation.crypto.certificates.loader import load_certificate_from_
 from provide.foundation.crypto.certificates.operations import create_x509_certificate
 from provide.foundation.crypto.certificates.trust import (
     verify_trust as verify_trust_impl,
-)
-from provide.foundation.config.defaults import (
-    DEFAULT_CERTIFICATE_COMMON_NAME,
-    DEFAULT_CERTIFICATE_GENERATE_KEYPAIR,
-    DEFAULT_CERTIFICATE_ORGANIZATION_NAME,
-    default_certificate_alt_names,
 )
 from provide.foundation.crypto.constants import (
     DEFAULT_CERTIFICATE_CURVE,

@@ -70,7 +70,10 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/config/test_schema_field.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/config/defaults.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/resilience/retry.py)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/resilience/retry.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/resilience/retry.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/crypto/certificates/certificate.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/tracer/spans.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/tracer/spans.py)"
     ],
     "deny": [],
     "ask": [],
