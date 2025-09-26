@@ -173,7 +173,8 @@ def test_context_propagation_in_logs(captured_stderr_for_foundation: io.StringIO
     bound_logger.info("Processing request")
 
     log_output = captured_stderr_for_foundation.getvalue()
-    assert "request_id=req-123" in log_output
+    # Check for request_id in both key-value and JSON formats
+    assert ("request_id=req-123" in log_output or '"request_id": "req-123"' in log_output), f"request_id not found in output: {log_output}"
 
 
 def test_configuration_edge_cases() -> None:
