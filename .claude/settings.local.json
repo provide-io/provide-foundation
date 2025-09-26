@@ -56,7 +56,10 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/ -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/config/ tests/config/)",
       "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/config/)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/config/ tests/config/)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/config/ tests/config/)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/config/ --ignore-missing-imports)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/config/)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/config/)"
     ],
     "deny": [],
     "ask": [],
