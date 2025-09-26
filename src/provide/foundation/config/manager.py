@@ -301,7 +301,8 @@ class ConfigManager:
         """Get existing config or create new one with defaults."""
         existing = self.get(name)
         if existing is not None:
-            return existing
+            # Type: ignore since we know this is the correct type from how it was registered
+            return existing  # type: ignore[return-value]
 
         # Create new config with defaults
         config = config_class.from_dict(defaults or {})

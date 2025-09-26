@@ -120,10 +120,10 @@ class FileConfigLoader(ConfigLoader):
             return yaml.safe_load(content)
         if self.format == ConfigFormat.TOML:
             try:
-                import tomllib
+                import tomllib as toml_parser
             except ImportError:
-                import tomli as tomllib
-            return tomllib.loads(content)
+                import tomli as toml_parser
+            return toml_parser.loads(content)
         if self.format == ConfigFormat.INI:
             import configparser
 
@@ -275,6 +275,8 @@ class MultiSourceLoader(ConfigLoader):
                         if source is not None:
                             config.update({key: value}, source=source)
 
+        if config is None:
+            raise ValueError("Failed to load configuration from any source")
         return config
 
 
