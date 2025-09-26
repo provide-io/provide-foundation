@@ -17,6 +17,7 @@ from provide.foundation.hub.registry import Registry
 class TestRegistryThreadSafety:
     """Test thread safety of the Registry class."""
 
+    @pytest.mark.slow
     def test_concurrent_registration(self) -> None:
         """Test concurrent registration doesn't cause race conditions."""
         registry = Registry()
@@ -58,6 +59,7 @@ class TestRegistryThreadSafety:
         all_items = registry.list_dimension("test")
         assert len(all_items) == 1000
 
+    @pytest.mark.slow
     def test_concurrent_get_operations(self) -> None:
         """Test concurrent get operations are thread-safe."""
         registry = Registry()
@@ -91,6 +93,7 @@ class TestRegistryThreadSafety:
         # Verify no mismatched values
         assert len(results) == 0, f"Mismatched values: {results}"
 
+    @pytest.mark.slow
     def test_concurrent_mixed_operations(self) -> None:
         """Test mixed read/write operations are thread-safe."""
         registry = Registry()
@@ -157,6 +160,7 @@ class TestRegistryThreadSafety:
         # Verify no errors
         assert len(errors) == 0, f"Errors occurred: {errors}"
 
+    @pytest.mark.slow
     def test_registry_clear_thread_safety(self) -> None:
         """Test that clear operation is thread-safe."""
         registry = Registry()
@@ -200,6 +204,7 @@ class TestHubThreadSafety:
         """Clear hub after each test."""
         clear_hub()
 
+    @pytest.mark.slow
     def test_concurrent_hub_initialization(self) -> None:
         """Test that get_hub() is thread-safe during initialization."""
         hub_instances = []
@@ -230,6 +235,7 @@ class TestHubThreadSafety:
             assert hub is first_hub, "Different hub instances returned!"
 
     @pytest.mark.serial
+    @pytest.mark.slow
     def test_concurrent_command_registration(self) -> None:
         """Test concurrent command registration via decorators."""
         clear_hub()  # Ensure clean state
@@ -262,6 +268,7 @@ class TestHubThreadSafety:
     # Original test was for concurrent component registration via decorators
     # which has been replaced by the registry-based component system
     @pytest.mark.serial
+    @pytest.mark.slow
     def test_concurrent_component_registration(self) -> None:
         """Test concurrent component registration - legacy test removed."""
         # Test replacement: verify registry operations are thread-safe
@@ -293,6 +300,7 @@ class TestHubThreadSafety:
         components = registry.list_dimension("component")
         assert len(components) == 50
 
+    @pytest.mark.slow
     def test_hub_clear_thread_safety(self) -> None:
         """Test that clear_hub results in a new hub instance for subsequent calls."""
         errors = []
@@ -333,6 +341,7 @@ class TestHubThreadSafety:
 class TestLoggerThreadSafety:
     """Test that logger remains thread-safe."""
 
+    @pytest.mark.slow
     def test_concurrent_logging(self) -> None:
         """Test that multiple threads can log concurrently."""
         from provide.foundation import logger
@@ -357,6 +366,7 @@ class TestLoggerThreadSafety:
 
         assert len(errors) == 0, f"Errors occurred: {errors}"
 
+    @pytest.mark.slow
     def test_logger_configuration_thread_safety(self) -> None:
         """Test that logger configuration is thread-safe."""
         from provide.foundation import get_logger
