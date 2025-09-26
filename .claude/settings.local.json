@@ -93,7 +93,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting.py::TestTokenBucketRateLimiter::test_extreme_time_precision -n auto --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/ -n auto --tb=short --maxfail=1)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting.py::TestTokenBucketRateLimiter::test_extreme_time_precision tests/config/ tests/integration/ -n auto --tb=short --maxfail=1)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/ -k \"concurrency or timing or precision or thread\" --collect-only -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/ -k \"concurrency or timing or precision or thread\" --collect-only -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting.py::TestTokenBucketRateLimiter::test_extreme_time_precision tests/concurrency/ tests/hub/test_hub_thread_safety.py tests/logger/ratelimit/ tests/utils/test_utils_timing.py -n auto --tb=short --maxfail=1)"
     ],
     "deny": [],
     "ask": [],
