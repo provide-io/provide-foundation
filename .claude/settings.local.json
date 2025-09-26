@@ -88,7 +88,11 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/crypto/ -v --tb=short -q)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/ -v --tb=short -q --maxfail=5)",
       "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/logger/types.py src/provide/foundation/config/types.py src/provide/foundation/crypto/certificates/generator.py)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting.py::TestTokenBucketRateLimiter::test_extreme_time_precision -xvs --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting.py::TestTokenBucketRateLimiter::test_extreme_time_precision -xvs --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting.py -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting.py::TestTokenBucketRateLimiter::test_extreme_time_precision -n auto --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/ -n auto --tb=short --maxfail=1)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting.py::TestTokenBucketRateLimiter::test_extreme_time_precision tests/config/ tests/integration/ -n auto --tb=short --maxfail=1)"
     ],
     "deny": [],
     "ask": [],
