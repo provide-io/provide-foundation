@@ -62,7 +62,11 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/config/)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_schema_field.py::TestSchemaFieldEdgeCases::test_validate_complex_nested_validation -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_schema_simple_coverage.py::TestValidators::test_validate_url_accessible tests/config/test_schema_validators.py::TestBuiltinValidators::test_validate_url_accessible tests/config/test_schema_config.py::TestConfigSchemaComprehensive::test_validate_all_required_fields_present -v)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_schema_simple_coverage.py::TestValidators::test_validate_url_accessible tests/config/test_schema_validators.py::TestBuiltinValidators::test_validate_url_accessible tests/config/test_schema_config.py -v)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_schema_simple_coverage.py::TestValidators::test_validate_url_accessible tests/config/test_schema_validators.py::TestBuiltinValidators::test_validate_url_accessible tests/config/test_schema_config.py -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_schema_field.py::TestSchemaFieldComprehensive::test_validate_sync_validator_fail_2 -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_schema_field.py -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_config_env.py tests/config/test_config_manager_coverage.py -q --tb=line)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_schema*.py -q)"
     ],
     "deny": [],
     "ask": [],
