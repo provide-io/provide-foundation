@@ -47,7 +47,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/integration/test_integration_core.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/integration/test_integration_core.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_config_env.py -v)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_config_loader.py -v)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_config_loader.py -v)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check tests/config/test_config_loader.py)"
     ],
     "deny": [],
     "ask": [],
