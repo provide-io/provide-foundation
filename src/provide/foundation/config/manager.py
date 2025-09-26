@@ -25,7 +25,7 @@ class ConfigManager:
         self._loaders: dict[str, ConfigLoader] = {}
         self._defaults: dict[str, ConfigDict] = {}
 
-    async def register(
+    def register(
         self,
         name: str,
         config: BaseConfig | None = None,
@@ -72,7 +72,7 @@ class ConfigManager:
         """Remove a configuration. Alias for unregister."""
         self.unregister(name)
 
-    async def get(self, name: str) -> BaseConfig | None:
+    def get(self, name: str) -> BaseConfig | None:
         """Get a configuration by name.
 
         Args:
@@ -84,7 +84,7 @@ class ConfigManager:
         """
         return self._configs.get(name)
 
-    async def set(self, name: str, config: BaseConfig) -> None:
+    def set(self, name: str, config: BaseConfig) -> None:
         """Set a configuration.
 
         Args:
@@ -94,7 +94,7 @@ class ConfigManager:
         """
         self._configs[name] = config
 
-    async def load(self, name: str, config_class: type[T], loader: ConfigLoader | None = None) -> T:
+    def load(self, name: str, config_class: type[T], loader: ConfigLoader | None = None) -> T:
         """Load a configuration.
 
         Args:
@@ -113,7 +113,7 @@ class ConfigManager:
                 raise ValueError(f"No loader registered for configuration: {name}")
 
         # Load configuration
-        config = await loader.load(config_class)
+        config = loader.load(config_class)
 
         # Apply defaults if available
         if name in self._defaults:
@@ -126,14 +126,14 @@ class ConfigManager:
         if name in self._schemas:
             schema = self._schemas[name]
             config_dict = config.to_dict(include_sensitive=True)
-            await schema.validate(config_dict)
+            schema.validate(config_dict)
 
         # Store configuration
         self._configs[name] = config
 
         return config
 
-    async def reload(self, name: str) -> BaseConfig:
+    def reload(self, name: str) -> BaseConfig:
         """Reload a configuration.
 
         Args:
@@ -153,7 +153,7 @@ class ConfigManager:
             raise ValueError(f"No loader registered for configuration: {name}")
 
         # Reload from loader
-        new_config = await loader.load(config.__class__)
+        new_config = loader.load(config.__class__)
 
         # Apply defaults
         if name in self._defaults:
@@ -166,14 +166,14 @@ class ConfigManager:
         if name in self._schemas:
             schema = self._schemas[name]
             config_dict = new_config.to_dict(include_sensitive=True)
-            await schema.validate(config_dict)
+            schema.validate(config_dict)
 
         # Update stored configuration
         self._configs[name] = new_config
 
         return new_config
 
-    async def update(
+    def update(
         self,
         name: str,
         updates: ConfigDict,
@@ -198,12 +198,12 @@ class ConfigManager:
             # Validate only the updated fields
             for key, value in updates.items():
                 if key in schema._field_map:
-                    await schema._field_map[key].validate(value)
+                    schema._field_map[key].validate(value)
 
         # Apply updates
         config.update(updates, source)
 
-    async def reset(self, name: str) -> None:
+    def reset(self, name: str) -> None:
         """Reset a configuration to defaults.
 
         Args:
@@ -240,7 +240,7 @@ class ConfigManager:
         self._loaders.clear()
         self._defaults.clear()
 
-    async def export(self, name: str, include_sensitive: bool = False) -> ConfigDict:
+    def export(self, name: str, include_sensitive: bool = False) -> ConfigDict:
         """Export a configuration as dictionary.
 
         Args:
@@ -256,7 +256,7 @@ class ConfigManager:
 
         return self._configs[name].to_dict(include_sensitive)
 
-    async def export_all(self, include_sensitive: bool = False) -> dict[str, ConfigDict]:
+    def export_all(self, include_sensitive: bool = False) -> dict[str, ConfigDict]:
         """Export all configurations.
 
         Args:
@@ -272,11 +272,11 @@ class ConfigManager:
         return result
 
     # Alias for export_all
-    async def export_to_dict(self, include_sensitive: bool = False) -> dict[str, ConfigDict]:
+    def export_to_dict(self, include_sensitive: bool = False) -> dict[str, ConfigDict]:
         """Export all configs to dict. Alias for export_all."""
-        return await self.export_all(include_sensitive)
+        return self.export_all(include_sensitive)
 
-    async def load_from_dict(self, name: str, config_class: type[T], data: ConfigDict) -> T:
+    def load_from_dict(self, name: str, config_class: type[T], data: ConfigDict) -> T:
         """Load config from dictionary."""
         config = config_class.from_dict(data)
         self._configs[name] = config
@@ -286,20 +286,20 @@ class ConfigManager:
         """Add a loader for a configuration."""
         self._loaders[name] = loader
 
-    async def validate_all(self) -> None:
+    def validate_all(self) -> None:
         """Validate all configurations."""
         for name, config in self._configs.items():
             if hasattr(config, "validate"):
-                await config.validate()
+                config.validate()
             if name in self._schemas:
                 schema = self._schemas[name]
                 config_dict = config.to_dict(include_sensitive=True)
                 if hasattr(schema, "validate"):
-                    await schema.validate(config_dict)
+                    schema.validate(config_dict)
 
-    async def get_or_create(self, name: str, config_class: type[T], defaults: ConfigDict | None = None) -> T:
+    def get_or_create(self, name: str, config_class: type[T], defaults: ConfigDict | None = None) -> T:
         """Get existing config or create new one with defaults."""
-        existing = await self.get(name)
+        existing = self.get(name)
         if existing is not None:
             return existing
 
@@ -313,7 +313,7 @@ class ConfigManager:
 _manager = ConfigManager()
 
 
-async def get_config(name: str) -> BaseConfig | None:
+def get_config(name: str) -> BaseConfig | None:
     """Get a configuration from the global manager.
 
     Args:
@@ -323,10 +323,10 @@ async def get_config(name: str) -> BaseConfig | None:
         Configuration instance or None
 
     """
-    return await _manager.get(name)
+    return _manager.get(name)
 
 
-async def set_config(name: str, config: BaseConfig) -> None:
+def set_config(name: str, config: BaseConfig) -> None:
     """Set a configuration in the global manager.
 
     Args:
@@ -334,10 +334,10 @@ async def set_config(name: str, config: BaseConfig) -> None:
         config: Configuration instance
 
     """
-    await _manager.set(name, config)
+    _manager.set(name, config)
 
 
-async def register_config(
+def register_config(
     name: str,
     config: BaseConfig | None = None,
     schema: ConfigSchema | None = None,
@@ -354,10 +354,10 @@ async def register_config(
         defaults: Default configuration values
 
     """
-    await _manager.register(name, config, schema, loader, defaults)
+    _manager.register(name, config, schema, loader, defaults)
 
 
-async def load_config(name: str, config_class: type[T], loader: ConfigLoader | None = None) -> T:
+def load_config(name: str, config_class: type[T], loader: ConfigLoader | None = None) -> T:
     """Load a configuration using the global manager.
 
     Args:
@@ -369,4 +369,4 @@ async def load_config(name: str, config_class: type[T], loader: ConfigLoader | N
         Configuration instance
 
     """
-    return await _manager.load(name, config_class, loader)
+    return _manager.load(name, config_class, loader)

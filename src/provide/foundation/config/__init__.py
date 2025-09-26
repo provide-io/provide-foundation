@@ -27,7 +27,6 @@ from provide.foundation.config.env import (
     RuntimeConfig,
     env_field,
     get_env,
-    get_env_async,
 )
 from provide.foundation.config.loader import (
     ConfigLoader,
@@ -38,6 +37,8 @@ from provide.foundation.config.loader import (
 from provide.foundation.config.manager import (
     ConfigManager,
     get_config,
+    load_config,
+    register_config,
     set_config,
 )
 from provide.foundation.config.schema import (
@@ -46,14 +47,6 @@ from provide.foundation.config.schema import (
     validate_schema,
 )
 
-# Import sync wrappers for convenience
-from provide.foundation.config.sync import (
-    SyncConfigManager,
-    load_config,
-    load_config_from_env,
-    load_config_from_file,
-    validate_config,
-)
 from provide.foundation.config.types import (
     ConfigDict,
     ConfigSource,
@@ -100,16 +93,13 @@ __all__ = [
     # Environment
     "RuntimeConfig",
     "SchemaField",
-    "SyncConfigManager",
     "env_field",
     "field",
     "get_config",
     "get_env",
-    "get_env_async",
-    # Sync wrappers
+    # Config loading
     "load_config",
-    "load_config_from_env",
-    "load_config_from_file",
+    "register_config",
     "parse_bool",
     # Converters
     "parse_bool_extended",
@@ -128,7 +118,6 @@ __all__ = [
     "set_config",
     # Validators
     "validate_choice",
-    "validate_config",
     "validate_log_level",
     "validate_non_negative",
     "validate_overflow_policy",
