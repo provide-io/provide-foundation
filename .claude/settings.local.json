@@ -79,7 +79,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/state/_internal/transitions.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/state/_internal/transitions.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/conftest.py)",
-      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/config/defaults.py)"
+      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/config/defaults.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/ -q --tb=short --maxfail=5)"
     ],
     "deny": [],
     "ask": [],
