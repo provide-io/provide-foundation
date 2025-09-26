@@ -21,6 +21,99 @@ from provide.foundation.crypto.constants import (
 
 """Certificate generation utilities."""
 
+
+def _parse_key_type_and_params(
+    key_type: str, key_size: int, ecdsa_curve: str
+) -> tuple[KeyType, int | None, CurveType | None]:
+    """Parse and validate key type parameters.
+
+    Args:
+        key_type: Key type string ('rsa' or 'ecdsa')
+        key_size: RSA key size
+        ecdsa_curve: ECDSA curve name
+
+    Returns:
+        Tuple of (KeyType, key_size_or_none, curve_or_none)
+
+    Raises:
+        ValueError: For invalid key types or curves
+    """
+    normalized_key_type_str = key_type.lower()
+    match normalized_key_type_str:
+        case "rsa":
+            return KeyType.RSA, key_size, None
+        case "ecdsa":
+            try:
+                curve = CurveType[ecdsa_curve.upper()]
+                return KeyType.ECDSA, None, curve
+            except KeyError as e_curve:
+                raise ValueError(f"Unsupported ECDSA curve: {ecdsa_curve}") from e_curve
+        case _:
+            raise ValueError(f"Unsupported key_type string: '{key_type}'. Must be 'rsa' or 'ecdsa'.")
+
+
+def _build_certificate_config(
+    common_name: str,
+    organization_name: str,
+    not_valid_before: datetime,
+    not_valid_after: datetime,
+    alt_names: list[str] | None,
+    gen_key_type: KeyType,
+    gen_key_size: int | None,
+    gen_curve: CurveType | None,
+) -> CertificateConfig:
+    """Build certificate configuration dictionary.
+
+    Args:
+        common_name: Certificate common name
+        organization_name: Organization name
+        not_valid_before: Certificate start validity
+        not_valid_after: Certificate end validity
+        alt_names: Subject alternative names
+        gen_key_type: Key type enum
+        gen_key_size: RSA key size (for RSA keys)
+        gen_curve: ECDSA curve (for ECDSA keys)
+
+    Returns:
+        Certificate configuration dictionary
+    """
+    conf: CertificateConfig = {
+        "common_name": common_name,
+        "organization": organization_name,
+        "alt_names": alt_names or ["localhost"],
+        "key_type": gen_key_type,
+        "not_valid_before": not_valid_before,
+        "not_valid_after": not_valid_after,
+    }
+    if gen_curve is not None:
+        conf["curve"] = gen_curve
+    if gen_key_size is not None:
+        conf["key_size"] = gen_key_size
+    return conf
+
+
+def _serialize_to_pem(
+    x509_cert: x509.Certificate,
+    private_key: rsa.RSAPrivateKey | ec.EllipticCurvePrivateKey,
+) -> tuple[str, str]:
+    """Serialize certificate and private key to PEM format.
+
+    Args:
+        x509_cert: X.509 certificate object
+        private_key: Private key object
+
+    Returns:
+        Tuple of (cert_pem, key_pem)
+    """
+    cert_pem = x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
+    key_pem = private_key.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=serialization.NoEncryption(),
+    ).decode("utf-8")
+    return cert_pem, key_pem
+
+
 if TYPE_CHECKING:
     from cryptography import x509
     from cryptography.hazmat.primitives import serialization
@@ -62,45 +155,25 @@ def generate_certificate(
     try:
         logger.debug("📜🔑🚀 Generating new keypair")
 
+        # Calculate validity period
         now = datetime.now(UTC)
         not_valid_before = now - timedelta(days=1)
         not_valid_after = now + timedelta(days=validity_days)
 
-        # Parse key type
-        normalized_key_type_str = key_type.lower()
-        match normalized_key_type_str:
-            case "rsa":
-                gen_key_type = KeyType.RSA
-            case "ecdsa":
-                gen_key_type = KeyType.ECDSA
-            case _:
-                raise ValueError(f"Unsupported key_type string: '{key_type}'. Must be 'rsa' or 'ecdsa'.")
+        # Parse and validate key type parameters
+        gen_key_type, gen_key_size, gen_curve = _parse_key_type_and_params(key_type, key_size, ecdsa_curve)
 
-        # Configure key parameters
-        gen_curve: CurveType | None = None
-        gen_key_size = None
-
-        if gen_key_type == KeyType.ECDSA:
-            try:
-                gen_curve = CurveType[ecdsa_curve.upper()]
-            except KeyError as e_curve:
-                raise ValueError(f"Unsupported ECDSA curve: {ecdsa_curve}") from e_curve
-        else:  # RSA
-            gen_key_size = key_size
-
-        # Build configuration
-        conf: CertificateConfig = {
-            "common_name": common_name,
-            "organization": organization_name,
-            "alt_names": alt_names or ["localhost"],
-            "key_type": gen_key_type,
-            "not_valid_before": not_valid_before,
-            "not_valid_after": not_valid_after,
-        }
-        if gen_curve is not None:
-            conf["curve"] = gen_curve
-        if gen_key_size is not None:
-            conf["key_size"] = gen_key_size
+        # Build certificate configuration
+        conf = _build_certificate_config(
+            common_name=common_name,
+            organization_name=organization_name,
+            not_valid_before=not_valid_before,
+            not_valid_after=not_valid_after,
+            alt_names=alt_names,
+            gen_key_type=gen_key_type,
+            gen_key_size=gen_key_size,
+            gen_curve=gen_curve,
+        )
         logger.debug(f"📜🔑🚀 Generation config: {conf}")
 
         # Generate base certificate and private key
@@ -118,13 +191,8 @@ def generate_certificate(
         if x509_cert is None:
             raise CertificateError("Certificate object (_cert) is None after creation")
 
-        # Convert to PEM format
-        cert_pem = x509_cert.public_bytes(serialization.Encoding.PEM).decode("utf-8")
-        key_pem = private_key.private_bytes(
-            encoding=serialization.Encoding.PEM,
-            format=serialization.PrivateFormat.PKCS8,
-            encryption_algorithm=serialization.NoEncryption(),
-        ).decode("utf-8")
+        # Serialize to PEM format
+        cert_pem, key_pem = _serialize_to_pem(x509_cert, private_key)
 
         logger.debug("📜🔑✅ Generated cert and key")
 
