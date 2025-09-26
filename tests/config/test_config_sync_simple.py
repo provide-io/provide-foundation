@@ -28,6 +28,9 @@ from provide.foundation.config.sync import (
 )
 from provide.foundation.config.types import ConfigSource
 
+# Mark all tests in this file to run serially to avoid global state pollution
+pytestmark = pytest.mark.serial
+
 
 @define
 class SimpleTestConfig(BaseConfig):
