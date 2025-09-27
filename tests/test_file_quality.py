@@ -74,7 +74,9 @@ class TestQualityAnalyzer:
             FileEvent(
                 path=Path("test.txt.tmp.12345"),
                 event_type="moved",
-                metadata=FileEventMetadata(timestamp=base_time + timedelta(milliseconds=50), sequence_number=2),
+                metadata=FileEventMetadata(
+                    timestamp=base_time + timedelta(milliseconds=50), sequence_number=2
+                ),
                 dest_path=Path("test.txt"),
             ),
         ]
@@ -159,7 +161,9 @@ class TestQualityAnalyzer:
                 FileEvent(
                     path=Path(f"test{i}.txt.tmp.{i}"),
                     event_type="moved",
-                    metadata=FileEventMetadata(timestamp=base_time + timedelta(milliseconds=50), sequence_number=2),
+                    metadata=FileEventMetadata(
+                        timestamp=base_time + timedelta(milliseconds=50), sequence_number=2
+                    ),
                     dest_path=Path(f"test{i}.txt"),
                 ),
             ]

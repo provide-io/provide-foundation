@@ -1,6 +1,5 @@
 """Comprehensive coverage tests for built-in schema validators."""
 
-import pytest
 
 from provide.foundation.config.schema import (
     validate_email,

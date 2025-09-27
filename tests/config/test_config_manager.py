@@ -2,10 +2,7 @@
 
 from __future__ import annotations
 
-from unittest.mock import AsyncMock
-
 from attrs import define
-import pytest
 
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.manager import ConfigManager

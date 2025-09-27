@@ -16,8 +16,6 @@ if src_path.exists():
     sys.path.insert(0, str(src_path))
 
 
-
-
 def test_service_name_no_emoji() -> None:
     """Test service name injection without emoji prefix for JSON format."""
     print("\n=== Test 2: Service Name Without Emoji (JSON) ===")

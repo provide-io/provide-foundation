@@ -27,7 +27,9 @@ class TransportConfig(RuntimeConfig):
     timeout: float = field(
         default=defaults.DEFAULT_TRANSPORT_TIMEOUT,
         env_var="PROVIDE_TRANSPORT_TIMEOUT",
-        converter=lambda x: parse_float_with_validation(x, min_val=0.0) if x else defaults.DEFAULT_TRANSPORT_TIMEOUT,
+        converter=lambda x: parse_float_with_validation(x, min_val=0.0)
+        if x
+        else defaults.DEFAULT_TRANSPORT_TIMEOUT,
         validator=validate_positive,
         description="Request timeout in seconds",
     )

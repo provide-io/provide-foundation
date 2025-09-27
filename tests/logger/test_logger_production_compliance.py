@@ -16,7 +16,7 @@ import threading
 import time
 from unittest.mock import patch
 
-from provide.testkit import TestEnvironment, reset_foundation_setup_for_testing
+from provide.testkit import reset_foundation_setup_for_testing
 import pytest
 from pytest import CaptureFixture  # Added for capsys
 
