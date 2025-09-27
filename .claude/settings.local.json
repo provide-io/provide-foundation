@@ -207,7 +207,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/observability/test_observability_coverage.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/observability/test_observability_coverage.py --ignore-missing-imports)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/formatting/test_grouping_coverage.py tests/observability/test_observability_coverage.py --cov=src/provide/foundation/formatting/grouping.py --cov=src/provide/foundation/observability/__init__.py --cov-report=term-missing --tb=short -q)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/observability/test_observability_coverage.py --tb=short -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/observability/test_observability_coverage.py --tb=short -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/formatting/test_grouping_coverage.py --tb=short -q)"
     ],
     "deny": [],
     "ask": [],
