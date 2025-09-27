@@ -3,6 +3,7 @@
 from typing import Never
 
 import pytest
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.config.schema import (
     SchemaField,
@@ -10,7 +11,7 @@ from provide.foundation.config.schema import (
 from provide.foundation.errors import ConfigValidationError
 
 
-class TestSchemaFieldComprehensive:
+class TestSchemaFieldComprehensive(FoundationTestCase):
     """Comprehensive tests for SchemaField validation."""
 
     def test_validate_required_field_missing(self) -> None:
@@ -243,7 +244,7 @@ class TestSchemaFieldComprehensive:
             )  # In choices, matches pattern, but fails custom validator (len <= 5)
 
 
-class TestSchemaFieldEdgeCases:
+class TestSchemaFieldEdgeCases(FoundationTestCase):
     """Test edge cases and corner cases for SchemaField."""
 
     def test_validate_none_with_type_check(self) -> None:
