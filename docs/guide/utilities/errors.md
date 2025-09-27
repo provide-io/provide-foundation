@@ -391,6 +391,131 @@ async def parallel_operations(tasks: list):
     return successes, failures
 ```
 
+## Error Handling Pattern Guidelines
+
+Choosing the right error handling approach depends on your specific needs:
+
+### Use @resilient Decorator When:
+
+- **Need automatic error recovery** with fallback values
+- **Want to suppress specific exceptions** gracefully
+- **Require error mapping/transformation** from generic to domain-specific errors
+- **Adding resilience to entire functions/methods**
+- **Need dynamic context injection** for debugging
+
+Example use cases:
+- API endpoints that should return default values on failure
+- External service calls that need graceful degradation
+- Data processing functions with fallback logic
+
+```python
+@resilient(
+    fallback="default_value",
+    suppress=(NetworkError, TimeoutError),
+    error_mapper=lambda e: ServiceError(f"External service failed: {e}"),
+    context_provider=lambda: {"service": "payment", "user_id": get_current_user_id()}
+)
+def fetch_user_preferences():
+    return external_api.get_preferences()
+```
+
+### Use error_boundary() Context Manager When:
+
+- **Handling errors in specific code blocks**
+- **Need fine-grained control** over error flow
+- **Implementing try-catch-finally patterns**
+- **Working with temporary error handling**
+- **Want transactional error behavior**
+
+Example use cases:
+- Risky operations within larger functions
+- Block-level error suppression
+- Database transaction blocks
+
+```python
+def process_user_data(user_data):
+    validated_data = validate_user_data(user_data)
+
+    # Handle specific operation errors
+    with error_boundary(
+        ValidationError,
+        on_error=lambda e: log_validation_failure(e),
+        fallback=None,
+        reraise=False
+    ):
+        optional_enrichment = enrich_user_data(validated_data)
+        validated_data.update(optional_enrichment or {})
+
+    return save_user_data(validated_data)
+```
+
+### Use ErrorHandler Class When:
+
+- **Building plugin systems** with error routing
+- **Need type-based error handling policies**
+- **Implementing complex error strategies**
+- **Creating reusable error handlers**
+- **Want centralized error processing**
+
+Example use cases:
+- Application-wide error handling
+- Plugin architectures
+- Complex error routing logic
+
+```python
+def create_api_error_handler():
+    handler = ErrorHandler(
+        policies={
+            ValidationError: lambda e: {"error": "validation", "details": e.context},
+            AuthenticationError: lambda e: {"error": "auth", "message": "Invalid credentials"},
+            NetworkError: lambda e: {"error": "network", "retry_after": 30}
+        },
+        default_action=lambda e: {"error": "internal", "message": "Service unavailable"},
+        reraise_unhandled=False
+    )
+    return handler
+
+@app.errorhandler(Exception)
+def handle_api_error(error):
+    result = api_error_handler.handle(error)
+    return jsonify(result), get_status_code(error)
+```
+
+### Use transactional() Context Manager When:
+
+- **Managing database transactions**
+- **Implementing rollback logic**
+- **Handling atomic operations**
+- **Ensuring cleanup on failure**
+- **Need guaranteed state consistency**
+
+Example use cases:
+- Database operations
+- File system changes
+- Multi-step atomic operations
+
+```python
+def transfer_funds(from_account, to_account, amount):
+    def rollback_transfer():
+        # Restore original balances
+        from_account.balance += amount
+        to_account.balance -= amount
+        db.session.rollback()
+
+    def commit_transfer():
+        db.session.commit()
+        audit_log.record_transfer(from_account, to_account, amount)
+
+    with transactional(
+        rollback=rollback_transfer,
+        commit=commit_transfer,
+        on_error=lambda e: notify_admin_of_transfer_failure(e)
+    ):
+        from_account.balance -= amount
+        to_account.balance += amount
+        db.session.flush()  # Validate constraints
+```
+
 ## Best Practices
 
 ### 1. Use Specific Error Types
