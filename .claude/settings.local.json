@@ -221,7 +221,11 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_lifecycle.py tests/context/test_context_core.py::TestContext::test_context_immutable_after_freeze -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/observability/test_observability_coverage.py::TestObservabilityModule::test_has_otel_detection_with_otel -xvs)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/observability/test_observability_coverage.py -n auto --maxfail=1 -q)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/env/test_env_types_coverage.py::TestEnvTypes::test_env_parser_type_alias -xvs)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/env/test_env_types_coverage.py::TestEnvTypes::test_env_parser_type_alias -xvs)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/env/test_env_types_coverage.py::TestEnvTypes::test_env_parser_type_alias tests/resilience/test_retry_decorator.py::TestRetryDecoratorParameterValidation::test_conflicting_parameters tests/hub/test_hub_context.py::TestContext::test_context_immutable_after_freeze -v)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/env/test_env_types_coverage.py tests/resilience/test_retry_decorator.py tests/hub/test_hub_context.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/env/test_env_types_coverage.py tests/hub/test_hub_context.py --ignore-missing-imports)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/env/test_env_types_coverage.py::TestEnvTypes::test_env_parser_type_alias tests/resilience/test_retry_decorator.py::TestRetryDecoratorParameterValidation::test_conflicting_parameters tests/hub/test_hub_context.py::TestContext::test_context_immutable_after_freeze -x --tb=short)"
     ],
     "deny": [],
     "ask": [],
