@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from attrs import define
 import pytest
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.config.base import field
 from provide.foundation.config.env import (
@@ -18,7 +19,7 @@ from provide.foundation.utils.parsing import (
 )
 
 
-class TestEnvUtilities:
+class TestEnvUtilities(FoundationTestCase):
     """Test environment variable utilities."""
 
     def test_get_env_existing(self, monkeypatch) -> None:
@@ -137,7 +138,7 @@ class TestRuntimeConfig(RuntimeConfig):
     custom_var: str = env_field(env_var="CUSTOM_ENV_VAR", default="")
 
 
-class TestRuntimeConfigClass:
+class TestRuntimeConfigClass(FoundationTestCase):
     """Test RuntimeConfig class functionality."""
 
     def test_from_env_with_prefix(self, monkeypatch) -> None:

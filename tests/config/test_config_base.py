@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from attrs import define
 import pytest
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.config.base import BaseConfig, field
 from provide.foundation.config.types import ConfigSource
@@ -25,7 +26,7 @@ class SampleConfig(BaseConfig):
         super().__attrs_post_init__()
 
 
-class TestBaseConfig:
+class TestBaseConfig(FoundationTestCase):
     """Test BaseConfig functionality."""
 
     def test_create_config(self) -> None:
@@ -182,7 +183,7 @@ class TestBaseConfig:
         assert "password123" not in repr_str
 
 
-class TestConfigField:
+class TestConfigField(FoundationTestCase):
     """Test enhanced field functionality."""
 
     def test_field_with_description(self) -> None:
@@ -214,7 +215,7 @@ class TestConfigField:
         assert field_obj.metadata["env_prefix"] == "APP"
 
 
-class TestConfigValidationError:
+class TestConfigValidationError(FoundationTestCase):
     """Test ConfigValidationError."""
 
     def test_validation_error(self) -> None:
