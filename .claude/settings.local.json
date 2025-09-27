@@ -128,7 +128,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_retry_coverage.py::TestRetryPolicyEdgeCases::test_unknown_backoff_strategy_fallback -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest -x --tb=short -q)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/crypto/ -v --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/crypto/ -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/crypto/ -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest --cov=src/provide/foundation --cov-report=term-missing --cov-report=html -q)"
     ],
     "deny": [],
     "ask": [],
