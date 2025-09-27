@@ -120,7 +120,12 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/state/test_transitions_coverage.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/state/test_transitions_coverage.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_transitions_coverage.py -v --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_transitions_coverage.py::TestCircuitBreakerStateMachineEdgeCases::test_transitions_from_all_states_to_reset -v --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_transitions_coverage.py::TestCircuitBreakerStateMachineEdgeCases::test_transitions_from_all_states_to_reset -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/resilience/test_retry_coverage.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/resilience/test_retry_coverage.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/resilience/test_retry_coverage.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_retry_coverage.py -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_retry_coverage.py::TestRetryPolicyEdgeCases::test_unknown_backoff_strategy_fallback -v --tb=short)"
     ],
     "deny": [],
     "ask": [],
