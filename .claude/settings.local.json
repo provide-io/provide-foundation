@@ -125,7 +125,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/resilience/test_retry_coverage.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/resilience/test_retry_coverage.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_retry_coverage.py -v --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_retry_coverage.py::TestRetryPolicyEdgeCases::test_unknown_backoff_strategy_fallback -v --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_retry_coverage.py::TestRetryPolicyEdgeCases::test_unknown_backoff_strategy_fallback -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest -x --tb=short -q)"
     ],
     "deny": [],
     "ask": [],
