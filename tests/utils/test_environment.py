@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import pytest
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.errors import ValidationError
 from provide.foundation.utils.environment import (
@@ -20,7 +21,7 @@ from provide.foundation.utils.environment import (
 )
 
 
-class TestBasicGetters:
+class TestBasicGetters(FoundationTestCase):
     """Test basic environment variable getters."""
 
     def test_get_bool(self, monkeypatch) -> None:
@@ -188,7 +189,7 @@ class TestBasicGetters:
         assert get_dict("TEST_DICT") == {}
 
 
-class TestRequire:
+class TestRequire(FoundationTestCase):
     """Test require function."""
 
     def test_require_present(self, monkeypatch) -> None:
@@ -227,7 +228,7 @@ class TestRequire:
         assert require("REQUIRED", dict[str, str]) == {"k": "v"}
 
 
-class TestEnvPrefix:
+class TestEnvPrefix(FoundationTestCase):
     """Test EnvPrefix class."""
 
     def test_prefix_basic(self, monkeypatch) -> None:
@@ -284,7 +285,7 @@ class TestEnvPrefix:
         assert env.get_bool("debug") is True
 
 
-class TestParsers:
+class TestParsers(FoundationTestCase):
     """Test parsing functions."""
 
     def test_parse_duration(self) -> None:
