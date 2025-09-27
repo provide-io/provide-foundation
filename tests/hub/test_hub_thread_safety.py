@@ -1,9 +1,12 @@
 """Thread safety tests for provide-foundation."""
 
+from __future__ import annotations
+
 import concurrent.futures
 import threading
-import time
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking.time import mock_sleep
 import pytest
 
 from provide.foundation.hub import (
@@ -14,7 +17,7 @@ from provide.foundation.hub import (
 from provide.foundation.hub.registry import Registry
 
 
-class TestRegistryThreadSafety:
+class TestRegistryThreadSafety(FoundationTestCase):
     """Test thread safety of the Registry class."""
 
     @pytest.mark.slow
@@ -108,7 +111,8 @@ class TestRegistryThreadSafety:
                         f"value_{thread_id}_{i}",
                         dimension="mixed",
                     )
-                    time.sleep(0.001)  # Small delay to increase contention
+                    with mock_sleep():
+                        pass  # Mock small delay to increase contention
             except Exception as e:
                 errors.append(f"Writer {thread_id}: {e}")
 
@@ -118,7 +122,8 @@ class TestRegistryThreadSafety:
                 for _ in range(100):
                     registry.list_dimension("mixed")
                     # Just accessing the list, checking it doesn't crash
-                    time.sleep(0.001)
+                    with mock_sleep():
+                        pass  # Mock delay
             except Exception as e:
                 errors.append(f"Reader {thread_id}: {e}")
 
@@ -128,7 +133,8 @@ class TestRegistryThreadSafety:
                 for i in range(25):
                     # Try to remove items that may or may not exist
                     registry.remove(f"writer_0_{i}", dimension="mixed")
-                    time.sleep(0.002)
+                    with mock_sleep():
+                        pass  # Mock delay
             except Exception as e:
                 errors.append(f"Remover {thread_id}: {e}")
 
@@ -148,7 +154,8 @@ class TestRegistryThreadSafety:
             thread.start()
 
         # Start remover after a small delay
-        time.sleep(0.01)
+        with mock_sleep():
+            pass  # Mock delay
         thread = threading.Thread(target=remover_thread, args=(0,))
         threads.append(thread)
         thread.start()
@@ -193,7 +200,7 @@ class TestRegistryThreadSafety:
         assert len(errors) == 0, f"Errors occurred: {errors}"
 
 
-class TestHubThreadSafety:
+class TestHubThreadSafety(FoundationTestCase):
     """Test thread safety of the Hub singleton."""
 
     def setup_method(self) -> None:
@@ -248,8 +255,8 @@ class TestHubThreadSafety:
                 for i in range(10):
 
                     @register_command(f"cmd_{thread_id}_{i}")
-                    def cmd() -> str:
-                        return f"result_{thread_id}_{i}"
+                    def cmd(tid: int = thread_id, idx: int = i) -> str:
+                        return f"result_{tid}_{idx}"
             except Exception as e:
                 errors.append(f"Thread {thread_id}: {e}")
 
@@ -339,7 +346,7 @@ class TestHubThreadSafety:
         assert hub1 is not hub2
 
 
-class TestLoggerThreadSafety:
+class TestLoggerThreadSafety(FoundationTestCase):
     """Test that logger remains thread-safe."""
 
     @pytest.mark.slow
