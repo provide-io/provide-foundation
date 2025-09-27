@@ -1,10 +1,13 @@
 """Async support tests for provide-foundation."""
 
+from __future__ import annotations
+
 import asyncio
-import time
 from typing import Any
 
 from attrs import define
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking.time import mock_sleep
 import pytest
 
 from provide.foundation.hub import (
@@ -16,7 +19,7 @@ from provide.foundation.hub.registry import Registry
 from provide.foundation.logger import get_logger
 
 
-class TestAsyncRegistryCompatibility:
+class TestAsyncRegistryCompatibility(FoundationTestCase):
     """Test Registry works correctly with async operations."""
 
     @pytest.mark.asyncio
@@ -28,7 +31,8 @@ class TestAsyncRegistryCompatibility:
         async def register_items() -> bool:
             for i in range(10):
                 registry.register(f"item_{i}", f"value_{i}", dimension="async_test")
-                await asyncio.sleep(0)  # Yield control
+                with mock_sleep():
+                    await asyncio.sleep(0)  # Yield control
             return True
 
         result = await register_items()
@@ -39,12 +43,13 @@ class TestAsyncRegistryCompatibility:
         assert len(items) == 10
 
         # Test retrieval in async context
-        async def get_items():
+        async def get_items() -> list[str]:
             results = []
             for i in range(10):
                 value = registry.get(f"item_{i}", dimension="async_test")
                 results.append(value)
-                await asyncio.sleep(0)
+                with mock_sleep():
+                    await asyncio.sleep(0)
             return results
 
         values = await get_items()
@@ -55,7 +60,7 @@ class TestAsyncRegistryCompatibility:
         """Test Registry handles concurrent async operations."""
         registry = Registry()
 
-        async def register_batch(batch_id: int):
+        async def register_batch(batch_id: int) -> int:
             """Register a batch of items asynchronously."""
             for i in range(10):
                 registry.register(
@@ -63,7 +68,8 @@ class TestAsyncRegistryCompatibility:
                     f"value_{batch_id}_{i}",
                     dimension="async_batch",
                 )
-                await asyncio.sleep(0.001)
+                with mock_sleep():
+                    await asyncio.sleep(0.001)
             return batch_id
 
         # Run multiple batches concurrently
@@ -86,12 +92,13 @@ class TestAsyncRegistryCompatibility:
             registry.register(f"async_item_{i}", i, dimension="iter_test")
 
         # Iterate in async context
-        async def iterate_registry():
+        async def iterate_registry() -> list[Any]:
             entries = []
             for entry in registry:
                 if entry.dimension == "iter_test":
                     entries.append(entry)
-                    await asyncio.sleep(0)  # Yield control
+                    with mock_sleep():
+                        await asyncio.sleep(0)  # Yield control
             return entries
 
         entries = await iterate_registry()
@@ -99,7 +106,7 @@ class TestAsyncRegistryCompatibility:
         assert all(e.dimension == "iter_test" for e in entries)
 
 
-class TestAsyncHubCompatibility:
+class TestAsyncHubCompatibility(FoundationTestCase):
     """Test Hub works correctly with async operations."""
 
     def setup_method(self) -> None:
@@ -125,7 +132,8 @@ class TestAsyncHubCompatibility:
                 # Test hub access doesn't fail in async context
                 current_hub = get_hub()
                 assert current_hub is hub
-                await asyncio.sleep(0)
+                with mock_sleep():
+                    await asyncio.sleep(0)
             return True
 
         result = await test_hub_access()
@@ -138,22 +146,25 @@ class TestAsyncHubCompatibility:
         async def task1() -> str:
             hub = get_hub()
             for i in range(10):
-                hub.add_command(lambda: f"cmd1_{i}", f"async_cmd1_{i}")
-                await asyncio.sleep(0.001)
+                hub.add_command(lambda idx=i: f"cmd1_{idx}", f"async_cmd1_{i}")
+                with mock_sleep():
+                    await asyncio.sleep(0.001)
             return "task1_done"
 
         async def task2() -> str:
             hub = get_hub()
             for i in range(10):
-                hub.add_command(lambda: f"cmd2_{i}", f"async_cmd2_{i}")
-                await asyncio.sleep(0.001)
+                hub.add_command(lambda idx=i: f"cmd2_{idx}", f"async_cmd2_{i}")
+                with mock_sleep():
+                    await asyncio.sleep(0.001)
             return "task2_done"
 
         async def task3() -> str:
             hub = get_hub()
             for _ in range(20):
                 commands = hub.list_commands()
-                await asyncio.sleep(0.001)
+                with mock_sleep():
+                    await asyncio.sleep(0.001)
             return f"found_{len(commands)}_commands"
 
         # Run all tasks concurrently
@@ -171,7 +182,7 @@ class TestAsyncHubCompatibility:
         assert cmd2_count == 10
 
 
-class TestAsyncLoggerCompatibility:
+class TestAsyncLoggerCompatibility(FoundationTestCase):
     """Test Logger works correctly with async operations."""
 
     @pytest.mark.asyncio
@@ -183,7 +194,8 @@ class TestAsyncLoggerCompatibility:
             for i in range(10):
                 logger.info(f"Async message {i}", index=i)
                 logger.debug(f"Debug message {i}", index=i)
-                await asyncio.sleep(0)
+                with mock_sleep():
+                    await asyncio.sleep(0)
             return True
 
         result = await log_messages()
@@ -197,7 +209,8 @@ class TestAsyncLoggerCompatibility:
             logger = get_logger(f"async_task_{task_id}")
             for i in range(20):
                 logger.info(f"Task {task_id} message {i}")
-                await asyncio.sleep(0.001)
+                with mock_sleep():
+                    await asyncio.sleep(0.001)
             return f"task_{task_id}_complete"
 
         # Run multiple logging tasks concurrently
@@ -207,7 +220,7 @@ class TestAsyncLoggerCompatibility:
         assert all(f"task_{i}_complete" in results for i in range(5))
 
 
-class TestAsyncContextManagers:
+class TestAsyncContextManagers(FoundationTestCase):
     """Test async context manager patterns."""
 
     @pytest.mark.asyncio
@@ -221,11 +234,13 @@ class TestAsyncContextManagers:
             cleaned_up: bool = False
 
             async def initialize(self) -> None:
-                await asyncio.sleep(0.001)  # Simulate async init
+                with mock_sleep():
+                    await asyncio.sleep(0.001)  # Simulate async init
                 self.initialized = True
 
             async def cleanup(self) -> None:
-                await asyncio.sleep(0.001)  # Simulate async cleanup
+                with mock_sleep():
+                    await asyncio.sleep(0.001)  # Simulate async cleanup
                 self.cleaned_up = True
 
         # Test manual lifecycle
@@ -248,17 +263,20 @@ class TestAsyncContextManagers:
             def __init__(self) -> None:
                 self._registry = Registry()
 
-            async def register(self, name: str, value: Any, dimension: str = "default"):
+            async def register(self, name: str, value: Any, dimension: str = "default") -> Any:
                 # Simulate async operation that uses sync registry
-                await asyncio.sleep(0)
+                with mock_sleep():
+                    await asyncio.sleep(0)
                 return self._registry.register(name, value, dimension)
 
-            async def get(self, name: str, dimension: str | None = None):
-                await asyncio.sleep(0)
+            async def get(self, name: str, dimension: str | None = None) -> Any:
+                with mock_sleep():
+                    await asyncio.sleep(0)
                 return self._registry.get(name, dimension)
 
-            async def list_dimension(self, dimension: str):
-                await asyncio.sleep(0)
+            async def list_dimension(self, dimension: str) -> list[str]:
+                with mock_sleep():
+                    await asyncio.sleep(0)
                 return self._registry.list_dimension(dimension)
 
         async_registry = AsyncRegistry()
@@ -272,7 +290,7 @@ class TestAsyncContextManagers:
         assert "async_key" in items
 
 
-class TestAsyncTaskCoordination:
+class TestAsyncTaskCoordination(FoundationTestCase):
     """Test coordination of async tasks with foundation components."""
 
     @pytest.mark.asyncio
@@ -285,7 +303,8 @@ class TestAsyncTaskCoordination:
             for i in range(count):
                 item_name = f"producer_{producer_id}_item_{i}"
                 registry.register(item_name, i, dimension="queue")
-                await asyncio.sleep(0.01)
+                with mock_sleep():
+                    await asyncio.sleep(0.01)
             return f"producer_{producer_id}_done"
 
         async def consumer(consumer_id: int, max_items: int) -> str:
@@ -300,7 +319,8 @@ class TestAsyncTaskCoordination:
                     if value is not None:
                         consumed.append((item, value))
                         registry.remove(item, dimension="queue")
-                await asyncio.sleep(0.015)
+                with mock_sleep():
+                    await asyncio.sleep(0.015)
             return f"consumer_{consumer_id}_consumed_{len(consumed)}"
 
         # Run producers and consumers concurrently
@@ -322,7 +342,8 @@ class TestAsyncTaskCoordination:
 
         async def event_handler(event_type: str, data: Any) -> None:
             """Handle events asynchronously."""
-            await asyncio.sleep(0.001)  # Simulate async processing
+            with mock_sleep():
+                await asyncio.sleep(0.001)  # Simulate async processing
             events.append((event_type, data))
 
         # Register event handlers as commands using decorator
@@ -330,10 +351,11 @@ class TestAsyncTaskCoordination:
             for event_type in ["start", "process", "complete"]:
 
                 @register_command(f"handle_{event_type}")
-                async def handler() -> None:
-                    await event_handler(event_type, {"timestamp": time.time()})
+                async def handler(etype: str = event_type) -> None:
+                    await event_handler(etype, {"timestamp": 1000.0})  # Fixed timestamp for tests
 
-                await asyncio.sleep(0)
+                with mock_sleep():
+                    await asyncio.sleep(0)
 
         await setup_handlers()
 
@@ -343,7 +365,7 @@ class TestAsyncTaskCoordination:
         assert len(handlers) == 3
 
 
-class TestAsyncMixedOperations:
+class TestAsyncMixedOperations(FoundationTestCase):
     """Test mixing sync and async operations."""
 
     @pytest.mark.asyncio
@@ -351,18 +373,20 @@ class TestAsyncMixedOperations:
         """Test sync operations work correctly in async context."""
         registry = Registry()
 
-        async def mixed_operations():
+        async def mixed_operations() -> str:
             # Sync operation
             registry.register("sync_item", "sync_value", dimension="mixed")
 
             # Async sleep
-            await asyncio.sleep(0.001)
+            with mock_sleep():
+                await asyncio.sleep(0.001)
 
             # Another sync operation
             value = registry.get("sync_item", dimension="mixed")
 
             # Async sleep
-            await asyncio.sleep(0.001)
+            with mock_sleep():
+                await asyncio.sleep(0.001)
 
             # More sync operations
             registry.remove("sync_item", dimension="mixed")
@@ -385,7 +409,8 @@ class TestAsyncMixedOperations:
         async def async_writer() -> str:
             for i in range(10):
                 registry.register(f"async_{i}", i, dimension="concurrent")
-                await asyncio.sleep(0.002)
+                with mock_sleep():
+                    await asyncio.sleep(0.002)
             return "async_done"
 
         def sync_writer() -> str:
@@ -393,12 +418,13 @@ class TestAsyncMixedOperations:
                 registry.register(f"sync_{i}", i, dimension="concurrent")
             return "sync_done"
 
-        async def async_reader():
+        async def async_reader() -> list[int]:
             counts = []
             for _ in range(5):
                 items = registry.list_dimension("concurrent")
                 counts.append(len(items))
-                await asyncio.sleep(0.005)
+                with mock_sleep():
+                    await asyncio.sleep(0.005)
             return counts
 
         # Run async writer and reader
