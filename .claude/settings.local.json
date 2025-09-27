@@ -186,7 +186,10 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils --cov=src/provide/foundation --cov-report=term-missing --tb=no -q)",
       "Bash(PYTHONPATH=src .venv/bin/pytest --cov=src/provide/foundation/utils --cov-report=term-missing -q --tb=no)",
       "Bash(PYTHONPATH=src .venv/bin/pytest --cov=src/provide/foundation/utils --cov-report=term --tb=no -q)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_formatting_coverage.py tests/utils/test_timing_coverage.py tests/utils/test_streams_coverage.py tests/utils/test_rate_limiting_coverage.py --cov=src/provide/foundation/utils --cov-report=term --tb=no -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_formatting_coverage.py tests/utils/test_timing_coverage.py tests/utils/test_streams_coverage.py tests/utils/test_rate_limiting_coverage.py --cov=src/provide/foundation/utils --cov-report=term --tb=no -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/ --cov=src/provide/foundation/utils --cov-report=term-missing --tb=no -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/ --cov=src/provide/foundation/utils --cov-report=term --tb=no -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest --cov=src/provide/foundation --cov-report=term --tb=no -q)"
     ],
     "deny": [],
     "ask": [],
