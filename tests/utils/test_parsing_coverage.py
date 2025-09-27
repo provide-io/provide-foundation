@@ -47,8 +47,11 @@ class TestParseBool:
         """Test parsing bool from non-string types."""
         assert parse_bool(1) is True
         assert parse_bool(0) is False
-        assert parse_bool([]) is False  # Empty list converts to "False"
-        assert parse_bool([1]) is True  # Non-empty list converts to "True" but string is "[1]"
+        # Lists convert to string but "[]" is not a valid boolean
+        with pytest.raises(ValueError, match="Cannot parse '\\[\\]' as boolean"):
+            parse_bool([])
+        with pytest.raises(ValueError, match="Cannot parse '\\[1\\]' as boolean"):
+            parse_bool([1])
 
     def test_parse_bool_strict_mode(self) -> None:
         """Test parse_bool with strict mode."""
@@ -469,8 +472,12 @@ class TestEdgeCases:
 
     def test_type_conversion_edge_cases(self) -> None:
         """Test edge cases in type conversion."""
-        # Float as string to int (should work)
-        assert parse_typed_value("42.0", int) == 42
+        # Float as string to int (raises ValueError in Python)
+        with pytest.raises(ValueError):
+            parse_typed_value("42.0", int)
+
+        # Valid int conversion
+        assert parse_typed_value("42", int) == 42
 
         # Invalid int conversion
         with pytest.raises(ValueError):
