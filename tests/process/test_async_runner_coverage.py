@@ -35,7 +35,7 @@ class TestAsyncErrorHandling:
     async def test_async_subprocess_timeout_error(self) -> None:
         """Test handling of async subprocess TimeoutError."""
         with pytest.raises(ProcessTimeoutError) as exc_info:
-            await async_run_command(["sleep", "10"], timeout=0.01, check=True)
+            await async_run_command(["sleep", "1"], timeout=0.01, check=True)
 
         assert "timed out" in str(exc_info.value).lower()
 
