@@ -147,7 +147,9 @@
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/utils/test_deps_coverage.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_deps_coverage.py -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_deps_coverage.py::TestCheckClick::test_check_click_version_exception -v)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_deps_coverage.py::TestCheckOpenTelemetry -v)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_deps_coverage.py::TestCheckOpenTelemetry -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_deps_coverage.py -q --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_deps_coverage.py --cov=src/provide/foundation/utils/deps --cov-report=term-missing -q)"
     ],
     "deny": [],
     "ask": [],
