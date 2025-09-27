@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import pytest
 from provide.testkit import reset_foundation_setup_for_testing
+import pytest
 
 
 @pytest.fixture(autouse=True)
@@ -85,6 +85,7 @@ class TestDocsModuleImportBehavior:
         # dependencies of the generator module are missing
         try:
             import provide.foundation.docs
+
             # If import succeeds, verify basic structure
             assert hasattr(provide.foundation.docs, "__all__")
         except ImportError:
@@ -142,9 +143,9 @@ class TestModuleMetadata:
         if provide.foundation.docs.__doc__:
             doc = provide.foundation.docs.__doc__
             # Should mention key concepts
-            assert any(keyword in doc.lower() for keyword in [
-                "documentation", "mkdocs", "generation", "utilities"
-            ])
+            assert any(
+                keyword in doc.lower() for keyword in ["documentation", "mkdocs", "generation", "utilities"]
+            )
 
 
 class TestRealWorldUsage:
@@ -168,12 +169,14 @@ class TestRealWorldUsage:
         try:
             # Test importing specific items
             from provide.foundation.docs import APIDocGenerator
+
             assert APIDocGenerator is not None
         except ImportError:
             pytest.skip("APIDocGenerator not available")
 
         try:
             from provide.foundation.docs import generate_api_docs
+
             assert generate_api_docs is not None
         except ImportError:
             pytest.skip("generate_api_docs not available")
@@ -215,8 +218,8 @@ class TestModuleIntegration:
     def test_import_hierarchy(self) -> None:
         """Test that import hierarchy works correctly."""
         # Test different import patterns
-        import provide.foundation.docs
         from provide.foundation import docs
+        import provide.foundation.docs
         import provide.foundation.docs as docs_module
 
         # All should refer to the same module
