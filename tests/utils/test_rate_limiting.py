@@ -57,9 +57,12 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
         assert await limiter.is_allowed() is True
         assert await limiter.is_allowed() is False
 
-        # Wait for half a second - should get 1 token back (2 tokens/sec * 0.5s = 1 token)
+        # Simulate time passage - should get 1 token back (2 tokens/sec * 0.6s = 1.2 tokens)
         with mock_sleep():
-            await asyncio.sleep(0.6)
+            # Manually set the limiter's timestamp to simulate 0.6 seconds passing
+            limiter._last_refill_timestamp = time.monotonic() - 0.6
+            # Trigger refill by calling _refill_tokens
+            await limiter._refill_tokens()
         assert await limiter.is_allowed() is True
 
         # Should be denied again immediately
@@ -75,9 +78,12 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
             assert await limiter.is_allowed() is True
         assert await limiter.is_allowed() is False
 
-        # Wait long enough for many tokens to be generated (way more than capacity)
+        # Simulate enough time for many tokens to be generated (way more than capacity)
         with mock_sleep():
-            await asyncio.sleep(1.0)  # Should generate 10 tokens, but capacity is 3
+            # Manually set the limiter's timestamp to simulate 1.0 second passing
+            # Should generate 10 tokens, but capacity is 3
+            limiter._last_refill_timestamp = time.monotonic() - 1.0
+            await limiter._refill_tokens()
 
         # Should only be able to use 3 tokens (capacity limit)
         for _ in range(3):
@@ -127,9 +133,10 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
         assert await limiter.is_allowed() is True
         assert await limiter.is_allowed() is False  # 0.5 tokens remaining, need 1.0
 
-        # Wait for 2 seconds to get 1 more token (0.5 tokens/sec * 2s = 1 token)
+        # Simulate 2.1 seconds to get 1 more token (0.5 tokens/sec * 2.1s = 1.05 tokens)
         with mock_sleep():
-            await asyncio.sleep(2.1)
+            limiter._last_refill_timestamp = time.monotonic() - 2.1
+            await limiter._refill_tokens()
         assert await limiter.is_allowed() is True
 
     def test_logger_initialization_success(self) -> None:
@@ -187,10 +194,11 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
         assert await limiter.is_allowed() is True
         assert await limiter.is_allowed() is False
 
-        # Wait just slightly longer than needed for 1 token (1/1000 = 0.001s)
-        # Use a slightly more generous sleep to account for event loop scheduling jitter.
+        # Simulate just slightly longer than needed for 1 token (1/1000 = 0.001s)
+        # Use a slightly more generous time to account for precision.
         with mock_sleep():
-            await asyncio.sleep(0.01)
+            limiter._last_refill_timestamp = time.monotonic() - 0.01
+            await limiter._refill_tokens()
         assert await limiter.is_allowed() is True
 
     @pytest.mark.asyncio
@@ -247,8 +255,9 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
             for _ in range(20):
                 if await limiter.is_allowed():
                     successes += 1
+                # Small delay to yield control - mock_sleep handles this
                 with mock_sleep():
-                    await asyncio.sleep(0.01)  # Small delay
+                    pass  # Just yield control, no real time delay needed
             return successes
 
         # Run multiple consumers concurrently while tokens refill
