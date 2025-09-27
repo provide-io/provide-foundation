@@ -263,7 +263,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting_coverage.py::TestTokenBucketRateLimiter::test_is_allowed_refill_over_time -n auto --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py::TestCircuitBreaker -xvs --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py::TestCircuitBreaker -q --tb=no)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py::TestCircuitBreaker -q --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py::TestCircuitBreaker -q --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py::TestCircuitBreaker::test_open_to_half_open_after_timeout -xvs --tb=short)"
     ],
     "deny": [],
     "ask": [],
