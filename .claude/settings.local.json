@@ -183,7 +183,9 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/ --cov=src/provide/foundation --cov-report=term:skip-covered --tb=no -q)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils tests/config/test_config_manager_coverage.py --cov=src/provide/foundation --cov-report=term-missing --tb=no -q)",
       "Bash(sort:*)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils --cov=src/provide/foundation --cov-report=term-missing --tb=no -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils --cov=src/provide/foundation --cov-report=term-missing --tb=no -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest --cov=src/provide/foundation/utils --cov-report=term-missing -q --tb=no)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest --cov=src/provide/foundation/utils --cov-report=term --tb=no -q)"
     ],
     "deny": [],
     "ask": [],
