@@ -41,9 +41,9 @@ class AnotherSampleConfig(BaseConfig):
 class TestConfigManagerComprehensive(FoundationTestCase):
     """Comprehensive tests for ConfigManager functionality."""
 
-    def setUp(self) -> None:
+    def setup_method(self) -> None:
         """Set up test environment."""
-        super().setUp()
+        super().setup_method()
         self.manager = ConfigManager()
         self.test_config = SampleConfigClass(name="test", count=5, enabled=True)
 
@@ -499,9 +499,9 @@ class TestConfigManagerComprehensive(FoundationTestCase):
 class TestGlobalFunctions(FoundationTestCase):
     """Test global configuration manager functions."""
 
-    def setUp(self) -> None:
+    def setup_method(self) -> None:
         """Set up test environment."""
-        super().setUp()
+        super().setup_method()
         # Reset global manager
         _manager.clear()
         self.test_config = SampleConfigClass(name="global_test")

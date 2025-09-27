@@ -250,7 +250,9 @@
       "Bash([ \"$file\" != \"tests/config/test_config_logger.py\" ])",
       "Bash(then echo \"=== $file ===\")",
       "Bash(head:*)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_config_manager_coverage.py tests/config/test_schema_validators.py tests/config/test_validators_coverage.py -v --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_config_manager_coverage.py tests/config/test_schema_validators.py tests/config/test_validators_coverage.py -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_config_manager_coverage.py -q --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_schema_config.py tests/config/test_schema_field.py tests/config/test_config_manager_coverage.py tests/config/test_schema_validators.py tests/config/test_validators_coverage.py -q --tb=short)"
     ],
     "deny": [],
     "ask": [],
