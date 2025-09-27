@@ -5,6 +5,7 @@ import threading
 from typing import Any
 
 from provide.foundation.concurrency.locks import get_lock_manager
+from provide.foundation.errors.runtime import RuntimeError as FoundationRuntimeError
 
 """Simplified, centralized initialization coordinator.
 
@@ -109,7 +110,10 @@ class InitializationCoordinator:
 
             except Exception as e:
                 self._state.mark_failed(e)
-                raise RuntimeError(f"Foundation initialization failed: {e}") from e
+                raise FoundationRuntimeError(f"Foundation initialization failed: {e}",
+                                            code="FOUNDATION_INIT_FAILED",
+                                            cause=e,
+                                            initialization_phase="config_and_logger") from e
 
     def _initialize_config(self, config: Any) -> Any:
         """Initialize configuration."""

@@ -18,6 +18,7 @@ from provide.foundation.config.defaults import (
     DEFAULT_PROCESS_WAIT_TIMEOUT,
 )
 from provide.foundation.errors.decorators import resilient
+from provide.foundation.errors.runtime import StateError
 from provide.foundation.logger import get_logger
 from provide.foundation.process.runner import ProcessError
 
@@ -109,7 +110,7 @@ class ManagedProcess:
 
     @resilient(
         error_mapper=lambda e: ProcessError(f"Failed to launch process: {e}")
-        if not isinstance(e, (ProcessError, RuntimeError))
+        if not isinstance(e, (ProcessError, StateError))
         else e,
     )
     def launch(self) -> None:
@@ -117,11 +118,13 @@ class ManagedProcess:
 
         Raises:
             ProcessError: If the process fails to launch
-            RuntimeError: If the process is already started
+            StateError: If the process is already started
 
         """
         if self._started:
-            raise RuntimeError("Process has already been started")
+            raise StateError("Process has already been started",
+                           code="PROCESS_ALREADY_STARTED",
+                           process_state="started")
 
         plog.debug("🚀 Launching managed process", command=" ".join(self.command))
 

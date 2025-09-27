@@ -8,6 +8,7 @@ from typing import Any
 
 from attrs import define
 
+from provide.foundation.errors.config import ValidationError
 from provide.foundation.errors.integration import TimeoutError
 from provide.foundation.errors.process import ProcessError
 from provide.foundation.logger import get_logger
@@ -433,7 +434,10 @@ def run_shell(
 
     """
     if not isinstance(cmd, str):
-        raise TypeError("Shell command must be a string")
+        raise ValidationError("Shell command must be a string",
+                            code="INVALID_SHELL_COMMAND",
+                            expected_type="str",
+                            actual_type=type(cmd).__name__)
 
     # Basic validation - log warning for potentially dangerous patterns
     dangerous_patterns = [";", "&&", "||", "|", ">", "<", "&", "$", "`"]

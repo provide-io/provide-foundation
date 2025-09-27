@@ -88,14 +88,14 @@ raise NetworkError(
 
 ## Error Decorators
 
-### @with_error_handling
+### @resilient
 
 Automatic error handling and logging:
 
 ```python
-from provide.foundation.errors import with_error_handling
+from provide.foundation.errors import resilient
 
-@with_error_handling(
+@resilient(
     fallback=None,
     log_errors=True,
     suppress=(KeyError, ValueError)
@@ -113,7 +113,7 @@ def get_context():
         "request_id": request.id
     }
 
-@with_error_handling(
+@resilient(
     context_provider=get_context,
     log_errors=True
 )

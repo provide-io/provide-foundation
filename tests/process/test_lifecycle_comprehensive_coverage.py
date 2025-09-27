@@ -14,6 +14,7 @@ pytestmark = pytest.mark.serial
 
 from typing import Never
 
+from provide.foundation.errors.runtime import StateError
 from provide.foundation.process.lifecycle import ManagedProcess, wait_for_process_output
 from provide.foundation.process.runner import ProcessError
 
@@ -116,7 +117,7 @@ class TestManagedProcessLaunch:
         proc = ManagedProcess(["echo", "test"])
         proc.launch()
 
-        with pytest.raises(RuntimeError, match="Process has already been started"):
+        with pytest.raises(StateError, match="Process has already been started"):
             proc.launch()
 
         proc._process.wait()

@@ -2,11 +2,13 @@ from __future__ import annotations
 
 from collections.abc import Generator
 import json
+import re
 import time
 from typing import Any
 
 import requests
 
+from provide.foundation.errors.config import ValidationError
 from provide.foundation.integrations.openobserve.auth import get_auth_headers
 from provide.foundation.integrations.openobserve.client import OpenObserveClient
 from provide.foundation.integrations.openobserve.exceptions import (
@@ -202,11 +204,17 @@ def tail_logs(
 
     # Sanitize stream name to prevent SQL injection
     if not re.match(r"^[a-zA-Z0-9_]+$", stream):
-        raise ValueError(f"Invalid stream name: {stream}")
+        raise ValidationError("Invalid stream name",
+                            code="INVALID_STREAM_NAME",
+                            stream=stream,
+                            allowed_pattern="^[a-zA-Z0-9_]+$")
 
     # Validate lines parameter
     if not isinstance(lines, int) or lines <= 0 or lines > 10000:
-        raise ValueError(f"Invalid lines parameter: {lines}")
+        raise ValidationError("Invalid lines parameter",
+                            code="INVALID_LINES_PARAM",
+                            lines=lines,
+                            expected_range="1-10000")
 
     # Build SQL query
     where_clause = f"WHERE {filter_sql}" if filter_sql else ""
