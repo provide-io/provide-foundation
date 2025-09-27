@@ -163,7 +163,8 @@
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/utils/test_environment_getters_coverage.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/utils/test_environment_getters_coverage.py --ignore-missing-imports)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_environment_getters_coverage.py --cov=src/provide/foundation/utils/environment/getters --cov-report=term-missing -q)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_environment_getters_coverage.py --cov=src/provide/foundation/utils --cov-report=term-missing -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_environment_getters_coverage.py --cov=src/provide/foundation/utils --cov-report=term-missing -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_environment_parsers_coverage.py -v --tb=short)"
     ],
     "deny": [],
     "ask": [],

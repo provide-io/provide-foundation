@@ -73,7 +73,7 @@ class TestParseDuration:
     def test_parse_duration_mixed_case(self) -> None:
         """Test parsing with mixed case."""
         assert parse_duration("1H30m") == 5400
-        assert parse_duration("2D5h") == 192000
+        assert parse_duration("2D5h") == 190800  # 2*86400 + 5*3600 = 172800 + 18000
         assert parse_duration("5m30S") == 330
 
     def test_parse_duration_with_spaces(self) -> None:
