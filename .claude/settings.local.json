@@ -231,7 +231,8 @@
       "Bash(PYTHONPATH=src pytest tests/cli/test_cli_integration.py -v --collect-only)",
       "Bash(PYTHONPATH=src pytest tests/cli/test_cli_integration.py --collect-only)",
       "Bash(PYTHONPATH=src pytest tests/cli/test_cli_integration.py::TestOutputFormatting::test_json_output_format -v --tb=short)",
-      "Bash(PYTHONPATH=src pytest tests/resilience/test_retry_executor.py::TestRetryExecutorSync::test_delay_between_retries -v --tb=short)"
+      "Bash(PYTHONPATH=src pytest tests/resilience/test_retry_executor.py::TestRetryExecutorSync::test_delay_between_retries -v --tb=short)",
+      "Bash(PYTHONPATH=src pytest tests/context/test_context_core.py::TestContext::test_context_initialization -v --tb=short)"
     ],
     "deny": [],
     "ask": [],
