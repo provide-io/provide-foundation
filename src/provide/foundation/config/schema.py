@@ -2,8 +2,7 @@
 
 from __future__ import annotations
 
-import asyncio
-from collections.abc import Awaitable, Callable
+from collections.abc import Callable
 from typing import Any
 
 from attrs import Attribute, define, fields
@@ -22,7 +21,7 @@ class SchemaField:
     required: bool = False
     default: Any = None
     description: str | None = None
-    validator: Callable[[Any], bool | Awaitable[bool]] | None = None
+    validator: Callable[[Any], bool] | None = None
     choices: list[Any] | None = None
     min_value: Any = None
     max_value: Any = None
@@ -67,14 +66,12 @@ class SchemaField:
                     value=value,
                 )
 
-    async def _validate_custom(self, value: Any) -> None:
+    def _validate_custom(self, value: Any) -> None:
         """Check custom validator."""
         if self.validator is not None:
             try:
                 result = self.validator(value)
-                # Handle both sync and async validators
-                if asyncio.iscoroutine(result) or asyncio.isfuture(result):
-                    result = await result
+                # Only support sync validators now
                 if not result:
                     raise ConfigValidationError("Custom validation failed", field=self.name, value=value)
             except ConfigValidationError:
@@ -82,7 +79,7 @@ class SchemaField:
             except Exception as e:
                 raise ConfigValidationError(f"Validation error: {e}", field=self.name, value=value) from e
 
-    async def validate(self, value: Any) -> None:
+    def validate(self, value: Any) -> None:
         """Validate a value against this schema field.
 
         Args:
@@ -104,7 +101,7 @@ class SchemaField:
         self._validate_choices(value)
         self._validate_range(value)
         self._validate_pattern(value)
-        await self._validate_custom(value)
+        self._validate_custom(value)
 
 
 class ConfigSchema:
@@ -125,7 +122,7 @@ class ConfigSchema:
         self.fields.append(field)
         self._field_map[field.name] = field
 
-    async def validate(self, data: ConfigDict) -> None:
+    def validate(self, data: ConfigDict) -> None:
         """Validate configuration data against schema.
 
         Args:
@@ -143,7 +140,7 @@ class ConfigSchema:
         # Validate each field
         for key, value in data.items():
             if key in self._field_map:
-                await self._field_map[key].validate(value)
+                self._field_map[key].validate(value)
 
     def apply_defaults(self, data: ConfigDict) -> ConfigDict:
         """Apply default values to configuration data.
@@ -218,7 +215,7 @@ class ConfigSchema:
         )
 
 
-async def validate_schema(config: BaseConfig, schema: ConfigSchema) -> None:
+def validate_schema(config: BaseConfig, schema: ConfigSchema) -> None:
     """Validate configuration instance against schema.
 
     Args:
@@ -230,7 +227,7 @@ async def validate_schema(config: BaseConfig, schema: ConfigSchema) -> None:
 
     """
     data = config.to_dict(include_sensitive=True)
-    await schema.validate(data)
+    schema.validate(data)
 
 
 # Common validators (all sync since they're simple checks)
@@ -278,7 +275,7 @@ def validate_version(value: str) -> bool:
 
 
 # Example async validator for complex checks
-async def validate_url_accessible(value: str) -> bool:
+def validate_url_accessible(value: str) -> bool:
     """Validate URL is accessible (example async validator)."""
     # This is just an example - in real use you'd use aiohttp or similar
     # For now, just do basic URL validation

@@ -89,11 +89,10 @@ class BaseConfig:
         # Note: validate() is now async, so we can't call it here
         # Users must explicitly call await config.validate() after creation
 
-    async def validate(self) -> None:
+    def validate(self) -> None:
         """Validate the configuration.
 
         Override this method to add custom validation logic.
-        Can perform async operations like checking database connections.
         """
 
     def to_dict(self, include_sensitive: bool = False) -> ConfigDict:
