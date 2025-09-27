@@ -67,9 +67,9 @@ class TestGetBool:
             get_bool("TEST_BOOL")
 
         error = exc_info.value
-        assert error.field == "TEST_BOOL"
-        assert error.value == "invalid_value"
-        assert error.rule == "boolean"
+        assert error.context["validation.field"] == "TEST_BOOL"
+        assert error.context["validation.value"] == "invalid_value"
+        assert error.context["validation.rule"] == "boolean"
         assert "Invalid boolean value for TEST_BOOL" in str(error)
 
     def test_get_bool_edge_cases(self, clean_env: Any) -> None:
@@ -101,9 +101,9 @@ class TestGetInt:
             get_int("TEST_INT")
 
         error = exc_info.value
-        assert error.field == "TEST_INT"
-        assert error.value == "not_a_number"
-        assert error.rule == "integer"
+        assert error.context["validation.field"] == "TEST_INT"
+        assert error.context["validation.value"] == "not_a_number"
+        assert error.context["validation.rule"] == "integer"
         assert "Invalid integer value for TEST_INT" in str(error)
 
     def test_get_int_edge_cases(self, clean_env: Any) -> None:
@@ -142,9 +142,9 @@ class TestGetFloat:
             get_float("TEST_FLOAT")
 
         error = exc_info.value
-        assert error.field == "TEST_FLOAT"
-        assert error.value == "not_a_float"
-        assert error.rule == "float"
+        assert error.context["validation.field"] == "TEST_FLOAT"
+        assert error.context["validation.value"] == "not_a_float"
+        assert error.context["validation.rule"] == "float"
         assert "Invalid float value for TEST_FLOAT" in str(error)
 
     def test_get_float_edge_cases(self, clean_env: Any) -> None:
@@ -411,8 +411,8 @@ class TestRequire:
             require("MISSING_VAR")
 
         error = exc_info.value
-        assert error.field == "MISSING_VAR"
-        assert error.rule == "required"
+        assert error.context["validation.field"] == "MISSING_VAR"
+        assert error.context["validation.rule"] == "required"
         assert "Required environment variable not set: MISSING_VAR" in str(error)
 
     def test_require_no_type_hint(self, clean_env: Any) -> None:
@@ -500,6 +500,7 @@ class TestIntegrationScenarios:
         import threading
 
         os.environ["CONCURRENT_VAR"] = "test_value"
+        os.environ["CONCURRENT_BOOL"] = "true"
         results = []
         errors = []
 
@@ -508,7 +509,7 @@ class TestIntegrationScenarios:
                 results.extend(
                     [
                         get_str("CONCURRENT_VAR"),
-                        get_bool("CONCURRENT_VAR", False),
+                        get_bool("CONCURRENT_BOOL"),
                         get_list("CONCURRENT_VAR"),
                     ]
                 )
