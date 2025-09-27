@@ -235,7 +235,8 @@
       "Bash(PYTHONPATH=src pytest tests/context/test_context_core.py::TestContext::test_context_initialization -v --tb=short)",
       "Bash(PYTHONPATH=src pytest tests/resilience/test_retry_executor.py::TestRetryExecutorSync::test_successful_first_attempt -v --tb=short)",
       "Bash(PYTHONPATH=src pytest tests/formatting/test_grouping_coverage.py::TestFormatGrouped::test_format_grouped_basic -v --tb=short)",
-      "Bash(PYTHONPATH=src pytest tests/resilience/test_retry_executor.py::TestRetryExecutorAsync::test_delay_between_retries -v --tb=short)"
+      "Bash(PYTHONPATH=src pytest tests/resilience/test_retry_executor.py::TestRetryExecutorAsync::test_delay_between_retries -v --tb=short)",
+      "Bash(xargs dirname:*)"
     ],
     "deny": [],
     "ask": [],
