@@ -289,7 +289,9 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_transitions_coverage.py::TestCircuitBreakerStateEdgeCases::test_attempt_reset_conditions -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/testing/test_testing_fixtures.py tests/testing/test_testing_cli.py --collect-only -q)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/ --collect-only -q)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_lifecycle.py::TestManagedProcess::test_read_line_async_timeout -v --timeout=10)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_lifecycle.py::TestManagedProcess::test_read_line_async_timeout -v --timeout=10)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_lifecycle.py::TestManagedProcess::test_read_line_async_timeout -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_lifecycle.py -v --tb=short -x)"
     ],
     "deny": [],
     "ask": [],
