@@ -2,9 +2,8 @@ import time
 
 from attrs import define
 import pytest
-# TODO: Use testkit's comprehensive time control utilities when available
-# from provide.testkit.time import time_machine
 
+from provide.testkit import FoundationTestCase
 from provide.foundation.state import (
     ImmutableState,
     StateManager,
@@ -15,7 +14,7 @@ from provide.foundation.state._internal.transitions import (
 )
 
 
-class TestImmutableState:
+class TestImmutableState(FoundationTestCase):
     def test_initial_state(self) -> None:
         state = ImmutableState()
         assert state.generation == 0
@@ -40,7 +39,7 @@ class TestImmutableState:
         assert state1.value == 0
 
 
-class TestStateManager:
+class TestStateManager(FoundationTestCase):
     def test_initial_state(self) -> None:
         initial = ImmutableState()
         manager = StateManager(state=initial)
@@ -56,7 +55,7 @@ class TestStateManager:
         assert old_state.generation == 0
 
 
-class TestCircuitBreaker:
+class TestCircuitBreaker(FoundationTestCase):
     @pytest.fixture
     def machine(self):
         return CircuitBreakerStateMachine(failure_threshold=2, recovery_timeout=0.1)
@@ -94,22 +93,28 @@ class TestCircuitBreaker:
         machine.transition(CircuitBreakerEvent.TIMEOUT)
         assert machine.current_state == "half_open"
 
-    def test_half_open_success_closes_circuit(self, machine) -> None:
+    def test_half_open_success_closes_circuit(self, machine, time_machine) -> None:
         machine.transition(CircuitBreakerEvent.FAILURE)
         machine.transition(CircuitBreakerEvent.FAILURE)
-        with mock_sleep():
-            time.sleep(0.15)
+        assert machine.current_state == "open"
+
+        time_machine.freeze()
+        time_machine.jump(machine.circuit_state.recovery_timeout + 0.01)
+
         machine.transition(CircuitBreakerEvent.TIMEOUT)
         assert machine.current_state == "half_open"
         machine.transition(CircuitBreakerEvent.SUCCESS)
         assert machine.current_state == "closed"
         assert machine.circuit_state.failure_count == 0
 
-    def test_half_open_failure_reopens_circuit(self, machine) -> None:
+    def test_half_open_failure_reopens_circuit(self, machine, time_machine) -> None:
         machine.transition(CircuitBreakerEvent.FAILURE)
         machine.transition(CircuitBreakerEvent.FAILURE)
-        with mock_sleep():
-            time.sleep(0.15)
+        assert machine.current_state == "open"
+
+        time_machine.freeze()
+        time_machine.jump(machine.circuit_state.recovery_timeout + 0.01)
+
         machine.transition(CircuitBreakerEvent.TIMEOUT)
         assert machine.current_state == "half_open"
         machine.transition(CircuitBreakerEvent.FAILURE)

@@ -264,7 +264,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py::TestCircuitBreaker -xvs --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py::TestCircuitBreaker -q --tb=no)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py::TestCircuitBreaker -q --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py::TestCircuitBreaker::test_open_to_half_open_after_timeout -xvs --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py::TestCircuitBreaker::test_open_to_half_open_after_timeout -xvs --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py::TestCircuitBreaker -v --tb=short)"
     ],
     "deny": [],
     "ask": [],
