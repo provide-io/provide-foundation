@@ -211,6 +211,7 @@ class TestGetPath:
         os.environ["TEST_PATH"] = "~/test"
 
         result = get_path("TEST_PATH")
+        assert result is not None
         assert str(result).startswith(str(Path.home()))
         assert result.name == "test"
 
