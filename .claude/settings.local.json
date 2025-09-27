@@ -311,7 +311,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting.py::TestTokenBucketRateLimiter::test_refill_rate -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting.py -v --tb=short --maxfail=1)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting_coverage.py::TestTokenBucketRateLimiter::test_is_allowed_refill_over_time -v --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting.py::TestTokenBucketRateLimiter::test_token_refill_over_time -v --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting.py::TestTokenBucketRateLimiter::test_token_refill_over_time -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting.py -v --tb=short --maxfail=3)"
     ],
     "deny": [],
     "ask": [],
