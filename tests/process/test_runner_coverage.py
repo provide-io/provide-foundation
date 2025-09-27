@@ -81,7 +81,7 @@ class TestErrorHandling:
     def test_subprocess_timeout_error(self) -> None:
         """Test handling of subprocess TimeoutExpired error."""
         with pytest.raises(TimeoutError) as exc_info:
-            run_command(["sleep", "10"], timeout=0.01, check=True)
+            run_command(["sleep", "1"], timeout=0.01, check=True)
 
         assert "timed out" in str(exc_info.value).lower()
 
@@ -218,7 +218,7 @@ class TestStreamCommandCoverage:
         """Test stream command timeout handling."""
         with pytest.raises(TimeoutError):
             # Try to stream from a long-running command with short timeout
-            list(stream_command(["sleep", "5"], timeout=0.1))
+            list(stream_command(["sleep", "1"], timeout=0.1))
 
     @patch("subprocess.Popen")
     def test_stream_generic_exception(self, mock_popen) -> None:

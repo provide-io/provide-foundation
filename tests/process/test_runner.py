@@ -75,7 +75,7 @@ class TestRunCommand:
     def test_command_timeout(self) -> None:
         """Test command timeout."""
         with pytest.raises(TimeoutError):
-            run_command(["sleep", "10"], timeout=0.1)
+            run_command(["sleep", "1"], timeout=0.1)
 
     def test_capture_output_false(self) -> None:
         """Test with capture_output=False."""
@@ -124,7 +124,7 @@ class TestStreamCommand:
     def test_stream_with_timeout(self) -> None:
         """Test streaming with timeout."""
         with pytest.raises(TimeoutError):
-            for _ in stream_command(["sleep", "10"], timeout=0.1):
+            for _ in stream_command(["sleep", "1"], timeout=0.1):
                 pass
 
 
