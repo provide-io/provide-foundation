@@ -106,7 +106,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/crypto/test_crypto_stubs.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/crypto/test_crypto_stubs.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/crypto/test_crypto_stubs.py)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/crypto/test_crypto_stubs.py -v --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/crypto/test_crypto_stubs.py -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_file_operations.py -v)"
     ],
     "deny": [],
     "ask": [],
