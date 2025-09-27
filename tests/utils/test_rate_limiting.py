@@ -4,9 +4,9 @@ import asyncio
 import time
 from typing import Never
 
-import pytest
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking.time import mock_sleep
+import pytest
 
 from provide.foundation.utils.rate_limiting import TokenBucketRateLimiter
 
