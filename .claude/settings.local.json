@@ -129,7 +129,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest -x --tb=short -q)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/crypto/ -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/crypto/ -q)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest --cov=src/provide/foundation --cov-report=term-missing --cov-report=html -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest --cov=src/provide/foundation --cov-report=term-missing --cov-report=html -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest --cov=src/provide/foundation --cov-report=term-missing --tb=no -x --maxfail=1 tests/config/ tests/file/ tests/transport/ tests/state/ tests/resilience/ -q)"
     ],
     "deny": [],
     "ask": [],
