@@ -85,8 +85,8 @@ class TestCircuitBreakerStateEdgeCases(FoundationTestCase):
 
     def test_should_attempt_reset_conditions(self, time_machine: TimeMachine) -> None:
         """Test should_attempt_reset under various conditions."""
-        time_machine.freeze()
         current_time = 1000.0  # Fixed time for test
+        time_machine.freeze(current_time)
 
         # Closed state - should not attempt reset
         closed_state = CircuitBreakerState(state="closed")
@@ -165,8 +165,8 @@ class TestCircuitBreakerStateEdgeCases(FoundationTestCase):
 
     def test_attempt_reset_conditions(self, time_machine: TimeMachine) -> None:
         """Test attempt_reset under various conditions."""
-        time_machine.freeze()
         current_time = 1000.0  # Fixed time for test
+        time_machine.freeze(current_time)
 
         # Open state ready for reset
         open_state_ready = CircuitBreakerState(state="open", next_attempt_time=current_time - 1)

@@ -284,7 +284,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/hub/test_hub_thread_safety.py::TestRegistryThreadSafety::test_concurrent_registration -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/hub/test_hub_thread_safety.py::TestRegistryThreadSafety::test_concurrent_registration -v --tb=short -m slow)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py tests/process/test_lifecycle.py tests/errors/test_integration.py --tb=short -q)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_transitions_coverage.py::TestCircuitBreakerStateEdgeCases::test_should_attempt_reset_conditions -xvs --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_transitions_coverage.py::TestCircuitBreakerStateEdgeCases::test_should_attempt_reset_conditions -xvs --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_transitions_coverage.py::TestCircuitBreakerStateEdgeCases::test_should_attempt_reset_conditions -v --tb=short)"
     ],
     "deny": [],
     "ask": [],
