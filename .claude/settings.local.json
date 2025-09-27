@@ -136,7 +136,9 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_formatting_coverage.py -q)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_parsing_coverage.py -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_parsing_coverage.py -q)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_timing_coverage.py -v)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_timing_coverage.py -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting_coverage.py -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting_coverage.py -q)"
     ],
     "deny": [],
     "ask": [],
