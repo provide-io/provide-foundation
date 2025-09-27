@@ -8,6 +8,7 @@ import sys
 from unittest.mock import patch
 
 import pytest
+from provide.testkit import FoundationTestCase, mock_sleep
 
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.process.async_runner import (
@@ -251,17 +252,18 @@ class TestAsyncCompletedProcessConstruction:
         assert result.env is None
 
 
-class TestAsyncContextualBehavior:
+class TestAsyncContextualBehavior(FoundationTestCase):
     """Test async-specific contextual behaviors."""
 
     @pytest.mark.asyncio
     async def test_async_cancel_during_execution(self) -> None:
         """Test that async operations can be cancelled."""
         # This tests the asyncio integration
-        task = asyncio.create_task(async_run_command(["sleep", "5"]))
+        task = asyncio.create_task(async_run_command(["sleep", "1"]))
 
-        # Give it a moment to start
-        await asyncio.sleep(0.1)
+        # Give it a moment to start (mocked to be instant)
+        with mock_sleep():
+            await asyncio.sleep(0.1)
 
         # Cancel the task
         task.cancel()
