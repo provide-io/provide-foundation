@@ -1,9 +1,10 @@
 import time
+from typing import TYPE_CHECKING
 
 from attrs import define
+from provide.testkit import FoundationTestCase
 import pytest
 
-from provide.testkit import FoundationTestCase
 from provide.foundation.state import (
     ImmutableState,
     StateManager,
@@ -12,6 +13,9 @@ from provide.foundation.state._internal.transitions import (
     CircuitBreakerEvent,
     CircuitBreakerStateMachine,
 )
+
+if TYPE_CHECKING:
+    from provide.testkit.time.fixtures import TimeMachine
 
 
 class TestImmutableState(FoundationTestCase):
@@ -57,32 +61,32 @@ class TestStateManager(FoundationTestCase):
 
 class TestCircuitBreaker(FoundationTestCase):
     @pytest.fixture
-    def machine(self):
+    def machine(self) -> CircuitBreakerStateMachine:
         return CircuitBreakerStateMachine(failure_threshold=2, recovery_timeout=0.1)
 
-    def test_initial_state_is_closed(self, machine) -> None:
+    def test_initial_state_is_closed(self, machine: CircuitBreakerStateMachine) -> None:
         assert machine.current_state == "closed"
         assert machine.circuit_state.is_closed()
 
-    def test_failure_below_threshold(self, machine) -> None:
+    def test_failure_below_threshold(self, machine: CircuitBreakerStateMachine) -> None:
         machine.transition(CircuitBreakerEvent.FAILURE)
         assert machine.current_state == "closed"
         assert machine.circuit_state.failure_count == 1
 
-    def test_failure_reaches_threshold(self, machine) -> None:
+    def test_failure_reaches_threshold(self, machine: CircuitBreakerStateMachine) -> None:
         machine.transition(CircuitBreakerEvent.FAILURE)
         machine.transition(CircuitBreakerEvent.FAILURE)
         assert machine.current_state == "open"
         assert machine.circuit_state.is_open()
         assert machine.circuit_state.failure_count == 2
 
-    def test_success_resets_failure_count(self, machine) -> None:
+    def test_success_resets_failure_count(self, machine: CircuitBreakerStateMachine) -> None:
         machine.transition(CircuitBreakerEvent.FAILURE)
         machine.transition(CircuitBreakerEvent.SUCCESS)
         assert machine.current_state == "closed"
         assert machine.circuit_state.failure_count == 0
 
-    def test_open_to_half_open_after_timeout(self, machine) -> None:
+    def test_open_to_half_open_after_timeout(self, machine: CircuitBreakerStateMachine) -> None:
         machine.transition(CircuitBreakerEvent.FAILURE)
         machine.transition(CircuitBreakerEvent.FAILURE)
         assert machine.current_state == "open"
@@ -93,7 +97,7 @@ class TestCircuitBreaker(FoundationTestCase):
         machine.transition(CircuitBreakerEvent.TIMEOUT)
         assert machine.current_state == "half_open"
 
-    def test_half_open_success_closes_circuit(self, machine, time_machine) -> None:
+    def test_half_open_success_closes_circuit(self, machine: CircuitBreakerStateMachine, time_machine: "TimeMachine") -> None:
         machine.transition(CircuitBreakerEvent.FAILURE)
         machine.transition(CircuitBreakerEvent.FAILURE)
         assert machine.current_state == "open"
@@ -107,7 +111,7 @@ class TestCircuitBreaker(FoundationTestCase):
         assert machine.current_state == "closed"
         assert machine.circuit_state.failure_count == 0
 
-    def test_half_open_failure_reopens_circuit(self, machine, time_machine) -> None:
+    def test_half_open_failure_reopens_circuit(self, machine: CircuitBreakerStateMachine, time_machine: "TimeMachine") -> None:
         machine.transition(CircuitBreakerEvent.FAILURE)
         machine.transition(CircuitBreakerEvent.FAILURE)
         assert machine.current_state == "open"
@@ -121,7 +125,7 @@ class TestCircuitBreaker(FoundationTestCase):
         assert machine.current_state == "open"
         assert machine.circuit_state.failure_count > 0
 
-    def test_reset_event_from_open(self, machine) -> None:
+    def test_reset_event_from_open(self, machine: CircuitBreakerStateMachine) -> None:
         machine.transition(CircuitBreakerEvent.FAILURE)
         machine.transition(CircuitBreakerEvent.FAILURE)
         assert machine.current_state == "open"
