@@ -9,13 +9,13 @@ import threading
 from typing import Any, Never
 from unittest.mock import Mock, patch
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking.time import mock_sleep
 import pytest
 
 from provide.foundation.errors.runtime import StateError
 from provide.foundation.process.lifecycle import ManagedProcess, wait_for_process_output
 from provide.foundation.process.runner import ProcessError
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking.time import mock_sleep
 
 # Mark all tests in this file to run serially to avoid event loop issues
 pytestmark = pytest.mark.serial
