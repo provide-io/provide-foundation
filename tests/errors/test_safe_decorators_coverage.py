@@ -4,13 +4,14 @@ import asyncio
 from typing import Never
 
 import pytest
+from provide.testkit import FoundationTestCase, mock_sleep
 
 from provide.foundation.errors.safe_decorators import (
     log_only_error_context,
 )
 
 
-class TestSafeDecoratorsCoverage:
+class TestSafeDecoratorsCoverage(FoundationTestCase):
     """Test safe decorators for improved coverage."""
 
     def test_logger_access_available(self) -> None:
@@ -97,7 +98,8 @@ class TestSafeDecoratorsCoverage:
 
         @log_only_error_context(log_success=True, log_level="debug")
         async def async_test_func(x, y):
-            await asyncio.sleep(0.001)  # Small delay to make it async
+            with mock_sleep():
+                await asyncio.sleep(0.001)  # Mock delay to make it async
             return x * y
 
         result = await async_test_func(3, 4)
@@ -116,7 +118,8 @@ class TestSafeDecoratorsCoverage:
             log_success=True,
         )
         async def async_test_func(value):
-            await asyncio.sleep(0.001)
+            with mock_sleep():
+                await asyncio.sleep(0.001)
             return value**3
 
         result = await async_test_func(2)
@@ -128,7 +131,8 @@ class TestSafeDecoratorsCoverage:
 
         @log_only_error_context(context_provider=lambda: {"async": "context"})
         async def async_test_func() -> Never:
-            await asyncio.sleep(0.001)
+            with mock_sleep():
+                await asyncio.sleep(0.001)
             raise RuntimeError("Async test error")
 
         with pytest.raises(RuntimeError) as exc_info:
@@ -142,7 +146,8 @@ class TestSafeDecoratorsCoverage:
 
         @log_only_error_context(log_level="debug", log_success=True)
         async def async_test_func(msg) -> str:
-            await asyncio.sleep(0.001)
+            with mock_sleep():
+                await asyncio.sleep(0.001)
             return f"processed: {msg}"
 
         result = await async_test_func("hello")
