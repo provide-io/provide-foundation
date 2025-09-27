@@ -317,8 +317,10 @@ class TestRetryDecoratorParameterValidation:
 
     def test_conflicting_parameters(self) -> None:
         """Test that conflicting parameters raise errors."""
+        from provide.foundation.errors.config import ConfigurationError
+
         # Can't specify both policy and individual params
-        with pytest.raises(ValueError) as exc_info:
+        with pytest.raises(ConfigurationError) as exc_info:
 
             @retry(policy=RetryPolicy(), max_attempts=5)
             def func() -> None:
