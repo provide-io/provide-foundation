@@ -6,7 +6,7 @@
 import io
 from typing import Any
 
-from provide.testkit import reset_foundation_setup_for_testing
+from provide.testkit import FoundationTestCase
 import pytest
 from structlog.dev import ConsoleRenderer
 from structlog.processors import JSONRenderer, TimeStamper
@@ -36,7 +36,7 @@ def get_proc_name(proc: Any) -> str:
     return proc.__class__.__name__ if hasattr(proc, "__class__") else str(type(proc))
 
 
-class TestBuildFormatterProcessorsList:
+class TestBuildFormatterProcessorsList(FoundationTestCase):
     def test_build_json_formatter(self) -> None:
         processors = _build_formatter_processors_list(
             LoggingConfig(console_formatter="json"),
@@ -58,7 +58,7 @@ class TestBuildFormatterProcessorsList:
         ]
 
 
-class TestBuildCoreProcessorsList:
+class TestBuildCoreProcessorsList(FoundationTestCase):
     @pytest.fixture(autouse=True)
     def reset_foundation_for_processor_tests(self) -> None:
         """Reset Foundation state before each test to ensure consistent processor counts."""
@@ -76,7 +76,7 @@ class TestBuildCoreProcessorsList:
         assert "add_logger_name_emoji_prefix" in proc_names
 
 
-class TestTelemetryConfigFromEnvEventSets:
+class TestTelemetryConfigFromEnvEventSets(FoundationTestCase):
     """Tests for deprecated emoji sets - now replaced by event sets."""
 
     def test_logging_config_no_emoji_sets(self) -> None:

@@ -245,7 +245,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_environment_parsers_coverage.py tests/utils/test_utils_deps_coverage.py --tb=short -q)",
       "Bash(then echo \"$file\")",
       "Bash(fi)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_formatting.py --tb=short -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_formatting.py --tb=short -q)",
+      "Bash(then echo \"Need to update: $file\")"
     ],
     "deny": [],
     "ask": [],
