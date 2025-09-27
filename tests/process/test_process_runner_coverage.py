@@ -100,6 +100,7 @@ class TestProcessRunnerCoverage:
         )
         assert "stream_value" in lines[0]
 
+    @pytest.mark.serial
     def test_stream_command_timeout_handling(self) -> None:
         """Test stream_command with timeout."""
         # Use a command that should complete quickly

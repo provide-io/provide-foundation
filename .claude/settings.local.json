@@ -95,7 +95,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting.py::TestTokenBucketRateLimiter::test_extreme_time_precision tests/config/ tests/integration/ -n auto --tb=short --maxfail=1)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/ -k \"concurrency or timing or precision or thread\" --collect-only -q)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting.py::TestTokenBucketRateLimiter::test_extreme_time_precision tests/concurrency/ tests/hub/test_hub_thread_safety.py tests/logger/ratelimit/ tests/utils/test_utils_timing.py -n auto --tb=short --maxfail=1)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes /Users/tim/code/gh/provide-io/provide-foundation/src/provide/foundation/hub/foundation.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes /Users/tim/code/gh/provide-io/provide-foundation/src/provide/foundation/hub/foundation.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_process_runner_coverage.py::TestProcessRunnerCoverage::test_stream_command_timeout_handling -xvs --tb=short)"
     ],
     "deny": [],
     "ask": [],
