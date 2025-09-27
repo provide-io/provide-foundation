@@ -212,7 +212,10 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/env/test_env_types_coverage.py tests/docs/test_docs_init_coverage.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/env/test_env_types_coverage.py tests/docs/test_docs_init_coverage.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/env/test_env_types_coverage.py tests/docs/test_docs_init_coverage.py --ignore-missing-imports)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_lifecycle.py::TestManagedProcess::test_launch_twice_raises_error -xvs)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_lifecycle.py::TestManagedProcess::test_launch_twice_raises_error -xvs)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/context/test_context_core.py::TestContext::test_context_immutable_after_freeze -xvs)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/context/ -x)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/ -x)"
     ],
     "deny": [],
     "ask": [],

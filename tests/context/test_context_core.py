@@ -7,6 +7,7 @@ import tempfile
 import pytest
 
 from provide.foundation.context import CLIContext as Context
+from provide.foundation.errors.runtime import StateError
 
 
 class TestContext:
@@ -283,7 +284,7 @@ profile = "config_profile"
 
         # With attrs, we can't dynamically freeze attributes
         # But we can prevent certain operations
-        with pytest.raises(RuntimeError, match="Context is frozen"):
+        with pytest.raises(StateError, match="Context is frozen"):
             ctx.update_from_env()
 
     def test_context_copy(self) -> None:
