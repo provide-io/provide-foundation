@@ -141,7 +141,10 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting_coverage.py -q)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/ --cov=src/provide/foundation/utils --cov-report=term-missing -q --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_retry_coverage.py tests/file/test_file_operations.py tests/transport/test_middleware_coverage.py --cov=src/provide/foundation --cov-report=term-missing -q --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_formatting_coverage.py tests/utils/test_parsing_coverage.py tests/utils/test_timing_coverage.py tests/utils/test_rate_limiting_coverage.py --cov=src/provide/foundation/utils --cov-report=term-missing -v)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_formatting_coverage.py tests/utils/test_parsing_coverage.py tests/utils/test_timing_coverage.py tests/utils/test_rate_limiting_coverage.py --cov=src/provide/foundation/utils --cov-report=term-missing -v)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/utils/test_deps_coverage.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/utils/test_deps_coverage.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/utils/test_deps_coverage.py)"
     ],
     "deny": [],
     "ask": [],
