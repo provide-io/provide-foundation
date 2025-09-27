@@ -65,7 +65,7 @@ class TestObservabilityModule:
         """Test is_openobserve_available when OpenTelemetry is available but OpenObserveClient is not."""
         with patch("provide.foundation.observability._HAS_OTEL", True):
             # Mock globals without OpenObserveClient
-            mock_globals = {}
+            mock_globals: dict[str, object] = {}
             with patch("provide.foundation.observability.globals", return_value=mock_globals):
                 from provide.foundation.observability import is_openobserve_available
 
@@ -260,7 +260,8 @@ class TestObservabilityEdgeCases:
                 raise ImportError("Commands not available")
             if "integrations.openobserve" in name and "commands" not in name:
                 return mock_openobserve
-            return __import__(name, *args, **kwargs)
+            # Use the real __import__ function for other imports
+            return __import__(name)
 
         with (
             patch("provide.foundation.observability._HAS_OTEL", True),
