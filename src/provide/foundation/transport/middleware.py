@@ -6,6 +6,11 @@ from typing import Any
 
 from attrs import define, field
 
+from provide.foundation.config.defaults import (
+    DEFAULT_TRANSPORT_LOG_BODIES,
+    DEFAULT_TRANSPORT_LOG_REQUESTS,
+    DEFAULT_TRANSPORT_LOG_RESPONSES,
+)
 from provide.foundation.hub import get_component_registry
 from provide.foundation.logger import get_logger
 from provide.foundation.metrics import counter, histogram
@@ -42,9 +47,9 @@ class Middleware(ABC):
 class LoggingMiddleware(Middleware):
     """Built-in telemetry middleware using foundation.logger."""
 
-    log_requests: bool = field(default=True)
-    log_responses: bool = field(default=True)
-    log_bodies: bool = field(default=False)
+    log_requests: bool = field(default=DEFAULT_TRANSPORT_LOG_REQUESTS)
+    log_responses: bool = field(default=DEFAULT_TRANSPORT_LOG_RESPONSES)
+    log_bodies: bool = field(default=DEFAULT_TRANSPORT_LOG_BODIES)
 
     async def process_request(self, request: Request) -> Request:
         """Log outgoing request."""

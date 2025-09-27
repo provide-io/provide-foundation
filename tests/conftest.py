@@ -162,7 +162,6 @@ __all__ = [
     "mock_http_config",
     # Logger exports
     "mock_logger",
-    "mock_logger",
     "mock_server",
     "mock_telemetry_config",
     "mock_transport",

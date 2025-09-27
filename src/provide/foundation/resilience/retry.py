@@ -8,6 +8,15 @@ from typing import Any, TypeVar
 
 from attrs import define, field, validators
 
+from provide.foundation.config.defaults import (
+    DEFAULT_RETRY_BASE_DELAY,
+    DEFAULT_RETRY_JITTER,
+    DEFAULT_RETRY_MAX_ATTEMPTS,
+    DEFAULT_RETRY_MAX_DELAY,
+    DEFAULT_RETRY_RETRYABLE_ERRORS,
+    DEFAULT_RETRY_RETRYABLE_STATUS_CODES,
+    default_retry_backoff_strategy,
+)
 from provide.foundation.resilience.types import BackoffStrategy
 
 """Unified retry execution engine and policy configuration.
@@ -37,13 +46,13 @@ class RetryPolicy:
 
     """
 
-    max_attempts: int = field(default=3, validator=validators.instance_of(int))
-    backoff: BackoffStrategy = field(default=BackoffStrategy.EXPONENTIAL)
-    base_delay: float = field(default=1.0, validator=validators.instance_of((int, float)))
-    max_delay: float = field(default=60.0, validator=validators.instance_of((int, float)))
-    jitter: bool = field(default=True)
-    retryable_errors: tuple[type[Exception], ...] | None = field(default=None)
-    retryable_status_codes: set[int] | None = field(default=None)
+    max_attempts: int = field(default=DEFAULT_RETRY_MAX_ATTEMPTS, validator=validators.instance_of(int))
+    backoff: BackoffStrategy = field(factory=default_retry_backoff_strategy)
+    base_delay: float = field(default=DEFAULT_RETRY_BASE_DELAY, validator=validators.instance_of((int, float)))
+    max_delay: float = field(default=DEFAULT_RETRY_MAX_DELAY, validator=validators.instance_of((int, float)))
+    jitter: bool = field(default=DEFAULT_RETRY_JITTER)
+    retryable_errors: tuple[type[Exception], ...] | None = field(default=DEFAULT_RETRY_RETRYABLE_ERRORS)
+    retryable_status_codes: set[int] | None = field(default=DEFAULT_RETRY_RETRYABLE_STATUS_CODES)
 
     @max_attempts.validator
     def _validate_max_attempts(self, attribute: object, value: int) -> None:
