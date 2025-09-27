@@ -248,7 +248,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_formatting.py --tb=short -q)",
       "Bash(then echo \"Need to update: $file\")",
       "Bash([ \"$file\" != \"tests/config/test_config_logger.py\" ])",
-      "Bash(then echo \"=== $file ===\")"
+      "Bash(then echo \"=== $file ===\")",
+      "Bash(head:*)"
     ],
     "deny": [],
     "ask": [],
