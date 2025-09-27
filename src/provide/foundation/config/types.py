@@ -3,11 +3,16 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any
+from typing import Any, TypeAlias
 
 # Basic type aliases
 ConfigValue = str | int | float | bool | None | list[Any] | dict[str, Any]
 ConfigDict = dict[str, ConfigValue]
+
+# Common configuration type aliases
+HeaderDict: TypeAlias = dict[str, str]
+EnvDict: TypeAlias = dict[str, str]
+FieldMetadata: TypeAlias = dict[str, Any]
 
 
 class ConfigSource(Enum):
