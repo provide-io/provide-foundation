@@ -8,7 +8,7 @@ import tempfile
 
 import click
 from click.testing import CliRunner
-from provide.testkit.cli import (
+from provide.testkit import (
     CliTestCase,
     MockContext,
     create_test_cli,

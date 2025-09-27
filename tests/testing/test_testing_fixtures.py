@@ -2,9 +2,7 @@
 
 import io
 
-from provide.testkit.fixtures import (
-    captured_stderr_for_foundation,
-)
+from provide.testkit import captured_stderr_for_foundation
 import pytest
 
 from provide.foundation import TelemetryConfig

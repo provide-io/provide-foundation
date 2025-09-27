@@ -137,7 +137,9 @@ class TestManagedProcess(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_read_line_async_timeout(self) -> None:
         """Test read timeout."""
-        process = ManagedProcess(["sleep", "10"])
+        # Use a process that will hang without producing output quickly
+        # 'cat' without input will wait for stdin indefinitely
+        process = ManagedProcess(["cat"])
         process.launch()
 
         try:
