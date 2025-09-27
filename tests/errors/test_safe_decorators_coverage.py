@@ -1,10 +1,10 @@
 """Additional tests for safe decorators to improve code coverage."""
 
 import asyncio
-from typing import Never
+from typing import Any, Never
 
-import pytest
 from provide.testkit import FoundationTestCase, mock_sleep
+import pytest
 
 from provide.foundation.errors.safe_decorators import (
     log_only_error_context,

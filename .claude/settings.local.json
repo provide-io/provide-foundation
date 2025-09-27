@@ -292,7 +292,10 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_lifecycle.py::TestManagedProcess::test_read_line_async_timeout -v --timeout=10)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_lifecycle.py::TestManagedProcess::test_read_line_async_timeout -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_lifecycle.py -v --tb=short -x)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/process/test_lifecycle.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/process/test_lifecycle.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_safe_decorators_coverage.py::TestSafeDecoratorsCoverage::test_log_only_error_context_async_function_success -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_safe_decorators_coverage.py -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/errors/test_safe_decorators_coverage.py)"
     ],
     "deny": [],
     "ask": [],
