@@ -2,10 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Any
-
-import pytest
 from provide.testkit import reset_foundation_setup_for_testing
+import pytest
 
 from provide.foundation.errors.config import ValidationError
 from provide.foundation.utils.environment.parsers import parse_duration, parse_size
@@ -346,14 +344,14 @@ class TestEdgeCasesAndRegressions:
         """Test regex edge cases for duration parsing."""
         # Test that only valid patterns match - these actually work because regex finds h and s
         assert parse_duration("1hour") == 3600  # finds 'h' in 'hour'
-        assert parse_duration("1sec") == 1      # finds 's' in 'sec'
+        assert parse_duration("1sec") == 1  # finds 's' in 'sec'
 
         # Test patterns that actually fail
         with pytest.raises(ValidationError):
             parse_duration("1xyz")  # No valid units
 
         with pytest.raises(ValidationError):
-            parse_duration("abc")   # No digits
+            parse_duration("abc")  # No digits
 
     def test_parse_size_regex_edge_cases(self) -> None:
         """Test regex edge cases for size parsing."""
