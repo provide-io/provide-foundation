@@ -88,12 +88,14 @@ class TestCircuitBreaker:
         machine.transition(CircuitBreakerEvent.FAILURE)
         assert machine.current_state == "open"
         with mock_sleep():
-            # Mock time.time to return a time that's 0.15 seconds after the recovery timeout
+            # Mock time.time to return a time that's after the recovery timeout
             current_time = time.time()
             recovery_time = current_time + machine.circuit_state.recovery_timeout + 0.01
-            with patch('time.time', return_value=recovery_time):
+            # Patch time.time in both the local module and the transitions module
+            with patch('time.time', return_value=recovery_time), \
+                 patch('provide.foundation.state._internal.transitions.time.time', return_value=recovery_time):
                 assert machine._should_attempt_reset() is True
-        machine.transition(CircuitBreakerEvent.TIMEOUT)
+                machine.transition(CircuitBreakerEvent.TIMEOUT)
         assert machine.current_state == "half_open"
 
     def test_half_open_success_closes_circuit(self, machine) -> None:
