@@ -5,6 +5,7 @@ from __future__ import annotations
 from unittest.mock import Mock, patch
 
 import pytest
+from provide.testkit import reset_foundation_setup_for_testing
 
 from provide.foundation.utils.deps import (
     DependencyStatus,
@@ -17,6 +18,12 @@ from provide.foundation.utils.deps import (
     has_dependency,
     require_dependency,
 )
+
+
+@pytest.fixture(autouse=True)
+def reset_foundation() -> None:
+    """Reset Foundation state before each test."""
+    reset_foundation_setup_for_testing()
 
 
 class TestDependencyStatus:
@@ -64,7 +71,7 @@ class TestCheckClick:
         assert status.version is not None
         assert "CLI features" in status.description
 
-    @patch("provide.foundation.utils.deps.version")
+    @patch("importlib.metadata.version")
     def test_check_click_version_exception(self, mock_version: Mock) -> None:
         """Test _check_click when version lookup fails."""
         mock_version.side_effect = Exception("Version lookup failed")
@@ -126,7 +133,7 @@ class TestCheckCryptography:
 class TestCheckOpenTelemetry:
     """Test _check_opentelemetry function."""
 
-    @patch("provide.foundation.utils.deps.version")
+    @patch("importlib.metadata.version")
     def test_check_opentelemetry_available(self, mock_version: Mock) -> None:
         """Test _check_opentelemetry when opentelemetry is available."""
         mock_version.return_value = "1.15.0"
@@ -141,7 +148,7 @@ class TestCheckOpenTelemetry:
             assert status.version == "1.15.0"
             assert "Enhanced telemetry" in status.description
 
-    @patch("provide.foundation.utils.deps.version")
+    @patch("importlib.metadata.version")
     def test_check_opentelemetry_version_exception(self, mock_version: Mock) -> None:
         """Test _check_opentelemetry when version lookup fails."""
         mock_version.side_effect = Exception("Version lookup failed")
