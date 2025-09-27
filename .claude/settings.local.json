@@ -305,7 +305,9 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/ -k \"async\" -v --tb=short --maxfail=3 -x)",
       "Bash(PYTHONPATH=src grep -r \"asyncio.sleep\" tests/ --include=\"*.py\")",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/concurrency/test_async_core.py::TestAsyncSleep::test_async_sleep_cancellation -v --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/utils/test_rate_limiting.py tests/utils/test_rate_limiting_coverage.py tests/process/test_async_runner_comprehensive_coverage.py tests/process/test_async_runner_coverage.py tests/process/test_lifecycle.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/utils/test_rate_limiting.py tests/utils/test_rate_limiting_coverage.py tests/process/test_async_runner_comprehensive_coverage.py tests/process/test_async_runner_coverage.py tests/process/test_lifecycle.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting.py::TestTokenBucketRateLimiter::test_refill_over_time -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting.py --collect-only -q)"
     ],
     "deny": [],
     "ask": [],
