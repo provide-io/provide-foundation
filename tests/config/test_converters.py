@@ -1,6 +1,7 @@
 """Tests for configuration field converters."""
 
 import pytest
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.config.converters import (
     parse_bool_extended,
@@ -26,7 +27,7 @@ from provide.foundation.config.converters import (
 from provide.foundation.errors.config import ValidationError
 
 
-class TestLogLevelParsing:
+class TestLogLevelParsing(FoundationTestCase):
     """Test log level parsing and validation."""
 
     def test_parse_log_level_valid(self) -> None:
@@ -47,7 +48,7 @@ class TestLogLevelParsing:
             parse_log_level("")
 
 
-class TestConsoleFormatterParsing:
+class TestConsoleFormatterParsing(FoundationTestCase):
     """Test console formatter parsing."""
 
     def test_parse_console_formatter_valid(self) -> None:
@@ -65,7 +66,7 @@ class TestConsoleFormatterParsing:
             parse_console_formatter("yaml")
 
 
-class TestModuleLevelsParsing:
+class TestModuleLevelsParsing(FoundationTestCase):
     """Test module-specific log levels parsing."""
 
     def test_parse_module_levels_valid(self) -> None:
@@ -95,7 +96,7 @@ class TestModuleLevelsParsing:
         assert result == {"auth": "DEBUG", "database": "ERROR"}
 
 
-class TestRateLimitsParsing:
+class TestRateLimitsParsing(FoundationTestCase):
     """Test rate limits parsing."""
 
     def test_parse_rate_limits_valid(self) -> None:
@@ -123,7 +124,7 @@ class TestRateLimitsParsing:
         assert result == {}  # Invalid number skipped
 
 
-class TestBoolExtendedParsing:
+class TestBoolExtendedParsing(FoundationTestCase):
     """Test extended boolean parsing."""
 
     @pytest.mark.parametrize(
@@ -152,7 +153,7 @@ class TestBoolExtendedParsing:
         assert parse_bool_extended(value) == expected
 
 
-class TestFloatValidationParsing:
+class TestFloatValidationParsing(FoundationTestCase):
     """Test float parsing with validation."""
 
     def test_parse_float_with_validation_valid(self) -> None:
@@ -177,7 +178,7 @@ class TestFloatValidationParsing:
             parse_float_with_validation("not_a_number")
 
 
-class TestSampleRateParsing:
+class TestSampleRateParsing(FoundationTestCase):
     """Test sample rate parsing."""
 
     def test_parse_sample_rate_valid(self) -> None:
@@ -195,7 +196,7 @@ class TestSampleRateParsing:
             parse_sample_rate("1.1")
 
 
-class TestHeadersParsing:
+class TestHeadersParsing(FoundationTestCase):
     """Test HTTP headers parsing."""
 
     def test_parse_headers_valid(self) -> None:
@@ -228,7 +229,7 @@ class TestHeadersParsing:
         }
 
 
-class TestCommaListParsing:
+class TestCommaListParsing(FoundationTestCase):
     """Test comma-separated list parsing."""
 
     def test_parse_comma_list_valid(self) -> None:
@@ -246,7 +247,7 @@ class TestCommaListParsing:
         assert parse_comma_list("single") == ["single"]
 
 
-class TestJsonParsing:
+class TestJsonParsing(FoundationTestCase):
     """Test JSON parsing functions."""
 
     def test_parse_json_dict_valid(self) -> None:
@@ -286,7 +287,7 @@ class TestJsonParsing:
             parse_json_list('{"key": "value"}')
 
 
-class TestValidators:
+class TestValidators(FoundationTestCase):
     """Test validator functions."""
 
     def test_validate_log_level(self) -> None:
@@ -370,7 +371,7 @@ class TestValidators:
             validate_overflow_policy(None, type("attr", (), {"name": "test"})(), "")
 
 
-class TestFoundationLogOutputParsing:
+class TestFoundationLogOutputParsing(FoundationTestCase):
     """Test foundation log output destination parsing."""
 
     def test_parse_foundation_log_output_valid(self) -> None:
@@ -403,7 +404,7 @@ class TestFoundationLogOutputParsing:
             parse_foundation_log_output("console")
 
 
-class TestBoolStrictParsing:
+class TestBoolStrictParsing(FoundationTestCase):
     """Test strict boolean parsing."""
 
     @pytest.mark.parametrize(
@@ -462,7 +463,7 @@ class TestBoolStrictParsing:
         assert parse_bool_strict("  false  ") is False
 
 
-class TestModuleLevelsDictInput:
+class TestModuleLevelsDictInput(FoundationTestCase):
     """Test module levels parsing with dict input."""
 
     def test_parse_module_levels_dict_valid(self) -> None:
