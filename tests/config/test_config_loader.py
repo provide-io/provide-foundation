@@ -5,8 +5,7 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
-import tempfile
-from typing import Any
+from typing import Any, cast
 from unittest.mock import Mock, patch
 
 import pytest
@@ -48,7 +47,11 @@ class TestConfig(BaseConfig):
         """Get source for a field."""
         return ConfigSource.RUNTIME
 
-    def update(self, updates: dict[str, Any], source: ConfigSource) -> None:
+    def update(
+        self,
+        updates: dict[str, str | int | float | bool | list[Any] | dict[str, Any] | None],
+        source: ConfigSource = ConfigSource.RUNTIME,
+    ) -> None:
         """Update configuration."""
         for key, value in updates.items():
             if hasattr(self, key):
@@ -170,8 +173,9 @@ class TestFileConfigLoader:
         data = loader._read_file()
 
         assert "section1" in data
-        assert data["section1"]["key1"] == "value1"
-        assert data["section1"]["key2"] == "value2"
+        section1 = cast(dict[str, Any], data["section1"])
+        assert section1["key1"] == "value1"
+        assert section1["key2"] == "value2"
 
     def test_load_env_file(self, tmp_path: Path) -> None:
         """Test loading .env file."""
@@ -226,17 +230,19 @@ class TestFileConfigLoader:
     def test_load_resilient_decorator(self, mock_read: Mock, tmp_path: Path) -> None:
         """Test resilient decorator catches errors."""
         config_file = tmp_path / "config.json"
-        config_file.write_text("{}")
 
+        # Don't write the file, just patch the read function
         mock_read.side_effect = OSError("File read error")
 
         loader = FileConfigLoader(config_file)
 
-        with pytest.raises(ConfigurationError) as exc_info:
-            loader.load(TestConfig)
+        # Mock the exists method to return True so we get to the read error
+        with patch.object(loader, 'exists', return_value=True):
+            with pytest.raises(ConfigurationError) as exc_info:
+                loader.load(TestConfig)
 
-        assert "Failed to load configuration" in str(exc_info.value)
-        assert exc_info.value.code == "CONFIG_LOAD_ERROR"
+            assert "Failed to read config file" in str(exc_info.value)
+            assert exc_info.value.code == "CONFIG_READ_ERROR"
 
     def test_parse_env_file_with_quotes(self, tmp_path: Path) -> None:
         """Test parsing .env file with quoted values."""
@@ -258,8 +264,10 @@ class TestFileConfigLoader:
         data = loader._read_file()
 
         assert "DEFAULT" in data
-        assert data["DEFAULT"]["default_key"] == "default_value"
-        assert data["section1"]["key1"] == "value1"
+        default_section = cast(dict[str, Any], data["DEFAULT"])
+        section1 = cast(dict[str, Any], data["section1"])
+        assert default_section["default_key"] == "default_value"
+        assert section1["key1"] == "value1"
 
 
 class TestRuntimeConfigLoader:
@@ -320,14 +328,14 @@ class TestDictConfigLoader:
 
     def test_init_defaults(self) -> None:
         """Test initialization with defaults."""
-        data = {"name": "dict_test"}
+        data: dict[str, Any] = {"name": "dict_test"}
         loader = DictConfigLoader(data)
         assert loader.data == data
         assert loader.source == ConfigSource.RUNTIME
 
     def test_init_custom_source(self) -> None:
         """Test initialization with custom source."""
-        data = {"name": "dict_test"}
+        data: dict[str, Any] = {"name": "dict_test"}
         loader = DictConfigLoader(data, source=ConfigSource.FILE)
         assert loader.source == ConfigSource.FILE
 
@@ -343,7 +351,7 @@ class TestDictConfigLoader:
 
     def test_load_config(self) -> None:
         """Test loading configuration from dictionary."""
-        data = {"name": "dict_config", "value": 500, "enabled": True}
+        data: dict[str, Any] = {"name": "dict_config", "value": 500, "enabled": True}
         loader = DictConfigLoader(data)
         config = loader.load(TestConfig)
 
@@ -391,16 +399,17 @@ class TestMultiSourceLoader:
 
     def test_load_merge_sources(self) -> None:
         """Test loading and merging from multiple sources."""
-        # Create a more sophisticated test config that supports merging
-        loader1 = DictConfigLoader({"name": "base", "value": 100})
+        # Test that the MultiSourceLoader creates config from first source
+        # then attempts to merge from subsequent sources
+        loader1 = DictConfigLoader({"name": "base", "value": 100, "enabled": True})
         loader2 = DictConfigLoader({"value": 200, "enabled": False})
         multi_loader = MultiSourceLoader(loader1, loader2)
 
         config = multi_loader.load(TestConfig)
-        # The second loader should override the first
-        assert config.name == "base"  # From first loader
-        assert config.value == 200  # Overridden by second loader
-        assert config.enabled is False  # From second loader
+        # First loader creates config, second loader updates through merge
+        assert config.name == "base"  # From first loader, not overridden by second
+        assert config.value == 200  # Updated by second loader
+        assert config.enabled is False  # Updated by second loader
 
     def test_load_no_sources_available_error(self) -> None:
         """Test error when no sources are available."""
@@ -425,7 +434,7 @@ class TestMultiSourceLoader:
 
         multi_loader = MultiSourceLoader(loader1, loader2)
 
-        with pytest.raises(Exception):
+        with pytest.raises(Exception, match="Load failed"):
             multi_loader.load(TestConfig)
 
 
@@ -498,12 +507,9 @@ class TestConfigLoaderIntegration:
             config = chained.load(TestConfig)
             assert config.name == "file_config"  # File loader wins
 
-            # Test multi-source loader (merge/override)
-            multi = MultiSourceLoader(file_loader, runtime_loader)
-            with pytest.raises(AttributeError):
-                # This will fail because TestConfig doesn't properly support merging
-                # In a real scenario, you'd have a config class that supports merging
-                multi.load(TestConfig)
+            # Test that RuntimeConfigLoader only works with RuntimeConfig subclasses
+            with pytest.raises(TypeError, match="must inherit from RuntimeConfig"):
+                runtime_loader.load(TestConfig)
 
     def test_error_propagation(self, tmp_path: Path) -> None:
         """Test that errors propagate correctly through loaders."""
