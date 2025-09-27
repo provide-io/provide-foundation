@@ -7,17 +7,11 @@ import os
 from pathlib import Path
 from typing import Any
 
-from provide.testkit import reset_foundation_setup_for_testing
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors.config import ValidationError
 from provide.foundation.utils.environment.prefix import EnvPrefix
-
-
-@pytest.fixture(autouse=True)
-def reset_foundation() -> None:
-    """Reset Foundation state before each test."""
-    reset_foundation_setup_for_testing()
 
 
 @pytest.fixture
@@ -30,7 +24,7 @@ def clean_env() -> Generator[None, None, None]:
     os.environ.update(original_env)
 
 
-class TestEnvPrefixInit:
+class TestEnvPrefixInit(FoundationTestCase):
     """Test EnvPrefix initialization."""
 
     def test_init_default_separator(self, clean_env: Any) -> None:
@@ -60,7 +54,7 @@ class TestEnvPrefixInit:
         assert env.separator == "_"
 
 
-class TestMakeName:
+class TestMakeName(FoundationTestCase):
     """Test _make_name method."""
 
     def test_make_name_basic(self, clean_env: Any) -> None:
@@ -94,7 +88,7 @@ class TestMakeName:
         assert env._make_name("") == "APP_"
 
 
-class TestGetBool:
+class TestGetBool(FoundationTestCase):
     """Test get_bool method."""
 
     def test_get_bool_existing_variable(self, clean_env: Any) -> None:
@@ -120,7 +114,7 @@ class TestGetBool:
         assert env.get_bool("enable-debug") is True
 
 
-class TestGetInt:
+class TestGetInt(FoundationTestCase):
     """Test get_int method."""
 
     def test_get_int_existing_variable(self, clean_env: Any) -> None:
@@ -140,7 +134,7 @@ class TestGetInt:
         assert env.get_int("port") is None
 
 
-class TestGetFloat:
+class TestGetFloat(FoundationTestCase):
     """Test get_float method."""
 
     def test_get_float_existing_variable(self, clean_env: Any) -> None:
@@ -160,7 +154,7 @@ class TestGetFloat:
         assert env.get_float("timeout") is None
 
 
-class TestGetStr:
+class TestGetStr(FoundationTestCase):
     """Test get_str method."""
 
     def test_get_str_existing_variable(self, clean_env: Any) -> None:
@@ -180,7 +174,7 @@ class TestGetStr:
         assert env.get_str("name") is None
 
 
-class TestGetPath:
+class TestGetPath(FoundationTestCase):
     """Test get_path method."""
 
     def test_get_path_existing_variable(self, clean_env: Any) -> None:
@@ -209,7 +203,7 @@ class TestGetPath:
         assert result == Path("/default/path")
 
 
-class TestGetList:
+class TestGetList(FoundationTestCase):
     """Test get_list method."""
 
     def test_get_list_existing_variable(self, clean_env: Any) -> None:
@@ -236,7 +230,7 @@ class TestGetList:
         assert env.get_list("hosts", separator=":") == ["host1", "host2", "host3"]
 
 
-class TestGetDict:
+class TestGetDict(FoundationTestCase):
     """Test get_dict method."""
 
     def test_get_dict_existing_variable(self, clean_env: Any) -> None:
@@ -264,7 +258,7 @@ class TestGetDict:
         assert result == {"env": "prod", "version": "1.0"}
 
 
-class TestRequire:
+class TestRequire(FoundationTestCase):
     """Test require method."""
 
     def test_require_existing_variable(self, clean_env: Any) -> None:
@@ -293,7 +287,7 @@ class TestRequire:
         assert env.require("api-key") == "mykey"
 
 
-class TestSubscriptNotation:
+class TestSubscriptNotation(FoundationTestCase):
     """Test __getitem__ method (subscript notation)."""
 
     def test_getitem_existing_variable(self, clean_env: Any) -> None:
@@ -314,7 +308,7 @@ class TestSubscriptNotation:
         assert env["database-url"] == "postgres://localhost"
 
 
-class TestContains:
+class TestContains(FoundationTestCase):
     """Test __contains__ method (in operator)."""
 
     def test_contains_existing_variable(self, clean_env: Any) -> None:
@@ -336,7 +330,7 @@ class TestContains:
         assert "api.key" in env
 
 
-class TestAllWithPrefix:
+class TestAllWithPrefix(FoundationTestCase):
     """Test all_with_prefix method."""
 
     def test_all_with_prefix_multiple_variables(self, clean_env: Any) -> None:
@@ -406,7 +400,7 @@ class TestAllWithPrefix:
         assert result == expected
 
 
-class TestIntegrationScenarios:
+class TestIntegrationScenarios(FoundationTestCase):
     """Test integration scenarios."""
 
     def test_real_world_configuration_scenario(self, clean_env: Any) -> None:
@@ -475,7 +469,7 @@ class TestIntegrationScenarios:
             env.get_int("invalid_int")
 
 
-class TestEdgeCases:
+class TestEdgeCases(FoundationTestCase):
     """Test edge cases and boundary conditions."""
 
     def test_empty_prefix(self, clean_env: Any) -> None:
@@ -503,7 +497,7 @@ class TestEdgeCases:
         assert env.get_str("unicode") == "café"
 
 
-class TestModuleIntegration:
+class TestModuleIntegration(FoundationTestCase):
     """Test module-level integration."""
 
     def test_class_importable(self) -> None:
