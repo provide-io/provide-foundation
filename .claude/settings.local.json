@@ -190,7 +190,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/ --cov=src/provide/foundation/utils --cov-report=term-missing --tb=no -q)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/ --cov=src/provide/foundation/utils --cov-report=term --tb=no -q)",
       "Bash(PYTHONPATH=src .venv/bin/pytest --cov=src/provide/foundation --cov-report=term --tb=no -q)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest --cov=src/provide/foundation --cov-report=term:skip-covered --tb=no -x --maxfail=1 tests/config/ tests/file/ tests/transport/ tests/state/ tests/resilience/ tests/utils/ -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest --cov=src/provide/foundation --cov-report=term:skip-covered --tb=no -x --maxfail=1 tests/config/ tests/file/ tests/transport/ tests/state/ tests/resilience/ tests/utils/ -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_environment_getters_coverage.py tests/utils/test_environment_parsers_coverage.py tests/utils/test_environment_prefix_coverage.py tests/utils/test_utils_deps_coverage.py tests/utils/test_formatting_coverage.py tests/utils/test_timing_coverage.py tests/utils/test_streams_coverage.py tests/utils/test_rate_limiting_coverage.py --cov=src/provide/foundation/utils --cov-report=term --tb=short -q)"
     ],
     "deny": [],
     "ask": [],
