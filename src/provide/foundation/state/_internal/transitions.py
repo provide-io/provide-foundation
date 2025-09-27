@@ -6,6 +6,14 @@ from typing import Any
 
 from attrs import field, frozen
 
+from provide.foundation.config.defaults import (
+    DEFAULT_CIRCUIT_BREAKER_FAILURE_COUNT,
+    DEFAULT_CIRCUIT_BREAKER_FAILURE_THRESHOLD,
+    DEFAULT_CIRCUIT_BREAKER_LAST_FAILURE_TIME,
+    DEFAULT_CIRCUIT_BREAKER_NEXT_ATTEMPT_TIME,
+    DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT,
+    DEFAULT_CIRCUIT_BREAKER_STATE,
+)
 from provide.foundation.state.base import ImmutableState, StateMachine, StateTransition
 
 """State transitions for Foundation components."""
@@ -24,12 +32,12 @@ class CircuitBreakerEvent(Enum):
 class CircuitBreakerState(ImmutableState):
     """Immutable circuit breaker state."""
 
-    state: str = field(default="closed")  # closed, open, half_open
-    failure_count: int = field(default=0)
-    last_failure_time: float | None = field(default=None)
-    next_attempt_time: float = field(default=0.0)
-    failure_threshold: int = field(default=5)
-    recovery_timeout: float = field(default=60.0)
+    state: str = field(default=DEFAULT_CIRCUIT_BREAKER_STATE)  # closed, open, half_open
+    failure_count: int = field(default=DEFAULT_CIRCUIT_BREAKER_FAILURE_COUNT)
+    last_failure_time: float | None = field(default=DEFAULT_CIRCUIT_BREAKER_LAST_FAILURE_TIME)
+    next_attempt_time: float = field(default=DEFAULT_CIRCUIT_BREAKER_NEXT_ATTEMPT_TIME)
+    failure_threshold: int = field(default=DEFAULT_CIRCUIT_BREAKER_FAILURE_THRESHOLD)
+    recovery_timeout: float = field(default=DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT)
 
     def with_changes(self, **changes: Any) -> CircuitBreakerState:
         """Create a new state instance with the specified changes.
