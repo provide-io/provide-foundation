@@ -101,7 +101,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/config/test_config_loader.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/config/test_config_loader.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_config_loader.py::TestFileConfigLoader::test_load_resilient_decorator -v)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_config_loader.py -v --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_config_loader.py -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_config_loader.py::TestMultiSourceLoader::test_load_merge_sources -v)"
     ],
     "deny": [],
     "ask": [],
