@@ -173,7 +173,9 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_environment_parsers_coverage.py --cov=src/provide/foundation/utils --cov-report=term-missing -q)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_environment_prefix_coverage.py -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/utils/test_environment_prefix_coverage.py)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/utils/test_environment_prefix_coverage.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/utils/test_environment_prefix_coverage.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/utils/test_environment_prefix_coverage.py --ignore-missing-imports)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_environment_prefix_coverage.py --cov=src/provide/foundation/utils --cov-report=term-missing -q)"
     ],
     "deny": [],
     "ask": [],
