@@ -186,7 +186,7 @@ class TestAsyncStreamCommandCoverage:
         with pytest.raises(ProcessTimeoutError):
             # Try to stream from a long-running command with short timeout
             lines = []
-            async for line in async_stream_command(["sleep", "5"], timeout=0.1):
+            async for line in async_stream_command(["sleep", "1"], timeout=0.1):
                 lines.append(line)
 
     @patch("asyncio.create_subprocess_exec")
