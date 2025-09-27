@@ -315,7 +315,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting.py -v --tb=short --maxfail=3)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_lock.py::test_file_lock_invalid_lock_content -v --tb=short --timeout=10)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_lock.py::test_file_lock_invalid_lock_content -v --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_lock.py --collect-only -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_lock.py --collect-only -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_lock.py -v --tb=short)"
     ],
     "deny": [],
     "ask": [],
