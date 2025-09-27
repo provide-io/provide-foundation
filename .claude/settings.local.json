@@ -111,7 +111,11 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/file/test_file_operations.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/file/test_file_operations.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/file/test_file_operations.py)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_file_operations.py -v --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_file_operations.py -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/transport/test_middleware_coverage.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/transport/test_middleware_coverage.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/transport/test_middleware_coverage.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/transport/test_middleware_coverage.py -v --tb=short)"
     ],
     "deny": [],
     "ask": [],
