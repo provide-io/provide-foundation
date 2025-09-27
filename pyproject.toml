@@ -94,7 +94,7 @@ pythonpath = ["src", "."]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*", "*Tests"]
 python_functions = ["test_*", "*_test"]
-addopts = "-m 'not integration' -rFE -q --color=yes --benchmark-columns=min,max,mean,stddev,median,iqr,ops --benchmark-sort=mean --dist worksteal"
+addopts = "-m 'not integration and not benchmark' -rFE -q --color=yes --benchmark-columns=min,max,mean,stddev,median,iqr,ops --benchmark-sort=mean --dist worksteal"
 markers = [
     "serial: run tests serially to avoid event loop conflicts",
     "async_unsafe: async tests that must run serially",
@@ -103,6 +103,10 @@ markers = [
     "integration.openobserve: OpenObserve integration tests",
     "slow: tests taking >1s",
     "fast: tests taking <100ms",
+    # Time-sensitive markers
+    "benchmark: performance/timing sensitive tests",
+    "time_sensitive: tests with strict timing requirements",
+    "flaky: tests known to be intermittently failing",
     # Module markers
     "archive: archive module tests",
     "process: process/subprocess tests",
