@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import contextlib
+
 from provide.testkit import reset_foundation_setup_for_testing
 import pytest
 
@@ -154,12 +156,15 @@ class TestRealWorldUsage:
     def test_import_all_pattern(self) -> None:
         """Test import all pattern works."""
         try:
-            from provide.foundation.docs import *  # noqa: F403
+            # Test that we can import all expected items
+            import provide.foundation.docs
 
-            # Verify that the star import brings in expected names
-            # We can't test the actual objects due to potential import issues,
-            # but we can test the import pattern works
-            assert True  # If we get here, the import worked
+            # Verify that all exports are accessible
+            for export_name in provide.foundation.docs.__all__:
+                assert hasattr(provide.foundation.docs, export_name)
+
+            # This tests the same functionality as star import without F403
+            assert True  # If we get here, the imports worked
         except ImportError:
             # Star imports might fail due to missing dependencies
             pytest.skip("Star import failed due to dependencies")
@@ -191,11 +196,9 @@ class TestRealWorldUsage:
 
         # Test accessing exports through the aliased module
         for export_name in docs.__all__:
-            try:
-                getattr(docs, export_name)
-            except AttributeError:
+            with contextlib.suppress(AttributeError):
                 # Some exports might not be available due to dependencies
-                pass
+                getattr(docs, export_name)
 
 
 class TestModuleIntegration:
