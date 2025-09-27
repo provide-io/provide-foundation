@@ -1,5 +1,6 @@
 """Comprehensive coverage tests for built-in schema validators."""
 
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.config.schema import (
     validate_email,
@@ -11,7 +12,7 @@ from provide.foundation.config.schema import (
 )
 
 
-class TestBuiltinValidators:
+class TestBuiltinValidators(FoundationTestCase):
     """Test built-in validator functions."""
 
     def test_validate_port_valid(self) -> None:

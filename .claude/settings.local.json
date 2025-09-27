@@ -249,7 +249,8 @@
       "Bash(then echo \"Need to update: $file\")",
       "Bash([ \"$file\" != \"tests/config/test_config_logger.py\" ])",
       "Bash(then echo \"=== $file ===\")",
-      "Bash(head:*)"
+      "Bash(head:*)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_config_manager_coverage.py tests/config/test_schema_validators.py tests/config/test_validators_coverage.py -v --tb=short)"
     ],
     "deny": [],
     "ask": [],

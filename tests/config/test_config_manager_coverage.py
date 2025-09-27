@@ -4,6 +4,7 @@ from unittest.mock import Mock
 
 from attrs import define
 import pytest
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.config.base import BaseConfig, field
 from provide.foundation.config.loader import ConfigLoader
@@ -37,11 +38,12 @@ class AnotherSampleConfig(BaseConfig):
     number: int = field(default=100)
 
 
-class TestConfigManagerComprehensive:
+class TestConfigManagerComprehensive(FoundationTestCase):
     """Comprehensive tests for ConfigManager functionality."""
 
-    def setup_method(self) -> None:
+    def setUp(self) -> None:
         """Set up test environment."""
+        super().setUp()
         self.manager = ConfigManager()
         self.test_config = SampleConfigClass(name="test", count=5, enabled=True)
 
@@ -494,11 +496,12 @@ class TestConfigManagerComprehensive:
         assert self.manager._configs["empty_test"] is result
 
 
-class TestGlobalFunctions:
+class TestGlobalFunctions(FoundationTestCase):
     """Test global configuration manager functions."""
 
-    def setup_method(self) -> None:
+    def setUp(self) -> None:
         """Set up test environment."""
+        super().setUp()
         # Reset global manager
         _manager.clear()
         self.test_config = SampleConfigClass(name="global_test")
