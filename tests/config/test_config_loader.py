@@ -241,7 +241,7 @@ class TestFileConfigLoader:
     def test_parse_env_file_with_quotes(self, tmp_path: Path) -> None:
         """Test parsing .env file with quoted values."""
         config_file = tmp_path / "config.env"
-        config_file.write_text('QUOTED_DOUBLE="value with spaces"\nQUOTED_SINGLE=\'single quotes\'\n')
+        config_file.write_text("QUOTED_DOUBLE=\"value with spaces\"\nQUOTED_SINGLE='single quotes'\n")
 
         loader = FileConfigLoader(config_file)
         data = loader._read_file()
