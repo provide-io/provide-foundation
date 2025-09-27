@@ -38,7 +38,7 @@ MAX_CERTIFICATE_VALIDITY_DAYS: Final[int] = 3650  # 10 years
 def _get_config_value(key: str, default: str | int) -> str | int:
     """Get crypto config value with fallback to default."""
     try:
-        from provide.foundation.config.sync import get_config
+        from provide.foundation.config import get_config
 
         config = get_config(f"crypto.{key}")
         if config is not None and hasattr(config, "value"):
