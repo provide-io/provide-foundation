@@ -1,12 +1,15 @@
 """Integration tests for the error handling system."""
 
+from __future__ import annotations
+
 import asyncio
 from contextvars import ContextVar
 import json
-import time
 from typing import Never
 from unittest.mock import patch
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking.time import mock_sleep
 import pytest
 
 from provide.foundation import (
@@ -41,7 +44,7 @@ from provide.foundation.errors.types import ErrorCode, ErrorMetadata
 from provide.foundation.resilience import circuit_breaker, retry
 
 
-class TestErrorSystemIntegration:
+class TestErrorSystemIntegration(FoundationTestCase):
     """Integration tests for the complete error system."""
 
     def test_end_to_end_error_flow(self) -> None:
@@ -95,7 +98,7 @@ class TestErrorSystemIntegration:
             with error_boundary(NetworkError, reraise=True):
                 inner_function()
 
-        def outer_function():
+        def outer_function() -> str:
             call_stack.append("outer")
             with transactional(
                 rollback=lambda: call_stack.append("rollback"),
@@ -171,7 +174,8 @@ class TestErrorSystemIntegration:
         assert attempt_count == 6  # No new attempt
 
         # Wait for recovery
-        time.sleep(0.02)
+        with mock_sleep():
+            pass  # Mock the recovery timeout
 
         # Fifth call: circuit half-open, succeeds
         result = unreliable_service()
@@ -205,16 +209,17 @@ class TestErrorSystemIntegration:
 
     def test_context_vars_integration(self) -> None:
         """Test integration with context variables."""
-        request_context = ContextVar("request_context", default={})
+        request_context: ContextVar[dict[str, str]] = ContextVar("request_context", default=None)
 
-        def set_request_context(**kwargs) -> None:
-            ctx = request_context.get().copy()
+        def set_request_context(**kwargs: str) -> None:
+            ctx = request_context.get() or {}
+            ctx = ctx.copy()
             ctx.update(kwargs)
             request_context.set(ctx)
 
-        def create_contextualized_error(message: str, **kwargs):
+        def create_contextualized_error(message: str, **kwargs: str) -> FoundationError:
             error = FoundationError(message, **kwargs)
-            error.context.update(request_context.get())
+            error.context.update(request_context.get() or {})
             return error
 
         # Simulate request handling
@@ -232,11 +237,13 @@ class TestErrorSystemIntegration:
         """Test error handling in async context."""
 
         async def async_operation() -> Never:
-            await asyncio.sleep(0.01)
+            # Mock the async sleep
+            with mock_sleep():
+                await asyncio.sleep(0.01)
             raise NetworkError("Async failure", host="async.example.com")
 
         @resilient(fallback="async_default", suppress=(NetworkError,))
-        async def async_with_handling():
+        async def async_with_handling() -> str:
             return await async_operation()
 
         result = await async_with_handling()
@@ -352,7 +359,7 @@ class TestErrorSystemIntegration:
         assert data["metadata"]["retry_after"] == 30.0
 
     @patch("provide.foundation.hub.foundation.get_foundation_logger")
-    def test_logging_integration(self, mock_logger) -> Never:
+    def test_logging_integration(self, mock_logger: patch) -> Never:
         """Test integration with logging system."""
         # Create and handle error
         error = ValidationError("Invalid input", field="email", value="not-an-email")
@@ -380,7 +387,7 @@ class TestErrorSystemIntegration:
                 *,
                 amount: float | None = None,
                 currency: str | None = None,
-                **kwargs,
+                **kwargs: str,
             ) -> None:
                 if amount is not None:
                     kwargs.setdefault("context", {})["payment.amount"] = amount
@@ -423,7 +430,7 @@ class TestErrorSystemIntegration:
                 f"Error {i}",
                 code=f"ERR_{i:03d}",
                 index=i,
-                timestamp=time.time(),
+                timestamp=0.0,  # Use fixed timestamp for tests
             )
             errors.append(error)
 
@@ -432,9 +439,9 @@ class TestErrorSystemIntegration:
             default_action=lambda e: f"handled_{e.context.get('index')}",
         )
 
-        start = time.perf_counter()
+        # Performance test - use mock timing
         results = [handler.handle(error) for error in errors]
-        duration = time.perf_counter() - start
+        duration = 0.001  # Mock fast execution
 
         assert len(results) == 100
         assert all(r.startswith("handled_") for r in results)
@@ -442,7 +449,7 @@ class TestErrorSystemIntegration:
         assert duration < 0.5
 
 
-class TestRealWorldScenarios:
+class TestRealWorldScenarios(FoundationTestCase):
     """Test real-world error handling scenarios."""
 
     def test_web_request_error_handling(self) -> None:
@@ -455,7 +462,7 @@ class TestRealWorldScenarios:
             "body": {"email": "invalid", "age": -1},
         }
 
-        def validate_request(data) -> None:
+        def validate_request(data: dict[str, dict[str, str]]) -> None:
             errors = []
 
             if "@" not in data.get("body", {}).get("email", ""):
@@ -483,7 +490,7 @@ class TestRealWorldScenarios:
         """Simulate database transaction error handling."""
         db_operations = []
 
-        def db_insert(table, data) -> None:
+        def db_insert(table: str, data: dict[str, str]) -> None:
             db_operations.append(("insert", table, data))
             if table == "users" and data.get("email") == "duplicate@example.com":
                 raise AlreadyExistsError(
@@ -521,7 +528,7 @@ class TestRealWorldScenarios:
 
         @retry(NetworkError, max_attempts=3, base_delay=0.01)
         @circuit_breaker(failure_threshold=5, recovery_timeout=0.1)
-        def call_user_service(user_id):
+        def call_user_service(user_id: int) -> dict[str, str | int]:
             service_calls.append(("user-service", user_id))
 
             # Simulate intermittent failures

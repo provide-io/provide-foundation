@@ -272,7 +272,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py::TestCircuitBreaker::test_half_open_success_closes_circuit -xvs --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/process/test_lifecycle_comprehensive_coverage.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/process/test_lifecycle_comprehensive_coverage.py)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_lifecycle_comprehensive_coverage.py -v --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_lifecycle_comprehensive_coverage.py -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/errors/test_integration.py)"
     ],
     "deny": [],
     "ask": [],
