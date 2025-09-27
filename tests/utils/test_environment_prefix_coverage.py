@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-import os
 from collections.abc import Generator
+import os
 from pathlib import Path
 from typing import Any
 
-import pytest
 from provide.testkit import reset_foundation_setup_for_testing
+import pytest
 
 from provide.foundation.errors.config import ValidationError
 from provide.foundation.utils.environment.prefix import EnvPrefix
@@ -381,7 +381,7 @@ class TestAllWithPrefix:
         """Test with overlapping prefixes."""
         os.environ["APP_DEBUG"] = "true"
         os.environ["APPA_DEBUG"] = "ignored"  # Similar but different prefix
-        os.environ["AP_DEBUG"] = "ignored"    # Shorter prefix
+        os.environ["AP_DEBUG"] = "ignored"  # Shorter prefix
 
         env = EnvPrefix("app")
         result = env.all_with_prefix()
