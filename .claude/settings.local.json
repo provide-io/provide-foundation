@@ -260,7 +260,9 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting_coverage.py -q --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/utils/test_rate_limiting_coverage.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/utils/test_rate_limiting_coverage.py)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting_coverage.py::TestTokenBucketRateLimiter::test_is_allowed_refill_over_time -n auto --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting_coverage.py::TestTokenBucketRateLimiter::test_is_allowed_refill_over_time -n auto --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py::TestCircuitBreaker -xvs --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_state_management.py::TestCircuitBreaker -q --tb=no)"
     ],
     "deny": [],
     "ask": [],
