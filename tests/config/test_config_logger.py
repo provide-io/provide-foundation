@@ -59,11 +59,6 @@ class TestBuildFormatterProcessorsList(FoundationTestCase):
 
 
 class TestBuildCoreProcessorsList(FoundationTestCase):
-    @pytest.fixture(autouse=True)
-    def reset_foundation_for_processor_tests(self) -> None:
-        """Reset Foundation state before each test to ensure consistent processor counts."""
-        reset_foundation_setup_for_testing()
-
     def test_default_config(self) -> None:
         config = TelemetryConfig()
         # Event sets auto-discovered now
