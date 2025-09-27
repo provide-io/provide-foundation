@@ -273,7 +273,10 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/process/test_lifecycle_comprehensive_coverage.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/process/test_lifecycle_comprehensive_coverage.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_lifecycle_comprehensive_coverage.py -v --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/errors/test_integration.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/errors/test_integration.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_transitions_coverage.py::TestCircuitBreakerStateMachineEdgeCases::test_guard_function_behavior -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_transitions_coverage.py::TestCircuitBreakerStateMachineEdgeCases::test_transitions_from_all_states_to_reset tests/state/test_transitions_coverage.py::TestCircuitBreakerStateMachineEdgeCases::test_attempt_reset_action_method -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py -v --tb=short)"
     ],
     "deny": [],
     "ask": [],

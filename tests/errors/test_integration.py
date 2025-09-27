@@ -5,12 +5,15 @@ from __future__ import annotations
 import asyncio
 from contextvars import ContextVar
 import json
-from typing import Never
+from typing import TYPE_CHECKING, Never
 from unittest.mock import patch
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking.time import mock_sleep
 import pytest
+
+if TYPE_CHECKING:
+    from provide.testkit.time.fixtures import TimeMachine
 
 from provide.foundation import (
     FoundationError,
@@ -139,8 +142,9 @@ class TestErrorSystemIntegration(FoundationTestCase):
         # Verify context propagation
         assert integration.context["network.host"] == "db.example.com"
 
-    def test_retry_with_circuit_breaker(self) -> None:
+    def test_retry_with_circuit_breaker(self, time_machine: "TimeMachine") -> None:
         """Test combining retry and circuit breaker patterns."""
+        time_machine.freeze()
         attempt_count = 0
 
         @circuit_breaker(failure_threshold=3, recovery_timeout=0.01)
@@ -173,9 +177,8 @@ class TestErrorSystemIntegration(FoundationTestCase):
         assert "Circuit breaker is open" in str(exc_info.value)
         assert attempt_count == 6  # No new attempt
 
-        # Wait for recovery
-        with mock_sleep():
-            pass  # Mock the recovery timeout
+        # Jump past recovery timeout
+        time_machine.jump(0.02)
 
         # Fifth call: circuit half-open, succeeds
         result = unreliable_service()
