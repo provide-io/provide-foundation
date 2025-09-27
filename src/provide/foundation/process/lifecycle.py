@@ -122,9 +122,9 @@ class ManagedProcess:
 
         """
         if self._started:
-            raise StateError("Process has already been started",
-                           code="PROCESS_ALREADY_STARTED",
-                           process_state="started")
+            raise StateError(
+                "Process has already been started", code="PROCESS_ALREADY_STARTED", process_state="started"
+            )
 
         plog.debug("🚀 Launching managed process", command=" ".join(self.command))
 

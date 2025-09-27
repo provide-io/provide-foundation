@@ -8,11 +8,11 @@ from attrs import define, field, fields, validators
 
 from provide.foundation.config import defaults
 from provide.foundation.config.base import ConfigSource, field as config_field
-from provide.foundation.errors.config import ConfigurationError
-from provide.foundation.errors.runtime import StateError
 from provide.foundation.config.converters import parse_bool_strict
 from provide.foundation.config.defaults import path_converter
 from provide.foundation.config.env import RuntimeConfig
+from provide.foundation.errors.config import ConfigurationError
+from provide.foundation.errors.runtime import StateError
 from provide.foundation.file.formats import read_json, read_toml, read_yaml, write_json, write_toml, write_yaml
 from provide.foundation.logger import get_logger
 
@@ -100,9 +100,11 @@ class CLIContext(RuntimeConfig):
 
         """
         if self._frozen:
-            raise StateError("Context is frozen and cannot be modified",
-                           code="CONTEXT_FROZEN",
-                           context_type=type(self).__name__)
+            raise StateError(
+                "Context is frozen and cannot be modified",
+                code="CONTEXT_FROZEN",
+                context_type=type(self).__name__,
+            )
 
         # Create default instance and environment instance
         default_ctx = self.__class__()  # All defaults
@@ -176,10 +178,12 @@ class CLIContext(RuntimeConfig):
         elif path.suffix in (".yaml", ".yml"):
             return read_yaml(path)
         else:
-            raise ConfigurationError(f"Unsupported config format: {path.suffix}",
-                                   code="UNSUPPORTED_CONFIG_FORMAT",
-                                   path=str(path),
-                                   suffix=path.suffix)
+            raise ConfigurationError(
+                f"Unsupported config format: {path.suffix}",
+                code="UNSUPPORTED_CONFIG_FORMAT",
+                path=str(path),
+                suffix=path.suffix,
+            )
 
     def _update_from_config_data(self, data: dict[str, Any]) -> None:
         """Update context fields from configuration data."""
@@ -241,14 +245,18 @@ class CLIContext(RuntimeConfig):
         elif path.suffix in (".yaml", ".yml"):
             write_yaml(path, data, default_flow_style=False)
         elif not path.suffix:
-            raise ConfigurationError(f"Unsupported config format: no file extension for {path}",
-                                   code="MISSING_FILE_EXTENSION",
-                                   path=str(path))
+            raise ConfigurationError(
+                f"Unsupported config format: no file extension for {path}",
+                code="MISSING_FILE_EXTENSION",
+                path=str(path),
+            )
         else:
-            raise ConfigurationError(f"Unsupported config format: {path.suffix}",
-                                   code="UNSUPPORTED_CONFIG_FORMAT",
-                                   path=str(path),
-                                   suffix=path.suffix)
+            raise ConfigurationError(
+                f"Unsupported config format: {path.suffix}",
+                code="UNSUPPORTED_CONFIG_FORMAT",
+                path=str(path),
+                suffix=path.suffix,
+            )
 
     def _merge_with_override(self, merged_data: dict[str, Any], other_data: dict[str, Any]) -> None:
         """Merge data with override_defaults=True strategy."""

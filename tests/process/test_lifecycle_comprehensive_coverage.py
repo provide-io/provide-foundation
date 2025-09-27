@@ -9,14 +9,14 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-# Mark all tests in this file to run serially to avoid event loop issues
-pytestmark = pytest.mark.serial
-
-from typing import Never
+from typing import Any, Never
 
 from provide.foundation.errors.runtime import StateError
 from provide.foundation.process.lifecycle import ManagedProcess, wait_for_process_output
 from provide.foundation.process.runner import ProcessError
+
+# Mark all tests in this file to run serially to avoid event loop issues
+pytestmark = pytest.mark.serial
 
 
 class TestManagedProcessInitialization:
@@ -238,7 +238,7 @@ class TestManagedProcessStderrRelay:
 
     @patch("sys.stderr.write")
     @patch("sys.stderr.flush")
-    def test_stderr_relay_enabled(self, mock_flush, mock_write) -> None:
+    def test_stderr_relay_enabled(self, mock_flush: Mock, mock_write: Mock) -> None:
         """Test stderr relay when enabled."""
         # Create a process that outputs to stderr
         proc = ManagedProcess(
@@ -394,7 +394,7 @@ class TestManagedProcessEdgeCases:
             proc.cleanup()
 
     @patch("subprocess.Popen")
-    def test_launch_subprocess_exception(self, mock_popen) -> None:
+    def test_launch_subprocess_exception(self, mock_popen: Mock) -> None:
         """Test launch when subprocess.Popen raises exception."""
         mock_popen.side_effect = OSError("Permission denied")
 
@@ -461,7 +461,7 @@ class TestWaitForProcessOutput:
         )
         proc.launch()
 
-        with pytest.raises(TimeoutError, match="Expected pattern .* not found within"):
+        with pytest.raises(TimeoutError, match=r"Expected pattern .* not found within"):
             await wait_for_process_output(
                 proc,
                 expected_parts=["never_appears"],
@@ -508,7 +508,7 @@ class TestWaitForProcessOutput:
         original_read_line = proc.read_line_async
         original_read_char = proc.read_char_async
 
-        async def mock_read_line(*args, **kwargs) -> Never:
+        async def mock_read_line(*args: Any, **kwargs: Any) -> Never:
             raise TimeoutError
 
         proc.read_line_async = mock_read_line
@@ -534,13 +534,13 @@ class TestWaitForProcessOutput:
         proc.launch()
 
         # Mock both reading methods to timeout
-        async def mock_timeout(*args, **kwargs) -> Never:
+        async def mock_timeout(*args: Any, **kwargs: Any) -> Never:
             raise TimeoutError
 
         proc.read_line_async = mock_timeout
         proc.read_char_async = mock_timeout
 
-        with pytest.raises(TimeoutError, match="Expected pattern .* not found within"):
+        with pytest.raises(TimeoutError, match=r"Expected pattern .* not found within"):
             await wait_for_process_output(
                 proc,
                 expected_parts=["never_appears"],

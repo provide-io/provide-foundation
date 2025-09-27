@@ -215,7 +215,9 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_lifecycle.py::TestManagedProcess::test_launch_twice_raises_error -xvs)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/context/test_context_core.py::TestContext::test_context_immutable_after_freeze -xvs)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/context/ -x)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/ -x)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/ -x)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/process/lifecycle.py src/provide/foundation/process/runner.py src/provide/foundation/hub/initialization.py src/provide/foundation/integrations/openobserve/streaming.py src/provide/foundation/resilience/decorators.py src/provide/foundation/context/core.py tests/context/test_context_core.py tests/process/test_lifecycle.py tests/process/test_lifecycle_comprehensive_coverage.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check:*)"
     ],
     "deny": [],
     "ask": [],

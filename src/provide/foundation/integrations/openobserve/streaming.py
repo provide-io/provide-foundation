@@ -200,21 +200,18 @@ def tail_logs(
         directly into SQL query. For user inputs, use parameterized search functions.
 
     """
-    import re
 
     # Sanitize stream name to prevent SQL injection
     if not re.match(r"^[a-zA-Z0-9_]+$", stream):
-        raise ValidationError("Invalid stream name",
-                            code="INVALID_STREAM_NAME",
-                            stream=stream,
-                            allowed_pattern="^[a-zA-Z0-9_]+$")
+        raise ValidationError(
+            "Invalid stream name", code="INVALID_STREAM_NAME", stream=stream, allowed_pattern="^[a-zA-Z0-9_]+$"
+        )
 
     # Validate lines parameter
     if not isinstance(lines, int) or lines <= 0 or lines > 10000:
-        raise ValidationError("Invalid lines parameter",
-                            code="INVALID_LINES_PARAM",
-                            lines=lines,
-                            expected_range="1-10000")
+        raise ValidationError(
+            "Invalid lines parameter", code="INVALID_LINES_PARAM", lines=lines, expected_range="1-10000"
+        )
 
     # Build SQL query
     where_clause = f"WHERE {filter_sql}" if filter_sql else ""

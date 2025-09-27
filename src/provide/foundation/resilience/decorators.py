@@ -88,16 +88,22 @@ def _validate_retry_parameters(
     if policy is not None and any(
         p is not None for p in [max_attempts, base_delay, backoff, max_delay, jitter]
     ):
-        raise ConfigurationError("Cannot specify both policy and individual retry parameters",
-                               code="CONFLICTING_RETRY_CONFIG",
-                               has_policy=policy is not None,
-                               individual_params=[name for name, value in [
-                                   ("max_attempts", max_attempts),
-                                   ("base_delay", base_delay),
-                                   ("backoff", backoff),
-                                   ("max_delay", max_delay),
-                                   ("jitter", jitter)
-                               ] if value is not None])
+        raise ConfigurationError(
+            "Cannot specify both policy and individual retry parameters",
+            code="CONFLICTING_RETRY_CONFIG",
+            has_policy=policy is not None,
+            individual_params=[
+                name
+                for name, value in [
+                    ("max_attempts", max_attempts),
+                    ("base_delay", base_delay),
+                    ("backoff", backoff),
+                    ("max_delay", max_delay),
+                    ("jitter", jitter),
+                ]
+                if value is not None
+            ],
+        )
 
 
 def _build_retry_policy(

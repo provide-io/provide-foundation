@@ -434,10 +434,12 @@ def run_shell(
 
     """
     if not isinstance(cmd, str):
-        raise ValidationError("Shell command must be a string",
-                            code="INVALID_SHELL_COMMAND",
-                            expected_type="str",
-                            actual_type=type(cmd).__name__)
+        raise ValidationError(
+            "Shell command must be a string",
+            code="INVALID_SHELL_COMMAND",
+            expected_type="str",
+            actual_type=type(cmd).__name__,
+        )
 
     # Basic validation - log warning for potentially dangerous patterns
     dangerous_patterns = [";", "&&", "||", "|", ">", "<", "&", "$", "`"]

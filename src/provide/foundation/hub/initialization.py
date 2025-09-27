@@ -110,10 +110,12 @@ class InitializationCoordinator:
 
             except Exception as e:
                 self._state.mark_failed(e)
-                raise FoundationRuntimeError(f"Foundation initialization failed: {e}",
-                                            code="FOUNDATION_INIT_FAILED",
-                                            cause=e,
-                                            initialization_phase="config_and_logger") from e
+                raise FoundationRuntimeError(
+                    f"Foundation initialization failed: {e}",
+                    code="FOUNDATION_INIT_FAILED",
+                    cause=e,
+                    initialization_phase="config_and_logger",
+                ) from e
 
     def _initialize_config(self, config: Any) -> Any:
         """Initialize configuration."""
