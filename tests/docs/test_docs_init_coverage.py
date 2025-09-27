@@ -99,7 +99,7 @@ class TestDocsModuleImportBehavior:
         """Test reference to generator module."""
         try:
             # Try to access the generator module through the import structure
-            from provide.foundation.docs import generator  # type: ignore
+            from provide.foundation.docs import generator
 
             # If successful, verify it has expected attributes
             assert hasattr(generator, "APIDocGenerator")
