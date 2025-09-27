@@ -170,6 +170,7 @@ class TestTokenBucketRateLimiter:
         assert await limiter.is_allowed() is False
 
     @pytest.mark.asyncio
+    @pytest.mark.time_sensitive
     async def test_extreme_time_precision(self) -> None:
         """Test behavior with very small time intervals and high precision."""
         limiter = TokenBucketRateLimiter(
