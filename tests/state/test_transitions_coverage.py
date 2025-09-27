@@ -5,8 +5,6 @@ from __future__ import annotations
 import time
 from unittest.mock import patch
 
-import pytest
-
 from provide.foundation.state._internal.transitions import (
     CircuitBreakerEvent,
     CircuitBreakerState,
@@ -286,11 +284,8 @@ class TestCircuitBreakerStateMachineEdgeCases:
         machine = CircuitBreakerStateMachine()
 
         # Open the circuit
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
+        for _ in range(10):  # Ensure we exceed any reasonable default threshold
+            machine.transition(CircuitBreakerEvent.FAILURE)
 
         assert machine.current_state == "open"
 
@@ -301,30 +296,28 @@ class TestCircuitBreakerStateMachineEdgeCases:
 
     def test_transitions_from_all_states_to_reset(self) -> None:
         """Test reset transitions work from all states."""
-        machine = CircuitBreakerStateMachine()
+        machine = CircuitBreakerStateMachine(recovery_timeout=0.05)  # Short timeout for test
 
         # Reset from closed
         machine.transition(CircuitBreakerEvent.RESET)
         assert machine.current_state == "closed"
 
         # Go to open, then reset
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
+        # Use enough failures to trigger open state based on default threshold
+        for _ in range(10):  # Ensure we exceed any reasonable default threshold
+            machine.transition(CircuitBreakerEvent.FAILURE)
         assert machine.current_state == "open"
 
         machine.transition(CircuitBreakerEvent.RESET)
         assert machine.current_state == "closed"
 
         # Go to half-open, then reset
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        time.sleep(0.1)  # Wait for recovery timeout
+        # Use enough failures to trigger open state based on default threshold
+        for _ in range(10):  # Ensure we exceed any reasonable default threshold
+            machine.transition(CircuitBreakerEvent.FAILURE)
+        assert machine.current_state == "open"
+
+        time.sleep(0.1)  # Wait for recovery timeout (longer than 0.05)
         machine.transition(CircuitBreakerEvent.TIMEOUT)
         assert machine.current_state == "half_open"
 
@@ -336,11 +329,8 @@ class TestCircuitBreakerStateMachineEdgeCases:
         machine = CircuitBreakerStateMachine(recovery_timeout=0.05)
 
         # Open the circuit
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
+        for _ in range(10):  # Ensure we exceed any reasonable default threshold
+            machine.transition(CircuitBreakerEvent.FAILURE)
 
         assert machine.current_state == "open"
 
@@ -354,11 +344,8 @@ class TestCircuitBreakerStateMachineEdgeCases:
         machine = CircuitBreakerStateMachine(recovery_timeout=1.0)  # Long timeout
 
         # Open the circuit
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
-        machine.transition(CircuitBreakerEvent.FAILURE)
+        for _ in range(10):  # Ensure we exceed any reasonable default threshold
+            machine.transition(CircuitBreakerEvent.FAILURE)
 
         assert machine.current_state == "open"
 

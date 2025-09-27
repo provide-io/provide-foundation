@@ -116,7 +116,11 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/transport/test_middleware_coverage.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/transport/test_middleware_coverage.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/transport/test_middleware_coverage.py -v --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/state/test_transitions_coverage.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/state/test_transitions_coverage.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/state/test_transitions_coverage.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/state/test_transitions_coverage.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_transitions_coverage.py -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/state/test_transitions_coverage.py::TestCircuitBreakerStateMachineEdgeCases::test_transitions_from_all_states_to_reset -v --tb=short)"
     ],
     "deny": [],
     "ask": [],
