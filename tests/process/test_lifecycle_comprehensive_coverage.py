@@ -1,25 +1,27 @@
 """Comprehensive coverage tests for process/lifecycle.py module."""
 
+from __future__ import annotations
+
 from pathlib import Path
 import sys
 import tempfile
 import threading
-import time
+from typing import Any, Never
 from unittest.mock import Mock, patch
 
 import pytest
 
-from typing import Any, Never
-
 from provide.foundation.errors.runtime import StateError
 from provide.foundation.process.lifecycle import ManagedProcess, wait_for_process_output
 from provide.foundation.process.runner import ProcessError
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking.time import mock_sleep
 
 # Mark all tests in this file to run serially to avoid event loop issues
 pytestmark = pytest.mark.serial
 
 
-class TestManagedProcessInitialization:
+class TestManagedProcessInitialization(FoundationTestCase):
     """Test ManagedProcess initialization and properties."""
 
     def test_basic_initialization(self) -> None:
@@ -95,7 +97,7 @@ class TestManagedProcessInitialization:
         assert proc.is_running() is False
 
 
-class TestManagedProcessLaunch:
+class TestManagedProcessLaunch(FoundationTestCase):
     """Test ManagedProcess launch functionality."""
 
     def test_successful_launch(self) -> None:
@@ -164,7 +166,7 @@ class TestManagedProcessLaunch:
         proc.cleanup()
 
 
-class TestManagedProcessOutput:
+class TestManagedProcessOutput(FoundationTestCase):
     """Test ManagedProcess output handling."""
 
     @pytest.mark.asyncio
@@ -233,7 +235,7 @@ class TestManagedProcessOutput:
             await proc.read_char_async()
 
 
-class TestManagedProcessStderrRelay:
+class TestManagedProcessStderrRelay(FoundationTestCase):
     """Test ManagedProcess stderr relay functionality."""
 
     @patch("sys.stderr.write")
@@ -250,7 +252,8 @@ class TestManagedProcessStderrRelay:
 
         # Wait for process to complete and stderr thread to relay
         proc._process.wait()
-        time.sleep(0.1)  # Give relay thread time to process
+        with mock_sleep():
+            pass  # Mock the relay thread processing time
 
         # Check if stderr was relayed (may not be called if process completes too quickly)
         proc.cleanup()
@@ -279,7 +282,7 @@ class TestManagedProcessStderrRelay:
         proc.cleanup()
 
 
-class TestManagedProcessTermination:
+class TestManagedProcessTermination(FoundationTestCase):
     """Test ManagedProcess termination functionality."""
 
     def test_terminate_gracefully_not_started(self) -> None:
@@ -349,7 +352,7 @@ class TestManagedProcessTermination:
         proc._stderr_thread.join.assert_called_once_with(timeout=1.0)
 
 
-class TestManagedProcessContextManager:
+class TestManagedProcessContextManager(FoundationTestCase):
     """Test ManagedProcess as context manager."""
 
     def test_context_manager_success(self) -> None:
@@ -374,7 +377,7 @@ class TestManagedProcessContextManager:
         assert not proc.is_running()
 
 
-class TestManagedProcessEdgeCases:
+class TestManagedProcessEdgeCases(FoundationTestCase):
     """Test ManagedProcess edge cases and error conditions."""
 
     def test_is_running_no_process(self) -> None:
@@ -421,7 +424,7 @@ class TestManagedProcessEdgeCases:
         assert proc._stderr_thread is None
 
 
-class TestWaitForProcessOutput:
+class TestWaitForProcessOutput(FoundationTestCase):
     """Test wait_for_process_output function."""
 
     @pytest.mark.asyncio
@@ -552,7 +555,7 @@ class TestWaitForProcessOutput:
 
 
 @pytest.mark.serial  # These tests have timing issues with parallel execution
-class TestProcessLifecycleIntegration:
+class TestProcessLifecycleIntegration(FoundationTestCase):
     """Integration tests for process lifecycle functionality."""
 
     def test_full_lifecycle_simple_command(self) -> None:
