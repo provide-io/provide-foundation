@@ -158,7 +158,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_utils_deps_coverage.py tests/utils/test_formatting_coverage.py tests/utils/test_parsing_coverage.py tests/utils/test_timing_coverage.py tests/utils/test_rate_limiting_coverage.py tests/utils/test_streams_coverage.py --cov=src/provide/foundation/utils --cov-report=term-missing -q --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest --cov=src/provide/foundation --cov-report=term:skip-covered --cov-report=html -q --tb=no)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/utils/test_environment_getters_coverage.py)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/utils/test_environment_getters_coverage.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes tests/utils/test_environment_getters_coverage.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_environment_getters_coverage.py -v --tb=short)"
     ],
     "deny": [],
     "ask": [],
