@@ -9,6 +9,7 @@ from typing import Any, cast
 from unittest.mock import Mock, patch
 
 import pytest
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.env import RuntimeConfig
@@ -97,7 +98,7 @@ class TestRuntimeConfig(RuntimeConfig):
         return config
 
 
-class TestFileConfigLoader:
+class TestFileConfigLoader(FoundationTestCase):
     """Test FileConfigLoader class."""
 
     def test_init_with_explicit_format(self) -> None:
@@ -278,7 +279,7 @@ class TestFileConfigLoader:
         assert section1["key1"] == "value1"
 
 
-class TestRuntimeConfigLoader:
+class TestRuntimeConfigLoader(FoundationTestCase):
     """Test RuntimeConfigLoader class."""
 
     def test_init_defaults(self) -> None:
@@ -331,7 +332,7 @@ class TestRuntimeConfigLoader:
         assert "must inherit from RuntimeConfig" in str(exc_info.value)
 
 
-class TestDictConfigLoader:
+class TestDictConfigLoader(FoundationTestCase):
     """Test DictConfigLoader class."""
 
     def test_init_defaults(self) -> None:
@@ -368,7 +369,7 @@ class TestDictConfigLoader:
         assert config.enabled is True
 
 
-class TestMultiSourceLoader:
+class TestMultiSourceLoader(FoundationTestCase):
     """Test MultiSourceLoader class."""
 
     def test_init(self) -> None:
@@ -447,7 +448,7 @@ class TestMultiSourceLoader:
             multi_loader.load(TestConfig)
 
 
-class TestChainedLoader:
+class TestChainedLoader(FoundationTestCase):
     """Test ChainedLoader class."""
 
     def test_init(self) -> None:
@@ -497,7 +498,7 @@ class TestChainedLoader:
         assert "No configuration source available" in str(exc_info.value)
 
 
-class TestConfigLoaderIntegration:
+class TestConfigLoaderIntegration(FoundationTestCase):
     """Integration tests for config loaders."""
 
     def test_file_and_runtime_integration(self, tmp_path: Path) -> None:
