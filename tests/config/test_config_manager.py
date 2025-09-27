@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+from unittest.mock import Mock
+
 from attrs import define
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.manager import ConfigManager
@@ -17,7 +20,7 @@ class SampleConfig(BaseConfig):
     enabled: bool = True
 
 
-class SampleConfigManager:
+class TestConfigManager(FoundationTestCase):
     """Test ConfigManager class."""
 
     def test_init_manager(self) -> None:
