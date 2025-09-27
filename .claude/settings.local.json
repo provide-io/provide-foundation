@@ -225,7 +225,13 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/env/test_env_types_coverage.py::TestEnvTypes::test_env_parser_type_alias tests/resilience/test_retry_decorator.py::TestRetryDecoratorParameterValidation::test_conflicting_parameters tests/hub/test_hub_context.py::TestContext::test_context_immutable_after_freeze -v)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/env/test_env_types_coverage.py tests/resilience/test_retry_decorator.py tests/hub/test_hub_context.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/env/test_env_types_coverage.py tests/hub/test_hub_context.py --ignore-missing-imports)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/env/test_env_types_coverage.py::TestEnvTypes::test_env_parser_type_alias tests/resilience/test_retry_decorator.py::TestRetryDecoratorParameterValidation::test_conflicting_parameters tests/hub/test_hub_context.py::TestContext::test_context_immutable_after_freeze -x --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/env/test_env_types_coverage.py::TestEnvTypes::test_env_parser_type_alias tests/resilience/test_retry_decorator.py::TestRetryDecoratorParameterValidation::test_conflicting_parameters tests/hub/test_hub_context.py::TestContext::test_context_immutable_after_freeze -x --tb=short)",
+      "Bash(PYTHONPATH=src pytest tests/config/test_config_env.py::TestRuntimeConfigClass::test_from_env_with_prefix -v --tb=short)",
+      "Bash(PYTHONPATH=src pytest tests/cli/test_cli_integration.py::TestCompleteCliIntegration::test_json_output_with_errors -v --tb=short)",
+      "Bash(PYTHONPATH=src pytest tests/cli/test_cli_integration.py -v --collect-only)",
+      "Bash(PYTHONPATH=src pytest tests/cli/test_cli_integration.py --collect-only)",
+      "Bash(PYTHONPATH=src pytest tests/cli/test_cli_integration.py::TestOutputFormatting::test_json_output_format -v --tb=short)",
+      "Bash(PYTHONPATH=src pytest tests/resilience/test_retry_executor.py::TestRetryExecutorSync::test_delay_between_retries -v --tb=short)"
     ],
     "deny": [],
     "ask": [],
