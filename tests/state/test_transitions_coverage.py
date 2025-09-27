@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-import time
-from unittest.mock import patch
+from typing import TYPE_CHECKING
+
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.state._internal.transitions import (
     CircuitBreakerEvent,
@@ -11,8 +12,11 @@ from provide.foundation.state._internal.transitions import (
     CircuitBreakerStateMachine,
 )
 
+if TYPE_CHECKING:
+    from provide.testkit.time.fixtures import TimeMachine
 
-class TestCircuitBreakerStateEdgeCases:
+
+class TestCircuitBreakerStateEdgeCases(FoundationTestCase):
     """Test edge cases in CircuitBreakerState."""
 
     def test_circuit_breaker_state_creation_with_defaults(self) -> None:
@@ -79,9 +83,10 @@ class TestCircuitBreakerStateEdgeCases:
         assert not half_open_state.is_open()
         assert half_open_state.is_half_open()
 
-    def test_should_attempt_reset_conditions(self) -> None:
+    def test_should_attempt_reset_conditions(self, time_machine: TimeMachine) -> None:
         """Test should_attempt_reset under various conditions."""
-        current_time = time.time()
+        time_machine.freeze()
+        current_time = 1000.0  # Fixed time for test
 
         # Closed state - should not attempt reset
         closed_state = CircuitBreakerState(state="closed")
@@ -120,47 +125,48 @@ class TestCircuitBreakerStateEdgeCases:
         new_state = open_state.record_success()
         assert new_state is open_state  # Should be unchanged
 
-    def test_record_failure_from_different_states(self) -> None:
+    def test_record_failure_from_different_states(self, time_machine: TimeMachine) -> None:
         """Test record_failure behavior from different states."""
-        current_time = time.time()
+        current_time = 1000.0
+        time_machine.freeze(current_time)
 
-        with patch("time.time", return_value=current_time):
-            # From half-open state - should go back to open
-            half_open_state = CircuitBreakerState(state="half_open", failure_count=1, recovery_timeout=60.0)
-            new_state = half_open_state.record_failure()
-            assert new_state.is_open()
-            assert new_state.failure_count == 2
-            assert new_state.last_failure_time == current_time
-            assert new_state.next_attempt_time == current_time + 60.0
+        # From half-open state - should go back to open
+        half_open_state = CircuitBreakerState(state="half_open", failure_count=1, recovery_timeout=60.0)
+        new_state = half_open_state.record_failure()
+        assert new_state.is_open()
+        assert new_state.failure_count == 2
+        assert new_state.last_failure_time == current_time
+        assert new_state.next_attempt_time == current_time + 60.0
 
-            # From closed state - below threshold
-            closed_state = CircuitBreakerState(state="closed", failure_count=1, failure_threshold=5)
-            new_state = closed_state.record_failure()
-            assert new_state.is_closed()
-            assert new_state.failure_count == 2
-            assert new_state.last_failure_time == current_time
+        # From closed state - below threshold
+        closed_state = CircuitBreakerState(state="closed", failure_count=1, failure_threshold=5)
+        new_state = closed_state.record_failure()
+        assert new_state.is_closed()
+        assert new_state.failure_count == 2
+        assert new_state.last_failure_time == current_time
 
-            # From closed state - reaches threshold
-            closed_state_threshold = CircuitBreakerState(
-                state="closed", failure_count=4, failure_threshold=5, recovery_timeout=30.0
-            )
-            new_state = closed_state_threshold.record_failure()
-            assert new_state.is_open()
-            assert new_state.failure_count == 5
-            assert new_state.last_failure_time == current_time
-            assert new_state.next_attempt_time == current_time + 30.0
+        # From closed state - reaches threshold
+        closed_state_threshold = CircuitBreakerState(
+            state="closed", failure_count=4, failure_threshold=5, recovery_timeout=30.0
+        )
+        new_state = closed_state_threshold.record_failure()
+        assert new_state.is_open()
+        assert new_state.failure_count == 5
+        assert new_state.last_failure_time == current_time
+        assert new_state.next_attempt_time == current_time + 30.0
 
-            # From open state - should update failure info
-            open_state = CircuitBreakerState(state="open", failure_count=5, recovery_timeout=45.0)
-            new_state = open_state.record_failure()
-            assert new_state.is_open()
-            assert new_state.failure_count == 6
-            assert new_state.last_failure_time == current_time
-            assert new_state.next_attempt_time == current_time + 45.0
+        # From open state - should update failure info
+        open_state = CircuitBreakerState(state="open", failure_count=5, recovery_timeout=45.0)
+        new_state = open_state.record_failure()
+        assert new_state.is_open()
+        assert new_state.failure_count == 6
+        assert new_state.last_failure_time == current_time
+        assert new_state.next_attempt_time == current_time + 45.0
 
-    def test_attempt_reset_conditions(self) -> None:
+    def test_attempt_reset_conditions(self, time_machine: TimeMachine) -> None:
         """Test attempt_reset under various conditions."""
-        current_time = time.time()
+        time_machine.freeze()
+        current_time = 1000.0  # Fixed time for test
 
         # Open state ready for reset
         open_state_ready = CircuitBreakerState(state="open", next_attempt_time=current_time - 1)
@@ -206,7 +212,7 @@ class TestCircuitBreakerStateEdgeCases:
         assert new_state.next_attempt_time == 0.0
 
 
-class TestCircuitBreakerStateMachineEdgeCases:
+class TestCircuitBreakerStateMachineEdgeCases(FoundationTestCase):
     """Test edge cases in CircuitBreakerStateMachine."""
 
     def test_state_machine_initialization_with_custom_params(self) -> None:
@@ -226,8 +232,9 @@ class TestCircuitBreakerStateMachineEdgeCases:
         assert isinstance(circuit_state, CircuitBreakerState)
         assert circuit_state.is_closed()
 
-    def test_guard_function_behavior(self) -> None:
+    def test_guard_function_behavior(self, time_machine: TimeMachine) -> None:
         """Test the guard function behavior."""
+        time_machine.freeze()
         machine = CircuitBreakerStateMachine(recovery_timeout=0.1)
 
         # Make circuit open
@@ -242,8 +249,8 @@ class TestCircuitBreakerStateMachineEdgeCases:
         # Guard should return False initially
         assert not machine._should_attempt_reset()
 
-        # Wait for timeout
-        time.sleep(0.15)
+        # Jump past the timeout
+        time_machine.jump(0.15)
 
         # Guard should return True after timeout
         assert machine._should_attempt_reset()
@@ -294,8 +301,9 @@ class TestCircuitBreakerStateMachineEdgeCases:
         assert machine.current_state == "closed"
         assert machine.circuit_state.failure_count == 0
 
-    def test_transitions_from_all_states_to_reset(self) -> None:
+    def test_transitions_from_all_states_to_reset(self, time_machine: TimeMachine) -> None:
         """Test reset transitions work from all states."""
+        time_machine.freeze()
         machine = CircuitBreakerStateMachine(recovery_timeout=0.05)  # Short timeout for test
 
         # Reset from closed
@@ -317,15 +325,16 @@ class TestCircuitBreakerStateMachineEdgeCases:
             machine.transition(CircuitBreakerEvent.FAILURE)
         assert machine.current_state == "open"
 
-        time.sleep(0.1)  # Wait for recovery timeout (longer than 0.05)
+        time_machine.jump(0.1)  # Jump past recovery timeout
         machine.transition(CircuitBreakerEvent.TIMEOUT)
         assert machine.current_state == "half_open"
 
         machine.transition(CircuitBreakerEvent.RESET)
         assert machine.current_state == "closed"
 
-    def test_attempt_reset_action_method(self) -> None:
+    def test_attempt_reset_action_method(self, time_machine: TimeMachine) -> None:
         """Test _attempt_reset action method."""
+        time_machine.freeze()
         machine = CircuitBreakerStateMachine(recovery_timeout=0.05)
 
         # Open the circuit
@@ -334,8 +343,8 @@ class TestCircuitBreakerStateMachineEdgeCases:
 
         assert machine.current_state == "open"
 
-        # Wait and call _attempt_reset directly
-        time.sleep(0.1)
+        # Jump past timeout and call _attempt_reset directly
+        time_machine.jump(0.1)
         machine._attempt_reset()
         assert machine.circuit_state.is_half_open()
 
@@ -354,7 +363,7 @@ class TestCircuitBreakerStateMachineEdgeCases:
         assert machine.current_state == "open"  # Should remain open
 
 
-class TestCircuitBreakerEvent:
+class TestCircuitBreakerEvent(FoundationTestCase):
     """Test CircuitBreakerEvent enum."""
 
     def test_event_enum_values(self) -> None:
