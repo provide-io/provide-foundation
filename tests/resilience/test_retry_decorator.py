@@ -8,9 +8,10 @@ import pytest
 
 from provide.foundation.resilience.decorators import retry
 from provide.foundation.resilience.retry import BackoffStrategy, RetryPolicy
+from provide.testkit import FoundationTestCase
 
 
-class TestRetryDecoratorSync:
+class TestRetryDecoratorSync(FoundationTestCase):
     """Test @retry decorator with synchronous functions."""
 
     def test_successful_function(self) -> None:
@@ -184,7 +185,7 @@ class TestRetryDecoratorSync:
             func3()
 
 
-class TestRetryDecoratorAsync:
+class TestRetryDecoratorAsync(FoundationTestCase):
     """Test @retry decorator with asynchronous functions."""
 
     @pytest.mark.asyncio

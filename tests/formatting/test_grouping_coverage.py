@@ -2,19 +2,13 @@
 
 from __future__ import annotations
 
-from provide.testkit import reset_foundation_setup_for_testing
 import pytest
 
 from provide.foundation.formatting.grouping import format_grouped
+from provide.testkit import FoundationTestCase
 
 
-@pytest.fixture(autouse=True)
-def reset_foundation() -> None:
-    """Reset Foundation state before each test."""
-    reset_foundation_setup_for_testing()
-
-
-class TestFormatGrouped:
+class TestFormatGrouped(FoundationTestCase):
     """Test format_grouped function."""
 
     def test_format_grouped_basic(self) -> None:

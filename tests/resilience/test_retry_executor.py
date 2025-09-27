@@ -14,10 +14,10 @@ from provide.foundation.resilience.retry import (
     RetryExecutor,
     RetryPolicy,
 )
-from provide.testkit import mock_sleep
+from provide.testkit import FoundationTestCase, mock_sleep
 
 
-class TestRetryExecutorSync:
+class TestRetryExecutorSync(FoundationTestCase):
     """Test synchronous retry execution."""
 
     def test_successful_first_attempt(self) -> None:
@@ -285,7 +285,7 @@ class TestRetryExecutorSync:
             assert 0.75 <= delay <= 1.25
 
 
-class TestRetryExecutorAsync:
+class TestRetryExecutorAsync(FoundationTestCase):
     """Test asynchronous retry execution."""
 
     @pytest.mark.asyncio
