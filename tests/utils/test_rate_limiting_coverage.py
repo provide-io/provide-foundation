@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import asyncio
 import time
-from unittest.mock import Mock, patch
 
+from provide.testkit.mocking.time import mock_sleep
 import pytest
 
 from provide.foundation.utils.rate_limiting import TokenBucketRateLimiter
@@ -83,13 +83,19 @@ class TestTokenBucketRateLimiter:
         # Should be empty now
         assert await limiter.is_allowed() is False
 
-        # Wait for refill (0.2 seconds should add 2 tokens at 10/sec rate)
-        await asyncio.sleep(0.2)
+        # Mock sleep and manually advance the limiter's time for deterministic testing
+        with mock_sleep():
+            # Manually set the limiter's timestamp to simulate 0.2 seconds passing
+            # This should add 2 tokens at 10/sec rate (0.2 * 10 = 2 tokens)
+            limiter._last_refill_timestamp = time.monotonic() - 0.2
 
-        # Should allow 2 requests now
-        assert await limiter.is_allowed() is True
-        assert await limiter.is_allowed() is True
-        assert await limiter.is_allowed() is False
+            # Trigger refill by calling is_allowed (which calls _refill_tokens internally)
+            await limiter._refill_tokens()
+
+            # Should allow 2 requests now
+            assert await limiter.is_allowed() is True
+            assert await limiter.is_allowed() is True
+            assert await limiter.is_allowed() is False
 
     @pytest.mark.asyncio
     async def test_refill_tokens_basic(self) -> None:
