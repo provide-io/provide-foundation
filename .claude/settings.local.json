@@ -238,7 +238,8 @@
       "Bash(PYTHONPATH=src pytest tests/resilience/test_retry_executor.py::TestRetryExecutorAsync::test_delay_between_retries -v --tb=short)",
       "Bash(xargs dirname:*)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_environment.py -v)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_deps.py -v)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_deps.py -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_environment_getters_coverage.py -v)"
     ],
     "deny": [],
     "ask": [],
