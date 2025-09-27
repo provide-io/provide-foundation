@@ -299,7 +299,10 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/ -k \"async\" -v --tb=short -x)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_async_runner_coverage.py::TestAsyncContextualBehavior::test_async_cancel_during_execution -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_async_runner_coverage.py::TestAsyncContextualBehavior -v --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_async_runner_coverage.py::TestAsyncStreamCommandCoverage::test_async_stream_command_timeout -v --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_async_runner_coverage.py::TestAsyncStreamCommandCoverage::test_async_stream_command_timeout -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/process/test_async_runner_coverage.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_async_runner_coverage.py -k \"async_cancel_during_execution or async_stream_command_timeout\" -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/ -k \"async\" -v --tb=short --maxfail=3 -x)"
     ],
     "deny": [],
     "ask": [],

@@ -7,8 +7,8 @@ import asyncio
 import sys
 from unittest.mock import patch
 
-import pytest
 from provide.testkit import FoundationTestCase, mock_sleep
+import pytest
 
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.process.async_runner import (
