@@ -28,8 +28,6 @@ with_suppression = os.environ.get("FOUNDATION_SUPPRESS_TESTING_WARNINGS")
 os.environ["FOUNDATION_SUPPRESS_TESTING_WARNINGS"] = "true"
 
 from provide.testkit import (  # noqa: E402
-    FoundationTestCase,
-    reset_foundation_setup_for_testing,
     set_log_stream_for_testing,
 )
 
@@ -66,47 +64,16 @@ if not os.getenv("PYTEST_WORKER_ID"):  # Avoid multiple messages with xdist
     conftest_diag_logger.debug("⚙️➡️🔍 Conftest loaded.")
 
 
-def _test_uses_foundation_test_case(request: pytest.FixtureRequest) -> bool:
-    """Check if the current test class inherits from FoundationTestCase."""
-    if hasattr(request, "instance") and request.instance is not None:
-        # Check if the test instance inherits from FoundationTestCase
-        return isinstance(request.instance, FoundationTestCase)
-    return False
-
-
 @pytest.fixture(autouse=True)
-def manage_telemetry_reset_for_each_test(request: pytest.FixtureRequest) -> Generator[None]:
-    """Autouse fixture to reset Foundation Telemetry before and after each test.
+def reset_log_stream_for_testing() -> Generator[None]:
+    """Autouse fixture to reset log stream after each test.
 
-    For tests that inherit from FoundationTestCase, this fixture is a no-op
-    since FoundationTestCase handles Foundation reset automatically.
-    For legacy tests, this ensures test isolation.
+    Foundation reset is handled by FoundationTestCase for migrated tests.
+    This fixture only ensures log stream cleanup for all tests.
     """
-    uses_foundation_test_case = _test_uses_foundation_test_case(request)
-
-    if uses_foundation_test_case:
-        # FoundationTestCase handles reset, so just yield
-        if not os.getenv("PYTEST_WORKER_ID") or os.getenv("PYTEST_WORKER_ID") == "gw0":
-            conftest_diag_logger.debug(
-                "🎯 Test uses FoundationTestCase - skipping global reset",
-            )
-        yield
-        # Still ensure stream is reset for cleanup
-        set_log_stream_for_testing(None)
-    else:
-        # Legacy test - perform full reset
-        if not os.getenv("PYTEST_WORKER_ID") or os.getenv("PYTEST_WORKER_ID") == "gw0":
-            conftest_diag_logger.debug(
-                "🔄 (Pre-test) Legacy test - calling reset_foundation_setup_for_testing()",
-            )
-        reset_foundation_setup_for_testing()
-        yield
-        if not os.getenv("PYTEST_WORKER_ID") or os.getenv("PYTEST_WORKER_ID") == "gw0":
-            conftest_diag_logger.debug(
-                "🔄 (Post-test) Legacy test - calling reset_foundation_setup_for_testing()",
-            )
-        reset_foundation_setup_for_testing()
-        set_log_stream_for_testing(None)  # Ensure stream is reset to default stderr
+    yield
+    # Ensure stream is reset to default stderr after each test
+    set_log_stream_for_testing(None)
 
 
 # Import and re-export fixtures from the unified testing module
