@@ -255,7 +255,7 @@ class TestFileFormats(FoundationTestCase):
         """Test reading TOML file."""
 
         path = temp_directory / "test.toml"
-    toml_content = """
+        toml_content = """
         [package]
         name = "test"
         version = "1.0.0"

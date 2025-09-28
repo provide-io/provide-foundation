@@ -68,7 +68,7 @@ class TestPackageReplacements(FoundationTestCase):
         flavorpack_path = Path("/Users/tim/code/gh/provide-io/flavorpack/src")
         disk_file = flavorpack_path / "flavor/utils/disk.py"
         if flavorpack_path.exists() and disk_file.exists():
-        import importlib.util
+            import importlib.util
 
         # Load the disk module directly without importing the full package
         spec = importlib.util.spec_from_file_location(
