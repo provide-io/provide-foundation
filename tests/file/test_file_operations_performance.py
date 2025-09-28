@@ -220,7 +220,7 @@ class TestFileOperationsPerformance(FoundationTestCase):
         # Add standard test cases
         scenarios = create_scenarios_from_patterns()
         for scenario in scenarios:
-            analyzer.add_test_scenario(scenario)
+            analyzer.add_scenario(scenario)
 
         # Benchmark the analysis
         metrics = [

@@ -38,7 +38,7 @@ class TestQualityAnalyzer(FoundationTestCase):
         analyzer = QualityAnalyzer(detector)
         assert analyzer.detector is detector
 
-    def test_add_test_scenario(self) -> None:
+    def test_add_scenario(self) -> None:
         """Test adding test cases."""
         analyzer = QualityAnalyzer()
 
@@ -49,7 +49,7 @@ class TestQualityAnalyzer(FoundationTestCase):
             description="Test case",
         )
 
-        analyzer.add_test_scenario(test_case)
+        analyzer.add_scenario(test_case)
         assert len(analyzer.test_cases) == 1
         assert analyzer.test_cases[0] == test_case
 
@@ -89,7 +89,7 @@ class TestQualityAnalyzer(FoundationTestCase):
             description="VSCode atomic save",
         )
 
-        analyzer.add_test_scenario(test_case)
+        analyzer.add_scenario(test_case)
 
         # Run analysis with specific metrics
         results = analyzer.run_analysis([AnalysisMetric.ACCURACY, AnalysisMetric.DETECTION_TIME])
@@ -138,7 +138,7 @@ class TestQualityAnalyzer(FoundationTestCase):
             description="Safe write operation",
         )
 
-        analyzer.add_test_scenario(test_case)
+        analyzer.add_scenario(test_case)
         results = analyzer.run_analysis([AnalysisMetric.ACCURACY])
 
         accuracy = results[AnalysisMetric.ACCURACY]
@@ -174,7 +174,7 @@ class TestQualityAnalyzer(FoundationTestCase):
                 events=events,
                 expected_operations=[{"type": "atomic_save"}],
             )
-            analyzer.add_test_scenario(test_case)
+            analyzer.add_scenario(test_case)
 
         results = analyzer.run_analysis([AnalysisMetric.CONFIDENCE_DISTRIBUTION])
 
@@ -204,7 +204,7 @@ class TestQualityAnalyzer(FoundationTestCase):
             expected_operations=[],
         )
 
-        analyzer.add_test_scenario(test_case)
+        analyzer.add_scenario(test_case)
         results = analyzer.run_analysis([AnalysisMetric.ACCURACY, AnalysisMetric.DETECTION_TIME])
 
         report = analyzer.generate_report(results)

@@ -41,7 +41,7 @@ class TestQualityAnalyzer(FoundationTestCase):
         analyzer = QualityAnalyzer()
         scenarios = create_scenarios_from_patterns()
         for scenario in scenarios:
-            analyzer.add_test_scenario(scenario)
+            analyzer.add_scenario(scenario)
         assert len(analyzer.test_cases) == len(scenarios)
 
     def test_run_analysis_without_scenarios(self) -> None:
@@ -57,7 +57,7 @@ class TestQualityAnalyzer(FoundationTestCase):
         vscode_scenario = next(
             s for s in scenarios if s.name == "vscode_atomic_save"
         )
-        analyzer.add_test_scenario(vscode_scenario)
+        analyzer.add_scenario(vscode_scenario)
         results = analyzer.run_analysis([AnalysisMetric.ACCURACY, AnalysisMetric.DETECTION_TIME])
         assert len(results) == 2
         assert AnalysisMetric.ACCURACY in results
@@ -68,7 +68,7 @@ class TestQualityAnalyzer(FoundationTestCase):
         """Test report generation."""
         analyzer = QualityAnalyzer()
         scenarios = create_scenarios_from_patterns()
-        analyzer.add_test_scenario(scenarios[0])
+        analyzer.add_scenario(scenarios[0])
         results = analyzer.run_analysis([AnalysisMetric.ACCURACY, AnalysisMetric.DETECTION_TIME])
         report = analyzer.generate_report(results)
         assert "File Operation Detection Quality Report" in report
