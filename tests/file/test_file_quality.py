@@ -15,10 +15,10 @@ from provide.foundation.file.operations import (
 )
 from provide.foundation.file.quality import (
     AnalysisMetric,
-    OperationTestCase,
+    OperationScenario,
     QualityAnalyzer,
     QualityResult,
-    create_test_cases_from_patterns,
+    create_scenarios_from_patterns,
 )
 
 
@@ -42,7 +42,7 @@ class TestQualityAnalyzer(FoundationTestCase):
         """Test adding test cases."""
         analyzer = QualityAnalyzer()
 
-        test_case = OperationTestCase(
+        test_case = OperationScenario(
             name="test_case",
             events=[],
             expected_operations=[],
@@ -82,7 +82,7 @@ class TestQualityAnalyzer(FoundationTestCase):
             ),
         ]
 
-        test_case = OperationTestCase(
+        test_case = OperationScenario(
             name="vscode_save",
             events=events,
             expected_operations=[{"type": "atomic_save", "confidence_min": 0.9}],
@@ -131,7 +131,7 @@ class TestQualityAnalyzer(FoundationTestCase):
             ),
         ]
 
-        test_case = OperationTestCase(
+        test_case = OperationScenario(
             name="safe_write",
             events=events,
             expected_operations=[{"type": "safe_write"}],
@@ -169,7 +169,7 @@ class TestQualityAnalyzer(FoundationTestCase):
                 ),
             ]
 
-            test_case = OperationTestCase(
+            test_case = OperationScenario(
                 name=f"atomic_save_{i}",
                 events=events,
                 expected_operations=[{"type": "atomic_save"}],
@@ -198,7 +198,7 @@ class TestQualityAnalyzer(FoundationTestCase):
             ),
         ]
 
-        test_case = OperationTestCase(
+        test_case = OperationScenario(
             name="simple_test",
             events=events,
             expected_operations=[],
@@ -238,7 +238,7 @@ class TestQualityResult(FoundationTestCase):
         assert isinstance(result.timestamp, datetime)
 
 
-class TestOperationTestCase(FoundationTestCase):
+class TestOperationScenario(FoundationTestCase):
     """Test the operation test case functionality."""
 
     def test_test_case_creation(self) -> None:
@@ -251,7 +251,7 @@ class TestOperationTestCase(FoundationTestCase):
             )
         ]
 
-        test_case = OperationTestCase(
+        test_case = OperationScenario(
             name="test",
             events=events,
             expected_operations=[{"type": "atomic_save"}],
