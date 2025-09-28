@@ -8,7 +8,7 @@ import tempfile
 from provide.testkit import FoundationTestCase
 import pytest
 
-from tests.file_operations_fixtures import (
+from tests.file.file_operations_fixtures import (
     FileOperationSimulator,
     FileOperationValidator,
     file_operation_pattern,
