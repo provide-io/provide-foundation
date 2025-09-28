@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 # Import fixtures from file_operations_fixtures
-from tests.file_operations_fixtures import (
+from tests.file.file_operations_fixtures import (
     file_operation_simulator,
     file_operation_validator,
     operation_detector,
