@@ -1,17 +1,20 @@
 """Comprehensive coverage tests for hub/type_mapping.py module."""
 
+from __future__ import annotations
+
 import sys
 import types
 import typing
 from typing import Any, Optional, Union
-from provide.testkit.mocking import patch
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.hub.type_mapping import extract_click_type
 
 
-class TestExtractClickTypeBasicTypes:
+class TestExtractClickTypeBasicTypes(FoundationTestCase):
     """Test extract_click_type with basic types."""
 
     def test_extract_string_type(self) -> None:
@@ -44,7 +47,7 @@ class TestExtractClickTypeBasicTypes:
         assert result is CustomClass
 
 
-class TestExtractClickTypeNoneHandling:
+class TestExtractClickTypeNoneHandling(FoundationTestCase):
     """Test extract_click_type with None types."""
 
     def test_extract_none_type(self) -> None:
@@ -58,7 +61,7 @@ class TestExtractClickTypeNoneHandling:
         assert result is str
 
 
-class TestExtractClickTypeUnionTypes:
+class TestExtractClickTypeUnionTypes(FoundationTestCase):
     """Test extract_click_type with Union types."""
 
     def test_extract_union_str_none(self) -> None:
@@ -92,7 +95,7 @@ class TestExtractClickTypeUnionTypes:
         assert result is str  # Should default to str
 
 
-class TestExtractClickTypeOptionalTypes:
+class TestExtractClickTypeOptionalTypes(FoundationTestCase):
     """Test extract_click_type with Optional types."""
 
     def test_extract_optional_str(self) -> None:
@@ -121,7 +124,7 @@ class TestExtractClickTypeOptionalTypes:
 
 
 @pytest.mark.skipif(sys.version_info < (3, 10), reason="Python 3.10+ union syntax")
-class TestExtractClickTypeModernUnionSyntax:
+class TestExtractClickTypeModernUnionSyntax(FoundationTestCase):
     """Test extract_click_type with Python 3.10+ union syntax."""
 
     def test_extract_modern_union_str_none(self) -> None:
@@ -150,7 +153,7 @@ class TestExtractClickTypeModernUnionSyntax:
         assert result is str  # Should return first non-None type
 
 
-class TestExtractClickTypeUnionTypeDetection:
+class TestExtractClickTypeUnionTypeDetection(FoundationTestCase):
     """Test Union type detection logic."""
 
     def test_typing_union_detection(self) -> None:
@@ -185,7 +188,7 @@ class TestExtractClickTypeUnionTypeDetection:
         assert type(None) in args
 
 
-class TestExtractClickTypeEdgeCases:
+class TestExtractClickTypeEdgeCases(FoundationTestCase):
     """Test edge cases and error conditions."""
 
     def test_extract_any_type(self) -> None:
@@ -276,7 +279,7 @@ class TestExtractClickTypeEdgeCases:
         assert result_dict == dict[str, int]
 
 
-class TestExtractClickTypeUnionTypeComparisons:
+class TestExtractClickTypeUnionTypeComparisons(FoundationTestCase):
     """Test UnionType detection and comparison logic."""
 
     @pytest.mark.skipif(
@@ -310,7 +313,7 @@ class TestExtractClickTypeUnionTypeComparisons:
             assert isinstance(modern_union, types.UnionType)
 
 
-class TestModuleExports:
+class TestModuleExports(FoundationTestCase):
     """Test module exports and structure."""
 
     def test_all_exports_defined(self) -> None:
@@ -342,7 +345,7 @@ class TestModuleExports:
         assert "Click type mapping" in type_mapping_module.__doc__
 
 
-class TestTypeMappingIntegration:
+class TestTypeMappingIntegration(FoundationTestCase):
     """Test integration aspects of type mapping."""
 
     def test_extract_click_type_with_real_function_annotations(self) -> None:

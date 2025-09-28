@@ -1,11 +1,13 @@
 """Comprehensive coverage tests for hub/__init__.py module."""
 
-from provide.testkit.mocking import patch
+from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 
-class TestHubInitImports:
+class TestHubInitImports(FoundationTestCase):
     """Test hub module imports and exports."""
 
     def test_core_imports_available(self) -> None:
@@ -49,7 +51,7 @@ class TestHubInitImports:
             assert hasattr(hub_module, export)
 
 
-class TestGetClickCommands:
+class TestGetClickCommands(FoundationTestCase):
     """Test get_click_commands function."""
 
     def test_get_click_commands_success(self) -> None:
@@ -85,7 +87,7 @@ class TestGetClickCommands:
         assert "pip install" in source
 
 
-class TestHubGetattrLazyLoading:
+class TestHubGetattrLazyLoading(FoundationTestCase):
     """Test __getattr__ lazy loading functionality."""
 
     def test_getattr_build_click_command_success(self) -> None:
@@ -119,7 +121,7 @@ class TestHubGetattrLazyLoading:
 
         with pytest.raises(
             AttributeError,
-            match="module 'provide.foundation.hub' has no attribute 'nonexistent_attr'",
+            match=r"module 'provide\.foundation\.hub' has no attribute 'nonexistent_attr'",
         ):
             _ = hub_module.nonexistent_attr
 
@@ -133,7 +135,7 @@ class TestHubGetattrLazyLoading:
         assert hub_module.Hub is not None
 
 
-class TestHubModuleBehavior:
+class TestHubModuleBehavior(FoundationTestCase):
     """Test overall hub module behavior and integration."""
 
     def test_module_docstring_present(self) -> None:
@@ -178,7 +180,7 @@ class TestHubModuleBehavior:
         assert registry is not None
 
 
-class TestClickDependencyHandling:
+class TestClickDependencyHandling(FoundationTestCase):
     """Test handling of optional click dependency."""
 
     def test_module_works_without_click_features(self) -> None:
@@ -223,7 +225,7 @@ class TestClickDependencyHandling:
         assert "provide-foundation[cli]" in source
 
 
-class TestHubLazyLoadingEdgeCases:
+class TestHubLazyLoadingEdgeCases(FoundationTestCase):
     """Test edge cases in lazy loading functionality."""
 
     def test_multiple_getattr_calls_consistency(self) -> None:

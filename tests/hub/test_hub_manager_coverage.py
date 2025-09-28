@@ -1,14 +1,17 @@
 """Additional tests for Hub manager to improve code coverage."""
 
+from __future__ import annotations
+
 from typing import Never
-from provide.testkit.mocking import Mock, patch
 
 import click
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.hub.manager import Hub
 
 
-class TestHubManagerCoverage:
+class TestHubManagerCoverage(FoundationTestCase):
     """Test Hub manager functionality for improved coverage."""
 
     def test_get_component_returns_none_for_missing(self) -> None:
