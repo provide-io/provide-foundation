@@ -6,7 +6,7 @@ from pathlib import Path
 
 from provide.testkit import FoundationTestCase
 
-from tests.file_operations_fixtures import (
+from tests.file.file_operations_fixtures import (
     FileOperationSimulator,
     FileOperationValidator,
     file_operation_pattern,

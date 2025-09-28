@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
+from collections.abc import Generator
 from pathlib import Path
 import tempfile
 
 from provide.testkit import FoundationTestCase
 import pytest
 
-from tests.file_operations_fixtures import (
+from tests.file.file_operations_fixtures import (
     FileOperationSimulator,
     FileOperationValidator,
     requires_file_operations,
@@ -16,20 +17,20 @@ from tests.file_operations_fixtures import (
 
 
 @pytest.fixture
-def temp_workspace():
+def temp_workspace() -> Generator[Path, None, None]:
     """Create a temporary workspace for testing."""
     with tempfile.TemporaryDirectory() as temp_dir:
         yield Path(temp_dir)
 
 
 @pytest.fixture
-def simulator(temp_workspace):
+def simulator(temp_workspace: Path) -> FileOperationSimulator:
     """Create a file operation simulator."""
     return FileOperationSimulator(temp_workspace)
 
 
 @pytest.fixture
-def validator():
+def validator() -> FileOperationValidator:
     """Create a file operation validator."""
     return FileOperationValidator()
 
@@ -38,12 +39,12 @@ def validator():
 class TestFileOperationFixtures(FoundationTestCase):
     """Test the file operation fixtures work correctly."""
 
-    def test_simulator_basic_functionality(self, simulator) -> None:
+    def test_simulator_basic_functionality(self, simulator: FileOperationSimulator) -> None:
         """Test basic simulator functionality."""
         assert simulator.base_path.exists()
         assert simulator.sequence_counter == 0
 
-    def test_vscode_save_simulation(self, simulator) -> None:
+    def test_vscode_save_simulation(self, simulator: FileOperationSimulator) -> None:
         """Test VSCode save simulation."""
         events = simulator.simulate_vscode_save("test.txt", 1024)
         assert len(events) == 2
@@ -52,7 +53,7 @@ class TestFileOperationFixtures(FoundationTestCase):
         assert events[1].event_type == "moved"
         assert events[1].dest_path.name == "test.txt"
 
-    def test_operation_detection(self, simulator) -> None:
+    def test_operation_detection(self, simulator: FileOperationSimulator) -> None:
         """Test operation detection works."""
         events = simulator.simulate_vscode_save("test.txt")
         operations = simulator.detect_operations(events)
@@ -62,7 +63,7 @@ class TestFileOperationFixtures(FoundationTestCase):
         atomic_saves = [op for op in operations if op.operation_type.value == "atomic_save"]
         assert len(atomic_saves) >= 1
 
-    def test_validation_works(self, simulator, validator) -> None:
+    def test_validation_works(self, simulator: FileOperationSimulator, validator: FileOperationValidator) -> None:
         """Test validation functionality."""
         events = simulator.simulate_vscode_save("test.txt")
         operations = simulator.detect_operations(events)
@@ -80,7 +81,7 @@ class TestFileOperationFixtures(FoundationTestCase):
         assert result["operation_type"] == "atomic_save"
         assert result["confidence"] >= 0.8
 
-    def test_validation_summary(self, validator) -> None:
+    def test_validation_summary(self, validator: FileOperationValidator) -> None:
         """Test validation summary functionality."""
         # Initially empty
         summary = validator.get_summary()
