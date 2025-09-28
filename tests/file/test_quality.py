@@ -25,7 +25,7 @@ class TestQualityAnalyzer(FoundationTestCase):
         """Test analyzer initialization."""
         analyzer = QualityAnalyzer()
         assert analyzer.detector is not None
-        assert len(analyzer.test_cases) == 0
+        assert len(analyzer.scenarios) == 0
         assert len(analyzer.results) == 0
 
     def test_analyzer_with_custom_detector(self) -> None:
@@ -42,7 +42,7 @@ class TestQualityAnalyzer(FoundationTestCase):
         scenarios = create_scenarios_from_patterns()
         for scenario in scenarios:
             analyzer.add_scenario(scenario)
-        assert len(analyzer.test_cases) == len(scenarios)
+        assert len(analyzer.scenarios) == len(scenarios)
 
     def test_run_analysis_without_scenarios(self) -> None:
         """Test running analysis without scenarios raises error."""

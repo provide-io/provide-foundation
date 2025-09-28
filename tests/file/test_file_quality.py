@@ -29,7 +29,7 @@ class TestQualityAnalyzer(FoundationTestCase):
         """Test analyzer initialization."""
         analyzer = QualityAnalyzer()
         assert analyzer.detector is not None
-        assert len(analyzer.test_cases) == 0
+        assert len(analyzer.scenarios) == 0
         assert len(analyzer.results) == 0
 
     def test_analyzer_with_custom_detector(self) -> None:
@@ -42,25 +42,25 @@ class TestQualityAnalyzer(FoundationTestCase):
         """Test adding test cases."""
         analyzer = QualityAnalyzer()
 
-        test_case = OperationScenario(
-            name="test_case",
+        scenario = OperationScenario(
+            name="scenario",
             events=[],
             expected_operations=[],
             description="Test case",
         )
 
-        analyzer.add_scenario(test_case)
-        assert len(analyzer.test_cases) == 1
-        assert analyzer.test_cases[0] == test_case
+        analyzer.add_scenario(scenario)
+        assert len(analyzer.scenarios) == 1
+        assert analyzer.scenarios[0] == scenario
 
-    def test_run_analysis_without_test_cases(self) -> None:
+    def test_run_analysis_without_scenarios(self) -> None:
         """Test running analysis without test cases raises error."""
         analyzer = QualityAnalyzer()
 
         with pytest.raises(ValueError, match="No test cases available"):
             analyzer.run_analysis()
 
-    def test_run_analysis_with_vscode_test_case(self) -> None:
+    def test_run_analysis_with_vscode_scenario(self) -> None:
         """Test running analysis with VSCode atomic save test case."""
         analyzer = QualityAnalyzer()
         base_time = datetime.now()
@@ -82,14 +82,14 @@ class TestQualityAnalyzer(FoundationTestCase):
             ),
         ]
 
-        test_case = OperationScenario(
+        scenario = OperationScenario(
             name="vscode_save",
             events=events,
             expected_operations=[{"type": "atomic_save", "confidence_min": 0.9}],
             description="VSCode atomic save",
         )
 
-        analyzer.add_scenario(test_case)
+        analyzer.add_scenario(scenario)
 
         # Run analysis with specific metrics
         results = analyzer.run_analysis([AnalysisMetric.ACCURACY, AnalysisMetric.DETECTION_TIME])
@@ -131,14 +131,14 @@ class TestQualityAnalyzer(FoundationTestCase):
             ),
         ]
 
-        test_case = OperationScenario(
+        scenario = OperationScenario(
             name="safe_write",
             events=events,
             expected_operations=[{"type": "safe_write"}],
             description="Safe write operation",
         )
 
-        analyzer.add_scenario(test_case)
+        analyzer.add_scenario(scenario)
         results = analyzer.run_analysis([AnalysisMetric.ACCURACY])
 
         accuracy = results[AnalysisMetric.ACCURACY]
@@ -169,12 +169,12 @@ class TestQualityAnalyzer(FoundationTestCase):
                 ),
             ]
 
-            test_case = OperationScenario(
+            scenario = OperationScenario(
                 name=f"atomic_save_{i}",
                 events=events,
                 expected_operations=[{"type": "atomic_save"}],
             )
-            analyzer.add_scenario(test_case)
+            analyzer.add_scenario(scenario)
 
         results = analyzer.run_analysis([AnalysisMetric.CONFIDENCE_DISTRIBUTION])
 
@@ -198,13 +198,13 @@ class TestQualityAnalyzer(FoundationTestCase):
             ),
         ]
 
-        test_case = OperationScenario(
+        scenario = OperationScenario(
             name="simple_test",
             events=events,
             expected_operations=[],
         )
 
-        analyzer.add_scenario(test_case)
+        analyzer.add_scenario(scenario)
         results = analyzer.run_analysis([AnalysisMetric.ACCURACY, AnalysisMetric.DETECTION_TIME])
 
         report = analyzer.generate_report(results)
@@ -241,7 +241,7 @@ class TestQualityResult(FoundationTestCase):
 class TestOperationScenario(FoundationTestCase):
     """Test the operation test case functionality."""
 
-    def test_test_case_creation(self) -> None:
+    def test_scenario_creation(self) -> None:
         """Test creating test cases."""
         events = [
             FileEvent(
@@ -251,7 +251,7 @@ class TestOperationScenario(FoundationTestCase):
             )
         ]
 
-        test_case = OperationScenario(
+        scenario = OperationScenario(
             name="test",
             events=events,
             expected_operations=[{"type": "atomic_save"}],
@@ -259,39 +259,39 @@ class TestOperationScenario(FoundationTestCase):
             tags=["test", "atomic"],
         )
 
-        assert test_case.name == "test"
-        assert len(test_case.events) == 1
-        assert len(test_case.expected_operations) == 1
-        assert test_case.description == "Test case"
-        assert "test" in test_case.tags
+        assert scenario.name == "test"
+        assert len(scenario.events) == 1
+        assert len(scenario.expected_operations) == 1
+        assert scenario.description == "Test case"
+        assert "test" in scenario.tags
 
 
 class TestCreateTestCasesFromPatterns(FoundationTestCase):
     """Test the standard test case creation."""
 
-    def test_create_standard_test_cases(self) -> None:
+    def test_create_standard_scenarios(self) -> None:
         """Test creating standard test cases."""
-        test_cases = create_scenarios_from_patterns()
+        scenarios = create_scenarios_from_patterns()
 
-        assert len(test_cases) >= 3  # Should have at least VSCode, safe write, and batch
+        assert len(scenarios) >= 3  # Should have at least VSCode, safe write, and batch
 
         # Check test case names
-        names = [tc.name for tc in test_cases]
+        names = [tc.name for tc in scenarios]
         assert "vscode_atomic_save" in names
         assert "safe_write_with_backup" in names
         assert "batch_format_operation" in names
 
         # Check that each test case has events and expected operations
-        for test_case in test_cases:
-            assert len(test_case.events) > 0
-            assert len(test_case.expected_operations) > 0
-            assert test_case.description
-            assert len(test_case.tags) > 0
+        for scenario in scenarios:
+            assert len(scenario.events) > 0
+            assert len(scenario.expected_operations) > 0
+            assert scenario.description
+            assert len(scenario.tags) > 0
 
-    def test_vscode_test_case_structure(self) -> None:
+    def test_vscode_scenario_structure(self) -> None:
         """Test VSCode test case has correct structure."""
-        test_cases = create_scenarios_from_patterns()
-        vscode_case = next(tc for tc in test_cases if tc.name == "vscode_atomic_save")
+        scenarios = create_scenarios_from_patterns()
+        vscode_case = next(tc for tc in scenarios if tc.name == "vscode_atomic_save")
 
         assert len(vscode_case.events) == 2
         assert vscode_case.events[0].event_type == "created"
