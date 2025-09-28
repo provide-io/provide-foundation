@@ -394,7 +394,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/cli/test_decorators.py -q)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting_coverage.py::TestTokenBucketRateLimiter::test_extreme_time_precision -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting_coverage.py tests/streams/test_console.py -n auto --tb=short -q)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/streams/test_console.py::TestWriteToConsole -v --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/streams/test_console.py::TestWriteToConsole -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/errors/test_types.py -q)"
     ],
     "deny": [],
     "ask": [],
