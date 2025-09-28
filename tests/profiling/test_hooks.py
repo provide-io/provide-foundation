@@ -182,6 +182,7 @@ class TestProfilingComponent(FoundationTestCase):
 
     def setup_method(self) -> None:
         """Reset Foundation state before each test."""
+        super().setup_method()
         # Reset Foundation components in proper order
         reset_structlog_state()
         reset_streams_state()
@@ -262,6 +263,7 @@ class TestProfilingCLI(FoundationTestCase):
 
     def setup_method(self) -> None:
         """Reset Foundation state before each test."""
+        super().setup_method()
         # Reset Foundation components in proper order
         reset_structlog_state()
         reset_streams_state()
@@ -336,6 +338,7 @@ class TestProfilingIntegration(FoundationTestCase):
 
     def setup_method(self) -> None:
         """Reset Foundation state before each test."""
+        super().setup_method()
         # Reset Foundation components in proper order
         reset_structlog_state()
         reset_streams_state()
