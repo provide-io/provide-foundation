@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+from pathlib import Path
 
 import pytest
 
@@ -38,51 +39,51 @@ class TestAtomicFileOperations(FoundationTestCase):
 
     def test_atomic_write_overwrites_file(self, temp_directory: Path) -> None:
         """Test atomic write overwrites existing file."""
-    path = temp_directory / "test.txt"
-    path.write_bytes(b"Old content")
+        path = temp_directory / "test.txt"
+        path.write_bytes(b"Old content")
 
-    new_data = b"New content"
-    atomic_write(path, new_data)
+        new_data = b"New content"
+        atomic_write(path, new_data)
 
-    assert path.read_bytes() == new_data
+        assert path.read_bytes() == new_data
 
 
     def test_atomic_write_with_mode(self, temp_directory: Path) -> None:
         """Test atomic write sets file permissions."""
-    path = temp_directory / "test.txt"
-    data = b"Test data"
-    mode = 0o600
+        path = temp_directory / "test.txt"
+        data = b"Test data"
+        mode = 0o600
 
-    atomic_write(path, data, mode=mode)
+        atomic_write(path, data, mode=mode)
 
-    assert path.exists()
-    assert path.stat().st_mode & 0o777 == mode
+        assert path.exists()
+        assert path.stat().st_mode & 0o777 == mode
 
 
     def test_atomic_write_with_backup(self, temp_directory: Path) -> None:
         """Test atomic write creates backup."""
-    path = temp_directory / "test.txt"
-    original_data = b"Original content"
-    path.write_bytes(original_data)
+        path = temp_directory / "test.txt"
+        original_data = b"Original content"
+        path.write_bytes(original_data)
 
-    new_data = b"New content"
-    atomic_write(path, new_data, backup=True)
+        new_data = b"New content"
+        atomic_write(path, new_data, backup=True)
 
-    backup_path = path.with_suffix(".txt.bak")
-    assert backup_path.exists()
-    assert backup_path.read_bytes() == original_data
-    assert path.read_bytes() == new_data
+        backup_path = path.with_suffix(".txt.bak")
+        assert backup_path.exists()
+        assert backup_path.read_bytes() == original_data
+        assert path.read_bytes() == new_data
 
 
     def test_atomic_write_creates_parent_dirs(self, temp_directory: Path) -> None:
         """Test atomic write creates parent directories."""
-    path = temp_directory / "subdir" / "nested" / "test.txt"
-    data = b"Test data"
+        path = temp_directory / "subdir" / "nested" / "test.txt"
+        data = b"Test data"
 
-    atomic_write(path, data)
+        atomic_write(path, data)
 
-    assert path.exists()
-    assert path.read_bytes() == data
+        assert path.exists()
+        assert path.read_bytes() == data
 
 
     def test_atomic_write_text(self, temp_directory: Path) -> None:
