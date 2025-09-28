@@ -3,13 +3,16 @@
 #
 """Tests to improve coverage for logger configuration files."""
 
-import os
-from unittest.mock import patch
+from __future__ import annotations
 
+import os
+from unittest.mock import Mock, patch
+
+from provide.testkit import FoundationTestCase
 import pytest
 
 
-class TestConfigBase:
+class TestConfigBase(FoundationTestCase):
     """Test logger config base functionality."""
 
     def test_get_config_logger_basic(self) -> None:
@@ -37,7 +40,7 @@ class TestConfigBase:
         assert logger is not None
 
     @patch("provide.foundation.utils.streams.get_foundation_log_stream")
-    def test_get_config_logger_with_stream_exception(self, mock_get_stream) -> None:
+    def test_get_config_logger_with_stream_exception(self, mock_get_stream: Mock) -> None:
         """Test config logger when stream resolution fails."""
         mock_get_stream.side_effect = Exception("Stream error")
 
@@ -48,7 +51,7 @@ class TestConfigBase:
         assert logger is not None
 
     @patch("structlog.get_config")
-    def test_get_config_logger_with_structlog_exception(self, mock_get_config) -> None:
+    def test_get_config_logger_with_structlog_exception(self, mock_get_config: Mock) -> None:
         """Test config logger when structlog config fails."""
         mock_get_config.side_effect = Exception("Structlog error")
 

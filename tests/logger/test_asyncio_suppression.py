@@ -1,15 +1,18 @@
 """Test asyncio debug message suppression via module-level log configuration."""
 
+from __future__ import annotations
+
 from io import StringIO
 from unittest.mock import patch
 
+from provide.testkit import FoundationTestCase
 import structlog
 
 from provide.foundation.logger.config import TelemetryConfig
 from provide.foundation.logger.setup.processors import configure_structlog_output
 
 
-class TestAsyncioDebugSuppression:
+class TestAsyncioDebugSuppression(FoundationTestCase):
     """Test that asyncio debug messages are properly suppressed."""
 
     def test_default_module_levels_includes_asyncio(self) -> None:
