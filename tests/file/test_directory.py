@@ -6,14 +6,14 @@ import os
 from pathlib import Path
 from typing import Never
 
+from provide.testkit import FoundationTestCase
 import pytest
 
-from provide.testkit import FoundationTestCase
 from provide.foundation.file import temp_dir
 from provide.foundation.file.directory import (
-        ensure_dir,
-        ensure_parent_dir,
-        safe_rmtree,
+    ensure_dir,
+    ensure_parent_dir,
+    safe_rmtree,
 )
 
 
@@ -129,17 +129,17 @@ class TestDirectoryOperations(FoundationTestCase):
         temp_path = None
 
         with temp_dir(prefix="test_") as td:
-        temp_path = td
-        assert td.exists()
-        assert td.is_dir()
-        assert td.name.startswith("test_")
+            temp_path = td
+            assert td.exists()
+            assert td.is_dir()
+            assert td.name.startswith("test_")
 
-        # Create a file in the temp dir
-        test_file = td / "test.txt"
-        test_file.write_text("content")
-        assert test_file.exists()
+            # Create a file in the temp dir
+            test_file = td / "test.txt"
+            test_file.write_text("content")
+            assert test_file.exists()
 
-    # After context, directory should be gone
+        # After context, directory should be gone
         assert not temp_path.exists()
 
     def test_temp_dir_no_cleanup(self) -> None:
@@ -148,16 +148,16 @@ class TestDirectoryOperations(FoundationTestCase):
         temp_path = None
 
         with temp_dir(prefix="test_", cleanup=False) as td:
-        temp_path = td
-        assert td.exists()
-        test_file = td / "test.txt"
-        test_file.write_text("content")
+            temp_path = td
+            assert td.exists()
+            test_file = td / "test.txt"
+            test_file.write_text("content")
 
-    # Directory should still exist
+        # Directory should still exist
         assert temp_path.exists()
         assert (temp_path / "test.txt").exists()
 
-    # Clean up manually
+        # Clean up manually
         import shutil
 
         shutil.rmtree(temp_path)
@@ -168,11 +168,11 @@ class TestDirectoryOperations(FoundationTestCase):
         temp_path = None
 
         with pytest.raises(ValueError), temp_dir() as td:
-        temp_path = td
-        assert td.exists()
-        raise ValueError("Test exception")
+            temp_path = td
+            assert td.exists()
+            raise ValueError("Test exception")
 
-    # Should still be cleaned up
+        # Should still be cleaned up
         assert not temp_path.exists()
 
     def test_safe_rmtree(self, temp_directory: Path) -> None:
@@ -180,9 +180,9 @@ class TestDirectoryOperations(FoundationTestCase):
 
         path = temp_directory / "to_remove"
         path.mkdir()
-    (path / "subdir").mkdir()
-    (path / "file.txt").write_text("content")
-    (path / "subdir" / "nested.txt").write_text("nested")
+        (path / "subdir").mkdir()
+        (path / "file.txt").write_text("content")
+        (path / "subdir" / "nested.txt").write_text("nested")
 
         result = safe_rmtree(path)
 
@@ -204,22 +204,22 @@ class TestDirectoryOperations(FoundationTestCase):
         path = temp_directory / "nonexistent"
 
         with pytest.raises(FileNotFoundError):
-        safe_rmtree(path, missing_ok=False)
+            safe_rmtree(path, missing_ok=False)
 
     def test_safe_rmtree_permission_error(self) -> None:
         """Test safe_rmtree handles permission errors gracefully."""
 
         with temp_dir() as td:
-        protected = td / "protected"
-        protected.mkdir()
-        (protected / "file.txt").write_text("content")
+            protected = td / "protected"
+            protected.mkdir()
+            (protected / "file.txt").write_text("content")
 
-        # Make directory read-only
-        os.chmod(protected, 0o444)
+            # Make directory read-only
+            protected.chmod(0o444)
 
-        # Should raise an error
-        with pytest.raises(OSError):
-            safe_rmtree(protected)
+            # Should raise an error
+            with pytest.raises(OSError):
+                safe_rmtree(protected)
 
-        # Restore permissions for cleanup
-        os.chmod(protected, 0o755)
+            # Restore permissions for cleanup
+            protected.chmod(0o755)

@@ -2,15 +2,18 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from provide.testkit import FoundationTestCase
+
 from provide.foundation.file.safe import (
-        safe_copy,
-        safe_delete,
-        safe_move,
-        safe_read,
-        safe_read_text,
+    safe_copy,
+    safe_delete,
+    safe_move,
+    safe_read,
+    safe_read_text,
 )
 
 
@@ -164,7 +167,7 @@ class TestSafeFileOperations(FoundationTestCase):
         dst.write_text("Destination content")
 
         with pytest.raises(FileExistsError):
-        safe_move(src, dst, overwrite=False)
+            safe_move(src, dst, overwrite=False)
 
         assert src.exists()
         assert dst.read_text() == "Destination content"
@@ -176,7 +179,7 @@ class TestSafeFileOperations(FoundationTestCase):
         dst = temp_directory / "destination.txt"
 
         with pytest.raises(FileNotFoundError):
-        safe_move(src, dst)
+            safe_move(src, dst)
 
     def test_safe_copy(self, temp_directory: Path) -> None:
         """Test safe copy of file."""
@@ -209,12 +212,10 @@ class TestSafeFileOperations(FoundationTestCase):
     def test_safe_copy_preserves_mode(self, temp_directory: Path) -> None:
         """Test safe copy preserves file permissions."""
 
-        import os
-
         src = temp_directory / "source.txt"
         dst = temp_directory / "destination.txt"
         src.write_text("content")
-        os.chmod(src, 0o600)
+        src.chmod(0o600)
 
         safe_copy(src, dst, preserve_mode=True)
 
@@ -223,22 +224,20 @@ class TestSafeFileOperations(FoundationTestCase):
     def test_safe_copy_no_preserve_mode(self, temp_directory: Path) -> None:
         """Test safe copy without preserving mode."""
 
-        import os
-
         src = temp_directory / "source.txt"
         dst = temp_directory / "destination.txt"
         src.write_text("content")
-        os.chmod(src, 0o600)
+        src.chmod(0o600)
 
         safe_copy(src, dst, preserve_mode=False)
 
-    # With preserve_mode=False, shutil.copy is used instead of copy2
-    # shutil.copy doesn't preserve permissions, so dst gets default permissions
+        # With preserve_mode=False, shutil.copy is used instead of copy2
+        # shutil.copy doesn't preserve permissions, so dst gets default permissions
         dst_mode = dst.stat().st_mode & 0o777
-    # The exact mode depends on umask, but it shouldn't be 0o600
-    # Actually, shutil.copy DOES copy permissions on Unix systems
-    # So this test expectation was wrong - safe_copy with preserve_mode=False
-    # still copies permissions due to shutil.copy behavior
+        # The exact mode depends on umask, but it shouldn't be 0o600
+        # Actually, shutil.copy DOES copy permissions on Unix systems
+        # So this test expectation was wrong - safe_copy with preserve_mode=False
+        # still copies permissions due to shutil.copy behavior
         assert dst_mode == 0o600  # shutil.copy copies permissions on Unix
 
     def test_safe_copy_overwrite(self, temp_directory: Path) -> None:
@@ -263,7 +262,7 @@ class TestSafeFileOperations(FoundationTestCase):
         dst.write_text("Destination content")
 
         with pytest.raises(FileExistsError):
-        safe_copy(src, dst, overwrite=False)
+            safe_copy(src, dst, overwrite=False)
 
         assert dst.read_text() == "Destination content"
 
@@ -274,4 +273,4 @@ class TestSafeFileOperations(FoundationTestCase):
         dst = temp_directory / "destination.txt"
 
         with pytest.raises(FileNotFoundError):
-        safe_copy(src, dst)
+            safe_copy(src, dst)

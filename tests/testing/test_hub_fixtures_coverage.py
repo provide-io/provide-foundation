@@ -1,12 +1,16 @@
 """Additional tests for testing hub fixtures to improve code coverage."""
 
+from __future__ import annotations
+
 from pathlib import Path
 
+from provide.testkit import FoundationTestCase
 
-class TestHubFixturesCoverage:
+
+class TestHubFixturesCoverage(FoundationTestCase):
     """Test hub testing fixtures for improved coverage."""
 
-    def test_default_container_directory_fixture(self, default_container_directory) -> None:
+    def test_default_container_directory_fixture(self, default_container_directory: Path) -> None:
         """Test default_container_directory fixture provides valid path."""
         # Test that we get a Path object
         assert isinstance(default_container_directory, Path)
@@ -25,7 +29,7 @@ class TestHubFixturesCoverage:
 
     def test_default_container_directory_is_temporary(
         self,
-        default_container_directory,
+        default_container_directory: Path,
     ) -> None:
         """Test that the directory is temporary and isolated per test session."""
         # Since it's session-scoped, we get the same directory within the session
@@ -45,7 +49,7 @@ class TestHubFixturesCoverage:
         assert subdir.exists()
         assert subdir.is_dir()
 
-    def test_container_directory_path_operations(self, default_container_directory) -> None:
+    def test_container_directory_path_operations(self, default_container_directory: Path) -> None:
         """Test various path operations on the container directory."""
         # Test path joining
         nested_path = default_container_directory / "nested" / "deep" / "path"
