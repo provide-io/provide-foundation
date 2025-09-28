@@ -348,7 +348,9 @@
       "Bash(PYTHONPATH=src .venv/bin/rg \"patch.*time\\.sleep|patch.*asyncio\\.sleep\" tests/ --type py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/integration/test_integration_coverage_100.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest -n auto --tb=no -q --timeout=60)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/integration/test_integration_verification.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/integration/test_integration_verification.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/integration/test_integration_verification.py::TestIntegrationVerification::test_basic_lazy_init -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest -n auto --tb=no -q -m \"not slow\")"
     ],
     "deny": [],
     "ask": [],
