@@ -433,7 +433,8 @@
       "Bash(PYTHONPATH=src timeout 60 .venv/bin/pytest tests/errors/test_integration.py -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/errors/test_integration.py)",
       "Bash(PYTHONPATH=src timeout 120 .venv/bin/pytest tests/errors/test_integration.py tests/concurrency/test_async_core.py -n auto --tb=short -q)",
-      "Bash(PYTHONPATH=src timeout 300 .venv/bin/pytest tests/errors/ tests/concurrency/ tests/hub/test_hub_thread_safety.py -n auto --tb=short -q)"
+      "Bash(PYTHONPATH=src timeout 300 .venv/bin/pytest tests/errors/ tests/concurrency/ tests/hub/test_hub_thread_safety.py -n auto --tb=short -q)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/crypto/test_checksums.py)"
     ],
     "deny": [],
     "ask": [],

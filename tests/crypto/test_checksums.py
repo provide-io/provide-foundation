@@ -1,6 +1,10 @@
 """Tests for checksum operations."""
 
+from __future__ import annotations
+
 from pathlib import Path
+
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.crypto import (
     calculate_checksums,
@@ -12,7 +16,7 @@ from provide.foundation.crypto import (
 from provide.foundation.crypto.checksums import verify_checksum_file
 
 
-class TestVerifyFile:
+class TestVerifyFile(FoundationTestCase):
     """Test verify_file function."""
 
     def test_verify_file_success(self, tmp_path: Path) -> None:
@@ -60,7 +64,7 @@ class TestVerifyFile:
         assert result is False
 
 
-class TestVerifyData:
+class TestVerifyData(FoundationTestCase):
     """Test verify_data function."""
 
     def test_verify_data_success(self) -> None:
@@ -93,7 +97,7 @@ class TestVerifyData:
         assert result is True
 
 
-class TestCalculateChecksums:
+class TestCalculateChecksums(FoundationTestCase):
     """Test calculate_checksums function."""
 
     def test_calculate_checksums_default(self, tmp_path: Path) -> None:
@@ -122,7 +126,7 @@ class TestCalculateChecksums:
         assert "blake2b" in result
 
 
-class TestChecksumFiles:
+class TestChecksumFiles(FoundationTestCase):
     """Test checksum file operations."""
 
     def test_parse_checksum_file_sha256(self, tmp_path: Path) -> None:
