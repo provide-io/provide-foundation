@@ -9,14 +9,14 @@ from __future__ import annotations
 from provide.foundation.file.quality.analyzer import QualityAnalyzer
 from provide.foundation.file.quality.metrics import AnalysisMetric, QualityResult
 from provide.foundation.file.quality.operation_scenarios import (
-    OperationTestCase,
-    create_test_cases_from_patterns,
+    OperationScenario,
+    create_scenarios_from_patterns,
 )
 
 __all__ = [
     "AnalysisMetric",
-    "OperationTestCase",
+    "OperationScenario",
     "QualityAnalyzer",
     "QualityResult",
-    "create_test_cases_from_patterns",
+    "create_scenarios_from_patterns",
 ]

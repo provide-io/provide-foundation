@@ -15,7 +15,7 @@ except ImportError:
     HAS_OPERATIONS_MODULE = False
 
 from provide.foundation.file.quality.metrics import AnalysisMetric, QualityResult
-from provide.foundation.file.quality.operation_scenarios import OperationTestCase
+from provide.foundation.file.quality.operation_scenarios import OperationScenario
 
 
 class QualityAnalyzer:
@@ -31,19 +31,19 @@ class QualityAnalyzer:
             raise ImportError("File operations module not available")
 
         self.detector = detector or OperationDetector()
-        self.test_cases: list[OperationTestCase] = []
+        self.scenarios: list[OperationScenario] = []
         self.results: list[QualityResult] = []
 
-    def add_test_case(self, test_case: OperationTestCase) -> None:
-        """Add a test case for analysis.
+    def add_scenario(self, scenario: OperationScenario) -> None:
+        """Add a scenario for analysis.
 
         Args:
-            test_case: Test case to add
+            scenario: Scenario to add
         """
-        self.test_cases.append(test_case)
+        self.scenarios.append(scenario)
 
     def run_analysis(self, metrics: list[AnalysisMetric] | None = None) -> dict[AnalysisMetric, QualityResult]:
-        """Run quality analysis on all test cases.
+        """Run quality analysis on all scenarios.
 
         Args:
             metrics: Metrics to analyze. If None, runs all metrics.
@@ -51,8 +51,8 @@ class QualityAnalyzer:
         Returns:
             Dictionary mapping metrics to their results
         """
-        if not self.test_cases:
-            raise ValueError("No test cases available for analysis")
+        if not self.scenarios:
+            raise ValueError("No scenarios available for analysis")
 
         if metrics is None:
             metrics = list(AnalysisMetric)
@@ -67,13 +67,13 @@ class QualityAnalyzer:
         return results
 
     def _collect_detection_data(self) -> tuple[list[dict[str, Any]], list[float]]:
-        """Collect detection results and timing data from test cases."""
+        """Collect detection results and timing data from scenarios."""
         detection_results = []
         timing_results = []
 
-        for test_case in self.test_cases:
+        for scenario in self.scenarios:
             start_time = time.perf_counter()
-            detected_operations = self.detector.detect(test_case.events)
+            detected_operations = self.detector.detect(scenario.events)
             end_time = time.perf_counter()
 
             detection_time = (end_time - start_time) * 1000  # milliseconds
@@ -81,7 +81,7 @@ class QualityAnalyzer:
 
             detection_results.append(
                 {
-                    "test_case": test_case,
+                    "scenario": scenario,
                     "detected": detected_operations,
                     "detection_time": detection_time,
                 }
@@ -126,9 +126,9 @@ class QualityAnalyzer:
         total_detections = 0
 
         for result in detection_results:
-            test_case = result["test_case"]
+            scenario = result["scenario"]
             detected = result["detected"]
-            expected = test_case.expected_operations
+            expected = scenario.expected_operations
 
             # Simple accuracy: correct type detection
             detected_types = [op.operation_type.value for op in detected]
@@ -163,9 +163,9 @@ class QualityAnalyzer:
         false_positives = 0
 
         for result in detection_results:
-            test_case = result["test_case"]
+            scenario = result["scenario"]
             detected = result["detected"]
-            expected = test_case.expected_operations
+            expected = scenario.expected_operations
 
             detected_types = [op.operation_type.value for op in detected]
             expected_types = [exp["type"] for exp in expected]
@@ -201,9 +201,9 @@ class QualityAnalyzer:
         false_negatives = 0
 
         for result in detection_results:
-            test_case = result["test_case"]
+            scenario = result["scenario"]
             detected = result["detected"]
-            expected = test_case.expected_operations
+            expected = scenario.expected_operations
 
             detected_types = [op.operation_type.value for op in detected]
             expected_types = [exp["type"] for exp in expected]
@@ -331,9 +331,9 @@ class QualityAnalyzer:
         total_negative_cases = 0
 
         for result in detection_results:
-            test_case = result["test_case"]
+            scenario = result["scenario"]
             detected = result["detected"]
-            expected = test_case.expected_operations
+            expected = scenario.expected_operations
 
             # If no operations were expected but some were detected
             if not expected and detected:
@@ -360,9 +360,9 @@ class QualityAnalyzer:
         total_positive_cases = 0
 
         for result in detection_results:
-            test_case = result["test_case"]
+            scenario = result["scenario"]
             detected = result["detected"]
-            expected = test_case.expected_operations
+            expected = scenario.expected_operations
 
             if expected:
                 total_positive_cases += len(expected)
@@ -413,7 +413,7 @@ class QualityAnalyzer:
             "File Operation Detection Quality Report",
             "=" * 45,
             f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
-            f"Test Cases: {len(self.test_cases)}",
+            f"Scenarios: {len(self.scenarios)}",
             "",
             "Metrics:",
         ]
