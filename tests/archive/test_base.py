@@ -1,14 +1,17 @@
 """Tests for the BaseArchive abstract interface."""
 
+from __future__ import annotations
+
 from abc import ABCMeta
 from pathlib import Path
 
 import pytest
 
 from provide.foundation.archive.base import ArchiveError, BaseArchive
+from provide.testkit import FoundationTestCase
 
 
-class TestBaseArchiveInterface:
+class TestBaseArchiveInterface(FoundationTestCase):
     """Test the BaseArchive abstract interface."""
 
     def test_base_archive_is_abstract(self) -> None:
@@ -63,7 +66,7 @@ class TestBaseArchiveInterface:
         assert str(error) == "test error"
 
 
-class TestBaseArchiveCommonBehavior:
+class TestBaseArchiveCommonBehavior(FoundationTestCase):
     """Test common behavior expected from BaseArchive implementations."""
 
     @pytest.fixture

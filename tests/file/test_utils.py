@@ -140,7 +140,7 @@ class TestFileUtils(FoundationTestCase):
         path.write_text("content")
 
         with pytest.raises(FileExistsError):
-        touch(path, exist_ok=False)
+            touch(path, exist_ok=False)
 
     def test_touch_creates_parent_dirs(self, temp_directory: Path) -> None:
         """Test touch creates parent directories."""

@@ -1,12 +1,15 @@
 """Tests for TAR archive implementation."""
 
+from __future__ import annotations
+
 import pytest
 
 from provide.foundation.archive.base import ArchiveError
 from provide.foundation.archive.tar import TarArchive
+from provide.testkit import FoundationTestCase
 
 
-class TestTarArchive:
+class TestTarArchive(FoundationTestCase):
     """Test TAR archive functionality."""
 
     @pytest.fixture

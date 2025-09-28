@@ -1,14 +1,17 @@
 """Tests for GZIP compression implementation."""
 
+from __future__ import annotations
+
 from io import BytesIO
 
 import pytest
 
 from provide.foundation.archive.base import ArchiveError
 from provide.foundation.archive.gzip import GzipCompressor
+from provide.testkit import FoundationTestCase
 
 
-class TestGzipCompressor:
+class TestGzipCompressor(FoundationTestCase):
     """Test GZIP compression functionality."""
 
     @pytest.fixture

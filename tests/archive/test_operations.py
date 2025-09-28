@@ -1,5 +1,7 @@
 """Tests for archive operations and chains."""
 
+from __future__ import annotations
+
 from pathlib import Path
 
 import pytest
@@ -9,9 +11,10 @@ from provide.foundation.archive.operations import (
     ArchiveOperations,
     OperationChain,
 )
+from provide.testkit import FoundationTestCase
 
 
-class TestOperationChain:
+class TestOperationChain(FoundationTestCase):
     """Test operation chain functionality."""
 
     @pytest.fixture
@@ -80,7 +83,7 @@ class TestOperationChain:
             chain.execute(source, output)
 
 
-class TestArchiveOperations:
+class TestArchiveOperations(FoundationTestCase):
     """Test archive operations helper class."""
 
     @pytest.fixture

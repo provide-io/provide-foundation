@@ -1,12 +1,15 @@
 """Tests for ZIP archive implementation."""
 
+from __future__ import annotations
+
 import pytest
 
 from provide.foundation.archive.base import ArchiveError
 from provide.foundation.archive.zip import ZipArchive
+from provide.testkit import FoundationTestCase
 
 
-class TestZipArchive:
+class TestZipArchive(FoundationTestCase):
     """Test ZIP archive functionality."""
 
     @pytest.fixture

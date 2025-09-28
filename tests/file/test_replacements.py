@@ -70,25 +70,25 @@ class TestPackageReplacements(FoundationTestCase):
         if flavorpack_path.exists() and disk_file.exists():
             import importlib.util
 
-        # Load the disk module directly without importing the full package
-        spec = importlib.util.spec_from_file_location(
-            "flavor.utils.disk",
-            str(flavorpack_path / "flavor/utils/disk.py"),
-        )
-        disk_module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(disk_module)
+            # Load the disk module directly without importing the full package
+            spec = importlib.util.spec_from_file_location(
+                "flavor.utils.disk",
+                str(flavorpack_path / "flavor/utils/disk.py"),
+            )
+            disk_module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(disk_module)
 
-        ensure_directory = disk_module.ensure_directory
+            ensure_directory = disk_module.ensure_directory
 
-        # Test ensure_directory
-        test_dir = tmp_path / "test_dir"
-        ensure_directory(test_dir, mode=0o755)
-        assert test_dir.exists()
-        assert test_dir.is_dir()
+            # Test ensure_directory
+            test_dir = tmp_path / "test_dir"
+            ensure_directory(test_dir, mode=0o755)
+            assert test_dir.exists()
+            assert test_dir.is_dir()
 
-        # Should be idempotent
-        ensure_directory(test_dir, mode=0o755)
-        assert test_dir.exists()
+            # Should be idempotent
+            ensure_directory(test_dir, mode=0o755)
+            assert test_dir.exists()
 
     @pytest.mark.skipif(
         not Path("/Users/tim/code/gh/provide-io/wrknv").exists(),
@@ -100,50 +100,50 @@ class TestPackageReplacements(FoundationTestCase):
         wrknv_path = Path("/Users/tim/code/gh/provide-io/wrknv/src")
         install_file = wrknv_path / "wrknv/wenv/operations/install.py"
         if wrknv_path.exists() and install_file.exists():
-        import importlib.util
+            import importlib.util
 
-        # Load the install module directly without importing the full package
-        spec = importlib.util.spec_from_file_location(
-            "wrknv.wenv.operations.install",
-            str(wrknv_path / "wrknv/wenv/operations/install.py"),
-        )
-        install_module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(install_module)
+            # Load the install module directly without importing the full package
+            spec = importlib.util.spec_from_file_location(
+                "wrknv.wenv.operations.install",
+                str(wrknv_path / "wrknv/wenv/operations/install.py"),
+            )
+            install_module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(install_module)
 
-        copy_file = install_module.copy_file
-        ensure_directory = install_module.ensure_directory
-        clean_directory = install_module.clean_directory
-        get_file_size = install_module.get_file_size
+            copy_file = install_module.copy_file
+            ensure_directory = install_module.ensure_directory
+            clean_directory = install_module.clean_directory
+            get_file_size = install_module.get_file_size
 
-        # Test ensure_directory
-        test_dir = tmp_path / "wrknv_dir"
-        ensure_directory(test_dir, mode=0o755)
-        assert test_dir.exists()
-        assert test_dir.is_dir()
+            # Test ensure_directory
+            test_dir = tmp_path / "wrknv_dir"
+            ensure_directory(test_dir, mode=0o755)
+            assert test_dir.exists()
+            assert test_dir.is_dir()
 
-        # Test copy_file
-        src_file = tmp_path / "source.txt"
-        dst_file = tmp_path / "dest.txt"
-        src_file.write_text("source content")
+            # Test copy_file
+            src_file = tmp_path / "source.txt"
+            dst_file = tmp_path / "dest.txt"
+            src_file.write_text("source content")
 
-        copy_file(src_file, dst_file, preserve_permissions=True)
-        assert dst_file.read_text() == "source content"
+            copy_file(src_file, dst_file, preserve_permissions=True)
+            assert dst_file.read_text() == "source content"
 
-        # Test get_file_size
-        size = get_file_size(dst_file)
-        assert size == len("source content")
+            # Test get_file_size
+            size = get_file_size(dst_file)
+            assert size == len("source content")
 
-        # Test clean_directory
-        test_dir = tmp_path / "clean_test"
-        test_dir.mkdir()
-        (test_dir / "file1.txt").write_text("content1")
-        (test_dir / "file2.txt").write_text("content2")
-        (test_dir / ".hidden").write_text("hidden")
+            # Test clean_directory
+            test_dir = tmp_path / "clean_test"
+            test_dir.mkdir()
+            (test_dir / "file1.txt").write_text("content1")
+            (test_dir / "file2.txt").write_text("content2")
+            (test_dir / ".hidden").write_text("hidden")
 
-        clean_directory(test_dir, keep_hidden=True)
-        assert (test_dir / ".hidden").exists()
-        assert not (test_dir / "file1.txt").exists()
-        assert not (test_dir / "file2.txt").exists()
+            clean_directory(test_dir, keep_hidden=True)
+            assert (test_dir / ".hidden").exists()
+            assert not (test_dir / "file1.txt").exists()
+            assert not (test_dir / "file2.txt").exists()
 
     @pytest.mark.skipif(
         not Path("/Users/tim/code/gh/provide-io/wrknv").exists(),
@@ -155,62 +155,62 @@ class TestPackageReplacements(FoundationTestCase):
         wrknv_path = Path("/Users/tim/code/gh/provide-io/wrknv/src")
         install_file = wrknv_path / "wrknv/wenv/operations/install.py"
         if wrknv_path.exists() and install_file.exists():
-        import importlib.util
+            import importlib.util
 
-        # Load the install module directly without importing the full package
-        spec = importlib.util.spec_from_file_location(
-            "wrknv.wenv.operations.install",
-            str(wrknv_path / "wrknv/wenv/operations/install.py"),
-        )
-        install_module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(install_module)
+            # Load the install module directly without importing the full package
+            spec = importlib.util.spec_from_file_location(
+                "wrknv.wenv.operations.install",
+                str(wrknv_path / "wrknv/wenv/operations/install.py"),
+            )
+            install_module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(install_module)
 
-        extract_archive = install_module.extract_archive
-        make_executable = install_module.make_executable
-        import tarfile
-        import zipfile
+            extract_archive = install_module.extract_archive
+            make_executable = install_module.make_executable
+            import tarfile
+            import zipfile
 
-        # Test tar.gz extraction
-        tar_path = tmp_path / "test.tar.gz"
-        extract_dir = tmp_path / "extracted_tar"
+            # Test tar.gz extraction
+            tar_path = tmp_path / "test.tar.gz"
+            extract_dir = tmp_path / "extracted_tar"
 
-        # Create a test tar.gz
-        with tarfile.open(tar_path, "w:gz") as tar:
-            test_file = tmp_path / "test_content.txt"
-            test_file.write_text("tar content")
-            tar.add(test_file, arcname="test_content.txt")
+            # Create a test tar.gz
+            with tarfile.open(tar_path, "w:gz") as tar:
+                test_file = tmp_path / "test_content.txt"
+                test_file.write_text("tar content")
+                tar.add(test_file, arcname="test_content.txt")
 
-        extract_archive(tar_path, extract_dir)
-        assert (extract_dir / "test_content.txt").exists()
-        assert (extract_dir / "test_content.txt").read_text() == "tar content"
+            extract_archive(tar_path, extract_dir)
+            assert (extract_dir / "test_content.txt").exists()
+            assert (extract_dir / "test_content.txt").read_text() == "tar content"
 
-        # Test zip extraction
-        zip_path = tmp_path / "test.zip"
-        extract_dir_zip = tmp_path / "extracted_zip"
+            # Test zip extraction
+            zip_path = tmp_path / "test.zip"
+            extract_dir_zip = tmp_path / "extracted_zip"
 
-        # Create a test zip
-        with zipfile.ZipFile(zip_path, "w") as zip_file:
-            test_file = tmp_path / "zip_content.txt"
-            test_file.write_text("zip content")
-            zip_file.write(test_file, arcname="zip_content.txt")
+            # Create a test zip
+            with zipfile.ZipFile(zip_path, "w") as zip_file:
+                test_file = tmp_path / "zip_content.txt"
+                test_file.write_text("zip content")
+                zip_file.write(test_file, arcname="zip_content.txt")
 
-        extract_archive(zip_path, extract_dir_zip)
-        assert (extract_dir_zip / "zip_content.txt").exists()
-        assert (extract_dir_zip / "zip_content.txt").read_text() == "zip content"
+            extract_archive(zip_path, extract_dir_zip)
+            assert (extract_dir_zip / "zip_content.txt").exists()
+            assert (extract_dir_zip / "zip_content.txt").read_text() == "zip content"
 
-        # Test make_executable (on Unix)
-        import platform
+            # Test make_executable (on Unix)
+            import platform
 
-        if platform.system().lower() != "windows":
-            script_file = tmp_path / "script.sh"
-            script_file.write_text("#!/bin/bash\necho test")
+            if platform.system().lower() != "windows":
+                script_file = tmp_path / "script.sh"
+                script_file.write_text("#!/bin/bash\necho test")
 
-            make_executable(script_file)
+                make_executable(script_file)
 
-            import stat
+                import stat
 
-            mode = script_file.stat().st_mode
-            assert mode & stat.S_IXUSR  # User execute bit should be set
+                mode = script_file.stat().st_mode
+                assert mode & stat.S_IXUSR  # User execute bit should be set
 
     @pytest.mark.skipif(
         not Path("/Users/tim/code/gh/provide-io/flavorpack").exists(),
@@ -220,9 +220,9 @@ class TestPackageReplacements(FoundationTestCase):
         """Integration test for flavorpack replacements."""
 
         with tempfile.TemporaryDirectory() as tmpdir:
-        tmp_path = Path(tmpdir)
-        test_flavorpack_atomic_replacements(tmp_path)
-        test_flavorpack_disk_replacements(tmp_path)
+            tmp_path = Path(tmpdir)
+            test_flavorpack_atomic_replacements(tmp_path)
+            test_flavorpack_disk_replacements(tmp_path)
 
     @pytest.mark.skipif(
         not Path("/Users/tim/code/gh/provide-io/wrknv").exists(),
@@ -232,6 +232,6 @@ class TestPackageReplacements(FoundationTestCase):
         """Integration test for wrknv replacements."""
 
         with tempfile.TemporaryDirectory() as tmpdir:
-        tmp_path = Path(tmpdir)
-        test_wrknv_install_replacements(tmp_path)
-        test_wrknv_extract_operations(tmp_path)
+            tmp_path = Path(tmpdir)
+            test_wrknv_install_replacements(tmp_path)
+            test_wrknv_extract_operations(tmp_path)

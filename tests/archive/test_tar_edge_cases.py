@@ -1,5 +1,7 @@
 """Edge case tests for TAR archive implementation."""
 
+from __future__ import annotations
+
 import tarfile
 import tempfile
 
@@ -7,9 +9,10 @@ import pytest
 
 from provide.foundation.archive.base import ArchiveError
 from provide.foundation.archive.tar import TarArchive
+from provide.testkit import FoundationTestCase
 
 
-class TestTarArchiveEdgeCases:
+class TestTarArchiveEdgeCases(FoundationTestCase):
     """Test TAR archive edge cases and security features."""
 
     @pytest.fixture
