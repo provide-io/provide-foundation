@@ -6,7 +6,7 @@ import time
 
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
 from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import mock
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.crypto import (
@@ -63,7 +63,7 @@ class TestKeys(FoundationTestCase):
     async def test_generate_rsa_keypair_backend_failure(self) -> None:
         """Ensure RSA key generation fails if the cryptography backend encounters an issue."""
         with (
-            mock.patch(
+            patch(
                 "cryptography.hazmat.primitives.asymmetric.rsa.generate_private_key",
                 side_effect=Exception("Backend failure"),
             ),
@@ -101,7 +101,7 @@ class TestKeys(FoundationTestCase):
     async def test_generate_ec_keypair_backend_failure(self) -> None:
         """Ensure EC key generation fails if the cryptography backend encounters an issue."""
         with (
-            mock.patch(
+            patch(
                 "cryptography.hazmat.primitives.asymmetric.ec.generate_private_key",
                 side_effect=Exception("Backend failure"),
             ),

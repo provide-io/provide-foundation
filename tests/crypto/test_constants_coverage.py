@@ -1,11 +1,14 @@
 """Additional tests for crypto constants to improve code coverage."""
 
-from unittest.mock import patch
+from __future__ import annotations
+
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 
 from provide.foundation.crypto import constants
 
 
-class TestCryptoConstantsCoverage:
+class TestCryptoConstantsCoverage(FoundationTestCase):
     """Test crypto constants for improved coverage."""
 
     def test_ed25519_constants(self) -> None:

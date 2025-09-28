@@ -6,7 +6,7 @@ from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import mock
+from provide.testkit.mocking import Mock, MagicMock, patch
 import pytest
 
 # Removed: import sys
@@ -184,8 +184,8 @@ class TestCertificateVerify(FoundationTestCase):
         cert = Certificate(generate_keypair=True)
 
         # Create a new mock certificate for verification
-        mock_cert = mock.MagicMock()
-        mock_cert._cert = mock.MagicMock()
+        mock_cert = MagicMock()
+        mock_cert._cert = MagicMock()
         mock_cert.public_key = None  # Force unsupported key type
 
         with pytest.raises(
@@ -270,7 +270,7 @@ class TestCertificateVerify(FoundationTestCase):
         cert = Certificate(generate_keypair=True)
 
         with (
-            mock.patch(
+            patch(
                 "cryptography.x509.CertificateBuilder.add_extension",
                 side_effect=Exception("Mock failure"),
             ),
