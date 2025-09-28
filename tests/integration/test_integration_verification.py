@@ -57,8 +57,6 @@ def test_service_name_injection() -> None:
     print("✅ Service name injection test works")
 
 
-
-
 def test_emergency_fallback() -> None:
     """Test emergency fallback doesn't crash."""
     print("\n=== Test 4: Emergency Fallback ===")

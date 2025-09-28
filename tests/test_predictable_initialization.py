@@ -8,11 +8,12 @@ from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
 import os
-import pytest
 from pathlib import Path
 import tempfile
 import time
 from unittest.mock import patch
+
+import pytest
 
 from provide.foundation.hub.manager import Hub, clear_hub, get_hub
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
@@ -77,6 +78,7 @@ class TestPredictableInitialization:
         clear_hub()
         # Also reset Foundation state to ensure clean environment
         from provide.testkit import reset_foundation_setup_for_testing
+
         from provide.foundation.testmode.internal import reset_global_coordinator
 
         reset_foundation_setup_for_testing()

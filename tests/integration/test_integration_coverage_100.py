@@ -255,6 +255,7 @@ def test_empty_config_object(captured_stderr_for_foundation: io.StringIO) -> Non
     assert "Log with empty config" in captured_stderr_for_foundation.getvalue()
 
 
+@pytest.mark.serial
 def test_log_file_redirection(tmp_path: Path) -> None:
     """Test redirecting logs to a file."""
     log_file = tmp_path / "test.log"

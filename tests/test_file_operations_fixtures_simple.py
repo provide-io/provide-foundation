@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import tempfile
 from pathlib import Path
+import tempfile
 
 import pytest
 
@@ -37,12 +37,12 @@ def validator():
 class TestFileOperationFixtures:
     """Test the file operation fixtures work correctly."""
 
-    def test_simulator_basic_functionality(self, simulator):
+    def test_simulator_basic_functionality(self, simulator) -> None:
         """Test basic simulator functionality."""
         assert simulator.base_path.exists()
         assert simulator.sequence_counter == 0
 
-    def test_vscode_save_simulation(self, simulator):
+    def test_vscode_save_simulation(self, simulator) -> None:
         """Test VSCode save simulation."""
         events = simulator.simulate_vscode_save("test.txt", 1024)
         assert len(events) == 2
@@ -51,7 +51,7 @@ class TestFileOperationFixtures:
         assert events[1].event_type == "moved"
         assert events[1].dest_path.name == "test.txt"
 
-    def test_operation_detection(self, simulator):
+    def test_operation_detection(self, simulator) -> None:
         """Test operation detection works."""
         events = simulator.simulate_vscode_save("test.txt")
         operations = simulator.detect_operations(events)
@@ -61,7 +61,7 @@ class TestFileOperationFixtures:
         atomic_saves = [op for op in operations if op.operation_type.value == "atomic_save"]
         assert len(atomic_saves) >= 1
 
-    def test_validation_works(self, simulator, validator):
+    def test_validation_works(self, simulator, validator) -> None:
         """Test validation functionality."""
         events = simulator.simulate_vscode_save("test.txt")
         operations = simulator.detect_operations(events)
@@ -79,7 +79,7 @@ class TestFileOperationFixtures:
         assert result["operation_type"] == "atomic_save"
         assert result["confidence"] >= 0.8
 
-    def test_validation_summary(self, validator):
+    def test_validation_summary(self, validator) -> None:
         """Test validation summary functionality."""
         # Initially empty
         summary = validator.get_summary()

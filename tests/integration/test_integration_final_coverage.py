@@ -14,9 +14,9 @@ def test_logger_base_already_configured_after_lock() -> None:
     discovering the logger is already configured.
     """
     from unittest.mock import Mock, patch
-    import threading
-    from provide.foundation.logger.core import FoundationLogger
+
     from provide.foundation.logger.config.telemetry import TelemetryConfig
+    from provide.foundation.logger.core import FoundationLogger
 
     # Create a fresh logger instance
     logger_instance = FoundationLogger("test_race_logger")
@@ -41,7 +41,7 @@ def test_logger_base_already_configured_after_lock() -> None:
     logger_instance._is_configured_by_setup = False
 
     # Mock setup to simulate race condition
-    with patch.object(logger_instance, 'setup', side_effect=mock_setup):
+    with patch.object(logger_instance, "setup", side_effect=mock_setup):
         # This should trigger the race condition scenario
         logger_instance._ensure_configured()
 

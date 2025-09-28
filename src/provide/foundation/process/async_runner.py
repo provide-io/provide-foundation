@@ -7,7 +7,6 @@ import os
 from pathlib import Path
 from typing import Any
 
-from provide.foundation.errors.integration import TimeoutError
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.logger import get_logger
 from provide.foundation.process.runner import CompletedProcess

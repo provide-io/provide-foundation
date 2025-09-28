@@ -2,8 +2,6 @@
 
 from unittest.mock import Mock, patch
 
-import pytest
-
 from provide.foundation.config.schema import (
     ConfigSchema,
     SchemaField,

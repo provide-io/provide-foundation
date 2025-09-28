@@ -100,8 +100,8 @@ class TestLoggerBind:
         assert len(test_entries) == 2
 
         # Find the specific entries
-        event1_entry = [e for e in test_entries if "event1" in e.get("event", "")][0]
-        event2_entry = [e for e in test_entries if "event2" in e.get("event", "")][0]
+        event1_entry = next(e for e in test_entries if "event1" in e.get("event", ""))
+        event2_entry = next(e for e in test_entries if "event2" in e.get("event", ""))
 
         # First should have key1
         assert "key1" in event1_entry
@@ -129,12 +129,14 @@ class TestLoggerBind:
 
         entries = get_log_entries(captured_stderr_for_foundation)
         # Filter for our test messages
-        test_entries = [e for e in entries if "original_event" in e.get("event", "") or "bound_event" in e.get("event", "")]
+        test_entries = [
+            e for e in entries if "original_event" in e.get("event", "") or "bound_event" in e.get("event", "")
+        ]
         assert len(test_entries) == 2
 
         # Find specific entries
-        original_entry = [e for e in test_entries if "original_event" in e.get("event", "")][0]
-        bound_entry = [e for e in test_entries if "bound_event" in e.get("event", "")][0]
+        original_entry = next(e for e in test_entries if "original_event" in e.get("event", ""))
+        bound_entry = next(e for e in test_entries if "bound_event" in e.get("event", ""))
 
         # Original logger shouldn't have the extra context
         assert "extra_context" not in original_entry
@@ -424,17 +426,24 @@ class TestLoggerContextIntegration:
 
         entries = get_log_entries(captured_stderr_for_foundation)
         # Filter for our test messages
-        test_keywords = ["start", "request_received", "auth_started", "auth_completed", "request_processed", "end"]
+        test_keywords = [
+            "start",
+            "request_received",
+            "auth_started",
+            "auth_completed",
+            "request_processed",
+            "end",
+        ]
         test_entries = [e for e in entries if any(kw in e.get("event", "") for kw in test_keywords)]
         assert len(test_entries) == 6
 
         # Sort by the order they appear to ensure consistency
-        start_entry = [e for e in test_entries if "start" in e.get("event", "")][0]
-        request_received_entry = [e for e in test_entries if "request_received" in e.get("event", "")][0]
-        auth_started_entry = [e for e in test_entries if "auth_started" in e.get("event", "")][0]
-        auth_completed_entry = [e for e in test_entries if "auth_completed" in e.get("event", "")][0]
-        request_processed_entry = [e for e in test_entries if "request_processed" in e.get("event", "")][0]
-        end_entry = [e for e in test_entries if "end" in e.get("event", "")][0]
+        start_entry = next(e for e in test_entries if "start" in e.get("event", ""))
+        request_received_entry = next(e for e in test_entries if "request_received" in e.get("event", ""))
+        auth_started_entry = next(e for e in test_entries if "auth_started" in e.get("event", ""))
+        auth_completed_entry = next(e for e in test_entries if "auth_completed" in e.get("event", ""))
+        request_processed_entry = next(e for e in test_entries if "request_processed" in e.get("event", ""))
+        end_entry = next(e for e in test_entries if "end" in e.get("event", ""))
 
         # Verify each entry has expected context
         assert "request_id" not in start_entry  # start

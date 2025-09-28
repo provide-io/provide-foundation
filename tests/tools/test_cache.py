@@ -6,7 +6,6 @@ including cache operations, TTL handling, and metadata management.
 
 from datetime import datetime, timedelta
 import json
-import os
 from pathlib import Path
 import tempfile
 from unittest.mock import patch
@@ -513,7 +512,6 @@ class TestToolCache:
         with patch("pathlib.Path.stat", side_effect=OSError("Permission denied")):
             size = cache.get_size()
             assert size == 0  # Should handle error gracefully
-
 
     def test_prune_expired_no_expired(
         self,
