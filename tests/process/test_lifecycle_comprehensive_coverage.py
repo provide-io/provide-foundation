@@ -305,7 +305,7 @@ class TestManagedProcessTermination(FoundationTestCase):
 
     def test_terminate_gracefully_success(self) -> None:
         """Test successful graceful termination."""
-        proc = ManagedProcess(["sleep", "10"])
+        proc = ManagedProcess(["sleep", "1"])
         proc.launch()
 
         # Process should be running
@@ -324,7 +324,7 @@ class TestManagedProcessTermination(FoundationTestCase):
             [
                 sys.executable,
                 "-c",
-                "import signal, time; signal.signal(signal.SIGTERM, signal.SIG_IGN); time.sleep(10)",
+                "import signal, time; signal.signal(signal.SIGTERM, signal.SIG_IGN); time.sleep(1)",
             ],
         )
         proc.launch()
@@ -367,7 +367,7 @@ class TestManagedProcessContextManager(FoundationTestCase):
     def test_context_manager_exception(self) -> None:
         """Test context manager cleanup on exception."""
         try:
-            with ManagedProcess(["sleep", "10"]) as proc:
+            with ManagedProcess(["sleep", "1"]) as proc:
                 # No need to call launch() - context manager already does this
                 raise ValueError("Test exception")
         except ValueError:
@@ -530,7 +530,7 @@ class TestWaitForProcessOutput(FoundationTestCase):
     async def test_wait_for_output_both_timeouts(self) -> None:
         """Test when both line and char reading timeout."""
         proc = ManagedProcess(
-            [sys.executable, "-c", "import time; time.sleep(10)"],
+            [sys.executable, "-c", "import time; time.sleep(1)"],
             capture_output=True,
             text_mode=True,
         )
@@ -574,7 +574,7 @@ class TestProcessLifecycleIntegration(FoundationTestCase):
             [
                 sys.executable,
                 "-c",
-                "import sys; print('ready', flush=True); import time; time.sleep(10)",
+                "import sys; print('ready', flush=True); import time; time.sleep(1)",
             ],
             capture_output=True,
             text_mode=True,

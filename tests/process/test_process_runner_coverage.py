@@ -163,7 +163,7 @@ class TestProcessRunnerCoverage:
 
         # Use a real timeout test
         with pytest.raises(TimeoutError) as exc_info:
-            run_command(["sleep", "2"], timeout=0.1, check=True)
+            run_command(["sleep", "1"], timeout=0.1, check=True)
 
         assert "timed out" in str(exc_info.value)
 

@@ -6,6 +6,7 @@ from typing import Never
 from unittest.mock import AsyncMock, patch
 
 import pytest
+from provide.testkit import FoundationTestCase, mock_sleep
 
 from provide.foundation.concurrency import (
     async_gather,
@@ -16,7 +17,7 @@ from provide.foundation.concurrency import (
 from provide.foundation.errors import ValidationError
 
 
-class TestAsyncSleep:
+class TestAsyncSleep(FoundationTestCase):
     """Test async_sleep function."""
 
     @pytest.mark.asyncio
@@ -71,7 +72,8 @@ class TestAsyncSleep:
 
         async def cancel_sleep() -> str:
             task = asyncio.create_task(async_sleep(1.0))
-            await asyncio.sleep(0.01)  # Let it start
+            with mock_sleep():
+                await asyncio.sleep(0.01)  # Let it start
             task.cancel()
             try:
                 await task
@@ -83,7 +85,7 @@ class TestAsyncSleep:
         assert result == "cancelled"
 
 
-class TestAsyncGather:
+class TestAsyncGather(FoundationTestCase):
     """Test async_gather function."""
 
     @pytest.mark.asyncio
@@ -210,7 +212,7 @@ class TestAsyncGather:
         assert kwargs["return_exceptions"] is True
 
 
-class TestAsyncWaitFor:
+class TestAsyncWaitFor(FoundationTestCase):
     """Test async_wait_for function."""
 
     @pytest.mark.asyncio
@@ -307,7 +309,7 @@ class TestAsyncWaitFor:
             await async_wait_for(failing_task(), timeout=1.0)
 
 
-class TestAsyncRun:
+class TestAsyncRun(FoundationTestCase):
     """Test async_run function."""
 
     def test_async_run_basic_async_function(self) -> None:
@@ -416,7 +418,7 @@ class TestAsyncRun:
             async_run(async_gen)
 
 
-class TestAsyncUtilitiesIntegration:
+class TestAsyncUtilitiesIntegration(FoundationTestCase):
     """Integration tests for async utilities."""
 
     @pytest.mark.asyncio
@@ -499,7 +501,8 @@ class TestAsyncUtilitiesIntegration:
 
         # Start the task and cancel it
         task = asyncio.create_task(cancellable_workflow())
-        await asyncio.sleep(0.01)  # Let it start
+        with mock_sleep():
+            await asyncio.sleep(0.01)  # Let it start
         task.cancel()
 
         try:

@@ -496,7 +496,7 @@ class TestAsyncRunShell:
     async def test_shell_timeout_exceeded(self) -> None:
         """Test shell command that exceeds timeout."""
         with pytest.raises(ProcessTimeoutError, match="Command timed out after"):
-            await async_run_shell("sleep 2", timeout=0.5)
+            await async_run_shell("sleep 1", timeout=0.5)
 
     async def test_shell_with_kwargs(self) -> None:
         """Test shell command with additional kwargs."""

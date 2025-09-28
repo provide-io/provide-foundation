@@ -78,7 +78,7 @@ class TestManagedProcess(FoundationTestCase):
     def test_terminate_gracefully(self) -> None:
         """Test graceful process termination."""
         # Use a longer-running command for better testing
-        process = ManagedProcess(["sleep", "10"])
+        process = ManagedProcess(["sleep", "1"])
         process.launch()
 
         # Process should be running
@@ -205,7 +205,7 @@ class TestWaitForProcessOutput(FoundationTestCase):
     async def test_wait_for_output_timeout(self) -> None:
         """Test timeout when expected output doesn't appear."""
         # Use a longer-running process to test actual timeout
-        process = ManagedProcess(["sleep", "5"])
+        process = ManagedProcess(["sleep", "1"])
         process.launch()
 
         try:
