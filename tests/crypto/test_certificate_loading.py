@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import mock
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.crypto import Certificate, CertificateError

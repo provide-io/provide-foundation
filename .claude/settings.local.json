@@ -440,7 +440,10 @@
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/crypto/test_certificate_loading.py --ignore-missing-imports)",
       "Bash(PYTHONPATH=src timeout 20 .venv/bin/pytest tests/errors/test_safe_decorators_coverage.py::TestSafeDecoratorsCoverage::test_log_only_error_context_async_function_success -xvs --tb=short)",
       "Bash(PYTHONPATH=src timeout 60 .venv/bin/pytest tests/errors/test_safe_decorators_coverage.py -v --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/crypto/test_certificate_verify.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/crypto/test_certificate_verify.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/crypto/test_certificate_verify.py --ignore-missing-imports)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/crypto/test_dependency_stubs.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/crypto/test_dependency_stubs.py --ignore-missing-imports)"
     ],
     "deny": [],
     "ask": [],

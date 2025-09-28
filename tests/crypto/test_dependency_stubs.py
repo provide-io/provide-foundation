@@ -1,8 +1,11 @@
 """Tests for crypto module dependency handling and stubs."""
 
-import sys
-from unittest.mock import patch
+from __future__ import annotations
 
+import sys
+
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.crypto import _HAS_CRYPTO
@@ -32,7 +35,7 @@ print("=" * 60, file=sys.stderr)
 
 
 @pytest.mark.skipif(_HAS_CRYPTO, reason=SKIP_REASON)
-class TestCryptoDependencyStubs:
+class TestCryptoDependencyStubs(FoundationTestCase):
     """Test cases for crypto module stub implementations when cryptography is not available."""
 
     def setup_method(self) -> None:
