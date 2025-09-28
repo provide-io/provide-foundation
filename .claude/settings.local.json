@@ -472,7 +472,9 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/resilience/test_fallback.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/resilience/test_integration.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/resilience/)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_acquire_release -xvs)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_acquire_release -xvs)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format /Users/tim/code/gh/provide-io/provide-foundation/tests/tracer/test_spans.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy /Users/tim/code/gh/provide-io/provide-foundation/tests/tracer/test_spans.py)"
     ],
     "deny": [],
     "ask": [],

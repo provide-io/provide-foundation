@@ -7,9 +7,9 @@ import time
 from typing import Never
 import uuid
 
-import pytest
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import patch
+import pytest
 
 from provide.foundation.tracer.spans import Span
 
@@ -420,7 +420,7 @@ class TestSpanContextManagement(FoundationTestCase):
 
         original_import = builtins.__import__
 
-        def failing_import(name, *args, **kwargs):
+        def failing_import(name: str, *args: object, **kwargs: object) -> object:
             if name == "provide.foundation.tracer.context":
                 raise ImportError("Module not found")
             return original_import(name, *args, **kwargs)
