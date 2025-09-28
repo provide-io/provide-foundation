@@ -509,7 +509,8 @@
       "Bash(PYTHONPATH=src timeout 5 .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_timeout -q --tb=no)",
       "Bash(PYTHONPATH=src timeout 30 .venv/bin/pytest tests/file/test_lock.py -v --tb=short)",
       "Bash(PYTHONPATH=src timeout 10 .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_timeout --no-cov -o asyncio_default_fixture_loop_scope=session -v)",
-      "Bash(PYTHONPATH=src timeout 30 .venv/bin/pytest tests/config/ tests/file/test_lock.py::TestFileLock::test_file_lock_timeout -v --tb=short)"
+      "Bash(PYTHONPATH=src timeout 30 .venv/bin/pytest tests/config/ tests/file/test_lock.py::TestFileLock::test_file_lock_timeout -v --tb=short)",
+      "Bash(PYTHONPATH=src timeout 20 .venv/bin/pytest tests/config/ tests/file/ tests/utils/ -q --tb=no --maxfail=1 -x)"
     ],
     "deny": [],
     "ask": [],
