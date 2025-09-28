@@ -347,7 +347,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/resilience/test_retry_executor.py tests/resilience/test_retry_decorator.py tests/resilience/test_integration.py)",
       "Bash(PYTHONPATH=src .venv/bin/rg \"patch.*time\\.sleep|patch.*asyncio\\.sleep\" tests/ --type py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/integration/test_integration_coverage_100.py)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest -n auto --tb=no -q --timeout=60)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest -n auto --tb=no -q --timeout=60)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/integration/test_integration_verification.py)"
     ],
     "deny": [],
     "ask": [],
