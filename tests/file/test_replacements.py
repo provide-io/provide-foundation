@@ -62,9 +62,9 @@ class TestPackageReplacements(FoundationTestCase):
             assert not text_file.exists()
             assert safe_unlink(text_file) is False  # Already deleted
 
-
     def test_flavorpack_disk_replacements(self, tmp_path: Path) -> None:
         """Test flavorpack disk operations are properly replaced."""
+
     flavorpack_path = Path("/Users/tim/code/gh/provide-io/flavorpack/src")
     disk_file = flavorpack_path / "flavor/utils/disk.py"
     if flavorpack_path.exists() and disk_file.exists():
@@ -90,13 +90,13 @@ class TestPackageReplacements(FoundationTestCase):
         ensure_directory(test_dir, mode=0o755)
         assert test_dir.exists()
 
-
     @pytest.mark.skipif(
         not Path("/Users/tim/code/gh/provide-io/wrknv").exists(),
         reason="wrknv repository not available",
     )
     def test_wrknv_install_replacements(self, tmp_path: Path) -> None:
         """Test wrknv install operations are properly replaced."""
+
     wrknv_path = Path("/Users/tim/code/gh/provide-io/wrknv/src")
     install_file = wrknv_path / "wrknv/wenv/operations/install.py"
     if wrknv_path.exists() and install_file.exists():
@@ -145,13 +145,13 @@ class TestPackageReplacements(FoundationTestCase):
         assert not (test_dir / "file1.txt").exists()
         assert not (test_dir / "file2.txt").exists()
 
-
     @pytest.mark.skipif(
         not Path("/Users/tim/code/gh/provide-io/wrknv").exists(),
         reason="wrknv repository not available",
     )
     def test_wrknv_extract_operations(self, tmp_path: Path) -> None:
         """Test wrknv extract operations still work."""
+
     wrknv_path = Path("/Users/tim/code/gh/provide-io/wrknv/src")
     install_file = wrknv_path / "wrknv/wenv/operations/install.py"
     if wrknv_path.exists() and install_file.exists():
@@ -212,18 +212,17 @@ class TestPackageReplacements(FoundationTestCase):
             mode = script_file.stat().st_mode
             assert mode & stat.S_IXUSR  # User execute bit should be set
 
-
     @pytest.mark.skipif(
         not Path("/Users/tim/code/gh/provide-io/flavorpack").exists(),
         reason="flavorpack repository not available",
     )
     def test_flavorpack_integration(self) -> None:
         """Integration test for flavorpack replacements."""
+
     with tempfile.TemporaryDirectory() as tmpdir:
         tmp_path = Path(tmpdir)
         test_flavorpack_atomic_replacements(tmp_path)
         test_flavorpack_disk_replacements(tmp_path)
-
 
     @pytest.mark.skipif(
         not Path("/Users/tim/code/gh/provide-io/wrknv").exists(),
@@ -231,6 +230,7 @@ class TestPackageReplacements(FoundationTestCase):
     )
     def test_wrknv_integration(self) -> None:
         """Integration test for wrknv replacements."""
+
     with tempfile.TemporaryDirectory() as tmpdir:
         tmp_path = Path(tmpdir)
         test_wrknv_install_replacements(tmp_path)

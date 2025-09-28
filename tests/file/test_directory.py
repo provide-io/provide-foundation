@@ -40,39 +40,36 @@ class TestDirectoryOperations(FoundationTestCase):
 
     def test_ensure_dir_existing(self, temp_directory: Path) -> None:
         """Test ensure_dir with existing directory."""
+        path = temp_directory / "existing_dir"
+        path.mkdir()
 
-    path = temp_directory / "existing_dir"
-    path.mkdir()
+        result = ensure_dir(path)
 
-    result = ensure_dir(path)
-
-    assert result == path
-    assert path.exists()
-    assert path.is_dir()
+        assert result == path
+        assert path.exists()
+        assert path.is_dir()
 
     def test_ensure_dir_with_parents(self, temp_directory: Path) -> None:
         """Test ensure_dir creates parent directories."""
+        path = temp_directory / "parent" / "child" / "grandchild"
 
-    path = temp_directory / "parent" / "child" / "grandchild"
+        result = ensure_dir(path)
 
-    result = ensure_dir(path)
-
-    assert result == path
-    assert path.exists()
-    assert path.is_dir()
-    assert path.parent.exists()
-    assert path.parent.parent.exists()
+        assert result == path
+        assert path.exists()
+        assert path.is_dir()
+        assert path.parent.exists()
+        assert path.parent.parent.exists()
 
     def test_ensure_dir_with_mode(self, temp_directory: Path) -> None:
         """Test ensure_dir sets permissions."""
+        path = temp_directory / "dir_with_mode"
+        mode = 0o700
 
-    path = temp_directory / "dir_with_mode"
-    mode = 0o700
+        ensure_dir(path, mode=mode)
 
-    ensure_dir(path, mode=mode)
-
-    assert path.exists()
-    assert path.stat().st_mode & 0o777 == mode
+        assert path.exists()
+        assert path.stat().st_mode & 0o777 == mode
 
     def test_ensure_dir_file_exists(self, temp_directory: Path) -> None:
         """Test ensure_dir raises when path is a file."""
