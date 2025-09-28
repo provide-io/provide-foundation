@@ -4,8 +4,6 @@ from __future__ import annotations
 
 import pytest
 
-from provide.testkit import FoundationTestCase
-
 from provide.foundation.transport import (
     HTTPMethod,
     Request,
@@ -81,10 +79,12 @@ def test_response_error_status() -> None:
     assert response_500.is_success() is False
     assert response_200.is_success() is True
 
-    with pytest.raises(Exception):  # HTTPResponseError
+    from provide.foundation.transport.errors import HTTPResponseError
+
+    with pytest.raises(HTTPResponseError):
         response_404.raise_for_status()
 
-    with pytest.raises(Exception):  # HTTPResponseError
+    with pytest.raises(HTTPResponseError):
         response_500.raise_for_status()
 
     # Should not raise

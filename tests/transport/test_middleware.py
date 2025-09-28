@@ -4,8 +4,6 @@ from __future__ import annotations
 
 import pytest
 
-from provide.testkit import FoundationTestCase
-
 from provide.foundation.transport.base import Request, Response
 from provide.foundation.transport.middleware import (
     LoggingMiddleware,
@@ -156,15 +154,15 @@ class TestMiddleware:
     def __init__(self) -> None:
         self.calls = []
 
-    async def process_request(self, request):
+    async def process_request(self, request: Request) -> Request:
         self.calls.append(("request", request.method))
         return request
 
-    async def process_response(self, response):
+    async def process_response(self, response: Response) -> Response:
         self.calls.append(("response", response.status))
         return response
 
-    async def process_error(self, error, request):
+    async def process_error(self, error: Exception, request: Request) -> Exception:
         self.calls.append(("error", str(error)))
         return error
 
@@ -214,7 +212,7 @@ async def test_retry_middleware_execute() -> None:
     request = Request(uri="https://api.example.com/test", method="GET")
     call_count = 0
 
-    async def failing_execute(req):
+    async def failing_execute(req: Request) -> Response:
         nonlocal call_count
         call_count += 1
 
