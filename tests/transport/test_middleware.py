@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import pytest
 
+from provide.testkit import FoundationTestCase
+
 from provide.foundation.transport.base import Request, Response
 from provide.foundation.transport.middleware import (
     LoggingMiddleware,

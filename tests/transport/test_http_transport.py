@@ -6,6 +6,8 @@ import httpx
 import pytest
 from pytest_httpx import HTTPXMock
 
+from provide.testkit import FoundationTestCase
+
 from provide.foundation.transport import (
     HTTPTransport,
     Request,

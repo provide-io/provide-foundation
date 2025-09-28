@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import pytest
 
+from provide.testkit import FoundationTestCase
+
 from provide.foundation.transport import (
     HTTPMethod,
     Request,
