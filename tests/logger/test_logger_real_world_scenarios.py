@@ -90,6 +90,8 @@ class TestRealWorldScenarios(FoundationTestCase):
             },
         ):
             # Force re-initialization with new environment variables
+            from provide.testkit import reset_foundation_setup_for_testing
+            reset_foundation_setup_for_testing()
             set_log_stream_for_testing(sys.stderr)
 
             # Service startup logging

@@ -196,6 +196,8 @@ class TestDocumentedBehaviorCompliance(FoundationTestCase):
 
         with patch.dict(os.environ, documented_env_vars):
             # Force re-initialization with new environment variables
+            from provide.testkit import reset_foundation_setup_for_testing
+            reset_foundation_setup_for_testing()
             set_log_stream_for_testing(sys.stderr)
 
             # Test each documented feature
@@ -446,6 +448,8 @@ class TestLazyInitializationDocumentation(FoundationTestCase):
             },
         ):
             # Force re-initialization with new environment variables
+            from provide.testkit import reset_foundation_setup_for_testing
+            reset_foundation_setup_for_testing()
             set_log_stream_for_testing(sys.stderr)
 
             from provide.foundation import logger
