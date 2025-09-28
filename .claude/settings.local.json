@@ -497,7 +497,11 @@
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/transport/test_middleware.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/transport/test_middleware.py -v)",
       "Bash(PYTHONPATH=src pytest tests/file/test_lock.py::TestFileLock::test_file_lock_timeout -xvs)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/file/test_lock.py src/provide/foundation/file/temp.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/file/test_lock.py src/provide/foundation/file/temp.py)",
+      "Bash(printf '\\e[?1000l\\e[?1002l\\e[?1003l\\e[?10061l')",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/file/test_lock.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/file/test_lock.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_timeout -v)"
     ],
     "deny": [],
     "ask": [],

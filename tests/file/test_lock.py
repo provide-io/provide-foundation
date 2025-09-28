@@ -129,7 +129,7 @@ class TestFileLock(FoundationTestCase):
         lock_path = temp_directory / "test.lock"
         results = []
 
-        def worker(worker_id) -> None:
+        def worker(worker_id: int) -> None:
             lock = FileLock(lock_path, timeout=5.0)  # Increased timeout for thread safety
             with lock:
                 results.append(worker_id)
@@ -158,7 +158,7 @@ class TestFileLock(FoundationTestCase):
                 with contextlib.suppress(FileNotFoundError, PermissionError):
                     lock_path.unlink()
 
-    def test_file_lock_exception_in_context(self, temp_directory) -> Never:
+    def test_file_lock_exception_in_context(self, temp_directory: Path) -> Never:
         """Test lock is released even when exception occurs."""
         lock_path = temp_directory / "test.lock"
 
