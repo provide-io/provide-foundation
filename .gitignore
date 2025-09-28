@@ -394,3 +394,4 @@ bin/
 .secrets
 .env.local
 site
+*.local.json
