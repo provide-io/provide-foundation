@@ -1,5 +1,7 @@
 """Additional tests for safe decorators to improve code coverage."""
 
+from __future__ import annotations
+
 import asyncio
 from typing import Any, Never
 

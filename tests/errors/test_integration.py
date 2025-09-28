@@ -6,7 +6,8 @@ import asyncio
 from contextvars import ContextVar
 import json
 from typing import TYPE_CHECKING, Never
-from unittest.mock import patch
+
+from provide.testkit.mocking import patch
 
 from provide.testkit import FoundationTestCase
 import pytest
