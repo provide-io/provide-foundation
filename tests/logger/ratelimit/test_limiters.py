@@ -4,6 +4,7 @@ import asyncio
 import threading
 import time
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.logger.ratelimit.limiters import (
@@ -13,7 +14,7 @@ from provide.foundation.logger.ratelimit.limiters import (
 )
 
 
-class TestSyncRateLimiter:
+class TestSyncRateLimiter(FoundationTestCase):
     """Test SyncRateLimiter class."""
 
     def test_sync_rate_limiter_init_valid(self) -> None:
@@ -130,7 +131,7 @@ class TestSyncRateLimiter:
         assert abs(stats["tokens_available"] - 3.0) < 0.01
 
 
-class TestAsyncRateLimiter:
+class TestAsyncRateLimiter(FoundationTestCase):
     """Test AsyncRateLimiter class."""
 
     def test_async_rate_limiter_init_valid(self) -> None:
@@ -190,7 +191,7 @@ class TestAsyncRateLimiter:
         """Test AsyncRateLimiter handles concurrent access."""
         limiter = AsyncRateLimiter(capacity=50.0, refill_rate=25.0)
 
-        async def worker():
+        async def worker() -> list[bool]:
             results = []
             for _ in range(10):
                 result = await limiter.is_allowed()
@@ -236,7 +237,7 @@ class TestAsyncRateLimiter:
         assert abs(stats["tokens_available"] - 8.0) < 0.01
 
 
-class TestGlobalRateLimiter:
+class TestGlobalRateLimiter(FoundationTestCase):
     """Test GlobalRateLimiter singleton class."""
 
     def test_global_rate_limiter_singleton(self) -> None:
@@ -410,7 +411,7 @@ class TestGlobalRateLimiter:
         assert allowed is False
 
 
-class TestRateLimiterIntegration:
+class TestRateLimiterIntegration(FoundationTestCase):
     """Integration tests for rate limiter components."""
 
     def test_rate_limiters_work_together(self) -> None:

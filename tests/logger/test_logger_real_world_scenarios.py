@@ -16,7 +16,7 @@ import os
 from typing import Any
 from unittest.mock import patch
 
-from provide.testkit import TestEnvironment, reset_foundation_setup_for_testing
+from provide.testkit import FoundationTestCase, TestEnvironment
 import pytest
 from pytest import CaptureFixture  # Added for capsys
 
@@ -28,7 +28,7 @@ from provide.foundation import (
 )
 
 
-class TestRealWorldScenarios:
+class TestRealWorldScenarios(FoundationTestCase):
     """Tests that simulate real-world application scenarios."""
 
     def test_web_application_startup_scenario(self, capsys: CaptureFixture) -> None:
@@ -90,7 +90,6 @@ class TestRealWorldScenarios:
             },
         ):
             # Force re-initialization with new environment variables
-            reset_foundation_setup_for_testing()
             set_log_stream_for_testing(sys.stderr)
 
             # Service startup logging
@@ -141,12 +140,10 @@ class TestRealWorldScenarios:
 
     def test_data_processing_pipeline_scenario(self, capsys: CaptureFixture) -> None:
         """Test lazy initialization in a data processing pipeline."""
+        import os
         import sys
 
         from provide.testkit import set_log_stream_for_testing
-
-        reset_foundation_setup_for_testing()
-        import os
 
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
@@ -191,12 +188,10 @@ class TestRealWorldScenarios:
 
     def test_concurrent_workers_scenario(self, capsys: CaptureFixture) -> None:
         """Test lazy initialization with concurrent worker processes."""
+        import os
         import sys
 
         from provide.testkit import set_log_stream_for_testing
-
-        reset_foundation_setup_for_testing()
-        import os
 
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
@@ -242,12 +237,10 @@ class TestRealWorldScenarios:
     @pytest.mark.asyncio
     async def test_async_web_server_scenario(self, capsys: CaptureFixture) -> None:
         """Test lazy initialization in async web server scenario."""
+        import os
         import sys
 
         from provide.testkit import set_log_stream_for_testing
-
-        reset_foundation_setup_for_testing()
-        import os
 
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
@@ -310,12 +303,10 @@ class TestRealWorldScenarios:
 
     def test_library_integration_scenario(self, capsys: CaptureFixture) -> None:
         """Test lazy initialization when used as a library component."""
+        import os
         import sys
 
         from provide.testkit import set_log_stream_for_testing
-
-        reset_foundation_setup_for_testing()
-        import os
 
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
@@ -367,17 +358,15 @@ class TestRealWorldScenarios:
         assert "Data processing completed" in captured.err
 
 
-class TestMigrationFromExplicitSetup:
+class TestMigrationFromExplicitSetup(FoundationTestCase):
     """Tests migration scenarios from explicit setup to lazy initialization."""
 
     def test_gradual_migration_scenario(self, capsys: CaptureFixture) -> None:
         """Test gradual migration from explicit setup to lazy initialization."""
+        import os
         import sys
 
         from provide.testkit import set_log_stream_for_testing
-
-        reset_foundation_setup_for_testing()
-        import os
 
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
@@ -413,12 +402,10 @@ class TestMigrationFromExplicitSetup:
 
     def test_mixed_initialization_order(self, capsys: CaptureFixture) -> None:
         """Test different initialization orders work correctly."""
+        import os
         import sys
 
         from provide.testkit import set_log_stream_for_testing
-
-        reset_foundation_setup_for_testing()
-        import os
 
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
@@ -454,12 +441,10 @@ class TestMigrationFromExplicitSetup:
 
     def test_configuration_precedence(self, capsys: CaptureFixture) -> None:
         """Test that explicit setup takes precedence over lazy initialization."""
+        import os
         import sys
 
         from provide.testkit import set_log_stream_for_testing
-
-        reset_foundation_setup_for_testing()
-        import os
 
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)

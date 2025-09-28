@@ -4,6 +4,7 @@ import sys
 import threading
 import time
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.logger.ratelimit.queue_limiter import (
@@ -32,7 +33,7 @@ def ensure_limiter_cleanup():
                 pass  # Ignore errors during cleanup
 
 
-class TestQueuedRateLimiter:
+class TestQueuedRateLimiter(FoundationTestCase):
     """Test QueuedRateLimiter class."""
 
     def test_queued_rate_limiter_init_valid(self, ensure_limiter_cleanup) -> None:
@@ -305,7 +306,7 @@ class TestQueuedRateLimiter:
         assert not limiter.worker_thread.is_alive()
 
 
-class TestBufferedRateLimiter:
+class TestBufferedRateLimiter(FoundationTestCase):
     """Test BufferedRateLimiter class."""
 
     def test_buffered_rate_limiter_init_valid(self) -> None:
@@ -531,7 +532,7 @@ class TestBufferedRateLimiter:
         assert stats["total_denied"] == denied_count
 
 
-class TestQueueLimiterIntegration:
+class TestQueueLimiterIntegration(FoundationTestCase):
     """Integration tests for queue-based rate limiters."""
 
     def test_different_queue_limiters_similar_behavior(self, ensure_limiter_cleanup) -> None:
