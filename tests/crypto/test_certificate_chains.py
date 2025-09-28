@@ -28,7 +28,6 @@ class TestCertificateChains(FoundationTestCase):
         # Should validate against the certificate in its trust chain
         assert client_cert.verify_trust(server_cert)
 
-
     @pytest.mark.asyncio
     async def test_certificate_chain_validation_no_trust(self, client_cert, server_cert) -> None:
         """Test validation behavior when certificates are not in trust chain."""
@@ -69,7 +68,6 @@ class TestCertificateChains(FoundationTestCase):
         else:
             pytest.skip("Certificate is not self-signed")
 
-
     def test_certificate_extensions(self, client_cert) -> None:
         """Test certificate extensions are present and valid."""
         x509_cert = client_cert._cert
@@ -95,7 +93,6 @@ class TestCertificateChains(FoundationTestCase):
             assert all(isinstance(name, (x509.DNSName, x509.IPAddress)) for name in san.value)
         except x509.ExtensionNotFound:
             pytest.skip("SAN extension not present")
-
 
     @pytest.mark.asyncio
     async def test_certificate_validity_period(self, client_cert) -> None:
@@ -133,7 +130,6 @@ class TestCertificateChains(FoundationTestCase):
         assert isinstance(cert_hash, int)
         # Same certificate should generate same hash
         assert hash(client_cert) == cert_hash
-
 
     @pytest.mark.asyncio
     async def test_certificate_invalid_trust_chain_signature(self) -> None:

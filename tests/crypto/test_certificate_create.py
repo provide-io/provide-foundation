@@ -28,7 +28,6 @@ class TestCertificateCreate(FoundationTestCase):
         ):
             Certificate(generate_keypair=True)
 
-
     @pytest.mark.asyncio
     async def test_create_x509_cert_serial_error(self) -> None:
         """Test error in serial number generation."""
@@ -37,7 +36,6 @@ class TestCertificateCreate(FoundationTestCase):
             pytest.raises(CertificateError, match="Failed to initialize certificate"),
         ):
             Certificate(generate_keypair=True)
-
 
     @pytest.mark.asyncio
     async def test_create_x509_cert_validity_error(self) -> None:
@@ -50,7 +48,6 @@ class TestCertificateCreate(FoundationTestCase):
             pytest.raises(CertificateError, match="Failed to initialize certificate"),
         ):
             Certificate(generate_keypair=True)
-
 
     @pytest.mark.asyncio
     async def test_certificate_extension_failure(self) -> None:
@@ -66,7 +63,6 @@ class TestCertificateCreate(FoundationTestCase):
         ):
             cert._create_x509_certificate()
 
-
     @pytest.mark.asyncio
     async def test_create_x509_cert_builder_error(self) -> None:
         """Test error in certificate builder."""
@@ -78,7 +74,6 @@ class TestCertificateCreate(FoundationTestCase):
             pytest.raises(CertificateError, match="Failed to initialize certificate"),
         ):
             Certificate(generate_keypair=True)
-
 
     @pytest.mark.asyncio
     async def test_create_x509_cert_extension_error(self) -> None:
@@ -93,7 +88,6 @@ class TestCertificateCreate(FoundationTestCase):
             pytest.raises(CertificateError, match="Failed to create"),
         ):
             cert._create_x509_certificate()
-
 
     @pytest.mark.asyncio
     async def test_create_invalid_key_type(self) -> None:
@@ -112,7 +106,6 @@ class TestCertificateCreate(FoundationTestCase):
         # The test expects "Unsupported key type"
         with pytest.raises(CertificateError, match="Unsupported key type: 123"):
             CertificateBase.create(config)
-
 
     def test_certificate_base_create_unsupported_key_type_str(self, mocker) -> None:
         """Test CertificateBase.create with an unsupported string for key_type in config."""
@@ -144,7 +137,6 @@ class TestCertificateCreate(FoundationTestCase):
             "error",
             "",
         )
-
 
     @pytest.mark.asyncio  # Keep async if other tests are, though this one is sync
     async def test_certificate_init_invalid_ecdsa_curve(self, mocker) -> None:

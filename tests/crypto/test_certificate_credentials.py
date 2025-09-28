@@ -76,85 +76,81 @@ class TestCertificateCredentials(FoundationTestCase):
 
     # Tests using conftest fixtures
     def test_mock_channel_credentials_with_client_cert(self, client_cert) -> None:
-    """Test creating channel credentials using client certificate fixture."""
-    creds = mock_ssl_channel_credentials(
-        root_certificates=client_cert.cert.encode(),
-        private_key=client_cert.key.encode(),
-        certificate_chain=client_cert.cert.encode(),
-    )
-    assert isinstance(creds.root_certificates, bytes)
-    assert isinstance(creds.private_key, bytes)
-    assert isinstance(creds.certificate_chain, bytes)
-    assert creds.root_certificates == client_cert.cert.encode()
-    assert creds.private_key == client_cert.key.encode()
-    assert creds.certificate_chain == client_cert.cert.encode()
-
+        """Test creating channel credentials using client certificate fixture."""
+        creds = mock_ssl_channel_credentials(
+            root_certificates=client_cert.cert.encode(),
+            private_key=client_cert.key.encode(),
+            certificate_chain=client_cert.cert.encode(),
+        )
+        assert isinstance(creds.root_certificates, bytes)
+        assert isinstance(creds.private_key, bytes)
+        assert isinstance(creds.certificate_chain, bytes)
+        assert creds.root_certificates == client_cert.cert.encode()
+        assert creds.private_key == client_cert.key.encode()
+        assert creds.certificate_chain == client_cert.cert.encode()
 
     def test_mock_server_credentials_with_server_cert(self, server_cert, client_cert) -> None:
-    """Test creating server credentials using server certificate fixture."""
-    pairs = [(server_cert.key.encode(), server_cert.cert.encode())]
-    creds = mock_ssl_server_credentials(
-        private_key_certificate_chain_pairs=pairs,
-        root_certificates=client_cert.cert.encode(),  # For client authentication
-        require_client_auth=True,
-    )
-    assert isinstance(creds.private_key_certificate_chain_pairs[0][0], bytes)
-    assert isinstance(creds.private_key_certificate_chain_pairs[0][1], bytes)
-    assert isinstance(creds.root_certificates, bytes)
-    assert creds.private_key_certificate_chain_pairs == pairs
-    assert creds.root_certificates == client_cert.cert.encode()
-    assert creds.require_client_auth is True
-
+        """Test creating server credentials using server certificate fixture."""
+        pairs = [(server_cert.key.encode(), server_cert.cert.encode())]
+        creds = mock_ssl_server_credentials(
+            private_key_certificate_chain_pairs=pairs,
+            root_certificates=client_cert.cert.encode(),  # For client authentication
+            require_client_auth=True,
+        )
+        assert isinstance(creds.private_key_certificate_chain_pairs[0][0], bytes)
+        assert isinstance(creds.private_key_certificate_chain_pairs[0][1], bytes)
+        assert isinstance(creds.root_certificates, bytes)
+        assert creds.private_key_certificate_chain_pairs == pairs
+        assert creds.root_certificates == client_cert.cert.encode()
+        assert creds.require_client_auth is True
 
     def test_mock_server_credentials_multiple_certs(self, server_cert, client_cert) -> None:
-    """Test creating server credentials with multiple certificate pairs."""
-    # Using both server and client certs as pairs for testing
-    pairs = [
-        (server_cert.key.encode(), server_cert.cert.encode()),
-        (client_cert.key.encode(), client_cert.cert.encode()),
-    ]
-    creds = mock_ssl_server_credentials(
-        private_key_certificate_chain_pairs=pairs,
-        root_certificates=client_cert.cert.encode(),
-        require_client_auth=True,
-    )
-    assert len(creds.private_key_certificate_chain_pairs) == 2
-    assert creds.private_key_certificate_chain_pairs == pairs
-
+        """Test creating server credentials with multiple certificate pairs."""
+        # Using both server and client certs as pairs for testing
+        pairs = [
+            (server_cert.key.encode(), server_cert.cert.encode()),
+            (client_cert.key.encode(), client_cert.cert.encode()),
+        ]
+        creds = mock_ssl_server_credentials(
+            private_key_certificate_chain_pairs=pairs,
+            root_certificates=client_cert.cert.encode(),
+            require_client_auth=True,
+        )
+        assert len(creds.private_key_certificate_chain_pairs) == 2
+        assert creds.private_key_certificate_chain_pairs == pairs
 
     def test_mock_server_credentials_validation_with_certs(
         self,
         server_cert,
         client_cert,
     ) -> None:
-    """Test validation rules with real certificates."""
-    # Test requiring client auth without root certs
-    with pytest.raises(ValueError):
-        mock_ssl_server_credentials(
-            private_key_certificate_chain_pairs=[
-                (server_cert.key.encode(), server_cert.cert.encode()),
-            ],
-            require_client_auth=True,  # Should fail without root_certificates
-        )
+        """Test validation rules with real certificates."""
+        # Test requiring client auth without root certs
+        with pytest.raises(ValueError):
+            mock_ssl_server_credentials(
+                private_key_certificate_chain_pairs=[
+                    (server_cert.key.encode(), server_cert.cert.encode()),
+                ],
+                require_client_auth=True,  # Should fail without root_certificates
+            )
 
-    # Test with invalid pair types
-    with pytest.raises(TypeError):
-        mock_ssl_server_credentials(
-            private_key_certificate_chain_pairs=[
-                (server_cert.key, server_cert.cert),  # Not encoded to bytes
-            ],
-        )
-
+        # Test with invalid pair types
+        with pytest.raises(TypeError):
+            mock_ssl_server_credentials(
+                private_key_certificate_chain_pairs=[
+                    (server_cert.key, server_cert.cert),  # Not encoded to bytes
+                ],
+            )
 
     def test_mock_channel_credentials_none_values(self, client_cert) -> None:
-    """Test channel credentials with optional parameters as None."""
-    creds = mock_ssl_channel_credentials(
-        root_certificates=client_cert.cert.encode(),
-        # Omitting private_key and certificate_chain
-    )
-    assert isinstance(creds.root_certificates, bytes)
-    assert creds.private_key is None
-    assert creds.certificate_chain is None
+        """Test channel credentials with optional parameters as None."""
+        creds = mock_ssl_channel_credentials(
+            root_certificates=client_cert.cert.encode(),
+            # Omitting private_key and certificate_chain
+        )
+        assert isinstance(creds.root_certificates, bytes)
+        assert creds.private_key is None
+        assert creds.certificate_chain is None
 
 
 ### 🐍🏗🧪️

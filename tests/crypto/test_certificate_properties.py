@@ -191,7 +191,6 @@ class TestCertificateProperties(FoundationTestCase):
         # Should return False when extension is not found
         assert cert.is_ca is False
 
-
     @pytest.mark.asyncio
     async def test_is_ca_extension_not_found_logs_debug(self, mocker) -> None:
         """Test is_ca property logs debug when BasicConstraints extension is not found."""
@@ -226,7 +225,6 @@ class TestCertificateProperties(FoundationTestCase):
         # Restore original extensions if necessary, though for this test it's fine as instance is local
         # For more complex scenarios, more careful patching/restoration might be needed
         # cert_instance._cert.extensions = original_extensions # Not strictly needed here
-
 
     @pytest.mark.asyncio
     async def test_unique_serial_numbers(self, client_cert, server_cert) -> None:
