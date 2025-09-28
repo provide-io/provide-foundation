@@ -519,7 +519,10 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/testkit/test_file_operations_fixtures.py::TestFileOperationSimulator::test_simulator_initialization -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest -n auto --tb=short -q --maxfail=10)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/console/ tests/platform/ tests/transport/test_middleware.py tests/integration/ tests/core/test_foundation_log_output.py tests/serialization/test_serialization_core.py tests/time/test_time_core.py -v --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest -n auto --tb=no -q --ignore=tests/file/test_file_operations.py --ignore=tests/test_file_operations.py --ignore=tests/testkit/test_file_operations_fixtures.py)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest -n auto --tb=no -q --ignore=tests/file/test_file_operations.py --ignore=tests/test_file_operations.py --ignore=tests/testkit/test_file_operations_fixtures.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest --collect-only -q)",
+      "Bash(.venv/bin/pytest --collect-only -q)",
+      "Bash(.venv/bin/pytest --collect-only)"
     ],
     "deny": [],
     "ask": [],
