@@ -398,7 +398,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/errors/test_types.py -q)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/logger/)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format /Users/tim/code/gh/provide-io/provide-foundation/tests/logger/)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff format /Users/tim/code/gh/provide-io/provide-foundation/tests/logger/ratelimit/test_processor.py /Users/tim/code/gh/provide-io/provide-foundation/tests/logger/ratelimit/test_queue_limiter.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff format /Users/tim/code/gh/provide-io/provide-foundation/tests/logger/ratelimit/test_processor.py /Users/tim/code/gh/provide-io/provide-foundation/tests/logger/ratelimit/test_queue_limiter.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/logger/test_logging.py::TestLoggingWithEmojiSets::test_llm_emoji_set_end_to_end -v)"
     ],
     "deny": [],
     "ask": [],

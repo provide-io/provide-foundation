@@ -96,7 +96,7 @@ class TestQueuedRateLimiter(FoundationTestCase):
 
         # Enqueue some items
         for i in range(5):
-            accepted, reason = limiter.enqueue(f"item_{i}")
+            accepted, _reason = limiter.enqueue(f"item_{i}")
             assert accepted is True
             assert reason is None
 
@@ -143,7 +143,7 @@ class TestQueuedRateLimiter(FoundationTestCase):
 
         # Fill queue to capacity
         for i in range(3):
-            accepted, reason = limiter.enqueue(f"item_{i}")
+            accepted, _reason = limiter.enqueue(f"item_{i}")
             assert accepted is True
 
         # Add one more item - should drop oldest
@@ -156,7 +156,7 @@ class TestQueuedRateLimiter(FoundationTestCase):
 
         limiter.shutdown()
 
-    def test_queued_rate_limiter_drop_newest_policy(self, ensure_limiter_cleanup) -> None:
+    def test_queued_rate_limiter_drop_newest_policy(self, ensure_limiter_cleanup: any) -> None:
         """Test drop_newest overflow policy."""
         limiter = ensure_limiter_cleanup(
             QueuedRateLimiter(
@@ -169,7 +169,7 @@ class TestQueuedRateLimiter(FoundationTestCase):
 
         # Fill queue to capacity
         for i in range(2):
-            accepted, reason = limiter.enqueue(f"item_{i}")
+            accepted, _reason = limiter.enqueue(f"item_{i}")
             assert accepted is True
 
         # Try to add one more - should be rejected
@@ -183,7 +183,7 @@ class TestQueuedRateLimiter(FoundationTestCase):
 
         limiter.shutdown()
 
-    def test_queued_rate_limiter_block_policy(self, ensure_limiter_cleanup) -> None:
+    def test_queued_rate_limiter_block_policy(self, ensure_limiter_cleanup: any) -> None:
         """Test block overflow policy."""
         limiter = ensure_limiter_cleanup(
             QueuedRateLimiter(
@@ -205,12 +205,12 @@ class TestQueuedRateLimiter(FoundationTestCase):
 
         limiter.shutdown()
 
-    def test_queued_rate_limiter_processing(self, ensure_limiter_cleanup) -> None:
+    def test_queued_rate_limiter_processing(self, ensure_limiter_cleanup: any) -> None:
         """Test that queued items are processed over time."""
         processed_items = []
 
         class TestQueuedRateLimiter(QueuedRateLimiter):
-            def _process_item(self, item) -> None:
+            def _process_item(self, item: any) -> None:
                 processed_items.append(item)
 
         limiter = ensure_limiter_cleanup(
@@ -236,7 +236,7 @@ class TestQueuedRateLimiter(FoundationTestCase):
 
         limiter.shutdown()
 
-    def test_queued_rate_limiter_estimate_size(self, ensure_limiter_cleanup) -> None:
+    def test_queued_rate_limiter_estimate_size(self, ensure_limiter_cleanup: any) -> None:
         """Test memory size estimation."""
         limiter = ensure_limiter_cleanup(QueuedRateLimiter(capacity=10.0, refill_rate=1.0))
 
@@ -253,7 +253,7 @@ class TestQueuedRateLimiter(FoundationTestCase):
 
         limiter.shutdown()
 
-    def test_queued_rate_limiter_get_stats(self, ensure_limiter_cleanup) -> None:
+    def test_queued_rate_limiter_get_stats(self, ensure_limiter_cleanup: any) -> None:
         """Test statistics collection."""
         limiter = ensure_limiter_cleanup(
             QueuedRateLimiter(
@@ -291,7 +291,7 @@ class TestQueuedRateLimiter(FoundationTestCase):
 
         limiter.shutdown()
 
-    def test_queued_rate_limiter_shutdown(self, ensure_limiter_cleanup) -> None:
+    def test_queued_rate_limiter_shutdown(self, ensure_limiter_cleanup: any) -> None:
         """Test proper shutdown."""
         limiter = ensure_limiter_cleanup(QueuedRateLimiter(capacity=10.0, refill_rate=1.0))
 
@@ -536,7 +536,7 @@ class TestBufferedRateLimiter(FoundationTestCase):
 class TestQueueLimiterIntegration(FoundationTestCase):
     """Integration tests for queue-based rate limiters."""
 
-    def test_different_queue_limiters_similar_behavior(self, ensure_limiter_cleanup) -> None:
+    def test_different_queue_limiters_similar_behavior(self, ensure_limiter_cleanup: any) -> None:
         """Test that different queue limiters have similar core behavior."""
         buffered = BufferedRateLimiter(capacity=5.0, refill_rate=2.0)
         queued = ensure_limiter_cleanup(QueuedRateLimiter(capacity=5.0, refill_rate=2.0, max_queue_size=10))
