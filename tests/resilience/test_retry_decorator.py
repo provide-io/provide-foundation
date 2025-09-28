@@ -1,7 +1,7 @@
 """Tests for @retry decorator."""
 
 import asyncio
-from typing import Never
+from typing import Any, Never
 from unittest.mock import ANY, AsyncMock, MagicMock, patch
 
 from provide.testkit import FoundationTestCase
@@ -61,7 +61,7 @@ class TestRetryDecoratorSync(FoundationTestCase):
         """Test retrying only specific exception types."""
 
         @retry(ValueError, TypeError, max_attempts=3, base_delay=0.01)
-        def selective_retry(error_type) -> Never:
+        def selective_retry(error_type: str) -> Never:
             if error_type == "value":
                 raise ValueError("value error")
             if error_type == "type":
@@ -107,7 +107,7 @@ class TestRetryDecoratorSync(FoundationTestCase):
         """Test decorated function with arguments."""
 
         @retry(max_attempts=2, base_delay=0.01)
-        def func_with_args(a, b, c=None) -> str:
+        def func_with_args(a: str, b: str, c: str | None = None) -> str:
             if not hasattr(func_with_args, "called"):
                 func_with_args.called = True
                 raise ValueError("first")
@@ -238,7 +238,7 @@ class TestRetryDecoratorAsync(FoundationTestCase):
         """Test decorated async function with arguments."""
 
         @retry(max_attempts=2, base_delay=0.01)
-        async def async_with_args(a, b, *, c=None) -> str:
+        async def async_with_args(a: str, b: str, *, c: str | None = None) -> str:
             await asyncio.sleep(0)  # Ensure it's async
             if not hasattr(async_with_args, "called"):
                 async_with_args.called = True
@@ -366,7 +366,7 @@ class TestRetryDecoratorParameterValidation:
         """Test decorator with only exception types as positional args."""
 
         @retry(ValueError, TypeError)
-        def func(error_type) -> Never:
+        def func(error_type: str) -> Never:
             if error_type == "value":
                 raise ValueError("test")
             if error_type == "type":
@@ -389,7 +389,7 @@ class TestRetryDecoratorLogging:
     """Test logging behavior of @retry decorator."""
 
     @patch("provide.foundation.hub.foundation.get_foundation_logger")
-    def test_retry_logging(self, mock_get_logger) -> None:
+    def test_retry_logging(self, mock_get_logger: Any) -> None:
         """Test that retries are logged."""
         mock_logger = mock_get_logger.return_value
 
@@ -407,7 +407,7 @@ class TestRetryDecoratorLogging:
         mock_logger.info.assert_called()
 
     @patch("provide.foundation.hub.foundation.get_foundation_logger")
-    def test_failure_logging(self, mock_get_logger) -> None:
+    def test_failure_logging(self, mock_get_logger: Any) -> None:
         """Test that final failure is logged."""
         mock_logger = mock_get_logger.return_value
 

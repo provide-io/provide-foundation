@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import pytest
 from provide.testkit import FoundationTestCase
+import pytest
 
 from provide.foundation.resilience.retry import BackoffStrategy, RetryPolicy
 
@@ -220,7 +220,7 @@ class TestRetryPolicyShouldRetry(FoundationTestCase):
 
         # Mock response objects
         class MockResponse:
-            def __init__(self, status) -> None:
+            def __init__(self, status: int) -> None:
                 self.status = status
 
         # Retryable status codes
@@ -244,7 +244,7 @@ class TestRetryPolicyShouldRetry(FoundationTestCase):
         )
 
         class MockResponse:
-            def __init__(self, status) -> None:
+            def __init__(self, status: int) -> None:
                 self.status = status
 
         assert policy.should_retry_response(MockResponse(500), 1) is False

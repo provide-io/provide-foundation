@@ -466,7 +466,12 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/transport/test_transport_basic.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/transport/test_client.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/transport/test_middleware.py --ignore-missing-imports)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/resilience/test_circuit_breaker.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/resilience/test_circuit_breaker.py)",
+      "Read(//Users/tim/**)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/resilience/test_retry_policy.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/resilience/test_fallback.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/resilience/test_integration.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/resilience/)"
     ],
     "deny": [],
     "ask": [],

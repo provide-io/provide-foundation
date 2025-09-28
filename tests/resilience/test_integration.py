@@ -1,6 +1,10 @@
 """Integration tests for resilience module with transport middleware and other components."""
 
+from __future__ import annotations
 
+from typing import Any
+
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.resilience.decorators import retry
@@ -14,7 +18,7 @@ from provide.foundation.transport.errors import TransportError
 from provide.foundation.transport.middleware import RetryMiddleware
 
 
-class TestRetryMiddlewareIntegration:
+class TestRetryMiddlewareIntegration(FoundationTestCase):
     """Test RetryMiddleware using unified retry logic."""
 
     @pytest.mark.asyncio
@@ -32,7 +36,7 @@ class TestRetryMiddlewareIntegration:
         request = Request(uri="https://api.example.com/test", method="GET")
         call_count = 0
 
-        async def failing_execute(req):
+        async def failing_execute(req: Request) -> Response:
             nonlocal call_count
             call_count += 1
 
@@ -61,7 +65,7 @@ class TestRetryMiddlewareIntegration:
         request = Request(uri="https://api.example.com/test", method="POST")
         call_count = 0
 
-        async def failing_execute(req):
+        async def failing_execute(req: Request) -> Response:
             nonlocal call_count
             call_count += 1
 
@@ -88,7 +92,7 @@ class TestRetryMiddlewareIntegration:
         request = Request(uri="https://api.example.com/test", method="GET")
         call_count = 0
 
-        async def execute_404(req):
+        async def execute_404(req: Request) -> Response:
             nonlocal call_count
             call_count += 1
             return Response(status=404, request=req)  # Not retryable
@@ -113,7 +117,7 @@ class TestRetryMiddlewareIntegration:
         request = Request(uri="https://api.example.com/test", method="PUT")
         call_count = 0
 
-        async def mixed_failures(req):
+        async def mixed_failures(req: Request) -> Response:
             nonlocal call_count
             call_count += 1
 
@@ -131,7 +135,7 @@ class TestRetryMiddlewareIntegration:
         assert call_count == 4
 
 
-class TestDecoratorWithMiddleware:
+class TestDecoratorWithMiddleware(FoundationTestCase):
     """Test @retry decorator working with middleware."""
 
     @pytest.mark.asyncio
@@ -146,10 +150,10 @@ class TestDecoratorWithMiddleware:
         middleware = RetryMiddleware(policy=policy)
 
         @retry(max_attempts=3, base_delay=0.01)
-        async def api_call():
+        async def api_call() -> Response:
             request = Request(uri="https://api.example.com", method="GET")
 
-            async def execute(req):
+            async def execute(req: Request) -> Response:
                 # Simulate flaky endpoint
                 if not hasattr(api_call, "attempts"):
                     api_call.attempts = 0
@@ -185,7 +189,7 @@ class TestDecoratorWithMiddleware:
             return "inner success"
 
         @retry(max_attempts=3, base_delay=0.01)
-        def outer_func():
+        def outer_func() -> str:
             nonlocal outer_calls
             outer_calls += 1
 
@@ -208,7 +212,7 @@ class TestDecoratorWithMiddleware:
         assert result == "inner success"
 
 
-class TestRetryExecutorWithRealWorld:
+class TestRetryExecutorWithRealWorld(FoundationTestCase):
     """Test RetryExecutor with real-world scenarios."""
 
     @pytest.mark.asyncio
@@ -220,7 +224,7 @@ class TestRetryExecutorWithRealWorld:
                 self.connection_attempts = 0
                 self.connected = False
 
-            async def connect(self):
+            async def connect(self) -> DatabaseConnection:
                 self.connection_attempts += 1
                 if self.connection_attempts < 3:
                     raise ConnectionError("Database unavailable")
@@ -252,7 +256,7 @@ class TestRetryExecutorWithRealWorld:
             def __init__(self) -> None:
                 self.request_count = 0
 
-            def make_request(self, endpoint):
+            def make_request(self, endpoint: str) -> dict[str, Any]:
                 self.request_count += 1
                 if self.request_count < 3:
                     raise RateLimitError("Rate limit exceeded")
@@ -278,13 +282,13 @@ class TestRetryExecutorWithRealWorld:
         """Test circuit breaker pattern combined with retry."""
 
         class CircuitBreaker:
-            def __init__(self, failure_threshold=3) -> None:
+            def __init__(self, failure_threshold: int = 3) -> None:
                 self.failure_count = 0
                 self.failure_threshold = failure_threshold
                 self.is_open = False
                 self.half_open_attempts = 0
 
-            async def call(self, func, *args, **kwargs):
+            async def call(self, func: Any, *args: Any, **kwargs: Any) -> Any:
                 if self.is_open:
                     if self.half_open_attempts < 1:
                         # Try half-open state
