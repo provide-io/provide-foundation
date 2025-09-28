@@ -60,8 +60,8 @@ def get_log_stream() -> TextIO:
                 except Exception:
                     # perr() also failed, try direct stderr as last resort
                     try:
-                        print(f"[STREAM ERROR] Stream operation failed: {e.__class__.__name__}: {e}",
-                              file=sys.stderr)
+                        sys.stderr.write(f"[STREAM ERROR] Stream operation failed: {e.__class__.__name__}: {e}\n")
+                        sys.stderr.flush()
                     except Exception:
                         # Can't even log to stderr, proceed with fallback anyway
                         pass

@@ -66,11 +66,11 @@ def write_to_console(message: str, stream: TextIO | None = None, log_fallback: b
             except Exception as log_error:
                 # Foundation logger failed, fall back to direct stderr logging
                 try:
-                    print(
+                    sys.stderr.write(
                         f"[DEBUG] Console write failed (logging also failed): "
-                        f"{e.__class__.__name__}: {e} (log_error: {log_error.__class__.__name__})",
-                        file=sys.stderr
+                        f"{e.__class__.__name__}: {e} (log_error: {log_error.__class__.__name__})\n"
                     )
+                    sys.stderr.flush()
                 except Exception:
                     # Even stderr failed - this is a critical system failure, we cannot continue
                     raise RuntimeError("Critical system failure: unable to write debug information to any stream") from e
