@@ -120,6 +120,7 @@ class TestGenerateLogEntry(FoundationTestCase):
 
     def setup_method(self) -> None:
         """Reset counters and random seed before each test."""
+        super().setup_method()
         import provide.foundation.cli.commands.logs.generate as generate_module
 
         generate_module._trace_counter = 0
