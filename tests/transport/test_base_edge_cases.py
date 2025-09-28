@@ -5,9 +5,9 @@ from __future__ import annotations
 import json
 from typing import Never
 
-import pytest
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import AsyncMock
+import pytest
 
 from provide.foundation.transport.base import Request, Response, TransportBase
 from provide.foundation.transport.errors import HTTPResponseError
@@ -147,10 +147,10 @@ class TestTransportBaseEdgeCases(FoundationTestCase):
     class MockTransport(TransportBase):
         """Mock transport implementation for testing."""
 
-        async def execute(self, request):
+        async def execute(self, request: Request) -> Response:
             return Response(status=200, body="OK")
 
-        def supports(self, transport_type):
+        def supports(self, transport_type: TransportType) -> bool:
             return transport_type == TransportType.HTTP
 
     def test_transport_base_initialization(self) -> None:
