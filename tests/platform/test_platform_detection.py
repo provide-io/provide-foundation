@@ -1,7 +1,11 @@
 """Tests for platform detection functions."""
 
-from unittest.mock import patch
+from __future__ import annotations
 
+from typing import Any
+
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.errors.platform import PlatformError
@@ -15,7 +19,7 @@ from provide.foundation.platform.detection import (
 )
 
 
-class TestPlatformDetection:
+class TestPlatformDetection(FoundationTestCase):
     """Test platform detection functions."""
 
     def test_get_os_name_normal(self) -> None:
@@ -90,7 +94,7 @@ class TestPlatformDetection:
 
     @patch("provide.foundation.platform.detection.get_arch_name")
     @patch("provide.foundation.platform.detection.get_os_name")
-    def test_get_platform_string(self, mock_os, mock_arch) -> None:
+    def test_get_platform_string(self, mock_os: Any, mock_arch: Any) -> None:
         """Test get_platform_string combines OS and arch."""
         mock_os.return_value = "darwin"
         mock_arch.return_value = "arm64"

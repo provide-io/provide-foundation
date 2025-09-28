@@ -123,7 +123,12 @@ def temp_file(
         if cleanup and temp_path and temp_path.exists():
             with error_boundary(Exception, reraise=False):
                 safe_delete(temp_path, missing_ok=True)
-                log.debug("Cleaned up temp file", path=str(temp_path))
+                # Safe logging - catch ValueError for closed file streams
+                try:
+                    log.debug("Cleaned up temp file", path=str(temp_path))
+                except (ValueError, OSError):
+                    # Log stream may be closed during test teardown
+                    pass
 
 
 @contextmanager
@@ -155,4 +160,9 @@ def temp_dir(
         if cleanup and temp_path and temp_path.exists():
             with error_boundary(Exception, reraise=False):
                 shutil.rmtree(temp_path)
-                log.debug("Cleaned up temp directory", path=str(temp_path))
+                # Safe logging - catch ValueError for closed file streams
+                try:
+                    log.debug("Cleaned up temp directory", path=str(temp_path))
+                except (ValueError, OSError):
+                    # Log stream may be closed during test teardown
+                    pass
