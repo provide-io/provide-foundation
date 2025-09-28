@@ -513,13 +513,13 @@ class TestBufferedRateLimiter(FoundationTestCase):
                 allowed, _ = limiter.is_allowed(f"item_{threading.current_thread().ident}_{i}")
                 results.append(allowed)
 
-        threads = [threading.Thread(target=worker) for _ in range(5)]
+        threads = [threading.Thread(daemon=True, target=worker) for _ in range(5)]
 
         for thread in threads:
             thread.start()
 
         for thread in threads:
-            thread.join()
+            thread.join(timeout=10.0)
 
         # Some should be allowed, some denied
         allowed_count = sum(results)

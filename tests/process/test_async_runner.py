@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 import sys
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
@@ -15,7 +16,7 @@ from provide.foundation.process.async_runner import (
 )
 
 
-class TestAsyncRunCommand:
+class TestAsyncRunCommand(FoundationTestCase):
     """Test async_run_command function."""
 
     @pytest.mark.asyncio
@@ -93,7 +94,7 @@ class TestAsyncRunCommand:
         assert result.stderr == ""
 
 
-class TestAsyncStreamCommand:
+class TestAsyncStreamCommand(FoundationTestCase):
     """Test async_stream_command function."""
 
     @pytest.mark.asyncio
@@ -132,7 +133,7 @@ class TestAsyncStreamCommand:
                 pass
 
 
-class TestAsyncRunShell:
+class TestAsyncRunShell(FoundationTestCase):
     """Test async_run_shell function."""
 
     @pytest.mark.asyncio

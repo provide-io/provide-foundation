@@ -405,11 +405,11 @@ class TestProfilingIntegration(FoundationTestCase):
                 component.processor.metrics.record_message(1000000, False, 3)
 
         # Run multiple threads
-        threads = [threading.Thread(target=worker) for _ in range(5)]
+        threads = [threading.Thread(daemon=True, target=worker) for _ in range(5)]
         for t in threads:
             t.start()
         for t in threads:
-            t.join()
+            t.join(timeout=10.0)
 
         # Should handle concurrent access without errors
         metrics = component.get_metrics()

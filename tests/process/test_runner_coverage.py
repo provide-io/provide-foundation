@@ -3,9 +3,12 @@
 #
 """Additional tests to achieve full coverage for process/runner.py."""
 
-import sys
-from unittest.mock import patch
+from __future__ import annotations
 
+import sys
+
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.errors.integration import TimeoutError
@@ -17,7 +20,7 @@ from provide.foundation.process.runner import (
 )
 
 
-class TestInputHandling:
+class TestInputHandling(FoundationTestCase):
     """Test input handling and conversion for different text modes."""
 
     def test_bytes_input_with_text_mode(self) -> None:
@@ -75,7 +78,7 @@ class TestInputHandling:
         assert result.returncode == 0
 
 
-class TestErrorHandling:
+class TestErrorHandling(FoundationTestCase):
     """Test error handling paths in runner."""
 
     def test_subprocess_timeout_error(self) -> None:
@@ -125,7 +128,7 @@ class TestErrorHandling:
         assert exc_info.value.code == "PROCESS_COMMAND_FAILED"
 
 
-class TestShellExecution:
+class TestShellExecution(FoundationTestCase):
     """Test shell execution paths."""
 
     def test_shell_with_complex_command(self) -> None:
@@ -148,7 +151,7 @@ class TestShellExecution:
             run_shell("exit 1", check=True)
 
 
-class TestWorkingDirectory:
+class TestWorkingDirectory(FoundationTestCase):
     """Test working directory handling."""
 
     def test_cwd_as_string(self, tmp_path) -> None:
@@ -172,7 +175,7 @@ class TestWorkingDirectory:
         assert "test content" in result.stdout
 
 
-class TestEnvironmentHandling:
+class TestEnvironmentHandling(FoundationTestCase):
     """Test environment variable handling."""
 
     def test_env_dict_conversion(self) -> None:
@@ -193,7 +196,7 @@ class TestEnvironmentHandling:
         # Should not crash or fail
 
 
-class TestStreamCommandCoverage:
+class TestStreamCommandCoverage(FoundationTestCase):
     """Test additional stream command functionality."""
 
     def test_stream_command_with_stderr(self) -> None:
@@ -231,7 +234,7 @@ class TestStreamCommandCoverage:
         assert "Failed to stream command" in str(exc_info.value)
 
 
-class TestCompletedProcessConstruction:
+class TestCompletedProcessConstruction(FoundationTestCase):
     """Test CompletedProcess object construction."""
 
     def test_completed_process_with_list_cmd(self) -> None:

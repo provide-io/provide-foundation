@@ -1,16 +1,15 @@
 """Comprehensive coverage tests for process/async_runner.py module."""
 
+from __future__ import annotations
+
+import builtins
 from pathlib import Path
 import sys
 import tempfile
-from unittest.mock import AsyncMock, Mock, patch
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import AsyncMock, Mock, patch
 import pytest
-
-# Mark all tests in this file to run serially to avoid event loop issues
-pytestmark = pytest.mark.serial
-
-import builtins
 
 from provide.foundation.errors.integration import TimeoutError
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
@@ -21,9 +20,12 @@ from provide.foundation.process.async_runner import (
 )
 from provide.foundation.process.runner import CompletedProcess
 
+# Mark all tests in this file to run serially to avoid event loop issues
+pytestmark = pytest.mark.serial
+
 
 @pytest.mark.asyncio
-class TestAsyncRunCommand:
+class TestAsyncRunCommand(FoundationTestCase):
     """Test async_run_command function."""
 
     async def test_basic_command_success(self) -> None:
@@ -227,7 +229,7 @@ class TestAsyncRunCommand:
 
 
 @pytest.mark.asyncio
-class TestAsyncStreamCommand:
+class TestAsyncStreamCommand(FoundationTestCase):
     """Test async_stream_command function."""
 
     async def test_basic_stream_success(self) -> None:
@@ -441,7 +443,7 @@ class TestAsyncStreamCommand:
 
 
 @pytest.mark.asyncio
-class TestAsyncRunShell:
+class TestAsyncRunShell(FoundationTestCase):
     """Test async_run_shell function."""
 
     async def test_basic_shell_command(self) -> None:
@@ -542,7 +544,7 @@ class TestAsyncRunShell:
 
 
 @pytest.mark.asyncio
-class TestAsyncRunnerEdgeCases:
+class TestAsyncRunnerEdgeCases(FoundationTestCase):
     """Test edge cases and error conditions."""
 
     async def test_empty_command_list(self) -> None:

@@ -84,12 +84,12 @@ class TestTraceSpanGeneration(FoundationTestCase):
             for _ in range(10):
                 trace_ids.append(generate_trace_id())
 
-        threads = [threading.Thread(target=generate_multiple) for _ in range(5)]
+        threads = [threading.Thread(daemon=True, target=generate_multiple) for _ in range(5)]
 
         for thread in threads:
             thread.start()
         for thread in threads:
-            thread.join()
+            thread.join(timeout=10.0)
 
         # Should have 50 unique trace IDs
         assert len(trace_ids) == 50
@@ -103,12 +103,12 @@ class TestTraceSpanGeneration(FoundationTestCase):
             for _ in range(10):
                 span_ids.append(generate_span_id())
 
-        threads = [threading.Thread(target=generate_multiple) for _ in range(5)]
+        threads = [threading.Thread(daemon=True, target=generate_multiple) for _ in range(5)]
 
         for thread in threads:
             thread.start()
         for thread in threads:
-            thread.join()
+            thread.join(timeout=10.0)
 
         # Should have 50 unique span IDs
         assert len(span_ids) == 50

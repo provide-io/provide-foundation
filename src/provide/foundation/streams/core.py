@@ -19,7 +19,10 @@ _STREAM_LOCK = threading.Lock()
 def get_log_stream() -> TextIO:
     """Get the current log stream."""
     global _PROVIDE_LOG_STREAM
-    with _STREAM_LOCK:
+    if not _STREAM_LOCK.acquire(timeout=5.0):
+        # If we can't acquire the lock within 5 seconds, return stderr as fallback
+        return sys.stderr
+    try:
         # Only validate real streams, not mock objects
         # Check if this is a real stream that can be closed
         if (
@@ -55,12 +58,17 @@ def get_log_stream() -> TextIO:
                 # Using perr() which is safe as it doesn't depend on Foundation logger
                 try:
                     from provide.foundation.console.output import perr
-                    perr(f"[STREAM ERROR] Stream operation failed, falling back to stderr: "
-                         f"{e.__class__.__name__}: {e}")
+
+                    perr(
+                        f"[STREAM ERROR] Stream operation failed, falling back to stderr: "
+                        f"{e.__class__.__name__}: {e}"
+                    )
                 except Exception:
                     # perr() also failed, try direct stderr as last resort
                     try:
-                        sys.stderr.write(f"[STREAM ERROR] Stream operation failed: {e.__class__.__name__}: {e}\n")
+                        sys.stderr.write(
+                            f"[STREAM ERROR] Stream operation failed: {e.__class__.__name__}: {e}\n"
+                        )
                         sys.stderr.flush()
                     except Exception:
                         # Can't even log to stderr, proceed with fallback anyway
@@ -82,6 +90,8 @@ def get_log_stream() -> TextIO:
                     raise ValueError("Stream validation failed - no stderr available") from e
 
         return _PROVIDE_LOG_STREAM
+    finally:
+        _STREAM_LOCK.release()
 
 
 def _reconfigure_structlog_stream() -> None:
@@ -113,7 +123,10 @@ def set_log_stream_for_testing(stream: TextIO | None) -> None:
     from provide.foundation.testmode.detection import is_in_click_testing
 
     global _PROVIDE_LOG_STREAM
-    with _STREAM_LOCK:
+    if not _STREAM_LOCK.acquire(timeout=5.0):
+        # If we can't acquire the lock within 5 seconds, skip the operation
+        return
+    try:
         # Don't modify streams if we're in Click testing context
         if is_in_click_testing():
             return
@@ -122,11 +135,18 @@ def set_log_stream_for_testing(stream: TextIO | None) -> None:
 
         # Reconfigure structlog to use the new stream
         _reconfigure_structlog_stream()
+    finally:
+        _STREAM_LOCK.release()
 
 
 def ensure_stderr_default() -> None:
     """Ensure the log stream defaults to stderr if it's stdout."""
     global _PROVIDE_LOG_STREAM
-    with _STREAM_LOCK:
+    if not _STREAM_LOCK.acquire(timeout=5.0):
+        # If we can't acquire the lock within 5 seconds, skip the operation
+        return
+    try:
         if _PROVIDE_LOG_STREAM is sys.stdout:
             _PROVIDE_LOG_STREAM = sys.stderr
+    finally:
+        _STREAM_LOCK.release()

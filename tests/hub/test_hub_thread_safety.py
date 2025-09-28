@@ -84,13 +84,13 @@ class TestRegistryThreadSafety(FoundationTestCase):
         # Create multiple threads that read from registry
         threads = []
         for thread_id in range(10):
-            thread = threading.Thread(target=get_items, args=(thread_id,))
+            thread = threading.Thread(daemon=True, target=get_items, args=(thread_id,))
             threads.append(thread)
             thread.start()
 
         # Wait for all threads to complete
         for thread in threads:
-            thread.join()
+            thread.join(timeout=10.0)
 
         # Verify no mismatched values
         assert len(results) == 0, f"Mismatched values: {results}"
@@ -139,25 +139,25 @@ class TestRegistryThreadSafety(FoundationTestCase):
 
         # Start writers
         for i in range(3):
-            thread = threading.Thread(target=writer_thread, args=(i,))
+            thread = threading.Thread(daemon=True, target=writer_thread, args=(i,))
             threads.append(thread)
             thread.start()
 
         # Start readers
         for i in range(3):
-            thread = threading.Thread(target=reader_thread, args=(i,))
+            thread = threading.Thread(daemon=True, target=reader_thread, args=(i,))
             threads.append(thread)
             thread.start()
 
         # Start remover after a small delay
         pass  # Small delay
-        thread = threading.Thread(target=remover_thread, args=(0,))
+        thread = threading.Thread(daemon=True, target=remover_thread, args=(0,))
         threads.append(thread)
         thread.start()
 
         # Wait for all threads
         for thread in threads:
-            thread.join()
+            thread.join(timeout=10.0)
 
         # Verify no errors
         assert len(errors) == 0, f"Errors occurred: {errors}"
@@ -219,7 +219,7 @@ class TestHubThreadSafety(FoundationTestCase):
         # Create multiple threads that all try to get hub at once
         threads = []
         for _ in range(20):
-            thread = threading.Thread(target=get_hub_instance)
+            thread = threading.Thread(daemon=True, target=get_hub_instance)
             threads.append(thread)
 
         # Start all threads at once
@@ -228,7 +228,7 @@ class TestHubThreadSafety(FoundationTestCase):
 
         # Wait for all threads
         for thread in threads:
-            thread.join()
+            thread.join(timeout=10.0)
 
         # Verify all threads got the same hub instance
         assert len(hub_instances) == 20
@@ -324,11 +324,11 @@ class TestHubThreadSafety(FoundationTestCase):
             except Exception as e:
                 errors.append(e)
 
-        threads = [threading.Thread(target=get_new_hub_instance) for _ in range(5)]
+        threads = [threading.Thread(daemon=True, target=get_new_hub_instance) for _ in range(5)]
         for t in threads:
             t.start()
         for t in threads:
-            t.join()
+            t.join(timeout=10.0)
 
         assert not errors, f"Errors occurred during re-initialization: {errors}"
         assert len(hub_instances) == 5

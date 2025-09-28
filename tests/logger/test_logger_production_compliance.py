@@ -318,7 +318,7 @@ class TestDocumentedBehaviorCompliance(FoundationTestCase):
         # Start all threads
         threads = []
         for i in range(thread_count):
-            thread = threading.Thread(target=stress_worker, args=(i,))
+            thread = threading.Thread(daemon=True, target=stress_worker, args=(i,))
             threads.append(thread)
             thread.start()
 

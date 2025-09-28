@@ -3,11 +3,13 @@
 #
 """Additional tests to achieve full coverage for process/async_runner.py."""
 
+from __future__ import annotations
+
 import asyncio
 import sys
-from unittest.mock import patch
 
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
@@ -18,7 +20,7 @@ from provide.foundation.process.async_runner import (
 )
 
 
-class TestAsyncInputHandling:
+class TestAsyncInputHandling(FoundationTestCase):
     """Test async input handling and conversion for different text modes."""
 
     @pytest.mark.asyncio
@@ -28,7 +30,7 @@ class TestAsyncInputHandling:
         assert result.returncode == 0
 
 
-class TestAsyncErrorHandling:
+class TestAsyncErrorHandling(FoundationTestCase):
     """Test async error handling paths."""
 
     @pytest.mark.asyncio
@@ -83,7 +85,7 @@ class TestAsyncErrorHandling:
         assert exc_info.value.code == "PROCESS_ASYNC_FAILED"
 
 
-class TestAsyncShellExecution:
+class TestAsyncShellExecution(FoundationTestCase):
     """Test async shell execution paths."""
 
     @pytest.mark.asyncio
@@ -109,7 +111,7 @@ class TestAsyncShellExecution:
             await async_run_shell("exit 1", check=True)
 
 
-class TestAsyncWorkingDirectory:
+class TestAsyncWorkingDirectory(FoundationTestCase):
     """Test async working directory handling."""
 
     @pytest.mark.asyncio
@@ -135,7 +137,7 @@ class TestAsyncWorkingDirectory:
         assert "test content" in result.stdout
 
 
-class TestAsyncEnvironmentHandling:
+class TestAsyncEnvironmentHandling(FoundationTestCase):
     """Test async environment variable handling."""
 
     @pytest.mark.asyncio
@@ -158,7 +160,7 @@ class TestAsyncEnvironmentHandling:
         # Should not crash or fail
 
 
-class TestAsyncStreamCommandCoverage:
+class TestAsyncStreamCommandCoverage(FoundationTestCase):
     """Test additional async stream command functionality."""
 
     @pytest.mark.asyncio
@@ -203,7 +205,7 @@ class TestAsyncStreamCommandCoverage:
         assert "Failed to stream async command" in str(exc_info.value)
 
 
-class TestAsyncCompletedProcessConstruction:
+class TestAsyncCompletedProcessConstruction(FoundationTestCase):
     """Test async CompletedProcess object construction."""
 
     @pytest.mark.asyncio

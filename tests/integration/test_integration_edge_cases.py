@@ -370,7 +370,7 @@ def test_concurrent_setup_calls() -> None:
 
     threads = []
     for config_item in configs:
-        thread = threading.Thread(target=setup_worker, args=(config_item,))
+        thread = threading.Thread(daemon=True, target=setup_worker, args=(config_item,))
         threads.append(thread)
         thread.start()
 

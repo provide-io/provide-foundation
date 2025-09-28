@@ -331,7 +331,7 @@ class TestFileOperationsPerformance:
                 ),
             ]
 
-            worker = threading.Thread(target=detect_worker, args=(i, events))
+            worker = threading.Thread(daemon=True, target=detect_worker, args=(i, events))
             workers.append(worker)
 
         # Start all workers
@@ -341,7 +341,7 @@ class TestFileOperationsPerformance:
 
         # Wait for all workers to complete
         for worker in workers:
-            worker.join()
+            worker.join(timeout=10.0)
 
         end_time = time.perf_counter()
 

@@ -57,6 +57,7 @@ def write_to_console(message: str, stream: TextIO | None = None, log_fallback: b
         if log_fallback:
             try:
                 from provide.foundation.hub.foundation import get_foundation_logger
+
                 get_foundation_logger().debug(
                     "Console write failed, falling back to stderr",
                     error=str(e),
@@ -73,7 +74,9 @@ def write_to_console(message: str, stream: TextIO | None = None, log_fallback: b
                     sys.stderr.flush()
                 except Exception:
                     # Even stderr failed - this is a critical system failure, we cannot continue
-                    raise RuntimeError("Critical system failure: unable to write debug information to any stream") from e
+                    raise RuntimeError(
+                        "Critical system failure: unable to write debug information to any stream"
+                    ) from e
 
         # Fallback to stderr - if this fails, let it propagate
         sys.stderr.write(message)

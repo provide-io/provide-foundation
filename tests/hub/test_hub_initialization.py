@@ -101,13 +101,13 @@ class TestHubInitialization(FoundationTestCase):
                 errors.append(e)
 
         # Start multiple threads simultaneously
-        threads = [threading.Thread(target=get_hub_thread) for _ in range(10)]
+        threads = [threading.Thread(daemon=True, target=get_hub_thread) for _ in range(10)]
 
         for thread in threads:
             thread.start()
 
         for thread in threads:
-            thread.join()
+            thread.join(timeout=10.0)
 
         # Should have no errors
         assert len(errors) == 0

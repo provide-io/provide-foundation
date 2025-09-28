@@ -87,7 +87,7 @@ class TestSyncRateLimiter(FoundationTestCase):
                 results.append(result)
 
         # Create multiple threads
-        threads = [threading.Thread(target=worker) for _ in range(5)]
+        threads = [threading.Thread(daemon=True, target=worker) for _ in range(5)]
 
         # Start all threads
         for thread in threads:
@@ -95,7 +95,7 @@ class TestSyncRateLimiter(FoundationTestCase):
 
         # Wait for completion
         for thread in threads:
-            thread.join()
+            thread.join(timeout=10.0)
 
         # Check that we got reasonable results
         allowed_count = sum(results)
@@ -254,13 +254,13 @@ class TestGlobalRateLimiter(FoundationTestCase):
         def create_instance() -> None:
             instances.append(GlobalRateLimiter())
 
-        threads = [threading.Thread(target=create_instance) for _ in range(10)]
+        threads = [threading.Thread(daemon=True, target=create_instance) for _ in range(10)]
 
         for thread in threads:
             thread.start()
 
         for thread in threads:
-            thread.join()
+            thread.join(timeout=10.0)
 
         # All instances should be the same
         first_instance = instances[0]

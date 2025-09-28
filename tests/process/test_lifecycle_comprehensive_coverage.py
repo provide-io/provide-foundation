@@ -7,9 +7,9 @@ import sys
 import tempfile
 import threading
 from typing import Any, Never
-from unittest.mock import Mock, patch
 
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.errors.runtime import StateError
