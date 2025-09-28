@@ -271,7 +271,7 @@ class TestCreateTestCasesFromPatterns(FoundationTestCase):
 
     def test_create_standard_test_cases(self) -> None:
         """Test creating standard test cases."""
-        test_cases = create_test_cases_from_patterns()
+        test_cases = create_scenarios_from_patterns()
 
         assert len(test_cases) >= 3  # Should have at least VSCode, safe write, and batch
 
@@ -290,7 +290,7 @@ class TestCreateTestCasesFromPatterns(FoundationTestCase):
 
     def test_vscode_test_case_structure(self) -> None:
         """Test VSCode test case has correct structure."""
-        test_cases = create_test_cases_from_patterns()
+        test_cases = create_scenarios_from_patterns()
         vscode_case = next(tc for tc in test_cases if tc.name == "vscode_atomic_save")
 
         assert len(vscode_case.events) == 2

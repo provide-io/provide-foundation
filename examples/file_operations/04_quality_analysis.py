@@ -16,7 +16,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 from provide.foundation.file.quality import (
     AnalysisMetric,
     QualityAnalyzer,
-    create_test_cases_from_patterns,
+    create_scenarios_from_patterns,
 )
 
 
@@ -30,7 +30,7 @@ def main():
 
     # Add standard test cases for common patterns
     print("\n📋 Creating test cases for common patterns...")
-    test_cases = create_test_cases_from_patterns()
+    test_cases = create_scenarios_from_patterns()
 
     for test_case in test_cases:
         analyzer.add_test_case(test_case)
