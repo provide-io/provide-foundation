@@ -1,7 +1,11 @@
 """Test coverage for logger config module imports."""
 
+from __future__ import annotations
 
-class TestLoggerConfigImports:
+from provide.testkit import FoundationTestCase
+
+
+class TestLoggerConfigImports(FoundationTestCase):
     """Test logger config module import functionality."""
 
     def test_logging_config_import(self) -> None:

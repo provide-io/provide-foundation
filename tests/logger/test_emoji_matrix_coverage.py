@@ -1,11 +1,14 @@
 """Test coverage for EventSet integration with logging."""
 
+from __future__ import annotations
+
 from provide.foundation.eventsets.registry import discover_event_sets, get_registry
 from provide.foundation.eventsets.resolver import get_resolver
 from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping
+from provide.testkit import FoundationTestCase
 
 
-class TestEventSetIntegration:
+class TestEventSetIntegration(FoundationTestCase):
     """Test EventSet integration with logging system."""
 
     def test_event_mapping_creation(self) -> None:
