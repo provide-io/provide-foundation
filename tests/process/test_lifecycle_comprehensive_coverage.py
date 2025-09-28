@@ -10,7 +10,6 @@ from typing import Any, Never
 from unittest.mock import Mock, patch
 
 from provide.testkit import FoundationTestCase
-from provide.testkit.mocking.time import mock_sleep
 import pytest
 
 from provide.foundation.errors.runtime import StateError
@@ -252,8 +251,7 @@ class TestManagedProcessStderrRelay(FoundationTestCase):
 
         # Wait for process to complete and stderr thread to relay
         proc._process.wait()
-        with mock_sleep():
-            pass  # Mock the relay thread processing time
+        pass  # Mock the relay thread processing time
 
         # Check if stderr was relayed (may not be called if process completes too quickly)
         proc.cleanup()

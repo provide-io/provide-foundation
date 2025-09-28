@@ -14,7 +14,7 @@ from provide.foundation.resilience.retry import (
     RetryExecutor,
     RetryPolicy,
 )
-from provide.testkit import FoundationTestCase, mock_sleep
+from provide.testkit import FoundationTestCase
 
 
 class TestRetryExecutorSync(FoundationTestCase):

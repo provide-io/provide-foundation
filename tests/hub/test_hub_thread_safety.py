@@ -6,7 +6,6 @@ import concurrent.futures
 import threading
 
 from provide.testkit import FoundationTestCase
-from provide.testkit.mocking.time import mock_sleep
 import pytest
 
 from provide.foundation.hub import (
@@ -111,8 +110,7 @@ class TestRegistryThreadSafety(FoundationTestCase):
                         f"value_{thread_id}_{i}",
                         dimension="mixed",
                     )
-                    with mock_sleep():
-                        pass  # Mock small delay to increase contention
+                    pass  # Small delay to increase contention
             except Exception as e:
                 errors.append(f"Writer {thread_id}: {e}")
 
@@ -122,8 +120,7 @@ class TestRegistryThreadSafety(FoundationTestCase):
                 for _ in range(100):
                     registry.list_dimension("mixed")
                     # Just accessing the list, checking it doesn't crash
-                    with mock_sleep():
-                        pass  # Mock delay
+                    pass  # Small delay
             except Exception as e:
                 errors.append(f"Reader {thread_id}: {e}")
 
@@ -133,8 +130,7 @@ class TestRegistryThreadSafety(FoundationTestCase):
                 for i in range(25):
                     # Try to remove items that may or may not exist
                     registry.remove(f"writer_0_{i}", dimension="mixed")
-                    with mock_sleep():
-                        pass  # Mock delay
+                    pass  # Small delay
             except Exception as e:
                 errors.append(f"Remover {thread_id}: {e}")
 
@@ -154,8 +150,7 @@ class TestRegistryThreadSafety(FoundationTestCase):
             thread.start()
 
         # Start remover after a small delay
-        with mock_sleep():
-            pass  # Mock delay
+        pass  # Small delay
         thread = threading.Thread(target=remover_thread, args=(0,))
         threads.append(thread)
         thread.start()

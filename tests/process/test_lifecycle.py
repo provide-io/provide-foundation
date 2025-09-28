@@ -222,14 +222,12 @@ class TestWaitForProcessOutput(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_wait_for_output_process_exit(self) -> None:
         """Test behavior when process exits before pattern found."""
-        from provide.testkit.mocking.time import mock_sleep
 
         process = ManagedProcess(["echo", "hello"])
         process.launch()
 
         # Wait a bit for the echo to complete
-        with mock_sleep():
-            await asyncio.sleep(0.1)
+        await asyncio.sleep(0.1)
 
         try:
             with pytest.raises(ProcessError, match="Process exited"):

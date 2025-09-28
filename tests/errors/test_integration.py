@@ -9,7 +9,6 @@ from typing import TYPE_CHECKING, Never
 from unittest.mock import patch
 
 from provide.testkit import FoundationTestCase
-from provide.testkit.mocking.time import mock_sleep
 import pytest
 
 if TYPE_CHECKING:
@@ -241,8 +240,7 @@ class TestErrorSystemIntegration(FoundationTestCase):
 
         async def async_operation() -> Never:
             # Mock the async sleep
-            with mock_sleep():
-                await asyncio.sleep(0.01)
+            await asyncio.sleep(0.01)
             raise NetworkError("Async failure", host="async.example.com")
 
         @resilient(fallback="async_default", suppress=(NetworkError,))
