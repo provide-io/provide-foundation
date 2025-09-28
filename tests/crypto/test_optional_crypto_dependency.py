@@ -1,13 +1,15 @@
 """Tests for optional cryptography dependency behavior."""
 
-from unittest.mock import patch
+from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.crypto import _HAS_CRYPTO
 
 
-class TestOptionalCryptoDependency:
+class TestOptionalCryptoDependency(FoundationTestCase):
     """Test that crypto functionality properly handles missing cryptography dependency."""
 
     def test_require_crypto_with_crypto_available(self) -> None:
@@ -130,7 +132,7 @@ class TestOptionalCryptoDependency:
             assert Certificate is not None
 
 
-class TestCryptoTypeAliases:
+class TestCryptoTypeAliases(FoundationTestCase):
     """Test type aliases behavior with/without cryptography."""
 
     def test_type_aliases_with_crypto(self) -> None:
@@ -153,7 +155,7 @@ class TestCryptoTypeAliases:
             assert KeyPair is not None or PublicKey is not None or (not _HAS_CRYPTO)
 
 
-class TestCryptoModuleImport:
+class TestCryptoModuleImport(FoundationTestCase):
     """Test crypto module import behavior."""
 
     def test_crypto_module_imports_with_crypto(self) -> None:
@@ -198,7 +200,7 @@ class TestCryptoModuleImport:
                 assert "pip install 'provide-foundation[crypto]'" in error_msg
 
 
-class TestCryptoFallbackBehavior:
+class TestCryptoFallbackBehavior(FoundationTestCase):
     """Test fallback behavior when crypto operations are attempted without cryptography."""
 
     def test_certificate_property_access_without_crypto(self) -> None:
@@ -238,7 +240,7 @@ class TestCryptoFallbackBehavior:
                 )
 
 
-class TestCryptoInstallationMessage:
+class TestCryptoInstallationMessage(FoundationTestCase):
     """Test that helpful installation messages are provided."""
 
     def test_installation_message_consistency(self) -> None:

@@ -1,6 +1,9 @@
 # pyvider/rpcplugin/tests/test_certificate_credentials.py
 
+from __future__ import annotations
+
 from attrs import define
+from provide.testkit import FoundationTestCase
 import pytest
 
 # Fixtures will be available via tests.fixtures through conftest.py
@@ -68,8 +71,11 @@ def mock_ssl_server_credentials(
     )
 
 
-# Tests using conftest fixtures
-def test_mock_channel_credentials_with_client_cert(client_cert) -> None:
+class TestCertificateCredentials(FoundationTestCase):
+    """Test certificate credentials functionality."""
+
+    # Tests using conftest fixtures
+    def test_mock_channel_credentials_with_client_cert(self, client_cert) -> None:
     """Test creating channel credentials using client certificate fixture."""
     creds = mock_ssl_channel_credentials(
         root_certificates=client_cert.cert.encode(),
@@ -84,7 +90,7 @@ def test_mock_channel_credentials_with_client_cert(client_cert) -> None:
     assert creds.certificate_chain == client_cert.cert.encode()
 
 
-def test_mock_server_credentials_with_server_cert(server_cert, client_cert) -> None:
+    def test_mock_server_credentials_with_server_cert(self, server_cert, client_cert) -> None:
     """Test creating server credentials using server certificate fixture."""
     pairs = [(server_cert.key.encode(), server_cert.cert.encode())]
     creds = mock_ssl_server_credentials(
@@ -100,7 +106,7 @@ def test_mock_server_credentials_with_server_cert(server_cert, client_cert) -> N
     assert creds.require_client_auth is True
 
 
-def test_mock_server_credentials_multiple_certs(server_cert, client_cert) -> None:
+    def test_mock_server_credentials_multiple_certs(self, server_cert, client_cert) -> None:
     """Test creating server credentials with multiple certificate pairs."""
     # Using both server and client certs as pairs for testing
     pairs = [
@@ -116,10 +122,11 @@ def test_mock_server_credentials_multiple_certs(server_cert, client_cert) -> Non
     assert creds.private_key_certificate_chain_pairs == pairs
 
 
-def test_mock_server_credentials_validation_with_certs(
-    server_cert,
-    client_cert,
-) -> None:
+    def test_mock_server_credentials_validation_with_certs(
+        self,
+        server_cert,
+        client_cert,
+    ) -> None:
     """Test validation rules with real certificates."""
     # Test requiring client auth without root certs
     with pytest.raises(ValueError):
@@ -139,7 +146,7 @@ def test_mock_server_credentials_validation_with_certs(
         )
 
 
-def test_mock_channel_credentials_none_values(client_cert) -> None:
+    def test_mock_channel_credentials_none_values(self, client_cert) -> None:
     """Test channel credentials with optional parameters as None."""
     creds = mock_ssl_channel_credentials(
         root_certificates=client_cert.cert.encode(),
