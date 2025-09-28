@@ -1,6 +1,6 @@
 """Error handling and dependency resolution tests for hub components module."""
 
-from unittest.mock import Mock
+from provide.testkit.mocking import Mock
 
 from provide.foundation.hub.components import (
     ComponentCategory,

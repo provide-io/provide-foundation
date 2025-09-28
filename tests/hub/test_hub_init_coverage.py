@@ -1,6 +1,6 @@
 """Comprehensive coverage tests for hub/__init__.py module."""
 
-from unittest.mock import patch
+from provide.testkit.mocking import patch
 
 import pytest
 

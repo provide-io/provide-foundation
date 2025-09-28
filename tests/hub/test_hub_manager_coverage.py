@@ -1,7 +1,7 @@
 """Additional tests for Hub manager to improve code coverage."""
 
 from typing import Never
-from unittest.mock import Mock, patch
+from provide.testkit.mocking import Mock, patch
 
 import click
 

@@ -1,6 +1,6 @@
 """Advanced cleanup, config loading, and miscellaneous tests for hub components module."""
 
-from unittest.mock import AsyncMock, Mock
+from provide.testkit.mocking import AsyncMock, Mock
 
 from provide.foundation.hub.components import (
     ComponentCategory,

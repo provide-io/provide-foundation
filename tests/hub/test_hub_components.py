@@ -1,5 +1,10 @@
 """Tests for component registration functionality."""
 
+from __future__ import annotations
+
+import pytest
+from provide.testkit import FoundationTestCase
+
 from provide.foundation.hub.components import (
     discover_components,
 )
@@ -18,24 +23,25 @@ from provide.foundation.hub.manager import clear_hub
 # - Entry point discovery through discover_components()
 
 
-class TestComponentDiscovery:
+class TestComponentDiscovery(FoundationTestCase):
     """Test component discovery functionality that still exists."""
 
     def setup_method(self) -> None:
         """Clear the hub before each test."""
+        super().setup_method()
         clear_hub()
 
-    def test_discover_components_from_entry_points(self, monkeypatch) -> None:
+    def test_discover_components_from_entry_points(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test discovering components from entry points - real implementation."""
         # Test with a non-existent group - should return empty dict gracefully
         discovered = discover_components("non.existent.group")
         assert isinstance(discovered, dict)
         assert len(discovered) == 0
 
-    def test_discover_components_with_mock_entry_points(self, monkeypatch) -> None:
+    def test_discover_components_with_mock_entry_points(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test component discovery with mocked entry points."""
         from importlib import metadata
-        from unittest.mock import Mock
+        from provide.testkit.mocking import Mock
 
         # Create a mock entry point
         mock_entry_point = Mock()
@@ -59,10 +65,10 @@ class TestComponentDiscovery:
         assert "test_component" in discovered
         assert discovered["test_component"] is mock_component_class
 
-    def test_discover_components_handles_load_errors(self, monkeypatch) -> None:
+    def test_discover_components_handles_load_errors(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test that component discovery handles loading errors gracefully."""
         from importlib import metadata
-        from unittest.mock import Mock
+        from provide.testkit.mocking import Mock
 
         # Create a mock entry point that fails to load
         mock_entry_point = Mock()
@@ -84,10 +90,10 @@ class TestComponentDiscovery:
         assert isinstance(discovered, dict)
         assert len(discovered) == 0
 
-    def test_discover_components_registers_in_hub(self, monkeypatch) -> None:
+    def test_discover_components_registers_in_hub(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test that discovered components are registered in the hub registry."""
         from importlib import metadata
-        from unittest.mock import Mock
+        from provide.testkit.mocking import Mock
 
         from provide.foundation.hub.components import get_component_registry
 

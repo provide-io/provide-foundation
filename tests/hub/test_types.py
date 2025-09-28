@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import pytest
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.hub.components import ComponentInfo
 from provide.foundation.hub.info import CommandInfo
@@ -12,7 +13,7 @@ from provide.foundation.hub.types import (
 )
 
 
-class TestRegistryEntry:
+class TestRegistryEntry(FoundationTestCase):
     """Test RegistryEntry dataclass."""
 
     def test_create_registry_entry(self) -> None:

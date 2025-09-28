@@ -4,7 +4,7 @@ import sys
 import types
 import typing
 from typing import Any, Optional, Union
-from unittest.mock import patch
+from provide.testkit.mocking import patch
 
 import pytest
 

@@ -1,6 +1,6 @@
 """Configuration and Pipeline tests for hub components module."""
 
-from unittest.mock import AsyncMock, Mock
+from provide.testkit.mocking import AsyncMock, Mock
 
 import pytest
 
