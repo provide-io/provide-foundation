@@ -501,7 +501,10 @@
       "Bash(printf '\\e[?1000l\\e[?1002l\\e[?1003l\\e[?10061l')",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/file/test_lock.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/file/test_lock.py)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_timeout -v)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_timeout -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_concurrent_access -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/ -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_directory.py::TestDirectoryOperations::test_temp_dir_creates_and_cleans -v)"
     ],
     "deny": [],
     "ask": [],

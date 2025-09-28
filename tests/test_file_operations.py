@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from pathlib import Path
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.file.operations import (
@@ -21,7 +22,7 @@ from provide.foundation.file.operations import (
 )
 
 
-class TestFileEvent:
+class TestFileEvent(FoundationTestCase):
     """Test FileEvent and metadata functionality."""
 
     def test_metadata_creation(self) -> None:
@@ -99,7 +100,7 @@ class TestFileEvent:
         assert event3.size_delta is None
 
 
-class TestOperationDetector:
+class TestOperationDetector(FoundationTestCase):
     """Test OperationDetector functionality."""
 
     def test_detector_initialization(self) -> None:
@@ -404,7 +405,7 @@ class TestOperationDetector:
         assert len(results) == 3
 
 
-class TestConvenienceFunctions:
+class TestConvenienceFunctions(FoundationTestCase):
     """Test convenience functions."""
 
     def test_is_temp_file(self) -> None:
@@ -475,7 +476,7 @@ class TestConvenienceFunctions:
         assert len(groups[1]) == 1
 
 
-class TestFileOperation:
+class TestFileOperation(FoundationTestCase):
     """Test FileOperation functionality."""
 
     def test_operation_timeline(self) -> None:

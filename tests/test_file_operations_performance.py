@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 import time
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.file.operations import (
@@ -17,7 +18,7 @@ from provide.foundation.file.operations import (
 from provide.foundation.file.quality import AnalysisMetric, QualityAnalyzer, create_test_cases_from_patterns
 
 
-class TestFileOperationsPerformance:
+class TestFileOperationsPerformance(FoundationTestCase):
     """Performance benchmarks for file operations detection."""
 
     def test_single_operation_detection_performance(self, benchmark) -> None:

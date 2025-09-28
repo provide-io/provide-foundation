@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 import tempfile
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from tests.file_operations_fixtures import (
@@ -35,7 +36,7 @@ def validator():
 
 
 @requires_file_operations
-class TestEditorSpecificPatterns:
+class TestEditorSpecificPatterns(FoundationTestCase):
     """Test editor-specific file operation patterns."""
 
     @file_operation_pattern("vscode")
@@ -172,7 +173,7 @@ class TestEditorSpecificPatterns:
 
 
 @requires_file_operations
-class TestFileTypeSpecificPatterns:
+class TestFileTypeSpecificPatterns(FoundationTestCase):
     """Test patterns specific to different file types."""
 
     def test_python_file_patterns(self, simulator, validator) -> None:
@@ -227,7 +228,7 @@ class TestFileTypeSpecificPatterns:
 
 
 @requires_file_operations
-class TestComplexScenarios:
+class TestComplexScenarios(FoundationTestCase):
     """Test complex real-world scenarios."""
 
     def test_developer_workflow_scenario(self, simulator, validator) -> None:
@@ -332,7 +333,7 @@ class TestComplexScenarios:
 
 
 @requires_file_operations
-class TestValidationScenarios:
+class TestValidationScenarios(FoundationTestCase):
     """Test validation scenarios with different expectations."""
 
     def test_validation_summary_comprehensive(self, simulator, validator) -> None:

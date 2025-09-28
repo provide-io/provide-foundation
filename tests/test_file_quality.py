@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from pathlib import Path
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.file.operations import (
@@ -21,7 +22,7 @@ from provide.foundation.file.quality import (
 )
 
 
-class TestQualityAnalyzer:
+class TestQualityAnalyzer(FoundationTestCase):
     """Test the quality analyzer functionality."""
 
     def test_analyzer_initialization(self) -> None:
@@ -220,7 +221,7 @@ class TestQualityAnalyzer:
         assert "No analysis results available" in report
 
 
-class TestQualityResult:
+class TestQualityResult(FoundationTestCase):
     """Test the quality result functionality."""
 
     def test_quality_result_creation(self) -> None:
@@ -237,7 +238,7 @@ class TestQualityResult:
         assert isinstance(result.timestamp, datetime)
 
 
-class TestOperationTestCase:
+class TestOperationTestCase(FoundationTestCase):
     """Test the operation test case functionality."""
 
     def test_test_case_creation(self) -> None:
@@ -265,7 +266,7 @@ class TestOperationTestCase:
         assert "test" in test_case.tags
 
 
-class TestCreateTestCasesFromPatterns:
+class TestCreateTestCasesFromPatterns(FoundationTestCase):
     """Test the standard test case creation."""
 
     def test_create_standard_test_cases(self) -> None:

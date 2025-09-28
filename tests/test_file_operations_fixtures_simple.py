@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 import tempfile
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from tests.file_operations_fixtures import (
@@ -34,7 +35,7 @@ def validator():
 
 
 @requires_file_operations
-class TestFileOperationFixtures:
+class TestFileOperationFixtures(FoundationTestCase):
     """Test the file operation fixtures work correctly."""
 
     def test_simulator_basic_functionality(self, simulator) -> None:
