@@ -255,7 +255,10 @@ def test_log_file_redirection(tmp_path: Path) -> None:
     from provide.testkit import enable_file_logging_for_testing
 
     # Enable file logging with proper setup order
-    with TestEnvironment({"PROVIDE_LOG_FILE": str(log_file)}), enable_file_logging_for_testing(str(log_file)) as file_helper:
+    with (
+        TestEnvironment({"PROVIDE_LOG_FILE": str(log_file)}),
+        enable_file_logging_for_testing(str(log_file)) as file_helper,
+    ):
         # Foundation state reset is automatic
         # Configure file logging after reset
         file_helper.setup_after_reset()

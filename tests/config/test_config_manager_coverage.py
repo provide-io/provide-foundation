@@ -1,10 +1,9 @@
 """Comprehensive coverage tests for config manager module."""
 
-from unittest.mock import Mock
-
 from attrs import define
-import pytest
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock
+import pytest
 
 from provide.foundation.config.base import BaseConfig, field
 from provide.foundation.config.loader import ConfigLoader

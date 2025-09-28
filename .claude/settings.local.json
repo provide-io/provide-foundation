@@ -350,7 +350,17 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest -n auto --tb=no -q --timeout=60)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/integration/test_integration_verification.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/integration/test_integration_verification.py::TestIntegrationVerification::test_basic_lazy_init -v)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest -n auto --tb=no -q -m \"not slow\")"
+      "Bash(PYTHONPATH=src .venv/bin/pytest -n auto --tb=no -q -m \"not slow\")",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/integration/test_integration_final_coverage.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/integration/test_integration_final_coverage.py::TestIntegrationFinalCoverage::test_field_mapping_creation -v)",
+      "Bash(PYTHONPATH=src grep -r \"reset_foundation_setup_for_testing\\|unittest\\.mock\" tests/config/ --include=\"*.py\")",
+      "Bash(while read file)",
+      "Bash(if grep -q \"unittest\\.mock\" \"$file\")",
+      "Bash(then)",
+      "Bash(echo \"Updating $file\")",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/config/ tests/integration/)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_config_loader.py -q --tb=short --maxfail=3)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/ -n auto --tb=no -q)"
     ],
     "deny": [],
     "ask": [],

@@ -2,8 +2,8 @@
 
 from typing import Never
 
-import pytest
 from provide.testkit import FoundationTestCase
+import pytest
 
 from provide.foundation.config.schema import (
     SchemaField,

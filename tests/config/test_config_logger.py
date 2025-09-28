@@ -7,7 +7,6 @@ import io
 from typing import Any
 
 from provide.testkit import FoundationTestCase
-import pytest
 from structlog.dev import ConsoleRenderer
 from structlog.processors import JSONRenderer, TimeStamper
 

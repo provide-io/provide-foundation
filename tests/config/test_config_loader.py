@@ -6,10 +6,10 @@ import json
 import os
 from pathlib import Path
 from typing import Any, cast
-from unittest.mock import Mock, patch
 
-import pytest
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
+import pytest
 
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.env import RuntimeConfig
@@ -40,9 +40,7 @@ class TestConfig(BaseConfig):
         """Create config from dictionary."""
         # Use provided data or fallback to defaults
         return cls(
-            name=data.get("name", "test"),
-            value=data.get("value", 42),
-            enabled=data.get("enabled", True)
+            name=data.get("name", "test"), value=data.get("value", 42), enabled=data.get("enabled", True)
         )
 
     def to_dict(self, include_sensitive: bool = False) -> dict[str, Any]:
@@ -246,7 +244,7 @@ class TestFileConfigLoader(FoundationTestCase):
         loader = FileConfigLoader(config_file)
 
         # Mock the exists method to return True so we get to the read error
-        with patch.object(loader, 'exists', return_value=True):
+        with patch.object(loader, "exists", return_value=True):
             with pytest.raises(ConfigurationError) as exc_info:
                 loader.load(TestConfig)
 
