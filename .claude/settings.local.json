@@ -565,7 +565,8 @@
       "Bash(.venv/bin/pytest tests/console/ tests/config/ tests/integration/ --tb=no -q)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/time/test_time_core.py::TestProvideTime::test_provide_time_advances -xvs)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/time/test_time_core.py::TestProvideSleep::test_provide_sleep_actually_sleeps -xvs)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_installer.py::TestToolInstaller::test_extract_zip_success -xvs)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_installer.py::TestToolInstaller::test_extract_zip_success -xvs)",
+      "Bash(.venv/bin/pytest --co -q)"
     ],
     "deny": [],
     "ask": [],

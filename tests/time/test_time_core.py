@@ -1,20 +1,17 @@
-from __future__ import annotations
-
 """Tests for Foundation time utilities."""
 
 from datetime import UTC, datetime
 import time
 from typing import Any
+from unittest.mock import MagicMock, patch
 from zoneinfo import ZoneInfo
 
-from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation.time import provide_now, provide_sleep, provide_time
 
 
-class TestProvideTime(FoundationTestCase):
+class TestProvideTime:
     """Test provide_time function."""
 
     def test_provide_time_returns_float(self) -> None:
