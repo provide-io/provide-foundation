@@ -1,9 +1,12 @@
 """Tests for atomic file operations."""
 
+from __future__ import annotations
+
 import os
 
 import pytest
 
+from provide.testkit import FoundationTestCase
 from provide.foundation.file.atomic import (
     atomic_replace,
     atomic_write,
@@ -11,18 +14,29 @@ from provide.foundation.file.atomic import (
 )
 
 
-def test_atomic_write_creates_file(temp_directory) -> None:
-    """Test atomic write creates new file."""
-    path = temp_directory / "test.txt"
-    data = b"Hello, World!"
+class TestAtomicFileOperations(FoundationTestCase):
+    """Test atomic file operations."""
 
-    atomic_write(path, data)
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
 
-    assert path.exists()
-    assert path.read_bytes() == data
+    def teardown_method(self) -> None:
+        """Clean up after test."""
+        super().teardown_method()
+
+    def test_atomic_write_creates_file(self, temp_directory) -> None:
+        """Test atomic write creates new file."""
+        path = temp_directory / "test.txt"
+        data = b"Hello, World!"
+
+        atomic_write(path, data)
+
+        assert path.exists()
+        assert path.read_bytes() == data
 
 
-def test_atomic_write_overwrites_file(temp_directory) -> None:
+    def test_atomic_write_overwrites_file(self, temp_directory) -> None:
     """Test atomic write overwrites existing file."""
     path = temp_directory / "test.txt"
     path.write_bytes(b"Old content")
@@ -33,7 +47,7 @@ def test_atomic_write_overwrites_file(temp_directory) -> None:
     assert path.read_bytes() == new_data
 
 
-def test_atomic_write_with_mode(temp_directory) -> None:
+    def test_atomic_write_with_mode(self, temp_directory) -> None:
     """Test atomic write sets file permissions."""
     path = temp_directory / "test.txt"
     data = b"Test data"
@@ -45,7 +59,7 @@ def test_atomic_write_with_mode(temp_directory) -> None:
     assert path.stat().st_mode & 0o777 == mode
 
 
-def test_atomic_write_with_backup(temp_directory) -> None:
+    def test_atomic_write_with_backup(self, temp_directory) -> None:
     """Test atomic write creates backup."""
     path = temp_directory / "test.txt"
     original_data = b"Original content"
@@ -60,7 +74,7 @@ def test_atomic_write_with_backup(temp_directory) -> None:
     assert path.read_bytes() == new_data
 
 
-def test_atomic_write_creates_parent_dirs(temp_directory) -> None:
+    def test_atomic_write_creates_parent_dirs(self, temp_directory) -> None:
     """Test atomic write creates parent directories."""
     path = temp_directory / "subdir" / "nested" / "test.txt"
     data = b"Test data"
@@ -71,7 +85,7 @@ def test_atomic_write_creates_parent_dirs(temp_directory) -> None:
     assert path.read_bytes() == data
 
 
-def test_atomic_write_text(temp_directory) -> None:
+    def test_atomic_write_text(self, temp_directory) -> None:
     """Test atomic text write."""
     path = temp_directory / "test.txt"
     text = "Hello, 世界! 🚀"
@@ -82,7 +96,7 @@ def test_atomic_write_text(temp_directory) -> None:
     assert path.read_text(encoding="utf-8") == text
 
 
-def test_atomic_write_text_with_encoding(temp_directory) -> None:
+    def test_atomic_write_text_with_encoding(self, temp_directory) -> None:
     """Test atomic text write with different encoding."""
     path = temp_directory / "test.txt"
     text = "Hello, World!"
@@ -93,7 +107,7 @@ def test_atomic_write_text_with_encoding(temp_directory) -> None:
     assert path.read_text(encoding="latin-1") == text
 
 
-def test_atomic_replace(temp_directory) -> None:
+    def test_atomic_replace(self, temp_directory) -> None:
     """Test atomic replace of existing file."""
     path = temp_directory / "test.txt"
     original_data = b"Original"
@@ -107,7 +121,7 @@ def test_atomic_replace(temp_directory) -> None:
     assert path.stat().st_mode == original_mode
 
 
-def test_atomic_replace_missing_file(temp_directory) -> None:
+    def test_atomic_replace_missing_file(self, temp_directory) -> None:
     """Test atomic replace raises for missing file."""
     path = temp_directory / "nonexistent.txt"
 
@@ -115,7 +129,7 @@ def test_atomic_replace_missing_file(temp_directory) -> None:
         atomic_replace(path, b"Data")
 
 
-def test_atomic_replace_without_preserve_mode(temp_directory) -> None:
+    def test_atomic_replace_without_preserve_mode(self, temp_directory) -> None:
     """Test atomic replace without preserving mode."""
     path = temp_directory / "test.txt"
     path.write_bytes(b"Original")
@@ -133,7 +147,7 @@ def test_atomic_replace_without_preserve_mode(temp_directory) -> None:
     assert mode >= 0o644  # Should have at least read permissions for owner/group
 
 
-def test_atomic_write_handles_errors(temp_directory) -> None:
+    def test_atomic_write_handles_errors(self, temp_directory) -> None:
     """Test atomic write cleans up on error."""
     # Create a directory where we expect a file
     path = temp_directory / "actually_a_dir"
@@ -147,7 +161,7 @@ def test_atomic_write_handles_errors(temp_directory) -> None:
     assert len(temp_files) == 0
 
 
-def test_atomic_write_preserves_permissions(temp_directory) -> None:
+    def test_atomic_write_preserves_permissions(self, temp_directory) -> None:
     """Test atomic write preserves existing file permissions by default."""
     path = temp_directory / "test.txt"
     path.write_bytes(b"Original")
@@ -158,7 +172,7 @@ def test_atomic_write_preserves_permissions(temp_directory) -> None:
     assert path.stat().st_mode & 0o777 == 0o600
 
 
-def test_atomic_write_no_preserve_permissions(temp_directory) -> None:
+    def test_atomic_write_no_preserve_permissions(self, temp_directory) -> None:
     """Test atomic write without preserving permissions."""
     path = temp_directory / "test.txt"
     path.write_bytes(b"Original")

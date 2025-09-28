@@ -1,7 +1,10 @@
 """Tests for safe file operations."""
 
+from __future__ import annotations
+
 import pytest
 
+from provide.testkit import FoundationTestCase
 from provide.foundation.file.safe import (
     safe_copy,
     safe_delete,
@@ -11,17 +14,28 @@ from provide.foundation.file.safe import (
 )
 
 
-def test_safe_read_existing_file(temp_directory) -> None:
-    """Test safe read of existing file."""
-    path = temp_directory / "test.txt"
-    data = b"Test content"
-    path.write_bytes(data)
+class TestSafeFileOperations(FoundationTestCase):
+    """Test safe file operations."""
 
-    result = safe_read(path)
-    assert result == data
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+
+    def teardown_method(self) -> None:
+        """Clean up after test."""
+        super().teardown_method()
+
+    def test_safe_read_existing_file(self, temp_directory) -> None:
+        """Test safe read of existing file."""
+        path = temp_directory / "test.txt"
+        data = b"Test content"
+        path.write_bytes(data)
+
+        result = safe_read(path)
+        assert result == data
 
 
-def test_safe_read_missing_file(temp_directory) -> None:
+    def test_safe_read_missing_file(self, temp_directory) -> None:
     """Test safe read returns default for missing file."""
     path = temp_directory / "nonexistent.txt"
 
@@ -33,7 +47,7 @@ def test_safe_read_missing_file(temp_directory) -> None:
     assert result == default
 
 
-def test_safe_read_with_encoding(temp_directory) -> None:
+    def test_safe_read_with_encoding(self, temp_directory) -> None:
     """Test safe read with encoding."""
     path = temp_directory / "test.txt"
     text = "Hello, 世界!"
@@ -43,7 +57,7 @@ def test_safe_read_with_encoding(temp_directory) -> None:
     assert result == text
 
 
-def test_safe_read_text(temp_directory) -> None:
+    def test_safe_read_text(self, temp_directory) -> None:
     """Test safe read text."""
     path = temp_directory / "test.txt"
     text = "Test text content"
@@ -53,7 +67,7 @@ def test_safe_read_text(temp_directory) -> None:
     assert result == text
 
 
-def test_safe_read_text_missing_file(temp_directory) -> None:
+    def test_safe_read_text_missing_file(self, temp_directory) -> None:
     """Test safe read text returns default for missing file."""
     path = temp_directory / "nonexistent.txt"
 
@@ -65,7 +79,7 @@ def test_safe_read_text_missing_file(temp_directory) -> None:
     assert result == default
 
 
-def test_safe_read_text_with_encoding(temp_directory) -> None:
+    def test_safe_read_text_with_encoding(self, temp_directory) -> None:
     """Test safe read text with specific encoding."""
     path = temp_directory / "test.txt"
     text = "Test text"
@@ -75,7 +89,7 @@ def test_safe_read_text_with_encoding(temp_directory) -> None:
     assert result == text
 
 
-def test_safe_delete_existing_file(temp_directory) -> None:
+    def test_safe_delete_existing_file(self, temp_directory) -> None:
     """Test safe delete of existing file."""
     path = temp_directory / "test.txt"
     path.write_text("content")
@@ -85,7 +99,7 @@ def test_safe_delete_existing_file(temp_directory) -> None:
     assert not path.exists()
 
 
-def test_safe_delete_missing_file(temp_directory) -> None:
+    def test_safe_delete_missing_file(self, temp_directory) -> None:
     """Test safe delete of missing file."""
     path = temp_directory / "nonexistent.txt"
 
@@ -93,7 +107,7 @@ def test_safe_delete_missing_file(temp_directory) -> None:
     assert result is False
 
 
-def test_safe_delete_missing_not_ok(temp_directory) -> None:
+    def test_safe_delete_missing_not_ok(self, temp_directory) -> None:
     """Test safe delete raises for missing file when missing_ok=False."""
     path = temp_directory / "nonexistent.txt"
 
@@ -101,7 +115,7 @@ def test_safe_delete_missing_not_ok(temp_directory) -> None:
         safe_delete(path, missing_ok=False)
 
 
-def test_safe_move(temp_directory) -> None:
+    def test_safe_move(self, temp_directory) -> None:
     """Test safe move of file."""
     src = temp_directory / "source.txt"
     dst = temp_directory / "destination.txt"
@@ -115,7 +129,7 @@ def test_safe_move(temp_directory) -> None:
     assert dst.read_text() == content
 
 
-def test_safe_move_to_subdir(temp_directory) -> None:
+    def test_safe_move_to_subdir(self, temp_directory) -> None:
     """Test safe move creates parent directories."""
     src = temp_directory / "source.txt"
     dst = temp_directory / "subdir" / "nested" / "destination.txt"
@@ -129,7 +143,7 @@ def test_safe_move_to_subdir(temp_directory) -> None:
     assert dst.read_text() == content
 
 
-def test_safe_move_overwrite(temp_directory) -> None:
+    def test_safe_move_overwrite(self, temp_directory) -> None:
     """Test safe move with overwrite."""
     src = temp_directory / "source.txt"
     dst = temp_directory / "destination.txt"
@@ -142,7 +156,7 @@ def test_safe_move_overwrite(temp_directory) -> None:
     assert dst.read_text() == "Source content"
 
 
-def test_safe_move_no_overwrite(temp_directory) -> None:
+    def test_safe_move_no_overwrite(self, temp_directory) -> None:
     """Test safe move without overwrite raises."""
     src = temp_directory / "source.txt"
     dst = temp_directory / "destination.txt"
@@ -156,7 +170,7 @@ def test_safe_move_no_overwrite(temp_directory) -> None:
     assert dst.read_text() == "Destination content"
 
 
-def test_safe_move_missing_source(temp_directory) -> None:
+    def test_safe_move_missing_source(self, temp_directory) -> None:
     """Test safe move with missing source raises."""
     src = temp_directory / "nonexistent.txt"
     dst = temp_directory / "destination.txt"
@@ -165,7 +179,7 @@ def test_safe_move_missing_source(temp_directory) -> None:
         safe_move(src, dst)
 
 
-def test_safe_copy(temp_directory) -> None:
+    def test_safe_copy(self, temp_directory) -> None:
     """Test safe copy of file."""
     src = temp_directory / "source.txt"
     dst = temp_directory / "destination.txt"
@@ -179,7 +193,7 @@ def test_safe_copy(temp_directory) -> None:
     assert dst.read_text() == content
 
 
-def test_safe_copy_to_subdir(temp_directory) -> None:
+    def test_safe_copy_to_subdir(self, temp_directory) -> None:
     """Test safe copy creates parent directories."""
     src = temp_directory / "source.txt"
     dst = temp_directory / "subdir" / "nested" / "destination.txt"
@@ -193,7 +207,7 @@ def test_safe_copy_to_subdir(temp_directory) -> None:
     assert dst.read_text() == content
 
 
-def test_safe_copy_preserves_mode(temp_directory) -> None:
+    def test_safe_copy_preserves_mode(self, temp_directory) -> None:
     """Test safe copy preserves file permissions."""
     import os
 
@@ -207,7 +221,7 @@ def test_safe_copy_preserves_mode(temp_directory) -> None:
     assert dst.stat().st_mode & 0o777 == 0o600
 
 
-def test_safe_copy_no_preserve_mode(temp_directory) -> None:
+    def test_safe_copy_no_preserve_mode(self, temp_directory) -> None:
     """Test safe copy without preserving mode."""
     import os
 
@@ -228,7 +242,7 @@ def test_safe_copy_no_preserve_mode(temp_directory) -> None:
     assert dst_mode == 0o600  # shutil.copy copies permissions on Unix
 
 
-def test_safe_copy_overwrite(temp_directory) -> None:
+    def test_safe_copy_overwrite(self, temp_directory) -> None:
     """Test safe copy with overwrite."""
     src = temp_directory / "source.txt"
     dst = temp_directory / "destination.txt"
@@ -241,7 +255,7 @@ def test_safe_copy_overwrite(temp_directory) -> None:
     assert dst.read_text() == "Source content"
 
 
-def test_safe_copy_no_overwrite(temp_directory) -> None:
+    def test_safe_copy_no_overwrite(self, temp_directory) -> None:
     """Test safe copy without overwrite raises."""
     src = temp_directory / "source.txt"
     dst = temp_directory / "destination.txt"
@@ -254,7 +268,7 @@ def test_safe_copy_no_overwrite(temp_directory) -> None:
     assert dst.read_text() == "Destination content"
 
 
-def test_safe_copy_missing_source(temp_directory) -> None:
+    def test_safe_copy_missing_source(self, temp_directory) -> None:
     """Test safe copy with missing source raises."""
     src = temp_directory / "nonexistent.txt"
     dst = temp_directory / "destination.txt"

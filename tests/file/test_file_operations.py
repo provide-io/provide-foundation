@@ -7,6 +7,7 @@ from pathlib import Path
 
 import pytest
 
+from provide.testkit import FoundationTestCase
 from provide.foundation.file.operations import (
     DetectorConfig,
     FileEvent,
@@ -33,8 +34,16 @@ def detector() -> OperationDetector:
     return OperationDetector()
 
 
-class TestDetectorConfig:
+class TestDetectorConfig(FoundationTestCase):
     """Test DetectorConfig dataclass."""
+
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+
+    def teardown_method(self) -> None:
+        """Clean up after test."""
+        super().teardown_method()
 
     def test_detector_config_defaults(self) -> None:
         """Test default configuration values."""
@@ -57,8 +66,16 @@ class TestDetectorConfig:
         assert config.min_confidence == 0.8
 
 
-class TestFileEvent:
+class TestFileEvent(FoundationTestCase):
     """Test FileEvent dataclass."""
+
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+
+    def teardown_method(self) -> None:
+        """Clean up after test."""
+        super().teardown_method()
 
     def test_file_event_creation(self, now: datetime) -> None:
         """Test basic FileEvent creation."""
@@ -100,8 +117,16 @@ class TestFileEvent:
         assert event.size_delta == 100
 
 
-class TestFileEventMetadata:
+class TestFileEventMetadata(FoundationTestCase):
     """Test FileEventMetadata dataclass."""
+
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+
+    def teardown_method(self) -> None:
+        """Clean up after test."""
+        super().teardown_method()
 
     def test_metadata_creation(self, now: datetime) -> None:
         """Test basic metadata creation."""
@@ -126,8 +151,16 @@ class TestFileEventMetadata:
         assert metadata.extra["custom"] == "value"
 
 
-class TestOperationDetector:
+class TestOperationDetector(FoundationTestCase):
     """Test OperationDetector functionality."""
+
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+
+    def teardown_method(self) -> None:
+        """Clean up after test."""
+        super().teardown_method()
 
     def test_detector_initialization(self) -> None:
         """Test detector initialization."""
@@ -180,8 +213,16 @@ class TestOperationDetector:
         assert len(atomic_ops) >= 0  # May or may not detect as atomic
 
 
-class TestUtilityFunctions:
+class TestUtilityFunctions(FoundationTestCase):
     """Test utility functions."""
+
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+
+    def teardown_method(self) -> None:
+        """Clean up after test."""
+        super().teardown_method()
 
     def test_is_temp_file_function(self) -> None:
         """Test is_temp_file utility function."""
@@ -240,8 +281,16 @@ class TestUtilityFunctions:
         assert len(groups) >= 1
 
 
-class TestFileOperation:
+class TestFileOperation(FoundationTestCase):
     """Test FileOperation dataclass."""
+
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+
+    def teardown_method(self) -> None:
+        """Clean up after test."""
+        super().teardown_method()
 
     def test_file_operation_creation(self, now: datetime) -> None:
         """Test FileOperation creation."""
@@ -296,8 +345,16 @@ class TestFileOperation:
         assert timeline[1][0] == 50.0  # Second event at 50ms
 
 
-class TestOperationType:
+class TestOperationType(FoundationTestCase):
     """Test OperationType enum."""
+
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+
+    def teardown_method(self) -> None:
+        """Clean up after test."""
+        super().teardown_method()
 
     def test_operation_types_exist(self) -> None:
         """Test that all operation types exist."""

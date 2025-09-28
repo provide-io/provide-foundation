@@ -1,7 +1,10 @@
 """Tests for atomic file operations permission handling."""
 
+from __future__ import annotations
+
 import os
 
+from provide.testkit import FoundationTestCase
 from provide.foundation.file.atomic import (
     atomic_replace,
     atomic_write,
@@ -9,26 +12,37 @@ from provide.foundation.file.atomic import (
 )
 
 
-def test_os_replace_preserves_permissions(temp_directory) -> None:
-    """Test that os.replace behavior with permissions."""
-    target = temp_directory / "target.txt"
-    target.write_bytes(b"Original")
-    os.chmod(target, 0o600)
+class TestAtomicPermissions(FoundationTestCase):
+    """Test atomic file operations permission handling."""
 
-    temp = temp_directory / "temp.txt"
-    temp.write_bytes(b"New content")
-    # Temp file gets default permissions
-    temp_mode = temp.stat().st_mode & 0o777
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
 
-    # os.replace uses the SOURCE file's permissions, not the target's
-    os.replace(temp, target)
+    def teardown_method(self) -> None:
+        """Clean up after test."""
+        super().teardown_method()
 
-    assert target.read_bytes() == b"New content"
-    # On macOS/Linux, os.replace uses source file permissions
-    assert target.stat().st_mode & 0o777 == temp_mode
+    def test_os_replace_preserves_permissions(self, temp_directory) -> None:
+        """Test that os.replace behavior with permissions."""
+        target = temp_directory / "target.txt"
+        target.write_bytes(b"Original")
+        os.chmod(target, 0o600)
+
+        temp = temp_directory / "temp.txt"
+        temp.write_bytes(b"New content")
+        # Temp file gets default permissions
+        temp_mode = temp.stat().st_mode & 0o777
+
+        # os.replace uses the SOURCE file's permissions, not the target's
+        os.replace(temp, target)
+
+        assert target.read_bytes() == b"New content"
+        # On macOS/Linux, os.replace uses source file permissions
+        assert target.stat().st_mode & 0o777 == temp_mode
 
 
-def test_atomic_write_default_preserves_existing(temp_directory) -> None:
+    def test_atomic_write_default_preserves_existing(self, temp_directory) -> None:
     """Test atomic_write preserves existing permissions by default."""
     path = temp_directory / "test.txt"
     path.write_bytes(b"Original")
@@ -41,7 +55,7 @@ def test_atomic_write_default_preserves_existing(temp_directory) -> None:
     assert path.stat().st_mode & 0o777 == 0o600
 
 
-def test_atomic_write_explicit_preserve_true(temp_directory) -> None:
+    def test_atomic_write_explicit_preserve_true(self, temp_directory) -> None:
     """Test atomic_write with preserve_mode=True."""
     path = temp_directory / "test.txt"
     path.write_bytes(b"Original")
@@ -53,7 +67,7 @@ def test_atomic_write_explicit_preserve_true(temp_directory) -> None:
     assert path.stat().st_mode & 0o777 == 0o600
 
 
-def test_atomic_write_preserve_false_on_existing(temp_directory) -> None:
+    def test_atomic_write_preserve_false_on_existing(self, temp_directory) -> None:
     """Test atomic_write with preserve_mode=False on existing file."""
     path = temp_directory / "test.txt"
     path.write_bytes(b"Original")
@@ -70,7 +84,7 @@ def test_atomic_write_preserve_false_on_existing(temp_directory) -> None:
     assert mode >= 0o644, f"Mode should be at least 0o644: {oct(mode)}"
 
 
-def test_atomic_write_preserve_false_on_new(temp_directory) -> None:
+    def test_atomic_write_preserve_false_on_new(self, temp_directory) -> None:
     """Test atomic_write with preserve_mode=False on new file."""
     path = temp_directory / "new.txt"
 
@@ -83,7 +97,7 @@ def test_atomic_write_preserve_false_on_new(temp_directory) -> None:
     assert mode >= 0o644  # At least readable
 
 
-def test_atomic_write_explicit_mode_overrides(temp_directory) -> None:
+    def test_atomic_write_explicit_mode_overrides(self, temp_directory) -> None:
     """Test that explicit mode overrides both existing and preserve_mode."""
     path = temp_directory / "test.txt"
     path.write_bytes(b"Original")
@@ -100,7 +114,7 @@ def test_atomic_write_explicit_mode_overrides(temp_directory) -> None:
     assert path.stat().st_mode & 0o777 == 0o644
 
 
-def test_atomic_replace_default_preserves(temp_directory) -> None:
+    def test_atomic_replace_default_preserves(self, temp_directory) -> None:
     """Test atomic_replace preserves by default."""
     path = temp_directory / "test.txt"
     path.write_bytes(b"Original")
@@ -112,7 +126,7 @@ def test_atomic_replace_default_preserves(temp_directory) -> None:
     assert path.stat().st_mode & 0o777 == 0o600
 
 
-def test_atomic_replace_explicit_preserve_true(temp_directory) -> None:
+    def test_atomic_replace_explicit_preserve_true(self, temp_directory) -> None:
     """Test atomic_replace with preserve_mode=True."""
     path = temp_directory / "test.txt"
     path.write_bytes(b"Original")
@@ -124,7 +138,7 @@ def test_atomic_replace_explicit_preserve_true(temp_directory) -> None:
     assert path.stat().st_mode & 0o777 == 0o600
 
 
-def test_atomic_replace_preserve_false(temp_directory) -> None:
+    def test_atomic_replace_preserve_false(self, temp_directory) -> None:
     """Test atomic_replace with preserve_mode=False."""
     path = temp_directory / "test.txt"
     path.write_bytes(b"Original")
@@ -139,7 +153,7 @@ def test_atomic_replace_preserve_false(temp_directory) -> None:
     assert mode >= 0o644, f"Mode should be at least 0o644: {oct(mode)}"
 
 
-def test_atomic_write_text_preserve_modes(temp_directory) -> None:
+    def test_atomic_write_text_preserve_modes(self, temp_directory) -> None:
     """Test atomic_write_text permission handling."""
     path = temp_directory / "test.txt"
     path.write_text("Original")
@@ -160,7 +174,7 @@ def test_atomic_write_text_preserve_modes(temp_directory) -> None:
     assert mode >= 0o644, f"Mode should be at least 0o644: {oct(mode)}"
 
 
-def test_permission_preservation_with_umask(temp_directory) -> None:
+    def test_permission_preservation_with_umask(self, temp_directory) -> None:
     """Test how umask affects default permissions."""
     original_umask = os.umask(0o022)  # Standard umask
     try:

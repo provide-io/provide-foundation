@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import pytest
 
+from provide.testkit import FoundationTestCase
 from provide.foundation.file.quality import (
     AnalysisMetric,
     QualityAnalyzer,
@@ -11,8 +12,16 @@ from provide.foundation.file.quality import (
 )
 
 
-class TestQualityAnalyzer:
+class TestQualityAnalyzer(FoundationTestCase):
     """Test the QualityAnalyzer class."""
+
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+
+    def teardown_method(self) -> None:
+        """Clean up after test."""
+        super().teardown_method()
 
     def test_analyzer_initialization(self) -> None:
         """Test analyzer initialization."""
@@ -95,8 +104,16 @@ class TestQualityAnalyzer:
             assert metric in results
 
 
-class TestCreateTestCasesFromPatterns:
+class TestCreateTestCasesFromPatterns(FoundationTestCase):
     """Test test case creation functionality."""
+
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+
+    def teardown_method(self) -> None:
+        """Clean up after test."""
+        super().teardown_method()
 
     def test_create_test_cases_basic(self) -> None:
         """Test basic test case creation."""
@@ -142,8 +159,16 @@ class TestCreateTestCasesFromPatterns:
         assert len(vim_cases) > 0
 
 
-class TestAnalysisMetrics:
+class TestAnalysisMetrics(FoundationTestCase):
     """Test AnalysisMetric enum."""
+
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+
+    def teardown_method(self) -> None:
+        """Clean up after test."""
+        super().teardown_method()
 
     def test_all_metrics_defined(self) -> None:
         """Test that all expected metrics are defined."""
@@ -159,8 +184,16 @@ class TestAnalysisMetrics:
         assert AnalysisMetric.CONFIDENCE_DISTRIBUTION.value == "confidence_distribution"
 
 
-class TestQualityIntegration:
+class TestQualityIntegration(FoundationTestCase):
     """Integration tests for quality analysis."""
+
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+
+    def teardown_method(self) -> None:
+        """Clean up after test."""
+        super().teardown_method()
 
     def test_full_analysis_workflow(self) -> None:
         """Test complete analysis workflow."""
