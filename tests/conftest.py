@@ -28,6 +28,7 @@ with_suppression = os.environ.get("FOUNDATION_SUPPRESS_TESTING_WARNINGS")
 os.environ["FOUNDATION_SUPPRESS_TESTING_WARNINGS"] = "true"
 
 from provide.testkit import (  # noqa: E402
+    FoundationTestCase,
     reset_foundation_setup_for_testing,
     set_log_stream_for_testing,
 )
@@ -69,7 +70,7 @@ def _test_uses_foundation_test_case(request: pytest.FixtureRequest) -> bool:
     """Check if the current test class inherits from FoundationTestCase."""
     if hasattr(request, "instance") and request.instance is not None:
         # Check if the test instance inherits from FoundationTestCase
-        return any(cls.__name__ == "FoundationTestCase" for cls in request.instance.__class__.__mro__)
+        return isinstance(request.instance, FoundationTestCase)
     return False
 
 
