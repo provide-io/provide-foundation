@@ -424,7 +424,8 @@
       "Bash(xargs:*)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/streams/core.py tests/file/test_lock.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/streams/ tests/file/test_lock.py)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py -v)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py -v)",
+      "Bash(timeout 10 bash -c \"PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_async_error_handling -v --tb=short\")"
     ],
     "deny": [],
     "ask": [],
