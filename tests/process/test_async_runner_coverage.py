@@ -7,7 +7,7 @@ import asyncio
 import sys
 from unittest.mock import patch
 
-from provide.testkit import FoundationTestCase, mock_sleep
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
@@ -261,9 +261,8 @@ class TestAsyncContextualBehavior(FoundationTestCase):
         # This tests the asyncio integration
         task = asyncio.create_task(async_run_command(["sleep", "1"]))
 
-        # Give it a moment to start (mocked to be instant)
-        with mock_sleep():
-            await asyncio.sleep(0.1)
+        # Give it a moment to start
+        await asyncio.sleep(0.1)
 
         # Cancel the task
         task.cancel()
