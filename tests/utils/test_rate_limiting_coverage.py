@@ -284,7 +284,8 @@ class TestTokenBucketRateLimiter:
             await limiter.is_allowed()
 
         # Wait for 1.5 seconds (should add 3 tokens, capped at capacity)
-        await asyncio.sleep(1.5)
+        with mock_sleep():
+            await asyncio.sleep(1.5)
 
         # Should allow 3 requests again
         for _ in range(3):
@@ -364,7 +365,8 @@ class TestRateLimitingIntegration:
         assert await limiter.is_allowed() is False
 
         # Wait for some refill
-        await asyncio.sleep(0.6)  # Should add ~1 token
+        with mock_sleep():
+            await asyncio.sleep(0.6)  # Should add ~1 token
 
         # Should allow one more request
         assert await limiter.is_allowed() is True

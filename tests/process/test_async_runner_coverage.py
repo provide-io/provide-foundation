@@ -7,6 +7,7 @@ import asyncio
 import sys
 from unittest.mock import patch
 
+from provide.testkit import FoundationTestCase, mock_sleep
 import pytest
 
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
@@ -34,7 +35,7 @@ class TestAsyncErrorHandling:
     async def test_async_subprocess_timeout_error(self) -> None:
         """Test handling of async subprocess TimeoutError."""
         with pytest.raises(ProcessTimeoutError) as exc_info:
-            await async_run_command(["sleep", "10"], timeout=0.01, check=True)
+            await async_run_command(["sleep", "1"], timeout=0.01, check=True)
 
         assert "timed out" in str(exc_info.value).lower()
 
@@ -185,7 +186,7 @@ class TestAsyncStreamCommandCoverage:
         with pytest.raises(ProcessTimeoutError):
             # Try to stream from a long-running command with short timeout
             lines = []
-            async for line in async_stream_command(["sleep", "5"], timeout=0.1):
+            async for line in async_stream_command(["sleep", "1"], timeout=0.1):
                 lines.append(line)
 
     @patch("asyncio.create_subprocess_exec")
@@ -251,17 +252,18 @@ class TestAsyncCompletedProcessConstruction:
         assert result.env is None
 
 
-class TestAsyncContextualBehavior:
+class TestAsyncContextualBehavior(FoundationTestCase):
     """Test async-specific contextual behaviors."""
 
     @pytest.mark.asyncio
     async def test_async_cancel_during_execution(self) -> None:
         """Test that async operations can be cancelled."""
         # This tests the asyncio integration
-        task = asyncio.create_task(async_run_command(["sleep", "5"]))
+        task = asyncio.create_task(async_run_command(["sleep", "1"]))
 
-        # Give it a moment to start
-        await asyncio.sleep(0.1)
+        # Give it a moment to start (mocked to be instant)
+        with mock_sleep():
+            await asyncio.sleep(0.1)
 
         # Cancel the task
         task.cancel()
