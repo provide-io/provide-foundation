@@ -7,6 +7,7 @@ import asyncio
 from typing import Never
 from unittest.mock import AsyncMock, MagicMock, patch
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.resilience.retry import (
@@ -14,7 +15,6 @@ from provide.foundation.resilience.retry import (
     RetryExecutor,
     RetryPolicy,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestRetryExecutorSync(FoundationTestCase):

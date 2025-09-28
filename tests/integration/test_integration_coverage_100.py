@@ -26,7 +26,7 @@ pytestmark = pytest.mark.serial
 @pytest.fixture(autouse=True)
 def manage_environment() -> None:
     """Ensure Foundation state is reset for each test."""
-    reset_foundation_setup_for_testing()
+    pass
 
 
 def test_ensure_stderr_default(captured_stderr_for_foundation: io.StringIO) -> None:
@@ -41,7 +41,6 @@ def test_ensure_stderr_default(captured_stderr_for_foundation: io.StringIO) -> N
 def test_log_level_case_insensitivity(captured_stderr_for_foundation: io.StringIO) -> None:
     """Test that log level configuration is case-insensitive."""
     with TestEnvironment({"PROVIDE_LOG_LEVEL": "debug"}):
-        reset_foundation_setup_for_testing()
         logger.debug("Case-insensitive debug message")
         assert "Case-insensitive debug message" in captured_stderr_for_foundation.getvalue()
 
@@ -49,7 +48,6 @@ def test_log_level_case_insensitivity(captured_stderr_for_foundation: io.StringI
 def test_empty_service_name_in_env() -> None:
     """Test that an empty service name in env is handled."""
     with TestEnvironment({"PROVIDE_SERVICE_NAME": ""}):
-        reset_foundation_setup_for_testing()
         hub = get_hub()
         # It should be treated as if it's not set (but currently returns empty string)
         service_name = hub.get_foundation_config().service_name
@@ -60,7 +58,6 @@ def test_json_formatter_from_env(captured_stderr_for_foundation: io.StringIO) ->
     """Test setting JSON formatter from environment."""
 
     with TestEnvironment({"PROVIDE_LOG_CONSOLE_FORMATTER": "json"}):
-        reset_foundation_setup_for_testing()
         logger.info("Testing JSON output", key="value")
         log_output = captured_stderr_for_foundation.getvalue()
         # Find the JSON line containing our test message
@@ -86,7 +83,6 @@ def test_no_color_env_var(captured_stderr_for_foundation: io.StringIO) -> None:
     """Test NO_COLOR environment variable disables color."""
     # This is hard to test directly, but we can check if the config reflects it.
     with TestEnvironment({"NO_COLOR": "1"}):
-        reset_foundation_setup_for_testing()
         hub = get_hub()
         # This assumes the underlying config object tracks this state.
         # This is an indirect test.
@@ -174,12 +170,10 @@ def test_dynamic_log_level_change(captured_stderr_for_foundation: io.StringIO) -
 def test_unsetting_env_var() -> None:
     """Test that unsetting an env var reverts to default."""
     with TestEnvironment({"PROVIDE_SERVICE_NAME": "temp-service"}):
-        reset_foundation_setup_for_testing()
         hub = get_hub()
         assert hub.get_foundation_config().service_name == "temp-service"
 
-    # After exiting context, env var should be gone. Re-init.
-    reset_foundation_setup_for_testing()
+    # After exiting context, env var should be gone
     hub = get_hub()
     assert hub.get_foundation_config().service_name is None
 
@@ -223,13 +217,13 @@ def test_shutdown_and_reinit(captured_stderr_for_foundation: io.StringIO) -> Non
     """Test shutting down and re-initializing the telemetry."""
     import asyncio
 
-    from provide.foundation import shutdown_foundation_telemetry
+    from provide.foundation import shutdown_foundation
 
     logger.info("Before shutdown")
     initial_output = captured_stderr_for_foundation.getvalue()
     assert "Before shutdown" in initial_output
 
-    asyncio.run(shutdown_foundation_telemetry())
+    asyncio.run(shutdown_foundation())
 
     # Should still work with basic logger after shutdown
     logger.info("After shutdown")
@@ -237,7 +231,6 @@ def test_shutdown_and_reinit(captured_stderr_for_foundation: io.StringIO) -> Non
     assert "After shutdown" in after_shutdown_output
 
     # Re-initialize
-    reset_foundation_setup_for_testing()
     logger.info("After re-initialization")
     final_output = captured_stderr_for_foundation.getvalue()
     assert "After re-initialization" in final_output
@@ -262,27 +255,25 @@ def test_log_file_redirection(tmp_path: Path) -> None:
     from provide.testkit import enable_file_logging_for_testing
 
     # Enable file logging with proper setup order
-    with TestEnvironment({"PROVIDE_LOG_FILE": str(log_file)}):
-        with enable_file_logging_for_testing(str(log_file)) as file_helper:
-            # Reset Foundation first
-            reset_foundation_setup_for_testing()
-            # Configure file logging after reset
-            file_helper.setup_after_reset()
+    with TestEnvironment({"PROVIDE_LOG_FILE": str(log_file)}), enable_file_logging_for_testing(str(log_file)) as file_helper:
+        # Foundation state reset is automatic
+        # Configure file logging after reset
+        file_helper.setup_after_reset()
 
-            logger.info("This goes to a file")
+        logger.info("This goes to a file")
 
-            # Flush the log streams to ensure content is written
-            from provide.foundation.streams.file import flush_log_streams
+        # Flush the log streams to ensure content is written
+        from provide.foundation.streams.file import flush_log_streams
 
-            flush_log_streams()
+        flush_log_streams()
 
     # This is tricky because the logger holds onto the file handle.
     # We need to shut down to flush and close it.
     import asyncio
 
-    from provide.foundation import shutdown_foundation_telemetry
+    from provide.foundation import shutdown_foundation
 
-    asyncio.run(shutdown_foundation_telemetry())
+    asyncio.run(shutdown_foundation())
 
     assert log_file.exists()
     content = log_file.read_text()

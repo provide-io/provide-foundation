@@ -4,11 +4,11 @@ import asyncio
 from typing import Never
 from unittest.mock import ANY, AsyncMock, MagicMock, patch
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.resilience.decorators import retry
 from provide.foundation.resilience.retry import BackoffStrategy, RetryPolicy
-from provide.testkit import FoundationTestCase
 
 
 class TestRetryDecoratorSync(FoundationTestCase):
