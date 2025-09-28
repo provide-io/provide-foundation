@@ -391,7 +391,10 @@
       "Bash(PYTHONPATH=src .venv/bin/mypy /Users/tim/code/gh/provide-io/provide-foundation/tests/utils/ /Users/tim/code/gh/provide-io/provide-foundation/tests/hub/ /Users/tim/code/gh/provide-io/provide-foundation/tests/cli/ --ignore-missing-imports)",
       "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/utils/test_basic_coverage.py -q)",
       "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/hub/test_hub_registry.py -q)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/cli/test_decorators.py -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/cli/test_decorators.py -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting_coverage.py::TestTokenBucketRateLimiter::test_extreme_time_precision -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting_coverage.py tests/streams/test_console.py -n auto --tb=short -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/streams/test_console.py::TestWriteToConsole -v --tb=short)"
     ],
     "deny": [],
     "ask": [],

@@ -1,8 +1,11 @@
 """Tests for provide.foundation.errors.decorators module."""
 
-from typing import Never
-from unittest.mock import patch
+from __future__ import annotations
 
+from typing import Never
+
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.errors.base import FoundationError
@@ -13,7 +16,7 @@ from provide.foundation.errors.decorators import (
 )
 
 
-class TestWithErrorHandling:
+class TestWithErrorHandling(FoundationTestCase):
     """Test resilient decorator."""
 
     def test_successful_function(self) -> None:
@@ -145,7 +148,7 @@ class TestWithErrorHandling:
         assert str(exc_info.value) == "foundation error"
 
 
-class TestSuppressAndLog:
+class TestSuppressAndLog(FoundationTestCase):
     """Test suppress_and_log decorator."""
 
     def test_suppress_specified_errors(self) -> None:
@@ -217,7 +220,7 @@ class TestSuppressAndLog:
         assert "test error" in log_message
 
 
-class TestFallbackOnError:
+class TestFallbackOnError(FoundationTestCase):
     """Test fallback_on_error decorator."""
 
     def test_successful_function(self) -> None:

@@ -1,8 +1,11 @@
 """Tests for provide.foundation.errors.handlers module."""
 
-from typing import Never
-from unittest.mock import MagicMock, patch
+from __future__ import annotations
 
+from typing import Never
+
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation.errors.base import FoundationError
@@ -17,7 +20,7 @@ from provide.foundation.errors.handlers import (
 from provide.foundation.errors.integration import NetworkError
 
 
-class TestErrorBoundary:
+class TestErrorBoundary(FoundationTestCase):
     """Test error_boundary context manager."""
 
     def test_no_error_passes_through(self) -> None:
@@ -147,7 +150,7 @@ class TestErrorBoundary:
         # Should not raise
 
 
-class TestTransactional:
+class TestTransactional(FoundationTestCase):
     """Test transactional context manager."""
 
     def test_commit_on_success(self) -> None:
@@ -255,7 +258,7 @@ class TestTransactional:
         rollback.assert_called_once()
 
 
-class TestHandleError:
+class TestHandleError(FoundationTestCase):
     """Test handle_error function."""
 
     def test_basic_error_handling(self) -> None:
@@ -329,7 +332,7 @@ class TestHandleError:
         assert call_args["captured"] == "data"
 
 
-class TestErrorHandler:
+class TestErrorHandler(FoundationTestCase):
     """Test ErrorHandler class."""
 
     def test_default_creation(self) -> None:
@@ -500,7 +503,7 @@ class TestErrorHandler:
         assert "Error handler failed" in mock_logger.return_value.error.call_args[0][0]
 
 
-class TestCreateErrorHandler:
+class TestCreateErrorHandler(FoundationTestCase):
     """Test create_error_handler function."""
 
     def test_create_with_policies(self) -> None:

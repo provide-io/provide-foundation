@@ -1,14 +1,17 @@
 """Tests for dependency-related exceptions."""
 
+from __future__ import annotations
+
 from typing import Never
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors.base import FoundationError
 from provide.foundation.errors.dependencies import DependencyError, DependencyMismatchError
 
 
-class TestDependencyError:
+class TestDependencyError(FoundationTestCase):
     """Test cases for DependencyError."""
 
     def test_dependency_error_inheritance(self) -> None:
@@ -88,7 +91,7 @@ class TestDependencyError:
         assert error_dict["error.cause_type"] == "ImportError"
 
 
-class TestDependencyMismatchError:
+class TestDependencyMismatchError(FoundationTestCase):
     """Test cases for DependencyMismatchError."""
 
     def test_dependency_mismatch_error_inheritance(self) -> None:
@@ -152,7 +155,7 @@ class TestDependencyMismatchError:
         assert error_dict["error.cause_type"] == "ImportError"
 
 
-class TestDependencyErrorIntegration:
+class TestDependencyErrorIntegration(FoundationTestCase):
     """Integration tests for dependency errors."""
 
     def test_errors_can_be_raised_and_caught(self) -> Never:
