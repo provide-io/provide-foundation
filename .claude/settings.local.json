@@ -526,7 +526,11 @@
       "Bash(PYTHONPATH=src timeout 30 .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_timeout tests/logger/ tests/hub/ -v --tb=no --maxfail=1)",
       "Bash(PYTHONPATH=src timeout 60 .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_timeout tests/ -q --tb=no --maxfail=1)",
       "Bash(PYTHONPATH=src timeout 60 .venv/bin/pytest tests/file/ -v --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_file_operations.py::TestOperationDetector::test_detect_single_file_creation -xvs)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_file_operations.py::TestOperationDetector::test_detect_single_file_creation -xvs)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/file/operations/detector.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/file/operations/detector.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_file_operations.py::TestOperationDetector::test_detect_single_file_creation tests/file/test_file_operations.py::TestOperationDetector::test_detect_atomic_save_pattern tests/file/test_file_operations.py::TestUtilityFunctions::test_extract_original_path_function -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/ -q --tb=short)"
     ],
     "deny": [],
     "ask": [],
