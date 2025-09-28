@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-# Import all components for backward compatibility
+# Import all components for convenience
 from provide.foundation.file.operations.detector import OperationDetector
 from provide.foundation.file.operations.types import (
     DetectorConfig,
