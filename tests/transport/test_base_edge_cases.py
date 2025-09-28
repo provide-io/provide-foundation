@@ -1,17 +1,20 @@
 """Edge case tests for transport base classes and types."""
 
+from __future__ import annotations
+
 import json
 from typing import Never
-from unittest.mock import AsyncMock
 
 import pytest
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import AsyncMock
 
 from provide.foundation.transport.base import Request, Response, TransportBase
 from provide.foundation.transport.errors import HTTPResponseError
 from provide.foundation.transport.types import TransportType
 
 
-class TestRequestEdgeCases:
+class TestRequestEdgeCases(FoundationTestCase):
     """Test edge cases for Request class."""
 
     def test_transport_type_unknown_scheme(self) -> None:
@@ -42,7 +45,7 @@ class TestRequestEdgeCases:
         assert request.base_url == "https://api.example.com"
 
 
-class TestResponseEdgeCases:
+class TestResponseEdgeCases(FoundationTestCase):
     """Test edge cases for Response class."""
 
     def test_json_with_bytes_body(self) -> None:
@@ -138,7 +141,7 @@ class TestResponseEdgeCases:
         assert not Response(status=300).is_success()  # Just above success
 
 
-class TestTransportBaseEdgeCases:
+class TestTransportBaseEdgeCases(FoundationTestCase):
     """Test edge cases for TransportBase abstract class."""
 
     class MockTransport(TransportBase):
