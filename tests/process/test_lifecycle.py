@@ -137,7 +137,8 @@ class TestManagedProcess(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_read_line_async_timeout(self) -> None:
         """Test read timeout."""
-        process = ManagedProcess(["sleep", "10"])
+        # Use a process that will delay before producing output
+        process = ManagedProcess(["sleep", "1"])
         process.launch()
 
         try:
