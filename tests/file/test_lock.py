@@ -76,19 +76,9 @@ class TestFileLock(FoundationTestCase):
 
     def test_file_lock_timeout(self, temp_directory: Path) -> None:
         """Test lock acquisition timeout."""
-        import uuid
-
-        # Use unique lock file name to avoid conflicts with other tests
-        unique_id = uuid.uuid4().hex[:8]
-        lock_path = temp_directory / f"test_timeout_{unique_id}.lock"
-
-        # Ensure clean state
-        if lock_path.exists():
-            with contextlib.suppress(FileNotFoundError, PermissionError):
-                lock_path.unlink()
-
+        lock_path = temp_directory / "test.lock"
         lock1 = FileLock(lock_path)
-        lock2 = FileLock(lock_path, timeout=0.5, check_interval=0.05)  # Faster polling
+        lock2 = FileLock(lock_path, timeout=0.5)
 
         try:
             # First lock acquired
@@ -108,28 +98,11 @@ class TestFileLock(FoundationTestCase):
             assert not lock2.locked
         finally:
             # Ensure cleanup even if test fails
-            lock1_locked = getattr(lock1, 'locked', False)
-            lock2_locked = getattr(lock2, 'locked', False)
-
-            if lock1_locked:
-                try:
-                    lock1.release()
-                except Exception:
-                    pass
-
-            if lock2_locked:
-                try:
-                    lock2.release()
-                except Exception:
-                    pass
-
-            # Force cleanup of lock file regardless of ownership
+            if lock1.locked:
+                lock1.release()
             if lock_path.exists():
-                with contextlib.suppress(FileNotFoundError, PermissionError, OSError):
+                with contextlib.suppress(FileNotFoundError, PermissionError):
                     lock_path.unlink()
-
-            # Small delay to ensure file system operations complete
-            time.sleep(0.01)
 
     def test_file_lock_multiple_releases(self, temp_directory: Path) -> None:
         """Test multiple releases are safe."""
