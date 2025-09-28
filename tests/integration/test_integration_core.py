@@ -23,10 +23,7 @@ from provide.foundation.hub.registry import Registry
 pytestmark = pytest.mark.serial
 
 
-@pytest.fixture(autouse=True)
-def manage_environment() -> None:
-    """Foundation state is automatically reset by conftest.py fixture."""
-    pass
+# Foundation state is automatically managed by FoundationTestCase base class
 
 
 def test_basic_initialization_and_logging(captured_stderr_for_foundation: io.StringIO) -> None:
