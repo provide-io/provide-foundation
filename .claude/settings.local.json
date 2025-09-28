@@ -450,7 +450,8 @@
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/crypto/test_certificate_lifecycle.py --ignore-missing-imports)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/crypto/test_signatures.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/crypto/test_hash_utils.py tests/crypto/test_certificate_properties.py tests/crypto/test_certificate_create.py tests/crypto/test_certificate_credentials.py tests/crypto/test_certificate_chains.py tests/crypto/test_optional_crypto_dependency.py tests/crypto/test_certificate_loading.py)",
-      "Bash(PYTHONPATH=src .venv/bin/mypy tests/crypto/test_hash_utils.py tests/crypto/test_certificate_properties.py tests/crypto/test_certificate_create.py tests/crypto/test_certificate_credentials.py tests/crypto/test_certificate_chains.py tests/crypto/test_optional_crypto_dependency.py tests/crypto/test_certificate_loading.py --ignore-missing-imports)"
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/crypto/test_hash_utils.py tests/crypto/test_certificate_properties.py tests/crypto/test_certificate_create.py tests/crypto/test_certificate_credentials.py tests/crypto/test_certificate_chains.py tests/crypto/test_optional_crypto_dependency.py tests/crypto/test_certificate_loading.py --ignore-missing-imports)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/crypto/ --tb=no -q)"
     ],
     "deny": [],
     "ask": [],
