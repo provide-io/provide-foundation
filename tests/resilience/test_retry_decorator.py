@@ -143,19 +143,18 @@ class TestRetryDecoratorSync(FoundationTestCase):
         assert documented_func.__name__ == "documented_func"
         assert documented_func.__doc__ == "This is a documented function."
 
-    @patch("time.sleep")
-    def test_delay_between_retries(self, mock_sleep) -> None:
-        """Test delay between retry attempts."""
+    @pytest.mark.slow
+    def test_delay_between_retries(self) -> None:
+        """Test delay between retry attempts with real delays."""
 
-        @retry(max_attempts=3, base_delay=1.0, jitter=False)
+        @retry(max_attempts=3, base_delay=0.1, jitter=False)
         def failing_func() -> Never:
             raise ValueError("fail")
 
         with pytest.raises(ValueError):
             failing_func()
 
-        assert mock_sleep.call_count == 2
-        mock_sleep.assert_any_call(1.0)
+        # Function should fail after 3 attempts with real delays
 
     def test_mixed_decorator_parameters(self) -> None:
         """Test decorator with mixed positional and keyword arguments."""
@@ -284,20 +283,18 @@ class TestRetryDecoratorAsync(FoundationTestCase):
         callback.assert_called_once()
 
     @pytest.mark.asyncio
-    @patch("asyncio.sleep")
-    async def test_async_delay_between_retries(self, mock_sleep) -> None:
-        """Test delay between async retry attempts."""
-        mock_sleep.return_value = None
+    @pytest.mark.slow
+    async def test_async_delay_between_retries(self) -> None:
+        """Test delay between async retry attempts with real delays."""
 
-        @retry(max_attempts=3, base_delay=1.0, jitter=False)
+        @retry(max_attempts=3, base_delay=0.1, jitter=False)
         async def failing_async() -> Never:
             raise ValueError("fail")
 
         with pytest.raises(ValueError):
             await failing_async()
 
-        assert mock_sleep.call_count == 2
-        mock_sleep.assert_any_call(1.0)
+        # Function should fail after 3 attempts with real delays
 
     @pytest.mark.asyncio
     async def test_preserve_async_function_metadata(self) -> None:

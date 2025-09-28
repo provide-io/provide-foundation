@@ -230,7 +230,7 @@ class TestRetryExecutorWithRealWorld:
 
         policy = RetryPolicy(
             max_attempts=5,
-            base_delay=0.1,
+            base_delay=0.01,  # Small real delay
             backoff=BackoffStrategy.EXPONENTIAL,
             retryable_errors=(ConnectionError,),
         )
@@ -238,8 +238,7 @@ class TestRetryExecutorWithRealWorld:
         executor = RetryExecutor(policy)
         db = DatabaseConnection()
 
-        with patch("asyncio.sleep"):  # Speed up test
-            connection = await executor.execute_async(db.connect)
+        connection = await executor.execute_async(db.connect)
 
         assert connection.connected
         assert db.connection_attempts == 3
@@ -262,7 +261,7 @@ class TestRetryExecutorWithRealWorld:
 
         policy = RetryPolicy(
             max_attempts=5,
-            base_delay=1.0,
+            base_delay=0.01,  # Small real delay
             backoff=BackoffStrategy.EXPONENTIAL,
             retryable_errors=(RateLimitError,),
         )
@@ -270,8 +269,7 @@ class TestRetryExecutorWithRealWorld:
         executor = RetryExecutor(policy)
         client = APIClient()
 
-        with patch("time.sleep"):  # Speed up test
-            result = executor.execute_sync(client.make_request, "/users")
+        result = executor.execute_sync(client.make_request, "/users")
 
         assert result == {"status": "success", "data": "/users"}
         assert client.request_count == 3

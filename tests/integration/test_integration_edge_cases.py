@@ -7,13 +7,15 @@ This module tests boundary conditions, error handling, and edge cases
 that might not be covered in regular functional tests.
 """
 
+from __future__ import annotations
+
 from collections.abc import Callable
 import io
 import os
-from typing import Any  # Added for type hints
-from unittest.mock import patch
+from typing import Any
 
 from provide.testkit import reset_foundation_setup_for_testing
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation import (

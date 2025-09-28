@@ -1,14 +1,12 @@
 """Core integration tests for the Foundation library."""
 
+from __future__ import annotations
+
 import io
 import os
-from unittest.mock import patch
 
-from provide.testkit import (
-    TestEnvironment,
-    isolated_cli_runner,
-    reset_foundation_setup_for_testing,
-)
+from provide.testkit import TestEnvironment, isolated_cli_runner
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation import (
@@ -27,8 +25,8 @@ pytestmark = pytest.mark.serial
 
 @pytest.fixture(autouse=True)
 def manage_environment() -> None:
-    """Ensure Foundation state is reset for each test."""
-    reset_foundation_setup_for_testing()
+    """Foundation state is automatically reset by conftest.py fixture."""
+    pass
 
 
 def test_basic_initialization_and_logging(captured_stderr_for_foundation: io.StringIO) -> None:

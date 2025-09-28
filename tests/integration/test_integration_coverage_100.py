@@ -1,14 +1,12 @@
 """100% coverage integration tests for the Foundation library."""
 
+from __future__ import annotations
+
 import io
 import json
 from pathlib import Path
 
-from provide.testkit import (
-    TestEnvironment,
-    isolated_cli_runner,
-    reset_foundation_setup_for_testing,
-)
+from provide.testkit import TestEnvironment, isolated_cli_runner
 import pytest
 
 from provide.foundation import (

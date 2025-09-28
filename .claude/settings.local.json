@@ -342,7 +342,8 @@
       "Bash(lsof:*)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/logger/test_config_module_coverage.py tests/logger/test_config_re_exports_coverage.py tests/logger/test_logger_context_binding.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/logger/test_config_module_coverage.py tests/logger/test_config_re_exports_coverage.py tests/logger/test_logger_context_binding.py --ignore-missing-imports)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/logger/test_config_module_coverage.py tests/logger/test_config_re_exports_coverage.py -v)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/logger/test_config_module_coverage.py tests/logger/test_config_re_exports_coverage.py -v)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/integration/test_integration_core.py tests/integration/test_integration_coverage_100.py tests/integration/test_integration_edge_cases.py tests/integration/test_integration_error_handling.py)"
     ],
     "deny": [],
     "ask": [],
