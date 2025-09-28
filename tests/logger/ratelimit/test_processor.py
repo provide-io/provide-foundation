@@ -22,6 +22,7 @@ class TestRateLimiterProcessor(FoundationTestCase):
 
     def setup_method(self) -> None:
         """Reset GlobalRateLimiter singleton before each test."""
+        super().setup_method()
         GlobalRateLimiter._instance = None
 
     def test_rate_limiter_processor_init(self) -> None:
@@ -389,6 +390,7 @@ class TestCreateRateLimiterProcessor(FoundationTestCase):
 
     def setup_method(self) -> None:
         """Reset GlobalRateLimiter singleton before each test."""
+        super().setup_method()
         GlobalRateLimiter._instance = None
 
     def test_create_rate_limiter_processor_basic(self) -> None:
@@ -492,6 +494,7 @@ class TestRateLimiterProcessorIntegration(FoundationTestCase):
 
     def setup_method(self) -> None:
         """Reset GlobalRateLimiter singleton before each test."""
+        super().setup_method()
         GlobalRateLimiter._instance = None
 
     @patch("provide.foundation.logger.get_logger")

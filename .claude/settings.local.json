@@ -399,7 +399,12 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/logger/)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format /Users/tim/code/gh/provide-io/provide-foundation/tests/logger/)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format /Users/tim/code/gh/provide-io/provide-foundation/tests/logger/ratelimit/test_processor.py /Users/tim/code/gh/provide-io/provide-foundation/tests/logger/ratelimit/test_queue_limiter.py)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/logger/test_logging.py::TestLoggingWithEmojiSets::test_llm_emoji_set_end_to_end -v)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/logger/test_logging.py::TestLoggingWithEmojiSets::test_llm_emoji_set_end_to_end -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/logger/ratelimit/test_processor.py::TestRateLimiterProcessor::test_rate_limiter_processor_init -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/logger/ -q --tb=short --maxfail=5)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/logger/test_logger_production_compliance.py -q --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/logger/ -q --tb=no --maxfail=10)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/logger/ratelimit/test_queue_limiter.py::TestQueuedRateLimiter::test_queued_rate_limiter_enqueue_basic -v)"
     ],
     "deny": [],
     "ask": [],

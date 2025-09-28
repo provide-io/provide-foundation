@@ -98,7 +98,7 @@ class TestQueuedRateLimiter(FoundationTestCase):
         for i in range(5):
             accepted, _reason = limiter.enqueue(f"item_{i}")
             assert accepted is True
-            assert reason is None
+            assert _reason is None
 
         stats = limiter.get_stats()
         assert stats["queue_size"] == 5

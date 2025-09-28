@@ -8,13 +8,15 @@ This module tests production-ready scenarios, documented behavior compliance,
 and performance requirements for lazy initialization functionality.
 """
 
+from __future__ import annotations
+
 import asyncio
 import contextlib
 import json
 import os
 import threading
 import time
-from unittest.mock import patch
+from provide.testkit.mocking import patch
 
 from provide.testkit import FoundationTestCase
 import pytest
@@ -25,7 +27,7 @@ from provide.foundation import (
     TelemetryConfig,
     get_hub,
     logger as global_logger,
-    shutdown_foundation_telemetry,
+    shutdown_foundation,
 )
 
 # Mark all tests in this file to run serially to avoid global state pollution
@@ -155,7 +157,7 @@ class TestProductionReadinessScenarios(FoundationTestCase):
 
         # Test graceful shutdown
         async def test_shutdown() -> None:
-            await shutdown_foundation_telemetry()
+            await shutdown_foundation()
 
         # Run shutdown
 
