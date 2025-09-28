@@ -47,7 +47,7 @@ class TestQualityAnalyzer(FoundationTestCase):
     def test_run_analysis_without_scenarios(self) -> None:
         """Test running analysis without scenarios raises error."""
         analyzer = QualityAnalyzer()
-        with pytest.raises(ValueError, match="No test cases available"):
+        with pytest.raises(ValueError, match="No scenarios available for analysis"):
             analyzer.run_analysis()
 
     def test_run_analysis_with_vscode_scenario(self) -> None:
