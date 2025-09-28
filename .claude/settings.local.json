@@ -380,7 +380,8 @@
       "Bash(PYTHONPATH=src .venv/bin/grep -n -A 10 \"test_write_to_console_with_exception_fallback\" tests/streams/test_console.py)",
       "Bash(PYTHONPATH=src grep -n -A 10 \"test_write_to_console_with_exception_fallback\" tests/streams/test_console.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/ -q --tb=short --maxfail=3)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/utils/ -q --tb=short --maxfail=3)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/utils/ -q --tb=short --maxfail=3)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/utils/test_utils_coverage.py::TestParsingCoverage::test_auto_parse_with_string_type_hints -v)"
     ],
     "deny": [],
     "ask": [],

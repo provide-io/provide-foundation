@@ -1,9 +1,12 @@
 """Basic coverage tests for CLI main module."""
 
+from __future__ import annotations
+
 import pytest
+from provide.testkit import FoundationTestCase
 
 
-class TestCLIMainCoverage:
+class TestCLIMainCoverage(FoundationTestCase):
     """Basic coverage tests for CLI main module."""
 
     def test_main_imports_successfully(self) -> None:

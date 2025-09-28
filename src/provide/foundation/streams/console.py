@@ -63,9 +63,17 @@ def write_to_console(message: str, stream: TextIO | None = None, log_fallback: b
                     error_type=type(e).__name__,
                     stream_type=type(target_stream).__name__,
                 )
-            except Exception:
-                # Can't log the fallback, just proceed silently
-                pass
+            except Exception as log_error:
+                # Foundation logger failed, fall back to direct stderr logging
+                try:
+                    print(
+                        f"[DEBUG] Console write failed (logging also failed): "
+                        f"{e.__class__.__name__}: {e} (log_error: {log_error.__class__.__name__})",
+                        file=sys.stderr
+                    )
+                except Exception:
+                    # Even stderr failed - this is a critical system failure, but we must continue
+                    pass
 
         # Fallback to stderr - if this fails, let it propagate
         sys.stderr.write(message)

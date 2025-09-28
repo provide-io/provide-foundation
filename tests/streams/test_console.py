@@ -287,6 +287,42 @@ class TestWriteToConsole:
             mock_stderr_write.assert_called_once_with("test message")
             mock_stderr_flush.assert_called_once()
 
+    def test_write_to_console_with_logging_failure_fallback(self) -> None:
+        """Test write_to_console when both stream and logging fail."""
+        from provide.foundation.streams.core import set_log_stream_for_testing
+        from unittest.mock import patch
+
+        # Create stream that raises exception on write
+        mock_stream = Mock()
+        mock_stream.write.side_effect = Exception("Write failed")
+
+        set_log_stream_for_testing(mock_stream)
+
+        with (
+            patch.object(sys.stderr, "write") as mock_stderr_write,
+            patch.object(sys.stderr, "flush") as mock_stderr_flush,
+            patch("provide.foundation.streams.console.get_foundation_logger") as mock_logger,
+        ):
+            # Make the Foundation logger also fail
+            mock_logger.side_effect = Exception("Logger failed")
+
+            try:
+                # Should handle both failures gracefully and log to stderr directly
+                write_to_console("test message")
+
+                # Should have tried the original stream
+                mock_stream.write.assert_called_once_with("test message")
+
+                # Should have fallen back to stderr for both the message and debug info
+                assert mock_stderr_write.call_count >= 1  # At least the main message
+                mock_stderr_flush.assert_called()
+
+                # Check that stderr received the main message
+                stderr_calls = [str(call) for call in mock_stderr_write.call_args_list]
+                assert any("test message" in call for call in stderr_calls)
+            finally:
+                set_log_stream_for_testing(None)
+
 
 class TestConsoleIntegration:
     """Test integration scenarios for console functions."""

@@ -1,5 +1,7 @@
 """Tests for CLI decorators."""
 
+from __future__ import annotations
+
 from pathlib import Path
 import tempfile
 from typing import Never
@@ -19,9 +21,10 @@ from provide.foundation.cli.decorators import (
     version_option,
 )
 from provide.foundation.context import CLIContext
+from provide.testkit import FoundationTestCase
 
 
-class TestLoggingOptions:
+class TestLoggingOptions(FoundationTestCase):
     """Test logging_options decorator."""
 
     def test_adds_log_level_option(self) -> None:
@@ -109,7 +112,7 @@ class TestLoggingOptions:
         assert "--debug" not in result.output
 
 
-class TestOutputOptions:
+class TestOutputOptions(FoundationTestCase):
     """Test output_options decorator."""
 
     def test_adds_json_option(self) -> None:
@@ -166,7 +169,7 @@ class TestOutputOptions:
         assert "--quiet" not in result.output
 
 
-class TestConfigOptions:
+class TestConfigOptions(FoundationTestCase):
     """Test config_options decorator."""
 
     def test_adds_config_option(self) -> None:
@@ -202,7 +205,7 @@ class TestConfigOptions:
         assert "profile=production" in result.output
 
 
-class TestFlexibleOptions:
+class TestFlexibleOptions(FoundationTestCase):
     """Test flexible_options decorator."""
 
     def test_combines_logging_and_config(self) -> None:
@@ -259,7 +262,7 @@ class TestFlexibleOptions:
         assert "log_level=INFO" in result.output
 
 
-class TestStandardOptions:
+class TestStandardOptions(FoundationTestCase):
     """Test standard_options decorator (for backward compatibility)."""
 
     def test_includes_all_options(self) -> None:
@@ -286,7 +289,7 @@ class TestStandardOptions:
         assert "--no-emoji" in result.output
 
 
-class TestPassContext:
+class TestPassContext(FoundationTestCase):
     """Test pass_context decorator."""
 
     def test_creates_context_if_none(self) -> None:
@@ -344,7 +347,7 @@ class TestPassContext:
         assert "options_removed" in result.output
 
 
-class TestErrorHandler:
+class TestErrorHandler(FoundationTestCase):
     """Test error_handler decorator."""
 
     def test_handles_exceptions_gracefully(self) -> None:
@@ -393,7 +396,7 @@ class TestErrorHandler:
         assert "Interrupted by user" in result.output
 
 
-class TestVersionOption:
+class TestVersionOption(FoundationTestCase):
     """Test version_option decorator."""
 
     def test_adds_version_option(self) -> None:
@@ -410,7 +413,7 @@ class TestVersionOption:
         assert "test-cli version 1.2.3" in result.output
 
 
-class TestOptionInheritance:
+class TestOptionInheritance(FoundationTestCase):
     """Test that options can be inherited from parent commands."""
 
     def test_subcommand_inherits_parent_options(self) -> None:
@@ -464,7 +467,7 @@ class TestOptionInheritance:
         assert "effective_log_level=DEBUG" in result.output
 
 
-class TestEnvironmentVariables:
+class TestEnvironmentVariables(FoundationTestCase):
     """Test environment variable support."""
 
     def test_all_options_support_env_vars(self) -> None:
