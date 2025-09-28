@@ -1,5 +1,7 @@
 """Tests for nested command registration functionality."""
 
+from __future__ import annotations
+
 import click
 from click.testing import CliRunner
 
@@ -8,13 +10,15 @@ from provide.foundation.hub.commands import (
     register_command,
 )
 from provide.foundation.hub.manager import clear_hub, get_hub
+from provide.testkit import FoundationTestCase
 
 
-class TestNestedCommandRegistration:
+class TestNestedCommandRegistration(FoundationTestCase):
     """Test nested command registration and CLI building."""
 
     def setup_method(self) -> None:
         """Clear the hub before each test."""
+        super().setup_method()
         clear_hub()
 
     def teardown_method(self) -> None:
@@ -392,11 +396,12 @@ class TestNestedCommandRegistration:
         assert hub.get_command("nonexistent.orphan") is orphan_command
 
 
-class TestNestedCommandIntegration:
+class TestNestedCommandIntegration(FoundationTestCase):
     """Integration tests for nested commands in real scenarios."""
 
     def setup_method(self) -> None:
         """Clear the hub before each test."""
+        super().setup_method()
         clear_hub()
 
     def teardown_method(self) -> None:

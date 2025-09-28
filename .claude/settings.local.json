@@ -361,7 +361,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/config/ tests/integration/)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/config/test_config_loader.py -q --tb=short --maxfail=3)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/ -n auto --tb=no -q)",
-      "Bash(if [ -f \"$file\" ])"
+      "Bash(if [ -f \"$file\" ])",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_retry_executor.py -v --tb=short)"
     ],
     "deny": [],
     "ask": [],

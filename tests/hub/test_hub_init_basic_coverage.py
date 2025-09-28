@@ -1,9 +1,13 @@
 """Basic coverage tests for hub __init__ module."""
 
+from __future__ import annotations
+
 import pytest
 
+from provide.testkit import FoundationTestCase
 
-class TestHubInitBasicCoverage:
+
+class TestHubInitBasicCoverage(FoundationTestCase):
     """Basic coverage tests for hub __init__ module."""
 
     def test_hub_init_imports_successfully(self) -> None:

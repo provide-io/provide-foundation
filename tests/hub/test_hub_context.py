@@ -1,5 +1,7 @@
 """Tests for the unified Context class."""
 
+from __future__ import annotations
+
 import os
 from pathlib import Path
 import tempfile
@@ -8,9 +10,10 @@ import pytest
 
 from provide.foundation.context import CLIContext
 from provide.foundation.errors.runtime import StateError
+from provide.testkit import FoundationTestCase
 
 
-class TestContext:
+class TestContext(FoundationTestCase):
     """Test the unified Context class."""
 
     def test_context_initialization(self) -> None:
