@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
+
+from attrs import define, field
 
 try:
     from provide.foundation.file.operations import FileEvent, FileEventMetadata
@@ -15,15 +16,15 @@ except ImportError:
     HAS_OPERATIONS_MODULE = False
 
 
-@dataclass
+@define(slots=True, kw_only=True)
 class OperationTestCase:
     """Test case for operation detection validation."""
 
     name: str
     events: list[FileEvent]
     expected_operations: list[dict[str, Any]]  # Expected operation specs
-    description: str = ""
-    tags: list[str] = field(default_factory=list)
+    description: str = field(default="")
+    tags: list[str] = field(factory=list)
 
 
 def create_test_cases_from_patterns() -> list[OperationTestCase]:
