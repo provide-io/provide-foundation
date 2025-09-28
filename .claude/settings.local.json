@@ -486,7 +486,11 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/file/test_directory.py tests/file/test_safe.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/ --collect-only -q)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/file/test_replacements.py)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/file/test_replacements.py tests/file/test_utils.py tests/file/test_formats.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/file/test_replacements.py tests/file/test_utils.py tests/file/test_formats.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_lock.py tests/file/test_safe.py tests/file/test_directory.py -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_formats.py tests/file/test_utils.py -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/ --tb=short -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_replacements.py --tb=short -q)"
     ],
     "deny": [],
     "ask": [],

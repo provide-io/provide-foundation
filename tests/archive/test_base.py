@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from abc import ABCMeta
 from pathlib import Path
+from typing import Any
 
 from provide.testkit import FoundationTestCase
 import pytest
@@ -70,7 +71,7 @@ class TestBaseArchiveCommonBehavior(FoundationTestCase):
     """Test common behavior expected from BaseArchive implementations."""
 
     @pytest.fixture
-    def mock_archiver(self):
+    def mock_archiver(self) -> Any:
         """Create a mock archiver for testing common behavior."""
 
         class MockArchiver(BaseArchive):
@@ -90,7 +91,7 @@ class TestBaseArchiveCommonBehavior(FoundationTestCase):
 
         return MockArchiver()
 
-    def test_create_returns_output_path(self, mock_archiver, temp_directory) -> None:
+    def test_create_returns_output_path(self, mock_archiver: Any, temp_directory: Path) -> None:
         """The create method should return the output path."""
         temp_path = temp_directory
         source = temp_path / "source"
@@ -102,7 +103,7 @@ class TestBaseArchiveCommonBehavior(FoundationTestCase):
         assert result == output
         assert output.exists()
 
-    def test_extract_returns_output_path(self, mock_archiver, temp_directory) -> None:
+    def test_extract_returns_output_path(self, mock_archiver: Any, temp_directory: Path) -> None:
         """The extract method should return the output path."""
         temp_path = temp_directory
         archive = temp_path / "test.archive"
@@ -114,7 +115,7 @@ class TestBaseArchiveCommonBehavior(FoundationTestCase):
         assert result == output
         assert output.exists()
 
-    def test_validate_returns_boolean(self, mock_archiver, temp_directory) -> None:
+    def test_validate_returns_boolean(self, mock_archiver: Any, temp_directory: Path) -> None:
         """The validate method should return a boolean."""
         temp_path = temp_directory
 
@@ -127,7 +128,7 @@ class TestBaseArchiveCommonBehavior(FoundationTestCase):
         invalid_archive = temp_path / "invalid.archive"
         assert mock_archiver.validate(invalid_archive) is False
 
-    def test_methods_accept_path_objects(self, mock_archiver, temp_directory) -> None:
+    def test_methods_accept_path_objects(self, mock_archiver: Any, temp_directory: Path) -> None:
         """All methods should accept Path objects as arguments."""
         temp_path = temp_directory
         source = temp_path / "source"

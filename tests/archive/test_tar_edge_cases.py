@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 import tarfile
 import tempfile
 
@@ -16,11 +17,13 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
     """Test TAR archive edge cases and security features."""
 
     @pytest.fixture
-    def tar_archive(self):
+    def tar_archive(self) -> TarArchive:
         """Create a TAR archive instance."""
         return TarArchive()
 
-    def test_list_contents_basic(self, tar_archive, test_files_structure) -> None:
+    def test_list_contents_basic(
+        self, tar_archive: TarArchive, test_files_structure: tuple[Path, Path]
+    ) -> None:
         """Test listing TAR archive contents."""
         temp_path, source = test_files_structure
         archive = temp_path / "test.tar"
@@ -39,7 +42,7 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
         # Should be sorted
         assert contents == sorted(contents)
 
-    def test_list_contents_empty_archive(self, tar_archive, temp_directory) -> None:
+    def test_list_contents_empty_archive(self, tar_archive: TarArchive, temp_directory: Path) -> None:
         """Test listing contents of empty archive."""
         temp_path = temp_directory
 
@@ -54,7 +57,7 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
         # Should return empty list for archive with no files
         assert contents == []
 
-    def test_list_contents_error_handling(self, tar_archive, temp_directory) -> None:
+    def test_list_contents_error_handling(self, tar_archive: TarArchive, temp_directory: Path) -> None:
         """Test error handling when listing contents."""
         temp_path = temp_directory
 
@@ -65,7 +68,7 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
         with pytest.raises(ArchiveError, match="Failed to list TAR contents"):
             tar_archive.list_contents(corrupt_archive)
 
-    def test_extract_unsafe_absolute_path(self, tar_archive, temp_directory) -> None:
+    def test_extract_unsafe_absolute_path(self, tar_archive: TarArchive, temp_directory: Path) -> None:
         """Test extraction blocks absolute paths in archive."""
         temp_path = temp_directory
         archive = temp_path / "unsafe_abs.tar"
@@ -84,7 +87,7 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
         with pytest.raises(ArchiveError, match="Unsafe path in archive: /etc/passwd"):
             tar_archive.extract(archive, output)
 
-    def test_extract_unsafe_relative_path(self, tar_archive, temp_directory) -> None:
+    def test_extract_unsafe_relative_path(self, tar_archive: TarArchive, temp_directory: Path) -> None:
         """Test extraction blocks path traversal attacks."""
         temp_path = temp_directory
         archive = temp_path / "unsafe_rel.tar"
@@ -100,10 +103,10 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
 
         output = temp_path / "extracted"
 
-        with pytest.raises(ArchiveError, match="Unsafe path in archive: ../../../etc/passwd"):
+        with pytest.raises(ArchiveError, match=r"Unsafe path in archive: \.\./\.\./\.\./etc/passwd"):
             tar_archive.extract(archive, output)
 
-    def test_extract_unsafe_symlink_absolute(self, tar_archive, temp_directory) -> None:
+    def test_extract_unsafe_symlink_absolute(self, tar_archive: TarArchive, temp_directory: Path) -> None:
         """Test extraction blocks absolute symlinks."""
         temp_path = temp_directory
         archive = temp_path / "unsafe_symlink_abs.tar"
@@ -120,7 +123,9 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
         with pytest.raises(ArchiveError, match="Unsafe symlink in archive"):
             tar_archive.extract(archive, output)
 
-    def test_extract_unsafe_symlink_relative_escape(self, tar_archive, temp_directory) -> None:
+    def test_extract_unsafe_symlink_relative_escape(
+        self, tar_archive: TarArchive, temp_directory: Path
+    ) -> None:
         """Test extraction blocks symlinks that escape extraction directory."""
         temp_path = temp_directory
         archive = temp_path / "unsafe_symlink_rel.tar"
@@ -137,7 +142,7 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
         with pytest.raises(ArchiveError, match="Unsafe symlink in archive"):
             tar_archive.extract(archive, output)
 
-    def test_extract_safe_symlink(self, tar_archive, temp_directory) -> None:
+    def test_extract_safe_symlink(self, tar_archive: TarArchive, temp_directory: Path) -> None:
         """Test extraction allows safe symlinks within extraction directory."""
         temp_path = temp_directory
         archive = temp_path / "safe_symlink.tar"
@@ -165,7 +170,7 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
         assert extracted_link.exists()
         assert extracted_link.is_symlink()
 
-    def test_deterministic_mode_metadata_normalization(self, test_files_structure) -> None:
+    def test_deterministic_mode_metadata_normalization(self, test_files_structure: tuple[Path, Path]) -> None:
         """Test deterministic mode normalizes metadata."""
         temp_path, source = test_files_structure
 
@@ -185,7 +190,7 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
                     assert member.gname == ""
                     assert member.mtime == 0
 
-    def test_preserve_permissions_false(self, test_files_structure) -> None:
+    def test_preserve_permissions_false(self, test_files_structure: tuple[Path, Path]) -> None:
         """Test permission normalization when preserve_permissions=False."""
         temp_path, source = test_files_structure
 
@@ -214,7 +219,7 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
                     # Directories should be normalized to 0o755
                     assert (member.mode & 0o777) == 0o755
 
-    def test_preserve_permissions_true(self, test_files_structure) -> None:
+    def test_preserve_permissions_true(self, test_files_structure: tuple[Path, Path]) -> None:
         """Test permission preservation when preserve_permissions=True."""
         temp_path, source = test_files_structure
 
@@ -241,7 +246,9 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
             # Original permissions should be preserved
             assert (special_member.mode & 0o777) == original_mode
 
-    def test_combined_deterministic_and_permission_settings(self, test_files_structure) -> None:
+    def test_combined_deterministic_and_permission_settings(
+        self, test_files_structure: tuple[Path, Path]
+    ) -> None:
         """Test interaction between deterministic mode and permission preservation."""
         temp_path, source = test_files_structure
 
@@ -265,7 +272,7 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
                     # And normalized permissions
                     assert (member.mode & 0o777) == 0o644
 
-    def test_extract_with_hardlinks(self, tar_archive, temp_directory) -> None:
+    def test_extract_with_hardlinks(self, tar_archive: TarArchive, temp_directory: Path) -> None:
         """Test extraction with unsafe hardlinks that escape extraction directory."""
         temp_path = temp_directory
         archive = temp_path / "hardlink.tar"
@@ -292,7 +299,7 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
         with pytest.raises(ArchiveError, match="Unsafe symlink in archive"):
             tar_archive.extract(archive, output)
 
-    def test_create_with_non_deterministic_mode(self, test_files_structure) -> None:
+    def test_create_with_non_deterministic_mode(self, test_files_structure: tuple[Path, Path]) -> None:
         """Test creating archive with deterministic=False preserves original metadata."""
         temp_path, source = test_files_structure
 
@@ -306,7 +313,9 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
         assert archive.exists()
         assert tar.validate(archive)
 
-    def test_list_contents_with_directories(self, tar_archive, test_files_structure) -> None:
+    def test_list_contents_with_directories(
+        self, tar_archive: TarArchive, test_files_structure: tuple[Path, Path]
+    ) -> None:
         """Test that list_contents only returns files, not directories."""
         temp_path, source = test_files_structure
         archive = temp_path / "test.tar"

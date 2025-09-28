@@ -221,8 +221,8 @@ class TestPackageReplacements(FoundationTestCase):
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tmp_path = Path(tmpdir)
-            test_flavorpack_atomic_replacements(tmp_path)
-            test_flavorpack_disk_replacements(tmp_path)
+            self.test_flavorpack_atomic_replacements(tmp_path)
+            self.test_flavorpack_disk_replacements(tmp_path)
 
     @pytest.mark.skipif(
         not Path("/Users/tim/code/gh/provide-io/wrknv").exists(),
@@ -233,5 +233,5 @@ class TestPackageReplacements(FoundationTestCase):
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tmp_path = Path(tmpdir)
-            test_wrknv_install_replacements(tmp_path)
-            test_wrknv_extract_operations(tmp_path)
+            self.test_wrknv_install_replacements(tmp_path)
+            self.test_wrknv_extract_operations(tmp_path)
