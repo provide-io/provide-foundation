@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import TYPE_CHECKING, Any
 
 from provide.foundation.logger import get_logger
@@ -21,6 +22,22 @@ except ImportError:
 log = get_logger(__name__)
 
 
+def _parse_filter_string(filter_str: str | None) -> dict[str, str]:
+    """Parse a filter string like "key='value', key2='value2'" into a dict."""
+    if not filter_str:
+        return {}
+
+    filters = {}
+    # Regex to find key='value' pairs, allowing for spaces and different quote types
+    pattern = re.compile(r"""(\w+)\s*=\s*(['"])(.*?)\2""")
+    matches = pattern.findall(filter_str)
+
+    for key, _quote, value in matches:
+        filters[key] = value
+
+    return filters
+
+
 if _HAS_CLICK:
 
     @click.command("tail")
@@ -33,8 +50,8 @@ if _HAS_CLICK:
     @click.option(
         "--filter",
         "-f",
-        "filter_sql",
-        help="SQL WHERE clause for filtering",
+        "filter_str",
+        help="Filter logs using key='value' pairs (e.g., \"level='ERROR', service='api'\")",
     )
     @click.option(
         "--lines",
@@ -59,7 +76,7 @@ if _HAS_CLICK:
     def tail_command(
         ctx: click.Context,
         stream: str,
-        filter_sql: str | None,
+        filter_str: str | None,
         lines: int,
         follow: bool,
         format: str,
@@ -94,15 +111,17 @@ if _HAS_CLICK:
             return 1
 
         try:
+            filters = _parse_filter_string(filter_str)
+
             click.echo(f"📡 Tailing logs from stream '{stream}'...")
-            if filter_sql:
-                click.echo(f"   Filter: {filter_sql}")
+            if filters:
+                click.echo(f"   Filter: {filters}")
             click.echo("   Press Ctrl+C to stop\n")
 
             # Tail logs
             for log_entry in tail_logs(
                 stream=stream,
-                filter_sql=filter_sql,
+                filters=filters,
                 follow=follow,
                 lines=lines,
                 client=client,
