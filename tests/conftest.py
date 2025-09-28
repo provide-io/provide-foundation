@@ -6,9 +6,8 @@
 This file contains only the essential global fixtures and configuration
 that must be at the root level for pytest.
 
-NOTE: Most tests should inherit from FoundationTestCase which handles
-Foundation reset automatically. This global fixture is maintained for
-legacy tests that haven't been migrated yet.
+All tests should inherit from FoundationTestCase which handles
+Foundation reset automatically.
 """
 
 from __future__ import annotations
@@ -27,9 +26,7 @@ os.environ.setdefault("PROVIDE_LOG_LEVEL", "DEBUG")
 with_suppression = os.environ.get("FOUNDATION_SUPPRESS_TESTING_WARNINGS")
 os.environ["FOUNDATION_SUPPRESS_TESTING_WARNINGS"] = "true"
 
-from provide.testkit import (  # noqa: E402
-    set_log_stream_for_testing,
-)
+from provide.testkit import set_log_stream_for_testing  # noqa: E402 # type: ignore
 
 # Restore original warning suppression state
 if with_suppression is None:
