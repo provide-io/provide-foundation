@@ -6,11 +6,12 @@ import asyncio
 import time
 
 import pytest
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.utils.rate_limiting import TokenBucketRateLimiter
 
 
-class TestTokenBucketRateLimiter:
+class TestTokenBucketRateLimiter(FoundationTestCase):
     """Test TokenBucketRateLimiter class."""
 
     def test_init_valid_parameters(self) -> None:
@@ -90,10 +91,10 @@ class TestTokenBucketRateLimiter:
         # Trigger refill by calling is_allowed (which calls _refill_tokens internally)
         await limiter._refill_tokens()
 
-            # Should allow 2 requests now
-            assert await limiter.is_allowed() is True
-            assert await limiter.is_allowed() is True
-            assert await limiter.is_allowed() is False
+        # Should allow 2 requests now
+        assert await limiter.is_allowed() is True
+        assert await limiter.is_allowed() is True
+        assert await limiter.is_allowed() is False
 
     @pytest.mark.asyncio
     async def test_refill_tokens_basic(self) -> None:

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import pytest
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.utils.formatting import (
     format_duration,
@@ -12,7 +13,7 @@ from provide.foundation.utils.formatting import (
 )
 
 
-class TestFormatSize:
+class TestFormatSize(FoundationTestCase):
     """Test format_size function."""
 
     def test_format_size_zero(self) -> None:
@@ -48,12 +49,12 @@ class TestFormatSize:
 
     def test_format_size_petabytes(self) -> None:
         """Test formatting petabytes."""
-        pb = 1024 ** 5
+        pb = 1024**5
         assert format_size(pb) == "1.0 PB"
 
     def test_format_size_exabytes(self) -> None:
         """Test formatting exabytes."""
-        eb = 1024 ** 6
+        eb = 1024**6
         assert format_size(eb) == "1.0 EB"
 
     def test_format_size_precision(self) -> None:
@@ -76,12 +77,12 @@ class TestFormatSize:
 
     def test_format_size_very_large(self) -> None:
         """Test formatting very large values (beyond exabytes)."""
-        huge = 1024 ** 7  # Larger than exabytes
+        huge = 1024**7  # Larger than exabytes
         result = format_size(huge)
         assert result.endswith(" EB")  # Should cap at EB
 
 
-class TestFormatDuration:
+class TestFormatDuration(FoundationTestCase):
     """Test format_duration function."""
 
     def test_format_duration_zero(self) -> None:
@@ -146,7 +147,7 @@ class TestFormatDuration:
         assert format_duration(3720, short=True) == "1h2m"
 
 
-class TestFormatNumber:
+class TestFormatNumber(FoundationTestCase):
     """Test format_number function."""
 
     def test_format_number_integers(self) -> None:
@@ -190,7 +191,7 @@ class TestFormatNumber:
         assert format_number(1234.001, precision=2) == "1,234.00"
 
 
-class TestFormatPercentage:
+class TestFormatPercentage(FoundationTestCase):
     """Test format_percentage function."""
 
     def test_format_percentage_basic(self) -> None:

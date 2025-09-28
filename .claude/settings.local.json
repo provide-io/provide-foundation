@@ -374,7 +374,13 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/logger/trace.py src/provide/foundation/streams/console.py src/provide/foundation/streams/core.py tests/conftest.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/logger/trace.py src/provide/foundation/streams/console.py src/provide/foundation/streams/core.py tests/conftest.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/test_rate_limiting_coverage.py -n auto --tb=short -q)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/ -n auto --tb=no -q --maxfail=3)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/ -n auto --tb=no -q --maxfail=3)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/utils/test_formatting_coverage.py tests/utils/test_parsing_coverage.py tests/utils/test_rate_limiting_coverage.py tests/utils/test_streams_coverage.py tests/utils/test_timing_coverage.py tests/utils/test_utils_coverage.py tests/utils/test_utils_timing.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format /Users/tim/code/gh/provide-io/provide-foundation/tests/utils/test_rate_limiting_coverage.py)",
+      "Bash(PYTHONPATH=src .venv/bin/grep -n -A 10 \"test_write_to_console_with_exception_fallback\" tests/streams/test_console.py)",
+      "Bash(PYTHONPATH=src grep -n -A 10 \"test_write_to_console_with_exception_fallback\" tests/streams/test_console.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/ -q --tb=short --maxfail=3)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/utils/ -q --tb=short --maxfail=3)"
     ],
     "deny": [],
     "ask": [],
