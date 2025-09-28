@@ -428,7 +428,12 @@
       "Bash(timeout 10 bash -c \"PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_async_error_handling -v --tb=short\")",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_async_error_handling -xvs --tb=short)",
       "Bash(timeout 30 PYTHONPATH=src .venv/bin/pytest tests/errors/test_integration.py -v --tb=short)",
-      "Bash(PYTHONPATH=src timeout 30 .venv/bin/pytest tests/errors/test_integration.py -v --tb=short)"
+      "Bash(PYTHONPATH=src timeout 30 .venv/bin/pytest tests/errors/test_integration.py -v --tb=short)",
+      "Bash(PYTHONPATH=src timeout 20 .venv/bin/pytest tests/errors/test_integration.py::TestErrorSystemIntegration::test_async_error_handling -xvs --tb=short)",
+      "Bash(PYTHONPATH=src timeout 60 .venv/bin/pytest tests/errors/test_integration.py -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/errors/test_integration.py)",
+      "Bash(PYTHONPATH=src timeout 120 .venv/bin/pytest tests/errors/test_integration.py tests/concurrency/test_async_core.py -n auto --tb=short -q)",
+      "Bash(PYTHONPATH=src timeout 300 .venv/bin/pytest tests/errors/ tests/concurrency/ tests/hub/test_hub_thread_safety.py -n auto --tb=short -q)"
     ],
     "deny": [],
     "ask": [],
