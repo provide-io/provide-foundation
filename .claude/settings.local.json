@@ -490,7 +490,9 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_lock.py tests/file/test_safe.py tests/file/test_directory.py -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_formats.py tests/file/test_utils.py -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/ --tb=short -q)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_replacements.py --tb=short -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_replacements.py --tb=short -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/tools/test_cache.py::TestToolCache::test_basic_cache_operations -xvs --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/tools/test_cache.py::TestToolCache::test_init_default_cache_dir -xvs --tb=short)"
     ],
     "deny": [],
     "ask": [],
