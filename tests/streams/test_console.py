@@ -229,6 +229,7 @@ class TestWriteToConsole:
             patch.object(sys.stderr, "flush") as mock_stderr_flush,
         ):
             try:
+                # Call write_to_console and expect it to handle the exception gracefully
                 write_to_console("test message")
 
                 # Should have tried the original stream
@@ -255,6 +256,7 @@ class TestWriteToConsole:
             patch.object(sys.stderr, "flush") as mock_stderr_flush,
         ):
             try:
+                # Call write_to_console and expect it to handle the exception gracefully
                 write_to_console("test message")
 
                 # Should have tried the original stream

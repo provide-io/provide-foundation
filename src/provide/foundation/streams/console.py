@@ -53,14 +53,18 @@ def write_to_console(message: str, stream: TextIO | None = None, log_fallback: b
         target_stream.write(message)
         target_stream.flush()
     except Exception as e:
-        # Log the fallback for debugging if requested, but avoid recursion by not using Foundation logger
+        # Log the fallback for debugging if requested
         if log_fallback:
-            # Use print to stderr directly to avoid circular dependencies
-            import traceback
             try:
-                print(f"[DEBUG] Console write failed, falling back to stderr: {e.__class__.__name__}: {e}", file=sys.stderr)
+                from provide.foundation.hub.foundation import get_foundation_logger
+                get_foundation_logger().debug(
+                    "Console write failed, falling back to stderr",
+                    error=str(e),
+                    error_type=type(e).__name__,
+                    stream_type=type(target_stream).__name__,
+                )
             except Exception:
-                # Can't even log to stderr, proceed silently
+                # Can't log the fallback, just proceed silently
                 pass
 
         # Fallback to stderr - if this fails, let it propagate

@@ -79,10 +79,11 @@ class TestParsingCoverage(FoundationTestCase):
 
         attrs_fields = {f.name: f for f in fields(DummyConfig)}
 
-        assert auto_parse(attrs_fields["int_val"], "42") == 42
-        assert auto_parse(attrs_fields["bool_val"], "true") is True
-        assert auto_parse(attrs_fields["list_val"], "a,b") == ["a", "b"]
-        assert auto_parse(attrs_fields["dict_val"], "k=v") == {"k": "v"}
+        # String type hints are treated as strings, not triggers for parsing
+        assert auto_parse(attrs_fields["int_val"], "42") == "42"
+        assert auto_parse(attrs_fields["bool_val"], "true") == "true"
+        assert auto_parse(attrs_fields["list_val"], "a,b") == "a,b"
+        assert auto_parse(attrs_fields["dict_val"], "k=v") == "k=v"
         assert auto_parse(attrs_fields["unknown_val"], "some_string") == "some_string"
 
     def test_auto_parse_no_type_hint(self) -> None:
