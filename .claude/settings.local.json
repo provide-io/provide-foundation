@@ -524,7 +524,8 @@
       "Bash(.venv/bin/pytest --collect-only -q)",
       "Bash(.venv/bin/pytest --collect-only)",
       "Bash(PYTHONPATH=src timeout 30 .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_timeout tests/logger/ tests/hub/ -v --tb=no --maxfail=1)",
-      "Bash(PYTHONPATH=src timeout 60 .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_timeout tests/ -q --tb=no --maxfail=1)"
+      "Bash(PYTHONPATH=src timeout 60 .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_timeout tests/ -q --tb=no --maxfail=1)",
+      "Bash(PYTHONPATH=src timeout 60 .venv/bin/pytest tests/file/ -v --tb=short)"
     ],
     "deny": [],
     "ask": [],
