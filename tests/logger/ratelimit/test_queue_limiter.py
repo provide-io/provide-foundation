@@ -1,5 +1,8 @@
 """Tests for Foundation queue-based rate limiting."""
 
+from __future__ import annotations
+
+from contextlib import suppress
 import sys
 import threading
 import time
@@ -14,7 +17,7 @@ from provide.foundation.logger.ratelimit.queue_limiter import (
 
 
 @pytest.fixture
-def ensure_limiter_cleanup():
+def ensure_limiter_cleanup() -> any:
     """Ensure all QueuedRateLimiter instances are properly shut down after each test."""
     created_limiters = []
 
@@ -27,16 +30,14 @@ def ensure_limiter_cleanup():
     # Cleanup: shutdown any remaining limiters
     for limiter in created_limiters:
         if hasattr(limiter, "running") and limiter.running:
-            try:
+            with suppress(Exception):
                 limiter.shutdown()
-            except Exception:
-                pass  # Ignore errors during cleanup
 
 
 class TestQueuedRateLimiter(FoundationTestCase):
     """Test QueuedRateLimiter class."""
 
-    def test_queued_rate_limiter_init_valid(self, ensure_limiter_cleanup) -> None:
+    def test_queued_rate_limiter_init_valid(self, ensure_limiter_cleanup: any) -> None:
         """Test QueuedRateLimiter initialization with valid parameters."""
         limiter = ensure_limiter_cleanup(
             QueuedRateLimiter(
@@ -83,7 +84,7 @@ class TestQueuedRateLimiter(FoundationTestCase):
         with pytest.raises(ValueError, match="Max queue size must be positive"):
             QueuedRateLimiter(capacity=10.0, refill_rate=1.0, max_queue_size=-1)
 
-    def test_queued_rate_limiter_enqueue_basic(self, ensure_limiter_cleanup) -> None:
+    def test_queued_rate_limiter_enqueue_basic(self, ensure_limiter_cleanup: any) -> None:
         """Test basic enqueueing functionality."""
         limiter = ensure_limiter_cleanup(
             QueuedRateLimiter(
@@ -105,7 +106,7 @@ class TestQueuedRateLimiter(FoundationTestCase):
 
         limiter.shutdown()
 
-    def test_queued_rate_limiter_memory_limit(self, ensure_limiter_cleanup) -> None:
+    def test_queued_rate_limiter_memory_limit(self, ensure_limiter_cleanup: any) -> None:
         """Test memory limit enforcement."""
         # Very small memory limit
         limiter = ensure_limiter_cleanup(
@@ -129,7 +130,7 @@ class TestQueuedRateLimiter(FoundationTestCase):
 
         limiter.shutdown()
 
-    def test_queued_rate_limiter_drop_oldest_policy(self, ensure_limiter_cleanup) -> None:
+    def test_queued_rate_limiter_drop_oldest_policy(self, ensure_limiter_cleanup: any) -> None:
         """Test drop_oldest overflow policy."""
         limiter = ensure_limiter_cleanup(
             QueuedRateLimiter(

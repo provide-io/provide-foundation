@@ -1,10 +1,12 @@
 """Tests for Foundation rate limiting processor."""
 
+from __future__ import annotations
+
 from contextlib import suppress
 import time
 
 from provide.testkit import FoundationTestCase
-from provide.testkit.mocking import MagicMock, patch
+from provide.testkit.mocking import MagicMock, Mock, patch
 import pytest
 import structlog
 
@@ -367,7 +369,7 @@ class TestRateLimiterProcessor(FoundationTestCase):
         assert processor.suppressed_counts == {}
 
     @patch("provide.foundation.logger.get_logger")
-    def test_rate_limiter_processor_callable_interface(self, mock_get_logger) -> None:
+    def test_rate_limiter_processor_callable_interface(self, mock_get_logger: Mock) -> None:
         """Test processor implements proper callable interface."""
         mock_logger = MagicMock()
         mock_get_logger.return_value = mock_logger
@@ -493,7 +495,7 @@ class TestRateLimiterProcessorIntegration(FoundationTestCase):
         GlobalRateLimiter._instance = None
 
     @patch("provide.foundation.logger.get_logger")
-    def test_processor_with_structlog_pipeline(self, mock_get_logger) -> None:
+    def test_processor_with_structlog_pipeline(self, mock_get_logger: Mock) -> None:
         """Test processor works in structlog pipeline."""
         mock_logger = MagicMock()
         mock_get_logger.return_value = mock_logger
@@ -555,7 +557,7 @@ class TestRateLimiterProcessorIntegration(FoundationTestCase):
         assert elapsed < 0.5
 
     @patch("provide.foundation.logger.get_logger")
-    def test_processor_multiple_logger_names(self, mock_get_logger) -> None:
+    def test_processor_multiple_logger_names(self, mock_get_logger: Mock) -> None:
         """Test processor handles multiple logger names correctly."""
         mock_logger = MagicMock()
         mock_get_logger.return_value = mock_logger
