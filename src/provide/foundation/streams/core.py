@@ -53,6 +53,7 @@ def get_log_stream() -> TextIO:
                 # Handle specific stream-related errors with logging
                 try:
                     from provide.foundation.hub.foundation import get_foundation_logger
+
                     get_foundation_logger().warning(
                         "Stream operation failed, falling back to stderr",
                         error=str(e),

@@ -59,6 +59,7 @@ try:
 
             # Use the Foundation console writing utility for proper error handling
             from provide.foundation.streams.console import write_to_console
+
             write_to_console(formatted_msg + "\n", stream=self._file, log_fallback=True)
 
         PrintLogger.trace = trace_for_print_logger

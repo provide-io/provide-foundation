@@ -57,6 +57,7 @@ def write_to_console(message: str, stream: TextIO | None = None, log_fallback: b
         if log_fallback:
             try:
                 from provide.foundation.hub.foundation import get_foundation_logger
+
                 get_foundation_logger().debug(
                     "Console write failed, falling back to stderr",
                     error=str(e),
