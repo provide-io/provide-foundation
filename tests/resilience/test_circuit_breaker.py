@@ -1,14 +1,17 @@
 """Tests for circuit breaker functionality."""
 
+from __future__ import annotations
+
 import time
 from typing import Never
 
 import pytest
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.resilience.circuit import CircuitBreaker, CircuitState
 
 
-class TestCircuitBreaker:
+class TestCircuitBreaker(FoundationTestCase):
     """Test CircuitBreaker class."""
 
     def test_initial_state(self) -> None:
