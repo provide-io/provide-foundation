@@ -1,9 +1,13 @@
 """Comprehensive coverage tests for logger/config.py re-exports module."""
 
+from __future__ import annotations
+
 import importlib
 
+from provide.testkit import FoundationTestCase
 
-class TestLoggerConfigReExports:
+
+class TestLoggerConfigReExports(FoundationTestCase):
     """Test logger/config.py re-exports functionality."""
 
     def test_logging_config_import(self) -> None:

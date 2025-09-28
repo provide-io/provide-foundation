@@ -1,7 +1,11 @@
 """Comprehensive tests for logger/config.py module."""
 
+from __future__ import annotations
 
-class TestLoggerConfigModule:
+from provide.testkit import FoundationTestCase
+
+
+class TestLoggerConfigModule(FoundationTestCase):
     """Test the logger config module re-exports."""
 
     def test_module_imports(self) -> None:

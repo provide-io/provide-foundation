@@ -333,7 +333,16 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/logger/test_config_coverage.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/logger/test_config_coverage.py --ignore-missing-imports)",
       "Bash(awk:*)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/logger/core.py src/provide/foundation/setup/__init__.py src/provide/foundation/__init__.py src/provide/foundation/hub/manager.py src/provide/foundation/file/operations.py src/provide/foundation/file/operations/__init__.py src/provide/foundation/hub/commands.py src/provide/foundation/logger/config/logging.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/logger/core.py src/provide/foundation/setup/__init__.py src/provide/foundation/__init__.py src/provide/foundation/hub/manager.py src/provide/foundation/file/operations.py src/provide/foundation/file/operations/__init__.py src/provide/foundation/hub/commands.py src/provide/foundation/logger/config/logging.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/logger/test_config_coverage.py tests/logger/test_config_imports.py tests/logger/test_emoji_matrix_coverage.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/logger/test_config_coverage.py tests/logger/test_config_imports.py tests/logger/test_emoji_matrix_coverage.py --ignore-missing-imports)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/logger/test_emoji_matrix_coverage.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/logger/test_emoji_matrix_coverage.py --ignore-missing-imports)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/logger/test_config_coverage.py tests/logger/test_config_imports.py tests/logger/test_emoji_matrix_coverage.py -v)",
+      "Bash(lsof:*)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/logger/test_config_module_coverage.py tests/logger/test_config_re_exports_coverage.py tests/logger/test_logger_context_binding.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/logger/test_config_module_coverage.py tests/logger/test_config_re_exports_coverage.py tests/logger/test_logger_context_binding.py --ignore-missing-imports)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/logger/test_config_module_coverage.py tests/logger/test_config_re_exports_coverage.py -v)"
     ],
     "deny": [],
     "ask": [],
