@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 #
 # test_components_coverage.py
 #
 """Tests to cover missing lines in hub/components.py for 100% coverage."""
 
+from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock
 
 from provide.foundation.hub.components import (
@@ -14,7 +17,7 @@ from provide.foundation.hub.components import (
 )
 
 
-class TestComponentLifecycle:
+class TestComponentLifecycle(FoundationTestCase):
     """Test component lifecycle management functionality."""
 
     def test_cleanup_all_components_with_cleanup_support(self) -> None:
@@ -88,7 +91,7 @@ class TestComponentLifecycle:
         registry.clear()
 
 
-class TestConfigSourceFunctionality:
+class TestConfigSourceFunctionality(FoundationTestCase):
     """Test configuration source functionality."""
 
     def test_get_config_value_with_sources(self) -> None:
