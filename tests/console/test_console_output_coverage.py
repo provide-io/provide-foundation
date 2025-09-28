@@ -1,8 +1,12 @@
 """Comprehensive coverage tests for console/output.py module."""
 
+from __future__ import annotations
+
 import json
 import sys
-from unittest.mock import Mock, patch
+
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.console.output import (
     _get_context,
@@ -15,7 +19,7 @@ from provide.foundation.console.output import (
 from provide.foundation.context import CLIContext
 
 
-class TestGetContext:
+class TestGetContext(FoundationTestCase):
     """Test _get_context function."""
 
     def test_get_context_no_click(self) -> None:
@@ -64,7 +68,7 @@ class TestGetContext:
             assert result is None
 
 
-class TestShouldUseJson:
+class TestShouldUseJson(FoundationTestCase):
     """Test _should_use_json function."""
 
     def test_should_use_json_with_context_true(self) -> None:
@@ -100,7 +104,7 @@ class TestShouldUseJson:
             mock_get_ctx.assert_called_once()
 
 
-class TestShouldUseColor:
+class TestShouldUseColor(FoundationTestCase):
     """Test _should_use_color function."""
 
     def test_should_use_color_with_stream_tty(self) -> None:
@@ -154,7 +158,7 @@ class TestShouldUseColor:
             assert result is False
 
 
-class TestOutputJson:
+class TestOutputJson(FoundationTestCase):
     """Test _output_json function."""
 
     def test_output_json_success(self) -> None:
@@ -206,7 +210,7 @@ class TestOutputJson:
             assert kwargs["file"] is sys.stdout
 
 
-class TestPoutFunction:
+class TestPoutFunction(FoundationTestCase):
     """Test pout function."""
 
     def test_pout_simple_message(self) -> None:
@@ -354,7 +358,7 @@ class TestPoutFunction:
             mock_click.echo.assert_called_with("test2", nl=False)
 
 
-class TestPerrFunction:
+class TestPerrFunction(FoundationTestCase):
     """Test perr function."""
 
     def test_perr_simple_message(self) -> None:
@@ -451,7 +455,7 @@ class TestPerrFunction:
             )
 
 
-class TestEdgeCases:
+class TestEdgeCases(FoundationTestCase):
     """Test edge cases and error conditions."""
 
     def test_click_import_error_handling(self) -> None:

@@ -1,14 +1,17 @@
 """Tests for console output functions."""
 
+from __future__ import annotations
+
 import json
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation import perr, pout
 from provide.foundation.context import CLIContext
 
 
-class TestConsoleOutput:
+class TestConsoleOutput(FoundationTestCase):
     """Test console output functions."""
 
     def test_pout_basic(self, capsys) -> None:
