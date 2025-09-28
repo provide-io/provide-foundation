@@ -459,7 +459,8 @@
       "Bash(if ! grep -q \"from pathlib import Path\" \"$file\")",
       "Bash(then sed -i '' '3i\\\nfrom pathlib import Path\n' \"$file\")",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/file/*.py)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/transport/test_base_edge_cases.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/transport/test_base_edge_cases.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/transport/test_transport_registry.py)"
     ],
     "deny": [],
     "ask": [],
