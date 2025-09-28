@@ -273,6 +273,7 @@ class TestTokenBucketRateLimiter:
         assert await limiter.is_allowed() is False
 
     @pytest.mark.asyncio
+    @pytest.mark.slow
     async def test_steady_state_behavior(self) -> None:
         """Test steady state behavior over time."""
         limiter = TokenBucketRateLimiter(capacity=3, refill_rate=2)  # 2 tokens per second

@@ -1,11 +1,14 @@
 """Comprehensive coverage tests for hub/commands.py module."""
 
+from __future__ import annotations
+
+from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import patch
 
 import pytest
 
 
-class TestHubCommandsImports:
+class TestHubCommandsImports(FoundationTestCase):
     """Test hub commands module imports and exports."""
 
     def test_core_imports_available(self) -> None:
@@ -38,7 +41,7 @@ class TestHubCommandsImports:
             assert export in commands_module.__all__
 
 
-class TestLazyLoadingFeatures:
+class TestLazyLoadingFeatures(FoundationTestCase):
     """Test lazy loading of click-dependent features."""
 
     def test_build_click_command_success(self) -> None:
@@ -91,7 +94,7 @@ class TestLazyLoadingFeatures:
         assert callable(commands_module.get_command_registry)
 
 
-class TestClickDependencyHandling:
+class TestClickDependencyHandling(FoundationTestCase):
     """Test handling of click dependency in lazy loading."""
 
     def test_click_import_error_handling_build_click_command(self) -> None:
@@ -169,7 +172,7 @@ class TestClickDependencyHandling:
                 _ = commands_module.build_click_command
 
 
-class TestGetattrLogic:
+class TestGetattrLogic(FoundationTestCase):
     """Test __getattr__ logic comprehensively."""
 
     def test_getattr_handles_both_click_features(self) -> None:
@@ -212,7 +215,7 @@ class TestGetattrLogic:
         assert build1 is build2
 
 
-class TestModuleBehavior:
+class TestModuleBehavior(FoundationTestCase):
     """Test overall module behavior and integration."""
 
     def test_module_docstring_present(self) -> None:
@@ -274,7 +277,7 @@ class TestModuleBehavior:
                 assert feature_name in ("build_click_command", "create_command_group")
 
 
-class TestErrorMessages:
+class TestErrorMessages(FoundationTestCase):
     """Test error message formatting and content."""
 
     def test_click_error_message_format(self) -> None:

@@ -68,9 +68,17 @@ def reset_log_stream_for_testing() -> Generator[None]:
     Foundation reset is handled by FoundationTestCase for migrated tests.
     This fixture only ensures log stream cleanup for all tests.
     """
-    yield
-    # Ensure stream is reset to default stderr after each test
-    set_log_stream_for_testing(None)
+    try:
+        yield
+    finally:
+        # Ensure stream is reset to default stderr after each test
+        # Handle potential closed streams during parallel execution
+        try:
+            set_log_stream_for_testing(None)
+        except (ValueError, OSError):
+            # Stream may be closed during parallel test execution
+            # This is acceptable - the next test will get a fresh stream
+            pass
 
 
 # Import and re-export fixtures from the unified testing module

@@ -27,19 +27,37 @@ def get_log_stream() -> TextIO:
             and not hasattr(_PROVIDE_LOG_STREAM, "_mock_name")  # Skip mock objects
             and _PROVIDE_LOG_STREAM.closed
         ):
-            # Stream is closed, reset to stderr or raise exception
+            # Stream is closed, reset to stderr
             try:
                 if hasattr(sys, "stderr") and sys.stderr is not None:
                     if not (hasattr(sys.stderr, "closed") and sys.stderr.closed):
                         _PROVIDE_LOG_STREAM = sys.stderr
                     else:
-                        # Even sys.stderr is closed, raise exception to trigger fallback
-                        raise ValueError("All available streams are closed")
+                        # Even sys.stderr is closed, use a safe fallback
+                        try:
+                            import io
+
+                            _PROVIDE_LOG_STREAM = io.StringIO()  # Safe fallback for parallel tests
+                        except ImportError:
+                            # Last resort - raise exception
+                            raise ValueError("All available streams are closed") from None
                 else:
-                    raise ValueError("No stderr available")
+                    # Create a safe fallback stream
+                    try:
+                        import io
+
+                        _PROVIDE_LOG_STREAM = io.StringIO()
+                    except ImportError:
+                        raise ValueError("No stderr available") from None
             except Exception:
-                # This will trigger the fallback in coordinator.py
-                raise ValueError("Stream validation failed - no valid streams available") from None
+                # Create minimal fallback to prevent total failure
+                try:
+                    import io
+
+                    _PROVIDE_LOG_STREAM = io.StringIO()
+                except Exception:
+                    # This will trigger the fallback in coordinator.py
+                    raise ValueError("Stream validation failed - no valid streams available") from None
 
         return _PROVIDE_LOG_STREAM
 

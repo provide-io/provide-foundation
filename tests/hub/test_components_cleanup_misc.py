@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 """Advanced cleanup, config loading, and miscellaneous tests for hub components module."""
 
+from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import AsyncMock, Mock
 
 from provide.foundation.hub.components import (
@@ -14,11 +17,12 @@ from provide.foundation.hub.components import (
 )
 
 
-class TestAdvancedCleanup:
+class TestAdvancedCleanup(FoundationTestCase):
     """Test advanced cleanup scenarios."""
 
     def setup_method(self) -> None:
         """Set up test environment."""
+        super().setup_method()
         reset_registry_for_tests()
 
     def teardown_method(self) -> None:
@@ -81,11 +85,12 @@ class TestAdvancedCleanup:
         component2.cleanup.assert_called_once()
 
 
-class TestConfigFromRegistry:
+class TestConfigFromRegistry(FoundationTestCase):
     """Test configuration loading from registry."""
 
     def setup_method(self) -> None:
         """Set up test environment."""
+        super().setup_method()
         reset_registry_for_tests()
 
     def teardown_method(self) -> None:
@@ -144,11 +149,12 @@ class TestConfigFromRegistry:
         async_source.load_config.assert_not_called()
 
 
-class TestMiscellaneousFunctionality:
+class TestMiscellaneousFunctionality(FoundationTestCase):
     """Test miscellaneous functionality and edge cases."""
 
     def setup_method(self) -> None:
         """Set up test environment."""
+        super().setup_method()
         reset_registry_for_tests()
 
     def teardown_method(self) -> None:

@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 """Configuration and Pipeline tests for hub components module."""
 
+from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import AsyncMock, Mock
 
 import pytest
@@ -14,11 +17,12 @@ from provide.foundation.hub.components import (
 )
 
 
-class TestAsyncConfigLoading:
+class TestAsyncConfigLoading(FoundationTestCase):
     """Test async configuration loading functionality."""
 
     def setup_method(self) -> None:
         """Set up test environment."""
+        super().setup_method()
         reset_registry_for_tests()
 
     def teardown_method(self) -> None:
@@ -89,11 +93,12 @@ class TestAsyncConfigLoading:
         assert configs["working_key"] == "working_value"
 
 
-class TestProcessorPipeline:
+class TestProcessorPipeline(FoundationTestCase):
     """Test processor pipeline functionality."""
 
     def setup_method(self) -> None:
         """Set up test environment."""
+        super().setup_method()
         reset_registry_for_tests()
 
     def teardown_method(self) -> None:

@@ -363,7 +363,10 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/ -n auto --tb=no -q)",
       "Bash(if [ -f \"$file\" ])",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_retry_executor.py -v --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/crypto/ --tb=short -q --maxfail=3)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/crypto/ --tb=short -q --maxfail=3)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/logger/trace.py src/provide/foundation/streams/core.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/crypto/ -q --tb=short --maxfail=3)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/crypto/ -n auto --tb=short -q --timeout=60)"
     ],
     "deny": [],
     "ask": [],

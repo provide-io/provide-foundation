@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 """Error handling and dependency resolution tests for hub components module."""
 
+from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock
 
 from provide.foundation.hub.components import (
@@ -12,11 +15,12 @@ from provide.foundation.hub.components import (
 )
 
 
-class TestErrorHandlers:
+class TestErrorHandlers(FoundationTestCase):
     """Test error handler functionality."""
 
     def setup_method(self) -> None:
         """Set up test environment."""
+        super().setup_method()
         reset_registry_for_tests()
 
     def teardown_method(self) -> None:
@@ -128,11 +132,12 @@ class TestErrorHandlers:
         assert result == {"handled": True}
 
 
-class TestComponentDependencies:
+class TestComponentDependencies(FoundationTestCase):
     """Test component dependency resolution."""
 
     def setup_method(self) -> None:
         """Set up test environment."""
+        super().setup_method()
         reset_registry_for_tests()
 
     def teardown_method(self) -> None:
