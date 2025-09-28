@@ -9,7 +9,7 @@ from tests.file_operations_fixtures import (
     FileOperationValidator,
     file_operation_pattern,
     requires_file_operations,  # Import the fixture
-    )
+)
 
 
 @requires_file_operations

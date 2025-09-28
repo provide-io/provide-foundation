@@ -190,6 +190,7 @@ def internal_setup(config: TelemetryConfig | None = None, is_explicit_call: bool
         # Configure log file if specified
         if current_config.logging.log_file is not None:
             from provide.foundation.streams.file import configure_file_logging
+
             configure_file_logging(log_file_path=str(current_config.logging.log_file))
 
         core_setup_logger.trace("Configuring structlog output processors")

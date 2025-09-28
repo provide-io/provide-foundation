@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import tempfile
 from pathlib import Path
+import tempfile
 
 import pytest
 
@@ -39,7 +39,7 @@ class TestEditorSpecificPatterns:
     """Test editor-specific file operation patterns."""
 
     @file_operation_pattern("vscode")
-    def test_vscode_atomic_save_pattern(self, simulator, validator):
+    def test_vscode_atomic_save_pattern(self, simulator, validator) -> None:
         """Test VSCode atomic save pattern detection."""
         events = simulator.simulate_vscode_save("document.txt", 2048)
         operations = simulator.detect_operations(events)
@@ -64,7 +64,7 @@ class TestEditorSpecificPatterns:
         assert result["is_atomic"] is True
 
     @file_operation_pattern("vim")
-    def test_vim_atomic_save_pattern(self, simulator, validator):
+    def test_vim_atomic_save_pattern(self, simulator, validator) -> None:
         """Test Vim atomic save pattern with backup."""
         events = simulator.simulate_vim_save("config.py", 1536)
         operations = simulator.detect_operations(events)
@@ -86,7 +86,7 @@ class TestEditorSpecificPatterns:
         assert result["valid"] is True
 
     @file_operation_pattern("safe_write")
-    def test_safe_write_with_backup_pattern(self, simulator, validator):
+    def test_safe_write_with_backup_pattern(self, simulator, validator) -> None:
         """Test safe write pattern with backup creation."""
         events = simulator.simulate_safe_write("important.data", 4096)
         operations = simulator.detect_operations(events)
@@ -110,7 +110,7 @@ class TestEditorSpecificPatterns:
         assert result["has_backup"] is True
 
     @file_operation_pattern("batch")
-    def test_batch_formatting_pattern(self, simulator, validator):
+    def test_batch_formatting_pattern(self, simulator, validator) -> None:
         """Test batch file formatting operation."""
         events = simulator.simulate_batch_operation(10, "module", ".py", 800)
         operations = simulator.detect_operations(events)
@@ -130,7 +130,7 @@ class TestEditorSpecificPatterns:
 
         assert result["valid"] is True
 
-    def test_mixed_editor_patterns(self, simulator, validator):
+    def test_mixed_editor_patterns(self, simulator, validator) -> None:
         """Test mixed patterns from different editors."""
         all_events = []
 
@@ -175,7 +175,7 @@ class TestEditorSpecificPatterns:
 class TestFileTypeSpecificPatterns:
     """Test patterns specific to different file types."""
 
-    def test_python_file_patterns(self, simulator, validator):
+    def test_python_file_patterns(self, simulator, validator) -> None:
         """Test patterns specific to Python files."""
         # Python files often get formatted with black/autopep8
         events = simulator.simulate_batch_operation(8, "python_module", ".py", 1200)
@@ -194,7 +194,7 @@ class TestFileTypeSpecificPatterns:
         )
         assert result["valid"] is True
 
-    def test_javascript_file_patterns(self, simulator, validator):
+    def test_javascript_file_patterns(self, simulator, validator) -> None:
         """Test patterns specific to JavaScript files."""
         # JavaScript files with VSCode/Prettier
         events = simulator.simulate_vscode_save("app.js", 2048)
@@ -204,7 +204,7 @@ class TestFileTypeSpecificPatterns:
         atomic_ops = [op for op in operations if op.operation_type.value == "atomic_save"]
         assert len(atomic_ops) >= 1
 
-    def test_config_file_patterns(self, simulator, validator):
+    def test_config_file_patterns(self, simulator, validator) -> None:
         """Test patterns for configuration files."""
         # Config files often use safe write
         events = simulator.simulate_safe_write("config.json", 512)
@@ -214,7 +214,7 @@ class TestFileTypeSpecificPatterns:
         safe_ops = [op for op in operations if op.operation_type.value == "safe_write"]
         assert len(safe_ops) >= 1
 
-    def test_large_file_patterns(self, simulator, validator):
+    def test_large_file_patterns(self, simulator, validator) -> None:
         """Test patterns for large files."""
         # Large files might use different save strategies
         events = simulator.simulate_safe_write("large_dataset.csv", 50 * 1024 * 1024)  # 50MB
@@ -230,7 +230,7 @@ class TestFileTypeSpecificPatterns:
 class TestComplexScenarios:
     """Test complex real-world scenarios."""
 
-    def test_developer_workflow_scenario(self, simulator, validator):
+    def test_developer_workflow_scenario(self, simulator, validator) -> None:
         """Test a complete developer workflow."""
         # Test each operation separately to ensure they're detected properly
 
@@ -265,7 +265,7 @@ class TestComplexScenarios:
         for operation in all_operations:
             assert operation.confidence >= 0.7
 
-    def test_concurrent_editor_scenario(self, simulator, validator):
+    def test_concurrent_editor_scenario(self, simulator, validator) -> None:
         """Test scenario with multiple editors working simultaneously."""
         all_events = []
 
@@ -292,7 +292,7 @@ class TestComplexScenarios:
             )
             assert result["valid"] is True
 
-    def test_error_recovery_scenario(self, simulator, validator):
+    def test_error_recovery_scenario(self, simulator, validator) -> None:
         """Test error recovery and backup scenarios."""
         all_events = []
 
@@ -313,7 +313,7 @@ class TestComplexScenarios:
         for operation in safe_operations:
             assert operation.has_backup is True
 
-    def test_performance_critical_scenario(self, simulator, validator):
+    def test_performance_critical_scenario(self, simulator, validator) -> None:
         """Test scenario with many rapid operations."""
         all_events = []
 
@@ -335,13 +335,13 @@ class TestComplexScenarios:
 class TestValidationScenarios:
     """Test validation scenarios with different expectations."""
 
-    def test_validation_summary_comprehensive(self, simulator, validator):
+    def test_validation_summary_comprehensive(self, simulator, validator) -> None:
         """Test comprehensive validation summary."""
         # Generate varied patterns
         patterns = simulator.simulate_all_patterns()
 
         all_operations = []
-        for pattern_name, events in patterns.items():
+        for _pattern_name, events in patterns.items():
             operations = simulator.detect_operations(events)
             all_operations.extend(operations)
 
@@ -359,7 +359,7 @@ class TestValidationScenarios:
         assert summary["success_rate"] >= 0.8  # Should have high success rate
         assert summary["average_confidence"] >= 0.7
 
-    def test_strict_validation_scenario(self, simulator, validator):
+    def test_strict_validation_scenario(self, simulator, validator) -> None:
         """Test strict validation requirements."""
         # Generate high-quality VSCode save
         events = simulator.simulate_vscode_save("strict_test.txt", 1024)
@@ -381,7 +381,7 @@ class TestValidationScenarios:
         assert result["valid"] is True
         assert result["confidence"] >= 0.95
 
-    def test_failure_case_validation(self, simulator, validator):
+    def test_failure_case_validation(self, simulator, validator) -> None:
         """Test validation failure cases."""
         events = simulator.simulate_vscode_save("test.txt", 1024)
         operations = simulator.detect_operations(events)

@@ -160,7 +160,6 @@ class TestMiscellaneousFunctionality:
         result = discover_components("test_group", "test_dimension", None)
         assert result == {}
 
-
     def test_reset_registry_for_tests(self) -> None:
         """Test reset_registry_for_tests clears state."""
         registry = get_component_registry()
