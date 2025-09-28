@@ -494,7 +494,9 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/tools/test_cache.py::TestToolCache::test_basic_cache_operations -xvs --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/tools/test_cache.py::TestToolCache::test_init_default_cache_dir -xvs --tb=short)",
       "Bash(while read f)",
-      "Bash(PYTHONPATH=src .venv/bin/mypy tests/transport/test_middleware.py)"
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/transport/test_middleware.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/transport/test_middleware.py -v)",
+      "Bash(PYTHONPATH=src pytest tests/file/test_lock.py::TestFileLock::test_file_lock_timeout -xvs)"
     ],
     "deny": [],
     "ask": [],
