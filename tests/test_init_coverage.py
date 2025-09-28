@@ -1,12 +1,15 @@
 """Coverage tests for foundation __init__.py module."""
 
-import sys
-from unittest.mock import patch
+from __future__ import annotations
 
+import sys
+
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 
-class TestFoundationInit:
+class TestFoundationInit(FoundationTestCase):
     """Test foundation __init__.py module coverage."""
 
     def setup_method(self) -> None:
@@ -67,10 +70,10 @@ class TestFoundationInit:
         if cli_module_key in sys.modules:
             del sys.modules[cli_module_key]
 
-        def mock_import_func(name, *args, **kwargs):
+        def mock_import_func(name: str, *args: object, **kwargs: object) -> object:
             if name == "provide.foundation.cli":
                 raise ImportError("No module named 'click'")
-            return __import__(name, *args, **kwargs)
+            return __import__(name, *args, **kwargs)  # type: ignore[arg-type]
 
         with (
             patch("builtins.__import__", side_effect=mock_import_func),
@@ -90,14 +93,16 @@ class TestFoundationInit:
         if cli_module_key in sys.modules:
             del sys.modules[cli_module_key]
 
-        def mock_import_func(name, *args, **kwargs):
+        def mock_import_func(name: str, *args: object, **kwargs: object) -> object:
             if name == "provide.foundation.cli":
                 raise ImportError("Some other error")
-            return __import__(name, *args, **kwargs)
+            return __import__(name, *args, **kwargs)  # type: ignore[arg-type]
 
-        with patch("builtins.__import__", side_effect=mock_import_func):
-            with pytest.raises(ImportError, match="Some other error"):
-                _ = provide.foundation.cli
+        with (
+            patch("builtins.__import__", side_effect=mock_import_func),
+            pytest.raises(ImportError, match="Some other error"),
+        ):
+            _ = provide.foundation.cli
 
     def test_getattr_cli_success(self) -> None:
         """Test __getattr__ for successful CLI import."""
@@ -220,7 +225,7 @@ class TestFoundationInit:
             assert hasattr(provide.foundation, export), f"Missing utility export: {export}"
 
 
-class TestModuleAttributes:
+class TestModuleAttributes(FoundationTestCase):
     """Test module attributes and special cases."""
 
     def test_version_import(self) -> None:

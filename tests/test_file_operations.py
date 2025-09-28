@@ -177,6 +177,74 @@ class TestOperationDetector(FoundationTestCase):
         assert operation.operation_type == OperationType.ATOMIC_SAVE
         assert operation.primary_path == Path("document.txt")
 
+    def test_atomic_save_detection_temp_create_delete_pattern(self) -> None:
+        """Test detecting VSCode/modern editor temp create-delete-create pattern."""
+        now = datetime.now()
+
+        # Modern editor pattern: create temp, delete temp, create real
+        events = [
+            FileEvent(
+                path=Path("test_config_commands.py.tmp.84"),
+                event_type="created",
+                metadata=FileEventMetadata(timestamp=now, sequence_number=1, size_after=1024),
+            ),
+            FileEvent(
+                path=Path("test_config_commands.py.tmp.84"),
+                event_type="deleted",
+                metadata=FileEventMetadata(
+                    timestamp=now + timedelta(milliseconds=50), sequence_number=2, size_before=1024
+                ),
+            ),
+            FileEvent(
+                path=Path("test_config_commands.py"),
+                event_type="created",
+                metadata=FileEventMetadata(
+                    timestamp=now + timedelta(milliseconds=100), sequence_number=3, size_after=1024
+                ),
+            ),
+        ]
+
+        detector = OperationDetector()
+        operations = detector.detect(events)
+
+        assert len(operations) == 1
+        operation = operations[0]
+        assert operation.operation_type == OperationType.ATOMIC_SAVE
+        assert operation.primary_path == Path("test_config_commands.py")
+        assert operation.confidence >= 0.9
+        assert operation.is_atomic is True
+        assert "Atomic save" in operation.description
+
+    def test_atomic_save_detection_same_file_delete_create_pattern(self) -> None:
+        """Test detecting same file delete-then-create atomic save pattern."""
+        now = datetime.now()
+
+        # Same file delete-create pattern
+        events = [
+            FileEvent(
+                path=Path("document.txt"),
+                event_type="deleted",
+                metadata=FileEventMetadata(timestamp=now, sequence_number=1, size_before=1000),
+            ),
+            FileEvent(
+                path=Path("document.txt"),
+                event_type="created",
+                metadata=FileEventMetadata(
+                    timestamp=now + timedelta(milliseconds=50), sequence_number=2, size_after=1024
+                ),
+            ),
+        ]
+
+        detector = OperationDetector()
+        operations = detector.detect(events)
+
+        assert len(operations) == 1
+        operation = operations[0]
+        assert operation.operation_type == OperationType.ATOMIC_SAVE
+        assert operation.primary_path == Path("document.txt")
+        assert operation.confidence >= 0.9
+        assert operation.is_atomic is True
+
     def test_safe_write_detection(self) -> None:
         """Test detecting safe write with backup."""
         now = datetime.now()

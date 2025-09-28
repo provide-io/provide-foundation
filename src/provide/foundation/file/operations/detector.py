@@ -184,10 +184,59 @@ class OperationDetector:
                     return modify_event.path, modify_event.path, [temp_event, modify_event], 0.80
         return None, None, [], 0.0
 
+    def _detect_temp_create_delete_pattern(
+        self, events: list[FileEvent]
+    ) -> tuple[Path | None, Path | None, list[FileEvent], float]:
+        """Detect Pattern 4: Temp file created -> deleted -> real file created (VSCode/modern editors)."""
+        temp_creates = [e for e in events if e.event_type == "created" and self._is_temp_file(e.path)]
+        temp_deletes = [e for e in events if e.event_type == "deleted" and self._is_temp_file(e.path)]
+        real_creates = [e for e in events if e.event_type == "created" and not self._is_temp_file(e.path)]
+
+        for temp_create in temp_creates:
+            # Find matching delete for the same temp file
+            temp_delete = next((e for e in temp_deletes if e.path == temp_create.path), None)
+            if not temp_delete:
+                continue
+
+            # Find related real file creation
+            for real_create in real_creates:
+                if (
+                    self._files_related(temp_create.path, real_create.path)
+                    and temp_create.timestamp < temp_delete.timestamp < real_create.timestamp
+                ):
+                    atomic_events = [temp_create, temp_delete, real_create]
+                    return real_create.path, real_create.path, atomic_events, 0.95
+
+        return None, None, [], 0.0
+
+    def _detect_same_file_delete_create_pattern(
+        self, events: list[FileEvent]
+    ) -> tuple[Path | None, Path | None, list[FileEvent], float]:
+        """Detect Pattern 5: Same file deleted then created (in-place atomic save)."""
+        deletes = [e for e in events if e.event_type == "deleted"]
+        creates = [e for e in events if e.event_type == "created"]
+
+        for delete_event in deletes:
+            for create_event in creates:
+                # Same file path and delete happens before create
+                if delete_event.path == create_event.path and delete_event.timestamp < create_event.timestamp:
+                    atomic_events = [delete_event, create_event]
+                    return create_event.path, create_event.path, atomic_events, 0.90
+
+        return None, None, [], 0.0
+
     def _detect_atomic_save(self, events: list[FileEvent]) -> FileOperation | None:
         """Detect atomic save pattern (temp file creation -> rename)."""
         # Try each pattern in order of confidence
-        primary_file, final_file, atomic_events, confidence = self._detect_temp_rename_pattern(events)
+        primary_file, final_file, atomic_events, confidence = self._detect_temp_create_delete_pattern(events)
+
+        if not primary_file:
+            primary_file, final_file, atomic_events, confidence = self._detect_temp_rename_pattern(events)
+
+        if not primary_file:
+            primary_file, final_file, atomic_events, confidence = self._detect_same_file_delete_create_pattern(
+                events
+            )
 
         if not primary_file:
             primary_file, final_file, atomic_events, confidence = self._detect_delete_temp_pattern(events)
