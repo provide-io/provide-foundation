@@ -1,12 +1,25 @@
-"""File operation quality analysis tools."""
+"""File operation quality analysis tools.
 
-from .analyzer import AnalysisMetric, QualityAnalyzer, QualityResult
-from .test_cases import OperationTestCase, create_test_cases_from_patterns
+This package provides utilities to analyze and measure the quality,
+accuracy, and performance of file operation detection algorithms.
+"""
+
+from __future__ import annotations
+
+from provide.foundation.file.quality.analyzer import (
+    AnalysisMetric,
+    QualityAnalyzer,
+    QualityResult,
+)
+from provide.foundation.file.quality.operation_scenarios import (
+    OperationScenario,
+    create_scenarios_from_patterns,
+)
 
 __all__ = [
     "AnalysisMetric",
+    "OperationScenario",
     "QualityAnalyzer",
     "QualityResult",
-    "OperationTestCase",
-    "create_test_cases_from_patterns",
+    "create_scenarios_from_patterns",
 ]

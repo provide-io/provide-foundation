@@ -8,17 +8,12 @@ from typing import Any
 
 from attrs import define, field
 
-try:
-    from provide.foundation.file.operations import FileEvent, FileEventMetadata
-
-    HAS_OPERATIONS_MODULE = True
-except ImportError:
-    HAS_OPERATIONS_MODULE = False
+from provide.foundation.file.operations.types import FileEvent, FileEventMetadata
 
 
 @define(slots=True, kw_only=True)
 class OperationScenario:
-    """A scenario for operation detection validation."""
+    """A scenario describing a sequence of file events and expected outcomes."""
 
     name: str
     events: list[FileEvent]
@@ -28,14 +23,11 @@ class OperationScenario:
 
 
 def create_scenarios_from_patterns() -> list[OperationScenario]:
-    """Create standard scenarios from common operation patterns.
+    """Create standard scenarios for common operation patterns.
 
     Returns:
-        List of scenarios covering common patterns
+        List of scenarios covering common patterns.
     """
-    if not HAS_OPERATIONS_MODULE:
-        return []
-
     scenarios = []
     base_time = datetime.now()
 
@@ -53,7 +45,6 @@ def create_scenarios_from_patterns() -> list[OperationScenario]:
             dest_path=Path("test.txt"),
         ),
     ]
-
     scenarios.append(
         OperationScenario(
             name="vscode_atomic_save",
@@ -82,7 +73,6 @@ def create_scenarios_from_patterns() -> list[OperationScenario]:
             ),
         ),
     ]
-
     scenarios.append(
         OperationScenario(
             name="safe_write_with_backup",
@@ -108,7 +98,6 @@ def create_scenarios_from_patterns() -> list[OperationScenario]:
                 ),
             )
         )
-
     scenarios.append(
         OperationScenario(
             name="batch_format_operation",

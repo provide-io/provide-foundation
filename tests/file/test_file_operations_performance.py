@@ -15,7 +15,11 @@ from provide.foundation.file.operations import (
     FileEventMetadata,
     OperationDetector,
 )
-from provide.foundation.file.quality import AnalysisMetric, QualityAnalyzer, create_test_cases_from_patterns
+from provide.foundation.file.quality import (
+    AnalysisMetric,
+    QualityAnalyzer,
+    create_scenarios_from_patterns,
+)
 
 
 class TestFileOperationsPerformance(FoundationTestCase):
@@ -214,9 +218,9 @@ class TestFileOperationsPerformance(FoundationTestCase):
         analyzer = QualityAnalyzer()
 
         # Add standard test cases
-        test_cases = create_test_cases_from_patterns()
-        for test_case in test_cases:
-            analyzer.add_test_case(test_case)
+        scenarios = create_scenarios_from_patterns()
+        for scenario in scenarios:
+            analyzer.add_test_case(scenario)
 
         # Benchmark the analysis
         metrics = [

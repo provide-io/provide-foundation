@@ -9,6 +9,7 @@ from zoneinfo import ZoneInfo
 import pytest
 
 from provide.foundation.time import provide_now, provide_sleep, provide_time
+from provide.testkit import FoundationTestCase
 
 
 class TestProvideTime:

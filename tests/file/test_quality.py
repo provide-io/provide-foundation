@@ -2,278 +2,133 @@
 
 from __future__ import annotations
 
+from datetime import datetime
+from pathlib import Path
+
 import pytest
 
-from provide.testkit import FoundationTestCase
+from provide.foundation.file.operations import FileEvent, FileEventMetadata
 from provide.foundation.file.quality import (
     AnalysisMetric,
+    OperationScenario,
     QualityAnalyzer,
-    create_test_cases_from_patterns,
+    QualityResult,
+    create_scenarios_from_patterns,
 )
+from provide.testkit import FoundationTestCase
 
 
 class TestQualityAnalyzer(FoundationTestCase):
-    """Test the QualityAnalyzer class."""
-
-    def setup_method(self) -> None:
-        """Set up test environment."""
-        super().setup_method()
-
-    def teardown_method(self) -> None:
-        """Clean up after test."""
-        super().teardown_method()
+    """Test the quality analyzer functionality."""
 
     def test_analyzer_initialization(self) -> None:
         """Test analyzer initialization."""
         analyzer = QualityAnalyzer()
-        assert analyzer is not None
+        assert analyzer.detector is not None
         assert len(analyzer.test_cases) == 0
+        assert len(analyzer.results) == 0
 
-    def test_add_test_case(self) -> None:
-        """Test adding test cases to analyzer."""
+    def test_analyzer_with_custom_detector(self) -> None:
+        """Test analyzer with custom detector."""
+        from provide.foundation.file.operations import OperationDetector
+
+        detector = OperationDetector()
+        analyzer = QualityAnalyzer(detector)
+        assert analyzer.detector is detector
+
+    def test_add_scenario(self) -> None:
+        """Test adding scenarios."""
         analyzer = QualityAnalyzer()
-        test_cases = create_test_cases_from_patterns()
+        scenarios = create_scenarios_from_patterns()
+        for scenario in scenarios:
+            analyzer.add_test_case(scenario)
+        assert len(analyzer.test_cases) == len(scenarios)
 
-        initial_count = len(analyzer.test_cases)
-        for test_case in test_cases[:3]:  # Add first 3 test cases
-            analyzer.add_test_case(test_case)
-
-        assert len(analyzer.test_cases) == initial_count + 3
-
-    def test_run_analysis_accuracy(self) -> None:
-        """Test running accuracy analysis."""
+    def test_run_analysis_without_scenarios(self) -> None:
+        """Test running analysis without scenarios raises error."""
         analyzer = QualityAnalyzer()
-        test_cases = create_test_cases_from_patterns()
+        with pytest.raises(ValueError, match="No test cases available"):
+            analyzer.run_analysis()
 
-        for test_case in test_cases:
-            analyzer.add_test_case(test_case)
-
-        results = analyzer.run_analysis([AnalysisMetric.ACCURACY])
-
+    def test_run_analysis_with_vscode_scenario(self) -> None:
+        """Test running analysis with VSCode atomic save scenario."""
+        analyzer = QualityAnalyzer()
+        scenarios = create_scenarios_from_patterns()
+        vscode_scenario = next(
+            s for s in scenarios if s.name == "vscode_atomic_save"
+        )
+        analyzer.add_test_case(vscode_scenario)
+        results = analyzer.run_analysis([AnalysisMetric.ACCURACY, AnalysisMetric.DETECTION_TIME])
+        assert len(results) == 2
         assert AnalysisMetric.ACCURACY in results
         accuracy_result = results[AnalysisMetric.ACCURACY]
-        assert hasattr(accuracy_result, "value")
         assert 0.0 <= accuracy_result.value <= 1.0
 
-    def test_run_analysis_detection_time(self) -> None:
-        """Test running detection time analysis."""
+    def test_generate_report(self) -> None:
+        """Test report generation."""
         analyzer = QualityAnalyzer()
-        test_cases = create_test_cases_from_patterns()
+        scenarios = create_scenarios_from_patterns()
+        analyzer.add_test_case(scenarios[0])
+        results = analyzer.run_analysis([AnalysisMetric.ACCURACY, AnalysisMetric.DETECTION_TIME])
+        report = analyzer.generate_report(results)
+        assert "File Operation Detection Quality Report" in report
+        assert "Accuracy" in report
+        assert "Detection Time" in report
 
-        for test_case in test_cases[:5]:  # Limit to 5 for speed
-            analyzer.add_test_case(test_case)
-
-        results = analyzer.run_analysis([AnalysisMetric.DETECTION_TIME])
-
-        assert AnalysisMetric.DETECTION_TIME in results
-        time_result = results[AnalysisMetric.DETECTION_TIME]
-        assert hasattr(time_result, "value")
-        assert time_result.value >= 0
-
-    def test_run_analysis_confidence_distribution(self) -> None:
-        """Test running confidence distribution analysis."""
+    def test_generate_report_without_results(self) -> None:
+        """Test report generation without results."""
         analyzer = QualityAnalyzer()
-        test_cases = create_test_cases_from_patterns()
-
-        for test_case in test_cases[:5]:
-            analyzer.add_test_case(test_case)
-
-        results = analyzer.run_analysis([AnalysisMetric.CONFIDENCE_DISTRIBUTION])
-
-        assert AnalysisMetric.CONFIDENCE_DISTRIBUTION in results
-        conf_result = results[AnalysisMetric.CONFIDENCE_DISTRIBUTION]
-        assert hasattr(conf_result, "value")
-
-    def test_run_multiple_metrics(self) -> None:
-        """Test running multiple metrics together."""
-        analyzer = QualityAnalyzer()
-        test_cases = create_test_cases_from_patterns()
-
-        for test_case in test_cases[:3]:
-            analyzer.add_test_case(test_case)
-
-        metrics = [
-            AnalysisMetric.ACCURACY,
-            AnalysisMetric.DETECTION_TIME,
-            AnalysisMetric.CONFIDENCE_DISTRIBUTION,
-        ]
-        results = analyzer.run_analysis(metrics)
-
-        assert len(results) == 3
-        for metric in metrics:
-            assert metric in results
+        report = analyzer.generate_report()
+        assert "No analysis results available" in report
 
 
-class TestCreateTestCasesFromPatterns(FoundationTestCase):
-    """Test test case creation functionality."""
+class TestQualityResult(FoundationTestCase):
+    """Test the quality result functionality."""
 
-    def setup_method(self) -> None:
-        """Set up test environment."""
-        super().setup_method()
-
-    def teardown_method(self) -> None:
-        """Clean up after test."""
-        super().teardown_method()
-
-    def test_create_test_cases_basic(self) -> None:
-        """Test basic test case creation."""
-        test_cases = create_test_cases_from_patterns()
-
-        assert len(test_cases) > 0
-        assert all(hasattr(case, "events") for case in test_cases)
-        assert all(hasattr(case, "expected_operations") for case in test_cases)
-
-    def test_test_cases_have_required_attributes(self) -> None:
-        """Test that test cases have all required attributes."""
-        test_cases = create_test_cases_from_patterns()
-
-        for test_case in test_cases:
-            assert hasattr(test_case, "events")
-            assert hasattr(test_case, "expected_operations")
-            assert hasattr(test_case, "description")
-            assert len(test_case.events) > 0
-
-    def test_vscode_pattern_test_case(self) -> None:
-        """Test VSCode pattern test case creation."""
-        test_cases = create_test_cases_from_patterns()
-
-        vscode_cases = [
-            case
-            for case in test_cases
-            if "vscode" in case.description.lower() or "atomic" in case.description.lower()
-        ]
-        assert len(vscode_cases) > 0
-
-        for case in vscode_cases:
-            assert len(case.events) >= 2  # At least create + move
-
-    def test_vim_pattern_test_case(self) -> None:
-        """Test Vim pattern test case creation."""
-        test_cases = create_test_cases_from_patterns()
-
-        vim_cases = [
-            case
-            for case in test_cases
-            if "vim" in case.description.lower() or "backup" in case.description.lower()
-        ]
-        assert len(vim_cases) > 0
+    def test_quality_result_creation(self) -> None:
+        """Test creating quality results."""
+        result = QualityResult(
+            metric=AnalysisMetric.ACCURACY,
+            value=0.95,
+            details={"test": "value"},
+        )
+        assert result.metric == AnalysisMetric.ACCURACY
+        assert result.value == 0.95
+        assert isinstance(result.timestamp, datetime)
 
 
-class TestAnalysisMetrics(FoundationTestCase):
-    """Test AnalysisMetric enum."""
+class TestOperationScenario(FoundationTestCase):
+    """Test the operation scenario functionality."""
 
-    def setup_method(self) -> None:
-        """Set up test environment."""
-        super().setup_method()
-
-    def teardown_method(self) -> None:
-        """Clean up after test."""
-        super().teardown_method()
-
-    def test_all_metrics_defined(self) -> None:
-        """Test that all expected metrics are defined."""
-        expected_metrics = ["ACCURACY", "DETECTION_TIME", "CONFIDENCE_DISTRIBUTION"]
-
-        for metric_name in expected_metrics:
-            assert hasattr(AnalysisMetric, metric_name)
-
-    def test_metric_values(self) -> None:
-        """Test metric enum values."""
-        assert AnalysisMetric.ACCURACY.value == "accuracy"
-        assert AnalysisMetric.DETECTION_TIME.value == "detection_time"
-        assert AnalysisMetric.CONFIDENCE_DISTRIBUTION.value == "confidence_distribution"
-
-
-class TestQualityIntegration(FoundationTestCase):
-    """Integration tests for quality analysis."""
-
-    def setup_method(self) -> None:
-        """Set up test environment."""
-        super().setup_method()
-
-    def teardown_method(self) -> None:
-        """Clean up after test."""
-        super().teardown_method()
-
-    def test_full_analysis_workflow(self) -> None:
-        """Test complete analysis workflow."""
-        analyzer = QualityAnalyzer()
-
-        # Add test cases
-        test_cases = create_test_cases_from_patterns()
-        for test_case in test_cases[:5]:  # Limit for performance
-            analyzer.add_test_case(test_case)
-
-        # Run all metrics
-        all_metrics = [
-            AnalysisMetric.ACCURACY,
-            AnalysisMetric.DETECTION_TIME,
-            AnalysisMetric.CONFIDENCE_DISTRIBUTION,
-        ]
-        results = analyzer.run_analysis(all_metrics)
-
-        # Verify results
-        assert len(results) == len(all_metrics)
-
-        # Check accuracy is reasonable
-        accuracy = results[AnalysisMetric.ACCURACY]
-        assert accuracy.value >= 0.0
-
-        # Check detection time is positive
-        detection_time = results[AnalysisMetric.DETECTION_TIME]
-        assert detection_time.value >= 0
-
-    def test_empty_analyzer_behavior(self) -> None:
-        """Test analyzer behavior with no test cases."""
-        analyzer = QualityAnalyzer()
-
-        # Should raise error when no test cases available
-        with pytest.raises(ValueError, match="No test cases available"):
-            analyzer.run_analysis([AnalysisMetric.ACCURACY])
-
-    def test_analyzer_with_single_test_case(self) -> None:
-        """Test analyzer with single test case."""
-        analyzer = QualityAnalyzer()
-        test_cases = create_test_cases_from_patterns()
-
-        if test_cases:
-            analyzer.add_test_case(test_cases[0])
-
-            results = analyzer.run_analysis([AnalysisMetric.ACCURACY])
-            assert AnalysisMetric.ACCURACY in results
-
-    def test_quality_analysis_with_real_operations(self) -> None:
-        """Integration test with real file operations."""
-        from datetime import datetime
-        from pathlib import Path
-
-        from provide.foundation.file.operations import FileEvent, FileEventMetadata, OperationDetector
-
-        # Create real file operation events
-        base_time = datetime.now()
+    def test_scenario_creation(self) -> None:
+        """Test creating scenarios."""
         events = [
             FileEvent(
-                path=Path("test.txt.tmp.123"),
+                path=Path("test.txt"),
                 event_type="created",
-                metadata=FileEventMetadata(timestamp=base_time, sequence_number=1),
-            ),
-            FileEvent(
-                path=Path("test.txt.tmp.123"),
-                event_type="moved",
-                metadata=FileEventMetadata(timestamp=base_time, sequence_number=2),
-                dest_path=Path("test.txt"),
-            ),
+                metadata=FileEventMetadata(timestamp=datetime.now(), sequence_number=1),
+            )
         ]
+        scenario = OperationScenario(
+            name="test",
+            events=events,
+            expected_operations=[{"type": "atomic_save"}],
+            description="Test scenario",
+            tags=["test", "atomic"],
+        )
+        assert scenario.name == "test"
+        assert len(scenario.events) == 1
+        assert "test" in scenario.tags
 
-        # Detect operations
-        detector = OperationDetector()
-        detector.detect(events)
 
-        # Use in quality analysis
-        analyzer = QualityAnalyzer()
-        test_cases = create_test_cases_from_patterns()
+class TestCreateScenariosFromPatterns(FoundationTestCase):
+    """Test the standard scenario creation."""
 
-        if test_cases:
-            analyzer.add_test_case(test_cases[0])
-            results = analyzer.run_analysis([AnalysisMetric.ACCURACY])
-            assert AnalysisMetric.ACCURACY in results
+    def test_create_standard_scenarios(self) -> None:
+        """Test creating standard scenarios."""
+        scenarios = create_scenarios_from_patterns()
+        assert len(scenarios) >= 3
+        names = [sc.name for sc in scenarios]
+        assert "vscode_atomic_save" in names
+        assert "safe_write_with_backup" in names
+        assert "batch_format_operation" in names
