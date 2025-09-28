@@ -5,15 +5,16 @@
 
 import time
 from typing import Never
-from unittest.mock import patch
 import uuid
 
 import pytest
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 
 from provide.foundation.tracer.spans import Span
 
 
-class TestSpan:
+class TestSpan(FoundationTestCase):
     """Test Span functionality."""
 
     def test_span_creation_with_defaults(self) -> None:
@@ -187,7 +188,7 @@ class TestSpan:
         uuid.UUID(span2.trace_id)  # Should not raise
 
 
-class TestSpanIntegration:
+class TestSpanIntegration(FoundationTestCase):
     """Test span integration scenarios."""
 
     def test_parent_child_relationship(self) -> None:
@@ -241,7 +242,7 @@ class TestSpanIntegration:
         assert duration < 100.0  # But not too long for test
 
 
-class TestSpanOpenTelemetryIntegration:
+class TestSpanOpenTelemetryIntegration(FoundationTestCase):
     """Test OpenTelemetry integration functionality."""
 
     def test_span_creation_with_otel_available(self) -> None:
@@ -387,7 +388,7 @@ class TestSpanOpenTelemetryIntegration:
             assert span.end_time is not None
 
 
-class TestSpanContextManagement:
+class TestSpanContextManagement(FoundationTestCase):
     """Test context manager integration with Foundation tracer."""
 
     def test_context_manager_with_foundation_context_success(self) -> None:
@@ -452,7 +453,7 @@ class TestSpanContextManagement:
             # Should still finish despite clear error
 
 
-class TestSpanEdgeCases:
+class TestSpanEdgeCases(FoundationTestCase):
     """Test edge cases and error scenarios."""
 
     def test_span_without_otel_dependencies(self) -> None:
