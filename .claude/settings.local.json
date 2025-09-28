@@ -331,7 +331,8 @@
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/logger/test_asyncio_suppression.py --ignore-missing-imports)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/logger/test_asyncio_suppression.py -v)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/logger/test_config_coverage.py)",
-      "Bash(PYTHONPATH=src .venv/bin/mypy tests/logger/test_config_coverage.py --ignore-missing-imports)"
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/logger/test_config_coverage.py --ignore-missing-imports)",
+      "Bash(awk:*)"
     ],
     "deny": [],
     "ask": [],
