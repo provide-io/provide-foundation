@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+from provide.foundation.errors.runtime import StateError
 from provide.foundation.process.lifecycle import ManagedProcess, wait_for_process_output
 from provide.foundation.process.runner import ProcessError
 
@@ -61,7 +62,7 @@ class TestManagedProcess:
         process = ManagedProcess(["echo", "hello"])
         process.launch()
 
-        with pytest.raises(RuntimeError, match="already been started"):
+        with pytest.raises(StateError, match="already been started"):
             process.launch()
 
         process.cleanup()
