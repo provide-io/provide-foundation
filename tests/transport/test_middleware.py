@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
 import pytest
 
-from provide.testkit import FoundationTestCase
 from provide.foundation.transport.base import Request, Response
 from provide.foundation.transport.middleware import (
     LoggingMiddleware,
@@ -149,10 +149,11 @@ async def test_middleware_pipeline_removal() -> None:
     assert len(pipeline.middleware) == 1
 
 
-class TestMiddleware:
+class TestMiddleware(FoundationTestCase):
     """Test middleware that tracks calls."""
 
     def __init__(self) -> None:
+        super().__init__()
         self.calls: list[tuple[str, str | int]] = []
 
     async def process_request(self, request: Request) -> Request:
