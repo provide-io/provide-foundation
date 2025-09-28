@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from provide.testkit import FoundationTestCase
+
 from tests.file_operations_fixtures import (
     FileOperationSimulator,
     FileOperationValidator,
@@ -13,7 +15,7 @@ from tests.file_operations_fixtures import (
 
 
 @requires_file_operations
-class TestFileOperationSimulator:
+class TestFileOperationSimulator(FoundationTestCase):
     """Test the file operation simulator."""
 
     def test_simulator_initialization(self, temp_workspace: Path) -> None:
@@ -120,7 +122,7 @@ class TestFileOperationSimulator:
 
 
 @requires_file_operations
-class TestFileOperationValidator:
+class TestFileOperationValidator(FoundationTestCase):
     """Test the file operation validator."""
 
     def test_validator_initialization(self, file_operation_validator: FileOperationValidator) -> None:
@@ -216,7 +218,7 @@ def test_file_operation_decorator(file_operation_simulator: FileOperationSimulat
 
 
 @requires_file_operations
-class TestIntegrationScenarios:
+class TestIntegrationScenarios(FoundationTestCase):
     """Integration tests for complex file operation scenarios."""
 
     def test_editor_workflow_simulation(
