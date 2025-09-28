@@ -1,10 +1,12 @@
 # pyvider/rpcplugin/tests/crypto/test_certificate_properties.py
 
-from unittest import mock
+from __future__ import annotations
 
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock
 import pytest
 
 from provide.foundation.crypto import Certificate, CertificateError
@@ -168,27 +170,30 @@ async def test_certificate_issuer_empty_fallback() -> None:
         )
 
 
-@pytest.mark.asyncio
-async def test_is_ca_extension_not_found() -> None:
-    """Test is_ca property when basic constraints extension is not found."""
-    cert = Certificate(generate_keypair=True)
+class TestCertificateProperties(FoundationTestCase):
+    """Test certificate property functionality."""
 
-    # Create a mock certificate that raises ExtensionNotFound
-    mock_cert = mock.MagicMock()
-    mock_cert.extensions.get_extension_for_oid.side_effect = x509.ExtensionNotFound(
-        "Basic Constraints",
-        x509.oid.ExtensionOID.BASIC_CONSTRAINTS,
-    )
+    @pytest.mark.asyncio
+    async def test_is_ca_extension_not_found(self) -> None:
+        """Test is_ca property when basic constraints extension is not found."""
+        cert = Certificate(generate_keypair=True)
 
-    # Replace the _cert attribute with our mock
-    cert._cert = mock_cert
+        # Create a mock certificate that raises ExtensionNotFound
+        mock_cert = MagicMock()
+        mock_cert.extensions.get_extension_for_oid.side_effect = x509.ExtensionNotFound(
+            "Basic Constraints",
+            x509.oid.ExtensionOID.BASIC_CONSTRAINTS,
+        )
 
-    # Should return False when extension is not found
-    assert cert.is_ca is False
+        # Replace the _cert attribute with our mock
+        cert._cert = mock_cert
+
+        # Should return False when extension is not found
+        assert cert.is_ca is False
 
 
-@pytest.mark.asyncio
-async def test_is_ca_extension_not_found_logs_debug(mocker) -> None:
+    @pytest.mark.asyncio
+    async def test_is_ca_extension_not_found_logs_debug(self, mocker) -> None:
     """Test is_ca property logs debug when BasicConstraints extension is not found."""
     # Create a Certificate instance (it will generate a real cert initially)
     cert_instance = Certificate(generate_keypair=True)

@@ -43,7 +43,7 @@ class TestCertificateLoading(FoundationTestCase):
     async def test_load_key_value_error(self, valid_cert_pem: Any) -> None:
         """Test ValueError in private key loading."""
         with (
-            mock.patch(
+            patch(
                 "cryptography.hazmat.primitives.serialization.load_pem_private_key",
                 side_effect=ValueError("Invalid key format"),
             ),
@@ -61,7 +61,7 @@ class TestCertificateLoading(FoundationTestCase):
     ) -> None:  # Added valid_cert_pem fixture
         """Test TypeError in private key loading."""
         with (
-            mock.patch(
+            patch(
                 "cryptography.hazmat.primitives.serialization.load_pem_private_key",
                 side_effect=TypeError("Password required"),
             ),
