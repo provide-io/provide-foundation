@@ -4,7 +4,7 @@
 
 The provide-foundation test suite is undergoing a migration to use the new `FoundationTestCase` base class from provide-testkit. This migration will standardize test infrastructure, reduce boilerplate code, and improve test isolation and cleanup across the entire codebase.
 
-**Current Progress: 69 of 186 test files migrated (37.1%)**
+**Current Progress: 86 of 211 test files migrated (40.8%)**
 
 ## Migration Overview
 
@@ -101,26 +101,41 @@ The provide-foundation test suite is undergoing a migration to use the new `Foun
 | `tests/hub/test_types.py` | 2 | TestRegistryEntry, TestCommandInfo |
 | `tests/hub/test_type_mapping_comprehensive_coverage.py` | 11 | All type mapping test classes |
 
-**Total: 213 test classes migrated across 69 files**
+#### CLI Directory Migration Session (2025-09-28)
+| File | Test Classes | Notes |
+|------|--------------|-------|
+| `tests/cli/test_decorators.py` | 10 | TestLoggingOptions, TestOutputOptions, TestConfigOptions, etc. |
+| `tests/cli/test_cli_utils_basic.py` | 4 | TestCliEchoFunctions, TestCliContext, TestCliAssertions, TestCliLogging |
+| `tests/cli/test_main_coverage.py` | 1 | TestCLIMainCoverage |
+| `tests/cli/test_cli_testing_coverage.py` | 6 | TestMockContext, TestIsolatedCliRunner, etc. |
+| `tests/cli/test_cli_integration.py` | 5 | TestCompleteCliIntegration, TestLoggingIntegration, etc. |
+| `tests/cli/commands/test_logs_coverage.py` | 1 | TestLogsCoverage |
+| `tests/cli/commands/test_deps_coverage.py` | 5 | TestDepsCommandCoverage classes |
+| `tests/cli/commands/logs/test_send_comprehensive.py` | 6 | TestSendCommand classes |
+| `tests/cli/commands/logs/test_generate_coverage.py` | 6 | TestConstants, TestTraceSpanGeneration, etc. |
+| `tests/cli/commands/logs/test_query_simplified.py` | 6 | TestQueryCommand classes |
+
+**Total: 272 test classes migrated across 86 files**
 
 ### Files Requiring Migration 📋
 
-**Total: ~800 test classes across 117 files still need migration**
+**Total: ~700 test classes across 125 files still need migration**
 
 #### By Directory (Top 10):
 
 | Directory | Test Classes | Priority | Status |
 |-----------|--------------|----------|--------|
-| `tests/cli/` | 50 | HIGH | Not started |
 | `tests/errors/` | 38 | HIGH | Not started |
 | `tests/logger/` | 33 | HIGH | **🔄 IN PROGRESS** (1 of 33 migrated - 3%) |
-| `tests/process/` | 25 | MEDIUM | Not started |
-| `tests/utils/` | ~24 remaining | HIGH | **🔄 IN PROGRESS** (69 of 93 migrated - 74%) |
+| `tests/process/` | 25 | HIGH | Not started |
 | `tests/crypto/` | 20 | MEDIUM | Not started |
+| `tests/transport/` | 17 | MEDIUM | Not started |
 | `tests/tools/` | 21 | LOW | Not started |
 | `tests/config/` | 0 remaining | HIGH | **✅ COMPLETE** (63 of 63 migrated - 100%) |
 | `tests/integration/` | 0 remaining | HIGH | **✅ COMPLETE** (6 of 6 migrated - 100%) |
 | `tests/hub/` | 0 remaining | HIGH | **✅ COMPLETE** (60 of 60 migrated - 100%) |
+| `tests/utils/` | 0 remaining | HIGH | **✅ COMPLETE** (93 of 93 migrated - 100%) |
+| `tests/cli/` | 0 remaining | HIGH | **✅ COMPLETE** (50 of 50 migrated - 100%) |
 
 ## Migration Guide
 
@@ -222,11 +237,12 @@ class TestMyFeature(FoundationTestCase):
 ### Immediate (This Week)
 1. ✅ Document current status (this document)
 2. 🔄 Migrate high-priority directories:
-   - ✅ `tests/utils/` (69 of 93 classes migrated - 74% complete)
+   - ✅ `tests/utils/` (93 of 93 classes migrated - 100% COMPLETE)
    - ✅ `tests/config/` (63 of 63 classes migrated - 100% COMPLETE)
    - ✅ `tests/hub/` (60 of 60 classes migrated - 100% COMPLETE)
    - ✅ `tests/integration/` (6 of 6 classes migrated - 100% COMPLETE)
-   - 🔄 `tests/cli/` (50 classes - ready to start)
+   - ✅ `tests/cli/` (50 of 50 classes migrated - 100% COMPLETE)
+   - 🔄 `tests/errors/` (38 classes - ready to start)
    - 🔄 `tests/logger/` (33 classes - minimal progress)
 
 ### Short Term (Next 2 Weeks)
@@ -311,21 +327,22 @@ def migrate_test_file(filepath):
 
 ## Conclusion
 
-The migration to FoundationTestCase has reached significant momentum with 37.1% completion. The foundation has been strengthened with:
+The migration to FoundationTestCase has reached significant momentum with 40.8% completion. The foundation has been strengthened with:
 - **Proven migration patterns** that work efficiently at scale across directories
 - **Quality processes** that ensure no regressions (430+ tests passing across config and integration)
-- **Strategic completion** of three high-priority directories:
+- **Strategic completion** of five high-priority directories:
   - **config 100% COMPLETE** (all 14 files migrated)
   - **integration 100% COMPLETE** (all 6 files migrated)
   - **hub 100% COMPLETE** (all 21 files migrated)
-  - **utils 74% COMPLETE** (ongoing progress)
+  - **utils 100% COMPLETE** (all 24 files migrated)
+  - **cli 100% COMPLETE** (all 10 files migrated)
 - **Backward compatibility cleanup** completed across entire codebase
 - **Documentation** of proper setup_method patterns for future consistency
 - **Complete unittest.mock migration** to testkit.mocking for consistency
 
-The remaining work is systematic and well-defined, requiring updates to 117 test files containing ~800 test classes. The established batch migration workflow makes this highly achievable with continued focused effort.
+The remaining work is systematic and well-defined, requiring updates to 125 test files containing ~700 test classes. The established batch migration workflow makes this highly achievable with continued focused effort.
 
 ---
 
-*Last Updated: 2025-09-28 (Hub Directory Complete - 37.1% Total Progress)*
-*Next Review: After completing tests/utils/ directory or starting tests/cli/*
+*Last Updated: 2025-09-28 (CLI and Utils Directories Complete - 40.8% Total Progress)*
+*Next Review: After completing tests/errors/ and tests/logger/ directories*
