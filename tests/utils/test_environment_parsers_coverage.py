@@ -2,20 +2,14 @@
 
 from __future__ import annotations
 
-from provide.testkit import reset_foundation_setup_for_testing
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors.config import ValidationError
 from provide.foundation.utils.environment.parsers import parse_duration, parse_size
 
 
-@pytest.fixture(autouse=True)
-def reset_foundation() -> None:
-    """Reset Foundation state before each test."""
-    reset_foundation_setup_for_testing()
-
-
-class TestParseDuration:
+class TestParseDuration(FoundationTestCase):
     """Test parse_duration function."""
 
     def test_parse_duration_plain_seconds(self) -> None:
@@ -138,7 +132,7 @@ class TestParseDuration:
         assert parse_duration("1d1d") == 172800  # 2 days
 
 
-class TestParseSize:
+class TestParseSize(FoundationTestCase):
     """Test parse_size function."""
 
     def test_parse_size_plain_bytes(self) -> None:
@@ -276,7 +270,7 @@ class TestParseSize:
         assert error.context["validation.rule"] == "size"
 
 
-class TestParseDurationValidationErrorDetails:
+class TestParseDurationValidationErrorDetails(FoundationTestCase):
     """Test ValidationError details for parse_duration."""
 
     def test_parse_duration_validation_error_has_context(self) -> None:
@@ -301,7 +295,7 @@ class TestParseDurationValidationErrorDetails:
         assert error.context["validation.rule"] == "duration"
 
 
-class TestModuleIntegration:
+class TestModuleIntegration(FoundationTestCase):
     """Test module-level integration scenarios."""
 
     def test_all_functions_importable(self) -> None:
@@ -337,7 +331,7 @@ class TestModuleIntegration:
             parse_size("")
 
 
-class TestEdgeCasesAndRegressions:
+class TestEdgeCasesAndRegressions(FoundationTestCase):
     """Test edge cases and potential regression scenarios."""
 
     def test_parse_duration_regex_edge_cases(self) -> None:

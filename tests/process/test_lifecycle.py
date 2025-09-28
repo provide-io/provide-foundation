@@ -3,6 +3,7 @@
 import asyncio
 from pathlib import Path
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors.runtime import StateError
@@ -10,7 +11,7 @@ from provide.foundation.process.lifecycle import ManagedProcess, wait_for_proces
 from provide.foundation.process.runner import ProcessError
 
 
-class TestManagedProcess:
+class TestManagedProcess(FoundationTestCase):
     """Test ManagedProcess functionality."""
 
     def test_init(self) -> None:
@@ -161,7 +162,7 @@ class TestManagedProcess:
             process.cleanup()
 
 
-class TestWaitForProcessOutput:
+class TestWaitForProcessOutput(FoundationTestCase):
     """Test wait_for_process_output function."""
 
     @pytest.mark.asyncio
@@ -220,11 +221,14 @@ class TestWaitForProcessOutput:
     @pytest.mark.asyncio
     async def test_wait_for_output_process_exit(self) -> None:
         """Test behavior when process exits before pattern found."""
+        from provide.testkit.mocking.time import mock_sleep
+
         process = ManagedProcess(["echo", "hello"])
         process.launch()
 
         # Wait a bit for the echo to complete
-        await asyncio.sleep(0.1)
+        with mock_sleep():
+            await asyncio.sleep(0.1)
 
         try:
             with pytest.raises(ProcessError, match="Process exited"):

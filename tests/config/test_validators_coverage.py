@@ -3,6 +3,7 @@
 from unittest.mock import Mock
 
 import pytest
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.config.validators import (
     validate_choice,
@@ -13,7 +14,7 @@ from provide.foundation.config.validators import (
 from provide.foundation.errors.config import ValidationError
 
 
-class TestValidatorsCoverage:
+class TestValidatorsCoverage(FoundationTestCase):
     """Test config validators for improved coverage."""
 
     def test_validate_choice_valid_value(self) -> None:

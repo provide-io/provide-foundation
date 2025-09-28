@@ -125,6 +125,8 @@ from provide.testkit import (
     temporary_cert_file,
     temporary_key_file,
     test_files_structure,
+    # Time fixtures
+    time_machine,
     valid_cert_pem,
     valid_key_pem,
 )
@@ -175,6 +177,8 @@ __all__ = [
     "temporary_cert_file",
     "temporary_key_file",
     "test_files_structure",
+    # Time fixtures
+    "time_machine",
     "valid_cert_pem",
     "valid_key_pem",
 ]

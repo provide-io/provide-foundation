@@ -1,6 +1,7 @@
 """Simplified tests for config schema to improve code coverage."""
 
 from unittest.mock import Mock, patch
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.config.schema import (
     ConfigSchema,
@@ -14,7 +15,7 @@ from provide.foundation.config.schema import (
 )
 
 
-class TestSchemaFieldSimple:
+class TestSchemaFieldSimple(FoundationTestCase):
     """Test SchemaField basic functionality."""
 
     def test_schema_field_initialization(self) -> None:
@@ -59,7 +60,7 @@ class TestSchemaFieldSimple:
         assert field.sensitive is False
 
 
-class TestConfigSchemaSimple:
+class TestConfigSchemaSimple(FoundationTestCase):
     """Test ConfigSchema basic functionality."""
 
     def test_config_schema_initialization_empty(self) -> None:
@@ -216,7 +217,7 @@ class TestConfigSchemaSimple:
         assert schema_field.required is False
 
 
-class TestValidators:
+class TestValidators(FoundationTestCase):
     """Test built-in validator functions."""
 
     def test_validate_port_valid_ports(self) -> None:

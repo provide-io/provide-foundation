@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any, get_origin
 from unittest.mock import Mock, patch
 
-from provide.testkit import reset_foundation_setup_for_testing
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors.config import ValidationError
@@ -27,12 +27,6 @@ from provide.foundation.utils.environment.getters import (
 )
 
 
-@pytest.fixture(autouse=True)
-def reset_foundation() -> None:
-    """Reset Foundation state before each test."""
-    reset_foundation_setup_for_testing()
-
-
 @pytest.fixture
 def clean_env() -> Generator[None, None, None]:
     """Fixture to clean up environment variables after each test."""
@@ -43,7 +37,7 @@ def clean_env() -> Generator[None, None, None]:
     os.environ.update(original_env)
 
 
-class TestGetLogger:
+class TestGetLogger(FoundationTestCase):
     """Test _get_logger function."""
 
     def test_get_logger_returns_logger(self) -> None:
@@ -56,7 +50,7 @@ class TestGetLogger:
         assert hasattr(logger, "debug")
 
 
-class TestGetBool:
+class TestGetBool(FoundationTestCase):
     """Test get_bool function edge cases."""
 
     def test_get_bool_validation_error_details(self, clean_env: Any) -> None:
@@ -90,7 +84,7 @@ class TestGetBool:
         assert get_bool("TEST_BOOL") is False
 
 
-class TestGetInt:
+class TestGetInt(FoundationTestCase):
     """Test get_int function edge cases."""
 
     def test_get_int_validation_error_details(self, clean_env: Any) -> None:
@@ -131,7 +125,7 @@ class TestGetInt:
             get_int("TEST_INT")
 
 
-class TestGetFloat:
+class TestGetFloat(FoundationTestCase):
     """Test get_float function edge cases."""
 
     def test_get_float_validation_error_details(self, clean_env: Any) -> None:
@@ -176,7 +170,7 @@ class TestGetFloat:
         assert result == float("-inf")
 
 
-class TestGetStr:
+class TestGetStr(FoundationTestCase):
     """Test get_str function edge cases."""
 
     def test_get_str_empty_string(self, clean_env: Any) -> None:
@@ -195,7 +189,7 @@ class TestGetStr:
         assert get_str("TEST_STR") == "héllo wørld 🌍"
 
 
-class TestGetPath:
+class TestGetPath(FoundationTestCase):
     """Test get_path function edge cases."""
 
     def test_get_path_environment_variable_expansion(self, clean_env: Any) -> None:
@@ -237,7 +231,7 @@ class TestGetPath:
         assert result == Path("/first/second/path")
 
 
-class TestGetList:
+class TestGetList(FoundationTestCase):
     """Test get_list function edge cases."""
 
     def test_get_list_empty_items_filtered(self, clean_env: Any) -> None:
@@ -271,7 +265,7 @@ class TestGetList:
         assert result == ["single"]
 
 
-class TestGetDict:
+class TestGetDict(FoundationTestCase):
     """Test get_dict function edge cases."""
 
     def test_get_dict_invalid_format_warning(self, clean_env: Any) -> None:
@@ -323,7 +317,7 @@ class TestGetDict:
         assert result == {"key1": "val=with=equals", "key2": "val2"}
 
 
-class TestParseSimpleType:
+class TestParseSimpleType(FoundationTestCase):
     """Test _parse_simple_type function."""
 
     def test_parse_simple_type_bool(self, clean_env: Any) -> None:
@@ -372,7 +366,7 @@ class TestParseSimpleType:
             _parse_simple_type("MISSING_VAR", object)
 
 
-class TestParseComplexType:
+class TestParseComplexType(FoundationTestCase):
     """Test _parse_complex_type function."""
 
     def test_parse_complex_type_list(self, clean_env: Any) -> None:
@@ -403,7 +397,7 @@ class TestParseComplexType:
             _parse_complex_type("MISSING_VAR", object)
 
 
-class TestRequire:
+class TestRequire(FoundationTestCase):
     """Test require function edge cases."""
 
     def test_require_missing_variable(self, clean_env: Any) -> None:
@@ -473,7 +467,7 @@ class TestRequire:
         assert result == ["a", "b", "c"]
 
 
-class TestIntegrationScenarios:
+class TestIntegrationScenarios(FoundationTestCase):
     """Test integration scenarios and edge cases."""
 
     def test_all_functions_handle_missing_vars(self, clean_env: Any) -> None:

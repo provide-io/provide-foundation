@@ -1,5 +1,7 @@
 """Tests for formatting utilities."""
 
+from provide.testkit import FoundationTestCase
+
 from provide.foundation.formatting import (
     format_duration,
     format_number,
@@ -17,7 +19,7 @@ from provide.foundation.formatting import (
 )
 
 
-class TestSizeFormatting:
+class TestSizeFormatting(FoundationTestCase):
     """Test size formatting."""
 
     def test_format_size_bytes(self) -> None:
@@ -64,7 +66,7 @@ class TestSizeFormatting:
         assert format_size(-1536) == "-1.5 KB"
 
 
-class TestDurationFormatting:
+class TestDurationFormatting(FoundationTestCase):
     """Test duration formatting."""
 
     def test_format_duration_seconds(self) -> None:
@@ -123,7 +125,7 @@ class TestDurationFormatting:
         assert result == (0, 0, 0, 30)
 
 
-class TestNumberFormatting:
+class TestNumberFormatting(FoundationTestCase):
     """Test number formatting."""
 
     def test_format_number_integers(self) -> None:
@@ -146,7 +148,7 @@ class TestNumberFormatting:
         assert format_number(1234, precision=2) == "1,234.00"
 
 
-class TestPercentageFormatting:
+class TestPercentageFormatting(FoundationTestCase):
     """Test percentage formatting."""
 
     def test_format_percentage(self) -> None:
@@ -170,7 +172,7 @@ class TestPercentageFormatting:
         assert format_percentage(0.0, include_sign=True) == "0.0%"
 
 
-class TestTextOperations:
+class TestTextOperations(FoundationTestCase):
     """Test text manipulation operations."""
 
     def test_truncate(self) -> None:
@@ -221,7 +223,7 @@ class TestTextOperations:
         assert strip_ansi("\x1b[31mred\x1b[0m \x1b[32mgreen\x1b[0m") == "red green"
 
 
-class TestCaseConversion:
+class TestCaseConversion(FoundationTestCase):
     """Test case conversion functions."""
 
     def test_to_snake_case(self) -> None:
@@ -249,7 +251,7 @@ class TestCaseConversion:
         assert to_camel_case("HELLO_WORLD") == "helloWorld"
 
 
-class TestTableFormatting:
+class TestTableFormatting(FoundationTestCase):
     """Test table formatting."""
 
     def test_format_table_basic(self) -> None:

@@ -101,6 +101,28 @@ def reset_foundation():
     reset_foundation_setup_for_testing()
 ```
 
+### FoundationTestCase Setup Pattern
+
+**IMPORTANT**: When inheriting from FoundationTestCase, use `setup_method` and `teardown_method`, not `setUp`/`tearDown`:
+
+```python
+from provide.testkit import FoundationTestCase
+
+class TestSomething(FoundationTestCase):
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()  # Always call parent setup
+        # Your custom setup code here
+        self.manager = ConfigManager()
+
+    def teardown_method(self) -> None:
+        """Clean up after test."""
+        # Your cleanup code here
+        super().teardown_method()  # Always call parent teardown
+```
+
+This pattern ensures compatibility with FoundationTestCase's internal state management and maintains consistency with the pytest convention used throughout the codebase.
+
 ### Testing Infrastructure
 
 - Comprehensive test coverage including unit, integration, and property-based tests
