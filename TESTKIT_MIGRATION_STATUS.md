@@ -4,7 +4,7 @@
 
 The provide-foundation test suite is undergoing a migration to use the new `FoundationTestCase` base class from provide-testkit. This migration will standardize test infrastructure, reduce boilerplate code, and improve test isolation and cleanup across the entire codebase.
 
-**Current Progress: 182 of 240 test files migrated (75.8%)**
+**Current Progress: 198 of 214 test files migrated (92.5%)**
 
 ## Migration Overview
 
