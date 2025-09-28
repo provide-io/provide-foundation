@@ -15,7 +15,7 @@ except ImportError:
     HAS_OPERATIONS_MODULE = False
 
 from provide.foundation.file.quality.metrics import AnalysisMetric, QualityResult
-from provide.foundation.file.quality.test_cases import OperationTestCase
+from provide.foundation.file.quality.operation_scenarios import OperationTestCase
 
 
 class QualityAnalyzer:
