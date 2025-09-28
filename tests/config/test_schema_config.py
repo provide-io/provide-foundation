@@ -4,6 +4,7 @@ from unittest.mock import Mock
 
 from attrs import define, field
 import pytest
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.schema import (
@@ -14,7 +15,7 @@ from provide.foundation.config.schema import (
 from provide.foundation.errors import ConfigValidationError
 
 
-class TestConfigSchemaComprehensive:
+class TestConfigSchemaComprehensive(FoundationTestCase):
     """Comprehensive tests for ConfigSchema class."""
 
     def test_init_with_fields(self) -> None:
@@ -253,7 +254,7 @@ class TestConfigSchemaComprehensive:
         assert field_obj.field_type is None
 
 
-class TestValidateSchema:
+class TestValidateSchema(FoundationTestCase):
     """Test the validate_schema function."""
 
     def test_validate_schema_passes(self) -> None:

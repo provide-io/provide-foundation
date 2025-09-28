@@ -20,13 +20,15 @@ from provide.foundation.tracer.context import (
     with_span,
 )
 from provide.foundation.tracer.spans import Span
+from provide.testkit import FoundationTestCase
 
 
-class TestTraceContext:
+class TestTraceContext(FoundationTestCase):
     """Test trace context management."""
 
     def setup_method(self) -> None:
         """Reset context before each test."""
+        super().setup_method()  # Call FoundationTestCase setup
         _current_span.set(None)
         _current_trace_id.set(None)
 
@@ -105,11 +107,12 @@ class TestTraceContext:
         assert context["span_name"] is None
 
 
-class TestSpanContext:
+class TestSpanContext(FoundationTestCase):
     """Test SpanContext context manager."""
 
     def setup_method(self) -> None:
         """Reset context before each test."""
+        super().setup_method()  # Call FoundationTestCase setup
         _current_span.set(None)
         _current_trace_id.set(None)
 
@@ -160,11 +163,12 @@ class TestSpanContext:
         assert get_current_span() is None
 
 
-class TestWithSpanHelper:
+class TestWithSpanHelper(FoundationTestCase):
     """Test with_span helper function."""
 
     def setup_method(self) -> None:
         """Reset context before each test."""
+        super().setup_method()  # Call FoundationTestCase setup
         _current_span.set(None)
         _current_trace_id.set(None)
 
@@ -229,7 +233,7 @@ class TestWithSpanHelper:
         assert get_current_span() is None
 
 
-class TestContextVarIsolation:
+class TestContextVarIsolation(FoundationTestCase):
     """Test that context variables are properly isolated across contexts."""
 
     def test_context_isolation(self) -> None:
@@ -280,11 +284,12 @@ class TestContextVarIsolation:
         assert results[0]["span_id"] != results[1]["span_id"]
 
 
-class TestTraceContextIntegration:
+class TestTraceContextIntegration(FoundationTestCase):
     """Test integration scenarios with trace context."""
 
     def setup_method(self) -> None:
         """Reset context before each test."""
+        super().setup_method()  # Call FoundationTestCase setup
         _current_span.set(None)
         _current_trace_id.set(None)
 

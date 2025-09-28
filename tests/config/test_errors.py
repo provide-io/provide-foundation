@@ -1,5 +1,7 @@
 """Tests for config.errors module."""
 
+from provide.testkit import FoundationTestCase
+
 from provide.foundation.config.errors import (
     ConfigError,
     ParseError,
@@ -9,7 +11,7 @@ from provide.foundation.config.errors import (
 )
 
 
-class TestConfigError:
+class TestConfigError(FoundationTestCase):
     """Test base ConfigError class."""
 
     def test_config_error_inherits_from_foundation_error(self) -> None:
@@ -37,7 +39,7 @@ class TestConfigError:
         assert error.message == "test"
 
 
-class TestParseError:
+class TestParseError(FoundationTestCase):
     """Test ParseError class."""
 
     def test_parse_error_inherits_from_config_error(self) -> None:
@@ -95,7 +97,7 @@ class TestParseError:
         assert error.message == "Complete parse error"
 
 
-class TestValidationError:
+class TestValidationError(FoundationTestCase):
     """Test ValidationError class."""
 
     def test_validation_error_inherits_from_config_error(self) -> None:
@@ -135,7 +137,7 @@ class TestValidationError:
         assert error.message == "Complete validation error"
 
 
-class TestFormatInvalidValueError:
+class TestFormatInvalidValueError(FoundationTestCase):
     """Test format_invalid_value_error function."""
 
     def test_format_with_field_and_value_only(self) -> None:
@@ -202,7 +204,7 @@ class TestFormatInvalidValueError:
         assert result == "Invalid config 'None'. Expected: dict"
 
 
-class TestFormatValidationError:
+class TestFormatValidationError(FoundationTestCase):
     """Test format_validation_error function."""
 
     def test_format_basic_validation_error(self) -> None:
@@ -252,7 +254,7 @@ class TestFormatValidationError:
         assert result == "Value True for debug_mode must be configured explicitly"
 
 
-class TestErrorIntegration:
+class TestErrorIntegration(FoundationTestCase):
     """Test integration between error classes and formatters."""
 
     def test_parse_error_with_formatted_message(self) -> None:

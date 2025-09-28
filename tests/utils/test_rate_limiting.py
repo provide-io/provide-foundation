@@ -5,11 +5,12 @@ import time
 from typing import Never
 
 import pytest
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.utils.rate_limiting import TokenBucketRateLimiter
 
 
-class TestTokenBucketRateLimiter:
+class TestTokenBucketRateLimiter(FoundationTestCase):
     """Test TokenBucketRateLimiter functionality."""
 
     def test_init_validates_parameters(self) -> None:

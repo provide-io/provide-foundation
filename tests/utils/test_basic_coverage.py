@@ -1,9 +1,10 @@
 """Basic coverage tests for utils modules."""
 
 import pytest
+from provide.testkit import FoundationTestCase
 
 
-class TestUtilsBasicCoverage:
+class TestUtilsBasicCoverage(FoundationTestCase):
     """Basic coverage tests for utils modules."""
 
     def test_deps_module_imports(self) -> None:

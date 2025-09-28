@@ -8,9 +8,10 @@ import pytest
 
 from provide.foundation.context import CLIContext as Context
 from provide.foundation.errors.runtime import StateError
+from provide.testkit import FoundationTestCase
 
 
-class TestContext:
+class TestContext(FoundationTestCase):
     """Test the unified Context class."""
 
     def test_context_initialization(self) -> None:

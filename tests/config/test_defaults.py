@@ -2,6 +2,7 @@
 
 from pathlib import Path
 from unittest.mock import patch
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.config.defaults import (
     DEFAULT_ATOMIC_ENCODING,
@@ -56,7 +57,7 @@ from provide.foundation.config.defaults import (
 )
 
 
-class TestLoggingDefaults:
+class TestLoggingDefaults(FoundationTestCase):
     """Test logging-related defaults."""
 
     def test_log_level_default(self) -> None:
@@ -103,7 +104,7 @@ class TestLoggingDefaults:
         assert isinstance(DEFAULT_RATE_LIMIT_OVERFLOW_POLICY, str)
 
 
-class TestTelemetryDefaults:
+class TestTelemetryDefaults(FoundationTestCase):
     """Test telemetry-related defaults."""
 
     def test_global_telemetry_default(self) -> None:
@@ -133,7 +134,7 @@ class TestTelemetryDefaults:
         assert 0.0 <= DEFAULT_TRACE_SAMPLE_RATE <= 1.0
 
 
-class TestProcessDefaults:
+class TestProcessDefaults(FoundationTestCase):
     """Test process-related defaults."""
 
     def test_process_timeout_defaults(self) -> None:
@@ -155,7 +156,7 @@ class TestProcessDefaults:
         assert DEFAULT_PROCESS_WAIT_TIMEOUT > 0
 
 
-class TestFileDefaults:
+class TestFileDefaults(FoundationTestCase):
     """Test file and lock-related defaults."""
 
     def test_file_lock_timeout_default(self) -> None:
@@ -165,7 +166,7 @@ class TestFileDefaults:
         assert DEFAULT_FILE_LOCK_TIMEOUT > 0
 
 
-class TestResilienceDefaults:
+class TestResilienceDefaults(FoundationTestCase):
     """Test resilience-related defaults."""
 
     def test_circuit_breaker_timeout_default(self) -> None:
@@ -175,7 +176,7 @@ class TestResilienceDefaults:
         assert DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT > 0
 
 
-class TestIntegrationDefaults:
+class TestIntegrationDefaults(FoundationTestCase):
     """Test integration-related defaults."""
 
     def test_openobserve_defaults(self) -> None:
@@ -189,7 +190,7 @@ class TestIntegrationDefaults:
         assert DEFAULT_OPENOBSERVE_MAX_RETRIES >= 0
 
 
-class TestTestingDefaults:
+class TestTestingDefaults(FoundationTestCase):
     """Test testing-related defaults."""
 
     def test_testing_timeout_defaults(self) -> None:
@@ -208,7 +209,7 @@ class TestTestingDefaults:
         assert DEFAULT_TEST_CHECKPOINT_TIMEOUT > 0
 
 
-class TestExitCodes:
+class TestExitCodes(FoundationTestCase):
     """Test exit code constants."""
 
     def test_exit_code_values(self) -> None:
@@ -227,7 +228,7 @@ class TestExitCodes:
         assert len(set(codes)) == len(codes)
 
 
-class TestTempFileDefaults:
+class TestTempFileDefaults(FoundationTestCase):
     """Test temporary file/directory defaults."""
 
     def test_temp_file_defaults(self) -> None:
@@ -243,7 +244,7 @@ class TestTempFileDefaults:
         assert isinstance(DEFAULT_TEMP_TEXT_MODE, bool)
 
 
-class TestDirectoryDefaults:
+class TestDirectoryDefaults(FoundationTestCase):
     """Test directory operation defaults."""
 
     def test_directory_defaults(self) -> None:
@@ -262,7 +263,7 @@ class TestDirectoryDefaults:
         assert 0o000 <= DEFAULT_DIR_MODE <= 0o777
 
 
-class TestAtomicWriteDefaults:
+class TestAtomicWriteDefaults(FoundationTestCase):
     """Test atomic write defaults."""
 
     def test_atomic_write_defaults(self) -> None:
@@ -284,7 +285,7 @@ class TestAtomicWriteDefaults:
         "test".encode(DEFAULT_ATOMIC_ENCODING)
 
 
-class TestFactoryFunctions:
+class TestFactoryFunctions(FoundationTestCase):
     """Test factory functions for mutable defaults."""
 
     def test_default_empty_dict(self) -> None:
@@ -379,7 +380,7 @@ class TestFactoryFunctions:
         mock_from_env.assert_called_once()
 
 
-class TestConverterFunctions:
+class TestConverterFunctions(FoundationTestCase):
     """Test converter functions."""
 
     def test_path_converter_with_string(self) -> None:
@@ -421,7 +422,7 @@ class TestConverterFunctions:
         assert hints["return"] == Path | None
 
 
-class TestDefaultConsistency:
+class TestDefaultConsistency(FoundationTestCase):
     """Test consistency across different default categories."""
 
     def test_timeout_consistency(self) -> None:
@@ -485,7 +486,7 @@ class TestDefaultConsistency:
             assert len(string_default) > 0
 
 
-class TestCryptoFactoryFunctions:
+class TestCryptoFactoryFunctions(FoundationTestCase):
     """Test crypto-related factory functions."""
 
     def test_default_supported_ec_curves(self) -> None:

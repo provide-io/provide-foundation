@@ -4,17 +4,11 @@ from __future__ import annotations
 
 from unittest.mock import Mock, patch
 
-from provide.testkit import reset_foundation_setup_for_testing
 import pytest
+from provide.testkit import FoundationTestCase
 
 
-@pytest.fixture(autouse=True)
-def reset_foundation() -> None:
-    """Reset Foundation state before each test."""
-    reset_foundation_setup_for_testing()
-
-
-class TestObservabilityModule:
+class TestObservabilityModule(FoundationTestCase):
     """Test observability module functionality."""
 
     def test_module_imports_successfully(self) -> None:

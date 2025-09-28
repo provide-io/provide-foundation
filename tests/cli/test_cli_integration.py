@@ -11,10 +11,8 @@ from provide.foundation.cli.decorators import (
     output_options,
     pass_context,
 )
-from provide.foundation.cli.utils import (
-    CliTestRunner,
-    setup_cli_logging,
-)
+from provide.foundation.cli.utils import setup_cli_logging
+from provide.testkit import CliTestRunner
 from provide.foundation.context import CLIContext
 from provide.foundation.logger import get_logger
 

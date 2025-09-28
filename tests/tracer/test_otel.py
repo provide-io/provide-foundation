@@ -12,9 +12,10 @@ from provide.foundation.tracer.otel import (
     setup_opentelemetry_tracing,
     shutdown_opentelemetry,
 )
+from provide.testkit import FoundationTestCase
 
 
-class TestRequireOtel:
+class TestRequireOtel(FoundationTestCase):
     """Test _require_otel function."""
 
     def test_require_otel_available(self) -> None:
@@ -33,7 +34,7 @@ class TestRequireOtel:
             assert "pip install 'provide-foundation[opentelemetry]'" in str(exc_info.value)
 
 
-class TestSetupOpentelemetryTracing:
+class TestSetupOpentelemetryTracing(FoundationTestCase):
     """Test setup_opentelemetry_tracing function."""
 
     def create_mock_config(self, **kwargs) -> Mock:
@@ -287,7 +288,7 @@ class TestSetupOpentelemetryTracing:
                                 mock_resource_class.create.assert_called_once_with({})
 
 
-class TestGetOtelTracer:
+class TestGetOtelTracer(FoundationTestCase):
     """Test get_otel_tracer function."""
 
     def test_get_tracer_otel_not_available(self) -> None:
@@ -320,7 +321,7 @@ class TestGetOtelTracer:
                 assert result is None
 
 
-class TestShutdownOpentelemetry:
+class TestShutdownOpentelemetry(FoundationTestCase):
     """Test shutdown_opentelemetry function."""
 
     def test_shutdown_otel_not_available(self) -> None:
@@ -372,7 +373,7 @@ class TestShutdownOpentelemetry:
                     )
 
 
-class TestModuleFeatureDetection:
+class TestModuleFeatureDetection(FoundationTestCase):
     """Test module-level feature detection."""
 
     def test_has_otel_detection(self) -> None:

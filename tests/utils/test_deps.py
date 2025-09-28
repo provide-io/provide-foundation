@@ -4,6 +4,7 @@ import sys
 from unittest.mock import Mock, patch
 
 import pytest
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.utils.deps import (
     DependencyStatus,
@@ -18,7 +19,7 @@ from provide.foundation.utils.deps import (
 )
 
 
-class TestDependencyStatus:
+class TestDependencyStatus(FoundationTestCase):
     """Test DependencyStatus NamedTuple."""
 
     def test_dependency_status_creation(self) -> None:
@@ -50,7 +51,7 @@ class TestDependencyStatus:
         assert status.description == "Missing library"
 
 
-class TestCheckClick:
+class TestCheckClick(FoundationTestCase):
     """Test _check_click function."""
 
     def test_check_click_available(self) -> None:
@@ -96,7 +97,7 @@ class TestCheckClick:
                 sys.modules["click"] = original_click
 
 
-class TestCheckCryptography:
+class TestCheckCryptography(FoundationTestCase):
     """Test _check_cryptography function."""
 
     def test_check_cryptography_available(self) -> None:
@@ -123,7 +124,7 @@ class TestCheckCryptography:
             assert "Crypto features" in result.description
 
 
-class TestCheckOpentelemetry:
+class TestCheckOpentelemetry(FoundationTestCase):
     """Test _check_opentelemetry function."""
 
     def test_check_opentelemetry_available(self) -> None:
@@ -159,7 +160,7 @@ class TestCheckOpentelemetry:
             assert "Enhanced telemetry" in result.description
 
 
-class TestGetOptionalDependencies:
+class TestGetOptionalDependencies(FoundationTestCase):
     """Test get_optional_dependencies function."""
 
     def test_get_optional_dependencies_returns_list(self) -> None:
@@ -185,7 +186,7 @@ class TestGetOptionalDependencies:
             mock_otel.assert_called_once()
 
 
-class TestCheckOptionalDeps:
+class TestCheckOptionalDeps(FoundationTestCase):
     """Test check_optional_deps function."""
 
     def test_check_optional_deps_quiet_mode(self) -> None:
@@ -275,7 +276,7 @@ class TestCheckOptionalDeps:
             assert any("provide-foundation[all]" in call for call in log_calls)
 
 
-class TestHasDependency:
+class TestHasDependency(FoundationTestCase):
     """Test has_dependency function."""
 
     def test_has_dependency_exists_and_available(self) -> None:
@@ -311,7 +312,7 @@ class TestHasDependency:
             assert result is False
 
 
-class TestRequireDependency:
+class TestRequireDependency(FoundationTestCase):
     """Test require_dependency function."""
 
     def test_require_dependency_available(self) -> None:
@@ -330,7 +331,7 @@ class TestRequireDependency:
             assert "pip install 'provide-foundation[missing_lib]'" in str(exc_info.value)
 
 
-class TestGetAvailableFeatures:
+class TestGetAvailableFeatures(FoundationTestCase):
     """Test get_available_features function."""
 
     def test_get_available_features(self) -> None:
@@ -358,7 +359,7 @@ class TestGetAvailableFeatures:
             assert result == {}
 
 
-class TestIntegration:
+class TestIntegration(FoundationTestCase):
     """Integration tests for multiple functions working together."""
 
     def test_full_workflow_all_available(self) -> None:
