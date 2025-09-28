@@ -8,12 +8,12 @@ import pytest
 
 from provide.testkit import FoundationTestCase
 from provide.foundation.file.formats import (
-        read_json,
-        read_toml,
-        read_yaml,
-        write_json,
-        write_toml,
-        write_yaml,
+    read_json,
+    read_toml,
+    read_yaml,
+    write_json,
+    write_toml,
+    write_yaml,
 )
 
 
@@ -116,7 +116,7 @@ class TestFileFormats(FoundationTestCase):
         write_json(path, data, sort_keys=True)
 
         content = path.read_text()
-    # Keys should appear in alphabetical order
+        # Keys should appear in alphabetical order
         assert content.index('"a"') < content.index('"m"') < content.index('"z"')
 
     def test_write_json_unicode(self, temp_directory: Path) -> None:
@@ -310,9 +310,9 @@ foo = "1.2.3"
 
         path = temp_directory / "test.toml"
         data = {
-        "package": {"name": "test", "version": "1.0.0"},
-        "dependencies": {"foo": "1.2.3"},
-    }
+            "package": {"name": "test", "version": "1.0.0"},
+            "dependencies": {"foo": "1.2.3"},
+        }
 
         write_toml(path, data)
 

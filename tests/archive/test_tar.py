@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.archive.base import ArchiveError
 from provide.foundation.archive.tar import TarArchive
-from provide.testkit import FoundationTestCase
 
 
 class TestTarArchive(FoundationTestCase):

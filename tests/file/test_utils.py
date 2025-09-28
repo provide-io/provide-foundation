@@ -108,18 +108,18 @@ class TestFileUtils(FoundationTestCase):
         path = temp_directory / "existing.txt"
         path.write_text("content")
 
-    # Get original mtime
+        # Get original mtime
         original_mtime = path.stat().st_mtime
 
-    # Wait a bit and touch
+        # Wait a bit and touch
         time.sleep(0.01)
         touch(path)
 
-    # mtime should be updated
+        # mtime should be updated
         new_mtime = path.stat().st_mtime
         assert new_mtime > original_mtime
 
-    # Content should be preserved
+        # Content should be preserved
         assert path.read_text() == "content"
 
     def test_touch_with_mode(self, temp_directory: Path) -> None:
@@ -156,14 +156,14 @@ class TestFileUtils(FoundationTestCase):
     def test_find_files_basic(self, temp_directory: Path) -> None:
         """Test finding files with basic pattern."""
 
-    # Create test files
-    (temp_directory / "test1.py").write_text("code")
-    (temp_directory / "test2.py").write_text("code")
-    (temp_directory / "test.txt").write_text("text")
-    (temp_directory / "subdir").mkdir()
-    (temp_directory / "subdir" / "test3.py").write_text("code")
+        # Create test files
+        (temp_directory / "test1.py").write_text("code")
+        (temp_directory / "test2.py").write_text("code")
+        (temp_directory / "test.txt").write_text("text")
+        (temp_directory / "subdir").mkdir()
+        (temp_directory / "subdir" / "test3.py").write_text("code")
 
-    # Find Python files
+        # Find Python files
         files = find_files("*.py", root=temp_directory)
 
         assert len(files) == 3
@@ -173,13 +173,13 @@ class TestFileUtils(FoundationTestCase):
     def test_find_files_non_recursive(self, temp_directory: Path) -> None:
         """Test non-recursive file finding."""
 
-    # Create test files
-    (temp_directory / "test1.py").write_text("code")
-    (temp_directory / "test2.py").write_text("code")
-    (temp_directory / "subdir").mkdir()
-    (temp_directory / "subdir" / "test3.py").write_text("code")
+        # Create test files
+        (temp_directory / "test1.py").write_text("code")
+        (temp_directory / "test2.py").write_text("code")
+        (temp_directory / "subdir").mkdir()
+        (temp_directory / "subdir" / "test3.py").write_text("code")
 
-    # Find Python files non-recursively
+        # Find Python files non-recursively
         files = find_files("*.py", root=temp_directory, recursive=False)
 
         assert len(files) == 2
@@ -189,15 +189,15 @@ class TestFileUtils(FoundationTestCase):
     def test_find_files_nested_pattern(self, temp_directory: Path) -> None:
         """Test finding files with nested pattern."""
 
-    # Create test structure
-    (temp_directory / "src").mkdir()
-    (temp_directory / "src" / "main.py").write_text("code")
-    (temp_directory / "tests").mkdir()
-    (temp_directory / "tests" / "test_main.py").write_text("test")
-    (temp_directory / "docs").mkdir()
-    (temp_directory / "docs" / "readme.md").write_text("docs")
+        # Create test structure
+        (temp_directory / "src").mkdir()
+        (temp_directory / "src" / "main.py").write_text("code")
+        (temp_directory / "tests").mkdir()
+        (temp_directory / "tests" / "test_main.py").write_text("test")
+        (temp_directory / "docs").mkdir()
+        (temp_directory / "docs" / "readme.md").write_text("docs")
 
-    # Find files in tests directory
+        # Find files in tests directory
         files = find_files("tests/*.py", root=temp_directory)
 
         assert len(files) == 1
@@ -215,9 +215,9 @@ class TestFileUtils(FoundationTestCase):
     def test_find_files_excludes_directories(self, temp_directory: Path) -> None:
         """Test find_files excludes directories."""
 
-    # Create files and directories
-    (temp_directory / "file.txt").write_text("content")
-    (temp_directory / "dir.txt").mkdir()  # Directory with .txt name
+        # Create files and directories
+        (temp_directory / "file.txt").write_text("content")
+        (temp_directory / "dir.txt").mkdir()  # Directory with .txt name
 
         files = find_files("*.txt", root=temp_directory)
 
@@ -250,7 +250,7 @@ class TestFileUtils(FoundationTestCase):
 
         assert backup_path is not None
         assert backup_path.exists()
-    # Should have format like test.20231225_143022.bak
+        # Should have format like test.20231225_143022.bak
         assert backup_path.name.startswith("test.")
         assert backup_path.name.endswith(".bak")
         assert len(backup_path.name) > len("test..bak")  # Has timestamp
@@ -273,23 +273,23 @@ class TestFileUtils(FoundationTestCase):
         path = temp_directory / "test.txt"
         path.write_text("version 1")
 
-    # First backup
+        # First backup
         backup1 = backup_file(path)
         assert backup1.name == "test.txt.bak"
 
-    # Modify original
+        # Modify original
         path.write_text("version 2")
 
-    # Second backup should get a different name
+        # Second backup should get a different name
         backup2 = backup_file(path)
         assert backup2.name == "test.txt.bak.1"
 
-    # Third backup
+        # Third backup
         path.write_text("version 3")
         backup3 = backup_file(path)
         assert backup3.name == "test.txt.bak.2"
 
-    # Check all backups exist
+        # Check all backups exist
         assert backup1.exists()
         assert backup2.exists()
         assert backup3.exists()
@@ -315,5 +315,5 @@ class TestFileUtils(FoundationTestCase):
         backup_path = backup_file(path)
 
         assert backup_path is not None
-    # shutil.copy2 should preserve permissions
+        # shutil.copy2 should preserve permissions
         assert backup_path.stat().st_mode & 0o777 == 0o600

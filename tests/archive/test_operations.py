@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.archive.base import ArchiveError
@@ -11,7 +12,6 @@ from provide.foundation.archive.operations import (
     ArchiveOperations,
     OperationChain,
 )
-from provide.testkit import FoundationTestCase
 
 
 class TestOperationChain(FoundationTestCase):

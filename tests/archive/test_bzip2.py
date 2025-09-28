@@ -4,11 +4,11 @@ from __future__ import annotations
 
 from io import BytesIO
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.archive.base import ArchiveError
 from provide.foundation.archive.bzip2 import Bzip2Compressor
-from provide.testkit import FoundationTestCase
 
 
 class TestBzip2Compressor(FoundationTestCase):
