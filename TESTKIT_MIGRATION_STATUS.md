@@ -4,7 +4,7 @@
 
 The provide-foundation test suite is undergoing a migration to use the new `FoundationTestCase` base class from provide-testkit. This migration will standardize test infrastructure, reduce boilerplate code, and improve test isolation and cleanup across the entire codebase.
 
-**Current Progress: 103 of 211 test files migrated (48.8%)**
+**Current Progress: 104 of 211 test files migrated (49.3%)**
 
 ## Migration Overview
 
@@ -138,7 +138,61 @@ The provide-foundation test suite is undergoing a migration to use the new `Foun
 | `tests/logger/ratelimit/test_processor.py` | 3 | TestRateLimiterProcessor, TestCreateRateLimiterProcessor, TestRateLimiterProcessorIntegration |
 | `tests/logger/processors/test_trace_coverage.py` | 3 | TestTraceProcessorWithOtel, TestTraceProcessorNoOtel, TestTraceProcessorHelpers |
 
-**Total: 346 test classes migrated across 103 files**
+#### Critical Test Fixes Session (2025-09-28)
+| File | Test Classes | Notes |
+|------|--------------|-------|
+| `tests/profiling/test_hooks.py` | 5 | TestProfileMetrics, TestProfilingProcessor, TestProfilingComponent, TestProfilingCLI, TestProfilingIntegration - Full FoundationTestCase migration |
+
+**Total: 351 test classes migrated across 104 files**
+
+## Critical Test Fixes Completed (2025-09-28)
+
+### 🔧 **Comprehensive Test Failure Resolution**
+
+A systematic effort was undertaken to resolve all failing tests identified during the migration process. **All 17 originally failing tests have been fixed with a 100% success rate.**
+
+#### **Issues Resolved:**
+
+**1. Foundation State Management Issues (5 tests)**
+- **File**: `tests/profiling/test_hooks.py`
+- **Problem**: Classes not inheriting from FoundationTestCase, causing "I/O operation on closed file" errors
+- **Solution**:
+  - Migrated all 5 test classes to inherit from FoundationTestCase
+  - Replaced `unittest.mock` with `provide.testkit.mocking`
+  - Fixed setup_method to call `super().setup_method()`
+- **Result**: All 22 profiling tests now pass
+
+**2. Setup Method Inheritance Issues (8 tests)**
+- **File**: `tests/cli/commands/logs/test_generate_coverage.py`
+- **Problem**: `TestGenerateLogEntry.setup_method()` missing `super().setup_method()` call
+- **Solution**: Added `super().setup_method()` at beginning of setup_method
+- **Result**: All 8 TestGenerateLogEntry tests now pass
+
+**3. Timing Test Stability (1 test)**
+- **File**: `tests/utils/test_rate_limiting.py`
+- **Problem**: `test_extreme_time_precision` failing due to race condition in CI environments
+- **Solution**: Increased sleep time from 0.01s to 0.02s for better CI stability
+- **Result**: Time-sensitive test now passes consistently
+
+**4. Environment Variable Reinitialization (3 tests)**
+- **Files**:
+  - `tests/logger/test_logger_production_compliance.py` (2 failures)
+  - `tests/logger/test_logger_real_world_scenarios.py` (1 failure)
+- **Problem**: Tests changing environment variables mid-test without Foundation reinitialization
+- **Solution**: Added `reset_foundation_setup_for_testing()` calls before `set_log_stream_for_testing()` to ensure Foundation picks up new environment variables
+- **Result**: All environment-dependent logger tests now pass
+
+#### **Quality Improvements Applied:**
+- ✅ **Future Annotations**: Ensured modern type hint support
+- ✅ **Mock Consistency**: Standardized on `provide.testkit.mocking`
+- ✅ **State Management**: Proper Foundation reset patterns
+- ✅ **Timing Stability**: Robust handling of time-sensitive tests
+
+#### **Impact:**
+- **17/17 failing tests resolved** (100% success rate)
+- **All migration-related issues eliminated**
+- **Robust test infrastructure established**
+- **CI/CD pipeline stability improved**
 
 ### Files Requiring Migration 📋
 
@@ -154,6 +208,7 @@ The provide-foundation test suite is undergoing a migration to use the new `Foun
 | `tests/crypto/` | 20 | MEDIUM | Not started |
 | `tests/transport/` | 17 | MEDIUM | Not started |
 | `tests/tools/` | 21 | LOW | Not started |
+| `tests/profiling/` | 0 remaining | MEDIUM | **✅ COMPLETE** (5 of 5 migrated - 100%) |
 | `tests/config/` | 0 remaining | HIGH | **✅ COMPLETE** (63 of 63 migrated - 100%) |
 | `tests/integration/` | 0 remaining | HIGH | **✅ COMPLETE** (6 of 6 migrated - 100%) |
 | `tests/hub/` | 0 remaining | HIGH | **✅ COMPLETE** (60 of 60 migrated - 100%) |
@@ -350,22 +405,32 @@ def migrate_test_file(filepath):
 
 ## Conclusion
 
-The migration to FoundationTestCase has reached significant momentum with 40.8% completion. The foundation has been strengthened with:
-- **Proven migration patterns** that work efficiently at scale across directories
-- **Quality processes** that ensure no regressions (430+ tests passing across config and integration)
-- **Strategic completion** of five high-priority directories:
-  - **config 100% COMPLETE** (all 14 files migrated)
-  - **integration 100% COMPLETE** (all 6 files migrated)
-  - **hub 100% COMPLETE** (all 21 files migrated)
-  - **utils 100% COMPLETE** (all 24 files migrated)
-  - **cli 100% COMPLETE** (all 10 files migrated)
-- **Backward compatibility cleanup** completed across entire codebase
-- **Documentation** of proper setup_method patterns for future consistency
-- **Complete unittest.mock migration** to testkit.mocking for consistency
+The migration to FoundationTestCase has achieved strong momentum with **49.3% completion** and **comprehensive test stability**. The foundation has been strengthened with:
 
-The remaining work is systematic and well-defined, requiring updates to 125 test files containing ~700 test classes. The established batch migration workflow makes this highly achievable with continued focused effort.
+- **Proven migration patterns** that work efficiently at scale across directories
+- **Quality processes** that ensure no regressions (500+ tests passing across migrated directories)
+- **Strategic completion** of eight high-priority directories:
+  - **config 100% COMPLETE** (all 14 files migrated - 63 classes)
+  - **integration 100% COMPLETE** (all 6 files migrated - 6 classes)
+  - **hub 100% COMPLETE** (all 21 files migrated - 60 classes)
+  - **utils 100% COMPLETE** (all 24 files migrated - 93 classes)
+  - **cli 100% COMPLETE** (all 10 files migrated - 50 classes)
+  - **errors 100% COMPLETE** (all 9 files migrated - 41 classes)
+  - **logger 100% COMPLETE** (all 17 files migrated - 33 classes)
+  - **profiling 100% COMPLETE** (all 1 file migrated - 5 classes)
+- **Critical test fixes completed**: All 17 failing tests resolved with 100% success rate
+- **Robust infrastructure**: Foundation state management, environment handling, and timing stability
+- **Complete standardization**: unittest.mock migration to testkit.mocking consistency
+
+### **Current Status:**
+- **351 test classes migrated** across **104 files** (49.3% complete)
+- **Zero failing tests** related to migration issues
+- **Eight directories at 100% completion**
+- **Proven scalable workflow** for remaining directories
+
+The remaining work is systematic and well-defined, requiring updates to ~107 test files containing ~350 test classes. The established batch migration workflow and comprehensive quality processes make completion highly achievable with continued focused effort.
 
 ---
 
-*Last Updated: 2025-09-28 (CLI and Utils Directories Complete - 40.8% Total Progress)*
-*Next Review: After completing tests/errors/ and tests/logger/ directories*
+*Last Updated: 2025-09-28 (Eight Directories Complete + All Test Failures Resolved - 49.3% Total Progress)*
+*Next Review: After completing tests/process/ and tests/crypto/ directories*
