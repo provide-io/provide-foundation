@@ -13,6 +13,7 @@ from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.errors import ProcessError
+from provide.foundation.errors.process import ProcessTimeoutError
 from provide.foundation.process.runner import (
     run_command,
     run_command_simple,
@@ -162,10 +163,8 @@ class TestProcessRunnerCoverage(FoundationTestCase):
 
     def test_run_command_handles_timeout(self) -> None:
         """Test run_command handles timeout."""
-        from provide.foundation.errors.integration import TimeoutError
-
         # Use a real timeout test
-        with pytest.raises(TimeoutError) as exc_info:
+        with pytest.raises(ProcessTimeoutError) as exc_info:
             run_command(["sleep", "1"], timeout=0.1, check=True)
 
         assert "timed out" in str(exc_info.value)
