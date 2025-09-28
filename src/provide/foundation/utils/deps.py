@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from typing import NamedTuple
+from attrs import define
 
 """Optional dependency checking utilities."""
 
 
-class DependencyStatus(NamedTuple):
+@define(frozen=True, slots=True)
+class DependencyStatus:
     """Status of an optional dependency."""
 
     name: str
