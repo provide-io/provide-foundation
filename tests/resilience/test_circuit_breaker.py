@@ -5,8 +5,8 @@ from __future__ import annotations
 import time
 from typing import Never
 
-import pytest
 from provide.testkit import FoundationTestCase
+import pytest
 
 from provide.foundation.resilience.circuit import CircuitBreaker, CircuitState
 

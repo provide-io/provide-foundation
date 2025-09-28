@@ -465,7 +465,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/transport/test_http_transport.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/transport/test_transport_basic.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/transport/test_client.py)",
-      "Bash(PYTHONPATH=src .venv/bin/mypy tests/transport/test_middleware.py --ignore-missing-imports)"
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/transport/test_middleware.py --ignore-missing-imports)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/resilience/test_circuit_breaker.py)"
     ],
     "deny": [],
     "ask": [],

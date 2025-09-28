@@ -1,11 +1,14 @@
 """Tests for RetryPolicy configuration and behavior."""
 
+from __future__ import annotations
+
 import pytest
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.resilience.retry import BackoffStrategy, RetryPolicy
 
 
-class TestRetryPolicyConfiguration:
+class TestRetryPolicyConfiguration(FoundationTestCase):
     """Test RetryPolicy configuration and validation."""
 
     def test_default_configuration(self) -> None:
@@ -64,7 +67,7 @@ class TestRetryPolicyConfiguration:
             RetryPolicy(base_delay=10.0, max_delay=5.0)  # max < base
 
 
-class TestRetryPolicyDelayCalculation:
+class TestRetryPolicyDelayCalculation(FoundationTestCase):
     """Test delay calculation for different backoff strategies."""
 
     def test_fixed_backoff(self) -> None:
@@ -165,7 +168,7 @@ class TestRetryPolicyDelayCalculation:
         assert 9.5 <= mean_delay <= 10.5
 
 
-class TestRetryPolicyShouldRetry:
+class TestRetryPolicyShouldRetry(FoundationTestCase):
     """Test should_retry decision logic."""
 
     def test_should_retry_within_attempts(self) -> None:
@@ -248,7 +251,7 @@ class TestRetryPolicyShouldRetry:
         assert policy.should_retry_response(MockResponse(200), 1) is False
 
 
-class TestRetryPolicyComparison:
+class TestRetryPolicyComparison(FoundationTestCase):
     """Test RetryPolicy comparison and hashing."""
 
     def test_equality(self) -> None:
@@ -298,7 +301,7 @@ class TestRetryPolicyComparison:
             policy.base_delay = 10.0
 
 
-class TestRetryPolicyStringRepresentation:
+class TestRetryPolicyStringRepresentation(FoundationTestCase):
     """Test string representation of RetryPolicy."""
 
     def test_repr(self) -> None:
