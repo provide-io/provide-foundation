@@ -534,7 +534,9 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/hub/test_component_registry_core.py::TestComponentRegistryArchitecture::test_foundation_uses_global_component_registry -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/core/test_init_coverage.py::TestFoundationInit -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_file_operations.py --collect-only -q)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_file_operations.py::TestOperationDetector::test_atomic_save_detection_vscode_pattern -v)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_file_operations.py::TestOperationDetector::test_atomic_save_detection_vscode_pattern -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_file_operations.py tests/test_file_operations.py -v --tb=no)",
+      "Bash(.venv/bin/pytest tests/file/test_file_operations.py::TestOperationDetector::test_detect_single_file_creation -xvs --tb=short)"
     ],
     "deny": [],
     "ask": [],
