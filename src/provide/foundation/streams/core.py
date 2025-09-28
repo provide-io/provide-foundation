@@ -50,18 +50,21 @@ def get_log_stream() -> TextIO:
                     except ImportError:
                         raise ValueError("No stderr available") from None
             except (OSError, AttributeError) as e:
-                # Handle specific stream-related errors with logging
+                # Handle specific stream-related errors
+                # NOTE: Cannot use Foundation logger here as it depends on these same streams (circular dependency)
+                # Using perr() which is safe as it doesn't depend on Foundation logger
                 try:
-                    from provide.foundation.hub.foundation import get_foundation_logger
-
-                    get_foundation_logger().warning(
-                        "Stream operation failed, falling back to stderr",
-                        error=str(e),
-                        error_type=type(e).__name__,
-                    )
+                    from provide.foundation.console.output import perr
+                    perr(f"[STREAM ERROR] Stream operation failed, falling back to stderr: "
+                         f"{e.__class__.__name__}: {e}")
                 except Exception:
-                    # Can't log, proceed with fallback anyway
-                    pass
+                    # perr() also failed, try direct stderr as last resort
+                    try:
+                        print(f"[STREAM ERROR] Stream operation failed: {e.__class__.__name__}: {e}",
+                              file=sys.stderr)
+                    except Exception:
+                        # Can't even log to stderr, proceed with fallback anyway
+                        pass
 
                 # Try stderr one more time before giving up
                 if hasattr(sys, "stderr") and sys.stderr is not None:

@@ -381,7 +381,17 @@
       "Bash(PYTHONPATH=src grep -n -A 10 \"test_write_to_console_with_exception_fallback\" tests/streams/test_console.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/utils/ -q --tb=short --maxfail=3)",
       "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/utils/ -q --tb=short --maxfail=3)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/utils/test_utils_coverage.py::TestParsingCoverage::test_auto_parse_with_string_type_hints -v)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/utils/test_utils_coverage.py::TestParsingCoverage::test_auto_parse_with_string_type_hints -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/logger/test_logging.py::TestLoggingWithEmojiSets::test_llm_emoji_set_end_to_end -xvs --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/cli/ -q --tb=short --maxfail=3)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/cli/commands/logs/test_generate_coverage.py::TestTraceSpanGeneration::test_generate_trace_id -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/streams/test_console.py::TestWriteToConsole::test_write_to_console_with_exception_fallback -v)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/utils/ tests/hub/ tests/cli/ --ignore-missing-imports)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy /Users/tim/code/gh/provide-io/provide-foundation/tests/utils/ /Users/tim/code/gh/provide-io/provide-foundation/tests/hub/ /Users/tim/code/gh/provide-io/provide-foundation/tests/cli/ --ignore-missing-imports --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy /Users/tim/code/gh/provide-io/provide-foundation/tests/utils/ /Users/tim/code/gh/provide-io/provide-foundation/tests/hub/ /Users/tim/code/gh/provide-io/provide-foundation/tests/cli/ --ignore-missing-imports)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/utils/test_basic_coverage.py -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/hub/test_hub_registry.py -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest /Users/tim/code/gh/provide-io/provide-foundation/tests/cli/test_decorators.py -q)"
     ],
     "deny": [],
     "ask": [],

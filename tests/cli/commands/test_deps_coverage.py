@@ -1,11 +1,14 @@
 """Comprehensive tests for cli/commands/deps.py module."""
 
+from __future__ import annotations
+
 from collections.abc import Generator
 import sys
 import threading
 from typing import Any
-from unittest.mock import Mock, patch
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 import pytest
 
 # Global lock to prevent parallel tests from interfering with module reloading
@@ -19,7 +22,7 @@ def module_reload_isolation() -> Generator[None, None, None]:
         yield
 
 
-class TestDepsCommandWithClick:
+class TestDepsCommandWithClick(FoundationTestCase):
     """Test deps command when click is available."""
 
     def test_deps_command_exists(self) -> None:
@@ -161,7 +164,7 @@ class TestDepsCommandWithClick:
             mock_check.assert_called_with(quiet=True, return_status=True)
 
 
-class TestDepsCommandWithoutClick:
+class TestDepsCommandWithoutClick(FoundationTestCase):
     """Test deps command when click is not available."""
 
     def test_deps_command_without_click(self, module_reload_isolation: Any) -> None:
@@ -234,7 +237,7 @@ class TestDepsCommandWithoutClick:
             importlib.reload(deps_module)
 
 
-class TestDepsCommandDecorators:
+class TestDepsCommandDecorators(FoundationTestCase):
     """Test click decorators on deps_command."""
 
     def test_click_decorators_applied(self) -> None:
@@ -247,7 +250,7 @@ class TestDepsCommandDecorators:
         assert callable(deps_command.callback)
 
 
-class TestDepsCommandModuleImport:
+class TestDepsCommandModuleImport(FoundationTestCase):
     """Test module-level import behavior."""
 
     def test_module_imports_successfully(self) -> None:
@@ -275,7 +278,7 @@ class TestDepsCommandModuleImport:
         assert deps_module._HAS_CLICK
 
 
-class TestDepsCommandEdgeCases:
+class TestDepsCommandEdgeCases(FoundationTestCase):
     """Test edge cases and error conditions."""
 
     def test_empty_deps_list(self) -> None:

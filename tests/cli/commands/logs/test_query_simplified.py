@@ -1,11 +1,13 @@
 """Simplified tests for CLI logs query command focused on coverage."""
 
-from unittest.mock import Mock, patch
+from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 import pytest
 
 
-class TestBuildQuerySql:
+class TestBuildQuerySql(FoundationTestCase):
     """Test _build_query_sql function - this is the most important uncovered code."""
 
     def test_basic_query_no_conditions(self) -> None:
@@ -100,7 +102,7 @@ class TestBuildQuerySql:
             _build_query_sql(None, None, "service@invalid", "default", 100)
 
 
-class TestGetTraceIdIfNeeded:
+class TestGetTraceIdIfNeeded(FoundationTestCase):
     """Test _get_trace_id_if_needed function."""
 
     def test_no_current_trace_returns_provided_trace_id(self) -> None:
@@ -128,7 +130,7 @@ class TestGetTraceIdIfNeeded:
             mock_echo.assert_called_with("Tracing not available.", err=True)
 
 
-class TestExecuteAndDisplayQuery:
+class TestExecuteAndDisplayQuery(FoundationTestCase):
     """Test _execute_and_display_query function."""
 
     def test_successful_query_with_results(self) -> None:
@@ -193,7 +195,7 @@ class TestExecuteAndDisplayQuery:
             mock_echo.assert_called_once_with("Query failed: Connection failed", err=True)
 
 
-class TestValidationEdgeCases:
+class TestValidationEdgeCases(FoundationTestCase):
     """Test edge cases in validation logic."""
 
     def test_trace_id_uuid_format_valid(self) -> None:
@@ -231,7 +233,7 @@ class TestValidationEdgeCases:
             _build_query_sql(None, None, None, "default", 10001)
 
 
-class TestQueryCommandWithoutClick:
+class TestQueryCommandWithoutClick(FoundationTestCase):
     """Test query command behavior when click is not available."""
 
     def test_command_import_availability(self) -> None:
@@ -247,7 +249,7 @@ class TestQueryCommandWithoutClick:
                 query_command()
 
 
-class TestModuleImports:
+class TestModuleImports(FoundationTestCase):
     """Test basic module imports and structure."""
 
     def test_module_has_required_functions(self) -> None:

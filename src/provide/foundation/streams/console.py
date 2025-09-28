@@ -72,8 +72,8 @@ def write_to_console(message: str, stream: TextIO | None = None, log_fallback: b
                         file=sys.stderr
                     )
                 except Exception:
-                    # Even stderr failed - this is a critical system failure, but we must continue
-                    pass
+                    # Even stderr failed - this is a critical system failure, we cannot continue
+                    raise RuntimeError("Critical system failure: unable to write debug information to any stream") from e
 
         # Fallback to stderr - if this fails, let it propagate
         sys.stderr.write(message)

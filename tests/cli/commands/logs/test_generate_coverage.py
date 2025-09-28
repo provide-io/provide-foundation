@@ -1,9 +1,12 @@
 """Comprehensive tests for CLI logs generate command."""
 
+from __future__ import annotations
+
 import random
 import threading
-from unittest.mock import Mock, patch
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.cli.commands.logs.generate import (
@@ -16,7 +19,7 @@ from provide.foundation.cli.commands.logs.generate import (
 )
 
 
-class TestConstants:
+class TestConstants(FoundationTestCase):
     """Test module constants."""
 
     def test_burroughs_phrases_exist(self) -> None:
@@ -44,11 +47,12 @@ class TestConstants:
         assert isinstance(_HAS_CLICK, bool)
 
 
-class TestTraceSpanGeneration:
+class TestTraceSpanGeneration(FoundationTestCase):
     """Test trace and span ID generation."""
 
     def setup_method(self) -> None:
         """Reset counters before each test."""
+        super().setup_method()
         import provide.foundation.cli.commands.logs.generate as generate_module
 
         generate_module._trace_counter = 0
@@ -111,7 +115,7 @@ class TestTraceSpanGeneration:
         assert len(set(span_ids)) == 50
 
 
-class TestGenerateLogEntry:
+class TestGenerateLogEntry(FoundationTestCase):
     """Test log entry generation."""
 
     def setup_method(self) -> None:
@@ -231,11 +235,11 @@ class TestGenerateLogEntry:
             assert span_id == f"span_{i:08d}"
 
 
-class TestHelperFunctions:
+class TestHelperFunctions(FoundationTestCase):
     """Test helper functions from the generate module."""
 
     @patch("provide.foundation.cli.commands.logs.generate.click")
-    def test_print_generation_config(self, mock_click) -> None:
+    def test_print_generation_config(self, mock_click: Mock) -> None:
         """Test _print_generation_config function."""
         from provide.foundation.cli.commands.logs.generate import _print_generation_config
 
@@ -253,7 +257,7 @@ class TestHelperFunctions:
         assert mock_click.echo.call_count >= 4
 
     @patch("provide.foundation.logger.ratelimit.GlobalRateLimiter")
-    def test_configure_rate_limiter_enabled(self, mock_limiter_class) -> None:
+    def test_configure_rate_limiter_enabled(self, mock_limiter_class: Mock) -> None:
         """Test _configure_rate_limiter with rate limiting enabled."""
         from provide.foundation.cli.commands.logs.generate import _configure_rate_limiter
 
@@ -276,7 +280,7 @@ class TestHelperFunctions:
         _configure_rate_limiter(enable_rate_limit=False, rate_limit=100.0)
 
     @patch("provide.foundation.cli.commands.logs.generate.get_logger")
-    def test_send_log_entry_success(self, mock_get_logger) -> None:
+    def test_send_log_entry_success(self, mock_get_logger: Mock) -> None:
         """Test _send_log_entry success case."""
         from provide.foundation.cli.commands.logs.generate import _send_log_entry
 
@@ -306,7 +310,7 @@ class TestHelperFunctions:
         mock_logger.info.assert_called_once_with("test message", service="test-service", extra_field="value")
 
     @patch("provide.foundation.cli.commands.logs.generate.get_logger")
-    def test_send_log_entry_failure(self, mock_get_logger) -> None:
+    def test_send_log_entry_failure(self, mock_get_logger: Mock) -> None:
         """Test _send_log_entry failure case."""
         from provide.foundation.cli.commands.logs.generate import _send_log_entry
 
@@ -333,7 +337,7 @@ class TestHelperFunctions:
         assert logs_rate_limited == 0
 
     @patch("provide.foundation.cli.commands.logs.generate.get_logger")
-    def test_send_log_entry_rate_limited(self, mock_get_logger) -> None:
+    def test_send_log_entry_rate_limited(self, mock_get_logger: Mock) -> None:
         """Test _send_log_entry rate limit case."""
         from provide.foundation.cli.commands.logs.generate import _send_log_entry
 
@@ -361,7 +365,7 @@ class TestHelperFunctions:
 
     @patch("provide.foundation.cli.commands.logs.generate.click")
     @patch("provide.foundation.cli.commands.logs.generate.time")
-    def test_print_stats(self, mock_time, mock_click) -> None:
+    def test_print_stats(self, mock_time: Mock, mock_click: Mock) -> None:
         """Test _print_stats function."""
         from provide.foundation.cli.commands.logs.generate import _print_stats
 
@@ -382,7 +386,7 @@ class TestHelperFunctions:
         mock_click.echo.assert_called_once()
 
     @patch("provide.foundation.cli.commands.logs.generate.click")
-    def test_print_final_stats(self, mock_click) -> None:
+    def test_print_final_stats(self, mock_click: Mock) -> None:
         """Test _print_final_stats function."""
         from provide.foundation.cli.commands.logs.generate import _print_final_stats
 
@@ -399,7 +403,7 @@ class TestHelperFunctions:
         assert mock_click.echo.call_count >= 5
 
 
-class TestClickIntegration:
+class TestClickIntegration(FoundationTestCase):
     """Test Click command integration when Click is available."""
 
     def test_generate_logs_command_exists(self) -> None:
@@ -439,7 +443,7 @@ class TestClickIntegration:
                 generate_logs_command()
 
 
-class TestLogEntryDataIntegrity:
+class TestLogEntryDataIntegrity(FoundationTestCase):
     """Test data integrity and consistency of generated log entries."""
 
     def test_log_entry_field_types(self) -> None:
