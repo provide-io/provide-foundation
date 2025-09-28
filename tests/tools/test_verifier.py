@@ -3,14 +3,16 @@
 Tests for verifying checksums and signatures of downloaded tools.
 """
 
-from unittest.mock import patch
+from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.tools.verifier import ToolVerifier
 
 
-class TestToolVerifier:
+class TestToolVerifier(FoundationTestCase):
     """Tests for ToolVerifier class."""
 
     @pytest.fixture

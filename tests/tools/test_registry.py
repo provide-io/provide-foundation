@@ -4,9 +4,12 @@ Tests registration, discovery, and retrieval of tool managers
 through the hub-based registry infrastructure.
 """
 
-from pathlib import Path
-from unittest.mock import Mock, patch
+from __future__ import annotations
 
+from pathlib import Path
+
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.config import BaseConfig
@@ -114,7 +117,7 @@ def registry(mock_hub):
             return ToolRegistry()
 
 
-class TestToolRegistry:
+class TestToolRegistry(FoundationTestCase):
     """Tests for ToolRegistry class."""
 
     def test_init(self, mock_hub) -> None:
@@ -286,7 +289,7 @@ class TestToolRegistry:
         assert registry.is_tool_registered("nonexistent") is False
 
 
-class TestDiscoverTools:
+class TestDiscoverTools(FoundationTestCase):
     """Tests for tool discovery via entry points."""
 
     def test_discover_tools_python_310_plus(self, mock_hub) -> None:
@@ -369,7 +372,7 @@ class TestDiscoverTools:
             assert registry is not None  # Successful construction despite error
 
 
-class TestGlobalFunctions:
+class TestGlobalFunctions(FoundationTestCase):
     """Tests for global registry functions."""
 
     def test_get_tool_registry_singleton(self) -> None:
@@ -413,7 +416,7 @@ class TestGlobalFunctions:
             mock_registry.create_tool_manager.assert_called_once_with("tool", config)
 
 
-class TestMultipleToolManagers:
+class TestMultipleToolManagers(FoundationTestCase):
     """Tests for handling multiple tool managers."""
 
     def test_register_multiple_tools(self, registry) -> None:
@@ -444,7 +447,7 @@ class TestMultipleToolManagers:
         assert all(call[1]["replace"] is True for call in calls)
 
 
-class TestRegistryDimension:
+class TestRegistryDimension(FoundationTestCase):
     """Tests for registry dimension management."""
 
     def test_dimension_constant(self) -> None:
