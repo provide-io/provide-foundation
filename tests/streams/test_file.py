@@ -1,10 +1,9 @@
-#
-# test_file.py
-#
-"""Tests for file stream functionality."""
+from __future__ import annotations
 
 from pathlib import Path
 import tempfile
+
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.streams.file import (
     close_log_streams,
@@ -12,8 +11,13 @@ from provide.foundation.streams.file import (
     flush_log_streams,
 )
 
+#
+# test_file.py
+#
+"""Tests for file stream functionality."""
 
-class TestFileStreams:
+
+class TestFileStreams(FoundationTestCase):
     def test_configure_file_logging_success(self) -> None:
         """Test successful file logging configuration."""
         with tempfile.TemporaryDirectory() as temp_dir:

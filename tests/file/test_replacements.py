@@ -65,9 +65,9 @@ class TestPackageReplacements(FoundationTestCase):
     def test_flavorpack_disk_replacements(self, tmp_path: Path) -> None:
         """Test flavorpack disk operations are properly replaced."""
 
-    flavorpack_path = Path("/Users/tim/code/gh/provide-io/flavorpack/src")
-    disk_file = flavorpack_path / "flavor/utils/disk.py"
-    if flavorpack_path.exists() and disk_file.exists():
+        flavorpack_path = Path("/Users/tim/code/gh/provide-io/flavorpack/src")
+        disk_file = flavorpack_path / "flavor/utils/disk.py"
+        if flavorpack_path.exists() and disk_file.exists():
         import importlib.util
 
         # Load the disk module directly without importing the full package
@@ -97,9 +97,9 @@ class TestPackageReplacements(FoundationTestCase):
     def test_wrknv_install_replacements(self, tmp_path: Path) -> None:
         """Test wrknv install operations are properly replaced."""
 
-    wrknv_path = Path("/Users/tim/code/gh/provide-io/wrknv/src")
-    install_file = wrknv_path / "wrknv/wenv/operations/install.py"
-    if wrknv_path.exists() and install_file.exists():
+        wrknv_path = Path("/Users/tim/code/gh/provide-io/wrknv/src")
+        install_file = wrknv_path / "wrknv/wenv/operations/install.py"
+        if wrknv_path.exists() and install_file.exists():
         import importlib.util
 
         # Load the install module directly without importing the full package
@@ -152,9 +152,9 @@ class TestPackageReplacements(FoundationTestCase):
     def test_wrknv_extract_operations(self, tmp_path: Path) -> None:
         """Test wrknv extract operations still work."""
 
-    wrknv_path = Path("/Users/tim/code/gh/provide-io/wrknv/src")
-    install_file = wrknv_path / "wrknv/wenv/operations/install.py"
-    if wrknv_path.exists() and install_file.exists():
+        wrknv_path = Path("/Users/tim/code/gh/provide-io/wrknv/src")
+        install_file = wrknv_path / "wrknv/wenv/operations/install.py"
+        if wrknv_path.exists() and install_file.exists():
         import importlib.util
 
         # Load the install module directly without importing the full package
@@ -219,7 +219,7 @@ class TestPackageReplacements(FoundationTestCase):
     def test_flavorpack_integration(self) -> None:
         """Integration test for flavorpack replacements."""
 
-    with tempfile.TemporaryDirectory() as tmpdir:
+        with tempfile.TemporaryDirectory() as tmpdir:
         tmp_path = Path(tmpdir)
         test_flavorpack_atomic_replacements(tmp_path)
         test_flavorpack_disk_replacements(tmp_path)
@@ -231,7 +231,7 @@ class TestPackageReplacements(FoundationTestCase):
     def test_wrknv_integration(self) -> None:
         """Integration test for wrknv replacements."""
 
-    with tempfile.TemporaryDirectory() as tmpdir:
+        with tempfile.TemporaryDirectory() as tmpdir:
         tmp_path = Path(tmpdir)
         test_wrknv_install_replacements(tmp_path)
         test_wrknv_extract_operations(tmp_path)

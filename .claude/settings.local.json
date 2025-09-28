@@ -481,7 +481,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format /Users/tim/code/gh/provide-io/provide-foundation/tests/observability/test_openobserve_integration.py)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format \"$file\")",
       "Bash(PYTHONPATH=src .venv/bin/ruff format /Users/tim/code/gh/provide-io/provide-foundation/tests/env/)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/file/test_directory.py tests/file/test_formats.py tests/file/test_safe.py tests/file/test_utils.py tests/file/test_replacements.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/file/test_directory.py tests/file/test_formats.py tests/file/test_safe.py tests/file/test_utils.py tests/file/test_replacements.py)",
+      "Bash(PYTHONPATH=src python3:*)"
     ],
     "deny": [],
     "ask": [],
