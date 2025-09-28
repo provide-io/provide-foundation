@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import click
 from click.testing import CliRunner
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.hub.commands import (
     create_command_group,
     register_command,
 )
 from provide.foundation.hub.manager import clear_hub, get_hub
-from provide.testkit import FoundationTestCase
 
 
 class TestNestedCommandRegistration(FoundationTestCase):

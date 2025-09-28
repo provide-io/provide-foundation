@@ -49,15 +49,33 @@ def get_log_stream() -> TextIO:
                         _PROVIDE_LOG_STREAM = io.StringIO()
                     except ImportError:
                         raise ValueError("No stderr available") from None
-            except Exception:
-                # Create minimal fallback to prevent total failure
+            except (OSError, AttributeError) as e:
+                # Handle specific stream-related errors with logging
                 try:
-                    import io
-
-                    _PROVIDE_LOG_STREAM = io.StringIO()
+                    from provide.foundation.hub.foundation import get_foundation_logger
+                    get_foundation_logger().warning(
+                        "Stream operation failed, falling back to stderr",
+                        error=str(e),
+                        error_type=type(e).__name__,
+                    )
                 except Exception:
-                    # This will trigger the fallback in coordinator.py
-                    raise ValueError("Stream validation failed - no valid streams available") from None
+                    # Can't log, proceed with fallback anyway
+                    pass
+
+                # Try stderr one more time before giving up
+                if hasattr(sys, "stderr") and sys.stderr is not None:
+                    try:
+                        if not (hasattr(sys.stderr, "closed") and sys.stderr.closed):
+                            _PROVIDE_LOG_STREAM = sys.stderr
+                        else:
+                            # Even stderr is closed - this is a critical error
+                            raise ValueError("All available streams are closed (including stderr)") from e
+                    except (OSError, AttributeError):
+                        # stderr is also problematic - this is a critical error
+                        raise ValueError("Stream validation failed - stderr unavailable") from e
+                else:
+                    # No stderr available - this is a critical error
+                    raise ValueError("Stream validation failed - no stderr available") from e
 
         return _PROVIDE_LOG_STREAM
 

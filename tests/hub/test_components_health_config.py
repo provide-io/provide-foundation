@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import AsyncMock, Mock
-
 import pytest
 
 from provide.foundation.hub.components import (

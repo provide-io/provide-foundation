@@ -57,24 +57,9 @@ try:
             else:
                 formatted_msg = str(msg)
 
-            # Use the same output mechanism as other PrintLogger methods
-            # Handle closed files gracefully during parallel test execution
-            try:
-                if hasattr(self._file, "closed") and self._file.closed:
-                    import sys
-
-                    # Fallback to stderr if current file is closed
-                    sys.stderr.write(formatted_msg + "\n")
-                    sys.stderr.flush()
-                else:
-                    self._file.write(formatted_msg + "\n")
-                    self._file.flush()
-            except ValueError:  # I/O operation on closed file
-                import sys
-
-                # Fallback to stderr
-                sys.stderr.write(formatted_msg + "\n")
-                sys.stderr.flush()
+            # Use the Foundation console writing utility for proper error handling
+            from provide.foundation.streams.console import write_to_console
+            write_to_console(formatted_msg + "\n", stream=self._file, log_fallback=True)
 
         PrintLogger.trace = trace_for_print_logger
 

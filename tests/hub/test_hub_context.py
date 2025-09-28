@@ -6,11 +6,11 @@ import os
 from pathlib import Path
 import tempfile
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.context import CLIContext
 from provide.foundation.errors.runtime import StateError
-from provide.testkit import FoundationTestCase
 
 
 class TestContext(FoundationTestCase):

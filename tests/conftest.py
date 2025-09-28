@@ -73,12 +73,14 @@ def reset_log_stream_for_testing() -> Generator[None]:
     finally:
         # Ensure stream is reset to default stderr after each test
         # Handle potential closed streams during parallel execution
-        try:
-            set_log_stream_for_testing(None)
-        except (ValueError, OSError):
-            # Stream may be closed during parallel test execution
-            # This is acceptable - the next test will get a fresh stream
-            pass
+        from provide.foundation.errors.decorators import suppress_and_log
+
+        @suppress_and_log(ValueError, OSError, log_level="debug")
+        def reset_stream_safely():
+            """Reset the log stream with automatic error suppression and logging."""
+            return set_log_stream_for_testing(None)
+
+        reset_stream_safely()
 
 
 # Import and re-export fixtures from the unified testing module

@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import pytest
 from provide.testkit import FoundationTestCase
+import pytest
 
 from provide.foundation.hub.components import (
     discover_components,
@@ -41,6 +41,7 @@ class TestComponentDiscovery(FoundationTestCase):
     def test_discover_components_with_mock_entry_points(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test component discovery with mocked entry points."""
         from importlib import metadata
+
         from provide.testkit.mocking import Mock
 
         # Create a mock entry point
@@ -68,6 +69,7 @@ class TestComponentDiscovery(FoundationTestCase):
     def test_discover_components_handles_load_errors(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test that component discovery handles loading errors gracefully."""
         from importlib import metadata
+
         from provide.testkit.mocking import Mock
 
         # Create a mock entry point that fails to load
@@ -93,6 +95,7 @@ class TestComponentDiscovery(FoundationTestCase):
     def test_discover_components_registers_in_hub(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test that discovered components are registered in the hub registry."""
         from importlib import metadata
+
         from provide.testkit.mocking import Mock
 
         from provide.foundation.hub.components import get_component_registry

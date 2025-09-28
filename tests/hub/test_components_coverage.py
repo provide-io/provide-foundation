@@ -1,9 +1,9 @@
-from __future__ import annotations
-
 #
 # test_components_coverage.py
 #
 """Tests to cover missing lines in hub/components.py for 100% coverage."""
+
+from __future__ import annotations
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock

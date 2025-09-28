@@ -5,8 +5,8 @@ from __future__ import annotations
 from typing import Never
 
 import click
-import pytest
 from provide.testkit import FoundationTestCase
+import pytest
 
 from provide.foundation.hub.commands import (
     build_click_command,

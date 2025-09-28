@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Advanced cleanup, config loading, and miscellaneous tests for hub components module."""
+
+from __future__ import annotations
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import AsyncMock, Mock
