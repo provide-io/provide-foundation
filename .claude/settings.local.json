@@ -367,7 +367,10 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/logger/trace.py src/provide/foundation/streams/core.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/crypto/ -q --tb=short --maxfail=3)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/crypto/ -n auto --tb=short -q --timeout=60)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/hub/)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/hub/)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/hub/ --ignore-missing-imports)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/hub/ -q --tb=short --maxfail=3)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/crypto/ -n auto --tb=short -q)"
     ],
     "deny": [],
     "ask": [],

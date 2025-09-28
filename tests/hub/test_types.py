@@ -103,7 +103,7 @@ class TestRegistrable:
         class ValidComponent:
             __registry_name__ = "valid"
             __registry_dimension__ = "test"
-            __registry_metadata__ = {}
+            __registry_metadata__: dict[str, any] = {}
 
         comp = ValidComponent()
         result = register_item(comp)

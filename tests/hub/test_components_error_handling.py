@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Error handling and dependency resolution tests for hub components module."""
+
+from __future__ import annotations
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock
