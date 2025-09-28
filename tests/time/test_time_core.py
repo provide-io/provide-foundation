@@ -1,16 +1,20 @@
+from __future__ import annotations
+
 """Tests for Foundation time utilities."""
 
 from datetime import UTC, datetime
 import time
-from unittest.mock import MagicMock, patch
+from typing import Any
 from zoneinfo import ZoneInfo
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation.time import provide_now, provide_sleep, provide_time
 
 
-class TestProvideTime:
+class TestProvideTime(FoundationTestCase):
     """Test provide_time function."""
 
     def test_provide_time_returns_float(self) -> None:
@@ -26,7 +30,7 @@ class TestProvideTime:
         assert time2 > time1
 
     @patch("provide.foundation.time.core.time")
-    def test_provide_time_uses_time_module(self, mock_time) -> None:
+    def test_provide_time_uses_time_module(self, mock_time: Any) -> None:
         """Test provide_time calls time.time()."""
         mock_time.time.return_value = 1234567890.0
 
@@ -43,7 +47,7 @@ class TestProvideTime:
         assert abs(time2 - time1) < 0.1
 
 
-class TestProvideSleep:
+class TestProvideSleep(FoundationTestCase):
     """Test provide_sleep function."""
 
     def test_provide_sleep_actually_sleeps(self) -> None:
@@ -72,7 +76,7 @@ class TestProvideSleep:
             provide_sleep(-1.0)
 
     @patch("provide.foundation.time.core.time")
-    def test_provide_sleep_uses_time_module(self, mock_time) -> None:
+    def test_provide_sleep_uses_time_module(self, mock_time: Any) -> None:
         """Test provide_sleep calls time.sleep()."""
         provide_sleep(0.5)
         mock_time.sleep.assert_called_once_with(0.5)
@@ -87,7 +91,7 @@ class TestProvideSleep:
         assert 0.04 <= elapsed <= 0.1
 
 
-class TestProvideNow:
+class TestProvideNow(FoundationTestCase):
     """Test provide_now function."""
 
     def test_provide_now_returns_datetime(self) -> None:
@@ -139,7 +143,7 @@ class TestProvideNow:
         assert time_diff <= 24 * 3600  # Less than 24 hours difference
 
     @patch("provide.foundation.time.core.datetime")
-    def test_provide_now_uses_datetime_module(self, mock_datetime) -> None:
+    def test_provide_now_uses_datetime_module(self, mock_datetime: Any) -> None:
         """Test provide_now calls datetime.now()."""
         mock_dt = MagicMock()
         mock_datetime.now.return_value = mock_dt
@@ -150,7 +154,7 @@ class TestProvideNow:
         mock_datetime.now.assert_called_once_with()
 
     @patch("provide.foundation.time.core.datetime")
-    def test_provide_now_with_timezone_uses_datetime_module(self, mock_datetime) -> None:
+    def test_provide_now_with_timezone_uses_datetime_module(self, mock_datetime: Any) -> None:
         """Test provide_now with timezone calls datetime.now() with timezone."""
         mock_dt = MagicMock()
         mock_datetime.now.return_value = mock_dt
@@ -165,7 +169,7 @@ class TestProvideNow:
         assert args[0].key == "UTC"
 
 
-class TestTimeUtilitiesIntegration:
+class TestTimeUtilitiesIntegration(FoundationTestCase):
     """Integration tests for time utilities."""
 
     def test_time_utilities_work_together(self) -> None:
@@ -222,5 +226,5 @@ class TestTimeUtilitiesIntegration:
             provide_sleep(-1)
 
         # provide_now with invalid timezone should raise ZoneInfo error
-        with pytest.raises(Exception):  # ZoneInfo will raise specific exception
+        with pytest.raises(Exception):  # noqa: B017
             provide_now("Invalid/Timezone")

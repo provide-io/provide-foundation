@@ -1,9 +1,12 @@
+from __future__ import annotations
+
 """Comprehensive tests for OpenObserve OTLP integration module."""
 
-from unittest.mock import Mock, patch
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 
-class TestOTLPConstants:
+class TestOTLPConstants(FoundationTestCase):
     """Test OTLP module constants and feature detection."""
 
     def test_has_otel_logs_flag_exists(self) -> None:
@@ -22,7 +25,7 @@ class TestOTLPConstants:
         assert hasattr(otlp_module, "create_otlp_logger_provider")
 
 
-class TestSendLogOTLP:
+class TestSendLogOTLP(FoundationTestCase):
     """Test send_log_otlp function."""
 
     def test_send_log_otlp_without_otel_returns_false(self) -> None:
@@ -245,7 +248,7 @@ class TestSendLogOTLP:
             assert result is False
 
 
-class TestSendLogBulk:
+class TestSendLogBulk(FoundationTestCase):
     """Test send_log_bulk function."""
 
     def test_send_log_bulk_success(self) -> None:
@@ -368,7 +371,7 @@ class TestSendLogBulk:
             assert result is False
 
 
-class TestSendLog:
+class TestSendLog(FoundationTestCase):
     """Test send_log function (main entry point)."""
 
     def test_send_log_prefer_otlp_success(self) -> None:
@@ -440,7 +443,7 @@ class TestSendLog:
             mock_bulk.assert_called_once()
 
 
-class TestCreateOTLPLoggerProvider:
+class TestCreateOTLPLoggerProvider(FoundationTestCase):
     """Test create_otlp_logger_provider function."""
 
     def test_create_otlp_logger_provider_without_otel_returns_none(self) -> None:
@@ -529,7 +532,7 @@ class TestCreateOTLPLoggerProvider:
             assert result is None
 
 
-class TestOTLPIntegration:
+class TestOTLPIntegration(FoundationTestCase):
     """Test OTLP integration scenarios and edge cases."""
 
     def test_trace_context_extraction(self) -> None:

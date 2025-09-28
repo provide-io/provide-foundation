@@ -504,7 +504,11 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_timeout -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_concurrent_access -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/ -v --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_directory.py::TestDirectoryOperations::test_temp_dir_creates_and_cleans -v)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_directory.py::TestDirectoryOperations::test_temp_dir_creates_and_cleans -v)",
+      "Bash(PYTHONPATH=src timeout 10 .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_timeout -xvs --tb=short)",
+      "Bash(PYTHONPATH=src timeout 5 .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_timeout -q --tb=no)",
+      "Bash(PYTHONPATH=src timeout 30 .venv/bin/pytest tests/file/test_lock.py -v --tb=short)",
+      "Bash(PYTHONPATH=src timeout 10 .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_timeout --no-cov -o asyncio_default_fixture_loop_scope=session -v)"
     ],
     "deny": [],
     "ask": [],

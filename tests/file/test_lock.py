@@ -78,11 +78,13 @@ class TestFileLock(FoundationTestCase):
         """Test lock acquisition timeout."""
         lock_path = temp_directory / "test.lock"
         lock1 = FileLock(lock_path)
-        lock2 = FileLock(lock_path, timeout=1.0)
+        lock2 = FileLock(lock_path, timeout=0.5)  # Shorter timeout for faster test
 
         try:
             # First lock acquired
-            lock1.acquire()
+            assert lock1.acquire()
+            assert lock1.locked
+            assert lock_path.exists()
 
             # Second lock should timeout
             start = time.time()
@@ -90,13 +92,18 @@ class TestFileLock(FoundationTestCase):
                 lock2.acquire()
             elapsed = time.time() - start
 
-            # More generous timeout window for stability
-            assert 0.8 < elapsed < 1.5  # Should timeout around 1.0s
+            # Should timeout around 0.5s
+            assert 0.4 < elapsed < 0.8, f"Expected timeout ~0.5s, got {elapsed:.3f}s"
             assert exc_info.value.code == "LOCK_TIMEOUT"
+            assert not lock2.locked
         finally:
             # Ensure cleanup even if test fails
             if lock1.locked:
                 lock1.release()
+            # Ensure any stray lock files are cleaned up
+            if lock_path.exists():
+                with contextlib.suppress(FileNotFoundError, PermissionError):
+                    lock_path.unlink()
 
     def test_file_lock_multiple_releases(self, temp_directory: Path) -> None:
         """Test multiple releases are safe."""

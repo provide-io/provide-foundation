@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 # tests/test_eventsets.py
 """Tests for Event Set configuration, resolution, and processing."""
 
-from provide.testkit.logger import reset_foundation_setup_for_testing
+from provide.testkit import FoundationTestCase
 
 from provide.foundation import (
     logger as global_logger,
@@ -15,7 +17,7 @@ from provide.foundation.eventsets.types import (
 )
 
 
-class TestEventSetRegistry:
+class TestEventSetRegistry(FoundationTestCase):
     """Test event set registration and discovery."""
 
     def test_discover_event_sets(self) -> None:
@@ -41,7 +43,7 @@ class TestEventSetRegistry:
         assert priorities == sorted(priorities, reverse=True)
 
 
-class TestEventSetResolver:
+class TestEventSetResolver(FoundationTestCase):
     """Test event set resolution and enrichment."""
 
     def test_resolver_enriches_das_events(self) -> None:
@@ -108,7 +110,7 @@ class TestEventSetResolver:
         assert enriched.get("llm.success") is True
 
 
-class TestEventSetTypes:
+class TestEventSetTypes(FoundationTestCase):
     """Test event set type definitions."""
 
     def test_event_mapping_creation(self) -> None:
@@ -141,7 +143,7 @@ class TestEventSetTypes:
         assert event_set.priority == 50
 
 
-class TestLoggingIntegration:
+class TestLoggingIntegration(FoundationTestCase):
     """Test integration with logging system."""
 
     def test_logging_uses_event_enrichment(self) -> None:
@@ -149,7 +151,7 @@ class TestLoggingIntegration:
         from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
         from provide.foundation.logger.setup import internal_setup
 
-        reset_foundation_setup_for_testing()
+        # Foundation reset is handled by FoundationTestCase
 
         # Set up telemetry with INFO level and DAS emoji enabled
         config = TelemetryConfig(

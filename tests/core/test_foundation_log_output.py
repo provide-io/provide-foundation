@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 #
 # tests/core/test_foundation_log_output.py
 #
@@ -5,19 +7,21 @@
 
 import io
 import sys
-from unittest.mock import patch
+from typing import Any
 
 import pytest
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 from pytest import CaptureFixture
 
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
 from provide.foundation.utils.streams import get_foundation_log_stream
 
 
-class TestFoundationLogOutputEnvironmentVariable:
+class TestFoundationLogOutputEnvironmentVariable(FoundationTestCase):
     """Test FOUNDATION_LOG_OUTPUT environment variable parsing and validation."""
 
-    def test_foundation_log_output_default_stderr(self, monkeypatch) -> None:
+    def test_foundation_log_output_default_stderr(self, monkeypatch: Any) -> None:
         """Test that default value is stderr."""
         # Clear any existing FOUNDATION_LOG_OUTPUT
         monkeypatch.delenv("FOUNDATION_LOG_OUTPUT", raising=False)
@@ -25,7 +29,7 @@ class TestFoundationLogOutputEnvironmentVariable:
         config = LoggingConfig.from_env()
         assert config.foundation_log_output == "stderr"
 
-    def test_foundation_log_output_valid_values(self, monkeypatch) -> None:
+    def test_foundation_log_output_valid_values(self, monkeypatch: Any) -> None:
         """Test that valid values are accepted."""
         valid_values = ["stderr", "stdout", "main"]
 
@@ -34,7 +38,7 @@ class TestFoundationLogOutputEnvironmentVariable:
             config = LoggingConfig.from_env()
             assert config.foundation_log_output == value.lower()
 
-    def test_foundation_log_output_case_insensitive(self, monkeypatch) -> None:
+    def test_foundation_log_output_case_insensitive(self, monkeypatch: Any) -> None:
         """Test that values are case-insensitive."""
         test_cases = [
             ("STDERR", "stderr"),
@@ -50,7 +54,7 @@ class TestFoundationLogOutputEnvironmentVariable:
 
     def test_foundation_log_output_invalid_value_raises_error(
         self,
-        monkeypatch,
+        monkeypatch: Any,
     ) -> None:
         """Test that invalid values raise ValueError (strict validation)."""
         monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "invalid_value")
@@ -60,7 +64,7 @@ class TestFoundationLogOutputEnvironmentVariable:
             LoggingConfig.from_env()
 
 
-class TestFoundationLogStreamUtility:
+class TestFoundationLogStreamUtility(FoundationTestCase):
     """Test get_foundation_log_stream() utility function."""
 
     def test_stderr_setting(self) -> None:
@@ -90,20 +94,18 @@ class TestFoundationLogStreamUtility:
         assert stream is sys.stderr
 
 
-class TestFoundationLogOutputIntegration:
+class TestFoundationLogOutputIntegration(FoundationTestCase):
     """Integration tests for FOUNDATION_LOG_OUTPUT affecting both core setup and config warnings."""
 
     def test_foundation_log_output_affects_both_loggers(
         self,
-        monkeypatch,
+        monkeypatch: Any,
         capsys: CaptureFixture,
     ) -> None:
         """Test that FOUNDATION_LOG_OUTPUT routing works for configuration."""
         monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "stdout")
 
-        from provide.testkit import reset_foundation_setup_for_testing
-
-        reset_foundation_setup_for_testing()
+        # Foundation reset is handled by FoundationTestCase
 
         # Create config - this exercises the routing behavior
         config = TelemetryConfig.from_env()
@@ -114,8 +116,8 @@ class TestFoundationLogOutputIntegration:
 
     def test_foundation_log_output_main_with_log_file(
         self,
-        monkeypatch,
-        tmp_path,
+        monkeypatch: Any,
+        tmp_path: Any,
         capsys: CaptureFixture,
     ) -> None:
         """Test FOUNDATION_LOG_OUTPUT=main follows main log file destination."""
@@ -126,11 +128,7 @@ class TestFoundationLogOutputIntegration:
         monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "main")
 
         # Reset and setup telemetry with file logging
-        from provide.testkit import reset_foundation_setup_for_testing
-
         from provide.foundation import get_hub
-
-        reset_foundation_setup_for_testing()
 
         config = TelemetryConfig.from_env()
         hub = get_hub()
@@ -146,8 +144,8 @@ class TestFoundationLogOutputIntegration:
 
     def test_foundation_log_output_stderr_with_main_to_file(
         self,
-        monkeypatch,
-        tmp_path,
+        monkeypatch: Any,
+        tmp_path: Any,
         capsys: CaptureFixture,
     ) -> None:
         """Test FOUNDATION_LOG_OUTPUT=stderr keeps foundation logs separate from main log file."""
@@ -158,11 +156,7 @@ class TestFoundationLogOutputIntegration:
         monkeypatch.setenv("FOUNDATION_LOG_OUTPUT", "stderr")
 
         # Reset and setup telemetry
-        from provide.testkit import reset_foundation_setup_for_testing
-
         from provide.foundation import get_hub
-
-        reset_foundation_setup_for_testing()
 
         config = TelemetryConfig.from_env()
         hub = get_hub()
