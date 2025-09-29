@@ -12,8 +12,16 @@ Provides functions for initializing, managing, and cleaning up components
 registered in the Hub registry system.
 """
 
-# Async-safe lock for component initialization
-_async_component_lock = asyncio.Lock()
+# Async-safe lock for component initialization (lazily created)
+_async_component_lock: asyncio.Lock | None = None
+
+
+def _get_async_lock() -> asyncio.Lock:
+    """Get or create the async component lock in the current event loop."""
+    global _async_component_lock
+    if _async_component_lock is None:
+        _async_component_lock = asyncio.Lock()
+    return _async_component_lock
 
 
 def _get_registry_and_globals() -> Any:
@@ -80,7 +88,7 @@ async def initialize_async_component(name: str, dimension: str) -> Any:
     key = (name, dimension)
 
     # First, check if already initialized (only need async lock for initialized_components)
-    async with _async_component_lock:
+    async with _get_async_lock():
         if key in initialized_components:
             return initialized_components[key]
 
@@ -99,7 +107,7 @@ async def initialize_async_component(name: str, dimension: str) -> Any:
         return entry.value
 
     # Double-check pattern with async lock
-    async with _async_component_lock:
+    async with _get_async_lock():
         if key in initialized_components:
             return initialized_components[key]
 
@@ -121,7 +129,7 @@ async def initialize_async_component(name: str, dimension: str) -> Any:
         )
 
         # Only need async lock for initialized_components dict
-        async with _async_component_lock:
+        async with _get_async_lock():
             # Final check before update
             if key not in initialized_components:
                 initialized_components[key] = component
