@@ -157,14 +157,14 @@ class TestDownloaderIntegration(FoundationTestCase):
             else:
                 raise
 
-    def test_download_with_wrong_checksum_fails(self, downloader, temp_dir) -> None:
+    async def test_download_with_wrong_checksum_fails(self, downloader, temp_dir) -> None:
         """Test download with wrong checksum fails."""
         url = "https://httpbin.org/bytes/100"
         dest = temp_dir / "wrong_checksum.bin"
         wrong_checksum = "0" * 64  # Wrong SHA256
 
         with pytest.raises(DownloadError, match="Checksum mismatch"):
-            downloader.download_with_progress(url, dest, wrong_checksum)
+            await downloader.download_with_progress(url, dest, wrong_checksum)
 
         # File should be cleaned up on checksum failure
         assert not dest.exists()
@@ -179,7 +179,7 @@ class TestDownloaderIntegration(FoundationTestCase):
         with pytest.raises(Exception):  # Could be DownloadError or HTTP error
             downloader.download_with_progress(url, dest)
 
-    def test_download_timeout_handling(self, downloader, temp_dir) -> None:
+    async def test_download_timeout_handling(self, downloader, temp_dir) -> None:
         """Test timeout handling."""
         # Use httpbin delay endpoint
         url = "https://httpbin.org/delay/10"  # 10 second delay
@@ -192,9 +192,9 @@ class TestDownloaderIntegration(FoundationTestCase):
             mock_stream.side_effect = httpx.TimeoutException("Request timed out")
 
             with pytest.raises(Exception):  # Timeout should cause failure
-                downloader.download_with_progress(url, dest)
+                await downloader.download_with_progress(url, dest)
 
-    def test_parallel_downloads(self, downloader, temp_dir) -> None:
+    async def test_parallel_downloads(self, downloader, temp_dir) -> None:
         """Test parallel downloads of multiple files."""
         urls_and_dests = [
             ("https://httpbin.org/bytes/500", temp_dir / "file1.bin"),
@@ -202,7 +202,7 @@ class TestDownloaderIntegration(FoundationTestCase):
             ("https://httpbin.org/bytes/700", temp_dir / "file3.bin"),
         ]
 
-        results = downloader.download_parallel(urls_and_dests)
+        results = await downloader.download_parallel(urls_and_dests)
 
         assert len(results) == 3
         for i, (_url, expected_dest) in enumerate(urls_and_dests):
@@ -220,7 +220,7 @@ class TestDownloaderIntegration(FoundationTestCase):
         with pytest.raises(DownloadError, match="Some downloads failed"):
             downloader.download_parallel(urls_and_dests)
 
-    def test_mirror_fallback_success(self, downloader, temp_dir) -> None:
+    async def test_mirror_fallback_success(self, downloader, temp_dir) -> None:
         """Test mirror fallback when primary fails."""
         # First URL fails, second succeeds
         mirrors = [
@@ -229,7 +229,7 @@ class TestDownloaderIntegration(FoundationTestCase):
         ]
         dest = temp_dir / "mirror_test.bin"
 
-        result = downloader.download_with_mirrors(mirrors, dest)
+        result = await downloader.download_with_mirrors(mirrors, dest)
 
         assert result == dest
         assert dest.exists()
@@ -247,7 +247,7 @@ class TestDownloaderIntegration(FoundationTestCase):
         with pytest.raises(DownloadError, match="All mirrors failed"):
             downloader.download_with_mirrors(mirrors, dest)
 
-    def test_download_real_jq_binary(self, downloader, temp_dir) -> None:
+    async def test_download_real_jq_binary(self, downloader, temp_dir) -> None:
         """Test downloading a real jq binary (small tool)."""
         # Use a specific jq version that should be stable
         platform_info = {
@@ -274,7 +274,7 @@ class TestDownloaderIntegration(FoundationTestCase):
         url = f"https://github.com/jqlang/jq/releases/download/jq-1.7.1/{filename}"
         dest = temp_dir / "jq"
 
-        result = downloader.download_with_progress(url, dest)
+        result = await downloader.download_with_progress(url, dest)
 
         assert result == dest
         assert dest.exists()

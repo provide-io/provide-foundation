@@ -180,7 +180,7 @@ class ToolDownloader:
 
         return results
 
-    def download_with_mirrors(self, mirrors: list[str], dest: Path) -> Path:
+    async def download_with_mirrors(self, mirrors: list[str], dest: Path) -> Path:
         """Try multiple mirrors until one succeeds using fallback pattern.
 
         Args:
@@ -194,28 +194,22 @@ class ToolDownloader:
             DownloadError: If all mirrors fail.
 
         """
-        from provide.foundation.resilience.fallback import FallbackChain
-
         if not mirrors:
             raise DownloadError("No mirrors provided")
 
-        # Create fallback functions for each mirror
-        fallback_funcs = []
+        last_error = None
+
+        # Try each mirror in sequence
         for mirror_url in mirrors:
+            try:
+                log.debug(f"Trying mirror: {mirror_url}")
+                return await self.download_with_progress(mirror_url, dest)
+            except Exception as e:
+                last_error = e
+                log.warning(f"Mirror {mirror_url} failed: {e}")
+                # Clean up any partial download
+                if dest.exists():
+                    dest.unlink()
 
-            def create_mirror_func(url: str) -> Any:
-                def mirror_download() -> Any:
-                    log.debug(f"Trying mirror: {url}")
-                    return self.download_with_progress(url, dest)
-
-                return mirror_download
-
-            fallback_funcs.append(create_mirror_func(mirror_url))
-
-        # Use FallbackChain to try mirrors in order
-        chain = FallbackChain(fallbacks=fallback_funcs[1:])  # All but first are fallbacks
-
-        try:
-            return chain.execute(fallback_funcs[0])  # First is primary
-        except Exception as e:
-            raise DownloadError(f"All mirrors failed: {e}") from e
+        # All mirrors failed
+        raise DownloadError(f"All mirrors failed: {last_error}") from last_error
