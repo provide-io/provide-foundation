@@ -1,14 +1,17 @@
 """Tests for fallback functionality."""
 
-from typing import Never
-from unittest.mock import MagicMock
+from __future__ import annotations
 
+from typing import Never
+
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock
 import pytest
 
 from provide.foundation.resilience.fallback import FallbackChain, fallback
 
 
-class TestFallbackChain:
+class TestFallbackChain(FoundationTestCase):
     """Test FallbackChain class."""
 
     def test_primary_success_no_fallbacks_used(self) -> None:
@@ -105,12 +108,12 @@ class TestFallbackChain:
         """Test fallback chain passes arguments correctly."""
         chain = FallbackChain()
 
-        def fallback_func(x, y, z=None) -> str:
+        def fallback_func(x: str, y: str, z: str | None = None) -> str:
             return f"fallback: {x}-{y}-{z}"
 
         chain.add_fallback(fallback_func)
 
-        def primary_func(x, y, z=None) -> Never:
+        def primary_func(x: str, y: str, z: str | None = None) -> Never:
             raise ValueError("primary failed")
 
         result = chain.execute(primary_func, "a", "b", z="c")
@@ -166,7 +169,7 @@ class TestFallbackChain:
             chain.execute(primary_func)
 
 
-class TestFallbackDecorator:
+class TestFallbackDecorator(FoundationTestCase):
     """Test @fallback decorator."""
 
     def test_fallback_decorator_success(self) -> None:
@@ -228,11 +231,11 @@ class TestFallbackDecorator:
     def test_fallback_decorator_with_arguments(self) -> None:
         """Test fallback decorator preserves function arguments."""
 
-        def backup_func(x, y=None) -> str:
+        def backup_func(x: str, y: str | None = None) -> str:
             return f"backup: {x}-{y}"
 
         @fallback(backup_func)
-        def primary_func(x, y=None) -> Never:
+        def primary_func(x: str, y: str | None = None) -> Never:
             raise ValueError("primary failed")
 
         result = primary_func("test", y="value")
