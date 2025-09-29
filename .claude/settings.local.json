@@ -630,7 +630,12 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py -v --tb=short -m integration -x --maxfail=3)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py::TestDownloaderIntegration::test_download_timeout_handling -v --tb=short -m integration)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py::TestBackoffRetryIntegration::test_eventual_success_after_retries -v --tb=short -m integration)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py -v --tb=short -m integration --maxfail=5)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py -v --tb=short -m integration --maxfail=5)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/resilience/test_circuit_breaker.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/resilience/test_circuit_breaker.py --ignore-missing-imports)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_circuit_recovery_after_timeout tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_custom_recovery_timeout -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_circuit_recovery_after_timeout tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_custom_recovery_timeout -n auto --tb=short -v)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py -n auto --tb=short -q)"
     ],
     "deny": [],
     "ask": [],
