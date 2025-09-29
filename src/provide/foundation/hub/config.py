@@ -113,30 +113,30 @@ def load_config_from_registry(config_class: type[T]) -> T:
 
     # Load from all config sources
     chain = get_config_chain()
-        for entry in chain:
-            source = entry.value
-            if hasattr(source, "load_config"):
-                try:
-                    # Skip async sources in sync context
-                    if inspect.iscoroutinefunction(source.load_config):
-                        get_foundation_logger().debug(
-                            "Skipping async config source in sync context",
-                            source=entry.name,
-                        )
-                        continue
-
-                    source_data = source.load_config()
-                    if source_data:
-                        config_data.update(source_data)
-                except Exception as e:
-                    get_foundation_logger().warning(
-                        "Failed to load config from source",
+    for entry in chain:
+        source = entry.value
+        if hasattr(source, "load_config"):
+            try:
+                # Skip async sources in sync context
+                if inspect.iscoroutinefunction(source.load_config):
+                    get_foundation_logger().debug(
+                        "Skipping async config source in sync context",
                         source=entry.name,
-                        error=str(e),
                     )
+                    continue
 
-        # Create config instance
-        return config_class.from_dict(config_data)
+                source_data = source.load_config()
+                if source_data:
+                    config_data.update(source_data)
+            except Exception as e:
+                get_foundation_logger().warning(
+                    "Failed to load config from source",
+                    source=entry.name,
+                    error=str(e),
+                )
+
+    # Create config instance
+    return config_class.from_dict(config_data)
 
 
 __all__ = [

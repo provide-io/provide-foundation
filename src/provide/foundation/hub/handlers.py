@@ -37,8 +37,7 @@ def get_handlers_for_exception(exception: Exception) -> list[RegistryEntry]:
     for entry in handlers:
         exception_types = entry.metadata.get("exception_types", [])
         if any(
-            exc_type in exception_type_name or exception_type_name in exc_type
-            for exc_type in exception_types
+            exc_type in exception_type_name or exception_type_name in exc_type for exc_type in exception_types
         ):
             matching_handlers.append(entry)
 

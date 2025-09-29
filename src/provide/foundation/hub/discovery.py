@@ -80,7 +80,8 @@ def discover_components(
             group_entries = entry_points.select(group=group)
         else:
             # Python 3.8-3.9 API
-            group_entries = entry_points.get(group, [])
+            from importlib.metadata import EntryPoints
+            group_entries = entry_points.get(group, EntryPoints())
 
         for entry_point in group_entries:
             try:

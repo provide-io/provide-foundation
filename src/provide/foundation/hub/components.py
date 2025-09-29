@@ -5,7 +5,6 @@ from typing import Any, Protocol
 
 from attrs import define, field
 
-from provide.foundation.concurrency.locks import get_lock_manager
 from provide.foundation.errors.decorators import resilient
 
 # Import functions from specialized modules for re-export
@@ -140,9 +139,7 @@ def bootstrap_foundation() -> None:
         return  # Already bootstrapped
 
     # Register core processors
-    def timestamp_processor(
-        logger: object, method_name: str, event_dict: dict[str, Any]
-    ) -> dict[str, Any]:
+    def timestamp_processor(logger: object, method_name: str, event_dict: dict[str, Any]) -> dict[str, Any]:
         import time
 
         event_dict["timestamp"] = time.time()
