@@ -1,9 +1,12 @@
 """Tests for format-specific file operations."""
 
+from __future__ import annotations
+
 import json
 
 import pytest
 
+from provide.testkit import FoundationTestCase
 from provide.foundation.file.formats import (
     read_json,
     read_toml,
@@ -13,21 +16,31 @@ from provide.foundation.file.formats import (
     write_yaml,
 )
 
-# JSON Tests
+class TestFileFormats(FoundationTestCase):
+    """Test format-specific file operations."""
+
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+
+    def teardown_method(self) -> None:
+        """Clean up after test."""
+        super().teardown_method()
+
+    # JSON Tests
+
+    def test_read_json(self, temp_directory: Path) -> None:
+        """Test reading JSON file."""
+        path = temp_directory / "test.json"
+        data = {"name": "test", "value": 42, "items": [1, 2, 3]}
+        path.write_text(json.dumps(data))
+
+        result = read_json(path)
+        assert result == data
 
 
-def test_read_json(temp_directory) -> None:
-    """Test reading JSON file."""
-    path = temp_directory / "test.json"
-    data = {"name": "test", "value": 42, "items": [1, 2, 3]}
-    path.write_text(json.dumps(data))
-
-    result = read_json(path)
-    assert result == data
-
-
-def test_read_json_missing_file(temp_directory) -> None:
-    """Test reading missing JSON file returns default."""
+    def test_read_json_missing_file(self, temp_directory: Path) -> None:
+        """Test reading missing JSON file returns default."""
     path = temp_directory / "nonexistent.json"
 
     result = read_json(path)
@@ -38,8 +51,8 @@ def test_read_json_missing_file(temp_directory) -> None:
     assert result == default
 
 
-def test_read_json_invalid(temp_directory) -> None:
-    """Test reading invalid JSON returns default."""
+    def test_read_json_invalid(self, temp_directory: Path) -> None:
+        """Test reading invalid JSON returns default."""
     path = temp_directory / "invalid.json"
     path.write_text("not valid json {]")
 
@@ -51,8 +64,8 @@ def test_read_json_invalid(temp_directory) -> None:
     assert result == default
 
 
-def test_read_json_empty_file(temp_directory) -> None:
-    """Test reading empty JSON file returns default."""
+    def test_read_json_empty_file(self, temp_directory: Path) -> None:
+        """Test reading empty JSON file returns default."""
     path = temp_directory / "empty.json"
     path.write_text("")
 
@@ -60,8 +73,8 @@ def test_read_json_empty_file(temp_directory) -> None:
     assert result is None
 
 
-def test_write_json(temp_directory) -> None:
-    """Test writing JSON file."""
+    def test_write_json(self, temp_directory: Path) -> None:
+        """Test writing JSON file."""
     path = temp_directory / "test.json"
     data = {"name": "test", "value": 42, "nested": {"key": "value"}}
 
@@ -72,8 +85,8 @@ def test_write_json(temp_directory) -> None:
     assert loaded == data
 
 
-def test_write_json_pretty(temp_directory) -> None:
-    """Test writing pretty-printed JSON."""
+    def test_write_json_pretty(self, temp_directory: Path) -> None:
+        """Test writing pretty-printed JSON."""
     path = temp_directory / "test.json"
     data = {"a": 1, "b": 2}
 
@@ -83,8 +96,8 @@ def test_write_json_pretty(temp_directory) -> None:
     assert '{\n    "a": 1' in content
 
 
-def test_write_json_compact(temp_directory) -> None:
-    """Test writing compact JSON."""
+    def test_write_json_compact(self, temp_directory: Path) -> None:
+        """Test writing compact JSON."""
     path = temp_directory / "test.json"
     data = {"a": 1, "b": 2}
 
@@ -94,8 +107,8 @@ def test_write_json_compact(temp_directory) -> None:
     assert content == '{"a": 1, "b": 2}' or content == '{"a":1,"b":2}'
 
 
-def test_write_json_sorted_keys(temp_directory) -> None:
-    """Test writing JSON with sorted keys."""
+    def test_write_json_sorted_keys(self, temp_directory: Path) -> None:
+        """Test writing JSON with sorted keys."""
     path = temp_directory / "test.json"
     data = {"z": 1, "a": 2, "m": 3}
 
@@ -106,8 +119,8 @@ def test_write_json_sorted_keys(temp_directory) -> None:
     assert content.index('"a"') < content.index('"m"') < content.index('"z"')
 
 
-def test_write_json_unicode(temp_directory) -> None:
-    """Test writing JSON with Unicode characters."""
+    def test_write_json_unicode(self, temp_directory: Path) -> None:
+        """Test writing JSON with Unicode characters."""
     path = temp_directory / "test.json"
     data = {"message": "Hello 世界 🚀"}
 
@@ -117,8 +130,8 @@ def test_write_json_unicode(temp_directory) -> None:
     assert loaded == data
 
 
-def test_write_json_creates_parent_dirs(temp_directory) -> None:
-    """Test write_json creates parent directories."""
+    def test_write_json_creates_parent_dirs(self, temp_directory: Path) -> None:
+        """Test write_json creates parent directories."""
     path = temp_directory / "subdir" / "nested" / "test.json"
     data = {"test": True}
 
@@ -128,8 +141,8 @@ def test_write_json_creates_parent_dirs(temp_directory) -> None:
     assert json.loads(path.read_text()) == data
 
 
-def test_write_json_non_atomic(temp_directory) -> None:
-    """Test non-atomic JSON write."""
+    def test_write_json_non_atomic(self, temp_directory: Path) -> None:
+        """Test non-atomic JSON write."""
     path = temp_directory / "test.json"
     data = {"test": True}
 
@@ -139,15 +152,14 @@ def test_write_json_non_atomic(temp_directory) -> None:
     assert json.loads(path.read_text()) == data
 
 
-# YAML Tests
+    # YAML Tests
 
-
-@pytest.mark.skipif(
-    not pytest.importorskip("yaml", reason="PyYAML not installed"),
-    reason="PyYAML required",
-)
-def test_read_yaml(temp_directory) -> None:
-    """Test reading YAML file."""
+    @pytest.mark.skipif(
+        not pytest.importorskip("yaml", reason="PyYAML not installed"),
+        reason="PyYAML required",
+    )
+    def test_read_yaml(self, temp_directory: Path) -> None:
+        """Test reading YAML file."""
     import yaml
 
     path = temp_directory / "test.yaml"
@@ -158,12 +170,12 @@ def test_read_yaml(temp_directory) -> None:
     assert result == data
 
 
-@pytest.mark.skipif(
-    not pytest.importorskip("yaml", reason="PyYAML not installed"),
-    reason="PyYAML required",
-)
-def test_read_yaml_missing_file(temp_directory) -> None:
-    """Test reading missing YAML file returns default."""
+    @pytest.mark.skipif(
+        not pytest.importorskip("yaml", reason="PyYAML not installed"),
+        reason="PyYAML required",
+    )
+    def test_read_yaml_missing_file(self, temp_directory: Path) -> None:
+        """Test reading missing YAML file returns default."""
     path = temp_directory / "nonexistent.yaml"
 
     result = read_yaml(path)
@@ -174,12 +186,12 @@ def test_read_yaml_missing_file(temp_directory) -> None:
     assert result == default
 
 
-@pytest.mark.skipif(
-    not pytest.importorskip("yaml", reason="PyYAML not installed"),
-    reason="PyYAML required",
-)
-def test_read_yaml_invalid(temp_directory) -> None:
-    """Test reading invalid YAML returns default."""
+    @pytest.mark.skipif(
+        not pytest.importorskip("yaml", reason="PyYAML not installed"),
+        reason="PyYAML required",
+    )
+    def test_read_yaml_invalid(self, temp_directory: Path) -> None:
+        """Test reading invalid YAML returns default."""
     path = temp_directory / "invalid.yaml"
     path.write_text("@invalid: [yaml content")
 
@@ -187,12 +199,12 @@ def test_read_yaml_invalid(temp_directory) -> None:
     assert result is None
 
 
-@pytest.mark.skipif(
-    not pytest.importorskip("yaml", reason="PyYAML not installed"),
-    reason="PyYAML required",
-)
-def test_write_yaml(temp_directory) -> None:
-    """Test writing YAML file."""
+    @pytest.mark.skipif(
+        not pytest.importorskip("yaml", reason="PyYAML not installed"),
+        reason="PyYAML required",
+    )
+    def test_write_yaml(self, temp_directory: Path) -> None:
+        """Test writing YAML file."""
     import yaml
 
     path = temp_directory / "test.yaml"
@@ -205,12 +217,12 @@ def test_write_yaml(temp_directory) -> None:
     assert loaded == data
 
 
-@pytest.mark.skipif(
-    not pytest.importorskip("yaml", reason="PyYAML not installed"),
-    reason="PyYAML required",
-)
-def test_write_yaml_flow_style(temp_directory) -> None:
-    """Test writing YAML in flow style."""
+    @pytest.mark.skipif(
+        not pytest.importorskip("yaml", reason="PyYAML not installed"),
+        reason="PyYAML required",
+    )
+    def test_write_yaml_flow_style(self, temp_directory: Path) -> None:
+        """Test writing YAML in flow style."""
     path = temp_directory / "test.yaml"
     data = {"a": [1, 2, 3]}
 
@@ -220,12 +232,12 @@ def test_write_yaml_flow_style(temp_directory) -> None:
     assert "{a: [1, 2, 3]}" in content
 
 
-@pytest.mark.skipif(
-    not pytest.importorskip("yaml", reason="PyYAML not installed"),
-    reason="PyYAML required",
-)
-def test_write_yaml_unicode(temp_directory) -> None:
-    """Test writing YAML with Unicode."""
+    @pytest.mark.skipif(
+        not pytest.importorskip("yaml", reason="PyYAML not installed"),
+        reason="PyYAML required",
+    )
+    def test_write_yaml_unicode(self, temp_directory: Path) -> None:
+        """Test writing YAML with Unicode."""
     import yaml
 
     path = temp_directory / "test.yaml"
@@ -237,16 +249,15 @@ def test_write_yaml_unicode(temp_directory) -> None:
     assert loaded == data
 
 
-# TOML Tests
+    # TOML Tests
 
-
-def test_read_toml(temp_directory) -> None:
-    """Test reading TOML file."""
+    def test_read_toml(self, temp_directory: Path) -> None:
+        """Test reading TOML file."""
     path = temp_directory / "test.toml"
     toml_content = """
-[package]
-name = "test"
-version = "1.0.0"
+        [package]
+        name = "test"
+        version = "1.0.0"
 
 [dependencies]
 foo = "1.2.3"
@@ -258,8 +269,8 @@ foo = "1.2.3"
     assert result["dependencies"]["foo"] == "1.2.3"
 
 
-def test_read_toml_missing_file(temp_directory) -> None:
-    """Test reading missing TOML file returns default."""
+    def test_read_toml_missing_file(self, temp_directory: Path) -> None:
+        """Test reading missing TOML file returns default."""
     path = temp_directory / "nonexistent.toml"
 
     result = read_toml(path)
@@ -270,8 +281,8 @@ def test_read_toml_missing_file(temp_directory) -> None:
     assert result == default
 
 
-def test_read_toml_invalid(temp_directory) -> None:
-    """Test reading invalid TOML returns default."""
+    def test_read_toml_invalid(self, temp_directory: Path) -> None:
+        """Test reading invalid TOML returns default."""
     path = temp_directory / "invalid.toml"
     path.write_text("[invalid toml content")
 
@@ -279,8 +290,8 @@ def test_read_toml_invalid(temp_directory) -> None:
     assert result == {}
 
 
-def test_read_toml_empty_file(temp_directory) -> None:
-    """Test reading empty TOML file."""
+    def test_read_toml_empty_file(self, temp_directory: Path) -> None:
+        """Test reading empty TOML file."""
     path = temp_directory / "empty.toml"
     path.write_text("")
 
@@ -288,12 +299,12 @@ def test_read_toml_empty_file(temp_directory) -> None:
     assert result == {}
 
 
-@pytest.mark.skipif(
-    not pytest.importorskip("tomli_w", reason="tomli-w not installed"),
-    reason="tomli-w required for TOML writing",
-)
-def test_write_toml(temp_directory) -> None:
-    """Test writing TOML file."""
+    @pytest.mark.skipif(
+        not pytest.importorskip("tomli_w", reason="tomli-w not installed"),
+        reason="tomli-w required for TOML writing",
+    )
+    def test_write_toml(self, temp_directory: Path) -> None:
+        """Test writing TOML file."""
     import tomllib
 
     path = temp_directory / "test.toml"
@@ -309,12 +320,12 @@ def test_write_toml(temp_directory) -> None:
     assert loaded == data
 
 
-@pytest.mark.skipif(
-    not pytest.importorskip("tomli_w", reason="tomli-w not installed"),
-    reason="tomli-w required for TOML writing",
-)
-def test_write_toml_creates_parent_dirs(temp_directory) -> None:
-    """Test write_toml creates parent directories."""
+    @pytest.mark.skipif(
+        not pytest.importorskip("tomli_w", reason="tomli-w not installed"),
+        reason="tomli-w required for TOML writing",
+    )
+    def test_write_toml_creates_parent_dirs(self, temp_directory: Path) -> None:
+        """Test write_toml creates parent directories."""
     path = temp_directory / "subdir" / "nested" / "test.toml"
     data = {"test": {"value": True}}
 
@@ -323,12 +334,12 @@ def test_write_toml_creates_parent_dirs(temp_directory) -> None:
     assert path.exists()
 
 
-@pytest.mark.skipif(
-    not pytest.importorskip("tomli_w", reason="tomli-w not installed"),
-    reason="tomli-w required for TOML writing",
-)
-def test_write_toml_non_atomic(temp_directory) -> None:
-    """Test non-atomic TOML write."""
+    @pytest.mark.skipif(
+        not pytest.importorskip("tomli_w", reason="tomli-w not installed"),
+        reason="tomli-w required for TOML writing",
+    )
+    def test_write_toml_non_atomic(self, temp_directory: Path) -> None:
+        """Test non-atomic TOML write."""
     path = temp_directory / "test.toml"
     data = {"test": True}
 

@@ -1,5 +1,7 @@
 """Universal client tests."""
 
+from __future__ import annotations
+
 import pytest
 from pytest_httpx import HTTPXMock
 
@@ -120,7 +122,7 @@ async def test_universal_client_middleware() -> None:
     client.middleware.add(metrics_mw)
 
     # Mock response
-    from unittest.mock import AsyncMock, patch
+    from provide.testkit.mocking import AsyncMock, patch
 
     with patch("provide.foundation.transport.http.httpx.AsyncClient") as mock_client_class:
         mock_client = AsyncMock()

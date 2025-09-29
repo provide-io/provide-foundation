@@ -1,8 +1,10 @@
 """Comprehensive tests for transport/registry.py module."""
 
-from unittest.mock import Mock, patch
+from __future__ import annotations
 
 import pytest
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.hub.components import ComponentCategory
 from provide.foundation.transport.base import Transport
@@ -31,7 +33,7 @@ class MockTransport(Transport):
         """Mock close implementation."""
 
 
-class TestRegisterTransport:
+class TestRegisterTransport(FoundationTestCase):
     """Test register_transport function."""
 
     def test_register_transport_basic(self) -> None:
@@ -109,7 +111,7 @@ class TestRegisterTransport:
                 )
 
 
-class TestGetTransportForScheme:
+class TestGetTransportForScheme(FoundationTestCase):
     """Test get_transport_for_scheme function."""
 
     def test_get_transport_for_scheme_found(self) -> None:
@@ -181,7 +183,7 @@ class TestGetTransportForScheme:
                 get_transport_for_scheme("http")
 
 
-class TestGetTransport:
+class TestGetTransport(FoundationTestCase):
     """Test get_transport function."""
 
     def test_get_transport_success(self) -> None:
@@ -235,7 +237,7 @@ class TestGetTransport:
                 get_transport("unknown://example.com")
 
 
-class TestListRegisteredTransports:
+class TestListRegisteredTransports(FoundationTestCase):
     """Test list_registered_transports function."""
 
     def test_list_registered_transports_empty(self) -> None:
@@ -333,7 +335,7 @@ class TestListRegisteredTransports:
             assert result == expected
 
 
-class TestGetTransportInfo:
+class TestGetTransportInfo(FoundationTestCase):
     """Test get_transport_info function."""
 
     def test_get_transport_info_by_name(self) -> None:
@@ -475,7 +477,7 @@ class TestGetTransportInfo:
             assert result["schemes"] == ["https"]
 
 
-class TestIntegration:
+class TestIntegration(FoundationTestCase):
     """Integration tests for registry functions working together."""
 
     def test_full_transport_lifecycle(self) -> None:
