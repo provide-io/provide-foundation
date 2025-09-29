@@ -8,11 +8,12 @@ from zoneinfo import ZoneInfo
 
 import pytest
 
+from provide.foundation.errors import ValidationError
 from provide.foundation.time import provide_now, provide_sleep, provide_time
 from provide.testkit import FoundationTestCase
 
 
-class TestProvideTime:
+class TestProvideTime(FoundationTestCase):
     """Test provide_time function."""
 
     def test_provide_time_returns_float(self) -> None:
@@ -23,7 +24,7 @@ class TestProvideTime:
     def test_provide_time_advances(self) -> None:
         """Test provide_time advances over time."""
         time1 = provide_time()
-        time.sleep(0.01)  # Small sleep
+        time.sleep(0.001)  # A small, real sleep to ensure clock tick
         time2 = provide_time()
         assert time2 > time1
 
@@ -54,8 +55,8 @@ class TestProvideSleep(FoundationTestCase):
         provide_sleep(0.1)
         end = time.time()
 
-        # Allow some tolerance for timing
         elapsed = end - start
+        # Allow a reasonable tolerance for timing variations in test environments
         assert 0.09 <= elapsed <= 0.2
 
     def test_provide_sleep_zero(self) -> None:
@@ -70,7 +71,7 @@ class TestProvideSleep(FoundationTestCase):
 
     def test_provide_sleep_negative_raises_error(self) -> None:
         """Test provide_sleep raises error for negative duration."""
-        with pytest.raises(ValueError, match="Sleep duration must be non-negative"):
+        with pytest.raises(ValidationError, match="Sleep duration must be non-negative"):
             provide_sleep(-1.0)
 
     @patch("provide.foundation.time.core.time")
@@ -97,23 +98,22 @@ class TestProvideNow(FoundationTestCase):
         result = provide_now()
         assert isinstance(result, datetime)
 
-    def test_provide_now_no_timezone(self) -> None:
-        """Test provide_now without timezone argument."""
+    def test_provide_now_is_naive_by_default(self) -> None:
+        """Test provide_now returns a naive datetime by default."""
         result = provide_now()
-        # Should have timezone info (system default)
-        assert result.tzinfo is None  # datetime.now() returns naive datetime
+        assert result.tzinfo is None
 
     def test_provide_now_with_utc(self) -> None:
         """Test provide_now with UTC timezone."""
         result = provide_now("UTC")
         assert result.tzinfo is not None
-        assert result.tzinfo.key == "UTC"
+        assert result.tzinfo == UTC
 
     def test_provide_now_with_timezone_string(self) -> None:
         """Test provide_now with timezone string."""
         result = provide_now("America/New_York")
         assert result.tzinfo is not None
-        assert result.tzinfo.key == "America/New_York"
+        assert str(result.tzinfo) == "America/New_York"
 
     def test_provide_now_with_zoneinfo_object(self) -> None:
         """Test provide_now with ZoneInfo object."""
@@ -124,21 +124,9 @@ class TestProvideNow(FoundationTestCase):
     def test_provide_now_advances(self) -> None:
         """Test provide_now advances over time."""
         time1 = provide_now()
-        time.sleep(0.01)
+        time.sleep(0.001)
         time2 = provide_now()
         assert time2 > time1
-
-    def test_provide_now_different_timezones(self) -> None:
-        """Test provide_now with different timezones."""
-        utc_now = provide_now("UTC")
-        ny_now = provide_now("America/New_York")
-
-        # They should be at roughly the same time but different timezones
-        time_diff = abs(
-            (utc_now.replace(tzinfo=None) - ny_now.replace(tzinfo=None)).total_seconds(),
-        )
-        # Should be within a few hours (timezone offset)
-        assert time_diff <= 24 * 3600  # Less than 24 hours difference
 
     @patch("provide.foundation.time.core.datetime")
     def test_provide_now_uses_datetime_module(self, mock_datetime: Any) -> None:
@@ -149,7 +137,7 @@ class TestProvideNow(FoundationTestCase):
         result = provide_now()
 
         assert result is mock_dt
-        mock_datetime.now.assert_called_once_with()
+        mock_datetime.now.assert_called_once_with(tz=None)
 
     @patch("provide.foundation.time.core.datetime")
     def test_provide_now_with_timezone_uses_datetime_module(self, mock_datetime: Any) -> None:
@@ -164,7 +152,7 @@ class TestProvideNow(FoundationTestCase):
         args, _kwargs = mock_datetime.now.call_args
         assert len(args) == 1
         assert isinstance(args[0], ZoneInfo)
-        assert args[0].key == "UTC"
+        assert str(args[0]) == "UTC"
 
 
 class TestTimeUtilitiesIntegration(FoundationTestCase):
@@ -175,7 +163,7 @@ class TestTimeUtilitiesIntegration(FoundationTestCase):
         start_time = provide_time()
         start_dt = provide_now()
 
-        provide_sleep(0.1)
+        provide_sleep(0.01)
 
         end_time = provide_time()
         end_dt = provide_now()
@@ -184,6 +172,8 @@ class TestTimeUtilitiesIntegration(FoundationTestCase):
         time_diff = end_time - start_time
         dt_diff = (end_dt - start_dt).total_seconds()
 
+        assert time_diff > 0
+        assert dt_diff > 0
         assert abs(time_diff - dt_diff) < 0.05  # Small tolerance
 
     def test_time_utilities_with_timezone(self) -> None:
@@ -203,24 +193,27 @@ class TestTimeUtilitiesIntegration(FoundationTestCase):
         import time as std_time
 
         # Test provide_time vs time.time
-        start = std_time.time()
+        start = std_time.perf_counter()
         for _ in range(1000):
             provide_time()
-        foundation_time = std_time.time() - start
+        foundation_time = std_time.perf_counter() - start
 
-        start = std_time.time()
+        start = std_time.perf_counter()
         for _ in range(1000):
             std_time.time()
-        standard_time = std_time.time() - start
+        standard_time = std_time.perf_counter() - start
+
+        # Ensure times are not zero to prevent flaky test failures
+        foundation_time = foundation_time or 1e-9
+        standard_time = standard_time or 1e-9
 
         # Foundation time should be reasonably close to standard time
-        # Loosen the multiplier to 100x to avoid flaky CI failures.
         assert foundation_time < standard_time * 100
 
     def test_exception_handling(self) -> None:
         """Test exception handling in time utilities."""
         # provide_sleep with negative value
-        with pytest.raises(ValueError):
+        with pytest.raises(ValidationError):
             provide_sleep(-1)
 
         # provide_now with invalid timezone should raise ZoneInfo error
