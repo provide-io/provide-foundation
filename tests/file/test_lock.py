@@ -7,7 +7,6 @@ import os
 from pathlib import Path
 import threading
 import time
-from typing import Never
 
 from provide.testkit import MinimalTestCase
 import pytest

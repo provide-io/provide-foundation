@@ -54,20 +54,23 @@ class TestOptionalCryptoDependency(FoundationTestCase):
     def test_certificate_base_creation_without_crypto(self) -> None:
         """Test CertificateBase.create fails gracefully without cryptography."""
         with patch("provide.foundation.crypto.certificates.base._HAS_CRYPTO", False):
+            from typing import cast
+
             from provide.foundation.crypto.certificates import (
                 CertificateBase,
             )
-
-            from typing import cast
             from provide.foundation.crypto.certificates.base import CertificateConfig
 
-            config = cast(CertificateConfig, {
-                "common_name": "test.com",
-                "organization": "Test Org",
-                "key_type": "rsa",
-                "not_valid_before": "2024-01-01T00:00:00Z",
-                "not_valid_after": "2025-01-01T00:00:00Z",
-            })
+            config = cast(
+                CertificateConfig,
+                {
+                    "common_name": "test.com",
+                    "organization": "Test Org",
+                    "key_type": "rsa",
+                    "not_valid_before": "2024-01-01T00:00:00Z",
+                    "not_valid_after": "2025-01-01T00:00:00Z",
+                },
+            )
 
             with pytest.raises(
                 ImportError,
