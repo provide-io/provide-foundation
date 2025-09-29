@@ -184,7 +184,6 @@ def get_hub() -> Hub:
 def clear_hub() -> None:
     """Clear the global hub instance."""
     global _global_hub
-    with get_lock_manager().acquire("foundation.hub.init"):
-        if _global_hub:
-            _global_hub.clear()
-        _global_hub = None
+    if _global_hub:
+        _global_hub.clear()
+    _global_hub = None

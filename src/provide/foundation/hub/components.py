@@ -103,66 +103,62 @@ def get_component_registry() -> Registry:
 )
 def check_component_health(name: str, dimension: str) -> dict[str, Any]:
     """Check component health status."""
-    with get_lock_manager().acquire("foundation.registry"):
-        component = _component_registry.get(name, dimension)
+    component = _component_registry.get(name, dimension)
 
-        if not component:
-            return {"status": "not_found"}
+    if not component:
+        return {"status": "not_found"}
 
-        entry = _component_registry.get_entry(name, dimension)
-        if not entry or not entry.metadata.get("supports_health_check", False):
-            return {"status": "no_health_check"}
+    entry = _component_registry.get_entry(name, dimension)
+    if not entry or not entry.metadata.get("supports_health_check", False):
+        return {"status": "no_health_check"}
 
-        if hasattr(component, "health_check"):
-            try:
-                return component.health_check()
-            except Exception as e:
-                return {"status": "error", "error": str(e)}
+    if hasattr(component, "health_check"):
+        try:
+            return component.health_check()
+        except Exception as e:
+            return {"status": "error", "error": str(e)}
 
-        return {"status": "unknown"}
+    return {"status": "unknown"}
 
 
 def get_component_config_schema(name: str, dimension: str) -> dict[str, Any] | None:
     """Get component configuration schema."""
-    with get_lock_manager().acquire("foundation.registry"):
-        entry = _component_registry.get_entry(name, dimension)
+    entry = _component_registry.get_entry(name, dimension)
 
-        if not entry:
-            return None
+    if not entry:
+        return None
 
-        return entry.metadata.get("config_schema")
+    return entry.metadata.get("config_schema")
 
 
 def bootstrap_foundation() -> None:
     """Bootstrap Foundation with core registry components."""
     registry = get_component_registry()
 
-    # Thread-safe check to prevent duplicate registration
-    with get_lock_manager().acquire("foundation.registry"):
-        # Check if already bootstrapped
-        if registry.get_entry("timestamp", ComponentCategory.PROCESSOR.value):
-            return  # Already bootstrapped
+    # Check if already bootstrapped
+    if registry.get_entry("timestamp", ComponentCategory.PROCESSOR.value):
+        return  # Already bootstrapped
 
-        # Register core processors
-        def timestamp_processor(
-            logger: object, method_name: str, event_dict: dict[str, Any]
-        ) -> dict[str, Any]:
-            import time
+    # Register core processors
+    def timestamp_processor(
+        logger: object, method_name: str, event_dict: dict[str, Any]
+    ) -> dict[str, Any]:
+        import time
 
-            event_dict["timestamp"] = time.time()
-            return event_dict
+        event_dict["timestamp"] = time.time()
+        return event_dict
 
-        registry.register(
-            name="timestamp",
-            value=timestamp_processor,
-            dimension=ComponentCategory.PROCESSOR.value,
-            metadata={"priority": 100, "stage": "pre_format"},
-            replace=True,  # Allow replacement for test scenarios
-        )
+    registry.register(
+        name="timestamp",
+        value=timestamp_processor,
+        dimension=ComponentCategory.PROCESSOR.value,
+        metadata={"priority": 100, "stage": "pre_format"},
+        replace=True,  # Allow replacement for test scenarios
+    )
 
-        from provide.foundation.hub.foundation import get_foundation_logger
+    from provide.foundation.hub.foundation import get_foundation_logger
 
-        get_foundation_logger().debug("Foundation bootstrap completed with registry components")
+    get_foundation_logger().debug("Foundation bootstrap completed with registry components")
 
 
 def reset_registry_for_tests() -> None:
