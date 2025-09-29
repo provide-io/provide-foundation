@@ -648,7 +648,13 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/cli/commands/test_deps_coverage.py -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py tests/cli/commands/test_deps_coverage.py -n auto --tb=short -q)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py -m time_sensitive -v)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_base.py tests/tools/test_downloader.py -v --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_base.py tests/tools/test_downloader.py -v --tb=short)",
+      "Bash(PYTHONPATH=src timeout 5 .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_acquire_release -xvs --tb=short)",
+      "Bash(PYTHONPATH=src timeout 5 .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_timeout -xvs --tb=short)",
+      "Bash(PYTHONPATH=src timeout 10 .venv/bin/pytest tests/file/test_lock.py -v --tb=short)",
+      "Bash(PYTHONPATH=src timeout 10 .venv/bin/pytest tests/file/test_lock.py -n 2 --tb=short -q)",
+      "Bash(PYTHONPATH=src timeout 30 .venv/bin/pytest tests/ -n auto --tb=no -q --maxfail=1)",
+      "Bash(env PYTHONPATH=src timeout 30 .venv/bin/pytest tests/ -n auto --tb=no -q --maxfail=1)"
     ],
     "deny": [],
     "ask": [],
