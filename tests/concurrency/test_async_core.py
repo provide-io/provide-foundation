@@ -6,7 +6,7 @@ from typing import Never
 from unittest.mock import AsyncMock, patch
 
 import pytest
-from provide.testkit import FoundationTestCase, mock_sleep
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.concurrency import (
     async_gather,
@@ -72,8 +72,7 @@ class TestAsyncSleep(FoundationTestCase):
 
         async def cancel_sleep() -> str:
             task = asyncio.create_task(async_sleep(1.0))
-            with mock_sleep():
-                await asyncio.sleep(0.01)  # Let it start
+            await asyncio.sleep(0.01)  # Let it start
             task.cancel()
             try:
                 await task
@@ -501,8 +500,7 @@ class TestAsyncUtilitiesIntegration(FoundationTestCase):
 
         # Start the task and cancel it
         task = asyncio.create_task(cancellable_workflow())
-        with mock_sleep():
-            await asyncio.sleep(0.01)  # Let it start
+        await asyncio.sleep(0.01)  # Let it start
         task.cancel()
 
         try:

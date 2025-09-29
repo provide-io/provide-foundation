@@ -86,6 +86,7 @@ class TestCircuitBreaker(FoundationTestCase):
         assert machine.current_state == "closed"
         assert machine.circuit_state.failure_count == 0
 
+    @pytest.mark.slow
     def test_open_to_half_open_after_timeout(self, machine: CircuitBreakerStateMachine) -> None:
         machine.transition(CircuitBreakerEvent.FAILURE)
         machine.transition(CircuitBreakerEvent.FAILURE)

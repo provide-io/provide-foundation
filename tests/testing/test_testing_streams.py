@@ -107,13 +107,13 @@ class TestStreamTestingUtilities:
         # Start multiple threads
         threads = []
         for i in range(3):
-            thread = threading.Thread(target=set_and_get_stream, args=(i,))
+            thread = threading.Thread(daemon=True, target=set_and_get_stream, args=(i,))
             threads.append(thread)
             thread.start()
 
         # Wait for all threads
         for thread in threads:
-            thread.join()
+            thread.join(timeout=10.0)
 
         # Due to the global stream state and threading lock,
         # we can't guarantee individual thread isolation,

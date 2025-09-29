@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from attrs import define
-import pytest
 from provide.testkit import FoundationTestCase
+import pytest
 
 from provide.foundation.config.base import field
 from provide.foundation.config.env import (

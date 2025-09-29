@@ -586,13 +586,13 @@ class TestFileOperationsStressTesting:
         start_time = time.perf_counter()
 
         for i in range(num_threads):
-            worker = threading.Thread(target=streaming_worker, args=(i,))
+            worker = threading.Thread(daemon=True, target=streaming_worker, args=(i,))
             workers.append(worker)
             worker.start()
 
         # Wait for completion
         for worker in workers:
-            worker.join()
+            worker.join(timeout=10.0)
 
         end_time = time.perf_counter()
         total_time = (end_time - start_time) * 1000

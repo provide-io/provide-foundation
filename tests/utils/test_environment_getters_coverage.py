@@ -512,11 +512,11 @@ class TestIntegrationScenarios(FoundationTestCase):
                 errors.append(e)
 
         # Run multiple threads
-        threads = [threading.Thread(target=get_env_vars) for _ in range(5)]
+        threads = [threading.Thread(daemon=True, target=get_env_vars) for _ in range(5)]
         for thread in threads:
             thread.start()
         for thread in threads:
-            thread.join()
+            thread.join(timeout=10.0)
 
         # All should succeed
         assert len(errors) == 0

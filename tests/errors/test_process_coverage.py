@@ -1,5 +1,9 @@
 """Comprehensive coverage tests for errors/process.py module."""
 
+from __future__ import annotations
+
+from provide.testkit import FoundationTestCase
+
 from provide.foundation.errors.process import (
     CommandNotFoundError,
     ProcessError,
@@ -7,7 +11,7 @@ from provide.foundation.errors.process import (
 )
 
 
-class TestProcessError:
+class TestProcessError(FoundationTestCase):
     """Test ProcessError class comprehensively."""
 
     def test_basic_process_error(self) -> None:
@@ -202,7 +206,7 @@ class TestProcessError:
         assert error.context["working_dir"] == "/tmp"
 
 
-class TestCommandNotFoundError:
+class TestCommandNotFoundError(FoundationTestCase):
     """Test CommandNotFoundError class."""
 
     def test_command_not_found_basic(self) -> None:
@@ -243,7 +247,7 @@ class TestCommandNotFoundError:
         assert error.stderr == "bash: missing_tool: command not found"
 
 
-class TestProcessTimeoutError:
+class TestProcessTimeoutError(FoundationTestCase):
     """Test ProcessTimeoutError class."""
 
     def test_process_timeout_basic(self) -> None:
@@ -325,7 +329,7 @@ class TestProcessTimeoutError:
         assert error.timeout is True
 
 
-class TestProcessErrorInheritance:
+class TestProcessErrorInheritance(FoundationTestCase):
     """Test inheritance and polymorphism of process errors."""
 
     def test_all_are_process_errors(self) -> None:

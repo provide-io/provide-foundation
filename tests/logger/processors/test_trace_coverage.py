@@ -1,9 +1,10 @@
 """Comprehensive tests for logger/processors/trace.py module."""
 
-from unittest.mock import Mock, patch
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 
-class TestTraceProcessorWithOtel:
+class TestTraceProcessorWithOtel(FoundationTestCase):
     """Test trace processor with OpenTelemetry available."""
 
     def test_inject_trace_context_with_otel_span(self) -> None:
@@ -135,7 +136,7 @@ class TestTraceProcessorWithOtel:
             assert "trace_flags" not in result or result["trace_flags"] == 0
 
 
-class TestTraceProcessorWithoutOtel:
+class TestTraceProcessorWithoutOtel(FoundationTestCase):
     """Test trace processor without OpenTelemetry."""
 
     def test_inject_trace_context_foundation_only(self) -> None:
@@ -226,7 +227,7 @@ class TestTraceProcessorWithoutOtel:
             assert "trace_id" not in result
 
 
-class TestTraceProcessorImports:
+class TestTraceProcessorImports(FoundationTestCase):
     """Test module imports and dependencies."""
 
     def test_module_imports(self) -> None:
@@ -260,7 +261,7 @@ class TestTraceProcessorImports:
             assert trace.otel_trace_runtime is None
 
 
-class TestShouldInjectTraceContext:
+class TestShouldInjectTraceContext(FoundationTestCase):
     """Test should_inject_trace_context function."""
 
     def test_should_inject_with_otel_active_span(self) -> None:
@@ -402,7 +403,7 @@ class TestShouldInjectTraceContext:
             assert should_inject_trace_context() is False
 
 
-class TestTraceProcessorLogging:
+class TestTraceProcessorLogging(FoundationTestCase):
     """Test logging behavior in trace processor."""
 
     def test_debug_logging_on_successful_otel_injection(self) -> None:

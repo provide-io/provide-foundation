@@ -128,6 +128,7 @@ class TestOpenObserveIntegration:
 
         return "\n".join(logs) + "\n"
 
+    @pytest.mark.slow
     def test_bulk_ingestion_and_query(self) -> None:
         """Test ingesting 1000 logs and querying them."""
         # Generate logs

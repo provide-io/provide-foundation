@@ -39,9 +39,7 @@ from provide.foundation.resilience import (
     fallback,
     retry,
 )
-from provide.foundation.setup import (
-    shutdown_foundation_telemetry,
-)
+from provide.foundation.setup import shutdown_foundation
 from provide.foundation.utils import (
     TokenBucketRateLimiter,
     check_optional_deps,
@@ -148,7 +146,7 @@ __all__ = [
     # Event enrichment utilities
     "show_event_matrix",
     # Utilities
-    "shutdown_foundation_telemetry",
+    "shutdown_foundation",
     "timed_block",
     "tracer",  # The tracer module for distributed tracing
 ]

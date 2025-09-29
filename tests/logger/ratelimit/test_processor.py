@@ -1,9 +1,12 @@
 """Tests for Foundation rate limiting processor."""
 
+from __future__ import annotations
+
 from contextlib import suppress
 import time
-from unittest.mock import MagicMock, patch
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, Mock, patch
 import pytest
 import structlog
 
@@ -14,11 +17,12 @@ from provide.foundation.logger.ratelimit.processor import (
 )
 
 
-class TestRateLimiterProcessor:
+class TestRateLimiterProcessor(FoundationTestCase):
     """Test RateLimiterProcessor class."""
 
     def setup_method(self) -> None:
         """Reset GlobalRateLimiter singleton before each test."""
+        super().setup_method()
         GlobalRateLimiter._instance = None
 
     def test_rate_limiter_processor_init(self) -> None:
@@ -47,7 +51,7 @@ class TestRateLimiterProcessor:
     @patch("provide.foundation.logger.get_logger")
     def test_rate_limiter_processor_allows_when_no_limits(
         self,
-        mock_get_logger,
+        mock_get_logger: MagicMock,
     ) -> None:
         """Test processor allows events when no rate limits are configured."""
         # Mock logger to prevent actual logging during summary
@@ -69,7 +73,7 @@ class TestRateLimiterProcessor:
         assert result == event_dict
 
     @patch("provide.foundation.logger.get_logger")
-    def test_rate_limiter_processor_blocks_when_limited(self, mock_get_logger) -> None:
+    def test_rate_limiter_processor_blocks_when_limited(self, mock_get_logger: MagicMock) -> None:
         """Test processor blocks events when rate limited."""
         mock_logger = MagicMock()
         mock_get_logger.return_value = mock_logger
@@ -101,7 +105,7 @@ class TestRateLimiterProcessor:
     @patch("provide.foundation.logger.get_logger")
     def test_rate_limiter_processor_emits_warning_on_limit(
         self,
-        mock_get_logger,
+        mock_get_logger: MagicMock,
     ) -> None:
         """Test processor emits warning when rate limited."""
         mock_logger = MagicMock()
@@ -136,7 +140,7 @@ class TestRateLimiterProcessor:
         assert result["_rate_limit_warning"] is True
 
     @patch("provide.foundation.logger.get_logger")
-    def test_rate_limiter_processor_warning_interval(self, mock_get_logger) -> None:
+    def test_rate_limiter_processor_warning_interval(self, mock_get_logger: MagicMock) -> None:
         """Test processor respects warning interval."""
         mock_logger = MagicMock()
         mock_get_logger.return_value = mock_logger
@@ -177,7 +181,7 @@ class TestRateLimiterProcessor:
     @patch("provide.foundation.logger.get_logger")
     def test_rate_limiter_processor_tracks_suppressed_counts(
         self,
-        mock_get_logger,
+        mock_get_logger: MagicMock,
     ) -> None:
         """Test processor tracks suppressed message counts."""
         mock_logger = MagicMock()
@@ -212,7 +216,7 @@ class TestRateLimiterProcessor:
         assert processor.suppressed_counts["test.logger"] == 3
 
     @patch("provide.foundation.logger.get_logger")
-    def test_rate_limiter_processor_different_loggers(self, mock_get_logger) -> None:
+    def test_rate_limiter_processor_different_loggers(self, mock_get_logger: MagicMock) -> None:
         """Test processor handles different loggers independently."""
         mock_logger = MagicMock()
         mock_get_logger.return_value = mock_logger
@@ -248,7 +252,7 @@ class TestRateLimiterProcessor:
         assert result2_again == event2
 
     @patch("provide.foundation.logger.get_logger")
-    def test_rate_limiter_processor_unknown_logger(self, mock_get_logger) -> None:
+    def test_rate_limiter_processor_unknown_logger(self, mock_get_logger: MagicMock) -> None:
         """Test processor handles unknown logger names gracefully."""
         mock_logger = MagicMock()
         mock_get_logger.return_value = mock_logger
@@ -266,7 +270,7 @@ class TestRateLimiterProcessor:
         assert result == event_dict
 
     @patch("provide.foundation.logger.get_logger")
-    def test_rate_limiter_processor_emit_summary(self, mock_get_logger) -> None:
+    def test_rate_limiter_processor_emit_summary(self, mock_get_logger: MagicMock) -> None:
         """Test processor emits periodic summaries."""
         mock_logger = MagicMock()
         mock_get_logger.return_value = mock_logger
@@ -319,7 +323,7 @@ class TestRateLimiterProcessor:
         assert "Rate limiting active" in call_args[0][0]
 
     @patch("provide.foundation.logger.get_logger")
-    def test_rate_limiter_processor_summary_no_activity(self, mock_get_logger) -> None:
+    def test_rate_limiter_processor_summary_no_activity(self, mock_get_logger: MagicMock) -> None:
         """Test processor doesn't emit summary when no rate limiting occurs."""
         mock_logger = MagicMock()
         mock_get_logger.return_value = mock_logger
@@ -351,7 +355,7 @@ class TestRateLimiterProcessor:
     @patch("provide.foundation.logger.get_logger")
     def test_rate_limiter_processor_summary_exception_handling(
         self,
-        mock_get_logger,
+        mock_get_logger: MagicMock,
     ) -> None:
         """Test processor handles exceptions during summary emission."""
         mock_get_logger.side_effect = Exception("Logger unavailable")
@@ -366,7 +370,7 @@ class TestRateLimiterProcessor:
         assert processor.suppressed_counts == {}
 
     @patch("provide.foundation.logger.get_logger")
-    def test_rate_limiter_processor_callable_interface(self, mock_get_logger) -> None:
+    def test_rate_limiter_processor_callable_interface(self, mock_get_logger: Mock) -> None:
         """Test processor implements proper callable interface."""
         mock_logger = MagicMock()
         mock_get_logger.return_value = mock_logger
@@ -381,11 +385,12 @@ class TestRateLimiterProcessor:
         assert result == event_dict
 
 
-class TestCreateRateLimiterProcessor:
+class TestCreateRateLimiterProcessor(FoundationTestCase):
     """Test create_rate_limiter_processor factory function."""
 
     def setup_method(self) -> None:
         """Reset GlobalRateLimiter singleton before each test."""
+        super().setup_method()
         GlobalRateLimiter._instance = None
 
     def test_create_rate_limiter_processor_basic(self) -> None:
@@ -484,15 +489,16 @@ class TestCreateRateLimiterProcessor:
         assert processor.rate_limiter.use_buffered is False
 
 
-class TestRateLimiterProcessorIntegration:
+class TestRateLimiterProcessorIntegration(FoundationTestCase):
     """Integration tests for rate limiter processor."""
 
     def setup_method(self) -> None:
         """Reset GlobalRateLimiter singleton before each test."""
+        super().setup_method()
         GlobalRateLimiter._instance = None
 
     @patch("provide.foundation.logger.get_logger")
-    def test_processor_with_structlog_pipeline(self, mock_get_logger) -> None:
+    def test_processor_with_structlog_pipeline(self, mock_get_logger: Mock) -> None:
         """Test processor works in structlog pipeline."""
         mock_logger = MagicMock()
         mock_get_logger.return_value = mock_logger
@@ -554,7 +560,7 @@ class TestRateLimiterProcessorIntegration:
         assert elapsed < 0.5
 
     @patch("provide.foundation.logger.get_logger")
-    def test_processor_multiple_logger_names(self, mock_get_logger) -> None:
+    def test_processor_multiple_logger_names(self, mock_get_logger: Mock) -> None:
         """Test processor handles multiple logger names correctly."""
         mock_logger = MagicMock()
         mock_get_logger.return_value = mock_logger

@@ -1,9 +1,12 @@
 """Basic coverage tests for logs CLI commands."""
 
+from __future__ import annotations
+
+from provide.testkit import FoundationTestCase
 import pytest
 
 
-class TestLogsCLIBasicCoverage:
+class TestLogsCLIBasicCoverage(FoundationTestCase):
     """Basic coverage tests for logs CLI commands."""
 
     def test_logs_init_imports_successfully(self) -> None:

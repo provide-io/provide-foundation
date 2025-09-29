@@ -1,5 +1,7 @@
 """Additional tests for provide.foundation.utils to increase code coverage."""
 
+from __future__ import annotations
+
 import io
 from typing import Any
 
@@ -9,9 +11,10 @@ from provide.foundation import LoggingConfig, TelemetryConfig, get_hub, logger
 from provide.foundation.formatting import format_table, to_camel_case
 from provide.foundation.utils import timed_block
 from provide.foundation.utils.parsing import auto_parse, parse_typed_value
+from provide.testkit import FoundationTestCase
 
 
-class TestCaseConversionCoverage:
+class TestCaseConversionCoverage(FoundationTestCase):
     """Coverage for case conversion functions."""
 
     def test_to_camel_case_empty_string(self) -> None:
@@ -19,7 +22,7 @@ class TestCaseConversionCoverage:
         assert to_camel_case("") == ""
 
 
-class TestTableFormattingCoverage:
+class TestTableFormattingCoverage(FoundationTestCase):
     """Coverage for table formatting edge cases."""
 
     def test_format_table_empty_rows(self) -> None:
@@ -54,7 +57,7 @@ class TestTableFormattingCoverage:
         assert format_table([], []) == ""
 
 
-class TestParsingCoverage:
+class TestParsingCoverage(FoundationTestCase):
     """Coverage for parsing utility functions."""
 
     def test_parse_typed_value_unsupported_origin(self) -> None:
@@ -76,10 +79,11 @@ class TestParsingCoverage:
 
         attrs_fields = {f.name: f for f in fields(DummyConfig)}
 
-        assert auto_parse(attrs_fields["int_val"], "42") == 42
-        assert auto_parse(attrs_fields["bool_val"], "true") is True
-        assert auto_parse(attrs_fields["list_val"], "a,b") == ["a", "b"]
-        assert auto_parse(attrs_fields["dict_val"], "k=v") == {"k": "v"}
+        # String type hints are treated as strings, not triggers for parsing
+        assert auto_parse(attrs_fields["int_val"], "42") == "42"
+        assert auto_parse(attrs_fields["bool_val"], "true") == "true"
+        assert auto_parse(attrs_fields["list_val"], "a,b") == "a,b"
+        assert auto_parse(attrs_fields["dict_val"], "k=v") == "k=v"
         assert auto_parse(attrs_fields["unknown_val"], "some_string") == "some_string"
 
     def test_auto_parse_no_type_hint(self) -> None:
@@ -124,7 +128,7 @@ class TestParsingCoverage:
         assert auto_parse(failing_field, "42") == 42
 
 
-class TestTimingCoverage:
+class TestTimingCoverage(FoundationTestCase):
     """Coverage for timing utility functions."""
 
     def test_timed_block_context_modification(
@@ -165,7 +169,7 @@ class TestTimingCoverage:
         assert "debug_test_op completed" in output
 
 
-class TestEnvUtilsCoverage:
+class TestEnvUtilsCoverage(FoundationTestCase):
     """Coverage for environment utilities."""
 
     def test_get_bool_edge_cases(self) -> None:

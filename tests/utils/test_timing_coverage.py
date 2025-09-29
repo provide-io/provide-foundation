@@ -5,14 +5,15 @@ from __future__ import annotations
 import contextvars
 import time
 from typing import Any
-from unittest.mock import Mock, patch
 
 import pytest
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.utils.timing import _PROVIDE_CONTEXT_TRACE_ID, timed_block
 
 
-class TestTimedBlock:
+class TestTimedBlock(FoundationTestCase):
     """Test timed_block context manager."""
 
     def test_timed_block_success(self) -> None:
@@ -145,7 +146,7 @@ class TestTimedBlock:
             layer_keys=layer_keys,
             initial_kvs=initial_kvs,
             priority="extra",
-            key2="value2"
+            key2="value2",
         ):
             pass
 
@@ -153,8 +154,8 @@ class TestTimedBlock:
         start_call = mock_logger.debug.call_args
         start_kwargs = start_call[1]
         assert start_kwargs["priority"] == "extra"  # extra_kvs wins
-        assert start_kwargs["key1"] == "value1"     # from initial_kvs
-        assert start_kwargs["key2"] == "value2"     # from extra_kvs
+        assert start_kwargs["key1"] == "value1"  # from initial_kvs
+        assert start_kwargs["key2"] == "value2"  # from extra_kvs
 
     def test_timed_block_with_trace_id(self) -> None:
         """Test timed_block with trace_id in context."""

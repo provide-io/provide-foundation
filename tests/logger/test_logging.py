@@ -8,6 +8,7 @@ import json
 import re
 from typing import Any
 
+from provide.testkit import FoundationTestCase
 import pytest
 from pytest import CaptureFixture, MonkeyPatch
 
@@ -134,7 +135,7 @@ def _check_traceback_presence(output: str, expected_traceback: str) -> bool:
     return "Traceback (most recent call last):" in output and expected_traceback in output
 
 
-class TestConfigWarnings:
+class TestConfigWarnings(FoundationTestCase):
     @pytest.mark.parametrize(
         "module_levels_env, expected_warning_parts",
         [
@@ -189,7 +190,7 @@ class TestConfigWarnings:
             assert module.strip() != "", "Empty module name should not be kept"
 
 
-class TestLoggingWithEmojiSets:
+class TestLoggingWithEmojiSets(FoundationTestCase):
     def test_llm_emoji_set_end_to_end(
         self,
         setup_foundation_telemetry_for_test: callable,
@@ -256,7 +257,7 @@ class TestLoggingWithEmojiSets:
         assert "status=success" in output
 
 
-class TestFactoriesModule:
+class TestFactoriesModule(FoundationTestCase):
     def test_get_logger_factory_basic(
         self,
         setup_foundation_telemetry_for_test: callable,

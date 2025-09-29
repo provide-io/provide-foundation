@@ -1,5 +1,9 @@
 """Tests for crypto hash utilities."""
 
+from __future__ import annotations
+
+from provide.testkit import FoundationTestCase
+
 from provide.foundation.crypto.utils import (
     compare_hash,
     format_hash,
@@ -12,7 +16,7 @@ from provide.foundation.crypto.utils import (
 )
 
 
-class TestHashUtils:
+class TestHashUtils(FoundationTestCase):
     """Test hash utility functions."""
 
     def test_quick_hash(self) -> None:

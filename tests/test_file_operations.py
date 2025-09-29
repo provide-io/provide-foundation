@@ -395,11 +395,11 @@ class TestOperationDetector:
             ]
             results.append(detector.detect(events))
 
-        threads = [threading.Thread(target=detect_worker) for _ in range(3)]
+        threads = [threading.Thread(daemon=True, target=detect_worker) for _ in range(3)]
         for t in threads:
             t.start()
         for t in threads:
-            t.join()
+            t.join(timeout=10.0)
 
         assert len(results) == 3
 

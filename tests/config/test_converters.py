@@ -1,7 +1,7 @@
 """Tests for configuration field converters."""
 
-import pytest
 from provide.testkit import FoundationTestCase
+import pytest
 
 from provide.foundation.config.converters import (
     parse_bool_extended,

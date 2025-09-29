@@ -1,7 +1,8 @@
 """Tests for basic CLI utility functions."""
 
+from __future__ import annotations
+
 import os
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -18,9 +19,11 @@ from provide.foundation.cli.utils import (
 )
 from provide.foundation.context import CLIContext
 from provide.foundation.logger import TelemetryConfig
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 
 
-class TestCliEchoFunctions:
+class TestCliEchoFunctions(FoundationTestCase):
     """Test CLI echo functions."""
 
     @patch("provide.foundation.cli.utils.pout")
@@ -84,7 +87,7 @@ class TestCliEchoFunctions:
         assert "FYI" in call_args[0][0]
 
 
-class TestCliContext:
+class TestCliContext(FoundationTestCase):
     """Test CLI context creation."""
 
     def test_create_cli_context_default(self) -> None:
@@ -100,7 +103,7 @@ class TestCliContext:
         assert ctx.debug is True
 
 
-class TestCliAssertions:
+class TestCliAssertions(FoundationTestCase):
     """Test CLI assertion helpers."""
 
     def test_assert_cli_success(self) -> None:
@@ -134,7 +137,7 @@ class TestCliAssertions:
             assert_cli_error(result, exit_code=2)
 
 
-class TestCliLogging:
+class TestCliLogging(FoundationTestCase):
     """Test CLI logging setup."""
 
     @patch("provide.foundation.cli.utils.get_hub")

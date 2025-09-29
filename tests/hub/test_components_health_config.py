@@ -1,7 +1,9 @@
 """Component health, configuration schema, and initialization tests for hub components module."""
 
-from unittest.mock import AsyncMock, Mock
+from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import AsyncMock, Mock
 import pytest
 
 from provide.foundation.hub.components import (
@@ -15,11 +17,12 @@ from provide.foundation.hub.components import (
 )
 
 
-class TestComponentHealth:
+class TestComponentHealth(FoundationTestCase):
     """Test component health checking."""
 
     def setup_method(self) -> None:
         """Set up test environment."""
+        super().setup_method()
         reset_registry_for_tests()
 
     def teardown_method(self) -> None:
@@ -100,11 +103,12 @@ class TestComponentHealth:
         assert result == {"status": "unknown"}
 
 
-class TestComponentConfigSchema:
+class TestComponentConfigSchema(FoundationTestCase):
     """Test component configuration schema functionality."""
 
     def setup_method(self) -> None:
         """Set up test environment."""
+        super().setup_method()
         reset_registry_for_tests()
 
     def teardown_method(self) -> None:
@@ -150,11 +154,12 @@ class TestComponentConfigSchema:
         assert result is None
 
 
-class TestComponentInitialization:
+class TestComponentInitialization(FoundationTestCase):
     """Test component initialization functionality."""
 
     def setup_method(self) -> None:
         """Set up test environment."""
+        super().setup_method()
         reset_registry_for_tests()
 
     def teardown_method(self) -> None:

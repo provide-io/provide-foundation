@@ -1,7 +1,10 @@
 """Tests for nested command registration functionality with dot notation."""
 
+from __future__ import annotations
+
 import click
 from click.testing import CliRunner
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.hub.commands import (
     create_command_group,
@@ -10,11 +13,12 @@ from provide.foundation.hub.commands import (
 from provide.foundation.hub.manager import clear_hub, get_hub
 
 
-class TestDotNotationCommands:
+class TestDotNotationCommands(FoundationTestCase):
     """Test command registration using dot notation."""
 
     def setup_method(self) -> None:
         """Clear the hub before each test."""
+        super().setup_method()
         clear_hub()
 
     def test_simple_nested_command(self) -> None:
@@ -328,11 +332,12 @@ class TestDotNotationCommands:
         assert rules.metadata.get("description") == "Rules commands"
 
 
-class TestDotNotationIntegration:
+class TestDotNotationIntegration(FoundationTestCase):
     """Integration tests for dot notation commands in real scenarios."""
 
     def setup_method(self) -> None:
         """Clear the hub before each test."""
+        super().setup_method()
         clear_hub()
 
     def test_realistic_cli_application(self) -> None:

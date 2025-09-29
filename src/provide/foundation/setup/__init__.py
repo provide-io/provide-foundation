@@ -34,18 +34,7 @@ async def shutdown_foundation(timeout_millis: int = 5000) -> None:
         flush_log_streams()
 
 
-async def shutdown_foundation_telemetry(timeout_millis: int = 5000) -> None:
-    """Legacy alias for shutdown_foundation.
-
-    Args:
-        timeout_millis: Timeout for shutdown (currently unused)
-
-    """
-    await shutdown_foundation(timeout_millis)
-
-
 __all__ = [
     "internal_setup",
     "shutdown_foundation",
-    "shutdown_foundation_telemetry",  # Legacy alias
 ]

@@ -1,8 +1,11 @@
 """Integration tests for error handling across foundation modules."""
 
+from __future__ import annotations
+
 import tempfile
 from typing import Never
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.config.loader import FileConfigLoader
@@ -16,7 +19,7 @@ from provide.foundation.hub import Hub
 from provide.foundation.hub.registry import Registry
 
 
-class TestErrorHandlingIntegration:
+class TestErrorHandlingIntegration(FoundationTestCase):
     """Test error handling integration across modules."""
 
     def test_registry_error_handling(self) -> None:

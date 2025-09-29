@@ -81,7 +81,7 @@ class FoundationLogger:
                 self.setup(config)
             return True
         except Exception:
-            # If Hub setup fails, fall through to legacy setup
+            # If Hub setup fails, fall through to lazy setup
             return False
 
     def _should_use_emergency_fallback(self) -> bool:
@@ -109,7 +109,7 @@ class FoundationLogger:
 
     def _ensure_configured(self) -> None:
         """Ensures the logger is configured, performing lazy setup if necessary.
-        Uses Hub for configuration when available, falls back to legacy setup.
+        Uses Hub for configuration when available, falls back to lazy setup.
         This method is thread-safe and handles setup failures gracefully.
         """
         # Fast path for already configured loggers.
@@ -120,7 +120,7 @@ class FoundationLogger:
         if self._try_hub_configuration():
             return
 
-        # Legacy setup path for backward compatibility
+        # Check if setup is already done
         if _LAZY_SETUP_STATE["done"] and not _LAZY_SETUP_STATE["error"]:
             return
 
@@ -221,8 +221,6 @@ class FoundationLogger:
         """Log warning-level event."""
         formatted_event = self._format_message_with_args(event, args)
         self._log_with_level("warning", formatted_event, **kwargs)
-
-    warn = warning  # Alias for compatibility
 
     def error(self, event: str, *args: Any, **kwargs: Any) -> None:
         """Log error-level event."""

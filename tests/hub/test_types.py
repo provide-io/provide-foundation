@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.hub.components import ComponentInfo
@@ -12,7 +13,7 @@ from provide.foundation.hub.types import (
 )
 
 
-class TestRegistryEntry:
+class TestRegistryEntry(FoundationTestCase):
     """Test RegistryEntry dataclass."""
 
     def test_create_registry_entry(self) -> None:
@@ -102,7 +103,7 @@ class TestRegistrable:
         class ValidComponent:
             __registry_name__ = "valid"
             __registry_dimension__ = "test"
-            __registry_metadata__ = {}
+            __registry_metadata__: dict[str, any] = {}
 
         comp = ValidComponent()
         result = register_item(comp)

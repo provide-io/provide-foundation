@@ -1,6 +1,9 @@
 """Basic coverage tests for hub components module - ComponentInfo, Category, and Emoji functionality."""
 
-from unittest.mock import Mock
+from __future__ import annotations
+
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock
 
 from provide.foundation.hub.components import (
     ComponentCategory,
@@ -8,7 +11,7 @@ from provide.foundation.hub.components import (
 )
 
 
-class TestComponentInfo:
+class TestComponentInfo(FoundationTestCase):
     """Test ComponentInfo dataclass."""
 
     def test_component_info_creation(self) -> None:
@@ -47,7 +50,7 @@ class TestComponentInfo:
         assert info.metadata == {}
 
 
-class TestComponentCategory:
+class TestComponentCategory(FoundationTestCase):
     """Test ComponentCategory enum."""
 
     def test_component_category_values(self) -> None:

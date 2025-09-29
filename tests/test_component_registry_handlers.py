@@ -155,12 +155,12 @@ class TestThreadSafeComponentAccess:
         # Register components concurrently
         threads = []
         for i in range(10):
-            thread = threading.Thread(target=register_component, args=(i,))
+            thread = threading.Thread(daemon=True, target=register_component, args=(i,))
             threads.append(thread)
             thread.start()
 
         for thread in threads:
-            thread.join()
+            thread.join(timeout=10.0)
 
         # All registrations should succeed
         assert len(errors) == 0
@@ -202,12 +202,12 @@ class TestThreadSafeComponentAccess:
         # Access component concurrently
         threads = []
         for _i in range(50):
-            thread = threading.Thread(target=access_component)
+            thread = threading.Thread(daemon=True, target=access_component)
             threads.append(thread)
             thread.start()
 
         for thread in threads:
-            thread.join()
+            thread.join(timeout=10.0)
 
         # All accesses should get the same component
         assert len(results) == 50

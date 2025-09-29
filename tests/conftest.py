@@ -5,7 +5,12 @@
 
 This file contains only the essential global fixtures and configuration
 that must be at the root level for pytest.
+
+All tests should inherit from FoundationTestCase which handles
+Foundation reset automatically.
 """
+
+from __future__ import annotations
 
 from collections.abc import Generator
 import logging as stdlib_logging
@@ -21,10 +26,7 @@ os.environ.setdefault("PROVIDE_LOG_LEVEL", "DEBUG")
 with_suppression = os.environ.get("FOUNDATION_SUPPRESS_TESTING_WARNINGS")
 os.environ["FOUNDATION_SUPPRESS_TESTING_WARNINGS"] = "true"
 
-from provide.testkit import (
-    reset_foundation_setup_for_testing,
-    set_log_stream_for_testing,
-)
+from provide.testkit import set_log_stream_for_testing  # noqa: E402 # type: ignore
 
 # Restore original warning suppression state
 if with_suppression is None:
@@ -60,28 +62,29 @@ if not os.getenv("PYTEST_WORKER_ID"):  # Avoid multiple messages with xdist
 
 
 @pytest.fixture(autouse=True)
-def manage_telemetry_reset_for_each_test() -> Generator[None]:
-    """Autouse fixture to reset Foundation Telemetry before and after each test.
-    Ensures test isolation by calling `reset_foundation_setup_for_testing()`.
+def reset_log_stream_for_testing() -> Generator[None]:
+    """Autouse fixture to reset log stream after each test.
+
+    Foundation reset is handled by FoundationTestCase for migrated tests.
+    This fixture only ensures log stream cleanup for all tests.
     """
-    if not os.getenv("PYTEST_WORKER_ID") or os.getenv("PYTEST_WORKER_ID") == "gw0":
-        conftest_diag_logger.debug(
-            "🔄 (Pre-test) Calling reset_foundation_setup_for_testing()",
-        )
-    reset_foundation_setup_for_testing()
-    # ensure_config_warnings_logger_configured call removed
-    yield
-    if not os.getenv("PYTEST_WORKER_ID") or os.getenv("PYTEST_WORKER_ID") == "gw0":
-        conftest_diag_logger.debug(
-            "🔄 (Post-test) Calling reset_foundation_setup_for_testing()",
-        )
-    reset_foundation_setup_for_testing()
-    # ensure_config_warnings_logger_configured call removed
-    set_log_stream_for_testing(None)  # Ensure stream is reset to default stderr
+    try:
+        yield
+    finally:
+        # Ensure stream is reset to default stderr after each test
+        # Handle potential closed streams during parallel execution
+        from provide.foundation.errors.decorators import suppress_and_log
+
+        @suppress_and_log(ValueError, OSError, log_level="debug")
+        def reset_stream_safely() -> None:
+            """Reset the log stream with automatic error suppression and logging."""
+            return set_log_stream_for_testing(None)
+
+        reset_stream_safely()
 
 
 # Import and re-export fixtures from the unified testing module
-from provide.testkit import (
+from provide.testkit import (  # noqa: E402
     async_stream_reader,
     async_timeout,
     binary_file,

@@ -1,6 +1,8 @@
 # tests/test_utils.py
 """Tests for utility functions in provide.foundation.utils."""
 
+from __future__ import annotations
+
 from collections.abc import Callable
 import io
 import re
@@ -14,6 +16,7 @@ from provide.foundation import (
 )
 from provide.foundation.utils import timed_block
 from provide.foundation.utils.timing import _PROVIDE_CONTEXT_TRACE_ID
+from provide.testkit import FoundationTestCase
 
 
 def parse_kv_log_line(line: str) -> dict:
@@ -73,7 +76,7 @@ def setup_telemetry_for_utils(
 
 
 @pytest.mark.usefixtures("setup_telemetry_for_utils")
-class TestTimedBlock:
+class TestTimedBlock(FoundationTestCase):
     def test_successful_execution(
         self,
         captured_stderr_for_foundation: io.StringIO,

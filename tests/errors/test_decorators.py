@@ -1,8 +1,11 @@
 """Tests for provide.foundation.errors.decorators module."""
 
-from typing import Never
-from unittest.mock import patch
+from __future__ import annotations
 
+from typing import Never
+
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.errors.base import FoundationError
@@ -13,7 +16,7 @@ from provide.foundation.errors.decorators import (
 )
 
 
-class TestWithErrorHandling:
+class TestWithErrorHandling(FoundationTestCase):
     """Test resilient decorator."""
 
     def test_successful_function(self) -> None:
@@ -39,7 +42,7 @@ class TestWithErrorHandling:
         """Test suppressing specific error types."""
 
         @resilient(fallback="default", suppress=(KeyError, ValueError))
-        def func(error_type) -> Never:
+        def func(error_type: str) -> Never:
             if error_type == "key":
                 raise KeyError("key error")
             if error_type == "value":
@@ -55,7 +58,7 @@ class TestWithErrorHandling:
             func("runtime")
 
     @patch("provide.foundation.hub.foundation.get_foundation_logger")
-    def test_error_logging(self, mock_logger) -> None:
+    def test_error_logging(self, mock_logger: patch) -> None:
         """Test that errors are logged."""
 
         @resilient(log_errors=True)
@@ -145,7 +148,7 @@ class TestWithErrorHandling:
         assert str(exc_info.value) == "foundation error"
 
 
-class TestSuppressAndLog:
+class TestSuppressAndLog(FoundationTestCase):
     """Test suppress_and_log decorator."""
 
     def test_suppress_specified_errors(self) -> None:
@@ -168,7 +171,7 @@ class TestSuppressAndLog:
             func("runtime")
 
     @patch("provide.foundation.hub.foundation.get_foundation_logger")
-    def test_logging_levels(self, mock_logger) -> None:
+    def test_logging_levels(self, mock_logger: patch) -> None:
         """Test different logging levels."""
 
         @suppress_and_log(ValueError, fallback=None, log_level="debug")
@@ -200,7 +203,7 @@ class TestSuppressAndLog:
         assert dict_fallback() == {"key": "value"}
 
     @patch("provide.foundation.hub.foundation.get_foundation_logger")
-    def test_log_message_format(self, mock_logger) -> None:
+    def test_log_message_format(self, mock_logger: patch) -> None:
         """Test log message formatting."""
 
         @suppress_and_log(ValueError, fallback="fallback")
@@ -217,7 +220,7 @@ class TestSuppressAndLog:
         assert "test error" in log_message
 
 
-class TestFallbackOnError:
+class TestFallbackOnError(FoundationTestCase):
     """Test fallback_on_error decorator."""
 
     def test_successful_function(self) -> None:
@@ -283,7 +286,7 @@ class TestFallbackOnError:
             func("runtime")
 
     @patch("provide.foundation.hub.foundation.get_foundation_logger")
-    def test_error_logging(self, mock_logger) -> None:
+    def test_error_logging(self, mock_logger: patch) -> None:
         """Test that errors are logged before fallback."""
 
         def fallback() -> str:
@@ -315,10 +318,10 @@ class TestFallbackOnError:
         # Should raise the fallback error with original as cause
         with pytest.raises(RuntimeError, match="fallback error") as exc_info:
             failing_func()
-        assert exc_info.value.__cause__.__class__ == ValueError
+        assert isinstance(exc_info.value.__cause__, ValueError)
 
     @patch("provide.foundation.hub.foundation.get_foundation_logger")
-    def test_fallback_error_logging(self, mock_logger) -> None:
+    def test_fallback_error_logging(self, mock_logger: patch) -> None:
         """Test logging when fallback also fails."""
 
         def bad_fallback() -> Never:

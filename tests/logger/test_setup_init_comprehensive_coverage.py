@@ -2,8 +2,10 @@
 
 import importlib
 
+from provide.testkit import FoundationTestCase
 
-class TestLoggerSetupInit:
+
+class TestLoggerSetupInit(FoundationTestCase):
     """Test logger/setup/__init__.py module functionality."""
 
     def test_internal_setup_import(self) -> None:

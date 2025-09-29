@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from unittest.mock import Mock
-
 from attrs import define
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock
 
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.manager import ConfigManager

@@ -1,6 +1,10 @@
 """Tests for provide.foundation.errors.context module."""
 
+from __future__ import annotations
+
 from datetime import datetime
+
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.errors.auth import AuthenticationError
 from provide.foundation.errors.base import FoundationError
@@ -14,7 +18,7 @@ from provide.foundation.errors.context import (
 from provide.foundation.errors.integration import IntegrationError, NetworkError
 
 
-class TestErrorSeverity:
+class TestErrorSeverity(FoundationTestCase):
     """Test ErrorSeverity enum."""
 
     def test_severity_values(self) -> None:
@@ -30,7 +34,7 @@ class TestErrorSeverity:
         assert ErrorSeverity.HIGH.value == "high"
 
 
-class TestErrorCategory:
+class TestErrorCategory(FoundationTestCase):
     """Test ErrorCategory enum."""
 
     def test_category_values(self) -> None:
@@ -45,7 +49,7 @@ class TestErrorCategory:
         assert ErrorCategory.SYSTEM.value == "system"
 
 
-class TestErrorContext:
+class TestErrorContext(FoundationTestCase):
     """Test ErrorContext class."""
 
     def test_default_creation(self) -> None:
@@ -260,7 +264,7 @@ class TestErrorContext:
         assert "terraform" not in result["detail"]
 
 
-class TestCaptureErrorContext:
+class TestCaptureErrorContext(FoundationTestCase):
     """Test capture_error_context function."""
 
     def test_capture_basic_exception(self) -> None:
@@ -392,7 +396,7 @@ class TestCaptureErrorContext:
         assert ctx.get_namespace("a") == {"b.c": "deep", "d": "shallow"}
 
 
-class TestErrorContextIntegration:
+class TestErrorContextIntegration(FoundationTestCase):
     """Test ErrorContext integration scenarios."""
 
     def test_full_context_workflow(self) -> None:

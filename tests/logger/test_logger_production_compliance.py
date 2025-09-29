@@ -8,15 +8,17 @@ This module tests production-ready scenarios, documented behavior compliance,
 and performance requirements for lazy initialization functionality.
 """
 
+from __future__ import annotations
+
 import asyncio
 import contextlib
 import json
 import os
 import threading
 import time
-from unittest.mock import patch
+from provide.testkit.mocking import patch
 
-from provide.testkit import reset_foundation_setup_for_testing
+from provide.testkit import FoundationTestCase
 import pytest
 from pytest import CaptureFixture  # Added for capsys
 
@@ -25,21 +27,20 @@ from provide.foundation import (
     TelemetryConfig,
     get_hub,
     logger as global_logger,
-    shutdown_foundation_telemetry,
+    shutdown_foundation,
 )
 
 # Mark all tests in this file to run serially to avoid global state pollution
 pytestmark = pytest.mark.serial
 
 
-class TestProductionReadinessScenarios:
+class TestProductionReadinessScenarios(FoundationTestCase):
     """Tests that verify production readiness of lazy initialization."""
 
     def test_high_throughput_scenario(self, captured_stderr_for_foundation) -> None:
         """Test lazy initialization under high throughput."""
 
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
-        reset_foundation_setup_for_testing()
 
         # Simulate high-throughput logging
         start_time = time.time()
@@ -69,7 +70,6 @@ class TestProductionReadinessScenarios:
 
         from provide.testkit import set_log_stream_for_testing
 
-        reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -103,7 +103,6 @@ class TestProductionReadinessScenarios:
 
         from provide.testkit import set_log_stream_for_testing
 
-        reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -145,7 +144,6 @@ class TestProductionReadinessScenarios:
 
         from provide.testkit import set_log_stream_for_testing
 
-        reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -159,7 +157,7 @@ class TestProductionReadinessScenarios:
 
         # Test graceful shutdown
         async def test_shutdown() -> None:
-            await shutdown_foundation_telemetry()
+            await shutdown_foundation()
 
         # Run shutdown
 
@@ -173,7 +171,7 @@ class TestProductionReadinessScenarios:
         assert "Message after shutdown" in captured.err
 
 
-class TestDocumentedBehaviorCompliance:
+class TestDocumentedBehaviorCompliance(FoundationTestCase):
     """Tests that verify compliance with documented lazy initialization behavior."""
 
     def test_documented_environment_variables(self, capsys: CaptureFixture) -> None:
@@ -182,7 +180,6 @@ class TestDocumentedBehaviorCompliance:
 
         from provide.testkit import set_log_stream_for_testing
 
-        reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -199,6 +196,7 @@ class TestDocumentedBehaviorCompliance:
 
         with patch.dict(os.environ, documented_env_vars):
             # Force re-initialization with new environment variables
+            from provide.testkit import reset_foundation_setup_for_testing
             reset_foundation_setup_for_testing()
             set_log_stream_for_testing(sys.stderr)
 
@@ -256,7 +254,6 @@ class TestDocumentedBehaviorCompliance:
 
         from provide.testkit import set_log_stream_for_testing
 
-        reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -289,7 +286,6 @@ class TestDocumentedBehaviorCompliance:
 
         from provide.testkit import set_log_stream_for_testing
 
-        reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -322,7 +318,7 @@ class TestDocumentedBehaviorCompliance:
         # Start all threads
         threads = []
         for i in range(thread_count):
-            thread = threading.Thread(target=stress_worker, args=(i,))
+            thread = threading.Thread(daemon=True, target=stress_worker, args=(i,))
             threads.append(thread)
             thread.start()
 
@@ -349,7 +345,6 @@ class TestDocumentedBehaviorCompliance:
 
         from provide.testkit import set_log_stream_for_testing
 
-        reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -381,7 +376,7 @@ class TestDocumentedBehaviorCompliance:
         assert "First message triggers initialization" in captured.err
 
 
-class TestLazyInitializationDocumentation:
+class TestLazyInitializationDocumentation(FoundationTestCase):
     """Tests that verify examples from documentation work correctly."""
 
     def test_basic_usage_example(self, capsys: CaptureFixture) -> None:
@@ -390,7 +385,6 @@ class TestLazyInitializationDocumentation:
 
         from provide.testkit import set_log_stream_for_testing
 
-        reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
 
         # Set up Foundation to log to stderr so capsys can capture it
@@ -416,7 +410,6 @@ class TestLazyInitializationDocumentation:
 
         from provide.testkit import set_log_stream_for_testing
 
-        reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -441,7 +434,6 @@ class TestLazyInitializationDocumentation:
 
         from provide.testkit import set_log_stream_for_testing
 
-        reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 
@@ -456,6 +448,7 @@ class TestLazyInitializationDocumentation:
             },
         ):
             # Force re-initialization with new environment variables
+            from provide.testkit import reset_foundation_setup_for_testing
             reset_foundation_setup_for_testing()
             set_log_stream_for_testing(sys.stderr)
 
@@ -493,7 +486,6 @@ class TestLazyInitializationDocumentation:
 
         from provide.testkit import set_log_stream_for_testing
 
-        reset_foundation_setup_for_testing()
         os.environ["PROVIDE_LOG_LEVEL"] = "INFO"
         set_log_stream_for_testing(sys.stderr)
 

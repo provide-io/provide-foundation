@@ -1,10 +1,9 @@
 """Comprehensive coverage tests for ConfigSchema class and schema validation."""
 
-from unittest.mock import Mock
-
 from attrs import define, field
-import pytest
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock
+import pytest
 
 from provide.foundation.config.base import BaseConfig
 from provide.foundation.config.schema import (

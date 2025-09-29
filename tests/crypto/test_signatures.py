@@ -1,5 +1,8 @@
 """Tests for digital signature operations (moved from flavorpack)."""
 
+from __future__ import annotations
+
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.crypto import (
@@ -13,7 +16,7 @@ from provide.foundation.crypto import (
 )
 
 
-class TestEd25519KeyGeneration:
+class TestEd25519KeyGeneration(FoundationTestCase):
     """Test Ed25519 key generation (moved from flavorpack security tests)."""
 
     def test_key_strength(self) -> None:
@@ -42,7 +45,7 @@ class TestEd25519KeyGeneration:
         assert len(seeds) == 100, "Random seed generation is not secure"
 
 
-class TestEd25519Signatures:
+class TestEd25519Signatures(FoundationTestCase):
     """Test Ed25519 signature algorithm (moved from flavorpack security tests)."""
 
     def test_signature_algorithm(self) -> None:

@@ -1,14 +1,12 @@
 """Core integration tests for the Foundation library."""
 
+from __future__ import annotations
+
 import io
 import os
-from unittest.mock import patch
 
-from provide.testkit import (
-    TestEnvironment,
-    isolated_cli_runner,
-    reset_foundation_setup_for_testing,
-)
+from provide.testkit import TestEnvironment, isolated_cli_runner
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation import (
@@ -27,8 +25,8 @@ pytestmark = pytest.mark.serial
 
 @pytest.fixture(autouse=True)
 def manage_environment() -> None:
-    """Ensure Foundation state is reset for each test."""
-    reset_foundation_setup_for_testing()
+    """Foundation state is automatically reset by conftest.py fixture."""
+    pass
 
 
 def test_basic_initialization_and_logging(captured_stderr_for_foundation: io.StringIO) -> None:
@@ -94,7 +92,6 @@ def test_configuration_from_environment(captured_stderr_for_foundation: io.Strin
             "PROVIDE_LOG_LEVEL": "DEBUG",
         }
     ):
-        reset_foundation_setup_for_testing()  # Re-init with new env vars
         hub = get_hub()
         assert hub.get_foundation_config().service_name == "test-service"
 
@@ -183,7 +180,6 @@ def test_configuration_edge_cases() -> None:
     """Test configuration edge cases."""
     # Test that re-initialization without force does nothing
     with TestEnvironment({"PROVIDE_SERVICE_NAME": "first-service"}):
-        reset_foundation_setup_for_testing()
         hub = get_hub()
         assert hub.get_foundation_config().service_name == "first-service"
 
@@ -193,7 +189,6 @@ def test_configuration_edge_cases() -> None:
         assert hub.get_foundation_config().service_name == "first-service"
 
     # Test re-initialization with force
-    reset_foundation_setup_for_testing()
     with TestEnvironment({"PROVIDE_SERVICE_NAME": "first-service"}):
         hub = get_hub()
         hub.initialize_foundation(force=True)  # Re-init with env var
@@ -206,6 +201,5 @@ def test_configuration_edge_cases() -> None:
 
     # Test empty environment
     with patch.dict(os.environ, {}, clear=True):
-        reset_foundation_setup_for_testing()
         hub = get_hub()
         assert hub.get_foundation_config().service_name is None

@@ -2,12 +2,15 @@
 
 import sys
 
+from provide.testkit import FoundationTestCase
 
-class TestLoggerSetupInitCoverage:
+
+class TestLoggerSetupInitCoverage(FoundationTestCase):
     """Test logger setup __init__ module functionality."""
 
     def setup_method(self) -> None:
         """Clear module state before each test to ensure isolation."""
+        super().setup_method()  # Always call parent setup first
         # Clear logger setup modules from cache
         modules_to_clear = [
             "provide.foundation.logger.setup",
@@ -27,6 +30,7 @@ class TestLoggerSetupInitCoverage:
         for mod_name, module in self.saved_modules.items():
             if mod_name not in sys.modules:
                 sys.modules[mod_name] = module
+        super().teardown_method()  # Always call parent teardown
 
     def test_internal_setup_import(self) -> None:
         """Test internal_setup can be imported."""

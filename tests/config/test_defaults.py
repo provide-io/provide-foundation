@@ -1,8 +1,9 @@
 """Tests for config.defaults module."""
 
 from pathlib import Path
-from unittest.mock import patch
+
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 
 from provide.foundation.config.defaults import (
     DEFAULT_ATOMIC_ENCODING,
