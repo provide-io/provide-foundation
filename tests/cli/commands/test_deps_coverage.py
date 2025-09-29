@@ -237,7 +237,7 @@ class TestDepsCommandModuleImport(FoundationTestCase):
         assert hasattr(deps, "_HAS_CLICK")
         assert isinstance(deps._HAS_CLICK, bool)
 
-    def test_click_import_handling(self) -> None:
+    def test_click_import_handling(self, module_reload_isolation: Any) -> None:
         """Test click import is handled properly."""
         # Test that the module handles click import correctly
         import provide.foundation.cli.commands.deps as deps_module
