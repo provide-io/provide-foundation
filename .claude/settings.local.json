@@ -586,7 +586,9 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/time/test_time_core.py::TestProvideTime::test_provide_time_advances tests/state/test_state_management.py::TestCircuitBreaker::test_half_open_success_closes_circuit -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/time/test_time_core.py::TestProvideTime::test_provide_time_advances tests/time/test_time_core.py::TestProvideSleep::test_provide_sleep_actually_sleeps -v --tb=short -n 0)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/time/test_time_core.py)",
-      "Bash(PYTHONPATH=src .venv/bin/mypy tests/time/test_time_core.py)"
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/time/test_time_core.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest -m \"time_sensitive\" -v --tb=short -n 0)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/time/ tests/file/test_file_quality.py tests/tools/test_installer.py::TestToolInstaller::test_extract_zip_success -v --tb=short)"
     ],
     "deny": [],
     "ask": [],
