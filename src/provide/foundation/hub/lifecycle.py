@@ -12,6 +12,9 @@ Provides functions for initializing, managing, and cleaning up components
 registered in the Hub registry system.
 """
 
+# Async-safe lock for component initialization
+_async_component_lock = asyncio.Lock()
+
 
 def _get_registry_and_globals() -> Any:
     """Get registry and initialized components from components module."""
@@ -77,57 +80,56 @@ def get_or_initialize_component(name: str, dimension: str) -> Any:
 
 async def initialize_async_component(name: str, dimension: str) -> Any:
     """Initialize component asynchronously."""
-    from provide.foundation.concurrency.locks import get_lock_manager
-
     registry, initialized_components = _get_registry_and_globals()
+    key = (name, dimension)
 
-    # First, check if already initialized and get factory info (with lock)
-    with get_lock_manager().acquire("foundation.registry"):
-        key = (name, dimension)
-
-        # Return already initialized component
+    # First, check if already initialized (only need async lock for initialized_components)
+    async with _async_component_lock:
         if key in initialized_components:
             return initialized_components[key]
 
-        entry = registry.get_entry(name, dimension)
+    # Registry operations are thread-safe internally, no external lock needed
+    entry = registry.get_entry(name, dimension)
 
-        if not entry:
-            return None
+    if not entry:
+        return None
 
-        # If not async or no factory, return current value
-        if not entry.metadata.get("async", False):
-            return entry.value
+    # If not async or no factory, return current value
+    if not entry.metadata.get("async", False):
+        return entry.value
 
-        factory = entry.metadata.get("factory")
-        if not factory:
-            return entry.value
+    factory = entry.metadata.get("factory")
+    if not factory:
+        return entry.value
 
-        # Extract metadata for use outside lock
-        metadata = entry.metadata.copy()
+    # Double-check pattern with async lock
+    async with _async_component_lock:
+        if key in initialized_components:
+            return initialized_components[key]
 
-    # Initialize component outside the lock to avoid deadlock
+    # Initialize component outside any lock
     try:
         if inspect.iscoroutinefunction(factory):
             component = await factory()
         else:
             component = factory()
 
-        # Re-acquire lock to update registry atomically
-        with get_lock_manager().acquire("foundation.registry"):
-            # Double-check component wasn't initialized by another coroutine
-            if key in initialized_components:
-                return initialized_components[key]
+        # Update both registry and initialized_components
+        # Registry handles its own thread-safety
+        registry.register(
+            name=name,
+            value=component,
+            dimension=dimension,
+            metadata=entry.metadata,
+            replace=True,
+        )
 
-            # Update registry
-            registry.register(
-                name=name,
-                value=component,
-                dimension=dimension,
-                metadata=metadata,
-                replace=True,
-            )
-            initialized_components[key] = component
-            return component
+        # Only need async lock for initialized_components dict
+        async with _async_component_lock:
+            # Final check before update
+            if key not in initialized_components:
+                initialized_components[key] = component
+            return initialized_components[key]
 
     except Exception as e:
         get_foundation_logger().error(
