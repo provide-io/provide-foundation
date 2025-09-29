@@ -30,51 +30,45 @@ def _get_registry_and_lock() -> tuple[Any, Any]:
 @resilient(fallback=None, suppress=(Exception,))
 def resolve_config_value(key: str) -> Any:
     """Resolve configuration value using priority-ordered sources."""
-    from provide.foundation.concurrency.locks import get_lock_manager
-
     registry, ComponentCategory = _get_registry_and_lock()
 
-    with get_lock_manager().acquire("foundation.registry"):
-        # Get all config sources
-        all_entries = list(registry)
-        config_sources = [
-            entry for entry in all_entries if entry.dimension == ComponentCategory.CONFIG_SOURCE.value
-        ]
+    # Get all config sources
+    all_entries = list(registry)
+    config_sources = [
+        entry for entry in all_entries if entry.dimension == ComponentCategory.CONFIG_SOURCE.value
+    ]
 
-        # Sort by priority (highest first)
-        config_sources.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)
+    # Sort by priority (highest first)
+    config_sources.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)
 
-        # Try each source
-        for entry in config_sources:
-            source = entry.value
-            if hasattr(source, "get_value"):
-                # Try to get value, continue on error
-                try:
-                    value = source.get_value(key)
-                    if value is not None:
-                        return value
-                except Exception:
-                    continue
+    # Try each source
+    for entry in config_sources:
+        source = entry.value
+        if hasattr(source, "get_value"):
+            # Try to get value, continue on error
+            try:
+                value = source.get_value(key)
+                if value is not None:
+                    return value
+            except Exception:
+                continue
 
-        return None
+    return None
 
 
 def get_config_chain() -> list[RegistryEntry]:
     """Get configuration sources ordered by priority."""
-    from provide.foundation.concurrency.locks import get_lock_manager
-
     registry, ComponentCategory = _get_registry_and_lock()
 
-    with get_lock_manager().acquire("foundation.registry"):
-        # Get all config sources
-        all_entries = list(registry)
-        config_sources = [
-            entry for entry in all_entries if entry.dimension == ComponentCategory.CONFIG_SOURCE.value
-        ]
+    # Get all config sources
+    all_entries = list(registry)
+    config_sources = [
+        entry for entry in all_entries if entry.dimension == ComponentCategory.CONFIG_SOURCE.value
+    ]
 
-        # Sort by priority (highest first)
-        config_sources.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)
-        return config_sources
+    # Sort by priority (highest first)
+    config_sources.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)
+    return config_sources
 
 
 @resilient(fallback={}, context_provider=lambda: {"function": "load_all_configs"})
@@ -112,16 +106,13 @@ def load_config_from_registry(config_class: type[T]) -> T:
         Configuration instance loaded from registry sources
 
     """
-    from provide.foundation.concurrency.locks import get_lock_manager
-
     _registry, _ComponentCategory = _get_registry_and_lock()
 
-    with get_lock_manager().acquire("foundation.registry"):
-        # Get configuration data from registry
-        config_data = {}
+    # Get configuration data from registry
+    config_data = {}
 
-        # Load from all config sources
-        chain = get_config_chain()
+    # Load from all config sources
+    chain = get_config_chain()
         for entry in chain:
             source = entry.value
             if hasattr(source, "load_config"):
