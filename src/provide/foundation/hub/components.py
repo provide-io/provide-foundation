@@ -158,8 +158,6 @@ def bootstrap_foundation() -> None:
     get_foundation_logger().debug("Foundation bootstrap completed with registry components")
 
 
-
-
 # Bootstrap will happen lazily on first hub access to avoid circular imports
 # bootstrap_foundation()
 
@@ -188,7 +186,6 @@ __all__ = [
     "initialize_async_component",
     "load_all_configs",
     "load_config_from_registry",
-    "reset_registry_for_tests",
     "resolve_component_dependencies",
     # Re-exported from specialized modules
     "resolve_config_value",
