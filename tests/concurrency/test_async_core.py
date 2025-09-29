@@ -3,7 +3,7 @@
 import asyncio
 import time
 from typing import Never
-from unittest.mock import AsyncMock, patch
+from provide.testkit.mocking import AsyncMock, patch
 
 import pytest
 from provide.testkit import MinimalTestCase

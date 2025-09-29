@@ -6,7 +6,7 @@ from collections.abc import Generator
 import os
 from pathlib import Path
 from typing import Any, get_origin
-from unittest.mock import Mock, patch
+from provide.testkit.mocking import Mock, patch
 
 from provide.testkit import FoundationTestCase
 import pytest

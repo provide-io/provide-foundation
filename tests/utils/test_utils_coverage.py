@@ -175,7 +175,7 @@ class TestEnvUtilsCoverage(FoundationTestCase):
     def test_get_bool_edge_cases(self) -> None:
         """Test edge cases for get_bool function."""
         import os
-        from unittest.mock import patch
+        from provide.testkit.mocking import patch
 
         from provide.foundation.errors.config import ValidationError
         from provide.foundation.utils.environment import get_bool
@@ -199,7 +199,7 @@ class TestEnvUtilsCoverage(FoundationTestCase):
     def test_get_int_edge_cases(self) -> None:
         """Test edge cases for get_int function."""
         import os
-        from unittest.mock import patch
+        from provide.testkit.mocking import patch
 
         from provide.foundation.errors.config import ValidationError
         from provide.foundation.utils.environment import get_int
@@ -223,7 +223,7 @@ class TestEnvUtilsCoverage(FoundationTestCase):
     def test_get_float_edge_cases(self) -> None:
         """Test edge cases for get_float function."""
         import os
-        from unittest.mock import patch
+        from provide.testkit.mocking import patch
 
         from provide.foundation.errors.config import ValidationError
         from provide.foundation.utils.environment import get_float
@@ -247,7 +247,7 @@ class TestEnvUtilsCoverage(FoundationTestCase):
     def test_get_str_with_default(self) -> None:
         """Test get_str with default value."""
         import os
-        from unittest.mock import patch
+        from provide.testkit.mocking import patch
 
         from provide.foundation.utils.environment import get_str
 
