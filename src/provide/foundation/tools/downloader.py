@@ -100,6 +100,11 @@ class ToolDownloader:
         try:
             # Use the client to make a request first to get headers
             response = await self.client.request(url, "GET")
+
+            # Check for HTTP errors (4xx/5xx status codes)
+            if not response.is_success():
+                raise DownloadError(f"HTTP {response.status} error for {url}")
+
             total_size = int(response.headers.get("content-length", 0))
 
             # Write to file and report progress

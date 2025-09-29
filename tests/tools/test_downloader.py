@@ -328,3 +328,41 @@ class TestToolDownloader(FoundationTestCase):
 
         with pytest.raises(Exception, match="Network error"):
             await downloader.download_with_progress(url, dest)
+
+    async def test_download_http_error_status(
+        self, downloader: ToolDownloader, mock_client: MagicMock, tmp_path: Path
+    ) -> None:
+        """Test handling HTTP error status codes (4xx/5xx)."""
+        dest = tmp_path / "tool.tar.gz"
+        url = "https://example.com/not-found.tar.gz"
+
+        # Mock response with 404 status
+        mock_response = MagicMock()
+        mock_response.status = 404
+        mock_response.is_success.return_value = False
+        mock_client.request.return_value = mock_response
+
+        with pytest.raises(DownloadError, match="HTTP 404 error"):
+            await downloader.download_with_progress(url, dest)
+
+        # Verify file doesn't exist
+        assert not dest.exists()
+
+    async def test_download_http_server_error(
+        self, downloader: ToolDownloader, mock_client: MagicMock, tmp_path: Path
+    ) -> None:
+        """Test handling HTTP server error status codes (5xx)."""
+        dest = tmp_path / "tool.tar.gz"
+        url = "https://example.com/server-error.tar.gz"
+
+        # Mock response with 500 status
+        mock_response = MagicMock()
+        mock_response.status = 500
+        mock_response.is_success.return_value = False
+        mock_client.request.return_value = mock_response
+
+        with pytest.raises(DownloadError, match="HTTP 500 error"):
+            await downloader.download_with_progress(url, dest)
+
+        # Verify file doesn't exist
+        assert not dest.exists()
