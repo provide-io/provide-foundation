@@ -613,7 +613,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_downloader.py::TestToolDownloader::test_download_http_error_status tests/tools/test_downloader.py::TestToolDownloader::test_download_http_server_error -v)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/tools/downloader.py tests/tools/test_downloader.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/ -v --tb=short -k \"httpx or client\" --collect-only)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/ -v --tb=short -x)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/ -v --tb=short -x)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_base.py::TestBaseToolManager::test_install_download_and_verify -v --tb=long)"
     ],
     "deny": [],
     "ask": [],

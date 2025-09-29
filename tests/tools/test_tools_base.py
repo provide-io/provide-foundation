@@ -190,19 +190,19 @@ class TestBaseToolManager(FoundationTestCase):
             assert concrete_manager.is_installed("1.0.0") is False
 
     @patch("provide.foundation.tools.base.Path")
-    def test_install_cached(self, mock_path_class, concrete_manager) -> None:
+    async def test_install_cached(self, mock_path_class, concrete_manager) -> None:
         """Test installing from cache."""
         cached_path = MagicMock(spec=Path)
 
         with patch.object(concrete_manager.cache, "get") as mock_get:
             mock_get.return_value = cached_path
 
-            result = concrete_manager.install("1.0.0")
+            result = await concrete_manager.install("1.0.0")
 
             assert result == cached_path
             mock_get.assert_called_once_with("testtool", "1.0.0")
 
-    def test_install_download_and_verify(self, concrete_manager, tmp_path) -> None:
+    async def test_install_download_and_verify(self, concrete_manager, tmp_path) -> None:
         """Test full installation with download and verification."""
         artifact_path = tmp_path / "artifact.tar.gz"
         install_path = tmp_path / "install"
@@ -222,7 +222,7 @@ class TestBaseToolManager(FoundationTestCase):
             # Create the artifact file
             artifact_path.touch()
 
-            result = concrete_manager.install("1.0.0")
+            result = await concrete_manager.install("1.0.0")
 
             assert result == install_path
             mock_download.assert_called_once()
@@ -230,7 +230,7 @@ class TestBaseToolManager(FoundationTestCase):
             mock_install.assert_called_once()
             mock_cache_store.assert_called_once_with("testtool", "1.0.0", install_path)
 
-    def test_install_verification_fails(self, concrete_manager, tmp_path) -> None:
+    async def test_install_verification_fails(self, concrete_manager, tmp_path) -> None:
         """Test installation fails when verification fails."""
         artifact_path = tmp_path / "artifact.tar.gz"
 
@@ -247,12 +247,12 @@ class TestBaseToolManager(FoundationTestCase):
             artifact_path.touch()
 
             with pytest.raises(ToolVerificationError, match="Checksum verification failed"):
-                concrete_manager.install("1.0.0")
+                await concrete_manager.install("1.0.0")
 
             # Artifact should be deleted
             assert not artifact_path.exists()
 
-    def test_install_no_download_url(self, concrete_manager) -> None:
+    async def test_install_no_download_url(self, concrete_manager) -> None:
         """Test installation fails when no download URL available."""
 
         def get_metadata_no_url(version):
@@ -270,7 +270,7 @@ class TestBaseToolManager(FoundationTestCase):
             mock_cache_get.return_value = None
 
             with pytest.raises(ToolInstallError, match="No download URL"):
-                concrete_manager.install("1.0.0")
+                await concrete_manager.install("1.0.0")
 
     def test_uninstall_success(self, concrete_manager, tmp_path) -> None:
         """Test successful uninstallation."""
