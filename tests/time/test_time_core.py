@@ -107,7 +107,7 @@ class TestProvideNow(FoundationTestCase):
         """Test provide_now with UTC timezone."""
         result = provide_now("UTC")
         assert result.tzinfo is not None
-        assert result.tzinfo == UTC
+        assert str(result.tzinfo) == "UTC"
 
     def test_provide_now_with_timezone_string(self) -> None:
         """Test provide_now with timezone string."""
@@ -137,7 +137,7 @@ class TestProvideNow(FoundationTestCase):
         result = provide_now()
 
         assert result is mock_dt
-        mock_datetime.now.assert_called_once_with(tz=None)
+        mock_datetime.now.assert_called_once_with()
 
     @patch("provide.foundation.time.core.datetime")
     def test_provide_now_with_timezone_uses_datetime_module(self, mock_datetime: Any) -> None:
