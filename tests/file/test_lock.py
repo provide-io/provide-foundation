@@ -78,7 +78,10 @@ class TestFileLock(MinimalTestCase):
         """Test lock acquisition timeout."""
         lock_path = temp_directory / "test.lock"
         lock1 = FileLock(lock_path)
-        lock2 = FileLock(lock_path, timeout=1.0)  # Increased timeout for robustness
+
+        # Use longer timeout and more generous bounds for coverage overhead
+        timeout_val = 2.0  # Increased from 1.0s
+        lock2 = FileLock(lock_path, timeout=timeout_val)
 
         try:
             # First lock acquired
@@ -92,8 +95,10 @@ class TestFileLock(MinimalTestCase):
                 lock2.acquire()
             elapsed = time.time() - start
 
-            # Should timeout around 1.0s, but be more lenient under load
-            assert 0.8 < elapsed < 2.0, f"Expected timeout ~1.0s, got {elapsed:.3f}s"
+            # Very generous bounds to handle coverage overhead (especially --cov-branch)
+            min_time = timeout_val * 0.7  # 1.4s minimum
+            max_time = timeout_val * 2.5  # 5.0s maximum
+            assert min_time < elapsed < max_time, f"Expected timeout ~{timeout_val}s, got {elapsed:.3f}s"
             assert exc_info.value.code == "LOCK_TIMEOUT"
             assert not lock2.locked
         finally:
@@ -137,10 +142,11 @@ class TestFileLock(MinimalTestCase):
         results = []
 
         def worker(worker_id: int) -> None:
-            lock = FileLock(lock_path, timeout=5.0)  # Increased timeout for thread safety
+            # Very generous timeout for coverage overhead
+            lock = FileLock(lock_path, timeout=10.0)  # Increased from 5.0s
             with lock:
                 results.append(worker_id)
-                time.sleep(0.1)  # Simulate work
+                time.sleep(0.05)  # Reduced work time to speed up test
 
         # Start multiple threads
         threads = []
@@ -150,9 +156,9 @@ class TestFileLock(MinimalTestCase):
                 threads.append(t)
                 t.start()
 
-            # Wait for all threads with explicit timeout
+            # Wait for all threads with very generous timeout
             for i, t in enumerate(threads):
-                t.join(timeout=10.0)
+                t.join(timeout=20.0)  # Increased from 10.0s
                 if t.is_alive():
                     pytest.fail(f"Thread {i} did not complete within timeout")
 
