@@ -21,7 +21,12 @@ class TestToolDownloader(FoundationTestCase):
     @pytest.fixture
     def mock_client(self):
         """Create a mock UniversalClient."""
-        return MagicMock()
+        client = MagicMock()
+        # Make request method return an awaitable
+        client.request = AsyncMock()
+        # Make stream method return an async iterator
+        client.stream = AsyncMock()
+        return client
 
     @pytest.fixture
     def downloader(self, mock_client):
