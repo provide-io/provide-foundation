@@ -1,44 +1,37 @@
-"""Test cases and utilities for file operation quality analysis."""
+"""Scenarios and utilities for file operation quality analysis."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-try:
-    from provide.foundation.file.operations import FileEvent, FileEventMetadata
+from attrs import define, field
 
-    HAS_OPERATIONS_MODULE = True
-except ImportError:
-    HAS_OPERATIONS_MODULE = False
+from provide.foundation.file.operations.types import FileEvent, FileEventMetadata
 
 
-@dataclass
-class OperationTestCase:
-    """Test case for operation detection validation."""
+@define(slots=True, kw_only=True)
+class OperationScenario:
+    """A scenario describing a sequence of file events and expected outcomes."""
 
     name: str
     events: list[FileEvent]
     expected_operations: list[dict[str, Any]]  # Expected operation specs
-    description: str = ""
-    tags: list[str] = field(default_factory=list)
+    description: str = field(default="")
+    tags: list[str] = field(factory=list)
 
 
-def create_test_cases_from_patterns() -> list[OperationTestCase]:
-    """Create standard test cases for common operation patterns.
+def create_scenarios_from_patterns() -> list[OperationScenario]:
+    """Create standard scenarios for common operation patterns.
 
     Returns:
-        List of test cases covering common patterns
+        List of scenarios covering common patterns.
     """
-    if not HAS_OPERATIONS_MODULE:
-        return []
-
-    test_cases = []
+    scenarios = []
     base_time = datetime.now()
 
-    # VSCode atomic save test case
+    # VSCode atomic save scenario
     vscode_events = [
         FileEvent(
             path=Path("test.txt.tmp.12345"),
@@ -52,9 +45,8 @@ def create_test_cases_from_patterns() -> list[OperationTestCase]:
             dest_path=Path("test.txt"),
         ),
     ]
-
-    test_cases.append(
-        OperationTestCase(
+    scenarios.append(
+        OperationScenario(
             name="vscode_atomic_save",
             events=vscode_events,
             expected_operations=[{"type": "atomic_save", "confidence_min": 0.9}],
@@ -63,7 +55,7 @@ def create_test_cases_from_patterns() -> list[OperationTestCase]:
         )
     )
 
-    # Safe write test case
+    # Safe write scenario
     safe_write_events = [
         FileEvent(
             path=Path("document.bak"),
@@ -81,9 +73,8 @@ def create_test_cases_from_patterns() -> list[OperationTestCase]:
             ),
         ),
     ]
-
-    test_cases.append(
-        OperationTestCase(
+    scenarios.append(
+        OperationScenario(
             name="safe_write_with_backup",
             events=safe_write_events,
             expected_operations=[{"type": "safe_write", "confidence_min": 0.8}],
@@ -92,7 +83,7 @@ def create_test_cases_from_patterns() -> list[OperationTestCase]:
         )
     )
 
-    # Batch update test case
+    # Batch update scenario
     batch_events = []
     for i in range(5):
         batch_events.append(
@@ -107,9 +98,8 @@ def create_test_cases_from_patterns() -> list[OperationTestCase]:
                 ),
             )
         )
-
-    test_cases.append(
-        OperationTestCase(
+    scenarios.append(
+        OperationScenario(
             name="batch_format_operation",
             events=batch_events,
             expected_operations=[{"type": "batch_update", "confidence_min": 0.7}],
@@ -118,4 +108,4 @@ def create_test_cases_from_patterns() -> list[OperationTestCase]:
         )
     )
 
-    return test_cases
+    return scenarios

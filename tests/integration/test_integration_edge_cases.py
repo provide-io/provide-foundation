@@ -14,7 +14,6 @@ import io
 import os
 from typing import Any
 
-from provide.testkit import reset_foundation_setup_for_testing
 from provide.testkit.mocking import patch
 import pytest
 
@@ -27,9 +26,9 @@ from provide.foundation import (
 
 
 def test_invalid_environment_variables_handling(
-    monkeypatch,
-    capsys,
-) -> None:  # Added capsys
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
     """Tests handling of invalid environment variables with strict validation."""
     # Define cases that should raise ValueError with strict validation
     strict_validation_cases = [
@@ -379,7 +378,7 @@ def test_concurrent_setup_calls() -> None:
 
     assert len(exceptions) == 0, f"Concurrent setup failed: {exceptions}"
     assert len(setup_results) == len(configs)
-    reset_foundation_setup_for_testing()
+    pass  # Foundation reset handled by FoundationTestCase
 
 
 def test_memory_usage_with_large_configs() -> None:
@@ -402,7 +401,7 @@ def test_memory_usage_with_large_configs() -> None:
     except Exception as e:  # pragma: no cover
         pytest.fail(f"Large configuration failed: {e}")
     finally:
-        reset_foundation_setup_for_testing()
+        pass  # Foundation reset handled by FoundationTestCase
 
 
 def test_trace_level_edge_cases(

@@ -50,7 +50,7 @@ class TestProductionReadinessScenarios(FoundationTestCase):
             global_logger.info(f"High throughput message {i}", iteration=i)
 
         end_time = time.time()
-        duration = end_time - start_time
+        duration = end_time - start_time or 1e-9  # Prevent division by zero
 
         # Get captured output from our fixture
         captured_stderr_for_foundation.seek(0)
@@ -369,7 +369,7 @@ class TestDocumentedBehaviorCompliance(FoundationTestCase):
         # Performance requirements (more relaxed for CI and varying system loads)
         assert init_time < 1.0, f"Initialization too slow: {init_time:.3f}s"
 
-        messages_per_second = 100 / subsequent_time
+        messages_per_second = 100 / (subsequent_time or 1e-9)
         assert messages_per_second > 1000, f"Subsequent logging too slow: {messages_per_second:.1f} msg/sec"
 
         captured = capsys.readouterr()

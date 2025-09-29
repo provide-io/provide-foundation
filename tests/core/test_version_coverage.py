@@ -1,14 +1,18 @@
 """Comprehensive coverage tests for _version.py module."""
 
+from __future__ import annotations
+
 from importlib.metadata import PackageNotFoundError
 from pathlib import Path
 import tempfile
-from unittest.mock import MagicMock, patch
+
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 
 from provide.foundation._version import __version__, _find_project_root, get_version
 
 
-class TestFindProjectRoot:
+class TestFindProjectRoot(FoundationTestCase):
     """Test _find_project_root function."""
 
     def test_find_project_root_exists(self) -> None:
@@ -33,7 +37,7 @@ class TestFindProjectRoot:
                 mock_path.return_value = mock_file_path
 
                 # Mock the directory traversal
-                def mock_path_init(path_str):
+                def mock_path_init(path_str: str) -> object:
                     if path_str == str(nested_dir / "fake_version.py"):
                         result = MagicMock()
                         result.parent = nested_dir
@@ -103,21 +107,23 @@ class TestFindProjectRoot:
             assert result is None or isinstance(result, Path)
 
 
-class TestGetVersion:
+class TestGetVersion(FoundationTestCase):
     """Test get_version function."""
 
     def test_get_version_from_version_file(self) -> None:
         """Test getting version from VERSION file."""
-        with patch("provide.foundation._version._find_project_root") as mock_find_root:
-            with tempfile.TemporaryDirectory() as temp_dir:
-                temp_path = Path(temp_dir)
-                version_file = temp_path / "VERSION"
-                version_file.write_text("2.1.0\n")
+        with (
+            patch("provide.foundation._version._find_project_root") as mock_find_root,
+            tempfile.TemporaryDirectory() as temp_dir,
+        ):
+            temp_path = Path(temp_dir)
+            version_file = temp_path / "VERSION"
+            version_file.write_text("2.1.0\n")
 
-                mock_find_root.return_value = temp_path
+            mock_find_root.return_value = temp_path
 
-                result = get_version()
-                assert result == "2.1.0"
+            result = get_version()
+            assert result == "2.1.0"
 
     def test_get_version_no_project_root(self) -> None:
         """Test getting version when no project root found."""
@@ -132,18 +138,20 @@ class TestGetVersion:
 
     def test_get_version_version_file_not_exists(self) -> None:
         """Test getting version when VERSION file doesn't exist in project root."""
-        with patch("provide.foundation._version._find_project_root") as mock_find_root:
-            with tempfile.TemporaryDirectory() as temp_dir:
-                temp_path = Path(temp_dir)
-                # No VERSION file created
+        with (
+            patch("provide.foundation._version._find_project_root") as mock_find_root,
+            tempfile.TemporaryDirectory() as temp_dir,
+        ):
+            temp_path = Path(temp_dir)
+            # No VERSION file created
 
-                mock_find_root.return_value = temp_path
+            mock_find_root.return_value = temp_path
 
-                with patch("importlib.metadata.version") as mock_version:
-                    mock_version.return_value = "1.3.0"
+            with patch("importlib.metadata.version") as mock_version:
+                mock_version.return_value = "1.3.0"
 
-                    result = get_version()
-                    assert result == "1.3.0"
+                result = get_version()
+                assert result == "1.3.0"
 
     def test_get_version_package_not_found(self) -> None:
         """Test getting version when package metadata not found."""
@@ -161,23 +169,25 @@ class TestGetVersion:
     def test_get_version_fallback_chain(self) -> None:
         """Test complete fallback chain to development version."""
         # Mock _find_project_root to return None
-        with patch("provide.foundation._version._find_project_root", return_value=None):
-            # Mock importlib.metadata.version to raise PackageNotFoundError
-            with patch("importlib.metadata.version") as mock_version:
-                from importlib.metadata import PackageNotFoundError
+        with (
+            patch("provide.foundation._version._find_project_root", return_value=None),
+            patch("importlib.metadata.version") as mock_version,
+        ):
+            from importlib.metadata import PackageNotFoundError
 
-                mock_version.side_effect = PackageNotFoundError()
+            mock_version.side_effect = PackageNotFoundError()
 
-                result = get_version()
-                assert result == "0.0.0-dev"
+            result = get_version()
+            assert result == "0.0.0-dev"
 
     def test_get_version_importlib_metadata_import_coverage(self) -> None:
         """Test that importlib.metadata import is covered."""
-        with patch("provide.foundation._version._find_project_root", return_value=None):
-            # This will test the import on line 44
-            with patch("importlib.metadata.version", return_value="test-version"):
-                result = get_version()
-                assert result == "test-version"
+        with (
+            patch("provide.foundation._version._find_project_root", return_value=None),
+            patch("importlib.metadata.version", return_value="test-version"),
+        ):
+            result = get_version()
+            assert result == "test-version"
 
     def test_get_version_with_project_root_but_no_version_file(self) -> None:
         """Test version retrieval with project root but missing VERSION file."""
@@ -199,7 +209,7 @@ class TestGetVersion:
                 assert result == "metadata-version"
 
 
-class TestVersionModule:
+class TestVersionModule(FoundationTestCase):
     """Test module-level functionality."""
 
     def test_version_attribute_exists(self) -> None:
@@ -239,7 +249,7 @@ class TestVersionModule:
         assert isinstance(__version__, str)
 
 
-class TestVersionEdgeCases:
+class TestVersionEdgeCases(FoundationTestCase):
     """Test edge cases and error conditions."""
 
     def test_version_file_read_error(self) -> None:
@@ -262,16 +272,18 @@ class TestVersionEdgeCases:
 
     def test_version_file_empty(self) -> None:
         """Test handling of empty VERSION file."""
-        with patch("provide.foundation._version._find_project_root") as mock_find_root:
-            with tempfile.TemporaryDirectory() as temp_dir:
-                temp_path = Path(temp_dir)
-                version_file = temp_path / "VERSION"
-                version_file.write_text("   \n  \t  \n  ")  # Whitespace only
+        with (
+            patch("provide.foundation._version._find_project_root") as mock_find_root,
+            tempfile.TemporaryDirectory() as temp_dir,
+        ):
+            temp_path = Path(temp_dir)
+            version_file = temp_path / "VERSION"
+            version_file.write_text("   \n  \t  \n  ")  # Whitespace only
 
-                mock_find_root.return_value = temp_path
+            mock_find_root.return_value = temp_path
 
-                result = get_version()
-                assert result == ""  # Should be empty string after strip()
+            result = get_version()
+            assert result == ""  # Should be empty string after strip()
 
     def test_multiple_fallback_scenarios(self) -> None:
         """Test various combinations of fallback scenarios."""

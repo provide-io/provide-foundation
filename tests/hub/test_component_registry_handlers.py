@@ -4,12 +4,16 @@ This test suite covers error handler registration, exception type matching,
 priority chains, and thread-safe component access patterns.
 """
 
+from __future__ import annotations
+
 import asyncio
 import threading
-from unittest.mock import Mock
+
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock
 
 
-class TestErrorHandlerComponents:
+class TestErrorHandlerComponents(FoundationTestCase):
     """Test error handler component registration and management."""
 
     def test_error_handlers_register_in_error_handler_category(self) -> None:
@@ -128,7 +132,7 @@ class TestErrorHandlerComponents:
         assert retrieved is async_error_handler
 
 
-class TestThreadSafeComponentAccess:
+class TestThreadSafeComponentAccess(FoundationTestCase):
     """Test thread-safe component access and initialization."""
 
     def test_concurrent_component_registration(self) -> None:

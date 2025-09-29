@@ -1,15 +1,18 @@
 """Tests for documentation generation utilities."""
 
+from __future__ import annotations
+
 from pathlib import Path
 import tempfile
 from unittest.mock import Mock, mock_open, patch
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.docs.generator import APIDocGenerator, generate_api_docs
 
 
-class TestAPIDocGenerator:
+class TestAPIDocGenerator(FoundationTestCase):
     """Test cases for APIDocGenerator."""
 
     def test_init_default_values(self) -> None:
@@ -361,7 +364,7 @@ class TestAPIDocGenerator:
                                 mock_index.assert_called_once()
 
 
-class TestGenerateApiDocs:
+class TestGenerateApiDocs(FoundationTestCase):
     """Test cases for generate_api_docs convenience function."""
 
     def test_generate_api_docs_default_args(self) -> None:
@@ -414,7 +417,7 @@ class TestGenerateApiDocs:
             assert result == {"processed_files": 10}
 
 
-class TestAPIDocGeneratorIntegration:
+class TestAPIDocGeneratorIntegration(FoundationTestCase):
     """Integration tests for APIDocGenerator."""
 
     def test_real_file_processing(self) -> None:

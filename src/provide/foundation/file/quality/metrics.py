@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from typing import Any
+
+from attrs import define, field
 
 
 class AnalysisMetric(Enum):
@@ -21,11 +22,11 @@ class AnalysisMetric(Enum):
     FALSE_NEGATIVE_RATE = "false_negative_rate"
 
 
-@dataclass
+@define(slots=True, kw_only=True)
 class QualityResult:
     """Result of quality analysis."""
 
     metric: AnalysisMetric
     value: float
-    details: dict[str, Any] = field(default_factory=dict)
-    timestamp: datetime = field(default_factory=datetime.now)
+    details: dict[str, Any] = field(factory=dict)
+    timestamp: datetime = field(factory=datetime.now)

@@ -3,12 +3,14 @@
 #
 """Tests to achieve full coverage for platform detection and info modules."""
 
-from unittest.mock import patch
+from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 
-class TestPlatformDetection:
+class TestPlatformDetection(FoundationTestCase):
     """Test platform detection functionality."""
 
     def test_get_os_name_darwin(self) -> None:

@@ -1,9 +1,13 @@
 """Tests for Foundation tool version resolver."""
 
+from __future__ import annotations
+
+from provide.testkit import FoundationTestCase
+
 from provide.foundation.tools.resolver import VersionResolver
 
 
-class TestVersionResolver:
+class TestVersionResolver(FoundationTestCase):
     """Test VersionResolver class."""
 
     def test_version_resolver_init(self) -> None:

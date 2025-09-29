@@ -1,11 +1,10 @@
-#
-# test_console.py
-#
-"""Tests for Foundation streams console module."""
+from __future__ import annotations
 
 import os
 import sys
-from unittest.mock import Mock, patch
+
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.streams.console import (
     get_console_stream,
@@ -14,8 +13,13 @@ from provide.foundation.streams.console import (
     write_to_console,
 )
 
+#
+# test_console.py
+#
+"""Tests for Foundation streams console module."""
 
-class TestGetConsoleStream:
+
+class TestGetConsoleStream(FoundationTestCase):
     """Test get_console_stream function."""
 
     def test_returns_log_stream(self) -> None:
@@ -29,7 +33,7 @@ class TestGetConsoleStream:
         assert console_stream is log_stream
 
 
-class TestIsTTY:
+class TestIsTTY(FoundationTestCase):
     """Test is_tty function."""
 
     def test_is_tty_with_tty_stream(self) -> None:
@@ -80,7 +84,7 @@ class TestIsTTY:
             set_log_stream_for_testing(None)
 
 
-class TestSupportsColor:
+class TestSupportsColor(FoundationTestCase):
     """Test supports_color function."""
 
     def setup_method(self) -> None:
@@ -187,7 +191,7 @@ class TestSupportsColor:
             set_log_stream_for_testing(None)
 
 
-class TestWriteToConsole:
+class TestWriteToConsole(FoundationTestCase):
     """Test write_to_console function."""
 
     def test_write_to_default_console_stream(self) -> None:
@@ -307,8 +311,9 @@ class TestWriteToConsole:
 
     def test_write_to_console_with_logging_failure_fallback(self) -> None:
         """Test write_to_console when both stream and Foundation logger fail."""
+        from provide.testkit.mocking import patch
+
         from provide.foundation.streams.core import set_log_stream_for_testing
-        from unittest.mock import patch
 
         # Create stream that raises exception on write
         mock_stream = Mock()
@@ -337,13 +342,17 @@ class TestWriteToConsole:
 
                 # Check that stderr received both the main message and debug info
                 stderr_calls = [str(call) for call in mock_stderr_write.call_args_list]
-                assert any("test message" in call for call in stderr_calls), f"Main message not found in {stderr_calls}"
-                assert any("Console write failed" in call for call in stderr_calls), f"Debug info not found in {stderr_calls}"
+                assert any("test message" in call for call in stderr_calls), (
+                    f"Main message not found in {stderr_calls}"
+                )
+                assert any("Console write failed" in call for call in stderr_calls), (
+                    f"Debug info not found in {stderr_calls}"
+                )
             finally:
                 set_log_stream_for_testing(None)
 
 
-class TestConsoleIntegration:
+class TestConsoleIntegration(FoundationTestCase):
     """Test integration scenarios for console functions."""
 
     def test_write_to_console_respects_log_stream_changes(self) -> None:

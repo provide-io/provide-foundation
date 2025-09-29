@@ -11,15 +11,16 @@ import os
 from pathlib import Path
 import tempfile
 import time
-from unittest.mock import patch
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.hub.manager import Hub, clear_hub, get_hub
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
 
 
-class TestPredictableInitialization:
+class TestPredictableInitialization(FoundationTestCase):
     """Test predictable initialization behavior."""
 
     def setup_method(self) -> None:
@@ -71,6 +72,7 @@ class TestPredictableInitialization:
             hub.initialize_foundation(explicit_config)
 
             config = hub.get_foundation_config()
+            assert config is not None
             # Explicit config should override environment
             assert config.logging.default_level == "CRITICAL"
 
@@ -88,6 +90,7 @@ class TestPredictableInitialization:
             hub = get_hub()  # Auto-initialize with env config
 
             config = hub.get_foundation_config()
+            assert config is not None
             assert config.logging.default_level == "WARNING"
 
         # 3. Defaults should be used when nothing specified
@@ -99,6 +102,7 @@ class TestPredictableInitialization:
             hub = get_hub()
 
             config = hub.get_foundation_config()
+            assert config is not None
             # Should use default level (WARNING)
             assert config.logging.default_level == "WARNING"
 
@@ -133,10 +137,12 @@ class TestPredictableInitialization:
         hub1 = Hub()
         hub1.initialize_foundation(config)
 
+        config1 = hub1.get_foundation_config()
+        assert config1 is not None
         state1 = {
             "initialized": hub1.is_foundation_initialized(),
-            "config_level": hub1.get_foundation_config().logging.default_level,
-            "config_formatter": hub1.get_foundation_config().logging.console_formatter,
+            "config_level": config1.logging.default_level,
+            "config_formatter": config1.logging.console_formatter,
         }
 
         # Reset and initialize again with same config
@@ -145,10 +151,12 @@ class TestPredictableInitialization:
         hub2 = Hub()
         hub2.initialize_foundation(config)
 
+        config2 = hub2.get_foundation_config()
+        assert config2 is not None
         state2 = {
             "initialized": hub2.is_foundation_initialized(),
-            "config_level": hub2.get_foundation_config().logging.default_level,
-            "config_formatter": hub2.get_foundation_config().logging.console_formatter,
+            "config_level": config2.logging.default_level,
+            "config_formatter": config2.logging.console_formatter,
         }
 
         # States should be identical
@@ -259,8 +267,12 @@ class TestPredictableInitialization:
         hub2.initialize_foundation(config2)
 
         # Should have different configs
-        assert hub1.get_foundation_config().logging.default_level == "DEBUG"
-        assert hub2.get_foundation_config().logging.default_level == "ERROR"
+        config1_check = hub1.get_foundation_config()
+        config2_check = hub2.get_foundation_config()
+        assert config1_check is not None
+        assert config2_check is not None
+        assert config1_check.logging.default_level == "DEBUG"
+        assert config2_check.logging.default_level == "ERROR"
 
         # Should be independently functional
         logger1 = hub1.get_foundation_logger("hub1.test")

@@ -1,27 +1,32 @@
 """Tests for BZIP2 compression implementation."""
 
-from io import BytesIO
+from __future__ import annotations
 
+from collections.abc import Callable
+from io import BytesIO
+from pathlib import Path
+
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.archive.base import ArchiveError
 from provide.foundation.archive.bzip2 import Bzip2Compressor
 
 
-class TestBzip2Compressor:
+class TestBzip2Compressor(FoundationTestCase):
     """Test BZIP2 compression functionality."""
 
     @pytest.fixture
-    def bzip2_compressor(self):
+    def bzip2_compressor(self) -> Bzip2Compressor:
         """Create a BZIP2 compressor instance."""
         return Bzip2Compressor()
 
     @pytest.fixture
-    def test_file(self, temp_file):
+    def test_file(self, temp_file: Callable[[str, str], Path]) -> Path:
         """Create a test file."""
         return temp_file("This is test content for BZIP2 compression.\n" * 100, ".txt")
 
-    def test_compress_file(self, bzip2_compressor, test_file) -> None:
+    def test_compress_file(self, bzip2_compressor: Bzip2Compressor, test_file: Path) -> None:
         """Test compressing a file."""
         output = test_file.with_suffix(".txt.bz2")
 
@@ -35,7 +40,7 @@ class TestBzip2Compressor:
         finally:
             output.unlink(missing_ok=True)
 
-    def test_decompress_file(self, bzip2_compressor, test_file) -> None:
+    def test_decompress_file(self, bzip2_compressor: Bzip2Compressor, test_file: Path) -> None:
         """Test decompressing a file."""
         compressed = test_file.with_suffix(".txt.bz2")
         decompressed = test_file.with_suffix(".txt.decompressed")
@@ -55,7 +60,7 @@ class TestBzip2Compressor:
             compressed.unlink(missing_ok=True)
             decompressed.unlink(missing_ok=True)
 
-    def test_compress_bytes(self, bzip2_compressor) -> None:
+    def test_compress_bytes(self, bzip2_compressor: Bzip2Compressor) -> None:
         """Test compressing bytes data."""
         data = b"Test data for BZIP2 compression" * 100
 
@@ -66,7 +71,7 @@ class TestBzip2Compressor:
         # Check BZIP2 magic number
         assert compressed[:3] == b"BZh"
 
-    def test_decompress_bytes(self, bzip2_compressor) -> None:
+    def test_decompress_bytes(self, bzip2_compressor: Bzip2Compressor) -> None:
         """Test decompressing bytes data."""
         original = b"Test data for BZIP2 compression" * 100
 
@@ -75,7 +80,7 @@ class TestBzip2Compressor:
 
         assert decompressed == original
 
-    def test_compress_stream(self, bzip2_compressor) -> None:
+    def test_compress_stream(self, bzip2_compressor: Bzip2Compressor) -> None:
         """Test compressing from stream to stream."""
         input_data = b"Stream BZIP2 compression test data" * 100
         input_stream = BytesIO(input_data)
@@ -87,7 +92,7 @@ class TestBzip2Compressor:
         assert len(compressed) < len(input_data)
         assert compressed[:3] == b"BZh"
 
-    def test_decompress_stream(self, bzip2_compressor) -> None:
+    def test_decompress_stream(self, bzip2_compressor: Bzip2Compressor) -> None:
         """Test decompressing from stream to stream."""
         original = b"Stream BZIP2 decompression test data" * 100
 
@@ -128,7 +133,7 @@ class TestBzip2Compressor:
         with pytest.raises(ValueError):
             Bzip2Compressor(level=10)
 
-    def test_error_handling(self, bzip2_compressor, temp_directory) -> None:
+    def test_error_handling(self, bzip2_compressor: Bzip2Compressor, temp_directory: Path) -> None:
         """Test error handling in BZIP2 operations."""
         temp_path = temp_directory
 

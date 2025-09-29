@@ -1,11 +1,14 @@
 """Integration tests for tools module with real network requests."""
 
+from __future__ import annotations
+
 import hashlib
 from pathlib import Path
 import tempfile
 import time
-from unittest.mock import Mock, patch
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 import pytest
 
 from provide.foundation.config import BaseConfig
@@ -62,7 +65,7 @@ class MockToolManager(BaseToolManager):
         return ["1.6", "1.7", "1.7.1"]
 
 
-class TestDownloaderIntegration:
+class TestDownloaderIntegration(FoundationTestCase):
     """Integration tests for ToolDownloader with real network requests."""
 
     @pytest.fixture
@@ -287,7 +290,7 @@ class TestDownloaderIntegration:
                 assert header in [b"\xfe\xed\xfa\xce", b"\xfe\xed\xfa\xcf", b"\xcf\xfa\xed\xfe"]
 
 
-class TestBackoffRetryIntegration:
+class TestBackoffRetryIntegration(FoundationTestCase):
     """Test backoff and retry logic with real failing URLs."""
 
     @pytest.fixture
@@ -381,7 +384,7 @@ class TestBackoffRetryIntegration:
             assert result == dest
 
 
-class TestFullWorkflowIntegration:
+class TestFullWorkflowIntegration(FoundationTestCase):
     """Test complete tool installation workflow."""
 
     @pytest.fixture
@@ -499,7 +502,7 @@ class TestFullWorkflowIntegration:
         assert len(cache.list_cached()) == 0
 
 
-class TestNetworkErrorHandling:
+class TestNetworkErrorHandling(FoundationTestCase):
     """Test various network error scenarios."""
 
     @pytest.fixture

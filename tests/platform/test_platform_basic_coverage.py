@@ -1,9 +1,12 @@
 """Basic coverage tests for platform modules."""
 
+from __future__ import annotations
+
+from provide.testkit import FoundationTestCase
 import pytest
 
 
-class TestPlatformBasicCoverage:
+class TestPlatformBasicCoverage(FoundationTestCase):
     """Basic coverage tests for platform modules."""
 
     def test_platform_init_imports(self) -> None:
@@ -85,7 +88,7 @@ class TestPlatformBasicCoverage:
             pytest.skip("platform detection functions not available")
 
 
-class TestTracerBasicCoverage:
+class TestTracerBasicCoverage(FoundationTestCase):
     """Basic coverage tests for tracer modules."""
 
     def test_tracer_init_imports(self) -> None:

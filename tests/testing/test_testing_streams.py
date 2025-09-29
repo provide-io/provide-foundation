@@ -1,8 +1,11 @@
 """Tests for stream testing utilities."""
 
+from __future__ import annotations
+
 import io
 import sys
 
+from provide.testkit import FoundationTestCase
 from provide.testkit.streams import (
     get_current_log_stream,
     reset_log_stream,
@@ -10,7 +13,7 @@ from provide.testkit.streams import (
 )
 
 
-class TestStreamTestingUtilities:
+class TestStreamTestingUtilities(FoundationTestCase):
     """Test stream testing helper functions."""
 
     def setup_method(self) -> None:
@@ -98,7 +101,7 @@ class TestStreamTestingUtilities:
 
         results = {}
 
-        def set_and_get_stream(stream_id) -> None:
+        def set_and_get_stream(stream_id: int) -> None:
             test_stream = io.StringIO()
             set_log_stream_for_testing(test_stream)
             time.sleep(0.01)  # Small delay to test race conditions

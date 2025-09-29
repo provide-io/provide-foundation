@@ -1,20 +1,27 @@
 """Tests for TAR archive implementation."""
 
+from __future__ import annotations
+
+from pathlib import Path
+
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.archive.base import ArchiveError
 from provide.foundation.archive.tar import TarArchive
 
 
-class TestTarArchive:
+class TestTarArchive(FoundationTestCase):
     """Test TAR archive functionality."""
 
     @pytest.fixture
-    def tar_archive(self):
+    def tar_archive(self) -> TarArchive:
         """Create a TAR archive instance."""
         return TarArchive()
 
-    def test_create_tar_archive(self, tar_archive, test_files_structure) -> None:
+    def test_create_tar_archive(
+        self, tar_archive: TarArchive, test_files_structure: tuple[Path, Path]
+    ) -> None:
         """Test creating a TAR archive."""
         temp_path, source = test_files_structure
         output = temp_path / "test.tar"
@@ -25,7 +32,9 @@ class TestTarArchive:
         assert output.exists()
         assert output.stat().st_size > 0
 
-    def test_extract_tar_archive(self, tar_archive, test_files_structure) -> None:
+    def test_extract_tar_archive(
+        self, tar_archive: TarArchive, test_files_structure: tuple[Path, Path]
+    ) -> None:
         """Test extracting a TAR archive."""
         temp_path, source = test_files_structure
         archive = temp_path / "test.tar"
@@ -43,7 +52,9 @@ class TestTarArchive:
         assert (output / "source" / "file1.txt").read_text() == "Content 1"
         assert (output / "source" / "subdir" / "file3.txt").exists()
 
-    def test_validate_tar_archive(self, tar_archive, test_files_structure) -> None:
+    def test_validate_tar_archive(
+        self, tar_archive: TarArchive, test_files_structure: tuple[Path, Path]
+    ) -> None:
         """Test validating a TAR archive."""
         temp_path, source = test_files_structure
         archive = temp_path / "test.tar"
@@ -60,7 +71,7 @@ class TestTarArchive:
         # Test non-existent file
         assert tar_archive.validate(temp_path / "nonexistent.tar") is False
 
-    def test_deterministic_mode(self, test_files_structure) -> None:
+    def test_deterministic_mode(self, test_files_structure: tuple[Path, Path]) -> None:
         """Test deterministic TAR creation."""
         temp_path, source = test_files_structure
 
@@ -80,7 +91,7 @@ class TestTarArchive:
         assert tar1.validate(output1)
         assert tar2.validate(output2)
 
-    def test_preserve_permissions(self, test_files_structure) -> None:
+    def test_preserve_permissions(self, test_files_structure: tuple[Path, Path]) -> None:
         """Test permission preservation."""
         temp_path, source = test_files_structure
 
@@ -103,7 +114,7 @@ class TestTarArchive:
         # Check if executable bit is preserved (at least for owner)
         assert extracted_file.stat().st_mode & 0o100
 
-    def test_error_handling(self, tar_archive, temp_directory) -> None:
+    def test_error_handling(self, tar_archive: TarArchive, temp_directory: Path) -> None:
         """Test error handling in TAR operations."""
         temp_path = temp_directory
 

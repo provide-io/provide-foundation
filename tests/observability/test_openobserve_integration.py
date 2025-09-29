@@ -1,11 +1,14 @@
 """Integration test for OpenObserve that generates and queries logs."""
 
+from __future__ import annotations
+
 from datetime import datetime, timedelta
 import json
 import os
 import random
 import time
 
+from provide.testkit import FoundationTestCase
 import pytest
 import requests
 
@@ -19,7 +22,7 @@ pytestmark = [
 ]
 
 
-class TestOpenObserveIntegration:
+class TestOpenObserveIntegration(FoundationTestCase):
     """Integration tests for OpenObserve."""
 
     @classmethod

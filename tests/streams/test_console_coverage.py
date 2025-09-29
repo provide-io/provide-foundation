@@ -1,15 +1,19 @@
+from __future__ import annotations
+
+from contextlib import suppress
+
+from provide.testkit import FoundationTestCase
+
 #
 # test_console_coverage.py
 #
 """Tests to achieve coverage for console and streams functionality."""
 
-from contextlib import suppress
 
-
-class TestFileStreams:
+class TestFileStreams(FoundationTestCase):
     """Test file stream functionality."""
 
-    def test_configure_file_logging_with_path(self, tmp_path) -> None:
+    def test_configure_file_logging_with_path(self, tmp_path: any) -> None:
         """Test file logging configuration with valid path."""
         from provide.foundation.streams.file import configure_file_logging
 

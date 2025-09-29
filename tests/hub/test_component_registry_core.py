@@ -4,13 +4,17 @@ This test suite defines Foundation's core registry architecture, metadata handli
 and bootstrap integration. No backward compatibility is maintained.
 """
 
+from __future__ import annotations
+
 from contextlib import suppress
-from unittest.mock import AsyncMock, Mock
+
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import AsyncMock, Mock
 
 from provide.foundation.hub.registry import Registry
 
 
-class TestComponentRegistryArchitecture:
+class TestComponentRegistryArchitecture(FoundationTestCase):
     """Test the core component registry architecture."""
 
     def test_foundation_uses_global_component_registry(self) -> None:
@@ -96,7 +100,7 @@ class TestComponentRegistryArchitecture:
         assert entry.metadata.get("has_lifecycle") is True
 
 
-class TestComponentMetadataAndVersioning:
+class TestComponentMetadataAndVersioning(FoundationTestCase):
     """Test component metadata and versioning support."""
 
     def test_component_versioning_support(self) -> None:
@@ -211,7 +215,7 @@ class TestComponentMetadataAndVersioning:
         assert retrieved_schema == config_schema
 
 
-class TestFoundationBootstrapIntegration:
+class TestFoundationBootstrapIntegration(FoundationTestCase):
     """Test Foundation's bootstrap process using registry components."""
 
     def test_foundation_bootstraps_with_registry(self) -> None:

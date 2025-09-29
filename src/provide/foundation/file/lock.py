@@ -76,6 +76,14 @@ class FileLock:
                 return True
 
             except FileExistsError:
+                # Check timeout FIRST to prevent infinite loops
+                if time.time() - start_time > self.timeout:
+                    raise LockError(
+                        f"Failed to acquire lock within {self.timeout}s",
+                        code="LOCK_TIMEOUT",
+                        path=str(self.path),
+                    ) from None
+
                 # Lock file exists, check if holder is still alive
                 if self._check_stale_lock():
                     continue  # Retry after removing stale lock
@@ -83,14 +91,6 @@ class FileLock:
                 if not blocking:
                     log.debug("Lock unavailable (non-blocking)", path=str(self.path))
                     return False
-
-                # Check timeout
-                if time.time() - start_time > self.timeout:
-                    raise LockError(
-                        f"Failed to acquire lock within {self.timeout}s",
-                        code="LOCK_TIMEOUT",
-                        path=str(self.path),
-                    ) from None
 
                 # Wait before retry
                 time.sleep(self.check_interval)
@@ -158,6 +158,7 @@ class FileLock:
                     return True
         except Exception as e:
             log.debug("Error checking stale lock", path=str(self.path), error=str(e))
+            return False
 
         return False
 

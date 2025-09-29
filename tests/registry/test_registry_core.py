@@ -1,12 +1,15 @@
+from __future__ import annotations
+
 """Tests for the foundation registry functionality."""
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors import AlreadyExistsError
 from provide.foundation.hub.registry import Registry
 
 
-class TestRegistry:
+class TestRegistry(FoundationTestCase):
     """Test the core Registry class."""
 
     def test_registry_stores_by_dimension(self) -> None:

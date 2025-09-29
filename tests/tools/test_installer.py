@@ -1,5 +1,7 @@
 """Tests for ToolInstaller class."""
 
+from __future__ import annotations
+
 from collections.abc import Generator
 import os
 from pathlib import Path
@@ -9,13 +11,14 @@ import tempfile
 from typing import Never
 import zipfile
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.tools.base import ToolMetadata
 from provide.foundation.tools.installer import InstallError, ToolInstaller
 
 
-class TestInstallError:
+class TestInstallError(FoundationTestCase):
     """Test InstallError exception."""
 
     def test_inherits_from_foundation_error(self) -> None:
@@ -32,7 +35,7 @@ class TestInstallError:
         assert str(exc_info.value) == "Test error"
 
 
-class TestToolInstaller:
+class TestToolInstaller(FoundationTestCase):
     """Test ToolInstaller functionality."""
 
     @pytest.fixture
