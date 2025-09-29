@@ -595,7 +595,11 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py::TestDownloaderIntegration::test_download_small_file_success -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py -k test_download_small_file_success -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py::TestDownloaderIntegration::test_download_small_file_success -v --no-markers)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py -m integration -v --tb=short -k test_download_small_file_success)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py -m integration -v --tb=short -k test_download_small_file_success)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py -m integration -v --tb=short -k \"test_parallel_downloads or test_mirror_fallback_success or test_redirect_handling\" --maxfail=3)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py::TestFullWorkflowIntegration::test_resolve_version_integration -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py -m integration -k test_resolve_version_integration -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py -m integration -k test_exponential_backoff_timing -v --tb=short -n 0)"
     ],
     "deny": [],
     "ask": [],
