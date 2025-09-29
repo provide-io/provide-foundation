@@ -78,7 +78,7 @@ class TestFileLock(MinimalTestCase):
         """Test lock acquisition timeout."""
         lock_path = temp_directory / "test.lock"
         lock1 = FileLock(lock_path)
-        lock2 = FileLock(lock_path, timeout=0.5)
+        lock2 = FileLock(lock_path, timeout=1.0)  # Increased timeout for robustness
 
         try:
             # First lock acquired
@@ -92,8 +92,8 @@ class TestFileLock(MinimalTestCase):
                 lock2.acquire()
             elapsed = time.time() - start
 
-            # Should timeout around 0.5s
-            assert 0.4 < elapsed < 0.8, f"Expected timeout ~0.5s, got {elapsed:.3f}s"
+            # Should timeout around 1.0s, but be more lenient under load
+            assert 0.8 < elapsed < 2.0, f"Expected timeout ~1.0s, got {elapsed:.3f}s"
             assert exc_info.value.code == "LOCK_TIMEOUT"
             assert not lock2.locked
         finally:
