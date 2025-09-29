@@ -604,7 +604,12 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/docs/test_docs_generator.py --collect-only)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/docs/test_docs_generator.py::TestAPIDocGenerator::test_init_default_values -v)",
       "Bash(PYTHONPATH=src .venv/bin/ruff format /Users/tim/code/gh/provide-io/provide-testkit/src/provide/testkit/mocking/fixtures.py /Users/tim/code/gh/provide-io/provide-testkit/src/provide/testkit/mocking/__init__.py)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_downloader.py::TestToolDownloader::test_download_with_progress_success -v --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_downloader.py::TestToolDownloader::test_download_with_progress_success -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_downloader.py -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/tools/test_downloader.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/tools/test_downloader.py --ignore-missing-imports)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py::TestDownloaderIntegration::test_download_small_file_success -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py::TestDownloaderIntegration::test_download_small_file_success -v --tb=short -m integration)"
     ],
     "deny": [],
     "ask": [],

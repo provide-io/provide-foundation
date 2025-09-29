@@ -5,6 +5,9 @@ Tests for downloading tools with progress, mirrors, and parallel downloads.
 
 from __future__ import annotations
 
+from pathlib import Path
+from typing import Any, Never
+
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import AsyncMock, MagicMock, Mock, patch
 import pytest
@@ -19,21 +22,21 @@ class TestToolDownloader(FoundationTestCase):
     """Tests for ToolDownloader class."""
 
     @pytest.fixture
-    def mock_client(self):
+    def mock_client(self) -> MagicMock:
         """Create a mock UniversalClient."""
         client = MagicMock()
         # Make request method return an awaitable
         client.request = AsyncMock()
-        # Make stream method return an async iterator
-        client.stream = AsyncMock()
         return client
 
     @pytest.fixture
-    def downloader(self, mock_client):
+    def downloader(self, mock_client: MagicMock) -> ToolDownloader:
         """Create a ToolDownloader instance."""
         return ToolDownloader(mock_client)
 
-    async def test_download_with_progress_success(self, downloader, mock_client, tmp_path) -> None:
+    async def test_download_with_progress_success(
+        self, downloader: ToolDownloader, mock_client: MagicMock, tmp_path: Path
+    ) -> None:
         """Test successful download with progress reporting."""
         dest = tmp_path / "tool.tar.gz"
         url = "https://example.com/tool.tar.gz"
@@ -43,14 +46,24 @@ class TestToolDownloader(FoundationTestCase):
         mock_response.headers = {"content-length": "1000"}
         mock_client.request.return_value = mock_response
 
-        # Mock streaming response as async generator
-        async def mock_stream():
-            chunks = [b"chunk1", b"chunk2", b"chunk3"]
-            for chunk in chunks:
-                yield chunk
+        # Create async iterator mock that yields chunks
+        class MockAsyncIterator:
+            def __init__(self, chunks: list[bytes]) -> None:
+                self.chunks = chunks
+                self.index = 0
 
-        # Make stream method return the async generator directly
-        mock_client.stream = AsyncMock(return_value=mock_stream())
+            def __aiter__(self) -> MockAsyncIterator:
+                return self
+
+            async def __anext__(self) -> bytes:
+                if self.index >= len(self.chunks):
+                    raise StopAsyncIteration
+                chunk = self.chunks[self.index]
+                self.index += 1
+                return chunk
+
+        # Mock the stream method to return the async iterator directly (not wrapped in AsyncMock)
+        mock_client.stream = MagicMock(return_value=MockAsyncIterator([b"chunk1", b"chunk2", b"chunk3"]))
 
         # Add progress callback
         progress_calls = []
@@ -73,7 +86,9 @@ class TestToolDownloader(FoundationTestCase):
         mock_client.request.assert_called_once_with(url, "GET")
         mock_client.stream.assert_called_once_with(url, "GET")
 
-    async def test_download_with_checksum_success(self, downloader, mock_client, tmp_path) -> None:
+    async def test_download_with_checksum_success(
+        self, downloader: ToolDownloader, mock_client: MagicMock, tmp_path: Path
+    ) -> None:
         """Test download with checksum verification."""
         dest = tmp_path / "tool.tar.gz"
         url = "https://example.com/tool.tar.gz"
@@ -85,7 +100,7 @@ class TestToolDownloader(FoundationTestCase):
         mock_client.request.return_value = mock_response
 
         # Mock streaming response
-        async def mock_stream():
+        async def mock_stream() -> Any:
             yield content
 
         mock_client.stream.return_value = mock_stream()
@@ -104,7 +119,9 @@ class TestToolDownloader(FoundationTestCase):
             assert dest.exists()
             mock_verify.assert_called_once_with(dest, "sha256:abc123")
 
-    async def test_download_with_checksum_failure(self, downloader, mock_client, tmp_path) -> None:
+    async def test_download_with_checksum_failure(
+        self, downloader: ToolDownloader, mock_client: MagicMock, tmp_path: Path
+    ) -> None:
         """Test download fails when checksum doesn't match."""
         dest = tmp_path / "tool.tar.gz"
         url = "https://example.com/tool.tar.gz"
@@ -115,7 +132,7 @@ class TestToolDownloader(FoundationTestCase):
         mock_client.request.return_value = mock_response
 
         # Mock streaming response
-        async def mock_stream():
+        async def mock_stream() -> Any:
             yield b"content"
 
         mock_client.stream.return_value = mock_stream()
@@ -134,7 +151,9 @@ class TestToolDownloader(FoundationTestCase):
             # File should be deleted
             assert not dest.exists()
 
-    async def test_download_parallel(self, downloader, mock_client, tmp_path) -> None:
+    async def test_download_parallel(
+        self, downloader: ToolDownloader, mock_client: MagicMock, tmp_path: Path
+    ) -> None:
         """Test parallel downloads of multiple files."""
         urls = [
             ("https://example.com/file1.tar.gz", tmp_path / "file1.tar.gz"),
@@ -143,7 +162,7 @@ class TestToolDownloader(FoundationTestCase):
         ]
 
         # Mock download_with_progress to create files
-        async def mock_download(url, dest, checksum=None):
+        async def mock_download(url: str, dest: Path, checksum: str | None = None) -> Path:
             dest.write_text(f"Content of {url}")
             return dest
 
@@ -156,7 +175,9 @@ class TestToolDownloader(FoundationTestCase):
             assert results[1].read_text() == "Content of https://example.com/file2.tar.gz"
             assert results[2].read_text() == "Content of https://example.com/file3.tar.gz"
 
-    async def test_download_with_mirrors_first_success(self, downloader, mock_client, tmp_path) -> None:
+    async def test_download_with_mirrors_first_success(
+        self, downloader: ToolDownloader, mock_client: MagicMock, tmp_path: Path
+    ) -> None:
         """Test download with mirrors succeeds on first mirror."""
         dest = tmp_path / "tool.tar.gz"
         mirrors = [
@@ -166,7 +187,7 @@ class TestToolDownloader(FoundationTestCase):
         ]
 
         # First mirror succeeds
-        async def mock_download(url, dest_path):
+        async def mock_download(url: str, dest_path: Path) -> Path:
             return dest_path
 
         with patch.object(downloader, "download_with_progress", side_effect=mock_download):
@@ -174,7 +195,9 @@ class TestToolDownloader(FoundationTestCase):
 
             assert result == dest
 
-    async def test_download_with_mirrors_fallback(self, downloader, mock_client, tmp_path) -> None:
+    async def test_download_with_mirrors_fallback(
+        self, downloader: ToolDownloader, mock_client: MagicMock, tmp_path: Path
+    ) -> None:
         """Test download falls back to next mirror on failure."""
         dest = tmp_path / "tool.tar.gz"
         mirrors = [
@@ -184,7 +207,7 @@ class TestToolDownloader(FoundationTestCase):
         ]
 
         # First two mirrors fail, third succeeds
-        async def mock_download(url, dest_path):
+        async def mock_download(url: str, dest_path: Path) -> Path:
             if url == mirrors[2]:
                 return dest_path
             raise DownloadError(f"Failed to download from {url}")
@@ -194,7 +217,9 @@ class TestToolDownloader(FoundationTestCase):
 
             assert result == dest
 
-    async def test_download_with_mirrors_all_fail(self, downloader, mock_client, tmp_path) -> None:
+    async def test_download_with_mirrors_all_fail(
+        self, downloader: ToolDownloader, mock_client: MagicMock, tmp_path: Path
+    ) -> None:
         """Test download fails when all mirrors fail."""
         dest = tmp_path / "tool.tar.gz"
         mirrors = [
@@ -203,14 +228,16 @@ class TestToolDownloader(FoundationTestCase):
         ]
 
         # All mirrors fail
-        async def mock_download_fail(url, dest_path):
+        async def mock_download_fail(url: str, dest_path: Path) -> Never:
             raise DownloadError("Connection failed")
 
-        with patch.object(downloader, "download_with_progress", side_effect=mock_download_fail):
-            with pytest.raises(DownloadError, match="All mirrors failed"):
-                await downloader.download_with_mirrors(mirrors, dest)
+        with (
+            patch.object(downloader, "download_with_progress", side_effect=mock_download_fail),
+            pytest.raises(DownloadError, match="All mirrors failed"),
+        ):
+            await downloader.download_with_mirrors(mirrors, dest)
 
-    def test_add_progress_callback(self, downloader) -> None:
+    def test_add_progress_callback(self, downloader: ToolDownloader) -> None:
         """Test adding progress callbacks."""
         callback1 = Mock()
         callback2 = Mock()
@@ -224,7 +251,7 @@ class TestToolDownloader(FoundationTestCase):
         callback1.assert_called_once_with(100, 1000)
         callback2.assert_called_once_with(100, 1000)
 
-    def test_verify_checksum_sha256(self, downloader, tmp_path) -> None:
+    def test_verify_checksum_sha256(self, downloader: ToolDownloader, tmp_path: Path) -> None:
         """Test SHA256 checksum verification."""
         file_path = tmp_path / "test.txt"
         file_path.write_text("test content")
@@ -239,7 +266,9 @@ class TestToolDownloader(FoundationTestCase):
         result = downloader.verify_checksum(file_path, "wrong_checksum")
         assert result is False
 
-    async def test_download_no_content_length(self, downloader, mock_client, tmp_path) -> None:
+    async def test_download_no_content_length(
+        self, downloader: ToolDownloader, mock_client: MagicMock, tmp_path: Path
+    ) -> None:
         """Test download when server doesn't provide content-length."""
         dest = tmp_path / "tool.tar.gz"
         url = "https://example.com/tool.tar.gz"
@@ -250,7 +279,7 @@ class TestToolDownloader(FoundationTestCase):
         mock_client.request.return_value = mock_response
 
         # Mock streaming response
-        async def mock_stream():
+        async def mock_stream() -> Any:
             chunks = [b"chunk1", b"chunk2"]
             for chunk in chunks:
                 yield chunk
@@ -262,7 +291,9 @@ class TestToolDownloader(FoundationTestCase):
         assert result == dest
         assert dest.read_bytes() == b"chunk1chunk2"
 
-    async def test_download_empty_file(self, downloader, mock_client, tmp_path) -> None:
+    async def test_download_empty_file(
+        self, downloader: ToolDownloader, mock_client: MagicMock, tmp_path: Path
+    ) -> None:
         """Test downloading an empty file."""
         dest = tmp_path / "empty.txt"
         url = "https://example.com/empty.txt"
@@ -273,7 +304,7 @@ class TestToolDownloader(FoundationTestCase):
         mock_client.request.return_value = mock_response
 
         # Mock streaming response (empty)
-        async def mock_stream():
+        async def mock_stream() -> Any:
             return
             yield  # Never executed
 
@@ -285,7 +316,9 @@ class TestToolDownloader(FoundationTestCase):
         assert dest.exists()
         assert dest.read_bytes() == b""
 
-    async def test_download_network_error(self, downloader, mock_client, tmp_path) -> None:
+    async def test_download_network_error(
+        self, downloader: ToolDownloader, mock_client: MagicMock, tmp_path: Path
+    ) -> None:
         """Test handling network errors during download."""
         dest = tmp_path / "tool.tar.gz"
         url = "https://example.com/tool.tar.gz"
