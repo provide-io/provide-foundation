@@ -173,14 +173,9 @@ class FileLock:
                         # Someone else removed it, that's fine
                         return True
             else:
-                # Invalid lock file content, consider it stale
-                log.warning("Removing invalid lock file", path=str(self.path), content=content)
-                try:
-                    self.path.unlink()
-                    return True
-                except FileNotFoundError:
-                    # Someone else removed it, that's fine
-                    return True
+                # Invalid lock file content, don't remove it as we can't be sure
+                log.debug("Invalid lock file content", path=str(self.path), content=content)
+                return False
         except Exception as e:
             log.debug("Error checking stale lock", path=str(self.path), error=str(e))
             return False
