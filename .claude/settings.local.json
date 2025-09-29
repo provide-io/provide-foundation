@@ -600,7 +600,10 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py::TestFullWorkflowIntegration::test_resolve_version_integration -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py -m integration -k test_resolve_version_integration -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py -m integration -k test_exponential_backoff_timing -v --tb=short -n 0)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_downloader.py::TestToolDownloader::test_download_with_progress_success -xvs --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_downloader.py::TestToolDownloader::test_download_with_progress_success -xvs --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/docs/test_docs_generator.py --collect-only)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/docs/test_docs_generator.py::TestAPIDocGenerator::test_init_default_values -v)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format /Users/tim/code/gh/provide-io/provide-testkit/src/provide/testkit/mocking/fixtures.py /Users/tim/code/gh/provide-io/provide-testkit/src/provide/testkit/mocking/__init__.py)"
     ],
     "deny": [],
     "ask": [],
