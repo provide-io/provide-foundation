@@ -671,7 +671,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/crypto/test_optional_crypto_dependency.py::TestCryptoFallbackBehavior::test_certificate_property_access_without_crypto -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_runner.py::TestStreamCommand::test_stream_with_timeout -xvs)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/crypto/test_optional_crypto_dependency.py::TestCryptoFallbackBehavior::test_crypto_module_resilience tests/docs/test_docs_init_coverage.py::TestDocsModuleStructure::test_module_imports_successfully tests/tools/test_installer.py::TestToolInstaller::test_extract_zip_success tests/tools/test_installer.py::TestToolInstaller::test_extract_zip_unsafe_paths -v)",
-      "Bash(PYTHONPATH=src timeout 120 .venv/bin/pytest tests/file/ tests/crypto/ tests/docs/ tests/tools/test_installer.py -q --tb=short --maxfail=3)"
+      "Bash(PYTHONPATH=src timeout 120 .venv/bin/pytest tests/file/ tests/crypto/ tests/docs/ tests/tools/test_installer.py -q --tb=short --maxfail=3)",
+      "Bash(PYTHONPATH=src timeout 10 .venv/bin/pytest tests/cli/commands/test_deps_coverage.py::TestDepsCommandModuleImport::test_click_import_handling -xvs --tb=short)"
     ],
     "deny": [],
     "ask": [],
