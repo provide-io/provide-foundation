@@ -1,10 +1,13 @@
 """Tests for console input functions."""
 
+from __future__ import annotations
+
 import asyncio
 from io import StringIO
 from typing import Never
-from unittest.mock import patch
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.console.input import (
@@ -18,7 +21,7 @@ from provide.foundation.console.input import (
 from provide.foundation.context import CLIContext
 
 
-class TestPin:
+class TestPin(FoundationTestCase):
     """Test basic pin() function."""
 
     def test_pin_basic_input(self) -> None:
@@ -109,7 +112,7 @@ class TestPin:
             assert result == {"input": "test value"}
 
 
-class TestPinStream:
+class TestPinStream(FoundationTestCase):
     """Test pin_stream() function."""
 
     def test_pin_stream_basic(self) -> None:
@@ -186,7 +189,7 @@ class TestPinStream:
             assert lines == ["plain", "text", "lines"]
 
 
-class TestPinLines:
+class TestPinLines(FoundationTestCase):
     """Test pin_lines() function."""
 
     def test_pin_lines_with_count(self) -> None:
@@ -210,7 +213,7 @@ class TestPinLines:
             assert lines == []
 
 
-class TestAsyncPin:
+class TestAsyncPin(FoundationTestCase):
     """Test async pin functions."""
 
     @pytest.mark.asyncio
@@ -284,7 +287,7 @@ class TestAsyncPin:
             assert lines == test_lines
 
 
-class TestAsyncStreamIntegration:
+class TestAsyncStreamIntegration(FoundationTestCase):
     """Test async streaming with real async I/O."""
 
     @pytest.mark.asyncio
@@ -325,7 +328,7 @@ class TestAsyncStreamIntegration:
 
         # Mock the executor call for JSON reading
         with patch("asyncio.get_event_loop") as mock_loop:
-            future = asyncio.Future()
+            future: asyncio.Future[list[str]] = asyncio.Future()
             future.set_result(test_data)
             mock_loop.return_value.run_in_executor.return_value = future
 
@@ -340,7 +343,7 @@ class TestAsyncStreamIntegration:
                 assert lines == test_data
 
 
-class TestEdgeCases:
+class TestEdgeCases(FoundationTestCase):
     """Test edge cases and error handling."""
 
     def test_pin_json_error_handling(self) -> None:

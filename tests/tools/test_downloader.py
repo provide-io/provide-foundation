@@ -3,8 +3,10 @@
 Tests for downloading tools with progress, mirrors, and parallel downloads.
 """
 
-from unittest.mock import MagicMock, Mock, patch
+from __future__ import annotations
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, Mock, patch
 import pytest
 
 from provide.foundation.tools.downloader import (
@@ -13,7 +15,7 @@ from provide.foundation.tools.downloader import (
 )
 
 
-class TestToolDownloader:
+class TestToolDownloader(FoundationTestCase):
     """Tests for ToolDownloader class."""
 
     @pytest.fixture

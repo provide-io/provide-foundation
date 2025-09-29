@@ -1,7 +1,11 @@
 """Test to verify unused modules are not imported."""
 
+from __future__ import annotations
 
-class TestUnusedModules:
+from provide.testkit import FoundationTestCase
+
+
+class TestUnusedModules(FoundationTestCase):
     """Test that unused modules are not accessible through main imports."""
 
     def test_utils_file_not_exported(self) -> None:

@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 import time
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.file.operations import (
@@ -14,10 +15,14 @@ from provide.foundation.file.operations import (
     FileEventMetadata,
     OperationDetector,
 )
-from provide.foundation.file.quality import AnalysisMetric, QualityAnalyzer, create_test_cases_from_patterns
+from provide.foundation.file.quality import (
+    AnalysisMetric,
+    QualityAnalyzer,
+    create_scenarios_from_patterns,
+)
 
 
-class TestFileOperationsPerformance:
+class TestFileOperationsPerformance(FoundationTestCase):
     """Performance benchmarks for file operations detection."""
 
     def test_single_operation_detection_performance(self, benchmark) -> None:
@@ -213,9 +218,9 @@ class TestFileOperationsPerformance:
         analyzer = QualityAnalyzer()
 
         # Add standard test cases
-        test_cases = create_test_cases_from_patterns()
-        for test_case in test_cases:
-            analyzer.add_test_case(test_case)
+        scenarios = create_scenarios_from_patterns()
+        for scenario in scenarios:
+            analyzer.add_scenario(scenario)
 
         # Benchmark the analysis
         metrics = [

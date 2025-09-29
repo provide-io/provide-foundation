@@ -1,15 +1,18 @@
 """Simple coverage tests for _version.py module."""
 
+from __future__ import annotations
+
 from pathlib import Path
 import tempfile
-from unittest.mock import MagicMock, patch
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation._version import __version__, _find_project_root, get_version
 
 
-class TestVersionSimpleCoverage:
+class TestVersionSimpleCoverage(FoundationTestCase):
     """Simple tests for version module coverage."""
 
     def test_find_project_root_actual(self) -> None:
@@ -102,30 +105,32 @@ class TestVersionSimpleCoverage:
     def test_importlib_metadata_fallback(self) -> None:
         """Test importlib.metadata fallback path."""
         # Mock _find_project_root to return None (no VERSION file)
-        with patch("provide.foundation._version._find_project_root", return_value=None):
-            # Mock the importlib.metadata.version import and function
-            with patch(
+        with (
+            patch("provide.foundation._version._find_project_root", return_value=None),
+            patch(
                 "importlib.metadata.version",
                 return_value="metadata-version",
-            ) as mock_version:
-                version = get_version()
-                assert version == "metadata-version"
-                mock_version.assert_called_once_with("provide-foundation")
+            ) as mock_version,
+        ):
+            version = get_version()
+            assert version == "metadata-version"
+            mock_version.assert_called_once_with("provide-foundation")
 
     def test_package_not_found_fallback(self) -> None:
         """Test PackageNotFoundError fallback to development version."""
         from importlib.metadata import PackageNotFoundError
 
         # Mock _find_project_root to return None
-        with patch("provide.foundation._version._find_project_root", return_value=None):
-            # Mock importlib.metadata.version to raise PackageNotFoundError
-            with patch(
+        with (
+            patch("provide.foundation._version._find_project_root", return_value=None),
+            patch(
                 "importlib.metadata.version",
                 side_effect=PackageNotFoundError(),
-            ) as mock_version:
-                version = get_version()
-                assert version == "0.0.0-dev"
-                mock_version.assert_called_once_with("provide-foundation")
+            ) as mock_version,
+        ):
+            version = get_version()
+            assert version == "0.0.0-dev"
+            mock_version.assert_called_once_with("provide-foundation")
 
     def test_version_with_whitespace(self) -> None:
         """Test VERSION file with whitespace handling."""
@@ -185,7 +190,7 @@ class TestVersionSimpleCoverage:
                 assert version2 == "file-version"
 
 
-class TestVersionModuleBehavior:
+class TestVersionModuleBehavior(FoundationTestCase):
     """Test version module behavior and imports."""
 
     def test_module_level_version_setting(self) -> None:
@@ -262,7 +267,7 @@ class TestVersionModuleBehavior:
                     pytest.fail(f"get_version() should not raise exceptions: {e}")
 
 
-class TestVersionCoverageSpecific:
+class TestVersionCoverageSpecific(FoundationTestCase):
     """Tests specifically targeting missing coverage lines."""
 
     def test_cover_line_23_none_return(self) -> None:

@@ -9,6 +9,7 @@ import tempfile
 from threading import Event as ThreadEvent
 import time
 
+from provide.testkit import FoundationTestCase
 import pytest
 from watchdog.events import FileSystemEvent, FileSystemEventHandler
 from watchdog.observers import Observer
@@ -89,7 +90,7 @@ class FileEventCapture(FileSystemEventHandler):
         self._stop_event.set()
 
 
-class TestFileOperationIntegration:
+class TestFileOperationIntegration(FoundationTestCase):
     """Integration tests using real filesystem operations."""
 
     @pytest.fixture
@@ -359,7 +360,7 @@ class TestFileOperationIntegration:
         assert isinstance(operations, list)
 
 
-class TestFileOperationsStressTesting:
+class TestFileOperationsStressTesting(FoundationTestCase):
     """Stress tests for file operations detection."""
 
     @pytest.fixture

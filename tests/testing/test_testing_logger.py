@@ -1,5 +1,8 @@
 """Tests for logger testing utilities."""
 
+from __future__ import annotations
+
+from provide.testkit import FoundationTestCase
 from provide.testkit.logger import (
     reset_foundation_setup_for_testing,
     reset_foundation_state,
@@ -13,7 +16,7 @@ from provide.foundation.logger.core import (
 )
 
 
-class TestLoggerTestingUtilities:
+class TestLoggerTestingUtilities(FoundationTestCase):
     """Test logger testing helper functions."""
 
     def test_reset_foundation_state_resets_structlog(self) -> None:

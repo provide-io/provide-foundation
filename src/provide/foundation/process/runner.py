@@ -9,8 +9,7 @@ from typing import Any
 from attrs import define
 
 from provide.foundation.errors.config import ValidationError
-from provide.foundation.errors.integration import TimeoutError
-from provide.foundation.errors.process import ProcessError
+from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.logger import get_logger
 
 """Core subprocess execution utilities."""
@@ -61,7 +60,7 @@ def run_command(
 
     Raises:
         ProcessError: If command fails and check=True
-        TimeoutError: If timeout is exceeded
+        ProcessTimeoutError: If timeout is exceeded
 
     """
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
@@ -147,14 +146,14 @@ def run_command(
             command=cmd_str,
             timeout=timeout,
         )
-        raise TimeoutError(
+        raise ProcessTimeoutError(
             f"Command timed out after {timeout}s: {cmd_str}",
             code="PROCESS_TIMEOUT",
             command=cmd_str,
             timeout_seconds=timeout,
         ) from e
     except Exception as e:
-        if isinstance(e, ProcessError | TimeoutError):
+        if isinstance(e, ProcessError | ProcessTimeoutError):
             raise
         plog.error(
             "💥 Command execution failed",
@@ -219,7 +218,7 @@ def _check_timeout_expired(start_time: float, timeout: float, cmd_str: str, proc
         process.kill()
         process.wait()
         plog.error("⏱️ Stream timed out", command=cmd_str, timeout=timeout)
-        raise TimeoutError(
+        raise ProcessTimeoutError(
             f"Command timed out after {timeout}s: {cmd_str}",
             code="PROCESS_STREAM_TIMEOUT",
             command=cmd_str,
@@ -345,7 +344,7 @@ def stream_command(
 
     Raises:
         ProcessError: If command fails
-        TimeoutError: If timeout is exceeded
+        ProcessTimeoutError: If timeout is exceeded
 
     """
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
@@ -391,7 +390,7 @@ def stream_command(
             _cleanup_process(process)
 
     except Exception as e:
-        if isinstance(e, ProcessError | TimeoutError):
+        if isinstance(e, ProcessError | ProcessTimeoutError):
             raise
         plog.error("💥 Stream failed", command=cmd_str, error=str(e))
         raise ProcessError(

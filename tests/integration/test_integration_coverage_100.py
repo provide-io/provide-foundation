@@ -23,10 +23,7 @@ from provide.foundation.hub.registry import Registry
 pytestmark = pytest.mark.serial
 
 
-@pytest.fixture(autouse=True)
-def manage_environment() -> None:
-    """Ensure Foundation state is reset for each test."""
-    pass
+# Foundation state is automatically managed by FoundationTestCase base class
 
 
 def test_ensure_stderr_default(captured_stderr_for_foundation: io.StringIO) -> None:

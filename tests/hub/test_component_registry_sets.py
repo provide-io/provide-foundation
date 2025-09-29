@@ -4,12 +4,16 @@ This test suite covers emoji set registration, discovery, priority ordering,
 and processor pipeline management through the registry system.
 """
 
+from __future__ import annotations
+
 import asyncio
+
+from provide.testkit import FoundationTestCase
 
 # Configuration source tests removed - module doesn't exist yet
 
 
-class TestProcessorRegistration:
+class TestProcessorRegistration(FoundationTestCase):
     """Test processor registration and pipeline management."""
 
     def test_processors_register_in_processor_category(self) -> None:
@@ -22,7 +26,9 @@ class TestProcessorRegistration:
         registry = get_component_registry()
 
         # Create a test processor
-        def test_processor(logger, method_name, event_dict):
+        def test_processor(
+            logger: object, method_name: str, event_dict: dict[str, object]
+        ) -> dict[str, object]:
             event_dict["processed"] = True
             return event_dict
 
@@ -77,7 +83,9 @@ class TestProcessorRegistration:
         registry = get_component_registry()
 
         # Create async processor
-        async def async_processor(logger, method_name, event_dict):
+        async def async_processor(
+            logger: object, method_name: str, event_dict: dict[str, object]
+        ) -> dict[str, object]:
             await asyncio.sleep(0)  # Simulate async work
             event_dict["async_processed"] = True
             return event_dict
@@ -117,7 +125,9 @@ class TestProcessorRegistration:
         registry = get_component_registry()
 
         # Processor with conditions
-        def conditional_processor(logger, method_name, event_dict):
+        def conditional_processor(
+            logger: object, method_name: str, event_dict: dict[str, object]
+        ) -> dict[str, object]:
             return event_dict
 
         registry.register(
@@ -137,5 +147,6 @@ class TestProcessorRegistration:
             "conditional_processor",
             ComponentCategory.PROCESSOR.value,
         )
+        assert entry is not None
         assert "conditions" in entry.metadata
         assert entry.metadata["conditions"]["min_level"] == "INFO"

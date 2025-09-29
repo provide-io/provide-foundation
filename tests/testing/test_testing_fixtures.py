@@ -1,14 +1,16 @@
 """Tests for common testing fixtures."""
 
+from __future__ import annotations
+
 import io
 
-from provide.testkit import captured_stderr_for_foundation
+from provide.testkit import FoundationTestCase, captured_stderr_for_foundation
 import pytest
 
 from provide.foundation import TelemetryConfig
 
 
-class TestTestingFixtures:
+class TestTestingFixtures(FoundationTestCase):
     """Test the common testing fixtures."""
 
     def test_captured_stderr_fixture_provides_stringio(self) -> None:
@@ -58,13 +60,13 @@ class TestTestingFixtures:
         _setup(custom_config)
 
     @pytest.fixture
-    def mock_captured_stderr(self):
+    def mock_captured_stderr(self) -> io.StringIO:
         """Mock version of captured_stderr_for_foundation fixture."""
         test_stream = io.StringIO()
         yield test_stream
         test_stream.close()
 
-    def test_fixture_integration_example(self, mock_captured_stderr) -> None:
+    def test_fixture_integration_example(self, mock_captured_stderr: io.StringIO) -> None:
         """Test how fixtures would be used together."""
         # This simulates how the real fixtures would be used
         assert isinstance(mock_captured_stderr, io.StringIO)

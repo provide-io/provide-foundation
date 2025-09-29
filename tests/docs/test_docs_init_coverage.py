@@ -4,17 +4,11 @@ from __future__ import annotations
 
 import contextlib
 
-from provide.testkit import reset_foundation_setup_for_testing
+from provide.testkit import FoundationTestCase
 import pytest
 
 
-@pytest.fixture(autouse=True)
-def reset_foundation() -> None:
-    """Reset Foundation state before each test."""
-    reset_foundation_setup_for_testing()
-
-
-class TestDocsModuleStructure:
+class TestDocsModuleStructure(FoundationTestCase):
     """Test docs module structure and imports."""
 
     def test_module_imports_successfully(self) -> None:
@@ -78,7 +72,7 @@ class TestDocsModuleStructure:
         assert provide.foundation.docs.__package__ == "provide.foundation.docs"
 
 
-class TestDocsModuleImportBehavior:
+class TestDocsModuleImportBehavior(FoundationTestCase):
     """Test import behavior and error handling."""
 
     def test_safe_import_with_missing_dependencies(self) -> None:
@@ -109,7 +103,7 @@ class TestDocsModuleImportBehavior:
             pytest.skip("Generator module not fully accessible")
 
 
-class TestModuleMetadata:
+class TestModuleMetadata(FoundationTestCase):
     """Test module metadata and structure."""
 
     def test_module_type_annotations(self) -> None:
@@ -150,7 +144,7 @@ class TestModuleMetadata:
             )
 
 
-class TestRealWorldUsage:
+class TestRealWorldUsage(FoundationTestCase):
     """Test real-world usage scenarios."""
 
     def test_import_all_pattern(self) -> None:
@@ -201,7 +195,7 @@ class TestRealWorldUsage:
                 getattr(docs, export_name)
 
 
-class TestModuleIntegration:
+class TestModuleIntegration(FoundationTestCase):
     """Test integration with the broader provide.foundation package."""
 
     def test_package_integration(self) -> None:

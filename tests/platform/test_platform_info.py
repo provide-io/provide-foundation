@@ -1,11 +1,16 @@
 """Tests for system information gathering."""
 
-from unittest.mock import MagicMock, patch
+from __future__ import annotations
+
+from typing import Any
+
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 
 from provide.foundation.platform import SystemInfo, get_system_info
 
 
-class TestSystemInfo:
+class TestSystemInfo(FoundationTestCase):
     """Test system information gathering."""
 
     @patch("provide.foundation.platform.info.get_os_name", return_value="darwin")
@@ -24,22 +29,22 @@ class TestSystemInfo:
     @patch("shutil.disk_usage")
     def test_get_system_info_complete(
         self,
-        mock_disk_usage,
-        mock_cpu_count,
-        mock_expanduser,
-        mock_env_get,
-        mock_node,
-        mock_python_version,
-        mock_cpu_type,
-        mock_os_version,
-        mock_platform,
-        mock_arch,
-        mock_os,
+        mock_disk_usage: Any,
+        mock_cpu_count: Any,
+        mock_expanduser: Any,
+        mock_env_get: Any,
+        mock_node: Any,
+        mock_python_version: Any,
+        mock_cpu_type: Any,
+        mock_os_version: Any,
+        mock_platform: Any,
+        mock_arch: Any,
+        mock_os: Any,
     ) -> None:
         """Test getting complete system information."""
 
         # Setup mocks
-        def env_side_effect(key, default=None):
+        def env_side_effect(key: str, default: Any = None) -> Any:
             if key == "USER":
                 return "testuser"
             if key == "TMPDIR":
@@ -96,17 +101,17 @@ class TestSystemInfo:
     @patch("shutil.disk_usage", side_effect=Exception("Cannot get disk usage"))
     def test_get_system_info_minimal(
         self,
-        mock_disk_usage,
-        mock_cpu_count,
-        mock_expanduser,
-        mock_env_get,
-        mock_node,
-        mock_python_version,
-        mock_cpu_type,
-        mock_os_version,
-        mock_platform,
-        mock_arch,
-        mock_os,
+        mock_disk_usage: Any,
+        mock_cpu_count: Any,
+        mock_expanduser: Any,
+        mock_env_get: Any,
+        mock_node: Any,
+        mock_python_version: Any,
+        mock_cpu_type: Any,
+        mock_os_version: Any,
+        mock_platform: Any,
+        mock_arch: Any,
+        mock_os: Any,
     ) -> None:
         """Test getting system info with minimal data available."""
         # Get system info
@@ -153,12 +158,12 @@ class TestSystemInfo:
     @patch("platform.python_version", return_value="3.11.0")
     def test_get_system_info_with_psutil(
         self,
-        mock_python_version,
-        mock_cpu_type,
-        mock_os_version,
-        mock_platform,
-        mock_arch,
-        mock_os,
+        mock_python_version: Any,
+        mock_cpu_type: Any,
+        mock_os_version: Any,
+        mock_platform: Any,
+        mock_arch: Any,
+        mock_os: Any,
     ) -> None:
         """Test getting system info with psutil available."""
         # Mock psutil

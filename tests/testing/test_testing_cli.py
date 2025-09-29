@@ -1,5 +1,7 @@
 """Tests for CLI testing utilities."""
 
+from __future__ import annotations
+
 from contextlib import suppress
 import json
 import os
@@ -10,15 +12,17 @@ import click
 from click.testing import CliRunner
 from provide.testkit import (
     CliTestCase,
+    FoundationTestCase,
     MockContext,
     create_test_cli,
     isolated_cli_runner,
     temp_config_file,
 )
+from provide.testkit.mocking import Mock
 import pytest
 
 
-class TestMockContext:
+class TestMockContext(FoundationTestCase):
     """Test the MockContext class."""
 
     def test_mock_context_tracks_calls(self) -> None:
@@ -51,7 +55,7 @@ class TestMockContext:
         assert str(tmp_path) in [str(p) for p in ctx.loaded_configs]
 
 
-class TestIsolatedCliRunner:
+class TestIsolatedCliRunner(FoundationTestCase):
     """Test the isolated CLI runner context manager."""
 
     def test_isolated_runner_basic(self) -> None:
@@ -86,7 +90,7 @@ class TestIsolatedCliRunner:
             assert isinstance(runner, CliRunner)
 
 
-class TestTempConfigFile:
+class TestTempConfigFile(FoundationTestCase):
     """Test temporary config file creation."""
 
     def test_temp_config_json(self) -> None:
@@ -97,7 +101,7 @@ class TestTempConfigFile:
             assert config_path.exists()
             assert config_path.suffix == ".json"
 
-            with open(config_path) as f:
+            with config_path.open() as f:
                 loaded = json.load(f)
 
             assert loaded == config
@@ -117,7 +121,7 @@ class TestTempConfigFile:
 
             import yaml
 
-            with open(config_path) as f:
+            with config_path.open() as f:
                 loaded = yaml.safe_load(f)
 
             assert loaded == config
@@ -142,7 +146,7 @@ class TestTempConfigFile:
             assert config_path.read_text() == content
 
 
-class TestCreateTestCli:
+class TestCreateTestCli(FoundationTestCase):
     """Test test CLI creation."""
 
     def test_create_basic_cli(self) -> None:
@@ -172,20 +176,19 @@ class TestCreateTestCli:
         assert cli.name == "custom-cli"
 
 
-class TestMockLogger:
+class TestMockLogger(FoundationTestCase):
     """Test mock logger creation."""
 
-    def test_mock_logger_has_methods(self, mock_logger) -> None:
+    def test_mock_logger_has_methods(self, mock_logger: Mock) -> None:
         """Test that mock logger has all expected methods."""
         methods = ["debug", "info", "warning", "error", "critical"]
         for method in methods:
             assert hasattr(mock_logger, method)
             # mock_logger creates Mock objects, not MagicMock
-            from unittest.mock import Mock
 
             assert isinstance(getattr(mock_logger, method), Mock)
 
-    def test_mock_logger_methods_callable(self, mock_logger) -> None:
+    def test_mock_logger_methods_callable(self, mock_logger: Mock) -> None:
         """Test that mock logger methods are callable."""
         # Should not raise any exceptions
         mock_logger.debug("test")
@@ -195,7 +198,7 @@ class TestMockLogger:
         mock_logger.critical("test")
 
 
-class TestCliTestCase:
+class TestCliTestCase(FoundationTestCase):
     """Test the CliTestCase base class."""
 
     def test_cli_test_case_setup(self) -> None:

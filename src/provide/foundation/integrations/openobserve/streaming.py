@@ -176,9 +176,27 @@ def stream_search_http2(
         raise OpenObserveStreamingError(f"HTTP/2 streaming failed: {e}") from e
 
 
+def _build_where_clause_from_filters(filters: dict[str, str]) -> str:
+    """Safely build a SQL WHERE clause from a dictionary of filters."""
+    if not filters:
+        return ""
+
+    conditions = []
+    for key, value in filters.items():
+        # Sanitize column name (key)
+        if not re.match(r"^[a-zA-Z0-9_]+$", key):
+            raise ValidationError(f"Invalid filter key: {key}")
+
+        # Escape single quotes in value
+        escaped_value = value.replace("'", "''")
+        conditions.append(f"{key} = '{escaped_value}'")
+
+    return f"WHERE {' AND '.join(conditions)}"
+
+
 def tail_logs(
     stream: str = "default",
-    filter_sql: str | None = None,
+    filters: dict[str, str] | None = None,
     follow: bool = True,
     lines: int = 10,
     client: OpenObserveClient | None = None,
@@ -187,7 +205,7 @@ def tail_logs(
 
     Args:
         stream: Stream name to tail
-        filter_sql: Optional SQL WHERE clause for filtering (TRUSTED input only)
+        filters: Dictionary of key-value pairs for filtering
         follow: If True, continue streaming new logs
         lines: Number of initial lines to show
         client: OpenObserve client
@@ -195,12 +213,7 @@ def tail_logs(
     Yields:
         Log entries
 
-    Security Note:
-        filter_sql parameter must be from trusted sources as it's inserted
-        directly into SQL query. For user inputs, use parameterized search functions.
-
     """
-
     # Sanitize stream name to prevent SQL injection
     if not re.match(r"^[a-zA-Z0-9_]+$", stream):
         raise ValidationError(
@@ -213,9 +226,9 @@ def tail_logs(
             "Invalid lines parameter", code="INVALID_LINES_PARAM", lines=lines, expected_range="1-10000"
         )
 
-    # Build SQL query
-    where_clause = f"WHERE {filter_sql}" if filter_sql else ""
-    sql = f"SELECT * FROM {stream} {where_clause} ORDER BY _timestamp DESC LIMIT {lines}"  # nosec B608 - Stream name validated, filter_sql sanitized by caller
+    # Build WHERE clause safely from filters
+    where_clause = _build_where_clause_from_filters(filters or {})
+    sql = f"SELECT * FROM {stream} {where_clause} ORDER BY _timestamp DESC LIMIT {lines}"
 
     if client is None:
         client = OpenObserveClient.from_config()
@@ -236,7 +249,7 @@ def tail_logs(
             last_timestamp = parse_relative_time("-1s")
 
         # Build streaming query
-        stream_sql = f"SELECT * FROM {stream} {where_clause} ORDER BY _timestamp ASC"  # nosec B608 - Stream name validated, filter_sql sanitized by caller
+        stream_sql = f"SELECT * FROM {stream} {where_clause} ORDER BY _timestamp ASC"
 
         # Stream new logs
         yield from stream_logs(

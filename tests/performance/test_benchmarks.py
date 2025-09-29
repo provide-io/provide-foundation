@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Performance benchmarks using pytest-benchmark.
 
 This module provides pytest-benchmark integration for Foundation's performance
@@ -13,7 +15,7 @@ from contextlib import contextmanager
 import io
 
 from provide.testkit import (
-    reset_foundation_setup_for_testing,
+    FoundationTestCase,
     set_log_stream_for_testing,
 )
 
@@ -31,12 +33,12 @@ def capture_logs():
         set_log_stream_for_testing(None)
 
 
-class TestBasicLoggingPerformance:
+class TestBasicLoggingPerformance(FoundationTestCase):
     """Basic logging performance benchmarks."""
 
     def setup_method(self) -> None:
         """Reset Foundation state before each test."""
-        reset_foundation_setup_for_testing()
+        super().setup_method()
 
     def test_basic_logging_throughput(self, benchmark) -> None:
         """Benchmark basic logging operations with emoji processing.
@@ -136,12 +138,12 @@ class TestBasicLoggingPerformance:
             # Performance validated by benchmark output - achieving >250k ops/sec
 
 
-class TestConcurrentPerformance:
+class TestConcurrentPerformance(FoundationTestCase):
     """Concurrent and async performance benchmarks."""
 
     def setup_method(self) -> None:
         """Reset Foundation state before each test."""
-        reset_foundation_setup_for_testing()
+        super().setup_method()
 
     def test_multithreaded_logging_performance(self, benchmark) -> None:
         """Benchmark thread safety and concurrent performance."""
@@ -213,12 +215,12 @@ class TestConcurrentPerformance:
             # Performance validated by benchmark output - level filtering is very efficient
 
 
-class TestDogfoodingPerformance:
+class TestDogfoodingPerformance(FoundationTestCase):
     """Specific benchmarks for dogfooding improvements."""
 
     def setup_method(self) -> None:
         """Reset Foundation state before each test."""
-        reset_foundation_setup_for_testing()
+        super().setup_method()
 
     def test_config_warning_performance(self, benchmark) -> None:
         """Benchmark config system warning generation with structured logging."""
@@ -243,7 +245,7 @@ class TestDogfoodingPerformance:
 
         def foundation_setup() -> None:
             """Test the improved Foundation setup process."""
-            reset_foundation_setup_for_testing()
+            # Foundation reset is handled by FoundationTestCase
             config = TelemetryConfig(
                 logging=LoggingConfig(
                     default_level="DEBUG",  # Enable our structured setup logging
@@ -264,7 +266,7 @@ class TestDogfoodingPerformance:
 
         def foundation_setup_cycle() -> None:
             """Test the Foundation setup/reset cycle performance."""
-            reset_foundation_setup_for_testing()
+            # Foundation reset is handled by FoundationTestCase
             config = TelemetryConfig(
                 logging=LoggingConfig(
                     foundation_setup_log_level="DEBUG",
@@ -280,12 +282,12 @@ class TestDogfoodingPerformance:
         # Performance validated by benchmark output - setup cycle maintains speed
 
 
-class TestLargePayloadPerformance:
+class TestLargePayloadPerformance(FoundationTestCase):
     """Performance benchmarks for large payloads."""
 
     def setup_method(self) -> None:
         """Reset Foundation state before each test."""
-        reset_foundation_setup_for_testing()
+        super().setup_method()
 
     def test_large_payload_performance(self, benchmark) -> None:
         """Benchmark performance with large structured data."""

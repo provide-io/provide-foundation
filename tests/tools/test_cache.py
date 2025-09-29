@@ -4,19 +4,22 @@ Tests the TTL-based caching system for installed tools,
 including cache operations, TTL handling, and metadata management.
 """
 
+from __future__ import annotations
+
 from datetime import datetime, timedelta
 import json
 from pathlib import Path
 import tempfile
-from unittest.mock import patch
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.errors import FoundationError
 from provide.foundation.tools.cache import CacheError, ToolCache
 
 
-class TestCacheError:
+class TestCacheError(FoundationTestCase):
     """Test CacheError exception class."""
 
     def test_inherits_from_foundation_error(self) -> None:
@@ -31,7 +34,7 @@ class TestCacheError:
             raise CacheError("cache operation failed")
 
 
-class TestToolCache:
+class TestToolCache(FoundationTestCase):
     """Test ToolCache class."""
 
     @pytest.fixture

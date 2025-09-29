@@ -1,15 +1,19 @@
+from __future__ import annotations
+
 """Tests for Foundation serialization utilities."""
 
 import json
-from unittest.mock import patch
+from typing import Any
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.errors import ValidationError
 from provide.foundation.serialization import provide_dumps, provide_loads
 
 
-class TestProvideDumps:
+class TestProvideDumps(FoundationTestCase):
     """Test provide_dumps function."""
 
     def test_provide_dumps_basic_dict(self) -> None:
@@ -115,7 +119,7 @@ class TestProvideDumps:
             provide_dumps(data)
 
     @patch("provide.foundation.serialization.core.json")
-    def test_provide_dumps_uses_json_module(self, mock_json) -> None:
+    def test_provide_dumps_uses_json_module(self, mock_json: Any) -> None:
         """Test provide_dumps calls json.dumps()."""
         mock_json.dumps.return_value = '{"test": "value"}'
 
@@ -141,7 +145,7 @@ class TestProvideDumps:
             provide_dumps({1, 2, 3})
 
 
-class TestProvideLoads:
+class TestProvideLoads(FoundationTestCase):
     """Test provide_loads function."""
 
     def test_provide_loads_basic_dict(self) -> None:
@@ -249,7 +253,7 @@ class TestProvideLoads:
             provide_loads("   ")
 
     @patch("provide.foundation.serialization.core.json")
-    def test_provide_loads_uses_json_module(self, mock_json) -> None:
+    def test_provide_loads_uses_json_module(self, mock_json: Any) -> None:
         """Test provide_loads calls json.loads()."""
         mock_json.loads.return_value = {"test": "value"}
 
@@ -284,7 +288,7 @@ class TestProvideLoads:
                 assert result == expected
 
 
-class TestSerializationRoundTrip:
+class TestSerializationRoundTrip(FoundationTestCase):
     """Test round-trip serialization/deserialization."""
 
     def test_roundtrip_basic_data(self) -> None:
@@ -346,7 +350,7 @@ class TestSerializationRoundTrip:
             assert deserialized == test_data
 
 
-class TestSerializationIntegration:
+class TestSerializationIntegration(FoundationTestCase):
     """Integration tests for serialization utilities."""
 
     def test_serialization_with_foundation_objects(self) -> None:

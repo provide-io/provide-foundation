@@ -11,8 +11,7 @@ from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import patch
 import pytest
 
-from provide.foundation.errors.integration import TimeoutError
-from provide.foundation.errors.process import ProcessError
+from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.process.runner import (
     run_command,
     run_shell,
@@ -83,7 +82,7 @@ class TestErrorHandling(FoundationTestCase):
 
     def test_subprocess_timeout_error(self) -> None:
         """Test handling of subprocess TimeoutExpired error."""
-        with pytest.raises(TimeoutError) as exc_info:
+        with pytest.raises(ProcessTimeoutError) as exc_info:
             run_command(["sleep", "1"], timeout=0.01, check=True)
 
         assert "timed out" in str(exc_info.value).lower()
@@ -219,7 +218,7 @@ class TestStreamCommandCoverage(FoundationTestCase):
 
     def test_stream_command_timeout(self) -> None:
         """Test stream command timeout handling."""
-        with pytest.raises(TimeoutError):
+        with pytest.raises(ProcessTimeoutError):
             # Try to stream from a long-running command with short timeout
             list(stream_command(["sleep", "1"], timeout=0.1))
 

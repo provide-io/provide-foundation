@@ -8,8 +8,7 @@ import sys
 from provide.testkit import FoundationTestCase
 import pytest
 
-from provide.foundation.errors.integration import TimeoutError
-from provide.foundation.errors.process import ProcessError
+from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.process.runner import (
     run_command,
     run_shell,
@@ -75,7 +74,7 @@ class TestRunCommand(FoundationTestCase):
 
     def test_command_timeout(self) -> None:
         """Test command timeout."""
-        with pytest.raises(TimeoutError):
+        with pytest.raises(ProcessTimeoutError):
             run_command(["sleep", "1"], timeout=0.1)
 
     def test_capture_output_false(self) -> None:
@@ -124,7 +123,7 @@ class TestStreamCommand(FoundationTestCase):
 
     def test_stream_with_timeout(self) -> None:
         """Test streaming with timeout."""
-        with pytest.raises(TimeoutError):
+        with pytest.raises(ProcessTimeoutError):
             for _ in stream_command(["sleep", "1"], timeout=0.1):
                 pass
 

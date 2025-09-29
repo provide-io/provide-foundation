@@ -3,9 +3,12 @@
 These tests define the expected behavior before implementation.
 """
 
-from pathlib import Path
-from unittest.mock import MagicMock, patch
+from __future__ import annotations
 
+from pathlib import Path
+
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation.config import BaseConfig
@@ -19,7 +22,7 @@ from provide.foundation.tools.base import (
 )
 
 
-class TestToolMetadata:
+class TestToolMetadata(FoundationTestCase):
     """Tests for ToolMetadata dataclass."""
 
     def test_metadata_creation(self) -> None:
@@ -58,7 +61,7 @@ class TestToolMetadata:
         assert metadata.dependencies == ["gcc"]
 
 
-class TestBaseToolManager:
+class TestBaseToolManager(FoundationTestCase):
     """Tests for BaseToolManager abstract class."""
 
     @pytest.fixture
