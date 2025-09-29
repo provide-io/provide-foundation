@@ -6,7 +6,7 @@ from typing import Never
 from unittest.mock import AsyncMock, patch
 
 import pytest
-from provide.testkit import FoundationTestCase
+from provide.testkit import MinimalTestCase
 
 from provide.foundation.concurrency import (
     async_gather,
@@ -17,7 +17,7 @@ from provide.foundation.concurrency import (
 from provide.foundation.errors import ValidationError
 
 
-class TestAsyncSleep(FoundationTestCase):
+class TestAsyncSleep(MinimalTestCase):
     """Test async_sleep function."""
 
     @pytest.mark.asyncio
@@ -84,7 +84,7 @@ class TestAsyncSleep(FoundationTestCase):
         assert result == "cancelled"
 
 
-class TestAsyncGather(FoundationTestCase):
+class TestAsyncGather(MinimalTestCase):
     """Test async_gather function."""
 
     @pytest.mark.asyncio
@@ -211,7 +211,7 @@ class TestAsyncGather(FoundationTestCase):
         assert kwargs["return_exceptions"] is True
 
 
-class TestAsyncWaitFor(FoundationTestCase):
+class TestAsyncWaitFor(MinimalTestCase):
     """Test async_wait_for function."""
 
     @pytest.mark.asyncio
@@ -308,7 +308,7 @@ class TestAsyncWaitFor(FoundationTestCase):
             await async_wait_for(failing_task(), timeout=1.0)
 
 
-class TestAsyncRun(FoundationTestCase):
+class TestAsyncRun(MinimalTestCase):
     """Test async_run function."""
 
     def test_async_run_basic_async_function(self) -> None:
@@ -417,7 +417,7 @@ class TestAsyncRun(FoundationTestCase):
             async_run(async_gen)
 
 
-class TestAsyncUtilitiesIntegration(FoundationTestCase):
+class TestAsyncUtilitiesIntegration(MinimalTestCase):
     """Integration tests for async utilities."""
 
     @pytest.mark.asyncio

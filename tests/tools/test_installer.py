@@ -11,14 +11,14 @@ import tempfile
 from typing import Never
 import zipfile
 
-from provide.testkit import FoundationTestCase
+from provide.testkit import MinimalTestCase
 import pytest
 
 from provide.foundation.tools.base import ToolMetadata
 from provide.foundation.tools.installer import InstallError, ToolInstaller
 
 
-class TestInstallError(FoundationTestCase):
+class TestInstallError(MinimalTestCase):
     """Test InstallError exception."""
 
     def test_inherits_from_foundation_error(self) -> None:
@@ -35,7 +35,7 @@ class TestInstallError(FoundationTestCase):
         assert str(exc_info.value) == "Test error"
 
 
-class TestToolInstaller(FoundationTestCase):
+class TestToolInstaller(MinimalTestCase):
     """Test ToolInstaller functionality."""
 
     @pytest.fixture

@@ -570,7 +570,9 @@
       "Bash(.venv/bin/pytest tests/time/test_time_core.py -v --tb=no)",
       "Bash(.venv/bin/pytest tests/time/test_time_core.py::TestProvideTime -xvs --tb=short)",
       "Bash(.venv/bin/pytest tests/time/test_time_core.py -q)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/time/test_time_core.py::TestProvideSleep::test_provide_sleep_actually_sleeps -xvs --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/time/test_time_core.py::TestProvideSleep::test_provide_sleep_actually_sleeps -xvs --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format /Users/tim/code/gh/provide-io/provide-testkit/src/provide/testkit/base/minimal.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format /Users/tim/code/gh/provide-io/provide-testkit/src/provide/testkit/base/foundation.py)"
     ],
     "deny": [],
     "ask": [],

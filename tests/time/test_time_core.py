@@ -10,10 +10,10 @@ import pytest
 
 from provide.foundation.errors import ValidationError
 from provide.foundation.time import provide_now, provide_sleep, provide_time
-from provide.testkit import FoundationTestCase
+from provide.testkit import FoundationTestCase, MinimalTestCase
 
 
-class TestProvideTime(FoundationTestCase):
+class TestProvideTime(MinimalTestCase):
     """Test provide_time function."""
 
     def test_provide_time_returns_float(self) -> None:
@@ -46,7 +46,7 @@ class TestProvideTime(FoundationTestCase):
         assert abs(time2 - time1) < 0.1
 
 
-class TestProvideSleep(FoundationTestCase):
+class TestProvideSleep(MinimalTestCase):
     """Test provide_sleep function."""
 
     def test_provide_sleep_actually_sleeps(self) -> None:
