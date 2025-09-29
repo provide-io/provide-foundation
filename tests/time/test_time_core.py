@@ -6,11 +6,11 @@ from typing import Any
 from unittest.mock import MagicMock, patch
 from zoneinfo import ZoneInfo
 
+from provide.testkit import FoundationTestCase, MinimalTestCase
 import pytest
 
 from provide.foundation.errors import ValidationError
 from provide.foundation.time import provide_now, provide_sleep, provide_time
-from provide.testkit import FoundationTestCase, MinimalTestCase
 
 
 class TestProvideTime(MinimalTestCase):
@@ -21,6 +21,7 @@ class TestProvideTime(MinimalTestCase):
         result = provide_time()
         assert isinstance(result, float)
 
+    @pytest.mark.time_sensitive
     def test_provide_time_advances(self) -> None:
         """Test provide_time advances over time."""
         time1 = provide_time()
@@ -49,6 +50,7 @@ class TestProvideTime(MinimalTestCase):
 class TestProvideSleep(MinimalTestCase):
     """Test provide_sleep function."""
 
+    @pytest.mark.time_sensitive
     def test_provide_sleep_actually_sleeps(self) -> None:
         """Test provide_sleep actually sleeps for the specified duration."""
         start = time.time()
@@ -80,6 +82,7 @@ class TestProvideSleep(MinimalTestCase):
         provide_sleep(0.5)
         mock_time.sleep.assert_called_once_with(0.5)
 
+    @pytest.mark.time_sensitive
     def test_provide_sleep_with_float_seconds(self) -> None:
         """Test provide_sleep works with float values."""
         start = time.time()
@@ -121,6 +124,7 @@ class TestProvideNow(FoundationTestCase):
         result = provide_now(tz)
         assert result.tzinfo is tz
 
+    @pytest.mark.time_sensitive
     def test_provide_now_advances(self) -> None:
         """Test provide_now advances over time."""
         time1 = provide_now()
@@ -158,6 +162,7 @@ class TestProvideNow(FoundationTestCase):
 class TestTimeUtilitiesIntegration(FoundationTestCase):
     """Integration tests for time utilities."""
 
+    @pytest.mark.time_sensitive
     def test_time_utilities_work_together(self) -> None:
         """Test that time utilities work together consistently."""
         start_time = provide_time()
