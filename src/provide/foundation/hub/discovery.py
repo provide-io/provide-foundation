@@ -75,13 +75,8 @@ def discover_components(
     # Discover all entry points in the specified group
     try:
         entry_points = metadata.entry_points()
-        if hasattr(entry_points, "select"):
-            # Python 3.10+ API
-            group_entries = entry_points.select(group=group)
-        else:
-            # Python 3.8-3.9 API
-            from importlib.metadata import EntryPoints
-            group_entries = entry_points.get(group, EntryPoints())
+        # Python 3.11+ API
+        group_entries = entry_points.select(group=group)
 
         for entry_point in group_entries:
             try:
