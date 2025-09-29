@@ -1,9 +1,13 @@
 """Tests for Foundation queue-based rate limiting."""
 
+from __future__ import annotations
+
+from contextlib import suppress
 import sys
 import threading
 import time
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.logger.ratelimit.queue_limiter import (
@@ -13,7 +17,7 @@ from provide.foundation.logger.ratelimit.queue_limiter import (
 
 
 @pytest.fixture
-def ensure_limiter_cleanup():
+def ensure_limiter_cleanup() -> any:
     """Ensure all QueuedRateLimiter instances are properly shut down after each test."""
     created_limiters = []
 
@@ -26,16 +30,14 @@ def ensure_limiter_cleanup():
     # Cleanup: shutdown any remaining limiters
     for limiter in created_limiters:
         if hasattr(limiter, "running") and limiter.running:
-            try:
+            with suppress(Exception):
                 limiter.shutdown()
-            except Exception:
-                pass  # Ignore errors during cleanup
 
 
-class TestQueuedRateLimiter:
+class TestQueuedRateLimiter(FoundationTestCase):
     """Test QueuedRateLimiter class."""
 
-    def test_queued_rate_limiter_init_valid(self, ensure_limiter_cleanup) -> None:
+    def test_queued_rate_limiter_init_valid(self, ensure_limiter_cleanup: any) -> None:
         """Test QueuedRateLimiter initialization with valid parameters."""
         limiter = ensure_limiter_cleanup(
             QueuedRateLimiter(
@@ -82,7 +84,7 @@ class TestQueuedRateLimiter:
         with pytest.raises(ValueError, match="Max queue size must be positive"):
             QueuedRateLimiter(capacity=10.0, refill_rate=1.0, max_queue_size=-1)
 
-    def test_queued_rate_limiter_enqueue_basic(self, ensure_limiter_cleanup) -> None:
+    def test_queued_rate_limiter_enqueue_basic(self, ensure_limiter_cleanup: any) -> None:
         """Test basic enqueueing functionality."""
         limiter = ensure_limiter_cleanup(
             QueuedRateLimiter(
@@ -94,9 +96,9 @@ class TestQueuedRateLimiter:
 
         # Enqueue some items
         for i in range(5):
-            accepted, reason = limiter.enqueue(f"item_{i}")
+            accepted, _reason = limiter.enqueue(f"item_{i}")
             assert accepted is True
-            assert reason is None
+            assert _reason is None
 
         stats = limiter.get_stats()
         assert stats["queue_size"] == 5
@@ -104,7 +106,7 @@ class TestQueuedRateLimiter:
 
         limiter.shutdown()
 
-    def test_queued_rate_limiter_memory_limit(self, ensure_limiter_cleanup) -> None:
+    def test_queued_rate_limiter_memory_limit(self, ensure_limiter_cleanup: any) -> None:
         """Test memory limit enforcement."""
         # Very small memory limit
         limiter = ensure_limiter_cleanup(
@@ -128,7 +130,7 @@ class TestQueuedRateLimiter:
 
         limiter.shutdown()
 
-    def test_queued_rate_limiter_drop_oldest_policy(self, ensure_limiter_cleanup) -> None:
+    def test_queued_rate_limiter_drop_oldest_policy(self, ensure_limiter_cleanup: any) -> None:
         """Test drop_oldest overflow policy."""
         limiter = ensure_limiter_cleanup(
             QueuedRateLimiter(
@@ -141,7 +143,7 @@ class TestQueuedRateLimiter:
 
         # Fill queue to capacity
         for i in range(3):
-            accepted, reason = limiter.enqueue(f"item_{i}")
+            accepted, _reason = limiter.enqueue(f"item_{i}")
             assert accepted is True
 
         # Add one more item - should drop oldest
@@ -154,7 +156,7 @@ class TestQueuedRateLimiter:
 
         limiter.shutdown()
 
-    def test_queued_rate_limiter_drop_newest_policy(self, ensure_limiter_cleanup) -> None:
+    def test_queued_rate_limiter_drop_newest_policy(self, ensure_limiter_cleanup: any) -> None:
         """Test drop_newest overflow policy."""
         limiter = ensure_limiter_cleanup(
             QueuedRateLimiter(
@@ -167,7 +169,7 @@ class TestQueuedRateLimiter:
 
         # Fill queue to capacity
         for i in range(2):
-            accepted, reason = limiter.enqueue(f"item_{i}")
+            accepted, _reason = limiter.enqueue(f"item_{i}")
             assert accepted is True
 
         # Try to add one more - should be rejected
@@ -181,7 +183,7 @@ class TestQueuedRateLimiter:
 
         limiter.shutdown()
 
-    def test_queued_rate_limiter_block_policy(self, ensure_limiter_cleanup) -> None:
+    def test_queued_rate_limiter_block_policy(self, ensure_limiter_cleanup: any) -> None:
         """Test block overflow policy."""
         limiter = ensure_limiter_cleanup(
             QueuedRateLimiter(
@@ -203,12 +205,12 @@ class TestQueuedRateLimiter:
 
         limiter.shutdown()
 
-    def test_queued_rate_limiter_processing(self, ensure_limiter_cleanup) -> None:
+    def test_queued_rate_limiter_processing(self, ensure_limiter_cleanup: any) -> None:
         """Test that queued items are processed over time."""
         processed_items = []
 
         class TestQueuedRateLimiter(QueuedRateLimiter):
-            def _process_item(self, item) -> None:
+            def _process_item(self, item: any) -> None:
                 processed_items.append(item)
 
         limiter = ensure_limiter_cleanup(
@@ -234,7 +236,7 @@ class TestQueuedRateLimiter:
 
         limiter.shutdown()
 
-    def test_queued_rate_limiter_estimate_size(self, ensure_limiter_cleanup) -> None:
+    def test_queued_rate_limiter_estimate_size(self, ensure_limiter_cleanup: any) -> None:
         """Test memory size estimation."""
         limiter = ensure_limiter_cleanup(QueuedRateLimiter(capacity=10.0, refill_rate=1.0))
 
@@ -251,7 +253,7 @@ class TestQueuedRateLimiter:
 
         limiter.shutdown()
 
-    def test_queued_rate_limiter_get_stats(self, ensure_limiter_cleanup) -> None:
+    def test_queued_rate_limiter_get_stats(self, ensure_limiter_cleanup: any) -> None:
         """Test statistics collection."""
         limiter = ensure_limiter_cleanup(
             QueuedRateLimiter(
@@ -289,7 +291,7 @@ class TestQueuedRateLimiter:
 
         limiter.shutdown()
 
-    def test_queued_rate_limiter_shutdown(self, ensure_limiter_cleanup) -> None:
+    def test_queued_rate_limiter_shutdown(self, ensure_limiter_cleanup: any) -> None:
         """Test proper shutdown."""
         limiter = ensure_limiter_cleanup(QueuedRateLimiter(capacity=10.0, refill_rate=1.0))
 
@@ -305,7 +307,7 @@ class TestQueuedRateLimiter:
         assert not limiter.worker_thread.is_alive()
 
 
-class TestBufferedRateLimiter:
+class TestBufferedRateLimiter(FoundationTestCase):
     """Test BufferedRateLimiter class."""
 
     def test_buffered_rate_limiter_init_valid(self) -> None:
@@ -511,13 +513,13 @@ class TestBufferedRateLimiter:
                 allowed, _ = limiter.is_allowed(f"item_{threading.current_thread().ident}_{i}")
                 results.append(allowed)
 
-        threads = [threading.Thread(target=worker) for _ in range(5)]
+        threads = [threading.Thread(daemon=True, target=worker) for _ in range(5)]
 
         for thread in threads:
             thread.start()
 
         for thread in threads:
-            thread.join()
+            thread.join(timeout=10.0)
 
         # Some should be allowed, some denied
         allowed_count = sum(results)
@@ -531,10 +533,10 @@ class TestBufferedRateLimiter:
         assert stats["total_denied"] == denied_count
 
 
-class TestQueueLimiterIntegration:
+class TestQueueLimiterIntegration(FoundationTestCase):
     """Integration tests for queue-based rate limiters."""
 
-    def test_different_queue_limiters_similar_behavior(self, ensure_limiter_cleanup) -> None:
+    def test_different_queue_limiters_similar_behavior(self, ensure_limiter_cleanup: any) -> None:
         """Test that different queue limiters have similar core behavior."""
         buffered = BufferedRateLimiter(capacity=5.0, refill_rate=2.0)
         queued = ensure_limiter_cleanup(QueuedRateLimiter(capacity=5.0, refill_rate=2.0, max_queue_size=10))

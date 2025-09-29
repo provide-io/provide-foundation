@@ -1,8 +1,12 @@
 """Tests for provide.foundation.errors.types module."""
 
+from __future__ import annotations
+
 from datetime import datetime
 import json
-from unittest.mock import patch
+
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 
 from provide.foundation.errors.types import (
     ErrorCode,
@@ -11,7 +15,7 @@ from provide.foundation.errors.types import (
 )
 
 
-class TestErrorCode:
+class TestErrorCode(FoundationTestCase):
     """Test ErrorCode enum."""
 
     def test_config_error_codes(self) -> None:
@@ -70,7 +74,7 @@ class TestErrorCode:
         assert all(code.value.startswith("VAL") for code in ErrorCode if "VALIDATION" in code.name)
 
 
-class TestErrorMetadata:
+class TestErrorMetadata(FoundationTestCase):
     """Test ErrorMetadata class."""
 
     def test_default_creation(self) -> None:
@@ -132,7 +136,7 @@ class TestErrorMetadata:
         assert result["retry_after"] == 0.0
 
 
-class TestErrorResponse:
+class TestErrorResponse(FoundationTestCase):
     """Test ErrorResponse class."""
 
     def test_creation_basic(self) -> None:

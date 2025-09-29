@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 import sys
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.errors.integration import TimeoutError
@@ -16,7 +17,7 @@ from provide.foundation.process.runner import (
 )
 
 
-class TestRunCommand:
+class TestRunCommand(FoundationTestCase):
     """Test run_command function."""
 
     def test_simple_command(self) -> None:
@@ -92,7 +93,7 @@ class TestRunCommand:
         assert "hello" in result.stdout
 
 
-class TestStreamCommand:
+class TestStreamCommand(FoundationTestCase):
     """Test stream_command function."""
 
     def test_stream_output(self) -> None:
@@ -128,7 +129,7 @@ class TestStreamCommand:
                 pass
 
 
-class TestRunShell:
+class TestRunShell(FoundationTestCase):
     """Test run_shell function."""
 
     def test_shell_command(self) -> None:

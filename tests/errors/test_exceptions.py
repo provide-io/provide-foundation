@@ -1,5 +1,9 @@
 """Tests for provide.foundation.errors.exceptions module."""
 
+from __future__ import annotations
+
+from provide.testkit import FoundationTestCase
+
 from provide.foundation.errors.auth import AuthenticationError, AuthorizationError
 from provide.foundation.errors.base import FoundationError
 from provide.foundation.errors.config import ConfigurationError, ValidationError
@@ -16,7 +20,7 @@ from provide.foundation.errors.resources import (
 from provide.foundation.errors.runtime import ConcurrencyError, RuntimeError, StateError
 
 
-class TestFoundationError:
+class TestFoundationError(FoundationTestCase):
     """Test the base FoundationError class."""
 
     def test_basic_creation(self) -> None:
@@ -139,7 +143,7 @@ class TestFoundationError:
         assert error2.code == "OVERRIDE"
 
 
-class TestConfigurationError:
+class TestConfigurationError(FoundationTestCase):
     """Test ConfigurationError class."""
 
     def test_basic_creation(self) -> None:
@@ -171,7 +175,7 @@ class TestConfigurationError:
         assert error.context["extra_param"] == "value"
 
 
-class TestValidationError:
+class TestValidationError(FoundationTestCase):
     """Test ValidationError class."""
 
     def test_basic_creation(self) -> None:
@@ -215,7 +219,7 @@ class TestValidationError:
         assert error.context["validation.value"] == "{'complex': 'object'}"
 
 
-class TestRuntimeError:
+class TestRuntimeError(FoundationTestCase):
     """Test RuntimeError class."""
 
     def test_basic_creation(self) -> None:
@@ -236,7 +240,7 @@ class TestRuntimeError:
         assert error.context["runtime.retry_possible"] is True
 
 
-class TestIntegrationError:
+class TestIntegrationError(FoundationTestCase):
     """Test IntegrationError class."""
 
     def test_basic_creation(self) -> None:
@@ -261,7 +265,7 @@ class TestIntegrationError:
         assert error.context["integration.status_code"] == 503
 
 
-class TestResourceError:
+class TestResourceError(FoundationTestCase):
     """Test ResourceError class."""
 
     def test_basic_creation(self) -> None:
@@ -281,7 +285,7 @@ class TestResourceError:
         assert error.context["resource.path"] == "/data/config.json"
 
 
-class TestNetworkError:
+class TestNetworkError(FoundationTestCase):
     """Test NetworkError class."""
 
     def test_basic_creation(self) -> None:
@@ -308,7 +312,7 @@ class TestNetworkError:
         assert error.context["network.port"] == 8080
 
 
-class TestTimeoutError:
+class TestTimeoutError(FoundationTestCase):
     """Test TimeoutError class."""
 
     def test_basic_creation(self) -> None:
@@ -334,7 +338,7 @@ class TestTimeoutError:
         assert error.context["timeout.elapsed"] == 45.5
 
 
-class TestAuthenticationError:
+class TestAuthenticationError(FoundationTestCase):
     """Test AuthenticationError class."""
 
     def test_basic_creation(self) -> None:
@@ -354,7 +358,7 @@ class TestAuthenticationError:
         assert error.context["auth.realm"] == "admin"
 
 
-class TestAuthorizationError:
+class TestAuthorizationError(FoundationTestCase):
     """Test AuthorizationError class."""
 
     def test_basic_creation(self) -> None:
@@ -379,7 +383,7 @@ class TestAuthorizationError:
         assert error.context["authz.actor"] == "user:123"
 
 
-class TestNotFoundError:
+class TestNotFoundError(FoundationTestCase):
     """Test NotFoundError class."""
 
     def test_basic_creation(self) -> None:
@@ -399,7 +403,7 @@ class TestNotFoundError:
         assert error.context["notfound.id"] == "usr_123"
 
 
-class TestAlreadyExistsError:
+class TestAlreadyExistsError(FoundationTestCase):
     """Test AlreadyExistsError class."""
 
     def test_basic_creation(self) -> None:
@@ -419,7 +423,7 @@ class TestAlreadyExistsError:
         assert error.context["exists.id"] == "user@example.com"
 
 
-class TestStateError:
+class TestStateError(FoundationTestCase):
     """Test StateError class."""
 
     def test_basic_creation(self) -> None:
@@ -444,7 +448,7 @@ class TestStateError:
         assert error.context["state.transition"] == "start->running"
 
 
-class TestConcurrencyError:
+class TestConcurrencyError(FoundationTestCase):
     """Test ConcurrencyError class."""
 
     def test_basic_creation(self) -> None:
@@ -479,7 +483,7 @@ class TestConcurrencyError:
         assert "v" in error.context["concurrency.version_actual"]
 
 
-class TestErrorInheritance:
+class TestErrorInheritance(FoundationTestCase):
     """Test error inheritance and isinstance checks."""
 
     def test_all_errors_inherit_from_foundation_error(self) -> None:

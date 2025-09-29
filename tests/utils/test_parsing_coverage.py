@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 from typing import Any
-from unittest.mock import Mock
 
 import pytest
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock
 from attrs import define, field, fields
 
 from provide.foundation.utils.parsing import (
@@ -17,7 +18,7 @@ from provide.foundation.utils.parsing import (
 )
 
 
-class TestParseBool:
+class TestParseBool(FoundationTestCase):
     """Test parse_bool function."""
 
     def test_parse_bool_from_bool(self) -> None:
@@ -74,7 +75,7 @@ class TestParseBool:
                 parse_bool(value)
 
 
-class TestParseList:
+class TestParseList(FoundationTestCase):
     """Test parse_list function."""
 
     def test_parse_list_from_list(self) -> None:
@@ -112,7 +113,7 @@ class TestParseList:
         assert parse_list(",b,") == ["", "b", ""]
 
 
-class TestParseDict:
+class TestParseDict(FoundationTestCase):
     """Test parse_dict function."""
 
     def test_parse_dict_from_dict(self) -> None:
@@ -160,7 +161,7 @@ class TestParseDict:
         assert parse_dict("a=1,,b=2") == {"a": "1", "b": "2"}  # Empty items are skipped
 
 
-class TestParseTypedValue:
+class TestParseTypedValue(FoundationTestCase):
     """Test parse_typed_value function."""
 
     def test_parse_typed_value_none(self) -> None:
@@ -204,6 +205,7 @@ class TestParseTypedValue:
 
     def test_parse_typed_value_unknown_type(self) -> None:
         """Test parsing with unknown type."""
+
         class CustomType:
             pass
 
@@ -337,11 +339,12 @@ class TestInternalHelpers:
         assert _extract_field_type(field_missing_type) is None
 
 
-class TestAutoParse:
+class TestAutoParse(FoundationTestCase):
     """Test auto_parse function."""
 
     def test_auto_parse_with_converter(self) -> None:
         """Test auto_parse with field converter."""
+
         @define
         class Config:
             value: str = field(converter=str.upper)
@@ -363,6 +366,7 @@ class TestAutoParse:
 
     def test_auto_parse_with_type_only(self) -> None:
         """Test auto_parse with type-based parsing."""
+
         @define
         class Config:
             count: int = field()
@@ -380,6 +384,7 @@ class TestAutoParse:
 
     def test_auto_parse_failing_converter(self) -> None:
         """Test auto_parse with failing converter falls back to type parsing."""
+
         def failing_converter(value: str) -> str:
             raise ValueError("Converter failed")
 
@@ -415,6 +420,7 @@ class TestAutoParse:
 
     def test_auto_parse_no_metadata(self) -> None:
         """Test auto_parse with field that has no metadata."""
+
         @define
         class Config:
             value: str = field()
@@ -429,6 +435,7 @@ class TestAutoParse:
 
     def test_auto_parse_complex_example(self) -> None:
         """Test auto_parse with complex example from docstring."""
+
         @define
         class Config:
             count: int = field()

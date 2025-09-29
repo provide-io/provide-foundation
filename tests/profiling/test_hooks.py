@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import time
-from unittest.mock import Mock, patch
-
 import pytest
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 from provide.foundation.context import CLIContext
 from provide.foundation.hub.manager import clear_hub, get_hub
 from provide.foundation.profiling.component import ProfilingComponent
@@ -18,7 +18,7 @@ from provide.foundation.testmode import (
 )
 
 
-class TestProfileMetrics:
+class TestProfileMetrics(FoundationTestCase):
     """Test ProfileMetrics data structure."""
 
     def test_metrics_initialization(self) -> None:
@@ -104,7 +104,7 @@ class TestProfileMetrics:
         assert data["total_messages"] == 1
 
 
-class TestProfilingProcessor:
+class TestProfilingProcessor(FoundationTestCase):
     """Test ProfilingProcessor for metrics collection."""
 
     def test_processor_initialization(self) -> None:
@@ -177,11 +177,12 @@ class TestProfilingProcessor:
         assert processor.metrics.message_count == 0
 
 
-class TestProfilingComponent:
+class TestProfilingComponent(FoundationTestCase):
     """Test ProfilingComponent Hub integration."""
 
     def setup_method(self) -> None:
         """Reset Foundation state before each test."""
+        super().setup_method()
         # Reset Foundation components in proper order
         reset_structlog_state()
         reset_streams_state()
@@ -257,11 +258,12 @@ class TestProfilingComponent:
         assert isinstance(profiler, ProfilingComponent)
 
 
-class TestProfilingCLI:
+class TestProfilingCLI(FoundationTestCase):
     """Test profiling CLI commands."""
 
     def setup_method(self) -> None:
         """Reset Foundation state before each test."""
+        super().setup_method()
         # Reset Foundation components in proper order
         reset_structlog_state()
         reset_streams_state()
@@ -331,11 +333,12 @@ class TestProfilingCLI:
             assert json_call or len(call_args) > 0
 
 
-class TestProfilingIntegration:
+class TestProfilingIntegration(FoundationTestCase):
     """Test full profiling system integration."""
 
     def setup_method(self) -> None:
         """Reset Foundation state before each test."""
+        super().setup_method()
         # Reset Foundation components in proper order
         reset_structlog_state()
         reset_streams_state()
@@ -402,11 +405,11 @@ class TestProfilingIntegration:
                 component.processor.metrics.record_message(1000000, False, 3)
 
         # Run multiple threads
-        threads = [threading.Thread(target=worker) for _ in range(5)]
+        threads = [threading.Thread(daemon=True, target=worker) for _ in range(5)]
         for t in threads:
             t.start()
         for t in threads:
-            t.join()
+            t.join(timeout=10.0)
 
         # Should handle concurrent access without errors
         metrics = component.get_metrics()

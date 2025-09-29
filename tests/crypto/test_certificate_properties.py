@@ -1,10 +1,12 @@
 # pyvider/rpcplugin/tests/crypto/test_certificate_properties.py
 
-from unittest import mock
+from __future__ import annotations
 
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import MagicMock
 import pytest
 
 from provide.foundation.crypto import Certificate, CertificateError
@@ -168,85 +170,84 @@ async def test_certificate_issuer_empty_fallback() -> None:
         )
 
 
-@pytest.mark.asyncio
-async def test_is_ca_extension_not_found() -> None:
-    """Test is_ca property when basic constraints extension is not found."""
-    cert = Certificate(generate_keypair=True)
+class TestCertificateProperties(FoundationTestCase):
+    """Test certificate property functionality."""
 
-    # Create a mock certificate that raises ExtensionNotFound
-    mock_cert = mock.MagicMock()
-    mock_cert.extensions.get_extension_for_oid.side_effect = x509.ExtensionNotFound(
-        "Basic Constraints",
-        x509.oid.ExtensionOID.BASIC_CONSTRAINTS,
-    )
+    @pytest.mark.asyncio
+    async def test_is_ca_extension_not_found(self) -> None:
+        """Test is_ca property when basic constraints extension is not found."""
+        cert = Certificate(generate_keypair=True)
 
-    # Replace the _cert attribute with our mock
-    cert._cert = mock_cert
+        # Create a mock certificate that raises ExtensionNotFound
+        mock_cert = MagicMock()
+        mock_cert.extensions.get_extension_for_oid.side_effect = x509.ExtensionNotFound(
+            "Basic Constraints",
+            x509.oid.ExtensionOID.BASIC_CONSTRAINTS,
+        )
 
-    # Should return False when extension is not found
-    assert cert.is_ca is False
+        # Replace the _cert attribute with our mock
+        cert._cert = mock_cert
 
+        # Should return False when extension is not found
+        assert cert.is_ca is False
 
-@pytest.mark.asyncio
-async def test_is_ca_extension_not_found_logs_debug(mocker) -> None:
-    """Test is_ca property logs debug when BasicConstraints extension is not found."""
-    # Create a Certificate instance (it will generate a real cert initially)
-    cert_instance = Certificate(generate_keypair=True)
+    @pytest.mark.asyncio
+    async def test_is_ca_extension_not_found_logs_debug(self, mocker) -> None:
+        """Test is_ca property logs debug when BasicConstraints extension is not found."""
+        # Create a Certificate instance (it will generate a real cert initially)
+        cert_instance = Certificate(generate_keypair=True)
 
-    # Mock the internal _cert object's extensions attribute
-    mock_extensions = mocker.MagicMock()
-    mock_extensions.get_extension_for_oid.side_effect = x509.ExtensionNotFound(
-        "Basic Constraints not found",
-        x509.oid.ExtensionOID.BASIC_CONSTRAINTS,
-    )
+        # Mock the internal _cert object's extensions attribute
+        mock_extensions = mocker.MagicMock()
+        mock_extensions.get_extension_for_oid.side_effect = x509.ExtensionNotFound(
+            "Basic Constraints not found",
+            x509.oid.ExtensionOID.BASIC_CONSTRAINTS,
+        )
 
-    # Patch the logger from the certificate module
-    mock_logger_debug = mocker.patch(
-        "provide.foundation.crypto.certificates.certificate.logger.debug",
-    )
+        # Patch the logger from the certificate module
+        mock_logger_debug = mocker.patch(
+            "provide.foundation.crypto.certificates.certificate.logger.debug",
+        )
 
-    # Temporarily replace the _cert.extensions on the instance
-    # This is a bit invasive, but necessary to simulate the condition for the property
-    cert_instance._cert = mocker.MagicMock(
-        spec=x509.Certificate,
-    )  # Replace _cert with a mock
-    cert_instance._cert.extensions = mock_extensions  # Assign mocked extensions to the mocked _cert
+        # Temporarily replace the _cert.extensions on the instance
+        # This is a bit invasive, but necessary to simulate the condition for the property
+        cert_instance._cert = mocker.MagicMock(
+            spec=x509.Certificate,
+        )  # Replace _cert with a mock
+        cert_instance._cert.extensions = mock_extensions  # Assign mocked extensions to the mocked _cert
 
-    assert cert_instance.is_ca is False  # is_ca should return False
+        assert cert_instance.is_ca is False  # is_ca should return False
 
-    mock_logger_debug.assert_called_once_with(
-        "📜🔍⚠️ is_ca: Basic Constraints extension not found",
-    )
+        mock_logger_debug.assert_called_once_with(
+            "📜🔍⚠️ is_ca: Basic Constraints extension not found",
+        )
 
-    # Restore original extensions if necessary, though for this test it's fine as instance is local
-    # For more complex scenarios, more careful patching/restoration might be needed
-    # cert_instance._cert.extensions = original_extensions # Not strictly needed here
+        # Restore original extensions if necessary, though for this test it's fine as instance is local
+        # For more complex scenarios, more careful patching/restoration might be needed
+        # cert_instance._cert.extensions = original_extensions # Not strictly needed here
 
+    @pytest.mark.asyncio
+    async def test_unique_serial_numbers(self, client_cert, server_cert) -> None:
+        """Ensure unique serial numbers for different certificates."""
+        assert client_cert._cert.serial_number != server_cert._cert.serial_number, (
+            "Serial numbers should be unique"
+        )
 
-@pytest.mark.asyncio
-async def test_unique_serial_numbers(client_cert, server_cert) -> None:
-    """Ensure unique serial numbers for different certificates."""
-    assert client_cert._cert.serial_number != server_cert._cert.serial_number, (
-        "Serial numbers should be unique"
-    )
+    @pytest.mark.asyncio
+    async def test_certificate_hash_uniqueness(self, client_cert, server_cert) -> None:
+        """Ensure different certificates have unique hashes."""
+        assert hash(client_cert) != hash(server_cert), "Different certs should not hash the same"
 
+    @pytest.mark.asyncio
+    async def test_certificate_hash_collision(self) -> None:
+        """Ensure certificates with identical serial numbers hash the same."""
+        cert1 = Certificate(generate_keypair=True, key_type="rsa")
+        cert2 = Certificate(generate_keypair=True, key_type="rsa")
 
-@pytest.mark.asyncio
-async def test_certificate_hash_uniqueness(client_cert, server_cert) -> None:
-    """Ensure different certificates have unique hashes."""
-    assert hash(client_cert) != hash(server_cert), "Different certs should not hash the same"
+        # Force serial numbers to be identical
+        cert2._base = cert1._base
 
-
-@pytest.mark.asyncio
-async def test_certificate_hash_collision() -> None:
-    """Ensure certificates with identical serial numbers hash the same."""
-    cert1 = Certificate(generate_keypair=True, key_type="rsa")
-    cert2 = Certificate(generate_keypair=True, key_type="rsa")
-
-    # Force serial numbers to be identical
-    cert2._base = cert1._base
-
-    assert hash(cert1) == hash(cert2), "Identical serials should hash the same"
+        assert hash(cert1) == hash(cert2), "Identical serials should hash the same"
 
 
 ### 🐍🏗🧪️

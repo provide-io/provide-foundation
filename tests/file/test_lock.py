@@ -124,13 +124,13 @@ def test_file_lock_concurrent_access(temp_directory) -> None:
     # Start multiple threads
     threads = []
     for i in range(3):
-        t = threading.Thread(target=worker, args=(i,))
+        t = threading.Thread(daemon=True, target=worker, args=(i,))
         threads.append(t)
         t.start()
 
     # Wait for all threads
     for t in threads:
-        t.join()
+        t.join(timeout=5.0)
 
     # All workers should have completed
     assert len(results) == 3
@@ -192,14 +192,14 @@ def test_file_lock_check_interval(temp_directory) -> None:
             checks += 1
 
     # Start counter thread
-    counter = threading.Thread(target=count_checks)
+    counter = threading.Thread(daemon=True, target=count_checks)
     counter.start()
 
     # Try to acquire (will timeout)
     with pytest.raises(LockError):
         lock2.acquire()
 
-    counter.join()
+    counter.join(timeout=5.0)
     lock1.release()
 
     # With 0.3s interval over ~1s, should be ~3 checks

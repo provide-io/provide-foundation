@@ -10,24 +10,27 @@ import os
 import threading
 import time
 from typing import TextIO
-from unittest.mock import patch
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.hub.manager import Hub, clear_hub, get_hub
 from provide.foundation.logger.config import LoggingConfig, TelemetryConfig
 
 
-class TestHubInitialization:
+class TestHubInitialization(FoundationTestCase):
     """Test Hub-based Foundation initialization."""
 
     def setup_method(self) -> None:
         """Reset Hub state before each test."""
+        super().setup_method()
         clear_hub()
 
     def teardown_method(self) -> None:
         """Clean up after each test."""
         clear_hub()
+        super().teardown_method()
 
     @pytest.fixture(autouse=True)
     def setup_test_output(self, captured_stderr_for_foundation: TextIO) -> None:
@@ -98,13 +101,13 @@ class TestHubInitialization:
                 errors.append(e)
 
         # Start multiple threads simultaneously
-        threads = [threading.Thread(target=get_hub_thread) for _ in range(10)]
+        threads = [threading.Thread(daemon=True, target=get_hub_thread) for _ in range(10)]
 
         for thread in threads:
             thread.start()
 
         for thread in threads:
-            thread.join()
+            thread.join(timeout=10.0)
 
         # Should have no errors
         assert len(errors) == 0

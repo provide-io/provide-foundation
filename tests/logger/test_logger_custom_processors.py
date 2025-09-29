@@ -3,6 +3,7 @@
 #
 """Unit tests for src.provide.foundation.logger.custom_processors.py"""
 
+from provide.testkit import FoundationTestCase
 import pytest
 import structlog  # For DropEvent
 
@@ -27,7 +28,7 @@ _LEVEL_TO_NUMERIC_TEST_MAP: dict[LogLevelStr, int] = {
 }
 
 
-class TestLevelFilterCustom:
+class TestLevelFilterCustom(FoundationTestCase):
     def test_filter_with_unrecognized_event_level_defaults_to_info_numeric(
         self,
     ) -> None:
@@ -81,7 +82,7 @@ class TestLevelFilterCustom:
 
 
 # Placeholder for next tests
-class TestAddLoggerNameEmojiPrefix:
+class TestAddLoggerNameEmojiPrefix(FoundationTestCase):
     def test_add_logger_name_emoji_prefix_event_is_none_but_emoji_exists(self) -> None:
         """Tests the case where event_dict['event'] is None, but a logger name emoji
         is found. The event should become just the emoji.

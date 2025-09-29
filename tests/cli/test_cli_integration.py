@@ -1,5 +1,7 @@
 """Integration tests for CLI functionality."""
 
+from __future__ import annotations
+
 import json
 from pathlib import Path
 import tempfile
@@ -15,9 +17,10 @@ from provide.foundation.cli.utils import setup_cli_logging
 from provide.testkit import CliTestRunner
 from provide.foundation.context import CLIContext
 from provide.foundation.logger import get_logger
+from provide.testkit import FoundationTestCase
 
 
-class TestCompleteCliIntegration:
+class TestCompleteCliIntegration(FoundationTestCase):
     """Test complete CLI with all options working together."""
 
     def create_test_cli(self):
@@ -165,7 +168,7 @@ class TestCompleteCliIntegration:
         assert "Application is healthy" in result.output
 
 
-class TestLoggingIntegration:
+class TestLoggingIntegration(FoundationTestCase):
     """Test that logging options actually affect logging behavior."""
 
     def _get_full_output(self, result) -> str:
@@ -246,7 +249,7 @@ class TestLoggingIntegration:
             log_file.unlink(missing_ok=True)
 
 
-class TestOutputFormatting:
+class TestOutputFormatting(FoundationTestCase):
     """Test output formatting options."""
 
     def test_json_output_format(self, click_testing_mode) -> None:
@@ -290,7 +293,7 @@ class TestOutputFormatting:
         assert "✅" not in result.output
 
 
-class TestConfigurationLoading:
+class TestConfigurationLoading(FoundationTestCase):
     """Test configuration file and profile loading."""
 
     def test_config_file_loading(self, click_testing_mode) -> None:
@@ -314,7 +317,7 @@ class TestConfigurationLoading:
             config_file.unlink(missing_ok=True)
 
 
-class TestRealWorldScenarios:
+class TestRealWorldScenarios(FoundationTestCase):
     """Test real-world CLI usage scenarios."""
 
     def _get_full_output(self, result) -> str:

@@ -1,8 +1,11 @@
 """Tests for FoundationLogger context binding methods (bind, unbind, try_unbind)."""
 
+from __future__ import annotations
+
 import json
 from typing import Any, TextIO
 
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation import logger as global_logger
@@ -45,7 +48,7 @@ def get_log_entries(output: TextIO) -> list[dict[str, Any]]:
     return entries
 
 
-class TestLoggerBind:
+class TestLoggerBind(FoundationTestCase):
     """Test the bind() method of FoundationLogger."""
 
     def test_bind_adds_context(
@@ -184,7 +187,7 @@ class TestLoggerBind:
         assert "test_event" in test_entries[0]["event"]
 
 
-class TestLoggerUnbind:
+class TestLoggerUnbind(FoundationTestCase):
     """Test the unbind() method of FoundationLogger."""
 
     def test_unbind_removes_context(
@@ -262,7 +265,7 @@ class TestLoggerUnbind:
         assert unbound_logger is not global_logger
 
 
-class TestLoggerTryUnbind:
+class TestLoggerTryUnbind(FoundationTestCase):
     """Test the try_unbind() method of FoundationLogger."""
 
     def test_try_unbind_removes_existing_keys(
@@ -350,7 +353,7 @@ class TestLoggerTryUnbind:
         assert unbound_logger is not global_logger
 
 
-class TestLoggerContextIntegration:
+class TestLoggerContextIntegration(FoundationTestCase):
     """Test integration scenarios with context binding."""
 
     def test_global_logger_bind_method_exists(self) -> None:
@@ -454,7 +457,7 @@ class TestLoggerContextIntegration:
         assert "request_id" not in end_entry  # end
 
 
-class TestLoggerBindingEdgeCases:
+class TestLoggerBindingEdgeCases(FoundationTestCase):
     """Test edge cases and error conditions."""
 
     def test_bind_with_reserved_keys(

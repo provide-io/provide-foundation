@@ -1,10 +1,11 @@
 """Comprehensive tests for CLI testing utilities to improve code coverage."""
 
+from __future__ import annotations
+
 import json
 import os
 from pathlib import Path
 import tempfile
-from unittest.mock import Mock, patch
 
 import click
 from click.testing import CliRunner
@@ -16,9 +17,11 @@ from provide.testkit import (
     temp_config_file,
 )
 import pytest
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 
-class TestMockContext:
+class TestMockContext(FoundationTestCase):
     """Test MockContext functionality."""
 
     def test_mock_context_initialization(self) -> None:
@@ -71,7 +74,7 @@ class TestMockContext:
         assert test_path in mock_ctx.loaded_configs
 
 
-class TestIsolatedCliRunner:
+class TestIsolatedCliRunner(FoundationTestCase):
     """Test isolated_cli_runner context manager."""
 
     def test_isolated_cli_runner_basic(self) -> None:
@@ -120,7 +123,7 @@ class TestIsolatedCliRunner:
         assert os.environ.get("NON_EXISTENT_VAR") is None
 
 
-class TestTempConfigFile:
+class TestTempConfigFile(FoundationTestCase):
     """Test temp_config_file context manager."""
 
     def test_temp_config_file_json_dict(self) -> None:
@@ -255,7 +258,7 @@ class TestTempConfigFile:
         assert not config_path.exists()
 
 
-class TestCreateTestCli:
+class TestCreateTestCli(FoundationTestCase):
     """Test create_test_cli function."""
 
     def test_create_test_cli_basic(self) -> None:
@@ -306,7 +309,7 @@ class TestCreateTestCli:
         # (standard_options may add some options but not commands)
 
 
-class TestMockLogger:
+class TestMockLogger(FoundationTestCase):
     """Test mock_logger function."""
 
     def test_mock_logger_creation(self, mock_logger) -> None:
@@ -335,7 +338,7 @@ class TestMockLogger:
         mock_logger.info.assert_called_once_with("info message", extra="data")
 
 
-class TestCliTestCase:
+class TestCliTestCase(FoundationTestCase):
     """Test CliTestCase base class."""
 
     def test_cli_test_case_setup(self) -> None:

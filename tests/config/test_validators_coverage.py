@@ -1,9 +1,8 @@
 """Additional tests for config validators to improve code coverage."""
 
-from unittest.mock import Mock
-
-import pytest
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock
+import pytest
 
 from provide.foundation.config.validators import (
     validate_choice,

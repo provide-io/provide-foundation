@@ -85,7 +85,7 @@ class LoggingConfig(RuntimeConfig):
         converter=parse_bool_extended,
         description="Omit timestamps from console output",
     )
-    # Event sets have replaced emoji sets - these fields are deprecated
+    # File logging configuration
     log_file: Path | None = field(
         default=None,
         env_var="PROVIDE_LOG_FILE",

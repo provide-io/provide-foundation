@@ -1,8 +1,11 @@
 """Additional tests for stream utilities to improve code coverage."""
 
+from __future__ import annotations
+
 import io
 import sys
-from unittest.mock import Mock, patch
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.utils.streams import (
     get_foundation_log_stream,
@@ -10,7 +13,7 @@ from provide.foundation.utils.streams import (
 )
 
 
-class TestStreamsCoverage:
+class TestStreamsCoverage(FoundationTestCase):
     """Test stream utilities for improved coverage."""
 
     def test_get_safe_stderr_normal_case(self) -> None:

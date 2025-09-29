@@ -1,8 +1,11 @@
 """Tests for command registration functionality."""
 
+from __future__ import annotations
+
 from typing import Never
 
 import click
+from provide.testkit import FoundationTestCase
 import pytest
 
 from provide.foundation.hub.commands import (
@@ -13,11 +16,12 @@ from provide.foundation.hub.commands import (
 from provide.foundation.hub.manager import clear_hub, get_hub
 
 
-class TestCommandRegistration:
+class TestCommandRegistration(FoundationTestCase):
     """Test command registration and CLI building."""
 
     def setup_method(self) -> None:
         """Clear the hub before each test."""
+        super().setup_method()
         clear_hub()
 
     def test_register_command_decorator(self) -> None:

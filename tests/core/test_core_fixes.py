@@ -169,7 +169,7 @@ def test_thread_safety() -> None:
     thread_count = 10
 
     for i in range(thread_count):
-        thread = threading.Thread(target=worker_thread, args=(i,))
+        thread = threading.Thread(daemon=True, target=worker_thread, args=(i,))
         threads.append(thread)
 
     # Start all threads

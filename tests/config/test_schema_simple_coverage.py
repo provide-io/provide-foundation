@@ -1,7 +1,7 @@
 """Simplified tests for config schema to improve code coverage."""
 
-from unittest.mock import Mock, patch
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.config.schema import (
     ConfigSchema,

@@ -53,7 +53,7 @@ class Hub(CoreHub):
             context: Foundation CLIContext for configuration
             component_registry: Custom component registry
             command_registry: Custom command registry
-            use_shared_registries: If True, use global shared registries (for compatibility)
+            use_shared_registries: If True, use global shared registries
 
         """
         # Determine if we should use shared registries
@@ -163,7 +163,7 @@ def get_hub() -> Hub:
     with get_lock_manager().acquire("foundation.hub.init"):
         # Double-check after acquiring lock
         if _global_hub is None:
-            # Global hub should use shared registries for backward compatibility
+            # Global hub uses shared registries by default
             _global_hub = Hub(use_shared_registries=True)
 
             # Auto-initialize Foundation on first hub access

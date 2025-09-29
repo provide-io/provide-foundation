@@ -6,10 +6,9 @@ import asyncio
 from contextvars import ContextVar
 import json
 from typing import TYPE_CHECKING, Never
-from unittest.mock import patch
 
 from provide.testkit import FoundationTestCase
-from provide.testkit.mocking.time import mock_sleep
+from provide.testkit.mocking import patch
 import pytest
 
 if TYPE_CHECKING:
@@ -142,7 +141,7 @@ class TestErrorSystemIntegration(FoundationTestCase):
         # Verify context propagation
         assert integration.context["network.host"] == "db.example.com"
 
-    def test_retry_with_circuit_breaker(self, time_machine: "TimeMachine") -> None:
+    def test_retry_with_circuit_breaker(self, time_machine: TimeMachine) -> None:
         """Test combining retry and circuit breaker patterns."""
         time_machine.freeze()
         attempt_count = 0
@@ -240,9 +239,8 @@ class TestErrorSystemIntegration(FoundationTestCase):
         """Test error handling in async context."""
 
         async def async_operation() -> Never:
-            # Mock the async sleep
-            with mock_sleep():
-                await asyncio.sleep(0.01)
+            # Use immediate async yield instead of sleep to avoid interference
+            await asyncio.sleep(0)  # Yield control without timing dependency
             raise NetworkError("Async failure", host="async.example.com")
 
         @resilient(fallback="async_default", suppress=(NetworkError,))

@@ -1,10 +1,14 @@
 """Tests for hashing operations."""
 
+from __future__ import annotations
+
 import hashlib
 from io import BytesIO
 from pathlib import Path
 
 import pytest
+
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.crypto import (
     hash_data,
@@ -17,7 +21,7 @@ from provide.foundation.errors.config import ValidationError
 from provide.foundation.errors.resources import ResourceError
 
 
-class TestHashFile:
+class TestHashFile(FoundationTestCase):
     """Test hash_file function."""
 
     def test_hash_file_sha256(self, tmp_path: Path) -> None:
@@ -90,7 +94,7 @@ class TestHashFile:
         assert all(c in "0123456789abcdef" for c in result)
 
 
-class TestHashData:
+class TestHashData(FoundationTestCase):
     """Test hash_data function."""
 
     def test_hash_data_sha256(self) -> None:
@@ -121,7 +125,7 @@ class TestHashData:
         assert result == expected
 
 
-class TestHashString:
+class TestHashString(FoundationTestCase):
     """Test hash_string function."""
 
     def test_hash_string_default(self) -> None:
@@ -151,7 +155,7 @@ class TestHashString:
         assert result_utf8 != result_utf16
 
 
-class TestHashStream:
+class TestHashStream(FoundationTestCase):
     """Test hash_stream function."""
 
     def test_hash_stream_basic(self) -> None:
@@ -184,7 +188,7 @@ class TestHashStream:
         assert result == expected
 
 
-class TestHashFileMultiple:
+class TestHashFileMultiple(FoundationTestCase):
     """Test hash_file_multiple function."""
 
     def test_hash_file_multiple_algorithms(self, tmp_path: Path) -> None:
@@ -210,7 +214,7 @@ class TestHashFileMultiple:
             hash_file_multiple(test_file, ["sha256", "invalid"])
 
 
-class TestHashChunks:
+class TestHashChunks(FoundationTestCase):
     """Test hash_chunks function."""
 
     def test_hash_chunks_basic(self) -> None:

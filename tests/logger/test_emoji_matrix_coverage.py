@@ -1,25 +1,29 @@
 """Test coverage for EventSet integration with logging."""
 
+from __future__ import annotations
+
+from provide.testkit import FoundationTestCase
+
 from provide.foundation.eventsets.registry import discover_event_sets, get_registry
 from provide.foundation.eventsets.resolver import get_resolver
 from provide.foundation.eventsets.types import EventMapping, EventSet, FieldMapping
 
 
-class TestEventSetIntegration:
+class TestEventSetIntegration(FoundationTestCase):
     """Test EventSet integration with logging system."""
 
     def test_event_mapping_creation(self) -> None:
         """Test EventMapping creation with visual markers."""
         mapping = EventMapping(
             name="test_mapping",
-            visual_markers={"success": "✅", "error": "❌", "info": "ℹ️"},
+            visual_markers={"success": "✅", "error": "❌", "info": "💡"},
             default_key="default",
         )
 
         assert mapping.name == "test_mapping"
         assert mapping.visual_markers["success"] == "✅"
         assert mapping.visual_markers["error"] == "❌"
-        assert mapping.visual_markers["info"] == "ℹ️"
+        assert mapping.visual_markers["info"] == "💡"
         assert mapping.default_key == "default"
 
     def test_event_set_creation(self) -> None:
@@ -107,7 +111,7 @@ class TestEventSetIntegration:
     def test_event_mapping_with_metadata_and_transformations(self) -> None:
         """Test EventMapping with metadata fields and transformations."""
 
-        def uppercase_transform(value):
+        def uppercase_transform(value: str | None) -> str | None:
             return str(value).upper() if value else value
 
         mapping = EventMapping(

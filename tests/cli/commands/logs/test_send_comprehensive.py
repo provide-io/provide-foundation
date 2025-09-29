@@ -1,10 +1,14 @@
 """Comprehensive tests for CLI logs send command."""
 
+from __future__ import annotations
+
 from io import StringIO
-from unittest.mock import Mock, patch
+
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 
-class TestGetMessageFromInput:
+class TestGetMessageFromInput(FoundationTestCase):
     """Test _get_message_from_input function."""
 
     def test_message_provided_returns_message(self) -> None:
@@ -57,7 +61,7 @@ class TestGetMessageFromInput:
             mock_echo.assert_called_once_with("Error: Empty message from stdin.", err=True)
 
 
-class TestBuildAttributes:
+class TestBuildAttributes(FoundationTestCase):
     """Test _build_attributes function."""
 
     def test_no_attributes_returns_empty_dict(self) -> None:
@@ -193,7 +197,7 @@ class TestBuildAttributes:
         assert result_code == 0
 
 
-class TestSendLogEntry:
+class TestSendLogEntry(FoundationTestCase):
     """Test _send_log_entry function."""
 
     def test_send_via_otlp_success(self) -> None:
@@ -346,7 +350,7 @@ class TestSendLogEntry:
             mock_echo.assert_called_once_with("✗ Failed to send log: HTTP API failed", err=True)
 
 
-class TestSendCommandWithoutClick:
+class TestSendCommandWithoutClick(FoundationTestCase):
     """Test send command behavior when click is not available."""
 
     def test_command_import_availability(self) -> None:
@@ -363,7 +367,7 @@ class TestSendCommandWithoutClick:
             assert hasattr(send_command, "__click_params__") or callable(send_command)
 
 
-class TestModuleStructure:
+class TestModuleStructure(FoundationTestCase):
     """Test basic module structure and imports."""
 
     def test_module_has_required_functions(self) -> None:
@@ -386,7 +390,7 @@ class TestModuleStructure:
         assert hasattr(log, "error")
 
 
-class TestEdgeCases:
+class TestEdgeCases(FoundationTestCase):
     """Test various edge cases."""
 
     def test_build_attributes_with_equals_in_value(self) -> None:

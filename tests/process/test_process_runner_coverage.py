@@ -1,12 +1,15 @@
 """Additional tests for process runner to improve code coverage."""
 
+from __future__ import annotations
+
 from pathlib import Path
 import subprocess
 import sys
 import tempfile
 from typing import Any
-from unittest.mock import patch
 
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.errors import ProcessError
@@ -18,7 +21,7 @@ from provide.foundation.process.runner import (
 )
 
 
-class TestProcessRunnerCoverage:
+class TestProcessRunnerCoverage(FoundationTestCase):
     """Test process runner functionality for improved coverage."""
 
     def test_run_command_with_path_cwd(self) -> None:
