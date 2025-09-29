@@ -58,13 +58,16 @@ class TestOptionalCryptoDependency(FoundationTestCase):
                 CertificateBase,
             )
 
-            config = {
+            from typing import cast
+            from provide.foundation.crypto.certificates.base import CertificateConfig
+
+            config = cast(CertificateConfig, {
                 "common_name": "test.com",
                 "organization": "Test Org",
                 "key_type": "rsa",
                 "not_valid_before": "2024-01-01T00:00:00Z",
                 "not_valid_after": "2025-01-01T00:00:00Z",
-            }
+            })
 
             with pytest.raises(
                 ImportError,
@@ -206,11 +209,9 @@ class TestCryptoFallbackBehavior(FoundationTestCase):
     def test_certificate_property_access_without_crypto(self) -> None:
         """Test certificate property access when crypto is not available."""
         # Test that certificate properties handle missing crypto gracefully
-        from provide.foundation.crypto.certificates import Certificate
-
         # When crypto is not available, even basic Certificate creation should fail
         # if it tries to parse invalid PEM data
-        from provide.foundation.crypto.certificates import CertificateError
+        from provide.foundation.crypto.certificates import Certificate, CertificateError
 
         with pytest.raises(CertificateError):  # Certificate wraps underlying errors
             Certificate(generate_keypair=False, cert_pem_or_uri="dummy")
@@ -220,7 +221,6 @@ class TestCryptoFallbackBehavior(FoundationTestCase):
         # Even if cryptography import fails, the module should still be importable
         # and provide meaningful error messages
         import sys
-        import importlib
 
         # Remove the modules from sys.modules to force fresh import
         modules_to_remove = [

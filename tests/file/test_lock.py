@@ -166,7 +166,7 @@ class TestFileLock(MinimalTestCase):
                 with contextlib.suppress(FileNotFoundError, PermissionError):
                     lock_path.unlink()
 
-    def test_file_lock_exception_in_context(self, temp_directory: Path) -> Never:
+    def test_file_lock_exception_in_context(self, temp_directory: Path) -> None:
         """Test lock is released even when exception occurs."""
         lock_path = temp_directory / "test.lock"
 

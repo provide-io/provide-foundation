@@ -674,7 +674,9 @@
       "Bash(PYTHONPATH=src timeout 120 .venv/bin/pytest tests/file/ tests/crypto/ tests/docs/ tests/tools/test_installer.py -q --tb=short --maxfail=3)",
       "Bash(PYTHONPATH=src timeout 10 .venv/bin/pytest tests/cli/commands/test_deps_coverage.py::TestDepsCommandModuleImport::test_click_import_handling -xvs --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/process/test_async_runner_coverage.py::TestAsyncStreamCommandCoverage::test_async_stream_command_timeout -xvs --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/cli/commands/test_deps_coverage.py::TestDepsCommandModuleImport::test_click_import_handling tests/process/test_async_runner_coverage.py::TestAsyncStreamCommandCoverage::test_async_stream_command_timeout -v --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/cli/commands/test_deps_coverage.py::TestDepsCommandModuleImport::test_click_import_handling tests/process/test_async_runner_coverage.py::TestAsyncStreamCommandCoverage::test_async_stream_command_timeout -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/crypto/test_optional_crypto_dependency.py src/provide/foundation/file/lock.py tests/file/test_lock.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/crypto/test_optional_crypto_dependency.py src/provide/foundation/file/lock.py tests/file/test_lock.py)"
     ],
     "deny": [],
     "ask": [],
