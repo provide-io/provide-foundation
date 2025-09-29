@@ -12,16 +12,8 @@ Provides functions for initializing, managing, and cleaning up components
 registered in the Hub registry system.
 """
 
-# Async-safe lock for component initialization (lazily created)
-_async_component_lock: asyncio.Lock | None = None
-
-
-def _get_async_lock() -> asyncio.Lock:
-    """Get or create the async component lock in the current event loop."""
-    global _async_component_lock
-    if _async_component_lock is None:
-        _async_component_lock = asyncio.Lock()
-    return _async_component_lock
+# No global async lock - registry handles its own thread safety
+# and _initialized_components dict access is simplified
 
 
 def _get_registry_and_globals() -> Any:
@@ -87,10 +79,9 @@ async def initialize_async_component(name: str, dimension: str) -> Any:
     registry, initialized_components = _get_registry_and_globals()
     key = (name, dimension)
 
-    # First, check if already initialized (only need async lock for initialized_components)
-    async with _get_async_lock():
-        if key in initialized_components:
-            return initialized_components[key]
+    # First, check if already initialized
+    if key in initialized_components:
+        return initialized_components[key]
 
     # Registry operations are thread-safe internally, no external lock needed
     entry = registry.get_entry(name, dimension)
@@ -106,10 +97,9 @@ async def initialize_async_component(name: str, dimension: str) -> Any:
     if not factory:
         return entry.value
 
-    # Double-check pattern with async lock
-    async with _get_async_lock():
-        if key in initialized_components:
-            return initialized_components[key]
+    # Double-check if already initialized
+    if key in initialized_components:
+        return initialized_components[key]
 
     # Initialize component outside any lock
     try:
@@ -128,12 +118,11 @@ async def initialize_async_component(name: str, dimension: str) -> Any:
             replace=True,
         )
 
-        # Only need async lock for initialized_components dict
-        async with _get_async_lock():
-            # Final check before update
-            if key not in initialized_components:
-                initialized_components[key] = component
-            return initialized_components[key]
+        # Update initialized_components cache
+        # Final check before update (race condition is acceptable here)
+        if key not in initialized_components:
+            initialized_components[key] = component
+        return initialized_components[key]
 
     except Exception as e:
         get_foundation_logger().error(
