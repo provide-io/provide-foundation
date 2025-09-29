@@ -14,9 +14,9 @@ import contextlib
 import json
 import os
 from typing import Any
-from unittest.mock import patch
 
 from provide.testkit import FoundationTestCase, TestEnvironment
+from provide.testkit.mocking import patch
 import pytest
 from pytest import CaptureFixture  # Added for capsys
 

@@ -1,9 +1,9 @@
 """Comprehensive tests for tracer/otel.py module."""
 
 import sys
-from unittest.mock import Mock, patch
 
 import pytest
+from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.tracer.otel import (
     _HAS_OTEL,

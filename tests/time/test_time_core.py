@@ -3,10 +3,10 @@
 from datetime import UTC, datetime
 import time
 from typing import Any
-from unittest.mock import MagicMock, patch
 from zoneinfo import ZoneInfo
 
 from provide.testkit import FoundationTestCase, MinimalTestCase
+from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation.errors import ValidationError

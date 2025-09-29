@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from io import StringIO
-from unittest.mock import patch
 
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import patch
 import structlog
 
 from provide.foundation.logger.config import TelemetryConfig
