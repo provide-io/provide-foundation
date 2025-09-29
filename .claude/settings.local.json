@@ -617,7 +617,10 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_base.py::TestBaseToolManager::test_install_download_and_verify -v --tb=long)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_base.py::TestBaseToolManager::test_install_download_and_verify -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_base.py::TestBaseToolManager -v --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/tools/base.py tests/tools/test_tools_base.py)"
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/tools/base.py tests/tools/test_tools_base.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format src/provide/foundation/tools/downloader.py src/provide/foundation/tools/base.py tests/tools/test_downloader.py tests/tools/test_tools_base.py)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/tools/test_tools_base.py)",
+      "Bash(PYTHONPATH=src .venv/bin/mypy tests/tools/test_tools_base.py --ignore-missing-imports)"
     ],
     "deny": [],
     "ask": [],

@@ -6,6 +6,7 @@ These tests define the expected behavior before implementation.
 from __future__ import annotations
 
 from pathlib import Path
+from typing import ClassVar
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import MagicMock, patch
@@ -65,18 +66,18 @@ class TestBaseToolManager(FoundationTestCase):
     """Tests for BaseToolManager abstract class."""
 
     @pytest.fixture
-    def mock_config(self):
+    def mock_config(self) -> MagicMock:
         """Create a mock config."""
         return MagicMock(spec=BaseConfig)
 
     @pytest.fixture
-    def concrete_manager(self, mock_config):
+    def concrete_manager(self, mock_config: MagicMock) -> BaseToolManager:
         """Create a concrete implementation of BaseToolManager."""
 
         class ConcreteToolManager(BaseToolManager):
             tool_name = "testtool"
             executable_name = "testtool"
-            supported_platforms = ["linux", "darwin"]
+            supported_platforms: ClassVar[list[str]] = ["linux", "darwin"]
 
             def get_metadata(self, version: str) -> ToolMetadata:
                 return ToolMetadata(
@@ -93,37 +94,37 @@ class TestBaseToolManager(FoundationTestCase):
 
         return ConcreteToolManager(mock_config)
 
-    def test_manager_requires_tool_name(self, mock_config) -> None:
+    def test_manager_requires_tool_name(self, mock_config: MagicMock) -> None:
         """Test that manager requires tool_name to be defined."""
 
         class InvalidManager(BaseToolManager):
             executable_name = "test"
 
             def get_metadata(self, version: str) -> ToolMetadata:
-                pass
+                return ToolMetadata(name="test", version=version, platform="linux", arch="amd64")
 
             def get_available_versions(self) -> list[str]:
-                pass
+                return []
 
         with pytest.raises(ToolError, match="must define tool_name"):
             InvalidManager(mock_config)
 
-    def test_manager_requires_executable_name(self, mock_config) -> None:
+    def test_manager_requires_executable_name(self, mock_config: MagicMock) -> None:
         """Test that manager requires executable_name to be defined."""
 
         class InvalidManager(BaseToolManager):
             tool_name = "test"
 
             def get_metadata(self, version: str) -> ToolMetadata:
-                pass
+                return ToolMetadata(name="test", version=version, platform="linux", arch="amd64")
 
             def get_available_versions(self) -> list[str]:
-                pass
+                return []
 
         with pytest.raises(ToolError, match="must define executable_name"):
             InvalidManager(mock_config)
 
-    def test_resolve_version_latest(self, concrete_manager) -> None:
+    def test_resolve_version_latest(self, concrete_manager: BaseToolManager) -> None:
         """Test resolving 'latest' version."""
         with patch.object(concrete_manager.resolver, "resolve") as mock_resolve:
             mock_resolve.return_value = "1.2.0"
@@ -136,7 +137,7 @@ class TestBaseToolManager(FoundationTestCase):
                 ["1.0.0", "1.1.0", "1.2.0", "2.0.0-beta"],
             )
 
-    def test_resolve_version_not_found(self, concrete_manager) -> None:
+    def test_resolve_version_not_found(self, concrete_manager: BaseToolManager) -> None:
         """Test resolving non-existent version."""
         with patch.object(concrete_manager.resolver, "resolve") as mock_resolve:
             mock_resolve.return_value = None
@@ -144,7 +145,7 @@ class TestBaseToolManager(FoundationTestCase):
             with pytest.raises(ToolNotFoundError, match="Cannot resolve version"):
                 concrete_manager.resolve_version("3.0.0")
 
-    def test_get_platform_info(self, concrete_manager) -> None:
+    def test_get_platform_info(self, concrete_manager: BaseToolManager) -> None:
         """Test getting platform information."""
         with patch("platform.system") as mock_system, patch("platform.machine") as mock_machine:
             mock_system.return_value = "Linux"
@@ -154,7 +155,7 @@ class TestBaseToolManager(FoundationTestCase):
 
             assert info == {"platform": "linux", "arch": "amd64"}
 
-    def test_get_platform_info_darwin_arm(self, concrete_manager) -> None:
+    def test_get_platform_info_darwin_arm(self, concrete_manager: BaseToolManager) -> None:
         """Test platform info for Mac ARM."""
         with patch("platform.system") as mock_system, patch("platform.machine") as mock_machine:
             mock_system.return_value = "Darwin"
@@ -164,13 +165,13 @@ class TestBaseToolManager(FoundationTestCase):
 
             assert info == {"platform": "darwin", "arch": "arm64"}
 
-    def test_get_install_path(self, concrete_manager) -> None:
+    def test_get_install_path(self, concrete_manager: BaseToolManager) -> None:
         """Test getting installation path for a version."""
         path = concrete_manager.get_install_path("1.5.0")
 
         assert path == Path.home() / ".provide-foundation" / "tools" / "testtool" / "1.5.0"
 
-    def test_is_installed_true(self, concrete_manager, tmp_path) -> None:
+    def test_is_installed_true(self, concrete_manager: BaseToolManager, tmp_path: Path) -> None:
         """Test checking if version is installed."""
         with patch.object(concrete_manager, "get_install_path") as mock_path:
             install_dir = tmp_path / "testtool"
@@ -182,7 +183,7 @@ class TestBaseToolManager(FoundationTestCase):
 
             assert concrete_manager.is_installed("1.0.0") is True
 
-    def test_is_installed_false(self, concrete_manager, tmp_path) -> None:
+    def test_is_installed_false(self, concrete_manager: BaseToolManager, tmp_path: Path) -> None:
         """Test checking if version is not installed."""
         with patch.object(concrete_manager, "get_install_path") as mock_path:
             mock_path.return_value = tmp_path / "notexist"
@@ -190,7 +191,7 @@ class TestBaseToolManager(FoundationTestCase):
             assert concrete_manager.is_installed("1.0.0") is False
 
     @patch("provide.foundation.tools.base.Path")
-    async def test_install_cached(self, mock_path_class, concrete_manager) -> None:
+    async def test_install_cached(self, mock_path_class: MagicMock, concrete_manager: BaseToolManager) -> None:
         """Test installing from cache."""
         cached_path = MagicMock(spec=Path)
 
@@ -202,7 +203,9 @@ class TestBaseToolManager(FoundationTestCase):
             assert result == cached_path
             mock_get.assert_called_once_with("testtool", "1.0.0")
 
-    async def test_install_download_and_verify(self, concrete_manager, tmp_path) -> None:
+    async def test_install_download_and_verify(
+        self, concrete_manager: BaseToolManager, tmp_path: Path
+    ) -> None:
         """Test full installation with download and verification."""
         artifact_path = tmp_path / "artifact.tar.gz"
         install_path = tmp_path / "install"
@@ -230,7 +233,7 @@ class TestBaseToolManager(FoundationTestCase):
             mock_install.assert_called_once()
             mock_cache_store.assert_called_once_with("testtool", "1.0.0", install_path)
 
-    async def test_install_verification_fails(self, concrete_manager, tmp_path) -> None:
+    async def test_install_verification_fails(self, concrete_manager: BaseToolManager, tmp_path: Path) -> None:
         """Test installation fails when verification fails."""
         artifact_path = tmp_path / "artifact.tar.gz"
 
@@ -252,10 +255,10 @@ class TestBaseToolManager(FoundationTestCase):
             # Artifact should be deleted
             assert not artifact_path.exists()
 
-    async def test_install_no_download_url(self, concrete_manager) -> None:
+    async def test_install_no_download_url(self, concrete_manager: BaseToolManager) -> None:
         """Test installation fails when no download URL available."""
 
-        def get_metadata_no_url(version):
+        def get_metadata_no_url(version: str) -> ToolMetadata:
             return ToolMetadata(
                 name="testtool",
                 version=version,
@@ -272,7 +275,7 @@ class TestBaseToolManager(FoundationTestCase):
             with pytest.raises(ToolInstallError, match="No download URL"):
                 await concrete_manager.install("1.0.0")
 
-    def test_uninstall_success(self, concrete_manager, tmp_path) -> None:
+    def test_uninstall_success(self, concrete_manager: BaseToolManager, tmp_path: Path) -> None:
         """Test successful uninstallation."""
         install_path = tmp_path / "testtool"
         install_path.mkdir(parents=True)
@@ -291,7 +294,7 @@ class TestBaseToolManager(FoundationTestCase):
             assert not install_path.exists()
             mock_invalidate.assert_called_once_with("testtool", "1.0.0")
 
-    def test_uninstall_not_found(self, concrete_manager, tmp_path) -> None:
+    def test_uninstall_not_found(self, concrete_manager: BaseToolManager, tmp_path: Path) -> None:
         """Test uninstalling non-existent version."""
         with (
             patch.object(concrete_manager, "get_install_path") as mock_path,
@@ -304,7 +307,7 @@ class TestBaseToolManager(FoundationTestCase):
             assert result is False
             mock_invalidate.assert_called_once_with("testtool", "1.0.0")
 
-    def test_lazy_loading_properties(self, concrete_manager) -> None:
+    def test_lazy_loading_properties(self, concrete_manager: BaseToolManager) -> None:
         """Test that components are lazy-loaded."""
         # Initially None
         assert concrete_manager._cache is None
