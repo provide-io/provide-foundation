@@ -142,10 +142,7 @@ def cleanup_all_components(dimension: str | None = None) -> None:
     """Clean up all components in dimension."""
     registry, _ = _get_registry_and_globals()
 
-    if dimension:
-        entries = [entry for entry in registry if entry.dimension == dimension]
-    else:
-        entries = list(registry)
+    entries = [entry for entry in registry if entry.dimension == dimension] if dimension else list(registry)
 
     for entry in entries:
         if entry.metadata.get("supports_cleanup", False):
