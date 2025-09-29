@@ -656,7 +656,8 @@
       "Bash(PYTHONPATH=src timeout 30 .venv/bin/pytest tests/ -n auto --tb=no -q --maxfail=1)",
       "Bash(env PYTHONPATH=src timeout 30 .venv/bin/pytest tests/ -n auto --tb=no -q --maxfail=1)",
       "Bash(PYTHONPATH=src .venv/bin/mypy src/provide/foundation/file/lock.py)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_lock.py -n auto --tb=short -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_lock.py -n auto --tb=short -q)",
+      "Bash(PYTHONPATH=src timeout 60 .venv/bin/pytest tests/ -n auto --tb=no -q --maxfail=3)"
     ],
     "deny": [],
     "ask": [],
