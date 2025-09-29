@@ -72,6 +72,15 @@ def reset_hub_state() -> None:
         # Components module not available, skip
         pass
 
+    try:
+        # Clear the global component registry (where bootstrap_foundation registers components)
+        from provide.foundation.hub.components import _component_registry
+
+        _component_registry.clear()
+    except ImportError:
+        # Components module not available, skip
+        pass
+
 
 def reset_streams_state() -> None:
     """Reset stream state to defaults.
