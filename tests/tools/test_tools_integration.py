@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import hashlib
 from pathlib import Path
 import tempfile
 import time
+from typing import ClassVar, Generator
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
@@ -31,7 +31,7 @@ class MockToolManager(BaseToolManager):
 
     tool_name = "jq"
     executable_name = "jq"
-    supported_platforms = ["linux", "darwin", "windows"]
+    supported_platforms: ClassVar[list[str]] = ["linux", "darwin", "windows"]
 
     def get_metadata(self, version: str) -> ToolMetadata:
         """Get metadata for jq (a real, small tool for testing)."""
@@ -122,25 +122,18 @@ class TestDownloaderIntegration(FoundationTestCase):
     async def test_download_with_checksum_success(self, downloader, temp_dir) -> None:
         """Test download with checksum verification."""
         try:
-            # Download a known file and verify its checksum
-            url = "https://httpbin.org/bytes/100"
+            # Use a fixed content endpoint that returns predictable data
+            url = "https://httpbin.org/base64/aGVsbG8gd29ybGQ="  # "hello world" in base64
             dest = temp_dir / "checksum_test.bin"
 
-            # First download to get the actual checksum
-            await downloader.download_with_progress(url, dest)
+            # Known SHA256 checksum for "hello world" (the actual decoded content)
+            expected_checksum = "b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9"
 
-            # Calculate checksum
-            hasher = hashlib.sha256()
-            with dest.open("rb") as f:
-                hasher.update(f.read())
-            expected_checksum = hasher.hexdigest()
+            # Download with checksum verification
+            result = await downloader.download_with_progress(url, dest, expected_checksum)
 
-            # Download again with checksum verification
-            dest2 = temp_dir / "checksum_test2.bin"
-            result2 = await downloader.download_with_progress(url, dest2, expected_checksum)
-
-            assert result2 == dest2
-            assert dest2.exists()
+            assert result == dest
+            assert dest.exists()
         except Exception as e:
             if any(
                 keyword in str(e)
@@ -185,14 +178,25 @@ class TestDownloaderIntegration(FoundationTestCase):
         url = "https://httpbin.org/delay/10"  # 10 second delay
         dest = temp_dir / "timeout_test.bin"
 
-        # Patch the client to have a short timeout
-        with patch.object(downloader.client, "stream") as mock_stream:
-            import httpx
+        # Create a new client with short timeout and patch the downloader to use it
+        import httpx
 
-            mock_stream.side_effect = httpx.TimeoutException("Request timed out")
+        from provide.foundation.transport import UniversalClient
 
+        # Create client with very short timeout
+        timeout_client = UniversalClient()
+        timeout_client._client = httpx.AsyncClient(timeout=0.1)  # 100ms timeout
+
+        # Replace the downloader's client
+        original_client = downloader.client
+        downloader.client = timeout_client
+
+        try:
             with pytest.raises(Exception):  # Timeout should cause failure
                 await downloader.download_with_progress(url, dest)
+        finally:
+            # Restore original client
+            downloader.client = original_client
 
     async def test_parallel_downloads(self, downloader, temp_dir) -> None:
         """Test parallel downloads of multiple files."""
@@ -274,20 +278,27 @@ class TestDownloaderIntegration(FoundationTestCase):
         url = f"https://github.com/jqlang/jq/releases/download/jq-1.7.1/{filename}"
         dest = temp_dir / "jq"
 
-        result = await downloader.download_with_progress(url, dest)
+        # Skip this test if we can't reach GitHub or the specific binary doesn't exist
+        try:
+            result = await downloader.download_with_progress(url, dest)
 
-        assert result == dest
-        assert dest.exists()
-        assert dest.stat().st_size > 1000  # Should be a reasonable size
+            assert result == dest
+            assert dest.exists()
+            assert dest.stat().st_size > 1000  # Should be a reasonable size
 
-        # Verify it's a binary
-        with dest.open("rb") as f:
-            header = f.read(4)
-            # Should be a valid binary (ELF on Linux, Mach-O on macOS)
-            if system == "linux":
-                assert header.startswith(b"\x7fELF")
-            elif system == "darwin":
-                assert header in [b"\xfe\xed\xfa\xce", b"\xfe\xed\xfa\xcf", b"\xcf\xfa\xed\xfe"]
+            # Verify it's a binary
+            with dest.open("rb") as f:
+                header = f.read(4)
+                # Should be a valid binary (ELF on Linux, Mach-O on macOS)
+                if system == "linux":
+                    assert header.startswith(b"\x7fELF")
+                elif system == "darwin":
+                    assert header in [b"\xfe\xed\xfa\xce", b"\xfe\xed\xfa\xcf", b"\xcf\xfa\xed\xfe"]
+        except Exception as e:
+            if any(keyword in str(e) for keyword in ["404", "not found", "DNS", "timeout", "ConnectError"]):
+                pytest.skip(f"GitHub/network issue - this is an integration test limitation: {e}")
+            else:
+                raise
 
 
 class TestBackoffRetryIntegration(FoundationTestCase):
@@ -379,10 +390,17 @@ class TestBackoffRetryIntegration(FoundationTestCase):
             # Succeed on 3rd attempt
             return original_stream("https://httpbin.org/bytes/100")
 
-        with patch.object(client, "stream", side_effect=mock_stream):
+        # Replace the client's stream method instead of patching
+        original_stream = client.stream
+        client.stream = mock_stream
+
+        try:
             # Should eventually succeed
             result = await downloader.download_with_progress("https://test.com/file", dest)
             assert result == dest
+        finally:
+            # Restore original stream method
+            client.stream = original_stream
 
 
 class TestFullWorkflowIntegration(FoundationTestCase):
@@ -456,7 +474,7 @@ class TestFullWorkflowIntegration(FoundationTestCase):
 
         try:
             # Test the complete workflow
-            install_path = mock_tool_manager.install(version)
+            install_path = await mock_tool_manager.install(version)
 
             assert install_path.exists()
             assert mock_tool_manager.is_installed(version)
@@ -472,6 +490,11 @@ class TestFullWorkflowIntegration(FoundationTestCase):
 
         except ToolNotFoundError:
             pytest.skip("Platform not supported for jq download")
+        except Exception as e:
+            if any(keyword in str(e) for keyword in ["404", "not found", "DNS", "timeout", "ConnectError"]):
+                pytest.skip(f"GitHub/network issue - this is an integration test limitation: {e}")
+            else:
+                raise
 
     def test_cache_integration_workflow(self, temp_dir) -> None:
         """Test cache operations with real workflows."""
@@ -557,8 +580,14 @@ class TestNetworkErrorHandling(FoundationTestCase):
         url = "https://httpbin.org/redirect-to?url=https://httpbin.org/bytes/200"
         dest = temp_dir / "redirect_test.bin"
 
-        result = await downloader.download_with_progress(url, dest)
+        try:
+            result = await downloader.download_with_progress(url, dest)
 
-        assert result == dest
-        assert dest.exists()
-        assert dest.stat().st_size == 200
+            assert result == dest
+            assert dest.exists()
+            assert dest.stat().st_size == 200
+        except Exception as e:
+            if any(keyword in str(e) for keyword in ["500", "502", "503", "DNS", "timeout", "ConnectError"]):
+                pytest.skip(f"httpbin issue - this is an integration test limitation: {e}")
+            else:
+                raise

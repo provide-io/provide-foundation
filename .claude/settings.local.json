@@ -622,7 +622,12 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/tools/test_tools_base.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/tools/test_tools_base.py --ignore-missing-imports)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_base.py -v --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/ -q --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/ -q --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/tools/test_tools_integration.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py::TestDownloaderIntegration::test_download_with_checksum_success -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py::TestDownloaderIntegration::test_download_with_checksum_success -v --tb=short -m integration)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py::TestFullWorkflowIntegration::test_complete_tool_installation_workflow -v --tb=short -m integration)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py -v --tb=short -m integration -x --maxfail=3)"
     ],
     "deny": [],
     "ask": [],
