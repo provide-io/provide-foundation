@@ -63,6 +63,14 @@ def reset_hub_state() -> None:
         # Hub module not available, skip
         pass
 
+    try:
+        # Also reset the initialized components cache
+        from provide.foundation.hub.components import _initialized_components
+        _initialized_components.clear()
+    except ImportError:
+        # Components module not available, skip
+        pass
+
 
 def reset_streams_state() -> None:
     """Reset stream state to defaults.
