@@ -66,12 +66,22 @@ class TestToolInstaller(MinimalTestCase):
         zip_path = temp_dir / "test.zip"
 
         with zipfile.ZipFile(zip_path, "w") as zf:
-            # Add a binary file
-            zf.writestr("bin/testtool", b"#!/bin/bash\necho 'Hello from testtool'\n")
-            # Add a text file
-            zf.writestr("README.txt", "This is a test tool")
-            # Add nested file
-            zf.writestr("docs/help.txt", "Help documentation")
+            # Use a valid timestamp after 1980
+            import time
+            valid_time = time.mktime((1980, 1, 1, 0, 0, 0, 0, 0, 0))
+
+            # Create ZipInfo objects with valid timestamps
+            bin_info = zipfile.ZipInfo("bin/testtool")
+            bin_info.date_time = (1980, 1, 1, 0, 0, 0)
+            zf.writestr(bin_info, b"#!/bin/bash\necho 'Hello from testtool'\n")
+
+            readme_info = zipfile.ZipInfo("README.txt")
+            readme_info.date_time = (1980, 1, 1, 0, 0, 0)
+            zf.writestr(readme_info, "This is a test tool")
+
+            docs_info = zipfile.ZipInfo("docs/help.txt")
+            docs_info.date_time = (1980, 1, 1, 0, 0, 0)
+            zf.writestr(docs_info, "Help documentation")
 
         return zip_path
 
@@ -154,9 +164,14 @@ class TestToolInstaller(MinimalTestCase):
         zip_path = temp_dir / "unsafe.zip"
 
         with zipfile.ZipFile(zip_path, "w") as zf:
-            # Add unsafe paths
-            zf.writestr("../../../etc/passwd", "unsafe content")
-            zf.writestr("/absolute/path", "unsafe content")
+            # Create ZipInfo objects with valid timestamps for unsafe paths
+            passwd_info = zipfile.ZipInfo("../../../etc/passwd")
+            passwd_info.date_time = (1980, 1, 1, 0, 0, 0)
+            zf.writestr(passwd_info, "unsafe content")
+
+            abs_info = zipfile.ZipInfo("/absolute/path")
+            abs_info.date_time = (1980, 1, 1, 0, 0, 0)
+            zf.writestr(abs_info, "unsafe content")
 
         dest_dir = temp_dir / "extracted"
 
