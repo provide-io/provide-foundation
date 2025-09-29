@@ -28,54 +28,50 @@ def _get_registry_and_globals() -> Any:
 
 def get_or_initialize_component(name: str, dimension: str) -> Any:
     """Get component, initializing lazily if needed."""
-    from provide.foundation.concurrency.locks import get_lock_manager
-
     registry, initialized_components = _get_registry_and_globals()
+    key = (name, dimension)
 
-    with get_lock_manager().acquire("foundation.registry"):
-        key = (name, dimension)
+    # Return already initialized component
+    if key in initialized_components:
+        return initialized_components[key]
 
-        # Return already initialized component
-        if key in initialized_components:
-            return initialized_components[key]
+    entry = registry.get_entry(name, dimension)
 
-        entry = registry.get_entry(name, dimension)
+    if not entry:
+        return None
 
-        if not entry:
-            return None
-
-        # If already initialized, return it
-        if entry.value is not None:
-            initialized_components[key] = entry.value
-            return entry.value
-
-        # Initialize lazily
-        if entry.metadata.get("lazy", False):
-            factory = entry.metadata.get("factory")
-            if factory:
-                try:
-                    component = factory()
-                    # Update registry with initialized component
-                    registry.register(
-                        name=name,
-                        value=component,
-                        dimension=dimension,
-                        metadata=entry.metadata,
-                        replace=True,
-                    )
-                    initialized_components[key] = component
-                    return component
-                except Exception as e:
-                    get_foundation_logger().error(
-                        "Component initialization failed",
-                        component=name,
-                        dimension=dimension,
-                        error=str(e),
-                    )
-                    # Return None on failure for resilient behavior
-                    return None
-
+    # If already initialized, return it
+    if entry.value is not None:
+        initialized_components[key] = entry.value
         return entry.value
+
+    # Initialize lazily
+    if entry.metadata.get("lazy", False):
+        factory = entry.metadata.get("factory")
+        if factory:
+            try:
+                component = factory()
+                # Update registry with initialized component
+                registry.register(
+                    name=name,
+                    value=component,
+                    dimension=dimension,
+                    metadata=entry.metadata,
+                    replace=True,
+                )
+                initialized_components[key] = component
+                return component
+            except Exception as e:
+                get_foundation_logger().error(
+                    "Component initialization failed",
+                    component=name,
+                    dimension=dimension,
+                    error=str(e),
+                )
+                # Return None on failure for resilient behavior
+                return None
+
+    return entry.value
 
 
 async def initialize_async_component(name: str, dimension: str) -> Any:
@@ -144,49 +140,46 @@ async def initialize_async_component(name: str, dimension: str) -> Any:
 
 def cleanup_all_components(dimension: str | None = None) -> None:
     """Clean up all components in dimension."""
-    from provide.foundation.concurrency.locks import get_lock_manager
-
     registry, _ = _get_registry_and_globals()
 
-    with get_lock_manager().acquire("foundation.registry"):
-        if dimension:
-            entries = [entry for entry in registry if entry.dimension == dimension]
-        else:
-            entries = list(registry)
+    if dimension:
+        entries = [entry for entry in registry if entry.dimension == dimension]
+    else:
+        entries = list(registry)
 
-        for entry in entries:
-            if entry.metadata.get("supports_cleanup", False):
-                component = entry.value
-                if hasattr(component, "cleanup"):
-                    try:
-                        cleanup_func = component.cleanup
-                        if inspect.iscoroutinefunction(cleanup_func):
-                            # Run async cleanup
-                            loop = None
-                            try:
-                                loop = asyncio.get_event_loop()
-                                if loop.is_running():
-                                    # Create task if loop is running
-                                    task = loop.create_task(cleanup_func())
-                                    # Store reference to prevent garbage collection
-                                    task.add_done_callback(lambda t: None)
-                                else:
-                                    loop.run_until_complete(cleanup_func())
-                            except RuntimeError:
-                                # Create new loop if none exists
-                                loop = asyncio.new_event_loop()
+    for entry in entries:
+        if entry.metadata.get("supports_cleanup", False):
+            component = entry.value
+            if hasattr(component, "cleanup"):
+                try:
+                    cleanup_func = component.cleanup
+                    if inspect.iscoroutinefunction(cleanup_func):
+                        # Run async cleanup
+                        loop = None
+                        try:
+                            loop = asyncio.get_event_loop()
+                            if loop.is_running():
+                                # Create task if loop is running
+                                task = loop.create_task(cleanup_func())
+                                # Store reference to prevent garbage collection
+                                task.add_done_callback(lambda t: None)
+                            else:
                                 loop.run_until_complete(cleanup_func())
-                                loop.close()
-                        else:
-                            cleanup_func()
-                    except Exception as e:
-                        get_foundation_logger().error(
-                            "Component cleanup failed",
-                            component=entry.name,
-                            dimension=entry.dimension,
-                            error=str(e),
-                        )
-                        # Log but don't re-raise during cleanup to allow other components to clean up
+                        except RuntimeError:
+                            # Create new loop if none exists
+                            loop = asyncio.new_event_loop()
+                            loop.run_until_complete(cleanup_func())
+                            loop.close()
+                    else:
+                        cleanup_func()
+                except Exception as e:
+                    get_foundation_logger().error(
+                        "Component cleanup failed",
+                        component=entry.name,
+                        dimension=entry.dimension,
+                        error=str(e),
+                    )
+                    # Log but don't re-raise during cleanup to allow other components to clean up
 
 
 async def initialize_all_async_components() -> None:
