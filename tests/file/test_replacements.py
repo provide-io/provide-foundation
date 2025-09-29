@@ -1,55 +1,70 @@
 #!/usr/bin/env python3
 """Test that replacements in other packages work correctly."""
 
+from __future__ import annotations
+
 from pathlib import Path
 import tempfile
 
 import pytest
 
-
-def test_flavorpack_atomic_replacements(tmp_path: Path) -> None:
-    """Test flavorpack atomic operations are properly replaced."""
-    # Add flavorpack to path
-    flavorpack_path = Path("/REDACTED_ABS_PATH")
-    atomic_file = flavorpack_path / "flavor/utils/atomic.py"
-    if flavorpack_path.exists() and atomic_file.exists():
-        import importlib.util
-
-        # Load the atomic module directly without importing the full package
-        spec = importlib.util.spec_from_file_location(
-            "flavor.utils.atomic",
-            str(flavorpack_path / "flavor/utils/atomic.py"),
-        )
-        atomic_module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(atomic_module)
-
-        atomic_write = atomic_module.atomic_write
-        atomic_replace = atomic_module.atomic_replace
-        atomic_write_text = atomic_module.atomic_write_text
-        safe_unlink = atomic_module.safe_unlink
-
-        # Test atomic_write
-        test_file = tmp_path / "test_atomic.bin"
-        atomic_write(test_file, b"test data")
-        assert test_file.read_bytes() == b"test data"
-
-        # Test atomic_replace
-        atomic_replace(test_file, b"replaced data")
-        assert test_file.read_bytes() == b"replaced data"
-
-        # Test atomic_write_text
-        text_file = tmp_path / "test_text.txt"
-        atomic_write_text(text_file, "test text")
-        assert text_file.read_text() == "test text"
-
-        # Test safe_unlink
-        assert safe_unlink(text_file) is True
-        assert not text_file.exists()
-        assert safe_unlink(text_file) is False  # Already deleted
+from provide.testkit import FoundationTestCase
 
 
-def test_flavorpack_disk_replacements(tmp_path: Path) -> None:
-    """Test flavorpack disk operations are properly replaced."""
+class TestPackageReplacements(FoundationTestCase):
+    """Test that replacements in other packages work correctly."""
+
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+
+    def teardown_method(self) -> None:
+        """Clean up after test."""
+        super().teardown_method()
+
+    def test_flavorpack_atomic_replacements(self, tmp_path: Path) -> None:
+        """Test flavorpack atomic operations are properly replaced."""
+        # Add flavorpack to path
+        flavorpack_path = Path("/REDACTED_ABS_PATH")
+        atomic_file = flavorpack_path / "flavor/utils/atomic.py"
+        if flavorpack_path.exists() and atomic_file.exists():
+            import importlib.util
+
+            # Load the atomic module directly without importing the full package
+            spec = importlib.util.spec_from_file_location(
+                "flavor.utils.atomic",
+                str(flavorpack_path / "flavor/utils/atomic.py"),
+            )
+            atomic_module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(atomic_module)
+
+            atomic_write = atomic_module.atomic_write
+            atomic_replace = atomic_module.atomic_replace
+            atomic_write_text = atomic_module.atomic_write_text
+            safe_unlink = atomic_module.safe_unlink
+
+            # Test atomic_write
+            test_file = tmp_path / "test_atomic.bin"
+            atomic_write(test_file, b"test data")
+            assert test_file.read_bytes() == b"test data"
+
+            # Test atomic_replace
+            atomic_replace(test_file, b"replaced data")
+            assert test_file.read_bytes() == b"replaced data"
+
+            # Test atomic_write_text
+            text_file = tmp_path / "test_text.txt"
+            atomic_write_text(text_file, "test text")
+            assert text_file.read_text() == "test text"
+
+            # Test safe_unlink
+            assert safe_unlink(text_file) is True
+            assert not text_file.exists()
+            assert safe_unlink(text_file) is False  # Already deleted
+
+
+    def test_flavorpack_disk_replacements(self, tmp_path: Path) -> None:
+        """Test flavorpack disk operations are properly replaced."""
     flavorpack_path = Path("/REDACTED_ABS_PATH")
     disk_file = flavorpack_path / "flavor/utils/disk.py"
     if flavorpack_path.exists() and disk_file.exists():
@@ -76,12 +91,12 @@ def test_flavorpack_disk_replacements(tmp_path: Path) -> None:
         assert test_dir.exists()
 
 
-@pytest.mark.skipif(
-    not Path("/REDACTED_ABS_PATH").exists(),
-    reason="wrknv repository not available",
-)
-def test_wrknv_install_replacements(tmp_path: Path) -> None:
-    """Test wrknv install operations are properly replaced."""
+    @pytest.mark.skipif(
+        not Path("/REDACTED_ABS_PATH").exists(),
+        reason="wrknv repository not available",
+    )
+    def test_wrknv_install_replacements(self, tmp_path: Path) -> None:
+        """Test wrknv install operations are properly replaced."""
     wrknv_path = Path("/REDACTED_ABS_PATH")
     install_file = wrknv_path / "wrknv/wenv/operations/install.py"
     if wrknv_path.exists() and install_file.exists():
@@ -131,12 +146,12 @@ def test_wrknv_install_replacements(tmp_path: Path) -> None:
         assert not (test_dir / "file2.txt").exists()
 
 
-@pytest.mark.skipif(
-    not Path("/REDACTED_ABS_PATH").exists(),
-    reason="wrknv repository not available",
-)
-def test_wrknv_extract_operations(tmp_path: Path) -> None:
-    """Test wrknv extract operations still work."""
+    @pytest.mark.skipif(
+        not Path("/REDACTED_ABS_PATH").exists(),
+        reason="wrknv repository not available",
+    )
+    def test_wrknv_extract_operations(self, tmp_path: Path) -> None:
+        """Test wrknv extract operations still work."""
     wrknv_path = Path("/REDACTED_ABS_PATH")
     install_file = wrknv_path / "wrknv/wenv/operations/install.py"
     if wrknv_path.exists() and install_file.exists():
@@ -198,24 +213,24 @@ def test_wrknv_extract_operations(tmp_path: Path) -> None:
             assert mode & stat.S_IXUSR  # User execute bit should be set
 
 
-@pytest.mark.skipif(
-    not Path("/REDACTED_ABS_PATH").exists(),
-    reason="flavorpack repository not available",
-)
-def test_flavorpack_integration() -> None:
-    """Integration test for flavorpack replacements."""
+    @pytest.mark.skipif(
+        not Path("/REDACTED_ABS_PATH").exists(),
+        reason="flavorpack repository not available",
+    )
+    def test_flavorpack_integration(self) -> None:
+        """Integration test for flavorpack replacements."""
     with tempfile.TemporaryDirectory() as tmpdir:
         tmp_path = Path(tmpdir)
         test_flavorpack_atomic_replacements(tmp_path)
         test_flavorpack_disk_replacements(tmp_path)
 
 
-@pytest.mark.skipif(
-    not Path("/REDACTED_ABS_PATH").exists(),
-    reason="wrknv repository not available",
-)
-def test_wrknv_integration() -> None:
-    """Integration test for wrknv replacements."""
+    @pytest.mark.skipif(
+        not Path("/REDACTED_ABS_PATH").exists(),
+        reason="wrknv repository not available",
+    )
+    def test_wrknv_integration(self) -> None:
+        """Integration test for wrknv replacements."""
     with tempfile.TemporaryDirectory() as tmpdir:
         tmp_path = Path(tmpdir)
         test_wrknv_install_replacements(tmp_path)

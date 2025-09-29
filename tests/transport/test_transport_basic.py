@@ -1,5 +1,7 @@
 """Basic transport system tests."""
 
+from __future__ import annotations
+
 import pytest
 
 from provide.foundation.transport import (

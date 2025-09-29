@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from unittest.mock import Mock, patch
-
 import pytest
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.transport.base import Request, Response
 from provide.foundation.transport.errors import TransportError
@@ -19,7 +19,7 @@ from provide.foundation.transport.middleware import (
 )
 
 
-class TestLoggingMiddlewareEdgeCases:
+class TestLoggingMiddlewareEdgeCases(FoundationTestCase):
     """Test edge cases in LoggingMiddleware."""
 
     @pytest.mark.asyncio
@@ -127,7 +127,7 @@ class TestLoggingMiddlewareEdgeCases:
         assert processed_response == response
 
 
-class TestRetryMiddlewareEdgeCases:
+class TestRetryMiddlewareEdgeCases(FoundationTestCase):
     """Test edge cases in RetryMiddleware."""
 
     @pytest.mark.asyncio
@@ -187,7 +187,7 @@ class TestRetryMiddlewareEdgeCases:
             await middleware.execute_with_retry(error_execute, request)
 
 
-class TestMetricsMiddlewareEdgeCases:
+class TestMetricsMiddlewareEdgeCases(FoundationTestCase):
     """Test edge cases in MetricsMiddleware."""
 
     @pytest.mark.asyncio
@@ -233,7 +233,7 @@ class TestMetricsMiddlewareEdgeCases:
             assert processed_error == error
 
 
-class TestMiddlewarePipelineEdgeCases:
+class TestMiddlewarePipelineEdgeCases(FoundationTestCase):
     """Test edge cases in MiddlewarePipeline."""
 
     @pytest.mark.asyncio
@@ -285,7 +285,7 @@ class TestMiddlewarePipelineEdgeCases:
         assert len(pipeline.middleware) == 1
 
 
-class TestMiddlewareRegistration:
+class TestMiddlewareRegistration(FoundationTestCase):
     """Test middleware registration functions."""
 
     def test_register_middleware_basic(self) -> None:
@@ -363,7 +363,7 @@ class TestMiddlewareRegistration:
             assert result[0] == LoggingMiddleware
 
 
-class TestDefaultPipeline:
+class TestDefaultPipeline(FoundationTestCase):
     """Test default pipeline creation."""
 
     def test_create_default_pipeline(self) -> None:
@@ -379,7 +379,7 @@ class TestDefaultPipeline:
         assert MetricsMiddleware in middleware_types
 
 
-class TestBuiltinRegistration:
+class TestBuiltinRegistration(FoundationTestCase):
     """Test builtin middleware registration."""
 
     def test_builtin_registration_import_error(self) -> None:
