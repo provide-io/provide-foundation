@@ -152,7 +152,7 @@ class TestMiddleware:
     """Test middleware that tracks calls."""
 
     def __init__(self) -> None:
-        self.calls = []
+        self.calls: list[tuple[str, str | int]] = []
 
     async def process_request(self, request: Request) -> Request:
         self.calls.append(("request", request.method))

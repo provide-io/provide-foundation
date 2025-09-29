@@ -187,53 +187,53 @@ class TestFileLock(FoundationTestCase):
 
     def test_file_lock_check_interval(self, temp_directory: Path) -> None:
         """Test custom check interval."""
-    lock_path = temp_directory / "test.lock"
-    lock1 = FileLock(lock_path)
-    lock2 = FileLock(lock_path, timeout=1.0, check_interval=0.3)
+        lock_path = temp_directory / "test.lock"
+        lock1 = FileLock(lock_path)
+        lock2 = FileLock(lock_path, timeout=1.0, check_interval=0.3)
 
-    lock1.acquire()
+        lock1.acquire()
 
-    # Track how many checks happen
-    start = time.time()
-    checks = 0
+        # Track how many checks happen
+        start = time.time()
+        checks = 0
 
-    def count_checks() -> None:
-        nonlocal checks
-        while time.time() - start < 0.9:
-            time.sleep(0.05)
-            if not lock_path.exists():
-                break
-            checks += 1
+        def count_checks() -> None:
+            nonlocal checks
+            while time.time() - start < 0.9:
+                time.sleep(0.05)
+                if not lock_path.exists():
+                    break
+                checks += 1
 
-    # Start counter thread
-    counter = threading.Thread(daemon=True, target=count_checks)
-    counter.start()
+        # Start counter thread
+        counter = threading.Thread(daemon=True, target=count_checks)
+        counter.start()
 
-    # Try to acquire (will timeout)
-    with pytest.raises(LockError):
-        lock2.acquire()
+        # Try to acquire (will timeout)
+        with pytest.raises(LockError):
+            lock2.acquire()
 
-    counter.join(timeout=5.0)
-    lock1.release()
+        counter.join(timeout=5.0)
+        lock1.release()
 
-    # With 0.3s interval over ~1s, should be ~3 checks
-    # But the counter thread is checking every 0.05s so it might count more
-    # This test is inherently flaky due to timing, so be lenient
-    assert checks > 0  # At least some checks happened
+        # With 0.3s interval over ~1s, should be ~3 checks
+        # But the counter thread is checking every 0.05s so it might count more
+        # This test is inherently flaky due to timing, so be lenient
+        assert checks > 0  # At least some checks happened
 
 
     def test_file_lock_invalid_lock_content(self, temp_directory: Path) -> None:
         """Test handling of invalid lock file content."""
-    lock_path = temp_directory / "test.lock"
+        lock_path = temp_directory / "test.lock"
 
-    # Create lock file with invalid content
-    lock_path.write_text("not_a_pid")
+        # Create lock file with invalid content
+        lock_path.write_text("not_a_pid")
 
-    # Should not be detected as stale, acquisition should fail quickly
-    lock = FileLock(lock_path, timeout=0.5)
+        # Should not be detected as stale, acquisition should fail quickly
+        lock = FileLock(lock_path, timeout=0.5)
 
-    with pytest.raises(LockError):
-        lock.acquire()
+        with pytest.raises(LockError):
+            lock.acquire()
 
-    # Invalid content should still be there
-    assert lock_path.exists()
+        # Invalid content should still be there
+        assert lock_path.exists()

@@ -2,15 +2,15 @@
 
 from __future__ import annotations
 
-from unittest.mock import AsyncMock, Mock, patch
-
+from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import AsyncMock, Mock, patch
 import pytest
 
 from provide.foundation.resilience.retry import RetryExecutor, RetryPolicy
 from provide.foundation.resilience.types import BackoffStrategy
 
 
-class TestRetryPolicyEdgeCases:
+class TestRetryPolicyEdgeCases(FoundationTestCase):
     """Test edge cases in RetryPolicy."""
 
     def test_calculate_delay_zero_attempt(self) -> None:
@@ -39,7 +39,6 @@ class TestRetryPolicyEdgeCases:
         policy = RetryPolicy(base_delay=2.0, jitter=False)
 
         # Temporarily patch the enum to test the fallback path
-        original_backoff = policy.backoff
         try:
             # Patch the calculate_delay method to test the else branch
             with patch.object(
@@ -179,7 +178,7 @@ class TestRetryPolicyEdgeCases:
             RetryPolicy(base_delay=2.0, max_delay=1.0)
 
 
-class TestRetryExecutorEdgeCases:
+class TestRetryExecutorEdgeCases(FoundationTestCase):
     """Test edge cases in RetryExecutor."""
 
     def test_execute_sync_no_exception_safety_path(self) -> None:
