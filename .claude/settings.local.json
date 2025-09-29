@@ -635,7 +635,10 @@
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/resilience/test_circuit_breaker.py --ignore-missing-imports)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_circuit_recovery_after_timeout tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_custom_recovery_timeout -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_circuit_recovery_after_timeout tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_custom_recovery_timeout -n auto --tb=short -v)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py -n auto --tb=short -q)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py -n auto --tb=short -q)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_circuit_recovery_after_timeout tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_half_open_failure_reopens_circuit tests/resilience/test_circuit_breaker.py::TestCircuitBreaker::test_custom_recovery_timeout -m \"time_sensitive\" -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/resilience/test_circuit_breaker.py -m \"not time_sensitive or time_sensitive\" -v --tb=short)"
     ],
     "deny": [],
     "ask": [],

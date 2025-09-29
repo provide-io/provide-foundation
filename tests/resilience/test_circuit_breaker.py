@@ -75,7 +75,7 @@ class TestCircuitBreaker(FoundationTestCase):
         with pytest.raises(RuntimeError, match="Circuit breaker is open"):
             breaker.call(failing_func)
 
-    @pytest.mark.no_cover
+    @pytest.mark.time_sensitive
     def test_circuit_recovery_after_timeout(self) -> None:
         """Test circuit attempts recovery after timeout."""
         breaker = CircuitBreaker(failure_threshold=1, recovery_timeout=0.1)
@@ -102,7 +102,7 @@ class TestCircuitBreaker(FoundationTestCase):
         assert breaker.state == CircuitState.CLOSED
         assert breaker.failure_count == 0
 
-    @pytest.mark.no_cover
+    @pytest.mark.time_sensitive
     def test_half_open_failure_reopens_circuit(self) -> None:
         """Test failure in half-open state reopens circuit."""
         breaker = CircuitBreaker(failure_threshold=1, recovery_timeout=0.1)
@@ -200,7 +200,7 @@ class TestCircuitBreaker(FoundationTestCase):
         result = await breaker.call_async(async_success_func)
         assert result == "async success"
 
-    @pytest.mark.no_cover
+    @pytest.mark.time_sensitive
     def test_custom_recovery_timeout(self) -> None:
         """Test custom recovery timeout setting."""
         breaker = CircuitBreaker(failure_threshold=1, recovery_timeout=1.0)
