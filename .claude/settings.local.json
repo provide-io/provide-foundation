@@ -599,7 +599,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py -m integration -v --tb=short -k \"test_parallel_downloads or test_mirror_fallback_success or test_redirect_handling\" --maxfail=3)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py::TestFullWorkflowIntegration::test_resolve_version_integration -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py -m integration -k test_resolve_version_integration -v --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py -m integration -k test_exponential_backoff_timing -v --tb=short -n 0)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py -m integration -k test_exponential_backoff_timing -v --tb=short -n 0)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_downloader.py::TestToolDownloader::test_download_with_progress_success -xvs --tb=short)"
     ],
     "deny": [],
     "ask": [],
