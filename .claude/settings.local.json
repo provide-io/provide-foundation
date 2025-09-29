@@ -577,7 +577,11 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/file/test_file_quality.py::TestQualityAnalyzer::test_run_analysis_without_scenarios tests/file/test_file_quality.py::TestQualityAnalyzer::test_generate_report -xvs --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/time/test_time_core.py tests/file/test_lock.py::TestFileLock::test_file_lock_timeout -v --tb=short)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/time/test_time_core.py::TestProvideSleep tests/file/test_lock.py::TestFileLock::test_file_lock_timeout tests/concurrency/test_async_core.py::TestAsyncSleep::test_async_sleep_actually_sleeps -v --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/time/ tests/file/test_lock.py tests/concurrency/ --cov=src/provide/foundation --cov-report=term-missing -q --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/time/ tests/file/test_lock.py tests/concurrency/ --cov=src/provide/foundation --cov-report=term-missing -q --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/time/test_time_core.py::TestProvideTime::test_provide_time_advances -xvs --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/time/test_time_core.py::TestProvideTime::test_provide_time_advances tests/time/test_time_core.py::TestProvideSleep::test_provide_sleep_actually_sleeps -xvs --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/time/test_time_core.py -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/time/test_time_core.py::TestProvideTime::test_provide_time_advances tests/state/test_state_management.py::TestCircuitBreakerStateMachine::test_half_open_success_closes_circuit -v --tb=short)"
     ],
     "deny": [],
     "ask": [],
