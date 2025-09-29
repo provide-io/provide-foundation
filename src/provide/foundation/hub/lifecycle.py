@@ -69,6 +69,8 @@ def get_or_initialize_component(name: str, dimension: str) -> Any:
                         dimension=dimension,
                         error=str(e),
                     )
+                    # Return None on failure for resilient behavior
+                    return None
 
         return entry.value
 
@@ -79,6 +81,7 @@ async def initialize_async_component(name: str, dimension: str) -> Any:
 
     registry, initialized_components = _get_registry_and_globals()
 
+    # First, check if already initialized and get factory info (with lock)
     with get_lock_manager().acquire("foundation.registry"):
         key = (name, dimension)
 
@@ -91,35 +94,50 @@ async def initialize_async_component(name: str, dimension: str) -> Any:
         if not entry:
             return None
 
-        # Initialize with async factory
-        if entry.metadata.get("async", False):
-            factory = entry.metadata.get("factory")
-            if factory:
-                try:
-                    if inspect.iscoroutinefunction(factory):
-                        component = await factory()
-                    else:
-                        component = factory()
+        # If not async or no factory, return current value
+        if not entry.metadata.get("async", False):
+            return entry.value
 
-                    # Update registry
-                    registry.register(
-                        name=name,
-                        value=component,
-                        dimension=dimension,
-                        metadata=entry.metadata,
-                        replace=True,
-                    )
-                    initialized_components[key] = component
-                    return component
-                except Exception as e:
-                    get_foundation_logger().error(
-                        "Async component initialization failed",
-                        component=name,
-                        dimension=dimension,
-                        error=str(e),
-                    )
+        factory = entry.metadata.get("factory")
+        if not factory:
+            return entry.value
 
-        return entry.value
+        # Extract metadata for use outside lock
+        metadata = entry.metadata.copy()
+
+    # Initialize component outside the lock to avoid deadlock
+    try:
+        if inspect.iscoroutinefunction(factory):
+            component = await factory()
+        else:
+            component = factory()
+
+        # Re-acquire lock to update registry atomically
+        with get_lock_manager().acquire("foundation.registry"):
+            # Double-check component wasn't initialized by another coroutine
+            if key in initialized_components:
+                return initialized_components[key]
+
+            # Update registry
+            registry.register(
+                name=name,
+                value=component,
+                dimension=dimension,
+                metadata=metadata,
+                replace=True,
+            )
+            initialized_components[key] = component
+            return component
+
+    except Exception as e:
+        get_foundation_logger().error(
+            "Async component initialization failed",
+            component=name,
+            dimension=dimension,
+            error=str(e),
+        )
+        # Return None on failure for resilient behavior
+        return None
 
 
 def cleanup_all_components(dimension: str | None = None) -> None:
@@ -166,6 +184,7 @@ def cleanup_all_components(dimension: str | None = None) -> None:
                             dimension=entry.dimension,
                             error=str(e),
                         )
+                        # Log but don't re-raise during cleanup to allow other components to clean up
 
 
 async def initialize_all_async_components() -> None:
@@ -189,6 +208,7 @@ async def initialize_all_async_components() -> None:
                 dimension=entry.dimension,
                 error=str(e),
             )
+            # Log but don't re-raise to allow other components to initialize
 
 
 __all__ = [
