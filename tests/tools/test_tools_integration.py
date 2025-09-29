@@ -178,14 +178,10 @@ class TestDownloaderIntegration(FoundationTestCase):
         url = "https://httpbin.org/delay/10"  # 10 second delay
         dest = temp_dir / "timeout_test.bin"
 
-        # Create a new client with short timeout and patch the downloader to use it
-        import httpx
-
+        # Create a new client with very short timeout
         from provide.foundation.transport import UniversalClient
 
-        # Create client with very short timeout
-        timeout_client = UniversalClient()
-        timeout_client._client = httpx.AsyncClient(timeout=0.1)  # 100ms timeout
+        timeout_client = UniversalClient(default_timeout=0.001)  # 1ms timeout
 
         # Replace the downloader's client
         original_client = downloader.client
@@ -370,6 +366,9 @@ class TestBackoffRetryIntegration(FoundationTestCase):
 
     async def test_eventual_success_after_retries(self, temp_dir) -> None:
         """Test eventual success after some failures."""
+        from provide.foundation.tools.downloader import ToolDownloader
+        from provide.foundation.transport import UniversalClient
+
         client = UniversalClient()
         downloader = ToolDownloader(client)
 
@@ -387,20 +386,30 @@ class TestBackoffRetryIntegration(FoundationTestCase):
                 import httpx
 
                 raise httpx.HTTPStatusError("Server error", request=Mock(), response=Mock(status_code=503))
-            # Succeed on 3rd attempt
-            return original_stream("https://httpbin.org/bytes/100")
+            # Succeed on 3rd attempt - yield bytes directly as an async iterator
+            yield b"test content"
 
-        # Replace the client's stream method instead of patching
-        original_stream = client.stream
-        client.stream = mock_stream
+        # Use a mock client instead of trying to modify the existing one
+        from unittest.mock import AsyncMock
 
-        try:
-            # Should eventually succeed
-            result = await downloader.download_with_progress("https://test.com/file", dest)
-            assert result == dest
-        finally:
-            # Restore original stream method
-            client.stream = original_stream
+        mock_client = AsyncMock()
+
+        # Mock the request method for headers
+        mock_response = AsyncMock()
+        mock_response.headers = {"content-length": "100"}
+        mock_response.is_success.return_value = True
+        mock_client.request.return_value = mock_response
+
+        # Set up the stream method to work with our retry logic
+        mock_client.stream = mock_stream
+
+        # Create a new downloader with the mock client
+        from provide.foundation.tools.downloader import ToolDownloader
+        test_downloader = ToolDownloader(mock_client)
+
+        # Should eventually succeed
+        result = await test_downloader.download_with_progress("https://test.com/file", dest)
+        assert result == dest
 
 
 class TestFullWorkflowIntegration(FoundationTestCase):
