@@ -629,7 +629,8 @@
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py::TestFullWorkflowIntegration::test_complete_tool_installation_workflow -v --tb=short -m integration)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py -v --tb=short -m integration -x --maxfail=3)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py::TestDownloaderIntegration::test_download_timeout_handling -v --tb=short -m integration)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py::TestBackoffRetryIntegration::test_eventual_success_after_retries -v --tb=short -m integration)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py::TestBackoffRetryIntegration::test_eventual_success_after_retries -v --tb=short -m integration)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py -v --tb=short -m integration --maxfail=5)"
     ],
     "deny": [],
     "ask": [],
