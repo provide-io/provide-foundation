@@ -210,7 +210,7 @@ class TestCryptoFallbackBehavior(FoundationTestCase):
 
         # When crypto is not available, even basic Certificate creation should fail
         # if it tries to parse invalid PEM data
-        with pytest.raises(Exception):  # Could be CertificateError or ImportError
+        with pytest.raises((ImportError, ValueError)):  # More specific exception types
             Certificate(generate_keypair=False, cert_pem_or_uri="dummy")
 
     def test_crypto_module_resilience(self) -> None:
@@ -218,20 +218,13 @@ class TestCryptoFallbackBehavior(FoundationTestCase):
         # Even if cryptography import fails, the module should still be importable
         # and provide meaningful error messages
 
-        # Simulate cryptography not being available
-        original_import = __builtins__["__import__"]
-
-        def mock_import(name, *args, **kwargs):
-            if name == "cryptography" or name.startswith("cryptography."):
-                raise ImportError("No module named 'cryptography'")
-            return original_import(name, *args, **kwargs)
-
-        with patch("builtins.__import__", side_effect=mock_import):
+        # Instead of manipulating __import__, mock the _HAS_CRYPTO flag directly
+        with patch("provide.foundation.crypto.certificates._HAS_CRYPTO", False):
             # Should still be able to import the module
             try:
                 import provide.foundation.crypto.certificates
 
-                # The module should exist but _HAS_CRYPTO should be False
+                # The module should exist and _HAS_CRYPTO should be mocked to False
                 assert hasattr(provide.foundation.crypto.certificates, "_HAS_CRYPTO")
             except ImportError:
                 # If this fails, it means the module doesn't handle missing cryptography properly

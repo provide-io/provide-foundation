@@ -71,6 +71,10 @@ def __getattr__(name: str) -> object:
             import provide.foundation.crypto as crypto
 
             return crypto
+        case "docs":
+            import provide.foundation.docs as docs
+
+            return docs
         case "formatting":
             import provide.foundation.formatting as formatting
 
@@ -122,6 +126,8 @@ __all__ = [
     "config",
     # Crypto module (lazy loaded)
     "crypto",
+    # Docs module (lazy loaded)
+    "docs",
     "error_boundary",
     "errors",  # The errors module for detailed imports
     "fallback",

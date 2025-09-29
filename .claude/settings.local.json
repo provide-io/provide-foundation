@@ -660,7 +660,9 @@
       "Bash(PYTHONPATH=src timeout 60 .venv/bin/pytest tests/ -n auto --tb=no -q --maxfail=3)",
       "Bash(PYTHONPATH=src timeout 30 .venv/bin/pytest tests/file/ -n auto --tb=no -q)",
       "Bash(kill:*)",
-      "Bash(env PYTHONPATH=src .venv/bin/pytest tests/ --collect-only -q)"
+      "Bash(env PYTHONPATH=src .venv/bin/pytest tests/ --collect-only -q)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/crypto/test_optional_crypto_dependency.py)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/crypto/test_optional_crypto_dependency.py::TestCryptoFallbackBehavior::test_crypto_module_resilience -v)"
     ],
     "deny": [],
     "ask": [],
