@@ -594,7 +594,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format /Users/tim/code/gh/provide-io/provide-foundation/tests/tools/test_tools_integration.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py::TestDownloaderIntegration::test_download_small_file_success -v)",
       "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py -k test_download_small_file_success -v)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py::TestDownloaderIntegration::test_download_small_file_success -v --no-markers)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py::TestDownloaderIntegration::test_download_small_file_success -v --no-markers)",
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/tools/test_tools_integration.py -m integration -v --tb=short -k test_download_small_file_success)"
     ],
     "deny": [],
     "ask": [],
