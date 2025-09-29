@@ -588,7 +588,8 @@
       "Bash(PYTHONPATH=src .venv/bin/ruff format tests/time/test_time_core.py)",
       "Bash(PYTHONPATH=src .venv/bin/mypy tests/time/test_time_core.py)",
       "Bash(PYTHONPATH=src .venv/bin/pytest -m \"time_sensitive\" -v --tb=short -n 0)",
-      "Bash(PYTHONPATH=src .venv/bin/pytest tests/time/ tests/file/test_file_quality.py tests/tools/test_installer.py::TestToolInstaller::test_extract_zip_success -v --tb=short)"
+      "Bash(PYTHONPATH=src .venv/bin/pytest tests/time/ tests/file/test_file_quality.py tests/tools/test_installer.py::TestToolInstaller::test_extract_zip_success -v --tb=short)",
+      "Bash(PYTHONPATH=src .venv/bin/ruff format tests/time/test_time_core.py tests/process/test_runner_coverage.py tests/profiling/test_hooks.py)"
     ],
     "deny": [],
     "ask": [],

@@ -181,6 +181,7 @@ class TestTimeUtilitiesIntegration(FoundationTestCase):
         assert dt_diff > 0
         assert abs(time_diff - dt_diff) < 0.05  # Small tolerance
 
+    @pytest.mark.time_sensitive
     def test_time_utilities_with_timezone(self) -> None:
         """Test time utilities with timezone awareness."""
         utc_now = provide_now("UTC")
