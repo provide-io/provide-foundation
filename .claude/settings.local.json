@@ -684,7 +684,9 @@
       "Bash(PYTHONPATH=src timeout 30 .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_timeout -v --tb=short -m \"time_sensitive\")",
       "Bash(PYTHONPATH=src timeout 30 .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_concurrent_access -v --tb=short -m \"time_sensitive\")",
       "Bash(PYTHONPATH=src timeout 120 .venv/bin/pytest tests/crypto/test_optional_crypto_dependency.py::TestCryptoFallbackBehavior::test_crypto_module_resilience tests/file/test_lock.py::TestFileLock::test_file_lock_timeout -n auto --cov=src/provide/foundation --cov-report=term -m \"not time_sensitive\" --tb=short -q)",
-      "Bash(PYTHONPATH=src timeout 60 .venv/bin/pytest tests/crypto/test_optional_crypto_dependency.py tests/file/test_lock.py -n auto --cov=src/provide/foundation --cov-report=term --tb=no -q --maxfail=3)"
+      "Bash(PYTHONPATH=src timeout 60 .venv/bin/pytest tests/crypto/test_optional_crypto_dependency.py tests/file/test_lock.py -n auto --cov=src/provide/foundation --cov-report=term --tb=no -q --maxfail=3)",
+      "Bash(PYTHONPATH=src timeout 30 .venv/bin/pytest tests/crypto/test_optional_crypto_dependency.py::TestCryptoFallbackBehavior::test_crypto_module_resilience tests/file/test_lock.py::TestFileLock::test_file_lock_timeout -v --tb=short -m \"time_sensitive\" -x)",
+      "Bash(PYTHONPATH=src timeout 30 .venv/bin/pytest tests/file/ tests/crypto/ tests/config/ -v --tb=short -x --maxfail=1)"
     ],
     "deny": [],
     "ask": [],
