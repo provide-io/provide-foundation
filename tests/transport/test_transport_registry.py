@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-import pytest
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
+import pytest
 
 from provide.foundation.hub.components import ComponentCategory
 from provide.foundation.transport.base import Transport
@@ -25,7 +25,7 @@ class MockTransport(Transport):
     def __init__(self, uri: str | None = None) -> None:
         self.uri = uri
 
-    async def send(self, data: bytes, **kwargs) -> bytes:
+    async def send(self, data: bytes, **kwargs: any) -> bytes:
         """Mock send implementation."""
         return b"mock_response"
 
@@ -486,7 +486,7 @@ class TestIntegration(FoundationTestCase):
         mock_registry = Mock()
         mock_registry.__iter__ = lambda self: iter(mock_registry_data)
 
-        def mock_register(name, value, dimension, metadata, replace) -> None:
+        def mock_register(name: str, value: any, dimension: str, metadata: dict[str, any], replace: bool) -> None:
             entry = Mock()
             entry.name = name
             entry.value = value
@@ -541,7 +541,7 @@ class TestIntegration(FoundationTestCase):
         mock_registry = Mock()
         mock_registry.__iter__ = lambda self: iter(mock_registry_data)
 
-        def mock_register(name, value, dimension, metadata, replace) -> None:
+        def mock_register(name: str, value: any, dimension: str, metadata: dict[str, any], replace: bool) -> None:
             entry = Mock()
             entry.name = name
             entry.value = value

@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-import pytest
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
+import pytest
 
 from provide.foundation.transport.base import Request, Response
 from provide.foundation.transport.errors import TransportError
