@@ -118,7 +118,7 @@ class FoundationManager:
         self._logger_instance = None
 
         # Clear Foundation config from registry to prevent stale state
-        if hasattr(self, '_registry') and self._registry:
+        if hasattr(self, "_registry") and self._registry:
             # Remove foundation config entries that might have stale state
             try:
                 self._registry.remove("foundation.config", "singleton")
