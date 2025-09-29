@@ -305,7 +305,7 @@ class TestFoundationBootstrapIntegration(FoundationTestCase):
         """Each test must have isolated registry state."""
         from provide.foundation.hub.components import (
             get_component_registry,
-            reset_registry_for_tests,
+            
         )
 
         registry = get_component_registry()
@@ -315,7 +315,7 @@ class TestFoundationBootstrapIntegration(FoundationTestCase):
         registry.register(name="test_isolation", value=test_component, dimension="test")
 
         # Reset registry
-        reset_registry_for_tests()
+        from provide.foundation.testmode.internal import reset_hub_state; reset_hub_state()
 
         # Component should be gone
         retrieved = registry.get("test_isolation", "test")

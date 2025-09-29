@@ -13,7 +13,7 @@ from provide.foundation.hub.components import (
     get_or_initialize_component,
     initialize_all_async_components,
     initialize_async_component,
-    reset_registry_for_tests,
+    
 )
 
 
@@ -23,11 +23,11 @@ class TestComponentHealth(FoundationTestCase):
     def setup_method(self) -> None:
         """Set up test environment."""
         super().setup_method()
-        reset_registry_for_tests()
+        from provide.foundation.testmode.internal import reset_hub_state; reset_hub_state()
 
     def teardown_method(self) -> None:
         """Clean up after tests."""
-        reset_registry_for_tests()
+        from provide.foundation.testmode.internal import reset_hub_state; reset_hub_state()
 
     def test_check_component_health_not_found(self) -> None:
         """Test check_component_health with non-existent component."""
@@ -109,11 +109,11 @@ class TestComponentConfigSchema(FoundationTestCase):
     def setup_method(self) -> None:
         """Set up test environment."""
         super().setup_method()
-        reset_registry_for_tests()
+        from provide.foundation.testmode.internal import reset_hub_state; reset_hub_state()
 
     def teardown_method(self) -> None:
         """Clean up after tests."""
-        reset_registry_for_tests()
+        from provide.foundation.testmode.internal import reset_hub_state; reset_hub_state()
 
     def test_get_component_config_schema(self) -> None:
         """Test get_component_config_schema returns schema from metadata."""
@@ -160,11 +160,11 @@ class TestComponentInitialization(FoundationTestCase):
     def setup_method(self) -> None:
         """Set up test environment."""
         super().setup_method()
-        reset_registry_for_tests()
+        from provide.foundation.testmode.internal import reset_hub_state; reset_hub_state()
 
     def teardown_method(self) -> None:
         """Clean up after tests."""
-        reset_registry_for_tests()
+        from provide.foundation.testmode.internal import reset_hub_state; reset_hub_state()
 
     def test_get_or_initialize_component_already_initialized(self) -> None:
         """Test get_or_initialize_component returns cached component."""
