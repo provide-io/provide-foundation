@@ -43,13 +43,14 @@ class TestToolDownloader(FoundationTestCase):
         mock_response.headers = {"content-length": "1000"}
         mock_client.request.return_value = mock_response
 
-        # Mock streaming response
+        # Mock streaming response as async generator
         async def mock_stream():
             chunks = [b"chunk1", b"chunk2", b"chunk3"]
             for chunk in chunks:
                 yield chunk
 
-        mock_client.stream.return_value = mock_stream()
+        # Make stream method return the async generator directly
+        mock_client.stream = AsyncMock(return_value=mock_stream())
 
         # Add progress callback
         progress_calls = []
