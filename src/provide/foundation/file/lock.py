@@ -59,14 +59,22 @@ class FileLock:
             LockError: If timeout exceeded (blocking mode)
 
         """
+        if self.timeout <= 0:
+            raise LockError("Timeout must be positive", code="INVALID_TIMEOUT", path=str(self.path))
+
         start_time = time.time()
+        attempts = 0
+        max_attempts = max(1, int(self.timeout / self.check_interval)) + 10  # Safety margin
 
         while True:
-            # Check timeout FIRST to prevent infinite loops
-            elapsed = time.time() - start_time
-            if elapsed >= self.timeout:
+            attempts += 1
+            current_time = time.time()
+            elapsed = current_time - start_time
+
+            # Multiple timeout checks to prevent any chance of infinite loop
+            if elapsed >= self.timeout or attempts > max_attempts:
                 raise LockError(
-                    f"Failed to acquire lock within {self.timeout}s",
+                    f"Failed to acquire lock within {self.timeout}s (elapsed: {elapsed:.3f}s, attempts: {attempts})",
                     code="LOCK_TIMEOUT",
                     path=str(self.path),
                 ) from None
@@ -81,7 +89,9 @@ class FileLock:
                     os.close(fd)
 
                 self.locked = True
-                log.debug("Acquired lock", path=str(self.path), pid=self.pid)
+                log.debug(
+                    "Acquired lock", path=str(self.path), pid=self.pid, attempts=attempts, elapsed=elapsed
+                )
                 return True
 
             except FileExistsError:
@@ -93,16 +103,27 @@ class FileLock:
                     log.debug("Lock unavailable (non-blocking)", path=str(self.path))
                     return False
 
-                # Calculate remaining time and ensure we don't sleep past timeout
+                # Calculate remaining time with extra safety checks
                 remaining = self.timeout - elapsed
-                if remaining <= 0:
-                    # Time's up, will be caught by timeout check on next iteration
+                if remaining <= 0.001:  # Give 1ms grace period
+                    # Time is essentially up
                     continue
 
-                sleep_time = min(self.check_interval, remaining)
-                if sleep_time > 0:
+                # Sleep for a safe amount, never more than remaining time
+                sleep_time = min(self.check_interval, remaining * 0.9)  # Use 90% of remaining
+                if sleep_time > 0.001:  # Only sleep if meaningful time left
                     time.sleep(sleep_time)
-                # Loop will check timeout on next iteration
+
+                # Emergency timeout check after sleep
+                if time.time() - start_time >= self.timeout:
+                    break
+
+        # Final timeout raise if we exit the loop
+        raise LockError(
+            f"Failed to acquire lock within {self.timeout}s",
+            code="LOCK_TIMEOUT",
+            path=str(self.path),
+        ) from None
 
     def release(self) -> None:
         """Release the lock.
