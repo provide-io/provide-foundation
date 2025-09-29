@@ -701,7 +701,8 @@
       "Bash(PYTHONPATH=src timeout 120 .venv/bin/pytest tests/crypto/test_optional_crypto_dependency.py::TestCryptoFallbackBehavior::test_crypto_module_resilience tests/file/test_lock.py tests/config/test_config_base.py -v --tb=short --maxfail=1 -x)",
       "Bash(PYTHONPATH=src timeout 30 .venv/bin/pytest tests/hub/test_component_registry_handlers.py::TestThreadSafeComponentAccess::test_async_component_initialization -v --tb=short)",
       "Bash(PYTHONPATH=src timeout 30 .venv/bin/pytest tests/docs/test_docs_init_coverage.py::TestDocsModuleStructure::test_module_imports_successfully -v --tb=short)",
-      "Bash(PYTHONPATH=src .venv/bin/mypy /Users/tim/code/gh/provide-io/provide-testkit/src/provide/testkit/base/foundation.py --ignore-missing-imports)"
+      "Bash(PYTHONPATH=src .venv/bin/mypy /Users/tim/code/gh/provide-io/provide-testkit/src/provide/testkit/base/foundation.py --ignore-missing-imports)",
+      "Bash(PYTHONPATH=src timeout 60 .venv/bin/pytest tests/file/test_lock.py::TestFileLock::test_file_lock_timeout tests/hub/test_component_registry_handlers.py::TestThreadSafeComponentAccess::test_async_component_initialization -v --tb=short)"
     ],
     "deny": [],
     "ask": [],
