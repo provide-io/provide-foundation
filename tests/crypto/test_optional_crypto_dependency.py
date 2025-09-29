@@ -210,7 +210,9 @@ class TestCryptoFallbackBehavior(FoundationTestCase):
 
         # When crypto is not available, even basic Certificate creation should fail
         # if it tries to parse invalid PEM data
-        with pytest.raises((ImportError, ValueError)):  # More specific exception types
+        from provide.foundation.crypto.certificates import CertificateError
+
+        with pytest.raises(CertificateError):  # Certificate wraps underlying errors
             Certificate(generate_keypair=False, cert_pem_or_uri="dummy")
 
     def test_crypto_module_resilience(self) -> None:
