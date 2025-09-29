@@ -168,9 +168,8 @@ def bootstrap_foundation() -> None:
 def reset_registry_for_tests() -> None:
     """Reset registry state for testing."""
     global _initialized_components
-    with get_lock_manager().acquire("foundation.registry"):
-        _component_registry.clear()
-        _initialized_components.clear()
+    _component_registry.clear()
+    _initialized_components.clear()
 
 
 # Bootstrap will happen lazily on first hub access to avoid circular imports
