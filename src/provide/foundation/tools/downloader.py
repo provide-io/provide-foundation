@@ -73,7 +73,7 @@ class ToolDownloader:
                 log.warning(f"Progress callback failed: {e}")
 
     @retry(max_attempts=3, base_delay=1.0)
-    def download_with_progress(self, url: str, dest: Path, checksum: str | None = None) -> Path:
+    async def download_with_progress(self, url: str, dest: Path, checksum: str | None = None) -> Path:
         """Download a file with progress reporting.
 
         Args:
@@ -94,17 +94,25 @@ class ToolDownloader:
         dest.parent.mkdir(parents=True, exist_ok=True)
 
         # Stream download with progress
-        with self.client.stream("GET", url) as response:
-            # Get total size if available
+        total_size = 0
+        downloaded = 0
+
+        try:
+            # Use the client to make a request first to get headers
+            response = await self.client.request(url, "GET")
             total_size = int(response.headers.get("content-length", 0))
-            downloaded = 0
 
             # Write to file and report progress
             with dest.open("wb") as f:
-                for chunk in response.iter_bytes(8192):
+                async for chunk in self.client.stream(url, "GET"):
                     f.write(chunk)
                     downloaded += len(chunk)
                     self._report_progress(downloaded, total_size)
+
+        except Exception as e:
+            if dest.exists():
+                dest.unlink()
+            raise DownloadError(f"Failed to download {url}: {e}") from e
 
         # Verify checksum if provided
         if checksum and not self.verify_checksum(dest, checksum):
@@ -135,7 +143,7 @@ class ToolDownloader:
         actual = hasher.hexdigest()
         return actual == expected
 
-    def download_parallel(self, urls: list[tuple[str, Path]]) -> list[Path]:
+    async def download_parallel(self, urls: list[tuple[str, Path]]) -> list[Path]:
         """Download multiple files in parallel.
 
         Args:
@@ -148,22 +156,24 @@ class ToolDownloader:
             DownloadError: If any download fails.
 
         """
+        import asyncio
+
         errors = []
 
-        with ThreadPoolExecutor(max_workers=4) as executor:
-            # Submit all downloads, maintaining order with index
-            futures = [executor.submit(self.download_with_progress, url, dest) for url, dest in urls]
+        # Create tasks for all downloads
+        tasks = [self.download_with_progress(url, dest) for url, dest in urls]
 
-            # Collect results in order
-            results = []
-            for i, future in enumerate(futures):
-                url, _dest = urls[i]
-                try:
-                    result = future.result()
-                    results.append(result)
-                except Exception as e:
-                    errors.append((url, e))
-                    log.error(f"Failed to download {url}: {e}")
+        # Execute downloads concurrently
+        results = []
+        task_results = await asyncio.gather(*tasks, return_exceptions=True)
+
+        for i, result in enumerate(task_results):
+            url, _dest = urls[i]
+            if isinstance(result, Exception):
+                errors.append((url, result))
+                log.error(f"Failed to download {url}: {result}")
+            else:
+                results.append(result)
 
         if errors:
             raise DownloadError(f"Some downloads failed: {errors}")
