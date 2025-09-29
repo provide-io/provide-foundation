@@ -63,7 +63,8 @@ class FileLock:
 
         while True:
             # Check timeout FIRST to prevent infinite loops
-            if time.time() - start_time > self.timeout:
+            elapsed = time.time() - start_time
+            if elapsed > self.timeout:
                 raise LockError(
                     f"Failed to acquire lock within {self.timeout}s",
                     code="LOCK_TIMEOUT",
@@ -92,8 +93,12 @@ class FileLock:
                     log.debug("Lock unavailable (non-blocking)", path=str(self.path))
                     return False
 
-                # Wait before retry
-                time.sleep(self.check_interval)
+                # Calculate remaining time and sleep only for that duration
+                remaining = self.timeout - elapsed
+                if remaining > 0:
+                    sleep_time = min(self.check_interval, remaining)
+                    time.sleep(sleep_time)
+                # Loop will check timeout on next iteration
 
     def release(self) -> None:
         """Release the lock.

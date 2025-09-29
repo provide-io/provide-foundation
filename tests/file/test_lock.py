@@ -74,6 +74,7 @@ class TestFileLock(MinimalTestCase):
         assert lock2.acquire(blocking=False)
         lock2.release()
 
+    @pytest.mark.time_sensitive
     def test_file_lock_timeout(self, temp_directory: Path) -> None:
         """Test lock acquisition timeout."""
         lock_path = temp_directory / "test.lock"
@@ -130,6 +131,7 @@ class TestFileLock(MinimalTestCase):
 
         lock.release()
 
+    @pytest.mark.time_sensitive
     def test_file_lock_concurrent_access(self, temp_directory: Path) -> None:
         """Test concurrent lock access from threads."""
         lock_path = temp_directory / "test.lock"
