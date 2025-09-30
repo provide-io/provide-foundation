@@ -482,7 +482,7 @@ class TestSpanEdgeCases(FoundationTestCase):
 
     def test_span_set_error_without_status_classes(self) -> None:
         """Test setting error when Status/StatusCode are None."""
-        from unittest.mock import MagicMock
+        from provide.testkit.mocking import MagicMock
 
         with (
             patch("provide.foundation.tracer.spans._HAS_OTEL", True),

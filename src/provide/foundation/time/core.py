@@ -4,6 +4,8 @@ from datetime import datetime
 import time
 from zoneinfo import ZoneInfo
 
+from provide.foundation.errors import ValidationError
+
 """Core time utilities for Foundation."""
 
 
@@ -28,12 +30,15 @@ def provide_sleep(seconds: float) -> None:
     Args:
         seconds: Number of seconds to sleep
 
+    Raises:
+        ValidationError: If seconds is negative
+
     Example:
         >>> provide_sleep(0.1)  # Sleep for 100ms
 
     """
     if seconds < 0:
-        raise ValueError("Sleep duration must be non-negative")
+        raise ValidationError("Sleep duration must be non-negative")
     time.sleep(seconds)
 
 

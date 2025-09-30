@@ -57,7 +57,7 @@ class TestQualityAnalyzer(FoundationTestCase):
         """Test running analysis without test cases raises error."""
         analyzer = QualityAnalyzer()
 
-        with pytest.raises(ValueError, match="No test cases available"):
+        with pytest.raises(ValueError, match="No scenarios available"):
             analyzer.run_analysis()
 
     def test_run_analysis_with_vscode_scenario(self) -> None:
@@ -212,7 +212,7 @@ class TestQualityAnalyzer(FoundationTestCase):
         assert "File Operation Detection Quality Report" in report
         assert "Accuracy" in report
         assert "Detection Time" in report
-        assert "Test Cases: 1" in report
+        assert "Scenarios: 1" in report
 
     def test_generate_report_without_results(self) -> None:
         """Test report generation without results."""

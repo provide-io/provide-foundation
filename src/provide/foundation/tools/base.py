@@ -202,7 +202,7 @@ class BaseToolManager(ABC):
         log.debug(f"Resolved {self.tool_name} version {spec} to {resolved}")
         return resolved
 
-    def install(self, version: str = "latest", force: bool = False) -> Path:
+    async def install(self, version: str = "latest", force: bool = False) -> Path:
         """Install a specific version of the tool.
 
         Args:
@@ -236,7 +236,7 @@ class BaseToolManager(ABC):
         from provide.foundation.file.temp import system_temp_dir
 
         download_path = system_temp_dir() / f"{self.tool_name}-{version}"
-        artifact_path = self.downloader.download_with_progress(
+        artifact_path = await self.downloader.download_with_progress(
             metadata.download_url,
             download_path,
             metadata.checksum,

@@ -1,10 +1,10 @@
 """Comprehensive tests for utils/deps.py module."""
 
 import sys
-from unittest.mock import Mock, patch
 
 import pytest
 from provide.testkit import FoundationTestCase
+from provide.testkit.mocking import Mock, patch
 
 from provide.foundation.utils.deps import (
     DependencyStatus,

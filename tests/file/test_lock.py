@@ -9,13 +9,13 @@ import threading
 import time
 from typing import Never
 
-from provide.testkit import FoundationTestCase
+from provide.testkit import MinimalTestCase
 import pytest
 
 from provide.foundation.file.lock import FileLock, LockError
 
 
-class TestFileLock(FoundationTestCase):
+class TestFileLock(MinimalTestCase):
     """Test file locking functionality."""
 
     def setup_method(self) -> None:
