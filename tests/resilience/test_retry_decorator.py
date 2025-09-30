@@ -2,7 +2,7 @@
 
 import asyncio
 from typing import Any, Never
-from unittest.mock import ANY, AsyncMock, MagicMock, patch
+from provide.testkit.mocking import ANY, AsyncMock, MagicMock, patch
 
 from provide.testkit import FoundationTestCase
 import pytest

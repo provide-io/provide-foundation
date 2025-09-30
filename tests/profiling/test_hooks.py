@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import time
-import pytest
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
+import pytest
+
 from provide.foundation.context import CLIContext
 from provide.foundation.hub.manager import clear_hub, get_hub
 from provide.foundation.profiling.component import ProfilingComponent
@@ -69,6 +70,7 @@ class TestProfileMetrics(FoundationTestCase):
         assert metrics.avg_latency_ms == pytest.approx(1.5, rel=0.1)  # (1+2)/2 million ns = 1.5ms
         assert metrics.emoji_overhead_percent == 50.0  # 1 of 2 messages
 
+    @pytest.mark.time_sensitive
     def test_metrics_reset(self) -> None:
         """Test metrics reset functionality."""
         metrics = ProfileMetrics()

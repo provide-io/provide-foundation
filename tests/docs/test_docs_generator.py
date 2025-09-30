@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 import tempfile
-from unittest.mock import Mock, mock_open, patch
+from provide.testkit.mocking import Mock, mock_open, patch
 
 from provide.testkit import FoundationTestCase
 import pytest

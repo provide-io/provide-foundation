@@ -216,6 +216,7 @@ class TestStreamCommandCoverage(FoundationTestCase):
         output = "".join(lines)
         assert "stdout" in output or "stderr" in output
 
+    @pytest.mark.time_sensitive
     def test_stream_command_timeout(self) -> None:
         """Test stream command timeout handling."""
         with pytest.raises(ProcessTimeoutError):

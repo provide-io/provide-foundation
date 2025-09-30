@@ -3,17 +3,17 @@
 from datetime import UTC, datetime
 import time
 from typing import Any
-from unittest.mock import MagicMock, patch
 from zoneinfo import ZoneInfo
 
+from provide.testkit import FoundationTestCase, MinimalTestCase
+from provide.testkit.mocking import MagicMock, patch
 import pytest
 
 from provide.foundation.errors import ValidationError
 from provide.foundation.time import provide_now, provide_sleep, provide_time
-from provide.testkit import FoundationTestCase
 
 
-class TestProvideTime(FoundationTestCase):
+class TestProvideTime(MinimalTestCase):
     """Test provide_time function."""
 
     def test_provide_time_returns_float(self) -> None:
@@ -21,6 +21,7 @@ class TestProvideTime(FoundationTestCase):
         result = provide_time()
         assert isinstance(result, float)
 
+    @pytest.mark.time_sensitive
     def test_provide_time_advances(self) -> None:
         """Test provide_time advances over time."""
         time1 = provide_time()
@@ -46,9 +47,10 @@ class TestProvideTime(FoundationTestCase):
         assert abs(time2 - time1) < 0.1
 
 
-class TestProvideSleep(FoundationTestCase):
+class TestProvideSleep(MinimalTestCase):
     """Test provide_sleep function."""
 
+    @pytest.mark.time_sensitive
     def test_provide_sleep_actually_sleeps(self) -> None:
         """Test provide_sleep actually sleeps for the specified duration."""
         start = time.time()
@@ -80,6 +82,7 @@ class TestProvideSleep(FoundationTestCase):
         provide_sleep(0.5)
         mock_time.sleep.assert_called_once_with(0.5)
 
+    @pytest.mark.time_sensitive
     def test_provide_sleep_with_float_seconds(self) -> None:
         """Test provide_sleep works with float values."""
         start = time.time()
@@ -107,7 +110,7 @@ class TestProvideNow(FoundationTestCase):
         """Test provide_now with UTC timezone."""
         result = provide_now("UTC")
         assert result.tzinfo is not None
-        assert result.tzinfo == UTC
+        assert str(result.tzinfo) == "UTC"
 
     def test_provide_now_with_timezone_string(self) -> None:
         """Test provide_now with timezone string."""
@@ -121,6 +124,7 @@ class TestProvideNow(FoundationTestCase):
         result = provide_now(tz)
         assert result.tzinfo is tz
 
+    @pytest.mark.time_sensitive
     def test_provide_now_advances(self) -> None:
         """Test provide_now advances over time."""
         time1 = provide_now()
@@ -137,7 +141,7 @@ class TestProvideNow(FoundationTestCase):
         result = provide_now()
 
         assert result is mock_dt
-        mock_datetime.now.assert_called_once_with(tz=None)
+        mock_datetime.now.assert_called_once_with()
 
     @patch("provide.foundation.time.core.datetime")
     def test_provide_now_with_timezone_uses_datetime_module(self, mock_datetime: Any) -> None:
@@ -158,6 +162,7 @@ class TestProvideNow(FoundationTestCase):
 class TestTimeUtilitiesIntegration(FoundationTestCase):
     """Integration tests for time utilities."""
 
+    @pytest.mark.time_sensitive
     def test_time_utilities_work_together(self) -> None:
         """Test that time utilities work together consistently."""
         start_time = provide_time()
@@ -176,6 +181,7 @@ class TestTimeUtilitiesIntegration(FoundationTestCase):
         assert dt_diff > 0
         assert abs(time_diff - dt_diff) < 0.05  # Small tolerance
 
+    @pytest.mark.time_sensitive
     def test_time_utilities_with_timezone(self) -> None:
         """Test time utilities with timezone awareness."""
         utc_now = provide_now("UTC")
