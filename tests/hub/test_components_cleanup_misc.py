@@ -13,7 +13,6 @@ from provide.foundation.hub.components import (
     discover_components,
     get_component_registry,
     load_config_from_registry,
-    reset_registry_for_tests,
 )
 
 
@@ -23,11 +22,13 @@ class TestAdvancedCleanup(FoundationTestCase):
     def setup_method(self) -> None:
         """Set up test environment."""
         super().setup_method()
-        reset_registry_for_tests()
+        from provide.foundation.testmode.internal import reset_hub_state
+        reset_hub_state()
 
     def teardown_method(self) -> None:
         """Clean up after tests."""
-        reset_registry_for_tests()
+        from provide.foundation.testmode.internal import reset_hub_state
+        reset_hub_state()
 
     def test_cleanup_all_components_with_async_cleanup(self) -> None:
         """Test cleanup_all_components handles async cleanup methods."""
@@ -91,11 +92,13 @@ class TestConfigFromRegistry(FoundationTestCase):
     def setup_method(self) -> None:
         """Set up test environment."""
         super().setup_method()
-        reset_registry_for_tests()
+        from provide.foundation.testmode.internal import reset_hub_state
+        reset_hub_state()
 
     def teardown_method(self) -> None:
         """Clean up after tests."""
-        reset_registry_for_tests()
+        from provide.foundation.testmode.internal import reset_hub_state
+        reset_hub_state()
 
     def test_load_config_from_registry_sync_sources(self) -> None:
         """Test load_config_from_registry with sync sources."""
@@ -155,19 +158,21 @@ class TestMiscellaneousFunctionality(FoundationTestCase):
     def setup_method(self) -> None:
         """Set up test environment."""
         super().setup_method()
-        reset_registry_for_tests()
+        from provide.foundation.testmode.internal import reset_hub_state
+        reset_hub_state()
 
     def teardown_method(self) -> None:
         """Clean up after tests."""
-        reset_registry_for_tests()
+        from provide.foundation.testmode.internal import reset_hub_state
+        reset_hub_state()
 
     def test_discover_components_stub(self) -> None:
         """Test discover_components stub functionality."""
         result = discover_components("test_group", "test_dimension", None)
         assert result == {}
 
-    def test_reset_registry_for_tests(self) -> None:
-        """Test reset_registry_for_tests clears state."""
+    def test_reset_hub_state_clears_registry(self) -> None:
+        """Test reset_hub_state clears registry state."""
         registry = get_component_registry()
 
         # Add some test data
@@ -179,7 +184,8 @@ class TestMiscellaneousFunctionality(FoundationTestCase):
         _initialized_components[("test", "test_dimension")] = test_component
 
         # Reset should clear everything
-        reset_registry_for_tests()
+        from provide.foundation.testmode.internal import reset_hub_state
+        reset_hub_state()
 
         assert len(list(registry)) == 0
         assert len(_initialized_components) == 0

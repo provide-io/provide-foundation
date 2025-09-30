@@ -12,7 +12,7 @@ from provide.foundation.hub.components import (
     get_processor_pipeline,
     get_processors_for_stage,
     load_all_configs,
-    reset_registry_for_tests,
+    
 )
 
 
@@ -22,11 +22,11 @@ class TestAsyncConfigLoading(FoundationTestCase):
     def setup_method(self) -> None:
         """Set up test environment."""
         super().setup_method()
-        reset_registry_for_tests()
+        from provide.foundation.testmode.internal import reset_hub_state; reset_hub_state()
 
     def teardown_method(self) -> None:
         """Clean up after tests."""
-        reset_registry_for_tests()
+        from provide.foundation.testmode.internal import reset_hub_state; reset_hub_state()
 
     @pytest.mark.asyncio
     async def test_load_all_configs_async_sources(self) -> None:
@@ -98,11 +98,11 @@ class TestProcessorPipeline(FoundationTestCase):
     def setup_method(self) -> None:
         """Set up test environment."""
         super().setup_method()
-        reset_registry_for_tests()
+        from provide.foundation.testmode.internal import reset_hub_state; reset_hub_state()
 
     def teardown_method(self) -> None:
         """Clean up after tests."""
-        reset_registry_for_tests()
+        from provide.foundation.testmode.internal import reset_hub_state; reset_hub_state()
 
     def test_get_processor_pipeline(self) -> None:
         """Test get_processor_pipeline returns processors ordered by priority."""

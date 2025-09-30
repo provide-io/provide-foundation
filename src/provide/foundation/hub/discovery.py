@@ -20,31 +20,28 @@ def _get_registry_and_lock() -> Any:
 
 def resolve_component_dependencies(name: str, dimension: str) -> dict[str, Any]:
     """Resolve component dependencies recursively."""
-    from provide.foundation.concurrency.locks import get_lock_manager
-
     registry = _get_registry_and_lock()
 
-    with get_lock_manager().acquire("foundation.registry"):
-        entry = registry.get_entry(name, dimension)
+    entry = registry.get_entry(name, dimension)
 
-        if not entry:
-            return {}
+    if not entry:
+        return {}
 
-        dependencies = {}
-        dep_names = entry.metadata.get("dependencies", [])
+    dependencies = {}
+    dep_names = entry.metadata.get("dependencies", [])
 
-        for dep_name in dep_names:
-            # Try same dimension first
-            dep_component = registry.get(dep_name, dimension)
+    for dep_name in dep_names:
+        # Try same dimension first
+        dep_component = registry.get(dep_name, dimension)
+        if dep_component is not None:
+            dependencies[dep_name] = dep_component
+        else:
+            # Search across dimensions
+            dep_component = registry.get(dep_name)
             if dep_component is not None:
                 dependencies[dep_name] = dep_component
-            else:
-                # Search across dimensions
-                dep_component = registry.get(dep_name)
-                if dep_component is not None:
-                    dependencies[dep_name] = dep_component
 
-        return dependencies
+    return dependencies
 
 
 def discover_components(
@@ -78,12 +75,8 @@ def discover_components(
     # Discover all entry points in the specified group
     try:
         entry_points = metadata.entry_points()
-        if hasattr(entry_points, "select"):
-            # Python 3.10+ API
-            group_entries = entry_points.select(group=group)
-        else:
-            # Python 3.8-3.9 API
-            group_entries = entry_points.get(group, [])
+        # Python 3.11+ API
+        group_entries = entry_points.select(group=group)
 
         for entry_point in group_entries:
             try:
