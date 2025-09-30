@@ -91,6 +91,7 @@ class TestRealWorldScenarios(FoundationTestCase):
         ):
             # Force re-initialization with new environment variables
             from provide.testkit import reset_foundation_setup_for_testing
+
             reset_foundation_setup_for_testing()
             set_log_stream_for_testing(sys.stderr)
 
@@ -264,7 +265,7 @@ class TestRealWorldScenarios(FoundationTestCase):
             )
 
             # Simulate async work
-            await asyncio.sleep(0.01)
+            await asyncio.sleep(0)
 
             # Simulate database query
             db_logger = global_logger.get_logger("server.database")
