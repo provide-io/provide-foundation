@@ -10,7 +10,7 @@ from provide.foundation.hub.components import (
     execute_error_handlers,
     get_component_registry,
     get_handlers_for_exception,
-    reset_registry_for_tests,
+    
     resolve_component_dependencies,
 )
 
@@ -21,11 +21,11 @@ class TestErrorHandlers(FoundationTestCase):
     def setup_method(self) -> None:
         """Set up test environment."""
         super().setup_method()
-        reset_registry_for_tests()
+        from provide.foundation.testmode.internal import reset_hub_state; reset_hub_state()
 
     def teardown_method(self) -> None:
         """Clean up after tests."""
-        reset_registry_for_tests()
+        from provide.foundation.testmode.internal import reset_hub_state; reset_hub_state()
 
     def test_get_handlers_for_exception(self) -> None:
         """Test get_handlers_for_exception finds matching handlers."""
@@ -138,11 +138,11 @@ class TestComponentDependencies(FoundationTestCase):
     def setup_method(self) -> None:
         """Set up test environment."""
         super().setup_method()
-        reset_registry_for_tests()
+        from provide.foundation.testmode.internal import reset_hub_state; reset_hub_state()
 
     def teardown_method(self) -> None:
         """Clean up after tests."""
-        reset_registry_for_tests()
+        from provide.foundation.testmode.internal import reset_hub_state; reset_hub_state()
 
     def test_resolve_component_dependencies_same_dimension(self) -> None:
         """Test resolve_component_dependencies finds deps in same dimension."""

@@ -169,14 +169,17 @@ def get_hub() -> Hub:
             # Auto-initialize Foundation on first hub access
             _global_hub.initialize_foundation()
 
-            # Bootstrap foundation components now that hub is ready
-            try:
-                from provide.foundation.hub.components import bootstrap_foundation
+            # Bootstrap foundation components now that hub is ready (skip in test mode)
+            from provide.foundation.testmode.detection import is_in_test_mode
 
-                bootstrap_foundation()
-            except ImportError:
-                # Bootstrap function might not exist yet, that's okay
-                pass
+            if not is_in_test_mode():
+                try:
+                    from provide.foundation.hub.components import bootstrap_foundation
+
+                    bootstrap_foundation()
+                except ImportError:
+                    # Bootstrap function might not exist yet, that's okay
+                    pass
 
     return _global_hub
 
@@ -184,7 +187,6 @@ def get_hub() -> Hub:
 def clear_hub() -> None:
     """Clear the global hub instance."""
     global _global_hub
-    with get_lock_manager().acquire("foundation.hub.init"):
-        if _global_hub:
-            _global_hub.clear()
-        _global_hub = None
+    if _global_hub:
+        _global_hub.clear()
+    _global_hub = None

@@ -23,18 +23,15 @@ def _get_registry_and_lock() -> Any:
 
 def get_processor_pipeline() -> list[RegistryEntry]:
     """Get log processors ordered by priority."""
-    from provide.foundation.concurrency.locks import get_lock_manager
-
     registry, ComponentCategory = _get_registry_and_lock()
 
-    with get_lock_manager().acquire("foundation.registry"):
-        # Get all processors
-        all_entries = list(registry)
-        processors = [entry for entry in all_entries if entry.dimension == ComponentCategory.PROCESSOR.value]
+    # Get all processors
+    all_entries = list(registry)
+    processors = [entry for entry in all_entries if entry.dimension == ComponentCategory.PROCESSOR.value]
 
-        # Sort by priority (highest first)
-        processors.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)
-        return processors
+    # Sort by priority (highest first)
+    processors.sort(key=lambda e: e.metadata.get("priority", 0), reverse=True)
+    return processors
 
 
 def get_processors_for_stage(stage: str) -> list[RegistryEntry]:
