@@ -375,6 +375,7 @@ class TestGlobalRateLimiter(FoundationTestCase):
         # Second request to test.logger should be denied by per-logger limit
         allowed, reason = limiter.is_allowed("test.logger")
         assert allowed is False
+        assert reason is not None
         assert "test.logger" in reason
 
         # Request to other logger should still be allowed (global limit not reached)
