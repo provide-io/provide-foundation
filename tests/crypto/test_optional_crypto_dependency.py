@@ -54,17 +54,23 @@ class TestOptionalCryptoDependency(FoundationTestCase):
     def test_certificate_base_creation_without_crypto(self) -> None:
         """Test CertificateBase.create fails gracefully without cryptography."""
         with patch("provide.foundation.crypto.certificates.base._HAS_CRYPTO", False):
+            from typing import cast
+
             from provide.foundation.crypto.certificates import (
                 CertificateBase,
             )
+            from provide.foundation.crypto.certificates.base import CertificateConfig
 
-            config = {
-                "common_name": "test.com",
-                "organization": "Test Org",
-                "key_type": "rsa",
-                "not_valid_before": "2024-01-01T00:00:00Z",
-                "not_valid_after": "2025-01-01T00:00:00Z",
-            }
+            config = cast(
+                CertificateConfig,
+                {
+                    "common_name": "test.com",
+                    "organization": "Test Org",
+                    "key_type": "rsa",
+                    "not_valid_before": "2024-01-01T00:00:00Z",
+                    "not_valid_after": "2025-01-01T00:00:00Z",
+                },
+            )
 
             with pytest.raises(
                 ImportError,
@@ -206,11 +212,9 @@ class TestCryptoFallbackBehavior(FoundationTestCase):
     def test_certificate_property_access_without_crypto(self) -> None:
         """Test certificate property access when crypto is not available."""
         # Test that certificate properties handle missing crypto gracefully
-        from provide.foundation.crypto.certificates import Certificate
-
         # When crypto is not available, even basic Certificate creation should fail
         # if it tries to parse invalid PEM data
-        from provide.foundation.crypto.certificates import CertificateError
+        from provide.foundation.crypto.certificates import Certificate, CertificateError
 
         with pytest.raises(CertificateError):  # Certificate wraps underlying errors
             Certificate(generate_keypair=False, cert_pem_or_uri="dummy")
@@ -219,20 +223,42 @@ class TestCryptoFallbackBehavior(FoundationTestCase):
         """Test that the crypto module is resilient to import issues."""
         # Even if cryptography import fails, the module should still be importable
         # and provide meaningful error messages
+        import sys
 
-        # Instead of manipulating __import__, mock the _HAS_CRYPTO flag directly
-        with patch("provide.foundation.crypto.certificates._HAS_CRYPTO", False):
-            # Should still be able to import the module
-            try:
+        # Remove the modules from sys.modules to force fresh import
+        modules_to_remove = [
+            "provide.foundation.crypto.certificates",
+            "provide.foundation.crypto.certificates.base",
+            "provide.foundation.crypto.certificates.certificate",
+            "provide.foundation.crypto.certificates.factory",
+            "provide.foundation.crypto.certificates.operations",
+        ]
+
+        original_modules = {}
+        for module_name in modules_to_remove:
+            if module_name in sys.modules:
+                original_modules[module_name] = sys.modules[module_name]
+                del sys.modules[module_name]
+
+        try:
+            # Now patch and import with fresh module state
+            with patch("provide.foundation.crypto.certificates.base._HAS_CRYPTO", False):
                 import provide.foundation.crypto.certificates
 
-                # The module should exist and _HAS_CRYPTO should be mocked to False
+                # The module should exist and be importable even with crypto disabled
                 assert hasattr(provide.foundation.crypto.certificates, "_HAS_CRYPTO")
-            except ImportError:
-                # If this fails, it means the module doesn't handle missing cryptography properly
-                pytest.fail(
-                    "Crypto module should be importable even without cryptography dependency",
-                )
+        except ImportError:
+            # If this fails, it means the module doesn't handle missing cryptography properly
+            pytest.fail(
+                "Crypto module should be importable even without cryptography dependency",
+            )
+        finally:
+            # Restore original modules to avoid affecting other tests
+            for module_name in modules_to_remove:
+                if module_name in sys.modules:
+                    del sys.modules[module_name]
+            for module_name, module in original_modules.items():
+                sys.modules[module_name] = module
 
 
 class TestCryptoInstallationMessage(FoundationTestCase):

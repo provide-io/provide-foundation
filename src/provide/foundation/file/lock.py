@@ -63,7 +63,8 @@ class FileLock:
 
         while True:
             # Check timeout FIRST to prevent infinite loops
-            if time.time() - start_time > self.timeout:
+            elapsed = time.time() - start_time
+            if elapsed >= self.timeout:
                 raise LockError(
                     f"Failed to acquire lock within {self.timeout}s",
                     code="LOCK_TIMEOUT",
@@ -92,8 +93,16 @@ class FileLock:
                     log.debug("Lock unavailable (non-blocking)", path=str(self.path))
                     return False
 
-                # Wait before retry
-                time.sleep(self.check_interval)
+                # Calculate remaining time and ensure we don't sleep past timeout
+                remaining = self.timeout - elapsed
+                if remaining <= 0:
+                    # Time's up, will be caught by timeout check on next iteration
+                    continue
+
+                sleep_time = min(self.check_interval, remaining)
+                if sleep_time > 0:
+                    time.sleep(sleep_time)
+                # Loop will check timeout on next iteration
 
     def release(self) -> None:
         """Release the lock.
@@ -142,6 +151,9 @@ class FileLock:
 
         """
         try:
+            if not self.path.exists():
+                return False
+
             content = self.path.read_text().strip()
             if content.isdigit():
                 lock_pid = int(content)
@@ -154,8 +166,16 @@ class FileLock:
                 except ProcessLookupError:
                     # Process doesn't exist, lock is stale
                     log.warning("Removing stale lock", path=str(self.path), stale_pid=lock_pid)
-                    self.path.unlink()
-                    return True
+                    try:
+                        self.path.unlink()
+                        return True
+                    except FileNotFoundError:
+                        # Someone else removed it, that's fine
+                        return True
+            else:
+                # Invalid lock file content, don't remove it as we can't be sure
+                log.debug("Invalid lock file content", path=str(self.path), content=content)
+                return False
         except Exception as e:
             log.debug("Error checking stale lock", path=str(self.path), error=str(e))
             return False
