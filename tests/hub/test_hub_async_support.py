@@ -42,10 +42,11 @@ class TestAsyncRegistryCompatibility(FoundationTestCase):
 
         # Test retrieval in async context
         async def get_items() -> list[str]:
-            results = []
+            results: list[str] = []
             for i in range(10):
                 value = registry.get(f"item_{i}", dimension="async_test")
-                results.append(value)
+                if value is not None:
+                    results.append(value)
                 await asyncio.sleep(0)
             return results
 
@@ -369,7 +370,7 @@ class TestAsyncMixedOperations(FoundationTestCase):
             # More sync operations
             registry.remove("sync_item", dimension="mixed")
 
-            return value
+            return value or ""
 
         result = await mixed_operations()
         assert result == "sync_value"
