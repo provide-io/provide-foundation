@@ -66,12 +66,23 @@ class TestToolInstaller(MinimalTestCase):
         zip_path = temp_dir / "test.zip"
 
         with zipfile.ZipFile(zip_path, "w") as zf:
-            # Add a binary file
-            zf.writestr("bin/testtool", b"#!/bin/bash\necho 'Hello from testtool'\n")
-            # Add a text file
-            zf.writestr("README.txt", "This is a test tool")
-            # Add nested file
-            zf.writestr("docs/help.txt", "Help documentation")
+            # Use a valid timestamp after 1980
+            import time
+
+            time.mktime((1980, 1, 1, 0, 0, 0, 0, 0, 0))
+
+            # Create ZipInfo objects with valid timestamps
+            bin_info = zipfile.ZipInfo("bin/testtool")
+            bin_info.date_time = (1980, 1, 1, 0, 0, 0)
+            zf.writestr(bin_info, b"#!/bin/bash\necho 'Hello from testtool'\n")
+
+            readme_info = zipfile.ZipInfo("README.txt")
+            readme_info.date_time = (1980, 1, 1, 0, 0, 0)
+            zf.writestr(readme_info, "This is a test tool")
+
+            docs_info = zipfile.ZipInfo("docs/help.txt")
+            docs_info.date_time = (1980, 1, 1, 0, 0, 0)
+            zf.writestr(docs_info, "Help documentation")
 
         return zip_path
 
@@ -154,9 +165,14 @@ class TestToolInstaller(MinimalTestCase):
         zip_path = temp_dir / "unsafe.zip"
 
         with zipfile.ZipFile(zip_path, "w") as zf:
-            # Add unsafe paths
-            zf.writestr("../../../etc/passwd", "unsafe content")
-            zf.writestr("/absolute/path", "unsafe content")
+            # Create ZipInfo objects with valid timestamps for unsafe paths
+            passwd_info = zipfile.ZipInfo("../../../etc/passwd")
+            passwd_info.date_time = (1980, 1, 1, 0, 0, 0)
+            zf.writestr(passwd_info, "unsafe content")
+
+            abs_info = zipfile.ZipInfo("/absolute/path")
+            abs_info.date_time = (1980, 1, 1, 0, 0, 0)
+            zf.writestr(abs_info, "unsafe content")
 
         dest_dir = temp_dir / "extracted"
 
@@ -397,7 +413,9 @@ class TestToolInstaller(MinimalTestCase):
         # Should point to new version
         assert latest_link.resolve().samefile(new_dir)
 
-    def test_install_zip_full_workflow(self, installer, sample_zip, temp_dir, sample_metadata) -> None:
+    def test_install_zip_full_workflow(
+        self, installer: ToolInstaller, sample_zip: Path, temp_dir: Path, sample_metadata: ToolMetadata
+    ) -> None:
         """Test complete installation workflow for ZIP file."""
         # Set install path in metadata
         install_dir = temp_dir / "install"
@@ -410,7 +428,9 @@ class TestToolInstaller(MinimalTestCase):
         assert (install_dir / "bin" / "testtool").exists()
         assert (install_dir / "README.txt").exists()
 
-    def test_install_tar_full_workflow(self, installer, sample_tar_gz, temp_dir, sample_metadata) -> None:
+    def test_install_tar_full_workflow(
+        self, installer: ToolInstaller, sample_tar_gz: Path, temp_dir: Path, sample_metadata: ToolMetadata
+    ) -> None:
         """Test complete installation workflow for TAR file."""
         install_dir = temp_dir / "install"
         sample_metadata.install_path = install_dir
@@ -421,7 +441,9 @@ class TestToolInstaller(MinimalTestCase):
         assert install_dir.exists()
         assert (install_dir / "bin" / "testtool").exists()
 
-    def test_install_binary_full_workflow(self, installer, sample_binary, temp_dir, sample_metadata) -> None:
+    def test_install_binary_full_workflow(
+        self, installer: ToolInstaller, sample_binary: Path, temp_dir: Path, sample_metadata: ToolMetadata
+    ) -> None:
         """Test complete installation workflow for binary file."""
         install_dir = temp_dir / "install"
         sample_metadata.install_path = install_dir
@@ -431,7 +453,9 @@ class TestToolInstaller(MinimalTestCase):
         assert result == install_dir
         assert (install_dir / "bin" / "testtool").exists()
 
-    def test_install_unknown_format(self, installer, temp_dir, sample_metadata) -> None:
+    def test_install_unknown_format(
+        self, installer: ToolInstaller, temp_dir: Path, sample_metadata: ToolMetadata
+    ) -> None:
         """Test installation of unknown file format raises error."""
         unknown_file = temp_dir / "unknown.xyz"
         unknown_file.write_text("unknown format")
@@ -440,7 +464,7 @@ class TestToolInstaller(MinimalTestCase):
             installer.install(unknown_file, sample_metadata)
 
     def test_install_reads_file_content_for_binary_detection(
-        self, installer, temp_dir, sample_metadata
+        self, installer: ToolInstaller, temp_dir: Path, sample_metadata: ToolMetadata
     ) -> None:
         """Test that installer reads file content for binary detection."""
         # Create file without extension but with binary content

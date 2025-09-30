@@ -62,6 +62,14 @@ class FileLock:
         start_time = time.time()
 
         while True:
+            # Check timeout FIRST to prevent infinite loops
+            if time.time() - start_time > self.timeout:
+                raise LockError(
+                    f"Failed to acquire lock within {self.timeout}s",
+                    code="LOCK_TIMEOUT",
+                    path=str(self.path),
+                ) from None
+
             try:
                 # Try to create lock file exclusively
                 fd = os.open(str(self.path), os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644)
@@ -76,14 +84,6 @@ class FileLock:
                 return True
 
             except FileExistsError:
-                # Check timeout FIRST to prevent infinite loops
-                if time.time() - start_time > self.timeout:
-                    raise LockError(
-                        f"Failed to acquire lock within {self.timeout}s",
-                        code="LOCK_TIMEOUT",
-                        path=str(self.path),
-                    ) from None
-
                 # Lock file exists, check if holder is still alive
                 if self._check_stale_lock():
                     continue  # Retry after removing stale lock
@@ -167,10 +167,9 @@ class FileLock:
         self.acquire()
         return self
 
-    def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> bool:
+    def __exit__(self, exc_type: object, exc_val: object, exc_tb: object) -> None:
         """Context manager exit."""
         self.release()
-        return False  # Don't suppress exceptions
 
 
 __all__ = [
