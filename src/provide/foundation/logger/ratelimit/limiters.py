@@ -101,12 +101,19 @@ class AsyncRateLimiter:
         self.refill_rate = float(refill_rate)
         self.tokens = float(capacity)
         self.last_refill = time.monotonic()
-        self.lock = asyncio.Lock()
+        self._lock: asyncio.Lock | None = None
 
         # Track statistics
         self.total_allowed = 0
         self.total_denied = 0
         self.last_denied_time: float | None = None
+
+    @property
+    def lock(self) -> asyncio.Lock:
+        """Get the asyncio lock, creating it lazily if needed."""
+        if self._lock is None:
+            self._lock = asyncio.Lock()
+        return self._lock
 
     async def is_allowed(self) -> bool:
         """Check if a log message is allowed based on available tokens.
