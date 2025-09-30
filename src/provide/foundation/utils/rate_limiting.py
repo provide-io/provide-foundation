@@ -37,7 +37,7 @@ class TokenBucketRateLimiter:
         self._refill_rate: float = float(refill_rate)
         self._tokens: float = float(capacity)  # Start with a full bucket
         self._last_refill_timestamp: float = time.monotonic()
-        self._lock: asyncio.Lock = asyncio.Lock()
+        self._lock: asyncio.Lock | None = None
 
         # Cache logger instance to avoid repeated imports
         self._logger = None
@@ -51,6 +51,13 @@ class TokenBucketRateLimiter:
         except ImportError:
             # Fallback if logger not available
             pass
+
+    @property
+    def lock(self) -> asyncio.Lock:
+        """Get the asyncio lock, creating it lazily if needed."""
+        if self._lock is None:
+            self._lock = asyncio.Lock()
+        return self._lock
 
     async def _refill_tokens(self) -> None:
         """Refills tokens based on the elapsed time since the last refill.
@@ -82,7 +89,7 @@ class TokenBucketRateLimiter:
             True if the request is allowed, False otherwise.
 
         """
-        async with self._lock:
+        async with self.lock:
             await self._refill_tokens()  # Refill before checking
 
             if self._tokens >= 1.0:
@@ -101,7 +108,7 @@ class TokenBucketRateLimiter:
 
     async def get_current_tokens(self) -> float:
         """Returns the current number of tokens, for testing/monitoring."""
-        async with self._lock:
+        async with self.lock:
             # It might be useful to refill before getting, to get the most
             # up-to-date count
             # await self._refill_tokens()
