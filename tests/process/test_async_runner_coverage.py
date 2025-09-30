@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import asyncio
 import sys
+from typing import Any
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import patch
@@ -43,7 +44,7 @@ class TestAsyncErrorHandling(FoundationTestCase):
 
     @patch("asyncio.create_subprocess_exec")
     @pytest.mark.asyncio
-    async def test_async_generic_subprocess_exception(self, mock_create) -> None:
+    async def test_async_generic_subprocess_exception(self, mock_create: Any) -> None:
         """Test handling of generic async subprocess exceptions."""
         # Mock create_subprocess_exec to raise a generic exception
         mock_create.side_effect = OSError("Command not found")
@@ -56,7 +57,7 @@ class TestAsyncErrorHandling(FoundationTestCase):
 
     @patch("asyncio.create_subprocess_exec")
     @pytest.mark.asyncio
-    async def test_async_reraise_process_error(self, mock_create) -> None:
+    async def test_async_reraise_process_error(self, mock_create: Any) -> None:
         """Test that ProcessError and ProcessTimeoutError are re-raised directly."""
         # Mock create_subprocess_exec to raise a ProcessError
         original_error = ProcessError("Original error", command="test_command")
@@ -115,7 +116,7 @@ class TestAsyncWorkingDirectory(FoundationTestCase):
     """Test async working directory handling."""
 
     @pytest.mark.asyncio
-    async def test_async_cwd_as_string(self, tmp_path) -> None:
+    async def test_async_cwd_as_string(self, tmp_path: Any) -> None:
         """Test async working directory as string path."""
         test_file = tmp_path / "test.txt"
         test_file.write_text("test content")
@@ -126,7 +127,7 @@ class TestAsyncWorkingDirectory(FoundationTestCase):
         assert "test content" in result.stdout
 
     @pytest.mark.asyncio
-    async def test_async_cwd_as_path_object(self, tmp_path) -> None:
+    async def test_async_cwd_as_path_object(self, tmp_path: Any) -> None:
         """Test async working directory as Path object."""
         test_file = tmp_path / "test.txt"
         test_file.write_text("test content")
@@ -186,14 +187,15 @@ class TestAsyncStreamCommandCoverage(FoundationTestCase):
     async def test_async_stream_command_timeout(self) -> None:
         """Test async stream command timeout handling."""
         with pytest.raises(ProcessTimeoutError):
-            # Try to stream from a long-running command with short timeout
+            # Try to stream from a long-running command with very short timeout
+            # Use a command that definitely won't complete in 0.05 seconds
             lines = []
-            async for line in async_stream_command(["sleep", "1"], timeout=0.1):
+            async for line in async_stream_command(["sleep", "10"], timeout=0.05):
                 lines.append(line)
 
     @patch("asyncio.create_subprocess_exec")
     @pytest.mark.asyncio
-    async def test_async_stream_generic_exception(self, mock_create) -> None:
+    async def test_async_stream_generic_exception(self, mock_create: Any) -> None:
         """Test async stream command with generic exception."""
         mock_create.side_effect = OSError("Command not found")
 
