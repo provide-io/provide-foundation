@@ -59,14 +59,24 @@ class FileLock:
             LockError: If timeout exceeded (blocking mode)
 
         """
-        start_time = time.time()
+        if self.timeout <= 0:
+            raise LockError("Timeout must be positive", code="INVALID_TIMEOUT", path=str(self.path))
 
-        while True:
-            # Check timeout FIRST to prevent infinite loops
-            elapsed = time.time() - start_time
-            if elapsed >= self.timeout:
+        # Use a finite loop with hard limits to prevent any possibility of hanging
+        start_time = time.time()
+        end_time = start_time + self.timeout
+        max_iterations = 1000  # Hard limit regardless of timeout
+        iteration = 0
+
+        while iteration < max_iterations:
+            iteration += 1
+            current_time = time.time()
+
+            # Hard timeout check - exit immediately if time is up
+            if current_time >= end_time:
+                elapsed = current_time - start_time
                 raise LockError(
-                    f"Failed to acquire lock within {self.timeout}s",
+                    f"Failed to acquire lock within {self.timeout}s (elapsed: {elapsed:.3f}s, iterations: {iteration})",
                     code="LOCK_TIMEOUT",
                     path=str(self.path),
                 ) from None
@@ -81,7 +91,10 @@ class FileLock:
                     os.close(fd)
 
                 self.locked = True
-                log.debug("Acquired lock", path=str(self.path), pid=self.pid)
+                elapsed = current_time - start_time
+                log.debug(
+                    "Acquired lock", path=str(self.path), pid=self.pid, iterations=iteration, elapsed=elapsed
+                )
                 return True
 
             except FileExistsError:
@@ -93,16 +106,24 @@ class FileLock:
                     log.debug("Lock unavailable (non-blocking)", path=str(self.path))
                     return False
 
-                # Calculate remaining time and ensure we don't sleep past timeout
-                remaining = self.timeout - elapsed
+                # Calculate remaining time
+                remaining = end_time - current_time
                 if remaining <= 0:
-                    # Time's up, will be caught by timeout check on next iteration
-                    continue
+                    # Time is up
+                    break
 
-                sleep_time = min(self.check_interval, remaining)
+                # Sleep for a small fixed interval or remaining time, whichever is smaller
+                sleep_time = min(0.01, remaining * 0.5)  # Never sleep more than 10ms
                 if sleep_time > 0:
                     time.sleep(sleep_time)
-                # Loop will check timeout on next iteration
+
+        # If we exit the loop without acquiring the lock
+        elapsed = time.time() - start_time
+        raise LockError(
+            f"Failed to acquire lock within {self.timeout}s (elapsed: {elapsed:.3f}s, iterations: {iteration})",
+            code="LOCK_TIMEOUT",
+            path=str(self.path),
+        ) from None
 
     def release(self) -> None:
         """Release the lock.
@@ -151,31 +172,42 @@ class FileLock:
 
         """
         try:
+            # Quick existence check first
             if not self.path.exists():
                 return False
 
-            content = self.path.read_text().strip()
-            if content.isdigit():
-                lock_pid = int(content)
-
-                # Check if process is still alive
-                try:
-                    os.kill(lock_pid, 0)
-                    # Process exists
-                    return False
-                except ProcessLookupError:
-                    # Process doesn't exist, lock is stale
-                    log.warning("Removing stale lock", path=str(self.path), stale_pid=lock_pid)
-                    try:
-                        self.path.unlink()
-                        return True
-                    except FileNotFoundError:
-                        # Someone else removed it, that's fine
-                        return True
-            else:
-                # Invalid lock file content, don't remove it as we can't be sure
-                log.debug("Invalid lock file content", path=str(self.path), content=content)
+            # Read content with a fallback to prevent hanging on I/O
+            try:
+                content = self.path.read_text().strip()
+            except Exception:
+                # If we can't read the file, assume it's not stale
                 return False
+
+            # Only process if content looks like a PID
+            if not content.isdigit():
+                log.debug("Invalid lock file content", path=str(self.path), content=content[:50])
+                return False
+
+            lock_pid = int(content)
+
+            # Quick process check
+            try:
+                os.kill(lock_pid, 0)
+                # Process exists, lock is valid
+                return False
+            except (ProcessLookupError, PermissionError):
+                # Process doesn't exist or we can't check it, consider stale
+                log.warning("Removing stale lock", path=str(self.path), stale_pid=lock_pid)
+                try:
+                    self.path.unlink()
+                    return True
+                except FileNotFoundError:
+                    # Already removed by someone else
+                    return True
+                except Exception:
+                    # Failed to remove, but that's ok
+                    return False
+
         except Exception as e:
             log.debug("Error checking stale lock", path=str(self.path), error=str(e))
             return False
