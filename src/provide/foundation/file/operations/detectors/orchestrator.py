@@ -148,6 +148,7 @@ class OperationDetector:
             (temp_detector.detect_temp_rename_pattern, (events,)),
             (temp_detector.detect_delete_temp_pattern, (events,)),
             (temp_detector.detect_temp_modify_pattern, (events,)),
+            (temp_detector.detect_temp_create_delete_pattern, (events,)),
 
             # Atomic save patterns
             (atomic_detector.detect_atomic_save, (events,)),
@@ -155,15 +156,12 @@ class OperationDetector:
 
             # Batch and sequence patterns
             (batch_detector.detect_rename_sequence, (events,)),
-            (batch_detector.detect_batch_update, (events,)),
             (batch_detector.detect_backup_create, (events,)),
+            (batch_detector.detect_batch_update, (events,)),
 
             # Simple patterns (lower specificity)
             (simple_detector.detect_same_file_delete_create_pattern, (events,)),
             (simple_detector.detect_direct_modification, (events,)),
-
-            # Temp cleanup (may not be relevant for display)
-            (temp_detector.detect_temp_create_delete_pattern, (events,)),
 
             # Fallback for unmatched events
             (simple_detector.detect_simple_operation, (events,)),

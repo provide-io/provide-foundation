@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from provide.foundation.file.operations.detectors.helpers import is_backup_file
 from provide.foundation.file.operations.types import (
     FileEvent,
     FileOperation,
@@ -103,6 +104,9 @@ class SimpleOperationDetector:
                 "pattern": f"simple_{event.event_type}",
             }
 
+        # Check if this is a backup file
+        is_backup_path = is_backup_file(primary_path)
+
         return FileOperation(
             operation_type=operation_type,
             primary_path=primary_path,
@@ -113,6 +117,7 @@ class SimpleOperationDetector:
             end_time=event.timestamp,
             is_atomic=True,
             is_safe=True,
+            has_backup=is_backup_path,
             files_affected=[primary_path],
             metadata=metadata,
         )

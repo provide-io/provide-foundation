@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections import defaultdict
 from pathlib import Path
 
+from provide.foundation.file.operations.detectors.helpers import is_backup_file
 from provide.foundation.file.operations.types import (
     FileEvent,
     FileOperation,
@@ -133,7 +134,7 @@ class BatchOperationDetector:
             if (
                 move_event.event_type == "moved"
                 and create_event.event_type == "created"
-                and self._is_backup_file(move_event.dest_path or move_event.path)
+                and is_backup_file(move_event.dest_path or move_event.path)
                 and move_event.path == create_event.path
             ):
                 # Time window check (backup operations usually happen quickly)
@@ -216,17 +217,3 @@ class BatchOperationDetector:
         }
 
         return type_mapping.get(most_common_type, OperationType.BATCH_UPDATE)
-
-    def _is_backup_file(self, path: Path) -> bool:
-        """Check if path looks like a backup file."""
-        name = path.name.lower()
-
-        backup_patterns = [
-            name.endswith(".bak"),
-            name.endswith(".backup"),
-            name.endswith(".orig"),
-            name.endswith("~"),
-            ".bak." in name,
-        ]
-
-        return any(backup_patterns)

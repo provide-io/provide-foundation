@@ -4,6 +4,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from provide.foundation.file.operations.detectors.helpers import (
+    extract_base_name,
+    is_temp_file,
+)
 from provide.foundation.file.operations.types import (
     FileEvent,
     FileOperation,
@@ -33,7 +37,7 @@ class TempPatternDetector:
 
             if (
                 current.event_type == "created"
-                and self._is_temp_file(current.path)
+                and is_temp_file(current.path)
                 and next_event.event_type == "moved"
                 and next_event.path == current.path
                 and next_event.dest_path
@@ -73,7 +77,7 @@ class TempPatternDetector:
             if (
                 delete_event.event_type == "deleted"
                 and temp_create.event_type == "created"
-                and self._is_temp_file(temp_create.path)
+                and is_temp_file(temp_create.path)
                 and temp_rename.event_type == "moved"
                 and temp_rename.path == temp_create.path
                 and temp_rename.dest_path == delete_event.path
@@ -110,7 +114,7 @@ class TempPatternDetector:
         # Group events by temp files
         temp_groups = {}
         for event in events:
-            if self._is_temp_file(event.path):
+            if is_temp_file(event.path):
                 path_str = str(event.path)
                 if path_str not in temp_groups:
                     temp_groups[path_str] = []
@@ -167,30 +171,81 @@ class TempPatternDetector:
     def detect_temp_create_delete_pattern(
         self, events: list[FileEvent], temp_window_ms: int = 5000
     ) -> FileOperation | None:
-        """Detect pattern: create temp -> delete temp (usually failed operations)."""
+        """Detect pattern: create temp -> delete temp -> create real file."""
         if len(events) < 2:
             return None
 
-        # Look for temp file creation followed by deletion
+        # Look for temp file creation followed by deletion, then real file creation
         temp_files = {}
+        real_files = {}
+
         for event in events:
-            if self._is_temp_file(event.path):
+            if is_temp_file(event.path):
                 path_str = str(event.path)
                 if path_str not in temp_files:
                     temp_files[path_str] = []
                 temp_files[path_str].append(event)
+            else:
+                path_str = str(event.path)
+                if path_str not in real_files:
+                    real_files[path_str] = []
+                real_files[path_str].append(event)
 
+        # Check for create temp -> delete temp -> create real pattern
         for temp_path_str, temp_events in temp_files.items():
             if len(temp_events) < 2:
                 continue
 
             temp_events.sort(key=lambda e: e.timestamp)
 
-            # Check for create -> delete pattern
+            # Check for create -> delete pattern on temp file
             if (
                 temp_events[0].event_type == "created"
                 and temp_events[-1].event_type == "deleted"
             ):
+                # Extract base name from temp file
+                temp_path = Path(temp_path_str)
+                base_name = extract_base_name(temp_path)
+
+                # Look for real file creation after temp deletion
+                if base_name:
+                    real_path = temp_path.parent / base_name
+                    real_path_str = str(real_path)
+
+                    if real_path_str in real_files:
+                        real_events = real_files[real_path_str]
+                        # Find create events after temp deletion
+                        for real_event in real_events:
+                            if (
+                                real_event.event_type == "created"
+                                and real_event.timestamp >= temp_events[-1].timestamp
+                            ):
+                                time_span = (
+                                    real_event.timestamp - temp_events[0].timestamp
+                                ).total_seconds() * 1000
+
+                                if time_span <= temp_window_ms:
+                                    all_events = temp_events + [real_event]
+                                    all_events.sort(key=lambda e: e.timestamp)
+
+                                    return FileOperation(
+                                        operation_type=OperationType.ATOMIC_SAVE,
+                                        primary_path=real_path,
+                                        events=all_events,
+                                        confidence=0.92,
+                                        description=f"Atomic save to {real_path.name}",
+                                        start_time=all_events[0].timestamp,
+                                        end_time=all_events[-1].timestamp,
+                                        is_atomic=True,
+                                        is_safe=True,
+                                        files_affected=[real_path],
+                                        metadata={
+                                            "temp_file": temp_path_str,
+                                            "pattern": "temp_create_delete_create_real",
+                                        },
+                                    )
+
+                # If no real file found, treat as temp cleanup
                 time_span = (
                     temp_events[-1].timestamp - temp_events[0].timestamp
                 ).total_seconds() * 1000
@@ -213,23 +268,3 @@ class TempPatternDetector:
                     )
 
         return None
-
-    def _is_temp_file(self, path: Path) -> bool:
-        """Check if path looks like a temporary file."""
-        name = path.name.lower()
-        stem = path.stem.lower()
-
-        # Common temp file patterns
-        temp_patterns = [
-            name.startswith(".tmp"),
-            name.startswith("tmp"),
-            name.endswith(".tmp"),
-            name.endswith(".temp"),
-            name.endswith("~"),
-            ".$" in name,  # .$ prefix (common in Windows)
-            stem.endswith(".tmp"),
-            ".swp" in name,  # vim swap files
-            ".#" in name,  # emacs temp files
-        ]
-
-        return any(temp_patterns)

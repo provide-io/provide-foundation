@@ -84,16 +84,12 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
         # This ensures clean state for the next test in the worker
         reset_foundation_setup_for_testing()
 
-        # Clean up crypto module cache only if we're NOT in a crypto test file
-        # This prevents patched crypto state from leaking to non-crypto tests
-        # while allowing crypto tests in the same file to share module state
-        test_file = request.fspath.basename if hasattr(request.fspath, "basename") else str(request.fspath)
-        is_crypto_test = "crypto" in str(test_file).lower()
-
-        if not is_crypto_test:
-            crypto_modules = [key for key in sys.modules.keys() if key.startswith("provide.foundation.crypto")]
-            for module_name in crypto_modules:
-                sys.modules.pop(module_name, None)
+        # NOTE: We do NOT remove modules from sys.modules because:
+        # 1. Removing modules causes them to be re-imported
+        # 2. Re-importing triggers module-level initialization code
+        # 3. This can cause infinite loops (e.g., transport auto-registration)
+        # 4. The reset_foundation_setup_for_testing() handles state cleanup
+        # 5. Tests should use proper mocking instead of sys.modules patching
 
         # Ensure stream is reset to default stderr after each test
         # Handle potential closed streams during parallel execution
