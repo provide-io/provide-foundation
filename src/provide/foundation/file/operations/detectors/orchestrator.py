@@ -18,6 +18,10 @@ from provide.foundation.file.operations.types import (
 )
 from provide.foundation.file.operations.detectors.atomic import AtomicOperationDetector
 from provide.foundation.file.operations.detectors.batch import BatchOperationDetector
+from provide.foundation.file.operations.detectors.helpers import (
+    extract_base_name,
+    is_temp_file,
+)
 from provide.foundation.file.operations.detectors.simple import SimpleOperationDetector
 from provide.foundation.file.operations.detectors.temp import TempPatternDetector
 from provide.foundation.logger import get_logger
