@@ -198,6 +198,15 @@ def reset_foundation_for_testing() -> None:
     # Full reset with Hub-based state management
     reset_foundation_state()
 
+    # Reset transport registration flags so transports can be re-registered
+    try:
+        from provide.foundation.testmode.internal import reset_transport_registration_flags
+
+        reset_transport_registration_flags()
+    except ImportError:
+        # Testmode module not available
+        pass
+
     # Re-register HTTP transport for tests that need it
     try:
         from provide.foundation.transport.http import _register_http_transport
