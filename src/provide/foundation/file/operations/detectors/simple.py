@@ -62,6 +62,7 @@ class SimpleOperationDetector:
                             end_time=create_event.timestamp,
                             is_atomic=True,
                             is_safe=True,
+                            files_affected=[Path(path_str)],
                             metadata={
                                 "pattern": "delete_create_replace",
                             },
@@ -112,6 +113,7 @@ class SimpleOperationDetector:
             end_time=event.timestamp,
             is_atomic=True,
             is_safe=True,
+            files_affected=[primary_path],
             metadata=metadata,
         )
 
@@ -141,6 +143,7 @@ class SimpleOperationDetector:
             end_time=sorted_events[-1].timestamp,
             is_atomic=False,
             is_safe=True,
+            files_affected=[first_event.path],
             metadata={
                 "modification_count": len(sorted_events),
                 "pattern": "direct_modification",

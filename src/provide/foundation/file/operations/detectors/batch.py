@@ -150,6 +150,7 @@ class BatchOperationDetector:
                         is_atomic=True,
                         is_safe=True,
                         has_backup=True,
+                        files_affected=[create_event.path],
                         metadata={
                             "backup_file": str(move_event.dest_path or move_event.path),
                             "pattern": "backup_create",
