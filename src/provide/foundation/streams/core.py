@@ -13,13 +13,21 @@ Handles log streams, file handles, and output configuration.
 
 _PROVIDE_LOG_STREAM: TextIO = sys.stderr
 _LOG_FILE_HANDLE: TextIO | None = None
-_STREAM_LOCK = threading.Lock()
+_STREAM_LOCK: threading.Lock | None = None
+
+
+def _get_stream_lock() -> threading.Lock:
+    """Get the stream lock, creating it lazily if needed."""
+    global _STREAM_LOCK
+    if _STREAM_LOCK is None:
+        _STREAM_LOCK = threading.Lock()
+    return _STREAM_LOCK
 
 
 def get_log_stream() -> TextIO:
     """Get the current log stream."""
     global _PROVIDE_LOG_STREAM
-    if not _STREAM_LOCK.acquire(timeout=5.0):
+    if not _get_stream_lock().acquire(timeout=5.0):
         # If we can't acquire the lock within 5 seconds, return stderr as fallback
         return sys.stderr
     try:
@@ -91,7 +99,7 @@ def get_log_stream() -> TextIO:
 
         return _PROVIDE_LOG_STREAM
     finally:
-        _STREAM_LOCK.release()
+        _get_stream_lock().release()
 
 
 def _reconfigure_structlog_stream() -> None:
@@ -123,7 +131,7 @@ def set_log_stream_for_testing(stream: TextIO | None) -> None:
     from provide.foundation.testmode.detection import is_in_click_testing
 
     global _PROVIDE_LOG_STREAM
-    if not _STREAM_LOCK.acquire(timeout=5.0):
+    if not _get_stream_lock().acquire(timeout=5.0):
         # If we can't acquire the lock within 5 seconds, skip the operation
         return
     try:
@@ -136,17 +144,17 @@ def set_log_stream_for_testing(stream: TextIO | None) -> None:
         # Reconfigure structlog to use the new stream
         _reconfigure_structlog_stream()
     finally:
-        _STREAM_LOCK.release()
+        _get_stream_lock().release()
 
 
 def ensure_stderr_default() -> None:
     """Ensure the log stream defaults to stderr if it's stdout."""
     global _PROVIDE_LOG_STREAM
-    if not _STREAM_LOCK.acquire(timeout=5.0):
+    if not _get_stream_lock().acquire(timeout=5.0):
         # If we can't acquire the lock within 5 seconds, skip the operation
         return
     try:
         if _PROVIDE_LOG_STREAM is sys.stdout:
             _PROVIDE_LOG_STREAM = sys.stderr
     finally:
-        _STREAM_LOCK.release()
+        _get_stream_lock().release()

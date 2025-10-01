@@ -160,12 +160,19 @@ class GlobalRateLimiter:
     """
 
     _instance = None
-    _lock = threading.Lock()
+    _lock: threading.Lock | None = None
     _initialized: bool
+
+    @classmethod
+    def _get_lock(cls) -> threading.Lock:
+        """Get the class lock, creating it lazily if needed."""
+        if cls._lock is None:
+            cls._lock = threading.Lock()
+        return cls._lock
 
     def __new__(cls) -> GlobalRateLimiter:
         if cls._instance is None:
-            with cls._lock:
+            with cls._get_lock():
                 if cls._instance is None:
                     cls._instance = super().__new__(cls)
                     cls._instance._initialized = False

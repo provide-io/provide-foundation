@@ -9,7 +9,7 @@ from pathlib import Path
 import sys
 
 from provide.foundation.streams.core import (
-    _STREAM_LOCK,
+    _get_stream_lock,
     _reconfigure_structlog_stream,
 )
 from provide.foundation.utils.streams import get_safe_stderr
@@ -41,7 +41,7 @@ def configure_file_logging(log_file_path: str | None) -> None:
     # Import here to avoid circular dependency
     from provide.foundation.testmode.detection import is_in_click_testing
 
-    with _STREAM_LOCK:
+    with _get_stream_lock():
         # Don't modify streams if we're in Click testing context
         if is_in_click_testing():
             return
@@ -83,7 +83,7 @@ def flush_log_streams() -> None:
     """Flush all log streams."""
     import provide.foundation.streams.core as core_module
 
-    with _STREAM_LOCK:
+    with _get_stream_lock():
         if core_module._LOG_FILE_HANDLE:
             try:
                 core_module._LOG_FILE_HANDLE.flush()
@@ -98,7 +98,7 @@ def close_log_streams() -> None:
     # Import here to avoid circular dependency
     from provide.foundation.testmode.detection import is_in_click_testing
 
-    with _STREAM_LOCK:
+    with _get_stream_lock():
         if core_module._LOG_FILE_HANDLE:
             with contextlib.suppress(Exception):
                 core_module._LOG_FILE_HANDLE.close()

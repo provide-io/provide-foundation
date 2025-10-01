@@ -268,9 +268,10 @@ class TestThreadSafeComponentAccess(FoundationTestCase):
 
         registry = get_component_registry()
 
-        # Async component factory
+        # Async component factory with minimal sleep to avoid event loop issues
         async def async_component_factory():
-            await asyncio.sleep(0.01)  # Simulate async init
+            # Use asyncio.sleep(0) instead of 0.01 to avoid timing issues in parallel tests
+            await asyncio.sleep(0)  # Minimal async yield
             component = Mock()
             component.async_initialized = True
             return component
@@ -285,8 +286,15 @@ class TestThreadSafeComponentAccess(FoundationTestCase):
             },
         )
 
-        component = await initialize_async_component("async_component", "test")
-        assert component.async_initialized is True
+        try:
+            component = await initialize_async_component("async_component", "test")
+            assert component.async_initialized is True
+        finally:
+            # Clean up registry to prevent state contamination
+            try:
+                registry.remove("async_component", "test")
+            except Exception:
+                pass  # Registry might not have remove method
 
     def test_component_cleanup_on_shutdown(self) -> None:
         """Components must support cleanup on shutdown."""
