@@ -338,18 +338,9 @@ class TestFileOperationIntegration(FoundationTestCase):
         # Ensure events were captured
         assert len(file_monitor.events) >= 1, "No events captured from file system"
 
-        # Debug: print captured events
-        print(f"\nCaptured {len(file_monitor.events)} events:")
-        for e in file_monitor.events:
-            print(f"  {e.event_type}: {e.path.name} at {e.timestamp}")
-
         # Should be detected as separate operations
         detector = OperationDetector(DetectorConfig(time_window_ms=500))
         operations = detector.detect(file_monitor.events)
-
-        print(f"Detected {len(operations)} operations:")
-        for op in operations:
-            print(f"  {op.operation_type}: {op.primary_path}")
 
         # Events should be in separate groups
         assert len(operations) >= 1

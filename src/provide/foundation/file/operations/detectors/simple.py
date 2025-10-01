@@ -123,34 +123,50 @@ class SimpleOperationDetector:
         )
 
     def detect_direct_modification(self, events: list[FileEvent]) -> FileOperation | None:
-        """Detect direct file modification (multiple modify events on same file)."""
+        """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
 
-        # Check if all events are modifications of the same file
+        # Check if all events are for the same file
         first_event = events[0]
-        if not all(
-            event.path == first_event.path and event.event_type == "modified"
-            for event in events
-        ):
+        if not all(event.path == first_event.path for event in events):
             return None
 
         # Sort by timestamp
         sorted_events = sorted(events, key=lambda e: e.timestamp)
 
+        # Check if this is all modifies OR created followed by modifies
+        event_types = [e.event_type for e in sorted_events]
+        is_all_modifies = all(et == "modified" for et in event_types)
+        is_create_then_modifies = (
+            event_types[0] == "created"
+            and all(et == "modified" for et in event_types[1:])
+        )
+
+        if not (is_all_modifies or is_create_then_modifies):
+            return None
+
+        # Determine operation type based on pattern
+        if is_create_then_modifies:
+            op_type = OperationType.BACKUP_CREATE
+            description = f"File created and modified: {first_event.path.name}"
+        else:
+            op_type = OperationType.ATOMIC_SAVE
+            description = f"Multiple modifications to {first_event.path.name}"
+
         return FileOperation(
-            operation_type=OperationType.ATOMIC_SAVE,
+            operation_type=op_type,
             primary_path=first_event.path,
             events=sorted_events,
             confidence=0.80,
-            description=f"Multiple modifications to {first_event.path.name}",
+            description=description,
             start_time=sorted_events[0].timestamp,
             end_time=sorted_events[-1].timestamp,
             is_atomic=False,
             is_safe=True,
             files_affected=[first_event.path],
             metadata={
-                "modification_count": len(sorted_events),
-                "pattern": "direct_modification",
+                "event_count": len(sorted_events),
+                "pattern": "direct_modification" if is_all_modifies else "create_modify",
             },
         )
