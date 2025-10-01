@@ -1,4 +1,14 @@
-"""File operation detectors."""
+"""File operation detectors.
+
+This package provides specialized detectors for different file operation patterns:
+- AtomicOperationDetector: Detects atomic saves and safe writes
+- TempPatternDetector: Detects temporary file patterns (VSCode, Vim, etc.)
+- BatchOperationDetector: Detects batch operations and rename sequences
+- SimpleOperationDetector: Detects simple/direct file operations
+
+The main OperationDetector orchestrates these specialized detectors to identify
+the best match for a given set of file events.
+"""
 
 from __future__ import annotations
 

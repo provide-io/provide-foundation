@@ -100,21 +100,29 @@ class OperationDetector:
         return operation
 
     def _group_events_by_time(self, events: list[FileEvent]) -> list[list[FileEvent]]:
-        """Group events that occur within time windows."""
+        """Group events that occur within time windows.
+
+        Uses a fixed time window from the first event in each group to ensure
+        all related events are captured together, even if they span longer than
+        the window between consecutive events.
+        """
         if not events:
             return []
 
         groups = []
         current_group = [events[0]]
+        group_start_time = events[0].timestamp  # Track first event in group
 
         for event in events[1:]:
-            time_diff = (event.timestamp - current_group[-1].timestamp).total_seconds() * 1000
+            # Compare to FIRST event in group, not last (fixes bundling bug)
+            time_diff = (event.timestamp - group_start_time).total_seconds() * 1000
 
             if time_diff <= self.config.time_window_ms:
                 current_group.append(event)
             else:
                 groups.append(current_group)
                 current_group = [event]
+                group_start_time = event.timestamp  # Reset for new group
 
         if current_group:
             groups.append(current_group)
@@ -184,6 +192,31 @@ class OperationDetector:
                 )
 
         if best_operation and best_confidence >= self.config.min_confidence:
+            # Validate that primary_path is not a temp file
+            if self._is_temp_file(best_operation.primary_path):
+                log.warning(
+                    "Detector returned temp file as primary_path, attempting to fix",
+                    temp_path=str(best_operation.primary_path),
+                    operation_type=best_operation.operation_type.value,
+                )
+                # Try to find the real file from the events
+                real_file = self._find_real_file_from_events(best_operation.events)
+                if real_file:
+                    # Create a new operation with the corrected path
+                    # (FileOperation is frozen, so we need attrs.evolve or recreate)
+                    from attrs import evolve
+                    best_operation = evolve(best_operation, primary_path=real_file)
+                    log.info(
+                        "Corrected primary_path from temp to real file",
+                        corrected_path=str(real_file),
+                    )
+                else:
+                    log.error(
+                        "Could not find real file, rejecting operation",
+                        temp_path=str(best_operation.primary_path),
+                    )
+                    return None
+
             log.debug(
                 "Selected operation",
                 operation_type=best_operation.operation_type.value,
@@ -195,315 +228,34 @@ class OperationDetector:
 
         return None
 
-    def _detect_temp_rename_pattern(
-        self, events: list[FileEvent]
-    ) -> tuple[Path | None, Path | None, list[FileEvent], float]:
-        """Detect Pattern 1: Direct temp file rename to final location."""
-        temp_creates = [e for e in events if e.event_type == "created" and self._is_temp_file(e.path)]
-        moves = [e for e in events if e.event_type in ("moved", "renamed")]
+    def _find_real_file_from_events(self, events: list[FileEvent]) -> Path | None:
+        """Find the real (non-temp) file path from a list of events."""
+        # Look for non-temp files in the events
+        for event in reversed(events):  # Start from most recent
+            # Check dest_path first (for move/rename operations)
+            if event.dest_path and not self._is_temp_file(event.dest_path):
+                return event.dest_path
+            # Then check regular path
+            if not self._is_temp_file(event.path):
+                return event.path
 
-        for temp_event in temp_creates:
-            for move_event in moves:
-                if move_event.path == temp_event.path and move_event.dest_path:
-                    # Temp file was renamed to final location - this is the end state
-                    return move_event.dest_path, move_event.dest_path, [temp_event, move_event], 0.95
-        return None, None, [], 0.0
-
-    def _detect_delete_temp_pattern(
-        self, events: list[FileEvent]
-    ) -> tuple[Path | None, Path | None, list[FileEvent], float]:
-        """Detect Pattern 2: Delete original, rename temp (common in atomic saves)."""
-        temp_creates = [e for e in events if e.event_type == "created" and self._is_temp_file(e.path)]
-        deletes = [e for e in events if e.event_type == "deleted"]
-
-        for delete_event in deletes:
-            for temp_event in temp_creates:
-                if self._files_related(delete_event.path, temp_event.path):
-                    # The deleted file is what gets replaced - this becomes the end state
-                    atomic_events = [e for e in events if e.path in (delete_event.path, temp_event.path)]
-                    return delete_event.path, delete_event.path, atomic_events, 0.85
-        return None, None, [], 0.0
-
-    def _detect_temp_modify_pattern(
-        self, events: list[FileEvent]
-    ) -> tuple[Path | None, Path | None, list[FileEvent], float]:
-        """Detect Pattern 3: Temp file created, then final file modified (overwrite pattern)."""
-        temp_creates = [e for e in events if e.event_type == "created" and self._is_temp_file(e.path)]
-        modifies = [e for e in events if e.event_type == "modified" and not self._is_temp_file(e.path)]
-
-        for temp_event in temp_creates:
-            for modify_event in modifies:
-                if self._files_related(temp_event.path, modify_event.path):
-                    # The modified file is the end state
-                    return modify_event.path, modify_event.path, [temp_event, modify_event], 0.80
-        return None, None, [], 0.0
-
-    def _detect_temp_create_delete_pattern(
-        self, events: list[FileEvent]
-    ) -> tuple[Path | None, Path | None, list[FileEvent], float]:
-        """Detect Pattern 4: Temp file created -> deleted -> real file created (VSCode/modern editors)."""
-        temp_creates = [e for e in events if e.event_type == "created" and self._is_temp_file(e.path)]
-        temp_deletes = [e for e in events if e.event_type == "deleted" and self._is_temp_file(e.path)]
-        real_creates = [e for e in events if e.event_type == "created" and not self._is_temp_file(e.path)]
-
-        for temp_create in temp_creates:
-            # Find matching delete for the same temp file
-            temp_delete = next((e for e in temp_deletes if e.path == temp_create.path), None)
-            if not temp_delete:
-                continue
-
-            # Find related real file creation
-            for real_create in real_creates:
-                if (
-                    self._files_related(temp_create.path, real_create.path)
-                    and temp_create.timestamp < temp_delete.timestamp < real_create.timestamp
-                ):
-                    atomic_events = [temp_create, temp_delete, real_create]
-                    return real_create.path, real_create.path, atomic_events, 0.95
-
-        return None, None, [], 0.0
-
-    def _detect_same_file_delete_create_pattern(
-        self, events: list[FileEvent]
-    ) -> tuple[Path | None, Path | None, list[FileEvent], float]:
-        """Detect Pattern 5: Same file deleted then created (in-place atomic save)."""
-        deletes = [e for e in events if e.event_type == "deleted"]
-        creates = [e for e in events if e.event_type == "created"]
-
-        for delete_event in deletes:
-            for create_event in creates:
-                # Same file path and delete happens before create
-                if delete_event.path == create_event.path and delete_event.timestamp < create_event.timestamp:
-                    atomic_events = [delete_event, create_event]
-                    return create_event.path, create_event.path, atomic_events, 0.90
-
-        return None, None, [], 0.0
-
-    def _detect_atomic_save(self, events: list[FileEvent]) -> FileOperation | None:
-        """Detect atomic save pattern (temp file creation -> rename)."""
-        # Try each pattern in order of confidence
-        primary_file, final_file, atomic_events, confidence = self._detect_temp_create_delete_pattern(events)
-
-        if not primary_file:
-            primary_file, final_file, atomic_events, confidence = self._detect_temp_rename_pattern(events)
-
-        if not primary_file:
-            primary_file, final_file, atomic_events, confidence = self._detect_same_file_delete_create_pattern(
-                events
-            )
-
-        if not primary_file:
-            primary_file, final_file, atomic_events, confidence = self._detect_delete_temp_pattern(events)
-
-        if not primary_file:
-            primary_file, final_file, atomic_events, confidence = self._detect_temp_modify_pattern(events)
-
-        if primary_file and final_file and confidence >= self.config.min_confidence:
-            start_time = min(e.timestamp for e in atomic_events)
-            end_time = max(e.timestamp for e in atomic_events)
-
-            # Collect all file paths affected, but primary_path is the end-state file
-            files_affected = list({e.path for e in events} | {e.dest_path for e in events if e.dest_path})
-
-            return FileOperation(
-                operation_type=OperationType.ATOMIC_SAVE,
-                primary_path=final_file,  # This is the end-state file that git sees
-                events=events,  # Include all events for operation history
-                confidence=confidence,
-                description=f"Atomic save of {final_file.name}",
-                start_time=start_time,
-                end_time=end_time,
-                is_atomic=True,
-                is_safe=True,
-                files_affected=files_affected,
-            )
-
-        return None
-
-    def _detect_safe_write(self, events: list[FileEvent]) -> FileOperation | None:
-        """Detect safe write pattern (backup -> write)."""
-        # Look for backup creation followed by modification
-        backup_events = [e for e in events if e.path.suffix in (".bak", ".backup", ".orig")]
-        modify_events = [
-            e
-            for e in events
-            if e.event_type in ("modified", "created") and e.path.suffix not in (".bak", ".backup", ".orig")
-        ]
-
-        if backup_events and modify_events:
-            primary_file = None
-            for backup_event in backup_events:
-                base_name = self._extract_base_name(backup_event.path)
-                if not base_name:
-                    continue
-                for modify_event in modify_events:
-                    # Compare the backup's base name with the modify event's filename
-                    if base_name == modify_event.path.name:
-                        primary_file = modify_event.path
-                        break
-
-            if primary_file:
-                start_time = min(e.timestamp for e in events)
-                end_time = max(e.timestamp for e in events)
-
-                return FileOperation(
-                    operation_type=OperationType.SAFE_WRITE,
-                    primary_path=primary_file,
-                    events=events,
-                    confidence=0.95,
-                    description=f"Safe write of {primary_file.name}",
-                    start_time=start_time,
-                    end_time=end_time,
-                    is_atomic=False,
-                    is_safe=True,
-                    has_backup=True,
-                )
-
-        return None
-
-    def _detect_rename_sequence(self, events: list[FileEvent]) -> FileOperation | None:
-        """Detect a sequence of renames/moves."""
-        move_events = [e for e in events if e.event_type in ("moved", "renamed")]
-
-        if len(move_events) >= 2:
-            # Check if moves form a chain
-            first_event = move_events[0]
-            last_event = move_events[-1]
-
-            start_time = min(e.timestamp for e in events)
-            end_time = max(e.timestamp for e in events)
-
-            return FileOperation(
-                operation_type=OperationType.RENAME_SEQUENCE,
-                primary_path=last_event.dest_path or last_event.path,
-                events=events,
-                confidence=0.90,
-                description=f"Rename sequence: {first_event.path.name} -> {last_event.dest_path.name if last_event.dest_path else last_event.path.name}",
-                start_time=start_time,
-                end_time=end_time,
-                is_atomic=True,
-                is_safe=True,
-            )
-
-        return None
-
-    def _detect_batch_update(self, events: list[FileEvent]) -> FileOperation | None:
-        """Detect batch file operations (multiple files, similar timing)."""
-        if len(events) < self.config.min_events_for_complex:
-            return None
-
-        # Group by operation type
-        type_groups = defaultdict(list)
+        # If all files are temp files, try to extract the base name
         for event in events:
-            type_groups[event.event_type].append(event)
+            if event.dest_path:
+                base_name = self._extract_base_name(event.dest_path)
+                if base_name:
+                    # Try to construct real path from base name
+                    real_path = event.dest_path.parent / base_name
+                    if real_path != event.dest_path:
+                        return real_path
 
-        # Look for consistent patterns across multiple files
-        if "modified" in type_groups and len(type_groups["modified"]) >= 3:
-            # Multiple modifications in quick succession suggests batch operation
-            modify_events = type_groups["modified"]
-            unique_files = {e.path for e in modify_events}
-
-            if len(unique_files) >= 3:  # At least 3 different files
-                start_time = min(e.timestamp for e in events)
-                end_time = max(e.timestamp for e in events)
-
-                # Use the directory or first file as primary path
-                primary_path = modify_events[0].path.parent
-
-                return FileOperation(
-                    operation_type=OperationType.BATCH_UPDATE,
-                    primary_path=primary_path,
-                    events=events,
-                    confidence=0.85,
-                    description=f"Batch update of {len(unique_files)} files",
-                    start_time=start_time,
-                    end_time=end_time,
-                    is_atomic=False,
-                    is_safe=True,
-                    files_affected=list(unique_files),
-                )
+            base_name = self._extract_base_name(event.path)
+            if base_name:
+                real_path = event.path.parent / base_name
+                if real_path != event.path:
+                    return real_path
 
         return None
-
-    def _detect_backup_create(self, events: list[FileEvent]) -> FileOperation | None:
-        """Detect backup file creation."""
-        backup_events = [
-            e
-            for e in events
-            if e.event_type == "created" and e.path.suffix in (".bak", ".backup", ".orig", "~")
-        ]
-
-        if backup_events:
-            backup_event = backup_events[0]
-            start_time = backup_event.timestamp
-            end_time = backup_event.timestamp
-
-            return FileOperation(
-                operation_type=OperationType.BACKUP_CREATE,
-                primary_path=backup_event.path,
-                events=[backup_event],
-                confidence=0.90,
-                description=f"Backup created: {backup_event.path.name}",
-                start_time=start_time,
-                end_time=end_time,
-                is_atomic=True,
-                is_safe=True,
-                has_backup=True,
-            )
-
-        return None
-
-    def _detect_simple_operation(self, events: list[FileEvent]) -> FileOperation | None:
-        """Detect simple file operations (create, modify, delete)."""
-        if not events:
-            return None
-
-        # Filter out directory events
-        file_events = [e for e in events if not e.path.name.endswith("/")]
-        if not file_events:
-            return None
-
-        # Get the primary file (most frequently mentioned or first non-temp file)
-        file_paths = [e.path for e in file_events]
-        primary_file = None
-
-        # Prefer non-temp files
-        non_temp_files = [p for p in file_paths if not self._is_temp_file(p)]
-        primary_file = non_temp_files[0] if non_temp_files else file_paths[0]
-
-        # Determine operation type based on event types
-        event_types = {e.event_type for e in file_events}
-
-        if "created" in event_types and "modified" in event_types:
-            operation_type = OperationType.ATOMIC_SAVE  # File created and modified
-            confidence = 0.75
-        elif "created" in event_types:
-            operation_type = OperationType.BACKUP_CREATE  # New file created
-            confidence = 0.70
-        elif "modified" in event_types:
-            operation_type = OperationType.ATOMIC_SAVE  # File modified
-            confidence = 0.72
-        elif "deleted" in event_types:
-            operation_type = OperationType.BACKUP_CREATE  # File deleted (use as fallback)
-            confidence = 0.70
-        else:
-            return None
-
-        start_time = min(e.timestamp for e in file_events)
-        end_time = max(e.timestamp for e in file_events)
-
-        return FileOperation(
-            operation_type=operation_type,
-            primary_path=primary_file,
-            events=file_events,
-            confidence=confidence,
-            description=f"Simple file operation on {primary_file.name}",
-            start_time=start_time,
-            end_time=end_time,
-            is_atomic=len(file_events) == 1,
-            is_safe=True,
-            files_affected=[primary_file],
-        )
 
     def _is_temp_file(self, path: Path) -> bool:
         """Check if path matches any temp file pattern."""
