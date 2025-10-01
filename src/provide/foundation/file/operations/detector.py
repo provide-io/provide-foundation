@@ -13,6 +13,12 @@ from provide.foundation.file.operations.types import (
     FileOperation,
     OperationType,
 )
+from provide.foundation.file.operations.detectors import (
+    AtomicOperationDetector,
+    BatchOperationDetector,
+    SimpleOperationDetector,
+    TempPatternDetector,
+)
 from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
@@ -116,30 +122,78 @@ class OperationDetector:
         return groups
 
     def _analyze_event_group(self, events: list[FileEvent]) -> FileOperation | None:
-        """Analyze a group of events to detect an operation."""
+        """Analyze a group of events to detect an operation using specialized detectors."""
         if not events:
             return None
 
-        # Try different detection strategies in order of specificity
-        detectors = [
-            self._detect_atomic_save,
-            self._detect_safe_write,
-            self._detect_rename_sequence,
-            self._detect_batch_update,
-            self._detect_backup_create,
-            self._detect_simple_operation,  # Fallback for basic operations
+        # Initialize specialized detector instances
+        atomic_detector = AtomicOperationDetector()
+        temp_detector = TempPatternDetector()
+        batch_detector = BatchOperationDetector()
+        simple_detector = SimpleOperationDetector()
+
+        # Try detectors in order of specificity (most specific patterns first)
+        # This ensures that editor-specific patterns are detected before generic ones
+        detection_attempts = [
+            # Temp file patterns (highest specificity for atomic saves)
+            (temp_detector.detect_temp_rename_pattern, (events,)),
+            (temp_detector.detect_delete_temp_pattern, (events,)),
+            (temp_detector.detect_temp_modify_pattern, (events,)),
+
+            # Atomic save patterns
+            (atomic_detector.detect_atomic_save, (events,)),
+            (atomic_detector.detect_safe_write, (events,)),
+
+            # Batch and sequence patterns
+            (batch_detector.detect_rename_sequence, (events,)),
+            (batch_detector.detect_batch_update, (events,)),
+            (batch_detector.detect_backup_create, (events,)),
+
+            # Simple patterns (lower specificity)
+            (simple_detector.detect_same_file_delete_create_pattern, (events,)),
+            (simple_detector.detect_direct_modification, (events,)),
+
+            # Temp cleanup (may not be relevant for display)
+            (temp_detector.detect_temp_create_delete_pattern, (events,)),
+
+            # Fallback for unmatched events
+            (simple_detector.detect_simple_operation, (events,)),
         ]
 
         best_operation = None
         best_confidence = 0.0
 
-        for detector in detectors:
-            operation = detector(events)
-            if operation and operation.confidence > best_confidence:
-                best_operation = operation
-                best_confidence = operation.confidence
+        for detect_func, args in detection_attempts:
+            try:
+                operation = detect_func(*args)
+                if operation and operation.confidence > best_confidence:
+                    best_operation = operation
+                    best_confidence = operation.confidence
+                    log.debug(
+                        "Found better operation match",
+                        detector=detect_func.__name__,
+                        confidence=operation.confidence,
+                        operation_type=operation.operation_type.value,
+                        primary_path=str(operation.primary_path),
+                    )
+            except Exception as e:
+                log.warning(
+                    "Detector failed",
+                    detector=detect_func.__name__,
+                    error=str(e),
+                )
 
-        return best_operation if best_confidence >= self.config.min_confidence else None
+        if best_operation and best_confidence >= self.config.min_confidence:
+            log.debug(
+                "Selected operation",
+                operation_type=best_operation.operation_type.value,
+                primary_path=str(best_operation.primary_path),
+                confidence=best_confidence,
+                is_temp=self._is_temp_file(best_operation.primary_path),
+            )
+            return best_operation
+
+        return None
 
     def _detect_temp_rename_pattern(
         self, events: list[FileEvent]

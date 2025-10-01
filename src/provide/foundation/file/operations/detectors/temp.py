@@ -32,18 +32,23 @@ class TempPatternDetector:
             time_diff = (next_event.timestamp - current.timestamp).total_seconds() * 1000
 
             if (
-                current.type == "created"
+                current.event_type == "created"
                 and self._is_temp_file(current.path)
-                and next_event.type == "moved"
-                and next_event.src_path == current.path
+                and next_event.event_type == "moved"
+                and next_event.path == current.path
+                and next_event.dest_path
                 and time_diff <= temp_window_ms
             ):
                 return FileOperation(
-                    type=OperationType.CREATE,
-                    path=next_event.path,
+                    operation_type=OperationType.ATOMIC_SAVE,
+                    primary_path=next_event.dest_path,
                     events=[current, next_event],
+                    confidence=0.95,
+                    description=f"Temp file renamed to {next_event.dest_path.name}",
                     start_time=current.timestamp,
                     end_time=next_event.timestamp,
+                    is_atomic=True,
+                    is_safe=True,
                     metadata={
                         "temp_file": str(current.path),
                         "pattern": "temp_rename",
@@ -65,22 +70,26 @@ class TempPatternDetector:
             temp_rename = events[i + 2]
 
             if (
-                delete_event.type == "deleted"
-                and temp_create.type == "created"
+                delete_event.event_type == "deleted"
+                and temp_create.event_type == "created"
                 and self._is_temp_file(temp_create.path)
-                and temp_rename.type == "moved"
-                and temp_rename.src_path == temp_create.path
-                and temp_rename.path == delete_event.path
+                and temp_rename.event_type == "moved"
+                and temp_rename.path == temp_create.path
+                and temp_rename.dest_path == delete_event.path
             ):
                 time_span = (temp_rename.timestamp - delete_event.timestamp).total_seconds() * 1000
 
                 if time_span <= temp_window_ms:
                     return FileOperation(
-                        type=OperationType.UPDATE,
-                        path=delete_event.path,
+                        operation_type=OperationType.ATOMIC_SAVE,
+                        primary_path=delete_event.path,
                         events=[delete_event, temp_create, temp_rename],
+                        confidence=0.90,
+                        description=f"File atomically saved via temp: {delete_event.path.name}",
                         start_time=delete_event.timestamp,
                         end_time=temp_rename.timestamp,
+                        is_atomic=True,
+                        is_safe=True,
                         metadata={
                             "temp_file": str(temp_create.path),
                             "pattern": "delete_temp_rename",
@@ -113,14 +122,14 @@ class TempPatternDetector:
 
             # Look for create -> modify -> rename sequence
             if (
-                temp_events[0].type == "created"
-                and any(e.type == "modified" for e in temp_events[1:])
+                temp_events[0].event_type == "created"
+                and any(e.event_type == "modified" for e in temp_events[1:])
             ):
                 # Find corresponding rename event
                 temp_path = Path(temp_path_str)
                 rename_events = [
                     e for e in events
-                    if e.type == "moved" and e.src_path == temp_path
+                    if e.event_type == "moved" and e.path == temp_path
                 ]
 
                 if rename_events:
@@ -133,12 +142,17 @@ class TempPatternDetector:
                     ).total_seconds() * 1000
 
                     if time_span <= temp_window_ms:
+                        final_path = rename_event.dest_path or rename_event.path
                         return FileOperation(
-                            type=OperationType.SAVE,
-                            path=rename_event.path,
+                            operation_type=OperationType.ATOMIC_SAVE,
+                            primary_path=final_path,
                             events=all_events,
+                            confidence=0.92,
+                            description=f"Temp file with modifications renamed to {final_path.name}",
                             start_time=all_events[0].timestamp,
                             end_time=all_events[-1].timestamp,
+                            is_atomic=True,
+                            is_safe=True,
                             metadata={
                                 "temp_file": temp_path_str,
                                 "pattern": "temp_modify_rename",
@@ -171,8 +185,8 @@ class TempPatternDetector:
 
             # Check for create -> delete pattern
             if (
-                temp_events[0].type == "created"
-                and temp_events[-1].type == "deleted"
+                temp_events[0].event_type == "created"
+                and temp_events[-1].event_type == "deleted"
             ):
                 time_span = (
                     temp_events[-1].timestamp - temp_events[0].timestamp
@@ -180,14 +194,17 @@ class TempPatternDetector:
 
                 if time_span <= temp_window_ms:
                     return FileOperation(
-                        type=OperationType.TEMP,
-                        path=Path(temp_path_str),
+                        operation_type=OperationType.TEMP_CLEANUP,
+                        primary_path=Path(temp_path_str),
                         events=temp_events,
+                        confidence=0.85,
+                        description="Temporary file created and deleted",
                         start_time=temp_events[0].timestamp,
                         end_time=temp_events[-1].timestamp,
+                        is_atomic=True,
+                        is_safe=True,
                         metadata={
                             "pattern": "temp_create_delete",
-                            "description": "Temporary file created and deleted",
                         },
                     )
 
