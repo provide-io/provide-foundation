@@ -102,6 +102,7 @@ class AsyncRateLimiter:
         self.tokens = float(capacity)
         self.last_refill = time.monotonic()
         self._lock: asyncio.Lock | None = None
+        self._init_lock = threading.Lock()
 
         # Track statistics
         self.total_allowed = 0
@@ -112,7 +113,9 @@ class AsyncRateLimiter:
     def lock(self) -> asyncio.Lock:
         """Get the asyncio lock, creating it lazily if needed."""
         if self._lock is None:
-            self._lock = asyncio.Lock()
+            with self._init_lock:
+                if self._lock is None:
+                    self._lock = asyncio.Lock()
         return self._lock
 
     async def is_allowed(self) -> bool:
@@ -160,19 +163,12 @@ class GlobalRateLimiter:
     """
 
     _instance = None
-    _lock: threading.Lock | None = None
+    _lock = threading.Lock()
     _initialized: bool
-
-    @classmethod
-    def _get_lock(cls) -> threading.Lock:
-        """Get the class lock, creating it lazily if needed."""
-        if cls._lock is None:
-            cls._lock = threading.Lock()
-        return cls._lock
 
     def __new__(cls) -> GlobalRateLimiter:
         if cls._instance is None:
-            with cls._get_lock():
+            with cls._lock:
                 if cls._instance is None:
                     cls._instance = super().__new__(cls)
                     cls._instance._initialized = False

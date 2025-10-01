@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import threading
 import time
 from typing import final
 
@@ -38,6 +39,7 @@ class TokenBucketRateLimiter:
         self._tokens: float = float(capacity)  # Start with a full bucket
         self._last_refill_timestamp: float = time.monotonic()
         self._lock: asyncio.Lock | None = None
+        self._init_lock = threading.Lock()
 
         # Cache logger instance to avoid repeated imports
         self._logger = None
@@ -56,7 +58,9 @@ class TokenBucketRateLimiter:
     def lock(self) -> asyncio.Lock:
         """Get the asyncio lock, creating it lazily if needed."""
         if self._lock is None:
-            self._lock = asyncio.Lock()
+            with self._init_lock:
+                if self._lock is None:
+                    self._lock = asyncio.Lock()
         return self._lock
 
     async def _refill_tokens(self) -> None:

@@ -13,14 +13,11 @@ Handles log streams, file handles, and output configuration.
 
 _PROVIDE_LOG_STREAM: TextIO = sys.stderr
 _LOG_FILE_HANDLE: TextIO | None = None
-_STREAM_LOCK: threading.Lock | None = None
+_STREAM_LOCK = threading.Lock()
 
 
 def _get_stream_lock() -> threading.Lock:
-    """Get the stream lock, creating it lazily if needed."""
-    global _STREAM_LOCK
-    if _STREAM_LOCK is None:
-        _STREAM_LOCK = threading.Lock()
+    """Get the stream lock."""
     return _STREAM_LOCK
 
 
