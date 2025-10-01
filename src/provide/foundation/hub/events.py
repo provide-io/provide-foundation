@@ -147,6 +147,15 @@ class EventBus:
         self._cleanup_dead_references()
         self._operation_count = 0
 
+    def clear(self) -> None:
+        """Clear all event subscriptions.
+
+        This is primarily used during test resets to prevent duplicate
+        event handlers from accumulating across test runs.
+        """
+        self._handlers.clear()
+        self._operation_count = 0
+
 
 # Global event bus instance
 _event_bus = EventBus()
