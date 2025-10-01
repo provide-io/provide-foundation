@@ -2,17 +2,18 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 import time
 
+from provide.testkit import FoundationTestCase
 import pytest
 
-from provide.testkit import FoundationTestCase
 from provide.foundation.file.utils import (
-        backup_file,
-        find_files,
-        get_mtime,
-        get_size,
-        touch,
+    backup_file,
+    find_files,
+    get_mtime,
+    get_size,
+    touch,
 )
 
 
@@ -68,11 +69,11 @@ class TestFileUtils(FoundationTestCase):
         path = temp_directory / "test.txt"
         before = time.time()
         path.write_text("content")
-        after = time.time()
 
         mtime = get_mtime(path)
         assert mtime is not None
-        assert before <= mtime <= after
+        # Allow small timing window after file creation due to filesystem granularity
+        assert before <= mtime <= time.time() + 1.0
 
     def test_get_mtime_missing_file(self, temp_directory: Path) -> None:
         """Test getting mtime of missing file returns None."""
@@ -275,6 +276,7 @@ class TestFileUtils(FoundationTestCase):
 
         # First backup
         backup1 = backup_file(path)
+        assert backup1 is not None
         assert backup1.name == "test.txt.bak"
 
         # Modify original
@@ -282,11 +284,13 @@ class TestFileUtils(FoundationTestCase):
 
         # Second backup should get a different name
         backup2 = backup_file(path)
+        assert backup2 is not None
         assert backup2.name == "test.txt.bak.1"
 
         # Third backup
         path.write_text("version 3")
         backup3 = backup_file(path)
+        assert backup3 is not None
         assert backup3.name == "test.txt.bak.2"
 
         # Check all backups exist
@@ -306,11 +310,9 @@ class TestFileUtils(FoundationTestCase):
     def test_backup_file_preserves_metadata(self, temp_directory: Path) -> None:
         """Test backup preserves file metadata."""
 
-        import os
-
         path = temp_directory / "test.txt"
         path.write_text("content")
-        os.chmod(path, 0o600)
+        path.chmod(0o600)
 
         backup_path = backup_file(path)
 

@@ -69,10 +69,11 @@ class TestSyncRateLimiter(FoundationTestCase):
         assert limiter.is_allowed() is True
         assert limiter.is_allowed() is False
 
-        # Wait for refill (0.15 seconds = 1.5 tokens)
-        time.sleep(0.15)
+        # Manually advance time to simulate refill instead of using timing-sensitive sleep
+        # Set the last refill timestamp to simulate 0.15 seconds ago (1.5 tokens)
+        limiter.last_refill = time.monotonic() - 0.15
 
-        # Should be allowed again
+        # Should be allowed again after manual time advancement
         assert limiter.is_allowed() is True
         assert limiter.is_allowed() is False  # Only 1.5 tokens refilled
 
@@ -179,10 +180,16 @@ class TestAsyncRateLimiter(FoundationTestCase):
         assert await limiter.is_allowed() is True
         assert await limiter.is_allowed() is False
 
-        # Wait for refill
-        await asyncio.sleep(0.15)  # 1.5 tokens
+        # Manually advance time to simulate refill instead of using timing-sensitive sleep
+        # Set the last refill timestamp to simulate 0.15 seconds ago (1.5 tokens)
+        import time
 
-        # Should be allowed again
+        limiter.last_refill = time.monotonic() - 0.15
+
+        # Minimal async yield to allow event loop processing
+        await asyncio.sleep(0)
+
+        # Should be allowed again after manual time advancement
         assert await limiter.is_allowed() is True
         assert await limiter.is_allowed() is False
 
@@ -368,6 +375,7 @@ class TestGlobalRateLimiter(FoundationTestCase):
         # Second request to test.logger should be denied by per-logger limit
         allowed, reason = limiter.is_allowed("test.logger")
         assert allowed is False
+        assert reason is not None
         assert "test.logger" in reason
 
         # Request to other logger should still be allowed (global limit not reached)
