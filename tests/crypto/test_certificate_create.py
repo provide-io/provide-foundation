@@ -42,7 +42,7 @@ class TestCertificateCreate(FoundationTestCase):
         """Test error in validity period calculation."""
         with (
             patch(
-                "provide.foundation.crypto.certificates.generator.datetime",
+                "provide.foundation.crypto.certificates.generator.datetime.now",
                 side_effect=Exception("Time error"),
             ),
             pytest.raises(CertificateError, match="Failed to initialize certificate"),
