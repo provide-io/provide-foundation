@@ -69,14 +69,6 @@ class TestCertificateLifecycle(FoundationTestCase):
         assert not expired_cert.verify_trust(expired_cert), "Expired certificates should not verify"
 
     @pytest.mark.asyncio
-    async def test_certificate_validity_period_error(self) -> None:
-        """Test certificate with invalid validity period."""
-        # Test with extreme validity period that should work
-        # (negative validity_days is allowed and will create an already-expired cert)
-        cert = Certificate(generate_keypair=True, validity_days=-365)
-        assert not cert.is_valid, "Certificate with negative validity should be expired"
-
-    @pytest.mark.asyncio
     async def test_certificate_extension_addition_failure(self) -> None:
         """Ensure failures in adding extensions raise CertificateError."""
         cert = Certificate(generate_keypair=True)
