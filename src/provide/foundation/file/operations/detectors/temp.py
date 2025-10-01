@@ -49,6 +49,7 @@ class TempPatternDetector:
                     end_time=next_event.timestamp,
                     is_atomic=True,
                     is_safe=True,
+                    files_affected=[next_event.dest_path],
                     metadata={
                         "temp_file": str(current.path),
                         "pattern": "temp_rename",
@@ -90,6 +91,7 @@ class TempPatternDetector:
                         end_time=temp_rename.timestamp,
                         is_atomic=True,
                         is_safe=True,
+                        files_affected=[delete_event.path],
                         metadata={
                             "temp_file": str(temp_create.path),
                             "pattern": "delete_temp_rename",
@@ -153,6 +155,7 @@ class TempPatternDetector:
                             end_time=all_events[-1].timestamp,
                             is_atomic=True,
                             is_safe=True,
+                            files_affected=[final_path],
                             metadata={
                                 "temp_file": temp_path_str,
                                 "pattern": "temp_modify_rename",
@@ -203,6 +206,7 @@ class TempPatternDetector:
                         end_time=temp_events[-1].timestamp,
                         is_atomic=True,
                         is_safe=True,
+                        files_affected=[Path(temp_path_str)],
                         metadata={
                             "pattern": "temp_create_delete",
                         },

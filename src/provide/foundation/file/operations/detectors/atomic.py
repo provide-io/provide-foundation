@@ -59,6 +59,7 @@ class AtomicOperationDetector:
                     end_time=related_events[-1].timestamp,
                     is_atomic=True,
                     is_safe=True,
+                    files_affected=[target_path],
                     metadata={
                         "temp_file": str(current.path),
                         "pattern": "atomic_save",
@@ -115,6 +116,7 @@ class AtomicOperationDetector:
                     is_atomic=False,
                     is_safe=True,
                     has_backup=True,
+                    files_affected=[target_path],
                     metadata={
                         "backup_file": str(backup_created.path),
                         "pattern": "safe_write",

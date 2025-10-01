@@ -56,9 +56,10 @@ class BatchOperationDetector:
             longest_chain = max(chains, key=len)
             longest_chain.sort(key=lambda e: e.timestamp)
 
+            final_path = longest_chain[-1].dest_path or longest_chain[-1].path
             return FileOperation(
                 operation_type=OperationType.RENAME_SEQUENCE,
-                primary_path=longest_chain[-1].dest_path or longest_chain[-1].path,
+                primary_path=final_path,
                 events=longest_chain,
                 confidence=0.90,
                 description=f"Rename sequence of {len(longest_chain)} moves",
@@ -66,6 +67,7 @@ class BatchOperationDetector:
                 end_time=longest_chain[-1].timestamp,
                 is_atomic=True,
                 is_safe=True,
+                files_affected=[final_path],
                 metadata={
                     "original_path": str(longest_chain[0].path),
                     "chain_length": len(longest_chain),
