@@ -192,7 +192,7 @@ class OperationDetector:
 
         if best_operation and best_confidence >= self.config.min_confidence:
             # Validate that primary_path is not a temp file
-            if self._is_temp_file(best_operation.primary_path):
+            if is_temp_file(best_operation.primary_path):
                 log.warning(
                     "Detector returned temp file as primary_path, attempting to fix",
                     temp_path=str(best_operation.primary_path),
@@ -221,7 +221,7 @@ class OperationDetector:
                 operation_type=best_operation.operation_type.value,
                 primary_path=str(best_operation.primary_path),
                 confidence=best_confidence,
-                is_temp=self._is_temp_file(best_operation.primary_path),
+                is_temp=is_temp_file(best_operation.primary_path),
             )
             return best_operation
 
@@ -232,23 +232,23 @@ class OperationDetector:
         # Look for non-temp files in the events
         for event in reversed(events):  # Start from most recent
             # Check dest_path first (for move/rename operations)
-            if event.dest_path and not self._is_temp_file(event.dest_path):
+            if event.dest_path and not is_temp_file(event.dest_path):
                 return event.dest_path
             # Then check regular path
-            if not self._is_temp_file(event.path):
+            if not is_temp_file(event.path):
                 return event.path
 
         # If all files are temp files, try to extract the base name
         for event in events:
             if event.dest_path:
-                base_name = self._extract_base_name(event.dest_path)
+                base_name = extract_base_name(event.dest_path)
                 if base_name:
                     # Try to construct real path from base name
                     real_path = event.dest_path.parent / base_name
                     if real_path != event.dest_path:
                         return real_path
 
-            base_name = self._extract_base_name(event.path)
+            base_name = extract_base_name(event.path)
             if base_name:
                 real_path = event.path.parent / base_name
                 if real_path != event.path:
@@ -300,8 +300,8 @@ class OperationDetector:
 
     def _files_related(self, path1: Path, path2: Path) -> bool:
         """Check if two file paths are related (same base name)."""
-        base1 = self._extract_base_name(path1)
-        base2 = self._extract_base_name(path2)
+        base1 = extract_base_name(path1)
+        base2 = extract_base_name(path2)
 
         if base1 and base2:
             return base1 == base2
