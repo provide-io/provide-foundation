@@ -44,8 +44,8 @@ class SimpleOperationDetector:
                 create_event = path_events[i + 1]
 
                 if (
-                    delete_event.type == "deleted"
-                    and create_event.type == "created"
+                    delete_event.event_type == "deleted"
+                    and create_event.event_type == "created"
                 ):
                     time_diff = (
                         create_event.timestamp - delete_event.timestamp
@@ -53,14 +53,17 @@ class SimpleOperationDetector:
 
                     if time_diff <= window_ms:
                         return FileOperation(
-                            type=OperationType.UPDATE,
-                            path=Path(path_str),
+                            operation_type=OperationType.ATOMIC_SAVE,
+                            primary_path=Path(path_str),
                             events=[delete_event, create_event],
+                            confidence=0.90,
+                            description=f"File replaced: {Path(path_str).name}",
                             start_time=delete_event.timestamp,
                             end_time=create_event.timestamp,
+                            is_atomic=True,
+                            is_safe=True,
                             metadata={
                                 "pattern": "delete_create_replace",
-                                "description": f"File replaced: {Path(path_str).name}",
                             },
                         )
 
@@ -75,34 +78,40 @@ class SimpleOperationDetector:
 
         # Map event types to operation types
         type_mapping = {
-            "created": OperationType.CREATE,
-            "modified": OperationType.UPDATE,
-            "deleted": OperationType.DELETE,
-            "moved": OperationType.MOVE,
+            "created": OperationType.BACKUP_CREATE,
+            "modified": OperationType.ATOMIC_SAVE,
+            "deleted": OperationType.TEMP_CLEANUP,
+            "moved": OperationType.RENAME_SEQUENCE,
         }
 
-        if event.type not in type_mapping:
+        if event.event_type not in type_mapping:
             return None
 
-        operation_type = type_mapping[event.type]
+        operation_type = type_mapping[event.event_type]
 
         # Special handling for move operations
-        if event.type == "moved":
+        if event.event_type == "moved":
+            primary_path = event.dest_path or event.path
             metadata = {
-                "original_path": str(event.src_path) if event.src_path else None,
+                "original_path": str(event.path),
                 "pattern": "simple_move",
             }
         else:
+            primary_path = event.path
             metadata = {
-                "pattern": f"simple_{event.type}",
+                "pattern": f"simple_{event.event_type}",
             }
 
         return FileOperation(
-            type=operation_type,
-            path=event.path,
+            operation_type=operation_type,
+            primary_path=primary_path,
             events=[event],
+            confidence=0.70,
+            description=f"Simple {event.event_type} on {primary_path.name}",
             start_time=event.timestamp,
             end_time=event.timestamp,
+            is_atomic=True,
+            is_safe=True,
             metadata=metadata,
         )
 
@@ -114,7 +123,7 @@ class SimpleOperationDetector:
         # Check if all events are modifications of the same file
         first_event = events[0]
         if not all(
-            event.path == first_event.path and event.type == "modified"
+            event.path == first_event.path and event.event_type == "modified"
             for event in events
         ):
             return None
@@ -123,14 +132,17 @@ class SimpleOperationDetector:
         sorted_events = sorted(events, key=lambda e: e.timestamp)
 
         return FileOperation(
-            type=OperationType.UPDATE,
-            path=first_event.path,
+            operation_type=OperationType.ATOMIC_SAVE,
+            primary_path=first_event.path,
             events=sorted_events,
+            confidence=0.80,
+            description=f"Multiple modifications to {first_event.path.name}",
             start_time=sorted_events[0].timestamp,
             end_time=sorted_events[-1].timestamp,
+            is_atomic=False,
+            is_safe=True,
             metadata={
                 "modification_count": len(sorted_events),
                 "pattern": "direct_modification",
-                "description": f"Multiple modifications to {first_event.path.name}",
             },
         )

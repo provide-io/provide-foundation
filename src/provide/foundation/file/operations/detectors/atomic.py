@@ -32,13 +32,14 @@ class AtomicOperationDetector:
 
             if (
                 self._is_temp_file(current.path)
-                and current.type in {"created", "modified"}
-                and next_event.type == "moved"
-                and next_event.src_path == current.path
-                and not self._is_temp_file(next_event.path)
+                and current.event_type in {"created", "modified"}
+                and next_event.event_type == "moved"
+                and next_event.path == current.path
+                and next_event.dest_path
+                and not self._is_temp_file(next_event.dest_path)
             ):
                 # Found atomic save pattern
-                target_path = next_event.path
+                target_path = next_event.dest_path
 
                 # Look for other related events (additional writes to temp)
                 related_events = [current, next_event]
@@ -49,15 +50,18 @@ class AtomicOperationDetector:
                 related_events.sort(key=lambda e: e.timestamp)
 
                 return FileOperation(
-                    type=OperationType.SAVE,
-                    path=target_path,
+                    operation_type=OperationType.ATOMIC_SAVE,
+                    primary_path=target_path,
                     events=related_events,
+                    confidence=0.95,
+                    description=f"Atomic save to {target_path.name}",
                     start_time=related_events[0].timestamp,
                     end_time=related_events[-1].timestamp,
+                    is_atomic=True,
+                    is_safe=True,
                     metadata={
                         "temp_file": str(current.path),
                         "pattern": "atomic_save",
-                        "description": f"Atomic save to {target_path.name}",
                     },
                 )
 
@@ -91,9 +95,9 @@ class AtomicOperationDetector:
             original_created = None
 
             for event in group_events:
-                if event.type in {"moved", "created"} and self._is_backup_file(event.path):
+                if event.event_type in {"moved", "created"} and self._is_backup_file(event.path):
                     backup_created = event
-                elif event.type == "created" and not self._is_backup_file(event.path):
+                elif event.event_type == "created" and not self._is_backup_file(event.path):
                     original_created = event
 
             if backup_created and original_created:
@@ -101,15 +105,19 @@ class AtomicOperationDetector:
                 target_path = original_created.path
 
                 return FileOperation(
-                    type=OperationType.SAVE,
-                    path=target_path,
+                    operation_type=OperationType.SAFE_WRITE,
+                    primary_path=target_path,
                     events=group_events,
+                    confidence=0.95,
+                    description=f"Safe write to {target_path.name}",
                     start_time=group_events[0].timestamp,
                     end_time=group_events[-1].timestamp,
+                    is_atomic=False,
+                    is_safe=True,
+                    has_backup=True,
                     metadata={
                         "backup_file": str(backup_created.path),
                         "pattern": "safe_write",
-                        "description": f"Safe write to {target_path.name}",
                     },
                 )
 

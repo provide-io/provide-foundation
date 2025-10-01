@@ -24,29 +24,29 @@ class BatchOperationDetector:
             return None
 
         # Look for chain of moves: A -> B -> C
-        move_events = [e for e in events if e.type == "moved"]
+        move_events = [e for e in events if e.event_type == "moved"]
         if len(move_events) < 2:
             return None
 
         # Build rename chains
         chains = []
         for move_event in move_events:
-            # Find chains where this move's src_path is another move's destination
+            # Find chains where this move's source path is another move's destination
             chain = [move_event]
 
             # Look backwards
-            current_src = move_event.src_path
+            current_src = move_event.path
             for other_move in move_events:
-                if other_move != move_event and other_move.path == current_src:
+                if other_move != move_event and other_move.dest_path == current_src:
                     chain.insert(0, other_move)
-                    current_src = other_move.src_path
+                    current_src = other_move.path
 
             # Look forwards
-            current_dest = move_event.path
+            current_dest = move_event.dest_path
             for other_move in move_events:
-                if other_move != move_event and other_move.src_path == current_dest:
+                if other_move != move_event and other_move.path == current_dest:
                     chain.append(other_move)
-                    current_dest = other_move.path
+                    current_dest = other_move.dest_path
 
             if len(chain) >= 2:
                 chains.append(chain)
@@ -57,13 +57,17 @@ class BatchOperationDetector:
             longest_chain.sort(key=lambda e: e.timestamp)
 
             return FileOperation(
-                type=OperationType.MOVE,
-                path=longest_chain[-1].path,
+                operation_type=OperationType.RENAME_SEQUENCE,
+                primary_path=longest_chain[-1].dest_path or longest_chain[-1].path,
                 events=longest_chain,
+                confidence=0.90,
+                description=f"Rename sequence of {len(longest_chain)} moves",
                 start_time=longest_chain[0].timestamp,
                 end_time=longest_chain[-1].timestamp,
+                is_atomic=True,
+                is_safe=True,
                 metadata={
-                    "original_path": str(longest_chain[0].src_path),
+                    "original_path": str(longest_chain[0].path),
                     "chain_length": len(longest_chain),
                     "pattern": "rename_sequence",
                 },
@@ -79,7 +83,7 @@ class BatchOperationDetector:
         # Group events by directory and time proximity
         directory_groups = defaultdict(list)
         for event in events:
-            if event.type in {"created", "modified", "deleted"}:
+            if event.event_type in {"created", "modified", "deleted"}:
                 directory_groups[event.path.parent].append(event)
 
         for directory, dir_events in directory_groups.items():
@@ -96,15 +100,19 @@ class BatchOperationDetector:
                     operation_type = self._determine_batch_operation_type(dir_events)
 
                     return FileOperation(
-                        type=operation_type,
-                        path=directory,
+                        operation_type=OperationType.BATCH_UPDATE,
+                        primary_path=directory,
                         events=dir_events,
+                        confidence=0.85,
+                        description=f"Batch operation on {len(dir_events)} files",
                         start_time=dir_events[0].timestamp,
                         end_time=dir_events[-1].timestamp,
+                        is_atomic=False,
+                        is_safe=True,
+                        files_affected=[e.path for e in dir_events],
                         metadata={
                             "file_count": len(dir_events),
                             "pattern": "batch_update",
-                            "description": f"Batch operation on {len(dir_events)} files",
                         },
                     )
 
@@ -121,22 +129,27 @@ class BatchOperationDetector:
             create_event = events[i + 1]
 
             if (
-                move_event.type == "moved"
-                and create_event.type == "created"
-                and self._is_backup_file(move_event.path)
-                and move_event.src_path == create_event.path
+                move_event.event_type == "moved"
+                and create_event.event_type == "created"
+                and self._is_backup_file(move_event.dest_path or move_event.path)
+                and move_event.path == create_event.path
             ):
                 # Time window check (backup operations usually happen quickly)
                 time_diff = (create_event.timestamp - move_event.timestamp).total_seconds()
                 if time_diff <= 2.0:
                     return FileOperation(
-                        type=OperationType.BACKUP,
-                        path=create_event.path,
+                        operation_type=OperationType.BACKUP_CREATE,
+                        primary_path=create_event.path,
                         events=[move_event, create_event],
+                        confidence=0.90,
+                        description=f"Backup created for {create_event.path.name}",
                         start_time=move_event.timestamp,
                         end_time=create_event.timestamp,
+                        is_atomic=True,
+                        is_safe=True,
+                        has_backup=True,
                         metadata={
-                            "backup_file": str(move_event.path),
+                            "backup_file": str(move_event.dest_path or move_event.path),
                             "pattern": "backup_create",
                         },
                     )
@@ -187,19 +200,19 @@ class BatchOperationDetector:
         """Determine the primary operation type for a batch."""
         type_counts = defaultdict(int)
         for event in events:
-            type_counts[event.type] += 1
+            type_counts[event.event_type] += 1
 
         # Return the most common operation type
         most_common_type = max(type_counts.keys(), key=lambda k: type_counts[k])
 
         type_mapping = {
-            "created": OperationType.CREATE,
-            "modified": OperationType.UPDATE,
-            "deleted": OperationType.DELETE,
-            "moved": OperationType.MOVE,
+            "created": OperationType.BACKUP_CREATE,
+            "modified": OperationType.ATOMIC_SAVE,
+            "deleted": OperationType.TEMP_CLEANUP,
+            "moved": OperationType.RENAME_SEQUENCE,
         }
 
-        return type_mapping.get(most_common_type, OperationType.UPDATE)
+        return type_mapping.get(most_common_type, OperationType.BATCH_UPDATE)
 
     def _is_backup_file(self, path: Path) -> bool:
         """Check if path looks like a backup file."""
