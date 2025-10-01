@@ -63,33 +63,26 @@ if not os.getenv("PYTEST_WORKER_ID"):  # Avoid multiple messages with xdist
 
 @pytest.fixture(autouse=True)
 def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[None]:
-    """Autouse fixture to reset Foundation state before each test.
+    """Autouse fixture to reset Foundation state after each test.
 
-    This ensures ALL tests get Foundation reset, not just those inheriting
-    from FoundationTestCase. This prevents global Hub state pollution between tests.
+    This ensures ALL tests get Foundation reset after completion, preventing global
+    Hub state pollution between tests. This is critical for parallel test execution
+    where environment variables and Hub state can leak between tests.
 
-    For test classes that inherit from FoundationTestCase, this fixture does nothing
-    since FoundationTestCase.setup_method() already handles reset with special logic
-    for timing-sensitive tests.
-
-    For standalone test functions (not in a class), this fixture ensures they get
-    proper Foundation reset.
+    The reset happens in the finally block (after test completion) to ensure that:
+    1. TestEnvironment context managers complete their cleanup first
+    2. Any state from the test is fully cleared before the next test starts
+    3. Environment variables set by the test don't affect the next test
     """
     from provide.testkit import reset_foundation_setup_for_testing
-    from provide.testkit.base.foundation import FoundationTestCase
-
-    # Check if this is a test method in a FoundationTestCase subclass
-    # If so, skip reset here as FoundationTestCase.setup_method() will handle it
-    is_foundation_test_case = request.instance is not None and isinstance(request.instance, FoundationTestCase)
-
-    if not is_foundation_test_case:
-        # Standalone test function or non-FoundationTestCase class
-        # Reset Foundation state before test
-        reset_foundation_setup_for_testing()
 
     try:
         yield
     finally:
+        # ALWAYS reset Foundation after each test, regardless of test type
+        # This ensures clean state for the next test in the worker
+        reset_foundation_setup_for_testing()
+
         # Ensure stream is reset to default stderr after each test
         # Handle potential closed streams during parallel execution
         from provide.foundation.errors.decorators import suppress_and_log
