@@ -75,6 +75,7 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
     3. Environment variables set by the test don't affect the next test
     """
     from provide.testkit import reset_foundation_setup_for_testing
+    import sys
 
     try:
         yield
@@ -82,6 +83,13 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
         # ALWAYS reset Foundation after each test, regardless of test type
         # This ensures clean state for the next test in the worker
         reset_foundation_setup_for_testing()
+
+        # Clean up crypto module cache to prevent patched state from leaking
+        # Crypto tests patch _HAS_CRYPTO and import modules, which get cached
+        # in sys.modules with the patched state, affecting subsequent tests
+        crypto_modules = [key for key in sys.modules.keys() if key.startswith("provide.foundation.crypto")]
+        for module_name in crypto_modules:
+            sys.modules.pop(module_name, None)
 
         # Ensure stream is reset to default stderr after each test
         # Handle potential closed streams during parallel execution
