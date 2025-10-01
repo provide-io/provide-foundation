@@ -81,6 +81,16 @@ def reset_hub_state() -> None:
         # Components module not available, skip
         pass
 
+    try:
+        # Clear event bus subscribers to prevent duplicate handlers accumulating
+        # across test runs (handlers are module-level functions that never get GC'd)
+        from provide.foundation.hub.events import get_event_bus
+
+        get_event_bus().clear()
+    except ImportError:
+        # Events module not available, skip
+        pass
+
 
 def reset_streams_state() -> None:
     """Reset stream state to defaults.
