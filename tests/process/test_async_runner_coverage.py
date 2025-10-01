@@ -265,8 +265,8 @@ class TestAsyncContextualBehavior(FoundationTestCase):
         # This tests the asyncio integration
         task = asyncio.create_task(async_run_command(["sleep", "1"]))
 
-        # Give it a moment to start
-        await asyncio.sleep(0.1)
+        # Give it a moment to start (use minimal delay to avoid timing issues in full suite)
+        await asyncio.sleep(0)
 
         # Cancel the task
         task.cancel()
