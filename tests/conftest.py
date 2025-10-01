@@ -80,9 +80,7 @@ def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[
 
     # Check if this is a test method in a FoundationTestCase subclass
     # If so, skip reset here as FoundationTestCase.setup_method() will handle it
-    is_foundation_test_case = (
-        request.instance is not None and isinstance(request.instance, FoundationTestCase)
-    )
+    is_foundation_test_case = request.instance is not None and isinstance(request.instance, FoundationTestCase)
 
     if not is_foundation_test_case:
         # Standalone test function or non-FoundationTestCase class
