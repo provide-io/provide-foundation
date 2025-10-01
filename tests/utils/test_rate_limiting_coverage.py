@@ -5,8 +5,8 @@ from __future__ import annotations
 import asyncio
 import time
 
-import pytest
 from provide.testkit import FoundationTestCase
+import pytest
 
 from provide.foundation.utils.rate_limiting import TokenBucketRateLimiter
 
@@ -20,7 +20,7 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
         assert limiter._capacity == 10.0
         assert limiter._refill_rate == 5.0
         assert limiter._tokens == 10.0  # Starts full
-        assert isinstance(limiter._lock, asyncio.Lock)
+        assert isinstance(limiter.lock, asyncio.Lock)
 
     def test_init_invalid_capacity(self) -> None:
         """Test initialization with invalid capacity."""
@@ -333,14 +333,14 @@ class TestTokenBucketEdgeCases:
         limiter = TokenBucketRateLimiter(capacity=5, refill_rate=1)
 
         # Verify lock is not held initially
-        assert not limiter._lock.locked()
+        assert not limiter.lock.locked()
 
         # Test that methods properly acquire and release lock
         await limiter.is_allowed()
-        assert not limiter._lock.locked()
+        assert not limiter.lock.locked()
 
         await limiter.get_current_tokens()
-        assert not limiter._lock.locked()
+        assert not limiter.lock.locked()
 
 
 class TestRateLimitingIntegration:
