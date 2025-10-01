@@ -76,54 +76,60 @@ class AtomicOperationDetector:
     def detect_safe_write(self, events: list[FileEvent]) -> FileOperation | None:
         """Detect safe write pattern (backup original, write new, cleanup).
 
-        Common pattern: rename original to backup -> create new -> delete backup
+        Common pattern: create backup -> modify original OR rename original to backup -> create new
         """
         if len(events) < 2:
             return None
 
-        # Group events by base file name
-        file_groups = {}
-        for event in events:
-            base_name = extract_base_name(event.path)
-            if base_name:
-                if base_name not in file_groups:
-                    file_groups[base_name] = []
-                file_groups[base_name].append(event)
+        # Find backup files and match them with original files
+        backup_events = []
+        regular_events = []
 
-        for base_name, group_events in file_groups.items():
-            if len(group_events) < 2:
+        for event in events:
+            if is_backup_file(event.path):
+                backup_events.append(event)
+            else:
+                regular_events.append(event)
+
+        # Try to match backup files with regular files
+        for backup_event in backup_events:
+            if backup_event.event_type not in {"moved", "created"}:
                 continue
 
-            group_events.sort(key=lambda e: e.timestamp)
+            # Extract base name from backup
+            base_name = extract_base_name(backup_event.path)
+            if not base_name:
+                continue
 
-            # Look for backup creation followed by file creation or modification
-            backup_created = None
-            original_updated = None
+            backup_parent = backup_event.path.parent
+            expected_original = backup_parent / base_name
 
-            for event in group_events:
-                if event.event_type in {"moved", "created"} and is_backup_file(event.path):
-                    backup_created = event
-                elif event.event_type in {"created", "modified"} and not is_backup_file(event.path):
-                    original_updated = event
+            # Find matching original file events
+            matching_events = [
+                e for e in regular_events
+                if e.path == expected_original and e.event_type in {"created", "modified"}
+            ]
 
-            if backup_created and original_updated:
+            if matching_events:
                 # Found safe write pattern
-                target_path = original_updated.path
+                original_event = matching_events[0]
+                all_events = [backup_event, original_event]
+                all_events.sort(key=lambda e: e.timestamp)
 
                 return FileOperation(
                     operation_type=OperationType.SAFE_WRITE,
-                    primary_path=target_path,
-                    events=group_events,
+                    primary_path=original_event.path,
+                    events=all_events,
                     confidence=0.95,
-                    description=f"Safe write to {target_path.name}",
-                    start_time=group_events[0].timestamp,
-                    end_time=group_events[-1].timestamp,
+                    description=f"Safe write to {original_event.path.name}",
+                    start_time=all_events[0].timestamp,
+                    end_time=all_events[-1].timestamp,
                     is_atomic=False,
                     is_safe=True,
                     has_backup=True,
-                    files_affected=[target_path],
+                    files_affected=[original_event.path],
                     metadata={
-                        "backup_file": str(backup_created.path),
+                        "backup_file": str(backup_event.path),
                         "pattern": "safe_write",
                     },
                 )
