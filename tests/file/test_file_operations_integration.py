@@ -333,7 +333,10 @@ class TestFileOperationIntegration(FoundationTestCase):
         time.sleep(0.6)  # Wait longer than default time window
 
         file2.write_text("Content 2")
-        time.sleep(0.1)
+        time.sleep(0.15)  # Allow filesystem events to be captured
+
+        # Ensure events were captured
+        assert len(file_monitor.events) >= 1, "No events captured from file system"
 
         # Should be detected as separate operations
         detector = OperationDetector(DetectorConfig(time_window_ms=500))
