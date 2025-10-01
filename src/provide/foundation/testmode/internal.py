@@ -81,15 +81,10 @@ def reset_hub_state() -> None:
         # Components module not available, skip
         pass
 
-    try:
-        # Clear event bus subscribers to prevent duplicate handlers accumulating
-        # across test runs (handlers are module-level functions that never get GC'd)
-        from provide.foundation.hub.events import get_event_bus
-
-        get_event_bus().clear()
-    except ImportError:
-        # Events module not available, skip
-        pass
+    # NOTE: Event bus clearing removed - it was causing infinite recursion
+    # during Foundation reinitialization. Event handlers use weak references
+    # and will be garbage collected naturally. The event bus has built-in
+    # "already registered" checks to prevent duplicate registrations.
 
 
 def reset_streams_state() -> None:
