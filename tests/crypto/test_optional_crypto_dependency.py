@@ -2,32 +2,11 @@
 
 from __future__ import annotations
 
-import sys
-
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.crypto import _HAS_CRYPTO
-
-
-@pytest.fixture(autouse=True)
-def cleanup_crypto_modules():
-    """Clean up crypto modules after tests that patch _HAS_CRYPTO.
-
-    This prevents patched module state from leaking to subsequent tests
-    when running the test suite serially.
-    """
-    yield
-
-    # After test completes, remove crypto modules from sys.modules
-    # This forces them to be re-imported with correct state
-    crypto_modules = [
-        key for key in list(sys.modules.keys())
-        if key.startswith("provide.foundation.crypto")
-    ]
-    for module_name in crypto_modules:
-        sys.modules.pop(module_name, None)
 
 
 class TestOptionalCryptoDependency(FoundationTestCase):
