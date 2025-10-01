@@ -62,12 +62,17 @@ if not os.getenv("PYTEST_WORKER_ID"):  # Avoid multiple messages with xdist
 
 
 @pytest.fixture(autouse=True)
-def reset_log_stream_for_testing() -> Generator[None]:
-    """Autouse fixture to reset log stream after each test.
+def reset_foundation_for_all_tests() -> Generator[None]:
+    """Autouse fixture to reset Foundation state before each test.
 
-    Foundation reset is handled by FoundationTestCase for migrated tests.
-    This fixture only ensures log stream cleanup for all tests.
+    This ensures ALL tests get Foundation reset, not just those inheriting
+    from FoundationTestCase. This prevents global Hub state pollution between tests.
     """
+    from provide.testkit import reset_foundation_setup_for_testing
+
+    # Reset Foundation state before test
+    reset_foundation_setup_for_testing()
+
     try:
         yield
     finally:
