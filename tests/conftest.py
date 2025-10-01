@@ -62,16 +62,32 @@ if not os.getenv("PYTEST_WORKER_ID"):  # Avoid multiple messages with xdist
 
 
 @pytest.fixture(autouse=True)
-def reset_foundation_for_all_tests() -> Generator[None]:
+def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[None]:
     """Autouse fixture to reset Foundation state before each test.
 
     This ensures ALL tests get Foundation reset, not just those inheriting
     from FoundationTestCase. This prevents global Hub state pollution between tests.
+
+    For test classes that inherit from FoundationTestCase, this fixture does nothing
+    since FoundationTestCase.setup_method() already handles reset with special logic
+    for timing-sensitive tests.
+
+    For standalone test functions (not in a class), this fixture ensures they get
+    proper Foundation reset.
     """
     from provide.testkit import reset_foundation_setup_for_testing
+    from provide.testkit.base.foundation import FoundationTestCase
 
-    # Reset Foundation state before test
-    reset_foundation_setup_for_testing()
+    # Check if this is a test method in a FoundationTestCase subclass
+    # If so, skip reset here as FoundationTestCase.setup_method() will handle it
+    is_foundation_test_case = (
+        request.instance is not None and isinstance(request.instance, FoundationTestCase)
+    )
+
+    if not is_foundation_test_case:
+        # Standalone test function or non-FoundationTestCase class
+        # Reset Foundation state before test
+        reset_foundation_setup_for_testing()
 
     try:
         yield
