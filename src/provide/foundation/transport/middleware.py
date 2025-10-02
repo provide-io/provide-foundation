@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from collections.abc import Awaitable, Callable
 import time
 from typing import Any
 
@@ -132,6 +133,8 @@ class RetryMiddleware(Middleware):
             retryable_status_codes={500, 502, 503, 504},
         ),
     )
+    time_source: Callable[[], float] | None = field(default=None)
+    async_sleep_func: Callable[[float], Awaitable[None]] | None = field(default=None)
 
     async def process_request(self, request: Request) -> Request:
         """No request processing needed."""
@@ -147,7 +150,11 @@ class RetryMiddleware(Middleware):
 
     async def execute_with_retry(self, execute_func: Any, request: Request) -> Response:
         """Execute request with retry logic using unified RetryExecutor."""
-        executor = RetryExecutor(self.policy)
+        executor = RetryExecutor(
+            self.policy,
+            time_source=self.time_source,
+            async_sleep_func=self.async_sleep_func,
+        )
 
         async def wrapped() -> Any:
             response = await execute_func(request)
