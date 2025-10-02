@@ -20,9 +20,10 @@ from provide.foundation.logger.processors.trace import inject_trace_context
 
 """Structlog processors for Foundation Telemetry."""
 
-# Module-level flag to prevent event enrichment re-initialization during resets
-# This persists across structlog.reset_defaults() calls
+# Module-level flags to prevent event enrichment re-initialization during resets
+# These persist across structlog.reset_defaults() calls
 _event_enrichment_initialized = False
+_reset_in_progress = False
 
 
 def _config_create_service_name_processor(
@@ -73,6 +74,11 @@ def _config_create_event_enrichment_processors(
             _method_name: str,
             event_dict: structlog.types.EventDict,
         ) -> structlog.types.EventDict:
+            # Skip event enrichment entirely during resets to prevent re-initialization
+            global _reset_in_progress
+            if _reset_in_progress:
+                return event_dict
+
             # Lazy import to avoid circular dependency
             from provide.foundation.eventsets.registry import discover_event_sets
             from provide.foundation.eventsets.resolver import get_resolver
@@ -95,6 +101,15 @@ def _config_create_event_enrichment_processors(
 
         processors.append(cast("StructlogProcessor", add_event_enrichment_processor))
     return processors
+
+
+def set_reset_in_progress(in_progress: bool) -> None:
+    """Set whether a reset is currently in progress.
+
+    This prevents event enrichment from triggering during resets.
+    """
+    global _reset_in_progress
+    _reset_in_progress = in_progress
 
 
 def reset_event_enrichment_state() -> None:

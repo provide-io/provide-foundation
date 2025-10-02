@@ -151,6 +151,14 @@ def reset_foundation_state() -> None:
             reset_structlog_state,
         )
 
+        # Signal that reset is in progress to prevent event enrichment
+        try:
+            from provide.foundation.logger.processors.main import set_reset_in_progress
+
+            set_reset_in_progress(True)
+        except ImportError:
+            pass
+
         # Reset Foundation environment variables first to avoid affecting other resets
         _reset_foundation_environment_variables()
 
@@ -199,8 +207,14 @@ def reset_foundation_state() -> None:
         # Final reset of logger state (after all operations that might trigger setup)
         reset_logger_state()
     finally:
-        # Always clear the in-progress flag
+        # Always clear the reset-in-progress flags
         _reset_in_progress = False
+        try:
+            from provide.foundation.logger.processors.main import set_reset_in_progress
+
+            set_reset_in_progress(False)
+        except ImportError:
+            pass
 
 
 def reset_foundation_for_testing() -> None:
