@@ -269,7 +269,13 @@ class TestRetryDecoratorAsync(FoundationTestCase):
         get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
         callback = AsyncMock()
 
-        @retry(max_attempts=2, base_delay=0.01, on_retry=callback, time_source=get_time, async_sleep_func=fake_async_sleep)
+        @retry(
+            max_attempts=2,
+            base_delay=0.01,
+            on_retry=callback,
+            time_source=get_time,
+            async_sleep_func=fake_async_sleep,
+        )
         async def async_with_callback() -> str:
             if not hasattr(async_with_callback, "called"):
                 async_with_callback.called = True
