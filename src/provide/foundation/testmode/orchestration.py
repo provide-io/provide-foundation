@@ -158,6 +158,17 @@ def reset_foundation_state() -> None:
         reset_structlog_state()
         reset_streams_state()
 
+        # Reset event enrichment processor state to prevent re-initialization during cleanup
+        try:
+            from provide.foundation.logger.processors.main import (
+                reset_event_enrichment_state,
+            )
+
+            reset_event_enrichment_state()
+        except ImportError:
+            # Processor module not available, skip
+            pass
+
         # Reset OpenTelemetry providers to avoid "Overriding" warnings and stream closure
         # Note: OpenTelemetry providers are designed to prevent override for safety.
         # In parallel test environments (pytest-xdist), skip this reset to avoid deadlocks.
