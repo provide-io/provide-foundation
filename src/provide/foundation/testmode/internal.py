@@ -22,11 +22,25 @@ def reset_event_loops() -> None:
 
     This is critical for pytest-xdist workers to shut down cleanly after
     async tests complete.
+
+    NOTE: Event loop reset is DISABLED when pytest-asyncio is active because:
+    1. pytest-asyncio manages event loop lifecycle
+    2. Creating a new loop during teardown can cache frozen time.monotonic
+       references if time_machine patches are still active (fixture cleanup
+       runs AFTER test teardown)
+    3. pytest-asyncio creates fresh loops per test anyway
     """
     try:
+        import sys
+
+        # Check if pytest-asyncio is active
+        if "pytest_asyncio" in sys.modules:
+            # Let pytest-asyncio manage event loop lifecycle
+            return
+
+        # Only reset event loops if pytest-asyncio is NOT active
         import asyncio
 
-        # Try to get the current event loop
         try:
             loop = asyncio.get_event_loop()
             # Don't close if it's running (we're inside an async context)
@@ -71,19 +85,22 @@ def reset_time_machine_state() -> None:
 
             count_found = 0
             count_frozen = 0
+            count_with_patches = 0
             for obj in gc.get_objects():
                 if isinstance(obj, TimeMachine):
                     count_found += 1
-                    if obj.is_frozen:
-                        count_frozen += 1
+                    if len(obj.patches) > 0:
+                        count_with_patches += 1
+                        print(f"[Foundation Reset] TimeMachine has {len(obj.patches)} active patches, is_frozen={obj.is_frozen}", file=sys.stderr)
                         try:
-                            print(f"[Foundation Reset] Stopping frozen TimeMachine with {len(obj.patches)} patches", file=sys.stderr)
                             obj._stop_all_patches()
                             obj.is_frozen = False
                         except Exception as e:
                             print(f"[Foundation Reset] Failed to stop TimeMachine: {e}", file=sys.stderr)
+                    if obj.is_frozen:
+                        count_frozen += 1
             if count_found > 0:
-                print(f"[Foundation Reset] Found {count_found} TimeMachine instances, {count_frozen} frozen", file=sys.stderr)
+                print(f"[Foundation Reset] Found {count_found} TimeMachine instances, {count_frozen} frozen, {count_with_patches} with patches", file=sys.stderr)
     except (ImportError, AttributeError, Exception) as e:
         # time_machine not available or cleanup failed, skip
         import sys
