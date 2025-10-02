@@ -5,14 +5,11 @@ from __future__ import annotations
 import asyncio
 from contextvars import ContextVar
 import json
-from typing import TYPE_CHECKING, Never
+from typing import Never
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import patch
 import pytest
-
-if TYPE_CHECKING:
-    from provide.testkit.time.fixtures import TimeMachine
 
 from provide.foundation import (
     FoundationError,
@@ -141,13 +138,29 @@ class TestErrorSystemIntegration(FoundationTestCase):
         # Verify context propagation
         assert integration.context["network.host"] == "db.example.com"
 
-    def test_retry_with_circuit_breaker(self, time_machine: TimeMachine) -> None:
-        """Test combining retry and circuit breaker patterns."""
-        time_machine.freeze()
+    def test_retry_with_circuit_breaker(self) -> None:
+        """Test combining retry and circuit breaker patterns using controlled time.
+
+        This test uses a controlled time source instead of time_machine to avoid
+        global time freezing that can interfere with async timeout tests.
+        """
+        # Controlled time source - starts at 0.0 and we advance it manually
+        current_time = [0.0]
+
+        def get_time() -> float:
+            return current_time[0]
+
+        def advance_time(seconds: float) -> None:
+            current_time[0] += seconds
+
+        # No-op sleep functions since we're controlling time manually
+        def fake_sleep(seconds: float) -> None:
+            advance_time(seconds)
+
         attempt_count = 0
 
-        @circuit_breaker(failure_threshold=3, recovery_timeout=0.01)
-        @retry(max_attempts=2, base_delay=0.01)
+        @circuit_breaker(failure_threshold=3, recovery_timeout=0.01, time_source=get_time)
+        @retry(max_attempts=2, base_delay=0.01, time_source=get_time, sleep_func=fake_sleep)
         def unreliable_service() -> str:
             nonlocal attempt_count
             attempt_count += 1
@@ -176,8 +189,8 @@ class TestErrorSystemIntegration(FoundationTestCase):
         assert "Circuit breaker is open" in str(exc_info.value)
         assert attempt_count == 6  # No new attempt
 
-        # Jump past recovery timeout
-        time_machine.jump(0.02)
+        # Advance time past recovery timeout (0.02s > 0.01s recovery_timeout)
+        advance_time(0.02)
 
         # Fifth call: circuit half-open, succeeds
         result = unreliable_service()
