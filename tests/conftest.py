@@ -78,9 +78,8 @@ def _intercept_event_loop_creation() -> Generator[None]:
 
     original_new_event_loop = asyncio.new_event_loop
 
-    def patched_new_event_loop() -> asyncio.AbstractEventLoop:
-        """Create new event loop after ensuring time is unfrozen."""
-        # CRITICAL: Stop all time patches BEFORE creating the loop
+    def ensure_time_unfrozen() -> None:
+        """Ensure time is unfrozen before event loop operations."""
         try:
             from provide.testkit.time.fixtures import TimeMachine
 
@@ -104,17 +103,37 @@ def _intercept_event_loop_creation() -> Generator[None]:
         except Exception:
             pass
 
-        # Now create the loop with unfrozen time
+    def patched_new_event_loop() -> asyncio.AbstractEventLoop:
+        """Create new event loop after ensuring time is unfrozen."""
+        ensure_time_unfrozen()
         return original_new_event_loop()
 
-    # Patch asyncio.new_event_loop
+    original_get_event_loop = asyncio.get_event_loop
+
+    def patched_get_event_loop() -> asyncio.AbstractEventLoop:
+        """Get event loop after ensuring time is unfrozen."""
+        # If there's no current loop, we'll create a new one - ensure time is unfrozen first
+        try:
+            loop = original_get_event_loop()
+            # Loop exists and is not closed, ensure it wasn't created with frozen time
+            if not loop.is_closed():
+                ensure_time_unfrozen()
+            return loop
+        except RuntimeError:
+            # No current event loop - will create new one
+            ensure_time_unfrozen()
+            return original_get_event_loop()
+
+    # Patch both new and get
     asyncio.new_event_loop = patched_new_event_loop
+    asyncio.get_event_loop = patched_get_event_loop
 
     try:
         yield
     finally:
-        # Restore original function
+        # Restore original functions
         asyncio.new_event_loop = original_new_event_loop
+        asyncio.get_event_loop = original_get_event_loop
 
         # Close any remaining loops
         try:
