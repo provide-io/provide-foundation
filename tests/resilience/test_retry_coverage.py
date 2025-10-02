@@ -4,30 +4,11 @@ from __future__ import annotations
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import AsyncMock, Mock, patch
+from provide.testkit.time import make_controlled_time
 import pytest
 
 from provide.foundation.resilience.retry import RetryExecutor, RetryPolicy
 from provide.foundation.resilience.types import BackoffStrategy
-
-
-# Controlled time helpers for testing without real sleeps
-def make_controlled_time() -> tuple[callable, callable, callable, callable]:
-    """Create controlled time source and sleep functions for testing."""
-    current_time = [0.0]
-
-    def get_time() -> float:
-        return current_time[0]
-
-    def advance_time(seconds: float) -> None:
-        current_time[0] += seconds
-
-    def fake_sleep(seconds: float) -> None:
-        advance_time(seconds)
-
-    async def fake_async_sleep(seconds: float) -> None:
-        advance_time(seconds)
-
-    return get_time, advance_time, fake_sleep, fake_async_sleep
 
 
 class TestRetryPolicyEdgeCases(FoundationTestCase):
@@ -230,14 +211,21 @@ class TestRetryExecutorEdgeCases(FoundationTestCase):
                 await executor.execute_async(dummy_func)
 
     def test_on_retry_callback_sync(self) -> None:
-        """Test on_retry callback in synchronous execution."""
+        """Test on_retry callback in synchronous execution using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
+
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
         callback_calls = []
 
         def on_retry_callback(attempt: int, error: Exception) -> None:
             callback_calls.append((attempt, str(error)))
 
-        executor = RetryExecutor(policy, on_retry=on_retry_callback)
+        executor = RetryExecutor(
+            policy,
+            on_retry=on_retry_callback,
+            time_source=get_time,
+            sleep_func=fake_sleep,
+        )
 
         mock_func = Mock(side_effect=[ValueError("error1"), ValueError("error2"), "success"])
 
@@ -250,14 +238,21 @@ class TestRetryExecutorEdgeCases(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_on_retry_callback_async(self) -> None:
-        """Test on_retry callback in asynchronous execution."""
+        """Test on_retry callback in asynchronous execution using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
+
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
         callback_calls = []
 
         def on_retry_callback(attempt: int, error: Exception) -> None:
             callback_calls.append((attempt, str(error)))
 
-        executor = RetryExecutor(policy, on_retry=on_retry_callback)
+        executor = RetryExecutor(
+            policy,
+            on_retry=on_retry_callback,
+            time_source=get_time,
+            async_sleep_func=fake_async_sleep,
+        )
 
         mock_func = AsyncMock(side_effect=[ValueError("error1"), ValueError("error2"), "success"])
 
@@ -270,7 +265,9 @@ class TestRetryExecutorEdgeCases(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_on_retry_async_callback(self) -> None:
-        """Test async on_retry callback in asynchronous execution."""
+        """Test async on_retry callback in asynchronous execution using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
+
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
         callback_calls = []
 
@@ -278,7 +275,12 @@ class TestRetryExecutorEdgeCases(FoundationTestCase):
             callback_calls.append((attempt, str(error)))
 
         # Type ignore for the async callback - this is tested to work at runtime
-        executor = RetryExecutor(policy, on_retry=on_retry_callback)  # type: ignore[arg-type]
+        executor = RetryExecutor(
+            policy,
+            on_retry=on_retry_callback,  # type: ignore[arg-type]
+            time_source=get_time,
+            async_sleep_func=fake_async_sleep,
+        )
 
         mock_func = AsyncMock(side_effect=[ValueError("error1"), "success"])
 
@@ -289,13 +291,20 @@ class TestRetryExecutorEdgeCases(FoundationTestCase):
         assert callback_calls[0] == (1, "error1")
 
     def test_on_retry_callback_exception_sync(self) -> None:
-        """Test on_retry callback exception handling in sync execution."""
+        """Test on_retry callback exception handling in sync execution using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
+
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
 
         def failing_callback(attempt: int, error: Exception) -> None:
             raise RuntimeError("Callback failed")
 
-        executor = RetryExecutor(policy, on_retry=failing_callback)
+        executor = RetryExecutor(
+            policy,
+            on_retry=failing_callback,
+            time_source=get_time,
+            sleep_func=fake_sleep,
+        )
 
         mock_func = Mock(side_effect=[ValueError("error1"), "success"])
 
@@ -305,13 +314,20 @@ class TestRetryExecutorEdgeCases(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_on_retry_callback_exception_async(self) -> None:
-        """Test on_retry callback exception handling in async execution."""
+        """Test on_retry callback exception handling in async execution using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
+
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
 
         def failing_callback(attempt: int, error: Exception) -> None:
             raise RuntimeError("Callback failed")
 
-        executor = RetryExecutor(policy, on_retry=failing_callback)
+        executor = RetryExecutor(
+            policy,
+            on_retry=failing_callback,
+            time_source=get_time,
+            async_sleep_func=fake_async_sleep,
+        )
 
         mock_func = AsyncMock(side_effect=[ValueError("error1"), "success"])
 
@@ -320,9 +336,11 @@ class TestRetryExecutorEdgeCases(FoundationTestCase):
         assert result == "success"
 
     def test_non_retryable_error_immediate_failure(self) -> None:
-        """Test immediate failure for non-retryable errors."""
+        """Test immediate failure for non-retryable errors using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
+
         policy = RetryPolicy(max_attempts=3, retryable_errors=(ValueError,), base_delay=0.01)
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(policy, time_source=get_time, sleep_func=fake_sleep)
 
         mock_func = Mock(side_effect=TypeError("Non-retryable error"))
 
@@ -334,9 +352,11 @@ class TestRetryExecutorEdgeCases(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_non_retryable_error_immediate_failure_async(self) -> None:
-        """Test immediate failure for non-retryable errors in async execution."""
+        """Test immediate failure for non-retryable errors in async execution using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
+
         policy = RetryPolicy(max_attempts=3, retryable_errors=(ValueError,), base_delay=0.01)
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(policy, time_source=get_time, async_sleep_func=fake_async_sleep)
 
         mock_func = AsyncMock(side_effect=TypeError("Non-retryable error"))
 
@@ -347,9 +367,11 @@ class TestRetryExecutorEdgeCases(FoundationTestCase):
         assert mock_func.call_count == 1
 
     def test_max_attempts_exhausted_sync(self) -> None:
-        """Test behavior when max attempts are exhausted in sync execution."""
+        """Test behavior when max attempts are exhausted in sync execution using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
+
         policy = RetryPolicy(max_attempts=2, base_delay=0.01)
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(policy, time_source=get_time, sleep_func=fake_sleep)
 
         mock_func = Mock(side_effect=ValueError("Always fails"))
 
@@ -361,9 +383,11 @@ class TestRetryExecutorEdgeCases(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_max_attempts_exhausted_async(self) -> None:
-        """Test behavior when max attempts are exhausted in async execution."""
+        """Test behavior when max attempts are exhausted in async execution using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
+
         policy = RetryPolicy(max_attempts=2, base_delay=0.01)
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(policy, time_source=get_time, async_sleep_func=fake_async_sleep)
 
         mock_func = AsyncMock(side_effect=ValueError("Always fails"))
 
