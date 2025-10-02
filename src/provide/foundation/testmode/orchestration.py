@@ -143,6 +143,7 @@ def reset_foundation_state() -> None:
             reset_circuit_breaker_state,
             reset_configuration_state,
             reset_coordinator_state,
+            reset_event_loops,
             reset_eventsets_state,
             reset_hub_state,
             reset_logger_state,
@@ -206,6 +207,10 @@ def reset_foundation_state() -> None:
 
         # Final reset of logger state (after all operations that might trigger setup)
         reset_logger_state()
+
+        # Clean up event loops to prevent worker shutdown hangs
+        # This must be last to ensure all async operations are complete
+        reset_event_loops()
     finally:
         # Always clear the reset-in-progress flags
         _reset_in_progress = False

@@ -17,6 +17,36 @@ _eventsets_reset_in_progress = False
 _hub_reset_in_progress = False
 
 
+def reset_event_loops() -> None:
+    """Close any running event loops to prevent worker shutdown hangs.
+
+    This is critical for pytest-xdist workers to shut down cleanly after
+    async tests complete.
+    """
+    try:
+        import asyncio
+
+        # Try to get the current event loop
+        try:
+            loop = asyncio.get_event_loop()
+            # Don't close if it's running (we're inside an async context)
+            if not loop.is_running() and not loop.is_closed():
+                loop.close()
+        except RuntimeError:
+            # No event loop in this thread, that's fine
+            pass
+
+        # Create a fresh event loop for the next test
+        try:
+            asyncio.set_event_loop(asyncio.new_event_loop())
+        except RuntimeError:
+            # Can't set event loop, skip
+            pass
+    except Exception:
+        # If anything fails, continue - better to leak a loop than crash
+        pass
+
+
 def reset_structlog_state() -> None:
     """Reset structlog configuration to defaults.
 
