@@ -231,7 +231,7 @@ class TestWriteToConsole(FoundationTestCase):
         with (
             patch.object(sys.stderr, "write") as mock_stderr_write,
             patch.object(sys.stderr, "flush") as mock_stderr_flush,
-            patch("provide.foundation.streams.console.get_foundation_logger") as mock_get_logger,
+            patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger,
         ):
             # Ensure logger is available for debug logging
             mock_logger = Mock()
@@ -266,7 +266,7 @@ class TestWriteToConsole(FoundationTestCase):
         with (
             patch.object(sys.stderr, "write") as mock_stderr_write,
             patch.object(sys.stderr, "flush") as mock_stderr_flush,
-            patch("provide.foundation.streams.console.get_foundation_logger") as mock_get_logger,
+            patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger,
         ):
             # Ensure logger is available for debug logging
             mock_logger = Mock()
@@ -297,7 +297,7 @@ class TestWriteToConsole(FoundationTestCase):
         with (
             patch.object(sys.stderr, "write") as mock_stderr_write,
             patch.object(sys.stderr, "flush") as mock_stderr_flush,
-            patch("provide.foundation.streams.console.get_foundation_logger") as mock_get_logger,
+            patch("provide.foundation.hub.foundation.get_foundation_logger") as mock_get_logger,
         ):
             # Ensure logger is available for debug logging
             mock_logger = Mock()
