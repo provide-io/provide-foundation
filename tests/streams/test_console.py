@@ -231,23 +231,25 @@ class TestWriteToConsole(FoundationTestCase):
         with (
             patch.object(sys.stderr, "write") as mock_stderr_write,
             patch.object(sys.stderr, "flush") as mock_stderr_flush,
+            patch("provide.foundation.streams.console.get_foundation_logger") as mock_get_logger,
         ):
+            # Ensure logger is available for debug logging
+            mock_logger = Mock()
+            mock_get_logger.return_value = mock_logger
+
             try:
                 # Call write_to_console and expect it to handle the exception gracefully
                 write_to_console("test message")
 
-                # Should have tried the original stream (may be called multiple times due to debug logging)
-                assert mock_stream.write.call_count >= 1
-                # Verify the first call was our main message
-                first_call = mock_stream.write.call_args_list[0]
-                assert first_call[0][0] == "test message"
+                # Should have tried the original stream
+                mock_stream.write.assert_called_once_with("test message")
 
-                # Should have fallen back to stderr - expects debug message + final message
-                assert mock_stderr_write.call_count >= 2
-                # Last call should be the main message
-                final_call = mock_stderr_write.call_args_list[-1]
-                assert final_call[0][0] == "test message"
-                assert mock_stderr_flush.call_count >= 2
+                # Logger should have been called for debug message
+                mock_logger.debug.assert_called_once()
+
+                # Should have fallen back to stderr for final message
+                mock_stderr_write.assert_called_once_with("test message")
+                mock_stderr_flush.assert_called_once()
             finally:
                 set_log_stream_for_testing(None)
 
@@ -264,24 +266,26 @@ class TestWriteToConsole(FoundationTestCase):
         with (
             patch.object(sys.stderr, "write") as mock_stderr_write,
             patch.object(sys.stderr, "flush") as mock_stderr_flush,
+            patch("provide.foundation.streams.console.get_foundation_logger") as mock_get_logger,
         ):
+            # Ensure logger is available for debug logging
+            mock_logger = Mock()
+            mock_get_logger.return_value = mock_logger
+
             try:
                 # Call write_to_console and expect it to handle the exception gracefully
                 write_to_console("test message")
 
-                # Should have tried the original stream (may be called multiple times due to debug logging)
-                assert mock_stream.write.call_count >= 1
-                # Verify the first call was our main message
-                first_call = mock_stream.write.call_args_list[0]
-                assert first_call[0][0] == "test message"
-                assert mock_stream.flush.call_count >= 1
+                # Should have written to original stream then failed on flush
+                mock_stream.write.assert_called_once_with("test message")
+                mock_stream.flush.assert_called_once()
 
-                # Should have fallen back to stderr - expects debug message + final message
-                assert mock_stderr_write.call_count >= 2
-                # Last call should be the main message
-                final_call = mock_stderr_write.call_args_list[-1]
-                assert final_call[0][0] == "test message"
-                assert mock_stderr_flush.call_count >= 2
+                # Logger should have been called for debug message
+                mock_logger.debug.assert_called_once()
+
+                # Should have fallen back to stderr for final message
+                mock_stderr_write.assert_called_once_with("test message")
+                mock_stderr_flush.assert_called_once()
             finally:
                 set_log_stream_for_testing(None)
 
@@ -293,21 +297,23 @@ class TestWriteToConsole(FoundationTestCase):
         with (
             patch.object(sys.stderr, "write") as mock_stderr_write,
             patch.object(sys.stderr, "flush") as mock_stderr_flush,
+            patch("provide.foundation.streams.console.get_foundation_logger") as mock_get_logger,
         ):
+            # Ensure logger is available for debug logging
+            mock_logger = Mock()
+            mock_get_logger.return_value = mock_logger
+
             write_to_console("test message", stream=mock_failing_stream)
 
-            # Should have tried the specific stream (may be called multiple times due to debug logging)
-            assert mock_failing_stream.write.call_count >= 1
-            # Verify the first call was our main message
-            first_call = mock_failing_stream.write.call_args_list[0]
-            assert first_call[0][0] == "test message"
+            # Should have tried the specific stream
+            mock_failing_stream.write.assert_called_once_with("test message")
 
-            # Should have fallen back to stderr - expects debug message + final message
-            assert mock_stderr_write.call_count >= 2
-            # Last call should be the main message
-            final_call = mock_stderr_write.call_args_list[-1]
-            assert final_call[0][0] == "test message"
-            assert mock_stderr_flush.call_count >= 2
+            # Logger should have been called for debug message
+            mock_logger.debug.assert_called_once()
+
+            # Should have fallen back to stderr for final message
+            mock_stderr_write.assert_called_once_with("test message")
+            mock_stderr_flush.assert_called_once()
 
     def test_write_to_console_with_logging_failure_fallback(self) -> None:
         """Test write_to_console when both stream and Foundation logger fail."""
