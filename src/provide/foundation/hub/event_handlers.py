@@ -20,6 +20,7 @@ def _get_logger_safely() -> Any:
     """Get logger without creating circular dependency.
 
     Returns None if logger is not yet available to avoid initialization issues.
+    Uses the internal setup logger to avoid triggering full Foundation initialization.
     """
     global _foundation_initializing, _reset_in_progress
 
@@ -29,18 +30,13 @@ def _get_logger_safely() -> Any:
         return None
 
     try:
-        # Check if foundation module is already imported before importing
-        # This prevents triggering initialization cascade during event handling
-        import sys
+        # Use the internal setup logger which doesn't trigger full initialization
+        # This is the same logger used by the event enrichment processor
+        from provide.foundation.logger.setup.coordinator import (
+            create_foundation_internal_logger,
+        )
 
-        if "provide.foundation.hub.foundation" not in sys.modules:
-            # Foundation not initialized yet, don't trigger import
-            return None
-
-        # Only import after we know the system is initialized
-        from provide.foundation.hub.foundation import get_foundation_logger
-
-        return get_foundation_logger()
+        return create_foundation_internal_logger()
     except Exception:
         # If logger isn't ready yet, gracefully ignore
         return None
