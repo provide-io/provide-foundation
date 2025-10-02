@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import importlib
+import sys
+
 from provide.foundation import config, errors, hub, platform, process, resilience, tracer
 from provide.foundation._version import __version__
 from provide.foundation.console import perr, pin, pout
@@ -52,24 +55,24 @@ Primary public interface for the library, re-exporting common components.
 
 
 # Lazy loading support for optional modules
+_getattr_in_progress: set[str] = set()
+
+
 def __getattr__(name: str) -> object:
     """Support lazy loading of optional modules."""
-    import sys
-
     # Build the full module name
     module_name = f"provide.foundation.{name}"
 
     # Check if we've already entered recursion for this module
     # This prevents infinite recursion when a module has been corrupted
-    recursion_key = f"_getattr_recursion_{name}"
-    if recursion_key in globals():
+    if name in _getattr_in_progress:
         raise AttributeError(
             f"module '{__name__}' has no attribute '{name}' "
             f"(recursion detected, module may be corrupted in sys.modules)"
         )
 
     # Set recursion guard
-    globals()[recursion_key] = True
+    _getattr_in_progress.add(name)
 
     try:
         # Check if module is already in sys.modules but corrupted
@@ -81,12 +84,11 @@ def __getattr__(name: str) -> object:
             # If it's None or invalid, remove it so we can re-import
             del sys.modules[module_name]
 
+        # Use importlib to avoid triggering __getattr__ recursion
         match name:
             case "cli":
                 try:
-                    import provide.foundation.cli as cli
-
-                    return cli
+                    return importlib.import_module("provide.foundation.cli")
                 except ImportError as e:
                     if "click" in str(e):
                         raise ImportError(
@@ -95,26 +97,18 @@ def __getattr__(name: str) -> object:
                         ) from e
                     raise
             case "crypto":
-                import provide.foundation.crypto as crypto
-
-                return crypto
+                return importlib.import_module("provide.foundation.crypto")
             case "docs":
-                import provide.foundation.docs as docs
-
-                return docs
+                return importlib.import_module("provide.foundation.docs")
             case "formatting":
-                import provide.foundation.formatting as formatting
-
-                return formatting
+                return importlib.import_module("provide.foundation.formatting")
             case "metrics":
-                import provide.foundation.metrics as metrics
-
-                return metrics
+                return importlib.import_module("provide.foundation.metrics")
             case _:
                 raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
     finally:
         # Always clear recursion guard
-        globals().pop(recursion_key, None)
+        _getattr_in_progress.discard(name)
 
 
 __all__ = [
