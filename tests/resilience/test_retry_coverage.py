@@ -10,6 +10,26 @@ from provide.foundation.resilience.retry import RetryExecutor, RetryPolicy
 from provide.foundation.resilience.types import BackoffStrategy
 
 
+# Controlled time helpers for testing without real sleeps
+def make_controlled_time() -> tuple[callable, callable, callable, callable]:
+    """Create controlled time source and sleep functions for testing."""
+    current_time = [0.0]
+
+    def get_time() -> float:
+        return current_time[0]
+
+    def advance_time(seconds: float) -> None:
+        current_time[0] += seconds
+
+    def fake_sleep(seconds: float) -> None:
+        advance_time(seconds)
+
+    async def fake_async_sleep(seconds: float) -> None:
+        advance_time(seconds)
+
+    return get_time, advance_time, fake_sleep, fake_async_sleep
+
+
 class TestRetryPolicyEdgeCases(FoundationTestCase):
     """Test edge cases in RetryPolicy."""
 
