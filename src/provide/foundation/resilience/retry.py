@@ -176,16 +176,28 @@ class RetryExecutor:
         self,
         policy: RetryPolicy,
         on_retry: Callable[[int, Exception], None] | None = None,
+        time_source: Callable[[], float] | None = None,
+        sleep_func: Callable[[float], None] | None = None,
+        async_sleep_func: Callable[[float], Awaitable[None]] | None = None,
     ) -> None:
         """Initialize retry executor.
 
         Args:
             policy: Retry policy configuration
             on_retry: Optional callback for retry events (attempt, error)
+            time_source: Optional callable that returns current time (for testing).
+                        Defaults to time.time() for production use.
+            sleep_func: Optional synchronous sleep function (for testing).
+                       Defaults to time.sleep() for production use.
+            async_sleep_func: Optional asynchronous sleep function (for testing).
+                             Defaults to asyncio.sleep() for production use.
 
         """
         self.policy = policy
         self.on_retry = on_retry
+        self._time_source = time_source or time.time
+        self._sleep = sleep_func or time.sleep
+        self._async_sleep = async_sleep_func or asyncio.sleep
 
     def execute_sync(self, func: Callable[..., T], *args: Any, **kwargs: Any) -> T:
         """Execute synchronous function with retry logic.
@@ -251,7 +263,7 @@ class RetryExecutor:
                         get_foundation_logger().warning("Retry callback failed", error=str(callback_error))
 
                 # Wait before retry
-                time.sleep(delay)
+                self._sleep(delay)
 
         # Should never reach here, but for safety
         if last_exception is not None:
@@ -326,7 +338,7 @@ class RetryExecutor:
                         get_foundation_logger().warning("Retry callback failed", error=str(callback_error))
 
                 # Wait before retry
-                await asyncio.sleep(delay)
+                await self._async_sleep(delay)
 
         # Should never reach here, but for safety
         if last_exception is not None:
