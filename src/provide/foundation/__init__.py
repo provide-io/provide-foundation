@@ -84,11 +84,13 @@ def __getattr__(name: str) -> object:
             # If it's None or invalid, remove it so we can re-import
             del sys.modules[module_name]
 
-        # Use importlib to avoid triggering __getattr__ recursion
+        # Import the submodule directly
         match name:
             case "cli":
                 try:
-                    return importlib.import_module("provide.foundation.cli")
+                    mod = __import__(module_name, fromlist=[""])
+                    sys.modules[module_name] = mod
+                    return mod
                 except ImportError as e:
                     if "click" in str(e):
                         raise ImportError(
@@ -96,14 +98,10 @@ def __getattr__(name: str) -> object:
                             "pip install 'provide-foundation[cli]'",
                         ) from e
                     raise
-            case "crypto":
-                return importlib.import_module("provide.foundation.crypto")
-            case "docs":
-                return importlib.import_module("provide.foundation.docs")
-            case "formatting":
-                return importlib.import_module("provide.foundation.formatting")
-            case "metrics":
-                return importlib.import_module("provide.foundation.metrics")
+            case "crypto" | "docs" | "formatting" | "metrics":
+                mod = __import__(module_name, fromlist=[""])
+                sys.modules[module_name] = mod
+                return mod
             case _:
                 raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
     finally:
