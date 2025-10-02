@@ -88,11 +88,11 @@ class TestAsyncRunCommand(FoundationTestCase):
         The pytest-asyncio event loop may cache frozen time.monotonic references from
         previous tests. Run with `pytest -n auto` for reliable results.
         """
-        # Check if time is frozen by seeing if time advances
+        # Check if time is frozen by seeing if time.time() changes
         import time
 
         t1 = time.time()
-        await asyncio.sleep(0.001)
+        time.sleep(0.001)  # Use blocking sleep, not async
         t2 = time.time()
 
         if t2 == t1:
