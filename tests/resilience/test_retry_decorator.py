@@ -212,10 +212,11 @@ class TestRetryDecoratorAsync(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_retry_on_async_failure(self) -> None:
-        """Test that decorated async function retries on failure."""
+        """Test that decorated async function retries on failure using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
         attempt_count = 0
 
-        @retry(max_attempts=3, base_delay=0.01)
+        @retry(max_attempts=3, base_delay=0.01, time_source=get_time, async_sleep_func=fake_async_sleep)
         async def failing_async() -> str:
             nonlocal attempt_count
             attempt_count += 1
@@ -230,10 +231,11 @@ class TestRetryDecoratorAsync(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_async_max_attempts_exceeded(self) -> None:
-        """Test that error is raised after max attempts in async."""
+        """Test that error is raised after max attempts in async using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
         attempt_count = 0
 
-        @retry(max_attempts=2, base_delay=0.01)
+        @retry(max_attempts=2, base_delay=0.01, time_source=get_time, async_sleep_func=fake_async_sleep)
         async def always_fails_async() -> Never:
             nonlocal attempt_count
             attempt_count += 1
@@ -247,9 +249,10 @@ class TestRetryDecoratorAsync(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_async_with_arguments(self) -> None:
-        """Test decorated async function with arguments."""
+        """Test decorated async function with arguments using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
 
-        @retry(max_attempts=2, base_delay=0.01)
+        @retry(max_attempts=2, base_delay=0.01, time_source=get_time, async_sleep_func=fake_async_sleep)
         async def async_with_args(a: str, b: str, *, c: str | None = None) -> str:
             await asyncio.sleep(0)  # Ensure it's async
             if not hasattr(async_with_args, "called"):
@@ -262,10 +265,11 @@ class TestRetryDecoratorAsync(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_async_on_retry_callback(self) -> None:
-        """Test async on_retry callback."""
+        """Test async on_retry callback using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
         callback = AsyncMock()
 
-        @retry(max_attempts=2, base_delay=0.01, on_retry=callback)
+        @retry(max_attempts=2, base_delay=0.01, on_retry=callback, time_source=get_time, async_sleep_func=fake_async_sleep)
         async def async_with_callback() -> str:
             if not hasattr(async_with_callback, "called"):
                 async_with_callback.called = True
