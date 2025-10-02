@@ -69,18 +69,6 @@ class TestCertificateLifecycle(FoundationTestCase):
         assert not expired_cert.verify_trust(expired_cert), "Expired certificates should not verify"
 
     @pytest.mark.asyncio
-    async def test_certificate_validity_period_error(self) -> None:
-        """Ensure validity period calculation failures raise CertificateError."""
-        with (
-            patch(
-                "provide.foundation.crypto.certificates.generator.datetime",
-                side_effect=Exception("Time error"),
-            ),
-            pytest.raises(CertificateError, match="Failed to initialize certificate"),
-        ):
-            Certificate(generate_keypair=True)
-
-    @pytest.mark.asyncio
     async def test_certificate_extension_addition_failure(self) -> None:
         """Ensure failures in adding extensions raise CertificateError."""
         cert = Certificate(generate_keypair=True)

@@ -206,8 +206,13 @@ def test_foundation_error_with_context(captured_stderr_for_foundation: io.String
         logger.exception("Caught error with context", **e.context)
 
     log_output = captured_stderr_for_foundation.getvalue()
-    assert "key=value" in log_output
-    assert "number=123" in log_output
+    # Support both JSON and key=value formats
+    assert ('"key": "value"' in log_output or "key=value" in log_output), (
+        f"Expected key/value in output, got: {log_output[:200]}"
+    )
+    assert ('"number": 123' in log_output or "number=123" in log_output), (
+        f"Expected number in output, got: {log_output[:200]}"
+    )
 
 
 def test_shutdown_and_reinit(captured_stderr_for_foundation: io.StringIO) -> None:

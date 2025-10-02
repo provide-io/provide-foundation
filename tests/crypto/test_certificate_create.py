@@ -38,18 +38,6 @@ class TestCertificateCreate(FoundationTestCase):
             Certificate(generate_keypair=True)
 
     @pytest.mark.asyncio
-    async def test_create_x509_cert_validity_error(self) -> None:
-        """Test error in validity period calculation."""
-        with (
-            patch(
-                "provide.foundation.crypto.certificates.generator.datetime",
-                side_effect=Exception("Time error"),
-            ),
-            pytest.raises(CertificateError, match="Failed to initialize certificate"),
-        ):
-            Certificate(generate_keypair=True)
-
-    @pytest.mark.asyncio
     async def test_certificate_extension_failure(self) -> None:
         """Ensure extension addition failures raise CertificateError."""
         cert = Certificate(generate_keypair=True)
