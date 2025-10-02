@@ -54,37 +54,67 @@ Primary public interface for the library, re-exporting common components.
 # Lazy loading support for optional modules
 def __getattr__(name: str) -> object:
     """Support lazy loading of optional modules."""
-    match name:
-        case "cli":
-            try:
-                import provide.foundation.cli as cli
+    import sys
 
-                return cli
-            except ImportError as e:
-                if "click" in str(e):
-                    raise ImportError(
-                        "CLI features require optional dependencies. Install with: "
-                        "pip install 'provide-foundation[cli]'",
-                    ) from e
-                raise
-        case "crypto":
-            import provide.foundation.crypto as crypto
+    # Build the full module name
+    module_name = f"provide.foundation.{name}"
 
-            return crypto
-        case "docs":
-            import provide.foundation.docs as docs
+    # Check if we've already entered recursion for this module
+    # This prevents infinite recursion when a module has been corrupted
+    recursion_key = f"_getattr_recursion_{name}"
+    if recursion_key in globals():
+        raise AttributeError(
+            f"module '{__name__}' has no attribute '{name}' "
+            f"(recursion detected, module may be corrupted in sys.modules)"
+        )
 
-            return docs
-        case "formatting":
-            import provide.foundation.formatting as formatting
+    # Set recursion guard
+    globals()[recursion_key] = True
 
-            return formatting
-        case "metrics":
-            import provide.foundation.metrics as metrics
+    try:
+        # Check if module is already in sys.modules but corrupted
+        if module_name in sys.modules:
+            existing_module = sys.modules[module_name]
+            # If it exists and is valid, return it
+            if existing_module is not None:
+                return existing_module
+            # If it's None or invalid, remove it so we can re-import
+            del sys.modules[module_name]
 
-            return metrics
-        case _:
-            raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+        match name:
+            case "cli":
+                try:
+                    import provide.foundation.cli as cli
+
+                    return cli
+                except ImportError as e:
+                    if "click" in str(e):
+                        raise ImportError(
+                            "CLI features require optional dependencies. Install with: "
+                            "pip install 'provide-foundation[cli]'",
+                        ) from e
+                    raise
+            case "crypto":
+                import provide.foundation.crypto as crypto
+
+                return crypto
+            case "docs":
+                import provide.foundation.docs as docs
+
+                return docs
+            case "formatting":
+                import provide.foundation.formatting as formatting
+
+                return formatting
+            case "metrics":
+                import provide.foundation.metrics as metrics
+
+                return metrics
+            case _:
+                raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+    finally:
+        # Always clear recursion guard
+        globals().pop(recursion_key, None)
 
 
 __all__ = [
