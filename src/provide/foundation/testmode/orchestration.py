@@ -148,9 +148,12 @@ def reset_foundation_state() -> None:
 
     # Reset OpenTelemetry providers to avoid "Overriding" warnings and stream closure
     # Note: OpenTelemetry providers are designed to prevent override for safety.
-    # In test environments, we suppress this reset to avoid hanging/blocking.
-    # The warnings are harmless in test context.
-    _reset_opentelemetry_providers()
+    # In parallel test environments (pytest-xdist), skip this reset to avoid deadlocks.
+    # The OTel provider reset manipulates internal _ONCE flags which can deadlock
+    # across multiple worker processes. The warnings are harmless in test context.
+    import os
+    if not os.environ.get("PYTEST_XDIST_WORKER"):
+        _reset_opentelemetry_providers()
 
     # Reset lazy setup state FIRST to prevent hub operations from triggering setup
     reset_logger_state()
