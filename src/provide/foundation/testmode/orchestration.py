@@ -152,6 +152,7 @@ def reset_foundation_state() -> None:
     # The OTel provider reset manipulates internal _ONCE flags which can deadlock
     # across multiple worker processes. The warnings are harmless in test context.
     import os
+
     if not os.environ.get("PYTEST_XDIST_WORKER"):
         _reset_opentelemetry_providers()
 
