@@ -51,42 +51,14 @@ def reset_event_loops() -> None:
 def reset_time_machine_state() -> None:
     """Reset time_machine state to ensure time is not frozen.
 
-    Tests using time_machine.freeze() can leave time frozen if cleanup fails,
-    which breaks asyncio.wait_for timeouts in subsequent tests.
+    NOTE: The actual cleanup is now handled by the _force_time_machine_cleanup
+    fixture in tests/conftest.py, which runs BEFORE Foundation teardown.
 
-    NOTE: This function attempts to proactively stop any active time patches,
-    but there's a complex interaction with pytest-asyncio event loop lifecycle
-    that can still cause timeout tests to fail when run after time_machine tests.
-
-    The issue is that pytest-asyncio's event loop may cache time.monotonic references
-    when created. If the loop is created while time patches are active (even if they're
-    stopped later), the cached references remain.
-
-    Workaround: Run time_machine tests in separate sessions from async timeout tests.
+    This ensures time patches are stopped before pytest-asyncio creates event loops
+    for the next test. This function remains as a no-op safety fallback.
     """
-    try:
-        import sys
-
-        # Check if the time_machine fixture is loaded
-        if "provide.testkit.time.fixtures" in sys.modules:
-            # Get the TimeMachine class
-            from provide.testkit.time.fixtures import TimeMachine
-
-            # Look for active TimeMachine instances and clean them up
-            # This handles the case where fixture cleanup hasn't run yet
-            import gc
-
-            for obj in gc.get_objects():
-                if isinstance(obj, TimeMachine):
-                    if len(obj.patches) > 0:
-                        try:
-                            obj._stop_all_patches()
-                            obj.is_frozen = False
-                        except Exception:
-                            pass
-    except (ImportError, AttributeError, Exception):
-        # time_machine not available or cleanup failed, skip
-        pass
+    # Cleanup is now handled by conftest fixture which runs earlier
+    pass
 
 
 def reset_structlog_state() -> None:

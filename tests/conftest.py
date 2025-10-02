@@ -62,6 +62,44 @@ if not os.getenv("PYTEST_WORKER_ID"):  # Avoid multiple messages with xdist
 
 
 @pytest.fixture(autouse=True)
+def _force_time_machine_cleanup() -> Generator[None]:
+    """Force cleanup of time_machine patches immediately after test completes.
+
+    This MUST run before Foundation teardown to ensure time patches are stopped
+    before pytest-asyncio creates event loops for the next test. If patches are
+    still active when the next async test's event loop is created, the loop will
+    cache frozen time.monotonic references and asyncio.wait_for() will never timeout.
+
+    This fixture runs BEFORE reset_foundation_for_all_tests because pytest executes
+    fixtures in the order they are defined in conftest.py.
+    """
+    yield  # Let test run
+
+    # Force cleanup of all TimeMachine instances IMMEDIATELY after test completes
+    try:
+        import sys
+        import gc
+
+        if "provide.testkit.time.fixtures" in sys.modules:
+            from provide.testkit.time.fixtures import TimeMachine
+
+            cleaned = 0
+            for obj in gc.get_objects():
+                if isinstance(obj, TimeMachine) and len(obj.patches) > 0:
+                    try:
+                        print(f"[Conftest] Stopping {len(obj.patches)} time patches", file=sys.stderr)
+                        obj._stop_all_patches()
+                        obj.is_frozen = False
+                        cleaned += 1
+                    except Exception as e:
+                        print(f"[Conftest] Failed to stop patches: {e}", file=sys.stderr)
+            if cleaned > 0:
+                print(f"[Conftest] Cleaned {cleaned} TimeMachine instances", file=sys.stderr)
+    except Exception as e:
+        print(f"[Conftest] Exception in time_machine cleanup: {e}", file=sys.stderr)
+
+
+@pytest.fixture(autouse=True)
 def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[None]:
     """Autouse fixture to reset Foundation state after each test.
 
