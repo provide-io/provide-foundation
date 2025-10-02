@@ -9,7 +9,7 @@ from provide.foundation.file.operations.types import DetectorConfig, FileEvent, 
 
 def detect_atomic_save(events: list[FileEvent]) -> FileOperation | None:
     """Detect if events represent an atomic save operation."""
-    from provide.foundation.file.operations.detector import OperationDetector
+    from provide.foundation.file.operations.detectors.orchestrator import OperationDetector
 
     detector = OperationDetector()
     operations = detector.detect(events)
@@ -18,7 +18,7 @@ def detect_atomic_save(events: list[FileEvent]) -> FileOperation | None:
 
 def is_temp_file(path: Path) -> bool:
     """Check if a path represents a temporary file."""
-    from provide.foundation.file.operations.detector import OperationDetector
+    from provide.foundation.file.operations.detectors.orchestrator import OperationDetector
 
     detector = OperationDetector()
     return detector._is_temp_file(path)
@@ -26,7 +26,7 @@ def is_temp_file(path: Path) -> bool:
 
 def extract_original_path(temp_path: Path) -> Path | None:
     """Extract the original filename from a temp file path."""
-    from provide.foundation.file.operations.detector import OperationDetector
+    from provide.foundation.file.operations.detectors.orchestrator import OperationDetector
 
     detector = OperationDetector()
     base_name = detector._extract_base_name(temp_path)
@@ -39,7 +39,7 @@ def extract_original_path(temp_path: Path) -> Path | None:
 
 def group_related_events(events: list[FileEvent], time_window_ms: int = 500) -> list[list[FileEvent]]:
     """Group events that occur within a time window."""
-    from provide.foundation.file.operations.detector import OperationDetector
+    from provide.foundation.file.operations.detectors.orchestrator import OperationDetector
 
     config = DetectorConfig(time_window_ms=time_window_ms)
     detector = OperationDetector(config)

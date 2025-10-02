@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from provide.foundation.file.operations.detectors.helpers import is_backup_file
 from provide.foundation.file.operations.types import (
     FileEvent,
     FileOperation,
@@ -44,8 +45,8 @@ class SimpleOperationDetector:
                 create_event = path_events[i + 1]
 
                 if (
-                    delete_event.type == "deleted"
-                    and create_event.type == "created"
+                    delete_event.event_type == "deleted"
+                    and create_event.event_type == "created"
                 ):
                     time_diff = (
                         create_event.timestamp - delete_event.timestamp
@@ -53,14 +54,18 @@ class SimpleOperationDetector:
 
                     if time_diff <= window_ms:
                         return FileOperation(
-                            type=OperationType.UPDATE,
-                            path=Path(path_str),
+                            operation_type=OperationType.ATOMIC_SAVE,
+                            primary_path=Path(path_str),
                             events=[delete_event, create_event],
+                            confidence=0.90,
+                            description=f"File replaced: {Path(path_str).name}",
                             start_time=delete_event.timestamp,
                             end_time=create_event.timestamp,
+                            is_atomic=True,
+                            is_safe=True,
+                            files_affected=[Path(path_str)],
                             metadata={
                                 "pattern": "delete_create_replace",
-                                "description": f"File replaced: {Path(path_str).name}",
                             },
                         )
 
@@ -75,62 +80,93 @@ class SimpleOperationDetector:
 
         # Map event types to operation types
         type_mapping = {
-            "created": OperationType.CREATE,
-            "modified": OperationType.UPDATE,
-            "deleted": OperationType.DELETE,
-            "moved": OperationType.MOVE,
+            "created": OperationType.BACKUP_CREATE,
+            "modified": OperationType.ATOMIC_SAVE,
+            "deleted": OperationType.TEMP_CLEANUP,
+            "moved": OperationType.RENAME_SEQUENCE,
         }
 
-        if event.type not in type_mapping:
+        if event.event_type not in type_mapping:
             return None
 
-        operation_type = type_mapping[event.type]
+        operation_type = type_mapping[event.event_type]
 
         # Special handling for move operations
-        if event.type == "moved":
+        if event.event_type == "moved":
+            primary_path = event.dest_path or event.path
             metadata = {
-                "original_path": str(event.src_path) if event.src_path else None,
+                "original_path": str(event.path),
                 "pattern": "simple_move",
             }
         else:
+            primary_path = event.path
             metadata = {
-                "pattern": f"simple_{event.type}",
+                "pattern": f"simple_{event.event_type}",
             }
 
+        # Check if this is a backup file
+        is_backup_path = is_backup_file(primary_path)
+
         return FileOperation(
-            type=operation_type,
-            path=event.path,
+            operation_type=operation_type,
+            primary_path=primary_path,
             events=[event],
+            confidence=0.70,
+            description=f"Simple {event.event_type} on {primary_path.name}",
             start_time=event.timestamp,
             end_time=event.timestamp,
+            is_atomic=True,
+            is_safe=True,
+            has_backup=is_backup_path,
+            files_affected=[primary_path],
             metadata=metadata,
         )
 
     def detect_direct_modification(self, events: list[FileEvent]) -> FileOperation | None:
-        """Detect direct file modification (multiple modify events on same file)."""
+        """Detect direct file modification (multiple events on same file)."""
         if len(events) < 2:
             return None
 
-        # Check if all events are modifications of the same file
+        # Check if all events are for the same file
         first_event = events[0]
-        if not all(
-            event.path == first_event.path and event.type == "modified"
-            for event in events
-        ):
+        if not all(event.path == first_event.path for event in events):
             return None
 
         # Sort by timestamp
         sorted_events = sorted(events, key=lambda e: e.timestamp)
 
+        # Check if this is all modifies OR created followed by modifies
+        event_types = [e.event_type for e in sorted_events]
+        is_all_modifies = all(et == "modified" for et in event_types)
+        is_create_then_modifies = (
+            event_types[0] == "created"
+            and all(et == "modified" for et in event_types[1:])
+        )
+
+        if not (is_all_modifies or is_create_then_modifies):
+            return None
+
+        # Determine operation type based on pattern
+        if is_create_then_modifies:
+            op_type = OperationType.BACKUP_CREATE
+            description = f"File created and modified: {first_event.path.name}"
+        else:
+            op_type = OperationType.ATOMIC_SAVE
+            description = f"Multiple modifications to {first_event.path.name}"
+
         return FileOperation(
-            type=OperationType.UPDATE,
-            path=first_event.path,
+            operation_type=op_type,
+            primary_path=first_event.path,
             events=sorted_events,
+            confidence=0.80,
+            description=description,
             start_time=sorted_events[0].timestamp,
             end_time=sorted_events[-1].timestamp,
+            is_atomic=False,
+            is_safe=True,
+            files_affected=[first_event.path],
             metadata={
-                "modification_count": len(sorted_events),
-                "pattern": "direct_modification",
-                "description": f"Multiple modifications to {first_event.path.name}",
+                "event_count": len(sorted_events),
+                "pattern": "direct_modification" if is_all_modifies else "create_modify",
             },
         )

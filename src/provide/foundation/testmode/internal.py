@@ -102,6 +102,26 @@ def reset_streams_state() -> None:
         pass
 
 
+def reset_transport_registration_flags() -> None:
+    """Reset transport auto-registration flags.
+
+    This resets the module-level flags that prevent duplicate transport
+    registration, allowing transports to be re-registered after the
+    registry is cleared during test cleanup.
+    """
+    try:
+        import sys
+
+        # Reset HTTP transport registration flag if module is loaded
+        if "provide.foundation.transport.http" in sys.modules:
+            http_module = sys.modules["provide.foundation.transport.http"]
+            if hasattr(http_module, "_http_transport_registered"):
+                http_module._http_transport_registered = False
+    except Exception:
+        # If reset fails, skip - the guard will be bypassed on next import
+        pass
+
+
 def reset_eventsets_state() -> None:
     """Reset event set registry and discovery state.
 

@@ -193,9 +193,23 @@ class HTTPTransport(TransportBase):
         return "❓"  # Unknown
 
 
-# Auto-register HTTP transport
+# Auto-register HTTP transport - but only once per process
+_http_transport_registered = False
+
+
 def _register_http_transport() -> None:
-    """Register HTTP transport with the Hub."""
+    """Register HTTP transport with the Hub.
+
+    This function is called at module import time, but includes a guard
+    to prevent multiple registrations if the module is re-imported
+    (e.g., after being removed from sys.modules during testing).
+    """
+    global _http_transport_registered
+
+    # Guard against multiple registrations
+    if _http_transport_registered:
+        return
+
     try:
         from provide.foundation.transport.registry import register_transport
 
@@ -215,6 +229,8 @@ def _register_http_transport() -> None:
             description="HTTP/HTTPS transport using httpx",
             version="1.0.0",
         )
+
+        _http_transport_registered = True
 
     except ImportError:
         # Registry not available yet, will be registered later
