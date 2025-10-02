@@ -67,9 +67,15 @@ def reset_time_machine_state() -> None:
     Tests using time_machine.freeze() can leave time frozen if cleanup fails,
     which breaks asyncio.wait_for timeouts in subsequent tests.
 
-    This MUST run before reset_event_loops() so the new event loop doesn't cache
-    frozen time references. The fixture cleanup runs after Foundation reset,
-    so we need to proactively stop patches here.
+    NOTE: This function attempts to proactively stop any active time patches,
+    but there's a complex interaction with pytest-asyncio event loop lifecycle
+    that can still cause timeout tests to fail when run after time_machine tests.
+
+    The issue is that pytest-asyncio's event loop may cache time.monotonic references
+    when created. If the loop is created while time patches are active (even if they're
+    stopped later), the cached references remain.
+
+    Workaround: Run time_machine tests in separate sessions from async timeout tests.
     """
     try:
         import sys
@@ -83,28 +89,17 @@ def reset_time_machine_state() -> None:
             # This handles the case where fixture cleanup hasn't run yet
             import gc
 
-            count_found = 0
-            count_frozen = 0
-            count_with_patches = 0
             for obj in gc.get_objects():
                 if isinstance(obj, TimeMachine):
-                    count_found += 1
                     if len(obj.patches) > 0:
-                        count_with_patches += 1
-                        print(f"[Foundation Reset] TimeMachine has {len(obj.patches)} active patches, is_frozen={obj.is_frozen}", file=sys.stderr)
                         try:
                             obj._stop_all_patches()
                             obj.is_frozen = False
-                        except Exception as e:
-                            print(f"[Foundation Reset] Failed to stop TimeMachine: {e}", file=sys.stderr)
-                    if obj.is_frozen:
-                        count_frozen += 1
-            if count_found > 0:
-                print(f"[Foundation Reset] Found {count_found} TimeMachine instances, {count_frozen} frozen, {count_with_patches} with patches", file=sys.stderr)
-    except (ImportError, AttributeError, Exception) as e:
+                        except Exception:
+                            pass
+    except (ImportError, AttributeError, Exception):
         # time_machine not available or cleanup failed, skip
-        import sys
-        print(f"[Foundation Reset] Exception in reset_time_machine_state: {e}", file=sys.stderr)
+        pass
 
 
 def reset_structlog_state() -> None:
