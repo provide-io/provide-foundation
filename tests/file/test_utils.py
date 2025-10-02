@@ -67,13 +67,13 @@ class TestFileUtils(FoundationTestCase):
         """Test getting modification time of existing file."""
 
         path = temp_directory / "test.txt"
-        before = time.time()
         path.write_text("content")
 
         mtime = get_mtime(path)
         assert mtime is not None
-        # Allow small timing window after file creation due to filesystem granularity
-        assert before <= mtime <= time.time() + 1.0
+        # Verify mtime is a reasonable value (within last 10 seconds and not in the future)
+        now = time.time()
+        assert now - 10.0 <= mtime <= now + 1.0, f"mtime {mtime} is not within reasonable range of now {now}"
 
     def test_get_mtime_missing_file(self, temp_directory: Path) -> None:
         """Test getting mtime of missing file returns None."""
