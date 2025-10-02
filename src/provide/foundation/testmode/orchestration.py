@@ -3,7 +3,6 @@ from __future__ import annotations
 #
 # orchestration.py
 #
-import threading
 from typing import Any
 
 """Foundation Test Reset Orchestration.
@@ -16,8 +15,7 @@ This is Foundation-internal knowledge that should be owned by Foundation,
 not by external testing frameworks.
 """
 
-# Global lock and flag to prevent concurrent/recursive resets
-_reset_lock = threading.RLock()
+# Global flag to prevent recursive resets
 _reset_in_progress = False
 
 
@@ -133,13 +131,11 @@ def reset_foundation_state() -> None:
     """
     global _reset_in_progress
 
-    # Prevent concurrent/recursive resets that can cause infinite loops
-    with _reset_lock:
-        if _reset_in_progress:
-            # Reset already in progress, skip to avoid recursion
-            return
-        _reset_in_progress = True
+    # Prevent recursive resets that can cause infinite loops
+    if _reset_in_progress:
+        return
 
+    _reset_in_progress = True
     try:
         # Import all the individual reset functions from internal module
         from provide.foundation.testmode.internal import (
@@ -192,8 +188,7 @@ def reset_foundation_state() -> None:
         reset_logger_state()
     finally:
         # Always clear the in-progress flag
-        with _reset_lock:
-            _reset_in_progress = False
+        _reset_in_progress = False
 
 
 def reset_foundation_for_testing() -> None:
