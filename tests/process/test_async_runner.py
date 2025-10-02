@@ -80,12 +80,12 @@ class TestAsyncRunCommand(FoundationTestCase):
         assert "test input" in result.stdout
 
     @pytest.mark.asyncio
-    @pytest.mark.xdist_group(name="timeout_tests")
     async def test_command_timeout(self) -> None:
         """Test command timeout.
 
-        NOTE: This test is grouped with xdist to ensure it runs on a worker that hasn't
-        run time_machine tests, which can leave frozen time references in event loops.
+        KNOWN ISSUE: This test may fail in serial execution if run after time_machine tests.
+        The pytest-asyncio event loop may cache frozen time.monotonic references from
+        previous tests. Run with `pytest -n auto` for reliable results.
         """
         with pytest.raises(ProcessTimeoutError):
             await async_run_command(["sleep", "1"], timeout=0.1)

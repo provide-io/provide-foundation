@@ -62,41 +62,34 @@ if not os.getenv("PYTEST_WORKER_ID"):  # Avoid multiple messages with xdist
 
 
 @pytest.fixture(autouse=True)
-def _force_time_machine_cleanup() -> Generator[None]:
-    """Force cleanup of time_machine patches immediately after test completes.
+def _cleanup_event_loops_after_time_machine() -> Generator[None]:
+    """Close event loops after each test to prevent frozen time caching.
 
-    This MUST run before Foundation teardown to ensure time patches are stopped
-    before pytest-asyncio creates event loops for the next test. If patches are
-    still active when the next async test's event loop is created, the loop will
-    cache frozen time.monotonic references and asyncio.wait_for() will never timeout.
+    When time_machine.freeze() is used, event loops created during or after the test
+    may cache frozen time.monotonic references. Closing the loop after each test
+    forces pytest-asyncio to create fresh loops.
 
-    This fixture runs BEFORE reset_foundation_for_all_tests because pytest executes
-    fixtures in the order they are defined in conftest.py.
+    KNOWN LIMITATION: This doesn't fully solve the issue in serial execution where
+    async timeout tests run immediately after time_machine tests. The timeout tests
+    may still fail because pytest-asyncio creates the loop during test setup (before
+    this fixture's teardown runs). Use pytest-xdist (-n auto) for reliable results.
     """
     yield  # Let test run
 
-    # Force cleanup of all TimeMachine instances IMMEDIATELY after test completes
+    # Close event loop to force pytest-asyncio to create a fresh one
     try:
-        import sys
-        import gc
+        import asyncio
 
-        if "provide.testkit.time.fixtures" in sys.modules:
-            from provide.testkit.time.fixtures import TimeMachine
-
-            cleaned = 0
-            for obj in gc.get_objects():
-                if isinstance(obj, TimeMachine) and len(obj.patches) > 0:
-                    try:
-                        print(f"[Conftest] Stopping {len(obj.patches)} time patches", file=sys.stderr)
-                        obj._stop_all_patches()
-                        obj.is_frozen = False
-                        cleaned += 1
-                    except Exception as e:
-                        print(f"[Conftest] Failed to stop patches: {e}", file=sys.stderr)
-            if cleaned > 0:
-                print(f"[Conftest] Cleaned {cleaned} TimeMachine instances", file=sys.stderr)
-    except Exception as e:
-        print(f"[Conftest] Exception in time_machine cleanup: {e}", file=sys.stderr)
+        try:
+            loop = asyncio.get_event_loop()
+            if not loop.is_running() and not loop.is_closed():
+                loop.close()
+        except RuntimeError:
+            # No event loop, that's fine
+            pass
+    except Exception:
+        # Event loop closure failed, continue
+        pass
 
 
 @pytest.fixture(autouse=True)
