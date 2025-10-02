@@ -62,15 +62,39 @@ if not os.getenv("PYTEST_WORKER_ID"):  # Avoid multiple messages with xdist
 
 
 @pytest.fixture(autouse=True)
-def reset_log_stream_for_testing() -> Generator[None]:
-    """Autouse fixture to reset log stream after each test.
+def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[None]:
+    """Autouse fixture to reset Foundation state after each test.
 
-    Foundation reset is handled by FoundationTestCase for migrated tests.
-    This fixture only ensures log stream cleanup for all tests.
+    This ensures ALL tests get Foundation reset after completion, preventing global
+    Hub state pollution between tests. This is critical for parallel test execution
+    where environment variables and Hub state can leak between tests.
+
+    The reset happens in the finally block (after test completion) to ensure that:
+    1. TestEnvironment context managers complete their cleanup first
+    2. Any state from the test is fully cleared before the next test starts
+    3. Environment variables set by the test don't affect the next test
     """
+    from provide.testkit import reset_foundation_setup_for_testing
+    import sys
+
     try:
         yield
     finally:
+        # ALWAYS reset Foundation after each test, regardless of test type
+        # This ensures clean state for the next test in the worker
+        reset_foundation_setup_for_testing()
+
+        # Clean up crypto module cache only if we're NOT in a crypto test file
+        # This prevents patched crypto state from leaking to non-crypto tests
+        # while allowing crypto tests in the same file to share module state
+        test_file = request.fspath.basename if hasattr(request.fspath, "basename") else str(request.fspath)
+        is_crypto_test = "crypto" in str(test_file).lower()
+
+        if not is_crypto_test:
+            crypto_modules = [key for key in sys.modules.keys() if key.startswith("provide.foundation.crypto")]
+            for module_name in crypto_modules:
+                sys.modules.pop(module_name, None)
+
         # Ensure stream is reset to default stderr after each test
         # Handle potential closed streams during parallel execution
         from provide.foundation.errors.decorators import suppress_and_log

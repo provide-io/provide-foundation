@@ -81,6 +81,11 @@ def reset_hub_state() -> None:
         # Components module not available, skip
         pass
 
+    # NOTE: Event bus clearing removed - it was causing infinite recursion
+    # during Foundation reinitialization. Event handlers use weak references
+    # and will be garbage collected naturally. The event bus has built-in
+    # "already registered" checks to prevent duplicate registrations.
+
 
 def reset_streams_state() -> None:
     """Reset stream state to defaults.

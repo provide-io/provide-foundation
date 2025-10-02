@@ -263,10 +263,11 @@ class TestAsyncContextualBehavior(FoundationTestCase):
     async def test_async_cancel_during_execution(self) -> None:
         """Test that async operations can be cancelled."""
         # This tests the asyncio integration
-        task = asyncio.create_task(async_run_command(["sleep", "1"]))
+        task = asyncio.create_task(async_run_command(["sleep", "10"]))
 
-        # Give it a moment to start (use minimal delay to avoid timing issues in full suite)
-        await asyncio.sleep(0)
+        # Give subprocess time to start to avoid cancelling during startup
+        # Using 0.1s instead of 0s to prevent deadlock on cancellation during spawn
+        await asyncio.sleep(0.1)
 
         # Cancel the task
         task.cancel()
