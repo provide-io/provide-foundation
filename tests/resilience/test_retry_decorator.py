@@ -163,10 +163,11 @@ class TestRetryDecoratorSync(FoundationTestCase):
         # Function should fail after 3 attempts with real delays
 
     def test_mixed_decorator_parameters(self) -> None:
-        """Test decorator with mixed positional and keyword arguments."""
+        """Test decorator with mixed positional and keyword arguments using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
 
         # Exceptions as positional, rest as kwargs
-        @retry(ValueError, TypeError, max_attempts=2, base_delay=0.01)
+        @retry(ValueError, TypeError, max_attempts=2, base_delay=0.01, time_source=get_time, sleep_func=fake_sleep)
         def func1() -> Never:
             raise ValueError("test")
 
@@ -182,7 +183,7 @@ class TestRetryDecoratorSync(FoundationTestCase):
             func2()
 
         # Just kwargs
-        @retry(max_attempts=1, base_delay=0.01)
+        @retry(max_attempts=1, base_delay=0.01, time_source=get_time, sleep_func=fake_sleep)
         def func3() -> Never:
             raise ValueError("test")
 
