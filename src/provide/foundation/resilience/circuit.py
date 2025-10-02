@@ -43,6 +43,10 @@ class CircuitBreaker:
         self.expected_exception = expected_exception
         self._time_source = time_source or time.time
         self._lock = RLock()
+        # Initialize state attributes (will be set properly in reset())
+        self._state: CircuitState
+        self._failure_count: int
+        self._last_failure_time: float | None
         self.reset()
 
     @property
@@ -117,7 +121,7 @@ class CircuitBreaker:
         with self._lock:
             self._state = CircuitState.CLOSED
             self._failure_count = 0
-            self._last_failure_time: float | None = None
+            self._last_failure_time = None
 
 
 def circuit_breaker(
