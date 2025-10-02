@@ -220,13 +220,13 @@ def reset_foundation_state() -> None:
         # Final reset of logger state (after all operations that might trigger setup)
         reset_logger_state()
 
-        # Clean up event loops FIRST to reset any time-related loop state
-        # This ensures a fresh event loop that isn't affected by time patches
-        reset_event_loops()
-
-        # Then reset time_machine patches after loop is reset
-        # This ensures time patches don't affect the new event loop
+        # Reset time_machine patches FIRST to unfreeze time
+        # This must happen BEFORE creating a new event loop so the loop doesn't cache frozen time
         reset_time_machine_state()
+
+        # Then clean up event loops to get a fresh loop with unfrozen time
+        # The new loop will have correct time.monotonic references
+        reset_event_loops()
     finally:
         # Always clear the reset-in-progress flags
         _reset_in_progress = False

@@ -53,13 +53,41 @@ def reset_time_machine_state() -> None:
     Tests using time_machine.freeze() can leave time frozen if cleanup fails,
     which breaks asyncio.wait_for timeouts in subsequent tests.
 
-    This function is a safety fallback - the primary fix is in provide-testkit's
-    TimeMachine.cleanup() method which now robustly stops all patches.
+    This MUST run before reset_event_loops() so the new event loop doesn't cache
+    frozen time references. The fixture cleanup runs after Foundation reset,
+    so we need to proactively stop patches here.
     """
-    # The time_machine fixture cleanup has been fixed in provide-testkit
-    # to handle exceptions during patch.stop() and properly reset state.
-    # This function remains as a safety measure but should not be needed.
-    pass
+    try:
+        import sys
+
+        # Check if the time_machine fixture is loaded
+        if "provide.testkit.time.fixtures" in sys.modules:
+            # Get the TimeMachine class
+            from provide.testkit.time.fixtures import TimeMachine
+
+            # Look for active TimeMachine instances and clean them up
+            # This handles the case where fixture cleanup hasn't run yet
+            import gc
+
+            count_found = 0
+            count_frozen = 0
+            for obj in gc.get_objects():
+                if isinstance(obj, TimeMachine):
+                    count_found += 1
+                    if obj.is_frozen:
+                        count_frozen += 1
+                        try:
+                            print(f"[Foundation Reset] Stopping frozen TimeMachine with {len(obj.patches)} patches", file=sys.stderr)
+                            obj._stop_all_patches()
+                            obj.is_frozen = False
+                        except Exception as e:
+                            print(f"[Foundation Reset] Failed to stop TimeMachine: {e}", file=sys.stderr)
+            if count_found > 0:
+                print(f"[Foundation Reset] Found {count_found} TimeMachine instances, {count_frozen} frozen", file=sys.stderr)
+    except (ImportError, AttributeError, Exception) as e:
+        # time_machine not available or cleanup failed, skip
+        import sys
+        print(f"[Foundation Reset] Exception in reset_time_machine_state: {e}", file=sys.stderr)
 
 
 def reset_structlog_state() -> None:
