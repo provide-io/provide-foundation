@@ -64,7 +64,9 @@ class TestRetryDecoratorSync(FoundationTestCase):
         """Test retrying only specific exception types using controlled time."""
         get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
 
-        @retry(ValueError, TypeError, max_attempts=3, base_delay=0.01, time_source=get_time, sleep_func=fake_sleep)
+        @retry(
+            ValueError, TypeError, max_attempts=3, base_delay=0.01, time_source=get_time, sleep_func=fake_sleep
+        )
         def selective_retry(error_type: str) -> Never:
             if error_type == "value":
                 raise ValueError("value error")
@@ -151,23 +153,26 @@ class TestRetryDecoratorSync(FoundationTestCase):
 
     @pytest.mark.slow
     def test_delay_between_retries(self) -> None:
-        """Test delay between retry attempts with real delays."""
+        """Test delay between retry attempts using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
 
-        @retry(max_attempts=3, base_delay=0.1, jitter=False)
+        @retry(max_attempts=3, base_delay=0.1, jitter=False, time_source=get_time, sleep_func=fake_sleep)
         def failing_func() -> Never:
             raise ValueError("fail")
 
         with pytest.raises(ValueError):
             failing_func()
 
-        # Function should fail after 3 attempts with real delays
+        # Function should fail after 3 attempts with controlled time
 
     def test_mixed_decorator_parameters(self) -> None:
         """Test decorator with mixed positional and keyword arguments using controlled time."""
         get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
 
         # Exceptions as positional, rest as kwargs
-        @retry(ValueError, TypeError, max_attempts=2, base_delay=0.01, time_source=get_time, sleep_func=fake_sleep)
+        @retry(
+            ValueError, TypeError, max_attempts=2, base_delay=0.01, time_source=get_time, sleep_func=fake_sleep
+        )
         def func1() -> Never:
             raise ValueError("test")
 
@@ -274,10 +279,17 @@ class TestRetryDecoratorAsync(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_sync_callback_with_async_function(self) -> None:
-        """Test sync callback with async decorated function."""
+        """Test sync callback with async decorated function using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
         callback = MagicMock()  # Sync callback
 
-        @retry(max_attempts=2, base_delay=0.01, on_retry=callback)
+        @retry(
+            max_attempts=2,
+            base_delay=0.01,
+            on_retry=callback,
+            time_source=get_time,
+            async_sleep_func=fake_async_sleep,
+        )
         async def async_func() -> str:
             if not hasattr(async_func, "called"):
                 async_func.called = True
@@ -292,16 +304,23 @@ class TestRetryDecoratorAsync(FoundationTestCase):
     @pytest.mark.asyncio
     @pytest.mark.slow
     async def test_async_delay_between_retries(self) -> None:
-        """Test delay between async retry attempts with real delays."""
+        """Test delay between async retry attempts using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
 
-        @retry(max_attempts=3, base_delay=0.1, jitter=False)
+        @retry(
+            max_attempts=3,
+            base_delay=0.1,
+            jitter=False,
+            time_source=get_time,
+            async_sleep_func=fake_async_sleep,
+        )
         async def failing_async() -> Never:
             raise ValueError("fail")
 
         with pytest.raises(ValueError):
             await failing_async()
 
-        # Function should fail after 3 attempts with real delays
+        # Function should fail after 3 attempts with controlled time
 
     @pytest.mark.asyncio
     async def test_preserve_async_function_metadata(self) -> None:
@@ -397,10 +416,11 @@ class TestRetryDecoratorLogging:
 
     @patch("provide.foundation.hub.foundation.get_foundation_logger")
     def test_retry_logging(self, mock_get_logger: Any) -> None:
-        """Test that retries are logged."""
+        """Test that retries are logged using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
         mock_logger = mock_get_logger.return_value
 
-        @retry(max_attempts=2, base_delay=0.01)
+        @retry(max_attempts=2, base_delay=0.01, time_source=get_time, sleep_func=fake_sleep)
         def func() -> str:
             if not hasattr(func, "called"):
                 func.called = True
@@ -415,10 +435,11 @@ class TestRetryDecoratorLogging:
 
     @patch("provide.foundation.hub.foundation.get_foundation_logger")
     def test_failure_logging(self, mock_get_logger: Any) -> None:
-        """Test that final failure is logged."""
+        """Test that final failure is logged using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
         mock_logger = mock_get_logger.return_value
 
-        @retry(max_attempts=2, base_delay=0.01)
+        @retry(max_attempts=2, base_delay=0.01, time_source=get_time, sleep_func=fake_sleep)
         def always_fails() -> Never:
             raise ValueError("test")
 
