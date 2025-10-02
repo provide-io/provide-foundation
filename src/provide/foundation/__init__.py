@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib
 import sys
+import threading
 
 from provide.foundation import config, errors, hub, platform, process, resilience, tracer
 from provide.foundation._version import __version__
@@ -55,7 +56,8 @@ Primary public interface for the library, re-exporting common components.
 
 
 # Lazy loading support for optional modules
-_getattr_in_progress: set[str] = set()
+# Use thread-local storage for recursion guard to ensure thread safety
+_thread_local = threading.local()
 
 
 def __getattr__(name: str) -> object:
@@ -63,16 +65,20 @@ def __getattr__(name: str) -> object:
     # Build the full module name
     module_name = f"provide.foundation.{name}"
 
+    # Initialize thread-local recursion guard if needed
+    if not hasattr(_thread_local, "getattr_in_progress"):
+        _thread_local.getattr_in_progress = set()
+
     # Check if we've already entered recursion for this module
     # This prevents infinite recursion when a module has been corrupted
-    if name in _getattr_in_progress:
+    if name in _thread_local.getattr_in_progress:
         raise AttributeError(
             f"module '{__name__}' has no attribute '{name}' "
             f"(recursion detected, module may be corrupted in sys.modules)"
         )
 
     # Set recursion guard
-    _getattr_in_progress.add(name)
+    _thread_local.getattr_in_progress.add(name)
 
     try:
         # Check if module is already in sys.modules but corrupted
@@ -106,7 +112,7 @@ def __getattr__(name: str) -> object:
                 raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
     finally:
         # Always clear recursion guard
-        _getattr_in_progress.discard(name)
+        _thread_local.getattr_in_progress.discard(name)
 
 
 __all__ = [
