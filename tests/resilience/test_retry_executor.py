@@ -53,9 +53,10 @@ class TestRetryExecutorSync(FoundationTestCase):
         assert mock_func.call_count == 3
 
     def test_max_attempts_exceeded(self) -> None:
-        """Test that error is raised after max attempts."""
+        """Test that error is raised after max attempts using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(policy, time_source=get_time, sleep_func=fake_sleep)
 
         mock_func = MagicMock(side_effect=ValueError("always fails"))
 
@@ -66,13 +67,14 @@ class TestRetryExecutorSync(FoundationTestCase):
         assert mock_func.call_count == 3
 
     def test_specific_exception_filtering(self) -> None:
-        """Test retrying only specific exception types."""
+        """Test retrying only specific exception types using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
         policy = RetryPolicy(
             max_attempts=3,
             base_delay=0.01,
             retryable_errors=(ValueError, TypeError),
         )
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(policy, time_source=get_time, sleep_func=fake_sleep)
 
         # Should not retry RuntimeError
         mock_func = MagicMock(side_effect=RuntimeError("not retryable"))
@@ -95,14 +97,15 @@ class TestRetryExecutorSync(FoundationTestCase):
         assert mock_func.call_count == 1
 
     def test_delay_between_retries(self) -> None:
-        """Test that delay is applied between retries."""
+        """Test that delay is applied between retries using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
         policy = RetryPolicy(
             max_attempts=3,
             base_delay=0.01,  # Use small real delay
             backoff=BackoffStrategy.FIXED,
             jitter=False,
         )
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(policy, time_source=get_time, sleep_func=fake_sleep)
 
         mock_func = MagicMock(side_effect=ValueError("fail"))
 
@@ -114,14 +117,15 @@ class TestRetryExecutorSync(FoundationTestCase):
 
     @pytest.mark.slow
     def test_exponential_backoff(self) -> None:
-        """Test exponential backoff strategy with real delays."""
+        """Test exponential backoff strategy using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
         policy = RetryPolicy(
             max_attempts=4,
             base_delay=0.1,  # Real delay for thorough testing
             backoff=BackoffStrategy.EXPONENTIAL,
             jitter=False,
         )
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(policy, time_source=get_time, sleep_func=fake_sleep)
 
         mock_func = MagicMock(side_effect=ValueError("fail"))
 
@@ -133,14 +137,15 @@ class TestRetryExecutorSync(FoundationTestCase):
 
     @pytest.mark.slow
     def test_linear_backoff(self) -> None:
-        """Test linear backoff strategy with real delays."""
+        """Test linear backoff strategy using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
         policy = RetryPolicy(
             max_attempts=4,
             base_delay=0.1,  # Real delay for thorough testing
             backoff=BackoffStrategy.LINEAR,
             jitter=False,
         )
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(policy, time_source=get_time, sleep_func=fake_sleep)
 
         mock_func = MagicMock(side_effect=ValueError("fail"))
 
@@ -152,14 +157,15 @@ class TestRetryExecutorSync(FoundationTestCase):
 
     @pytest.mark.slow
     def test_fibonacci_backoff(self) -> None:
-        """Test Fibonacci backoff strategy with real delays."""
+        """Test Fibonacci backoff strategy using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
         policy = RetryPolicy(
             max_attempts=5,
             base_delay=0.1,  # Real delay for thorough testing
             backoff=BackoffStrategy.FIBONACCI,
             jitter=False,
         )
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(policy, time_source=get_time, sleep_func=fake_sleep)
 
         mock_func = MagicMock(side_effect=ValueError("fail"))
 
@@ -171,7 +177,8 @@ class TestRetryExecutorSync(FoundationTestCase):
 
     @pytest.mark.slow
     def test_max_delay_cap(self) -> None:
-        """Test that delays are capped at max_delay with real delays."""
+        """Test that delays are capped at max_delay using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
         policy = RetryPolicy(
             max_attempts=5,
             base_delay=0.2,  # Real delay for thorough testing
@@ -179,7 +186,7 @@ class TestRetryExecutorSync(FoundationTestCase):
             max_delay=0.3,  # Real max delay cap
             jitter=False,
         )
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(policy, time_source=get_time, sleep_func=fake_sleep)
 
         mock_func = MagicMock(side_effect=ValueError("fail"))
 
@@ -190,10 +197,11 @@ class TestRetryExecutorSync(FoundationTestCase):
         assert mock_func.call_count == 5
 
     def test_on_retry_callback(self) -> None:
-        """Test that on_retry callback is invoked."""
+        """Test that on_retry callback is invoked using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
         callback = MagicMock()
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
-        executor = RetryExecutor(policy, on_retry=callback)
+        executor = RetryExecutor(policy, on_retry=callback, time_source=get_time, sleep_func=fake_sleep)
 
         mock_func = MagicMock(
             side_effect=[
@@ -215,13 +223,14 @@ class TestRetryExecutorSync(FoundationTestCase):
         assert calls[1][0][0] == 2  # Second retry (attempt 3)
 
     def test_on_retry_callback_exception_ignored(self) -> None:
-        """Test that exceptions in on_retry don't break retry."""
+        """Test that exceptions in on_retry don't break retry using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
 
         def bad_callback(attempt, error) -> Never:
             raise RuntimeError("callback failed")
 
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
-        executor = RetryExecutor(policy, on_retry=bad_callback)
+        executor = RetryExecutor(policy, on_retry=bad_callback, time_source=get_time, sleep_func=fake_sleep)
 
         mock_func = MagicMock(
             side_effect=[
@@ -240,14 +249,15 @@ class TestRetryExecutorSync(FoundationTestCase):
 
     @pytest.mark.slow
     def test_with_jitter(self) -> None:
-        """Test that jitter adds randomness to delays with real delays."""
+        """Test that jitter adds randomness to delays using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
         policy = RetryPolicy(
             max_attempts=3,
             base_delay=0.1,  # Real delay for thorough testing
             backoff=BackoffStrategy.FIXED,
             jitter=True,
         )
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(policy, time_source=get_time, sleep_func=fake_sleep)
 
         mock_func = MagicMock(side_effect=ValueError("fail"))
 
@@ -296,9 +306,10 @@ class TestRetryExecutorAsync(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_max_attempts_exceeded(self) -> None:
-        """Test that error is raised after max attempts."""
+        """Test that error is raised after max attempts using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(policy, time_source=get_time, async_sleep_func=fake_async_sleep)
 
         mock_func = AsyncMock(side_effect=ValueError("always fails"))
 
@@ -310,13 +321,14 @@ class TestRetryExecutorAsync(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_specific_exception_filtering(self) -> None:
-        """Test retrying only specific exception types."""
+        """Test retrying only specific exception types using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
         policy = RetryPolicy(
             max_attempts=3,
             base_delay=0.01,
             retryable_errors=(ValueError, TypeError),
         )
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(policy, time_source=get_time, async_sleep_func=fake_async_sleep)
 
         # Should not retry RuntimeError
         mock_func = AsyncMock(side_effect=RuntimeError("not retryable"))
@@ -328,14 +340,15 @@ class TestRetryExecutorAsync(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_delay_between_retries(self) -> None:
-        """Test that delay is applied between async retries."""
+        """Test that delay is applied between async retries using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
         policy = RetryPolicy(
             max_attempts=3,
             base_delay=0.01,  # Use small real delay
             backoff=BackoffStrategy.FIXED,
             jitter=False,
         )
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(policy, time_source=get_time, async_sleep_func=fake_async_sleep)
 
         mock_func = AsyncMock(side_effect=ValueError("fail"))
 
@@ -347,10 +360,13 @@ class TestRetryExecutorAsync(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_on_retry_callback_async(self) -> None:
-        """Test that async on_retry callback is invoked."""
+        """Test that async on_retry callback is invoked using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
         callback = AsyncMock()
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
-        executor = RetryExecutor(policy, on_retry=callback)
+        executor = RetryExecutor(
+            policy, on_retry=callback, time_source=get_time, async_sleep_func=fake_async_sleep
+        )
 
         mock_func = AsyncMock(
             side_effect=[
@@ -367,10 +383,13 @@ class TestRetryExecutorAsync(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_mixed_sync_async_callback(self) -> None:
-        """Test sync callback with async execution."""
+        """Test sync callback with async execution using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
         callback = MagicMock()  # Sync callback
         policy = RetryPolicy(max_attempts=2, base_delay=0.01)
-        executor = RetryExecutor(policy, on_retry=callback)
+        executor = RetryExecutor(
+            policy, on_retry=callback, time_source=get_time, async_sleep_func=fake_async_sleep
+        )
 
         mock_func = AsyncMock(
             side_effect=[
@@ -386,9 +405,10 @@ class TestRetryExecutorAsync(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_concurrent_executions(self) -> None:
-        """Test multiple concurrent retry executions."""
+        """Test multiple concurrent retry executions using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
         policy = RetryPolicy(max_attempts=2, base_delay=0.01)
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(policy, time_source=get_time, async_sleep_func=fake_async_sleep)
 
         async def failing_then_success(id) -> str:
             if not hasattr(failing_then_success, f"called_{id}"):
@@ -410,9 +430,10 @@ class TestRetryExecutorLogging:
     """Test logging behavior of RetryExecutor."""
 
     def test_retry_attempt_logged(self) -> None:
-        """Test that retry attempts are logged."""
+        """Test that retry attempts are logged using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(policy, time_source=get_time, sleep_func=fake_sleep)
 
         mock_func = MagicMock(
             side_effect=[
@@ -434,9 +455,10 @@ class TestRetryExecutorLogging:
         assert "1/3" in log_message or "attempt 2" in log_message
 
     def test_max_attempts_failure_logged(self) -> None:
-        """Test that max attempts failure is logged."""
+        """Test that max attempts failure is logged using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
         policy = RetryPolicy(max_attempts=2, base_delay=0.01)
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(policy, time_source=get_time, sleep_func=fake_sleep)
 
         mock_func = MagicMock(side_effect=ValueError("always fails"))
 
@@ -497,9 +519,10 @@ class TestRetryExecutorEdgeCases:
             executor.execute_sync(None)
 
     def test_function_with_no_args(self) -> None:
-        """Test retry with function that takes no arguments."""
+        """Test retry with function that takes no arguments using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
         policy = RetryPolicy(max_attempts=2, base_delay=0.01)
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(policy, time_source=get_time, sleep_func=fake_sleep)
 
         call_count = 0
 
@@ -516,9 +539,10 @@ class TestRetryExecutorEdgeCases:
         assert call_count == 2
 
     def test_generator_function_retry(self) -> None:
-        """Test handling of generator functions with retry executor."""
+        """Test handling of generator functions with retry executor using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
         policy = RetryPolicy(max_attempts=2, base_delay=0.01)
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(policy, time_source=get_time, sleep_func=fake_sleep)
 
         # Simple test: generator functions should work with retry executor
         # The executor should call the generator function and return the generator
