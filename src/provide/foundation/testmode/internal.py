@@ -23,24 +23,14 @@ def reset_event_loops() -> None:
     This is critical for pytest-xdist workers to shut down cleanly after
     async tests complete.
 
-    NOTE: Event loop reset is DISABLED when pytest-asyncio is active because:
-    1. pytest-asyncio manages event loop lifecycle
-    2. Creating a new loop during teardown can cache frozen time.monotonic
-       references if time_machine patches are still active (fixture cleanup
-       runs AFTER test teardown)
-    3. pytest-asyncio creates fresh loops per test anyway
+    IMPORTANT: This MUST be called AFTER reset_time_machine_state() to ensure
+    time patches are stopped before creating a new event loop. Otherwise the
+    new loop may cache frozen time.monotonic references.
     """
     try:
-        import sys
-
-        # Check if pytest-asyncio is active
-        if "pytest_asyncio" in sys.modules:
-            # Let pytest-asyncio manage event loop lifecycle
-            return
-
-        # Only reset event loops if pytest-asyncio is NOT active
         import asyncio
 
+        # Close the current event loop if it's not running
         try:
             loop = asyncio.get_event_loop()
             # Don't close if it's running (we're inside an async context)
@@ -50,12 +40,9 @@ def reset_event_loops() -> None:
             # No event loop in this thread, that's fine
             pass
 
-        # Create a fresh event loop for the next test
-        try:
-            asyncio.set_event_loop(asyncio.new_event_loop())
-        except RuntimeError:
-            # Can't set event loop, skip
-            pass
+        # DON'T create a new event loop - let pytest-asyncio manage it
+        # If we create one here while time patches are still active (fixture cleanup
+        # hasn't run yet), the new loop will cache frozen time.monotonic references
     except Exception:
         # If anything fails, continue - better to leak a loop than crash
         pass
