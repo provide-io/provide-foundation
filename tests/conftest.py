@@ -74,31 +74,48 @@ def _force_time_machine_cleanup() -> Generator[None]:
     """
     yield  # Let test run
 
-    # Import time_machine internals to forcibly stop all patches
-    try:
-        from unittest.mock import _patch as mock_patch_module
-
-        # Stop ALL active patches globally, not just time_machine ones
-        # This ensures time.time and time.monotonic are unfrozen before next test setup
-        if hasattr(mock_patch_module, "_patch_stopall"):
-            mock_patch_module._patch_stopall()
-    except Exception:
-        # If stopall fails, try manual cleanup
-        pass
-
-    # Also try to stop patches via time_machine if it was used
+    # CRITICAL: Clean up time_machine patches BEFORE anything else
+    # This ensures time is unfrozen before pytest-asyncio creates event loops for next test
     try:
         import gc
+        import time
+        from unittest.mock import _patch
+
         from provide.testkit.time.fixtures import TimeMachine
 
         # Find all TimeMachine instances and force cleanup
         for obj in gc.get_objects():
-            if isinstance(obj, TimeMachine):
+            if isinstance(obj, TimeMachine) and obj.is_frozen:
                 try:
+                    # Force stop all patches in this TimeMachine instance
                     obj.cleanup()
                 except Exception:
                     pass
+
+        # Verify time is unfrozen by checking if time.time() and time.monotonic() work
+        # If they're still mocked, the return values will be identical between calls
+        t1 = time.time()
+        time.sleep(0.001)
+        t2 = time.time()
+
+        # If time is still frozen, t2 will equal t1
+        if t2 == t1:
+            # Time is still frozen - manually unpatch
+            # Find all active patches and stop them
+            for obj in gc.get_objects():
+                if isinstance(obj, _patch):
+                    try:
+                        # Check if this patch is for time.time or time.monotonic
+                        if hasattr(obj, "attribute") and obj.attribute in (
+                            "time",
+                            "monotonic",
+                        ):
+                            obj.stop()
+                    except Exception:
+                        pass
+
     except Exception:
+        # Cleanup failed, continue anyway
         pass
 
     # Close event loop to force pytest-asyncio to create a fresh one
