@@ -52,25 +52,15 @@ def reset_time_machine_state() -> None:
 
     Tests using time_machine.freeze() can leave time frozen if cleanup fails,
     which breaks asyncio.wait_for timeouts in subsequent tests.
-    """
-    try:
-        from unittest.mock import _patch
 
-        # Stop ALL active unittest.mock patches to ensure time is unfrozen
-        # The time_machine fixture patches time.time, time.monotonic, etc.
-        # If cleanup fails, these patches remain active and break asyncio timeouts
-        if hasattr(_patch, "_active_patches"):
-            # Make a copy since we're modifying during iteration
-            active_patches = list(_patch._active_patches)
-            for patch in active_patches:
-                try:
-                    patch.stop()
-                except Exception:
-                    # Ignore errors during patch cleanup
-                    pass
-    except (ImportError, AttributeError, Exception):
-        # unittest.mock not available or API changed, skip
-        pass
+    NOTE: This is a workaround for time_machine fixture cleanup not running properly.
+    The root cause appears to be in provide-testkit's time_machine fixture.
+    """
+    #  TODO: This function is currently a placeholder. The time_machine fixture
+    #  cleanup issue needs to be fixed in provide-testkit, not worked around here.
+    #  For now, timeout tests may fail when run after time_machine tests in the
+    #  full test suite.
+    pass
 
 
 def reset_structlog_state() -> None:
