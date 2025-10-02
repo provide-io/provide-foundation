@@ -3,6 +3,7 @@
 import asyncio
 from typing import Any, Never
 from provide.testkit.mocking import ANY, AsyncMock, MagicMock, patch
+from provide.testkit.time import make_controlled_time
 
 from provide.testkit import FoundationTestCase
 import pytest
@@ -25,10 +26,11 @@ class TestRetryDecoratorSync(FoundationTestCase):
         assert result == "success"
 
     def test_retry_on_failure(self) -> None:
-        """Test that decorated function retries on failure."""
+        """Test that decorated function retries on failure using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
         attempt_count = 0
 
-        @retry(max_attempts=3, base_delay=0.01)
+        @retry(max_attempts=3, base_delay=0.01, time_source=get_time, sleep_func=fake_sleep)
         def failing_func() -> str:
             nonlocal attempt_count
             attempt_count += 1
@@ -42,10 +44,11 @@ class TestRetryDecoratorSync(FoundationTestCase):
         assert attempt_count == 3
 
     def test_max_attempts_exceeded(self) -> None:
-        """Test that error is raised after max attempts."""
+        """Test that error is raised after max attempts using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
         attempt_count = 0
 
-        @retry(max_attempts=2, base_delay=0.01)
+        @retry(max_attempts=2, base_delay=0.01, time_source=get_time, sleep_func=fake_sleep)
         def always_fails() -> Never:
             nonlocal attempt_count
             attempt_count += 1
@@ -58,9 +61,10 @@ class TestRetryDecoratorSync(FoundationTestCase):
         assert attempt_count == 2
 
     def test_specific_exception_types(self) -> None:
-        """Test retrying only specific exception types."""
+        """Test retrying only specific exception types using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
 
-        @retry(ValueError, TypeError, max_attempts=3, base_delay=0.01)
+        @retry(ValueError, TypeError, max_attempts=3, base_delay=0.01, time_source=get_time, sleep_func=fake_sleep)
         def selective_retry(error_type: str) -> Never:
             if error_type == "value":
                 raise ValueError("value error")
@@ -104,9 +108,10 @@ class TestRetryDecoratorSync(FoundationTestCase):
         assert attempt_count == 2
 
     def test_function_with_arguments(self) -> None:
-        """Test decorated function with arguments."""
+        """Test decorated function with arguments using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
 
-        @retry(max_attempts=2, base_delay=0.01)
+        @retry(max_attempts=2, base_delay=0.01, time_source=get_time, sleep_func=fake_sleep)
         def func_with_args(a: str, b: str, c: str | None = None) -> str:
             if not hasattr(func_with_args, "called"):
                 func_with_args.called = True
@@ -117,10 +122,11 @@ class TestRetryDecoratorSync(FoundationTestCase):
         assert result == "x-y-z"
 
     def test_on_retry_callback(self) -> None:
-        """Test on_retry callback with decorator."""
+        """Test on_retry callback with decorator using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
         callback = MagicMock()
 
-        @retry(max_attempts=2, base_delay=0.01, on_retry=callback)
+        @retry(max_attempts=2, base_delay=0.01, on_retry=callback, time_source=get_time, sleep_func=fake_sleep)
         def func_with_callback() -> str:
             if not hasattr(func_with_callback, "called"):
                 func_with_callback.called = True
