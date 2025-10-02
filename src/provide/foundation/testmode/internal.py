@@ -53,13 +53,12 @@ def reset_time_machine_state() -> None:
     Tests using time_machine.freeze() can leave time frozen if cleanup fails,
     which breaks asyncio.wait_for timeouts in subsequent tests.
 
-    NOTE: This is a workaround for time_machine fixture cleanup not running properly.
-    The root cause appears to be in provide-testkit's time_machine fixture.
+    This function is a safety fallback - the primary fix is in provide-testkit's
+    TimeMachine.cleanup() method which now robustly stops all patches.
     """
-    #  TODO: This function is currently a placeholder. The time_machine fixture
-    #  cleanup issue needs to be fixed in provide-testkit, not worked around here.
-    #  For now, timeout tests may fail when run after time_machine tests in the
-    #  full test suite.
+    # The time_machine fixture cleanup has been fixed in provide-testkit
+    # to handle exceptions during patch.stop() and properly reset state.
+    # This function remains as a safety measure but should not be needed.
     pass
 
 
