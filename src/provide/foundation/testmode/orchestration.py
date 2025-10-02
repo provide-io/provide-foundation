@@ -150,6 +150,7 @@ def reset_foundation_state() -> None:
             reset_state_managers,
             reset_streams_state,
             reset_structlog_state,
+            reset_time_machine_state,
         )
 
         # Signal that reset is in progress to prevent event enrichment and Hub event logging
@@ -218,6 +219,10 @@ def reset_foundation_state() -> None:
 
         # Final reset of logger state (after all operations that might trigger setup)
         reset_logger_state()
+
+        # Reset time_machine state to ensure time is not frozen
+        # This must happen before event loop cleanup since time affects the event loop
+        reset_time_machine_state()
 
         # Clean up event loops to prevent worker shutdown hangs
         # This must be last to ensure all async operations are complete

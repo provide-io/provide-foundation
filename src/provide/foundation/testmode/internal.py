@@ -47,6 +47,35 @@ def reset_event_loops() -> None:
         pass
 
 
+def reset_time_machine_state() -> None:
+    """Reset time_machine state to ensure time is not frozen.
+
+    Tests using time_machine.freeze() can leave time frozen if cleanup fails,
+    which breaks asyncio.wait_for timeouts in subsequent tests.
+    """
+    try:
+        # Check if time_machine is available and has been used
+        import sys
+
+        if "time_machine" in sys.modules:
+            import time_machine  # type: ignore[import-not-found]
+
+            # Get the global coordinator that tracks active time travel
+            if hasattr(time_machine, "travel") and hasattr(time_machine.travel, "_destinations_stack"):
+                # Clear any active time travel destinations
+                time_machine.travel._destinations_stack.clear()
+
+            # Also try to stop any active time travel via the global escape hatch
+            if hasattr(time_machine, "_is_travelling") and time_machine._is_travelling():
+                try:
+                    time_machine._stop_travelling()
+                except Exception:
+                    pass
+    except (ImportError, AttributeError, Exception):
+        # time_machine not available or API changed, skip
+        pass
+
+
 def reset_structlog_state() -> None:
     """Reset structlog configuration to defaults.
 
