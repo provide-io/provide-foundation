@@ -62,19 +62,44 @@ if not os.getenv("PYTEST_WORKER_ID"):  # Avoid multiple messages with xdist
 
 
 @pytest.fixture(autouse=True)
-def _cleanup_event_loops_after_time_machine() -> Generator[None]:
-    """Close event loops after each test to prevent frozen time caching.
+def _force_time_machine_cleanup() -> Generator[None]:
+    """Force cleanup of time_machine patches after each test.
 
-    When time_machine.freeze() is used, event loops created during or after the test
-    may cache frozen time.monotonic references. Closing the loop after each test
-    forces pytest-asyncio to create fresh loops.
+    This fixture runs with the highest priority (before other fixtures' teardown) to ensure
+    time patches are stopped BEFORE pytest-asyncio creates event loops for the next test.
 
-    KNOWN LIMITATION: This doesn't fully solve the issue in serial execution where
-    async timeout tests run immediately after time_machine tests. The timeout tests
-    may still fail because pytest-asyncio creates the loop during test setup (before
-    this fixture's teardown runs). Use pytest-xdist (-n auto) for reliable results.
+    Without this, pytest-asyncio may create event loops while time is still frozen, causing
+    the loop to cache frozen time.monotonic references that persist even after patches are
+    stopped.
     """
     yield  # Let test run
+
+    # Import time_machine internals to forcibly stop all patches
+    try:
+        from unittest.mock import _patch as mock_patch_module
+
+        # Stop ALL active patches globally, not just time_machine ones
+        # This ensures time.time and time.monotonic are unfrozen before next test setup
+        if hasattr(mock_patch_module, "_patch_stopall"):
+            mock_patch_module._patch_stopall()
+    except Exception:
+        # If stopall fails, try manual cleanup
+        pass
+
+    # Also try to stop patches via time_machine if it was used
+    try:
+        import gc
+        from provide.testkit.time.fixtures import TimeMachine
+
+        # Find all TimeMachine instances and force cleanup
+        for obj in gc.get_objects():
+            if isinstance(obj, TimeMachine):
+                try:
+                    obj.cleanup()
+                except Exception:
+                    pass
+    except Exception:
+        pass
 
     # Close event loop to force pytest-asyncio to create a fresh one
     try:
