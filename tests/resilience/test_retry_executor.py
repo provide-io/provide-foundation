@@ -6,6 +6,7 @@ This test file follows TDD principles - tests are written before implementation.
 import asyncio
 from typing import Never
 from provide.testkit.mocking import AsyncMock, MagicMock, patch
+from provide.testkit.time import make_controlled_time
 
 from provide.testkit import FoundationTestCase
 import pytest
@@ -33,9 +34,10 @@ class TestRetryExecutorSync(FoundationTestCase):
         mock_func.assert_called_once_with("arg1", key="value")
 
     def test_retry_on_failure_then_success(self) -> None:
-        """Test function that fails then succeeds."""
+        """Test function that fails then succeeds using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(policy, time_source=get_time, sleep_func=fake_sleep)
 
         mock_func = MagicMock(
             side_effect=[
@@ -274,9 +276,10 @@ class TestRetryExecutorAsync(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_retry_on_failure_then_success(self) -> None:
-        """Test async function that fails then succeeds."""
+        """Test async function that fails then succeeds using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
         policy = RetryPolicy(max_attempts=3, base_delay=0.01)
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(policy, time_source=get_time, async_sleep_func=fake_async_sleep)
 
         mock_func = AsyncMock(
             side_effect=[
