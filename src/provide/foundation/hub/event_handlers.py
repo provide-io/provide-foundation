@@ -10,12 +10,23 @@ This module provides the bridge between the event system and logging,
 breaking the circular dependency while maintaining logging functionality.
 """
 
+# Global flag to prevent event logging during Foundation initialization
+# This prevents infinite loops when modules auto-register during import
+_foundation_initializing = False
+
 
 def _get_logger_safely() -> Any:
     """Get logger without creating circular dependency.
 
     Returns None if logger is not yet available to avoid initialization issues.
     """
+    global _foundation_initializing
+
+    # Never try to get logger if Foundation is currently initializing
+    # This prevents cascade imports during module initialization
+    if _foundation_initializing:
+        return None
+
     try:
         # Check if foundation module is already imported before importing
         # This prevents triggering initialization cascade during event handling

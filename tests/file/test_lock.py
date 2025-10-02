@@ -76,11 +76,13 @@ class TestFileLock(MinimalTestCase):
     @pytest.mark.time_sensitive
     def test_file_lock_timeout(self, temp_directory: Path) -> None:
         """Test lock acquisition timeout."""
-        lock_path = temp_directory / "test.lock"
+        # Make lock path unique per worker to prevent collision in parallel execution
+        worker_id = os.environ.get("PYTEST_XDIST_WORKER", "gw0")
+        lock_path = temp_directory / f"test_{worker_id}.lock"
         lock1 = FileLock(lock_path)
 
-        # Use longer timeout and more generous bounds for coverage overhead
-        timeout_val = 2.0  # Increased from 1.0s
+        # Use shorter timeout for faster test execution in parallel
+        timeout_val = 1.0
         lock2 = FileLock(lock_path, timeout=timeout_val)
 
         try:
@@ -95,9 +97,9 @@ class TestFileLock(MinimalTestCase):
                 lock2.acquire()
             elapsed = time.time() - start
 
-            # Very generous bounds to handle coverage overhead (especially --cov-branch)
-            min_time = timeout_val * 0.7  # 1.4s minimum
-            max_time = timeout_val * 2.5  # 5.0s maximum
+            # Generous bounds to handle coverage overhead
+            min_time = timeout_val * 0.7  # 0.7s minimum
+            max_time = timeout_val * 2.5  # 2.5s maximum
             assert min_time < elapsed < max_time, f"Expected timeout ~{timeout_val}s, got {elapsed:.3f}s"
             assert exc_info.value.code == "LOCK_TIMEOUT"
             assert not lock2.locked
@@ -138,15 +140,17 @@ class TestFileLock(MinimalTestCase):
     @pytest.mark.time_sensitive
     def test_file_lock_concurrent_access(self, temp_directory: Path) -> None:
         """Test concurrent lock access from threads."""
-        lock_path = temp_directory / "test.lock"
+        # Make lock path unique per worker to prevent collision in parallel execution
+        worker_id = os.environ.get("PYTEST_XDIST_WORKER", "gw0")
+        lock_path = temp_directory / f"test_concurrent_{worker_id}.lock"
         results = []
 
-        def worker(worker_id: int) -> None:
-            # Very generous timeout for coverage overhead
-            lock = FileLock(lock_path, timeout=10.0)  # Increased from 5.0s
+        def worker(thread_id: int) -> None:
+            # Reduced timeout for faster parallel execution
+            lock = FileLock(lock_path, timeout=2.0)
             with lock:
-                results.append(worker_id)
-                time.sleep(0.05)  # Reduced work time to speed up test
+                results.append(thread_id)
+                time.sleep(0.02)  # Minimal work time
 
         # Start multiple threads
         threads = []
@@ -156,9 +160,9 @@ class TestFileLock(MinimalTestCase):
                 threads.append(t)
                 t.start()
 
-            # Wait for all threads with very generous timeout
+            # Wait for all threads with reasonable timeout
             for i, t in enumerate(threads):
-                t.join(timeout=20.0)  # Increased from 10.0s
+                t.join(timeout=5.0)  # Reduced from 20.0s
                 if t.is_alive():
                     pytest.fail(f"Thread {i} did not complete within timeout")
 

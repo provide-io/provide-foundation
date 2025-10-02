@@ -4,6 +4,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from provide.foundation.file.operations.detectors.helpers import (
+    extract_base_name,
+    is_backup_file,
+    is_temp_file,
+)
 from provide.foundation.file.operations.types import (
     FileEvent,
     FileOperation,
@@ -31,14 +36,15 @@ class AtomicOperationDetector:
             next_event = events[i + 1]
 
             if (
-                self._is_temp_file(current.path)
-                and current.type in {"created", "modified"}
-                and next_event.type == "moved"
-                and next_event.src_path == current.path
-                and not self._is_temp_file(next_event.path)
+                is_temp_file(current.path)
+                and current.event_type in {"created", "modified"}
+                and next_event.event_type == "moved"
+                and next_event.path == current.path
+                and next_event.dest_path
+                and not is_temp_file(next_event.dest_path)
             ):
                 # Found atomic save pattern
-                target_path = next_event.path
+                target_path = next_event.dest_path
 
                 # Look for other related events (additional writes to temp)
                 related_events = [current, next_event]
@@ -49,15 +55,19 @@ class AtomicOperationDetector:
                 related_events.sort(key=lambda e: e.timestamp)
 
                 return FileOperation(
-                    type=OperationType.SAVE,
-                    path=target_path,
+                    operation_type=OperationType.ATOMIC_SAVE,
+                    primary_path=target_path,
                     events=related_events,
+                    confidence=0.95,
+                    description=f"Atomic save to {target_path.name}",
                     start_time=related_events[0].timestamp,
                     end_time=related_events[-1].timestamp,
+                    is_atomic=True,
+                    is_safe=True,
+                    files_affected=[target_path],
                     metadata={
                         "temp_file": str(current.path),
                         "pattern": "atomic_save",
-                        "description": f"Atomic save to {target_path.name}",
                     },
                 )
 
@@ -66,107 +76,62 @@ class AtomicOperationDetector:
     def detect_safe_write(self, events: list[FileEvent]) -> FileOperation | None:
         """Detect safe write pattern (backup original, write new, cleanup).
 
-        Common pattern: rename original to backup -> create new -> delete backup
+        Common pattern: create backup -> modify original OR rename original to backup -> create new
         """
         if len(events) < 2:
             return None
 
-        # Group events by base file name
-        file_groups = {}
-        for event in events:
-            base_name = self._extract_base_name(event.path)
-            if base_name:
-                if base_name not in file_groups:
-                    file_groups[base_name] = []
-                file_groups[base_name].append(event)
+        # Find backup files and match them with original files
+        backup_events = []
+        regular_events = []
 
-        for base_name, group_events in file_groups.items():
-            if len(group_events) < 2:
+        for event in events:
+            if is_backup_file(event.path):
+                backup_events.append(event)
+            else:
+                regular_events.append(event)
+
+        # Try to match backup files with regular files
+        for backup_event in backup_events:
+            if backup_event.event_type not in {"moved", "created"}:
                 continue
 
-            group_events.sort(key=lambda e: e.timestamp)
+            # Extract base name from backup
+            base_name = extract_base_name(backup_event.path)
+            if not base_name:
+                continue
 
-            # Look for backup creation followed by new file creation
-            backup_created = None
-            original_created = None
+            backup_parent = backup_event.path.parent
+            expected_original = backup_parent / base_name
 
-            for event in group_events:
-                if event.type in {"moved", "created"} and self._is_backup_file(event.path):
-                    backup_created = event
-                elif event.type == "created" and not self._is_backup_file(event.path):
-                    original_created = event
+            # Find matching original file events
+            matching_events = [
+                e for e in regular_events
+                if e.path == expected_original and e.event_type in {"created", "modified"}
+            ]
 
-            if backup_created and original_created:
+            if matching_events:
                 # Found safe write pattern
-                target_path = original_created.path
+                original_event = matching_events[0]
+                all_events = [backup_event, original_event]
+                all_events.sort(key=lambda e: e.timestamp)
 
                 return FileOperation(
-                    type=OperationType.SAVE,
-                    path=target_path,
-                    events=group_events,
-                    start_time=group_events[0].timestamp,
-                    end_time=group_events[-1].timestamp,
+                    operation_type=OperationType.SAFE_WRITE,
+                    primary_path=original_event.path,
+                    events=all_events,
+                    confidence=0.95,
+                    description=f"Safe write to {original_event.path.name}",
+                    start_time=all_events[0].timestamp,
+                    end_time=all_events[-1].timestamp,
+                    is_atomic=False,
+                    is_safe=True,
+                    has_backup=True,
+                    files_affected=[original_event.path],
                     metadata={
-                        "backup_file": str(backup_created.path),
+                        "backup_file": str(backup_event.path),
                         "pattern": "safe_write",
-                        "description": f"Safe write to {target_path.name}",
                     },
                 )
 
         return None
-
-    def _is_temp_file(self, path: Path) -> bool:
-        """Check if path looks like a temporary file."""
-        name = path.name.lower()
-        stem = path.stem.lower()
-
-        # Common temp file patterns
-        temp_patterns = [
-            name.startswith(".tmp"),
-            name.startswith("tmp"),
-            name.endswith(".tmp"),
-            name.endswith(".temp"),
-            name.endswith("~"),
-            ".$" in name,  # .$ prefix (common in Windows)
-            stem.endswith(".tmp"),
-            ".swp" in name,  # vim swap files
-            ".#" in name,  # emacs temp files
-        ]
-
-        return any(temp_patterns)
-
-    def _is_backup_file(self, path: Path) -> bool:
-        """Check if path looks like a backup file."""
-        name = path.name.lower()
-
-        backup_patterns = [
-            name.endswith(".bak"),
-            name.endswith(".backup"),
-            name.endswith(".orig"),
-            name.endswith("~"),
-            ".bak." in name,
-        ]
-
-        return any(backup_patterns)
-
-    def _extract_base_name(self, path: Path) -> str | None:
-        """Extract base filename for grouping related files."""
-        name = path.name
-
-        # Remove common temp/backup suffixes
-        suffixes_to_remove = [".tmp", ".temp", ".bak", ".backup", ".orig", "~"]
-
-        base_name = name
-        for suffix in suffixes_to_remove:
-            if base_name.endswith(suffix):
-                base_name = base_name[: -len(suffix)]
-                break
-
-        # Remove temp prefixes
-        prefixes_to_remove = ["tmp", ".tmp", ".#"]
-        for prefix in prefixes_to_remove:
-            if base_name.startswith(prefix):
-                base_name = base_name[len(prefix) :]
-                break
-
-        return base_name if base_name else None
