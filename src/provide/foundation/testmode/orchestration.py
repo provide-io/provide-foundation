@@ -15,8 +15,9 @@ This is Foundation-internal knowledge that should be owned by Foundation,
 not by external testing frameworks.
 """
 
-# Global flag to prevent recursive resets
+# Global flags to prevent recursive resets
 _reset_in_progress = False
+_reset_for_testing_in_progress = False
 
 
 def _reset_otel_once_flag(once_obj: Any) -> None:
@@ -198,57 +199,68 @@ def reset_foundation_for_testing() -> None:
     It performs the complete state reset and handles test-specific concerns
     like transport re-registration and test stream preservation.
     """
-    # Save current stream if it's a test stream (not stderr/stdout)
-    import sys
+    global _reset_for_testing_in_progress
 
-    preserve_stream = None
+    # Prevent recursive resets during test cleanup
+    if _reset_for_testing_in_progress:
+        return
+
+    _reset_for_testing_in_progress = True
     try:
-        from provide.foundation.streams.core import get_log_stream
+        # Save current stream if it's a test stream (not stderr/stdout)
+        import sys
 
-        current_stream = get_log_stream()
-        # Only preserve if it's not stderr/stdout (i.e., it's a test stream)
-        if current_stream not in (sys.stderr, sys.stdout):
-            preserve_stream = current_stream
-    except Exception:
-        # Error getting current stream, skip preservation
-        pass
-
-    # Full reset with Hub-based state management
-    reset_foundation_state()
-
-    # Reset transport registration flags so transports can be re-registered
-    try:
-        from provide.foundation.testmode.internal import reset_transport_registration_flags
-
-        reset_transport_registration_flags()
-    except ImportError:
-        # Testmode module not available
-        pass
-
-    # Re-register HTTP transport for tests that need it
-    try:
-        from provide.foundation.transport.http import _register_http_transport
-
-        _register_http_transport()
-    except ImportError:
-        # Transport module not available
-        pass
-
-    # Final reset of lazy setup state (after transport registration)
-    try:
-        from provide.foundation.logger.core import _LAZY_SETUP_STATE
-
-        _LAZY_SETUP_STATE.update({"done": False, "error": None, "in_progress": False})
-    except ImportError:
-        # Legacy state not available, skip
-        pass
-
-    # Restore test stream if there was one
-    if preserve_stream:
+        preserve_stream = None
         try:
-            from provide.foundation.streams.core import set_log_stream_for_testing
+            from provide.foundation.streams.core import get_log_stream
 
-            set_log_stream_for_testing(preserve_stream)
+            current_stream = get_log_stream()
+            # Only preserve if it's not stderr/stdout (i.e., it's a test stream)
+            if current_stream not in (sys.stderr, sys.stdout):
+                preserve_stream = current_stream
         except Exception:
-            # Error restoring stream, continue without it
+            # Error getting current stream, skip preservation
             pass
+
+        # Full reset with Hub-based state management
+        reset_foundation_state()
+
+        # Reset transport registration flags so transports can be re-registered
+        try:
+            from provide.foundation.testmode.internal import reset_transport_registration_flags
+
+            reset_transport_registration_flags()
+        except ImportError:
+            # Testmode module not available
+            pass
+
+        # Re-register HTTP transport for tests that need it
+        try:
+            from provide.foundation.transport.http import _register_http_transport
+
+            _register_http_transport()
+        except ImportError:
+            # Transport module not available
+            pass
+
+        # Final reset of lazy setup state (after transport registration)
+        try:
+            from provide.foundation.logger.core import _LAZY_SETUP_STATE
+
+            _LAZY_SETUP_STATE.update({"done": False, "error": None, "in_progress": False})
+        except ImportError:
+            # Legacy state not available, skip
+            pass
+
+        # Restore test stream if there was one
+        if preserve_stream:
+            try:
+                from provide.foundation.streams.core import set_log_stream_for_testing
+
+                set_log_stream_for_testing(preserve_stream)
+            except Exception:
+                # Error restoring stream, continue without it
+                pass
+    finally:
+        # Always clear the in-progress flag
+        _reset_for_testing_in_progress = False
