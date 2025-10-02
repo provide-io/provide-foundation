@@ -54,25 +54,22 @@ def reset_time_machine_state() -> None:
     which breaks asyncio.wait_for timeouts in subsequent tests.
     """
     try:
-        # Check if time_machine is available and has been used
-        import sys
+        from unittest.mock import _patch
 
-        if "time_machine" in sys.modules:
-            import time_machine  # type: ignore[import-not-found]
-
-            # Get the global coordinator that tracks active time travel
-            if hasattr(time_machine, "travel") and hasattr(time_machine.travel, "_destinations_stack"):
-                # Clear any active time travel destinations
-                time_machine.travel._destinations_stack.clear()
-
-            # Also try to stop any active time travel via the global escape hatch
-            if hasattr(time_machine, "_is_travelling") and time_machine._is_travelling():
+        # Stop ALL active unittest.mock patches to ensure time is unfrozen
+        # The time_machine fixture patches time.time, time.monotonic, etc.
+        # If cleanup fails, these patches remain active and break asyncio timeouts
+        if hasattr(_patch, "_active_patches"):
+            # Make a copy since we're modifying during iteration
+            active_patches = list(_patch._active_patches)
+            for patch in active_patches:
                 try:
-                    time_machine._stop_travelling()
+                    patch.stop()
                 except Exception:
+                    # Ignore errors during patch cleanup
                     pass
     except (ImportError, AttributeError, Exception):
-        # time_machine not available or API changed, skip
+        # unittest.mock not available or API changed, skip
         pass
 
 
