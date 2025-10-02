@@ -10,9 +10,10 @@ This module provides the bridge between the event system and logging,
 breaking the circular dependency while maintaining logging functionality.
 """
 
-# Global flag to prevent event logging during Foundation initialization
-# This prevents infinite loops when modules auto-register during import
+# Global flags to prevent event logging during Foundation initialization/reset
+# This prevents infinite loops when modules auto-register during import/reset
 _foundation_initializing = False
+_reset_in_progress = False
 
 
 def _get_logger_safely() -> Any:
@@ -20,11 +21,11 @@ def _get_logger_safely() -> Any:
 
     Returns None if logger is not yet available to avoid initialization issues.
     """
-    global _foundation_initializing
+    global _foundation_initializing, _reset_in_progress
 
-    # Never try to get logger if Foundation is currently initializing
-    # This prevents cascade imports during module initialization
-    if _foundation_initializing:
+    # Never try to get logger if Foundation is currently initializing or resetting
+    # This prevents cascade imports during module initialization and infinite loops during reset
+    if _foundation_initializing or _reset_in_progress:
         return None
 
     try:
@@ -43,6 +44,19 @@ def _get_logger_safely() -> Any:
     except Exception:
         # If logger isn't ready yet, gracefully ignore
         return None
+
+
+def set_reset_in_progress(in_progress: bool) -> None:
+    """Set whether a reset is currently in progress.
+
+    This prevents event handlers from triggering logger operations during resets,
+    which would cause infinite loops.
+
+    Args:
+        in_progress: True if reset is starting, False if reset is complete
+    """
+    global _reset_in_progress
+    _reset_in_progress = in_progress
 
 
 def handle_registry_event(event: Event | RegistryEvent) -> None:

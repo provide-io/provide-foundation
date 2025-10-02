@@ -152,11 +152,22 @@ def reset_foundation_state() -> None:
             reset_structlog_state,
         )
 
-        # Signal that reset is in progress to prevent event enrichment
+        # Signal that reset is in progress to prevent event enrichment and Hub event logging
         try:
-            from provide.foundation.logger.processors.main import set_reset_in_progress
+            from provide.foundation.logger.processors.main import (
+                set_reset_in_progress as set_processor_reset,
+            )
 
-            set_reset_in_progress(True)
+            set_processor_reset(True)
+        except ImportError:
+            pass
+
+        try:
+            from provide.foundation.hub.event_handlers import (
+                set_reset_in_progress as set_hub_reset,
+            )
+
+            set_hub_reset(True)
         except ImportError:
             pass
 
@@ -215,9 +226,20 @@ def reset_foundation_state() -> None:
         # Always clear the reset-in-progress flags
         _reset_in_progress = False
         try:
-            from provide.foundation.logger.processors.main import set_reset_in_progress
+            from provide.foundation.logger.processors.main import (
+                set_reset_in_progress as set_processor_reset,
+            )
 
-            set_reset_in_progress(False)
+            set_processor_reset(False)
+        except ImportError:
+            pass
+
+        try:
+            from provide.foundation.hub.event_handlers import (
+                set_reset_in_progress as set_hub_reset,
+            )
+
+            set_hub_reset(False)
         except ImportError:
             pass
 
