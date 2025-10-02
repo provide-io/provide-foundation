@@ -256,6 +256,7 @@ def circuit_breaker(
     failure_threshold: int = 5,
     recovery_timeout: float = DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT,
     expected_exception: tuple[type[Exception], ...] = (Exception,),
+    time_source: Callable[[], float] | None = None,
 ) -> Callable[[F], F]:
     """Create a circuit breaker decorator.
 
@@ -263,6 +264,7 @@ def circuit_breaker(
         failure_threshold: Number of failures before opening circuit.
         recovery_timeout: Seconds to wait before attempting recovery.
         expected_exception: Exception types that trigger the breaker.
+        time_source: Optional callable that returns current time (for testing).
 
     Returns:
         Circuit breaker decorator.
@@ -277,6 +279,7 @@ def circuit_breaker(
         failure_threshold=failure_threshold,
         recovery_timeout=recovery_timeout,
         expected_exception=expected_exception,
+        time_source=time_source,
     )
 
     # Register for appropriate cleanup based on context
