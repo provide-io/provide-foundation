@@ -17,6 +17,14 @@ def _get_logger_safely() -> Any:
     Returns None if logger is not yet available to avoid initialization issues.
     """
     try:
+        # Check if foundation module is already imported before importing
+        # This prevents triggering initialization cascade during event handling
+        import sys
+
+        if "provide.foundation.hub.foundation" not in sys.modules:
+            # Foundation not initialized yet, don't trigger import
+            return None
+
         # Only import after we know the system is initialized
         from provide.foundation.hub.foundation import get_foundation_logger
 
