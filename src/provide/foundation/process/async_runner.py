@@ -88,12 +88,17 @@ async def _communicate_with_timeout(
 ) -> tuple[bytes | None, bytes | None]:
     """Communicate with process with optional timeout."""
     if timeout:
+        import sys
+        print(f"[async_run_command] Using timeout={timeout} for command={cmd_str}", file=sys.stderr)
         try:
-            return await asyncio.wait_for(
+            result = await asyncio.wait_for(
                 process.communicate(input=input),
                 timeout=timeout,
             )
+            print(f"[async_run_command] Command completed without timeout", file=sys.stderr)
+            return result
         except builtins.TimeoutError as e:
+            print(f"[async_run_command] Caught TimeoutError!", file=sys.stderr)
             process.kill()
             await process.wait()
             plog.error("⏱️ Async command timed out", command=cmd_str, timeout=timeout)
