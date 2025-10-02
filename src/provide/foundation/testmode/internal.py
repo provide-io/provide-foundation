@@ -12,6 +12,10 @@ can use to reset Foundation's internal state. These are internal APIs
 designed to be called by testkit for proper test isolation.
 """
 
+# Global flags to prevent recursive resets in individual functions
+_eventsets_reset_in_progress = False
+_hub_reset_in_progress = False
+
 
 def reset_structlog_state() -> None:
     """Reset structlog configuration to defaults.
@@ -55,31 +59,41 @@ def reset_hub_state() -> None:
     This clears the Hub registry and resets all Hub components
     to their initial state.
     """
+    global _hub_reset_in_progress
+
+    # Prevent recursive resets that can trigger re-initialization
+    if _hub_reset_in_progress:
+        return
+
+    _hub_reset_in_progress = True
     try:
-        from provide.foundation.hub.manager import clear_hub
+        try:
+            from provide.foundation.hub.manager import clear_hub
 
-        clear_hub()
-    except ImportError:
-        # Hub module not available, skip
-        pass
+            clear_hub()
+        except ImportError:
+            # Hub module not available, skip
+            pass
 
-    try:
-        # Also reset the initialized components cache
-        from provide.foundation.hub.components import _initialized_components
+        try:
+            # Also reset the initialized components cache
+            from provide.foundation.hub.components import _initialized_components
 
-        _initialized_components.clear()
-    except ImportError:
-        # Components module not available, skip
-        pass
+            _initialized_components.clear()
+        except ImportError:
+            # Components module not available, skip
+            pass
 
-    try:
-        # Clear the global component registry (where bootstrap_foundation registers components)
-        from provide.foundation.hub.components import _component_registry
+        try:
+            # Clear the global component registry (where bootstrap_foundation registers components)
+            from provide.foundation.hub.components import _component_registry
 
-        _component_registry.clear()
-    except ImportError:
-        # Components module not available, skip
-        pass
+            _component_registry.clear()
+        except ImportError:
+            # Components module not available, skip
+            pass
+    finally:
+        _hub_reset_in_progress = False
 
     # NOTE: Event bus clearing removed - it was causing infinite recursion
     # during Foundation reinitialization. Event handlers use weak references
@@ -116,7 +130,7 @@ def reset_transport_registration_flags() -> None:
         if "provide.foundation.transport.http" in sys.modules:
             http_module = sys.modules["provide.foundation.transport.http"]
             if hasattr(http_module, "_http_transport_registered"):
-                http_module._http_transport_registered = False
+                http_module._http_transport_registered = False  # type: ignore[attr-defined]
     except Exception:
         # If reset fails, skip - the guard will be bypassed on next import
         pass
@@ -128,6 +142,13 @@ def reset_eventsets_state() -> None:
     This clears the event set registry to ensure clean state
     between tests.
     """
+    global _eventsets_reset_in_progress
+
+    # Prevent recursive resets that trigger event processor initialization
+    if _eventsets_reset_in_progress:
+        return
+
+    _eventsets_reset_in_progress = True
     try:
         from provide.foundation.eventsets.registry import clear_registry
 
@@ -135,6 +156,8 @@ def reset_eventsets_state() -> None:
     except ImportError:
         # Event sets may not be available in all test environments
         pass
+    finally:
+        _eventsets_reset_in_progress = False
 
 
 def reset_coordinator_state() -> None:
