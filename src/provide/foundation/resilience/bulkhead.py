@@ -32,6 +32,7 @@ class ResourcePool:
     _active_count: int = field(default=0, init=False)
     _queue_size: int = field(default=0, init=False)
     _lock: threading.RLock = field(factory=threading.RLock, init=False)
+    _async_lock: asyncio.Lock | None = field(default=None, init=False)
 
     def __attrs_post_init__(self) -> None:
         """Initialize semaphores after object creation."""
@@ -105,11 +106,13 @@ class ResourcePool:
         """
         actual_timeout = timeout if timeout is not None else self.timeout
 
-        # Initialize async semaphore on first use
+        # Initialize async locks and semaphore on first use
+        if self._async_lock is None:
+            self._async_lock = asyncio.Lock()
         if self._async_semaphore is None:
             self._async_semaphore = asyncio.Semaphore(self.max_concurrent)
 
-        with self._lock:
+        async with self._async_lock:
             if self._queue_size >= self.max_queue_size:
                 raise RuntimeError(f"Queue is full (max: {self.max_queue_size})")
             self._queue_size += 1
@@ -117,18 +120,21 @@ class ResourcePool:
         try:
             acquired = await asyncio.wait_for(self._async_semaphore.acquire(), timeout=actual_timeout)
             if acquired:
-                with self._lock:
+                async with self._async_lock:
                     self._active_count += 1
             return True
         except TimeoutError:
             return False
         finally:
-            with self._lock:
+            async with self._async_lock:
                 self._queue_size -= 1
 
     async def release_async(self) -> None:
         """Release a resource slot (async)."""
-        with self._lock:
+        if self._async_lock is None:
+            self._async_lock = asyncio.Lock()
+
+        async with self._async_lock:
             if self._active_count > 0:
                 self._active_count -= 1
 
