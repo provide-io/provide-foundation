@@ -59,26 +59,79 @@ Primary public interface for the library, re-exporting common components.
 # Use thread-local storage for recursion guard to ensure thread safety
 _thread_local = threading.local()
 
+# Maximum depth for nested lazy imports to prevent stack overflow
+_MAX_LAZY_IMPORT_DEPTH = 5
+
+# Modules that are safe to lazy-load (do not trigger recursive lookups)
+# These modules have been verified to not cause import cycles
+_LAZY_LOADABLE_MODULES = frozenset(["cli", "crypto", "docs", "formatting", "metrics"])
+
 
 def __getattr__(name: str) -> object:
-    """Support lazy loading of optional modules."""
+    """Support lazy loading of optional modules.
+
+    This lazy loading mechanism reduces initial import overhead by deferring
+    module imports until first access. However, it can be fragile if modules
+    have complex interdependencies.
+
+    Safe lazy-loaded modules (verified no import cycles):
+    - cli: Requires optional 'click' dependency
+    - crypto: Cryptographic utilities
+    - docs: Documentation generation
+    - formatting: Text formatting utilities
+    - metrics: Metrics collection
+
+    Args:
+        name: Module name to lazy-load
+
+    Returns:
+        The imported module
+
+    Raises:
+        AttributeError: If module is not allowed for lazy loading
+        ImportError: If module import fails
+        RecursionError: If import depth exceeds safe limits
+    """
     # Build the full module name
     module_name = f"provide.foundation.{name}"
 
-    # Initialize thread-local recursion guard if needed
+    # Initialize thread-local state if needed
     if not hasattr(_thread_local, "getattr_in_progress"):
         _thread_local.getattr_in_progress = set()
+        _thread_local.import_depth = 0
+        _thread_local.import_chain = []
 
-    # Check if we've already entered recursion for this module
-    # This prevents infinite recursion when a module has been corrupted
-    if name in _thread_local.getattr_in_progress:
-        raise AttributeError(
-            f"module '{__name__}' has no attribute '{name}' "
-            f"(recursion detected, module may be corrupted in sys.modules)"
+    # Check recursion depth to prevent stack overflow from complex import chains
+    if _thread_local.import_depth >= _MAX_LAZY_IMPORT_DEPTH:
+        chain_str = " -> ".join(_thread_local.import_chain + [name])
+        raise RecursionError(
+            f"Lazy import depth limit ({_MAX_LAZY_IMPORT_DEPTH}) exceeded. "
+            f"Import chain: {chain_str}. This indicates a complex nested import "
+            f"that should be refactored or imported eagerly."
         )
 
-    # Set recursion guard
+    # Check if we've already entered recursion for this specific module
+    # This prevents infinite loops when a module has been corrupted
+    if name in _thread_local.getattr_in_progress:
+        chain_str = " -> ".join(_thread_local.import_chain + [name])
+        raise AttributeError(
+            f"module '{__name__}' has no attribute '{name}' "
+            f"(circular import detected in chain: {chain_str}). "
+            f"Module may be corrupted in sys.modules."
+        )
+
+    # Verify module is in the allowed lazy-load list
+    if name not in _LAZY_LOADABLE_MODULES:
+        available = ", ".join(sorted(_LAZY_LOADABLE_MODULES))
+        raise AttributeError(
+            f"module '{__name__}' has no attribute '{name}'. "
+            f"Only these modules support lazy loading: {available}"
+        )
+
+    # Set recursion guards
     _thread_local.getattr_in_progress.add(name)
+    _thread_local.import_depth += 1
+    _thread_local.import_chain.append(name)
 
     try:
         # Check if module is already in sys.modules but corrupted
@@ -90,29 +143,30 @@ def __getattr__(name: str) -> object:
             # If it's None or invalid, remove it so we can re-import
             del sys.modules[module_name]
 
-        # Import the submodule directly
-        match name:
-            case "cli":
-                try:
-                    mod = __import__(module_name, fromlist=[""])
-                    sys.modules[module_name] = mod
-                    return mod
-                except ImportError as e:
-                    if "click" in str(e):
-                        raise ImportError(
-                            "CLI features require optional dependencies. Install with: "
-                            "pip install 'provide-foundation[cli]'",
-                        ) from e
-                    raise
-            case "crypto" | "docs" | "formatting" | "metrics":
+        # Import the submodule with appropriate error handling
+        if name == "cli":
+            try:
                 mod = __import__(module_name, fromlist=[""])
                 sys.modules[module_name] = mod
                 return mod
-            case _:
-                raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+            except ImportError as e:
+                if "click" in str(e):
+                    raise ImportError(
+                        "CLI features require optional dependencies. Install with: "
+                        "pip install 'provide-foundation[cli]'",
+                    ) from e
+                raise
+        else:
+            # Standard import for other allowed modules
+            mod = __import__(module_name, fromlist=[""])
+            sys.modules[module_name] = mod
+            return mod
     finally:
-        # Always clear recursion guard
+        # Always clear recursion guards in reverse order
         _thread_local.getattr_in_progress.discard(name)
+        _thread_local.import_depth -= 1
+        if _thread_local.import_chain and _thread_local.import_chain[-1] == name:
+            _thread_local.import_chain.pop()
 
 
 __all__ = [
