@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-
 from provide.foundation.file.operations.detectors.helpers import (
     extract_base_name,
     is_backup_file,

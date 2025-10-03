@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from pathlib import Path
 
 from provide.foundation.file.operations.detectors.helpers import is_backup_file
 from provide.foundation.file.operations.types import (

@@ -5,17 +5,10 @@ Coordinates specialized detector classes to identify the best match for file eve
 
 from __future__ import annotations
 
-from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 import re
 
-from provide.foundation.file.operations.types import (
-    DetectorConfig,
-    FileEvent,
-    FileOperation,
-    OperationType,
-)
 from provide.foundation.file.operations.detectors.atomic import AtomicOperationDetector
 from provide.foundation.file.operations.detectors.batch import BatchOperationDetector
 from provide.foundation.file.operations.detectors.helpers import (
@@ -24,6 +17,11 @@ from provide.foundation.file.operations.detectors.helpers import (
 )
 from provide.foundation.file.operations.detectors.simple import SimpleOperationDetector
 from provide.foundation.file.operations.detectors.temp import TempPatternDetector
+from provide.foundation.file.operations.types import (
+    DetectorConfig,
+    FileEvent,
+    FileOperation,
+)
 from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
