@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from provide.testkit import FoundationTestCase
+from provide.testkit.time import make_controlled_time
 import pytest
 
 from provide.foundation.resilience.decorators import retry
@@ -23,7 +24,9 @@ class TestRetryMiddlewareIntegration(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_middleware_with_retry_policy(self) -> None:
-        """Test middleware configured with RetryPolicy."""
+        """Test middleware configured with RetryPolicy using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
+
         policy = RetryPolicy(
             max_attempts=3,
             base_delay=0.01,
@@ -31,7 +34,11 @@ class TestRetryMiddlewareIntegration(FoundationTestCase):
             retryable_status_codes={500, 502, 503},
         )
 
-        middleware = RetryMiddleware(policy=policy)
+        middleware = RetryMiddleware(
+            policy=policy,
+            time_source=get_time,
+            async_sleep_func=fake_async_sleep,
+        )
 
         request = Request(uri="https://api.example.com/test", method="GET")
         call_count = 0
@@ -53,14 +60,20 @@ class TestRetryMiddlewareIntegration(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_middleware_with_transport_errors(self) -> None:
-        """Test middleware retrying transport errors."""
+        """Test middleware retrying transport errors using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
+
         policy = RetryPolicy(
             max_attempts=3,
             base_delay=0.01,
             retryable_errors=(TransportError,),
         )
 
-        middleware = RetryMiddleware(policy=policy)
+        middleware = RetryMiddleware(
+            policy=policy,
+            time_source=get_time,
+            async_sleep_func=fake_async_sleep,
+        )
 
         request = Request(uri="https://api.example.com/test", method="POST")
         call_count = 0
@@ -80,14 +93,20 @@ class TestRetryMiddlewareIntegration(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_middleware_non_retryable_status(self) -> None:
-        """Test middleware doesn't retry non-retryable status codes."""
+        """Test middleware doesn't retry non-retryable status codes using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
+
         policy = RetryPolicy(
             max_attempts=3,
             base_delay=0.01,
             retryable_status_codes={500, 503},
         )
 
-        middleware = RetryMiddleware(policy=policy)
+        middleware = RetryMiddleware(
+            policy=policy,
+            time_source=get_time,
+            async_sleep_func=fake_async_sleep,
+        )
 
         request = Request(uri="https://api.example.com/test", method="GET")
         call_count = 0
@@ -104,7 +123,9 @@ class TestRetryMiddlewareIntegration(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_middleware_mixed_errors_and_status(self) -> None:
-        """Test middleware handling both errors and status codes."""
+        """Test middleware handling both errors and status codes using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
+
         policy = RetryPolicy(
             max_attempts=5,
             base_delay=0.01,
@@ -112,7 +133,11 @@ class TestRetryMiddlewareIntegration(FoundationTestCase):
             retryable_status_codes={503},
         )
 
-        middleware = RetryMiddleware(policy=policy)
+        middleware = RetryMiddleware(
+            policy=policy,
+            time_source=get_time,
+            async_sleep_func=fake_async_sleep,
+        )
 
         request = Request(uri="https://api.example.com/test", method="PUT")
         call_count = 0
@@ -140,16 +165,22 @@ class TestDecoratorWithMiddleware(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_decorated_function_calling_middleware(self) -> None:
-        """Test retry decorator on function that uses middleware."""
+        """Test retry decorator on function that uses middleware using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
+
         policy = RetryPolicy(
             max_attempts=2,
             base_delay=0.01,
             retryable_status_codes={500},
         )
 
-        middleware = RetryMiddleware(policy=policy)
+        middleware = RetryMiddleware(
+            policy=policy,
+            time_source=get_time,
+            async_sleep_func=fake_async_sleep,
+        )
 
-        @retry(max_attempts=3, base_delay=0.01)
+        @retry(max_attempts=3, base_delay=0.01, time_source=get_time, async_sleep_func=fake_async_sleep)
         async def api_call() -> Response:
             request = Request(uri="https://api.example.com", method="GET")
 
@@ -176,11 +207,13 @@ class TestDecoratorWithMiddleware(FoundationTestCase):
         assert result.status == 200
 
     def test_nested_retry_decorators(self) -> None:
-        """Test nested functions with retry decorators."""
+        """Test nested functions with retry decorators using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
+
         inner_calls = 0
         outer_calls = 0
 
-        @retry(max_attempts=2, base_delay=0.01)
+        @retry(max_attempts=2, base_delay=0.01, time_source=get_time, sleep_func=fake_sleep)
         def inner_func() -> str:
             nonlocal inner_calls
             inner_calls += 1
@@ -188,7 +221,7 @@ class TestDecoratorWithMiddleware(FoundationTestCase):
                 raise ValueError("inner fail")
             return "inner success"
 
-        @retry(max_attempts=3, base_delay=0.01)
+        @retry(max_attempts=3, base_delay=0.01, time_source=get_time, sleep_func=fake_sleep)
         def outer_func() -> str:
             nonlocal outer_calls
             outer_calls += 1
@@ -217,7 +250,8 @@ class TestRetryExecutorWithRealWorld(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_database_connection_retry(self) -> None:
-        """Simulate database connection retry scenario."""
+        """Simulate database connection retry scenario using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
 
         class DatabaseConnection:
             def __init__(self) -> None:
@@ -233,12 +267,16 @@ class TestRetryExecutorWithRealWorld(FoundationTestCase):
 
         policy = RetryPolicy(
             max_attempts=5,
-            base_delay=0.01,  # Small real delay
+            base_delay=0.01,
             backoff=BackoffStrategy.EXPONENTIAL,
             retryable_errors=(ConnectionError,),
         )
 
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(
+            policy,
+            time_source=get_time,
+            async_sleep_func=fake_async_sleep,
+        )
         db = DatabaseConnection()
 
         connection = await executor.execute_async(db.connect)
@@ -247,7 +285,8 @@ class TestRetryExecutorWithRealWorld(FoundationTestCase):
         assert db.connection_attempts == 3
 
     def test_api_rate_limit_retry(self) -> None:
-        """Simulate API rate limit retry scenario."""
+        """Simulate API rate limit retry scenario using controlled time."""
+        get_time, _advance_time, fake_sleep, _fake_async_sleep = make_controlled_time()
 
         class RateLimitError(Exception):
             pass
@@ -264,12 +303,16 @@ class TestRetryExecutorWithRealWorld(FoundationTestCase):
 
         policy = RetryPolicy(
             max_attempts=5,
-            base_delay=0.01,  # Small real delay
+            base_delay=0.01,
             backoff=BackoffStrategy.EXPONENTIAL,
             retryable_errors=(RateLimitError,),
         )
 
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(
+            policy,
+            time_source=get_time,
+            sleep_func=fake_sleep,
+        )
         client = APIClient()
 
         result = executor.execute_sync(client.make_request, "/users")
@@ -279,7 +322,8 @@ class TestRetryExecutorWithRealWorld(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_circuit_breaker_with_retry(self) -> None:
-        """Test circuit breaker pattern combined with retry."""
+        """Test circuit breaker pattern combined with retry using controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
 
         class CircuitBreaker:
             def __init__(self, failure_threshold: int = 3) -> None:
@@ -324,7 +368,11 @@ class TestRetryExecutorWithRealWorld(FoundationTestCase):
             base_delay=0.01,
             retryable_errors=(ValueError, RuntimeError),
         )
-        executor = RetryExecutor(policy)
+        executor = RetryExecutor(
+            policy,
+            time_source=get_time,
+            async_sleep_func=fake_async_sleep,
+        )
 
         call_count = 0
 
