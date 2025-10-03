@@ -63,8 +63,8 @@ def parse_bool_strict(value: str | bool) -> bool:
     - Critical system configurations where misconfiguration is dangerous
     - Programmatic configuration where clear validation errors help developers
 
-    **Recognized True Values:** true, yes, 1, on (case-insensitive)
-    **Recognized False Values:** false, no, 0, off (case-insensitive)
+    **Recognized True Values:** true, yes, 1, on, enabled (case-insensitive)
+    **Recognized False Values:** false, no, 0, off, disabled (case-insensitive)
     **Error Behavior:** Raises ValueError with helpful message for invalid values
 
     Args:
@@ -97,15 +97,15 @@ def parse_bool_strict(value: str | bool) -> bool:
     # Convert to string and parse
     value_lower = value.lower().strip()
 
-    if value_lower in ("true", "yes", "1", "on"):
+    if value_lower in ("true", "yes", "1", "on", "enabled"):
         return True
-    if value_lower in ("false", "no", "0", "off"):
+    if value_lower in ("false", "no", "0", "off", "disabled"):
         return False
     raise ValueError(
         _format_invalid_value_error(
             "boolean",
             value,
-            valid_options=["true", "false", "yes", "no", "1", "0", "on", "off"],
+            valid_options=["true", "false", "yes", "no", "1", "0", "on", "off", "enabled", "disabled"],
             additional_info="Use parse_bool_extended() for lenient parsing that defaults to False",
         ),
     )
