@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-import asyncio
 from collections.abc import Callable
-import threading
 import time
 from typing import final
+
+from provide.foundation.concurrency.locks import DualLock
 
 """Rate limiting utilities for Foundation.
 
@@ -47,8 +47,7 @@ class TokenBucketRateLimiter:
         self._tokens: float = float(capacity)  # Start with a full bucket
         self._time_source = time_source if time_source is not None else time.monotonic
         self._last_refill_timestamp: float = self._time_source()
-        self._lock: asyncio.Lock | None = None
-        self._init_lock = threading.Lock()
+        self._lock = DualLock()
 
         # Cache logger instance to avoid repeated imports
         self._logger = None
@@ -62,15 +61,6 @@ class TokenBucketRateLimiter:
         except ImportError:
             # Fallback if logger not available
             pass
-
-    @property
-    def lock(self) -> asyncio.Lock:
-        """Get the asyncio lock, creating it lazily if needed."""
-        if self._lock is None:
-            with self._init_lock:
-                if self._lock is None:
-                    self._lock = asyncio.Lock()
-        return self._lock
 
     async def _refill_tokens(self) -> None:
         """Refills tokens based on the elapsed time since the last refill.
@@ -102,7 +92,7 @@ class TokenBucketRateLimiter:
             True if the request is allowed, False otherwise.
 
         """
-        async with self.lock:
+        async with self._lock.async_():
             await self._refill_tokens()  # Refill before checking
 
             if self._tokens >= 1.0:
@@ -121,7 +111,7 @@ class TokenBucketRateLimiter:
 
     async def get_current_tokens(self) -> float:
         """Returns the current number of tokens, for testing/monitoring."""
-        async with self.lock:
+        async with self._lock.async_():
             # It might be useful to refill before getting, to get the most
             # up-to-date count
             # await self._refill_tokens()
