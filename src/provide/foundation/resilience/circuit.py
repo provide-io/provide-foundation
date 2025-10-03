@@ -27,12 +27,26 @@ class CircuitBreaker:
         failure_threshold: int = 5,
         recovery_timeout: float = 30.0,
         expected_exception: type[Exception] | tuple[type[Exception], ...] = Exception,
+        time_source: Callable[[], float] | None = None,
     ) -> None:
-        """Initialize the circuit breaker."""
+        """Initialize the circuit breaker.
+
+        Args:
+            failure_threshold: Number of failures before opening circuit
+            recovery_timeout: Seconds to wait before attempting recovery
+            expected_exception: Exception type(s) to catch
+            time_source: Optional callable that returns current time (for testing).
+                        Defaults to time.time() for production use.
+        """
         self.failure_threshold = failure_threshold
         self.recovery_timeout = recovery_timeout
         self.expected_exception = expected_exception
+        self._time_source = time_source or time.time
         self._lock = RLock()
+        # Initialize state attributes (will be set properly in reset())
+        self._state: CircuitState
+        self._failure_count: int
+        self._last_failure_time: float | None
         self.reset()
 
     @property
@@ -52,7 +66,7 @@ class CircuitBreaker:
 
     def _can_attempt_recovery(self) -> bool:
         """Check if the circuit can attempt recovery."""
-        return time.time() >= (self._last_failure_time or 0) + self.recovery_timeout
+        return self._time_source() >= (self._last_failure_time or 0) + self.recovery_timeout
 
     def call(self, func: Callable, *args: Any, **kwargs: Any) -> Any:
         """Execute a synchronous function through the circuit breaker."""
@@ -100,26 +114,39 @@ class CircuitBreaker:
                 # This transition happens for failures in CLOSED state
                 # or for the single attempt in HALF_OPEN state.
                 self._state = CircuitState.OPEN
-                self._last_failure_time = time.time()
+                self._last_failure_time = self._time_source()
 
     def reset(self) -> None:
         """Reset the circuit breaker to its initial state."""
         with self._lock:
             self._state = CircuitState.CLOSED
             self._failure_count = 0
-            self._last_failure_time: float | None = None
+            self._last_failure_time = None
 
 
 def circuit_breaker(
     failure_threshold: int = 5,
     recovery_timeout: float = 30.0,
     expected_exception: type[Exception] | tuple[type[Exception], ...] = FoundationError,
+    time_source: Callable[[], float] | None = None,
 ) -> Callable:
-    """A decorator to apply the circuit breaker pattern to a function."""
+    """A decorator to apply the circuit breaker pattern to a function.
+
+    Args:
+        failure_threshold: Number of failures before opening circuit
+        recovery_timeout: Seconds to wait before attempting recovery
+        expected_exception: Exception type(s) to catch
+        time_source: Optional callable that returns current time (for testing).
+                    Defaults to time.time() for production use.
+
+    Returns:
+        Decorated function with circuit breaker protection
+    """
     breaker = CircuitBreaker(
         failure_threshold=failure_threshold,
         recovery_timeout=recovery_timeout,
         expected_exception=expected_exception,
+        time_source=time_source,
     )
 
     def decorator(func: Callable) -> Callable:

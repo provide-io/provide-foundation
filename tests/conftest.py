@@ -61,35 +61,87 @@ if not os.getenv("PYTEST_WORKER_ID"):  # Avoid multiple messages with xdist
     conftest_diag_logger.debug("⚙️➡️🔍 Conftest loaded.")
 
 
-@pytest.fixture(autouse=True)
-def _cleanup_event_loops_after_time_machine() -> Generator[None]:
-    """Close event loops after each test to prevent frozen time caching.
+@pytest.fixture(autouse=True, scope="function")
+def _intercept_event_loop_creation() -> Generator[None]:
+    """Intercept asyncio event loop creation to ensure time is unfrozen.
 
-    When time_machine.freeze() is used, event loops created during or after the test
-    may cache frozen time.monotonic references. Closing the loop after each test
-    forces pytest-asyncio to create fresh loops.
+    This fixture patches asyncio.new_event_loop() to forcibly stop all time_machine
+    patches BEFORE creating new event loops. This ensures loops are created with
+    correct time.monotonic references, not frozen ones.
 
-    KNOWN LIMITATION: This doesn't fully solve the issue in serial execution where
-    async timeout tests run immediately after time_machine tests. The timeout tests
-    may still fail because pytest-asyncio creates the loop during test setup (before
-    this fixture's teardown runs). Use pytest-xdist (-n auto) for reliable results.
+    This is the ONLY reliable way to prevent pytest-asyncio from creating event loops
+    while time is still frozen.
     """
-    yield  # Let test run
+    import asyncio
+    import gc
+    from unittest.mock import _patch
 
-    # Close event loop to force pytest-asyncio to create a fresh one
+    original_new_event_loop = asyncio.new_event_loop
+
+    def ensure_time_unfrozen() -> None:
+        """Ensure time is unfrozen before event loop operations."""
+        try:
+            from provide.testkit.time.fixtures import TimeMachine
+
+            # Find all TimeMachine instances and force cleanup
+            for obj in gc.get_objects():
+                if isinstance(obj, TimeMachine) and obj.is_frozen:
+                    try:
+                        obj.cleanup()
+                    except Exception:
+                        pass
+
+            # Also find and stop any active _patch objects for time functions
+            for obj in gc.get_objects():
+                if isinstance(obj, _patch):
+                    try:
+                        if hasattr(obj, "attribute") and obj.attribute in ("time", "monotonic"):
+                            obj.stop()
+                    except Exception:
+                        pass
+
+        except Exception:
+            pass
+
+    def patched_new_event_loop() -> asyncio.AbstractEventLoop:
+        """Create new event loop after ensuring time is unfrozen."""
+        ensure_time_unfrozen()
+        return original_new_event_loop()
+
+    original_get_event_loop = asyncio.get_event_loop
+
+    def patched_get_event_loop() -> asyncio.AbstractEventLoop:
+        """Get event loop after ensuring time is unfrozen."""
+        # If there's no current loop, we'll create a new one - ensure time is unfrozen first
+        try:
+            loop = original_get_event_loop()
+            # Loop exists and is not closed, ensure it wasn't created with frozen time
+            if not loop.is_closed():
+                ensure_time_unfrozen()
+            return loop
+        except RuntimeError:
+            # No current event loop - will create new one
+            ensure_time_unfrozen()
+            return original_get_event_loop()
+
+    # Patch both new and get
+    asyncio.new_event_loop = patched_new_event_loop
+    asyncio.get_event_loop = patched_get_event_loop
+
     try:
-        import asyncio
+        yield
+    finally:
+        # Restore original functions
+        asyncio.new_event_loop = original_new_event_loop
+        asyncio.get_event_loop = original_get_event_loop
 
+        # Close any remaining loops
         try:
             loop = asyncio.get_event_loop()
             if not loop.is_running() and not loop.is_closed():
                 loop.close()
         except RuntimeError:
-            # No event loop, that's fine
             pass
-    except Exception:
-        # Event loop closure failed, continue
-        pass
 
 
 @pytest.fixture(autouse=True)

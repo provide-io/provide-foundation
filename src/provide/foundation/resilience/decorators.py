@@ -137,9 +137,18 @@ def _create_retry_wrapper(
     func: F,
     policy: RetryPolicy,
     on_retry: Callable[[int, Exception], None] | None,
+    time_source: Callable[[], float] | None = None,
+    sleep_func: Callable[[float], None] | None = None,
+    async_sleep_func: Callable[[float], Any] | None = None,
 ) -> F:
     """Create the retry wrapper for a function."""
-    executor = RetryExecutor(policy, on_retry=on_retry)
+    executor = RetryExecutor(
+        policy,
+        on_retry=on_retry,
+        time_source=time_source,
+        sleep_func=sleep_func,
+        async_sleep_func=async_sleep_func,
+    )
 
     if asyncio.iscoroutinefunction(func):
 
@@ -165,6 +174,9 @@ def retry(
     max_delay: float | None = None,
     jitter: bool | None = None,
     on_retry: Callable[[int, Exception], None] | None = None,
+    time_source: Callable[[], float] | None = None,
+    sleep_func: Callable[[float], None] | None = None,
+    async_sleep_func: Callable[[float], Any] | None = None,
 ) -> Callable[[F], F]:
     """Decorator for retrying operations on errors.
 
@@ -192,6 +204,9 @@ def retry(
         max_delay: Maximum delay cap
         jitter: Whether to add jitter
         on_retry: Callback for retry events
+        time_source: Optional callable that returns current time (for testing)
+        sleep_func: Optional synchronous sleep function (for testing)
+        async_sleep_func: Optional asynchronous sleep function (for testing)
 
     Returns:
         Decorated function with retry logic
@@ -222,7 +237,14 @@ def retry(
         policy = _build_retry_policy(exceptions, max_attempts, base_delay, backoff, max_delay, jitter)
 
     def decorator(func: F) -> F:
-        return _create_retry_wrapper(func, policy, on_retry)
+        return _create_retry_wrapper(
+            func,
+            policy,
+            on_retry,
+            time_source=time_source,
+            sleep_func=sleep_func,
+            async_sleep_func=async_sleep_func,
+        )
 
     return decorator
 
@@ -234,6 +256,7 @@ def circuit_breaker(
     failure_threshold: int = 5,
     recovery_timeout: float = DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT,
     expected_exception: tuple[type[Exception], ...] = (Exception,),
+    time_source: Callable[[], float] | None = None,
 ) -> Callable[[F], F]:
     """Create a circuit breaker decorator.
 
@@ -241,6 +264,7 @@ def circuit_breaker(
         failure_threshold: Number of failures before opening circuit.
         recovery_timeout: Seconds to wait before attempting recovery.
         expected_exception: Exception types that trigger the breaker.
+        time_source: Optional callable that returns current time (for testing).
 
     Returns:
         Circuit breaker decorator.
@@ -255,6 +279,7 @@ def circuit_breaker(
         failure_threshold=failure_threshold,
         recovery_timeout=recovery_timeout,
         expected_exception=expected_exception,
+        time_source=time_source,
     )
 
     # Register for appropriate cleanup based on context
