@@ -10,6 +10,7 @@ from typing import Any, Never
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import AsyncMock, MagicMock, Mock, patch
+from provide.testkit.time import make_controlled_time
 import pytest
 
 from provide.foundation.tools.downloader import (
@@ -31,8 +32,9 @@ class TestToolDownloader(FoundationTestCase):
 
     @pytest.fixture
     def downloader(self, mock_client: MagicMock) -> ToolDownloader:
-        """Create a ToolDownloader instance."""
-        return ToolDownloader(mock_client)
+        """Create a ToolDownloader instance with controlled time."""
+        get_time, _advance_time, _fake_sleep, fake_async_sleep = make_controlled_time()
+        return ToolDownloader(mock_client, time_source=get_time, async_sleep_func=fake_async_sleep)
 
     async def test_download_with_progress_success(
         self, downloader: ToolDownloader, mock_client: MagicMock, tmp_path: Path

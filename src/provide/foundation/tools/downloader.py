@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 import hashlib
 from pathlib import Path
 
 from provide.foundation.errors import FoundationError
 from provide.foundation.logger import get_logger
-from provide.foundation.resilience import retry
+from provide.foundation.resilience import RetryExecutor, RetryPolicy
 from provide.foundation.transport import UniversalClient
 
 """Tool download orchestration with progress reporting.
@@ -34,18 +34,34 @@ class ToolDownloader:
     Attributes:
         client: Transport client for HTTP requests.
         progress_callbacks: List of progress callback functions.
+        retry_policy: Policy for retry behavior on downloads.
 
     """
 
-    def __init__(self, client: UniversalClient) -> None:
+    def __init__(
+        self,
+        client: UniversalClient,
+        time_source: Callable[[], float] | None = None,
+        async_sleep_func: Callable[[float], Awaitable[None]] | None = None,
+    ) -> None:
         """Initialize the downloader.
 
         Args:
             client: Universal client for making HTTP requests.
+            time_source: Optional time source for testing (defaults to time.time).
+            async_sleep_func: Optional async sleep function for testing (defaults to asyncio.sleep).
 
         """
         self.client = client
         self.progress_callbacks: list[Callable[[int, int], None]] = []
+
+        # Create retry policy for downloads
+        self.retry_policy = RetryPolicy(max_attempts=3, base_delay=1.0)
+        self._retry_executor = RetryExecutor(
+            self.retry_policy,
+            time_source=time_source,
+            async_sleep_func=async_sleep_func,
+        )
 
     def add_progress_callback(self, callback: Callable[[int, int], None]) -> None:
         """Add a progress callback.
@@ -70,7 +86,6 @@ class ToolDownloader:
             except Exception as e:
                 log.warning(f"Progress callback failed: {e}")
 
-    @retry(max_attempts=3, base_delay=1.0)
     async def download_with_progress(self, url: str, dest: Path, checksum: str | None = None) -> Path:
         """Download a file with progress reporting.
 
@@ -86,44 +101,50 @@ class ToolDownloader:
             DownloadError: If download or verification fails.
 
         """
-        log.debug(f"Downloading {url} to {dest}")
 
-        # Ensure parent directory exists
-        dest.parent.mkdir(parents=True, exist_ok=True)
+        async def _download() -> Path:
+            """Inner download function that will be retried."""
+            log.debug(f"Downloading {url} to {dest}")
 
-        # Stream download with progress
-        total_size = 0
-        downloaded = 0
+            # Ensure parent directory exists
+            dest.parent.mkdir(parents=True, exist_ok=True)
 
-        try:
-            # Use the client to make a request first to get headers
-            response = await self.client.request(url, "GET")
+            # Stream download with progress
+            total_size = 0
+            downloaded = 0
 
-            # Check for HTTP errors (4xx/5xx status codes)
-            if not response.is_success():
-                raise DownloadError(f"HTTP {response.status} error for {url}")
+            try:
+                # Use the client to make a request first to get headers
+                response = await self.client.request(url, "GET")
 
-            total_size = int(response.headers.get("content-length", 0))
+                # Check for HTTP errors (4xx/5xx status codes)
+                if not response.is_success():
+                    raise DownloadError(f"HTTP {response.status} error for {url}")
 
-            # Write to file and report progress
-            with dest.open("wb") as f:
-                async for chunk in self.client.stream(url, "GET"):
-                    f.write(chunk)
-                    downloaded += len(chunk)
-                    self._report_progress(downloaded, total_size)
+                total_size = int(response.headers.get("content-length", 0))
 
-        except Exception as e:
-            if dest.exists():
+                # Write to file and report progress
+                with dest.open("wb") as f:
+                    async for chunk in self.client.stream(url, "GET"):
+                        f.write(chunk)
+                        downloaded += len(chunk)
+                        self._report_progress(downloaded, total_size)
+
+            except Exception as e:
+                if dest.exists():
+                    dest.unlink()
+                raise DownloadError(f"Failed to download {url}: {e}") from e
+
+            # Verify checksum if provided
+            if checksum and not self.verify_checksum(dest, checksum):
                 dest.unlink()
-            raise DownloadError(f"Failed to download {url}: {e}") from e
+                raise DownloadError(f"Checksum mismatch for {url}")
 
-        # Verify checksum if provided
-        if checksum and not self.verify_checksum(dest, checksum):
-            dest.unlink()
-            raise DownloadError(f"Checksum mismatch for {url}")
+            log.info(f"Downloaded {url} successfully")
+            return dest
 
-        log.info(f"Downloaded {url} successfully")
-        return dest
+        # Execute with retry
+        return await self._retry_executor.execute_async(_download)
 
     def verify_checksum(self, file_path: Path, expected: str) -> bool:
         """Verify file checksum.
