@@ -33,11 +33,11 @@ def _is_safe_path(base_dir: Path, target_path: str) -> bool:
         True if path is safe, False otherwise
     """
     # Check for absolute paths
-    if os.path.isabs(target_path):
+    if Path(target_path).is_absolute():
         return False
 
     # Check for path traversal patterns
-    if ".." in target_path.split(os.sep):
+    if ".." in Path(target_path).parts:
         return False
 
     # Normalize and resolve the full path
@@ -136,7 +136,7 @@ class TarArchive(BaseArchive):
                             )
 
                         # Prevent absolute path in link target
-                        if os.path.isabs(member.linkname):
+                        if Path(member.linkname).is_absolute():
                             raise ArchiveError(
                                 f"Absolute path in link target: {member.name} -> {member.linkname}"
                             )
