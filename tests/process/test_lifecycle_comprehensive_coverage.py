@@ -527,8 +527,9 @@ class TestWaitForProcessOutput(FoundationTestCase):
 
     async def test_wait_for_output_both_timeouts(self) -> None:
         """Test when both line and char reading timeout."""
+        # Use a longer-running process that won't exit before timeout
         proc = ManagedProcess(
-            [sys.executable, "-c", "import time; time.sleep(1)"],
+            [sys.executable, "-c", "import time; time.sleep(10)"],
             capture_output=True,
             text_mode=True,
         )
@@ -545,7 +546,7 @@ class TestWaitForProcessOutput(FoundationTestCase):
             await wait_for_process_output(
                 proc,
                 expected_parts=["never_appears"],
-                timeout=1.0,
+                timeout=0.5,  # Short timeout to ensure test completes quickly
             )
 
         proc.terminate_gracefully()
