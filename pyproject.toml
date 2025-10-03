@@ -31,7 +31,7 @@ classifiers = [
 dependencies = [
     "aiofiles>=23.2.1",
     "attrs>=23.1.0",
-    "psutils>=3.3.11",
+    "psutil>=3.3.11",
     "structlog>=25.3.0",
     "tomli_w>=1.0.0",
 ]
