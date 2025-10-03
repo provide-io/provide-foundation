@@ -78,10 +78,17 @@ def __getattr__(name: str) -> object:
         from provide.foundation.utils.importer import lazy_import
 
         return lazy_import(__name__, name)
+    except ModuleNotFoundError as e:
+        # If the exact module doesn't exist, it's an invalid attribute
+        module_name = f"{__name__}.{name}"
+        if module_name in str(e):
+            raise AttributeError(f"module '{__name__}' has no attribute '{name}'") from None
+        # Otherwise re-raise (it's a missing dependency)
+        raise
     except AttributeError:
         # If it's not a valid submodule, raise AttributeError
         raise AttributeError(f"module '{__name__}' has no attribute '{name}'") from None
-    # ImportError is allowed to propagate for special error handling (e.g., missing click)
+    # Other ImportError is allowed to propagate for special error handling (e.g., missing click)
 
 
 __all__ = [
