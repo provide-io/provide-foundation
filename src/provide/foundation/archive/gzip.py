@@ -34,7 +34,7 @@ class GzipCompressor:
 
     level: int = field(
         default=defaults.DEFAULT_GZIP_COMPRESSION_LEVEL,
-        validator=[validators.instance_of(int), _validate_compression_level],
+        validator=[validators.instance_of(int), _validate_compression_level],  # type: ignore[arg-type]
     )  # Compression level 1-9 (1=fast, 9=best)
 
     def compress(self, input_stream: BinaryIO, output_stream: BinaryIO) -> None:

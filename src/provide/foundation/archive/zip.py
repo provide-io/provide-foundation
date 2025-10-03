@@ -32,7 +32,7 @@ class ZipArchive(BaseArchive):
 
     compression_level: int = field(
         default=defaults.DEFAULT_ZIP_COMPRESSION_LEVEL,
-        validator=[validators.instance_of(int), _validate_compression_level],
+        validator=[validators.instance_of(int), _validate_compression_level],  # type: ignore[arg-type]
     )  # Compression level 0-9 (0=store, 9=best)
     compression_type: int = field(default=defaults.DEFAULT_ZIP_COMPRESSION_TYPE)
     password: bytes | None = field(default=defaults.DEFAULT_ZIP_PASSWORD)
