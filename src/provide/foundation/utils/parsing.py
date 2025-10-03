@@ -14,7 +14,7 @@ T = TypeVar("T")
 def parse_bool(value: Any, strict: bool = False) -> bool:
     """Parse a boolean value from string or other types.
 
-    Accepts: true/false, yes/no, 1/0, on/off, enabled/disabled (case-insensitive)
+    Accepts: true/false, yes/no, 1/0, on/off (case-insensitive)
 
     Args:
         value: Value to parse as boolean
@@ -24,23 +24,16 @@ def parse_bool(value: Any, strict: bool = False) -> bool:
         Boolean value
 
     Raises:
-        TypeError: If strict=True and value is not bool or string
+        TypeError: If strict=True and value is not bool or string, or if value is not bool/str
         ValueError: If value cannot be parsed as boolean
 
     """
-    if isinstance(value, bool):
-        return value
+    from provide.foundation.config.parsers.primitives import parse_bool_strict
 
-    if strict and not isinstance(value, str):
+    if strict and not isinstance(value, (bool, str)):
         raise TypeError(f"Cannot convert {type(value).__name__} to bool: {value!r}")
 
-    str_value = str(value).lower().strip()
-
-    if str_value in ("true", "yes", "1", "on", "enabled"):
-        return True
-    if str_value in ("false", "no", "0", "off", "disabled", ""):
-        return False
-    raise ValueError(f"Cannot parse '{value}' as boolean")
+    return parse_bool_strict(value)
 
 
 def parse_list(
