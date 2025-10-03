@@ -319,6 +319,9 @@ class TestVersionEdgeCases(FoundationTestCase):
         ]
 
         for root_return, _file_exists, metadata_result, expected in scenarios:
+            # Clear cache before each scenario to ensure fresh evaluation
+            _reset_version_cache()
+
             with patch(
                 "provide.foundation._version._find_project_root",
                 return_value=root_return,
