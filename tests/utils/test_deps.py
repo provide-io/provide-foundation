@@ -176,10 +176,12 @@ class TestGetOptionalDependencies(FoundationTestCase):
 
             result = get_optional_dependencies()
 
-            assert len(result) == 3
+            assert len(result) == 5
             assert result[0].name == "click"
             assert result[1].name == "cryptography"
-            assert result[2].name == "opentelemetry"
+            assert result[2].name == "httpx"
+            assert result[3].name == "mkdocs"
+            assert result[4].name == "opentelemetry"
 
             mock_click.assert_called_once()
             mock_crypto.assert_called_once()
@@ -376,12 +378,14 @@ class TestIntegration(FoundationTestCase):
 
             # Test the workflow
             deps = get_optional_dependencies()
-            assert len(deps) == 3
+            assert len(deps) == 5
             assert all(dep.available for dep in deps)
 
             # Test has_dependency
             assert has_dependency("click") is True
             assert has_dependency("cryptography") is True
+            assert has_dependency("httpx") is True
+            assert has_dependency("mkdocs") is True
             assert has_dependency("opentelemetry") is True
             assert has_dependency("nonexistent") is False
 

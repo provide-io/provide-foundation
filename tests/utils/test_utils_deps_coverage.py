@@ -171,9 +171,9 @@ class TestGetOptionalDependencies(FoundationTestCase):
         """Test get_optional_dependencies returns all expected dependencies."""
         deps = get_optional_dependencies()
 
-        assert len(deps) == 3
+        assert len(deps) == 5
         dep_names = {dep.name for dep in deps}
-        expected_names = {"click", "cryptography", "opentelemetry"}
+        expected_names = {"click", "cryptography", "httpx", "mkdocs", "opentelemetry"}
         assert dep_names == expected_names
 
     def test_get_optional_dependencies_types(self) -> None:
@@ -201,7 +201,7 @@ class TestCheckOptionalDeps(FoundationTestCase):
         result = check_optional_deps(quiet=True, return_status=True)
 
         assert result is not None
-        assert len(result) == 3
+        assert len(result) == 5
         assert all(isinstance(dep, DependencyStatus) for dep in result)
 
     def test_check_optional_deps_not_quiet(self) -> None:
@@ -210,7 +210,7 @@ class TestCheckOptionalDeps(FoundationTestCase):
         result = check_optional_deps(quiet=False, return_status=True)
 
         assert result is not None
-        assert len(result) == 3
+        assert len(result) == 5
 
 
 class TestHasDependency(FoundationTestCase):
