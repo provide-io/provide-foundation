@@ -176,9 +176,7 @@ class BatchOperationDetector:
         names = [path.stem.lower() for path in paths]
         if len(names) >= 2:
             # Simple heuristic: check if names share common prefixes
-            common_prefix_len = len(
-                self._longest_common_prefix([names[0], names[1]])
-            )
+            common_prefix_len = len(self._longest_common_prefix([names[0], names[1]]))
             return common_prefix_len >= 3
 
         return False

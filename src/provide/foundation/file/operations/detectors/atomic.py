@@ -106,7 +106,8 @@ class AtomicOperationDetector:
 
             # Find matching original file events
             matching_events = [
-                e for e in regular_events
+                e
+                for e in regular_events
                 if e.path == expected_original and e.event_type in {"created", "modified"}
             ]
 
