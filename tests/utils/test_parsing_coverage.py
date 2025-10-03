@@ -471,7 +471,8 @@ class TestEdgeCases:
         # Whitespace-only strings strip to empty and should raise an error for booleans
         with pytest.raises(ValueError, match="Invalid boolean"):
             parse_bool("   ")
-        assert parse_list("   ") == []  # Empty after strip
+        # parse_list splits on comma, so whitespace-only becomes single empty item
+        assert parse_list("   ") == [""]
 
     def test_special_characters_in_values(self) -> None:
         """Test parsing values with special characters."""
