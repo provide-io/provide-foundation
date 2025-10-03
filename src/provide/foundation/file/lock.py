@@ -190,7 +190,7 @@ class FileLock:
         finally:
             self.locked = False
 
-    def _check_stale_lock(self) -> bool:
+    def _check_stale_lock(self) -> bool:  # noqa: C901
         """Check if lock file is stale and remove if so.
 
         Uses psutil to validate process start time, preventing PID recycling attacks.
@@ -198,6 +198,10 @@ class FileLock:
 
         Returns:
             True if stale lock was removed, False otherwise
+
+        Note:
+            Complexity is intentionally high to handle all security-critical cases
+            (PID recycling, format compatibility, error handling).
 
         """
         try:
