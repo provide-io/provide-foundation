@@ -12,8 +12,8 @@ import pytest
 from provide.foundation._version import (
     __version__,
     _find_project_root,
-    _reset_version_cache,
     get_version,
+    reset_version_cache,
 )
 
 
@@ -23,7 +23,7 @@ class TestVersionSimpleCoverage(FoundationTestCase):
     def setup_method(self) -> None:
         """Reset version cache before each test."""
         super().setup_method()
-        _reset_version_cache()
+        reset_version_cache()
 
     def test_find_project_root_actual(self) -> None:
         """Test _find_project_root with actual filesystem."""
@@ -196,7 +196,7 @@ class TestVersionSimpleCoverage(FoundationTestCase):
                 version_file.write_text("file-version")
 
                 # Reset cache to test new scenario
-                _reset_version_cache()
+                reset_version_cache()
 
                 # Test again - should now read from file
                 version2 = get_version()
@@ -209,7 +209,7 @@ class TestVersionModuleBehavior(FoundationTestCase):
     def setup_method(self) -> None:
         """Reset version cache before each test."""
         super().setup_method()
-        _reset_version_cache()
+        reset_version_cache()
 
     def test_module_level_version_setting(self) -> None:
         """Test that module-level __version__ is properly set."""
@@ -291,7 +291,7 @@ class TestVersionCoverageSpecific(FoundationTestCase):
     def setup_method(self) -> None:
         """Reset version cache before each test."""
         super().setup_method()
-        _reset_version_cache()
+        reset_version_cache()
 
     def test_cover_line_23_none_return(self) -> None:
         """Specifically test line 23 return None."""

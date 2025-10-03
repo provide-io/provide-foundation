@@ -390,9 +390,9 @@ def reset_version_cache() -> None:
     version resolution scenarios.
     """
     try:
-        from provide.foundation._version import _reset_version_cache
+        from provide.foundation._version import reset_version_cache as _reset_cache
 
-        _reset_version_cache()
+        _reset_cache()
     except ImportError:
         # Version module not available, skip
         pass

@@ -18,12 +18,14 @@ _version_lock = threading.Lock()
 _cached_version: str | None = None
 
 
-def _reset_version_cache() -> None:
-    """Reset the cached version.
+def reset_version_cache() -> None:
+    """Reset the cached version (for testing).
 
-    This function is intended for testing purposes only.
-    It clears the cached version so that get_version() will
+    This function clears the cached version so that get_version() will
     re-evaluate the version on the next call.
+
+    Warning:
+        This should only be called from test code or test fixtures.
     """
     global _cached_version
     with _version_lock:

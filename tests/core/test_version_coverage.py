@@ -12,8 +12,8 @@ from provide.testkit.mocking import MagicMock, patch
 from provide.foundation._version import (
     __version__,
     _find_project_root,
-    _reset_version_cache,
     get_version,
+    reset_version_cache,
 )
 
 
@@ -23,7 +23,7 @@ class TestFindProjectRoot(FoundationTestCase):
     def setup_method(self) -> None:
         """Reset version cache before each test."""
         super().setup_method()
-        _reset_version_cache()
+        reset_version_cache()
 
     def test_find_project_root_exists(self) -> None:
         """Test finding project root when VERSION file exists."""
@@ -123,7 +123,7 @@ class TestGetVersion(FoundationTestCase):
     def setup_method(self) -> None:
         """Reset version cache before each test."""
         super().setup_method()
-        _reset_version_cache()
+        reset_version_cache()
 
     def test_get_version_from_version_file(self) -> None:
         """Test getting version from VERSION file."""
@@ -230,7 +230,7 @@ class TestVersionModule(FoundationTestCase):
     def setup_method(self) -> None:
         """Reset version cache before each test."""
         super().setup_method()
-        _reset_version_cache()
+        reset_version_cache()
 
     def test_version_attribute_exists(self) -> None:
         """Test that __version__ attribute is set."""
@@ -275,7 +275,7 @@ class TestVersionEdgeCases(FoundationTestCase):
     def setup_method(self) -> None:
         """Reset version cache before each test."""
         super().setup_method()
-        _reset_version_cache()
+        reset_version_cache()
 
     def test_version_file_read_error(self) -> None:
         """Test handling of VERSION file read errors."""
@@ -320,7 +320,7 @@ class TestVersionEdgeCases(FoundationTestCase):
 
         for root_return, _file_exists, metadata_result, expected in scenarios:
             # Clear cache before each scenario to ensure fresh evaluation
-            _reset_version_cache()
+            reset_version_cache()
 
             with patch(
                 "provide.foundation._version._find_project_root",
