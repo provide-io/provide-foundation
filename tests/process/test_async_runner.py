@@ -81,7 +81,12 @@ class TestAsyncRunCommand(FoundationTestCase):
 
     @pytest.mark.asyncio
     async def test_command_timeout(self) -> None:
-        """Test command timeout."""
+        """Test command timeout.
+
+        KNOWN ISSUE: This test may fail in serial execution if run after time_machine tests.
+        The pytest-asyncio event loop may cache frozen time.monotonic references from
+        previous tests. Run with `pytest -n auto` for reliable results.
+        """
         with pytest.raises(ProcessTimeoutError):
             await async_run_command(["sleep", "1"], timeout=0.1)
 

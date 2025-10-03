@@ -22,11 +22,15 @@ def reset_event_loops() -> None:
 
     This is critical for pytest-xdist workers to shut down cleanly after
     async tests complete.
+
+    IMPORTANT: This MUST be called AFTER reset_time_machine_state() to ensure
+    time patches are stopped before creating a new event loop. Otherwise the
+    new loop may cache frozen time.monotonic references.
     """
     try:
         import asyncio
 
-        # Try to get the current event loop
+        # Close the current event loop if it's not running
         try:
             loop = asyncio.get_event_loop()
             # Don't close if it's running (we're inside an async context)
@@ -36,12 +40,9 @@ def reset_event_loops() -> None:
             # No event loop in this thread, that's fine
             pass
 
-        # Create a fresh event loop for the next test
-        try:
-            asyncio.set_event_loop(asyncio.new_event_loop())
-        except RuntimeError:
-            # Can't set event loop, skip
-            pass
+        # DON'T create a new event loop - let pytest-asyncio manage it
+        # If we create one here while time patches are still active (fixture cleanup
+        # hasn't run yet), the new loop will cache frozen time.monotonic references
     except Exception:
         # If anything fails, continue - better to leak a loop than crash
         pass
@@ -50,15 +51,13 @@ def reset_event_loops() -> None:
 def reset_time_machine_state() -> None:
     """Reset time_machine state to ensure time is not frozen.
 
-    Tests using time_machine.freeze() can leave time frozen if cleanup fails,
-    which breaks asyncio.wait_for timeouts in subsequent tests.
+    NOTE: The actual cleanup is now handled by the _force_time_machine_cleanup
+    fixture in tests/conftest.py, which runs BEFORE Foundation teardown.
 
-    This function is a safety fallback - the primary fix is in provide-testkit's
-    TimeMachine.cleanup() method which now robustly stops all patches.
+    This ensures time patches are stopped before pytest-asyncio creates event loops
+    for the next test. This function remains as a no-op safety fallback.
     """
-    # The time_machine fixture cleanup has been fixed in provide-testkit
-    # to handle exceptions during patch.stop() and properly reset state.
-    # This function remains as a safety measure but should not be needed.
+    # Cleanup is now handled by conftest fixture which runs earlier
     pass
 
 
