@@ -23,7 +23,7 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
 
     def test_init_valid_parameters(self) -> None:
         """Test initialization with valid parameters."""
-        limiter = TokenBucketRateLimiter(capacity=10, refill_rate=5)
+        limiter = TokenBucketRateLimiter(capacity=10, refill_rate=5, time_source=self.get_time)
         assert limiter._capacity == 10.0
         assert limiter._refill_rate == 5.0
         assert limiter._tokens == 10.0  # Starts full
@@ -32,22 +32,22 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
     def test_init_invalid_capacity(self) -> None:
         """Test initialization with invalid capacity."""
         with pytest.raises(ValueError, match="Capacity must be positive"):
-            TokenBucketRateLimiter(capacity=0, refill_rate=1)
+            TokenBucketRateLimiter(capacity=0, refill_rate=1, time_source=self.get_time)
 
         with pytest.raises(ValueError, match="Capacity must be positive"):
-            TokenBucketRateLimiter(capacity=-1, refill_rate=1)
+            TokenBucketRateLimiter(capacity=-1, refill_rate=1, time_source=self.get_time)
 
     def test_init_invalid_refill_rate(self) -> None:
         """Test initialization with invalid refill rate."""
         with pytest.raises(ValueError, match="Refill rate must be positive"):
-            TokenBucketRateLimiter(capacity=10, refill_rate=0)
+            TokenBucketRateLimiter(capacity=10, refill_rate=0, time_source=self.get_time)
 
         with pytest.raises(ValueError, match="Refill rate must be positive"):
-            TokenBucketRateLimiter(capacity=10, refill_rate=-1)
+            TokenBucketRateLimiter(capacity=10, refill_rate=-1, time_source=self.get_time)
 
     def test_init_float_conversion(self) -> None:
         """Test that parameters are converted to float."""
-        limiter = TokenBucketRateLimiter(capacity=10, refill_rate=5)
+        limiter = TokenBucketRateLimiter(capacity=10, refill_rate=5, time_source=self.get_time)
         assert isinstance(limiter._capacity, float)
         assert isinstance(limiter._refill_rate, float)
         assert isinstance(limiter._tokens, float)
