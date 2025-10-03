@@ -7,9 +7,9 @@ import socket
 import time
 from unittest.mock import MagicMock, patch
 
+from provide.testkit import MinimalTestCase
 import psutil
 import pytest
-from provide.testkit import MinimalTestCase
 
 from provide.foundation.file.lock import FileLock, LockError
 
