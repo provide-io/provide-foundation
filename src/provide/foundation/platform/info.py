@@ -10,7 +10,6 @@ import sys
 from attrs import define
 
 from provide.foundation.logger import get_logger
-from provide.foundation.utils.caching import cached
 from provide.foundation.platform.detection import (
     get_arch_name,
     get_cpu_type,
@@ -18,6 +17,7 @@ from provide.foundation.platform.detection import (
     get_os_version,
     get_platform_string,
 )
+from provide.foundation.utils.caching import cached
 
 """System information gathering utilities."""
 
