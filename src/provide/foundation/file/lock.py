@@ -239,9 +239,12 @@ class FileLock:
             try:
                 proc = psutil.Process(lock_pid)
 
+                # Call a method to trigger NoSuchProcess if PID doesn't exist
+                # This is needed because Process.__init__ is lazy
+                proc_start_time = proc.create_time()
+
                 # If we have start_time, validate it matches to prevent PID recycling
                 if lock_start_time is not None:
-                    proc_start_time = proc.create_time()
                     # Allow 1 second tolerance for timestamp precision differences
                     if abs(proc_start_time - lock_start_time) > 1.0:
                         log.warning(

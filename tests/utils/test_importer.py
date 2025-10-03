@@ -78,10 +78,7 @@ class TestLazyImport:
 
     def test_lazy_import_special_module_click_missing(self) -> None:
         """Test special error message for CLI module when click is missing."""
-        with (
-            patch.dict(sys.modules, {"click": None}),
-            patch("provide.foundation.utils.importer.__import__") as mock_import,
-        ):
+        with patch("builtins.__import__") as mock_import:
             # Simulate ImportError mentioning 'click'
             mock_import.side_effect = ImportError("No module named 'click'")
 
