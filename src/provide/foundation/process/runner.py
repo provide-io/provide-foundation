@@ -76,9 +76,15 @@ def run_command(
     if isinstance(cwd, Path):
         cwd = str(cwd)
 
-    # If command is a string, we need shell=True
+    # Validate command type and shell parameter
     if isinstance(cmd, str) and not shell:
-        shell = True
+        raise ValidationError(
+            "String commands require explicit shell=True for security. "
+            "Use run_shell() for shell commands or pass a list for direct execution.",
+            code="INVALID_COMMAND_TYPE",
+            expected="list[str] or (str with shell=True)",
+            actual="str without shell=True",
+        )
 
     try:
         # Prepare command for subprocess

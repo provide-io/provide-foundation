@@ -85,8 +85,8 @@ class TestRunCommand(FoundationTestCase):
         assert result.stderr == ""
 
     def test_command_as_string(self) -> None:
-        """Test command as string."""
-        result = run_command("echo hello")
+        """Test command as string requires explicit shell=True."""
+        result = run_command("echo hello", shell=True)
 
         assert result.returncode == 0
         assert "hello" in result.stdout
