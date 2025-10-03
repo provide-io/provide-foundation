@@ -14,6 +14,12 @@ from provide.foundation.utils.rate_limiting import TokenBucketRateLimiter
 class TestTokenBucketRateLimiter(FoundationTestCase):
     """Test TokenBucketRateLimiter functionality."""
 
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+        # Create controlled time for all tests
+        self.get_time, self.advance_time, self.fake_sleep, self.fake_async_sleep = make_controlled_time()
+
     def test_init_validates_parameters(self) -> None:
         """Test that initialization validates parameters."""
         # Valid parameters should work
