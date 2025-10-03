@@ -103,7 +103,7 @@ def __getattr__(name: str) -> object:
 
     # Check recursion depth to prevent stack overflow from complex import chains
     if _thread_local.import_depth >= _MAX_LAZY_IMPORT_DEPTH:
-        chain_str = " -> ".join(_thread_local.import_chain + [name])
+        chain_str = " -> ".join([*_thread_local.import_chain, name])
         raise RecursionError(
             f"Lazy import depth limit ({_MAX_LAZY_IMPORT_DEPTH}) exceeded. "
             f"Import chain: {chain_str}. This indicates a complex nested import "
@@ -113,7 +113,7 @@ def __getattr__(name: str) -> object:
     # Check if we've already entered recursion for this specific module
     # This prevents infinite loops when a module has been corrupted
     if name in _thread_local.getattr_in_progress:
-        chain_str = " -> ".join(_thread_local.import_chain + [name])
+        chain_str = " -> ".join([*_thread_local.import_chain, name])
         raise AttributeError(
             f"module '{__name__}' has no attribute '{name}' "
             f"(circular import detected in chain: {chain_str}). "
