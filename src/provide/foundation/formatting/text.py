@@ -1,10 +1,15 @@
 from __future__ import annotations
 
+import re
+
 """Text manipulation and formatting utilities.
 
 Provides utilities for text truncation, indentation, and other common
 text operations.
 """
+
+# Compiled regex patterns for performance
+ANSI_PATTERN = re.compile(r"\x1b\[[0-9;]*m")
 
 
 def truncate(text: str, max_length: int, suffix: str = "...", whole_words: bool = True) -> str:
@@ -138,10 +143,7 @@ def strip_ansi(text: str) -> str:
         Text without ANSI codes
 
     """
-    import re
-
-    ansi_pattern = re.compile(r"\x1b\[[0-9;]*m")
-    return ansi_pattern.sub("", text)
+    return ANSI_PATTERN.sub("", text)
 
 
 __all__ = [
