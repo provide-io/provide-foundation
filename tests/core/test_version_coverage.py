@@ -9,11 +9,21 @@ import tempfile
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import MagicMock, patch
 
-from provide.foundation._version import __version__, _find_project_root, get_version
+from provide.foundation._version import (
+    __version__,
+    _find_project_root,
+    _reset_version_cache,
+    get_version,
+)
 
 
 class TestFindProjectRoot(FoundationTestCase):
     """Test _find_project_root function."""
+
+    def setup_method(self) -> None:
+        """Reset version cache before each test."""
+        super().setup_method()
+        _reset_version_cache()
 
     def test_find_project_root_exists(self) -> None:
         """Test finding project root when VERSION file exists."""
@@ -109,6 +119,11 @@ class TestFindProjectRoot(FoundationTestCase):
 
 class TestGetVersion(FoundationTestCase):
     """Test get_version function."""
+
+    def setup_method(self) -> None:
+        """Reset version cache before each test."""
+        super().setup_method()
+        _reset_version_cache()
 
     def test_get_version_from_version_file(self) -> None:
         """Test getting version from VERSION file."""
@@ -212,6 +227,11 @@ class TestGetVersion(FoundationTestCase):
 class TestVersionModule(FoundationTestCase):
     """Test module-level functionality."""
 
+    def setup_method(self) -> None:
+        """Reset version cache before each test."""
+        super().setup_method()
+        _reset_version_cache()
+
     def test_version_attribute_exists(self) -> None:
         """Test that __version__ attribute is set."""
         assert hasattr(get_version, "__module__")
@@ -251,6 +271,11 @@ class TestVersionModule(FoundationTestCase):
 
 class TestVersionEdgeCases(FoundationTestCase):
     """Test edge cases and error conditions."""
+
+    def setup_method(self) -> None:
+        """Reset version cache before each test."""
+        super().setup_method()
+        _reset_version_cache()
 
     def test_version_file_read_error(self) -> None:
         """Test handling of VERSION file read errors."""

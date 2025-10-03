@@ -18,6 +18,18 @@ _version_lock = threading.Lock()
 _cached_version: str | None = None
 
 
+def _reset_version_cache() -> None:
+    """Reset the cached version.
+
+    This function is intended for testing purposes only.
+    It clears the cached version so that get_version() will
+    re-evaluate the version on the next call.
+    """
+    global _cached_version
+    with _version_lock:
+        _cached_version = None
+
+
 def _find_project_root() -> Path | None:
     """Find the project root directory by looking for VERSION file."""
     current = Path(__file__).parent
