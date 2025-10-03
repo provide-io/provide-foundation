@@ -63,6 +63,7 @@ class TestFoundationInit(FoundationTestCase):
 
     def test_aaa_getattr_cli_click_missing(self) -> None:
         """Test __getattr__ CLI import with missing click dependency."""
+        import builtins
         import provide.foundation
 
         # Clear any existing CLI module from cache
@@ -70,10 +71,13 @@ class TestFoundationInit(FoundationTestCase):
         if cli_module_key in sys.modules:
             del sys.modules[cli_module_key]
 
+        # Save original __import__ before patching
+        original_import = builtins.__import__
+
         def mock_import_func(name: str, *args: object, **kwargs: object) -> object:
             if name == "provide.foundation.cli":
                 raise ImportError("No module named 'click'")
-            return __import__(name, *args, **kwargs)  # type: ignore[arg-type]
+            return original_import(name, *args, **kwargs)  # type: ignore[arg-type]
 
         with (
             patch("builtins.__import__", side_effect=mock_import_func),
@@ -86,6 +90,7 @@ class TestFoundationInit(FoundationTestCase):
 
     def test_aaa_getattr_cli_other_import_error(self) -> None:
         """Test __getattr__ CLI import with other ImportError."""
+        import builtins
         import provide.foundation
 
         # Clear any existing CLI module from cache
@@ -93,10 +98,13 @@ class TestFoundationInit(FoundationTestCase):
         if cli_module_key in sys.modules:
             del sys.modules[cli_module_key]
 
+        # Save original __import__ before patching
+        original_import = builtins.__import__
+
         def mock_import_func(name: str, *args: object, **kwargs: object) -> object:
             if name == "provide.foundation.cli":
                 raise ImportError("Some other error")
-            return __import__(name, *args, **kwargs)  # type: ignore[arg-type]
+            return original_import(name, *args, **kwargs)  # type: ignore[arg-type]
 
         with (
             patch("builtins.__import__", side_effect=mock_import_func),
