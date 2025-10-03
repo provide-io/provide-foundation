@@ -215,7 +215,7 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_extreme_concurrency_stress(self) -> None:
         """Test thread-safety with extreme concurrency."""
-        limiter = TokenBucketRateLimiter(capacity=100.0, refill_rate=1.0)
+        limiter = TokenBucketRateLimiter(capacity=100.0, refill_rate=1.0, time_source=self.get_time)
 
         # Create extreme number of concurrent tasks
         async def try_get_token():
@@ -232,7 +232,7 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_concurrent_refill_and_consumption(self) -> None:
         """Test concurrent token consumption while refilling occurs."""
-        limiter = TokenBucketRateLimiter(capacity=5.0, refill_rate=10.0)  # Fast refill
+        limiter = TokenBucketRateLimiter(capacity=5.0, refill_rate=10.0, time_source=self.get_time)  # Fast refill
 
         # Use all initial tokens
         for _ in range(5):
@@ -245,7 +245,7 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
             for _ in range(20):
                 if await limiter.is_allowed():
                     successes += 1
-                await asyncio.sleep(0.01)  # Small delay
+                self.advance_time(0.01)  # Advance time by 10ms
             return successes
 
         # Run multiple consumers concurrently while tokens refill
@@ -254,9 +254,8 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
 
         # Should have some successes due to refilling, but not unlimited
         total_successes = sum(results)
-        # With 10 tokens/sec refill rate and ~0.6s total time,
-        # expect some additional tokens, but exact timing varies in CI/test environments
-        # Be more lenient with timing-dependent behavior
+        # With 10 tokens/sec refill rate and 0.6s total time (20 * 0.01 * 3),
+        # expect 6 tokens refilled total, so total successes should be around 6
         assert 0 <= total_successes <= 20  # Reasonable range allowing for timing variations
 
     @pytest.mark.asyncio
@@ -266,7 +265,7 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
         mock_logger = mocker.MagicMock()
         mocker.patch("provide.foundation.logger.get_logger", return_value=mock_logger)
 
-        limiter = TokenBucketRateLimiter(capacity=2.0, refill_rate=1.0)
+        limiter = TokenBucketRateLimiter(capacity=2.0, refill_rate=1.0, time_source=self.get_time)
 
         # Should have logged initialization
         mock_logger.debug.assert_called_once()
