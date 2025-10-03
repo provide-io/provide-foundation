@@ -5,12 +5,14 @@ import re
 
 from provide.foundation.errors.platform import PlatformError
 from provide.foundation.logger import get_logger
+from provide.foundation.utils.caching import cached
 
 """Core platform detection functions."""
 
 plog = get_logger(__name__)
 
 
+@cached()
 def get_os_name() -> str:
     """Get normalized OS name.
 
@@ -32,6 +34,7 @@ def get_os_name() -> str:
         ) from e
 
 
+@cached()
 def get_arch_name() -> str:
     """Get normalized architecture name.
 
@@ -58,6 +61,7 @@ def get_arch_name() -> str:
         ) from e
 
 
+@cached()
 def get_platform_string() -> str:
     """Get normalized platform string in format 'os_arch'.
 
@@ -72,6 +76,7 @@ def get_platform_string() -> str:
     return platform_str
 
 
+@cached()
 def get_os_version() -> str | None:
     """Get OS version information.
 
@@ -147,6 +152,7 @@ def _detect_apple_cpu(processor: str) -> str | None:
     return "Apple Silicon"
 
 
+@cached()
 def get_cpu_type() -> str | None:
     """Get CPU type/family information.
 

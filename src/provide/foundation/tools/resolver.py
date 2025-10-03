@@ -30,6 +30,10 @@ class VersionResolver:
     - Exact versions
     """
 
+    def __init__(self) -> None:
+        """Initialize version resolver with pattern cache."""
+        self._pattern_cache: dict[str, re.Pattern[str]] = {}
+
     def resolve(self, spec: str, available: list[str]) -> str | None:
         """Resolve a version specification to a concrete version.
 
@@ -226,13 +230,17 @@ class VersionResolver:
             Best matching version, or None if no match.
 
         """
-        # Convert wildcard to regex
+        # Convert wildcard to regex (with caching)
         regex_pattern = pattern.replace(".", r"\.")
         regex_pattern = regex_pattern.replace("*", r".*")
         regex_pattern = f"^{regex_pattern}$"
 
         try:
-            regex = re.compile(regex_pattern)
+            # Check cache first
+            if regex_pattern not in self._pattern_cache:
+                self._pattern_cache[regex_pattern] = re.compile(regex_pattern)
+
+            regex = self._pattern_cache[regex_pattern]
             matches = [v for v in available if regex.match(v)]
 
             if matches:

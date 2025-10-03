@@ -10,6 +10,7 @@ import sys
 from attrs import define
 
 from provide.foundation.logger import get_logger
+from provide.foundation.utils.caching import cached
 from provide.foundation.platform.detection import (
     get_arch_name,
     get_cpu_type,
@@ -43,6 +44,7 @@ class SystemInfo:
     disk_usage: dict[str, dict[str, int]] | None
 
 
+@cached()
 def get_system_info() -> SystemInfo:
     """Gather comprehensive system information.
 
@@ -137,27 +139,32 @@ def get_system_info() -> SystemInfo:
 
 
 # Platform detection functions
+@cached()
 def is_windows() -> bool:
     """Check if running on Windows."""
     return sys.platform.startswith("win")
 
 
+@cached()
 def is_macos() -> bool:
     """Check if running on macOS."""
     return sys.platform == "darwin"
 
 
+@cached()
 def is_linux() -> bool:
     """Check if running on Linux."""
     return sys.platform.startswith("linux")
 
 
+@cached()
 def is_arm() -> bool:
     """Check if running on ARM architecture."""
     machine = platform.machine().lower()
     return "arm" in machine or "aarch" in machine
 
 
+@cached()
 def is_64bit() -> bool:
     """Check if running on 64-bit architecture."""
     return platform.machine().endswith("64") or sys.maxsize > 2**32

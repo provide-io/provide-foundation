@@ -7,6 +7,7 @@ from typing import Any
 
 from provide.foundation.context import CLIContext
 from provide.foundation.errors.decorators import resilient
+from provide.foundation.utils.caching import cached
 
 """Core console output functions for standardized CLI output.
 
@@ -42,18 +43,37 @@ def _should_use_json(ctx: CLIContext | None = None) -> bool:
     return ctx.json_output if ctx else False
 
 
+@cached()
+def _get_color_env_settings() -> tuple[bool | None, bool]:
+    """Get cached color environment variable settings.
+
+    Returns:
+        Tuple of (force_color, no_color) where:
+        - force_color is True if FORCE_COLOR is set, None otherwise
+        - no_color is True if NO_COLOR is set, False otherwise
+    """
+    force_color = os.environ.get("FORCE_COLOR", "").lower()
+    force = True if force_color in ("1", "true", "yes") else None
+
+    no_color = bool(os.environ.get("NO_COLOR"))
+
+    return (force, no_color)
+
+
 def _should_use_color(ctx: CLIContext | None = None, stream: Any = None) -> bool:
     """Determine if color output should be used."""
     if ctx is None:
         ctx = _get_context()
 
+    # Check environment variables (cached)
+    force_color, no_color = _get_color_env_settings()
+
     # Check FORCE_COLOR first (enables color even for non-TTY)
-    force_color = os.environ.get("FORCE_COLOR", "").lower()
-    if force_color in ("1", "true", "yes"):
+    if force_color:
         return True
 
     # Check NO_COLOR (disables color even for TTY)
-    if os.environ.get("NO_COLOR"):
+    if no_color:
         return False
 
     # Check context no_color setting
