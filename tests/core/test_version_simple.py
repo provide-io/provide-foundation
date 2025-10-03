@@ -195,6 +195,9 @@ class TestVersionSimpleCoverage(FoundationTestCase):
                 version_file = temp_path / "VERSION"
                 version_file.write_text("file-version")
 
+                # Reset cache to test new scenario
+                _reset_version_cache()
+
                 # Test again - should now read from file
                 version2 = get_version()
                 assert version2 == "file-version"
