@@ -91,7 +91,7 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_get_current_tokens(self) -> None:
         """Test getting current token count."""
-        limiter = TokenBucketRateLimiter(capacity=5.0, refill_rate=1.0)
+        limiter = TokenBucketRateLimiter(capacity=5.0, refill_rate=1.0, time_source=self.get_time)
 
         # Should start with full capacity
         tokens = await limiter.get_current_tokens()
@@ -108,7 +108,7 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_concurrent_access(self) -> None:
         """Test thread-safety with concurrent access."""
-        limiter = TokenBucketRateLimiter(capacity=10.0, refill_rate=1.0)
+        limiter = TokenBucketRateLimiter(capacity=10.0, refill_rate=1.0, time_source=self.get_time)
 
         # Create multiple concurrent tasks trying to get tokens
         async def try_get_token():
@@ -124,20 +124,20 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_fractional_values(self) -> None:
         """Test that fractional capacity and refill rates work."""
-        limiter = TokenBucketRateLimiter(capacity=2.5, refill_rate=0.5)
+        limiter = TokenBucketRateLimiter(capacity=2.5, refill_rate=0.5, time_source=self.get_time)
 
         # Should allow 2 requests initially (2.5 capacity, but we consume 1.0 per request)
         assert await limiter.is_allowed() is True
         assert await limiter.is_allowed() is True
         assert await limiter.is_allowed() is False  # 0.5 tokens remaining, need 1.0
 
-        # Wait for 2 seconds to get 1 more token (0.5 tokens/sec * 2s = 1 token)
-        await asyncio.sleep(2.1)
+        # Advance time by 2.1 seconds to get 1 more token (0.5 tokens/sec * 2.1s = 1.05 tokens)
+        self.advance_time(2.1)
         assert await limiter.is_allowed() is True
 
     def test_logger_initialization_success(self) -> None:
         """Test successful logger initialization."""
-        limiter = TokenBucketRateLimiter(capacity=1.0, refill_rate=1.0)
+        limiter = TokenBucketRateLimiter(capacity=1.0, refill_rate=1.0, time_source=self.get_time)
         # Logger should be available and cached
         assert limiter._logger is not None
 
