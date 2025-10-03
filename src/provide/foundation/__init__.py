@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import importlib
 import sys
 import threading
 
@@ -67,7 +66,7 @@ _MAX_LAZY_IMPORT_DEPTH = 5
 _LAZY_LOADABLE_MODULES = frozenset(["cli", "crypto", "docs", "formatting", "metrics"])
 
 
-def __getattr__(name: str) -> object:
+def __getattr__(name: str) -> object:  # noqa: C901
     """Support lazy loading of optional modules.
 
     This lazy loading mechanism reduces initial import overhead by deferring
@@ -91,6 +90,10 @@ def __getattr__(name: str) -> object:
         AttributeError: If module is not allowed for lazy loading
         ImportError: If module import fails
         RecursionError: If import depth exceeds safe limits
+
+    Note:
+        Complexity is intentionally high to handle all edge cases
+        in this critical import hook (recursion, corruption, depth limits).
     """
     # Build the full module name
     module_name = f"provide.foundation.{name}"
