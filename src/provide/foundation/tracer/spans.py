@@ -23,19 +23,20 @@ if TYPE_CHECKING:
     from opentelemetry import trace as otel_trace
     from opentelemetry.trace import Status, StatusCode
 
-log = get_logger(__name__)
-
 # OpenTelemetry feature detection
+_HAS_OTEL: bool
 try:
     from opentelemetry import trace as otel_trace
-    from opentelemetry.trace import Status, StatusCode
+    from opentelemetry.trace import Status, StatusCode  # noqa: F811
 
     _HAS_OTEL = True
 except ImportError:
-    otel_trace: Any = None
-    Status: Any = None
-    StatusCode: Any = None
+    otel_trace = None  # type: ignore[assignment]
+    Status = None  # type: ignore[misc,assignment]
+    StatusCode = None  # type: ignore[misc,assignment]
     _HAS_OTEL = False
+
+log = get_logger(__name__)
 
 
 @define
@@ -98,7 +99,7 @@ class Span:
         self.error = str(error)
 
         # Also set on OpenTelemetry span if available
-        if self._otel_span and Status and StatusCode:
+        if self._otel_span and Status is not None and StatusCode is not None:
             try:
                 self._otel_span.set_status(Status(StatusCode.ERROR, str(error)))
                 self._otel_span.record_exception(error if isinstance(error, Exception) else Exception(error))
@@ -145,7 +146,11 @@ class Span:
         """Context manager exit."""
         # Handle exceptions
         if exc_type is not None:
-            self.set_error(exc_val if exc_val else exc_type.__name__)
+            error_msg = str(exc_val) if exc_val else exc_type.__name__
+            if isinstance(exc_val, Exception):
+                self.set_error(exc_val)
+            else:
+                self.set_error(error_msg)
 
         # Finish the span
         self.finish()
@@ -160,9 +165,11 @@ class Span:
 
     def duration_ms(self) -> float:
         """Get the duration of the span in milliseconds."""
+        # start_time is guaranteed to be set in __attrs_post_init__
+        start = self.start_time if self.start_time is not None else 0.0
         if self.end_time is None:
-            return (self._time_source() - self.start_time) * 1000
-        return (self.end_time - self.start_time) * 1000
+            return (self._time_source() - start) * 1000
+        return (self.end_time - start) * 1000
 
     def to_dict(self) -> dict[str, Any]:
         """Convert span to dictionary representation."""
