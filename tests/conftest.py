@@ -62,6 +62,37 @@ if not os.getenv("PYTEST_WORKER_ID"):  # Avoid multiple messages with xdist
 
 
 @pytest.fixture(autouse=True)
+def _cleanup_event_loops_after_time_machine() -> Generator[None]:
+    """Close event loops after each test to prevent frozen time caching.
+
+    When time_machine.freeze() is used, event loops created during or after the test
+    may cache frozen time.monotonic references. Closing the loop after each test
+    forces pytest-asyncio to create fresh loops.
+
+    KNOWN LIMITATION: This doesn't fully solve the issue in serial execution where
+    async timeout tests run immediately after time_machine tests. The timeout tests
+    may still fail because pytest-asyncio creates the loop during test setup (before
+    this fixture's teardown runs). Use pytest-xdist (-n auto) for reliable results.
+    """
+    yield  # Let test run
+
+    # Close event loop to force pytest-asyncio to create a fresh one
+    try:
+        import asyncio
+
+        try:
+            loop = asyncio.get_event_loop()
+            if not loop.is_running() and not loop.is_closed():
+                loop.close()
+        except RuntimeError:
+            # No event loop, that's fine
+            pass
+    except Exception:
+        # Event loop closure failed, continue
+        pass
+
+
+@pytest.fixture(autouse=True)
 def reset_foundation_for_all_tests(request: pytest.FixtureRequest) -> Generator[None]:
     """Autouse fixture to reset Foundation state after each test.
 
