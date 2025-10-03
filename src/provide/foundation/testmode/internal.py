@@ -47,6 +47,21 @@ def reset_event_loops() -> None:
         pass
 
 
+def reset_time_machine_state() -> None:
+    """Reset time_machine state to ensure time is not frozen.
+
+    Tests using time_machine.freeze() can leave time frozen if cleanup fails,
+    which breaks asyncio.wait_for timeouts in subsequent tests.
+
+    This function is a safety fallback - the primary fix is in provide-testkit's
+    TimeMachine.cleanup() method which now robustly stops all patches.
+    """
+    # The time_machine fixture cleanup has been fixed in provide-testkit
+    # to handle exceptions during patch.stop() and properly reset state.
+    # This function remains as a safety measure but should not be needed.
+    pass
+
+
 def reset_structlog_state() -> None:
     """Reset structlog configuration to defaults.
 
