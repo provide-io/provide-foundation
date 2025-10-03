@@ -44,7 +44,7 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_initial_tokens_available(self) -> None:
         """Test that limiter starts with full capacity of tokens."""
-        limiter = TokenBucketRateLimiter(capacity=5.0, refill_rate=1.0)
+        limiter = TokenBucketRateLimiter(capacity=5.0, refill_rate=1.0, time_source=self.get_time)
 
         # Should allow up to capacity requests immediately
         for _ in range(5):
