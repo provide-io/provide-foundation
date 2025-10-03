@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Any
-
 from provide.testkit import FoundationTestCase
 import pytest
 
@@ -45,12 +43,13 @@ class TestCreateDependencyStub(FoundationTestCase):
         with pytest.raises(DependencyError, match="test-package"):
             instance()  # type: ignore[operator]
 
-    def test_stub_raises_on_attribute_access(self) -> None:
-        """Test that stub raises DependencyError on attribute access."""
+    def test_stub_raises_on_new(self) -> None:
+        """Test that stub raises DependencyError via __new__."""
         StubClass = create_dependency_stub("test-package", "test-feature")
 
+        # __new__ should raise before __init__ is called
         with pytest.raises(DependencyError, match="test-package"):
-            _ = StubClass.some_attribute  # type: ignore[attr-defined]
+            StubClass()
 
     def test_stub_raises_on_class_getitem(self) -> None:
         """Test that stub raises DependencyError on generic access."""
