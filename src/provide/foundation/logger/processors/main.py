@@ -20,6 +20,11 @@ from provide.foundation.logger.processors.trace import inject_trace_context
 
 """Structlog processors for Foundation Telemetry."""
 
+# Module-level flags to prevent event enrichment re-initialization during resets
+# These persist across structlog.reset_defaults() calls
+_event_enrichment_initialized = False
+_reset_in_progress = False
+
 
 def _config_create_service_name_processor(
     service_name: str | None,
@@ -63,20 +68,24 @@ def _config_create_event_enrichment_processors(
     if logging_config.logger_name_emoji_prefix_enabled:
         processors.append(cast("StructlogProcessor", add_logger_name_emoji_prefix))
     if logging_config.das_emoji_prefix_enabled:
-        # Use a closure with mutable state to track initialization
-        state = {"initialized": False}
 
         def add_event_enrichment_processor(
             _logger: Any,
             _method_name: str,
             event_dict: structlog.types.EventDict,
         ) -> structlog.types.EventDict:
+            # Skip event enrichment entirely during resets to prevent re-initialization
+            global _reset_in_progress
+            if _reset_in_progress:
+                return event_dict
+
             # Lazy import to avoid circular dependency
             from provide.foundation.eventsets.registry import discover_event_sets
             from provide.foundation.eventsets.resolver import get_resolver
 
-            # Initialize on first use
-            if not state["initialized"]:
+            # Use module-level flag to prevent re-initialization during resets
+            global _event_enrichment_initialized
+            if not _event_enrichment_initialized:
                 from provide.foundation.logger.setup.coordinator import (
                     create_foundation_internal_logger,
                 )
@@ -84,7 +93,7 @@ def _config_create_event_enrichment_processors(
                 setup_logger = create_foundation_internal_logger()
                 setup_logger.trace("Initializing event enrichment processor")
                 discover_event_sets()
-                state["initialized"] = True
+                _event_enrichment_initialized = True
                 setup_logger.trace("Event enrichment processor initialized")
 
             resolver = get_resolver()
@@ -92,6 +101,25 @@ def _config_create_event_enrichment_processors(
 
         processors.append(cast("StructlogProcessor", add_event_enrichment_processor))
     return processors
+
+
+def set_reset_in_progress(in_progress: bool) -> None:
+    """Set whether a reset is currently in progress.
+
+    This prevents event enrichment from triggering during resets.
+    """
+    global _reset_in_progress
+    _reset_in_progress = in_progress
+
+
+def reset_event_enrichment_state() -> None:
+    """Reset event enrichment initialization state for testing.
+
+    This should only be called during test cleanup to allow re-initialization
+    in the next test.
+    """
+    global _event_enrichment_initialized
+    _event_enrichment_initialized = False
 
 
 def _build_core_processors_list(config: TelemetryConfig) -> list[StructlogProcessor]:
