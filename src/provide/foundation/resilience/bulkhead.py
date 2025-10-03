@@ -8,6 +8,8 @@ from typing import Any, TypeVar
 
 from attrs import define, field
 
+from provide.foundation.concurrency.locks import DualLock
+
 """Bulkhead pattern for resource isolation and limiting.
 
 The bulkhead pattern isolates resources to prevent failures in one part of
@@ -31,8 +33,7 @@ class ResourcePool:
     _async_semaphore: asyncio.Semaphore | None = field(default=None, init=False)
     _active_count: int = field(default=0, init=False)
     _queue_size: int = field(default=0, init=False)
-    _lock: threading.RLock = field(factory=threading.RLock, init=False)
-    _async_lock: asyncio.Lock | None = field(default=None, init=False)
+    _lock: DualLock = field(factory=DualLock, init=False)
 
     def __attrs_post_init__(self) -> None:
         """Initialize semaphores after object creation."""
@@ -41,19 +42,19 @@ class ResourcePool:
     @property
     def active_count(self) -> int:
         """Number of currently active operations."""
-        with self._lock:
+        with self._lock.sync():
             return self._active_count
 
     @property
     def available_capacity(self) -> int:
         """Number of available slots."""
-        with self._lock:
+        with self._lock.sync():
             return self.max_concurrent - self._active_count
 
     @property
     def queue_size(self) -> int:
         """Current queue size."""
-        with self._lock:
+        with self._lock.sync():
             return self._queue_size
 
     def acquire(self, timeout: float | None = None) -> bool:
@@ -70,7 +71,7 @@ class ResourcePool:
         """
         actual_timeout = timeout if timeout is not None else self.timeout
 
-        with self._lock:
+        with self._lock.sync():
             if self._queue_size >= self.max_queue_size:
                 raise RuntimeError(f"Queue is full (max: {self.max_queue_size})")
             self._queue_size += 1
@@ -78,16 +79,16 @@ class ResourcePool:
         try:
             acquired = self._semaphore.acquire(timeout=actual_timeout)
             if acquired:
-                with self._lock:
+                with self._lock.sync():
                     self._active_count += 1
             return acquired
         finally:
-            with self._lock:
+            with self._lock.sync():
                 self._queue_size -= 1
 
     def release(self) -> None:
         """Release a resource slot."""
-        with self._lock:
+        with self._lock.sync():
             if self._active_count > 0:
                 self._active_count -= 1
         self._semaphore.release()
@@ -106,13 +107,11 @@ class ResourcePool:
         """
         actual_timeout = timeout if timeout is not None else self.timeout
 
-        # Initialize async locks and semaphore on first use
-        if self._async_lock is None:
-            self._async_lock = asyncio.Lock()
+        # Initialize async semaphore on first use
         if self._async_semaphore is None:
             self._async_semaphore = asyncio.Semaphore(self.max_concurrent)
 
-        async with self._async_lock:
+        async with self._lock.async_():
             if self._queue_size >= self.max_queue_size:
                 raise RuntimeError(f"Queue is full (max: {self.max_queue_size})")
             self._queue_size += 1
@@ -120,21 +119,18 @@ class ResourcePool:
         try:
             acquired = await asyncio.wait_for(self._async_semaphore.acquire(), timeout=actual_timeout)
             if acquired:
-                async with self._async_lock:
+                async with self._lock.async_():
                     self._active_count += 1
             return True
         except TimeoutError:
             return False
         finally:
-            async with self._async_lock:
+            async with self._lock.async_():
                 self._queue_size -= 1
 
     async def release_async(self) -> None:
         """Release a resource slot (async)."""
-        if self._async_lock is None:
-            self._async_lock = asyncio.Lock()
-
-        async with self._async_lock:
+        async with self._lock.async_():
             if self._active_count > 0:
                 self._active_count -= 1
 
@@ -143,7 +139,7 @@ class ResourcePool:
 
     def get_stats(self) -> dict[str, Any]:
         """Get pool statistics."""
-        with self._lock:
+        with self._lock.sync():
             return {
                 "max_concurrent": self.max_concurrent,
                 "active_count": self._active_count,
