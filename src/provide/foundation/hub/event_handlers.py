@@ -10,39 +10,47 @@ This module provides the bridge between the event system and logging,
 breaking the circular dependency while maintaining logging functionality.
 """
 
-# Global flag to prevent event logging during Foundation initialization
-# This prevents infinite loops when modules auto-register during import
+# Global flags to prevent event logging during Foundation initialization/reset
+# This prevents infinite loops when modules auto-register during import/reset
 _foundation_initializing = False
+_reset_in_progress = False
 
 
 def _get_logger_safely() -> Any:
     """Get logger without creating circular dependency.
 
     Returns None if logger is not yet available to avoid initialization issues.
+    Uses vanilla Python logger to completely avoid Foundation initialization.
     """
-    global _foundation_initializing
+    global _foundation_initializing, _reset_in_progress
 
-    # Never try to get logger if Foundation is currently initializing
-    # This prevents cascade imports during module initialization
-    if _foundation_initializing:
+    # Never try to get logger if Foundation is currently initializing or resetting
+    # This prevents cascade imports during module initialization and infinite loops during reset
+    if _foundation_initializing or _reset_in_progress:
         return None
 
     try:
-        # Check if foundation module is already imported before importing
-        # This prevents triggering initialization cascade during event handling
-        import sys
+        # Use vanilla Python logger which doesn't trigger any Foundation initialization
+        # Per coordinator.py docs: "Components should use get_vanilla_logger() instead"
+        from provide.foundation.logger.setup.coordinator import get_vanilla_logger
 
-        if "provide.foundation.hub.foundation" not in sys.modules:
-            # Foundation not initialized yet, don't trigger import
-            return None
-
-        # Only import after we know the system is initialized
-        from provide.foundation.hub.foundation import get_foundation_logger
-
-        return get_foundation_logger()
+        return get_vanilla_logger("provide.foundation.hub.events")
     except Exception:
         # If logger isn't ready yet, gracefully ignore
         return None
+
+
+def set_reset_in_progress(in_progress: bool) -> None:
+    """Set whether a reset is currently in progress.
+
+    This prevents event handlers from triggering logger operations during resets,
+    which would cause infinite loops.
+
+    Args:
+        in_progress: True if reset is starting, False if reset is complete
+    """
+    global _reset_in_progress
+    _reset_in_progress = in_progress
 
 
 def handle_registry_event(event: Event | RegistryEvent) -> None:
@@ -57,11 +65,15 @@ def handle_registry_event(event: Event | RegistryEvent) -> None:
 
     if isinstance(event, RegistryEvent):
         if event.operation == "register":
-            logger.debug("Registered item", name=event.item_name, dimension=event.dimension, **event.data)
+            logger.debug(
+                f"Registered item: name={event.item_name}, dimension={event.dimension}, data={event.data}"
+            )
         elif event.operation == "remove":
-            logger.debug("Removed item", name=event.item_name, dimension=event.dimension, **event.data)
+            logger.debug(
+                f"Removed item: name={event.item_name}, dimension={event.dimension}, data={event.data}"
+            )
     elif event.name.startswith("registry."):
-        logger.debug(f"Registry event: {event.name}", **event.data)
+        logger.debug(f"Registry event: {event.name}, data={event.data}")
 
 
 def handle_circuit_breaker_event(event: Event) -> None:
@@ -75,15 +87,15 @@ def handle_circuit_breaker_event(event: Event) -> None:
         return
 
     if event.name == "circuit_breaker.recovered":
-        logger.info("Circuit breaker recovered - closing circuit", **event.data)
+        logger.info(f"Circuit breaker recovered - closing circuit: {event.data}")
     elif event.name == "circuit_breaker.opened":
-        logger.error("Circuit breaker opened due to failures", **event.data)
+        logger.error(f"Circuit breaker opened due to failures: {event.data}")
     elif event.name == "circuit_breaker.recovery_failed":
-        logger.warning("Circuit breaker recovery failed - opening circuit", **event.data)
+        logger.warning(f"Circuit breaker recovery failed - opening circuit: {event.data}")
     elif event.name == "circuit_breaker.attempting_recovery":
-        logger.info("Circuit breaker attempting recovery", **event.data)
+        logger.info(f"Circuit breaker attempting recovery: {event.data}")
     elif event.name == "circuit_breaker.manual_reset":
-        logger.info("Circuit breaker manually reset", **event.data)
+        logger.info(f"Circuit breaker manually reset: {event.data}")
 
 
 def setup_event_logging() -> None:

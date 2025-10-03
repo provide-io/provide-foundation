@@ -150,13 +150,25 @@ def reset_foundation_state() -> None:
             reset_state_managers,
             reset_streams_state,
             reset_structlog_state,
+            reset_time_machine_state,
         )
 
-        # Signal that reset is in progress to prevent event enrichment
+        # Signal that reset is in progress to prevent event enrichment and Hub event logging
         try:
-            from provide.foundation.logger.processors.main import set_reset_in_progress
+            from provide.foundation.logger.processors.main import (
+                set_reset_in_progress as set_processor_reset,
+            )
 
-            set_reset_in_progress(True)
+            set_processor_reset(True)
+        except ImportError:
+            pass
+
+        try:
+            from provide.foundation.hub.event_handlers import (
+                set_reset_in_progress as set_hub_reset,
+            )
+
+            set_hub_reset(True)
         except ImportError:
             pass
 
@@ -208,16 +220,31 @@ def reset_foundation_state() -> None:
         # Final reset of logger state (after all operations that might trigger setup)
         reset_logger_state()
 
-        # Clean up event loops to prevent worker shutdown hangs
-        # This must be last to ensure all async operations are complete
+        # Clean up event loops FIRST to reset any time-related loop state
+        # This ensures a fresh event loop that isn't affected by time patches
         reset_event_loops()
+
+        # Then reset time_machine patches after loop is reset
+        # This ensures time patches don't affect the new event loop
+        reset_time_machine_state()
     finally:
         # Always clear the reset-in-progress flags
         _reset_in_progress = False
         try:
-            from provide.foundation.logger.processors.main import set_reset_in_progress
+            from provide.foundation.logger.processors.main import (
+                set_reset_in_progress as set_processor_reset,
+            )
 
-            set_reset_in_progress(False)
+            set_processor_reset(False)
+        except ImportError:
+            pass
+
+        try:
+            from provide.foundation.hub.event_handlers import (
+                set_reset_in_progress as set_hub_reset,
+            )
+
+            set_hub_reset(False)
         except ImportError:
             pass
 
