@@ -233,7 +233,7 @@ class TestLazyImportEdgeCases:
 
     def test_import_with_mock_failure(self) -> None:
         """Test behavior when __import__ fails."""
-        with patch("provide.foundation.utils.importer.__import__") as mock_import:
+        with patch("builtins.__import__") as mock_import:
             mock_import.side_effect = ImportError("Simulated import failure")
 
             with pytest.raises(ImportError, match="Simulated import failure"):
