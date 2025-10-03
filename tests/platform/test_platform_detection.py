@@ -22,6 +22,16 @@ from provide.foundation.platform.detection import (
 class TestPlatformDetection(FoundationTestCase):
     """Test platform detection functions."""
 
+    def setup_method(self) -> None:
+        """Set up test environment and clear caches."""
+        super().setup_method()
+        # Clear cached platform detection results before each test
+        get_os_name.cache_clear()  # type: ignore[attr-defined]
+        get_arch_name.cache_clear()  # type: ignore[attr-defined]
+        get_platform_string.cache_clear()  # type: ignore[attr-defined]
+        get_os_version.cache_clear()  # type: ignore[attr-defined]
+        get_cpu_type.cache_clear()  # type: ignore[attr-defined]
+
     def test_get_os_name_normal(self) -> None:
         """Test get_os_name with normal system values."""
         with patch("platform.system") as mock_system:

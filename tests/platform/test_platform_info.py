@@ -8,10 +8,22 @@ from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import MagicMock, patch
 
 from provide.foundation.platform import SystemInfo, get_system_info
+from provide.foundation.platform.info import is_64bit, is_arm, is_linux, is_macos, is_windows
 
 
 class TestSystemInfo(FoundationTestCase):
     """Test system information gathering."""
+
+    def setup_method(self) -> None:
+        """Set up test environment and clear caches."""
+        super().setup_method()
+        # Clear cached platform info results before each test
+        get_system_info.cache_clear()  # type: ignore[attr-defined]
+        is_windows.cache_clear()  # type: ignore[attr-defined]
+        is_macos.cache_clear()  # type: ignore[attr-defined]
+        is_linux.cache_clear()  # type: ignore[attr-defined]
+        is_arm.cache_clear()  # type: ignore[attr-defined]
+        is_64bit.cache_clear()  # type: ignore[attr-defined]
 
     @patch("provide.foundation.platform.info.get_os_name", return_value="darwin")
     @patch("provide.foundation.platform.info.get_arch_name", return_value="arm64")
