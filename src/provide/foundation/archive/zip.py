@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 import zipfile
 
-from attrs import define, validators
+from attrs import Attribute, define, validators
 
 from provide.foundation.archive.base import ArchiveError, BaseArchive
 from provide.foundation.config import defaults
@@ -16,7 +16,7 @@ from provide.foundation.logger import get_logger
 logger = get_logger(__name__)
 
 
-def _validate_compression_level(instance: object, attribute: object, value: int) -> None:
+def _validate_compression_level(instance: ZipArchive, attribute: Attribute[int], value: int) -> None:
     """Validate compression level is between 0 and 9."""
     if not 0 <= value <= 9:
         raise ValueError(f"Compression level must be 0-9, got {value}")
