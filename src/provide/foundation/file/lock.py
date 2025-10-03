@@ -98,8 +98,20 @@ class FileLock:
                 # Try to create lock file exclusively
                 fd = os.open(str(self.path), os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644)
                 try:
-                    # Write our PID to the lock file
-                    os.write(fd, str(self.pid).encode())
+                    # Write lock metadata as JSON for robust validation
+                    lock_info = {
+                        "pid": self.pid,
+                        "hostname": socket.gethostname(),
+                        "created": current_time,
+                    }
+                    # Add process start time if psutil is available
+                    if HAS_PSUTIL:
+                        try:
+                            proc = psutil.Process(self.pid)
+                            lock_info["start_time"] = proc.create_time()
+                        except (psutil.NoSuchProcess, psutil.AccessDenied):
+                            pass
+                    os.write(fd, json.dumps(lock_info).encode())
                 finally:
                     os.close(fd)
 
