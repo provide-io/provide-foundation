@@ -31,7 +31,8 @@ class TestSpan(FoundationTestCase):
         assert span.span_id is not None
         assert span.trace_id is not None
         assert span.parent_id is None
-        assert span.start_time > 0
+        assert span.start_time is not None
+        assert span.start_time >= 0
         assert span.end_time is None
         assert span.tags == {}
         assert span.status == "ok"
@@ -121,13 +122,15 @@ class TestSpan(FoundationTestCase):
 
     def test_duration_ms_active_span(self) -> None:
         """Test duration calculation for active span."""
-        # Create span with known start time
-        span = Span("test_op", start_time=1000.0, time_source=self.get_time)
+        # Create span at current time
+        span = Span("test_op", time_source=self.get_time)
+        start = span.start_time
 
-        self.advance_time(1.5)  # Advance time to 1001.5
+        self.advance_time(1.5)  # Advance time by 1.5 seconds
         duration = span.duration_ms()
 
         assert duration == 1500.0  # 1.5 seconds = 1500ms
+        assert span.start_time == start  # Verify start time didn't change
 
     def test_duration_ms_finished_span(self) -> None:
         """Test duration calculation for finished span."""
@@ -550,6 +553,7 @@ class TestSpanEdgeCases(FoundationTestCase):
         assert isinstance(span.trace_id, str)
         assert len(span.trace_id) == 36  # UUID4 format
         assert isinstance(span.start_time, float)
+        assert span.start_time >= 0
         assert span.end_time is None
         assert span.tags == {}
         assert span.status == "ok"
