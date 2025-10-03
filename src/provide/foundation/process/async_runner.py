@@ -121,7 +121,7 @@ def _create_completed_process(
     stderr_str = stderr.decode(errors="replace") if stderr else ""
 
     return CompletedProcess(
-        args=cmd,
+        args=cmd if isinstance(cmd, list) else [cmd],
         returncode=process.returncode or 0,
         stdout=stdout_str,
         stderr=stderr_str,
@@ -213,6 +213,18 @@ async def async_run_command(
     cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
     plog.info("🚀 Running async command", command=cmd_str, cwd=str(cwd) if cwd else None)
 
+    # Validate command type and shell parameter
+    if isinstance(cmd, str) and not shell:
+        from provide.foundation.errors.config import ValidationError
+
+        raise ValidationError(
+            "String commands require explicit shell=True for security. "
+            "Use async_run_shell() for shell commands or pass a list for direct execution.",
+            code="INVALID_COMMAND_TYPE",
+            expected="list[str] or (str with shell=True)",
+            actual="str without shell=True",
+        )
+
     # Prepare environment and convert Path to string
     run_env = _prepare_async_environment(env)
     cwd_str = str(cwd) if isinstance(cwd, Path) else cwd
@@ -286,7 +298,7 @@ async def _create_stream_subprocess(
 
 async def _read_lines_with_timeout(process: Any, timeout: float, cmd_str: str) -> list[str]:
     """Read lines from process stdout with timeout."""
-    lines = []
+    lines: list[str] = []
     if not process.stdout:
         return lines
 
