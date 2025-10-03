@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from provide.foundation import config, errors, hub, platform, process, resilience, tracer
-from provide.foundation._version import __version__
 from provide.foundation.console import perr, pin, pout
 from provide.foundation.context import CLIContext, Context
 from provide.foundation.errors import (
@@ -51,122 +50,37 @@ Primary public interface for the library, re-exporting common components.
 """
 
 
-# Lazy loading support for optional modules
-# Use thread-local storage for recursion guard to ensure thread safety
-_thread_local = threading.local()
+# Lazy loading support for optional modules and __version__
+def __getattr__(name: str) -> object:
+    """Support lazy loading of modules and __version__.
 
-# Maximum depth for nested lazy imports to prevent stack overflow
-_MAX_LAZY_IMPORT_DEPTH = 5
-
-# Modules that are safe to lazy-load (do not trigger recursive lookups)
-# These modules have been verified to not cause import cycles
-_LAZY_LOADABLE_MODULES = frozenset(["cli", "crypto", "docs", "formatting", "metrics"])
-
-
-def __getattr__(name: str) -> object:  # noqa: C901
-    """Support lazy loading of optional modules.
-
-    This lazy loading mechanism reduces initial import overhead by deferring
-    module imports until first access. However, it can be fragile if modules
-    have complex interdependencies.
-
-    Safe lazy-loaded modules (verified no import cycles):
-    - cli: Requires optional 'click' dependency
-    - crypto: Cryptographic utilities
-    - docs: Documentation generation
-    - formatting: Text formatting utilities
-    - metrics: Metrics collection
+    This reduces initial import overhead by deferring module imports
+    and version loading until first access.
 
     Args:
-        name: Module name to lazy-load
+        name: Attribute name to lazy-load
 
     Returns:
-        The imported module
+        The imported module or attribute
 
     Raises:
-        AttributeError: If module is not allowed for lazy loading
+        AttributeError: If attribute doesn't exist
         ImportError: If module import fails
-        RecursionError: If import depth exceeds safe limits
-
-    Note:
-        Complexity is intentionally high to handle all edge cases
-        in this critical import hook (recursion, corruption, depth limits).
     """
-    # Build the full module name
-    module_name = f"provide.foundation.{name}"
+    # Handle __version__ specially to avoid import-time I/O
+    if name == "__version__":
+        from provide.foundation._version import __version__
 
-    # Initialize thread-local state if needed
-    if not hasattr(_thread_local, "getattr_in_progress"):
-        _thread_local.getattr_in_progress = set()
-        _thread_local.import_depth = 0
-        _thread_local.import_chain = []
+        return __version__
 
-    # Check recursion depth to prevent stack overflow from complex import chains
-    if _thread_local.import_depth >= _MAX_LAZY_IMPORT_DEPTH:
-        chain_str = " -> ".join([*_thread_local.import_chain, name])
-        raise RecursionError(
-            f"Lazy import depth limit ({_MAX_LAZY_IMPORT_DEPTH}) exceeded. "
-            f"Import chain: {chain_str}. This indicates a complex nested import "
-            f"that should be refactored or imported eagerly."
-        )
-
-    # Check if we've already entered recursion for this specific module
-    # This prevents infinite loops when a module has been corrupted
-    if name in _thread_local.getattr_in_progress:
-        chain_str = " -> ".join([*_thread_local.import_chain, name])
-        raise AttributeError(
-            f"module '{__name__}' has no attribute '{name}' "
-            f"(circular import detected in chain: {chain_str}). "
-            f"Module may be corrupted in sys.modules."
-        )
-
-    # Verify module is in the allowed lazy-load list
-    if name not in _LAZY_LOADABLE_MODULES:
-        available = ", ".join(sorted(_LAZY_LOADABLE_MODULES))
-        raise AttributeError(
-            f"module '{__name__}' has no attribute '{name}'. "
-            f"Only these modules support lazy loading: {available}"
-        )
-
-    # Set recursion guards
-    _thread_local.getattr_in_progress.add(name)
-    _thread_local.import_depth += 1
-    _thread_local.import_chain.append(name)
-
+    # For all other attributes, try to import as a submodule
     try:
-        # Check if module is already in sys.modules but corrupted
-        if module_name in sys.modules:
-            existing_module = sys.modules[module_name]
-            # If it exists and is valid, return it
-            if existing_module is not None:
-                return existing_module
-            # If it's None or invalid, remove it so we can re-import
-            del sys.modules[module_name]
+        from provide.foundation.utils.importer import lazy_import
 
-        # Import the submodule with appropriate error handling
-        if name == "cli":
-            try:
-                mod = __import__(module_name, fromlist=[""])
-                sys.modules[module_name] = mod
-                return mod
-            except ImportError as e:
-                if "click" in str(e):
-                    raise ImportError(
-                        "CLI features require optional dependencies. Install with: "
-                        "pip install 'provide-foundation[cli]'",
-                    ) from e
-                raise
-        else:
-            # Standard import for other allowed modules
-            mod = __import__(module_name, fromlist=[""])
-            sys.modules[module_name] = mod
-            return mod
-    finally:
-        # Always clear recursion guards in reverse order
-        _thread_local.getattr_in_progress.discard(name)
-        _thread_local.import_depth -= 1
-        if _thread_local.import_chain and _thread_local.import_chain[-1] == name:
-            _thread_local.import_chain.pop()
+        return lazy_import(__name__, name)
+    except (AttributeError, ImportError):
+        # If it's not a valid submodule, raise AttributeError
+        raise AttributeError(f"module '{__name__}' has no attribute '{name}'") from None
 
 
 __all__ = [

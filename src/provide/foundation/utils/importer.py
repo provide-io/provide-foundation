@@ -16,26 +16,27 @@ _thread_local = threading.local()
 # Maximum depth for nested lazy imports to prevent stack overflow
 MAX_LAZY_IMPORT_DEPTH = 5
 
-# Modules that are safe to lazy-load (do not trigger recursive lookups)
-# These modules have been verified to not cause import cycles
-LAZY_LOADABLE_MODULES = frozenset(["cli", "crypto", "docs", "formatting", "metrics"])
+# Modules that require special error handling
+SPECIAL_MODULES = {
+    "cli": "CLI features require optional dependencies. Install with: pip install 'provide-foundation[cli]'",
+}
 
 
-def lazy_import(parent_module: str, name: str) -> object:  # noqa: C901
+def lazy_import(parent_module: str, name: str) -> object:
     """Import a module lazily with comprehensive safety checks.
 
     This function provides thread-safe lazy loading with protection against:
     - Circular imports (tracks import chains)
     - Stack overflow (enforces maximum depth)
     - Corrupted module states (validates sys.modules)
-    - Invalid module requests (allowlist enforcement)
 
-    Safe lazy-loaded modules (verified no import cycles):
+    Commonly lazy-loaded modules:
     - cli: Requires optional 'click' dependency
     - crypto: Cryptographic utilities
     - docs: Documentation generation
     - formatting: Text formatting utilities
     - metrics: Metrics collection
+    - observability: Observability features
 
     Args:
         parent_module: The parent module name (e.g., "provide.foundation")
@@ -85,14 +86,6 @@ def lazy_import(parent_module: str, name: str) -> object:  # noqa: C901
             f"Module may be corrupted in sys.modules."
         )
 
-    # Verify module is in the allowed lazy-load list
-    if name not in LAZY_LOADABLE_MODULES:
-        available = ", ".join(sorted(LAZY_LOADABLE_MODULES))
-        raise AttributeError(
-            f"module '{parent_module}' has no attribute '{name}'. "
-            f"Only these modules support lazy loading: {available}"
-        )
-
     # Set recursion guards
     _thread_local.getattr_in_progress.add(name)
     _thread_local.import_depth += 1
@@ -109,23 +102,15 @@ def lazy_import(parent_module: str, name: str) -> object:  # noqa: C901
             del sys.modules[module_name]
 
         # Import the submodule with appropriate error handling
-        if name == "cli":
-            try:
-                mod = __import__(module_name, fromlist=[""])
-                sys.modules[module_name] = mod
-                return mod
-            except ImportError as e:
-                if "click" in str(e):
-                    raise ImportError(
-                        "CLI features require optional dependencies. Install with: "
-                        "pip install 'provide-foundation[cli]'",
-                    ) from e
-                raise
-        else:
-            # Standard import for other allowed modules
+        try:
             mod = __import__(module_name, fromlist=[""])
             sys.modules[module_name] = mod
             return mod
+        except ImportError as e:
+            # Provide helpful error messages for known optional dependencies
+            if name in SPECIAL_MODULES and "click" in str(e):
+                raise ImportError(SPECIAL_MODULES[name]) from e
+            raise
     finally:
         # Always clear recursion guards in reverse order
         _thread_local.getattr_in_progress.discard(name)
