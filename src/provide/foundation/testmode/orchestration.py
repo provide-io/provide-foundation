@@ -15,8 +15,9 @@ This is Foundation-internal knowledge that should be owned by Foundation,
 not by external testing frameworks.
 """
 
-# Global flag to prevent recursive resets
+# Global flags to prevent recursive resets
 _reset_in_progress = False
+_reset_for_testing_in_progress = False
 
 
 def _reset_otel_once_flag(once_obj: Any) -> None:
@@ -142,6 +143,7 @@ def reset_foundation_state() -> None:
             reset_circuit_breaker_state,
             reset_configuration_state,
             reset_coordinator_state,
+            reset_event_loops,
             reset_eventsets_state,
             reset_hub_state,
             reset_logger_state,
@@ -150,12 +152,31 @@ def reset_foundation_state() -> None:
             reset_structlog_state,
         )
 
+        # Signal that reset is in progress to prevent event enrichment
+        try:
+            from provide.foundation.logger.processors.main import set_reset_in_progress
+
+            set_reset_in_progress(True)
+        except ImportError:
+            pass
+
         # Reset Foundation environment variables first to avoid affecting other resets
         _reset_foundation_environment_variables()
 
         # Reset in the proper order to avoid triggering reinitialization
         reset_structlog_state()
         reset_streams_state()
+
+        # Reset event enrichment processor state to prevent re-initialization during cleanup
+        try:
+            from provide.foundation.logger.processors.main import (
+                reset_event_enrichment_state,
+            )
+
+            reset_event_enrichment_state()
+        except ImportError:
+            # Processor module not available, skip
+            pass
 
         # Reset OpenTelemetry providers to avoid "Overriding" warnings and stream closure
         # Note: OpenTelemetry providers are designed to prevent override for safety.
@@ -186,9 +207,19 @@ def reset_foundation_state() -> None:
 
         # Final reset of logger state (after all operations that might trigger setup)
         reset_logger_state()
+
+        # Clean up event loops to prevent worker shutdown hangs
+        # This must be last to ensure all async operations are complete
+        reset_event_loops()
     finally:
-        # Always clear the in-progress flag
+        # Always clear the reset-in-progress flags
         _reset_in_progress = False
+        try:
+            from provide.foundation.logger.processors.main import set_reset_in_progress
+
+            set_reset_in_progress(False)
+        except ImportError:
+            pass
 
 
 def reset_foundation_for_testing() -> None:
@@ -198,57 +229,68 @@ def reset_foundation_for_testing() -> None:
     It performs the complete state reset and handles test-specific concerns
     like transport re-registration and test stream preservation.
     """
-    # Save current stream if it's a test stream (not stderr/stdout)
-    import sys
+    global _reset_for_testing_in_progress
 
-    preserve_stream = None
+    # Prevent recursive resets during test cleanup
+    if _reset_for_testing_in_progress:
+        return
+
+    _reset_for_testing_in_progress = True
     try:
-        from provide.foundation.streams.core import get_log_stream
+        # Save current stream if it's a test stream (not stderr/stdout)
+        import sys
 
-        current_stream = get_log_stream()
-        # Only preserve if it's not stderr/stdout (i.e., it's a test stream)
-        if current_stream not in (sys.stderr, sys.stdout):
-            preserve_stream = current_stream
-    except Exception:
-        # Error getting current stream, skip preservation
-        pass
-
-    # Full reset with Hub-based state management
-    reset_foundation_state()
-
-    # Reset transport registration flags so transports can be re-registered
-    try:
-        from provide.foundation.testmode.internal import reset_transport_registration_flags
-
-        reset_transport_registration_flags()
-    except ImportError:
-        # Testmode module not available
-        pass
-
-    # Re-register HTTP transport for tests that need it
-    try:
-        from provide.foundation.transport.http import _register_http_transport
-
-        _register_http_transport()
-    except ImportError:
-        # Transport module not available
-        pass
-
-    # Final reset of lazy setup state (after transport registration)
-    try:
-        from provide.foundation.logger.core import _LAZY_SETUP_STATE
-
-        _LAZY_SETUP_STATE.update({"done": False, "error": None, "in_progress": False})
-    except ImportError:
-        # Legacy state not available, skip
-        pass
-
-    # Restore test stream if there was one
-    if preserve_stream:
+        preserve_stream = None
         try:
-            from provide.foundation.streams.core import set_log_stream_for_testing
+            from provide.foundation.streams.core import get_log_stream
 
-            set_log_stream_for_testing(preserve_stream)
+            current_stream = get_log_stream()
+            # Only preserve if it's not stderr/stdout (i.e., it's a test stream)
+            if current_stream not in (sys.stderr, sys.stdout):
+                preserve_stream = current_stream
         except Exception:
-            # Error restoring stream, continue without it
+            # Error getting current stream, skip preservation
             pass
+
+        # Full reset with Hub-based state management
+        reset_foundation_state()
+
+        # Reset transport registration flags so transports can be re-registered
+        try:
+            from provide.foundation.testmode.internal import reset_transport_registration_flags
+
+            reset_transport_registration_flags()
+        except ImportError:
+            # Testmode module not available
+            pass
+
+        # Re-register HTTP transport for tests that need it
+        try:
+            from provide.foundation.transport.http import _register_http_transport
+
+            _register_http_transport()
+        except ImportError:
+            # Transport module not available
+            pass
+
+        # Final reset of lazy setup state (after transport registration)
+        try:
+            from provide.foundation.logger.core import _LAZY_SETUP_STATE
+
+            _LAZY_SETUP_STATE.update({"done": False, "error": None, "in_progress": False})
+        except ImportError:
+            # Legacy state not available, skip
+            pass
+
+        # Restore test stream if there was one
+        if preserve_stream:
+            try:
+                from provide.foundation.streams.core import set_log_stream_for_testing
+
+                set_log_stream_for_testing(preserve_stream)
+            except Exception:
+                # Error restoring stream, continue without it
+                pass
+    finally:
+        # Always clear the in-progress flag
+        _reset_for_testing_in_progress = False
