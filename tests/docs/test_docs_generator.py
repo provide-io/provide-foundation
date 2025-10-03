@@ -61,8 +61,10 @@ class TestAPIDocGenerator(FoundationTestCase):
 
     def test_init_mkdocs_gen_files_unavailable(self) -> None:
         """Test APIDocGenerator raises error when mkdocs_gen_files is unavailable."""
+        from provide.foundation.errors import DependencyError
+
         with patch("provide.foundation.docs.generator.mkdocs_gen_files", None):
-            with pytest.raises(ImportError, match="mkdocs_gen_files is required"):
+            with pytest.raises(DependencyError, match="mkdocs-gen-files"):
                 APIDocGenerator()
 
     def test_should_skip_patterns(self) -> None:

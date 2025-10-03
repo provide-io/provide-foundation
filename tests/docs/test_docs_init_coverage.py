@@ -28,7 +28,7 @@ class TestDocsModuleStructure(FoundationTestCase):
         """Test that __all__ contains expected exports."""
         import provide.foundation.docs
 
-        expected_exports = {"APIDocGenerator", "generate_api_docs"}
+        expected_exports = {"_HAS_MKDOCS", "APIDocGenerator", "generate_api_docs"}
         actual_exports = set(provide.foundation.docs.__all__)
         assert actual_exports == expected_exports
 
