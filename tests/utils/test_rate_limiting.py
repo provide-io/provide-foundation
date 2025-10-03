@@ -232,7 +232,9 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_concurrent_refill_and_consumption(self) -> None:
         """Test concurrent token consumption while refilling occurs."""
-        limiter = TokenBucketRateLimiter(capacity=5.0, refill_rate=10.0, time_source=self.get_time)  # Fast refill
+        limiter = TokenBucketRateLimiter(
+            capacity=5.0, refill_rate=10.0, time_source=self.get_time
+        )  # Fast refill
 
         # Use all initial tokens
         for _ in range(5):
