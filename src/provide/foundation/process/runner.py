@@ -91,6 +91,7 @@ def run_command(
         subprocess_cmd = cmd_str if shell else cmd
 
         # Handle input based on text mode
+        subprocess_input: str | bytes | None
         if input is not None and text and isinstance(input, bytes):
             # Convert bytes to string if text mode is enabled
             subprocess_input = input.decode("utf-8")
