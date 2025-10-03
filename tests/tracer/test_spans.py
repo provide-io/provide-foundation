@@ -261,6 +261,12 @@ class TestSpanIntegration(FoundationTestCase):
 class TestSpanOpenTelemetryIntegration(FoundationTestCase):
     """Test OpenTelemetry integration functionality."""
 
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+        # Create controlled time for all tests
+        self.get_time, self.advance_time, self.fake_sleep, self.fake_async_sleep = make_controlled_time()
+
     def test_span_creation_with_otel_available(self) -> None:
         """Test span creation when OpenTelemetry is available."""
         with (
@@ -270,7 +276,7 @@ class TestSpanOpenTelemetryIntegration(FoundationTestCase):
             mock_tracer = mock_otel.get_tracer.return_value
             mock_span = mock_tracer.start_span.return_value
 
-            span = Span("test_op")
+            span = Span("test_op", time_source=self.get_time)
 
             mock_otel.get_tracer.assert_called_once_with("provide.foundation.tracer.spans")
             mock_tracer.start_span.assert_called_once_with("test_op")
@@ -284,7 +290,7 @@ class TestSpanOpenTelemetryIntegration(FoundationTestCase):
         ):
             mock_otel.get_tracer.side_effect = Exception("OTEL setup failed")
 
-            span = Span("test_op")
+            span = Span("test_op", time_source=self.get_time)
 
             assert span._otel_span is None
 
@@ -296,7 +302,7 @@ class TestSpanOpenTelemetryIntegration(FoundationTestCase):
         ):
             mock_otel_span = mock_otel.get_tracer.return_value.start_span.return_value
 
-            span = Span("test_op")
+            span = Span("test_op", time_source=self.get_time)
             span.set_tag("user_id", "123")
 
             assert span.tags["user_id"] == "123"
@@ -311,7 +317,7 @@ class TestSpanOpenTelemetryIntegration(FoundationTestCase):
             mock_otel_span = mock_otel.get_tracer.return_value.start_span.return_value
             mock_otel_span.set_attribute.side_effect = Exception("Set attribute failed")
 
-            span = Span("test_op")
+            span = Span("test_op", time_source=self.get_time)
             span.set_tag("user_id", "123")
 
             # Should still set local tag even if OTEL fails
@@ -327,7 +333,7 @@ class TestSpanOpenTelemetryIntegration(FoundationTestCase):
         ):
             mock_otel_span = mock_otel.get_tracer.return_value.start_span.return_value
 
-            span = Span("test_op")
+            span = Span("test_op", time_source=self.get_time)
             error_msg = "Database error"
             span.set_error(error_msg)
 
@@ -346,7 +352,7 @@ class TestSpanOpenTelemetryIntegration(FoundationTestCase):
         ):
             mock_otel_span = mock_otel.get_tracer.return_value.start_span.return_value
 
-            span = Span("test_op")
+            span = Span("test_op", time_source=self.get_time)
             error = ValueError("Invalid data")
             span.set_error(error)
 
@@ -365,7 +371,7 @@ class TestSpanOpenTelemetryIntegration(FoundationTestCase):
             mock_otel_span = mock_otel.get_tracer.return_value.start_span.return_value
             mock_otel_span.set_status.side_effect = Exception("OTEL error")
 
-            span = Span("test_op")
+            span = Span("test_op", time_source=self.get_time)
             span.set_error("Test error")
 
             # Should still set local error even if OTEL fails
@@ -380,7 +386,7 @@ class TestSpanOpenTelemetryIntegration(FoundationTestCase):
         ):
             mock_otel_span = mock_otel.get_tracer.return_value.start_span.return_value
 
-            span = Span("test_op")
+            span = Span("test_op", time_source=self.get_time)
             span.finish()
 
             assert span._active is False
@@ -396,7 +402,7 @@ class TestSpanOpenTelemetryIntegration(FoundationTestCase):
             mock_otel_span = mock_otel.get_tracer.return_value.start_span.return_value
             mock_otel_span.end.side_effect = Exception("End failed")
 
-            span = Span("test_op")
+            span = Span("test_op", time_source=self.get_time)
             span.finish()
 
             # Should still finish local span even if OTEL fails
@@ -407,11 +413,17 @@ class TestSpanOpenTelemetryIntegration(FoundationTestCase):
 class TestSpanContextManagement(FoundationTestCase):
     """Test context manager integration with Foundation tracer."""
 
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+        # Create controlled time for all tests
+        self.get_time, self.advance_time, self.fake_sleep, self.fake_async_sleep = make_controlled_time()
+
     def test_context_manager_with_foundation_context_success(self) -> None:
         """Test context manager with successful Foundation tracer context setup."""
         with (
             patch("provide.foundation.tracer.context.set_current_span") as mock_set_span,
-            Span("test_op") as span,
+            Span("test_op", time_source=self.get_time) as span,
         ):
             assert span._active is True
             # Should be called twice: enter (with span) and exit (with None)
@@ -423,7 +435,7 @@ class TestSpanContextManagement(FoundationTestCase):
         with patch("provide.foundation.tracer.context.set_current_span") as mock_set_span:
             mock_set_span.side_effect = [Exception("Context error"), None]
 
-            with Span("test_op") as span:
+            with Span("test_op", time_source=self.get_time) as span:
                 assert span._active is True
                 # Should still work despite context error
 
@@ -442,7 +454,7 @@ class TestSpanContextManagement(FoundationTestCase):
             return original_import(name, *args, **kwargs)
 
         with patch.object(builtins, "__import__", side_effect=failing_import):
-            with Span("test_op") as span:
+            with Span("test_op", time_source=self.get_time) as span:
                 assert span._active is True
                 # Should still work despite import error
 
@@ -451,7 +463,7 @@ class TestSpanContextManagement(FoundationTestCase):
     def test_context_manager_clears_foundation_context_on_exit(self) -> None:
         """Test that context manager clears Foundation tracer context on exit."""
         with patch("provide.foundation.tracer.context.set_current_span") as mock_set_span:
-            with Span("test_op"):
+            with Span("test_op", time_source=self.get_time):
                 pass
 
             # Should call with span on enter, then with None on exit
@@ -462,7 +474,7 @@ class TestSpanContextManagement(FoundationTestCase):
         with patch("provide.foundation.tracer.context.set_current_span") as mock_set_span:
             mock_set_span.side_effect = [None, Exception("Clear error")]
 
-            with Span("test_op") as span:
+            with Span("test_op", time_source=self.get_time) as span:
                 pass
 
             assert span._active is False
@@ -472,10 +484,16 @@ class TestSpanContextManagement(FoundationTestCase):
 class TestSpanEdgeCases(FoundationTestCase):
     """Test edge cases and error scenarios."""
 
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+        # Create controlled time for all tests
+        self.get_time, self.advance_time, self.fake_sleep, self.fake_async_sleep = make_controlled_time()
+
     def test_span_without_otel_dependencies(self) -> None:
         """Test span creation when OpenTelemetry is not available."""
         with patch("provide.foundation.tracer.spans._HAS_OTEL", False):
-            span = Span("test_op")
+            span = Span("test_op", time_source=self.get_time)
 
             assert span._otel_span is None
             # All operations should work normally
@@ -490,7 +508,7 @@ class TestSpanEdgeCases(FoundationTestCase):
 
     def test_span_set_tag_with_none_otel_span(self) -> None:
         """Test setting tag when _otel_span is None."""
-        span = Span("test_op")
+        span = Span("test_op", time_source=self.get_time)
         span._otel_span = None
 
         span.set_tag("user_id", "123")
@@ -505,7 +523,7 @@ class TestSpanEdgeCases(FoundationTestCase):
             patch("provide.foundation.tracer.spans.Status", None),
             patch("provide.foundation.tracer.spans.StatusCode", None),
         ):
-            span = Span("test_op")
+            span = Span("test_op", time_source=self.get_time)
             span._otel_span = MagicMock()
 
             span.set_error("Test error")
@@ -515,7 +533,7 @@ class TestSpanEdgeCases(FoundationTestCase):
 
     def test_span_context_manager_with_none_exception_value(self) -> Never:
         """Test context manager when exception has no value."""
-        with pytest.raises(ValueError), Span("test_op") as span:
+        with pytest.raises(ValueError), Span("test_op", time_source=self.get_time) as span:
             raise ValueError
 
         assert span.status == "error"
@@ -523,7 +541,7 @@ class TestSpanEdgeCases(FoundationTestCase):
 
     def test_span_dataclass_field_defaults(self) -> None:
         """Test that dataclass fields have correct defaults."""
-        span = Span("test_op")
+        span = Span("test_op", time_source=self.get_time)
 
         # Test all default values
         assert isinstance(span.span_id, str)
@@ -548,6 +566,7 @@ class TestSpanEdgeCases(FoundationTestCase):
             start_time=1000.0,
             tags={"user": "test"},
             status="pending",
+            time_source=self.get_time,
         )
         span.end_time = 1002.0
         span.error = "Test error"
