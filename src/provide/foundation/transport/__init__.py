@@ -31,7 +31,15 @@ from provide.foundation.transport.errors import (
 )
 
 # Transport implementations
-from provide.foundation.transport.http import HTTPTransport
+try:
+    from provide.foundation.transport.http import HTTPTransport
+
+    _HAS_HTTPX = True
+except ImportError:
+    from provide.foundation.utils.stubs import create_dependency_stub
+
+    _HAS_HTTPX = False
+    HTTPTransport = create_dependency_stub("httpx", "transport")  # type: ignore[misc,assignment]
 
 # Middleware system
 from provide.foundation.transport.middleware import (
@@ -113,6 +121,8 @@ Environment Configuration:
 """
 
 __all__ = [
+    # Internal flags (for tests)
+    "_HAS_HTTPX",
     # Types
     "Data",
     "HTTPConfig",
