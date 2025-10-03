@@ -49,18 +49,27 @@ class Span:
     span_id: str = field(factory=lambda: str(uuid.uuid4()))
     parent_id: str | None = None
     trace_id: str = field(factory=lambda: str(uuid.uuid4()))
-    start_time: float = field(factory=time.time)
+    start_time: float | None = None
     end_time: float | None = None
     tags: dict[str, Any] = field(factory=dict)
     status: str = "ok"
     error: str | None = None
+    time_source: Any = field(default=None, kw_only=True)
 
     # Internal OpenTelemetry span (when available)
     _otel_span: otel_trace.Span | None = field(default=DEFAULT_TRACER_OTEL_SPAN, init=False, repr=False)
     _active: bool = field(default=DEFAULT_TRACER_ACTIVE, init=False, repr=False)
+    _time_source: Any = field(init=False, repr=False)
 
     def __attrs_post_init__(self) -> None:
         """Initialize span after creation."""
+        # Set up time source
+        self._time_source = self.time_source if self.time_source is not None else time.time
+
+        # Set start_time if not provided
+        if self.start_time is None:
+            object.__setattr__(self, "start_time", self._time_source())
+
         # Try to create OpenTelemetry span if available
         if _HAS_OTEL:
             try:
@@ -99,7 +108,7 @@ class Span:
     def finish(self) -> None:
         """Finish the span and record end time."""
         if self._active:
-            self.end_time = time.time()
+            self.end_time = self._time_source()
             self._active = False
 
             # Also finish OpenTelemetry span if available
@@ -152,7 +161,7 @@ class Span:
     def duration_ms(self) -> float:
         """Get the duration of the span in milliseconds."""
         if self.end_time is None:
-            return (time.time() - self.start_time) * 1000
+            return (self._time_source() - self.start_time) * 1000
         return (self.end_time - self.start_time) * 1000
 
     def to_dict(self) -> dict[str, Any]:
