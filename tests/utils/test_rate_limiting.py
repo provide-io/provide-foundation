@@ -152,25 +152,21 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
         monkeypatch.setattr("builtins.__import__", mock_import_error)
 
         # Should not raise an exception, should fallback gracefully
-        limiter = TokenBucketRateLimiter(capacity=1.0, refill_rate=1.0)
+        limiter = TokenBucketRateLimiter(capacity=1.0, refill_rate=1.0, time_source=self.get_time)
         assert limiter._logger is None
 
     @pytest.mark.asyncio
     async def test_very_long_wait_periods(self) -> None:
         """Test behavior after very long idle periods."""
-        limiter = TokenBucketRateLimiter(capacity=3.0, refill_rate=1.0)
+        limiter = TokenBucketRateLimiter(capacity=3.0, refill_rate=1.0, time_source=self.get_time)
 
         # Use all tokens
         for _ in range(3):
             assert await limiter.is_allowed() is True
         assert await limiter.is_allowed() is False
 
-        # Simulate a very long wait (equivalent to generating 100 tokens)
-        # but capacity should limit to 3
-        start_time = time.monotonic()
-
-        # Manually advance the internal timestamp to simulate long wait
-        limiter._last_refill_timestamp = start_time - 100.0  # 100 seconds ago
+        # Advance time by 100 seconds (would generate 100 tokens, but capacity limits to 3)
+        self.advance_time(100.0)
 
         # Should still be limited by capacity
         for _ in range(3):
@@ -184,21 +180,21 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
         limiter = TokenBucketRateLimiter(
             capacity=1.0,
             refill_rate=1000.0,
+            time_source=self.get_time,
         )  # Very fast refill
 
         # Use the initial token
         assert await limiter.is_allowed() is True
         assert await limiter.is_allowed() is False
 
-        # Wait just slightly longer than needed for 1 token (1/1000 = 0.001s)
-        # Use a more generous sleep to account for event loop scheduling jitter and CI environment variability.
-        await asyncio.sleep(0.02)
+        # Advance time by 0.002s (should generate 2 tokens at 1000 tokens/sec)
+        self.advance_time(0.002)
         assert await limiter.is_allowed() is True
 
     @pytest.mark.asyncio
     async def test_high_concurrency_stress(self) -> None:
         """Test thread-safety with high concurrency stress testing."""
-        limiter = TokenBucketRateLimiter(capacity=50.0, refill_rate=1.0)
+        limiter = TokenBucketRateLimiter(capacity=50.0, refill_rate=1.0, time_source=self.get_time)
 
         # Create many more concurrent tasks than capacity
         async def try_get_token():
