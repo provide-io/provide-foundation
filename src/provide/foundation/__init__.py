@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-import sys
-import threading
-
 from provide.foundation import config, errors, hub, platform, process, resilience, tracer
 from provide.foundation._version import __version__
 from provide.foundation.console import perr, pin, pout
