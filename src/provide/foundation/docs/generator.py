@@ -15,7 +15,7 @@ try:
 
     _HAS_MKDOCS = True
 except ImportError:
-    mkdocs_gen_files: Any = None
+    mkdocs_gen_files = None  # type: ignore[assignment]
     _HAS_MKDOCS = False
     logger.warning("mkdocs_gen_files not available - doc generation disabled")
 
