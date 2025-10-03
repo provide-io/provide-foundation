@@ -5,14 +5,18 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
+from provide.foundation.errors import DependencyError
 from provide.foundation.logger import get_logger
 
 logger = get_logger(__name__)
 
 try:
     import mkdocs_gen_files
+
+    _HAS_MKDOCS = True
 except ImportError:
     mkdocs_gen_files: Any = None
+    _HAS_MKDOCS = False
     logger.warning("mkdocs_gen_files not available - doc generation disabled")
 
 
@@ -52,10 +56,7 @@ class APIDocGenerator:
         self.custom_index_content = custom_index_content
 
         if mkdocs_gen_files is None:
-            raise ImportError(
-                "mkdocs_gen_files is required for documentation generation. "
-                "Install with: pip install mkdocs-gen-files"
-            )
+            raise DependencyError("mkdocs-gen-files", feature="docs")
 
         self.nav = mkdocs_gen_files.Nav()
         self._processed_files: set[Path] = set()
