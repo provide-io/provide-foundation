@@ -380,3 +380,19 @@ def reset_configuration_state() -> None:
     except ImportError:
         # Hub not available, skip
         pass
+
+
+def reset_version_cache() -> None:
+    """Reset version cache to defaults.
+
+    This clears the cached version to ensure clean state
+    between tests, allowing each test to verify different
+    version resolution scenarios.
+    """
+    try:
+        from provide.foundation._version import _reset_version_cache
+
+        _reset_version_cache()
+    except ImportError:
+        # Version module not available, skip
+        pass
