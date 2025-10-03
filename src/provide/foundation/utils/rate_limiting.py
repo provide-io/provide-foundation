@@ -75,7 +75,7 @@ class TokenBucketRateLimiter:
         """Refills tokens based on the elapsed time since the last refill.
         This method is not locked internally; caller must hold the lock.
         """
-        now = time.monotonic()
+        now = self._time_source()
         elapsed_time = now - self._last_refill_timestamp
         if elapsed_time > 0:  # only refill if time has passed
             tokens_to_add = elapsed_time * self._refill_rate
