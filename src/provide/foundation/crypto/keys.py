@@ -172,14 +172,3 @@ def generate_tls_keypair(
     if key_type == "rsa":
         return generate_rsa_keypair(DEFAULT_RSA_KEY_SIZE)
     raise ValueError(f"TLS key type must be 'ecdsa' or 'rsa', got {key_type}")
-
-
-# Legacy functions
-def generate_key_pair() -> Ed25519KeyPair:
-    """Legacy compatibility function.
-
-    This maintains compatibility with existing flavorpack code.
-    New code should use generate_signing_keypair() or generate_keypair().
-    """
-    logger.debug("🔑 Using legacy generate_key_pair() function")
-    return generate_ed25519_keypair()
