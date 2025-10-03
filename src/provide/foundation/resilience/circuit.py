@@ -92,10 +92,10 @@ class CircuitBreaker:
             self._async_lock = asyncio.Lock()
 
         async with self._async_lock:
-            current_state = await self._get_state_async()
-            if current_state == CircuitState.OPEN:
+            # Check state directly without calling _get_state_async to avoid deadlock
+            if self._state == CircuitState.OPEN and not self._can_attempt_recovery():
                 raise RuntimeError("Circuit breaker is open")
-            # If HALF_OPEN, we proceed with the call
+            # If HALF_OPEN or recovery possible, we proceed with the call
 
         try:
             result = await func(*args, **kwargs)
@@ -127,16 +127,6 @@ class CircuitBreaker:
             self._state = CircuitState.CLOSED
             self._failure_count = 0
             self._last_failure_time = None
-
-    async def _get_state_async(self) -> CircuitState:
-        """Get the current state (async version)."""
-        if self._async_lock is None:
-            self._async_lock = asyncio.Lock()
-
-        async with self._async_lock:
-            if self._state == CircuitState.OPEN and self._can_attempt_recovery():
-                return CircuitState.HALF_OPEN
-            return self._state
 
     async def _on_success_async(self) -> None:
         """Handle a successful call (async version)."""
