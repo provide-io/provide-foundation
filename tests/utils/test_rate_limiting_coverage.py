@@ -55,20 +55,20 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
     def test_init_with_logger_available(self) -> None:
         """Test initialization when logger is available."""
         # Just test that the limiter initializes correctly
-        limiter = TokenBucketRateLimiter(capacity=5, refill_rate=2)
+        limiter = TokenBucketRateLimiter(capacity=5, refill_rate=2, time_source=self.get_time)
         # Logger should be set (or None if import fails)
         assert limiter._logger is not None or limiter._logger is None
 
     def test_init_with_logger_import_error(self) -> None:
         """Test initialization when logger import fails."""
         # Just ensure initialization works regardless of logger availability
-        limiter = TokenBucketRateLimiter(capacity=5, refill_rate=2)
+        limiter = TokenBucketRateLimiter(capacity=5, refill_rate=2, time_source=self.get_time)
         assert isinstance(limiter, TokenBucketRateLimiter)
 
     @pytest.mark.asyncio
     async def test_is_allowed_initial_tokens(self) -> None:
         """Test that initial requests are allowed with full bucket."""
-        limiter = TokenBucketRateLimiter(capacity=3, refill_rate=1)
+        limiter = TokenBucketRateLimiter(capacity=3, refill_rate=1, time_source=self.get_time)
 
         # Should allow 3 requests initially
         assert await limiter.is_allowed() is True
