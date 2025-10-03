@@ -57,14 +57,14 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
     async def test_token_refill_over_time(self) -> None:
         """Test that tokens are refilled over time."""
         # Create limiter with 1 token capacity, refilling at 2 tokens/second
-        limiter = TokenBucketRateLimiter(capacity=1.0, refill_rate=2.0)
+        limiter = TokenBucketRateLimiter(capacity=1.0, refill_rate=2.0, time_source=self.get_time)
 
         # Use the initial token
         assert await limiter.is_allowed() is True
         assert await limiter.is_allowed() is False
 
-        # Wait for half a second - should get 1 token back (2 tokens/sec * 0.6s = 1.2 tokens)
-        await asyncio.sleep(0.6)
+        # Advance time by 0.6 seconds - should get 1 token back (2 tokens/sec * 0.6s = 1.2 tokens)
+        self.advance_time(0.6)
         assert await limiter.is_allowed() is True
 
         # Should be denied again immediately
@@ -73,15 +73,15 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_burst_capacity_limit(self) -> None:
         """Test that tokens don't accumulate beyond capacity."""
-        limiter = TokenBucketRateLimiter(capacity=3.0, refill_rate=10.0)
+        limiter = TokenBucketRateLimiter(capacity=3.0, refill_rate=10.0, time_source=self.get_time)
 
         # Use all initial tokens
         for _ in range(3):
             assert await limiter.is_allowed() is True
         assert await limiter.is_allowed() is False
 
-        # Wait long enough for many tokens to be generated (way more than capacity)
-        await asyncio.sleep(1.0)  # Should generate 10 tokens, but capacity is 3
+        # Advance time for many tokens to be generated (way more than capacity)
+        self.advance_time(1.0)  # Should generate 10 tokens, but capacity is 3
 
         # Should only be able to use 3 tokens (capacity limit)
         for _ in range(3):
