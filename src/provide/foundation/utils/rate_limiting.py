@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import threading
 import time
-from typing import final
+from typing import Callable, final
 
 """Rate limiting utilities for Foundation.
 
@@ -24,7 +24,7 @@ class TokenBucketRateLimiter:
         self,
         capacity: float,
         refill_rate: float,
-        time_source: callable | None = None,
+        time_source: Callable[[], float] | None = None,
     ) -> None:
         """Initialize the TokenBucketRateLimiter.
 
