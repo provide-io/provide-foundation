@@ -43,6 +43,7 @@ class CircuitBreaker:
         self.expected_exception = expected_exception
         self._time_source = time_source or time.time
         self._lock = RLock()
+        self._async_lock: asyncio.Lock | None = None
         # Initialize state attributes (will be set properly in reset())
         self._state: CircuitState
         self._failure_count: int
@@ -86,18 +87,22 @@ class CircuitBreaker:
 
     async def call_async(self, func: Callable, *args: Any, **kwargs: Any) -> Any:
         """Execute an asynchronous function through the circuit breaker."""
-        with self._lock:
-            current_state = self.state
+        # Initialize async lock on first use
+        if self._async_lock is None:
+            self._async_lock = asyncio.Lock()
+
+        async with self._async_lock:
+            current_state = await self._get_state_async()
             if current_state == CircuitState.OPEN:
                 raise RuntimeError("Circuit breaker is open")
             # If HALF_OPEN, we proceed with the call
 
         try:
             result = await func(*args, **kwargs)
-            self._on_success()
+            await self._on_success_async()
             return result
         except self.expected_exception as e:
-            self._on_failure()
+            await self._on_failure_async()
             raise e
 
     def _on_success(self) -> None:
@@ -122,6 +127,37 @@ class CircuitBreaker:
             self._state = CircuitState.CLOSED
             self._failure_count = 0
             self._last_failure_time = None
+
+    async def _get_state_async(self) -> CircuitState:
+        """Get the current state (async version)."""
+        if self._async_lock is None:
+            self._async_lock = asyncio.Lock()
+
+        async with self._async_lock:
+            if self._state == CircuitState.OPEN and self._can_attempt_recovery():
+                return CircuitState.HALF_OPEN
+            return self._state
+
+    async def _on_success_async(self) -> None:
+        """Handle a successful call (async version)."""
+        if self._async_lock is None:
+            self._async_lock = asyncio.Lock()
+
+        async with self._async_lock:
+            self._state = CircuitState.CLOSED
+            self._failure_count = 0
+            self._last_failure_time = None
+
+    async def _on_failure_async(self) -> None:
+        """Handle a failed call (async version)."""
+        if self._async_lock is None:
+            self._async_lock = asyncio.Lock()
+
+        async with self._async_lock:
+            self._failure_count += 1
+            if self._failure_count >= self.failure_threshold:
+                self._state = CircuitState.OPEN
+                self._last_failure_time = self._time_source()
 
 
 def circuit_breaker(
