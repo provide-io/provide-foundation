@@ -180,9 +180,9 @@ class TestEnvUtilsCoverage(FoundationTestCase):
         from provide.foundation.errors.config import ValidationError
         from provide.foundation.utils.environment import get_bool
 
-        # Test with empty string (should be False)
+        # Test with empty string (returns None with warning)
         with patch.dict(os.environ, {"TEST_BOOL": ""}):
-            assert get_bool("TEST_BOOL") is False
+            assert get_bool("TEST_BOOL") is None
 
         # Test with whitespace
         with patch.dict(os.environ, {"TEST_BOOL": "  true  "}):

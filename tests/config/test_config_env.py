@@ -71,7 +71,6 @@ class TestEnvUtilities(FoundationTestCase):
         assert parse_bool("no") is False
         assert parse_bool("off") is False
         assert parse_bool("disabled") is False
-        assert parse_bool("") is False
         assert parse_bool(False) is False
 
     def test_parse_bool_invalid(self) -> None:

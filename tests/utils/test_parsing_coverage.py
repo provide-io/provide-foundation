@@ -34,7 +34,7 @@ class TestParseBool(FoundationTestCase):
 
     def test_parse_bool_false_values(self) -> None:
         """Test parsing bool from false string values."""
-        false_values = ["false", "FALSE", "False", "no", "NO", "0", "off", "OFF", "disabled", "DISABLED", ""]
+        false_values = ["false", "FALSE", "False", "no", "NO", "0", "off", "OFF", "disabled", "DISABLED"]
         for value in false_values:
             assert parse_bool(value) is False, f"Failed to parse '{value}' as False"
 
@@ -46,12 +46,14 @@ class TestParseBool(FoundationTestCase):
 
     def test_parse_bool_non_string_types(self) -> None:
         """Test parsing bool from non-string types."""
-        assert parse_bool(1) is True
-        assert parse_bool(0) is False
-        # Lists convert to string but "[]" is not a valid boolean
-        with pytest.raises(ValueError, match="Cannot parse '\\[\\]' as boolean"):
+        # parse_bool now uses parse_bool_strict which rejects non-bool/non-str types
+        with pytest.raises(TypeError, match="Boolean field requires str or bool"):
+            parse_bool(1)
+        with pytest.raises(TypeError, match="Boolean field requires str or bool"):
+            parse_bool(0)
+        with pytest.raises(TypeError, match="Boolean field requires str or bool"):
             parse_bool([])
-        with pytest.raises(ValueError, match="Cannot parse '\\[1\\]' as boolean"):
+        with pytest.raises(TypeError, match="Boolean field requires str or bool"):
             parse_bool([1])
 
     def test_parse_bool_strict_mode(self) -> None:
@@ -71,7 +73,7 @@ class TestParseBool(FoundationTestCase):
         """Test parsing bool from invalid values."""
         invalid_values = ["maybe", "invalid", "2", "unknown"]
         for value in invalid_values:
-            with pytest.raises(ValueError, match=f"Cannot parse '{value}' as boolean"):
+            with pytest.raises(ValueError, match=f"Invalid boolean '{value}'"):
                 parse_bool(value)
 
 
@@ -457,15 +459,19 @@ class TestEdgeCases:
 
     def test_empty_string_parsing(self) -> None:
         """Test parsing empty strings."""
-        assert parse_bool("") is False
+        # Empty string is ambiguous for booleans and should raise an error
+        with pytest.raises(ValueError, match="Invalid boolean"):
+            parse_bool("")
         assert parse_list("") == []
         assert parse_dict("") == {}
         assert parse_typed_value("", str) == ""
 
     def test_whitespace_only_strings(self) -> None:
         """Test parsing whitespace-only strings."""
-        assert parse_bool("   ") is False  # Stripped to empty string
-        assert parse_list("   ") == [""]  # Single empty item after strip
+        # Whitespace-only strings strip to empty and should raise an error for booleans
+        with pytest.raises(ValueError, match="Invalid boolean"):
+            parse_bool("   ")
+        assert parse_list("   ") == []  # Empty after strip
 
     def test_special_characters_in_values(self) -> None:
         """Test parsing values with special characters."""
