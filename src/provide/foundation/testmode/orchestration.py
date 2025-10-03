@@ -15,6 +15,9 @@ This is Foundation-internal knowledge that should be owned by Foundation,
 not by external testing frameworks.
 """
 
+# Global flag to prevent recursive resets
+_reset_in_progress = False
+
 
 def _reset_otel_once_flag(once_obj: Any) -> None:
     """Reset OpenTelemetry Once flag to allow re-initialization."""
@@ -126,55 +129,66 @@ def reset_foundation_state() -> None:
     This function encapsulates Foundation-internal knowledge about proper
     reset ordering and component dependencies.
     """
-    # Import all the individual reset functions from internal module
-    from provide.foundation.testmode.internal import (
-        reset_circuit_breaker_state,
-        reset_configuration_state,
-        reset_coordinator_state,
-        reset_eventsets_state,
-        reset_hub_state,
-        reset_logger_state,
-        reset_state_managers,
-        reset_streams_state,
-        reset_structlog_state,
-    )
+    global _reset_in_progress
 
-    # Reset Foundation environment variables first to avoid affecting other resets
-    _reset_foundation_environment_variables()
+    # Prevent recursive resets that can cause infinite loops
+    if _reset_in_progress:
+        return
 
-    # Reset in the proper order to avoid triggering reinitialization
-    reset_structlog_state()
-    reset_streams_state()
+    _reset_in_progress = True
+    try:
+        # Import all the individual reset functions from internal module
+        from provide.foundation.testmode.internal import (
+            reset_circuit_breaker_state,
+            reset_configuration_state,
+            reset_coordinator_state,
+            reset_eventsets_state,
+            reset_hub_state,
+            reset_logger_state,
+            reset_state_managers,
+            reset_streams_state,
+            reset_structlog_state,
+        )
 
-    # Reset OpenTelemetry providers to avoid "Overriding" warnings and stream closure
-    # Note: OpenTelemetry providers are designed to prevent override for safety.
-    # In parallel test environments (pytest-xdist), skip this reset to avoid deadlocks.
-    # The OTel provider reset manipulates internal _ONCE flags which can deadlock
-    # across multiple worker processes. The warnings are harmless in test context.
-    import os
+        # Reset Foundation environment variables first to avoid affecting other resets
+        _reset_foundation_environment_variables()
 
-    if not os.environ.get("PYTEST_XDIST_WORKER"):
-        _reset_opentelemetry_providers()
+        # Reset in the proper order to avoid triggering reinitialization
+        reset_structlog_state()
+        reset_streams_state()
 
-    # Reset lazy setup state FIRST to prevent hub operations from triggering setup
-    reset_logger_state()
+        # Reset OpenTelemetry providers to avoid "Overriding" warnings and stream closure
+        # Note: OpenTelemetry providers are designed to prevent override for safety.
+        # In parallel test environments (pytest-xdist), skip this reset to avoid deadlocks.
+        # The OTel provider reset manipulates internal _ONCE flags which can deadlock
+        # across multiple worker processes. The warnings are harmless in test context.
+        import os
 
-    # Clear Hub (this handles all Foundation state including logger instances)
-    reset_hub_state()
+        if not os.environ.get("PYTEST_XDIST_WORKER"):
+            _reset_opentelemetry_providers()
 
-    # Reset coordinator and event set state
-    reset_coordinator_state()
-    reset_eventsets_state()
+        # Reset lazy setup state FIRST to prevent hub operations from triggering setup
+        reset_logger_state()
 
-    # Reset circuit breaker state to prevent test isolation issues
-    reset_circuit_breaker_state()
+        # Clear Hub (this handles all Foundation state including logger instances)
+        reset_hub_state()
 
-    # Reset new state management systems
-    reset_state_managers()
-    reset_configuration_state()
+        # Reset coordinator and event set state
+        reset_coordinator_state()
+        reset_eventsets_state()
 
-    # Final reset of logger state (after all operations that might trigger setup)
-    reset_logger_state()
+        # Reset circuit breaker state to prevent test isolation issues
+        reset_circuit_breaker_state()
+
+        # Reset new state management systems
+        reset_state_managers()
+        reset_configuration_state()
+
+        # Final reset of logger state (after all operations that might trigger setup)
+        reset_logger_state()
+    finally:
+        # Always clear the in-progress flag
+        _reset_in_progress = False
 
 
 def reset_foundation_for_testing() -> None:
