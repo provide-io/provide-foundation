@@ -1,7 +1,6 @@
 """Tests for rate limiting utilities."""
 
 import asyncio
-import time
 from typing import Never
 
 from provide.testkit import FoundationTestCase

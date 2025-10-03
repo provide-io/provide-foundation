@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import asyncio
+from collections.abc import Callable
 import threading
 import time
-from typing import Callable, final
+from typing import final
 
 """Rate limiting utilities for Foundation.
 
