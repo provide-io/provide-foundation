@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 import zipfile
 
@@ -14,6 +15,41 @@ from provide.foundation.logger import get_logger
 """ZIP archive implementation."""
 
 logger = get_logger(__name__)
+
+
+def _is_safe_path(base_dir: Path, target_path: str) -> bool:
+    """Validate that a path is safe for extraction.
+
+    Prevents:
+    - Path traversal attacks (..)
+    - Absolute paths
+    - Symlinks that point outside base directory
+
+    Args:
+        base_dir: Base extraction directory
+        target_path: Path to validate
+
+    Returns:
+        True if path is safe, False otherwise
+    """
+    # Check for absolute paths
+    if os.path.isabs(target_path):
+        return False
+
+    # Check for path traversal patterns
+    if ".." in target_path.split(os.sep):
+        return False
+
+    # Normalize and resolve the full path
+    try:
+        full_path = (base_dir / target_path).resolve()
+        base_resolved = base_dir.resolve()
+
+        # Ensure the resolved path is within base directory
+        # This catches symlinks and other tricks
+        return str(full_path).startswith(str(base_resolved) + os.sep) or full_path == base_resolved
+    except (ValueError, OSError):
+        return False
 
 
 def _validate_compression_level(instance: ZipArchive, attribute: Attribute[int], value: int) -> None:
@@ -90,7 +126,7 @@ class ZipArchive(BaseArchive):
             Path to extraction directory
 
         Raises:
-            ArchiveError: If extraction fails
+            ArchiveError: If extraction fails or archive contains unsafe paths
 
         """
         try:
@@ -100,10 +136,13 @@ class ZipArchive(BaseArchive):
                 if self.password:
                     zf.setpassword(self.password)
 
-                # Security check - prevent path traversal
+                # Enhanced security check - prevent path traversal, symlinks, absolute paths
                 for member in zf.namelist():
-                    if member.startswith("/") or ".." in member:
-                        raise ArchiveError(f"Unsafe path in archive: {member}")
+                    if not _is_safe_path(output, member):
+                        raise ArchiveError(
+                            f"Unsafe path in archive: {member}. "
+                            "Archive may contain path traversal, symlinks, or absolute paths."
+                        )
 
                 # Extract all
                 zf.extractall(output)
@@ -111,6 +150,8 @@ class ZipArchive(BaseArchive):
             logger.debug(f"Extracted ZIP archive to: {output}")
             return output
 
+        except ArchiveError:
+            raise
         except Exception as e:
             raise ArchiveError(f"Failed to extract ZIP archive: {e}") from e
 
@@ -187,7 +228,7 @@ class ZipArchive(BaseArchive):
             Path to extracted file
 
         Raises:
-            ArchiveError: If extraction fails
+            ArchiveError: If extraction fails or member path is unsafe
 
         """
         try:
@@ -195,9 +236,13 @@ class ZipArchive(BaseArchive):
                 if self.password:
                     zf.setpassword(self.password)
 
-                # Security check
-                if member.startswith("/") or ".." in member:
-                    raise ArchiveError(f"Unsafe path: {member}")
+                # Enhanced security check
+                extract_base = output if output.is_dir() else output.parent
+                if not _is_safe_path(extract_base, member):
+                    raise ArchiveError(
+                        f"Unsafe path: {member}. "
+                        "Path may contain traversal, symlinks, or absolute paths."
+                    )
 
                 if output.is_dir():
                     zf.extract(member, output)
@@ -207,5 +252,7 @@ class ZipArchive(BaseArchive):
                     target.write(source.read())
                 return output
 
+        except ArchiveError:
+            raise
         except Exception as e:
             raise ArchiveError(f"Failed to extract file from ZIP: {e}") from e

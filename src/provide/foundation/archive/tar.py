@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 import tarfile
 
@@ -14,6 +15,41 @@ from provide.foundation.logger import get_logger
 """TAR archive implementation."""
 
 logger = get_logger(__name__)
+
+
+def _is_safe_path(base_dir: Path, target_path: str) -> bool:
+    """Validate that a path is safe for extraction.
+
+    Prevents:
+    - Path traversal attacks (..)
+    - Absolute paths
+    - Symlinks that point outside base directory
+
+    Args:
+        base_dir: Base extraction directory
+        target_path: Path to validate
+
+    Returns:
+        True if path is safe, False otherwise
+    """
+    # Check for absolute paths
+    if os.path.isabs(target_path):
+        return False
+
+    # Check for path traversal patterns
+    if ".." in target_path.split(os.sep):
+        return False
+
+    # Normalize and resolve the full path
+    try:
+        full_path = (base_dir / target_path).resolve()
+        base_resolved = base_dir.resolve()
+
+        # Ensure the resolved path is within base directory
+        # This catches symlinks and other tricks
+        return str(full_path).startswith(str(base_resolved) + os.sep) or full_path == base_resolved
+    except (ValueError, OSError):
+        return False
 
 
 @define(slots=True)
@@ -73,32 +109,37 @@ class TarArchive(BaseArchive):
             Path to extraction directory
 
         Raises:
-            ArchiveError: If extraction fails
+            ArchiveError: If extraction fails or archive contains unsafe paths
 
         """
         try:
             output.mkdir(parents=True, exist_ok=True)
 
             with tarfile.open(archive, "r") as tar:
-                # Security check - prevent path traversal and validate members
+                # Enhanced security check - prevent path traversal and validate members
                 safe_members = []
                 for member in tar.getmembers():
-                    if member.name.startswith("/") or ".." in member.name:
-                        raise ArchiveError(f"Unsafe path in archive: {member.name}")
+                    # Use unified path validation
+                    if not _is_safe_path(output, member.name):
+                        raise ArchiveError(
+                            f"Unsafe path in archive: {member.name}. "
+                            "Archive may contain path traversal, symlinks, or absolute paths."
+                        )
 
-                    # Additional security checks
+                    # Additional checks for symlinks and hardlinks
                     if member.islnk() or member.issym():
-                        # Check that symlinks don't escape extraction directory
-                        link_path = Path(output) / member.name
-                        target = Path(member.linkname)
-                        if not target.is_absolute():
-                            target = link_path.parent / target
-                        try:
-                            target.resolve().relative_to(Path(output).resolve())
-                        except ValueError as e:
+                        # Check that link targets are also safe
+                        if not _is_safe_path(output, member.linkname):
                             raise ArchiveError(
-                                f"Unsafe symlink in archive: {member.name} -> {member.linkname}"
-                            ) from e
+                                f"Unsafe link target in archive: {member.name} -> {member.linkname}. "
+                                "Link target may escape extraction directory."
+                            )
+
+                        # Prevent absolute path in link target
+                        if os.path.isabs(member.linkname):
+                            raise ArchiveError(
+                                f"Absolute path in link target: {member.name} -> {member.linkname}"
+                            )
 
                     safe_members.append(member)
 
@@ -108,6 +149,8 @@ class TarArchive(BaseArchive):
             logger.debug(f"Extracted TAR archive to: {output}")
             return output
 
+        except ArchiveError:
+            raise
         except Exception as e:
             raise ArchiveError(f"Failed to extract TAR archive: {e}") from e
 

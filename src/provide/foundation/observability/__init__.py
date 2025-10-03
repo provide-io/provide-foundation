@@ -41,15 +41,16 @@ if _HAS_OTEL:
             )
 
         __all__ = [
+            "_HAS_OTEL",
             "OpenObserveClient",
             "search_logs",
             "stream_logs",
         ]
     except ImportError:
         # OpenObserve module not fully available
-        __all__ = []
+        __all__ = ["_HAS_OTEL"]
 else:
-    __all__ = []
+    __all__ = ["_HAS_OTEL"]
 
 
 def is_openobserve_available() -> bool:

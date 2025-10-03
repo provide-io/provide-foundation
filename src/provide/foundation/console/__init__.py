@@ -1,5 +1,13 @@
 from __future__ import annotations
 
+# Check for Click availability
+try:
+    import click  # noqa: F401
+
+    _HAS_CLICK = True
+except ImportError:
+    _HAS_CLICK = False
+
 from provide.foundation.console.input import (
     apin,
     apin_lines,
@@ -16,6 +24,8 @@ Provides pout(), perr(), and pin() functions for consistent I/O handling.
 """
 
 __all__ = [
+    # Dependency flags
+    "_HAS_CLICK",
     # Async input functions
     "apin",
     "apin_lines",

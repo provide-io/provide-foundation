@@ -37,6 +37,13 @@ class OperationDetector:
         self._pending_events: list[FileEvent] = []
         self._last_flush = datetime.now()
 
+        # Pre-instantiate specialized detectors to avoid repeated initialization
+        # This improves performance when processing many event groups
+        self._atomic_detector = AtomicOperationDetector()
+        self._temp_detector = TempPatternDetector()
+        self._batch_detector = BatchOperationDetector()
+        self._simple_detector = SimpleOperationDetector()
+
     def detect(self, events: list[FileEvent]) -> list[FileOperation]:
         """Detect all operations from a list of events.
 
@@ -133,40 +140,42 @@ class OperationDetector:
         return groups
 
     def _analyze_event_group(self, events: list[FileEvent]) -> FileOperation | None:
-        """Analyze a group of events to detect an operation using specialized detectors."""
+        """Analyze a group of events to detect an operation using specialized detectors.
+
+        Performance optimizations:
+        - Pre-instantiated detectors (avoid repeated initialization)
+        - Early termination on high-confidence matches (>=0.95)
+        - Detectors ordered by specificity for faster matching
+        """
         if not events:
             return None
-
-        # Initialize specialized detector instances
-        atomic_detector = AtomicOperationDetector()
-        temp_detector = TempPatternDetector()
-        batch_detector = BatchOperationDetector()
-        simple_detector = SimpleOperationDetector()
 
         # Try detectors in order of specificity (most specific patterns first)
         # This ensures that editor-specific patterns are detected before generic ones
         detection_attempts = [
             # Temp file patterns (highest specificity for atomic saves)
-            (temp_detector.detect_temp_rename_pattern, (events,)),
-            (temp_detector.detect_delete_temp_pattern, (events,)),
-            (temp_detector.detect_temp_modify_pattern, (events,)),
-            (temp_detector.detect_temp_create_delete_pattern, (events,)),
+            (self._temp_detector.detect_temp_rename_pattern, (events,)),
+            (self._temp_detector.detect_delete_temp_pattern, (events,)),
+            (self._temp_detector.detect_temp_modify_pattern, (events,)),
+            (self._temp_detector.detect_temp_create_delete_pattern, (events,)),
             # Atomic save patterns
-            (atomic_detector.detect_atomic_save, (events,)),
-            (atomic_detector.detect_safe_write, (events,)),
+            (self._atomic_detector.detect_atomic_save, (events,)),
+            (self._atomic_detector.detect_safe_write, (events,)),
             # Batch and sequence patterns
-            (batch_detector.detect_rename_sequence, (events,)),
-            (batch_detector.detect_backup_create, (events,)),
-            (batch_detector.detect_batch_update, (events,)),
+            (self._batch_detector.detect_rename_sequence, (events,)),
+            (self._batch_detector.detect_backup_create, (events,)),
+            (self._batch_detector.detect_batch_update, (events,)),
             # Simple patterns (lower specificity)
-            (simple_detector.detect_same_file_delete_create_pattern, (events,)),
-            (simple_detector.detect_direct_modification, (events,)),
+            (self._simple_detector.detect_same_file_delete_create_pattern, (events,)),
+            (self._simple_detector.detect_direct_modification, (events,)),
             # Fallback for unmatched events
-            (simple_detector.detect_simple_operation, (events,)),
+            (self._simple_detector.detect_simple_operation, (events,)),
         ]
 
         best_operation = None
         best_confidence = 0.0
+        # Early termination threshold - stop searching if we find a very high confidence match
+        HIGH_CONFIDENCE_THRESHOLD = 0.95
 
         for detect_func, args in detection_attempts:
             try:
@@ -181,6 +190,16 @@ class OperationDetector:
                         operation_type=operation.operation_type.value,
                         primary_path=str(operation.primary_path),
                     )
+
+                    # Early termination: if we found a very high confidence match, stop searching
+                    if best_confidence >= HIGH_CONFIDENCE_THRESHOLD:
+                        log.debug(
+                            "Early termination on high confidence match",
+                            confidence=best_confidence,
+                            detector=detect_func.__name__,
+                        )
+                        break
+
             except Exception as e:
                 log.warning(
                     "Detector failed",
