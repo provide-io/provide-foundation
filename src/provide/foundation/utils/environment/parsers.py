@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 
 from provide.foundation.errors.config import ValidationError
+from provide.foundation.utils.caching import cached
 
 """Duration and size parsing utilities for environment variables.
 
@@ -10,11 +11,18 @@ Provides specialized parsers for common environment variable formats
 like durations (30s, 1h30m) and sizes (10MB, 1.5GB).
 """
 
+# Pre-compiled regex patterns for performance
+_DURATION_PATTERN = re.compile(r"(\d+)([dhms])")
+_SIZE_PATTERN = re.compile(r"^(\d+(?:\.\d+)?)\s*([KMGT]?B?)$")
 
+
+@cached(maxsize=256)
 def parse_duration(value: str) -> int:
     """Parse duration string to seconds.
 
     Supports formats like: 30s, 5m, 2h, 1d, 1h30m, etc.
+
+    Results are cached for performance on repeated calls.
 
     Args:
         value: Duration string
@@ -36,9 +44,8 @@ def parse_duration(value: str) -> int:
 
     total_seconds = 0
 
-    # Pattern for duration components
-    pattern = r"(\d+)([dhms])"
-    matches = re.findall(pattern, value.lower())
+    # Use pre-compiled pattern
+    matches = _DURATION_PATTERN.findall(value.lower())
 
     if not matches:
         raise ValidationError(f"Invalid duration format: {value}", value=value, rule="duration")
@@ -59,10 +66,13 @@ def parse_duration(value: str) -> int:
     return total_seconds
 
 
+@cached(maxsize=256)
 def parse_size(value: str) -> int:
     """Parse size string to bytes.
 
     Supports formats like: 1024, 1KB, 10MB, 1.5GB, etc.
+
+    Results are cached for performance on repeated calls.
 
     Args:
         value: Size string
@@ -82,9 +92,8 @@ def parse_size(value: str) -> int:
     if value.isdigit():
         return int(value)
 
-    # Pattern for size with unit
-    pattern = r"^(\d+(?:\.\d+)?)\s*([KMGT]?B?)$"
-    match = re.match(pattern, value.upper())
+    # Use pre-compiled pattern
+    match = _SIZE_PATTERN.match(value.upper())
 
     if not match:
         raise ValidationError(f"Invalid size format: {value}", value=value, rule="size")
