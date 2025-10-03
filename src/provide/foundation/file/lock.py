@@ -1,14 +1,27 @@
 from __future__ import annotations
 
+import json
 import os
 from pathlib import Path
+import socket
 import time
+
+try:
+    import psutil
+
+    HAS_PSUTIL = True
+except ImportError:
+    HAS_PSUTIL = False
 
 from provide.foundation.config.defaults import DEFAULT_FILE_LOCK_TIMEOUT
 from provide.foundation.errors.resources import LockError
 from provide.foundation.logger import get_logger
 
-"""File-based locking for concurrent access control."""
+"""File-based locking for concurrent access control.
+
+Uses psutil for robust process validation to prevent PID recycling attacks.
+Falls back to timestamp-based validation if psutil is not available.
+"""
 
 log = get_logger(__name__)
 
