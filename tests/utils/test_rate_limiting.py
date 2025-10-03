@@ -23,23 +23,23 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
     def test_init_validates_parameters(self) -> None:
         """Test that initialization validates parameters."""
         # Valid parameters should work
-        limiter = TokenBucketRateLimiter(capacity=10.0, refill_rate=5.0)
+        limiter = TokenBucketRateLimiter(capacity=10.0, refill_rate=5.0, time_source=self.get_time)
         assert limiter._capacity == 10.0
         assert limiter._refill_rate == 5.0
 
         # Invalid capacity should raise ValueError
         with pytest.raises(ValueError, match="Capacity must be positive"):
-            TokenBucketRateLimiter(capacity=0, refill_rate=5.0)
+            TokenBucketRateLimiter(capacity=0, refill_rate=5.0, time_source=self.get_time)
 
         with pytest.raises(ValueError, match="Capacity must be positive"):
-            TokenBucketRateLimiter(capacity=-1, refill_rate=5.0)
+            TokenBucketRateLimiter(capacity=-1, refill_rate=5.0, time_source=self.get_time)
 
         # Invalid refill rate should raise ValueError
         with pytest.raises(ValueError, match="Refill rate must be positive"):
-            TokenBucketRateLimiter(capacity=10.0, refill_rate=0)
+            TokenBucketRateLimiter(capacity=10.0, refill_rate=0, time_source=self.get_time)
 
         with pytest.raises(ValueError, match="Refill rate must be positive"):
-            TokenBucketRateLimiter(capacity=10.0, refill_rate=-1)
+            TokenBucketRateLimiter(capacity=10.0, refill_rate=-1, time_source=self.get_time)
 
     @pytest.mark.asyncio
     async def test_initial_tokens_available(self) -> None:
