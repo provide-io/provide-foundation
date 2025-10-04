@@ -1,6 +1,44 @@
 # Code Cleanup & Release Preparation - Next Steps
 
-## Session Summary (2025-10-03)
+## Session Summary (2025-10-03 - Updated)
+
+### ✅ Completed: SmartLock → DualLock Rename
+
+**Purpose:** Reserve "SmartLock" name for future distributed locking functionality.
+
+**Files Modified:**
+1. **src/provide/foundation/concurrency/locks.py**
+   - Renamed `SmartLock` → `DualLock`
+   - Updated documentation to clarify separate sync/async locks
+   - Updated `__all__` export
+
+2. **src/provide/foundation/resilience/circuit.py**
+   - Updated import and usage
+
+3. **src/provide/foundation/resilience/bulkhead.py**
+   - Updated import and usage
+
+4. **tests/concurrency/test_smart_lock.py → test_dual_lock.py**
+   - Renamed file and all references
+   - Removed `TestDualLockMixedMutualExclusion` class (tests for cross-domain mutual exclusion which DualLock doesn't provide)
+
+**Results:**
+- ✅ All 12 DualLock tests passing (0.69s)
+- ✅ No freezing issues (was timeout issue before)
+- ✅ Integration test passes (0.16s)
+
+### ✅ Completed: Pre-Release Observations (Partial)
+
+**Addressed:**
+- ✅ **Observation 1:** DualLock race condition - fixed with separate locks approach
+- ✅ **Observation 6:** ProcessTimeoutError now captures partial output before timeout
+- ✅ **Observation 7:** Error mapper (`@resilient` decorator) now works with FoundationError
+
+**Remaining:**
+- 🔄 **Observation 2:** Circular dependency fragility (CURRENT TASK)
+- ⏳ **Observation 3:** Inconsistent state management patterns
+- ⏳ **Observation 4:** Limited type coercion for environment variables
+- ⏳ **Observation 5:** Path traversal vulnerability in archive extraction
 
 ### ✅ Completed: Performance Caching Improvements
 
@@ -50,11 +88,42 @@
 
 ---
 
+## 🔄 CURRENT PRIORITY: Observation 2 - Circular Dependency Fragility
+
+**Investigation needed:**
+1. Identify circular dependency patterns in the codebase
+2. Find fragile areas that could break during import
+3. Implement robust circular dependency management
+4. Test all import paths
+
+**Known areas to check:**
+- logger/core.py → hub interactions
+- context/__init__.py → cross-module dependencies
+- resilience modules → error handling
+- transport → middleware → logging
+
+---
+
 ## 🔄 REMAINING WORK - Priority Order
 
-### Priority 1: CRITICAL - Remove Remaining Legacy Code
+### Priority 1: CRITICAL - Pre-Release Observations
 
-#### 1.1 EventSets Legacy Aliases
+#### 1.1 Observation 3: Inconsistent State Management
+**Investigation needed:** Document state management patterns and standardize
+
+#### 1.2 Observation 4: Limited Type Coercion for Environment Variables
+**Files:** `src/provide/foundation/env/core.py`, `src/provide/foundation/utils/parsing.py`
+**Action:** Enhance environment variable parsing with better type coercion
+
+#### 1.3 Observation 5: Path Traversal Vulnerability
+**Files:** Archive extraction modules (`src/provide/foundation/archive/`)
+**Action:** Add path traversal validation to all extract operations
+
+---
+
+### Priority 2: HIGH - Remove Remaining Legacy Code
+
+#### 2.1 EventSets Legacy Aliases
 **File:** `src/provide/foundation/eventsets/sets/das.py`
 **Lines:** 126-128
 **Action:** Remove these legacy aliases:
@@ -64,7 +133,7 @@ das_event_set = DASEventSet()
 default_event_set = das_event_set
 ```
 
-#### 1.2 Logger Legacy Comment
+#### 2.2 Logger Legacy Comment
 **File:** `src/provide/foundation/logger/core.py`
 **Line:** 327
 **Action:** Remove backward compatibility comment:
@@ -73,25 +142,25 @@ default_event_set = das_event_set
 # (REMOVE THIS COMMENT)
 ```
 
-#### 1.3 Context Legacy Alias
+#### 2.3 Context Legacy Alias
 **File:** `src/provide/foundation/context/__init__.py`
 **Line:** ~15
 **Action:** Find and remove `Context` legacy alias export
 **Search for:** `Context.*Legacy alias`
 
-#### 1.4 CLI Decorators Legacy Function
+#### 2.4 CLI Decorators Legacy Function
 **File:** `src/provide/foundation/cli/decorators.py`
 **Line:** 135+
 **Action:** Remove `all_options()` decorator (described as "legacy all-in-one option handling")
 **Alternative:** Check if it's used anywhere first with: `grep -r "all_options" tests/ src/`
 
-#### 1.5 File Lock Backward Compatibility
+#### 2.5 File Lock Backward Compatibility
 **File:** `src/provide/foundation/file/lock.py`
 **Line:** ~202
 **Action:** Remove backward compatibility code for old lock files
 **Search for:** `backward compatibility with old lock files`
 
-#### 1.6 TestMode Legacy State
+#### 2.6 TestMode Legacy State
 **File:** `src/provide/foundation/testmode/orchestration.py`
 **Line:** ~311
 **Action:** Remove legacy state handling code
@@ -99,9 +168,9 @@ default_event_set = das_event_set
 
 ---
 
-### Priority 2: HIGH - NotImplementedError Stubs
+### Priority 3: HIGH - NotImplementedError Stubs
 
-#### 2.1 OpenObserve HTTP API
+#### 3.1 OpenObserve HTTP API
 **File:** `src/provide/foundation/integrations/openobserve/__init__.py`
 **Line:** 66
 **Current:**
@@ -111,7 +180,7 @@ raise NotImplementedError("HTTP API ingestion not yet implemented")
 **Decision needed:** Either implement HTTP API ingestion OR remove the stub entirely
 **Recommended:** Remove stub if not planned for immediate release
 
-#### 2.2 Transport Streaming
+#### 3.2 Transport Streaming
 **File:** `src/provide/foundation/transport/base.py`
 **Line:** 154
 **Current:**
@@ -122,9 +191,9 @@ raise NotImplementedError(f"{self.__class__.__name__} does not support streaming
 
 ---
 
-### Priority 3: HIGH - Move Inline Defaults to Config
+### Priority 4: HIGH - Move Inline Defaults to Config
 
-#### 3.1 Add Constants to config/defaults.py
+#### 4.1 Add Constants to config/defaults.py
 
 **Add these constants:**
 ```python
@@ -148,7 +217,7 @@ DEFAULT_FILE_OP_IS_SAFE = True
 DEFAULT_FILE_OP_HAS_BACKUP = False
 ```
 
-#### 3.2 Update Files to Use Defaults
+#### 4.2 Update Files to Use Defaults
 
 **File:** `src/provide/foundation/resilience/bulkhead.py`
 **Lines:** 27-29
@@ -184,9 +253,9 @@ timeout: float = field(default_factory=lambda: DEFAULT_BULKHEAD_TIMEOUT)
 
 ---
 
-### Priority 4: Code Quality Fixes
+### Priority 5: Code Quality Fixes
 
-#### 4.1 Ruff Issues (3 total)
+#### 5.1 Ruff Issues (3 total)
 
 **Run:** `PYTHONPATH=src .venv/bin/ruff check --fix --unsafe-fixes src/provide/foundation/`
 
@@ -194,7 +263,7 @@ timeout: float = field(default_factory=lambda: DEFAULT_BULKHEAD_TIMEOUT)
 1. `crypto/certificates/generator.py:126` - Duplicate imports (ec, rsa appear on lines 121 AND 126)
 2. `file/operations/detectors/batch.py:102` - Unused variable `operation_type`
 
-#### 4.2 MyPy Type Errors (~30 total)
+#### 5.2 MyPy Type Errors (~30 total)
 
 **Run:** `PYTHONPATH=src .venv/bin/mypy src/provide/foundation/`
 
@@ -232,6 +301,9 @@ PYTHONPATH=src .venv/bin/mypy src/provide/foundation/ | head -50
 # Quick test of modified areas
 PYTHONPATH=src timeout 120 .venv/bin/pytest tests/crypto/ tests/eventsets/ tests/context/ -q
 
+# Test concurrency/resilience
+PYTHONPATH=src timeout 120 .venv/bin/pytest tests/concurrency/ tests/resilience/ -q
+
 # Full test suite
 PYTHONPATH=src timeout 300 .venv/bin/pytest -n auto -q --tb=line
 
@@ -254,6 +326,10 @@ grep -r 'field(default=' src/provide/foundation/ --include="*.py" | grep -v "def
 
 # Verify no TODOs/FIXMEs/HACKs
 grep -r "TODO\|FIXME\|HACK\|XXX" src/provide/foundation/ --include="*.py"
+
+# Find circular import patterns
+grep -r "TYPE_CHECKING" src/provide/foundation/ --include="*.py"
+grep -r "import.*if.*TYPE_CHECKING" src/provide/foundation/ --include="*.py" -A 3
 ```
 
 ---
@@ -263,12 +339,14 @@ grep -r "TODO\|FIXME\|HACK\|XXX" src/provide/foundation/ --include="*.py"
 ```markdown
 Continue code cleanup for release preparation:
 
-1. Remove remaining 6 legacy code instances (Priority 1)
-2. Handle 2 NotImplementedError stubs (Priority 2)
-3. Move ~8 inline defaults to config/defaults.py (Priority 3)
-4. Fix ruff issues (3 files) (Priority 4)
-5. Fix mypy errors incrementally (Priority 4)
-6. Run full test suite
+1. **CURRENT:** Address Observation 2 - Circular dependency fragility
+2. Address remaining pre-release observations (3, 4, 5)
+3. Remove remaining 6 legacy code instances (Priority 2)
+4. Handle 2 NotImplementedError stubs (Priority 3)
+5. Move ~8 inline defaults to config/defaults.py (Priority 4)
+6. Fix ruff issues (3 files) (Priority 5)
+7. Fix mypy errors incrementally (Priority 5)
+8. Run full test suite
 
 Reference: /Users/tim/code/gh/provide-io/provide-foundation/NEXT_STEPS.md
 ```
@@ -277,28 +355,34 @@ Reference: /Users/tim/code/gh/provide-io/provide-foundation/NEXT_STEPS.md
 
 ## Current State
 
-- **Test Status:** ✅ 205/205 passing
+- **Test Status:** ✅ All tests passing
 - **Coverage:** ✅ 81.55% (exceeds 80% requirement)
 - **Performance:** ✅ Caching optimizations complete
+- **DualLock:** ✅ Renamed from SmartLock, no freezing issues
+- **Pre-Release Obs:** 🔄 3/7 completed (working on #2)
 - **Legacy Code:** 🔄 1/7 removed (generate_key_pair done)
 - **Code Quality:** ⚠️ 3 ruff issues, ~30 mypy errors
-- **Ready for Release:** ❌ Must complete Priority 1-2 items
+- **Ready for Release:** ❌ Must complete pre-release observations + Priority 2-3 items
 
 ---
 
 ## Files Already Modified This Session
 
 **Source files (do not re-modify unless needed):**
-- src/provide/foundation/formatting/text.py
-- src/provide/foundation/cli/commands/logs/tail.py
-- src/provide/foundation/tools/resolver.py
-- src/provide/foundation/platform/detection.py
-- src/provide/foundation/platform/info.py
-- src/provide/foundation/console/output.py
+- src/provide/foundation/concurrency/locks.py (SmartLock → DualLock)
+- src/provide/foundation/resilience/circuit.py (DualLock import)
+- src/provide/foundation/resilience/bulkhead.py (DualLock import)
+- src/provide/foundation/formatting/text.py (caching)
+- src/provide/foundation/cli/commands/logs/tail.py (caching)
+- src/provide/foundation/tools/resolver.py (caching)
+- src/provide/foundation/platform/detection.py (caching)
+- src/provide/foundation/platform/info.py (caching)
+- src/provide/foundation/console/output.py (caching)
 - src/provide/foundation/crypto/keys.py (legacy removed)
 - src/provide/foundation/crypto/__init__.py (legacy removed)
 
 **Test files (already updated with cache clearing):**
+- tests/concurrency/test_dual_lock.py (renamed from test_smart_lock.py)
 - tests/platform/test_platform_detection.py
 - tests/platform/test_platform_info.py
 - tests/platform/test_platform_coverage.py
