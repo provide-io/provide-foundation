@@ -150,7 +150,11 @@ class TransportBase(ABC):
         self._logger.trace("Transport disconnecting")
 
     async def stream(self, request: Request) -> AsyncIterator[bytes]:
-        """Default streaming implementation (not supported)."""
+        """Default streaming implementation.
+
+        Raises:
+            NotImplementedError: Streaming is not supported by this transport
+        """
         raise NotImplementedError(f"{self.__class__.__name__} does not support streaming")
 
     async def __aenter__(self) -> TransportBase:

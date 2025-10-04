@@ -130,9 +130,6 @@ def standard_options(f: F) -> F:
     """Apply all standard CLI options.
 
     Combines logging_options, config_options, and output_options.
-
-    Note: Consider using flexible_options for better granular control.
-    This decorator provides legacy all-in-one option handling.
     """
     f = logging_options(f)
     f = config_options(f)

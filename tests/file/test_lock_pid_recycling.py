@@ -452,6 +452,7 @@ class TestFileLockPIDRecyclingEdgeCases(MinimalTestCase):
         # Clean up
         lock_path.unlink()
 
+    @pytest.mark.time_sensitive
     def test_lock_start_time_out_of_tolerance(self, temp_directory: Path) -> None:
         """Test start time difference beyond tolerance is detected."""
         lock_path = temp_directory / "test.lock"

@@ -156,17 +156,13 @@ class FileLock:
             if self.path.exists():
                 try:
                     content = self.path.read_text().strip()
-                    # Try parsing as JSON first (new format)
                     try:
                         lock_info = json.loads(content)
-                        # Ensure it's a dict, not just a number (plain PID parses as valid JSON)
                         if isinstance(lock_info, dict):
                             owner_pid = lock_info.get("pid")
                         else:
-                            # Plain number parsed as JSON - treat as old format
                             owner_pid = lock_info if isinstance(lock_info, int) else None
                     except (json.JSONDecodeError, ValueError):
-                        # Fall back to plain PID format (old format)
                         owner_pid = int(content) if content.isdigit() else None
 
                     if owner_pid == self.pid:
@@ -221,23 +217,19 @@ class FileLock:
                 # If we can't read the file, assume it's not stale
                 return False
 
-            # Try parsing as JSON first (new format with start_time)
             lock_pid = None
             lock_start_time = None
             try:
                 lock_info = json.loads(content)
-                # Ensure it's a dict, not just a number (plain PID parses as valid JSON)
                 if isinstance(lock_info, dict):
                     lock_pid = lock_info.get("pid")
                     lock_start_time = lock_info.get("start_time")
                 elif isinstance(lock_info, int):
-                    # Plain number parsed as JSON - treat as old format
                     lock_pid = lock_info
                 else:
                     log.debug("Invalid lock file content", path=str(self.path), content=content[:50])
                     return False
             except (json.JSONDecodeError, ValueError):
-                # Fall back to plain PID format (old format)
                 if content.isdigit():
                     lock_pid = int(content)
                 else:
@@ -257,23 +249,22 @@ class FileLock:
                 proc_start_time = proc.create_time()
 
                 # If we have start_time, validate it matches to prevent PID recycling
-                if lock_start_time is not None:
-                    # Allow 1 second tolerance for timestamp precision differences
-                    if abs(proc_start_time - lock_start_time) > 1.0:
-                        log.warning(
-                            "PID recycling detected - removing stale lock",
-                            path=str(self.path),
-                            lock_pid=lock_pid,
-                            lock_start=lock_start_time,
-                            proc_start=proc_start_time,
-                        )
-                        try:
-                            self.path.unlink()
-                            return True
-                        except FileNotFoundError:
-                            return True
-                        except Exception:
-                            return False
+                # Allow 1 second tolerance for timestamp precision differences
+                if lock_start_time is not None and abs(proc_start_time - lock_start_time) > 1.0:
+                    log.warning(
+                        "PID recycling detected - removing stale lock",
+                        path=str(self.path),
+                        lock_pid=lock_pid,
+                        lock_start=lock_start_time,
+                        proc_start=proc_start_time,
+                    )
+                    try:
+                        self.path.unlink()
+                        return True
+                    except FileNotFoundError:
+                        return True
+                    except Exception:
+                        return False
 
                 # Process exists and start time matches (or no start time available)
                 return False

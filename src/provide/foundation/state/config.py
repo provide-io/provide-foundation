@@ -8,6 +8,7 @@ from typing import Any
 
 from attrs import define, field, frozen
 
+from provide.foundation.config.defaults import DEFAULT_STATE_CONFIG_NAME
 from provide.foundation.state.base import ImmutableState, StateManager
 
 """Immutable configuration management with versioning."""
@@ -23,7 +24,7 @@ class VersionedConfig(ImmutableState):
 
     data: dict[str, Any] = field(factory=dict)
     parent_generation: int | None = field(default=None)
-    config_name: str = field(default="")
+    config_name: str = field(default=DEFAULT_STATE_CONFIG_NAME)
 
     def with_changes(self, **changes: Any) -> VersionedConfig:
         """Create a new state instance with the specified changes.

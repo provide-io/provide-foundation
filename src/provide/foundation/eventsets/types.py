@@ -5,6 +5,8 @@ from typing import Any
 
 from attrs import define, field
 
+from provide.foundation.config.defaults import DEFAULT_EVENT_KEY
+
 """Event set type definitions for the Foundation event enrichment system."""
 
 
@@ -25,7 +27,7 @@ class EventMapping:
     visual_markers: dict[str, str] = field(factory=dict)
     metadata_fields: dict[str, dict[str, Any]] = field(factory=dict)
     transformations: dict[str, Callable[[Any], Any]] = field(factory=dict)
-    default_key: str = field(default="default")
+    default_key: str = field(default=DEFAULT_EVENT_KEY)
 
 
 @define(frozen=True, slots=True)

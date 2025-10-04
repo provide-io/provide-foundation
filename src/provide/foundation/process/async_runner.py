@@ -94,14 +94,45 @@ async def _communicate_with_timeout(
                 timeout=timeout,
             )
         except builtins.TimeoutError as e:
+            # Try to capture partial output before killing the process
+            # Note: This may not capture all output if pipes are buffered
+            partial_stdout: bytes | None = None
+            partial_stderr: bytes | None = None
+
+            try:
+                # Try to read any available output without blocking
+                if process.stdout:
+                    try:
+                        # Use a very short timeout to avoid hanging
+                        partial_stdout = await asyncio.wait_for(process.stdout.read(), timeout=0.1)
+                    except TimeoutError:
+                        pass  # No output available
+
+                if process.stderr:
+                    try:
+                        partial_stderr = await asyncio.wait_for(process.stderr.read(), timeout=0.1)
+                    except TimeoutError:
+                        pass  # No output available
+            except Exception:
+                # If we fail to read partial output, continue with kill
+                pass
+
             process.kill()
             await process.wait()
-            plog.error("⏱️ Async command timed out", command=cmd_str, timeout=timeout)
+            plog.error(
+                "⏱️ Async command timed out",
+                command=cmd_str,
+                timeout=timeout,
+                partial_stdout_size=len(partial_stdout) if partial_stdout else 0,
+                partial_stderr_size=len(partial_stderr) if partial_stderr else 0,
+            )
             raise ProcessTimeoutError(
                 f"Command timed out after {timeout}s: {cmd_str}",
                 code="PROCESS_ASYNC_TIMEOUT",
                 command=cmd_str,
                 timeout_seconds=timeout,
+                stdout=partial_stdout,
+                stderr=partial_stderr,
             ) from e
     else:
         return await process.communicate(input=input)

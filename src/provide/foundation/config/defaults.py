@@ -136,6 +136,11 @@ DEFAULT_RETRY_JITTER = True
 DEFAULT_RETRY_RETRYABLE_ERRORS = None
 DEFAULT_RETRY_RETRYABLE_STATUS_CODES = None
 
+# Bulkhead defaults
+DEFAULT_BULKHEAD_MAX_CONCURRENT = 10
+DEFAULT_BULKHEAD_MAX_QUEUE_SIZE = 100
+DEFAULT_BULKHEAD_TIMEOUT = 30.0
+
 
 def default_retry_backoff_strategy() -> BackoffStrategy:
     """Factory for default retry backoff strategy."""
@@ -149,6 +154,28 @@ def default_retry_backoff_strategy() -> BackoffStrategy:
 # =================================
 DEFAULT_OPENOBSERVE_TIMEOUT = 30
 DEFAULT_OPENOBSERVE_MAX_RETRIES = 3
+
+# =================================
+# EventSet defaults
+# =================================
+DEFAULT_EVENT_KEY = "default"
+
+# =================================
+# Component defaults
+# =================================
+DEFAULT_COMPONENT_DIMENSION = "component"
+
+# =================================
+# State config defaults
+# =================================
+DEFAULT_STATE_CONFIG_NAME = ""
+
+# =================================
+# File operation defaults
+# =================================
+DEFAULT_FILE_OP_IS_ATOMIC = False
+DEFAULT_FILE_OP_IS_SAFE = True
+DEFAULT_FILE_OP_HAS_BACKUP = False
 
 # =================================
 # Testing defaults
