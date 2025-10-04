@@ -44,11 +44,11 @@ class DualLock:
         ...         self._value = 0
         ...
         ...     def increment(self):  # ONLY sync methods access _value
-        ...         with self._lock.with_sync_lock():
+        ...         with self._lock.sync():
         ...             self._value += 1
         ...
         ...     async def get_async(self):  # Different resource, separate lock
-        ...         async with self._lock.with_async_lock():
+        ...         async with self._lock.aio():
         ...             return await self._fetch_data()
 
     INCORRECT Usage (Race Condition):
@@ -58,11 +58,11 @@ class DualLock:
         ...         self._shared = 0
         ...
         ...     def increment_sync(self):
-        ...         with self._lock.with_sync_lock():
+        ...         with self._lock.sync():
         ...             self._shared += 1  # Not protected from async_increment!
         ...
         ...     async def increment_async(self):
-        ...         async with self._lock.with_async_lock():
+        ...         async with self._lock.aio():
         ...             self._shared += 1  # Not protected from increment_sync!
     """
 
@@ -73,7 +73,7 @@ class DualLock:
         self._async_init_lock = threading.Lock()
 
     @contextlib.contextmanager
-    def with_sync_lock(self) -> Generator[None, None, None]:
+    def sync(self) -> Generator[None, None, None]:
         """Acquire lock in synchronous context.
 
         Use with standard 'with' statement in synchronous methods.
@@ -84,7 +84,7 @@ class DualLock:
 
         Example:
             >>> lock = DualLock()
-            >>> with lock.with_sync_lock():
+            >>> with lock.sync():
             ...     # Critical section protected from other sync code
             ...     pass
         """
@@ -92,7 +92,7 @@ class DualLock:
             yield
 
     @contextlib.asynccontextmanager
-    async def with_async_lock(self) -> AsyncIterator[None]:
+    async def aio(self) -> AsyncIterator[None]:
         """Acquire lock in asynchronous context.
 
         Use with 'async with' statement in asynchronous methods.
@@ -106,7 +106,7 @@ class DualLock:
             >>> import asyncio
             >>> lock = DualLock()
             >>> async def main():
-            ...     async with lock.with_async_lock():
+            ...     async with lock.aio():
             ...         # Critical section protected from other async code
             ...         pass
             >>> asyncio.run(main())
@@ -119,15 +119,6 @@ class DualLock:
 
         async with self._async_lock:
             yield
-
-    # Backward compatibility aliases
-    def sync(self) -> Generator[None, None, None]:
-        """Deprecated: Use with_sync_lock() instead."""
-        return self.with_sync_lock()
-
-    def async_(self) -> AsyncIterator[None]:
-        """Deprecated: Use with_async_lock() instead."""
-        return self.with_async_lock()
 
 
 @define
