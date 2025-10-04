@@ -78,6 +78,11 @@ class TestLazyImport:
 
     def test_lazy_import_special_module_click_missing(self) -> None:
         """Test special error message for CLI module when click is missing."""
+        # Clear CLI module from cache to ensure fresh import
+        cli_module_key = "provide.foundation.cli"
+        if cli_module_key in sys.modules:
+            del sys.modules[cli_module_key]
+
         with patch("builtins.__import__") as mock_import:
             # Simulate ImportError mentioning 'click'
             mock_import.side_effect = ImportError("No module named 'click'")
@@ -233,7 +238,7 @@ class TestLazyImportEdgeCases:
 
     def test_import_with_mock_failure(self) -> None:
         """Test behavior when __import__ fails."""
-        with patch("provide.foundation.utils.importer.__import__") as mock_import:
+        with patch("builtins.__import__") as mock_import:
             mock_import.side_effect = ImportError("Simulated import failure")
 
             with pytest.raises(ImportError, match="Simulated import failure"):

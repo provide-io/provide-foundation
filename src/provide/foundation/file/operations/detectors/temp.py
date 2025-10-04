@@ -127,25 +127,19 @@ class TempPatternDetector:
             temp_events.sort(key=lambda e: e.timestamp)
 
             # Look for create -> modify -> rename sequence
-            if (
-                temp_events[0].event_type == "created"
-                and any(e.event_type == "modified" for e in temp_events[1:])
+            if temp_events[0].event_type == "created" and any(
+                e.event_type == "modified" for e in temp_events[1:]
             ):
                 # Find corresponding rename event
                 temp_path = Path(temp_path_str)
-                rename_events = [
-                    e for e in events
-                    if e.event_type == "moved" and e.path == temp_path
-                ]
+                rename_events = [e for e in events if e.event_type == "moved" and e.path == temp_path]
 
                 if rename_events:
                     rename_event = rename_events[0]
                     all_events = temp_events + [rename_event]
                     all_events.sort(key=lambda e: e.timestamp)
 
-                    time_span = (
-                        all_events[-1].timestamp - all_events[0].timestamp
-                    ).total_seconds() * 1000
+                    time_span = (all_events[-1].timestamp - all_events[0].timestamp).total_seconds() * 1000
 
                     if time_span <= temp_window_ms:
                         final_path = rename_event.dest_path or rename_event.path
@@ -199,10 +193,7 @@ class TempPatternDetector:
             temp_events.sort(key=lambda e: e.timestamp)
 
             # Check for create -> delete pattern on temp file
-            if (
-                temp_events[0].event_type == "created"
-                and temp_events[-1].event_type == "deleted"
-            ):
+            if temp_events[0].event_type == "created" and temp_events[-1].event_type == "deleted":
                 # Extract base name from temp file
                 temp_path = Path(temp_path_str)
                 base_name = extract_base_name(temp_path)
@@ -246,9 +237,7 @@ class TempPatternDetector:
                                     )
 
                 # If no real file found, treat as temp cleanup
-                time_span = (
-                    temp_events[-1].timestamp - temp_events[0].timestamp
-                ).total_seconds() * 1000
+                time_span = (temp_events[-1].timestamp - temp_events[0].timestamp).total_seconds() * 1000
 
                 if time_span <= temp_window_ms:
                     return FileOperation(

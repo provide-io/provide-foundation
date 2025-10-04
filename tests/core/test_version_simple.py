@@ -9,11 +9,21 @@ from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import MagicMock, patch
 import pytest
 
-from provide.foundation._version import __version__, _find_project_root, get_version
+from provide.foundation._version import (
+    __version__,
+    _find_project_root,
+    get_version,
+    reset_version_cache,
+)
 
 
 class TestVersionSimpleCoverage(FoundationTestCase):
     """Simple tests for version module coverage."""
+
+    def setup_method(self) -> None:
+        """Reset version cache before each test."""
+        super().setup_method()
+        reset_version_cache()
 
     def test_find_project_root_actual(self) -> None:
         """Test _find_project_root with actual filesystem."""
@@ -185,6 +195,9 @@ class TestVersionSimpleCoverage(FoundationTestCase):
                 version_file = temp_path / "VERSION"
                 version_file.write_text("file-version")
 
+                # Reset cache to test new scenario
+                reset_version_cache()
+
                 # Test again - should now read from file
                 version2 = get_version()
                 assert version2 == "file-version"
@@ -192,6 +205,11 @@ class TestVersionSimpleCoverage(FoundationTestCase):
 
 class TestVersionModuleBehavior(FoundationTestCase):
     """Test version module behavior and imports."""
+
+    def setup_method(self) -> None:
+        """Reset version cache before each test."""
+        super().setup_method()
+        reset_version_cache()
 
     def test_module_level_version_setting(self) -> None:
         """Test that module-level __version__ is properly set."""
@@ -269,6 +287,11 @@ class TestVersionModuleBehavior(FoundationTestCase):
 
 class TestVersionCoverageSpecific(FoundationTestCase):
     """Tests specifically targeting missing coverage lines."""
+
+    def setup_method(self) -> None:
+        """Reset version cache before each test."""
+        super().setup_method()
+        reset_version_cache()
 
     def test_cover_line_23_none_return(self) -> None:
         """Specifically test line 23 return None."""

@@ -5,17 +5,10 @@ Coordinates specialized detector classes to identify the best match for file eve
 
 from __future__ import annotations
 
-from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 import re
 
-from provide.foundation.file.operations.types import (
-    DetectorConfig,
-    FileEvent,
-    FileOperation,
-    OperationType,
-)
 from provide.foundation.file.operations.detectors.atomic import AtomicOperationDetector
 from provide.foundation.file.operations.detectors.batch import BatchOperationDetector
 from provide.foundation.file.operations.detectors.helpers import (
@@ -24,6 +17,11 @@ from provide.foundation.file.operations.detectors.helpers import (
 )
 from provide.foundation.file.operations.detectors.simple import SimpleOperationDetector
 from provide.foundation.file.operations.detectors.temp import TempPatternDetector
+from provide.foundation.file.operations.types import (
+    DetectorConfig,
+    FileEvent,
+    FileOperation,
+)
 from provide.foundation.logger import get_logger
 
 log = get_logger(__name__)
@@ -153,20 +151,16 @@ class OperationDetector:
             (temp_detector.detect_delete_temp_pattern, (events,)),
             (temp_detector.detect_temp_modify_pattern, (events,)),
             (temp_detector.detect_temp_create_delete_pattern, (events,)),
-
             # Atomic save patterns
             (atomic_detector.detect_atomic_save, (events,)),
             (atomic_detector.detect_safe_write, (events,)),
-
             # Batch and sequence patterns
             (batch_detector.detect_rename_sequence, (events,)),
             (batch_detector.detect_backup_create, (events,)),
             (batch_detector.detect_batch_update, (events,)),
-
             # Simple patterns (lower specificity)
             (simple_detector.detect_same_file_delete_create_pattern, (events,)),
             (simple_detector.detect_direct_modification, (events,)),
-
             # Fallback for unmatched events
             (simple_detector.detect_simple_operation, (events,)),
         ]
@@ -208,6 +202,7 @@ class OperationDetector:
                     # Create a new operation with the corrected path
                     # (FileOperation is frozen, so we need attrs.evolve or recreate)
                     from attrs import evolve
+
                     best_operation = evolve(best_operation, primary_path=real_file)
                     log.info(
                         "Corrected primary_path from temp to real file",

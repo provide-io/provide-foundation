@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from pathlib import Path
 
 from provide.foundation.file.operations.detectors.helpers import is_backup_file
 from provide.foundation.file.operations.types import (
@@ -176,9 +175,7 @@ class BatchOperationDetector:
         names = [path.stem.lower() for path in paths]
         if len(names) >= 2:
             # Simple heuristic: check if names share common prefixes
-            common_prefix_len = len(
-                self._longest_common_prefix([names[0], names[1]])
-            )
+            common_prefix_len = len(self._longest_common_prefix([names[0], names[1]]))
             return common_prefix_len >= 3
 
         return False

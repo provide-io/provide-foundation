@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-
 from provide.foundation.file.operations.detectors.helpers import (
     extract_base_name,
     is_backup_file,
@@ -106,7 +104,8 @@ class AtomicOperationDetector:
 
             # Find matching original file events
             matching_events = [
-                e for e in regular_events
+                e
+                for e in regular_events
                 if e.path == expected_original and e.event_type in {"created", "modified"}
             ]
 
