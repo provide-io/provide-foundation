@@ -37,7 +37,9 @@ class TestFileLockChaos(FoundationTestCase):
         lock_duration=chaos_timings(min_value=0.001, max_value=0.1),
         timeout=st.floats(min_value=0.5, max_value=2.0),
     )
-    @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
+    @settings(
+        max_examples=20, suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture]
+    )
     def test_concurrent_thread_access_chaos(
         self,
         tmp_path: Path,
@@ -89,7 +91,9 @@ class TestFileLockChaos(FoundationTestCase):
         time_advance=st.floats(min_value=0.0, max_value=600.0),
         stale_threshold=st.floats(min_value=0.5, max_value=5.0),
     )
-    @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
+    @settings(
+        max_examples=20, suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture]
+    )
     def test_stale_lock_detection_chaos(
         self,
         tmp_path: Path,
@@ -126,7 +130,9 @@ class TestFileLockChaos(FoundationTestCase):
 
     @pytest.mark.chaos_slow
     @given(scenario=pid_recycling_scenarios())
-    @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
+    @settings(
+        max_examples=20, suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture]
+    )
     def test_pid_recycling_protection_chaos(
         self,
         tmp_path: Path,
@@ -177,7 +183,9 @@ class TestFileLockChaos(FoundationTestCase):
             st.just(""),
         ),
     )
-    @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
+    @settings(
+        max_examples=20, suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture]
+    )
     def test_corrupted_lock_file_chaos(
         self,
         tmp_path: Path,
@@ -214,7 +222,9 @@ class TestFileLockChaos(FoundationTestCase):
 
     @pytest.mark.chaos_slow
     @given(scenario=lock_file_scenarios())
-    @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
+    @settings(
+        max_examples=20, suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture]
+    )
     def test_lock_file_scenarios_chaos(
         self,
         tmp_path: Path,
@@ -272,7 +282,9 @@ class TestFileLockChaos(FoundationTestCase):
         timeout=st.floats(min_value=0.1, max_value=1.0),
         iterations=st.integers(min_value=2, max_value=5),
     )
-    @settings(max_examples=10, suppress_health_check=[HealthCheck.too_slow])
+    @settings(
+        max_examples=10, suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture]
+    )
     def test_reentrant_locking_chaos(
         self,
         tmp_path: Path,
@@ -312,7 +324,9 @@ class TestFileLockAsyncChaos(FoundationTestCase):
         num_tasks=st.integers(min_value=2, max_value=10),
         lock_duration=chaos_timings(min_value=0.001, max_value=0.05),
     )
-    @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
+    @settings(
+        max_examples=20, suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture]
+    )
     async def test_async_concurrent_access_chaos(
         self,
         tmp_path: Path,
