@@ -4,7 +4,7 @@ from collections.abc import Callable
 import time
 from typing import final
 
-from provide.foundation.concurrency.locks import DualLock
+from provide.foundation.concurrency.locks import SmartLock
 
 """Rate limiting utilities for Foundation.
 
@@ -47,7 +47,7 @@ class TokenBucketRateLimiter:
         self._tokens: float = float(capacity)  # Start with a full bucket
         self._time_source = time_source if time_source is not None else time.monotonic
         self._last_refill_timestamp: float = self._time_source()
-        self._lock = DualLock()
+        self._lock = SmartLock()
 
         # Cache logger instance to avoid repeated imports
         self._logger = None

@@ -16,7 +16,8 @@ from provide.foundation.errors.runtime import RuntimeError as FoundationRuntimeE
 This module provides a LockManager that enforces lock ordering and provides
 timeout mechanisms to prevent deadlocks across the entire foundation.
 
-It also provides DualLock for classes that need both sync and async APIs.
+It also provides SmartLock for classes that need both sync and async APIs
+with true mutual exclusion between sync threads and async tasks.
 """
 
 
@@ -47,6 +48,10 @@ class SmartLock:
     Note:
         The async context manager uses asyncio.to_thread() to acquire the
         threading.RLock, ensuring the event loop is not blocked while waiting.
+
+        For pure async code, use asyncio.Lock directly.
+        For pure sync code, use threading.RLock directly.
+        Only use SmartLock when you have mixed sync/async access to shared state.
     """
 
     def __init__(self) -> None:
@@ -97,91 +102,6 @@ class SmartLock:
         finally:
             # Release in thread pool as well for symmetry
             await asyncio.to_thread(self._lock.release)
-
-
-class DualLock:
-    """Lock that supports both synchronous and asynchronous contexts.
-
-    This class provides separate locking mechanisms for sync and async code,
-    preventing event loop blocking while maintaining thread safety.
-
-    Use this when you have a class with both sync and async methods that need
-    to protect shared state.
-
-    .. warning::
-        DualLock uses separate locks for sync and async contexts, which means
-        there is no mutual exclusion between a sync thread and an async task.
-        For true mutual exclusion, use SmartLock instead.
-
-    Example:
-        >>> class MyClass:
-        ...     def __init__(self):
-        ...         self._lock = DualLock()
-        ...         self._value = 0
-        ...
-        ...     def increment(self):
-        ...         with self._lock.sync():
-        ...             self._value += 1
-        ...
-        ...     async def increment_async(self):
-        ...         async with self._lock.async_():
-        ...             self._value += 1
-
-    """
-
-    def __init__(self) -> None:
-        """Initialize dual lock with both sync and async locks."""
-        self._sync_lock = threading.RLock()
-        self._async_lock: asyncio.Lock | None = None
-        self._async_init_lock = threading.Lock()
-
-    @contextlib.contextmanager
-    def sync(self) -> Generator[None, None, None]:
-        """Acquire lock in synchronous context.
-
-        Use with standard 'with' statement in synchronous methods.
-
-        Yields:
-            None when lock is acquired
-
-        Example:
-            >>> lock = DualLock()
-            >>> with lock.sync():
-            ...     # Critical section for sync code
-            ...     pass
-
-        """
-        with self._sync_lock:
-            yield
-
-    @contextlib.asynccontextmanager
-    async def async_(self) -> AsyncIterator[None]:
-        """Acquire lock in asynchronous context.
-
-        Use with 'async with' statement in asynchronous methods.
-        The async lock is lazily initialized on first use.
-
-        Yields:
-            None when lock is acquired
-
-        Example:
-            >>> import asyncio
-            >>> lock = DualLock()
-            >>> async def main():
-            ...     async with lock.async_():
-            ...         # Critical section for async code
-            ...         pass
-            >>> asyncio.run(main())
-
-        """
-        # Lazy initialization of async lock (thread-safe)
-        if self._async_lock is None:
-            with self._async_init_lock:
-                if self._async_lock is None:
-                    self._async_lock = asyncio.Lock()
-
-        async with self._async_lock:
-            yield
 
 
 @define
@@ -455,4 +375,4 @@ def register_foundation_locks() -> None:
     manager.register_lock("foundation.hub.components", order=220, description="Hub component management")
 
 
-__all__ = ["DualLock", "LockInfo", "LockManager", "SmartLock", "get_lock_manager", "register_foundation_locks"]
+__all__ = ["LockInfo", "LockManager", "SmartLock", "get_lock_manager", "register_foundation_locks"]

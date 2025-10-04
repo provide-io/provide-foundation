@@ -8,7 +8,7 @@ from typing import Any, TypeVar
 
 from attrs import define, field
 
-from provide.foundation.concurrency.locks import DualLock
+from provide.foundation.concurrency.locks import SmartLock
 from provide.foundation.config.defaults import (
     DEFAULT_BULKHEAD_MAX_CONCURRENT,
     DEFAULT_BULKHEAD_MAX_QUEUE_SIZE,
@@ -38,7 +38,7 @@ class ResourcePool:
     _async_semaphore: asyncio.Semaphore | None = field(default=None, init=False)
     _active_count: int = field(default=0, init=False)
     _queue_size: int = field(default=0, init=False)
-    _lock: DualLock = field(factory=DualLock, init=False)
+    _lock: SmartLock = field(factory=SmartLock, init=False)
 
     def __attrs_post_init__(self) -> None:
         """Initialize semaphores after object creation."""

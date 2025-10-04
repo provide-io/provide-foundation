@@ -7,7 +7,7 @@ import threading
 import time
 from typing import Any
 
-from provide.foundation.concurrency.locks import DualLock
+from provide.foundation.concurrency.locks import SmartLock
 
 """Rate limiter implementations for Foundation's logging system."""
 
@@ -102,7 +102,7 @@ class AsyncRateLimiter:
         self.refill_rate = float(refill_rate)
         self.tokens = float(capacity)
         self.last_refill = time.monotonic()
-        self._lock = DualLock()
+        self._lock = SmartLock()
 
         # Track statistics
         self.total_allowed = 0
