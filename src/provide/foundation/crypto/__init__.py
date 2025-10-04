@@ -77,7 +77,6 @@ try:
     )
     from provide.foundation.crypto.keys import (
         generate_ec_keypair,
-        generate_key_pair,
         generate_keypair,
         generate_rsa_keypair,
         generate_tls_keypair,
@@ -162,10 +161,6 @@ if not _HAS_CRYPTO:
 
     def generate_ed25519_keypair(*args: Any, **kwargs: Any) -> Never:
         """Stub for generate_ed25519_keypair when cryptography is not installed."""
-        raise DependencyError("cryptography", feature="crypto")
-
-    def generate_key_pair(*args: Any, **kwargs: Any) -> Never:
-        """Stub for generate_key_pair when cryptography is not installed."""
         raise DependencyError("cryptography", feature="crypto")
 
     def generate_keypair(*args: Any, **kwargs: Any) -> Never:
@@ -257,8 +252,6 @@ __all__ = [
     "format_hash",
     "generate_ec_keypair",
     "generate_ed25519_keypair",
-    # Legacy compatibility
-    "generate_key_pair",
     # Key generation
     "generate_keypair",
     "generate_rsa_keypair",

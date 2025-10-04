@@ -308,7 +308,6 @@ def reset_foundation_for_testing() -> None:
 
             _LAZY_SETUP_STATE.update({"done": False, "error": None, "in_progress": False})
         except ImportError:
-            # Legacy state not available, skip
             pass
 
         # Restore test stream if there was one

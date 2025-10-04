@@ -5,6 +5,7 @@ from typing import Any, Protocol
 
 from attrs import define, field
 
+from provide.foundation.config.defaults import DEFAULT_COMPONENT_DIMENSION
 from provide.foundation.errors.decorators import resilient
 
 # Import functions from specialized modules for re-export
@@ -48,7 +49,7 @@ class ComponentInfo:
 
     name: str = field()
     component_class: type[Any] = field()
-    dimension: str = field(default="component")
+    dimension: str = field(default=DEFAULT_COMPONENT_DIMENSION)
     version: str | None = field(default=None)
     description: str | None = field(default=None)
     author: str | None = field(default=None)

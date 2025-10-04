@@ -208,12 +208,12 @@ def test_event_set_defaults() -> None:
     """Test that event sets provide correct default visual markers."""
     print("\n=== Test 6: Event Set Defaults ===")
 
-    from provide.foundation.eventsets.sets.das import das_event_set
+    from provide.foundation.eventsets.sets.das import EVENT_SET
 
     # Check that DAS event set has the expected mappings
-    domain_mapping = next((m for m in das_event_set.mappings if m.name == "domain"), None)
-    action_mapping = next((m for m in das_event_set.mappings if m.name == "action"), None)
-    status_mapping = next((m for m in das_event_set.mappings if m.name == "status"), None)
+    domain_mapping = next((m for m in EVENT_SET.mappings if m.name == "domain"), None)
+    action_mapping = next((m for m in EVENT_SET.mappings if m.name == "action"), None)
+    status_mapping = next((m for m in EVENT_SET.mappings if m.name == "status"), None)
 
     assert domain_mapping is not None, "Domain mapping not found in DAS event set"
     assert action_mapping is not None, "Action mapping not found in DAS event set"

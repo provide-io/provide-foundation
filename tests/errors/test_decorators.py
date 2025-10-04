@@ -132,20 +132,21 @@ class TestWithErrorHandling(FoundationTestCase):
         result = await async_func(True)
         assert result == "default"
 
-    def test_foundation_error_not_mapped(self) -> None:
-        """Test that FoundationError is not mapped."""
+    def test_foundation_error_can_be_mapped(self) -> None:
+        """Test that FoundationError can now be mapped to domain-specific errors."""
 
         def map_error(e: Exception) -> Exception:
+            # Map FoundationError to a domain-specific error
             return RuntimeError(f"Mapped: {e}")
 
         @resilient(error_mapper=map_error)
         def func() -> Never:
             raise FoundationError("foundation error")
 
-        # FoundationError should not be mapped
-        with pytest.raises(FoundationError) as exc_info:
+        # FoundationError should now be mapped
+        with pytest.raises(RuntimeError) as exc_info:
             func()
-        assert str(exc_info.value) == "foundation error"
+        assert str(exc_info.value) == "Mapped: foundation error"
 
 
 class TestSuppressAndLog(FoundationTestCase):

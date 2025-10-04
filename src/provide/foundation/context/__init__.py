@@ -8,9 +8,6 @@ Provides CLI runtime context for managing command execution state,
 output formatting, and CLI-specific settings.
 """
 
-Context = CLIContext
-
 __all__ = [
     "CLIContext",
-    "Context",  # Legacy alias
 ]
