@@ -49,8 +49,11 @@ def extract_cli_hint(annotation: Any, param_name: str) -> tuple[Any, str | None]
     Supports typing.Annotated with string metadata to explicitly control
     whether a parameter becomes a CLI argument or option.
 
+    Handles both runtime Annotated types and string annotations from
+    `from __future__ import annotations`.
+
     Args:
-        annotation: Type annotation (may be Annotated[type, 'hint'])
+        annotation: Type annotation (may be Annotated[type, 'hint'] or string)
         param_name: Parameter name (for error messages)
 
     Returns:
@@ -76,7 +79,29 @@ def extract_cli_hint(annotation: Any, param_name: str) -> tuple[Any, str | None]
         >>> extract_cli_hint(Annotated[str, 'invalid'], 'user')
 
     """
-    # Check if this is an Annotated type
+    # Handle string annotations from __future__ import annotations
+    if isinstance(annotation, str):
+        # Check if it's an Annotated string pattern
+        if annotation.startswith("Annotated["):
+            # Extract hint from string: "Annotated[str, 'option']" -> 'option'
+            # Simple regex pattern for CLI hints
+            import re
+
+            hint_match = re.search(r"['\"](\w+)['\"]", annotation)
+            if hint_match:
+                hint = hint_match.group(1)
+                if hint in ("argument", "option"):
+                    # Return the full annotation string as base_type for now
+                    # extract_concrete_type will handle it
+                    return annotation, hint
+                else:
+                    # Invalid hint
+                    raise InvalidCLIHintError(hint, param_name)
+
+        # Not Annotated or no hint found
+        return annotation, None
+
+    # Check if this is a runtime Annotated type
     if get_origin(annotation) is Annotated:
         args = get_args(annotation)
         base_type = args[0]
