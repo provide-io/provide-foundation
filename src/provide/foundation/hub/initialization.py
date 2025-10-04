@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 import contextlib
+from enum import Enum, auto
 import threading
 from typing import Any
 
+from attrs import frozen
+
 from provide.foundation.concurrency.locks import get_lock_manager
 from provide.foundation.errors.runtime import RuntimeError as FoundationRuntimeError
+from provide.foundation.state.base import ImmutableState, StateMachine, StateTransition
 
 """Simplified, centralized initialization coordinator.
 
@@ -14,48 +18,134 @@ thread-safe state machine that uses the LockManager for coordination.
 """
 
 
-class InitializationState:
-    """Thread-safe initialization state tracker."""
+class InitState(Enum):
+    """Initialization states."""
+
+    UNINITIALIZED = auto()
+    INITIALIZING = auto()
+    INITIALIZED = auto()
+    FAILED = auto()
+
+
+class InitEvent(Enum):
+    """Initialization events."""
+
+    START = auto()
+    COMPLETE = auto()
+    FAIL = auto()
+    RESET = auto()
+
+
+@frozen
+class InitializationState(ImmutableState):
+    """Immutable initialization state."""
+
+    status: InitState = InitState.UNINITIALIZED
+    config: Any = None
+    logger_instance: Any = None
+    error: Exception | None = None
+
+
+class InitializationStateMachine(StateMachine[InitState, InitEvent]):
+    """State machine for Foundation initialization.
+
+    States:
+    - UNINITIALIZED: Initial state, no initialization attempted
+    - INITIALIZING: Initialization in progress
+    - INITIALIZED: Successfully initialized
+    - FAILED: Initialization failed
+
+    Events:
+    - START: Begin initialization
+    - COMPLETE: Mark initialization complete
+    - FAIL: Mark initialization failed
+    - RESET: Reset to uninitialized state
+    """
 
     def __init__(self) -> None:
-        """Initialize state tracker."""
-        self.is_initialized = False
-        self.initialization_error: Exception | None = None
-        self.config: Any = None
-        self.logger_instance: Any = None
+        """Initialize the state machine."""
+        super().__init__(InitState.UNINITIALIZED)
+        self._state_data = InitializationState()
         self._event = threading.Event()
+
+        # Define transitions
+        self.add_transition(
+            StateTransition(
+                from_state=InitState.UNINITIALIZED,
+                event=InitEvent.START,
+                to_state=InitState.INITIALIZING,
+            )
+        )
+        self.add_transition(
+            StateTransition(
+                from_state=InitState.INITIALIZING,
+                event=InitEvent.COMPLETE,
+                to_state=InitState.INITIALIZED,
+                action=self._event.set,
+            )
+        )
+        self.add_transition(
+            StateTransition(
+                from_state=InitState.INITIALIZING,
+                event=InitEvent.FAIL,
+                to_state=InitState.FAILED,
+                action=self._event.set,
+            )
+        )
+        # Allow reset from any state
+        for state in [InitState.INITIALIZED, InitState.FAILED, InitState.INITIALIZING]:
+            self.add_transition(
+                StateTransition(
+                    from_state=state,
+                    event=InitEvent.RESET,
+                    to_state=InitState.UNINITIALIZED,
+                    action=self._event.clear,
+                )
+            )
+
+    @property
+    def state_data(self) -> InitializationState:
+        """Get the current state data."""
+        with self._lock:
+            return self._state_data
 
     def mark_complete(self, config: Any, logger_instance: Any) -> None:
         """Mark initialization as complete."""
-        self.config = config
-        self.logger_instance = logger_instance
-        self.is_initialized = True
-        self._event.set()
+        with self._lock:
+            self._state_data = self._state_data.with_changes(
+                status=InitState.INITIALIZED,
+                config=config,
+                logger_instance=logger_instance,
+                error=None,
+            )
+        self.transition(InitEvent.COMPLETE)
 
     def mark_failed(self, error: Exception) -> None:
         """Mark initialization as failed."""
-        self.initialization_error = error
-        self._event.set()
+        with self._lock:
+            self._state_data = self._state_data.with_changes(
+                status=InitState.FAILED,
+                error=error,
+            )
+        self.transition(InitEvent.FAIL)
 
     def wait_for_completion(self, timeout: float = 10.0) -> bool:
         """Wait for initialization to complete."""
         return self._event.wait(timeout)
 
     def reset(self) -> None:
-        """Reset state for re-initialization."""
-        self.is_initialized = False
-        self.initialization_error = None
-        self.config = None
-        self.logger_instance = None
-        self._event.clear()
+        """Reset the state machine to uninitialized."""
+        with self._lock:
+            self._state_data = InitializationState()
+        self.transition(InitEvent.RESET)
 
 
 class InitializationCoordinator:
-    """Centralized initialization coordinator using LockManager."""
+    """Centralized initialization coordinator using state machine."""
 
     def __init__(self) -> None:
         """Initialize coordinator."""
-        self._state = InitializationState()
+        self._state_machine = InitializationStateMachine()
         self._lock_manager = get_lock_manager()
 
         # Register all foundation locks (includes coordinator lock)
@@ -80,17 +170,22 @@ class InitializationCoordinator:
             RuntimeError: If initialization fails
         """
         # Fast path if already initialized and not forcing
-        if self._state.is_initialized and not force:
-            return self._state.config, self._state.logger_instance
+        state_data = self._state_machine.state_data
+        if self._state_machine.current_state == InitState.INITIALIZED and not force:
+            return state_data.config, state_data.logger_instance
 
         # Use lock manager for thread-safe initialization
         with self._lock_manager.acquire("foundation.init.coordinator"):
             # Double-check after acquiring lock
-            if self._state.is_initialized and not force:
-                return self._state.config, self._state.logger_instance
+            state_data = self._state_machine.state_data
+            if self._state_machine.current_state == InitState.INITIALIZED and not force:
+                return state_data.config, state_data.logger_instance
 
             if force:
-                self._state.reset()
+                self._state_machine.reset()
+
+            # Transition to INITIALIZING state
+            self._state_machine.transition(InitEvent.START)
 
             try:
                 # Single initialization path
@@ -103,13 +198,13 @@ class InitializationCoordinator:
                 # Set up event handlers
                 self._setup_event_handlers()
 
-                # Mark complete
-                self._state.mark_complete(actual_config, logger_instance)
+                # Mark complete (transitions to INITIALIZED)
+                self._state_machine.mark_complete(actual_config, logger_instance)
 
                 return actual_config, logger_instance
 
             except Exception as e:
-                self._state.mark_failed(e)
+                self._state_machine.mark_failed(e)
                 raise FoundationRuntimeError(
                     f"Foundation initialization failed: {e}",
                     code="FOUNDATION_INIT_FAILED",
@@ -178,15 +273,15 @@ class InitializationCoordinator:
 
     def get_state(self) -> InitializationState:
         """Get current initialization state."""
-        return self._state
+        return self._state_machine.state_data
 
     def is_initialized(self) -> bool:
         """Check if foundation is initialized."""
-        return self._state.is_initialized
+        return self._state_machine.current_state == InitState.INITIALIZED
 
     def reset_state(self) -> None:
         """Reset coordinator state for testing."""
-        self._state.reset()
+        self._state_machine.reset()
 
 
 # Global coordinator instance
@@ -199,7 +294,10 @@ def get_initialization_coordinator() -> InitializationCoordinator:
 
 
 __all__ = [
+    "InitEvent",
     "InitializationCoordinator",
     "InitializationState",
+    "InitializationStateMachine",
+    "InitState",
     "get_initialization_coordinator",
 ]
