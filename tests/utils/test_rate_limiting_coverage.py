@@ -22,13 +22,13 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
 
     def test_init_valid_parameters(self) -> None:
         """Test initialization with valid parameters."""
-        from provide.foundation.concurrency.locks import SmartLock
+        import asyncio
 
         limiter = TokenBucketRateLimiter(capacity=10, refill_rate=5, time_source=self.get_time)
         assert limiter._capacity == 10.0
         assert limiter._refill_rate == 5.0
         assert limiter._tokens == 10.0  # Starts full
-        assert isinstance(limiter._lock, SmartLock)
+        assert isinstance(limiter._lock, asyncio.Lock)
 
     def test_init_invalid_capacity(self) -> None:
         """Test initialization with invalid capacity."""
@@ -347,22 +347,18 @@ class TestTokenBucketEdgeCases(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_lock_acquisition(self) -> None:
         """Test that lock is properly acquired and released."""
-        import threading
+        import asyncio
 
         limiter = TokenBucketRateLimiter(capacity=5, refill_rate=1, time_source=self.get_time)
 
-        # SmartLock uses a single threading.Lock (not separate async lock)
-        assert hasattr(limiter._lock, "_lock")
-        # Check it's a lock type by checking it has the lock interface
-        assert hasattr(limiter._lock._lock, "acquire")
-        assert hasattr(limiter._lock._lock, "release")
-        assert hasattr(limiter._lock._lock, "locked")
+        # TokenBucketRateLimiter uses asyncio.Lock (pure async)
+        assert isinstance(limiter._lock, asyncio.Lock)
 
         # Test that methods properly acquire and release lock
         await limiter.is_allowed()
         await limiter.get_current_tokens()
         # Lock should be released after async operations complete
-        assert not limiter._lock._lock.locked()
+        assert not limiter._lock.locked()
 
 
 class TestRateLimitingIntegration(FoundationTestCase):

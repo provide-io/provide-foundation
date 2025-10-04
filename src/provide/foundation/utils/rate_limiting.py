@@ -4,7 +4,7 @@ from collections.abc import Callable
 import time
 from typing import final
 
-from provide.foundation.concurrency.locks import SmartLock
+import asyncio
 
 """Rate limiting utilities for Foundation.
 
@@ -47,7 +47,7 @@ class TokenBucketRateLimiter:
         self._tokens: float = float(capacity)  # Start with a full bucket
         self._time_source = time_source if time_source is not None else time.monotonic
         self._last_refill_timestamp: float = self._time_source()
-        self._lock = SmartLock()
+        self._lock = asyncio.Lock()
 
         # Cache logger instance to avoid repeated imports
         self._logger = None
@@ -92,7 +92,7 @@ class TokenBucketRateLimiter:
             True if the request is allowed, False otherwise.
 
         """
-        async with self._lock.async_():
+        async with self._lock:
             await self._refill_tokens()  # Refill before checking
 
             if self._tokens >= 1.0:
@@ -111,7 +111,7 @@ class TokenBucketRateLimiter:
 
     async def get_current_tokens(self) -> float:
         """Returns the current number of tokens, for testing/monitoring."""
-        async with self._lock.async_():
+        async with self._lock:
             # It might be useful to refill before getting, to get the most
             # up-to-date count
             # await self._refill_tokens()
