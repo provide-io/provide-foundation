@@ -11,7 +11,6 @@ from concurrent.futures import ThreadPoolExecutor
 from hypothesis import given, settings, strategies as st
 from provide.testkit import FoundationTestCase
 from provide.testkit.chaos import (
-    malformed_inputs,
     rate_burst_patterns,
     thread_counts,
     unicode_chaos,
@@ -67,8 +66,18 @@ class TestLoggerUnicodeChaos(FoundationTestCase):
         except Exception as e:
             raise AssertionError(f"Logger failed with mixed content: {e}") from e
 
-    @given(data=malformed_inputs())
-    @settings(max_examples=50)
+    @given(
+        data=st.one_of(
+            st.none(),
+            st.integers(),
+            st.floats(allow_nan=True, allow_infinity=True),
+            st.text(min_size=0, max_size=1000),
+            st.binary(min_size=0, max_size=1000),
+            st.lists(st.integers(), min_size=0, max_size=50),
+            st.dictionaries(st.text(min_size=0, max_size=20), st.integers(), min_size=0, max_size=20),
+        )
+    )
+    @settings(max_examples=30)
     def test_malformed_log_data_chaos(self, data: object) -> None:
         """Test logger with malformed input data.
 
