@@ -13,6 +13,24 @@ import pytest
 class TestPlatformDetection(FoundationTestCase):
     """Test platform detection functionality."""
 
+    def setup_method(self) -> None:
+        """Set up test environment and clear caches."""
+        super().setup_method()
+        # Import and clear cached platform detection results before each test
+        from provide.foundation.platform.detection import (
+            get_arch_name,
+            get_cpu_type,
+            get_os_name,
+            get_os_version,
+            get_platform_string,
+        )
+
+        get_os_name.cache_clear()  # type: ignore[attr-defined]
+        get_arch_name.cache_clear()  # type: ignore[attr-defined]
+        get_platform_string.cache_clear()  # type: ignore[attr-defined]
+        get_os_version.cache_clear()  # type: ignore[attr-defined]
+        get_cpu_type.cache_clear()  # type: ignore[attr-defined]
+
     def test_get_os_name_darwin(self) -> None:
         """Test OS name detection for Darwin."""
         from provide.foundation.platform.detection import get_os_name

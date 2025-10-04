@@ -22,15 +22,27 @@ from provide.foundation.platform.detection import (
 class TestPlatformDetection(FoundationTestCase):
     """Test platform detection functions."""
 
+    def setup_method(self) -> None:
+        """Set up test environment and clear caches."""
+        super().setup_method()
+        # Clear cached platform detection results before each test
+        get_os_name.cache_clear()  # type: ignore[attr-defined]
+        get_arch_name.cache_clear()  # type: ignore[attr-defined]
+        get_platform_string.cache_clear()  # type: ignore[attr-defined]
+        get_os_version.cache_clear()  # type: ignore[attr-defined]
+        get_cpu_type.cache_clear()  # type: ignore[attr-defined]
+
     def test_get_os_name_normal(self) -> None:
         """Test get_os_name with normal system values."""
         with patch("platform.system") as mock_system:
             # Test Darwin/macOS
             mock_system.return_value = "Darwin"
             assert get_os_name() == "darwin"
+            get_os_name.cache_clear()  # type: ignore[attr-defined]
 
             mock_system.return_value = "Linux"
             assert get_os_name() == "linux"
+            get_os_name.cache_clear()  # type: ignore[attr-defined]
 
             mock_system.return_value = "Windows"
             assert get_os_name() == "windows"
@@ -40,6 +52,7 @@ class TestPlatformDetection(FoundationTestCase):
         with patch("platform.system") as mock_system:
             mock_system.return_value = "DARWIN"
             assert get_os_name() == "darwin"
+            get_os_name.cache_clear()  # type: ignore[attr-defined]
 
             mock_system.return_value = "linux"
             assert get_os_name() == "linux"
@@ -59,20 +72,25 @@ class TestPlatformDetection(FoundationTestCase):
             # Test x86_64/amd64
             mock_machine.return_value = "x86_64"
             assert get_arch_name() == "amd64"
+            get_arch_name.cache_clear()  # type: ignore[attr-defined]
 
             mock_machine.return_value = "AMD64"
             assert get_arch_name() == "amd64"
+            get_arch_name.cache_clear()  # type: ignore[attr-defined]
 
             # Test ARM variants
             mock_machine.return_value = "aarch64"
             assert get_arch_name() == "arm64"
+            get_arch_name.cache_clear()  # type: ignore[attr-defined]
 
             mock_machine.return_value = "ARM64"
             assert get_arch_name() == "arm64"
+            get_arch_name.cache_clear()  # type: ignore[attr-defined]
 
             # Test legacy x86
             mock_machine.return_value = "i686"
             assert get_arch_name() == "x86"
+            get_arch_name.cache_clear()  # type: ignore[attr-defined]
 
             mock_machine.return_value = "i586"
             assert get_arch_name() == "x86"
