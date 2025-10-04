@@ -148,6 +148,40 @@ class TestWithErrorHandling(FoundationTestCase):
             func()
         assert str(exc_info.value) == "Mapped: foundation error"
 
+    def test_foundation_error_context_preservation(self) -> None:
+        """Test that FoundationError context is auto-preserved when mapping."""
+        from provide.foundation.errors.config import ConfigError
+
+        def map_to_config_error(e: Exception) -> Exception:
+            if isinstance(e, FoundationError):
+                # Map to ConfigError without manually copying context
+                return ConfigError(f"Config issue: {e.message}")
+            return e
+
+        @resilient(error_mapper=map_to_config_error)
+        def func() -> Never:
+            raise FoundationError(
+                "database connection failed",
+                code="DB_CONN_001",
+                context={"host": "localhost", "port": 5432},
+                retry_count=3,
+                user_id=123,
+            )
+
+        # ConfigError should have inherited context from FoundationError
+        with pytest.raises(ConfigError) as exc_info:
+            func()
+
+        error = exc_info.value
+        assert "Config issue: database connection failed" in str(error)
+        # Context should be preserved
+        assert error.context["host"] == "localhost"
+        assert error.context["port"] == 5432
+        assert error.context["retry_count"] == 3
+        assert error.context["user_id"] == 123
+        # Code should be preserved if mapped error uses default
+        assert error.code == "DB_CONN_001"
+
 
 class TestSuppressAndLog(FoundationTestCase):
     """Test suppress_and_log decorator."""
