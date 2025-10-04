@@ -20,7 +20,7 @@ from provide.foundation.config.defaults import (
 from provide.foundation.errors.decorators import resilient
 from provide.foundation.errors.runtime import StateError
 from provide.foundation.logger import get_logger
-from provide.foundation.process.runner import ProcessError
+from provide.foundation.errors.process import ProcessError
 
 """Process lifecycle management utilities.
 

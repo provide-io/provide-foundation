@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from provide.foundation.process.aio.execution import async_run
-from provide.foundation.process.runner import CompletedProcess
+from provide.foundation.process.shared import CompletedProcess
 
 """Shell command execution via async subprocess."""
 

@@ -14,7 +14,7 @@ import pytest
 from provide.foundation.errors.integration import TimeoutError
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.process.aio import async_run, async_shell, async_stream
-from provide.foundation.process.runner import CompletedProcess
+from provide.foundation.process.shared import CompletedProcess
 
 # Mark all tests in this file to run serially to avoid event loop issues
 pytestmark = pytest.mark.serial

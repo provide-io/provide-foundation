@@ -10,8 +10,11 @@ from typing import Any
 from provide.foundation.errors.config import ValidationError
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
 from provide.foundation.logger import get_logger
-from provide.foundation.process.runner import CompletedProcess
-from provide.foundation.process.shared import filter_subprocess_kwargs, prepare_environment
+from provide.foundation.process.shared import (
+    CompletedProcess,
+    filter_subprocess_kwargs,
+    prepare_environment,
+)
 
 """Core async subprocess execution."""
 
