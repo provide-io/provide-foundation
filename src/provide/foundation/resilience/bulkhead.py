@@ -9,7 +9,6 @@ from typing import Any, TypeVar
 
 from attrs import define, field
 
-from provide.foundation.concurrency.locks import DualLock
 from provide.foundation.config.defaults import (
     DEFAULT_BULKHEAD_MAX_CONCURRENT,
     DEFAULT_BULKHEAD_MAX_QUEUE_SIZE,
@@ -31,17 +30,17 @@ class ResourcePool:
     """Resource pool with limited capacity for isolation.
 
     Enforces max_concurrent limit across BOTH sync and async contexts.
-    Uses a shared counter with DualLock to prevent oversubscription.
+    Uses a shared atomic counter protected by threading.Lock to prevent oversubscription.
     """
 
     max_concurrent: int = field(default=DEFAULT_BULKHEAD_MAX_CONCURRENT)
     max_queue_size: int = field(default=DEFAULT_BULKHEAD_MAX_QUEUE_SIZE)
     timeout: float = field(default=DEFAULT_BULKHEAD_TIMEOUT)
 
-    # Internal state - shared counter for true concurrency limit
+    # Internal state - shared atomic counter for true concurrency limit
     _active_count: int = field(default=0, init=False)
     _waiting_count: int = field(default=0, init=False)
-    _lock: DualLock = field(factory=DualLock, init=False)
+    _counter_lock: threading.Lock = field(factory=threading.Lock, init=False)
     _sync_waiters: list[threading.Event] = field(factory=list, init=False)
     _async_waiters: list[asyncio.Event] = field(factory=list, init=False)
 
@@ -52,19 +51,19 @@ class ResourcePool:
     @property
     def active_count(self) -> int:
         """Number of currently active operations (across sync and async)."""
-        with self._lock.sync():
+        with self._counter_lock:
             return self._active_count
 
     @property
     def available_capacity(self) -> int:
         """Number of available slots."""
-        with self._lock.sync():
+        with self._counter_lock:
             return max(0, self.max_concurrent - self._active_count)
 
     @property
     def queue_size(self) -> int:
         """Current number of waiting operations."""
-        with self._lock.sync():
+        with self._counter_lock:
             return self._waiting_count
 
     def acquire(self, timeout: float | None = None) -> bool:
@@ -82,7 +81,7 @@ class ResourcePool:
         actual_timeout = timeout if timeout is not None else self.timeout
 
         # Try to acquire immediately
-        with self._lock.sync():
+        with self._counter_lock:
             if self._active_count < self.max_concurrent:
                 self._active_count += 1
                 return True
@@ -102,28 +101,16 @@ class ResourcePool:
                 # Successfully signaled, we now have the slot
                 return True
             # Timeout - remove from queue
-            with self._lock.sync(), contextlib.suppress(ValueError):
+            with self._counter_lock, contextlib.suppress(ValueError):
                 self._sync_waiters.remove(waiter)
             return False
         finally:
-            with self._lock.sync():
+            with self._counter_lock:
                 self._waiting_count -= 1
 
     def release(self) -> None:
         """Release a resource slot."""
-        with self._lock.sync():
-            if self._active_count > 0:
-                self._active_count -= 1
-
-            # Signal next waiter (prefer sync over async for fairness)
-            if self._sync_waiters:
-                sync_waiter = self._sync_waiters.pop(0)
-                self._active_count += 1
-                sync_waiter.set()
-            elif self._async_waiters:
-                async_waiter = self._async_waiters.pop(0)
-                self._active_count += 1
-                async_waiter.set()
+        self._release_and_signal()
 
     async def acquire_async(self, timeout: float | None = None) -> bool:
         """Acquire a resource slot (async).
@@ -139,20 +126,16 @@ class ResourcePool:
         """
         actual_timeout = timeout if timeout is not None else self.timeout
 
-        # Try to acquire immediately
-        async with self._lock.async_():
-            if self._active_count < self.max_concurrent:
-                self._active_count += 1
-                return True
-
-            # Check queue limit
-            if self._waiting_count >= self.max_queue_size:
-                raise RuntimeError(f"Queue is full (max: {self.max_queue_size})")
-
-            # Add to wait queue
-            self._waiting_count += 1
-            waiter = asyncio.Event()
-            self._async_waiters.append(waiter)
+        # Try to acquire immediately using atomic counter access
+        waiter = None
+        acquired = await asyncio.to_thread(self._try_acquire_or_queue_async)
+        if acquired is True:
+            return True
+        elif isinstance(acquired, asyncio.Event):
+            waiter = acquired
+        else:
+            # Queue is full
+            raise RuntimeError(f"Queue is full (max: {self.max_queue_size})")
 
         # Wait for signal from release
         try:
@@ -161,17 +144,45 @@ class ResourcePool:
             return True
         except TimeoutError:
             # Timeout - remove from queue
-            async with self._lock.async_():
-                with contextlib.suppress(ValueError):
-                    self._async_waiters.remove(waiter)
+            await asyncio.to_thread(self._remove_async_waiter, waiter)
             return False
         finally:
-            async with self._lock.async_():
-                self._waiting_count -= 1
+            await asyncio.to_thread(self._decrement_waiting)
+
+    def _try_acquire_or_queue_async(self) -> bool | asyncio.Event | None:
+        """Helper for async acquire - returns True if acquired, Event if queued, None if queue full."""
+        with self._counter_lock:
+            if self._active_count < self.max_concurrent:
+                self._active_count += 1
+                return True
+
+            # Check queue limit
+            if self._waiting_count >= self.max_queue_size:
+                return None  # Queue full
+
+            # Add to wait queue
+            self._waiting_count += 1
+            waiter = asyncio.Event()
+            self._async_waiters.append(waiter)
+            return waiter
+
+    def _remove_async_waiter(self, waiter: asyncio.Event) -> None:
+        """Helper to remove async waiter from queue."""
+        with self._counter_lock, contextlib.suppress(ValueError):
+            self._async_waiters.remove(waiter)
+
+    def _decrement_waiting(self) -> None:
+        """Helper to decrement waiting count."""
+        with self._counter_lock:
+            self._waiting_count -= 1
 
     async def release_async(self) -> None:
         """Release a resource slot (async)."""
-        async with self._lock.async_():
+        await asyncio.to_thread(self._release_and_signal)
+
+    def _release_and_signal(self) -> None:
+        """Helper to release slot and signal next waiter atomically."""
+        with self._counter_lock:
             if self._active_count > 0:
                 self._active_count -= 1
 
@@ -187,7 +198,7 @@ class ResourcePool:
 
     def get_stats(self) -> dict[str, Any]:
         """Get pool statistics."""
-        with self._lock.sync():
+        with self._counter_lock:
             return {
                 "max_concurrent": self.max_concurrent,
                 "active_count": self._active_count,
