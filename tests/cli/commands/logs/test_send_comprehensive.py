@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from io import StringIO
 
+import pytest
+
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import Mock, patch
 
