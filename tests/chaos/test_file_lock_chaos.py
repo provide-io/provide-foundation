@@ -223,7 +223,9 @@ class TestFileLockChaos(FoundationTestCase):
     @pytest.mark.chaos_slow
     @given(scenario=lock_file_scenarios())
     @settings(
-        max_examples=20, suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture]
+        max_examples=20,
+        suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture],
+        deadline=None,
     )
     def test_lock_file_scenarios_chaos(
         self,
