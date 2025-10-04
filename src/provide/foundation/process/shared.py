@@ -2,12 +2,27 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 import os
+from pathlib import Path
 from typing import Any
 
+from attrs import define
+
+from provide.foundation.errors.config import ValidationError
 from provide.foundation.errors.process import ProcessError
-from provide.foundation.process.runner import CompletedProcess
 
 """Shared utilities for both sync and async subprocess execution."""
+
+
+@define
+class CompletedProcess:
+    """Result of a completed process."""
+
+    args: list[str]
+    returncode: int
+    stdout: str
+    stderr: str
+    cwd: str | None = None
+    env: dict[str, str] | None = None
 
 
 def prepare_environment(env: Mapping[str, str] | None) -> dict[str, str]:
@@ -136,3 +151,61 @@ def filter_subprocess_kwargs(kwargs: dict) -> dict:
         "process_group",
     }
     return {k: v for k, v in kwargs.items() if k in valid_subprocess_kwargs}
+
+
+def normalize_cwd(cwd: str | Path | None) -> str | None:
+    """Normalize working directory to string.
+
+    Args:
+        cwd: Working directory as string, Path, or None
+
+    Returns:
+        Working directory as string or None
+    """
+    if isinstance(cwd, Path):
+        return str(cwd)
+    return cwd
+
+
+def prepare_input(input: str | bytes | None, text_mode: bool) -> str | bytes | None:
+    """Prepare input for subprocess based on text mode.
+
+    Args:
+        input: Input data as string, bytes, or None
+        text_mode: Whether subprocess is in text mode
+
+    Returns:
+        Properly converted input for subprocess
+    """
+    if input is None:
+        return None
+
+    if text_mode and isinstance(input, bytes):
+        # Convert bytes to string for text mode
+        return input.decode("utf-8")
+    elif not text_mode and isinstance(input, str):
+        # Convert string to bytes for binary mode
+        return input.encode("utf-8")
+    else:
+        # Already correct type
+        return input
+
+
+def validate_command_type(cmd: list[str] | str, shell: bool) -> None:
+    """Validate command type matches shell parameter.
+
+    Args:
+        cmd: Command as list or string
+        shell: Whether shell execution is enabled
+
+    Raises:
+        ValidationError: If string command provided without shell=True
+    """
+    if isinstance(cmd, str) and not shell:
+        raise ValidationError(
+            "String commands require explicit shell=True for security. "
+            "Use shell() for shell commands or pass a list for direct execution.",
+            code="INVALID_COMMAND_TYPE",
+            expected="list[str] or (str with shell=True)",
+            actual="str without shell=True",
+        )
