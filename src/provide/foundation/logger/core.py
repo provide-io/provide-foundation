@@ -324,7 +324,6 @@ def get_global_logger() -> FoundationLogger:
     return FoundationLogger()
 
 
-# Backward compatibility: provide global logger object with lazy access
 class GlobalLoggerProxy:
     """Proxy object that forwards all attribute access to Hub-based logger."""
 

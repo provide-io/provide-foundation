@@ -126,20 +126,6 @@ def flexible_options(f: F) -> F:
     return f
 
 
-def standard_options(f: F) -> F:
-    """Apply all standard CLI options.
-
-    Combines logging_options, config_options, and output_options.
-
-    Note: Consider using flexible_options for better granular control.
-    This decorator provides legacy all-in-one option handling.
-    """
-    f = logging_options(f)
-    f = config_options(f)
-    f = output_options(f)
-    return f
-
-
 def error_handler(f: F) -> F:
     """Decorator to handle errors consistently in CLI commands.
 
