@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from provide.foundation import config, errors, hub, platform, process, resilience, tracer
 from provide.foundation.console import perr, pin, pout
-from provide.foundation.context import CLIContext, Context
+from provide.foundation.context import CLIContext
 from provide.foundation.errors import (
     FoundationError,
     error_boundary,
@@ -99,7 +99,6 @@ __all__ = [
     "CircuitState",
     "ComponentCategory",
     "ConsoleFormatterStr",
-    "Context",  # Legacy context support
     # Event set types
     "EventMapping",
     "EventSet",
