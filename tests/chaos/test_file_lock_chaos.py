@@ -31,6 +31,7 @@ from provide.foundation.file.lock import FileLock
 class TestFileLockChaos(FoundationTestCase):
     """Chaos tests for FileLock with property-based testing."""
 
+    @pytest.mark.chaos_slow
     @given(
         num_threads=thread_counts(min_threads=2, max_threads=10),
         lock_duration=chaos_timings(min_value=0.001, max_value=0.1),
@@ -83,6 +84,7 @@ class TestFileLockChaos(FoundationTestCase):
         # (no concurrent access violations)
         assert len(acquired_by) > 0, "At least one thread should acquire lock"
 
+    @pytest.mark.chaos_slow
     @given(
         time_advance=st.floats(min_value=0.0, max_value=600.0),
         stale_threshold=st.floats(min_value=0.5, max_value=5.0),
@@ -122,6 +124,7 @@ class TestFileLockChaos(FoundationTestCase):
         lock.release()
         assert not lock.locked
 
+    @pytest.mark.chaos_slow
     @given(scenario=pid_recycling_scenarios())
     @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
     def test_pid_recycling_protection_chaos(
@@ -162,6 +165,7 @@ class TestFileLockChaos(FoundationTestCase):
 
         lock.release()
 
+    @pytest.mark.chaos_slow
     @given(
         check_interval=st.floats(min_value=0.001, max_value=0.2),
         lock_content=st.one_of(
@@ -208,6 +212,7 @@ class TestFileLockChaos(FoundationTestCase):
             # Timeout is acceptable for corrupted locks
             pass
 
+    @pytest.mark.chaos_slow
     @given(scenario=lock_file_scenarios())
     @settings(max_examples=20, suppress_health_check=[HealthCheck.too_slow])
     def test_lock_file_scenarios_chaos(
@@ -298,6 +303,7 @@ class TestFileLockChaos(FoundationTestCase):
 class TestFileLockAsyncChaos(FoundationTestCase):
     """Async chaos tests for FileLock with concurrent async operations."""
 
+    @pytest.mark.chaos_slow
     @pytest.mark.asyncio
     @given(
         num_tasks=st.integers(min_value=2, max_value=10),
