@@ -164,7 +164,7 @@ class TestAsyncStreamCommandCoverage(FoundationTestCase):
     async def test_async_stream_command_with_stderr(self) -> None:
         """Test async streaming command with stderr capture."""
         lines = []
-        async for line in async_stream_command(
+        async for line in async_stream(
             [
                 sys.executable,
                 "-c",
@@ -186,7 +186,7 @@ class TestAsyncStreamCommandCoverage(FoundationTestCase):
             # Try to stream from a long-running command with very short timeout
             # Use a command that definitely won't complete in 0.05 seconds
             lines = []
-            async for line in async_stream_command(["sleep", "10"], timeout=0.05):
+            async for line in async_stream(["sleep", "10"], timeout=0.05):
                 lines.append(line)
 
     @patch("asyncio.create_subprocess_exec")
@@ -197,7 +197,7 @@ class TestAsyncStreamCommandCoverage(FoundationTestCase):
 
         with pytest.raises(ProcessError) as exc_info:
             lines = []
-            async for line in async_stream_command(["nonexistent"]):
+            async for line in async_stream(["nonexistent"]):
                 lines.append(line)
 
         assert "Failed to stream async command" in str(exc_info.value)
