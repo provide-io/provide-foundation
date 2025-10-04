@@ -16,9 +16,11 @@ _thread_local = threading.local()
 # Maximum depth for nested lazy imports to prevent stack overflow
 MAX_LAZY_IMPORT_DEPTH = 5
 
-# Modules that require special error handling
+# Modules that require special error handling with helpful install messages
 SPECIAL_MODULES = {
     "cli": "CLI features require optional dependencies. Install with: pip install 'provide-foundation[cli]'",
+    "transport": "HTTP/HTTPS transport requires optional dependencies. Install with: pip install 'provide-foundation[transport]'",
+    "docs": "Documentation generation requires optional dependencies. Install with: pip install 'provide-foundation[docs]'",
 }
 
 
@@ -108,8 +110,15 @@ def lazy_import(parent_module: str, name: str) -> object:
             return mod
         except ImportError as e:
             # Provide helpful error messages for known optional dependencies
-            if name in SPECIAL_MODULES and "click" in str(e):
-                raise ImportError(SPECIAL_MODULES[name]) from e
+            if name in SPECIAL_MODULES:
+                error_str = str(e)
+                # Check if error is about missing dependency for this feature
+                if (
+                    (name == "cli" and "click" in error_str)
+                    or (name == "transport" and "httpx" in error_str)
+                    or (name == "docs" and ("mkdocs" in error_str or "mkdocstrings" in error_str))
+                ):
+                    raise ImportError(SPECIAL_MODULES[name]) from e
             raise
     finally:
         # Always clear recursion guards in reverse order
