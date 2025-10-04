@@ -123,7 +123,6 @@ if TYPE_CHECKING:
 try:
     from cryptography import x509
     from cryptography.hazmat.primitives import serialization
-    from cryptography.hazmat.primitives.asymmetric import ec, rsa
 
     _HAS_CRYPTO = True
 except ImportError:

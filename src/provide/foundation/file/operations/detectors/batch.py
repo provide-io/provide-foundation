@@ -96,12 +96,8 @@ class BatchOperationDetector:
 
             # Check if events are clustered in time (within 5 seconds)
             time_span = (dir_events[-1].timestamp - dir_events[0].timestamp).total_seconds()
-            if time_span <= 5.0:
-                # Check if files are related (similar names/extensions)
-                if self._files_are_related(dir_events):
-                    operation_type = self._determine_batch_operation_type(dir_events)
-
-                    return FileOperation(
+            if time_span <= 5.0 and self._files_are_related(dir_events):
+                return FileOperation(
                         operation_type=OperationType.BATCH_UPDATE,
                         primary_path=directory,
                         events=dir_events,
