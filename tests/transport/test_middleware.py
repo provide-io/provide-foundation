@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from provide.testkit import FoundationTestCase
+from provide.testkit.time import make_controlled_time
 import pytest
 
 from provide.foundation.transport.base import Request, Response
@@ -203,13 +204,20 @@ async def test_retry_middleware_execute() -> None:
     """Test retry middleware execute_with_retry method."""
     from provide.foundation.resilience.retry import BackoffStrategy, RetryPolicy
 
+    # Create controlled time for testing retry delays
+    get_time, advance_time, fake_sleep, fake_async_sleep = make_controlled_time()
+
     policy = RetryPolicy(
         max_attempts=3,
         base_delay=0.01,  # Very fast for testing
         backoff=BackoffStrategy.EXPONENTIAL,
         retryable_status_codes={500},
     )
-    middleware = RetryMiddleware(policy=policy)
+    middleware = RetryMiddleware(
+        policy=policy,
+        time_source=get_time,
+        async_sleep_func=fake_async_sleep,
+    )
 
     request = Request(uri="https://api.example.com/test", method="GET")
     call_count = 0
