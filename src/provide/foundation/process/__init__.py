@@ -42,13 +42,13 @@ __all__ = [
     "exit_success",
     # Sync execution (modern API)
     "run",
-    "run_simple",
-    "shell",
-    "stream",
     # Backward compatibility (deprecated)
     "run_command",
     "run_command_simple",
     "run_shell",
+    "run_simple",
+    "shell",
+    "stream",
     "stream_command",
     "wait_for_process_output",
 ]

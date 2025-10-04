@@ -12,11 +12,7 @@ from provide.testkit.mocking import patch
 import pytest
 
 from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
-from provide.foundation.process.runner import (
-    run_command,
-    run_shell,
-    stream_command,
-)
+from provide.foundation.process.sync import run, shell, stream
 
 
 class TestInputHandling(FoundationTestCase):
@@ -25,7 +21,7 @@ class TestInputHandling(FoundationTestCase):
     def test_bytes_input_with_text_mode(self) -> None:
         """Test bytes input gets converted to string in text mode."""
         # Use echo command that reads from stdin
-        result = run_command(
+        result = run(
             ["cat"],
             input=b"hello world",
             text=True,
@@ -37,7 +33,7 @@ class TestInputHandling(FoundationTestCase):
 
     def test_string_input_with_binary_mode(self) -> None:
         """Test string input gets converted to bytes in binary mode."""
-        result = run_command(
+        result = run(
             ["cat"],
             input="hello world",
             text=False,
@@ -50,7 +46,7 @@ class TestInputHandling(FoundationTestCase):
     def test_matching_input_types(self) -> None:
         """Test that matching input types are passed through unchanged."""
         # String input with text mode - should pass through
-        result = run_command(
+        result = run(
             ["cat"],
             input="hello world",
             text=True,
@@ -61,7 +57,7 @@ class TestInputHandling(FoundationTestCase):
         assert "hello world" in result.stdout
 
         # Bytes input with binary mode - should pass through
-        result = run_command(
+        result = run(
             ["cat"],
             input=b"hello world",
             text=False,
@@ -73,7 +69,7 @@ class TestInputHandling(FoundationTestCase):
 
     def test_none_input(self) -> None:
         """Test that None input is handled correctly."""
-        result = run_command(["echo", "test"], input=None)
+        result = run(["echo", "test"], input=None)
         assert result.returncode == 0
 
 
@@ -83,7 +79,7 @@ class TestErrorHandling(FoundationTestCase):
     def test_subprocess_timeout_error(self) -> None:
         """Test handling of subprocess TimeoutExpired error."""
         with pytest.raises(ProcessTimeoutError) as exc_info:
-            run_command(["sleep", "1"], timeout=0.01, check=True)
+            run(["sleep", "1"], timeout=0.01, check=True)
 
         assert "timed out" in str(exc_info.value).lower()
 
@@ -94,7 +90,7 @@ class TestErrorHandling(FoundationTestCase):
         mock_run.side_effect = OSError("File not found")
 
         with pytest.raises(ProcessError) as exc_info:
-            run_command(["nonexistent_command"], check=True)
+            run(["nonexistent_command"], check=True)
 
         assert "Failed to execute command" in str(exc_info.value)
         assert exc_info.value.code == "PROCESS_EXECUTION_FAILED"
@@ -107,21 +103,21 @@ class TestErrorHandling(FoundationTestCase):
         mock_run.side_effect = original_error
 
         with pytest.raises(ProcessError) as exc_info:
-            run_command(["test"], check=True)
+            run(["test"], check=True)
 
         # Should be the same exception instance
         assert exc_info.value is original_error
 
     def test_command_failure_with_check_false(self) -> None:
         """Test that failed commands don't raise when check=False."""
-        result = run_command(["false"], check=False)
+        result = run(["false"], check=False)
         assert result.returncode != 0
         # Should not raise an exception
 
     def test_command_failure_with_check_true(self) -> None:
         """Test that failed commands raise ProcessError when check=True."""
         with pytest.raises(ProcessError) as exc_info:
-            run_command(["false"], check=True)
+            run(["false"], check=True)
 
         assert exc_info.value.return_code != 0
         assert exc_info.value.code == "PROCESS_COMMAND_FAILED"
@@ -132,14 +128,14 @@ class TestShellExecution(FoundationTestCase):
 
     def test_shell_with_complex_command(self) -> None:
         """Test shell execution with complex commands."""
-        result = run_shell("echo 'hello world' | grep hello")
+        result = shell("echo 'hello world' | grep hello")
 
         assert result.returncode == 0
         assert "hello" in result.stdout
 
     def test_shell_with_environment_variables(self) -> None:
         """Test shell execution with custom environment."""
-        result = run_shell("echo $TEST_VAR", env={"TEST_VAR": "test_value"})
+        result = shell("echo $TEST_VAR", env={"TEST_VAR": "test_value"})
 
         assert result.returncode == 0
         assert "test_value" in result.stdout
@@ -147,7 +143,7 @@ class TestShellExecution(FoundationTestCase):
     def test_shell_failure(self) -> None:
         """Test shell command failure."""
         with pytest.raises(ProcessError):
-            run_shell("exit 1", check=True)
+            shell("exit 1", check=True)
 
 
 class TestWorkingDirectory(FoundationTestCase):
@@ -158,7 +154,7 @@ class TestWorkingDirectory(FoundationTestCase):
         test_file = tmp_path / "test.txt"
         test_file.write_text("test content")
 
-        result = run_command(["cat", "test.txt"], cwd=str(tmp_path))
+        result = run(["cat", "test.txt"], cwd=str(tmp_path))
 
         assert result.returncode == 0
         assert "test content" in result.stdout
@@ -168,7 +164,7 @@ class TestWorkingDirectory(FoundationTestCase):
         test_file = tmp_path / "test.txt"
         test_file.write_text("test content")
 
-        result = run_command(["cat", "test.txt"], cwd=tmp_path)
+        result = run(["cat", "test.txt"], cwd=tmp_path)
 
         assert result.returncode == 0
         assert "test content" in result.stdout
@@ -179,7 +175,7 @@ class TestEnvironmentHandling(FoundationTestCase):
 
     def test_env_dict_conversion(self) -> None:
         """Test that env dict is properly converted."""
-        result = run_command(
+        result = run(
             ["env"],
             env={"TEST_VAR": "test_value"},
             capture_output=True,
@@ -190,7 +186,7 @@ class TestEnvironmentHandling(FoundationTestCase):
 
     def test_env_none(self) -> None:
         """Test that None env is handled correctly."""
-        result = run_command(["echo", "test"], env=None)
+        result = run(["echo", "test"], env=None)
         assert result.returncode == 0
         # Should not crash or fail
 
@@ -198,10 +194,10 @@ class TestEnvironmentHandling(FoundationTestCase):
 class TestStreamCommandCoverage(FoundationTestCase):
     """Test additional stream command functionality."""
 
-    def test_stream_command_with_stderr(self) -> None:
+    def test_stream_with_stderr(self) -> None:
         """Test streaming command with stderr capture."""
         lines = list(
-            stream_command(
+            stream(
                 [
                     sys.executable,
                     "-c",
@@ -217,11 +213,11 @@ class TestStreamCommandCoverage(FoundationTestCase):
         assert "stdout" in output or "stderr" in output
 
     @pytest.mark.time_sensitive
-    def test_stream_command_timeout(self) -> None:
+    def test_stream_timeout(self) -> None:
         """Test stream command timeout handling."""
         with pytest.raises(ProcessTimeoutError):
             # Try to stream from a long-running command with short timeout
-            list(stream_command(["sleep", "1"], timeout=0.1))
+            list(stream(["sleep", "1"], timeout=0.1))
 
     @patch("subprocess.Popen")
     def test_stream_generic_exception(self, mock_popen) -> None:
@@ -229,7 +225,7 @@ class TestStreamCommandCoverage(FoundationTestCase):
         mock_popen.side_effect = OSError("Command not found")
 
         with pytest.raises(ProcessError) as exc_info:
-            list(stream_command(["nonexistent"]))
+            list(stream(["nonexistent"]))
 
         assert "Failed to stream command" in str(exc_info.value)
 
@@ -239,14 +235,14 @@ class TestCompletedProcessConstruction(FoundationTestCase):
 
     def test_completed_process_with_list_cmd(self) -> None:
         """Test CompletedProcess construction with list command."""
-        result = run_command(["echo", "hello"], capture_output=True)
+        result = run(["echo", "hello"], capture_output=True)
 
         assert isinstance(result.args, list)
         assert result.args == ["echo", "hello"]
 
     def test_completed_process_with_string_cmd(self) -> None:
         """Test CompletedProcess construction with string command."""
-        result = run_shell("echo hello", capture_output=True)
+        result = shell("echo hello", capture_output=True)
 
         assert isinstance(result.args, list)
         assert len(result.args) == 1  # String command becomes single-item list
@@ -254,7 +250,7 @@ class TestCompletedProcessConstruction(FoundationTestCase):
 
     def test_completed_process_without_capture(self) -> None:
         """Test CompletedProcess when capture_output=False."""
-        result = run_command(["echo", "hello"], capture_output=False)
+        result = run(["echo", "hello"], capture_output=False)
 
         # stdout/stderr should be empty strings when not captured
         assert result.stdout == ""
@@ -263,7 +259,7 @@ class TestCompletedProcessConstruction(FoundationTestCase):
     def test_completed_process_env_handling(self) -> None:
         """Test CompletedProcess environment handling."""
         # Test with custom env
-        result = run_command(
+        result = run(
             ["echo", "test"],
             env={"TEST_VAR": "value"},
             capture_output=True,
@@ -272,5 +268,5 @@ class TestCompletedProcessConstruction(FoundationTestCase):
         assert "TEST_VAR" in result.env
 
         # Test with no env
-        result = run_command(["echo", "test"], env=None, capture_output=True)
+        result = run(["echo", "test"], env=None, capture_output=True)
         assert result.env is None

@@ -14,28 +14,23 @@ import pytest
 
 from provide.foundation.errors import ProcessError
 from provide.foundation.errors.process import ProcessTimeoutError
-from provide.foundation.process.runner import (
-    run_command,
-    run_command_simple,
-    run_shell,
-    stream_command,
-)
+from provide.foundation.process.sync import run, run_simple, shell, stream
 
 
 class TestProcessRunnerCoverage(FoundationTestCase):
     """Test process runner functionality for improved coverage."""
 
-    def test_run_command_with_path_cwd(self) -> None:
-        """Test run_command with Path object as cwd."""
+    def test_run_with_path_cwd(self) -> None:
+        """Test run with Path object as cwd."""
         with tempfile.TemporaryDirectory() as tmpdir:
             path_cwd = Path(tmpdir)
-            result = run_command(["pwd"], cwd=path_cwd, capture_output=True, check=True)
+            result = run(["pwd"], cwd=path_cwd, capture_output=True, check=True)
             assert tmpdir in result.stdout
 
-    def test_run_command_env_variable_update(self) -> None:
-        """Test run_command with environment variables."""
+    def test_run_env_variable_update(self) -> None:
+        """Test run with environment variables."""
         env = {"TEST_VAR": "test_value"}
-        result = run_command(
+        result = run(
             [
                 sys.executable,
                 "-c",
@@ -47,9 +42,9 @@ class TestProcessRunnerCoverage(FoundationTestCase):
         )
         assert "test_value" in result.stdout
 
-    def test_run_command_disables_foundation_telemetry_by_default(self) -> None:
-        """Test that run_command disables foundation telemetry by default."""
-        result = run_command(
+    def test_run_disables_foundation_telemetry_by_default(self) -> None:
+        """Test that run disables foundation telemetry by default."""
+        result = run(
             [
                 sys.executable,
                 "-c",
@@ -60,10 +55,10 @@ class TestProcessRunnerCoverage(FoundationTestCase):
         )
         assert "true" in result.stdout
 
-    def test_run_command_preserves_existing_telemetry_setting(self) -> None:
+    def test_run_preserves_existing_telemetry_setting(self) -> None:
         """Test that existing telemetry settings are preserved."""
         env = {"PROVIDE_TELEMETRY_DISABLED": "false"}
-        result = run_command(
+        result = run(
             [
                 sys.executable,
                 "-c",
@@ -75,25 +70,25 @@ class TestProcessRunnerCoverage(FoundationTestCase):
         )
         assert "false" in result.stdout
 
-    def test_run_command_simple_strips_whitespace(self) -> None:
-        """Test that run_command_simple strips whitespace from output."""
+    def test_run_simple_strips_whitespace(self) -> None:
+        """Test that run_simple strips whitespace from output."""
         # Test with a command that outputs whitespace
-        output = run_command_simple(["echo", "  test  "])
+        output = run_simple(["echo", "  test  "])
         assert output == "test"
 
-    def test_stream_command_with_path_cwd(self) -> None:
-        """Test stream_command with Path object as cwd."""
+    def test_stream_with_path_cwd(self) -> None:
+        """Test stream with Path object as cwd."""
         with tempfile.TemporaryDirectory() as tmpdir:
             path_cwd = Path(tmpdir)
-            lines = list(stream_command(["pwd"], cwd=path_cwd))
+            lines = list(stream(["pwd"], cwd=path_cwd))
             assert len(lines) > 0
             assert tmpdir in lines[0]
 
-    def test_stream_command_with_environment_variables(self) -> None:
-        """Test stream_command with environment variables."""
+    def test_stream_with_environment_variables(self) -> None:
+        """Test stream with environment variables."""
         env = {"TEST_STREAM_VAR": "stream_value"}
         lines = list(
-            stream_command(
+            stream(
                 [
                     sys.executable,
                     "-c",
@@ -105,17 +100,17 @@ class TestProcessRunnerCoverage(FoundationTestCase):
         assert "stream_value" in lines[0]
 
     @pytest.mark.serial
-    def test_stream_command_timeout_handling(self) -> None:
-        """Test stream_command with timeout."""
+    def test_stream_timeout_handling(self) -> None:
+        """Test stream with timeout."""
         # Use a command that should complete quickly
-        lines = list(stream_command(["echo", "test"], timeout=1.0))
+        lines = list(stream(["echo", "test"], timeout=1.0))
         assert "test" in lines[0]
 
-    def test_stream_command_stream_stderr_enabled(self) -> None:
-        """Test stream_command with stderr streaming enabled."""
+    def test_stream_stream_stderr_enabled(self) -> None:
+        """Test stream with stderr streaming enabled."""
         # This will output to stderr, but with stream_stderr=True it goes to stdout
         lines = list(
-            stream_command(
+            stream(
                 [sys.executable, "-c", "import sys; sys.stderr.write('error\\n')"],
                 stream_stderr=True,
             ),
@@ -123,58 +118,58 @@ class TestProcessRunnerCoverage(FoundationTestCase):
         # When stream_stderr=True, stderr goes to stdout so we can capture it
         assert len(lines) >= 0  # May or may not capture the stderr
 
-    def test_stream_command_handles_nonblocking_io(self) -> None:
-        """Test stream_command with basic streaming functionality."""
+    def test_stream_handles_nonblocking_io(self) -> None:
+        """Test stream with basic streaming functionality."""
         # Simple test that actually works with real commands
-        lines = list(stream_command(["echo", "test"]))
+        lines = list(stream(["echo", "test"]))
         assert len(lines) > 0
         assert "test" in lines[0]
 
-    def test_run_shell_basic(self) -> None:
-        """Test run_shell basic functionality."""
-        result = run_shell("echo test")
+    def test_shell_basic(self) -> None:
+        """Test shell basic functionality."""
+        result = shell("echo test")
         assert "test" in result.stdout
 
-    def test_run_shell_with_pipes(self) -> None:
-        """Test run_shell with shell pipes."""
-        result = run_shell("echo 'hello world' | grep hello")
+    def test_shell_with_pipes(self) -> None:
+        """Test shell with shell pipes."""
+        result = shell("echo 'hello world' | grep hello")
         assert "hello" in result.stdout
 
-    def test_run_shell_failure_handling(self) -> None:
-        """Test run_shell with command failure."""
+    def test_shell_failure_handling(self) -> None:
+        """Test shell with command failure."""
         with pytest.raises(ProcessError):
-            run_shell("exit 1", check=True)
+            shell("exit 1", check=True)
 
-    def test_run_shell_with_cwd_path(self) -> None:
-        """Test run_shell with Path object as cwd."""
+    def test_shell_with_cwd_path(self) -> None:
+        """Test shell with Path object as cwd."""
         with tempfile.TemporaryDirectory() as tmpdir:
             path_cwd = Path(tmpdir)
-            result = run_shell("pwd", cwd=path_cwd)
+            result = shell("pwd", cwd=path_cwd)
             assert tmpdir in result.stdout
 
-    def test_run_shell_env_inheritance_and_override(self) -> None:
-        """Test run_shell inherits and overrides environment variables."""
+    def test_shell_env_inheritance_and_override(self) -> None:
+        """Test shell inherits and overrides environment variables."""
         env = {"SHELL_TEST_VAR": "shell_value"}
-        result = run_shell(
+        result = shell(
             f"{sys.executable} -c \"import os; print(os.environ.get('SHELL_TEST_VAR', 'not_found'))\"",
             env=env,
         )
         assert "shell_value" in result.stdout
 
-    def test_run_command_handles_timeout(self) -> None:
-        """Test run_command handles timeout."""
+    def test_run_handles_timeout(self) -> None:
+        """Test run handles timeout."""
         # Use a real timeout test
         with pytest.raises(ProcessTimeoutError) as exc_info:
-            run_command(["sleep", "1"], timeout=0.1, check=True)
+            run(["sleep", "1"], timeout=0.1, check=True)
 
         assert "timed out" in str(exc_info.value)
 
     @patch("subprocess.run")
-    def test_run_command_handles_subprocess_error(self, mock_run: Any) -> None:
-        """Test run_command handles subprocess.SubprocessError."""
+    def test_run_handles_subprocess_error(self, mock_run: Any) -> None:
+        """Test run handles subprocess.SubprocessError."""
         mock_run.side_effect = subprocess.SubprocessError("Generic error")
 
         with pytest.raises(ProcessError) as exc_info:
-            run_command(["invalid_command"], check=True)
+            run(["invalid_command"], check=True)
 
         assert "Failed to execute command" in str(exc_info.value)
