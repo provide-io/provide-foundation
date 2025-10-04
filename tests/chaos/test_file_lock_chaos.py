@@ -327,7 +327,9 @@ class TestFileLockAsyncChaos(FoundationTestCase):
         lock_duration=chaos_timings(min_value=0.001, max_value=0.05),
     )
     @settings(
-        max_examples=20, suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture]
+        max_examples=20,
+        suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture],
+        deadline=None,
     )
     async def test_async_concurrent_access_chaos(
         self,

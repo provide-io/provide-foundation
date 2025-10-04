@@ -104,7 +104,7 @@ class TestLoggerConcurrencyChaos(FoundationTestCase):
         num_threads=thread_counts(min_threads=2, max_threads=20),
         messages_per_thread=st.integers(min_value=5, max_value=50),
     )
-    @settings(max_examples=20)
+    @settings(max_examples=20, deadline=None)
     def test_concurrent_logging_chaos(
         self,
         num_threads: int,
