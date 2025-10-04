@@ -11,18 +11,20 @@ from provide.foundation.process.lifecycle import (
     ManagedProcess,
     wait_for_process_output,
 )
-from provide.foundation.process.runner import (
-    CompletedProcess,
-    run_command,
-    run_shell,
-    stream_command,
-)
+from provide.foundation.process.shared import CompletedProcess
+from provide.foundation.process.sync import run, run_simple, shell, stream
 
 """Process execution utilities.
 
 Provides sync and async subprocess execution with consistent error handling,
 and advanced process lifecycle management.
 """
+
+# Backward compatibility aliases
+run_command = run
+run_command_simple = run_simple
+run_shell = shell
+stream_command = stream
 
 __all__ = [
     # Core types
@@ -34,12 +36,18 @@ __all__ = [
     "async_run",
     "async_shell",
     "async_stream",
+    # Exit utilities
     "exit_error",
     "exit_interrupted",
-    # Exit utilities
     "exit_success",
-    # Sync execution
+    # Sync execution (modern API)
+    "run",
+    "run_simple",
+    "shell",
+    "stream",
+    # Backward compatibility (deprecated)
     "run_command",
+    "run_command_simple",
     "run_shell",
     "stream_command",
     "wait_for_process_output",
