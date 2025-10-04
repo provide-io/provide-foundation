@@ -44,7 +44,7 @@ try:
     from provide.foundation.integrations.openobserve.otlp import send_log
 except ImportError:
     # OTLP functionality not available
-    send_log = None
+    send_log = None  # type: ignore[assignment]
 
 """OpenObserve integration for Foundation.
 
