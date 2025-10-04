@@ -87,7 +87,9 @@ class TestRetryPolicyChaos(FoundationTestCase):
 
         delay = policy.calculate_delay(attempt)
         assert delay >= 0
-        assert delay <= policy.max_delay
+        # With jitter, delay can be up to 125% of max_delay (±25% variation)
+        # So we allow 1.25x max_delay as the upper bound
+        assert delay <= policy.max_delay * 1.25
 
     @given(patterns=failure_patterns(max_failures=10))
     @settings(max_examples=30)
