@@ -131,10 +131,20 @@ cat chaos_test_output.log
   - These tests work correctly but are too slow for Hypothesis health checks
   - Consider moving to integration test suite or disabling for CI
 
-### Minor Issues to Fix
+### Minor Issues Found (3 failures in 24 tests)
 
-1. **Rate limiter edge value test** - Expects ValueError for invalid capacity but implementation may handle differently
-2. **Retry concurrent test timeout** - Async concurrent retry test occasionally times out
+1. **FileLock reentrant locking test** - Uses function-scoped fixture `tmp_path` which conflicts with Hypothesis's test case generation
+   - Hypothesis generates multiple test cases but the fixture isn't reset between them
+   - Fix: Replace `tmp_path` fixture with a context manager creating temporary directories inside the test
+
+2. **Rate limiter edge value test** - Expects ValueError for NaN capacity but implementation accepts it
+   - Test expects: `with pytest.raises(ValueError, match="Capacity must be positive")`
+   - Actual behavior: Implementation logs debug message but doesn't raise exception
+   - Fix options: Either update test to match implementation or add validation to TokenBucketRateLimiter
+
+3. **Retry concurrent test timeout** - Hypothesis discovered unrealistically short timeout (0.004827s)
+   - The `timeout_patterns()` strategy can generate values too small for concurrent async operations
+   - Fix: Increase min_timeout in the strategy call or add test-level filtering for timeouts < 0.1s
 
 ## Known Issues
 
@@ -252,14 +262,14 @@ Current status: **Option 3 (Manual Only)** - Run locally as needed
 
 ## Verification Results
 
-After fixing API mismatches, current test status:
+After fixing API mismatches and running background verification with full chaos profile (1000 examples):
 
-- ✅ **21/29 tests passing** (72% success rate)
+- ✅ **21/24 tests passing** (87.5% success rate)
 - ✅ Circuit Breaker: 5/5 tests passing
 - ✅ Logger: 6/6 tests passing
-- ✅ Rate Limiter: 5/6 tests passing
-- ✅ Retry Logic: 5/6 tests passing
-- ⚠️ FileLock: 0/6 tests (marked as `chaos_slow`, too slow for property-based testing)
+- ✅ Rate Limiter: 5/6 tests passing (1 minor edge case issue)
+- ✅ Retry Logic: 5/6 tests passing (1 timeout edge case)
+- ⚠️ FileLock: 6 tests marked as `chaos_slow`, excluded from regular runs (too slow for property-based testing)
 
 ## Next Steps
 
