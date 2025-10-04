@@ -150,12 +150,12 @@ class TestWithErrorHandling(FoundationTestCase):
 
     def test_foundation_error_context_preservation(self) -> None:
         """Test that FoundationError context is auto-preserved when mapping."""
-        from provide.foundation.errors.config import ConfigError
+        from provide.foundation.errors.config import ConfigurationError
 
         def map_to_config_error(e: Exception) -> Exception:
             if isinstance(e, FoundationError):
-                # Map to ConfigError without manually copying context
-                return ConfigError(f"Config issue: {e.message}")
+                # Map to ConfigurationError without manually copying context
+                return ConfigurationError(f"Config issue: {e.message}")
             return e
 
         @resilient(error_mapper=map_to_config_error)
@@ -168,8 +168,8 @@ class TestWithErrorHandling(FoundationTestCase):
                 user_id=123,
             )
 
-        # ConfigError should have inherited context from FoundationError
-        with pytest.raises(ConfigError) as exc_info:
+        # ConfigurationError should have inherited context from FoundationError
+        with pytest.raises(ConfigurationError) as exc_info:
             func()
 
         error = exc_info.value
