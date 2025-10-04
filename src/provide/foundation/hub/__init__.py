@@ -66,7 +66,7 @@ try:
 except ImportError:
     _HAS_CLICK = False
 
-    def build_click_command(*args: Any, **kwargs: Any) -> Any:
+    def build_click_command(name: str, registry: Any = None) -> Any:  # type: ignore[misc]
         raise ImportError(
             "CLI command building requires optional dependencies. Install with: "
             "pip install 'provide-foundation[cli]'"

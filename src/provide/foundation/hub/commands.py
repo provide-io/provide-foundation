@@ -23,10 +23,15 @@ try:
 except ImportError:
     _HAS_CLICK = False
 
-    def build_click_command(*args: Any, **kwargs: Any) -> Any:
+    def build_click_command(name: str, registry: Any = None) -> Any:  # type: ignore[misc]
         raise ImportError("CLI feature 'build_click_command' requires: pip install 'provide-foundation[cli]'")
 
-    def create_command_group(*args: Any, **kwargs: Any) -> Any:
+    def create_command_group(  # type: ignore[misc]
+        name: str = "cli",
+        commands: list[str] | None = None,
+        registry: Any = None,
+        **kwargs: Any,
+    ) -> Any:
         raise ImportError("CLI feature 'create_command_group' requires: pip install 'provide-foundation[cli]'")
 
 
