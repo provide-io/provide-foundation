@@ -19,7 +19,7 @@ from provide.testkit.chaos import (
 )
 import pytest
 
-from provide.foundation.resilience.retry import RetryPolicy, retry_execute, retry_execute_async
+from provide.foundation.resilience.retry import RetryExecutor, RetryPolicy
 from provide.foundation.resilience.types import BackoffStrategy
 
 
@@ -116,8 +116,9 @@ class TestRetryPolicyChaos(FoundationTestCase):
 
             return "success"
 
+        executor = RetryExecutor(policy=policy)
         try:
-            result = retry_execute(operation, policy)
+            result = executor.execute_sync(operation)
             assert result == "success"
             # Should have retried through failures
         except Exception:
@@ -150,15 +151,16 @@ class TestRetryPolicyChaos(FoundationTestCase):
                 raise ValueError(f"Failure {attempts[0]}")
             return "success"
 
+        executor = RetryExecutor(policy=policy)
         if failure_count < max_attempts:
             # Should eventually succeed
-            result = retry_execute(failing_operation, policy)
+            result = executor.execute_sync(failing_operation)
             assert result == "success"
             assert attempts[0] == failure_count + 1
         else:
             # Should exhaust retries
             with pytest.raises(ValueError):
-                retry_execute(failing_operation, policy)
+                executor.execute_sync(failing_operation)
             assert attempts[0] == max_attempts
 
 
@@ -209,12 +211,13 @@ class TestAsyncRetryChaos(FoundationTestCase):
                 raise ValueError(f"Async failure {attempts[0]}")
             return "async success"
 
+        executor = RetryExecutor(policy=policy)
         if failure_count < max_attempts:
-            result = await retry_execute_async(async_operation, policy)
+            result = await executor.execute_async(async_operation)
             assert result == "async success"
         else:
             with pytest.raises(ValueError):
-                await retry_execute_async(async_operation, policy)
+                await executor.execute_async(async_operation)
 
     @pytest.mark.asyncio
     @given(
@@ -243,8 +246,10 @@ class TestAsyncRetryChaos(FoundationTestCase):
                 raise ValueError(f"Task {task_id} first attempt")
             return f"success-{task_id}"
 
+        executor = RetryExecutor(policy=policy)
+
         async def worker(task_id: int) -> str:
-            return await retry_execute_async(lambda: async_operation(task_id), policy)
+            return await executor.execute_async(lambda: async_operation(task_id))
 
         tasks = [worker(i) for i in range(num_concurrent)]
 
