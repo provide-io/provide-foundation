@@ -4,7 +4,7 @@ import asyncio
 from collections.abc import Callable
 import functools
 import inspect
-from typing import Any, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from provide.foundation.config.defaults import DEFAULT_CIRCUIT_BREAKER_RECOVERY_TIMEOUT
 from provide.foundation.errors.config import ConfigurationError
@@ -14,6 +14,9 @@ from provide.foundation.resilience.retry import (
     RetryExecutor,
     RetryPolicy,
 )
+
+if TYPE_CHECKING:
+    from provide.foundation.hub.registry import Registry
 
 """Resilience decorators for retry, circuit breaker, and fallback patterns."""
 
@@ -25,9 +28,9 @@ CIRCUIT_BREAKER_TEST_DIMENSION = "circuit_breaker_test"
 _circuit_breaker_counter = 0
 
 
-def _get_circuit_breaker_registry():
+def _get_circuit_breaker_registry() -> Registry:
     """Get the Hub registry for circuit breakers."""
-    from provide.foundation.hub.foundation import get_hub
+    from provide.foundation.hub.manager import get_hub
 
     return get_hub().registry
 
