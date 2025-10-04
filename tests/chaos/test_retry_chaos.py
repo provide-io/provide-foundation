@@ -62,7 +62,7 @@ class TestRetryPolicyChaos(FoundationTestCase):
     @given(
         attempt=st.integers(min_value=0, max_value=50),
         backoff_type=st.sampled_from(
-            [BackoffStrategy.CONSTANT, BackoffStrategy.LINEAR, BackoffStrategy.EXPONENTIAL]
+            [BackoffStrategy.FIXED, BackoffStrategy.LINEAR, BackoffStrategy.EXPONENTIAL]
         ),
     )
     @settings(max_examples=30)
@@ -190,7 +190,7 @@ class TestAsyncRetryChaos(FoundationTestCase):
 
         # Map string to BackoffStrategy
         backoff_map = {
-            "constant": BackoffStrategy.CONSTANT,
+            "constant": BackoffStrategy.FIXED,
             "linear": BackoffStrategy.LINEAR,
             "exponential": BackoffStrategy.EXPONENTIAL,
             "jittered": BackoffStrategy.EXPONENTIAL,  # Use exponential for jittered
