@@ -18,9 +18,9 @@ from provide.foundation.config.defaults import (
     DEFAULT_PROCESS_WAIT_TIMEOUT,
 )
 from provide.foundation.errors.decorators import resilient
+from provide.foundation.errors.process import ProcessError
 from provide.foundation.errors.runtime import StateError
 from provide.foundation.logger import get_logger
-from provide.foundation.errors.process import ProcessError
 
 """Process lifecycle management utilities.
 
@@ -306,7 +306,10 @@ def _drain_remaining_output(process: ManagedProcess, buffer: str) -> str:
                     else str(remaining)
                 )
                 plog.debug("Read remaining output from exited process", size=len(remaining))
-        except Exception:
+        except (OSError, ValueError, AttributeError):
+            # OSError: stream/file read errors
+            # ValueError: invalid stream state or decoding errors
+            # AttributeError: stdout/stderr unavailable
             pass
     return buffer
 
@@ -382,8 +385,10 @@ async def _try_read_process_line(
 
     except TimeoutError:
         pass
-    except Exception:
-        # Process might have exited, continue
+    except (ProcessLookupError, PermissionError, OSError):
+        # ProcessLookupError: process already exited
+        # PermissionError: process inaccessible
+        # OSError: process stream/state errors
         pass
 
     return buffer, False
