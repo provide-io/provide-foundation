@@ -45,6 +45,8 @@ through the adapter pattern. Supports multiple CLI frameworks with a unified int
 """
 
 __all__ = [
+    # Dependency flags
+    "_HAS_CLICK",
     # Adapter system
     "CLIAdapter",
     "CLIAdapterNotFoundError",
@@ -53,8 +55,6 @@ __all__ = [
     # Utilities
     "CliTestRunner",
     "InvalidCLIHintError",
-    # Dependency flags
-    "_HAS_CLICK",
     "assert_cli_error",
     "assert_cli_success",
     # Decorators

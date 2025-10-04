@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum, auto
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, cast
 
 from attrs import define, field
 
