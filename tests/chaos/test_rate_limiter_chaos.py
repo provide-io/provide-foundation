@@ -179,6 +179,7 @@ class TestTokenBucketChaos(FoundationTestCase):
         - Invalid values are skipped (implementation accepts them but they're not useful)
         """
         import math
+
         from hypothesis import assume
 
         # Skip invalid values that aren't useful for testing
