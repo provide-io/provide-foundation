@@ -3,11 +3,10 @@ from __future__ import annotations
 #
 # limiters.py
 #
+import asyncio
 import threading
 import time
 from typing import Any
-
-from provide.foundation.concurrency.locks import SmartLock
 
 """Rate limiter implementations for Foundation's logging system."""
 
@@ -102,7 +101,7 @@ class AsyncRateLimiter:
         self.refill_rate = float(refill_rate)
         self.tokens = float(capacity)
         self.last_refill = time.monotonic()
-        self._lock = SmartLock()
+        self._lock = asyncio.Lock()
 
         # Track statistics
         self.total_allowed = 0
@@ -116,7 +115,7 @@ class AsyncRateLimiter:
             True if the log should be allowed, False if rate limited
 
         """
-        async with self._lock.async_():
+        async with self._lock:
             now = time.monotonic()
             elapsed = now - self.last_refill
 
@@ -137,7 +136,7 @@ class AsyncRateLimiter:
 
     async def get_stats(self) -> dict[str, Any]:
         """Get rate limiter statistics."""
-        async with self._lock.async_():
+        async with self._lock:
             return {
                 "tokens_available": self.tokens,
                 "capacity": self.capacity,
