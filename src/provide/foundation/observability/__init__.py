@@ -12,7 +12,7 @@ Only available when OpenTelemetry dependencies are installed.
 if TYPE_CHECKING:
     pass  # OpenTelemetry imports are handled at runtime
 
-# OpenTelemetry feature detection
+# OpenTelemetry feature detection - Pattern 1: _HAS_* flag
 _otel_trace_module: Any = None
 try:
     from opentelemetry import trace as _otel_trace_module
@@ -25,7 +25,7 @@ except ImportError:
 # Use consistent name throughout
 otel_trace = _otel_trace_module
 
-# Only import OpenObserve if OpenTelemetry is available
+# Pattern 2: Import real implementation or create stubs
 if _HAS_OTEL:
     try:
         from provide.foundation.integrations.openobserve import (
@@ -39,18 +39,20 @@ if _HAS_OTEL:
             from provide.foundation.integrations.openobserve.commands import (  # noqa: F401
                 openobserve_group,
             )
-
-        __all__ = [
-            "_HAS_OTEL",
-            "OpenObserveClient",
-            "search_logs",
-            "stream_logs",
-        ]
     except ImportError:
-        # OpenObserve module not fully available
-        __all__ = ["_HAS_OTEL"]
+        # OpenObserve module not available - create stubs
+        from provide.foundation.utils.stubs import create_dependency_stub, create_function_stub
+
+        OpenObserveClient = create_dependency_stub("opentelemetry", "observability")  # type: ignore[misc,assignment]
+        search_logs = create_function_stub("opentelemetry", "observability")
+        stream_logs = create_function_stub("opentelemetry", "observability")
 else:
-    __all__ = ["_HAS_OTEL"]
+    # OpenTelemetry not available - create stubs
+    from provide.foundation.utils.stubs import create_dependency_stub, create_function_stub
+
+    OpenObserveClient = create_dependency_stub("opentelemetry", "observability")  # type: ignore[misc,assignment]
+    search_logs = create_function_stub("opentelemetry", "observability")
+    stream_logs = create_function_stub("opentelemetry", "observability")
 
 
 def is_openobserve_available() -> bool:

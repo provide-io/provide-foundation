@@ -58,36 +58,19 @@ from provide.foundation.hub.registry import (
     RegistryEntry,
 )
 
+# CLI features (require click) - Pattern 2: stub function with helpful error
+try:
+    from provide.foundation.cli.click.builder import build_click_command
 
-# CLI features (require click) - lazy loaded
-def get_click_commands() -> dict[str, object]:
-    """Get CLI command building functions.
+    _HAS_CLICK = True
+except ImportError:
+    _HAS_CLICK = False
 
-    Returns:
-        Module with click command building functionality.
-
-    Raises:
-        ImportError: If click is not available.
-
-    """
-    try:
-        from provide.foundation.hub.commands import build_click_command
-
-        return {"build_click_command": build_click_command}
-    except ImportError as e:
-        if "click" in str(e):
-            raise ImportError(
-                "CLI command building requires optional dependencies. Install with: "
-                "pip install 'provide-foundation[cli]'",
-            ) from e
-        raise
-
-
-def __getattr__(name: str) -> Any:
-    """Support lazy loading of CLI-dependent features."""
-    if name == "build_click_command":
-        return get_click_commands()["build_click_command"]
-    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+    def build_click_command(*args: Any, **kwargs: Any) -> Any:
+        raise ImportError(
+            "CLI command building requires optional dependencies. Install with: "
+            "pip install 'provide-foundation[cli]'"
+        )
 
 
 __all__ = [
@@ -106,10 +89,9 @@ __all__ = [
     "Registry",
     "RegistryEntry",
     "ResourceManager",
-    # CLI features (lazy loaded)
+    # CLI features (stub function if click not available)
     "build_click_command",
     "clear_hub",
-    "get_click_commands",
     # Components
     "get_component_registry",
     "get_hub",
