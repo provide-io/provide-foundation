@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+from collections.abc import Callable
 import threading
 import time
 from typing import final
@@ -20,13 +21,20 @@ class TokenBucketRateLimiter:
     at a constant rate. It is designed to be thread-safe using an asyncio.Lock.
     """
 
-    def __init__(self, capacity: float, refill_rate: float) -> None:
+    def __init__(
+        self,
+        capacity: float,
+        refill_rate: float,
+        time_source: Callable[[], float] | None = None,
+    ) -> None:
         """Initialize the TokenBucketRateLimiter.
 
         Args:
             capacity: The maximum number of tokens the bucket can hold
                       (burst capacity).
             refill_rate: The rate at which tokens are refilled per second.
+            time_source: Optional callable that returns current time (for testing).
+                        Defaults to time.monotonic.
 
         """
         if capacity <= 0:
@@ -37,7 +45,8 @@ class TokenBucketRateLimiter:
         self._capacity: float = float(capacity)
         self._refill_rate: float = float(refill_rate)
         self._tokens: float = float(capacity)  # Start with a full bucket
-        self._last_refill_timestamp: float = time.monotonic()
+        self._time_source = time_source if time_source is not None else time.monotonic
+        self._last_refill_timestamp: float = self._time_source()
         self._lock: asyncio.Lock | None = None
         self._init_lock = threading.Lock()
 
@@ -67,7 +76,7 @@ class TokenBucketRateLimiter:
         """Refills tokens based on the elapsed time since the last refill.
         This method is not locked internally; caller must hold the lock.
         """
-        now = time.monotonic()
+        now = self._time_source()
         elapsed_time = now - self._last_refill_timestamp
         if elapsed_time > 0:  # only refill if time has passed
             tokens_to_add = elapsed_time * self._refill_rate
