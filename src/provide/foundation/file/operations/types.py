@@ -9,6 +9,12 @@ from typing import Any
 
 from attrs import define, field
 
+from provide.foundation.config.defaults import (
+    DEFAULT_FILE_OP_HAS_BACKUP,
+    DEFAULT_FILE_OP_IS_ATOMIC,
+    DEFAULT_FILE_OP_IS_SAFE,
+)
+
 
 @define(frozen=True, slots=True, kw_only=True)
 class FileEventMetadata:
@@ -102,9 +108,9 @@ class FileOperation:
     files_affected: list[Path] | None = field(default=None)
 
     # Analysis results
-    is_atomic: bool = field(default=False)  # Was this atomic?
-    is_safe: bool = field(default=True)  # Was data preserved?
-    has_backup: bool = field(default=False)  # Was backup created?
+    is_atomic: bool = field(default=DEFAULT_FILE_OP_IS_ATOMIC)
+    is_safe: bool = field(default=DEFAULT_FILE_OP_IS_SAFE)
+    has_backup: bool = field(default=DEFAULT_FILE_OP_HAS_BACKUP)
 
     # Optional metadata
     metadata: dict[str, Any] = field(factory=dict)

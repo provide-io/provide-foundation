@@ -9,6 +9,11 @@ from typing import Any, TypeVar
 from attrs import define, field
 
 from provide.foundation.concurrency.locks import DualLock
+from provide.foundation.config.defaults import (
+    DEFAULT_BULKHEAD_MAX_CONCURRENT,
+    DEFAULT_BULKHEAD_MAX_QUEUE_SIZE,
+    DEFAULT_BULKHEAD_TIMEOUT,
+)
 
 """Bulkhead pattern for resource isolation and limiting.
 
@@ -24,9 +29,9 @@ T = TypeVar("T")
 class ResourcePool:
     """Resource pool with limited capacity for isolation."""
 
-    max_concurrent: int = field(default=10)
-    max_queue_size: int = field(default=100)
-    timeout: float = field(default=30.0)  # seconds
+    max_concurrent: int = field(default=DEFAULT_BULKHEAD_MAX_CONCURRENT)
+    max_queue_size: int = field(default=DEFAULT_BULKHEAD_MAX_QUEUE_SIZE)
+    timeout: float = field(default=DEFAULT_BULKHEAD_TIMEOUT)
 
     # Internal state
     _semaphore: threading.Semaphore = field(init=False)
