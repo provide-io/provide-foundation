@@ -189,42 +189,47 @@ After thorough ecosystem analysis (`provide-foundation`, `plating`, `pyvider-rpc
 - ✅ Zero breaking changes (DualLock was internal-only)
 - ✅ Better reflects actual usage patterns
 
-## ✅ COMPLETED - Optional Dependency Pattern Documentation
+## ✅ COMPLETED - Optional Dependencies Standardized to 2-Pattern Approach
 
-### Background
-After analyzing 38 files with optional dependencies, found **4 distinct patterns**, each serving a legitimate purpose. Rather than force standardization to a single pattern (which would harm performance/UX), documented **when to use each pattern**.
+### Summary
+Simplified optional dependency handling to follow industry-standard patterns used by major Python libraries (requests, structlog, httpx). Removed `__getattr__` magic and dynamic `__all__` in favor of explicit stub functions with delayed imports.
 
-**Patterns Identified**:
-1. **`_HAS_*` Flags** (38 files) - Internal conditionals, fast boolean checks
-2. **`__getattr__` Lazy Loading** (5 files) - Public API, helpful error messages
-3. **Stub Classes** (2 uses) - Type safety, IDE support, graceful degradation
-4. **Dynamic `__all__`** (1 file) - Module export control
+### Changes Implemented
 
-### Resolution
-**Status**: ✅ Complete
+**Pattern 1: `_HAS_*` Flags** - For internal conditionals (38 files)
+- Fast boolean checks
+- Example: `_HAS_CLICK`, `_HAS_CRYPTO`, `_HAS_HTTPX`, `_HAS_OTEL`
 
-Created comprehensive documentation: `docs/contributing/optional-dependencies.md`
+**Pattern 2: Stub Functions with Delayed Imports** - For public API
+- Helpful error messages with install instructions
+- Delayed imports to avoid circular dependencies
+- No `__getattr__` magic - explicit, debuggable functions
 
-**Decision Tree Documented**:
-- Internal logic → Use `_HAS_*` flags (performance)
-- Public API → Use `__getattr__` (user experience)
-- Type checking → Use stub classes (IDE support)
-- Export control → Use dynamic `__all__` (clean imports)
+**Files Changed**:
+1. `hub/__init__.py` - Replaced `__getattr__` with stub function
+2. `hub/commands.py` - Replaced `__getattr__` with stub functions (delayed imports)
+3. `observability/__init__.py` - Replaced dynamic `__all__` with static exports + stubs
 
-**Key Insight**: Each pattern optimizes for different concerns. Using the wrong pattern would sacrifice either:
-- Performance (unnecessary overhead)
-- User experience (unclear errors)
-- Type safety (missing IDE hints)
-- Export cleanliness (polluted namespace)
+**Removed**:
+- ❌ `__getattr__` lazy loading in hub modules (replaced with stub functions)
+- ❌ Dynamic `__all__` in observability (replaced with static `__all__`)
+- ❌ Over-engineered documentation (597 lines deleted):
+  - `docs/contributing/optional-dependencies.md` (297 lines)
+  - `docs/architecture/circular-dependencies.md` (290 lines)
+  - `docs/circular-dependencies.md` (12 KB duplicate)
+- ❌ `get_click_commands()` function (replaced with direct `build_click_command` stub)
 
-### Crypto Stubs Simplified
-**Status**: ✅ Complete
+**Key Technical Detail - Circular Import Solution**:
+The stub functions use **delayed imports** (import inside the function, not at module top) to avoid circular dependencies:
+- `hub/commands.py` can't import `cli/click/builder.py` at module load (circular dep)
+- Solution: Import inside stub function when CALLED
+- This maintains the 2-pattern approach while avoiding import cycles
 
-Migrated **crypto/__init__.py** from 168 lines of manual stubs to 60 lines using `create_dependency_stub()`:
-- ✅ **108 lines removed** (64% reduction)
-- ✅ Consistent with transport pattern
-- ✅ All 360 crypto tests passing
-- ⚠️ Trade-off accepted: Generic stub errors instead of method-specific messages (acceptable for pre-release)
+**Test Updates**:
+- Removed obsolete tests for `__getattr__` behavior
+- Removed obsolete tests for `get_click_commands()`
+- Updated tests to use `build_click_command` directly
+- All tests passing ✅
 
 ## ✅ COMPLETED - Circular Dependency Documentation
 
