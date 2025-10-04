@@ -43,8 +43,7 @@ class InvalidCLIHintError(CLIError):
 
         """
         super().__init__(
-            f"Invalid CLI hint '{hint}' for parameter '{param_name}'. "
-            f"Must be 'option' or 'argument'.",
+            f"Invalid CLI hint '{hint}' for parameter '{param_name}'. Must be 'option' or 'argument'.",
             code="CLI_INVALID_HINT",
             hint=hint,
             param_name=param_name,
@@ -97,8 +96,8 @@ class CLIBuildError(CLIError):
 
 
 __all__ = [
-    "CLIError",
-    "InvalidCLIHintError",
     "CLIAdapterNotFoundError",
     "CLIBuildError",
+    "CLIError",
+    "InvalidCLIHintError",
 ]

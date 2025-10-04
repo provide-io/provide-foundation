@@ -240,10 +240,7 @@ def build_click_command(
 
     try:
         # Introspect parameters if not already done
-        if info.parameters is None:
-            params = introspect_parameters(info.func)
-        else:
-            params = info.parameters
+        params = introspect_parameters(info.func) if info.parameters is None else info.parameters
 
         # Separate into arguments and options
         arguments, options = _separate_arguments_and_options(params)
@@ -441,7 +438,7 @@ def create_command_group(
                 continue
 
             # Check if this is a group
-            if entry.metadata.get("is_group"):
+            if entry and entry.metadata.get("is_group"):
                 _create_subgroup(cmd_name, entry, groups, group)
 
         # Second pass: add commands to groups
