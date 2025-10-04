@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import sys
+from typing import Any
 
 from provide.testkit import FoundationTestCase
 from provide.testkit.mocking import patch
@@ -84,7 +85,7 @@ class TestErrorHandling(FoundationTestCase):
         assert "timed out" in str(exc_info.value).lower()
 
     @patch("subprocess.run")
-    def test_generic_subprocess_exception(self, mock_run) -> None:
+    def test_generic_subprocess_exception(self, mock_run: Any) -> None:
         """Test handling of generic subprocess exceptions."""
         # Mock subprocess.run to raise a generic exception
         mock_run.side_effect = OSError("File not found")
@@ -96,7 +97,7 @@ class TestErrorHandling(FoundationTestCase):
         assert exc_info.value.code == "PROCESS_EXECUTION_FAILED"
 
     @patch("subprocess.run")
-    def test_reraise_process_error(self, mock_run) -> None:
+    def test_reraise_process_error(self, mock_run: Any) -> None:
         """Test that ProcessError and TimeoutError are re-raised directly."""
         # Mock subprocess.run to raise a ProcessError
         original_error = ProcessError("Original error", command="test_command")
@@ -149,7 +150,7 @@ class TestShellExecution(FoundationTestCase):
 class TestWorkingDirectory(FoundationTestCase):
     """Test working directory handling."""
 
-    def test_cwd_as_string(self, tmp_path) -> None:
+    def test_cwd_as_string(self, tmp_path: Any) -> None:
         """Test working directory as string path."""
         test_file = tmp_path / "test.txt"
         test_file.write_text("test content")
@@ -159,7 +160,7 @@ class TestWorkingDirectory(FoundationTestCase):
         assert result.returncode == 0
         assert "test content" in result.stdout
 
-    def test_cwd_as_path_object(self, tmp_path) -> None:
+    def test_cwd_as_path_object(self, tmp_path: Any) -> None:
         """Test working directory as Path object."""
         test_file = tmp_path / "test.txt"
         test_file.write_text("test content")
@@ -220,7 +221,7 @@ class TestStreamCommandCoverage(FoundationTestCase):
             list(stream(["sleep", "1"], timeout=0.1))
 
     @patch("subprocess.Popen")
-    def test_stream_generic_exception(self, mock_popen) -> None:
+    def test_stream_generic_exception(self, mock_popen: Any) -> None:
         """Test stream command with generic exception."""
         mock_popen.side_effect = OSError("Command not found")
 
