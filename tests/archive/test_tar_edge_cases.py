@@ -120,7 +120,7 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
 
         output = temp_path / "extracted"
 
-        with pytest.raises(ArchiveError, match="Unsafe symlink in archive"):
+        with pytest.raises(ArchiveError, match="Unsafe link target in archive|Absolute path in link target"):
             tar_archive.extract(archive, output)
 
     def test_extract_unsafe_symlink_relative_escape(
@@ -139,7 +139,7 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
 
         output = temp_path / "extracted"
 
-        with pytest.raises(ArchiveError, match="Unsafe symlink in archive"):
+        with pytest.raises(ArchiveError, match="Unsafe link target in archive"):
             tar_archive.extract(archive, output)
 
     def test_extract_safe_symlink(self, tar_archive: TarArchive, temp_directory: Path) -> None:
@@ -296,7 +296,7 @@ class TestTarArchiveEdgeCases(FoundationTestCase):
         output = temp_path / "extracted"
 
         # This should trigger the symlink safety check for hardlinks
-        with pytest.raises(ArchiveError, match="Unsafe symlink in archive"):
+        with pytest.raises(ArchiveError, match="Unsafe link target in archive"):
             tar_archive.extract(archive, output)
 
     def test_create_with_non_deterministic_mode(self, test_files_structure: tuple[Path, Path]) -> None:
