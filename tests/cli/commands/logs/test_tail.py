@@ -156,15 +156,21 @@ class TestTailCommand:
         )
 
 
-@patch("provide.foundation.cli.commands.logs.tail._HAS_CLICK", False)
 def test_tail_command_raises_importerror_if_click_is_missing() -> None:
     """Test that tail_command raises ImportError if Click is not installed."""
     import importlib
     from provide.foundation.cli.commands.logs import tail
+
+    # Reload and then patch
     importlib.reload(tail)
 
-    with pytest.raises(
-        ImportError,
-        match="CLI commands require optional dependencies",
-    ):
-        tail.tail_command()
+    with patch("provide.foundation.cli.commands.logs.tail._HAS_CLICK", False):
+        # Reload again with the patch active
+        importlib.reload(tail)
+
+        with pytest.raises(
+            ImportError,
+            match="CLI commands require optional dependencies",
+        ):
+            # Call with empty args to avoid Click reading from sys.argv
+            tail.tail_command([], standalone_mode=False)

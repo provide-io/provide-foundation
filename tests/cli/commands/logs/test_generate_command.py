@@ -131,15 +131,21 @@ class TestGenerateLogsCommand:
         mock_configure_limiter.assert_called_once_with(True, 50.0)
 
 
-@patch("provide.foundation.cli.commands.logs.generate._HAS_CLICK", False)
 def test_generate_command_raises_importerror_if_click_is_missing() -> None:
     """Test that generate_logs_command raises ImportError if Click is not installed."""
     import importlib
     from provide.foundation.cli.commands.logs import generate
+
+    # Reload and then patch
     importlib.reload(generate)
 
-    with pytest.raises(
-        ImportError,
-        match="Click is required for CLI commands",
-    ):
-        generate.generate_logs_command()
+    with patch("provide.foundation.cli.commands.logs.generate._HAS_CLICK", False):
+        # Reload again with the patch active
+        importlib.reload(generate)
+
+        with pytest.raises(
+            ImportError,
+            match="Click is required for CLI commands",
+        ):
+            # Call with empty args to avoid Click reading from sys.argv
+            generate.generate_logs_command([], standalone_mode=False)
