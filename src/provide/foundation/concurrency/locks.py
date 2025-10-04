@@ -24,9 +24,8 @@ with true mutual exclusion between sync threads and async tasks.
 class SmartLock:
     """Unified lock providing true mutual exclusion between sync and async contexts.
 
-    SmartLock uses a threading.Lock (acquired via asyncio.to_thread for async)
-    to ensure that synchronous and asynchronous code paths acquire the same
-    underlying lock, preventing race conditions between sync threads and async tasks.
+    SmartLock uses a threading.Lock for mutual exclusion between sync and async code,
+    with non-blocking async acquisition to avoid thread pool exhaustion and deadlocks.
 
     This is the recommended locking mechanism for classes that expose both
     sync and async APIs accessing shared state.
@@ -46,15 +45,14 @@ class SmartLock:
         ...             self._value += 1
 
     Note:
-        The async context manager uses asyncio.to_thread() to acquire the
-        threading.Lock, ensuring the event loop is not blocked while waiting.
+        The async context manager uses non-blocking acquisition with polling
+        to prevent blocking the event loop or exhausting thread pools.
 
         For pure async code, use asyncio.Lock directly.
         For pure sync code, use threading.Lock/RLock directly.
         Only use SmartLock when you have mixed sync/async access to shared state.
 
-        This lock is NOT reentrant because asyncio.to_thread() may use different
-        threads from the pool for each call.
+        This lock is NOT reentrant.
     """
 
     def __init__(self) -> None:
@@ -84,7 +82,7 @@ class SmartLock:
         """Acquire lock in asynchronous context.
 
         Use with 'async with' statement in asynchronous methods.
-        The lock is acquired via asyncio.to_thread() to prevent blocking the event loop.
+        Uses non-blocking acquisition with exponential backoff to avoid thread pool exhaustion.
 
         Yields:
             None when lock is acquired
@@ -98,12 +96,24 @@ class SmartLock:
             ...         pass
             >>> asyncio.run(main())
         """
-        # Acquire the lock in a thread pool to avoid blocking the event loop
-        await asyncio.to_thread(self._lock.acquire, True)  # blocking=True
+        # Use non-blocking acquire with polling to avoid thread pool deadlocks
+        delay = 0.0001  # Start with 0.1ms
+        max_delay = 0.01  # Cap at 10ms
+
+        while True:
+            # Try to acquire without blocking
+            acquired = self._lock.acquire(blocking=False)
+            if acquired:
+                break
+
+            # Wait before retrying, with exponential backoff
+            await asyncio.sleep(delay)
+            delay = min(delay * 1.5, max_delay)  # Exponential backoff with cap
+
         try:
             yield
         finally:
-            # Release the lock (can be done directly, it's just a flag update)
+            # Release the lock
             self._lock.release()
 
 
