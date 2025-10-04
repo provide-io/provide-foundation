@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import contextlib
+import json
 import os
 from pathlib import Path
 import threading
@@ -34,7 +35,10 @@ class TestFileLock(MinimalTestCase):
         assert lock.acquire()
         assert lock.locked
         assert lock_path.exists()
-        assert lock_path.read_text() == str(os.getpid())
+
+        # Lock file should contain JSON with our PID
+        lock_info = json.loads(lock_path.read_text())
+        assert lock_info["pid"] == os.getpid()
 
         # Release lock
         lock.release()
@@ -48,7 +52,10 @@ class TestFileLock(MinimalTestCase):
         with FileLock(lock_path) as lock:
             assert lock.locked
             assert lock_path.exists()
-            assert lock_path.read_text() == str(os.getpid())
+
+            # Lock file should contain JSON with our PID
+            lock_info = json.loads(lock_path.read_text())
+            assert lock_info["pid"] == os.getpid()
 
         assert not lock.locked
         assert not lock_path.exists()
@@ -127,13 +134,16 @@ class TestFileLock(MinimalTestCase):
         """Test stale lock detection and removal."""
         lock_path = temp_directory / "test.lock"
 
-        # Create a lock file with non-existent PID
+        # Create a lock file with non-existent PID (old plain-text format)
         lock_path.write_text("99999999")  # Unlikely to be a real PID
 
         # New lock should detect stale lock and acquire
         lock = FileLock(lock_path)
         assert lock.acquire()
-        assert lock_path.read_text() == str(os.getpid())
+
+        # New lock should use JSON format
+        lock_info = json.loads(lock_path.read_text())
+        assert lock_info["pid"] == os.getpid()
 
         lock.release()
 
@@ -191,7 +201,7 @@ class TestFileLock(MinimalTestCase):
         """Test lock doesn't release if owned by different process."""
         lock_path = temp_directory / "test.lock"
 
-        # Create lock file owned by different PID
+        # Create lock file owned by different PID (old plain-text format)
         different_pid = os.getpid() + 1
         lock_path.write_text(str(different_pid))
 
@@ -202,6 +212,7 @@ class TestFileLock(MinimalTestCase):
 
         # File should still exist (owned by different process)
         assert lock_path.exists()
+        # Should still be plain text format (wasn't overwritten)
         assert lock_path.read_text() == str(different_pid)
 
         # Clean up

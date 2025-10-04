@@ -1,14 +1,21 @@
 from __future__ import annotations
 
+import json
 import os
 from pathlib import Path
+import socket
 import time
+
+import psutil
 
 from provide.foundation.config.defaults import DEFAULT_FILE_LOCK_TIMEOUT
 from provide.foundation.errors.resources import LockError
 from provide.foundation.logger import get_logger
 
-"""File-based locking for concurrent access control."""
+"""File-based locking for concurrent access control.
+
+Uses psutil for robust process validation to prevent PID recycling attacks.
+"""
 
 log = get_logger(__name__)
 
@@ -85,8 +92,19 @@ class FileLock:
                 # Try to create lock file exclusively
                 fd = os.open(str(self.path), os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644)
                 try:
-                    # Write our PID to the lock file
-                    os.write(fd, str(self.pid).encode())
+                    # Write lock metadata as JSON for robust validation
+                    lock_info = {
+                        "pid": self.pid,
+                        "hostname": socket.gethostname(),
+                        "created": current_time,
+                    }
+                    # Add process start time for PID recycling protection
+                    try:
+                        proc = psutil.Process(self.pid)
+                        lock_info["start_time"] = proc.create_time()
+                    except (psutil.NoSuchProcess, psutil.AccessDenied):
+                        pass
+                    os.write(fd, json.dumps(lock_info).encode())
                 finally:
                     os.close(fd)
 
@@ -138,14 +156,27 @@ class FileLock:
             if self.path.exists():
                 try:
                     content = self.path.read_text().strip()
-                    if content == str(self.pid):
+                    # Try parsing as JSON first (new format)
+                    try:
+                        lock_info = json.loads(content)
+                        # Ensure it's a dict, not just a number (plain PID parses as valid JSON)
+                        if isinstance(lock_info, dict):
+                            owner_pid = lock_info.get("pid")
+                        else:
+                            # Plain number parsed as JSON - treat as old format
+                            owner_pid = lock_info if isinstance(lock_info, int) else None
+                    except (json.JSONDecodeError, ValueError):
+                        # Fall back to plain PID format (old format)
+                        owner_pid = int(content) if content.isdigit() else None
+
+                    if owner_pid == self.pid:
                         self.path.unlink()
                         log.debug("Released lock", path=str(self.path), pid=self.pid)
                     else:
                         log.warning(
                             "Lock owned by different process",
                             path=str(self.path),
-                            owner_pid=content,
+                            owner_pid=owner_pid,
                             our_pid=self.pid,
                         )
                 except Exception as e:
@@ -164,11 +195,18 @@ class FileLock:
         finally:
             self.locked = False
 
-    def _check_stale_lock(self) -> bool:
+    def _check_stale_lock(self) -> bool:  # noqa: C901
         """Check if lock file is stale and remove if so.
+
+        Uses psutil to validate process start time, preventing PID recycling attacks.
+        Falls back to simple PID check for backward compatibility with old lock files.
 
         Returns:
             True if stale lock was removed, False otherwise
+
+        Note:
+            Complexity is intentionally high to handle all security-critical cases
+            (PID recycling, format compatibility, error handling).
 
         """
         try:
@@ -183,30 +221,77 @@ class FileLock:
                 # If we can't read the file, assume it's not stale
                 return False
 
-            # Only process if content looks like a PID
-            if not content.isdigit():
-                log.debug("Invalid lock file content", path=str(self.path), content=content[:50])
-                return False
-
-            lock_pid = int(content)
-
-            # Quick process check
+            # Try parsing as JSON first (new format with start_time)
+            lock_pid = None
+            lock_start_time = None
             try:
-                os.kill(lock_pid, 0)
-                # Process exists, lock is valid
+                lock_info = json.loads(content)
+                # Ensure it's a dict, not just a number (plain PID parses as valid JSON)
+                if isinstance(lock_info, dict):
+                    lock_pid = lock_info.get("pid")
+                    lock_start_time = lock_info.get("start_time")
+                elif isinstance(lock_info, int):
+                    # Plain number parsed as JSON - treat as old format
+                    lock_pid = lock_info
+                else:
+                    log.debug("Invalid lock file content", path=str(self.path), content=content[:50])
+                    return False
+            except (json.JSONDecodeError, ValueError):
+                # Fall back to plain PID format (old format)
+                if content.isdigit():
+                    lock_pid = int(content)
+                else:
+                    log.debug("Invalid lock file content", path=str(self.path), content=content[:50])
+                    return False
+
+            if lock_pid is None:
+                log.debug("No PID in lock file", path=str(self.path))
                 return False
-            except (ProcessLookupError, PermissionError):
-                # Process doesn't exist or we can't check it, consider stale
-                log.warning("Removing stale lock", path=str(self.path), stale_pid=lock_pid)
+
+            # Validate process with psutil for robust PID recycling protection
+            try:
+                proc = psutil.Process(lock_pid)
+
+                # Call a method to trigger NoSuchProcess if PID doesn't exist
+                # This is needed because Process.__init__ is lazy
+                proc_start_time = proc.create_time()
+
+                # If we have start_time, validate it matches to prevent PID recycling
+                if lock_start_time is not None:
+                    # Allow 1 second tolerance for timestamp precision differences
+                    if abs(proc_start_time - lock_start_time) > 1.0:
+                        log.warning(
+                            "PID recycling detected - removing stale lock",
+                            path=str(self.path),
+                            lock_pid=lock_pid,
+                            lock_start=lock_start_time,
+                            proc_start=proc_start_time,
+                        )
+                        try:
+                            self.path.unlink()
+                            return True
+                        except FileNotFoundError:
+                            return True
+                        except Exception:
+                            return False
+
+                # Process exists and start time matches (or no start time available)
+                return False
+
+            except psutil.NoSuchProcess:
+                # Process doesn't exist - lock is stale
+                log.warning("Removing stale lock - process not found", path=str(self.path), stale_pid=lock_pid)
                 try:
                     self.path.unlink()
                     return True
                 except FileNotFoundError:
-                    # Already removed by someone else
                     return True
                 except Exception:
-                    # Failed to remove, but that's ok
                     return False
+
+            except psutil.AccessDenied:
+                # Can't check process - assume it's valid to be safe
+                return False
 
         except Exception as e:
             log.debug("Error checking stale lock", path=str(self.path), error=str(e))

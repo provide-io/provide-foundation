@@ -23,6 +23,7 @@ from provide.foundation.utils.environment import (
     parse_size,
     require,
 )
+from provide.foundation.utils.importer import lazy_import
 from provide.foundation.utils.parsing import (
     auto_parse,
     parse_bool,
@@ -47,6 +48,8 @@ __all__ = [
     "auto_parse",
     # Dependency checking utilities
     "check_optional_deps",
+    # Lazy import utilities
+    "lazy_import",
     # Module exports
     "environment",
     "get_available_features",
