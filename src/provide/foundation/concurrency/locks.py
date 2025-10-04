@@ -24,9 +24,9 @@ with true mutual exclusion between sync threads and async tasks.
 class SmartLock:
     """Unified lock providing true mutual exclusion between sync and async contexts.
 
-    SmartLock uses a single threading.RLock and asyncio.to_thread() to ensure
-    that synchronous and asynchronous code paths acquire the same underlying lock,
-    preventing race conditions between sync threads and async tasks.
+    SmartLock uses a threading.Lock (acquired via asyncio.to_thread for async)
+    to ensure that synchronous and asynchronous code paths acquire the same
+    underlying lock, preventing race conditions between sync threads and async tasks.
 
     This is the recommended locking mechanism for classes that expose both
     sync and async APIs accessing shared state.
@@ -47,16 +47,19 @@ class SmartLock:
 
     Note:
         The async context manager uses asyncio.to_thread() to acquire the
-        threading.RLock, ensuring the event loop is not blocked while waiting.
+        threading.Lock, ensuring the event loop is not blocked while waiting.
 
         For pure async code, use asyncio.Lock directly.
-        For pure sync code, use threading.RLock directly.
+        For pure sync code, use threading.Lock/RLock directly.
         Only use SmartLock when you have mixed sync/async access to shared state.
+
+        This lock is NOT reentrant because asyncio.to_thread() may use different
+        threads from the pool for each call.
     """
 
     def __init__(self) -> None:
-        """Initialize SmartLock with a single reentrant lock."""
-        self._lock = threading.RLock()
+        """Initialize SmartLock with a single non-reentrant lock."""
+        self._lock = threading.Lock()
 
     @contextlib.contextmanager
     def sync(self) -> Generator[None, None, None]:
@@ -96,12 +99,12 @@ class SmartLock:
             >>> asyncio.run(main())
         """
         # Acquire the lock in a thread pool to avoid blocking the event loop
-        await asyncio.to_thread(self._lock.acquire)
+        await asyncio.to_thread(self._lock.acquire, True)  # blocking=True
         try:
             yield
         finally:
-            # Release in thread pool as well for symmetry
-            await asyncio.to_thread(self._lock.release)
+            # Release the lock (can be done directly, it's just a flag update)
+            self._lock.release()
 
 
 @define
