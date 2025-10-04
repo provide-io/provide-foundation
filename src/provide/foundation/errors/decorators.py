@@ -84,8 +84,13 @@ class ResilientErrorHandler:
         )
 
     def map_error(self, exception: Exception) -> Exception:
-        """Apply error mapping if configured."""
-        if self.error_mapper and not isinstance(exception, FoundationError):
+        """Apply error mapping if configured.
+
+        The error_mapper is applied to all exceptions, including FoundationError types.
+        This allows translating low-level foundation errors into higher-level,
+        domain-specific exceptions while preserving error handling benefits.
+        """
+        if self.error_mapper:
             mapped = self.error_mapper(exception)
             if mapped is not exception:
                 return mapped
