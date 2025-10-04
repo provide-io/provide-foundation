@@ -91,6 +91,55 @@ def _check_opentelemetry() -> DependencyStatus:
         )
 
 
+def _check_httpx() -> DependencyStatus:
+    """Check httpx availability for transport support."""
+    try:
+        import httpx
+
+        # Get version safely
+        version = getattr(httpx, "__version__", "unknown")
+
+        return DependencyStatus(
+            name="httpx",
+            available=True,
+            version=version,
+            description="HTTP/HTTPS transport support",
+        )
+    except ImportError:
+        return DependencyStatus(
+            name="httpx",
+            available=False,
+            version=None,
+            description="HTTP/HTTPS transport support",
+        )
+
+
+def _check_mkdocs() -> DependencyStatus:
+    """Check mkdocs availability for documentation generation."""
+    try:
+        import mkdocs  # noqa: F401
+
+        try:
+            from importlib.metadata import version
+
+            ver = version("mkdocs")
+        except Exception:
+            ver = "unknown"
+        return DependencyStatus(
+            name="mkdocs",
+            available=True,
+            version=ver,
+            description="Documentation generation support",
+        )
+    except ImportError:
+        return DependencyStatus(
+            name="mkdocs",
+            available=False,
+            version=None,
+            description="Documentation generation support",
+        )
+
+
 def get_optional_dependencies() -> list[DependencyStatus]:
     """Get status of all optional dependencies.
 
@@ -101,6 +150,8 @@ def get_optional_dependencies() -> list[DependencyStatus]:
     return [
         _check_click(),
         _check_cryptography(),
+        _check_httpx(),
+        _check_mkdocs(),
         _check_opentelemetry(),
     ]
 

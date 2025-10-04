@@ -32,6 +32,11 @@ from provide.foundation.utils.parsing import (
     parse_typed_value,
 )
 from provide.foundation.utils.rate_limiting import TokenBucketRateLimiter
+from provide.foundation.utils.stubs import (
+    create_dependency_stub,
+    create_function_stub,
+    create_module_stub,
+)
 from provide.foundation.utils.timing import timed_block
 
 """Utility modules for provide.foundation.
@@ -48,6 +53,10 @@ __all__ = [
     "auto_parse",
     # Dependency checking utilities
     "check_optional_deps",
+    # Stub creation utilities
+    "create_dependency_stub",
+    "create_function_stub",
+    "create_module_stub",
     # Lazy import utilities
     "lazy_import",
     # Module exports
