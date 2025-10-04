@@ -16,6 +16,7 @@ settings.register_profile(
     deadline=None,  # Disable for async tests
     report_multiple_bugs=True,
     phases=[Phase.explicit, Phase.reuse, Phase.generate, Phase.shrink],
+    print_blob=True,  # Enable statistics printing
 )
 
 settings.register_profile(
@@ -25,6 +26,7 @@ settings.register_profile(
     deadline=10000,
     report_multiple_bugs=False,
     phases=[Phase.explicit, Phase.reuse, Phase.generate, Phase.shrink],
+    print_blob=True,  # Enable statistics printing
 )
 
 settings.register_profile(
@@ -34,6 +36,7 @@ settings.register_profile(
     deadline=5000,
     report_multiple_bugs=False,
     phases=[Phase.explicit, Phase.generate],
+    print_blob=True,  # Enable statistics printing
 )
 
 

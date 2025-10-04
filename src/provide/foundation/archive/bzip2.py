@@ -1,162 +1,47 @@
 from __future__ import annotations
 
 import bz2
-from pathlib import Path
 import shutil
 from typing import BinaryIO
 
-from attrs import Attribute, define, validators
+from attrs import define
 
-from provide.foundation.archive.base import ArchiveError
+from provide.foundation.archive.base import BaseCompressor
 from provide.foundation.config import defaults
 from provide.foundation.config.base import field
-from provide.foundation.file import ensure_parent_dir
-from provide.foundation.logger import get_logger
 
 """BZIP2 compression implementation."""
 
-logger = get_logger(__name__)
-
-
-def _validate_compression_level(instance: Bzip2Compressor, attribute: Attribute[int], value: int) -> None:
-    """Validate compression level is between 1 and 9."""
-    if not 1 <= value <= 9:
-        raise ValueError(f"Compression level must be 1-9, got {value}")
-
 
 @define(slots=True)
-class Bzip2Compressor:
+class Bzip2Compressor(BaseCompressor):
     """BZIP2 compression implementation.
 
     Provides BZIP2 compression and decompression for single files.
     Does not handle bundling - use with TarArchive for .tar.bz2 files.
     """
 
-    level: int = field(
-        default=defaults.DEFAULT_BZIP2_COMPRESSION_LEVEL,
-        validator=[validators.instance_of(int), _validate_compression_level],  # type: ignore[arg-type]
-    )  # Compression level 1-9 (1=fast, 9=best)
+    level: int = field(default=defaults.DEFAULT_BZIP2_COMPRESSION_LEVEL)
 
-    def compress(self, input_stream: BinaryIO, output_stream: BinaryIO) -> None:
-        """Compress data from input stream to output stream.
+    @property
+    def format_name(self) -> str:
+        """Return the name of the compression format."""
+        return "BZIP2"
 
-        Args:
-            input_stream: Input binary stream
-            output_stream: Output binary stream
+    def _compress_stream(self, input_stream: BinaryIO, output_stream: BinaryIO) -> None:
+        """Library-specific stream compression implementation."""
+        with bz2.BZ2File(output_stream, "wb", compresslevel=self.level) as bz:
+            shutil.copyfileobj(input_stream, bz)
 
-        Raises:
-            ArchiveError: If compression fails
+    def _decompress_stream(self, input_stream: BinaryIO, output_stream: BinaryIO) -> None:
+        """Library-specific stream decompression implementation."""
+        with bz2.BZ2File(input_stream, "rb") as bz:
+            shutil.copyfileobj(bz, output_stream)
 
-        """
-        try:
-            with bz2.BZ2File(output_stream, "wb", compresslevel=self.level) as bz:
-                shutil.copyfileobj(input_stream, bz)
-            logger.debug(f"Compressed data with BZIP2 level {self.level}")
-        except (OSError, ValueError) as e:
-            raise ArchiveError(f"Failed to compress with BZIP2: {e}") from e
+    def _compress_bytes_impl(self, data: bytes) -> bytes:
+        """Library-specific bytes compression implementation."""
+        return bz2.compress(data, compresslevel=self.level)
 
-    def decompress(self, input_stream: BinaryIO, output_stream: BinaryIO) -> None:
-        """Decompress data from input stream to output stream.
-
-        Args:
-            input_stream: Input binary stream (bzip2 compressed)
-            output_stream: Output binary stream
-
-        Raises:
-            ArchiveError: If decompression fails
-
-        """
-        try:
-            with bz2.BZ2File(input_stream, "rb") as bz:
-                shutil.copyfileobj(bz, output_stream)
-            logger.debug("Decompressed BZIP2 data")
-        except (OSError, ValueError) as e:
-            raise ArchiveError(f"Failed to decompress BZIP2: {e}") from e
-
-    def compress_file(self, input_path: Path, output_path: Path) -> Path:
-        """Compress a file.
-
-        Args:
-            input_path: Input file path
-            output_path: Output file path (should end with .bz2)
-
-        Returns:
-            Path to compressed file
-
-        Raises:
-            ArchiveError: If compression fails
-
-        """
-        try:
-            ensure_parent_dir(output_path)
-
-            with input_path.open("rb") as f_in, bz2.open(output_path, "wb", compresslevel=self.level) as f_out:
-                shutil.copyfileobj(f_in, f_out)
-
-            logger.debug(f"Compressed {input_path} to {output_path}")
-            return output_path
-
-        except (OSError, ValueError) as e:
-            raise ArchiveError(f"Failed to compress file: {e}") from e
-
-    def decompress_file(self, input_path: Path, output_path: Path) -> Path:
-        """Decompress a file.
-
-        Args:
-            input_path: Input file path (bzip2 compressed)
-            output_path: Output file path
-
-        Returns:
-            Path to decompressed file
-
-        Raises:
-            ArchiveError: If decompression fails
-
-        """
-        try:
-            ensure_parent_dir(output_path)
-
-            with bz2.open(input_path, "rb") as f_in, output_path.open("wb") as f_out:
-                shutil.copyfileobj(f_in, f_out)
-
-            logger.debug(f"Decompressed {input_path} to {output_path}")
-            return output_path
-
-        except (OSError, ValueError) as e:
-            raise ArchiveError(f"Failed to decompress file: {e}") from e
-
-    def compress_bytes(self, data: bytes) -> bytes:
-        """Compress bytes data.
-
-        Args:
-            data: Input bytes
-
-        Returns:
-            Compressed bytes
-
-        Raises:
-            ArchiveError: If compression fails
-
-        """
-        try:
-            return bz2.compress(data, compresslevel=self.level)
-        except (OSError, ValueError) as e:
-            raise ArchiveError(f"Failed to compress bytes: {e}") from e
-
-    def decompress_bytes(self, data: bytes) -> bytes:
-        """Decompress bytes data.
-
-        Args:
-            data: Compressed bytes
-
-        Returns:
-            Decompressed bytes
-
-        Raises:
-            ArchiveError: If decompression fails
-
-        """
-        try:
-            return bz2.decompress(data)
-        except (OSError, ValueError) as e:
-            raise ArchiveError(f"Failed to decompress bytes: {e}") from e
+    def _decompress_bytes_impl(self, data: bytes) -> bytes:
+        """Library-specific bytes decompression implementation."""
+        return bz2.decompress(data)

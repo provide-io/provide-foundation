@@ -1,165 +1,47 @@
 from __future__ import annotations
 
 import gzip
-from pathlib import Path
 import shutil
 from typing import BinaryIO
 
-from attrs import Attribute, define, validators
+from attrs import define
 
-from provide.foundation.archive.base import ArchiveError
+from provide.foundation.archive.base import BaseCompressor
 from provide.foundation.config import defaults
 from provide.foundation.config.base import field
-from provide.foundation.file import ensure_parent_dir
-from provide.foundation.logger import get_logger
 
 """GZIP compression implementation."""
 
-logger = get_logger(__name__)
-
-
-def _validate_compression_level(instance: GzipCompressor, attribute: Attribute[int], value: int) -> None:
-    """Validate compression level is between 1 and 9."""
-    if not 1 <= value <= 9:
-        raise ValueError(f"Compression level must be 1-9, got {value}")
-
 
 @define(slots=True)
-class GzipCompressor:
+class GzipCompressor(BaseCompressor):
     """GZIP compression implementation.
 
     Provides GZIP compression and decompression for single files.
     Does not handle bundling - use with TarArchive for .tar.gz files.
     """
 
-    level: int = field(
-        default=defaults.DEFAULT_GZIP_COMPRESSION_LEVEL,
-        validator=[validators.instance_of(int), _validate_compression_level],  # type: ignore[arg-type]
-    )  # Compression level 1-9 (1=fast, 9=best)
+    level: int = field(default=defaults.DEFAULT_GZIP_COMPRESSION_LEVEL)
 
-    def compress(self, input_stream: BinaryIO, output_stream: BinaryIO) -> None:
-        """Compress data from input stream to output stream.
+    @property
+    def format_name(self) -> str:
+        """Return the name of the compression format."""
+        return "GZIP"
 
-        Args:
-            input_stream: Input binary stream
-            output_stream: Output binary stream
+    def _compress_stream(self, input_stream: BinaryIO, output_stream: BinaryIO) -> None:
+        """Library-specific stream compression implementation."""
+        with gzip.GzipFile(fileobj=output_stream, mode="wb", compresslevel=self.level) as gz:
+            shutil.copyfileobj(input_stream, gz)
 
-        Raises:
-            ArchiveError: If compression fails
+    def _decompress_stream(self, input_stream: BinaryIO, output_stream: BinaryIO) -> None:
+        """Library-specific stream decompression implementation."""
+        with gzip.GzipFile(fileobj=input_stream, mode="rb") as gz:
+            shutil.copyfileobj(gz, output_stream)
 
-        """
-        try:
-            with gzip.GzipFile(fileobj=output_stream, mode="wb", compresslevel=self.level) as gz:
-                shutil.copyfileobj(input_stream, gz)
-            logger.debug(f"Compressed data with GZIP level {self.level}")
-        except (OSError, ValueError) as e:
-            raise ArchiveError(f"Failed to compress with GZIP: {e}") from e
+    def _compress_bytes_impl(self, data: bytes) -> bytes:
+        """Library-specific bytes compression implementation."""
+        return gzip.compress(data, compresslevel=self.level)
 
-    def decompress(self, input_stream: BinaryIO, output_stream: BinaryIO) -> None:
-        """Decompress data from input stream to output stream.
-
-        Args:
-            input_stream: Input binary stream (gzipped)
-            output_stream: Output binary stream
-
-        Raises:
-            ArchiveError: If decompression fails
-
-        """
-        try:
-            with gzip.GzipFile(fileobj=input_stream, mode="rb") as gz:
-                shutil.copyfileobj(gz, output_stream)
-            logger.debug("Decompressed GZIP data")
-        except (OSError, ValueError) as e:
-            raise ArchiveError(f"Failed to decompress GZIP: {e}") from e
-
-    def compress_file(self, input_path: Path, output_path: Path) -> Path:
-        """Compress a file.
-
-        Args:
-            input_path: Input file path
-            output_path: Output file path (should end with .gz)
-
-        Returns:
-            Path to compressed file
-
-        Raises:
-            ArchiveError: If compression fails
-
-        """
-        try:
-            ensure_parent_dir(output_path)
-
-            with (
-                input_path.open("rb") as f_in,
-                gzip.open(output_path, "wb", compresslevel=self.level) as f_out,
-            ):
-                shutil.copyfileobj(f_in, f_out)
-
-            logger.debug(f"Compressed {input_path} to {output_path}")
-            return output_path
-
-        except (OSError, ValueError) as e:
-            raise ArchiveError(f"Failed to compress file: {e}") from e
-
-    def decompress_file(self, input_path: Path, output_path: Path) -> Path:
-        """Decompress a file.
-
-        Args:
-            input_path: Input file path (gzipped)
-            output_path: Output file path
-
-        Returns:
-            Path to decompressed file
-
-        Raises:
-            ArchiveError: If decompression fails
-
-        """
-        try:
-            ensure_parent_dir(output_path)
-
-            with gzip.open(input_path, "rb") as f_in, output_path.open("wb") as f_out:
-                shutil.copyfileobj(f_in, f_out)
-
-            logger.debug(f"Decompressed {input_path} to {output_path}")
-            return output_path
-
-        except (OSError, ValueError) as e:
-            raise ArchiveError(f"Failed to decompress file: {e}") from e
-
-    def compress_bytes(self, data: bytes) -> bytes:
-        """Compress bytes data.
-
-        Args:
-            data: Input bytes
-
-        Returns:
-            Compressed bytes
-
-        Raises:
-            ArchiveError: If compression fails
-
-        """
-        try:
-            return gzip.compress(data, compresslevel=self.level)
-        except (OSError, ValueError) as e:
-            raise ArchiveError(f"Failed to compress bytes: {e}") from e
-
-    def decompress_bytes(self, data: bytes) -> bytes:
-        """Decompress bytes data.
-
-        Args:
-            data: Compressed bytes
-
-        Returns:
-            Decompressed bytes
-
-        Raises:
-            ArchiveError: If decompression fails
-
-        """
-        try:
-            return gzip.decompress(data)
-        except (OSError, ValueError) as e:
-            raise ArchiveError(f"Failed to decompress bytes: {e}") from e
+    def _decompress_bytes_impl(self, data: bytes) -> bytes:
+        """Library-specific bytes decompression implementation."""
+        return gzip.decompress(data)
