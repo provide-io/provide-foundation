@@ -5,7 +5,7 @@ from pathlib import Path
 import shutil
 from typing import BinaryIO
 
-from attrs import define, validators
+from attrs import Attribute, define, validators
 
 from provide.foundation.archive.base import ArchiveError
 from provide.foundation.config import defaults
@@ -18,7 +18,7 @@ from provide.foundation.logger import get_logger
 logger = get_logger(__name__)
 
 
-def _validate_compression_level(instance: object, attribute: object, value: int) -> None:
+def _validate_compression_level(instance: GzipCompressor, attribute: Attribute[int], value: int) -> None:
     """Validate compression level is between 1 and 9."""
     if not 1 <= value <= 9:
         raise ValueError(f"Compression level must be 1-9, got {value}")
@@ -34,7 +34,7 @@ class GzipCompressor:
 
     level: int = field(
         default=defaults.DEFAULT_GZIP_COMPRESSION_LEVEL,
-        validator=[validators.instance_of(int), _validate_compression_level],
+        validator=[validators.instance_of(int), _validate_compression_level],  # type: ignore[arg-type]
     )  # Compression level 1-9 (1=fast, 9=best)
 
     def compress(self, input_stream: BinaryIO, output_stream: BinaryIO) -> None:
