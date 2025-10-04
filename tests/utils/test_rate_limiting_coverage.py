@@ -22,11 +22,13 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
 
     def test_init_valid_parameters(self) -> None:
         """Test initialization with valid parameters."""
+        from provide.foundation.concurrency.locks import DualLock
+
         limiter = TokenBucketRateLimiter(capacity=10, refill_rate=5, time_source=self.get_time)
         assert limiter._capacity == 10.0
         assert limiter._refill_rate == 5.0
         assert limiter._tokens == 10.0  # Starts full
-        assert isinstance(limiter.lock, asyncio.Lock)
+        assert isinstance(limiter._lock, DualLock)
 
     def test_init_invalid_capacity(self) -> None:
         """Test initialization with invalid capacity."""
@@ -347,15 +349,16 @@ class TestTokenBucketEdgeCases(FoundationTestCase):
         """Test that lock is properly acquired and released."""
         limiter = TokenBucketRateLimiter(capacity=5, refill_rate=1, time_source=self.get_time)
 
-        # Verify lock is not held initially
-        assert not limiter.lock.locked()
+        # First call initializes the async lock
+        await limiter.is_allowed()
+
+        # After initialization, verify lock exists and is not held
+        assert limiter._lock._async_lock is not None
+        assert not limiter._lock._async_lock.locked()
 
         # Test that methods properly acquire and release lock
-        await limiter.is_allowed()
-        assert not limiter.lock.locked()
-
         await limiter.get_current_tokens()
-        assert not limiter.lock.locked()
+        assert not limiter._lock._async_lock.locked()
 
 
 class TestRateLimitingIntegration(FoundationTestCase):

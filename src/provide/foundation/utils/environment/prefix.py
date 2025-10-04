@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 from typing import Any, TypeVar
 
+from provide.foundation.utils.caching import LRUCache
 from provide.foundation.utils.environment.getters import (
     get_bool,
     get_dict,
@@ -31,6 +32,8 @@ class EnvPrefix:
     Provides convenient access to environment variables with a common prefix,
     useful for application-specific configuration namespacing.
 
+    Uses caching to improve performance for repeated name lookups.
+
     Examples:
         >>> app_env = EnvPrefix('MYAPP')
         >>> app_env.get_bool('DEBUG')  # Reads MYAPP_DEBUG
@@ -48,12 +51,32 @@ class EnvPrefix:
         """
         self.prefix = prefix.upper()
         self.separator = separator
+        self._name_cache = LRUCache(maxsize=128)
 
     def _make_name(self, name: str) -> str:
-        """Create full environment variable name."""
+        """Create full environment variable name.
+
+        Results are cached for improved performance on repeated calls.
+
+        Args:
+            name: Variable name to normalize
+
+        Returns:
+            Full environment variable name with prefix
+        """
+        # Check cache first
+        cached_name = self._name_cache.get(name)
+        if cached_name is not None:
+            return cached_name
+
         # Convert to uppercase and replace common separators
-        name = name.upper().replace("-", "_").replace(".", "_")
-        return f"{self.prefix}{self.separator}{name}"
+        normalized = name.upper().replace("-", "_").replace(".", "_")
+        full_name = f"{self.prefix}{self.separator}{normalized}"
+
+        # Store in cache
+        self._name_cache.set(name, full_name)
+
+        return full_name
 
     def get_bool(self, name: str, default: bool | None = None) -> bool | None:
         """Get boolean with prefix."""

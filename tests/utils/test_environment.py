@@ -32,9 +32,13 @@ class TestBasicGetters(FoundationTestCase):
             assert get_bool("TEST_BOOL") is True
 
         # False values
-        for value in ["false", "False", "0", "no", "NO", "off", "OFF", "disabled", ""]:
+        for value in ["false", "False", "0", "no", "NO", "off", "OFF", "disabled"]:
             monkeypatch.setenv("TEST_BOOL", value)
             assert get_bool("TEST_BOOL") is False
+
+        # Empty string returns None with warning
+        monkeypatch.setenv("TEST_BOOL", "")
+        assert get_bool("TEST_BOOL") is None
 
         # Invalid value
         monkeypatch.setenv("TEST_BOOL", "invalid")

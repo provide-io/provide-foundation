@@ -31,7 +31,11 @@ def get_bool(name: str, default: bool | None = None) -> bool | None:
         default: Default value if not set
 
     Returns:
-        Boolean value or default
+        Boolean value, None (if set but empty), or default (if unset)
+
+    Note:
+        Empty string is treated as ambiguous and returns None with a warning.
+        Unset variable returns the default value.
 
     Examples:
         >>> os.environ['DEBUG'] = 'true'
@@ -41,9 +45,20 @@ def get_bool(name: str, default: bool | None = None) -> bool | None:
         False
 
     """
+    from provide.foundation.logger import get_logger
+
     value = os.environ.get(name)
     if value is None:
         return default
+
+    # Handle empty/whitespace-only strings as ambiguous
+    if not value.strip():
+        logger = get_logger(__name__)
+        logger.warning(
+            f"Environment variable {name} is set but empty - treating as None. "
+            f"Either provide a value or unset the variable to use default."
+        )
+        return None
 
     try:
         return parse_bool(value)

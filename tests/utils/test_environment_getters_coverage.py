@@ -68,9 +68,9 @@ class TestGetBool(FoundationTestCase):
 
     def test_get_bool_edge_cases(self, clean_env: Any) -> None:
         """Test get_bool with various edge cases."""
-        # Test with empty string
+        # Test with empty string - returns None with warning
         os.environ["TEST_BOOL"] = ""
-        assert get_bool("TEST_BOOL") is False
+        assert get_bool("TEST_BOOL") is None
 
         # Test with whitespace
         os.environ["TEST_BOOL"] = "  true  "
