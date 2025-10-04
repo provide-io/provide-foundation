@@ -17,11 +17,19 @@ from provide.foundation.resilience.retry import (
 
 """Resilience decorators for retry, circuit breaker, and fallback patterns."""
 
-# Global registry of circuit breaker instances for testing
-_circuit_breaker_instances: list[CircuitBreaker] = []
+# Circuit breaker registry dimensions
+CIRCUIT_BREAKER_DIMENSION = "circuit_breaker"
+CIRCUIT_BREAKER_TEST_DIMENSION = "circuit_breaker_test"
 
-# Separate registry for circuit breakers created in test files
-_test_circuit_breaker_instances: list[CircuitBreaker] = []
+# Counter for generating unique circuit breaker names
+_circuit_breaker_counter = 0
+
+
+def _get_circuit_breaker_registry():
+    """Get the Hub registry for circuit breakers."""
+    from provide.foundation.hub.foundation import get_hub
+
+    return get_hub().registry
 
 
 def _should_register_for_global_reset() -> bool:
@@ -282,13 +290,19 @@ def circuit_breaker(
         time_source=time_source,
     )
 
+    # Register circuit breaker in Hub registry with unique name
+    global _circuit_breaker_counter
+    _circuit_breaker_counter += 1
+    breaker_name = f"cb_{_circuit_breaker_counter}"
+
     # Register for appropriate cleanup based on context
+    registry = _get_circuit_breaker_registry()
     if _should_register_for_global_reset():
         # Production circuit breakers
-        _circuit_breaker_instances.append(breaker)
+        registry.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_DIMENSION)
     else:
         # Test circuit breakers go to separate registry for isolated reset
-        _test_circuit_breaker_instances.append(breaker)
+        registry.register(breaker_name, breaker, dimension=CIRCUIT_BREAKER_TEST_DIMENSION)
 
     def decorator(func: F) -> F:
         @functools.wraps(func)
@@ -312,8 +326,11 @@ def reset_circuit_breakers_for_testing() -> None:
     This function is called by the test framework to ensure
     circuit breaker state doesn't leak between tests.
     """
-    for breaker in _circuit_breaker_instances:
-        breaker.reset()
+    registry = _get_circuit_breaker_registry()
+    for name in registry.list_dimension(CIRCUIT_BREAKER_DIMENSION):
+        breaker = registry.get(name, dimension=CIRCUIT_BREAKER_DIMENSION)
+        if breaker:
+            breaker.reset()
 
 
 def reset_test_circuit_breakers() -> None:
@@ -322,8 +339,11 @@ def reset_test_circuit_breakers() -> None:
     This function resets circuit breakers that were created within test files
     to ensure proper test isolation without affecting production circuit breakers.
     """
-    for breaker in _test_circuit_breaker_instances:
-        breaker.reset()
+    registry = _get_circuit_breaker_registry()
+    for name in registry.list_dimension(CIRCUIT_BREAKER_TEST_DIMENSION):
+        breaker = registry.get(name, dimension=CIRCUIT_BREAKER_TEST_DIMENSION)
+        if breaker:
+            breaker.reset()
 
 
 def fallback(*fallback_funcs: Callable[..., Any]) -> Callable[[F], F]:
