@@ -29,13 +29,13 @@ from provide.foundation.file.operations.utils import (
 )
 
 __all__ = [
-    # Main detector
-    "OperationDetector",
     # Types
     "DetectorConfig",
     "FileEvent",
     "FileEventMetadata",
     "FileOperation",
+    # Main detector
+    "OperationDetector",
     "OperationType",
     # Utilities
     "detect_atomic_save",

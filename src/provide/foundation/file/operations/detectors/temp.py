@@ -136,7 +136,7 @@ class TempPatternDetector:
 
                 if rename_events:
                     rename_event = rename_events[0]
-                    all_events = temp_events + [rename_event]
+                    all_events = [*temp_events, rename_event]
                     all_events.sort(key=lambda e: e.timestamp)
 
                     time_span = (all_events[-1].timestamp - all_events[0].timestamp).total_seconds() * 1000
@@ -162,10 +162,13 @@ class TempPatternDetector:
 
         return None
 
-    def detect_temp_create_delete_pattern(
+    def detect_temp_create_delete_pattern(  # noqa: C901
         self, events: list[FileEvent], temp_window_ms: int = 5000
     ) -> FileOperation | None:
-        """Detect pattern: create temp -> delete temp -> create real file."""
+        """Detect pattern: create temp -> delete temp -> create real file.
+
+        Note: High complexity is intentional to handle all temp file patterns.
+        """
         if len(events) < 2:
             return None
 
@@ -216,7 +219,7 @@ class TempPatternDetector:
                                 ).total_seconds() * 1000
 
                                 if time_span <= temp_window_ms:
-                                    all_events = temp_events + [real_event]
+                                    all_events = [*temp_events, real_event]
                                     all_events.sort(key=lambda e: e.timestamp)
 
                                     return FileOperation(

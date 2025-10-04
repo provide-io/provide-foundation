@@ -21,8 +21,11 @@ def _get_stream_lock() -> threading.Lock:
     return _STREAM_LOCK
 
 
-def get_log_stream() -> TextIO:
-    """Get the current log stream."""
+def get_log_stream() -> TextIO:  # noqa: C901
+    """Get the current log stream.
+
+    Note: High complexity is intentional for robust stream handling across test/prod.
+    """
     global _PROVIDE_LOG_STREAM
     if not _get_stream_lock().acquire(timeout=5.0):
         # If we can't acquire the lock within 5 seconds, return stderr as fallback
