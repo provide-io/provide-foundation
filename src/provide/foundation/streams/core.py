@@ -22,15 +22,8 @@ def _get_stream_lock() -> threading.RLock:
 
     Returns managed lock to prevent deadlocks and enable monitoring.
     """
-    try:
-        return get_lock_manager().get_lock("foundation.stream")
-    except KeyError:
-        # Fallback: register on first use if not already registered
-        return get_lock_manager().register_lock(
-            name="foundation.stream",
-            order=10,
-            description="Log stream management lock",
-        )
+    # Lock is registered during Foundation initialization via register_foundation_locks()
+    return get_lock_manager().get_lock("foundation.stream")
 
 
 def get_log_stream() -> TextIO:  # noqa: C901

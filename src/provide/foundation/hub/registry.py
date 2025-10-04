@@ -44,18 +44,10 @@ class Registry:
     def __init__(self) -> None:
         """Initialize an empty registry."""
         # Use managed lock for deadlock prevention
+        # Lock is registered during Foundation initialization via register_foundation_locks()
         from provide.foundation.concurrency.locks import get_lock_manager
 
-        try:
-            self._lock = get_lock_manager().get_lock("foundation.registry")
-        except KeyError:
-            # Register on first use if not already registered
-            self._lock = get_lock_manager().register_lock(
-                name="foundation.registry",
-                order=120,
-                description="Component registry lock",
-            )
-
+        self._lock = get_lock_manager().get_lock("foundation.registry")
         self._registry: dict[str, dict[str, RegistryEntry]] = defaultdict(dict)
         self._aliases: dict[str, tuple[str, str]] = {}
 
