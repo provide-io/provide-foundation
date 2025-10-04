@@ -133,16 +133,6 @@ if not _HAS_CRYPTO:
 
 
 __all__ = [
-    # Internal flag
-    "_HAS_CRYPTO",
-    # X.509 certificates
-    "Certificate",
-    "CertificateBase",
-    "CertificateConfig",
-    "CertificateError",
-    # Types
-    "CurveType",
-    "KeyType",
     # Constants
     "DEFAULT_CERTIFICATE_KEY_TYPE",
     "DEFAULT_CERTIFICATE_VALIDITY_DAYS",
@@ -155,6 +145,21 @@ __all__ = [
     "SUPPORTED_EC_CURVES",
     "SUPPORTED_KEY_TYPES",
     "SUPPORTED_RSA_SIZES",
+    # Internal flag
+    "_HAS_CRYPTO",
+    # X.509 certificates
+    "Certificate",
+    "CertificateBase",
+    "CertificateConfig",
+    "CertificateError",
+    # Types
+    "CurveType",
+    # OOP Signers/Verifiers
+    "Ed25519Signer",
+    "Ed25519Verifier",
+    "KeyType",
+    "RSASigner",
+    "RSAVerifier",
     # Functions
     "create_ca",
     "create_self_signed",
@@ -168,9 +173,4 @@ __all__ = [
     "get_default_signature_algorithm",
     "sign_data",
     "verify_signature",
-    # OOP Signers/Verifiers
-    "Ed25519Signer",
-    "Ed25519Verifier",
-    "RSASigner",
-    "RSAVerifier",
 ]
