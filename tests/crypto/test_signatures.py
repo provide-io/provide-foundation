@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from provide.testkit import FoundationTestCase
 import pytest
+from provide.testkit import FoundationTestCase
 
 from provide.foundation.crypto import (
     ED25519_PRIVATE_KEY_SIZE,
@@ -14,6 +14,7 @@ from provide.foundation.crypto import (
     sign_data,
     verify_signature,
 )
+from provide.foundation.errors.crypto import CryptoKeyError
 
 
 class TestEd25519KeyGeneration(FoundationTestCase):
@@ -76,7 +77,7 @@ class TestEd25519Signatures(FoundationTestCase):
         invalid_key = b"too_short"
         data = b"test data"
 
-        with pytest.raises(ValueError, match="Private key must be 32 bytes"):
+        with pytest.raises(CryptoKeyError, match="Private key must be 32 bytes"):
             sign_data(data, invalid_key)
 
     def test_verify_invalid_signature_size(self) -> None:
