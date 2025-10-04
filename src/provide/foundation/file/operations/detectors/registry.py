@@ -93,8 +93,8 @@ def clear_detector_registry() -> None:
 
 
 __all__ = [
+    "clear_detector_registry",
+    "get_all_detectors",
     "get_detector_registry",
     "register_detector",
-    "get_all_detectors",
-    "clear_detector_registry",
 ]
