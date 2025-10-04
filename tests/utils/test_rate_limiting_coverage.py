@@ -22,13 +22,13 @@ class TestTokenBucketRateLimiter(FoundationTestCase):
 
     def test_init_valid_parameters(self) -> None:
         """Test initialization with valid parameters."""
-        from provide.foundation.concurrency.locks import DualLock
+        from provide.foundation.concurrency.locks import SmartLock
 
         limiter = TokenBucketRateLimiter(capacity=10, refill_rate=5, time_source=self.get_time)
         assert limiter._capacity == 10.0
         assert limiter._refill_rate == 5.0
         assert limiter._tokens == 10.0  # Starts full
-        assert isinstance(limiter._lock, DualLock)
+        assert isinstance(limiter._lock, SmartLock)
 
     def test_init_invalid_capacity(self) -> None:
         """Test initialization with invalid capacity."""

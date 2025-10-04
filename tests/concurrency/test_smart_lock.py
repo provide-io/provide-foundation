@@ -1,4 +1,4 @@
-"""Tests for DualLock concurrency primitive."""
+"""Tests for SmartLock concurrency primitive."""
 
 from __future__ import annotations
 
@@ -8,15 +8,15 @@ import time
 
 from provide.testkit import FoundationTestCase
 
-from provide.foundation.concurrency.locks import DualLock
+from provide.foundation.concurrency.locks import SmartLock
 
 
-class TestDualLockSync(FoundationTestCase):
-    """Test DualLock synchronous operations."""
+class TestSmartLockSync(FoundationTestCase):
+    """Test SmartLock synchronous operations."""
 
     def test_sync_lock_basic(self) -> None:
         """Test basic synchronous lock acquisition."""
-        lock = DualLock()
+        lock = SmartLock()
         shared_value = 0
 
         with lock.sync():
@@ -26,7 +26,7 @@ class TestDualLockSync(FoundationTestCase):
 
     def test_sync_lock_mutual_exclusion(self) -> None:
         """Test mutual exclusion in sync context."""
-        lock = DualLock()
+        lock = SmartLock()
         counter = 0
         iterations = 100
 
@@ -48,7 +48,7 @@ class TestDualLockSync(FoundationTestCase):
 
     def test_sync_lock_reentrant(self) -> None:
         """Test that sync lock is reentrant."""
-        lock = DualLock()
+        lock = SmartLock()
 
         with lock.sync():  # noqa: SIM117
             # Should not deadlock - intentionally nested to test re-entrancy
@@ -57,7 +57,7 @@ class TestDualLockSync(FoundationTestCase):
 
     def test_sync_lock_exception_handling(self) -> None:
         """Test that lock is released on exception."""
-        lock = DualLock()
+        lock = SmartLock()
 
         try:
             with lock.sync():
@@ -70,12 +70,12 @@ class TestDualLockSync(FoundationTestCase):
             assert True
 
 
-class TestDualLockAsync(FoundationTestCase):
-    """Test DualLock asynchronous operations."""
+class TestSmartLockAsync(FoundationTestCase):
+    """Test SmartLock asynchronous operations."""
 
     async def test_async_lock_basic(self) -> None:
         """Test basic asynchronous lock acquisition."""
-        lock = DualLock()
+        lock = SmartLock()
         shared_value = 0
 
         async with lock.async_():
@@ -85,7 +85,7 @@ class TestDualLockAsync(FoundationTestCase):
 
     async def test_async_lock_mutual_exclusion(self) -> None:
         """Test mutual exclusion in async context."""
-        lock = DualLock()
+        lock = SmartLock()
         counter = 0
         iterations = 50
 
@@ -102,22 +102,9 @@ class TestDualLockAsync(FoundationTestCase):
 
         assert counter == iterations * 5
 
-    async def test_async_lock_lazy_initialization(self) -> None:
-        """Test that async lock is lazily initialized."""
-        lock = DualLock()
-
-        # Lock should be None initially
-        assert lock._async_lock is None
-
-        # After first async use, it should be initialized
-        async with lock.async_():
-            pass
-
-        assert lock._async_lock is not None
-
     async def test_async_lock_exception_handling(self) -> None:
         """Test that async lock is released on exception."""
-        lock = DualLock()
+        lock = SmartLock()
 
         try:
             async with lock.async_():
@@ -130,93 +117,167 @@ class TestDualLockAsync(FoundationTestCase):
             assert True
 
 
-class TestDualLockMixed(FoundationTestCase):
-    """Test DualLock with mixed sync/async usage."""
+class TestSmartLockMixedMutualExclusion(FoundationTestCase):
+    """Test SmartLock provides true mutual exclusion between sync and async."""
 
-    async def test_independent_sync_async_locks(self) -> None:
-        """Test that sync and async locks are independent."""
-        lock = DualLock()
-        sync_completed = False
-        async_completed = False
+    async def test_sync_blocks_async(self) -> None:
+        """Test that sync lock acquisition blocks async lock acquisition."""
+        lock = SmartLock()
+        sync_started = threading.Event()
+        sync_released = threading.Event()
+        async_acquired = False
 
         def sync_task() -> None:
-            nonlocal sync_completed
             with lock.sync():
-                time.sleep(0.1)
-                sync_completed = True
+                sync_started.set()
+                time.sleep(0.2)  # Hold lock for a while
+            sync_released.set()
 
         async def async_task() -> None:
-            nonlocal async_completed
+            nonlocal async_acquired
+            # Wait for sync to acquire first
+            await asyncio.to_thread(sync_started.wait)
+
+            # Try to acquire - should block until sync releases
             async with lock.async_():
-                await asyncio.sleep(0.1)
-                async_completed = True
+                async_acquired = True
+                # Verify sync has released before we got here
+                assert sync_released.is_set()
 
         # Start sync task in thread
         thread = threading.Thread(target=sync_task)
         thread.start()
 
-        # Run async task concurrently
+        # Run async task
         await async_task()
 
         # Wait for sync task
         thread.join()
 
-        # Both should complete successfully (they don't block each other)
-        assert sync_completed
-        assert async_completed
+        # Verify both completed
+        assert async_acquired
+        assert sync_released.is_set()
 
-    async def test_mixed_concurrent_access(self) -> None:
-        """Test concurrent access from both sync and async contexts."""
-        lock = DualLock()
+    async def test_async_blocks_sync(self) -> None:
+        """Test that async lock acquisition blocks sync lock acquisition."""
+        lock = SmartLock()
+        async_acquired = asyncio.Event()
+        async_released = False
+        sync_acquired = False
+
+        async def async_task() -> None:
+            nonlocal async_released
+            async with lock.async_():
+                async_acquired.set()
+                await asyncio.sleep(0.2)  # Hold lock for a while
+                async_released = True
+
+        def sync_task() -> None:
+            nonlocal sync_acquired
+            # Try to acquire - should block until async releases
+            with lock.sync():
+                sync_acquired = True
+                # Verify async has released before we got here
+                assert async_released
+
+        # Start async task
+        async_task_handle = asyncio.create_task(async_task())
+
+        # Wait for async to acquire
+        await async_acquired.wait()
+
+        # Start sync task in thread
+        thread = threading.Thread(target=sync_task)
+        thread.start()
+
+        # Wait for both to complete
+        await async_task_handle
+        thread.join()
+
+        # Verify both completed
+        assert sync_acquired
+        assert async_released
+
+    async def test_mixed_counter_race_condition(self) -> None:
+        """Test that SmartLock prevents race conditions in mixed sync/async access."""
+        lock = SmartLock()
+        counter = 0
+        iterations = 50
+
+        def sync_increment() -> None:
+            nonlocal counter
+            for _ in range(iterations):
+                with lock.sync():
+                    current = counter
+                    time.sleep(0.0001)  # Force context switch
+                    counter = current + 1
+
+        async def async_increment() -> None:
+            nonlocal counter
+            for _ in range(iterations):
+                async with lock.async_():
+                    current = counter
+                    await asyncio.sleep(0.0001)  # Force context switch
+                    counter = current + 1
+
+        # Start 3 sync threads
+        threads = [threading.Thread(target=sync_increment) for _ in range(3)]
+        for t in threads:
+            t.start()
+
+        # Start 3 async tasks
+        tasks = [asyncio.create_task(async_increment()) for _ in range(3)]
+
+        # Wait for all to complete
+        await asyncio.gather(*tasks)
+        for t in threads:
+            t.join()
+
+        # If mutual exclusion works, we should have exact count
+        expected = iterations * 6
+        assert counter == expected
+
+    async def test_rapid_mixed_access(self) -> None:
+        """Test rapid switching between sync and async access."""
+        lock = SmartLock()
         results: list[str] = []
 
         def sync_append(value: str) -> None:
             with lock.sync():
                 results.append(value)
-                time.sleep(0.01)
 
         async def async_append(value: str) -> None:
             async with lock.async_():
                 results.append(value)
-                await asyncio.sleep(0.01)
 
-        # Mix of sync and async operations
-        threads = [threading.Thread(target=sync_append, args=(f"sync_{i}",)) for i in range(3)]
+        # Rapidly alternate between sync and async
+        threads = []
+        tasks = []
 
-        for t in threads:
-            t.start()
+        for i in range(20):
+            if i % 2 == 0:
+                t = threading.Thread(target=sync_append, args=(f"sync_{i}",))
+                threads.append(t)
+                t.start()
+            else:
+                task = asyncio.create_task(async_append(f"async_{i}"))
+                tasks.append(task)
 
-        await asyncio.gather(*[async_append(f"async_{i}") for i in range(3)])
-
+        # Wait for all to complete
+        await asyncio.gather(*tasks)
         for t in threads:
             t.join()
 
         # All operations should complete
-        assert len(results) == 6
-
-    def test_sync_to_async_transition(self) -> None:
-        """Test using same DualLock instance from sync then async."""
-        lock = DualLock()
-
-        # First use from sync context
-        with lock.sync():
-            pass
-
-        # Then use from async context
-        async def async_use() -> int:
-            async with lock.async_():
-                return 2
-
-        result = asyncio.run(async_use())
-        assert result == 2
+        assert len(results) == 20
 
 
-class TestDualLockEdgeCases(FoundationTestCase):
+class TestSmartLockEdgeCases(FoundationTestCase):
     """Test edge cases and stress scenarios."""
 
     async def test_high_contention_async(self) -> None:
         """Test async lock under high contention."""
-        lock = DualLock()
+        lock = SmartLock()
         counter = 0
         num_tasks = 50
         iterations_per_task = 10
@@ -234,7 +295,7 @@ class TestDualLockEdgeCases(FoundationTestCase):
 
     def test_high_contention_sync(self) -> None:
         """Test sync lock under high contention."""
-        lock = DualLock()
+        lock = SmartLock()
         counter = 0
         num_threads = 20
         iterations_per_thread = 50
@@ -255,7 +316,7 @@ class TestDualLockEdgeCases(FoundationTestCase):
 
     async def test_rapid_acquire_release_async(self) -> None:
         """Test rapid acquire/release cycles in async context."""
-        lock = DualLock()
+        lock = SmartLock()
 
         for _ in range(1000):
             async with lock.async_():
@@ -263,22 +324,22 @@ class TestDualLockEdgeCases(FoundationTestCase):
 
     def test_rapid_acquire_release_sync(self) -> None:
         """Test rapid acquire/release cycles in sync context."""
-        lock = DualLock()
+        lock = SmartLock()
 
         for _ in range(1000):
             with lock.sync():
                 pass
 
 
-class TestDualLockRealWorld(FoundationTestCase):
+class TestSmartLockRealWorld(FoundationTestCase):
     """Test real-world usage patterns."""
 
     async def test_class_with_dual_api(self) -> None:
-        """Test DualLock in a class with both sync and async methods."""
+        """Test SmartLock in a class with both sync and async methods."""
 
         class Counter:
             def __init__(self) -> None:
-                self._lock = DualLock()
+                self._lock = SmartLock()
                 self._value = 0
 
             def increment(self) -> int:
@@ -304,7 +365,7 @@ class TestDualLockRealWorld(FoundationTestCase):
         result = await counter.increment_async()
         assert result == 2
 
-        # Mix of both
+        # Mix of both with guaranteed mutual exclusion
         def sync_increments() -> None:
             for _ in range(5):
                 counter.increment()
