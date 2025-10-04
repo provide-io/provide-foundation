@@ -1,249 +1,17 @@
 from __future__ import annotations
 
-import asyncio
-import builtins
 from collections.abc import AsyncIterator, Mapping
-import contextlib
-import os
 from pathlib import Path
 from typing import Any
 
-from provide.foundation.errors.process import ProcessError, ProcessTimeoutError
-from provide.foundation.logger import get_logger
+from provide.foundation.process.aio import async_run, async_shell, async_stream
 from provide.foundation.process.runner import CompletedProcess
 
-"""Async subprocess execution utilities."""
+"""Async subprocess execution utilities.
 
-plog = get_logger(__name__)
-
-
-def _filter_subprocess_kwargs(kwargs: dict) -> dict:
-    """Filter kwargs to only include valid subprocess parameters."""
-    valid_subprocess_kwargs = {
-        "stdin",
-        "stdout",
-        "stderr",
-        "shell",
-        "cwd",
-        "env",
-        "universal_newlines",
-        "startupinfo",
-        "creationflags",
-        "restore_signals",
-        "start_new_session",
-        "pass_fds",
-        "encoding",
-        "errors",
-        "text",
-        "executable",
-        "preexec_fn",
-        "close_fds",
-        "group",
-        "extra_groups",
-        "user",
-        "umask",
-    }
-    return {k: v for k, v in kwargs.items() if k in valid_subprocess_kwargs}
-
-
-def _prepare_async_environment(env: Mapping[str, str] | None) -> dict[str, str]:
-    """Prepare environment for async process execution."""
-    run_env = os.environ.copy()
-    if env is not None:
-        run_env.update(env)
-    run_env.setdefault("PROVIDE_TELEMETRY_DISABLED", "true")
-    return run_env
-
-
-async def _create_subprocess(
-    cmd: list[str] | str,
-    cmd_str: str,
-    shell: bool,
-    cwd: str | None,
-    run_env: dict[str, str],
-    capture_output: bool,
-    input: bytes | None,
-    kwargs: dict[str, Any],
-) -> asyncio.subprocess.Process:
-    """Create an async subprocess."""
-    common_args = {
-        "cwd": cwd,
-        "env": run_env,
-        "stdout": asyncio.subprocess.PIPE if capture_output else None,
-        "stderr": asyncio.subprocess.PIPE if capture_output else None,
-        "stdin": asyncio.subprocess.PIPE if input else None,
-        **_filter_subprocess_kwargs(kwargs),
-    }
-
-    if shell:
-        return await asyncio.create_subprocess_shell(cmd_str, **common_args)
-    else:
-        return await asyncio.create_subprocess_exec(*(cmd if isinstance(cmd, list) else [cmd]), **common_args)
-
-
-async def _read_stream_continuously(
-    stream: asyncio.StreamReader | None,
-) -> bytes:
-    """Continuously read from a stream until EOF."""
-    if stream is None:
-        return b""
-
-    chunks: list[bytes] = []
-    try:
-        while True:
-            chunk = await stream.read(8192)  # Read in 8KB chunks
-            if not chunk:
-                break
-            chunks.append(chunk)
-    except Exception:
-        # Stream closed or error, return what we have
-        pass
-    return b"".join(chunks)
-
-
-async def _communicate_with_timeout(
-    process: asyncio.subprocess.Process,
-    input: bytes | None,
-    timeout: float | None,
-    cmd_str: str,
-) -> tuple[bytes | None, bytes | None]:
-    """Communicate with process with optional timeout.
-
-    Uses background tasks to continuously read stdout/stderr to ensure
-    no output is lost on timeout.
-    """
-    if timeout:
-        # Start background tasks to continuously read output streams
-        stdout_task = asyncio.create_task(_read_stream_continuously(process.stdout))
-        stderr_task = asyncio.create_task(_read_stream_continuously(process.stderr))
-
-        # Write input if provided
-        if input and process.stdin:
-            process.stdin.write(input)
-            await process.stdin.drain()
-            process.stdin.close()
-            await process.stdin.wait_closed()
-
-        # Wait for process to complete with timeout
-        try:
-            await asyncio.wait_for(process.wait(), timeout=timeout)
-            # Process completed successfully, get output from background tasks
-            stdout = await stdout_task
-            stderr = await stderr_task
-            return (stdout if stdout else None, stderr if stderr else None)
-        except builtins.TimeoutError as e:
-            # Process timed out - kill it and capture whatever output we've accumulated
-            process.kill()
-
-            # Wait a bit for background tasks to finish reading any remaining data
-            try:
-                await asyncio.wait_for(
-                    asyncio.gather(stdout_task, stderr_task, return_exceptions=True),
-                    timeout=0.5,
-                )
-            except builtins.TimeoutError:
-                # Even the cleanup timed out, cancel the tasks
-                stdout_task.cancel()
-                stderr_task.cancel()
-
-            # Ensure process is cleaned up
-            with contextlib.suppress(builtins.TimeoutError):
-                # Process still won't die after 1s, not much more we can do
-                await asyncio.wait_for(process.wait(), timeout=1.0)
-
-            # Get whatever output was captured
-            partial_stdout = stdout_task.result() if stdout_task.done() else b""
-            partial_stderr = stderr_task.result() if stderr_task.done() else b""
-
-            plog.error(
-                "⏱️ Async command timed out",
-                command=cmd_str,
-                timeout=timeout,
-                captured_stdout_size=len(partial_stdout),
-                captured_stderr_size=len(partial_stderr),
-            )
-            raise ProcessTimeoutError(
-                f"Command timed out after {timeout}s: {cmd_str}",
-                code="PROCESS_ASYNC_TIMEOUT",
-                command=cmd_str,
-                timeout_seconds=timeout,
-                stdout=partial_stdout if partial_stdout else None,
-                stderr=partial_stderr if partial_stderr else None,
-            ) from e
-    else:
-        return await process.communicate(input=input)
-
-
-def _create_completed_process(
-    cmd: list[str] | str,
-    process: asyncio.subprocess.Process,
-    stdout: bytes | None,
-    stderr: bytes | None,
-    cwd: str | None,
-    env: Mapping[str, str] | None,
-    run_env: dict[str, str],
-) -> CompletedProcess:
-    """Create a CompletedProcess from subprocess results."""
-    stdout_str = stdout.decode(errors="replace") if stdout else ""
-    stderr_str = stderr.decode(errors="replace") if stderr else ""
-
-    return CompletedProcess(
-        args=cmd if isinstance(cmd, list) else [cmd],
-        returncode=process.returncode or 0,
-        stdout=stdout_str,
-        stderr=stderr_str,
-        cwd=cwd,
-        env=dict(run_env) if env else None,
-    )
-
-
-def _check_process_success(
-    process: asyncio.subprocess.Process,
-    cmd_str: str,
-    capture_output: bool,
-    stdout_str: str,
-    stderr_str: str,
-    check: bool,
-) -> None:
-    """Check if process succeeded and raise if needed."""
-    if check and process.returncode != 0:
-        plog.error(
-            "❌ Async command failed",
-            command=cmd_str,
-            returncode=process.returncode,
-            stderr=stderr_str if capture_output else None,
-        )
-        raise ProcessError(
-            f"Command failed with exit code {process.returncode}: {cmd_str}",
-            code="PROCESS_ASYNC_FAILED",
-            command=cmd_str,
-            return_code=process.returncode,
-            stdout=stdout_str if capture_output else None,
-            stderr=stderr_str if capture_output else None,
-        )
-
-
-async def _cleanup_process(process: asyncio.subprocess.Process | None) -> None:
-    """Clean up process resources."""
-    if not process:
-        return
-
-    # Close pipes if they exist
-    if process.stdin and not process.stdin.is_closing():
-        process.stdin.close()
-    if process.stdout and not process.stdout.at_eof():
-        process.stdout.feed_eof()
-    if process.stderr and process.stderr != asyncio.subprocess.PIPE and not process.stderr.at_eof():
-        process.stderr.feed_eof()
-
-    # Ensure process is terminated
-    if process.returncode is None:
-        process.terminate()
-        try:
-            await asyncio.wait_for(process.wait(), timeout=1.0)
-        except builtins.TimeoutError:
-            process.kill()
-            await process.wait()
+This module provides backward-compatible wrappers for the refactored aio package.
+New code should import directly from provide.foundation.process.aio.
+"""
 
 
 async def async_run_command(
@@ -267,7 +35,8 @@ async def async_run_command(
         check: Whether to raise exception on non-zero exit
         timeout: Command timeout in seconds
         input: Input to send to the process
-        **kwargs: Additional arguments
+        shell: Whether to execute via shell
+        **kwargs: Additional subprocess arguments
 
     Returns:
         CompletedProcess with results
@@ -275,167 +44,18 @@ async def async_run_command(
     Raises:
         ProcessError: If command fails and check=True
         ProcessTimeoutError: If timeout is exceeded
-
     """
-    cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
-    plog.info("🚀 Running async command", command=cmd_str, cwd=str(cwd) if cwd else None)
-
-    # Validate command type and shell parameter
-    if isinstance(cmd, str) and not shell:
-        from provide.foundation.errors.config import ValidationError
-
-        raise ValidationError(
-            "String commands require explicit shell=True for security. "
-            "Use async_run_shell() for shell commands or pass a list for direct execution.",
-            code="INVALID_COMMAND_TYPE",
-            expected="list[str] or (str with shell=True)",
-            actual="str without shell=True",
-        )
-
-    # Prepare environment and convert Path to string
-    run_env = _prepare_async_environment(env)
-    cwd_str = str(cwd) if isinstance(cwd, Path) else cwd
-
-    process = None
-    try:
-        # Create subprocess
-        process = await _create_subprocess(
-            cmd, cmd_str, shell, cwd_str, run_env, capture_output, input, kwargs
-        )
-
-        try:
-            # Communicate with process
-            stdout, stderr = await _communicate_with_timeout(process, input, timeout, cmd_str)
-
-            # Create completed process
-            completed = _create_completed_process(cmd, process, stdout, stderr, cwd_str, env, run_env)
-
-            # Check for success
-            _check_process_success(process, cmd_str, capture_output, completed.stdout, completed.stderr, check)
-
-            plog.debug(
-                "✅ Async command completed",
-                command=cmd_str,
-                returncode=process.returncode,
-            )
-
-            return completed
-        finally:
-            await _cleanup_process(process)
-
-    except Exception as e:
-        if isinstance(e, ProcessError | ProcessTimeoutError):
-            raise
-
-        plog.error(
-            "💥 Async command execution failed",
-            command=cmd_str,
-            error=str(e),
-        )
-        raise ProcessError(
-            f"Failed to execute async command: {cmd_str}",
-            code="PROCESS_ASYNC_EXECUTION_FAILED",
-            command=cmd_str,
-        ) from e
-
-
-def _prepare_stream_environment(env: Mapping[str, str] | None) -> dict[str, str]:
-    """Prepare the environment for process execution."""
-    run_env = os.environ.copy()
-    if env is not None:
-        run_env.update(env)
-    run_env.setdefault("PROVIDE_TELEMETRY_DISABLED", "true")
-    return run_env
-
-
-async def _create_stream_subprocess(
-    cmd: list[str], cwd: str | None, run_env: dict[str, str], stream_stderr: bool, kwargs: dict[str, Any]
-) -> Any:
-    """Create subprocess for streaming."""
-    stderr_handling = asyncio.subprocess.STDOUT if stream_stderr else asyncio.subprocess.PIPE
-    return await asyncio.create_subprocess_exec(
-        *(cmd if isinstance(cmd, list) else cmd.split()),
+    return await async_run(
+        cmd=cmd,
         cwd=cwd,
-        env=run_env,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=stderr_handling,
-        **_filter_subprocess_kwargs(kwargs),
+        env=env,
+        capture_output=capture_output,
+        check=check,
+        timeout=timeout,
+        input=input,
+        shell=shell,
+        **kwargs,
     )
-
-
-async def _read_lines_with_timeout(process: Any, timeout: float, cmd_str: str) -> list[str]:
-    """Read lines from process stdout with timeout."""
-    lines: list[str] = []
-    if not process.stdout:
-        return lines
-
-    try:
-        remaining_timeout = timeout
-        start_time = asyncio.get_event_loop().time()
-
-        while True:
-            elapsed = asyncio.get_event_loop().time() - start_time
-            remaining_timeout = timeout - elapsed
-
-            if remaining_timeout <= 0:
-                raise builtins.TimeoutError()
-
-            # Wait for a line with remaining timeout
-            line = await asyncio.wait_for(
-                process.stdout.readline(),
-                timeout=remaining_timeout,
-            )
-
-            if not line:
-                break  # EOF
-
-            lines.append(line.decode(errors="replace").rstrip())
-    except builtins.TimeoutError as e:
-        process.kill()
-        await process.wait()
-        plog.error("⏱️ Async stream timed out", command=cmd_str, timeout=timeout)
-        raise ProcessTimeoutError(
-            f"Command timed out after {timeout}s: {cmd_str}",
-            code="PROCESS_ASYNC_STREAM_TIMEOUT",
-            command=cmd_str,
-            timeout_seconds=timeout,
-        ) from e
-
-    return lines
-
-
-async def _cleanup_stream_process(process: Any) -> None:
-    """Clean up subprocess resources."""
-    if not process:
-        return
-
-    # Close pipes if they exist and are still open
-    if process.stdin and not process.stdin.is_closing():
-        process.stdin.close()
-    if process.stdout and not process.stdout.at_eof():
-        process.stdout.feed_eof()
-    if process.stderr and process.stderr != asyncio.subprocess.STDOUT and not process.stderr.at_eof():
-        process.stderr.feed_eof()
-
-    # Ensure process is terminated
-    if process.returncode is None:
-        process.terminate()
-        try:
-            await asyncio.wait_for(process.wait(), timeout=1.0)
-        except builtins.TimeoutError:
-            process.kill()
-            await process.wait()
-
-
-def _check_process_exit_code(process: Any, cmd_str: str) -> None:
-    """Check if process exited successfully."""
-    if process.returncode != 0:
-        raise ProcessError(
-            f"Command failed with exit code {process.returncode}: {cmd_str}",
-            code="PROCESS_ASYNC_STREAM_FAILED",
-            command=cmd_str,
-            return_code=process.returncode,
-        )
 
 
 async def async_stream_command(
@@ -453,7 +73,8 @@ async def async_stream_command(
         cwd: Working directory for the command
         env: Environment variables
         timeout: Command timeout in seconds
-        **kwargs: Additional arguments
+        stream_stderr: Whether to merge stderr into stdout
+        **kwargs: Additional subprocess arguments
 
     Yields:
         Lines of output from the command
@@ -461,54 +82,16 @@ async def async_stream_command(
     Raises:
         ProcessError: If command fails
         ProcessTimeoutError: If timeout is exceeded
-
     """
-    cmd_str = " ".join(cmd) if isinstance(cmd, list) else str(cmd)
-    plog.info("🌊 Streaming async command", command=cmd_str, cwd=str(cwd) if cwd else None)
-
-    # Prepare environment and working directory
-    run_env = _prepare_stream_environment(env)
-    cwd_str = str(cwd) if isinstance(cwd, Path) else cwd
-
-    process = None
-    try:
-        # Create subprocess
-        process = await _create_stream_subprocess(cmd, cwd_str, run_env, stream_stderr, kwargs)
-
-        try:
-            # Stream output with optional timeout
-            if timeout:
-                lines = await _read_lines_with_timeout(process, timeout, cmd_str)
-                await process.wait()
-                _check_process_exit_code(process, cmd_str)
-
-                # Yield lines as they were read
-                for line in lines:
-                    yield line
-            else:
-                # No timeout - stream normally
-                if process.stdout:
-                    async for line in process.stdout:
-                        yield line.decode(errors="replace").rstrip()
-
-                # Wait for process to complete and check exit code
-                await process.wait()
-                _check_process_exit_code(process, cmd_str)
-
-            plog.debug("✅ Async stream completed", command=cmd_str)
-        finally:
-            await _cleanup_stream_process(process)
-
-    except Exception as e:
-        if isinstance(e, ProcessError | ProcessTimeoutError):
-            raise
-
-        plog.error("💥 Async stream failed", command=cmd_str, error=str(e))
-        raise ProcessError(
-            f"Failed to stream async command: {cmd_str}",
-            code="PROCESS_ASYNC_STREAM_ERROR",
-            command=cmd_str,
-        ) from e
+    async for line in async_stream(
+        cmd=cmd,
+        cwd=cwd,
+        env=env,
+        timeout=timeout,
+        stream_stderr=stream_stderr,
+        **kwargs,
+    ):
+        yield line
 
 
 async def async_run_shell(
@@ -531,7 +114,7 @@ async def async_run_shell(
         env: Environment variables
         capture_output: Whether to capture output
         check: Whether to raise on non-zero exit
-        timeout: Command timeout
+        timeout: Command timeout in seconds
         **kwargs: Additional subprocess arguments
 
     Returns:
@@ -541,15 +124,20 @@ async def async_run_shell(
         This function enables shell interpretation of the command string,
         which allows shell features but also creates injection risks.
         Use async_run_command with a list for safer execution.
-
     """
-    return await async_run_command(
-        cmd,
+    return await async_shell(
+        cmd=cmd,
         cwd=cwd,
         env=env,
         capture_output=capture_output,
         check=check,
         timeout=timeout,
-        shell=True,  # nosec B604 - Intentional shell usage with caller validation
         **kwargs,
     )
+
+
+__all__ = [
+    "async_run_command",
+    "async_run_shell",
+    "async_stream_command",
+]
