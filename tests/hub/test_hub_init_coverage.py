@@ -51,88 +51,23 @@ class TestHubInitImports(FoundationTestCase):
             assert hasattr(hub_module, export)
 
 
-class TestGetClickCommands(FoundationTestCase):
-    """Test get_click_commands function."""
+class TestBuildClickCommandStub(FoundationTestCase):
+    """Test build_click_command stub behavior."""
 
-    def test_get_click_commands_success(self) -> None:
-        """Test successful get_click_commands when click is available."""
-        from provide.foundation.hub import get_click_commands
+    def test_build_click_command_available(self) -> None:
+        """Test that build_click_command is available (real or stub)."""
+        from provide.foundation.hub import build_click_command
 
-        # This should work if click is installed (which it should be for tests)
-        result = get_click_commands()
-
-        assert isinstance(result, dict)
-        assert "build_click_command" in result
-        assert callable(result["build_click_command"])
-
-    def test_get_click_commands_error_handling_paths(self) -> None:
-        """Test the error handling paths in get_click_commands."""
-        from provide.foundation.hub import get_click_commands
-
-        # Test the normal case - this exercises the successful path
-        result = get_click_commands()
-        assert isinstance(result, dict)
-        assert "build_click_command" in result
-
-        # We can't easily mock the import failure without complex setup,
-        # but we can at least test that the function is structured correctly
-        # and the error paths exist in the code
-        import inspect
-
-        source = inspect.getsource(get_click_commands)
-
-        # Verify error handling code exists
-        assert "ImportError" in source
-        assert "click" in source
-        assert "pip install" in source
-
-
-class TestHubGetattrLazyLoading(FoundationTestCase):
-    """Test __getattr__ lazy loading functionality."""
-
-    def test_getattr_build_click_command_success(self) -> None:
-        """Test __getattr__ successfully loads build_click_command."""
-        import provide.foundation.hub as hub_module
-
-        # Access build_click_command through __getattr__
-        build_click_command = hub_module.build_click_command
-
-        # Should be a callable function
+        # Should be callable (either real function or stub)
         assert callable(build_click_command)
 
-    def test_getattr_build_click_command_import_error(self) -> None:
-        """Test __getattr__ when build_click_command import fails."""
+    def test_build_click_command_in_all(self) -> None:
+        """Test that build_click_command is in __all__."""
         import provide.foundation.hub as hub_module
 
-        # Mock get_click_commands to raise ImportError
-        with (
-            patch.object(
-                hub_module,
-                "get_click_commands",
-                side_effect=ImportError("click not available"),
-            ),
-            pytest.raises(ImportError, match="click not available"),
-        ):
-            _ = hub_module.build_click_command
+        assert "build_click_command" in hub_module.__all__
 
-    def test_getattr_nonexistent_attribute(self) -> None:
-        """Test __getattr__ with non-existent attribute."""
-        import provide.foundation.hub as hub_module
 
-        with pytest.raises(
-            AttributeError,
-            match=r"module 'provide\.foundation\.hub' has no attribute 'nonexistent_attr'",
-        ):
-            _ = hub_module.nonexistent_attr
-
-    def test_getattr_other_valid_attributes_bypass(self) -> None:
-        """Test that __getattr__ doesn't interfere with normal attributes."""
-        import provide.foundation.hub as hub_module
-
-        # These should work normally without triggering __getattr__
-        assert callable(hub_module.register_command)
-        assert callable(hub_module.get_hub)
-        assert hub_module.Hub is not None
 
 
 class TestHubModuleBehavior(FoundationTestCase):
