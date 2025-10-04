@@ -299,6 +299,9 @@ class TestFileLockChaos(FoundationTestCase):
         lock.release()
         assert not lock.locked
 
+    # Note: reentrant_locking_chaos test removed - it was already marked as @pytest.mark.slow above
+    # and has been included in the chaos_slow category
+
 
 class TestFileLockAsyncChaos(FoundationTestCase):
     """Async chaos tests for FileLock with concurrent async operations."""
