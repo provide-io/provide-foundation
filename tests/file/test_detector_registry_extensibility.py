@@ -350,6 +350,16 @@ class TestDetectorRegistryExtensibility(FoundationTestCase):
 class TestDetectorRegistryBuiltins(FoundationTestCase):
     """Test that built-in detectors are auto-registered."""
 
+    def setup_method(self) -> None:
+        """Set up test environment."""
+        super().setup_method()
+        # Re-register built-in detectors if they were cleared
+        from provide.foundation.file.operations.detectors import (
+            _auto_register_builtin_detectors,
+        )
+
+        _auto_register_builtin_detectors()
+
     def test_builtin_detectors_auto_registered(self) -> None:
         """Test that built-in detectors are automatically registered on import."""
         # Import the module (auto-registration happens)
