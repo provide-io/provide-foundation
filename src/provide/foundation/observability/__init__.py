@@ -55,6 +55,17 @@ else:
     stream_logs = create_function_stub("opentelemetry", "observability")
 
 
+# Static __all__ export (always the same, regardless of dependencies)
+__all__ = [
+    "_HAS_OTEL",
+    "OpenObserveClient",
+    "is_openobserve_available",
+    "otel_trace",
+    "search_logs",
+    "stream_logs",
+]
+
+
 def is_openobserve_available() -> bool:
     """Check if OpenObserve integration is available.
 
