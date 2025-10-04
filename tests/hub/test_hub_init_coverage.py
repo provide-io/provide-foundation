@@ -15,8 +15,8 @@ class TestHubInitImports(FoundationTestCase):
         from provide.foundation.hub import (
             ComponentCategory,
             Hub,
+            build_click_command,
             clear_hub,
-            get_click_commands,
             get_component_registry,
             get_hub,
             register_command,
@@ -29,7 +29,7 @@ class TestHubInitImports(FoundationTestCase):
         assert Hub is not None
         assert callable(clear_hub)
         assert callable(get_hub)
-        assert callable(get_click_commands)
+        assert callable(build_click_command)
 
     def test_all_exports_defined(self) -> None:
         """Test that __all__ exports are properly defined."""
@@ -42,7 +42,7 @@ class TestHubInitImports(FoundationTestCase):
             "clear_hub",
             "get_hub",
             "register_command",
-            "get_click_commands",
+            "build_click_command",
         ]
 
         assert hasattr(hub_module, "__all__")
