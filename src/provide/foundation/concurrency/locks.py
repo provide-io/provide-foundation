@@ -20,6 +20,85 @@ It also provides DualLock for classes that need both sync and async APIs.
 """
 
 
+class SmartLock:
+    """Unified lock providing true mutual exclusion between sync and async contexts.
+
+    SmartLock uses a single threading.RLock and asyncio.to_thread() to ensure
+    that synchronous and asynchronous code paths acquire the same underlying lock,
+    preventing race conditions between sync threads and async tasks.
+
+    This is the recommended locking mechanism for classes that expose both
+    sync and async APIs accessing shared state.
+
+    Example:
+        >>> class MyClass:
+        ...     def __init__(self):
+        ...         self._lock = SmartLock()
+        ...         self._value = 0
+        ...
+        ...     def increment(self):
+        ...         with self._lock.sync():
+        ...             self._value += 1
+        ...
+        ...     async def increment_async(self):
+        ...         async with self._lock.async_():
+        ...             self._value += 1
+
+    Note:
+        The async context manager uses asyncio.to_thread() to acquire the
+        threading.RLock, ensuring the event loop is not blocked while waiting.
+    """
+
+    def __init__(self) -> None:
+        """Initialize SmartLock with a single reentrant lock."""
+        self._lock = threading.RLock()
+
+    @contextlib.contextmanager
+    def sync(self) -> Generator[None, None, None]:
+        """Acquire lock in synchronous context.
+
+        Use with standard 'with' statement in synchronous methods.
+
+        Yields:
+            None when lock is acquired
+
+        Example:
+            >>> lock = SmartLock()
+            >>> with lock.sync():
+            ...     # Critical section - protected from both sync and async access
+            ...     pass
+        """
+        with self._lock:
+            yield
+
+    @contextlib.asynccontextmanager
+    async def async_(self) -> AsyncIterator[None]:
+        """Acquire lock in asynchronous context.
+
+        Use with 'async with' statement in asynchronous methods.
+        The lock is acquired via asyncio.to_thread() to prevent blocking the event loop.
+
+        Yields:
+            None when lock is acquired
+
+        Example:
+            >>> import asyncio
+            >>> lock = SmartLock()
+            >>> async def main():
+            ...     async with lock.async_():
+            ...         # Critical section - protected from both sync and async access
+            ...         pass
+            >>> asyncio.run(main())
+        """
+        # Acquire the lock in a thread pool to avoid blocking the event loop
+        await asyncio.to_thread(self._lock.acquire)
+        try:
+            yield
+        finally:
+            # Release in thread pool as well for symmetry
+            await asyncio.to_thread(self._lock.release)
+
+
 class DualLock:
     """Lock that supports both synchronous and asynchronous contexts.
 
@@ -28,6 +107,11 @@ class DualLock:
 
     Use this when you have a class with both sync and async methods that need
     to protect shared state.
+
+    .. warning::
+        DualLock uses separate locks for sync and async contexts, which means
+        there is no mutual exclusion between a sync thread and an async task.
+        For true mutual exclusion, use SmartLock instead.
 
     Example:
         >>> class MyClass:
@@ -371,4 +455,4 @@ def register_foundation_locks() -> None:
     manager.register_lock("foundation.hub.components", order=220, description="Hub component management")
 
 
-__all__ = ["DualLock", "LockInfo", "LockManager", "get_lock_manager", "register_foundation_locks"]
+__all__ = ["DualLock", "LockInfo", "LockManager", "SmartLock", "get_lock_manager", "register_foundation_locks"]
