@@ -242,10 +242,11 @@ class TestFileLockPIDRecycling(MinimalTestCase):
         lock_path.unlink()
 
     def test_different_hostname_lock(self, temp_directory: Path) -> None:
-        """Test lock from different hostname is handled."""
+        """Test lock from different hostname is removed as stale."""
         lock_path = temp_directory / "test.lock"
 
         # Create a lock with different hostname (simulating network filesystem)
+        # Since we can't validate remote processes, this will be treated as stale
         remote_info = {
             "pid": 12345,
             "hostname": "remote-machine.example.com",
@@ -254,14 +255,16 @@ class TestFileLockPIDRecycling(MinimalTestCase):
         }
         lock_path.write_text(json.dumps(remote_info))
 
-        # Lock should timeout (can't validate remote process)
-        lock = FileLock(lock_path, timeout=0.3)
+        # Lock should be removed as stale (can't validate remote process)
+        lock = FileLock(lock_path)
+        assert lock.acquire()
 
-        with pytest.raises(LockError):
-            lock.acquire()
+        # Verify our lock replaced the remote one
+        lock_info = json.loads(lock_path.read_text())
+        assert lock_info["pid"] == os.getpid()
+        assert lock_info["hostname"] == socket.gethostname()
 
-        # Clean up
-        lock_path.unlink()
+        lock.release()
 
     def test_lock_with_psutil_access_denied(self, temp_directory: Path) -> None:
         """Test handling when psutil.AccessDenied is raised."""

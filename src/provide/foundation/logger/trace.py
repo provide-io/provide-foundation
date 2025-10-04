@@ -61,12 +61,14 @@ try:
             # Note: Catch exceptions to maintain logging contract (logging methods shouldn't raise)
             try:
                 from provide.foundation.streams.console import write_to_console
+
                 write_to_console(formatted_msg + "\n", stream=self._file, log_fallback=True)
             except Exception:
                 # Fallback for trace logging when console write fails
                 # Use direct stderr as last resort to maintain logging contract
                 try:
                     import sys
+
                     sys.stderr.write(formatted_msg + "\n")
                     sys.stderr.flush()
                 except Exception:

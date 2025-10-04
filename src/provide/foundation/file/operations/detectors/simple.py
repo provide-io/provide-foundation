@@ -44,13 +44,8 @@ class SimpleOperationDetector:
                 delete_event = path_events[i]
                 create_event = path_events[i + 1]
 
-                if (
-                    delete_event.event_type == "deleted"
-                    and create_event.event_type == "created"
-                ):
-                    time_diff = (
-                        create_event.timestamp - delete_event.timestamp
-                    ).total_seconds() * 1000
+                if delete_event.event_type == "deleted" and create_event.event_type == "created":
+                    time_diff = (create_event.timestamp - delete_event.timestamp).total_seconds() * 1000
 
                     if time_diff <= window_ms:
                         return FileOperation(
@@ -138,9 +133,8 @@ class SimpleOperationDetector:
         # Check if this is all modifies OR created followed by modifies
         event_types = [e.event_type for e in sorted_events]
         is_all_modifies = all(et == "modified" for et in event_types)
-        is_create_then_modifies = (
-            event_types[0] == "created"
-            and all(et == "modified" for et in event_types[1:])
+        is_create_then_modifies = event_types[0] == "created" and all(
+            et == "modified" for et in event_types[1:]
         )
 
         if not (is_all_modifies or is_create_then_modifies):

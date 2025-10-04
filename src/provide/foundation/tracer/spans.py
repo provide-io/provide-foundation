@@ -27,7 +27,7 @@ if TYPE_CHECKING:
 _HAS_OTEL: bool
 try:
     from opentelemetry import trace as otel_trace
-    from opentelemetry.trace import Status, StatusCode  # noqa: F811
+    from opentelemetry.trace import Status, StatusCode
 
     _HAS_OTEL = True
 except ImportError:

@@ -151,6 +151,7 @@ def reset_foundation_state() -> None:
             reset_streams_state,
             reset_structlog_state,
             reset_time_machine_state,
+            reset_version_cache,
         )
 
         # Signal that reset is in progress to prevent event enrichment and Hub event logging
@@ -178,6 +179,7 @@ def reset_foundation_state() -> None:
         # Reset in the proper order to avoid triggering reinitialization
         reset_structlog_state()
         reset_streams_state()
+        reset_version_cache()
 
         # Reset event enrichment processor state to prevent re-initialization during cleanup
         try:

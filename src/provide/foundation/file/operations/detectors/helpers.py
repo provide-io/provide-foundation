@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-import re
 from pathlib import Path
+import re
 
 
 def is_temp_file(path: Path) -> bool:
@@ -67,6 +67,6 @@ def extract_base_name(path: Path) -> str | None:
             break
 
     # Remove temp file ID patterns like .tmp.84
-    base_name = re.sub(r'\.tmp\.\d+$', '', base_name)
+    base_name = re.sub(r"\.tmp\.\d+$", "", base_name)
 
     return base_name if base_name and base_name != name else None
