@@ -6,6 +6,7 @@ import threading
 import time
 
 from provide.testkit import FoundationTestCase
+import pytest
 
 from provide.foundation.utils.caching import (
     LRUCache,
@@ -315,6 +316,7 @@ class TestCachingIntegration(FoundationTestCase):
         stats = env._name_cache.stats()
         assert stats["hits"] >= 1
 
+    @pytest.mark.time_sensitive
     def test_cache_performance_improvement(self) -> None:
         """Test that caching provides measurable performance improvement."""
         from provide.foundation.utils.environment.parsers import parse_duration
