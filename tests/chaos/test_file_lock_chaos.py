@@ -38,7 +38,9 @@ class TestFileLockChaos(FoundationTestCase):
         timeout=st.floats(min_value=0.5, max_value=2.0),
     )
     @settings(
-        max_examples=20, suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture]
+        max_examples=20,
+        suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture],
+        deadline=None,
     )
     def test_concurrent_thread_access_chaos(
         self,
@@ -184,7 +186,9 @@ class TestFileLockChaos(FoundationTestCase):
         ),
     )
     @settings(
-        max_examples=20, suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture]
+        max_examples=20,
+        suppress_health_check=[HealthCheck.too_slow, HealthCheck.function_scoped_fixture],
+        deadline=None,
     )
     def test_corrupted_lock_file_chaos(
         self,

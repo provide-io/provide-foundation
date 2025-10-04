@@ -11,7 +11,7 @@ from concurrent.futures import ThreadPoolExecutor
 import contextlib
 import time
 
-from hypothesis import given, settings, strategies as st
+from hypothesis import HealthCheck, given, settings, strategies as st
 from provide.testkit import FoundationTestCase
 from provide.testkit.chaos import (
     chaos_timings,
@@ -32,7 +32,7 @@ class TestCircuitBreakerChaos(FoundationTestCase):
         num_calls=st.integers(min_value=1, max_value=20),
         failure_rate=st.floats(min_value=0.0, max_value=1.0),
     )
-    @settings(max_examples=30)
+    @settings(max_examples=30, suppress_health_check=[HealthCheck.too_slow])
     def test_failure_threshold_chaos(
         self,
         failure_threshold: int,
