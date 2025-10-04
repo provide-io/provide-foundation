@@ -112,7 +112,9 @@ class InitializationStateMachine(StateMachine[InitState, InitEvent]):
     def mark_complete(self, config: Any, logger_instance: Any) -> None:
         """Mark initialization as complete."""
         with self._lock:
-            self._state_data = self._state_data.with_changes(
+            # Type ignore needed because with_changes returns ImmutableState
+            # but we know it's actually InitializationState
+            self._state_data = self._state_data.with_changes(  # type: ignore[assignment]
                 status=InitState.INITIALIZED,
                 config=config,
                 logger_instance=logger_instance,
@@ -123,7 +125,9 @@ class InitializationStateMachine(StateMachine[InitState, InitEvent]):
     def mark_failed(self, error: Exception) -> None:
         """Mark initialization as failed."""
         with self._lock:
-            self._state_data = self._state_data.with_changes(
+            # Type ignore needed because with_changes returns ImmutableState
+            # but we know it's actually InitializationState
+            self._state_data = self._state_data.with_changes(  # type: ignore[assignment]
                 status=InitState.FAILED,
                 error=error,
             )
@@ -295,9 +299,9 @@ def get_initialization_coordinator() -> InitializationCoordinator:
 
 __all__ = [
     "InitEvent",
+    "InitState",
     "InitializationCoordinator",
     "InitializationState",
     "InitializationStateMachine",
-    "InitState",
     "get_initialization_coordinator",
 ]
