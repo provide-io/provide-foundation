@@ -205,7 +205,7 @@ class TestAsyncRunCommand(FoundationTestCase):
         """Test that a non-ProcessError is wrapped in ProcessError."""
         with (
             patch(
-                "provide.foundation.process.async_runner._create_subprocess",
+                "provide.foundation.process.aio.execution.create_subprocess",
                 side_effect=OSError("test os error"),
             ),
             pytest.raises(ProcessError) as exc_info,
@@ -218,7 +218,7 @@ class TestAsyncRunCommand(FoundationTestCase):
         """Test that a non-ProcessError TimeoutError is wrapped in ProcessError."""
         with (
             patch(
-                "provide.foundation.process.async_runner._create_subprocess",
+                "provide.foundation.process.aio.execution.create_subprocess",
                 side_effect=TimeoutError("test timeout"),
             ),
             pytest.raises(ProcessError) as exc_info,
@@ -407,7 +407,7 @@ class TestAsyncStreamCommand(FoundationTestCase):
         """Test that a non-ProcessError is wrapped in ProcessError during stream."""
         with (
             patch(
-                "provide.foundation.process.async_runner._create_stream_subprocess",
+                "provide.foundation.process.aio.streaming.create_stream_subprocess",
                 side_effect=OSError("stream error"),
             ),
             pytest.raises(ProcessError) as exc_info,
@@ -422,7 +422,7 @@ class TestAsyncStreamCommand(FoundationTestCase):
         """Test that a non-ProcessError TimeoutError is wrapped during stream."""
         with (
             patch(
-                "provide.foundation.process.async_runner._create_stream_subprocess",
+                "provide.foundation.process.aio.streaming.create_stream_subprocess",
                 side_effect=TimeoutError("stream timeout"),
             ),
             pytest.raises(ProcessError) as exc_info,
@@ -510,7 +510,7 @@ class TestAsyncRunShell(FoundationTestCase):
     async def test_shell_delegates_to_async_run_command(self) -> None:
         """Test that async_run_shell properly delegates to async_run_command."""
         with patch(
-            "provide.foundation.process.async_runner.async_run_command",
+            "provide.foundation.process.aio.execution.async_run",
         ) as mock_run:
             mock_run.return_value = CompletedProcess(
                 args=["test command"],
