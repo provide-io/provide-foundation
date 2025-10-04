@@ -231,6 +231,31 @@ The stub functions use **delayed imports** (import inside the function, not at m
 - Updated tests to use `build_click_command` directly
 - All tests passing ✅
 
+## ✅ COMPLETED - Simplified crypto/__init__.py
+
+### Summary
+Moved all complicated optional dependency logic from `crypto/__init__.py` to `crypto/deps.py`, following the Foundation standard pattern (`utils/deps.py`).
+
+### Changes Implemented
+
+**Before**: `crypto/__init__.py` had 230 lines with:
+- Multiple try/except blocks (lines 43-100)
+- Conditional stub creation logic (lines 103-162)
+- Factory function calls (lines 154-157)
+- Complex conditional branching
+
+**After**: Ultra-simple structure
+- `crypto/__init__.py`: ~70 lines - just import statements (no logic!)
+- `crypto/deps.py`: ~170 lines - all the complicated optional dependency handling
+
+**Benefits**:
+- ✅ `__init__.py` is dead simple (just imports)
+- ✅ All complexity isolated in `deps.py` (standard Foundation pattern)
+- ✅ Easier to maintain and debug
+- ✅ Matches `utils/deps.py` pattern used elsewhere
+- ✅ No behavior changes - just reorganization
+- ✅ All 360+ crypto tests passing
+
 ## ✅ COMPLETED - Circular Dependency Documentation
 
 ### Background
