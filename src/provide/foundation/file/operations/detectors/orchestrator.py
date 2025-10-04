@@ -5,9 +5,11 @@ Coordinates detector functions via registry to identify the best match for file 
 
 from __future__ import annotations
 
+import asyncio
 from datetime import datetime
 from pathlib import Path
 import re
+from typing import Any
 
 from provide.foundation.file.operations.detectors.helpers import (
     extract_base_name,
@@ -27,12 +29,22 @@ log = get_logger(__name__)
 class OperationDetector:
     """Detects and classifies file operations from events."""
 
-    def __init__(self, config: DetectorConfig | None = None) -> None:
-        """Initialize with optional configuration."""
+    def __init__(
+        self, config: DetectorConfig | None = None, on_operation_complete: Any = None
+    ) -> None:
+        """Initialize with optional configuration and callback.
+
+        Args:
+            config: Detector configuration
+            on_operation_complete: Callback function(operation: FileOperation) called
+                                 when an operation is detected. Used for streaming mode.
+        """
         self.config = config or DetectorConfig()
         self._pattern_cache: dict[str, re.Pattern] = {}
         self._pending_events: list[FileEvent] = []
         self._last_flush = datetime.now()
+        self.on_operation_complete = on_operation_complete
+        self._flush_timer: Any = None  # asyncio.TimerHandle for auto-flush
 
     def detect(self, events: list[FileEvent]) -> list[FileOperation]:
         """Detect all operations from a list of events.
