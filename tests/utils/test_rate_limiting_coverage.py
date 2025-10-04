@@ -347,18 +347,22 @@ class TestTokenBucketEdgeCases(FoundationTestCase):
     @pytest.mark.asyncio
     async def test_lock_acquisition(self) -> None:
         """Test that lock is properly acquired and released."""
+        import threading
+
         limiter = TokenBucketRateLimiter(capacity=5, refill_rate=1, time_source=self.get_time)
 
-        # First call initializes the async lock
-        await limiter.is_allowed()
-
-        # After initialization, verify lock exists and is not held
-        assert limiter._lock._async_lock is not None
-        assert not limiter._lock._async_lock.locked()
+        # SmartLock uses a single threading.Lock (not separate async lock)
+        assert hasattr(limiter._lock, "_lock")
+        # Check it's a lock type by checking it has the lock interface
+        assert hasattr(limiter._lock._lock, "acquire")
+        assert hasattr(limiter._lock._lock, "release")
+        assert hasattr(limiter._lock._lock, "locked")
 
         # Test that methods properly acquire and release lock
+        await limiter.is_allowed()
         await limiter.get_current_tokens()
-        assert not limiter._lock._async_lock.locked()
+        # Lock should be released after async operations complete
+        assert not limiter._lock._lock.locked()
 
 
 class TestRateLimitingIntegration(FoundationTestCase):
