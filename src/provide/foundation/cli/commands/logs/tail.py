@@ -21,6 +21,9 @@ except ImportError:
 
 log = get_logger(__name__)
 
+# Compiled regex patterns for performance
+KEY_VALUE_PATTERN = re.compile(r"""(\w+)\s*=\s*(['"])(.*?)\2""")
+
 
 def _parse_filter_string(filter_str: str | None) -> dict[str, str]:
     """Parse a filter string like "key='value', key2='value2'" into a dict."""
@@ -29,8 +32,7 @@ def _parse_filter_string(filter_str: str | None) -> dict[str, str]:
 
     filters = {}
     # Regex to find key='value' pairs, allowing for spaces and different quote types
-    pattern = re.compile(r"""(\w+)\s*=\s*(['"])(.*?)\2""")
-    matches = pattern.findall(filter_str)
+    matches = KEY_VALUE_PATTERN.findall(filter_str)
 
     for key, _quote, value in matches:
         filters[key] = value
