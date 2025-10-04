@@ -510,7 +510,7 @@ class TestAsyncRunShell(FoundationTestCase):
     async def test_shell_delegates_to_async_run_command(self) -> None:
         """Test that async_run_shell properly delegates to async_run_command."""
         with patch(
-            "provide.foundation.process.aio.execution.async_run",
+            "provide.foundation.process.aio.shell.async_run",
         ) as mock_run:
             mock_run.return_value = CompletedProcess(
                 args=["test command"],
