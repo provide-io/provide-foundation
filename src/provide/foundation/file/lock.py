@@ -249,23 +249,22 @@ class FileLock:
                 proc_start_time = proc.create_time()
 
                 # If we have start_time, validate it matches to prevent PID recycling
-                if lock_start_time is not None:
-                    # Allow 1 second tolerance for timestamp precision differences
-                    if abs(proc_start_time - lock_start_time) > 1.0:
-                        log.warning(
-                            "PID recycling detected - removing stale lock",
-                            path=str(self.path),
-                            lock_pid=lock_pid,
-                            lock_start=lock_start_time,
-                            proc_start=proc_start_time,
-                        )
-                        try:
-                            self.path.unlink()
-                            return True
-                        except FileNotFoundError:
-                            return True
-                        except Exception:
-                            return False
+                # Allow 1 second tolerance for timestamp precision differences
+                if lock_start_time is not None and abs(proc_start_time - lock_start_time) > 1.0:
+                    log.warning(
+                        "PID recycling detected - removing stale lock",
+                        path=str(self.path),
+                        lock_pid=lock_pid,
+                        lock_start=lock_start_time,
+                        proc_start=proc_start_time,
+                    )
+                    try:
+                        self.path.unlink()
+                        return True
+                    except FileNotFoundError:
+                        return True
+                    except Exception:
+                        return False
 
                 # Process exists and start time matches (or no start time available)
                 return False
