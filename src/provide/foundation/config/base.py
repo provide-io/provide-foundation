@@ -76,7 +76,11 @@ class BaseConfig:
     """Base configuration class with common functionality.
 
     All configuration classes should inherit from this.
-    All methods are async to support async validation and I/O operations.
+
+    Note on Validation:
+        The validate() method is synchronous. Subclasses can override it to add
+        custom validation logic. If async validation is needed, subclasses should
+        implement their own async validation methods.
     """
 
     # These are instance attributes that need to be defined outside of slots
@@ -84,15 +88,24 @@ class BaseConfig:
     _original_values: dict[str, Any] = attrs_field(init=False, factory=dict)
 
     def __attrs_post_init__(self) -> None:
-        """Post-initialization hook for subclasses."""
+        """Post-initialization hook for subclasses.
+
+        Note: validate() is not called automatically to allow subclasses
+        to perform validation at the appropriate time (e.g., after all
+        fields are populated from multiple sources).
+        """
         # The _source_map and _original_values are now handled by attrs with factory
-        # Note: validate() is now async, so we can't call it here
-        # Users must explicitly call await config.validate() after creation
 
     def validate(self) -> None:
         """Validate the configuration.
 
-        Override this method to add custom validation logic.
+        This is a synchronous validation method. Override this in subclasses
+        to add custom validation logic. Call this explicitly after creating
+        and populating a configuration instance.
+
+        Raises:
+            ValidationError: If validation fails
+
         """
 
     def to_dict(self, include_sensitive: bool = False) -> ConfigDict:

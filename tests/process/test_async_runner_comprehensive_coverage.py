@@ -152,9 +152,9 @@ class TestAsyncRunCommand(FoundationTestCase):
         assert result.returncode == 0
         assert "no shell" in result.stdout
 
-    async def test_command_shell_false_string_cmd(self) -> None:
-        """Test command execution with shell=False and string command."""
-        result = await async_run_command("echo", shell=False)
+    async def test_command_shell_false_list_cmd(self) -> None:
+        """Test command execution with shell=False and list command."""
+        result = await async_run_command(["echo", "test"], shell=False)
 
         assert result.returncode == 0
 

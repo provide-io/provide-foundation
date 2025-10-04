@@ -1,5 +1,13 @@
 from __future__ import annotations
 
+# Check for Click availability
+try:
+    import click  # noqa: F401
+
+    _HAS_CLICK = True
+except ImportError:
+    _HAS_CLICK = False
+
 from provide.foundation.cli.decorators import (
     config_options,
     error_handler,
@@ -30,6 +38,8 @@ CLI tools in the provide-io ecosystem.
 """
 
 __all__ = [
+    # Dependency flags
+    "_HAS_CLICK",
     # Utilities
     "CliTestRunner",
     "assert_cli_error",
