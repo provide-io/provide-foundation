@@ -3,10 +3,11 @@ from __future__ import annotations
 #
 # limiters.py
 #
-import asyncio
 import threading
 import time
 from typing import Any
+
+from provide.foundation.concurrency.locks import DualLock
 
 """Rate limiter implementations for Foundation's logging system."""
 
@@ -101,22 +102,12 @@ class AsyncRateLimiter:
         self.refill_rate = float(refill_rate)
         self.tokens = float(capacity)
         self.last_refill = time.monotonic()
-        self._lock: asyncio.Lock | None = None
-        self._init_lock = threading.Lock()
+        self._lock = DualLock()
 
         # Track statistics
         self.total_allowed = 0
         self.total_denied = 0
         self.last_denied_time: float | None = None
-
-    @property
-    def lock(self) -> asyncio.Lock:
-        """Get the asyncio lock, creating it lazily if needed."""
-        if self._lock is None:
-            with self._init_lock:
-                if self._lock is None:
-                    self._lock = asyncio.Lock()
-        return self._lock
 
     async def is_allowed(self) -> bool:
         """Check if a log message is allowed based on available tokens.
@@ -125,7 +116,7 @@ class AsyncRateLimiter:
             True if the log should be allowed, False if rate limited
 
         """
-        async with self.lock:
+        async with self._lock.async_():
             now = time.monotonic()
             elapsed = now - self.last_refill
 
@@ -146,7 +137,7 @@ class AsyncRateLimiter:
 
     async def get_stats(self) -> dict[str, Any]:
         """Get rate limiter statistics."""
-        async with self.lock:
+        async with self._lock.async_():
             return {
                 "tokens_available": self.tokens,
                 "capacity": self.capacity,
