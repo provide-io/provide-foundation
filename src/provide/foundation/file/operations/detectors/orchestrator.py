@@ -20,6 +20,7 @@ from provide.foundation.file.operations.types import (
     DetectorConfig,
     FileEvent,
     FileOperation,
+    OperationType,
 )
 from provide.foundation.logger import get_logger
 
@@ -91,6 +92,152 @@ class OperationDetector:
             return self._flush_pending()
 
         return None
+
+    def add_event(self, event: FileEvent) -> None:
+        """Add event with auto-flush and callback support.
+
+        This is the recommended method for streaming detection with automatic
+        temp file hiding and callback-based operation reporting.
+
+        Args:
+            event: File event to process
+
+        Behavior:
+            - Hides temp files automatically (no callback until operation completes)
+            - Schedules auto-flush timer for pending operations
+            - Calls on_operation_complete(operation) when pattern detected
+            - Emits non-temp files immediately if no operation pattern found
+        """
+        # Add to pending events
+        self._pending_events.append(event)
+
+        # Check if this is a temp file
+        is_temp = is_temp_file(event.path) or (event.dest_path and is_temp_file(event.dest_path))
+
+        log.trace(
+            "Event added to detector",
+            path=str(event.path),
+            dest_path=str(event.dest_path) if event.dest_path else None,
+            is_temp=is_temp,
+            pending_count=len(self._pending_events),
+        )
+
+        # Try to detect operation with current events
+        operation = self._analyze_event_group(self._pending_events)
+
+        if operation:
+            # Operation detected! Clear pending events and emit
+            log.debug(
+                "Operation detected",
+                operation_type=operation.operation_type.value,
+                primary_path=str(operation.primary_path),
+                event_count=operation.event_count,
+            )
+            self._pending_events.clear()
+            self._last_flush = datetime.now()
+
+            # Cancel any pending flush timer
+            if self._flush_timer:
+                self._flush_timer.cancel()
+                self._flush_timer = None
+
+            # Call callback if provided
+            if self.on_operation_complete:
+                self.on_operation_complete(operation)
+        else:
+            # No operation yet
+            if not is_temp:
+                # Non-temp file with no operation detected
+                # Check if we should emit it individually or keep waiting
+                # If we have ONLY this event (no other pending), emit it
+                if len(self._pending_events) == 1:
+                    log.trace(
+                        "Single non-temp event, emitting immediately",
+                        path=str(event.path),
+                    )
+                    self._pending_events.clear()
+                    if self.on_operation_complete:
+                        # Create single-event operation
+                        single_op = self._create_single_event_operation(event)
+                        self.on_operation_complete(single_op)
+                else:
+                    # Keep buffering, schedule flush
+                    self._schedule_auto_flush()
+            else:
+                # Temp file, keep buffering silently
+                log.trace(
+                    "Temp file buffered",
+                    path=str(event.path),
+                )
+                self._schedule_auto_flush()
+
+    def _schedule_auto_flush(self) -> None:
+        """Schedule auto-flush timer."""
+        # Cancel existing timer
+        if self._flush_timer:
+            self._flush_timer.cancel()
+
+        # Schedule new timer
+        try:
+            loop = asyncio.get_event_loop()
+            self._flush_timer = loop.call_later(
+                self.config.time_window_ms / 1000.0, self._auto_flush
+            )
+            log.trace(
+                "Auto-flush scheduled",
+                window_ms=self.config.time_window_ms,
+            )
+        except RuntimeError:
+            # No event loop running - can't schedule timer
+            log.warning("Cannot schedule auto-flush: no event loop running")
+
+    def _auto_flush(self) -> None:
+        """Auto-flush callback - emits pending operations."""
+        if not self._pending_events:
+            return
+
+        log.debug(
+            "Auto-flush triggered",
+            pending_events=len(self._pending_events),
+        )
+
+        # Try to detect operation from pending events
+        operation = self._analyze_event_group(self._pending_events)
+
+        if operation:
+            log.debug(
+                "Operation detected on auto-flush",
+                operation_type=operation.operation_type.value,
+            )
+            if self.on_operation_complete:
+                self.on_operation_complete(operation)
+        else:
+            # No operation detected, emit individual events
+            log.debug(
+                "No operation detected, emitting individual events",
+                event_count=len(self._pending_events),
+            )
+            for event in self._pending_events:
+                if self.on_operation_complete:
+                    single_op = self._create_single_event_operation(event)
+                    self.on_operation_complete(single_op)
+
+        self._pending_events.clear()
+        self._last_flush = datetime.now()
+        self._flush_timer = None
+
+    def _create_single_event_operation(self, event: FileEvent) -> FileOperation:
+        """Create a FileOperation from a single event."""
+        return FileOperation(
+            operation_type=OperationType.UNKNOWN,
+            primary_path=event.path,
+            events=[event],
+            confidence=1.0,
+            description=f"{event.event_type} {event.path.name}",
+            start_time=event.timestamp,
+            end_time=event.timestamp,
+            files_affected=[event.path],
+        )
 
     def flush(self) -> list[FileOperation]:
         """Get any pending operations and clear buffer."""
