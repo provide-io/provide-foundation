@@ -74,7 +74,9 @@ def get_all_detectors() -> list[tuple[str, DetectorFunc, int]]:
         List of tuples: (name, detector_func, priority)
     """
     registry = get_detector_registry()
-    entries = registry.get_all("file_operation_detector")
+
+    # Collect all entries from the file_operation_detector dimension
+    entries = [entry for entry in registry if entry.dimension == "file_operation_detector"]
 
     # Sort by priority (highest first)
     sorted_entries = sorted(
