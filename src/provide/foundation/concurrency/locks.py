@@ -24,25 +24,46 @@ with separate isolation in each domain.
 class DualLock:
     """Lock that supports both synchronous and asynchronous contexts.
 
-    This class provides separate locking mechanisms for sync and async code,
-    preventing event loop blocking while maintaining thread safety within each domain.
+    Warning:
+        This class provides **SEPARATE** locks for sync and async contexts.
+        It does NOT provide mutual exclusion between sync and async code accessing
+        the same resource. The sync lock only protects against other sync code,
+        and the async lock only protects against other async code.
 
-    Note: This does NOT provide mutual exclusion between sync and async contexts.
-    For true mutual exclusion, ensure your code uses only sync or only async access patterns.
+        If you need true mutual exclusion across both sync and async code paths,
+        ensure your code uses ONLY sync OR ONLY async access patterns - never mix them
+        on the same shared resource.
 
-    Example:
+    This class prevents event loop blocking while maintaining thread safety within
+    each execution domain (sync or async).
+
+    Correct Usage Example:
         >>> class MyClass:
         ...     def __init__(self):
         ...         self._lock = DualLock()
         ...         self._value = 0
         ...
-        ...     def increment(self):
-        ...         with self._lock.sync():
+        ...     def increment(self):  # ONLY sync methods access _value
+        ...         with self._lock.with_sync_lock():
         ...             self._value += 1
         ...
+        ...     async def get_async(self):  # Different resource, separate lock
+        ...         async with self._lock.with_async_lock():
+        ...             return await self._fetch_data()
+
+    INCORRECT Usage (Race Condition):
+        >>> class BadClass:
+        ...     def __init__(self):
+        ...         self._lock = DualLock()
+        ...         self._shared = 0
+        ...
+        ...     def increment_sync(self):
+        ...         with self._lock.with_sync_lock():
+        ...             self._shared += 1  # Not protected from async_increment!
+        ...
         ...     async def increment_async(self):
-        ...         async with self._lock.async_():
-        ...             self._value += 1
+        ...         async with self._lock.with_async_lock():
+        ...             self._shared += 1  # Not protected from increment_sync!
     """
 
     def __init__(self) -> None:
@@ -52,29 +73,31 @@ class DualLock:
         self._async_init_lock = threading.Lock()
 
     @contextlib.contextmanager
-    def sync(self) -> Generator[None, None, None]:
+    def with_sync_lock(self) -> Generator[None, None, None]:
         """Acquire lock in synchronous context.
 
         Use with standard 'with' statement in synchronous methods.
+        Provides thread-safety for synchronous code only.
 
         Yields:
             None when lock is acquired
 
         Example:
             >>> lock = DualLock()
-            >>> with lock.sync():
-            ...     # Critical section for sync code
+            >>> with lock.with_sync_lock():
+            ...     # Critical section protected from other sync code
             ...     pass
         """
         with self._sync_lock:
             yield
 
     @contextlib.asynccontextmanager
-    async def async_(self) -> AsyncIterator[None]:
+    async def with_async_lock(self) -> AsyncIterator[None]:
         """Acquire lock in asynchronous context.
 
         Use with 'async with' statement in asynchronous methods.
         The async lock is lazily initialized on first use.
+        Provides concurrency-safety for async code only.
 
         Yields:
             None when lock is acquired
@@ -83,8 +106,8 @@ class DualLock:
             >>> import asyncio
             >>> lock = DualLock()
             >>> async def main():
-            ...     async with lock.async_():
-            ...         # Critical section for async code
+            ...     async with lock.with_async_lock():
+            ...         # Critical section protected from other async code
             ...         pass
             >>> asyncio.run(main())
         """
@@ -96,6 +119,15 @@ class DualLock:
 
         async with self._async_lock:
             yield
+
+    # Backward compatibility aliases
+    def sync(self) -> Generator[None, None, None]:
+        """Deprecated: Use with_sync_lock() instead."""
+        return self.with_sync_lock()
+
+    def async_(self) -> AsyncIterator[None]:
+        """Deprecated: Use with_async_lock() instead."""
+        return self.with_async_lock()
 
 
 @define
